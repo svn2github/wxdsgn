@@ -41,7 +41,8 @@ uses
   {$IFDEF WX_BUILD}
   ,JclStrings, JvExControls, JvComponent, TypInfo,JclRTTI,JvStringHolder,
   ELDsgnr,JvInspector, xprocs,dmCreateNewProp,wxUtils, DbugIntf,
-  wxSizerpanel,Designerfrm, ELPropInsp,uFileWatch, ThemeMgr,ExceptionFilterUnit
+  wxSizerpanel,Designerfrm, ELPropInsp,uFileWatch, ThemeMgr,ExceptionFilterUnit,
+  DesignerOptions
   {$ENDIF}
   ;
 {$ENDIF}
@@ -942,14 +943,21 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure est1Click(Sender: TObject);
     procedure JvInspPropertiesItemValueChanged(Sender: TObject;Item: TJvCustomInspectorItem);
     procedure ViewControlIDsClick(Sender: TObject);
+    procedure AlignToGridClick(Sender: TObject);
+    procedure AlignToLeftClick(Sender: TObject);
+    procedure AlignToRightClick(Sender: TObject);
+    procedure AlignToMiddleVerticalClick(Sender: TObject);
+    procedure AlignToMiddleHorizontalClick(Sender: TObject);
+    procedure AlignToTopClick(Sender: TObject);
+    procedure AlignToBottomClick(Sender: TObject);
+    procedure DesignerOptionsClick(Sender: TObject);
     procedure ChangeCreationOrder1Click(Sender: TObject);
     procedure ELDesigner1Notification(Sender: TObject;AnObject: TPersistent; Operation: TOperation);
     procedure OnPropertyItemSelected(Sender: TObject);
     function IsFromScrollBarShowing:boolean;
     procedure actNewWxFrameExecute(Sender: TObject);
     procedure actNewwxDialogExecute(Sender: TObject);
-    procedure LeftPageControlUnDock(Sender: TObject; Client: TControl;
-      NewTarget: TWinControl; var Allow: Boolean);
+    procedure LeftPageControlUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure ApplicationEvents1Activate(Sender: TObject);
   {$ENDIF}
 
@@ -1064,6 +1072,15 @@ public
   DesignerMenuChangeCreationOrder :TMenuItem;
   DesignerMenuViewIDs:TMenuItem;
   DesignerMenuSep2:TMenuItem;
+  DesignerMenuAlign : TMenuItem;
+  DesignerMenuAlignToGrid, DesignerMenuAlignVertical, DesignerMenuAlignHorizontal,
+  DesignerMenuAlignToLeft, DesignerMenuAlignToRight,
+  DesignerMenuAlignToTop, DesignerMenuAlignToBottom,
+  DesignerMenuAlignToMiddle : TMenuItem;
+  DesignerMenuAlignToMiddleVertical, DesignerMenuAlignToMiddleHorizontal: TMenuItem;
+  DesignerMenuSep3:TMenuItem;
+  DesignerMenuDesignerOptions:TMenuItem;
+  DesignerMenuSep4:TMenuItem;
 
   JvInspectorDotNETPainter1: TJvInspectorBorlandPainter;
   JvInspectorDotNETPainter2: TJvInspectorBorlandPainter;
@@ -1086,6 +1103,7 @@ public
   //frmClassBrwsDock:TForm;
   frmControlsDock:TForm;
   strChangedFileList:TStringList;
+  strStdwxIDList:TStringList;
   FWatchList:TList;
   FileWatching:Boolean;
 {$ENDIF}
@@ -1134,6 +1152,7 @@ public
     function CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string;var ErrorString:String):Boolean;overload;
     function LocateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string):Boolean;
     procedure OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
+    procedure OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
     procedure UpdateDefaultFormContent;
     function GetFunctionsFromSource(classname: string; var strLstFuncs:TStringList): Boolean;
     function GetCurrentDesignerForm: TfrmNewForm;
@@ -1232,6 +1251,7 @@ end;
 procedure TMainForm.DoCreateWxSpecificItems;
 var
   I: Integer;
+  ini :TiniFile;
 begin
   //PopuP menu
   frmInspectorDock:=TForm.Create(self);
@@ -1239,6 +1259,7 @@ begin
 
   frmControlsDock:=TForm.Create(self);
   strChangedFileList:=TStringList.Create;
+  strStdwxIDList:=GetPredefinedwxIds;
   FWatchList:=TList.Create;
   FileWatching:=false;
   //LeftPageControl.Owner:=frmClassBrwsDock;
@@ -1255,6 +1276,19 @@ begin
   DesignerMenuChangeCreationOrder := TMenuItem.Create(Self);
   DesignerMenuViewIDs:= TMenuItem.Create(Self);
   DesignerMenuSep2:= TMenuItem.Create(Self);
+  DesignerMenuAlign := TMenuItem.Create(Self);
+  DesignerMenuAlignToGrid := TMenuItem.Create(DesignerMenuAlign);
+  DesignerMenuAlignVertical := TMenuItem.Create(DesignerMenuAlign);
+  DesignerMenuAlignHorizontal := TMenuItem.Create(DesignerMenuAlign);
+  DesignerMenuAlignToTop := TMenuItem.Create(DesignerMenuAlignVertical);
+  DesignerMenuAlignToMiddleVertical := TMenuItem.Create(DesignerMenuAlignVertical);
+  DesignerMenuAlignToBottom := TMenuItem.Create(DesignerMenuAlignVertical);
+  DesignerMenuAlignToLeft := TMenuItem.Create(DesignerMenuAlignHorizontal);
+  DesignerMenuAlignToMiddleHorizontal := TMenuItem.Create(DesignerMenuAlignHorizontal);
+  DesignerMenuAlignToRight := TMenuItem.Create(DesignerMenuAlignHorizontal);
+  DesignerMenuSep3 := TMenuItem.Create(Self);
+  DesignerMenuDesignerOptions:= TMenuItem.Create(Self);
+  DesignerMenuSep4:= TMenuItem.Create(Self);
 
   with DesignerPopup do
   begin
@@ -1314,8 +1348,95 @@ begin
     Caption := 'View Control IDs';
     OnClick := ViewControlIDsClick;
   end;
-  DesignerPopup.Items.Add(DesignerMenuCopy);
+
+  with DesignerMenuSep3 do
+  begin
+    Name := 'DesignerMenuSep3';
+    Caption := '-';
+  end;
+
+  with DesignerMenuAlign do
+  begin
+    Name := 'DesignerMenuAlign';
+    Caption := 'Align';
+   end;
+
+  with DesignerMenuAlignToGrid do
+  begin
+    Name := 'DesignerMenuAlignToGrid';
+    Caption := 'To Grid';
+    OnClick := AlignToGridClick;
+  end;
+
+  with DesignerMenuAlignVertical do
+  begin
+    Name := 'DesignerMenuAlignVertical';
+    Caption := 'Vertical';
+    end;
+
+  with DesignerMenuAlignHorizontal do
+  begin
+    Name := 'DesignerMenuAlignHorizontal';
+    Caption := 'Horizontal';
+  end;
+
+  with DesignerMenuAlignToLeft do
+  begin
+    Name := 'DesignerMenuAlignToLeft';
+    Caption := 'To Left';
+    OnClick := AlignToLeftClick;
+  end;
+
+  with DesignerMenuAlignToRight do
+  begin
+    Name := 'DesignerMenuAlignToRight';
+    Caption := 'To Right';
+    OnClick := AlignToRightClick;
+  end;
+
+  with DesignerMenuAlignToMiddleVertical do
+  begin
+    Name := 'DesignerMenuAlignToMiddleVertical';
+    Caption := 'To Center';
+    OnClick := AlignToMiddleVerticalClick;
+  end;
+
+  with DesignerMenuAlignToMiddleHorizontal do
+  begin
+    Name := 'DesignerMenuAlignToMiddleHorizontal';
+    Caption := 'To Center';
+    OnClick := AlignToMiddleHorizontalClick;
+  end;
+
+   with DesignerMenuAlignToTop do
+  begin
+    Name := 'DesignerMenuAlignToTop';
+    Caption := 'To Top';
+    OnClick := AlignToTopClick;
+  end;
+
+   with DesignerMenuAlignToBottom do
+  begin
+    Name := 'DesignerMenuAlignToBottom';
+    Caption := 'To Bottom';
+    OnClick := AlignToBottomClick;
+  end;
+
+  with DesignerMenuSep4 do
+  begin
+    Name := 'DesignerMenuSep4';
+    Caption := '-';
+  end;
+
+  with DesignerMenuDesignerOptions do
+  begin
+    Name := 'DesignerMenuDesignerOptions';
+    Caption := 'View Designer Options';
+    OnClick := DesignerOptionsClick;
+  end;
+
   DesignerPopup.Items.Add(DesignerMenuCut);
+  DesignerPopup.Items.Add(DesignerMenuCopy);
   DesignerPopup.Items.Add(DesignerMenuPaste);
   DesignerPopup.Items.Add(DesignerMenuDelete);
   DesignerPopup.Items.Add(DesignerMenuSep1);
@@ -1323,8 +1444,24 @@ begin
   DesignerPopup.Items.Add(DesignerMenuChangeCreationOrder);
   DesignerPopup.Items.Add(DesignerMenuViewIDs);
   DesignerPopup.Items.Add(DesignerMenuSep2);
+  DesignerPopup.Items.Add(DesignerMenuAlign);
+  
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Add(DesignerMenuAlignToGrid);
 
-  //Object insoector Styles
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Add(DesignerMenuAlignHorizontal);
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Horizontal').MenuIndex].Add(DesignerMenuAlignToLeft);
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Horizontal').MenuIndex].Add(DesignerMenuAlignToMiddleHorizontal);
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Horizontal').MenuIndex].Add(DesignerMenuAlignToRight);
+
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Add(DesignerMenuAlignVertical);
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Vertical').MenuIndex].Add(DesignerMenuAlignToTop);
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Vertical').MenuIndex].Add(DesignerMenuAlignToMiddleVertical);
+  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Vertical').MenuIndex].Add(DesignerMenuAlignToBottom);
+
+  DesignerPopup.Items.Add(DesignerMenuSep3);
+  DesignerPopup.Items.Add(DesignerMenuDesignerOptions);
+
+  //Object inspector Styles
   JvInspectorDotNETPainter1 := TJvInspectorBorlandPainter.Create(frmInspectorDock);
   JvInspectorDotNETPainter2 := TJvInspectorBorlandPainter.Create(frmInspectorDock);
   with JvInspectorDotNETPainter1 do
@@ -1357,6 +1494,35 @@ begin
     OnModified := ELDesigner1Modified;
   end;
 
+      ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
+    try
+        ELDesigner1.Grid.Visible:=ini.ReadBool('wxWidgets','cbGridVisible',ELDesigner1.Grid.Visible);
+        ELDesigner1.Grid.XStep:=ini.ReadInteger('wxWidgets','lbGridXStepUpDown',ELDesigner1.Grid.XStep);
+        ELDesigner1.Grid.YStep:=ini.ReadInteger('wxWidgets','lbGridYStepUpDown',ELDesigner1.Grid.YStep);
+        ELDesigner1.SnapToGrid:=ini.ReadBool('wxWidgets','cbSnapToGrid',ELDesigner1.SnapToGrid);
+
+        if ini.ReadBool('wxWidgets','cbControlHints',true) then
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints + [htControl]
+        else
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints - [htControl];
+
+        if ini.ReadBool('wxWidgets','cbSizeHints',true) then
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints + [htSize]
+        else
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints - [htSize];
+
+        if ini.ReadBool('wxWidgets','cbMoveHints',true) then
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints + [htMove]
+        else
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints - [htMove];
+                    
+        if ini.ReadBool('wxWidgets','cbInsertHints',true) then
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints + [htInsert]
+        else
+            ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints - [htInsert];
+    except
+        ini.destroy;
+    end;
 
   pnlMainInsp := TPanel.Create(frmInspectorDock);
   cbxControlsx := TComboBox.Create(frmInspectorDock);
@@ -2110,8 +2276,11 @@ begin
   fDebugger.Free;
   dmMain.Free;
   devImageThemes.Free;
+  {$IFDEF WX_BUILD}
   strChangedFileList.Free; //Used for wx's Own File watch functions
+  strStdwxIDList.Free;//Used for
   FWatchList.Free; //Used for wx's Own File watch functions
+  {$ENDIF WX_BUILD}
   tmpcount := BreakPointList.Count - 1;
 {** RNC Clean up the global breakpoint list *** }
   for i := tmpcount downto 0 do
@@ -9205,7 +9374,8 @@ begin
       begin
           if IsControlWxWindow(Tcontrol(SelectedComponent)) then
           begin
-            TWincontrol(SelectedComponent).Align:=alClient;
+            if TWincontrol(SelectedComponent).Parent is TForm then
+                TWincontrol(SelectedComponent).Align:=alClient;
           end;
       end;
     end;
@@ -9753,7 +9923,13 @@ begin
       begin
         //sendDebug('I''m here');
       end;
-      //sendDebug(Item.DisplayName);
+      
+    //Populate the std wx Ids for the ID_Name selection
+    if AnsiSameText('Wx_IDName', trim(Item.DisplayName)) then
+    begin
+        Item.Flags := Item.Flags + [iifValueList, iifAllowNonListValues];
+        Item.OnGetValueList := OnStdWxIDListPopup;
+    end;
 
       for I := 0 to strLst.Count - 1 do // Iterate
       begin
@@ -9761,16 +9937,6 @@ begin
         StrCompCaption := trim(ExtractComponentPropertyCaption(strLst[i]));
         if AnsiSameText(StrCompName, trim(Item.DisplayName)) then
         begin
-
-//          if AnsiSameText(StrCompName, 'Name') then
-//          begin
-////            if AnsiSameText(Item.Parent.Data.TypeInfo.Name, 'TWxPoint') then
-////            begin
-////                boolOk := false;
-////                break;
-////            end;
-//          end;
-
           if AnsiSameText(Item.Data.TypeInfo.Name, 'TCaption') then
           begin
             Item.Flags := Item.Flags  - [iifMultiLine];
@@ -9790,12 +9956,13 @@ begin
           begin
             Item.Flags := Item.Flags + [iifEditButton];
           end;
-
           Item.DisplayName := StrCompCaption;
           boolOk := true;
           break;
         end;
+
       end; // for
+
     end;
 
   end;
@@ -10291,6 +10458,12 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
+procedure TMainForm.OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
+begin
+    Value.Clear;
+    Value.Assign(strStdwxIDList);
+end;
+
 procedure TMainForm.OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
 var
   boolNoFunction: Boolean;
@@ -11675,6 +11848,53 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
+procedure TMainForm.DesignerOptionsClick(Sender: TObject);
+var
+    DesignerForm: TDesignerForm;
+begin
+    DesignerForm:=TDesignerForm.Create(self);
+    try
+        DesignerForm.showModal;
+        DesignerForm.destroy;
+    except
+    end;
+end;
+
+procedure TMainForm.AlignToGridClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.AlignToGrid;
+end;
+
+procedure TMainForm.AlignToLeftClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.Align(atLeftTop, atNoChanges);
+end;
+
+procedure TMainForm.AlignToRightClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.Align(atRightBottom, atNoChanges);
+end;
+
+procedure TMainForm.AlignToMiddleHorizontalClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.Align(atCenter, atNoChanges);
+end;
+
+procedure TMainForm.AlignToMiddleVerticalClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.Align(atNoChanges, atCenter);
+end;
+
+procedure TMainForm.AlignToTopClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.Align(atNoChanges, atLeftTop);
+end;
+
+procedure TMainForm.AlignToBottomClick(Sender: TObject);
+begin
+    ELDesigner1.SelectedControls.Align(atNoChanges, atRightBottom);
+end;
+
 procedure TMainForm.ViewControlIDsClick(Sender: TObject);
 var
     vwCtrlIDsFormObj:TViewControlIDsForm;
