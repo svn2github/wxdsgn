@@ -301,15 +301,15 @@ end;
 function TWxGridSizer.GenerateEnumControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxGridSizer.GenerateControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxGridSizer.GenerateEventTableEntries(CurrClassName:String):String;
@@ -371,7 +371,7 @@ end;
 
 function TWxGridSizer.GetIDName:String;
 begin
-Result:=wx_IDName;
+    //Result:=wx_IDName;
 end;
 
 function TWxGridSizer.GetIDValue:LongInt;

@@ -273,15 +273,15 @@ end;
 function TWxBoxSizer.GenerateEnumControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxBoxSizer.GenerateControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
 
@@ -360,17 +360,17 @@ end;
 
 function TWxBoxSizer.GetEventList:TStringlist;
 begin
-Result:=Wx_EventList;
+    Result:=Wx_EventList;
 end;
 
 function TWxBoxSizer.GetIDName:String;
 begin
-Result:=wx_IDName;
+    Result:='';
 end;
 
 function TWxBoxSizer.GetIDValue:LongInt;
 begin
-Result:=wx_IDValue;
+    Result:=wx_IDValue;
 end;
 
 function TWxBoxSizer.GetParameterFromEventName(EventName: string):String;

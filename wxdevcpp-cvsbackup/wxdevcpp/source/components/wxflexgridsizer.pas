@@ -302,15 +302,15 @@ end;
 function TWxFlexGridSizer.GenerateEnumControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxFlexGridSizer.GenerateControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
 

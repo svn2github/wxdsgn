@@ -302,15 +302,15 @@ end;
 function TWxStaticBoxSizer.GenerateEnumControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStaticBoxSizer.GenerateControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+//     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+//        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStaticBoxSizer.GenerateEventTableEntries(CurrClassName:String):String;
@@ -389,7 +389,7 @@ end;
 
 function TWxStaticBoxSizer.GetIDName:String;
 begin
-Result:=wx_IDName;
+    //Result:=wx_IDName;
 end;
 
 function TWxStaticBoxSizer.GetIDValue:LongInt;
