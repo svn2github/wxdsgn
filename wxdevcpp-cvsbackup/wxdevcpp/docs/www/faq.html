@@ -35,10 +35,12 @@
 <h3>What is wx-devcpp ?</h3>
 <P>wx-devcpp is an extension of DevC++ with a Form Designer for the Amazing Multiplatform toolkit <A HREF="http://www.wxWidgets.org">wx-Widgets</A>. The source is based on Sep 18th 2004 of DevC++. </P>
 
+<h3>Where can I get Help on wx-devcpp?</h3>
+<P>Please post your question in the wxForum. You can use this link (<A HREF="">http://www.solidsteel.nl/users/wxwidgets/viewforum.php?f=28</A>) to check the forum.</P>
+
 
 <h3>Why should I donate money to wx-Widgets Foundation instead of wx-devcpp?</h3>
 <P>More than 10 years of development has gone into wx-Widgets development. wx-devcpp is just a wrapper to explore and show the full potential of wx-Widgets, so I would really like you to send couple of bucks to the true genius who are responsible for making the multiplatform programming a reality.<br>If you donate money to wx-widgets, you will automatically see a sharp increase in the quality of wx-devcpp.</P>
-
 
 <h3>Which language wx-devcpp is written with?</h3>
 <P>wx-devcpp is written with Borland Delphi 6.0. Lot of third party components like jvcl, extlib etc are used.</P>
@@ -49,7 +51,7 @@
 
 
 <h3>Will there be a release for Linux?</h3>
-<P>You have to ask this question to the core Dev-C++  developers. Since wx-devcpp is based on the Dev-C++ source code, a linux will be a possible there is a Linux version of Dev-C++.</P>
+<P>You have to ask this question to the core Dev-C++  developers. Since wx-devcpp is based on the Dev-C++ source code, a linux will be a possible only if we have a Linux version of Dev-C++.</P>
 
 <h3> I'm not able to see the Design Dialog, what is happening ?</h3>
 <P>There is a problem in the pre-6.4 releases wxForm files. Please open up the text editor and Remove the line <br><br>
@@ -58,8 +60,8 @@
   This should allow the wxForm to be edited properly.
 </P>
 
-<h3> Why does wx-devcpp copiler program crashes after adding a control ?</h3>
-<P>It seems there is a problem with the makefile dependency. Open the Compiler Option (using the Tools Menu) and switch to the "Setting Tab" and then select "C++ compiler" and set the "Use heuristicsto compile faster" to "yes". This should fix the problem.
+<h3> Why does wx-devcpp compiled program crashes after adding a control ?</h3>
+<P>It seems there is a problem with the makefile dependency. Uncheck the "Use Fast but imperfect dependency generation" option (you can see that at the top of the dialog) in the Compiler Options. (ps : This issue is fixed in beta 6.6)
 
 </P>
 

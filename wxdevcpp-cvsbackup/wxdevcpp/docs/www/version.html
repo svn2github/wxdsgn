@@ -44,6 +44,34 @@ Finally the Beta 6.6 has seen the light. There are no major changes made to this
 
 <a name="versionhistory"></a>
 <h2>Version History - List of changes/additions</h2>
+<h3>Beta 6.7 (2005-03-21)</h3>
+<ol>
+	<li>Merged Dev-C++ 4.9.9.2 Code base(now supporting GNU GCC 3.4 compiler toolchain).(Guru)</li> 
+	<li>Latest wx-Widgets library 2.5.4 (UpCase & Malcolm Nealon)</li> 
+	<li>Support for Custom File Names in Project Creation.(Tony)</li> 
+	<li>Support for wxSplitterWindow.(Guru)</li> 
+	<li>Support for Enum Based Control ID.(Guru) **1** (see below)</li> 	
+	<li>wxHtmlWindow event Bug Fix.(Guru)</li> 
+	<li>Now Sizers can be added in a frame even if we already dropped a toolbar or statusbar or popupmenu.(Guru)</li> 
+	<li>Fixed Bug #1162774 - Window or Sizer controls are not fully visible when toolbar or statusbar are in the frame.(Guru)</li> 
+	<li>Ability to specify wx's standard ID for the Controls.(Guru)</li> 
+	<li>Fix for running wx-devcpp in multiple instances.(Guru)</li> 
+	<li>Fixed a nasty bug where the form keeps growing big when a Window control is dropped into a Sizer.(Guru)</li> 
+	<li>Options to manipulate the Designer Form Options (like snap to grid, grid size etc).(Guru)</li> 
+	<li> Designer Components Alignment Options (To Grid, Vertical, Horizontal etc) (Tony).</li> 
+	<li>Small mods in Mal's tutorial help file (Tony & Malcolm Nealon )</li> 
+	<li>Dev-cpp project files for all the wx sample files (Malcolm Nealon)</li> 
+	<li>Updated CVS source usage for collaboration. (Tony & Marek).</li> 
+	<li>Gnu Debugger (gdb) has been upgraded to version 6.3. (Tony)</li> 
+
+	<br><br>
+
+<B>**1** </B>: Although the old #define declarations are maintained for backward compatability, all users are strongly advised to convert their code to the new enum based control ID declaration. To convert the old #define based control ids to new enum based Ids, you need to follow the steps outlined here:
+<A HREF="http://www.solidsteel.nl/users/wxwidgets/viewtopic.php?t=1597">http://www.solidsteel.nl/users/wxwidgets/viewtopic.php?t=1597</A>
+
+</ol> 
+
+<h2>Version History - List of changes/additions</h2>
 <h3>Beta 6.6 (2005-02-21)</h3>
 <ol>
 	<li>Fixed issues with the Non Visible Components showing as visible component in the designer.</li> 
