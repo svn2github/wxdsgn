@@ -290,7 +290,7 @@ begin
     end;
 
 
-    Result:=Result+#13+Format('%s =  new %s(%s, %s, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Result+#13+Format('%s =  new %s(%s, %s, _("%s"), %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
