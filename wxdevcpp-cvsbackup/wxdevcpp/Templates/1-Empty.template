@@ -1,0 +1,36 @@
+[Template]
+ver=1
+Name=Empty Project
+IconIndex=4
+Description=An empty project
+Catagory=Basic
+
+[Project]
+UnitCount=0
+Type=1
+Name=Empty app
+Ver=1
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=newFrameproject_private.rc
+ResourceIncludes=c:\Dev-Cpp\include\
+MakeIncludes=
+Compiler=-fno-rtti -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -fvtable-thunks -D__WXMSW__ -D__GNUWIN32__ -D__WIN95___@@__@@_
+CppCompiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@__@@_
+Linker=-lwxmsw25_@@_-lwxmsw25_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
+IsCpp=1
+Icon=
+ExeOutput=
+ObjectOutput=
+OverrideOutput=0
+OverrideOutputName=newFrameProject.exe
+HostApplication=
+Folders="C++ Header","C++ Source","wxForm Files"
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=1
+CompilerSet=0
+CompilerSettings=0000000000000101001000
