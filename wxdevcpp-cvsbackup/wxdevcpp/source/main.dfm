@@ -27,7 +27,7 @@ object MainForm: TMainForm
     Left = 209
     Top = 100
     Width = 3
-    Height = 274
+    Height = 282
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -35,7 +35,7 @@ object MainForm: TMainForm
   end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 374
+    Top = 382
     Width = 768
     Height = 4
     Cursor = crVSplit
@@ -47,7 +47,7 @@ object MainForm: TMainForm
     Left = 598
     Top = 100
     Width = 3
-    Height = 274
+    Height = 282
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -56,7 +56,7 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 378
+    Top = 386
     Width = 768
     Height = 128
     ActivePage = CompSheet
@@ -1111,7 +1111,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 506
+    Top = 514
     Width = 768
     Height = 19
     Panels = <
@@ -1135,7 +1135,7 @@ object MainForm: TMainForm
     Left = 212
     Top = 100
     Width = 386
-    Height = 274
+    Height = 282
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1195,7 +1195,7 @@ object MainForm: TMainForm
     Left = 601
     Top = 100
     Width = 167
-    Height = 274
+    Height = 282
     Align = alRight
     TabOrder = 6
     Visible = False
@@ -1204,7 +1204,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 100
     Width = 209
-    Height = 274
+    Height = 282
     Align = alLeft
     DockSite = True
     TabOrder = 7

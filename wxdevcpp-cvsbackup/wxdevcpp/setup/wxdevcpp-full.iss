@@ -5,7 +5,7 @@
 
 [Setup]
 AppName=wxDev-cpp
-AppVerName=wxDev-cpp 6.4 beta
+AppVerName=wxDev-cpp 6.6 beta
 AppPublisher=Guru Kathiresam
 AppPublisherURL=http://wxdsgn.sourceforge.net/
 AppSupportURL=http://wxdsgn.sourceforge.net/
@@ -26,10 +26,10 @@ OutputBaseFilename=wxdevcpp-full-setup
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: D:\dev-cpp\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
+Source: W:\dev-cpp\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: D:\Dev-Cpp\Templates\00-wxWindows.template; DestDir: {app}\Templates\; DestName: 00-wxWindows.template; Flags: overwritereadonly ignoreversion
-Source: D:\Dev-Cpp\Templates\0-wxWindows.template; DestDir: {app}\Templates\; DestName: 0-wxWindows.template; Flags: overwritereadonly ignoreversion
+Source: W:\Dev-Cpp\Templates\00-wxWindows.template; DestDir: {app}\Templates\; DestName: 00-wxWindows.template; Flags: overwritereadonly ignoreversion
+Source: W:\Dev-Cpp\Templates\0-wxWindows.template; DestDir: {app}\Templates\; DestName: 0-wxWindows.template; Flags: overwritereadonly ignoreversion
 
 [Icons]
 Name: {group}\wxDev-cpp; Filename: {app}\devcpp.exe; WorkingDir: {app}; IconFilename: {app}\devcpp.exe

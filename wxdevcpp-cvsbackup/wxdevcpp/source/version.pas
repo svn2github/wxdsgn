@@ -22,12 +22,12 @@ unit version;
 interface
 
 const
-  GCC_VERSION          = '3.3.1';
+  GCC_VERSION          = '3.4.2-20040916-1';
 
 resourcestring
   // misc strings
   DEVCPP = 'Dev-C++';
-  DEVCPP_VERSION       = '4.9.9.0-wx-beta-6.6';
+  DEVCPP_VERSION       = '4.9.9.1-wx-beta-6.6';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
