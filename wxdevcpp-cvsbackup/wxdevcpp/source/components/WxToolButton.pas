@@ -190,7 +190,7 @@ begin
     FWx_PropertyList.add('Wx_IDName : IDName ');
     FWx_PropertyList.add('Wx_IDValue : IDValue ');
     FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-    //FWx_PropertyList.add('Name : Name');
+    FWx_PropertyList.add('Name : Name');
     FWx_PropertyList.add('ToolKind : ToolKind');
     FWx_PropertyList.add('Caption : Label');
     //FWx_PropertyList.add('Width : Width');
