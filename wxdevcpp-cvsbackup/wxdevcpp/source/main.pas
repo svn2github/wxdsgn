@@ -10037,6 +10037,9 @@ begin
                     if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton') then
                         GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);
 
+                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitBtn') then
+                        GenerateXPMDirectly(TWxBitBtn(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);
+
                     if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton') then
                         GenerateXPMDirectly(TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);
 
