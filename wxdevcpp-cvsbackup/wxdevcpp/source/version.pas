@@ -60,21 +60,11 @@ resourcestring
   BIN_DIR = 'Bin';
   LIB_DIR = 'lib';
   C_INCLUDE_DIR = 'include';
-  CPP_INCLUDE_DIR      = 
-                         'include'
-                       //one of below directories will be deleted if don't exist, later
-                       + ';include' + pd + 'c++' + pd + GCC_VERSION
-                       + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'
-                       + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'backward'
-                       + ';lib' + pd + 'gcc' + pd + 'mingw32' + pd + GCC_VERSION + pd + 'include'
-                       + ';include' + pd + 'c++' + pd + '3.3.1'
-                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'mingw32'
-                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'backward'
-                       + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include'
+  CPP_INCLUDE_DIR      =
 //The Dir are taken from bottom to up. So I added the dir in the inverted order in which
 //they are picked by the parser.                       
   {$IFDEF WX_BUILD}
-                       +  ';include' + pd + 'wx;'
+                       'include' + pd + 'wx;'
                        + 'include' + pd + 'wx' + pd + 'xrc;'
                        + 'include' + pd + 'wx' + pd + 'xml;'
                        + 'include' + pd + 'wx' + pd + 'svg;'
@@ -91,8 +81,18 @@ resourcestring
                        + 'include' + pd + 'wx' + pd + 'generic;'
                        + 'include' + pd + 'wx' + pd + 'msw;'
   {$ENDIF}
+                         'include'
+                       //one of below directories will be deleted if don't exist, later
+                       + ';include' + pd + 'c++' + pd + GCC_VERSION
+                       + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'
+                       + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'backward'
+                       + ';lib' + pd + 'gcc' + pd + 'mingw32' + pd + GCC_VERSION + pd + 'include'
+                       + ';include' + pd + 'c++' + pd + '3.3.1'
+                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'mingw32'
+                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'backward'
+                       + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include'
 
-                       ;  
+                       ;
   LANGUAGE_DIR         = 'Lang' + pd;
   ICON_DIR             = 'Icons' + pd;
   HELP_DIR             = 'Help' + pd;
