@@ -7983,6 +7983,8 @@ var
   FolderNode: TTreeNode;
   NewUnit: TProjUnit;
   strCppFile,strHppFile:String;
+  ini: Tinifile;
+
 {$ENDIF}
 begin
 {$IFDEF WX_BUILD}
@@ -8027,9 +8029,17 @@ begin
       else
       FCreateFormPropObj.Caption := 'Create New wxWidgets Dialog';
 
-  FCreateFormPropObj.txtFileName.Text := emptyFileName;
-  FCreateFormPropObj.txtClassName.Text := emptyFileName;
-  FCreateFormPropObj.txtTitle.Text := emptyFileName;
+  // Open the ini file and see if we have any default values for author, class, license
+  // ReadString will return either the ini key or the default
+  ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
+
+  FCreateFormPropObj.txtFileName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),''); // Default file name
+  FCreateFormPropObj.txtClassName.Text := ini.ReadString('wxWidgets',
+                                       'Class', ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Class');  // Default class name
+  FCreateFormPropObj.txtTitle.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'');   // Default title name
+
+  FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', '');
+
 
   if InProject then
     FCreateFormPropObj.txtSaveTo.Text :=
@@ -8046,6 +8056,12 @@ begin
     FCreateFormPropObj.Destroy;
     exit;
   end;
+
+   // Write the current strings back as the default
+  ini.WriteString('wxWidgets', 'Class', FCreateFormPropObj.txtClassName.Text);
+  ini.WriteString('wxWidgets', 'Author', FCreateFormPropObj.txtAuthorName.Text);
+
+  ini.free;
 
   CreateStatus := CreateSourceCodes(strCppFile,strHppFile,FCreateFormPropObj, strCppCode, strHCode);
   if CreateStatus then
@@ -8240,7 +8256,7 @@ begin
   // Write the current strings back as the default
   ini.WriteString('wxWidgets', 'Class', FCreateFormPropObj.txtClassName.Text);
   ini.WriteString('wxWidgets', 'Author', FCreateFormPropObj.txtAuthorName.Text);
-  
+
   ini.free;
 
   // Call CreateAppSourceCodes to replace the keywords in our template files
@@ -8629,6 +8645,7 @@ var
       strSearchReplace(strFileSrc, '%CLASS_TITLE%', strClassTitle, [srAll]);
       strSearchReplace(strFileSrc, '%CLASS_STYLE_STRING%', strClassStyleString,[srAll]);
       strSearchReplace(strFileSrc, '%PROJECT_NAME%', ChangeFileExt(ExtractFileName(fProject.FileName), ''),[srAll]);
+      strSearchReplace(strFileSrc, '%APP_NAME%', ChangeFileExt(ExtractFileName(fProject.FileName), '') + APP_SUFFIX,[srAll]);
 
     finally
 
