@@ -680,9 +680,10 @@ begin
     Result:=strCapitalize(Result);
     strSearchReplace(Result,' ','',[srAll]);
 end;
+
 procedure TMenuItemForm.btNewOnMenuClick(Sender: TObject);
 var
-    strFnc:String;
+    strFnc,ErrorString:String;
 begin
     if MainForm.isCurrentFormFilesNeedToBeSaved = true then
     begin
@@ -698,7 +699,7 @@ begin
     if strFnc = '' then
         exit;
 
-    MainForm.CreateFunctionInEditor(strFnc,'void','wxCommandEvent& event');
+    MainForm.CreateFunctionInEditor(strFnc,'void','wxCommandEvent& event',ErrorString);
 
     cbOnMenu.Text:=strFnc;
     btNewOnMenu.Enabled:=false;
@@ -707,7 +708,7 @@ end;
 
 procedure TMenuItemForm.btNewUpdateUIClick(Sender: TObject);
 var
-    strFnc:String;
+    strFnc,ErrorString:String;
 begin
     if MainForm.isCurrentFormFilesNeedToBeSaved = true then
     begin
@@ -723,7 +724,7 @@ begin
     strFnc:=trim(InputBox('New Function','Create New Function ?', GetFunctionName(trim(txtIDName.Text))+'UpdateUI'));
     if strFnc = '' then
         exit;
-    MainForm.CreateFunctionInEditor(strFnc,'void','wxUpdateUIEvent& event');
+    MainForm.CreateFunctionInEditor(strFnc,'void','wxUpdateUIEvent& event',ErrorString);
     cbOnUpdateUI.Text:=strFnc;
     btNewUpdateUI.Enabled:=false;
 end;
