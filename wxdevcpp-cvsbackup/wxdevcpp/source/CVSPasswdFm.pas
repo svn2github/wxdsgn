@@ -22,8 +22,14 @@ unit CVSPasswdFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls;
+{$ENDIF}
 
 type
   TCVSPasswdForm = class(TForm)
@@ -44,7 +50,8 @@ var
 
 implementation
 
-uses devcfg;
+uses 
+  devcfg;
 
 {$R *.dfm}
 

@@ -23,9 +23,16 @@ unit CompOptionsFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls, Inifiles, ExtCtrls, ComCtrls, devTabs, Spin, XPMenu,
   CompilerOptionsFrame;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QButtons, QStdCtrls, Inifiles, QExtCtrls, QComCtrls, devTabs,
+  CompilerOptionsFrame;
+{$ENDIF}
 
 type
   TCompForm = class(TForm)
@@ -132,9 +139,15 @@ var
 
 implementation
 
-uses Main, FileCtrl, version, devcfg, utils, MultiLangSupport, datamod;
+uses 
+{$IFDEF WIN32}
+  Main, FileCtrl, version, devcfg, utils, MultiLangSupport, datamod;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, Main, version, devcfg, utils, MultiLangSupport, datamod;
+{$ENDIF}
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   Help_Topics: array[0..3] of string = (
@@ -145,6 +158,7 @@ const
 
 procedure TCompForm.btnCancelClick(Sender: TObject);
 begin
+     devCompiler.CompilerSet:=cmbCompilerSetComp.ItemIndex;
   Close;
 end;
 
@@ -163,6 +177,12 @@ begin
     exit;
   end;
 
+   //RNC
+   devCompilerSet.CmdOpts:= Commands.Lines.Text;
+   devCompilerSet.AddtoLink:= cbLinkerAdd.Checked;
+   devCompilerSet.AddtoComp:= cbCompAdd.Checked;
+   devCompilerSet.LinkOpts:= Linker.Lines.Text;
+   devCompilerSet.SaveSettings;
   devCompilerSet.OptionsStr := devCompiler.OptionStr;
   devCompilerSet.SaveSet(currentSet);
   devCompilerSet.SaveSettings;
@@ -172,11 +192,8 @@ begin
     Delay := seCompDelay.Value;
     FastDep := cbFastDep.Checked;
 
-    AddtoComp := cbCompAdd.Checked;
-    CmdOpts := Commands.Lines.Text;
 
-    AddtoLink := cbLinkerAdd.Checked;
-    LinkOpts := Linker.Lines.Text;
+
 
     CompilerSet := cmbCompilerSetComp.ItemIndex;
     devCompilerSet.Sets.Assign(cmbCompilerSetComp.Items);
@@ -216,12 +233,17 @@ begin
   begin
     seCompDelay.Value := Delay;
     cbFastDep.Checked := FastDep;
+//RNC
+     //Commands.Lines.Text:= CmdOpts;
+     Commands.Lines.Text:= devCompilerSet.CmdOpts;
+     cbCompAdd.Checked:= devCompilerSet.AddtoComp;
+    // cbCompAdd.Checked:= AddToComp;
 
-    Commands.Lines.Text := CmdOpts;
-    cbCompAdd.Checked := AddToComp;
+     //Linker.Lines.Text:= LinkOpts;
+     Linker.Lines.Text:= devCompilerSet.LinkOpts;
+     cbLinkerAdd.Checked:= devCompilerSet.AddtoLink;
+    // cbLinkerAdd.Checked:= AddtoLink;
 
-    Linker.Lines.Text := LinkOpts;
-    cbLinkerAdd.Checked := AddtoLink;
 
     cmbCompilerSetComp.Items.Clear;
     cmbCompilerSetComp.Items.Assign(devCompilerSet.Sets);
@@ -284,7 +306,12 @@ end;
 
 procedure TCompForm.btnBrowseClick(Sender: TObject);
 var
+{$IFDEF WIN32}
   NewItem: string;
+{$ENDIF}
+{$IFDEF LINUX}
+  NewItem: WideString;
+{$ENDIF}
 begin
   if (Trim(edEntry.Text) <> '') and DirectoryExists(Trim(edEntry.Text)) then
     newitem := edEntry.Text
@@ -303,7 +330,7 @@ begin
     2: lstDirs.Items.Add(TrimRight(edEntry.Text));
     3: lstDirs.DeleteSelected;
     4:
-      for idx := pred(lstDirs.Count) downto 0 do
+    for idx:= pred(lstDirs.Items.Count) downto 0 do
         if not DirectoryExists(lstDirs.Items[idx]) then
           lstDirs.Items.Delete(idx);
   end; { case }
@@ -365,7 +392,7 @@ begin
     btnDelete.Enabled := TRUE;
     btnReplace.Enabled := btnAdd.Enabled;
     btnUp.Enabled := lstDirs.ItemIndex > 0;
-    btnDown.Enabled := lstDirs.ItemIndex < (lstDirs.Count - 1);
+     btnDown.Enabled:= lstDirs.ItemIndex < (lstDirs.Items.Count -1);
   end
   else
   begin
@@ -374,7 +401,7 @@ begin
     btnUp.Enabled := FALSE;
     btnDown.Enabled := FALSE;
   end;
-  btnDelInval.Enabled := lstDirs.Count > 0;
+  btnDelInval.Enabled:= lstDirs.Items.Count> 0;
 end;
 
 procedure TCompForm.PageControlChange(Sender: TObject);
@@ -385,8 +412,12 @@ end;
 procedure TCompForm.edEntryKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if key = vk_return then
-    ButtonClick(btnAdd);
+{$IFDEF WIN32}
+  if key = vk_return then ButtonClick(btnAdd);
+{$ENDIF}
+{$IFDEF LINUX}
+  if key = XK_RETURN then ButtonClick(btnAdd);
+{$ENDIF}
 end;
 
 procedure TCompForm.FormCreate(Sender: TObject);
@@ -446,21 +477,31 @@ end;
 procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
 begin
   devCompilerSet.OptionsStr := devCompiler.OptionStr;
+  devCompilerSet.CmdOpts:=Commands.Lines.Text;
+  devCompilerSet.LinkOpts:=Linker.Lines.Text;
+
+  devCompilerSet.AddtoLink:=cbLinkerAdd.Checked;
+  devCompilerSet.AddtoComp:=cbCompAdd.Checked;
+
   devCompilerSet.SaveSet(currentSet);
   devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
   currentSet := cmbCompilerSetComp.ItemIndex;
 
-  with devCompilerSet do
-  begin
+
+  with devCompilerSet do begin
     fBins := BinDir;
     fC := CDir;
     fCpp := CppDir;
     fLibs := LibDir;
+    Commands.Lines.Text:= CmdOpts;
+    Linker.Lines.Text:= LinkOpts;
+    cbCompAdd.Checked:=AddtoComp;
+    cbLinkerAdd.Checked:=AddtoLink;
+
   end;
   DirTabsChange(DirTabs);
 
-  with devCompilerSet do
-  begin
+  with devCompilerSet do begin
     GccEdit.Text := gccName;
     GppEdit.Text := gppName;
     GdbEdit.Text := gdbName;
@@ -504,10 +545,8 @@ begin
     sl.Free;
   end;
 
-  dmMain.OpenDialog.FileName :=
-    IncludeTrailingPathDelimiter(dmMain.OpenDialog.InitialDir) + Obj.Text;
-  if dmMain.OpenDialog.Execute then
-  begin
+  dmMain.OpenDialog.FileName:=IncludeTrailingPathDelimiter(dmMain.OpenDialog.InitialDir)+Obj.Text;
+  if dmMain.OpenDialog.Execute then begin
     Obj.Text := ExtractFileName(dmMain.OpenDialog.FileName);
     devCompilerSet.gccName := GccEdit.Text;
     devCompilerSet.gppName := GppEdit.Text;
@@ -524,8 +563,7 @@ var
   S: string;
 begin
   S := 'New compiler';
-  if not InputQuery(Lang[ID_COPT_NEWCOMPSET], Lang[ID_COPT_PROMPTNEWCOMPSET], S)
-    or (S = '') then
+  if not InputQuery(Lang[ID_COPT_NEWCOMPSET], Lang[ID_COPT_PROMPTNEWCOMPSET], S) or (S='') then
     Exit;
 
   cmbCompilerSetComp.ItemIndex := cmbCompilerSetComp.Items.Add(S);
@@ -535,14 +573,12 @@ end;
 
 procedure TCompForm.btnDelCompilerSetClick(Sender: TObject);
 begin
-  if cmbCompilerSetComp.Items.Count = 1 then
-  begin
+  if cmbCompilerSetComp.Items.Count=1 then begin
     MessageDlg(Lang[ID_COPT_CANTDELETECOMPSET], mtError, [mbOk], 0);
     Exit;
   end;
 
-  if MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation, [mbYes, mbNo], 0) =
-    mrNo then
+  if MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation, [mbYes, mbNo], 0)=mrNo then
     Exit;
 
   devCompilerSet.Sets.Delete(cmbCompilerSetComp.ItemIndex);
@@ -556,9 +592,7 @@ var
   S: string;
 begin
   S := cmbCompilerSetComp.Text;
-  if not InputQuery(Lang[ID_COPT_RENAMECOMPSET],
-    Lang[ID_COPT_PROMPTRENAMECOMPSET], S) or (S = '') or (S =
-    cmbCompilerSetComp.Text) then
+  if not InputQuery(Lang[ID_COPT_RENAMECOMPSET], Lang[ID_COPT_PROMPTRENAMECOMPSET], S) or (S='') or (S=cmbCompilerSetComp.Text) then
     Exit;
 
   cmbCompilerSetComp.Items[cmbCompilerSetComp.ItemIndex] := S;

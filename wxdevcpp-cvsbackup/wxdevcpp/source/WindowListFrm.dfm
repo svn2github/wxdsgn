@@ -29,7 +29,7 @@ object WindowListForm: TWindowListForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 236
+    Height = 243
     Align = alLeft
     AutoSize = False
   end
@@ -37,13 +37,13 @@ object WindowListForm: TWindowListForm
     Left = 340
     Top = 6
     Width = 6
-    Height = 236
+    Height = 243
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 242
+    Top = 249
     Width = 346
     Height = 41
     Align = alBottom
@@ -96,7 +96,7 @@ object WindowListForm: TWindowListForm
     Left = 6
     Top = 6
     Width = 334
-    Height = 236
+    Height = 243
     Align = alClient
     Caption = 'Select the window you want to edit :'
     TabOrder = 1
@@ -112,7 +112,7 @@ object WindowListForm: TWindowListForm
       Left = 2
       Top = 18
       Width = 6
-      Height = 210
+      Height = 217
       Align = alLeft
       AutoSize = False
     end
@@ -120,13 +120,13 @@ object WindowListForm: TWindowListForm
       Left = 326
       Top = 18
       Width = 6
-      Height = 210
+      Height = 217
       Align = alRight
       AutoSize = False
     end
     object Label7: TLabel
       Left = 2
-      Top = 228
+      Top = 235
       Width = 330
       Height = 6
       Align = alBottom
@@ -136,7 +136,7 @@ object WindowListForm: TWindowListForm
       Left = 8
       Top = 18
       Width = 318
-      Height = 199
+      Height = 212
       Align = alClient
       IntegralHeight = True
       ItemHeight = 13

@@ -28,22 +28,38 @@ unit main;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, StdCtrls, ComCtrls, ToolWin, ExtCtrls, Buttons, utils,
   Project, editor, compiler, ActnList, oysUtils, Toolfrm, AppEvnts, Grids,
   debugger, ClassBrowser, DevThemes, CodeCompletion, CppParser, CppTokenizer,
   devShortcuts, StrUtils, devFileMonitor, devMonitorTypes, DdeMan, XPMenu,
-  CVSFm, ImageTheme, ThemeMgr,SynEditTextBuffer,SynEditTypes
-
+  CVSFm, ImageTheme
 
   {$IFDEF WX_BUILD}
   ,JclStrings, JvExControls, JvComponent, TypInfo,JclRTTI,JvStringHolder,
   ELDsgnr,JvInspector, xprocs,dmCreateNewProp,wxUtils, DbugIntf,
-  wxSizerpanel,Designerfrm, DockPanel, ELPropInsp,uFileWatch
+  wxSizerpanel,Designerfrm, ELPropInsp,uFileWatch, ThemeMgr
   {$ENDIF}
   ;
-
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QMenus, QStdCtrls, QComCtrls, QExtCtrls, QButtons, utils,
+  project, editor, compiler, QActnList, oysUtils, QGrids,
+  debugger, ClassBrowser, DevThemes, CodeCompletion, CppParser, CppTokenizer,
+  devShortcuts, StrUtils, devFileMonitor, devMonitorTypes,
+  CVSFm, ImageTheme, Types;
+{$ENDIF}
 type
+    { *** RNC make the breakpoints global ***}
+    TBreakPointEntry = record
+        file_name    : String;
+        line    : integer;
+        editor : TEditor;
+        breakPointIndex:integer;
+    end;
+PBreakPointEntry = ^TBreakPointEntry;
   TMainForm = class(TForm)
     MainMenu: TMainMenu;
     FileMenu: TMenuItem;
@@ -543,6 +559,11 @@ type
     Login1: TMenuItem;
     Logout1: TMenuItem;
     N66: TMenuItem;
+    LeftPageControl: TPageControl;
+    ProjectSheet: TTabSheet;
+    ProjectView: TTreeView;
+    ClassSheet: TTabSheet;
+    ClassBrowser1: TClassBrowser;
     DebugSubPages: TPageControl;
     tabVars: TTabSheet;
     PanelDebug: TPanel;
@@ -567,6 +588,8 @@ type
     cmbMembers: TComboBox;
     N17: TMenuItem;
     ToolClassesItem: TMenuItem;
+    DebugLeftSheet: TTabSheet;
+    DebugTree: TTreeView;
     DebugPanel: TPanel;
     NextStepBtn: TSpeedButton;
     StepIntoBtn: TSpeedButton;
@@ -614,13 +637,6 @@ type
     N72: TMenuItem;
     N70: TMenuItem;
     pnlBrowsers: TPanel;
-    LeftPageControl: TPageControl;
-    ProjectSheet: TTabSheet;
-    ProjectView: TTreeView;
-    ClassSheet: TTabSheet;
-    ClassBrowser1: TClassBrowser;
-    DebugLeftSheet: TTabSheet;
-    DebugTree: TTreeView;
     NewWxFrameItem: TMenuItem;
     N73: TMenuItem;
     actNewWxFrame: TAction;
@@ -757,7 +773,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure ClassBrowser1Select(Sender: TObject; Filename: TFileName;
       Line: Integer);
-    procedure CppParser1TotalProgress(Sender: TObject; FileName: string;
+    procedure CppParser1TotalProgress(Sender: TObject; FileName: String;
       Total, Current: Integer);
     procedure CodeCompletion1Resize(Sender: TObject);
     procedure actSwapHeaderSourceUpdate(Sender: TObject);
@@ -810,7 +826,7 @@ type
     procedure actRunUpdate(Sender: TObject);
     procedure actCompileUpdate(Sender: TObject);
     procedure devFileMonitor1NotifyChange(Sender: TObject;
-      ChangeType: TdevMonitorChangeType; Filename: string);
+      ChangeType: TdevMonitorChangeType; Filename: String);
     procedure actFilePropertiesExecute(Sender: TObject);
     procedure actViewToDoListExecute(Sender: TObject);
     procedure actAddToDoExecute(Sender: TObject);
@@ -950,18 +966,16 @@ type
     OldHeight: integer;
     ReloadFilename: string;
 
-    function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
+    function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean; // Modified for wx-devcpp
     procedure AddFindOutputItem(line, col, unit_, message: string);
     function ParseParams(s: string): string;
     procedure ParseCmdLine;
-    procedure ParseCustomCmdLine(strLst:TStringList);
     procedure BuildBookMarkMenus;
     procedure BuildHelpMenu;
     procedure SetHints;
     procedure HelpItemClick(Sender: TObject);
     procedure MRUClick(Sender: TObject);
     procedure CodeInsClick(Sender: TObjecT);
-    procedure SurroundWithClick(Sender: TObject);
     procedure ToolItemClick(Sender: TObject);
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure LogEntryProc(const msg: string);
@@ -990,7 +1004,9 @@ type
     procedure BuildOpenWith;
     procedure RebuildClassesToolbar;
     procedure PrepareDebugger;
-    procedure HideCodeToolTip; // added on 23rd may 2004 by peter_
+    procedure HideCodeToolTip; // added on 23rd may 2004 by peter_   
+    procedure ParseCustomCmdLine(strLst:TStringList); //Added By Guru    
+    procedure SurroundWithClick(Sender: TObject);     //Added By Guru
   protected
     {$IFDEF WX_BUILD}
     procedure DoCreateWxSpecificItems;
@@ -998,7 +1014,7 @@ type
     procedure DoCreateEverything; // added by peter
     procedure DoApplyWindowPlacement; // added by peter
   public
-    procedure OpenFile(s: string; withoutActivation: Boolean = false); // Added by Guru
+    procedure OpenFile(s: string; withoutActivation: Boolean = false); // Modified for wx
     procedure OpenProject(s: string);
     function FileIsOpen(const s: string; inprj: boolean = FALSE): integer;
     function GetEditor(const index: integer = -1): TEditor;
@@ -1006,10 +1022,20 @@ type
     procedure GotoBreakpoint(bfile: string; bline: integer);
     procedure RemoveActiveBreakpoints;
     procedure AddDebugVar(s: string);
-    procedure OnBreakpointToggle(Sender: TEditor; Line: integer; BreakExists:boolean);
+    procedure OnBreakpointToggle(index: integer; BreakExists: boolean);
     procedure SetProjCompOpt(idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
     function CloseEditor(index: integer; Rem: boolean): Boolean;
     procedure RefreshContext;
+
+    { *** RNC Global Breakpoint Declarations *** }
+    procedure AddBreakPointToList(line_number: integer; e : TEditor; filename:string);
+    function RemoveBreakPointFromList(line_number: integer; e:TEditor): integer;
+    procedure RemoveAllBreakPointFromList();
+    function GetBreakPointIndex(line_number: integer; e:TEditor) : integer;
+    procedure RemoveBreakPointAtIndex(index:integer);
+    //function BreakPointForFile(filename : string) : integer;
+        
+    //Functions for wx-devcpp
     procedure SurroundString(e: TEditor;strStart,strEnd:String);
     procedure CppCommentString(e: TEditor);
     function GetCurrentFileName:String;
@@ -1119,14 +1145,17 @@ public
 
 var
   MainForm: TMainForm;
+      { *** RNC Declare global breakpoint list *** }
+    BreakPointList : TList;
 
 implementation
 
 uses
-  ShellAPI, inifiles, Clipbrd, MultiLangSupport, version,
+{$IFDEF WIN32}
+  ShellAPI, IniFiles, Clipbrd, MultiLangSupport, version,
   devcfg, datamod, helpfrm, NewProjectFrm, AboutFrm, PrintFrm,
   CompOptionsFrm, EditorOptfrm, Incrementalfrm, Search_Center, Envirofrm,
-  SynEdit, {$IFDEF NEW_SYNEDIT} SynEditTypes, {$ENDIF}
+  SynEdit, SynEditTypes,
   CheckForUpdate, debugfrm, Types, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
@@ -1147,10 +1176,22 @@ uses
   WxColourDialog ,WxPageSetupDialog, wxTimer,WxNonVisibleBaseComponent,
   CreateOrderFm,
   ViewIDForm
-  {$ENDIF}
+  {$ENDIF} // END OF IFEDEF WX_BUILD 
   ;
-
-{$R *.DFM}
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, IniFiles, QClipbrd, MultiLangSupport, version,
+  devcfg, datamod, helpfrm, NewProjectFrm, AboutFrm, PrintFrm,
+  CompOptionsFrm, EditorOptfrm, Incrementalfrm, Search_Center, Envirofrm,
+  QSynEdit, QSynEditTypes,
+  CheckForUpdate, debugfrm, Prjtypes, devExec,
+  NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
+  ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
+  ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
+  WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm;
+{$ENDIF}
+  
+{$R *.dfm}
 
 var
   fFirstShow: boolean;
@@ -1742,8 +1783,9 @@ begin
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
 
+  { *** RNC Create breakpoint list *** }
+  BreakPointList := TList.create;
   InitClassBrowser(true {not CacheCreated});
-
   //variable for clearing up inspector data.
   //Added because there is a AV when adding a function
   //from the event list
@@ -1751,8 +1793,81 @@ begin
   boolInspectorDataClear:=True;
   DisablePropertyBuilding:=false;
   {$ENDIF}
-
 end;
+{ *** RNC add global breakpoint *** }
+procedure TMainForm.AddBreakPointToList(line_number: integer; e: TEditor; filename:string);
+var
+  APBreakPoint : PBreakPointEntry;
+begin
+  new(APBreakPoint);
+  with APBreakPoint^ do
+  begin
+        line := line_number;
+        file_name := e.TabSheet.Caption;
+        editor := e;
+  end;
+  BreakPointList.Add(APBreakPoint);
+end;
+
+function TMainForm.RemoveBreakPointFromList(line_number: integer; e:TEditor) : integer;
+var
+  i : integer;
+begin
+Result := -1;
+  for i:=0 to BreakPointList.Count -1 do
+  begin
+      if ((PBreakPointEntry(BreakPointList.Items[i])^.line = line_number) and (PBreakPointEntry(BreakPointList.Items[i])^.editor = e)) then begin
+          //Result:= i;
+          Result:= PBreakPointEntry(BreakPointList.Items[i])^.breakPointIndex;
+          RemoveBreakPointAtIndex(i);
+          break;
+      end;
+  end;
+end;
+
+procedure TMainForm.RemoveBreakPointAtIndex(index:integer);
+begin
+   dispose(BreakPointList.Items[index]);
+   BreakPointList.Delete(index);
+end;
+
+function TMainForm.GetBreakPointIndex(line_number: integer; e:TEditor) : integer;
+var
+  i : integer;
+begin
+Result := -1;
+  for i:=0 to BreakPointList.Count -1 do
+  begin
+      if ((PBreakPointEntry(BreakPointList.Items[i])^.line = line_number) and (PBreakPointEntry(BreakPointList.Items[i])^.editor = e)) then begin
+          Result:= i;
+          break;
+      end;
+  end;
+end;
+
+procedure TMainForm.RemoveAllBreakPointFromList();
+var
+  i : integer;
+begin
+  for i:=0 to BreakPointList.Count -1 do begin
+     dispose(BreakPointList.Items[i]);
+     BreakPointList.Delete(i);
+  end;
+end;
+
+{function TMainForm.BreakPointForFile(filename : string) : integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i:=0 to BreakPointList.Count -1 do
+  begin
+      if PBreakPointEntry(BreakPointList.Items[i])^.file_name = filename then begin
+          Result := PBreakPointEntry(BreakPointList.Items[i])^.line;
+      end;
+  end;
+end;   }
+
 {*** modified by peter ***}
 procedure TMainForm.DoApplyWindowPlacement;
 //
@@ -1978,6 +2093,9 @@ begin
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
+var
+  i: integer;
+  tmpcount: integer;
 begin
   if fDebugger.Executing then
     fDebugger.CloseDebugger(Sender);
@@ -1987,8 +2105,16 @@ begin
   fDebugger.Free;
   dmMain.Free;
   devImageThemes.Free;
-  strChangedFileList.Free;
-  FWatchList.Free;
+  strChangedFileList.Free; //Used for wx's Own File watch functions
+  FWatchList.Free; //Used for wx's Own File watch functions
+  tmpcount := BreakPointList.Count - 1;
+{** RNC Clean up the global breakpoint list *** }
+  for i := tmpcount downto 0 do
+  begin
+    dispose(BreakPointList.Items[i]);
+    BreakPointList.Delete(i);
+  end;
+  BreakPointList.Free;
 end;
 
 procedure TMainForm.ParseCmdLine;
@@ -2007,36 +2133,6 @@ begin
   ParseCustomCmdLine(strLstParams);
   strLstParams.Destroy;
 end;
-
-//Commented ParseCmdLine code
-//var
-//  idx: integer;
-//begin
-//  idx := 1;
-//  while idx <= ParamCount do
-//  begin
-//    if (ParamStr(idx) = CONFIG_PARAM) then
-//      idx := idx + 2;
-//    if FileExists(ParamStr(idx)) then begin
-//      if GetFileTyp(ParamStr(idx)) = utPrj then
-//      begin
-//        OpenProject(ParamStr(idx));
-//        break; // only open 1 project
-//      end
-//      else begin
-//        {$IFDEF WX_BUILD}
-//        if iswxForm(ParamStr(idx)) then
-//        begin
-//          OpenFile(ChangeFileExt(ParamStr(idx), H_EXT), True);
-//          OpenFile(ChangeFileExt(ParamStr(idx), CPP_EXT), true);
-//        end;
-//        {$ENDIF}
-//        OpenFile(ParamStr(idx));
-//      end;
-//    end;
-//    inc(idx);
-//  end;
-//end;
 
 //This function is derived from the pre parsecmdline function.
 //This is also used when activating the devcpp's previous instance
@@ -2071,7 +2167,6 @@ begin
     inc(idx);
   end;
 end;
-
 
 procedure TMainForm.BuildBookMarkMenus;
 var
@@ -2209,7 +2304,7 @@ var
   szFileName: array[0..260] of char;
   pt: TPoint;
   hdl: THandle;
-  ProjectFN: string;
+ ProjectFN: String;
 begin
   try
     ProjectFN := '';
@@ -2583,7 +2678,6 @@ begin
       boolIsForm:=iswxForm(e.FileName);
       boolIsRC:=isRCExt(e.FileName);
     end;
-
     if fProject.Options.UseGPP then
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
@@ -2694,6 +2788,11 @@ begin
       e.FileName := s;
 
       try
+           if devEditor.AppendNewline then
+             with e.Text do
+               if Lines.Count > 0 then
+                 if Lines[Lines.Count -1] <> '' then
+                   Lines.Add('');
         e.Text.Lines.SaveToFile(s);
         e.Modified := FALSE;
         e.New := FALSE;
@@ -2745,27 +2844,39 @@ begin
   if (not e.new) and e.Modified then
   begin // not new but in project (relative path in e.filename)
     if Assigned(fProject) and (e.InProject) then
-    try
+     begin
+       try
       idx := fProject.GetUnitFromEditor(e);
       if idx = -1 then
         MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], 0)
-      else begin
+         else
         fProject.units[idx].Save;
-        //                 CppParser1.AddFileToScan(fProject.units[idx].FileName);
-        //                 CppParser1.ParseList;
+       except
+         MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]),
+           mtError, [mbOk], 0);
+         Result := False;
+         Exit;
+       end;
+       try
+		if idx <> -1 then
         if ClassBrowser1.Enabled then begin
           CppParser1.ReParseFile(fProject.units[idx].FileName, True); //new cc
           if e.TabSheet = PageControl.ActivePage then
             ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
         end;
-      end;
     except
-      MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]),
+         MessageDlg(Format('Error reparsing file %s', [e.FileName]),
         mtError, [mbOk], 0);
       Result := False;
+       end;
     end
     else // stand alone file (should have fullpath in e.filename)
     try
+        if devEditor.AppendNewline then
+          with e.Text do
+            if Lines.Count > 0 then
+              if Lines[Lines.Count -1] <> '' then
+                Lines.Add('');
       e.Text.Lines.SaveToFile(e.FileName);
       e.Modified := false;
       if ClassBrowser1.Enabled then begin
@@ -3105,7 +3216,7 @@ end;
 procedure TMainForm.SurroundString(e: TEditor;strStart,strEnd:String);
 var
   I: Integer;
-    startXY,endXY:TPoint;
+    startXY,endXY:TBufferCoord;
     strLstToPaste:TStringList;
 begin
     if assigned(e) = false then
@@ -3118,12 +3229,13 @@ begin
         begin
             startXY:=e.Text.BlockBegin;
             endXY:=e.Text.BlockEnd;
-            for I := startXY.Y-1 to endXY.Y-1 do    // Iterate
+
+            for I := startXY.Line-1 to endXY.Line-1 do    // Iterate
             begin
                 strLstToPaste.Add(e.Text.Lines[i])
             end;
 
-            for I := endXY.Y-1 downto startXY.Y-1 do    // Iterate
+            for I := endXY.Line-1 downto startXY.Line-1 do    // Iterate
             begin
                 //e.Text.insert
                 e.Text.Lines.Delete(I);
@@ -3133,13 +3245,13 @@ begin
         end
         else
         begin
-            startXY.Y:=e.Text.CaretYPix;
+            startXY.Line:=e.Text.CaretY;
         end;
         strLstToPaste.Add(strEnd);
 
         for I := strLstToPaste.Count-1 downto 0 do    // Iterate
         begin
-            e.Text.Lines.Insert(startXY.Y-1,strLstToPaste[i]);
+            e.Text.Lines.Insert(startXY.Line -1,strLstToPaste[i]);
             e.Modified:=true;
         end;
 
@@ -3152,7 +3264,7 @@ end;
 procedure TMainForm.CppCommentString(e: TEditor);
 var
   I: Integer;
-    startXY,endXY:TPoint;
+    startXY,endXY:TBufferCoord;
     strLine:string;
 begin
     if assigned(e) = false then
@@ -3161,7 +3273,7 @@ begin
     begin
         startXY:=e.Text.BlockBegin;
         endXY:=e.Text.BlockEnd;
-        for I := startXY.Y-1 to endXY.Y-1 do    // Iterate
+        for I := startXY.Line-1 to endXY.Line-1 do    // Iterate
         begin
             e.Text.Lines[i]:='// '+e.Text.Lines[i] ;
             e.Modified:=true;
@@ -3251,7 +3363,7 @@ begin
         //Some freaking unknown error
         //I dont know where all the editors are
         //freed. So I save the layout and close the
-        //project. Any help with this is greatly appreciated.
+        //project. Any help in fixing this is greatly appreciated.
         fProject.SaveLayout;
         //actCloseAll.Execute;
         actCloseProject.Execute;
@@ -3608,10 +3720,13 @@ begin
     if (Node.Level >= 1) then
     begin
       i := integer(Node.Data);
+      //Added for wx.
+      //This will allow DevC++ to open custom program
+      //as assigned by the user like VC++
       if OpenWithAssignedProgram(fProject.Units[i].FileName) = true then
         Exit;
       idx := FileIsOpen(fProject.Units[i].FileName, TRUE);
-      
+      //Added By wx
       if isFileOpenedinEditor(fProject.Units[i].FileName) then
         e :=GetEditorFromFileName(fProject.Units[i].FileName)
       else
@@ -3813,11 +3928,11 @@ begin
   if Assigned(fProject) then
     InProject := Application.MessageBox(PChar(
       Lang[ID_MSG_NEWRES]), 'New Resource', MB_ICONQUESTION +
-      MB_YESNO) = 6
+        MB_YESNO) = mrYes
   else
     InProject := False;
 
-  fname := Lang[ID_UNTITLED] + inttostr(dmMain.GetNum);
+  fname:=Lang[ID_UNTITLED] +inttostr(dmMain.GetNum) + '.rc';
   NewEditor := TEditor.Create;
   NewEditor.init(InProject, fname, '', 
   	FALSE, TRUE);
@@ -3955,19 +4070,18 @@ var
   wa: boolean;
 { I: integer;}
 begin
-  // save project layout anyway ;)
-  fProject.CmdLineArgs := fCompiler.RunParams;
-  fProject.SaveLayout;
-
   actStopExecute.Execute;
   wa := devFileMonitor1.Active;
   devFileMonitor1.Deactivate;
 
-  //Just close all the file tabs before
-  //closing the project
+  // save project layout anyway ;)
+  fProject.CmdLineArgs := fCompiler.RunParams;
+  fProject.SaveLayout;
+  
+  //Added for wx problems : Just close all the file 
+  //tabs before closing the project
   actCloseAll.Execute;
-
-
+  
   // ** should we save watches?
   if fProject.Modified then
   begin
@@ -4006,6 +4120,7 @@ begin
   try
     FreeandNil(fProject);
   except
+  	fProject:=nil;
   end;
   
   ProjectView.Items.Clear;
@@ -4179,8 +4294,14 @@ procedure TMainForm.actProjectManagerExecute(Sender: TObject);
 begin
   if (DebugSubPages.Parent <> self) and assigned(ProjectToolWindow) then
     ProjectToolWindow.Close;
+    if actProjectManager.Checked then
+    begin
+    	//if the panel which holds the Browser Tab is 
+    	//visible, v'll make it visible
+    	if LeftPageControl.Visible = false then
+			LeftPageControl.Visible:=true;
+    end;
   pnlBrowsers.Visible := actProjectManager.Checked;
-  // LeftPageControl.Visible:= actProjectManager.Checked;
   devData.ProjectView := actProjectManager.Checked;
 end;
 
@@ -4343,8 +4464,14 @@ var
 begin
   if not assigned(fProject) then exit;
 
+{$IFDEF WIN32}
   while ProjectView.SelectionCount > 0 do begin
     node := ProjectView.Selections[0];
+{$ENDIF}
+{$IFDEF LINUX}
+  while ProjectView.SelCount>0 do begin
+    node:=ProjectView.Selected[0];
+{$ENDIF}
     if not assigned(node) or
       (node.Level < 1) then
       Continue;
@@ -4551,6 +4678,7 @@ begin
   SearchCenter.SingleFile := FALSE;
   SearchCenter.Project := fProject;
   SearchCenter.Replace := false;
+  SearchCenter.Editor := GetEditor;
   if SearchCenter.ExecuteSearch then
   begin
     OpenCloseMessageSheet(TRUE);
@@ -4593,13 +4721,18 @@ begin
   begin
     Application.MessageBox(
       'Why in the world are you trying to compile an empty project? ;-)',
+{$IFDEF WIN32}
       'Huh?', MB_ICONINFORMATION);
+{$ENDIF}
+{$IFDEF LINUX}
+        'Huh?', [smbOK], smsInformation);
+{$ENDIF}
     Exit;
   end;
 
   LogOutput.Clear;
-  CompilerOutput.Clear;
-  ResourceOutput.Clear;
+  CompilerOutput.Items.Clear;
+  ResourceOutput.Items.Clear;
   ResSheet.Highlighted := false;
   SizeFile.Text := '';
   TotalErrors.Text := '0';
@@ -4741,7 +4874,6 @@ begin
   MessageControl.ActivePage := DebugSheet;
   OpenCloseMessageSheet(True);
 
-  fDebugger.ClearBreakpoints;
   fDebugger.ClearIncludeDirs;
 
   // add to the debugger the global include dirs
@@ -4791,13 +4923,16 @@ begin
     fDebugger.Execute;
     fDebugger.SendCommand(GDB_FILE, fDebugger.FileName);
     fDebugger.SendCommand(GDB_SETARGS, fCompiler.RunParams);
-    for idx := 0 to pred(PageControl.PageCount) do begin
+     {for idx:= 0 to pred(PageControl.PageCount) do begin
       e := GetEditor(idx);
       // why used to enter breakpoints only in project files?
       // did it have something to do with the debugger's include dirs? ;)
       if e.Breakpoints.Count > 0 then
         for idx2 := 0 to pred(e.Breakpoints.Count) do
           fDebugger.AddBreakPoint(e, integer(e.Breakpoints[idx2]));
+     end;}
+     for idx:=0 to BreakPointList.Count -1 do begin
+        PBreakPointEntry(BreakPointList.Items[idx])^.breakPointIndex := fDebugger.AddBreakpoint(idx);
     end;
     if fProject.Options.typ = dptDyn then begin
       fDebugger.SendCommand(GDB_EXECFILE, '"' + StringReplace(fProject.Options.HostApplication, '\', '\\', [rfReplaceAll])+ '"');
@@ -4821,9 +4956,12 @@ begin
       fDebugger.Execute;
       fDebugger.SendCommand(GDB_FILE, fDebugger.FileName);
       fDebugger.SendCommand(GDB_SETARGS, fCompiler.RunParams);
-      if (e.Breakpoints.Count > 0) then
+        for idx2:=0 to BreakPointList.Count -1 do begin
+           PBreakPointEntry(BreakPointList.Items[idx2])^.breakPointIndex := fDebugger.AddBreakpoint(idx2);
+        end;
+        {if (e.Breakpoints.Count > 0) then
         for idx2 := 0 to pred(e.Breakpoints.Count) do
-          fDebugger.AddBreakPoint(e, integer(e.Breakpoints[idx2]));
+            fDebugger.AddBreakPoint(e, integer(e.Breakpoints[idx2]));}
     end;
   end;
 
@@ -4840,6 +4978,9 @@ begin
 
   // Run the debugger
   fDebugger.SendCommand(GDB_RUN, '');
+
+  // RNC 07.02.2004 -- Now that the debugger has started, set broken to false (see debugwait.pas for explaination of broken)
+  fDebugger.SetBroken(false);
 end;
 
 procedure TMainForm.actEnviroOptionsExecute(Sender: TObject);
@@ -4912,6 +5053,8 @@ begin
   e := GetEditor;
   if (assigned(e)) then
   begin
+  //Added for wx problems.
+  //Some weird error pops when doing an Update
     try
         (Sender as TAction).Enabled := (e.Text.Text <> '');
     except
@@ -5022,10 +5165,10 @@ end;
 procedure TMainForm.actMsgClearExecute(Sender: TObject);
 begin
   case MessageControl.ActivePageIndex of
-    cCompTab: CompilerOutput.Clear;
-    cResTab: ResourceOutput.Clear;
+   cCompTab: CompilerOutput.Items.Clear;
+   cResTab:  ResourceOutput.Items.Clear;
     cLogTab: LogOutput.Clear;
-    cFindTab: FindOutput.Clear;
+   cFindTab: FindOutput.Items.Clear;
   end;
 end;
 
@@ -5047,6 +5190,9 @@ procedure TMainForm.actIncrementalExecute(Sender: TObject);
 var
   pt: TPoint;
 begin
+  SearchCenter.Editor := GetEditor;
+  SearchCenter.AssignSearchEngine;
+
   frmIncremental.SearchAgain.Shortcut := actFindNext.Shortcut;
   pt := ClienttoScreen(point(PageControl.Left, PageControl.Top));
   frmIncremental.Left := pt.x;
@@ -5055,6 +5201,8 @@ begin
   frmIncremental.ShowModal;
 end;
 
+//Added for wx : Modifications to this function is for
+//Original DevC++ was not parsing certain error lines properly
 procedure TMainForm.CompilerOutputDblClick(Sender: TObject);
 var
   Col, Line: integer;
@@ -5120,11 +5268,7 @@ begin
 
   if assigned(e) then
   begin
-{$IFDEF NEW_SYNEDIT} 
-     e.Text.CaretXY:= BufferCoord(col, line);
-{$ELSE}
-    e.Text.CaretXY := point(col, line);
-{$ENDIF}
+    e.Text.CaretXY:= BufferCoord(col, line);
     e.Text.SetSelWord;
     e.Text.CaretXY := e.Text.BlockBegin;
     e.Activate;
@@ -5156,7 +5300,12 @@ procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
+{$IFDEF WIN32}
     vk_F6:
+{$ENDIF}
+{$IFDEF LINUX}
+   XK_F6:
+{$ENDIF}
       if ssCtrl in Shift then ShowDebug;
   end;
 end;
@@ -5212,6 +5361,7 @@ begin
   if Trim(s) = '' then
     Exit;
   if fDebugger.Executing then begin
+//  if fDebugger.isBroken and fDebugger.Executing then begin
     fDebugger.RefreshContext();
     fDebugger.SendCommand(GDB_DISPLAY, s);
   end;
@@ -5219,7 +5369,8 @@ end;
 
 procedure TMainForm.actNextStepExecute(Sender: TObject);
 begin
-  if fDebugger.Executing then begin
+  //if fDebugger.Executing then begin
+  if fDebugger.isBroken and fDebugger.Executing then begin
     fDebugger.RefreshContext();
     fDebugger.SendCommand(GDB_NEXT, '');
   end;
@@ -5227,7 +5378,8 @@ end;
 
 procedure TMainForm.actStepSingleExecute(Sender: TObject);
 begin
-  if fDebugger.Executing then begin
+  //if fDebugger.Executing then begin
+  if fDebugger.isBroken and fDebugger.Executing then begin
     fDebugger.RefreshContext();
     fDebugger.SendCommand(GDB_STEP, '');
   end;
@@ -5279,10 +5431,13 @@ end;
 
 procedure TMainForm.actStepOverExecute(Sender: TObject);
 begin
-  if fDebugger.Executing then begin
+  if fDebugger.isBroken and fDebugger.Executing then begin
+//  if fDebugger.Executing then begin
     RemoveActiveBreakpoints;
     fDebugger.RefreshContext();
     fDebugger.SendCommand(GDB_CONTINUE, '');
+    // RNC 07.02.2004 -- Set broken to false when the user presses continue
+    fDebugger.SetBroken(false);
   end;
 end;
 
@@ -5356,6 +5511,7 @@ procedure TMainForm.actSaveUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
+ //Added for wx: Try catch for Some weird Error
   try
     e := GetEditor;
     actSave.Enabled := assigned(e) and (e.Modified or e.Text.Modified or (e.FileName = ''));
@@ -5390,8 +5546,8 @@ end;
 
 procedure TMainForm.ClearMessageControl;
 begin
-  CompilerOutput.Clear;
-  FindOutput.Clear;
+  CompilerOutput.Items.Clear;
+  FindOutput.Items.Clear;
   ResourceOutput.Clear;
   LogOutput.Clear;
   DebugOutput.Clear;
@@ -5434,7 +5590,8 @@ begin
     if not Assigned(e) then
       Continue
     else begin
-      if SameFileName(e.FileName, ffile) then
+          //ExpandFileName reduces all the "\..\" in the path
+          if SameFileName(e.FileName, ExpandFileName(ffile)) then
       begin
         Result := e;
         Exit;
@@ -5609,7 +5766,7 @@ begin
 end;
 
 procedure TMainForm.CppParser1TotalProgress(Sender: TObject;
-  FileName: string; Total, Current: Integer);
+  FileName: String; Total, Current: Integer);
 begin
   if FileName <> '' then
     StatusBar.Panels[3].Text := 'Parsing ' + Filename
@@ -5649,8 +5806,8 @@ end;
 procedure TMainForm.actSwapHeaderSourceExecute(Sender: TObject);
 var
   e: TEditor;
-  Ext: string;
-  FileName: string;
+ Ext: String;
+ FileName: String;
   i: integer;
 begin
   e := GetEditor;
@@ -5747,7 +5904,12 @@ begin
 
   if not FileExists(FileName) then begin
     Application.MessageBox('No corresponding header or source file found.',
+{$IFDEF WIN32}
       'Error', MB_ICONINFORMATION);
+{$ENDIF}
+{$IFDEF LINUX}
+        'Error', [smbOK], smsInformation);
+{$ENDIF}
     exit;
   end;
   e := GetEditorFromFileName(FileName);
@@ -5853,7 +6015,6 @@ begin
     end;
     {$ENDIF}
   end;
-
 end;
 
 procedure TMainForm.actConfigShortcutsExecute(Sender: TObject);
@@ -5983,6 +6144,9 @@ begin
     fParser := CppParser1;
     if ShowModal = mrOK then begin
       st := PStatement(lvEntries.Selected.Data);
+      //make sure statement still exists
+      if fParser.Statements.IndexOf(lvEntries.Selected.Data) = -1 then
+        lvEntries.Selected.Data := nil;
       e := GetEditor;
       if Assigned(e) and Assigned(st) then begin
         if st^._IsDeclaration then
@@ -6001,31 +6165,67 @@ end;
 
 procedure TMainForm.actBrowserGotoImplUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := Assigned(ClassBrowser1)
+  if Assigned(ClassBrowser1)
     and ClassBrowser1.Enabled
     and Assigned(ClassBrowser1.Selected)
-    and Assigned(ClassBrowser1.Selected.Data)
-    and (PStatement(ClassBrowser1.Selected.Data)^._Kind <> skClass);
+  and Assigned(ClassBrowser1.Selected.Data) then
+    //check if node.data still in statements
+    if CppParser1.Statements.IndexOf(ClassBrowser1.Selected.Data) >=0 then
+      (Sender as TAction).Enabled :=
+        (PStatement(ClassBrowser1.Selected.Data)^._Kind<>skClass)
+    else
+    begin
+      ClassBrowser1.Selected.Data := nil;
+     (Sender as TAction).Enabled := False;
+    end
+  else
+    (Sender as TAction).Enabled := False;
 end;
 
 procedure TMainForm.actBrowserNewClassUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := ClassBrowser1.Enabled and Assigned(fProject);
+  (Sender as TAction).Enabled:=ClassBrowser1.Enabled
+    and Assigned(fProject);
 end;
 
 procedure TMainForm.actBrowserNewMemberUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := Assigned(ClassBrowser1.Selected) and Assigned(ClassBrowser1.Selected.Data) and (PStatement(ClassBrowser1.Selected.Data)^._Kind = skClass);
+  if Assigned(ClassBrowser1.Selected)
+  and Assigned(ClassBrowser1.Selected.Data) then
+    //check if node.data still in statements
+    if CppParser1.Statements.IndexOf(ClassBrowser1.Selected.Data) >= 0 then
+      (Sender as TAction).Enabled :=
+        (PStatement(ClassBrowser1.Selected.Data)^._Kind=skClass)
+    else
+    begin
+      ClassBrowser1.Selected.Data := nil;
+      (Sender as TAction).Enabled := False;
+    end
+  else
+    (Sender as TAction).Enabled := False;
 end;
 
 procedure TMainForm.actBrowserNewVarUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := Assigned(ClassBrowser1.Selected) and Assigned(ClassBrowser1.Selected.Data) and (PStatement(ClassBrowser1.Selected.Data)^._Kind = skClass);
+  if Assigned(ClassBrowser1.Selected)
+  and Assigned(ClassBrowser1.Selected.Data) then
+    //check if node.data still in statements
+    if CppParser1.Statements.IndexOf(ClassBrowser1.Selected.Data) >= 0 then
+      (Sender as TAction).Enabled :=
+        (PStatement(ClassBrowser1.Selected.Data)^._Kind=skClass)
+    else
+    begin
+      ClassBrowser1.Selected.Data := nil;
+      (Sender as TAction).Enabled := False;
+    end
+  else
+    (Sender as TAction).Enabled := False;
 end;
 
 procedure TMainForm.actBrowserAddFolderUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := ClassBrowser1.Enabled and Assigned(fProject);
+  (Sender as TAction).Enabled:=ClassBrowser1.Enabled
+    and Assigned(fProject);
 end;
 
 procedure TMainForm.actBrowserViewAllUpdate(Sender: TObject);
@@ -6236,7 +6436,11 @@ begin
    {$IFDEF WX_BUILD}
     if not e.isForm then
         e.Text.SetFocus;
-   {$ENDIF}
+   {$ENDIF}   
+   {$IFNDEF WX_BUILD}
+    e.Text.SetFocus;   
+   {$ENDIF}   
+      
   end;
 end;
 
@@ -6347,14 +6551,10 @@ begin
 end;
 
 procedure TMainForm.devFileMonitor1NotifyChange(Sender: TObject;
-  ChangeType: TdevMonitorChangeType; Filename: string);
+  ChangeType: TdevMonitorChangeType; Filename: String);
 var
   e: TEditor;
-{$IFDEF NEW_SYNEDIT} 
   p : TBufferCoord;
-{$ELSE}
-  p: TPoint;
-{$ENDIF}
 begin
   if ReloadFileName = FileName then
     exit;
@@ -6365,11 +6565,7 @@ begin
         if Assigned(e) then begin
           p := e.Text.CaretXY;
           e.Text.Lines.LoadFromFile(Filename);
-{$IFDEF NEW_SYNEDIT}
         if (p.Line <= e.Text.Lines.Count) then
-{$ELSE}
-          if (p.Y <= e.Text.Lines.Count) then
-{$ENDIF}
             e.Text.CaretXY := p;
         end;
       end;
@@ -6390,14 +6586,16 @@ begin
   end;
 end;
 
-procedure TMainForm.OnBreakpointToggle(Sender: TEditor; Line: integer;
-  BreakExists: boolean);
+
+procedure TMainForm.OnBreakpointToggle(index:integer; BreakExists:boolean);
 begin
-  if fDebugger.Executing then begin
-    if BreakExists then
-      fDebugger.AddBreakpoint(Sender, Line)
-    else
-      fDebugger.RemoveBreakpoint(Sender, Line);
+  if fDebugger.Executing and fDebugger.isBroken then begin
+    if BreakExists then begin
+      PBreakPointEntry(BreakPointList.Items[index])^.breakPointIndex := fDebugger.AddBreakpoint(index);
+    end
+    else begin
+      fDebugger.RemoveBreakpoint(index);
+    end;
   end;
 end;
 
@@ -6426,12 +6624,24 @@ begin
 end;
 
 procedure TMainForm.actProjectRemoveFolderExecute(Sender: TObject);
+var
+  idx: integer;
+  node: TTreeNode;
 begin
+  if not assigned(fProject) then exit;
   if Assigned(ProjectView.Selected) and (ProjectView.Selected.Data = Pointer(-1)) then
     if MessageDlg(Lang[ID_MSG_REMOVEBROWSERFOLDER], mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
       ProjectView.Items.BeginUpdate;
-      while ProjectView.Selected.Count > 0 do
-        ProjectView.Selected.Item[0].MoveTo(ProjectView.TopItem.getFirstChild, naInsert);
+      while ProjectView.Selected.Count > 0 do begin
+        node := ProjectView.Selected.Item[0];
+        if not assigned(node) then
+          Continue;
+        if (node.Data = Pointer(-1)) or (node.Level < 1) then
+         Continue;
+        idx:= integer(node.Data);
+        if not fProject.Remove(idx, true) then
+          exit;
+      end;
       ProjectView.TopItem.AlphaSort(False);
       ProjectView.Selected.Delete;
       ProjectView.Items.EndUpdate;
@@ -6531,15 +6741,36 @@ begin
     AddDebugVar(s);
 end;
 
+// RNC -- 07-02-2004
+// I changed the way the run to cursor works to make it more compatible with
+// MSVC++.
+//  Run to cursor no longer sets a breakpoint.  It will try to run to the wherever the
+// cusor is.  If there happens to be a breakpoint before that, the debugging stops there
+// and the run to cursor value is removed.  (it will not stop there if you press continue)
 procedure TMainForm.actRunToCursorExecute(Sender: TObject);
 var
   e: TEditor;
+ line : integer;
 begin
   e := GetEditor;
-  if assigned(e) then
-    e.RunToCursor(e.Text.CaretY);
-  if not fDebugger.Executing then
+  line := e.Text.CaretY;
+  // If the debugger is not running, set the breakpoint to the current line and start the debugger
+  if not fDebugger.Executing then begin
+    e.RunToCursor(line);
     actDebugExecute(sender);
+  end
+
+  // Otherwise, make sure that the debugger is stopped so that breakpoints can be added
+  // Also ensure that the cursor is not on a line that is already marked as a breakpoint
+  else if (fDebugger.isBroken = true) and (not fDebugger.BreakpointExists(e.TabSheet.Caption, line)) then begin
+  if assigned(e) then
+      e.RunToCursor(line);
+  end;
+
+  // If we are broken and the run to cursor location is the same as the current breakpoint, just
+  // continue to try to run to the current location
+  if (fDebugger.isBroken = true) then
+    fDebugger.SendCommand(GDB_CONTINUE, '');
 end;
 
 procedure TMainForm.GdbCommandBtnClick(Sender: TObject);
@@ -6839,14 +7070,14 @@ begin
     RemoveItem(ProjectView.Selected)
   else if (Key = VK_ESCAPE) and (Shift = []) then
   begin
-    if PageControl.Visible and PageControl.Enabled and (PageControl.ActivePage <> nil) then
+    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
       GetEditor(-1).Activate;
   end
   else if (Key = VK_ESCAPE) and (Shift = [ssShift]) then
   begin
     actProjectManager.Checked := False;
     actProjectManagerExecute(nil);
-    if PageControl.Visible and PageControl.Enabled and (PageControl.ActivePage <> nil) then
+    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
       GetEditor(-1).Activate;
   end
   else if (Key = VK_RETURN) and Assigned(ProjectView.Selected) then
@@ -6910,11 +7141,7 @@ var
   wa: boolean;
   I: integer;
   e: TEditor;
-{$IFDEF NEW_SYNEDIT} 
   pt: TBufferCoord;
-{$ELSE}
-  pt: TPoint;
-{$ENDIF}
 begin
   actSaveAll.Execute;
   wa := devFileMonitor1.Active;
@@ -7083,7 +7310,7 @@ begin
     actProjectManagerExecute(nil);
   end;
   LeftPageControl.ActivePageIndex := 1;
-  if ClassBrowser1.Visible and ClassBrowser1.Enabled then
+  if ClassBrowser1.Visible And ClassBrowser1.Enabled then
     ClassBrowser1.SetFocus;
 end;
 
@@ -7126,7 +7353,8 @@ begin
   pnlBrowsers.Visible := False;
 
   (Sender as TForm).RemoveControl(LeftPageControl);
-
+  if LeftPageControl.visible = false then
+  	LeftPageControl.visible :=true;
   LeftPageControl.Left := 0;
   LeftPageControl.Top := ControlBar1.Height;
   LeftPageControl.Align := alLeft;
@@ -7457,21 +7685,36 @@ end;
 procedure TMainForm.CompilerOutputKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+{$IFDEF WIN32}
   if Key = VK_RETURN then
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_RETURN then
+{$ENDIF}
     CompilerOutputDblClick(sender);
 end;
 
 procedure TMainForm.FindOutputKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+{$IFDEF WIN32}
   if Key = VK_RETURN then
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_RETURN then
+{$ENDIF}
     FindOutputDblClick(sender);
 end;
 
 procedure TMainForm.DebugTreeKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+{$IFDEF WIN32}
   if Key = VK_DELETE then
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_DELETE then
+{$ENDIF}
     actRemoveWatchExecute(sender);
 end;
 
@@ -7525,9 +7768,8 @@ begin
 end;
 
 procedure TMainForm.actAttachProcessExecute(Sender: TObject);
-var idx, idx2: integer;
+var idx : integer;
   	s: string;
-  	e: TEditor;
 begin
   PrepareDebugger;
   if assigned(fProject) then begin
@@ -7558,13 +7800,8 @@ begin
 
         fDebugger.SendCommand(GDB_ATTACH, s);
 
-        for idx := 0 to pred(PageControl.PageCount) do begin
-          e := GetEditor(idx);
-          // why used to enter breakpoints only in project files?
-          // did it have something to do with the debugger's include dirs? ;)
-          if e.Breakpoints.Count > 0 then
-            for idx2 := 0 to pred(e.Breakpoints.Count) do
-              fDebugger.AddBreakPoint(e, integer(e.Breakpoints[idx2]));
+       for idx:=0 to BreakPointList.Count -1 do begin
+           PBreakPointEntry(BreakPointList.Items[idx])^.breakPointIndex := fDebugger.AddBreakpoint(idx);
         end;
 
         DebugTree.Items.Clear;
@@ -7658,6 +7895,7 @@ begin
 
   if Assigned(CurrentEditor)  AND Assigned(CurrentEditor.CodeToolTip) then 
   begin
+  	//Added for wx Problems
     try
       CurrentEditor.CodeToolTip.ReleaseHandle;
     except
@@ -7671,12 +7909,19 @@ procedure TMainForm.ApplicationEvents1Deactivate(Sender: TObject);
 // added on 23rd may 2004 by peter_
 //
   {$IFDEF WX_BUILD}
+  //This is a custom File Watcher used specifically for 
+  //wx-devcpp because the current implementation
+  //is somewhat erratic in my machine
 var
     fwatchThread:TFileWatch;
     i:Integer;
   {$ENDIF}
 begin
-  HideCodeToolTip;
+  try
+  	HideCodeToolTip;
+  except
+  end; 
+  
   {$IFDEF WX_BUILD}
   devFileMonitor1.Deactivate;
   FWatchList.Clear;
@@ -7710,7 +7955,7 @@ begin
   mnuCVSCurrent.Enabled := PageControl.PageCount > 0;
 end;
 
-{Functions Added By Guru}
+{Functions Added By Guru for wx Implementation}
 
 procedure TMainForm.CreateNewDialogOrFrameCode(dsgnType:TWxDesignerType);
 {$IFDEF WX_BUILD}
@@ -9659,7 +9904,6 @@ var
   intfObj: IWxComponentInterface;
   e: TEditor;
   CppEditor, Hppeditor: TSynEdit;
-
 begin
   Result := False;
   boolFound := False;
@@ -9700,13 +9944,14 @@ begin
     if assigned(e) then
     begin
         //Fixme: check for valiud line num here
-        e.Text.CaretXY := point(0, intLineNum);
+        e.Text.CaretX:=0;
+        e.Text.CaretX:=intLineNum;
         OpenFile(e.GetDesignerCPPFileName);
     end;
     boolInspectorDataClear:=False;
   end;
   exit;
-  
+
   boolInspectorDataClear:=False;
   Hppeditor := e.GetDesignerHPPText;
 

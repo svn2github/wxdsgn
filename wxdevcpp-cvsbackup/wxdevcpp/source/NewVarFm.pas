@@ -22,8 +22,14 @@ unit NewVarFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QExtCtrls;
+{$ENDIF}
 
 type
   TNewVarForm = class(TForm)
@@ -102,8 +108,7 @@ begin
   finally
     sl.Free;
   end;
-  cmbClass.ItemIndex :=
-    cmbClass.Items.IndexOf(PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
+  cmbClass.ItemIndex := cmbClass.Items.IndexOf(PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
 
   cmbType.SetFocus;
 end;
@@ -120,8 +125,7 @@ end;
 
 procedure TNewVarForm.chkReadFuncClick(Sender: TObject);
 begin
-  if chkReadFunc.Checked then
-  begin
+  if chkReadFunc.Checked then begin
     if btnCreate.Enabled then // type and name are ok
       txtReadFunc.Text := 'Get' + txtName.Text
     else
@@ -134,8 +138,7 @@ end;
 
 procedure TNewVarForm.chkWriteFuncClick(Sender: TObject);
 begin
-  if chkWriteFunc.Checked then
-  begin
+  if chkWriteFunc.Checked then begin
     if btnCreate.Enabled then // type and name are ok
       txtWriteFunc.Text := 'Set' + txtName.Text
     else
@@ -169,26 +172,22 @@ var
   wa: boolean;
   S: string;
 begin
-  if cmbClass.ItemIndex = -1 then
-  begin
+  if cmbClass.ItemIndex = -1 then begin
     MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
     Exit;
   end;
 
   if cmbClass.Items.IndexOf(cmbClass.Text) > -1 then
-    St :=
-      PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(cmbClass.Text)])
+    St := PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(cmbClass.Text)])
   else
     St := nil;
 
-  if not Assigned(St) then
-  begin
+  if not Assigned(St) then begin
     MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
     Exit;
   end;
 
-  with MainForm do
-  begin
+  with MainForm do begin
     pID := St^._ID;
 
     VarName := txtName.Text;
@@ -208,11 +207,9 @@ begin
     if Trim(memDescr.Text) = '' then
       memDescr.Text := 'No description';
 
-    CppParser1.GetSourcePair(CppParser1.GetDeclarationFileName(St), CppFname,
-      fName);
+    CppParser1.GetSourcePair(CppParser1.GetDeclarationFileName(St), CppFname, fName);
 
-    if not FileExists(CppFname) then
-    begin
+    if not FileExists(CppFname) then begin
       MessageDlg(Lang[ID_NEWVAR_MSG_NOIMPL], mtError, [mbOk], 0);
       Exit;
     end;
@@ -224,12 +221,15 @@ begin
       Exit;
 
     if e.Modified then
-      case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]), mtConfirmation,
-        [mbYes, mbCancel], 0) of
-        mrYes: if FileExists(fName) then
-          begin
+      case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]), mtConfirmation, [mbYes, mbCancel], 0) of
+        mrYes: if FileExists(fName) then begin
             wa := MainForm.devFileMonitor1.Active;
             MainForm.devFileMonitor1.Deactivate;
+            if devEditor.AppendNewline then
+              with e.Text do
+                if Lines.Count > 0 then
+                  if Lines[Lines.Count -1] <> '' then
+                    Lines.Add('');
             e.Text.Lines.SaveToFile(fName);
             if wa then
               MainForm.devFileMonitor1.Activate;
@@ -242,16 +242,13 @@ begin
     // Ask CppParser for insertion line suggestion ;)
     Line := CppParser1.SuggestMemberInsertionLine(pID, VarScope, AddScopeStr);
     if VarScope <> scsPublic then
-      PublicLine := CppParser1.SuggestMemberInsertionLine(pID, scsPublic,
-        fAddScopeStr)
-    else
-    begin
+      PublicLine := CppParser1.SuggestMemberInsertionLine(pID, scsPublic, fAddScopeStr)
+    else begin
       fAddScopeStr := AddScopeStr;
       PublicLine := Line;
     end;
 
-    if Line = -1 then
-    begin
+    if Line = -1 then begin
       // CppParser could not suggest a line for insertion :(
       MessageDlg(Lang[ID_NEWVAR_MSG_NOLINE], mtError, [mbOk], 0);
       Exit;
@@ -289,11 +286,9 @@ begin
     e.Modified := True;
 
     // if needed, insert a new member function for READ access to the new var
-    if VarRead then
-    begin
+    if VarRead then begin
       S := #9#9 + VarType + ' ' + VarReadFunc + '()';
-      if chkInlineR.Checked then
-      begin
+      if chkInlineR.Checked then begin
         e.Text.Lines.Insert(PublicLine, #9#9'}');
         e.Text.Lines.Insert(PublicLine, #9#9#9'return ' + VarName + ';');
         e.Text.Lines.Insert(PublicLine, #9#9'{');
@@ -306,11 +301,9 @@ begin
     end;
 
     // if needed, insert a new member function for WRITE access to the new var
-    if VarWrite then
-    begin
+    if VarWrite then begin
       S := #9#9'void ' + VarWriteFunc + '(' + VarType + ' x)';
-      if chkInlineW.Checked then
-      begin
+      if chkInlineW.Checked then begin
         e.Text.Lines.Insert(PublicLine, #9#9'}');
         e.Text.Lines.Insert(PublicLine, #9#9#9 + VarName + ' = x;');
         e.Text.Lines.Insert(PublicLine, #9#9'{');
@@ -334,8 +327,7 @@ begin
       Exit;
 
     // if needed, insert a new member function for READ access to the new var
-    if VarRead and not chkInlineR.Checked then
-    begin
+    if VarRead and not chkInlineR.Checked then begin
       e.Text.Lines.Append('');
       e.Text.Lines.Append('// returns the value of ' + VarName);
       e.Text.Lines.Append(VarType + ' ' + ClsName + '::' + VarReadFunc + '()');
@@ -348,12 +340,10 @@ begin
     end;
 
     // if needed, insert a new member function for WRITE access to the new var
-    if VarWrite and not chkInlineW.Checked then
-    begin
+    if VarWrite and not chkInlineW.Checked then begin
       e.Text.Lines.Append('');
       e.Text.Lines.Append('// sets the value of ' + VarName);
-      e.Text.Lines.Append('void ' + ClsName + '::' + VarWriteFunc + '(' + VarType
-        + ' x)');
+      e.Text.Lines.Append('void ' + ClsName + '::' + VarWriteFunc + '(' + VarType + ' x)');
       e.Text.Lines.Append('{');
       e.Text.Lines.Append(#9 + VarName + ' = x;');
       e.Text.Lines.Append('}');

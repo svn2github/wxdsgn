@@ -21,12 +21,18 @@ unit utils;
 
 interface
 uses
-  Windows, Messages,Classes, Sysutils, Forms, ShellAPI, Dialogs, SynEditHighlighter,
-  menus, Registry;
+{$IFDEF WIN32}
+ Windows, Classes, Sysutils, Forms, ShellAPI, Dialogs, SynEditHighlighter,
+ Menus, Registry, Messages {for WM_USER};
+{$ENDIF}
+{$IFDEF LINUX}
+ Classes, Sysutils, QForms, QDialogs, QSynEditHighlighter,
+ QMenus, Types;
+{$ENDIF}
 
 const
   // Name of main window class (could use GUID to ensure uniqueness)
-  cWindowClassName = 'DelphiDabbler.SingleApp.Demo';
+  cWindowClassName = 'wxDevCpp.SingleApp.Program';
   // Any 32 bit number here to perform check on copied data
   cCopyDataWaterMark = $DE1F1DAB;
   // User window message handled by main form to ensure that app is not
@@ -60,26 +66,28 @@ type
 
   TFilterSet = (ftOpen, ftHelp, ftPrj, ftSrc, ftAll);
 
-  TErrFunc = procedure(Msg: string) of object;
-  TLineOutputFunc = procedure(Line: string) of object;
+ TErrFunc = procedure(Msg: String) of Object;
+ TLineOutputFunc = procedure(Line: String) of Object;
   TCheckAbortFunc = procedure(var AbortThread: boolean) of object;
+  
 {$IFDEF WX_BUILD}
-{Guru: Functions}
 function ExtractComponentPropertyName(const S: string): string;
 function ExtractComponentPropertyCaption(const S: string): string;
 function iswxForm(FileName: string): Boolean;
 function isRCExt(FileName: string): boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
 {$ENDIF}
+
+{Guru: Functions}
 function DuplicateAppInstWdw: HWND;
 function SwitchToPrevInst(Wnd: HWND): Boolean;
 
 {Guru: End Functions}
 
-function IsWinNT: boolean;
+function IsWinNT : boolean;
 
 procedure FilesFromWildcard(Directory, Mask: string;
-  var Files: TStringList; Subdirs, ShowDirs, Multitasking: Boolean);
+  var Files : TStringList; Subdirs, ShowDirs, Multitasking: Boolean);
 function ExecuteFile(const FileName, Params, DefaultDir: string;
   ShowCmd: Integer): THandle;
 function RunAndGetOutput(Cmd, WorkDir: string;
@@ -87,11 +95,12 @@ function RunAndGetOutput(Cmd, WorkDir: string;
   CheckAbortFunc: TCheckAbortFunc;
   ShowReturnValue: Boolean = True): string;
 function GetShortName(FileName: string): string;
-procedure ShowError(Msg: string);
+procedure ShowError(Msg: String);
 
-function CommaStrToStr(s: string; formatstr: string): string;
-function IncludeQuoteIfSpaces(s: string): string;
-function IncludeQuoteIfNeeded(s: string): string;
+function CommaStrToStr(s : string; formatstr : string) : string;
+function IncludeQuoteIfSpaces(s : string) : string;
+function IncludeQuoteIfNeeded(s : string) : string;
+
 
 // Added by MikeB
 procedure LoadFilefromResource(const FileName: string; ms: TMemoryStream);
@@ -99,10 +108,8 @@ procedure LoadFilefromResource(const FileName: string; ms: TMemoryStream);
 function ValidateFile(const FileName: string; const WorkPath: string;
   const CheckDirs: boolean = FALSE): string;
 
-function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean;
-  overload;
-function BuildFilter(var value: string; const _filters: array of string):
-  boolean; overload;
+function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean; overload;
+function BuildFilter(var value: string; const _filters: array of string): boolean; overload;
 
 function CodeInstoStr(s: string): string;
 function StrtoCodeIns(s: string): string;
@@ -114,8 +121,7 @@ procedure StrtoPoint(var pt: TPoint; value: string);
 function PointtoStr(const pt: TPoint): string;
 
 function ListtoStr(const List: TStrings): string;
-procedure StrtoList(s: string; const List: TStrings; const delimiter: char =
-  ';');
+procedure StrtoList(s: string; const List: TStrings; const delimiter: char=';');
 
 function GetFileTyp(const FileName: string): TUnitType;
 function GetExTyp(const FileName: string): TExUnitType;
@@ -127,9 +133,12 @@ procedure CloneMenu(const FromMenu: TMenuItem; ToMenu: TMenuItem);
 
 function GetLastPos(const SubStr: string; const S: string): integer;
 
-function GenMakePath(FileName: string): string;
-function GenMakePath2(FileName: string): string;
-function GetRealPath(BrokenFileName: string; Directory: string = ''): string;
+function GenMakePath(FileName: String): String; overload;
+function GenMakePath2(FileName: String): String;
+function GenMakePath(FileName: String; EscapeSpaces,
+                     EncloseInQuotes: Boolean): String; overload;
+
+function GetRealPath(BrokenFileName: String; Directory: String = ''): String;
 
 function CalcMod(Count: Integer): Integer;
 
@@ -137,15 +146,19 @@ function GetVersionString(FileName: string): string;
 
 function CheckChangeDir(var Dir: string): boolean;
 
-function GetAssociatedProgram(const Extension: string; var Filename,
-  Description: string): boolean;
+function GetAssociatedProgram(const Extension: string; var Filename, Description: string): boolean;
 
-function IsNumeric(s: string): boolean;
+function IsNumeric(s : string) : boolean;
 
 implementation
 
-uses devcfg, version, graphics, strUtils, MultiLangSupport, main, editor;
-
+uses 
+{$IFDEF WIN32}
+  devcfg, version, Graphics, StrUtils, MultiLangSupport, main, editor;
+{$ENDIF}
+{$IFDEF LINUX}
+  devcfg, version, QGraphics, StrUtils, MultiLangSupport, main, editor;
+{$ENDIF}  
 function ExtractComponentPropertyName(const S: string): string;
 var
   SepaPos: integer;
@@ -202,14 +215,13 @@ begin
 end;
 {$ENDIF}
 
-procedure FilesFromWildcard(Directory, Mask: string;
-  var Files: TStringList; Subdirs, ShowDirs, Multitasking: Boolean);
+procedure FilesFromWildcard(Directory, Mask: String;
+  var Files : TStringList; Subdirs, ShowDirs, Multitasking: Boolean);
 var
   SearchRec: TSearchRec;
   Attr, Error: Integer;
 begin
-  if (Directory[Length(Directory)] <> '\') then
-    Directory := Directory + '\';
+  Directory := IncludeTrailingPathDelimiter(Directory);
 
   { First, find the required file... }
   Attr := faAnyFile;
@@ -271,7 +283,7 @@ var
   hOutputReadTmp, hOutputRead, hOutputWrite, hInputWriteTmp, hInputRead,
     hInputWrite, hErrorWrite: THandle;
   FOutput: string;
-  CurrentLine: string;
+  CurrentLine: String;
   bAbort: boolean;
 begin
   FOutput := '';
@@ -304,21 +316,19 @@ begin
   tsi.hStdError := hErrorWrite;
 
   if not CreateProcess(nil, PChar(Cmd), @sa, @sa, true, 0, nil, PChar(WorkDir),
-    tsi, tpi) then
-  begin
-    result := InttoStr(GetLastError) + ': unable to run program file.';
+                        tsi, tpi) then begin
+    result := 'Unable to run "' + Cmd + '": ' + SysErrorMessage(GetLastError);
     exit;
   end;
   CloseHandle(hOutputWrite);
-  CloseHandle(hInputRead);
+  CloseHandle(hInputRead );
   CloseHandle(hErrorWrite);
 
-  bAbort := False;
+  bAbort:=False;
   repeat
     if Assigned(CheckAbortFunc) then
       CheckAbortFunc(bAbort);
-    if bAbort then
-    begin
+     if bAbort then begin
       TerminateProcess(tpi.hProcess, 1);
       Break;
     end;
@@ -364,19 +374,19 @@ var
 begin
   if add <> '' then
     if Add[length(Add)] <> ';' then
-      Add := Add + ';';
+    Add:= Add +';';
 
   // PATH environment variable does *not* like quotes in paths...
   // Even if there are spaces in pathnames, it doesn't matter.
   // It splits them up by the ';'
-  Add := StringReplace(Add, '"', '', [rfReplaceAll]);
+  Add:=StringReplace(Add, '"', '', [rfReplaceAll]);
 
   if UseOriginal then
-    NewPath := Add + devDirs.OriginalPath
+   NewPath:= Add+ devDirs.OriginalPath
   else
   begin
     GetEnvironmentVariable(pchar('PATH'), @OldPath, PATH_LEN);
-    NewPath := Add + string(OldPath);
+     NewPath:= Add +string(OldPath);
   end;
 
   SetEnvironmentVariable(pchar('PATH'), pchar(NewPath));
@@ -389,33 +399,40 @@ var
   tmp: TStrings;
   idx: integer;
 begin
-  fName := ExtractFileName(FileName);
+  fName:= ExtractFileName(FileName);
   if FileExists(FileName) then
-    result := FileName
-  else if FileExists(WorkPath + fName) then
-    result := WorkPath + fName
-  else if FileExists(WorkPath + FileName) then
-    result := FileName
-  else if CheckDirs then
-  begin
-    if (devDirs.Default <> '') and (FileExists(devDirs.Default + fName)) then
-      result := devDirs.Default + fName
-    else if (devDirs.Exec <> '') and (FileExists(devDirs.Exec + fName)) then
-      result := devDirs.Exec + fName
-    else if (devDirs.Help <> '') and (FileExists(devDirs.Help + fName)) then
-      result := devDirs.Help + fName
-    else if (devDirs.Lang <> '') and (FileExists(devDirs.Lang + fName)) then
-      result := devDirs.Lang + fName
-    else if (devDirs.Icons <> '') then
+   result:= FileName
+  else
+   if FileExists(WorkPath +fName) then
+    result:= WorkPath +fName
+  else
+   if FileExists(WorkPath +FileName) then
+    result:= FileName
+   else
+    if CheckDirs then 
+     begin    
+       if (devDirs.Default <> '') and (FileExists(devDirs.Default +fName)) then
+        result:= devDirs.Default +fName
+       else
+       if (devDirs.Exec <> '') and (FileExists(devDirs.Exec +fName)) then
+        result:= devDirs.Exec +fName
+       else
+       if (devDirs.Help <> '') and (FileExists(devDirs.Help +fName)) then
+        result:= devDirs.Help +fName
+       else
+       if (devDirs.Lang <> '') and (FileExists(devDirs.Lang +fName)) then
+        result:= devDirs.Lang +fName
+       else
+       if (devDirs.Icons <> '') then
     begin
-      tmp := TStringList.Create;
+          tmp:= TStringList.Create;
       try
         StrtoList(devDirs.Icons, tmp);
-        if tmp.Count > 0 then
-          for idx := 0 to pred(tmp.Count) do
-            if FileExists(IncludeTrailingPathDelimiter(tmp[idx]) + fName) then
+           if tmp.Count> 0 then
+            for idx:= 0 to pred(tmp.Count) do
+             if FileExists(IncludeTrailingPathDelimiter(tmp[idx]) +fName) then
             begin
-              result := IncludeTrailingPathDelimiter(tmp[idx]) + fName;
+                result:= IncludeTrailingPathDelimiter(tmp[idx]) +fName;
               break;
             end;
       finally
@@ -424,7 +441,7 @@ begin
     end;
   end
   else
-    result := '';
+     result:= '';
 end;
 
 procedure LoadFilefromResource(const FileName: string; ms: TMemoryStream);
@@ -434,11 +451,11 @@ var
   Buffer: PChar;
   aName, Ext: string;
 begin
-  Ext := ExtractFileExt(FileName);
-  Ext := copy(ext, 2, length(ext));
-  aName := ChangeFileExt(ExtractFileName(FileName), '');
-  HResInfo := FindResource(HInstance, pchar(aName), pchar(Ext));
-  hres := LoadResource(HInstance, HResInfo);
+  Ext:= ExtractFileExt(FileName);
+  Ext:= copy(ext, 2, length(ext));
+  aName:= ChangeFileExt(ExtractFileName(FileName), '');
+  HResInfo:= FindResource(HInstance, pchar(aName), pchar(Ext));
+  hres:= LoadResource(HInstance, HResInfo);
   if HRes = 0 then
   begin
     MessageBox(Application.MainForm.Handle,
@@ -447,7 +464,7 @@ begin
     exit;
   end;
 
-  Buffer := LockResource(HRes);
+  Buffer:= LockResource(HRes);
   ms.clear;
   ms.WriteBuffer(Buffer[0], SizeofResource(HInstance, HResInfo));
   ms.Seek(0, 0);
@@ -460,10 +477,10 @@ var
   pFileName: array[0..2048] of char;
 begin
   GetShortPathName(pchar(FileName), pFileName, 2048);
-  result := strpas(pFileName);
+  result:= strpas(pFileName);
 end;
 
-procedure ShowError(Msg: string);
+procedure ShowError(Msg: String);
 begin
   Application.MessageBox(PChar(Msg), 'Error', MB_ICONHAND);
 end;
@@ -474,80 +491,76 @@ var
   s,
     LFilter: string;
 begin
-  result := TRUE;
+  result:= TRUE;
   try
-    if _Filter = '' then
-      exit;
+   if _Filter = '' then exit;
 
-    LFilter := value;
-    idx := pos('|', LFilter);
-    if idx > 0 then
+   LFilter:= value;
+   idx:= pos('|', LFilter);
+   if idx> 0 then
     begin
-      Insert(_Filter + '|', LFilter, AnsiPos(FLT_ALLFILES, LFIlter));
-      s := Copy(_Filter, AnsiPos('|', _Filter) + 1, length(_Filter)) + ';';
-      Insert(s, LFilter, AnsiPos('|', LFilter) + 1);
+      Insert(_Filter +'|', LFilter, AnsiPos(FLT_ALLFILES, LFIlter));
+      s:= Copy(_Filter, AnsiPos('|', _Filter) +1, length(_Filter)) +';';
+      Insert(s, LFilter, AnsiPos('|', LFilter) +1);
       if LFilter[Length(LFilter)] <> '|' then
-        LFilter := LFilter + '|';
+       LFilter:= LFilter +'|';
     end;
-    value := LFilter;
+   value:= LFilter;
   except
-    result := FALSE;
+   result:= FALSE;
   end;
 end;
 
-function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean;
-  overload;
+function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean; overload;
 begin
-  value := FLT_BASE + FLT_ALLFILES;
+  value:= FLT_BASE +FLT_ALLFILES;
   case FLTStyle of
-    ftOpen: result := BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_CS,
-      FLT_CPPS, FLT_RES {$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);
-    ftHelp: result := BuildFilter(value, [FLT_HELPS]);
-    ftPrj: result := BuildFilter(value, [FLT_PROJECTS]);
-    ftSrc: result := BuildFilter(value, [FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS]);
-    ftAll: result := BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_RES,
-      FLT_CS, FLT_CPPS {$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);
+   ftOpen: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);  
+   ftHelp: result:= BuildFilter(value, [FLT_HELPS]);
+   ftPrj: result:= BuildFilter(value, [FLT_PROJECTS]);
+   ftSrc: result:= BuildFilter(value, [FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS]);
+   ftAll: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_RES, FLT_CS,
+     FLT_CPPS {$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);   
   else
-    result := TRUE;
+   result:= TRUE;
   end;
 end;
 
-function BuildFilter(var value: string; const _filters: array of string):
-  boolean; overload;
+function BuildFilter(var value: string; const _filters: array of string): boolean; overload;
 var
   idx: integer;
 begin
-  result := FALSE;
-  value := FLT_BASE + FLT_ALLFILES;
-  for idx := 0 to high(_Filters) do
+  result:= FALSE;
+  value:= FLT_BASE +FLT_ALLFILES;
+  for idx:= 0 to high(_Filters) do
     if not AddFilter(value, _Filters[idx]) then
       exit;
-  result := TRUE;
+  result:= TRUE;
 end;
 
 function CodeInstoStr(s: string): string;
 begin
-  result := StringReplace(s, #13#10, '$_', [rfReplaceAll]);
+  result:= StringReplace(s, #13#10, '$_', [rfReplaceAll]);
 end;
 
 function StrtoCodeIns(s: string): string;
 begin
-  result := StringReplace(s, '$_', #13#10, [rfReplaceAll]);
+  result:= StringReplace(s, '$_', #13#10, [rfReplaceAll]);
 end;
 
 procedure StrtoPoint(var pt: TPoint; value: string);
 var
   tmp: TStringList;
 begin
-  tmp := TStringList.Create;
+  tmp:= TStringList.Create;
   try
-    tmp.CommaText := value;
-    if tmp.Count >= 2 then
+   tmp.CommaText:= value;
+   if tmp.Count>= 2 then
       with pt do
       begin
         // x=foreground y=background
-        x := StringToColor(tmp[1]);
-        y := StringtoColor(tmp[0]);
+       x:= StringToColor(tmp[1]);
+       y:= StringtoColor(tmp[0]);
       end;
   finally
     tmp.Free;
@@ -556,12 +569,12 @@ end;
 
 function PointtoStr(const pt: TPoint): string;
 begin
-  result := format('%d, %d', [pt.y, pt.x]);
+  result:= format('%d, %d', [pt.y, pt.x]);
 end;
 
 function AttrtoStr(const Attr: TSynHighlighterAttributes): string;
 begin
-  result := format('%s, %s, %d, %d, %d',
+  result:= format('%s, %s, %d, %d, %d',
     [ColortoString(Attr.Foreground),
     ColortoString(Attr.Background),
       ord(fsBold in Attr.Style),
@@ -573,27 +586,27 @@ procedure StrtoAttr(var Attr: TSynHighlighterAttributes; Value: string);
 var
   tmp: TStringList;
 begin
-  tmp := TStringList.Create;
+  tmp:= TStringList.Create;
   try
-    tmp.commaText := Value;
+   tmp.commaText:= Value;
     if tmp.count = 5 then
       with attr do
       begin
-        Foreground := StringtoColor(tmp[0]);
-        Background := StringtoColor(tmp[1]);
-        style := [];
+       Foreground:= StringtoColor(tmp[0]);
+       Background:= StringtoColor(tmp[1]);
+       style:= [];
         if tmp[2] = '1' then
-          style := style + [fsbold]
+        style:= style +[fsbold]
         else
-          style := style - [fsbold];
+        style:= style -[fsbold];
         if tmp[3] = '1' then
-          style := style + [fsItalic]
+        style:= style +[fsItalic]
         else
-          style := style - [fsItalic];
+        style:= style -[fsItalic];
         if tmp[4] = '1' then
-          style := style + [fsUnderline]
+        style:= style +[fsUnderline]
         else
-          style := style - [fsUnderline];
+        style:= style -[fsUnderline];
       end;
   finally
     tmp.Free;
@@ -611,14 +624,12 @@ begin
   end;
 end;*)
 
-function CommaStrToStr(s: string; formatstr: string): string;
-var
-  i: integer;
-  tmp: string;
+function CommaStrToStr(s : string; formatstr : string) : string;
+var i : integer;
+    tmp : string;
 begin
   result := '';
-  while pos(';', s) > 0 do
-  begin
+  while pos(';', s) > 0 do begin
     i := pos(';', s);
     tmp := Copy(s, 1, i - 1);
     Delete(s, 1, i);
@@ -628,17 +639,14 @@ begin
     result := format(formatstr, [result, s]);
 end;
 
-procedure StrtoList(s: string; const List: TStrings; const delimiter: char =
-  ';');
-var
-  tmp: string;
-  i: integer;
+procedure StrtoList(s: string; const List: TStrings; const delimiter: char=';');
+var tmp : string;
+    i   : integer;
 begin
   List.BeginUpdate;
   try
     List.Clear;
-    while pos(delimiter, s) > 0 do
-    begin
+   while pos(delimiter, s) > 0 do begin
       i := pos(delimiter, s);
       tmp := Copy(s, 1, i - 1);
       Delete(s, 1, i);
@@ -660,12 +668,10 @@ begin
 end;*)
 
 function ListtoStr(const List: TStrings): string;
-var
-  i: integer;
+var i : integer;
 begin
   result := '';
-  for i := 0 to List.Count - 1 do
-  begin
+  for i := 0 to List.Count - 1 do begin
     if i = 0 then
       result := List.Strings[0]
     else
@@ -677,17 +683,20 @@ function GetFileTyp(const FileName: string): TUnitType;
 var
   ext: string;
 begin
-  Ext := ExtractfileExt(FileName);
+  Ext:= ExtractfileExt(FileName);
   if AnsiCompareText(Ext, DEV_EXT) = 0 then
-    result := utPrj
-  else if AnsiMatchText(ext, ['.c', '.cpp', '.cc', '.cxx', '.c++', '.cp']) then
-    result := utsrc
-  else if AnsiMatchText(ext, ['.h', '.hpp', '.rh', '.hh', '.hxx']) then
-    result := utHead
-  else if AnsiMatchText(ext, ['.res', '.rc']) then
-    result := utRes
+   result:= utPrj
   else
-    result := utOther;
+  if AnsiMatchText(ext, ['.c', '.cpp', '.cc', '.cxx', '.c++', '.cp']) then
+   result:= utsrc
+  else 
+  if AnsiMatchText(ext, ['.h', '.hpp', '.rh', '.hh', '.hxx']) then
+   result:= utHead
+  else 
+  if AnsiMatchText(ext, ['.res', '.rc']) then
+   result:= utRes
+  else
+   result:= utOther;
 end;
 
 // this function sucks -- need to replace
@@ -697,36 +706,36 @@ var
   idx: integer;
   s: string;
 begin
-  s := ExtractFileExt(FileName);
-  result := utxother;
-  for idx := 0 to high(ctypes) do
+  s:= ExtractFileExt(FileName);
+  result:= utxother;
+  for idx:= 0 to high(ctypes) do
     if AnsiCompareText(s, ctypes[idx]) = 0 then
     begin
-      result := utcsrc;
+      result:= utcsrc;
       exit;
     end;
-  for idx := 0 to high(cpptypes) do
+  for idx:= 0 to high(cpptypes) do
     if AnsiCompareText(s, cpptypes[idx]) = 0 then
     begin
-      result := utcppsrc;
+      result:= utcppsrc;
       exit;
     end;
-  for idx := 0 to high(headtypes) do
+  for idx:= 0 to high(headtypes) do
     if AnsiCompareText(s, headTypes[idx]) = 0 then
     begin
       case idx of
-        0: result := utchead;
-        1: result := utcppHead;
-        2: result := utresHead;
+       0: result:= utchead;
+       1: result:= utcppHead;
+       2: result:= utresHead;
       end;
       exit;
     end;
-  for idx := 0 to high(restypes) do
+  for idx:= 0 to high(restypes) do
     if AnsiCompareText(s, restypes[idx]) = 0 then
     begin
       case idx of
-        0: result := utresComp;
-        1: result := utresSrc;
+       0: result:= utresComp;
+       1: result:= utresSrc;
       end;
       exit;
     end;
@@ -739,15 +748,14 @@ function ExpandFileto(const FileName: string; const BasePath: string): string;
 var
   oldPath: string;
 begin
-  oldPath := GetCurrentDir;
+  oldPath:= GetCurrentDir;
   try
-    if DirectoryExists(BasePath) then
-    begin
+   if DirectoryExists(BasePath) then begin
       chdir(BasePath);
-      result := ExpandFileName(FileName);
+     result:= ExpandFileName(FileName);
     end
     else
-      Result := Filename; // no luck...
+    Result:=Filename; // no luck...
   finally
     chdir(oldPath);
   end;
@@ -757,13 +765,14 @@ function FileSamePath(const FileName: string; const TestPath: string): boolean;
 var
   s1, s2: string;
 begin
-  result := FALSE;
-  s1 := ExtractFilePath(FileName);
-  s2 := ExtractFilePath(TestPath);
+  result:= FALSE;
+  s1:= ExtractFilePath(FileName);
+  s2:= ExtractFilePath(TestPath);
   if (s1 = s2) then
-    result := TRUE
-  else if (s1 = '') then
-    result := FileExists(s2 + FileName);
+   result:= TRUE
+  else
+   if (s1 = '') then
+    result:= FileExists(s2 +FileName);
 end;
 
 procedure CloneMenu(const FromMenu: TMenuItem; ToMenu: TMenuItem);
@@ -772,22 +781,21 @@ var
   Item: TMenuItem;
 begin
   ToMenu.Clear;
-  if FromMenu.Count <= 0 then
-    exit;
-  for idx := 0 to pred(FromMenu.Count) do
+  if FromMenu.Count <= 0 then exit;
+  for idx:= 0 to pred(FromMenu.Count) do
   begin
-    Item := TMenuItem.Create(ToMenu);
+     Item:= TMenuItem.Create(ToMenu);
     with FromMenu.Items[idx] do
     begin
-      Item.Caption := Caption;
-      Item.OnClick := OnClick;
-      Item.Tag := Tag;
-      Item.AutoCheck := AutoCheck;
-      Item.ShortCut := ShortCut;
+        Item.Caption:= Caption;
+        Item.OnClick:= OnClick;
+        Item.Tag:= Tag;
+        Item.AutoCheck:= AutoCheck;
+        Item.ShortCut:= ShortCut;
     end;
     ToMenu.Add(Item);
   end;
-  ToMenu.Visible := FromMenu.Visible;
+  ToMenu.Visible:= FromMenu.Visible;
 end;
 
 function GetLastPos(const SubStr: string; const s: string): integer;
@@ -795,58 +803,50 @@ var
   Last,
     Current: PAnsiChar;
 begin
-  result := 0;
-  Last := nil;
-  Current := PAnsiChar(s);
+  result:= 0;
+  Last:= nil;
+  Current:= PAnsiChar(s);
   while (Current <> nil) and (Current^ <> #0) do
   begin
-    Current := AnsiStrPos(PAnsiChar(Current), PAnsiChar(SubStr));
+    Current:= AnsiStrPos(PAnsiChar(Current), PAnsiChar(SubStr));
     if Current <> nil then
     begin
-      Last := Current;
+      Last:= Current;
       inc(Current, length(SubStr));
     end;
   end;
   if Last <> nil then
-    result := abs((longint(PAnsiChar(s)) - longint(Last)) div sizeof(AnsiChar))
-      + 1;
+   result:= abs((longint(PAnsiChar(s)) -longint(Last)) div sizeof(AnsiChar)) +1;
 end;
 
 { GenMakePath: convert a filename to a format that can be used by make }
-
-function GenMakePath(FileName: string): string;
+function GenMakePath(FileName: String): String;
 begin
-  Result := StringReplace(Filename, '\', '/', [rfReplaceAll]);
-  if Pos(' ', Filename) > 0 then
-    Result := '"' + Result + '"';
+  Result := GenMakePath(FileName, False, True);
 end;
 
-function GenMakePath2(FileName: string): string;
-var
-  S: string;
-  i: Integer;
+function GenMakePath2(FileName: String): String;
 begin
-  Result := '';
-  S := FileName;
+  Result := GenMakePath(FileName, True, False);
+end;
+
+function GenMakePath(FileName: String; EscapeSpaces,
+                     EncloseInQuotes: Boolean): String;
+begin
+  Result := FileName;
 
   { Convert backslashes to slashes }
-  i := Pos('\', FileName);
-  while i > 0 do
-  begin
-    S[i] := '/';
-    i := Pos('\', S);
-  end;
+  Result := StringReplace(Result, '\', '/', [rfReplaceAll]);
 
-  for i := 1 to Length(S) do
-  begin
-    if S[i] = ' ' then
-      { Escape spaces }
-      Result := Result + '\';
-    Result := Result + S[i];
-  end;
+  if EscapeSpaces then
+    Result := StringReplace(Result, ' ', '\ ', [rfReplaceAll]);
+
+  if EncloseInQuotes then
+    if (Pos(' ', Result) > 0) then
+      Result := '"' + Result + '"';
 end;
 
-function GetRealPath(BrokenFileName: string; Directory: string): string;
+function GetRealPath(BrokenFileName: String; Directory: String): String;
 var
   e: TEditor;
 begin
@@ -854,11 +854,11 @@ begin
 
   { There are 3 kinds of bad filenames:
     1: C:/Foo/Bar.txt              (must be backslashes)
-    2: //C/WINDOWS/Desktop/foo.c   (WinUnix paths?)
+    2: /C/WINDOWS/Desktop/foo.c    (WinUnix paths?)
     3: foo.c                       (not an absolute filename) }
 
   { First, check if this is a WinUnix path }
-  if CompareText(Copy(Result, 1, 2), '//') = 0 then
+  if CompareText(Copy(Result, 1, 1), '/') = 0 then
   begin
     Delete(Result, 1, 2);
     Result[2] := ':';
@@ -866,31 +866,30 @@ begin
   end;
 
   { Second, check if this is an absolute filename }
-  if (Length(Result) < 4) or not ((LowerCase(Result)[1] in ['A'..'Z']) and
-    (Result[2] = ':')) then
+  if (Length(Result) < 4) or not ((LowerCase(Result)[1] in ['A'..'Z']) and (Result[2] = ':')) then
   begin
     { It's not. }
     if Length(Directory) = 0 then
     begin
       if Assigned(MainForm.fProject) then
         Result := ExpandFileTo(Result, MainForm.fProject.Directory)
-      else
-      begin
+          else begin
         e := MainForm.GetEditor;
         if (Assigned(e)) and (Length(ExtractFileDir(e.FileName)) > 0) then
           Result := ExpandFileTo(Result, ExtractFileDir(e.FileName))
         else
           Result := ExpandFileName(Result);
       end;
-    end
-    else
+      end else
     begin
       Result := ExpandFileTo(Result, Directory);
     end;
   end;
 
   { Last, replace all slashes with backslahes }
+{$IFDEF WIN32}
   StringReplace(Result, '/', '\', [rfReplaceAll]);
+{$ENDIF}
 end;
 
 function CalcMod(Count: Integer): Integer;
@@ -915,7 +914,7 @@ begin
     Result := 128;
 end;
 
-function IncludeQuoteIfSpaces(s: string): string;
+function IncludeQuoteIfSpaces(s : string) : string;
 begin
   if pos(' ', s) > 0 then
     result := '"' + s + '"'
@@ -923,7 +922,7 @@ begin
     result := s;
 end;
 
-function IncludeQuoteIfNeeded(s: string): string;
+function IncludeQuoteIfNeeded(s : string) : string;
 begin
   if pos('"', s) = 0 then
     result := '"' + s + '"'
@@ -1013,16 +1012,13 @@ begin
     SendMessage(Wnd, UM_ENSURERESTORED, 0, 0);
 end;
 
-function IsWinNT: boolean;
-var
-  ver: TOSVersionInfo;
+function IsWinNT : boolean;
+var ver : TOSVersionInfo;
 begin
   ver.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
   result := false;
-  if GetVersionEx(ver) then
-  begin
-    if (ver.dwPlatformId = VER_PLATFORM_WIN32_NT) {and (ver.dwMajorVersion > 4) }
-      then
+  if GetVersionEx(ver) then begin
+    if (ver.dwPlatformId = VER_PLATFORM_WIN32_NT) {and (ver.dwMajorVersion > 4) }then
       result := true;
   end
 end;
@@ -1030,60 +1026,55 @@ end;
 // tries to change the current directory to Dir.
 // Returns True if succesfull, False otherwise.
 // If it succeeds, the Dir variable, holds the old dir.
-
 function CheckChangeDir(var Dir: string): boolean;
 var
   Old: string;
 begin
-  Old := GetCurrentDir;
-  Result := SetCurrentDir(Dir);
+  Old:=GetCurrentDir;
+  Result:=SetCurrentDir(Dir);
   if Result then
-    Dir := Old;
+    Dir:=Old;
 end;
 
-function GetAssociatedProgram(const Extension: string; var Filename,
-  Description: string): boolean;
+function GetAssociatedProgram(const Extension: string; var Filename, Description: string): boolean;
 const
   NOVALUE = '$__NONE__$';
 var
   R: TRegIniFile;
   Base, S: string;
 begin
-  Result := False;
-  R := TRegIniFile.Create;
+  Result:=False;
+  R:=TRegIniFile.Create;
   try
-    R.RootKey := HKEY_CLASSES_ROOT;
-    Base := R.ReadString(Extension, '', NOVALUE);
-    if S = NOVALUE then
+    R.RootKey:=HKEY_CLASSES_ROOT;
+    Base:=R.ReadString(Extension, '', NOVALUE);
+    if S=NOVALUE then
       Exit;
-    S := R.ReadString(Base + '\shell\open\command', '', NOVALUE);
-    if S = NOVALUE then
+    S:=R.ReadString(Base+'\shell\open\command', '', NOVALUE);
+    if S=NOVALUE then
       Exit;
-    Filename := S;
-      // filename probably contains args, e.g. Filename='"some where\my.exe" "%1"'
+    Filename:=S; // filename probably contains args, e.g. Filename='"some where\my.exe" "%1"'
 
-    Description := ExtractFilename(S);
-    Result := True;
-    S := R.ReadString(Base + '\shell\open\ddeexec\application', '', NOVALUE);
-    if S = NOVALUE then
-      Description := 'Default application'
+    Description:=ExtractFilename(S);
+    Result:=True;
+    S:=R.ReadString(Base+'\shell\open\ddeexec\application', '', NOVALUE);
+    if S=NOVALUE then
+      Description:='Default application'
     else
-      Description := S;
-    if S = 'DEVCPP' then // avoid extensions registered to DevCpp ;)
-      Result := False;
+      Description:=S;
+    if S='DEVCPP' then // avoid extensions registered to DevCpp ;)
+      Result:=False;
   finally
     R.Free;
   end;
 end;
 
-function IsNumeric(s: string): boolean;
-var
-  i: integer;
+function IsNumeric(s : string) : boolean;
+var i : integer;
 begin
   result := true;
   for i := 1 to length(s) do
-    if not (s[i] in ['0'..'9']) then
-    begin
+    if not (s[i] in ['0'..'9']) then begin
       result := false;
       exit;
     end;

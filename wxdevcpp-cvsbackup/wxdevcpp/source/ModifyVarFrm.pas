@@ -22,8 +22,14 @@ unit ModifyVarFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QButtons;
+{$ENDIF}
 
 type
   TModifyVarForm = class(TForm)
@@ -46,7 +52,8 @@ var
 
 implementation
 
-uses MultiLangSupport;
+uses 
+  MultiLangSupport;
 
 {$R *.dfm}
 

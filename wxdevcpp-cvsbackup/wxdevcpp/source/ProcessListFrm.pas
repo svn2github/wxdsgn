@@ -22,8 +22,14 @@ unit ProcessListFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls, MultiLangSupport;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QButtons, QExtCtrls, MultiLangSupport;
+{$ENDIF}
 
 type
   TProcessListForm = class(TForm)
@@ -47,7 +53,8 @@ var
 
 implementation
 
-uses tlhelp32;
+uses 
+  tlhelp32;
 
 {$R *.dfm}
 
@@ -63,8 +70,7 @@ begin
   try
     pe.dwSize := SizeOf(pe);
     HasProcess := Process32First(t, pe);
-    while HasProcess do
-    begin
+    while HasProcess do begin
       ProcessCombo.Items.Add(pe.szExeFile);
       ProcessList.Add(pointer(pe.th32ProcessId));
       HasProcess := Process32Next(t, pe);

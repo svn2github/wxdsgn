@@ -23,9 +23,16 @@ unit NewProjectFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ImgList, Buttons, ComCtrls, Templates, Inifiles,
   devTabs, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QExtCtrls, QImgList, QButtons, QComCtrls, Templates, Inifiles,
+  devTabs;
+{$ENDIF}
 
 type
   TNewProjectForm = class(TForm)
@@ -73,10 +80,16 @@ type
 implementation
 
 uses
-  MultiLangSupport, utils, datamod, filectrl, devcfg, version,
+{$IFDEF WIN32}
+  MultiLangSupport, utils, datamod, FileCtrl, devcfg, version,
   project, prjtypes;
+{$ENDIF}
+{$IFDEF LINUX}
+  MultiLangSupport, utils, datamod, devcfg, version,
+  project, prjtypes;
+{$ENDIF}
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TNewProjectForm.FormCreate(Sender: TObject);
 begin
@@ -96,8 +109,7 @@ procedure TNewProjectForm.AddTemplate(FileName: string);
 var
   Template: TTemplate;
 begin
-  if not FileExists(FileName) then
-    exit;
+  if not FileExists(FileName) then exit;
   Template := TTemplate.Create;
   Template.ReadTemplateFile(FileName);
   fTemplates.Add(Template);
@@ -110,10 +122,8 @@ var
   sDir: string;
 begin
   sDir := devDirs.Templates;
-  if not CheckChangeDir(sDir) then
-  begin
-    MessageDlg('Could not change to the Templates directory (' +
-      devDirs.Templates + ')...', mtError, [mbOk], 0);
+  if not CheckChangeDir(sDir) then begin
+    MessageDlg('Could not change to the Templates directory ('+devDirs.Templates+')...', mtError, [mbOk], 0);
     Exit;
   end;
   LTemplates := TStringList.Create;
@@ -166,16 +176,14 @@ begin
   begin
     btnOk.Enabled := True;
     LTemplate := TTemplate(fTemplates[integer(ProjView.Selected.Data)]);
-    if not assigned(LTemplate) then
-      exit;
+     if not assigned(LTemplate) then exit;
     TemplateLabel.Caption := LTemplate.Description;
 
     if LTemplate.OptionsRec.useGPP then
     begin
       rbC.Enabled := False;
       rbCpp.Checked := True;
-    end
-    else
+     end else
       rbC.Enabled := True;
 
     //     edProjectName.Text:= LTemplate.ProjectName;
@@ -208,8 +216,7 @@ procedure TNewProjectForm.UpdateView;
   begin
     result := TRUE;
     for idx := 0 to pred(TabsMain.Tabs.Count) do
-      if AnsiCompareText(TabsMain.Tabs[idx], Value) = 0 then
-        exit;
+     if AnsiCompareText(TabsMain.Tabs[idx], Value) = 0 then exit;
     result := FALSE;
   end;
 var
@@ -239,23 +246,19 @@ begin
   for idx := 0 to pred(fTemplates.Count) do
   begin
     LTemplate := TTemplate(fTemplates[idx]);
-    if LTemplate.Catagory = '' then
-      LTemplate.Catagory := Lang[ID_NP_PRJSHEET];
-    if AnsiCompareText(LTemplate.Catagory, TabsMain.Tabs[TabsMain.TabIndex]) = 0
-      then
+     if LTemplate.Catagory = '' then LTemplate.Catagory:= Lang[ID_NP_PRJSHEET];
+     if AnsiCompareText(LTemplate.Catagory, TabsMain.Tabs[TabsMain.TabIndex]) = 0 then
     begin
       Item := ProjView.Items.Add;
       Item.Caption := LTemplate.Name;
       Item.Data := pointer(idx);
       //        ShowMessage(LTemplate.Name + ': ' + LTemplate.OptionsRec.icon);
-      fName := ValidateFile(LTemplate.OptionsRec.Icon,
-        ExtractFilePath(LTemplate.FileName));
+        fName:= ValidateFile(LTemplate.OptionsRec.Icon, ExtractFilePath(LTemplate.FileName));
       if fName <> '' then
       begin
         LIcon := TIcon.Create;
         try
-          LIcon.LoadFromFile(ExpandFileto(fName,
-            ExtractFilePath(LTemplate.FileName)));
+            LIcon.LoadFromFile(ExpandFileto(fName, ExtractFilePath(LTemplate.FileName)));
           Item.ImageIndex := ImageList1.AddIcon(LIcon);
           if Item.ImageIndex = -1 then
             Item.ImageIndex := 0;

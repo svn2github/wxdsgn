@@ -22,8 +22,14 @@ unit AboutFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QExtCtrls;
+{$ENDIF}
 
 type
   TAboutForm = class(TForm)
@@ -73,10 +79,15 @@ type
   end;
 
 implementation
+uses 
+{$IFDEF WIN32}
+  ShellAPI, devcfg, MultiLangSupport, CheckForUpdate, main;
+{$ENDIF}
+{$IFDEF LINUX}
+  devcfg, MultiLangSupport, CheckForUpdate, main;
+{$ENDIF}
 
-uses ShellAPI, devcfg, MultiLangSupport, CheckForUpdate, main;
-
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TAboutForm.LoadText;
 begin
@@ -158,8 +169,7 @@ end;
 {$ENDIF}
 
 procedure TAboutForm.LabelClick(Sender: TObject);
-var
-  s: string;
+var s : string;
 begin
   if pos('@', (Sender as TLabel).Caption) <> 0 then
     s := 'mailto:' + (Sender as TLabel).Caption
@@ -179,8 +189,7 @@ begin
 end;
 
 procedure TAboutForm.btnAuthorsClick(Sender: TObject);
-const
-  MessageText =
+const MessageText =
     'Authors:'#13#10#13#10 +
     '- Development: Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'#13#10 +
     '- Contributors: Peter Schraut, Marek Januszewski'#13#10 +

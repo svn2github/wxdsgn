@@ -28,8 +28,15 @@ unit GotoLineFrm;
 
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+uses
+{$IFDEF WIN32}
+  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, 
   Buttons, ExtCtrls, Spin, XPMenu, SynEdit;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, QGraphics, QForms, QControls, QStdCtrls, 
+  QButtons, QExtCtrls, QComCtrls, QSynEdit;
+{$ENDIF}
 
 type
   TGotoLineForm = class(TForm)
@@ -55,9 +62,14 @@ type
 implementation
 
 uses
+{$IFDEF WIN32}
   MultiLangSupport, devcfg;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, MultiLangSupport, devcfg;
+{$ENDIF}
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TGotoLineForm.FormCreate(Sender: TObject);
 begin
@@ -72,8 +84,12 @@ end;
 procedure TGotoLineForm.LineKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then
-    BtnOK.Click;
+{$IFDEF WIN32}
+  if Key = VK_RETURN then BtnOK.Click;
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_RETURN then BtnOK.Click;
+{$ENDIF}
 end;
 
 procedure TGotoLineForm.LoadTexts;
@@ -88,8 +104,12 @@ end;
 procedure TGotoLineForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
-    Close;
+{$IFDEF WIN32}
+  if Key = VK_ESCAPE then Close;
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_ESCAPE then Close;
+{$ENDIF}
 end;
 
 procedure TGotoLineForm.SetEditor(AEditor: TCustomSynEdit);

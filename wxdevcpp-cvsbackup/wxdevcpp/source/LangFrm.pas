@@ -22,8 +22,14 @@ unit LangFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, Menus, XPMenu, ComCtrls, FileCtrl;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QExtCtrls, QMenus, QComCtrls;
+{$ENDIF}
 
 type
   TLangForm = class(TForm)
@@ -73,8 +79,7 @@ type
     HasProgressStarted: boolean;
 
     function GetSelected: integer;
-    procedure CppParserTotalProgress(Sender: TObject; FileName: string; Total,
-      Current: Integer);
+    procedure CppParserTotalProgress(Sender: TObject; FileName: String; Total, Current: Integer);
     procedure CppParserStartParsing(Sender: TObject);
     procedure CppParserEndParsing(Sender: TObject);
 
@@ -84,9 +89,11 @@ type
   end;
 
 implementation
-uses MultiLangSupport, datamod, DevThemes, devcfg, utils, main, version;
 
-{$R *.DFM}
+uses 
+  MultiLangSupport, datamod, DevThemes, devcfg, utils, main, version;
+
+{$R *.dfm}
 
 procedure TLangForm.UpdateList;
 var
@@ -120,8 +127,7 @@ begin
 end;
 
 procedure TLangForm.FormActivate(Sender: TObject);
-var
-  s: array[0..255] of char;
+var s : array [0..255] of char;
   d: DWORD;
   sl: TStrings;
 begin
@@ -135,14 +141,9 @@ begin
 {$IFDEF BETAVERSION}
   MessageBox(Self.Handle,
     PChar('This is a beta version of Dev-C++.'
-    + 'Please report bugs at http://bloodshed.net/bugs. We provide updates often, so be sure to check for them in Tools menu, Check for Updates/Packages.' +
-      #13#13
-    + 'Windows 2000 and XP : your config files will be stored in c:\Documents and Settings\' +
-      s + '\Local Settings\Application Data' + #13
-    + 'Windows 95, 98, NT : your config files will be stored in your Dev-C++ directory' +
-      #13
-    +
-      'Otherwise, you can pass the following parameter to Dev-C++ : -c c:\config_file_directory'),
+              +'Please report bugs at http://bloodshed.net/bugs. We provide updates often, so be sure to check for them in Tools menu, Check for Updates/Packages.'+ #13#13
+              +'Your config files will be stored in ' +  ExtractFileDir(devData.INIFile) + #13
+              +'Otherwise, you can pass the following parameter to Dev-C++ : -c c:\config_file_directory'),
     PChar('Beta version Notice'), MB_OK);
 {$ENDIF}
 end;
@@ -157,11 +158,9 @@ begin
   pbCCCache.Visible := False;
 end;
 
-procedure TLangForm.CppParserTotalProgress(Sender: TObject; FileName: string;
-  Total, Current: Integer);
+procedure TLangForm.CppParserTotalProgress(Sender: TObject; FileName: String; Total, Current: Integer);
 begin
-  if not HasProgressStarted then
-  begin
+  if not HasProgressStarted then begin
     pbCCCache.Max := Total;
     HasProgressStarted := true;
   end;
@@ -175,12 +174,10 @@ begin
 end;
 
 procedure TLangForm.OkBtnClick(Sender: TObject);
-var
-  s, f: TStringList;
+var s, f : TStringList;
   i, j: integer;
 begin
-  if OkBtn.Tag = 0 then
-  begin
+  if OkBtn.Tag = 0 then begin
     OkBtn.Tag := 1;
     SecondPanel.Visible := true;
     FirstPanel.Visible := false;
@@ -188,16 +185,13 @@ begin
     devData.Theme := ThemeBox.Items[ThemeBox.ItemIndex];
     devData.XPTheme := XPCheckBox.Checked;
   end
-  else if OkBtn.Tag = 1 then
-  begin
-    if YesClassBrowser.Checked then
-    begin
+  else if OkBtn.Tag = 1 then begin
+    if YesClassBrowser.Checked then begin
       OkBtn.Tag := 2;
       CachePanel.Visible := true;
       SecondPanel.Visible := false;
     end
-    else
-    begin
+    else begin
       OkBtn.Tag := 3;
       OkBtn.Kind := bkOK;
       OkBtn.ModalResult := mrOK;
@@ -211,10 +205,8 @@ begin
       SaveOptions;
     end;
   end
-  else if OkBtn.Tag = 2 then
-  begin
-    if YesCache.Checked then
-    begin
+  else if OkBtn.Tag = 2 then begin
+    if YesCache.Checked then begin
       YesCache.Enabled := false;
       NoCache.Enabled := false;
       OkBtn.Enabled := false;
@@ -253,6 +245,7 @@ begin
         //we add the wx's MSW dir because lot of wx classes get screwed up
         //by the forward declaration. Stupid C++ Forward declarations!
         StrToList(
+        (*
                     {$IFDEF WX_BUILD}
                     CPP_INCLUDE_DIR_WX_MSW_INCLUDE + ';'+
                     CPP_INCLUDE_DIR_WX_GENERIC_INCLUDE + ';' +
@@ -271,14 +264,13 @@ begin
                     CPP_INCLUDE_DIR_WX_XRC_INCLUDE + ';'+
                     CPP_INCLUDE_DIR_WX_INCLUDE + ';'+
                     {$ENDIF}
+        *)
                     devDirs.Cpp+';',s);
       end;
 
       f := TStringList.Create;
-      for i := 0 to s.Count - 1 do
-      begin
-        if DirectoryExists(s[i]) then
-        begin
+       for i := 0 to s.Count - 1 do begin
+         if DirectoryExists(s[i]) then begin
           FilesFromWildcard(s[i], '*.*', f, false, false, false);
           Screen.Cursor := crHourglass;
           Application.ProcessMessages;
@@ -286,16 +278,14 @@ begin
             MainForm.CppParser1.AddFileToScan(f[j]);
         end
         else
-          MessageDlg('Directory "' + s[i] + '" does not exists', mtWarning,
-            [mbOK], 0);
+           MessageDlg('Directory "' + s[i] + '" does not exists', mtWarning, [mbOK], 0);
       end;
       MainForm.CppParser1.ParseList;
       ParseLabel.Caption := 'Finalizing... Please wait';
       Application.ProcessMessages;
       MainForm.CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
 
-      MainForm.CppParser1.OnStartParsing := MainForm.CppParser1StartParsing;
-      ;
+       MainForm.CppParser1.OnStartParsing := MainForm.CppParser1StartParsing;;
       MainForm.CppParser1.OnEndParsing := MainForm.CppParser1EndParsing;
       MainForm.CppParser1.OnTotalProgress := MainForm.CppParser1TotalProgress;
 
@@ -309,8 +299,7 @@ begin
       s.Free;
       f.Free;
     end
-    else
-    begin
+    else begin
       devClassBrowsing.Enabled := true;
       devClassBrowsing.ParseLocalHeaders := true;
       devClassBrowsing.ParseGlobalHeaders := false;
@@ -343,7 +332,12 @@ end;
 
 procedure TLangForm.LoadBtnClick(Sender: TObject);
 var
+{$IFDEF WIN32}
   s: string;
+{$ENDIF}
+{$IFDEF LINUX}
+  s: WideString;
+{$ENDIF}
 begin
   if SelectDirectory('Include Directory', '', s) then
     DirEdit.Text := s;

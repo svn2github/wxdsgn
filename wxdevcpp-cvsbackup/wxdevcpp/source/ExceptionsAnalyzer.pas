@@ -25,9 +25,16 @@ unit ExceptionsAnalyzer;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StrUtils, StdCtrls, Buttons, ExtCtrls, ShellAPI, ComCtrls,
   XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, StrUtils, QStdCtrls, QButtons, QExtCtrls, QComCtrls
+  ;
+{$ENDIF}
 
 type
   PUnitEntry = ^TUnitEntry;
@@ -135,7 +142,8 @@ implementation
 
 {$R *.dfm}
 
-uses utils, devcfg, version;
+uses 
+  utils, devcfg, version;
 
 const
   MAX_DEPTH = 10000;
@@ -177,13 +185,11 @@ begin
   sl := TStringList.Create;
   try
     sl.LoadFromFile(Fname);
-    if sl.Count > 0 then
-    begin
+    if sl.Count > 0 then begin
 
       // find "Detailed map of segments"
       I := 0;
-      while I < sl.Count - 1 do
-      begin
+      while I < sl.Count - 1 do begin
         if sl[I] = 'Detailed map of segments' then
           Break;
         Inc(I);
@@ -197,12 +203,10 @@ begin
       Inc(I);
       while (I < sl.Count - 1) and (sl[I] = '') do
         Inc(I);
-      while I < sl.Count - 1 do
-      begin
+      while I < sl.Count - 1 do begin
         if sl[I] = '' then
           Break;
-        if Copy(sl[I], 1, 6) = ' 0001:' then
-        begin
+        if Copy(sl[I], 1, 6) = ' 0001:' then begin
           iStart := StrToIntDef('$' + Copy(sl[I], 7, 8), 0);
           iLen := StrToIntDef('$' + Copy(sl[I], 16, 8), 0);
           pUn := New(PUnitEntry);
@@ -217,8 +221,7 @@ begin
       end;
 
       // find "  Address         Publics by Value"
-      while I < sl.Count - 1 do
-      begin
+      while I < sl.Count - 1 do begin
         if sl[I] = '  Address         Publics by Value' then
           Break;
         Inc(I);
@@ -228,12 +231,10 @@ begin
       Inc(I);
       while (I < sl.Count - 1) and (sl[I] = '') do
         Inc(I);
-      while I < sl.Count - 1 do
-      begin
+      while I < sl.Count - 1 do begin
         if sl[I] = '' then
           Break;
-        if Copy(sl[I], 1, 6) = ' 0001:' then
-        begin
+        if Copy(sl[I], 1, 6) = ' 0001:' then begin
           iStart := StrToIntDef('$' + Copy(sl[I], 7, 8), 0);
           pFun := New(PFuncsEntry);
           pFun^.Name := Trim(Copy(sl[I], 22, MaxInt));
@@ -244,20 +245,15 @@ begin
       end;
 
       CurrUnit := -1;
-      while I < sl.Count - 1 do
-      begin
+      while I < sl.Count - 1 do begin
         // find "Line numbers for"
-        while I < sl.Count - 1 do
-        begin
-          if AnsiStartsStr('Line numbers for ', sl[I]) then
-          begin
+        while I < sl.Count - 1 do begin
+          if AnsiStartsStr('Line numbers for ', sl[I]) then begin
             idx := Pos('(', sl[I]);
-            if idx > 0 then
-            begin
+            if idx > 0 then begin
               sUnitName := Copy(sl[I], 18, idx - 18);
               for idx := 0 to fUnits.Count - 1 do
-                if CompareStr(sUnitName, PUnitEntry(fUnits[idx])^.Name) = 0 then
-                begin
+                if CompareStr(sUnitName, PUnitEntry(fUnits[idx])^.Name) = 0 then begin
                   CurrUnit := idx;
                   Break;
                 end;
@@ -271,8 +267,7 @@ begin
         Inc(I);
         while (I < sl.Count - 1) and (sl[I] = '') do
           Inc(I);
-        while (I < sl.Count - 1) and (sl[I] <> '') do
-        begin
+        while (I < sl.Count - 1) and (sl[I] <> '') do begin
           pLin := New(PLineEntry);
           pLin^.Line := Trim(Copy(sl[I], 1, 6));
           pLin^.Address := StrToIntDef('$' + Copy(sl[I], 13, 8), 0);
@@ -307,18 +302,15 @@ end;
 
 procedure ClearModules;
 begin
-  while fLines.Count > 0 do
-  begin
+  while fLines.Count > 0 do begin
     Dispose(fLines[0]);
     fLines.Delete(0);
   end;
-  while fFuncs.Count > 0 do
-  begin
+  while fFuncs.Count > 0 do begin
     Dispose(fFuncs[0]);
     fFuncs.Delete(0);
   end;
-  while fUnits.Count > 0 do
-  begin
+  while fUnits.Count > 0 do begin
     Dispose(fUnits[0]);
     fUnits.Delete(0);
   end;
@@ -345,9 +337,7 @@ begin
   // find unit
   for I := 0 to fUnits.Count - 1 do
     if (MapAddress >= pUnitEntry(fUnits[I])^.Start) and
-      (dword(MapAddress) <= (dword(pUnitEntry(fUnits[I])^.Start) +
-        dword(pUnitEntry(fUnits[I])^.Len))) then
-    begin
+      (dword(MapAddress) <= (dword(pUnitEntry(fUnits[I])^.Start) + dword(pUnitEntry(fUnits[I])^.Len))) then begin
       sUnitName := pUnitEntry(fUnits[I])^.Name;
       UnitIdx := I;
       Break;
@@ -355,8 +345,7 @@ begin
 
   // find function
   for I := 0 to fFuncs.Count - 1 do
-    if MapAddress < PFuncsEntry(fFuncs[I])^.Address then
-    begin
+    if MapAddress < PFuncsEntry(fFuncs[I])^.Address then begin
       if I > 0 then
         sProcName := PFuncsEntry(fFuncs[I - 1])^.Name;
       Break;
@@ -365,18 +354,14 @@ begin
   // find line
   for I := 0 to fLines.Count - 1 do
     if integer(PLineEntry(fLines[I])^.UnitIndex) = UnitIdx then
-      if PLineEntry(fLines[I])^.Address > MapAddress then
-      begin
-        if (I > 0) and (integer(PLineEntry(fLines[I - 1])^.UnitIndex) = UnitIdx)
-          then
+      if PLineEntry(fLines[I])^.Address > MapAddress then begin
+        if (I > 0) and (integer(PLineEntry(fLines[I - 1])^.UnitIndex) = UnitIdx) then
           sLineNum := PLineEntry(fLines[I - 1])^.Line;
         Break;
       end;
   if sLineNum <> '' then
-    Result := Format('%8.8x (%8.8x): %s (%s - %s)'#13#10, [Address, MapAddress,
-      sProcName, sUnitName, sLineNum])
-  else
-  begin
+    Result := Format('%8.8x (%8.8x): %s (%s - %s)'#13#10, [Address, MapAddress, sProcName, sUnitName, sLineNum])
+  else begin
     if fUnits.Count = 0 then
       Result := Format('%8.8x', [Address]);
   end;
@@ -392,63 +377,50 @@ var
   BufSize: cardinal;
   sVer: string;
 begin
-  if fReportEXEversion then
-  begin
+  if fReportEXEversion then begin
     sVer := GetVersionString(ParamStr(0));
     frmExceptionsAnalyzer.lblProgramPath.Caption := ParamStr(0);
-    if sVer <> '' then
-    begin
+    if sVer <> '' then begin
       Result := 'Application version: ' + sVer + #13#10;
       frmExceptionsAnalyzer.lblProgramVersion.Caption := sVer;
     end
-    else
-    begin
+    else begin
       Result := 'Application version: <not available>'#13#10;
       frmExceptionsAnalyzer.lblProgramVersion.Caption := '<not available>';
     end;
     Result := Result + #13#10;
   end;
 
-  if fReportMachine or fReportComputerName then
-  begin
+  if fReportMachine or fReportComputerName then begin
     Result := Result + 'Machine info'#13#10;
     Result := Result + '---------'#13#10;
-    if fReportMachine then
-    begin
+    if fReportMachine then begin
       vi.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
       GetVersionEx(vi);
       case vi.dwPlatformId of
-        VER_PLATFORM_WIN32s:
-          begin
+        VER_PLATFORM_WIN32s: begin
             frmExceptionsAnalyzer.lblPlatform.Caption := 'Win3.1 with Win32s';
             Result := Result + 'Platform       : Win3.1 with Win32s'#13#10;
           end;
-        VER_PLATFORM_WIN32_WINDOWS:
-          begin
+        VER_PLATFORM_WIN32_WINDOWS: begin
             frmExceptionsAnalyzer.lblPlatform.Caption := 'Windows 95 and later';
             Result := Result + 'Platform       : Windows 95 and later'#13#10;
           end;
-        VER_PLATFORM_WIN32_NT:
-          begin
+        VER_PLATFORM_WIN32_NT: begin
             frmExceptionsAnalyzer.lblPlatform.Caption := 'Windows NT';
             Result := Result + 'Platform       : Windows NT'#13#10;
           end;
-      else
-        begin
+      else begin
           frmExceptionsAnalyzer.lblPlatform.Caption := 'Unknown';
           Result := Result + 'Platform       : Unknown'#13#10;
         end;
       end;
-      Result := Result +
-        Format('OS version     : version %d.%d (build %d)'#13#10,
-        [vi.dwMajorVersion, vi.dwMinorVersion, vi.dwBuildNumber]);
-      frmExceptionsAnalyzer.lblOSversion.Caption := Format('%d.%d (build %d)',
-        [vi.dwMajorVersion, vi.dwMinorVersion, vi.dwBuildNumber]);
+      Result := Result + Format('OS version     : version %d.%d (build %d)'#13#10, [vi.dwMajorVersion, vi.dwMinorVersion, vi.dwBuildNumber]);
+      frmExceptionsAnalyzer.lblOSversion.Caption := Format('%d.%d (build %d)', [vi.dwMajorVersion, vi.dwMinorVersion, vi.dwBuildNumber]);
       Result := Result + Format('Additional info: %s'#13#10, [vi.szCSDVersion]);
       frmExceptionsAnalyzer.lblAdditionalInfo.Caption := vi.szCSDVersion;
     end;
-    if fReportComputerName then
-    begin
+    if fReportComputerName then begin
       BufSize := MAX_PATH;
       GetComputerName(Buf, BufSize);
       Result := Result + Format('Computer name  : %s'#13#10, [Buf]);
@@ -458,8 +430,7 @@ begin
     Result := Result + #13#10;
   end;
 
-  if fReportMemory then
-  begin
+  if fReportMemory then begin
     ms.dwLength := SizeOf(TMemoryStatus);
     GlobalMemoryStatus(ms);
     Result := Result + 'Memory Status'#13#10;
@@ -470,49 +441,35 @@ begin
     FreeP := (Avail * 100) / Tot;
     UsedP := 100 - FreeP;
     Result := Result + Format('Physical memory: %13.0n total'#13#10, [Tot]);
-    Result := Result + Format('                 %13.0n in use (%6.2f%%)'#13#10,
-      [Tot - Avail, UsedP]);
-    Result := Result + Format('                 %13.0n free   (%6.2f%%)'#13#10,
-      [Avail, FreeP]);
+    Result := Result + Format('                 %13.0n in use (%6.2f%%)'#13#10, [Tot - Avail, UsedP]);
+    Result := Result + Format('                 %13.0n free   (%6.2f%%)'#13#10, [Avail, FreeP]);
     frmExceptionsAnalyzer.lblTotalPhys.Caption := Format('%0.0n', [Tot]);
-    frmExceptionsAnalyzer.lblUsedPhys.Caption := Format('%0.0n'#13#10'%6.2f%%',
-      [Tot - Avail, UsedP]);
-    frmExceptionsAnalyzer.lblFreePhys.Caption := Format('%0.0n'#13#10'%6.2f%%',
-      [Avail, FreeP]);
+    frmExceptionsAnalyzer.lblUsedPhys.Caption := Format('%0.0n'#13#10'%6.2f%%', [Tot - Avail, UsedP]);
+    frmExceptionsAnalyzer.lblFreePhys.Caption := Format('%0.0n'#13#10'%6.2f%%', [Avail, FreeP]);
 
     Tot := ms.dwTotalPageFile;
     Avail := ms.dwAvailPageFile;
     FreeP := (Avail * 100) / Tot;
     UsedP := 100 - FreeP;
     Result := Result + Format('Cache          : %13.0n total'#13#10, [Tot]);
-    Result := Result + Format('                 %13.0n in use (%6.2f%%)'#13#10,
-      [Tot - Avail, UsedP]);
-    Result := Result + Format('                 %13.0n free   (%6.2f%%)'#13#10,
-      [Avail, FreeP]);
+    Result := Result + Format('                 %13.0n in use (%6.2f%%)'#13#10, [Tot - Avail, UsedP]);
+    Result := Result + Format('                 %13.0n free   (%6.2f%%)'#13#10, [Avail, FreeP]);
     frmExceptionsAnalyzer.lblTotalCache.Caption := Format('%0.0n', [Tot]);
-    frmExceptionsAnalyzer.lblUsedCache.Caption := Format('%0.0n'#13#10'%6.2f%%',
-      [Tot - Avail, UsedP]);
-    frmExceptionsAnalyzer.lblFreeCache.Caption := Format('%0.0n'#13#10'%6.2f%%',
-      [Avail, FreeP]);
+    frmExceptionsAnalyzer.lblUsedCache.Caption := Format('%0.0n'#13#10'%6.2f%%', [Tot - Avail, UsedP]);
+    frmExceptionsAnalyzer.lblFreeCache.Caption := Format('%0.0n'#13#10'%6.2f%%', [Avail, FreeP]);
 
     Tot := ms.dwTotalVirtual;
     Avail := ms.dwAvailVirtual;
     FreeP := (Avail * 100) / Tot;
     UsedP := 100 - FreeP;
     Result := Result + Format('Virtual memory : %13.0n total'#13#10, [Tot]);
-    Result := Result + Format('                 %13.0n in use (%6.2f%%)'#13#10,
-      [Tot - Avail, UsedP]);
-    Result := Result + Format('                 %13.0n free   (%6.2f%%)'#13#10,
-      [Avail, FreeP]);
-    Result := Result + Format('Memory load    : %12d%%'#13#10,
-      [ms.dwMemoryLoad]);
+    Result := Result + Format('                 %13.0n in use (%6.2f%%)'#13#10, [Tot - Avail, UsedP]);
+    Result := Result + Format('                 %13.0n free   (%6.2f%%)'#13#10, [Avail, FreeP]);
+    Result := Result + Format('Memory load    : %12d%%'#13#10, [ms.dwMemoryLoad]);
     frmExceptionsAnalyzer.lblTotalVirt.Caption := Format('%0.0n', [Tot]);
-    frmExceptionsAnalyzer.lblUsedVirt.Caption := Format('%0.0n'#13#10'%6.2f%%',
-      [Tot - Avail, UsedP]);
-    frmExceptionsAnalyzer.lblFreeVirt.Caption := Format('%0.0n'#13#10'%6.2f%%',
-      [Avail, FreeP]);
-    frmExceptionsAnalyzer.lblMemoryLoad.Caption := Format('%d%%',
-      [ms.dwMemoryLoad]);
+    frmExceptionsAnalyzer.lblUsedVirt.Caption := Format('%0.0n'#13#10'%6.2f%%', [Tot - Avail, UsedP]);
+    frmExceptionsAnalyzer.lblFreeVirt.Caption := Format('%0.0n'#13#10'%6.2f%%', [Avail, FreeP]);
+    frmExceptionsAnalyzer.lblMemoryLoad.Caption := Format('%d%%', [ms.dwMemoryLoad]);
     Result := Result + #13#10;
   end;
 end;
@@ -535,9 +492,7 @@ begin
 end;
 
 procedure ShowExceptionInfo(E: Exception);
-const
-  usermsg =
-    'Please include a description of what you were doing before the error occured (please give as much precisions as possible) : ';
+const usermsg = 'Please include a description of what you were doing before the error occured (please give as much precisions as possible) : ';
 var
   target: pointer;
   p, stackstart: ^pointer;
@@ -566,8 +521,7 @@ begin
     end;
 
     Res := '';
-    for I := 0 to sl.Count - 1 do
-    begin
+    for I := 0 to sl.Count - 1 do begin
       S := AddressInfo(StrToIntDef(sl[I], -1));
       if S <> '' then
         Res := Res + S; // + #13#10;
@@ -592,25 +546,21 @@ begin
 
   // show dialog
   frmExceptionsAnalyzer := TfrmExceptionsAnalyzer.Create(Application.MainForm);
-  with frmExceptionsAnalyzer do
-  try
+  with frmExceptionsAnalyzer do try
     lblAddress.Caption := Format('0x%8.8x', [dword(ExceptAddr)]);
     lblError.Caption := E.Message;
     memStackTrace.Text := Res;
     si := GatherSystemInfo;
-    memBugReport.Text := si;
-    memBugReport.Text := 'The following error occured in version ' +
-      DEVCPP_VERSION + ':'#13#10
-      + lblError.Caption + ' (at address ' + lblAddress.Caption +
-        ')'#13#10#13#10#13#10
+    memBugReport.Text := si
+                       + #13#10
+                       + 'The following error occured in version ' + DEVCPP_VERSION + ':'#13#10
+                       + lblError.Caption + ' (at address ' + lblAddress.Caption + ')'#13#10#13#10#13#10
       + usermsg + #13#10#13#10#13#10
       + 'State information follows:'#13#10;
     if fReportStackTrace then
-      memBugReport.Text := memBugReport.Text +
-        'Stack trace:'#13#10'------------'#13#10 + Res;
+      memBugReport.Text := memBugReport.Text + 'Stack trace:'#13#10'------------'#13#10 + Res;
     if ShowModal = mrAbort then
-      if MessageDlg('Are you sure you want to terminate the application?',
-        mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      if MessageDlg('Are you sure you want to terminate the application?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         TerminateProcess(GetCurrentProcess, 0);
   finally
     frmExceptionsAnalyzer.Free;
@@ -655,13 +605,11 @@ begin
   Cmd := 'mailto:' + fEmail;
   Cmd := Cmd + '?Subject=' + fSubject;
   Cmd := Cmd + '&Body=';
-  if Trim(memBugReport.Lines.Text) <> '' then
-  begin
+    if Trim(memBugReport.Lines.Text) <> '' then begin
     for I := 0 to memBugReport.Lines.Count - 1 do
       Cmd := Cmd + memBugReport.Lines[I] + '%0A';
   end;
-  Delete(Cmd, 1280, MaxInt);
-    // there is problem with bigger strings in ShellExecute
+    Delete(Cmd, 1280, MaxInt); // there is problem with bigger strings in ShellExecute
   ShellExecute(0, 'open', PChar(Cmd), nil, nil, SW_SHOWNORMAL);
 end;
 
@@ -688,12 +636,9 @@ begin
   lblFreeCache.Caption := '';
   lblMemoryLoad.Caption := '';
   PageControl1.ActivePageIndex := PageControl1.PageCount - 1;
-  btnClose.Hint :=
-    'Closes this window and attempts to continue the application execution';
-  btnTerminate.Hint :=
-    'Closes this window and terminates the application execution';
-  btnSend.Hint :=
-    'Sends a bug report to the application support team describing the error';
+  btnClose.Hint := 'Closes this window and attempts to continue the application execution';
+  btnTerminate.Hint := 'Closes this window and terminates the application execution';
+  btnSend.Hint := 'Sends a bug report to the application support team describing the error';
   btnView.Hint := 'View details of the system at the time of the error';
 end;
 
@@ -720,13 +665,12 @@ begin
 end;
 
 initialization
-  fEmail := 'dev-cpp-bugs@lists.sourceforge.net';
-    //'haiku@bloodshed.net;mandrav@supergoal.gr;h.lai@chello.nl';
-  fSubject := 'Dev-C++ bug report';
+  fEmail := 'dev-cpp-bugs@lists.sourceforge.net'; //'haiku@bloodshed.net;mandrav@supergoal.gr;h.lai@chello.nl';
+  fSubject := 'Dev-C++ ' + DEVCPP_VERSION + ' bug report';
   fReportEXEversion := True;
   fReportComputerName := False;
   fReportMachine := True;
-  fReportMemory := True;
+  fReportMemory := False;
   fReportStackTrace := True;
   fLines := TList.Create;
   fFuncs := TList.Create;

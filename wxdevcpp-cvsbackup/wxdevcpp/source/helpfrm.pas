@@ -22,9 +22,16 @@ unit helpfrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, Buttons, StdCtrls, Grids, ValEdit, inifiles, ExtCtrls,
+  Dialogs, ComCtrls, Buttons, StdCtrls, Grids, ValEdit, IniFiles, ExtCtrls,
   XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QComCtrls, QButtons, QStdCtrls, QGrids, IniFiles, ExtCtrls
+  ;
+{$ENDIF}
 
 type
   TfrmHelpEdit = class(TForm)
@@ -54,7 +61,7 @@ type
     procedure lvFilesEditing(Sender: TObject; Item: TListItem;
       var AllowEdit: Boolean);
     procedure lvFilesEdited(Sender: TObject; Item: TListItem;
-      var S: string);
+      var S: String);
     procedure FormCreate(Sender: TObject);
     procedure lvFilesChange(Sender: TObject; Item: TListItem;
       Change: TItemChange);
@@ -100,8 +107,7 @@ begin
     lvFiles.Selected := lvFiles.Items[0];
   lvFilesChange(Self, nil, ctState);
   result := ShowModal = mrOk;
-  if result then
-    WriteHelpINI;
+  if result then WriteHelpINI;
 end;
 
 procedure TfrmHelpEdit.ReadHelpINI;
@@ -113,8 +119,7 @@ var
   Entry: TEntry;
 begin
   hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
-  if hFile = '' then
-    exit;
+  if hFile = '' then exit;
   fini := TINIFile.Create(hFile);
   with fini do
   begin
@@ -124,8 +129,7 @@ begin
       for idx := 0 to pred(hFiles.Count) do
       begin
         hFile := ReadString(hFiles[idx], 'Path', '');
-        if hFile = '' then
-          continue;
+         if hFile = '' then continue;
         if AnsiPos(HTTP, hFile) = 0 then
           hFile := ValidateFile(hFile, devDirs.Help);
 
@@ -168,8 +172,7 @@ begin
   else
     fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI);
 
-  if (not assigned(fIni)) then
-  begin
+  if (not assigned(fIni)) then begin
     MessageDlg('Coulnd''t create configuration file', mtError, [mbOk], 0);
     exit;
   end;
@@ -245,8 +248,7 @@ begin
     begin
       if assigned(lvFiles.Selected) then
         Item := lvFiles.Selected
-      else
-      begin
+        else begin
         Item := lvFiles.Items.Add;
         Item.SubItems.Add('');
         Data := TEntry.Create;
@@ -278,7 +280,7 @@ begin
 end;
 
 procedure TfrmHelpEdit.lvFilesEdited(Sender: TObject; Item: TListItem;
-  var S: string);
+  var S: String);
 begin
   fEditing := FALSE;
 end;
@@ -350,8 +352,7 @@ end;
 procedure TfrmHelpEdit.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  if lvFiles.IsEditing then
-  begin
+  if lvFiles.IsEditing then begin
     lvFiles.Selected.CancelEdit;
     Action := caNone;
   end;

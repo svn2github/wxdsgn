@@ -22,8 +22,14 @@ unit WindowListFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QExtCtrls;
+{$ENDIF}
 
 type
   TWindowListForm = class(TForm)
@@ -49,9 +55,15 @@ type
 
 implementation
 
-uses MultiLangSupport, devcfg;
+uses 
+{$IFDEF WIN32}
+  MultiLangSupport, devcfg;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, MultiLangSupport, devcfg;
+{$ENDIF}
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TWindowListForm.FormCreate(Sender: TObject);
 begin
@@ -59,18 +71,16 @@ begin
     XPMenu.Active := true
   else
     XPMenu.Active := false;
-  Caption := Lang[ID_WL];
-  GroupBox.Caption := Lang[ID_WL_SELECT];
+  Caption:=           Lang[ID_WL];
+  GroupBox.Caption:=  Lang[ID_WL_SELECT];
   OkBtn.Caption := Lang[ID_BTN_OK];
-  CancelBtn.Caption := Lang[ID_BTN_CANCEL];
+  CancelBtn.Caption:= Lang[ID_BTN_CANCEL];
 end;
 
 procedure TWindowListForm.UnitListDblClick(Sender: TObject);
-var
-  a: TCloseAction;
+var a : TCloseAction;
 begin
-  if UnitList.ItemIndex > -1 then
-  begin
+  if UnitList.ItemIndex > -1 then begin
     ModalResult := mrOk;
     DoClose(a);
   end;
@@ -84,7 +94,12 @@ end;
 procedure TWindowListForm.UnitListKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = vk_Return then
+{$IFDEF WIN32}
+  if Key=vk_Return then
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_RETURN then
+{$ENDIF}
     UnitListDblClick(Sender);
 end;
 

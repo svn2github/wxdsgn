@@ -22,7 +22,12 @@ unit FileAssocs;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, SysUtils, Classes, Forms, Registry, ShlObj;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QForms;
+{$ENDIF}
 
 procedure CheckAssociations;
 procedure Associate(Index: integer);
@@ -54,7 +59,8 @@ const
 
 implementation
 
-uses devcfg;
+uses 
+  devcfg;
 
 var
   Associated: array[0..AssociationsCount - 1] of boolean;

@@ -22,8 +22,14 @@ unit PrintFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, MultiLangSupport, Spin, datamod, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, MultiLangSupport, QComCtrls, datamod;
+{$ENDIF}
 
 type
   TPrintForm = class(TForm)
@@ -52,9 +58,10 @@ var
 
 implementation
 
-uses devcfg;
+uses 
+  devcfg;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TPrintForm.LoadText;
 begin

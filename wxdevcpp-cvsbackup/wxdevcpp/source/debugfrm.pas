@@ -22,8 +22,14 @@ unit debugfrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QComCtrls;
+{$ENDIF}
 
 type
   TDebugForm = class(TForm)
@@ -43,7 +49,8 @@ var
 
 implementation
 
-uses utils, devcfg, main;
+uses 
+  utils, devcfg, main;
 
 {$R *.dfm}
 

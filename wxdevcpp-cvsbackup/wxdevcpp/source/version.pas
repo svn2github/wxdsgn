@@ -22,12 +22,19 @@ unit version;
 interface
 
 const
-  GCC_VERSION          = '3.3.1';
+  GCC_VERSION          = '3.4.2';
+  //path delimiter
+{$IFDEF WIN32}
+  pd                   = '\';
+{$ENDIF}
+{$IFDEF LINUX}
+  pd                   = '/';
+{$ENDIF}
 
 resourcestring
   // misc strings
   DEVCPP = 'Dev-C++';
-  DEVCPP_VERSION       = '4.9.9.0-wx-beta-6.6';
+  DEVCPP_VERSION       = '4.9.9.2-wx-beta-7.0';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
@@ -35,7 +42,7 @@ resourcestring
   DEV_COMPLETION_CACHE = 'cache.ccc';
   DEV_DEFAULTCODE_FILE = 'defaultcode.cfg';
   DEV_SHORTCUTS_FILE = 'devshortcuts.cfg';
-  DEV_CLASSFOLDERS_FILE = 'classfolders.dcf';
+  DEV_CLASSFOLDERS_FILE= 'classfolders.dcf';
   DEV_WEBMIRRORS_FILE = 'mirrors.cfg';
   DEV_MAKE_FILE = 'Makefile.win';
   DEV_TOOLS_FILE = 'tools.ini';
@@ -48,41 +55,46 @@ resourcestring
   DEV_INTERNAL_THEME = 'New Look';
   // default directories
   BIN_DIR = 'Bin';
-
-  SND_BIN_DIR          = 'lib\gcc-lib\mingw32\' + GCC_VERSION;
   LIB_DIR = 'lib';
-  MINGW_BIN_DIR = '';
   C_INCLUDE_DIR = 'include';
-  CPP_INCLUDE_DIR      = 'include\c++\' + GCC_VERSION;
-  CPP_INCLUDE_DIR_MINGW= 'include\c++\' + GCC_VERSION + '\mingw32';
-  CPP_INCLUDE_DIR_BACK = 'include\c++\' + GCC_VERSION + '\backward';
-  CPP_INCLUDE_DIR_MINGW_INCLUDE = 'lib\gcc-lib\mingw32\' + GCC_VERSION +  '\include';
-
+  CPP_INCLUDE_DIR      = 
   {$IFDEF WX_BUILD}
-  CPP_INCLUDE_DIR_WX_INCLUDE= 'include\wx';
-  CPP_INCLUDE_DIR_WX_MSW_INCLUDE= 'include\wx\msw';
-  CPP_INCLUDE_DIR_WX_GENERIC_INCLUDE= 'include\wx\generic';
-  CPP_INCLUDE_DIR_WX_ANIMATE_INCLUDE= 'include\wx\animate';
-  CPP_INCLUDE_DIR_WX_FL_INCLUDE= 'include\wx\fl';
-  CPP_INCLUDE_DIR_WX_GIZMOS_INCLUDE= 'include\wx\gizmos';
-  CPP_INCLUDE_DIR_WX_HTML_INCLUDE= 'include\wx\html';
-  CPP_INCLUDE_DIR_WX_MMEDIA_INCLUDE= 'include\wx\mmedia';
-  CPP_INCLUDE_DIR_WX_NET_INCLUDE= 'include\wx\net';
-  CPP_INCLUDE_DIR_WX_OGL_INCLUDE= 'include\wx\ogl';
-  CPP_INCLUDE_DIR_WX_PLOT_INCLUDE= 'include\wx\plot';
-  CPP_INCLUDE_DIR_WX_PROTOCOL_INCLUDE= 'include\wx\protocol';
-  CPP_INCLUDE_DIR_WX_STC_INCLUDE= 'include\wx\stc';
-  CPP_INCLUDE_DIR_WX_SVG_INCLUDE= 'include\wx\svg';
-  CPP_INCLUDE_DIR_WX_XML_INCLUDE= 'include\wx\xml';
-  CPP_INCLUDE_DIR_WX_XRC_INCLUDE= 'include\wx\xrc';
-  {$ENDIF}
-  
-  LANGUAGE_DIR = 'Lang\';
-  ICON_DIR = 'Icons\';
-  HELP_DIR = 'Help\';
-  TEMPLATE_DIR = 'Templates\';
-  THEME_DIR = 'Themes\';
-  PACKAGES_DIR = 'Packages\';
+                         'include' + pd + 'wx'
+                       + 'include' + pd + 'wx' + pd + 'msw'
+                       + 'include' + pd + 'wx' + pd + 'generic'
+                       + 'include' + pd + 'wx' + pd + 'animate'
+                       + 'include' + pd + 'wx' + pd + 'fl'
+                       + 'include' + pd + 'wx' + pd + 'gizmos'
+                       + 'include' + pd + 'wx' + pd + 'html'
+                       + 'include' + pd + 'wx' + pd + 'mmedia'
+                       + 'include' + pd + 'wx' + pd + 'net'
+                       + 'include' + pd + 'wx' + pd + 'ogl'
+                       + 'include' + pd + 'wx' + pd + 'plot'
+                       + 'include' + pd + 'wx' + pd + 'protocol'
+                       + 'include' + pd + 'wx' + pd + 'stc'
+                       + 'include' + pd + 'wx' + pd + 'svg'
+                       + 'include' + pd + 'wx' + pd + 'xml'
+                       + 'include' + pd + 'wx' + pd + 'xrc' 
+                       +
+  {$ENDIF}  
+                         'include'
+                       //one of below directories will be deleted if don't exist, later
+                       + ';include' + pd + 'c++' + pd + GCC_VERSION
+                       + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'
+                       + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'backward'
+                       + ';lib' + pd + 'gcc' + pd + 'mingw32' + pd + GCC_VERSION + pd + 'include'
+                       + ';include' + pd + 'c++' + pd + '3.3.1'
+                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'mingw32'
+                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'backward'
+                       + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include'
+
+                       ;  
+  LANGUAGE_DIR         = 'Lang' + pd;
+  ICON_DIR             = 'Icons' + pd;
+  HELP_DIR             = 'Help' + pd;
+  TEMPLATE_DIR         = 'Templates' + pd;
+  THEME_DIR            = 'Themes' + pd;
+  PACKAGES_DIR         = 'Packages' + pd;
 
   // file fxtensions
   LIB_EXT = '.a';

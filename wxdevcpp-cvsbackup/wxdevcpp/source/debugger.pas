@@ -20,15 +20,27 @@
 unit debugger;
 
 interface
-uses Sysutils, Windows, Classes, ShellAPI, Dialogs, Controls,
+
+uses 
+{$IFDEF WIN32}
+  Sysutils, Windows, Classes, ShellAPI, Dialogs, Controls,
   debugreader, debugwait, version, editor, ComCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  Sysutils, Classes, QDialogs, QControls,
+  debugreader, debugwait, version, editor, QComCtrls;
+{$ENDIF}
 
 type
   TGdbBreakpoint = class
   public
     Index: integer;
     Editor: TEditor;
+    // RNC add the file that this breakpoint is in
+    filename : string;
     Line: integer;
+    // RNC 07.02.2004 -- A variable to hold GDB's index for this breakpoint
+    BreakPointIndex : integer;
   end;
 
   TDebugger = class
@@ -36,6 +48,9 @@ type
     destructor Destroy; override;
   private
     fIncDirs: string;
+    // RNC 07.02.2004 -- Increments each time a breakpoint is added to GDB.  And is the id for the next breakpoint in gdb
+    breakPointCount : integer;
+
     function GetCallStack: TList;
     function GetWatchValue: string;
     function GetWatchVar: string;
@@ -48,16 +63,14 @@ type
     FileName: string;
     Executing: boolean;
     DebugTree: TTreeView;
-    BreakList: TList;
     InAssembler: boolean;
     Registers: TRegisters;
     OnRegistersReady: procedure of object;
-
     procedure Execute;
     procedure SendCommand(command, params: string);
-    procedure AddBreakpoint(editor: TEditor; line: integer);
-    procedure RemoveBreakpoint(editor: TEditor; line: integer);
-    procedure ClearBreakpoints;
+    //RNC Change Add/Remove Breakpoint to take an index into the 1 array of breakpoints
+    function AddBreakpoint(i:integer):integer;
+    procedure RemoveBreakpoint(i : integer);
     procedure RemoveAllBreakpoints;
     procedure RefreshContext(); // tries to display variable considered not in current context
     procedure CloseDebugger(Sender: TObject);
@@ -65,6 +78,16 @@ type
     procedure ClearIncludeDirs;
     function Idle: boolean;
     function IsIdling: boolean;
+
+    // RNC 07-02-2004 3 new functions:
+    // Check to see if the debugger is currently stopped at a breakpoint
+    function  IsBroken : boolean;
+    // Set whether or not the debugger is currently at a breakpoint
+    procedure SetBroken(b: boolean);
+    // Check to see if the given line is already a breakpoint
+    //RNC change to take a filename, not an editor.  an editor is destroyed when the
+    // file is closed. however, the filename does not change.
+    function BreakpointExists(filename: string; line: integer):boolean;
 
   protected
     hInputWrite: THandle;
@@ -83,6 +106,9 @@ type
     procedure OnDebugFinish(Sender: TObject);
     procedure OnNoDebuggingSymbolsFound;
     procedure OnSourceMoreRecent;
+    // RNC a function to be called if we have a valid-frame but no source file
+    // to open up
+    procedure InaccessibleFunction;
     procedure OnAsmCode(s: string);
     procedure OnAsmFunc(s: string);
     procedure OnAsmCodeEnd;
@@ -91,7 +117,9 @@ type
   end;
 
 implementation
-uses main, devcfg, MultiLangSupport, cpufrm, prjtypes, StrUtils;
+
+uses 
+  main, devcfg, MultiLangSupport, cpufrm, prjtypes, StrUtils;
 
 constructor TDebugger.Create;
 begin
@@ -99,22 +127,34 @@ begin
   Executing := false;
   FileName := '';
   GdbBreakCount := 1;
-  BreakList := TList.Create;
   fIncDirs := '';
   InAssembler := false;
 end;
 
 destructor TDebugger.Destroy;
-var i : integer;
 begin
-  for i := 0 to BreakList.Count - 1 do
-    TGdbBreakpoint(BreakList[I]).Free;
-  BreakList.Free;
   if (Executing) then
     CloseDebugger(nil);
   CloseHandle(EventReady);
   inherited Destroy;
 end;
+
+/////////////////////////////////
+// RNC 07-02-04 Get/Set the flag as to whether or not the debugger is at a breakpoint
+procedure TDebugger.SetBroken(b: boolean);
+begin
+  Wait.broken := b;
+end;
+
+
+function TDebugger.IsBroken : boolean;
+begin
+  if Wait = nil then
+    Result := False
+  else
+    Result := Wait.broken;
+end;
+////////////////////////////////////
 
 function TDebugger.Idle: boolean;
 var i : integer;
@@ -209,8 +249,11 @@ begin
   Reader := TDebugReader.Create(true);
   // Create a thread that will notice when an output is ready to be analyzed
   Wait := TDebugWait.Create(true);
+  Wait.broken := true;    // RNC 07-02-2004 Set broken to true before the debugger has actually started.  This allows breapoints to be set
   Wait.OnNoDebuggingSymbols := OnNoDebuggingSymbolsFound;
   Wait.OnSourceMoreRecent := OnSourceMoreRecent;
+  // RNC set DebugWait's InaccessibleFunction to this one
+  Wait.InaccessibleFunction := InaccessibleFunction;
   Wait.OnAsmCode := OnAsmCode;
   Wait.OnAsmFunc := OnAsmFunc;
   Wait.OnAsmCodeEnd := OnAsmCodeEnd;
@@ -230,6 +273,8 @@ begin
   Reader.FreeOnTerminate := true;
   Reader.Idling := true;
   Reader.Resume;
+  // RNC 07-02-2004  set the breakPointCount to 0
+  breakPointCount := 0;
 end;
 
 procedure TDebugger.DisplayError(s: string);
@@ -242,6 +287,8 @@ procedure TDebugger.Launch(hChildStdOut, hChildStdIn,
 var
   pi: TProcessInformation;
   si: TStartupInfo;
+  // RNC send the include directories to GDB
+  inc : string;
   gdb: string;
 begin
   // Set up the start up info struct.
@@ -258,8 +305,12 @@ begin
   else
     gdb := GDB_PROGRAM;
   // Launch process
+  // RNC add quotes to the include directories (in case they have spaces)
+  inc := StringReplace(fIncDirs, '  -', '"  -', [rfReplaceAll]);
+  inc := StringReplace(inc, '=', '="',[rfReplaceAll]);
+  inc := inc + '"';
   if (not CreateProcess(nil,
-    pchar(gdb + ' --annotate=2 --silent ' + fIncDirs), nil, nil, true,
+                        pchar(gdb + ' --annotate=2 --silent'), nil, nil, true,
                         CREATE_NEW_CONSOLE, nil, nil, si, pi)) then begin
     DisplayError('Could not find program file ' + gdb);
     exit;
@@ -273,6 +324,7 @@ end;
 procedure TDebugger.CloseDebugger(Sender: TObject);
 begin
   if Executing then begin
+    SetBroken(false);    // RNC 07-02-2004 Set broken to false when exiting
     Executing := false;
     // Force the read on the input to return by closing the stdin handle.
     //  if (not CloseHandle(hStdIn)) then
@@ -382,6 +434,14 @@ begin
   end;
 end;
 
+// RNC function to continue if we are stuck debugging places we can't see 
+// (ie, we entered a DLL)
+procedure TDebugger.InaccessibleFunction;
+begin
+  MainForm.actStepOverExecute(nil);
+end;
+
+
 procedure TDebugger.OnSourceMoreRecent;
 begin
   if (MessageDlg(Lang[ID_MSG_SOURCEMORERECENT], mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
@@ -395,52 +455,57 @@ begin
   MessageDlg(Lang[ID_MSG_SEGFAULT], mtWarning, [mbOk], 0);
 end;
 
-procedure TDebugger.AddBreakpoint(editor: TEditor; line: integer);
-var b : TGdbBreakpoint;
+// RNC 07-02-2004
+// If the running program is not broken and the user tries to add a breakpoint, display
+// an error message saying that a breakpoint cannot be added while the program is running
+//RNC changed to accept an index into the array of breakpoints
+function TDebugger.AddBreakpoint(i : integer):integer;
 begin
-  SendCommand(GDB_BREAK, '"' + editor.TabSheet.Caption + ':' + inttostr(line) + '"');
-  //SendCommand(GDB_BREAK, '"' + editor.FileName + ':' + inttostr(line) + '"');
-  b := TGdbBreakpoint.Create;
-  b.Index := GdbBreakCount;
-  b.Editor := editor;
-  b.Line := Line;
-  BreakList.Add(b);
-  inc(GdbBreakCount);
+  Result:=-1;
+  if (IsBroken = true) then begin
+    inc(breakPointCount);
+    SendCommand(GDB_BREAK, '"' + PBreakPointEntry(BreakPointList.Items[i])^.file_name + ':' + inttostr(PBreakPointEntry(BreakPointList.Items[i])^.line) + '"');
+    Result:=breakPointCount;
+  end;
 end;
 
-procedure TDebugger.RemoveBreakpoint(editor: TEditor;
-  line: integer);
+// RNC 07-02-2004 A function to return true or false depending on whether or not a breakpoint already exists
+// RNC changed to check if a breakpoint exists by checking a filename vs the global list, not an editor
+// editors change when a file is close, but the filename will not.  This makes sure that just becuse
+// you close a file, the breakpoint will not disappear
+function TDebugger.BreakpointExists(filename: string; line: integer):boolean;
 var
   I: integer;
 begin
-  for I := 0 to BreakList.Count - 1 do
-    if (TGdbBreakpoint(BreakList[I]).Editor = editor) and
-       (TGdbBreakpoint(BreakList[I]).line = line) then begin
-      if Executing then
-        SendCommand(GDB_DELETE, inttostr(I + 1));
-      TGdbBreakpoint(BreakList[I]).Free;
-      BreakList.Delete(I);
-      dec(GdbBreakCount);
+  Result := false;
+  for I := 0 to BreakPointList.Count-1 do
+    if (PBreakPointEntry(BreakPointList[I])^.file_name = filename) and
+       (PBreakPointEntry(BreakPointList[I])^.line = line) then begin
+       Result:=true;
       Break;
     end;
 end;
 
+// RNC changed to take an index in the 1 list of breakpoints, not an editor
+procedure TDebugger.RemoveBreakpoint(i: integer);
+begin
+if (IsBroken = true) then begin
+  if Executing then begin
+    SendCommand(GDB_DELETE, inttostr(i));
+  end;
+end;
+end;
+
+// RNC Change to remove breakpoints using new list
 procedure TDebugger.RemoveAllBreakpoints;
 var
   I: integer;
 begin
-  for I := 0 to BreakList.Count - 1 do begin
+  for I := 0 to BreakPointList.Count - 1 do begin
     if Executing then
-      SendCommand(GDB_DELETE, inttostr(I + 1));
-    BreakList.Delete(I);
-    dec(GdbBreakCount);
+      SendCommand(GDB_DELETE, inttostr(PBreakPointEntry(BreakPointList.Items[I])^.breakPointIndex));
   end;
-  ClearBreakpoints;
-end;
-
-procedure TDebugger.ClearBreakpoints;
-begin
-  BreakList.Clear;
+  MainForm.RemoveAllBreakPointFromList();
 end;
 
 function TDebugger.GetCallStack: TList;

@@ -1,10 +1,10 @@
 object EnviroForm: TEnviroForm
-  Left = 401
-  Top = 193
+  Left = 743
+  Top = 198
   BorderStyle = bsDialog
   Caption = 'Environment Options'
   ClientHeight = 404
-  ClientWidth = 483
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,14 +18,14 @@ object EnviroForm: TEnviroForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   DesignSize = (
-    483
+    418
     404)
   PixelsPerInch = 96
   TextHeight = 13
   object PagesMain: TPageControl
     Left = 8
     Top = 8
-    Width = 465
+    Width = 400
     Height = 353
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
@@ -37,12 +37,12 @@ object EnviroForm: TEnviroForm
       ParentShowHint = False
       ShowHint = False
       DesignSize = (
-        457
-        325)
+        396
+        326)
       object cbBackups: TCheckBox
         Left = 8
-        Top = 53
-        Width = 444
+        Top = 29
+        Width = 379
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Create File Backups'
@@ -52,8 +52,8 @@ object EnviroForm: TEnviroForm
       end
       object cbMinOnRun: TCheckBox
         Left = 8
-        Top = 74
-        Width = 444
+        Top = 50
+        Width = 379
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Minimize on Run'
@@ -63,8 +63,8 @@ object EnviroForm: TEnviroForm
       end
       object cbDefCpp: TCheckBox
         Left = 8
-        Top = 32
-        Width = 444
+        Top = 8
+        Width = 379
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Default to C++ on New Project'
@@ -74,8 +74,8 @@ object EnviroForm: TEnviroForm
       end
       object cbShowBars: TCheckBox
         Left = 8
-        Top = 96
-        Width = 444
+        Top = 72
+        Width = 379
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Show Toolbars in Full Screen'
@@ -85,8 +85,8 @@ object EnviroForm: TEnviroForm
       end
       object cbShowMenu: TCheckBox
         Left = 8
-        Top = 117
-        Width = 444
+        Top = 93
+        Width = 379
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Show Menu in Full Screen'
@@ -97,7 +97,7 @@ object EnviroForm: TEnviroForm
       end
       object rgbAutoOpen: TRadioGroup
         Left = 8
-        Top = 173
+        Top = 141
         Width = 189
         Height = 90
         Caption = '   Auto Open  '
@@ -109,8 +109,8 @@ object EnviroForm: TEnviroForm
       end
       object cbdblFiles: TCheckBox
         Left = 8
-        Top = 138
-        Width = 444
+        Top = 114
+        Width = 379
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Double Click to Open Files'
@@ -120,7 +120,7 @@ object EnviroForm: TEnviroForm
       end
       object gbDebugger: TGroupBox
         Left = 207
-        Top = 173
+        Top = 141
         Width = 182
         Height = 90
         Caption = '  Debug Variable Browser  '
@@ -607,8 +607,8 @@ object EnviroForm: TEnviroForm
     object tabExternal: TTabSheet
       Caption = 'External Programs'
       DesignSize = (
-        457
-        325)
+        396
+        326)
       object lblExternal: TLabel
         Left = 8
         Top = 8
@@ -617,8 +617,8 @@ object EnviroForm: TEnviroForm
         Caption = 'External programs associations:'
       end
       object btnExtAdd: TSpeedButton
-        Left = 121
-        Top = 282
+        Left = 98
+        Top = 286
         Width = 99
         Height = 25
         Anchors = [akBottom]
@@ -626,8 +626,8 @@ object EnviroForm: TEnviroForm
         OnClick = btnExtAddClick
       end
       object btnExtDel: TSpeedButton
-        Left = 238
-        Top = 282
+        Left = 199
+        Top = 286
         Width = 99
         Height = 25
         Anchors = [akBottom]
@@ -637,8 +637,8 @@ object EnviroForm: TEnviroForm
       object vleExternal: TValueListEditor
         Left = 16
         Top = 24
-        Width = 421
-        Height = 251
+        Width = 360
+        Height = 255
         Anchors = [akLeft, akTop, akRight, akBottom]
         KeyOptions = [keyEdit, keyAdd, keyDelete]
         Options = [goVertLine, goHorzLine, goEditing, goAlwaysShowEditor, goThumbTracking]
@@ -650,7 +650,7 @@ object EnviroForm: TEnviroForm
         OnValidate = vleExternalValidate
         ColWidths = (
           72
-          343)
+          282)
       end
     end
     object tabAssocs: TTabSheet
@@ -658,8 +658,8 @@ object EnviroForm: TEnviroForm
       ParentShowHint = False
       ShowHint = False
       DesignSize = (
-        457
-        325)
+        396
+        326)
       object lblAssocFileTypes: TLabel
         Left = 8
         Top = 8
@@ -669,8 +669,8 @@ object EnviroForm: TEnviroForm
       end
       object lblAssocDesc: TLabel
         Left = 16
-        Top = 258
-        Width = 416
+        Top = 262
+        Width = 355
         Height = 49
         Anchors = [akLeft, akRight, akBottom]
         AutoSize = False
@@ -682,8 +682,8 @@ object EnviroForm: TEnviroForm
       object lstAssocFileTypes: TCheckListBox
         Left = 16
         Top = 24
-        Width = 417
-        Height = 231
+        Width = 356
+        Height = 235
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         TabOrder = 0
@@ -774,7 +774,7 @@ object EnviroForm: TEnviroForm
     end
   end
   object btnOk: TBitBtn
-    Left = 226
+    Left = 161
     Top = 372
     Width = 80
     Height = 25
@@ -804,7 +804,7 @@ object EnviroForm: TEnviroForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 306
+    Left = 241
     Top = 372
     Width = 80
     Height = 25
@@ -813,7 +813,7 @@ object EnviroForm: TEnviroForm
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 397
+    Left = 332
     Top = 372
     Width = 75
     Height = 25

@@ -22,8 +22,14 @@ unit Splash;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, ComCtrls, Version;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QExtCtrls, QComCtrls, Version;
+{$ENDIF}
 
 type
   TSplashForm = class(TForm)
@@ -40,20 +46,20 @@ var
 
 implementation
 
-uses devcfg;
+uses 
+  devcfg;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TSplashForm.FormCreate(Sender: TObject);
 begin
   if (devData.Splash <> '') and FileExists(devData.Splash) then
   begin
     Image.Picture.LoadFromFile(devData.Splash);
-    ClientWidth := Image.Width;
-    ClientHeight := Image.Height + StatusBar.Height;
+     ClientWidth:= Image.Width;
+     ClientHeight:= Image.Height + StatusBar.Height;
   end;
-  StatusBar.SimpleText := 'Bloodshed Dev-C++ ' + DEVCPP_VERSION +
-    '. Loading...';
+  StatusBar.SimpleText := 'Bloodshed Dev-C++ '+ DEVCPP_VERSION +'. Loading...';
 end;
 
 procedure TSplashForm.ImageClick(Sender: TObject);

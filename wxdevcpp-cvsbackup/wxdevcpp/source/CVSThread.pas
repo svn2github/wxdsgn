@@ -22,7 +22,12 @@ unit CVSThread;
 interface
 
 uses
+{$IFDEF WIN32}
   Classes, Windows, SysUtils, StrUtils, utils;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, SysUtils, StrUtils, utils;
+{$ENDIF}
 
 type
   TLineOutputEvent = procedure(Sender: TObject; const Line: string) of object;
@@ -48,8 +53,7 @@ type
     Output: string;
     property OnLineOutput: TLineOutputEvent read FLineOutput write FLineOutput;
     property OnCheckAbort: TCheckAbortFunc read FCheckAbort write FCheckAbort;
-    property OnNeedPassword: TNeedPasswordEvent read fNeedPassword write
-      fNeedPassword;
+    property OnNeedPassword: TNeedPasswordEvent read fNeedPassword write fNeedPassword;
   end;
 
 implementation
@@ -126,11 +130,9 @@ begin
   tsi.hStdError := hOutputWrite;
   tsi.wShowWindow := SW_SHOW; //SW_HIDE;
 
-  if not CreateProcess(nil, PChar(Cmd), @sa, @sa, true, CREATE_NEW_CONSOLE, nil,
-    PChar(WorkingDir),
-    tsi, tpi) then
-  begin
-    LineOutput(InttoStr(GetLastError) + ': unable to run program file.');
+  if not CreateProcess(nil, PChar(Cmd), @sa, @sa, true, CREATE_NEW_CONSOLE, nil, PChar(WorkingDir),
+    tsi, tpi) then begin
+    LineOutput('unable to run program file: ' + SysErrorMessage(GetLastError));
     exit;
   end;
   CloseHandle(hOutputWrite);
@@ -144,8 +146,7 @@ begin
       Break;
 
     FillChar(aBuf, sizeof(aBuf), 0);
-    if (not ReadFile(hOutputRead, aBuf, sizeof(aBuf), nRead, nil)) or (nRead = 0)
-      then
+    if (not ReadFile(hOutputRead, aBuf, sizeof(aBuf), nRead, nil)) or (nRead = 0) then
     begin
       if GetLastError = ERROR_BROKEN_PIPE then
         Break
@@ -158,8 +159,7 @@ begin
     CurrentLine := CurrentLine + PChar(@aBuf[0]);
     repeat
       idx := Pos(#10, CurrentLine);
-      if idx > 0 then
-      begin
+      if idx > 0 then begin
         LineOutput(Copy(CurrentLine, 1, idx - 1));
         Delete(CurrentLine, 1, idx);
       end;
@@ -203,14 +203,19 @@ var
   Key: Byte;
   I: integer;
 begin
-  for I := 1 to Length(Pass) do
-  begin
+  for I := 1 to Length(Pass) do begin
     Key := VkKeyScan(Pass[I]);
     keybd_event(LoByte(Key), 0, 0, 0);
     keybd_event(LoByte(Key), 0, KEYEVENTF_KEYUP, 0);
   end;
+{$IFDEF WIN32}
   keybd_event(VK_RETURN, 0, 0, 0);
   keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0);
+{$ENDIF}
+{$IFDEF LINUX}
+  keybd_event(XK_RETURN, 0, 0, 0);
+  keybd_event(XK_RETURN, 0, KEYEVENTF_KEYUP, 0);
+{$ENDIF}
 end;
 
 end.

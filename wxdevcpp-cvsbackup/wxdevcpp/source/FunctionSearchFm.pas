@@ -22,8 +22,14 @@ unit FunctionSearchFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, CppParser, ComCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QExtCtrls, CppParser, QComCtrls;
+{$ENDIF}
 
 type
   TFunctionSearchForm = class(TForm)
@@ -55,7 +61,13 @@ var
 
 implementation
 
-uses datamod, MultiLangSupport, devcfg;
+uses 
+{$IFDEF WIN32}
+  datamod, MultiLangSupport, devcfg;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, datamod, MultiLangSupport, devcfg;
+{$ENDIF} 
 
 {$R *.dfm}
 
@@ -78,17 +90,12 @@ begin
   for I := 0 to fParser.Statements.Count - 1 do
     if PStatement(fParser.Statements[I])^._Kind = skFunction then
       if (PStatement(fParser.Statements[I])^._IsDeclaration and
-        (AnsiCompareText(PStatement(fParser.Statements[I])^._DeclImplFileName,
-          fFilename) = 0)) or
+        (AnsiCompareText(PStatement(fParser.Statements[I])^._DeclImplFileName, fFilename) = 0)) or
         (not PStatement(fParser.Statements[I])^._IsDeclaration and
-        (AnsiCompareText(PStatement(fParser.Statements[I])^._FileName, fFilename)
-          = 0)) then
+        (AnsiCompareText(PStatement(fParser.Statements[I])^._FileName, fFilename) = 0)) then
         if (txtSearch.Text = '') or
-          (AnsiPos(LowerCase(txtSearch.Text),
-            LowerCase(PStatement(fParser.Statements[I])^._ScopelessCmd)) > 0) then
-        begin
-          with lvEntries.Items.Add do
-          begin
+          (AnsiPos(LowerCase(txtSearch.Text), LowerCase(PStatement(fParser.Statements[I])^._ScopelessCmd)) > 0) then begin
+          with lvEntries.Items.Add do begin
             ImageIndex := -1;
             case PStatement(fParser.Statements[I])^._ClassScope of
               scsPrivate: StateIndex := 5;
@@ -113,7 +120,12 @@ begin
 
   // without this, the user has to press the down arrow twice to
   // move down the listview entries (only the first time!)...
+{$IFDEF WIN32}
   lvEntries.Perform(WM_KEYDOWN, VK_DOWN, 0);
+{$ENDIF}
+{$IFDEF LINUX}
+  lvEntries.Perform(WM_KEYDOWN, XK_DOWN, 0);
+{$ENDIF}
 end;
 
 procedure TFunctionSearchForm.txtSearchExit(Sender: TObject);
@@ -125,15 +137,26 @@ end;
 procedure TFunctionSearchForm.txtSearchKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
+  if lvEntries = nil then Exit;
+
   case Key of
-    VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT:
-      begin
+{$IFDEF WIN32}
+    VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT: begin
+{$ENDIF}
+{$IFDEF LINUX}
+    XK_UP, XK_DOWN, XK_PRIOR, XK_NEXT: begin
+{$ENDIF}
         lvEntries.Perform(WM_KEYDOWN, Key, 0);
         Key := 0;
       end;
+{$IFDEF WIN32}
     VK_ESCAPE: ModalResult := mrCancel;
-    VK_RETURN: if lvEntries.Selected <> nil then
-        ModalResult := mrOK;
+    VK_RETURN: if lvEntries.Selected <> nil then ModalResult := mrOK;
+{$ENDIF}
+{$IFDEF LINUX}
+    XK_ESCAPE: ModalResult := mrCancel;
+    XK_RETURN: if lvEntries.Selected <> nil then ModalResult := mrOK;
+{$ENDIF}
   end;
 end;
 

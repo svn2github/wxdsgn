@@ -22,7 +22,12 @@ unit prjtypes;
 interface
 
 uses
-  Classes, Editor, comctrls, datamod;
+{$IFDEF WIN32}
+  Classes, editor, ComCtrls, datamod;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, editor, QComCtrls, datamod;
+{$ENDIF}
 
 const
   dptGUI = 0;
@@ -66,14 +71,14 @@ type
 
     Includes: TStrings;
     Libs: TStrings;
-    PrivateResource: string; // Dev-C++ will overwrite this file
+   PrivateResource: String; // Dev-C++ will overwrite this file
     ResourceIncludes: TStringList;
     MakeIncludes: TStringList;
     useGPP: boolean;
     Icon: string;
 
-    ExeOutput: string;
-    ObjectOutput: string;
+   ExeOutput: String;
+   ObjectOutput: String;
 
     OverrideOutput: boolean;
     OverridenOutput: string;
@@ -92,7 +97,8 @@ procedure AssignOptionsRec(var R1, R2: TProjOptions);
 
 implementation
 
-uses devcfg;
+uses 
+  devcfg;
 
 procedure InitOptionsRec(var Rec: TProjOptions);
 begin

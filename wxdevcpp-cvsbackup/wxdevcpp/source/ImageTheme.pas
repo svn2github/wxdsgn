@@ -29,13 +29,19 @@ unit ImageTheme;
 
 interface
 uses
+{$IFDEF WIN32}
   Windows, SysUtils, Classes, Controls, Graphics, Contnrs;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QControls, QGraphics, Contnrs, QImgList;
+{$ENDIF}
 
 type
   TCustomImageTheme = class;
   TCustomDevImageTheme = class;
   TImageThemeClass = class of TCustomImageTheme;
 
+  
   TCustomImageTheme = class(TPersistent)
   private
     FBitmap: TBitmap;
@@ -78,12 +84,9 @@ type
   protected
     property MenuImages: TImageList read FMenuImages write SetMenuImages;
     property HelpImages: TImageList read FHelpImages write SetHelpImages;
-    property ProjectImages: TImageList read FProjectImages write
-      SetProjectImages;
-    property SpecialImages: TImageList read FSpecialImages write
-      SetSpecialImages;
-    property BrowserImages: TImageList read FBrowserImages write
-      SetBrowserImages;
+    property ProjectImages: TImageList read FProjectImages write SetProjectImages;
+    property SpecialImages: TImageList read FSpecialImages write SetSpecialImages;
+    property BrowserImages: TImageList read FBrowserImages write SetBrowserImages;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -91,6 +94,7 @@ type
     procedure SaveToFile(AFilename: string); override;
   end;
 
+  
   TDevImageTheme = class(TCustomDevImageTheme)
   public
     property MenuImages;
@@ -100,16 +104,19 @@ type
     property BrowserImages;
   end;
 
+  
   TGnomeImageTheme = class(TDevImageTheme)
   public
     constructor Create; override;
   end;
 
+  
   TNewLookImageTheme = class(TDevImageTheme)
   public
     constructor Create; override;
   end;
 
+  
   TBlueImageTheme = class(TDevImageTheme)
   public
     constructor Create; override;
@@ -125,8 +132,7 @@ type
     procedure SetCurrentTheme(const ATheme: TCustomImageTheme);
   protected
     procedure DoCreateThemeFromFile(AFilename: string); virtual;
-    property CurrentTheme: TCustomImageTheme read FCurrentTheme write
-      SetCurrentTheme;
+    property CurrentTheme: TCustomImageTheme read FCurrentTheme write SetCurrentTheme;
     property Themes[Index: Integer]: TCustomImageTheme read GetTheme;
     property ThemeFilename[Index: Integer]: string read GetThemeFilename;
     property ThemeTitle[Index: Integer]: string read GetThemeTitle;
@@ -142,8 +148,8 @@ type
     procedure RegisterTheme(const ThemeClass: TImageThemeClass);
   end;
 
-  TDevImageThemeChanged = procedure(Sender: TObject; const OldTheme:
-    TCustomDevImageTheme; const NewTheme: TCustomDevImageTheme);
+
+  TDevImageThemeChanged = procedure(Sender: TObject; const OldTheme: TCustomDevImageTheme; const NewTheme: TCustomDevImageTheme);
 
   TDevImageThemeFactory = class(TCustomImageThemeFactory)
   private
@@ -155,14 +161,11 @@ type
     procedure DoCreateThemeFromFile(AFilename: string); override;
   public
     constructor Create; override;
-    property CurrentTheme: TDevImageTheme read GetCurrentTheme write
-      SetCurrentTheme;
+    property CurrentTheme: TDevImageTheme read GetCurrentTheme write SetCurrentTheme;
     property Themes[Index: Integer]: TDevImageTheme read GetTheme;
     property ThemeFilename;
     property ThemeTitle;
-    property OnThemeChanged: TDevImageThemeChanged read FOnThemeChanged write
-      FOnThemeChanged;
-    destructor Destroy; override;
+    property OnThemeChanged: TDevImageThemeChanged read FOnThemeChanged write FOnThemeChanged;
   end;
 
 var
@@ -282,8 +285,7 @@ var
     Bmp.Height := Bitmap.Height;
 
     if (ALine * cTileH + cTileH) <= Bitmap.Height then
-      Bmp.Canvas.CopyRect(Rect(0, 0, FBitmap.Width, cTileH), Bitmap.Canvas,
-        Rect(0, ALine * cTileH, Bitmap.Width, ALine * cTileH + cTileH))
+      Bmp.Canvas.CopyRect(Rect(0,0,FBitmap.Width,cTileH), Bitmap.Canvas, Rect(0,ALine*cTileH,Bitmap.Width,ALine*cTileH+cTileH))
     else
     begin
       Bmp.Canvas.Brush.Color := clBtnFace;
@@ -471,8 +473,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomImageThemeFactory.ActivateTheme(ATheme: TCustomImageTheme):
-  Boolean;
+function TCustomImageThemeFactory.ActivateTheme(ATheme: TCustomImageTheme): Boolean; 
 begin
   CurrentTheme := ATheme;
   Result := True;
@@ -572,8 +573,7 @@ procedure TCustomImageThemeFactory.LoadFromDirectory(ADirectory: string);
 var
   F: TSearchRec;
 begin
-  if not DirectoryExists(ADirectory) then
-    Exit;
+  if not DirectoryExists(ADirectory) then Exit;
 
   if ADirectory[Length(ADirectory)] <> '\' then
     ADirectory := ADirectory + '\';
@@ -588,8 +588,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomImageThemeFactory.RegisterTheme(const ThemeClass:
-  TImageThemeClass);
+procedure TCustomImageThemeFactory.RegisterTheme(const ThemeClass: TImageThemeClass);
 var
   NewTheme: TCustomImageTheme;
 begin
@@ -599,8 +598,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomImageThemeFactory.SetCurrentTheme(const ATheme:
-  TCustomImageTheme);
+procedure TCustomImageThemeFactory.SetCurrentTheme(const ATheme: TCustomImageTheme);
 begin
   if FCurrentTheme <> ATheme then
   begin
@@ -624,11 +622,6 @@ begin
   RegisterTheme(TBlueImageTheme);
 
   FCurrentTheme := Themes[0];
-end;
-
-destructor TDevImageThemeFactory.Destroy;
-begin
-  inherited;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

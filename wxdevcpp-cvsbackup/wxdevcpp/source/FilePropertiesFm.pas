@@ -23,10 +23,16 @@ unit FilePropertiesFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StrUtils, ExtCtrls, StdCtrls, SynEdit, 
-  {$IFDEF NEW_SYNEDIT} SynEditTypes, {$ENDIF}
-  FileCtrl, XPMenu;
+  SynEditTypes, FileCtrl, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, StrUtils, QExtCtrls, QStdCtrls, QSynEdit,
+  QSynEditTypes;
+{$ENDIF}
 
 type
   TFilePropertiesForm = class(TForm)
@@ -90,7 +96,13 @@ var
 
 implementation
 
-uses SynEditHighlighter, main, MultiLangSupport, datamod, project, editor,devcfg;
+uses 
+{$IFDEF WIN32}
+  SynEditHighlighter, main, MultiLangSupport, datamod, project, editor, devcfg;
+{$ENDIF}
+{$IFDEF LINUX}
+  QSynEditHighlighter, main, MultiLangSupport, datamod, project, editor, devcfg;
+{$ENDIF}
 
 {$R *.dfm}
 
@@ -139,11 +151,7 @@ begin
       Inc(C);
 
     // take the token type of the first word of the line
-{$IFDEF NEW_SYNEDIT} 
     fEdit.GetHighlighterAttriAtRowCol(BufferCoord(C, I + 1), Token, Attri);
-{$ELSE}
-    fEdit.GetHighlighterAttriAtRowCol(Point(C, I + 1), Token, Attri);
-{$ENDIF}
 
     // if we get a token type...
     if Assigned(Attri) then begin

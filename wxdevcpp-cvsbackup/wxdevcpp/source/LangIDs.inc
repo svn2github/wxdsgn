@@ -401,6 +401,11 @@ const
   ID_EOPT_SPECIALCHARS             = 451;
   ID_EOPT_PARSERHINTS              = 452;
   ID_EOPT_MATCH                    = 453;
+  ID_EOPT_APPENDNEWLINE            = 454;
+  ID_EOPT_HIGHLIGHTCURRLINE        = 455;
+  ID_EOPT_HINTHIGHLIGHT            = 456;
+  ID_EOPT_HINTWHITESPACE           = 457;
+
 
     // Display Tab
   ID_EOPT_EDFONT                   = 460;

@@ -22,11 +22,20 @@ unit datamod;
 interface
 
 uses
-  SysUtils, Classes, menus, Dialogs, ImgList, Controls,
+{$IFDEF WIN32}
+  SysUtils, Classes, Menus, Dialogs, ImgList, Controls,
   SynEditExport, SynExportHTML, SynExportRTF,
   SynEditHighlighter, SynHighlighterCpp, SynEditPrint,
   oysUtils, CodeIns, SynHighlighterRC, SynCompletionProposal,
   SynEditMiscClasses, SynEditSearch;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QMenus, QDialogs, QImgList, QControls,
+  QSynEditExport, QSynExportHTML, QSynExportRTF,
+  QSynEditHighlighter, QSynHighlighterCpp, QSynEditPrint,
+  oysUtils, CodeIns, QSynHighlighterRC, QSynCompletionProposal,
+  QSynEditMiscClasses, QSynEditSearch;
+{$ENDIF}
 
 type
   TdmMain = class(TDataModule)
@@ -113,7 +122,8 @@ var
 
 implementation
 
-uses devcfg, inifiles, utils, version, main, MultiLangSupport;
+uses 
+  devcfg, IniFiles, utils, version, main, MultiLangSupport;
 
 {$R *.dfm}
 
@@ -233,7 +243,10 @@ begin
           if tmp.Count > 0 then
             for idx := 0 to pred(tmp.Count) do
               if AnsiCompareText(Ext, tmp[idx]) = 0 then
+                begin
                 result := cpp;
+                  Exit;
+                end;
         finally
           tmp.Free;
         end;

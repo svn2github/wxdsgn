@@ -22,8 +22,14 @@ unit TipOfTheDayFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, ShellAPI, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QComCtrls, QExtCtrls, XPMenu;
+{$ENDIF}
 
 type
   TTipOfTheDayForm = class(TForm)
@@ -68,7 +74,8 @@ var
 
 implementation
 
-uses devcfg, MultiLangSupport;
+uses 
+  devcfg, MultiLangSupport;
 
 {$R *.dfm}
 
@@ -85,20 +92,17 @@ begin
   S := devDirs.Lang + ExtractFileName(LangNoExt) + '.tips';
   if not FileExists(S) then
     S := devDirs.Lang + 'English.tips';
-  if not FileExists(S) then
-  begin
+  if not FileExists(S) then begin
     btnNext.Enabled := False;
     btnPrev.Enabled := False;
   end
-  else
-  begin
+  else begin
     LoadFromFile(S);
     if (TipsCounter < 0) or (TipsCounter >= sl.Count) then
       TipsCounter := 0;
     if sl.Count > 0 then
       lblTip.Caption := CurrentTip
-    else
-    begin
+    else begin
       btnNext.Enabled := False;
       btnPrev.Enabled := False;
     end;
@@ -123,14 +127,12 @@ begin
   url := '';
   urldesc := '';
   idx := Pos('<URL>', Result);
-  if idx > 0 then
-  begin
+  if idx > 0 then begin
     url := Copy(Result, idx + 5, MaxInt);
     Delete(Result, idx, MaxInt);
     idx := Pos('<UDESC>', url);
     lblUrl.Visible := True;
-    if idx > 0 then
-    begin
+    if idx > 0 then begin
       urldesc := Copy(url, idx + 7, MaxInt);
       Delete(url, idx, MaxInt);
     end;
@@ -196,8 +198,7 @@ begin
   try
     sl.LoadFromFile(Filename);
     I := 0;
-    while I < sl.Count do
-    begin
+    while I < sl.Count do begin
       if Trim(sl[I]) = '' then
         sl.Delete(I) // delete empty lines
       else if Trim(sl[I])[1] = '#' then

@@ -22,8 +22,14 @@ unit AddToDoFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Spin, SynEditTextBuffer, SynEditTypes, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QComCtrls, QSynEditTextBuffer, QSynEditTypes;
+{$ENDIF}
 
 type
   TAddToDoForm = class(TForm)
@@ -52,7 +58,8 @@ var
 
 implementation
 
-uses main, editor, MultiLangSupport, devcfg;
+uses 
+  main, editor, MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
@@ -66,11 +73,7 @@ procedure TAddToDoForm.btnOKClick(Sender: TObject);
 var
   e: TEditor;
   I: integer;
-{$IFDEF NEW_SYNEDIT} 
   st: TBufferCoord;
-{$ELSE}
-  st: TPoint;
-{$ENDIF}
   Line: integer;
   LineText: string;
   Hdr: string;
@@ -84,13 +87,8 @@ begin
 
   Line := e.Text.CaretY - 1;
   LineText := e.Text.Lines[Line];
-{$IFDEF NEW_SYNEDIT} 
   st.Line := Line + 1;
   st.Char := 1;
-{$ELSE}
-  st.Y := Line + 1;
-  st.X := 1;
-{$ENDIF}
 
   I := 1;
   while (I <= Length(LineText)) and (LineText[I] in [#9, ' ']) do
@@ -114,11 +112,7 @@ begin
         e.Text.Lines.Insert(Line + I, Prepend + memDescr.Lines[I]);
     end;
   end;
-{$IFDEF NEW_SYNEDIT} 
   e.Text.UndoList.AddChange(crInsert, st, BufferCoord(st.Char, st.Line + memDescr.Lines.Count), '', smNormal);
-{$ELSE}
-  e.Text.UndoList.AddChange(crInsert, st, Point(st.X, st.Y + memDescr.Lines.Count), '', smNormal);
-{$ENDIF}
   e.Modified := True;
   Close;
 end;

@@ -22,8 +22,14 @@ unit debugwait;
 interface
 
 uses
+{$IFDEF WIN32}
   Sysutils, Classes, Windows, ShellAPI, debugreader,
-  version, dialogs, ComCtrls, StrUtils, Forms;
+  version, Dialogs, ComCtrls, StrUtils, Forms;
+{$ENDIF}
+{$IFDEF LINUX}
+  Sysutils, Classes, debugreader,
+  version, QDialogs, QComCtrls, StrUtils, QForms;
+{$ENDIF}
 
 const SPACES = [' ', #9, #13, #10];
 
@@ -74,10 +80,16 @@ type
     tmpWatchValue: string;
     OnNoDebuggingSymbols: procedure of object;
     OnSourceMoreRecent: procedure of object;
+    // RNC A procedure to see if debugging went into a DLL that we do not have debug info for.
+    InaccessibleFunction : procedure of object;
     OnAsmCode: procedure(s: string) of object;
     OnAsmFunc: procedure(s: string) of object;
     OnAsmCodeEnd: procedure of object;
     OnSegmentationFault: procedure of object;
+
+    // RNC 07.02.02004 -- A variable to indicate that the debugger is on a breakpoint
+    // meaning that more breakpoints can be added
+    broken : boolean;
 
   protected
     pos: integer;
@@ -113,7 +125,9 @@ type
   end;
 
 implementation
-uses main, devcfg, utils;
+
+uses 
+  main, devcfg, utils;
 
 constructor TDebugNode.Create;
 begin
@@ -139,8 +153,16 @@ begin
   MainForm.DebugOutput.Lines.Add(debugstr);
 end;
 
+// RNC 07-02-2004
+// Since you cannot add breakpoints while GDB is running, I created a variable
+// broken to indicate that the debugger has stopped on a breakpoint.  (on the command line
+// this would be when you can actually type at a prompt).  If this variable is true
+// add breakpoints will succeed.  Otherewise a message box will appear saying that the
+// debugger must be stopped to add breakpoints.  This is useful on event-driven apps
+// where the user may think they can add breakpoints while the program is running
 procedure TDebugWait.BreakPointNotify;
 begin
+  broken := true;
   if (FirstBreak) then begin
     FirstBreak := false;
     MainForm.RefreshContext;
@@ -151,7 +173,14 @@ end;
 procedure TDebugWait.SignalNotify;
 begin
   if (debugstr = T_SEGFAULT) and Assigned(OnSegmentationFault) then
-    OnSegmentationFault;
+    OnSegmentationFault
+  // RNC 07-14-2004 I found out that if you build a GUI program without the -mwindows
+  // flag in the linker, the program will open with a console window.  If you press
+  // Ctrl-c in this console, you can pause or halt the debugger.  This is the same
+  // as pressing ctrl-c in gdb on the command line.  If this occurs, then set broken to true
+  // so breakpoints can be added in the halted state.
+  else if debugstr = 'Interrupt' then
+    broken:=true;
 end;
 
 procedure TDebugWait.SkipSpaces;
@@ -354,7 +383,6 @@ var a : TAnnotateType;
   n: TDebugNode;
   s: string;
   Count, tmp: integer;
-  strTm:String;
 begin
   result := 0;
   repeat
@@ -367,7 +395,6 @@ begin
         //Node.Value := ' = ';
         GetNextLine;
         repeat
-        try
           SkipSpaces;
           s := GetNextLine;
           if (s <> '') and (s[1] = #26) and (System.pos(T_ARRAYSECTION_END, s) > 0) then  begin
@@ -375,15 +402,8 @@ begin
             GetNextLine;
             exit;
           end
-          else
-          begin
-            if (s <> '') then
-                if (s[1] <> #26) then
+          else if (s[1] <> #26) then
                     Node.Value := Node.Value + s;
-          end;
-        except
-            strTm:='test';
-        end;
         until (s = '');
         SkipSpaces;
         GetNextLine;
@@ -769,6 +789,12 @@ begin
         debugstr := 'Source file is more recent than executable';
         Synchronize(debug);
         Synchronize(OnSourceMoreRecent);
+      end
+      // RNC if we have a frame-function-name but no source file to open, then we have probably jumped into a DLL or something else
+      // Therefore call the InaccessibleFunction (which just continues)
+      else if (System.pos('frame-function-name', Reader.Output) <> 0) and (System.pos('frame-source-file', Reader.Output) = 0) then begin
+        debugstr := 'Execution moved to an unaccessible function';
+        Synchronize(InaccessibleFunction);
       end;
       Analyze; // Analyze output and act accordingly
       debugstr := Reader.Output;

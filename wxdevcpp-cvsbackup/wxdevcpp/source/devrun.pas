@@ -22,22 +22,27 @@ unit devrun;
 interface
 
 uses
+{$IFDEF WIN32}
   Classes, Windows, Dialogs, utils;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, QDialogs, utils;
+{$ENDIF}
 
 type
-  TLineOutputEvent = procedure(Sender: TObject; const Line: string) of object;
+  TLineOutputEvent = procedure(Sender: TObject; const Line: String) of Object;
 
   TDevRun = class(TThread)
   private
-    TheMsg: string;
-    CurrentLine: string;
+    TheMsg     : String;
+    CurrentLine: String;
     FLineOutput: TLineOutputEvent;
     fCheckAbort: TCheckAbortFunc;
   protected
     procedure CallLineOutputEvent;
     procedure Execute; override;
-    procedure LineOutput(Line: string);
-    procedure ShowError(Msg: string);
+    procedure LineOutput(Line: String);
+    procedure ShowError(Msg: String);
     procedure ShowMsg;
   public
     Command: string;
@@ -54,7 +59,7 @@ begin
   utils.ShowError(TheMsg);
 end;
 
-procedure TDevRun.ShowError(Msg: string);
+procedure TDevRun.ShowError(Msg: String);
 begin
   TheMsg := Msg;
   Synchronize(ShowMsg);
@@ -65,7 +70,7 @@ begin
   FLineOutput(Self, CurrentLine);
 end;
 
-procedure TDevRun.LineOutput(Line: string);
+procedure TDevRun.LineOutput(Line: String);
 begin
   CurrentLine := Line;
   if Assigned(FLineOutput) then

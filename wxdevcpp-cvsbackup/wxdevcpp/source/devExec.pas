@@ -21,7 +21,13 @@ unit devExec;
 
 interface
 
-uses Windows, Classes;
+uses 
+{$IFDEF WIN32}
+  Windows, Classes;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes;
+{$ENDIF}
 
 type
   TExecThread = class(TThread)
@@ -53,8 +59,7 @@ type
   public
     class function devExecutor: TdevExecutor;
     procedure Reset;
-    procedure ExecuteAndWatch(sFileName, sParams, sPath: string; bVisible:
-      boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
+    procedure ExecuteAndWatch(sFileName, sParams, sPath: string; bVisible: boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
   published
     property Running: boolean read fIsRunning;
   end;
@@ -80,8 +85,7 @@ var
   ProcessInfo: TProcessInformation;
 begin
   FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-  with StartupInfo do
-  begin
+  with StartupInfo do begin
     cb := SizeOf(TStartupInfo);
     dwFlags := STARTF_USESHOWWINDOW or STARTF_FORCEONFEEDBACK;
     if fVisible then
@@ -91,8 +95,7 @@ begin
   end;
   if CreateProcess(nil, PChar(fFile + ' ' + fParams), nil, nil, False,
     NORMAL_PRIORITY_CLASS, nil, PChar(fPath),
-    StartupInfo, ProcessInfo) then
-  begin
+    StartupInfo, ProcessInfo) then begin
     fProcess := ProcessInfo.hProcess;
     WaitForSingleObject(ProcessInfo.hProcess, fTimeOut);
   end;
@@ -105,8 +108,7 @@ var
 
 function devExecutor: TdevExecutor;
 begin
-  if not Assigned(fDevExecutor) then
-  begin
+  if not Assigned(fDevExecutor) then begin
     try
       fDevExecutor := TdevExecutor.Create;
     finally
@@ -128,8 +130,7 @@ begin
   fIsRunning := True;
   fOnTermEvent := OnTermEvent;
   fExec := TExecThread.Create(True);
-  with fExec do
-  begin
+  with fExec do begin
     FileName := sFileName;
     Params := sParams;
     Path := sPath;

@@ -22,8 +22,14 @@ unit NewMemberFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, CppParser, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QExtCtrls, CppParser;
+{$ENDIF}
 
 type
   TNewMemberForm = class(TForm)
@@ -68,7 +74,8 @@ var
 
 implementation
 
-uses editor, main, MultiLangSupport, devcfg;
+uses 
+  editor, main, MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
@@ -104,8 +111,7 @@ begin
   finally
     sl.Free;
   end;
-  cmbClass.ItemIndex :=
-    cmbClass.Items.IndexOf(PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
+  cmbClass.ItemIndex := cmbClass.Items.IndexOf(PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
 
   cmbType.SetFocus;
 end;
@@ -128,28 +134,24 @@ var
   ClsName: string;
   wa: boolean;
 begin
-  if cmbClass.ItemIndex = -1 then
-  begin
+  if cmbClass.ItemIndex = -1 then begin
     MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
     ModalResult := mrNone;
     Exit;
   end;
 
   if cmbClass.Items.IndexOf(cmbClass.Text) > -1 then
-    St :=
-      PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(cmbClass.Text)])
+    St := PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(cmbClass.Text)])
   else
     St := nil;
 
-  if not Assigned(St) then
-  begin
+  if not Assigned(St) then begin
     MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
     ModalResult := mrNone;
     Exit;
   end;
 
-  with MainForm do
-  begin
+  with MainForm do begin
     pID := St^._ID;
 
     VarName := txtName.Text;
@@ -166,11 +168,9 @@ begin
     if Trim(memDescr.Text) = '' then
       memDescr.Text := 'No description';
 
-    CppParser1.GetSourcePair(CppParser1.GetDeclarationFileName(St), CppFname,
-      fName);
+    CppParser1.GetSourcePair(CppParser1.GetDeclarationFileName(St), CppFname, fName);
 
-    if not chkInline.Checked and not FileExists(CppFname) then
-    begin
+    if not chkInline.Checked and not FileExists(CppFname) then begin
       MessageDlg(Lang[ID_NEWVAR_MSG_NOIMPL], mtError, [mbOk], 0);
       Exit;
     end;
@@ -182,12 +182,15 @@ begin
       Exit;
 
     if e.Modified then
-      case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]), mtConfirmation,
-        [mbYes, mbCancel], 0) of
-        mrYes: if FileExists(fName) then
-          begin
+      case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]), mtConfirmation, [mbYes, mbCancel], 0) of
+        mrYes: if FileExists(fName) then begin
             wa := MainForm.devFileMonitor1.Active;
             MainForm.devFileMonitor1.Deactivate;
+            if devEditor.AppendNewline then
+              with e.Text do
+                if Lines.Count > 0 then
+                  if Lines[Lines.Count -1] <> '' then
+                    Lines.Add('');
             e.Text.Lines.SaveToFile(fName);
             if wa then
               MainForm.devFileMonitor1.Activate;
@@ -200,8 +203,7 @@ begin
     // Ask CppParser for insertion line suggestion ;)
     Line := CppParser1.SuggestMemberInsertionLine(pID, VarScope, AddScopeStr);
 
-    if Line = -1 then
-    begin
+    if Line = -1 then begin
       // CppParser could not suggest a line for insertion :(
       MessageDlg(Lang[ID_NEWVAR_MSG_NOLINE], mtError, [mbOk], 0);
       Exit;
@@ -219,13 +221,10 @@ begin
     S := S + VarType + ' ' + VarName + '(' + VarArguments + ')';
     if chkPure.Checked then
       S := S + ' = 0L';
-    if chkInline.Checked then
-    begin
+    if chkInline.Checked then begin
       e.Text.Lines.Insert(Line, #9#9'}');
       if chkToDo.Checked then
-        e.Text.Lines.Insert(Line,
-          #9#9#9'/* TODO (#1#): Implement inline function ' + cmbClass.Text + '::'
-          + VarName + '(' + VarArguments + ') */')
+        e.Text.Lines.Insert(Line, #9#9#9'/* TODO (#1#): Implement inline function ' + cmbClass.Text + '::' + VarName + '(' + VarArguments + ') */')
       else
         e.Text.Lines.Insert(Line, #9#9#9'// insert your code here');
       e.Text.Lines.Insert(Line, #9#9'{');
@@ -285,12 +284,10 @@ begin
     if cmbComment.ItemIndex = 0 then // /* ... */
       e.Text.Lines.Append(' */');
 
-    e.Text.Lines.Append(VarType + ' ' + ClsName + '::' + VarName + '(' +
-      VarArguments + ')');
+    e.Text.Lines.Append(VarType + ' ' + ClsName + '::' + VarName + '(' + VarArguments + ')');
     e.Text.Lines.Append('{');
     if chkToDo.Checked then
-      e.Text.Lines.Append(#9'/* TODO (#1#): Implement ' + ClsName + '::' +
-        VarName + '() */')
+      e.Text.Lines.Append(#9'/* TODO (#1#): Implement ' + ClsName + '::' + VarName + '() */')
     else
       e.Text.Lines.Append(#9'// insert your code here');
     e.Text.Lines.Append('}');
@@ -338,25 +335,21 @@ begin
   chkPure.OnClick := nil;
   chkInline.OnClick := nil;
 
-  if Sender = chkStatic then
-  begin
+  if Sender = chkStatic then begin
     chkInline.Enabled := True;
-    if chkStatic.Checked then
-    begin
+    if chkStatic.Checked then begin
       chkVirtual.Checked := False;
       chkPure.Checked := False;
     end;
   end
-  else if Sender = chkVirtual then
-  begin
+  else if Sender = chkVirtual then begin
     chkInline.Enabled := True;
     if not chkVirtual.Checked then
       chkPure.Checked := False
     else
       chkStatic.Checked := False;
   end
-  else if Sender = chkPure then
-  begin
+  else if Sender = chkPure then begin
     chkInline.Enabled := not chkPure.Checked;
     chkInline.Checked := False;
     chkStatic.Checked := False;

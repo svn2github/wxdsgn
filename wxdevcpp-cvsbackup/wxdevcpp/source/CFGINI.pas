@@ -22,7 +22,7 @@ unit CFGINI;
 interface
 
 uses
-  classes, inifiles, cfgtypes, typinfo;
+  Classes, IniFiles, cfgTypes, TypInfo;
 
 type
   TCFGINI = class(TObject)
@@ -50,18 +50,20 @@ type
     procedure LoadObject(var Obj: TCFGOptions);
     procedure SaveObject(var Obj: TCFGOptions);
 
-    function LoadSetting(const key: string; const Entry: string): string;
-      overload;
-    function LoadSetting(val: boolean; const key, Entry: string): string;
-      overload;
-    procedure SaveSetting(const key: string; const entry: string; const value:
-      string);
+   function LoadSetting(const key: string; const Entry: string): string; overload;
+   function LoadSetting(val : boolean; const key, Entry: string): string; overload;
+   procedure SaveSetting(const key: string; const entry: string; const value: string);
   end;
 
 implementation
 
 uses
-  CFGData, sysUtils, Graphics;
+{$IFDEF WIN32}
+  CFGData, SysUtils, Graphics;
+{$ENDIF}
+{$IFDEF LINUX}
+  CFGData, SysUtils, QGraphics;
+{$ENDIF}
 
 { TCFGINI }
 
@@ -89,31 +91,27 @@ procedure TCFGINI.ReadConfig;
 var
   section: string;
 begin
-  if not assigned(fIni) then
-    exit;
+  if not assigned(fIni) then exit;
   section := TConfigData(fOwner).INISection;
   if section = '' then
     raise EConfigDataError.Create('(ConfigData(INIReadCFG): Section not set');
   try
     ReadFromINIFile(fOwner, Section);
-  except
-  end;
+  except end;
 end;
 
 procedure TCFGINI.SaveConfig;
 var
   section: string;
 begin
-  if not assigned(fIni) then
-    exit;
+  if not assigned(fIni) then exit;
   section := TConfigData(fOwner).INISection;
   if section = '' then
     raise EConfigDataError.Create('(ConfigData(INISaveCFG): Section not set');
   with fINI do
   try
     WritetoINIfile(Section, fOwner);
-  except
-  end;
+   except end;
 end;
 
 // Reading methods
@@ -124,15 +122,13 @@ var
   value: integer;
 begin
   result := 0;
-  if not assigned(fIni) then
-    exit;
+  if not assigned(fIni) then exit;
   TypeInfo := GetTypeData(TypeInfo).CompType^;
   value := 0;
   if fINI.SectionExists(Name) then
     with GetTypeData(TypeInfo)^ do
       for idx := MinValue to MaxValue do
-        if ReadBoolString(fini.ReadString(Name, GetENumName(TypeInfo, idx),
-          'FALSE')) then
+     if ReadBoolString(fini.ReadString(Name, GetENumName(TypeInfo, idx), 'FALSE')) then
           include(TIntegerSet(value), idx);
   result := value;
 end;
@@ -185,19 +181,15 @@ begin
     case PropType(Obj, PropName) of
       tkString,
         tkLString,
-        tkWString: SetStrProp(Obj, PropName, fINI.ReadString(Section, PropName,
-          ''));
+      tkWString: SetStrProp(Obj, PropName, fINI.ReadString(Section, PropName, ''));
 
       tkChar,
         tkEnumeration,
-        tkInteger: SetOrdProp(Obj, PropName, fINI.ReadInteger(Section, PropName,
-          1));
+      tkInteger: SetOrdProp(Obj, PropName, fINI.ReadInteger(Section, PropName, 1));
 
-      tkInt64: SetInt64Prop(Obj, PropName, StrtoInt(fINI.ReadString(Section,
-        PropName, '0')));
+      tkInt64: SetInt64Prop(Obj, PropName, StrtoInt(fINI.ReadString(Section, PropName, '0')));
 
-      tkFloat: SetFloatProp(Obj, PropName, StrtoFloat(fINI.ReadString(Section,
-        PropName, '0.0')));
+      tkFloat: SetFloatProp(Obj, PropName, StrtoFloat(fINI.ReadString(Section, PropName, '0.0')));
 
       tkSet: SetOrdProp(Obj, PropName, ReadSet(Section + '.' + PropName,
           GetPropInfo(Obj, PropName, [tkSet])^.PropType^));
@@ -205,11 +197,9 @@ begin
       tkClass:
         begin
           if TPersistent(GetOrdProp(Obj, PropName)) is TStrings then
-            ReadStrings(Section + '.' + PropName, TStrings(GetOrdProp(Obj,
-              PropName)))
+          ReadStrings(Section +'.' +PropName, TStrings(GetOrdProp(Obj, PropName)))
           else
-            ReadObject(Section + '.' + PropName, TPersistent(GetOrdProp(Obj,
-              PropName)));
+          ReadObject(Section +'.' +PropName, TPersistent(GetOrdProp(Obj, PropName)));
         end;
     end;
   end;
@@ -240,8 +230,7 @@ var
   idx: integer;
 begin
   ClearSection(Name);
-  if value.count <= 0 then
-    exit;
+  if value.count <= 0 then exit;
   for idx := 0 to Pred(value.Count) do
     if AnsiPos('=', value[idx]) <> 0 then
       fini.WriteString(Name, Value.Names[idx], value.Values[Value.Names[idx]])
@@ -257,20 +246,17 @@ procedure TCFGINI.WriteObject(const Name: string; Obj: TPersistent);
   begin
     result := FALSE;
     Count := GetPropCount(Obj);
-    if Count <= 0 then
-      exit;
+     if Count <= 0 then exit;
     c := Count;
     for idx := 0 to pred(Count) do
     begin
-      if TConfigData(fOwner).IgnoreProperties.Indexof(getPropName(Obj, idx)) <>
-        -1 then
+        if TConfigData(fOwner).IgnoreProperties.Indexof(getPropName(Obj, idx)) <> -1 then
         dec(c);
     end;
     result := c > 0;
   end;
 begin
-  if not WritetheObject(Obj) then
-    exit;
+  if not WritetheObject(Obj) then exit;
   ClearSection(Name);
   WritetoINIFile(Name, Obj);
 end;
@@ -298,37 +284,30 @@ begin
       if idx2 > -1 then
         CD.IgnoreProperties[idx2] := 'Name';
     end;
-    if CD.IgnoreProperties.Indexof(PropName) >= 0 then
-      continue;
+     if CD.IgnoreProperties.Indexof(PropName)>= 0 then continue;
     case PropType(Obj, PropName) of
       tkString,
         tkLString,
-        tkWString: fINI.WriteString(Section, PropName, '"' + GetStrProp(Obj,
-          PropName) + '"');
+      tkWString: fINI.WriteString(Section, PropName, '"'+GetStrProp(Obj, PropName)+'"');
       // 11 Jul 2002: mandrav: added double quotes around strings.
       // fixes a bug with stringlists comma-text saved as string...
 
       tkChar,
         tkEnumeration,
-        tkInteger: fINI.WriteInteger(Section, PropName, GetOrdProp(Obj,
-          PropName));
+      tkInteger: fINI.WriteInteger(Section, PropName, GetOrdProp(Obj, PropName));
 
-      tkInt64: fINI.WriteString(Section, PropName, InttoStr(GetInt64Prop(Obj,
-        PropName)));
+      tkInt64: fINI.WriteString(Section, PropName, InttoStr(GetInt64Prop(Obj, PropName)));
 
-      tkFloat: fINI.WriteString(Section, PropName, FloattoStr(GetFloatProp(Obj,
-        PropName)));
+      tkFloat: fINI.WriteString(Section, PropName, FloattoStr(GetFloatProp(Obj, PropName)));
 
       tkSet: WriteSet(Section + '.' + PropName, GetOrdProp(Obj, PropName),
           GetPropInfo(Obj, PropName, [tkSet])^.PropType^);
       tkClass:
         begin
           if TPersistent(GetOrdProp(Obj, PropName)) is TStrings then
-            WriteStrings(Section + '.' + PropName, TStrings(GetOrdProp(Obj,
-              PropName)))
+          WriteStrings(Section +'.'+PropName, TStrings(GetOrdProp(Obj, PropName)))
           else
-            WritetoINIFile(Section + '.' + PropName, TPersistent(GetOrdProp(Obj,
-              PropName)));
+          WritetoINIFile(Section +'.' +PropName, TPersistent(GetOrdProp(Obj, PropName)));
         end;
     end;
   end;
@@ -336,12 +315,10 @@ end;
 
 procedure TCFGINI.LoadObject(var Obj: TCFGOptions);
 begin
-  if not assigned(Obj) then
-    exit;
+  if not assigned(Obj) then exit;
   try
     ReadObject(Obj.Name, Obj);
-  except
-  end;
+  except end;
 end;
 
 function TCFGINI.LoadSetting(const key, Entry: string): string;
@@ -352,8 +329,7 @@ end;
 function TCFGINI.LoadSetting(val: boolean; const key, Entry: string): string;
 begin
   result := fini.ReadString(Key, Entry, '');
-  if result = '' then
-  begin
+  if result = '' then begin
     if val then
       result := '1'
     else
@@ -363,8 +339,7 @@ end;
 
 procedure TCFGINI.SaveObject(var Obj: TCFGOptions);
 begin
-  if not assigned(Obj) then
-    exit;
+  if not assigned(Obj) then exit;
   WriteObject(Obj.Name, Obj);
 end;
 

@@ -22,8 +22,14 @@ unit CPUFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, SynEdit, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QButtons, QSynEdit;
+{$ENDIF}
 
 type
   TCPUForm = class(TForm)
@@ -85,8 +91,9 @@ var
 
 implementation
 
-uses main, version, MultiLangSupport, debugger, utils,
-  devcfg, debugwait;
+uses 
+  main, version, MultiLangSupport, debugger, utils,
+  devcfg, debugwait, Types; 
 
 {$R *.dfm}
 
@@ -98,8 +105,7 @@ end;
 
 procedure TCPUForm.edFuncKeyPress(Sender: TObject; var Key: Char);
 begin
-  if key = #13 then
-  begin
+  if key = #13 then begin
     if (MainForm.fDebugger.Executing) then
       CodeList.Lines.Clear;
     MainForm.fDebugger.SendCommand(GDB_DISASSEMBLE, edFunc.Text);
@@ -107,14 +113,12 @@ begin
 end;
 
 procedure TCPUForm.rbSyntaxClick(Sender: TObject);
-var
-  cb: TCheckBox;
+var cb : TCheckBox;
 begin
   cb := TCheckBox(sender);
   while (MainForm.fDebugger.InAssembler) do
     sleep(20);
-  if (MainForm.fDebugger.Executing) then
-  begin
+  if (MainForm.fDebugger.Executing) then begin
     CodeList.Lines.Clear;
     if cb.Tag = 0 then
       MainForm.fDebugger.SendCommand(GDB_SETFLAVOR, GDB_ATT)
@@ -132,8 +136,7 @@ begin
     XPMenu.Active := true
   else
     XPMenu.Active := false;
-  with Lang do
-  begin
+  with Lang do begin
     Caption := Strings[ID_CPU_CAPTION];
     gbAsm.Caption := Strings[ID_CPU_ASMCODE];
     gbSyntax.Caption := Strings[ID_CPU_SYNTAX];
@@ -152,8 +155,7 @@ begin
 end;
 
 procedure TCPUForm.OnRegistersReady;
-var
-  i: integer;
+var i : integer;
 begin
   EAXText.Text := MainForm.fDebugger.Registers[EAX];
   EBXText.Text := MainForm.fDebugger.Registers[EBX];
@@ -169,8 +171,7 @@ begin
   SSText.Text := MainForm.fDebugger.Registers[SS];
   ESText.Text := MainForm.fDebugger.Registers[ES];
   for i := 0 to CodeList.Lines.Count - 1 do
-    if pos(EIPText.Text, CodeList.Lines[i]) <> 0 then
-    begin
+    if pos(EIPText.Text, CodeList.Lines[i]) <> 0 then begin
       if (ActiveLine <> i) and (ActiveLine <> -1) then
         CodeList.InvalidateLine(ActiveLine);
       ActiveLine := i + 1;
@@ -183,11 +184,9 @@ end;
 
 procedure TCPUForm.OnActiveLine(Sender: TObject; Line: Integer;
   var Special: Boolean; var FG, BG: TColor);
-var
-  pt: TPoint;
-begin
-  if (Line = ActiveLine) then
+var pt : TPoint;
   begin
+   if (Line = ActiveLine) then begin
     StrtoPoint(pt, devEditor.Syntax.Values[cABP]);
     BG := pt.X;
     FG := pt.Y;

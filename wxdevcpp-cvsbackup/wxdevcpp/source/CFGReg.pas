@@ -22,7 +22,12 @@ unit CFGReg;
 interface
 
 uses
-  Classes, Registry, types, typinfo, cfgtypes;
+{$IFDEF WIN32}
+  Classes, Registry, Types, TypInfo, cfgTypes;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, Types, TypInfo, cfgTypes;
+{$ENDIF}
 
 type
   TCFGReg = class(TObject)
@@ -47,18 +52,20 @@ type
     procedure LoadObject(var Obj: TCFGOptions);
     procedure SaveObject(var Obj: TCFGOptions);
 
-    function LoadSetting(const key: string; const Entry: string): string;
-      overload;
-    function LoadSetting(val: boolean; const key, Entry: string): string;
-      overload;
-    procedure SaveSetting(const key: string; const entry: string; const value:
-      string);
+   function LoadSetting(const key: string; const Entry: string): string; overload;
+   function LoadSetting(val : boolean; const key, Entry: string): string; overload;
+   procedure SaveSetting(const key: string; const entry: string; const value: string);
   end;
 
 implementation
 
 uses
-  CFGData, Graphics, sysUtils;
+{$IFDEF WIN32}
+  CFGData, Graphics, SysUtils;
+{$ENDIF}
+{$IFDEF LINUX}
+  CFGData, QGraphics, SysUtils;
+{$ENDIF}
 
 { TCFGReg }
 
@@ -136,8 +143,8 @@ begin
         CD.IgnoreProperties[idx2] := 'Name';
     end;
 
-    if (CD.IgnoreProperties.Indexof(PropName) > -1) or
-      (not fReg.ValueExists(PropName)) then
+     if (CD.IgnoreProperties.Indexof(PropName)> -1)
+	 or (not fReg.ValueExists(PropName)) then
       continue;
 
     case PropType(Obj, PropName) of
@@ -151,8 +158,7 @@ begin
 
       tkInt64: SetInt64Prop(Obj, PropName, StrtoInt(fReg.ReadString(PropName)));
 
-      tkFloat: SetFloatProp(Obj, PropName,
-        StrtoFloat(fReg.ReadString(PropName)));
+      tkFloat: SetFloatProp(Obj, PropName, StrtoFloat(fReg.ReadString(PropName)));
 
       tkSet: SetOrdProp(Obj, PropName, ReadSet(PropName,
           GetPropInfo(Obj, PropName, [tkSet])^.PropType^));
@@ -179,8 +185,7 @@ begin
   value := 0;
   try
     if not freg.OpenKey(Name, FALSE) then
-      raise
-        ERegistryException.Createfmt('ConfigData(RegReadSet): Cannot read subkey %s', [Name]);
+    raise ERegistryException.Createfmt('ConfigData(RegReadSet): Cannot read subkey %s', [Name]);
 
     with GetTypeData(TypeInfo)^ do
       for idx := MinValue to MaxValue do
@@ -201,8 +206,7 @@ begin
   try
     value.Clear;
     if not fReg.OpenKey(Name, FALSE) then
-      raise
-        ERegistryException.Createfmt('ConfigData(RegReadStrings): Cannot open subkey %s', [Name]);
+    raise ERegistryException.Createfmt('ConfigData(RegReadStrings): Cannot open subkey %s', [Name]);
 
     fReg.GetValueNames(value);
   finally
@@ -253,8 +257,7 @@ begin
         CD.IgnoreProperties[idx2] := 'Name';
     end;
 
-    if (CD.IgnoreProperties.Indexof(PropName) > -1) then
-      continue;
+     if (CD.IgnoreProperties.Indexof(PropName)> -1) then continue;
     case PropType(Obj, PropName) of
       tkString,
         tkLString,
@@ -264,11 +267,9 @@ begin
         tkEnumeration,
         tkInteger: fReg.WriteInteger(PropName, GetOrdProp(Obj, PropName));
 
-      tkInt64: fReg.WriteString(PropName, InttoStr(GetInt64Prop(Obj,
-        PropName)));
+      tkInt64: fReg.WriteString(PropName, InttoStr(GetInt64Prop(Obj, PropName)));
 
-      tkFloat: fReg.WriteString(PropName, FloattoStr(GetFloatProp(Obj,
-        PropName)));
+      tkFloat: fReg.WriteString(PropName, FloattoStr(GetFloatProp(Obj, PropName)));
 
       tkSet: WriteSet(PropName, GetOrdProp(Obj, PropName),
           GetPropInfo(Obj, PropName, [tkSet])^.PropType^);
@@ -294,13 +295,11 @@ begin
   OldKey := '\' + fReg.CurrentPath;
   try
     if not fReg.OpenKey(Name, TRUE) then
-      raise
-        ERegistryException.Createfmt('ConfigData(RegSaveSet): Cannot create subkey %s', [name]);
+    raise ERegistryException.Createfmt('ConfigData(RegSaveSet): Cannot create subkey %s', [name]);
 
     with GetTypeData(TypeInfo)^ do
       for idx := MinValue to MaxValue do
-        fReg.WriteString(GetENumName(TypeInfo, idx), boolStr[idx in
-          TIntegerSet(value)]);
+     fReg.WriteString(GetENumName(TypeInfo, idx), boolStr[idx in TIntegerSet(value)]);
   finally
     fReg.OpenKey(OldKey, FALSE);
   end;
@@ -311,13 +310,11 @@ var
   OldKey: string;
   idx: integer;
 begin
-  if value.Count <= 0 then
-    exit;
+  if value.Count <= 0 then exit;
   OldKey := '\' + fReg.CurrentPath;
   try
     if not fReg.OpenKey(Name, TRUE) then
-      raise
-        ERegistryException.Createfmt('ConfigData(RegSaveStrings): Cannot create %s', [name]);
+    raise ERegistryException.Createfmt('ConfigData(RegSaveStrings): Cannot create %s', [name]);
 
     for idx := 0 to pred(value.Count) do
       fReg.WriteString(value[idx], '');
@@ -333,15 +330,12 @@ procedure TCFGReg.WriteObject(const Name: string; Obj: TPersistent);
     idx, c, Count: integer;
   begin
     result := FALSE;
-    if not assigned(Obj) then
-      exit;
+    if not assigned(Obj) then exit;
     Count := GetPropCount(Obj);
-    if Count <= 0 then
-      exit;
+    if Count <= 0 then exit;
     c := Count;
     for idx := 0 to pred(Count) do
-      if TConfigData(fOwner).IgnoreProperties.Indexof(GetPropName(Obj, idx)) > -1
-        then
+     if TConfigData(fOwner).IgnoreProperties.Indexof(GetPropName(Obj, idx))> -1 then
         dec(c);
 
     result := c > 0;
@@ -350,14 +344,11 @@ procedure TCFGReg.WriteObject(const Name: string; Obj: TPersistent);
 var
   OldKey: string;
 begin
-  if not WritetheObject(Obj) then
-    exit;
+  if not WritetheObject(Obj) then exit;
   OldKey := '\' + fReg.CurrentPath;
   try
     if not fReg.OpenKey(Name, TRUE) then
-      raise
-        ERegistryException.Createfmt('(ConfigData(RegSaveObj): Cannot create %s',
-        [name]);
+    raise  ERegistryException.Createfmt('(ConfigData(RegSaveObj): Cannot create %s', [name]);
 
     WritetoRegistry(Obj);
   finally
@@ -390,8 +381,7 @@ begin
   try
     if fReg.OpenKey(Key, FALSE) then
       result := fReg.ReadString(Entry)
-    else
-    begin
+   else begin
       if val then
         result := '1'
       else
@@ -418,8 +408,7 @@ procedure TCFGReg.SaveObject(var Obj: TCFGOptions);
 var
   OldKey: string;
 begin
-  if not assigned(Obj) then
-    exit;
+  if not assigned(Obj) then exit;
   Oldkey := '\' + fReg.CurrentPath;
   try
     WriteObject(Obj.Name, Obj);

@@ -24,22 +24,27 @@ interface
 uses
   SysUtils, devCfg, Version;
 
-function ParseMacros(Str: string): string;
+function ParseMacros(Str: String): String;
 
 implementation
 
 uses
+{$IFDEF WIN32}
   Main, editor, Dialogs, Utils, Classes;
+{$ENDIF}
+{$IFDEF LINUX}
+  Main, editor, QDialogs, Utils, Classes;
+{$ENDIF}
 
-procedure Replace(var Str: string; Old, New: string);
+procedure Replace(var Str: String; Old, New: String);
 begin
   Str := StringReplace(Str, Old, New, [rfReplaceAll]);
 end;
 
-function ParseMacros(Str: string): string;
+function ParseMacros(Str: String): String;
 var
   e: TEditor;
-  Dir: string;
+  Dir: String;
   StrList: TStringList;
 begin
   Result := Str;
@@ -91,8 +96,7 @@ begin
 
     // clear unchanged macros
     Replace(Result, '<SOURCESPCLIST>', '');
-  end
-  else
+  end else
   begin
     // clear unchanged macros
     Replace(Result, '<EXENAME>', '');
@@ -113,8 +117,7 @@ begin
       Replace(Result, '<SOURCENAME>', ExtractFilePath(e.FileName));
 
     Replace(Result, '<WORDXY>', e.GetWordAtCursor);
-  end
-  else
+  end else
   begin
     // clear unchanged macros
     Replace(Result, '<SOURCENAME>', '');

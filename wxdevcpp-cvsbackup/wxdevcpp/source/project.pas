@@ -20,9 +20,18 @@
 unit project;
 
 interface
-uses IniFiles, SysUtils, Dialogs, ComCtrls, Editor, Contnrs,
-  Classes, Controls, version, prjtypes, templates, Forms,
+
+uses 
+{$IFDEF WIN32}
+  IniFiles, SysUtils, Dialogs, ComCtrls, Editor, Contnrs,
+  Classes, Controls, version, prjtypes, Templates, Forms,
   Windows;
+{$ENDIF}
+{$IFDEF LINUX}
+  IniFiles, SysUtils, QDialogs, QComCtrls, Editor, Contnrs,
+  Classes, QControls, version, prjtypes, Templates, QForms
+  ;
+{$ENDIF}
 
 type
   TdevINI = class(TObject)
@@ -234,7 +243,7 @@ end;
 destructor TProjUnit.Destroy;
 begin
   if Assigned(fEditor) then
-    fEditor.Free;
+    FreeAndNil(fEditor);
   fEditor := nil;
   fNode := nil;
   inherited;
@@ -252,6 +261,11 @@ begin
     begin
       fEditor := TEditor.Create;
       fEditor.Init(TRUE, ExtractFileName(fFileName), fFileName, FALSE);
+       if devEditor.AppendNewline then
+         with fEditor.Text do
+           if Lines.Count > 0 then
+             if Lines[Lines.Count -1] <> '' then
+               Lines.Add('');
       fEditor.Text.Lines.SavetoFile(fFileName);
       fEditor.New := False;
       fEditor.Modified := False;
@@ -262,6 +276,11 @@ begin
     else 
     if assigned(fEditor) and fEditor.Modified then
     begin
+       if devEditor.AppendNewline then
+         with fEditor.Text do
+           if Lines.Count > 0 then
+             if Lines[Lines.Count -1] <> '' then
+               Lines.Add('');
       fEditor.Text.Lines.SaveToFile(fEditor.FileName);
       if FileExists(fEditor.FileName) then
         FileSetDate(fEditor.FileName, DateTimeToFileDate(Now)); // fix the "Clock skew detected" warning ;)
@@ -501,7 +520,7 @@ end;
 procedure TProject.BuildPrivateResource(ForceSave: boolean = False);
 var
   ResFile, Original: TStringList;
-  Res, Def, Icon: string;
+  Res, Def, Icon: String;
   comp, i: Integer;
 begin
   comp := 0;
@@ -542,8 +561,8 @@ begin
     Exit;
 
   ResFile := TStringList.Create;
-  ResFile.Add('// THIS FILE WILL BE OVERWRITTEN BY DEV-C++!');
-  ResFile.Add('// DO NOT EDIT!');
+  ResFile.Add('/* THIS FILE WILL BE OVERWRITTEN BY DEV-C++ */');
+  ResFile.Add('/* DO NOT EDIT! */');
   ResFile.Add('');
 
   if fOptions.IncludeVersionInfo then begin
@@ -554,7 +573,7 @@ begin
   for i := 0 to Units.Count - 1 do
     if GetFileTyp(Units[i].FileName) = utRes then
       if Units[i].Compile then
-        ResFile.Add('#include "' + GenMakePath(ExtractRelativePath(Directory,Units[i].FileName)) + '"');
+        ResFile.Add('#include "' + GenMakePath(ExtractRelativePath(Directory, Units[i].FileName), False, False) + '"');
 
   if Length(Options.Icon) > 0 then
   begin
@@ -631,10 +650,23 @@ begin
       Original := TStringList.Create;
       Original.LoadFromFile(Res);
       if CompareStr(Original.Text, ResFile.Text) <> 0 then
+          begin
+            if devEditor.AppendNewline then
+              if ResFile.Count > 0 then
+                if ResFile[ResFile.Count -1] <> '' then
+                  ResFile.Add('');
         ResFile.SaveToFile(Res);
+          end;
       Original.Free;
-    end else
+      end
+      else
+      begin
+        if devEditor.AppendNewline then
+          if ResFile.Count > 0 then
+            if ResFile[ResFile.Count -1] <> '' then
+              ResFile.Add('');
       ResFile.SaveToFile(Res);
+      end;
     fOptions.PrivateResource := ExtractRelativePath(Directory, Res);
   end
   else
@@ -686,13 +718,13 @@ begin
   Res := ChangeFileExt(Res, H_EXT);
   ResFile.Clear;
   Def := StringReplace(ExtractFilename(UpperCase(Res)), '.', '_', [rfReplaceAll]);
-  ResFile.Add('// THIS FILE WILL BE OVERWRITTEN BY DEV-C++!');
-  ResFile.Add('// DO NOT EDIT!');
+  ResFile.Add('/* THIS FILE WILL BE OVERWRITTEN BY DEV-C++ */');
+  ResFile.Add('/* DO NOT EDIT ! */');
   ResFile.Add('');
   ResFile.Add('#ifndef ' + Def);
   ResFile.Add('#define ' + Def);
   ResFile.Add('');
-  ResFile.Add('// VERSION DEFINITIONS');
+  ResFile.Add('/* VERSION DEFINITIONS */');
   ResFile.Add('#define VER_STRING'#9 + Format('"%d.%d.%d.%d"', [fOptions.VersionInfo.Major, fOptions.VersionInfo.Minor,fOptions.VersionInfo.Release, fOptions.VersionInfo.Build]));
   ResFile.Add('#define VER_MAJOR'#9 + IntToStr(fOptions.VersionInfo.Major));
   ResFile.Add('#define VER_MINOR'#9 + IntToStr(fOptions.VersionInfo.Minor));
@@ -708,7 +740,7 @@ begin
   ResFile.Add('#define PRODUCT_NAME'#9'"' + fOptions.VersionInfo.ProductName +'"');
   ResFile.Add('#define PRODUCT_VERSION'#9'"' +fOptions.VersionInfo.ProductVersion + '"');
   ResFile.Add('');
-  ResFile.Add('#endif //' + Def);
+  ResFile.Add('#endif /*'+Def +'*/');
   ResFile.SaveToFile(Res);
 
   if FileExists(Res) then
@@ -717,7 +749,7 @@ begin
   ResFile.Free;
 end;
 
-function TProject.NewUnit(NewProject: boolean; CustomFileName: string): integer;
+function TProject.NewUnit(NewProject : boolean; CustomFileName: String): integer;
 var
   newunit: TProjUnit;
   s: string;
@@ -1061,7 +1093,7 @@ var
   i: integer;
 begin
   FolderNodeFromName := fNode;
-  if name <> '' then
+  If name<>'' then
     for i := 0 to pred(fFolders.Count) do
     begin
       if AnsiCompareText(AnsiDequotedStr(fFolders[i], '"'), AnsiDequotedStr(name,'"')) = 0 then
@@ -1497,7 +1529,13 @@ begin
 
   if Length(Options.ExeOutput) > 0 then begin
     if not DirectoryExists(Options.ExeOutput) then
-      MkDir(Options.ExeOutput);
+        try
+          SysUtils.ForceDirectories(Options.ExeOutput);
+        except
+          MessageDlg('Could not create executable output directory: "'
+            + Options.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
+          exit;
+        end;
     Result := GetRealPath(IncludeTrailingPathDelimiter(Options.ExeOutput) +
       ExtractFileName(Result));
   end;
@@ -1679,7 +1717,7 @@ end;
 
 procedure TProject.ShowOptions;
 var
-  IconFileName: string;
+  IconFileName: String;
   L, I: TStrings;
   R: TStringList;
 begin
@@ -1749,7 +1787,7 @@ var
   Options: TProjOptions;
   idx: integer;
   s, s2: string;
-  OriginalIcon, DestIcon: string;
+ OriginalIcon, DestIcon: String;
 begin
   result := TRUE;
   try
@@ -1881,7 +1919,7 @@ begin
     for idx := 0 to Items.Count - 1 do
     begin
       tempnode := Items[idx];
-      if tempnode.Expanded and (tempnode.Data = Pointer(-1)) then //data=pointer(-1) - it's folder
+      if tempnode.Expanded AND (tempnode.Data=Pointer(-1)) then //data=pointer(-1) - it's folder
         oldPaths.Add(GetFolderPath(tempnode));
     end;
 
@@ -2125,7 +2163,7 @@ end;
 
 function TUnitList.Indexof(FileName: string): integer;
 var
-  s1, s2: string;
+  s1, s2: String;
 begin
   for result := 0 to pred(fList.Count) do
   begin

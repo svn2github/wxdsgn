@@ -23,9 +23,16 @@ unit Envirofrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Spin, ExtCtrls, devTabs, ExtDlgs, Buttons, DevThemes,
-  CheckLst, XPMenu, Grids, ValEdit, ComCtrls;
+  CheckLst, XPMenu, Grids, ValEdit,ComCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QComCtrls, QExtCtrls, devTabs, QButtons, DevThemes,
+  QCheckLst, QGrids;
+{$ENDIF}
 
 type
   TEnviroForm = class(TForm)
@@ -108,7 +115,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure vleExternalEditButtonClick(Sender: TObject);
     procedure vleExternalValidate(Sender: TObject; ACol, ARow: Integer;
-      const KeyName, KeyValue: string);
+      const KeyName, KeyValue: String);
     procedure btnExtAddClick(Sender: TObject);
     procedure btnExtDelClick(Sender: TObject);
     procedure chkAltConfigClick(Sender: TObject);
@@ -121,8 +128,12 @@ type
 implementation
 
 uses
-  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs,
-    ImageTheme;
+{$IFDEF WIN32}
+  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme;
+{$ENDIF}
 
 {$R *.dfm}
 
@@ -219,8 +230,7 @@ begin
     {*** Modified by Peter ***}
     cboTheme.Items.Clear;
     devImageThemes.GetThemeTitles(cboTheme.Items);
-    cboTheme.ItemIndex :=
-      devImageThemes.IndexOf(devImageThemes.CurrentTheme.Title);
+     cboTheme.ItemIndex := devImageThemes.IndexOf(devImageThemes.CurrentTheme.Title);
     //cboTheme.Text := devImageThemes.CurrentTheme.Title;
     //cboTheme.Items.AddStrings(devTheme.ThemeList);
     //cboTheme.ItemIndex := cboTheme.Items.IndexOf(devData.Theme);
@@ -250,12 +260,9 @@ begin
       vleExternal.ItemProps[idx].EditStyle := esEllipsis;
 
     lstAssocFileTypes.Clear;
-    for idx := 0 to AssociationsCount - 1 do
-    begin
-      lstAssocFileTypes.Items.Add(Format('%s  (*.%s)', [Associations[idx, 1],
-        Associations[idx, 0]]));
-      lstAssocFileTypes.Checked[lstAssocFileTypes.Items.Count - 1] :=
-        IsAssociated(idx);
+     for idx:=0 to AssociationsCount-1 do begin
+       lstAssocFileTypes.Items.Add(Format('%s  (*.%s)', [Associations[idx, 1], Associations[idx, 0]]));
+       lstAssocFileTypes.Checked[lstAssocFileTypes.Items.Count-1]:=IsAssociated(idx);
     end;
 
     edCVSExec.Text := devCVSHandler.Executable;
@@ -269,8 +276,7 @@ var
   idx: integer;
   s: string;
 begin
-  if chkAltConfig.Enabled then
-  begin
+  if chkAltConfig.Enabled then begin
     if UseAltConfigFile <> chkAltConfig.Checked then
       MessageDlg(Lang[ID_ENV_CONFIGCHANGED], mtInformation, [mbOk], 0);
     UseAltConfigFile := chkAltConfig.Checked and (edAltConfig.Text <> '');
@@ -308,16 +314,13 @@ begin
     WatchError := cbWatchError.Checked;
   end;
 
-  devDirs.Icons := IncludeTrailingPathDelimiter(ExpandFileto(edIcoLib.Text,
-    devDirs.Exec));
-  devDirs.Templates :=
-    IncludeTrailingPathDelimiter(ExpandFileto(edTemplatesDir.Text, devDirs.Exec));
+  devDirs.Icons:= IncludeTrailingPathDelimiter(ExpandFileto(edIcoLib.Text, devDirs.Exec));
+  devDirs.Templates:= IncludeTrailingPathDelimiter(ExpandFileto(edTemplatesDir.Text, devDirs.Exec));
   devDirs.Default := edUserDir.Text;
 
   if edLang.Text <> ExtractRelativePath(devDirs.Exec, devDirs.Lang) then
   begin
-    devDirs.Lang := IncludeTrailingPathDelimiter(ExpandFileto(edLang.Text,
-      devDirs.Exec));
+     devDirs.Lang:= IncludeTrailingPathDelimiter(ExpandFileto(edLang.Text, devDirs.Exec));
     Lang.CheckLanguageFiles;
   end;
 
@@ -451,7 +454,12 @@ end;
 procedure TEnviroForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+{$IFDEF WIN32}
   if key = vk_F1 then
+{$ENDIF}
+{$IFDEF LINUX}
+  if key = XK_F1 then
+{$ENDIF}
     Application.HelpJump(HelpKeyword);
 end;
 
@@ -463,14 +471,12 @@ end;
 
 procedure TEnviroForm.vleExternalEditButtonClick(Sender: TObject);
 begin
-  if Trim(vleExternal.Cells[0, vleExternal.Row]) = '' then
-  begin
+  if Trim(vleExternal.Cells[0, vleExternal.Row])='' then begin
     MessageDlg('Add an extension first!', mtError, [mbOk], 0);
     Exit;
   end;
 
-  with dmMain.OpenDialog do
-  begin
+  with dmMain.OpenDialog do begin
     Filter := FLT_ALLFILES;
     if Execute then
       vleExternal.Cells[1, vleExternal.Row] := Filename;
@@ -478,12 +484,11 @@ begin
 end;
 
 procedure TEnviroForm.vleExternalValidate(Sender: TObject; ACol,
-  ARow: Integer; const KeyName, KeyValue: string);
+  ARow: Integer; const KeyName, KeyValue: String);
 var
   idx: integer;
 begin
-  if vleExternal.FindRow(KeyName, idx) and (idx <> ARow) then
-  begin
+  if vleExternal.FindRow(KeyName, idx) and (idx<>ARow) then begin
     MessageDlg('Extension exists...', mtError, [mbOk], 0);
     vleExternal.Col := 0;
     vleExternal.Row := ARow;
@@ -502,8 +507,7 @@ end;
 
 procedure TEnviroForm.btnExtDelClick(Sender: TObject);
 begin
-  if (vleExternal.Row = 1) and (vleExternal.RowCount = 2) and
-    (vleExternal.Cells[0, 1] = '') then
+  if (vleExternal.Row = 1) and (vleExternal.RowCount = 2) and (vleExternal.Cells[0, 1] = '') then
     exit;
   if (vleExternal.RowCount > 1) and (vleExternal.Row > 0) then
     vleExternal.DeleteRow(vleExternal.Row);

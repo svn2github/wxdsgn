@@ -22,8 +22,14 @@ unit IconFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Forms,
   ImgList, ComCtrls, Buttons, StdCtrls, Controls, Dialogs, ExtDlgs, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QForms, 
+  QImgList, QComCtrls, QButtons, QStdCtrls, QControls, QDialogs;
+{$ENDIF}
 
 type
   TIconForm = class(TForm)
@@ -38,7 +44,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure IconViewInfoTip(Sender: TObject; Item: TListItem;
-      var InfoTip: string);
+      var InfoTip: String);
     procedure IconViewDblClick(Sender: TObject);
   private
     procedure LoadText;
@@ -54,7 +60,7 @@ implementation
 
 uses Version, MultiLangSupport, devcfg, utils;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TIconForm.LoadText;
 begin
@@ -94,7 +100,7 @@ begin
   try
     ImageList.Clear;
     Items.BeginUpdate;
-    Clear;
+    Items.Clear;
     tmp := TStringList.Create;
     try
       StrtoList(devDirs.Icons, tmp);
@@ -150,7 +156,7 @@ begin
 end;
 
 procedure TIconForm.IconViewInfoTip(Sender: TObject; Item: TListItem;
-  var InfoTip: string);
+  var InfoTip: String);
 begin
   InfoTip := Item.SubItems[0];
 end;

@@ -22,7 +22,12 @@ unit CFGData;
 interface
 
 uses
-  Windows, Messages, Classes, sysUtils, typinfo, cfgreg, cfgini, cfgtypes;
+{$IFDEF WIN32}
+  Windows, Messages, Classes, sysUtils, TypInfo, cfgreg, CFGINI, cfgtypes;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, sysUtils, TypInfo, cfgreg, CFGINI, cfgtypes;
+{$ENDIF}
 
 type
   EConfigDataError = class(Exception);
@@ -85,7 +90,7 @@ type
   end;
 
 function ReadBoolString(Value: string): boolean;
-function GetPropName(Instance: TPersistent; Index: Integer): string;
+function GetPropName(Instance: TPersistent; Index: Integer): String;
 function GetPropCount(Instance: TPersistent): Integer;
 
 const
@@ -111,32 +116,30 @@ end;
 //Returns the number of properties of a given object
 
 function GetPropCount(Instance: TPersistent): Integer;
-var
-  Data: PTypeData;
-begin
+var Data: PTypeData;
+Begin
   Data := GetTypeData(Instance.Classinfo);
   Result := Data^.PropCount;
-end;
+End;
 
 //Returns the property name of an instance at a certain index
-
-function GetPropName(Instance: TPersistent; Index: Integer): string;
-var
-  PropList: PPropList;
+function GetPropName(Instance: TPersistent; Index: Integer): String;
+var PropList: PPropList;
   PropInfo: PPropInfo;
   Data: PTypeData;
-begin
+Begin
   Result := '';
   Data := GetTypeData(Instance.Classinfo);
   GetMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
-  try
+  Try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
     Result := PropInfo^.Name;
   finally
     FreeMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
-  end;
-end;
+  End;
+End;
+
 
 { TConfigData }
 
@@ -193,13 +196,11 @@ begin
   if fUseRegistry then
   try
     GetReg.ReadConfig;
-  except
-  end
+   except end
   else
   try
     GetINI.ReadConfig;
-  except
-  end;
+   except end;
 end;
 
 procedure TConfigData.SaveConfigData;
@@ -207,13 +208,11 @@ begin
   if fUseRegistry then
   try
     GetReg.SaveConfig;
-  except
-  end
+   except end
   else
   try
     GetINI.SaveConfig;
-  except
-  end;
+   except end;
 end;
 
 function TConfigData.LoadWindowPlacement(const key: string;
@@ -224,8 +223,7 @@ function TConfigData.LoadWindowPlacement(const key: string;
   var
     tmp: TSTringList;
   begin
-    if s = '' then
-      result := EmptyWinPlace
+     if s = '' then result:= EmptyWinPlace
     else
     begin
       tmp := TStringList.Create;
@@ -286,8 +284,7 @@ begin
       GetReg.SaveSetting(key, 'WinPlace', s)
     else
       GetINI.SaveSetting(key, 'WinPlace', s);
-  except
-  end;
+  except end;
 end;
 
 procedure TConfigData.LoadObject(obj: TCFGOptions);
@@ -297,8 +294,7 @@ begin
       GetReg.LoadObject(Obj)
     else
       GetINI.LoadObject(Obj);
-  except
-  end;
+  except end;
 end;
 
 procedure TConfigData.SaveObject(obj: TCFGOptions);
@@ -308,8 +304,7 @@ begin
       GetReg.SaveObject(Obj)
     else
       GetINI.SaveObject(Obj);
-  except
-  end;
+  except end;
 end;
 
 function TConfigData.LoadboolSetting(const key, entry: string): boolean;
@@ -322,8 +317,7 @@ begin
     else
       s := GetINI.LoadSetting(key, Entry);
 
-    if s = '' then
-      s := '0';
+   if s = '' then s:= '0';
     if fboolAsWords then
       result := ReadboolString(s)
     else
@@ -333,8 +327,7 @@ begin
   end;
 end;
 
-function TConfigData.LoadboolSetting(val: boolean; const key, entry: string):
-  boolean;
+function TConfigData.LoadboolSetting(val : boolean; const key, entry: string): boolean;
 var
   s: string;
 begin
@@ -344,8 +337,7 @@ begin
     else
       s := GetINI.LoadSetting(val, key, Entry);
 
-    if s = '' then
-      s := '0';
+   if s = '' then s:= '0';
     if fboolAsWords then
       result := ReadboolString(s)
     else
@@ -362,8 +354,7 @@ begin
       result := GetReg.LoadSetting(key, Entry)
     else
       result := GetINI.LoadSetting(key, Entry);
-  except
-  end;
+  except end;
 end;
 
 procedure TConfigData.SaveSetting(const key: string; const Entry: string;
@@ -374,8 +365,7 @@ begin
       GetReg.SaveSetting(key, Entry, Value)
     else
       GetINI.SaveSetting(key, Entry, Value);
-  except
-  end;
+  except end;
 end;
 
 procedure TConfigData.SaveboolSetting(const key: string; const entry: string;
@@ -393,8 +383,7 @@ begin
       GetReg.SaveSetting(key, Entry, s)
     else
       GetINI.SaveSetting(key, Entry, s);
-  except
-  end;
+  except end;
 end;
 
 end.

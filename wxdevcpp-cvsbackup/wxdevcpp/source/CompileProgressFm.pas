@@ -22,8 +22,14 @@ unit CompileProgressFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QExtCtrls, QComCtrls;
+{$ENDIF}
 
 type
   TCompileProgressForm = class(TForm)

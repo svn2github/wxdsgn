@@ -22,8 +22,14 @@ unit ViewToDoFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, Menus, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QComCtrls, QMenus;
+{$ENDIF}
 
 type
   PToDoRec = ^TToDoRec;
@@ -71,8 +77,7 @@ type
     procedure BuildList;
     procedure AddFiles(Current, InProject, NotInProject, OpenOnly: boolean);
     procedure AddToDo(Filename: string);
-    function BreakupToDo(Filename: string; sl: TStrings; Line: integer; Token:
-      string; HasUser, HasPriority: boolean): integer;
+    function BreakupToDo(Filename: string; sl: TStrings; Line: integer; Token: string; HasUser, HasPriority: boolean): integer;
   public
     { Public declarations }
   end;
@@ -86,8 +91,7 @@ uses main, editor, project, StrUtils, MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
-function TViewToDoForm.BreakupToDo(Filename: string; sl: TStrings; Line:
-  integer; Token: string; HasUser,
+function TViewToDoForm.BreakupToDo(Filename: string; sl: TStrings; Line: integer; Token: string; HasUser,
   HasPriority: boolean): integer;
 var
   sUser: string;
@@ -119,8 +123,7 @@ begin
     Inc(idx, 2); // skip " ("
 
   Delete(S, 1, idx - 1);
-  if HasUser or HasPriority then
-  begin
+  if HasUser or HasPriority then begin
     idx := AnsiPos('#', S);
     sUser := Copy(S, 1, idx - 1); // got user
     iPriority := StrToIntDef(S[idx + 1], 1); // got priority
@@ -131,13 +134,10 @@ begin
   Delete(S, 1, idx + 1);
   Done := False;
   Y := Line;
-  while (Y < sl.Count) and not Done do
-  begin
+  while (Y < sl.Count) and not Done do begin
     X := Indent;
-    while (X <= Length(sl[Y])) and not Done do
-    begin
-      if (sl[Y][X] = '*') and (X < Length(sl[Y])) and (sl[Y][X + 1] = '/') then
-      begin
+    while (X <= Length(sl[Y])) and not Done do begin
+      if (sl[Y][X] = '*') and (X < Length(sl[Y])) and (sl[Y][X + 1] = '/') then begin
         Done := True;
         Break;
       end;
@@ -146,8 +146,7 @@ begin
     end;
     if not MultiLine then
       Break;
-    if not Done then
-    begin
+    if not Done then begin
       sDescription := sDescription + #13#10;
       Inc(Line);
     end;
@@ -178,24 +177,22 @@ begin
     for I := 0 to MainForm.PageControl.PageCount - 1 do
       if TEditor(MainForm.PageControl.Pages[I].Tag).FileName = Filename then
         sl.Assign(TEditor(MainForm.PageControl.Pages[I].Tag).Text.Lines)
-      else
+      else if FileExists(Filename) then
         sl.LoadFromFile(Filename);
     if sl.Count = 0 then
+      if FileExists(Filename) then
       sl.LoadFromFile(Filename);
     I := 0;
-    while I < sl.Count do
-    begin
-      //      if MatchesMask(sl[I], '*/? TODO ([a-z0-9_]*#[1-9]#)*:*') then
+    while I < sl.Count do begin
+//      if MatchesMask(sl[I], '*/? TODO ([a-z0-9_]*#[1-9]#)*:*') then
       if MatchesMask(sl[I], '*/? TODO (?*#?#)*:*') then
         BreakupToDo(Filename, sl, I, 'TODO', True, True) // full info TODO
       else if MatchesMask(sl[I], '*/? DONE (?*#?#)*:*') then
         BreakupToDo(Filename, sl, I, 'DONE', True, True) // full info DONE
       else if MatchesMask(sl[I], '*/? TODO (#?#)*:*') then
-        BreakupToDo(Filename, sl, I, 'TODO', False, True)
-          // only priority info TODO
+        BreakupToDo(Filename, sl, I, 'TODO', False, True) // only priority info TODO
       else if MatchesMask(sl[I], '*/? DONE (#?#)*:*') then
-        BreakupToDo(Filename, sl, I, 'DONE', False, True)
-          // only priority info DONE
+        BreakupToDo(Filename, sl, I, 'DONE', False, True) // only priority info DONE
       else if MatchesMask(sl[I], '*/?*TODO*:*') then
         BreakupToDo(Filename, sl, I, 'TODO', False, False) // custom TODO
       else if MatchesMask(sl[I], '*/?*DONE*:*') then
@@ -207,31 +204,26 @@ begin
   end;
 end;
 
-procedure TViewToDoForm.AddFiles(Current, InProject, NotInProject, OpenOnly:
-  boolean);
+procedure TViewToDoForm.AddFiles(Current, InProject, NotInProject, OpenOnly: boolean);
 var
   e: TEditor;
   idx: integer;
 begin
-  if Current then
-  begin
+  if Current then begin
     e := MainForm.GetEditor;
     if Assigned(e) then
       AddToDo(e.FileName);
     Exit;
   end;
 
-  if InProject and not OpenOnly then
-  begin
+  if InProject and not OpenOnly then begin
     if Assigned(MainForm.fProject) then
       for idx := 0 to pred(MainForm.fProject.Units.Count) do
         AddToDo(MainForm.fProject.Units[idx].filename);
   end;
 
-  if OpenOnly then
-  begin
-    for idx := 0 to pred(MainForm.PageControl.PageCount) do
-    begin
+  if OpenOnly then begin
+    for idx := 0 to pred(MainForm.PageControl.PageCount) do begin
       e := MainForm.GetEditor(idx);
       if Assigned(e) then
         if InProject and e.InProject then
@@ -239,10 +231,8 @@ begin
     end;
   end;
 
-  if NotInProject then
-  begin
-    for idx := 0 to pred(MainForm.PageControl.PageCount) do
-    begin
+  if NotInProject then begin
+    for idx := 0 to pred(MainForm.PageControl.PageCount) do begin
       e := MainForm.GetEditor(idx);
       if Assigned(e) then
         if not e.InProject then
@@ -275,8 +265,7 @@ end;
 procedure TViewToDoForm.FormDestroy(Sender: TObject);
 begin
   while fToDoList.Count > 0 do
-    if Assigned(fToDoList[0]) then
-    begin
+    if Assigned(fToDoList[0]) then begin
       Dispose(PToDoRec(fToDoList[0]));
       fToDoList.Delete(0);
     end;
@@ -317,11 +306,22 @@ begin
   else
     XPMenu.Active := false;
   Caption := Lang[ID_VIEWTODO_MENUITEM];
+
+{$IFDEF WIN32}
   lv.Column[0].Caption := Lang[ID_VIEWTODO_DONE];
   lv.Column[1].Caption := Lang[ID_ADDTODO_PRIORITY];
   lv.Column[2].Caption := Lang[ID_ADDTODO_DESCRIPTION];
   lv.Column[3].Caption := Lang[ID_VIEWTODO_FILENAME];
   lv.Column[4].Caption := Lang[ID_ADDTODO_USER];
+{$ENDIF}
+{$IFDEF LINUX}
+  lv.Columns[0].Caption := Lang[ID_VIEWTODO_DONE];
+  lv.Columns[1].Caption := Lang[ID_ADDTODO_PRIORITY];
+  lv.Columns[2].Caption := Lang[ID_ADDTODO_DESCRIPTION];
+  lv.Columns[3].Caption := Lang[ID_VIEWTODO_FILENAME];
+  lv.Columns[4].Caption := Lang[ID_ADDTODO_USER];
+{$ENDIF}
+
   chkNoDone.Caption := Lang[ID_VIEWTODO_NOSHOWDONE];
   btnClose.Caption := Lang[ID_BTN_CLOSE];
   lblFilter.Caption := Lang[ID_VIEWTODO_FILTER];
@@ -349,21 +349,15 @@ begin
     Exit;
 
   e := MainForm.GetEditorFromFileName(PToDoRec(Item.Data)^.Filename);
-  if Assigned(e) then
-  begin
+  if Assigned(e) then begin
     PToDoRec(Item.Data)^.IsDone := Item.Checked;
-    if Item.Checked then
-    begin
-      e.Text.Lines[PToDoRec(Item.Data)^.Line] :=
-        StringReplace(e.Text.Lines[PToDoRec(Item.Data)^.Line], 'TODO', 'DONE',
-        []);
+    if Item.Checked then begin
+      e.Text.Lines[PToDoRec(Item.Data)^.Line] := StringReplace(e.Text.Lines[PToDoRec(Item.Data)^.Line], 'TODO', 'DONE', []);
       if chkNoDone.Checked then
         BuildList;
     end
     else
-      e.Text.Lines[PToDoRec(Item.Data)^.Line] :=
-        StringReplace(e.Text.Lines[PToDoRec(Item.Data)^.Line], 'DONE', 'TODO',
-        []);
+      e.Text.Lines[PToDoRec(Item.Data)^.Line] := StringReplace(e.Text.Lines[PToDoRec(Item.Data)^.Line], 'DONE', 'TODO', []);
     e.Modified := True;
     lv.Refresh;
   end;
@@ -381,18 +375,15 @@ procedure TViewToDoForm.lvCompare(Sender: TObject; Item1, Item2: TListItem;
 var
   idx: Integer;
 begin
-  if fSortColumn = 0 then
-  begin
+  if fSortColumn = 0 then begin
     if PToDoRec(Item1.Data)^.IsDone and not PToDoRec(Item2.Data)^.IsDone then
       Compare := 1
-    else if not PToDoRec(Item1.Data)^.IsDone and PToDoRec(Item2.Data)^.IsDone
-      then
+    else if not PToDoRec(Item1.Data)^.IsDone and PToDoRec(Item2.Data)^.IsDone then
       Compare := -1
     else
       Compare := 0;
   end
-  else
-  begin
+  else begin
     idx := fSortColumn - 1;
     Compare := AnsiCompareText(Item1.SubItems[idx], Item2.SubItems[idx]);
   end;
@@ -408,8 +399,7 @@ begin
     Exit;
 
   e := MainForm.GetEditorFromFilename(PToDoRec(lv.Selected.Data)^.Filename);
-  if Assigned(e) then
-  begin
+  if Assigned(e) then begin
     e.GotoLineNr(PToDoRec(lv.Selected.Data)^.Line + 1);
     Close;
   end;
@@ -428,12 +418,10 @@ var
 begin
   lv.Items.BeginUpdate;
   lv.Items.Clear;
-  for I := 0 to fToDoList.Count - 1 do
-  begin
+  for I := 0 to fToDoList.Count - 1 do begin
     td := PToDoRec(fToDoList[I]);
     if (chkNoDone.Checked and not td^.IsDone) or not chkNoDone.Checked then
-      with lv.Items.Add do
-      begin
+      with lv.Items.Add do begin
         Caption := '';
         SubItems.Add(IntToStr(td^.Priority));
         S := StringReplace(td^.Description, #13#10, ' ', [rfReplaceAll]);
@@ -467,39 +455,32 @@ begin
   if AnsiPos('**', MaskStr) > 0 then // illegal
     Matches := False;
 
-  while Matches do
-  begin
+  while Matches do begin
     case MaskStr[MaskIndex] of
-      '*':
-        begin
+      '*': begin
           if MaskIndex < Length(MaskStr) then
             NextMatch := MaskStr[MaskIndex + 1]
           else
             NextMatch := #0;
-          while SearchIndex <= Length(SearchStr) do
-          begin
-            if SearchStr[SearchIndex] = NextMatch then
-            begin
+          while SearchIndex <= Length(SearchStr) do begin
+            if SearchStr[SearchIndex] = NextMatch then begin
               Inc(SearchIndex);
               Inc(MaskIndex, 2);
               Break;
             end;
             Inc(SearchIndex);
           end;
-          if (SearchIndex = Length(SearchStr)) and (MaskIndex < Length(MaskStr))
-            then
+          if (SearchIndex = Length(SearchStr)) and (MaskIndex < Length(MaskStr)) then
             Matches := False;
         end;
-      '?':
-        begin
+      '?': begin
           Inc(SearchIndex);
           Inc(MaskIndex);
         end;
     else
       if MaskStr[MaskIndex] <> SearchStr[SearchIndex] then
         Matches := False
-      else
-      begin
+      else begin
         Inc(MaskIndex);
         Inc(SearchIndex);
       end;
@@ -513,20 +494,19 @@ begin
   if (MaskIndex = Length(MaskStr)) and (MaskStr[MaskIndex] = '*') then
     MaskIndex := Length(MaskStr) + 1;
 
-  Result := Matches and (MaskIndex > Length(MaskStr)) and (SearchIndex >
-    Length(SearchStr));
+  Result := Matches and (MaskIndex > Length(MaskStr)) and (SearchIndex > Length(SearchStr));
 end;
 
 procedure TViewToDoForm.cmbFilterChange(Sender: TObject);
 begin
-  {
+{
     0 = All files (in project and not)
     1 = Open files only (in project and not)
     2 = All project files
     3 = Open project files only
     4 = Non-project open files
     5 = Current file only
-  }
+}
   fToDoList.Clear;
   lv.Items.Clear;
   case cmbFilter.ItemIndex of

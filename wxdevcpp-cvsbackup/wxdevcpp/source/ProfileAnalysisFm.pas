@@ -22,8 +22,14 @@ unit ProfileAnalysisFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QComCtrls, QExtCtrls;
+{$ENDIF}
 
 type
   TProfileAnalysisForm = class(TForm)
@@ -66,9 +72,15 @@ var
 
 implementation
 
-uses devcfg, version, utils, main, ShellAPI, StrUtils, MultiLangSupport,
-CppParser,
+uses 
+{$IFDEF WIN32}
+  devcfg, version, utils, main, ShellAPI, StrUtils, MultiLangSupport, CppParser,
   editor;
+{$ENDIF}
+{$IFDEF LINUX}
+  devcfg, version, utils, main, StrUtils, MultiLangSupport, CppParser,
+  editor, Types;
+{$ENDIF}
 
 {$R *.dfm}
 
@@ -105,48 +117,38 @@ begin
     Cmd := devCompiler.gprofName
   else
     Cmd := GPROF_PROGRAM;
-  if Assigned(MainForm.fProject) then
-  begin
+  if Assigned(MainForm.fProject) then begin
     Dir := ExtractFilePath(MainForm.fProject.Executable);
-    Params := GPROF_CMD_GENFLAT + ' "' +
-      ExtractFileName(MainForm.fProject.Executable) + '"';
+    Params := GPROF_CMD_GENFLAT + ' "' + ExtractFileName(MainForm.fProject.Executable) + '"';
   end
-  else
-  begin
+  else begin
     Dir := ExtractFilePath(MainForm.GetEditor.FileName);
-    Params := GPROF_CMD_GENFLAT + ' "' +
-      ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
+    Params := GPROF_CMD_GENFLAT + ' "' + ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
   end;
 
-  memFlat.Lines.Text := RunAndGetOutput(Cmd + ' ' + Params, Dir, nil, nil, nil,
-    False);
+  memFlat.Lines.Text := RunAndGetOutput(Cmd + ' ' + Params, Dir, nil, nil, nil, False);
   memFlat.SelStart := 0;
 
   BreakLine := -1;
   I := 0;
   Parsing := False;
   Done := False;
-  while (I < memFlat.Lines.Count) and not Done do
-  begin
+  while (I < memFlat.Lines.Count) and not Done do begin
     Line := memFlat.Lines[I];
 
     // parse
-    if Parsing then
-    begin
-      if Trim(Line) = '' then
-      begin
+    if Parsing then begin
+      if Trim(Line) = '' then begin
         BreakLine := I;
         Break;
       end;
 
-      with lvFlat.Items.Add do
-      begin
+      with lvFlat.Items.Add do begin
         Caption := Trim(Copy(Line, 55, Length(Line) - 54));
 
         // remove arguments - if exists
         if AnsiPos('(', Caption) > 0 then
-          Data := MainForm.CppParser1.Locate(Copy(Caption, 1, AnsiPos('(',
-            Caption) - 1), True)
+          Data := MainForm.CppParser1.Locate(Copy(Caption, 1, AnsiPos('(', Caption) - 1), True)
         else
           Data := MainForm.CppParser1.Locate(Caption, True);
 
@@ -158,8 +160,7 @@ begin
         SubItems.Add(Trim(Copy(Line, 46, 9)));
       end;
     end
-    else
-    begin
+    else begin
       Parsing := AnsiStartsText('%', Trim(Line));
       if Parsing then
         Inc(I); // skip over next line too
@@ -186,50 +187,39 @@ begin
   else
     Cmd := GPROF_PROGRAM;
 
-  if Assigned(MainForm.fProject) then
-  begin
+  if Assigned(MainForm.fProject) then begin
     Dir := ExtractFilePath(MainForm.fProject.Executable);
-    Params := GPROF_CMD_GENMAP + ' "' +
-      ExtractFileName(MainForm.fProject.Executable) + '"';
+    Params := GPROF_CMD_GENMAP + ' "' + ExtractFileName(MainForm.fProject.Executable) + '"';
   end
-  else
-  begin
+  else begin
     Dir := ExtractFilePath(MainForm.GetEditor.FileName);
-    Params := GPROF_CMD_GENMAP + ' "' +
-      ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
+    Params := GPROF_CMD_GENMAP + ' "' + ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
   end;
 
-  memGraph.Lines.Text := RunAndGetOutput(Cmd + ' ' + Params, Dir, nil, nil, nil,
-    False);
+  memGraph.Lines.Text := RunAndGetOutput(Cmd + ' ' + Params, Dir, nil, nil, nil, False);
   memGraph.SelStart := 0;
 
   BreakLine := -1;
   I := 0;
   Parsing := False;
   Done := False;
-  while (I < memGraph.Lines.Count) and not Done do
-  begin
+  while (I < memGraph.Lines.Count) and not Done do begin
     Line := memGraph.Lines[I];
 
     // parse
-    if Parsing then
-    begin
-      if Trim(Line) = '' then
-      begin
+    if Parsing then begin
+      if Trim(Line) = '' then begin
         BreakLine := I;
         Break;
       end;
 
-      if not AnsiStartsText('---', Line) then
-      begin
-        with lvGraph.Items.Add do
-        begin
+      if not AnsiStartsText('---', Line) then begin
+        with lvGraph.Items.Add do begin
           Caption := Trim(Copy(Line, 46, Length(Line) - 45));
 
           // remove arguments - if exists
           if AnsiPos('(', Caption) > 0 then
-            Data := MainForm.CppParser1.Locate(Copy(Caption, 1, AnsiPos('(',
-              Caption) - 1), True)
+            Data := MainForm.CppParser1.Locate(Copy(Caption, 1, AnsiPos('(', Caption) - 1), True)
           else
             Data := MainForm.CppParser1.Locate(Caption, True);
 
@@ -281,8 +271,7 @@ procedure TProfileAnalysisForm.lvFlatCustomDrawItem(
   Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
   var DefaultDraw: Boolean);
 begin
-  if not (cdsSelected in State) then
-  begin
+  if not (cdsSelected in State) then begin
     if Assigned(Item.Data) then
       Sender.Canvas.Font.Color := clBlue
     else
@@ -294,10 +283,8 @@ procedure TProfileAnalysisForm.lvGraphCustomDrawItem(
   Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
   var DefaultDraw: Boolean);
 begin
-  if not (cdsSelected in State) then
-  begin
-    if (Item.SubItems.Count > 0) and (Item.SubItems[0] <> '') then
-    begin
+  if not (cdsSelected in State) then begin
+    if (Item.SubItems.Count > 0) and (Item.SubItems[0] <> '') then begin
       if Assigned(Item.Data) then
         Sender.Canvas.Font.Color := clBlue
       else
@@ -327,8 +314,7 @@ procedure TProfileAnalysisForm.lvFlatMouseMove(Sender: TObject;
 var
   It: TListItem;
 begin
-  with Sender as TListView do
-  begin
+  with Sender as TListView do begin
     It := GetItemAt(X, Y);
     if Assigned(It) and Assigned(It.Data) then
       Cursor := crHandPoint
@@ -345,12 +331,9 @@ var
 begin
   P := TListView(Sender).ScreenToClient(Mouse.CursorPos);
   It := TListView(Sender).GetItemAt(P.X, P.Y);
-  if Assigned(It) and Assigned(It.Data) then
-  begin
-    e :=
-      MainForm.GetEditorFromFileName(MainForm.CppParser1.GetImplementationFileName(PStatement(It.Data)));
-    if Assigned(e) then
-    begin
+  if Assigned(It) and Assigned(It.Data) then begin
+    e := MainForm.GetEditorFromFileName(MainForm.CppParser1.GetImplementationFileName(PStatement(It.Data)));
+    if Assigned(e) then begin
       e.GotoLineNr(MainForm.CppParser1.GetImplementationLine(PStatement(It.Data)));
       e.Activate;
     end;

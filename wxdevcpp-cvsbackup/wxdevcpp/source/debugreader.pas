@@ -20,7 +20,14 @@
 unit debugreader;
 
 interface
-uses Classes, Windows, ShellAPI, Dialogs, SysUtils, version;
+
+uses 
+{$IFDEF WIN32}
+  Classes, Windows, ShellAPI, Dialogs, SysUtils, version;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, QDialogs, SysUtils, version;
+{$ENDIF}
 
 type
   TDebugReader = class(TThread)
@@ -44,20 +51,17 @@ var
   _output: string;
 begin
   _output := '';
-  while true do
-  begin
+  while true do begin
     FillChar(lpBuffer, sizeof(lpBuffer), 0);
     if (not ReadFile(hPipeRead, lpBuffer, sizeof(lpBuffer),
-      nBytesRead, nil) or (nBytesRead = 0)) then
-    begin
+        nBytesRead, nil) or (nBytesRead = 0)) then begin
       if (GetLastError() = ERROR_BROKEN_PIPE) then
         break // pipe done - normal exit path.
       else
         break; // Something bad happened.
     end;
     _output := _output + string(lpBuffer);
-    if pos(GDB_PROMPT, _output) <> 0 then
-    begin
+    if pos(GDB_PROMPT, _output) <> 0 then begin
       SetEvent(EventReady);
       Output := _output;
       _output := '';

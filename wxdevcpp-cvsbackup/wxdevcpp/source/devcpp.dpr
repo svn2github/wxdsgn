@@ -22,21 +22,27 @@ program devcpp;
 {$R 'icons.res' 'icons.rc'}
 {%File 'LangIDs.inc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}
+
+{$IFDEF WIN32}
 {$R 'webupdate\selfupdater.res' 'webupdate\selfupdater.rc'}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R 'webupdate/selfupdater.res' 'webupdate/selfupdater.rc'}
+{$ENDIF}
+
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  madExcept,
-  madLinkDisAsm,
-  madScreenShot,
-  MemCheck in 'MemCheck.pas',
-  Windows,
-  Forms,
-  sysUtils,
-  SHFolder,
-  Dialogs,
-  inifiles,
+{$IFDEF WIN32}
+  {$IFDEF WX_BUILD}
+  madExcept,madLinkDisAsm, madScreenShot, MemCheck in 'MemCheck.pas', inifiles,
+  {$ENDIF}  
+  Windows, Forms, sysUtils, SHFolder, Dialogs,
+{$ENDIF}
+{$IFDEF LINUX}
+  QForms, sysUtils, QDialogs,
+{$ENDIF}
   main in 'main.pas' {MainForm},
   MultiLangSupport in 'MultiLangSupport.pas',
   Splash in 'Splash.pas' {SplashForm},
@@ -102,12 +108,20 @@ uses
   ParamsFrm in 'ParamsFrm.pas' {ParamsForm},
   CompilerOptionsFrame in 'CompilerOptionsFrame.pas' {CompOptionsFrame: TFrame},
   CompileProgressFm in 'CompileProgressFm.pas' {CompileProgressForm},
+{$IFDEF WIN32}
   WebThread in 'webupdate\WebThread.pas',
   WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
+{$ENDIF}
+{$IFDEF LINUX}
+  WebThread in 'webupdate/WebThread.pas',
+  WebUpdate in 'webupdate/WebUpdate.pas' {WebUpdateForm},
+{$ENDIF}
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
+  ImageTheme in 'ImageTheme.pas' 
+  
+  {$IFDEF WX_BUILD},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
   WxUtils in 'components\wxUtils.pas',
   WxBitmapButton in 'components\WxBitmapButton.pas',
@@ -172,7 +186,7 @@ uses
   wxMessageDialog in 'components\wxMessageDialog.pas',
   uFileWatch in 'uFileWatch.pas';
 
-{$R *.RES}
+{$R *.res}
 {$R winxp.res}
 
 {$IFDEF WX_BUILD}
@@ -180,6 +194,8 @@ uses
 {$R SYSREG.DCR}
 {$R DBREG.DCR}
 {$ENDIF}
+
+//wx-addition Single Instance feature
 function CanStart: Boolean;
 var
   Wdw: HWND;
@@ -190,6 +206,7 @@ begin
   else
     Result := not SwitchToPrevInst(Wdw);
 end;
+
 type
   TMainFormHack = class(TMainForm);
 
@@ -197,7 +214,8 @@ const
     WXVERSION = 6;
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
-  UserHome: array[0..MAX_PATH] of char;
+    UserHome, strLocalAppData, strAppData, strIniFile: String;
+    tempc: array [0..MAX_PATH] of char;
   boolCanStart:Boolean;
   iniFile:TIniFile;
   versionNum:Integer;
@@ -206,25 +224,43 @@ begin
 {$IFDEF MEM_DEBUG}
   MemChk;
 {$ENDIF MEM_DEBUG}
-
+  strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
+  
   if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then  begin
     if not DirectoryExists(ParamStr(2)) then begin
       MessageDlg('The directory "' + ParamStr(2) + '" doesn''t exist. Dev-C++ will now quit, please create the directory first.', mtError, [mbOK], 0);
       Application.Terminate;
       exit;
     end;
-    devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
+    devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + strIniFile;
     ConfigMode := CFG_PARAM;
   end
   else if IsWinNT then begin
-    if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, UserHome)) and
-      DirectoryExists(string(UserHome)) then begin
-      devData.INIFile := IncludeTrailingBackslash(string(UserHome)) + ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
+     //default dir should be %APPDATA%\Dev-Cpp
+     strLocalAppData := '';
+     if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
+       strLocalAppData := IncludeTrailingBackslash(String(tempc));
+
+     strAppData := '';
+     if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
+       strAppData := IncludeTrailingBackslash(String(tempc));
+
+     if (strLocalAppData <> '') and
+     FileExists(strLocalAppData + strIniFile) then begin
+       UserHome := strLocalAppData;
+       devData.INIFile := UserHome + strIniFile;
+       ConfigMode := CFG_USER;
+     end
+     else if (strAppData <> '')
+     and FileExists(strAppData + strIniFile) then begin
+       UserHome := strAppData;
+       devData.INIFile := UserHome + strIniFile;
       ConfigMode := CFG_USER;
     end
-    else if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, UserHome)) and
-      DirectoryExists(string(UserHome)) then begin
-      devData.INIFile := IncludeTrailingBackslash(string(UserHome)) + ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
+     else if (strAppData <> '')
+     and (DirectoryExists(strAppData + 'Dev-Cpp') or CreateDir(strAppData + 'Dev-Cpp')) then begin
+       UserHome := strAppData + 'Dev-Cpp\';
+       devData.INIFile := UserHome + strIniFile;
       ConfigMode := CFG_USER;
     end
     else
@@ -280,7 +316,7 @@ begin
   if ConfigMode = CFG_PARAM then
     devDirs.Config := IncludeTrailingBackslash(ParamStr(2))
   else if ConfigMode = CFG_USER then
-    devDirs.Config := IncludeTrailingBackslash(string(UserHome));
+    devDirs.Config := UserHome;
   devData.ReadConfigData;
   devTheme := TdevTheme.Create;
 
@@ -288,7 +324,6 @@ begin
   Application.Initialize;
   Application.Title := 'Dev-C++';
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TCreationOrderForm, CreationOrderForm);
   MainForm.Hide; // hide it
 
 

@@ -22,8 +22,14 @@ unit Findfrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   SynEdit, StdCtrls, devTabs, SynEditTypes, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms,
+  QSynEdit, QStdCtrls, devTabs, QSynEditTypes;
+{$ENDIF}
 
 type
   TfrmFind = class(TForm)
@@ -71,9 +77,15 @@ var
 
 implementation
 
-uses Main, Dialogs, MultiLangSupport, devcfg;
+uses 
+{$IFDEF WIN32}
+  Main, Dialogs, MultiLangSupport, devcfg;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, Main, QDialogs, MultiLangSupport, devcfg;
+{$ENDIF}
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TfrmFind.btnFindClick(Sender: TObject);
 begin
@@ -107,7 +119,7 @@ begin
     end
     else
     begin
-      MainForm.FindOutput.Clear;
+        MainForm.FindOutput.Items.Clear;
       include(fSearchOptions, ssoEntireScope);
       include(fSearchOptions, ssoReplaceAll);
       include(fSearchOptions, ssoPrompt);
@@ -218,10 +230,14 @@ end;
 procedure TfrmFind.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+{$IFDEF WIN32}
   if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+{$ENDIF}
+{$IFDEF LINUX}
+  if (Key=XK_TAB) and (Shift=[ssCtrl]) then
+{$ENDIF}
     // switch tabs
-    if FindTabs.Tabs.Count > 1 then
-    begin
+    if FindTabs.Tabs.Count> 1 then begin
       if FindTabs.TabIndex = 0 then
         FindTabs.TabIndex := 1
       else

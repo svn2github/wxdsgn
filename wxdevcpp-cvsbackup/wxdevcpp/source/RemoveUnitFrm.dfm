@@ -1,6 +1,6 @@
 object RemoveUnitForm: TRemoveUnitForm
-  Left = 239
-  Top = 116
+  Left = 267
+  Top = 187
   Width = 354
   Height = 317
   BorderIcons = [biSystemMenu, biMaximize]

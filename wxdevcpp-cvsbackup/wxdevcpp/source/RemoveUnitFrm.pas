@@ -22,8 +22,14 @@ unit RemoveUnitFrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QExtCtrls;
+{$ENDIF}
 
 type
   TRemoveUnitForm = class(TForm)
@@ -45,9 +51,10 @@ type
 
 implementation
 
-uses MultiLangSupport, devcfg;
+uses 
+  MultiLangSupport, devcfg;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TRemoveUnitForm.FormCreate(Sender: TObject);
 begin
@@ -55,10 +62,10 @@ begin
     XPMenu.Active := true
   else
     XPMenu.Active := false;
-  Caption := Lang[ID_RU];
-  GroupBox.Caption := Lang[ID_RU_TEXT];
+  Caption:=           Lang[ID_RU];
+  GroupBox.Caption:=  Lang[ID_RU_TEXT];
   OkBtn.Caption := Lang[ID_BTN_OK];
-  CancelBtn.Caption := Lang[ID_BTN_CANCEL];
+  CancelBtn.Caption:= Lang[ID_BTN_CANCEL];
 end;
 
 end.

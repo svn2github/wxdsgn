@@ -22,8 +22,14 @@ unit ResourceSelector;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QButtons;
+{$ENDIF}
 
 type
   TSelectResource = class(TForm)
@@ -37,7 +43,7 @@ type
   private
     { Private declarations }
   public
-    function Select(Resources: TStringList): string;
+    function Select(Resources: TStringList): String;
     function SelectIndex(Resources: TStringList): Integer;
   end;
 
@@ -48,7 +54,7 @@ implementation
 
 {$R *.dfm}
 
-function TSelectResource.Select(Resources: TStringList): string;
+function TSelectResource.Select(Resources: TStringList): String;
 var
   i: Integer;
 begin
@@ -108,11 +114,9 @@ begin
 end;
 
 procedure TSelectResource.ListDblClick(Sender: TObject);
-var
-  a: TCloseAction;
+var a : TCloseAction;
 begin
-  if List.ItemIndex > -1 then
-  begin
+  if List.ItemIndex > -1 then begin
     ModalResult := mrOk;
     DoClose(a);
   end;

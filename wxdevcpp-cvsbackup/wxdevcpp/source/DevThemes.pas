@@ -22,7 +22,12 @@ unit DevThemes;
 interface
 
 uses
+{$IFDEF WIN32}
   Classes, Controls, oysUtils;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, QControls, oysUtils, QImgList;
+{$ENDIF}
 
 type
   TdevTheme = class(TObject)
@@ -62,7 +67,14 @@ var
 
 implementation
 
-uses SysUtils, Forms, Graphics, devcfg, utils, datamod, version;
+uses 
+{$IFDEF WIN32}
+  SysUtils, Forms, Graphics, devcfg, utils, datamod, version;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, QForms, QGraphics, devcfg, utils, datamod, version;
+{$ENDIF}
+
 
 { TdevTheme }
 
@@ -114,8 +126,7 @@ begin
 
 end;
 
-function TdevTheme.GetImage(const Index: Integer; var imglst: TImageList):
-  boolean;
+function TdevTheme.GetImage(const Index: Integer; var imglst: TImageList): boolean;
 var
   idx: Integer;
   aFile: string;
@@ -152,13 +163,11 @@ var
   idx: Integer;
 begin
   Result := False;
-  if theme = fName then
-    Exit;
+  if theme = fName then Exit;
 
   if (theme = DEV_GNOME_THEME) or
     (theme = DEV_NEWLOOK_THEME) or
-    (theme = DEV_BLUE_THEME) then
-  begin
+     (theme = DEV_BLUE_THEME) then begin
     if theme = DEV_NEWLOOK_THEME then
     begin
       fMenus.Clear;
@@ -297,8 +306,7 @@ begin
   fThemes.Append(DEV_GNOME_THEME + '=' + DEV_GNOME_THEME);
   fThemes.Append(DEV_BLUE_THEME + '=' + DEV_BLUE_THEME);
 
-  if devDirs.Themes = '' then
-    Exit;
+  if devDirs.Themes = '' then Exit;
 
   FilesFromWildCard(devDirs.Themes, '*.thm',
     TStringList(fThemes), True, False, True);
@@ -307,8 +315,7 @@ begin
   begin
     tmp := TStringList.Create;
     try
-      for idx := 3 to pred(fThemes.Count) do
-        // start from 3 because we have three standard themes
+      for idx:= 3 to pred(fThemes.Count) do  // start from 3 because we have three standard themes
       begin
         tmp.Clear;
         tmp.LoadFromfile(fThemes[idx]);

@@ -22,8 +22,14 @@ unit NewClassFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QButtons;
+{$ENDIF}
 
 type
   TNewClassForm = class(TForm)
@@ -77,7 +83,8 @@ var
 
 implementation
 
-uses main, CppParser, MultiLangSupport, version, editor, devcfg;
+uses 
+  main, CppParser, MultiLangSupport, version, editor, devcfg;
 
 {$R *.dfm}
 

@@ -23,8 +23,14 @@ unit Incrementalfrm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ActnList, SynEdit, SynEditTypes;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QActnList, QSynEdit, QSynEditTypes;
+{$ENDIF}
 
 type
   TfrmIncremental = class(TForm)
@@ -40,11 +46,7 @@ type
   public
     SearchString: string;
     Editor: TSynEdit;
-{$IFDEF NEW_SYNEDIT} 
     OrgPt        : TBufferCoord;
-{$ELSE}
-    OrgPt: TPoint;
-{$ENDIF}
   private
     rOptions: TSynSearchOptions;
   end;
@@ -54,10 +56,15 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
+{$IFDEF WIN32}
   main;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, main;
+{$ENDIF}
 
 procedure TfrmIncremental.EditChange(Sender: TObject);
 var
@@ -117,7 +124,12 @@ procedure TfrmIncremental.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
+{$IFDEF WIN32}
     VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN: Close;
+{$ENDIF}
+{$IFDEF LINUX}
+    XK_LEFT, XK_RIGHT, XK_UP, XK_DOWN : Close;
+{$ENDIF}
   end;
 end;
 

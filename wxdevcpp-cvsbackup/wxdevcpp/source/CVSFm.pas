@@ -23,9 +23,16 @@ unit CVSFm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, devTabs, StdCtrls, Spin, devRun, ComCtrls, StrUtils, FileCtrl,
   Grids, ValEdit, CVSThread, XPMenu, Menus, CheckLst, DateUtils;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, devTabs, QStdCtrls, devRun, QComCtrls, StrUtils, 
+  QGrids, CVSThread, QMenus, QCheckLst, DateUtils, Types;
+{$ENDIF}
 
 type
   TCVSAction = (caImport, caCheckout, caCommit, caUpdate, caDiff, caLog, caAdd,caRemove, caLogin, caLogout);
@@ -188,7 +195,8 @@ var
 
 implementation
 
-uses devcfg, utils, MultiLangSupport, CVSPasswdFm;
+uses 
+  devcfg, utils, MultiLangSupport, CVSPasswdFm;
 
 {$R *.dfm}
 
@@ -450,7 +458,7 @@ begin
   //rebuild the fFiles TStrings based on the lstFiles checked items
   if tabFiles.TabVisible then begin
     fFiles.Clear;
-    for I := 0 to lstFiles.Count - 1 do
+    for I := 0 to lstFiles.Items.Count - 1 do
       if lstFiles.Checked[I] then
         fFiles.Add(lstFiles.Items[I]);
   end;

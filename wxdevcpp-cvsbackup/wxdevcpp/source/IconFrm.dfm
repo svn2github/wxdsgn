@@ -1,6 +1,6 @@
 object IconForm: TIconForm
-  Left = 308
-  Top = 137
+  Left = 264
+  Top = 179
   Width = 343
   Height = 342
   BorderIcons = [biSystemMenu]

@@ -25,8 +25,14 @@ unit compiler;
 
 interface
 uses
-  Windows, SysUtils, Dialogs, StdCtrls, ComCtrls, forms,
+{$IFDEF WIN32}
+  Windows, SysUtils, Dialogs, StdCtrls, ComCtrls, Forms,
   devrun, version, project, utils, prjtypes, Classes, Graphics;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, QDialogs, QStdCtrls, QComCtrls, QForms,
+  devrun, version, project, utils, prjtypes, Classes, QGraphics;
+{$ENDIF}
 
 type
   TLogEntryEvent = procedure(const msg: string) of object;
@@ -72,7 +78,7 @@ type
     function Clean: Boolean; virtual;
     function RebuildAll: Boolean; virtual;
     procedure ShowResults; virtual;
-    function FindDeps(TheFile: string): string;
+    function FindDeps(TheFile: String): String;
     function SwitchToProjectCompilerSet: integer; // returns the original compiler set
     procedure SwitchToOriginalCompilerSet(Index: integer); // switches the original compiler set to index
 
@@ -111,7 +117,7 @@ type
     procedure LaunchThread(s, dir: string); virtual;
     procedure ThreadCheckAbort(var AbortThread: boolean); virtual;
     procedure OnCompilationTerminated(Sender: TObject); virtual;
-    procedure OnLineOutput(Sender: TObject; const Line: string); virtual;
+    procedure OnLineOutput(Sender: TObject; const Line: String); virtual;
     procedure ParseResults; virtual;
     function NewMakeFile(var F: TextFile): boolean; virtual;
     procedure WriteMakeClean(var F: TextFile); virtual;
@@ -207,14 +213,14 @@ begin
         if not DirectoryExists(fProject.Options.ObjectOutput) then
           MkDir(fProject.Options.ObjectOutput);
         ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
-        ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)));
+         ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)), True, True);
         Objects := Format(cAppendStr, [Objects, ofile]);
         if fProject.Units[i].Link then
           LinkObjects := Format(cAppendStr, [LinkObjects, ofile]);
       end
       else begin
         Objects := Format(cAppendStr, [Objects,
-          GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
+           GenMakePath(ChangeFileExt(tfile, OBJ_EXT), True, True)]);
         if fProject.Units[i].Link then
           LinkObjects := Format(cAppendStr, [LinkObjects,GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
       end;
@@ -223,8 +229,16 @@ begin
 
   if Length(fProject.Options.PrivateResource) = 0 then
     ObjResFile := ''
+  else begin
+    if fProject.Options.ObjectOutput<>'' then begin
+      if not DirectoryExists(fProject.Options.ObjectOutput) then
+        MkDir(fProject.Options.ObjectOutput);
+      ObjResFile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput)+ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
+      ObjResFile := GenMakePath(ExtractRelativePath(fProject.FileName, ObjResFile));
+    end
   else
     ObjResFile := GenMakePath(ChangeFileExt(fProject.Options.PrivateResource, RES_EXT));
+  end;
 
   if (devCompiler.gppName <> '') then
     Comp_ProgCpp := devCompiler.gppName
@@ -251,10 +265,13 @@ begin
   Assignfile(F, fMakefile);
   try
     Rewrite(F);
-  except
-    MessageDlg('Could not create Makefile !!!', mtError, [mbOK], 0);
+  except on E: Exception do
+  begin
+    MessageDlg('Could not create Makefile: "' + fMakefile + '"'
+      + #13#10 + E.Message, mtError, [mbOK], 0);
     result := false;
     exit;
+  end;
   end;
   result := true;
   writeln(F, '# Project: ' + fProject.Name);
@@ -286,6 +303,7 @@ begin
 
   writeln(F, 'CXXFLAGS = $(CXXINCS)' + fCppCompileParams);
   writeln(F, 'CFLAGS = $(INCS)' + fCompileParams);
+  writeln(F, 'RM = rm -f');
 
   Writeln(F, '');
   if DoCheckSyntax then
@@ -354,7 +372,7 @@ procedure TCompiler.WriteMakeObjFilesRules(var F: TextFile);
 var
   i: integer;
   ShortPath: string;
-  ResIncludes: string;
+ ResIncludes: String;
   tfile, ofile, ResFiles, tmp: string;
 begin
   for i := 0 to pred(fProject.Units.Count) do
@@ -386,7 +404,7 @@ begin
 
       if DoCheckSyntax then
       begin
-        writeln(F, ofile + ':' + GenMakePath2(tfile));
+              writeln(F, GenMakePath2(ofile) + ':' + GenMakePath2(tfile));
         if fProject.Units[i].CompileCpp then
           writeln(F, #9 + '$(CPP) -S ' + GenMakePath(tfile) +
             ' -o nul $(CXXFLAGS)')
@@ -396,10 +414,10 @@ begin
       end else
       begin
         if PerfectDepCheck and not fSingleFile then
-          writeln(F, ofile + ': ' + GenMakePath2(tfile) + ' ' +
+                  writeln(F, GenMakePath2(ofile) + ': ' + GenMakePath2(tfile) + ' ' +
             FindDeps(fProject.Directory + tfile))
         else
-          writeln(F, ofile + ': ' + GenMakePath2(tfile));
+                  writeln(F, GenMakePath2(ofile) + ': ' + GenMakePath2(tfile));
 
         if fProject.Units[i].OverrideBuildCmd and (fProject.Units[i].BuildCmd <> '') then  begin
           tmp := fProject.Units[i].BuildCmd;
@@ -441,12 +459,17 @@ begin
       tfile := ExtractRelativePath(fProject.Executable,
         fProject.Units[i].FileName);
       if FileExists(GetRealPath(tfile, fProject.Directory)) then
-        ResFiles := ResFiles + GenMakePath(tfile) + ' ';
+              ResFiles := ResFiles + GenMakePath2(tfile) + ' ';
     end;
 
     writeln(F);
-    ofile := GenMakePath(ExtractRelativePath(Makefile, ChangeFileExt(fProject.Options.PrivateResource, RES_EXT)));
-    tfile := GenMakePath(ExtractRelativePath(Makefile,fProject.Options.PrivateResource));
+
+      if fProject.Options.ObjectOutput<>'' then
+        ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput)+ChangeFileExt(fProject.Options.PrivateResource, RES_EXT)
+      else
+        ofile := ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
+      ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ofile));//GenMakePath(ExtractRelativePath(Makefile, ChangeFileExt(fProject.Options.PrivateResource, RES_EXT)));
+      tfile := GenMakePath(ExtractRelativePath(fProject.FileName, fProject.Options.PrivateResource));
     if DoCheckSyntax then
     begin
       writeln(F, ofile + ':');
@@ -465,7 +488,7 @@ procedure TCompiler.WriteMakeClean(var F: TextFile);
 begin
   Writeln(F);
   Writeln(F, 'clean: clean-custom');
-  Writeln(F, #9 + 'rm -f $(OBJ) $(BIN)');
+  Writeln(F, #9 + '${RM} $(OBJ) $(BIN)');
 end;
 
 procedure TCompiler.CreateMakefile;
@@ -563,8 +586,11 @@ begin
       fCompileParams := StringReplace(fProject.Options.cmdlines.Compiler, '_@@_',' ', [rfReplaceAll]);
     end;
 
-    if (CmdOpts <> '') and AddtoComp then
-      AppendStr(fUserParams, cmdOpts);
+     //RNC
+     //if (CmdOpts <> '') and AddtoComp then
+     if (devCompilerSet.CmdOpts <> '') and devCompilerSet.AddtoComp then
+      AppendStr(fUserParams, devCompilerSet.CmdOpts);
+      //AppendStr(fUserParams, cmdOpts);
 
     AppendStr(fCompileParams, fUserParams);
     AppendStr(fCppCompileParams, fUserParams);
@@ -943,7 +969,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TCompiler.OnLineOutput(Sender: TObject; const Line: string);
+procedure TCompiler.OnLineOutput(Sender: TObject; const Line: String);
 begin
   DoLogEntry(Line);
   ProcessProgressForm(Line);
@@ -1289,9 +1315,20 @@ begin
         end
         else begin
           cpos := GetLastPos(':', Line);
+           if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos - 1), -1) <> -1 then
+           begin
           O_Line := Copy(Line, cpos + 1, Length(Line) - cpos - 1);
           Delete(Line, cpos, Length(Line) - cpos + 1);
           O_file := Line;
+             //filename may also contain column as "filename:line:col"
+             cpos := GetLastPos(':', Line);
+             if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos), -1) <> -1 then
+             begin
+               O_Line := Copy(Line, cpos + 1, Length(Line) - cpos) + ':' + O_Line;
+               Delete(Line, cpos, Length(Line) - cpos + 1);
+               O_file := Line;
+             end;
+           end;
         end;
 
         cpos := Pos('parse error before ', O_Msg);
@@ -1342,8 +1379,9 @@ var
 begin
   fLibrariesParams := '';
   fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
-  if (devCompiler.LinkOpts <> '') and devCompiler.AddtoLink then
-    fLibrariesParams := fLibrariesParams + ' ' + devCompiler.LinkOpts;
+//RNC
+  if (devCompilerSet.LinkOpts <> '') and devCompilerSet.AddtoLink then
+    fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
   if (fTarget = ctProject) and assigned(fProject) then begin
     for i := 0 to pred(fProject.Options.Libs.Count) do
       fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.Options.Libs[i]]);
@@ -1355,7 +1393,7 @@ begin
   if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
     fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
 
-  AppendStr(fLibrariesParams, ' ');
+  fLibrariesParams := fLibrariesParams + ' ';
   for I := 0 to devCompiler.OptionsCount - 1 do
     // consider project specific options for the compiler
     if (
@@ -1372,10 +1410,12 @@ begin
           else
             val := devCompiler.Options[I].optValue;
           if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
-            AppendStr(fLibrariesParams, devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ');
+              fLibrariesParams := fLibrariesParams
+                + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
         end
         else if (Assigned(fProject) and (StrToIntDef(fProject.Options.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
-          AppendStr(fLibrariesParams, devCompiler.Options[I].optSetting + ' ');
+            fLibrariesParams := fLibrariesParams
+              + devCompiler.Options[I].optSetting + ' ';
     end;
 
 end;

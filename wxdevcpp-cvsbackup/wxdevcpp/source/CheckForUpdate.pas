@@ -21,8 +21,15 @@ unit CheckForUpdate;
 
 interface
 
-uses Classes, Windows, Wininet, Forms, Messages, SysUtils,
+uses 
+{$IFDEF WIN32}
+  Classes, Windows, Wininet, Forms, Messages, SysUtils,
   Dialogs;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, QForms, SysUtils,
+  QDialogs;
+{$ENDIF}
 
 type
   TCheckForUpdate = class(TObject)
@@ -42,16 +49,15 @@ type
     procedure Check;
   end;
 
-const
-  URL = 'http://www.bloodshed.net/dev/update.txt';
-const
-  LocalFileName = 'update.txt';
+const URL = 'http://www.bloodshed.net/dev/update.txt';
+const LocalFileName = 'update.txt';
 
 procedure CheckUpdate(aOwner: TComponent);
 
 implementation
 
-uses CheckFrm, Version;
+uses 
+  CheckFrm, Version;
 
 procedure CheckUpdate(aOwner: TComponent);
 begin
@@ -76,20 +82,16 @@ begin
 
   UpdateFile := '';
 
-  NetHandle := InternetOpen('Dev-C++ Check for Update',
-    INTERNET_OPEN_TYPE_PRECONFIG,
+  NetHandle := InternetOpen('Dev-C++ Check for Update', INTERNET_OPEN_TYPE_PRECONFIG,
     nil, nil, 0);
 
-  if Assigned(NetHandle) then
-  begin
+  if Assigned(NetHandle) then begin
     UrlHandle := InternetOpenUrl(NetHandle, PChar(Url), nil, 0,
       INTERNET_FLAG_RELOAD, 0);
     Result := True;
   end
-  else
-  begin
-    raise
-      Exception.Create('Dev-C++ was not able to download update file. Please see http://www.bloodshed.net/dev/');
+  else begin
+     raise Exception.Create('Dev-C++ was not able to download update file. Please see http://www.bloodshed.net/dev/');
     Result := False;
   end;
 end;
@@ -101,8 +103,7 @@ begin
 end;
 
 procedure TCheckForUpdate.Download;
-var
-  F: TextFile;
+var F : TextFile;
 begin
   if Assigned(UrlHandle) then
     { UrlHandle valid? Proceed with download }
@@ -120,24 +121,20 @@ begin
     Write(F, UpdateFile);
     CloseFile(F);
   end
-  else
-  begin
+  else begin
     { UrlHandle is not valid. Raise an exception. }
-    raise
-      Exception.CreateFmt('Cannot open URL %s, please see http://www.bloodshed.net/dev/', [Url]);
+     raise Exception.CreateFmt('Cannot open URL %s, please see http://www.bloodshed.net/dev/', [Url]);
     Disconnect;
   end;
 end;
 
 procedure TCheckForUpdate.Check;
-var
-  F: TextFile;
+var F : TextFile;
   c: char;
   tmp: string;
   i: integer;
 begin
-  if not FileExists(LocalFileName) then
-  begin
+  if not FileExists(LocalFileName) then begin
     MessageDlg('Dev-C++ was not able to download the update file. Please see http://www.bloodshed.net/dev/', mtError, [mbOK], 0);
     Exit;
   end;
@@ -153,22 +150,19 @@ begin
     Read(F, c);
     VersionName := versionname + c;
   until c = '$';
-  while Pos('$', VersionName) <> 0 do
-    Delete(VersionName, Pos('$', VersionName), 1);
+  while Pos('$',VersionName)<>0 do Delete(VersionName, Pos('$', VersionName), 1);
 
   repeat
     Read(F, c);
     Needed_package := Needed_package + c;
   until c = '$';
-  while Pos('$', Needed_package) <> 0 do
-    Delete(Needed_package, Pos('$', Needed_package), 1);
+  while Pos('$',Needed_package)<>0 do Delete(Needed_package, Pos('$', Needed_package), 1);
 
   repeat
     Read(F, c);
     Description := Description + c;
   until c = '$';
-  while Pos('$', Description) <> 0 do
-    Delete(Description, Pos('$', Description), 1);
+  while Pos('$',Description)<>0 do Delete(Description, Pos('$', Description), 1);
 
   i := 0;
 

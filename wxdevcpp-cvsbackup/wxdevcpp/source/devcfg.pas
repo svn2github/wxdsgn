@@ -37,7 +37,12 @@ unit devcfg;
 interface
 
 uses
+{$IFDEF WIN32}
 Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes;
+{$ENDIF}
+{$IFDEF LINUX}
+  QDialogs, Classes, QGraphics, QSynEdit, CFGData, CFGTypes, IniFiles, prjtypes;
+{$ENDIF}
 
 const
   BoolValYesNo: array[boolean] of string = ('No', 'Yes');
@@ -77,6 +82,12 @@ type
     fCppDir: string;
     fLibDir: string;
     fOptions: string;
+   //RNC
+   fCompAdd: boolean;          // add fcmdopts to compiler command line
+   fLinkAdd: boolean;          // add flinkopts to linker command line
+   fCmdOptions : string;
+   fLinkOptions : string;
+
     procedure WriteSets;
     procedure UpdateSets;
   public
@@ -108,6 +119,12 @@ type
     property CppDir: string read fCppDir write fCppDir;
     property LibDir: string read fLibDir write fLibDir;
     property OptionsStr: string read fOptions write fOptions;
+//RNC
+   property CmdOpts: string read fCmdOptions write fCmdOptions;
+   property LinkOpts: string read fLinkOptions write fLinkOptions;
+   property AddtoComp: boolean read fCompAdd write fCompAdd;
+   property AddtoLink: boolean read fLinkAdd write fLinkAdd;
+
   end;
 
   // compiler options
@@ -137,8 +154,6 @@ type
     //Debugger
     fModified: boolean; // has options been changed since last compile
 
-    fCompAdd: boolean; // add fcmdopts to compiler command line
-    fLinkAdd: boolean; // add flinkopts to linker command line
     fcmdOpts: string; // command-line adds for compiler
     flinkopts: string; // command-line adds for linker
 
@@ -169,12 +184,13 @@ type
     procedure ChangeOptionsLang;
     function ConvertCharToValue(c: char): integer;
   published
-    property FastDep: Boolean read fFastDep write fFastDep default false;
+   property FastDep: Boolean read fFastDep write fFastDep;
 
-    property AddtoComp: boolean read fCompAdd write fCompAdd;
-    property AddtoLink: boolean read fLinkAdd write fLinkAdd;
-    property CmdOpts: string read fCmdOpts write fCmdOpts;
-    property LinkOpts: string read fLinkopts write fLinkOpts;
+//   property AddtoComp: boolean read fCompAdd write fCompAdd;
+//   property AddtoLink: boolean read fLinkAdd write fLinkAdd;
+//RNC
+//   property CmdOpts: string read fCmdOpts write fCmdOpts;
+//   property LinkOpts: string read fLinkopts write fLinkOpts;
 
     property RunParams: string read fRunParams write fRunParams;
     property OutputDir: string read fOutputDir write fOutputDir; // ** unused
@@ -369,6 +385,7 @@ type
     fSmartTabs: boolean; // Tab to next no whitespace char
     fSmartUnindent: boolean; // on backspace move to prev non-whitespace char
     fSpecialChar: boolean; // special line characters visible
+   fAppendNewline: boolean;    // append newline character to the end of line
     fTabtoSpaces: boolean; // convert tabs to spaces
     fAutoCloseBrace: boolean; // insert closing braces
     fMarginColor: TColor; // Color of right margin
@@ -376,6 +393,8 @@ type
     fDefaultIntoPrj: boolean; // Insert Default Source Code into "empty" project
     fParserHints: boolean; // Show parser's hint for the word under the cursor
     fMatch: boolean; // Highlight matching parenthesis
+   fHighCurrLine: boolean;     // Highlight current line
+   fHighColor: TColor;         // Color of current line when highlighted
 
   public
     constructor Create;
@@ -403,6 +422,7 @@ type
     property HalfPageScroll: boolean read fHalfPage write fHalfPage;
     property ScrollHint: boolean read fShowScrollHint write fShowScrollHint;
     property SpecialChars: boolean read fSpecialChar write fSpecialChar;
+   property AppendNewline: boolean read fAppendNewline write fAppendNewline;
     property AutoCloseBrace: boolean read fAutoCloseBrace write fAutoCloseBrace;
 
     property TabSize: integer read fTabSize write fTabSize;
@@ -434,6 +454,9 @@ type
 
     property ParserHints: boolean read fParserHints write fParserHints;
     property Match: boolean read fMatch write fMatch;
+   property HighCurrLine: boolean read fHighCurrLine write fHighCurrLine;
+   property HighColor: TColor read fHighColor write fHighColor;
+
   end;
 
   // master option object -- contains program globals
@@ -652,8 +675,93 @@ var
 implementation
 
 uses
-  MultiLangSupport, SysUtils, Forms, version, utils, SynEditMiscClasses,
+{$IFDEF WIN32}
+  MultiLangSupport, SysUtils, Forms, Controls, version, utils, SynEditMiscClasses,
   datamod, FileAssocs;
+{$ENDIF}
+{$IFDEF LINUX}
+  MultiLangSupport, SysUtils, QForms, QControls, version, utils, QSynEditMiscClasses,
+  datamod, FileAssocs, Types;
+{$ENDIF}
+
+function ValidatePaths(dirList: String; var badDirs: String): String;
+//checks if directories in provided ; delimited list exist
+//returns filtered out dirList with only existing paths
+//badDirs returns ; delimited list of non existing dirs
+//also remove duplicates and empty entries
+var
+  strs: TStrings;
+  i,j: Integer;
+  currdir: String;
+
+  function makeFullPath(dir: String): String;
+  begin
+    Result := dir;
+    //check if full path
+{$IFDEF WIN32}
+    if Length(dir) > 1 then
+      if dir[2] = ':' then
+        Exit;
+    if Length(dir) > 0 then
+      if dir[1] = '\' then
+        Exit;
+{$ENDIF}
+{$IFDEF LINUX}
+    if Length(dir) > 0 then
+      if dir[1] = '/' then
+        Exit;
+{$ENDIF}
+    //otherwise just add path
+    Result := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+      + Result;
+  end;
+
+begin
+  Result := '';
+  badDirs := '';
+
+  //needed to confirm relative paths
+  currdir := GetCurrentDir;
+  SetCurrentDir(ExtractFilePath(Application.ExeName));
+
+  strs := TStringList.Create;
+  repeat
+    if Pos(';', dirList) = 0 then
+      strs.Add(dirList)
+    else
+    begin
+      strs.Add(Copy(dirList, 1, Pos(';', dirList) -1));
+      Delete(dirList, 1, Pos(';', dirList));
+    end;
+  until Pos(';', dirList) = 0;
+
+  //eliminate duplicates
+  for i := strs.Count -2 downto 0 do
+    for j := strs.Count -1 downto i + 1 do
+      if (Trim(strs[j]) = '') or
+        ( makeFullPath(Trim(strs[i])) = makeFullPath(Trim(strs[j])) ) then
+          strs.Delete(j);
+
+  //check the directories
+  for i := strs.Count -1 downto 0 do
+  begin
+    if DirectoryExists(strs[i]) then
+      Result := Result + ';' + strs[i]
+    else
+      badDirs := badDirs + ';' + strs[i];
+  end;
+
+  if Length(Result) > 0 then
+    if Result[1] = ';' then
+      Delete(Result, 1, 1);
+  if Length(badDirs) > 0 then
+    if badDirs[1] = ';' then
+      Delete(badDirs, 1, 1);
+
+  FreeAndNil(strs);
+
+  SetCurrentDir(currdir);
+end;
 
 procedure InitializeOptions;
 begin
@@ -1107,8 +1215,8 @@ begin
     fIntermediate := LoadSetting(key, 'InterDir');
     fOutputDir := LoadSetting(key, 'OutputDir');
     fRunParams := LoadSetting(key, 'RunParams');
-    fCompAdd := LoadBoolSetting(key, 'CompAdd');
-    fLinkAdd := LoadBoolSetting(key, 'LinkAdd');
+     //fCompAdd:= LoadBoolSetting(key, 'CompAdd');
+     //fLinkAdd:= LoadBoolSetting(key, 'LinkAdd');
     fcmdOpts := LoadSetting(key, 'cmdline');
     flinkopts := LoadSetting(key, 'LinkLine');
 
@@ -1150,10 +1258,10 @@ begin
     SaveSetting(key, 'InterDir', fIntermediate);
     SaveSetting(key, 'OutputDir', fOutputDir);
     SaveSetting(key, 'RunParams', fRunParams);
-    SaveBoolSetting(key, 'CompAdd', fCompAdd);
-    SaveBoolSetting(key, 'LinkAdd', fLinkAdd);
-    SaveSetting(key, 'cmdline', fcmdOpts);
-    SaveSetting(key, 'LinkLine', flinkopts);
+     //SaveBoolSetting(key, 'CompAdd', fCompAdd);
+     //SaveBoolSetting(key, 'LinkAdd', fLinkAdd);
+     //SaveSetting(key, 'cmdline', fcmdOpts);
+     //SaveSetting(key, 'LinkLine', flinkopts);
 
     SaveBoolSetting(key, 'Log', fSaveLog);
     SaveSetting(key, 'Delay', inttostr(fDelay));
@@ -1240,8 +1348,8 @@ begin
   fUseParams := FALSE;
   fModified := TRUE;
   fSaveLog := FALSE;
-  fCompAdd := FALSE;
-  fLinkAdd := FALSE;
+  //fCompAdd:= FALSE;
+  //fLinkAdd:= FALSE;
   fcmdOpts := '';
   flinkOpts := '';
   fDelay := 0;
@@ -1274,25 +1382,18 @@ begin
 end;
 
 procedure TdevDirs.SettoDefaults;
+var
+  tempstr: String;
 begin
   fDefault:= IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
-  if DirectoryExists(fDefault + BIN_DIR) then
-    fBinDir := fDefault + BIN_DIR;
-  if DirectoryExists(fDefault + SND_BIN_DIR) then
-    fBindir := fBinDir + ';' + fDefault + SND_BIN_DIR;
-  if fDefault <> '' then
-  begin
-    fCDir := fDefault + C_INCLUDE_DIR;
-    fCppDir := fDefault + CPP_INCLUDE_DIR + ';'
-      + fDefault + CPP_INCLUDE_DIR_MINGW + ';'
-      + fDefault + CPP_INCLUDE_DIR_BACK + ';'
-      + fDefault + CPP_INCLUDE_DIR_MINGW_INCLUDE + ';'
-      + fCDir;
-    fLibDir := fDefault + LIB_DIR;
-  end;
+  fBinDir:= ValidatePaths(fDefault + BIN_DIR, tempstr);
+  fCDir:= ValidatePaths(fDefault + C_INCLUDE_DIR, tempstr);
+  fCppDir:= ValidatePaths(fDefault
+    + StringReplace(CPP_INCLUDE_DIR, ';', ';' + fDefault, [rfReplaceAll]), tempstr);
+  fLibDir:= ValidatePaths(fDefault + LIB_DIR, tempstr);
 
   fExec := ExtractFilePath(Application.ExeName);
-  fConfig := ExtractFilePath(Application.ExeName);
+  fConfig:= fExec;
   fHelp := fExec + HELP_DIR;
   fIcons := fExec + ICON_DIR;
   fLang := fExec + LANGUAGE_DIR;
@@ -1423,10 +1524,17 @@ begin
   fTabtoSpaces := TRUE;
 
   fUseSyn := TRUE;
-  fSynExt := 'c;cpp;h;hpp';
+  //last ; is for files with no extension
+  //which should be treated as cpp header files
+  fSynExt:= 'c;cpp;h;hpp;cc;cxx;cp;hp;rh;';
 
   fParserHints := TRUE;
   fMatch := false;
+
+  fHighCurrLine := True;
+  fHighColor := $FFFFCC; //Light Turquoise
+
+  fAppendNewline := True;
 end;
 
 procedure TdevEditor.AssignEditor(Editor: TSynEdit);
@@ -1473,7 +1581,11 @@ begin
 
       ScrollHintFormat := shfTopToBottom;
 
-{$IFDEF NEW_SYNEDIT}
+      if HighCurrLine then
+        ActiveLineColor := HighColor
+      else
+        ActiveLineColor := clNone;
+
       Options := [
         eoAltSetsColumnMode, eoDisableScrollArrows,
         eoDragDropEditing, eoDropFiles, eoKeepCaretX,
@@ -1509,37 +1621,6 @@ begin
         Options := Options + [eoTrimTrailingSpaces];
       if fSpecialChar then
         Options := Options + [eoShowSpecialChars];
-
-{$ELSE}
-      //non-optional synedit options
-      SetOptionFlag(eoAltSetsColumnMode, TRUE);
-      SetOptionFlag(eoDisableScrollArrows, TRUE);
-      SetOptionFlag(eoDragDropEditing, TRUE);
-      SetOptionFlag(eoDropFiles, TRUE);
-      SetOptionFlag(eoKeepCaretX, TRUE);
-      SetOptionFlag(eoRightMouseMovesCursor, TRUE);
-      SetOptionFlag(eoScrollByOneLess, TRUE);
-      SetOptionFlag(eoAutoSizeMaxLeftChar, TRUE);
-
-      SetOptionFlag(eoNoCaret, FALSE);
-      SetOptionFlag(eoNoSelection, FALSE);
-      SetOptionFlag(eoScrollHintFollows, FALSE);
-
-      //Optional synedit options in devData
-      SetOptionFlag(eoAutoIndent, fAutoIndent);
-      SetOptionFlag(eoEnhanceHomeKey, fEHomeKey);
-      SetOptionFlag(eoGroupUndo, fGroupUndo);
-      SetOptionFlag(eoHalfPageScroll, fHalfPage);
-      SetOptionFlag(eoHideShowScrollbars, fShowScrollbars);
-      SetOptionFlag(eoScrollPastEOF, fPastEOF);
-      SetOptionFlag(eoScrollPastEOL, fPastEOL);
-      SetOptionFlag(eoShowScrollHint, fShowScrollHint);
-      SetOptionFlag(eoSmartTabs, fSmartTabs);
-      SetOptionFlag(eoSmartTabDelete, fSmartTabs);
-      SetOptionFlag(eoTabsToSpaces, fTabtoSpaces);
-      SetOptionFlag(eoTrimTrailingSpaces, fTrailBlanks);
-      SetOptionFlag(eoShowSpecialChars, fSpecialChar);
-{$ENDIF}
 
     finally
       EndUpdate;
@@ -1667,6 +1748,10 @@ begin
   devCompiler.windresName := devCompilerSet.windresName;
   devCompiler.dllwrapName := devCompilerSet.dllwrapName;
   devCompiler.gprofName := devCompilerSet.gprofName;
+  //RNC
+  devCompiler.fcmdOpts:=devCompilerSet.fCmdOptions;
+  devCompiler.flinkopts:=devCompilerSet.fLinkOptions;
+
   // we have to set the devDirs too
   devDirs.Bins := devCompilerSet.BinDir;
   devDirs.C := devCompilerSet.CDir;
@@ -1699,6 +1784,32 @@ end;
 procedure TdevCompilerSet.LoadSetDirs(Index: integer);
 var
   key: string;
+  goodBinDir, goodCDir, goodCppDir, goodLibDir: String;
+  msg: String;
+  tempStr: String;
+  maindir: String;
+  makeSig, mingwmakeSig: String;
+
+{
+  function isPathInList(pathList, path: String): Boolean;
+  var
+    i: Integer;
+    strs: TStrings;
+  begin
+    Result := False;
+    strs := TStringList.Create;
+    strs.Delimiter := ';';
+    strs.DelimitedText := pathList;
+    for i := 0 to strs.Count -1 do
+      if strs[i] = path then
+      begin
+        Result := True;
+        break;
+      end;
+    strs.Free;
+  end;
+}
+
 begin
   if Index<0 then Exit;
   with devData do
@@ -1713,6 +1824,160 @@ begin
      if fCppDir='' then fCppDir:=devDirs.Cpp;
     fLibDir := LoadSetting(key, 'Lib');
      if fLibDir='' then fLibDir:=devDirs.Lib;
+
+     //check for valid paths
+     msg := '';
+     goodBinDir := ValidatePaths(fBinDir, tempStr);
+     if tempStr <> '' then
+     begin
+       msg := msg + 'Following Bin directories don''t exist:' + #13#10;
+       msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
+       msg := msg + #13#10 + #13#10;
+     end;
+     goodCDir := ValidatePaths(fCDir, tempStr);
+     if tempStr <> '' then
+     begin
+       msg := msg + 'Following C Include directories don''t exist:' + #13#10;
+       msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
+       msg := msg + #13#10 + #13#10;
+     end;
+     goodCppDir := ValidatePaths(fCppDir, tempStr);
+     if tempStr <> '' then
+     begin
+       msg := msg + 'Following C++ Include directories don''t exist:' + #13#10;
+       msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
+       msg := msg + #13#10 + #13#10;
+     end;
+     goodLibDir := ValidatePaths(fLibDir, tempStr);
+     if tempStr <> '' then
+     begin
+       msg := msg + 'Following Libs directories don''t exist:' + #13#10;
+       msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
+       msg := msg + #13#10 + #13#10;
+     end;
+     if msg <> '' then
+     begin
+       msg := msg + 'Would you like Dev-C++ to remove them for you '
+         + 'and add the default paths to the remaining existing paths?' + #13#10
+         + 'Leaving those directories will lead to problems during compilation '
+         + 'of any projects created with Dev-C++' + #13#10
+         + #13#10
+         + 'Unless you know exactly what you''re doing, it is recommended '
+         + 'that you click Yes';
+
+       if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+       begin
+         fBinDir := goodBinDir;
+         fCDir := goodCDir;
+         fCppDir := goodCppDir;
+         fLibDir := goodLibDir;
+
+         //additionally insert default paths:
+         maindir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
+         tempStr := '';
+         fBinDir := maindir + BIN_DIR + ';' + fBinDir;
+         fBinDir := ValidatePaths(fBinDir, tempStr);
+         devDirs.Bins := fBinDir;
+         fCDir := C_INCLUDE_DIR + ';' + fCDir;
+         fCDir := ValidatePaths(fCDir, tempStr);
+         devDirs.C := fCDir;
+         fCppDir := CPP_INCLUDE_DIR + ';' + fCppDir;
+         fCppDir := ValidatePaths(fCppDir, tempStr);
+         devDirs.Cpp := fCppDir;
+         fLibDir := LIB_DIR + ';' + fLibDir;
+         fLibDir := ValidatePaths(fLibDir, tempStr);
+         devDirs.Lib := fLibDir;
+       end;
+     end;
+   end;
+
+  //check if make is in path + bins directory
+  if devDirs.OriginalPath = '' then // first time only
+    devDirs.OriginalPath := GetEnvironmentVariable('PATH');
+  SetPath(devDirs.Bins);
+  makeSig := RunAndGetOutput(devCompilerSet.makeName + ' --v',
+    ExtractFileDir(Application.ExeName), nil, nil, nil);
+
+  if Pos('GNU Make', makeSig) = 0 then
+  begin
+    //check for mingw32-make first before adding the path to bin dir
+    //process it later
+    mingwmakeSig := RunAndGetOutput('mingw32-make --v',
+      ExtractFileDir(Application.ExeName), nil, nil, nil);
+
+    //check if make is found if Dev-C++'s bin directory is added to path
+    SetPath(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+     + BIN_DIR);
+    makeSig := RunAndGetOutput(devCompilerSet.makeName + ' --v',
+      ExtractFileDir(Application.ExeName), nil, nil, nil);
+    if Pos('GNU Make', makeSig) > 0 then
+    begin
+      msg := 'Dev-C++ was unable to find GNU Make with current settings '
+        + 'however there''s GNU Make in Dev-C++''s bin directory. '
+        + 'Would you like to add this path to current Bin path?'
+        + #13#10#13#10
+        + 'Unless you know exactly what you''re doing, it is recommended '
+        + 'that you click Yes';
+      if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+       fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+         + BIN_DIR + ';' + fBinDir;
+    end
+
+    //check if "mingw32-make" is available and is GNU Make
+    else if Pos('GNU Make', mingwmakeSig) > 0 then
+    begin
+      msg := 'Dev-C++ was unable to find GNU Make with current settings '
+        + 'however there''s mingw32-make that seems to be GNU Make. '
+        + 'Would you like Dev-C++ to adjust the settings for you to '
+        + 'use mingw32-make?'
+        + #13#10#13#10
+        + 'Unless you know exactly what you''re doing, it is recommended '
+        + 'that you click Yes';
+      if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      begin
+        devCompilerSet.makeName := 'mingw32-make';
+        devCompiler.makeName := 'mingw32-make';
+      end;
+    end
+
+    //check if "mingw32-make" is available in bin directory
+    else
+    begin
+      mingwmakeSig := RunAndGetOutput('mingw32-make --v',
+        ExtractFileDir(Application.ExeName), nil, nil, nil);
+      if Pos('GNU Make', mingwmakeSig) > 0 then
+      begin
+        msg := 'Dev-C++ was unable to find GNU Make in PATH '
+          + 'or in Dev-C++''s bin directory'
+          + 'however there''s mingw32-make that seems to be GNU Make in bin directory. '
+          + 'Would you like Dev-C++ to adjust the settings for you to '
+          + 'use mingw32-make and adjust current Bin path?'
+          + #13#10#13#10
+          + 'Unless you know exactly what you''re doing, it is recommended '
+          + 'that you click Yes';
+        if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        begin
+          fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+            + BIN_DIR + ';' + fBinDir;
+          devCompilerSet.makeName := 'mingw32-make';
+          devCompiler.makeName := 'mingw32-make';
+        end;
+      end;
+    end;
+
+    //if nothing's found just display the warning message
+    if (Pos('GNU Make', mingwmakeSig) = 0)
+      and (Pos('GNU Make', makeSig) = 0) then
+    begin
+      msg := 'There doesn''t seem to be GNU Make file in PATH '
+        + 'or in Dev-C++''s Bin path. Please make sure that you have '
+        + 'GNU Make and adjust Bin setting or system PATH environment '
+        + 'variable and that make setting in Compiler Option contains '
+        + 'correct filename, otherwise you will not be able to compile '
+        + 'anything.' ;
+      MessageDlg(msg, mtConfirmation, [mbOK], 0);
+    end;
+
   end;
 end;
 
@@ -1740,6 +2005,13 @@ begin
     fgprofName := LoadSetting(key, GPROF_PROGRAM);
      if fgprofName='' then fgprofName:=GPROF_PROGRAM;
     fOptions := LoadSetting(key, 'Options');
+
+     //RNC
+    fCmdOptions:= LoadSetting(key, 'cmdline');
+    fLinkOptions:=LoadSetting(key, 'LinkLine');
+    fCompAdd:= LoadBoolSetting(key, 'CompAdd');
+    fLinkAdd:= LoadBoolSetting(key, 'LinkAdd');
+
   end;
 end;
 
@@ -1787,6 +2059,10 @@ begin
     SaveSetting(key, DLLWRAP_PROGRAM, fdllwrapName);
     SaveSetting(key, GPROF_PROGRAM, fgprofName);
     SaveSetting(key, 'Options', fOptions);
+     SaveSetting(key, 'cmdline', fCmdOptions);
+     SaveSetting(key, 'LinkLine', fLinkOptions);
+     SaveBoolSetting(key, 'CompAdd', fCompAdd);
+     SaveBoolSetting(key, 'LinkAdd', fLinkAdd);
   end;
 end;
 
@@ -1813,6 +2089,11 @@ begin
   fwindresName := WINDRES_PROGRAM;
   fdllwrapName := DLLWRAP_PROGRAM;
   fgprofName := GPROF_PROGRAM;
+  fCompAdd:= FALSE;
+  fLinkAdd:= FALSE;
+  fCmdOptions:='';
+  fLinkOptions:='';
+
 
   // dirs
   fBinDir := devDirs.Bins;
