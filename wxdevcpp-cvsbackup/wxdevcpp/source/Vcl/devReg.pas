@@ -22,7 +22,13 @@ unit devReg;
 interface
 
 uses
+{$IFDEF WIN32}
  Classes, Controls, devTabs, ColorPickerButton, devFileMonitor,
+{$ENDIF}
+{$IFDEF LINUX}
+ Classes, QControls, devTabs, ColorPickerButton, devFileMonitor,
+{$ENDIF}
+
 {$IFDEF VER130}
  DsgnIntf
 {$ELSE}

@@ -21,8 +21,15 @@ unit ClassBrowser;
 
 interface
 
-uses Windows, Messages, Classes, SysUtils, Controls, ComCtrls, Forms, Graphics,
+uses 
+{$IFDEF WIN32}
+  Windows, Messages, Classes, SysUtils, Controls, ComCtrls, Forms, Graphics,
   CppParser;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, SysUtils, QControls, QComCtrls, QForms, QGraphics,
+  CppParser;
+{$ENDIF}
 
 const
   MAX_CUSTOM_FOLDERS = 250;
@@ -98,6 +105,7 @@ type
     fUseColors: boolean;
     fParserBusy: boolean;
     fShowInheritedMembers: boolean;
+    fShowingSampleData: Boolean;
     procedure CustomPaintMe(var Msg: TMessage); message WM_PAINT;
     procedure SetParser(Value: TCppParser);
     procedure AddMembers(Node: TTreeNode; ParentIndex, ParentID: integer);
@@ -303,6 +311,7 @@ begin
   RightClickSelect := True;
   fShowInheritedMembers := False;
   SetUseColors(True);
+  fShowingSampleData := False;
 end;
 
 destructor TClassBrowser.Destroy;
@@ -368,6 +377,18 @@ begin
   begin
     fLastSelection := '';
     Exit;
+  end
+  else if not fShowingSampleData and (fParser = nil) then
+  begin
+    Node.Data := nil;
+    fLastSelection := '';
+    Exit;
+  end
+  else if not fShowingSampleData and (fParser.Statements.IndexOf(Node.Data) = -1) then
+  begin
+    Node.Data := nil;
+    fLastSelection := '';
+    Exit;
   end;
 
   if Node.ImageIndex = fImagesRecord.fGlobalsImg then begin
@@ -376,21 +397,20 @@ begin
   end;
 
   with PStatement(Node.Data)^ do
+  begin
     fLastSelection := ExtractFileName(_Filename) + ':' + IntToStr(_Line) + ':' + _FullText;
 
-  if Assigned(fOnSelect) then begin
-    if (Button = mbLeft) and not (ssShift in Shift) then begin // need implementation
-      if PStatement(Node.Data)^._IsDeclaration then
-        fOnSelect(Self, PStatement(Node.Data)^._DeclImplFileName, PStatement(Node.Data)^._DeclImplLine)
-      else
-        fOnSelect(Self, PStatement(Node.Data)^._FileName, PStatement(Node.Data)^._Line);
-    end
-    else if (Button = mbLeft) and (ssShift in Shift) then begin // // need declaration
-      if PStatement(Node.Data)^._IsDeclaration then
-        fOnSelect(Self, PStatement(Node.Data)^._FileName, PStatement(Node.Data)^._Line)
-      else
-        fOnSelect(Self, PStatement(Node.Data)^._DeclImplFileName, PStatement(Node.Data)^._DeclImplLine);
-    end;
+    if Assigned(fOnSelect) then
+      if (Button = mbLeft) and not (ssShift in Shift) then // need implementation
+        if _IsDeclaration then
+          fOnSelect(Self, _DeclImplFileName, _DeclImplLine)
+        else
+          fOnSelect(Self, _FileName, _Line)
+      else if (Button = mbLeft) and (ssShift in Shift) then // // need declaration
+        if _IsDeclaration then
+          fOnSelect(Self, _FileName, _Line)
+        else
+          fOnSelect(Self, _DeclImplFileName, _DeclImplLine);
   end;
 end;
 
@@ -449,6 +469,7 @@ var
   Node, SubNode: TTreeNode;
   Statement: PStatement;
 begin
+  fShowingSampleData := True;
   Items.Clear;
   with Items do begin
     Statement := CreateTempStatement('class Class1', 'class', 'Class1', '', skClass, scsNone);
@@ -976,6 +997,7 @@ var
   NodeRect, tmp: TRect;
   st: PStatement;
   bInherited: boolean;
+  currItem: TTreeNode;
 begin
   inherited;
 
@@ -986,69 +1008,78 @@ begin
     Exit;
 
   for I := 0 to Items.Count - 1 do begin
-    if Items.Item[I].IsVisible then begin
-      NodeRect := Items.Item[I].DisplayRect(true);
+    currItem := Items[I];
 
-      if Items[I].ImageIndex <> fImagesRecord.fGlobalsImg then begin
+    if currItem.IsVisible then begin
+      NodeRect := currItem.DisplayRect(true);
+
+      if currItem.ImageIndex <> fImagesRecord.fGlobalsImg then begin
         fCnv.Font.Color := Self.Font.Color;
         fCnv.Brush.Color := Color;
         fCnv.FillRect(NodeRect);
-        st := Items.Item[I].Data;
-        if Assigned(st) then begin
-          fCnv.Font.Style := [fsBold];
-          if Selected = Items.Item[I] then begin
-            fCnv.Font.Color := clHighlightText;
-            fCnv.Brush.Color := clHighlight;
-            tmp := NodeRect;
-            tmp.Right := tmp.Left + fCnv.TextWidth(st^._ScopelessCmd) + 4;
-            fCnv.FillRect(tmp);
-          end;
+        st := currItem.Data;
+        if Assigned(fParser) or fShowingSampleData then
+          if Assigned(st) then
+            if fShowingSampleData
+            or (fParser.Statements.IndexOf(st) <> -1) then begin
+              fCnv.Font.Style := [fsBold];
+              if Selected = currItem then begin
+                fCnv.Font.Color := clHighlightText;
+                fCnv.Brush.Color := clHighlight;
+                tmp := NodeRect;
+                tmp.Right := tmp.Left + fCnv.TextWidth(st^._ScopelessCmd) + 4;
+                fCnv.FillRect(tmp);
+              end;
 
-          bInherited := fShowInheritedMembers and
-            Assigned(Items[I].Parent) and
-            (Items[I].Parent.ImageIndex <> fImagesRecord.Globals) and
-            Assigned(Items[I].Parent.Data) and
-            (PStatement(Items[I].Parent.Data)^._ID <> st^._ParentID);
+              bInherited := fShowInheritedMembers and
+                Assigned(currItem.Parent) and
+                (currItem.Parent.ImageIndex <> fImagesRecord.Globals) and
+                Assigned(currItem.Parent.Data) and
+                ( fShowingSampleData or
+                  (fParser.Statements.IndexOf(currItem.Parent.Data) <> -1) )and
+                (PStatement(currItem.Parent.Data)^._ID <> st^._ParentID);
 
-          if bInherited then
-            fCnv.Font.Color := clGray;
+              if bInherited then
+                fCnv.Font.Color := clGray;
 
-          fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, st^._ScopelessCmd);
-          if bInherited then
-            fCnv.Font.Color := clGray
-          else
-            fCnv.Font.Color := Self.Font.Color;
-          fCnv.Brush.Color := Color;
+              fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, st^._ScopelessCmd);
+              if bInherited then
+                fCnv.Font.Color := clGray
+              else
+                fCnv.Font.Color := Self.Font.Color;
+              fCnv.Brush.Color := Color;
 
-          NodeRect.Left := NodeRect.Left + fCnv.TextWidth(st^._ScopelessCmd) + 2;
-          fCnv.Font.Style := [];
-          if bInherited then
-            fCnv.Font.Color := clGray
-          else
-            fCnv.Font.Color := clMaroon;
-          fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, st^._Args);
+              NodeRect.Left := NodeRect.Left + fCnv.TextWidth(st^._ScopelessCmd) + 2;
+              fCnv.Font.Style := [];
+              if bInherited then
+                fCnv.Font.Color := clGray
+              else
+                fCnv.Font.Color := clMaroon;
+              fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, st^._Args);
 
-          if st^._Type <> '' then begin
-            fCnv.Font.Color := clGray;
-            NodeRect.Left := NodeRect.Left + fCnv.TextWidth(st^._Args) + 2;
-            fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, ': ' + st^._Type);
-          end
-          else begin
-            if st^._Kind in [skConstructor, skDestructor] then begin
-              fCnv.Font.Color := clGray;
-              NodeRect.Left := NodeRect.Left + fCnv.TextWidth(st^._Args) + 2;
-              fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, ': ' + fParser.StatementKindStr(st^._Kind));
-            end;
-          end;
-        end;
+              if st^._Type <> '' then begin
+                fCnv.Font.Color := clGray;
+                NodeRect.Left := NodeRect.Left + fCnv.TextWidth(st^._Args) + 2;
+                fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, ': ' + st^._Type);
+              end
+              else begin
+                if st^._Kind in [skConstructor, skDestructor] then begin
+                  fCnv.Font.Color := clGray;
+                  NodeRect.Left := NodeRect.Left + fCnv.TextWidth(st^._Args) + 2;
+                  fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, ': ' + fParser.StatementKindStr(st^._Kind));
+                end;
+              end;
+            end
+            else
+              currItem.Data := nil;
       end
       else begin
         fCnv.Font.Style := [fsBold];
-        if Selected = Items.Item[I] then begin
+        if Selected = currItem then begin
           fCnv.Font.Color := clHighlightText;
           fCnv.Brush.Color := clHighlight;
           tmp := NodeRect;
-          tmp.Right := tmp.Left + fCnv.TextWidth(Items[I].Text) + 4;
+          tmp.Right := tmp.Left + fCnv.TextWidth(currItem.Text) + 4;
           fCnv.FillRect(tmp);
         end
         else begin
@@ -1056,7 +1087,7 @@ begin
           fCnv.Brush.Color := Color;
         end;
         fCnv.FillRect(NodeRect);
-        fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, Items[I].Text);
+        fCnv.TextOut(NodeRect.Left + 2, NodeRect.Top + 1, currItem.Text);
       end;
     end;
   end;

@@ -3,8 +3,14 @@ unit ExtractionProgressDialog;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QComCtrls, QStdCtrls;
+{$ENDIF}
 
 type
   TExtractionProgress = class(TForm)

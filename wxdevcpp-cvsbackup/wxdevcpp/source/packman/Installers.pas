@@ -3,7 +3,12 @@ unit Installers;
 interface
 
 uses
+{$IFDEF WIN32}
   SysUtils, Classes, InstallFiles, Forms, Windows, Dialogs;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, InstallFiles, QForms, QDialogs;
+{$ENDIF}
 
 type
   TProgressEvent = procedure(Sender: TObject; CurrentFile: TInstallFile;
@@ -68,6 +73,7 @@ var
   EntryName: String;
   F: TextFile;
   IMod: Integer;
+  strDevRoot: String;
 begin
   Result := True;
   FInstalling := True;
@@ -133,13 +139,23 @@ begin
   Writeln(F, 'Description=' + FInfo.Description);
   Writeln(F, 'Url=' + FInfo.URL);
 
+  strDevRoot := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+
   { Write the file logs }
   Writeln(F, '');
   Writeln(F, '[Files]');
-  for i := 0 to Files.Count - 1 do
-      Writeln(F, Files.Files[i].Dest);
-  for i := 0 to Files.IconCount - 1 do
-      Writeln(F, Files.Icons[i].FileName);
+  with Files do
+  begin
+    for i := 0 to Count - 1 do
+      if Pos(strDevRoot, Files[i].Dest) = 1 then
+        //if in root of dev-c++, write just relative path to the root
+        Writeln(F, Copy(Files[i].Dest, Length(strDevRoot) + 1,
+          Length(Files[i].Dest) - Length(strDevRoot)))
+      else
+        Writeln(F, Files[i].Dest);
+    for i := 0 to IconCount - 1 do
+        Writeln(F, Icons[i].FileName);
+  end;
 
   Flush(F);
   CloseFile(F);

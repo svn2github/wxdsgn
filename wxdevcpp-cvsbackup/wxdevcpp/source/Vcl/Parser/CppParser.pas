@@ -21,7 +21,13 @@ unit CppParser;
 
 interface
 
-uses Dialogs, Windows, Classes, SysUtils, StrUtils, ComCtrls, U_IntList, CppTokenizer,INIFiles,Forms;
+uses
+{$IFDEF WIN32}
+  Dialogs, Windows, Classes, SysUtils, StrUtils, ComCtrls, U_IntList, CppTokenizer;
+{$ENDIF}
+{$IFDEF LINUX}
+  QDialogs, Classes, SysUtils, StrUtils, QComCtrls, U_IntList, CppTokenizer;
+{$ENDIF}
 
 type
   TStatementKind = (
@@ -183,7 +189,6 @@ type
     procedure DeleteTemporaries;
     function FindIncludeRec(Filename: string; DeleteIt: boolean = False): PIncludesRec;
   public
-    strWxIgnoreFunctions:TStringList;
     function GetFileIncludes(Filename: string): string;
     function IsCfile(Filename: string): boolean;
     function IsHfile(Filename: string): boolean;
@@ -242,9 +247,45 @@ type
 
 implementation
 
-constructor TCppParser.Create(AOwner: TComponent);
+{$IFDEF LINUX}
+uses Libc;
+{$ENDIF}
+
+//helper functions for cross platform compilation
+{$IFDEF WIN32}
+type
+  myTickCount = cardinal;
+
+function myGetTickCount: myTickCount;
+begin
+  result := GetTickCount;
+end;
+
+function myGetSecsSickTick(lastTick: myTickCount): integer;
+begin
+  result := Round((GetTickCount - lastTick) / 1000);
+end;
+{$ENDIF}
+{$IFDEF LINUX}
+type
+  myTickCount = integer;
+
+function myGetTickCount: myTickCount;
 var
-    iniFile:TIniFile;
+  buf: tms;
+begin
+  result := Libc.times(buf);
+end;
+
+function myGetSecsSickTick(lastTick: myTickCount): integer;
+var
+  buf: tms;
+begin
+  result := Round((Libc.times(buf) - lastTick) / CLOCKS_PER_SEC);
+end;
+{$ENDIF}
+
+constructor TCppParser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fStatementList := TList.Create;
@@ -261,15 +302,6 @@ begin
   fProjectFiles := TStringList.Create;
   fInvalidatedIDs := TIntList.Create;
 
-  strWxIgnoreFunctions := TStringList.Create;
-  iniFile :=  TIniFile.Create(ChangeFileExt(Application.ExeName,'.functions.ignore'));
-  try
-    iniFile.ReadSections(strWxIgnoreFunctions);
-  finally
-    iniFile.Destroy
-  end;
-
-
   fParseLocalHeaders := False;
   fParseGlobalHeaders := False;
   fReparsing := False;
@@ -284,24 +316,31 @@ begin
 end;
 
 destructor TCppParser.Destroy;
+var
+  i: Integer;
 begin
-  try
-    // I think there is no need to free everything ourselves - delphi will automatically free everything ;)
-//    Reset(False);
-  finally
-    FreeAndNil(fInvalidatedIDs);
-    FreeAndNil(fProjectFiles);
-    FreeAndNil(fIncludesList);
-    FreeAndNil(fOutstandingTypedefs);
-    FreeAndNil(fStatementList);
-    FreeAndNil(fFilesToScan);
-    FreeAndNil(fCacheContents);
-    FreeAndNil(fScannedFiles);
-    FreeAndNil(fIncludePaths);
-    FreeAndNil(fProjectIncludePaths);
-    FreeAndNil(fFileIncludes);
-    FreeAndNil(strWxIgnoreFunctions);
-  end;
+  FreeAndNil(fInvalidatedIDs);
+  FreeAndNil(fProjectFiles);
+
+  for i := 0 to fIncludesList.Count -1 do
+    Dispose(PIncludesRec(fIncludesList.Items[i]));
+  FreeAndNil(fIncludesList);
+
+  for i := 0 to fOutstandingTypedefs.Count -1 do
+    Dispose(POutstandingTypedef(fOutstandingTypedefs.Items[i]));
+  FreeAndNil(fOutstandingTypedefs);
+
+  for i := 0 to fStatementList.Count -1 do
+    Dispose(PStatement(fStatementList.Items[i]));
+  FreeAndNil(fStatementList);
+
+  FreeAndNil(fFilesToScan);
+  FreeAndNil(fCacheContents);
+  FreeAndNil(fScannedFiles);
+  FreeAndNil(fIncludePaths);
+  FreeAndNil(fProjectIncludePaths);
+  FreeAndNil(fFileIncludes);
+
   inherited Destroy;
 end;
 
@@ -1164,7 +1203,12 @@ var
   Index: integer;
   FName: string;
   FullFName: string;
+  StrFullText: string;
+  StrArgs: string;
+  StrCommand: string;
   IsGlobal: boolean;
+  OpenBracketPos: Integer;
+  I: Integer;
 begin
   sl := TStringList.Create;
   try
@@ -1193,40 +1237,110 @@ begin
       end
 
       // DEFINITIONS
-{      else begin
+      else 
+      begin
         if sl[0] = '#define' then
+        begin
           Index := 1
-        else if (sl.Count > 1) and (sl[0] = '#') and (sl[1] = 'define') then
-          Index := 2
-        else
-          Index := -1;
+        end
+        else 
+        begin
+          if (sl.Count > 1) and (sl[0] = '#') and (sl[1] = 'define') then
+          begin
+            Index := 2
+          end
+          else 
+          begin
+            Index := -1
+          end
+        end;
+        
+        // modified by peter_
         if (Index <> -1) and (sl.Count > Index + 1) then
-          AddStatement(-1,
-            GetCurrentClass,
-            fCurrentFile,
-            sl[Index],
-            '',
-            sl[Index],
-            '',
-            PToken(fTokenizer.Tokens[fIndex])^.Line,
-            skPreprocessor,
-            GetScope,
-            fClassScope,
-            False,
-            True)
+        begin
+          StrFullText := sl[Index];
+          OpenBracketPos := AnsiPos('(', StrFullText);
+          
+          // Is it a #define with arguments, like 'foo(a, b)' ?
+          if OpenBracketPos > 0 then
+          begin
+            I := Index+1;
+
+            // Because of the call to ExtractStrings, a few lines
+            // above, the define could be seperated into several
+            // strings. This would result into:
+            // 1) foo(a,
+            // 2) b)
+            // Because this is kinda wrong, we have to loop through
+            // the List and merge our FullText again in order to get
+            // this: foo(a, b)
+            while AnsiPos(')', StrFullText) = 0 do
+            begin
+              StrFullText := StrFullText + sl[I];
+              Inc(I);
+            end;
+
+            // Copy '(a, b)' out of 'foo(a, b)'
+            StrArgs := Copy(StrFullText, OpenBracketPos, Length(StrFullText)-OpenBracketPos+1);
+
+            // Copy 'foo' out of 'foo(a, b)'
+            StrCommand := Copy(StrFullText, 1, OpenBracketPos-1);
+          end
+          else
+          begin
+            // In case the #define has no arguments, the Command is just
+            // the same as the define name!
+            StrCommand := StrFullText;
+
+            // and we don't have an argument
+            StrArgs := '';
+          end;
+
+          AddStatement(-1 {GetClassID(StrCommand, skPreprocessor)},
+                       GetCurrentClass,
+                       FCurrentFile,
+                       StrFullText,
+                       '',
+                       StrCommand,
+                       StrArgs,
+                       PToken(FTokenizer.Tokens[FIndex])^.Line,
+                       skPreprocessor,
+                       GetScope,
+                       FClassScope,
+                       False,
+                       True)
+        end
 
         // All OTHER
-        else
+        else 
+        begin
           if fLogStatements then
+          begin
             if Assigned(fOnLogStatement) then
-              fOnLogStatement(Self, '[parser   ]: -P- ' + Format('%4d ', [PToken(fTokenizer.Tokens[fIndex])^.Line]) + StringOfChar(' ', fLevel) + 'Unknown definition: ' + PToken(fTokenizer.Tokens[fIndex])^.Text);
+            begin
+              fOnLogStatement(Self, '[parser   ]: -P- ' +
+                Format('%4d ', [PToken(fTokenizer.Tokens[fIndex])^.Line]) +
+                StringOfChar(' ', fLevel) + 'Unknown definition: ' +
+                PToken(fTokenizer.Tokens[fIndex])^.Text)
+            end
+          end
+        end;
       end
-}
+
     end
-    else
+    else 
+    begin
       if fLogStatements then
+      begin
         if Assigned(fOnLogStatement) then
-          fOnLogStatement(Self, '[parser   ]: -P- ' + Format('%4d ', [PToken(fTokenizer.Tokens[fIndex])^.Line]) + StringOfChar(' ', fLevel) + 'Unknown definition: ' + PToken(fTokenizer.Tokens[fIndex])^.Text);
+        begin
+          fOnLogStatement(Self, '[parser   ]: -P- ' +
+            Format('%4d ', [PToken(fTokenizer.Tokens[fIndex])^.Line]) +
+            StringOfChar(' ', fLevel) + 'Unknown definition: ' +
+            PToken(fTokenizer.Tokens[fIndex])^.Text)
+        end
+      end
+    end;
   finally
     sl.Free;
   end;
@@ -1489,7 +1603,7 @@ end;
 
 procedure TCppParser.Parse(FileName: TFileName; IsVisible: boolean; ManualUpdate: boolean = False; processInh: boolean = True);
 var
-  sTime: cardinal;
+  sTime: myTickCount;
   P: PIncludesRec;
 begin
   if not fEnabled then
@@ -1501,7 +1615,7 @@ begin
   if (not ManualUpdate) and Assigned(fOnStartParsing) then
     fOnStartParsing(Self);
   ClearOutstandingTypedefs;
-  sTime := GetTickCount;
+  sTime := myGetTickCount;
   if Assigned(fOnLogStatement) then
     fOnLogStatement(Self, '[parser   ]: Parsing ' + FileName);
   fTokenizer.Reset;
@@ -1541,7 +1655,7 @@ begin
         fOnFileProgress(Self, fCurrentFile, 0, 0);
       fScannedFiles.Add(FileName);
       if Assigned(fOnLogStatement) then
-        fOnLogStatement(Self, Format('[parser   ]: Done in %2.3f seconds.', [(GetTickCount - sTime) / 1000]));
+        fOnLogStatement(Self, Format('[parser   ]: Done in %2.3f seconds.', [myGetSecsSickTick(sTime)]));
     except
       if Assigned(fOnLogStatement) then
         fOnLogStatement(Self, Format('[parser   ]: Error scanning file %s', [FileName]));
@@ -1623,7 +1737,7 @@ end;
 
 procedure TCppParser.Parse(FileName: TFileName);
 var
-  sTime: cardinal;
+  sTime: myTickCount;
   IsVisible: boolean;
   bLocal: boolean;
   bGlobal: boolean;
@@ -1639,7 +1753,7 @@ begin
   bGlobal := ParseGlobalHeaders;
   ParseLocalHeaders := False;
   ParseGlobalHeaders := False;
-  sTime := GetTickCount;
+  sTime := myGetTickCount;
   if Assigned(fOnStartParsing) then
     fOnStartParsing(Self);
   try
@@ -1660,15 +1774,16 @@ begin
   if Assigned(fOnTotalProgress) then
     fOnTotalProgress(Self, '', 0, 0);
   if Assigned(fOnLogStatement) then
-    fOnLogStatement(Self, Format('[parser   ]: Total parsing done in %2.3f seconds.', [(GetTickCount - sTime) / 1000]));
+    fOnLogStatement(Self, Format('[parser   ]: Total parsing done in %2.3f seconds.', [myGetSecsSickTick(sTime)]));
   if Assigned(fOnUpdate) then
     fOnUpdate(Self);
 end;
 
 procedure TCppParser.ParseList;
 var
-  sTime: cardinal;
+  sTime: myTickCount;
   IsVisible: boolean;
+
 begin
   if not fEnabled then
     Exit;
@@ -1676,7 +1791,7 @@ begin
     fOnBusy(Self);
   if Assigned(fOnLogStatement) then
     fOnLogStatement(Self, '[parser   ]: Starting.');
-  sTime := GetTickCount;
+  sTime := myGetTickCount;
   if Assigned(fOnStartParsing) then
     fOnStartParsing(Self);
   try
@@ -1698,7 +1813,7 @@ begin
   if Assigned(fOnTotalProgress) then
     fOnTotalProgress(Self, '', 0, 0);
   if Assigned(fOnLogStatement) then
-    fOnLogStatement(Self, Format('[parser   ]: Total parsing done in %2.3f seconds.', [(GetTickCount - sTime) / 1000]));
+    fOnLogStatement(Self, Format('[parser   ]: Total parsing done in %2.3f seconds.', [myGetSecsSickTick(sTime)]));
   if Assigned(fOnUpdate) then
     fOnUpdate(Self);
 end;

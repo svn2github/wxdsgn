@@ -21,7 +21,13 @@ unit ClassBrowsingReg;
 
 interface
 
-uses Windows, Classes, CppParser, CppTokenizer, CodeCompletion, ClassBrowser;
+uses 
+{$IFDEF WIN32}
+  Windows, Classes, CppParser, CppTokenizer, CodeCompletion, ClassBrowser;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, CppParser, CppTokenizer, CodeCompletion, ClassBrowser;
+{$ENDIF}
 
 procedure Register;
 

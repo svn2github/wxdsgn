@@ -3,9 +3,16 @@ unit InstallWizards;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, InstallFiles, ExtCtrls, StdCtrls, Buttons, ShellAPI, ComCtrls,
   Installers, PackmanExitCodesU;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, InstallFiles, QExtCtrls, QStdCtrls, QButtons, QComCtrls,
+  Installers, PackmanExitCodesU;
+{$ENDIF}
 
 type
   TInstallWizard = class(TForm)
@@ -83,6 +90,7 @@ type
   public
     DontShowError: Boolean;
     PMExitCode: TPackmanExitCode;
+    Quiet: Boolean;
     constructor Create(AOwner: TComponent); override;
     function SetFileName(AFileName: String): Boolean;
   end;
@@ -93,15 +101,109 @@ var
 implementation
 
 uses
-  Bzip2, LibTar, ExtractionProgressDialog;
+  Bzip2, LibTar, ExtractionProgressDialog, Unzip, ziptypes;
 
 const
   PageCount = 5;
 
 var
   AppDir: String;
+ //just referenceS for unzip callbacks
+  bar: TProgressBar;
+  app: TApplication;
 
 {$R *.dfm}
+
+PROCEDURE UnzipReport( Retcode : longint;Rec : pReportRec ); stdcall;
+begin
+  if rec^.Status = file_starting then
+  begin
+    bar.Min := 0;
+    bar.Max := rec^.Size;
+  end
+  else if rec^.Status = file_unzipping then
+    bar.Position := Retcode;
+  app.ProcessMessages;
+end;
+
+FUNCTION UnzipQuestion ( Rec : pReportRec ) : Boolean; stdcall;
+begin
+  Result := (MessageDlg('Do you want to overwrite "'
+    + rec^.FileName + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes);
+end;
+
+procedure GetZipNameAndVersion( var zipname, zipversion: String);
+//this proc gets a name of zip package i.e. glib-dev-2.4.7
+//(of file glib-dev-2.4.7.zip) and attempts to resolve the name
+//and the version of it: in this case 'glib-dev' and '2.4.7'
+//this should take care of version formats like 'glib-dev-2.4.7',
+//'jpeg-6b-1', 'ps-p17', can also end in one of: -bin.zip, -dep,
+//-doc, -lib or -src (gnuwin32.sf.net format)
+var
+  tempStrs: TStrings;
+  suffix: String;
+
+  function checkIfVersion( const str: String): Boolean;
+  //check for only numbers or dots, at most one char could also be a letter
+  var
+    i: Integer;
+    wasLetter: Boolean;
+  begin
+    Result := False;
+    wasLetter := False;
+    if Length(str) = 0 then Exit;
+    for i := 1 to Length(str) do
+      if Not (str[i] in ['0'..'9', '.']) then
+        if (Not wasLetter) and (str[i] in ['a'..'z', 'A'..'Z']) then
+          wasLetter := True
+        else
+          Exit;
+    Result := True;
+  end;
+
+begin
+  zipversion := '';
+
+  tempStrs := TStringList.Create;
+  tempStrs.Delimiter := '-';
+  tempStrs.DelimitedText := zipname;
+  if tempStrs.Count = 0 then Exit; //no '-' - Exit
+
+  //check for 'suffixes' like -bin, -dep, -doc, -lib, -src
+  //for example: libintl-0.11.5-2-bin.zip
+  suffix := '';
+  if (tempStrs[tempStrs.Count-1] = 'bin')
+  or (tempStrs[tempStrs.Count-1] = 'dep')
+  or (tempStrs[tempStrs.Count-1] = 'doc')
+  or (tempStrs[tempStrs.Count-1] = 'lib')
+  or (tempStrs[tempStrs.Count-1] = 'src') then
+  begin
+    suffix := tempStrs[tempStrs.Count-1];
+    tempStrs.Delete(tempStrs.Count-1);
+  end;
+
+  //check the last '-' before known version formats:
+  //(glib-dev-2.4.7, jpeg-6b, LibW11-2001-12-01, ps-p17)
+  while tempStrs.Count > 1 do
+  begin
+    if checkIfVersion(tempStrs[tempStrs.Count-1]) then
+    begin
+      if zipversion = '' then
+        zipversion := tempStrs[tempStrs.Count-1]
+      else
+        zipversion := tempStrs[tempStrs.Count-1] + '-' + zipversion;
+      tempStrs.Delete(tempStrs.Count-1);
+      zipname := tempStrs.DelimitedText;
+    end
+    else
+      break;
+  end;
+
+  tempStrs.Free;
+
+  if suffix <> '' then
+    zipname := zipname + '-' + suffix;
+end;
 
 procedure Mkdir(const DirName: String);
 var
@@ -130,6 +232,58 @@ begin
           Result[i] := '\';
 end;
 
+procedure CreateDevPackageFile(PackageFile, DevPakName, DevPakVer: String);
+//this attempts to create a package description file (DevPackage)
+//for generic packages (*.zip, *.tar.bz2 etc)
+var
+  DevPak: TextFile;
+begin
+  AssignFile(DevPak, PackageFile);
+  Rewrite(DevPak);
+  Writeln(DevPak, ''
+    + '[Setup]' + #13#10
+    + 'Version=2' + #13#10
+    + 'AppName=' + DevPakName + #13#10
+    + 'AppVerName=' + DevPakName + ' ' + DevPakVer + #13#10
+    + 'AppVersion=' + DevPakVer + #13#10
+    + 'MenuName=' + #13#10
+    + 'Description=' + #13#10
+    + 'Url=' + #13#10
+    + 'Readme=' + #13#10
+    + 'License=' + #13#10
+    + 'Picture=' + #13#10
+    + 'Dependencies=' + #13#10
+    + 'Reboot=0' + #13#10
+    + '[Files]' + #13#10
+    + DevPakName + '=<app>\' + #13#10);
+  CloseFile(DevPak);
+end;
+
+function UnzipErrCodeToStr(errcode: Integer): String;
+begin
+  case errcode of
+    unzip_Ok             : Result := 'Ok';
+    unzip_CRCErr         : Result := 'CRC Error';
+    unzip_WriteErr       : Result := 'Write Error';
+    unzip_ReadErr        : Result := 'Read Error';
+    unzip_ZipFileErr     : Result := 'Zip File Error';
+    unzip_UserAbort      : Result := 'User Abort';
+    unzip_NotSupported   : Result := 'Not Supported';
+    unzip_Encrypted      : Result := 'Encrypted';
+    unzip_InUse          : Result := 'In Use';
+    unzip_InternalError  : Result := 'Internal Error';
+    unzip_NoMoreItems    : Result := 'No More Items';
+    unzip_FileError      : Result := 'File Error';
+    unzip_NotZipfile     : Result := 'Not Zip file';
+    unzip_HeaderTooLarge : Result := 'Header Too Large';
+    unzip_ZipFileOpenError : Result := 'Zip File Open Error';
+    unzip_SeriousError   : Result := 'Serious Error';
+    unzip_MissingParameter : Result := 'Missing Parameter';
+  else
+    Result := 'Unknown';
+  end;
+end;
+
 function TInstallWizard.SetFileName(AFileName: String): Boolean;
 const
   BufSize = 1024 * 64;
@@ -153,44 +307,124 @@ var
   i: Integer;
   EntryName: String;
   DepErrors: TStringList;
+
+  IsZip: Boolean;
+  ziprec: TZipRec;
+  DevPakName, DevPakVer: String; //for generic zip or tar.bz2 devpaks
+  unziperrCode: Integer;
+
+  procedure cleanup;
+  begin
+    if TempFiles <> nil then FreeAndNil(TempFiles);
+    if TempDirs <> nil then FreeAndNil(TempDirs);
+    if DepErrors <> nil then FreeAndNil(DepErrors);
+    RemoveDir(TempFilesDir);
+  end;
+
 begin
   IsCompressed := False;
+  IsZip := False;
+
   Result := False;
   FileName := AFileName;
 
-  { Check for Bzip2 signature }
+  { Check for signature }
   FileMode := 0;
   AssignFile(F, AFileName);
   Reset(F, 1);
+
+  { Check for bzip2 signature }
   FillChar(Buf, SizeOf(Buf) - 1, #0);
   BlockRead(F, Buf, 3, BytesRead);
   if BytesRead = 3 then
+    if Buf = 'BZh' then
+      IsCompressed := True;
+
+  { Check for zip signature }
+  if not IsCompressed then
   begin
-      if Buf = 'BZh' then
-          IsCompressed := True;
+    Seek(F, 0);
+    FillChar(Buf, SizeOf(Buf) - 1, #0);
+    BlockRead(F, Buf, 4, BytesRead);
+    if BytesRead = 4 then
+      if Buf = 'PK' + #3 + #4 then
+      begin
+        IsCompressed := True;
+        IsZip := True;
+      end;
   end;
+
   CloseFile(F);
 
   { If compressed, extract the package to a temporary file }
+  PackageFile := '';
   if IsCompressed then
   begin
+    FillChar(TempPath, SizeOf(TempPath) - 1, 0);
+    GetTempPath(SizeOf(TempPath) - 1, TempPath);
+
+    DevPakName := ChangeFileExt(ExtractFileName(AFileName), '');
+    if ExtractFileExt(DevPakName) = '.tar' then
+      DevPakName := ChangeFileExt(DevPakName, '');
+    GetZipNameAndVersion(DevPakName, DevPakVer);
+    if DevPakVer = '' then DevPakVer := '1.0';
+
+    ExtractDir := TempPath + IntToStr(Random(1000)) + '-Dev-'
+      + IntToStr(Random(1000)) + '-Package\';
+    TempFilesDir := ExtractDir;
+    ExtractDir := ExtractDir + DevPakName  + '\';
+    TempFiles := TStringList.Create;
+    TempDirs := TStringList.Create;
+    MkDir(ExtractDir);
+
+    if IsZip then
+    begin
+      ExtractionProgress := TExtractionProgress.Create(Self);
+      try
+        ExtractionProgress.Show;
+
+        bar := ExtractionProgress.ProgressBar1;
+        app := Application;
+
+        unziperrCode := FileUnzip(PChar(AFileName),
+          PChar(ExtractDir), '*.*', UnzipReport, UnzipQuestion);
+        if unziperrCode < 0 then
+        begin
+          MessageDlg('Unzip failed. Error ' + IntToStr(unziperrCode)
+          + ': ' + UnzipErrCodeToStr(unziperrCode), mtError, [mbOK], 0);
+          raise Exception.Create('error extracting for zip file "'
+            + AFileName + '"');
+        end;
+      except
+        ExtractionProgress.Free;
+        CloseZipFile(ziprec);
+        PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
+        cleanup;
+        Exit;
+      end;
+      ExtractionProgress.Free;
+      CloseZipFile(ziprec);
+    end //if is zip
+    //is bzip2
+    else
+    begin
+      { Extract the bzip2 compressed *.devpak file }
       Bz2File := nil;
       Bz2 := nil;
       try
-         Bz2File := TFileStream.Create(AFileName, fmOpenRead);
-         Bz2 := TBZDecompressionStream.Create(Bz2File);
+        Bz2File := TFileStream.Create(AFileName, fmOpenRead);
+        Bz2 := TBZDecompressionStream.Create(Bz2File);
       except
-         if Assigned(Bz2) then
-             Bz2.Free;
-         if Assigned(Bz2File) then
-             Bz2File.Free;
-         PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
-         Exit;
+        if Assigned(Bz2) then
+          Bz2.Free;
+        if Assigned(Bz2File) then
+          Bz2File.Free;
+        PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
+        cleanup;
+        Exit;
       end;
 
-      FillChar(TempPath, SizeOf(TempPath) - 1, 0);
       FillChar(TarFile, SizeOf(TarFile) - 1, 0);
-      GetTempPath(SizeOf(TempPath) - 1, TempPath);
       TarFile := TempPath + IntToStr(Random(1000)) + '-Dev-' +
         IntToStr(Random(1000)) + '-Package.tar';
 
@@ -198,146 +432,152 @@ begin
       ExtractionProgress.Show;
       ExtractedFile := nil;
       try
-         ExtractedFile := TFileStream.Create(TarFile, fmCreate);
-         ExtractionProgress.ProgressBar1.Max := Bz2File.Size * 2;
-         BytesRead := Bz2.Read(Bz2Buf, BufSize - 1);
-         while BytesRead > 0 do
-         begin
-             ExtractedFile.Write(Bz2Buf, BufSize - 1);
-             BytesRead := Bz2.Read(Bz2Buf, BufSize - 1);
-             ExtractionProgress.ProgressBar1.Position := Bz2File.Position;
-             Application.ProcessMessages;
-         end;
+        ExtractedFile := TFileStream.Create(TarFile, fmCreate);
+        ExtractionProgress.ProgressBar1.Max := Bz2File.Size * 2;
+        BytesRead := Bz2.Read(Bz2Buf, BufSize - 1);
+        while BytesRead > 0 do
+        begin
+          ExtractedFile.Write(Bz2Buf, BufSize - 1);
+          BytesRead := Bz2.Read(Bz2Buf, BufSize - 1);
+          ExtractionProgress.ProgressBar1.Position := Bz2File.Position;
+          Application.ProcessMessages;
+        end;
       except
-         if Assigned(ExtractedFile) then
-             ExtractedFile.Free;
-         ExtractionProgress.Free;
-         PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
-         Exit;
+        if Assigned(ExtractedFile) then
+            ExtractedFile.Free;
+        ExtractionProgress.Free;
+        PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
+        if FileExists(TarFile) then DeleteFile(TarFile);
+        cleanup;
+        Exit;
       end;
       ExtractedFile.Free;
 
       Bz2.Free;
       Bz2File.Free;
-  end;
 
-  { Now extract the file }
-  if IsCompressed then
-  begin
+      { Now extract the *.tar file }
       Bz2File := TFileStream.Create(TarFile, fmOpenRead);
       Tar := TTarArchive.Create(Bz2File);
       ExtractionProgress.ProgressBar1.Max := Tar.FStream.Size * 2;
       ExtractionProgress.ProgressBar1.Position := Tar.FStream.Position;
 
-      ExtractDir := TempPath + IntToStr(Random(1000)) + '-Dev-' +
-        IntToStr(Random(1000)) + '-Package\';
-      TempFilesDir := ExtractDir;
-      TempFiles := TStringList.Create;
-      TempDirs := TStringList.Create;
-      MkDir(ExtractDir);
-      PackageFile := '';
-
       try
-         while Tar.FindNext(DirRec) do
-         begin
-             FN := ExtractDir + ConvertSlashes(DirRec.Name);
-             // fix, was : if DirRec.Name[Length(DirRec.Name)] = '/' then
-             if (DirRec.FileType = ftDirectory) then
-             begin
-                 TempDirs.Add(FN);
-                 Continue;
-             end;
-             if not DirectoryExists(ExtractFileDir(FN)) then
-                 MkDir(ExtractFileDir(FN));
+        while Tar.FindNext(DirRec) do
+        begin
+          FN := ExtractDir + ConvertSlashes(DirRec.Name);
+          // fix, was : if DirRec.Name[Length(DirRec.Name)] = '/' then
+          if (DirRec.FileType = ftDirectory) then
+          begin
+            TempDirs.Add(FN);
+            Continue;
+          end;
+          if not DirectoryExists(ExtractFileDir(FN)) then
+            MkDir(ExtractFileDir(FN));
 
-             ExtractedFile := TFileStream.Create(FN, fmCreate);
-             TempFiles.Add(FN);
-             Tar.ReadFile(ExtractedFile);
-             ExtractedFile.Free;
+          ExtractedFile := TFileStream.Create(FN, fmCreate);
+          TempFiles.Add(FN);
+          Tar.ReadFile(ExtractedFile);
+          ExtractedFile.Free;
 
-             if (not FileExists(PackageFile)) and (CompareText(ExtractFileExt(FN),
-               '.DevPackage') = 0) then
-                 PackageFile := FN;
+          if (not FileExists(PackageFile)) and (CompareText(ExtractFileExt(FN),
+            '.DevPackage') = 0) then
+              PackageFile := FN;
 
-             ExtractionProgress.ProgressBar1.Position := Tar.FStream.Size +
-               Tar.FStream.Position;
-             Application.ProcessMessages;
-         end;
+          ExtractionProgress.ProgressBar1.Position := Tar.FStream.Size +
+            Tar.FStream.Position;
+          Application.ProcessMessages;
+        end; //while
       except
-         ExtractionProgress.Free;
-         Tar.Free;
-         Bz2File.Free;
-         DeleteFile(TarFile);
-         PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
-         Exit;
+        ExtractionProgress.Free;
+        Tar.Free;
+        Bz2File.Free;
+        DeleteFile(TarFile);
+        PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
+        cleanup;
+        Exit;
       end;
       ExtractionProgress.Free;
       Tar.Free;
       Bz2File.Free;
       DeleteFile(TarFile);
+    end; //else if it's bzip2
 
-      FileName := PackageFile;
+    //it's now unpacked, deal with DevPackage file
+    if LowerCase(ExtractFileExt(AFileName)) = '.devpak' then
+    begin
       if not FileExists(PackageFile) then
       begin
-          Application.MessageBox('A package description file (*.DevPackage) ' +
-            'has not been found in this archive.', 'Error', MB_ICONHAND);
-          DontShowError := True;
-          PMExitCode := PACKMAN_EXITCODE_NO_PACKAGE_DESCRIPTION;
-          Exit;
-      end;
-  end;
-
+        Application.MessageBox('A package description file (*.DevPackage) ' +
+          'has not been found in this archive.', 'Error', MB_ICONHAND);
+        DontShowError := True;
+        PMExitCode := PACKMAN_EXITCODE_NO_PACKAGE_DESCRIPTION;
+        cleanup;
+        Exit;
+      end
+    end
+    else
+    //so this is generic package like *.tar.bz2 or *.zip
+    begin
+      //create a generic *.DevPackage
+      PackageFile := TempFilesDir + DevPakName + '.DevPackage';
+      CreateDevPackageFile(PackageFile, DevPakName, DevPakVer);
+    end;
+    FileName := PackageFile;
+  end; //if IsCompressed
 
   { Go on with the installation }
-
   try
-      InstallInfo := TInstallInfo.Create(FileName);
+    InstallInfo := TInstallInfo.Create(FileName);
   except
-      Application.MessageBox('This file is not a valid package file.',
-        'Error', MB_ICONERROR);
-      Close;
-      DontShowError := True;
-      PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
-      Exit;
+    Application.MessageBox('This file is not a valid package file.',
+      'Error', MB_ICONERROR);
+    Close;
+    DontShowError := True;
+    PMExitCode := PACKMAN_EXITCODE_INVALID_FORMAT;
+    cleanup;
+    Exit;
   end;
 
   if InstallInfo.Version > SupportedVersion then
   begin
-      Application.MessageBox(PChar('This version of Package Manager only' +
-        ' supports packages up to version ' + IntToStr(SupportedVersion) +
-        '.' + #13#10 + 'The package you selected has version number ' +
-        IntToStr(InstallInfo.Version) + '.' + #13#10#13#10 +
-        'This means the package format has changed.' + #13#10 +
-        'It is highly recommended to upgrade to the latest version of ' +
-        'Dev-C++ and Package Manager.'),
-        'Incompatible version', MB_ICONERROR);
-      Close;
-      DontShowError := True;
-      PMExitCode := PACKMAN_EXITCODE_VERSION_NOT_SUPPORTED;
-      Exit;
+    Application.MessageBox(PChar('This version of Package Manager only' +
+      ' supports packages up to version ' + IntToStr(SupportedVersion) +
+      '.' + #13#10 + 'The package you selected has version number ' +
+      IntToStr(InstallInfo.Version) + '.' + #13#10#13#10 +
+      'This means the package format has changed.' + #13#10 +
+      'It is highly recommended to upgrade to the latest version of ' +
+      'Dev-C++ and Package Manager.'),
+      'Incompatible version', MB_ICONERROR);
+    Close;
+    DontShowError := True;
+    PMExitCode := PACKMAN_EXITCODE_VERSION_NOT_SUPPORTED;
+    cleanup;
+    Exit;
   end;
 
   AppDir := ExtractFileDir(ParamStr(0));
   DepErrors := TStringList.Create;
   for i := 0 to InstallInfo.Dependencies.Count - 1 do
   begin
-      EntryName := ChangeFileExt(InstallInfo.Dependencies.Strings[i], '.entry');
-      EntryName := AppDir + '\Packages\' + EntryName;
-      if not FileExists(EntryName) then
-          DepErrors.Add(InstallInfo.Dependencies.Strings[i]);
+    EntryName := ChangeFileExt(InstallInfo.Dependencies.Strings[i], '.entry');
+    EntryName := AppDir + '\Packages\' + EntryName;
+    if not FileExists(EntryName) then
+      DepErrors.Add(InstallInfo.Dependencies.Strings[i]);
   end;
   if DepErrors.Count > 0 then
   begin
-      Application.MessageBox(PChar('This package depends on some ' +
-       'other packages, which are not installed on your system.' + #13#10 +
-       'Please install them first. The required depencies are:' + #13#10 +
-       DepErrors.Text), 'Dependency Error', MB_ICONERROR);
-      Close;
-      DontShowError := True;
-      PMExitCode := PACKMAN_EXITCODE_DEPENDACIES_NOT_MET;
-      Exit;
+    Application.MessageBox(PChar('This package depends on some ' +
+     'other packages, which are not installed on your system.' + #13#10 +
+     'Please install them first. The required depencies are:' + #13#10 +
+     DepErrors.Text), 'Dependency Error', MB_ICONERROR);
+    Close;
+    DontShowError := True;
+    PMExitCode := PACKMAN_EXITCODE_DEPENDACIES_NOT_MET;
+    cleanup;
+    Exit;
   end;
-  DepErrors.Free;
+  FreeAndNil(DepErrors);
 
   Installer := nil;
   Notebook1.PageIndex := 0;
@@ -354,26 +594,29 @@ begin
   Descr.Text := InstallInfo.Description;
 
   if (Length(InstallInfo.Readme) = 0) and (Length(InstallInfo.License) = 0) then
-      NextBtn.Caption := '&Install >';
+    NextBtn.Caption := '&Install >';
   if Length(InstallInfo.Readme) = 0 then
-      Step2.Font.Color := clSilver
+    Step2.Font.Color := clSilver
   else
-      ReadmeMemo.Text := InstallInfo.Readme;
+    ReadmeMemo.Text := InstallInfo.Readme;
 
   if Length(InstallInfo.License) = 0 then
-      Step3.Font.Color := clSilver
+    Step3.Font.Color := clSilver
   else
-      LicenseMemo.Text := InstallInfo.License;
+    LicenseMemo.Text := InstallInfo.License;
 
   if InstallInfo.Reboot then
   begin
-      Label21.Show;
-      RadioButton1.Show;
-      RadioButton2.Show;
+    Label21.Show;
+    RadioButton1.Show;
+    RadioButton2.Show;
   end;
 
   PMExitCode := PACKMAN_EXITCODE_NO_ERROR;
   Result := True;
+
+  if Quiet then
+    StartInstall;
 end;
 
 procedure TInstallWizard.Notebook1PageChanged(Sender: TObject);
@@ -565,27 +808,30 @@ procedure TInstallWizard.FormClose(Sender: TObject;
 var
   i: Integer;
 begin
-  InstallInfo.Free;
-
   if IsCompressed and DirectoryExists(TempFilesDir) then
   begin
-      for i := TempFiles.Count - 1 downto 0 do
+      if Assigned(TempFiles) then
+        for i := TempFiles.Count - 1 downto 0 do
           DeleteFile(ConvertSlashes(TempFiles.Strings[i]));
-      TempFiles.Free;
+      FreeAndNil(TempFiles);
 
-      for i := TempDirs.Count - 1 downto 0 do
+      if Assigned(TempDirs) then
+        for i := TempDirs.Count - 1 downto 0 do
           RemoveDir(ConvertSlashes(TempDirs.Strings[i]));
-      TempDirs.Free;
+      FreeAndNil(TempDirs);
       RemoveDir(TempFilesDir);
   end;
 
   if (Assigned(InstallInfo)) and (InstallInfo.Reboot) and
     (RadioButton1.Checked) then
   begin
-      ExitWindowsEx(EWX_REBOOT, 0);
-      Application.Terminate;
+    FreeAndNil(InstallInfo);
+    ExitWindowsEx(EWX_REBOOT, 0);
+    Application.Terminate;
   end;
 
+  if InstallInfo <> nil then
+    FreeAndNil(InstallInfo);
   Action := caFree;
 end;
 
@@ -594,6 +840,7 @@ begin
   inherited;
 
   PMExitCode := PACKMAN_EXITCODE_ERRCODE_UNKNOWN;
+  Quiet := False;
 end;
 
 end.

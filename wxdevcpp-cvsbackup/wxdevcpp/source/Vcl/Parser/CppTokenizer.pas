@@ -21,7 +21,13 @@ unit CppTokenizer;
 
 interface
 
-uses Windows, Classes, SysUtils, StrUtils, ComCtrls;
+uses 
+{$IFDEF WIN32}
+  Windows, Classes, SysUtils, StrUtils, ComCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, SysUtils, StrUtils, QComCtrls;
+{$ENDIF}
 
 const
   LetterChars: set of Char = ['A'..'Z', 'a'..'z', '_', '*', '&', '~'];

@@ -22,9 +22,14 @@ unit CodeCompletionForm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, SysUtils, Variants, Classes, Graphics, Forms, StdCtrls, Controls,
   CodeCompletion, CppParser, Grids, Dialogs;
-
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, SysUtils, Variants, Classes, QGraphics, QForms, QStdCtrls, QControls,
+  CodeCompletion, CppParser, QGrids, QDialogs, Types;
+{$ENDIF}
 
 type
   {** Modified by Peter **}
@@ -209,8 +214,14 @@ procedure TCodeComplForm.lbCompletionKeyDown(Sender: TObject;
 begin
   {** Modified by Peter **}
   case Key of
+{$IFDEF WIN32}
     VK_TAB,
     VK_RETURN:     
+{$ENDIF}
+{$IFDEF LINUX}
+    XK_TAB,
+    XK_RETURN:     
+{$ENDIF}
       begin
         DoCompletion;  
       end;

@@ -31,7 +31,7 @@ ShowHints=1
 ShowWarnings=1
 UnitAliases=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [Linker]
-MapFile=0
+MapFile=3
 OutputObjs=0
 ConsoleApp=1
 DebugInfo=0
@@ -61,7 +61,7 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=2
 MinorVer=2
-Release=5
+Release=6
 Build=0
 Debug=0
 PreRelease=0
@@ -73,13 +73,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Bloodshed Software
 FileDescription=Dev-C++ Package Manager
-FileVersion=2.2.5.0
+FileVersion=2.2.6.0
 InternalName=PackMan
 LegalCopyright=Copyright (c) 2002 Hongli Lai
 LegalTrademarks=
 OriginalFilename=PackMan.exe
 ProductName=Bloodshed Dev-C++ 5.0
-ProductVersion=2.2.5
+ProductVersion=2.2.6
 Comments=GPL'ed
 Website=http://www.bloodshed.net/
 [Excluded Packages]

@@ -1,7 +1,12 @@
 program Packman;
 
 uses
+{$IFDEF WIN32}
   Forms,
+{$ENDIF}
+{$IFDEF LINUX}
+  QForms,
+{$ENDIF}
   InstallWizards in 'InstallWizards.pas' {InstallWizard},
   InstallFiles in 'InstallFiles.pas',
   Installers in 'Installers.pas',
@@ -14,7 +19,10 @@ uses
   BZip2 in 'bzip2.pas',
   LibTar in 'LibTar.pas',
   ExtractionProgressDialog in 'ExtractionProgressDialog.pas' {ExtractionProgress},
-  PackmanExitCodesU in 'PackmanExitCodesU.pas';
+  PackmanExitCodesU in 'PackmanExitCodesU.pas',
+  ExceptionsAnalyzer in 'ExceptionsAnalyzer.pas' {frmExceptionsAnalyzer},
+  Unzip in 'unzip\UNZIP.PAS',
+  ziptypes in 'unzip\ZIPTYPES.PAS';
 
 {$R *.res}
 

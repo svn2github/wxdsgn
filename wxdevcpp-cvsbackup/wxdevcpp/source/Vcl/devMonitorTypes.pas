@@ -21,7 +21,14 @@ unit devMonitorTypes;
 
 interface
 
-uses Classes, Windows;
+uses 
+{$IFDEF WIN32}
+  Classes, Windows;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes;
+{$ENDIF}
+
 type
   TdevMonitorChangeType = (mctChanged, mctDeleted);
   TdevMonitorChange = procedure(Sender: TObject; ChangeType: TdevMonitorChangeType; Filename: string) of object;

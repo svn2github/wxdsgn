@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 166
   Width = 488
   Height = 418
-  Caption = 'Dev-C++ Package Manager (version 2.2.4)'
+  Caption = 'Dev-C++ Package Manager (version 2.2.6)'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2533,8 +2533,8 @@ object MainForm: TMainForm
     Filter = 
       'All supported package formats (*.DevPak;*.DevPackage)|*.DevPak;*' +
       '.DevPackage|Dev-C++ Compressed Package (*.DevPak)|*.DevPak|Dev-C' +
-      '++ Package Information (*.DevPackage)|*.DevPackage|All Files (*.' +
-      '*)|*.*'
+      '++ Package Information (*.DevPackage)|*.DevPackage|Generic packa' +
+      'ges (*.zip;*.tar.bz2)|*.zip;*.tar.bz2|All Files (*.*)|*.*'
     Title = 'Please select a package to install'
     Left = 280
     Top = 296

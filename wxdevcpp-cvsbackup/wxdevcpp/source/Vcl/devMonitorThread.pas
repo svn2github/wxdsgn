@@ -22,8 +22,14 @@ unit devMonitorThread;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, devMonitorTypes, SyncObjs;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, devMonitorTypes, SyncObjs;
+{$ENDIF}
 
 const APPMSG_NOTIFYFILECHANGED = WM_USER + 2048;
 
@@ -147,8 +153,6 @@ begin
       PChar(fDirs[I]),
       False,
       FILE_NOTIFY_CHANGE_LAST_WRITE or FILE_NOTIFY_CHANGE_FILE_NAME
-      {or FILE_NOTIFY_CHANGE_SIZE or FILE_ACTION_MODIFIED
-      or FILE_NOTIFY_CHANGE_LAST_ACCESS}
       );
     nMonitors := nMonitors + 1;
   end;

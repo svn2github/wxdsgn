@@ -37,8 +37,14 @@ unit XPMenu;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ComCtrls, Forms,
   Menus, Commctrl, ExtCtrls, StdCtrls, Buttons;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QComCtrls, QForms,
+  QMenus, Commctrl, QStdCtrls, QButtons;
+{$ENDIF}
 
 type
   TXPContainer = (xccForm, xccFrame, xccToolbar, xccCoolbar, xccControlbar, xccPanel,
@@ -759,6 +765,7 @@ begin
        if MenuItem.ImageIndex <> -1 then
          HasImgLstBitmap := true;
     end;
+
     if (MenuItem.Parent.GetParentMenu.Images <> nil)
     {$IFDEF VER5U}
     or (MenuItem.Parent.SubMenuImages <> nil)
@@ -1257,6 +1264,7 @@ begin
    ARect:=origrect;
   end;
 // +jt
+
   if not (csDesigning in ComponentState) then
   begin
     if (FFlatMenu) and (not FTopMenu) then
@@ -2513,6 +2521,7 @@ end;
  end
  else Result:=CallWindowProc(Pointer(GetWindowLong(hWnd,GWL_USERDATA)), hwnd, uMsg, wParam, lParam);
 end;
+
 procedure TXPMenu.DrawWindowBorder(hWnd: HWND; IsRightToLeft: boolean);
 var
   WRect: TRect;
@@ -2609,6 +2618,7 @@ begin
    dCanvas.Free;
  FSettingWindowRng :=false;
  end;
+
 end;
 
 procedure TXPMenu.Notification(AComponent: TComponent; Operation: TOperation);
@@ -2926,6 +2936,7 @@ begin
   ACanvas.LineTo(X + 2, Y - 2);
   ACanvas.LineTo(X + 7, Y - 7);
 end;
+
 
 { TCustomComboSubClass }
 //By Heath Provost (Nov 20, 2001)

@@ -1,6 +1,6 @@
 object WebUpdateForm: TWebUpdateForm
-  Left = 226
-  Top = 160
+  Left = 255
+  Top = 141
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'WebUpdate'
@@ -206,9 +206,9 @@ object WebUpdateForm: TWebUpdateForm
   object Label7: TLabel
     Left = 8
     Top = 56
-    Width = 61
+    Width = 104
     Height = 13
-    Caption = '&Select mirror:'
+    Caption = '&Select devpak server:'
     FocusControl = cmbMirrors
   end
   object Bevel2: TBevel

@@ -22,8 +22,14 @@ unit devShortcutsEditorForm;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, ComCtrls, StdCtrls, Menus;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QExtCtrls, QComCtrls, QStdCtrls, QMenus;
+{$ENDIF}
 
 type
   TfrmShortcutsEditor = class(TForm)

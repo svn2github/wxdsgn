@@ -29,8 +29,15 @@ unit CodeCompletion;
 
 interface
 
-uses Windows, Classes, Forms, SysUtils, Controls, Graphics, StrUtils, CppParser,
-  ExtCtrls, U_IntList, dialogs;
+uses 
+{$IFDEF WIN32}
+  Windows, Classes, Forms, SysUtils, Controls, Graphics, StrUtils, CppParser,
+  ExtCtrls, U_IntList, Dialogs;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, Classes, QForms, SysUtils, QControls, QGraphics, StrUtils, CppParser,
+  QExtCtrls, U_IntList, QDialogs, Types;
+{$ENDIF}
 
 type
   {** Modified by Peter **}
@@ -65,9 +72,9 @@ type
     function ApplyStandardFilter(Index: integer): boolean;
     function ApplyClassFilter(Index, ParentID: integer; InheritanceIDs: TIntList): boolean;
     function ApplyMemberFilter(_Class: string; Index, CurrentID: integer; ClassIDs, InheritanceIDs: TIntList): boolean;
-    procedure GetCompletionFor(_Phrase,_Class, _Value: string; HasDot: boolean = False);
+    procedure GetCompletionFor(_Class, _Value: string; HasDot: boolean = False);
 //    procedure GetCompletionFor1(_Class, _Value: string; HasDot: boolean = False);
-    procedure FilterList(_Phrase,_Class, _Value: string; HasDot: boolean = False);
+    procedure FilterList(_Class, _Value: string; HasDot: boolean = False);
     function GetClass(Phrase: string): string;
     function GetMember(Phrase: string): string;
     function GetHasDot(Phrase: string): boolean;
@@ -263,7 +270,7 @@ begin
     );
 end;
 
-procedure TCodeCompletion.GetCompletionFor(_Phrase,_Class, _Value: string; HasDot: boolean = False);
+procedure TCodeCompletion.GetCompletionFor(_Class, _Value: string; HasDot: boolean = False);
 var
   I, I1: integer;
   InheritanceIDs: TIntList;
@@ -274,7 +281,6 @@ var
   pST: PStatement;
   CurrentID: integer;
   bOnlyLocal: boolean;
-  partialStr:String;
   procedure GetInheritance(ClassIndex: integer);
   var
     I: integer;
@@ -340,24 +346,10 @@ begin
         CurrentID := PStatement(fParser.Statements[fCurrClassID])^._ID
       else
         CurrentID := -1;
-      if AnsiStartsText('::',_Phrase) then
-        partialStr:=copy(_Phrase,3,length(_Phrase));
-
       for I := 0 to fParser.Statements.Count - 1 do begin
-        if AnsiStartsText('::',_Phrase) then
-        begin
-            if (PStatement(fParser.Statements[I])._Kind <> skFunction) or (PStatement(fParser.Statements[I])._ClassScope <> scsNone )then
-                continue;
-
-            if fParser.strWxIgnoreFunctions.indexOf(PStatement(fParser.Statements[I])._ScopelessCmd) <> -1 then
-                continue;
-
-            if AnsiStartsText(partialStr,PStatement(fParser.Statements[I])._ScopelessCmd) then
-                fCompletionStatementList.Add(PStatement(fParser.Statements[I]))
-        end
-        else
-            if ApplyStandardFilter(I) and ApplyMemberFilter(_Class, I, CurrentID, ClassIDs, InheritanceIDs) then
-                fCompletionStatementList.Add(PStatement(fParser.Statements[I]));
+        if ApplyStandardFilter(I) and
+          ApplyMemberFilter(_Class, I, CurrentID, ClassIDs, InheritanceIDs) then
+          fCompletionStatementList.Add(PStatement(fParser.Statements[I]));
       end;
     end;
   finally
@@ -367,11 +359,10 @@ begin
   end;
 end;
 
-procedure TCodeCompletion.FilterList(_Phrase,_Class, _Value: string;
+procedure TCodeCompletion.FilterList(_Class, _Value: string;
   HasDot: boolean);
 var
   I: integer;
-  partialStr:String;
 begin
   CodeComplForm.lbCompletion.Items.BeginUpdate;
   CodeComplForm.lbCompletion.Items.Clear;
@@ -395,34 +386,10 @@ begin
         end;
     end
     else begin
-
-        if AnsiStartsText('::',_Phrase) then
-        begin
-            fCompletionStatementList.Clear;
-            partialStr:=copy(_Phrase,3,length(_Phrase));
-            for I := 0 to fFullCompletionStatementList.Count - 1 do
-            begin
-                if (PStatement(fFullCompletionStatementList[I])^._Kind <> skFunction) or (PStatement(fFullCompletionStatementList[I])^._ClassScope <> scsNone )then
-                    continue;
-                //Ignore certain function declarations
-
-                if fParser.strWxIgnoreFunctions.indexOf(PStatement(fFullCompletionStatementList[I])^._ScopelessCmd) <> -1 then
-                    continue;
-
-                if AnsiStartsText(partialStr, PStatement(fFullCompletionStatementList[I])^._ScopelessCmd) then
-                begin
-                    fCompletionStatementList.Add(fFullCompletionStatementList[I]);
-                    CodeComplForm.lbCompletion.Items.Add('');
-                end;
-            end;
-        end
-        else
-        begin
-            for I := 0 to fFullCompletionStatementList.Count - 1 do
-                CodeComplForm.lbCompletion.Items.Add('');
-            fCompletionStatementList.Clear;
-            fCompletionStatementList.Assign(fFullCompletionStatementList);
-        end;
+      for I := 0 to fFullCompletionStatementList.Count - 1 do
+        CodeComplForm.lbCompletion.Items.Add('');
+      fCompletionStatementList.Clear;
+      fCompletionStatementList.Assign(fFullCompletionStatementList);
     end;
   except
   end;
@@ -473,18 +440,16 @@ end;
 function TCodeCompletion.GetTypeID(_Value: string; il: TIntList): integer;
 var
   I: integer;
-  //strVal:String;
 begin
   Result := -1;
   if (_Value <> '') and (_Value[Length(_Value)] = '>') then // template
     Delete(_Value, Pos('<', _Value), MaxInt);
-
   for I := 0 to fParser.Statements.Count - 1 do
-    if((AnsiCompareText(_Value, PStatement(fParser.Statements[I])^._ScopelessCmd) = 0) or
+    if (AnsiCompareText(_Value, PStatement(fParser.Statements[I])^._ScopelessCmd) = 0) or
       (AnsiCompareText(_Value, PStatement(fParser.Statements[I])^._ScopelessCmd + '*') = 0) or
       (AnsiCompareText(_Value, PStatement(fParser.Statements[I])^._ScopelessCmd + '&') = 0) or
-      (AnsiCompareText(_Value, PStatement(fParser.Statements[I])^._ScopelessCmd + '**') = 0) ) then begin
-      if (Result = -1) or ((Result <> -1) and (PStatement(fParser.Statements[I])^._ParentID <> Result) {and (PStatement(fParser.Statements[I])^._ParentID <> -1)})then begin
+      (AnsiCompareText(_Value, PStatement(fParser.Statements[I])^._ScopelessCmd + '**') = 0) then begin
+      if (Result = -1) or ((Result <> -1) and (PStatement(fParser.Statements[I])^._ParentID <> Result) {and (PStatement(fParser.Statements[I])^._ParentID <> -1)}) then begin
         Result := PStatement(fParser.Statements[I])^._ID;
         if Assigned(il) then
           il.Add(Result)
@@ -503,7 +468,12 @@ procedure TCodeCompletion.ComplKeyPress(Sender: TObject; var Key: Char);
 begin
   if fEnabled then begin
     case Key of
+{$IFDEF WIN32}
       Char(vk_Escape), '.', '>': CodeComplForm.Hide;
+{$ENDIF}
+{$IFDEF LINUX}
+      Char(xk_Escape), '.', '>': CodeComplForm.Hide;
+{$ENDIF}
     end;
 
     if Assigned(fOnKeyPress) then
@@ -563,19 +533,18 @@ begin
     C := GetClass(Phrase);
     M := GetMember(Phrase);
     D := GetHasDot(Phrase); // and (M<>'');
-
-    if (not D or (D and (C <> ''))) or (AnsiStartsText('::',Phrase) = true)then try
+    if not D or (D and (C <> '')) then try
       Screen.Cursor := crHourglass;
       // only perform new search if just invoked
       if not CodeComplForm.Showing then begin
         fCompletionStatementList.Clear;
         fFullCompletionStatementList.Clear;
         fIncludedFiles.CommaText := fParser.GetFileIncludes(Filename);
-        GetCompletionFor(Phrase,C, M, D);
+        GetCompletionFor(C, M, D);
         fFullCompletionStatementList.Assign(fCompletionStatementList);
       end;
       // perform filtering in list
-      FilterList(Phrase,C, M, D);
+      FilterList(C, M, D);
     finally
       Screen.Cursor := crDefault;
     end;

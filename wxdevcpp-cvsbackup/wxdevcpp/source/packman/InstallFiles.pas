@@ -3,7 +3,12 @@ unit InstallFiles;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Classes, IniFiles, SysUtils, Dialogs, PackmanUtils;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, IniFiles, SysUtils, QDialogs, PackmanUtils;
+{$ENDIF}
 
 type
   TIconFile = Class

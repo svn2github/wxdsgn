@@ -3,8 +3,14 @@ unit VerifyForms;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Buttons, ComCtrls, IniFiles;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QExtCtrls, QButtons, QComCtrls, IniFiles;
+{$ENDIF}
 
 type
   TVerifyForm = class(TForm)

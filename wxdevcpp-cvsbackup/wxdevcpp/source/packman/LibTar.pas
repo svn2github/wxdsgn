@@ -74,7 +74,10 @@ UNIT LibTar;
 INTERFACE
 
 USES
-  Windows, SysUtils, Classes;
+{$IFDEF WIN32}
+  Windows,
+{$ENDIF}
+  SysUtils, Classes;
 
 TYPE
   // --- File Access Permissions

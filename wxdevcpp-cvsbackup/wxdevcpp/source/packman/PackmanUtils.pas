@@ -3,18 +3,28 @@ unit PackmanUtils;
 interface
 
 uses
+{$IFDEF WIN32}
   Classes, SysUtils, Windows;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, SysUtils;
+{$ENDIF}
 
 procedure FilesFromWildcard(Directory, Mask: String; var Files : TStringList;
   Subdirs, ShowDirs: Boolean);
 function GetDevcppMenu: String;
 procedure CreateShortcut(FileName, Target: String; Icon: String = '');
 function CalcMod(Count: Integer): Integer;
+function GetVersionString(FileName: string): string;
 
 implementation
 
 uses
+{$IFDEF WIN32}
   ShlObj, ActiveX, ComObj;
+{$ENDIF}
+{$IFDEF LINUX}
+{$ENDIF}
 
 procedure FilesFromWildcard(Directory, Mask: String; var Files : TStringList;
   Subdirs, ShowDirs: Boolean);
@@ -121,6 +131,41 @@ begin
       Result := 8
   else
       Result := 16;
+end;
+
+// added by mandrav 13 Sep 2002
+// returns the file version of the .exe specified by filename
+// in the form x.x.x.x
+function GetVersionString(FileName: string): string;
+var
+  Buf: Pointer;
+  i: cardinal;
+  P: pointer;
+  pSize: cardinal;
+  ffi: TVSFixedFileInfo;
+begin
+  Result := '';
+  i := GetFileVersionInfoSize(PChar(FileName), i);
+  if i = 0 then
+    Exit;
+
+  Buf := AllocMem(i);
+  try
+    if not GetFileVersionInfo(PChar(FileName), 0, i, Buf) then
+      Exit;
+
+    pSize := SizeOf(P);
+    VerQueryValue(Buf, '\', p, pSize);
+
+    ffi := TVSFixedFileInfo(p^);
+    Result := Format('%d.%d.%d.%d', [
+      HiWord(ffi.dwFileVersionMS),
+        LoWord(ffi.dwFileVersionMS),
+        HiWord(ffi.dwFileVersionLS),
+        LoWord(ffi.dwFileVersionLS)]);
+  finally
+    FreeMem(Buf);
+  end;
 end;
 
 end.

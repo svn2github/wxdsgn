@@ -3,9 +3,16 @@ unit Main;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, StdCtrls, ComCtrls, ExtCtrls, ToolWin, Buttons, devTabs,
   ShellAPI, ImgList, IniFiles;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QMenus, QStdCtrls, QComCtrls, QExtCtrls, ToolWin, QButtons, devTabs,
+  QImgList, IniFiles;
+{$ENDIF}
 
 type
   TMainForm = class(TForm)
@@ -157,44 +164,98 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   FileName: String;
-  Auto: Boolean;
+  OptionAuto: Boolean;
+  OptionUninstall: Boolean;
+  OptionQuiet: Boolean;
+  OptionReqVersion: String;
+  i: Integer;
 begin
   Randomize;
   Application.OnHint := AppHint;
 
-  Auto := False;
-  if CompareText(ParamStr(1), '/auto') = 0 then
-  begin
-      FileName := ParamStr(2);
-      Auto := True;
-  end else
-      FileName := ParamStr(1);
+// parse command line
+// packman [/auto] [/quiet] [[file] | [/uninstall file [/version number]]]
+//   /auto - close packman after finishing
+//   /quiet - don't require the user to press any buttons
+//   file - filename of the devpak
+//   /uninstall file - filename of the *.entry of the devpak to uninstall
+//     /version number - check the version number of the *.entry to uninstall (AppVersion)
 
-  if FileExists(FileName) then
-  begin
-      InstallWizard := TInstallWizard.Create(Self);
-      with InstallWizard do
-      try
-         Application.ProcessMessages;
-         if SetFileName(FileName) then
-         begin
-             ShowModal;
-             if Auto then
-                 Halt(PMExitCode);
-         end else begin
-             if (not DontShowError) and (not Auto) then
-                 Application.MessageBox('An error has occured.' + #13#10 +
-                   'The selected installation file may be damaged or invalid.',
-                   'Error', MB_ICONHAND);
+  OptionAuto := False;
+  OptionUninstall := False;
+  OptionQuiet := False;
+  FileName := '';
+  OptionReqVersion := '';
 
-             if Auto then
-                 Halt(PMExitCode);
-         end;
-      finally
-         Free;
+  i := 1;
+  while i <= ParamCount do
+  begin
+    if CompareText(ParamStr(i), '/auto') = 0 then
+      OptionAuto := True
+    else if CompareText(ParamStr(i), '/uninstall') = 0 then
+      OptionUninstall := True
+    else if CompareText(ParamStr(i), '/quiet') = 0 then
+      OptionQuiet := True
+    else if (CompareText(ParamStr(i), '/version') = 0)
+      and (i + 1 <= ParamCount) then
+    begin
+      OptionReqVersion := ParamStr(i + 1);
+      i := i + 1;
+    end
+    else
+      FileName := ParamStr(i);
+    i := i + 1;
+  end;
+// parsing done
+
+  if Not OptionUninstall and FileExists(FileName) then
+  begin
+    InstallWizard := TInstallWizard.Create(Self);
+    with InstallWizard do
+    try
+      Application.ProcessMessages;
+      Quiet := OptionQuiet;
+      if SetFileName(FileName) then
+      begin
+        if Quiet then
+          Close
+        else
+          ShowModal;
+        if OptionAuto then
+          Halt(PMExitCode);
+      end
+      else
+      begin
+        if (not DontShowError) and (not OptionAuto) then
+          Application.MessageBox('An error has occured.' + #13#10 +
+            'The selected installation file may be damaged or invalid.',
+            'Error', MB_ICONHAND);
+
+        if OptionAuto then
+          Halt(PMExitCode);
       end;
-  end else if Auto then
-      Halt(PACKMAN_EXITCODE_FILE_NOT_FOUND);
+    finally
+      Free;
+    end;
+  end
+  else if OptionUninstall and FileExists(FileName) then
+  begin
+    RemoveForm := TRemoveForm.Create(Self);
+    with RemoveForm do
+    try
+      Entry := FileName;
+      ReqVersion := OptionReqVersion;
+      if OptionQuiet then
+        CloseWhenDone := True;
+      ShowModal;
+    finally
+      Free;
+      if OptionAuto then
+        Halt(PACKMAN_EXITCODE_NO_ERROR);
+    end;
+  end
+  else if OptionAuto then
+    Halt(PACKMAN_EXITCODE_FILE_NOT_FOUND);
 
   Reload;
 end;

@@ -54,6 +54,11 @@
 //
 //      now looks the file very rubbish and needs some serious cleanup :P
 //
+//
+//    2004-12-05
+//      NEW_SYNEDIT is no longer need as we use "new' synedit
+//      and never going back to "old". removing all defines and ifdefs
+//
 //    24/03/2004
 //      Made more changes for downwards compatibility with old SynEdit.
 //      Check the 'NEW_SYNEDIT' define.
@@ -72,15 +77,6 @@
 
 unit CodeToolTip;
 
-// the new SynEdit, or in other words, the SynEdit from the
-// latest CVS resp (24 march 2004) has changed some functionames
-// and lots of inner workings. So we have a define here where you
-// can select if you want to compile the code for the old or new
-// SynEdit version.
-
-{.$DEFINE NEW_SYNEDIT}
-
-
 // the xptooltip looks nicer than the original THintWindow
 // from delphi and yeah, it supports alphablending under win2k
 // and shadowing under win xp. it is is downwards compatible.
@@ -90,8 +86,14 @@ unit CodeToolTip;
 
 interface
 uses
+{$IFDEF WIN32}
   SysUtils, Dialogs, Classes, Windows, Messages, Graphics, Controls, Menus, Forms, StdCtrls,
-  SynEdit, SynEditHighlighter, SynEditKbdHandler, XPToolTip;
+  SynEditKbdHandler, SynEdit, SynEditHighlighter, XPToolTip;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, QDialogs, Classes, Xlib, QGraphics, QControls, QMenus, QForms, QStdCtrls,
+  QSynEditKbdHandler, QSynEdit, QSynEditHighlighter, Types, XPToolTip;
+{$ENDIF}
 
          
 type
@@ -159,7 +161,7 @@ type
     FBmp: TBitmap;
     FOptions: TToolTipOptions;
     FEditor: TCustomSynEdit;
-    FKeyDownProc: {$IFDEF NEW_SYNEDIT} TKeyEvent {$ELSE} TKeyDownProc {$ENDIF};  
+    FKeyDownProc: TKeyEvent;  
     FEndWhenChr: String;
     FStartWhenChr: String;
     FToolTips: TStringList;
@@ -171,9 +173,6 @@ type
     FDelimiters: string;
     FMaxScanLength: Integer;
     FCustomSelIndex: Boolean; // user clicked up/down
-{$IFNDEF NEW_SYNEDIT}    
-    FTokenPt: TPoint;
-{$ENDIF}
     procedure SetSelIndex(Value: Integer);
     procedure SetToolTips(const Strings: TStringList);
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
@@ -442,17 +441,12 @@ begin
   // we have a limit of how many chars we scan maximal...
   FMaxScanLength := 1024;
 
-  
-{$IFDEF NEW_SYNEDIT}
   FKeyDownProc  := EditorKeyDown;
-{$ELSE}
-  FKeyDownProc := TKeyDownProc.Create(EditorKeyDown);
-{$ENDIF}
 
   FUpButton := TCodeToolTipUpButton.Create;
   FUpButton.Left := 4;
   FUpButton.Top := 3;
-  
+
   FDownButton := TCodeToolTipDownButton.Create;
   FDownButton.Left := 20; // unknown, it's calculated at runtime
   FDownButton.Top := 3;
@@ -464,16 +458,16 @@ destructor TBaseCodeToolTip.Destroy;
 begin
   if Activated then ReleaseHandle;
 
-{$IFDEF NEW_SYNEDIT}
   FKeyDownProc  := nil;
-{$ELSE}
-  FKeyDownProc.Free;
-{$ENDIF}
 
   FEditor := nil;
+
+  FreeAndNil(FUpButton);
+  FreeAndNil(FDownButton);
+
   FToolTips.Free;
   FLookupEditor.Free;
-  
+
   inherited;
 end;
 
@@ -497,6 +491,7 @@ begin
   if Activated then
   begin
     case Key of
+{$IFDEF WIN32}
       VK_ESCAPE:
         begin
           if (ttoHideOnESC in FOptions) then ReleaseHandle;
@@ -507,6 +502,19 @@ begin
           if (ttoHideOnEnter in FOptions) then ReleaseHandle
           else Show;
         end; 
+{$ENDIF}
+{$IFDEF LINUX}
+      XK_ESCAPE:
+        begin
+          if (ttoHideOnESC in FOptions) then ReleaseHandle;
+        end;
+        
+      XK_RETURN:
+        begin
+          if (ttoHideOnEnter in FOptions) then ReleaseHandle
+          else Show;
+        end; 
+{$ENDIF}
     end;
   end;
 end;
@@ -705,15 +713,20 @@ var
  WidthParam: Integer;
  I: Integer;
  CurParam: Integer;
- HLAttr: TSynHighlighterAttributes;
  StrToken,S: string;
+{$IFDEF WIN32}
  CurChar: Char;
+{$ENDIF}
+{$IFDEF LINUX}
+ CurChar: WideChar;
+{$ENDIF}
 
   procedure DrawParamLetterEx(Index: Integer; CurrentParam: Boolean=False);
   var
     J: Integer;
     CharW: Integer;
     CharH: Integer;
+    HLAttr: TSynHighlighterAttributes;
   begin
     // we use a lookup editor to get the syntax coloring
     // for out tooltips :)
@@ -723,7 +736,8 @@ var
     with FBmp.Canvas do
     begin
       Brush.Style := bsClear;
-      Font.Color := HLAttr.Foreground;
+      if HLAttr <> nil then
+        Font.Color := HLAttr.Foreground;
 
       // if it is the word where the cursor currently is
       // we draw it in bold and also check for further drawing options
@@ -733,7 +747,7 @@ var
         if (ttoCurrentArgumentBlackOnly in FOptions) then
           Font.Color := clBlack;        
       end
-      else
+      else if HLAttr <> nil then
         Font.Style := HLAttr.Style;
       
       CharH := TextHeight('Wg');
@@ -838,21 +852,12 @@ var
   CaretXYPix: TPoint;
   YPos: Integer;
 begin
-{$IFDEF NEW_SYNEDIT}
   CaretXYPix := FEditor.RowColumnToPixels(FEditor.DisplayXY);
-{$ELSE}
-  CaretXYPix.X := FEditor.CaretXPix;
-  CaretXYPix.Y := FEditor.CaretYPix;
-{$ENDIF}
-  
+
   Pt := FEditor.ClientToScreen(Point(CaretXYPix.X, CaretXYPix.Y));
   Dec(Pt.X, cHorzFix);
 
-{$IFDEF NEW_SYNEDIT}
   Dec(Pt.Y, FEditor.LineHeight);
-{$ELSE}
-  Dec(Pt.Y, FEditor.LineHeight);
-{$ENDIF}
 
   YPos := Pt.Y;
   Inc(YPos, FEditor.LineHeight);
@@ -863,12 +868,8 @@ begin
 
   // this displays the rect below the current line and at the
   // same position where the token begins
-{$IFDEF NEW_SYNEDIT}  
   Pt := FEditor.ClientToScreen(FEditor.RowColumnToPixels(FEditor.BufferToDisplayPos(FEditor.CharIndexToRowCol(FTokenPos))));
-{$ELSE}                 
-  Pt := FEditor.ClientToScreen(FEditor.RowColumnToPixels(FTokenPt));
-{$ENDIF}
-  
+
   ActivateHint(Rect(Pt.X, 
                     YPos+2+FEditor.LineHeight, 
                     Pt.X+NewWidth, 
@@ -964,7 +965,9 @@ var
   S1: string;
   nCommas: Integer;
   ProtoFound: Boolean;
-  
+  attr: TSynHighlighterAttributes;
+  attrstr: String; //dummy string
+      
   // skip c/c++ commentblocks 
   procedure SkipCommentBlock;
   begin
@@ -992,6 +995,14 @@ begin
   ASSERT(nil <> FToolTips, 'FToolTips must not be nil');
   ASSERT(nil <> FEditor, 'FEditor must not be nil');
   ASSERT(nil <> FEditor.Highlighter, 'FEditor.Highlighter must not be nil');
+
+  //get highlighter attribute and check if the cursor is not within
+  //string or comment etc.
+  FEditor.GetHighlighterAttriAtRowCol(FEditor.CaretXY, attrstr, attr);
+  with FEditor.Highlighter do
+    if (attr <> nil) then
+      if (attr = StringAttribute) or (attr = CommentAttribute) then
+        Exit;
 
   // get the current position in the text
   Idx := FEditor.SelStart;
@@ -1072,36 +1083,14 @@ begin
   // foo(int a, int b
   // the previous word would be 'foo'  
   S := PreviousWordString(P, CurPos);
-  
-{$IFNDEF NEW_SYNEDIT}
-  // calc the x and y token coordinate 
-  // the token is the name of the prototype in question!
-  // we use this later for adjusting the hint position
-  if S <> '' then
-  begin
-    // check if the word is in the current line
-    I := AnsiPos(S, FEditor.LineText);
-    if I > 0 then
-    begin
-      // get the row and column of the word, then compare
-      // it with the previous word we did find before
-      S1 := FEditor.GetWordAtRowCol(Point(I, FEditor.CaretY));
-      if S1 = S then
-      begin
-        // and when it is same finally set the token point
-        FTokenPt := Point(I, FEditor.CaretY);
-      end;
-    end;
-  end;
-{$ENDIF}
 
   DoBeforeShow(FToolTips, S);
-  
+
   // get the current token position in the text
   // this is where the prototypename usually starts
   FTokenPos := CurPos - Length(S)-1;
 
-  
+
   // check if the token is added to the list
   ProtoFound := False;
   for I := 0 to FToolTips.Count-1 do
@@ -1156,11 +1145,20 @@ begin
   // hel_function(
   //            ^-- If we are here, we must hide it!
   case FCurCharW of
+{$IFDEF WIN32}
     VK_LEFT,
     VK_RIGHT,
     VK_UP,
     VK_DOWN,
     VK_BACK: ReleaseHandle;
+{$ENDIF}
+{$IFDEF LINUX}
+    XK_LEFT,
+    XK_RIGHT,
+    XK_UP,
+    XK_DOWN,
+    XK_BackSpace: ReleaseHandle;
+{$ENDIF}
   else
     // Braces dont match? Then hide ..
     if nBraces <> 0 then

@@ -25,7 +25,12 @@ unit devTabs;
 interface
 
 uses
- Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList;
+{$IFDEF WIN32}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QGraphics, QControls, QForms, QImgList, Types;
+{$ENDIF}
 
 type
   TdevTabOrientation = (toTop, toBottom);

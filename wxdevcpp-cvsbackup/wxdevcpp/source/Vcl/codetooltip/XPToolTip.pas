@@ -32,7 +32,12 @@ unit XPToolTip;
 interface
 
 uses
+{$IFDEF WIN32}
   SysUtils, Dialogs, Classes, Windows, Messages, Graphics, Controls, Menus, Forms, StdCtrls;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, QDialogs, Classes, QGraphics, QControls, QMenus, QForms, QStdCtrls, Types;
+{$ENDIF}
 
   
 type
@@ -43,7 +48,12 @@ type
     property Activated: Boolean read FActivated;    
   public
     constructor Create(AOwner: TComponent); override;
+{$IFDEF WIN32}
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
+{$ENDIF}
+{$IFDEF LINUX}
+    procedure ActivateHint(Rect: TRect; const AHint: WideString); override;
+{$ENDIF}
     procedure ReleaseHandle; virtual;
   end;
   
@@ -71,7 +81,12 @@ type
     property DropShadow: Boolean read FDropShadow write SetDropShadow default True;
   public
     constructor Create(AOwner: TComponent); override;
+{$IFDEF WIN32}
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
+{$ENDIF}
+{$IFDEF LINUX}
+    procedure ActivateHint(Rect: TRect; const AHint: WideString); override;
+{$ENDIF}
   end;
 
 
@@ -96,13 +111,23 @@ var
   function IsWin2kOrLater: Boolean;
   // returns true when the operating system is windows 2000 or newer  
   begin
+{$IFDEF WIN32}
     Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5);
+{$ENDIF}
+{$IFDEF LINUX}
+    Result := False;
+{$ENDIF}
   end;
   
   function IsWinXP: Boolean;
   // returns true when the operating system is windows XP or newer  
   begin
+{$IFDEF WIN32}
     Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
+{$ENDIF}
+{$IFDEF LINUX}
+    Result := False;
+{$ENDIF}
   end;
 
 //----------------- TCustomToolTip -------------------------------------------------------------------------------------
@@ -117,8 +142,13 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
 procedure TCustomToolTip.ActivateHint(Rect: TRect; const AHint: string);
-begin     
+{$ENDIF}
+{$IFDEF LINUX}
+procedure TCustomToolTip.ActivateHint(Rect: TRect; const AHint: WideString);
+{$ENDIF}
+begin
   inherited;
   FActivated := True;
 end;
@@ -148,7 +178,12 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
 procedure TCustomXPToolTip.ActivateHint(Rect: TRect; const AHint: string);
+{$ENDIF}
+{$IFDEF LINUX}
+procedure TCustomXPToolTip.ActivateHint(Rect: TRect; const AHint: WideString);
+{$ENDIF}
 const
   CS_DROPSHADOW = $00020000;
 begin     

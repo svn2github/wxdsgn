@@ -33,8 +33,15 @@ unit ColorPickerButton;
 
 interface
 
-uses Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
-     ExtCtrls, CommCtrl;
+uses 
+{$IFDEF WIN32}
+  Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
+  ExtCtrls, CommCtrl;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Classes, QControls, QForms, QGraphics, QStdCtrls,
+  QCommCtrl;
+{$ENDIF}
 
 const // constants used in OnHint and internally to indicate a specific cell
       DefaultCell = -3;
@@ -185,7 +192,14 @@ type
 
 implementation
 
-uses ActnList, ImgList;
+{$IFDEF WIN32}
+uses
+  ActnList, ImgList;
+{$ENDIF}
+{$IFDEF LINUX}
+uses
+  QActnList, QImgList, Types;
+{$ENDIF}
 
 const
  DRAW_BUTTON_UP = 8208;
@@ -2758,7 +2772,9 @@ begin
   FColorPopup := TColorPopup.Create(Self);
   // park the window somewhere it can't be seen
   FColorPopup.Left := -1000;
-  FPopupWnd := AllocateHWnd(PopupWndProc);
+  // to avoid "deprecated" message use
+  // Classes.AllocateHWnd not Forms.AllocateHWnd
+  FPopupWnd := Classes.AllocateHWnd(PopupWndProc);
 
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
@@ -2781,7 +2797,9 @@ end;
 destructor TColorPickerButton.Destroy;
 
 begin
-  DeallocateHWnd(FPopupWnd);
+  // to avoid "deprecated" message use
+  // Classes.AllocateHWnd not Forms.AllocateHWnd
+  Classes.DeallocateHWnd(FPopupWnd);
   Dec(ButtonCount);
   // the color popup window will automatically be freed since the button is the owner
   // of the popup

@@ -8,7 +8,8 @@ unit U_IntList;
 
 interface
 
-uses classes, sysconst, sysutils;
+uses 
+  Classes, SysConst, SysUtils;
 
 const
   maxlistsize =maxint div 32;

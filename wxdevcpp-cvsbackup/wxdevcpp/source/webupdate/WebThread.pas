@@ -22,7 +22,12 @@ unit WebThread;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Classes, SysUtils, WinInet;
+{$ENDIF}
+{$IFDEF LINUX}
+  Classes, SysUtils;
+{$ENDIF}
 
 // this thread retrieves a remote document and saves it in a temporary file.
 type
@@ -195,7 +200,7 @@ begin
       FileClose(hFile);
 
       if GetLastError <> 0 then begin
-        SetMessage(wumrRetrieveError, 'Error retrieving remote file');
+        SetMessage(wumrRetrieveError, 'Error retrieving remote file: ' + SysErrorMessage(GetLastError));
         DeleteFile(TempFile);
         Synchronize(AlertMainThread);
         InternetCloseHandle(fFileHandle);

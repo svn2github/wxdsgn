@@ -22,9 +22,16 @@ unit WebUpdate;
 interface
 
 uses
+{$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, WebThread, CheckLst, ExtCtrls, IniFiles,
   ShellApi, TypInfo, Buttons, XPMenu;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  QDialogs, QComCtrls, QStdCtrls, WebThread, QCheckLst, QExtCtrls, IniFiles,
+  TypInfo, QButtons;
+{$ENDIF}
 
 type
   TWebUpdateForm = class(TForm)
@@ -90,6 +97,7 @@ type
     function GetSelected(index: integer): boolean;
     procedure EnableForm;
     procedure DisableForm;
+    procedure CheckInstalledExes;
   public
     { Public declarations }
     BasePath: string;
@@ -104,7 +112,13 @@ var
 
 implementation
 
-uses utils, version, devcfg, PackmanExitCodesU, main;
+uses 
+{$IFDEF WIN32}
+  utils, version, devcfg, PackmanExitCodesU, main;
+{$ENDIF}
+{$IFDEF LINUX}
+  Xlib, utils, version, devcfg, PackmanExitCodesU, main;  
+{$ENDIF}
 
 {$R *.dfm}
 
@@ -113,7 +127,7 @@ const
   CONF_FILE = 'webupdate.conf';
 //  DEFAULT_MIRROR = 'Andreas Aberg''s server=http://vUpdate.servebeer.com/';  // 'bloodshed.net (Bloodshed server)=http://haiku.bloodshed.net/dev/webupdate/';
   DEFAULT_MIRROR = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
-  DEFAULT_MIRROR_2 = 'devpaks.org Community Devpaks=http://devpaks.org/';
+  DEFAULT_MIRROR_2 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
 
 var
   BASE_URL: string;
@@ -140,8 +154,14 @@ var
   tmp: string;
 begin
   if fErrorsList.Count > 0 then
+{$IFDEF WIN32}
+    MessageBox(Self.Handle, 'Could not connect to remote site. The remote site might be down, or your connection ' +
+      'to the Internet might not be working...'#13#10#13#10'Please try another mirror site...', '', MB_ICONERROR or MB_OK)
+{$ENDIF}
+{$IFDEF LINUX}
     MessageDlg('Could not connect to remote site. The remote site might be down, or your connection ' +
       'to the Internet might not be working...'#13#10#13#10'Please try another mirror site...', mtError, [mbOk], 0)
+{$ENDIF}
   else begin
     if (wThread.LastMessage = wumrDisconnect) and
       FileExists(PUpdateRec(wThread.Files[0])^.TempFilename) then begin
@@ -191,13 +211,12 @@ begin
       if PUpdateRec(wThread.Files[I])^.Execute then begin
         PackFileName := ExtractFilePath(Application.ExeName) + PACKAGES_DIR + ExtractFileName(PUpdateRec(wThread.Files[I])^.LocalFilename);
         ForceDirectories(ExtractFilePath(Application.ExeName) + PACKAGES_DIR); // Create <devcpp>\Packages
-        if MoveFileEx(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(PackFileName),
-        MOVEFILE_COPY_ALLOWED or MOVEFILE_REPLACE_EXISTING) = BOOL(False) then
+        DeleteFile(PackFileName);
+        //Win9x does not support MoveFileEx
+        if MoveFile(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(PackFileName)) = BOOL(False) then
         begin
           MessageDlg('Could not move file: ' + PUpdateRec(wThread.Files[I])^.TempFilename +
-          ' to ' + PackFileName +
-          ' please verify you have enough permissions to install packages on this system',
-          mtWarning, [mbOK], 0);
+          ' to ' + PackFileName + #13#10 + SysErrorMessage(GetLastError), mtWarning, [mbOK], 0);
         end
         else if FileExists(ExtractFilePath(Application.ExeName) + PACKMAN_PROGRAM) then begin
           //start Packman.exe
@@ -210,7 +229,8 @@ begin
           end;
           if CreateProcess(nil, PChar(ExtractFilePath(Application.ExeName) + PACKMAN_PROGRAM
             + ' /auto "' + PackFileName + '"'), nil, nil, False, NORMAL_PRIORITY_CLASS,
-            nil, nil, PackStartupInfo, PackProcessInfo) then begin
+            nil, PChar(ExtractFilePath(Application.ExeName)),
+            PackStartupInfo, PackProcessInfo) then begin
               PackProcess := PackProcessInfo.hProcess;
               while WaitforSingleObject(PackProcess, 250) <> WAIT_OBJECT_0 do
                 Application.ProcessMessages;
@@ -264,13 +284,13 @@ procedure TWebUpdateForm.WriteInstalled(index : integer; InPackMan: Boolean);
 var i : integer;
 begin
   if Not InPackMan then
-  if FileExists(devDirs.Config + 'devcpp.cfg') then
-    with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
-      try
-        WriteString(WEBUPDATE_SECTION, PUpdateRec(wThread.Files[index])^.Name, PUpdateRec(wThread.Files[index])^.Version);
-      finally
-        Free;
-      end;
+    if FileExists(devDirs.Config + 'devcpp.cfg') then
+      with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+        try
+          WriteString(WEBUPDATE_SECTION, PUpdateRec(wThread.Files[index])^.Name, PUpdateRec(wThread.Files[index])^.Version);
+        finally
+          Free;
+        end;
 
   //clear from the list        
   for i := 0 to lv.Items.Count - 1 do
@@ -408,7 +428,7 @@ begin
       P^.Version := Ini.ReadString(sl[I], 'Version', '<unknown>');
       P^.LocalVersion := GetPackmanPackVersion(PackmanPacks, P^.Name);
       if P^.LocalVersion = '' then
-      P^.LocalVersion := LocalIni.ReadString(WEBUPDATE_SECTION, P^.Name, '');
+        P^.LocalVersion := LocalIni.ReadString(WEBUPDATE_SECTION, P^.Name, '');
       P^.Size := Ini.ReadInteger(sl[I], 'Size', 0);
       P^.Date := Ini.ReadString(sl[I], 'Date', '');
       P^.Selected := False;
@@ -608,7 +628,7 @@ procedure TWebUpdateForm.FormClose(Sender: TObject;
 begin
   cmbMirrors.Clear;
   cmbGroups.Clear;
-  lv.Clear;
+  lv.Items.Clear;
   memDescr.Clear;
 
   ClearList;
@@ -690,7 +710,23 @@ begin
 end;
 
 procedure TWebUpdateForm.cmbMirrorsChange(Sender: TObject);
+var
+  lastSelMirror: Integer;
+  lastMirrorList: String;
+  tmpAction: TCloseAction;
 begin
+  with cmbMirrors do
+  begin
+    lastSelMirror := ItemIndex;
+    lastMirrorList := Items.Text;
+
+    FormClose(Self, tmpAction);
+    FormShow(Self);
+
+    Items.Text := lastMirrorList;
+    ItemIndex := lastSelMirror;
+  end;
+
   BASE_URL := fMirrorList.Values[cmbMirrors.Text];
 end;
 
@@ -740,7 +776,7 @@ procedure TWebUpdateForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.ExStyle := params.ExStyle or WS_EX_APPWINDOW;
-  params.WndParent := MainForm.Handle;
+  params.WndParent := GetDesktopWindow;
 end;
 
 function TWebUpdateForm.GetSelected(index: integer): boolean;
@@ -819,7 +855,12 @@ end;
 procedure TWebUpdateForm.lvKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+{$IFDEF WIN32}
   if Key = VK_SPACE then
+{$ENDIF}
+{$IFDEF LINUX}
+  if Key = XK_SPACE then
+{$ENDIF}
     lvClick(Sender);
 end;
 
@@ -827,6 +868,9 @@ procedure TWebUpdateForm.FormShow(Sender: TObject);
 begin
   if Not FormInitialized then
   begin
+
+    CheckInstalledExes;
+
     fUpdateList := TList.Create;
     fMirrorList := TStringList.Create;
     fErrorsList := TStringList.Create;
@@ -854,5 +898,48 @@ begin
   end;
 end;
 
+procedure TWebUpdateForm.CheckInstalledExes;
+var
+  devcppversion,
+  packmanversion,
+  devcppversion2,
+  packmanversion2: String;
+begin
+//this procedure checks versions of installed components
+//that are not handled by packman:
+//namely devcpp.exe and packman.exe
+//and writes those version to devcpp.cfg if are newer that in devcpp.cfg
+
+  if Not FileExists(devDirs.Config + 'devcpp.cfg') then
+    Exit;
+
+  with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+    try
+      devcppversion2 := ReadString(WEBUPDATE_SECTION, 'Dev-C++ Update', '');
+      packmanversion2 := ReadString(WEBUPDATE_SECTION, 'PackMan', '');
+    finally
+      Free;
+    end;
+
+  devcppversion := GetVersionString(ParamStr(0));
+  if (devcppversion <> '') and (devcppversion <> devcppversion2) then
+    with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+      try
+        WriteString(WEBUPDATE_SECTION, 'Dev-C++ Update', devcppversion);
+      finally
+        Free;
+      end;
+
+  packmanversion := GetVersionString(IncludeTrailingPathDelimiter(devDirs.Exec) + PACKMAN_PROGRAM);
+  if (packmanversion <> '') and (packmanversion <> packmanversion2) then
+    with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+      try
+        WriteString(WEBUPDATE_SECTION, 'PackMan', packmanversion);
+      finally
+        Free;
+      end;
+end;
+
 end.
+
 
