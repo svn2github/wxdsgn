@@ -1,0 +1,24 @@
+The new debugging mechanism as of version 4.9.5.3 works like this:
+
+The global exception handler has been trapped by devcpp and, when an exception occurs, it gathers some system info (OS version, memory info etc)
+and then displays a nice ;) dialog describing the problem.
+The real power though, is hidden in the, so called, StackTrace. The very first thing it does, when an exception occurs, is find the chain of calls the program was performing at the moment the exception was raised.
+But then again, these calls are just a bunch of memory addresses (runtime image addresses to be exact). Not much of a help. What we need is a way to "map" each address to a specific piece of code in the devcpp source code. This can be done with the use of the devcpp.map file. If this file exists in the same directory as devcpp.exe, when an exception occurs and devcpp performs the stacktrace, it can "map" these addresses into unit-function-line information. Neat, eh?
+
+So, if you are a user of devcpp, you should download the devcpp.map file, to help us pin-point the problem, when one occurs (you should send the bug-report of course!).
+
+*** WARNING ***
+One caveat: the devcpp.exe and the devcpp.map files should be downloaded/updated together. This means that each devcpp.map file corresponds to *only* one specific devcpp.exe file. If you use the wrong map file, the information it will collect will be totally wrong.
+If you are going to use this debugging feature, please, please, use the correct map file.
+After all, debugging info is A Good Thing(tm) but only if it is correct.
+If, for any reason, you update the devcpp.exe and not the devcpp.map file, please delete the devcpp.map file from your disk. Erroneous info will make us look in the wrong places in the devcpp code and, as a consequence, we will not be able to squash those bugs ;)
+
+The Dev-C++ Team.
+
+
+EXE vs MAP files mapping
+------------------------------------
+devcpp.exe               devcpp.map
+Version - CVS version    CVS version
+---------------------    -----------
+4.9.5.3     1.92           1.1

@@ -1,0 +1,21 @@
+** Dev-C++ 5 Features list **
+
+- Support GCC based compilers (Mingw included)
+- Integrated debugging (using GDB)
+- Support for multiple languages (localization)
+- Class Browser
+- Code Completion
+- Function Listing
+- Project Manager
+- Customizable syntax highlighting editor
+- Quickly create Windows, console, static libraries and DLL
+- Support of templates for creating your own project types
+- Makefile creation
+- Edit and compile Resource files
+- Tool Manager
+- Print support
+- Find and replace facilities
+- Profiling support
+- To-Do list
+- CPU Window
+- CVS integration
