@@ -1,4 +1,7 @@
 {
+
+    $Id$
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -164,6 +167,7 @@ const
   RES_EXT = '.res';
   RH_EXT = '.rh';
 {$IFDEF WX_BUILD}
+  APP_SUFFIX = 'App';
   WXFORM_EXT = '.wxform';
 {$ENDIF}
   PATH_LEN = 512;
