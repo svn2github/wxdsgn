@@ -2,3 +2,5 @@
 *.bak
 devcpp.exe
 devcpp.map
+*.~*
+*.dcu
