@@ -1,0 +1,200 @@
+IMPORTING THE CURRENT SYNEDIT INTO DEV-CPP TREE:
+
+1. copy files:
+  in Packages:
+    SynEdit_D6.dpk
+    SynEdit_D6_PE.dpk
+  in Source:
+    Contributors.txt
+    SynAutoCorrect.pas
+    SynAutoCorrectEditor.dfm
+    SynAutoCorrectEditor.pas
+    SynCompletionProposal.pas
+    SynDBEdit.pas
+    SynEdit.inc
+    SynEdit.pas
+    SynEdit.res
+    SynEditAutoComplete.pas
+    SynEditExport.pas
+    SynEditHighlighter.pas
+    SynEditKbdHandler.pas
+    SynEditKeyCmdEditor.dfm
+    SynEditKeyCmdEditor.pas
+    SynEditKeyCmds.pas
+    SynEditKeyCmdsEditor.dfm
+    SynEditKeyCmdsEditor.pas
+    SynEditKeyConst.pas
+    SynEditMiscClasses.pas
+    SynEditMiscProcs.pas
+    SynEditOptionsDialog.dfm
+    SynEditOptionsDialog.pas
+    SynEditPlugins.pas
+    SynEditPrint.pas
+    SynEditPrintHeaderFooter.pas
+    SynEditPrintMargins.pas
+    SynEditPrintMarginsDialog.dfm
+    SynEditPrintMarginsDialog.pas
+    SynEditPrintPreview.pas
+    SynEditPrintTypes.pas
+    SynEditPrinterInfo.pas
+    SynEditPropertyReg.pas
+    SynEditPythonBehaviour.pas
+    SynEditReg.dcr
+    SynEditReg.pas
+    SynEditReg.res
+    SynEditSearch.pas
+    SynEditStrConst.pas
+    SynEditTextBuffer.pas
+    SynEditTypes.pas
+    SynEditWordWrap.pas
+    SynExportHTML.pas
+    SynExportRTF.pas
+    SynHighlighterCpp.pas
+    SynHighlighterManager.pas
+    SynHighlighterMulti.pas
+    SynHighlighterRC.pas
+    SynMacroRecorder.pas
+    SynMemo.pas
+    SynRegExpr.pas
+    SynTextDrawer.pas
+    kTextDrawer.pas
+
+2. from dev-cpp/synedit-old/source
+  copy the files from Source to Source:
+    SynAutoIndent.pas
+    SynAutoIndent.res
+
+3. Modify SynEditReg:
+cvs -z9 diff -u SynEditReg.pas (in directory C:\projects\dev-cpp\V5\source\Vcl\synedit\Source\)
+Key is of wrong type (unable to open file)
+Index: SynEditReg.pas
+===================================================================
+RCS file: /cvsroot/dev-cpp/V5/source/Vcl/synedit/Source/SynEditReg.pas,v
+retrieving revision 1.4
+diff -u -r1.4 SynEditReg.pas
+--- SynEditReg.pas	7 Aug 2004 17:41:00 -0000	1.4
++++ SynEditReg.pas	7 Aug 2004 17:44:52 -0000
+@@ -137,7 +82,6 @@
+   SynEditExport,
+   SynExportHTML,
+   SynExportRTF,
+-  SynExportTeX,
+   SynHighlighterMulti,
+   SynCompletionProposal,
+   SynEditPythonBehaviour,
+@@ -146,67 +90,12 @@
+   SynMacroRecorder,
+   SynAutoCorrect,
+   SynEditSearch,
+-  SynEditRegexSearch,
+   {$IFDEF SYN_COMPILER_4_UP}
+   SynHighlighterManager,
+   {$ENDIF}
+   SynEditOptionsDialog,
+-  SynHighlighterADSP21xx,
+-  SynHighlighterAsm,
+-  SynHighlighterAWK,
+-  SynHighlighterBaan,
+-  SynHighlighterBat,
+-  SynHighlighterCAC,
+-  SynHighlighterCache,
+-  SynHighlighterCobol,
+   SynHighlighterCpp,
+-  SynHighlighterCS,
+-  SynHighlighterCss,
+-  SynHighlighterDfm,
+-  SynHighlighterDml,
+-  SynHighlighterDOT,
+-  SynHighlighterEiffel,
+-  SynHighlighterFortran,
+-  SynHighlighterFoxpro,
+-  SynHighlighterGalaxy,
+-  SynHighlighterGeneral,
+-  SynHighlighterHaskell,
+-  SynHighlighterHC11,
+-  SynHighlighterHP48,
+-  SynHighlighterHtml,
+-  SynHighlighterIni,
+-  SynHighlighterInno,
+-  SynHighlighterJava,
+-  SynHighlighterJScript,
+-  SynHighlighterKix,
+-  SynHighlighterModelica,
+-  SynHighlighterM3,
+-  SynHighlighterPas,
+-  SynHighlighterPerl,
+-  SynHighlighterPHP,
+-  SynHighlighterProgress,
+-  SynHighlighterPython,
+   SynHighlighterRC,
+-  SynHighlighterRuby,
+-  SynHighlighterSml,
+-  SynHighlighterSQL,
+-  SynHighlighterTclTk,
+-  SynHighlighterTeX,
+-  SynHighlighterUNIXShellScript,
+-  SynHighlighterURI,
+-  SynHighlighterVB,
+-  SynHighlighterVBScript,
+-  SynHighlighterVrml97,
+-  SynHighlighterGWS,
+-  SynHighlighterCPM,
+-  SynHighlighterSDD,
+-  SynHighlighterXML,
+-  SynHighlighterMsg,
+-  SynHighlighterIDL,
+-  SynHighlighterUnreal,
+-  SynHighlighterST,
+-  SynHighlighterLDraw,
+-  SynURIOpener,
+ {$ENDIF}
+   Classes;
+ 
+@@ -237,15 +126,14 @@
+   GroupDescendentsWith(TSynEditPythonBehaviour, TSynEdit);
+   GroupDescendentsWith(TSynHighlighterManager, TSynEdit);
+   GroupDescendentsWith(TSynEditOptionsDialog, TSynEdit);
+-  GroupDescendentsWith(TSynURIOpener, TSynEdit);
+ {$ENDIF}
+ 
+ // SynEdit extra components
+   RegisterComponents(SYNS_ComponentsPage, [TSynExporterHTML, TSynExporterRTF,
+-    TSynExporterTeX, TSynEditPythonBehaviour, TSynMultiSyn,
++    TSynEditPythonBehaviour, TSynMultiSyn,
+     TSynCompletionProposal, TSynAutoComplete, TSynMacroRecorder,
+     TSynEditPrint, TSynEditPrintPreview, TSynAutoCorrect,
+-    TSynEditSearch, TSynEditRegexSearch, TSynEditOptionsDialog, TSynURIOpener]);
++    TSynEditSearch, TSynEditOptionsDialog]);
+ {$IFDEF SYN_COMPILER_4_UP}
+   RegisterComponents(SYNS_ComponentsPage, [TSynHighlighterManager]);
+ {$ENDIF}
+@@ -253,26 +141,9 @@
+ // SynEdit highlighters
+   RegisterComponents(SYNS_HighlightersPage, [
+     //classic
+-    TSynCppSyn, TSynEiffelSyn, TSynFortranSyn, TSynGeneralSyn, TSynJavaSyn,
+-    TSynM3Syn, TSynPasSyn, TSynVBSyn, TSynCobolSyn, TSynCSSyn,
+-    // internet
+-    TSynCssSyn, TSynHTMLSyn, TSynJScriptSyn, TSynPHPSyn, TSynVBScriptSyn,
+-    TSynXMLSyn, TSynVrml97Syn,
+-    //interpreted
+-    TSynAWKSyn, TSynBATSyn, TSynKixSyn, TSynPerlSyn, TSynPythonSyn,
+-    TSynTclTkSyn, TSynGWScriptSyn, TSynRubySyn, TSynUNIXShellScriptSyn, 
+-    //database
+-    TSynCACSyn, TSynCacheSyn, TSynFoxproSyn, TSynSQLSyn, TSynSDDSyn,
+-    //assembler
+-    TSynADSP21xxSyn, TSynAsmSyn, TSynHC11Syn, TSynHP48Syn, TSynSTSyn,
+-    //data modeling
+-    TSynDmlSyn, TSynModelicaSyn, TSynSMLSyn,
+-    //data
+-    TSynDfmSyn, TSynIniSyn, TSynInnoSyn,
++    TSynCppSyn,
+     // other
+-    TSynBaanSyn, TSynGalaxySyn, TSynProgressSyn, TSynMsgSyn,
+-    TSynIdlSyn, TSynUnrealSyn, TSynCPMSyn, TSynTeXSyn, 
+-    TSynHaskellSyn, TSynLDRSyn, TSynURISyn, TSynDOTSyn, TSynRCSyn
++    TSynRCSyn
+   ]);
+ end;
+
+4. When compiling add ..\Source into Search Path
