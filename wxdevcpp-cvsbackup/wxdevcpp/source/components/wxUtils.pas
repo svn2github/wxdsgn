@@ -20,8 +20,9 @@ unit WxUtils;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, Stdctrls, JvInspector, Dialogs, ComCtrls, ExtCtrls,dmListview,UPicEdit;
+uses WinTypes, WinProcs, Messages, SysUtils, StrUtils,Classes, Controls,
+  Forms, Graphics, Stdctrls, JvInspector, Dialogs, ComCtrls, ExtCtrls,dmListview,
+  UPicEdit,xprocs,DbugIntf;
 
 const
   IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
@@ -31,6 +32,7 @@ type
 TWxSizerVerticalAlignment = (wxSZALIGN_TOP,wxSZALIGN_BOTTOM,wxSZALIGN_CENTER_VERTICAL,wxSZALIGN_GROW_VERTICAL);
 TWxSizerHorizontalAlignment = (wxSZALIGN_LEFT,wxSZALIGN_RIGHT,wxSZALIGN_CENTER_HORIZONTAL,wxSZALIGN_GROW_HORIZONTAL);
 TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
+TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
 
   IWxComponentInterface = interface ['{624949E8-E46C-4EF9-BADA-BC85325165B3}']
     function GenerateControlIDs: string;
@@ -50,6 +52,14 @@ TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
     function GetParameterFromEventName(EventName: string): string;
     function GetTypeFromEventName(EventName: string): string;
     procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
+    function GetStretchFactor:Integer;
+    procedure SetStretchFactor(intValue:Integer);
+
+    function GetFGColor:string;
+    procedure SetFGColor(strValue:String);
+
+    function GetBGColor:string;
+    procedure SetBGColor(strValue:String);
 
 //    function GetVerticalAlignment: TWxSizerVerticalAlignment;
 //    function GetHorizonalAlignment: TWxSizerHorizonalAlignment;
@@ -156,7 +166,7 @@ TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
     TWxTVStyleSet = set of TWxTVStyleItem;
 
 //End of Control Styles
-  
+
   TWxFileDialogType = (wxOPEN, wxSAVE);
 
   TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
@@ -165,6 +175,24 @@ TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
 
 //Sizer orientation
 TWxSizerOrientation = (wxVertical,wxHorizontal);
+
+TWxColorString = class
+    public
+        FstrColorValue:String;
+    published
+        property strColorValue:String read FstrColorValue write FstrColorValue;
+end;
+
+  TJvInspectorColorEditItem = class(TJvCustomInspectorItem)
+  protected
+    procedure Edit; override;
+
+    function GetDisplayValue: string; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
 
 
   TJvInspectorListItemsItem = class(TJvCustomInspectorItem)
@@ -211,7 +239,7 @@ TWxSizerOrientation = (wxVertical,wxHorizontal);
     class procedure RegisterAsDefaultItem;
   end;
 
-  TJvInspectorIconItem = class(TJvCustomInspectorItem)
+  TJvInspectorMyFontItem = class(TJvCustomInspectorItem)
   protected
     procedure Edit; override;
 
@@ -223,7 +251,7 @@ TWxSizerOrientation = (wxVertical,wxHorizontal);
   end;
 
 
-
+function GetGridSelectionToString(grdsel:TWxGridSelection):String;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
 function GetCheckboxStyleString(stdStyle:TWxcbxStyleSet):String;
@@ -279,7 +307,11 @@ function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxDlgStyleSe
 
 function SizerAlignmentToStr(SizerVerticalAlignment:TWxSizerVerticalAlignment):String;overload;
 function SizerAlignmentToStr(SizerHorizontalAlignment:TWxSizerHorizontalAlignment):String;overload;
-
+function RGBFormatStrToColor(strColorValue:String):TColor;
+function GetColorFromString(strColorValue:String):TColor;
+function GetGeneralColorFromString(strColorValue:String):TColor;
+function IsDefaultColorStr(strvalue:String):boolean;
+function GetwxColorFromString(strValue:String):String;
 
 function GetWxIDString(strID: string; intID: LongInt): string;
 function IsValidClass(comp: TComponent): boolean;
@@ -287,12 +319,73 @@ function GetEventNameFromDisplayName(strDisplayName: string; strlst:TStringList)
 function AlignmentToStr(taPos: TAlignment): string;
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: Boolean = True);
 function GetXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
-
+function GenerateXPMDirectly(bmp:TBitmap;strCompName:String;strFileName:String):boolean;
+function GetWxFontDeclaration(fnt:TFont):String;
 
 implementation
 
-uses wxlistCtrl,WxStaticBitmap;
+uses DesignerFrm,wxlistCtrl,WxStaticBitmap,WxBitmapButton,UColorEdit;
 
+function GetGridSelectionToString(grdsel:TWxGridSelection):String;
+begin
+    Result:='wxGridSelectCells';
+    if grdsel = wxGridSelectCells then
+    begin
+        Result:='wxGridSelectCells';
+    end;
+    if grdsel = wxGridSelectColumns then
+    begin
+        Result:='wxGridSelectColumns';
+    end;
+    if grdsel = wxGridSelectCells then
+    begin
+        Result:='wxGridSelectCells';
+    end;          
+    //
+end;
+
+function GetWxFontDeclaration(fnt:TFont):String;
+var
+    strStyle,strWeight,strUnderline:String;
+    fntDefault:TFont;
+begin
+    fntDefault:=TFont.Create;
+
+    Result:='';
+    try
+    if fnt.Style = fntDefault.Style then
+    begin
+        if fnt.Name = fntDefault.Name then
+        begin
+            if fnt.Size = fntDefault.Size then
+            begin
+                Result:='';
+                exit;
+            end;
+        end;
+    end;
+    finally
+        fntDefault.destroy;
+    end;
+
+    if fsItalic in fnt.Style then
+        strStyle:='wxITALIC'
+    else
+        strStyle:='wxNORMAL';
+
+    if fsBold in fnt.Style then
+        strWeight:='wxBOLD'
+    else
+        strWeight:='wxNORMAL';
+
+    if fsUnderline in fnt.Style then
+        strUnderline:='TRUE'
+    else
+        strUnderline:='FALSE';
+
+   Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS ,'+strStyle+',' + strWeight +',' + strUnderline+',_T("'+ fnt.Name +'"))';
+   
+end;
 function GetEventNameFromDisplayName(strDisplayName: string; strlst:
   TStringList): string;
 var
@@ -1538,6 +1631,34 @@ begin
 end;
 
 //End here
+function RGBFormatStrToColor(strColorValue:String):TColor;
+var
+    strLst:TStringList;
+begin
+    strLst:=TStringList.Create;
+    strTokenToStrings(strColorValue,',',strLst);
+    if strLst.Count > 2 then
+    begin
+        Result:= RGB(StrToInt(strLst[0]),StrToInt(strLst[2]),StrToInt(strLst[2])) ;
+    end
+    else
+        Result:= RGB(0,0,0) ;
+        
+    strLst.destroy;
+end;
+function GetColorFromString(strColorValue:String):TColor;
+var
+    strChoice,strCmd:String;
+begin
+    strChoice:=copy(strColorValue,5,length(strColorValue));
+    strCmd:=copy(strColorValue,0,4);
+    if  AnsiSameText(strCmd,'CUS:') then
+    begin
+        Result:=RGBFormatStrToColor(strChoice);
+        exit;
+    end;
+    Result:=GetGeneralColorFromString(strChoice);
+end;
 
 function SizerAlignmentToStr(SizerVerticalAlignment:TWxSizerVerticalAlignment):String;
 begin
@@ -1790,6 +1911,7 @@ end;
 
 function GetXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
 var
+  I: Integer;
    iWidth: Integer;
    iHeight: Integer;
    xpos, ypos, palindex, cindex, cpp: Integer;
@@ -1804,6 +1926,8 @@ var
    cpos: ^Integer;
    pal: TList;
    found: Boolean;
+   strlst:TStringList;
+   strLine:String;
    label Finish1;
 function pow(base: Integer; index: Integer): Integer;
 var
@@ -1867,26 +1991,39 @@ begin
    //Writeln(F,'/* XPM */');
    Result:=Result+'/* '+XPMName+' XPM */'+#13;
    StrFmt(outline,'static char *%s',[XPMName]);
+   strLine:=outline;
    cp:=StrScan(outline,'.');
    if cp<>nil then cp[0]:=#0;
    StrCat(outline,'_XPM[]={');
+   strLine:=outline;
    //Writeln(F,outline);
    Result:=Result+outline+#13;
    StrFmt(outline,'"%d %d %d %d",',[iWidth,iHeight,pal.Count,cpp]);
+   strLine:=outline;
    //Writeln(F,outline);
+   strLine:=outline;
    Result:=Result+outline+#13;
    for palindex:=0 to pal.Count-1 do begin
       ccol:=TColor(pal.Items[palindex]^);
       ccol:=ccol mod (256*256*256);
-      StrFmt(outline,'"      c #%s%s%s",',[IntToHex(ccol mod 256,2),
-      IntToHex((ccol div 256) mod 256,2),IntToHex(ccol div (256*256),2)]);
+      StrFmt(outline,'"      c #%s%s%s",',[IntToHex(ccol mod 256,2), IntToHex((ccol div 256) mod 256,2),IntToHex(ccol div (256*256),2)]);
+      strLine:=outline;
       cindex:=palindex;
       for pixc:=1 to cpp do begin
          outline[pixc]:=usechrs[cindex div pow(64,cpp-pixc)];
          cindex:=cindex mod pow(64,cpp-pixc);
+         strLine:=outline;
       end;
-      //Writeln(F,outline);
-      Result:=Result+outline+#13;
+      strLine:=outline;
+//      if AnsiStartsText('"      c #',strLine) then
+//      begin
+//        strLine:='"      c #FFFFFF",';
+//        Result:=Result+strLine+#13;
+//      end
+//      else
+      begin
+        Result:=Result+outline+#13;
+      end;
    end;
    cpos:=@image^;
    for ypos:=0 to iHeight-1 do begin
@@ -1913,8 +2050,247 @@ begin
    pal.Free;
 //   Form2.Hide;
 //   Form1.Enabled:=True;
+    strlst:=TStringList.Create;
+    strlst.text:=Result;
+    for I := 0 to strlst.Count - 1 do    // Iterate
+    begin
+        strLine:=trim(strlst[i]);
+        //sendDebug(IntToStr(i)+' Old # = '+IntToStr(Length(strlst[i])));
+
+        if AnsiEndsText('","",',strLine) then
+        begin
+            //not tested
+            strLine:=copy(strLine,0,length(strLine) -5);
+            if not AnsiEndsText('",',strLine) then
+                strlst[i]:=strLine+'",';
+        end;
+
+        strLine:=trim(strlst[i]);
+
+        if AnsiEndsText('"",',strLine) then
+        begin
+            //tested
+            strLine:=copy(strLine,0,length(strLine) -3);
+            if not AnsiEndsText('",',strLine) then
+                strlst[i]:=strLine+'",';
+        end;
+
+        strLine:=trim(strlst[i]);
+        if AnsiEndsText('",",',strLine) then
+        begin
+            //tested
+            strLine:=copy(strLine,0,length(strLine) -4);
+            if not AnsiEndsText('",',strLine) then
+                strlst[i]:=strLine+'",';
+        end;
+
+        strLine:=trim(strlst[i]);
+
+        if AnsiEndsText('",""};',strLine) then
+        begin
+            strLine:=copy(strLine,0,length(strLine) -6);
+            if not AnsiEndsText('"};',strLine) then
+                strlst[i]:=strLine+'"};';
+        end;
+
+        strLine:=trim(strlst[i]);
+       if AnsiEndsText('""};',strLine) then
+        begin
+            //not test
+            strLine:=copy(strLine,0,length(strLine) -4);
+            if not AnsiEndsText('"};',strLine) then
+                strlst[i]:=strLine+'"};';
+        end;
+
+        strLine:=trim(strlst[i]);
+       if AnsiEndsText('","};',strLine) then
+        begin
+            //not test
+            strLine:=copy(strLine,0,length(strLine) -5);
+            if not AnsiEndsText('"};',strLine) then
+                strlst[i]:=strLine+'"};';
+        end;
+
+        //sendDebug(IntToStr(i)+' New # = '+IntToStr(Length(strlst[i])));
+
+    end;    // for
+
+    Result:=strlst.text;
+
+    strlst.destroy;
 end;
 end;
+
+function GetRawXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
+var
+  I: Integer;
+   iWidth: Integer;
+   iHeight: Integer;
+   xpos, ypos, palindex, cindex, cpp: Integer;
+   cp: PChar;
+   pixc: Integer;
+   outline: array[0..800] of Char;
+   usechrs: array[0..64] of Char;
+   rval: Real;
+   ccol, tcol: TColor;
+   lcol: ^TColor;
+   image: ^Integer;
+   cpos: ^Integer;
+   pal: TList;
+   found: Boolean;
+   strlst:TStringList;
+   strLine:String;
+   label Finish1;
+function pow(base: Integer; index: Integer): Integer;
+var
+   retval: Integer;
+   ittr: Integer;
+begin
+retval:=1;
+for ittr:=1 to index do retval:=retval*base;
+pow:=retval;
+end;
+
+begin
+
+    Result:='';
+begin
+//   Form1.Enabled:=False;
+//   Form2.Gauge1.Progress:=0;
+//   Form2.Show;
+   StrPCopy(usechrs,' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
+   pal:=TList.Create;                    { Create TList to form our palette }
+   iWidth:=delphiBitmap.Width;
+   iHeight:=delphiBitmap.Height;
+   if iWidth>180 then iWidth:=180;
+   if iHeight>180 then iHeight:=180;
+   GetMem(image,SizeOf(Integer)*iWidth*iHeight); { Allocate space for image }
+                        { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
+   cpos:=@image^;     { This will be a pointer to current position in image }
+   for ypos:=0 to iHeight-1 do begin
+      for xpos:=0 to iWidth-1 do begin
+         ccol:=delphiBitmap.Canvas.Pixels[xpos,ypos];
+         found:=False;
+         for palindex:=0 to pal.Count-1 do begin { Search palette for color }
+            tcol:=TColor(pal.Items[palindex]^);
+            if tcol=ccol then begin                             { Found it! }
+               found:=True;
+               cindex:=palindex;        { Remember it's position in palette }
+               break;
+            end;
+         end;
+         if not found then begin             { Add new color to our palette }
+            New(lcol);
+            lcol^:=ccol;
+            pal.Add(lcol);
+            cindex:=pal.Count-1;
+         end;
+         cpos^:=cindex;                { Store palette index for this pixel }
+         Inc(cpos);                                 { Move on to next pixel }
+      end;
+
+//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+//      Application.ProcessMessages;
+//      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+
+   end;
+
+   //AssignFile(F,SaveDialog1.Filename);
+   //Rewrite(F);
+   rval:=ln(pal.Count)/ln(64);
+   cpp:=trunc(rval);
+   if(cpp<>rval) then Inc(cpp);
+   //Writeln(F,'/* XPM */');
+   Result:=Result+'/* '+XPMName+' XPM */'+#13;
+   StrFmt(outline,'static char *%s',[XPMName]);
+   strLine:=outline;
+   cp:=StrScan(outline,'.');
+   if cp<>nil then cp[0]:=#0;
+   StrCat(outline,'_XPM[]={');
+   strLine:=outline;
+   //Writeln(F,outline);
+   Result:=Result+outline+#13;
+   StrFmt(outline,'"%d %d %d %d",',[iWidth,iHeight,pal.Count,cpp]);
+   strLine:=outline;
+   //Writeln(F,outline);
+   strLine:=outline;
+   Result:=Result+outline+#13;
+   for palindex:=0 to pal.Count-1 do begin
+      ccol:=TColor(pal.Items[palindex]^);
+      ccol:=ccol mod (256*256*256);
+      StrFmt(outline,'"      c #%s%s%s",',[IntToHex(ccol mod 256,2), IntToHex((ccol div 256) mod 256,2),IntToHex(ccol div (256*256),2)]);
+      strLine:=outline;
+      cindex:=palindex;
+      for pixc:=1 to cpp do begin
+         outline[pixc]:=usechrs[cindex div pow(64,cpp-pixc)];
+         cindex:=cindex mod pow(64,cpp-pixc);
+         strLine:=outline;
+      end;
+      strLine:=outline;
+      Result:=Result+outline+#13;
+   end;
+   cpos:=@image^;
+   for ypos:=0 to iHeight-1 do begin
+      StrPCopy(outline,'"');
+      for xpos:=0 to iWidth-1 do begin
+         cindex:=cpos^;
+         for pixc:=1 to cpp do begin
+            outline[xpos*cpp+pixc]:=usechrs[cindex div pow(64,cpp-pixc)];
+            cindex:=cindex mod pow(64,cpp-pixc);
+         end;
+         Inc(cpos);
+      end;
+      outline[cpp*(xpos+1)+1]:=#0;
+      if ypos<iHeight-1 then StrCat(outline,'",') else StrCat(outline,'"};');
+      //Writeln(F,outline);
+      Result:=Result+outline+#13;
+   end;
+   //Finish2:
+   //CloseFile(F);
+
+   Finish1:
+   FreeMem(image,SizeOf(Integer)*iWidth*iHeight);
+   for palindex:=0 to pal.Count-1 do Dispose(pal.Items[palindex]);
+   pal.Free;
+end;
+end;
+
+function GenerateXPMDirectly(bmp:TBitmap;strCompName:String;strFileName:String):boolean;
+var
+  I: Integer;
+  xpmFileDir:String;
+  fileStrlst:TStringList;
+  strXPMContent,strRawXPMContent:String;
+
+begin
+    xpmFileDir:=IncludetrailingBackslash(ExtractFileDir(strFileName));
+    
+    if bmp.handle <> 0 then
+    begin
+        fileStrlst:=TStringList.Create;
+        try
+            strXPMContent:=GetXPMFromTPicture(strCompName,bmp);
+            //strRawXPMContent:=GetRawXPMFromTPicture(strCompName,bmp);
+            if trim(strXPMContent) <> '' then
+            begin
+                fileStrlst.Add(strXPMContent);
+                fileStrlst.SaveToFile(xpmFileDir+strCompName+'_XPM.xpm');
+
+            end;
+//            if trim(strRawXPMContent) <> '' then
+//            begin
+//                fileStrlst.Clear;
+//                fileStrlst.Add(strRawXPMContent);
+//                fileStrlst.SaveToFile(xpmFileDir+strCompName+'_XPM-Raw.xpm');
+//            end;
+
+        except
+        end;
+        fileStrlst.destroy;
+    end;
+
+end;
+
 
 function IcoToBmp(Icon : TIcon):TBitmap;
 begin
@@ -1923,6 +2299,520 @@ begin
    Result.Height := Icon.Height;
    Result.Canvas.Draw(0, 0, Icon ) ;
 end;
+
+function GetwxColorFromString(strValue:String):String;
+var
+    strColorValue,strChoice:String;
+begin
+    Result:='';
+    strColorValue:=trim(strValue);
+    strColorValue:=copy(strColorValue,5,length(strColorValue));
+    strChoice:=copy(trim(strValue),0,4);
+
+    if AnsiSameText(strChoice,'CUS:') then
+    begin
+        Result:='wxColour('+strColorValue+')';
+        exit;
+    end;
+
+    if AnsiSameText(strChoice,'DEF:') then
+    begin
+        Result:='';
+        exit;
+    end;
+
+
+    if AnsiSameText(strColorValue,'wxBLACK') then
+    begin
+        Result:='wxColour(*wxBLACK)';
+        exit;
+    end;
+    if AnsiSameText(strColorValue,'wxWHITE') then
+    begin
+        Result:='wxColour(*wxWHITE)';
+        exit;
+    end;
+
+    if AnsiSameText(strColorValue,'wxRED') then
+    begin
+        Result:='*wxRED';
+        exit;
+    end;
+if AnsiSameText(strColorValue,'wxBLUE') then
+begin
+        Result:='*wxBLUE';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxGREEN') then
+begin
+        Result:='*wxGREEN';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxCYAN') then
+begin
+        Result:='*wxCYAN';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxLIGHT_GREY') then
+begin
+        Result:='*wxLIGHT_GREY';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_SCROLLBAR') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_SCROLLBAR)';
+    exit;
+end;
+
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BACKGROUND') then
+begin
+        Result:='wxSystemSettings::GetColour()';
+    exit;
+end;
+
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_ACTIVECAPTION') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INACTIVECAPTION') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_MENU') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_MENU)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_WINDOW') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_WINDOWFRAME') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_MENUTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_MENUTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_WINDOWTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_CAPTIONTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_CAPTIONTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_ACTIVEBORDER') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVEBORDER)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INACTIVEBORDER') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVEBORDER)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_APPWORKSPACE') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_HIGHLIGHT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_HIGHLIGHTTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNFACE') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNSHADOW') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_GRAYTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INACTIVECAPTIONTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTIONTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNHIGHLIGHT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DDKSHADOW') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DLIGHT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INFOTEXT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_INFOTEXT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INFOBK') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_INFOBK)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_DESKTOP') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_DESKTOP)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DFACE') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DSHADOW') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DHIGHLIGHT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DHILIGHT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_3DHILIGHT)';
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNHILIGHT') then
+begin
+        Result:='wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHILIGHT)';
+    exit;
+end;
+
+end;
+
+//-------------------------------------------------------------------------------
+function IsDefaultColorStr(strvalue:String):boolean;
+begin
+    strvalue:=trim(strvalue);
+    if strvalue = '' then
+    begin
+        Result:=true;
+        exit;
+    end;
+
+    if UpperCase(copy(strvalue,0,4)) = 'DEF:' then
+	    result:=true
+    else
+	    result:=false
+end;
+
+function GetGeneralColorFromString(strColorValue:String):TColor;
+begin
+    strColorValue:=trim(strColorValue);
+    Result:=0+clBlack;
+if AnsiSameText(strColorValue,'wxBLACK') then
+begin
+    Result:=clBlack;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxWHITE') then
+begin
+    Result:=clWhite;
+    exit;
+end;
+
+if AnsiSameText(strColorValue,'wxRED') then
+begin
+    Result:=clred;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxBLUE') then
+begin
+    Result:=clBlue;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxGREEN') then
+begin
+    Result:=clGreen;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxCYAN') then
+begin
+    Result:=clAqua	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxLIGHT_GREY') then
+begin
+    Result:=clLtGray	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_SCROLLBAR') then
+begin
+    Result:=clScrollBar	;
+    exit;
+end;
+
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BACKGROUND') then
+begin
+    Result:=clBackground;
+    exit;
+end;
+
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_ACTIVECAPTION') then
+begin
+    Result:=clActiveCaption	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INACTIVECAPTION') then
+begin
+    Result:=clInactiveCaption	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_MENU') then
+begin
+    Result:=clMenu	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_WINDOW') then
+begin
+    Result:=clWindow;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_WINDOWFRAME') then
+begin
+    Result:=clWindowFrame	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_MENUTEXT') then
+begin
+    Result:=clMenuText	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_WINDOWTEXT') then
+begin
+    Result:=clWindowText;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_CAPTIONTEXT') then
+begin
+    Result:=clCaptionText;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_ACTIVEBORDER') then
+begin
+    Result:=clActiveBorder	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INACTIVEBORDER') then
+begin
+    Result:=clInactiveBorder;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_APPWORKSPACE') then
+begin
+    Result:=clAppWorkSpace;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_HIGHLIGHT') then
+begin
+    Result:=clHighlight	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_HIGHLIGHTTEXT') then
+begin
+    Result:=clHighlightText;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNFACE') then
+begin
+    Result:=clBtnFace	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNSHADOW') then
+begin
+    Result:=clBtnShadow;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_GRAYTEXT') then
+begin
+    Result:=clGrayText	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNTEXT') then
+begin
+    Result:=clBtnText	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INACTIVECAPTIONTEXT') then
+begin
+    Result:=clInactiveCaptionText	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNHIGHLIGHT') then
+begin
+    Result:=clBtnHighlight	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DDKSHADOW') then
+begin
+    Result:=cl3DDkShadow;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DLIGHT') then
+begin
+    Result:=cl3DLight 	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INFOTEXT') then
+begin
+    Result:=clInfoText;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_INFOBK') then
+begin
+    Result:=clInfoBk 	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_DESKTOP') then
+begin
+    Result:=clBackground ;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DFACE') then
+begin
+    Result:=clBtnFace	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DSHADOW') then
+begin
+    Result:=clBtnShadow	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DHIGHLIGHT') then
+begin
+    Result:=clBtnHighlight	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_3DHILIGHT') then
+begin
+    Result:=clBtnHighlight	;
+    exit;
+end;
+if AnsiSameText(strColorValue,'wxSYS_COLOUR_BTNHILIGHT') then
+begin
+    Result:=clBtnHighlight	;
+    exit;
+end;
+
+end;
+
+procedure TJvInspectorColorEditItem.Edit;
+var
+  ColorEditForm: TColorEdit;
+  strColorValue:String;
+  compIntf: IWxComponentInterface;
+begin
+
+  ColorEditForm := TColorEdit.Create(GetParentForm(Inspector));
+  try
+    if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(IID_IWxComponentInterface, compIntf) then
+    begin
+        if AnsiSameText(Data.Name ,'Wx_ProxyBGColorString') then
+        begin
+            strColorValue:=compIntf.GetBGColor;
+        end;
+        if AnsiSameText(Data.Name ,'Wx_ProxyFGColorString') then
+        begin
+            strColorValue:=compIntf.GetFGColor;
+        end;
+    end;
+
+    ColorEditForm.SetColorString(strColorValue);
+
+    if ColorEditForm.ShowModal  <> mrOK then
+        exit;
+
+    strColorValue:=ColorEditForm.GetColorString;
+
+    if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(IID_IWxComponentInterface, compIntf) then
+    begin
+        if AnsiSameText(Data.Name ,'Wx_ProxyBGColorString') then
+        begin
+            compIntf.SetBGColor(strColorValue);
+        end;
+        if AnsiSameText(Data.Name ,'Wx_ProxyFGColorString') then
+        begin
+            compIntf.SetFGColor(strColorValue);
+        end;
+    end;
+
+    if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+    begin
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+    end;
+
+  finally
+    ColorEditForm.Destroy;
+  end;
+
+end;
+
+function TJvInspectorColorEditItem.GetDisplayValue: string;
+begin
+      Result := 'Edit Color';
+end;
+
+procedure TJvInspectorColorEditItem.SetDisplayValue(const Value: string);
+begin
+  //
+end;
+
+procedure TJvInspectorColorEditItem.SetFlags(const Value: TInspectorItemFlags);
+var
+  NewValue: TInspectorItemFlags;
+begin
+  NewValue := Value + [iifEditButton];
+  inherited SetFlags(NewValue);
+end;
+
+class procedure TJvInspectorColorEditItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxColorString)));
+  end;
+end;
+//-------------------------------------------------------------------------------
+
 
 //-------------------------------------------------------------------------------
 
@@ -1933,7 +2823,7 @@ end;
 
 function TJvInspectorListItemsItem.GetDisplayValue: string;
 begin
-  //
+  Result := 'Edit Items';
 end;
 
 procedure TJvInspectorListItemsItem.SetDisplayValue(const Value: string);
@@ -2000,6 +2890,11 @@ begin
       end;
     end;
 
+    if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+    begin
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+    end;
+
   finally
     ListviewForm.Destroy;
   end;
@@ -2042,7 +2937,7 @@ end;
 
 function TJvInspectorTreeNodesItem.GetDisplayValue: string;
 begin
-  //
+      Result := 'Edit Nodes';
 end;
 
 procedure TJvInspectorTreeNodesItem.SetDisplayValue(const Value: string);
@@ -2072,10 +2967,25 @@ procedure TJvInspectorBitmapItem.Edit;
 var
   PictureEdit: TPictureEdit;
   picObj:Tpicture;
+  strClassName:String;
+  bmp:TBitmap;
 begin
-
   PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
-  PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture);
+  strClassName:=UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName);
+
+  if  strClassName = UpperCase('TWxBitmapButton') then
+    PictureEdit.Image1.Picture.Assign(TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+
+  if  strClassName = UpperCase('TWxStaticBitmap') then
+    PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture);
+
+  if  strClassName = UpperCase('TFrmNewForm') then
+    PictureEdit.Image1.Picture.Assign(TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON);
+
+
+//  if UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName) = UpperCase('TWxStaticBitmap') then
+//    PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture);
+
   try
 
     if PictureEdit.ShowModal <> mrOK then
@@ -2084,8 +2994,35 @@ begin
     begin
         picObj:=TPicture.Create;
         //PictureEdit.Image1.Picture.
-        picObj.Assign(PictureEdit.Image1.Picture);
-        TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture:=picObj;
+        picObj.Bitmap.Assign(PictureEdit.Image1.Picture.Bitmap);
+
+        if strClassName = UpperCase('TWxStaticBitmap') then
+        begin
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.assign(picObj);
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Transparent:=true;
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Width:=TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Width;
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Height:=TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Height;
+        end;
+
+        if  strClassName = UpperCase('TFrmNewForm') then
+        begin
+            TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.assign(picObj);
+            TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Bitmap.Transparent:=true;
+        end;
+
+        if  strClassName = UpperCase('TWxBitmapButton') then
+        begin
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.assign(picObj);
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent:=true;
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+        end;
+
+        if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+        begin
+            TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+        end;
+
+
     end;
 
   finally
@@ -2095,7 +3032,7 @@ end;
 
 function TJvInspectorBitmapItem.GetDisplayValue: string;
 begin
-  //
+    Result := 'Edit Picture';
 end;
 
 procedure TJvInspectorBitmapItem.SetDisplayValue(const Value: string);
@@ -2120,36 +3057,58 @@ begin
   end;
 end;
 //------------------------------------------------------------------------------
-procedure TJvInspectorIconItem.Edit;
+procedure TJvInspectorMyFontItem.Edit;
 var
-  PictureEdit: TPictureEdit;
+  FontDlg: TFontDialog;
+  fnt:TFont;
+  strColorValue:String;
+  compIntf: IWxComponentInterface;
+  prevColor:TColor;
+  ColorInt:Integer;
 begin
 
-  PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
-  //PictureEdit.Image1.Picture.Assign(TfrmNewForm(TJvInspectorPropData(Self.GetData()).Instance)..picture);
-  try
+   fnt := TFont(Data.AsOrdinal);
 
-    if PictureEdit.ShowModal <> mrOK then
-      Exit
-//    else
-//        TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Assign(PictureEdit.Image1.Picture);
+   prevColor:=fnt.Color;
 
-  finally
-    PictureEdit.Destroy;
-  end;
+   FontDlg := TFontDialog.Create(Inspector);
+
+   try
+        FontDlg.Font.assign(fnt);
+        if not FontDlg.execute then
+            exit;
+        fnt.assign(FontDlg.Font);
+        
+        if prevColor <> fnt.Color then
+        begin
+            if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(IID_IWxComponentInterface, compIntf) then
+            begin
+                ColorInt := ColorToRGB(fnt.Color);
+                compIntf.SetFGColor('CUS:'+IntToStr(GetRValue(ColorInt))+','+IntToStr(GetGValue(ColorInt))+',' + IntToStr(GetBValue(ColorInt)));
+            end;
+        end;
+
+        if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+        begin
+            TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+        end;
+
+    finally
+        FontDlg.Destroy;
+    end;
 end;
 
-function TJvInspectorIconItem.GetDisplayValue: string;
+function TJvInspectorMyFontItem.GetDisplayValue: string;
+begin
+    Result := 'Edit Font';
+end;
+
+procedure TJvInspectorMyFontItem.SetDisplayValue(const Value: string);
 begin
   //
 end;
 
-procedure TJvInspectorIconItem.SetDisplayValue(const Value: string);
-begin
-  //
-end;
-
-procedure TJvInspectorIconItem.SetFlags(const Value: TInspectorItemFlags);
+procedure TJvInspectorMyFontItem.SetFlags(const Value: TInspectorItemFlags);
 var
   NewValue: TInspectorItemFlags;
 begin
@@ -2157,13 +3116,15 @@ begin
   inherited SetFlags(NewValue);
 end;
 
-class procedure TJvInspectorIconItem.RegisterAsDefaultItem;
+class procedure TJvInspectorMyFontItem.RegisterAsDefaultItem;
 begin
   with TJvCustomInspectorData.ItemRegister do
   begin
     if IndexOf(Self) = -1 then
-      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TIcon)));
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TFont)));
   end;
 end;
+
+
 
 end.

@@ -27,7 +27,7 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'Dev-C++';
-  DEVCPP_VERSION       = '4.9.9.0-wx-beta-6.2';
+  DEVCPP_VERSION       = '4.9.9.0-wx-beta-6.4';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';

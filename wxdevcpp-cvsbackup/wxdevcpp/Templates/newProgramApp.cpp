@@ -19,3 +19,18 @@ bool newProgramApp::OnInit()
 	return TRUE;
 }
  
+ bool newProgramApp::OnExceptionInMainLoop()
+ {
+	return TRUE;
+}
+int newProgramApp::OnExit()
+{
+	return 0;
+}
+void newProgramApp::OnUnhandledException()
+{
+
+}
+void newProgramApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const
+{
+}

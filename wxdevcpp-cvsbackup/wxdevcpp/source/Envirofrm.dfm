@@ -41,7 +41,7 @@ object EnviroForm: TEnviroForm
         325)
       object cbBackups: TCheckBox
         Left = 8
-        Top = 29
+        Top = 53
         Width = 444
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -52,7 +52,7 @@ object EnviroForm: TEnviroForm
       end
       object cbMinOnRun: TCheckBox
         Left = 8
-        Top = 50
+        Top = 74
         Width = 444
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -63,7 +63,7 @@ object EnviroForm: TEnviroForm
       end
       object cbDefCpp: TCheckBox
         Left = 8
-        Top = 8
+        Top = 32
         Width = 444
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -74,7 +74,7 @@ object EnviroForm: TEnviroForm
       end
       object cbShowBars: TCheckBox
         Left = 8
-        Top = 72
+        Top = 96
         Width = 444
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -85,7 +85,7 @@ object EnviroForm: TEnviroForm
       end
       object cbShowMenu: TCheckBox
         Left = 8
-        Top = 93
+        Top = 117
         Width = 444
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -97,7 +97,7 @@ object EnviroForm: TEnviroForm
       end
       object rgbAutoOpen: TRadioGroup
         Left = 8
-        Top = 141
+        Top = 173
         Width = 189
         Height = 90
         Caption = '   Auto Open  '
@@ -109,7 +109,7 @@ object EnviroForm: TEnviroForm
       end
       object cbdblFiles: TCheckBox
         Left = 8
-        Top = 114
+        Top = 138
         Width = 444
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -120,7 +120,7 @@ object EnviroForm: TEnviroForm
       end
       object gbDebugger: TGroupBox
         Left = 207
-        Top = 141
+        Top = 173
         Width = 182
         Height = 90
         Caption = '  Debug Variable Browser  '
@@ -141,6 +141,17 @@ object EnviroForm: TEnviroForm
           Caption = 'Report watch errors'
           TabOrder = 1
         end
+      end
+      object cbSingleInstance: TCheckBox
+        Left = 7
+        Top = 9
+        Width = 444
+        Height = 17
+        Anchors = [akLeft, akTop, akRight]
+        Caption = 'Allow only one instance of Dev-CPP'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 8
       end
     end
     object tabInterface: TTabSheet
@@ -639,7 +650,7 @@ object EnviroForm: TEnviroForm
         OnValidate = vleExternalValidate
         ColWidths = (
           72
-          282)
+          343)
       end
     end
     object tabAssocs: TTabSheet

@@ -21,9 +21,18 @@ unit utils;
 
 interface
 uses
-  Windows, Classes, Sysutils, Forms, ShellAPI, Dialogs, SynEditHighlighter,
+  Windows, Messages,Classes, Sysutils, Forms, ShellAPI, Dialogs, SynEditHighlighter,
   menus, Registry;
 
+const
+  // Name of main window class (could use GUID to ensure uniqueness)
+  cWindowClassName = 'DelphiDabbler.SingleApp.Demo';
+  // Any 32 bit number here to perform check on copied data
+  cCopyDataWaterMark = $DE1F1DAB;
+  // User window message handled by main form to ensure that app is not
+  // minimized or hidden and that window is foreground window
+  UM_ENSURERESTORED = WM_USER + 1;
+    
 type
   PdevSearchResult = ^TdevSearchResult;
   TdevSearchResult = record
@@ -61,6 +70,8 @@ function ExtractComponentPropertyCaption(const S: string): string;
 function iswxForm(FileName: string): Boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
 {$ENDIF}
+function DuplicateAppInstWdw: HWND;
+function SwitchToPrevInst(Wnd: HWND): Boolean;
 
 {Guru: End Functions}
 
@@ -944,6 +955,52 @@ begin
   finally
     FreeMem(Buf);
   end;
+end;
+
+function SendParamsToPrevInstance(WndH: HWND): Boolean;
+var
+  CopyData: TCopyDataStruct;
+  I: Integer;
+  DataSize: Integer;
+  Data: PChar;
+  PData: PChar;
+begin
+  DataSize := 0;
+  for I := 1 to ParamCount do
+    Inc(DataSize, Length(ParamStr(I)) + 1);
+  Inc(DataSize);
+  Data := StrAlloc(DataSize);
+  try
+    PData := Data;
+    for I := 1 to ParamCount do
+    begin
+      StrPCopy(PData, ParamStr(I));
+      Inc(PData, Length(ParamStr(I)) + 1);
+    end;
+    PData^ := #0;
+    CopyData.lpData := Data;
+    CopyData.cbData := DataSize;
+    CopyData.dwData := cCopyDataWaterMark;
+    Result := SendMessage(WndH, WM_COPYDATA, 0, LPARAM(@CopyData)) = 1;
+  finally
+    StrDispose(Data);
+  end;
+end;
+
+function DuplicateAppInstWdw: HWND;
+begin
+  Result := FindWindow(cWindowClassName, nil);
+end;
+
+function SwitchToPrevInst(Wnd: HWND): Boolean;
+begin
+  Assert(Wnd <> 0);
+  if ParamCount > 0 then
+    Result := SendParamsToPrevInstance(Wnd)
+  else
+    Result := True;
+  if Result then
+    SendMessage(Wnd, UM_ENSURERESTORED, 0, 0);
 end;
 
 function IsWinNT: boolean;

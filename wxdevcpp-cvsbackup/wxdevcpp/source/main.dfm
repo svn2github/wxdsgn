@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 165
-  Top = 116
-  Width = 719
+  Left = 236
+  Top = 105
+  Width = 776
   Height = 579
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -24,7 +24,7 @@ object MainForm: TMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object SplitterLeft: TSplitter
-    Left = 210
+    Left = 225
     Top = 100
     Width = 4
     Height = 274
@@ -36,7 +36,7 @@ object MainForm: TMainForm
   object SplitterBottom: TSplitter
     Left = 0
     Top = 374
-    Width = 711
+    Width = 768
     Height = 4
     Cursor = crVSplit
     Align = alBottom
@@ -44,7 +44,7 @@ object MainForm: TMainForm
     OnMoved = SplitterBottomMoved
   end
   object SplitterRight: TSplitter
-    Left = 541
+    Left = 598
     Top = 100
     Width = 3
     Height = 274
@@ -57,15 +57,15 @@ object MainForm: TMainForm
   object MessageControl: TPageControl
     Left = 0
     Top = 378
-    Width = 711
+    Width = 768
     Height = 128
-    ActivePage = DebugSheet
+    ActivePage = CompSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     OnChange = MessageControlChange
     OnChanging = MessageControlChanging
@@ -77,7 +77,7 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 699
+        Width = 756
         Height = 96
         Align = alClient
         BevelOuter = bvRaised
@@ -115,8 +115,8 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 699
-        Height = 95
+        Width = 756
+        Height = 96
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -134,7 +134,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 95
+        Height = 96
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -188,19 +188,19 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 474
-        Height = 95
+        Width = 531
+        Height = 96
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          474
-          95)
+          531
+          96)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 664
-          Height = 75
+          Width = 721
+          Height = 76
           Anchors = [akLeft, akTop, akRight, akBottom]
           BevelInner = bvNone
           BevelKind = bkTile
@@ -218,8 +218,8 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 699
-        Height = 95
+        Width = 756
+        Height = 96
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -599,8 +599,8 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 691
-            Height = 64
+            Width = 748
+            Height = 65
             Align = alClient
             Columns = <
               item
@@ -633,8 +633,8 @@ object MainForm: TMainForm
           object DebugOutput: TMemo
             Left = 0
             Top = 22
-            Width = 691
-            Height = 42
+            Width = 748
+            Height = 43
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -645,7 +645,7 @@ object MainForm: TMainForm
           object GdbOutputPanel: TPanel
             Left = 0
             Top = 0
-            Width = 691
+            Width = 748
             Height = 22
             Align = alTop
             BevelOuter = bvNone
@@ -685,8 +685,8 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 699
-        Height = 95
+        Width = 756
+        Height = 96
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -736,7 +736,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar
     Left = 0
     Top = 16
-    Width = 711
+    Width = 768
     Height = 84
     Align = alTop
     AutoDock = False
@@ -818,7 +818,7 @@ object MainForm: TMainForm
     object tbCompile: TToolBar
       Left = 11
       Top = 30
-      Width = 119
+      Width = 138
       Height = 22
       AutoSize = True
       Caption = 'Compile and Run'
@@ -857,9 +857,14 @@ object MainForm: TMainForm
         Top = 0
         Action = actDebug
       end
+      object ProgramResetBtn: TToolButton
+        Left = 115
+        Top = 0
+        Action = actProgramReset
+      end
     end
     object tbOptions: TToolBar
-      Left = 143
+      Left = 162
       Top = 30
       Width = 46
       Height = 22
@@ -1003,7 +1008,7 @@ object MainForm: TMainForm
       end
     end
     object tbSpecials: TToolBar
-      Left = 202
+      Left = 221
       Top = 30
       Width = 243
       Height = 22
@@ -1052,7 +1057,7 @@ object MainForm: TMainForm
     object tbClasses: TToolBar
       Left = 11
       Top = 58
-      Width = 462
+      Width = 470
       Height = 22
       AutoSize = True
       Caption = 'tbClasses'
@@ -1102,7 +1107,7 @@ object MainForm: TMainForm
   object StatusBar: TStatusBar
     Left = 0
     Top = 506
-    Width = 711
+    Width = 768
     Height = 19
     Panels = <
       item
@@ -1122,9 +1127,9 @@ object MainForm: TMainForm
     UseSystemFont = False
   end
   object PageControl: TPageControl
-    Left = 214
+    Left = 229
     Top = 100
-    Width = 327
+    Width = 369
     Height = 274
     Align = alClient
     PopupMenu = EditorPopupMenu
@@ -1138,7 +1143,7 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 711
+    Width = 768
     Height = 16
     Align = alTop
     BevelOuter = bvNone
@@ -1148,10 +1153,10 @@ object MainForm: TMainForm
     TabOrder = 4
     Visible = False
     DesignSize = (
-      711
+      768
       16)
     object btnFullScrRevert: TSpeedButton
-      Left = 696
+      Left = 753
       Top = 0
       Width = 14
       Height = 14
@@ -1174,25 +1179,33 @@ object MainForm: TMainForm
     end
   end
   object devFileMonitor1: TdevFileMonitor
-    Left = 112
+    Left = 8
     Top = 152
-    Width = 0
-    Height = 0
+    Width = 17
+    Height = 33
     Active = False
     OnNotifyChange = devFileMonitor1NotifyChange
+  end
+  object pnlControlHolder: TPanel
+    Left = 601
+    Top = 100
+    Width = 167
+    Height = 274
+    Align = alRight
+    TabOrder = 6
   end
   object pnlBrowsers: TPanel
     Left = 0
     Top = 100
-    Width = 210
+    Width = 225
     Height = 274
     Align = alLeft
     DockSite = True
-    TabOrder = 6
+    TabOrder = 7
     object LeftPageControl: TPageControl
-      Left = 1
-      Top = 16
-      Width = 231
+      Left = 32
+      Top = 9
+      Width = 199
       Height = 265
       ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
@@ -1204,7 +1217,7 @@ object MainForm: TMainForm
         object ProjectView: TTreeView
           Left = 0
           Top = 0
-          Width = 223
+          Width = 191
           Height = 237
           Align = alClient
           ChangeDelay = 1
@@ -1236,7 +1249,7 @@ object MainForm: TMainForm
         object ClassBrowser1: TClassBrowser
           Left = 0
           Top = 0
-          Width = 223
+          Width = 191
           Height = 237
           Align = alClient
           Images = dmMain.ClassImages
@@ -1271,7 +1284,7 @@ object MainForm: TMainForm
         object DebugTree: TTreeView
           Left = 0
           Top = 0
-          Width = 223
+          Width = 191
           Height = 237
           Align = alClient
           Images = dmMain.MenuImages_NewLook
@@ -1285,14 +1298,6 @@ object MainForm: TMainForm
         end
       end
     end
-  end
-  object pnlControlHolder: TPanel
-    Left = 544
-    Top = 100
-    Width = 167
-    Height = 274
-    Align = alRight
-    TabOrder = 7
   end
   object MainMenu: TMainMenu
     Images = dmMain.MenuImages_Gnome
@@ -2062,6 +2067,63 @@ object MainForm: TMainForm
       object MessageBoxPopItem: TMenuItem
         Caption = 'MessageBox'
       end
+    end
+    object SurroundWithPopItem: TMenuItem
+      Caption = 'Surround With'
+      object trycatchPopItem: TMenuItem
+        Caption = 'try...catch'
+      end
+      object tryfinallyPopItem: TMenuItem
+        Caption = 'try...finally'
+      end
+      object trycatchfinallyPopItem: TMenuItem
+        Caption = 'try...catch...finally'
+      end
+      object N68: TMenuItem
+        Caption = '-'
+      end
+      object forloopPopItem: TMenuItem
+        Caption = 'for'
+      end
+      object forintloopPopItem: TMenuItem
+        Caption = 'for(int i...'
+      end
+      object whileLoopPopItem: TMenuItem
+        Caption = 'while'
+      end
+      object dowhileLoopPopItem: TMenuItem
+        Caption = 'do..while'
+      end
+      object N71: TMenuItem
+        Caption = '-'
+      end
+      object ifLoopPopItem: TMenuItem
+        Caption = 'if'
+      end
+      object ifelseloopPopItem: TMenuItem
+        Caption = 'if...else'
+      end
+      object switchLoopPopItem: TMenuItem
+        Caption = 'switch'
+      end
+      object N72: TMenuItem
+        Caption = '-'
+      end
+      object bracesPopItem: TMenuItem
+        Caption = '{..}'
+      end
+      object N69: TMenuItem
+        Caption = '-'
+      end
+      object CStyleCommentPopItem: TMenuItem
+        Caption = 'C Style Comment'
+      end
+      object CppStyleCommentPopItem: TMenuItem
+        Caption = 'C++ Style Comment'
+      end
+    end
+    object N70: TMenuItem
+      Caption = '-'
     end
     object TogglebookmarksPopItem: TMenuItem
       Caption = '&Toggle bookmarks'
@@ -2911,6 +2973,7 @@ object MainForm: TMainForm
     object actProgramReset: TAction
       Category = 'Execute'
       Caption = 'Program reset'
+      ImageIndex = 48
       ShortCut = 32881
       OnExecute = actProgramResetExecute
       OnUpdate = actProgramResetUpdate
@@ -3218,7 +3281,7 @@ object MainForm: TMainForm
   object MessagePopup: TPopupMenu
     OnPopup = MessagePopupPopup
     Left = 275
-    Top = 219
+    Top = 224
     object MsgCopyItem: TMenuItem
       Action = actMsgCopy
     end

@@ -45,8 +45,9 @@ type
         { Storage for property Wx_Message }
         FWx_Message : String;
         { Storage for property Wx_PropertyList }
-        FWx_PropertyList : TStringlist;
-        { Storage for property Wx_ToolTip }
+        FWx_PropertyList : TStringList;
+        FInvisibleBGColorString : String;
+        FInvisibleFGColorString : String;        { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
 
       { Private methods of TWxSaveFileDialog }
@@ -88,7 +89,12 @@ type
         procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
         procedure SetIDName(IDName:String);
         procedure SetIDValue(IDValue:longInt);
-        procedure SetWxClassName(wxClassName:String);
+            procedure SetWxClassName(wxClassName:String);
+    function GetFGColor:string;
+    procedure SetFGColor(strValue:String);
+
+    function GetBGColor:string;
+    procedure SetBGColor(strValue:String);
 
     published
       { Published properties of TWxSaveFileDialog }
@@ -251,7 +257,6 @@ const
       +'8000008080000080800000808000008080000080800000808000008080000080'
       +'8000008080000080800000808000008080000080800000808000}'
   +'  end';
-
 begin
      { Call the Create method of the parent class }
      inherited Create(AOwner);
@@ -279,6 +284,8 @@ begin
      FWx_PropertyList.add('wx_Message:Message');
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
 end;
 
 destructor TWxSaveFileDialog.Destroy;
@@ -297,11 +304,6 @@ begin
 end;
 
 function TWxSaveFileDialog.GenerateControlIDs:String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
@@ -309,17 +311,12 @@ begin
 end;
 
 function TWxSaveFileDialog.GenerateEventTableEntries(CurrClassName:String):String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:='';
 end;
 
 function TWxSaveFileDialog.GenerateGUIControlCreation:String;
-     { Internal declarations for method }
+
      { type }
      { . . . }
       var
@@ -332,103 +329,53 @@ begin
 end;
 
 function TWxSaveFileDialog.GenerateGUIControlDeclaration:String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:='';
      Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
 end;
 
 function TWxSaveFileDialog.GenerateHeaderInclude:String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:='';
      Result:='#include <wx/filedlg.h>'
 end;
 
 function TWxSaveFileDialog.GenerateImageInclude: string;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
 
 end;
 
 function TWxSaveFileDialog.GetEventList:TStringlist;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:=nil;
 end;
 
 function TWxSaveFileDialog.GetIDName:String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:=wx_IDName;
 end;
 
 function TWxSaveFileDialog.GetIDValue:LongInt;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:=wx_IDValue;
 end;
 
 function TWxSaveFileDialog.GetParameterFromEventName(EventName: string):String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
 
 end;
 
 function TWxSaveFileDialog.GetPropertyList:TStringList;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:=FWx_PropertyList;
 end;
 
 function TWxSaveFileDialog.GetTypeFromEventName(EventName: string):string;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
 
 end;
 
 function TWxSaveFileDialog.GetWxClassName:String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Result:=wx_Class;
 end;
@@ -456,41 +403,21 @@ begin
 end;
 
 procedure TWxSaveFileDialog.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
 
 end;
 
 procedure TWxSaveFileDialog.SetIDName(IDName:String);
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      Wx_IDName:=IDName;
 end;
 
 procedure TWxSaveFileDialog.SetIDValue(IDValue:longInt);
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      wx_IDValue:=IDValue;
 end;
 
 procedure TWxSaveFileDialog.SetWxClassName(wxClassName:String);
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      wx_Class:=wxClassName;
 end;

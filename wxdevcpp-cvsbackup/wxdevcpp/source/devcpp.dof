@@ -41,7 +41,7 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=..
+OutputDir=C:\dev-cpp
 UnitOutputDir=units
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -87,7 +87,7 @@ ProductVersion=5
 Comments=Under the GNU General Public License
 [Excluded Packages]
 c:\program files\borland\delphi6\Bin\dclsoap60.bpl=Borland SOAP Components
-C:\Program Files\Borland\Delphi6\Projects\Bpl\JvStdCtrlsD6D.bpl=JVCL Controls Runtime Package
+C:\Program Files\Borland\Delphi6\Projects\Bpl\JvStdCtrlsD6D.bpl=JVCL Standard Controls
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=C:\V5\source\Vcl\codetooltip\;C:\V5\source\Vcl\Parser\;C:\V5\source\Vcl\synedit\Source\
@@ -111,5 +111,5 @@ Count=1
 Item0=units
 [HistoryLists\hlOutputDirectorry]
 Count=2
-Item0=..
-Item1=C:\Dev-Cpp
+Item0=C:\dev-cpp
+Item1=..

@@ -110,17 +110,16 @@ uses
   ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
   WxUtils in 'components\wxUtils.pas',
-  WxButton in 'components\WxButton.pas',
+  WxBitmapButton in 'components\WxBitmapButton.pas',
   WXCheckBox in 'components\wxcheckbox.pas',
   WxComboBox in 'components\wxcombobox.pas',
   WxEdit in 'components\wxEdit.pas',
   WxGauge in 'components\wxgauge.pas',
+  WxGrid in 'components\wxgrid.pas',
   WxListBox in 'components\wxlistbox.pas',
   Wxlistctrl in 'components\wxlistctrl.pas',
   WxMemo in 'components\wxmemo.pas',
-  WxOpenFileDialog in 'components\wxopenfiledialog.pas',
   WXRadioButton in 'components\wxradiobutton.pas',
-  WxSaveFileDialog in 'components\wxsavefiledialog.pas',
   WxScrollBar in 'components\wxscrollbar.pas',
   WxSlider in 'components\wxslider.pas',
   WxSpinButton in 'components\wxspinbutton.pas',
@@ -139,7 +138,9 @@ uses
   WXStaticBoxSizer in 'components\wxstaticboxsizer.pas',
   WXSizerPanel in 'components\WXSizerPanel.pas',
   Wxcontrolpanel in 'components\Wxcontrolpanel.pas' {$ENDIF},
-  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm};
+  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
+  UColorEdit in 'propedit\UColorEdit.pas' {ColorEdit},
+  WxButton in 'components\WxButton.pas';
 
 {$R *.RES}
 {$R winxp.res}
@@ -149,7 +150,16 @@ uses
 {$R SYSREG.DCR}
 {$R DBREG.DCR}
 {$ENDIF}
-
+function CanStart: Boolean;
+var
+  Wdw: HWND;
+begin
+  Wdw := DuplicateAppInstWdw;
+  if Wdw = 0 then
+    Result := True
+  else
+    Result := not SwitchToPrevInst(Wdw);
+end;
 type
   TMainFormHack = class(TMainForm);
 
@@ -158,9 +168,10 @@ const
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
   UserHome: array[0..MAX_PATH] of char;
-  IsNewToWxDevCpp:Boolean;
+  boolCanStart:Boolean;
   iniFile:TIniFile;
   versionNum:Integer;
+
 begin
 {$IFDEF MEM_DEBUG}
   MemChk;
@@ -217,6 +228,13 @@ begin
     end;
   end;
 
+  if devData.SingleInstance then
+  begin
+    boolCanStart:=CanStart;
+    if boolCanStart = false then
+        exit;
+  end;
+
   devData.UseRegistry := FALSE;
   devData.BoolAsWords := FALSE;
   devData.INISection := OPT_OPTIONS;
@@ -237,14 +255,15 @@ begin
   devData.ReadConfigData;
   devTheme := TdevTheme.Create;
 
-  
+
   Application.Initialize;
   Application.Title := 'Dev-C++';
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TCreationOrderForm, CreationOrderForm);
+  Application.CreateForm(TColorEdit, ColorEdit);
   MainForm.Hide; // hide it
 
-  
+
   if not devData.NoSplashScreen then
   begin
     SplashForm := TSplashForm.Create(Application);
@@ -257,7 +276,7 @@ begin
   // because it takes quite a while ...
   TMainFormHack(MainForm).DoCreateEverything;
 
-  
+
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);

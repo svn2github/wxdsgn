@@ -95,10 +95,16 @@ type
       FEVT_UPDATE_UI,
       FEVT_CLOSE: string;
     FWx_Name: string;
-    FWx_ICON:TIcon;
+    FWx_ICON:TPicture;
+    { Storage for property Wx_StretchFactor }
+    FWx_StretchFactor : Integer;
+    { Storage for property Wx_ProxyBGColorString }
+    FWx_ProxyBGColorString : TWxColorString;
+    { Storage for property Wx_ProxyFGColorString }
+    FWx_ProxyFGColorString : TWxColorString;
 
   published
-    property Wx_ICON: TIcon
+    property Wx_ICON: TPicture
       read FWx_ICON write FWx_ICON;
 
     property Wx_Name: string
@@ -127,6 +133,15 @@ type
 
     property Wx_DialogStyle: TWxDlgStyleSet
       read FWxFrm_DialogStyle write FWxFrm_DialogStyle;
+
+    property Wx_StretchFactor : Integer
+        read FWx_StretchFactor write FWx_StretchFactor
+        default 0;
+
+    property Wx_ProxyBGColorString : TWxColorString
+        read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString : TWxColorString
+        read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
 
     property EVT_CHAR: string
       read FEVT_CHAR write FEVT_CHAR;
@@ -253,8 +268,15 @@ type
     function GetParameterFromEventName(EventName: string): string;
     function GetTypeFromEventName(EventName: string): string;
     procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-
+    function GetStretchFactor:Integer;
+    procedure SetStretchFactor(intValue:Integer);
+    function GetFGColor:string;
+    procedure SetFGColor(strValue:String);
+    function GetBGColor:string;
+    procedure SetBGColor(strValue:String);
+            
     property synEdit: TSynEdit read fsynEdit write fsynEdit;
+    
   end;
 
 var
@@ -278,7 +300,7 @@ var
   wxcompInterface: IWxComponentInterface;
   strEntry,strEventTableStart,strEventTableEnd: string;
   isSizerAvailable:Boolean;
-  strHdrValue,strManualCode:String;
+  strHdrValue:String;
   strStartStr,strEndStr:String;
   strLst,strlstManualCode : TStringList;
 
@@ -343,10 +365,10 @@ begin
     GetStartAndEndBlockStrings('',btManualCode,strStartStr,strEndStr);
     strlstManualCode:=TStringList.Create;
     if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode,intManualBlockStart, intManualBlockEnd) then
-    begin 
+    begin
         strlstManualCode := GetBlockCode(synEdit, strClassName, btManualCode,intManualBlockStart,intManualBlockEnd);
     end;
-    
+
     DeleteAllClassNameEventTableEntries(synEdit, strClassName, intBlockStart,intBlockEnd);
 
     strEventTableEnd:='END_EVENT_TABLE()';
@@ -406,8 +428,18 @@ begin
         end;
       end;
     end;
-    strLst.destroy;
 
+    strHdrValue := trim(frmNewForm.GenerateImageInclude);
+    if strHdrValue <> '' then
+    begin
+        if strLst.indexOf(strHdrValue) = -1 then
+        begin
+            strLst.add(strHdrValue);
+            AddClassNameIncludeHeader(synEdit, strClassName, intBlockStart,intBlockEnd, strHdrValue);
+        end;
+    end;
+    
+    strLst.destroy;
   end;
 
 
@@ -511,6 +543,23 @@ var
 begin
     xpmFileDir:=IncludetrailingBackslash(ExtractFileDir(strFileName));
 
+    if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
+    begin
+        if not fileexists(xpmFileDir+frmNewForm.Wx_Name+'_XPM.xpm') then
+        begin
+            try
+                fileStrlst:=TStringList.Create;
+                strXPMContent:=GetXPMFromTPicture(frmNewForm.Wx_Name,frmNewForm.Wx_ICON.Bitmap);
+                if trim(strXPMContent) <> '' then
+                begin
+                    fileStrlst.Add(strXPMContent);
+                    fileStrlst.SaveToFile(xpmFileDir+frmNewForm.Wx_Name+'_XPM.xpm');
+                end;
+            except
+            end;
+            fileStrlst.destroy;
+        end;
+    end;
 
     for I := 0 to frmNewForm.ComponentCount - 1 do    // Iterate
     begin
@@ -518,18 +567,21 @@ begin
         begin
             if TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap.handle = 0 then
                 continue;
-            try
-                fileStrlst:=TStringList.Create;
-                strXPMContent:=GetXPMFromTPicture(frmNewForm.Components[I].Name,TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap);
-                if trim(strXPMContent) = '' then
-                    continue;
-                fileStrlst.Add(strXPMContent);
-                fileStrlst.SaveToFile(xpmFileDir+frmNewForm.Components[I].Name+'_XPM.xpm');
-            except
+            if not fileexists(xpmFileDir+frmNewForm.Wx_Name+'_XPM.xpm') then
+            begin
+                try
+                    fileStrlst:=TStringList.Create;
+                    strXPMContent:=GetXPMFromTPicture(frmNewForm.Components[I].Name,TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap);
+                    if trim(strXPMContent) = '' then
+                        continue;
+                    fileStrlst.Add(strXPMContent);
+                    fileStrlst.SaveToFile(xpmFileDir+frmNewForm.Components[I].Name+'_XPM.xpm');
+                except
+                end;
+                fileStrlst.destroy;
             end;
-            fileStrlst.destroy;
-        end;
-    end;    // for
+        end;    // for
+    end;
 end;
 
 function TfrmNewForm.GetParameterFromEventName(EventName: string): string;
@@ -746,6 +798,15 @@ end;
 procedure TfrmNewForm.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
 begin
     //Result:=WxControlNone;
+end;
+
+function TfrmNewForm.GetStretchFactor:Integer;
+begin
+    result:=Wx_StretchFactor;
+end;
+procedure TfrmNewForm.SetStretchFactor(intValue:Integer);
+begin
+    Wx_StretchFactor:=intValue;
 end;
 
 function TfrmNewForm.GetEventList: TStringlist;
@@ -1038,16 +1099,22 @@ begin
   
   if self.Wx_Center then
     strLst.add('this->Center();');
-
-  if self.Wx_ICON.Handle =0 then
+    
+  if assigned(Wx_ICON) then
   begin
-    strLst.add('this->SetIcon(wxNullIcon);');
-  end
-  else
-  begin
-    Result:='wxIcon '+self.Name+'_ICON'+' '+self.Name+'_XPM'+');';
-    strLst.add('this->SetIcon('+self.Name+'_XPM'+');');
+    if Wx_ICON.Bitmap.Handle =0 then
+    begin
+        strLst.add('this->SetIcon(wxNullIcon);');
+    end
+    else
+    begin
+        strLst.add('wxIcon '+self.Wx_Name+'_ICON'+' ('+self.Wx_Name+'_XPM'+');');
+        strLst.add('this->SetIcon('+self.Wx_Name+'_XPM'+');');
+    end;
   end;
+
+  if trim(self.Wx_ToolTips) <> '' then
+    strLst.add(Format('this->SetToolTip(wxT("%s"));',[self.Wx_ToolTips]));
 
   Result := strLst.text;
   strLst.destroy;
@@ -1060,12 +1127,19 @@ end;
 
 function TfrmNewForm.GenerateHeaderInclude: string;
 begin
-  //
+  result:='';
 end;
 
 function TfrmNewForm.GenerateImageInclude: string;
 begin
-  //
+  result:='';
+  if assigned(Wx_ICON) then
+  begin
+    if Wx_ICON.Bitmap.Handle <>0 then
+    begin
+        result :='#include "'+self.wx_Name+'_XPM.xpm"';
+    end;
+  end;
 end;
 
 
@@ -1117,7 +1191,7 @@ begin
 
   self.OldCreateOrder:=true;
 
-  FWx_ICON:=TIcon.Create;
+  FWx_ICON:=TPicture.Create;
 
   wx_PropertyList := TStringList.Create;
   wx_PropertyList.Add('Wx_IDName:IDName');
@@ -1250,7 +1324,29 @@ procedure TfrmNewForm.FormKeyDown(Sender: TObject; var Key: Word;
 begin
 {$IFDEF WX_BUILD}
   MainForm.ELDesigner1KeyDown(Sender,Key, Shift);
-{$ENDIF}  
+{$ENDIF}
+end;
+
+function TfrmNewForm.GetFGColor:string;
+begin
+   Result:=Wx_ProxyFGColorString.strColorValue;
+end;
+
+procedure TfrmNewForm.SetFGColor(strValue:String);
+begin
+    Wx_ProxyFGColorString.strColorValue:=strValue;
+    self.Color:=GetColorFromString(strValue);
+end;
+
+function TfrmNewForm.GetBGColor:string;
+begin
+   Result:=Wx_ProxyBGColorString.strColorValue;
+end;
+
+procedure TfrmNewForm.SetBGColor(strValue:String);
+begin
+   Wx_ProxyBGColorString.strColorValue:=strValue;
+   self.Font.Color:=GetColorFromString(strValue);
 end;
 
 end.

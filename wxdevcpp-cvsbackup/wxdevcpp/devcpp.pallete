@@ -1,5 +1,5 @@
 [Palette]
 Sizers=TWxBoxSizer;TWxStaticBoxSizer;TWxGridSizer;TWxFlexGridSizer;
-Controls=TWxStaticText;TWxButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;TWxslider;TWxStaticLine;TWxStaticBitmap;
+Controls=TWxStaticText;TWxButton;TWxBitmapButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGrid;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;TWxslider;TWxStaticLine;TWxStaticBitmap;
 [Version]
 IniVersion=1

@@ -33,13 +33,13 @@ uses
   Project, editor, compiler, ActnList, oysUtils, Toolfrm, AppEvnts, Grids,
   debugger, ClassBrowser, DevThemes, CodeCompletion, CppParser, CppTokenizer,
   devShortcuts, StrUtils, devFileMonitor, devMonitorTypes, DdeMan, XPMenu,
-  CVSFm, ImageTheme, ThemeMgr
+  CVSFm, ImageTheme, ThemeMgr,SynEditTextBuffer,SynEditTypes
 
 
   {$IFDEF WX_BUILD}
   ,JclStrings, JvExControls, JvComponent, TypInfo,JclRTTI,JvStringHolder,
   ELDsgnr,JvInspector, xprocs,dmCreateNewProp,wxUtils, DbugIntf,
-  wxSizerpanel,Designerfrm
+  wxSizerpanel,Designerfrm, DockPanel
   {$ENDIF}
   ;
 
@@ -591,6 +591,28 @@ type
     actDesignerCut: TAction;
     actDesignerPaste: TAction;
     actDesignerDelete: TAction;
+    pnlControlHolder: TPanel;
+    SplitterRight: TSplitter;
+    ProgramResetBtn: TToolButton;
+    SurroundWithPopItem: TMenuItem;
+    trycatchPopItem: TMenuItem;
+    tryfinallyPopItem: TMenuItem;
+    trycatchfinallyPopItem: TMenuItem;
+    N68: TMenuItem;
+    CStyleCommentPopItem: TMenuItem;
+    CppStyleCommentPopItem: TMenuItem;
+    N69: TMenuItem;
+    forloopPopItem: TMenuItem;
+    whileLoopPopItem: TMenuItem;
+    dowhileLoopPopItem: TMenuItem;
+    bracesPopItem: TMenuItem;
+    ifLoopPopItem: TMenuItem;
+    ifelseloopPopItem: TMenuItem;
+    forintloopPopItem: TMenuItem;
+    switchLoopPopItem: TMenuItem;
+    N71: TMenuItem;
+    N72: TMenuItem;
+    N70: TMenuItem;
     pnlBrowsers: TPanel;
     LeftPageControl: TPageControl;
     ProjectSheet: TTabSheet;
@@ -599,8 +621,6 @@ type
     ClassBrowser1: TClassBrowser;
     DebugLeftSheet: TTabSheet;
     DebugTree: TTreeView;
-    pnlControlHolder: TPanel;
-    SplitterRight: TSplitter;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -900,6 +920,7 @@ type
     procedure ViewControlIDsClick(Sender: TObject);
     procedure ChangeCreationOrder1Click(Sender: TObject);
     procedure ELDesigner1Notification(Sender: TObject;AnObject: TPersistent; Operation: TOperation);
+    procedure OnPropertyItemSelected(Sender: TObject);
   {$ENDIF}
 
   private
@@ -922,12 +943,14 @@ type
     procedure AddFindOutputItem(line, col, unit_, message: string);
     function ParseParams(s: string): string;
     procedure ParseCmdLine;
+    procedure ParseCustomCmdLine(strLst:TStringList);
     procedure BuildBookMarkMenus;
     procedure BuildHelpMenu;
     procedure SetHints;
     procedure HelpItemClick(Sender: TObject);
     procedure MRUClick(Sender: TObject);
     procedure CodeInsClick(Sender: TObjecT);
+    procedure SurroundWithClick(Sender: TObject);
     procedure ToolItemClick(Sender: TObject);
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure LogEntryProc(const msg: string);
@@ -976,8 +999,14 @@ type
     procedure SetProjCompOpt(idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
     function CloseEditor(index: integer; Rem: boolean): Boolean;
     procedure RefreshContext;
-
+    procedure SurroundString(e: TEditor;strStart,strEnd:String);
+    procedure CppCommentString(e: TEditor);
     {Guru's Function}
+  private
+    procedure UMEnsureRestored(var Msg: TMessage); message UM_ENSURERESTORED;
+    procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
 public
 {$IFDEF WX_BUILD}
   //PopUpMenu
@@ -1011,6 +1040,7 @@ public
   PalleteListPanel: TPanel;
   Palettes: TComboBox;
   frmInspectorDock:TForm;
+  //frmClassBrwsDock:TForm;
   frmControlsDock:TForm;
 {$ENDIF}
 
@@ -1041,7 +1071,8 @@ public
     SelectedComponentName: string;
     SelectedComponent: TComponent;
     PreviousStringValue: string;
-
+    PreviousComponentName:string;
+    function OpenWithAssignedProgram(strFileName:String):boolean;
     procedure BuildProperties(Comp: TControl);
     procedure BuildComponentList(Designer: TfrmNewForm);
     function CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string):Boolean;
@@ -1074,8 +1105,8 @@ uses
 
   {$IFDEF WX_BUILD}
   ,WxBoxSizer, WxStaticBoxSizer,WxGridSizer,
-  WxButton, WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
-  WxMemo, WxOpenFileDialog, WXRadioButton, WxSaveFileDialog, WxScrollBar,
+  WxButton, WxBitmapButton,WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
+  WxMemo, WXRadioButton, WxScrollBar,wxGrid,
   WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
   WxStaticText, WxTreeCtrl, WxControlPanel,CompFileIo, WXFlexGridSizer, CreateOrderFm,
   ViewIDForm
@@ -1094,6 +1125,21 @@ const
   cDebugTab = 3;
   cFindTab = 4;
   IniVersion = 1;
+  INT_BRACES= 1;
+  INT_TRY_CATCH= 2;
+  INT_TRY_FINALLY= 3;
+  INT_TRY_CATCH_FINALLY= 4;
+  INT_C_COMMENT= 5;
+  INT_FOR= 6;
+  INT_FOR_I= 7;
+  INT_WHILE= 8;
+  INT_DO_WHILE= 9;
+  INT_IF= 10;
+  INT_IF_ELSE= 11;
+  INT_SWITCH= 12;
+  INT_CPP_COMMENT= 13;
+
+
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -1101,10 +1147,17 @@ begin
 end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.DoCreateWxSpecificItems;
+var
+  I: Integer;
 begin
   //PopuP menu
   frmInspectorDock:=TForm.Create(self);
+  //frmClassBrwsDock:=TForm.Create(self);
+
   frmControlsDock:=TForm.Create(self);
+
+  //LeftPageControl.Owner:=frmClassBrwsDock;
+  //LeftPageControl.Parent:=frmClassBrwsDock;
 
   DesignerPopup := TPopupMenu.Create(Self);
   DesignerMenuEdit := TMenuItem.Create(Self);
@@ -1294,8 +1347,9 @@ begin
     ItemHeight := 16;
     Painter := JvInspectorDotNETPainter1;
     ReadOnly := False;
-    UseBands := False;
-    WantTabs := False;
+    UseBands := false;
+    WantTabs := true;
+
     AfterItemCreate := JvInspPropertiesAfterItemCreate;
     BeforeSelection := JvInspPropertiesBeforeSelection;
     OnDataValueChanged := JvInspPropertiesDataValueChanged;
@@ -1329,15 +1383,27 @@ begin
     AfterItemCreate := JvInspEventsAfterItemCreate;
     OnDataValueChanged := JvInspEventsDataValueChanged;
     OnItemValueChanged := JvInspEventsItemValueChanged;
+    OnItemSelected:= OnPropertyItemSelected;
   end;
 
   intControlCount := 1000;
   //frmInspectorDock.Width:=100;
-  //frmInspectorDock.Height:=100;                             ep
-  frmInspectorDock.Visible:=true;
+  frmInspectorDock.Height:=500;                             
+  //frmInspectorDock.Visible:=true;
+  LeftPageControl.Height:=400;
   frmInspectorDock.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
+  frmInspectorDock.Visible:=true;
   LeftPageControl.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
-  LeftPageControl.Height:=200;
+  //frmInspectorDock.Height:=400;
+  //pnlBrowsers.Height:=500;
+  LeftPageControl.Height:=600;
+
+//  for I := 0 to pnlBrowsers.DockClientCount - 1 do    // Iterate
+//  begin
+//        pnlBrowsers.DockClients[];
+//  end;    // for
+
+
   //Design Control specifics
   lbxControls := TListBox.Create(Self);
   PalleteListPanel := TPanel.Create(Self);
@@ -1388,12 +1454,89 @@ begin
     OnChange := PalettesChange;
   end;
 
+    trycatchPopItem.Tag:=INT_TRY_CATCH;
+    trycatchPopItem.OnClick:=SurroundWithClick;
+
+    tryfinallyPopItem.Tag:=INT_TRY_FINALLY;
+    tryfinallyPopItem.OnClick:=SurroundWithClick;
+    
+    trycatchfinallyPopItem.Tag:=INT_TRY_CATCH_FINALLY;
+    trycatchfinallyPopItem.OnClick:=SurroundWithClick;
+
+    forloopPopItem.Tag:=INT_FOR;
+    forloopPopItem.OnClick:=SurroundWithClick;
+
+    forintloopPopItem.Tag:=INT_FOR_I;
+    forintloopPopItem.OnClick:=SurroundWithClick;
+    
+    whileLoopPopItem.Tag:=INT_WHILE;
+    whileLoopPopItem.OnClick:=SurroundWithClick;
+    
+    dowhileLoopPopItem.Tag:=INT_DO_WHILE;
+    dowhileLoopPopItem.OnClick:=SurroundWithClick;
+
+    ifLoopPopItem.Tag:=INT_IF;
+    ifLoopPopItem.OnClick:=SurroundWithClick;
+
+    ifelseloopPopItem.Tag:=INT_IF_ELSE;
+    ifelseloopPopItem.OnClick:=SurroundWithClick;
+    
+    switchLoopPopItem.Tag:=INT_SWITCH;
+    switchLoopPopItem.OnClick:=SurroundWithClick;
+
+    bracesPopItem.Tag:=INT_BRACES;
+    bracesPopItem.OnClick:=SurroundWithClick;
+
+    CStyleCommentPopItem.Tag:=INT_C_COMMENT;
+    CStyleCommentPopItem.OnClick:=SurroundWithClick;
+
+    CPPStyleCommentPopItem.Tag:=INT_CPP_COMMENT;
+    CPPStyleCommentPopItem.OnClick:=SurroundWithClick;
+
   //Setting data for the newly created GUI
   LoadComponents;
   intControlCount := 1000;
 
 end;
 {$ENDIF}
+procedure TMainForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  StrCopy(Params.WinClassName, cWindowClassName);
+end;
+
+procedure TMainForm.UMEnsureRestored(var Msg: TMessage);
+begin
+  if IsIconic(Application.Handle) then
+    Application.Restore;
+  if not Visible then
+    Visible := True;
+  Application.BringToFront;
+end;
+
+procedure TMainForm.WMCopyData(var Msg: TWMCopyData);
+var
+  PData: PChar;
+  Param: string;
+  strLstParams:TStringList;
+begin
+  if Msg.CopyDataStruct.dwData <> cCopyDataWaterMark then
+  begin
+     exit;
+    //raise Exception.Create('Invalid data structure passed in WM_COPYDATA');
+  end;
+  PData := Msg.CopyDataStruct.lpData;
+  strLstParams:=TStringList.Create;
+  while PData^ <> #0 do
+  begin
+    strLstParams.add(StrPas(PData));
+    //ProcessParam(Param);
+    Inc(PData, Length(Param) + 1);
+  end;
+  Msg.Result := 1;
+  ParseCustomCmdLine(strLstParams);
+end;
+
 
 procedure TMainForm.DoCreateEverything;
 //
@@ -1807,32 +1950,84 @@ end;
 procedure TMainForm.ParseCmdLine;
 var
   idx: integer;
+  strLstParams:TStringList;
 begin
   idx := 1;
+  strLstParams:=TStringList.Create;
   while idx <= ParamCount do
   begin
-    if (ParamStr(idx) = CONFIG_PARAM) then
+    strLstParams.Add(ParamStr(idx));
+    inc(idx);
+  end;
+  
+  ParseCustomCmdLine(strLstParams);
+  strLstParams.Destroy;
+end;
+
+//Commented ParseCmdLine code
+//var
+//  idx: integer;
+//begin
+//  idx := 1;
+//  while idx <= ParamCount do
+//  begin
+//    if (ParamStr(idx) = CONFIG_PARAM) then
+//      idx := idx + 2;
+//    if FileExists(ParamStr(idx)) then begin
+//      if GetFileTyp(ParamStr(idx)) = utPrj then
+//      begin
+//        OpenProject(ParamStr(idx));
+//        break; // only open 1 project
+//      end
+//      else begin
+//        {$IFDEF WX_BUILD}
+//        if iswxForm(ParamStr(idx)) then
+//        begin
+//          OpenFile(ChangeFileExt(ParamStr(idx), H_EXT), True);
+//          OpenFile(ChangeFileExt(ParamStr(idx), CPP_EXT), true);
+//        end;
+//        {$ENDIF}
+//        OpenFile(ParamStr(idx));
+//      end;
+//    end;
+//    inc(idx);
+//  end;
+//end;
+
+//This function is derived from the pre parsecmdline function.
+//This is also used when activating the devcpp's previous instance
+ 
+procedure TMainForm.ParseCustomCmdLine(strLst:TStringList);
+var
+  idx: integer;
+  intParamCount:Integer;
+begin
+  idx := 0;
+  while idx <= intParamCount do
+  begin
+    if (strLst[idx] = CONFIG_PARAM) then
       idx := idx + 2;
-    if FileExists(ParamStr(idx)) then begin
-      if GetFileTyp(ParamStr(idx)) = utPrj then
+    if FileExists(strLst[idx]) then begin
+      if GetFileTyp(strLst[idx]) = utPrj then
       begin
-        OpenProject(ParamStr(idx));
+        OpenProject(strLst[idx]);
         break; // only open 1 project
       end
       else begin
         {$IFDEF WX_BUILD}
-        if iswxForm(ParamStr(idx)) then
+        if iswxForm(strLst[idx]) then
         begin
-          OpenFile(ChangeFileExt(ParamStr(idx), H_EXT), True);
-          OpenFile(ChangeFileExt(ParamStr(idx), CPP_EXT), true);
+          OpenFile(ChangeFileExt(strLst[idx], H_EXT), True);
+          OpenFile(ChangeFileExt(strLst[idx], CPP_EXT), true);
         end;
         {$ENDIF}
-        OpenFile(ParamStr(idx));
+        OpenFile(strLst[idx]);
       end;
     end;
     inc(idx);
   end;
 end;
+
 
 procedure TMainForm.BuildBookMarkMenus;
 var
@@ -2312,7 +2507,7 @@ begin
       if (AnsiCompareText(e.FileName, s) = 0) then
         if (not inprj) or (e.InProject) then exit;
     end
-    else 
+    else
       if AnsiCompareText(e.TabSheet.Caption, ExtractfileName(s)) = 0 then
         if (not inprj) or (e.InProject) then exit;
   end;
@@ -2326,15 +2521,25 @@ var
     s: string;
   idx: integer;
   CFilter, CppFilter, HFilter: Integer;
+  boolIsForm:Boolean;
 begin
   Result := True;
   idx := -1;
   if assigned(fProject) then
   begin
     if e.FileName = '' then
-      idx := fProject.GetUnitFromString(e.TabSheet.Caption)
+    begin
+      idx := fProject.GetUnitFromString(e.TabSheet.Caption);
+      boolIsForm:=iswxForm(e.TabSheet.Caption);
+    end
     else
+    begin
       idx := fProject.Units.Indexof(e.FileName);
+      boolIsForm:=iswxForm(e.FileName);
+    end;
+
+
+
     if fProject.Options.UseGPP then
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
@@ -2351,6 +2556,7 @@ begin
       CppFilter := 3;
       HFilter := 4;
     end;
+
     if e.IsRes then
     begin
       BuildFilter(flt, [FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);
@@ -2359,6 +2565,17 @@ begin
       CppFilter := 2;
       HFilter := 2;
     end;
+    {$IFDEF WX_BUILD}
+    if boolIsForm then
+    begin
+      BuildFilter(flt, [FLT_WXFORMS]);
+      dext := RC_EXT;
+      CFilter := 2;
+      CppFilter := 2;
+      HFilter := 2;
+    end;
+    {$ENDIF}
+    
   end
   else
   begin
@@ -2461,7 +2678,7 @@ begin
   //Just Generate XPM's while saving the file
   if e.isForm then
         GenerateXPM(e.GetDesigner,e.FileName);
-  {$ENDIF}  
+  {$ENDIF}
 
   if (not e.new) and e.Modified then
   begin // not new but in project (relative path in e.filename)
@@ -2821,6 +3038,131 @@ begin
   e := GetEditor;
   if assigned(e) then
     e.InsertString(dmMain.CodeInserts[(Sender as TMenuItem).Tag].Line, TRUE);
+end;
+
+procedure TMainForm.SurroundString(e: TEditor;strStart,strEnd:String);
+var
+  I: Integer;
+    startXY,endXY:TPoint;
+    strLstToPaste:TStringList;
+begin
+    if assigned(e) = false then
+        exit;
+
+    strLstToPaste:=TStringList.Create;
+    try
+        strLstToPaste.Add(strStart);
+        if e.Text.SelAvail then
+        begin
+            startXY:=e.Text.BlockBegin;
+            endXY:=e.Text.BlockEnd;
+            for I := startXY.Y-1 to endXY.Y-1 do    // Iterate
+            begin
+                strLstToPaste.Add(e.Text.Lines[i])
+            end;
+
+            for I := endXY.Y-1 downto startXY.Y-1 do    // Iterate
+            begin
+                //e.Text.insert
+                e.Text.Lines.Delete(I);
+            end;
+
+                // for
+        end
+        else
+        begin
+            startXY.Y:=e.Text.CaretYPix;
+        end;
+        strLstToPaste.Add(strEnd);
+
+        for I := strLstToPaste.Count-1 downto 0 do    // Iterate
+        begin
+            e.Text.Lines.Insert(startXY.Y-1,strLstToPaste[i]);
+            e.Modified:=true;
+        end;
+
+    finally
+        strLstToPaste.Destroy;
+    end;
+
+end;
+
+procedure TMainForm.CppCommentString(e: TEditor);
+var
+  I: Integer;
+    startXY,endXY,st:TPoint;
+    strLstToPaste:TStringList;
+    strLine:string;
+begin
+    if assigned(e) = false then
+        exit;
+    if e.Text.SelAvail then
+    begin
+        startXY:=e.Text.BlockBegin;
+        endXY:=e.Text.BlockEnd;
+        for I := startXY.Y-1 to endXY.Y-1 do    // Iterate
+        begin
+            e.Text.Lines[i]:='// '+e.Text.Lines[i] ;
+            e.Modified:=true;
+//            e.Text.UndoList.AddChange(crPaste, st, Point(st.X, st.Y ), '', smNormal);
+//            e.Text.Lines.Delete(i);
+//            e.Text.UndoList.AddChange(crDelete, st, Point(st.X, st.Y ), '', smNormal);
+//            e.Text.Lines.Insert(i,strLine);
+//            e.Text.UndoList.AddChange(crPaste, st, Point(st.X, st.Y +1), '', smNormal);
+        end;
+    end
+end;
+
+procedure TMainForm.SurroundWithClick(Sender: TObject);
+var
+  e: TEditor;
+begin
+  e := GetEditor;
+  if assigned(e) = false then
+    exit;
+
+        case TMenuItem(Sender).Tag of    //
+          INT_BRACES:
+                SurroundString(e,'{','}');
+
+          INT_TRY_CATCH:
+                SurroundString(e,'try{','}catch() {}');
+
+          INT_TRY_FINALLY:
+                SurroundString(e,'try{','}finally { }');
+
+          INT_TRY_CATCH_FINALLY:
+                SurroundString(e,'try{','}catch() { } finally{ }');
+
+          INT_C_COMMENT:
+                SurroundString(e,'/*','*/');
+
+          INT_FOR:
+                SurroundString(e,'for(){','}');
+
+          INT_FOR_I:
+                SurroundString(e,'for(int i=;i<;i++){','}');
+
+          INT_WHILE:
+                SurroundString(e,'while(){','}');
+
+          INT_DO_WHILE:
+                SurroundString(e,'do{','}while();');
+
+          INT_IF:
+                SurroundString(e,'if(){','}');
+
+          INT_IF_ELSE:
+                SurroundString(e,'if(){','} else { }');
+
+          INT_SWITCH:
+                SurroundString(e,'switch() { case 0:','}');
+
+          INT_CPP_COMMENT:
+                CppCommentString(e);
+
+        end;    // case
+
 end;
 
 procedure TMainForm.ToolItemClick(Sender: TObject);
@@ -3201,6 +3543,8 @@ begin
     if (Node.Level >= 1) then
     begin
       i := integer(Node.Data);
+      if OpenWithAssignedProgram(fProject.Units[i].FileName) = true then
+        Exit;
       idx := FileIsOpen(fProject.Units[i].FileName, TRUE);
       
       if isFileOpenedinEditor(fProject.Units[i].FileName) then
@@ -4636,6 +4980,8 @@ var
   Col, Line: integer;
   tFile: string;
   e: TEditor;
+  intTmpPos  ,delimPos : integer;
+  strCol:string;
 begin
   // do nothing if no item selected, or no line/unit specified
   if not assigned(CompilerOutput.Selected) or
@@ -4647,9 +4993,27 @@ begin
   if Line = -1 then
     Exit;
 
-  tfile := CompilerOutput.Selected.SubItems[0];
+  tfile := trim(CompilerOutput.Selected.SubItems[0]);
+  if fileExists(tfile) = false then
+  begin
+    if strContains(' from ',tfile) then
+    begin
+        intTmpPos := pos(' from ',tfile);
+        tfile := trim(copy(tfile,0,intTmpPos)) ;
+    end;
+        if copy(tfile,length(tfile),1) = ',' then
+            tfile := trim(copy(tfile,0,length(tfile)-1));
+        delimPos := LastDelimiter(':',tfile);
+        if delimPos <> 2 then
+        begin
+            strCol:=copy(tfile,delimPos+1,length(tfile));
+            if isNumeric(strCol) then
+                Line:=strToInt(strCol);
+            tfile := trim(copy(tfile,0,delimPos-1));
+        end;
 
-  //trim(tfile);
+  end;
+
 
   e := GetEditorFromFileName(tfile);
 
@@ -6840,6 +7204,33 @@ begin
   end;
 end;
 
+function TMainForm.OpenWithAssignedProgram(strFileName:String):boolean;
+var
+  idx, idx2, idx3: integer;
+begin
+  Result:=false;
+  
+  if not Assigned(fProject) then
+    Exit;
+  if not assigned(ProjectView.Selected) or
+    (ProjectView.Selected.Level < 1) then exit;
+  if ProjectView.Selected.Data = Pointer(-1) then
+    Exit;
+  idx2 := integer(ProjectView.Selected.Data);
+  idx3:=devExternalPrograms.AssignedProgram(ExtractFileExt(fProject.Units[idx2].FileName));
+  if idx3 = -1 then
+  begin
+    exit;
+  end;
+    ShellExecute(0, 'open',
+      PChar(devExternalPrograms.ProgramName[idx3]),
+      PChar(fProject.Units[idx2].FileName),
+      PChar(ExtractFilePath(fProject.Units[idx2].FileName)),
+      SW_SHOW);
+
+    Result:=true;
+
+end;
 procedure TMainForm.mnuOpenWithClick(Sender: TObject);
 var
   idx, idx2, idx3: integer;
@@ -7521,11 +7912,9 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.ReadClass;
 begin
-  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxCheckBox,
-    TWxRadioButton, TWxComboBox, TWxGauge, TWxListBox, TWXListCtrl, TWXMemo,
-      TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
-  RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine,
-    TWxOpenFileDialog, TWxSaveFileDialog]);
+  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,TWxCheckBox,
+    TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWXMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
+  RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine]);
 end;
 {$ENDIF}
 
@@ -7558,7 +7947,7 @@ begin
       'TWxBoxSizer;TWxStaticBoxSizer;TWxGridSizer;TWxFlexGridSizer;');
 
     WriteString('Palette', 'Controls',
-      'TWxStaticText;TWxButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;TWxslider;TWxStaticLine;TWxStaticBitmap;');
+      'TWxStaticText;TWxButton;TWxBitmapButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGrid;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;TWxslider;TWxStaticLine;TWxStaticBitmap;');
 //    WriteString('Palette', 'Dialogs',
 //      'TWxOpenFileDialog;TWxSaveFileDialog;TWxColourDialog;TWxDirDialog;TWxFindReplaceFileDialog;TWxSingleChoiceDialog;TWxTextEntryDialog;TWxFontDialog;TWxPageSetupDialog;TWxPrintDialog;TWxMessageDialog;');
     //WriteString('Palette', 'Standard' ,'TWxStaticText;TWxButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListView;TWxTreeview;TWxGauge;TWxScrollBar;TWxSpinButton;');
@@ -7609,9 +7998,6 @@ begin
     //Show all controls
     Palettes.Items.Add('All');
 
-    if Palettes.Items.Count > 0 then
-      Palettes.ItemIndex := 0;
-
     for I := 0 to PaletteList.Count - 1 do
     begin
       PalettePage := PaletteList.Names[I];
@@ -7620,6 +8006,12 @@ begin
         CreatePalettePage(PaletteList,PalettePage);
         Break;
       end;
+    end;
+
+    if Palettes.Items.Count > 0 then
+    begin
+      Palettes.ItemIndex := Palettes.Items.Count-1;
+      self.PalettesChange(Palettes);
     end;
 
     lbxControls.ItemIndex := 0;
@@ -8019,7 +8411,7 @@ begin
   SplitterRight.Enabled:=true;
   SplitterRight.Visible:=true;
   //PageControl.PopupMenu:=nil;
-  
+
 end;
 {$ENDIF}
 
@@ -8173,8 +8565,7 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
-procedure TMainForm.JvInspPropertiesAfterItemCreate(Sender: TObject;
-  Item: TJvCustomInspectorItem);
+procedure TMainForm.JvInspPropertiesAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
 var
   I: Integer;
   StrCompName, StrCompCaption: string;
@@ -8183,16 +8574,17 @@ var
   strTemp: string;
   wxcompInterface: IWxComponentInterface;
 begin
+  
   boolOk := false;
   if SelectedComponent  = nil then
   begin
-    boolOk := False;
+    //boolOk := False;
     Exit;
   end;
 
   if not Assigned(Item) then
   begin
-    boolOk := False;
+    //boolOk := False;
     Exit;
   end;
 
@@ -8201,8 +8593,7 @@ begin
     if IsValidClass(SelectedComponent) then
     begin
       strTemp := SelectedComponent.ClassName;
-      if SelectedComponent.GetInterface(IID_IWxComponentInterface,
-        wxcompInterface) then
+      if SelectedComponent.GetInterface(IID_IWxComponentInterface,wxcompInterface) then
         strLst := wxcompInterface.GetPropertyList
       else
         strLst := nil;
@@ -8278,6 +8669,29 @@ var
 begin
   if JvInspProperties.Selected <> nil then
   begin
+
+    if assigned(JvInspProperties.Selected.Data) then
+    begin
+        strValue:=JvInspProperties.Selected.Data.TypeInfo.Name ;
+        if UpperCase(strValue) = UpperCase('TPicture') then
+        begin
+                e := GetEditor(PageControl.ActivePageIndex);
+                strValue:=TJvInspectorPropData(JvInspProperties.Selected.Data).Instance.ClassName;
+                if Assigned(e) then
+                begin
+                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm') then
+                        GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap,e.GetDesigner.Wx_Name,e.FileName);
+
+                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TStaticBitmap') then
+                        GenerateXPMDirectly(TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Picture.Bitmap,SelectedComponent.Name,e.FileName);
+
+                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton') then
+                        GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);
+
+                end;
+        end;
+    end;
+
     if UpperCase(Trim(JvInspProperties.Selected.DisplayName)) = UpperCase('NAME') then
     begin
         if not ClassBrowser1.Enabled then
@@ -8288,6 +8702,7 @@ begin
             Exit;
         end;
 
+
       comp := Self.SelectedComponent;
       idxName := cbxControlsx.Items.IndexOfObject(comp);
       if idxName <> -1 then
@@ -8296,17 +8711,20 @@ begin
         begin
           if comp.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
           begin
-            cbxControlsx.Items[idxName] := TfrmNewForm(comp).Wx_Name + ':' +
-              wxcompInterface.GetWxClassName;
+
+            if AnsiSameText('ID_'+PreviousComponentName,wxcompInterface.GetIDName()) then
+            begin
+                wxcompInterface.SetIDName(UpperCase('ID_'+comp.Name));
+            end;
+
+            cbxControlsx.Items[idxName] := TfrmNewForm(comp).Wx_Name + ':' + wxcompInterface.GetWxClassName;
             cbxControlsx.ItemIndex := idxName;
             //Update the ClassName using PreviousStringValue
             e := GetEditor(PageControl.ActivePageIndex);
             if Assigned(e) then
             begin
-              ReplaceClassNameInEditorFile(ChangeFileExt(e.FileName, CPP_EXT),
-                PreviousStringValue, TfrmNewForm(comp).Wx_Name);
-              ReplaceClassNameInEditorFile(ChangeFileExt(e.FileName, H_EXT),
-                PreviousStringValue, TfrmNewForm(comp).Wx_Name);
+              ReplaceClassNameInEditorFile(ChangeFileExt(e.FileName, CPP_EXT), PreviousStringValue, TfrmNewForm(comp).Wx_Name);
+              ReplaceClassNameInEditorFile(ChangeFileExt(e.FileName, H_EXT),PreviousStringValue, TfrmNewForm(comp).Wx_Name);
             end;
           end
           else
@@ -8318,8 +8736,11 @@ begin
         begin
           if comp.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
           begin
-            cbxControlsx.Items[idxName] := comp.Name + ':' +
-              wxcompInterface.GetWxClassName;
+            if AnsiSameText('ID_'+PreviousComponentName,wxcompInterface.GetIDName()) then
+            begin
+                wxcompInterface.SetIDName(UpperCase('ID_'+comp.Name));
+            end;
+            cbxControlsx.Items[idxName] := comp.Name + ':' + wxcompInterface.GetWxClassName;
             cbxControlsx.ItemIndex := idxName;
           end;
         end;
@@ -8444,7 +8865,7 @@ procedure TMainForm.JvInspEventsDataValueChanged(Sender: TObject;
 var
   str: string;
   strDisplayName: string;
-  e, srcEditor: TEditor;
+  e: TEditor;
   boolIsFilesDirty: Boolean;
   componentInstance:TComponent;
   propertName:string;
@@ -8673,9 +9094,6 @@ end;
 var
   intFunctionCounter:Integer;
   strOldFunctionName:string;
-  pID: integer;
-  fName: string;
-  CppFname: string;
   I: integer;
   Line: integer;
   AddScopeStr: boolean;
@@ -8683,10 +9101,8 @@ var
   VarName: string;
   VarType: string;
   VarArguments: string;
-  VarScope: TStatementClassScope;
-  St, St2: PStatement;
+  St: PStatement;
   ClsName, strEName: string;
-  wa: boolean;
   boolFound: Boolean;
   intfObj: IWxComponentInterface;
   e: TEditor;
@@ -8823,7 +9239,7 @@ end;
 function TMainForm.GetFunctionsFromSource(classname: string; var strLstFuncs:
   TStringList): Boolean;
 var
-  Statement: PStatement;
+  //Statement: PStatement;
   i, intColon: Integer;
   strParserFunctionName, strParserClassName: string;
 
@@ -9054,8 +9470,11 @@ begin
     begin
       PreviousStringValue := NewItem.Data.AsString;
     end;
+      if AnsiSameText(NewItem.DisplayName, 'name') then
+            PreviousComponentName:=NewItem.Data.AsString
   except
   end;
+
 end;
 {$ENDIF}
 
@@ -9447,6 +9866,17 @@ begin
 end;
 {$ENDIF}
 
+procedure TMainForm.OnPropertyItemSelected(Sender: TObject);
+begin
+    if assigned(SelectedComponent) then
+    begin
+        if SelectedComponent is TFrmNewForm then
+            PreviousComponentName:=TFrmNewForm(SelectedComponent).Wx_Name
+        else
+            PreviousComponentName:=SelectedComponent.Name;
+    end;
+end;
+
 initialization
 {$IFDEF WX_BUILD}
 //    TJvInspectorAlignItem.RegisterAsDefaultItem;
@@ -9455,9 +9885,10 @@ initialization
 //    TJvInspectorTImageIndexItem.RegisterAsDefaultItem;
 //    TJvInspectorListItemsItem.RegisterAsDefaultItem;
 //    TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
-    TJvInspectorIconItem.RegisterAsDefaultItem;
+    TJvInspectorMyFontItem.RegisterAsDefaultItem;
     TJvInspectorBitmapItem.RegisterAsDefaultItem;
     TJvInspectorListColumnsItem.RegisterAsDefaultItem;
+    TJvInspectorColorEditItem.RegisterAsDefaultItem;
 {$ENDIF}
 
 finalization

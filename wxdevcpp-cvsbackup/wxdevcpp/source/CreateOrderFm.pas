@@ -70,7 +70,6 @@ begin
         MessageDlg('Please select a control to change creation order.', mtError, [mbOK], 0);
         exit;
     end;
-    SelectionObj:=nil;
     SelectionObj:=ControlListBox.Items.Objects[ControlListBox.ItemIndex];
     ChangeControlZOrder(ControlListBox.Items.Objects[ControlListBox.ItemIndex],false);
     PopulateControlList;
@@ -88,7 +87,6 @@ begin
         exit;
     end;
 
-    SelectionObj:=nil;
     SelectionObj:=ControlListBox.Items.Objects[ControlListBox.ItemIndex];
 
     ChangeControlZOrder(ControlListBox.Items.Objects[ControlListBox.ItemIndex],true);

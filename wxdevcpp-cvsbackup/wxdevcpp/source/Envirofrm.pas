@@ -97,6 +97,7 @@ type
     btnBrwLang: TSpeedButton;
     btnBrwSplash: TSpeedButton;
     btnCVSExecBrws: TSpeedButton;
+    cbSingleInstance: TCheckBox;
     procedure BrowseClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -201,6 +202,7 @@ begin
   with devData do
   begin
     rgbAutoOpen.ItemIndex := AutoOpen;
+    cbSingleInstance.Checked := SingleInstance;
     cbDefCpp.Checked := defCpp;
     cbShowBars.Checked := ShowBars;
     cbBackups.Checked := BackUps;
@@ -278,6 +280,7 @@ begin
 
   with devData do
   begin
+    SingleInstance := cbSingleInstance.Checked;
     DefCpp := cbDefCpp.Checked;
     ShowBars := cbShowBars.Checked;
     ShowMenu := cbShowMenu.Checked;

@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=wxDev-cpp
-AppVerName=wxDev-cpp
+AppVerName=wxDev-cpp 6.3 beta
 AppPublisher=Guru Kathiresam
 AppPublisherURL=http://www.grewordlist.com
 AppSupportURL=http://www.grewordlist.com
@@ -24,7 +24,7 @@ OutputBaseFilename=wxdevcpp-full-setup
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: C:\dev-cpp\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
+Source: D:\dev-cpp\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -33,4 +33,4 @@ Name: {group}\{cm:UninstallProgram,wxDev-cpp}; Filename: {uninstallexe}; Working
 Name: {userdesktop}\wxDev-cpp; Filename: {app}\devcpp.exe; Tasks: desktopicon; WorkingDir: {app}
 
 [Run]
-Filename: {app}\devcpp.exe; Description: {cm:LaunchProgram,wxDev-cpp}; Flags: nowait postinstall skipifsilent
+Filename: {app}\devcpp.exe; Description: {cm:LaunchProgram,wxDev-cpp}; Flags: nowait postinstall skipifsilent; WorkingDir: {app}

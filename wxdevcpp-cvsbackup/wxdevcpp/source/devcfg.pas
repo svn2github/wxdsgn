@@ -460,6 +460,7 @@ type
     fFullScr: boolean; // IDE is Full screen
     fShowBars: boolean; // Show toolbars in FullScreen mode
     fShowMenu: boolean; // Show Main Menu in Full Screen Mode
+    fSingleInstance: boolean; // Allow the IDE to be in single instance
     fDefCpp: boolean; // Default to C++ project (compile with g++)
     fFirst: boolean; // first run of dev-c
     fSplash: string; // user selected splash screen
@@ -552,6 +553,7 @@ type
     property ShowMenu: boolean read fShowMenu write fShowMenu;
 
     //Running Status Options
+    property SingleInstance: boolean read fSingleInstance write fSingleInstance;
     property DefCpp: boolean read fDefCpp write fDefCpp;
     property ShowOutput: boolean read fOutput write fOutput;
     property OutputOnNeed: boolean read fOutputOnNeed write fOutputOnNeed;
@@ -862,6 +864,7 @@ begin
   fOutputOnNeed := true;
   fOutputHeight := 120;
   fStatusbar := TRUE;
+  fSingleInstance := TRUE;
   fShowBars := FALSE;
   fShowMenu := TRUE;
   fDefCpp := TRUE;

@@ -473,7 +473,7 @@ end;
 function TCodeCompletion.GetTypeID(_Value: string; il: TIntList): integer;
 var
   I: integer;
-  strVal:String;
+  //strVal:String;
 begin
   Result := -1;
   if (_Value <> '') and (_Value[Length(_Value)] = '>') then // template

@@ -69,10 +69,12 @@ SaveControlOrientation=Method
 SetIDName=Method
 SetIDValue=Method
 SetWxClassName=Method
+Wx_BGColor=Property
 Wx_Border=Property
 Wx_Class=Property
 Wx_ControlOrientation=Property
 Wx_Enabled=Property
+Wx_FGColor=Property
 Wx_GeneralStyle=Property
 Wx_HelpText=Property
 Wx_Hidden=Property
@@ -83,6 +85,11 @@ Wx_SliderStyle=Property
 Wx_StrechFactor=Property
 Wx_ToolTip=Property
 Wx_VerticalAlignment=Property
+Wx_ProxyBGColorString=Property
+Wx_ProxyFGColorString=Property
+Wx_StretchFactor=Property
+GetStretchFactor:integer;=Method
+SetStretchFactor=Method
 [GLOBAL$]
 Descr=
 DefaultCode=1
@@ -119,7 +126,7 @@ Ov=1
 Mode=2
 WinMessage=
 [CreateCODE$]
-Lines=74
+Lines=76
 L1=begin
 L2=~~~~~{ Call the Create method of the parent class }
 L3=~~~~~inherited Create(AOwner);
@@ -151,49 +158,51 @@ L28=~~~~~FWx_PropertyList.add('Top : Top');
 L29=~~~~~FWx_PropertyList.add('Width : Width');
 L30=~~~~~FWx_PropertyList.add('Height:Height');
 L31=
-L32=~~~~~FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
-L33=~~~~~FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-L34=~~~~~FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-L35=~~~~~FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-L36=~~~~~FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-L37=~~~~~FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-L38=~~~~~FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-L39=~~~~~FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
-L40=~~~~~FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-L41=~~~~~FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-L42=~~~~~FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-L43=~~~~~FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-L44=~~~~~FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-L45=~~~~~FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-L46=
-L47=~~~~~FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
-L48=~~~~~FWx_PropertyList.Add('wxSL_AUTOTICKS:wxSL_AUTOTICKS');
-L49=~~~~~FWx_PropertyList.Add('wxSL_LABELS:wxSL_LABELS');
-L50=~~~~~FWx_PropertyList.Add('wxSL_LEFT:wxSL_LEFT');
-L51=~~~~~FWx_PropertyList.Add('wxSL_RIGHT:wxSL_RIGHT');
-L52=~~~~~FWx_PropertyList.Add('wxSL_TOP:wxSL_TOP');
-L53=~~~~~FWx_PropertyList.Add('wxSL_SELRANGE:wxSL_SELRANGE');
-L54=
-L55=~~~~~FWx_PropertyList.add('Font : Font');
-L56=~~~~~FWx_PropertyList.add('Color : Color ');
+L32=~~~~~FWx_PropertyList.add('Wx_BGColor:Background Color');
+L33=~~~~~FWx_PropertyList.add('Wx_FGColor:Foreground Color');
+L34=
+L35=~~~~~FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
+L36=~~~~~FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+L37=~~~~~FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
+L38=~~~~~FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
+L39=~~~~~FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
+L40=~~~~~FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
+L41=~~~~~FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
+L42=~~~~~FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
+L43=~~~~~FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
+L44=~~~~~FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+L45=~~~~~FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
+L46=~~~~~FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
+L47=~~~~~FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
+L48=~~~~~FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+L49=
+L50=~~~~~FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
+L51=~~~~~FWx_PropertyList.Add('wxSL_AUTOTICKS:wxSL_AUTOTICKS');
+L52=~~~~~FWx_PropertyList.Add('wxSL_LABELS:wxSL_LABELS');
+L53=~~~~~FWx_PropertyList.Add('wxSL_LEFT:wxSL_LEFT');
+L54=~~~~~FWx_PropertyList.Add('wxSL_RIGHT:wxSL_RIGHT');
+L55=~~~~~FWx_PropertyList.Add('wxSL_TOP:wxSL_TOP');
+L56=~~~~~FWx_PropertyList.Add('wxSL_SELRANGE:wxSL_SELRANGE');
 L57=
-L58=~~~~~FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-L59=~~~~~FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-L60=
-L61=
-L62=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL:OnScroll ');
-L63=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_TOP:OnScrollTop ');
-L64=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_BOTTOM:OnBottom ');
-L65=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_LINEUP:OnLineUp ');
-L66=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_LINEDOWN:OnLineDown ');
-L67=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_PAGEUP:OnPageUp ');
-L68=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_PAGEDOWN:OnPageDown ');
-L69=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_THUMBTRACK:OnThumbtrack ');
-L70=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_THUMBRELEASE:OnThumbRelease ');
-L71=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_ENDSCROLL:OnEndScroll ');
-L72=~~~~FWx_EventList.add('EVT_UPDATE_UI:OnUpdate ');
-L73=
-L74=end;
+L58=~~~~~FWx_PropertyList.add('Font : Font');
+L59=
+L60=~~~~~FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
+L61=~~~~~FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
+L62=
+L63=
+L64=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL:OnScroll ');
+L65=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_TOP:OnScrollTop ');
+L66=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_BOTTOM:OnBottom ');
+L67=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_LINEUP:OnLineUp ');
+L68=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_LINEDOWN:OnLineDown ');
+L69=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_PAGEUP:OnPageUp ');
+L70=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_PAGEDOWN:OnPageDown ');
+L71=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_THUMBTRACK:OnThumbtrack ');
+L72=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_THUMBRELEASE:OnThumbRelease ');
+L73=~~~~FWx_EventList.add('EVT_COMMAND_SCROLL_ENDSCROLL:OnEndScroll ');
+L74=~~~~FWx_EventList.add('EVT_UPDATE_UI:OnUpdate ');
+L75=
+L76=end;
 [CreateHELP$]
 Lines=0
 [Destroy]
@@ -1124,6 +1133,29 @@ L7=~~~~~wx_Class:=wxClassName;
 L8=end;
 [SetWxClassNameHELP$]
 Lines=0
+[Wx_BGColor]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TColor
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_BGColorCODE$]
+Lines=0
+[Wx_BGColorHELP$]
+Lines=0
 [Wx_Border]
 Descr=
 DefaultCode=6
@@ -1215,6 +1247,29 @@ Link=
 [Wx_EnabledCODE$]
 Lines=0
 [Wx_EnabledHELP$]
+Lines=0
+[Wx_FGColor]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TColor
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_FGColorCODE$]
+Lines=0
+[Wx_FGColorHELP$]
 Lines=0
 [Wx_GeneralStyle]
 Descr=
@@ -1445,4 +1500,101 @@ Link=
 [Wx_VerticalAlignmentCODE$]
 Lines=0
 [Wx_VerticalAlignmentHELP$]
+Lines=0
+[Wx_ProxyBGColorString]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TWxColorString
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_ProxyBGColorStringCODE$]
+Lines=0
+[Wx_ProxyBGColorStringHELP$]
+Lines=0
+[Wx_ProxyFGColorString]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TWxColorString
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_ProxyFGColorStringCODE$]
+Lines=0
+[Wx_ProxyFGColorStringHELP$]
+Lines=0
+[Wx_StretchFactor]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=Integer
+PropDefault=0
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_StretchFactorCODE$]
+Lines=0
+[Wx_StretchFactorHELP$]
+Lines=0
+[GetStretchFactor:integer;]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetStretchFactor:integer;
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetStretchFactor:integer;CODE$]
+Lines=0
+[GetStretchFactor:integer;HELP$]
+Lines=0
+[SetStretchFactor]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=0
+Header=SetStretchFactor(intValue:Integer);
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[SetStretchFactorCODE$]
+Lines=0
+[SetStretchFactorHELP$]
 Lines=0

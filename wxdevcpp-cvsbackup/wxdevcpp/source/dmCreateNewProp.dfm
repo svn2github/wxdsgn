@@ -4,7 +4,7 @@ object frmCreateFormProp: TfrmCreateFormProp
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
   Caption = 'Create new Dialog'
-  ClientHeight = 247
+  ClientHeight = 240
   ClientWidth = 430
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -44,13 +44,6 @@ object frmCreateFormProp: TfrmCreateFormProp
     Height = 13
     Caption = 'Title'
   end
-  object Label6: TLabel
-    Left = 16
-    Top = 115
-    Width = 60
-    Height = 13
-    Caption = 'Default Style'
-  end
   object Bevel1: TBevel
     Left = 16
     Top = 192
@@ -67,10 +60,17 @@ object frmCreateFormProp: TfrmCreateFormProp
   end
   object Label8: TLabel
     Left = 16
-    Top = 171
+    Top = 115
     Width = 31
     Height = 13
     Caption = 'Author'
+  end
+  object Label6: TLabel
+    Left = 16
+    Top = 147
+    Width = 60
+    Height = 13
+    Caption = 'Default Style'
   end
   object txtSaveTo: TEdit
     Left = 96
@@ -110,107 +110,107 @@ object frmCreateFormProp: TfrmCreateFormProp
     Height = 21
     TabOrder = 4
   end
-  object cbUseCaption: TCheckBox
+  object btCancel: TButton
+    Left = 344
+    Top = 208
+    Width = 75
+    Height = 25
+    Caption = 'Cancel'
+    TabOrder = 7
+    OnClick = btCancelClick
+  end
+  object btCreate: TButton
+    Left = 16
+    Top = 208
+    Width = 75
+    Height = 25
+    Caption = 'Create'
+    Default = True
+    TabOrder = 6
+    OnClick = btCreateClick
+  end
+  object txtAuthorName: TEdit
     Left = 96
     Top = 112
+    Width = 321
+    Height = 21
+    TabOrder = 5
+  end
+  object cbUseCaption: TCheckBox
+    Left = 96
+    Top = 144
     Width = 89
     Height = 17
     Caption = 'Use Caption'
     Checked = True
     State = cbChecked
-    TabOrder = 5
+    TabOrder = 8
   end
   object cbResizeBorder: TCheckBox
     Left = 192
-    Top = 112
+    Top = 144
     Width = 89
     Height = 17
     Caption = 'Resize Border'
-    TabOrder = 6
+    TabOrder = 9
   end
   object cbSystemMenu: TCheckBox
     Left = 288
-    Top = 112
+    Top = 144
     Width = 89
     Height = 17
     Caption = 'System Menu'
     Checked = True
     State = cbChecked
-    TabOrder = 7
+    TabOrder = 10
   end
   object cbThickBorder: TCheckBox
     Left = 96
-    Top = 128
+    Top = 160
     Width = 89
     Height = 17
     Caption = 'Thick Border'
-    TabOrder = 8
+    TabOrder = 11
   end
   object cbStayOnTop: TCheckBox
     Left = 192
-    Top = 128
+    Top = 160
     Width = 89
     Height = 17
     Caption = 'Stay On Top'
-    TabOrder = 9
+    TabOrder = 12
   end
   object cbNoParent: TCheckBox
     Left = 288
-    Top = 128
+    Top = 160
     Width = 89
     Height = 17
     Caption = 'No Parent'
     Checked = True
     State = cbChecked
-    TabOrder = 10
-  end
-  object btCancel: TButton
-    Left = 344
-    Top = 216
-    Width = 75
-    Height = 25
-    Caption = 'Cancel'
-    TabOrder = 15
-    OnClick = btCancelClick
-  end
-  object btCreate: TButton
-    Left = 16
-    Top = 216
-    Width = 75
-    Height = 25
-    Caption = 'Create'
-    Default = True
-    TabOrder = 14
-    OnClick = btCreateClick
-  end
-  object txtAuthorName: TEdit
-    Left = 96
-    Top = 168
-    Width = 321
-    Height = 21
     TabOrder = 13
   end
   object cbMinButton: TCheckBox
     Left = 96
-    Top = 144
+    Top = 176
     Width = 89
     Height = 17
     Caption = 'Min Button'
     Checked = True
     State = cbChecked
-    TabOrder = 11
+    TabOrder = 14
   end
   object cbMaxButton: TCheckBox
     Left = 192
-    Top = 144
+    Top = 176
     Width = 89
     Height = 17
     Caption = 'Max Button'
-    TabOrder = 12
+    TabOrder = 15
   end
   object cbCloseButton: TCheckBox
     Left = 288
-    Top = 144
+    Top = 176
     Width = 89
     Height = 17
     Caption = 'Close Button'
@@ -228,7 +228,7 @@ object frmCreateFormProp: TfrmCreateFormProp
       'txtTitle.Text')
     StoredValues = <>
     Left = 232
-    Top = 200
+    Top = 144
   end
   object JvAppRegistryStorage1: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -236,10 +236,10 @@ object frmCreateFormProp: TfrmCreateFormProp
     Root = 'Software\dlgHelper'
     SubStorages = <>
     Left = 136
-    Top = 192
+    Top = 136
   end
   object JvBrwrFldrDlg: TJvSelectDirectory
     Left = 280
-    Top = 160
+    Top = 104
   end
 end

@@ -14,6 +14,10 @@ class newProgramApp:public wxApp
 {
 public:
 	bool OnInit();
+	bool OnExceptionInMainLoop();
+	int OnExit();
+	void OnUnhandledException();
+	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
 };
 
  

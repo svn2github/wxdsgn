@@ -52,7 +52,8 @@ type
         FWx_IDValue : Boolean;
         { Storage for property Wx_PropertyList }
         FWx_PropertyList : TStringList;
-        { Storage for property Wx_ToolTip }
+        FInvisibleBGColorString : String;
+        FInvisibleFGColorString : String;        { Storage for property Wx_ToolTip }
         FWx_ToolTip : Boolean;
         { Storage for property Wx_VerticalAlignment }
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
@@ -64,6 +65,9 @@ type
         procedure AutoDestroy;
         { Write method for property Wx_PropertyList }
         procedure SetWx_PropertyList(Value : TStringList);
+	
+	procedure SetProxyFGColorString(value:String);
+	procedure SetProxyBGColorString(value:String);
 
     protected
       { Protected fields of TWxSpinCtrl }
@@ -74,7 +78,8 @@ type
 
     public
       { Public fields and properties of TWxSpinCtrl }
-
+       defaultBGColor:TColor;	
+       defaultFGColor:TColor;
       { Public methods of TWxSpinCtrl }
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
@@ -111,6 +116,8 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
              read FWx_VerticalAlignment write FWx_VerticalAlignment
              default wxSZALIGN_CENTER_VERTICAL;
+        property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
+        property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
 
   end;
 
@@ -132,6 +139,10 @@ begin
      FWx_IDValue := -1;
      FWx_PropertyList := TStringList.Create;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+     FWx_ProxyBGColorString := TColorString.Create;
+     FWx_ProxyFGColorString := TColorString.Create;
+     defaultBGColor:=self.color;
+     defaultFGColor:=self.font.color;
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -194,11 +205,6 @@ begin
 end;
 
 function TWxSpinCtrl.GetEventList:TStringlist;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
 
 end;
@@ -212,5 +218,16 @@ begin
 
 end;
 
+procedure TWxSpinCtrl.SetProxyFGColorString(value:String);
+begin
+    FInvisibleFGColorString:=value;
+    self.Color:=GetColorFromString(value);
+end;
+
+procedure TWxSpinCtrl.SetProxyBGColorString(value:String);
+begin
+   FInvisibleBGColorString:=value;
+   self.Font.Color:=GetColorFromString(value);
+end;
 
 end.

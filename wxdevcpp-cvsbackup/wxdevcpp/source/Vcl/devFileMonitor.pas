@@ -23,7 +23,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Forms, Controls,
-  devMonitorThread, devMonitorTypes;
+  devMonitorThread, devMonitorTypes,dbugIntf;
 
 type
   TdevFileMonitor = class(TWinControl)
@@ -76,6 +76,7 @@ end;
 procedure TdevFileMonitor.Activate;
 begin
   if not Active then begin
+    SendDebug('DevFileMonitor is Active');
     fMonitor := TdevMonitorThread.Create(Self, fFiles);
 //    fMonitor.OnTerminate := MonitorTerminated;
     fMonitor.Resume;
@@ -93,6 +94,7 @@ end;
 procedure TdevFileMonitor.Deactivate;
 begin
   if Assigned(fMonitor) then begin
+    SendDebug('DevFileMonitor deactivated');
     fMonitor.TellToQuit;
     fMonitor.WaitFor;
     fMonitor.Free;
@@ -140,11 +142,18 @@ begin
     Activate
   else if not Value and Active then
     Deactivate;
+  if value then
+    SendDebug('DevFileMonitor Set Active =  true')
+  else
+    SendDebug('DevFileMonitor Set Active  = false');
+    
+
 end;
 
 procedure TdevFileMonitor.SetFiles(const Value: TStrings);
 begin
   fFiles.Assign(Value);
+    SendDebug('DevFileMonitor Set Files = ' +  Value.Text);
 end;
 
 end.

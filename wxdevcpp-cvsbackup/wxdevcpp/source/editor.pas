@@ -755,12 +755,12 @@ end;
 
 procedure TEditor.EditorStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
-var
-    tempvarForDebug:Integer;
+//var
+//    tempvarForDebug:Integer;
 begin
    if assigned(self.fText) = false then
    begin
-    tempvarForDebug:=0; 
+    //tempvarForDebug:=0;
    end;
 
   if scModified in Changes then begin
@@ -1490,7 +1490,7 @@ var s, s1: string;
   	p: TPoint;
 {$ENDIF}
   	I,j: integer;
-    attr:TSynHighlighterAttributes;
+    //attr:TSynHighlighterAttributes;
 begin
   fHintTimer.Enabled := false;
 
