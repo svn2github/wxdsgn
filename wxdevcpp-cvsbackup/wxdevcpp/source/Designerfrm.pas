@@ -34,9 +34,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, Buttons, StdCtrls, DbugIntf,
   WxEdit, WxStaticText, WxButton, wxUtils, WXRadioButton, WXCheckBox,
-    Wxcombobox,
+    Wxcombobox,WxToolButton,WxSeparator,
   WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
-  WxSizerPanel,ComCtrls, SynEdit;
+  WxSizerPanel,ComCtrls, SynEdit, Menus;
 
 type
 
@@ -62,38 +62,57 @@ type
     fsynEdit: TSynEdit;
 
     FEVT_CHAR,
-      FEVT_KEY_UP,
-      FEVT_KEY_DOWN,
-      FEVT_ERASE_BACKGROUND,
-      FEVT_SIZE,
-      FEVT_SET_FOCUS,
-      FEVT_KILL_FOCUS,
-      FEVT_ENTER_WINDOW,
-      FEVT_LEAVE_WINDOW,
-      FEVT_MOTION,
-      FEVT_LEFT_DOWN,
-      FEVT_LEFT_UP,
-      FEVT_RIGHT_DOWN,
-      FEVT_RIGHT_UP,
-      FEVT_MIDDLE_DOWN,
-      FEVT_MIDDLE_UP,
-      FEVT_LEFT_DCLICK,
-      FEVT_RIGHT_DCLICK,
-      FEVT_MIDDLE_DCLICK,
-      FEVT_PAINT,
-      FEVT_INIT_DIALOG,
-      FEVT_SCROLLWIN,
-      FEVT_SCROLLWIN_TOP,
-      FEVT_SCROLLWIN_BOTTOM,
-      FEVT_SCROLLWIN_LINEUP,
-      FEVT_SCROLLWIN_LINEDOWN,
-      FEVT_SCROLLWIN_PAGEUP,
-      FEVT_SCROLLWIN_PAGEDOWN,
-      FEVT_SCROLLWIN_THUMBTRACK,
-      FEVT_SCROLLWIN_THUMBRELEASE,
-      FEVT_SYS_COLOUR_CHANGED,
-      FEVT_UPDATE_UI,
-      FEVT_CLOSE: string;
+    FEVT_KEY_UP,
+    FEVT_KEY_DOWN,
+    FEVT_ERASE_BACKGROUND,
+    FEVT_SIZE,
+    FEVT_SET_FOCUS,
+    FEVT_KILL_FOCUS,
+    FEVT_ENTER_WINDOW,
+    FEVT_LEAVE_WINDOW,
+    FEVT_MOTION,
+    FEVT_LEFT_DOWN,
+    FEVT_LEFT_UP,
+    FEVT_RIGHT_DOWN,
+    FEVT_RIGHT_UP,
+    FEVT_MIDDLE_DOWN,
+    FEVT_MIDDLE_UP,
+    FEVT_LEFT_DCLICK,
+    FEVT_RIGHT_DCLICK,
+    FEVT_MIDDLE_DCLICK,
+    FEVT_PAINT,
+    FEVT_INIT_DIALOG,
+    FEVT_SCROLLWIN,
+    FEVT_SCROLLWIN_TOP,
+    FEVT_SCROLLWIN_BOTTOM,
+    FEVT_SCROLLWIN_LINEUP,
+    FEVT_SCROLLWIN_LINEDOWN,
+    FEVT_SCROLLWIN_PAGEUP,
+    FEVT_SCROLLWIN_PAGEDOWN,
+    FEVT_SCROLLWIN_THUMBTRACK,
+    FEVT_SCROLLWIN_THUMBRELEASE,
+    FEVT_SYS_COLOUR_CHANGED,
+    FEVT_UPDATE_UI,
+    FEVT_CLOSE: string;
+    FEVT_IDLE,
+    FEVT_ACTIVATE,
+    FEVT_ACTIVATE_APP,
+    FEVT_QUERY_END_SESSION,
+    FEVT_END_SESSION,
+    FEVT_DROP_FILES,
+    FEVT_SPLITTER_SASH_POS_CHANGED,
+    FEVT_SPLITTER_UNSPLIT,
+    FEVT_SPLITTER_DCLICK,
+    FEVT_JOY_BUTTON_DOWN,
+    FEVT_JOY_BUTTON_UP,
+    FEVT_JOY_MOVE,
+    FEVT_JOY_ZMOVE,
+    FEVT_MENU_OPEN,
+    FEVT_MENU_CLOSE,
+    FEVT_MENU_HIGHLIGHT_ALL,
+    FEVT_MOUSEWHEEL,
+    FEVT_MOUSE_EVENTS: string;
+
     FWx_Name: string;
     FWx_ICON:TPicture;
     { Storage for property Wx_StretchFactor }
@@ -102,7 +121,10 @@ type
     FWx_ProxyBGColorString : TWxColorString;
     { Storage for property Wx_ProxyFGColorString }
     FWx_ProxyFGColorString : TWxColorString;
-
+    FWxDesignerType:TWxDesignerType;
+    
+    procedure SetDesignerType(value:TWxDesignerType);
+    
   published
     property Wx_ICON: TPicture
       read FWx_ICON write FWx_ICON;
@@ -142,6 +164,9 @@ type
         read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
     property Wx_ProxyFGColorString : TWxColorString
         read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
+
+    property Wx_DesignerType : TWxDesignerType
+        read FWxDesignerType write SetDesignerType default dtWxDialog;
 
     property EVT_CHAR: string
       read FEVT_CHAR write FEVT_CHAR;
@@ -242,7 +267,24 @@ type
     property EVT_CLOSE: string
       read FEVT_CLOSE write FEVT_CLOSE;
 
-
+    property EVT_IDLE :string read FEVT_IDLE write FEVT_IDLE;
+    property EVT_ACTIVATE :string read FEVT_ACTIVATE write FEVT_ACTIVATE;
+    property EVT_ACTIVATE_APP :string read FEVT_ACTIVATE_APP write FEVT_ACTIVATE_APP ;
+    property EVT_QUERY_END_SESSION :string read FEVT_QUERY_END_SESSION write FEVT_QUERY_END_SESSION;
+    property EVT_END_SESSION :string read FEVT_END_SESSION write FEVT_END_SESSION;
+    property EVT_DROP_FILES :string read FEVT_DROP_FILES write FEVT_DROP_FILES;
+    property EVT_SPLITTER_SASH_POS_CHANGED  :string read FEVT_SPLITTER_SASH_POS_CHANGED write FEVT_SPLITTER_SASH_POS_CHANGED;
+    property EVT_SPLITTER_UNSPLIT :string read FEVT_SPLITTER_UNSPLIT write FEVT_SPLITTER_UNSPLIT;
+    property EVT_SPLITTER_DCLICK :string read FEVT_SPLITTER_DCLICK write FEVT_SPLITTER_DCLICK ;
+    property EVT_JOY_BUTTON_DOWN :string read FEVT_JOY_BUTTON_DOWN write FEVT_JOY_BUTTON_DOWN;
+    property EVT_JOY_BUTTON_UP :string read FEVT_JOY_BUTTON_UP write FEVT_JOY_BUTTON_UP;
+    property EVT_JOY_MOVE :string read FEVT_JOY_MOVE write FEVT_JOY_MOVE;
+    property EVT_JOY_ZMOVE :string read FEVT_JOY_ZMOVE write FEVT_JOY_ZMOVE;
+    property EVT_MENU_OPEN :string read FEVT_MENU_OPEN write FEVT_MENU_OPEN;
+    property EVT_MENU_CLOSE :string read FEVT_MENU_CLOSE write FEVT_MENU_CLOSE;
+    property EVT_MENU_HIGHLIGHT_ALL :string read FEVT_MENU_HIGHLIGHT_ALL write FEVT_MENU_HIGHLIGHT_ALL;
+    property EVT_MOUSEWHEEL :string read FEVT_MOUSEWHEEL write FEVT_MOUSEWHEEL;
+    property EVT_MOUSE_EVENTS :string read FEVT_MOUSE_EVENTS write FEVT_MOUSE_EVENTS;
 
   public
     { Public declarations }
@@ -251,6 +293,7 @@ type
     FWx_EventList: TStringList;
     function GenerateControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
+    //function GenerateExtraCodeForFrame:string;
     function GenerateGUIControlCreation: string;
     function GenerateGUIControlDeclaration: string;
     function GenerateHeaderInclude: string;
@@ -274,7 +317,7 @@ type
     procedure SetFGColor(strValue:String);
     function GetBGColor:string;
     procedure SetBGColor(strValue:String);
-            
+
     property synEdit: TSynEdit read fsynEdit write fsynEdit;
     
   end;
@@ -284,7 +327,7 @@ var
 
 procedure GenerateCpp(frmNewForm: TfrmNewForm; strClassName: string; synEdit:TSynEdit;strFileName:String);
 procedure GenerateHpp(frmNewForm: TfrmNewForm; strClassName: string; synEdit:TSynEdit);
-procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName:String);
+procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName:String;onlyForForm:Boolean = false);
 
 implementation
 
@@ -303,6 +346,8 @@ var
   strHdrValue:String;
   strStartStr,strEndStr:String;
   strLst,strlstManualCode : TStringList;
+  CntIntf:IWxContainerAndSizerInterface;
+  strTemp:String;
 
 begin
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation,intBlockStart, intBlockEnd) then
@@ -310,10 +355,15 @@ begin
     //Clear Declaration and Creation Field
     DeleteAllClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd);
 
+//    if frmNewForm.Wx_DesignerType = dtWxFrame then
+//        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateExtraCodeForFrame);
+
+    
     isSizerAvailable:=false;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
-        if frmNewForm.Components[i] is TWxSizerPanel then
+        if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface,CntIntf) then
+        //if frmNewForm.Components[i] is TWxSizerPanel then
         begin
             isSizerAvailable:=true;
             break;
@@ -329,7 +379,7 @@ begin
     begin
         for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
         begin
-            if frmNewForm.Components[i] is TWxSizerPanel then
+            if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface,CntIntf) then
                 continue;
             if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
             begin
@@ -346,6 +396,7 @@ begin
 //                continue;
             if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
             begin
+                strTemp:=wxcompInterface.GenerateGUIControlCreation;
                 AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
             end;
             AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, '');
@@ -357,7 +408,11 @@ begin
     begin
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateGUIControlCreation);
     end;
+
   end;
+
+
+
 
   // Event
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries,intBlockStart, intBlockEnd) then
@@ -379,8 +434,7 @@ begin
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
       wxcompInterface := nil;
-      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-        wxcompInterface) then
+      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
       begin
         strEntry := wxcompInterface.GenerateEventTableEntries(strClassName);
         //SendDebug(strEntry);
@@ -480,8 +534,7 @@ begin
     strLst := TStringList.Create;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
-      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-        wxcompInterface) then
+      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
       begin
         strIDValue := wxcompInterface.GenerateControlIDs;
         if trim(strIDValue) <> '' then
@@ -533,7 +586,7 @@ begin
 end;
 
 
-procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName:String);
+procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName:String;onlyForForm:Boolean);
 var
   I: Integer;
   xpmFileDir:String;
@@ -545,6 +598,9 @@ begin
 
     if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
     begin
+        if onlyForForm then
+            DeleteFile(xpmFileDir+frmNewForm.Wx_Name+'_XPM.xpm');
+            
         if not fileexists(xpmFileDir+frmNewForm.Wx_Name+'_XPM.xpm') then
         begin
             try
@@ -561,13 +617,16 @@ begin
         end;
     end;
 
+    if onlyForForm = true then
+        exit;
+
     for I := 0 to frmNewForm.ComponentCount - 1 do    // Iterate
     begin
         if frmNewForm.Components[I] is TWxStaticBitmap then
         begin
             if TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap.handle = 0 then
                 continue;
-            if not fileexists(xpmFileDir+frmNewForm.Wx_Name+'_XPM.xpm') then
+            if not fileexists(xpmFileDir+frmNewForm.Components[I].Name+'_XPM.xpm') then
             begin
                 try
                     fileStrlst:=TStringList.Create;
@@ -581,6 +640,26 @@ begin
                 fileStrlst.destroy;
             end;
         end;    // for
+
+        if frmNewForm.Components[I] is TWxToolButton then
+        begin
+            if TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap.handle = 0 then
+                continue;
+            if not fileexists(xpmFileDir+frmNewForm.Components[I].Name+'_XPM.xpm') then
+            begin
+                try
+                    fileStrlst:=TStringList.Create;
+                    strXPMContent:=GetXPMFromTPicture(frmNewForm.Components[I].Name,TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
+                    if trim(strXPMContent) = '' then
+                        continue;
+                    fileStrlst.Add(strXPMContent);
+                    fileStrlst.SaveToFile(xpmFileDir+frmNewForm.Components[I].Name+'_XPM.xpm');
+                except
+                end;
+                fileStrlst.destroy;
+            end;
+        end;    // for
+
     end;
 end;
 
@@ -786,6 +865,96 @@ begin
     exit;
   end;
 
+  if EventName = 'EVT_IDLE' then
+  begin
+    Result := 'wxIdleEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_ACTIVATE' then
+  begin
+    Result := 'wxActivateEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_ACTIVATE_APP' then
+  begin
+    Result := 'wxActivateEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_QUERY_END_SESSION' then
+  begin
+    Result := 'wxCloseEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_END_SESSION' then
+  begin
+    Result := 'wxCloseEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_DROP_FILES' then
+  begin
+    Result := 'wxDropFilesEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_SPLITTER_SASH_POS_CHANGED' then
+  begin
+    Result := 'wxSplitterEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_SPLITTER_UNSPLIT' then
+  begin
+    Result := 'wxSplitterEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_SPLITTER_DCLICK' then
+  begin
+    Result := 'wxSplitterEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_JOY_BUTTON_DOWN' then
+  begin
+    Result := 'wxJoystickEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_JOY_BUTTON_UP' then
+  begin
+    Result := 'wxJoystickEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_JOY_MOVE' then
+  begin
+    Result := 'wxJoystickEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_JOY_ZMOVE' then
+  begin
+    Result := 'wxJoystickEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_MENU_OPEN' then
+  begin
+    Result := 'wxMenuEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_MENU_CLOSE' then
+  begin
+    Result := 'wxMenuEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_MENU_HIGHLIGHT_ALL' then
+  begin
+    Result := 'wxMenuEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_MOUSEWHEEL' then
+  begin
+    Result := 'wxMouseEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_MOUSE_EVENTS' then
+  begin
+    Result := 'wxMouseEvent& event';
+    exit;
+  end;
 
   Result := 'void';
 end;
@@ -1054,6 +1223,114 @@ begin
       [CurrClassName, EVT_SYS_COLOUR_CHANGED]) + '';
 
   end;
+  if trim(EVT_IDLE) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_IDLE(%s::%s)',
+      [CurrClassName, EVT_IDLE]) + '';
+
+  end;
+  if trim(EVT_ACTIVATE) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_ACTIVATE(%s::%s)',
+      [CurrClassName, EVT_ACTIVATE]) + '';
+
+  end;
+  if trim(EVT_ACTIVATE_APP) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_ACTIVATE_APP(%s::%s)',
+      [CurrClassName, EVT_ACTIVATE_APP]) + '';
+
+  end;
+  if trim(EVT_QUERY_END_SESSION) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_QUERY_END_SESSION(%s::%s)',
+      [CurrClassName, EVT_QUERY_END_SESSION]) + '';
+
+  end;
+  if trim(EVT_END_SESSION) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_END_SESSION(%s::%s)',
+      [CurrClassName, EVT_END_SESSION]) + '';
+
+  end;
+  if trim(EVT_DROP_FILES) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_DROP_FILES(%s::%s)',
+      [CurrClassName, EVT_DROP_FILES]) + '';
+
+  end;
+  if trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_SPLITTER_SASH_POS_CHANGED(%s::%s)',
+      [CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
+
+  end;
+  if trim(EVT_SPLITTER_UNSPLIT) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_SPLITTER_UNSPLIT(%s::%s)',
+      [CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
+
+  end;
+  if trim(EVT_SPLITTER_DCLICK) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_SPLITTER_DCLICK(%s::%s)',
+      [CurrClassName, EVT_SPLITTER_DCLICK]) + '';
+
+  end;
+  if trim(EVT_JOY_BUTTON_DOWN) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_JOY_BUTTON_DOWN(%s::%s)',
+      [CurrClassName, EVT_JOY_BUTTON_DOWN]) + '';
+
+  end;
+  if trim(EVT_JOY_BUTTON_UP) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_JOY_BUTTON_UP(%s::%s)',
+      [CurrClassName, EVT_JOY_BUTTON_UP]) + '';
+
+  end;
+  if trim(EVT_JOY_MOVE) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_JOY_MOVE(%s::%s)',
+      [CurrClassName, EVT_JOY_MOVE]) + '';
+
+  end;
+  if trim(EVT_JOY_ZMOVE) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_JOY_ZMOVE(%s::%s)',
+      [CurrClassName, EVT_JOY_ZMOVE]) + '';
+
+  end;
+  if trim(EVT_MENU_OPEN) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_MENU_OPEN(%s::%s)',
+      [CurrClassName, EVT_MENU_OPEN]) + '';
+
+  end;
+  if trim(EVT_MENU_CLOSE) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_MENU_CLOSE(%s::%s)',
+      [CurrClassName, EVT_MENU_CLOSE]) + '';
+
+  end;
+  if trim(EVT_MENU_HIGHLIGHT_ALL) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_MENU_HIGHLIGHT_ALL(%s::%s)',
+      [CurrClassName, EVT_MENU_HIGHLIGHT_ALL]) + '';
+
+  end;
+  if trim(EVT_MOUSEWHEEL) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_MOUSEWHEEL(%s::%s)',
+      [CurrClassName, EVT_MOUSEWHEEL]) + '';
+
+  end;
+  if trim(EVT_MOUSE_EVENTS) <> '' then
+  begin
+    Result := Result + #13 + Format('EVT_MOUSE_EVENTS(%s::%s)',
+      [CurrClassName, EVT_MOUSE_EVENTS]) + '';
+
+  end;
 
 end;
 
@@ -1066,13 +1343,75 @@ begin
     Result := '#define THIS_DIALOG_STYLE 0';
 end;
 
+//function TfrmNewForm.GenerateExtraCodeForFrame:string;
+//var
+//      strLst: TStringList;
+//      I:Integer;
+//begin
+//  strLst := TStringList.Create;
+//    Result:=strLst.text;
+//    strLst.destroy;
+//end;
+
 function TfrmNewForm.GenerateGUIControlCreation: string;
 var
-  I: Integer;
+  I,J,MaxToolWidth,MaxToolHt,MaxSepValue: Integer;
   strLst: TStringList;
   isSizerAvailable:Boolean;
+
 begin
   strLst := TStringList.Create;
+
+    if self.Wx_DesignerType = dtWxFrame then
+    begin
+        for I := self.ComponentCount - 1 downto 0 do    // Iterate
+        begin
+            if IsControlWxToolBar(TControl(Components[i])) then
+            begin
+                MaxToolWidth:=16;
+                MaxToolHt:=15;
+                MaxSepValue:=5;
+                for J := 0 to TWinControl(Components[i]).ControlCount - 1 do    // Iterate
+                begin
+                    if (TWinControl(Components[i]).Controls[J] is TWxSeparator) then
+                    begin
+                        if TWinControl(Components[i]).Controls[J].width > MaxSepValue then
+                            MaxSepValue:=TWinControl(Components[i]).Controls[J].Width;
+                    end;
+
+                    if (TWinControl(Components[i]).Controls[J] is TWxToolButton) then
+                    begin
+                        if TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap <> nil then
+                        begin
+                            if TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Height > MaxToolHt then
+                                MaxToolHt:=TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Height;
+
+                            if TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width > MaxToolWidth then
+                                MaxToolWidth:=TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width;
+                        end;
+                    end;
+                end;    // for
+                if not ( (MaxToolWidth = 16) and (MaxToolHt = 15) ) then
+                begin
+                    strLst.add(Format('%s->SetToolBitmapSize(wxSize(%d,%d));',[self.Components[i].Name,MaxToolWidth,MaxToolHt]));
+                end;
+
+                if (MaxSepValue <> 5) then
+                begin
+                    strLst.add(Format('%s->SetToolSeparation(%d);',[self.Components[i].Name,MaxSepValue]));
+                end;
+                strLst.add(Format('%s->Realize();',[self.Components[i].Name]));
+                strLst.add(Format('this->SetToolBar(%s);',[self.Components[i].Name]));
+            end;
+
+            if IsControlWxStatusBar(TControl(Components[i])) then
+            begin
+                //strLst.add(Format('%s->SetFieldsCount(%d);',[self.Components[i].Name]));
+                strLst.add(Format('this->SetStatusBar(%s);',[self.Components[i].Name]));
+            end;
+        end;    // for
+    end;
+
 
   isSizerAvailable:=false;
     for I := 0 to self.ComponentCount - 1 do // Iterate
@@ -1095,7 +1434,7 @@ begin
             self.width, self.height]));
     end;
 
-  strLst.add(Format('this->SetTitle(wxString("%s"));', [self.Caption]));
+  strLst.add(Format('this->SetTitle(_("%s"));', [self.Caption]));
   
   if self.Wx_Center then
     strLst.add('this->Center();');
@@ -1114,7 +1453,7 @@ begin
   end;
 
   if trim(self.Wx_ToolTips) <> '' then
-    strLst.add(Format('this->SetToolTip(wxT("%s"));',[self.Wx_ToolTips]));
+    strLst.add(Format('this->SetToolTip(wxT(_("%s")));',[self.Wx_ToolTips]));
 
   Result := strLst.text;
   strLst.destroy;
@@ -1160,6 +1499,24 @@ end;
 
 function TfrmNewForm.GetWxClassName: string;
 begin
+    if trim(Wx_Class) = '' then
+    begin
+        if Wx_DesignerType = dtWxDialog then
+        begin
+            Wx_Class:='wxDialog'
+        end;
+        
+        if Wx_DesignerType = dtWxFrame then
+        begin
+            Wx_Class:='wxFrame'
+        end;
+
+        if Wx_DesignerType = dtWxWizard then
+        begin
+            Wx_Class:='wxWizard'
+        end;
+
+    end;
   Result := wx_Class;
 end;
 
@@ -1249,7 +1606,7 @@ begin
   FWx_EventList.add('  EVT_KILL_FOCUS: OnKillFocus');
   FWx_EventList.add('  EVT_ENTER_WINDOW: OnEnterWindow');
   FWx_EventList.add('  EVT_LEAVE_WINDOW: OnLeaveWindow');
-  FWx_EventList.add('  EVT_MOTION: OnMotion');
+  FWx_EventList.add('  EVT_MOTION: OnMouseMotion');
   FWx_EventList.add('  EVT_LEFT_DOWN: OnLeftDown');
   FWx_EventList.add('  EVT_LEFT_UP: OnLeftUP');
   FWx_EventList.add('  EVT_RIGHT_DOWN: OnRightDown');
@@ -1271,7 +1628,26 @@ begin
   FWx_EventList.add('  EVT_SCROLLWIN_THUMBTRACK: OnScrollWinThumbTrack');
   FWx_EventList.add('  EVT_SCROLLWIN_THUMBRELEASE: OnScrollWinThumbRelease');
   FWx_EventList.add('  EVT_SYS_COLOUR_CHANGED: OnColourChanged');
-  FWx_EventList.add('  EVT_UPDATE_UI:OnUpdateUI');
+  FWx_EventList.add('  EVT_IDLE :OnIdle');
+  FWx_EventList.add('  EVT_ACTIVATE :OnActivate');
+  FWx_EventList.add('  EVT_ACTIVATE_APP :OnActivateApp');
+  FWx_EventList.add('  EVT_QUERY_END_SESSION :OnQueryEndSession');
+  FWx_EventList.add('  EVT_END_SESSION :OnEndSession');
+  FWx_EventList.add('  EVT_DROP_FILES :OnDropFiles');
+  FWx_EventList.add('  EVT_SPLITTER_SASH_POS_CHANGED  :OnSplitterSashPosChanged');
+  FWx_EventList.add('  EVT_SPLITTER_UNSPLIT :OnSplitterUnSplit');
+  FWx_EventList.add('  EVT_SPLITTER_DCLICK :OnSplitterDoubleClick');
+  FWx_EventList.add('  EVT_JOY_BUTTON_DOWN :OnJoyButtonDown');
+  FWx_EventList.add('  EVT_JOY_BUTTON_UP :OnJoyButtonUp');
+  FWx_EventList.add('  EVT_JOY_MOVE :OnJoyMove');
+  FWx_EventList.add('  EVT_JOY_ZMOVE :OnJoyZMove');
+  FWx_EventList.add('  EVT_MENU_OPEN :OnMenuOpen');
+  FWx_EventList.add('  EVT_MENU_CLOSE :OnMenuClose');
+  FWx_EventList.add('  EVT_MENU_HIGHLIGHT_ALL :OnMenuHightLightAll');
+  FWx_EventList.add('  EVT_MOUSEWHEEL :OnMouseWheel');
+  FWx_EventList.add('  EVT_MOUSE_EVENTS :OnMouseEvents');
+
+  //FWx_EventList.add('  EVT_UPDATE_UI:OnUpdateUI');
 
 end;
 
@@ -1349,4 +1725,21 @@ begin
    self.Font.Color:=GetColorFromString(strValue);
 end;
 
+procedure TfrmNewForm.SetDesignerType(value:TWxDesignerType);
+begin
+    Wx_Class:='wxDialog';
+    
+    if value = dtWxFrame then
+    begin
+        Wx_Class:='wxFrame';
+        self.Color:=clAppWorkSpace;
+        //self.BorderStyle:=bsSingle;
+    end;
+
+    if value = dtWxWizard then
+    begin
+        Wx_Class:='wxWizard';
+    end;
+    FWxDesignerType:=value;
+end;
 end.

@@ -1,25 +1,62 @@
-roperty Wx_ProxyBGColorString : TWxColorString
-             read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
-        property Wx_ProxyFGColorString : TWxColorString
-             read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
-        property Wx_StretchFactor : Integer
-             read FWx_StretchFactor write FWx_StretchFactor
-             default 0;
+unit WxOpenFileDialog;
 
-	property Wx_StrechFactor : Integer
-		read FWx_StretchFactor write FWx_StretchFactor;
+interface
 
-        property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
-        property Wx_VerticalAlignment : TWxSizerVerticalAlignment
-             read FWx_VerticalAlignment write FWx_VerticalAlignment
-             default wxSZALIGN_CENTER_VERTICAL;
-        property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
-        property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+uses
+  Windows, Messages, SysUtils, Classes,wxUtils,WxNonVisibleBaseComponent;
 
-        property OnDrawButton: TDrawButtonEvent read FOnDrawButton write FOnDrawButton;
-        property Color;
-    property Wx_BITMAP: TPicture read FWx_BITMAP write FWx_BITMAP;
+type
+  TWxOpenFileDialog = class(TWxNonVisibleBaseComponent,IWxComponentInterface)
+  private
+    { Private declarations }
+        FWx_Class : String;
+        FWx_PropertyList : TStringList;
+        FWx_Message: String;
+        FWx_Extensions: String;
+        FWx_DefaultFile: String;
+        FWx_DefaultDir: String;
+        FWx_DialogStyle : TWxFileDialogStyleSet;
+        procedure AutoInitialize;
+        procedure AutoDestroy;
 
+  protected
+
+  public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        function GenerateControlIDs:String;
+        function GenerateEventTableEntries(CurrClassName:String):String;
+        function GenerateGUIControlCreation:String;
+        function GenerateGUIControlDeclaration:String;
+        function GenerateHeaderInclude:String;
+        function GenerateImageInclude: string;
+        function GetEventList:TStringlist;
+        function GetIDName:String;
+        function GetIDValue:LongInt;
+        function GetParameterFromEventName(EventName: string):String;
+        function GetPropertyList:TStringList;
+        function GetStretchFactor:Integer;
+        function GetTypeFromEventName(EventName: string):string;
+        function GetWxClassName:String;
+        procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
+        procedure SetIDName(IDName:String);
+        procedure SetIDValue(IDValue:longInt);
+        procedure SetStretchFactor(intValue:Integer);
+        procedure SetWxClassName(wxClassName:String);
+        function GetFGColor:string;
+        procedure SetFGColor(strValue:String);
+        function GetBGColor:string;
+        procedure SetBGColor(strValue:String);
+        procedure SetProxyFGColorString(value:String);
+        procedure SetProxyBGColorString(value:String);
+  published
+    { Published declarations }
+        property Wx_Class : String read FWx_Class write FWx_Class;
+        property Wx_Message: String read FWx_Message write FWx_Message;
+        property Wx_Extensions: String read FWx_Extensions write FWx_Extensions;
+        property Wx_DefaultFile: String read FWx_DefaultFile write FWx_DefaultFile;
+        property Wx_DefaultDir: String read FWx_DefaultDir write FWx_DefaultDir;
+        property Wx_DialogStyle:TWxFileDialogStyleSet read FWx_DialogStyle write FWx_DialogStyle;
   end;
 
 procedure Register;
@@ -28,128 +65,56 @@ implementation
 
 procedure Register;
 begin
-     { Register TWxButton with wxWidgets as its
-       default page on the Delphi component palette }
-     RegisterComponents('wxWidgets', [TWxBitmapButton]);
+  RegisterComponents('wxWidgets', [TWxOpenFileDialog]);
 end;
 
 { Method to set variable and property values and create objects }
-procedure TWxBitmapButton.AutoInitialize;
+procedure TWxOpenFileDialog.AutoInitialize;
 begin
      FWx_PropertyList := TStringList.Create;
-     FWx_Border := 5;
-     FWx_Class := 'wxBitmapButton';
-     FWx_Enabled := True;
-     FWx_EventList := TstringList.Create;
-     FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
-     FWx_IDValue := -1;
-     FWx_StretchFactor := 0;
-     FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
-     FWx_ProxyBGColorString := TWxColorString.Create;
-     FWx_ProxyFGColorString := TWxColorString.Create;
-     defaultBGColor:=self.color;
-     defaultFGColor:=self.font.color;
-     Caption:='';
-     FWx_Bitmap:=TPicture.Create;
+     FWx_Class := 'wxFileDialog';
+     Glyph.Handle:=LoadBitmap(hInstance, 'TWXOPENFILEDIALOG');
+     self.FWx_Extensions:= '*.*';
+     self.wx_Message:='Choose a file';
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxBitmapButton.AutoDestroy;
+procedure TWxOpenFileDialog.AutoDestroy;
 begin
      FWx_PropertyList.Free;
-     FWx_EventList.Free;
 end; { of AutoDestroy }
 
-{ Write method for property Wx_EventList }
-procedure TWxBitmapButton.SetWx_EventList(Value : TstringList);
+constructor TWxOpenFileDialog.Create(AOwner: TComponent);
 begin
-     { Use Assign method because TstringList is an object type
-       and FWx_EventList has been created. }
-     FWx_EventList.Assign(Value);
-end;
-
-{ Override OnClick handler from TButton,IWxComponentInterface }
-procedure TWxBitmapButton.Click;
-begin
-     { Code to execute before activating click
-       behavior of component's parent class }
-
-     { Activate click behavior of parent }
-     inherited Click;
-
-     { Code to execute after click behavior
-       of parent }
-
-end;
-
-constructor TWxBitmapButton.Create(AOwner: TComponent);
-begin
-     { Call the Create method of the parent class }
+     { Call the Create method of the container's parent class       }
      inherited Create(AOwner);
-    FCanvas := TCanvas.Create;
-     { AutoInitialize sets the initial values of variables and      }
-     { properties; also, it creates objects for properties of       }
-     { standard Delphi object types (e.g., TFont, TTimer,           }
-     { TPicture) and for any variables marked as objects.           }
+
+     { AutoInitialize sets the initial values of variables          }
+     { (including subcomponent variables) and properties;           }
+     { also, it creates objects for properties of standard          }
+     { Delphi object types (e.g., TFont, TTimer, TPicture)          }
+     { and for any variables marked as objects.                     }
      { AutoInitialize method is generated by Component Create.      }
      AutoInitialize;
-     self.Caption:='';
+
      { Code to perform other tasks when the component is created }
+     { Code to perform other tasks when the component is created }
+     FWx_PropertyList.add('Wx_DialogStyle:File Dialog Style');
+     
+     FWx_PropertyList.add('wxHIDE_READONLY:wxHIDE_READONLY');
+     FWx_PropertyList.add('wxOVERWRITE_PROMPT:wxOVERWRITE_PROMPT');
+     FWx_PropertyList.add('wxMULTIPLE:wxMULTIPLE');
+     FWx_PropertyList.add('wxCHANGE_DIR:wxCHANGE_DIR');
 
-     FWx_PropertyList.add('wx_Class:Base Class');
-     FWx_PropertyList.add('Wx_Hidden :Hidden');
-     FWx_PropertyList.add('Wx_Border : Border ');
-     FWx_PropertyList.add('Wx_HelpText :HelpText ');
-     FWx_PropertyList.add('Wx_IDName : IDName ');
-     FWx_PropertyList.add('Wx_IDValue : IDValue ');
-     FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-//     FWx_PropertyList.add('Caption : Label');
-     FWx_PropertyList.add('Name : Name');
-     FWx_PropertyList.add('Left : Left');
-     FWx_PropertyList.add('Top : Top');
-     FWx_PropertyList.add('Width : Width');
-     FWx_PropertyList.add('Height:Height');
-     FWx_PropertyList.add('Wx_Bitmap:Bitmap');
-
-
-     FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
-     FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
-
-     FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
-     FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-     FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-     FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-     FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-     FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-     FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-     FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
-     FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-     FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-     FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-     FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-     FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-     FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-
-     FWx_PropertyList.add('Font : Font');
-
-     FWx_PropertyList.add('Wx_ButtonStyle:Button Style');
-     FWx_PropertyList.add('wxBU_LEFT:wxBU_LEFT');
-     FWx_PropertyList.add('wxBU_TOP:wxBU_TOP');
-     FWx_PropertyList.add('wxBU_RIGHT:wxBU_RIGHT');
-     FWx_PropertyList.add('wxBU_BOTTOM:wxBU_BOTTOM');
-     FWx_PropertyList.add('wxBU_EXACTFIT:wxBU_EXACTFIT');
-
-     FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-     FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-
-     FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
-
-     FWx_EventList.add('EVT_BUTTON:OnClick');
-     FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-
+     FWx_PropertyList.add('Wx_DefaultDir:Default Dir');
+     FWx_PropertyList.add('Wx_DefaultFile:Default File');
+     FWx_PropertyList.add('Wx_Extensions:Extensions');
+     FWx_PropertyList.add('Wx_Message:Message');
+     FWx_PropertyList.add('Name:Name');
+     FWx_PropertyList.add('Wx_Class:Base Class');
 end;
 
-destructor TWxBitmapButton.Destroy;
+destructor TWxOpenFileDialog.Destroy;
 begin
      { AutoDestroy, which is generated by Component Create, frees any   }
      { objects created by AutoInitialize.                               }
@@ -162,217 +127,135 @@ begin
      { Last, free the component by calling the Destroy method of the    }
      { parent class.                                                    }
      inherited Destroy;
-     FCanvas.Free;
 end;
 
-procedure TWxBitmapButton.WMPaint(var Message: TWMPaint);
-begin
-    self.Caption:='';
-    inherited;
-end;
-
-//procedure TWxButton.SetButtonStyle(ADefault: Boolean);
-//begin
-//  if ADefault <> IsFocused then
-//  begin
-//    IsFocused := ADefault;
-//    Refresh;
-//  end;
-//end;
-//
-//procedure TWxButton.CreateParams(var Params: TCreateParams);
-//begin
-//  inherited CreateParams(Params);
-//  with Params do Style := Style or BS_OWNERDRAW;
-//end;
-//
-//procedure TWxButton.CNMeasureItem(var Message: TWMMeasureItem);
-//begin
-//  with Message.MeasureItemStruct^ do
-//  begin
-//    itemWidth  := Width;
-//    itemHeight := Height;
-//  end;
-//end;
-//
-//procedure TWxButton.CNDrawItem(var Message: TWMDrawItem);
-//var
-//  SaveIndex: Integer;
-//begin
-//  with Message.DrawItemStruct^ do
-//  begin
-//    SaveIndex := SaveDC(hDC);
-//    FCanvas.Lock;
-//    try
-//      FCanvas.Handle := hDC;
-//      FCanvas.Font   := Font;
-//      FCanvas.Brush  := Brush;
-//      DrawButton(rcItem, itemState);
-//    finally
-//      FCanvas.Handle := 0;
-//      FCanvas.Unlock;
-//      RestoreDC(hDC, SaveIndex);
-//    end;
-//  end;
-//  Message.Result := 1;
-//end;
-//
-//procedure TWxButton.CMEnabledChanged(var Message: TMessage);
-//begin
-//  inherited;
-//  Invalidate;
-//end;
-//
-//procedure TWxButton.CMFontChanged(var Message: TMessage);
-//begin
-//  inherited;
-//  Invalidate;
-//end;
-//
-//procedure TWxButton.WMLButtonDblClk(var Message: TWMLButtonDblClk);
-//begin
-//  Perform(WM_LBUTTONDOWN, Message.Keys, Longint(Message.Pos));
-//end;
-//
-//procedure TWxButton.DrawButton(Rect: TRect; State: UINT);
-//var
-//  Flags, OldMode: Longint;
-//  IsDown, IsDefault, IsDisabled: Boolean;
-//  OldColor: TColor;
-//  OrgRect: TRect;
-//begin
-//  OrgRect    := Rect;
-//  Flags      := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
-//  IsDown     := State and ODS_SELECTED <> 0;
-//  IsDefault  := State and ODS_FOCUS <> 0;
-//  IsDisabled := State and ODS_DISABLED <> 0;
-//
-//  if IsDown then Flags := Flags or DFCS_PUSHED;
-//  if IsDisabled then Flags := Flags or DFCS_INACTIVE;
-//
-//  if IsFocused or IsDefault then
-//  begin
-//    FCanvas.Pen.Color   := clWindowFrame;
-//    FCanvas.Pen.Width   := 1;
-//    FCanvas.Brush.Style := bsClear;
-//    FCanvas.Rectangle(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
-//    InflateRect(Rect, - 1, - 1);
-//  end;
-//
-//  if IsDown then
-//  begin
-//    FCanvas.Pen.Color   := clBtnShadow;
-//    FCanvas.Pen.Width   := 1;
-//    FCanvas.Brush.Color := clBtnFace;
-//    FCanvas.Rectangle(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
-//    InflateRect(Rect, - 1, - 1);
-//  end
-//  else
-//    DrawFrameControl(FCanvas.Handle, Rect, DFC_BUTTON, Flags);
-//
-//  if IsDown then OffsetRect(Rect, 1, 1);
-//
-//  OldColor := FCanvas.Brush.Color;
-//  FCanvas.Brush.Color := Color;
-//  FCanvas.FillRect(Rect);
-//  FCanvas.Brush.Color := OldColor;
-//  OldMode := SetBkMode(FCanvas.Handle, TRANSPARENT);
-//  FCanvas.Font.Color := clBtnText;
-//  if IsDisabled then
-//    DrawState(FCanvas.Handle, FCanvas.Brush.Handle, nil, Integer(Caption),
-//0,
-//    ((Rect.Right - Rect.Left) - FCanvas.TextWidth(Caption)) div 2,
-//    ((Rect.Bottom - Rect.Top) - FCanvas.TextHeight(Caption)) div 2,
-//      0, 0, DST_TEXT or DSS_DISABLED)
-//  else
-//    DrawText(FCanvas.Handle, PChar(Caption), - 1, Rect,
-//      DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-//  SetBkMode(FCanvas.Handle, OldMode);
-//
-//  if Assigned(FOnDrawButton) then
-//    FOnDrawButton(Self, Rect, TOwnerDrawState(LongRec(State).Lo));
-//
-//  if IsFocused and IsDefault then
-//  begin
-//    Rect := OrgRect;
-//    InflateRect(Rect, - 4, - 4);
-//    FCanvas.Pen.Color   := clWindowFrame;
-//    FCanvas.Brush.Color := clBtnFace;
-//    DrawFocusRect(FCanvas.Handle, Rect);
-//  end;
-//end;
-
-
-function TWxBitmapButton.GenerateControlIDs:String;
+function TWxOpenFileDialog.GenerateControlIDs:String;
 begin
      Result:='';
-     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
-function TWxBitmapButton.GenerateEventTableEntries(CurrClassName:String):String;
-
-     { type }
-     { . . . }
+function TWxOpenFileDialog.GenerateEventTableEntries(CurrClassName:String):String;
 begin
      Result:='';
-     if trim(EVT_BUTTON) <> '' then
-     begin
-          Result:=Format('EVT_BUTTON(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_BUTTON]) +'';
-     end;
-
-     if trim(EVT_UPDATE_UI) <> '' then
-     begin
-          Result:=Result+#13+Format('EVT_UPDATE_UI(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_UPDATE_UI]) +'';
-     end;
-
 end;
 
-function TWxBitmapButton.GenerateGUIControlCreation:String;
-
-     { type }
-     { . . . }
+function TWxOpenFileDialog.GenerateGUIControlCreation:String;
 var
-     strColorStr:String;
-     strStyle:String;
-     parentName,strAlignment:String;
+     strType,strStyle:String;
 begin
-    Result:='';
-    strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
+     Result:='';
+    strType:='wxOPEN';
+    strStyle:=GetFileDialogStyleString(self.Wx_DialogStyle);
 
+    Result:=Format('%s =  new %s(this, "%s" , "%s" , "%s" , "%s", %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),GetCppString(wx_DefaultFile),wx_Extensions,strType+strStyle] );
+end;
 
-    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
-       parentName:='this'
-    else
-       parentName:=self.Parent.name;
+function TWxOpenFileDialog.GenerateGUIControlDeclaration:String;
+begin
+     Result:='';
+     Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
+end;
 
-    Result:='wxBitmap '+self.Name+'_BITMAP'+' (wxNullBitmap);';
+function TWxOpenFileDialog.GenerateHeaderInclude:String;
+begin
+     Result:='';
+     Result:='#include <wx/filedlg.h>';
+end;
 
-    if assigned(Wx_Bitmap) then
-    begin
-        if Wx_Bitmap.Bitmap.Handle <>0 then
-            Result:='wxBitmap '+self.Name+'_BITMAP'+' ('+self.Name+'_XPM'+');';
-    end;
+function TWxOpenFileDialog.GenerateImageInclude: string;
+begin
 
+end;
 
-    Result:=Result+#13+Format('%s =  new %s(%s, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
+function TWxOpenFileDialog.GetEventList:TStringlist;
+begin
+Result:=nil;
+end;
 
-    if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
+function TWxOpenFileDialog.GetIDName:String;
+begin
 
-    if self.Wx_Hidden then
-        Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
+end;
 
-    if not Wx_Enabled then
-        Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
+function TWxOpenFileDialog.GetIDValue:LongInt;
+begin
+Result:=0;
+end;
 
-    if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,self.Wx_HelpText]);
+function TWxOpenFileDialog.GetParameterFromEventName(EventName: string):String;
+begin
 
-    strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
-    if strColorStr <> '' then
-	Result:=Result+#13+Format('%s->SetForegroundColour(%s);',[self.Name,strColorStr]);
+end;
 
-    strColorStr:=trim(GetwxColorFromString(InvisibleBGColorString));
-    if strColorStr <> '' then
-	
+function TWxOpenFileDialog.GetStretchFactor:Integer;
+begin
+//
+end;
+
+function TWxOpenFileDialog.GetPropertyList:TStringList;
+begin
+     Result:=FWx_PropertyList;
+end;
+
+function TWxOpenFileDialog.GetTypeFromEventName(EventName: string):string;
+begin
+
+end;
+
+function TWxOpenFileDialog.GetWxClassName:String;
+begin
+     if trim(wx_Class) = '' then
+        wx_Class:='wxFileDialog';
+     Result:=wx_Class;
+end;
+
+procedure TWxOpenFileDialog.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
+begin
+    //
+end;
+
+procedure TWxOpenFileDialog.SetIDName(IDName:String);
+begin
+
+end;
+
+procedure TWxOpenFileDialog.SetIDValue(IDValue:longInt);
+begin
+
+end;
+
+procedure TWxOpenFileDialog.SetStretchFactor(intValue:Integer);
+begin
+end;
+
+procedure TWxOpenFileDialog.SetWxClassName(wxClassName:String);
+begin
+     wx_Class:=wxClassName;
+end;
+
+function TWxOpenFileDialog.GetFGColor:string;
+begin
+
+end;
+
+procedure TWxOpenFileDialog.SetFGColor(strValue:String);
+begin
+end;
+    
+function TWxOpenFileDialog.GetBGColor:string;
+begin
+end;
+
+procedure TWxOpenFileDialog.SetBGColor(strValue:String);
+begin
+end;
+procedure TWxOpenFileDialog.SetProxyFGColorString(value:String);
+begin
+end;
+
+procedure TWxOpenFileDialog.SetProxyBGColorString(value:String);
+begin
+end;
+
+end.
+ 

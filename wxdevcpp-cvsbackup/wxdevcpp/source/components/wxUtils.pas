@@ -1,3 +1,9 @@
+{
+Todo:
+Deffered:
+wxSingleChoiceDialog,TWxTextEntryDialog
+}
+     
 { ****************************************************************** }
 {                                                                    }
 {   VCL component wxUtils                                          }
@@ -22,17 +28,35 @@ interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, StrUtils,Classes, Controls,
   Forms, Graphics, Stdctrls, JvInspector, Dialogs, ComCtrls, ExtCtrls,dmListview,
-  UPicEdit,xprocs,DbugIntf;
+  UPicEdit,xprocs,DbugIntf,TypInfo,Menus,UStatusbar;
 
 const
   IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
-
+  IID_IWxDialogNonInsertableInterface: TGUID = '{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}';
+  IID_IWxToolBarInsertableInterface: TGUID =  '{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}';
+  IID_IWxToolBarNonInsertableInterface: TGUID =  '{6A81CF27-1269-4BD6-9C5D-16F88293B66B}';
+  IID_IWxWindowInterface: TGUID =  '{3164E818-E7FA-423B-B342-C89D8AF23617}';
+  IID_IWxContainerAndSizerInterface: TGUID =  '{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}';
+  IDD_IWxContainerInterface: TGUID =  '{1149F8B7-04D7-466F-96FA-74C7383F2EFD}';
+  IID_IWxToolBarInterface: TGUID =  '{518BF32C-F961-4148-B506-F60A9D21AD15}';
+  IDD_IWxStatusBarInterface: TGUID =  '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
+  IDD_IWxCollectionInterface: TGUID =  '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
 type
+
+  TWxPoint = class(TComponent)
+  private
+        FX:Integer;
+        FY:Integer;
+   published
+        property X:Integer read FX write FX default 0;
+        property Y:Integer read FY write FY default 0;
+  end;
 
 TWxSizerVerticalAlignment = (wxSZALIGN_TOP,wxSZALIGN_BOTTOM,wxSZALIGN_CENTER_VERTICAL,wxSZALIGN_GROW_VERTICAL);
 TWxSizerHorizontalAlignment = (wxSZALIGN_LEFT,wxSZALIGN_RIGHT,wxSZALIGN_CENTER_HORIZONTAL,wxSZALIGN_GROW_HORIZONTAL);
 TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
 TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
+TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
 
   IWxComponentInterface = interface ['{624949E8-E46C-4EF9-BADA-BC85325165B3}']
     function GenerateControlIDs: string;
@@ -65,6 +89,40 @@ TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
 //    function GetHorizonalAlignment: TWxSizerHorizonalAlignment;
 
   end;
+
+  IWxDialogNonInsertableInterface = interface ['{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}']
+    //procedure DummySizerNonInsertableInterfaceProcedure;
+  end;
+
+  IWxToolBarInsertableInterface = interface  ['{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}']
+    //procedure DummyToolBarInsertableInterfaceProcedure;
+  end;
+
+    IWxToolBarNonInsertableInterface = interface ['{6A81CF27-1269-4BD6-9C5D-16F88293B66B}']
+        //procedure DummyToolBarNonInsertableInterfaceProcedure;
+    end;
+
+    IWxWindowInterface = interface ['{3164E818-E7FA-423B-B342-C89D8AF23617}']
+        //
+    end;
+
+    IWxContainerAndSizerInterface = interface ['{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}']
+    end;
+
+    IWxContainerInterface = interface ['{1149F8B7-04D7-466F-96FA-74C7383F2EFD}']
+    end;
+
+    IWxToolBarInterface= interface ['{518BF32C-F961-4148-B506-F60A9D21AD15}']
+    end;
+
+    IWxStatusBarInterface= interface ['{4E9800A3-D948-4F48-A109-7F81B69ECAD3}']
+    end;
+
+    IWxCollectionInterface= interface ['{DC147ECD-47A2-4334-A113-CD9B794CBCE1}']
+        function GetMaxID:Integer;
+    end;
+
+
 
     TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
                        wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW, wxNO_3D,
@@ -112,11 +170,11 @@ TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
     TWxgagStyleSet = Set of TWxgagStyleItem;
 
 
-    TWxsbtnStyleItem = (wxSP_ARROW_KEYS , wxSP_WRAP );
+    TWxsbtnStyleItem = (wxSP_ARROW_KEYS , wxSP_WRAP,wxSP_HORIZONTAL,wxSP_VERTICAL );
     TWxsbtnStyleSet = Set of TWxsbtnStyleItem ;
 
 
-    TWxsldrStyleItem = (wxSL_AUTOTICKS , wxSL_LABELS , wxSL_LEFT ,wxSL_RIGHT ,wxSL_TOP ,wxSL_SELRANGE );
+    TWxsldrStyleItem = (wxSL_HORIZONTAL,wxSL_VERTICAL, wxSL_AUTOTICKS , wxSL_LABELS , wxSL_LEFT ,wxSL_RIGHT ,wxSL_TOP ,wxSL_SELRANGE );
     TWxsldrStyleSet = Set of TWxsldrStyleItem ;
 
     //TWxslnStyleSet = Set of TWxslnStyleItem ;
@@ -127,12 +185,6 @@ TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
                        wxCAL_SEQUENTIAL_MONTH_SELECTION);
     TWxcalctrlStyleSet = Set of TWxcalctrlStyleItem ;
 
-    //TWxcklbxStyleSet = Set of TWxcklbxStyleItem ;
-    //TWxchStyleSet = Set of TWxchStyleItem ;
-
-
-    TWxhwndStyleItem = (wxHW_SCROLLBAR_NEVER, wxHW_SCROLLBAR_AUTO ,wxHW_NO_SELECTION);
-    TWxhwndStyleSet = Set of TWxhwndStyleItem ;
 
 
     TWxnbxStyleItem = (wxNB_LEFT , wxNB_RIGHT ,wxNB_BOTTOM ,wxNB_FIXEDWIDTH ,wxNB_MULTILINE );
@@ -165,6 +217,24 @@ TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
                         wxTR_DEFAULT_STYLE);
     TWxTVStyleSet = set of TWxTVStyleItem;
 
+    TWxScrWinStyleItem = (wxRETAINED);
+    TWxScrWinStyleSet = Set of TWxScrWinStyleItem ;
+
+    TWxHtmlWinStyleItem = (wxHW_SCROLLBAR_NEVER,wxHW_SCROLLBAR_AUTO,wxHW_NO_SELECTION);
+    TWxHtmlWinStyleSet = Set of TWxHtmlWinStyleItem ;
+
+    TWxMenuItemStyleItem = (wxMnuItm_Normal,wxMnuItm_Separator,wxMnuItm_Radio,wxMnuItm_Check);
+
+    TWxToolbottonItemStyleItem = (wxITEM_NORMAL,wxITEM_RADIO,wxITEM_CHECK);
+
+    TWxFindReplaceFlagItem = (wxFR_DOWN,wxFR_WHOLEWORD, wxFR_MATCHCASE);
+    TWxFindReplaceFlagSet = Set of TWxFindReplaceFlagItem;
+
+    TwxFindReplaceDialogStyleItem = (wxFR_REPLACEDIALOG ,wxFR_NOUPDOWN, wxFR_NOMATCHCASE,wxFR_NOWHOLEWORD);
+    TwxFindReplaceDialogStyleSet = Set of TwxFindReplaceDialogStyleItem;
+
+
+
 //End of Control Styles
 
   TWxFileDialogType = (wxOPEN, wxSAVE);
@@ -172,6 +242,23 @@ TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
   TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
     wxCHANGE_DIR);
   TWxFileDialogStyleSet = set of TWxFileDialogStyleItem;
+
+  TWxDirDialogStyleItem = (wxDD_NEW_DIR_BUTTON);
+  TWxDirDialogStyleSet = set of TWxDirDialogStyleItem;
+
+  TWxProgressDialogStyleItem = (wxPD_APP_MODAL,wxPD_AUTO_HIDE,wxPD_CAN_ABORT,wxPD_ELAPSED_TIME,wxPD_ESTIMATED_TIME,wxPD_REMAINING_TIME);
+  TWxProgressDialogStyleSet = set of TWxProgressDialogStyleItem ;
+
+  TWxMessageDialogStyleItem = (wxOK,wxCANCEL,wxYES_NO ,wxYES_DEFAULT,wxNO_DEFAULT,wxICON_EXCLAMATION,wxICON_HAND,wxICON_ERROR ,wxICON_QUESTION , wxICON_INFORMATION );
+  TWxMessageDialogStyleSet = set of TWxMessageDialogStyleItem ;
+
+  TWxPaperSizeItem = (wxPAPER_NONE,wxPAPER_LETTER,wxPAPER_LEGAL,wxPAPER_A4,wxPAPER_CSHEET, wxPAPER_DSHEET,wxPAPER_ESHEET,
+                    wxPAPER_LETTERSMALL, wxPAPER_TABLOID,wxPAPER_LEDGER, wxPAPER_STATEMENT, wxPAPER_EXECUTIVE, wxPAPER_A3,
+                    wxPAPER_A4SMALL, wxPAPER_A5, wxPAPER_B4, wxPAPER_B5, wxPAPER_FOLIO, wxPAPER_QUARTO, wxPAPER_10X14, wxPAPER_11X17,
+                    wxPAPER_NOTE, wxPAPER_ENV_9, wxPAPER_ENV_10, wxPAPER_ENV_11, wxPAPER_ENV_12, wxPAPER_ENV_14, wxPAPER_ENV_DL,wxPAPER_ENV_C5,
+                    wxPAPER_ENV_C3,wxPAPER_ENV_C4,wxPAPER_ENV_C6,wxPAPER_ENV_C65,wxPAPER_ENV_B4,wxPAPER_ENV_B5, wxPAPER_ENV_B6, wxPAPER_ENV_ITALY,
+                    wxPAPER_ENV_MONARCH, wxPAPER_ENV_PERSONAL, wxPAPER_FANFOLD_US, wxPAPER_FANFOLD_STD_GERMAN, wxPAPER_FANFOLD_LGL_GERMAN);
+
 
 //Sizer orientation
 TWxSizerOrientation = (wxVertical,wxHorizontal);
@@ -182,6 +269,20 @@ TWxColorString = class
     published
         property strColorValue:String read FstrColorValue write FstrColorValue;
 end;
+
+  TWxJvInspectorTStringsItem = class(TJvCustomInspectorItem)
+  protected
+    procedure ContentsChanged(Sender: TObject);
+    function GetDisplayValue: string; override;
+    procedure Edit; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
 
   TJvInspectorColorEditItem = class(TJvCustomInspectorItem)
   protected
@@ -207,6 +308,17 @@ end;
   end;
 
   TJvInspectorListColumnsItem = class(TJvCustomInspectorItem)
+  protected
+    procedure Edit; override;
+
+    function GetDisplayValue: string; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
+
+  TJvInspectorStatusBarItem = class(TJvCustomInspectorItem)
   protected
     procedure Edit; override;
 
@@ -250,6 +362,17 @@ end;
     class procedure RegisterAsDefaultItem;
   end;
 
+  TJvInspectorMenuItem = class(TJvCustomInspectorItem)
+  protected
+    procedure Edit; override;
+
+    function GetDisplayValue: string; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
+
 
 function GetGridSelectionToString(grdsel:TWxGridSelection):String;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
@@ -268,12 +391,20 @@ function GetSliderStyleString(stdStyle:TWxsldrStyleSet):String;
 function GetCalendarCtrlStyleString(stdStyle:TWxcalctrlStyleSet):String;
 //function GetCheckListBoxStyleString(stdStyle:TWxcklbxStyleSet):String;
 //function GetChoiceStyleString(stdStyle:TWxchStyleSet):String;
-function GetHtmlWindowStyleString(stdStyle:TWxhwndStyleSet):String;
 function GetNotebookStyleString(stdStyle:TWxnbxStyleSet):String;
 function GetRadioBoxStyleString(stdStyle:TWxrbxStyleSet):String;
 function GetStatusBarStyleString(stdStyle:TWxsbrStyleSet):String;
 //function GetToggleButtonStyleString(stdStyle:TWxtbtnStyleSet):String;
 function GetToolBarStyleString(stdStyle:TWxtbrStyleSet):String;
+function GetScrolledWindowStyleString(stdStyle:TWxScrWinStyleSet):String;
+function GetHtmlWindowStyleString(stdStyle:TWxHtmlWinStyleSet):String;
+function GetFileDialogStyleString(stdStyle:TWxFileDialogStyleSet):String;
+function GetDirDialogStyleString(stdStyle:TWxDirDialogStyleSet):String;
+function GetProgressDialogStyleString(stdStyle:TWxProgressDialogStyleSet):String;
+function GetMessageDialogStyleString(stdStyle:TWxMessageDialogStyleSet):String;
+function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet):String;
+function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet):String;
+
 
 //Todo :
 function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;cbxstyle:TWxcbxStyleSet):String;
@@ -281,7 +412,7 @@ function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;tvstyle:TWxTvStyleSet
 function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;rbstyle:TWxrbStyleSet):String;
 function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;lbxstyle:TWxlbxStyleSet):String;
 function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;gagstyle:TWxgagStyleSet):String;
-//function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxscbrStyleSet):String;
+function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxsbrStyleSet):String;
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;sbtnstyle:TWxsbtnStyleSet):String;
 function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;sldrstyle:TWxsldrStyleSet):String;
 //function GetStaticBoxSpecificStyle(stdstyle: TWxStdStyleSet;sbxstyle:TWxsbxStyleSet):String;
@@ -290,12 +421,15 @@ function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;sldrstyle:TWxsldrStyleS
 function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;calctrlstyle:TWxcalctrlStyleSet):String;
 //function GetCheckListBoxSpecificStyle(stdstyle: TWxStdStyleSet;cklbxstyle:TWxcklbxStyleSet):String;
 //function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
-function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;hwndstyle:TWxhwndStyleSet):String;
 function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;nbxstyle:TWxnbxStyleSet):String;
 function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;rbxstyle:TWxrbxStyleSet):String;
 function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;sbrstyle:TWxsbrStyleSet):String;
 //function GetToggleButtonSpecificStyle(stdstyle: TWxStdStyleSet;tbtnstyle:TWxtbtnStyleSet):String;
 function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;tbrstyle:TWxtbrStyleSet):String;
+function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;scrWinStyle:TWxScrWinStyleSet):String;
+function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;htmlWinStyle:TWxHtmlWinStyleSet):String;
+
+
 /////////////////////////////
 
 function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet; lstvwstyle:TWxLVStyleSet): string;
@@ -312,6 +446,15 @@ function GetColorFromString(strColorValue:String):TColor;
 function GetGeneralColorFromString(strColorValue:String):TColor;
 function IsDefaultColorStr(strvalue:String):boolean;
 function GetwxColorFromString(strValue:String):String;
+function PaperIDToString(sizeitem:TWxPaperSizeItem):String;
+
+function IsControlWxSizer(ctrl:TControl):Boolean;
+function IsControlWxContainer(ctrl:TControl):Boolean;
+function IsControlWxWindow(ctrl:TControl):Boolean;
+function IsControlWxToolBar(ctrl:TControl):Boolean;
+function IsControlWxStatusBar(ctrl:TControl):Boolean;
+function IsControlWxNonVisible(ctrl:TControl):Boolean;
+function GetNonVisualComponentCount(frmMainObj:TForm):Integer;
 
 function GetWxIDString(strID: string; intID: LongInt): string;
 function IsValidClass(comp: TComponent): boolean;
@@ -319,12 +462,25 @@ function GetEventNameFromDisplayName(strDisplayName: string; strlst:TStringList)
 function AlignmentToStr(taPos: TAlignment): string;
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: Boolean = True);
 function GetXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
+function GetXPMFromTPictureXXX(XPMName:String;delphiBitmap:TBitmap):String;
 function GenerateXPMDirectly(bmp:TBitmap;strCompName:String;strFileName:String):boolean;
+function OpenXPMImage(InpImage:TBitmap;strFname:String):boolean;
+function GetCppString(str:String):string;
+
 function GetWxFontDeclaration(fnt:TFont):String;
+
+function GetWxWidgetParent(cntrl:TControl):String;
+function GetWxWindowControls(wnCtrl:TWinControl):Integer;
+function GetAvailableControlCount(ParentControl:TWinControl;ControlToCheck:TComponent):Integer;overload;
+function GetAvailableControlCount(ParentControl:TWinControl;ControlToCheck:String):Integer;overload;
+function GetMaxIDofWxForm(ParentControl:TWinControl):integer;
+function GetMenuKindAsText(menuStyle:TWxMenuItemStyleItem):String;
+function GetToolButtonKindAsText(toolStyle:TWxToolbottonItemStyleItem):String;
 
 implementation
 
-uses DesignerFrm,wxlistCtrl,WxStaticBitmap,WxBitmapButton,UColorEdit;
+uses DesignerFrm,wxlistCtrl,WxStaticBitmap,WxBitmapButton,WxSizerPanel,WxToolButton,
+     UColorEdit,UMenuitem,WxCustomMenuItem,WxPopupMenu,WxMenuBar,WxNonVisibleBaseComponent;
 
 function GetGridSelectionToString(grdsel:TWxGridSelection):String;
 begin
@@ -348,8 +504,10 @@ function GetWxFontDeclaration(fnt:TFont):String;
 var
     strStyle,strWeight,strUnderline:String;
     fntDefault:TFont;
+    defaultFontName:String;
 begin
     fntDefault:=TFont.Create;
+    defaultFontName:=fntDefault.Name;
 
     Result:='';
     try
@@ -383,8 +541,167 @@ begin
     else
         strUnderline:='FALSE';
 
-   Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS ,'+strStyle+',' + strWeight +',' + strUnderline+',_T("'+ fnt.Name +'"))';
-   
+    if fnt.Name <> defaultFontName then
+        Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS ,'+strStyle+',' + strWeight +',' + strUnderline+',_T("'+ fnt.Name +'"))'
+    else
+        Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS ,'+strStyle+',' + strWeight +',' + strUnderline+')'
+end;
+
+function GetWxWidgetParent(cntrl:TControl):String;
+Var
+    TestCtrl:TControl;
+begin
+    Result:='';
+    if cntrl = nil then
+        exit;
+
+    if cntrl.Parent = nil then
+        exit;
+
+    if cntrl.Parent is TForm then
+    begin
+        Result:='this';
+        exit;
+    end;
+
+    if not (cntrl.Parent is TwxSizerPanel) then
+    begin
+        Result:=cntrl.Parent.Name;
+        exit;
+    end;
+
+    if (cntrl.Parent is TWxSizerPanel) then
+    begin
+        TestCtrl:=cntrl.Parent;
+        Result:=TestCtrl.Name;
+        while ((TestCtrl is TWxSizerPanel)) do 
+        begin
+            if (TestCtrl is TWxSizerPanel) then
+                TestCtrl:=TestCtrl.Parent;
+
+            if TestCtrl = nil then
+            begin
+                Result:='this';
+                break;
+            end;
+            if (TestCtrl is TForm) then
+                Result:='this'
+            else
+                Result:=TestCtrl.Name;
+        end;
+    end; 
+end;
+
+function GetWxWindowControls(wnCtrl:TWinControl):Integer;
+var
+  I: Integer;
+  wndInterface:IWxWindowInterface;
+begin
+    Result:=0;
+    for I := 0 to wnCtrl.ComponentCount - 1 do    // Iterate
+    begin
+        if wnCtrl.Components[i].GetInterface(IID_IWxWindowInterface,wndInterface) then
+            Inc(Result);
+    end;    // for
+end;
+
+function GetMaxIDofWxForm(ParentControl:TWinControl):integer;
+var
+    wxcompInterface:IWxComponentInterface;
+    i:Integer;
+    maxval:Integer;
+begin
+  Result:=0;
+  for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
+  begin
+    if ParentControl.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+    begin
+      maxval:=wxcompInterface.GetIDValue;
+      //sendDeBug(IntToStr(maxval));
+      if wxcompInterface.GetIDValue > Result then
+      begin
+        Result := wxcompInterface.GetIDValue;
+      end;
+    end;
+  end; // for
+
+  if Result = 0 then
+    Result:=1000;
+
+end;
+
+function GetMenuKindAsText(menuStyle:TWxMenuItemStyleItem):String;
+begin
+    Result:='wxITEM_NORMAL';
+    if menuStyle = wxMnuItm_Normal then
+    begin
+        Result:='wxITEM_NORMAL';
+        exit;
+    end;
+
+    if menuStyle = wxMnuItm_Separator then
+    begin
+        Result:='wxITEM_SEPARATOR';
+        exit;
+    end;
+    if menuStyle = wxMnuItm_Radio then
+    begin
+        Result:='wxITEM_RADIO';
+        exit;
+    end;
+    if menuStyle = wxMnuItm_Check then
+    begin
+        Result:='wxITEM_CHECK';
+        exit;
+    end;
+
+end;
+
+function GetToolButtonKindAsText(toolStyle:TWxToolbottonItemStyleItem):String;
+begin
+    Result:='wxITEM_NORMAL';
+    if toolStyle = wxITEM_NORMAL then
+    begin
+        Result:='wxITEM_NORMAL';
+        exit;
+    end;
+
+    if toolStyle = wxITEM_RADIO then
+    begin
+        Result:='wxITEM_RADIO';
+        exit;
+    end;
+    
+    if toolStyle = wxITEM_CHECK then
+    begin
+        Result:='wxITEM_CHECK';
+        exit;
+    end;
+
+end;
+
+function GetAvailableControlCount(ParentControl:TWinControl;ControlToCheck:String):Integer;overload;
+var
+  I: Integer;
+begin
+    Result:=0;
+    for I := 0 to ParentControl.ComponentCount - 1 do    // Iterate
+    begin
+        if strContainsU(ParentControl.Components[i].ClassName,ControlToCheck) then
+            inc(Result);
+    end;    // for
+end;
+
+function GetAvailableControlCount(ParentControl:TWinControl;ControlToCheck:TComponent):Integer;overload;
+var
+  I: Integer;
+begin
+    Result:=0;
+    for I := 0 to ParentControl.ComponentCount - 1 do    // Iterate
+    begin
+        if strContainsU(ParentControl.Components[i].ClassName,ControlToCheck.ClassName) then
+            inc(Result);
+    end;    // for
 end;
 function GetEventNameFromDisplayName(strDisplayName: string; strlst:
   TStringList): string;
@@ -657,6 +974,12 @@ begin
   if wxSP_WRAP in stdStyle then
     strLst.add('wxSP_WRAP');
 
+  if wxSP_HORIZONTAL in stdStyle then
+    strLst.add('wxSP_HORIZONTAL');
+
+  if wxSP_VERTICAL in stdStyle then
+    strLst.add('wxSP_VERTICAL');
+
   if strLst.Count = 0 then
   begin
     Result := '';
@@ -698,6 +1021,12 @@ begin
 
   if wxSL_SELRANGE in stdStyle then
     strLst.add('wxSL_SELRANGE');
+
+  if wxSL_HORIZONTAL in stdStyle then
+    strLst.add('wxSL_HORIZONTAL');
+
+  if wxSL_VERTICAL in stdStyle then
+    strLst.add('wxSL_VERTICAL');
 
 
         
@@ -767,39 +1096,6 @@ begin
   strLst.destroy;
 end;
 
-
-function GetHtmlWindowStyleString(stdStyle:TWxhwndStyleSet):String;
-var
-  I: Integer;
-  strLst: TStringList;
-begin
-  strLst := TStringList.Create;
-  if wxHW_SCROLLBAR_NEVER in stdStyle then
-    strLst.add('wxHW_SCROLLBAR_NEVER');
-
-  if wxHW_SCROLLBAR_AUTO in stdStyle then
-    strLst.add('wxHW_SCROLLBAR_AUTO');
-
-  if wxHW_NO_SELECTION in stdStyle then
-    strLst.add('wxHW_NO_SELECTION');
-
-  if strLst.Count = 0 then
-  begin
-    Result := '';
-  end
-  else
-  begin
-    for I := 0 to strLst.count - 1 do // Iterate
-    begin
-      if i <> strLst.count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + ' ' + strLst[i] + ' ';
-    end; // for
-  end;
-  //sendDebug(Result);
-  strLst.destroy;
-end;
 
 function GetNotebookStyleString(stdStyle:TWxnbxStyleSet):String;
 var
@@ -904,7 +1200,7 @@ var
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
-  
+
   if wxTB_FLAT in stdStyle then
     strLst.add('wxTB_FLAT');
 
@@ -934,7 +1230,7 @@ begin
 
   if wxTB_HORZ_TEXT in stdStyle then
     strLst.add('wxTB_HORZ_TEXT');
-        
+
   if strLst.Count = 0 then
   begin
     Result := '';
@@ -953,8 +1249,325 @@ begin
   strLst.destroy;
 end;
 
-//Here is the end;
+function GetScrolledWindowStyleString(stdStyle:TWxScrWinStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
 
+  if wxRETAINED in stdStyle then
+    strLst.add('wxRETAINED');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+
+function GetHtmlWindowStyleString(stdStyle:TWxHtmlWinStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxHW_SCROLLBAR_NEVER in stdStyle then
+    strLst.add('wxHW_SCROLLBAR_NEVER');
+
+  if wxHW_SCROLLBAR_AUTO in stdStyle then
+    strLst.add('wxHW_SCROLLBAR_AUTO');
+
+  if wxHW_NO_SELECTION  in stdStyle then
+    strLst.add('wxHW_NO_SELECTION ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+
+function GetFileDialogStyleString(stdStyle:TWxFileDialogStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxHIDE_READONLY in stdStyle then
+    strLst.add('wxHIDE_READONLY');
+
+  if wxOVERWRITE_PROMPT in stdStyle then
+    strLst.add('wxOVERWRITE_PROMPT');
+
+  if wxMULTIPLE  in stdStyle then
+    strLst.add('wxMULTIPLE ');
+
+  if wxCHANGE_DIR  in stdStyle then
+    strLst.add('wxCHANGE_DIR ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    Result := ' | ';
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+function GetDirDialogStyleString(stdStyle:TWxDirDialogStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxDD_NEW_DIR_BUTTON in stdStyle then
+    strLst.add('wxDD_NEW_DIR_BUTTON');
+
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    Result := ' , ';
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+
+function GetProgressDialogStyleString(stdStyle:TWxProgressDialogStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxPD_APP_MODAL in stdStyle then
+    strLst.add('wxPD_APP_MODAL');
+
+  if wxPD_AUTO_HIDE in stdStyle then
+    strLst.add('wxPD_AUTO_HIDE');
+
+  if wxPD_CAN_ABORT  in stdStyle then
+    strLst.add('wxPD_CAN_ABORT ');
+
+  if wxPD_ELAPSED_TIME  in stdStyle then
+    strLst.add('wxPD_ELAPSED_TIME ');
+
+  if wxPD_ESTIMATED_TIME in stdStyle then
+    strLst.add('wxPD_ESTIMATED_TIME');
+
+  if wxPD_REMAINING_TIME  in stdStyle then
+    strLst.add('wxPD_REMAINING_TIME ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    Result := ' , ';
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+  
+function GetMessageDialogStyleString(stdStyle:TWxMessageDialogStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxOK in stdStyle then
+    strLst.add('wxOK');
+
+  if wxCANCEL in stdStyle then
+    strLst.add('wxCANCEL');
+
+  if wxYES_NO  in stdStyle then
+    strLst.add('wxYES_NO ');
+
+  if wxYES_DEFAULT  in stdStyle then
+    strLst.add('wxYES_DEFAULT ');
+
+  if wxNO_DEFAULT in stdStyle then
+    strLst.add('wxNO_DEFAULT');
+
+  if wxICON_EXCLAMATION  in stdStyle then
+    strLst.add('wxICON_EXCLAMATION ');
+
+  if wxICON_HAND  in stdStyle then
+    strLst.add('wxICON_HAND ');
+
+  if wxICON_ERROR  in stdStyle then
+    strLst.add('wxICON_ERROR ');
+
+  if wxICON_QUESTION in stdStyle then
+    strLst.add('wxICON_QUESTION');
+
+  if wxICON_INFORMATION  in stdStyle then
+    strLst.add('wxICON_INFORMATION ');
+    
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    Result := ' , ';
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxFR_DOWN in stdStyle then
+    strLst.add('wxFR_DOWN');
+
+  if wxFR_WHOLEWORD in stdStyle then
+    strLst.add('wxFR_WHOLEWORD');
+
+  if wxFR_MATCHCASE  in stdStyle then
+    strLst.add('wxFR_MATCHCASE ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    Result := '';
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+
+function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxFR_REPLACEDIALOG in stdStyle then
+    strLst.add('wxFR_REPLACEDIALOG');
+
+  if wxFR_NOUPDOWN  in stdStyle then
+    strLst.add('wxFR_NOUPDOWN ');
+
+  if wxFR_NOMATCHCASE  in stdStyle then
+    strLst.add('wxFR_NOMATCHCASE ');
+
+  if wxFR_NOWHOLEWORD  in stdStyle then
+    strLst.add('wxFR_NOWHOLEWORD ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    Result := ' , ';
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+
+
+//Here is the end;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
 var
   I: Integer;
@@ -1098,8 +1711,8 @@ begin
   if wxALIGN_RIGHT in stdStyle then
     strLst.add('wxALIGN_RIGHT');
 
-  if wxST_NO_AUTORESIZE in stdStyle then
-    strLst.add('wxST_NO_AUTORESIZE');
+  if wxALIGN_CENTRE in stdStyle then
+    strLst.add('wxALIGN_CENTRE');
 
   if wxST_NO_AUTORESIZE in stdStyle then
     strLst.add('wxST_NO_AUTORESIZE');
@@ -1412,23 +2025,23 @@ begin
     Result := ' , ' + Result;
 end;
 
-//function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxscbrStyleSet):String;
-//var
-//  strA: string;
-//begin
-//  Result := GetStdStyleString(stdstyle);
-//  strA := trim(GetScrollbarStyleString(scbrstyle));
-//  if strA <> '' then
-//  begin
-//    if trim(Result) = '' then
-//      Result := strA
-//    else
-//      Result := Result + ' | ' + strA
-//  end;
-//
-//  if trim(Result) <> '' then
-//    Result := ' , ' + Result;
-//end;
+function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxsbrStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetScrollbarStyleString(scbrstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
 
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;sbtnstyle:TWxsbtnStyleSet):String;
 var
@@ -1522,24 +2135,6 @@ end;
 //    Result := ' , ' + Result;
 //end;
 
-function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;hwndstyle:TWxhwndStyleSet):String;
-var
-  strA: string;
-begin
-  Result := GetStdStyleString(stdstyle);
-  strA := trim(GetHtmlWindowStyleString(hwndstyle));
-  if strA <> '' then
-  begin
-    if trim(Result) = '' then
-      Result := strA
-    else
-      Result := Result + ' | ' + strA
-  end;
-
-  if trim(Result) <> '' then
-    Result := ' , ' + Result;
-end;
-
 function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;nbxstyle:TWxnbxStyleSet):String;
 var
   strA: string;
@@ -1612,6 +2207,42 @@ end;
 //    Result := ' , ' + Result;
 //end;
 
+function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;scrWinStyle:TWxScrWinStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetScrolledWindowStyleString(scrWinStyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;htmlWinStyle:TWxHtmlWinStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetHtmlWindowStyleString(htmlWinStyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
 function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;tbrstyle:TWxtbrStyleSet):String;
 var
   strA: string;
@@ -1639,7 +2270,7 @@ begin
     strTokenToStrings(strColorValue,',',strLst);
     if strLst.Count > 2 then
     begin
-        Result:= RGB(StrToInt(strLst[0]),StrToInt(strLst[2]),StrToInt(strLst[2])) ;
+        Result:= RGB(StrToInt(strLst[0]),StrToInt(strLst[1]),StrToInt(strLst[2])) ;
     end
     else
         Result:= RGB(0,0,0) ;
@@ -1834,6 +2465,59 @@ begin
   end;
 end;
 
+function IsControlWxWindow(ctrl:TControl):Boolean;
+Var
+    cntIntf:IWxWindowInterface;
+begin
+    Result:=false;
+    if not assigned(ctrl) then
+        Exit;
+    Result:=ctrl.GetInterface(IID_IWxWindowInterface,cntIntf);
+end;
+
+function IsControlWxSizer(ctrl:TControl):Boolean;
+Var
+    cntIntf:IWxContainerAndSizerInterface;
+begin
+    Result:=false;
+    if not assigned(ctrl) then
+        Exit;
+    Result:=ctrl.GetInterface(IID_IWxContainerAndSizerInterface,cntIntf);
+end;
+function IsControlWxContainer(ctrl:TControl):Boolean;
+Var
+    cntIntf:IWxContainerInterface;
+begin
+    Result:=false;
+    if not assigned(ctrl) then
+        Exit;
+    Result:=ctrl.GetInterface(IDD_IWxContainerInterface,cntIntf);
+end;
+
+function IsControlWxToolBar(ctrl:TControl):Boolean;
+Var
+    cntIntf:IWxToolBarInterface;
+begin
+    Result:=false;
+    if not assigned(ctrl) then
+        Exit;
+    Result:=ctrl.GetInterface(IID_IWxToolBarInterface,cntIntf);
+end;
+
+function IsControlWxStatusBar(ctrl:TControl):Boolean;
+Var
+    cntIntf:IWxStatusBarInterface;
+begin
+    Result:=false;
+    if not assigned(ctrl) then
+        Exit;
+    Result:=ctrl.GetInterface(IDD_IWxStatusBarInterface,cntIntf);
+end;
+
+function IsControlWxNonVisible(ctrl:TControl):Boolean;
+begin
+    Result:=ctrl is TWxNonVisibleBaseComponent;
+end;
 function GetWxIDString(strID: string; intID: LongInt): string;
 begin
   if intID > 0 then
@@ -1846,7 +2530,17 @@ begin
   else
     Result := '-1';
 end;
-
+function GetNonVisualComponentCount(frmMainObj:TForm):Integer;
+var
+  I: Integer;
+begin
+    Result:=0;
+    for I := 0 to frmMainObj.ComponentCount - 1 do    // Iterate
+    begin
+        if frmMainObj.components[i] is TWxNonVisibleBaseComponent then
+            inc(Result);
+    end;    // for
+end;
 function AlignmentToStr(taPos: TAlignment): string;
 begin
   Result := '';
@@ -1940,7 +2634,9 @@ pow:=retval;
 end;
 
 begin
-
+    Result:='';
+    Result:=GetXPMFromTPictureXXX(XPMName,delphiBitmap);
+    exit;
     Result:='';
 begin
 //   Form1.Enabled:=False;
@@ -1948,6 +2644,7 @@ begin
 //   Form2.Show;
    StrPCopy(usechrs,' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
    pal:=TList.Create;                    { Create TList to form our palette }
+   delphiBitmap.Transparent:=true;
    iWidth:=delphiBitmap.Width;
    iHeight:=delphiBitmap.Height;
    if iWidth>180 then iWidth:=180;
@@ -2121,7 +2818,7 @@ begin
 end;
 end;
 
-function GetRawXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
+function GetXPMFromTPictureXXX(XPMName:String;delphiBitmap:TBitmap):String;
 var
   I: Integer;
    iWidth: Integer;
@@ -2139,6 +2836,221 @@ var
    pal: TList;
    found: Boolean;
    strlst:TStringList;
+   strLine:String;
+   label Finish1;
+function pow(base: Integer; index: Integer): Integer;
+var
+   retval: Integer;
+   ittr: Integer;
+begin
+retval:=1;
+for ittr:=1 to index do retval:=retval*base;
+pow:=retval;
+end;
+
+begin
+
+    Result:='';
+begin
+//   Form1.Enabled:=False;
+//   Form2.Gauge1.Progress:=0;
+//   Form2.Show;
+   StrPCopy(usechrs,' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
+   pal:=TList.Create;                    { Create TList to form our palette }
+   delphiBitmap.Transparent:=true;
+   iWidth:=delphiBitmap.Width;
+   iHeight:=delphiBitmap.Height;
+   if iWidth>180 then iWidth:=180;
+   if iHeight>180 then iHeight:=180;
+   GetMem(image,SizeOf(Integer)*iWidth*iHeight); { Allocate space for image }
+                        { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
+   cpos:=@image^;     { This will be a pointer to current position in image }
+   for ypos:=0 to iHeight-1 do begin
+      for xpos:=0 to iWidth-1 do begin
+         ccol:=delphiBitmap.Canvas.Pixels[xpos,ypos];
+         found:=False;
+         for palindex:=0 to pal.Count-1 do begin { Search palette for color }
+            tcol:=TColor(pal.Items[palindex]^);
+            if tcol=ccol then begin                             { Found it! }
+               found:=True;
+               cindex:=palindex;        { Remember it's position in palette }
+               break;
+            end;
+         end;
+         if not found then begin             { Add new color to our palette }
+            New(lcol);
+            lcol^:=ccol;
+            pal.Add(lcol);
+            cindex:=pal.Count-1;
+         end;
+         cpos^:=cindex;                { Store palette index for this pixel }
+         Inc(cpos);                                 { Move on to next pixel }
+      end;
+
+//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+//      Application.ProcessMessages;
+//      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+
+   end;
+
+   //AssignFile(F,SaveDialog1.Filename);
+   //Rewrite(F);
+   rval:=ln(pal.Count)/ln(64);
+   cpp:=trunc(rval);
+   if(cpp<>rval) then Inc(cpp);
+   //Writeln(F,'/* XPM */');
+   Result:=Result+'/* '+XPMName+' XPM */'+#13;
+   StrFmt(outline,'static char *%s',[XPMName]);
+   strLine:=outline;
+   cp:=StrScan(outline,'.');
+   if cp<>nil then cp[0]:=#0;
+   StrCat(outline,'_XPM[]={');
+   strLine:=outline;
+   //Writeln(F,outline);
+   Result:=Result+outline+#13;
+   StrFmt(outline,'"%d %d %d %d",',[iWidth,iHeight,pal.Count,cpp]);
+   strLine:=outline;
+   //Writeln(F,outline);
+   strLine:=outline;
+   Result:=Result+outline+#13;
+   for palindex:=0 to pal.Count-1 do begin
+      ccol:=TColor(pal.Items[palindex]^);
+      ccol:=ccol mod (256*256*256);
+      if palindex = 0 then
+        StrFmt(outline,'"      c None",',[''])
+      else
+        StrFmt(outline,'"      c #%s%s%s",',[IntToHex(ccol mod 256,2), IntToHex((ccol div 256) mod 256,2),IntToHex(ccol div (256*256),2)]);
+
+      strLine:=outline;
+      cindex:=palindex;
+      for pixc:=1 to cpp do begin
+         outline[pixc]:=usechrs[cindex div pow(64,cpp-pixc)];
+         cindex:=cindex mod pow(64,cpp-pixc);
+         strLine:=outline;
+      end;
+      strLine:=outline;
+//      if AnsiStartsText('"      c #',strLine) then
+//      begin
+//        strLine:='"      c #FFFFFF",';
+//        Result:=Result+strLine+#13;
+//      end
+//      else
+      begin
+        Result:=Result+outline+#13;
+      end;
+   end;
+   cpos:=@image^;
+   for ypos:=0 to iHeight-1 do begin
+      StrPCopy(outline,'"');
+      for xpos:=0 to iWidth-1 do begin
+         cindex:=cpos^;
+         for pixc:=1 to cpp do begin
+            outline[xpos*cpp+pixc]:=usechrs[cindex div pow(64,cpp-pixc)];
+            cindex:=cindex mod pow(64,cpp-pixc);
+         end;
+         Inc(cpos);
+      end;
+      outline[cpp*(xpos+1)+1]:=#0;
+      if ypos<iHeight-1 then StrCat(outline,'",') else StrCat(outline,'"};');
+      //Writeln(F,outline);
+      Result:=Result+outline+#13;
+   end;
+   //Finish2:
+   //CloseFile(F);
+
+   Finish1:
+   FreeMem(image,SizeOf(Integer)*iWidth*iHeight);
+   for palindex:=0 to pal.Count-1 do Dispose(pal.Items[palindex]);
+   pal.Free;
+//   Form2.Hide;
+//   Form1.Enabled:=True;
+    strlst:=TStringList.Create;
+    strlst.text:=Result;
+    for I := 0 to strlst.Count - 1 do    // Iterate
+    begin
+        strLine:=trim(strlst[i]);
+        //sendDebug(IntToStr(i)+' Old # = '+IntToStr(Length(strlst[i])));
+
+        if AnsiEndsText('","",',strLine) then
+        begin
+            //not tested
+            strLine:=copy(strLine,0,length(strLine) -5);
+            if not AnsiEndsText('",',strLine) then
+                strlst[i]:=strLine+'",';
+        end;
+
+        strLine:=trim(strlst[i]);
+
+        if AnsiEndsText('"",',strLine) then
+        begin
+            //tested
+            strLine:=copy(strLine,0,length(strLine) -3);
+            if not AnsiEndsText('",',strLine) then
+                strlst[i]:=strLine+'",';
+        end;
+
+        strLine:=trim(strlst[i]);
+        if AnsiEndsText('",",',strLine) then
+        begin
+            //tested
+            strLine:=copy(strLine,0,length(strLine) -4);
+            if not AnsiEndsText('",',strLine) then
+                strlst[i]:=strLine+'",';
+        end;
+
+        strLine:=trim(strlst[i]);
+
+        if AnsiEndsText('",""};',strLine) then
+        begin
+            strLine:=copy(strLine,0,length(strLine) -6);
+            if not AnsiEndsText('"};',strLine) then
+                strlst[i]:=strLine+'"};';
+        end;
+
+        strLine:=trim(strlst[i]);
+       if AnsiEndsText('""};',strLine) then
+        begin
+            //not test
+            strLine:=copy(strLine,0,length(strLine) -4);
+            if not AnsiEndsText('"};',strLine) then
+                strlst[i]:=strLine+'"};';
+        end;
+
+        strLine:=trim(strlst[i]);
+       if AnsiEndsText('","};',strLine) then
+        begin
+            //not test
+            strLine:=copy(strLine,0,length(strLine) -5);
+            if not AnsiEndsText('"};',strLine) then
+                strlst[i]:=strLine+'"};';
+        end;
+
+        //sendDebug(IntToStr(i)+' New # = '+IntToStr(Length(strlst[i])));
+
+    end;    // for
+
+    Result:=strlst.text;
+
+    strlst.destroy;
+end;
+end;
+
+function GetRawXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
+var
+   iWidth: Integer;
+   iHeight: Integer;
+   xpos, ypos, palindex, cindex, cpp: Integer;
+   cp: PChar;
+   pixc: Integer;
+   outline: array[0..800] of Char;
+   usechrs: array[0..64] of Char;
+   rval: Real;
+   ccol, tcol: TColor;
+   lcol: ^TColor;
+   image: ^Integer;
+   cpos: ^Integer;
+   pal: TList;
+   found: Boolean;
    strLine:String;
    label Finish1;
 function pow(base: Integer; index: Integer): Integer;
@@ -2257,14 +3169,13 @@ end;
 
 function GenerateXPMDirectly(bmp:TBitmap;strCompName:String;strFileName:String):boolean;
 var
-  I: Integer;
   xpmFileDir:String;
   fileStrlst:TStringList;
-  strXPMContent,strRawXPMContent:String;
+  strXPMContent:String;
 
 begin
     xpmFileDir:=IncludetrailingBackslash(ExtractFileDir(strFileName));
-    
+
     if bmp.handle <> 0 then
     begin
         fileStrlst:=TStringList.Create;
@@ -2291,6 +3202,131 @@ begin
 
 end;
 
+function GetCppString(str:String):string;
+begin
+    Result:=str;
+    strSearchReplace(Result,'"','\"',[srAll]);
+end;
+
+function OpenXPMImage(InpImage:TBitmap;strFname:String):boolean;
+type
+   TPalRec=record
+      chrs: PChar;
+      color: TColor;
+   end;
+function HexVal(chr: Char): Integer;
+begin
+   if (chr>='a') and (chr<='f') then HexVal:=Ord(chr)-Ord('a')+10 else HexVal:=Ord(chr)-Ord('0');
+end;
+
+var
+   iWidth: Integer;
+   iHeight: Integer;
+   cpp, colors, col, ypos, xpos, hexc, infield: Integer;
+   fieldstr: array[0..256] of Char;
+   fieldval: Integer;
+   rgb1, rgb2, rgb3: Integer;
+   inpline: array[0..800] of Char;
+   capline: array[0..256] of Char;
+   pal: TList;
+   palitem: ^TPalRec;
+   cp1,cp2: PChar;
+   F: TextFile;
+   ColorDialog1:TColorDialog;
+   label Finish1;
+begin
+begin
+   AssignFile(F,strFname);
+   Reset(F);
+   inpline[0]:=#0;
+   while inpline[0]<>'"' do Readln(F,inpline);
+
+   infield:=0;
+   fieldstr[0]:=#0;
+   cp1:=inpline+1;
+   while cp1<=StrScan(inpline+1,'"') do begin
+      if (cp1[0]=' ') or (cp1[0]='"') then begin
+         if fieldstr[0]<>#0 then begin
+            Inc(infield);
+            fieldval:=StrToInt(StrPas(fieldstr));
+            fieldstr[0]:=#0;
+            if infield=1 then iWidth:=fieldval;
+            if infield=2 then iHeight:=fieldval;
+            if infield=3 then colors:=fieldval;
+            if infield=4 then cpp:=fieldval;
+         end;
+      end
+      else begin
+         fieldstr[StrLen(fieldstr)+1]:=#0;
+         fieldstr[StrLen(fieldstr)]:=cp1[0];
+      end;
+      Inc(cp1);
+   end;
+
+   pal:=TList.Create;
+   for col:=0 to colors-1 do begin
+      inpline[0]:=#0;
+      while inpline[0]<>'"' do Readln(F,inpline);
+      inpline[cpp+1]:=#0;
+      New(palitem);
+      palitem^.chrs:=StrAlloc(cpp+1);
+      StrCopy(palitem^.chrs,inpline+1);
+      cp1:=StrScan(inpline+cpp+2,'c')+1;
+      cp1:=SysUtils.StrLower(cp1);
+      if StrScan(cp1,'#')=nil then begin
+         StrCopy(capline,'What color does "');
+         StrCat(capline,cp1);
+         StrCat(capline,' represent?');
+         Application.MessageBox(capline,'Select Color', mb_OK);
+         ColorDialog1:=TColorDialog.Create(nil);
+         ColorDialog1.Execute;
+         palitem^.color:=ColorDialog1.Color;
+      end
+      else begin
+         cp1:=StrScan(cp1,'#')+1;
+         cp2:=StrScan(cp1,'"');
+         cp2[0]:=#0;
+         hexc:=StrLen(cp1) div 3;
+         rgb1:=HexVal(cp1[0])*16+HexVal(cp1[1]);
+         rgb2:=HexVal(cp1[hexc])*16+HexVal(cp1[hexc+1]);
+         rgb3:=HexVal(cp1[2*hexc])*16+HexVal(cp1[2*hexc+1]);
+         palitem^.color:=longint(rgb1)+256*longint(rgb2)+256*256*longint(rgb3);
+      end;
+      pal.Add(palitem);
+   end;
+
+   InpImage.Height:=iHeight;
+   InpImage.Width:=iWidth;
+   cp1:=StrAlloc(cpp+1);
+   for ypos:=0 to iHeight-1 do begin
+      inpline[0]:=#0;
+      while inpline[0]<>'"' do Readln(F,inpline);
+      for xpos:=0 to iWidth-1 do begin
+         StrLCopy(cp1,inpline+xpos*cpp+1,cpp);
+         for col:=0 to colors-1 do begin
+             palitem:=pal.Items[col];
+             if SysUtils.StrComp(palitem^.chrs,cp1)=0 then break;
+         end;
+         InpImage.Canvas.Pixels[xpos,ypos]:=palitem^.color;
+      end;
+      //Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+      Application.ProcessMessages;
+   end;
+
+   Finish1:
+   StrDispose(cp1);
+
+   for col:=0 to colors-1 do begin
+      palitem:=pal.Items[col];
+      StrDispose(palitem^.chrs);
+      Dispose(palitem);
+   end;
+   pal.Free;
+
+   CloseFile(F);
+end;
+
+end;
 
 function IcoToBmp(Icon : TIcon):TBitmap;
 begin
@@ -2518,6 +3554,228 @@ end;
 
 end;
 
+function PaperIDToString(sizeitem:TWxPaperSizeItem):String;
+begin
+    Result:='wxPAPER_NONE';
+    
+    if sizeitem = wxPAPER_NONE then
+    begin
+        Result:='wxPAPER_NONE';
+        Exit;
+    end;
+
+
+    if sizeitem = wxPAPER_LETTER then
+    begin
+        Result:='wxPAPER_LETTER';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_LEGAL then
+    begin
+        Result:='wxPAPER_LEGAL';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_A4 then
+    begin
+        Result:='wxPAPER_A4';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_CSHEET then
+    begin
+        Result:='wxPAPER_CSHEET';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_DSHEET then
+    begin
+        Result:='wxPAPER_DSHEET';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ESHEET then
+    begin
+        Result:='wxPAPER_ESHEET';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_LETTERSMALL then
+    begin
+        Result:='wxPAPER_LETTERSMALL';
+        Exit;
+    end;
+
+    if sizeitem = wxPAPER_TABLOID then
+    begin
+        Result:='wxPAPER_TABLOID';
+        Exit;
+    end;
+  if sizeitem = wxPAPER_LEDGER then
+    begin
+        Result:='wxPAPER_LEDGER';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_STATEMENT then
+    begin
+        Result:='wxPAPER_STATEMENT';
+        Exit;
+    end;
+    if sizeitem =wxPAPER_EXECUTIVE  then
+    begin
+        Result:='wxPAPER_EXECUTIVE';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_NOTE then
+    begin
+        Result:='wxPAPER_NOTE';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_9 then
+    begin
+        Result:='wxPAPER_ENV_9';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_A3 then
+    begin
+        Result:='wxPAPER_A3';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_A4SMALL then
+    begin
+        Result:='wxPAPER_A4SMALL';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_A5 then
+    begin
+        Result:='wxPAPER_A5';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_B4 then
+    begin
+        Result:='wxPAPER_B4';
+        Exit;
+    end;
+
+    if sizeitem =  wxPAPER_B5 then
+    begin
+        Result:='wxPAPER_B5';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_FOLIO then
+    begin
+        Result:='wxPAPER_FOLIO';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_QUARTO then
+    begin
+        Result:='wxPAPER_QUARTO';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_10X14 then
+    begin
+        Result:='wxPAPER_10X14';
+        Exit;
+    end;
+
+    if sizeitem = wxPAPER_11X17 then
+    begin
+        Result:='wxPAPER_11X17';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_10 then
+    begin
+        Result:='wxPAPER_ENV_10';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_11 then
+    begin
+        Result:='wxPAPER_ENV_11';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_12 then
+    begin
+        Result:='wxPAPER_ENV_12';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_14 then
+    begin
+        Result:='wxPAPER_ENV_14';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_DL then
+    begin
+        Result:='wxPAPER_ENV_DL';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_C5 then
+    begin
+        Result:='wxPAPER_ENV_C5';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_C3  then
+    begin
+        Result:='wxPAPER_ENV_C3';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_C4 then
+    begin
+        Result:='wxPAPER_ENV_C4';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_C6 then
+    begin
+        Result:='wxPAPER_ENV_C6';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_C65 then
+    begin
+        Result:='wxPAPER_ENV_C65';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_B4 then
+    begin
+        Result:='wxPAPER_ENV_B4';
+        Exit;
+    end;
+
+    if sizeitem = wxPAPER_ENV_B5 then
+    begin
+        Result:='wxPAPER_ENV_B5';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_B6 then
+    begin
+        Result:='wxPAPER_ENV_B6';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_ITALY then
+    begin
+        Result:='wxPAPER_ENV_ITALY';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_ENV_MONARCH then
+    begin
+        Result:='wxPAPER_ENV_MONARCH';
+        Exit;
+    end;
+    if sizeitem =  wxPAPER_ENV_PERSONAL then
+    begin
+        Result:='wxPAPER_ENV_PERSONAL';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_FANFOLD_US then
+    begin
+        Result:='wxPAPER_FANFOLD_US';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_FANFOLD_STD_GERMAN then
+    begin
+        Result:='wxPAPER_FANFOLD_STD_GERMAN';
+        Exit;
+    end;
+    if sizeitem = wxPAPER_FANFOLD_LGL_GERMAN then
+    begin
+        Result:='wxPAPER_FANFOLD_LGL_GERMAN';
+        Exit;
+    end;
+    
+end;
 //-------------------------------------------------------------------------------
 function IsDefaultColorStr(strvalue:String):boolean;
 begin
@@ -2731,9 +3989,189 @@ begin
     Result:=clBtnHighlight	;
     exit;
 end;
+end;
+{-------------------------------------------------------}
+//=== { TSLEditorForm } ======================================================
 
+type
+  TSLEditorForm = class(TCustomForm)
+  public
+    grp: TGroupBox;
+    lbl: TLabel;
+    mm: TMemo;
+    btnOK: TButton;
+    btnCancel: TButton;
+    OnContentsChanged: TNotifyEvent;
+    constructor CreateNew(AOwner: TComponent); reintroduce;
+    procedure MemoChanged(Sender: TObject);
+  end;
+
+constructor TSLEditorForm.CreateNew(AOwner: TComponent);
+begin
+  inherited CreateNew(AOwner);
+  Caption := 'String List Editor';
+  Width := 435;
+  Height := 305;
+  BorderIcons := [biSystemMenu];
+  grp := TGroupBox.Create(Self);
+  grp.Parent := Self;
+  grp.Left := 10;
+  grp.Top := 10;
+  grp.Width := ClientWidth - 20;
+  grp.Height := 230;
+  grp.Anchors := [akTop, akLeft, akRight, akBottom];
+  lbl := TLabel.Create(Self);
+  lbl.Parent := grp;
+  lbl.Caption := '';
+  lbl.AutoSize := False;
+  lbl.Left := 10;
+  lbl.Top := 10;
+  lbl.Width := grp.ClientWidth - 20;
+  lbl.Anchors := [akTop, akLeft, akRight];
+  mm := TMemo.Create(Self);
+  mm.Parent := grp;
+  mm.Left := 10;
+  mm.Top := 30;
+  mm.Width := grp.ClientWidth - 20;
+  mm.Height := grp.ClientHeight - 40;
+  mm.Anchors := [akTop, akLeft, akRight, akBottom];
+  mm.ScrollBars := ssBoth;
+  mm.WordWrap := False;
+  mm.WantReturns := True;
+  mm.WantTabs := False;
+  mm.OnChange := MemoChanged;
+  btnOK := TButton.Create(Self);
+  btnOK.Parent := Self;
+  btnOK.ModalResult := mrOK;
+  btnOK.Default := True;
+  btnOK.Caption := 'Ok';
+  btnOK.Left := ClientWidth - 15 - 2 * btnOK.Width;
+  btnOK.Top := ClientHeight - 5 - btnOK.Height;
+  btnOK.Anchors := [akRight, akBottom];
+  btnCancel := TButton.Create(Self);
+  btnCancel.Parent := Self;
+  btnCancel.ModalResult := mrCancel;
+  btnCancel.Cancel := True;
+  btnCancel.Caption := 'Cancel';
+  btnCancel.Left := ClientWidth - 10 - btnCancel.Width;
+  btnCancel.Top := ClientHeight - 5 - btnCancel.Height;
+  btnCancel.Anchors := [akRight, akBottom];
+  Constraints.MinWidth := 2 * btnOK.Width + 25 + (Width - ClientWidth);
+  Constraints.MinHeight := (ClientHeight - mm.ClientHeight) + 43 + (Height - ClientHeight);
 end;
 
+procedure TSLEditorForm.MemoChanged(Sender: TObject);
+var
+  I: Integer;
+begin
+  I := mm.Lines.Count;
+  if I <> 1 then
+    lbl.Caption := IntToStr(I) + ' lines'
+  else
+    lbl.Caption := '1 line';
+  if Assigned(OnContentsChanged) then
+    OnContentsChanged(Sender);
+end;
+
+//=== { TJvInspectorTStringsItem } ===========================================
+
+constructor TWxJvInspectorTStringsItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  RowSizing.MinHeight := irsItemHeight;
+  Flags := Flags + [iifEditButton];
+end;
+
+procedure TWxJvInspectorTStringsItem.ContentsChanged(Sender: TObject);
+var
+  Obj: TStrings;
+begin
+  Obj := TStrings(Data.AsOrdinal);
+  Obj.Text := TMemo(Sender).Lines.Text;
+end;
+
+function TWxJvInspectorTStringsItem.GetDisplayValue: string;
+begin
+    Result := 'Edit Strings';
+end;
+
+procedure TWxJvInspectorTStringsItem.Edit;
+var
+  SL: TStrings;
+begin
+  with TSLEditorForm.CreateNew(Inspector) do
+  try
+    SL := TStrings(Data.AsOrdinal);
+    mm.Lines.Assign(SL);
+    if AutoUpdate then
+      OnContentsChanged := ContentsChanged;
+    if ShowModal = mrOK then
+    begin
+      SL.Assign(mm.Lines);
+      if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+      begin
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+      end;
+    end;
+  finally
+    Free;
+  end;
+end;
+
+procedure TWxJvInspectorTStringsItem.SetDisplayValue(const Value: string);
+var
+  Obj: TObject;
+begin
+  if Multiline then
+  begin
+    Obj := TObject(Data.AsOrdinal);
+    TStrings(Obj).Text := Value;
+  end;
+end;
+
+procedure TWxJvInspectorTStringsItem.SetFlags(const Value: TInspectorItemFlags);
+var
+  OldMask: TInspectorItemFlags;
+  NewMask: TInspectorItemFlags;
+begin
+  { The item has either an edit button or is multiline. If one of them is set,
+    the other one will be removed }
+  OldMask := Flags * [iifEditButton, iifMultiLine];
+  NewMask := Value * [iifEditButton, iifMultiLine];
+  if OldMask <> NewMask then
+  begin
+    if Multiline and not (iifEditButton in OldMask) and (iifEditButton in NewMask) then
+      inherited SetFlags(Value - [iifMultiLine]) // iifEditButton has changed
+    else
+    if not Multiline and (iifEditButton in OldMask) and (iifMultiLine in NewMask) then
+      inherited SetFlags(Value - [iifEditButton]) // iifMultiLine has changed
+    else
+      inherited SetFlags(Value); // Neither flag has changed. Should never occur.
+  end
+  else // Flags have not changed
+    inherited SetFlags(Value);
+  if RowSizing <> nil then
+  begin
+    RowSizing.Sizable := Multiline; // Update sizable state
+    if not Multiline then
+      RowSizing.SizingFactor := irsNoReSize
+    else
+      RowSizing.SizingFactor := irsValueHeight;
+  end;
+end;
+
+class procedure TWxJvInspectorTStringsItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStrings)));
+  end;
+end;
+
+
+{-------------------------------------------------------}
 procedure TJvInspectorColorEditItem.Edit;
 var
   ColorEditForm: TColorEdit;
@@ -2847,6 +4285,84 @@ begin
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TListItems)));
   end;
 end;
+//-------------------------------------------------------------------------------
+
+
+procedure TJvInspectorStatusBarItem.Edit;
+var
+  sbForm: TStatusBarForm;
+  i: Integer;
+  stPnl: TStatusPanel;
+begin
+
+  sbForm := TStatusBarForm.Create(GetParentForm(Inspector));
+  try
+    sbForm.StatusBarObj.Panels.Clear;
+    for i := 0 to
+      TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Count - 1
+      do
+    begin
+      stPnl := sbForm.StatusBarObj.Panels.Add;
+      stPnl.Text :=TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Text;
+      stPnl.Width :=TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Width;
+    end;
+    sbForm.fillListInfo;
+
+    if sbForm.ShowModal <> mrOK then
+    begin
+      Exit;
+    end
+    else
+    begin
+      TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).panels.Clear;
+      for i := 0 to sbForm.StatusBarObj.Panels.Count - 1 do
+      begin
+        stPnl :=
+          TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Add;
+        stPnl.Text := sbForm.StatusBarObj.Panels[i].Text;
+        stPnl.Width := sbForm.StatusBarObj.Panels[i].Width;
+      end;
+    end;
+
+    if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+    begin
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+    end;
+
+  finally
+    sbForm.Destroy;
+  end;
+
+end;
+
+function TJvInspectorStatusBarItem.GetDisplayValue: string;
+begin
+  Result := 'Edit Fields';
+end;
+
+procedure TJvInspectorStatusBarItem.SetDisplayValue(const Value: string);
+begin
+  //
+end;
+
+procedure TJvInspectorStatusBarItem.SetFlags(const Value:
+  TInspectorItemFlags);
+var
+  NewValue: TInspectorItemFlags;
+begin
+  NewValue := Value + [iifEditButton];
+  inherited SetFlags(NewValue);
+end;
+
+class procedure TJvInspectorStatusBarItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStatusPanels)));
+  end;
+end;
+
 //-------------------------------------------------------------------------------
 
 procedure TJvInspectorListColumnsItem.Edit;
@@ -2968,13 +4484,16 @@ var
   PictureEdit: TPictureEdit;
   picObj:Tpicture;
   strClassName:String;
-  bmp:TBitmap;
 begin
   PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
   strClassName:=UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName);
 
   if  strClassName = UpperCase('TWxBitmapButton') then
     PictureEdit.Image1.Picture.Assign(TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+
+  if  strClassName = UpperCase('TWxToolButton') then
+    PictureEdit.Image1.Picture.Assign(TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+
 
   if  strClassName = UpperCase('TWxStaticBitmap') then
     PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture);
@@ -3017,12 +4536,17 @@ begin
             TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
         end;
 
+        if  strClassName = UpperCase('TWxToolButton') then
+        begin
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.assign(picObj);
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent:=true;
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+        end;
+
         if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
         begin
             TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
         end;
-
-
     end;
 
   finally
@@ -3061,7 +4585,6 @@ procedure TJvInspectorMyFontItem.Edit;
 var
   FontDlg: TFontDialog;
   fnt:TFont;
-  strColorValue:String;
   compIntf: IWxComponentInterface;
   prevColor:TColor;
   ColorInt:Integer;
@@ -3125,6 +4648,104 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+procedure TJvInspectorMenuItem.Edit;
+var
+  mnuDlg: TMenuItemForm;
+  mnuItem:TMenuItem;
+  testMnu:TMenuItem;
+  pMenuItem:TWxPopupMenu;
+  mbItem:TWxMenuBar;
+  ownerComp:TWinControl;
+  maxControlValue:Integer;
+begin
+   mnuDlg := TMenuItemForm.Create(Inspector);
+   try
+   if (TJvInspectorPropData(Self.GetData()).Instance is TWxPopupMenu) then
+   begin
+        pMenuItem:=TWxPopupMenu(TJvInspectorPropData(Self.GetData()).Instance);
+        maxControlValue:=GetMaxIDofWxForm(pMenuItem.parent);
+        mnuDlg.SetMaxID(maxControlValue);
+        ownerComp:=pMenuItem.parent;
+        mnuDlg.SetMenuItemsDes(pMenuItem.Parent,pMenuItem,TWxCustomMenuItem(pMenuItem.Wx_MenuItems),mnuDlg.FMenuItems);
+   end;
 
+   if (TJvInspectorPropData(Self.GetData()).Instance is TWxMenuBar) then
+   begin
+        mbItem:=TWxMenuBar(TJvInspectorPropData(Self.GetData()).Instance);
+        maxControlValue:=GetMaxIDofWxForm(mbItem.parent);
+        mnuDlg.SetMaxID(maxControlValue);
+        ownerComp:=mbItem.parent;
+        mnuDlg.SetMenuItemsDes(mbItem.Parent,mbItem,TWxCustomMenuItem(mbItem.Wx_MenuItems),mnuDlg.FMenuItems);
+   end;
+
+    if mnuDlg.ShowModal <> mrOk then
+        exit;
+
+   if (TJvInspectorPropData(Self.GetData()).Instance is TWxMenuBar) then
+   begin
+       mbItem.Wx_MenuItems.destroy;
+       mbItem.Wx_MenuItems:=TWxCustomMenuItem.Create(mbItem);
+       mnuDlg.SetMenuItemsDes(mbItem.Parent,mbItem,mnuDlg.FMenuItems, TWxCustomMenuItem(mbItem.Wx_MenuItems));
+       mbItem.BuildMenus(mbItem.Wx_MenuItems);
+   end;
+
+   if (TJvInspectorPropData(Self.GetData()).Instance is TWxPopupMenu) then
+   begin
+       pMenuItem.Wx_MenuItems.destroy;
+       pMenuItem.Wx_MenuItems:=TWxCustomMenuItem.Create(pMenuItem);
+       mnuDlg.SetMenuItemsDes(pMenuItem.Parent,pMenuItem,mnuDlg.FMenuItems, TWxCustomMenuItem(pMenuItem.Wx_MenuItems));
+   end;
+
+    if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+    begin
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+    end;
+
+//        if prevColor <> fnt.Color then
+//        begin
+//            if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(IID_IWxComponentInterface, compIntf) then
+//            begin
+//                ColorInt := ColorToRGB(fnt.Color);
+//                compIntf.SetFGColor('CUS:'+IntToStr(GetRValue(ColorInt))+','+IntToStr(GetGValue(ColorInt))+',' + IntToStr(GetBValue(ColorInt)));
+//            end;
+//        end;
+//
+//        if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+//        begin
+//            TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+//        end;
+
+    finally
+        mnuDlg.Destroy;
+    end;
+end;
+
+function TJvInspectorMenuItem.GetDisplayValue: string;
+begin
+    Result := 'Edit MenuItems';
+end;
+
+procedure TJvInspectorMenuItem.SetDisplayValue(const Value: string);
+begin
+  //
+end;
+
+procedure TJvInspectorMenuItem.SetFlags(const Value: TInspectorItemFlags);
+var
+  NewValue: TInspectorItemFlags;
+begin
+  NewValue := Value + [iifEditButton];
+  inherited SetFlags(NewValue);
+end;
+
+class procedure TJvInspectorMenuItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxCustomMenuItem)));
+  end;
+end;
 
 end.

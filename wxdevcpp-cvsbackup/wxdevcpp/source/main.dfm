@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 236
-  Top = 105
+  Left = 201
+  Top = 107
   Width = 776
   Height = 579
   Color = clBtnFace
@@ -24,9 +24,9 @@ object MainForm: TMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object SplitterLeft: TSplitter
-    Left = 225
+    Left = 209
     Top = 100
-    Width = 4
+    Width = 3
     Height = 274
     Cursor = crHSplit
     AutoSnap = False
@@ -818,7 +818,7 @@ object MainForm: TMainForm
     object tbCompile: TToolBar
       Left = 11
       Top = 30
-      Width = 138
+      Width = 164
       Height = 22
       AutoSize = True
       Caption = 'Compile and Run'
@@ -842,29 +842,34 @@ object MainForm: TMainForm
         Top = 0
         Action = actRun
       end
-      object CompileAndRunBtn: TToolButton
-        Left = 46
-        Top = 0
-        Action = actCompRun
-      end
       object RebuildAllBtn: TToolButton
-        Left = 69
+        Left = 46
         Top = 0
         Action = actRebuild
       end
-      object DebugBtn: TToolButton
-        Left = 92
+      object CompileAndRunBtn: TToolButton
+        Left = 69
         Top = 0
-        Action = actDebug
+        Action = actCompRun
       end
       object ProgramResetBtn: TToolButton
-        Left = 115
+        Left = 92
         Top = 0
         Action = actProgramReset
       end
+      object DebugBtn: TToolButton
+        Left = 115
+        Top = 0
+        Action = actDebug
+      end
+      object DebugStopBtn: TToolButton
+        Left = 138
+        Top = 0
+        Action = actStopExecute
+      end
     end
     object tbOptions: TToolBar
-      Left = 162
+      Left = 188
       Top = 30
       Width = 46
       Height = 22
@@ -1008,7 +1013,7 @@ object MainForm: TMainForm
       end
     end
     object tbSpecials: TToolBar
-      Left = 221
+      Left = 247
       Top = 30
       Width = 243
       Height = 22
@@ -1127,9 +1132,9 @@ object MainForm: TMainForm
     UseSystemFont = False
   end
   object PageControl: TPageControl
-    Left = 229
+    Left = 212
     Top = 100
-    Width = 369
+    Width = 386
     Height = 274
     Align = alClient
     PopupMenu = EditorPopupMenu
@@ -1193,32 +1198,34 @@ object MainForm: TMainForm
     Height = 274
     Align = alRight
     TabOrder = 6
+    Visible = False
   end
   object pnlBrowsers: TPanel
     Left = 0
     Top = 100
-    Width = 225
+    Width = 209
     Height = 274
     Align = alLeft
     DockSite = True
     TabOrder = 7
     object LeftPageControl: TPageControl
-      Left = 32
-      Top = 9
-      Width = 199
-      Height = 265
+      Left = 9
+      Top = 16
+      Width = 192
+      Height = 257
       ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
       TabIndex = 0
       TabOrder = 0
+      OnUnDock = LeftPageControlUnDock
       object ProjectSheet: TTabSheet
         Caption = 'Project'
         ImageIndex = -1
         object ProjectView: TTreeView
           Left = 0
           Top = 0
-          Width = 191
-          Height = 237
+          Width = 184
+          Height = 229
           Align = alClient
           ChangeDelay = 1
           DragMode = dmAutomatic
@@ -1249,8 +1256,8 @@ object MainForm: TMainForm
         object ClassBrowser1: TClassBrowser
           Left = 0
           Top = 0
-          Width = 191
-          Height = 237
+          Width = 184
+          Height = 229
           Align = alClient
           Images = dmMain.ClassImages
           ReadOnly = True
@@ -1284,8 +1291,8 @@ object MainForm: TMainForm
         object DebugTree: TTreeView
           Left = 0
           Top = 0
-          Width = 191
-          Height = 237
+          Width = 184
+          Height = 229
           Align = alClient
           Images = dmMain.MenuImages_NewLook
           Indent = 19
@@ -1301,8 +1308,8 @@ object MainForm: TMainForm
   end
   object MainMenu: TMainMenu
     Images = dmMain.MenuImages_Gnome
-    Left = 366
-    Top = 144
+    Left = 230
+    Top = 128
     object FileMenu: TMenuItem
       Action = actFileMenu
       object mnuNew: TMenuItem
@@ -1311,8 +1318,14 @@ object MainForm: TMainForm
           Tag = 2
           Action = actNewSource
         end
-        object NewWxFormItem: TMenuItem
-          Action = actNewwxForm
+        object NewWxDialogItem: TMenuItem
+          Action = actNewwxDialog
+        end
+        object NewWxFrameItem: TMenuItem
+          Action = actNewWxFrame
+        end
+        object N73: TMenuItem
+          Caption = '-'
         end
         object NewprojectItem: TMenuItem
           Action = actNewProject
@@ -2012,6 +2025,7 @@ object MainForm: TMainForm
     end
     object Swapheadersource1: TMenuItem
       Action = actSwapHeaderSource
+      ShortCut = 16456
     end
     object MenuItem2: TMenuItem
       Caption = '-'
@@ -3246,10 +3260,11 @@ object MainForm: TMainForm
       OnExecute = actModifyWatchExecute
       OnUpdate = actModifyWatchUpdate
     end
-    object actNewwxForm: TAction
+    object actNewwxDialog: TAction
       Category = 'File'
-      Caption = 'New wxForm'
-      OnExecute = actNewwxFormExecute
+      Caption = 'New wxDialog'
+      ImageIndex = 1
+      OnExecute = actNewwxDialogExecute
     end
     object actDesignerCopy: TAction
       Category = 'Designer'
@@ -3271,12 +3286,19 @@ object MainForm: TMainForm
       Caption = 'Delete'
       OnExecute = actDesignerDeleteExecute
     end
+    object actNewWxFrame: TAction
+      Category = 'File'
+      Caption = 'New wxFrame'
+      ImageIndex = 1
+      OnExecute = actNewWxFrameExecute
+    end
   end
   object ApplicationEvents1: TApplicationEvents
+    OnActivate = ApplicationEvents1Activate
     OnDeactivate = ApplicationEvents1Deactivate
     OnIdle = ApplicationEvents1Idle
-    Left = 346
-    Top = 146
+    Left = 298
+    Top = 138
   end
   object MessagePopup: TPopupMenu
     OnPopup = MessagePopupPopup
@@ -3405,8 +3427,8 @@ object MainForm: TMainForm
   end
   object DebugVarsPopup: TPopupMenu
     OnPopup = DebugVarsPopupPopup
-    Left = 424
-    Top = 172
+    Left = 440
+    Top = 196
     object AddwatchPop: TMenuItem
       Action = actAddWatch
     end
@@ -3463,5 +3485,10 @@ object MainForm: TMainForm
     Options = [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw]
     Left = 272
     Top = 288
+  end
+  object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
+    DrawNameEndEllipsis = False
+    Left = 424
+    Top = 296
   end
 end

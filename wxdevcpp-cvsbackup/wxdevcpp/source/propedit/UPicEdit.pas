@@ -3,7 +3,7 @@ unit UPicEdit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+   GraphicEX,Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ExtDlgs,jpeg;
 
 type
@@ -29,6 +29,7 @@ var
 
 implementation
 
+uses wxutils;
 {$R *.DFM}
 
 procedure TPictureEdit.btnLoadClick(Sender: TObject);
@@ -41,6 +42,7 @@ var
     mf:TMetafile;
     jf:TJPEGImage;
     ic:TIcon;
+    pngG:TPNGGraphic;
 begin
     strExt:= ExtractFileExt(strFile);
     if trim(strExt)='' then
@@ -91,6 +93,23 @@ begin
         bmp.Height := ic.Height;
         bmp.Canvas.Draw(0, 0, ic) ;
         ic.Destroy;
+    end;
+
+    if UpperCase(trim(strExt))='.PNG' then
+    begin
+        pngG:=TPNGGraphic.Create;
+        pngG.LoadFromFile(strFile);
+        //ic.Transparent:=true;
+        //bmp.Transparent:=true;
+        bmp.Width := pngG.Width;
+        bmp.Height := pngG.Height;
+        bmp.Canvas.Draw(0, 0, pngG) ;
+        pngG.Destroy;
+    end;
+
+    if UpperCase(trim(strExt))='.XPM' then
+    begin
+        OpenXPMImage(bmp,strFile);
     end;
 
     bmp.Transparent:=true;

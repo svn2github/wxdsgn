@@ -8,378 +8,467 @@
   resources were bound to the produced executable.
 */
 
-#define main_cDefault 64896
-#define main_cExecDir 64897
-#define main_cSrcList 64898
-#define main_cWordxy 64899
-#define ELSConsts_SELDsgnrClipboardFormat 64912
-#define compiler_cAppendStr 64913
-#define compiler_cCmdLine 64914
-#define compiler_cMakeLine 64915
-#define compiler_cSingleFileMakeLine 64916
-#define compiler_cMake 64917
-#define compiler_cDots 64918
-#define compiler_cAppendStr 64919
-#define compiler_cAppendStr 64920
-#define main_cEXEName 64921
-#define main_cPrjName 64922
-#define main_cPrjFile 64923
-#define main_cPrjPath 64924
-#define main_cCurSrc 64925
-#define main_cSrcPath 64926
-#define main_cDevVer 64927
-#define JclResources_RsOSVersionWinXP 64928
-#define JclResources_RsOSVersionWin2003 64929
-#define JclResources_RsProductTypeWorkStation 64930
-#define JclResources_RsProductTypeServer 64931
-#define JclResources_RsProductTypeAdvancedServer 64932
-#define JclResources_RsProductTypePersonal 64933
-#define JclResources_RsProductTypeProfessional 64934
-#define JclResources_RsProductTypeDatacenterServer 64935
-#define JConsts_sChangeJPGSize 64936
-#define JConsts_sJPEGError 64937
-#define JConsts_sJPEGImageFile 64938
-#define Templates_cTemplate 64939
-#define Templates_cEditor 64940
-#define Templates_cProject 64941
-#define ELSConsts_SELDsgnrControlLockedDel 64942
-#define ELSConsts_SELDsgnrControlsLockedDel 64943
-#define JclResources_RsIntelCacheDescr0A 64944
-#define JclResources_RsIntelCacheDescr0C 64945
-#define JclResources_RsIntelCacheDescr40 64946
-#define JclResources_RsIntelCacheDescr41 64947
-#define JclResources_RsIntelCacheDescr42 64948
-#define JclResources_RsIntelCacheDescr43 64949
-#define JclResources_RsIntelCacheDescr44 64950
-#define JclResources_RsIntelCacheDescr45 64951
-#define JclResources_RsOSVersionWin95 64952
-#define JclResources_RsOSVersionWin95OSR2 64953
-#define JclResources_RsOSVersionWin98 64954
-#define JclResources_RsOSVersionWin98SE 64955
-#define JclResources_RsOSVersionWinME 64956
-#define JclResources_RsOSVersionWinNT3 64957
-#define JclResources_RsOSVersionWinNT4 64958
-#define JclResources_RsOSVersionWin2000 64959
-#define JclResources_RsRTTIFloatType 64960
-#define JclResources_RsRTTIMethodKind 64961
-#define JclResources_RsRTTIParamCount 64962
-#define JclResources_RsRTTIReturnType 64963
-#define JclResources_RsRTTIMaxLen 64964
-#define JclResources_RsRTTIElSize 64965
-#define JclResources_RsRTTIElType 64966
-#define JclResources_RsRTTIElNeedCleanup 64967
-#define JclResources_RsRTTIVarType 64968
-#define JclResources_RsDeclarationFormat 64969
-#define JclResources_RsIntelCacheDescr01 64970
-#define JclResources_RsIntelCacheDescr02 64971
-#define JclResources_RsIntelCacheDescr03 64972
-#define JclResources_RsIntelCacheDescr04 64973
-#define JclResources_RsIntelCacheDescr06 64974
-#define JclResources_RsIntelCacheDescr08 64975
-#define JclResources_RsRTTIIndex 64976
-#define JclResources_RsRTTIDefault 64977
-#define JclResources_RsRTTIName 64978
-#define JclResources_RsRTTIType 64979
-#define JclResources_RsRTTIFlags 64980
-#define JclResources_RsRTTIGUID 64981
-#define JclResources_RsRTTITypeKind 64982
-#define JclResources_RsRTTIOrdinalType 64983
-#define JclResources_RsRTTIMinValue 64984
-#define JclResources_RsRTTIMaxValue 64985
-#define JclResources_RsRTTINameList 64986
-#define JclResources_RsRTTIClassName 64987
-#define JclResources_RsRTTIParent 64988
-#define JclResources_RsRTTIPropCount 64989
-#define JclResources_RsRTTIUnitName 64990
-#define JclResources_RsRTTIBasedOn 64991
-#define JclResources_RsRTTIUnknownIdentifier 64992
-#define JclResources_RsRTTIVar 64993
-#define JclResources_RsRTTIConst 64994
-#define JclResources_RsRTTIArrayOf 64995
-#define JclResources_RsRTTIOut 64996
-#define JclResources_RsRTTIOrdinal 64997
-#define JclResources_RsRTTITrue 64998
-#define JclResources_RsRTTIFalse 64999
-#define JclResources_RsRTTITypeError 65000
-#define JclResources_RsRTTITypeInfoAt 65001
-#define JclResources_RsRTTIPropRead 65002
-#define JclResources_RsRTTIPropWrite 65003
-#define JclResources_RsRTTIPropStored 65004
-#define JclResources_RsRTTIField 65005
-#define JclResources_RsRTTIStaticMethod 65006
-#define JclResources_RsRTTIVirtualMethod 65007
-#define JvResources_RsClBtnText 65008
-#define JvResources_RsClInactiveCaptionText 65009
-#define JvResources_RsClBtnHighlight 65010
-#define JvResources_RsCl3DDkShadow 65011
-#define JvResources_RsCl3DLight 65012
-#define JvResources_RsClInfoText 65013
-#define JvResources_RsClInfoBk 65014
-#define JclResources_RsRemovableDrive 65015
-#define JclResources_RsHardDisk 65016
-#define JclResources_RsRemoteDrive 65017
-#define JclResources_RsCDRomDrive 65018
-#define JclResources_RsRamDisk 65019
-#define JclResources_RsUnableToOpenKeyRead 65020
-#define JclResources_RsUnableToOpenKeyWrite 65021
-#define JclResources_RsUnableToAccessValue 65022
-#define JclResources_RsRTTIValueOutOfRange 65023
-#define JvResources_RsClActiveCaption 65024
-#define JvResources_RsClInactiveCaption 65025
-#define JvResources_RsClMenu 65026
-#define JvResources_RsClWindow 65027
-#define JvResources_RsClWindowFrame 65028
-#define JvResources_RsClMenuText 65029
-#define JvResources_RsClWindowText 65030
-#define JvResources_RsClCaptionText 65031
-#define JvResources_RsClActiveBorder 65032
-#define JvResources_RsClInactiveBorder 65033
-#define JvResources_RsClAppWorkSpace 65034
-#define JvResources_RsClHighlight 65035
-#define JvResources_RsClHighlightText 65036
-#define JvResources_RsClBtnFace 65037
-#define JvResources_RsClBtnShadow 65038
-#define JvResources_RsClGrayText 65039
-#define JvResources_RsClTeal 65040
-#define JvResources_RsClGray 65041
-#define JvResources_RsClSilver 65042
-#define JvResources_RsClRed 65043
-#define JvResources_RsClLime 65044
-#define JvResources_RsClYellow 65045
-#define JvResources_RsClBlue 65046
-#define JvResources_RsClFuchsia 65047
-#define JvResources_RsClAqua 65048
-#define JvResources_RsClWhite 65049
-#define JvResources_RsClMoneyGreen 65050
-#define JvResources_RsClSkyBlue 65051
-#define JvResources_RsClCream 65052
-#define JvResources_RsClMedGray 65053
-#define JvResources_RsClScrollBar 65054
-#define JvResources_RsClBackground 65055
-#define JvResources_RsEInstanceAlreadyExists 65056
-#define JvResources_RsENameAlreadyExistsForInstance 65057
-#define JvResources_RsEInstanceNonexistent 65058
-#define JvResources_RsEMethodAlreadyExists 65059
-#define JvResources_RsENameAlreadyExistsForMethod 65060
-#define JvResources_RsEJvAssertSetTopIndex 65061
-#define JvResources_RsEJvAssertInspectorPainter 65062
-#define JvResources_RsEJvAssertDataParent 65063
-#define JvResources_RsEJvAssertParent 65064
-#define JvResources_RsEJvAssertPropInfo 65065
-#define JvResources_RsClBlack 65066
-#define JvResources_RsClMaroon 65067
-#define JvResources_RsClGreen 65068
-#define JvResources_RsClOlive 65069
-#define JvResources_RsClNavy 65070
-#define JvResources_RsClPurple 65071
-#define JvResources_RsEJvInspNoGenReg 65072
-#define JvResources_RsEJvInspPaintNotActive 65073
-#define JvResources_RsEJvInspPaintOnlyUsedOnce 65074
-#define JvResources_RsEInspectorInternalError 65075
-#define JvResources_RsESpecifierBeforeSeparator 65076
-#define JvResources_RsEDOrDDOnlyOnce 65077
-#define JvResources_RsEMOrMMOnlyOnce 65078
-#define JvResources_RsEYYOrYYYYOnlyOnce 65079
-#define JvResources_RsEOnlyDOrDDAllowed 65080
-#define JvResources_RsEOnlyMOrMMAllowed 65081
-#define JvResources_RsEOnlyYYOrYYYYAllowed 65082
-#define JvResources_RsEOnlyTwoSeparators 65083
-#define JvResources_RsEOnlyDMYSAllowed 65084
-#define JvResources_RsEDOrDDRequired 65085
-#define JvResources_RsEMOrMMRequired 65086
-#define JvResources_RsEYYOrYYYYRequired 65087
-#define JvResources_RsJvInspItemUnInitialized 65088
-#define JvResources_RsJvInspItemUnassigned 65089
-#define JvResources_RsJvInspItemNoValue 65090
-#define JvResources_RsStringListEditorCaption 65091
-#define JvResources_RsXLinesCaption 65092
-#define JvResources_RsOneLineCaption 65093
-#define JvResources_RsEJvInspItemHasParent 65094
-#define JvResources_RsEJvInspItemNotAChild 65095
-#define JvResources_RsEJvInspItemColNotFound 65096
-#define JvResources_RsEJvInspItemItemIsNotCol 65097
-#define JvResources_RsEJvInspItemInvalidPropValue 65098
-#define JvResources_RsEJvInspDataNoAccessAs 65099
-#define JvResources_RsEJvInspDataNotInit 65100
-#define JvResources_RsEJvInspDataNotAssigned 65101
-#define JvResources_RsEJvInspDataNoValue 65102
-#define JvResources_RsEJvInspDataStrTooLong 65103
-#define version_cSel 65104
-#define CodeToolTip_SCodeToolTipIndexXOfX 65105
-#define ComConst_SOleError 65106
-#define ComConst_SNoMethod 65107
-#define ComConst_SVarNotObject 65108
-#define ComConst_STooManyParams 65109
-#define JvResources_RsButtonOKCaption 65110
-#define JvResources_RsButtonCancelCaption 65111
-#define JvResources_RsEUnableToCreateKey 65112
-#define JvResources_RsEEnumeratingRegistry 65113
-#define JvResources_RsEInvalidType 65114
-#define JvResources_RsEUnknownBaseType 65115
-#define JvResources_RsEInvalidPath 65116
-#define JvResources_RsENotAUniqueRootPath 65117
-#define JvResources_RsECircularReferenceOfStorages 65118
-#define JvResources_RsJvInspItemValueException 65119
-#define version_WEBUPDATE_SECTION 65120
-#define version_DEFCOMPILERSET 65121
-#define version_FLT_BASE 65122
-#define version_FLT_ALLFILES 65123
-#define version_FLT_PROJECTS 65124
-#define version_FLT_WXFORMS 65125
-#define version_FLT_HEADS 65126
-#define version_FLT_CS 65127
-#define version_FLT_CPPS 65128
-#define version_FLT_RES 65129
-#define version_FLT_HELPS 65130
-#define version_FLT_MSVCPROJECTS 65131
-#define version_cBP 65132
-#define version_cErr 65133
-#define version_cABP 65134
-#define version_cGut 65135
-#define version_RTF_EXT 65136
-#define version_INI_EXT 65137
-#define version_TEMPLATE_EXT 65138
-#define version_SYNTAX_EXT 65139
-#define version_MAKE_PROGRAM 65140
-#define version_GCC_PROGRAM 65141
-#define version_GPP_PROGRAM 65142
-#define version_GDB_PROGRAM 65143
-#define version_WINDRES_PROGRAM 65144
-#define version_DLLWRAP_PROGRAM 65145
-#define version_GPROF_PROGRAM 65146
-#define version_PACKMAN_PROGRAM 65147
-#define version_OPT_DIRS 65148
-#define version_OPT_EDITOR 65149
-#define version_OPT_OPTIONS 65150
-#define version_OPT_COMPILERSETS 65151
-#define version_CPP_INCLUDE_DIR_WX_STC_INCLUDE 65152
-#define version_CPP_INCLUDE_DIR_WX_SVG_INCLUDE 65153
-#define version_CPP_INCLUDE_DIR_WX_XML_INCLUDE 65154
-#define version_CPP_INCLUDE_DIR_WX_XRC_INCLUDE 65155
-#define version_LANGUAGE_DIR 65156
-#define version_ICON_DIR 65157
-#define version_HELP_DIR 65158
-#define version_TEMPLATE_DIR 65159
-#define version_THEME_DIR 65160
-#define version_PACKAGES_DIR 65161
-#define version_LIB_EXT 65162
-#define version_OBJ_EXT 65163
-#define version_DLL_EXT 65164
-#define version_EXE_EXT 65165
-#define version_DEV_EXT 65166
-#define version_HTML_EXT 65167
-#define version_CPP_INCLUDE_DIR 65168
-#define version_CPP_INCLUDE_DIR_MINGW 65169
-#define version_CPP_INCLUDE_DIR_BACK 65170
-#define version_CPP_INCLUDE_DIR_MINGW_INCLUDE 65171
-#define version_CPP_INCLUDE_DIR_WX_INCLUDE 65172
-#define version_CPP_INCLUDE_DIR_WX_MSW_INCLUDE 65173
-#define version_CPP_INCLUDE_DIR_WX_GENERIC_INCLUDE 65174
-#define version_CPP_INCLUDE_DIR_WX_ANIMATE_INCLUDE 65175
-#define version_CPP_INCLUDE_DIR_WX_FL_INCLUDE 65176
-#define version_CPP_INCLUDE_DIR_WX_GIZMOS_INCLUDE 65177
-#define version_CPP_INCLUDE_DIR_WX_HTML_INCLUDE 65178
-#define version_CPP_INCLUDE_DIR_WX_MMEDIA_INCLUDE 65179
-#define version_CPP_INCLUDE_DIR_WX_NET_INCLUDE 65180
-#define version_CPP_INCLUDE_DIR_WX_OGL_INCLUDE 65181
-#define version_CPP_INCLUDE_DIR_WX_PLOT_INCLUDE 65182
-#define version_CPP_INCLUDE_DIR_WX_PROTOCOL_INCLUDE 65183
-#define version_DEV_COMPLETION_CACHE 65184
-#define version_DEV_DEFAULTCODE_FILE 65185
-#define version_DEV_SHORTCUTS_FILE 65186
-#define version_DEV_CLASSFOLDERS_FILE 65187
-#define version_DEV_WEBMIRRORS_FILE 65188
-#define version_DEV_MAKE_FILE 65189
-#define version_DEV_HELP_INI 65190
-#define version_DEV_CODEINS_FILE 65191
-#define version_DEV_MAINHELP_FILE 65192
-#define version_DEV_GNOME_THEME 65193
-#define version_DEV_NEWLOOK_THEME 65194
-#define version_DEV_BLUE_THEME 65195
-#define version_BIN_DIR 65196
-#define version_SND_BIN_DIR 65197
-#define version_LIB_DIR 65198
-#define version_C_INCLUDE_DIR 65199
-#define SynEditStrConst_SYNS_ExporterFormatRTF 65200
-#define SynEditStrConst_SYNS_ScrollInfoFmt 65201
-#define SynEditStrConst_SYNS_ScrollInfoFmtTop 65202
-#define SynEditStrConst_SYNS_EDuplicateShortcut 65203
-#define SynEditStrConst_SYNS_FilterCPP 65204
-#define SynEditStrConst_SYNS_FilterHTML 65205
-#define SynEditStrConst_SYNS_FilterRTF 65206
-#define SynEditStrConst_SYNS_FilterRC 65207
-#define SynEditStrConst_SYNS_LangCPP 65208
-#define SynEditStrConst_SYNS_LangRC 65209
-#define version_DEVCPP 65210
-#define version_DEVCPP_VERSION 65211
-#define version_DEFAULT_LANG_FILE 65212
-#define version_HTTP 65213
-#define version_DEV_INTERNAL_OPEN 65214
-#define version_DEV_SEARCHLOOP 65215
-#define SynEditStrConst_SYNS_Untitled 65216
-#define SynEditStrConst_SYNS_AttrAssembler 65217
-#define SynEditStrConst_SYNS_AttrCharacter 65218
-#define SynEditStrConst_SYNS_AttrComment 65219
-#define SynEditStrConst_SYNS_AttrFloat 65220
-#define SynEditStrConst_SYNS_AttrHexadecimal 65221
-#define SynEditStrConst_SYNS_AttrIdentifier 65222
-#define SynEditStrConst_SYNS_AttrIllegalChar 65223
-#define SynEditStrConst_SYNS_AttrNumber 65224
-#define SynEditStrConst_SYNS_AttrOctal 65225
-#define SynEditStrConst_SYNS_AttrPreprocessor 65226
-#define SynEditStrConst_SYNS_AttrReservedWord 65227
-#define SynEditStrConst_SYNS_AttrSpace 65228
-#define SynEditStrConst_SYNS_AttrString 65229
-#define SynEditStrConst_SYNS_AttrSymbol 65230
-#define SynEditStrConst_SYNS_ExporterFormatHTML 65231
-#define ComStrs_sTabFailDelete 65232
-#define ComStrs_sTabFailRetrieve 65233
-#define ComStrs_sTabFailGetObject 65234
-#define ComStrs_sTabFailSet 65235
-#define ComStrs_sTabFailSetObject 65236
-#define ComStrs_sTabMustBeMultiLine 65237
-#define ComStrs_sInvalidIndex 65238
-#define ComStrs_sInsertError 65239
-#define ComStrs_sInvalidOwner 65240
-#define ComStrs_sRichEditInsertError 65241
-#define ComStrs_sRichEditLoadFail 65242
-#define ComStrs_sRichEditSaveFail 65243
-#define ComStrs_sUDAssociated 65244
-#define ComStrs_sPageIndexError 65245
-#define ComStrs_sInvalidComCtl32 65246
-#define SynEditTextBuffer_SListIndexOutOfBounds 65247
-#define Consts_SDockZoneHasNoCtl 65248
-#define Consts_SMultiSelectRequired 65249
-#define Consts_SKeyCaption 65250
-#define Consts_SValueCaption 65251
-#define Consts_SKeyConflict 65252
-#define Consts_SKeyNotFound 65253
-#define Consts_SNoColumnMoving 65254
-#define Consts_SNoEqualsInKey 65255
-#define Consts_SSeparator 65256
-#define Consts_SErrorSettingCount 65257
-#define Consts_SListBoxMustBeVirtual 65258
-#define HelpIntfs_hNoTableOfContents 65259
-#define HelpIntfs_hNothingFound 65260
-#define HelpIntfs_hNoContext 65261
-#define HelpIntfs_hNoTopics 65262
-#define ComStrs_sTabFailClear 65263
+#define main_cDevVer 64816
+#define main_cDefault 64817
+#define main_cExecDir 64818
+#define main_cSrcList 64819
+#define main_cWordxy 64820
+#define compiler_cAppendStr 64821
+#define compiler_cCmdLine 64822
+#define compiler_cMakeLine 64823
+#define compiler_cSingleFileMakeLine 64824
+#define compiler_cMake 64825
+#define compiler_cDots 64826
+#define compiler_cAppendStr 64827
+#define compiler_cAppendStr 64828
+#define GraphicStrings_gesJPEGSamplingFactors 64832
+#define GraphicStrings_gesJPEGBogusTableField 64833
+#define GraphicStrings_gesJPEGFractionalLine 64834
+#define GraphicStrings_gesWarning 64835
+#define Templates_cTemplate 64836
+#define Templates_cEditor 64837
+#define Templates_cProject 64838
+#define ELSConsts_SELDsgnrControlLockedDel 64839
+#define ELSConsts_SELDsgnrControlsLockedDel 64840
+#define ELSConsts_SELDsgnrClipboardFormat 64841
+#define main_cEXEName 64842
+#define main_cPrjName 64843
+#define main_cPrjFile 64844
+#define main_cPrjPath 64845
+#define main_cCurSrc 64846
+#define main_cSrcPath 64847
+#define GraphicStrings_gesCompressionScheme 64848
+#define GraphicStrings_gesIndexedNotSupported 64849
+#define GraphicStrings_gesConversionUnsupported 64850
+#define GraphicStrings_gesInvalidSampleDepth 64851
+#define GraphicStrings_gesInvalidPixelDepth 64852
+#define GraphicStrings_gesInvalidSubSampling 64853
+#define GraphicStrings_gesVerticalSubSamplingError 64854
+#define GraphicStrings_gesPreparing 64855
+#define GraphicStrings_gesLoadingData 64856
+#define GraphicStrings_gesUpsampling 64857
+#define GraphicStrings_gesTransfering 64858
+#define GraphicStrings_gesLZ77Error 64859
+#define GraphicStrings_gesJPEGEOI 64860
+#define GraphicStrings_gesJPEGStripSize 64861
+#define GraphicStrings_gesJPEGComponentCount 64862
+#define GraphicStrings_gesJPEGDataPrecision 64863
+#define GraphicStrings_gesPortableGray 64864
+#define GraphicStrings_gesPortableMono 64865
+#define GraphicStrings_gesAutoDesk 64866
+#define GraphicStrings_gesKodakPhotoCD 64867
+#define GraphicStrings_gesHalo 64868
+#define GraphicStrings_gesPaintShopPro 64869
+#define GraphicStrings_gesPortableNetworkGraphic 64870
+#define GraphicStrings_gesInvalidImage 64871
+#define GraphicStrings_gesInvalidColorFormat 64872
+#define GraphicStrings_gesStreamReadError 64873
+#define GraphicStrings_gesUnsupportedFeature 64874
+#define GraphicStrings_gesInvalidCRC 64875
+#define GraphicStrings_gesCompression 64876
+#define GraphicStrings_gesExtraCompressedData 64877
+#define GraphicStrings_gesInvalidPalette 64878
+#define GraphicStrings_gesUnknownCriticalChunk 64879
+#define GraphicStrings_gesJFIFImages 64880
+#define GraphicStrings_gesTruevision 64881
+#define GraphicStrings_gesTIFF 64882
+#define GraphicStrings_gesMacTIFF 64883
+#define GraphicStrings_gesPCTIF 64884
+#define GraphicStrings_gesGFIFax 64885
+#define GraphicStrings_gesSGI 64886
+#define GraphicStrings_gesSGITrueColor 64887
+#define GraphicStrings_gesZSoft 64888
+#define GraphicStrings_gesZSoftWord 64889
+#define GraphicStrings_gesAliasWaveFront 64890
+#define GraphicStrings_gesSGITrueColorAlpha 64891
+#define GraphicStrings_gesSGIMono 64892
+#define GraphicStrings_gesPhotoshop 64893
+#define GraphicStrings_gesPortable 64894
+#define GraphicStrings_gesPortablePixel 64895
+#define MZLib_SIncorrectDataCheck 64896
+#define MZLib_SUnknownCompression 64897
+#define MZLib_SInvalidWindowSize 64898
+#define MZLib_SIncorrectHeaderCheck 64899
+#define MZLib_SNeedDictionary 64900
+#define GraphicStrings_gesRegistration 64901
+#define GraphicStrings_gesBitmaps 64902
+#define GraphicStrings_gesRLEBitmaps 64903
+#define GraphicStrings_gesDIBs 64904
+#define GraphicStrings_gesEPS 64905
+#define GraphicStrings_gesIcons 64906
+#define GraphicStrings_gesMetaFiles 64907
+#define GraphicStrings_gesEnhancedMetaFiles 64908
+#define GraphicStrings_gesJPGImages 64909
+#define GraphicStrings_gesJPEGImages 64910
+#define GraphicStrings_gesJPEImages 64911
+#define MZLib_SStreamError 64912
+#define MZLib_SDataError 64913
+#define MZLib_SInsufficientMemory 64914
+#define MZLib_SBufferError 64915
+#define MZLib_SIncompatibleVersion 64916
+#define MZLib_SInvalidDistanceCode 64917
+#define MZLib_SInvalidLengthCode 64918
+#define MZLib_SOversubscribedDBLTree 64919
+#define MZLib_SIncompleteDBLTree 64920
+#define MZLib_SOversubscribedLLTree 64921
+#define MZLib_SIncompleteLLTree 64922
+#define MZLib_SEmptyDistanceTree 64923
+#define MZLib_SInvalidBlockType 64924
+#define MZLib_SInvalidStoredBlockLengths 64925
+#define MZLib_STooManyLDSymbols 64926
+#define MZLib_SInvalidBitLengthRepeat 64927
+#define JclResources_RsOSVersionWin2000 64928
+#define JclResources_RsOSVersionWinXP 64929
+#define JclResources_RsOSVersionWin2003 64930
+#define JclResources_RsProductTypeWorkStation 64931
+#define JclResources_RsProductTypeServer 64932
+#define JclResources_RsProductTypeAdvancedServer 64933
+#define JclResources_RsProductTypePersonal 64934
+#define JclResources_RsProductTypeProfessional 64935
+#define JclResources_RsProductTypeDatacenterServer 64936
+#define JConsts_sChangeJPGSize 64937
+#define JConsts_sJPEGError 64938
+#define JConsts_sJPEGImageFile 64939
+#define JPG_sJPEGError 64940
+#define MZLib_SNeedDict 64941
+#define MZLib_SStreamEnd 64942
+#define MZLib_SFileError 64943
+#define JclResources_RsIntelCacheDescr08 64944
+#define JclResources_RsIntelCacheDescr0A 64945
+#define JclResources_RsIntelCacheDescr0C 64946
+#define JclResources_RsIntelCacheDescr40 64947
+#define JclResources_RsIntelCacheDescr41 64948
+#define JclResources_RsIntelCacheDescr42 64949
+#define JclResources_RsIntelCacheDescr43 64950
+#define JclResources_RsIntelCacheDescr44 64951
+#define JclResources_RsIntelCacheDescr45 64952
+#define JclResources_RsOSVersionWin95 64953
+#define JclResources_RsOSVersionWin95OSR2 64954
+#define JclResources_RsOSVersionWin98 64955
+#define JclResources_RsOSVersionWin98SE 64956
+#define JclResources_RsOSVersionWinME 64957
+#define JclResources_RsOSVersionWinNT3 64958
+#define JclResources_RsOSVersionWinNT4 64959
+#define JclResources_RsRTTIBasedOn 64960
+#define JclResources_RsRTTIFloatType 64961
+#define JclResources_RsRTTIMethodKind 64962
+#define JclResources_RsRTTIParamCount 64963
+#define JclResources_RsRTTIReturnType 64964
+#define JclResources_RsRTTIMaxLen 64965
+#define JclResources_RsRTTIElSize 64966
+#define JclResources_RsRTTIElType 64967
+#define JclResources_RsRTTIElNeedCleanup 64968
+#define JclResources_RsRTTIVarType 64969
+#define JclResources_RsDeclarationFormat 64970
+#define JclResources_RsIntelCacheDescr01 64971
+#define JclResources_RsIntelCacheDescr02 64972
+#define JclResources_RsIntelCacheDescr03 64973
+#define JclResources_RsIntelCacheDescr04 64974
+#define JclResources_RsIntelCacheDescr06 64975
+#define JclResources_RsRTTIVirtualMethod 64976
+#define JclResources_RsRTTIIndex 64977
+#define JclResources_RsRTTIDefault 64978
+#define JclResources_RsRTTIName 64979
+#define JclResources_RsRTTIType 64980
+#define JclResources_RsRTTIFlags 64981
+#define JclResources_RsRTTIGUID 64982
+#define JclResources_RsRTTITypeKind 64983
+#define JclResources_RsRTTIOrdinalType 64984
+#define JclResources_RsRTTIMinValue 64985
+#define JclResources_RsRTTIMaxValue 64986
+#define JclResources_RsRTTINameList 64987
+#define JclResources_RsRTTIClassName 64988
+#define JclResources_RsRTTIParent 64989
+#define JclResources_RsRTTIPropCount 64990
+#define JclResources_RsRTTIUnitName 64991
+#define JclResources_RsRTTIValueOutOfRange 64992
+#define JclResources_RsRTTIUnknownIdentifier 64993
+#define JclResources_RsRTTIVar 64994
+#define JclResources_RsRTTIConst 64995
+#define JclResources_RsRTTIArrayOf 64996
+#define JclResources_RsRTTIOut 64997
+#define JclResources_RsRTTIOrdinal 64998
+#define JclResources_RsRTTITrue 64999
+#define JclResources_RsRTTIFalse 65000
+#define JclResources_RsRTTITypeError 65001
+#define JclResources_RsRTTITypeInfoAt 65002
+#define JclResources_RsRTTIPropRead 65003
+#define JclResources_RsRTTIPropWrite 65004
+#define JclResources_RsRTTIPropStored 65005
+#define JclResources_RsRTTIField 65006
+#define JclResources_RsRTTIStaticMethod 65007
+#define JvResources_RsClGrayText 65008
+#define JvResources_RsClBtnText 65009
+#define JvResources_RsClInactiveCaptionText 65010
+#define JvResources_RsClBtnHighlight 65011
+#define JvResources_RsCl3DDkShadow 65012
+#define JvResources_RsCl3DLight 65013
+#define JvResources_RsClInfoText 65014
+#define JvResources_RsClInfoBk 65015
+#define JclResources_RsRemovableDrive 65016
+#define JclResources_RsHardDisk 65017
+#define JclResources_RsRemoteDrive 65018
+#define JclResources_RsCDRomDrive 65019
+#define JclResources_RsRamDisk 65020
+#define JclResources_RsUnableToOpenKeyRead 65021
+#define JclResources_RsUnableToOpenKeyWrite 65022
+#define JclResources_RsUnableToAccessValue 65023
+#define JvResources_RsClBackground 65024
+#define JvResources_RsClActiveCaption 65025
+#define JvResources_RsClInactiveCaption 65026
+#define JvResources_RsClMenu 65027
+#define JvResources_RsClWindow 65028
+#define JvResources_RsClWindowFrame 65029
+#define JvResources_RsClMenuText 65030
+#define JvResources_RsClWindowText 65031
+#define JvResources_RsClCaptionText 65032
+#define JvResources_RsClActiveBorder 65033
+#define JvResources_RsClInactiveBorder 65034
+#define JvResources_RsClAppWorkSpace 65035
+#define JvResources_RsClHighlight 65036
+#define JvResources_RsClHighlightText 65037
+#define JvResources_RsClBtnFace 65038
+#define JvResources_RsClBtnShadow 65039
+#define JvResources_RsClPurple 65040
+#define JvResources_RsClTeal 65041
+#define JvResources_RsClGray 65042
+#define JvResources_RsClSilver 65043
+#define JvResources_RsClRed 65044
+#define JvResources_RsClLime 65045
+#define JvResources_RsClYellow 65046
+#define JvResources_RsClBlue 65047
+#define JvResources_RsClFuchsia 65048
+#define JvResources_RsClAqua 65049
+#define JvResources_RsClWhite 65050
+#define JvResources_RsClMoneyGreen 65051
+#define JvResources_RsClSkyBlue 65052
+#define JvResources_RsClCream 65053
+#define JvResources_RsClMedGray 65054
+#define JvResources_RsClScrollBar 65055
+#define JvResources_RsEYYOrYYYYRequired 65056
+#define JvResources_RsEInstanceAlreadyExists 65057
+#define JvResources_RsENameAlreadyExistsForInstance 65058
+#define JvResources_RsEInstanceNonexistent 65059
+#define JvResources_RsEMethodAlreadyExists 65060
+#define JvResources_RsENameAlreadyExistsForMethod 65061
+#define JvResources_RsEJvAssertSetTopIndex 65062
+#define JvResources_RsEJvAssertInspectorPainter 65063
+#define JvResources_RsEJvAssertDataParent 65064
+#define JvResources_RsEJvAssertParent 65065
+#define JvResources_RsEJvAssertPropInfo 65066
+#define JvResources_RsClBlack 65067
+#define JvResources_RsClMaroon 65068
+#define JvResources_RsClGreen 65069
+#define JvResources_RsClOlive 65070
+#define JvResources_RsClNavy 65071
+#define JvResources_RsEJvInspDataStrTooLong 65072
+#define JvResources_RsEJvInspNoGenReg 65073
+#define JvResources_RsEJvInspPaintNotActive 65074
+#define JvResources_RsEJvInspPaintOnlyUsedOnce 65075
+#define JvResources_RsEInspectorInternalError 65076
+#define JvResources_RsESpecifierBeforeSeparator 65077
+#define JvResources_RsEDOrDDOnlyOnce 65078
+#define JvResources_RsEMOrMMOnlyOnce 65079
+#define JvResources_RsEYYOrYYYYOnlyOnce 65080
+#define JvResources_RsEOnlyDOrDDAllowed 65081
+#define JvResources_RsEOnlyMOrMMAllowed 65082
+#define JvResources_RsEOnlyYYOrYYYYAllowed 65083
+#define JvResources_RsEOnlyTwoSeparators 65084
+#define JvResources_RsEOnlyDMYSAllowed 65085
+#define JvResources_RsEDOrDDRequired 65086
+#define JvResources_RsEMOrMMRequired 65087
+#define JvResources_RsJvInspItemValueException 65088
+#define JvResources_RsJvInspItemUnInitialized 65089
+#define JvResources_RsJvInspItemUnassigned 65090
+#define JvResources_RsJvInspItemNoValue 65091
+#define JvResources_RsStringListEditorCaption 65092
+#define JvResources_RsXLinesCaption 65093
+#define JvResources_RsOneLineCaption 65094
+#define JvResources_RsEJvInspItemHasParent 65095
+#define JvResources_RsEJvInspItemNotAChild 65096
+#define JvResources_RsEJvInspItemColNotFound 65097
+#define JvResources_RsEJvInspItemItemIsNotCol 65098
+#define JvResources_RsEJvInspItemInvalidPropValue 65099
+#define JvResources_RsEJvInspDataNoAccessAs 65100
+#define JvResources_RsEJvInspDataNotInit 65101
+#define JvResources_RsEJvInspDataNotAssigned 65102
+#define JvResources_RsEJvInspDataNoValue 65103
+#define version_cGut 65104
+#define version_cSel 65105
+#define CodeToolTip_SCodeToolTipIndexXOfX 65106
+#define ComConst_SOleError 65107
+#define ComConst_SNoMethod 65108
+#define ComConst_SVarNotObject 65109
+#define ComConst_STooManyParams 65110
+#define JvResources_RsButtonOKCaption 65111
+#define JvResources_RsButtonCancelCaption 65112
+#define JvResources_RsEUnableToCreateKey 65113
+#define JvResources_RsEEnumeratingRegistry 65114
+#define JvResources_RsEInvalidType 65115
+#define JvResources_RsEUnknownBaseType 65116
+#define JvResources_RsEInvalidPath 65117
+#define JvResources_RsENotAUniqueRootPath 65118
+#define JvResources_RsECircularReferenceOfStorages 65119
+#define version_OPT_COMPILERSETS 65120
+#define version_WEBUPDATE_SECTION 65121
+#define version_DEFCOMPILERSET 65122
+#define version_FLT_BASE 65123
+#define version_FLT_ALLFILES 65124
+#define version_FLT_PROJECTS 65125
+#define version_FLT_WXFORMS 65126
+#define version_FLT_HEADS 65127
+#define version_FLT_CS 65128
+#define version_FLT_CPPS 65129
+#define version_FLT_RES 65130
+#define version_FLT_HELPS 65131
+#define version_FLT_MSVCPROJECTS 65132
+#define version_cBP 65133
+#define version_cErr 65134
+#define version_cABP 65135
+#define version_HTML_EXT 65136
+#define version_RTF_EXT 65137
+#define version_INI_EXT 65138
+#define version_TEMPLATE_EXT 65139
+#define version_SYNTAX_EXT 65140
+#define version_MAKE_PROGRAM 65141
+#define version_GCC_PROGRAM 65142
+#define version_GPP_PROGRAM 65143
+#define version_GDB_PROGRAM 65144
+#define version_WINDRES_PROGRAM 65145
+#define version_DLLWRAP_PROGRAM 65146
+#define version_GPROF_PROGRAM 65147
+#define version_PACKMAN_PROGRAM 65148
+#define version_OPT_DIRS 65149
+#define version_OPT_EDITOR 65150
+#define version_OPT_OPTIONS 65151
+#define version_CPP_INCLUDE_DIR_WX_PROTOCOL_INCLUDE 65152
+#define version_CPP_INCLUDE_DIR_WX_STC_INCLUDE 65153
+#define version_CPP_INCLUDE_DIR_WX_SVG_INCLUDE 65154
+#define version_CPP_INCLUDE_DIR_WX_XML_INCLUDE 65155
+#define version_CPP_INCLUDE_DIR_WX_XRC_INCLUDE 65156
+#define version_LANGUAGE_DIR 65157
+#define version_ICON_DIR 65158
+#define version_HELP_DIR 65159
+#define version_TEMPLATE_DIR 65160
+#define version_THEME_DIR 65161
+#define version_PACKAGES_DIR 65162
+#define version_LIB_EXT 65163
+#define version_OBJ_EXT 65164
+#define version_DLL_EXT 65165
+#define version_EXE_EXT 65166
+#define version_DEV_EXT 65167
+#define version_C_INCLUDE_DIR 65168
+#define version_CPP_INCLUDE_DIR 65169
+#define version_CPP_INCLUDE_DIR_MINGW 65170
+#define version_CPP_INCLUDE_DIR_BACK 65171
+#define version_CPP_INCLUDE_DIR_MINGW_INCLUDE 65172
+#define version_CPP_INCLUDE_DIR_WX_INCLUDE 65173
+#define version_CPP_INCLUDE_DIR_WX_MSW_INCLUDE 65174
+#define version_CPP_INCLUDE_DIR_WX_GENERIC_INCLUDE 65175
+#define version_CPP_INCLUDE_DIR_WX_ANIMATE_INCLUDE 65176
+#define version_CPP_INCLUDE_DIR_WX_FL_INCLUDE 65177
+#define version_CPP_INCLUDE_DIR_WX_GIZMOS_INCLUDE 65178
+#define version_CPP_INCLUDE_DIR_WX_HTML_INCLUDE 65179
+#define version_CPP_INCLUDE_DIR_WX_MMEDIA_INCLUDE 65180
+#define version_CPP_INCLUDE_DIR_WX_NET_INCLUDE 65181
+#define version_CPP_INCLUDE_DIR_WX_OGL_INCLUDE 65182
+#define version_CPP_INCLUDE_DIR_WX_PLOT_INCLUDE 65183
+#define version_DEV_SEARCHLOOP 65184
+#define version_DEV_COMPLETION_CACHE 65185
+#define version_DEV_DEFAULTCODE_FILE 65186
+#define version_DEV_SHORTCUTS_FILE 65187
+#define version_DEV_CLASSFOLDERS_FILE 65188
+#define version_DEV_WEBMIRRORS_FILE 65189
+#define version_DEV_MAKE_FILE 65190
+#define version_DEV_HELP_INI 65191
+#define version_DEV_CODEINS_FILE 65192
+#define version_DEV_MAINHELP_FILE 65193
+#define version_DEV_GNOME_THEME 65194
+#define version_DEV_NEWLOOK_THEME 65195
+#define version_DEV_BLUE_THEME 65196
+#define version_BIN_DIR 65197
+#define version_SND_BIN_DIR 65198
+#define version_LIB_DIR 65199
+#define SynEditStrConst_SYNS_ExporterFormatHTML 65200
+#define SynEditStrConst_SYNS_ExporterFormatRTF 65201
+#define SynEditStrConst_SYNS_ScrollInfoFmt 65202
+#define SynEditStrConst_SYNS_ScrollInfoFmtTop 65203
+#define SynEditStrConst_SYNS_EDuplicateShortcut 65204
+#define SynEditStrConst_SYNS_FilterCPP 65205
+#define SynEditStrConst_SYNS_FilterHTML 65206
+#define SynEditStrConst_SYNS_FilterRTF 65207
+#define SynEditStrConst_SYNS_FilterRC 65208
+#define SynEditStrConst_SYNS_LangCPP 65209
+#define SynEditStrConst_SYNS_LangRC 65210
+#define version_DEVCPP 65211
+#define version_DEVCPP_VERSION 65212
+#define version_DEFAULT_LANG_FILE 65213
+#define version_HTTP 65214
+#define version_DEV_INTERNAL_OPEN 65215
+#define SynEditTextBuffer_SListIndexOutOfBounds 65216
+#define SynEditStrConst_SYNS_Untitled 65217
+#define SynEditStrConst_SYNS_AttrAssembler 65218
+#define SynEditStrConst_SYNS_AttrCharacter 65219
+#define SynEditStrConst_SYNS_AttrComment 65220
+#define SynEditStrConst_SYNS_AttrFloat 65221
+#define SynEditStrConst_SYNS_AttrHexadecimal 65222
+#define SynEditStrConst_SYNS_AttrIdentifier 65223
+#define SynEditStrConst_SYNS_AttrIllegalChar 65224
+#define SynEditStrConst_SYNS_AttrNumber 65225
+#define SynEditStrConst_SYNS_AttrOctal 65226
+#define SynEditStrConst_SYNS_AttrPreprocessor 65227
+#define SynEditStrConst_SYNS_AttrReservedWord 65228
+#define SynEditStrConst_SYNS_AttrSpace 65229
+#define SynEditStrConst_SYNS_AttrString 65230
+#define SynEditStrConst_SYNS_AttrSymbol 65231
+#define ComStrs_sTabFailClear 65232
+#define ComStrs_sTabFailDelete 65233
+#define ComStrs_sTabFailRetrieve 65234
+#define ComStrs_sTabFailGetObject 65235
+#define ComStrs_sTabFailSet 65236
+#define ComStrs_sTabFailSetObject 65237
+#define ComStrs_sTabMustBeMultiLine 65238
+#define ComStrs_sInvalidIndex 65239
+#define ComStrs_sInsertError 65240
+#define ComStrs_sInvalidOwner 65241
+#define ComStrs_sRichEditInsertError 65242
+#define ComStrs_sRichEditLoadFail 65243
+#define ComStrs_sRichEditSaveFail 65244
+#define ComStrs_sUDAssociated 65245
+#define ComStrs_sPageIndexError 65246
+#define ComStrs_sInvalidComCtl32 65247
+#define Consts_SDockZoneNotFound 65248
+#define Consts_SDockZoneHasNoCtl 65249
+#define Consts_SMultiSelectRequired 65250
+#define Consts_SKeyCaption 65251
+#define Consts_SValueCaption 65252
+#define Consts_SKeyConflict 65253
+#define Consts_SKeyNotFound 65254
+#define Consts_SNoColumnMoving 65255
+#define Consts_SNoEqualsInKey 65256
+#define Consts_SSeparator 65257
+#define Consts_SErrorSettingCount 65258
+#define Consts_SListBoxMustBeVirtual 65259
+#define HelpIntfs_hNoTableOfContents 65260
+#define HelpIntfs_hNothingFound 65261
+#define HelpIntfs_hNoContext 65262
+#define HelpIntfs_hNoTopics 65263
 #define Consts_SDirsCap 65264
 #define Consts_SFilesCap 65265
 #define Consts_SNetworkCap 65266
 #define Consts_SInvalidClipFmt 65267
 #define Consts_SIconToClipboard 65268
 #define Consts_SCannotOpenClipboard 65269
-#define Consts_SInvalidMemoSize 65270
-#define Consts_SNoDefaultPrinter 65271
-#define Consts_SDuplicateMenus 65272
-#define Consts_SPictureLabel 65273
-#define Consts_SPictureDesc 65274
-#define Consts_SPreviewLabel 65275
-#define Consts_SCannotOpenAVI 65276
-#define Consts_SDockedCtlNeedsName 65277
-#define Consts_SDockTreeRemoveError 65278
-#define Consts_SDockZoneNotFound 65279
+#define Consts_SDefault 65270
+#define Consts_SInvalidMemoSize 65271
+#define Consts_SNoDefaultPrinter 65272
+#define Consts_SDuplicateMenus 65273
+#define Consts_SPictureLabel 65274
+#define Consts_SPictureDesc 65275
+#define Consts_SPreviewLabel 65276
+#define Consts_SCannotOpenAVI 65277
+#define Consts_SDockedCtlNeedsName 65278
+#define Consts_SDockTreeRemoveError 65279
 #define Consts_SmkcUp 65280
 #define Consts_SmkcRight 65281
 #define Consts_SmkcDown 65282
@@ -638,11 +727,11 @@
 #define SysConst_SDiskFull 65535
 STRINGTABLE
 BEGIN
+	main_cDevVer,	"<DEVCPPVERSION>"
 	main_cDefault,	"<DEFAULT>"
 	main_cExecDir,	"<EXECPATH>"
 	main_cSrcList,	"<SOURCESPCLIST>"
 	main_cWordxy,	"<WORDXY>"
-	ELSConsts_SELDsgnrClipboardFormat,	"Extension Library designer components"
 	compiler_cAppendStr,	"%s %s"
 	compiler_cCmdLine,	"%s \"%s\" -o \"%s\" %s %s %s"
 	compiler_cMakeLine,	"%s -f \"%s\" all"
@@ -651,13 +740,103 @@ BEGIN
 	compiler_cDots,	"..."
 	compiler_cAppendStr,	"%s -L\"%s\""
 	compiler_cAppendStr,	"%s -I\"%s\" "
+	GraphicStrings_gesJPEGSamplingFactors,	"Improper JPEG sampling factors."
+	GraphicStrings_gesJPEGBogusTableField,	"Bogus JPEG tables field."
+	GraphicStrings_gesJPEGFractionalLine,	"Fractional JPEG scanline unsupported."
+	GraphicStrings_gesWarning,	"Warning"
+	Templates_cTemplate,	"Template"
+	Templates_cEditor,	"Editor"
+	Templates_cProject,	"Project"
+	ELSConsts_SELDsgnrControlLockedDel,	"Control \"%s\" or some of it chidrens can not\r be deleted becouse they are locked"
+	ELSConsts_SELDsgnrControlsLockedDel,	"Some controls is locked. Can not delete controls."
+	ELSConsts_SELDsgnrClipboardFormat,	"Extension Library designer components"
 	main_cEXEName,	"<EXENAME>"
 	main_cPrjName,	"<PROJECTNAME>"
 	main_cPrjFile,	"<PROJECTFILE>"
 	main_cPrjPath,	"<PROJECTPATH>"
 	main_cCurSrc,	"<SOURCENAME>"
 	main_cSrcPath,	"<SOURCEPATH>"
-	main_cDevVer,	"<DEVCPPVERSION>"
+	GraphicStrings_gesCompressionScheme,	"The compression scheme is"
+	GraphicStrings_gesIndexedNotSupported,	"Conversion between indexed and non-indexed pixel formats is not supported."
+	GraphicStrings_gesConversionUnsupported,	"Color conversion failed. Could not find a proper method."
+	GraphicStrings_gesInvalidSampleDepth,	"Color depth is invalid. Bits per sample must be 1, 2, 4, 8 or 16."
+	GraphicStrings_gesInvalidPixelDepth,	"Sample count per pixel does not correspond to the given color scheme."
+	GraphicStrings_gesInvalidSubSampling,	"Subsampling value is invalid. Allowed are 1, 2 and 4."
+	GraphicStrings_gesVerticalSubSamplingError,	"Vertical subsampling value must be <= horizontal subsampling value."
+	GraphicStrings_gesPreparing,	"Preparing..."
+	GraphicStrings_gesLoadingData,	"Loading data..."
+	GraphicStrings_gesUpsampling,	"Upsampling..."
+	GraphicStrings_gesTransfering,	"Transfering..."
+	GraphicStrings_gesLZ77Error,	"LZ77 decompression error."
+	GraphicStrings_gesJPEGEOI,	"JPEG decompression error. Unexpected end of input."
+	GraphicStrings_gesJPEGStripSize,	"Improper JPEG strip/tile size."
+	GraphicStrings_gesJPEGComponentCount,	"Improper JPEG component count."
+	GraphicStrings_gesJPEGDataPrecision,	"Improper JPEG data precision."
+	GraphicStrings_gesPortableGray,	"Portable gray map images"
+	GraphicStrings_gesPortableMono,	"Portable bitmap images"
+	GraphicStrings_gesAutoDesk,	"Autodesk images"
+	GraphicStrings_gesKodakPhotoCD,	"Kodak Photo-CD images"
+	GraphicStrings_gesHalo,	"Dr. Halo images"
+	GraphicStrings_gesPaintShopPro,	"Paintshop Pro images"
+	GraphicStrings_gesPortableNetworkGraphic,	"Portable network graphic images"
+	GraphicStrings_gesInvalidImage,	"Cannot load image. Invalid or unexpected %s image format."
+	GraphicStrings_gesInvalidColorFormat,	"Invalid color format in %s file."
+	GraphicStrings_gesStreamReadError,	"Stream read error in %s file."
+	GraphicStrings_gesUnsupportedFeature,	"Cannot load image. %s not supported for %s files."
+	GraphicStrings_gesInvalidCRC,	"Cannot load image. CRC error found in %s file."
+	GraphicStrings_gesCompression,	"Cannot load image. Compression error found in %s file."
+	GraphicStrings_gesExtraCompressedData,	"Cannot load image. Extra compressed data found in %s file."
+	GraphicStrings_gesInvalidPalette,	"Cannot load image. Palette in %s file is invalid."
+	GraphicStrings_gesUnknownCriticalChunk,	"Cannot load PNG image. Unexpected but critical chunk detected."
+	GraphicStrings_gesJFIFImages,	"JFIF images"
+	GraphicStrings_gesTruevision,	"Truevision images"
+	GraphicStrings_gesTIFF,	"Tagged image file format images"
+	GraphicStrings_gesMacTIFF,	"Macintosh TIFF images"
+	GraphicStrings_gesPCTIF,	"PC TIF images"
+	GraphicStrings_gesGFIFax,	"GFI fax images"
+	GraphicStrings_gesSGI,	"SGI images"
+	GraphicStrings_gesSGITrueColor,	"SGI true color images"
+	GraphicStrings_gesZSoft,	"ZSoft Paintbrush images"
+	GraphicStrings_gesZSoftWord,	"Word 5.x screen capture images"
+	GraphicStrings_gesAliasWaveFront,	"Alias/Wavefront images"
+	GraphicStrings_gesSGITrueColorAlpha,	"SGI true color images with alpha"
+	GraphicStrings_gesSGIMono,	"SGI black/white images"
+	GraphicStrings_gesPhotoshop,	"Photoshop images"
+	GraphicStrings_gesPortable,	"Portable map images"
+	GraphicStrings_gesPortablePixel,	"Portable pixel map images"
+	MZLib_SIncorrectDataCheck,	"incorrect data check"
+	MZLib_SUnknownCompression,	"unknown compression method"
+	MZLib_SInvalidWindowSize,	"invalid window size"
+	MZLib_SIncorrectHeaderCheck,	"incorrect header check"
+	MZLib_SNeedDictionary,	"need dictionary"
+	GraphicStrings_gesRegistration,	"Attempt to register %s twice."
+	GraphicStrings_gesBitmaps,	"Windows bitmaps"
+	GraphicStrings_gesRLEBitmaps,	"Run length encoded Windows bitmaps"
+	GraphicStrings_gesDIBs,	"Device independant Windows bitmaps"
+	GraphicStrings_gesEPS,	"Encapsulated Postscript images"
+	GraphicStrings_gesIcons,	"Windows icons"
+	GraphicStrings_gesMetaFiles,	"Windows metafiles"
+	GraphicStrings_gesEnhancedMetaFiles,	"Windows enhanced meta files"
+	GraphicStrings_gesJPGImages,	"JPG images"
+	GraphicStrings_gesJPEGImages,	"JPEG images"
+	GraphicStrings_gesJPEImages,	"JPE images"
+	MZLib_SStreamError,	"stream error"
+	MZLib_SDataError,	"data error"
+	MZLib_SInsufficientMemory,	"insufficient memory"
+	MZLib_SBufferError,	"buffer error"
+	MZLib_SIncompatibleVersion,	"incompatible version"
+	MZLib_SInvalidDistanceCode,	"invalid distance code"
+	MZLib_SInvalidLengthCode,	"invalid literal/length code"
+	MZLib_SOversubscribedDBLTree,	"oversubscribed dynamic bit lengths tree"
+	MZLib_SIncompleteDBLTree,	"incomplete dynamic bit lengths tree"
+	MZLib_SOversubscribedLLTree,	"oversubscribed literal/length tree"
+	MZLib_SIncompleteLLTree,	"incomplete literal/length tree"
+	MZLib_SEmptyDistanceTree,	"empty distance tree with lengths"
+	MZLib_SInvalidBlockType,	"invalid block type"
+	MZLib_SInvalidStoredBlockLengths,	"invalid stored block lengths"
+	MZLib_STooManyLDSymbols,	"too many length or distance symbols"
+	MZLib_SInvalidBitLengthRepeat,	"invalid bit length repeat"
+	JclResources_RsOSVersionWin2000,	"Windows 2000"
 	JclResources_RsOSVersionWinXP,	"Windows XP"
 	JclResources_RsOSVersionWin2003,	"Windows Server 2003"
 	JclResources_RsProductTypeWorkStation,	"Workstation"
@@ -669,11 +848,11 @@ BEGIN
 	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
 	JConsts_sJPEGError,	"JPEG error #%d"
 	JConsts_sJPEGImageFile,	"JPEG Image File"
-	Templates_cTemplate,	"Template"
-	Templates_cEditor,	"Editor"
-	Templates_cProject,	"Project"
-	ELSConsts_SELDsgnrControlLockedDel,	"Control \"%s\" or some of it chidrens can not\r be deleted becouse they are locked"
-	ELSConsts_SELDsgnrControlsLockedDel,	"Some controls is locked. Can not delete controls."
+	JPG_sJPEGError,	"JPEG error #%d"
+	MZLib_SNeedDict,	"need dictionary"
+	MZLib_SStreamEnd,	"stream end"
+	MZLib_SFileError,	"file error"
+	JclResources_RsIntelCacheDescr08,	"16KB instruction cache, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr0A,	"8KB data cache 2-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr0C,	"16KB data cache, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr40,	"No L2 cache"
@@ -689,7 +868,7 @@ BEGIN
 	JclResources_RsOSVersionWinME,	"Windows ME"
 	JclResources_RsOSVersionWinNT3,	"Windows NT 3.%u"
 	JclResources_RsOSVersionWinNT4,	"Windows NT 4.%u"
-	JclResources_RsOSVersionWin2000,	"Windows 2000"
+	JclResources_RsRTTIBasedOn,	"Based on: "
 	JclResources_RsRTTIFloatType,	"Float type: "
 	JclResources_RsRTTIMethodKind,	"Method kind: "
 	JclResources_RsRTTIParamCount,	"Parameter count: "
@@ -705,7 +884,7 @@ BEGIN
 	JclResources_RsIntelCacheDescr03,	"Data TLB, 4Kb pages, 4-way set associative, 64 entries"
 	JclResources_RsIntelCacheDescr04,	"Data TLB, 4Mb pages, 4-way set associative, 8 entries"
 	JclResources_RsIntelCacheDescr06,	"8KB instruction cache, 4-way set associative, 32 byte line size"
-	JclResources_RsIntelCacheDescr08,	"16KB instruction cache, 4-way set associative, 32 byte line size"
+	JclResources_RsRTTIVirtualMethod,	"virtual method"
 	JclResources_RsRTTIIndex,	"index"
 	JclResources_RsRTTIDefault,	"default"
 	JclResources_RsRTTIName,	"Name: "
@@ -721,7 +900,7 @@ BEGIN
 	JclResources_RsRTTIParent,	"Parent: "
 	JclResources_RsRTTIPropCount,	"Property count: "
 	JclResources_RsRTTIUnitName,	"Unit name: "
-	JclResources_RsRTTIBasedOn,	"Based on: "
+	JclResources_RsRTTIValueOutOfRange,	"Value out of range (%s)."
 	JclResources_RsRTTIUnknownIdentifier,	"Unknown identifier '%s'."
 	JclResources_RsRTTIVar,	"var "
 	JclResources_RsRTTIConst,	"const "
@@ -737,7 +916,7 @@ BEGIN
 	JclResources_RsRTTIPropStored,	"stored"
 	JclResources_RsRTTIField,	"field"
 	JclResources_RsRTTIStaticMethod,	"static method"
-	JclResources_RsRTTIVirtualMethod,	"virtual method"
+	JvResources_RsClGrayText,	"Dimmed text"
 	JvResources_RsClBtnText,	"Button text"
 	JvResources_RsClInactiveCaptionText,	"Inactive window title bar text"
 	JvResources_RsClBtnHighlight,	"Button highlight"
@@ -753,7 +932,7 @@ BEGIN
 	JclResources_RsUnableToOpenKeyRead,	"Unable to open key \"%s\" for read"
 	JclResources_RsUnableToOpenKeyWrite,	"Unable to open key \"%s\" for write"
 	JclResources_RsUnableToAccessValue,	"Unable to open key \"%s\" and access value \"%s\""
-	JclResources_RsRTTIValueOutOfRange,	"Value out of range (%s)."
+	JvResources_RsClBackground,	"Desktop background"
 	JvResources_RsClActiveCaption,	"Active window title bar"
 	JvResources_RsClInactiveCaption,	"Inactive window title bar"
 	JvResources_RsClMenu,	"Menu background"
@@ -769,7 +948,7 @@ BEGIN
 	JvResources_RsClHighlightText,	"Selection text"
 	JvResources_RsClBtnFace,	"Button face"
 	JvResources_RsClBtnShadow,	"Button shadow"
-	JvResources_RsClGrayText,	"Dimmed text"
+	JvResources_RsClPurple,	"Purple"
 	JvResources_RsClTeal,	"Teal"
 	JvResources_RsClGray,	"Gray"
 	JvResources_RsClSilver,	"Silver"
@@ -785,7 +964,7 @@ BEGIN
 	JvResources_RsClCream,	"Cream"
 	JvResources_RsClMedGray,	"Medium gray"
 	JvResources_RsClScrollBar,	"Scrollbar"
-	JvResources_RsClBackground,	"Desktop background"
+	JvResources_RsEYYOrYYYYRequired,	"'yy' or 'yyyy' are required"
 	JvResources_RsEInstanceAlreadyExists,	"Instance already exists with another name"
 	JvResources_RsENameAlreadyExistsForInstance,	"Name already exists for another instance"
 	JvResources_RsEInstanceNonexistent,	"Instance does not exist"
@@ -801,7 +980,7 @@ BEGIN
 	JvResources_RsClGreen,	"Green"
 	JvResources_RsClOlive,	"Olive green"
 	JvResources_RsClNavy,	"Navy blue"
-	JvResources_RsClPurple,	"Purple"
+	JvResources_RsEJvInspDataStrTooLong,	"String too long"
 	JvResources_RsEJvInspNoGenReg,	"Unable to create generic item registration list"
 	JvResources_RsEJvInspPaintNotActive,	"Painter is not the active painter of the specified inspector"
 	JvResources_RsEJvInspPaintOnlyUsedOnce,	"Inspector painter can only be linked to one inspector"
@@ -817,7 +996,7 @@ BEGIN
 	JvResources_RsEOnlyDMYSAllowed,	"Only 'd', 'm', 'y' and '%s' are allowed"
 	JvResources_RsEDOrDDRequired,	"'d' or 'dd' are required"
 	JvResources_RsEMOrMMRequired,	"'m' or 'mm' are required"
-	JvResources_RsEYYOrYYYYRequired,	"'yy' or 'yyyy' are required"
+	JvResources_RsJvInspItemValueException,	"Exception "
 	JvResources_RsJvInspItemUnInitialized,	"(uninitialized)"
 	JvResources_RsJvInspItemUnassigned,	"(unassigned)"
 	JvResources_RsJvInspItemNoValue,	"(no value)"
@@ -833,7 +1012,7 @@ BEGIN
 	JvResources_RsEJvInspDataNotInit,	"Data not initialized"
 	JvResources_RsEJvInspDataNotAssigned,	"Data not assigned"
 	JvResources_RsEJvInspDataNoValue,	"Data has no value"
-	JvResources_RsEJvInspDataStrTooLong,	"String too long"
+	version_cGut,	"Gutter"
 	version_cSel,	"Selected text"
 	CodeToolTip_SCodeToolTipIndexXOfX,	"%d / %d"
 	ComConst_SOleError,	"OLE error %.8x"
@@ -849,7 +1028,7 @@ BEGIN
 	JvResources_RsEInvalidPath,	"Invalid path"
 	JvResources_RsENotAUniqueRootPath,	"'%s' is not a unique root path"
 	JvResources_RsECircularReferenceOfStorages,	"Circular reference of storages"
-	JvResources_RsJvInspItemValueException,	"Exception "
+	version_OPT_COMPILERSETS,	"CompilerSets"
 	version_WEBUPDATE_SECTION,	"WEBUPDATE"
 	version_DEFCOMPILERSET,	"Default compiler"
 	version_FLT_BASE,	"All known Files||"
@@ -865,7 +1044,7 @@ BEGIN
 	version_cBP,	"Break points"
 	version_cErr,	"Error Line"
 	version_cABP,	"Active Breakpoints"
-	version_cGut,	"Gutter"
+	version_HTML_EXT,	".html"
 	version_RTF_EXT,	".rtf"
 	version_INI_EXT,	".ini"
 	version_TEMPLATE_EXT,	".template"
@@ -881,7 +1060,7 @@ BEGIN
 	version_OPT_DIRS,	"Directories"
 	version_OPT_EDITOR,	"Editor"
 	version_OPT_OPTIONS,	"Options"
-	version_OPT_COMPILERSETS,	"CompilerSets"
+	version_CPP_INCLUDE_DIR_WX_PROTOCOL_INCLUDE,	"include\\wx\\protocol"
 	version_CPP_INCLUDE_DIR_WX_STC_INCLUDE,	"include\\wx\\stc"
 	version_CPP_INCLUDE_DIR_WX_SVG_INCLUDE,	"include\\wx\\svg"
 	version_CPP_INCLUDE_DIR_WX_XML_INCLUDE,	"include\\wx\\xml"
@@ -897,7 +1076,7 @@ BEGIN
 	version_DLL_EXT,	".dll"
 	version_EXE_EXT,	".exe"
 	version_DEV_EXT,	".dev"
-	version_HTML_EXT,	".html"
+	version_C_INCLUDE_DIR,	"include"
 	version_CPP_INCLUDE_DIR,	"include\\c++\\3.3.1"
 	version_CPP_INCLUDE_DIR_MINGW,	"include\\c++\\3.3.1\\mingw32"
 	version_CPP_INCLUDE_DIR_BACK,	"include\\c++\\3.3.1\\backward"
@@ -913,7 +1092,7 @@ BEGIN
 	version_CPP_INCLUDE_DIR_WX_NET_INCLUDE,	"include\\wx\\net"
 	version_CPP_INCLUDE_DIR_WX_OGL_INCLUDE,	"include\\wx\\ogl"
 	version_CPP_INCLUDE_DIR_WX_PLOT_INCLUDE,	"include\\wx\\plot"
-	version_CPP_INCLUDE_DIR_WX_PROTOCOL_INCLUDE,	"include\\wx\\protocol"
+	version_DEV_SEARCHLOOP,	"$__DEV_SEARCH_LOOP"
 	version_DEV_COMPLETION_CACHE,	"cache.ccc"
 	version_DEV_DEFAULTCODE_FILE,	"defaultcode.cfg"
 	version_DEV_SHORTCUTS_FILE,	"devshortcuts.cfg"
@@ -929,7 +1108,7 @@ BEGIN
 	version_BIN_DIR,	"Bin"
 	version_SND_BIN_DIR,	"lib\\gcc-lib\\mingw32\\3.3.1"
 	version_LIB_DIR,	"lib"
-	version_C_INCLUDE_DIR,	"include"
+	SynEditStrConst_SYNS_ExporterFormatHTML,	"HTML"
 	SynEditStrConst_SYNS_ExporterFormatRTF,	"RTF"
 	SynEditStrConst_SYNS_ScrollInfoFmt,	"%d - %d"
 	SynEditStrConst_SYNS_ScrollInfoFmtTop,	"Top Line: %d"
@@ -941,11 +1120,11 @@ BEGIN
 	SynEditStrConst_SYNS_LangCPP,	"C++"
 	SynEditStrConst_SYNS_LangRC,	"Resource script"
 	version_DEVCPP,	"Dev-C++"
-	version_DEVCPP_VERSION,	"4.9.9.0-wx-beta-6.4"
+	version_DEVCPP_VERSION,	"4.9.9.0-wx-beta-6.6"
 	version_DEFAULT_LANG_FILE,	"English.lng"
 	version_HTTP,	"http://"
 	version_DEV_INTERNAL_OPEN,	"$__DEV_INTERNAL_OPEN"
-	version_DEV_SEARCHLOOP,	"$__DEV_SEARCH_LOOP"
+	SynEditTextBuffer_SListIndexOutOfBounds,	"Invalid stringlist index %d"
 	SynEditStrConst_SYNS_Untitled,	"Untitled"
 	SynEditStrConst_SYNS_AttrAssembler,	"Assembler"
 	SynEditStrConst_SYNS_AttrCharacter,	"Character"
@@ -961,7 +1140,7 @@ BEGIN
 	SynEditStrConst_SYNS_AttrSpace,	"Space"
 	SynEditStrConst_SYNS_AttrString,	"String"
 	SynEditStrConst_SYNS_AttrSymbol,	"Symbol"
-	SynEditStrConst_SYNS_ExporterFormatHTML,	"HTML"
+	ComStrs_sTabFailClear,	"Failed to clear tab control"
 	ComStrs_sTabFailDelete,	"Failed to delete tab at index %d"
 	ComStrs_sTabFailRetrieve,	"Failed to retrieve tab at index %d"
 	ComStrs_sTabFailGetObject,	"Failed to get object at index %d"
@@ -977,7 +1156,7 @@ BEGIN
 	ComStrs_sUDAssociated,	"%s is already associated with %s"
 	ComStrs_sPageIndexError,	"%d is an invalid PageIndex value.  PageIndex must be between 0 and %d"
 	ComStrs_sInvalidComCtl32,	"This control requires version 4.70 or greater of COMCTL32.DLL"
-	SynEditTextBuffer_SListIndexOutOfBounds,	"Invalid stringlist index %d"
+	Consts_SDockZoneNotFound,	" - Dock zone not found"
 	Consts_SDockZoneHasNoCtl,	" - Dock zone has no control"
 	Consts_SMultiSelectRequired,	"Multiselect mode must be on for this feature"
 	Consts_SKeyCaption,	"Key"
@@ -993,13 +1172,13 @@ BEGIN
 	HelpIntfs_hNothingFound,	"No help found for %s"
 	HelpIntfs_hNoContext,	"No context-sensitive help installed"
 	HelpIntfs_hNoTopics,	"No topic-based help system installed"
-	ComStrs_sTabFailClear,	"Failed to clear tab control"
 	Consts_SDirsCap,	"&Directories:"
 	Consts_SFilesCap,	"&Files: (*.*)"
 	Consts_SNetworkCap,	"Ne&twork..."
 	Consts_SInvalidClipFmt,	"Invalid clipboard format"
 	Consts_SIconToClipboard,	"Clipboard does not support Icons"
 	Consts_SCannotOpenClipboard,	"Cannot open clipboard"
+	Consts_SDefault,	"Default"
 	Consts_SInvalidMemoSize,	"Text exceeds memo capacity"
 	Consts_SNoDefaultPrinter,	"There is no default printer currently selected"
 	Consts_SDuplicateMenus,	"Menu '%s' is already being used by another form"
@@ -1009,7 +1188,6 @@ BEGIN
 	Consts_SCannotOpenAVI,	"Cannot open AVI"
 	Consts_SDockedCtlNeedsName,	"Docked control must have a name"
 	Consts_SDockTreeRemoveError,	"Error removing control from dock tree"
-	Consts_SDockZoneNotFound,	" - Dock zone not found"
 	Consts_SmkcUp,	"Up"
 	Consts_SmkcRight,	"Right"
 	Consts_SmkcDown,	"Down"

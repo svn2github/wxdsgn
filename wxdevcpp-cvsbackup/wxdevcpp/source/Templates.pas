@@ -179,6 +179,9 @@ begin
       fOptions.IncludeVersionInfo := ReadBool(cProject, 'IncludeVersionInfo',
         FALSE);
       fOptions.SupportXPThemes := ReadBool(cProject, 'SupportXPThemes', FALSE);
+      //Added for gettting compiler settings
+      fOptions.CompilerOptions:= ReadString(cProject, 'CompilerSettings', '');
+      fOptions.CompilerOptions:= ReadString(cProject, 'CompilerSettings', '');
       // units are read on demand
     end;
   end;

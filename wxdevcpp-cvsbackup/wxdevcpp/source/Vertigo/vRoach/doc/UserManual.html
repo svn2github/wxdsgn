@@ -1,0 +1,732 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Kip Warner">
+   <meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>vUpdate - User Manual</title>
+</head>
+<body text="#00CC00" bgcolor="#000000" link="#3333FF" vlink="#3333FF" alink="#3333FF">
+<a NAME="top"></a>
+<br>&nbsp;
+<center><table CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td>
+<center><u><font face="Lucida Console"><font size=-1>vRoach v1.431 Beta</font></font></u>
+<br><font face="Lucida Console"><font size=-1>-</font></font>
+<br><u><font face="Lucida Console"><font size=-1>User Manual</font></font></u></center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center>
+<p><img SRC="logo.png" NOSAVE height=198 width=198></center>
+
+<p><br>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Table of Contents...</font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Introduction</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1><a href="#Stuff about this manual...">Stuff
+about this manual</a></font></font>
+<p><font face="Lucida Console"><font size=-1><a href="#What is vRoach">What
+is vRoach?</a></font></font>
+<p><font face="Lucida Console"><font size=-1><a href="#Why was it built">Why
+was it built?</a></font></font>
+<p><font face="Lucida Console"><font size=-1><a href="#How does it work">How
+does it work?</a></font></font>
+<ul>
+<ul>
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step one">Enter information</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step two">Select options</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step three">Send</a></font></font></li>
+</ul>
+</ul>
+</ul>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Misc</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1><a href="#contact">Contact</a></font></font></td>
+</tr>
+</table></center>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="Stuff about this manual..."></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Stuff about this manual...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>Please note that this manual
+will make frequent references to the free version of vRoach bundled with
+the open source
+<i>Dev-C++</i> IDE (very popular win32 front end for GCC).
+It is highly recommended that the reader <a href="http://www.bloodshed.net/dev">downloads</a>
+Dev-C++, as this is an excellent way for them to see vRoach in action.</font></font></li>
+</ul>
+
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>All the graphics on this page
+are encoded in .png format. If they look messed, it is probably because
+your browser is too old and crappy. I have noticed that Konqueror, Opera,
+Mozilla, and Netscape 4.x seem to work just fine.</font></font></li>
+</ul>
+
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>This manual assumes that the
+reader has a basic knowledge of the Winblows operating system. Developer
+knowledge is not required, but it will be an asset.</font></font></li>
+</ul>
+
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>Note that the pictures in here
+may not reflect what vRoach really looks like. vRoach gets better and better
+every day so some things may be different in the version you have.</font></font></li>
+</ul>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="What is vRoach"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>What is vRoach?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>vRoach is a portable bug
+submitter (also known as a feedback agent). By portable I mean it is a
+stand alone component that can be wired into virtually any existing software
+package. vRoach gives your clients the ability to assist your developers
+in locating bugs or sending feedback through a familiar and friendly interface.
+vRoach is fast and can be used on the fly so you do not have to stop what
+you are doing. It is also capable of sending optional information that
+developers tend to need when diagnosing a problem remotely (ie operating
+system version, build numbers, screen resolution, etc).</font></font>
+<br>&nbsp;</td>
+</tr>
+</table></center>
+
+<p><a NAME="Why was it built"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Why was it built?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>It occurred to me that most
+of the bugs that exist in any given software package are almost always
+discovered by your clients. The client, unlike the developer, will do things
+with your application that you would never have thought of. vRoach allows
+your clients to communicate fast and on the fly with your developers in
+a way that is productive. It can generate and email a report that includes
+the user's comments and optionally their system specifications / configuration
+files. Therefore, vRoach gives your clients the ability to search, and
+the developers the ability to destroy. Paired up with something like <a href="http://www.zero47.com/vertigo/vUpdate/UserManual.html">vUpdate</a>
+can prove to be lethal.</font></font>
+<br><font face="Lucida Console"><font size=-1></font></font>&nbsp;</td>
+</tr>
+</table></center>
+
+<p><a NAME="How does it work"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>How does it work?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>Here is a step by step example
+of a typical vRoach scenario with the Dev-C++ IDE...</font></font>
+<p><a NAME="step one"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step One - Enter information</font></font>
+<p><font face="Lucida Console"><font size=-1>User begins by entering in
+details as to what they were doing at the time of the incident. The interface
+was designed to be self explanatory and very logical.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="vRoach.png" NOSAVE BORDER=1 height=528 width=304></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step two"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Two - Select options</font></font>
+<p><font face="Lucida Console"><font size=-1>The user then selects extra
+information they may wish to make available to the developers.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="vRoachOptions.png" NOSAVE BORDER=1 height=528 width=304></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step three"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Three - Report sent</font></font>
+<p><font face="Lucida Console"><font size=-1>A report is pieced together
+and emailed off to a pre specified address. Please note that it is possible
+to have the report sent to an unlimited amount of addresses. Here is an
+example report from the above figure...</font></font></td>
+</tr>
+
+<tr>
+<td><font size=-1>vRoach Version: vRoach 1.431 Beta</font>
+<br><font size=-1>Submitted by: Kip</font>
+<br><font size=-1>Total submits: 1</font>
+<br><font size=-1>Email: kip@zero47.com</font>
+<br><font size=-1>Comment: Dev-C++ crashed when I hit the ok button in
+the options dialog box</font>
+<p><font size=-1>System specification...</font>
+<br><font size=-1>=========================================</font>
+<br><font size=-1>Platform ID: Winblows NT</font>
+<br><font size=-1>Platform Version: 5.0</font>
+<br><font size=-1>Platform Build Number: 2195</font>
+<br><font size=-1>Platform Extra Info: Service Pack 3</font>
+<br><font size=-1>Screen Resolution: 1280 by 1024</font>
+<p><font size=-1>=========================================</font>
+<p><font size=-1>Program configuration settings...</font>
+<br><font size=-1>=========================================</font>
+<br><font size=-1>User's devcpp.ini...</font>
+<br><font size=-1>/\------------------------------------/\</font>
+<br><font size=-1>[Editor.Syntax]</font>
+<br><font size=-1>Assembler=clLime, clNone, 0, 0, 0</font>
+<br><font size=-1>Character=$00FF6633, clNone, 0, 0, 0</font>
+<br><font size=-1>Comment=$00FF6633, clNone, 0, 1, 0</font>
+<br><font size=-1>Float=clFuchsia, clNone, 0, 0, 0</font>
+<br><font size=-1>Hexadecimal=clFuchsia, clNone, 0, 0, 0</font>
+<br><font size=-1>Identifier=clLime, clNone, 0, 0, 0</font>
+<br><font size=-1>Illegal char=clRed, clMaroon, 0, 0, 0</font>
+<br><font size=-1>Number=clBlue, clNone, 0, 0, 0</font>
+<br><font size=-1>Octal=clFuchsia, clNone, 0, 0, 0</font>
+<br><font size=-1>Preprocessor=clLime, clNone, 0, 0, 0</font>
+<br><font size=-1>Reserved word=clGreen, clNone, 0, 0, 0</font>
+<br><font size=-1>Space=clWhite, clBlack, 0, 0, 0</font>
+<br><font size=-1>String=$00C3C3C3, clNone, 0, 0, 0</font>
+<br><font size=-1>Symbol=clLime, clNone, 0, 0, 0</font>
+<br><font size=-1>Gutter=65280, 0</font>
+<br><font size=-1>Break points=16777215, 8421504</font>
+<br><font size=-1>Error Line=16777215, 255</font>
+<br><font size=-1>Active Breakpoints=16777215, 16711680</font>
+<br><font size=-1>Selected text=16777215, 8388608</font>
+<p><font size=-1>[Editor]</font>
+<br><font size=-1>UseSyntax=1</font>
+<br><font size=-1>AutoIndent=1</font>
+<br><font size=-1>InsertMode=1</font>
+<br><font size=-1>TabToSpaces=1</font>
+<br><font size=-1>SmartTabs=0</font>
+<br><font size=-1>SmartUnindent=1</font>
+<br><font size=-1>TrailBlank=0</font>
+<br><font size=-1>GroupUndo=1</font>
+<br><font size=-1>EHomeKey=0</font>
+<br><font size=-1>PastEOF=0</font>
+<br><font size=-1>PastEOL=0</font>
+<br><font size=-1>DblClkLine=0</font>
+<br><font size=-1>FindText=1</font>
+<br><font size=-1>Scrollbars=1</font>
+<br><font size=-1>HalfPageScroll=0</font>
+<br><font size=-1>ScrollHint=1</font>
+<br><font size=-1>SpecialChars=0</font>
+<br><font size=-1>AutoCloseBrace=0</font>
+<br><font size=-1>TabSize=4</font>
+<br><font size=-1>MarginVis=1</font>
+<br><font size=-1>MarginSize=80</font>
+<br><font size=-1>MarginColor=-2147483634</font>
+<br><font size=-1>InsertCaret=0</font>
+<br><font size=-1>OverwriteCaret=0</font>
+<br><font size=-1>InsDropFiles=0</font>
+<br><font size=-1>GutterVis=1</font>
+<br><font size=-1>GutterAuto=0</font>
+<br><font size=-1>LineNumbers=1</font>
+<br><font size=-1>LeadZero=0</font>
+<br><font size=-1>FirstLineZero=0</font>
+<br><font size=-1>Gutterfnt=1</font>
+<br><font size=-1>GutterSize=32</font>
+<br><font size=-1>SyntaxExt="c;cpp;h;hpp"</font>
+<br><font size=-1>DefaulttoPrj=0</font>
+<br><font size=-1>[Options]</font>
+<br><font size=-1>Language="English (Original)"</font>
+<br><font size=-1>Theme="Gnome"</font>
+<br><font size=-1>First=0</font>
+<br><font size=-1>Splash=""</font>
+<br><font size=-1>MRUMax=10</font>
+<br><font size=-1>DblFiles=0</font>
+<br><font size=-1>NoSplashScreen=0</font>
+<br><font size=-1>MinOnRun=0</font>
+<br><font size=-1>OpenStyle=1</font>
+<br><font size=-1>BackUps=1</font>
+<br><font size=-1>AutoOpen=2</font>
+<br><font size=-1>MsgTabs=1</font>
+<br><font size=-1>ShowBars=0</font>
+<br><font size=-1>ShowMenu=0</font>
+<br><font size=-1>DefCpp=1</font>
+<br><font size=-1>ShowOutput=0</font>
+<br><font size=-1>OutputOnNeed=0</font>
+<br><font size=-1>OutputHeight=120</font>
+<br><font size=-1>ProjectView=1</font>
+<br><font size=-1>ClassView=0</font>
+<br><font size=-1>ProjectWidth=161</font>
+<br><font size=-1>Statusbar=1</font>
+<br><font size=-1>FullScreen=0</font>
+<br><font size=-1>FindCols="75, 75, 120, 150"</font>
+<br><font size=-1>CompCols="75, 75, 120"</font>
+<br><font size=-1>ToolbarMain=1</font>
+<br><font size=-1>ToolbarMainX=11</font>
+<br><font size=-1>ToolbarMainY=2</font>
+<br><font size=-1>ToolbarEdit=1</font>
+<br><font size=-1>ToolbarEditX=333</font>
+<br><font size=-1>ToolbarEditY=2</font>
+<br><font size=-1>ToolbarCompile=1</font>
+<br><font size=-1>ToolbarCompileX=201</font>
+<br><font size=-1>ToolbarCompileY=2</font>
+<br><font size=-1>ToolbarProject=1</font>
+<br><font size=-1>ToolbarProjectX=393</font>
+<br><font size=-1>ToolbarProjectY=2</font>
+<br><font size=-1>ToolbarOptions=1</font>
+<br><font size=-1>ToolbarOptionsX=881</font>
+<br><font size=-1>ToolbarOptionsY=2</font>
+<br><font size=-1>ToolbarSpecials=1</font>
+<br><font size=-1>ToolbarSpecialsX=628</font>
+<br><font size=-1>ToolbarSpecialsY=2</font>
+<br><font size=-1>ToolbarSearch=1</font>
+<br><font size=-1>ToolbarSearchX=514</font>
+<br><font size=-1>ToolbarSearchY=2</font>
+<br><font size=-1>[Position]</font>
+<br><font size=-1>WinPlace=2, 3, -1, -1, -1, -1, 201, 147, 1078, 876</font>
+<br><font size=-1>[Directories]</font>
+<br><font size=-1>Bins="d:\dev\compilers\DevCpp5\Bin;d:\dev\compilers\DevCpp5\lib\gcc-lib\mingw32\2.95.3-6"</font>
+<br><font size=-1>Default="d:\dev\compilers\DevCpp5\"</font>
+<br><font size=-1>C="d:\dev\compilers\DevCpp5\include"</font>
+<br><font size=-1>Cpp="d:\dev\compilers\DevCpp5\include\g++-3;d:\dev\compilers\DevCpp5\include"</font>
+<br><font size=-1>Help="Help\"</font>
+<br><font size=-1>Icons="Icons\"</font>
+<br><font size=-1>Lang="Lang\"</font>
+<br><font size=-1>Lib="d:\dev\compilers\DevCpp5\lib"</font>
+<br><font size=-1>Templates="Templates\"</font>
+<br><font size=-1>Themes="Themes\"</font>
+<br><font size=-1>[Compiler]</font>
+<br><font size=-1>UseParams=1</font>
+<br><font size=-1>InterDir=</font>
+<br><font size=-1>OutputDir=</font>
+<br><font size=-1>RunParams=</font>
+<br><font size=-1>CompAdd=0</font>
+<br><font size=-1>LinkAdd=0</font>
+<br><font size=-1>cmdline=</font>
+<br><font size=-1>LinkLine=</font>
+<br><font size=-1>Log=0</font>
+<br><font size=-1>Delay=0</font>
+<br><font size=-1>gcc.exe=gcc.exe</font>
+<br><font size=-1>g++.exe=g++.exe</font>
+<br><font size=-1>gdb.exe=gdb.exe</font>
+<br><font size=-1>make.exe=make.exe</font>
+<br><font size=-1>windres.exe=windres.exe</font>
+<br><font size=-1>dllwrap.exe=dllwrap.exe</font>
+<br><font size=-1>gprof.exe=gprof.exe</font>
+<br><font size=-1>[C++_Compiler]</font>
+<br><font size=-1>Heuristics=0</font>
+<br><font size=-1>AccessChecking=0</font>
+<br><font size=-1>AcceptDollar=0</font>
+<br><font size=-1>[C_Compiler]</font>
+<br><font size=-1>Ansi=0</font>
+<br><font size=-1>Traditional=0</font>
+<br><font size=-1>Warning=0</font>
+<br><font size=-1>UseCygwin=0</font>
+<br><font size=-1>[Optimization]</font>
+<br><font size=-1>MinorOpt=1</font>
+<br><font size=-1>Optimization=3</font>
+<br><font size=-1>[Makefile]</font>
+<br><font size=-1>FastDep=0</font>
+<br><font size=-1>[Profiling]</font>
+<br><font size=-1>Profile=0</font>
+<br><font size=-1>[Code_Generation]</font>
+<br><font size=-1>Exceptions=0</font>
+<br><font size=-1>DoubleFloat=0</font>
+<br><font size=-1>Memory=0</font>
+<br><font size=-1>[Linker]</font>
+<br><font size=-1>ObjC=0</font>
+<br><font size=-1>DebugInfo=0</font>
+<br><font size=-1>NoLibs=0</font>
+<br><font size=-1>Win32=1</font>
+<br><font size=-1>[Editor.Font]</font>
+<br><font size=-1>Charset=1</font>
+<br><font size=-1>Color=-2147483640</font>
+<br><font size=-1>Name="Courier New"</font>
+<br><font size=-1>Pitch=0</font>
+<br><font size=-1>Size=10</font>
+<br><font size=-1>[Editor.Gutterfont]</font>
+<br><font size=-1>Charset=1</font>
+<br><font size=-1>Color=-2147483640</font>
+<br><font size=-1>Name="Terminal"</font>
+<br><font size=-1>Pitch=0</font>
+<br><font size=-1>Size=9</font>
+<br><font size=-1>[CodeCompletion]</font>
+<br><font size=-1>Width=320</font>
+<br><font size=-1>Height=240</font>
+<br><font size=-1>Delay=500</font>
+<br><font size=-1>BackColor=-2147483643</font>
+<br><font size=-1>Enabled=0</font>
+<br><font size=-1>[ClassBrowsing]</font>
+<br><font size=-1>Enabled=0</font>
+<br><font size=-1>ViewStyle=0</font>
+<br><font size=-1>ParseLocalHeaders=0</font>
+<br><font size=-1>ParseGlobalHeaders=0</font>
+<br><font size=-1>ShowAllClasses=0</font>
+<br><font size=-1>[History]</font>
+<br><font size=-1>0=D:\projects\vRoach\src\vRoach.dev</font>
+<br><font size=-1>1=D:\projects\vDict\src\vDict.dev</font>
+<br><font size=-1>2=D:\projects\vUpdate\src\vUpdate.dev</font>
+<br><font size=-1>3=D:\dev\Compilers\bcc55\Include\winsock2.h</font>
+<br><font size=-1>4=D:\projects\vDict\src\keygen\vDictKeyGen.cpp</font>
+<br><font size=-1>5=C:\Documents and Settings\Administrator\Desktop\test.cpp</font>
+<br><font size=-1>6=D:\projects\vRoach\src\DialogProc.c</font>
+<p><font size=-1>\/------------------------------------\/</font>
+<p><font size=-1>User's devcpp.cfg...</font>
+<br><font size=-1>/\------------------------------------/\</font>
+<br><font size=-1>[Tools]</font>
+<br><font size=-1>Count=1</font>
+<p><font size=-1>[Tool0]</font>
+<br><font size=-1>Title=vRoach</font>
+<br><font size=-1>Program=vRoach.exe</font>
+<br><font size=-1>WorkDir=d:\dev\compilers\devcpp5</font>
+<br><font size=-1>Params=</font>
+<br><font size=-1>[VUPDATE]</font>
+<br><font size=-1>AdvancedBandwidthThrottle = "100.000000"</font>
+<br><font size=-1>AdvancedDebugLog = "0"</font>
+<br><font size=-1>ListOther = "1"</font>
+<br><font size=-1>ListHelp = "1"</font>
+<br><font size=-1>ListLanguages = "1"</font>
+<br><font size=-1>ListPatches = "1"</font>
+<br><font size=-1>ListPackages = "1"</font>
+<br><font size=-1>InterfacePreviews = "0"</font>
+<br><font size=-1>InterfaceDevTheme = "1"</font>
+<br><font size=-1>InterfaceSmoothProgressBar = "1"</font>
+<br><font size=-1>$ROOT="d:\dev\compilers\DevCpp5\"</font>
+<br><font size=-1>$BIN="d:\dev\compilers\DevCpp5\Bin"</font>
+<br><font size=-1>$HELP="D:\dev\Compilers\DevCpp5\Help\"</font>
+<br><font size=-1>$ICONS="D:\dev\Compilers\DevCpp5\Icons\"</font>
+<br><font size=-1>$INCLUDE="d:\dev\compilers\DevCpp5\include"</font>
+<br><font size=-1>$LIB="d:\dev\compilers\DevCpp5\lib"</font>
+<br><font size=-1>$LANG="D:\dev\Compilers\DevCpp5\Lang\"</font>
+<br><font size=-1>$TEMPLATES="D:\dev\Compilers\DevCpp5\Templates\"</font>
+<br><font size=-1>$THEMES="D:\dev\Compilers\DevCpp5\Themes\"</font>
+<p><font size=-1>\/------------------------------------\/</font>
+<p><font size=-1>User's devshortcuts.cfg...</font>
+<br><font size=-1>/\------------------------------------/\</font>
+<br><font size=-1>[Shortcuts]</font>
+<br><font size=-1>Source File=Ctrl+N</font>
+<br><font size=-1>Project...=</font>
+<br><font size=-1>Resource File=</font>
+<br><font size=-1>Template...=</font>
+<br><font size=-1>Open Project or File...=Ctrl+O</font>
+<br><font size=-1>Clear History=</font>
+<br><font size=-1>Save=Ctrl+S</font>
+<br><font size=-1>Save As...=Ctrl+F12</font>
+<br><font size=-1>Save All=</font>
+<br><font size=-1>Close=</font>
+<br><font size=-1>Close All=</font>
+<br><font size=-1>Close Project=</font>
+<br><font size=-1>Properties=</font>
+<br><font size=-1>Import MS Visual C++ project=</font>
+<br><font size=-1>to HTML=</font>
+<br><font size=-1>to RTF=</font>
+<br><font size=-1>Project to HTML=</font>
+<br><font size=-1>Print=Ctrl+P</font>
+<br><font size=-1>Print Setup=</font>
+<br><font size=-1>Exit=</font>
+<br><font size=-1>Undo=Ctrl+Z</font>
+<br><font size=-1>Redo=Shift+Ctrl+Z</font>
+<br><font size=-1>Cut=Ctrl+X</font>
+<br><font size=-1>Copy=</font>
+<br><font size=-1>Paste=Ctrl+V</font>
+<br><font size=-1>Swap header/source=</font>
+<br><font size=-1>Date/Time=</font>
+<br><font size=-1>Comment Header=</font>
+<br><font size=-1>Select All=Ctrl+A</font>
+<br><font size=-1>Comment=Ctrl+Alt+.</font>
+<br><font size=-1>Uncomment=Ctrl+Alt+,</font>
+<br><font size=-1>Indent=Ctrl+I</font>
+<br><font size=-1>Unindent=Ctrl+U</font>
+<br><font size=-1>Find...=Ctrl+F</font>
+<br><font size=-1>Find in Files...=Shift+Alt+F</font>
+<br><font size=-1>Search Again=F3</font>
+<br><font size=-1>Replace...=Ctrl+R</font>
+<br><font size=-1>Incremental Search=Ctrl+I</font>
+<br><font size=-1>Goto function...=Shift+Ctrl+G</font>
+<br><font size=-1>Goto line...=Ctrl+G</font>
+<br><font size=-1>Project/Class Browser=</font>
+<br><font size=-1>Statusbar=</font>
+<br><font size=-1>Always Visible=</font>
+<br><font size=-1>Only when Needed=</font>
+<br><font size=-1>Main=</font>
+<br><font size=-1>Edit=</font>
+<br><font size=-1>Search=</font>
+<br><font size=-1>Compile and Run=</font>
+<br><font size=-1>Project=</font>
+<br><font size=-1>Options=</font>
+<br><font size=-1>Specials=</font>
+<br><font size=-1>To-Do list...=</font>
+<br><font size=-1>New unit=</font>
+<br><font size=-1>Add to Project=</font>
+<br><font size=-1>Remove from Project=</font>
+<br><font size=-1>Add Resource File...=</font>
+<br><font size=-1>Remove Resource File...=</font>
+<br><font size=-1>Edit Resource File...=</font>
+<br><font size=-1>Project Options=Alt+P</font>
+<br><font size=-1>Compile=Ctrl+F9</font>
+<br><font size=-1>Run=Ctrl+F10</font>
+<br><font size=-1>Compile &amp; Run=F9</font>
+<br><font size=-1>Rebuild All=Ctrl+F11</font>
+<br><font size=-1>Syntax Check=</font>
+<br><font size=-1>Clean=Ctrl+Alt+F12</font>
+<br><font size=-1>Profile analysis=</font>
+<br><font size=-1>Program Reset=Alt+F2</font>
+<br><font size=-1>Debug=F8</font>
+<br><font size=-1>Stop Execution=Alt+F2</font>
+<br><font size=-1>Toggle Breakpoint=Ctrl+F5</font>
+<br><font size=-1>Next Step=F7</font>
+<br><font size=-1>Step Into=Shift+F7</font>
+<br><font size=-1>Step Over=Ctrl+F7</font>
+<br><font size=-1>Run to Cursor=Ctrl+F4</font>
+<br><font size=-1>Add Watch=F4</font>
+<br><font size=-1>Watch Variables=Ctrl+W</font>
+<br><font size=-1>View CPU Window=</font>
+<br><font size=-1>Compiler Options=</font>
+<br><font size=-1>Environment Options=</font>
+<br><font size=-1>Editor Options=</font>
+<br><font size=-1>Configure Shortcuts=</font>
+<br><font size=-1>Configure Tools=</font>
+<br><font size=-1>Check for Updates/Packages...=Ctrl+Alt+V</font>
+<br><font size=-1>Full Screen Mode=F12</font>
+<br><font size=-1>Next=F6</font>
+<br><font size=-1>Previous=F5</font>
+<br><font size=-1>Customize Help Menu...=</font>
+<br><font size=-1>About Dev-C++...=</font>
+<br><font size=-1>Close all except this=</font>
+<br><font size=-1>Delete=</font>
+<br><font size=-1>Add To-Do item...=Shift+Ctrl+T</font>
+<br><font size=-1>Remove file=</font>
+<br><font size=-1>Rename file=</font>
+<br><font size=-1>Open=</font>
+<br><font size=-1>Add folder=</font>
+<br><font size=-1>Remove folder=</font>
+<br><font size=-1>Rename folder=</font>
+<br><font size=-1>Clear=</font>
+<br><font size=-1>Goto declaration=</font>
+<br><font size=-1>Goto implementation=</font>
+<br><font size=-1>New class=</font>
+<br><font size=-1>New member function=</font>
+<br><font size=-1>New variable=</font>
+<br><font size=-1>All files=</font>
+<br><font size=-1>Current file=</font>
+<br><font size=-1>Edit watch=</font>
+<br><font size=-1>Remove watch=</font>
+<p><font size=-1>\/------------------------------------\/</font>
+<p><font size=-1>User's vUpdate Install Database.txt...</font>
+<br><font size=-1>/\------------------------------------/\</font>
+<br><font size=-1># This file is generated by vUpdate and is used to keep</font>
+<br><font size=-1># track of what has already been installed. It is highly</font>
+<br><font size=-1># recommend that you don't edit its contents unless you</font>
+<br><font size=-1># know what you are doing. Doing so can result in</font>
+<br><font size=-1># either yourself or vUpdate going mad.</font>
+<p><font size=-1># Chinese language Installed on Fri Aug 02 03:26:54 2002</font>
+<br><font size=-1>LangChinese</font>
+<br><font size=-1>1.5</font>
+<p><font size=-1># English language Installed on Fri Aug 02 03:27:10 2002</font>
+<br><font size=-1>LangEnglish</font>
+<br><font size=-1>1.60</font>
+<p><font size=-1># Czech language Installed on Fri Aug 02 13:10:03 2002</font>
+<br><font size=-1>LangCzech</font>
+<br><font size=-1>1.3</font>
+<p><font size=-1># Danish language Installed on Fri Aug 02 13:10:08 2002</font>
+<br><font size=-1>LangDanish</font>
+<br><font size=-1>1.2</font>
+<p><font size=-1># Dutch language Installed on Fri Aug 02 13:10:10 2002</font>
+<br><font size=-1>LangDutch</font>
+<br><font size=-1>1.25</font>
+<p><font size=-1># French language Installed on Fri Aug 02 13:10:25 2002</font>
+<br><font size=-1>LangFrench</font>
+<br><font size=-1>1.34</font>
+<p><font size=-1># German language Installed on Fri Aug 02 13:10:27 2002</font>
+<br><font size=-1>LangGerman</font>
+<br><font size=-1>1.17</font>
+<p><font size=-1># Greek language Installed on Fri Aug 02 13:10:45 2002</font>
+<br><font size=-1>LangGreek</font>
+<br><font size=-1>1.36</font>
+<p><font size=-1># Italian language Installed on Fri Aug 02 13:10:46 2002</font>
+<br><font size=-1>LangItalian</font>
+<br><font size=-1>1.4</font>
+<p><font size=-1># Korean language Installed on Fri Aug 02 13:10:48 2002</font>
+<br><font size=-1>LangKorean</font>
+<br><font size=-1>1.4</font>
+<p><font size=-1># Polish language Installed on Fri Aug 02 13:10:53 2002</font>
+<br><font size=-1>LangPolish</font>
+<br><font size=-1>1.1</font>
+<p><font size=-1># Portuguese language Installed on Fri Aug 02 13:10:55
+2002</font>
+<br><font size=-1>LangPortuguese</font>
+<br><font size=-1>1.5</font>
+<p><font size=-1># Spanish language Installed on Fri Aug 02 13:10:57 2002</font>
+<br><font size=-1>LangSpanish</font>
+<br><font size=-1>1.2</font>
+<p><font size=-1># FLTK Installed on Sat Aug 03 14:33:28 2002</font>
+<br><font size=-1>fltk</font>
+<br><font size=-1>1.10</font>
+<p><font size=-1># Chinese TC language Installed on Mon Aug 05 15:35:16
+2002</font>
+<br><font size=-1>LangChineseTC</font>
+<br><font size=-1>1.4</font>
+<p><font size=-1># Dev-C++ installed on Tue Aug 06 17:57:02 2002</font>
+<br><font size=-1>DevCppExe</font>
+<br><font size=-1>1.76</font>
+<p><font size=-1># vRoach 1.431 Beta installed on Wed Aug 21 20:04:46 2002</font>
+<br><font size=-1>vRoach</font>
+<br><font size=-1>1.431</font>
+<br><font size=-1>\/------------------------------------\/</font>
+<p><font size=-1>User's vUpdate Debug Log.txt...</font>
+<br><font size=-1>/\------------------------------------/\</font>
+<br><font size=-1># v1.509 Wed Aug 21 20:03:06 2002</font>
+<br><font size=-1>According to your devcpp.cfg, vUpdate thinks these are
+your macros...</font>
+<br><font size=-1>$ROOT: "d:\dev\compilers\DevCpp5\"</font>
+<br><font size=-1>$BIN: "d:\dev\compilers\DevCpp5\Bin"</font>
+<br><font size=-1>$HELP: "D:\dev\Compilers\DevCpp5\Help\"</font>
+<br><font size=-1>$ICONS: "D:\dev\Compilers\DevCpp5\Icons\"</font>
+<br><font size=-1>$INCLUDE: "d:\dev\compilers\DevCpp5\include"</font>
+<br><font size=-1>$LIB: "d:\dev\compilers\DevCpp5\lib"</font>
+<br><font size=-1>$LANG: "D:\dev\Compilers\DevCpp5\Lang\"</font>
+<br><font size=-1>$TEMPLATES: "D:\dev\Compilers\DevCpp5\Templates\"</font>
+<br><font size=-1>$THEMES: "D:\dev\Compilers\DevCpp5\Themes\"</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:06 2002</font>
+<br><font size=-1>According to your devcpp.cfg, vUpdate thinks these are
+your options...</font>
+<br><font size=-1>bInterfaceSmoothProgressBar: "1"</font>
+<br><font size=-1>bInterfaceDevTheme: "1"</font>
+<br><font size=-1>bInterfacePreviews: "0"</font>
+<br><font size=-1>bListPackages: "1"</font>
+<br><font size=-1>bListPatches: "1"</font>
+<br><font size=-1>bListLanguages: "1"</font>
+<br><font size=-1>bListHelp: "1"</font>
+<br><font size=-1>bListOther: "1"</font>
+<br><font size=-1>bAdvancedDebugLog: "1"</font>
+<br><font size=-1>fBandwidthThrottle: "100.000000"</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:06 2002</font>
+<br><font size=-1>Status: Ready, hit start to begin...</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:08 2002</font>
+<br><font size=-1>According to your devcpp.cfg, vUpdate thinks these are
+your macros...</font>
+<br><font size=-1>$ROOT: "d:\dev\compilers\DevCpp5\"</font>
+<br><font size=-1>$BIN: "d:\dev\compilers\DevCpp5\Bin"</font>
+<br><font size=-1>$HELP: "D:\dev\Compilers\DevCpp5\Help\"</font>
+<br><font size=-1>$ICONS: "D:\dev\Compilers\DevCpp5\Icons\"</font>
+<br><font size=-1>$INCLUDE: "d:\dev\compilers\DevCpp5\include"</font>
+<br><font size=-1>$LIB: "d:\dev\compilers\DevCpp5\lib"</font>
+<br><font size=-1>$LANG: "D:\dev\Compilers\DevCpp5\Lang\"</font>
+<br><font size=-1>$TEMPLATES: "D:\dev\Compilers\DevCpp5\Templates\"</font>
+<br><font size=-1>$THEMES: "D:\dev\Compilers\DevCpp5\Themes\"</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:08 2002</font>
+<br><font size=-1>According to your devcpp.cfg, vUpdate thinks these are
+your options...</font>
+<br><font size=-1>bInterfaceSmoothProgressBar: "1"</font>
+<br><font size=-1>bInterfaceDevTheme: "1"</font>
+<br><font size=-1>bInterfacePreviews: "0"</font>
+<br><font size=-1>bListPackages: "1"</font>
+<br><font size=-1>bListPatches: "1"</font>
+<br><font size=-1>bListLanguages: "1"</font>
+<br><font size=-1>bListHelp: "1"</font>
+<br><font size=-1>bListOther: "1"</font>
+<br><font size=-1>bAdvancedDebugLog: "1"</font>
+<br><font size=-1>fBandwidthThrottle: "100.000000"</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:19 2002</font>
+<br><font size=-1>Preparing to save macros and options......</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:19 2002</font>
+<br><font size=-1>Saving your options...</font>
+<p><font size=-1># v1.509 Wed Aug 21 20:03:19 2002</font>
+<br><font size=-1>Saved options...</font>
+<p><font size=-1>\/------------------------------------\/</font>
+<p><font size=-1>=========================================</font>
+<br>&nbsp;
+<br>&nbsp;
+<p><font size=-1>Questions, comments, and suggestions about vRoach</font>
+<br><font size=-1>can be sent to kip@zero47.com. Good luck. L8tr.</font></td>
+</tr>
+</table></center>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="contact"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Contact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>E-Mail: <a href="mailto:kip@zero47.com?subject=vUpdate">kip@zero47.com</a></font></font>
+<br><font face="Lucida Console"><font size=-1>Website: <a href="http://www.zero47.com">http://www.zero47.com</a></font></font>
+<br><font face="Lucida Console"><font size=-1>ICQ: <a href="http://wwp.icq.com/whitepages/message_me/1,,,00.icq?uin=29008229&action=message">29008229</a></font></font></td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+</body>
+</html>

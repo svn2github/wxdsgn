@@ -113,7 +113,7 @@ begin
     Top := 90;
     Width := 372;
     Height := 13;
-    Caption := 'WxWidgets Designer and portions - Copyright (c) Guru Kathiresan';
+    Caption := 'wxWidgets Designer and portions - Copyright (c) Guru Kathiresan';
     Font.Charset := DEFAULT_CHARSET;
     Font.Color := clWindowText;
     Font.Height := -11;

@@ -1,0 +1,81 @@
+# Project: vUpdate
+# Makefile created by Dev-C++ 4.9.7.0
+
+CPP   = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = vUpdate_private.res
+OBJ  = obj/WndProc.o obj/FlushBuffer.o obj/install.o obj/main.o obj/misc.o obj/DownloadUpdatesThread.o obj/ini_io.o obj/start.o obj/GetOptions.o obj/ResetState.o obj/DialogProc.o obj/DebugOut.o obj/DownloadFile.o obj/fillHeader.o obj/DisplayUpdates.o obj/InsertMacros.o obj/SaveOptions.o obj/ImplementOptions.o $(RES)
+LIBS =  -L"c:/mingw/lib" -lcomctl32 -lws2_32
+INCS =  -I"c:/mingw/include"  -I"c:/mingw/include/c++/3.2"  -I"c:/mingw/include" 
+BIN  = ../bin/vUpdate.exe
+CXXFLAGS = $(INCS) -fvtable-thunks -g3 -mwindows
+CFLAGS = $(INCS) -fvtable-thunks -g3 -mwindows
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before ../bin/vUpdate.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(OBJ) -o "..\bin\vUpdate.exe" $(LIBS) $(CXXFLAGS)
+
+obj/WndProc.o: WndProc.c
+	$(CPP) -c WndProc.c -o obj/WndProc.o $(CXXFLAGS)
+
+obj/FlushBuffer.o: FlushBuffer.c
+	$(CPP) -c FlushBuffer.c -o obj/FlushBuffer.o $(CXXFLAGS)
+
+obj/install.o: install.c
+	$(CPP) -c install.c -o obj/install.o $(CXXFLAGS)
+
+obj/main.o: main.c
+	$(CPP) -c main.c -o obj/main.o $(CXXFLAGS)
+
+obj/misc.o: misc.c
+	$(CPP) -c misc.c -o obj/misc.o $(CXXFLAGS)
+
+obj/DownloadUpdatesThread.o: DownloadUpdatesThread.c
+	$(CPP) -c DownloadUpdatesThread.c -o obj/DownloadUpdatesThread.o $(CXXFLAGS)
+
+obj/ini_io.o: ini_io.c
+	$(CPP) -c ini_io.c -o obj/ini_io.o $(CXXFLAGS)
+
+obj/start.o: start.c
+	$(CPP) -c start.c -o obj/start.o $(CXXFLAGS)
+
+obj/GetOptions.o: GetOptions.c
+	$(CPP) -c GetOptions.c -o obj/GetOptions.o $(CXXFLAGS)
+
+obj/ResetState.o: ResetState.c
+	$(CPP) -c ResetState.c -o obj/ResetState.o $(CXXFLAGS)
+
+obj/DialogProc.o: DialogProc.c
+	$(CPP) -c DialogProc.c -o obj/DialogProc.o $(CXXFLAGS)
+
+obj/DebugOut.o: DebugOut.c
+	$(CPP) -c DebugOut.c -o obj/DebugOut.o $(CXXFLAGS)
+
+obj/DownloadFile.o: DownloadFile.c
+	$(CPP) -c DownloadFile.c -o obj/DownloadFile.o $(CXXFLAGS)
+
+obj/fillHeader.o: fillHeader.c
+	$(CPP) -c fillHeader.c -o obj/fillHeader.o $(CXXFLAGS)
+
+obj/DisplayUpdates.o: DisplayUpdates.c
+	$(CPP) -c DisplayUpdates.c -o obj/DisplayUpdates.o $(CXXFLAGS)
+
+obj/InsertMacros.o: InsertMacros.c
+	$(CPP) -c InsertMacros.c -o obj/InsertMacros.o $(CXXFLAGS)
+
+obj/SaveOptions.o: SaveOptions.c
+	$(CPP) -c SaveOptions.c -o obj/SaveOptions.o $(CXXFLAGS)
+
+obj/ImplementOptions.o: ImplementOptions.c
+	$(CPP) -c ImplementOptions.c -o obj/ImplementOptions.o $(CXXFLAGS)
+
+vUpdate_private.res: vUpdate_private.rc resources/resources.rc 
+	$(WINDRES) -i vUpdate_private.rc -I rc -o vUpdate_private.res -O coff 

@@ -147,6 +147,8 @@ begin
       PChar(fDirs[I]),
       False,
       FILE_NOTIFY_CHANGE_LAST_WRITE or FILE_NOTIFY_CHANGE_FILE_NAME
+      {or FILE_NOTIFY_CHANGE_SIZE or FILE_ACTION_MODIFIED
+      or FILE_NOTIFY_CHANGE_LAST_ACCESS}
       );
     nMonitors := nMonitors + 1;
   end;

@@ -21,14 +21,6 @@ object NewProjectForm: TNewProjectForm
     267)
   PixelsPerInch = 96
   TextHeight = 13
-  object lblPrjName: TLabel
-    Left = 8
-    Top = 185
-    Width = 34
-    Height = 13
-    Anchors = [akLeft, akRight, akBottom]
-    Caption = 'Name: '
-  end
   object Bevel1: TBevel
     Left = 6
     Top = 171
@@ -37,13 +29,13 @@ object NewProjectForm: TNewProjectForm
     Anchors = [akLeft, akRight, akBottom]
     Shape = bsTopLine
   end
-  object Label2: TLabel
-    Left = 16
-    Top = 165
-    Width = 87
+  object lblPrjName: TLabel
+    Left = 8
+    Top = 185
+    Width = 34
     Height = 13
-    Anchors = [akLeft, akBottom]
-    Caption = '  Project Options:  '
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Name: '
   end
   object btnBrws2: TSpeedButton
     Tag = 2
@@ -79,6 +71,14 @@ object NewProjectForm: TNewProjectForm
       BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
       BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
     Visible = False
+  end
+  object Label2: TLabel
+    Left = 16
+    Top = 165
+    Width = 87
+    Height = 13
+    Anchors = [akLeft, akBottom]
+    Caption = '  Project Options:  '
   end
   object pnlDesc: TPanel
     Left = 8

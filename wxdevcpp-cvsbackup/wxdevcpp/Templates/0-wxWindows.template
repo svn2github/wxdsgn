@@ -1,20 +1,20 @@
 [Template]
 ver=1
-Name=wxWidgets Dialog Application
-Icon=wxWindows.ico
-Description=A basic template for wxWindows applications.
+Name=wxWidgets Dialog
+IconIndex=0
+Description=A basic Dialog for wxWindows applications.
 Catagory=Basic
 
 [Project]
-Name=newProject
-UnitCount=5
+Name=newDlgProject
+UnitCount=6
 Type=0
 Ver=1
 ObjFiles=
 Includes=
 Libs=
-PrivateResource=newproject_private.rc
-ResourceIncludes=
+PrivateResource=newDlgproject_private.rc
+ResourceIncludes=c:\dev-cpp\include\
 MakeIncludes=
 Compiler=-fno-rtti -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -fvtable-thunks -D__WXMSW__ -D__GNUWIN32__ -D__WIN95___@@__@@_
 CppCompiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@__@@_
@@ -24,7 +24,7 @@ Icon=
 ExeOutput=
 ObjectOutput=
 OverrideOutput=0
-OverrideOutputName=newproject.exe
+OverrideOutputName=newDlgproject.exe
 HostApplication=
 Folders="C++ Header","C++ Source","wxForm Files"
 CommandLine=
@@ -46,8 +46,8 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1]
-CppName=newProgramApp.cpp
-Cpp=newProgramApp.cpp
+CppName=newProgramDlgApp.cpp
+Cpp=newProgramDlgApp.cpp
 CompileCpp=1
 Folder=C++ Source
 Compile=1
@@ -57,8 +57,8 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-CppName=newProgramApp.h
-Cpp=newProgramApp.h
+CppName=newProgramDlgApp.h
+Cpp=newProgramDlgApp.h
 CompileCpp=1
 Folder=C++ Header
 Compile=1
@@ -90,5 +90,14 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-
-
+[Unit5]
+CppName=newProgramApp.rc
+Cpp=newProgramApp.rc
+FileName=newProgramApp.rc
+Folder=Resources
+CompileCpp=0
+Compile=1
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

@@ -1,0 +1,31 @@
+[Project]
+FileName=OpenGL.dev
+Name=Project 1
+UnitCount=1
+Icon=
+ObjFile=-lopengl32
+Type=0
+Ver=1
+ObjFiles=""
+Includes=""
+Libs=
+PrivateResource=
+ResourceIncludes=
+Resources=
+Compiler=
+Linker=-lopengl32 -lglu32
+IsCpp=1
+ExeOutput=
+ObjectOutput=
+
+[Unit2]
+FileName=Untitled1
+
+[Views]
+ProjectView=1
+
+[Unit1]
+FileName=Main.cpp
+Open=1
+Top=1
+

@@ -68,6 +68,7 @@ type
 function ExtractComponentPropertyName(const S: string): string;
 function ExtractComponentPropertyCaption(const S: string): string;
 function iswxForm(FileName: string): Boolean;
+function isRCExt(FileName: string): boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
 {$ENDIF}
 function DuplicateAppInstWdw: HWND;
@@ -174,6 +175,15 @@ begin
   else
     result := False;
 end;
+
+function isRCExt(FileName: string): boolean;
+begin
+  if LowerCase(ExtractFileExt(FileName)) = LowerCase(RC_EXT) then
+    Result := true
+  else
+    result := False;
+end;
+
 {$ENDIF}
 {$IFDEF WX_BUILD}
 function SaveStringToFile(strContent, strFileName: string): Boolean;

@@ -5,5 +5,4 @@ Important features:
 - implement all help file section linking from dev-c++
 
 Not-so-important features:
-- keeping CVS up to date
-
+-

@@ -300,8 +300,6 @@ begin
     fScrollDesign.Align := alClient;
     fScrollDesign.Visible := True;
     fScrollDesign.Color := clWhite;
-    fScrollDesign.HorzScrollBar.Visible:=true;
-    fScrollDesign.VertScrollBar.Visible:=true;
 
     fDesigner := TfrmNewForm.Create(fScrollDesign);
     //fDesigner.Parent:=fScrollDesign;
@@ -311,6 +309,15 @@ begin
       (GetWindowLong(fDesigner.Handle, GWL_STYLE)));
     Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
     ShowWindow(fDesigner.Handle, Sw_ShowNormal);
+
+    fScrollDesign.ScrollInView(fDesigner);
+
+    fScrollDesign.HorzScrollBar.Visible:=true;
+    fScrollDesign.VertScrollBar.Visible:=true;
+    fScrollDesign.AutoScroll:=true;
+    fScrollDesign.VertScrollBar.Position := fScrollDesign.VertScrollBar.Range
+    
+
   end
   else
   {$ENDIF}
@@ -352,6 +359,7 @@ begin
     fDesigner.Visible := True;
     fDesigner.Left := 8;
     fDesigner.Top := 8;
+
     if fDesignerDefaultData then
     begin
       if Trim(fDesignerClassName) <> '' then

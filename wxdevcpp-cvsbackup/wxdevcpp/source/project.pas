@@ -320,7 +320,26 @@ begin
       CppFilter := 3;
       HFilter := 4;
     end;
-
+    {$IFDEF WX_BUILD}
+    if isRCExt(FileName) then
+    begin
+        BuildFilter(flt, [FLT_RES]);
+        DefaultExt := RC_EXT;
+        CFilter := 2;
+        CppFilter := 2;
+        HFilter := 2;
+    end;
+    if isWxForm(FileName) then
+    begin
+        BuildFilter(flt, [FLT_WXFORMS]);
+        DefaultExt := WXFORM_EXT;
+        CFilter := 2;
+        CppFilter := 2;
+        HFilter := 2;
+        WxFilter:= 2;
+    end;
+    {$ENDIF} 
+      
     Filter := flt;
     if (CompareText(ExtractFileExt(FileName), '.h') = 0) or
       (CompareText(ExtractFileExt(FileName), '.hpp') = 0) or
@@ -1749,7 +1768,6 @@ begin
       end;
       exit;
     end;
-
     fName := aTemplate.ProjectName;
     finifile.FileName := aFileName;
 

@@ -32,51 +32,27 @@ type
   TWxListBox = class(TListBox,IWxComponentInterface)
     private
       { Private fields of TWxListBox }
-        { Storage for property EVT_LISTBOX }
         FEVT_LISTBOX : String;
-        { Storage for property EVT_LISTBOX_DCLICK }
         FEVT_LISTBOX_DCLICK : String;
-        { Storage for property EVT_TEXT }
-        FEVT_TEXT : String;
-        { Storage for property EVT_UPDATE_UI }
         FEVT_UPDATE_UI : String;
-        { Storage for property Wx_BGColor }
         FWx_BGColor : TColor;
-        { Storage for property Wx_Border }
         FWx_Border : Integer;
-        { Storage for property Wx_Class }
         FWx_Class : String;
-        { Storage for property Wx_ControlOrientation }
         FWx_ControlOrientation : TWxControlOrientation;
-        { Storage for property Wx_Enabled }
         FWx_Enabled : Boolean;
-        { Storage for property Wx_FGColor }
         FWx_FGColor : TColor;
-        { Storage for property Wx_GeneralStyle }
         FWx_GeneralStyle : TWxStdStyleSet;
-        { Storage for property Wx_HelpText }
         FWx_HelpText : String;
-        { Storage for property Wx_Hidden }
         FWx_Hidden : Boolean;
-        { Storage for property Wx_HorizontalAlignment }
         FWx_HorizontalAlignment : TWxSizerHorizontalAlignment;
-        { Storage for property Wx_IDName }
         FWx_IDName : String;
-        { Storage for property Wx_IDValue }
         FWx_IDValue : Longint;
-        { Storage for property Wx_ListboxStyle }
         FWx_ListboxStyle : TWxLBxStyleSet;
-        { Storage for property Wx_ProxyBGColorString }
         FWx_ProxyBGColorString : TWxColorString;
-        { Storage for property Wx_ProxyFGColorString }
         FWx_ProxyFGColorString : TWxColorString;
-        { Storage for property Wx_StrechFactor }
         FWx_StrechFactor : Integer;
-        { Storage for property Wx_StretchFactor }
         FWx_StretchFactor : Integer;
-        { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
-        { Storage for property Wx_VerticalAlignment }
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
@@ -85,9 +61,7 @@ type
         FInvisibleFGColorString : String;
 
       { Private methods of TWxListBox }
-        { Method to set variable and property values and create objects }
         procedure AutoInitialize;
-        { Method to free any objects created by AutoInitialize }
         procedure AutoDestroy;
 
     protected
@@ -146,53 +120,32 @@ type
         property OnMouseDown;
         property OnMouseMove;
         property OnMouseUp;
+        //For Backward compatibility
+        property EVT_TEXT : String read FEVT_LISTBOX;
         property EVT_LISTBOX : String read FEVT_LISTBOX write FEVT_LISTBOX;
-        property EVT_LISTBOX_DCLICK : String
-             read FEVT_LISTBOX_DCLICK write FEVT_LISTBOX_DCLICK;
-        property EVT_TEXT : String read FEVT_TEXT write FEVT_TEXT;
-        property EVT_UPDATE_UI : String
-             read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
+        property EVT_LISTBOX_DCLICK : String read FEVT_LISTBOX_DCLICK write FEVT_LISTBOX_DCLICK;
+        property EVT_UPDATE_UI : String read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
         property Wx_BGColor : TColor read FWx_BGColor write FWx_BGColor;
-        property Wx_Border : Integer
-             read FWx_Border write FWx_Border
-             default 5;
+        property Wx_Border : Integer read FWx_Border write FWx_Border default 5;
         property Wx_Class : String read FWx_Class write FWx_Class;
-        property Wx_ControlOrientation : TWxControlOrientation
-             read FWx_ControlOrientation write FWx_ControlOrientation;
-        property Wx_Enabled : Boolean
-             read FWx_Enabled write FWx_Enabled
-             default True;
+        property Wx_ControlOrientation : TWxControlOrientation read FWx_ControlOrientation write FWx_ControlOrientation;
+        property Wx_Enabled : Boolean read FWx_Enabled write FWx_Enabled default True;
         property Wx_FGColor : TColor read FWx_FGColor write FWx_FGColor;
-        property Wx_GeneralStyle : TWxStdStyleSet
-             read FWx_GeneralStyle write FWx_GeneralStyle;
+        property Wx_GeneralStyle : TWxStdStyleSet read FWx_GeneralStyle write FWx_GeneralStyle;
         property Wx_HelpText : String read FWx_HelpText write FWx_HelpText;
         property Wx_Hidden : Boolean read FWx_Hidden write FWx_Hidden;
-        property Wx_HorizontalAlignment : TWxSizerHorizontalAlignment
-             read FWx_HorizontalAlignment write FWx_HorizontalAlignment
-             default wxSZALIGN_CENTER_HORIZONTAL;
+        property Wx_HorizontalAlignment : TWxSizerHorizontalAlignment read FWx_HorizontalAlignment write FWx_HorizontalAlignment default wxSZALIGN_CENTER_HORIZONTAL;
         property Wx_IDName : String read FWx_IDName write FWx_IDName;
-        property Wx_IDValue : Longint
-             read FWx_IDValue write FWx_IDValue
-             default -1;
-        property Wx_ListboxStyle : TWxLBxStyleSet
-             read FWx_ListboxStyle write FWx_ListboxStyle;
-        property Wx_ProxyBGColorString : TWxColorString
-             read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
-        property Wx_ProxyFGColorString : TWxColorString
-             read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
-        property Wx_StrechFactor : Integer
-             read FWx_StrechFactor write FWx_StrechFactor;
-        property Wx_StretchFactor : Integer
-             read FWx_StretchFactor write FWx_StretchFactor
-             default 0;
+        property Wx_IDValue : Longint read FWx_IDValue write FWx_IDValue default -1;
+        property Wx_ListboxStyle : TWxLBxStyleSet read FWx_ListboxStyle write FWx_ListboxStyle;
+        property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
+        property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
+        property Wx_StrechFactor : Integer read FWx_StrechFactor write FWx_StrechFactor;
+        property Wx_StretchFactor : Integer read FWx_StretchFactor write FWx_StretchFactor default 0;
         property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
-        property Wx_VerticalAlignment : TWxSizerVerticalAlignment
-             read FWx_VerticalAlignment write FWx_VerticalAlignment
-             default wxSZALIGN_CENTER_VERTICAL;
+        property Wx_VerticalAlignment : TWxSizerVerticalAlignment read FWx_VerticalAlignment write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
-
-
   end;
 
 procedure Register;
@@ -273,7 +226,7 @@ begin
      AutoInitialize;
 
      { Code to perform other tasks when the component is created }
-     FWx_PropertyList.add('Items :Items');
+     FWx_PropertyList.add('Items :Strings');
      FWx_PropertyList.add('Wx_Hidden :Hidden');
      FWx_PropertyList.add('Wx_Border : Border ');
      FWx_PropertyList.add('Wx_Default :WxDefault ');
@@ -327,7 +280,6 @@ begin
 
      FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
      FWx_EventList.add('EVT_LISTBOX:OnEnter');
-     FWx_EventList.add('EVT_TEXT:OnSelected');
      FWx_EventList.add('EVT_LISTBOX_DCLICK:OnDoubleClicked');
 
 end;
@@ -349,8 +301,7 @@ end;
 
 function TWxListBox.GenerateControlIDs:String;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -361,8 +312,7 @@ end;
 
 function TWxListBox.GenerateEventTableEntries(CurrClassName:String):String;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -379,11 +329,6 @@ begin
           Result:=Result+#13+Format('EVT_UPDATE_UI(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_UPDATE_UI]) +'';
      end;
 
-     if trim(EVT_TEXT) <> '' then
-     begin
-          Result:=Result+#13+Format('EVT_TEXT(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_TEXT]) +'';
-     end;
-
      if trim(EVT_LISTBOX_DCLICK) <> '' then
      begin
           Result:=Result+#13+Format('EVT_LISTBOX_DCLICK(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_LISTBOX_DCLICK]) +'';
@@ -398,17 +343,22 @@ var
     strColorStr:String;
 begin
      Result:='';
-    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
-       parentName:='this'
-    else
-       parentName:=self.Parent.name;
+
+//    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
+//       parentName:=GetWxWidgetParent(self)
+//    else
+//       parentName:=self.Parent.name;
+
+    parentName:=GetWxWidgetParent(self);
+
+
 
     strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
 
     Result:=Format('%s =  new %s(%s, %s ,wxPoint(%d,%d),wxSize(%d,%d), (wxArrayString)NULL %s );',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
+        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,self.Wx_ToolTip]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -452,8 +402,7 @@ end;
 
 function TWxListBox.GenerateGUIControlDeclaration:String;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -463,8 +412,7 @@ end;
 
 function TWxListBox.GenerateHeaderInclude:String;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -475,8 +423,7 @@ end;
 
 function TWxListBox.GenerateImageInclude: string;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -485,8 +432,7 @@ end;
 
 function TWxListBox.GetEventList:TStringlist;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -495,8 +441,7 @@ end;
 
 function TWxListBox.GetIDName:String;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -505,8 +450,7 @@ end;
 
 function TWxListBox.GetIDValue:LongInt;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -515,8 +459,7 @@ end;
 
 function TWxListBox.GetParameterFromEventName(EventName: string):String;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -525,8 +468,7 @@ end;
 
 function TWxListBox.GetPropertyList:TStringList;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -535,8 +477,7 @@ end;
 
 function TWxListBox.GetStretchFactor:Integer;
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -544,21 +485,28 @@ begin
 end;
 
 function TWxListBox.GetTypeFromEventName(EventName: string):string;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
 
+     if EventName = 'EVT_LISTBOX' then
+     begin
+          Result:='wxCommandEvent& event';
+          exit;
+     end;
+
+     if EventName = 'EVT_UPDATE_UI' then
+     begin
+        Result:='wxUpdateUIEvent& event';
+        exit;
+     end;
+
+     if EventName = 'EVT_LISTBOX_DCLICK' then
+     begin
+          Result:='wxCommandEvent& event';
+          exit;
+     end;
 end;
 
 function TWxListBox.GetWxClassName:String;
-     { Internal declarations for method }
-     { type }
-     { . . . }
-     { var }
-     { . . . }
 begin
      if trim(wx_Class) = '' then
         wx_Class:='wxListBox';
@@ -576,8 +524,7 @@ end;
 
 procedure TWxListBox.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -586,8 +533,7 @@ end;
 
 procedure TWxListBox.SetIDName(IDName:String);
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -596,8 +542,7 @@ end;
 
 procedure TWxListBox.SetIDValue(IDValue:longInt);
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -606,8 +551,7 @@ end;
 
 procedure TWxListBox.SetStretchFactor(intValue:Integer);
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin
@@ -616,8 +560,7 @@ end;
 
 procedure TWxListBox.SetWxClassName(wxClassName:String);
      { Internal declarations for method }
-     { type }
-     { . . . }
+
      { var }
      { . . . }
 begin

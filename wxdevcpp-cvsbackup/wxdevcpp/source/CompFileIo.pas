@@ -962,7 +962,6 @@ begin
   // Try to read all forms and components
     while (Result) and (X <= Counts[0]) do
     try
-        bCreated := FALSE;
         pObject := pObjects[X]^;
         bCreated := (not Assigned(pObject));
 

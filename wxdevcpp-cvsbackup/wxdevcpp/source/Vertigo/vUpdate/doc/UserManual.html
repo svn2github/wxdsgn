@@ -1,0 +1,1249 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Kip Warner">
+   <meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>vUpdate - User Manual</title>
+</head>
+<body text="#00CC00" bgcolor="#000000" link="#3333FF" vlink="#3333FF" alink="#3333FF">
+<a NAME="top"></a>
+<br>&nbsp;
+<center><table CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td>
+<center><u><font face="Lucida Console"><font size=-1>vUpdate v1.503</font></font></u>
+<br><font face="Lucida Console"><font size=-1>-</font></font>
+<br><u><font face="Lucida Console"><font size=-1>User Manual</font></font></u></center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center>
+<p><img SRC="http://www.zero47.com/vertigo/vUpdate/logo.png" NOSAVE height=198 width=198></center>
+
+<p><br>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Table of Contents...</font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Introduction</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1><a href="#Stuff about this manual...">Stuff
+about this manual</a></font></font>
+<p><font face="Lucida Console"><font size=-1><a href="#What is vUpdate">What
+is vUpdate?</a></font></font>
+<p><font face="Lucida Console"><font size=-1><a href="#Why was it built">Why
+was it built?</a></font></font>
+<p><font face="Lucida Console"><font size=-1><a href="#How does it work">How
+does it work?</a></font></font>
+<ul>
+<ul>
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step one">Execute</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step two">Ready</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step three">Connect
+to server</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step three and a half">Check
+for self upgrade</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step four">List updates</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step five">User makes
+selections</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step six">Download</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step seven">Install</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#step eight">Done</a></font></font></li>
+</ul>
+</ul>
+</ul>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Reference</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1><a href="#The Update Scripts">The
+Update Scripts</a></font></font>
+<ul>
+<ul>
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1><a href="#the basics">The basics</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#The vUpdate script">The
+vUpdate script</a></font></font></li>
+</ul>
+</ul>
+</ul>
+<font face="Lucida Console"><font size=-1><a href="#Field Reference">Field
+Reference</a></font></font>
+<ul>
+<ul>
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_announcements">Announcements</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_description">Description</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_downloadto">DownloadTo</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_entrycode">EntryCode</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_execute">Execute</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_filename">FileName</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_filesize">FileSize</a>&nbsp;</font></font><img SRC="http://www.zero47.com/vertigo/vUpdate/new.gif" NOSAVE height=12 width=31></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_messagebox">MessageBox</a>&nbsp;</font></font><img SRC="http://www.zero47.com/vertigo/vUpdate/new.gif" NOSAVE height=12 width=31></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_mirror">Mirror*</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_previewpic">PreviewPic</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_title">Title</a></font></font></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_type">Type</a>&nbsp;</font></font><img SRC="http://www.zero47.com/vertigo/vUpdate/new.gif" NOSAVE height=12 width=31></li>
+
+<li>
+<font face="Lucida Console"><font size=-1><a href="#field_version">Version</a></font></font></li>
+</ul>
+</ul>
+</ul>
+</td>
+</tr>
+</table></center>
+<font face="Lucida Console"><font size=-1><a href="#contact"></a></font></font>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Misc</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1><a href="#contact">Contact</a></font></font></td>
+</tr>
+</table></center>
+<font face="Lucida Console"><font size=-1><a href="#contact"></a></font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="Stuff about this manual..."></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Stuff about this manual...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>Please note that this manual
+will make frequent references to the free version of vUpdate bundled with
+the open source
+<i>Dev-C++</i> IDE (very popular win32 front end for GCC).
+It is highly recommended that the reader <a href="http://www.bloodshed.net/dev">downloads</a>
+Dev-C++, as this is an excellent way for them to see vUpdate in action.</font></font></li>
+</ul>
+
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>All the graphics on this page
+are encoded in .png format. If they look messed, it is probably because
+your browser is too old and crappy. I have noticed that Konqueror, Opera,
+Mozilla, and Netscape 4.x seem to work just fine.</font></font></li>
+</ul>
+
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>This manual assumes that the
+reader has a basic knowledge of the Winblows operating system. Developer
+knowledge is not required, but it will be an asset.</font></font></li>
+</ul>
+
+<ul>
+<li>
+<font face="Lucida Console"><font size=-1>Note that the pictures in here
+may not reflect what vUpdate really looks like. vUpdate gets better and
+better every day so some things may be different in the version you have.</font></font></li>
+</ul>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="What is vUpdate"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>What is vUpdate?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>vUpdate is a portable, flexible,
+and extremely powerful "web updater". By portable I mean it is a stand
+alone component that can be wired into virtually any existing software
+package, and as far as I am aware, the only one of its generation in existence.
+It allows everything from patches and documents to third party plugins
+to become available to all your end users through a simple, logical and
+aesthetically pleasing interface. For the developer, this means that one
+minute after you compile your latest release, it can be made available
+to everyone in a place where it will naturally be expected. If you are
+in the marketing field, you of all people understand how rapidly the computer
+scene is changing. vUpdate gives your application a gift, a port hole to
+unlimited expansion. Please read on if you are interested. This is what
+it looks like...</font></font>
+<br>&nbsp;
+<br>&nbsp;
+<br>
+<br>
+<center>
+<p><img SRC="http://www.zero47.com/vertigo/vUpdate/main.png" NOSAVE BORDER=1 height=240 width=564></center>
+
+<p><br></td>
+</tr>
+</table></center>
+
+<p><a NAME="Why was it built"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Why was it built?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>vUpdate began with the notion
+that most software is far more annoying than need be. I realized one day
+how frustrated I had become with keeping my compiler updated with the latest
+libraries, docs, binaries, and whatever else. This always involved going
+deep into Source Forge and finding some archive I needed. Then I would
+have to worry about whether or not I got the right one because the file
+names are always insanely long (but informative once you know how to read
+them). Next would come the installation (if it even came with one). This
+would always involve reading docs that were over worded and gave you far
+too much information than need be. Especially when all you wanted to know
+was which directory this file goes in. I figured, <i>I don't have time
+for this, and neither does anyone else I know</i>.</font></font>
+<p><font face="Lucida Console"><font size=-1>After thinking about this
+for a while, I came to the conclusion that the entire process behind application
+expansion is almost always the same for everyone using that particular
+application. Computers love long boring repetitive tasks, so why not show
+it how to do all this for me...</font></font>
+<br><font face="Lucida Console"><font size=-1>&nbsp;</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="How does it work"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>How does it work?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>As stated above, the process
+for upgrading an application is usually the same as it ages. For example,
+when I need to update my compiler, there is a procedure that is always
+followed for that specific compiler. I download the latest libraries and
+dump them in the library directory. I take the headers and put them with
+the others and do the same for any new binaries. This process has become
+a regular for me, yet it is still very time consuming. The only dynamic
+part of the process is the updated files, their destination, and possibly
+a few other things. Because of this, both logic and data in vUpdate have
+carefully been separated which leaves you with enough exposed to accurately
+describe what you want it to do and leaving the rest to automation. Here
+is a step by step example of a typical vUpdate scenario with the Dev-C++
+IDE...</font></font>
+<p><a NAME="step one"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step One - Execute</font></font>
+<p><font face="Lucida Console"><font size=-1>vUpdate is executed from within
+its parent program. The URL to an <i><a href="#The vUpdate script">update
+script</a></i> is passed as its first parameter.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/parent.png" NOSAVE BORDER=1 height=358 width=561></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step two"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Two - Ready</font></font>
+<p><font face="Lucida Console"><font size=-1>vUpdate is opened and the
+user is immediately presented with a well organized self-explanatory interface.</font></font>
+<p><font face="Lucida Console"><font size=-1>Note: The logo you see in
+the picture box on the top right can be, as with many other parts, modified
+to suit your needs.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/ready.png" NOSAVE BORDER=1 height=241 width=565></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step three"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Three - Connect to server</font></font>
+<p><font face="Lucida Console"><font size=-1>When the user hits the start
+button, vUpdate downloads an <i><a href="#The vUpdate script">update script</a></i>
+(see step one). It will then analyze the script and do as it is told (I
+will show you how the <i><a href="#The vUpdate script">update script</a></i>
+works later. Just note the differences in the above picture with the following
+one for now).</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/list.png" NOSAVE BORDER=1 height=241 width=565></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step three and a half"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Three (and a half) -
+Check for self upgrade</font></font>
+<p><font face="Lucida Console"><font size=-1>Like your software, vUpdate
+is also self-upgradable. When a bug is found or a feature requested, I
+can quickly implement it and redistribute the newer vUpdate to everyone
+with it. This means that the possibilities of vUpdate, like your software,
+will also become unlimited.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="upgrade.png" NOSAVE height=273 width=199>
+<p><img SRC="http://www.zero47.com/vertigo/vUpdate/upgrade2.png" NOSAVE height=239 width=563>
+<p><img SRC="http://www.zero47.com/vertigo/vUpdate/upgrade3.png" NOSAVE height=119 width=299></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step four"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Four - List updates</font></font>
+<p><font face="Lucida Console"><font size=-1>The user is now presented
+with a list of qualified packages available on the update server. They
+can scroll through the list as they please to check them out. When they
+find one they like, they simply position the cursor over it and an optional
+package description / preview picture is displayed (see the screen shot
+below). You can use this to notify the user of special precautions, or
+possibly last minute release information. Use the preview pictures to your
+advantage too. 3rd party plugin? No problem, stuff their logo in there.
+You may also choose to use the announcements window to display to your
+clients anything from the latest news to the bad joke of the day.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/preview.png" NOSAVE BORDER=1 height=241 width=565></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step five"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Five - User makes selections</font></font>
+<p><font face="Lucida Console"><font size=-1>The user may check as many
+items as they wish. Those checked are marked for download and will be handled
+as specified in the script.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/checked.png" NOSAVE BORDER=1 height=241 width=565></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step six"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Six - Download</font></font>
+<p><font face="Lucida Console"><font size=-1>All marked files are downloaded
+off the server and into a location on the clients machine (specified in
+the <i><a href="#script">update script</a></i>). The progress of the operation
+is visually displayed with a progress bar on the bottom.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/download.png" NOSAVE BORDER=1 height=241 width=565></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step seven"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Seven - Install</font></font>
+<p><font face="Lucida Console"><font size=-1>Certain tasks may need to
+be performed after a file is downloaded and put where it needs to go. In
+this case, PackMan (the Dev-C++ package installer) is being run because
+the update the user selected is a special add on for Dev-c++.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/install.png" NOSAVE BORDER=1 height=239 width=563></center>
+</td>
+</tr>
+</table></center>
+<a NAME="step eight"></a>
+<br>&nbsp;
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>Step Eight - Done</font></font>
+<p><font face="Lucida Console"><font size=-1>vUpdate is now done downloading
+and installing all the items that were requested. Any errors that may have
+occurred during the process are clearly marked in the status window. The
+status window is invaluable when it comes to finding out what went wrong,
+and lets face it, occasionally shit happens. At this point the user can,
+if they wish, hit start again and begin the whole process all over again
+if they want more updates.</font></font></td>
+</tr>
+
+<tr>
+<td>
+<center><img SRC="http://www.zero47.com/vertigo/vUpdate/done.png" NOSAVE BORDER=1 height=241 width=565></center>
+</td>
+</tr>
+</table></center>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="The Update Scripts"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>The Update Scripts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td><a NAME="the basics"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>The basics</font></font>
+<p><font face="Lucida Console"><font size=-1>Before I started writing vUpdate
+I had a pretty good idea what I wanted. I knew that who ever was going
+to be maintaining the update scripts, like everyone these days, would have
+little time. So I figured I should keep the syntax as similar as possible
+to something they are already familiar with, the .ini format. In reality
+though, there isn't really a standardized format, but there is a certain
+"generalishness" that they all have...</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>; I am a comment. Everything
+after the semi colon on this line is ignored...</font></font>
+<p><font face="Lucida Console"><font size=-1>[Key A]</font></font>
+<br><font face="Lucida Console"><font size=-1>field = "stuff" ; More comments...</font></font>
+<br><font face="Lucida Console"><font size=-1>foo= "more stuff"</font></font>
+<p><font face="Lucida Console"><font size=-1>[Key B]</font></font>
+<br><font face="Lucida Console"><font size=-1>field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "The value"</font></font>
+<br><font face="Lucida Console"><font size=-1>Field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "another value"</font></font>
+<br><font face="Lucida Console"><font size=-1>moreFields&nbsp;&nbsp; ="values
+and&nbsp; stuff"&nbsp;&nbsp; ; Some more comments...</font></font>
+<p><font face="Lucida Console"><font size=-1>; Note that fields under each
+key are unique. i.e. Key A's <i>field</i> is not</font></font>
+<br><font face="Lucida Console"><font size=-1>; equal to Key B's <i>field</i>.
+Think of the fields as being part of a set of the</font></font>
+<br><font face="Lucida Console"><font size=-1>; key above it. Fields are
+also case sensitive so Key B's <i>field</i> and&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; <i>Field</i> are not equal.
+Also remember that both keys and fields are both</font></font>
+<br><font face="Lucida Console"><font size=-1>; case sensitive. Any who,
+If you still don't get it, try this...</font></font>
+<p><font face="Lucida Console"><font size=-1>[Phantom]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; Really sweet paintball gun...</font></font>
+<br><font face="Lucida Console"><font size=-1>Bolt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "Closed Bolt"</font></font>
+<br><font face="Lucida Console"><font size=-1>Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "Pump Action"</font></font>
+<br><font face="Lucida Console"><font size=-1>Manufacturer = "CCI"</font></font>
+<br><font face="Lucida Console"><font size=-1>Caliber&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "68"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; .68 of an inch...</font></font>
+<br><font face="Lucida Console"><font size=-1>Velocity&nbsp;&nbsp;&nbsp;&nbsp;
+= "270"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; 270 feet per second...</font></font>
+<br><font face="Lucida Console"><font size=-1>Class&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "Stock Class"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; No loader,
+takes paint tubes...</font></font>
+<p><font face="Lucida Console"><font size=-1>[Model98]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; Another cool paintball gun...</font></font>
+<br><font face="Lucida Console"><font size=-1>Manufacturer = "Tippmann"</font></font>
+<br><font face="Lucida Console"><font size=-1>Velocity&nbsp;&nbsp;&nbsp;&nbsp;
+= "290"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; Optimal velocity...</font></font>
+<br><font face="Lucida Console"><font size=-1>Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "Semi Auto"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; for
+those who can't aim ;)...</font></font>
+<br><font face="Lucida Console"><font size=-1>Bolt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "Open Blow Back"</font></font>
+<br><font face="Lucida Console"><font size=-1>Caliber&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "68"</font></font>
+<p><font face="Lucida Console"><font size=-1>; I hope that clarified things
+for you. Note that each key's fields do&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; not necessarily have to
+be declared in the same order. Also note&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; that Model98 does not have
+all the same fields as the Phantom's key.&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; When vUpdate reads in a
+key in the script, it looks for certain ones&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; and keeps track of the
+fields specified. It will also fill in fields</font></font>
+<br><font face="Lucida Console"><font size=-1>; that are optional that
+you did not specify. Also, take close note of how</font></font>
+<br><font face="Lucida Console"><font size=-1>; much more readable the
+second example is over the first. vUpdate doesn't</font></font>
+<br><font face="Lucida Console"><font size=-1>; care how you do it, just
+as long as there is a field name, an equal sign,</font></font>
+<br><font face="Lucida Console"><font size=-1>; and then the data surrounded
+by quotation marks all on one line.</font></font>
+<br><font face="Lucida Console"><font size=-1>&nbsp;</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="The vUpdate script"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=20 COLS=1 WIDTH="97%" BGCOLOR="#000000" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>The vUpdate script</font></font>
+<p><font face="Lucida Console"><font size=-1>This is a sample update script.
+Tailor it to your needs and place it on your update server. Simply pass
+the url to vUpdate as its first parameter when linking it into your application...</font></font>
+<p><font face="Lucida Console"><font size=-1>i.e. "vUpdate.exe http://192.168.1.2/update.ini"</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>; This is a server side file
+called update.ini...</font></font>
+<br><font face="Lucida Console"><font size=-1>; This is a mandatory key.
+This is where vUpdate grabs basic settings....</font></font>
+<br><font face="Lucida Console"><font size=-1>[SETTINGS]</font></font>
+<p><font face="Lucida Console"><font size=-1>; This specifies the url to
+the directory on the update server containing</font></font>
+<br><font face="Lucida Console"><font size=-1>; all the files we will need
+for the rest of this session. You can specify</font></font>
+<br><font face="Lucida Console"><font size=-1>; up to 32 different mirrors.
+To balance your bandwidth load, vUpdate</font></font>
+<br><font face="Lucida Console"><font size=-1>; selects a random one for
+you. You can specify up to 32 different&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; mirrors, but you must always
+specify at least one.</font></font>
+<br><font face="Lucida Console"><font size=-1>Mirror1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "http://192.168.1.2/devfiles/"</font></font>
+<br><font face="Lucida Console"><font size=-1>Mirror2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "http://www.someserver.com/files/"</font></font>
+<br><font face="Lucida Console"><font size=-1>Mirror3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "http://www.anothermirror.com/"</font></font>
+<p><font face="Lucida Console"><font size=-1>; Look at <a href="#step three">this</a>.
+The text in the announcements window comes from this field. ; Anywhere
+vUpdate sees "\n", it will display the following characters on a&nbsp;
+; new line if applicable.</font></font>
+<br><font face="Lucida Console"><font size=-1>Announcements&nbsp;&nbsp;
+= "Greetings...\n\nWelcome to vUpdate, enjoy =)"</font></font>
+<p><font face="Lucida Console"><font size=-1>; Each update you saw listed
+has all its information encapsulated under</font></font>
+<br><font face="Lucida Console"><font size=-1>; its own key. The first
+package you define is called PACKAGE1, the next</font></font>
+<br><font face="Lucida Console"><font size=-1>; PACKAGE2, then PACKAGE3,
+and so forth. For simplicity, I will just list a</font></font>
+<br><font face="Lucida Console"><font size=-1>; single sample package.
+Please note that for a complete list of available</font></font>
+<br><font face="Lucida Console"><font size=-1>; fields, please check the
+<a href="#Field Reference">Field
+Reference</a>.</font></font>
+<br><font face="Lucida Console"><font size=-1>[PACKAGE1]</font></font>
+<p><font face="Lucida Console"><font size=-1>; Name, as you want it to
+appear when listed...</font></font>
+<br><font face="Lucida Console"><font size=-1>Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "cryptoAPI"</font></font>
+<p><font face="Lucida Console"><font size=-1>; The version of this item...</font></font>
+<br><font face="Lucida Console"><font size=-1>Version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "1.0"</font></font>
+<p><font face="Lucida Console"><font size=-1>; Identifier of item as you
+want it logged in the install database...</font></font>
+<br><font face="Lucida Console"><font size=-1>EntryCode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "cryptoapi"</font></font>
+<p><font face="Lucida Console"><font size=-1>; File name on server. Assuming
+we are using Mirror1, this gets expanded</font></font>
+<br><font face="Lucida Console"><font size=-1>; later to "http://192.168.1.2/devfiles/cryptoAPI.zip".</font></font>
+<br><font face="Lucida Console"><font size=-1>FileName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "cryptoAPI.zip"</font></font>
+<p><font face="Lucida Console"><font size=-1>; The item's description as
+you want it to appear in the description window.</font></font>
+<br><font face="Lucida Console"><font size=-1>Description&nbsp;&nbsp;&nbsp;&nbsp;
+= "Microsoft cryptoAPI for Dev-C++. \n(zipped package)"</font></font>
+<p><font face="Lucida Console"><font size=-1>; This is where vUpdate will
+download the file to. In the case of Dev-c++,&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; there are many macros (i.e.
+$TEMP) that are available here. Some include&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; $ROOT, $BIN, $HELP, $ICONS,
+$TEMP, $INCLUDE, $LIB, $LANG, $WINDOWS,</font></font>
+<br><font face="Lucida Console"><font size=-1>; $THEMES, $SYSTEM, and $SYSTEM32.
+You are probably beginning to realize the ; potential vUpdate has now on
+your product. Also, if the path you specified ; does not exist, vUpdate
+will create it and any necessary parent&nbsp;</font></font>
+<br><font face="Lucida Console"><font size=-1>; directories.</font></font>
+<br><font face="Lucida Console"><font size=-1>DownloadTo&nbsp;&nbsp;&nbsp;&nbsp;
+= "$TEMP\Downloaded Packages\"</font></font>
+<p><font face="Lucida Console"><font size=-1>; This is the file name of
+this package's preview picture. This is optional. ; If you don't want to
+use one, simply specify "NA", "", comment it out, or ; just don't type
+it in. If you do use one, it should be a bitmap (.bmp) of ; 130 by 70 pixels
+in dimension. I recommend a maximum of 256 colors as this ; calculates
+to only 10 kilobytes per preview and much less if you use an</font></font>
+<br><font face="Lucida Console"><font size=-1>; even smaller color palette.
+More graphic formats will&nbsp; most likely be</font></font>
+<br><font face="Lucida Console"><font size=-1>; supported in the future
+(i.e. .png).</font></font>
+<br><font face="Lucida Console"><font size=-1>PreviewPic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "cryptoapi.bmp"</font></font>
+<p><font face="Lucida Console"><font size=-1>; This is a flag. It can either
+be "TRUE" (or "1") or "FALSE" (or "0"). Set</font></font>
+<br><font face="Lucida Console"><font size=-1>; it to true if you want
+this file to be executed after it is downloaded.</font></font>
+<br><font face="Lucida Console"><font size=-1>Execute&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "TRUE"</font></font>
+<p><font face="Lucida Console"><font size=-1>; This flag (for the Dev-C++
+IDE) operates the same as above. Set it to</font></font>
+<br><font face="Lucida Console"><font size=-1>; true if you wish Dev-C++
+(the parent application) to be closed. This is</font></font>
+<br><font face="Lucida Console"><font size=-1>; useful when upgrading the
+parent applications main exe seeing that you</font></font>
+<br><font face="Lucida Console"><font size=-1>; cannot write to a file
+that is locked.</font></font>
+<br><font face="Lucida Console"><font size=-1>CloseDev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= "FALSE"</font></font>
+<p><font face="Lucida Console"><font size=-1>; You are probably wondering
+what I was smoking when I put this lonely key</font></font>
+<br><font face="Lucida Console"><font size=-1>; here. This is actually
+the first thing vUpdate checks. Put it at the very</font></font>
+<br><font face="Lucida Console"><font size=-1>; end of your script to tell
+it that this file is complete and didn't</font></font>
+<br><font face="Lucida Console"><font size=-1>; come in corrupt (because
+every now and then http goes stupid).</font></font>
+<br><font face="Lucida Console"><font size=-1>[END]</font></font>
+<br><font face="Lucida Console"><font size=-1>&nbsp;</font></font></td>
+</tr>
+</table></center>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="Field Reference"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Field Reference&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td><font face="Lucida Console"><font size=-1>This section of the manual
+is useful for finding out what fields are available to you and what they
+do. You may wish to bookmark this section as it doubles as both a guide
+and a reference. Note that the * character is a wild card. It means that
+anything can be there, but in this case it is probably an integer. By the
+way, if you see a new field here that just came out, you can use it. vUpdate
+is self upgrade able so anything I add here will immediately become available
+to you.</font></font>
+<p><a NAME="field_announcements"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Announcements</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>SETTINGS</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is an optional field.
+When specified, its data will be placed in the announcements window. Use
+the '\n' characters to tell vUpdate that the following text belongs on
+a new line.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Announcements = "Hello world.\n\nNew
+line"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_description"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Description</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is an optional field.
+The description string is what is displayed when the user positions the
+mouse over this package's item. The text will go in the description box
+on the mouse over.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Description = "Hey there!\n\nThis
+is a description!"</font></font>
+<p><font face="Lucida Console"><font size=-1>; Use the '\n' characters
+to put stuff on a new line.</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_downloadto"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>DownloadTo</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is a mandatory field.
+The field specifies where this packages file will be downloaded to. You
+could specify a path if you really wanted to, but its not recommended because
+everybody's machine is different. So, you may choose to use the macros
+provided. The vUpdate that ships with Dev-C++ has several that include...</font></font>
+<br>&nbsp;
+<table WIDTH="100%" >
+<tr>
+<td><font face="Lucida Console"><font size=-1>$ROOT</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Dev-C++ root directory.</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$BIN</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Compilers binary directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$HELP</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Dev-C++ Help directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$ICONS</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Dev-C++ Icons directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$INCLUDE</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Compiler include directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$LIB</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Compiler library directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$LANG</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Dev-C++ language file directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$TEMPLATES</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Dev-C++ project templates
+directory</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$TEMP</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Temporary directory created
+by vUpdate at runtime. Put stuff here if you are just going to be needing
+it for a short time (such as an installer). vUpdate will delete it on exit.</font></font></td>
+</tr>
+
+<tr>
+<td><font face="Lucida Console"><font size=-1>$THEMES</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Dev-C++ interface themes
+directory</font></font></td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>DownloadTo = "$HELP"</font></font>
+<p><font face="Lucida Console"><font size=-1>; This means that this packages
+file will be downloaded into</font></font>
+<br><font face="Lucida Console"><font size=-1>; the help directory overwriting
+any other file with the same</font></font>
+<br><font face="Lucida Console"><font size=-1>; name.</font></font>
+<p><font face="Lucida Console"><font size=-1>; You also can place it in
+a sub directory if you wanted to</font></font>
+<br><font face="Lucida Console"><font size=-1>; instead...</font></font>
+<br><font face="Lucida Console"><font size=-1>DownloadTo = "$HELP\some
+stuff\more stuff\"</font></font>
+<p><font face="Lucida Console"><font size=-1>; If that path and all its
+parent directories do not exist,</font></font>
+<br><font face="Lucida Console"><font size=-1>; vUpdate will create them
+for you.</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_entrycode"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>EntryCode</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is a mandatory field.
+The entry code is how you want to identify this item in the installation
+database. When vUpdate scans each package tag, it checks to see if this
+entry code is already logged in the installation database. Think of it
+as a signature. If it is found, then it will check the package version.
+If the package version in your script is newer than the one they have installed,
+it will be made available to them. Otherwise it will be skipped.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>EntryCode = "OnlineTutorial"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_execute"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Execute</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is an optional field.
+It is a flag that accepts boolean values (TRUE, FALSE, 1, 0). Set it to
+true if you want vUpdate to execute this item after it is downloaded. This
+is useful if you are distributing an installer such as <a href="http://www.nullsoft.com/free/nsis/">Nullsoft's
+NSIS</a>.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Execute = "TRUE"</font></font>
+<p><font face="Lucida Console"><font size=-1>; If this is some kind of
+an installer, I recommend you</font></font>
+<br><font face="Lucida Console"><font size=-1>; DownloadTo $TEMP.</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_filename"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>FileName</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is a mandatory field.
+It is the file name of the package as it appears on the server.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>FileName = "LatestTutorials.hlp"</font></font>
+<p><font face="Lucida Console"><font size=-1>; so, assuming the selected
+mirror was declared as...</font></font>
+<br><font face="Lucida Console"><font size=-1>; Mirror* = "http://192.168.1.2/stuff"</font></font>
+<br><font face="Lucida Console"><font size=-1>; this will resolve to...</font></font>
+<br><font face="Lucida Console"><font size=-1>; http://192.168.1.2/stuff/LastestTutorials.hlp</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_filesize"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>FileSize&nbsp;</font></font><img SRC="http://www.zero47.com/vertigo/vUpdate/new.gif" NOSAVE height=12 width=31></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is an optional field.
+This is the file size of the package. It can be just an estimate if you
+wish. It will be displayed in the package description windows just above
+your description. If you don't specify a value, vUpdate will just use a
+'?' character.</font></font>
+<p><font face="Lucida Console"><font size=-1>Note: vUpdate will pay no
+attention to this value because it has nothing to do with how the file
+is downloaded.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>FileSize = "30 Megabytes"</font></font>
+<p><font face="Lucida Console"><font size=-1>; Top of description window
+will now look like this...</font></font>
+<p><font face="Lucida Console"><font size=-1>; Size: 30 Megabytes</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_messagebox"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>MessageBox&nbsp;</font></font><img SRC="http://www.zero47.com/vertigo/vUpdate/new.gif" NOSAVE height=12 width=31></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is an optional field.
+Use this to have vUpdate popup a message box containing a string of your
+choice. Useful for installation reminders or whatever else you may want.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>MessageBox = "Note:\n\nDon't
+forget to read the readme!"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_mirror"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Mirror*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>SETTINGS</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is a mandatory field.
+It specifies the complete URL to the location of all files to be reference
+for an update session. The * is a number starting at 1 and can range all
+the way up to 32. This means you can have up to 32 file mirrors. vUpdate
+will select a random one for you each time the start button is pressed.
+This is useful for balancing your bandwidth load.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Mirror1 = "http://192.168.1.2/update"</font></font>
+<br><font face="Lucida Console"><font size=-1>Mirror2 = "http://www.someserver.com"</font></font>
+<br><font face="Lucida Console"><font size=-1>Mirror3 = "http://192.168.1.3/files/"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_previewpic"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PreviewPic</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This field is optional. Use
+it if you want a preview picture displayed in the picture box every time
+there is a mouse over of this packages list item. The picture must be a
+bitmap of 130x70 pixels in dimension. You can use any color depth you wish,
+but I recommend 256 colors max because that leaves it at around 10 kilobytes
+per preview pic. In the future, there will probably be more support for
+other formats (png, jpg, etc.).</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PreviewPic = "help.bmp"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_title"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Title</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is a mandatory field.
+It is the name of the package as you want it to be displayed when listed.
+It is recommended that you keep your title as short and descriptive as
+possible.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Title = "Online Tutorial
+Updates"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_type"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Type&nbsp;</font></font><img SRC="http://www.zero47.com/vertigo/vUpdate/new.gif" NOSAVE height=12 width=31></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is an optional field.
+Use this to tell vUpdate how you want your update classified. Valid entries
+totaly depend on your distribution of vUpdate. With Dev-C++ though, you
+can use <i>package</i>, <i>patch</i>, <i>language</i>, and <i>help</i>
+identifiers. If vUpdate comes across a type it does not recognize, it will
+be classified under the <i>other</i> category. This also goes for if you
+didn't declare a type. Please note that the "type" field's data is not
+case sensitive.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Type = "help"</font></font></td>
+</tr>
+</table></center>
+
+<p><a NAME="field_version"></a>
+<center><table BORDER=0 CELLPADDING=10 WIDTH="97%" BGCOLOR="#000000" >
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>FIELD:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Version</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>KEY:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>PACKAGE*</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>DESCRIPTION:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>This is a mandatory field.
+This is the version of the package you are releasing. You may use any integer
+or float. It is recommended that the reader checks out the EntryCode field
+for more information.</font></font></td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td><font face="Lucida Console"><font size=-1>EXAMPLE:</font></font></td>
+
+<td><font face="Lucida Console"><font size=-1>Version = "3.644" or Version
+= "2"</font></font>
+<p><font face="Lucida Console"><font size=-1>; Don't do this...</font></font>
+<br><font face="Lucida Console"><font size=-1>; Version = "4.43 Alpha Release
+6"</font></font>
+<br><font face="Lucida Console"><font size=-1>; vUpdate will have no way
+of quantifying that information.</font></font></td>
+</tr>
+</table></center>
+</td>
+</tr>
+</table></center>
+
+<p><a NAME="contact"></a>
+<center><table BORDER CELLSPACING=0 CELLPADDING=10 COLS=1 WIDTH="700" >
+<tr BGCOLOR="#333333">
+<td><i><font face="Lucida Console"><font size=-1>Contact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="#top">up</a></font></font></i></td>
+</tr>
+
+<tr BGCOLOR="#191919">
+<td>
+<br><font face="Lucida Console"><font size=-1>E-Mail: <a href="mailto:kip@zero47.com?subject=vUpdate">kip@zero47.com</a></font></font>
+<br><font face="Lucida Console"><font size=-1>Website: <a href="http://www.zero47.com">http://www.zero47.com</a></font></font>
+<br><font face="Lucida Console"><font size=-1>ICQ: <a href="http://wwp.icq.com/whitepages/message_me/1,,,00.icq?uin=29008229&action=message">29008229</a></font></font>
+<br><font face="Lucida Console"><font size=-1>&nbsp;</font></font></td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+</body>
+</html>
