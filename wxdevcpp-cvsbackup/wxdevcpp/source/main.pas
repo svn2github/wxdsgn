@@ -1,4 +1,6 @@
 {
+    $Id$
+    
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -916,6 +918,7 @@ PBreakPointEntry = ^TBreakPointEntry;
 
   {$IFDEF WX_BUILD}
     procedure CreateNewDialogOrFrameCode(dsgnType:TWxDesignerType);
+    procedure NewWxProjectCode(dsgnType:TWxDesignerType);
     procedure Panel2Resize(Sender: TObject);
     procedure PalleteListPanelResize(Sender: TObject);
     procedure lbxControlsDrawItem(Control: TWinControl; Index: Integer;Rect: TRect; State: TOwnerDrawState);
@@ -1091,8 +1094,9 @@ public
 
 {$IFDEF WX_BUILD}
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
-    procedure GetIntialFormData(FCreateFormProp: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; dlgStyle: TWxDlgStyleSet);
+    procedure GetIntialFormData(FCreateFormProp: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet);
     function CreateSourceCodes(strCppFile,strHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string): Boolean;
+    function CreateAppSourceCodes(strCppFile,strHppFile,strAppCppFile,strAppHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string): Boolean;
     procedure ReadClass;
     procedure CreatePalettePage(PaletteLst:TStringList;PalettePage: string);
     procedure LoadDefaultPalette;
@@ -2237,7 +2241,7 @@ begin
     else
       fHelpFiles.Clear;
 
-    ini.ReadSections(fHelpFiles);
+     ini.ReadSections(fHelpFiles);
     if fHelpFiles.Count = 0 then exit;
 
     for idx := 0 to pred(fHelpFiles.Count) do
@@ -3908,6 +3912,13 @@ begin
         Exit;
       end;
       fCompiler.Project := fProject;
+
+      {$IFDEF WX_BUILD}
+      if (GetTemplate.Name = 'wxWidgets Frame') then
+          NewWxProjectCode(dtWxFrame)
+      else if (GetTemplate.Name = 'wxWidgets Dialog') then
+          NewWxProjectCode(dtWxDialog);
+      {$ENDIF}
 
       if not devData.ProjectView then
         actProjectManager.Execute;
@@ -7955,8 +7966,9 @@ begin
   mnuCVSCurrent.Enabled := PageControl.PageCount > 0;
 end;
 
-{Functions Added By Guru for wx Implementation}
 
+
+{Functions Added By Guru for wx Implementation}
 procedure TMainForm.CreateNewDialogOrFrameCode(dsgnType:TWxDesignerType);
 {$IFDEF WX_BUILD}
 var
@@ -7976,27 +7988,32 @@ begin
 {$IFDEF WX_BUILD}
   if dsgnType = dtWxFrame then
   begin
-    strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxFrame.cpp.code';
-    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxFrame.h.code';
+    strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxFrame.cpp.code';
+    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxFrame.h.code';
   end
   Else
   begin
-    strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxDlg.cpp.code';
-    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxDlg.h.code';  
+    strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxDlg.cpp.code';
+    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxDlg.h.code';  
   end;
     
-  if (not fileExists(strCppFile)) or (not fileExists(strHppFile)) then
+  if (not fileExists(strCppFile)) then
   begin
-    MessageDlg('Unable to find wxWidgets Template files. '+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
+    MessageDlg('Unable to find wxWidgets Template file: '+strCppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
     exit;
   end;
 
+   if (not fileExists(strHppFile)) then
+  begin
+    MessageDlg('Unable to find wxWidgets Template file: '+strHppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
+    exit;
+  end;
 
   InProject := false;
   if Assigned(fProject) then
   begin
     InProject := Application.MessageBox(PChar(
-      Lang[ID_MSG_NEWRES]), 'New wxWindows Form', MB_ICONQUESTION +
+      Lang[ID_MSG_NEWRES]), 'New wxWidgets Form', MB_ICONQUESTION +
       MB_YESNO) = 6
   end;
 
@@ -8004,6 +8021,11 @@ begin
   FCreateFormPropObj.JvFormStorage1.RestoreFormPlacement;
   FCreateFormPropObj.JvFormStorage1.Active := False;
   emptyFileName := Lang[ID_UNTITLED] + inttostr(dmMain.GetNum);
+
+  if dsgnType = dtWxFrame then
+     FCreateFormPropObj.Caption := 'Create New wxWidgets Frame'
+      else
+      FCreateFormPropObj.Caption := 'Create New wxWidgets Dialog';
 
   FCreateFormPropObj.txtFileName.Text := emptyFileName;
   FCreateFormPropObj.txtClassName.Text := emptyFileName;
@@ -8038,7 +8060,7 @@ begin
   begin
     //Add localization here
     Application.MessageBox(PChar('Unable to Create wxForm'),
-      'New wxWindows Form', MB_ICONQUESTION + MB_OK);
+      'New wxWidgets Form', MB_ICONQUESTION + MB_OK);
     Exit;
   end;
 
@@ -8093,8 +8115,253 @@ begin
   end;
 
   NewDesigner.Activate;
-{$ENDIF}
+
 end;
+{$ENDIF}
+
+{$IFDEF WX_BUILD}
+procedure TMainForm.NewWxProjectCode(dsgnType:TWxDesignerType);
+// This code creates a new wxWidgets project
+//    including c++ code, headers, and resource files
+// It was scavenged from TMainForm.CreateNewDialogOrFrameCode (above).
+//  The template for this code should be in the \Templates directory.
+//
+//  For wxFrame projects, the templates are:
+//       Templates\wxWidgets\wxprojFrame.cpp,
+//       Templates\wxWidgets\wxprojFrame.h,
+//       Templates\wxWidgets\wxprojFrameApp.cpp, and
+//       Templates\wxWidgets\wxprojFrameApp.h
+//
+//  For wxDialog projects, the templates are:
+//       Templates\wxWidgets\wxprojDlg.cpp,
+//       Templates\wxWidgets\wxprojDlg.h,
+//       Templates\wxWidgets\wxprojDlgApp.cpp, and
+//       Templates\wxWidgets\wxprojDlgApp.h
+//
+//  This function calls CreateAppSourceCodes which takes those
+//  template files, replaces keywords (e.g. %FILE_NAME%, %CLASS_NAME%,
+//  %AUTHOR_NAME%) within the templates with the user-supplied values,
+//  saves the newly-created project files, and adds them to the new
+//  project.
+var
+  NewDesigner: TEditor;
+  strFileName, strShortFileName, strAppFileName: string;
+  FCreateFormPropObj: TfrmCreateFormProp;
+  strFName, strCName, strFTitle: string;
+  dlgSStyle: TWxDlgStyleSet;
+  InProject, CreateStatus: Boolean;
+  strCppCode, strHCode, strAppHeaderCode, strAppSourceCode: string;
+  emptyFileName: string;
+  FolderNode: TTreeNode;
+  NewUnit: TProjUnit;
+  strCppFile,strHppFile,strAppCppFile,strAppHppFile:String;
+  ini: Tinifile;
+
+begin
+
+  if dsgnType = dtWxFrame then        //  For wxFrames
+  begin
+    strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojFrame.cpp';
+    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojFrame.h';
+    strAppCppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojFrameApp.cpp';
+    strAppHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojFrameApp.h';
+  end
+  Else
+
+  begin                     // For wxDialogs
+    strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojDlg.cpp';
+    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojDlg.h';
+    strAppCppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojDlgApp.cpp';
+    strAppHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxprojDlgApp.h';
+  end;
+
+  // If template files don't exist, we need to send an error message to user.
+  if (not fileExists(strCppFile)) then
+  begin
+    MessageDlg('Unable to find wxWidgets Template file: '+strCppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
+    exit;
+  end;
+   if (not fileExists(strHppFile)) then
+  begin
+    MessageDlg('Unable to find wxWidgets Template file: '+strHppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
+    exit;
+  end;
+   if (not fileExists(strAppCppFile)) then
+  begin
+    MessageDlg('Unable to find wxWidgets Template file: '+strAppCppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
+    exit;
+  end;
+   if (not fileExists(strAppHppFile))  then
+  begin
+    MessageDlg('Unable to find wxWidgets Template file: '+strAppHppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
+    exit;
+  end;
+
+  InProject := true;  // We are creating files that will be part of a project
+
+  FCreateFormPropObj := TfrmCreateFormProp.Create(self);
+  FCreateFormPropObj.JvFormStorage1.RestoreFormPlacement;
+  FCreateFormPropObj.JvFormStorage1.Active := False;
+
+  if dsgnType = dtWxFrame then
+     FCreateFormPropObj.Caption := 'Create New Project - wxWidgets Frame'
+     else
+      FCreateFormPropObj.Caption := 'Create New Project - wxWidgets Dialog';
+  
+  emptyFileName := Lang[ID_UNTITLED] + inttostr(dmMain.GetNum);
+
+  // Open the ini file and see if we have any default values for author, class, license
+  // ReadString will return either the ini key or the default
+  ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
+
+  FCreateFormPropObj.txtFileName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),''); // Default file name
+  FCreateFormPropObj.txtClassName.Text := ini.ReadString('wxWidgets',
+                                       'Class', ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Class');  // Default class name
+  FCreateFormPropObj.txtTitle.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'');   // Default title name
+
+  FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', '');
+
+  if InProject then
+    FCreateFormPropObj.txtSaveTo.Text :=
+      IncludeTrailingBackslash(ExtractFileDir(fProject.FileName))
+  else
+  begin
+    if Trim(FCreateFormPropObj.txtSaveTo.Text) = '' then
+      FCreateFormPropObj.txtSaveTo.Text :=
+        IncludeTrailingBackslash(ExtractFileDir(Application.ExeName));
+  end;
+
+  if FCreateFormPropObj.showModal <> mrOK then
+  begin
+    FCreateFormPropObj.Destroy;
+    exit;
+  end;
+
+  // Write the current strings back as the default
+  ini.WriteString('wxWidgets', 'Class', FCreateFormPropObj.txtClassName.Text);
+  ini.WriteString('wxWidgets', 'Author', FCreateFormPropObj.txtAuthorName.Text);
+  
+  ini.free;
+
+  // Call CreateAppSourceCodes to replace the keywords in our template files
+  //  and create the new project files
+  CreateStatus := CreateAppSourceCodes(strCppFile,strHppFile,strAppCppFile,strAppHppFile,FCreateFormPropObj,
+            strCppCode, strHCode, strAppSourceCode, strAppHeaderCode);
+
+  if CreateStatus then  // If true, then CreateAppSourceCodes was able to create our project files
+  begin
+    GetIntialFormData(FCreateFormPropObj, strFName, strCName, strFTitle,dlgSStyle);
+    CreateStatus := CreateFormFile(strFName, strCName, strFTitle, dlgSStyle,dsgnType);
+  end;
+
+  FCreateFormPropObj.Destroy;
+
+  if not CreateStatus then  // if false, then CreateAppSourceCodes had some problem creating the project files
+  begin
+    //Add localization here
+    Application.MessageBox(PChar('Unable to Create wxForm'),
+      'New wxWidgets Form', MB_ICONQUESTION + MB_OK);
+    Exit;
+  end;
+
+  strFileName := strFName;
+
+  // Open the .h file generated by CreateAppSourceCodes and add it to the project
+    strFileName := ChangeFileExt(strFileName, H_EXT);
+    OpenFile(strFileName);
+    if Assigned(fProject) and (InProject = true)then
+    begin
+        FolderNode:=fProject.Node;
+        fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+        if ClassBrowser1.Enabled then
+        begin
+            CppParser1.AddFileToScan(strFileName,true);
+        end;
+        //CppParser1.ReParseFile(strFileName, True); //new cc
+    end;
+
+    // Open the .cpp file generated by CreateAppSourceCodes and add it to the project
+    strFileName := ChangeFileExt(strFileName, CPP_EXT);
+    OpenFile(strFileName);
+    if Assigned(fProject) and (InProject = true)then
+    begin
+        FolderNode:=fProject.Node;
+        fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+
+        if ClassBrowser1.Enabled then
+        begin
+          CppParser1.AddFileToScan(strFileName, True);
+          CppParser1.ReParseFile(strFileName, True); //new cc
+          ClassBrowser1.UpdateView;
+        end;
+      end;
+
+   // Open the .h application file generated by CreateAppSourceCodes and add it to the project
+   strAppFileName := ChangeFileExt(fProject.FileName, '') + APP_SUFFIX + H_EXT;
+    OpenFile(strAppFileName);
+    if Assigned(fProject) and (InProject = true)then
+    begin
+        FolderNode:=fProject.Node;
+
+        fProject.AddUnit(strAppFileName, FolderNode, false); // add under folder
+           if ClassBrowser1.Enabled then
+        begin
+            CppParser1.AddFileToScan(strAppFileName,true);
+        end;
+        //CppParser1.ReParseFile(strAppFileName, True); //new cc
+    end;
+
+
+    // Open the .cpp application file generated by CreateAppSourceCodes and add it to the project
+   strAppFileName := ChangeFileExt(fProject.FileName, '') + APP_SUFFIX + CPP_EXT;
+   OpenFile(strAppFileName);
+    if Assigned(fProject) and (InProject = true) then
+    begin
+        FolderNode:=fProject.Node;
+        fProject.AddUnit(strAppFileName, FolderNode, false); // add under folder
+        if ClassBrowser1.Enabled then
+        begin
+            CppParser1.AddFileToScan(strAppFileName,true);
+        end;
+        //CppParser1.ReParseFile(strAppFileName, True); //new cc
+    end;
+
+    // Add resource file to the project
+   strAppFileName := ChangeFileExt(fProject.FileName, '') + APP_SUFFIX + '.rc';
+   OpenFile(strAppFileName);
+    if Assigned(fProject) and (InProject = true) then
+    begin
+        FolderNode:=fProject.Node;
+        fProject.AddUnit(strAppFileName, FolderNode, false); // add under folder
+        if ClassBrowser1.Enabled then
+        begin
+            CppParser1.AddFileToScan(strAppFileName,true);
+        end;
+        //CppParser1.ReParseFile(strAppFileName, True); //new cc
+    end;
+
+    // Add wxForm to the project
+    strFileName := ChangeFileExt(strFileName, WXFORM_EXT);
+    strShortFileName := ExtractFileName(strFileName);
+    NewDesigner := TEditor.Create;
+
+    if Assigned(fProject) and (InProject = true) then
+    begin
+        FolderNode:=fProject.Node;
+        NewUnit:=fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+        NewUnit.Editor:=NewDesigner;
+    end;
+
+  NewDesigner.Init(InProject, strShortFileName, strFileName, TRUE);
+
+  if not ClassBrowser1.Enabled then
+  begin
+    MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Adding Event handlers and Other features of the Form Designer '+#13+#10+'wont work properly.'+#13+#10+''+#13+#10+'Please enable the Class Browser.', mtWarning, [mbOK], 0);
+  end;
+
+  NewDesigner.Activate;
+end;
+{$ENDIF}
 
 {$IFDEF WX_BUILD}
 function TMainForm.CreateFormFile(strFName, strCName, strFTitle: string;dlgSStyle: TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
@@ -8112,7 +8379,7 @@ begin
         FNewFormObj.Wx_DesignerType:= dtWxDialog;
 
       FNewFormObj.Caption := strFTitle;
-      FNewFormObj.Wx_DialogStyle := [wxCaption,wxResize_Border,wxSystem_Menu,wxThick_Frame,wxMinimize_Box,wxMaximize_Box,wxClose_Box];
+      FNewFormObj.Wx_DialogStyle := dlgSStyle; //[wxCaption,wxResize_Border,wxSystem_Menu,wxThick_Frame,wxMinimize_Box,wxMaximize_Box,wxClose_Box];
       FNewFormObj.Wx_Name := strCName;
       FNewFormObj.EVT_CLOSE:=strCName+'Close';
       FNewFormObj.Wx_Center:=True;
@@ -8128,7 +8395,7 @@ end;
 
 {$IFDEF WX_BUILD}
 procedure TMainForm.GetIntialFormData(FCreateFormProp: TfrmCreateFormProp; var
-  strFName, strCName, strFTitle: string; dlgStyle: TWxDlgStyleSet);
+  strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet);
 begin
   strCName := Trim(FCreateFormProp.txtClassName.Text);
   strFTitle := Trim(FCreateFormProp.txtTitle.Text);
@@ -8277,6 +8544,151 @@ begin
   //Create Source Code for the Cpp, H, and Form Files
   if Result then
     Result := SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
+
+end;
+{$ENDIF}
+
+{$IFDEF WX_BUILD}
+function TMainForm.CreateAppSourceCodes(strCppFile,strHppFile, strAppCppFile, strAppHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string): Boolean;
+// This is scavenged from TMainForm.CreateSourceCodes (above)
+// It uses the template files passed to it through the file names contained in
+// strCppFile,strHppFile, strAppCppFile, and strAppHppFile to create new
+// .cpp and .h files based on those templates. It replaces the keywords
+// in the templates (%FILE_NAME%, %CLASS_NAME%, %AUTHOR_NAME%, etc.) with
+// those supplied by the user. Finally, it creates a resource file and a
+// wxform file for the new project.
+var
+  strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: string;
+  strLstHeaderCode,strLstSourceCode,strLstAppHeaderCode,strLstAppSourceCode:TStringList;
+
+  function GetStyleString: string;
+  var
+    I: Integer;
+    strLst: TStringList;
+  begin
+    strLst := TStringList.Create;
+
+    if FCreateFormProp.cbUseCaption.checked then
+      strLst.add('wxCAPTION');
+
+    if FCreateFormProp.cbResizeBorder.checked then
+      strLst.add('wxRESIZE_BORDER');
+
+    if FCreateFormProp.cbSystemMenu.checked then
+      strLst.add('wxSYSTEM_MENU');
+
+    if FCreateFormProp.cbThickBorder.checked then
+      strLst.add('wxTHICK_FRAME');
+
+    if FCreateFormProp.cbStayOnTop.checked then
+      strLst.add('wxSTAY_ON_TOP');
+
+    if FCreateFormProp.cbNoParent.checked then
+      strLst.add('wxDIALOG_NO_PARENT');
+
+    if FCreateFormProp.cbMinButton.checked then
+      strLst.add('wxMINIMIZE_BOX');
+
+    if FCreateFormProp.cbMaxButton.checked then
+      strLst.add('wxMAXIMIZE_BOX');
+
+    if FCreateFormProp.cbCloseButton.checked then
+      strLst.add('wxCLOSE_BOX');
+
+    if strLst.Count = 0 then
+    begin
+      Result := 'wxDEFAULT_DIALOG_STYLE	';
+    end
+    else
+    begin
+      for I := 0 to strLst.count - 1 do // Iterate
+      begin
+        if i <> strLst.count - 1 then
+          Result := Result + strLst[i] + '  |  '
+        else
+          Result := Result + ' ' + strLst[i] + ' ';
+      end; // for
+    end;
+    strLst.destroy;
+  end;
+
+  // A function within a function
+  // This replaces all occurrences of several keywords in a text string
+  function replaceAllSymbolsInStrLst(strLst: TStrings; var strFileSrc: string):
+      Boolean;
+  begin
+    Result := True;
+    try
+      strFileSrc := strLst.text;
+      strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName),[srAll]);
+      strSearchReplace(strFileSrc, '%AUTHOR_NAME%', strAuthor, [srAll]);
+      strSearchReplace(strFileSrc, '%DATE_STRING%', strDate, [srAll]);
+      strSearchReplace(strFileSrc, '%CLASS_NAME%', strClassName, [srAll]);
+      strSearchReplace(strFileSrc, '%CAP_CLASS_NAME%', UpperCase(strClassName),[srAll]);
+
+      strSearchReplace(strFileSrc, '%CLASS_TITLE%', strClassTitle, [srAll]);
+      strSearchReplace(strFileSrc, '%CLASS_STYLE_STRING%', strClassStyleString,[srAll]);
+      strSearchReplace(strFileSrc, '%PROJECT_NAME%', ChangeFileExt(ExtractFileName(fProject.FileName), ''),[srAll]);
+
+    finally
+
+    end;
+  end;
+begin
+  Result := False;
+  if not assigned(FCreateFormProp) then
+    exit;
+
+  strClassName := Trim(FCreateFormProp.txtClassName.Text);
+  strDate := DateTimeToStr(now);
+  strAuthor := Trim(FCreateFormProp.txtAuthorName.Text);
+  strClassTitle := Trim(FCreateFormProp.txtTitle.Text);
+  strClassStyleString := GetStyleString;
+
+  strFileName := IncludeTrailingBackslash(Trim(FCreateFormProp.txtSaveTo.Text))
+    + Trim(FCreateFormProp.txtFileName.Text);
+
+
+    // Create a bunch of string buffers to hold the text of the template files
+  strLstHeaderCode:=TStringList.Create;
+  strLstSourceCode:=TStringList.Create;
+  strLstAppHeaderCode:=TStringList.Create;
+  strLstAppSourceCode:=TStringList.Create;
+
+  // Load the template files into the string buffers we just created
+  strLstHeaderCode.LoadFromFile(strHppFile);
+  strLstSourceCode.LoadFromFile(strCppFile);
+  strLstAppHeaderCode.LoadFromFile(strAppHppFile);
+  strLstAppSourceCode.LoadFromFile(strAppCppFile);
+
+  //Create Dlg Cpp Code
+  replaceAllSymbolsInStrLst(strLstSourceCode, cppCode);
+
+  //Create Dlg Hpp Code
+  replaceAllSymbolsInStrLst(strLstHeaderCode, hppCode);
+
+  //Create App Hpp Code
+  replaceAllSymbolsInStrLst(strLstAppHeaderCode, apphppCode);
+
+  //Create App Cpp Code
+  replaceAllSymbolsInStrLst(strLstAppSourceCode, appcppCode);
+
+  strLstHeaderCode.Destroy;
+  strLstSourceCode.Destroy;
+  strLstAppSourceCode.Destroy;
+  strLstAppHeaderCode.Destroy;
+
+  //Create Source Code for the Cpp, H, RC, and Form Files
+  Result := SaveStringToFile(cppCode, ChangeFileExt(strFileName, CPP_EXT));
+   if Result then
+    Result := SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
+  if Result then
+    Result := SaveStringToFile(apphppCode, ChangeFileExt(fProject.FileName, '') + APP_SUFFIX + H_EXT);
+   if Result then
+    Result := SaveStringToFile(appcppCode, ChangeFileExt(fProject.FileName, '') +  APP_SUFFIX + CPP_EXT);
+
+    if Result then
+    Result := SaveStringToFile('#include <wx/msw/wx.rc>', ChangeFileExt(fProject.FileName, '') +  APP_SUFFIX + '.rc');
 
 end;
 {$ENDIF}
