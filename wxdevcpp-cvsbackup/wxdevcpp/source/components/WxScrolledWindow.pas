@@ -1,3 +1,6 @@
+// $Id$
+//
+
 unit WxScrolledWindow;
 
 interface

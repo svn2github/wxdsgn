@@ -5,6 +5,8 @@ wxSingleChoiceDialog,TWxTextEntryDialog
 }
      
 { ****************************************************************** }
+{ $Id$                                                               }
+{                                                                    }
 {                                                                    }
 {   VCL component wxUtils                                          }
 {                                                                    }

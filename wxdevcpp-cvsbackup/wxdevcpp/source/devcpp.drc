@@ -1081,7 +1081,7 @@ BEGIN
 	version_BIN_DIR,	"Bin"
 	version_LIB_DIR,	"lib"
 	version_C_INCLUDE_DIR,	"include"
-	version_CPP_INCLUDE_DIR,	"include\\wxinclude\\wx\\mswinclude\\wx\\genericinclude\\wx\\animateinclude\\wx\\flinclude\\wx\\gizmosinclude\\wx\\htmlinclude\\wx\\mmediainclude\\wx\\netinclude\\wx\\oglinclude\\wx\\plotinclude\\wx\\protocolinclude\\wx\\stcinclude\\wx\\svginclude\\wx\\xmlinclude\\wx\\xrcinclude;include\\c++\\3.4.2;include\\c++\\3.4.2\\mingw32;include\\c++\\3.4.2\\backward;lib\\gcc\\mingw32\\3.4.2\\include;include\\c++\\3.3.1;include\\c++\\3.3.1\\mingw32;include\\c++\\3.3.1\\backward;lib\\gcc-lib\\mingw32\\3.3.1\\include"
+	version_CPP_INCLUDE_DIR,	"include\\wx;include\\wx\\xrc;include\\wx\\xml;include\\wx\\svg;include\\wx\\stc;include\\wx\\protocol;include\\wx\\plot;include\\wx\\ogl;include\\wx\\net;include\\wx\\mmedia;include\\wx\\html;include\\wx\\gizmos;include\\wx\\fl;include\\wx\\animate;include\\wx\\generic;include\\wx\\msw;include;include\\c++\\3.4.2;include\\c++\\3.4.2\\mingw32;include\\c++\\3.4.2\\backward;lib\\gcc\\mingw32\\3.4.2\\include;include\\c++\\3.3.1;include\\c++\\3.3.1\\mingw32;include\\c++\\3.3.1\\backward;lib\\gcc-lib\\mingw32\\3.3.1\\include"
 	version_LANGUAGE_DIR,	"Lang\\"
 	version_ICON_DIR,	"Icons\\"
 	version_HELP_DIR,	"Help\\"

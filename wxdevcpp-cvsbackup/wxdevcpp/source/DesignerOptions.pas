@@ -1,3 +1,6 @@
+// $Id$
+//
+
 unit DesignerOptions;
 
 interface

@@ -79,9 +79,9 @@ resourcestring
                        + 'include' + pd + 'wx' + pd + 'fl;'
                        + 'include' + pd + 'wx' + pd + 'animate;'
                        + 'include' + pd + 'wx' + pd + 'generic;'
-                       + 'include' + pd + 'wx' + pd + 'msw;'
+                       + 'include' + pd + 'wx' + pd + 'msw;'  +
   {$ENDIF}
-                         'include'
+                        'include'
                        //one of below directories will be deleted if don't exist, later
                        + ';include' + pd + 'c++' + pd + GCC_VERSION
                        + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'

@@ -1,4 +1,6 @@
 {***********************************************************************}
+{ $Id$                                                                  }
+{                                                                       }
 { 	        HSoftware Components Collection                         }
 {                                                                       }
 {     	        Copyright (C) 1996 by Artem A. Berman                   }

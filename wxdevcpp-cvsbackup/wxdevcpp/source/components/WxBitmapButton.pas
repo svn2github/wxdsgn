@@ -1,3 +1,5 @@
+// $Id$
+//
 unit WxBitmapButton;
 
 interface

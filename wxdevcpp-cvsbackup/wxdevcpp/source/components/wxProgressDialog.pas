@@ -1,3 +1,6 @@
+// $Id$
+//
+
 unit wxProgressDialog;
 
 interface

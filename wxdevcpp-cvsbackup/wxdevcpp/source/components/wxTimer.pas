@@ -1,3 +1,6 @@
+// $Id$
+//
+
 unit wxTimer;
 
 interface

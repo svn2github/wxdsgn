@@ -1,4 +1,7 @@
 {
+
+$Id$
+
 wxDialog Designer
 Copyright (c) 2003 Guru Kathiresan grk4352@njit.edu
 All rights reserved.
