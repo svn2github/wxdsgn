@@ -39,5 +39,5 @@ begin
 end;
 
 initialization
-  RegisterExceptionHandler(ExceptionFilter, false);
+  RegisterExceptionHandler(ExceptionFilter, stTrySyncCallOnSuccess);
 end.
