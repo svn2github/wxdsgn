@@ -184,7 +184,9 @@ uses
   wxPageSetupDialog in 'components\wxPageSetupDialog.pas',
   dmListview in 'propedit\dmListview.pas' {ListviewForm},
   wxMessageDialog in 'components\wxMessageDialog.pas',
-  uFileWatch in 'uFileWatch.pas';
+  uFileWatch in 'uFileWatch.pas',
+  wxsplitterwindow in 'components\wxsplitterwindow.pas',
+  DesignerOptions in 'DesignerOptions.pas' {DesignerForm};
 
 {$R *.res}
 {$R winxp.res}
@@ -292,14 +294,6 @@ begin
     end;
   end;
 
-
-  if devData.SingleInstance then
-  begin
-    boolCanStart:=CanStart;
-    if boolCanStart = false then
-        exit;
-  end;
-
   devData.UseRegistry := FALSE;
   devData.BoolAsWords := FALSE;
   devData.INISection := OPT_OPTIONS;
@@ -318,12 +312,20 @@ begin
   else if ConfigMode = CFG_USER then
     devDirs.Config := UserHome;
   devData.ReadConfigData;
+
+  if devData.SingleInstance then
+  begin
+    boolCanStart:=CanStart;
+    if boolCanStart = false then
+        exit;
+  end;
+
   devTheme := TdevTheme.Create;
 
 
   Application.Initialize;
   Application.Title := 'wx-devcpp';
-  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TMainForm, MainForm);  
   MainForm.Hide; // hide it
 
 
