@@ -7967,10 +7967,23 @@ begin
 end;
 
 
+{$IFDEF WX_BUILD}
+// Get the login name to use as a default if the author name is unknown
+function GetLoginName: string;
+var
+  buffer: array[0..255] of char;
+  size: dword;
+begin
+  size := 256;
+  if GetUserName(buffer, size) then
+    Result := buffer
+  else
+    Result := ''
+end;
 
 {Functions Added By Guru for wx Implementation}
 procedure TMainForm.CreateNewDialogOrFrameCode(dsgnType:TWxDesignerType);
-{$IFDEF WX_BUILD}
+
 var
   NewDesigner: TEditor;
   strFileName, strShortFileName: string;
@@ -7985,9 +7998,7 @@ var
   strCppFile,strHppFile:String;
   ini: Tinifile;
 
-{$ENDIF}
 begin
-{$IFDEF WX_BUILD}
   if dsgnType = dtWxFrame then
   begin
     strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxFrame.cpp.code';
@@ -8038,7 +8049,7 @@ begin
                                        'Class', ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Class');  // Default class name
   FCreateFormPropObj.txtTitle.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'');   // Default title name
 
-  FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', '');
+  FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', GetLoginName);
 
 
   if InProject then
@@ -8235,7 +8246,7 @@ begin
                                        'Class', ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Class');  // Default class name
   FCreateFormPropObj.txtTitle.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'');   // Default title name
 
-  FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', '');
+  FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', GetLoginName);
 
   if InProject then
     FCreateFormPropObj.txtSaveTo.Text :=
