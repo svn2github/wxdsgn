@@ -308,6 +308,10 @@ Ver=1
 451=Afficher les caractères invisibles
 452=Afficher les conseils de l'éditeur
 453=Aide parenthèses/accolades relatives
+454=Terminer fichier par un retour ligne
+455=Mettre en surbrillance la ligne courante
+456=Affecté à la valeur du système "Texte sélectionné"
+457=Affécté à la valeur de l'espace blanc
 
 # through 459 for additions
 
@@ -402,8 +406,8 @@ Ver=1
 552=Conseil: appuyer sur Echap pour effacer un raccourci
 553=Entrée dans le menu
 554=Raccourci affecté
-555=OK
-556=Annuler
+555=Annuler
+556=OK
 
 #Tool Menu Macros
 560=Retourne le répertoire courant

@@ -308,6 +308,10 @@ Ver=1
 451=Show hidden line characters
 452=Show editor hints
 453=Highlight matching braces/parentheses
+454=Ensure that file ends with newline
+455=Highlight current line
+456=Sets to System HighlightText value
+457=Sets to WhiteSpace value
 
 # through 459 for additions
 

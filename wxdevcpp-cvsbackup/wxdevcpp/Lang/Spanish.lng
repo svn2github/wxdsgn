@@ -1,11 +1,14 @@
 [lang]
-Lang=Spanish (Latinoamérica)
+Lang=Spanish (Latino América)
 Ver=1
 
-#Español Latinoamericano V16 Mar.5.2003 Dev-CPP 4.9.7.5
+#Español Latinoamericano V16 Lun.15.Nov Dev-CPP 4.9.9.0
 #Maintainer: Ricardo Ortega
-#Favor remitir comentarios y sugerencias a ricardo@ortega.as o rortega@andinanet.net
-#Si prefiere el español castellano vea SpanishCastellano.lng y SpanishCastellano.tips
+#Favor de mandar sus comentarios y sugerencias a scroll0_0@hotmail.com
+#Si prefiere el español castellano vea SpanishCastellano.lng y 
+SpanishCastellano.tips
+#Herramientas -> Opciones de entorno -> Interfaz -> Idioma
+
 
 #Top level menus
 100=&Archivo
@@ -91,6 +94,7 @@ Ver=1
 195=&Especiales
 196=&Edición
 197=&Buscar
+198=Ventana de reporte flotante
 
 #Project menu
 200=&Nuevo archivo fuente
@@ -127,7 +131,8 @@ Ver=1
 232=&Siguiente
 233=&Anterior
 234=&Cerrar Todo
-235=Pantalla completa de Dev-CPP %s. Presione Mayus-F12 para ver/ocultar barra de herramientas. F12 para modo normal.
+235=Pantalla completa de Dev-CPP %s. Presione Mayus-F12 para ver/ocultar 
+barra de herramientas. F12 para modo normal.
 236=Cerrar todos excepto este
 237=&Listar...
 
@@ -150,6 +155,9 @@ Ver=1
 254=Entrar a &siguiente instrucción
 255=&Ejecutar hasta el cursor
 256=Ver ve&ntana del CPU
+257=Pegar al proseso...
+258=Modificar valor
+259=Limpiar todo
 
 #context menus
 # project menu
@@ -541,7 +549,10 @@ Ver=1
 731=Usar Compilador Cygwin en vez de Mingw
 732=Añadir los siguientes comandos cuando llama al compilador
 733=Retardo para el Compilador
-734=Activa un Retraso en milisegs si Make notifica sobre la fecha del archivo MAKEFILE
+734=Activa un Retraso en milisegs si Make notifica sobre la fecha del 
+archivo MAKEFILE
+735=Mostrar un error por línea
+
 740=Generación de Código:
 741=Optimización:
 745=Activar Manejo de Excepciones
@@ -562,7 +573,8 @@ Ver=1
 760=No optimizar
 761=Optimizar más
 
-770=Es posible cambiar los nombres de los programas que usa Dev-Cpp. (Por ejemplo para usar un Cross Compiler).
+770=Es posible cambiar los nombres de los programas que usa Dev-Cpp. (Por 
+ejemplo para usar un Cross Compiler).
 771=Paquete de Compilador a Configurar
 772=Nuevo Paquete de Compilador
 773=Ingrese el nombre para el nuevo Paquete de Compilador:
@@ -631,7 +643,8 @@ Ver=1
 852=Opciones de Importación
 853=Configuración para importar
 854=Nombre de archivo para proyecto Dev-Cpp
-855=El archivo de proyecto MS VC++ ha sido importado y convertido a proyecto Dev-Cpp. ¿Quiere abrirlo ahora?
+855=El archivo de proyecto MS VC++ ha sido importado y convertido a proyecto 
+Dev-Cpp. ¿Quiere abrirlo ahora?
 
 
 #Project Options form
@@ -748,16 +761,23 @@ Ver=1
 1010=Archivo ya existe, ¿Sobreescribir?
 1011=¿Añadir Nuevo Archivo al Proyecto?
 1012=¿Añadir Nuevo Archivo de Recurso al Proyecto?
-1013=El proyecto no tiene información para depuración. ¿Desea activar depuración y recompilar el proyecto?
-1014=No ha habilitado Análisis Perfil de Ejecución y/o Depuración. ¿Desea activar y recompilar el proyecto?
-1015=Debe Ejecutar el proyecto al menos una vez para que se genere información de Análisis Perfil ...
+1013=El proyecto no tiene información para depuración. ¿Desea activar 
+depuración y recompilar el proyecto?
+1014=No ha habilitado Análisis Perfil de Ejecución y/o Depuración. ¿Desea 
+activar y recompilar el proyecto?
+1015=Debe Ejecutar el proyecto al menos una vez para que se genere 
+información de Análisis Perfil ...
 1016=Ingrese nuevo nombre de carpeta:
 1017=Realmente desea borrar esta carpeta?
 1018=Ingrese el nuevo nombre de carpeta:
-1019=El archivo %s es sólo de lectura. ¿Desea cambiarlo a modo lectura y escritura? Si no, el archivo no será grabado
-1020=Error: El archivo %s no fue cambiado a modo lectura y escritura y no pudo ser grabado
-1021=Se ha producido una violación de acceso a memoria (fallo de segmentación) en su programa
-1022=El archivo fuente es más reciente que el ejecutable. ¿Desea reconstruir el ejecutable?
+1019=El archivo %s es sólo de lectura. ¿Desea cambiarlo a modo lectura y 
+escritura? Si no, el archivo no será grabado
+1020=Error: El archivo %s no fue cambiado a modo lectura y escritura y no 
+pudo ser grabado
+1021=Se ha producido una violación de acceso a memoria (fallo de 
+segmentación) en su programa
+1022=El archivo fuente es más reciente que el ejecutable. ¿Desea reconstruir 
+el ejecutable?
 
 # errors
 1500=No se puede abrir Archivo %s
@@ -774,8 +794,10 @@ Ver=1
 1511=Archivo de Plantilla %s no encontrado, Saltando
 1512=No hay ninguna Plantilla Asignada
 1513=Archivo %s no encontrado
-1514=No se ha indicado Aplicación Anfitriona. Puede indicarla en el menú "Ejecutar / Argumentos".
-1515=Aplicación Anfitriona no encontrada! Puede indicarla en el menú "Ejecutar / Argumentos".
+1514=No se ha indicado Aplicación Anfitriona. Puede indicarla en el menú 
+"Ejecutar / Argumentos".
+1515=Aplicación Anfitriona no encontrada! Puede indicarla en el menú 
+"Ejecutar / Argumentos".
 
 # misc
 2000=Sin Nombre
@@ -821,6 +843,7 @@ Ver=1
 2518=Re&nombrar
 2519=&Importar
 2520=Modo Ventana
+2521=Limpiar
 
 # CPU Window RO
 2600=Ventana de CPU
@@ -839,7 +862,8 @@ Ver=1
 # Environment Options (more)
 2800=Asociaciones de Archivos
 2801=Tipos de archivos:
-2802=Active o desactive la marca para los tipos de archivos que Windows abrirá automáticamente con Dev-Cpp ...
+2802=Active o desactive la marca para los tipos de archivos que Windows 
+abrirá automáticamente con Dev-Cpp ...
 
 2803=Soporte CVS
 2804=Archivo de Programa CVS
@@ -855,6 +879,8 @@ Ver=1
 2814=Vigilar variable bajo el cursor del ratón
 2815=Reportar errores de vigilancia
 2816=Examinar variables de depuración
+2817=Archivo de configuración alterno
+2818=Usar este archivo de configuración alterno
 
 
 # Execute menu (more)
@@ -939,7 +965,8 @@ Ver=1
 3202=Opciones de Proyecto:
 3203=Generar información para depuración
 3204=Generar información para perfilamiento
-3205=NOTA: Estas configuraciones se aplican solo a este proyecto y tienen preferencia sobre las opciones globales del compilador
+3205=NOTA: Estas configuraciones se aplican solo a este proyecto y tienen 
+preferencia sobre las opciones globales del compilador
 3206=Soportar Modo Windows XP
 3207=Opciones de Archivo Fuente:
 3208=Incluir en compilación
@@ -958,5 +985,13 @@ Ver=1
 3221=Incluir en Enlace
 3222=Prioridad de Construcción:
 3223=Auto-incrementar número de construcción al compilar
+3224=Usar el Makefile de costumbre (no generar ninguno, usar éste)
+3225=Información acerca del Makefile de costumbre...
+3226=Incluir el siguiente archivo dentro del Makefile:
 
+
+
+3400=Tira ejecutable
+3401=Generar instrucciones para la máquina siguiente
+3402=Permitir el uso de las funciones específicas del prosesador
 

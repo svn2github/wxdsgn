@@ -2,6 +2,7 @@
 Lang=German (Deutsch)
 Ver=1
 
+
 #Top level menus
 100=&Datei
 101=B&earbeiten
@@ -14,12 +15,14 @@ Ver=1
 108=&Hilfe
 109=&Fehlersuche
 
+
 #File menu
 120=&Neu
 121=&Projekt...
 122=&Quelldatei
 123=&Ressourcen Datei
 124=&Vorlage...
+
 
 130=Pr&ojekt oder Datei öffnen...
 131=&Neu öffnen
@@ -32,16 +35,20 @@ Ver=1
 138=Eigenschaften
 139=Speichere Projekt als...
 
+
 140=&Exportieren
 141=nach &HTML
 142=nach &RTF
 143=&Projekt nach HTML
 
+
 149=&Import
+
 
 150=&Drucken
 151=Druckereinstellungen
 152=&Beenden
+
 
 #Edit menu
 160=&Rückgängig
@@ -59,6 +66,7 @@ Ver=1
 172=&Kommentar Header
 #Due to exhausted numbers, the Edit menu continues at 380...
 
+
 #Search menu
 175=Suchen...
 176=Suchen in &Dateien...
@@ -67,6 +75,7 @@ Ver=1
 179=&Gehe zu Zeile...
 180=&Inkrementelle Suche
 181=Gehe zu Funk&tion...
+
 
 #View menu
 182=Freier Projekt-Manager
@@ -79,6 +88,7 @@ Ver=1
 189=&Nur wenn nötig
 190=Symbolleis&ten
 
+
 # Toolbar Captions
 191=Standard
 192=Kompilieren und Ausführen
@@ -88,8 +98,10 @@ Ver=1
 196=Bearbeiten
 197=Suchen
 
+
 #View menu (bis)
 198=Freies &Reportfenster
+
 
 #Project menu
 200=&Neue Datei
@@ -100,6 +112,7 @@ Ver=1
 205=&Make-Datei bearbeiten
 206=Ressourcen &Datei hinzufügen...
 207=Ressourcen Datei ent&fernen...
+
 
 #Execute menu
 210=&Kompilieren
@@ -113,12 +126,14 @@ Ver=1
 218=Pro&fil Analyse
 219=Abbrechen
 
+
 #Tool menu
 220=&Compiler Optionen
 221=&Umgebungs Optionen
 222=&Editor Optionen
 223=Konfiguriere &Werkzeuge
 224=Konfiguriere &Shortcuts
+
 
 #Window menu
 230=&Vollbild
@@ -130,11 +145,13 @@ Ver=1
 236=&Schließe alles ohne dieses
 237=&Liste...
 
+
 #Help menu
 240=Ü&ber Dev-C++...
 241=Auf &Updates/Pakete prüfen...
 242=Hilfe-Menü &anpassen...
 243=Dev-C++ &Hilfe
+
 
 #Debug Menu
 245=&Fehlersuche
@@ -151,6 +168,8 @@ Ver=1
 256=&CPU-Fenster
 257=&Zum Prozess hinzufügen...
 258=Wert &modifizieren
+259=&Lösche alles
+
 
 #context menus
 #project menu
@@ -160,12 +179,14 @@ Ver=1
 263=Optionen...
 264=Ressourcen Datei bearbeiten
 
+
 # File menu
 270=Datei entfernen
 271=Datei umbenennen
 272=Schließen
 273=Öffnen
 274=Header öffnen
+
 
 # class browser menu
 280=Gehe zu Deklaration
@@ -185,6 +206,7 @@ Ver=1
 294=Zeige geerbte Member
 295=Öffnen mit...
 
+
 #Message control
 # sheets
 300=Compiler
@@ -194,11 +216,13 @@ Ver=1
 304=Schließen
 305=Fehlersuche
 
+
 # pop menu
 310=&Löschen
 311=&Kopieren
 312=&Verbergen
 313=Ö&ffnen
+
 
 # column headers
 # 320, 322, 323 not in inc file
@@ -206,6 +230,7 @@ Ver=1
 316=Datei
 317=Meldung
 318=Argumente
+
 
 320=Zeile suchen
 321=Spalte
@@ -216,13 +241,16 @@ Ver=1
 326=Fehler insgesamt:
 327=Dateigröße:
 
+
 # debug
+
 
 330=Überwachte Variablen
 331=Ablaufverfolgung
 332=Ausgabe
 333=Sende Kommando zu GDB:
 334=Sende
+
 
 # Specials toolbar items
 340=Neu
@@ -233,6 +261,7 @@ Ver=1
 345=Fehlersuch-Fenster
 346=Report-Fenster
 
+
 #non-visible (open/save dialogs)
 350=Datei öffnen
 351=Datei öffnen
@@ -240,6 +269,7 @@ Ver=1
 353=Datei speichern
 354=Projekt speichern
 355=Hilfedatei auswählen
+
 
 357=Neuer Variablen Watch
 358=Variablen Name eingeben:
@@ -249,8 +279,10 @@ Ver=1
 362=Variable zum ändern:
 363=Neuer Wert:
 
+
 370=Projekt
 371=Klassen
+
 
 #Edit menu (more options)
 380=Kommentar
@@ -258,6 +290,7 @@ Ver=1
 382=Einrücken
 383=Einrückung aufheben
 384=Header/Source umschalten
+
 
 #Editor Options Dialog 400-499
 400=Editor Optionen
@@ -268,9 +301,11 @@ Ver=1
 405=Fertigstellung
 406=Klassenbrowser
 
+
 #sub tabs
 410=Einfügungen
 411=Standardquelle
+
 
 # General Tab
 419=Name der neuen Syntax Einstellungen:
@@ -308,8 +343,12 @@ Ver=1
 451=Versteckte Zeichen anzeigen
 452=Editor Tips zeigen
 453=Klammerpaare hervorheben
-
+454=Stellen Sie sicher, dass Dateien mit Newline enden
+455=Aktuelle Linie hervorheben
+456=Auf System-Highlight Textwert setzen
+457=Auf WhiteSpace Wert setzen
 # through 459 for additions
+
 
 # Display Tab
 460=Editor Schriftart:
@@ -324,6 +363,7 @@ Ver=1
 469=Bel. Schriftart benutzen
 470=Rand-Schriftart
 
+
 # Syntax Tab
 471=Vordergrund
 472=Hintergrund
@@ -335,6 +375,7 @@ Ver=1
 478=Typ:
 479=Eigene Syntax Einstellungen sichern
 
+
 # Code Tab
 480=Code
 481=Menü Text
@@ -342,12 +383,14 @@ Ver=1
 483=Beschreibung
 484=Standard Code in leere Anfangsquelldatei einfügen
 
+
 # Completion Tab
 485=Cache für Code-Vervollständigung nutzen
 486=Dateien im Cache:
 487=Code-Vervollständigung erlauben
 488=Verzögerung (ms):
 489=Hintergrundfarbe:
+
 
 # Class browsing Tab
 490=Klassen-Browser Einstellungen
@@ -357,6 +400,7 @@ Ver=1
 494=Ansichts Optionen
 495=Klassen-Browser erlauben
 496=Scan globale Dateien in #include Dateien
+
 
 #New project form
 500=Neues Projekt
@@ -368,17 +412,21 @@ Ver=1
 507=Verschiedenes
 508=Projekt Optionen:
 
+
 #Remove file form
 520=Aus Projekt entfernen
 521=Zu entfernende Datei auswählen:
+
 
 #Goto line form
 525=Gehe zu Zeile...
 526=Neue Zeile:
 
+
 #Tool config form
 530=Werkzeugkonfiguration
 531=Aktuelle Werkzeuge:
+
 
 #Edit Tool form
 535=Werkzeug Eintrag bearbeiten
@@ -389,10 +437,12 @@ Ver=1
 540=Makro einfügen
 541=Verfügbare Makros
 
+
 #Icon Library Form
 545=Icon Bibliothek
 546=Ausgewähltes Icon benutzen
 547=Durchsuchen
+
 
 #Configure Shortcuts Form
 550=Konfiguriere Shortcuts
@@ -402,6 +452,7 @@ Ver=1
 554=Shortcut zugewiesen
 555=Abbruch
 556=OK
+
 
 #Tool Menu Macros
 560=Gibt das Standardverzeichnis zurück
@@ -416,6 +467,7 @@ Ver=1
 569=Gibt das Wort am Cursor im aktiven Editor zurück
 570=Gibt die Dev-C++ Version zurück
 # -- TO 579
+
 
 #About form
 580=Über Dev-C++ :)
@@ -434,12 +486,14 @@ Ver=1
 593=haiku@bloodshed.net
 594=Auf &Updates prüfen
 
+
 #Code Inserts Entry Edit form
 600=Code Einfügeeintrag bearbeiten
 601=Code Einfügeeintrag hinzufügen
 602=Menüpunkt Überschrift
 603=Menüpunkt Beschreibung
 604=Menü Gruppe
+
 
 #Environment options form
 606=Fortschrittsfenster f. Kompilation 
@@ -477,6 +531,7 @@ Ver=1
 638=Thema:
 639=Schnittstelle
 
+
 #Find Form
 640=Suchtext
 641=Suchen
@@ -498,6 +553,7 @@ Ver=1
 657=Vorwärts
 658=Rückwärts
 
+
 #Replace form
 670=Ersetzen
 671=Suchtext:
@@ -516,11 +572,13 @@ Ver=1
 684=Ab &Cursor
 685=T&extbeginn
 
+
 #Goto function form
 695=Suche nach:
 696=Type
 697=Funktion
 698=Zeile
+
 
 #Compiler Options
 700=Compiler Optionen
@@ -529,6 +587,7 @@ Ver=1
 703=Einstellungen
 704=Linker
 705=Programme
+
 
 710=Programmdateien
 711=Bibliotheken
@@ -548,6 +607,7 @@ Ver=1
 733=Verzögerung
 734=Erlaubt eine Verzögerung in ms, wenn der Compiler sich über den Zeitstempel der Makedatei beklagt.
 735=Zeigt einen Fehler pro Zeile
+
 
 740=Code Erzeugung
 741=Optimierung
@@ -569,6 +629,7 @@ Ver=1
 760=&Nicht optimieren
 761=Mehr optimieren
 
+
 770=Sie möchten vielleicht die in Dev-C++ genutzten Dateinamen ändern (z.B. bei Benutzung eines Cross-Compilers):
 771=Compiler Set konfigurieren
 772=Neuer Compiler Set
@@ -578,6 +639,7 @@ Ver=1
 776=Compiler Set umbenennen
 777=Neuer Setname:
 778=Weitere Optimierungen
+
 
 #Help Editor Form
 780=Hilfemenü-Editor
@@ -593,6 +655,7 @@ Ver=1
 790=Suche in der Hilfe-Datei nach dem Word an Cursorposition
 791=F1-Shortcut zuweisen
 
+
 #Print File Form
 800=Datei drucken
 801=Parameter:
@@ -606,6 +669,7 @@ Ver=1
 809=Anzahl der Kopien:
 810=Nur Markierung drucken
 
+
 #Update Form
 820=Auf Update für Dev-C++ prüfen
 821=Aufgabe:
@@ -615,11 +679,13 @@ Ver=1
 825=Beschreibung des Release:
 826=Download Seite (Doppelklick für Download):
 
+
 #AddToDo form
 830=To-Do Eintrag hinzufügen...
 831=Beschreibung
 832=Priorität
 833=Benutzer
+
 
 #ViewToDo form
 835=To-Do Liste...
@@ -634,6 +700,7 @@ Ver=1
 844=Offene Nicht-Projekt-Dateien
 845=Nur aktuelle Datei
 
+
 #Import MSVC++ form
 850=MS Visual C++-Projekt importieren
 851=Visual C++-Projektdatei auswählen
@@ -642,6 +709,7 @@ Ver=1
 854=Dev-C++ Projekt Dateiname
 855=Die MS Visual C++-Projektdatei wurde importiert und erfolgreich zu einem Dev-C++ Projekt konvertiert! Jetzt öffnen ?
 856=Kann Ziel-Konfiguration "%s" nicht finden (ev. ein Fehler in Dev-C++)...
+
 
 #Project Options form
 900=Projekt Optionen
@@ -674,6 +742,7 @@ Ver=1
 927=Bibliothek/Objekt hinzuf.
 928=%d Dateien [%d Quellen, %d Header, %d Ressourcen]
 
+
 #New template form
 930=Name:
 931=Beschreibung:
@@ -693,6 +762,7 @@ Ver=1
 945=Include-Verzeichnisse des Projektes nutzen
 946=Bibliotheks-Verzeichnisse des Projektes nutzen
 947=Ressourcen-Verzeichnisse des Projektes nutzen
+
 
 #New variable/member forms
 950=Rückgabe Typ:
@@ -722,6 +792,7 @@ Ver=1
 974=Zum aktuellen Projekt hinzufügen
 975=Attribute
 
+
 #File properties form
 980=Dateiname
 981=Im Projekt
@@ -737,10 +808,12 @@ Ver=1
 991=Datum/Zeitstempel der Datei
 992=Compiler-Einstellungen
 
+
 #Profile analysis form
 995=Auslastungs Analyse
 996=Funktionszeit 
 997=Funktionsabdeckung
+
 
 #Global strings
 # messages
@@ -769,6 +842,7 @@ Ver=1
 1022=Quelldatei ist jünger als die EXE-Datei. Neu erzeugen ?
 1023=Hinzuzufügende Anwendung auswählen:
 
+
 #errors
 1500=Kann %s nicht öffnen
 1501=Kann %s nicht speichern
@@ -786,6 +860,7 @@ Ver=1
 1513=Datei %s nicht gefunden.
 1514=Keine Host Anwendung angegeben. Sie können sie im Ausführen Menü, Parameter festlegen.
 1515=Host Anwendung nicht gefunden ! Sie können es im Ausführen Menü, Parameter ändern.
+
 
 # misc
 2000=Unbenannt
@@ -806,6 +881,7 @@ Ver=1
 2015=Frage
 2016=Kompilierung erfolgreich
 2017=Kompilation durch Benutzer abgebrochen
+
 
 # buttons
 2500=&Ok
@@ -831,12 +907,14 @@ Ver=1
 2520=Fenster Modus
 2521=Löschen
 
+
 # CPU Window
 2600=CPU-Fenster
 2601=Assembler Code:
 2602=Funktion:
 2603=Assembler Syntax:
 2604=Register:
+
 
 # TipOfTheDay Window
 2700=Tip des Tages
@@ -845,6 +923,7 @@ Ver=1
 2703=Keine Tips beim Start anzeigen
 2704=Nächster Tip
 2705=Vorheriger Tip
+
 
 # Environment Options (more)
 2800=Datei Zuordnung
@@ -868,18 +947,22 @@ Ver=1
 2818=Gewechselte Konfiguratios-Datei nutzen
 2819=Sie haben die Konfiguratios-Datei dieser Anwendung geändert.<CR>Diese neue Konf.-Datei wird in der aktuellen Sitzung *nicht* benutzt. Alle Änderungen dieser Sitzung an der Konfigurations-Datei werden in die gegenwärtige Konf.- Datei geschrieben.<CR><CR>Es ist empfehlenswert, die Anwendung neu zu starten, um die neue Konf.-Datei zu nutzen...
 
+
 #Execute menu (more)
 2900=Parameter...
 2901=Aktuelle Datei kompilieren
+
 
 # Window list
 2910=Fenster Liste
 2911=Fenster zum Bearbeiten wählen:
 
+
 # CVS Menu
 2990=Aktuelle Datei...
 2991=Ganzes Projekt...
 2992=Bitte konfigurieren Sie die CVS-Unterstützung in "Werkzeuge / Umgebungs Optionen"...
+
 
 # CVS form
 3000=Import Optionen
@@ -939,10 +1022,12 @@ Ver=1
 3054=Optionen entfernen
 3055=Datei auch von Festplatte entfernen...
 
+
 # Params form
 3100=Parameter
 3101=Übergabe-Parameter für Ihr Programm:
 3102=Host Anwendung:
+
 
 # Project options form (continued)
 3200=Dateien
@@ -965,10 +1050,16 @@ Ver=1
 3217=Sprache:
 3218=Zusätzliche Informationen:
 3219=Überschreibe Build Kommando
-3220=Ausgabe-Datei
+3220=Ausgabedatei
 3221=Ins Linken einbeziehen
 3222=Build Priorität:
-3223=Build-Nummer beim kompilieren automatisch erhöhen
+3223=Build-Nummer beim Kompilieren automatisch erhöhen
+3224=Nutze eigenes Makefile (kein Makefile generieren)
+3225=Informationen über Anpassungen des Makefile...
+3226=&Folgende Datei ins Makefile einschließen:
+
 
 # More compiler options
 3400=EXE entfernen
+3401=Instruktionen für folgende CPU generieren
+3402=Prozessor spezifische Built-in Funktionen nutzen

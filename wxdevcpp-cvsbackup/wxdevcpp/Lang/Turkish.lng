@@ -1,9 +1,9 @@
 [lang]
 Lang=Turkish
-Ver=1
+Ver=3
 
 #Düzneleme = Bülent COÞKUN
-#Son Düzenleme Tarihi = 12.03.2003
+#Son Düzenleme Tarihi = 20.10.2004
 
 #Top level menus
 100=&Dosya
@@ -146,13 +146,16 @@ Ver=1
 247=&Sonraki Adým
 248=&Adým Atla
 249=&Ýzleme ekle
-250=&Ýzlenen deðiþkenler
+250=Ý&zlenen deðiþkenler
 251=Çalýþmayý durdur
-252=&Ýzlemeyi düzenle
-253=&Ýzlemeyi kaldýr
-254=&Ýçine Adým
+252=Ýzlemeyi &düzenle
+253=Ýzlemeyi &kaldýr
+254=Ýçine &Adým
 255=Ýmleçe kadar çalýþtýr
 256=&CPU penceresini göster
+257=Süreç'e ( Process ) baðlan
+258=&Deðeri Deðiþtir
+259=&Hepsini temizle
 
 #context menus
 # project menu
@@ -246,6 +249,9 @@ Ver=1
 358=Deðiþken Ýsmi:
 359=Deðiþken izlemesini düzenle
 360=Yeni Deðiþeken Ýsmi:
+361=Deðeri Deðiþtir
+362=Düzenlenecek Deðiþken:
+363=Yeni Deðer:
 
 370=Proje
 371=Sýnýflar
@@ -261,7 +267,7 @@ Ver=1
 400=Editör Ayarlarý
 401=Genel
 402=Görünüm
-403=Syntax
+403=Yazým Kuralý
 404=Kod
 405=Kod-Tamamlama
 406=Sýnýf Gezgini
@@ -283,8 +289,8 @@ Ver=1
 429=Ýmleç EOF Bassýn
 430=Ýmleç EOL Bassýn
 431=Hat Çift Klik 
-432=Find Text at Cursor
-433=Scrollbars as needed
+432=Ýmleçten itibaren metin bul
+433=Ýhtiyaca göre kaydýrma çubuklarý
 434=Yarým Sayfa Kaymasý
 435=Kayma Ýpucu
 436=Yazýmkurallarýna göre Renklendir
@@ -396,7 +402,7 @@ Ver=1
 
 #Configure Shortcuts Form
 550=Kýsayol Konfigurasyonu
-551= Bir nesneyi seçiniz ve istedðiniz kýsayolu klavyeden giriniz
+551=Bir nesneyi seçiniz ve istedðiniz kýsayolu klavyeden giriniz
 552=Ýpucu:"Escape"e basarak bir kýsayolu silebilirsiniz
 553=Menu giriþi
 554=Kýsayol atandý
@@ -547,6 +553,7 @@ Ver=1
 732=Derleyici çaðýrýrken komut satýrýna þunlarý ekle:
 733=Derleme Gecikmesi
 734=Eðer make komutu makefile zaman pulu ile ilgili bir sorunla karþýlaþýrsa milisaniyeler mertebesinde geçikme olur. 
+735=Her satýrda bir hata görüntüle
 740=Kod Generation:
 741=Optimizasyon:
 745=KuralDýþýDurum yakalmayý aktif hale getir
@@ -600,7 +607,7 @@ Ver=1
 805=&Sözcük Dönüþü
 806=&Satýr Numaralarý
 807=Satýr Numaralarýný Yazdýr
-808=Print Line Numbers in Margin
+808=Kenarda satýr numaralarýný bas
 809=Kopya Sayýsý:
 810=Sadece seçili bölümü yazdýr
 
@@ -636,10 +643,10 @@ Ver=1
 850=MS Visual C++ projesi Ýthal Et
 851=Visual C++ proje dosyasýný seçin
 852=Ýthal etme ayarlarý
-853=Konfigurasyon ithal
+853=Konfigürasyon ithal
 854=Dev-C++ proje dosya ismi
 855=MS Visual C++ proje dosyasý baþarý ile Dev-C++ projesi olarak ithal edildi! Yeni Dev-C++ projesini þimdi açmak ister misiniz?
-
+856=Hedef konfigürasyon "%s", konumlandýrýlamaz (bu muhtelelen Dev-C++ daki bir böcek(bug) )...
 
 #Project Options form
 900=Proje Ayarlarý
@@ -765,6 +772,8 @@ Ver=1
 1020=Bir hata oluþtu. %s dosyasý yazýlabilir hale etirilemedi ve kaydedilemedi...
 1021=Programýnýz geçersiz iþlem (Segmentation Fault) yürüttü.
 1022=Kaynak kodunuz çalýþtýrýlanbilecekten daha yeni.Tekrar derlemek istermisiniz?
+1023=Lütfen baðlanmak istediðiniz uygulamayý seçiniz:
+
 
 # errors
 1500=%s - Dosya açýlamýyor
@@ -826,6 +835,7 @@ Ver=1
 2518=Yeniden adlandýr
 2519=Ýthal
 2520=Pencere Modu
+2521=Temiz
 
 # CPU Window
 2600=CPU Penceresi
@@ -860,7 +870,9 @@ Ver=1
 2814=Fare altýndaki deðiþkinleri izle
 2815=Ýzleme hatalarýný raporla
 2816=Hata ayýlmama deðiþkenleri gezgini
-
+2817=Alternatif Konfigürasyon dosyasý
+2818=Bu alternatif konfigürasyon dosyasýný kullan
+2819=Uygulama tarafýndan kullanýlan konfigürasyon dosyasýný deðiþtirdiniz.<CR>Yeni konfigürasyon dosyasý mevcut oturum için kullanýlamayacaktýr.Bu oturumda yapýlan herhangi bir konfigürasyon deðiþkliði, hali hazýrda açýk olan konfigürasyon dosyasýna kaydedilecektir.<CR><CR>Tavisye edilen uygulamayý þimdi tekrar baþlatmanýzdýr, böylece yeni konfigürasyon dosyanýz kullanýlmaya baþlanýr...
 
 #Execute menu (more)
 2901=Mevcut dosyayý Derle
@@ -960,3 +972,10 @@ Ver=1
 3221=Baðlama esnasýnda dahil et
 3222=Ýnþa Öncelliði:
 3223=Derleme esnasýnda üretim numarasýný otomatik-arttýrma 
+3402=&Ekteki dosyalarý Makefile içine dahil et:
+3401=Belirtilen makine için komut üret
+3400=Exe yi yanýnlaþtýr
+3226=&Ekteki dosyalarý Makefile içine dahil et:
+3225=Makefile kiþiselleþtirmesi hakkýnda bilgi...
+3224=kiþisel Makefile kullan ( Makefile yaratma, bunu kullan )
+atma, bunu kullan )

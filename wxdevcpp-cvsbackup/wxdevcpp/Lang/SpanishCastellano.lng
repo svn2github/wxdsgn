@@ -1,16 +1,16 @@
 [lang]
 Lang=Español (Castellano)
-Ver=12
+Ver=13
 
 #
 #
 # Traducción al Español (Castellano)
 # Hecho por Fernando Muñoz Ledesma
-# E-mail: ledesmafernando@msn.com
-# Web: http://membres.lycos.fr/ledesma/
+# E-mail: ledesmafernando@gmail.com
+# Web: http://ledesma.f2o.org/
 # Para cualquier sugerencia o cosa mandarme un e-mail
-# Modificado miércoles 01 de octubre de 2003
-# 
+# Modificado 22 de Enero del 2005
+#
 #
 
 #Top level menus
@@ -117,7 +117,7 @@ Ver=12
 214=&Limpiar resultados
 215=Re&sultados del Compilador
 216=Revisar Sinta&xis
-217=Rei&niciar ejecución del programa
+217=&Detener el programa
 218=Análisis de Per&fil
 219=Abortar
 
@@ -134,7 +134,8 @@ Ver=12
 232=&Siguiente
 233=&Anterior
 234=&Cerrar Todo
-235=%s versión %s. Pantalla Completa. Presiona shift+F12 para activar la barra de herramientas o F12 para regresar a modo normal.
+235=%s versión %s. Pantalla Completa. Presiona shift+F12 para activar la 
+barra de herramientas o F12 para regresar a modo normal.
 236=Cerrar todos menos éste
 237=&Lista...
 
@@ -158,6 +159,9 @@ Ver=12
 255=Ir a &cursor
 256=&Ver ventana del CPU
 257=A&djuntar al proceso...
+258=Modificar valor
+259=Borrar todo
+
 
 #context menus
 # project menu
@@ -250,6 +254,10 @@ Ver=12
 358=Introduce el Nombre de la Variable:
 359=Modificar Variable Observada
 360=Nuevo Nombre de Variable:
+361=Modificar valor
+362=Variable a modificar:
+363=Nuevo valor:
+
 
 370=Proyecto
 371=Clases
@@ -551,7 +559,8 @@ Ver=12
 731=Usar Compilador Cygwin en vez de Mingw
 732=Aña&dir los siguientes comandos al llamar al compilador
 733=Retraso Compil.
-734=Activa un Retraso en milisegundos por si falla por la hora y fecha del archivo de construcción
+734=Activa un Retraso en milisegundos por si falla por la hora y fecha del 
+archivo de construcción
 735=Muestra un error por línea
 
 740=Generación de Código
@@ -575,7 +584,8 @@ Ver=12
 760=No Optimizar
 761=Optimizar más
 
-770=Si quieres puedes cambiar los programas usados en Dev-C++ para poder usar un Cross - Compiler, por ejemplo:
+770=Si quieres puedes cambiar los programas usados en Dev-C++ para poder 
+usar un Cross - Compiler, por ejemplo:
 771=Compilador a configurar:
 772=Nuevo compilador
 773=Introduce el nuevo nombre del compilador:
@@ -646,8 +656,10 @@ Ver=12
 852=Opciones de importación
 853=Configuración a importar
 854=Nombre de archivo de proyecto de Dev-C++
-855=El archivo de proyecto de MS Visual C++ ha sido importado y convertido a proyecto de Dev-C++ satisfactoriamente. ¿Deseas abrirlo ahora?
-*856=Cannot locate target configuration "%s" (this is probably a bug in Dev-C++)...
+855=El archivo de proyecto de MS Visual C++ ha sido importado y convertido a 
+proyecto de Dev-C++ satisfactoriamente. ¿Deseas abrirlo ahora?
+*856=Cannot locate target configuration "%s" (this is probably a bug in 
+Dev-C++)...
 
 #Project Options form
 900=Opciones de Proyecto
@@ -763,16 +775,23 @@ Ver=12
 1010=El archivo ya existe, ¿quieres sobreescribirlo?
 1011=¿Añadir nuevo archivo al proyecto?
 1012=¿Añadir nuevo recurso a proyecto?
-1013=Tu proyecto no tiene información de depuración, ¿quieres activar la depuración y reconstruir su proyecto?
-1014=No has activado información de perfil y/o depuración en las Opciones del Compilador. ¿Quieres activarlas y reconstruir el proyecto ahora?
-1015=Por favor, prueba tu proyecto al menos una vez, para que la información del perfil se genere...
+1013=Tu proyecto no tiene información de depuración, ¿quieres activar la 
+depuración y reconstruir su proyecto?
+1014=No has activado información de perfil y/o depuración en las Opciones 
+del Compilador. ¿Quieres activarlas y reconstruir el proyecto ahora?
+1015=Por favor, prueba tu proyecto al menos una vez, para que la información 
+del perfil se genere...
 1016=Insertar nuevo nombre de la carpeta
 1017=¿Estás seguro de quitar esta carpeta?
 1018=Introduce el nuevo nombre de la carpeta:
-1019=El archivo %s no se puede guardar porque está marcado como sólo lectura. ¿Quieres marcarlo de lectura y escritura para poder guardarlo?
-1020=Un error ha ocurrido. El archivo %s no fue marcado de lectura y escritura y no fue guardado...
-1021=Violación de un acceso a memoria (Fallo de segmentación) ocurrió en tu programa.
-1022=El código fuente es más reciente que el ejecutable compilado. ¿Quieres reconstruirlo?
+1019=El archivo %s no se puede guardar porque está marcado como sólo 
+lectura. ¿Quieres marcarlo de lectura y escritura para poder guardarlo?
+1020=Un error ha ocurrido. El archivo %s no fue marcado de lectura y 
+escritura y no fue guardado...
+1021=Violación de un acceso a memoria (Fallo de segmentación) ocurrió en tu 
+programa.
+1022=El código fuente es más reciente que el ejecutable compilado. ¿Quieres 
+reconstruirlo?
 1023=Selecciona la aplicación que quieres para adjuntar:
 
 # errors
@@ -783,15 +802,17 @@ Ver=12
 1504=Proyecto no ejecutable
 1505=Proyecto aún no compilado
 1506=Código fuente no compilado
-1507=Archivo de Construcción no encontrado 
+1507=Archivo de Construcción no encontrado
 1508=Fallo al borrar los resultados
 1509=La plantilla no se pudo aplicar en el Proyecto
 1510=El recurso %s no fue encontrado: %s - %s
 1511=La plantilla %s no fue encontrada, Siguiendo
 1512=No hay ninguna plantilla asignada.
 1513=El Archivo %s no fue encontrado.
-1514=No se especificó aplicación local. Puedes incluirla en el menú Ejecutar, Parámetros.
-1515=Aplicación local no encontrada ! Puedes cambiarla en el menú Ejecutar, Parámetros.
+1514=No se especificó aplicación local. Puedes incluirla en el menú 
+Ejecutar, Parámetros.
+1515=Aplicación local no encontrada ! Puedes cambiarla en el menú Ejecutar, 
+Parámetros.
 
 # misc
 2000=SinNombre
@@ -835,6 +856,7 @@ Ver=12
 2518=&Renombrar
 2519=&Importar
 2520=Modo ventana
+2521=Borrar
 
 # CPU Window
 2600=Ventana del CPU
@@ -853,7 +875,8 @@ Ver=12
 
 2800=Asociación de archivos
 2801=Tipos de archivos:
-2802=Simplemente selecciona o quita los tipos de archivos que se asociarán a Dev-C++ como programa por defecto para abrirlos...
+2802=Simplemente selecciona o quita los tipos de archivos que se asociarán a 
+Dev-C++ como programa por defecto para abrirlos...
 2803=Soporte CVS
 2804=Archivo de programa CVS
 2805=Nivel de compresión
@@ -870,7 +893,11 @@ Ver=12
 2816=Explorador de depuración de variables
 2817=Archivo de configuración diferente
 2818=Usa este archivo de configuración diferente
-2819=Has cambiado el archivo de configuración a utilizar en tu aplicación.<CR>El nuevo archivo de configuración *no* se usará en la sesión actual. Cualquier cambio que hagas en esta sesión, será guardado en el archivo de configuración *actual*<CR><CR>Es recomendable reiniciar Dev-C++ ahora, para que empiece a usar el nuevo archivo de configuración... 
+2819=Has cambiado el archivo de configuración a utilizar en tu 
+aplicación.<CR>El nuevo archivo de configuración *no* se usará en la sesión 
+actual. Cualquier cambio que hagas en esta sesión, será guardado en el 
+archivo de configuración *actual*<CR><CR>Es recomendable reiniciar Dev-C++ 
+ahora, para que empiece a usar el nuevo archivo de configuración...
 
 #Execute menu (more)
 2900=Parámetros...
@@ -883,7 +910,8 @@ Ver=12
 # CVS Menu
 2990=El archivo actual...
 2991=El proyecto entero...
-2992=Por favor configura soporte CVS en "Herramientas / Opciones del Entorno"...
+2992=Por favor configura soporte CVS en "Herramientas / Opciones del 
+Entorno"...
 
 # CVS form
 3000=Opciones de importación
@@ -954,7 +982,8 @@ Ver=12
 3202=Opciones del proyecto:
 3203=Generar información para depurar
 3204=Generar información del pérfil
-3205=NOTA: Estas configuraciones permanecerán en este proyecto sobre las opciones generales del compilador.
+3205=NOTA: Estas configuraciones permanecerán en este proyecto sobre las 
+opciones generales del compilador.
 3206=Soporte para los temas visuales de WindowsXP
 3207=Opciones del archivo:
 3208=Incluir al compilar
@@ -973,5 +1002,14 @@ Ver=12
 3221=Incluir en el el proceso de link
 3222=Prioridad de Construcción:
 3223=Auto incrementar el número de construcción al compilar
+3224=Usar Makefile personalizado (no generar uno, usar éste)
+3225=Información para personalizar el Makefile...
+3226=&Incluir estos archivos en el Makefile:
+
+#More compiler options
+3400=Reducir tamaño del ejecutable
+3401=Generar instrucciones para la siguiente máquina
+3402=Habilitar funciones específicas del procesador
+
 
 

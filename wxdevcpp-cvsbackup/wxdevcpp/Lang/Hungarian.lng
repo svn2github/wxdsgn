@@ -173,6 +173,7 @@ Ver=1
 256=&CPU Ablak
 257=F&olyamathoz rendelés...
 258=&Érték módosítása
+259=Mindet törli
 #context menus
 
 
@@ -1132,6 +1133,9 @@ Ver=1
 3221=Hozzáadás a linkeléshez
 3222=Fordítási prioritás:
 3223=Fordításkor a "build number" automatikus növelése
+3224=Egyedi Makefile használata (ne generáljon Makefile-t, ezt használja)
+3225=Információ a Makefile készítéséhez...
+3226=&A következõ fájl(ok) hozzáadása a Makefile-hoz:
 
 
 3400=Exe fájl sztrippelése
