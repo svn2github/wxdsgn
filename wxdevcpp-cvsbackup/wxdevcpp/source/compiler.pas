@@ -123,6 +123,7 @@ implementation
 uses
   MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils;
 
+
 procedure TCompiler.DoLogEntry(const msg: string);
 begin
   if assigned(fOnLogEntry) then
@@ -141,6 +142,7 @@ begin
     fOnResOutput(s, s2, s3);
 end;
 
+
 function TCompiler.GetMakeFile: string;
 begin
   if not FileExists(fMakeFile) then
@@ -149,7 +151,6 @@ begin
 end;
 
 // create makefile for fproject if assigned
-
 procedure TCompiler.BuildMakeFile;
 begin
   if not assigned(fProject) then
@@ -450,12 +451,12 @@ begin
     begin
       writeln(F, ofile + ':');
       writeln(F, #9 + '$(WINDRES) -i ' + tfile +
-        ' -I rc -o nul -O coff' + ResIncludes)
+            ' --input-format=rc -o nul -O coff' + ResIncludes)
     end else
     begin
       writeln(F, ofile + ': ' + tfile + ' ' + ResFiles);
       writeln(F, #9 + '$(WINDRES) -i ' + tfile +
-        ' -I rc -o ' + ofile + ' -O coff' + ResIncludes);
+            ' --input-format=rc -o ' + ofile + ' -O coff' + ResIncludes);
     end;
   end;
 end;
@@ -567,6 +568,8 @@ begin
 
     AppendStr(fCompileParams, fUserParams);
     AppendStr(fCppCompileParams, fUserParams);
+
+
 
     for I := 0 to devCompiler.OptionsCount - 1 do
       // consider project specific options for the compiler
@@ -690,7 +693,7 @@ begin
       s := devCompiler.windresName
     else
       s := WINDRES_PROGRAM;
-    cmdline := s + ' -I rc -i ' + fSourceFile + ' -o ' +
+    cmdline := s + ' --input-format=rc -i ' + fSourceFile + ' -o ' +
       ChangeFileExt(fSourceFile, OBJ_EXT);
     DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
     DoLogEntry(cmdline);
@@ -1030,6 +1033,7 @@ begin
         Continue;
       end;
 
+
       { windres errors }
       if Pos('windres.exe: ', LowerCase(Line)) > 0 then
       begin
@@ -1092,6 +1096,7 @@ begin
         end;
       end;
 
+
       { foo.c: In function 'bar': }
       if Pos('In function', Line) > 0 then
       begin
@@ -1140,6 +1145,7 @@ begin
         Continue;
       end;
 
+
       { foo.cpp: In method `bool MyApp::Bar()': }
       cpos := GetLastPos('In method `', Line);
       // GCC >= 3.2 support
@@ -1162,6 +1168,7 @@ begin
         Continue;
       end;
 
+
       { C:\TEMP\foo.o(.text+0xc)://C/bar.c: undefined reference to `hello' }
       cpos := Pos('undefined reference to ', Line);
       if cpos > 0 then
@@ -1175,6 +1182,7 @@ begin
         Continue;
       end;
 
+
       { foo.cpp:1:[2:] bar.h: No such file or directory }
       cpos := GetLastPos('No such file or directory', Line);
       if cpos > 0 then
@@ -1185,14 +1193,17 @@ begin
         O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos) +
           ': No such file or directory.';
 
+
         { Get file name }
         cpos := Pos(':', Line);
         O_file := Copy(Line, 1, cpos - 1);
         Delete(Line, 1, cpos);
 
+
         { Get line number }
         cpos := Pos(':', Line);
         O_Line := Copy(Line, 1, cpos - 1);
+
 
         Inc(fErrCount);
         Inc(Messages);
@@ -1266,6 +1277,7 @@ begin
           Inc(fErrCount);
         end;
         Inc(Messages);
+
 
         // GCC >= 3.2. support
         if Pos(': error', Line) > 0 then begin
@@ -1343,6 +1355,7 @@ begin
   if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
     fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
 
+  AppendStr(fLibrariesParams, ' ');
   for I := 0 to devCompiler.OptionsCount - 1 do
     // consider project specific options for the compiler
     if (
@@ -1572,3 +1585,4 @@ begin
 end;
 
 end.
+

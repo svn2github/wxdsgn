@@ -27,6 +27,9 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madScreenShot,
   MemCheck in 'MemCheck.pas',
   Windows,
   Forms,
@@ -104,10 +107,7 @@ uses
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas'
-
-  {$IFDEF WX_BUILD}
-  ,
+  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
   WxUtils in 'components\wxUtils.pas',
   WxButton in 'components\WxButton.pas',
@@ -134,12 +134,12 @@ uses
   WXGridSizer in 'components\wxgridsizer.pas',
   WXBoxSizer in 'components\wxboxsizer.pas',
   WXFlexGridSizer in 'components\wxflexgridsizer.pas',
-  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
+  ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   UPicEdit in 'propedit\UPicEdit.pas' {PictureEdit},
-  WXStaticBoxSizer in 'components\wxstaticboxsizer.pas'
-{$ENDIF}
-
-;
+  WXStaticBoxSizer in 'components\wxstaticboxsizer.pas',
+  WXSizerPanel in 'components\WXSizerPanel.pas',
+  Wxcontrolpanel in 'components\Wxcontrolpanel.pas' {$ENDIF},
+  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm};
 
 {$R *.RES}
 {$R winxp.res}
@@ -154,7 +154,7 @@ type
   TMainFormHack = class(TMainForm);
 
 const
-    WXVERSION = 1;
+    WXVERSION = 6;
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
   UserHome: array[0..MAX_PATH] of char;
@@ -199,14 +199,14 @@ begin
         iniFile:=TIniFile.Create(devData.INIFile);
         try
             versionNum:=iniFile.ReadInteger('Program','Version',-1);
-            if versionNum = -1 then
+            if versionNum <> WXVERSION then
             begin
                 DeleteFile(devData.INIFile);
             end;
         finally
             iniFile.Destroy;
         end;
-        
+
         try
             iniFile:=TIniFile.Create(devData.INIFile);
             iniFile.WriteInteger('Program','Version',WXVERSION);
@@ -241,6 +241,7 @@ begin
   Application.Initialize;
   Application.Title := 'Dev-C++';
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TCreationOrderForm, CreationOrderForm);
   MainForm.Hide; // hide it
 
   

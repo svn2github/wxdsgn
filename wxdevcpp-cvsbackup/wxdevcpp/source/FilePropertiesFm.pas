@@ -290,8 +290,7 @@ end;
 
 procedure TFilePropertiesForm.cmbFilesClick(Sender: TObject);
 begin
-  if Assigned(cmbFiles.Items.Objects[cmbFiles.ItemIndex]) then
-  begin
+  if Assigned(cmbFiles.Items.Objects[cmbFiles.ItemIndex]) then begin
     fFilename := TProjUnit(cmbFiles.Items.Objects[cmbFiles.ItemIndex]).FileName;
     ShowPropsFor(fFilename);
   end
@@ -305,3 +304,4 @@ begin
 end;
 
 end.
+

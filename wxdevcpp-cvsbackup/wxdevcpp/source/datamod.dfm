@@ -3,9 +3,9 @@ object dmMain: TdmMain
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
   Left = 315
-  Top = 215
-  Height = 405
-  Width = 573
+  Top = 269
+  Height = 354
+  Width = 494
   object Cpp: TSynCppSyn
     DefaultFilter = 'C++ files (*.cpp,*.h,*.hpp)|*.cpp;*.h;*.hpp'
     AsmAttri.Foreground = clBlue
@@ -2665,7 +2665,7 @@ object dmMain: TdmMain
     Left = 46
     Top = 196
     Bitmap = {
-      494C010135003600040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010135003600040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000E0000000010020000000000000E0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000157030001570300015703000157030001570300015703000157
@@ -4517,7 +4517,8 @@ object dmMain: TdmMain
       0001C007FF1900010001C007818D00010000C007FFC100010000C00780650001
       0000C007FFF100010000C007803100010007C007FFF900010007C007C30D0001
       8007C00701FF0001C007C00701010001C007C00F01FF0001C007C01F01010001
-      C00FC03F81FF0001C01FFFFFC3FF800F}
+      C00FC03F81FF0001C01FFFFFC3FF800F00000000000000000000000000000000
+      000000000000}
   end
   object ProjectImage_NewLook: TImageList
     Left = 164
@@ -9355,6 +9356,34 @@ object dmMain: TdmMain
     Filter = 'Resource Scripts (*.rc)|*.rc|All files (*.*)|*.*'
     Left = 112
     Top = 120
+  end
+  object SynHint: TSynCompletionProposal
+    DefaultType = ctHint
+    Options = [scoCaseSensitive, scoLimitToMatchedText, scoUsePrettyText]
+    Position = 0
+    NbLinesInWindow = 1
+    ClSelect = clHighlight
+    ClSelectedText = clHighlightText
+    ClBackground = clWindow
+    Width = 262
+    BiggestWord = 'CONSTRUCTOR'
+    EndOfTokenChr = '()[]. '
+    TriggerChars = '.'
+    ClTitleBackground = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clBtnText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = [fsBold]
+    ShortCut = 16416
+    TimerInterval = 2000
+    Left = 224
+    Top = 248
   end
   object ClassImages: TImageList
     Left = 392

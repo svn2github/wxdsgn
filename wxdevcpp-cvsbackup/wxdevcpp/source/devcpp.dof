@@ -47,7 +47,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=$(DELPHI)\Lib\Debug;D:\Projects\Delphi\d6comps\collections\jcl\jcl\lib\d6\debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip
 Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;SynEdit_D6_PE
-Conditionals=BETAVERSION;_DEBUG;NEW_SYNEDIT;WX_BUILD;
+Conditionals=BETAVERSION;_DEBUG;WX_BUILD;;madExcept
 DebugSourceDirs=C:\V5\source\Vcl\codetooltip\;C:\V5\source\Vcl\Parser\;C:\V5\source\Vcl\synedit\Source\
 UsePackages=0
 [Parameters]
@@ -65,8 +65,8 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=4
 MinorVer=9
-Release=8
-Build=10
+Release=9
+Build=0
 Debug=0
 PreRelease=0
 Special=0
@@ -77,7 +77,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Bloodshed Software
 FileDescription=Dev-C++ IDE
-FileVersion=4.9.8.10
+FileVersion=4.9.9.0
 InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software
 LegalTrademarks=
@@ -92,12 +92,13 @@ C:\Program Files\Borland\Delphi6\Projects\Bpl\JvStdCtrlsD6D.bpl=JVCL Controls Ru
 Count=1
 Item0=C:\V5\source\Vcl\codetooltip\;C:\V5\source\Vcl\Parser\;C:\V5\source\Vcl\synedit\Source\
 [HistoryLists\hlConditionals]
-Count=5
-Item0=BETAVERSION;_DEBUG;MINGW_3_2;WX_BUILD;
-Item1=BETAVERSION;_DEBUG;MINGW_3_2;madExcept;
-Item2=BETAVERSION;_DEBUG;MINGW_3_2;madExcept;wx_build;
-Item3=BETAVERSION;_DEBUG;MINGW_3_2;madExcept
-Item4=BETAVERSION;_DEBUG;MINGW_3_2;madExcept;MEM_DEBUG
+Count=6
+Item0=BETAVERSION;_DEBUG;WX_BUILD;;madExcept
+Item1=BETAVERSION;_DEBUG;MINGW_3_2;WX_BUILD;
+Item2=BETAVERSION;_DEBUG;MINGW_3_2;madExcept;
+Item3=BETAVERSION;_DEBUG;MINGW_3_2;madExcept;wx_build;
+Item4=BETAVERSION;_DEBUG;MINGW_3_2;madExcept
+Item5=BETAVERSION;_DEBUG;MINGW_3_2;madExcept;MEM_DEBUG
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
@@ -110,5 +111,5 @@ Count=1
 Item0=units
 [HistoryLists\hlOutputDirectorry]
 Count=2
-Item0=C:\Dev-Cpp
-Item1=..
+Item0=..
+Item1=C:\Dev-Cpp

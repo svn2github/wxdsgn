@@ -33,8 +33,7 @@ uses
   Project, editor, compiler, ActnList, oysUtils, Toolfrm, AppEvnts, Grids,
   debugger, ClassBrowser, DevThemes, CodeCompletion, CppParser, CppTokenizer,
   devShortcuts, StrUtils, devFileMonitor, devMonitorTypes, DdeMan, XPMenu,
-  CVSFm, ImageTheme
-  ,TB2Dock,  TBXDkPanels, ThemeMgr
+  CVSFm, ImageTheme, ThemeMgr
 
 
   {$IFDEF WX_BUILD}
@@ -587,10 +586,12 @@ type
     ClearallWatchPop: TMenuItem;
     actNewwxForm: TAction;
     NewWxFormItem: TMenuItem;
-    dcLeft: TTBXMultiDock;
-    LeftBrowsers: TTBXDockablePanel;
-    PageControl2: TPageControl;
-    PageControl3: TPageControl;
+    ThemeManager1: TThemeManager;
+    actDesignerCopy: TAction;
+    actDesignerCut: TAction;
+    actDesignerPaste: TAction;
+    actDesignerDelete: TAction;
+    pnlBrowsers: TPanel;
     LeftPageControl: TPageControl;
     ProjectSheet: TTabSheet;
     ProjectView: TTreeView;
@@ -598,11 +599,8 @@ type
     ClassBrowser1: TClassBrowser;
     DebugLeftSheet: TTabSheet;
     DebugTree: TTreeView;
-    ThemeManager1: TThemeManager;
-    actDesignerCopy: TAction;
-    actDesignerCut: TAction;
-    actDesignerPaste: TAction;
-    actDesignerDelete: TAction;
+    pnlControlHolder: TPanel;
+    SplitterRight: TSplitter;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -899,6 +897,7 @@ type
     procedure JvInspPropertiesBeforeSelection(Sender: TObject;NewItem: TJvCustomInspectorItem; var Allow: Boolean);
     procedure est1Click(Sender: TObject);
     procedure JvInspPropertiesItemValueChanged(Sender: TObject;Item: TJvCustomInspectorItem);
+    procedure ViewControlIDsClick(Sender: TObject);
     procedure ChangeCreationOrder1Click(Sender: TObject);
     procedure ELDesigner1Notification(Sender: TObject;AnObject: TPersistent; Operation: TOperation);
   {$ENDIF}
@@ -991,26 +990,28 @@ public
   DesignerMenuSep1 : TMenuItem;
   DesignerMenuCopyWidgetName : TMenuItem;
   DesignerMenuChangeCreationOrder :TMenuItem;
+  DesignerMenuViewIDs:TMenuItem;
+  DesignerMenuSep2:TMenuItem;
 
   JvInspectorDotNETPainter1: TJvInspectorDotNETPainter;
   JvInspectorDotNETPainter2: TJvInspectorDotNETPainter;   
 
   ELDesigner1: TELDesigner;
   //Specific to Object inspector
-  dpnlProperties: TTBXDockablePanel;
   Panel2: TPanel;
   cbxControlsx: TComboBox;
   pgCtrlObjectInspector: TPageControl;
+  pnlMainInsp:TPanel;
   TabProperty: TTabSheet;
   JvInspProperties: TJvInspector;
   TabEvent: TTabSheet;
   JvInspEvents: TJvInspector;
   //Specifics for Controls
-  dcRight : TTBXMultiDock;
-  dpnlControls: TTBXDockablePanel;
   lbxControls: TListBox;
   PalleteListPanel: TPanel;
   Palettes: TComboBox;
+  frmInspectorDock:TForm;
+  frmControlsDock:TForm;
 {$ENDIF}
 
 	function SaveFileInternal(e: TEditor): Boolean;
@@ -1076,7 +1077,8 @@ uses
   WxButton, WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
   WxMemo, WxOpenFileDialog, WXRadioButton, WxSaveFileDialog, WxScrollBar,
   WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
-  WxStaticText, WxTreeCtrl, WxControlPanel,CompFileIo, WXFlexGridSizer, CreateOrderFm
+  WxStaticText, WxTreeCtrl, WxControlPanel,CompFileIo, WXFlexGridSizer, CreateOrderFm,
+  ViewIDForm
   {$ENDIF}
   ;
 
@@ -1101,6 +1103,9 @@ end;
 procedure TMainForm.DoCreateWxSpecificItems;
 begin
   //PopuP menu
+  frmInspectorDock:=TForm.Create(self);
+  frmControlsDock:=TForm.Create(self);
+
   DesignerPopup := TPopupMenu.Create(Self);
   DesignerMenuEdit := TMenuItem.Create(Self);
   DesignerMenuCopy := TMenuItem.Create(Self);
@@ -1110,6 +1115,8 @@ begin
   DesignerMenuSep1 := TMenuItem.Create(Self);
   DesignerMenuCopyWidgetName := TMenuItem.Create(Self);
   DesignerMenuChangeCreationOrder := TMenuItem.Create(Self);
+  DesignerMenuViewIDs:= TMenuItem.Create(Self);
+  DesignerMenuSep2:= TMenuItem.Create(Self);
 
   with DesignerPopup do
   begin
@@ -1158,6 +1165,17 @@ begin
     OnClick := ChangeCreationOrder1Click;
   end;
 
+  with DesignerMenuSep2 do
+  begin
+    Name := 'DesignerMenuSep2';
+    Caption := '-';
+  end;
+  with DesignerMenuViewIDs do
+  begin
+    Name := 'DesignerMenuViewIDs';
+    Caption := 'View Control IDs';
+    OnClick := ViewControlIDsClick;
+  end;
   DesignerPopup.Items.Add(DesignerMenuCopy);
   DesignerPopup.Items.Add(DesignerMenuCut);
   DesignerPopup.Items.Add(DesignerMenuPaste);
@@ -1165,10 +1183,12 @@ begin
   DesignerPopup.Items.Add(DesignerMenuSep1);
   DesignerPopup.Items.Add(DesignerMenuCopyWidgetName);
   DesignerPopup.Items.Add(DesignerMenuChangeCreationOrder);
+  DesignerPopup.Items.Add(DesignerMenuViewIDs);
+  DesignerPopup.Items.Add(DesignerMenuSep2);
 
   //Object insoector Styles
-  JvInspectorDotNETPainter1 := TJvInspectorDotNETPainter.Create(Self);
-  JvInspectorDotNETPainter2 := TJvInspectorDotNETPainter.Create(Self);
+  JvInspectorDotNETPainter1 := TJvInspectorDotNETPainter.Create(frmInspectorDock);
+  JvInspectorDotNETPainter2 := TJvInspectorDotNETPainter.Create(frmInspectorDock);
   with JvInspectorDotNETPainter1 do
   begin
     Name := 'JvInspectorDotNETPainter1';
@@ -1186,6 +1206,9 @@ begin
     Name := 'ELDesigner1';
     ClipboardFormat := 'Extension Library designer components';
     PopupMenu := DesignerPopup;
+    SnapToGrid:=false;
+    //Grid.XStep:=4;
+    //Grid.YStep:=4;
     OnContextPopup :=ELDesigner1ContextPopup;
     OnChangeSelection := ELDesigner1ChangeSelection;
     OnControlDeleted := ELDesigner1ControlDeleted;
@@ -1197,47 +1220,32 @@ begin
   end;
 
 
-  dpnlProperties := TTBXDockablePanel.Create(Self);
-  Panel2 := TPanel.Create(Self);
-  cbxControlsx := TComboBox.Create(Self);
-  pgCtrlObjectInspector := TPageControl.Create(Self);
-  TabProperty := TTabSheet.Create(Self);
-  JvInspProperties := TJvInspector.Create(Self);
-  TabEvent := TTabSheet.Create(Self);
-  JvInspEvents := TJvInspector.Create(Self);
+  pnlMainInsp := TPanel.Create(frmInspectorDock);
+  cbxControlsx := TComboBox.Create(frmInspectorDock);
+  pgCtrlObjectInspector := TPageControl.Create(frmInspectorDock);
+  TabProperty := TTabSheet.Create(frmInspectorDock);
+  JvInspProperties := TJvInspector.Create(frmInspectorDock);
+  TabEvent := TTabSheet.Create(frmInspectorDock);
+  JvInspEvents := TJvInspector.Create(frmInspectorDock);
 
-  with dpnlProperties do
+  with pnlMainInsp do
   begin
-    Name := 'dpnlProperties';
-    Parent := dcLeft;
-    Left := 0;
-    Top := 129;
-    Align := alLeft;
-    Caption := 'Object Inspector';
-    DockedWidth := 196;
-    DockPos := 129;
-    FloatingWidth := 128;
-    FloatingHeight := 128;
-    SupportedDocks := [dkStandardDock, dkMultiDock];
-    TabOrder := 0;
-  end;
-  with Panel2 do
-  begin
-    Name := 'Panel2';
-    Parent := dpnlProperties;
+    Name := 'pnlMainInsp';
+    Parent := frmInspectorDock;
     Left := 0;
     Top := 0;
     Width := 196;
     Height := 28;
-    Align := alTop;
+    Align := alClient;
     BevelOuter := bvNone;
     TabOrder := 0;
-    OnResize := Panel2Resize;
+    //OnResize := Panel21Resize;
   end;
   with cbxControlsx do
   begin
     Name := 'cbxControlsx';
-    Parent := Panel2;
+    Parent := pnlMainInsp;
+    Align := alTop;
     Left := 0;
     Top := 1;
     Width := 201;
@@ -1252,7 +1260,7 @@ begin
   with pgCtrlObjectInspector do
   begin
     Name := 'pgCtrlObjectInspector';
-    Parent := dpnlProperties;
+    Parent := pnlMainInsp;
     Left := 0;
     Top := 28;
     Width := 196;
@@ -1322,44 +1330,22 @@ begin
     OnDataValueChanged := JvInspEventsDataValueChanged;
     OnItemValueChanged := JvInspEventsItemValueChanged;
   end;
-  //Design Control specifics
 
-  dcRight := TTBXMultiDock.Create(Self);
-  dpnlControls := TTBXDockablePanel.Create(Self);
+  intControlCount := 1000;
+  //frmInspectorDock.Width:=100;
+  //frmInspectorDock.Height:=100;                             ep
+  frmInspectorDock.Visible:=true;
+  frmInspectorDock.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
+  LeftPageControl.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
+  LeftPageControl.Height:=200;
+  //Design Control specifics
   lbxControls := TListBox.Create(Self);
   PalleteListPanel := TPanel.Create(Self);
   Palettes := TComboBox.Create(Self);
-  with dcRight do
-  begin
-    Name := 'dcRight';
-    Parent := Self;
-    Left := 541;
-    Top := 100;
-    Width := 170;
-    Height := 274;
-    BackgroundOnToolbars := False;
-    Position := dpRight;
-  end;
-  with dpnlControls do
-  begin
-    Name := 'dpnlControls';
-    Parent := dcRight;
-    Left := 0;
-    Top := 0;
-    Caption := 'Design Controls';
-    DefaultDock := dcRight;
-    DockedWidth := 166;
-    DockPos := 0;
-    FloatingWidth := 128;
-    FloatingHeight := 128;
-    SupportedDocks := [dkStandardDock, dkMultiDock];
-    TabOrder := 0;
-    Visible := False;
-  end;
   with lbxControls do
   begin
     Name := 'lbxControls';
-    Parent := dpnlControls;
+    Parent := pnlControlHolder;
     Left := 0;
     Top := 25;
     Width := 166;
@@ -1376,7 +1362,7 @@ begin
   with PalleteListPanel do
   begin
     Name := 'PalleteListPanel';
-    Parent := dpnlControls;
+    Parent := pnlControlHolder;
     Left := 0;
     Top := 0;
     Width := 166;
@@ -1517,7 +1503,12 @@ begin
   LoadText(FALSE);
 
   devShortcuts1.Filename := devDirs.Config + DEV_SHORTCUTS_FILE;
+  
+  //Some weird problem when upgrading to new version
+  try
   devShortcuts1.Load;
+  except
+  end;
 
   Application.HelpFile := ValidateFile(DEV_MAINHELP_FILE, devDirs.Help, TRUE);
   { copied this part of code to 'DoApplyWindowPlacement' because it forces the form to show
@@ -1606,7 +1597,8 @@ begin
   end;
 
   try
-    WebUpdateForm.XPMenu.Active := devData.XPTheme;
+    if assigned(WebUpdateForm) then
+        WebUpdateForm.XPMenu.Active := devData.XPTheme;
   except
   end;
 
@@ -2611,11 +2603,15 @@ var
     begin
         dmMain.AddtoHistory(eX.FileName);
         eX.Close;
+        eX:=nil; // because closing the editor will destroy it
     end
     else
     begin
         if eX.IsRes or (not Assigned(fProject)) then
-            eX.Close
+        begin
+            eX.Close;
+            eX:=nil; // because closing the editor will destroy it
+        end
         else if assigned(fProject) then
             fProject.CloseUnit(fProject.Units.Indexof(eX));
     end;
@@ -2848,7 +2844,15 @@ begin
       s2 := fProject.Name;
     if (MessageDlg(format(Lang[ID_MSG_CLOSEPROJECTPROMPT], [s2]),
       mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
-      actCloseProject.Execute
+      begin
+        //Some freaking unknown error
+        //I dont know where all the editors are
+        //freed. So I save the layout and close the
+        //project. Any help with this is greatly appreciated.
+        fProject.SaveLayout;
+        //actCloseAll.Execute;
+        actCloseProject.Execute;
+      end
     else
       exit;
   end;
@@ -3542,13 +3546,18 @@ var
   wa: boolean;
 { I: integer;}
 begin
+  // save project layout anyway ;)
+  fProject.CmdLineArgs := fCompiler.RunParams;
+  fProject.SaveLayout;
+
   actStopExecute.Execute;
   wa := devFileMonitor1.Active;
   devFileMonitor1.Deactivate;
 
-  // save project layout anyway ;)
-  fProject.CmdLineArgs := fCompiler.RunParams;
-  fProject.SaveLayout;
+  //Just close all the file tabs before
+  //closing the project
+  actCloseAll.Execute;
+
 
   // ** should we save watches?
   if fProject.Modified then
@@ -3744,7 +3753,7 @@ procedure TMainForm.actProjectManagerExecute(Sender: TObject);
 begin
   if (DebugSubPages.Parent <> self) and assigned(ProjectToolWindow) then
     ProjectToolWindow.Close;
-  LeftBrowsers.Visible := actProjectManager.Checked;
+  pnlBrowsers.Visible := actProjectManager.Checked;
   // LeftPageControl.Visible:= actProjectManager.Checked;
   devData.ProjectView := actProjectManager.Checked;
 end;
@@ -4473,10 +4482,18 @@ end;
 procedure TMainForm.actUpdateEmptyEditor(Sender: TObject);
 var
   e: TEditor;
+  tempvarForDebug:Integer;
 begin
   e := GetEditor;
   if (assigned(e)) then
-    (Sender as TAction).Enabled := (e.Text.Text <> '')
+  begin
+    try
+        (Sender as TAction).Enabled := (e.Text.Text <> '');
+    except
+        tempvarForDebug:=0;
+        e:=nil;
+    end;
+  end
   else
     (Sender as TAction).Enabled := false;
 end;
@@ -4631,6 +4648,9 @@ begin
     Exit;
 
   tfile := CompilerOutput.Selected.SubItems[0];
+
+  //trim(tfile);
+
   e := GetEditorFromFileName(tfile);
 
   Application.ProcessMessages;
@@ -4873,8 +4893,12 @@ procedure TMainForm.actSaveUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
-  actSave.Enabled := assigned(e) and (e.Modified or e.Text.Modified or (e.FileName = ''));
+  try
+    e := GetEditor;
+    actSave.Enabled := assigned(e) and (e.Modified or e.Text.Modified or (e.FileName = ''));
+  except
+     e:=nil;
+  end;
 end;
 
 procedure TMainForm.actSaveAsUpdate(Sender: TObject);
@@ -6636,14 +6660,14 @@ procedure TMainForm.ProjectWindowClose(Sender: TObject; var Action: TCloseAction
 begin
   FloatingPojectManagerItem.Checked := False;
   //LeftPageControl.Visible := false;
-  LeftBrowsers.Visible := False;
+  pnlBrowsers.Visible := False;
 
   (Sender as TForm).RemoveControl(LeftPageControl);
 
   LeftPageControl.Left := 0;
   LeftPageControl.Top := ControlBar1.Height;
   LeftPageControl.Align := alLeft;
-  LeftBrowsers.Visible := True;
+  pnlBrowsers.Visible := True;
   //LeftPageControl.Visible := true;
   InsertControl(LeftPageControl);
   ProjectToolWindow.Free;
@@ -6693,14 +6717,14 @@ begin
       OnClose := ProjectWindowClose;
       BorderStyle := bsSizeable;
       BorderIcons := [biSystemMenu];
-      LeftBrowsers.Visible := False;
+      pnlBrowsers.Visible := False;
       //LeftPageControl.Visible := false;
       self.RemoveControl(LeftPageControl);
 
       LeftPageControl.Left := 0;
       LeftPageControl.Top := 0;
       LeftPageControl.Align := alClient;
-      LeftBrowsers.Visible := True;
+      pnlBrowsers.Visible := True;
       //LeftPageControl.Visible := true;
       ProjectToolWindow.InsertControl(LeftPageControl);
 
@@ -7171,6 +7195,7 @@ begin
   DisableDesignerControls;
   {$ENDIF}
 end;
+
 procedure TMainForm.mnuCVSClick(Sender: TObject);
 begin
   mnuCVSCurrent.Enabled := PageControl.PageCount > 0;
@@ -7322,7 +7347,7 @@ begin
     try
       //FNewFormObj.Name := strCName;
       FNewFormObj.Caption := strFTitle;
-      FNewFormObj.Wx_DialogStyle := dlgSStyle;
+      FNewFormObj.Wx_DialogStyle := [wxCaption,wxResize_Border,wxSystem_Menu,wxThick_Frame,wxMinimize_Box,wxMaximize_Box,wxClose_Box];
       FNewFormObj.Wx_Name := strCName;
       FNewFormObj.EVT_CLOSE:=strCName+'Close';
       FNewFormObj.Wx_Center:=True;
@@ -7934,6 +7959,8 @@ procedure TMainForm.DisableDesignerControls;
 begin
 
   //PageControl.PopupMenu:=EditorPopupMenu;
+  SplitterRight.Enabled:=false;
+  SplitterRight.Visible:=false;
 
   cbxControlsx.Enabled := False;
   pgCtrlObjectInspector.Enabled := False;
@@ -7942,7 +7969,7 @@ begin
   JvInspEvents.Enabled := False;
   Palettes.Enabled := False;
   lbxControls.Enabled := False;
-  dpnlControls.Visible := false;
+  pnlControlHolder.Visible := false;
 
   ELDesigner1.Active:=False;
   ELDesigner1.DesignControl:=nil;
@@ -7988,7 +8015,9 @@ begin
   JvInspEvents.Enabled := true;
   Palettes.Enabled := true;
   lbxControls.Enabled := true;
-  dpnlControls.Visible := True;
+  pnlControlHolder.Visible := True;
+  SplitterRight.Enabled:=true;
+  SplitterRight.Visible:=true;
   //PageControl.PopupMenu:=nil;
   
 end;
@@ -9035,11 +9064,11 @@ function TMainForm.ReplaceClassNameInEditorFile(FileName, FromClassName,
   ToClassName: string): Boolean;
 var
   e: TEditor;
-  St, Statement: PStatement;
+  St: PStatement;
   i, intColon: Integer;
   strParserClassName: string;
   cppEditor,hppEditor:TEditor;
-  LineNumber:Integer;
+  //LineNumber:Integer;
   LineString:string;
 begin
   OpenFile(ChangeFileExt(FileName,CPP_EXT),true);
@@ -9153,7 +9182,7 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.est1Click(Sender: TObject);
 var
-  I,intColon: Integer;
+  I: Integer;
   strParserFunctionName, strParserClassName: string;
   _FullText: string;
   _Type: string;
@@ -9295,11 +9324,19 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
+procedure TMainForm.ViewControlIDsClick(Sender: TObject);
+var
+    vwCtrlIDsFormObj:TViewControlIDsForm;
+begin
+    vwCtrlIDsFormObj:=TViewControlIDsForm.Create(self);
+
+    vwCtrlIDsFormObj.SetMainControl(TWinControl(ELDesigner1.DesignControl));
+    vwCtrlIDsFormObj.PopulateControlList;
+    vwCtrlIDsFormObj.ShowModal;
+end;
 procedure TMainForm.ChangeCreationOrder1Click(Sender: TObject);
 var
-  I: Integer;
     CreationOrderForm:TCreationOrderForm;
-    CustomFrm:TCustomForm;
     e,hppEditor,cppEditor:TEditor;
 begin
     if ELDesigner1.SelectedControls.Count = 0 then

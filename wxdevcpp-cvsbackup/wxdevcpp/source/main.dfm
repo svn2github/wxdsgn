@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 185
-  Top = 101
+  Left = 165
+  Top = 116
   Width = 719
   Height = 579
   Color = clBtnFace
@@ -24,7 +24,7 @@ object MainForm: TMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object SplitterLeft: TSplitter
-    Left = 200
+    Left = 210
     Top = 100
     Width = 4
     Height = 274
@@ -43,18 +43,29 @@ object MainForm: TMainForm
     OnCanResize = SplitterBottomCanResize
     OnMoved = SplitterBottomMoved
   end
+  object SplitterRight: TSplitter
+    Left = 541
+    Top = 100
+    Width = 3
+    Height = 274
+    Cursor = crHSplit
+    Align = alRight
+    AutoSnap = False
+    MinSize = 45
+    ResizeStyle = rsUpdate
+  end
   object MessageControl: TPageControl
     Left = 0
     Top = 378
     Width = 711
     Height = 128
-    ActivePage = CompSheet
+    ActivePage = DebugSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 0
     OnChange = MessageControlChange
     OnChanging = MessageControlChanging
@@ -189,7 +200,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 664
-          Height = 76
+          Height = 75
           Anchors = [akLeft, akTop, akRight, akBottom]
           BevelInner = bvNone
           BevelKind = bkTile
@@ -1111,9 +1122,9 @@ object MainForm: TMainForm
     UseSystemFont = False
   end
   object PageControl: TPageControl
-    Left = 204
+    Left = 214
     Top = 100
-    Width = 507
+    Width = 327
     Height = 274
     Align = alClient
     PopupMenu = EditorPopupMenu
@@ -1170,139 +1181,118 @@ object MainForm: TMainForm
     Active = False
     OnNotifyChange = devFileMonitor1NotifyChange
   end
-  object dcLeft: TTBXMultiDock
+  object pnlBrowsers: TPanel
     Left = 0
     Top = 100
-    Width = 200
+    Width = 210
     Height = 274
-    Position = dpLeft
-    object LeftBrowsers: TTBXDockablePanel
-      Left = 0
-      Top = 0
-      Align = alLeft
-      Caption = 'Project Browser'
-      DefaultDock = dcLeft
-      DockedWidth = 196
-      DockPos = 0
-      FloatingWidth = 128
-      FloatingHeight = 128
-      SupportedDocks = [dkStandardDock, dkMultiDock]
+    Align = alLeft
+    DockSite = True
+    TabOrder = 6
+    object LeftPageControl: TPageControl
+      Left = 1
+      Top = 16
+      Width = 231
+      Height = 265
+      ActivePage = ProjectSheet
+      Images = dmMain.ProjectImage_NewLook
+      TabIndex = 0
       TabOrder = 0
-      object PageControl2: TPageControl
-        Left = -8
-        Top = 16
-        Width = 289
-        Height = 193
-        TabOrder = 0
-        TabPosition = tpBottom
-      end
-      object PageControl3: TPageControl
-        Left = 0
-        Top = 0
-        Width = 196
-        Height = 236
-        Align = alClient
-        TabOrder = 1
-        TabPosition = tpBottom
-      end
-      object LeftPageControl: TPageControl
-        Left = 0
-        Top = 0
-        Width = 196
-        Height = 236
-        ActivePage = ProjectSheet
-        Align = alClient
-        Images = dmMain.ProjectImage_NewLook
-        TabIndex = 0
-        TabOrder = 2
-        object ProjectSheet: TTabSheet
-          Caption = 'Project'
-          ImageIndex = -1
-          object ProjectView: TTreeView
-            Left = 0
-            Top = 0
-            Width = 188
-            Height = 208
-            Align = alClient
-            ChangeDelay = 1
-            DragMode = dmAutomatic
-            HideSelection = False
-            HotTrack = True
-            Images = dmMain.ProjectImage_Gnome
-            Indent = 19
-            MultiSelect = True
-            MultiSelectStyle = [msControlSelect, msShiftSelect]
-            ReadOnly = True
-            RightClickSelect = True
-            SortType = stText
-            TabOrder = 0
-            OnClick = ProjectViewClick
-            OnCompare = ProjectViewCompare
-            OnContextPopup = ProjectViewContextPopup
-            OnDblClick = ProjectViewDblClick
-            OnDragDrop = ProjectViewDragDrop
-            OnDragOver = ProjectViewDragOver
-            OnKeyDown = ProjectViewKeyDown
-            OnKeyPress = ProjectViewKeyPress
-            OnMouseDown = ProjectViewMouseDown
-          end
+      object ProjectSheet: TTabSheet
+        Caption = 'Project'
+        ImageIndex = -1
+        object ProjectView: TTreeView
+          Left = 0
+          Top = 0
+          Width = 223
+          Height = 237
+          Align = alClient
+          ChangeDelay = 1
+          DragMode = dmAutomatic
+          HideSelection = False
+          HotTrack = True
+          Images = dmMain.ProjectImage_Gnome
+          Indent = 19
+          MultiSelect = True
+          MultiSelectStyle = [msControlSelect, msShiftSelect]
+          ReadOnly = True
+          RightClickSelect = True
+          SortType = stText
+          TabOrder = 0
+          OnClick = ProjectViewClick
+          OnCompare = ProjectViewCompare
+          OnContextPopup = ProjectViewContextPopup
+          OnDblClick = ProjectViewDblClick
+          OnDragDrop = ProjectViewDragDrop
+          OnDragOver = ProjectViewDragOver
+          OnKeyDown = ProjectViewKeyDown
+          OnKeyPress = ProjectViewKeyPress
+          OnMouseDown = ProjectViewMouseDown
         end
-        object ClassSheet: TTabSheet
-          Caption = 'Classes'
-          ImageIndex = -1
-          object ClassBrowser1: TClassBrowser
-            Left = 0
-            Top = 0
-            Width = 188
-            Height = 208
-            Align = alClient
-            Images = dmMain.ClassImages
-            ReadOnly = True
-            Indent = 19
-            TabOrder = 0
-            PopupMenu = BrowserPopup
-            ShowFilter = sfAll
-            OnSelect = ClassBrowser1Select
-            Parser = CppParser1
-            ItemImages.Globals = 0
-            ItemImages.Classes = 1
-            ItemImages.VariablePrivate = 2
-            ItemImages.VariableProtected = 3
-            ItemImages.VariablePublic = 4
-            ItemImages.VariablePublished = 4
-            ItemImages.MethodPrivate = 5
-            ItemImages.MethodProtected = 6
-            ItemImages.MethodPublic = 7
-            ItemImages.MethodPublished = 7
-            ItemImages.InheritedMethodProtected = 8
-            ItemImages.InheritedMethodPublic = 10
-            ItemImages.InheritedVariableProtected = 9
-            ItemImages.InheritedVariablePublic = 11
-            UseColors = True
-            ShowInheritedMembers = False
-          end
+      end
+      object ClassSheet: TTabSheet
+        Caption = 'Classes'
+        ImageIndex = -1
+        object ClassBrowser1: TClassBrowser
+          Left = 0
+          Top = 0
+          Width = 223
+          Height = 237
+          Align = alClient
+          Images = dmMain.ClassImages
+          ReadOnly = True
+          Indent = 19
+          TabOrder = 0
+          PopupMenu = BrowserPopup
+          ShowFilter = sfAll
+          OnSelect = ClassBrowser1Select
+          Parser = CppParser1
+          ItemImages.Globals = 0
+          ItemImages.Classes = 1
+          ItemImages.VariablePrivate = 2
+          ItemImages.VariableProtected = 3
+          ItemImages.VariablePublic = 4
+          ItemImages.VariablePublished = 4
+          ItemImages.MethodPrivate = 5
+          ItemImages.MethodProtected = 6
+          ItemImages.MethodPublic = 7
+          ItemImages.MethodPublished = 7
+          ItemImages.InheritedMethodProtected = 8
+          ItemImages.InheritedMethodPublic = 10
+          ItemImages.InheritedVariableProtected = 9
+          ItemImages.InheritedVariablePublic = 11
+          UseColors = True
+          ShowInheritedMembers = False
         end
-        object DebugLeftSheet: TTabSheet
-          Caption = 'Debug'
-          ImageIndex = -1
-          object DebugTree: TTreeView
-            Left = 0
-            Top = 0
-            Width = 188
-            Height = 208
-            Align = alClient
-            Images = dmMain.MenuImages_NewLook
-            Indent = 19
-            MultiSelectStyle = []
-            PopupMenu = DebugVarsPopup
-            ReadOnly = True
-            RightClickSelect = True
-            TabOrder = 0
-            OnKeyDown = DebugTreeKeyDown
-          end
+      end
+      object DebugLeftSheet: TTabSheet
+        Caption = 'Debug'
+        ImageIndex = -1
+        object DebugTree: TTreeView
+          Left = 0
+          Top = 0
+          Width = 223
+          Height = 237
+          Align = alClient
+          Images = dmMain.MenuImages_NewLook
+          Indent = 19
+          MultiSelectStyle = []
+          PopupMenu = DebugVarsPopup
+          ReadOnly = True
+          RightClickSelect = True
+          TabOrder = 0
+          OnKeyDown = DebugTreeKeyDown
         end
       end
     end
+  end
+  object pnlControlHolder: TPanel
+    Left = 544
+    Top = 100
+    Width = 167
+    Height = 274
+    Align = alRight
+    TabOrder = 7
   end
   object MainMenu: TMainMenu
     Images = dmMain.MenuImages_Gnome
@@ -2388,7 +2378,7 @@ object MainForm: TMainForm
       Category = 'File'
       Caption = '&Close'
       ImageIndex = 9
-      ShortCut = 32883
+      ShortCut = 16499
       OnExecute = actCloseExecute
       OnUpdate = actUpdatePageCount
     end

@@ -284,7 +284,7 @@ end;
 
 function TDebugWait.CreateClassNodes(node : TDebugNode; s : string; i : integer) : integer;
 var parent, newnode : TDebugNode;
-  j, count: integer;
+    j{, count}     : integer;
   first: boolean;
 begin
   first := false;
@@ -293,7 +293,7 @@ begin
     i := 1;
   end;
   parent := node;
-  count := 0;
+{  count := 0;}
   result := 0;
   while (s[i] <> '') do begin
     if (s[i] = '{') then begin
@@ -305,7 +305,7 @@ begin
         i := i + 1;
         continue;
       end;
-      count := count + 1;
+{      count := count + 1;}
       newnode := TDebugNode.Create;
       i := i + 1;
       if (s[i] = '') then
@@ -354,6 +354,7 @@ var a : TAnnotateType;
   n: TDebugNode;
   s: string;
   Count, tmp: integer;
+  strTm:String;
 begin
   result := 0;
   repeat
@@ -366,6 +367,7 @@ begin
         //Node.Value := ' = ';
         GetNextLine;
         repeat
+        try
           SkipSpaces;
           s := GetNextLine;
           if (s <> '') and (s[1] = #26) and (System.pos(T_ARRAYSECTION_END, s) > 0) then  begin
@@ -373,8 +375,15 @@ begin
             GetNextLine;
             exit;
           end
-          else if (s[1] <> #26) then
-            Node.Value := Node.Value + s;
+          else
+          begin
+            if (s <> '') then
+                if (s[1] <> #26) then
+                    Node.Value := Node.Value + s;
+          end;
+        except
+            strTm:='test';
+        end;
         until (s = '');
         SkipSpaces;
         GetNextLine;

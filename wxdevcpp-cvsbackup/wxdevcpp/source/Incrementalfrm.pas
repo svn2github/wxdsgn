@@ -40,7 +40,11 @@ type
   public
     SearchString: string;
     Editor: TSynEdit;
+{$IFDEF NEW_SYNEDIT} 
+    OrgPt        : TBufferCoord;
+{$ELSE}
     OrgPt: TPoint;
+{$ENDIF}
   private
     rOptions: TSynSearchOptions;
   end;

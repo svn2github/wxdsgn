@@ -27,7 +27,7 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'Dev-C++';
-  DEVCPP_VERSION       = '4.9.9.0';
+  DEVCPP_VERSION       = '4.9.9.0-wx-beta-6.2';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
@@ -56,7 +56,7 @@ resourcestring
   CPP_INCLUDE_DIR      = 'include\c++\' + GCC_VERSION;
   CPP_INCLUDE_DIR_MINGW= 'include\c++\' + GCC_VERSION + '\mingw32';
   CPP_INCLUDE_DIR_BACK = 'include\c++\' + GCC_VERSION + '\backward';
-  CPP_INCLUDE_DIR_MINGW_INCLUDE = 'lib\gcc-lib\mingw32\3.3.1\include';
+  CPP_INCLUDE_DIR_MINGW_INCLUDE = 'lib\gcc-lib\mingw32\' + GCC_VERSION +  '\include';
 
   {$IFDEF WX_BUILD}
   CPP_INCLUDE_DIR_WX_INCLUDE= 'include\wx';

@@ -25,7 +25,8 @@ uses
   SysUtils, Classes, menus, Dialogs, ImgList, Controls,
   SynEditExport, SynExportHTML, SynExportRTF,
   SynEditHighlighter, SynHighlighterCpp, SynEditPrint,
-  oysUtils, CodeIns, SynHighlighterRC, SynCompletionProposal;
+  oysUtils, CodeIns, SynHighlighterRC, SynCompletionProposal,
+  SynEditMiscClasses, SynEditSearch;
 
 type
   TdmMain = class(TDataModule)
@@ -51,6 +52,7 @@ type
     ProjectImage_Blue: TImageList;
     Specialimages_Blue: TImageList;
     ResourceDialog: TOpenDialog;
+    SynHint: TSynCompletionProposal;
     ClassImages: TImageList;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
@@ -154,8 +156,7 @@ begin
       cpp.Attribute[i].Assign(Attr);
       a := devEditor.Syntax.IndexOfName(cpp.Attribute[i].Name);
       if a = -1 then
-        devEditor.Syntax.Append(format('%s=%s', [cpp.Attribute[i].Name,
-          AttrtoStr(Attr)]))
+        devEditor.Syntax.Append(format('%s=%s', [cpp.Attribute[i].Name, AttrtoStr(Attr)]))
       else
         devEditor.Syntax.Values[cpp.Attribute[i].Name] := AttrtoStr(Attr);
     finally
@@ -260,14 +261,14 @@ begin
   UpdateHighlighter;
 end;
 
+
 { ---------- MRU ---------- }
 
 procedure TdmMain.AddtoHistory(s: string);
 var
   idx: integer;
 begin
-  if (s = '') then
-    exit;
+  if (s = '') then exit;
   idx := fMRU.IndexofValue(s);
   if idx = -1 then
     // insert always first
@@ -280,8 +281,7 @@ var
   idx: integer;
 begin
   idx := fMRU.IndexofValue(s);
-  if idx > -1 then
-    fMRU.Delete(idx);
+  if idx > -1 then fMRU.Delete(idx);
   RebuildMRU;
 end;
 
@@ -305,11 +305,9 @@ begin
   ini := TiniFile.Create(devData.iniFile);
   with ini do
   try
-    if not SectionExists('History') then
-      exit;
+    if not SectionExists('History') then exit;
     ReadSectionValues('History', fMRU);
-    if fMRU.Count = 0 then
-      exit;
+    if fMRU.Count = 0 then exit;
     for idx := pred(fMRU.Count) downto 0 do
       if not FileExists(fMRU.Values[idx]) then
         fMRU.Delete(idx);
@@ -324,15 +322,13 @@ var
   ini: TINIFile;
   idx: integer;
 begin
-  if not assigned(fMRU) then
-    exit;
+  if not assigned(fMRU) then exit;
 
   ini := TINIFile.Create(devData.INIFile);
   with ini do
   try
     EraseSection('History');
-    if fMRU.Count = 0 then
-      exit;
+    if fMRU.Count = 0 then exit;
     for idx := 0 to pred(fMRU.Count) do
       WriteString('History', inttostr(idx), fMRU.Values[idx]);
   finally
@@ -356,8 +352,7 @@ procedure TdmMain.RebuildMRU;
       Done := True;
       for I := 0 to fMRU.Count - 2 do
         if (LowerCase(ExtractFileExt(fMRU[I])) <> '.dev') and
-          (LowerCase(ExtractFileExt(fMRU[I + 1])) = '.dev') then
-        begin
+           (LowerCase(ExtractFileExt(fMRU[I+1])) = '.dev') then begin
           swp := fMRU[I];
           fMRU[I] := fMRU[I + 1];
           fMRU[I + 1] := swp;
@@ -365,8 +360,7 @@ procedure TdmMain.RebuildMRU;
         end;
     until Done;
     for I := 0 to fMRU.Count - 1 do
-      if LowerCase(ExtractFileExt(fMRU[I])) <> '.dev' then
-      begin
+      if LowerCase(ExtractFileExt(fMRU[I])) <> '.dev' then begin
         C := I;
         Break;
       end;
@@ -380,8 +374,7 @@ var
   NonDev: integer;
   UpdMRU: ToysStringList;
 begin
-  if not assigned(fMRUMenu) then
-    exit;
+  if not assigned(fMRUMenu) then exit;
   for idx := pred(fMRUMenu.Count) downto fMRUOffset do
     fMRUMenu[idx].Free;
 
@@ -415,6 +408,7 @@ begin
   end;
   if (fMRUMenu.Count - fMRUOffset) > 0 then
     fMRUMenu.InsertNewLineAfter(fMRUMenu.Items[fMRUMenu.Count - 1]);
+
 
   // Now build the other recent files entries (*.cpp, *.h, etc)
   if (fMRU.Count - NonDev) > fMRUMax then
@@ -456,15 +450,13 @@ end;
 
 // Loads code inserts, when sep value changes a separator is
 // insert only if sep is a higher value then previous sep value.
-
 procedure TdmMain.LoadCodeIns;
 var
   cdx,
     idx: integer;
   Item: TMenuItem;
 begin
-  if not assigned(fCodeMenu) then
-    exit;
+  if not assigned(fCodeMenu) then exit;
   fCodeList.LoadCode;
 
   for idx := pred(fCodeMenu.Count) downto fCodeOffset do
@@ -496,8 +488,7 @@ end;
 
 procedure TdmMain.ExportToHtml(FileLines: TStrings; ExportFilename: string);
 begin
-  if (not Assigned(FileLines)) or (FileLines.Count = 0) or (ExportFilename = '')
-    then
+  if (not Assigned(FileLines)) or (FileLines.Count=0) or (ExportFilename='') then
     Exit;
   SynExporterHTML.Title := ExtractFileName(ExportFileName);
   SynExporterHTML.CreateHTMLFragment := False;
@@ -509,8 +500,7 @@ end;
 
 procedure TdmMain.ExportToRtf(FileLines: TStrings; ExportFilename: string);
 begin
-  if (not Assigned(FileLines)) or (FileLines.Count = 0) or (ExportFilename = '')
-    then
+  if (not Assigned(FileLines)) or (FileLines.Count=0) or (ExportFilename='') then
     Exit;
 
   SynExporterRTF.ExportAll(FileLines);
@@ -518,4 +508,3 @@ begin
 end;
 
 end.
-

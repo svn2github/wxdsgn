@@ -26,7 +26,7 @@ uses Windows, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, CodeComplet
    SynCompletionProposal, StrUtils, SynEditTypes,  SynEditHighlighter,
 
   {** Modified by Peter **}
-  DevCodeToolTip, SynAutoIndent
+  DevCodeToolTip, SynAutoIndent,utils
 
   {$IFDEF WX_BUILD}
     ,Designerfrm, CompFileIo, wxutils
@@ -215,7 +215,7 @@ type
 
 implementation
 
-uses main, project, MultiLangSupport, devcfg, Search_Center,utils,
+uses main, project, MultiLangSupport, devcfg, Search_Center,
   datamod, GotoLineFrm, Macros;
 
 { TDebugGutter }
@@ -550,6 +550,16 @@ end;
 
 procedure TEditor.Close;
 begin
+  fText.OnStatusChange := nil;
+  fText.OnSpecialLineColors := nil;
+  fText.OnGutterClick := nil;
+  fText.OnReplaceText := nil;
+  fText.OnDropFiles := nil;
+  fText.OnDblClick := nil;
+  fText.OnMouseDown := nil;
+  fText.OnPaintTransient := nil;
+  fText.OnKeyPress := nil;
+
 {$IFDEF WX_BUILD}
   if isForm then
   begin
@@ -563,8 +573,13 @@ begin
 end;
 
 function TEditor.GetModified: boolean;
+var
+    boolFTextModified:Boolean;
 begin
-  result := fModified or fText.Modified;
+  boolFTextModified:=false;
+  if assigned(fText) then
+    boolFTextModified := fText.Modified;
+  result := fModified or boolFTextModified;
 end;
 
 procedure TEditor.SetModified(value: boolean);
@@ -740,7 +755,14 @@ end;
 
 procedure TEditor.EditorStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
+var
+    tempvarForDebug:Integer;
 begin
+   if assigned(self.fText) = false then
+   begin
+    tempvarForDebug:=0; 
+   end;
+
   if scModified in Changes then begin
     if Modified then
       UpdateCaption('[*] ' + ExtractfileName(fFileName))
@@ -1474,14 +1496,14 @@ begin
 
   //check if not comment or string
   //if yes - exit without hint
-  p := fText.DisplayToBufferPos(fText.PixelsToRowColumn(X, Y));
-  if fText.GetHighlighterAttriAtRowCol(p, s, attr) then
-    if (attr = fText.Highlighter.StringAttribute)
-    or (attr = fText.Highlighter.CommentAttribute) then
-    begin
-      fText.Hint:='';
-      Exit;
-    end;
+//  p := fText.DisplayToBufferPos(fText.PixelsToRowColumn(X, Y));
+//  if fText.GetHighlighterAttriAtRowCol(p, s, attr) then
+//    if (attr = fText.Highlighter.StringAttribute)
+//    or (attr = fText.Highlighter.CommentAttribute) then
+//    begin
+//      fText.Hint:='';
+//      Exit;
+//    end;
 
   if devEditor.ParserHints and  (not MainForm.fDebugger.Executing) then begin // editing - show declaration of word under cursor in a hint
 {$IFDEF NEW_SYNEDIT}
@@ -2039,15 +2061,15 @@ procedure TEditor.FunctionArgsExecute(Kind: SynCompletionType; Sender: TObject;
 var
   locline, lookup: string;
   TmpX, savepos, StartX,
-    ParenCounter,
-    TmpLocation: Integer;
+  ParenCounter{,
+  TmpLocation}    : Integer;
   FoundMatch: Boolean;
-  P: PStatement;
+  {P: PStatement;}
   sl: TList;
 begin
 
   sl := nil;
-  P := nil;
+  {P := nil;}
   try
     with TSynCompletionProposal(Sender).Editor do
     begin
@@ -2060,11 +2082,11 @@ begin
       else
         dec(TmpX);
       FoundMatch := False;
-      TmpLocation := 0;
+      {TmpLocation := 0;}
       while (TmpX > 0) and not (FoundMatch) do
       begin
         if LocLine[TmpX] = ',' then begin
-          inc(TmpLocation);
+          {inc(TmpLocation);}
           dec(TmpX);
         end
         else if LocLine[TmpX] = ')' then begin
@@ -2122,6 +2144,7 @@ begin
 
     CanExecute := FoundMatch;
 
+    
     {** Modified by Peter **}
     // no longer needed, check 'DoOnCodeCompletion' below ...
     {
@@ -2187,7 +2210,6 @@ begin
 end;
 
 // Editor needs to be told when class browser has been recreated otherwise AV !
-
 procedure TEditor.UpdateParser;
 begin
   FCodeToolTip.Parser := MainForm.CppParser1;

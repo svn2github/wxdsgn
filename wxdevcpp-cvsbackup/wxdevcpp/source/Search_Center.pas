@@ -36,11 +36,10 @@ interface
   If only SynEdit had a define with its version in it...
 }
 
-{.$DEFINE NEWEST_SYNEDIT}
 
 uses
   Classes, types, Project, Editor, utils, synedit, comctrls,
-{$IFDEF NEWEST_SYNEDIT}
+{$IFDEF NEW_SYNEDIT}
   SynEditSearch, SynEditMiscClasses,
 {$ENDIF}
   SynEditTypes;
@@ -63,7 +62,7 @@ type
     fSynEdit: TSynEdit;
     fCurFile: string;
     fPC: TPageControl;
-{$IFDEF NEWEST_SYNEDIT}
+{$IFDEF NEW_SYNEDIT}
     fSearchEngine: TSynEditSearch;
 {$ENDIF}
     function RunSingleFile: boolean;
@@ -100,7 +99,7 @@ function TdevSearchCenter.ExecuteSearch: boolean;
 var
   return: integer;
 begin
-{$IFDEF NEWEST_SYNEDIT}
+{$IFDEF NEW_SYNEDIT}
   if Assigned(fEditor) then
     fEditor.Text.SearchEngine := fSearchEngine;
 {$ENDIF}
@@ -130,7 +129,8 @@ begin
   end;
   if not (return in [mrOk, mrAll]) then
     result := FALSE
-  else if fReplace or (not frmFind.FindAll) then
+  else
+   if fReplace or (not frmFind.FindAll) then
     result := RunSingleFile
   else
     result := RunAllFiles;
@@ -145,8 +145,7 @@ begin
   end
   else if fEditor.Text.SearchReplace(fFindText, fReplaceText, fOptions) = 0 then
     MessageDlg(format(Lang[ID_MSG_TEXTNOTFOUND], [SearchCenter.FindText]),
-      mtInformation, [mbOk], 0);
-        //MessageDlg('No match for ' + fFindText, mtInformation, [mbOK], 0);
+       mtInformation, [mbOk], 0);//MessageDlg('No match for ' + fFindText, mtInformation, [mbOK], 0);
   result := TRUE;
 end;
 
@@ -222,7 +221,7 @@ begin
   fSingleFile := true;
   fSynEdit := TSynEdit.Create(nil);
   fSynEdit.OnReplaceText := EditorReplaceText;
-{$IFDEF NEWEST_SYNEDIT}
+{$IFDEF NEW_SYNEDIT}
   fSearchEngine := TSynEditSearch.Create(nil);
   fSynEdit.SearchEngine := fSearchEngine;
 {$ENDIF}
@@ -230,7 +229,7 @@ end;
 
 destructor TdevSearchCenter.Destroy;
 begin
-{$IFDEF NEWEST_SYNEDIT}
+{$IFDEF NEW_SYNEDIT}
   fSearchEngine.Free;
 {$ENDIF}
   fSynEdit.Free;

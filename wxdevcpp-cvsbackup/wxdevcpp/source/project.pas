@@ -256,7 +256,8 @@ begin
       fEditor.New := False;
       fEditor.Modified := False;
       fEditor.Close;
-      FreeAndNil(fEditor);
+      fEditor:=nil; // because closing the editor will destroy it
+      //FreeAndNil(fEditor);
     end
     else 
     if assigned(fEditor) and fEditor.Modified then
@@ -279,6 +280,10 @@ function TProjUnit.SaveAs: boolean;
 var
   flt: string;
   CFilter, CppFilter, HFilter: Integer;
+  {$IFDEF WX_BUILD}
+  boolwxForm:Boolean;
+  WxFilter: Integer;
+  {$ENDIF}
 begin
   with dmMain.SaveDialog do
   begin
@@ -286,18 +291,30 @@ begin
       FileName := fEditor.TabSheet.Caption
     else
       FileName := ExtractFileName(fFileName);
+    {$IFDEF WX_BUILD}
+     boolwxForm:=iswxForm(FileName);
+    {$ENDIF}
 
     if fParent.Options.useGPP then
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
+      {$IFDEF WX_BUILD}
+      BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS, FLT_WXFORMS]);
+      WxFilter:=5;
+      {$ENDIF}
       DefaultExt := CPP_EXT;
       CFilter := 3;
       CppFilter := 2;
       HFilter := 4;
+
     end
     else
     begin
       BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS]);
+      {$IFDEF WX_BUILD}
+      BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS, FLT_WXFORMS]);
+      WxFilter:=5;
+      {$ENDIF}
       DefaultExt := C_EXT;
       CFilter := 2;
       CppFilter := 3;
@@ -317,6 +334,10 @@ begin
       else
         FilterIndex := CFilter;
     end;
+    {$IFDEF WX_BUILD}
+    if boolwxForm then
+        FilterIndex := WxFilter;
+    {$ENDIF}
 
     InitialDir := ExtractFilePath(fFileName);
     Title := Lang[ID_NV_SAVEFILE];
@@ -1239,18 +1260,20 @@ begin
 
     // save editor info
     for idx := 0 to pred(fUnits.Count) do
+    begin
+      try
       with fUnits[idx] do
       begin
         // save info on open state
-        aset := Assigned(editor);
+        aset := Assigned(fUnits[idx].editor);
         layIni.WriteBool('Editor_' + IntToStr(idx), 'Open', aset);
         layIni.WriteBool('Editor_' + IntToStr(idx), 'Top', aset and
-          (Editor.TabSheet = Editor.TabSheet.PageControl.ActivePage));
+          (fUnits[idx].Editor.TabSheet = fUnits[idx].Editor.TabSheet.PageControl.ActivePage));
         if aset then begin
-          layIni.WriteInteger('Editor_' + IntToStr(idx), 'CursorCol', Editor.Text.CaretX);
-          layIni.WriteInteger('Editor_' + IntToStr(idx), 'CursorRow', Editor.Text.CaretY);
-          layIni.WriteInteger('Editor_' + IntToStr(idx), 'TopLine',   Editor.Text.TopLine);
-          layIni.WriteInteger('Editor_' + IntToStr(idx), 'LeftChar',  Editor.Text.LeftChar);
+          layIni.WriteInteger('Editor_' + IntToStr(idx), 'CursorCol', fUnits[idx].Editor.Text.CaretX);
+          layIni.WriteInteger('Editor_' + IntToStr(idx), 'CursorRow', fUnits[idx].Editor.Text.CaretY);
+          layIni.WriteInteger('Editor_' + IntToStr(idx), 'TopLine',   fUnits[idx].Editor.Text.TopLine);
+          layIni.WriteInteger('Editor_' + IntToStr(idx), 'LeftChar',  fUnits[idx].Editor.Text.LeftChar);
         end;
 
         // remove old data from project file
@@ -1262,6 +1285,10 @@ begin
         fIniFile.DeleteKey('TopLine');
         fIniFile.DeleteKey('LeftChar');
       end;
+      except
+      end;
+    end;
+
     {   ** not good !!** if fModified then
          finiFile.UpdateFile; }
 
@@ -1363,12 +1390,13 @@ begin
     except
       MessageDlg(format(Lang[ID_ERR_OPENFILE], [Filename]), mtError, [mbOK], 0);
       fEditor.Close;
-      FreeAndNil(fEditor);
+      fEditor:=nil; //because closing the editor will destroy it
+      //FreeAndNil(fEditor);
     end
     else
     begin
       fEditor.Close;
-      FreeAndNil(fEditor);
+      fEditor:=nil; //because closing the editor will destroy it
     end;
   end;
 end;
@@ -1383,7 +1411,7 @@ begin
     begin
       SaveUnitLayout(fEditor, index);
       fEditor.Close;
-      FreeAndNil(fEditor);
+      fEditor:=nil; //because closing the editor will destroy it
     end;
   end;
 end;
@@ -2098,6 +2126,7 @@ begin
   result := -1;
 end;
 
+
 { TdevINI }
 
 destructor TdevINI.Destroy;
@@ -2122,98 +2151,84 @@ begin
 end;
 
 // reads a boolean value from fsection
-
 function TdevINI.Read(Name: string; Default: boolean): boolean;
 begin
   result := fINIFile.ReadBool(fSection, Name, Default);
 end;
 
 // reads a integer value from fsection
-
 function TdevINI.Read(Name: string; Default: integer): integer;
 begin
   result := fINIFile.ReadInteger(fSection, Name, Default);
 end;
 
 // reads unit filename for passed index
-
 function TdevINI.Read(index: integer): string;
 begin
   result := fINIFile.ReadString('Unit' + inttostr(index + 1), 'FileName', '');
 end;
 
 // reads a string subitem from a unit entry
-
 function TdevINI.Read(index: integer; Item: string; default: string): string;
 begin
   result := fINIFile.ReadString('Unit' + inttostr(index + 1), Item, default);
 end;
 
 // reads a boolean subitem from a unit entry
-
 function TdevINI.Read(index: integer; Item: string; default: boolean): boolean;
 begin
   result := fINIFile.ReadBool('Unit' + inttostr(index + 1), Item, default);
 end;
 
 // reads an integer subitem from a unit entry
-
 function TdevINI.Read(index: integer; Item: string; default: integer): integer;
 begin
   result := fINIFile.ReadInteger('Unit' + inttostr(index + 1), Item, default);
 end;
 
 // reads string value from fsection
-
 function TdevINI.Read(Name, Default: string): string;
 begin
   result := fINIFile.ReadString(fSection, Name, Default);
 end;
 
 // write unit entry for passed index
-
 procedure TdevINI.Write(index: integer; value: string);
 begin
   finifile.WriteString('Unit' + inttostr(index + 1), 'FileName', value);
 end;
 
 // write a string subitem in a unit entry
-
 procedure TdevINI.Write(index: integer; Item: string; Value: string);
 begin
   finifile.WriteString('Unit' + inttostr(index + 1), Item, Value);
 end;
 
 // write a boolean subitem in a unit entry
-
 procedure TdevINI.Write(index: integer; Item: string; Value: boolean);
 begin
   finifile.WriteBool('Unit' + inttostr(index + 1), Item, Value);
 end;
 
 // write an integer subitem in a unit entry
-
 procedure TdevINI.Write(index: integer; Item: string; Value: integer);
 begin
   finifile.WriteInteger('Unit' + inttostr(index + 1), Item, Value);
 end;
 
 // write string value to fsection
-
 procedure TdevINI.Write(Name, value: string);
 begin
   finifile.WriteString(fSection, Name, Value);
 end;
 
 // write boolean value to fsection
-
 procedure TdevINI.Write(Name: string; value: boolean);
 begin
   fINIFile.WriteBool(fSection, Name, Value);
 end;
 
 // write integer value to fsection
-
 procedure TdevINI.Write(Name: string; value: integer);
 begin
   fINIFile.WriteInteger(fSection, Name, Value);
