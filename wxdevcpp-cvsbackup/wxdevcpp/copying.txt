@@ -1,4 +1,4 @@
-Bloodshed Dev-C++ and wx-Dev-C++ are distributed under the GNU General Public License. 
+Bloodshed Dev-C++ and wx-devcpp are distributed under the GNU General Public License. 
 Be sure to read it before using/installing this distribution.
 
 		   GNU GENERAL PUBLIC LICENSE

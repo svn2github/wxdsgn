@@ -101,14 +101,16 @@ UninstPage instfiles
 
   !insertmacro MUI_PAGE_LICENSE "copying.txt"
   !insertmacro MUI_PAGE_COMPONENTS
-  !define MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave
+  !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
 
- ; !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe"
- ; !define MUI_FINISHPAGE_NOREBOOTSUPPORT
-  !insertmacro MUI_PAGE_FINISH
 
+  ; At the end of installation, we need to call run_devcpp to
+  ;   see if the user wishes to run wx-devcpp
+  !define MUI_PAGE_CUSTOMFUNCTION_PRE run_devcpp
+  !insertmacro MUI_PAGE_FINISH
+  
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
 
@@ -168,24 +170,8 @@ UninstPage instfiles
   !insertmacro MUI_RESERVEFILE_LANGDLL
 
 !endif ;NEW_INTERFACE
+
 ;--------------------------------
-
-; --------------------------------------------------
-; Create uninstaller log as we install files
-; From http://nsis.sourceforge.net/archive/nsisweb.php?page=679&instances=0,64
-
-!macro File FileName
-  File ${FileName}
-!macroend
-!define File "!insertmacro File"
-
-; Add file /r macro
-!macro FileR FileName
- File /r ${FileName}
-!macroend
-!define FileR "!insertmacro FileR"
-
-;-----------------------------------------------------
 
 # [Files]
 
@@ -195,14 +181,14 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   CreateDirectory $INSTDIR
   SetOutPath $INSTDIR
   
-  ${File} "devcpp.exe"
-  ${File} "copying.txt"
-  ${File} "News.txt"
-  ${File} "packman.exe"
+  File "devcpp.exe"
+  File "copying.txt"
+  File "News.txt"
+  File "packman.exe"
   SetOutPath $INSTDIR\Lang
-  ${File} "Lang\English.*"
+  File "Lang\English.*"
   SetOutPath $INSTDIR\Templates
-  ${File} "Templates\*"
+  File "Templates\*"
 
   ; Added for wx-devcpp  -- START
   
@@ -232,7 +218,7 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   ; end replacing text within template files
   
   SetOutPath $INSTDIR\wx
-  ${FileR} "wx\*"
+  File /r "wx\*"
   ; Added for wx-devcpp  -- END
 
   ; Delete old devcpp.map to avoid confusion in bug reports
@@ -256,41 +242,41 @@ Section "Example files" SectionExamples
 
   SetOutPath $INSTDIR\Examples
   SetOutPath $INSTDIR\Examples\FileEditor
-  ${File} "Examples\FileEditor\*"
+  File "Examples\FileEditor\*"
   SetOutPath $INSTDIR\Examples\Hello
-  ${File} "Examples\Hello\*"
+  File "Examples\Hello\*"
   SetOutPath $INSTDIR\Examples\Jackpot
-  ${File} "Examples\Jackpot\*"
+  File "Examples\Jackpot\*"
   SetOutPath $INSTDIR\Examples\MDIApp
-  ${File} "Examples\MDIApp\*"
+  File "Examples\MDIApp\*"
   SetOutPath $INSTDIR\Examples\OpenGL
-  ${File} "Examples\OpenGL\*"
+  File "Examples\OpenGL\*"
   SetOutPath $INSTDIR\Examples\Simpwin
-  ${File} "Examples\Simpwin\*"
+  File "Examples\Simpwin\*"
   SetOutPath $INSTDIR\Examples\WinAnim
-  ${File} "Examples\WinAnim\*"
+  File "Examples\WinAnim\*"
   SetOutPath $INSTDIR\Examples\WinMenu
-  ${File} "Examples\WinMenu\*"
+  File "Examples\WinMenu\*"
   SetOutPath $INSTDIR\Examples\WinTest
-  ${File} "Examples\WinTest\*"
+  File "Examples\WinTest\*"
 
 SectionEnd
 
 Section "Help files" SectionHelp
   SectionIn 1 2
   SetOutPath $INSTDIR\Help
-  ${File} "Help\DevCpp.hlp"
-  ${File} "Help\DevCpp.cnt"
+  File "Help\DevCpp.hlp"
+  File "Help\DevCpp.cnt"
   
   ; Added for wx-devcpp  -- START
-  ${File} "Help\wx.hlp"
-  ${File} "Help\wx.cnt"
-  ${File} "Help\wx.gid"
-  ${File} "Help\devhelp.ini"
+  File "Help\wx.hlp"
+  File "Help\wx.cnt"
+  File "Help\wx.gid"
+  File "Help\devhelp.ini"
   ; Added for wx-devcpp  -- END
   
   SetOutPath $INSTDIR\Packages
-  ${File} "Packages\DevCppHelp.entry"
+  File "Packages\DevCppHelp.entry"
 
 SectionEnd
 
@@ -298,9 +284,9 @@ Section "Icon files" SectionIcons
   SectionIn 1 2
 
   SetOutPath $INSTDIR\Icons
-  ${File} "Icons\*.ico"
+  File "Icons\*.ico"
   ;SetOutPath $INSTDIR\Themes
-  ;${FileR} "Themes\*"
+  ;File /r "Themes\*"
 
 SectionEnd
 
@@ -308,7 +294,7 @@ SectionEnd
 Section "Tutorials" SectionTutorial
   SectionIn 1 2
   SetOutPath $INSTDIR\Tutorial
-  ${FileR} "Tutorial\*"
+  File /r "Tutorial\*"
 SectionEnd
 ; Added for wx-devcpp  -- END
 
@@ -317,23 +303,23 @@ Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   SectionIn 1 2
   SetOutPath $INSTDIR
   SetOutPath $INSTDIR\bin
-  ${FileR} "bin\*"
+  File /r "bin\*"
   SetOutPath $INSTDIR\include
-  ${FileR} "include\*"
+  File /r "include\*"
   SetOutPath $INSTDIR\lib
-  ${FileR} "lib\*"
+  File /r "lib\*"
   ;SetOutPath $INSTDIR\libexec
-  ;${FileR} "libexec\"
+  ;File /r "libexec\"
   SetOutPath $INSTDIR\mingw32
-  ${FileR} "mingw32\*"
+  File /r "mingw32\*"
   SetOutPath $INSTDIR\Packages
-  ${File} "Packages\binutils.entry"
-  ${File} "Packages\gcc-core.entry"
-  ${File} "Packages\gcc-g++.entry"
-  ${File} "Packages\gdb.entry"
-  ${File} "Packages\make.entry"
-  ${File} "Packages\mingw-runtime.entry"
-  ${File} "Packages\w32api.entry"
+  File "Packages\binutils.entry"
+  File "Packages\gcc-core.entry"
+  File "Packages\gcc-g++.entry"
+  File "Packages\gdb.entry"
+  File "Packages\make.entry"
+  File "Packages\mingw-runtime.entry"
+  File "Packages\w32api.entry"
 
 SectionEnd
 !endif
@@ -341,14 +327,14 @@ SectionEnd
 # Section "Updater and bug reporter (vUpdate/vRoach)"
 #   SectionIn 1 2
 #   SetOutPath $INSTDIR
-#   ${File} "vUpdate.exe"
-#   ${File} "vRoach.exe"
+#   File "vUpdate.exe"
+#   File "vRoach.exe"
 # SectionEnd
 
 Section "Language files" SectionLangs
   SectionIn 1
   SetOutPath $INSTDIR\Lang
-  ${File} "Lang\*"
+  File "Lang\*"
 SectionEnd
 
 # [File association]
@@ -519,10 +505,10 @@ SectionEnd
 Section "Debug files" SectionDebug
   SectionIn 1 2
   SetOutPath $INSTDIR
-  ${File} "devcpp.map"
-  ${File} "Packman.map"
+  File "devcpp.map"
+  File "Packman.map"
   SetOutPath $INSTDIR\Packages
-  ${File} "Packages\Dev-C++_Map.entry"
+  File "Packages\Dev-C++_Map.entry"
 SectionEnd
 
 
@@ -613,6 +599,20 @@ SectionEnd
 
 ; Functions
 
+Function run_devcpp
+
+  MessageBox MB_YESNO "${PROGRAM_NAME} ${WXDEVCPP_VERSION} has been installed successfully.$\r$\nDo you wish to run the program?" IDNO dont_run
+  ; For some reason, NSIS uses the last directory it was working on
+  ; Because of this, if you try the command $INSTDIR/devcpp.exe, the wx-devcpp
+  ; program will run, but it might not be using $INSTDIR as the working directory
+  ; This can screw up the code completion cache that's created on the initial run
+  ; To get around it, we add this code to specifically change the directory to $INSTDIR
+  ; and then run the program.  GAR --21 Feb 2005
+   SetOutPath "$INSTDIR"
+   Exec "devcpp.exe"
+dont_run:
+FunctionEnd
+   
 Function .onInit
   MessageBox MB_OK "Welcome to ${PROGRAM_NAME} ${WXDEVCPP_VERSION} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation of ${PROGRAM_NAME} or Dev-Cpp."
 ; Ask for language to use in installer
@@ -622,7 +622,7 @@ FunctionEnd
 
 ;called when the install was successful
 Function .onInstSuccess
-         SetOutPath $INSTDIR
+   Exec run_devcpp
 FunctionEnd
 
 !ifndef NEW_INTERFACE
