@@ -1,8 +1,0 @@
-** TODO for Dev-C++ **
-
-Important features:
-- write help files
-- implement all help file section linking from dev-c++
-
-Not-so-important features:
--
