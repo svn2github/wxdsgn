@@ -1,0 +1,75 @@
+//---------------------------------------------------------------------------
+//
+// Name:        %FILE_NAME%.h
+// Author:      %AUTHOR_NAME%
+// Created:     %DATE_STRING%
+//
+//---------------------------------------------------------------------------
+#ifndef __%CAP_CLASS_NAME%_HPP_
+#define __%CAP_CLASS_NAME%_HPP_
+
+
+// For compilers that support precompilation, includes "wx.h".
+#include <wx/wxprec.h>
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+// Include your minimal set of headers here, or wx.h
+#include <wx/wx.h>
+#endif
+
+
+////Header Include Start
+////Header Include End
+
+#include <wx/dialog.h>
+
+//Compatibility for 2.4.x code
+#ifndef wxCLOSE_BOX
+#define wxCLOSE_BOX 0x1000
+#endif
+#ifndef wxFIXED_MINSIZE
+#define wxFIXED_MINSIZE 0
+#endif
+
+////GUI Control ID Start
+///Dont not Add/Edit Anything here. The GUI builder will remove them.
+
+////GUI Control ID End
+
+////Dialog Style Start
+#define THIS_DIALOG_STYLE %CLASS_STYLE_STRING%
+////Dialog Style End
+
+class %CLASS_NAME% : public wxDialog
+{
+public:
+    %CLASS_NAME%( wxWindow *parent, wxWindowID id = 1, const wxString &title = _T("%CLASS_TITLE%"),
+        const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize,
+        long style = THIS_DIALOG_STYLE);
+    virtual ~%CLASS_NAME%();
+public:
+  ////GUI Control Declaration Start
+  ///Dont not Add/Edit Anything here. The GUI builder will remove them.
+
+  ////GUI Control Declaration End
+
+private:
+    DECLARE_EVENT_TABLE()
+
+public:
+    void %CLASS_NAME%Close(wxCloseEvent& event);
+    void CreateGUIControls(void);
+
+};
+
+
+#endif
+ 
+ 
+ 
+ 

@@ -1,14 +1,16 @@
 [Template]
 ver=1
-Name=Empty Project
-IconIndex=4
-Description=An empty project
+Name=wxWidgets Frame
+IconIndex=0
+Description=A basic Frame for wxWidgets applications.
 Catagory=Basic
 
 [Project]
+Name=wxProject
 UnitCount=0
 Type=0
 Cpp=1
+ResourceIncludes="C:\Dev-Cpp\include"
 Compiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-fvtable-thunks_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@_
 Linker=-lwxmsw25_@@_-lwxmsw25_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
 Name=wxWindows Project
@@ -18,3 +20,4 @@ CompilerSettings=0000000001001000000000
 CompilerSet=0
 IncludeVersionInfo=0
 SupportXPThemes=0
+
