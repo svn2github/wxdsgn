@@ -4,7 +4,7 @@
 ; http://nsis.sourceforge.net/
 
 !define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.7beta"
+!define WXDEVCPP_VERSION "6.7alpha3"
 !define WXWIDGETS_VERSION "2.5"
 !define PROGRAM_NAME "wx-devcpp"
 !define START_MENU_DIRECTORY "Bloodshed Dev-C++"
@@ -29,9 +29,9 @@ Var LOCAL_APPDATA
 
 Name "${DISPLAY_NAME}"
 !ifdef HAVE_MINGW 
-OutFile "devcpp-${WXDEVCPP_VERSION}_setup.exe"
+OutFile "${PROGRAM_NAME}-${WXDEVCPP_VERSION}_setup.exe"
 !else
-OutFile "devcpp-${WXDEVCPP_VERSION}_nomingw_setup.exe"
+OutFile "${PROGRAM_NAME}-${WXDEVCPP_VERSION}_nomingw_setup.exe"
 !endif
 Caption "${DISPLAY_NAME}"
 
@@ -163,34 +163,38 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   ; Replace the text %DEVCPPINSTALLDIR% in the template files with
   ; whatever installation directory the user selected during
   ; the install
-  Push "%DEVCPPINSTALLDIR%" #text to be replaced
-  Push $INSTDIR #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\00-wxWindows.template #file to replace in
-  Call AdvReplaceInFile
-
-  Push "%WXVERSION%"  #text to be replaced
-  Push ${WXWIDGETS_VERSION}  #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\00-wxWindows.template #file to replace in
-  Call AdvReplaceInFile
   
+  ; 00-wxWindows.template
   Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
   Push all #replace all occurrences
   Push all #replace all occurrences
-  Push $INSTDIR\Templates\0-wxWindows.template #file to replace in
+  Push $INSTDIR\Templates\00-wxWidgets.template #file to replace in
   Call AdvReplaceInFile
-
+/*
+  Push "%WXVERSION%"  #text to be replaced
+  Push ${WXWIDGETS_VERSION}  #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\00-wxWindows.template #file to replace in
+  Call AdvReplaceInFile
+ */
+  ; 0-wxWindows.template
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\0-wxWidgets.template #file to replace in
+  Call AdvReplaceInFile
+/*
   Push "%WXVERSION%"  #text to be replaced
   Push ${WXWIDGETS_VERSION}  #replace with
   Push all #replace all occurrences
   Push all #replace all occurrences
   Push $INSTDIR\Templates\0-wxWindows.template #file to replace in
   Call AdvReplaceInFile
-
+*/
+  ; 1-empty.template
   Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
   Push all #replace all occurrences
@@ -198,7 +202,7 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   Push $INSTDIR\Templates\1-empty.template #file to replace in
   Call AdvReplaceInFile
   ; end replacing text within template files
-
+/*
   Push "%WXVERSION%"  #text to be replaced
   Push ${WXWIDGETS_VERSION}  #replace with
   Push all #replace all occurrences
@@ -206,8 +210,28 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   Push $INSTDIR\Templates\1-empty.template #file to replace in
   Call AdvReplaceInFile
 
- ; SetOutPath $INSTDIR\wx
- ; File /r "wx\*"
+  ; wxWindows.template
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\wxWindows.template #file to replace in
+  Call AdvReplaceInFile
+  ; end replacing text within template files
+
+  Push "%WXVERSION%"  #text to be replaced
+  Push ${WXWIDGETS_VERSION}  #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\wxWindows.template #file to replace in
+  Call AdvReplaceInFile
+  */
+  
+  SetOutPath $INSTDIR\Templates\wxWidgets
+  File "Templates\wxWidgets\*"
+
+  SetOutPath $INSTDIR\wx
+  File /r "wx\*"
   ; Added for wx-devcpp  -- END
 
   ; Delete old devcpp.map to avoid confusion in bug reports
@@ -222,6 +246,8 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoRepair" 1
   WriteUninstaller "$INSTDIR\uninstall.exe"
+
+  SetOutPath $INSTDIR
 
 SectionEnd
 
@@ -246,6 +272,9 @@ Section "Example files" SectionExamples
   File "Examples\WinMenu\*"
   SetOutPath $INSTDIR\Examples\WinTest
   File "Examples\WinTest\*"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Help files" SectionHelp
@@ -265,6 +294,8 @@ Section "Help files" SectionHelp
   File "Help\wx-devcpp Tutorial Help.chm"
   ; Added for wx-devcpp  -- END
 
+  SetOutPath $INSTDIR
+
 SectionEnd
 
 Section "Icon files" SectionIcons
@@ -273,6 +304,9 @@ Section "Icon files" SectionIcons
   File "Icons\*.ico"
   #SetOutPath $INSTDIR\Themes
   #File /r "Themes\*"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 !ifdef HAVE_MINGW
@@ -290,8 +324,8 @@ Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry"'
   
   ; Added for wx-devcpp  -- START
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets_contrib.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets254contrib.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets254.entry"'
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'
@@ -313,13 +347,15 @@ Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   File "Packages\w32api.entry"
   
   ; Added for wx-devcpp  -- START
-  File "Packages\zlib.entry"
-  File "Packages\libjpeg.entry"
-  File "Packages\libtiff.entry"
-  File "Packages\libpng.entry"
-  File "Packages\wxWidgets.entry"
-  File "Packages\wxWidgets_contrib.entry"
+  ;File "Packages\zlib.entry"
+  ;File "Packages\libjpeg.entry"
+  ;File "Packages\libtiff.entry"
+  ;File "Packages\libpng.entry"
+  File "Packages\wxWidgets254.entry"
+  File "Packages\wxWidgets254contrib.entry"
   ; Added for wx-devcpp  -- END
+  
+  SetOutPath $INSTDIR
   
 SectionEnd
 !endif
@@ -329,12 +365,16 @@ SectionEnd
 #   SetOutPath $INSTDIR
 #   File "vUpdate.exe"
 #   File "vRoach.exe"
+#   SetOutPath $INSTDIR
 # SectionEnd
 
 Section "Language files" SectionLangs
   SectionIn 1
   SetOutPath $INSTDIR\Lang
   File "Lang\*"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 # [File association]
@@ -352,6 +392,9 @@ Section "Associate .dev files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.dev\DefaultIcon" "" '$0,3'
   WriteRegStr HKCR "${PROGRAM_NAME}.dev\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .c files to ${PROGRAM_NAME}"
@@ -366,6 +409,9 @@ Section "Associate .c files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.c\DefaultIcon" "" '$0,4'
   WriteRegStr HKCR "${PROGRAM_NAME}.c\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .cpp files to ${PROGRAM_NAME}"
@@ -380,6 +426,9 @@ Section "Associate .cpp files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.cpp\DefaultIcon" "" '$0,5'
   WriteRegStr HKCR "${PROGRAM_NAME}.cpp\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .h files to ${PROGRAM_NAME}"
@@ -394,6 +443,9 @@ Section "Associate .h files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.h\DefaultIcon" "" '$0,6'
   WriteRegStr HKCR "${PROGRAM_NAME}.h\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .hpp files to ${PROGRAM_NAME}"
@@ -408,6 +460,9 @@ Section "Associate .hpp files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.hpp\DefaultIcon" "" '$0,7'
   WriteRegStr HKCR "${PROGRAM_NAME}.hpp\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .rc files to ${PROGRAM_NAME}"
@@ -422,6 +477,9 @@ Section "Associate .rc files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.rc\DefaultIcon" "" '$0,8'
   WriteRegStr HKCR "${PROGRAM_NAME}.rc\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .devpak files to ${PROGRAM_NAME}"
@@ -437,6 +495,9 @@ Section "Associate .devpak files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak\DefaultIcon" "" '$0,9'
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak\Shell\Open\Command" "" '$1 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .devpackage files to ${PROGRAM_NAME}"
@@ -452,6 +513,9 @@ Section "Associate .devpackage files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpackage\DefaultIcon" "" '$0,10'
   WriteRegStr HKCR "${PROGRAM_NAME}.devpackage\Shell\Open\Command" "" '$1 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Associate .template files to ${PROGRAM_NAME}"
@@ -466,6 +530,9 @@ Section "Associate .template files to ${PROGRAM_NAME}"
   WriteRegStr HKCR "${PROGRAM_NAME}.template\DefaultIcon" "" '$0,1'
   WriteRegStr HKCR "${PROGRAM_NAME}.template\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 SubSectionEnd
@@ -494,12 +561,18 @@ exists:
   CreateShortCut "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
   CreateShortCut "$0\${START_MENU_DIRECTORY}\License.lnk" "$INSTDIR\copying.txt"
   CreateShortCut "$0\${START_MENU_DIRECTORY}\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Create Quick Launch shortcut" SectionQuickLaunch
   SectionIn 1 2
   SetShellVarContext current
   CreateShortCut "$QUICKLAUNCH\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Debug files" SectionDebug
@@ -509,6 +582,9 @@ Section "Debug files" SectionDebug
   File "Packman.map"
   SetOutPath $INSTDIR\Packages
   File "Packages\Dev-C++_Map.entry"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
 
 Section "Remove all previous configuration files" SectionConfig
@@ -554,21 +630,10 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$INSTDIR\mirrors.cfg"
   Delete "$INSTDIR\tools.ini"
   Delete "$INSTDIR\devcpp.ci"
+  
+  SetOutPath $INSTDIR
+  
 SectionEnd
-
-Function run_devcpp
-
-  MessageBox MB_YESNO "${PROGRAM_NAME} ${WXDEVCPP_VERSION} has been installed successfully.$\r$\nDo you wish to run the program?" IDNO dont_run
-  ; For some reason, NSIS uses the last directory it was working on
-  ; Because of this, if you try the command $INSTDIR/devcpp.exe, the wx-devcpp
-  ; program will run, but it might not be using $INSTDIR as the working directory
-  ; This can screw up the code completion cache that's created on the initial run
-  ; To get around it, we add this code to specifically change the directory to $INSTDIR
-  ; and then run the program.  GAR --21 Feb 2005
-   SetOutPath "$INSTDIR"
-   Exec "devcpp.exe"
-dont_run:
-FunctionEnd
 
 ;--------------------------------
 
@@ -646,7 +711,7 @@ Function BackupAssoc
   ;$0 is an extension - for example ".dev"
 
   ;check if backup already exists
-  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" "$0"
+  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0"
   ;don't backup if backup exists in registry
   StrCmp $1 "" 0 no_assoc
 
@@ -655,7 +720,7 @@ Function BackupAssoc
   StrCmp $1 "DevCpp$0" no_assoc
 
   StrCmp $1 "" no_assoc
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" "$0" "$1"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0" "$1"
   no_assoc:
   
 FunctionEnd
@@ -665,7 +730,7 @@ Function un.RestoreAssoc
   ;$0 is an extension - for example ".dev"
 
   DeleteRegKey HKCR "$0"
-  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" "$0"
+  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0"
   StrCmp $1 "" no_backup
     WriteRegStr HKCR "$0" "" "$1"
     Call un.RefreshShellIcons
@@ -900,7 +965,7 @@ Section "Uninstall"
   !include ".\installed_files.nsh"
 
   ; Remove icons
-  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" \
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
       "Shortcuts"
   Delete "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk"
   Delete "$0\${START_MENU_DIRECTORY}\License.lnk"
@@ -940,7 +1005,7 @@ Section "Uninstall"
   DeleteRegKey HKCR "${PROGRAM_NAME}.template"
 
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}"
   DeleteRegKey HKLM "SOFTWARE\${START_MENU_DIRECTORY}"
 
   MessageBox MB_YESNO "Do you want to remove all the remaining configuration files?" IDNO Done

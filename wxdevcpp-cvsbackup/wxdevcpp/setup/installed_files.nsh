@@ -1,20 +1,18 @@
 ; this file was automatically created after full installation
 ; on Linux by running the following commands:
 ;
-;cd Dev-Cpp/ && \
-; find -type f -exec echo "  Delete \"{}\"" \; | \
-; sed -e "s/\\//\\\/g" | \
-; sed -e "s/\"\./\"\$INSTDIR/" | \
-; grep -v "CVS" | \
-; todos \
-; >>../installed_files.nsh
-; find -type d -exec echo "  RMDir  \"{}\"" \; | \
-; sed -e "s/\\//\\\/g" | \
-; sed -e "s/\"\./\"\$INSTDIR/" | \
-; grep -v "CVS" | \
-; sort -r -f | \
-; todos \
-; >>../installed_files.nsh 
+/* cd Dev-Cpp/ && \
+ find -type f -exec echo "  Delete {} " \; | \
+sed -e "s/\"\./\"\$INSTDIR/"" | \
+grep -v "CVS" | \
+ todos \
+ >>../installed_files.txt
+find -type d -exec echo "  RMDir  {}" \; | \
+  sed -e "s/\"\./\"\$INSTDIR/"" | \
+ grep -v "CVS" | \
+ sort -r -f  \
+ >>../installed_files.txt
+ */
 ;
 ;--------------------------------------------
 
@@ -28,12 +26,12 @@
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry" /version "3.2"'
   
    ; Added for wx-devcpp  -- START
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets_contrib.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\zlib.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets254contrib.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets254.entry"'
+  ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
+  ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
+  ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'
+  ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\zlib.entry"'
   ; Added for wx-devcpp  -- END
 
 !endif
@@ -183,29 +181,20 @@
   
   ; Added for wx-devcpp  -- START
   Delete "$INSTDIR\Templates\1-Empty.template"
-  Delete "$INSTDIR\Templates\0-wxWindows.template"
-  Delete "$INSTDIR\Templates\00-wxWindows.template"
-  Delete "$INSTDIR\Templates\newProgramApp.cpp"
-  Delete "$INSTDIR\Templates\newProgramApp.h"
-  Delete "$INSTDIR\Templates\newProgramApp.rc"
-  Delete "$INSTDIR\Templates\newProgramDlg.cpp"
-  Delete "$INSTDIR\Templates\newProgramDlg.h"
-  Delete "$INSTDIR\Templates\newProgramDlg.wxform"
-  Delete "$INSTDIR\Templates\newProgramDlgApp.cpp"
-  Delete "$INSTDIR\Templates\newProgramDlgApp.h"
-  Delete "$INSTDIR\Templates\newProgramFrame.cpp"
-  Delete "$INSTDIR\Templates\newProgramFrame.h"
-  Delete "$INSTDIR\Templates\newProgramFrame.wxform"
-  Delete "$INSTDIR\Templates\newProgramFrameApp.cpp"
-  Delete "$INSTDIR\Templates\newProgramFrameApp.h"
-  Delete "$INSTDIR\Templates\newproject.dev"
-  Delete "$INSTDIR\Templates\newproject.exe.Manifest"
-  Delete "$INSTDIR\Templates\newproject_private.h"
-  Delete "$INSTDIR\Templates\newproject_private.rc"
-  Delete "$INSTDIR\Templates\wxDlg.h.code"
-  Delete "$INSTDIR\Templates\wxDlg.cpp.code"
-  Delete "$INSTDIR\Templates\wxFrame.h.code"
-  Delete "$INSTDIR\Templates\wxFrame.cpp.code"
+  Delete "$INSTDIR\Templates\0-wxWidgets.template"
+  Delete "$INSTDIR\Templates\00-wxWidgets.template"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojDlg.cpp"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojDlg.h"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojDlgApp.cpp"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojDlgApp.h"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojFrame.cpp"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojFrame.h"
+   Delete "$INSTDIR\Templates\wxWidgets\wxprojFrameApp.cpp"
+  Delete "$INSTDIR\Templates\wxWidgets\wxprojFrameApp.h"
+  Delete "$INSTDIR\Templates\wxWidgets\wxDlg.h.code"
+  Delete "$INSTDIR\Templates\wxWidgets\wxDlg.cpp.code"
+  Delete "$INSTDIR\Templates\wxWidgets\wxFrame.h.code"
+  Delete "$INSTDIR\Templates\wxWidgets\wxFrame.cpp.code"
   ; Added for wx-devcpp  -- END
   
   Delete "$INSTDIR\copying.txt"
@@ -223,6 +212,8 @@
   Delete "$INSTDIR\devcpp.pallete"
   Delete "$INSTDIR\devcpp.mad"
   Delete "$INSTDIR\devcpp.exe"
+  
+  RMDir "$INSTDIR\Templates\wxWidgets"
   ; Added for wx-devcpp  -- END
 
   RMDir  "$INSTDIR\Templates"
