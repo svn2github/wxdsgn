@@ -492,7 +492,7 @@ exists:
   CreateDirectory "$0\${START_MENU_DIRECTORY}"
   SetOutPath $INSTDIR
   CreateShortCut "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
-  CreateShortCut "$0\$START_MENU_DIRECTORY}\License.lnk" "$INSTDIR\copying.txt"
+  CreateShortCut "$0\${START_MENU_DIRECTORY}\License.lnk" "$INSTDIR\copying.txt"
   CreateShortCut "$0\${START_MENU_DIRECTORY}\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
 SectionEnd
 

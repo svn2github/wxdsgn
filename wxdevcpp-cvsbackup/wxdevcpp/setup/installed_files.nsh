@@ -202,6 +202,10 @@
   Delete "$INSTDIR\Templates\newproject.exe.Manifest"
   Delete "$INSTDIR\Templates\newproject_private.h"
   Delete "$INSTDIR\Templates\newproject_private.rc"
+  Delete "$INSTDIR\Templates\wxDlg.h.code"
+  Delete "$INSTDIR\Templates\wxDlg.cpp.code"
+  Delete "$INSTDIR\Templates\wxFrame.h.code"
+  Delete "$INSTDIR\Templates\wxFrame.cpp.code"
   ; Added for wx-devcpp  -- END
   
   Delete "$INSTDIR\copying.txt"
@@ -218,6 +222,7 @@
   ; Added for wx-devcpp  -- START
   Delete "$INSTDIR\devcpp.pallete"
   Delete "$INSTDIR\devcpp.mad"
+  Delete "$INSTDIR\devcpp.exe"
   ; Added for wx-devcpp  -- END
 
   RMDir  "$INSTDIR\Templates"
