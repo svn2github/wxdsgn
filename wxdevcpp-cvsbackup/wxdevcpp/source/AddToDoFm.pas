@@ -66,23 +66,31 @@ procedure TAddToDoForm.btnOKClick(Sender: TObject);
 var
   e: TEditor;
   I: integer;
+{$IFDEF NEW_SYNEDIT} 
+  st: TBufferCoord;
+{$ELSE}
   st: TPoint;
+{$ENDIF}
   Line: integer;
   LineText: string;
   Hdr: string;
   Prepend: string;
 begin
   e := MainForm.GetEditor;
-  if not Assigned(e) then
-  begin
+  if not Assigned(e) then begin
     Close;
     Exit;
   end;
 
   Line := e.Text.CaretY - 1;
   LineText := e.Text.Lines[Line];
+{$IFDEF NEW_SYNEDIT} 
+  st.Line := Line + 1;
+  st.Char := 1;
+{$ELSE}
   st.Y := Line + 1;
   st.X := 1;
+{$ENDIF}
 
   I := 1;
   while (I <= Length(LineText)) and (LineText[I] in [#9, ' ']) do
@@ -96,20 +104,21 @@ begin
 
   if memDescr.Lines.Count = 1 then
     e.Text.Lines.Insert(Line, Prepend + Hdr + memDescr.Text + ' */')
-  else
-  begin
+  else begin
     e.Text.Lines.Insert(Line, Prepend + Hdr + memDescr.Lines[0]);
     Prepend := Prepend + StringOfChar(#32, Length(Hdr));
-    for I := 1 to memDescr.Lines.Count - 1 do
-    begin
+    for I := 1 to memDescr.Lines.Count - 1 do begin
       if I = memDescr.Lines.Count - 1 then
         e.Text.Lines.Insert(Line + I, Prepend + memDescr.Lines[I] + ' */')
       else
         e.Text.Lines.Insert(Line + I, Prepend + memDescr.Lines[I]);
     end;
   end;
-  e.Text.UndoList.AddChange(crInsert, st, Point(st.X, st.Y +
-    memDescr.Lines.Count), '', smNormal);
+{$IFDEF NEW_SYNEDIT} 
+  e.Text.UndoList.AddChange(crInsert, st, BufferCoord(st.Char, st.Line + memDescr.Lines.Count), '', smNormal);
+{$ELSE}
+  e.Text.UndoList.AddChange(crInsert, st, Point(st.X, st.Y + memDescr.Lines.Count), '', smNormal);
+{$ENDIF}
   e.Modified := True;
   Close;
 end;
@@ -124,8 +133,7 @@ end;
 
 procedure TAddToDoForm.txtUserKeyPress(Sender: TObject; var Key: Char);
 begin
-  if not (Key in ['a'..'z', 'A'..'Z', '0'..'9', '_', #8, #13, #27]) then
-  begin
+  if not (Key in ['a'..'z', 'A'..'Z', '0'..'9', '_', #8, #13, #27]) then begin
     Key := #0;
     Exit;
   end;
@@ -146,3 +154,4 @@ begin
 end;
 
 end.
+
