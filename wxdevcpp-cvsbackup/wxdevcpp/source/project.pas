@@ -1867,7 +1867,7 @@ begin
               if s <> '' then
               begin
               	s := StringReplace(s, '#13#10', #13#10, [rfReplaceAll]);
-              	Editor.InsertString(s, FALSE);
+                 	Editor.InsertString(s, FALSE);
               	Editor.Modified := TRUE;
               end;
             	Editor.Activate;

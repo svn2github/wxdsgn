@@ -23,12 +23,15 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Classes, editor, ComCtrls, datamod;
+  Classes, editor, ComCtrls, datamod
 {$ENDIF}
 {$IFDEF LINUX}
-  Classes, editor, QComCtrls, datamod;
+  Classes, editor, QComCtrls, datamod
 {$ENDIF}
-
+{$IFDEF WX_BUILD}
+  ,SysUtils
+{$ENDIF}
+;
 const
   dptGUI = 0;
   dptCon = 1;
@@ -150,11 +153,26 @@ begin
     typ := R1.typ;
     Ver := r1.ver;
     Objfiles.Text := r1.ObjFiles.Text;
+
+ {$IFDEF WX_BUILD}
+    Includes.Text := StringReplace(R1.Includes.Text,
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+    Libs.Text := StringReplace(R1.Libs.Text,
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+    PrivateResource := StringReplace(R1.PrivateResource,
+      '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+    ResourceIncludes.Text := StringReplace(R1.ResourceIncludes.Text,
+          '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+    MakeIncludes.Text := StringReplace(R1.MakeIncludes.Text,
+       '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+ {$ELSE}
     Includes.Text := R1.Includes.Text;
     Libs.Text := R1.Libs.Text;
     PrivateResource := R1.PrivateResource;
     ResourceIncludes.Text := R1.ResourceIncludes.Text;
     MakeIncludes.Text := R1.MakeIncludes.Text;
+ {$ENDIF}
+
     cmdLines.Compiler := R1.cmdLines.Compiler;
     cmdLines.CppCompiler := R1.cmdLines.CppCompiler;
     cmdLines.Linker := R1.cmdLines.Linker;

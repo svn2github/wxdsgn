@@ -8712,6 +8712,7 @@ var
     try
       strFileSrc := strLst.text;
       strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName),[srAll]);
+      strSearchReplace(strFileSrc, '%DEVCPP_DIR%', devDirs.Default,[srAll]);
       strSearchReplace(strFileSrc, '%AUTHOR_NAME%', strAuthor, [srAll]);
       strSearchReplace(strFileSrc, '%DATE_STRING%', strDate, [srAll]);
       strSearchReplace(strFileSrc, '%CLASS_NAME%', strClassName, [srAll]);
@@ -8835,6 +8836,7 @@ var
     try
       strFileSrc := strLst.text;
       strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName),[srAll]);
+      strSearchReplace(strFileSrc, '%DEVCPP_DIR%', devDirs.Default,[srAll]);
       strSearchReplace(strFileSrc, '%AUTHOR_NAME%', strAuthor, [srAll]);
       strSearchReplace(strFileSrc, '%DATE_STRING%', strDate, [srAll]);
       strSearchReplace(strFileSrc, '%CLASS_NAME%', strClassName, [srAll]);

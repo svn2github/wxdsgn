@@ -27,7 +27,7 @@ object MainForm: TMainForm
     Left = 209
     Top = 100
     Width = 4
-    Height = 250
+    Height = 258
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -35,7 +35,7 @@ object MainForm: TMainForm
   end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 350
+    Top = 358
     Width = 766
     Height = 4
     Cursor = crVSplit
@@ -47,7 +47,7 @@ object MainForm: TMainForm
     Left = 596
     Top = 100
     Width = 3
-    Height = 250
+    Height = 258
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -56,7 +56,7 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 354
+    Top = 362
     Width = 766
     Height = 113
     ActivePage = CompSheet
@@ -1111,7 +1111,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 467
+    Top = 475
     Width = 766
     Height = 19
     Panels = <
@@ -1135,7 +1135,7 @@ object MainForm: TMainForm
     Left = 213
     Top = 100
     Width = 383
-    Height = 250
+    Height = 258
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1195,7 +1195,7 @@ object MainForm: TMainForm
     Left = 599
     Top = 100
     Width = 167
-    Height = 250
+    Height = 258
     Align = alRight
     TabOrder = 6
     Visible = False
@@ -1204,7 +1204,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 100
     Width = 209
-    Height = 250
+    Height = 258
     Align = alLeft
     DockSite = True
     TabOrder = 7
@@ -1225,7 +1225,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 172
+          Height = 173
           Align = alClient
           ChangeDelay = 1
           DragMode = dmAutomatic
@@ -1257,7 +1257,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 172
+          Height = 173
           Align = alClient
           Images = dmMain.ClassImages
           ReadOnly = True
@@ -1292,7 +1292,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 172
+          Height = 173
           Align = alClient
           Images = dmMain.MenuImages_NewLook
           Indent = 19
