@@ -72,13 +72,13 @@ Locale=1033
 CodePage=1252
 [Version Info Keys]
 CompanyName=Bloodshed Software
-FileDescription=Dev-C++ IDE
+FileDescription=wx-devcpp/Dev-C++ IDE
 FileVersion=4.9.9.2
 InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software
 LegalTrademarks=
 OriginalFilename=devcpp.exe
-ProductName=Dev-C++
+ProductName=wx-devcpp
 ProductVersion=5
 Comments=Under the GNU General Public License
 LastCompiled=2005-02-26 22:06:56

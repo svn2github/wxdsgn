@@ -140,10 +140,10 @@ begin
   GetUserName(s, d);
 {$IFDEF BETAVERSION}
   MessageBox(Self.Handle,
-    PChar('This is a beta version of Dev-C++.'
-              +'Please report bugs at http://bloodshed.net/bugs. We provide updates often, so be sure to check for them in Tools menu, Check for Updates/Packages.'+ #13#13
+    PChar('This is a beta version of wx-devcpp.'
+              +'Please report bugs at https://sourceforge.net/tracker/?group_id=95606&atid=611982. We provide updates often, so be sure to check for them in Tools menu, Check for Updates/Packages.'+ #13#13
               +'Your config files will be stored in ' +  ExtractFileDir(devData.INIFile) + #13
-              +'Otherwise, you can pass the following parameter to Dev-C++ : -c c:\config_file_directory'),
+              +'Otherwise, you can pass the following parameter to wx-devcpp : -c c:\config_file_directory'),
     PChar('Beta version Notice'), MB_OK);
 {$ENDIF}
 end;

@@ -322,7 +322,7 @@ begin
 
 
   Application.Initialize;
-  Application.Title := 'Dev-C++';
+  Application.Title := 'wx-devcpp';
   Application.CreateForm(TMainForm, MainForm);
   MainForm.Hide; // hide it
 
