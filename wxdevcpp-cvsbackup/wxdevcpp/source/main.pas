@@ -1187,7 +1187,7 @@ uses
 
   {$IFDEF WX_BUILD}
   ,WxBoxSizer, WxStaticBoxSizer,WxGridSizer,
-  WxButton, WxBitmapButton,WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
+  WxButton, wxBitBtn, WxBitmapButton,WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
   WxMemo, WXRadioButton, WxScrollBar,wxGrid,
   WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
   WxStaticText, WxTreeCtrl, WxControlPanel,CompFileIo, WXFlexGridSizer,
@@ -8913,7 +8913,7 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.ReadClass;
 begin
-  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWXMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
+  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton,TWxBitBtn, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWXMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
   RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine]);
   RegisterClasses([TWxPanel,TWXListBook, TWxNoteBook, TWxStatusBar, TWxToolBar]);
   RegisterClasses([TWxNoteBookPage,TWxchecklistbox,TWxSplitterWindow]);
