@@ -54,7 +54,6 @@ type
     btnClose: TBitBtn;
     XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure lvClick(Sender: TObject);
     procedure lvChange(Sender: TObject; Item: TListItem;
       Change: TItemChange);
@@ -66,6 +65,8 @@ type
     procedure lvCompare(Sender: TObject; Item1, Item2: TListItem;
       Data: Integer; var Compare: Integer);
     procedure lvKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     { Private declarations }
     wThread: TWebThread;
@@ -75,6 +76,7 @@ type
     fSelfUpdate: string;
     ColumnToSort: integer;
     SortAscending: boolean;
+    FormInitialized: Boolean;
     procedure GetUpdateInfo(Sender: TObject);
     procedure DownloadFiles(Sender: TObject);
     function CheckFile(Filename: string): boolean;
@@ -84,7 +86,7 @@ type
     procedure UpdateSelf;
     procedure GetMirrorList;
     function ReplaceMacros(Source: string): string;
-    procedure WriteInstalled(index : integer);
+    procedure WriteInstalled(index : integer; InPackMan: Boolean);
     function GetSelected(index: integer): boolean;
     procedure EnableForm;
     procedure DisableForm;
@@ -109,9 +111,9 @@ uses utils, version, devcfg, PackmanExitCodesU, main;
 const
   MAGIC_HEADER = '{WebUpdate_config_file}';
   CONF_FILE = 'webupdate.conf';
-  DEFAULT_MIRROR   = 'Devpaks.org=http://devpaks.org/'; // Seems to have lot and more upto date devpaks
-  DEFAULT_MIRROR_2 = 'Andreas Aberg''s server=http://vUpdate.servebeer.com/';  // 'bloodshed.net (Bloodshed server)=http://haiku.bloodshed.net/dev/webupdate/';
-  DEFAULT_MIRROR_3 = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
+//  DEFAULT_MIRROR = 'Andreas Aberg''s server=http://vUpdate.servebeer.com/';  // 'bloodshed.net (Bloodshed server)=http://haiku.bloodshed.net/dev/webupdate/';
+  DEFAULT_MIRROR = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
+  DEFAULT_MIRROR_2 = 'devpaks.org Community Devpaks=http://devpaks.org/';
 
 var
   BASE_URL: string;
@@ -193,6 +195,7 @@ begin
         MOVEFILE_COPY_ALLOWED or MOVEFILE_REPLACE_EXISTING) = BOOL(False) then
         begin
           MessageDlg('Could not move file: ' + PUpdateRec(wThread.Files[I])^.TempFilename +
+          ' to ' + PackFileName +
           ' please verify you have enough permissions to install packages on this system',
           mtWarning, [mbOK], 0);
         end
@@ -215,7 +218,7 @@ begin
               CloseHandle(PackProcessInfo.hProcess);
               CloseHandle(PackProcessInfo.hThread);
               if PackExitCode = Cardinal(PACKMAN_EXITCODE_NO_ERROR) then
-                WriteInstalled(I)
+                WriteInstalled(I, True)
               else
                 MessageDlg('PackMan.exe failed to install the package or the installation was cancelled!', mtError, [mbOK], 0);
           end
@@ -230,12 +233,12 @@ begin
         ForceDirectories(ExtractFilePath(Dest));
         if CopyFile(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(Dest), False) then begin
           DeleteFile(PUpdateRec(wThread.Files[I])^.TempFilename);
-          WriteInstalled(I);
+          WriteInstalled(I, False);
         end
         else begin
           if LowerCase(Dest) = LowerCase(Application.ExeName) then begin
             fSelfUpdate := PUpdateRec(wThread.Files[I])^.TempFilename;
-            WriteInstalled(I);
+            WriteInstalled(I, False);
           end
           else
             MessageDlg('Could not install file: ' + Dest, mtError, [mbOK], 0);
@@ -255,9 +258,12 @@ begin
   wThread := nil;
 end;
 
-procedure TWebUpdateForm.WriteInstalled(index : integer);
+procedure TWebUpdateForm.WriteInstalled(index : integer; InPackMan: Boolean);
+//InPackMan=false meaning write in devcpp.cfg
+//otherwise just clean from the list because Packman is handling its devpak list
 var i : integer;
 begin
+  if Not InPackMan then
   if FileExists(devDirs.Config + 'devcpp.cfg') then
     with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
       try
@@ -265,6 +271,8 @@ begin
       finally
         Free;
       end;
+
+  //clear from the list        
   for i := 0 to lv.Items.Count - 1 do
     if lv.Items[i].Data = PUpdateRec(wThread.Files[index]) then
     begin
@@ -278,6 +286,7 @@ var
   sl: TStringList;
   I: integer;
   Ini, LocalIni: TIniFile;
+  PackmanPacks: TStrings;
   P: PUpdateRec;
 
   procedure AddGroups(text: String);
@@ -304,17 +313,77 @@ var
     end;
   end;
 
+  procedure ReadPackmanPackages(List: TStrings);
+  //this procedure parses the packman entry files and returns
+  //a list of installed packages in format
+  //'AppName=AppVersion'
+  var
+    tempFiles: TStringList;
+    tempIni: TIniFile;
+    packName, packVersion: String;
+    i: Integer;
+  begin
+    if List = nil then Exit;
+
+    tempFiles := TStringList.Create;
+    FilesFromWildcard(devDirs.Exec + 'Packages',
+      '*.entry', tempFiles, False, False, False);
+
+    for i := 0 to tempFiles.Count -1 do
+    begin
+      packName := '';
+      packVersion := '';
+      try
+        tempIni := TIniFile.Create(tempFiles[i]);
+        try
+          packName := tempIni.ReadString('Setup', 'AppName', '');
+          packVersion := tempIni.ReadString('Setup', 'AppVersion', '');
+          if (packName <> '') and (packVersion <> '') then
+            List.Add(packName + '=' + packVersion);
+        finally
+          tempIni.Free;
+        end;
+      except
+      end;
+    end;
+
+    tempFiles.Free;
+  end;
+
+  function GetPackmanPackVersion(List: TStrings; AppName: String): String;
+  //returns AppVersion string, based on given AppName and provided
+  //list of Packages as returned by ReadPackmanPackages
+  var
+    i: Integer;
+  begin
+    Result := '';
+    if List = nil then Exit;
+
+    for i := 0 to List.Count -1 do
+    begin
+      if Pos(LowerCase(AppName + '='), LowerCase(List[i])) = 1 then
+      begin
+        Result := Copy(List[i], Length(AppName + '=') + 1,
+          Length(List[i]) - Length(AppName + '='));
+        Break;
+      end;
+    end;
+  end;
+
 begin
   Result := False;
 
   ClearList;
 
-  if (not FileExists(Filename)) or (not FileExists(devDirs.Config + 'devcpp.cfg')) then
+  if (not FileExists(Filename)) { or (not FileExists(devDirs.Config + 'devcpp.cfg')) } then
     Exit;
 
   Ini := TIniFile.Create(Filename);
 
   LocalIni := TIniFile.Create(devDirs.Config + 'devcpp.cfg');
+
+  PackmanPacks := TStringList.Create;
+  ReadPackmanPackages(PackmanPacks);
 
   sl := TStringList.Create;
   try
@@ -337,13 +406,16 @@ begin
       P^.Group := Ini.ReadString(sl[I], 'Group', '');
       P^.InstallPath := Ini.ReadString(sl[I], 'InstallPath', '');
       P^.Version := Ini.ReadString(sl[I], 'Version', '<unknown>');
+      P^.LocalVersion := GetPackmanPackVersion(PackmanPacks, P^.Name);
+      if P^.LocalVersion = '' then
       P^.LocalVersion := LocalIni.ReadString(WEBUPDATE_SECTION, P^.Name, '');
       P^.Size := Ini.ReadInteger(sl[I], 'Size', 0);
       P^.Date := Ini.ReadString(sl[I], 'Date', '');
       P^.Selected := False;
       P^.Execute := Ini.ReadBool(sl[I], 'Execute', false);
       // verify if the user already has the last update
-      if  LocalIni.ReadString(WEBUPDATE_SECTION, P^.Name, '') = P^.Version then begin
+      if (P^.LocalVersion = P^.Version) then
+      begin
         Dispose(P);
         continue;
       end;
@@ -354,6 +426,7 @@ begin
     sl.Free;
     Ini.Free;
     LocalIni.Free;
+    PackmanPacks.Free;
   end;
   FillList('');
 end;
@@ -419,26 +492,7 @@ end;
 
 procedure TWebUpdateForm.FormCreate(Sender: TObject);
 begin
-  fUpdateList := TList.Create;
-  fMirrorList := TStringList.Create;
-  fErrorsList := TStringList.Create;
-  ProgressBar1.Position := 0;
-  lblStatus.Caption := 'Disconnected';
-  CalcTotalSize;
-  btnCheck.OnClick := GetUpdateInfo;
-  fSelfUpdate := '';
-  cmbGroups.Items.Add(AllGroupsText);
-  cmbGroups.ItemIndex := 0;
-  GetMirrorList;
-  memDescr.Lines.Add('Press "Check for updates" to request a list of available updates on the server.');
-end;
-
-procedure TWebUpdateForm.FormDestroy(Sender: TObject);
-begin
-  ClearList;
-  FreeAndNil(fUpdateList);
-  FreeAndNil(fMirrorList);
-  FreeAndNil(fErrorsList);
+  FormInitialized := False;
 end;
 
 procedure TWebUpdateForm.lvClick(Sender: TObject);
@@ -552,7 +606,17 @@ end;
 procedure TWebUpdateForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-//  Action := caFree;
+  cmbMirrors.Clear;
+  cmbGroups.Clear;
+  lv.Clear;
+  memDescr.Clear;
+
+  ClearList;
+  FreeAndNil(fUpdateList);
+  FreeAndNil(fMirrorList);
+  FreeAndNil(fErrorsList);
+
+  FormInitialized := False;
 end;
 
 procedure TWebUpdateForm.UpdateSelf;
@@ -609,7 +673,6 @@ begin
   if fMirrorList.Count = 0 then begin
     fMirrorList.Add(DEFAULT_MIRROR);
     fMirrorList.Add(DEFAULT_MIRROR_2);
-    fMirrorList.Add(DEFAULT_MIRROR_3);    
   end;
 
   cmbMirrors.Items.Clear;
@@ -758,6 +821,37 @@ procedure TWebUpdateForm.lvKeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_SPACE then
     lvClick(Sender);
+end;
+
+procedure TWebUpdateForm.FormShow(Sender: TObject);
+begin
+  if Not FormInitialized then
+  begin
+    fUpdateList := TList.Create;
+    fMirrorList := TStringList.Create;
+    fErrorsList := TStringList.Create;
+    ProgressBar1.Position := 0;
+    lblStatus.Caption := 'Disconnected';
+    CalcTotalSize;
+    btnCheck.Caption := 'Check for &updates';
+    btnCheck.OnClick := GetUpdateInfo;
+    fSelfUpdate := '';
+    cmbGroups.Items.Add(AllGroupsText);
+    cmbGroups.ItemIndex := 0;
+    GetMirrorList;
+    memDescr.Lines.Add('Press "Check for updates" to request a list of available updates on the server.');
+
+    FormInitialized := True;
+  end;
+end;
+
+procedure TWebUpdateForm.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  if Assigned(wThread) then begin
+    MessageDlg('Please wait until download is complete.', mtInformation, [mbCancel], 0);
+    CanClose := False;
+  end;
 end;
 
 end.
