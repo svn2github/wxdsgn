@@ -1,0 +1,103 @@
+[Template]
+ver=1
+Name=wxWidgets Frame
+IconIndex=0
+Description=A basic Frame for wxWindows applications.
+Catagory=Basic
+
+[Project]
+Name=newFrameProject
+UnitCount=6
+Type=0
+Ver=1
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=newFrameproject_private.rc
+ResourceIncludes=C:\Dev-Cpp\include\
+MakeIncludes=
+Compiler=-fno-rtti -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -fvtable-thunks -D__WXMSW__ -D__GNUWIN32__ -D__WIN95___@@__@@_
+CppCompiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@__@@_
+Linker=-lwxmsw25_@@_-lwxmsw25_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
+IsCpp=1
+Icon=
+ExeOutput=
+ObjectOutput=
+OverrideOutput=0
+OverrideOutputName=newFrameProject.exe
+HostApplication=
+Folders="C++ Header","C++ Source","wxForm Files"
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=1
+CompilerSet=0
+CompilerSettings=0000000000000101001000
+
+[Unit0]
+CppName=newProgramFrame.wxform
+Cpp=newProgramFrame.wxform
+Folder=wxForm Files
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1]
+CppName=newProgramFrameApp.cpp
+Cpp=newProgramFrameApp.cpp
+CompileCpp=1
+Folder=C++ Source
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+CppName=newProgramFrameApp.h
+Cpp=newProgramFrameApp.h
+CompileCpp=1
+Folder=C++ Header
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+
+[Unit3]
+CppName=newProgramFrame.cpp
+Cpp=newProgramFrame.cpp
+CompileCpp=1
+Folder=C++ Source
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
+CppName=newProgramFrame.h
+Cpp=newProgramFrame.h
+CompileCpp=1
+Folder=C++ Header
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+CppName=newProgramApp.rc
+Cpp=newProgramApp.rc
+FileName=newProgramApp.rc
+Folder=Resources
+CompileCpp=0
+Compile=1
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
