@@ -33,7 +33,7 @@ interface
 uses classes, Sysutils, DbugIntf,xprocs,synEdit;
 
 type
-    TBlockType = (btManualCode,btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration);
+    TBlockType = (btManualCode,btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btClassNameEnumControlIdentifiers,btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration);
 
 function GetStartAndEndBlockStrings(ClassNameString: string; blockType: TBlockType; var StartString, EndString: string): Boolean;
 
@@ -55,6 +55,9 @@ function DeleteAllClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: s
 
 function AddClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
 function DeleteAllClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+
+function AddClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
+function DeleteAllClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
 
 function AddClassNameIncludeHeader(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
 function DeleteAllClassNameIncludeHeader(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
@@ -312,6 +315,32 @@ begin
     DeleteBlock(synEdit, ClassNameString, btClassNameControlIdentifiers);
 end;
 
+function AddClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
+var
+    i:Integer;
+    strlst: TStringList;
+begin
+    Result:= True;
+    if trim(ControlIDString) = '' then
+        exit;
+    strlst:=TStringList.Create;
+
+    strTokenToStrings(ControlIDString,#13,strlst);
+
+    for i := strlst.Count - 1 downto 0 do    // Iterate
+    begin
+        synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
+    end;    // for
+
+    strlst.Destroy;
+end;
+
+function DeleteAllClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+begin
+    Result:= True;
+    DeleteBlock(synEdit, ClassNameString, btClassNameEnumControlIdentifiers);
+end;
+
 function AddClassNameIncludeHeader(synEdit:TSynEdit;ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
 var
     i:Integer;
@@ -377,6 +406,12 @@ begin
         Exit;
     end;
 
+    if blockType = btClassNameEnumControlIdentifiers then
+    begin
+        StartString := '////GUI Enum Control ID Start';
+        EndString := '////GUI Enum Control ID End';
+        Exit;
+    end;
 
     if blockType = btXPMImages then
     begin
