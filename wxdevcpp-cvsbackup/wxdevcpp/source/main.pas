@@ -41,7 +41,7 @@ uses
   {$IFDEF WX_BUILD}
   ,JclStrings, JvExControls, JvComponent, TypInfo,JclRTTI,JvStringHolder,
   ELDsgnr,JvInspector, xprocs,dmCreateNewProp,wxUtils, DbugIntf,
-  wxSizerpanel,Designerfrm, ELPropInsp,uFileWatch, ThemeMgr
+  wxSizerpanel,Designerfrm, ELPropInsp,uFileWatch, ThemeMgr,ExceptionFilterUnit
   {$ENDIF}
   ;
 {$ENDIF}
