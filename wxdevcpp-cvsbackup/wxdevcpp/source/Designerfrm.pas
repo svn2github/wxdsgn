@@ -36,7 +36,8 @@ uses
   WxEdit, WxStaticText, WxButton, wxUtils, WXRadioButton, WXCheckBox,
     Wxcombobox,WxToolButton,WxSeparator,
   WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
-  WxSizerPanel,ComCtrls, SynEdit, Menus;
+  WxSizerPanel,WxSplitterWindow,
+  ComCtrls, SynEdit, Menus;
 
 type
 
@@ -126,30 +127,14 @@ type
     procedure SetDesignerType(value:TWxDesignerType);
     
   published
-    property Wx_ICON: TPicture
-      read FWx_ICON write FWx_ICON;
-
-    property Wx_Name: string
-      read FWx_Name write FWx_Name;
-
-    property Wx_IDName: string
-      read FWxFrm_IDName write FWxFrm_IDName;
-
-    property Wx_IDValue: LongInt
-      read FWxFrm_IDValue write FWxFrm_IDValue;
-
-    property Wx_Class: string
-      read FWxFrm_Class write FWxFrm_Class;
-
-    property Wx_Center: Boolean
-      read FWxFrm_Center write FWxFrm_Center;
-
-    property Wx_Hidden: Boolean
-      read FWxFrm_Hidden write FWxFrm_Hidden;
-
-    property Wx_ToolTips: string
-      read FWxFrm_ToolTips write FWxFrm_ToolTips;
-
+    property Wx_ICON: TPicture read FWx_ICON write FWx_ICON;
+    property Wx_Name: string read FWx_Name write FWx_Name;
+    property Wx_IDName: string read FWxFrm_IDName write FWxFrm_IDName;
+    property Wx_IDValue: LongInt read FWxFrm_IDValue write FWxFrm_IDValue;
+    property Wx_Class: string read FWxFrm_Class write FWxFrm_Class;
+    property Wx_Center: Boolean read FWxFrm_Center write FWxFrm_Center;
+    property Wx_Hidden: Boolean read FWxFrm_Hidden write FWxFrm_Hidden;
+    property Wx_ToolTips: string read FWxFrm_ToolTips write FWxFrm_ToolTips;
     property Wx_GeneralStyle: TWxStdStyleSet
       read FWxFrm_GeneralStyle write FWxFrm_GeneralStyle;
 
@@ -292,6 +277,7 @@ type
     wx_PropertyList: TStringList;
     FWx_EventList: TStringList;
     function GenerateControlIDs: string;
+    function GenerateEnumControlIDs: string;    
     function GenerateEventTableEntries(CurrClassName: string): string;
     //function GenerateExtraCodeForFrame:string;
     function GenerateGUIControlCreation: string;
@@ -340,7 +326,7 @@ var
   i: Integer;
   intBlockStart, intBlockEnd: Integer;
   intManualBlockStart, intManualBlockEnd: Integer;
-  wxcompInterface: IWxComponentInterface;
+   wxcompInterface: IWxComponentInterface;
   strEntry,strEventTableStart,strEventTableEnd: string;
   isSizerAvailable:Boolean;
   strHdrValue:String;
@@ -373,6 +359,17 @@ begin
     if isSizerAvailable then
     begin
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateGUIControlCreation);
+        //Add the Code Generation Items that need to be added after the creation with new
+        for I :=  frmNewForm.ComponentCount - 1  downto 0 do // Iterate
+        begin
+            if not frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
+                continue;
+            strTemp:=CntIntf.GenerateLastCreationCode;
+            if trim(strTemp) = '' then
+                continue;
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, '');
+        end; // for        
     end;
 
     if not isSizerAvailable then
@@ -408,7 +405,6 @@ begin
     begin
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateGUIControlCreation);
     end;
-
   end;
 
 
@@ -525,8 +521,8 @@ begin
     end;
   end;
 
-  if GetBlockStartAndEndPos(synEdit, strClassName,
-    btClassNameControlIdentifiers, intBlockStart, intBlockEnd) then
+  //For Old #define styled Control Ids
+  if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameControlIdentifiers, intBlockStart, intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
     DeleteAllClassNameControlIndentifiers(synEdit, strClassName, intBlockStart,
@@ -542,8 +538,30 @@ begin
           if strLst.indexOf(strIDValue) = -1 then
           begin
             strLst.Add(strIDValue);
-            AddClassNameControlIndentifiers(synEdit, strClassName,
-              intBlockStart, intBlockEnd, strIDValue);
+            AddClassNameControlIndentifiers(synEdit, strClassName,intBlockStart, intBlockEnd, strIDValue);
+          end;
+        end;
+      end;
+    end;
+    strLst.destroy;
+  end;
+ //New Enum Based Control Ids
+   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEnumControlIdentifiers, intBlockStart, intBlockEnd) then
+  begin
+    //Clear Declaration and Creation Field
+    DeleteAllClassNameEnumControlIndentifiers(synEdit, strClassName, intBlockStart,intBlockEnd);
+    strLst := TStringList.Create;
+    for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+    begin
+      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
+      begin
+        strIDValue := wxcompInterface.GenerateEnumControlIDs;
+        if trim(strIDValue) <> '' then
+        begin
+          if strLst.indexOf(strIDValue) = -1 then
+          begin
+            strLst.Add(strIDValue);
+            AddClassNameEnumControlIndentifiers(synEdit, strClassName,intBlockStart, intBlockEnd, strIDValue);
           end;
         end;
       end;
@@ -996,6 +1014,13 @@ begin
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
     Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
 end;
+
+function TfrmNewForm.GenerateEnumControlIDs: string;
+begin
+  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+    Result := Format('%s = %d ,', [Wx_IDName, Wx_IDValue]);
+end;
+
 
 function TfrmNewForm.GenerateEventTableEntries(CurrClassName: string): string;
 begin

@@ -1,6 +1,6 @@
 {
     $Id$
-    
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -1007,8 +1007,8 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure BuildOpenWith;
     procedure RebuildClassesToolbar;
     procedure PrepareDebugger;
-    procedure HideCodeToolTip; // added on 23rd may 2004 by peter_   
-    procedure ParseCustomCmdLine(strLst:TStringList); //Added By Guru    
+    procedure HideCodeToolTip; // added on 23rd may 2004 by peter_
+    procedure ParseCustomCmdLine(strLst:TStringList); //Added By Guru
     procedure SurroundWithClick(Sender: TObject);     //Added By Guru
   protected
     {$IFDEF WX_BUILD}
@@ -1037,7 +1037,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     function GetBreakPointIndex(line_number: integer; e:TEditor) : integer;
     procedure RemoveBreakPointAtIndex(index:integer);
     //function BreakPointForFile(filename : string) : integer;
-        
+
     //Functions for wx-devcpp
     procedure SurroundString(e: TEditor;strStart,strEnd:String);
     procedure CppCommentString(e: TEditor);
@@ -1066,7 +1066,7 @@ public
   DesignerMenuSep2:TMenuItem;
 
   JvInspectorDotNETPainter1: TJvInspectorBorlandPainter;
-  JvInspectorDotNETPainter2: TJvInspectorBorlandPainter;   
+  JvInspectorDotNETPainter2: TJvInspectorBorlandPainter;
 
   ELDesigner1: TELDesigner;
   //Specific to Object inspector
@@ -1130,8 +1130,8 @@ public
     function isFunctionAvailable(intClassID:Integer;strFunctionName:String):boolean;
     function isCurrentFormFilesNeedToBeSaved:Boolean;
     function saveCurrentFormFiles:Boolean;
-    function CreateFunctionInEditor(var strFncName:string;strReturnType,strParameter :String):boolean;overload;
-    function CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string):Boolean;overload;
+    function CreateFunctionInEditor(var strFncName:string;strReturnType,strParameter :String;var ErrorString:String):boolean;overload;
+    function CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string;var ErrorString:String):Boolean;overload;
     function LocateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string):Boolean;
     procedure OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
     procedure UpdateDefaultFormContent;
@@ -1139,7 +1139,7 @@ public
     function GetCurrentDesignerForm: TfrmNewForm;
     function isCurrentPageDesigner: Boolean;
     function ReplaceClassNameInEditorFile(FileName, FromClassName, ToClassName:string): Boolean;
-    function ReplaceClassNameInEditor(strLst:TStringList;edt:TEditor;FromClassName, ToClassName:string):boolean;    
+    function ReplaceClassNameInEditor(strLst:TStringList;edt:TEditor;FromClassName, ToClassName:string):boolean;
     function GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string): Boolean;
 
     function LocateFunction(strFunctionName:String):boolean;
@@ -1178,9 +1178,10 @@ uses
   WxOpenFileDialog,WxSaveFileDialog,WxFontDialog,
   wxMessageDialog,WxProgressDialog,WxPrintDialog,WxFindReplaceDialog,WxDirDialog,
   WxColourDialog ,WxPageSetupDialog, wxTimer,WxNonVisibleBaseComponent,
+  WxSplitterWindow,
   CreateOrderFm,
   ViewIDForm
-  {$ENDIF} // END OF IFEDEF WX_BUILD 
+  {$ENDIF} // END OF IFEDEF WX_BUILD
   ;
 {$ENDIF}
 {$IFDEF LINUX}
@@ -1194,7 +1195,7 @@ uses
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
   WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm;
 {$ENDIF}
-  
+
 {$R *.dfm}
 
 var
@@ -1472,7 +1473,7 @@ begin
 
   intControlCount := 1000;
   //frmInspectorDock.Width:=100;
-  frmInspectorDock.Height:=500;                             
+  frmInspectorDock.Height:=500;
   //frmInspectorDock.Visible:=true;
   LeftPageControl.Height:=400;
   frmInspectorDock.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
@@ -1543,7 +1544,7 @@ begin
 
     tryfinallyPopItem.Tag:=INT_TRY_FINALLY;
     tryfinallyPopItem.OnClick:=SurroundWithClick;
-    
+
     trycatchfinallyPopItem.Tag:=INT_TRY_CATCH_FINALLY;
     trycatchfinallyPopItem.OnClick:=SurroundWithClick;
 
@@ -1552,10 +1553,10 @@ begin
 
     forintloopPopItem.Tag:=INT_FOR_I;
     forintloopPopItem.OnClick:=SurroundWithClick;
-    
+
     whileLoopPopItem.Tag:=INT_WHILE;
     whileLoopPopItem.OnClick:=SurroundWithClick;
-    
+
     dowhileLoopPopItem.Tag:=INT_DO_WHILE;
     dowhileLoopPopItem.OnClick:=SurroundWithClick;
 
@@ -1564,7 +1565,7 @@ begin
 
     ifelseloopPopItem.Tag:=INT_IF_ELSE;
     ifelseloopPopItem.OnClick:=SurroundWithClick;
-    
+
     switchLoopPopItem.Tag:=INT_SWITCH;
     switchLoopPopItem.OnClick:=SurroundWithClick;
 
@@ -1732,7 +1733,7 @@ begin
   LoadText(FALSE);
 
   devShortcuts1.Filename := devDirs.Config + DEV_SHORTCUTS_FILE;
-  
+
   //Some weird problem when upgrading to new version
   try
   devShortcuts1.Load;
@@ -1882,7 +1883,7 @@ procedure TMainForm.DoApplyWindowPlacement;
 begin
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
-  else 
+  else
   if not CacheCreated then // this is so weird, but the following call seems to take a lot of time to execute
     Self.Position := poScreenCenter;
 
@@ -2133,14 +2134,14 @@ begin
     strLstParams.Add(ParamStr(idx));
     inc(idx);
   end;
-  
+
   ParseCustomCmdLine(strLstParams);
   strLstParams.Destroy;
 end;
 
 //This function is derived from the pre parsecmdline function.
 //This is also used when activating the devcpp's previous instance
- 
+
 procedure TMainForm.ParseCustomCmdLine(strLst:TStringList);
 var
   idx: integer;
@@ -2949,7 +2950,7 @@ begin
             end;
         end;
     end;
-   {$ENDIF}   
+   {$ENDIF}
 
 end;
 
@@ -3058,7 +3059,7 @@ begin
 
   end
   else
-{$ENDIF}  
+{$ENDIF}
     CloseEditorInternal(e);
 
   //Guru : My Code End;
@@ -3071,7 +3072,7 @@ begin
     {$ENDIF}
         e.Text.SetFocus;
   end
-  else 
+  else
   	if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
       ClassBrowser1.Clear;
 end;
@@ -3518,7 +3519,7 @@ begin
     // <SOURCESPCLIST>
     s := StringReplace(s, cSrcList, fProject.ListUnitStr(' '), [rfReplaceAll]);
   end
-  else 
+  else
    if assigned(e) then
    begin
     // <EXENAME>
@@ -3945,7 +3946,7 @@ begin
 
   fname:=Lang[ID_UNTITLED] +inttostr(dmMain.GetNum) + '.rc';
   NewEditor := TEditor.Create;
-  NewEditor.init(InProject, fname, '', 
+  NewEditor.init(InProject, fname, '',
   	FALSE, TRUE);
   NewEditor.Activate;
 
@@ -4045,7 +4046,7 @@ begin
   end;
 
   for idx := 0 to pred(PageControl.PageCount) do begin
-    e := GetEditor(idx);        
+    e := GetEditor(idx);
     if (e.Modified) and ((not e.InProject) or (e.IsRes) {$IFDEF WX_BUILD} or (e.isForm){$ENDIF} ) then
       if not SaveFile(GetEditor(idx)) then
         Break;
@@ -4088,11 +4089,11 @@ begin
   // save project layout anyway ;)
   fProject.CmdLineArgs := fCompiler.RunParams;
   fProject.SaveLayout;
-  
-  //Added for wx problems : Just close all the file 
+
+  //Added for wx problems : Just close all the file
   //tabs before closing the project
   actCloseAll.Execute;
-  
+
   // ** should we save watches?
   if fProject.Modified then
   begin
@@ -4133,7 +4134,7 @@ begin
   except
   	fProject:=nil;
   end;
-  
+
   ProjectView.Items.Clear;
   ClearMessageControl;
   UpdateAppTitle;
@@ -4307,7 +4308,7 @@ begin
     ProjectToolWindow.Close;
     if actProjectManager.Checked then
     begin
-    	//if the panel which holds the Browser Tab is 
+    	//if the panel which holds the Browser Tab is
     	//visible, v'll make it visible
     	if LeftPageControl.Visible = false then
 			LeftPageControl.Visible:=true;
@@ -4503,7 +4504,7 @@ var
     NewName: string;
 begin
   if not assigned(fProject) then exit;
-  if not assigned(ProjectView.Selected) or 
+  if not assigned(ProjectView.Selected) or
   	(ProjectView.Selected.Level < 1) then exit;
 
   if ProjectView.Selected.Data = Pointer(-1) then
@@ -4765,7 +4766,7 @@ begin
     // no matter if the editor file is not in project,
     // the target is ctProject since we have a project open...
     fCompiler.Target := ctProject
-  else 
+  else
   if assigned(e) and
     (GetFiletyp(e.Filename) in [utSrc, utRes]) or e.new then
     fCompiler.Target := ctFile;
@@ -4776,7 +4777,7 @@ begin
       Exit;
     fCompiler.SourceFile := e.FileName;
   end
-  else 
+  else
   if fCompiler.Target = ctProject then
   begin
     actSaveAllExecute(Self);
@@ -4828,7 +4829,7 @@ begin
     else
       fCompiler.Target := ctProject;
   end
-  else 
+  else
   if assigned(e) then
     fCompiler.Target := ctFile;
 
@@ -5153,7 +5154,7 @@ begin
                         CompilerOutput.Selected.Caption +' ' +
                         CompilerOutput.Selected.SubItems.Text
                         , #13#10, ' ', [rfReplaceAll])
-                        , #10, ' ', [rfReplaceAll])          
+                        , #10, ' ', [rfReplaceAll])
       end;
 
     cResTab:
@@ -6447,11 +6448,11 @@ begin
    {$IFDEF WX_BUILD}
     if not e.isForm then
         e.Text.SetFocus;
-   {$ENDIF}   
+   {$ENDIF}
    {$IFNDEF WX_BUILD}
-    e.Text.SetFocus;   
-   {$ENDIF}   
-      
+    e.Text.SetFocus;
+   {$ENDIF}
+
   end;
 end;
 
@@ -6570,7 +6571,7 @@ begin
   if ReloadFileName = FileName then
     exit;
   ReloadFilename := FileName;
-  case ChangeType of 
+  case ChangeType of
   		mctChanged: if MessageDlg(Filename + ' has changed. Reload from disk?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
         e := GetEditorFromFileName(Filename);
         if Assigned(e) then begin
@@ -6665,7 +6666,7 @@ var
   S: string;
 begin
   if Assigned(ProjectView.Selected) and (ProjectView.Selected.Data = Pointer(-1)) then begin
-    S := ProjectView.Selected.Text;    
+    S := ProjectView.Selected.Text;
     if InputQuery(Lang[ID_POP_RENAMEFOLDER], Lang[ID_MSG_RENAMEBROWSERFOLDER], S) and (S <> '') then begin
       ProjectView.Selected.Text := S;
       fProject.UpdateFolders;
@@ -7288,9 +7289,9 @@ procedure TMainForm.ProjectViewCompare(Sender: TObject; Node1,
 begin
   if (Node1.Data = pointer(-1)) and (Node2.Data = pointer(-1)) then
     Compare := AnsiCompareStr(Node1.Text, Node2.Text)
-  else 
+  else
   	if Node1.Data = pointer(-1) then Compare := -1
-   else 
+   else
    	if Node2.Data = pointer(-1) then Compare := +1
   else
     Compare := AnsiCompareStr(Node1.Text, Node2.Text);
@@ -7547,7 +7548,7 @@ var
   idx2, idx3: integer;
 begin
   Result:=false;
-  
+
   if not Assigned(fProject) then
     Exit;
   if not assigned(ProjectView.Selected) or
@@ -7904,7 +7905,7 @@ var
 begin
   CurrentEditor := GetEditor(PageControl.ActivePageIndex);
 
-  if Assigned(CurrentEditor)  AND Assigned(CurrentEditor.CodeToolTip) then 
+  if Assigned(CurrentEditor)  AND Assigned(CurrentEditor.CodeToolTip) then
   begin
   	//Added for wx Problems
     try
@@ -7920,7 +7921,7 @@ procedure TMainForm.ApplicationEvents1Deactivate(Sender: TObject);
 // added on 23rd may 2004 by peter_
 //
   {$IFDEF WX_BUILD}
-  //This is a custom File Watcher used specifically for 
+  //This is a custom File Watcher used specifically for
   //wx-devcpp because the current implementation
   //is somewhat erratic in my machine
 var
@@ -7931,8 +7932,8 @@ begin
   try
   	HideCodeToolTip;
   except
-  end; 
-  
+  end;
+
   {$IFDEF WX_BUILD}
   devFileMonitor1.Deactivate;
   FWatchList.Clear;
@@ -8007,9 +8008,9 @@ begin
   Else
   begin
     strCppFile:= includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxDlg.cpp.code';
-    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxDlg.h.code';  
+    strHppFile:=includetrailingbackslash(ExtractFileDir(Application.ExeName))+'Templates\wxWidgets\wxDlg.h.code';
   end;
-    
+
   if (not fileExists(strCppFile)) then
   begin
     MessageDlg('Unable to find wxWidgets Template file: '+strCppFile+#13+#10+''+#13+#10+'Please provide the template files in the template directory. ', mtError, [mbOK], 0);
@@ -8044,22 +8045,29 @@ begin
   // ReadString will return either the ini key or the default
   ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
 
-  FCreateFormPropObj.txtFileName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),''); // Default file name
-  FCreateFormPropObj.txtClassName.Text := ini.ReadString('wxWidgets',
-                                       'Class', ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Class');  // Default class name
-  FCreateFormPropObj.txtTitle.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'');   // Default title name
+  //Reverted the changes for using the custom names.
+  //Custome Names are Ok for ProjectCreation, but it is not good for
+  //Individual Forms.
+  if dsgnType = dtWxFrame then
+  begin
+    FCreateFormPropObj.txtFileName.Text := emptyFileName+'Frm';
+    FCreateFormPropObj.txtClassName.Text := emptyFileName+'Frm';
+  end
+  else
+  begin
+    FCreateFormPropObj.txtFileName.Text := emptyFileName+'Dlg';
+    FCreateFormPropObj.txtClassName.Text := emptyFileName+'Dlg';
+  end;
 
+  FCreateFormPropObj.txtTitle.Text := emptyFileName;
   FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', GetLoginName);
 
-
   if InProject then
-    FCreateFormPropObj.txtSaveTo.Text :=
-      IncludeTrailingBackslash(ExtractFileDir(fProject.FileName))
+    FCreateFormPropObj.txtSaveTo.Text := IncludeTrailingBackslash(ExtractFileDir(fProject.FileName))
   else
   begin
     if Trim(FCreateFormPropObj.txtSaveTo.Text) = '' then
-      FCreateFormPropObj.txtSaveTo.Text :=
-        IncludeTrailingBackslash(ExtractFileDir(Application.ExeName));
+      FCreateFormPropObj.txtSaveTo.Text :=IncludeTrailingBackslash(ExtractFileDir(Application.ExeName));
   end;
 
   if FCreateFormPropObj.showModal <> mrOK then
@@ -8068,9 +8076,12 @@ begin
     exit;
   end;
 
+  try
    // Write the current strings back as the default
-  ini.WriteString('wxWidgets', 'Class', FCreateFormPropObj.txtClassName.Text);
   ini.WriteString('wxWidgets', 'Author', FCreateFormPropObj.txtAuthorName.Text);
+  except
+
+  end;
 
   ini.free;
 
@@ -8086,8 +8097,7 @@ begin
   if not CreateStatus then
   begin
     //Add localization here
-    Application.MessageBox(PChar('Unable to Create wxForm'),
-      'New wxWidgets Form', MB_ICONQUESTION + MB_OK);
+    Application.MessageBox(PChar('Unable to Create wxForm'),'New wxWidgets Form', MB_ICONQUESTION + MB_OK);
     Exit;
   end;
 
@@ -8234,29 +8244,35 @@ begin
      FCreateFormPropObj.Caption := 'Create New Project - wxWidgets Frame'
      else
       FCreateFormPropObj.Caption := 'Create New Project - wxWidgets Dialog';
-  
+
   emptyFileName := Lang[ID_UNTITLED] + inttostr(dmMain.GetNum);
 
   // Open the ini file and see if we have any default values for author, class, license
   // ReadString will return either the ini key or the default
   ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
 
-  FCreateFormPropObj.txtFileName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),''); // Default file name
-  FCreateFormPropObj.txtClassName.Text := ini.ReadString('wxWidgets',
-                                       'Class', ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Class');  // Default class name
+  //Normally the user wont save the Form file with the same filename as that of the
+  //Project.
+  // Default class name
+  //For Dialog we'll Add Dlg at the end of the Projectname.
+  //Who is going to use the same class Name for all the projects ?
+  if dsgnType = dtWxFrame then
+  begin
+    FCreateFormPropObj.txtFileName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'') +'Frm';
+    FCreateFormPropObj.txtClassName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Frm';
+  end
+  else
+  begin
+    FCreateFormPropObj.txtFileName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'') +'Dlg';
+    FCreateFormPropObj.txtClassName.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'') + 'Dlg';
+  end;
+
   FCreateFormPropObj.txtTitle.Text := ChangeFileExt(ExtractFileName(fProject.FileName),'');   // Default title name
 
   FCreateFormPropObj.txtAuthorName.Text := ini.ReadString('wxWidgets', 'Author', GetLoginName);
-
-  if InProject then
-    FCreateFormPropObj.txtSaveTo.Text :=
-      IncludeTrailingBackslash(ExtractFileDir(fProject.FileName))
-  else
-  begin
-    if Trim(FCreateFormPropObj.txtSaveTo.Text) = '' then
-      FCreateFormPropObj.txtSaveTo.Text :=
-        IncludeTrailingBackslash(ExtractFileDir(Application.ExeName));
-  end;
+  //We we are creating a new project without having a project open
+  //then we'll see the InProject as false
+  FCreateFormPropObj.txtSaveTo.Text := IncludeTrailingBackslash(ExtractFileDir(fProject.FileName));
 
   if FCreateFormPropObj.showModal <> mrOK then
   begin
@@ -8264,9 +8280,11 @@ begin
     exit;
   end;
 
-  // Write the current strings back as the default
-  ini.WriteString('wxWidgets', 'Class', FCreateFormPropObj.txtClassName.Text);
-  ini.WriteString('wxWidgets', 'Author', FCreateFormPropObj.txtAuthorName.Text);
+  try
+    // Write the current strings back as the default
+    ini.WriteString('wxWidgets', 'Author', FCreateFormPropObj.txtAuthorName.Text);
+  except
+  end;
 
   ini.free;
 
@@ -8727,7 +8745,7 @@ begin
   RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWXMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
   RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine]);
   RegisterClasses([TWxPanel,TWXListBook, TWxNoteBook, TWxStatusBar, TWxToolBar]);
-  RegisterClasses([TWxNoteBookPage,TWxchecklistbox]);
+  RegisterClasses([TWxNoteBookPage,TWxchecklistbox,TWxSplitterWindow]);
   RegisterClasses([TWxSpinCtrl,TWxScrolledWindow,TWxHtmlWindow,TWxToolButton,TWxSeparator]);
   RegisterClasses([TWxPopupMenu,TWxMenuBar]);
   RegisterClasses([TWxOpenFileDialog,TWxSaveFileDialog,TWxFontDialog, TwxMessageDialog,TWxProgressDialog,TWxPrintDialog,TWxFindReplaceDialog,TWxDirDialog,TWxColourDialog]);
@@ -8767,7 +8785,7 @@ begin
     strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;';
     strTemp:=strTemp+'TWxSlider;TWxStaticLine;TWxStaticBitmap;TWxStatusBar;TWxChecklistbox;TWxSpinCtrl;';
     WriteString('Palette', 'Controls',strTemp);
-    WriteString('Palette', 'Window','TWxPanel;TWxNoteBook;TWxNoteBookPage;TWxGrid;TWxScrolledWindow;TWxHtmlWindow;');
+    WriteString('Palette', 'Window','TWxPanel;TWxNoteBook;TWxNoteBookPage;TWxGrid;TWxScrolledWindow;TWxHtmlWindow;TWxSplitterWindow;');
     WriteString('Palette', 'Toolbar','TWxToolBar;TWxToolButton;TWxSeparator;TWxEdit;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxSpinCtrl;');
     WriteString('Palette', 'Menu','TWxMenuBar;TWxPopupMenu;');
     WriteString('Palette', 'Dialogs','TWxOpenFileDialog;TWxSaveFileDialog;TWxProgressDialog;TWxColourDialog;TWxDirDialog;TWxFindReplaceDialog;TWxFontDialog;TWxPageSetupDialog;TWxPrintDialog;TWxMessageDialog;');
@@ -8883,7 +8901,7 @@ var
       Break;
     ComponentName := Copy(ComponentNames, Temp, Pos1 - Temp - 1);
     Temp := Pos1;
-    
+
     //CreateButton(ComponentName);
     if trim(ComponentName) = '' then
         continue;
@@ -9117,8 +9135,7 @@ end;
 
 
 {$IFDEF WX_BUILD}
-procedure TMainForm.ELDesigner1ControlInserted(Sender: TObject;
-  AControl: TControl);
+procedure TMainForm.ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
 var
   I: Integer;
   compObj: Tcomponent;
@@ -9143,6 +9160,19 @@ begin
       strClass, ELDesigner1.SelectedControls[0]);
   end;
 
+  if (AControl is TWinControl) then
+  begin
+    //todo: Try to create an interface to make sure whether a container has a limiting controls.
+    //If someone is dropping more than one control then we'll make the
+    //controls's parent as the parent of SplitterWindow
+    if (TWinControl(AControl).Parent <> nil) and  (TWinControl(AControl).Parent is TWxSplitterWindow) then
+    begin
+        if TWinControl(AControl).Parent.ControlCount > 2 then
+            TWinControl(AControl).Parent:= TWinControl(AControl).Parent.Parent;
+    end;
+  end;
+
+
   if SelectedComponent <> nil then
   begin
     if (SelectedComponent is TWxNoteBookPage) then
@@ -9151,6 +9181,7 @@ begin
         TWinControl(SelectedComponent).Parent:=TWinControl(PreviousComponent);
         TWxNoteBookPage(SelectedComponent).PageControl:=TPageControl(PreviousComponent);
     end;
+
     if(SelectedComponent is TWxNonVisibleBaseComponent) then
     begin
         TWxNonVisibleBaseComponent(SelectedComponent).Parent:=ELDesigner1.DesignControl;
@@ -9326,6 +9357,29 @@ var
       nontlbrInterface:IWxToolBarNonInsertableInterface;
       CurrentParent:TWinControl;
 
+function GetNonAllowAbleControlCountForFrame(winCtrl:TWinControl):Integer;
+var
+  I: Integer;
+begin
+    Result:=0;
+    //Weird error remover ... Shitty solution.
+    FirstComponentBeingDeleted:='';
+
+    if winCtrl = nil then
+        exit;
+    Result := 0;
+    for I := 0 to winCtrl.ControlCount - 1 do    // Iterate
+    begin
+        if (winCtrl.Controls[i] is TWxToolBar) or (winCtrl.Controls[i] is TWxMenuBar)
+        or (winCtrl.Controls[i] is TWxStatusBar) or (winCtrl.Controls[i] is TWxPopupMenu)
+        or (winCtrl.Controls[i] is TWxNonVisibleBaseComponent) then
+        begin
+            continue;
+        end;
+        inc(Result);
+    end;    // for
+end;
+
 function isSizerAvailable(winCtrl:TWinControl):Boolean;
 var
   I: Integer;
@@ -9473,8 +9527,11 @@ begin
             begin
                 if isSizerAvailable(ELDesigner1.DesignControl) = false then
                 begin
-                    ShowErrorAndReset('You cannot add a sizer if you have other standard components.'+#13+#10+''+#13+#10+'Please remove all the controls before adding a sizer.');
-                    exit;
+                    if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
+                    begin
+                        ShowErrorAndReset('You cannot add a sizer if you have other standard components.'+#13+#10+''+#13+#10+'Please remove all the controls before adding a sizer.');
+                        exit;
+                    end;
                 end;
             end;
         end;
@@ -10009,11 +10066,11 @@ end;
 procedure TMainForm.JvInspEventsDataValueChanged(Sender: TObject;
   Data: TJvCustomInspectorData);
 var
-  str: string;
+  str,ErrorString: string;
   e: TEditor;
   boolIsFilesDirty: Boolean;
   componentInstance:TComponent;
-  propertName:string;
+  propertyName,wxClassName,propDisplayName:string;
 
 procedure SetPropertyValue(Comp:TComponent;strPropName,strPropValue:String);
 var
@@ -10108,21 +10165,25 @@ begin
 
         //SendDebug(JvInspEvents.Selected.Data.Name);
         componentInstance:=SelectedComponent;
-        propertName:=Data.Name;
-
-        if CreateFunctionInEditor(Data,Trim(e.getDesigner().Wx_Name),SelectedComponent, str, JvInspEvents.Selected.DisplayName) then
+        propertyName:=Data.Name;
+        wxClassName:=Trim(e.getDesigner().Wx_Name);
+        propDisplayName:=JvInspEvents.Selected.DisplayName;
+        if CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
         begin
 
           //This is causing AV, so I moved this operation to
           //CreateFunctionInEditor
           //Data.AsString := str;
-          SetPropertyValue(componentInstance,propertName,str);
+          SetPropertyValue(componentInstance,propertyName,str);
 
         end
         else
         begin
           Data.AsString := '';
-          MessageDlg('Unable to add function', mtError, [mbOK], 0);
+          if ErrorString = '' then
+            MessageDlg('Unable to add function', mtError, [mbOK], 0)
+          else
+            MessageDlg(ErrorString, mtError, [mbOK], 0);
         end;
       end;
 
@@ -10550,7 +10611,7 @@ begin
 
 end;
 
-function TMainForm.CreateFunctionInEditor(var strFncName:string;strReturnType,strParameter :String):boolean;
+function TMainForm.CreateFunctionInEditor(var strFncName:string;strReturnType,strParameter :String;var ErrorString:String):boolean;
 var
   intFunctionCounter:Integer;
   strOldFunctionName:string;
@@ -10676,7 +10737,7 @@ begin
   end;
 end;
 
-function TMainForm.CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string): Boolean;
+function TMainForm.CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string;var ErrorString:String): Boolean;
 var
   intFunctionCounter:Integer;
   strOldFunctionName:string;
@@ -10692,7 +10753,7 @@ var
   boolFound: Boolean;
   intfObj: IWxComponentInterface;
   e: TEditor;
-  CppEditor, Hppeditor: TSynEdit; 
+  CppEditor, Hppeditor: TSynEdit;
 begin
   Result := False;
   boolFound := False;
@@ -10719,6 +10780,7 @@ begin
 
   if boolFound = False then
   begin
+    ErrorString :='Class Name not found in the Class Browser.' + #13+#10+' Try to reset the class parser option and try again';
     Exit;
   end;
 
