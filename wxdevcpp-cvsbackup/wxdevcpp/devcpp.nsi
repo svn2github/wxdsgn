@@ -105,8 +105,8 @@ UninstPage instfiles
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
 
-  !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe"
-  !define MUI_FINISHPAGE_NOREBOOTSUPPORT
+ ; !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe"
+ ; !define MUI_FINISHPAGE_NOREBOOTSUPPORT
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_CONFIRM
@@ -133,7 +133,7 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "Portuguese"
   !insertmacro MUI_LANGUAGE "PortugueseBR"
   !insertmacro MUI_LANGUAGE "Polish"
-  !insertmacro MUI_LANGUAGE "Russian"
+  ;!insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Ukrainian"
   !insertmacro MUI_LANGUAGE "Czech"
   !insertmacro MUI_LANGUAGE "Slovak"
@@ -527,7 +527,7 @@ SectionEnd
 
 
 Section "Remove all previous configuration files" SectionConfig
- SectionIn 1 2 RO
+ SectionIn 1 2
   Delete "$APPDATA\Dev-Cpp\devcpp.ini"
   Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
   Delete "$APPDATA\Dev-Cpp\cache.ccc"
@@ -620,6 +620,11 @@ Function .onInit
 
 FunctionEnd
 
+;called when the install was successful
+Function .onInstSuccess
+         SetOutPath $INSTDIR
+FunctionEnd
+
 !ifndef NEW_INTERFACE
 
 ;called when the user hits the 'cancel' button
@@ -632,9 +637,12 @@ FunctionEnd
 ;called when the install was successful
 Function .onInstSuccess
   MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} ${WXDEVCPP_VERSION} now?" IDNO DontRun
+  SetOutDir $INSTDIR
   Exec '"$INSTDIR\devcpp.exe"'
   DontRun:
 FunctionEnd
+
+!endif ;!NEW_INTERFACE
 
 ;--------------------------------
 ;Uninstaller Functions
@@ -646,11 +654,10 @@ Function un.onInit
 FunctionEnd
 
 ;called when the uninstall was successful
-Function un.onInstSuccess
-  Delete "$INSTDIR\uninstaller.exe"
+Function un.onUninstSuccess
+  Delete "$INSTDIR\uninstall.exe"
+  RMDir "$INSTDIR"
 FunctionEnd
-
-!endif ;!NEW_INTERFACE
 
 ;backup file association
 Function BackupAssoc
@@ -988,6 +995,7 @@ Section "Uninstall"
   Delete "$APPDATA\tools.ini"
   Delete "$APPDATA\devcpp.ci"
 
+  Delete "$INSTDIR\devcpp.exe"
   Delete "$INSTDIR\devcpp.ini"
   Delete "$INSTDIR\devcpp.cfg"
   Delete "$INSTDIR\cache.ccc"
