@@ -334,7 +334,6 @@ var
   strLst,strlstManualCode : TStringList;
   CntIntf:IWxContainerAndSizerInterface;
   strTemp:String;
-
 begin
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation,intBlockStart, intBlockEnd) then
   begin
@@ -344,7 +343,7 @@ begin
 //    if frmNewForm.Wx_DesignerType = dtWxFrame then
 //        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateExtraCodeForFrame);
 
-    
+
     isSizerAvailable:=false;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
@@ -369,7 +368,7 @@ begin
                 continue;
             AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
             AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, '');
-        end; // for        
+        end; // for
     end;
 
     if not isSizerAvailable then
@@ -406,9 +405,6 @@ begin
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateGUIControlCreation);
     end;
   end;
-
-
-
 
   // Event
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries,intBlockStart, intBlockEnd) then
@@ -504,8 +500,7 @@ var
   strLst: TStringList;
   strHdrValue, strIDValue: string;
 begin
-  if GetBlockStartAndEndPos(synEdit, strClassName,
-    btClassNameGUIItemsDeclaration, intBlockStart, intBlockEnd) then
+  if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsDeclaration, intBlockStart, intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
     DeleteAllClassNameGUIItemsDeclaration(synEdit, strClassName, intBlockStart,
@@ -532,6 +527,9 @@ begin
     begin
       if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
       begin
+        //If the user is using a predefined ID then we dont generate ids for them
+        if IsIDPredefined(trim(wxcompInterface.GetIDName),MainForm.strStdwxIDList) then
+            continue;
         strIDValue := wxcompInterface.GenerateControlIDs;
         if trim(strIDValue) <> '' then
         begin
@@ -555,6 +553,9 @@ begin
     begin
       if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
       begin
+        //If the user is using a predefined ID then we dont generate ids for them
+        if IsIDPredefined(trim(wxcompInterface.GetIDName),MainForm.strStdwxIDList) then
+            continue;
         strIDValue := wxcompInterface.GenerateEnumControlIDs;
         if trim(strIDValue) <> '' then
         begin
@@ -568,7 +569,7 @@ begin
     end;
     strLst.destroy;
   end;
-
+  
   if GetBlockStartAndEndPos(synEdit, strClassName, btDialogStyle, intBlockStart,
     intBlockEnd) then
   begin
