@@ -52,7 +52,6 @@ type
         FWx_ListboxStyle : TWxLBxStyleSet;
         FWx_ProxyBGColorString : TWxColorString;
         FWx_ProxyFGColorString : TWxColorString;
-        FWx_StrechFactor : Integer;
         FWx_StretchFactor : Integer;
         FWx_ToolTip : String;
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
@@ -143,7 +142,7 @@ type
         property Wx_ListboxStyle : TWxLBxStyleSet read FWx_ListboxStyle write FWx_ListboxStyle;
         property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
-        property Wx_StrechFactor : Integer read FWx_StrechFactor write FWx_StrechFactor;
+        property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
         property Wx_StretchFactor : Integer read FWx_StretchFactor write FWx_StretchFactor default 0;
         property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment read FWx_VerticalAlignment write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
@@ -275,6 +274,7 @@ begin
      FWx_PropertyList.add('wxLB_ALWAYS_SB:wxLB_ALWAYS_SB');
      FWx_PropertyList.add('wxLB_NEEDED_SB:wxLB_NEEDED_SB');
      FWx_PropertyList.add('wxLB_SORT:wxLB_SORT');
+     FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
 
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
@@ -403,7 +403,7 @@ begin
              strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
 
 
-         Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
+         Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StretchFactor,strAlignment,self.Wx_Border]);
     end;
 
 end;
