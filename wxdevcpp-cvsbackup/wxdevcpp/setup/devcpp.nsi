@@ -4,10 +4,9 @@
 ; http://nsis.sourceforge.net/
 
 !define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.7alpha3"
-!define WXWIDGETS_VERSION "2.5"
+!define WXDEVCPP_VERSION "6.7beta"
 !define PROGRAM_NAME "wx-devcpp"
-!define START_MENU_DIRECTORY "Bloodshed Dev-C++"
+!define DEFAULT_START_MENU_DIRECTORY "wx-devcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
 !define HAVE_MINGW
 !define NEW_INTERFACE
@@ -90,9 +89,15 @@ UninstPage instfiles
 
 !else ;NEW_INTERFACE
 
+  Var STARTMENU_FOLDER
+
   !insertmacro MUI_PAGE_LICENSE "copying.txt"
   !insertmacro MUI_PAGE_COMPONENTS
-  !define MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave
+  !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave  ; Check if default directory name is valid
+
+  !define MUI_STARTMENUPAGE_DEFAULTFOLDER ${DEFAULT_START_MENU_DIRECTORY}
+  !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   
@@ -104,21 +109,20 @@ UninstPage instfiles
   !insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
-;Languages
+;Languages - Commented out languages are not currently supported by NSIS
 
   !insertmacro MUI_LANGUAGE "English"
-
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Catalan"
-;  !insertmacro MUI_LANGUAGE "Chinese"
-;  !insertmacro MUI_LANGUAGE "Chinese_TC"
+ ; !insertmacro MUI_LANGUAGE "Chinese"
+ ; !insertmacro MUI_LANGUAGE "Chinese_TC"
   !insertmacro MUI_LANGUAGE "Croatian"
   !insertmacro MUI_LANGUAGE "Czech"
   !insertmacro MUI_LANGUAGE "Danish"
   !insertmacro MUI_LANGUAGE "Dutch"
   !insertmacro MUI_LANGUAGE "Estonian"
   !insertmacro MUI_LANGUAGE "French"
-;  !insertmacro MUI_LANGUAGE "Galego"
+ ; !insertmacro MUI_LANGUAGE "Galego"
   !insertmacro MUI_LANGUAGE "German"
   !insertmacro MUI_LANGUAGE "Greek"
   !insertmacro MUI_LANGUAGE "Hungarian"
@@ -129,11 +133,11 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "Polish"
   !insertmacro MUI_LANGUAGE "Portuguese"
   !insertmacro MUI_LANGUAGE "Romanian"
-;  !insertmacro MUI_LANGUAGE "Russian"
+  !insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Slovak"
   !insertmacro MUI_LANGUAGE "Slovenian"
   !insertmacro MUI_LANGUAGE "Spanish"
-;  !insertmacro MUI_LANGUAGE "SpanishCastellano"
+ ; !insertmacro MUI_LANGUAGE "SpanishCastellano"
   !insertmacro MUI_LANGUAGE "Swedish"
   !insertmacro MUI_LANGUAGE "Turkish"
   !insertmacro MUI_LANGUAGE "Ukrainian"
@@ -171,14 +175,8 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   Push all #replace all occurrences
   Push $INSTDIR\Templates\00-wxWidgets.template #file to replace in
   Call AdvReplaceInFile
-/*
-  Push "%WXVERSION%"  #text to be replaced
-  Push ${WXWIDGETS_VERSION}  #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\00-wxWindows.template #file to replace in
-  Call AdvReplaceInFile
- */
+
+
   ; 0-wxWindows.template
   Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
@@ -186,14 +184,8 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   Push all #replace all occurrences
   Push $INSTDIR\Templates\0-wxWidgets.template #file to replace in
   Call AdvReplaceInFile
-/*
-  Push "%WXVERSION%"  #text to be replaced
-  Push ${WXWIDGETS_VERSION}  #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\0-wxWindows.template #file to replace in
-  Call AdvReplaceInFile
-*/
+
+
   ; 1-empty.template
   Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
@@ -202,30 +194,6 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   Push $INSTDIR\Templates\1-empty.template #file to replace in
   Call AdvReplaceInFile
   ; end replacing text within template files
-/*
-  Push "%WXVERSION%"  #text to be replaced
-  Push ${WXWIDGETS_VERSION}  #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\1-empty.template #file to replace in
-  Call AdvReplaceInFile
-
-  ; wxWindows.template
-  Push "%DEVCPPINSTALLDIR%" #text to be replaced
-  Push $INSTDIR #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\wxWindows.template #file to replace in
-  Call AdvReplaceInFile
-  ; end replacing text within template files
-
-  Push "%WXVERSION%"  #text to be replaced
-  Push ${WXWIDGETS_VERSION}  #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\wxWindows.template #file to replace in
-  Call AdvReplaceInFile
-  */
   
   SetOutPath $INSTDIR\Templates\wxWidgets
   File "Templates\wxWidgets\*"
@@ -288,6 +256,7 @@ Section "Help files" SectionHelp
   ; Added for wx-devcpp  -- START
   SetOutPath $INSTDIR\Help
   File "Help\wx.hlp"
+  File "Help\wx.chm"  ; From Mal's devpak
   File "Help\wx.cnt"
   File "Help\wx.gid"
   File "Help\devhelp.ini"
@@ -355,6 +324,34 @@ Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   File "Packages\wxWidgets254contrib.entry"
   ; Added for wx-devcpp  -- END
   
+  ; Add links to START MENU
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+  
+   ;try to read from registry if last installation installed for All Users/Current User
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+      "Shortcuts"
+  StrCmp $0 "" cont exists
+  cont:
+
+  SetShellVarContext all
+  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
+  SetShellVarContext current
+
+AllUsers:
+  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+      "Shortcuts" "$0"
+
+exists:
+
+  CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+  SetOutPath $INSTDIR
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
+
+!insertmacro MUI_STARTMENU_WRITE_END
+
   SetOutPath $INSTDIR
   
 SectionEnd
@@ -438,7 +435,7 @@ Section "Associate .h files to ${PROGRAM_NAME}"
   Call BackupAssoc
 
   StrCpy $0 $INSTDIR\DevCpp.exe
-  WriteRegStr HKCR ".h" "" "DevCpp.h"
+  WriteRegStr HKCR ".h" "" "${PROGRAM_NAME}.h"
   WriteRegStr HKCR "${PROGRAM_NAME}.h" "" "C Header File"
   WriteRegStr HKCR "${PROGRAM_NAME}.h\DefaultIcon" "" '$0,6'
   WriteRegStr HKCR "${PROGRAM_NAME}.h\Shell\Open\Command" "" '$0 "%1"'
@@ -537,35 +534,6 @@ SectionEnd
 
 SubSectionEnd
 
-# [Shortcuts]
-Section "Create shortcuts in Start Menu" SectionShortcuts
-  SectionIn 1 2
-
-  ;try to read from registry if last installation installed for All Users/Current User
-  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts"
-  StrCmp $0 "" cont exists
-  cont:
-
-  SetShellVarContext all
-  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
-  SetShellVarContext current
-AllUsers:
-  StrCpy $0 $SMPROGRAMS
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts" "$0"
-
-exists:
-  CreateDirectory "$0\${START_MENU_DIRECTORY}"
-  SetOutPath $INSTDIR
-  CreateShortCut "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
-  CreateShortCut "$0\${START_MENU_DIRECTORY}\License.lnk" "$INSTDIR\copying.txt"
-  CreateShortCut "$0\${START_MENU_DIRECTORY}\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
-  
-  SetOutPath $INSTDIR
-  
-SectionEnd
-
 Section "Create Quick Launch shortcut" SectionQuickLaunch
   SectionIn 1 2
   SetShellVarContext current
@@ -578,7 +546,7 @@ SectionEnd
 Section "Debug files" SectionDebug
   SectionIn 1
   SetOutPath $INSTDIR
-  File "devcpp.map"
+  ;File "devcpp.map"
   File "Packman.map"
   SetOutPath $INSTDIR\Packages
   File "Packages\Dev-C++_Map.entry"
@@ -955,7 +923,7 @@ FunctionEnd
 
 # [UnInstallation]
 
-UninstallText "This program will uninstall ${PROGRAM_NAME}, continue ?"
+UninstallText "This program will uninstall ${PROGRAM_NAME}. Continue ?"
 ShowUninstDetails show
 
 Section "Uninstall"
@@ -966,11 +934,17 @@ Section "Uninstall"
 
   ; Remove icons
   ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts"
-  Delete "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk"
-  Delete "$0\${START_MENU_DIRECTORY}\License.lnk"
-  Delete "$0\${START_MENU_DIRECTORY}\Uninstall ${PROGRAM_NAME}.lnk"
-  RMDir  "$0\${START_MENU_DIRECTORY}"
+     "Shortcuts"
+     
+  ; Determine if the STARUP_MENU DIRECTORY was created during install
+  StrCmp $0 "" bypass_startupmenu remove_startupmenu
+remove_startupmenu:
+  Delete "$0\${PROGRAM_NAME}.lnk"
+  Delete "$0\License.lnk"
+  Delete "$0\Uninstall ${PROGRAM_NAME}.lnk"
+  RMDir  "$0"
+  
+bypass_startupmenu:
   SetShellVarContext current
   Delete "$QUICKLAUNCH\${PROGRAM_NAME}.lnk"
 
@@ -1006,7 +980,7 @@ Section "Uninstall"
 
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}"
-  DeleteRegKey HKLM "SOFTWARE\${START_MENU_DIRECTORY}"
+  DeleteRegKey HKLM "SOFTWARE\${PROGRAM_NAME}"
 
   MessageBox MB_YESNO "Do you want to remove all the remaining configuration files?" IDNO Done
 

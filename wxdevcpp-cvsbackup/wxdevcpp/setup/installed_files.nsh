@@ -1,3 +1,4 @@
+; $Id$
 ; this file was automatically created after full installation
 ; on Linux by running the following commands:
 ;
@@ -78,6 +79,7 @@ find -type d -exec echo "  RMDir  {}" \; | \
   
   ; Added for wx-devcpp  -- START
   Delete "$INSTDIR\Help\wx.hlp"
+  Delete "$INSTDIR\Help\wx.chm"
   Delete "$INSTDIR\Help\wx.cnt"
   Delete "$INSTDIR\Help\wx.gid"
   Delete "$INSTDIR\Help\devhelp.ini"
