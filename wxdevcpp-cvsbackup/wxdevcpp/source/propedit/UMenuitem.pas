@@ -43,7 +43,6 @@ type
     cbChecked: TComboBox;
     cbEnabled: TComboBox;
     txtHint: TEdit;
-    txtIDName: TEdit;
     cbVisible: TComboBox;
     btnOK: TButton;
     btnCancel: TButton;
@@ -72,6 +71,7 @@ type
     btNewUpdateUI: TButton;
     Image1: TImage;
     Button3: TButton;
+    txtIDName: TComboBox;
     procedure btnInsertClick(Sender: TObject);
     procedure btnSubmenuClick(Sender: TObject);
     procedure txtCaptionKeyDown(Sender: TObject; var Key: Word;Shift: TShiftState);
@@ -493,6 +493,8 @@ var
 begin
    FSubMenuItemCreationClicked:=false;
    tvMenuItem.Items.Clear;
+   txtIDName.Items.Assign(MainForm.strStdwxIDList);
+
    FMenuItems:=TWxCustomMenuItem.Create(nil);
    FMaxID:=2000;
    //if FDesigner <> nil then
