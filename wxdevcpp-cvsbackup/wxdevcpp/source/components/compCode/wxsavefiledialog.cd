@@ -1,0 +1,1067 @@
+[MAININFO$]
+CCVer=4.0
+Compatible20=0
+Compatible21=0
+Compatible22=0
+Compatible25=0
+Compatible30=0
+Compatible40=1
+Lang=Pasc
+UnitName=WxSaveFileDialog
+LimitName=0
+NewClassName=TWxSaveFileDialog
+ParentClassName=TSpeedButton,IWxComponentInterface
+VCLAncestorName=TSpeedButton
+DefaultPalette=wxWidgets
+CopyrightLine=Copyright © 2003 by Guru Kathiresan
+TargetDir=e:\backup\delphi\demo\wxdevcpp\source\components\
+FormMode=0
+FormFile=
+[UNITS$]
+Lines=10
+L1=WinTypes
+L2=WinProcs
+L3=Messages
+L4=SysUtils
+L5=Classes
+L6=Controls
+L7=Forms
+L8=Graphics
+L9=Buttons
+L10=Wxutils
+[ITEMLIST$]
+Create=Method
+Destroy=Method
+GenerateControlIDs:String=Method
+GenerateEventTableEntries=Method
+GenerateGUIControlCreation:String=Method
+GenerateGUIControlDeclaration:String=Method
+GenerateHeaderInclude:String=Method
+GetEventList:TStringlist=Method
+GetIDName:String=Method
+GetIDValue:LongInt=Method
+GetPropertyList:TStringList=Method
+GetWxClassName:String=Method
+Loaded=Method
+OnClick=ExistingEvent
+OnDblClick=ExistingEvent
+OnDragDrop=ExistingEvent
+OnMouseDown=ExistingEvent
+OnMouseMove=ExistingEvent
+OnMouseUp=ExistingEvent
+Paint=Method
+SetIDName=Method
+SetIDValue=Method
+SetWxClassName=Method
+WMSize=Method
+Wx_Class=Property
+Wx_DefaultDir=Property
+Wx_DefaultFile=Property
+Wx_DialogStyle=Property
+Wx_Extensions=Property
+Wx_GeneralStyle=Property
+Wx_HelpText=Property
+Wx_Hidden=Property
+Wx_IDName=Property
+Wx_IDValue=Property
+Wx_Message=Property
+Wx_PropertyList=Property
+Wx_ToolTip=Property
+GetTypeFromEventName=Method
+GetParameterFromEventName=Method
+SaveControlOrientation=Method
+GenerateImageInclude:=Method
+[GLOBAL$]
+Descr=
+DefaultCode=1
+Keywords=
+[CODE$]
+Lines=9
+L1={
+L2=*************IMPORTANT*************
+L3=If you want to change any of the wxwidgets components,  you have to use comp screate by David Price.
+L4=You can download a copy from 
+L5=
+L6=http://torry.net/tools/components/compcreation/cc.zip
+L7=
+L8=***IF YOU FOLLOW THIS YOUR UPDATES WONT BE INCLUDED IN THE DISTRIBUTION****
+L9=}
+[HELP$]
+Lines=0
+[IMPGLOBAL$]
+Descr=
+DefaultCode=1
+Keywords=
+[IMPGLOBAL$CODE$]
+Lines=0
+[IMPGLOBAL$HELP$]
+Lines=0
+[Create]
+Descr=
+DefaultCode=2
+Keywords=
+Kind=2
+Header=Create(AOwner: TComponent)
+S=0
+Ov=1
+Mode=2
+WinMessage=
+[CreateCODE$]
+Lines=108
+L1=const
+L2=
+L3=~~myglyp = 'object SXXXXSP: TSpeedButton'
+L4=~~+'Glyph.Data = {'
+L5=~~+'36090000424D3609000000000000360000002800000018000000180000000100'
+L6=~~+'2000000000000009000000000000000000000000000000000000008080000080'
+L7=~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L8=~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L9=~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L10=~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L11=~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L12=~~+'8000008080000080800000808000008080000080800000808000008080008080'
+L13=~~+'8000000000000000000000000000000000000000000000000000000000000000'
+L14=~~+'0000000000000000000000000000000000000000000000000000000000000000'
+L15=~~+'0000000000000000000000000000000000000000000000808000008080008080'
+L16=~~+'8000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L17=~~+'C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L18=~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L19=~~+'8000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L20=~~+'C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L21=~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L22=~~+'8000C0C0C000C0C0C000C0C0C000000000000000000000000000000000000000'
+L23=~~+'000000000000000000000000000000000000000000000000000000000000C0C0'
+L24=~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L25=~~~~~~+'8000C0C0C000C0C0C000000000000000000000FFFF00C0C0C00000FFFF00C0C0'
+L26=~~~~~~+'C00000FFFF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0C00000FFFF000000'
+L27=~~~~~~+'0000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L28=~~~~~~+'8000C0C0C000C0C0C0000000000000FFFF000000000000FFFF00C0C0C00000FF'
+L29=~~~~~~+'FF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0C00000FF'
+L30=~~~~~~+'FF0000000000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L31=~~~~~~+'8000C0C0C000C0C0C00000000000FFFFFF0000000000C0C0C00000FFFF00C0C0'
+L32=~~~~~~+'C00000FFFF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0'
+L33=~~~~~~+'C00000000000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L34=~~~~~~+'8000C0C0C000C0C0C0000000000000FFFF00FFFFFF0000000000C0C0C00000FF'
+L35=~~~~~~+'FF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0C00000FFFF00C0C0C00000FF'
+L36=~~~~~~+'FF00C0C0C00000000000C0C0C000C0C0C0000000000000808000008080008080'
+L37=~~~~~~+'8000C0C0C000C0C0C00000000000FFFFFF0000FFFF00FFFFFF00000000000000'
+L38=~~~~~~+'0000000000000000000000000000C0C0C00000FFFF00C0C0C00000FFFF00C0C0'
+L39=~~~~~~+'C00000FFFF0000000000C0C0C000C0C0C0000000000000808000008080008080'
+L40=~~~~~~+'8000C0C0C000C0C0C0000000000000FFFF00FFFFFF0000FFFF00FFFFFF0000FF'
+L41=~~~~~~+'FF00FFFFFF0000FFFF00FFFFFF00000000000000000000000000000000000000'
+L42=~~~~~~+'000000000000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L43=~~~~~~+'8000C0C0C000C0C0C00000000000FFFFFF0000FFFF00FFFFFF0000FFFF00FFFF'
+L44=~~~~~~+'FF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF000000'
+L45=~~~~~~+'0000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L46=~~~~~~+'8000C0C0C000C0C0C0000000000000FFFF00FFFFFF0000FFFF00FFFFFF0000FF'
+L47=~~~~~~+'FF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF000000'
+L48=~~~~~~+'0000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L49=~~~~~~+'8000C0C0C000C0C0C00000000000FFFFFF0000FFFF00FFFFFF0000FFFF00FFFF'
+L50=~~~~~~+'FF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF000000'
+L51=~~~~~~+'0000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L52=~~~~~~+'8000C0C0C000C0C0C0000000000000FFFF00FFFFFF0000FFFF00FFFFFF0000FF'
+L53=~~~~~~+'FF0000000000000000000000000000000000000000000000000000000000C0C0'
+L54=~~~~~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L55=~~~~~~+'8000C0C0C000C0C0C000C0C0C000000000000000000000000000000000000000'
+L56=~~~~~~+'0000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L57=~~~~~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L58=~~~~~~+'8000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L59=~~~~~~+'C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L60=~~~~~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L61=~~~~~~+'8000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L62=~~~~~~+'C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0C000C0C0'
+L63=~~~~~~+'C000C0C0C000C0C0C000C0C0C000C0C0C0000000000000808000008080008080'
+L64=~~~~~~+'8000000000000000000000000000000000000000000000000000000000000000'
+L65=~~~~~~+'0000000000000000000000000000000000000000000000000000000000000000'
+L66=~~~~~~+'0000000000000000000000000000000000000000000000808000008080008080'
+L67=~~~~~~+'8000FFFFFF0000000000FF000000FF000000FF000000FF000000FF000000FF00'
+L68=~~~~~~+'0000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF00'
+L69=~~~~~~+'000000000000FFFFFF0000000000FFFFFF000000000000808000008080008080'
+L70=~~~~~~+'8000808080008080800080808000808080008080800080808000808080008080'
+L71=~~~~~~+'8000808080008080800080808000808080008080800080808000808080008080'
+L72=~~~~~~+'8000808080008080800080808000808080008080800000808000008080000080'
+L73=~~~~~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L74=~~~~~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L75=~~~~~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L76=~~~~~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L77=~~~~~~+'8000008080000080800000808000008080000080800000808000008080000080'
+L78=~~~~~~+'8000008080000080800000808000008080000080800000808000}'
+L79=~~+'  end';
+L80=
+L81=begin
+L82=~~~~~{ Call the Create method of the parent class }
+L83=~~~~~inherited Create(AOwner);
+L84=
+L85=~~~~~{ AutoInitialize sets the initial values of variables and      }
+L86=~~~~~{ properties; also, it creates objects for properties of       }
+L87=~~~~~{ standard Delphi object types (e.g., TFont, TTimer,           }
+L88=~~~~~{ TPicture) and for any variables marked as objects.           }
+L89=~~~~~{ AutoInitialize method is generated by Component Create.      }
+L90=~~~~~AutoInitialize;
+L91=
+L92=~~~~~{Set the Default nonvisible properties}
+L93=~~~~~flat:=true;
+L94=~~~~~height:=29;
+L95=~~~~~width:=29;
+L96=~~~~~{ Code to perform other tasks when the component is created }
+L97=~~~~~FWx_PropertyList.add('FWx_DialogType:Dialog Type');
+L98=~~~~~FWx_PropertyList.add('FWx_DialogStyle:File Dialog Style');
+L99=~~~~~FWx_PropertyList.add('Wx_IDName : IDName ');
+L100=~~~~~FWx_PropertyList.add('Wx_IDValue : IDValue ');
+L101=~~~~~FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
+L102=~~~~~FWx_PropertyList.add('wx_DefaultDir:Default Dir');
+L103=~~~~~FWx_PropertyList.add('wx_DefaultFile:Default File');
+L104=~~~~~FWx_PropertyList.add('wx_Extensions:Extensions');
+L105=~~~~~FWx_PropertyList.add('wx_Message:Message');
+L106=~~~~~FWx_PropertyList.add('Name:Name');
+L107=~~~~~FWx_PropertyList.add('Wx_Class:Base Class');
+L108=end;
+[CreateHELP$]
+Lines=0
+[Destroy]
+Descr=
+DefaultCode=4
+Keywords=
+Kind=3
+Header=Destroy
+S=0
+Ov=1
+Mode=2
+WinMessage=
+[DestroyCODE$]
+Lines=13
+L1=begin
+L2=~~~~~{ AutoDestroy, which is generated by Component Create, frees any   }
+L3=~~~~~{ objects created by AutoInitialize.                               }
+L4=~~~~~AutoDestroy;
+L5=
+L6=~~~~~{ Here, free any other dynamic objects that the component methods  }
+L7=~~~~~{ created but have not yet freed.  Also perform any other clean-up }
+L8=~~~~~{ operations needed before the component is destroyed.             }
+L9=
+L10=~~~~~{ Last, free the component by calling the Destroy method of the    }
+L11=~~~~~{ parent class.                                                    }
+L12=~~~~~inherited Destroy;
+L13=end;
+[DestroyHELP$]
+Lines=0
+[GenerateControlIDs:String]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GenerateControlIDs:String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GenerateControlIDs:StringCODE$]
+Lines=10
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:='';
+L8=~~~~~if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+L9=~~~~~~~~Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+L10=end;
+[GenerateControlIDs:StringHELP$]
+Lines=0
+[GenerateEventTableEntries]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GenerateEventTableEntries(CurrClassName:String):String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GenerateEventTableEntriesCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:='';
+L8=end;
+[GenerateEventTableEntriesHELP$]
+Lines=0
+[GenerateGUIControlCreation:String]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GenerateGUIControlCreation:String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GenerateGUIControlCreation:StringCODE$]
+Lines=11
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~~var
+L5=~~~~~strStyle:String;
+L6=~~~~~strType:String;
+L7=begin
+L8=~~~~~Result:='';
+L9=~~~~strType:='wxSAVE';
+L10=~~~~Result:=Format('%s =  new %s(this, "%s" , "%s" , "%s" , "%s", %s);',[self.Name,self.wx_Class,wx_Message,wx_DefaultDir,wx_DefaultFile,wx_Extensions,strType+strStyle] );
+L11=end;
+[GenerateGUIControlCreation:StringHELP$]
+Lines=0
+[GenerateGUIControlDeclaration:String]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GenerateGUIControlDeclaration:String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GenerateGUIControlDeclaration:StringCODE$]
+Lines=9
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:='';
+L8=~~~~~Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
+L9=end;
+[GenerateGUIControlDeclaration:StringHELP$]
+Lines=0
+[GenerateHeaderInclude:String]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GenerateHeaderInclude:String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GenerateHeaderInclude:StringCODE$]
+Lines=9
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:='';
+L8=~~~~~Result:='#include <wx/filedlg.h>'
+L9=end;
+[GenerateHeaderInclude:StringHELP$]
+Lines=0
+[GetEventList:TStringlist]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetEventList:TStringlist
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetEventList:TStringlistCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:=nil;
+L8=end;
+[GetEventList:TStringlistHELP$]
+Lines=0
+[GetIDName:String]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetIDName:String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetIDName:StringCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:=wx_IDName;
+L8=end;
+[GetIDName:StringHELP$]
+Lines=0
+[GetIDValue:LongInt]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetIDValue:LongInt
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetIDValue:LongIntCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:=wx_IDValue;
+L8=end;
+[GetIDValue:LongIntHELP$]
+Lines=0
+[GetPropertyList:TStringList]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetPropertyList:TStringList
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetPropertyList:TStringListCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:=FWx_PropertyList;
+L8=end;
+[GetPropertyList:TStringListHELP$]
+Lines=0
+[GetWxClassName:String]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetWxClassName:String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetWxClassName:StringCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Result:=wx_Class;
+L8=end;
+[GetWxClassName:StringHELP$]
+Lines=0
+[Loaded]
+Descr=
+DefaultCode=20
+Keywords=
+Kind=0
+Header=Loaded
+S=1
+Ov=1
+Mode=2
+WinMessage=
+[LoadedCODE$]
+Lines=7
+L1=begin
+L2=~~~~~inherited Loaded;
+L3=
+L4=~~~~~{ Perform any component setup that depends on the property
+L5=~~~~~~~values having been set }
+L6=
+L7=end;
+[LoadedHELP$]
+Lines=0
+[OnClick]
+Descr=
+DefaultCode=7
+Keywords=
+Ov=1
+P=1
+HandlerDecl=Click
+[OnClickCODE$]
+Lines=11
+L1=begin
+L2=~~~~~{ Code to execute before activating click
+L3=~~~~~~~behavior of component's parent class }
+L4=
+L5=~~~~~{ Activate click behavior of parent }
+L6=~~~~~inherited Click;
+L7=
+L8=~~~~~{ Code to execute after click behavior
+L9=~~~~~~~of parent }
+L10=
+L11=end;
+[OnClickHELP$]
+Lines=0
+[OnDblClick]
+Descr=
+DefaultCode=8
+Keywords=
+Ov=0
+P=1
+HandlerDecl=DblClick
+[OnDblClickCODE$]
+Lines=0
+[OnDblClickHELP$]
+Lines=0
+[OnDragDrop]
+Descr=
+DefaultCode=13
+Keywords=
+Ov=0
+P=1
+HandlerDecl=DragDrop(DragObject: TObject; X, Y: Integer)
+[OnDragDropCODE$]
+Lines=0
+[OnDragDropHELP$]
+Lines=0
+[OnMouseDown]
+Descr=
+DefaultCode=13
+Keywords=
+Ov=0
+P=1
+HandlerDecl=MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer)
+[OnMouseDownCODE$]
+Lines=0
+[OnMouseDownHELP$]
+Lines=0
+[OnMouseMove]
+Descr=
+DefaultCode=13
+Keywords=
+Ov=0
+P=1
+HandlerDecl=MouseMove(Shift: TShiftState; X, Y: Integer)
+[OnMouseMoveCODE$]
+Lines=0
+[OnMouseMoveHELP$]
+Lines=0
+[OnMouseUp]
+Descr=
+DefaultCode=13
+Keywords=
+Ov=0
+P=1
+HandlerDecl=MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer)
+[OnMouseUpCODE$]
+Lines=0
+[OnMouseUpHELP$]
+Lines=0
+[Paint]
+Descr=
+DefaultCode=5
+Keywords=
+Kind=0
+Header=Paint
+S=1
+Ov=1
+Mode=2
+WinMessage=
+[PaintCODE$]
+Lines=11
+L1=begin
+L2=~~~~~{ Make this component look like its parent component by calling
+L3=~~~~~~~its parent's Paint method. }
+L4=~~~~~inherited Paint;
+L5=
+L6=~~~~~{ To change the appearance of the component, use the methods
+L7=~~~~~~~supplied by the component's Canvas property (which is of
+L8=~~~~~~~type TCanvas).  For example, }
+L9=
+L10=~~~~~{ Canvas.Rectangle(0, 0, Width, Height); }
+L11=end;
+[PaintHELP$]
+Lines=0
+[SetIDName]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=0
+Header=SetIDName(IDName:String)
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[SetIDNameCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~Wx_IDName:=IDName;
+L8=end;
+[SetIDNameHELP$]
+Lines=0
+[SetIDValue]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=0
+Header=SetIDValue(IDValue:longInt)
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[SetIDValueCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~wx_IDValue:=IDValue;
+L8=end;
+[SetIDValueHELP$]
+Lines=0
+[SetWxClassName]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=0
+Header=SetWxClassName(wxClassName:String)
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[SetWxClassNameCODE$]
+Lines=8
+L1=~~~~~{ Internal declarations for method }
+L2=~~~~~{ type }
+L3=~~~~~{ . . . }
+L4=~~~~~{ var }
+L5=~~~~~{ . . . }
+L6=begin
+L7=~~~~~wx_Class:=wxClassName;
+L8=end;
+[SetWxClassNameHELP$]
+Lines=0
+[WMSize]
+Descr=
+DefaultCode=12
+Keywords=
+Kind=0
+Header=WMSize(var Message: TWMSize)
+S=2
+Ov=0
+Mode=2
+WinMessage=WM_PAINT
+[WMSizeCODE$]
+Lines=25
+L1=var
+L2=~~~~~W, H: Integer;
+L3=begin
+L4=~~~~~inherited;
+L5=
+L6=~~~~~{ Copy the new width and height of the component
+L7=~~~~~~~so we can use SetBounds to change both at once }
+L8=~~~~~Width:=29;
+L9=~~~~~Height:=29;
+L10=
+L11=~~~~~W := Width;
+L12=~~~~~H := Height;
+L13=
+L14=~~~~~{ Code to check and adjust W and H }
+L15=
+L16=~~~~~{ Update the component size if we adjusted W or H }
+L17=~~~~~//if (W <> Width) or (H <> Height) then
+L18=~~~~~~~~inherited SetBounds(Left, Top, W, H);
+L19=
+L20=~~~~~{ Code to update dimensions of any owned sub-components
+L21=~~~~~~~by reading their Height and Width properties and updating
+L22=~~~~~~~via their SetBounds methods }
+L23=
+L24=~~~~~Message.Result := 0;
+L25=end;
+[WMSizeHELP$]
+Lines=0
+[Wx_Class]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault='wxFileDialog'
+Quote=1
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_ClassCODE$]
+Lines=0
+[Wx_ClassHELP$]
+Lines=0
+[Wx_DefaultDir]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_DefaultDirCODE$]
+Lines=0
+[Wx_DefaultDirHELP$]
+Lines=0
+[Wx_DefaultFile]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_DefaultFileCODE$]
+Lines=0
+[Wx_DefaultFileHELP$]
+Lines=0
+[Wx_DialogStyle]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TWxFileDialogStyleSet
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_DialogStyleCODE$]
+Lines=0
+[Wx_DialogStyleHELP$]
+Lines=0
+[Wx_Extensions]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_ExtensionsCODE$]
+Lines=0
+[Wx_ExtensionsHELP$]
+Lines=0
+[Wx_GeneralStyle]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TWxStdStyleSet
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_GeneralStyleCODE$]
+Lines=0
+[Wx_GeneralStyleHELP$]
+Lines=0
+[Wx_HelpText]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_HelpTextCODE$]
+Lines=0
+[Wx_HelpTextHELP$]
+Lines=0
+[Wx_Hidden]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=Boolean
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_HiddenCODE$]
+Lines=0
+[Wx_HiddenHELP$]
+Lines=0
+[Wx_IDName]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_IDNameCODE$]
+Lines=0
+[Wx_IDNameHELP$]
+Lines=0
+[Wx_IDValue]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=Longint
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_IDValueCODE$]
+Lines=0
+[Wx_IDValueHELP$]
+Lines=0
+[Wx_Message]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_MessageCODE$]
+Lines=0
+[Wx_MessageHELP$]
+Lines=0
+[Wx_PropertyList]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=TStringlist
+PropDefault=
+Quote=0
+RM=0
+WM=1
+VIRT=0
+Hide=0
+SP=2
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_PropertyListCODE$]
+Lines=10
+L1=begin
+L2=~~~~~{ Use Assign method because TStringlist is an object type
+L3=~~~~~~~and FWx_PropertyList has been created. }
+L4=~~~~~FWx_PropertyList.Assign(Value);
+L5=
+L6=~~~~~{ If changing this property affects the appearance of
+L7=~~~~~~~the component, call Invalidate here so the image will be
+L8=~~~~~~~updated. }
+L9=~~~~~{ Invalidate; }
+L10=end;
+[Wx_PropertyListHELP$]
+Lines=0
+[Wx_ToolTip]
+Descr=
+DefaultCode=6
+Keywords=
+IN=0
+RO=0
+PropType=String
+PropDefault=
+Quote=0
+RM=0
+WM=0
+VIRT=0
+Hide=0
+SP=0
+DefEdit=1
+All=0
+EC=
+EU=
+Link=
+[Wx_ToolTipCODE$]
+Lines=0
+[Wx_ToolTipHELP$]
+Lines=0
+[GetTypeFromEventName]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetTypeFromEventName(EventName: string):string
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetTypeFromEventNameCODE$]
+Lines=0
+[GetTypeFromEventNameHELP$]
+Lines=0
+[GetParameterFromEventName]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GetParameterFromEventName(EventName: string):String
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GetParameterFromEventNameCODE$]
+Lines=0
+[GetParameterFromEventNameHELP$]
+Lines=0
+[SaveControlOrientation]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=0
+Header=SaveControlOrientation(ControlOrientation:TWxControlOrientation)
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[SaveControlOrientationCODE$]
+Lines=0
+[SaveControlOrientationHELP$]
+Lines=0
+[GenerateImageInclude:]
+Descr=
+DefaultCode=0
+Keywords=
+Kind=1
+Header=GenerateImageInclude: string
+S=0
+Ov=0
+Mode=2
+WinMessage=
+[GenerateImageInclude:CODE$]
+Lines=0
+[GenerateImageInclude:HELP$]
+Lines=0
