@@ -144,6 +144,7 @@ begin
      FOrientation := wxHorizontal;
      FSpaceValue := 5;
      FWx_Border := 0;
+     FWx_SashPosition := 0;
      FWx_Class := 'wxSplitterWindow';
      FWx_EventList := TStringList.Create;
      FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
@@ -192,6 +193,7 @@ begin
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+     FWx_PropertyList.add('Wx_SashPosition   : Sash Position');
 
      FWx_PropertyList.add('Wx_GeneralStyle : General Styles');
      FWx_PropertyList.add('Wx_SplitterStyle : Splitter Window Styles');
@@ -445,7 +447,7 @@ begin
         exit;
     end;
     
-    if ControlCount > 0 then
+    if (ControlCount > 0) and (Wx_SashPosition = 0)then
         Wx_SashPosition:=self.Controls[0].Width;
 
      maxWidth:=0;
@@ -647,7 +649,7 @@ begin
         strSecondControl:= self.Controls[1].Name;
 
     strOrientation:='SplitHorizontally';
-    if self.Wx_ControlOrientation = wxControlVertical then
+    if self.Orientation = wxVertical then
         strOrientation:='SplitVertically'
     else
         strOrientation:='SplitHorizontally';
