@@ -1,12 +1,13 @@
 ;--------------------------------
 ; $Id$
-; NSIS Installer Script for wx-devcpp
-; You can download the NSIS builder at http://nsis.sourceforge.net/
-; $Id$
+; NSIS Install Script for wx-devcpp
+; http://nsis.sourceforge.net/
 
-!define DEVCPP_VERSION "4.9.9.1"
-!define WXDEVCPP_VERSION "6.6beta"
+!define DEVCPP_VERSION "4.9.9.2"
+!define WXDEVCPP_VERSION "6.7beta"
+!define WXWIDGETS_VERSION "2.5"
 !define PROGRAM_NAME "wx-devcpp"
+!define START_MENU_DIRECTORY "Bloodshed Dev-C++"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
 !define HAVE_MINGW
 !define NEW_INTERFACE
@@ -27,15 +28,15 @@ Var LOCAL_APPDATA
 # [Installer Attributes]
 
 Name "${DISPLAY_NAME}"
-!ifdef HAVE_MINGW
-OutFile "${PROGRAM_NAME}-${WXDEVCPP_VERSION}_setup.exe"
+!ifdef HAVE_MINGW 
+OutFile "devcpp-${WXDEVCPP_VERSION}_setup.exe"
 !else
-OutFile "${PROGRAM_NAME}-${WXDEVCPP_VERSION}_nomingw_setup.exe"
+OutFile "devcpp-${WXDEVCPP_VERSION}_nomingw_setup.exe"
 !endif
 Caption "${DISPLAY_NAME}"
 
 # [Licence Attributes]
-LicenseText "Dev-C++ and ${PROGRAM_NAME} are distributed under the GNU General Public License :"
+LicenseText "${PROGRAM_NAME} is distributed under the GNU General Public License :"
 LicenseData "copying.txt"
 
 # [Directory Selection]
@@ -75,7 +76,7 @@ BGGradient off
 # [Pages]
 
 !ifndef NEW_INTERFACE
-
+  
 Page license
 Page components
 PageEx directory
@@ -89,28 +90,16 @@ UninstPage instfiles
 
 !else ;NEW_INTERFACE
 
-;--------------------------------
-;Language Selection Dialog Settings
-
-  ;Remember the installer language
-  !define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
-  !define MUI_LANGDLL_REGISTRY_KEY "Software\${PROGRAM_NAME}"
-  !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
-
-; ----------------------------------
-
   !insertmacro MUI_PAGE_LICENSE "copying.txt"
   !insertmacro MUI_PAGE_COMPONENTS
-  !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave
+  !define MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
-
-
-  ; At the end of installation, we need to call run_devcpp to
-  ;   see if the user wishes to run wx-devcpp
-  !define MUI_PAGE_CUSTOMFUNCTION_PRE run_devcpp
-  !insertmacro MUI_PAGE_FINISH
   
+  !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe"
+  !define MUI_FINISHPAGE_NOREBOOTSUPPORT
+  !insertmacro MUI_PAGE_FINISH
+
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
 
@@ -118,69 +107,46 @@ UninstPage instfiles
 ;Languages
 
   !insertmacro MUI_LANGUAGE "English"
-  !insertmacro MUI_LANGUAGE "French"
-  !insertmacro MUI_LANGUAGE "German"
-  !insertmacro MUI_LANGUAGE "Spanish"
-  !insertmacro MUI_LANGUAGE "SimpChinese"
-  !insertmacro MUI_LANGUAGE "TradChinese"
-  !insertmacro MUI_LANGUAGE "Japanese"
-  !insertmacro MUI_LANGUAGE "Korean"
-  !insertmacro MUI_LANGUAGE "Italian"
-  !insertmacro MUI_LANGUAGE "Dutch"
-  !insertmacro MUI_LANGUAGE "Danish"
-  !insertmacro MUI_LANGUAGE "Swedish"
-  !insertmacro MUI_LANGUAGE "Norwegian"
-  !insertmacro MUI_LANGUAGE "Finnish"
-  !insertmacro MUI_LANGUAGE "Greek"
-  !insertmacro MUI_LANGUAGE "Portuguese"
-  !insertmacro MUI_LANGUAGE "PortugueseBR"
-  !insertmacro MUI_LANGUAGE "Polish"
-  ;!insertmacro MUI_LANGUAGE "Russian"
-  !insertmacro MUI_LANGUAGE "Ukrainian"
-  !insertmacro MUI_LANGUAGE "Czech"
-  !insertmacro MUI_LANGUAGE "Slovak"
-  !insertmacro MUI_LANGUAGE "Croatian"
+
   !insertmacro MUI_LANGUAGE "Bulgarian"
-  !insertmacro MUI_LANGUAGE "Hungarian"
-  !insertmacro MUI_LANGUAGE "Romanian"
-  !insertmacro MUI_LANGUAGE "Latvian"
-  !insertmacro MUI_LANGUAGE "Macedonian"
-  !insertmacro MUI_LANGUAGE "Estonian"
-  !insertmacro MUI_LANGUAGE "Turkish"
-  !insertmacro MUI_LANGUAGE "Lithuanian"
   !insertmacro MUI_LANGUAGE "Catalan"
+;  !insertmacro MUI_LANGUAGE "Chinese"
+;  !insertmacro MUI_LANGUAGE "Chinese_TC"
+  !insertmacro MUI_LANGUAGE "Croatian"
+  !insertmacro MUI_LANGUAGE "Czech"
+  !insertmacro MUI_LANGUAGE "Danish"
+  !insertmacro MUI_LANGUAGE "Dutch"
+  !insertmacro MUI_LANGUAGE "Estonian"
+  !insertmacro MUI_LANGUAGE "French"
+;  !insertmacro MUI_LANGUAGE "Galego"
+  !insertmacro MUI_LANGUAGE "German"
+  !insertmacro MUI_LANGUAGE "Greek"
+  !insertmacro MUI_LANGUAGE "Hungarian"
+  !insertmacro MUI_LANGUAGE "Italian"
+  !insertmacro MUI_LANGUAGE "Korean"
+  !insertmacro MUI_LANGUAGE "Latvian"
+  !insertmacro MUI_LANGUAGE "Norwegian"
+  !insertmacro MUI_LANGUAGE "Polish"
+  !insertmacro MUI_LANGUAGE "Portuguese"
+  !insertmacro MUI_LANGUAGE "Romanian"
+;  !insertmacro MUI_LANGUAGE "Russian"
+  !insertmacro MUI_LANGUAGE "Slovak"
   !insertmacro MUI_LANGUAGE "Slovenian"
-  !insertmacro MUI_LANGUAGE "Serbian"
-  !insertmacro MUI_LANGUAGE "SerbianLatin"
-  !insertmacro MUI_LANGUAGE "Arabic"
-  !insertmacro MUI_LANGUAGE "Farsi"
-  !insertmacro MUI_LANGUAGE "Hebrew"
-  !insertmacro MUI_LANGUAGE "Indonesian"
-  !insertmacro MUI_LANGUAGE "Mongolian"
-  !insertmacro MUI_LANGUAGE "Luxembourgish"
-  !insertmacro MUI_LANGUAGE "Albanian"
-
-;--------------------------------
-;Reserve Files
-
-  ;These files should be inserted before other files in the data block
-  ;Keep these lines before any File command
-  ;Only for solid compression (by default, solid compression is enabled for BZIP2 and LZMA)
-
-  !insertmacro MUI_RESERVEFILE_LANGDLL
+  !insertmacro MUI_LANGUAGE "Spanish"
+;  !insertmacro MUI_LANGUAGE "SpanishCastellano"
+  !insertmacro MUI_LANGUAGE "Swedish"
+  !insertmacro MUI_LANGUAGE "Turkish"
+  !insertmacro MUI_LANGUAGE "Ukrainian"
 
 !endif ;NEW_INTERFACE
-
 ;--------------------------------
 
 # [Files]
 
 Section "${PROGRAM_NAME} program files (required)" SectionMain
   SectionIn 1 2 RO
-
-  CreateDirectory $INSTDIR
   SetOutPath $INSTDIR
-  
+ 
   File "devcpp.exe"
   File "copying.txt"
   File "News.txt"
@@ -189,36 +155,59 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   File "Lang\English.*"
   SetOutPath $INSTDIR\Templates
   File "Templates\*"
+  SetOutPath $INSTDIR\bin
+  File "bin\rm.exe"
 
-  ; Added for wx-devcpp  -- START
-  
+ ; Added for wx-devcpp  -- START
+
   ; Replace the text %DEVCPPINSTALLDIR% in the template files with
   ; whatever installation directory the user selected during
   ; the install
-  Push %DEVCPPINSTALLDIR% #text to be replaced
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
   Push all #replace all occurrences
   Push all #replace all occurrences
   Push $INSTDIR\Templates\00-wxWindows.template #file to replace in
   Call AdvReplaceInFile
 
-  Push %DEVCPPINSTALLDIR% #text to be replaced
+  Push "%WXVERSION%"  #text to be replaced
+  Push ${WXWIDGETS_VERSION}  #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\00-wxWindows.template #file to replace in
+  Call AdvReplaceInFile
+  
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
   Push all #replace all occurrences
   Push all #replace all occurrences
   Push $INSTDIR\Templates\0-wxWindows.template #file to replace in
   Call AdvReplaceInFile
 
-  Push %DEVCPPINSTALLDIR% #text to be replaced
+  Push "%WXVERSION%"  #text to be replaced
+  Push ${WXWIDGETS_VERSION}  #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\0-wxWindows.template #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
   Push $INSTDIR #replace with
   Push all #replace all occurrences
   Push all #replace all occurrences
   Push $INSTDIR\Templates\1-empty.template #file to replace in
   Call AdvReplaceInFile
   ; end replacing text within template files
-  
-  SetOutPath $INSTDIR\wx
-  File /r "wx\*"
+
+  Push "%WXVERSION%"  #text to be replaced
+  Push ${WXWIDGETS_VERSION}  #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\Templates\1-empty.template #file to replace in
+  Call AdvReplaceInFile
+
+ ; SetOutPath $INSTDIR\wx
+ ; File /r "wx\*"
   ; Added for wx-devcpp  -- END
 
   ; Delete old devcpp.map to avoid confusion in bug reports
@@ -226,7 +215,7 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
 
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\${PROGRAM_NAME} "Install_Dir" "$INSTDIR"
-
+  
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "DisplayName" "${DISPLAY_NAME}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
@@ -234,12 +223,10 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoRepair" 1
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
-
 SectionEnd
 
 Section "Example files" SectionExamples
   SectionIn 1 2
-
   SetOutPath $INSTDIR\Examples
   SetOutPath $INSTDIR\Examples\FileEditor
   File "Examples\FileEditor\*"
@@ -259,7 +246,6 @@ Section "Example files" SectionExamples
   File "Examples\WinMenu\*"
   SetOutPath $INSTDIR\Examples\WinTest
   File "Examples\WinTest\*"
-
 SectionEnd
 
 Section "Help files" SectionHelp
@@ -267,51 +253,56 @@ Section "Help files" SectionHelp
   SetOutPath $INSTDIR\Help
   File "Help\DevCpp.hlp"
   File "Help\DevCpp.cnt"
+  SetOutPath $INSTDIR\Packages
+  File "Packages\DevCppHelp.entry"
   
   ; Added for wx-devcpp  -- START
+  SetOutPath $INSTDIR\Help
   File "Help\wx.hlp"
   File "Help\wx.cnt"
   File "Help\wx.gid"
   File "Help\devhelp.ini"
+  File "Help\wx-devcpp Tutorial Help.chm"
   ; Added for wx-devcpp  -- END
-  
-  SetOutPath $INSTDIR\Packages
-  File "Packages\DevCppHelp.entry"
 
 SectionEnd
 
 Section "Icon files" SectionIcons
   SectionIn 1 2
-
   SetOutPath $INSTDIR\Icons
   File "Icons\*.ico"
-  ;SetOutPath $INSTDIR\Themes
-  ;File /r "Themes\*"
-
+  #SetOutPath $INSTDIR\Themes
+  #File /r "Themes\*"
 SectionEnd
-
-; Added for wx-devcpp  -- START
-Section "Tutorials" SectionTutorial
-  SectionIn 1 2
-  SetOutPath $INSTDIR\Tutorial
-  File /r "Tutorial\*"
-SectionEnd
-; Added for wx-devcpp  -- END
 
 !ifdef HAVE_MINGW
 Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   SectionIn 1 2
   SetOutPath $INSTDIR
-  SetOutPath $INSTDIR\bin
-  File /r "bin\*"
-  SetOutPath $INSTDIR\include
-  File /r "include\*"
-  SetOutPath $INSTDIR\lib
-  File /r "lib\*"
-  ;SetOutPath $INSTDIR\libexec
-  ;File /r "libexec\"
-  SetOutPath $INSTDIR\mingw32
-  File /r "mingw32\*"
+  ; uninstall previous packages
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\binutils.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-core.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-g++.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-objc.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gdb.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\make.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\mingw-runtime.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry"'
+  
+  ; Added for wx-devcpp  -- START
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets_contrib.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\zlib.entry"'
+  ; Added for wx-devcpp  -- END
+
+  File /r "bin"
+  File /r "include"
+  File /r "lib"
+  File /r "libexec"
+  File /r "mingw32"
   SetOutPath $INSTDIR\Packages
   File "Packages\binutils.entry"
   File "Packages\gcc-core.entry"
@@ -320,7 +311,16 @@ Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   File "Packages\make.entry"
   File "Packages\mingw-runtime.entry"
   File "Packages\w32api.entry"
-
+  
+  ; Added for wx-devcpp  -- START
+  File "Packages\zlib.entry"
+  File "Packages\libjpeg.entry"
+  File "Packages\libtiff.entry"
+  File "Packages\libpng.entry"
+  File "Packages\wxWidgets.entry"
+  File "Packages\wxWidgets_contrib.entry"
+  ; Added for wx-devcpp  -- END
+  
 SectionEnd
 !endif
 
@@ -389,7 +389,7 @@ Section "Associate .h files to ${PROGRAM_NAME}"
   Call BackupAssoc
 
   StrCpy $0 $INSTDIR\DevCpp.exe
-  WriteRegStr HKCR ".h" "" "${PROGRAM_NAME}.h"
+  WriteRegStr HKCR ".h" "" "DevCpp.h"
   WriteRegStr HKCR "${PROGRAM_NAME}.h" "" "C Header File"
   WriteRegStr HKCR "${PROGRAM_NAME}.h\DefaultIcon" "" '$0,6'
   WriteRegStr HKCR "${PROGRAM_NAME}.h\Shell\Open\Command" "" '$0 "%1"'
@@ -489,11 +489,11 @@ AllUsers:
       "Shortcuts" "$0"
 
 exists:
-  CreateDirectory "$0\${PROGRAM_NAME}"
+  CreateDirectory "$0\${START_MENU_DIRECTORY}"
   SetOutPath $INSTDIR
-  CreateShortCut "$0\${PROGRAM_NAME}\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
-  CreateShortCut "$0\${PROGRAM_NAME}\License.lnk" "$INSTDIR\copying.txt"
-  CreateShortCut "$0\${PROGRAM_NAME}\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
+  CreateShortCut "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
+  CreateShortCut "$0\$START_MENU_DIRECTORY}\License.lnk" "$INSTDIR\copying.txt"
+  CreateShortCut "$0\${START_MENU_DIRECTORY}\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
 SectionEnd
 
 Section "Create Quick Launch shortcut" SectionQuickLaunch
@@ -503,7 +503,7 @@ Section "Create Quick Launch shortcut" SectionQuickLaunch
 SectionEnd
 
 Section "Debug files" SectionDebug
-  SectionIn 1 2
+  SectionIn 1
   SetOutPath $INSTDIR
   File "devcpp.map"
   File "Packman.map"
@@ -511,9 +511,9 @@ Section "Debug files" SectionDebug
   File "Packages\Dev-C++_Map.entry"
 SectionEnd
 
-
 Section "Remove all previous configuration files" SectionConfig
- SectionIn 1 2
+   SectionIn 1 2
+
   Delete "$APPDATA\Dev-Cpp\devcpp.ini"
   Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
   Delete "$APPDATA\Dev-Cpp\cache.ccc"
@@ -523,7 +523,7 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
   Delete "$APPDATA\Dev-Cpp\tools.ini"
   Delete "$APPDATA\Dev-Cpp\devcpp.ci"
-
+  
   call GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
   Delete "$LOCAL_APPDATA\devcpp.cfg"
@@ -544,7 +544,7 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$APPDATA\mirrors.cfg"
   Delete "$APPDATA\tools.ini"
   Delete "$APPDATA\devcpp.ci"
-
+  
   Delete "$INSTDIR\devcpp.ini"
   Delete "$INSTDIR\devcpp.cfg"
   Delete "$INSTDIR\cache.ccc"
@@ -554,9 +554,21 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$INSTDIR\mirrors.cfg"
   Delete "$INSTDIR\tools.ini"
   Delete "$INSTDIR\devcpp.ci"
-  Delete "$INSTDIR\devcpp.pallete"
-
 SectionEnd
+
+Function run_devcpp
+
+  MessageBox MB_YESNO "${PROGRAM_NAME} ${WXDEVCPP_VERSION} has been installed successfully.$\r$\nDo you wish to run the program?" IDNO dont_run
+  ; For some reason, NSIS uses the last directory it was working on
+  ; Because of this, if you try the command $INSTDIR/devcpp.exe, the wx-devcpp
+  ; program will run, but it might not be using $INSTDIR as the working directory
+  ; This can screw up the code completion cache that's created on the initial run
+  ; To get around it, we add this code to specifically change the directory to $INSTDIR
+  ; and then run the program.  GAR --21 Feb 2005
+   SetOutPath "$INSTDIR"
+   Exec "devcpp.exe"
+dont_run:
+FunctionEnd
 
 ;--------------------------------
 
@@ -599,30 +611,10 @@ SectionEnd
 
 ; Functions
 
-Function run_devcpp
-
-  MessageBox MB_YESNO "${PROGRAM_NAME} ${WXDEVCPP_VERSION} has been installed successfully.$\r$\nDo you wish to run the program?" IDNO dont_run
-  ; For some reason, NSIS uses the last directory it was working on
-  ; Because of this, if you try the command $INSTDIR/devcpp.exe, the wx-devcpp
-  ; program will run, but it might not be using $INSTDIR as the working directory
-  ; This can screw up the code completion cache that's created on the initial run
-  ; To get around it, we add this code to specifically change the directory to $INSTDIR
-  ; and then run the program.  GAR --21 Feb 2005
-   SetOutPath "$INSTDIR"
-   Exec "devcpp.exe"
-dont_run:
-FunctionEnd
-   
 Function .onInit
-  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} ${WXDEVCPP_VERSION} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation of ${PROGRAM_NAME} or Dev-Cpp."
-; Ask for language to use in installer
-   !insertmacro MUI_LANGDLL_DISPLAY
+  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program. Please do not install this version of ${PROGRAM_NAME} over an existing installation."
 
-FunctionEnd
-
-;called when the install was successful
-Function .onInstSuccess
-   Exec run_devcpp
+  !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
 !ifndef NEW_INTERFACE
@@ -636,22 +628,12 @@ FunctionEnd
 
 ;called when the install was successful
 Function .onInstSuccess
-  MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} ${WXDEVCPP_VERSION} now?" IDNO DontRun
-  SetOutDir $INSTDIR
+  MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} now?" IDNO DontRun
   Exec '"$INSTDIR\devcpp.exe"'
   DontRun:
 FunctionEnd
 
 !endif ;!NEW_INTERFACE
-
-;--------------------------------
-;Uninstaller Functions
-
-Function un.onInit
-
-  !insertmacro MUI_UNGETLANGUAGE
-
-FunctionEnd
 
 ;called when the uninstall was successful
 Function un.onUninstSuccess
@@ -664,7 +646,7 @@ Function BackupAssoc
   ;$0 is an extension - for example ".dev"
 
   ;check if backup already exists
-  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0"
+  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" "$0"
   ;don't backup if backup exists in registry
   StrCmp $1 "" 0 no_assoc
 
@@ -673,9 +655,9 @@ Function BackupAssoc
   StrCmp $1 "DevCpp$0" no_assoc
 
   StrCmp $1 "" no_assoc
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0" "$1"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" "$0" "$1"
   no_assoc:
-
+  
 FunctionEnd
 
 ;restore file association
@@ -683,16 +665,16 @@ Function un.RestoreAssoc
   ;$0 is an extension - for example ".dev"
 
   DeleteRegKey HKCR "$0"
-  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0"
+  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" "$0"
   StrCmp $1 "" no_backup
     WriteRegStr HKCR "$0" "" "$1"
     Call un.RefreshShellIcons
   no_backup:
-
+  
 FunctionEnd
 
 ;http://nsis.sourceforge.net/archive/viewpage.php?pageid=202
-;After changing file associations, you can call this macro to refresh the shell immediatly.
+;After changing file associations, you can call this macro to refresh the shell immediatly. 
 ;It calls the shell32 function SHChangeNotify. This will force windows to reload your changes from the registry.
 !define SHCNE_ASSOCCHANGED 0x08000000
 !define SHCNF_IDLIST 0
@@ -780,7 +762,7 @@ Function GetLocalAppData
 
   System::Call 'shfolder.dll::SHGetFolderPathA(i, i, i, i, t) i \
                 (0, ${CSIDL_LOCAL_APPDATA}, 0, 0, .r0) .r1'
-
+  
   StrCpy $LOCAL_APPDATA $0
 FunctionEnd
 
@@ -789,11 +771,14 @@ Function un.GetLocalAppData
 
   System::Call 'shfolder.dll::SHGetFolderPathA(i, i, i, i, t) i \
                 (0, ${CSIDL_LOCAL_APPDATA}, 0, 0, .r0) .r1'
-
+  
   StrCpy $LOCAL_APPDATA $0
 FunctionEnd
+
+; Added for wx-devcpp  -- START
+
 ; Replace text within a file
-; From http://nsis.sourceforge.net/archive/nsisweb.php?page=316&instances=0,11,311
+; From http://nsis.sourceforge.net/archive/nsisweb.php?page=511&instances=0,11,311
 ; USE:
 ; Push hello #text to be replaced
 ; Push blah #replace with
@@ -802,6 +787,10 @@ FunctionEnd
 ; Push C:\temp1.bat #file to replace in
 ; Call AdvReplaceInFile
 
+;Original Written by Afrow UK
+; Rewrite to Replace on line within text by rainmanx
+; This version works on R4 and R3 of Nullsoft Installer
+; It replaces what ever is in the line throught the entire text matching it.
 Function AdvReplaceInFile
 Exch $0 ;file to replace in
 Exch
@@ -828,62 +817,54 @@ Push $R3 ;universal
 Push $R4 ;count (onwards)
 Push $R5 ;count (after)
 Push $R6 ;temp file name
-
-  GetTempFileName $R6
-  FileOpen $R1 $0 r ;file to search in
-  FileOpen $R0 $R6 w ;temp file
-   StrLen $R3 $4
-   StrCpy $R4 -1
-   StrCpy $R5 -1
-
+;-------------------------------
+GetTempFileName $R6
+FileOpen $R1 $0 r ;file to search in
+FileOpen $R0 $R6 w ;temp file
+StrLen $R3 $4
+StrCpy $R4 -1
+StrCpy $R5 -1
 loop_read:
- ClearErrors
- FileRead $R1 $R2 ;read line
- IfErrors exit
-
-   StrCpy $5 0
-   StrCpy $7 $R2
-
+ClearErrors
+FileRead $R1 $R2 ;read line
+IfErrors exit
+StrCpy $5 0
+StrCpy $7 $R2
 loop_filter:
-   IntOp $5 $5 - 1
-   StrCpy $6 $7 $R3 $5 ;search
-   StrCmp $6 "" file_write2
-   StrCmp $6 $4 0 loop_filter
-
- StrCpy $8 $7 $5 ;left part
- IntOp $6 $5 + $R3
- StrCpy $9 $7 "" $6 ;right part
- StrCpy $7 $8$3$9 ;re-join
-
+IntOp $5 $5 - 1
+StrCpy $6 $7 $R3 $5 ;search
+StrCmp $6 "" file_write2
+StrCmp $6 $4 0 loop_filter
+StrCpy $8 $7 $5 ;left part
+IntOp $6 $5 + $R3
+StrCpy $9 $7 "" $6 ;right part
+StrLen $6 $7
+StrCpy $7 $8$3$9 ;re-join
+StrCmp -$6 $5 0 loop_filter
 IntOp $R4 $R4 + 1
 StrCmp $2 all file_write1
 StrCmp $R4 $2 0 file_write2
 IntOp $R4 $R4 - 1
-
 IntOp $R5 $R5 + 1
 StrCmp $1 all file_write1
 StrCmp $R5 $1 0 file_write1
 IntOp $R5 $R5 - 1
 Goto file_write2
-
 file_write1:
- FileWrite $R0 $7 ;write modified line
+FileWrite $R0 $7 ;write modified line
 Goto loop_read
-
 file_write2:
- FileWrite $R0 $R2 ;write unmodified line
+FileWrite $R0 $7 ;write modified line
 Goto loop_read
-
 exit:
-  FileClose $R0
-  FileClose $R1
-
-   SetDetailsPrint none
-  Delete $0
-  Rename $R6 $0
-  Delete $R6
-   SetDetailsPrint both
-
+FileClose $R0
+FileClose $R1
+SetDetailsPrint none
+Delete $0
+Rename $R6 $0
+Delete $R6
+SetDetailsPrint both
+;-------------------------------
 Pop $R6
 Pop $R5
 Pop $R4
@@ -903,28 +884,28 @@ Pop $1
 Pop $0
 FunctionEnd
 
+; Added for wx-devcpp  -- END
+
+;--------------------------------
 
 # [UnInstallation]
 
-UninstallText "This program will uninstall ${PROGRAM_NAME} ${WXDEVCPP_VERSION}. Do you want to continue ?"
+UninstallText "This program will uninstall ${PROGRAM_NAME}, continue ?"
 ShowUninstDetails show
 
 Section "Uninstall"
 
-; These unintaller log files were created by running a linux/msys
-; script on an installed version. This way we'll only be removing
-; the files and directories we created with the initial installation.
-; Remove files and uninstaller
+  ; Remove files and uninstaller
+  Delete "$INSTDIR\uninstall.exe"
   !include ".\installed_files.nsh"
-  !include ".\installed_dirs.nsh"
 
   ; Remove icons
-  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}\Backup" \
       "Shortcuts"
-  Delete "$0\${PROGRAM_NAME}\${PROGRAM_NAME}.lnk"
-  Delete "$0\${PROGRAM_NAME}\License.lnk"
-  Delete "$0\${PROGRAM_NAME}\Uninstall ${PROGRAM_NAME}.lnk"
-  RMDir  "$0\${PROGRAM_NAME}"
+  Delete "$0\${START_MENU_DIRECTORY}\${PROGRAM_NAME}.lnk"
+  Delete "$0\${START_MENU_DIRECTORY}\License.lnk"
+  Delete "$0\${START_MENU_DIRECTORY}\Uninstall ${PROGRAM_NAME}.lnk"
+  RMDir  "$0\${START_MENU_DIRECTORY}"
   SetShellVarContext current
   Delete "$QUICKLAUNCH\${PROGRAM_NAME}.lnk"
 
@@ -945,9 +926,9 @@ Section "Uninstall"
   Call un.RestoreAssoc
   StrCpy $0 ".devpackage"
   Call un.RestoreAssoc
-  StrCpy $0 ".template"
+  StrCpy $0 ".template" 
   Call un.RestoreAssoc
-
+ 
   DeleteRegKey HKCR "${PROGRAM_NAME}.dev"
   DeleteRegKey HKCR "${PROGRAM_NAME}.c"
   DeleteRegKey HKCR "${PROGRAM_NAME}.cpp"
@@ -959,8 +940,8 @@ Section "Uninstall"
   DeleteRegKey HKCR "${PROGRAM_NAME}.template"
 
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}"
-  DeleteRegKey HKLM SOFTWARE\${PROGRAM_NAME}
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${START_MENU_DIRECTORY}"
+  DeleteRegKey HKLM "SOFTWARE\${START_MENU_DIRECTORY}"
 
   MessageBox MB_YESNO "Do you want to remove all the remaining configuration files?" IDNO Done
 
@@ -973,7 +954,7 @@ Section "Uninstall"
   Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
   Delete "$APPDATA\Dev-Cpp\tools.ini"
   Delete "$APPDATA\Dev-Cpp\devcpp.ci"
-
+  
   call un.GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
   Delete "$LOCAL_APPDATA\devcpp.cfg"
@@ -994,8 +975,7 @@ Section "Uninstall"
   Delete "$APPDATA\mirrors.cfg"
   Delete "$APPDATA\tools.ini"
   Delete "$APPDATA\devcpp.ci"
-
-  Delete "$INSTDIR\devcpp.exe"
+  
   Delete "$INSTDIR\devcpp.ini"
   Delete "$INSTDIR\devcpp.cfg"
   Delete "$INSTDIR\cache.ccc"
@@ -1005,10 +985,9 @@ Section "Uninstall"
   Delete "$INSTDIR\mirrors.cfg"
   Delete "$INSTDIR\tools.ini"
   Delete "$INSTDIR\devcpp.ci"
-  Delete "$INSTDIR\devcpp.pallete"
 
 Done:
-  MessageBox MB_OK "${PROGRAM_NAME} ${WXDEVCPP_VERSION} has been uninstalled.$\r$\nPlease now delete the $INSTDIR directory if it doesn't contain some of your documents"
+  MessageBox MB_OK "${PROGRAM_NAME} has been uninstalled. Please now delete the $INSTDIR directory if it doesn't contain some of your documents"
 
 SectionEnd
 
