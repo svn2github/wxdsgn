@@ -25,11 +25,6 @@
 
 #include <wx/frame.h>
 
-////GUI Control ID Start
-///Dont not Add/Edit Anything here. The GUI builder will remove them.
-
-////GUI Control ID End
-
 ////Dialog Style Start
 #define THIS_DIALOG_STYLE %CLASS_STYLE_STRING%
 ////Dialog Style End
@@ -49,6 +44,16 @@ public:
   ///Dont not Add/Edit Anything here. The GUI builder will remove them.
 
   ////GUI Control Declaration End
+
+public:
+	//Note: if you receive any error with this enums, then you need to
+        //change your old form code that are based on the #define control ids.
+	//It may replace a numberic value in the enums names.
+	enum {
+////GUI Enum Control ID Start
+////GUI Enum Control ID End
+   ID_DUMMY_VALUE_ //Dont Delete this DummyValue
+   }; //End of Enum
 
 public:
     void %CLASS_NAME%Close(wxCloseEvent& event);

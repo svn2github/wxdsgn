@@ -25,9 +25,6 @@
 
 #include <wx/dialog.h>
 
-////GUI Control ID Start
-////GUI Control ID End
-
 ////Dialog Style Start
 #define THIS_DIALOG_STYLE  %CLASS_STYLE_STRING%
 ////Dialog Style End
@@ -43,7 +40,15 @@ public:
 public:
   ////GUI Control Declaration Start
   ////GUI Control Declaration End
-
+public:
+	//Note: if you receive any error with this enums, then you need to
+    //change your old form code that are based on the #define control ids.
+	//It may replace a numberic value in the enums names.
+	enum {
+////GUI Enum Control ID Start
+////GUI Enum Control ID End
+   ID_DUMMY_VALUE_ //Dont Delete this DummyValue
+   }; //End of Enum
 private:
     DECLARE_EVENT_TABLE()
 
