@@ -66,7 +66,6 @@ const
   SYNS_AttrCDATASection         =  'CDATA Section';
   SYNS_AttrCharacter            =  'Character';
   SYNS_AttrClass                =  'Class';
-  SYNS_AttrCF                   =  'Cold Fusion tag';
   SYNS_AttrComment              =  'Comment';
   SYNS_AttrCondition            =  'Condition';
   SYNS_AttrDataType             =  'Data type';
@@ -93,7 +92,6 @@ const
   SYNS_AttrIndirect             =  'Indirect';
   SYNS_AttrInvalidSymbol        =  'Invalid symbol';
   SYNS_AttrInternalFunction     =  'Internal function';
-  SYNS_AttrInternalVariable     =  'Internal variable';
   SYNS_AttrKey                  =  'Key';
   SYNS_AttrLabel                =  'Label';
   SYNS_AttrMacro                =  'Macro';
@@ -107,8 +105,6 @@ const
   SYNS_AttrNumber               =  'Number';
   SYNS_AttrOctal                =  'Octal';
   SYNS_AttrOperator             =  'Operator';
-  SYNS_AttrPOD                  =  'POD section';
-  SYNS_AttrPound                =  'Cold Fusion Token';
   SYNS_AttrPLSQL                =  'Reserved word (PL/SQL)';
   SYNS_AttrPragma               =  'Pragma';
   SYNS_AttrPreprocessor         =  'Preprocessor';
@@ -126,7 +122,7 @@ const
   SYNS_AttrSection              =  'Section';
   SYNS_AttrSpace                =  'Space';
   SYNS_AttrSpecialVariable      =  'Special variable';
-  SYNS_AttrSQLKey               =  'SQL keyword';
+  SYNS_AttrSQLKey               =  'SQL keyword';  
   SYNS_AttrSQLPlus              =  'SQL*Plus command';
   SYNS_AttrString               =  'String';
   SYNS_AttrSymbol               =  'Symbol';
@@ -142,6 +138,12 @@ const
   SYNS_AttrVariable             =  'Variable';
   SYNS_AttrWhitespace           =  'Whitespace';
 
+  // mine
+  SYNS_AttrPOD                  =  'POD section';
+  SYNS_AttrPound                =  'Cold Fusion Token';
+  SYNS_AttrInternalVariable     =  'Internal variable';
+  SYNS_AttrCF                   =  'Cold Fusion Tag';
+  
   // names of exporter output formats
   SYNS_ExporterFormatHTML       =  'HTML';
   SYNS_ExporterFormatRTF        =  'RTF';
@@ -166,7 +168,6 @@ const
   SYNS_FilterPascal             =  'Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc';
   SYNS_FilterHP48               =  'HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp';
   SYNS_FilterCAClipper          =  'CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc';
-  SYNS_FilterCFML               =  'CFML Document  (*.cfm;*.cfml)|*.cfm;*.cfml';
   SYNS_FilterCORBAIDL           =  'CORBA IDL files (*.idl)|*.idl';
   SYNS_FilterCPM                =  'CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf';
   SYNS_FilterCPP                =  'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp';
@@ -193,7 +194,7 @@ const
   SYNS_FilterCache              =  'Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int';
   SYNS_FilterCSS                =  'Cascading Stylesheets (*.css)|*.css';
   SYNS_FilterJScript            =  'Javascript Files (*.js)|*.js';
-  SYNS_FilterKIX                =  'Kix Scripts (*.kix)|*.kix';
+  SYNS_FilterKIX                =  'KiXtart scripts (*.kix)|*.kix';
   SYNS_FilterBaan               =  'Baan 4GL Files (*.cln)|*.cln';
   SYNS_FilterFoxpro             =  'Foxpro Files (*.prg)|*.prg';
   SYNS_FilterFortran            =  'Fortran Files (*.for)|*.for';
@@ -203,58 +204,66 @@ const
   SYNS_FilterModelica           =  'Modelica Files (*.mo)|*.mo';
   SYNS_FilterModula3            =  'Modula-3 Files (*.m3)|*.m3';
   SYNS_FilterSDD                =  'Semanta DD files (*.sdd)|*.sdd';
-  SYNS_FilterXML                =  'XML Document (*.xml,*.xsd,*.xsl,*.xslt)|*.xml;*.xsd;*.xsl;*.xslt';
+  SYNS_FilterXML                =  'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd';
   SYNS_FilterGWS                =  'GW-TEL Script Files (*.gws)|*.gws';
   SYNS_FilterSynGenMsgfiles     =  'Msg files (*.msg)|*.msg';
 
+  // mine
+  SYNS_FilterCFML               =  'Cold Fusion files (*.cfm;*.cfml)|*.cfm;*.cfml';
+  SYNS_FilterRC                 =  'Resource scripts (*.rc)|*.rc';
+
   // Language names. Maybe somebody wants them translated / more detailed...
-  SYNS_Lang68HC11               =  '68HC11 Assembler';
-  SYNS_LangADSP21xx             =  'ADSP21xx';
-  SYNS_LangAWK                  =  'AWK Script';
-  SYNS_LangBatch                =  'MS-DOS Batch Language';
-  SYNS_LangBaan                 =  'Baan 4GL';
-  SYNS_LangCache                =  'Cache Object Script';
-  SYNS_LangCAClipper            =  'CA-Clipper';
-  SYNS_LangCFML                 =  'Cold Fusion';
-  SYNS_LangCORBAIDL             =  'CORBA IDL';
-  SYNS_LangCPM                  =  'COAS Product Manager reports';
-  SYNS_LangCPP                  =  'C++';
-  SYNS_LangCSS                  =  'Cascading Stylesheets';
-  SYNS_LangDfm                  =  'Borland Form Definitions';
-  SYNS_LangFortran              =  'Fortran';
-  SYNS_LangFoxpro               =  'Foxpro';
-  SYNS_LangGalaxy               =  'Galaxy';
-  SYNS_LangGembase              =  'Gembase';
-  SYNS_LangGeneral              =  'General';
-  SYNS_LangGeneralMulti         =  'General Multi-Highlighter';
-  SYNS_LangGWS                  =  'GW-TEL Script';
   SYNS_LangHP48                 =  'HP48';
-  SYNS_LangHTML                 =  'HTML Document';
-  SYNS_LangINI                  =  'INI Files';
-  SYNS_LangInno                 =  'Inno Setup Scripts';
+  SYNS_LangCAClipper            =  'CA-Clipper';
+  SYNS_LangCPM                  =  'COAS Product Manager report';
+  SYNS_LangCPP                  =  'C++';
   SYNS_LangJava                 =  'Java';
+  SYNS_LangPerl                 =  'Perl';
+  SYNS_LangBatch                =  'MS-DOS batch language';
+  SYNS_LangDfm                  =  'Borland Form definition';
+  SYNS_LangAWK                  =  'AWK Script';
+  SYNS_LangCORBAIDL             =  'CORBA IDL';
+  SYNS_LangHTML                 =  'HTML document';
+  SYNS_LangVBSScript            =  'MS VBScript';
+  SYNS_LangGalaxy               =  'Galaxy';
+  SYNS_LangGeneral              =  'General';
+  SYNS_LangPascal               =  'ObjectPascal';
+  SYNS_LangX86Asm               =  'x86 assembly language';
+  SYNS_LangPython               =  'Python';
+  SYNS_LangTclTk                =  'Tcl/Tk';
+  SYNS_LangSQL                  =  'SQL';
+  SYNS_LangGembase              =  'Gembase';
+  SYNS_LangINI                  =  'INI file';
+  SYNS_LangSML                  =  'Standard ML';
+  SYNS_LangVisualBASIC          =  'Visual Basic';
+  SYNS_LangADSP21xx             =  'ADSP21xx';
+  SYNS_LangPHP                  =  'PHP';
+  SYNS_LangSybaseSQL            =  'Sybase SQL';
+  SYNS_LangGeneralMulti         =  'General Multi-Highlighter';
+  SYNS_LangCache                =  'Cache Object script';
+  SYNS_LangCSS                  =  'Cascading style sheets';
   SYNS_LangJScript              =  'Javascript';
-  SYNS_LangKIX                  =  'KIX32';
+  SYNS_LangKIX                  =  'KiXtart script';
+  SYNS_LangBaan                 =  'Baan 4GL';
+  SYNS_LangFoxpro               =  'Foxpro';
+  SYNS_LangFortran              =  'Fortran';
+  SYNS_Lang68HC11               =  '68HC11 assembler';
+  SYNS_LangProgress             =  'Progress';
+  SYNS_LangInno                 =  'Inno Setup script';
   SYNS_LangModelica             =  'Modelica';
   SYNS_LangModula3              =  'Modula 3';
-  SYNS_LangPascal               =  'ObjectPascal';
-  SYNS_LangPerl                 =  'Perl';
-  SYNS_LangPHP                  =  'PHP';
-  SYNS_LangProgress             =  'Progress';
-  SYNS_LangPython               =  'Python';
   SYNS_LangSDD                  =  'Semanta data dictionary';
-  SYNS_LangSML                  =  'Standard ML';
-  SYNS_LangSQL                  =  'SQL';
-  SYNS_LangSybaseSQL            =  'Sybase SQL';
+  SYNS_LangXML                  =  'XML document';
+  SYNS_LangGWS                  =  'GW-TEL script';
   SYNS_LangSynGenMsgfiles       =  'SynGen Msg files';
-  SYNS_LangTclTk                =  'Tcl/Tk';
   SYNS_LangUnreal               =  'Unreal';
-  SYNS_LangVBSScript            =  'MS VBScript';
-  SYNS_LangVisualBASIC          =  'Visual Basic';
-  SYNS_LangX86Asm               =  'x86 Assembly Language';
-  SYNS_LangXML                  =  'XML Document';
+
+  // Mine
+  SYNS_LangCFML                 =  'Cold Fusion';
+  SYNS_LangRC                   =  'Resource script';
 
 implementation
 
 end.
+
 
