@@ -201,7 +201,7 @@ const MessageText =
     {$IFDEF WX_BUILD}
     +
     ''#13#10+
-    '- wxWidgets Designer Extension: Guru Kathiresan'#13#10
+    '- wxWidgets Designer Extension: Guru Kathiresan , Tony Reina.'#13#10
     {$ENDIF}
     ;
 begin
