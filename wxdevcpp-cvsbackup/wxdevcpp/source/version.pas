@@ -61,25 +61,6 @@ resourcestring
   LIB_DIR = 'lib';
   C_INCLUDE_DIR = 'include';
   CPP_INCLUDE_DIR      = 
-  {$IFDEF WX_BUILD}
-                         'include' + pd + 'wx;'
-                       + 'include' + pd + 'wx' + pd + 'msw;'
-                       + 'include' + pd + 'wx' + pd + 'generic;'
-                       + 'include' + pd + 'wx' + pd + 'animate;'
-                       + 'include' + pd + 'wx' + pd + 'fl;'
-                       + 'include' + pd + 'wx' + pd + 'gizmos;'
-                       + 'include' + pd + 'wx' + pd + 'html;'
-                       + 'include' + pd + 'wx' + pd + 'mmedia;'
-                       + 'include' + pd + 'wx' + pd + 'net;'
-                       + 'include' + pd + 'wx' + pd + 'ogl;'
-                       + 'include' + pd + 'wx' + pd + 'plot;'
-                       + 'include' + pd + 'wx' + pd + 'protocol;'
-                       + 'include' + pd + 'wx' + pd + 'stc;'
-                       + 'include' + pd + 'wx' + pd + 'svg;'
-                       + 'include' + pd + 'wx' + pd + 'xml;'
-                       + 'include' + pd + 'wx' + pd + 'xrc;' 
-                       +
-  {$ENDIF}  
                          'include'
                        //one of below directories will be deleted if don't exist, later
                        + ';include' + pd + 'c++' + pd + GCC_VERSION
@@ -90,6 +71,26 @@ resourcestring
                        + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'mingw32'
                        + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'backward'
                        + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include'
+//The Dir are taken from bottom to up. So I added the dir in the inverted order in which
+//they are picked by the parser.                       
+  {$IFDEF WX_BUILD}
+                       +  ';include' + pd + 'wx;'
+                       + 'include' + pd + 'wx' + pd + 'xrc;'
+                       + 'include' + pd + 'wx' + pd + 'xml;'
+                       + 'include' + pd + 'wx' + pd + 'svg;'
+                       + 'include' + pd + 'wx' + pd + 'stc;'
+                       + 'include' + pd + 'wx' + pd + 'protocol;'
+                       + 'include' + pd + 'wx' + pd + 'plot;'
+                       + 'include' + pd + 'wx' + pd + 'ogl;'
+                       + 'include' + pd + 'wx' + pd + 'net;'
+                       + 'include' + pd + 'wx' + pd + 'mmedia;'
+                       + 'include' + pd + 'wx' + pd + 'html;'
+                       + 'include' + pd + 'wx' + pd + 'gizmos;'
+                       + 'include' + pd + 'wx' + pd + 'fl;'
+                       + 'include' + pd + 'wx' + pd + 'animate;'
+                       + 'include' + pd + 'wx' + pd + 'generic;'
+                       + 'include' + pd + 'wx' + pd + 'msw;'
+  {$ENDIF}
 
                        ;  
   LANGUAGE_DIR         = 'Lang' + pd;
