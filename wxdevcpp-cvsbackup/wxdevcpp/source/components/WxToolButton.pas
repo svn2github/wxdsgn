@@ -60,6 +60,7 @@ type
         destructor Destroy; override;
         procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -214,14 +215,24 @@ begin
     inherited;
 end;
 
+function TWxToolButton.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+    if not IsControlWxToolBar(self.parent) then
+        exit;
+
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+end;
+
 function TWxToolButton.GenerateControlIDs:String;
 begin
      Result:='';
     if not IsControlWxToolBar(self.parent) then
         exit;
-             
+
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('#define %s  %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxToolButton.GenerateEventTableEntries(CurrClassName:String):String;

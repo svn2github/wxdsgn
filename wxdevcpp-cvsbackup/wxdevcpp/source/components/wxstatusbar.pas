@@ -55,6 +55,7 @@ type
         procedure Click; override;
         procedure Loaded; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -82,6 +83,8 @@ type
         procedure SetProxyBGColorString(value:String);
         
         procedure DummySizerNonInsertableInterfaceProcedure;
+        function GenerateLastCreationCode:String;
+                
     public
       { Public fields and properties of TWxStatusBar }
       { Public fields and properties of TWxTreeCtrl }
@@ -253,6 +256,12 @@ begin
 
 end;
 
+function TWxStatusBar.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+end;
 
 function TWxStatusBar.GenerateControlIDs:String;
 begin
@@ -506,5 +515,11 @@ end;
 procedure TWxStatusBar.DummySizerNonInsertableInterfaceProcedure;
 begin
 end;
+
+function TWxStatusBar.GenerateLastCreationCode:String;
+begin
+    Result:='';
+end;
+
 
 end.

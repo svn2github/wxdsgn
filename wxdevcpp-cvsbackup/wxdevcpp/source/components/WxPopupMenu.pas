@@ -24,6 +24,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -112,6 +113,53 @@ begin
      inherited Destroy;
 end;
 
+function TWxPopupMenu.GenerateEnumControlIDs:String;
+var
+  I: Integer;
+  retValue:Integer;
+  strF:String;
+  strLst:TStringList;
+
+  procedure GetEnumControlIDFromSubMenu(idstrList:TStringList;submnu:TWxCustomMenuItem);
+  var
+    myretValue:Integer;
+    J:Integer;
+    strData:String;
+  begin
+    for J := 0 to submnu.Count - 1 do    // Iterate
+    begin
+        strData:=''+submnu.Items[J].Wx_IDName+' = '+IntToStr(submnu.Items[J].wx_IDValue) + ' , ';
+        idstrList.add(strData);
+
+        if submnu.items[J].Count > 0 then
+        begin
+            GetEnumControlIDFromSubMenu(idstrList,submnu.items[J]);
+        end;
+    end;    // for
+  end;
+
+begin
+
+    Result :='';
+    strLst:=TStringList.Create;
+
+    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+    begin
+        strF:=''+Wx_MenuItems.Items[i].Wx_IDName+' = '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue) + ' , ';
+        if trim(strF) <> '' then
+        begin
+            strLst.add(strF);
+        end;
+
+        if Wx_MenuItems.items[i].Count > 0 then
+        begin
+            GetEnumControlIDFromSubMenu(strLst,Wx_MenuItems.items[i]);
+        end
+    end;    // for
+    Result:=strLst.Text;
+    strLst.Destroy;
+
+end;
 function TWxPopupMenu.GenerateControlIDs:String;
 var
   I: Integer;
@@ -127,7 +175,7 @@ var
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-        strData:='#define '+submnu.Items[J].Wx_IDName+' '+IntToStr(submnu.Items[J].wx_IDValue);
+        strData:='#define '+submnu.Items[J].Wx_IDName+' '+IntToStr(submnu.Items[J].wx_IDValue) + ' ';
         idstrList.add(strData);
 
         if submnu.items[J].Count > 0 then
@@ -144,7 +192,7 @@ begin
 
     for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
     begin
-        strF:='#define '+Wx_MenuItems.Items[i].Wx_IDName+' '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue);
+        strF:='#define '+Wx_MenuItems.Items[i].Wx_IDName+'  '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue) + ' ';
         if trim(strF) <> '' then
         begin
             strLst.add(strF);

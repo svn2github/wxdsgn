@@ -57,6 +57,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -93,45 +94,26 @@ type
         property OnMouseMove;
         property OnMouseUp;
         property EVT_BUTTON : String read FEVT_BUTTON write FEVT_BUTTON;
-        property EVT_UPDATE_UI : String
-             read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
+        property EVT_UPDATE_UI : String read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
         property Wx_BKColor : TColor read FWx_BKColor write FWx_BKColor;
-        property Wx_Border : Integer
-             read FWx_Border write FWx_Border
-             default 5;
-        property Wx_ButtonStyle : TWxBtnStyleSet
-             read FWx_ButtonStyle write FWx_ButtonStyle;
+        property Wx_Border : Integer read FWx_Border write FWx_Border default 5;
+        property Wx_ButtonStyle : TWxBtnStyleSet read FWx_ButtonStyle write FWx_ButtonStyle;
         property Wx_Class : String read FWx_Class write FWx_Class;
-        property Wx_ControlOrientation : TWxControlOrientation
-             read FWx_ControlOrientation write FWx_ControlOrientation;
+        property Wx_ControlOrientation : TWxControlOrientation read FWx_ControlOrientation write FWx_ControlOrientation;
         property Wx_Default : Boolean read FWx_Default write FWx_Default;
-        property Wx_Enabled : Boolean
-             read FWx_Enabled write FWx_Enabled
-             default True;
-        property Wx_EventList : TstringList
-             read FWx_EventList write FWx_EventList;
+        property Wx_Enabled : Boolean read FWx_Enabled write FWx_Enabled default True;
+        property Wx_EventList : TstringList read FWx_EventList write FWx_EventList;
         property Wx_FGColor : TColor read FWx_FGColor write FWx_FGColor;
-        property Wx_GeneralStyle : TWxStdStyleSet
-             read FWx_GeneralStyle write FWx_GeneralStyle;
+        property Wx_GeneralStyle : TWxStdStyleSet read FWx_GeneralStyle write FWx_GeneralStyle;
         property Wx_HelpText : String read FWx_HelpText write FWx_HelpText;
         property Wx_Hidden : Boolean read FWx_Hidden write FWx_Hidden;
-        property Wx_HorizontalAlignment : TWxSizerHorizontalAlignment
-             read FWx_HorizontalAlignment write FWx_HorizontalAlignment
-             default wxSZALIGN_CENTER_HORIZONTAL;
+        property Wx_HorizontalAlignment : TWxSizerHorizontalAlignment read FWx_HorizontalAlignment write FWx_HorizontalAlignment default wxSZALIGN_CENTER_HORIZONTAL;
         property Wx_IDName : String read FWx_IDName write FWx_IDName;
-        property Wx_IDValue : Longint
-             read FWx_IDValue write FWx_IDValue
-             default -1;
-        property Wx_ProxyBGColorString : TWxColorString
-             read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
-        property Wx_ProxyFGColorString : TWxColorString
-             read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
-        property Wx_StretchFactor : Integer
-             read FWx_StretchFactor write FWx_StretchFactor
-             default 0;
-
-	property Wx_StrechFactor : Integer
-		read FWx_StretchFactor write FWx_StretchFactor;
+        property Wx_IDValue : Longint read FWx_IDValue write FWx_IDValue default -1;
+        property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
+        property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
+        property Wx_StretchFactor : Integer read FWx_StretchFactor write FWx_StretchFactor default 0;
+    	property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
 
         property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
@@ -247,12 +229,21 @@ begin
      FCanvas.Free;
 end;
 
+
+function TWxButton.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+end;
+
 function TWxButton.GenerateControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
         Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
+
 
 function TWxButton.GenerateEventTableEntries(CurrClassName:String):String;
 begin

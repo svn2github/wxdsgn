@@ -59,6 +59,7 @@ TWxGridSelection = (wxGridSelectCells,wxGridSelectColumns,wxGridSelectRows);
 TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
 
   IWxComponentInterface = interface ['{624949E8-E46C-4EF9-BADA-BC85325165B3}']
+    function GenerateEnumControlIDs: string;  
     function GenerateControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
     function GenerateGUIControlCreation: string;
@@ -107,6 +108,7 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     end;
 
     IWxContainerAndSizerInterface = interface ['{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}']
+        function GenerateLastCreationCode:String;
     end;
 
     IWxContainerInterface = interface ['{1149F8B7-04D7-466F-96FA-74C7383F2EFD}']
@@ -222,6 +224,9 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
 
     TWxHtmlWinStyleItem = (wxHW_SCROLLBAR_NEVER,wxHW_SCROLLBAR_AUTO,wxHW_NO_SELECTION);
     TWxHtmlWinStyleSet = Set of TWxHtmlWinStyleItem ;
+
+    TWxSplitterWinStyleItem = (wxSP_3D,wxSP_3DSASH ,wxSP_3DBORDER,wxSP_BORDER,wxSP_NOBORDER,wxSP_NO_XP_THEME,wxSP_PERMIT_UNSPLIT,wxSP_LIVE_UPDATE);
+    TWxSplitterWinStyleSet = Set of TWxSplitterWinStyleItem ;
 
     TWxMenuItemStyleItem = (wxMnuItm_Normal,wxMnuItm_Separator,wxMnuItm_Radio,wxMnuItm_Check);
 
@@ -398,6 +403,7 @@ function GetStatusBarStyleString(stdStyle:TWxsbrStyleSet):String;
 function GetToolBarStyleString(stdStyle:TWxtbrStyleSet):String;
 function GetScrolledWindowStyleString(stdStyle:TWxScrWinStyleSet):String;
 function GetHtmlWindowStyleString(stdStyle:TWxHtmlWinStyleSet):String;
+function GetSplitterWindowStyleString(stdStyle:TWxSplitterWinStyleSet):String;
 function GetFileDialogStyleString(stdStyle:TWxFileDialogStyleSet):String;
 function GetDirDialogStyleString(stdStyle:TWxDirDialogStyleSet):String;
 function GetProgressDialogStyleString(stdStyle:TWxProgressDialogStyleSet):String;
@@ -428,7 +434,7 @@ function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;sbrstyle:TWxsbrStyle
 function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;tbrstyle:TWxtbrStyleSet):String;
 function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;scrWinStyle:TWxScrWinStyleSet):String;
 function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;htmlWinStyle:TWxHtmlWinStyleSet):String;
-
+function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;splitterWinStyle:TWxSplitterWinStyleSet):String;
 
 /////////////////////////////
 
@@ -477,11 +483,137 @@ function GetMaxIDofWxForm(ParentControl:TWinControl):integer;
 function GetMenuKindAsText(menuStyle:TWxMenuItemStyleItem):String;
 function GetToolButtonKindAsText(toolStyle:TWxToolbottonItemStyleItem):String;
 
+function GetTotalHtOfAllToolBarAndStatusBar(ParentControl:TWinControl):Integer;
+
+function GetPredefinedwxIds:TStringList;
+function IsIDPredefined(str:String;strlst:TStringList):Boolean;
+
 implementation
 
 uses DesignerFrm,wxlistCtrl,WxStaticBitmap,WxBitmapButton,WxSizerPanel,WxToolButton,
      UColorEdit,UMenuitem,WxCustomMenuItem,WxPopupMenu,WxMenuBar,WxNonVisibleBaseComponent;
 
+function GetTotalHtOfAllToolBarAndStatusBar(ParentControl:TWinControl):Integer;
+var
+  I: Integer;
+begin
+    Result:=0;
+    for I := 0 to ParentControl.ControlCount - 1 do    // Iterate
+    begin
+        if not( IsControlWxToolBar(ParentControl.Controls[i]) or IsControlWxStatusBar(ParentControl.Controls[i]) ) then
+            continue;
+        Result:=Result+ParentControl.Controls[i].Height;
+    end;    // for
+end;
+function IsIDPredefined(str:String;strlst:TStringList):Boolean;
+begin
+    if strlst.IndexOf(str) <> -1 then
+        Result:=true
+    else
+        Result:=false;
+end;
+
+function GetPredefinedwxIds:TStringList;
+begin
+  Result:=TStringList.Create;
+  Result.add('wxID_OPEN');
+  Result.add('wxID_CLOSE');
+  Result.add('wxID_NEW');
+  Result.add('wxID_SAVE');
+  Result.add('wxID_SAVEAS');
+  Result.add('wxID_REVERT');
+  Result.add('wxID_EXIT');
+  Result.add('wxID_UNDO');
+  Result.add('wxID_REDO');
+  Result.add('wxID_HELP');
+  Result.add('wxID_PRINT');
+  Result.add('wxID_PRINT_SETUP');
+  Result.add('wxID_PREVIEW');
+  Result.add('wxID_ABOUT');
+  Result.add('wxID_HELP_CONTENTS');
+  Result.add('wxID_HELP_COMMANDS');
+  Result.add('wxID_HELP_PROCEDURES');
+  Result.add('wxID_HELP_CONTEXT');
+  Result.add('wxID_CLOSE_ALL');
+  Result.add('wxID_PREFERENCES');
+  Result.add('wxID_CUT');
+  Result.add('wxID_COPY');
+  Result.add('wxID_PASTE');
+  Result.add('wxID_CLEAR');
+  Result.add('wxID_FIND');
+  Result.add('wxID_DUPLICATE');
+  Result.add('wxID_SELECTALL');
+  Result.add('wxID_DELETE');
+  Result.add('wxID_REPLACE');
+  Result.add('wxID_REPLACE_ALL');
+  Result.add('wxID_PROPERTIES');
+  Result.add('wxID_VIEW_DETAILS');
+  Result.add('wxID_VIEW_LARGEICONS');
+  Result.add('wxID_VIEW_SMALLICONS');
+  Result.add('wxID_VIEW_LIST');
+  Result.add('wxID_VIEW_SORTDATE');
+  Result.add('wxID_VIEW_SORTNAME');
+  Result.add('wxID_VIEW_SORTSIZE');
+  Result.add('wxID_VIEW_SORTTYPE');
+  Result.add('wxID_FILE1');
+  Result.add('wxID_FILE2');
+  Result.add('wxID_FILE3');
+  Result.add('wxID_FILE4');
+  Result.add('wxID_FILE5');
+  Result.add('wxID_FILE6');
+  Result.add('wxID_FILE7');
+  Result.add('wxID_FILE8');
+  Result.add('wxID_FILE9');
+  Result.add('wxID_OK');
+  Result.add('wxID_CANCEL');
+  Result.add('wxID_APPLY');
+  Result.add('wxID_YES');
+  Result.add('wxID_NO');
+  Result.add('wxID_STATIC');
+  Result.add('wxID_FORWARD');
+  Result.add('wxID_BACKWARD');
+  Result.add('wxID_DEFAULT');
+  Result.add('wxID_MORE');
+  Result.add('wxID_SETUP');
+  Result.add('wxID_RESET');
+  Result.add('wxID_CONTEXT_HELP');
+  Result.add('wxID_YESTOALL');
+  Result.add('wxID_NOTOALL');
+  Result.add('wxID_ABORT');
+  Result.add('wxID_RETRY');
+  Result.add('wxID_IGNORE');
+  Result.add('wxID_ADD');
+  Result.add('wxID_REMOVE');
+  Result.add('wxID_UP');
+  Result.add('wxID_DOWN');
+  Result.add('wxID_HOME');
+  Result.add('wxID_REFRESH');
+  Result.add('wxID_STOP');
+  Result.add('wxID_INDEX');
+  Result.add('wxID_BOLD');
+  Result.add('wxID_ITALIC');
+  Result.add('wxID_JUSTIFY_CENTER');
+  Result.add('wxID_JUSTIFY_FILL');
+  Result.add('wxID_JUSTIFY_RIGHT');
+  Result.add('wxID_JUSTIFY_LEFT');
+  Result.add('wxID_UNDERLINE');
+  Result.add('wxID_INDENT');
+  Result.add('wxID_UNINDENT');
+  Result.add('wxID_ZOOM_100');
+  Result.add('wxID_ZOOM_FIT');
+  Result.add('wxID_ZOOM_IN');
+  Result.add('wxID_ZOOM_OUT');
+  Result.add('wxID_UNDELETE');
+  Result.add('wxID_REVERT_TO_SAVED');
+  Result.add('wxID_SYSTEM_MENU');
+  Result.add('wxID_CLOSE_FRAME');
+  Result.add('wxID_MOVE_FRAME');
+  Result.add('wxID_RESIZE_FRAME');
+  Result.add('wxID_MAXIMIZE_FRAME');
+  Result.add('wxID_ICONIZE_FRAME');
+  Result.add('wxID_RESTORE_FRAME');
+  Result.add('wxID_FILEDLGG');
+end;
 function GetGridSelectionToString(grdsel:TWxGridSelection):String;
 begin
     Result:='wxGridSelectCells';
@@ -1294,6 +1426,58 @@ begin
 
   if wxHW_NO_SELECTION  in stdStyle then
     strLst.add('wxHW_NO_SELECTION ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+
+end;
+
+
+
+function GetSplitterWindowStyleString(stdStyle:TWxSplitterWinStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  if wxSP_3D in stdStyle then
+    strLst.add('wxSP_3D');
+
+  if wxSP_3DSASH in stdStyle then
+    strLst.add('wxSP_3DSASH');
+
+  if wxSP_3DBORDER  in stdStyle then
+    strLst.add('wxSP_3DBORDER ');
+
+  if wxSP_BORDER in stdStyle then
+    strLst.add('wxSP_BORDER');
+
+  if wxSP_NOBORDER in stdStyle then
+    strLst.add('wxSP_NOBORDER');
+
+  if wxSP_NO_XP_THEME  in stdStyle then
+    strLst.add('wxSP_NO_XP_THEME ');
+
+  if wxSP_PERMIT_UNSPLIT in stdStyle then
+    strLst.add('wxSP_PERMIT_UNSPLIT');
+
+  if wxSP_LIVE_UPDATE in stdStyle then
+    strLst.add('wxSP_LIVE_UPDATE');
 
   if strLst.Count = 0 then
   begin
@@ -2231,6 +2415,24 @@ var
 begin
   Result := GetStdStyleString(stdstyle);
   strA := trim(GetHtmlWindowStyleString(htmlWinStyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;SplitterWinStyle:TWxSplitterWinStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetSplitterWindowStyleString(SplitterWinStyle));
   if strA <> '' then
   begin
     if trim(Result) = '' then

@@ -67,6 +67,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -308,12 +309,21 @@ begin
      inherited Destroy;
 end;
 
+
+function TWxHtmlWindow.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+end;
+
 function TWxHtmlWindow.GenerateControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
         Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
+
 
 function TWxHtmlWindow.GenerateEventTableEntries(CurrClassName:String):String;
 begin
@@ -424,7 +434,12 @@ end;
 
 function TWxHtmlWindow.GetParameterFromEventName(EventName: string):String;
 begin
-    Result:='wxCommandEvent& event';
+    Result:='';
+    if EventName = 'EVT_UPDATE_UI' then
+    begin
+        Result:='wxUpdateUIEvent& event';
+        exit;
+    end;
 end;
 
 function TWxHtmlWindow.GetPropertyList:TStringList;

@@ -75,6 +75,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -92,14 +93,14 @@ type
         procedure SetIDName(IDName:String);
         procedure SetIDValue(IDValue:longInt);
         procedure SetStretchFactor(intValue:Integer);
-            procedure SetWxClassName(wxClassName:String);
-    function GetFGColor:string;
-    procedure SetFGColor(strValue:String);
+        procedure SetWxClassName(wxClassName:String);
+        function GetFGColor:string;
+        procedure SetFGColor(strValue:String);
 
-    function GetBGColor:string;
-    procedure SetBGColor(strValue:String);
+        function GetBGColor:string;
+        procedure SetBGColor(strValue:String);
         procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-
+        function GenerateLastCreationCode:String;
     published
       { Published properties of TWxGridSizer }
         property OnClick;
@@ -292,6 +293,14 @@ begin
      { Last, free the component by calling the Destroy method of the    }
      { parent class.                                                    }
      inherited Destroy;
+end;
+
+
+function TWxGridSizer.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxGridSizer.GenerateControlIDs:String;
@@ -503,9 +512,9 @@ begin
             self.Parent.ClientWidth:=self.Columns * (maxWidth+2* self.FSpaceValue);
 
         if (totalmaxht < 45)then
-            self.Parent.ClientHeight:=35
+            self.Parent.ClientHeight:=35+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
         else
-            self.Parent.ClientHeight:=OriRows * (maxHt+2* self.FSpaceValue);
+            self.Parent.ClientHeight:=OriRows * (maxHt+2* self.FSpaceValue)+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent);
 
         self.Align:=alClient;
     end
@@ -587,6 +596,9 @@ begin
 
 end;
 
-
+function TWxGridSizer.GenerateLastCreationCode:String;
+begin
+    Result:='';
+end;
 
 end.

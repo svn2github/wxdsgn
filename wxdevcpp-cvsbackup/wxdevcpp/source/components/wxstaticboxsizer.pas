@@ -77,6 +77,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -94,13 +95,13 @@ type
         procedure SetIDName(IDName:String);
         procedure SetIDValue(IDValue:longInt);
         procedure SetStretchFactor(intValue:Integer);
-            procedure SetWxClassName(wxClassName:String);
-    function GetFGColor:string;
-    procedure SetFGColor(strValue:String);
-
-    function GetBGColor:string;
-    procedure SetBGColor(strValue:String);
-
+        procedure SetWxClassName(wxClassName:String);
+        function GetFGColor:string;
+        procedure SetFGColor(strValue:String);
+        function GetBGColor:string;
+        procedure SetBGColor(strValue:String);
+        function GenerateLastCreationCode:String;
+        
     published
       { Published properties of TWxStaticBoxSizer }
         property OnClick;
@@ -294,6 +295,13 @@ begin
      { Last, free the component by calling the Destroy method of the    }
      { parent class.                                                    }
      inherited Destroy;
+end;
+
+function TWxStaticBoxSizer.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStaticBoxSizer.GenerateControlIDs:String;
@@ -528,18 +536,18 @@ begin
         end;
 
         if (totalmaxht < 45)then
-            self.Parent.ClientHeight:=45
+            self.Parent.ClientHeight:=45+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
         else
         begin
             if self.Orientation = wxHorizontal then
             begin
                 if maxht+2*self.FSpaceValue < 45 then
-                    self.Parent.ClientHeight:=45
+                    self.Parent.ClientHeight:=45+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
                 else
-                    self.Parent.ClientHeight:=maxht+self.FSpaceValue+self.FSpaceValue+self.FSpaceValue+self.FSpaceValue+self.FSpaceValue; //add 3 sapces
+                    self.Parent.ClientHeight:=maxht+self.FSpaceValue+self.FSpaceValue+self.FSpaceValue+self.FSpaceValue+self.FSpaceValue+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent); //add 3 sapces
             end
             else
-                self.Parent.ClientHeight:=totalmaxht;
+                self.Parent.ClientHeight:=totalmaxht+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent);
         end;
         self.Align:=alClient;
     end
@@ -648,5 +656,11 @@ end;
 procedure TWxStaticBoxSizer.SetBGColor(strValue:String);
 begin
 end;
+
+function TWxStaticBoxSizer.GenerateLastCreationCode:String;
+begin
+    Result:='';
+end;
+
 
 end.

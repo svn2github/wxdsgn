@@ -93,7 +93,8 @@ type
       { Public methods of TWxStaticText }
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
-        function GenerateControlIDs:String; virtual;
+        function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String; virtual;
         function GenerateEventTableEntries(CurrClassName:String):String; virtual;
         function GenerateGUIControlCreation:String; virtual;
         function GenerateGUIControlDeclaration:String; virtual;
@@ -302,6 +303,13 @@ begin
      { Last, free the component by calling the Destroy method of the    }
      { parent class.                                                    }
      inherited Destroy;
+end;
+
+function TWxStaticText.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStaticText.GenerateControlIDs:String;

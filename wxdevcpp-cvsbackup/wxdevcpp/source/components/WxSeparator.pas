@@ -58,6 +58,7 @@ type
         destructor Destroy; override;
         procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -202,6 +203,14 @@ procedure TWxSeparator.WMPaint(var Message: TWMPaint);
 begin
     self.Caption:='';
     inherited;
+end;
+
+
+function TWxSeparator.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxSeparator.GenerateControlIDs:String;

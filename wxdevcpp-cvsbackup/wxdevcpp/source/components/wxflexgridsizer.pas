@@ -75,6 +75,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -93,15 +94,15 @@ type
         procedure SetIDValue(IDValue:longInt);
         procedure SetStretchFactor(intValue:Integer);
         procedure SetWxClassName(wxClassName:String);
-	function GetFGColor:string;
-	procedure SetFGColor(strValue:String);
-	function GetBGColor:string;
-	procedure SetBGColor(strValue:String);
+	    function GetFGColor:string;
+	    procedure SetFGColor(strValue:String);
+	    function GetBGColor:string;
+	    procedure SetBGColor(strValue:String);
 
         procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
         function maxHeightOfRow(rowIndex:Integer):Integer;
         function maxWidthOfColumn(colIndex,totalRows:Integer):Integer;
-
+        function GenerateLastCreationCode:String;
     published
       { Published properties of TWxFlexGridSizer }
         property OnClick;
@@ -295,12 +296,22 @@ begin
      inherited Destroy;
 end;
 
+
+function TWxFlexGridSizer.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+end;
+
 function TWxFlexGridSizer.GenerateControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
         Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
+
+
 
 function TWxFlexGridSizer.GenerateEventTableEntries(CurrClassName:String):String;
 begin
@@ -522,9 +533,9 @@ begin
             self.Parent.ClientWidth:=tmpTotalWt;//self.Columns * (maxWidth+2* self.FSpaceValue);
 
         if (totalmaxht < 45)then
-            self.Parent.ClientHeight:=35
+            self.Parent.ClientHeight:=35+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
         else
-            self.Parent.ClientHeight:=totalmaxHt;//OriRows * (maxHt+2* self.FSpaceValue);
+            self.Parent.ClientHeight:=totalmaxHt+ GetTotalHtOfAllToolBarAndStatusBar(self.Parent);
 
         self.Align:=alClient;
     end
@@ -660,5 +671,9 @@ procedure TWxFlexGridSizer.SetBGColor(strValue:String);
 begin
 end;
 
+function TWxFlexGridSizer.GenerateLastCreationCode:String;
+begin
+    Result:='';
+end;
 
 end.

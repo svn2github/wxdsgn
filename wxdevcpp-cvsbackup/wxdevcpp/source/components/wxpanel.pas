@@ -68,6 +68,7 @@ type
         destructor Destroy; override;
         procedure Paint;override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -93,7 +94,7 @@ type
 
         procedure SetProxyFGColorString(value:String);
         procedure SetProxyBGColorString(value:String);
-
+        function GenerateLastCreationCode:String;
     published
       { Published properties of TWxPanel }
         property Wx_BKColor : TColor read FWx_BKColor write FWx_BKColor;
@@ -232,6 +233,14 @@ begin
      { Make this component look like its parent component by calling
        its parent's Paint method. }
      inherited Paint;
+end;
+
+
+function TWxPanel.GenerateEnumControlIDs:String;
+begin
+     Result:='';
+     if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxPanel.GenerateControlIDs:String;
@@ -443,5 +452,11 @@ begin
    FInvisibleBGColorString:=value;
    self.Font.Color:=GetColorFromString(value);
 end;
+
+function TWxPanel.GenerateLastCreationCode:String;
+begin
+    Result:='';
+end;
+
 
 end.

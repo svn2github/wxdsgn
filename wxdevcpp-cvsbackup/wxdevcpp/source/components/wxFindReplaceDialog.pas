@@ -26,6 +26,7 @@ type
         constructor Create(AOwner: TComponent); override;
         destructor Destroy; override;
         function GenerateControlIDs:String;
+        function GenerateEnumControlIDs:String;
         function GenerateEventTableEntries(CurrClassName:String):String;
         function GenerateGUIControlCreation:String;
         function GenerateGUIControlDeclaration:String;
@@ -135,6 +136,11 @@ begin
 end;
 
 function TWxFindReplaceDialog.GenerateControlIDs:String;
+begin
+     Result:='';
+end;
+
+function TWxFindReplaceDialog.GenerateEnumControlIDs:String;
 begin
      Result:='';
 end;
