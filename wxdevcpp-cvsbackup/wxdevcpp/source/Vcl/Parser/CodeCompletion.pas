@@ -30,7 +30,7 @@ unit CodeCompletion;
 interface
 
 uses Windows, Classes, Forms, SysUtils, Controls, Graphics, StrUtils, CppParser,
-  ExtCtrls, U_IntList, dialogs,DbugIntf;
+  ExtCtrls, U_IntList, dialogs;
 
 type
   {** Modified by Peter **}
@@ -321,8 +321,7 @@ begin
     end
     else begin // looking for class members only
       for I1 := 0 to fParser.Statements.Count - 1 do
-        //sendDebug('ScopeLessCmd = '+PStatement(fParser.Statements[I1])^._ScopelessCmd);
-        if (PStatement(fParser.Statements[I1])^._ScopelessCmd =  _Class ) then begin
+        if PStatement(fParser.Statements[I1])^._ScopelessCmd = _Class then begin
           if PStatement(fParser.Statements[I1])^._Kind = skClass then begin
             // added for the case "Class::Member", where "Class" is the actual class
             ClassIDs.Clear;
