@@ -5,12 +5,12 @@
 
 [Setup]
 AppName=wxDev-cpp
-AppVerName=wxDev-cpp 6.6 beta
+AppVerName= wxDev-cpp 6.6 beta
 AppPublisher=Guru Kathiresam
 AppPublisherURL=http://wxdsgn.sourceforge.net/
 AppSupportURL=http://wxdsgn.sourceforge.net/
 AppUpdatesURL=http://wxdsgn.sourceforge.net/
-DefaultDirName=c:\dev-cpp\
+DefaultDirName=c:\Dev-Cpp\
 DefaultGroupName=wxDev-cpp
 Compression=lzma
 SolidCompression=true
