@@ -1,6 +1,9 @@
 ;--------------------------------
+; $Id$
+; NSIS Installer Script for wx-devcpp
+; You can download the NSIS builder at http://nsis.sourceforge.net/
 
-!define DEVCPP_VERSION "4.9.9.2"
+!define DEVCPP_VERSION "4.9.9.1"
 !define WXDEVCPP_VERSION "6.6beta"
 !define DISPLAY_NAME "wx-Dev-C++ ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
 !define HAVE_MINGW
@@ -125,7 +128,6 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "Croatian"
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Hungarian"
-  !insertmacro MUI_LANGUAGE "Thai"
   !insertmacro MUI_LANGUAGE "Romanian"
   !insertmacro MUI_LANGUAGE "Latvian"
   !insertmacro MUI_LANGUAGE "Macedonian"
@@ -219,8 +221,8 @@ Section "Icon files" SectionIcons
   SectionIn 1 2
   SetOutPath $INSTDIR\Icons
   File "..\..\Icons\*.ico"
-  #SetOutPath $INSTDIR\Themes
-  #File /r "..\..\Themes\*"
+  ;SetOutPath $INSTDIR\Themes
+  ;File /r "..\..\Themes\*"
 SectionEnd
 
 ; Added for wx-devcpp  -- START
@@ -235,11 +237,11 @@ SectionEnd
 Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   SectionIn 1 2
   SetOutPath $INSTDIR
-  File /r "..\..\bin"
-  File /r "..\..\include"
-  File /r "..\..\lib"
-  #File /r "..\..\libexec"
-  File /r "..\..\mingw32"
+  File /r "..\..\bin\"
+  File /r "..\..\include\"
+  File /r "..\..\lib\"
+  ;File /r "..\..\libexec\"
+  File /r "..\..\mingw32\"
   SetOutPath $INSTDIR\Packages
   File "..\..\Packages\binutils.entry"
   File "..\..\Packages\gcc-core.entry"
@@ -418,15 +420,15 @@ AllUsers:
 exists:
   CreateDirectory "$0\Bloodshed wxDev-C++"
   SetOutPath $INSTDIR
-  CreateShortCut "$0\Bloodshed wxDev-C++\Dev-C++.lnk" "$INSTDIR\devcpp.exe"
+  CreateShortCut "$0\Bloodshed wxDev-C++\wxDev-C++.lnk" "$INSTDIR\devcpp.exe"
   CreateShortCut "$0\Bloodshed wxDev-C++\License.lnk" "$INSTDIR\copying.txt"
-  CreateShortCut "$0\Bloodshed wxDev-C++\Uninstall Dev-C++.lnk" "$INSTDIR\uninstall.exe"
+  CreateShortCut "$0\Bloodshed wxDev-C++\Uninstall wxDev-C++.lnk" "$INSTDIR\uninstall.exe"
 SectionEnd
 
 Section "Create Quick Launch shortcut" SectionQuickLaunch
   SectionIn 1 2
   SetShellVarContext current
-  CreateShortCut "$QUICKLAUNCH\Dev-C++.lnk" "$INSTDIR\devcpp.exe"
+  CreateShortCut "$QUICKLAUNCH\wxDev-C++.lnk" "$INSTDIR\devcpp.exe"
 SectionEnd
 
 Section "Debug files" SectionDebug
@@ -435,7 +437,7 @@ Section "Debug files" SectionDebug
   File "..\..\devcpp.map"
   File "..\..\Packman.map"
   SetOutPath $INSTDIR\Packages
-  ;File "..\..\Packages\Dev-C++_Map.entry"
+  File "..\..\Packages\Dev-C++_Map.entry"
 SectionEnd
 
 Section "Remove all previous configuration files" SectionConfig
@@ -697,9 +699,9 @@ Section "Uninstall"
   ; Remove icons
   ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Dev-C++\Backup" \
       "Shortcuts"
-  Delete "$0\Bloodshed wxDev-C++\Dev-C++.lnk"
+  Delete "$0\Bloodshed wxDev-C++\wxDev-C++.lnk"
   Delete "$0\Bloodshed wxDev-C++\License.lnk"
-  Delete "$0\Bloodshed wxDev-C++\Uninstall Dev-C++.lnk"
+  Delete "$0\Bloodshed wxDev-C++\Uninstall wxDev-C++.lnk"
   RMDir  "$0\Bloodshed wxDev-C++"
   SetShellVarContext current
   Delete "$QUICKLAUNCH\Dev-C++.lnk"
