@@ -90,7 +90,7 @@ Lines=9
 L1={
 L2=*************IMPORTANT*************
 L3=If you want to change any of the wxwidgets components,  you have to use comp screate by David Price.
-L4=You can download a copy from 
+L4=You can download a copy from
 L5=
 L6=http://torry.net/tools/components/compcreation/cc.zip
 L7=
@@ -275,7 +275,7 @@ Ov=0
 Mode=2
 WinMessage=
 [GenerateGUIControlCreation:StringCODE$]
-Lines=52
+Lines=53
 L1=var
 L2=~~~~~strStyle,parentName,strAlignment,strBitmapArrayName:String;
 L3=begin
@@ -293,41 +293,42 @@ L14=~~~~if self.Picture.Bitmap.handle = 0 then
 L15=~~~~~~~strBitmapArrayName:='wxNullBitmap'
 L16=~~~~else
 L17=~~~~begin
-L18=~~~~~~~~~strBitmapArrayName:=self.Name+'_BITMAP';
-L19=~~~~~~~~~Result:='wxBitmap '+strBitmapArrayName+'('+self.Name+'_XPM'+');';
-L20=~~~~end;
-L21=~~~~if Result <> '' then
-L22=~~~~~~~Result:=Result+#13+Format('%s =  new %s(this, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] )
-L23=~~~~else
-L24=~~~~~~~Result:=Format('%s =  new %s(this, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] );
-L25=
+L18=~~~~~~~~~//Result := ''+'wxBitmap'
+L19=~~~~~~~~~strBitmapArrayName:=self.Name+'_BITMAP';
+L20=~~~~~~~~~Result:='wxBitmap '+strBitmapArrayName+'('+self.Name+'_XPM'+');';
+L21=~~~~end;
+L22=~~~~if Result <> '' then
+L23=~~~~~~~Result:=Result+#13+Format('%s =  new %s(this, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] )
+L24=~~~~else
+L25=~~~~~~~Result:=Format('%s =  new %s(this, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] );
 L26=
-L27=~~~~if trim(self.Wx_ToolTip) <> '' then
-L28=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
-L29=
-L30=~~~~if self.Wx_Hidden then
-L31=~~~~~~~~Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
-L32=
-L33=~~~~if not Wx_Enabled then
-L34=~~~~~~~~Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
-L35=
-L36=~~~~if trim(self.Wx_HelpText) <> '' then
-L37=~~~~~~~~Result:=Result +#13+Format('%s->SetHelpText(wxString("%s"));',[self.Name,self.Wx_HelpText]);
-L38=
-L39=~~~~if(self.Parent is TWxSizerPanel) then
-L40=~~~~begin
-L41=~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | '+ SizerAlignmentToStr(Wx_VerticalAlignment) +' | wxALL';
-L42=~~~~~~~~if wx_ControlOrientation = wxControlVertical then
-L43=~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment)+ ' | wxALL';
-L44=
-L45=~~~~~~~~~if wx_ControlOrientation = wxControlHorizontal then
-L46=~~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
-L47=
-L48=~~~~~~~~~Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
-L49=~~~~end;
-L50=
+L27=
+L28=~~~~if trim(self.Wx_ToolTip) <> '' then
+L29=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
+L30=
+L31=~~~~if self.Wx_Hidden then
+L32=~~~~~~~~Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
+L33=
+L34=~~~~if not Wx_Enabled then
+L35=~~~~~~~~Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
+L36=
+L37=~~~~if trim(self.Wx_HelpText) <> '' then
+L38=~~~~~~~~Result:=Result +#13+Format('%s->SetHelpText(wxString("%s"));',[self.Name,self.Wx_HelpText]);
+L39=
+L40=~~~~if(self.Parent is TWxSizerPanel) then
+L41=~~~~begin
+L42=~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | '+ SizerAlignmentToStr(Wx_VerticalAlignment) +' | wxALL';
+L43=~~~~~~~~if wx_ControlOrientation = wxControlVertical then
+L44=~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment)+ ' | wxALL';
+L45=
+L46=~~~~~~~~~if wx_ControlOrientation = wxControlHorizontal then
+L47=~~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
+L48=
+L49=~~~~~~~~~Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
+L50=~~~~end;
 L51=
-L52=end;
+L52=
+L53=end;
 [GenerateGUIControlCreation:StringHELP$]
 Lines=0
 [GenerateGUIControlDeclaration:String]

@@ -87,7 +87,7 @@ Descr=
 DefaultCode=1
 Keywords=
 [CODE$]
-Lines=16
+Lines=11
 L1={
 L2=*************IMPORTANT*************
 L3=If you want to change any of the wxwidgets components,  you have to use comp screate by David Price.
@@ -97,13 +97,8 @@ L6=http://torry.net/tools/components/compcreation/cc.zip
 L7=
 L8=***IF YOU FOLLOW THIS YOUR UPDATES WONT BE INCLUDED IN THE DISTRIBUTION****
 L9=}
-L10=
-L11=~type
-L12=
-L13=~~~~~TWxRBStyleItem = (wxRB_GROUP,wxRB_SINGLE);
-L14=~~~~~TWxRBStyleSet = set of TWxRBStyleItem;
-L15={ var }
-L16=~~~~~{ . . . }
+L10={ var }
+L11=~~~~~{ . . . }
 [HELP$]
 Lines=0
 [IMPGLOBAL$]

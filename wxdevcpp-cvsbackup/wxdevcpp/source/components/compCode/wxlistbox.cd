@@ -431,7 +431,7 @@ L12=~~~~~~~parentName:=self.Parent.name;
 L13=
 L14=~~~~strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
 L15=
-L16=~~~~Result:=Format('%s =  new %s(%s, %s ,wxPoint(%d,%d),wxSize(%d,%d), NULL %s );',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+L16=~~~~Result:=Format('%s =  new %s(%s, %s ,wxPoint(%d,%d),wxSize(%d,%d), (wxArrayString)NULL %s );',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 L17=
 L18=~~~~if trim(self.Wx_ToolTip) <> '' then
 L19=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);

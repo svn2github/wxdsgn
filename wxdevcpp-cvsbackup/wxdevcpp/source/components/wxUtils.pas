@@ -10,6 +10,12 @@
 {                                                                    }
 { ****************************************************************** }
 
+{*
+  todo:
+  1) StaticText needs Style
+  2)Scrollbar need to have the vertical and horizontal poperties
+  
+*}
 unit WxUtils;
 
 interface
@@ -32,7 +38,7 @@ TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
     function GenerateGUIControlCreation: string;
     function GenerateGUIControlDeclaration: string;
     function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;    
+    function GenerateImageInclude: string;
     function GetIDName: string;
     function GetIDValue: LongInt;
     function GetPropertyList: TStringList;
@@ -50,71 +56,107 @@ TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
 
   end;
 
-  TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
-    wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW, wxNO_3D,
-    wxTAB_TRAVERSAL, wxWANTS_CHARS, wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
-    wxHSCROLL, wxCLIP_CHILDREN);
-  TWxStdStyleSet = set of TWxStdStyleItem;
+    TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
+                       wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW, wxNO_3D,
+                       wxTAB_TRAVERSAL, wxWANTS_CHARS, wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
+                       wxHSCROLL, wxCLIP_CHILDREN);
+    TWxStdStyleSet = set of TWxStdStyleItem;
 
-  TWxBtnStyleItem = (wxBU_LEFT, wxBU_TOP, wxBU_RIGHT, wxBU_BOTTOM,
-    wxBU_EXACTFIT);
-  TWxBtnStyleSet = set of TWxBtnStyleItem;
+    TWxBtnStyleItem = (wxBU_LEFT, wxBU_TOP, wxBU_RIGHT, wxBU_BOTTOM,
+                        wxBU_EXACTFIT);
+    TWxBtnStyleSet = set of TWxBtnStyleItem;
 
-  TWxLbStyleItem = (wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_CENTRE,
-    wxST_NO_AUTORESIZE);
-  TWxLbStyleSet = set of TWxLbStyleItem;
+    TWxLbStyleItem = (wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_CENTRE,
+                        wxST_NO_AUTORESIZE);
+    TWxLbStyleSet = set of TWxLbStyleItem;
 
-  TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
-    wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NOHIDESEL,
-    wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP,wxTE_MULTILINE);
-  TWxEdtGeneralStyleSet = set of TWxEdtGeneralStyleItem;
+    TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
+                            wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NOHIDESEL,
+                            wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP,wxTE_MULTILINE);
+    TWxEdtGeneralStyleSet = set of TWxEdtGeneralStyleItem;
 
-  TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
-  TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
+    TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
+    TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
 
-  TWxDlgStyleItem = (wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME,
-    wxSTAY_ON_TOP, wxDIALOG_NO_PARENT, wxDIALOG_EX_CONTEXTHELP, wxMINIMIZE_BOX,
-    wxMAXIMIZE_BOX,wxCLOSE_BOX);
-  TWxDlgStyleSet = set of TWxDlgStyleItem;
+    TWxDlgStyleItem = (wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME,
+                        wxSTAY_ON_TOP, wxDIALOG_NO_PARENT, wxDIALOG_EX_CONTEXTHELP, wxMINIMIZE_BOX,
+                        wxMAXIMIZE_BOX,wxCLOSE_BOX);
+    TWxDlgStyleSet = set of TWxDlgStyleItem;
 
-  //newly Added
-  TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
-  TWxCmbStyleSet = set of TWxCmbStyleItem;
+    //newly Added
+    TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
+    TWxCmbStyleSet = set of TWxCmbStyleItem;
 
-  TWxLBxStyleItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED, wxLB_HSCROLL,
-    wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
-  TWxLBxStyleSet = set of TWxLBxStyleItem;
+    TWxLBxStyleItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED, wxLB_HSCROLL,
+                        wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
+    TWxLBxStyleSet = set of TWxLBxStyleItem;
 
-  TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
-  TWxRBStyleSet = set of TWxRBStyleItem;
 
-  // use wxGA_VERTICAL internally
+    TWxCBxStyleItem = (wxCHK_2STATE ,wxCHK_3STATE ,wxCHK_ALLOW_3RD_STATE_FOR_USER );
+    TWxCBxStyleSet = set of TWxCBxStyleItem;
 
-  TWxGAStyleItem = (wxGA_PROGRESSBAR, wxGA_SMOOTH);
-  TWxGAStyleSet = set of TWxGAStyleItem;
+    TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
+    TWxRBStyleSet = set of TWxRBStyleItem;
 
-  //use wxSP_VERTICAL internally
-  TWxSPStyleItem = (wxSP_ARROW_KEYS, wxSP_WRAP);
-  TWxSPStyleSet = set of TWxSPStyleItem;
+    TWxgagStyleItem = (wxGA_SMOOTH);
+    TWxgagStyleSet = Set of TWxgagStyleItem;
 
-  TWxLVStyleItem = (wxLC_LIST, wxLC_REPORT, wxLC_VIRTUAL, wxLC_ICON,
-    wxLC_SMALL_ICON, wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
-    wxLC_USER_TEXT, wxLC_EDIT_LABELS, wxLC_NO_HEADER, wxLC_SINGLE_SEL,
-    wxLC_SORT_ASCENDING, wxLC_SORT_DESCENDING, wxLC_HRULES, wxLC_VRULES);
-  TWxLVStyleSet = set of TWxLVStyleItem;
 
-  TWxTVStyleItem = (wxTR_EDIT_LABELS, wxTR_NO_BUTTONS, wxTR_HAS_BUTTONS,
-    wxTR_TWIST_BUTTONS, wxTR_NO_LINES, wxTR_FULL_ROW_HIGHLIGHT,
-    wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES,
-    wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE, wxTR_MULTIPLE, wxTR_EXTENDED,
-    wxTR_DEFAULT_STYLE);
-  TWxTVStyleSet = set of TWxTVStyleItem;
+    TWxsbtnStyleItem = (wxSP_ARROW_KEYS , wxSP_WRAP );
+    TWxsbtnStyleSet = Set of TWxsbtnStyleItem ;
 
-  //use wxSL_VERTICAL internally
-  TWxSLStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT, wxSL_RIGHT,
-    wxSL_TOP, wxSL_SELRANGE);
-  TWxSLStyleSet = set of TWxSLStyleItem;
 
+    TWxsldrStyleItem = (wxSL_AUTOTICKS , wxSL_LABELS , wxSL_LEFT ,wxSL_RIGHT ,wxSL_TOP ,wxSL_SELRANGE );
+    TWxsldrStyleSet = Set of TWxsldrStyleItem ;
+
+    //TWxslnStyleSet = Set of TWxslnStyleItem ;
+    //TWxsbtmpStyleSet = Set of TWxsbtmpStyleItem ;
+    //TWxsbxStyleSet = Set of TWxsbxStyleItem ;
+    TWxcalctrlStyleItem = (wxCAL_SUNDAY_FIRST ,wxCAL_MONDAY_FIRST ,wxCAL_SHOW_HOLIDAYS ,
+                       wxCAL_NO_YEAR_CHANGE ,wxCAL_NO_MONTH_CHANGE ,wxCAL_SHOW_SURROUNDING_WEEKS,
+                       wxCAL_SEQUENTIAL_MONTH_SELECTION);
+    TWxcalctrlStyleSet = Set of TWxcalctrlStyleItem ;
+
+    //TWxcklbxStyleSet = Set of TWxcklbxStyleItem ;
+    //TWxchStyleSet = Set of TWxchStyleItem ;
+
+
+    TWxhwndStyleItem = (wxHW_SCROLLBAR_NEVER, wxHW_SCROLLBAR_AUTO ,wxHW_NO_SELECTION);
+    TWxhwndStyleSet = Set of TWxhwndStyleItem ;
+
+
+    TWxnbxStyleItem = (wxNB_LEFT , wxNB_RIGHT ,wxNB_BOTTOM ,wxNB_FIXEDWIDTH ,wxNB_MULTILINE );
+    TWxnbxStyleSet = Set of TWxnbxStyleItem ;
+
+
+    TWxrbxStyleItem = (wxRA_SPECIFY_ROWS ,wxRA_SPECIFY_COLS );
+    TWxrbxStyleSet = Set of TWxrbxStyleItem ;
+
+
+    TWxsbrStyleItem = (wxST_SIZEGRIP );
+    TWxsbrStyleSet = Set of TWxsbrStyleItem ;
+
+    TWxtbrStyleItem = (wxTB_FLAT , wxTB_DOCKABLE,wxTB_HORIZONTAL,wxTB_VERTICAL,wxTB_TEXT ,
+                    wxTB_NOICONS , wxTB_NODIVIDER, wxTB_NOALIGN ,wxTB_HORZ_LAYOUT,
+                  wxTB_HORZ_TEXT );
+    TWxtbrStyleSet = Set of TWxtbrStyleItem ;
+
+
+    TWxLVStyleItem = (wxLC_LIST, wxLC_REPORT, wxLC_VIRTUAL, wxLC_ICON,
+                      wxLC_SMALL_ICON, wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
+                      wxLC_USER_TEXT, wxLC_EDIT_LABELS, wxLC_NO_HEADER, wxLC_SINGLE_SEL,
+                      wxLC_SORT_ASCENDING, wxLC_SORT_DESCENDING, wxLC_HRULES, wxLC_VRULES);
+    TWxLVStyleSet = set of TWxLVStyleItem;
+
+    TWxTVStyleItem = (wxTR_EDIT_LABELS, wxTR_NO_BUTTONS, wxTR_HAS_BUTTONS,
+                        wxTR_TWIST_BUTTONS, wxTR_NO_LINES, wxTR_FULL_ROW_HIGHLIGHT,
+                        wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES,
+                        wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE, wxTR_MULTIPLE, wxTR_EXTENDED,
+                        wxTR_DEFAULT_STYLE);
+    TWxTVStyleSet = set of TWxTVStyleItem;
+
+//End of Control Styles
+  
   TWxFileDialogType = (wxOPEN, wxSAVE);
 
   TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
@@ -181,28 +223,71 @@ TWxSizerOrientation = (wxVertical,wxHorizontal);
   end;
 
 
+
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
-function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet; lstvwstyle:
-  TWxLVStyleSet): string;
+function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
+function GetCheckboxStyleString(stdStyle:TWxcbxStyleSet):String;
+function GetTreeviewStyleString(stdStyle:TWxTVStyleSet):String;
+function GetRadiobuttonStyleString(stdStyle:TWxrbStyleSet):String;
+function GetListboxStyleString(stdStyle:TWxlbxStyleSet):String;
+function GetGaugeStyleString(stdStyle:TWxgagStyleSet):String;
+function GetScrollbarStyleString(stdStyle:TWxsbrStyleSet):String;
+function GetSpinButtonStyleString(stdStyle:TWxsbtnStyleSet):String;
+function GetSliderStyleString(stdStyle:TWxsldrStyleSet):String;
+//function GetStaticBoxStyleString(stdStyle:TWxsbxStyleSet):String;
+//function GetStaticLineStyleString(stdStyle:TWxslnStyleSet):String;
+//function GetStaticBitmapStyleString(stdStyle:TWxsbtmpStyleSet):String;
+function GetCalendarCtrlStyleString(stdStyle:TWxcalctrlStyleSet):String;
+//function GetCheckListBoxStyleString(stdStyle:TWxcklbxStyleSet):String;
+//function GetChoiceStyleString(stdStyle:TWxchStyleSet):String;
+function GetHtmlWindowStyleString(stdStyle:TWxhwndStyleSet):String;
+function GetNotebookStyleString(stdStyle:TWxnbxStyleSet):String;
+function GetRadioBoxStyleString(stdStyle:TWxrbxStyleSet):String;
+function GetStatusBarStyleString(stdStyle:TWxsbrStyleSet):String;
+//function GetToggleButtonStyleString(stdStyle:TWxtbtnStyleSet):String;
+function GetToolBarStyleString(stdStyle:TWxtbrStyleSet):String;
+
+//Todo :
+function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;cbxstyle:TWxcbxStyleSet):String;
+function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;tvstyle:TWxTvStyleSet):String;
+function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;rbstyle:TWxrbStyleSet):String;
+function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;lbxstyle:TWxlbxStyleSet):String;
+function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;gagstyle:TWxgagStyleSet):String;
+//function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxscbrStyleSet):String;
+function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;sbtnstyle:TWxsbtnStyleSet):String;
+function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;sldrstyle:TWxsldrStyleSet):String;
+//function GetStaticBoxSpecificStyle(stdstyle: TWxStdStyleSet;sbxstyle:TWxsbxStyleSet):String;
+//function GetStaticLineSpecificStyle(stdstyle: TWxStdStyleSet;slnstyle:TWxslnStyleSet):String;
+//function GetStaticBitmapSpecificStyle(stdstyle: TWxStdStyleSet;sbtmpstyle:TWxsbtmpStyleSet):String;
+function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;calctrlstyle:TWxcalctrlStyleSet):String;
+//function GetCheckListBoxSpecificStyle(stdstyle: TWxStdStyleSet;cklbxstyle:TWxcklbxStyleSet):String;
+//function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
+function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;hwndstyle:TWxhwndStyleSet):String;
+function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;nbxstyle:TWxnbxStyleSet):String;
+function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;rbxstyle:TWxrbxStyleSet):String;
+function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;sbrstyle:TWxsbrStyleSet):String;
+//function GetToggleButtonSpecificStyle(stdstyle: TWxStdStyleSet;tbtnstyle:TWxtbtnStyleSet):String;
+function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;tbrstyle:TWxtbrStyleSet):String;
+/////////////////////////////
+
+function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet; lstvwstyle:TWxLVStyleSet): string;
+function GetEditSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxEdtGeneralStyleSet): string;
+function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxBtnStyleSet): string;
+function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:  TWxLbStyleSet): string;
+function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet; cmbstyle:TWxCmbStyleSet): string;
+function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxDlgStyleSet): string;
 
 function SizerAlignmentToStr(SizerVerticalAlignment:TWxSizerVerticalAlignment):String;overload;
 function SizerAlignmentToStr(SizerHorizontalAlignment:TWxSizerHorizontalAlignment):String;overload;
 
-function GetEditSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
-  TWxEdtGeneralStyleSet): string;
-function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
-  TWxLbStyleSet): string;
-function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet): string;
 
 function GetWxIDString(strID: string; intID: LongInt): string;
-function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
-  TWxDlgStyleSet): string;
 function IsValidClass(comp: TComponent): boolean;
-function GetEventNameFromDisplayName(strDisplayName: string; strlst:
-  TStringList): string;
+function GetEventNameFromDisplayName(strDisplayName: string; strlst:TStringList): string;
 function AlignmentToStr(taPos: TAlignment): string;
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: Boolean = True);
 function GetXPMFromTPicture(XPMName:String;delphiBitmap:TBitmap):String;
+
 
 implementation
 
@@ -233,6 +318,584 @@ var
   intfObj: IWxComponentInterface;
 begin
   Result := comp.GetInterface(IID_IWxComponentInterface, intfObj);
+end;
+
+//Here is the start
+function GetCheckboxStyleString(stdStyle:TWxcbxStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxCHK_2STATE in stdStyle then
+    strLst.add('wxCHK_2STATE ');
+
+  if wxCHK_3STATE in stdStyle then
+    strLst.add('wxCHK_3STATE ');
+
+  if wxCHK_ALLOW_3RD_STATE_FOR_USER in stdStyle then
+    strLst.add('wxCHK_ALLOW_3RD_STATE_FOR_USER');
+
+//  if wxCB_SORT in stdStyle then
+//    strLst.add('wxALIGN_RIGHT ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetTreeviewStyleString(stdStyle:TWxtvStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxTR_EDIT_LABELS  in stdStyle then
+    strLst.add('wxTR_EDIT_LABELS');
+
+  if wxTR_NO_BUTTONS in stdStyle then
+    strLst.add('wxTR_NO_BUTTONS');
+
+  if wxTR_HAS_BUTTONS  in stdStyle then
+    strLst.add('wxTR_HAS_BUTTONS');
+
+  if wxTR_TWIST_BUTTONS  in stdStyle then
+    strLst.add('wxTR_TWIST_BUTTONS');
+
+  if wxTR_NO_LINES  in stdStyle then
+    strLst.add('wxTR_NO_LINES');
+
+  if wxTR_FULL_ROW_HIGHLIGHT  in stdStyle then
+    strLst.add('wxTR_FULL_ROW_HIGHLIGHT');
+
+  if wxTR_LINES_AT_ROOT  in stdStyle then
+    strLst.add('wxTR_LINES_AT_ROOT');
+
+  if wxTR_HIDE_ROOT  in stdStyle then
+    strLst.add('wxTR_HIDE_ROOT');
+
+  if wxTR_ROW_LINES  in stdStyle then
+    strLst.add('wxTR_ROW_LINES');
+
+  if wxTR_HAS_VARIABLE_ROW_HEIGHT in stdStyle then
+    strLst.add('wxTR_HAS_VARIABLE_ROW_HEIGHT');
+
+  if wxTR_SINGLE  in stdStyle then
+    strLst.add('wxTR_SINGLE');
+
+  if wxTR_MULTIPLE  in stdStyle then
+    strLst.add('wxTR_MULTIPLE');
+
+  if wxTR_EXTENDED   in stdStyle then
+    strLst.add('wxTR_EXTENDED');
+
+  if wxTR_DEFAULT_STYLE   in stdStyle then
+    strLst.add('wxTR_DEFAULT_STYLE');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetRadiobuttonStyleString(stdStyle:TWxrbStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxRB_GROUP in stdStyle then
+    strLst.add('wxRB_GROUP');
+
+  if wxRB_SINGLE in stdStyle then
+    strLst.add('wxRB_SINGLE');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetListboxStyleString(stdStyle:TWxlbxStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxLB_SINGLE  in stdStyle then
+    strLst.add('wxLB_SINGLE ');
+
+  if wxLB_MULTIPLE  in stdStyle then
+    strLst.add('wxLB_MULTIPLE ');
+
+  if wxLB_EXTENDED   in stdStyle then
+    strLst.add('wxLB_EXTENDED  ');
+
+  if wxLB_HSCROLL  in stdStyle then
+    strLst.add('wxLB_HSCROLL ');
+
+  if wxLB_ALWAYS_SB   in stdStyle then
+    strLst.add('wxLB_ALWAYS_SB  ');
+
+  if wxLB_NEEDED_SB   in stdStyle then
+    strLst.add('wxLB_NEEDED_SB  ');
+
+  if wxLB_NEEDED_SB   in stdStyle then
+    strLst.add('wxLB_SORT   ');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetGaugeStyleString(stdStyle:TWxgagStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxGA_SMOOTH in stdStyle then
+    strLst.add('wxGA_SMOOTH');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetScrollbarStyleString(stdStyle:TWxsbrStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxST_SIZEGRIP in stdStyle then
+    strLst.add('wxST_SIZEGRIP');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetSpinButtonStyleString(stdStyle:TWxsbtnStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxSP_ARROW_KEYS in stdStyle then
+    strLst.add('wxSP_ARROW_KEYS');
+
+  if wxSP_WRAP in stdStyle then
+    strLst.add('wxSP_WRAP');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetSliderStyleString(stdStyle:TWxsldrStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxSL_AUTOTICKS in stdStyle then
+    strLst.add('wxSL_AUTOTICKS');
+
+  if wxSL_LABELS in stdStyle then
+    strLst.add('wxSL_LABELS');
+
+  if wxSL_LEFT in stdStyle then
+    strLst.add('wxSL_LEFT');
+
+  if wxSL_RIGHT in stdStyle then
+    strLst.add('wxSL_RIGHT');
+
+  if wxSL_TOP in stdStyle then
+    strLst.add('wxSL_TOP');
+
+  if wxSL_SELRANGE in stdStyle then
+    strLst.add('wxSL_SELRANGE');
+
+
+        
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+
+function GetCalendarCtrlStyleString(stdStyle:TWxcalctrlStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxCAL_SUNDAY_FIRST in stdStyle then
+    strLst.add('wxCAL_SUNDAY_FIRST');
+
+  if wxCAL_MONDAY_FIRST in stdStyle then
+    strLst.add('wxCAL_MONDAY_FIRST');
+
+  if wxCAL_SHOW_HOLIDAYS in stdStyle then
+    strLst.add('wxCAL_SHOW_HOLIDAYS');
+
+  if wxCAL_NO_YEAR_CHANGE in stdStyle then
+    strLst.add('wxCAL_NO_YEAR_CHANGE');
+
+  if wxCAL_NO_MONTH_CHANGE in stdStyle then
+    strLst.add('wxCAL_NO_MONTH_CHANGE');
+
+  if wxCAL_SHOW_SURROUNDING_WEEKS in stdStyle then
+    strLst.add('wxCAL_SHOW_SURROUNDING_WEEKS');
+
+  if wxCAL_SEQUENTIAL_MONTH_SELECTION in stdStyle then
+    strLst.add('wxCAL_SEQUENTIAL_MONTH_SELECTION');
+
+
+            
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+
+function GetHtmlWindowStyleString(stdStyle:TWxhwndStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxHW_SCROLLBAR_NEVER in stdStyle then
+    strLst.add('wxHW_SCROLLBAR_NEVER');
+
+  if wxHW_SCROLLBAR_AUTO in stdStyle then
+    strLst.add('wxHW_SCROLLBAR_AUTO');
+
+  if wxHW_NO_SELECTION in stdStyle then
+    strLst.add('wxHW_NO_SELECTION');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetNotebookStyleString(stdStyle:TWxnbxStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxNB_LEFT in stdStyle then
+    strLst.add('wxNB_LEFT');
+
+  if wxNB_RIGHT in stdStyle then
+    strLst.add('wxNB_RIGHT');
+
+  if wxNB_BOTTOM in stdStyle then
+    strLst.add('wxNB_BOTTOM');
+
+  if wxNB_FIXEDWIDTH in stdStyle then
+    strLst.add('wxNB_FIXEDWIDTH');
+
+  if wxNB_MULTILINE in stdStyle then
+    strLst.add('wxNB_MULTILINE');
+    
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetRadioBoxStyleString(stdStyle:TWxrbxStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxRA_SPECIFY_ROWS in stdStyle then
+    strLst.add('wxRA_SPECIFY_ROWS');
+
+  if wxRA_SPECIFY_COLS in stdStyle then
+    strLst.add('wxRA_SPECIFY_COLS');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetStatusBarStyleString(stdStyle:TWxsbrStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxST_SIZEGRIP in stdStyle then
+    strLst.add('wxST_SIZEGRIP');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+
+function GetToolBarStyleString(stdStyle:TWxtbrStyleSet):String;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  
+  if wxTB_FLAT in stdStyle then
+    strLst.add('wxTB_FLAT');
+
+  if wxTB_DOCKABLE in stdStyle then
+    strLst.add('wxTB_DOCKABLE');
+
+  if wxTB_HORIZONTAL in stdStyle then
+    strLst.add('wxTB_HORIZONTAL');
+
+  if wxTB_VERTICAL in stdStyle then
+    strLst.add('wxTB_VERTICAL');
+
+  if wxTB_TEXT in stdStyle then
+    strLst.add('wxTB_TEXT');
+
+  if wxTB_NOICONS in stdStyle then
+    strLst.add('wxTB_NOICONS');
+
+  if wxTB_NODIVIDER in stdStyle then
+    strLst.add('wxTB_NODIVIDER');
+
+  if wxTB_NOALIGN in stdStyle then
+    strLst.add('wxTB_NOALIGN');
+
+  if wxTB_HORZ_LAYOUT in stdStyle then
+    strLst.add('wxTB_HORZ_LAYOUT');
+
+  if wxTB_HORZ_TEXT in stdStyle then
+    strLst.add('wxTB_HORZ_TEXT');
+        
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+//Here is the end;
+
+function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+  if wxCB_SIMPLE in stdStyle then
+    strLst.add('wxCB_SIMPLE');
+
+  if wxCB_DROPDOWN in stdStyle then
+    strLst.add('wxCB_DROPDOWN');
+
+  if wxCB_READONLY in stdStyle then
+    strLst.add('wxCB_READONLY');
+
+  if wxCB_SORT in stdStyle then
+    strLst.add('wxCB_SORT');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
 end;
 
 function GetDlgStyleString(stdStyle: TWxDlgStyleSet): string;
@@ -270,6 +933,46 @@ begin
 
   if wxCLOSE_BOX  in stdStyle then
     strLst.add('wxCLOSE_BOX');
+
+  if strLst.Count = 0 then
+  begin
+    Result := '';
+  end
+  else
+  begin
+    for I := 0 to strLst.count - 1 do // Iterate
+    begin
+      if i <> strLst.count - 1 then
+        Result := Result + strLst[i] + ' | '
+      else
+        Result := Result + ' ' + strLst[i] + ' ';
+    end; // for
+  end;
+  //sendDebug(Result);
+  strLst.destroy;
+end;
+
+function GetButtonStyleString(stdStyle: TWxBtnStyleSet): string;
+var
+  I: Integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+  if wxBU_LEFT in stdStyle then
+    strLst.add('wxBU_LEFT');
+
+  if wxBU_TOP in stdStyle then
+    strLst.add('wxBU_TOP');
+
+  if wxBU_RIGHT in stdStyle then
+    strLst.add('wxBU_RIGHT');
+
+  if wxBU_EXACTFIT in stdStyle then
+    strLst.add('wxBU_EXACTFIT');
+
+  if wxBU_BOTTOM in stdStyle then
+    strLst.add('wxBU_BOTTOM');
 
   if strLst.Count = 0 then
   begin
@@ -377,8 +1080,6 @@ begin
   if wxTE_MULTILINE in edtdStyle then
     strLst.add('wxTE_MULTILINE');
 
-  if wxTE_MULTILINE in edtdStyle then
-    strLst.add('wxTE_MULTILINE');
 
   if strLst.Count = 0 then
   begin
@@ -416,6 +1117,25 @@ begin
   if trim(Result) <> '' then
     Result := ' , ' + Result;
 end;
+
+function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet; cmbstyle:TWxCmbStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetComboxBoxStyleString(cmbstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
 
 function GetListViewStyleString(lstvwstyle: TWxLVStyleSet): string;
 var
@@ -507,6 +1227,317 @@ begin
   if trim(Result) <> '' then
     Result := ' , ' + Result;
 end;
+
+//Start here
+function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;cbxstyle:TWxcbxStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetCheckBoxStyleString(cbxstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;tvstyle:TWxTVStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetTreeViewStyleString(tvstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;rbstyle:TWxrbStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetRadioButtonStyleString(rbstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;lbxstyle:TWxlbxStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetListBoxStyleString(lbxstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;gagstyle:TWxgagStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetGaugeStyleString(gagstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+//function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxscbrStyleSet):String;
+//var
+//  strA: string;
+//begin
+//  Result := GetStdStyleString(stdstyle);
+//  strA := trim(GetScrollbarStyleString(scbrstyle));
+//  if strA <> '' then
+//  begin
+//    if trim(Result) = '' then
+//      Result := strA
+//    else
+//      Result := Result + ' | ' + strA
+//  end;
+//
+//  if trim(Result) <> '' then
+//    Result := ' , ' + Result;
+//end;
+
+function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;sbtnstyle:TWxsbtnStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetSpinButtonStyleString(sbtnstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;sldrstyle:TWxsldrStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetSliderStyleString(sldrstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+
+
+//function GetStaticBitmapSpecificStyle(stdstyle: TWxStdStyleSet;sbtmpstyle:TWxsbtmpStyleSet):String;
+//var
+//  strA: string;
+//begin
+//  Result := GetStdStyleString(stdstyle);
+//  strA := trim(GetStaticBitmapStyleString(sbtmpstyle));
+//  if strA <> '' then
+//  begin
+//    if trim(Result) = '' then
+//      Result := strA
+//    else
+//      Result := Result + ' | ' + strA
+//  end;
+//
+//  if trim(Result) <> '' then
+//    Result := ' , ' + Result;
+//end;
+
+function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;calctrlstyle:TWxcalctrlStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetCalendarCtrlStyleString(calctrlstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+//function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
+//var
+//  strA: string;
+//begin
+//  Result := GetStdStyleString(stdstyle);
+//  strA := trim(GetChoiceStyleString(chstyle));
+//  if strA <> '' then
+//  begin
+//    if trim(Result) = '' then
+//      Result := strA
+//    else
+//      Result := Result + ' | ' + strA
+//  end;
+//
+//  if trim(Result) <> '' then
+//    Result := ' , ' + Result;
+//end;
+
+function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;hwndstyle:TWxhwndStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetHtmlWindowStyleString(hwndstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;nbxstyle:TWxnbxStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetNotebookStyleString(nbxstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;rbxstyle:TWxrbxStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetRadioBoxStyleString(rbxstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;sbrstyle:TWxsbrStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetStatusBarStyleString(sbrstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+//function GetToggleButtonSpecificStyle(stdstyle: TWxStdStyleSet;tbtnstyle:TWxtbtnStyleSet):String;
+//var
+//  strA: string;
+//begin
+//  Result := GetStdStyleString(stdstyle);
+//  strA := trim(GetToggleButtonStyleString(tbtnstyle));
+//  if strA <> '' then
+//  begin
+//    if trim(Result) = '' then
+//      Result := strA
+//    else
+//      Result := Result + ' | ' + strA
+//  end;
+//
+//  if trim(Result) <> '' then
+//    Result := ' , ' + Result;
+//end;
+
+function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;tbrstyle:TWxtbrStyleSet):String;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetToolBarStyleString(tbrstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
+  if trim(Result) <> '' then
+    Result := ' , ' + Result;
+end;
+
+//End here
 
 function SizerAlignmentToStr(SizerVerticalAlignment:TWxSizerVerticalAlignment):String;
 begin
@@ -627,13 +1658,25 @@ begin
   strLst.destroy;
 end;
 
-function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet): string;
+function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
+  TWxBtnStyleSet): string;
+var
+  strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  //I'm adding a comma if
+  strA := trim(GetButtonStyleString(dlgstyle));
+  if strA <> '' then
+  begin
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA
+  end;
+
   if trim(Result) <> '' then
     Result := ' , ' + Result;
 end;
+
 
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
   TWxLbStyleSet): string;
@@ -1040,6 +2083,7 @@ begin
     else
     begin
         picObj:=TPicture.Create;
+        //PictureEdit.Image1.Picture.
         picObj.Assign(PictureEdit.Image1.Picture);
         TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture:=picObj;
     end;

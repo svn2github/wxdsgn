@@ -337,7 +337,7 @@ L5=~~~~~strStyle:String;
 L6=~~~~~parentName,strAlignment:String;
 L7=begin
 L8=~~~~Result:='';
-L9=~~~~strStyle:=GetButtonStyleString(self.Wx_GeneralStyle,Wx_ButtonStyle);
+L9=~~~~strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
 L10=
 L11=
 L12=~~~~if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then

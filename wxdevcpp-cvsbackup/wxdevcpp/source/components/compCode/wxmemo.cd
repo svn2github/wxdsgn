@@ -448,7 +448,7 @@ Ov=0
 Mode=2
 WinMessage=
 [GenerateGUIControlCreation:StringCODE$]
-Lines=56
+Lines=58
 L1=~~~~~{ Internal declarations for method }
 L2=~~~~~{ type }
 L3=~~~~~{ . . . }
@@ -466,45 +466,47 @@ L14=
 L15=~~~~Wx_EditStyle:=Wx_EditStyle+[wxTE_MULTILINE];
 L16=
 L17=~~~~strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
-L18=~~~~if trim(strStyle) <> '' then
-L19=~~~~~~~strStyle:=',' +strStyle;
-L20=~~~~Result:=Format('%s =  new %s(%s, %s, "" , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+L18=
+L19=~~~~//if trim(strStyle) <> '' then
+L20=~~~~//   strStyle:=',' +strStyle;
 L21=
-L22=~~~~if trim(self.Wx_ToolTip) <> '' then
-L23=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
-L24=
-L25=~~~~if self.Wx_Hidden then
-L26=~~~~~~~~Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
-L27=
-L28=~~~~if not Wx_Enabled then
-L29=~~~~~~~~Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
-L30=
-L31=~~~~if trim(self.Wx_HelpText) <> '' then
-L32=~~~~~~~~Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,self.Wx_HelpText]);
-L33=
-L34=~~~~for i:= 0 to self.Lines.count -1 Do
-L35=~~~~begin
-L36=~~~~~~~~if i = self.Lines.count -1 then
-L37=~~~~~~~~~~~Result:=Result +#13+Format('%s->AppendText(_("%s"));',[self.Name,self.Lines[i]])
-L38=~~~~~~~~else
-L39=~~~~~~~~~~~~Result:=Result +#13+Format('%s->AppendText(_("%s\n"));',[self.Name,self.Lines[i]]);
-L40=~~~~end;
-L41=
-L42=~~~~if(self.Parent is TWxSizerPanel) then
-L43=~~~~begin
-L44=~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | '+ SizerAlignmentToStr(Wx_VerticalAlignment) +' | wxALL';
-L45=~~~~~~~~if wx_ControlOrientation = wxControlVertical then
-L46=~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment)+ ' | wxALL';
-L47=
-L48=~~~~~~~~~if wx_ControlOrientation = wxControlHorizontal then
-L49=~~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
-L50=
-L51=
-L52=~~~~~~~~~Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
-L53=~~~~end;
-L54=
-L55=
-L56=end;
+L22=~~~~Result:=Format('%s =  new %s(%s, %s, "" , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+L23=
+L24=~~~~if trim(self.Wx_ToolTip) <> '' then
+L25=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
+L26=
+L27=~~~~if self.Wx_Hidden then
+L28=~~~~~~~~Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
+L29=
+L30=~~~~if not Wx_Enabled then
+L31=~~~~~~~~Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
+L32=
+L33=~~~~if trim(self.Wx_HelpText) <> '' then
+L34=~~~~~~~~Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,self.Wx_HelpText]);
+L35=
+L36=~~~~for i:= 0 to self.Lines.count -1 Do
+L37=~~~~begin
+L38=~~~~~~~~if i = self.Lines.count -1 then
+L39=~~~~~~~~~~~Result:=Result +#13+Format('%s->AppendText(_("%s"));',[self.Name,self.Lines[i]])
+L40=~~~~~~~~else
+L41=~~~~~~~~~~~~Result:=Result +#13+Format('%s->AppendText(_("%s\n"));',[self.Name,self.Lines[i]]);
+L42=~~~~end;
+L43=
+L44=~~~~if(self.Parent is TWxSizerPanel) then
+L45=~~~~begin
+L46=~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | '+ SizerAlignmentToStr(Wx_VerticalAlignment) +' | wxALL';
+L47=~~~~~~~~if wx_ControlOrientation = wxControlVertical then
+L48=~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment)+ ' | wxALL';
+L49=
+L50=~~~~~~~~~if wx_ControlOrientation = wxControlHorizontal then
+L51=~~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
+L52=
+L53=
+L54=~~~~~~~~~Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
+L55=~~~~end;
+L56=
+L57=
+L58=end;
 [GenerateGUIControlCreation:StringHELP$]
 Lines=0
 [GenerateGUIControlDeclaration:String]

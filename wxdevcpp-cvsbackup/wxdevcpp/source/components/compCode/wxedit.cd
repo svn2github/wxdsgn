@@ -454,7 +454,7 @@ Ov=0
 Mode=2
 WinMessage=
 [GenerateGUIControlCreation:StringCODE$]
-Lines=44
+Lines=43
 L1=~~~~~{ Internal declarations for method }
 L2=~~~~~{ type }
 L3=~~~~~{ . . . }
@@ -468,37 +468,36 @@ L10=~~~~else
 L11=~~~~~~~parentName:=self.Parent.name;
 L12=
 L13=~~~~strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
-L14=~~~~if trim(strStyle) <> '' then
-L15=~~~~~~~strStyle:=',' +strStyle;
-L16=~~~~Result:=Format('%s =  new %s(%s, %s, _("%s") , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Text,self.Left,self.Top,self.width,self.Height,strStyle] );
-L17=
-L18=~~~~if trim(self.Wx_ToolTip) <> '' then
-L19=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
-L20=
-L21=~~~~if self.Wx_Hidden then
-L22=~~~~~~~~Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
-L23=
-L24=~~~~if not Wx_Enabled then
-L25=~~~~~~~~Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
-L26=
-L27=~~~~if trim(self.Wx_HelpText) <> '' then
-L28=~~~~~~~~Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,self.Wx_HelpText]);
-L29=
-L30=~~~~if(self.Parent is TWxSizerPanel) then
-L31=~~~~begin
-L32=~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | '+ SizerAlignmentToStr(Wx_VerticalAlignment) +' | wxALL';
-L33=~~~~~~~~if wx_ControlOrientation = wxControlVertical then
-L34=~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment)+ ' | wxALL';
-L35=
-L36=~~~~~~~~~if wx_ControlOrientation = wxControlHorizontal then
-L37=~~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
+L14=
+L15=~~~~Result:=Format('%s =  new %s(%s, %s, _("%s") , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Text,self.Left,self.Top,self.width,self.Height,strStyle] );
+L16=
+L17=~~~~if trim(self.Wx_ToolTip) <> '' then
+L18=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
+L19=
+L20=~~~~if self.Wx_Hidden then
+L21=~~~~~~~~Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
+L22=
+L23=~~~~if not Wx_Enabled then
+L24=~~~~~~~~Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
+L25=
+L26=~~~~if trim(self.Wx_HelpText) <> '' then
+L27=~~~~~~~~Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,self.Wx_HelpText]);
+L28=
+L29=~~~~if(self.Parent is TWxSizerPanel) then
+L30=~~~~begin
+L31=~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | '+ SizerAlignmentToStr(Wx_VerticalAlignment) +' | wxALL';
+L32=~~~~~~~~if wx_ControlOrientation = wxControlVertical then
+L33=~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_HorizontalAlignment)+ ' | wxALL';
+L34=
+L35=~~~~~~~~~if wx_ControlOrientation = wxControlHorizontal then
+L36=~~~~~~~~~~~~~strAlignment:=SizerAlignmentToStr(Wx_VerticalAlignment)+ ' | wxALL';
+L37=
 L38=
-L39=
-L40=~~~~~~~~~Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
-L41=~~~~end;
+L39=~~~~~~~~~Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StrechFactor,strAlignment,self.Wx_Border]);
+L40=~~~~end;
+L41=
 L42=
-L43=
-L44=end;
+L43=end;
 [GenerateGUIControlCreation:StringHELP$]
 Lines=0
 [GenerateGUIControlDeclaration:String]

@@ -407,7 +407,7 @@ L15=~~~~//if trim(strStyle) <> '' then
 L16=~~~~//   strStyle:=',' +strStyle;
 L17=
 L18=~~~~//Last comma is removed because it depends on the user selection of the properties.
-L19=~~~~Result:=Format('%s =  new %s(%s, %s ,_("%s") ,wxPoint(%d,%d),wxSize(%d,%d), ""  %s );',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Left,self.Top,self.width,self.Height,strStyle] );
+L19=~~~~Result:=Format('%s =  new %s(%s, %s ,_("%s") ,wxPoint(%d,%d),wxSize(%d,%d), (wxArrayString)NULL  %s );',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Left,self.Top,self.width,self.Height,strStyle] );
 L20=
 L21=~~~~if trim(self.Wx_ToolTip) <> '' then
 L22=~~~~~~~~Result:=Result + #13+Format('%s->SetToolTip(wxT("%s"));',[self.Name,self.Wx_ToolTip]);
