@@ -5,3 +5,5 @@ devcpp.map
 *.~*
 *.dcu
 *.ddp
+*.map
+

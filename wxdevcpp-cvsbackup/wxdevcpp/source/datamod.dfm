@@ -43,8 +43,7 @@ object dmMain: TdmMain
     Font.Name = 'Courier New'
     Font.Style = []
     Highlighter = Cpp
-    HTMLFontSize = fs03
-    Title = 'Untitled'
+   Title = 'Untitled'
     UseBackground = True
     Left = 188
     Top = 8
@@ -9753,14 +9752,12 @@ object dmMain: TdmMain
   object SynHint: TSynCompletionProposal
     DefaultType = ctHint
     Options = [scoCaseSensitive, scoLimitToMatchedText, scoUsePrettyText]
-    Position = 0
     NbLinesInWindow = 1
     ClSelect = clHighlight
     ClSelectedText = clHighlightText
     ClBackground = clWindow
     Width = 262
-    BiggestWord = 'CONSTRUCTOR'
-    EndOfTokenChr = '()[]. '
+   EndOfTokenChr = '()[]. '
     TriggerChars = '.'
     ClTitleBackground = clBtnFace
     Font.Charset = DEFAULT_CHARSET

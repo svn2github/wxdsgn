@@ -549,7 +549,8 @@ begin
       MainForm.DisableDesignerControls;
   {$ENDIF}
 
-    if MainForm.ClassBrowser1.Enabled {$IFDEF WX_BUILD} or isForm {$ENDIF} then
+    if MainForm.ClassBrowser1.Enabled 
+    {$IFDEF WX_BUILD} or isForm {$ENDIF} then
       MainForm.PageControlChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent
 
 

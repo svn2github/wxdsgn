@@ -286,7 +286,7 @@ begin
 
 
   Application.Initialize;
-  Application.Title := 'Dev-C++';
+  Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TCreationOrderForm, CreationOrderForm);
   MainForm.Hide; // hide it

@@ -2059,13 +2059,13 @@ begin
       end
       else begin
         {$IFDEF WX_BUILD}
-        if iswxForm(strLst[idx]) then
+        if iswxForm(ParamStr(idx)) then
         begin
-          OpenFile(ChangeFileExt(strLst[idx], H_EXT), True);
-          OpenFile(ChangeFileExt(strLst[idx], CPP_EXT), true);
+          OpenFile(ChangeFileExt(ParamStr(idx), H_EXT), True);
+          OpenFile(ChangeFileExt(ParamStr(idx), CPP_EXT), true);
         end;
         {$ENDIF}
-        OpenFile(strLst[idx]);
+        OpenFile(ParamStr(idx));
       end;
     end;
     inc(idx);

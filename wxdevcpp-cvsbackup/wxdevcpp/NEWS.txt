@@ -1,3 +1,14 @@
+Version 4.9.9.1pseudo for wxdevcpp-6.6beta (16 Feb 2005 Tony Reina)
+* Some of the code from dev-cpp 4.9.9.1 has been merged, but this is
+still not a true merge with the main dev-cpp 4.9.9.1 source code. 
+Guru and I have been making good progress with the code that will be
+labeled dev-cpp 4.9.9.2 and hope to have a true merge by wxdevcpp6.7beta.
+I'm still optimistic that in the end we can just generate a patch 
+to the dev-cpp source code (which will make maintaining it a little easier). 
+If the dev-cpp source code doesn't change radically
+the same patch might be applicable for several more releases. Perhaps
+this is just wishful thinking on my part. 
+
 Version 4.9.9.0
 * Support for latest Mingw compiler system builds
 * Bug fixes

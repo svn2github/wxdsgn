@@ -62,7 +62,7 @@ AutoIncBuild=0
 MajorVer=4
 MinorVer=9
 Release=9
-Build=0
+Build=1
 Debug=0
 PreRelease=0
 Special=0
@@ -72,14 +72,14 @@ Locale=1033
 CodePage=1252
 [Version Info Keys]
 CompanyName=Bloodshed Software
-FileDescription=Dev-C++ IDE
-FileVersion=4.9.9.0
+FileDescription=wxDev-C++ IDE
+FileVersion=4.9.9.1
 InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software
 LegalTrademarks=
 OriginalFilename=devcpp.exe
-ProductName=Dev-C++
-ProductVersion=5
+ProductName=wxDev-C++
+ProductVersion=6.6beta
 Comments=Under the GNU General Public License
 LastCompiled=2005-01-08 12:19:29
 [Excluded Packages]
