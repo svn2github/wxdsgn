@@ -5,6 +5,7 @@
 // Created:     %DATE_STRING%
 //
 //---------------------------------------------------------------------------
+
 #include "%PROJECT_NAME%App.h"
 #include "%FILE_NAME%.h"
 

@@ -6,19 +6,6 @@
 //
 //---------------------------------------------------------------------------
 
-// For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-// Include your minimal set of headers here, or wx.h
-#include <wx/wx.h>
-#endif
-
-
 #include "%FILE_NAME%.h"
 
 ////Header Include Start
@@ -29,15 +16,15 @@
 // %CLASS_NAME%
 //----------------------------------------------------------------------------
 
-    ////Event Table Start
-    BEGIN_EVENT_TABLE(%CLASS_NAME%,wxFrame)
+  ////Event Table Start
+  BEGIN_EVENT_TABLE(%CLASS_NAME%,wxFrame)
 
-    ////Manual Code Start
-    ////Manual Code End
+  ////Manual Code Start
+  ////Manual Code End
 	
-    EVT_CLOSE(%CLASS_NAME%::%CLASS_NAME%Close)
-    END_EVENT_TABLE()
-    ////Event Table End
+  EVT_CLOSE(%CLASS_NAME%::%CLASS_NAME%Close)
+  END_EVENT_TABLE()
+  ////Event Table End
 
 
 
@@ -53,7 +40,7 @@ void %CLASS_NAME%::CreateGUIControls(void)
 {
     ////GUI Items Creation Start
 
-    this->SetSize(7,6,324,334);
+    this->SetSize(8,8,320,334);
     this->SetTitle(wxString("%CLASS_TITLE%"));
     this->Center();
     this->SetIcon(wxNullIcon);
