@@ -29,6 +29,7 @@ find -type d -exec echo "  RMDir  {}" \; | \
    ; Added for wx-devcpp  -- START
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets254contrib.entry"'
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets254.entry"'
+   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgetsSamples.entry"'
   ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
   ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
   ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'

@@ -198,8 +198,23 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   SetOutPath $INSTDIR\Templates\wxWidgets
   File "Templates\wxWidgets\*"
 
-  SetOutPath $INSTDIR\wx
-  File /r "wx\*"
+  SetOutPath $INSTDIR\wx\art
+  File /r "wx\art\*"
+  SetOutPath $INSTDIR\wx\contrib
+  File /r "wx\contrib\*"
+  SetOutPath $INSTDIR\wx\locale
+  File /r "wx\locale\*"
+  
+  SetOutPath $INSTDIR\wx\samples\widgets
+  File /r "wx\samples\widgets\*"
+  
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\widgets\widgets.dev #file to replace in
+  Call AdvReplaceInFile
+  
   ; Added for wx-devcpp  -- END
 
   ; Delete old devcpp.map to avoid confusion in bug reports
@@ -241,6 +256,546 @@ Section "Example files" SectionExamples
   SetOutPath $INSTDIR\Examples\WinTest
   File "Examples\WinTest\*"
   
+  ; Added for wx-devcpp  -- START
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgetsSamples.entry"'
+  SetOutPath $INSTDIR\Packages
+  File "Packages\wxWidgetsSamples.entry"
+  SetOutPath $INSTDIR\wx\samples
+  File /r "wx\samples\*"
+  
+  ; Replace the text %DEVCPPINSTALLDIR% in the dev files with
+  ; whatever installation directory the user selected during
+  ; the install. Ideally if/when we start installing the devpaks
+  ; automatically, this code can be removed as the devpak installer
+  ; should be able to produce the correct code.
+  
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\artprov\artprov.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\calendar\calendar.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\caret\caret.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\checklst\checklst.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\config\config.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\controls\controls.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\db\db.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\dialogs\dialogs.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\dialup\dialup.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\dnd\dnd.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\docview\docview.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\docvwmdi\docvwmdi.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\dragimag\dragimag.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\drawing\drawing.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\dynamic\dynamic.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\erase\erase.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\event\event.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\exec\exec.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\font\font.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\grid\grid.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\help\help.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\htlbox\hllbox.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\about\about.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\help\help.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\helpview\helpview.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\printing\printing.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\test\test.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\virtual\virtual.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\widget\widget.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\html\zip\zip.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\image\image.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\internat\internat.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\ipc\client.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\ipc\server.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\joytest\joytest.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\keyboard\keyboard.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\layout\layout.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\listbox\listbox.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\mdi\mdi.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\mediaplayer\mediaplayer.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\menu\menu.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\mfc\mfc.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\minifram\minifram.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\minimal\minimal.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\multimon\multimon.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\nativdlg\nativdlg.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\notebook\notebook.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\oleauto\oleauto.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\opengl\cube\cube.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\opengl\isosurf\isosurf.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\ownerdrw\ownerdrw.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\png\png.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\popup\popup.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\printing\printing.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\propsize\propsize.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\regtest\regtest.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\richedit\richedit.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\rotate\rotate.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\sashtest\sashtest.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\scroll\scroll.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\scrollsub\scrollsub.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\shaped\shaped.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\sockets\client.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\sockets\server.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\statbar\statbar.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\taskbar\taskbar.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\text\text.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\thread\thread.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\toolbar\toolbar.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\treectrl\treectrl.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\typetest\typetest.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\validate\validate.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\vscroll\vscroll.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\wizard\wizard.dev #file to replace in
+  Call AdvReplaceInFile
+
+  Push "%DEVCPPINSTALLDIR%" #text to be replaced
+  Push $INSTDIR #replace with
+  Push all #replace all occurrences
+  Push all #replace all occurrences
+  Push $INSTDIR\wx\samples\xrc\xrc.dev #file to replace in
+  Call AdvReplaceInFile
+
+  ; Added for wx-devcpp  -- END
+
   SetOutPath $INSTDIR
   
 SectionEnd
