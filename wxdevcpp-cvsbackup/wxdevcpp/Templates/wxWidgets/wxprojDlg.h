@@ -28,16 +28,16 @@
 #include <wx/dialog.h>
 
 ////Dialog Style Start
-#define THIS_DIALOG_STYLE  %CLASS_STYLE_STRING%
+#define %CLASS_NAME%_STYLE  %CLASS_STYLE_STRING%
 ////Dialog Style End
 
 class %CLASS_NAME% : public wxDialog
 {
 public:
-    %CLASS_NAME%( wxWindow *parent, wxWindowID id = 1, const wxString &title = _T("%CLASS_TITLE%1"),
+    %CLASS_NAME%( wxWindow *parent, wxWindowID id = 1, const wxString &title = wxT("%CLASS_TITLE%1"),
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = THIS_DIALOG_STYLE);
+        long style = %CLASS_NAME%_STYLE);
     virtual ~%CLASS_NAME%();
 public:
   //Do not add custom Control Declarations here.

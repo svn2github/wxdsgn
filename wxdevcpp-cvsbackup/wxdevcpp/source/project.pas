@@ -885,15 +885,49 @@ begin
     if (Read('Ver', 0) > 0) then //ver> 0 is at least a v5 project
     begin
       fOptions.typ := Read('type', 0);
+
+    {$IFDEF WX_BUILD}
+
+    // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
+
+    fOptions.cmdLines.Compiler := StringReplace(Read('Compiler', ''),
+       '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+      fOptions.cmdLines.CppCompiler := StringReplace(Read('CppCompiler', ''),
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+      fOptions.cmdLines.Linker := StringReplace(Read('Linker', ''),
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+      fOptions.ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+      fOptions.Libs.DelimitedText := StringReplace(Read('Libs', ''),
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+      fOptions.Includes.DelimitedText := StringReplace(Read('Includes', ''),
+         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+
+      fOptions.PrivateResource := StringReplace(Read('PrivateResource', ''),
+            '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+
+      fOptions.ResourceIncludes.DelimitedText :=
+           StringReplace(Read('ResourceIncludes', ''),
+               '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+
+      fOptions.MakeIncludes.DelimitedText :=
+          StringReplace(Read('MakeIncludes', ''),
+             '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+
+    {$ELSE}
       fOptions.cmdLines.Compiler := Read('Compiler', '');
       fOptions.cmdLines.CppCompiler := Read('CppCompiler', '');
       fOptions.cmdLines.Linker := Read('Linker', '');
       fOptions.ObjFiles.DelimitedText := Read('ObjFiles', '');
       fOptions.Libs.DelimitedText := Read('Libs', '');
       fOptions.Includes.DelimitedText := Read('Includes', '');
+
       fOptions.PrivateResource := Read('PrivateResource', '');
       fOptions.ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
       fOptions.MakeIncludes.DelimitedText := Read('MakeIncludes', '');
+
+    {$ENDIF}
+
       fOptions.UseGpp := Read('IsCpp', FALSE);
       fOptions.ExeOutput := Read('ExeOutput', '');
       fOptions.ObjectOutput := Read('ObjectOutput', '');

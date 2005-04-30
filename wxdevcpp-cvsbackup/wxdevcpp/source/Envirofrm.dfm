@@ -1,5 +1,5 @@
 object EnviroForm: TEnviroForm
-  Left = 743
+  Left = 464
   Top = 198
   BorderStyle = bsDialog
   Caption = 'Environment Options'
@@ -37,8 +37,8 @@ object EnviroForm: TEnviroForm
       ParentShowHint = False
       ShowHint = False
       DesignSize = (
-        396
-        326)
+        392
+        325)
       object cbBackups: TCheckBox
         Left = 8
         Top = 29
@@ -196,7 +196,7 @@ object EnviroForm: TEnviroForm
         Width = 154
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 0
       end
       object cboTheme: TComboBox
@@ -205,7 +205,7 @@ object EnviroForm: TEnviroForm
         Width = 153
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
       end
       object cboTabsTop: TComboBox
@@ -607,8 +607,8 @@ object EnviroForm: TEnviroForm
     object tabExternal: TTabSheet
       Caption = 'External Programs'
       DesignSize = (
-        396
-        326)
+        392
+        325)
       object lblExternal: TLabel
         Left = 8
         Top = 8
@@ -658,8 +658,8 @@ object EnviroForm: TEnviroForm
       ParentShowHint = False
       ShowHint = False
       DesignSize = (
-        396
-        326)
+        392
+        325)
       object lblAssocFileTypes: TLabel
         Left = 8
         Top = 8

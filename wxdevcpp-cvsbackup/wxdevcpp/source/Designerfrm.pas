@@ -40,7 +40,7 @@ uses
     Wxcombobox,WxToolButton,WxSeparator,
   WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
   WxSizerPanel,WxSplitterWindow,
-  ComCtrls, SynEdit, Menus;
+  ComCtrls, SynEdit, Menus, xprocs;
 
 type
 
@@ -501,7 +501,7 @@ var
   intBlockStart, intBlockEnd: Integer;
   wxcompInterface: IWxComponentInterface;
   strLst: TStringList;
-  strHdrValue, strIDValue: string;
+  strHdrValue, strIDValue, strLine: string;
 begin
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsDeclaration, intBlockStart, intBlockEnd) then
   begin
@@ -577,10 +577,32 @@ begin
     intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
+
+    // We want to parse the #define line and just extract the name of
+    //    the constant. The name used to be hardcoded as THIS_DIALOG_STYLE
+    //    Now we'll use a name based on the CLASSNAME, but for backwards
+    //    compatibility we need to just change the options, not the name
+    //    itself.
+    // Get the #define line  (it should be just after the start of the block)
+    for I := intBlockStart to intBlockEnd do // Iterate
+    begin
+       if ( strContainsU('#define', synEdit.Lines[I]) ) then
+               strLine := Trim(synEdit.Lines[I]);
+    end;
+
+    // Tokenize the line by spaces
+    strLst := TStringList.Create;   // Create a string list
+    strTokenToStrings(strLine, ' ', strLst); // Break up the line wherever there is a space
+    strLine := '#undef ' + strLst.Strings[1] + #13#10;
+    strLine := strLine + strLst.Strings[0] + ' ' + strLst.Strings[1] + ' ' + frmNewForm.GetDialogStyleString;   // Get the first and second strings
+
+    strLst.Destroy; // Destroy the string list
+
     DeleteAllDialogStyleDeclaration(synEdit, strClassName, intBlockStart,
       intBlockEnd);
     AddDialogStyleDeclaration(synEdit, strClassName, intBlockStart, intBlockEnd,
-      frmNewForm.GetDialogStyleString);
+      strLine);
+
   end;
 
   if GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes,
@@ -1016,13 +1038,13 @@ end;
 function TfrmNewForm.GenerateControlIDs: string;
 begin
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+    Result := Format('#define %s %d', [Wx_IDName, Wx_IDValue]);
 end;
 
 function TfrmNewForm.GenerateEnumControlIDs: string;
 begin
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('%s = %d ,', [Wx_IDName, Wx_IDValue]);
+    Result := Format('%s = %d,', [Wx_IDName, Wx_IDValue]);
 end;
 
 
@@ -1365,11 +1387,11 @@ end;
 
 function TfrmNewForm.GetDialogStyleString: string;
 begin
+// This used to be hardcoded as THIS_DIALOG_STYLE
   if (self.Wx_DialogStyle <> []) or (self.Wx_GeneralStyle <> []) then
-    Result := '#define THIS_DIALOG_STYLE ' +
-      GetDialogSpecificStyle(self.Wx_GeneralStyle, self.Wx_DialogStyle)
+     Result := GetDialogSpecificStyle(self.Wx_GeneralStyle, self.Wx_DialogStyle)
   else
-    Result := '#define THIS_DIALOG_STYLE 0';
+    Result := '0';
 end;
 
 //function TfrmNewForm.GenerateExtraCodeForFrame:string;
@@ -1463,7 +1485,7 @@ begin
             self.width, self.height]));
     end;
 
-  strLst.add(Format('this->SetTitle(_("%s"));', [self.Caption]));
+  strLst.add(Format('this->SetTitle(%s);', [GetCppString(self.Caption)]));
   
   if self.Wx_Center then
     strLst.add('this->Center();');
@@ -1476,13 +1498,13 @@ begin
     end
     else
     begin
-        strLst.add('wxIcon '+self.Wx_Name+'_ICON'+' ('+self.Wx_Name+'_XPM'+');');
-        strLst.add('this->SetIcon('+self.Wx_Name+'_XPM'+');');
+        strLst.add('wxIcon ' + self.Wx_Name + '_ICON'+ ' (' + self.Wx_Name + '_XPM' + ');');
+        strLst.add('this->SetIcon(' + self.Wx_Name + '_XPM' + ');');
     end;
   end;
 
   if trim(self.Wx_ToolTips) <> '' then
-    strLst.add(Format('this->SetToolTip(wxT(_("%s")));',[self.Wx_ToolTips]));
+    strLst.add(Format('this->SetToolTip(%s);',[GetCppString(self.Wx_ToolTips)]));
 
   Result := strLst.text;
   strLst.destroy;

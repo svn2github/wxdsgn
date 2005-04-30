@@ -719,7 +719,7 @@ procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 var
     Token: string;
 begin
-    List.Clear;
+   List.Clear;
     Token := strToken(S, Seperator);
     while Token <> '' do
     begin
