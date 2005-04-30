@@ -109,7 +109,8 @@ begin
      FWx_PropertyList.add('wxICON_HAND:wxICON_HAND');
      FWx_PropertyList.add('wxICON_ERROR:wxICON_ERROR');
      FWx_PropertyList.add('wxICON_QUESTION:wxICON_QUESTION');
-     FWx_PropertyList.add('wxICON_INFORMATION:wxICON_INFORMATION');  
+     FWx_PropertyList.add('wxICON_INFORMATION:wxICON_INFORMATION');
+     FWx_PropertyList.add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
 
      FWx_PropertyList.add('Wx_Message:Message');
      FWx_PropertyList.add('Wx_Caption:Caption');
@@ -154,7 +155,7 @@ var
 begin
     Result:='';
     strStyle:=GetMessageDialogStyleString(self.Wx_DialogStyle);
-    Result:=Format('%s =  new %s(this, _("%s") , _("%s")  %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_Caption),strStyle] );
+    Result:=Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_Caption),strStyle] );
 end;
 
 function TWxMessageDialog.GenerateGUIControlDeclaration:String;

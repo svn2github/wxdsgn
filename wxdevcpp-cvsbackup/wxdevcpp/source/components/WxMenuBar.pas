@@ -179,7 +179,7 @@ var
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-        strData:=''+submnu.Items[J].Wx_IDName+' = '+IntToStr(submnu.Items[J].wx_IDValue) +  ' ,  ';
+        strData:=''+submnu.Items[J].Wx_IDName+' = '+IntToStr(submnu.Items[J].wx_IDValue) +  ', ';
         idstrList.add(strData);
 
         if submnu.items[J].Count > 0 then
@@ -196,7 +196,7 @@ begin
 
     for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
     begin
-        strF:=' '+Wx_MenuItems.Items[i].Wx_IDName+' = '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue) +' , ';
+        strF:=' '+Wx_MenuItems.Items[i].Wx_IDName+' = '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue) +', ';
         if trim(strF) <> '' then
         begin
             strLst.add(strF);
@@ -283,10 +283,10 @@ var
         else
         begin
             if trim(submnu.Items[j].EVT_Menu) <> '' then
-                strLst.add('EVT_MENU('+submnu.Items[j].Wx_IDName +' , '+CurrClassName +'::'+submnu.Items[j].EVT_Menu+')');
+                strLst.add('EVT_MENU('+submnu.Items[j].Wx_IDName +', '+CurrClassName +'::'+submnu.Items[j].EVT_Menu+')');
 
             if trim(submnu.Items[j].EVT_UPDATE_UI) <> '' then
-                strLst.add('EVT_UPDATE_UI('+submnu.Items[j].Wx_IDName +' , '+CurrClassName +'::'+submnu.Items[j].EVT_UPDATE_UI+')');
+                strLst.add('EVT_UPDATE_UI('+submnu.Items[j].Wx_IDName +', '+CurrClassName +'::'+submnu.Items[j].EVT_UPDATE_UI+')');
         end;
     end;    // for
   end;
@@ -305,10 +305,10 @@ begin
         else
         begin
             if trim(Wx_MenuItems.Items[i].EVT_Menu) <> '' then
-                strLst.add('EVT_MENU('+Wx_MenuItems.Items[i].Wx_IDName +' , '+CurrClassName +'::'+Wx_MenuItems.Items[i].EVT_Menu+')');
+                strLst.add('EVT_MENU('+Wx_MenuItems.Items[i].Wx_IDName +', '+CurrClassName +'::'+Wx_MenuItems.Items[i].EVT_Menu+')');
 
             if trim(Wx_MenuItems.Items[i].EVT_UPDATE_UI) <> '' then
-                strLst.add('EVT_UPDATE_UI('+Wx_MenuItems.Items[i].Wx_IDName +' , '+CurrClassName +'::'+Wx_MenuItems.Items[i].EVT_UPDATE_UI+')');
+                strLst.add('EVT_UPDATE_UI('+Wx_MenuItems.Items[i].Wx_IDName +', '+CurrClassName +'::'+Wx_MenuItems.Items[i].EVT_UPDATE_UI+')');
 
         end;
     end;    // for
@@ -328,7 +328,7 @@ begin
     //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
-    Result:=Format('%s =  new %s(%s );',[self.Name,self.Wx_Class,strStyle] );
+    Result:=Format('%s =  new %s(%s);',[self.Name,self.Wx_Class,strStyle] );
     strMenucodeData:=GetMenuItemCode;
     Result:=Result+#13+strMenucodeData;
     Result:=Result+#13+'this->SetMenuBar('+self.Name+');';
@@ -345,14 +345,14 @@ begin
         begin
             if item.WX_BITMAP.Bitmap.Handle <> 0 then
             begin
-                Result:=' wxMenuItem * '+item.Wx_IDName+'_mnuItem_obj = new wxMenuItem ('+Format('%s,%s,_("%s"),_("%s"), %s',[parentName,item.Wx_IDName,item.Wx_Caption,item.Wx_HelpText,GetMenuKindAsText(item.Wx_MenuItemStyle)])+');';
+                Result:=' wxMenuItem * '+item.Wx_IDName+'_mnuItem_obj = new wxMenuItem ('+Format('%s, %s, %s, %s, %s',[parentName,item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)])+');';
                 Result:=Result+#13+#10+'wxBitmap '+item.Wx_IDName+'_mnuItem_obj_BMP('+ item.Wx_IDName+'_XPM);';
                 Result:=Result+#13+#10+item.Wx_IDName+'_mnuItem_obj->SetBitmap('+item.Wx_IDName+'_mnuItem_obj_BMP);';
                 Result:=Result+#13+#10+parentName+'->Append('+item.Wx_IDName+'_mnuItem_obj);';
             end
             else
             begin
-                Result:=parentName+'->Append('+ Format('%s,_("%s"),_("%s"), %s',[item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)]) +');';
+                Result:=parentName+'->Append('+ Format('%s, %s, %s, %s',[item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)]) +');';
             end;
 
             if item.Wx_Checked then
@@ -389,8 +389,11 @@ var
     begin
         if submnu.items[J].Count > 0 then
         begin
+            strV:=Format('wxMenu *%s = new wxMenu(%s);',[submnu.items[J].wx_IDName+'_Mnu_Obj','0']);
+            strLst.add(strV);
+
             GetCodeFromSubMenu(submnustrlst,submnu.items[J]);
-            strV:=parentItemName+'->Append('+format('%s,_("%s") , %s',[submnu.items[J].Wx_IDNAME,GetCppString(submnu.items[J].Wx_Caption),submnu.items[J].Wx_IDName+'_obj'])+');';
+            strV:=parentItemName+'->Append('+format('%s, %s, %s',[submnu.items[J].Wx_IDNAME,GetCppString(submnu.items[J].Wx_Caption),submnu.items[J].Wx_IDName+'_Mnu_Obj'])+');';
             strLst.add(strV);
         end
         Else
@@ -418,10 +421,10 @@ begin
             strF:=Format('wxMenu *%s = new wxMenu(%s);',[Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj','0']);
             strLst.add(strF);
             //
-            strF:=Format('%s->Append(%s,_("%s"));',[self.Name,Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj',Wx_MenuItems.Items[i].Wx_Caption]);
+            strF:=Format('%s->Append(%s, %s);',[self.Name,Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj',GetCppString(Wx_MenuItems.Items[i].Wx_Caption)]);
             strLst.add(strF);
             GetCodeFromSubMenu(strLst,Wx_MenuItems.items[i]);
-            //strLst.add(self.Name+'->Append('+Wx_MenuItems.items[i].Wx_IDName+',_("'+Wx_MenuItems.items[i].Wx_Caption+'"),'+Wx_MenuItems.items[i].Wx_IDName+'_Obj ' +');');
+            //strLst.add(self.Name+'->Append('+Wx_MenuItems.items[i].Wx_IDName+',_("'+Wx_MenuItems.items[i].Wx_Caption+'"),'+Wx_MenuItems.items[i].Wx_IDName+'_Mnu_Obj ' +');');
         end
         Else
         begin
@@ -432,7 +435,7 @@ begin
             if trim(strF) <> '' then
             begin
                 strLst.add(strF);
-                strF:=Format('%s->Append(%s,_("%s"));',[self.Name,Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj',GetCppString(Wx_MenuItems.Items[i].Wx_Caption)]);
+                strF:=Format('%s->Append(%s, %s);',[self.Name,Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj',GetCppString(Wx_MenuItems.Items[i].Wx_Caption)]);
                 strLst.add(strF);
                 strLst.add('');
             end;

@@ -286,7 +286,7 @@ begin
     end;
 
     Result:=strFirstBitmap+#13+strSecondBitmap;
-    Result:=Result+#13+Format('%s->AddTool(%s,_("%s"),%s , %s, %s,_("%s"),_("%s"));',[parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Name+'_BITMAP',self.Name+'_DISABLE_BITMAP',GetToolButtonKindAsText(ToolKind),self.Wx_ToolTip,self.Wx_HelpText] );
+    Result:=Result+#13+Format('%s->AddTool(%s, %s, %s, %s, %s, %s, %s);',[parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Name+'_BITMAP',self.Name+'_DISABLE_BITMAP',GetToolButtonKindAsText(ToolKind),GetCppString(self.Wx_ToolTip),GetCppString(self.Wx_HelpText)] );
 
 end;
 

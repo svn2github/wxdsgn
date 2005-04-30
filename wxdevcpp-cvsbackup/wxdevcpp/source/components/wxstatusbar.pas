@@ -325,14 +325,14 @@ begin
 
     strStyle:=GetScrollbarSpecificStyle(self.Wx_GeneralStyle,Wx_StatusbarStyleSet);
 
-    Result:=Format('%s =  new %s(%s, %s %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strStyle] );
+    Result:=Format('%s = new %s(%s, %s%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strStyle] );
 
     if self.Panels.Count > 0  then
     begin
         Result:=Result + #13+Format('%s->SetFieldsCount(%d);',[self.Name,self.Panels.Count]);
         for I := 0 to Panels.Count - 1 do    // Iterate
         begin
-            Result:=Result + #13+Format('%s->SetStatusText(_("%s"),%d);',[self.Name,GetCppString(self.Panels.items[i].Text),I]);
+            Result:=Result + #13+Format('%s->SetStatusText(%s,%d);',[self.Name,GetCppString(self.Panels.items[i].Text),I]);
         end;    // for
 
         Result:=Result + #13+Format('int %s_Widths[%d];',[self.Name,self.Panels.Count]);
@@ -350,7 +350,7 @@ begin
     end;
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -359,7 +359,7 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

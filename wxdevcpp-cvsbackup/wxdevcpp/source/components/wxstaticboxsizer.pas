@@ -336,7 +336,7 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-    result:=Format('wxStaticBox* %s = new wxStaticBox(%s,wxID_ANY,_("%s"));',[staticBoxName,parentName,GetCppString(self.Wx_Caption)]);
+    result:=Format('wxStaticBox* %s = new wxStaticBox(%s, wxID_ANY, %s);',[staticBoxName,parentName,GetCppString(self.Wx_Caption)]);
     Result:=Result+#13+Format('wxStaticBoxSizer* %s = new wxStaticBoxSizer(%s,%s);',[self.Name,staticBoxName,strOrientation]);
     parentName:=self.Parent.Name;
 
@@ -347,7 +347,7 @@ begin
         else
             parentName:=self.Parent.Name;
 
-//        result:=Format('wxStaticBox* %s = new wxStaticBox(%s,wxID_ANY,_("%s"));',[staticBoxName,parentName,self.Wx_Caption]);
+//        result:=Format('wxStaticBox* %s = new wxStaticBox(%s, wxID_ANY, %s);',[staticBoxName,parentName,GetCppString(self.Wx_Caption)]);
 //        Result:=Result+#13+Format('wxStaticBoxSizer* %s = new wxStaticBoxSizer(%s,%s);',[self.Name,staticBoxName,strOrientation]);
 
          Result:=Result+#13+Format('%s->SetSizer(%s);',[parentName,self.Name]);

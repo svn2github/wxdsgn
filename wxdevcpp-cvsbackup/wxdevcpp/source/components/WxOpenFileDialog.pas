@@ -106,9 +106,9 @@ begin
      FWx_PropertyList.add('Wx_DialogStyle:File Dialog Style');
      
      FWx_PropertyList.add('wxHIDE_READONLY:wxHIDE_READONLY');
-     FWx_PropertyList.add('wxOVERWRITE_PROMPT:wxOVERWRITE_PROMPT');
      FWx_PropertyList.add('wxMULTIPLE:wxMULTIPLE');
      FWx_PropertyList.add('wxCHANGE_DIR:wxCHANGE_DIR');
+     FWx_PropertyList.add('wxFILE_MUST_EXIST:wxFILE_MUST_EXIST');
 
      FWx_PropertyList.add('Wx_DefaultDir:Default Dir');
      FWx_PropertyList.add('Wx_DefaultFile:Default File');
@@ -156,7 +156,7 @@ begin
     strType:='wxOPEN';
     strStyle:=GetFileDialogStyleString(self.Wx_DialogStyle);
 
-    Result:=Format('%s =  new %s(this, "%s" , "%s" , "%s" , "%s", %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),GetCppString(wx_DefaultFile),wx_Extensions,strType+strStyle] );
+    Result:=Format('%s =  new %s(this, %s, %s, %s, %s, %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),GetCppString(wx_DefaultFile),wx_Extensions,strType+strStyle] );
 end;
 
 function TWxOpenFileDialog.GenerateGUIControlDeclaration:String;

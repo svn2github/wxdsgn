@@ -164,7 +164,7 @@ begin
     //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
-    Result:=Format('%s =  new %s(%s, %s,_("%s"),wxPoint(%d,%d),wxSize(%d,%d) %s );',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s =  new %s(%s, %s, %s", wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);

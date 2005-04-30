@@ -313,7 +313,7 @@ begin
      FWx_PropertyList.Add('wxCHK_2STATE:wxCHK_2STATE');
      FWx_PropertyList.Add('wxCHK_3STATE:wxCHK_3STATE');
      FWx_PropertyList.Add('wxCHK_ALLOW_3RD_STATE_FOR_USER:wxCHK_ALLOW_3RD_STATE_FOR_USER');
-
+     FWx_PropertyList.Add('wxALIGN_RIGHT_CB:wxALIGN_RIGHT');
 
      FWx_PropertyList.add('Font : Font');
 
@@ -347,7 +347,7 @@ function TWxCheckBox.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxCheckBox.GenerateControlIDs:String;
@@ -395,10 +395,10 @@ begin
 
     strStyle:=GetCheckboxSpecificStyle(self.Wx_GeneralStyle,Wx_CheckBoxStyle);
 
-    Result:=Format('%s =  new %s(%s, %s, _("%s") , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -407,7 +407,7 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     if self.Checked then
         Result:=Result +#13+Format('%s->SetValue(true);',[self.Name]);

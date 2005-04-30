@@ -163,7 +163,7 @@ function TWxTimer.GenerateGUIControlCreation:String;
 begin
     Result:='';
     Result:=Format('%s =  new %s();',[self.Name,self.wx_Class] );
-    Result:=Result+#13+Format('%s->SetOwner(this,%s);',[self.Name,Wx_IDName] );
+    Result:=Result+#13+Format('%s->SetOwner(this, %s);',[self.Name,Wx_IDName] );
 
     if Wx_AutoStart = true then
         Result:=Result+#13+Format('%s->Start(%d);',[self.Name,self.Wx_Interval] );

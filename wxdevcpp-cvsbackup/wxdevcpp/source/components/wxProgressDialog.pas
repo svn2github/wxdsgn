@@ -98,6 +98,8 @@ begin
      { Code to perform other tasks when the component is created }
      FWx_PropertyList.add('Wx_ProgressDialogStyle:Progress Dialog Style');
      FWx_PropertyList.add('wxPD_APP_MODAL:wxPD_APP_MODAL');
+     FWx_PropertyList.add('wxPD_SMOOTH:wxPD_SMOOTH');
+     FWx_PropertyList.add('wxPD_CAN_SKIP:wxPD_CAN_SKIP');
      FWx_PropertyList.add('wxPD_AUTO_HIDE:wxPD_AUTO_HIDE');
      FWx_PropertyList.add('wxPD_CAN_ABORT:wxPD_CAN_ABORT');
      FWx_PropertyList.add('wxPD_ELAPSED_TIME:wxPD_ELAPSED_TIME');
@@ -135,7 +137,7 @@ end;
 function TWxProgressDialog.GenerateGUIControlCreation:String;
 begin
     Result:='';
-    Result:=Format('%s =  new %s(_("%s") , _("%s") , %d , this  %s);',[self.Name,self.wx_Class,GetCppString(self.Wx_Title),self.Wx_Message,Wx_MaxValue,GetProgressDialogStyleString(Wx_ProgressDialogStyle)] );
+    Result:=Format('%s =  new %s( %s, %s, %d , this  %s);',[self.Name,self.wx_Class,GetCppString(self.Wx_Title),self.Wx_Message,Wx_MaxValue,GetProgressDialogStyleString(Wx_ProgressDialogStyle)] );
 
     if not WX_AutoShow then
         Result:=Result+#13+self.Name+'->Show(false);'

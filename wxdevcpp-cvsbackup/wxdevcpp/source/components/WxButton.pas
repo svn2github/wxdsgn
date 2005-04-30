@@ -116,7 +116,7 @@ type
         property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
         property Wx_StretchFactor : Integer read FWx_StretchFactor write FWx_StretchFactor default 0;
-    	property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
+    //	property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
 
         property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
@@ -210,6 +210,7 @@ begin
      FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
      FWx_PropertyList.add('Font : Font');
      FWx_PropertyList.add('Wx_ButtonStyle:Button Style');
+     FWx_PropertyList.add('wxNO_BORDER:wxNO_BORDER');
      FWx_PropertyList.add('wxBU_LEFT:wxBU_LEFT');
      FWx_PropertyList.add('wxBU_TOP:wxBU_TOP');
      FWx_PropertyList.add('wxBU_RIGHT:wxBU_RIGHT');
@@ -237,7 +238,7 @@ function TWxButton.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxButton.GenerateControlIDs:String;
@@ -273,10 +274,10 @@ begin
     strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
     parentName:=GetWxWidgetParent(self);
 
-    Result:=Format('%s =  new %s(%s, %s, _("%s") , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -285,7 +286,7 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     if self.Default then
         Result:=Result +#13+Format('%s->SetDefault();',[self.Name]);

@@ -163,14 +163,14 @@ begin
      if strFlag = '' then
         strFlag:='0';
      Result:= self.Name+'_Data = new wxFindReplaceData('+strFlag+');' ;
-    Result:=Result+#13+self.Name+'_Data->SetFindString(_("'+GetCppString(Wx_FindString)+'"));';
-    Result:=Result+#13+self.Name+'_Data->SetReplaceString(_("'+GetCppString(Wx_ReplaceString)+'"));' ;
+    Result:=Result+#13+self.Name+'_Data->SetFindString('+GetCppString(Wx_FindString)+');';
+    Result:=Result+#13+self.Name+'_Data->SetReplaceString('+GetCppString(Wx_ReplaceString)+');' ;
 
     strStyle:=GetFindReplaceDialogStyleString(Wx_Styles);
     if strStyle = '' then
         strStyle:=',0';
 
-    Result:=Result+#13+Format('%s =  new %s(this, %s , _("%s") %s);',[self.Name,self.wx_Class,self.Name+'_Data',GetCppString(Wx_Title),strStyle] );
+    Result:=Result+#13+Format('%s =  new %s(this, %s, %s %s);',[self.Name,self.wx_Class,self.Name+'_Data',GetCppString(Wx_Title),strStyle] );
     
 end;
 

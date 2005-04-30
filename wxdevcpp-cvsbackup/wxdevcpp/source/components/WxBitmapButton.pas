@@ -206,6 +206,7 @@ begin
     FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
     FWx_PropertyList.add('Font : Font');
     FWx_PropertyList.add('Wx_ButtonStyle:Button Style');
+    FWx_PropertyList.Add('wxBU_AUTODRAW:wxBU_AUTODRAW');
     FWx_PropertyList.add('wxBU_LEFT:wxBU_LEFT');
     FWx_PropertyList.add('wxBU_TOP:wxBU_TOP');
     FWx_PropertyList.add('wxBU_RIGHT:wxBU_RIGHT');
@@ -237,14 +238,14 @@ function TWxBitmapButton.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxBitmapButton.GenerateControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('#define %s %d',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxBitmapButton.GenerateEventTableEntries(CurrClassName:String):String;
@@ -273,15 +274,12 @@ begin
     Result:='';
     strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
 
-
 //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
 //       parentName:=GetWxWidgetParent(self)
 //    else
 //       parentName:=self.Parent.name;
 
     parentName:=GetWxWidgetParent(self);
-
-
 
     Result:='wxBitmap '+self.Name+'_BITMAP'+' (wxNullBitmap);';
 
@@ -291,11 +289,10 @@ begin
             Result:='wxBitmap '+self.Name+'_BITMAP'+' ('+self.Name+'_XPM'+');';
     end;
 
-
-    Result:=Result+#13+Format('%s =  new %s(%s, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Result+#13+Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -304,7 +301,7 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

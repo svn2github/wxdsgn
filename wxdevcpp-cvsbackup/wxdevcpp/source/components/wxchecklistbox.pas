@@ -40,6 +40,7 @@ type
         FWx_IDName : String;
         FWx_IDValue : Longint;
         FWx_ListboxStyle : TWxLBxStyleSet;
+        FWx_ListboxSubStyle : TWxLBxStyleSubItem;
         FWx_ProxyBGColorString : TWxColorString;
         FWx_ProxyFGColorString : TWxColorString;
         FWx_StretchFactor : Integer;
@@ -139,7 +140,7 @@ type
              default -1;
         property Wx_ListboxStyle : TWxLBxStyleSet
              read FWx_ListboxStyle write FWx_ListboxStyle;
-        property Wx_ProxyBGColorString : TWxColorString
+       property Wx_ProxyBGColorString : TWxColorString
              read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString
              read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
@@ -272,6 +273,7 @@ begin
      FWx_PropertyList.add('Checked : Checked');
 
      FWx_PropertyList.add('Wx_ListboxStyle:Listbox Style');
+     FWx_PropertyList.add('Wx_ListboxStyle:LB');
      FWx_PropertyList.add('wxLB_SINGLE:wxLB_SINGLE');
      FWx_PropertyList.add('wxLB_MULTIPLE:wxLB_MULTIPLE');
      FWx_PropertyList.add('wxLB_EXTENDED:wxLB_EXTENDED');
@@ -366,10 +368,10 @@ begin
 
     strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
 
-    Result:=Format('%s =  new %s(%s, %s ,wxPoint(%d,%d),wxSize(%d,%d), (wxArrayString)NULL %s );',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -378,10 +380,10 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     for i:= 0 to self.Items.count -1 Do
-        Result:=Result +#13+Format('%s->Append(_("%s"));',[self.Name,GetCppString(self.Items[i])]);
+        Result:=Result +#13+Format('%s->Append(%s);',[self.Name,GetCppString(self.Items[i])]);
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

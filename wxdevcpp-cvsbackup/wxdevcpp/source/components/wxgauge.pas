@@ -338,10 +338,10 @@ begin
 
     strStyle:=GetGaugeSpecificStyle(self.Wx_GeneralStyle,Wx_GaugeStyle);
 
-    Result:=Format('%s =  new %s(%s, %s,%d ,wxPoint(%d,%d),wxSize(%d,%d) %s );',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d),wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName, GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -350,7 +350,7 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
    Result:=Result +#13+Format('%s->SetRange(%d);',[self.Name,self.Max]);
    Result:=Result +#13+Format('%s->SetValue(%d);',[self.Name,self.Position]);

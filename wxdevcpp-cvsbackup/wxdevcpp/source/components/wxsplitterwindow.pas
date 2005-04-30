@@ -295,7 +295,7 @@ begin
     parentName:=GetWxWidgetParent(self);
     strStyle:=GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle,self.Wx_SplitterStyle);
 
-    Result:=Format('%s =  new %s(%s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s =new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

@@ -144,7 +144,7 @@ var
 begin
      Result:='';
     strStyle:=GetDirDialogStyleString(self.Wx_DirDialogStyle);
-    Result:=Format('%s =  new %s(this, "%s" , "%s"  %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),strStyle] );
+    Result:=Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),strStyle] );
 end;
 
 function TWxDirDialog.GenerateGUIControlDeclaration:String;

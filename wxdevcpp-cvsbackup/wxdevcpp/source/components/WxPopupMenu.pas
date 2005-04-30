@@ -278,7 +278,7 @@ begin
     //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
-    Result:=Format('%s =  new %s(_("%s") %s );',[self.Name,self.Wx_Class,GetCppString(Wx_Caption),strStyle] );
+    Result:=Format('%s = new %s(%s %s );',[self.Name,self.Wx_Class,GetCppString(Wx_Caption),strStyle] );
     strMenucodeData:=GetMenuItemCode;
     Result:=Result+#13+strMenucodeData;
 end;
@@ -294,14 +294,14 @@ begin
         begin
             if item.WX_BITMAP.Bitmap.Handle <> 0 then
             begin
-                Result:=' wxMenuItem * '+item.Wx_IDName+'_mnuItem_obj = new wxMenuItem ('+Format('%s,%s,_("%s"),_("%s"), %s',[parentName,item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)])+');';
+                Result:=' wxMenuItem * '+item.Wx_IDName+'_mnuItem_obj = new wxMenuItem ('+Format('%s, %s, %s, %s, %s',[parentName,item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)])+');';
                 Result:=Result+#13+#10+'wxBitmap '+item.Wx_IDName+'_mnuItem_obj_BMP('+ item.Wx_IDName+'_XPM);';
                 Result:=Result+#13+#10+item.Wx_IDName+'_mnuItem_obj->SetBitmap('+item.Wx_IDName+'_mnuItem_obj_BMP);';
                 Result:=Result+#13+#10+parentName+'->Append('+item.Wx_IDName+'_mnuItem_obj);';
             end
             else
             begin
-                Result:=parentName+'->Append('+ Format('%s,_("%s"),_("%s"), %s',[item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)]) +');';
+                Result:=parentName+'->Append('+ Format('%s, %s, %s, %s',[item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)]) +');';
             end;
 
             if item.Wx_Checked then
@@ -340,7 +340,7 @@ var
         if submnu.items[J].Count > 0 then
         begin
             GetCodeFromSubMenu(submnustrlst,submnu.items[J]);
-            strV:=parentItemName+'->Append('+format('%s,_("%s") , %s',[submnu.items[J].Wx_IDNAME,GetCppString(submnu.items[J].Wx_Caption),submnu.items[J].Wx_IDName+'_obj'])+');';
+            strV:=parentItemName+'->Append('+format('%s, %s, %s',[submnu.items[J].Wx_IDNAME,GetCppString(submnu.items[J].Wx_Caption),submnu.items[J].Wx_IDName+'_obj'])+');';
             strLst.add(strV);
         end
         Else
@@ -365,7 +365,7 @@ begin
         if Wx_MenuItems.items[i].Count > 0 then
         begin
             GetCodeFromSubMenu(strLst,Wx_MenuItems.items[i]);
-            strLst.add(self.Name+'->Append('+Wx_MenuItems.items[i].Wx_IDName+',_("'+Wx_MenuItems.items[i].Wx_Caption+'"),'+Wx_MenuItems.items[i].Wx_IDName+'_Obj ' +');');
+            strLst.add(self.Name+'->Append('+Wx_MenuItems.items[i].Wx_IDName+', '+GetCppString(Wx_MenuItems.items[i].Wx_Caption)+', '+Wx_MenuItems.items[i].Wx_IDName+'_Obj ' +');');
         end
         Else
         begin

@@ -50,6 +50,7 @@ type
         FWx_IDName : String;
         FWx_IDValue : Longint;
         FWx_ListboxStyle : TWxLBxStyleSet;
+        FWx_ListboxSubStyle : TWxLBxStyleSubItem;
         FWx_ProxyBGColorString : TWxColorString;
         FWx_ProxyFGColorString : TWxColorString;
         FWx_StretchFactor : Integer;
@@ -108,6 +109,7 @@ type
         procedure SetBGColor(strValue:String);
         procedure SetProxyFGColorString(value:String);
         procedure SetProxyBGColorString(value:String);
+        function GetListBoxSelectorStyle(Wx_ListboxSubStyle : TWxLBxStyleSubItem) : string;
 
     published
       { Published properties of TWxListBox }
@@ -140,6 +142,7 @@ type
         property Wx_IDName : String read FWx_IDName write FWx_IDName;
         property Wx_IDValue : Longint read FWx_IDValue write FWx_IDValue default -1;
         property Wx_ListboxStyle : TWxLBxStyleSet read FWx_ListboxStyle write FWx_ListboxStyle;
+        property Wx_ListboxSubStyle : TWxLBxStyleSubItem read FWx_ListboxSubStyle write FWx_ListboxSubStyle;
         property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
         property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
@@ -173,6 +176,7 @@ begin
      FWx_IDValue := -1;
      FWx_StretchFactor := 0;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -267,6 +271,7 @@ begin
      FWx_PropertyList.add('Checked : Checked');
 
      FWx_PropertyList.add('Wx_ListboxStyle:Listbox Style');
+     FWx_PropertyList.add('Wx_ListboxSubStyle:Selector Style');
      FWx_PropertyList.add('wxLB_SINGLE:wxLB_SINGLE');
      FWx_PropertyList.add('wxLB_MULTIPLE:wxLB_MULTIPLE');
      FWx_PropertyList.add('wxLB_EXTENDED:wxLB_EXTENDED');
@@ -276,10 +281,8 @@ begin
      FWx_PropertyList.add('wxLB_SORT:wxLB_SORT');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
-
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-
 
      FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
      FWx_EventList.add('EVT_LISTBOX:OnEnter');
@@ -307,7 +310,7 @@ function TWxListBox.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxListBox.GenerateControlIDs:String;
@@ -359,14 +362,13 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+    strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle) +
+         GetListBoxSelectorStyle(Wx_ListboxSubStyle);
 
-
-    strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
-
-    Result:=Format('%s =  new %s(%s, %s ,wxPoint(%d,%d),wxSize(%d,%d), (wxArrayString)NULL %s );',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,self.Wx_ToolTip]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -375,9 +377,9 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,self.Wx_HelpText]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
     for i:= 0 to self.Items.count -1 Do
-        Result:=Result +#13+Format('%s->Append(_("%s"));',[self.Name,self.Items[i]]);
+        Result:=Result +#13+Format('%s->Append(%s);',[self.Name,GetCppString(self.Items[i])]);
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then
@@ -612,6 +614,26 @@ procedure TWxListBox.SetProxyBGColorString(value:String);
 begin
    FInvisibleBGColorString:=value;
    self.Font.Color:=GetColorFromString(value);
+end;
+
+function TWxListBox.GetListBoxSelectorStyle(Wx_ListboxSubStyle : TWxLBxStyleSubItem) : string;
+begin
+Result:='';
+    if  Wx_ListboxSubStyle = wxLB_SINGLE then
+    begin
+        Result:= ', wxLB_SINGLE';
+        exit;
+    end;
+     if  Wx_ListboxSubStyle = wxLB_MULTIPLE then
+    begin
+        Result:= ', wxLB_MULTIPLE';
+        exit;
+    end;
+     if  Wx_ListboxSubStyle = wxLB_EXTENDED then
+    begin
+        Result:= ', wxLB_EXTENDED';
+        exit;
+    end;
 end;
 
 end.

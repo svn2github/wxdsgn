@@ -332,6 +332,7 @@ begin
      FWx_PropertyList.add('Checked : Checked');
 
      FWx_PropertyList.Add('Wx_EditStyle:Edit Style');
+     FWx_PropertyList.Add('wxHSCROLL2:wxHSCROLL');
      FWx_PropertyList.Add('wxTE_PROCESS_ENTER:wxTE_PROCESS_ENTER');
      FWx_PropertyList.Add('wxTE_PROCESS_TAB:wxTE_PROCESS_TAB');
      FWx_PropertyList.Add('wxTE_PASSWORD:wxTE_PASSWORD');
@@ -339,6 +340,11 @@ begin
      FWx_PropertyList.Add('wxTE_RICH:wxTE_RICH');
      FWx_PropertyList.Add('wxTE_RICH2:wxTE_RICH2');
      FWx_PropertyList.Add('wxTE_AUTO_URL:wxTE_AUTO_URL');
+     FWx_PropertyList.Add('wxTE_DONTWRAP:wxTE_DONTWRAP');
+     FWx_PropertyList.Add('wxTE_LINEWRAP:wxTE_LINEWRAP');
+     FWx_PropertyList.Add('wxTE_WORDWRAP:wxTE_WORDWRAP');
+     FWx_PropertyList.Add('wxTE_CHARWRAP:wxTE_CHARWRAP');
+     FWx_PropertyList.Add('wxTE_CAPITALIZE:wxTE_CAPITALIZE');
      FWx_PropertyList.Add('wxTE_NOHIDESEL:wxTE_NOHIDESEL');
      FWx_PropertyList.Add('wxTE_LEFT:wxTE_LEFT');
      FWx_PropertyList.Add('wxTE_CENTRE:wxTE_CENTRE');
@@ -377,7 +383,7 @@ function TWxMemo.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d,',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxMemo.GenerateControlIDs:String;
@@ -446,10 +452,10 @@ begin
     //if trim(strStyle) <> '' then
     //   strStyle:=',' +strStyle;
 
-    Result:=Format('%s =  new %s(%s, %s, "" , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue), GetCppString(''), self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     Result:=Result + #13+Format('%s->SetMaxLength(%d);',[self.Name,self.Wx_MaxLength]);
 
@@ -460,14 +466,14 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     for i:= 0 to self.Lines.count -1 Do
     begin
         if i = self.Lines.count -1 then
-           Result:=Result +#13+Format('%s->AppendText(_("%s"));',[self.Name,GetCppString(self.Lines[i])])
+           Result:=Result +#13+Format('%s->AppendText(%s);',[self.Name,GetCppString(self.Lines[i])])
         else
-            Result:=Result +#13+Format('%s->AppendText(_("%s\n"));',[self.Name,GetCppString(self.Lines[i])]);
+            Result:=Result +#13+Format('%s->AppendText(%s);',[self.Name,GetCppString(self.Lines[i])]);
     end;
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));

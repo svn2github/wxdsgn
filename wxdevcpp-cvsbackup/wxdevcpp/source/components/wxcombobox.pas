@@ -381,14 +381,14 @@ begin
 
     for i:= 0 to self.Items.count -1 Do
     begin
-        Result:=Result +#13+Format('%s.Add(_("%s"));',['arrayStringFor_'+self.Name,GetCppString(self.Items[i])]);
+        Result:=Result +#13+Format('%s.Add(%s);',['arrayStringFor_'+self.Name,GetCppString(self.Items[i])]);
     end;
 
     //Last comma is removed because it depends on the user selection of the properties.
-    Result:=Result +#13+Format('%s =  new %s(%s, %s ,_("%s") ,wxPoint(%d,%d),wxSize(%d,%d), %s  %s );',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,'arrayStringFor_'+self.Name,strStyle] );
+    Result:=Result +#13+Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,'arrayStringFor_'+self.Name,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);
@@ -397,7 +397,7 @@ begin
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
     if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+        Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

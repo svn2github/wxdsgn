@@ -356,7 +356,12 @@ begin
      FWx_PropertyList.Add('wxTE_LEFT:wxTE_LEFT');
      FWx_PropertyList.Add('wxTE_CENTRE:wxTE_CENTRE');
      FWx_PropertyList.Add('wxTE_RIGHT:wxTE_RIGHT');
-
+     FWx_PropertyList.Add('wxTE_LINEWRAP:wxTE_LINEWRAP');
+     FWx_PropertyList.Add('wxTE_DONTWRAP:wxTE_DONTWRAP');
+     FWx_PropertyList.Add('wxTE_CHARWRAP:wxTE_CHARWRAP');
+     FWx_PropertyList.Add('wxTE_BESTWRAP:wxTE_BESTWRAP');
+     FWx_PropertyList.Add('wxTE_CAPITALIZE:wxTE_CAPITALIZE');
+   
      FWx_PropertyList.add('Font : Font');
 
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
@@ -393,7 +398,7 @@ function TWxEdit.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxEdit.GenerateControlIDs:String;
@@ -455,10 +460,10 @@ begin
 
     strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
 
-    Result:=Format('%s =  new %s(%s, %s, _("%s") , wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
-        Result:=Result + #13+Format('%s->SetToolTip(wxT(_("%s")));',[self.Name,GetCppString(self.Wx_ToolTip)]);
+        Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 
     Result:=Result + #13+Format('%s->SetMaxLength(%d);',[self.Name,self.Wx_MaxLength]);
 
@@ -468,8 +473,8 @@ begin
     if not Wx_Enabled then
         Result:=Result + #13+Format('%s->Enable(false);',[self.Name]);
 
-    if trim(self.Wx_HelpText) <> '' then
-        Result:=Result +#13+Format('%s->SetHelpText(_("%s"));',[self.Name,GetCppString(self.Wx_HelpText)]);
+    if (trim(self.Wx_HelpText) <> '') then
+          Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

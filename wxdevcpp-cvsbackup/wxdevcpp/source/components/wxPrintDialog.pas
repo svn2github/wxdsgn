@@ -163,7 +163,7 @@ begin
     else
         Result:=Result+#13+self.Name+'_Data->SetSelection(false);';
 
-     Result:=Result+#13+Format('%s =  new %s(this,%s);',[self.Name,self.wx_Class,self.Name+'_Data'] );
+     Result:=Result+#13+Format('%s =  new %s(this, %s);',[self.Name,self.wx_Class,self.Name+'_Data'] );
 
 end;
 
