@@ -362,8 +362,7 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-    strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle) +
-         GetListBoxSelectorStyle(Wx_ListboxSubStyle);
+    strStyle:=GetListBoxSelectorStyle(Wx_ListboxSubStyle) + GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
 
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 

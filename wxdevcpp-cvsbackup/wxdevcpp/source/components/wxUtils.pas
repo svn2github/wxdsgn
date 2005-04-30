@@ -160,11 +160,11 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
     TWxCmbStyleSet = set of TWxCmbStyleItem;
 
-    TWxLBxStyleItem = (wxLB_HSCROLL, wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
-    TWxLBxStyleSet = set of TWxLBxStyleItem;
-
     TWxLBxStyleSubItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED);
     TWxLBxStyleSubSet = set of TWxLBxStyleSubItem;
+
+    TWxLBxStyleItem = (wxLB_HSCROLL, wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
+    TWxLBxStyleSet = set of TWxLBxStyleItem;
 
     TWxCBxStyleItem = (wxCHK_2STATE ,wxCHK_3STATE ,wxCHK_ALLOW_3RD_STATE_FOR_USER, wxALIGN_RIGHT_CB);
     TWxCBxStyleSet = set of TWxCBxStyleItem;
@@ -1011,25 +1011,25 @@ begin
   strLst := TStringList.Create;
 
  // if wxLB_SINGLE  in stdStyle then
- //   strLst.add('wxLB_SINGLE ');
+ //   strLst.add('wxLB_SINGLE');
 
  // if wxLB_MULTIPLE  in stdStyle then
-  //  strLst.add('wxLB_MULTIPLE ');
+  //  strLst.add('wxLB_MULTIPLE');
 
  // if wxLB_EXTENDED   in stdStyle then
- //   strLst.add('wxLB_EXTENDED  ');
+ //   strLst.add('wxLB_EXTENDED');
 
   if wxLB_HSCROLL  in stdStyle then
-    strLst.add('wxLB_HSCROLL ');
+    strLst.add('wxLB_HSCROLL');
 
   if wxLB_ALWAYS_SB   in stdStyle then
-    strLst.add('wxLB_ALWAYS_SB  ');
+    strLst.add('wxLB_ALWAYS_SB');
 
   if wxLB_NEEDED_SB   in stdStyle then
-    strLst.add('wxLB_NEEDED_SB  ');
+    strLst.add('wxLB_NEEDED_SB');
 
   if wxLB_NEEDED_SB   in stdStyle then
-    strLst.add('wxLB_SORT   ');
+    strLst.add('wxLB_SORT');
 
   if strLst.Count = 0 then
   begin
@@ -2219,7 +2219,10 @@ begin
     if trim(Result) = '' then
       Result := strA
     else
-      Result := Result + ' | ' + strA
+      Result := Result + ' | ' + strA;
+
+    Result := ' | ' + Result;
+
   end;
 
  // if trim(Result) <> '' then
