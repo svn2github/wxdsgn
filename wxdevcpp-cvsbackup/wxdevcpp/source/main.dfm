@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 212
-  Top = 135
+  Left = 251
+  Top = 132
   Width = 774
   Height = 540
   Color = clBtnFace
@@ -116,7 +116,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 754
-        Height = 81
+        Height = 80
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -134,7 +134,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 81
+        Height = 80
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -189,18 +189,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 529
-        Height = 81
+        Height = 80
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           529
-          81)
+          80)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 774
-          Height = 63
+          Height = 62
           Anchors = [akLeft, akTop, akRight, akBottom]
           BevelInner = bvNone
           BevelKind = bkTile
@@ -219,7 +219,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 754
-        Height = 81
+        Height = 80
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -600,7 +600,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 746
-            Height = 50
+            Height = 49
             Align = alClient
             Columns = <
               item
@@ -634,7 +634,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 746
-            Height = 28
+            Height = 27
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -686,7 +686,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 754
-        Height = 81
+        Height = 80
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft

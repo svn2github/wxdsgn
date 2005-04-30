@@ -78,6 +78,10 @@ type
         FWx_ProxyFGColorString : TWxColorString;
         { Storage for property Wx_SliderStyle }
         FWx_SliderStyle : TWxsldrStyleSet;
+         { Storage for property Wx_SliderOrientation }
+        FWx_SliderOrientation : TWx_SliderOrientation;
+         { Storage for property TWx_SliderRange }
+        FWx_SliderRange : TWx_SliderRange;
         { Storage for property Wx_StretchFactor }
         FWx_StretchFactor : Integer;
         { Storage for property Wx_ToolTip }
@@ -137,6 +141,8 @@ type
     procedure SetProxyFGColorString(value:String);
     procedure SetProxyBGColorString(value:String);
 
+    function GetSliderOrientation(value : TWx_SliderOrientation) : string;
+    function GetSliderRange(value : TWx_SliderRange) : string;
 
     published
       { Published properties of TWxSlider }
@@ -194,7 +200,10 @@ type
              read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
         property Wx_SliderStyle : TWxsldrStyleSet
              read FWx_SliderStyle write FWx_SliderStyle;
-
+        property Wx_SliderOrientation : TWx_SliderOrientation
+             read FWx_SliderOrientation  write FWx_SliderOrientation;
+        property Wx_SliderRange : TWx_SliderRange
+             read FWx_SliderRange  write FWx_SliderRange;
 	property Wx_StrechFactor : Integer
 		read FWx_StretchFactor write FWx_StretchFactor;
 		
@@ -319,14 +328,15 @@ begin
      FWx_PropertyList.Add('wxSL_LEFT:wxSL_LEFT');
      FWx_PropertyList.Add('wxSL_RIGHT:wxSL_RIGHT');
      FWx_PropertyList.Add('wxSL_TOP:wxSL_TOP');
-     FWx_PropertyList.Add('wxSL_SELRANGE:wxSL_SELRANGE');
+
+     FWx_PropertyList.Add('Wx_SliderRange : Slider Style');
 
      FWx_PropertyList.add('Font : Font');
 
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
-     FWx_PropertyList.add('Orientation  : Orientation');
+     FWx_PropertyList.add('Wx_SliderOrientation  : Orientation');
 
     FWx_EventList.add('EVT_COMMAND_SCROLL:OnScroll ');
     FWx_EventList.add('EVT_COMMAND_SCROLL_TOP:OnScrollTop ');
@@ -361,7 +371,7 @@ function TWxSlider.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxSlider.GenerateControlIDs:String;
@@ -442,13 +452,22 @@ begin
 //       parentName:=GetWxWidgetParent(self)
 //    else
 //       parentName:=self.Parent.name;
-    if self.Orientation = trHorizontal then
+ {   if self.Orientation = trHorizontal then
         Wx_SliderStyle:=Wx_SliderStyle + [wxSL_HORIZONTAL] - [wxSL_VERTICAL]
     else
         Wx_SliderStyle:=Wx_SliderStyle + [wxSL_VERTICAL] - [wxSL_HORIZONTAL];
+  }
 
     parentName:=GetWxWidgetParent(self);
-    strStyle:=GetSliderSpecificStyle(self.Wx_GeneralStyle,Wx_SliderStyle);
+
+    strStyle := GetSliderSpecificStyle(self.Wx_GeneralStyle,Wx_SliderStyle);
+    if (strStyle <> '') then
+        strStyle:=GetSliderOrientation(Wx_SliderOrientation) +
+            ' | ' + strStyle
+    else
+        strStyle:=GetSliderOrientation(Wx_SliderOrientation);
+
+    strStyle := strStyle + GetSliderRange(Wx_SliderRange);
 
     Result:=Format('%s = new %s(%s, %s, %d, %d, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.position,self.Min,self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
 
@@ -691,6 +710,40 @@ procedure TWxSlider.SetProxyBGColorString(value:String);
 begin
    FInvisibleBGColorString:=value;
    self.Font.Color:=GetColorFromString(value);
+end;
+
+function TWxSlider.GetSliderOrientation(value : TWx_SliderOrientation) : string;
+begin
+Result:='';
+    if  value = wxSL_VERTICAL then
+    begin
+        Result:= ', wxSL_VERTICAL';
+        self.Orientation := trVertical;
+        exit;
+    end;
+     if  value = wxSL_HORIZONTAL then
+    begin
+        Result:= ', wxSL_HORIZONTAL';
+        self.Orientation := trHorizontal;
+        exit;
+    end;
+
+end;
+
+function TWxSlider.GetSliderRange(value : TWx_SliderRange) : string;
+begin
+Result:='';
+    if  value = wxSEL_RANGE then
+    begin
+      Result := ' | wxSEL_RANGE ';
+      exit;
+    end;
+
+    if  value = wxSL_INVERSE then
+    begin
+      Result := ' | wxSL_INVERSE ';
+      exit;
+      end;
 end;
 
 end.

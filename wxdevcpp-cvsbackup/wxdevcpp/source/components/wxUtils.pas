@@ -126,8 +126,6 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
         function GetMaxID:Integer;
     end;
 
-
-
     TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
                        wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW, wxNO_3D,
                        wxTAB_TRAVERSAL, wxWANTS_CHARS, wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
@@ -172,15 +170,22 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
     TWxRBStyleSet = set of TWxRBStyleItem;
 
+    TWxGAgOrientation = (wxGA_HORIZONTAL, wxGA_VERTICAL);
+    
     TWxgagStyleItem = (wxGA_SMOOTH);
     TWxgagStyleSet = Set of TWxgagStyleItem;
 
+    TWxsbtnOrientation = (wxSP_HORIZONTAL, wxSP_VERTICAL);
 
-    TWxsbtnStyleItem = (wxSP_ARROW_KEYS , wxSP_WRAP,wxSP_HORIZONTAL,wxSP_VERTICAL );
+    TWxsbtnStyleItem = (wxSP_ARROW_KEYS , wxSP_WRAP);
     TWxsbtnStyleSet = Set of TWxsbtnStyleItem ;
 
+    TWx_SBOrientation = (wxSB_HORIZONTAL, wxSB_VERTICAL);
 
-    TWxsldrStyleItem = (wxSL_HORIZONTAL,wxSL_VERTICAL, wxSL_AUTOTICKS , wxSL_LABELS , wxSL_LEFT ,wxSL_RIGHT ,wxSL_TOP ,wxSL_SELRANGE );
+    TWx_SliderOrientation = (wxSL_HORIZONTAL,wxSL_VERTICAL);
+    TWx_SliderRange = (wxSEL_RANGE, wxSL_INVERSE);
+    
+    TWxsldrStyleItem = (wxSL_AUTOTICKS , wxSL_LABELS , wxSL_LEFT ,wxSL_RIGHT ,wxSL_TOP);
     TWxsldrStyleSet = Set of TWxsldrStyleItem ;
 
     //TWxslnStyleSet = Set of TWxslnStyleItem ;
@@ -191,15 +196,11 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
                        wxCAL_SEQUENTIAL_MONTH_SELECTION);
     TWxcalctrlStyleSet = Set of TWxcalctrlStyleItem ;
 
-
-
     TWxnbxStyleItem = (wxNB_LEFT, wxNB_RIGHT, wxNB_BOTTOM, wxNB_FIXEDWIDTH, wxNB_MULTILINE, wxNB_NOPAGETHEME );
     TWxnbxStyleSet = Set of TWxnbxStyleItem ;
 
-
     TWxrbxStyleItem = (wxRA_SPECIFY_ROWS ,wxRA_SPECIFY_COLS );
     TWxrbxStyleSet = Set of TWxrbxStyleItem ;
-
 
     TWxsbrStyleItem = (wxST_SIZEGRIP );
     TWxsbrStyleSet = Set of TWxsbrStyleItem ;
@@ -242,7 +243,7 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     TwxFindReplaceDialogStyleItem = (wxFR_REPLACEDIALOG ,wxFR_NOUPDOWN, wxFR_NOMATCHCASE,wxFR_NOWHOLEWORD);
     TwxFindReplaceDialogStyleSet = Set of TwxFindReplaceDialogStyleItem;
 
-
+    TWx_LIOrientation = (wxLI_HORIZONTAL, wxLI_VERTICAL);
 
 //End of Control Styles
 
@@ -1115,12 +1116,12 @@ begin
   if wxSP_WRAP in stdStyle then
     strLst.add('wxSP_WRAP');
 
-  if wxSP_HORIZONTAL in stdStyle then
+ { if wxSP_HORIZONTAL in stdStyle then
     strLst.add('wxSP_HORIZONTAL');
 
   if wxSP_VERTICAL in stdStyle then
     strLst.add('wxSP_VERTICAL');
-
+  }
   if strLst.Count = 0 then
   begin
     Result := '';
@@ -1160,17 +1161,6 @@ begin
   if wxSL_TOP in stdStyle then
     strLst.add('wxSL_TOP');
 
-  if wxSL_SELRANGE in stdStyle then
-    strLst.add('wxSL_SELRANGE');
-
-  if wxSL_HORIZONTAL in stdStyle then
-    strLst.add('wxSL_HORIZONTAL');
-
-  if wxSL_VERTICAL in stdStyle then
-    strLst.add('wxSL_VERTICAL');
-
-
-        
   if strLst.Count = 0 then
   begin
     Result := '';
@@ -1528,10 +1518,10 @@ begin
     strLst.add('wxFILE_MUST_EXIST');
 
   if wxMULTIPLE  in stdStyle then
-    strLst.add('wxMULTIPLE ');
+    strLst.add('wxMULTIPLE');
 
   if wxCHANGE_DIR  in stdStyle then
-    strLst.add('wxCHANGE_DIR ');
+    strLst.add('wxCHANGE_DIR');
 
   if strLst.Count = 0 then
   begin
@@ -1651,28 +1641,28 @@ begin
     strLst.add('wxCANCEL');
 
   if wxYES_NO  in stdStyle then
-    strLst.add('wxYES_NO ');
+    strLst.add('wxYES_NO');
 
   if wxYES_DEFAULT  in stdStyle then
-    strLst.add('wxYES_DEFAULT ');
+    strLst.add('wxYES_DEFAULT');
 
   if wxNO_DEFAULT in stdStyle then
     strLst.add('wxNO_DEFAULT');
 
   if wxICON_EXCLAMATION  in stdStyle then
-    strLst.add('wxICON_EXCLAMATION ');
+    strLst.add('wxICON_EXCLAMATION');
 
   if wxICON_HAND  in stdStyle then
-    strLst.add('wxICON_HAND ');
+    strLst.add('wxICON_HAND');
 
   if wxICON_ERROR  in stdStyle then
-    strLst.add('wxICON_ERROR ');
+    strLst.add('wxICON_ERROR');
 
   if wxICON_QUESTION in stdStyle then
     strLst.add('wxICON_QUESTION');
 
   if wxICON_INFORMATION  in stdStyle then
-    strLst.add('wxICON_INFORMATION ');
+    strLst.add('wxICON_INFORMATION');
     
   if strLst.Count = 0 then
   begin
@@ -1745,10 +1735,10 @@ begin
     strLst.add('wxFR_NOUPDOWN ');
 
   if wxFR_NOMATCHCASE  in stdStyle then
-    strLst.add('wxFR_NOMATCHCASE ');
+    strLst.add('wxFR_NOMATCHCASE');
 
   if wxFR_NOWHOLEWORD  in stdStyle then
-    strLst.add('wxFR_NOWHOLEWORD ');
+    strLst.add('wxFR_NOWHOLEWORD');
 
   if strLst.Count = 0 then
   begin
@@ -2081,13 +2071,13 @@ begin
     strLst.add('wxLC_ICON');
 
   if wxLC_SMALL_ICON in lstvwstyle then
-    strLst.add('wxLC_SMALL_ICON ');
+    strLst.add('wxLC_SMALL_ICON');
 
   if wxLC_ALIGN_TOP in lstvwstyle then
-    strLst.add('wxLC_ALIGN_TOP ');
+    strLst.add('wxLC_ALIGN_TOP');
 
   if wxLC_ALIGN_LEFT in lstvwstyle then
-    strLst.add('wxLC_ALIGN_LEFT ');
+    strLst.add('wxLC_ALIGN_LEFT');
 
   if wxLC_AUTOARRANGE in lstvwstyle then
     strLst.add('wxLC_AUTOARRANGE');
@@ -2220,13 +2210,7 @@ begin
       Result := strA
     else
       Result := Result + ' | ' + strA;
-
-    Result := ' | ' + Result;
-
   end;
-
- // if trim(Result) <> '' then
- //   Result := ', ' + Result;
 
 end;
 
@@ -2241,11 +2225,13 @@ begin
     if trim(Result) = '' then
       Result := strA
     else
-      Result := Result + ' | ' + strA
+      Result := Result + ' | ' + strA;
+
   end;
 
   if trim(Result) <> '' then
-    Result := ', ' + Result;
+    Result := ' | ' + Result;
+
 end;
 
 function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxsbrStyleSet):String;
@@ -2259,7 +2245,9 @@ begin
     if trim(Result) = '' then
       Result := strA
     else
-      Result := Result + ' | ' + strA
+      Result := Result + ' | ' + strA;
+
+  Result := ' | ' + Result;
   end;
 
   if trim(Result) <> '' then
@@ -2298,8 +2286,6 @@ begin
       Result := Result + ' | ' + strA
   end;
 
-  if trim(Result) <> '' then
-    Result := ', ' + Result;
 end;
 
 

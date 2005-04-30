@@ -38,6 +38,8 @@ type
         FWx_Enabled : Boolean;
         { Storage for property Wx_FGColor }
         FWx_FGColor : TColor;
+        { Storage for property Wx_GaugeOrientation }
+        FWx_GaugeOrientation : TWxGAgOrientation;
         { Storage for property Wx_GaugeStyle }
         FWx_GaugeStyle : TWxGAgStyleSet;
         { Storage for property Wx_GeneralStyle }
@@ -113,7 +115,7 @@ type
 
     procedure SetProxyFGColorString(value:String);
     procedure SetProxyBGColorString(value:String);
-
+     function GetGaugeOrientation(Wx_GaugeOrientation : TWxGAgOrientation) : string;
 
     published
       { Published properties of TWxGauge }
@@ -130,6 +132,8 @@ type
              read FWx_Enabled write FWx_Enabled
              default True;
         property Wx_FGColor : TColor read FWx_FGColor write FWx_FGColor;
+        property Wx_GaugeOrientation : TWxGAgOrientation
+             read FWx_GaugeOrientation write FWx_GaugeOrientation;
         property Wx_GaugeStyle : TWxGAgStyleSet
              read FWx_GaugeStyle write FWx_GaugeStyle;
         property Wx_GeneralStyle : TWxStdStyleSet
@@ -194,6 +198,7 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -258,6 +263,8 @@ begin
 
      FWx_PropertyList.add('Wx_GaugeStyle : Gauge Styles');
      FWx_PropertyList.Add('wxGA_SMOOTH:wxGA_SMOOTH');
+
+     FWx_PropertyList.add('Wx_GaugeOrientation : Orientation');
 
      FWx_PropertyList.add('Font : Font');
 
@@ -334,11 +341,10 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+    strStyle:=GetGaugeOrientation(Wx_GaugeOrientation) +
+       GetGaugeSpecificStyle(self.Wx_GeneralStyle,Wx_GaugeStyle);
 
-
-    strStyle:=GetGaugeSpecificStyle(self.Wx_GeneralStyle,Wx_GaugeStyle);
-
-    Result:=Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d),wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName, GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName, GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
@@ -512,6 +518,24 @@ procedure TWxGauge.SetProxyBGColorString(value:String);
 begin
    FInvisibleBGColorString:=value;
    self.Font.Color:=GetColorFromString(value);
+end;
+
+function TWxGauge.GetGaugeOrientation(Wx_GaugeOrientation : TWxGAgOrientation) : string;
+begin
+Result:='';
+    if  Wx_GaugeOrientation = wxGA_VERTICAL then
+    begin
+        Result:= ', wxGA_VERTICAL';
+        self.Orientation := pbVertical;
+         exit;
+    end;
+     if  Wx_GaugeOrientation = wxGA_HORIZONTAL then
+    begin
+        Result:= ', wxGA_HORIZONTAL';
+        self.Orientation := pbHorizontal;
+          exit;
+    end;
+
 end;
 
 end.

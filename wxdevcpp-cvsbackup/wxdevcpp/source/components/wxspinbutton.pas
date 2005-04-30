@@ -66,6 +66,8 @@ type
         FWx_ProxyFGColorString : TWxColorString;
         { Storage for property Wx_SpinButtonStyle }
         FWx_SpinButtonStyle : TWxsbtnStyleSet;
+        { Storage for property Wx_SpinButtonOrientation }
+        FWx_SpinButtonOrientation : TWxsbtnOrientation;
         { Storage for property Wx_StretchFactor }
         FWx_StretchFactor : Integer;
         { Storage for property Wx_ToolTip }
@@ -120,6 +122,7 @@ type
         procedure SetFGColor(strValue:String);
         function GetBGColor:string;
         procedure SetBGColor(strValue:String);
+        function GetSpinButtonOrientation(value : TWxsbtnOrientation) : string;
 
     procedure SetProxyFGColorString(value:String);
     procedure SetProxyBGColorString(value:String);
@@ -165,7 +168,8 @@ type
              read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
         property Wx_SpinButtonStyle : TWxsbtnStyleSet
              read FWx_SpinButtonStyle write FWx_SpinButtonStyle;
-
+        property Wx_SpinButtonOrientation : TWxsbtnOrientation
+             read FWx_SpinButtonOrientation write FWx_SpinButtonOrientation;
 	property Wx_StrechFactor : Integer
 		read FWx_StretchFactor write FWx_StretchFactor;
 		
@@ -232,7 +236,6 @@ begin
 
      { Code to perform other tasks when the component is created }
 
-     FWx_PropertyList.add('Orientation :Orientation');
      FWx_PropertyList.add('Max :Max');
      FWx_PropertyList.add('Min :Min');
      FWx_PropertyList.add('Position :Value');
@@ -272,15 +275,13 @@ begin
 
 
      FWx_PropertyList.add('Wx_SpinButtonStyle:Spin Button Style');
+     FWx_PropertyList.add('Wx_SpinButtonOrientation:Orientation');
      FWx_PropertyList.Add('wxSP_ARROW_KEYS:wxSP_ARROW_KEYS');
      FWx_PropertyList.Add('wxSP_WRAP:wxSP_WRAP');
 
-
-
-     FWx_PropertyList.add('Font : Font');
+    FWx_PropertyList.add('Font : Font');
 
      FWx_PropertyList.add('Checked : Checked');
-
 
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
@@ -312,7 +313,7 @@ function TWxSpinButton.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxSpinButton.GenerateControlIDs:String;
@@ -361,16 +362,19 @@ begin
 //    else
 //       parentName:=self.Parent.name;
 
-    if self.Orientation = udHorizontal then
+  {  if self.Orientation = udHorizontal then
         Wx_SpinButtonStyle:=Wx_SpinButtonStyle - [wxSP_VERTICAL	] + [wxSP_HORIZONTAL]
     else
         Wx_SpinButtonStyle:=Wx_SpinButtonStyle - [wxSP_HORIZONTAL] + [wxSP_VERTICAL	];
-
+    }
+    
     parentName:=GetWxWidgetParent(self);
 
-
-
     strStyle:=GetSpinButtonSpecificStyle(self.Wx_GeneralStyle,Wx_SpinButtonStyle);
+    if (strStyle <> '') then
+    strStyle := GetSpinButtonOrientation(Wx_SpinButtonOrientation) + ' | ' + strStyle
+    else
+    strStyle := GetSpinButtonOrientation(Wx_SpinButtonOrientation);
 
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
@@ -575,4 +579,21 @@ begin
    self.Font.Color:=GetColorFromString(value);
 end;
 
+function TWxSpinButton.GetSpinButtonOrientation(value : TWxsbtnOrientation) : string;
+begin
+Result:='';
+    if  value = wxSP_VERTICAL then
+    begin
+        Result:= ', wxSP_VERTICAL';
+        self.Orientation := udVertical;
+         exit;
+    end;
+     if  value = wxSP_HORIZONTAL then
+    begin
+        Result:= ', wxSP_HORIZONTAL';
+        self.Orientation := udHorizontal;
+          exit;
+    end;
+
+end;
 end.

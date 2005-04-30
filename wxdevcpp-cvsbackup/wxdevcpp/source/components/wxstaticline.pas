@@ -62,6 +62,7 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_LIOrientation : TWx_LIOrientation;
       { Private methods of TWxStaticLine }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -112,6 +113,8 @@ type
 
     procedure SetProxyFGColorString(value:String);
     procedure SetProxyBGColorString(value:String);
+
+   function GetLineOrientation(value : TWx_LIOrientation) : string;
 
         procedure WMSizeX(var Message: TWMSize); message WM_PAINT;
     published
@@ -167,6 +170,7 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+        property Wx_LIOrientation : TWx_LIOrientation read FWx_LIOrientation write FWx_LIOrientation;
 
   end;
 
@@ -288,7 +292,7 @@ begin
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
 
-
+     FWx_PropertyList.add('Wx_LIOrientation:Orientation');
      FWx_PropertyList.add('Font : Font');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
      self.Caption:='';
@@ -314,7 +318,7 @@ function TWxStaticLine.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStaticLine.GenerateControlIDs:String;
@@ -345,11 +349,13 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+    strStyle:= GetStdStyleString(self.Wx_GeneralStyle);
 
+    if (strStyle <> '') then
+        strStyle := GetLineOrientation(FWx_LIOrientation) + ' | ' + strStyle
+    else
+         strStyle :=  GetLineOrientation(FWx_LIOrientation);
 
-    strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
-    if trim(strStyle) <> '' then
-       strStyle:=',' +strStyle;
     //self.Height-5 this is to make sure the groupbox size is not directly given to the code generation.
     //If we dont use this one, we'll have to line(a rectangle) with big ht. 
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height-5,strStyle] );
@@ -560,4 +566,19 @@ begin
    self.Font.Color:=GetColorFromString(value);
 end;
 
+function TWxStaticLine.GetLineOrientation(value : TWx_LIOrientation) : string;
+begin
+Result:='';
+    if  value = wxLI_VERTICAL then
+    begin
+        Result:= ', wxLI_VERTICAL';
+             exit;
+    end;
+     if  value = wxLI_HORIZONTAL then
+    begin
+        Result:= ', wxLI_HORIZONTAL';
+             exit;
+    end;
+    end;
+    
 end.

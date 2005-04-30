@@ -82,6 +82,8 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_SBOrientation : TWx_SBOrientation;
+
       { Private methods of TWxScrollBar }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -131,7 +133,7 @@ type
 
     procedure SetProxyFGColorString(value:String);
     procedure SetProxyBGColorString(value:String);
-
+      function GetSBOrientation(Wx_SBOrientation : TWx_SBOrientation) : string;
 
     published
       { Published properties of TWxScrollBar }
@@ -205,7 +207,7 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
-
+        property Wx_SBOrientation : TWx_SBOrientation read FWx_SBOrientation write FWx_SBOrientation;
   end;
 
 procedure Register;
@@ -306,6 +308,8 @@ begin
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
 
+     FWx_PropertyList.add('Wx_SBOrientation : Orientation');
+
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
@@ -350,7 +354,6 @@ begin
     FWx_EventList.add('EVT_COMMAND_SCROLL_ENDSCROLL   :  OnScroll' );
     FWx_EventList.add('EVT_UPDATE_UI   :  OnUpdate' );
 
-
 end;
 
 destructor TWxScrollBar.Destroy;
@@ -373,7 +376,7 @@ function TWxScrollBar.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxScrollBar.GenerateControlIDs:String;
@@ -462,11 +465,14 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-
-
     strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
-    if trim(strStyle) <> '' then
-       strStyle:=',' +strStyle;
+    if (strStyle <> '') then
+    begin
+        strStyle := ' | ' + strStyle;
+    end;
+
+    strStyle := GetSBOrientation(self.Wx_SBOrientation) + strStyle;
+
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
@@ -698,4 +704,21 @@ begin
    self.Font.Color:=GetColorFromString(value);
 end;
 
+function TWxScrollBar.GetSBOrientation(Wx_SBOrientation : TWx_SBOrientation) : string;
+begin
+Result:='';
+    if  Wx_SBOrientation = wxSB_VERTICAL then
+    begin
+        Result:= ', wxSB_VERTICAL';
+             self.SaveControlOrientation(wxControlVertical);
+              exit;
+    end;
+     if  Wx_SBOrientation = wxSB_HORIZONTAL then
+    begin
+        Result:= ', wxSB_HORIZONTAL';
+        self.SaveControlOrientation(wxControlHorizontal);
+           exit;
+    end;
+
+end;
 end.

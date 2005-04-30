@@ -456,8 +456,6 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-
-
     strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
 
     Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );

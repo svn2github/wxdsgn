@@ -98,6 +98,7 @@ type
         procedure SetBGColor(strValue:String);
         procedure SetProxyFGColorString(value:String);
         procedure SetProxyBGColorString(value:String);
+        function GetCheckListBoxSelectorStyle(value : TWxLBxStyleSubItem) : string;
 
     published
       { Published properties of TWxListBox }
@@ -140,6 +141,8 @@ type
              default -1;
         property Wx_ListboxStyle : TWxLBxStyleSet
              read FWx_ListboxStyle write FWx_ListboxStyle;
+       property Wx_ListboxSubStyle : TWxLBxStyleSubItem
+             read FWx_ListboxSubStyle write FWx_ListboxSubStyle;
        property Wx_ProxyBGColorString : TWxColorString
              read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString
@@ -273,6 +276,7 @@ begin
      FWx_PropertyList.add('Checked : Checked');
 
      FWx_PropertyList.add('Wx_ListboxStyle:Listbox Style');
+     FWx_PropertyList.add('Wx_ListboxSubStyle:Listbox Style');
      FWx_PropertyList.add('Wx_ListboxStyle:LB');
      FWx_PropertyList.add('wxLB_SINGLE:wxLB_SINGLE');
      FWx_PropertyList.add('wxLB_MULTIPLE:wxLB_MULTIPLE');
@@ -367,6 +371,12 @@ begin
     parentName:=GetWxWidgetParent(self);
 
     strStyle:=GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
+
+    if (strStyle <> '') then
+       strStyle := GetCheckListBoxSelectorStyle(Wx_ListboxSubStyle) + ' | ' +
+              strStyle
+    else
+       strStyle := GetCheckListBoxSelectorStyle(Wx_ListboxSubStyle);
 
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
@@ -569,4 +579,23 @@ begin
    self.Font.Color:=GetColorFromString(value);
 end;
 
+function TWxCheckListBox.GetCheckListBoxSelectorStyle(value : TWxLBxStyleSubItem) : string;
+begin
+Result:='';
+   if  value = wxLB_SINGLE then
+    begin
+        Result:= ', wxLB_SINGLE';
+        exit;
+    end;
+     if  value = wxLB_MULTIPLE then
+    begin
+        Result:= ', wxLB_MULTIPLE';
+        exit;
+    end;
+     if  value = wxLB_EXTENDED then
+    begin
+        Result:= ', wxLB_EXTENDED';
+        exit;
+    end;
+end;
 end.

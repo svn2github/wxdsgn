@@ -236,7 +236,7 @@ begin
      FWx_PropertyList.add('Wx_Hidden :Hidden');
      FWx_PropertyList.add('Wx_Border : Border ');
      FWx_PropertyList.add('Wx_Default :WxDefault ');
-     FWx_PropertyList.add('Wx_HelpText :HelpText ');
+     FWx_PropertyList.add('Wx_HelpText :HelpText');
      FWx_PropertyList.add('Wx_IDName : IDName ');
      FWx_PropertyList.add('Wx_IDValue : IDValue ');
      FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
@@ -271,7 +271,7 @@ begin
      FWx_PropertyList.add('Checked : Checked');
 
      FWx_PropertyList.add('Wx_ListboxStyle:Listbox Style');
-     FWx_PropertyList.add('Wx_ListboxSubStyle:Selector Style');
+     FWx_PropertyList.add('Wx_ListboxSubStyle:Listbox Style');
      FWx_PropertyList.add('wxLB_SINGLE:wxLB_SINGLE');
      FWx_PropertyList.add('wxLB_MULTIPLE:wxLB_MULTIPLE');
      FWx_PropertyList.add('wxLB_EXTENDED:wxLB_EXTENDED');
@@ -362,7 +362,7 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-    strStyle:=GetListBoxSelectorStyle(Wx_ListboxSubStyle) + GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
+ //   strStyle:=GetListBoxSelectorStyle(Wx_ListboxSubStyle) + GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
 
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
@@ -618,7 +618,7 @@ end;
 function TWxListBox.GetListBoxSelectorStyle(Wx_ListboxSubStyle : TWxLBxStyleSubItem) : string;
 begin
 Result:='';
-    if  Wx_ListboxSubStyle = wxLB_SINGLE then
+   if  Wx_ListboxSubStyle = wxLB_SINGLE then
     begin
         Result:= ', wxLB_SINGLE';
         exit;
