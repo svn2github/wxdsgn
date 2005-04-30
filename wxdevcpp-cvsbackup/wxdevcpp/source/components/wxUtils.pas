@@ -134,8 +134,8 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
                        wxHSCROLL, wxCLIP_CHILDREN);
     TWxStdStyleSet = set of TWxStdStyleItem;
 
-    TWxBtnStyleItem = (wxBU_LEFT, wxBU_TOP, wxBU_RIGHT, wxBU_BOTTOM,
-                        wxBU_EXACTFIT);
+    TWxBtnStyleItem = (wxBU_AUTODRAW, wxBU_LEFT, wxBU_TOP, wxBU_RIGHT, wxBU_BOTTOM,
+                        wxBU_EXACTFIT, wxNO_BORDER);
     TWxBtnStyleSet = set of TWxBtnStyleItem;
 
     TWxLbStyleItem = (wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_CENTRE,
@@ -144,11 +144,12 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
 
     TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
                             wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NOHIDESEL,
-                            wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP,wxTE_MULTILINE);
+                            wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP, wxTE_CHARWRAP, wxTE_BESTWRAP, wxTE_CAPITALIZE,
+                            wxTE_MULTILINE, wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
     TWxEdtGeneralStyleSet = set of TWxEdtGeneralStyleItem;
 
-    TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
-    TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
+  //  TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
+   // TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
 
     TWxDlgStyleItem = (wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME,
                         wxSTAY_ON_TOP, wxDIALOG_NO_PARENT, wxDIALOG_EX_CONTEXTHELP, wxMINIMIZE_BOX,
@@ -159,12 +160,13 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
     TWxCmbStyleSet = set of TWxCmbStyleItem;
 
-    TWxLBxStyleItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED, wxLB_HSCROLL,
-                        wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
+    TWxLBxStyleItem = (wxLB_HSCROLL, wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
     TWxLBxStyleSet = set of TWxLBxStyleItem;
 
+    TWxLBxStyleSubItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED);
+    TWxLBxStyleSubSet = set of TWxLBxStyleSubItem;
 
-    TWxCBxStyleItem = (wxCHK_2STATE ,wxCHK_3STATE ,wxCHK_ALLOW_3RD_STATE_FOR_USER );
+    TWxCBxStyleItem = (wxCHK_2STATE ,wxCHK_3STATE ,wxCHK_ALLOW_3RD_STATE_FOR_USER, wxALIGN_RIGHT_CB);
     TWxCBxStyleSet = set of TWxCBxStyleItem;
 
     TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
@@ -191,7 +193,7 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
 
 
 
-    TWxnbxStyleItem = (wxNB_LEFT , wxNB_RIGHT ,wxNB_BOTTOM ,wxNB_FIXEDWIDTH ,wxNB_MULTILINE );
+    TWxnbxStyleItem = (wxNB_LEFT, wxNB_RIGHT, wxNB_BOTTOM, wxNB_FIXEDWIDTH, wxNB_MULTILINE, wxNB_NOPAGETHEME );
     TWxnbxStyleSet = Set of TWxnbxStyleItem ;
 
 
@@ -247,13 +249,13 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
   TWxFileDialogType = (wxOPEN, wxSAVE);
 
   TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
-    wxCHANGE_DIR);
+    wxCHANGE_DIR, wxFILE_MUST_EXIST);
   TWxFileDialogStyleSet = set of TWxFileDialogStyleItem;
 
   TWxDirDialogStyleItem = (wxDD_NEW_DIR_BUTTON);
   TWxDirDialogStyleSet = set of TWxDirDialogStyleItem;
 
-  TWxProgressDialogStyleItem = (wxPD_APP_MODAL,wxPD_AUTO_HIDE,wxPD_CAN_ABORT,wxPD_ELAPSED_TIME,wxPD_ESTIMATED_TIME,wxPD_REMAINING_TIME);
+  TWxProgressDialogStyleItem = (wxPD_APP_MODAL,wxPD_AUTO_HIDE,wxPD_CAN_ABORT,wxPD_ELAPSED_TIME,wxPD_ESTIMATED_TIME,wxPD_REMAINING_TIME,wxPD_SMOOTH,wxPD_CAN_SKIP);
   TWxProgressDialogStyleSet = set of TWxProgressDialogStyleItem ;
 
   TWxMessageDialogStyleItem = (wxOK,wxCANCEL,wxYES_NO ,wxYES_DEFAULT,wxNO_DEFAULT,wxICON_EXCLAMATION,wxICON_HAND,wxICON_ERROR ,wxICON_QUESTION , wxICON_INFORMATION );
@@ -677,9 +679,9 @@ begin
         strUnderline:='FALSE';
 
     if fnt.Name <> defaultFontName then
-        Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS ,'+strStyle+',' + strWeight +',' + strUnderline+',_T("'+ fnt.Name +'"))'
+        Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS, '+strStyle+',' + strWeight +', ' + strUnderline+', '+ GetCppString(fnt.Name) +')'
     else
-        Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS ,'+strStyle+',' + strWeight +',' + strUnderline+')'
+        Result:=Result+'wxFont('+ IntToStr(fnt.size)+', wxSWISS, '+strStyle+',' + strWeight +', ' + strUnderline+')';
 end;
 
 function GetWxWidgetParent(cntrl:TControl):String;
@@ -881,6 +883,9 @@ begin
   if wxCHK_ALLOW_3RD_STATE_FOR_USER in stdStyle then
     strLst.add('wxCHK_ALLOW_3RD_STATE_FOR_USER');
 
+  if wxALIGN_RIGHT_CB in stdStyle then
+    strLst.add('wxALIGN_RIGHT');
+
 //  if wxCB_SORT in stdStyle then
 //    strLst.add('wxALIGN_RIGHT ');
 
@@ -895,7 +900,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -961,7 +966,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -991,7 +996,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1004,14 +1009,15 @@ var
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
-  if wxLB_SINGLE  in stdStyle then
-    strLst.add('wxLB_SINGLE ');
 
-  if wxLB_MULTIPLE  in stdStyle then
-    strLst.add('wxLB_MULTIPLE ');
+ // if wxLB_SINGLE  in stdStyle then
+ //   strLst.add('wxLB_SINGLE ');
 
-  if wxLB_EXTENDED   in stdStyle then
-    strLst.add('wxLB_EXTENDED  ');
+ // if wxLB_MULTIPLE  in stdStyle then
+  //  strLst.add('wxLB_MULTIPLE ');
+
+ // if wxLB_EXTENDED   in stdStyle then
+ //   strLst.add('wxLB_EXTENDED  ');
 
   if wxLB_HSCROLL  in stdStyle then
     strLst.add('wxLB_HSCROLL ');
@@ -1036,7 +1042,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1063,7 +1069,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1090,7 +1096,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1126,7 +1132,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1176,7 +1182,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1224,7 +1230,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1252,7 +1258,10 @@ begin
 
   if wxNB_MULTILINE in stdStyle then
     strLst.add('wxNB_MULTILINE');
-    
+
+  if wxNB_NOPAGETHEME in stdStyle then
+    strLst.add('wxNB_NOPAGETHEME');
+
   if strLst.Count = 0 then
   begin
     Result := '';
@@ -1264,7 +1273,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1294,7 +1303,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1321,7 +1330,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1377,7 +1386,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1405,7 +1414,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1441,7 +1450,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1493,7 +1502,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1515,6 +1524,9 @@ begin
   if wxOVERWRITE_PROMPT in stdStyle then
     strLst.add('wxOVERWRITE_PROMPT');
 
+  if wxFILE_MUST_EXIST in stdStyle then
+    strLst.add('wxFILE_MUST_EXIST');
+
   if wxMULTIPLE  in stdStyle then
     strLst.add('wxMULTIPLE ');
 
@@ -1533,7 +1545,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1558,13 +1570,13 @@ begin
   end
   else
   begin
-    Result := ' , ';
+    Result := ', ';
     for I := 0 to strLst.count - 1 do // Iterate
     begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1582,6 +1594,12 @@ begin
 
   if wxPD_APP_MODAL in stdStyle then
     strLst.add('wxPD_APP_MODAL');
+
+  if wxPD_SMOOTH in stdStyle then
+    strLst.add('wxPD_SMOOTH');
+
+  if wxPD_CAN_SKIP in stdStyle then
+    strLst.add('wxPD_CAN_SKIP');
 
   if wxPD_AUTO_HIDE in stdStyle then
     strLst.add('wxPD_AUTO_HIDE');
@@ -1604,13 +1622,13 @@ begin
   end
   else
   begin
-    Result := ' , ';
+    Result := ', ';
     for I := 0 to strLst.count - 1 do // Iterate
     begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1662,13 +1680,13 @@ begin
   end
   else
   begin
-    Result := ' , ';
+    Result := ', ';
     for I := 0 to strLst.count - 1 do // Iterate
     begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1704,7 +1722,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1738,13 +1756,13 @@ begin
   end
   else
   begin
-    Result := ' , ';
+    Result := ', ';
     for I := 0 to strLst.count - 1 do // Iterate
     begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1784,7 +1802,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1838,7 +1856,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1852,6 +1870,9 @@ var
 begin
 
   strLst := TStringList.Create;
+  if wxBU_AUTODRAW in stdStyle then
+    strLst.add('wxBU_AUTODRAW');
+
   if wxBU_LEFT in stdStyle then
     strLst.add('wxBU_LEFT');
 
@@ -1867,6 +1888,9 @@ begin
   if wxBU_BOTTOM in stdStyle then
     strLst.add('wxBU_BOTTOM');
 
+   if wxNO_BORDER in stdStyle then
+    strLst.add('wxNO_BORDER');
+
   if strLst.Count = 0 then
   begin
     Result := '';
@@ -1878,7 +1902,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1915,7 +1939,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -1952,17 +1976,23 @@ begin
   if wxTE_NOHIDESEL in edtdStyle then
     strLst.add('wxTE_NOHIDESEL');
 
-  //    if wxTE_LEFT in edtdStyle then
-  //        strLst.add('wxTE_LEFT');
-  //
-  //    if wxTE_CENTRE in edtdStyle then
-  //        strLst.add('wxTE_CENTRE');
-  //
-  //    if wxTE_RIGHT in edtdStyle then
-  //        strLst.add('wxTE_RIGHT');
+  if wxTE_LEFT in edtdStyle then
+     strLst.add('wxTE_LEFT');
+
+  if wxTE_CENTRE in edtdStyle then
+     strLst.add('wxTE_CENTRE');
+
+  if wxTE_RIGHT in edtdStyle then
+        strLst.add('wxTE_RIGHT');
 
   if wxTE_DONTWRAP in edtdStyle then
     strLst.add('wxTE_DONTWRAP');
+
+  if wxTE_BESTWRAP in edtdStyle then
+    strLst.add('wxTE_BESTWRAP');
+
+  if wxTE_CHARWRAP in edtdStyle then
+    strLst.add('wxTE_CHARWRAP');
 
   if wxTE_LINEWRAP in edtdStyle then
     strLst.add('wxTE_LINEWRAP');
@@ -1970,9 +2000,11 @@ begin
   if wxTE_WORDWRAP in edtdStyle then
     strLst.add('wxTE_WORDWRAP');
 
+  if wxTE_CAPITALIZE in edtdStyle then
+    strLst.add('wxTE_CAPITALIZE');
+
   if wxTE_MULTILINE in edtdStyle then
     strLst.add('wxTE_MULTILINE');
-
 
   if strLst.Count = 0 then
   begin
@@ -1985,7 +2017,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -2008,7 +2040,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet; cmbstyle:TWxCmbStyleSet): string;
@@ -2026,7 +2058,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 
@@ -2095,7 +2127,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -2118,7 +2150,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 //Start here
@@ -2137,7 +2169,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;tvstyle:TWxTVStyleSet):String;
@@ -2155,7 +2187,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;rbstyle:TWxrbStyleSet):String;
@@ -2173,7 +2205,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;lbxstyle:TWxlbxStyleSet):String;
@@ -2190,8 +2222,9 @@ begin
       Result := Result + ' | ' + strA
   end;
 
-  if trim(Result) <> '' then
-    Result := ' , ' + Result;
+ // if trim(Result) <> '' then
+ //   Result := ', ' + Result;
+
 end;
 
 function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;gagstyle:TWxgagStyleSet):String;
@@ -2209,7 +2242,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;scbrstyle:TWxsbrStyleSet):String;
@@ -2227,7 +2260,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;sbtnstyle:TWxsbtnStyleSet):String;
@@ -2245,7 +2278,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;sldrstyle:TWxsldrStyleSet):String;
@@ -2263,7 +2296,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 
@@ -2283,7 +2316,7 @@ end;
 //  end;
 //
 //  if trim(Result) <> '' then
-//    Result := ' , ' + Result;
+//    Result := ', ' + Result;
 //end;
 
 function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;calctrlstyle:TWxcalctrlStyleSet):String;
@@ -2301,7 +2334,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 //function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
@@ -2319,7 +2352,7 @@ end;
 //  end;
 //
 //  if trim(Result) <> '' then
-//    Result := ' , ' + Result;
+//    Result := ', ' + Result;
 //end;
 
 function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;nbxstyle:TWxnbxStyleSet):String;
@@ -2337,7 +2370,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;rbxstyle:TWxrbxStyleSet):String;
@@ -2355,7 +2388,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;sbrstyle:TWxsbrStyleSet):String;
@@ -2373,7 +2406,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 //function GetToggleButtonSpecificStyle(stdstyle: TWxStdStyleSet;tbtnstyle:TWxtbtnStyleSet):String;
@@ -2391,7 +2424,7 @@ end;
 //  end;
 //
 //  if trim(Result) <> '' then
-//    Result := ' , ' + Result;
+//    Result := ', ' + Result;
 //end;
 
 function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;scrWinStyle:TWxScrWinStyleSet):String;
@@ -2409,7 +2442,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;htmlWinStyle:TWxHtmlWinStyleSet):String;
@@ -2427,7 +2460,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;SplitterWinStyle:TWxSplitterWinStyleSet):String;
@@ -2445,7 +2478,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;tbrstyle:TWxtbrStyleSet):String;
@@ -2463,7 +2496,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 //End here
@@ -2608,7 +2641,7 @@ begin
       if i <> strLst.count - 1 then
         Result := Result + strLst[i] + ' | '
       else
-        Result := Result + ' ' + strLst[i] + ' ';
+        Result := Result + strLst[i];
     end; // for
   end;
   //sendDebug(Result);
@@ -2631,7 +2664,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 
@@ -2651,7 +2684,7 @@ begin
   end;
 
   if trim(Result) <> '' then
-    Result := ' , ' + Result;
+    Result := ', ' + Result;
 end;
 
 function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
@@ -2723,6 +2756,7 @@ function IsControlWxNonVisible(ctrl:TControl):Boolean;
 begin
     Result:=ctrl is TWxNonVisibleBaseComponent;
 end;
+
 function GetWxIDString(strID: string; intID: LongInt): string;
 begin
   if intID > 0 then
@@ -2734,7 +2768,9 @@ begin
   end
   else
     Result := '-1';
+
 end;
+
 function GetNonVisualComponentCount(frmMainObj:TForm):Integer;
 var
   I: Integer;
@@ -3409,8 +3445,20 @@ end;
 
 function GetCppString(str:String):string;
 begin
-    Result:=str;
-    strSearchReplace(Result,'"','\"',[srAll]);
+
+// If the first character in the text is a &, then
+//    the user wants this to be a literal variable name
+// Otherwise, the user wants this to be a text value
+if (AnsiPos('&', str) <> 1) then
+ begin
+    strSearchReplace(str,'"','\"',[srAll]);
+    Result:='wxT("' + str + '")';
+  end
+else
+ begin
+    Delete(str, 1, 1);
+    result := str;
+  end
 end;
 
 function OpenXPMImage(InpImage:TBitmap;strFname:String):boolean;
