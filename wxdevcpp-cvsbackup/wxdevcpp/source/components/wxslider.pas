@@ -733,9 +733,9 @@ end;
 function TWxSlider.GetSliderRange(value : TWx_SliderRange) : string;
 begin
 Result:='';
-    if  value = wxSEL_RANGE then
+    if  value = wxSL_SELRANGE then
     begin
-      Result := ' | wxSEL_RANGE ';
+      Result := ' | wxSL_SELRANGE ';
       exit;
     end;
 

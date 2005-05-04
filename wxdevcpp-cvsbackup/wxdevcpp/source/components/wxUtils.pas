@@ -183,7 +183,7 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     TWx_SBOrientation = (wxSB_HORIZONTAL, wxSB_VERTICAL);
 
     TWx_SliderOrientation = (wxSL_HORIZONTAL,wxSL_VERTICAL);
-    TWx_SliderRange = (wxSEL_RANGE, wxSL_INVERSE);
+    TWx_SliderRange = (wxSL_SELRANGE, wxSL_INVERSE);
     
     TWxsldrStyleItem = (wxSL_AUTOTICKS , wxSL_LABELS , wxSL_LEFT ,wxSL_RIGHT ,wxSL_TOP);
     TWxsldrStyleSet = Set of TWxsldrStyleItem ;

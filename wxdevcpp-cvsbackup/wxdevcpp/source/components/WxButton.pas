@@ -116,7 +116,7 @@ type
         property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
         property Wx_StretchFactor : Integer read FWx_StretchFactor write FWx_StretchFactor default 0;
-    //	property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
+    	property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
 
         property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
