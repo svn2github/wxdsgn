@@ -53,6 +53,9 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure SetFrameProperties();
+    procedure SetDialogProperties();
+     
   private
     { Private declarations }
     FWxFrm_IDName: string;
@@ -705,6 +708,119 @@ begin
         end;    // for
 
     end;
+end;
+
+procedure TfrmNewForm.SetDialogProperties();
+begin
+
+wx_PropertyList := TStringList.Create;
+  wx_PropertyList.Add('Wx_IDName:IDName');
+  wx_PropertyList.Add('Wx_IDValue:IDValue');
+  wx_PropertyList.Add('Wx_Class:Class');
+  wx_PropertyList.Add('Wx_Center:Center');
+  wx_PropertyList.Add('Wx_HelpText:HelpText');
+  wx_PropertyList.Add('Wx_ToolTips:ToolTips');
+  wx_PropertyList.Add('Wx_Hidden:Hidden');
+  wx_PropertyList.Add('Caption:Title');
+  wx_PropertyList.Add('Height:Height');
+  wx_PropertyList.Add('Width:Width');
+  wx_PropertyList.Add('Left:Left');
+  wx_PropertyList.Add('Top:Top');
+  wx_PropertyList.Add('Font:Font');
+
+  wx_PropertyList.Add('Wx_GeneralStyle:GeneralStyle');
+  wx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+  wx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
+  wx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
+  wx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
+  wx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
+  wx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
+  wx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
+  wx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  wx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
+  wx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
+  wx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
+  wx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+  wx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+  wx_PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
+  wx_PropertyList.Add('wxFULL_REPAINT_ON_RESIZE:wxFULL_REPAINT_ON_RESIZE');
+
+  wx_PropertyList.Add('Wx_DialogStyle:DialogStyle');
+  wx_PropertyList.Add('wxCAPTION:wxCAPTION');
+  wx_PropertyList.Add('wxNO_3D:wxNO_3D');
+  wx_PropertyList.Add('wxRESIZE_BORDER:wxRESIZE_BORDER');
+  wx_PropertyList.Add('wxSYSTEM_MENU:wxSYSTEM_MENU');
+  wx_PropertyList.Add('wxTHICK_FRAME:wxTHICK_FRAME');
+  wx_PropertyList.Add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
+  wx_PropertyList.Add('wxDIALOG_NO_PARENT:wxDIALOG_NO_PARENT');
+  wx_PropertyList.Add('wxDIALOG_EX_CONTEXTHELP:wxDIALOG_EX_CONTEXTHELP');
+  wx_PropertyList.Add('wxMINIMIZE_BOX:wxMINIMIZE_BOX');
+  wx_PropertyList.Add('wxMAXIMIZE_BOX:wxMAXIMIZE_BOX');
+  wx_PropertyList.Add('wxCLOSE_BOX:wxCLOSE_BOX');
+  wx_PropertyList.Add('Wx_Name:Name');
+  wx_PropertyList.Add('Wx_ICON:Icon');
+
+
+end;
+
+procedure TfrmNewForm.SetFrameProperties();
+begin
+
+  wx_PropertyList := TStringList.Create;
+  wx_PropertyList.Add('Wx_IDName:IDName');
+  wx_PropertyList.Add('Wx_IDValue:IDValue');
+  wx_PropertyList.Add('Wx_Class:Class');
+  wx_PropertyList.Add('Wx_Center:Center');
+  wx_PropertyList.Add('Wx_HelpText:HelpText');
+  wx_PropertyList.Add('Wx_ToolTips:ToolTips');
+  wx_PropertyList.Add('Wx_Hidden:Hidden');
+  wx_PropertyList.Add('Caption:Title');
+  wx_PropertyList.Add('Height:Height');
+  wx_PropertyList.Add('Width:Width');
+  wx_PropertyList.Add('Left:Left');
+  wx_PropertyList.Add('Top:Top');
+  wx_PropertyList.Add('Font:Font');
+
+  wx_PropertyList.Add('Wx_GeneralStyle:GeneralStyle');
+  wx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+  wx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
+  wx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
+  wx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
+  wx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
+  wx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
+  wx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
+  wx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  wx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
+  wx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
+  wx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
+  wx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+  wx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+  wx_PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
+  wx_PropertyList.Add('wxFULL_REPAINT_ON_RESIZE:wxFULL_REPAINT_ON_RESIZE');
+
+  wx_PropertyList.Add('Wx_DialogStyle:FrameStyle');
+  wx_PropertyList.Add('wxCAPTION:wxCAPTION');
+  wx_PropertyList.Add('wxNO_3D:wxNO_3D');
+  wx_PropertyList.Add('wxRESIZE_BORDER:wxRESIZE_BORDER');
+  wx_PropertyList.Add('wxSYSTEM_MENU:wxSYSTEM_MENU');
+  wx_PropertyList.Add('wxTHICK_FRAME:wxTHICK_FRAME');
+  wx_PropertyList.Add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
+  wx_PropertyList.Add('wxFRAME_NO_PARENT:wxFRAME_NO_PARENT');
+  wx_PropertyList.Add('wxFRAME_EX_CONTEXTHELP:wxFRAME_EX_CONTEXTHELP');
+  wx_PropertyList.Add('wxMINIMIZE_BOX:wxMINIMIZE_BOX');
+  wx_PropertyList.Add('wxMAXIMIZE_BOX:wxMAXIMIZE_BOX');
+  wx_PropertyList.Add('wxCLOSE_BOX:wxCLOSE_BOX');
+  wx_PropertyList.Add('wxICONIZE:wxICONIZE');
+  wx_PropertyList.Add('wxMINIMIZE:wxMINIMIZE');
+  wx_PropertyList.Add('wxMAXIMIZE:wxMAXIMIZE');
+  wx_PropertyList.Add('wxFRAME_TOOL_WINDOW:wxFRAME_TOOL_WINDOW');
+  wx_PropertyList.Add('wxFRAME_NO_TASKBAR:wxFRAME_NO_TASKBAR');
+  wx_PropertyList.Add('wxFRAME_FLOAT_ON_PARENT:wxFRAME_FLOAT_ON_PARENT');
+  wx_PropertyList.Add('wxFRAME_SHAPED:wxFRAME_SHAPED');
+  wx_PropertyList.Add('Wx_Name:Name');
+  wx_PropertyList.Add('Wx_ICON:Icon');
+
+
 end;
 
 function TfrmNewForm.GetParameterFromEventName(EventName: string): string;
@@ -1389,20 +1505,14 @@ function TfrmNewForm.GetDialogStyleString: string;
 begin
 // This used to be hardcoded as THIS_DIALOG_STYLE
   if (self.Wx_DialogStyle <> []) or (self.Wx_GeneralStyle <> []) then
-     Result := GetDialogSpecificStyle(self.Wx_GeneralStyle, self.Wx_DialogStyle)
+     Result := GetDialogSpecificStyle(self.Wx_GeneralStyle, self.Wx_DialogStyle, self.Wx_Class)
   else
-    Result := '0';
-end;
+    if (strEqual(self.Wx_Class, 'wxDialog')) then
+        Result := 'wxDEFAULT_DIALOG_STYLE'
+    else if (strEqual(self.Wx_Class, 'wxFrame')) then
+        Result := 'wxDEFAULT_FRAME_STYLE';
 
-//function TfrmNewForm.GenerateExtraCodeForFrame:string;
-//var
-//      strLst: TStringList;
-//      I:Integer;
-//begin
-//  strLst := TStringList.Create;
-//    Result:=strLst.text;
-//    strLst.destroy;
-//end;
+end;
 
 function TfrmNewForm.GenerateGUIControlCreation: string;
 var
@@ -1508,6 +1618,7 @@ begin
 
   Result := strLst.text;
   strLst.destroy;
+
 end;
 
 function TfrmNewForm.GenerateGUIControlDeclaration: string;
@@ -1601,50 +1712,7 @@ begin
 
   FWx_ICON:=TPicture.Create;
 
-  wx_PropertyList := TStringList.Create;
-  wx_PropertyList.Add('Wx_IDName:IDName');
-  wx_PropertyList.Add('Wx_IDValue:IDValue');
-  wx_PropertyList.Add('Wx_Class:Class');
-  wx_PropertyList.Add('Wx_Center:Center');
-  wx_PropertyList.Add('Wx_HelpText:HelpText');
-  wx_PropertyList.Add('Wx_ToolTips:ToolTips');
-  wx_PropertyList.Add('Wx_Hidden:Hidden');
-  wx_PropertyList.Add('Caption:Title');
-  wx_PropertyList.Add('Height:Height');
-  wx_PropertyList.Add('Width:Width');
-  wx_PropertyList.Add('Left:Left');
-  wx_PropertyList.Add('Top:Top');
-  wx_PropertyList.Add('Font:Font');
-
-  wx_PropertyList.Add('Wx_GeneralStyle:GeneralStyle');
-  wx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-  wx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-  wx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-  wx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-  wx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  wx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  wx_PropertyList.Add('wxNO_3D:wxNO_3D');
-  wx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  wx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-  wx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-  wx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-  wx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-  wx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-
-  wx_PropertyList.Add('Wx_DialogStyle:DialogStyle');
-  wx_PropertyList.Add('wxCAPTION:wxCAPTION');
-  wx_PropertyList.Add('wxRESIZE_BORDER:wxRESIZE_BORDER');
-  wx_PropertyList.Add('wxSYSTEM_MENU:wxSYSTEM_MENU');
-  wx_PropertyList.Add('wxTHICK_FRAME:wxTHICK_FRAME');
-  wx_PropertyList.Add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
-  wx_PropertyList.Add('wxDIALOG_NO_PARENT:wxDIALOG_NO_PARENT');
-  wx_PropertyList.Add('wxDIALOG_EX_CONTEXTHELP:wxDIALOG_EX_CONTEXTHELP');
-  wx_PropertyList.Add('wxMINIMIZE_BOX:wxMINIMIZE_BOX');
-  wx_PropertyList.Add('wxMAXIMIZE_BOX:wxMAXIMIZE_BOX');
-    wx_PropertyList.Add('wxCLOSE_BOX:wxCLOSE_BOX');
-  wx_PropertyList.Add('Wx_Name:Name');
-  wx_PropertyList.Add('Wx_ICON:Icon');
-
+  SetDialogProperties();
 
   FWx_EventList := TStringList.Create;
   FWx_EventList.add('  EVT_CLOSE: OnClose');
@@ -1705,9 +1773,10 @@ end;
 procedure TfrmNewForm.FormCreate(Sender: TObject);
 var
   hMenuHandle: HMENU;
+
 Begin
   CreateInitVars;
-  if (Self.Handle <> 0) then
+ { if (Self.Handle <> 0) then
   begin
     hMenuHandle := GetSystemMenu(Self.Handle, FALSE);
     if (hMenuHandle <> 0) then
@@ -1716,6 +1785,7 @@ Begin
       DeleteMenu(hMenuHandle, SC_MAXIMIZE, MF_BYCOMMAND);
     end;
   end;
+  }
 end;
 
 procedure TfrmNewForm.FormResize(Sender: TObject);
@@ -1778,13 +1848,15 @@ end;
 
 procedure TfrmNewForm.SetDesignerType(value:TWxDesignerType);
 begin
-    Wx_Class:='wxDialog';
-    
+
+   Wx_Class:='wxDialog';
+
     if value = dtWxFrame then
     begin
         Wx_Class:='wxFrame';
         self.Color:=clAppWorkSpace;
         //self.BorderStyle:=bsSingle;
+        SetFrameProperties();
     end;
 
     if value = dtWxWizard then
@@ -1792,5 +1864,8 @@ begin
         Wx_Class:='wxWizard';
     end;
     FWxDesignerType:=value;
+
+
+
 end;
 end.

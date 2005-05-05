@@ -195,12 +195,12 @@ object MainForm: TMainForm
         TabOrder = 1
         DesignSize = (
           529
-          80)
+          81)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 774
-          Height = 62
+          Height = 64
           Anchors = [akLeft, akTop, akRight, akBottom]
           BevelInner = bvNone
           BevelKind = bkTile
@@ -219,7 +219,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 754
-        Height = 80
+        Height = 81
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -634,7 +634,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 746
-            Height = 27
+            Height = 28
             Align = alClient
             Lines.Strings = (
               'Debugger output')

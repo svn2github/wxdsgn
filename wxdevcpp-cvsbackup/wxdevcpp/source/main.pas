@@ -39,9 +39,9 @@ uses
   CVSFm, ImageTheme
 
   {$IFDEF WX_BUILD}
-  ,JclStrings, JvExControls, JvComponent, TypInfo,JclRTTI,JvStringHolder,
-  ELDsgnr,JvInspector, xprocs,dmCreateNewProp,wxUtils, DbugIntf,
-  wxSizerpanel,Designerfrm, ELPropInsp,uFileWatch, ThemeMgr,ExceptionFilterUnit,
+  , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
+  ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
+  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr, ExceptionFilterUnit,
   DesignerOptions
   {$ENDIF}
   ;
@@ -1112,9 +1112,9 @@ public
 
 {$IFDEF WX_BUILD}
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
-    procedure GetIntialFormData(FCreateFormProp: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet);
-    function CreateSourceCodes(strCppFile,strHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string): Boolean;
-    function CreateAppSourceCodes(strCppFile,strHppFile,strAppCppFile,strAppHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string): Boolean;
+    procedure GetIntialFormData(FCreateFormProp: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType:TWxDesignerType);
+    function CreateSourceCodes(strCppFile,strHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string; dsgnType:TWxDesignerType): Boolean;
+    function CreateAppSourceCodes(strCppFile,strHppFile,strAppCppFile,strAppHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string; dsgnType:TWxDesignerType): Boolean;
     procedure ReadClass;
     procedure CreatePalettePage(PaletteLst:TStringList;PalettePage: string);
     procedure LoadDefaultPalette;
@@ -8254,10 +8254,10 @@ begin
 
   ini.free;
 
-  CreateStatus := CreateSourceCodes(strCppFile,strHppFile,FCreateFormPropObj, strCppCode, strHCode);
+  CreateStatus := CreateSourceCodes(strCppFile,strHppFile,FCreateFormPropObj, strCppCode, strHCode, dsgnType);
   if CreateStatus then
   begin
-    GetIntialFormData(FCreateFormPropObj, strFName, strCName, strFTitle,dlgSStyle);
+    GetIntialFormData(FCreateFormPropObj, strFName, strCName, strFTitle,dlgSStyle, dsgnType);
     CreateStatus := CreateFormFile(strFName, strCName, strFTitle, dlgSStyle,dsgnType);
   end;
 
@@ -8460,11 +8460,11 @@ begin
   // Call CreateAppSourceCodes to replace the keywords in our template files
   //  and create the new project files
   CreateStatus := CreateAppSourceCodes(strCppFile,strHppFile,strAppCppFile,strAppHppFile,FCreateFormPropObj,
-            strCppCode, strHCode, strAppSourceCode, strAppHeaderCode);
+            strCppCode, strHCode, strAppSourceCode, strAppHeaderCode, dsgnType);
 
   if CreateStatus then  // If true, then CreateAppSourceCodes was able to create our project files
   begin
-    GetIntialFormData(FCreateFormPropObj, strFName, strCName, strFTitle,dlgSStyle);
+    GetIntialFormData(FCreateFormPropObj, strFName, strCName, strFTitle,dlgSStyle,dsgnType);
     CreateStatus := CreateFormFile(strFName, strCName, strFTitle, dlgSStyle,dsgnType);
   end;
 
@@ -8578,7 +8578,7 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
-function TMainForm.CreateFormFile(strFName, strCName, strFTitle: string;dlgSStyle: TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
+function TMainForm.CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet; dsgnType:TWxDesignerType): Boolean;
 var
   FNewFormObj: TfrmNewForm;
 begin
@@ -8609,7 +8609,7 @@ end;
 
 {$IFDEF WX_BUILD}
 procedure TMainForm.GetIntialFormData(FCreateFormProp: TfrmCreateFormProp; var
-  strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet);
+  strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType:TWxDesignerType);
 begin
   strCName := Trim(FCreateFormProp.txtClassName.Text);
   strFTitle := Trim(FCreateFormProp.txtTitle.Text);
@@ -8633,8 +8633,9 @@ begin
   if FCreateFormProp.cbStayOnTop.Checked then
     dlgStyle := dlgStyle + [wxSTAY_ON_TOP];
 
-  if FCreateFormProp.cbNoParent.Checked then
-    dlgStyle := dlgStyle + [wxDIALOG_NO_PARENT];
+  if (dsgnType = dtWxDialog) then
+          if FCreateFormProp.cbNoParent.Checked then
+                dlgStyle := dlgStyle + [wxDIALOG_NO_PARENT];
 
   if FCreateFormProp.cbMaxButton.Checked then
     dlgStyle := dlgStyle + [wxMAXIMIZE_BOX];
@@ -8649,7 +8650,7 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
-function TMainForm.CreateSourceCodes(strCppFile,strHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string): Boolean;
+function TMainForm.CreateSourceCodes(strCppFile,strHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string; dsgnType:TWxDesignerType): Boolean;
 var
   strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: string;
   strLstHeaderCode,strLstSourceCode:TStringList;
@@ -8676,8 +8677,9 @@ var
     if FCreateFormProp.cbStayOnTop.checked then
       strLst.add('wxSTAY_ON_TOP');
 
-    if FCreateFormProp.cbNoParent.checked then
-      strLst.add('wxDIALOG_NO_PARENT');
+    if (dsgnType = dtWxDialog) then
+        if FCreateFormProp.cbNoParent.checked then
+                strLst.add('wxDIALOG_NO_PARENT');
 
     if FCreateFormProp.cbMinButton.checked then
       strLst.add('wxMINIMIZE_BOX');
@@ -8690,7 +8692,14 @@ var
 
     if strLst.Count = 0 then
     begin
-      Result := 'wxDEFAULT_DIALOG_STYLE	';
+      if (dsgnType = dtWxDialog) then
+      begin
+        Result := 'wxDEFAULT_DIALOG_STYLE';
+      end;
+      if (dsgnType = dtWxFrame) then
+      begin
+        Result := 'wxDEFAULT_FRAME_STYLE';
+      end;
     end
     else
     begin
@@ -8764,7 +8773,7 @@ end;
 {$ENDIF}
 
 {$IFDEF WX_BUILD}
-function TMainForm.CreateAppSourceCodes(strCppFile,strHppFile, strAppCppFile, strAppHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string): Boolean;
+function TMainForm.CreateAppSourceCodes(strCppFile,strHppFile, strAppCppFile, strAppHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string; dsgnType:TWxDesignerType): Boolean;
 // This is scavenged from TMainForm.CreateSourceCodes (above)
 // It uses the template files passed to it through the file names contained in
 // strCppFile,strHppFile, strAppCppFile, and strAppHppFile to create new
@@ -8798,8 +8807,9 @@ var
     if FCreateFormProp.cbStayOnTop.checked then
       strLst.add('wxSTAY_ON_TOP');
 
-    if FCreateFormProp.cbNoParent.checked then
-      strLst.add('wxDIALOG_NO_PARENT');
+    if (dsgnType = dtWxDialog) then
+        if FCreateFormProp.cbNoParent.checked then
+                strLst.add('wxDIALOG_NO_PARENT');
 
     if FCreateFormProp.cbMinButton.checked then
       strLst.add('wxMINIMIZE_BOX');
@@ -8812,7 +8822,11 @@ var
 
     if strLst.Count = 0 then
     begin
-      Result := 'wxDEFAULT_DIALOG_STYLE	';
+        if (dsgnType = dtWxDialog) then
+          Result := 'wxDEFAULT_DIALOG_STYLE';
+
+        if (dsgnType = dtWxFrame) then
+          Result := 'wxDEFAULT_FRAME_STYLE';
     end
     else
     begin

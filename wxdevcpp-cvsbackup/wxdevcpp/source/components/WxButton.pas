@@ -210,7 +210,6 @@ begin
      FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
      FWx_PropertyList.add('Font : Font');
      FWx_PropertyList.add('Wx_ButtonStyle:Button Style');
-     FWx_PropertyList.add('wxNO_BORDER:wxNO_BORDER');
      FWx_PropertyList.add('wxBU_LEFT:wxBU_LEFT');
      FWx_PropertyList.add('wxBU_TOP:wxBU_TOP');
      FWx_PropertyList.add('wxBU_RIGHT:wxBU_RIGHT');

@@ -127,13 +127,13 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     end;
 
     TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
-                       wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW, wxNO_3D,
+                       wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW,
                        wxTAB_TRAVERSAL, wxWANTS_CHARS, wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
-                       wxHSCROLL, wxCLIP_CHILDREN);
+                       wxHSCROLL, wxCLIP_CHILDREN, wxNO_BORDER, wxALWAYS_SHOW_SB, wxFULL_REPAINT_ON_RESIZE);
     TWxStdStyleSet = set of TWxStdStyleItem;
 
     TWxBtnStyleItem = (wxBU_AUTODRAW, wxBU_LEFT, wxBU_TOP, wxBU_RIGHT, wxBU_BOTTOM,
-                        wxBU_EXACTFIT, wxNO_BORDER);
+                        wxBU_EXACTFIT);
     TWxBtnStyleSet = set of TWxBtnStyleItem;
 
     TWxLbStyleItem = (wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_CENTRE,
@@ -151,7 +151,11 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
 
     TWxDlgStyleItem = (wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME,
                         wxSTAY_ON_TOP, wxDIALOG_NO_PARENT, wxDIALOG_EX_CONTEXTHELP, wxMINIMIZE_BOX,
-                        wxMAXIMIZE_BOX,wxCLOSE_BOX);
+                        wxMAXIMIZE_BOX, wxCLOSE_BOX, wxNO_3D,
+                       wxDEFAULT_DIALOG_STYLE, wxDEFAULT_FRAME_STYLE,
+                       wxMINIMIZE, wxMAXIMIZE, wxFRAME_TOOL_WINDOW,
+                       wxFRAME_NO_TASKBAR, wxFRAME_FLOAT_ON_PARENT,
+                       wxFRAME_EX_CONTEXTHELP, wxFRAME_SHAPED);
     TWxDlgStyleSet = set of TWxDlgStyleItem;
 
     //newly Added
@@ -209,7 +213,6 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
                     wxTB_NOICONS , wxTB_NODIVIDER, wxTB_NOALIGN ,wxTB_HORZ_LAYOUT,
                   wxTB_HORZ_TEXT );
     TWxtbrStyleSet = Set of TWxtbrStyleItem ;
-
 
     TWxLVStyleItem = (wxLC_LIST, wxLC_REPORT, wxLC_VIRTUAL, wxLC_ICON,
                       wxLC_SMALL_ICON, wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
@@ -448,7 +451,7 @@ function GetEditSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxEdtGeneralSt
 function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxBtnStyleSet): string;
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:  TWxLbStyleSet): string;
 function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet; cmbstyle:TWxCmbStyleSet): string;
-function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxDlgStyleSet): string;
+function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:TWxDlgStyleSet; wxclassname : string): string;
 
 function SizerAlignmentToStr(SizerVerticalAlignment:TWxSizerVerticalAlignment):String;overload;
 function SizerAlignmentToStr(SizerHorizontalAlignment:TWxSizerHorizontalAlignment):String;overload;
@@ -1799,7 +1802,7 @@ begin
   strLst.destroy;
 end;
 
-function GetDlgStyleString(stdStyle: TWxDlgStyleSet): string;
+function GetDlgStyleString(stdStyle: TWxDlgStyleSet; wxclassname : string): string;
 var
   I: Integer;
   strLst: TStringList;
@@ -1820,11 +1823,15 @@ begin
   if wxSTAY_ON_TOP in stdStyle then
     strLst.add('wxSTAY_ON_TOP');
 
+  if strEqual(wxclassname, 'wxDialog') then
   if wxDIALOG_NO_PARENT in stdStyle then
     strLst.add('wxDIALOG_NO_PARENT');
 
   if wxDIALOG_EX_CONTEXTHELP in stdStyle then
     strLst.add('wxDIALOG_EX_CONTEXTHELP');
+
+  if wxFRAME_EX_CONTEXTHELP in stdStyle then
+    strLst.add('wxFRAME_EX_CONTEXTHELP');
 
   if wxMINIMIZE_BOX in stdStyle then
     strLst.add('wxMINIMIZE_BOX');
@@ -1834,6 +1841,27 @@ begin
 
   if wxCLOSE_BOX  in stdStyle then
     strLst.add('wxCLOSE_BOX');
+
+  if wxNO_3D in stdStyle then
+    strLst.add('wxNO_3D');
+
+  if wxMINIMIZE in stdStyle then
+    strLst.add('wxMINIMIZE');
+
+  if wxMAXIMIZE in stdStyle then
+    strLst.add('wxMAXIMIZE');
+
+  if wxFRAME_TOOL_WINDOW in stdStyle then
+    strLst.add('wxFRAME_TOOL_WINDOW');
+
+  if wxFRAME_NO_TASKBAR in stdStyle then
+    strLst.add('wxFRAME_NO_TASKBAR');
+
+  if wxFRAME_FLOAT_ON_PARENT in stdStyle then
+    strLst.add('wxFRAME_FLOAT_ON_PARENT');
+
+  if wxFRAME_SHAPED in stdStyle then
+    strLst.add('wxFRAME_SHAPED');
 
   if strLst.Count = 0 then
   begin
@@ -1877,9 +1905,6 @@ begin
 
   if wxBU_BOTTOM in stdStyle then
     strLst.add('wxBU_BOTTOM');
-
-   if wxNO_BORDER in stdStyle then
-    strLst.add('wxNO_BORDER');
 
   if strLst.Count = 0 then
   begin
@@ -2598,9 +2623,6 @@ begin
   if wxTRANSPARENT_WINDOW in stdStyle then
     strLst.add('wxTRANSPARENT_WINDOW');
 
-  if wxNO_3D in stdStyle then
-    strLst.add('wxNO_3D');
-
   if wxTAB_TRAVERSAL in stdStyle then
     strLst.add('wxTAB_TRAVERSAL');
 
@@ -2618,6 +2640,15 @@ begin
 
   if wxCLIP_CHILDREN in stdStyle then
     strLst.add('wxCLIP_CHILDREN');
+
+  if wxNO_BORDER in stdStyle then
+    strLst.add('wxNO_BORDER');
+
+  if wxALWAYS_SHOW_SB in stdStyle then
+    strLst.add('wxALWAYS_SHOW_SB');
+
+  if wxFULL_REPAINT_ON_RESIZE in stdStyle then
+    strLst.add('wxFULL_REPAINT_ON_RESIZE');
 
   if strLst.Count = 0 then
   begin
@@ -2677,12 +2708,12 @@ begin
 end;
 
 function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle:
-  TWxDlgStyleSet): string;
+  TWxDlgStyleSet; wxclassname : string): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA := trim(GetDlgStyleString(dlgstyle));
+  strA := trim(GetDlgStyleString(dlgstyle, wxclassname));
   if strA <> '' then
   begin
     if trim(Result) = '' then
