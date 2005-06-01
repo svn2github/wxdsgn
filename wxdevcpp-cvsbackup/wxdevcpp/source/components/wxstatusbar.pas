@@ -45,6 +45,7 @@ type
         FWx_Hidden: Boolean;
         FWx_HelpText: String;
         FWx_Border: Integer;
+        FWx_Comments : TStrings;
 
       { Private methods of TWxStatusBar }
         procedure AutoInitialize;
@@ -124,6 +125,7 @@ type
         property Wx_HelpText : String read FWx_HelpText write FWx_HelpText;
         property Wx_Enabled : Boolean read FWx_Enabled write FWx_Enabled;
         property Wx_Border : Integer read FWx_Border write FWx_Border default 5;        
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -151,6 +153,7 @@ begin
      FWx_StretchFactor := 0;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
      FWx_Enabled:=true;
+     FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -231,6 +234,7 @@ begin
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
     FWx_PropertyList.add('wxST_SIZEGRIP:wxST_SIZEGRIP');
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
@@ -262,7 +266,7 @@ function TWxStatusBar.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStatusBar.GenerateControlIDs:String;
@@ -321,11 +325,9 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+   strStyle:=GetScrollbarSpecificStyle(self.Wx_GeneralStyle,Wx_StatusbarStyleSet);
 
-
-    strStyle:=GetScrollbarSpecificStyle(self.Wx_GeneralStyle,Wx_StatusbarStyleSet);
-
-    Result:=Format('%s = new %s(%s, %s%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strStyle] );
 
     if self.Panels.Count > 0  then
     begin

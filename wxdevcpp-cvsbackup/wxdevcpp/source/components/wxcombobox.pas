@@ -66,12 +66,15 @@ type
         FWx_StretchFactor : Integer;
         { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
+        FWx_Validator : String;
         { Storage for property Wx_VerticalAlignment }
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxComboBox }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -164,6 +167,8 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment read FWx_VerticalAlignment write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -195,6 +200,8 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -289,6 +296,9 @@ begin
      FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
      FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
 
+     FWx_PropertyList.Add('Wx_Validator : Validator code');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
      FWx_PropertyList.add('Font : Font');
 
      FWx_PropertyList.add('Checked : Checked');
@@ -296,7 +306,6 @@ begin
 
      FWx_PropertyList.add('wxRB_GROUP:wxRB_GROUP');
      FWx_PropertyList.add('wxRB_SINGLE:wxRB_SINGLE');
-
 
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
@@ -333,7 +342,7 @@ function TWxComboBox.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxComboBox.GenerateControlIDs:String;
@@ -377,7 +386,7 @@ begin
     parentName:=GetWxWidgetParent(self);
     strStyle:=GetcomboBoxSpecificStyle(Wx_GeneralStyle,Wx_ComboboxStyle);
 
-    Result:='wxArrayString arrayStringFor_'+self.Name+';';
+    Result:= GetCommentString(self.FWx_Comments.Text) + 'wxArrayString arrayStringFor_'+self.Name+';';
 
     for i:= 0 to self.Items.count -1 Do
     begin
@@ -385,6 +394,12 @@ begin
     end;
 
     //Last comma is removed because it depends on the user selection of the properties.
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+   
     Result:=Result +#13+Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,'arrayStringFor_'+self.Name,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then

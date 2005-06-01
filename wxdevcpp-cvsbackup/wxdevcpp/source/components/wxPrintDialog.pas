@@ -21,6 +21,7 @@ type
         FWx_PrintToFile:Boolean;
         FWx_Selection:Boolean;
         FWx_ToPage:Integer;
+        FWx_Comments : TStrings;
 
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -66,6 +67,7 @@ type
         property Wx_PrintToFile:Boolean read  FWx_PrintToFile write FWx_PrintToFile;
         property Wx_Selection:Boolean read FWx_Selection write FWx_Selection;
         property Wx_ToPage:Integer read FWx_ToPage write FWx_ToPage;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
   end;
 
 procedure Register;
@@ -82,6 +84,7 @@ procedure TWxPrintDialog.AutoInitialize;
 begin
      FWx_PropertyList := TStringList.Create;
      FWx_Class := 'wxPrintDialog';
+     FWx_Comments := TStringList.Create;
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxPrintDialog');
 end; { of AutoInitialize }
 
@@ -110,6 +113,7 @@ begin
      FWx_PropertyList.add('Wx_PrintToFile:PrintToFile');
      FWx_PropertyList.add('Wx_Selection:Selection');
      FWx_PropertyList.add('Wx_ToPage:To Page');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 end;
 
 destructor TWxPrintDialog.Destroy;
@@ -146,7 +150,7 @@ function TWxPrintDialog.GenerateGUIControlCreation:String;
 begin
 
     Result:='';
-    Result:= self.Name+'_Data = new wxPrintDialogData();' ;
+    Result:= GetCommentString(self.FWx_Comments.Text) +  self.Name+'_Data = new wxPrintDialogData();' ;
     Result:=Result+#13+self.Name+'_Data->SetFromPage('+IntToStr(Wx_FromPage)+');' ;
     Result:=Result+#13+self.Name+'_Data->SetMaxPage('+IntToStr(Wx_MaxPage)+');' ;
     Result:=Result+#13+self.Name+'_Data->SetMinPage('+IntToStr(Wx_MinPage)+');' ;

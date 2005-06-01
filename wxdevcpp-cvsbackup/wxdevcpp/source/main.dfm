@@ -1,8 +1,8 @@
 object MainForm: TMainForm
-  Left = 251
-  Top = 132
-  Width = 774
-  Height = 540
+  Left = 273
+  Top = 173
+  Width = 638
+  Height = 444
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -27,7 +27,7 @@ object MainForm: TMainForm
     Left = 209
     Top = 100
     Width = 4
-    Height = 258
+    Height = 162
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -35,8 +35,8 @@ object MainForm: TMainForm
   end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 358
-    Width = 766
+    Top = 262
+    Width = 630
     Height = 4
     Cursor = crVSplit
     Align = alBottom
@@ -44,10 +44,10 @@ object MainForm: TMainForm
     OnMoved = SplitterBottomMoved
   end
   object SplitterRight: TSplitter
-    Left = 596
+    Left = 460
     Top = 100
     Width = 3
-    Height = 258
+    Height = 162
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -56,8 +56,8 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 362
-    Width = 766
+    Top = 266
+    Width = 630
     Height = 113
     ActivePage = CompSheet
     Align = alBottom
@@ -77,7 +77,7 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 754
+        Width = 618
         Height = 81
         Align = alClient
         BevelOuter = bvRaised
@@ -115,7 +115,7 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 754
+        Width = 618
         Height = 80
         Align = alClient
         BevelKind = bkSoft
@@ -188,18 +188,18 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 529
+        Width = 393
         Height = 80
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          529
-          81)
+          393
+          80)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 774
+          Width = 638
           Height = 64
           Anchors = [akLeft, akTop, akRight, akBottom]
           BevelInner = bvNone
@@ -218,8 +218,8 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 754
-        Height = 81
+        Width = 618
+        Height = 80
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -599,7 +599,7 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 746
+            Width = 610
             Height = 49
             Align = alClient
             Columns = <
@@ -633,8 +633,8 @@ object MainForm: TMainForm
           object DebugOutput: TMemo
             Left = 0
             Top = 22
-            Width = 746
-            Height = 28
+            Width = 610
+            Height = 27
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -645,7 +645,7 @@ object MainForm: TMainForm
           object GdbOutputPanel: TPanel
             Left = 0
             Top = 0
-            Width = 746
+            Width = 610
             Height = 22
             Align = alTop
             BevelOuter = bvNone
@@ -685,7 +685,7 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 754
+        Width = 618
         Height = 80
         Align = alClient
         BevelOuter = bvRaised
@@ -736,7 +736,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar
     Left = 0
     Top = 16
-    Width = 766
+    Width = 630
     Height = 84
     Align = alTop
     AutoDock = False
@@ -1111,8 +1111,8 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 475
-    Width = 766
+    Top = 379
+    Width = 630
     Height = 19
     Panels = <
       item
@@ -1134,8 +1134,8 @@ object MainForm: TMainForm
   object PageControl: TPageControl
     Left = 213
     Top = 100
-    Width = 383
-    Height = 258
+    Width = 247
+    Height = 162
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1148,7 +1148,7 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 766
+    Width = 630
     Height = 16
     Align = alTop
     BevelOuter = bvNone
@@ -1158,10 +1158,10 @@ object MainForm: TMainForm
     TabOrder = 4
     Visible = False
     DesignSize = (
-      766
+      630
       16)
     object btnFullScrRevert: TSpeedButton
-      Left = 751
+      Left = 615
       Top = 0
       Width = 14
       Height = 14
@@ -1192,10 +1192,10 @@ object MainForm: TMainForm
     OnNotifyChange = devFileMonitor1NotifyChange
   end
   object pnlControlHolder: TPanel
-    Left = 599
+    Left = 463
     Top = 100
     Width = 167
-    Height = 258
+    Height = 162
     Align = alRight
     TabOrder = 6
     Visible = False
@@ -1204,7 +1204,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 100
     Width = 209
-    Height = 258
+    Height = 162
     Align = alLeft
     DockSite = True
     TabOrder = 7
@@ -3271,21 +3271,25 @@ object MainForm: TMainForm
     object actDesignerCopy: TAction
       Category = 'Designer'
       Caption = 'Copy'
+      ShortCut = 49219
       OnExecute = actDesignerCopyExecute
     end
     object actDesignerCut: TAction
       Category = 'Designer'
       Caption = 'Cut'
+      ShortCut = 49240
       OnExecute = actDesignerCutExecute
     end
     object actDesignerPaste: TAction
       Category = 'Designer'
       Caption = 'Paste'
+      ShortCut = 49238
       OnExecute = actDesignerPasteExecute
     end
     object actDesignerDelete: TAction
       Category = 'Designer'
       Caption = 'Delete'
+      ShortCut = 16430
       OnExecute = actDesignerDeleteExecute
     end
     object actNewWxFrame: TAction
@@ -3293,6 +3297,30 @@ object MainForm: TMainForm
       Caption = 'New wxFrame'
       ImageIndex = 1
       OnExecute = actNewWxFrameExecute
+    end
+    object actWxPropertyInspectorCut: TAction
+      Category = 'Designer'
+      Caption = 'Cut'
+      ShortCut = 16472
+      OnExecute = actWxPropertyInspectorCutExecute
+    end
+    object actWxPropertyInspectorCopy: TAction
+      Category = 'Designer'
+      Caption = 'Copy'
+      ShortCut = 16451
+      OnExecute = actWxPropertyInspectorCopyExecute
+    end
+    object actWxPropertyInspectorPaste: TAction
+      Category = 'Designer'
+      Caption = 'Paste'
+      ShortCut = 16470
+      OnExecute = actWxPropertyInspectorPasteExecute
+    end
+    object actWxPropertyInspectorDelete: TAction
+      Category = 'Designer'
+      Caption = 'Delete'
+      ShortCut = 46
+      OnExecute = actWxPropertyInspectorDeleteExecute
     end
   end
   object ApplicationEvents1: TApplicationEvents

@@ -22,6 +22,7 @@ type
         FWx_Extensions: String;
         FWx_DefaultFile: String;
         FWx_DefaultDir: String;
+        FWx_Comments : TStrings;
 
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -68,7 +69,8 @@ type
         property Wx_Extensions: String read FWx_Extensions write FWx_Extensions;
         property Wx_DefaultFile: String read FWx_DefaultFile write FWx_DefaultFile;
         property Wx_DefaultDir: String read FWx_DefaultDir write FWx_DefaultDir;
-    
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -84,6 +86,8 @@ procedure TWxSaveDialog.AutoInitialize;
 begin
      FWx_PropertyList := TStringList.Create;
      FWx_Class := 'wxFileDialog';
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -113,6 +117,7 @@ begin
      FWx_PropertyList.add('Wx_IDValue : IDValue ');
      FWx_PropertyList.add('Name : Name');
      FWx_PropertyList.add('Wx_MenuItems: Menu Items');
+     FWx_PropertyList.add('Wx_Comments:Comments');
      
 end;
 
@@ -136,7 +141,7 @@ function TWxSaveDialog.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxSaveDialog.GenerateControlIDs:String;
@@ -164,7 +169,7 @@ begin
     //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
-    Result:=Format('%s =  new %s(%s, %s, %s", wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= '/*' + self.FWx_Comments.Text + '*/' + #13 + Format('%s =  new %s(%s, %s, %s", wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if self.Wx_Hidden then
         Result:=Result + #13+Format('%s->Show(false);',[self.Name]);

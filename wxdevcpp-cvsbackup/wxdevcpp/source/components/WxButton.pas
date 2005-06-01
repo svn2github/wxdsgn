@@ -42,7 +42,9 @@ type
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
-        FInvisibleFGColorString : String;        
+        FInvisibleFGColorString : String;
+        FWx_Validator : String;
+        FWx_Comments : TStrings;
 
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -117,11 +119,14 @@ type
         property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
         property Wx_StretchFactor : Integer read FWx_StretchFactor write FWx_StretchFactor default 0;
     	property Wx_StrechFactor : Integer read FWx_StretchFactor write FWx_StretchFactor;
-
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
         property Wx_ToolTip : String read FWx_ToolTip write FWx_ToolTip;
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
              read FWx_VerticalAlignment write FWx_VerticalAlignment
              default wxSZALIGN_CENTER_VERTICAL;
+
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
 
@@ -156,6 +161,9 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -218,7 +226,10 @@ begin
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+     FWx_PropertyList.add('Wx_Validator : Validator code');
      FWx_PropertyList.add('Default   : Default');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_EventList.add('EVT_BUTTON:OnClick');
      FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -273,7 +284,13 @@ begin
     strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
     parentName:=GetWxWidgetParent(self);
 
-    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
+    if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+           
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

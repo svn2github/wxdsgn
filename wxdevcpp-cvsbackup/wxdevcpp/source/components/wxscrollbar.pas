@@ -62,6 +62,9 @@ type
         FWx_HelpText : String;
         { Storage for property Wx_Hidden }
         FWx_Hidden : Boolean;
+        FWx_Validator : String;
+        FWx_Comments : TStrings;
+
         { Storage for property Wx_HorizontalAlignment }
         FWx_HorizontalAlignment : TWxSizerHorizontalAlignment;
         { Storage for property Wx_IDName }
@@ -176,6 +179,7 @@ type
              read FWx_Border write FWx_Border
              default 5;
         property Wx_Class : String read FWx_Class write FWx_Class;
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
         property Wx_ControlOrientation : TWxControlOrientation
              read FWx_ControlOrientation write FWx_ControlOrientation;
         property Wx_Enabled : Boolean read FWx_Enabled write FWx_Enabled;
@@ -208,6 +212,8 @@ type
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Wx_SBOrientation : TWx_SBOrientation read FWx_SBOrientation write FWx_SBOrientation;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -236,6 +242,7 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -308,6 +315,8 @@ begin
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
 
+     FWx_PropertyList.add('Wx_Validator : Validator code');
+
      FWx_PropertyList.add('Wx_SBOrientation : Orientation');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
@@ -340,6 +349,8 @@ begin
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
 
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
     FWx_EventList.add('EVT_SCROLLBAR : OnUpdated' );
     FWx_EventList.add('EVT_COMMAND_SCROLL   :  OnScroll' );
@@ -473,7 +484,13 @@ begin
 
     strStyle := GetSBOrientation(self.Wx_SBOrientation) + strStyle;
 
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
@@ -710,14 +727,12 @@ Result:='';
     if  Wx_SBOrientation = wxSB_VERTICAL then
     begin
         Result:= ', wxSB_VERTICAL';
-             self.SaveControlOrientation(wxControlVertical);
-              exit;
+        self.Kind := sbVertical;
     end;
      if  Wx_SBOrientation = wxSB_HORIZONTAL then
     begin
         Result:= ', wxSB_HORIZONTAL';
-        self.SaveControlOrientation(wxControlHorizontal);
-           exit;
+        self.Kind := sbHorizontal;
     end;
 
 end;

@@ -53,6 +53,8 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxGridSizer }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -153,6 +155,8 @@ type
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
 
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -181,6 +185,8 @@ begin
      FWx_IDValue := -1;
      FWx_StretchFactor := 0;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -276,6 +282,8 @@ begin
      FWx_PropertyList.add('RowSpacing : RowSpacing');
      FWx_PropertyList.add('ColumnSpacing : ColumnSpacing');
 
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
@@ -326,7 +334,7 @@ var
      parentName:String;
 begin
 
-    Result:=Format('wxGridSizer* %s = new wxGridSizer(%d,%d,%d,%d);',[self.Name,self.rows,self.columns,self.rowSpacing,self.columnSpacing]);
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('wxGridSizer* %s = new wxGridSizer(%d,%d,%d,%d);',[self.Name,self.rows,self.columns,self.rowSpacing,self.columnSpacing]);
     if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent)) )then
     begin
         if (self.Parent is TForm) then

@@ -30,7 +30,7 @@ interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, StrUtils,Classes, Controls,
   Forms, Graphics, Stdctrls, Dialogs, ComCtrls, ExtCtrls,dmListview,
-  UPicEdit,xprocs,DbugIntf,TypInfo,Menus,UStatusbar,JvInspector;
+  UPicEdit,xprocs,DbugIntf,TypInfo,Menus,UStatusbar,JvInspector; 
 
 const
   IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
@@ -283,6 +283,14 @@ TWxColorString = class
         property strColorValue:String read FstrColorValue write FstrColorValue;
 end;
 
+// Added 11 May 2005 - Tony
+TWxFileNameString = class
+      public
+        FstrFileNameValue:String;
+    published
+        property strFileNameValue:String read FstrFileNameValue write FstrFileNameValue;
+end;
+
   TWxJvInspectorTStringsItem = class(TJvCustomInspectorItem)
   protected
     procedure ContentsChanged(Sender: TObject);
@@ -308,6 +316,15 @@ end;
     class procedure RegisterAsDefaultItem;
   end;
 
+  // Added 11 May 2005 by Tony
+  TJvInspectorFileNameEditItem = class(TJvCustomInspectorItem)
+  protected
+    procedure Edit; override;
+    function GetDisplayValue: string; override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
 
   TJvInspectorListItemsItem = class(TJvCustomInspectorItem)
   protected
@@ -419,7 +436,6 @@ function GetMessageDialogStyleString(stdStyle:TWxMessageDialogStyleSet):String;
 function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet):String;
 function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet):String;
 
-
 //Todo :
 function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;cbxstyle:TWxcbxStyleSet):String;
 function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;tvstyle:TWxTvStyleSet):String;
@@ -480,6 +496,7 @@ function GetXPMFromTPictureXXX(XPMName:String;delphiBitmap:TBitmap):String;
 function GenerateXPMDirectly(bmp:TBitmap;strCompName:String;strFileName:String):boolean;
 function OpenXPMImage(InpImage:TBitmap;strFname:String):boolean;
 function GetCppString(str:String):string;
+function GetCommentString(str:String):string;
 
 function GetWxFontDeclaration(fnt:TFont):String;
 
@@ -3463,21 +3480,30 @@ begin
 
 end;
 
+function GetCommentString(str:String):string;
+begin
+   if (trim(str) <> '') then
+    Result := '/* ' + str + ' */' + #13
+   else
+     Result:= ' ';
+
+end;
+
 function GetCppString(str:String):string;
 begin
 
 // If the first character in the text is a &, then
 //    the user wants this to be a literal variable name
 // Otherwise, the user wants this to be a text value
-if (AnsiPos('&', str) <> 1) then
- begin
-    strSearchReplace(str,'"','\"',[srAll]);
-    Result:='wxT("' + str + '")';
+if (AnsiPos('&&', str) = 1) then
+   begin
+    Delete(str, 1, 2);
+    Result := str;
   end
 else
- begin
-    Delete(str, 1, 1);
-    result := str;
+  begin
+    strSearchReplace(str,'"','\"',[srAll]);
+    Result:='wxT("' + str + '")';
   end
 end;
 
@@ -4522,6 +4548,15 @@ begin
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxColorString)));
   end;
 end;
+
+class procedure TJvInspectorFileNameEditItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxFileNameString)));
+  end;
+end;
 //-------------------------------------------------------------------------------
 
 
@@ -5029,6 +5064,62 @@ begin
     if IndexOf(Self) = -1 then
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxCustomMenuItem)));
   end;
+end;
+
+procedure TJvInspectorFileNameEditItem.Edit;
+var
+  FileOpenForm: TOpenDialog;
+  strFileNameValue:String;
+  WxFileNameString : TWxFileNameString;
+  compIntf: IWxComponentInterface;
+begin
+
+  WxFileNameString := TWxFileNameString(Data.AsOrdinal);
+
+  FileOpenForm := TOpenDialog.Create(GetParentForm(Inspector));
+  FileOpenForm.Filter := 'All files (*.*)|*.*';
+
+  if (FileOpenForm.Execute) then // If a file is selected
+       WxFileNameString.FstrFileNameValue := FileOpenForm.FileName
+   else  // If Cancel is pushed, then remove file to load
+      WxFileNameString.FstrFileNameValue := '';
+
+ // if strEqual(UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName), UpperCase('TWxMemo')) then
+ //       TWxMemo(TJvInspectorPropData(Self.GetData()).Instance).SetWxFileName(WxFileNameString.FstrFileNameValue);
+
+ // Tony 15 May 2005
+ // Unfortunately, I need to do the OnDataValueChanged twice to get the
+ // wxform to update. Problem is that I need to invoke SetWxFileName procedure
+ // in the calling function (at this point WxMemo). The 2 lines above should
+ // do this (TWxMemo(...)), but I compiler complains that it can't find TWxMemo
+  if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+  begin
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+        TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
+  end;
+
+
+end;
+
+function TJvInspectorFileNameEditItem.GetDisplayValue: string;
+var
+  WxFileNameString : TWxFileNameString;
+begin
+
+  WxFileNameString := TWxFileNameString(Data.AsOrdinal);
+
+  Result := 'File to load';
+
+  if trim(WxFileNameString.FstrFileNameValue) <> '' then
+        Result := WxFileNameString.FstrFileNameValue;
+end;
+
+procedure TJvInspectorFileNameEditItem.SetFlags(const Value: TInspectorItemFlags);
+var
+  NewValue: TInspectorItemFlags;
+begin
+  NewValue := Value + [iifEditButton];
+  inherited SetFlags(NewValue);
 end;
 
 end.

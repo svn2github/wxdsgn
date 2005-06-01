@@ -78,6 +78,8 @@ type
         FWx_StretchFactor : Integer;
         { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
+        FWx_Comments : TStrings;
+
         { Storage for property Wx_VerticalAlignment }
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
@@ -216,6 +218,7 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment read FWx_VerticalAlignment write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -247,6 +250,7 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -412,6 +416,8 @@ begin
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
      FWx_PropertyList.Add('Wx_RowCount:Row Count');
      FWx_PropertyList.Add('Wx_ColCount:Column Count');
      FWx_PropertyList.Add('DefaultColWidth:Column Width');
@@ -446,7 +452,6 @@ begin
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
 
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
-
 
     FWx_EventList.add('EVT_GRID_CELL_LEFT_CLICK:OnCellLeftClick');
     FWx_EventList.add('EVT_GRID_CELL_RIGHT_CLICK:OnCellRightClick');
@@ -511,7 +516,7 @@ function TWxGrid.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxGrid.GenerateControlIDs:String;
@@ -617,11 +622,9 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+   strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
 
-       
-    strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
-
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text)+ Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

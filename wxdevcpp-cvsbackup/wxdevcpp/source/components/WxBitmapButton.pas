@@ -39,6 +39,8 @@ type
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
 
+        FWx_Comments : TStrings;
+
       { Private methods of TWxButton }
 
         procedure AutoInitialize;
@@ -122,6 +124,8 @@ type
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Color;
         property Wx_BITMAP: TPicture read FWx_BITMAP write SetButtonBitmap;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -150,6 +154,8 @@ begin
      defaultFGColor:=self.font.color;
      Caption:='';
      FWx_Bitmap:=TPicture.Create;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 
@@ -174,6 +180,8 @@ begin
 
     AutoInitialize;
     self.Caption:='';
+
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
     FWx_PropertyList.add('wx_Class:Base Class');
     FWx_PropertyList.add('Wx_Hidden :Hidden');
@@ -281,7 +289,7 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-    Result:='wxBitmap '+self.Name+'_BITMAP'+' (wxNullBitmap);';
+    Result:= GetCommentString(self.FWx_Comments.Text) + 'wxBitmap '+self.Name+'_BITMAP'+' (wxNullBitmap);';
 
     if assigned(Wx_Bitmap) then
     begin

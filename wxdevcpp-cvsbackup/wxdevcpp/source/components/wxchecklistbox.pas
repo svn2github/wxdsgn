@@ -45,9 +45,13 @@ type
         FWx_ProxyFGColorString : TWxColorString;
         FWx_StretchFactor : Integer;
         FWx_ToolTip : String;
+        FWx_Validator : String;
+
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
+
+        FWx_Comments : TStrings;
 
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
@@ -143,6 +147,7 @@ type
              read FWx_ListboxStyle write FWx_ListboxStyle;
        property Wx_ListboxSubStyle : TWxLBxStyleSubItem
              read FWx_ListboxSubStyle write FWx_ListboxSubStyle;
+       property Wx_Validator : String read FWx_Validator write FWx_Validator;
        property Wx_ProxyBGColorString : TWxColorString
              read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString
@@ -155,7 +160,7 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
-
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -182,6 +187,8 @@ begin
      FWx_IDValue := -1;
      FWx_StretchFactor := 0;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -254,6 +261,9 @@ begin
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
 
+     FWx_PropertyList.Add('Wx_Validator : Validator code');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
@@ -321,7 +331,7 @@ function TWxCheckListBox.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxCheckListBox.GenerateControlIDs:String;
@@ -378,7 +388,13 @@ begin
     else
        strStyle := GetCheckListBoxSelectorStyle(Wx_ListboxSubStyle);
 
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

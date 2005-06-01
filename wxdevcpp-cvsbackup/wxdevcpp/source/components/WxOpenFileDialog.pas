@@ -19,6 +19,9 @@ type
         FWx_DefaultFile: String;
         FWx_DefaultDir: String;
         FWx_DialogStyle : TWxFileDialogStyleSet;
+        FWx_Comments : TStrings;
+
+
         procedure AutoInitialize;
         procedure AutoDestroy;
 
@@ -61,6 +64,8 @@ type
         property Wx_DefaultFile: String read FWx_DefaultFile write FWx_DefaultFile;
         property Wx_DefaultDir: String read FWx_DefaultDir write FWx_DefaultDir;
         property Wx_DialogStyle:TWxFileDialogStyleSet read FWx_DialogStyle write FWx_DialogStyle;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -80,6 +85,8 @@ begin
      Glyph.Handle:=LoadBitmap(hInstance, 'TWXOPENFILEDIALOG');
      self.FWx_Extensions:= '*.*';
      self.wx_Message:='Choose a file';
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -116,6 +123,8 @@ begin
      FWx_PropertyList.add('Wx_Message:Message');
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxOpenFileDialog.Destroy;
@@ -156,7 +165,7 @@ begin
     strType:='wxOPEN';
     strStyle:=GetFileDialogStyleString(self.Wx_DialogStyle);
 
-    Result:=Format('%s =  new %s(this, %s, %s, %s, %s, %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),GetCppString(wx_DefaultFile),wx_Extensions,strType+strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s(this, %s, %s, %s, %s, %s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),GetCppString(wx_DefaultFile),wx_Extensions,strType+strStyle] );
 end;
 
 function TWxOpenFileDialog.GenerateGUIControlDeclaration:String;

@@ -68,12 +68,15 @@ type
         FWx_StretchFactor : Integer;
         { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
+        FWx_Validator : String;
         { Storage for property Wx_VerticalAlignment }
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxStaticText }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -162,6 +165,7 @@ type
         property Wx_ProxyFGColorString : TWxColorString
              read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
 
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
 	property Wx_StrechFactor : Integer
 		read FWx_StretchFactor write FWx_StretchFactor;
 		
@@ -174,6 +178,7 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -204,6 +209,8 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=clBtnFace;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -263,6 +270,8 @@ begin
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
+     FWx_PropertyList.add('Wx_Validator : Validator code');
+
      FWx_PropertyList.add('Wx_GeneralStyle : General Styles');
      FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
      FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
@@ -289,6 +298,8 @@ begin
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
@@ -344,8 +355,16 @@ begin
     parentName:=GetWxWidgetParent(self);
 
     strStyle:=GetLabelSpecificStyle(Wx_GeneralStyle,Wx_LabelStyle);
+
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+
+
     //Last comma is removed because it depends on the user selection of the properties.
-    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,strStyle] );
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
 

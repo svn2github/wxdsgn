@@ -24,7 +24,7 @@ type
   TWxControlPanel = class(TPanel)
     private
       { Private fields of TWxControlPanel }
-
+    
       { Private methods of TWxControlPanel }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -78,6 +78,7 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxControlPanel.AutoInitialize;
 begin
+ 
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -134,6 +135,7 @@ begin
 
      { Code to perform other tasks when the container is created    }
      self.Caption:='';
+
 end;
 
 destructor TWxControlPanel.Destroy;

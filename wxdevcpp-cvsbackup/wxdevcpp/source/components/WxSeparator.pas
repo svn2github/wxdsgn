@@ -39,6 +39,7 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
 
       { Private methods of TWxButton }
 
@@ -123,6 +124,8 @@ type
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Color;
         property Wx_BITMAP: TPicture read FWx_BITMAP write SetButtonBitmap;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -153,6 +156,7 @@ begin
      FWx_Bitmap:=TPicture.Create;
      self.Style:=tbsDivider	;
      self.Width:=5;
+     FWx_Comments := TStringList.Create;
 end; { of AutoInitialize }
 
 
@@ -191,6 +195,8 @@ begin
     FWx_PropertyList.add('Width : Width');
     //FWx_PropertyList.add('Height:Height');
 
+    FWx_PropertyList.add('Wx_Comments:Comments');
+
     FWx_EventList.add('EVT_BUTTON:OnClick');
     FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
@@ -213,7 +219,7 @@ function TWxSeparator.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxSeparator.GenerateControlIDs:String;
@@ -249,7 +255,7 @@ begin
     if not IsControlWxToolBar(self.parent) then
         exit;    
     parentName:=GetWxWidgetParent(self);
-    Result:=parentName+'->AddSeparator();';
+    Result:= GetCommentString(self.FWx_Comments.Text) + parentName+'->AddSeparator();';
 end;
 
 function TWxSeparator.GenerateGUIControlDeclaration:String;

@@ -62,6 +62,7 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
       { Private methods of TWxTreeCtrl }
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -173,6 +174,7 @@ type
         property Wx_IDValue : Longint
              read FWx_IDValue write FWx_IDValue
              default -1;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
         property Wx_ProxyBGColorString : TWxColorString
              read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
@@ -224,6 +226,7 @@ begin
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
      FWx_TreeviewStyle :=[wxTR_HAS_BUTTONS];
+     FWx_Comments := TStringList.Create;
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -302,6 +305,8 @@ begin
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_PropertyList.add('Wx_GeneralStyle : General Styles');
      FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
@@ -385,7 +390,7 @@ function TWxTreeCtrl.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxTreeCtrl.GenerateControlIDs:String;
@@ -489,11 +494,9 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+  strStyle:=GetTreeViewSpecificStyle(self.Wx_GeneralStyle,Wx_TreeviewStyle);
 
-
-    strStyle:=GetTreeViewSpecificStyle(self.Wx_GeneralStyle,Wx_TreeviewStyle);
-
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(Wx_ToolTip) ]);

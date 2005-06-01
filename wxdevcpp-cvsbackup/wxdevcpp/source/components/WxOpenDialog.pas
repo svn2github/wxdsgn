@@ -22,6 +22,7 @@ type
         FWx_Extensions: String;
         FWx_DefaultFile: String;
         FWx_DefaultDir: String;
+        FWx_Comments : TStrings;
 
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -68,6 +69,7 @@ type
         property Wx_Extensions: String read FWx_Extensions write FWx_Extensions;
         property Wx_DefaultFile: String read FWx_DefaultFile write FWx_DefaultFile;
         property Wx_DefaultDir: String read FWx_DefaultDir write FWx_DefaultDir;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -87,6 +89,8 @@ begin
      FWx_Class := 'wxFileDialog';
      FWx_Enabled := True;
      FWx_Hidden := False;
+     FWx_Comments := TStringList.Create;
+
      Glyph.Handle:=LoadBitmap(hInstance, 'TWXOPENFILEDIALOG')
 end; { of AutoInitialize }
 
@@ -118,6 +122,8 @@ begin
      FWx_PropertyList.add('Wx_Message:Message');
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxOpenFileDialog.Destroy;
@@ -140,7 +146,7 @@ function TWxOpenFileDialog.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxOpenFileDialog.GenerateControlIDs:String;
@@ -161,7 +167,7 @@ var
 begin
      Result:='';
     strType:='wxOPEN';
-    Result:=Format('%s =  new %s(this, "%s" , "%s" , "%s" , "%s", %s);',[self.Name,self.wx_Class,wx_Message,wx_DefaultDir,wx_DefaultFile,wx_Extensions,strType+strStyle] );
+    Result:= '/*' + self.FWx_Comments.Text + '*/' + #13 + Format('%s =  new %s(this, "%s" , "%s" , "%s" , "%s", %s);',[self.Name,self.wx_Class,wx_Message,wx_DefaultDir,wx_DefaultFile,wx_Extensions,strType+strStyle] );
 end;
 
 function TWxOpenFileDialog.GenerateGUIControlDeclaration:String;

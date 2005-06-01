@@ -645,6 +645,10 @@ PBreakPointEntry = ^TBreakPointEntry;
     actNewWxFrame: TAction;
     JvInspectorBorlandPainter1: TJvInspectorBorlandPainter;
     DebugStopBtn: TToolButton;
+    actWxPropertyInspectorCut: TAction;
+    actWxPropertyInspectorCopy: TAction;
+    actWxPropertyInspectorPaste: TAction;
+    actWxPropertyInspectorDelete: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -913,6 +917,10 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure mnuCVSClick(Sender: TObject);
     procedure actDesignerCopyExecute(Sender: TObject);
     procedure actDesignerCutExecute(Sender: TObject);
+    procedure actWxPropertyInspectorCutExecute(Sender: TObject);
+    procedure actWxPropertyInspectorCopyExecute(Sender: TObject);
+    procedure actWxPropertyInspectorPasteExecute(Sender: TObject);
+    procedure actWxPropertyInspectorDeleteExecute(Sender: TObject);
     procedure actDesignerPasteExecute(Sender: TObject);
     procedure actDesignerDeleteExecute(Sender: TObject);
     function isFileOpenedinEditor(strFile: string): Boolean;
@@ -924,6 +932,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure PalleteListPanelResize(Sender: TObject);
     procedure lbxControlsDrawItem(Control: TWinControl; Index: Integer;Rect: TRect; State: TOwnerDrawState);
     procedure PalettesChange(Sender: TObject);
+    procedure WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure ELDesigner1ChangeSelection(Sender: TObject);
     procedure ELDesigner1ControlDeleted(Sender: TObject; AControl: TControl);
@@ -1060,6 +1069,15 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure CreateParams(var Params: TCreateParams); override;
 public
 {$IFDEF WX_BUILD}
+
+// Wx Property Inspector Popup Menu
+WxPropertyInspectorPopup:TPopupMenu;
+  WxPropertyInspectorMenuEdit : TMenuItem;
+  WxPropertyInspectorMenuCopy : TMenuItem;
+  WxPropertyInspectorMenuCut : TMenuItem;
+  WxPropertyInspectorMenuPaste : TMenuItem;
+  WxPropertyInspectorMenuDelete : TMenuItem;
+
   //PopUpMenu
   DesignerPopup:TPopupMenu;
   DesignerMenuEdit : TMenuItem;
@@ -1265,6 +1283,13 @@ begin
   //LeftPageControl.Owner:=frmClassBrwsDock;
   //LeftPageControl.Parent:=frmClassBrwsDock;
 
+  WxPropertyInspectorPopup := TPopupMenu.Create(Self);
+  WxPropertyInspectorMenuEdit := TMenuItem.Create(Self);
+  WxPropertyInspectorMenuCopy := TMenuItem.Create(Self);
+  WxPropertyInspectorMenuCut := TMenuItem.Create(Self);
+  WxPropertyInspectorMenuPaste := TMenuItem.Create(Self);
+  WxPropertyInspectorMenuDelete := TMenuItem.Create(Self);
+
   DesignerPopup := TPopupMenu.Create(Self);
   DesignerMenuEdit := TMenuItem.Create(Self);
   DesignerMenuCopy := TMenuItem.Create(Self);
@@ -1289,6 +1314,36 @@ begin
   DesignerMenuSep3 := TMenuItem.Create(Self);
   DesignerMenuDesignerOptions:= TMenuItem.Create(Self);
   DesignerMenuSep4:= TMenuItem.Create(Self);
+
+  with WxPropertyInspectorPopup do
+  begin
+    Name := 'WxPropertyInspectorPopup';
+  end;
+  with WxPropertyInspectorMenuEdit do
+  begin
+    Name := 'WxPropertyInspectorMenuEdit';
+    Caption := 'Wx Property Edit';
+  end;
+  with WxPropertyInspectorMenuCopy do
+  begin
+    Name := 'WxPropertyInspectorMenuCopy';
+   Action := actWxPropertyInspectorCopy;
+  end;
+  with WxPropertyInspectorMenuCut do
+  begin
+    Name := 'WxPropertyInspectorMenuCut';
+   Action :=  actWxPropertyInspectorCut;
+  end;
+  with WxPropertyInspectorMenuPaste do
+  begin
+    Name := 'WxPropertyInspectorMenuPaste';
+    Action := actWxPropertyInspectorPaste;
+   end;
+  with WxPropertyInspectorMenuDelete do
+  begin
+    Name := 'WxPropertyInspectorMenuDelete';
+    Action := actWxPropertyInspectorDelete;
+   end;
 
   with DesignerPopup do
   begin
@@ -1434,6 +1489,11 @@ begin
     Caption := 'View Designer Options';
     OnClick := DesignerOptionsClick;
   end;
+
+  WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuCut);
+  WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuCopy);
+  WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuPaste);
+  WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuDelete);
 
   DesignerPopup.Items.Add(DesignerMenuCut);
   DesignerPopup.Items.Add(DesignerMenuCopy);
@@ -1601,6 +1661,9 @@ begin
     UseBands := false;
     WantTabs := true;
 
+    // Add popup menu for Wx property inspector
+     OnContextPopup :=WxPropertyInspectorContextPopup;
+  
     AfterItemCreate := JvInspPropertiesAfterItemCreate;
     BeforeSelection := JvInspPropertiesBeforeSelection;
     OnDataValueChanged := JvInspPropertiesDataValueChanged;
@@ -4409,14 +4472,16 @@ procedure TMainForm.actCutExecute(Sender: TObject);
 var
   e: TEditor;
 begin
+
   e := GetEditor;
   if assigned(e) then
   begin
     if e.isForm then
-        actDesignerCut.Execute
-    else
-        e.Text.CutToClipboard;
+       actDesignerCut.Execute
+      else
+         e.Text.CutToClipboard
   end;
+
 end;
 
 procedure TMainForm.actCopyExecute(Sender: TObject);
@@ -4444,7 +4509,7 @@ begin
         actDesignerPaste.Execute
     else
         e.Text.PasteFromClipboard;
-  end;
+   end;
 end;
 
 procedure TMainForm.actSelectAllExecute(Sender: TObject);
@@ -5488,7 +5553,7 @@ begin
    XK_F6:
 {$ENDIF}
       if ssCtrl in Shift then ShowDebug;
-  end;
+end;
 end;
 
 function TMainForm.GetEditor(const index: integer): TEditor;
@@ -8927,7 +8992,7 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.ReadClass;
 begin
-  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton,TWxBitBtn, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWXMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
+  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton,TWxBitBtn, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
   RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine]);
   RegisterClasses([TWxPanel,TWXListBook, TWxNoteBook, TWxStatusBar, TWxToolBar]);
   RegisterClasses([TWxNoteBookPage,TWxchecklistbox,TWxSplitterWindow]);
@@ -8967,7 +9032,7 @@ begin
   begin
     //Dont forget to add semicolon at the end of the string
     WriteString('Palette', 'Sizers','TWxBoxSizer;TWxStaticBoxSizer;TWxGridSizer;TWxFlexGridSizer;');
-    strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxEdit;TWXMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;';
+    strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxEdit;TWxMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;';
     strTemp:=strTemp+'TWxSlider;TWxStaticLine;TWxStaticBitmap;TWxStatusBar;TWxChecklistbox;TWxSpinCtrl;';
     WriteString('Palette', 'Controls',strTemp);
     WriteString('Palette', 'Window','TWxPanel;TWxNoteBook;TWxNoteBookPage;TWxGrid;TWxScrolledWindow;TWxHtmlWindow;TWxSplitterWindow;');
@@ -9215,6 +9280,12 @@ procedure TMainForm.ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; v
 begin
     Handled:=true;
     DesignerPopup.Popup(MousePos.X,MousePos.Y);
+end;
+
+procedure TMainForm.WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+begin
+    Handled:=true;
+    WxPropertyInspectorPopup.Popup(MousePos.X,MousePos.Y);
 end;
 
 procedure TMainForm.ELDesigner1ChangeSelection(Sender: TObject);
@@ -9752,7 +9823,8 @@ end;
 procedure TMainForm.ELDesigner1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Shift = [ssCtrl] then
+
+ { if Shift = [ssCtrl] then
   begin
     if (Key = Ord('C')) then
       ELDesigner1.Copy;
@@ -9761,6 +9833,7 @@ begin
     if (Key = Ord('V')) then
       ELDesigner1.Paste;
   end;
+ } 
 end;
 {$ENDIF}
 
@@ -9984,7 +10057,7 @@ begin
   end;
 
   //  if Item is TJvInspectorBooleanItem then
-  //    TJvInspectorBooleanItem(Item).ShowAsCheckbox := True;
+   //  TJvInspectorBooleanItem(Item).ShowAsCheckbox := True;
 
   Item.Hidden := not boolOk;
   //Item.Hidden:= false;
@@ -12107,6 +12180,34 @@ begin
   {$ENDIF}
 end;
 
+procedure TMainForm.actWxPropertyInspectorCutExecute(Sender: TObject);
+begin
+{$IFDEF WX_BUILD}
+    SendMessage(GetFocus, WM_CUT, 0, 0);
+{$ENDIF}
+end;
+
+procedure TMainForm.actWxPropertyInspectorCopyExecute(Sender: TObject);
+begin
+{$IFDEF WX_BUILD}
+    SendMessage(GetFocus, WM_COPY, 0, 0);
+{$ENDIF}
+end;
+
+procedure TMainForm.actWxPropertyInspectorPasteExecute(Sender: TObject);
+begin
+{$IFDEF WX_BUILD}
+    SendMessage(GetFocus, WM_PASTE, 0, 0);
+{$ENDIF}
+end;
+
+procedure TMainForm.actWxPropertyInspectorDeleteExecute(Sender: TObject);
+begin
+{$IFDEF WX_BUILD}
+    SendMessage(GetFocus, WM_CLEAR, 0, 0);
+{$ENDIF}
+end;
+
 initialization
 {$IFDEF WX_BUILD}
 //    TJvInspectorAlignItem.RegisterAsDefaultItem;
@@ -12121,6 +12222,7 @@ initialization
     TJvInspectorBitmapItem.RegisterAsDefaultItem;
     TJvInspectorListColumnsItem.RegisterAsDefaultItem;
     TJvInspectorColorEditItem.RegisterAsDefaultItem;
+    TJvInspectorFileNameEditItem.RegisterAsDefaultItem;
     TJvInspectorStatusBarItem.RegisterAsDefaultItem;
 {$ENDIF}
 

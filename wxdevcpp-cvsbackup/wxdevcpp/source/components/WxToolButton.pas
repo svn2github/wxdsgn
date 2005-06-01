@@ -42,6 +42,7 @@ type
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
         FToolKind:TWxToolbottonItemStyleItem;
+        FWx_Comments : TStrings;
       { Private methods of TWxButton }
 
         procedure AutoInitialize;
@@ -127,6 +128,7 @@ type
         property Color;
         property Wx_BITMAP: TPicture read FWx_BITMAP write SetButtonBitmap;
         property Wx_DISABLE_BITMAP: TPicture read FWx_DISABLE_BITMAP write SetDisableBitmap;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -160,6 +162,8 @@ begin
      self.width :=24;
      self.Height :=24;
      self.Layout:=blGlyphTop;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 
@@ -202,6 +206,8 @@ begin
     FWx_PropertyList.add('Wx_Bitmap:Active Bitmap');
     //FWx_PropertyList.add('Wx_DISABLE_BITMAP:Disable Bitmap');
 
+    FWx_PropertyList.add('Wx_Comments:Comments');
+
     FWx_EventList.add('EVT_MENU:OnClick');
     FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
@@ -225,7 +231,7 @@ begin
         exit;
 
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxToolButton.GenerateControlIDs:String;
@@ -285,7 +291,7 @@ begin
             strSecondBitmap:='wxBitmap '+self.Name+'_DISABLE_BITMAP'+' ('+self.Name+'_DISABLE_BITMAP_XPM'+');';
     end;
 
-    Result:=strFirstBitmap+#13+strSecondBitmap;
+    Result:= GetCommentString(self.FWx_Comments.Text) + strFirstBitmap+#13+strSecondBitmap;
     Result:=Result+#13+Format('%s->AddTool(%s, %s, %s, %s, %s, %s, %s);',[parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Name+'_BITMAP',self.Name+'_DISABLE_BITMAP',GetToolButtonKindAsText(ToolKind),GetCppString(self.Wx_ToolTip),GetCppString(self.Wx_HelpText)] );
 
 end;

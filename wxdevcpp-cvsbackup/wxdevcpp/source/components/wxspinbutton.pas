@@ -68,6 +68,7 @@ type
         FWx_SpinButtonStyle : TWxsbtnStyleSet;
         { Storage for property Wx_SpinButtonOrientation }
         FWx_SpinButtonOrientation : TWxsbtnOrientation;
+        FWx_Validator : String;
         { Storage for property Wx_StretchFactor }
         FWx_StretchFactor : Integer;
         { Storage for property Wx_ToolTip }
@@ -78,6 +79,8 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxSpinButton }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -160,6 +163,7 @@ type
         property Wx_IDValue : Longint
              read FWx_IDValue write FWx_IDValue
              default -1;
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
         property Wx_Max : Integer read FWx_Max write FWx_Max;
         property Wx_Position : Integer read FWx_Position write FWx_Position;
         property Wx_ProxyBGColorString : TWxColorString
@@ -182,6 +186,8 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+
+       property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -213,6 +219,8 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -255,6 +263,8 @@ begin
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
 
+     FWx_PropertyList.add('Wx_Validator : Validator code');
+
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
@@ -286,6 +296,8 @@ begin
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_EventList.add('EVT_SPIN : OnUpdated');
      FWx_EventList.add('EVT_SPIN_UP : OnUp' );
@@ -376,7 +388,13 @@ begin
     else
     strStyle := GetSpinButtonOrientation(Wx_SpinButtonOrientation);
 
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

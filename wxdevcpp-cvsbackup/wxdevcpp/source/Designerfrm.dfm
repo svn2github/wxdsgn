@@ -1,6 +1,6 @@
 object frmNewForm: TfrmNewForm
-  Left = 336
-  Top = 224
+  Left = 338
+  Top = 179
   Width = 320
   Height = 334
   BorderIcons = [biSystemMenu, biMinimize]

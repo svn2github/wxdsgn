@@ -42,7 +42,8 @@ type
         FWx_HelpText : String;
         { Storage for property Wx_Hidden }
         FWx_Hidden : Boolean;
-              
+        FWx_Length : Integer;
+
         { Storage for property Wx_HorizontalAlignment }
         FWx_HorizontalAlignment : TWxSizerHorizontalAlignment;
         { Storage for property Wx_IDName }
@@ -63,6 +64,7 @@ type
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
         FWx_LIOrientation : TWx_LIOrientation;
+        FWx_Comments : TStrings;
       { Private methods of TWxStaticLine }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -147,7 +149,7 @@ type
         property Wx_Hidden : Boolean
              read FWx_Hidden write FWx_Hidden
              default False;
-                         
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
         property Wx_HorizontalAlignment : TWxSizerHorizontalAlignment
              read FWx_HorizontalAlignment write FWx_HorizontalAlignment
              default wxSZALIGN_CENTER_HORIZONTAL;
@@ -172,6 +174,7 @@ type
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Wx_LIOrientation : TWx_LIOrientation read FWx_LIOrientation write FWx_LIOrientation;
 
+        property Wx_Length : Integer read FWx_Length write FWx_Length;
   end;
 
 procedure Register;
@@ -188,6 +191,7 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxStaticLine.AutoInitialize;
 begin
+     FWx_Length := 150;
      FWx_PropertyList := TStringList.Create;
      FWx_Border := 5;
      FWx_Class := 'wxStaticLine';
@@ -195,11 +199,12 @@ begin
      FWx_Hidden := False;
      FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
      FWx_StretchFactor := 0;
-     FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
      FWx_ProxyBGColorString := TWxColorString.Create;
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=clBtnFace;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -268,8 +273,11 @@ begin
      FWx_PropertyList.add('Wx_Enabled:Enabled');
      FWx_PropertyList.add('Left:Left');
      FWx_PropertyList.add('Top:Top');
-     FWx_PropertyList.add('Width:Width');
-     FWx_PropertyList.add('Height:Height');
+    // FWx_PropertyList.add('Width:Width');
+    // FWx_PropertyList.add('Height:Height');
+      FWx_PropertyList.add('Wx_Length:Length');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -296,6 +304,7 @@ begin
      FWx_PropertyList.add('Font : Font');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
      self.Caption:='';
+
 end;
 
 destructor TWxStaticLine.Destroy;
@@ -356,9 +365,10 @@ begin
     else
          strStyle :=  GetLineOrientation(FWx_LIOrientation);
 
-    //self.Height-5 this is to make sure the groupbox size is not directly given to the code generation.
-    //If we dont use this one, we'll have to line(a rectangle) with big ht. 
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height-5,strStyle] );
+  if (FWx_LIOrientation = wxLI_HORIZONTAL) then
+        Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,FWx_Length,0,strStyle])
+  else
+     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,0,FWx_Length,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
@@ -512,14 +522,26 @@ var
 begin
      inherited;
      Caption:='';
-     { Copy the new width and height of the component
-       so we can use SetBounds to change both at once }
-     W := Width;
-     { Code to check and adjust W and H }
-     H:=7;
+
+     if (FWx_LIOrientation = wxLI_HORIZONTAL) then
+      begin
+        { Copy the new width and height of the component
+        so we can use SetBounds to change both at once }
+        W := Width;
+        FWx_Length := Width;
+        { Code to check and adjust W and H }
+        H := 7;
+      end
+     else
+        begin
+          W := 3;
+          H := Height;
+          FWx_Length := Height;
+        end;
+
      { Update the component size if we adjusted W or H }
      if (W <> Width) or (H <> Height) then
-        inherited SetBounds(Left, Top, W, H);
+         inherited SetBounds(Left, Top, W, H);
 
      { Code to update dimensions of any owned sub-components
        by reading their Height and Width properties and updating
@@ -570,15 +592,14 @@ function TWxStaticLine.GetLineOrientation(value : TWx_LIOrientation) : string;
 begin
 Result:='';
     if  value = wxLI_VERTICAL then
-    begin
+      begin
         Result:= ', wxLI_VERTICAL';
-             exit;
-    end;
-     if  value = wxLI_HORIZONTAL then
-    begin
+      end;
+    if  value = wxLI_HORIZONTAL then
+      begin
         Result:= ', wxLI_HORIZONTAL';
-             exit;
-    end;
-    end;
-    
+      end;
+
+end;
+
 end.

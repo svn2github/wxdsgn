@@ -15,6 +15,8 @@ type
     { Private declarations }
         FWx_Class : String;
         FWx_Caption:String;
+        FWx_Comments : TStrings;
+
         FWx_PropertyList : TStringList;
         FWx_MenuItems: TWxCustomMenuItem;
         FMainMenu: TMainMenu;
@@ -66,6 +68,7 @@ type
         property Wx_Class : String read FWx_Class write FWx_Class;
         property Wx_Caption : String read FWx_Caption write FWx_Caption;
         property Wx_MenuItems : TWxCustomMenuItem  read FWx_MenuItems  write FWx_MenuItems;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -87,6 +90,8 @@ begin
      FWx_MenuItems:=TWxCustomMenuItem.Create(self.Parent);
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxMenuBar');
      FMainMenu := TMainMenu.Create(Self.Parent);
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 procedure TWxMenuBar.BuildMenus(value: TWxCustomMenuItem);
@@ -154,6 +159,8 @@ begin
      FWx_PropertyList.add('Wx_Caption :Caption');
      FWx_PropertyList.add('Name : Name');
      FWx_PropertyList.add('Wx_MenuItems: Menu Items');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxMenuBar.Destroy;
@@ -328,7 +335,7 @@ begin
     //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
-    Result:=Format('%s =  new %s(%s);',[self.Name,self.Wx_Class,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s(%s);',[self.Name,self.Wx_Class,strStyle] );
     strMenucodeData:=GetMenuItemCode;
     Result:=Result+#13+strMenucodeData;
     Result:=Result+#13+'this->SetMenuBar('+self.Name+');';

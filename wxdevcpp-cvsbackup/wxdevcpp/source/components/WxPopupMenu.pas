@@ -17,6 +17,7 @@ type
         FWx_Caption:String;
         FWx_PropertyList : TStringList;
         FWx_MenuItems: TWxCustomMenuItem;
+        FWx_Comments : TStrings;
         
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -64,6 +65,7 @@ type
         property Wx_Class : String read FWx_Class write FWx_Class;
         property Wx_Caption : String read FWx_Caption write FWx_Caption;
         property Wx_MenuItems : TWxCustomMenuItem  read FWx_MenuItems  write FWx_MenuItems;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -85,6 +87,8 @@ begin
      FWx_PropertyList := TStringList.Create;
      FWx_Class := 'wxMenu';
      FWx_MenuItems:=TWxCustomMenuItem.Create(self.Parent);
+     FWx_Comments := TStringList.Create;
+
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxPopupMenu');
 end; { of AutoInitialize }
 
@@ -106,6 +110,7 @@ begin
      FWx_PropertyList.add('Wx_Caption :Caption');
      FWx_PropertyList.add('Name : Name');
      FWx_PropertyList.add('Wx_MenuItems: Menu Items');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 end;
 
 destructor TWxPopupMenu.Destroy;
@@ -278,7 +283,7 @@ begin
     //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
-    Result:=Format('%s = new %s(%s %s );',[self.Name,self.Wx_Class,GetCppString(Wx_Caption),strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s %s );',[self.Name,self.Wx_Class,GetCppString(Wx_Caption),strStyle] );
     strMenucodeData:=GetMenuItemCode;
     Result:=Result+#13+strMenucodeData;
 end;

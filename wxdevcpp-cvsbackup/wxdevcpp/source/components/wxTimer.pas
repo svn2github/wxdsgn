@@ -19,6 +19,8 @@ type
         FWx_IDValue:Integer;
         FWx_Interval:Integer;
         FWx_AutoStart:Boolean;
+        FWx_Comments : TStrings;
+
         FEVT_TIMER:String;
 
         procedure AutoInitialize;
@@ -62,6 +64,8 @@ type
         property Wx_IDValue:Integer  read  FWx_IDValue write FWx_IDValue;
         property Wx_Interval:Integer  read  FWx_Interval write FWx_Interval;
         property Wx_AutoStart:Boolean  read  FWx_AutoStart write FWx_AutoStart;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
         property EVT_TIMER:String  read  FEVT_TIMER write FEVT_TIMER;
 
   end;
@@ -84,6 +88,8 @@ begin
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxTimer');
      FWx_Interval:=100;
      FWx_AutoStart:=false;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -116,8 +122,9 @@ begin
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
 
-     FWx_EventList.add('EVT_TIMER:OnTimer');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
+     FWx_EventList.add('EVT_TIMER:OnTimer');
 
 end;
 
@@ -140,7 +147,7 @@ function TWxTimer.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxTimer.GenerateControlIDs:String;
@@ -162,7 +169,7 @@ end;
 function TWxTimer.GenerateGUIControlCreation:String;
 begin
     Result:='';
-    Result:=Format('%s =  new %s();',[self.Name,self.wx_Class] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s();',[self.Name,self.wx_Class] );
     Result:=Result+#13+Format('%s->SetOwner(this, %s);',[self.Name,Wx_IDName] );
 
     if Wx_AutoStart = true then

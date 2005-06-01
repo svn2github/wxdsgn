@@ -77,6 +77,9 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Validator : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxCheckBox }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -181,6 +184,10 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
              read FWx_VerticalAlignment write FWx_VerticalAlignment
              default wxSZALIGN_CENTER_VERTICAL;
+
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
 
@@ -213,6 +220,9 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=clBtnFace;
      defaultFGColor:=self.font.color;
+
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -290,6 +300,9 @@ begin
      FWx_PropertyList.add('Caption:Caption');
      FWx_PropertyList.add('Checked:Checked');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.Add('Wx_Validator : Validator code');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -323,7 +336,6 @@ begin
 
      FWx_EventList.add('EVT_CHECKBOX:OnClick');
      FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-
 
 end;
 
@@ -395,7 +407,13 @@ begin
 
     strStyle:=GetCheckboxSpecificStyle(self.Wx_GeneralStyle,Wx_CheckBoxStyle);
 
-    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

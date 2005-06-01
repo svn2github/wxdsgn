@@ -13,6 +13,7 @@ type
   private
     { Private declarations }
         FWx_Class : String;
+        FWx_Comments : TStrings;
         FWx_PropertyList : TStringList;
         FWx_Message: String;
         FWx_DefaultDir: String;
@@ -57,6 +58,8 @@ type
         property Wx_Message: String read FWx_Message write FWx_Message;
         property Wx_DefaultDir: String read FWx_DefaultDir write FWx_DefaultDir;
         property Wx_DirDialogStyle:TWxDirDialogStyleSet read FWx_DirDialogStyle write FWx_DirDialogStyle;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -75,6 +78,8 @@ begin
      FWx_Class := 'wxDirDialog';
      FWx_Message:='Choose a directory';
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxDirDialog');
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -105,6 +110,8 @@ begin
      FWx_PropertyList.add('Wx_Message:Message');
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxDirDialog.Destroy;
@@ -144,7 +151,7 @@ var
 begin
      Result:='';
     strStyle:=GetDirDialogStyleString(self.Wx_DirDialogStyle);
-    Result:=Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),strStyle] );
 end;
 
 function TWxDirDialog.GenerateGUIControlDeclaration:String;

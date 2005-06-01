@@ -16,6 +16,8 @@ type
         FWx_PropertyList : TStringList;
         FWx_Message: String;
         FWx_Caption: String;
+        FWx_Comments : TStrings;
+
         FWx_DialogStyle : TWxMessageDialogStyleSet;
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -57,6 +59,8 @@ type
         property Wx_Message: String read FWx_Message write FWx_Message;
         property Wx_Caption: String read FWx_Caption write FWx_Caption;
         property Wx_DialogStyle:TWxMessageDialogStyleSet read FWx_DialogStyle write FWx_DialogStyle;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -75,6 +79,8 @@ begin
      FWx_Class := 'wxMessageDialog';
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxMessageDialog');
      FWx_Caption:='Message box';
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -116,6 +122,8 @@ begin
      FWx_PropertyList.add('Wx_Caption:Caption');
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxMessageDialog.Destroy;
@@ -155,7 +163,7 @@ var
 begin
     Result:='';
     strStyle:=GetMessageDialogStyleString(self.Wx_DialogStyle);
-    Result:=Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_Caption),strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_Caption),strStyle] );
 end;
 
 function TWxMessageDialog.GenerateGUIControlDeclaration:String;

@@ -43,6 +43,8 @@ type
         FWx_StretchFactor : Integer;
         FWx_ToolTip : String;
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
+        FWx_Comments : TStrings;
+
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
@@ -154,6 +156,9 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
              read FWx_VerticalAlignment write FWx_VerticalAlignment
              default wxSZALIGN_CENTER_VERTICAL;
+
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Wx_HtmlStrings:TStringList read FHtmlStrings write FHtmlStrings;
@@ -190,6 +195,8 @@ begin
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
      self.Text:='No HTML Preview Available';
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -260,6 +267,7 @@ begin
      FWx_PropertyList.add('Top:Top');
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -316,7 +324,7 @@ function TWxHtmlWindow.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxHtmlWindow.GenerateControlIDs:String;
@@ -348,10 +356,9 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-
     strStyle:=GetHtmlWindowSpecificStyle(self.Wx_GeneralStyle,self.Wx_HtmlStyle);
 
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

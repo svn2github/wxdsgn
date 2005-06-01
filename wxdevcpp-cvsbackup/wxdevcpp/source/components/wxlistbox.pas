@@ -55,6 +55,7 @@ type
         FWx_ProxyFGColorString : TWxColorString;
         FWx_StretchFactor : Integer;
         FWx_ToolTip : String;
+        FWx_Validator : String;
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
@@ -151,6 +152,7 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment read FWx_VerticalAlignment write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
   end;
 
 procedure Register;
@@ -248,6 +250,7 @@ begin
      FWx_PropertyList.add('Top:Top');
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
+     FWx_PropertyList.add('Wx_Validator : Validator code');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -362,7 +365,13 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
- //   strStyle:=GetListBoxSelectorStyle(Wx_ListboxSubStyle) + GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
+    strStyle:=GetListBoxSelectorStyle(Wx_ListboxSubStyle) + GetListBoxSpecificStyle(self.Wx_GeneralStyle,Wx_ListboxStyle);
+
+   if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
 
     Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 

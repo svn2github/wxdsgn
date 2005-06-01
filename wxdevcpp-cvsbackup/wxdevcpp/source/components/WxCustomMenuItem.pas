@@ -68,6 +68,7 @@ type
     FWx_Caption : String;
     FWx_Checked : Boolean;
     FWX_BITMAP:TPicture;
+    FWx_Comments : TStrings;
 
     FAdded: Boolean;
     //FParentHandle: HMENU;
@@ -133,6 +134,8 @@ type
     property Wx_Caption : String read FWx_Caption write FWx_Caption;
     property Wx_Checked : Boolean read FWx_Checked write FWx_Checked;
     property WX_BITMAP:TPicture read FWX_BITMAP write FWX_BITMAP;
+    property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
   TwxCustomMenuItemWrapper = class (TComponent)

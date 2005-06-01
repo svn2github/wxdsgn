@@ -66,6 +66,7 @@ type
         FWx_HelpText : String;
         { Storage for property Wx_Hidden }
         FWx_Hidden : Boolean;
+        FWx_Validator : String;
         { Storage for property Wx_HorizontalAlignment }
         FWx_HorizontalAlignment : TWxSizerHorizontalAlignment;
         { Storage for property Wx_IDName }
@@ -92,6 +93,8 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxSlider }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -177,6 +180,7 @@ type
              read FWx_Border write FWx_Border
              default 5;
         property Wx_Class : String read FWx_Class write FWx_Class;
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
         property Wx_ControlOrientation : TWxControlOrientation
              read FWx_ControlOrientation write FWx_ControlOrientation;
         property Wx_Enabled : Boolean
@@ -206,7 +210,9 @@ type
              read FWx_SliderRange  write FWx_SliderRange;
 	property Wx_StrechFactor : Integer
 		read FWx_StretchFactor write FWx_StretchFactor;
-		
+
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
 	property Wx_StretchFactor : Integer
              read FWx_StretchFactor write FWx_StretchFactor
              default 0;
@@ -246,6 +252,8 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -304,6 +312,7 @@ begin
      FWx_PropertyList.add('Width : Width');
      FWx_PropertyList.add('Height:Height');
 
+     FWx_PropertyList.Add('Wx_Validator : Validator code');
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
@@ -337,6 +346,8 @@ begin
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
      FWx_PropertyList.add('Wx_SliderOrientation  : Orientation');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
     FWx_EventList.add('EVT_COMMAND_SCROLL:OnScroll ');
     FWx_EventList.add('EVT_COMMAND_SCROLL_TOP:OnScrollTop ');
@@ -469,7 +480,13 @@ begin
 
     strStyle := strStyle + GetSliderRange(Wx_SliderRange);
 
-    Result:=Format('%s = new %s(%s, %s, %d, %d, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.position,self.Min,self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+   
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %d, %d, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.position,self.Min,self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

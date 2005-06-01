@@ -28,12 +28,12 @@ type
         FEVT_UPDATE_UI : String;
         { Storage for property Wx_BGColor }
         FWx_BGColor : TColor;
+        { Storage for property Wx_ControlOrientation }
+        FWx_ControlOrientation : TWxControlOrientation;
         { Storage for property Wx_Border }
         FWx_Border : Integer;
         { Storage for property Wx_Class }
         FWx_Class : String;
-        { Storage for property Wx_ControlOrientation }
-        FWx_ControlOrientation : TWxControlOrientation;
         { Storage for property Wx_Enabled }
         FWx_Enabled : Boolean;
         { Storage for property Wx_FGColor }
@@ -68,6 +68,9 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Validator : String;
+        FWx_Comments : TStrings;
+
       { Private methods of TWxGauge }
         { Method to set variable and property values and create objects }
         procedure AutoInitialize;
@@ -125,10 +128,9 @@ type
         property Wx_Border : Integer
              read FWx_Border write FWx_Border
              default 5;
+        property Wx_ControlOrientation : TWxControlOrientation read FWx_ControlOrientation write FWx_ControlOrientation;
         property Wx_Class : String read FWx_Class write FWx_Class;
-        property Wx_ControlOrientation : TWxControlOrientation
-             read FWx_ControlOrientation write FWx_ControlOrientation;
-        property Wx_Enabled : Boolean
+         property Wx_Enabled : Boolean
              read FWx_Enabled write FWx_Enabled
              default True;
         property Wx_FGColor : TColor read FWx_FGColor write FWx_FGColor;
@@ -168,6 +170,9 @@ type
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
 
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -198,6 +203,7 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -242,6 +248,9 @@ begin
      FWx_PropertyList.add('Top:Top');
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
+     FWx_PropertyList.add('Wx_Validator : Validator code');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -303,7 +312,7 @@ function TWxGauge.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxGauge.GenerateControlIDs:String;
@@ -313,7 +322,10 @@ begin
         Result:=Format('#define %s %d ',[Wx_IDName,Wx_IDValue]);
 end;
 
-
+procedure TWxGauge.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
+begin
+    wx_ControlOrientation:=ControlOrientation;
+end;
 
 function TWxGauge.GenerateEventTableEntries(CurrClassName:String):String;
 begin
@@ -326,9 +338,7 @@ begin
 end;
 
 function TWxGauge.GenerateGUIControlCreation:String;
-
-
-     var
+var
      strColorStr:String;
      strStyle,parentName,strAlignment:String;
 begin
@@ -344,7 +354,13 @@ begin
     strStyle:=GetGaugeOrientation(Wx_GaugeOrientation) +
        GetGaugeSpecificStyle(self.Wx_GeneralStyle,Wx_GaugeStyle);
 
-    Result:=Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName, GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+   
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName, GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
@@ -456,11 +472,6 @@ begin
 
 end;
 
-procedure TWxGauge.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-begin
-wx_ControlOrientation:=ControlOrientation;
-end;
-
 procedure TWxGauge.SetIDName(IDName:String);
 begin
      wx_IDName:=IDName;
@@ -527,12 +538,14 @@ Result:='';
     begin
         Result:= ', wxGA_VERTICAL';
         self.Orientation := pbVertical;
+        FWx_ControlOrientation := wxControlVertical;
          exit;
     end;
      if  Wx_GaugeOrientation = wxGA_HORIZONTAL then
     begin
         Result:= ', wxGA_HORIZONTAL';
         self.Orientation := pbHorizontal;
+        FWx_ControlOrientation := wxControlHorizontal;
           exit;
     end;
 

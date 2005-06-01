@@ -49,6 +49,7 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
+        FWx_Comments : TStrings;
 
         RdGrp : TRadioGroup;
 
@@ -149,6 +150,7 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -177,6 +179,7 @@ begin
      FWx_IDValue := -1;
      FWx_StretchFactor := 0;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+     FWx_Comments := TStringList.Create;
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -282,6 +285,7 @@ begin
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_Caption   : Caption');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 end;
 
 destructor TWxStaticBoxSizer.Destroy;
@@ -336,7 +340,7 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-    result:=Format('wxStaticBox* %s = new wxStaticBox(%s, wxID_ANY, %s);',[staticBoxName,parentName,GetCppString(self.Wx_Caption)]);
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('wxStaticBox* %s = new wxStaticBox(%s, wxID_ANY, %s);',[staticBoxName,parentName,GetCppString(self.Wx_Caption)]);
     Result:=Result+#13+Format('wxStaticBoxSizer* %s = new wxStaticBoxSizer(%s,%s);',[self.Name,staticBoxName,strOrientation]);
     parentName:=self.Parent.Name;
 

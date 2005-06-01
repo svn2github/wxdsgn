@@ -44,15 +44,14 @@ type
         FWx_Border: Integer;
         FWx_NoteBookStyle:TWxnbxStyleSet;
         FWx_GeneralStyle:TWxStdStyleSet;
+        FWx_Comments : TStrings;
 
         FWx_ProxyBGColorString : TWxColorString;
         FWx_ProxyFGColorString : TWxColorString;
 
-
-        FEVT_UPDATE_UI  : string ;
+       FEVT_UPDATE_UI  : string ;
         FEVT_NOTEBOOK_PAGE_CHANGED  : string;
         FEVT_NOTEBOOK_PAGE_CHANGING  : string;
-
 
       { Private methods of TWxNotebook }
         procedure AutoInitialize;
@@ -122,6 +121,7 @@ type
         property Wx_ProxyBGColorString : TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
         property Wx_ProxyFGColorString : TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
 
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
         property EVT_UPDATE_UI  : string read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
         property EVT_NOTEBOOK_PAGE_CHANGED  : string read FEVT_NOTEBOOK_PAGE_CHANGED write FEVT_NOTEBOOK_PAGE_CHANGED;
@@ -159,6 +159,7 @@ begin
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
 
+     FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -226,6 +227,7 @@ begin
      FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
      FWx_EventList.add('EVT_NOTEBOOK_PAGE_CHANGING:OnPageChanging');
 
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
@@ -245,7 +247,7 @@ function TWxNotebook.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxNotebook.GenerateControlIDs:String;
@@ -292,11 +294,9 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
+   strStyle:=GetNotebookSpecificStyle(self.Wx_GeneralStyle,self.Wx_NoteBookStyle);
 
-
-    strStyle:=GetNotebookSpecificStyle(self.Wx_GeneralStyle,self.Wx_NoteBookStyle);
-
-    Result:=Format('%s = new %s(%s, %s, wxPoint(%d,%d),wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d),wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

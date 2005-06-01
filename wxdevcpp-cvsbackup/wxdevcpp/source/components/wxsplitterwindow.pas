@@ -39,6 +39,7 @@ type
         FInvisibleFGColorString : String;
         FWx_GeneralStyle : TWxStdStyleSet;
         FWx_SplitterStyle:TWxSplitterWinStyleSet;
+        FWx_Comments : TStrings;
 
         FEVT_SPLITTER_SASH_POS_CHANGING : string;
         FEVT_SPLITTER_SASH_POS_CHANGED : string;
@@ -118,6 +119,7 @@ type
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Wx_GeneralStyle : TWxStdStyleSet read FWx_GeneralStyle write FWx_GeneralStyle;
         property Wx_SplitterStyle : TWxSplitterWinStyleSet read FWx_SplitterStyle write FWx_SplitterStyle;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
         property EVT_SPLITTER_SASH_POS_CHANGING : string read FEVT_SPLITTER_SASH_POS_CHANGING write FEVT_SPLITTER_SASH_POS_CHANGING ;
         property EVT_SPLITTER_SASH_POS_CHANGED : string read FEVT_SPLITTER_SASH_POS_CHANGED write FEVT_SPLITTER_SASH_POS_CHANGED;
@@ -150,6 +152,7 @@ begin
      FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
      FWx_IDValue := -1;
      FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+     FWx_Comments := TStringList.Create;
 end; { of AutoInitialize }
 
 procedure TWxSplitterWindow.AutoDestroy;
@@ -220,6 +223,7 @@ begin
      FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
      FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
      FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
      FWx_EventList.Add('EVT_SPLITTER_SASH_POS_CHANGING : OnSashPosChanging');
      FWx_EventList.Add('EVT_SPLITTER_SASH_POS_CHANGED : OnSashPosChanged');
@@ -249,7 +253,7 @@ function TWxSplitterWindow.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxSplitterWindow.GenerateControlIDs:String;
@@ -295,7 +299,7 @@ begin
     parentName:=GetWxWidgetParent(self);
     strStyle:=GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle,self.Wx_SplitterStyle);
 
-    Result:=Format('%s =new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
     if strColorStr <> '' then

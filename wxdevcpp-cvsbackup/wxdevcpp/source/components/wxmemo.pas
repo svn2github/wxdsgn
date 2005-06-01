@@ -17,8 +17,8 @@ unit WxMemo;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, 
-     Forms, Graphics, Stdctrls, Wxutils, ExtCtrls, WxSizerPanel;
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+     Forms, Graphics, Stdctrls, Wxutils, ExtCtrls, WxSizerPanel, Dialogs, xprocs;
 
 type
   TWxMemo = class(TMemo,IWxComponentInterface)
@@ -47,6 +47,7 @@ type
         { Storage for property Wx_Enabled }
         FWx_Enabled : Boolean;
         { Storage for property Wx_FGColor }
+        FWx_Validator : String;
         FWx_FGColor : TColor;
         { Storage for property Wx_GeneralStyle }
         FWx_GeneralStyle : TWxStdStyleSet;
@@ -69,14 +70,18 @@ type
         { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
         FWx_MaxLength:Integer;
-        
+
+        FWx_Comments : TStrings;
+
+        FWx_LoadFromFile : TWxFileNameString;
+        FWx_FiletoLoad : String;
+
         { Storage for property Wx_VerticalAlignment }
         FWx_VerticalAlignment : TWxSizerVerticalAlignment;
         FWx_EventList : TStringList;
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
-
 
       { Private methods of TWxMemo }
         { Method to set variable and property values and create objects }
@@ -120,8 +125,9 @@ type
         procedure SetIDName(IDName:String);
         procedure SetIDValue(IDValue:longInt);
         procedure SetStretchFactor(intValue:Integer);
-            procedure SetWxClassName(wxClassName:String);
-    function GetFGColor:string;
+        procedure SetWxClassName(wxClassName:String);
+        procedure SetWxFileName(wxFileName:String);
+       function GetFGColor:string;
     procedure SetFGColor(strValue:String);
 
     function GetBGColor:string;
@@ -129,7 +135,6 @@ type
 
     procedure SetProxyFGColorString(value:String);
     procedure SetProxyBGColorString(value:String);
-
 
     published
       { Published properties of TWxMemo }
@@ -183,9 +188,13 @@ type
         property Wx_ProxyFGColorString : TWxColorString
              read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
 
+        property Wx_Validator : String read FWx_Validator write FWx_Validator;
+
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
 	property Wx_StrechFactor : Integer
 		read FWx_StretchFactor write FWx_StretchFactor;
-	
+
 	property Wx_StretchFactor : Integer
              read FWx_StretchFactor write FWx_StretchFactor
              default 0;
@@ -198,6 +207,9 @@ type
              default wxSZALIGN_CENTER_VERTICAL;
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
+
+        property Wx_LoadFromFile : TWxFileNameString read FWx_LoadFromFile write FWx_LoadFromFile;
+        property Wx_FiletoLoad : String read FWx_FiletoLoad write FWx_FiletoLoad;
 
   end;
 
@@ -229,6 +241,9 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_LoadFromFile := TWxFileNameString.Create;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -274,7 +289,7 @@ begin
      inherited KeyPress(Key);
 
      { Code to execute after KeyPress behavior of parent }
-
+   
 end;
 
 constructor TWxMemo.Create(AOwner: TComponent);
@@ -308,6 +323,9 @@ begin
      FWx_PropertyList.add('Top:Top');
      FWx_PropertyList.add('Width:Width');
      FWx_PropertyList.add('Height:Height');
+
+     FWx_PropertyList.add('Wx_Comments:Comments');
+     FWx_PropertyList.add('Wx_Validator : Validator code');
 
      FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
      FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -349,11 +367,13 @@ begin
      FWx_PropertyList.Add('wxTE_LEFT:wxTE_LEFT');
      FWx_PropertyList.Add('wxTE_CENTRE:wxTE_CENTRE');
      FWx_PropertyList.Add('wxTE_RIGHT:wxTE_RIGHT');
+     FWx_PropertyList.Add('Wx_LoadFromFile : Load From File');
 
      FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
+   //  FWx_PropertyList.add('Wx_FiletoLoad : File to Load');
 
      FWx_EventList.add('EVT_TEXT_ENTER:OnEnter');
      FWx_EventList.add('EVT_TEXT:OnUpdated');
@@ -426,15 +446,12 @@ begin
 end;
 
 function TWxMemo.GenerateGUIControlCreation:String;
-
-
      var
      strColorStr:String;
      strStyle,parentName,strAlignment:String;
      i:Integer;
-begin
+ begin
      Result:='';
-
 
 //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
 //       parentName:=GetWxWidgetParent(self)
@@ -443,8 +460,6 @@ begin
 
     parentName:=GetWxWidgetParent(self);
 
-
-
     Wx_EditStyle:=Wx_EditStyle+[wxTE_MULTILINE];
 
     strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
@@ -452,7 +467,21 @@ begin
     //if trim(strStyle) <> '' then
     //   strStyle:=',' +strStyle;
 
-    Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue), GetCppString(''), self.Left,self.Top,self.width,self.Height,strStyle] );
+      if trim(self.FWx_Validator) <> '' then
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', 0, ' + self.Wx_Validator;
+
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue), GetCppString(''), self.Left,self.Top,self.width,self.Height,strStyle] );
+
+    SetWxFileName(self.FWx_LoadFromFile.FstrFileNameValue);
+    if FWx_FiletoLoad <> ''  then
+    begin
+         Result := Result + #13+Format('%s->LoadFile("%s");', [self.Name, FWx_FiletoLoad]);
+        self.Lines.LoadFromFile(FWx_FiletoLoad);
+
+    end;
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);
@@ -468,12 +497,15 @@ begin
     if trim(self.Wx_HelpText) <> '' then
         Result:=Result +#13+Format('%s->SetHelpText(%s);',[self.Name,GetCppString(self.Wx_HelpText)]);
 
-    for i:= 0 to self.Lines.count -1 Do
+    if FWx_FiletoLoad = ''  then
     begin
-        if i = self.Lines.count -1 then
-           Result:=Result +#13+Format('%s->AppendText(%s);',[self.Name,GetCppString(self.Lines[i])])
-        else
-            Result:=Result +#13+Format('%s->AppendText(%s);',[self.Name,GetCppString(self.Lines[i])]);
+    for i:= 0 to self.Lines.count -1 Do
+        begin
+                if i = self.Lines.count -1 then
+                        Result:=Result +#13+Format('%s->AppendText(%s);',[self.Name,GetCppString(self.Lines[i])])
+                else
+                Result:=Result +#13+Format('%s->AppendText(%s);',[self.Name,GetCppString(self.Lines[i])]);
+        end;
     end;
 
     strColorStr:=trim(GetwxColorFromString(InvisibleFGColorString));
@@ -595,6 +627,8 @@ begin
      { Perform any component setup that depends on the property
        values having been set }
      self.ScrollBars:=ssVertical;
+     self.FWx_LoadFromFile.FstrFileNameValue := FWx_FiletoLoad;
+
 end;
 
 procedure TWxMemo.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
@@ -609,7 +643,7 @@ end;
 
 procedure TWxMemo.SetIDValue(IDValue:longInt);
 begin
-     Wx_IDValue:=IDVAlue;
+     Wx_IDValue:=IDValue;
 end;
 
 procedure TWxMemo.SetStretchFactor(intValue:Integer);
@@ -659,6 +693,13 @@ procedure TWxMemo.SetProxyBGColorString(value:String);
 begin
    FInvisibleBGColorString:=value;
    self.Font.Color:=GetColorFromString(value);
+end;
+
+procedure TWxMemo.SetWxFileName(wxFileName:String);
+begin
+        FWx_FiletoLoad := trim(wxFileName);
+        strSearchReplace(FWx_FiletoLoad,'\','/',[srAll]);
+        Wx_LoadFromFile.FstrFileNameValue := FWx_FiletoLoad;
 end;
 
 end.

@@ -131,7 +131,7 @@ type
     FWxDesignerType:TWxDesignerType;
     
     procedure SetDesignerType(value:TWxDesignerType);
-    
+     
   published
     property Wx_ICON: TPicture read FWx_ICON write FWx_ICON;
     property Wx_Name: string read FWx_Name write FWx_Name;
@@ -1567,12 +1567,13 @@ begin
 
             if IsControlWxStatusBar(TControl(Components[i])) then
             begin
-                //strLst.add(Format('%s->SetFieldsCount(%d);',[self.Components[i].Name]));
+            if (TWinControl(Components[i]).Controls[J] is TWxScrollBar) then
+            else
+             //strLst.add(Format('%s->SetFieldsCount(%d);',[self.Components[i].Name]));
                 strLst.add(Format('this->SetStatusBar(%s);',[self.Components[i].Name]));
             end;
         end;    // for
     end;
-
 
   isSizerAvailable:=false;
     for I := 0 to self.ComponentCount - 1 do // Iterate
@@ -1689,7 +1690,7 @@ end;
 
 procedure TfrmNewForm.SetIDValue(IDValue: longInt);
 begin
-  Wx_IDValue := IDVAlue;
+  Wx_IDValue := IDValue;
 end;
 
 procedure TfrmNewForm.SetWxClassName(wxClassName: string);
@@ -1776,7 +1777,7 @@ var
 
 Begin
   CreateInitVars;
- { if (Self.Handle <> 0) then
+  if (Self.Handle <> 0) then
   begin
     hMenuHandle := GetSystemMenu(Self.Handle, FALSE);
     if (hMenuHandle <> 0) then
@@ -1785,7 +1786,7 @@ Begin
       DeleteMenu(hMenuHandle, SC_MAXIMIZE, MF_BYCOMMAND);
     end;
   end;
-  }
+  
 end;
 
 procedure TfrmNewForm.FormResize(Sender: TObject);
@@ -1819,7 +1820,7 @@ end;
 procedure TfrmNewForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-{$IFDEF WX_BUILD}
+ {$IFDEF WX_BUILD}
   MainForm.ELDesigner1KeyDown(Sender,Key, Shift);
 {$ENDIF}
 end;
@@ -1864,8 +1865,6 @@ begin
         Wx_Class:='wxWizard';
     end;
     FWxDesignerType:=value;
-
-
 
 end;
 end.

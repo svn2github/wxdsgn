@@ -39,6 +39,8 @@ type
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
 
+        FWx_Comments : TStrings;
+
       { Private methods of TWxButton }
 
         procedure AutoInitialize;
@@ -122,6 +124,8 @@ type
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
         property Color;
         property Wx_BITMAP: TPicture read FWx_BITMAP write SetButtonBitmap;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
   end;
 
 procedure Register;
@@ -149,6 +153,8 @@ begin
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
      FWx_Bitmap:=TPicture.Create;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 
@@ -214,6 +220,8 @@ begin
     FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
     FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
+    FWx_PropertyList.add('Wx_Comments:Comments');
+
     FWx_EventList.add('EVT_BUTTON:OnClick');
     FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
@@ -235,7 +243,7 @@ function TWxBitBtn.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxBitBtn.GenerateControlIDs:String;
@@ -281,7 +289,7 @@ begin
 
 
 
-    Result:='wxBitmap '+self.Name+'_BITMAP'+' (wxNullBitmap);';
+    Result:= '/*' + self.FWx_Comments.Text + '*/' + #13 + 'wxBitmap '+self.Name+'_BITMAP'+' (wxNullBitmap);';
 
     if assigned(Wx_Bitmap) then
     begin
@@ -289,8 +297,7 @@ begin
             Result:='wxBitmap '+self.Name+'_BITMAP'+' ('+self.Name+'_XPM'+');';
     end;
 
-
-    Result:=Result+#13+Format('%s =  new %s(%s, %s, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
+    Result:=Result + #13 + Format('%s =  new %s(%s, %s, %s, %s, wxPoint(%d,%d),wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Caption,self.Name+'_BITMAP',self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
         Result:=Result + #13+Format('%s->SetToolTip(%s);',[self.Name,GetCppString(self.Wx_ToolTip)]);

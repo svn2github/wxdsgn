@@ -19,6 +19,7 @@ type
         FWX_MAXValue:Integer;
         FWX_AutoShow:Boolean;
         FWx_Message: String;
+        FWx_Comments : TStrings;
         
         procedure AutoInitialize;
         procedure AutoDestroy;
@@ -62,6 +63,7 @@ type
         property WX_MAXValue: integer read FWX_MAXValue write FWX_MAXValue default 100;
         property WX_AutoShow: boolean read FWX_AutoShow write FWX_AutoShow default false;        
         property Wx_ProgressDialogStyle:TWxProgressDialogStyleSet read FWx_ProgressDialogStyle write FWx_ProgressDialogStyle;
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
   end;
 
@@ -82,6 +84,8 @@ begin
      FWX_MAXValue:=100;
      FWX_AutoShow:=false;
      FWx_ProgressDialogStyle :=[wxPD_AUTO_HIDE,wxPD_APP_MODAL];
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 procedure TWxProgressDialog.AutoDestroy;
@@ -111,6 +115,8 @@ begin
      FWx_PropertyList.add('WX_AutoShow:Auto Show');
      FWx_PropertyList.add('Name:Name');
      FWx_PropertyList.add('Wx_Class:Base Class');
+     FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxProgressDialog.Destroy;
@@ -137,7 +143,7 @@ end;
 function TWxProgressDialog.GenerateGUIControlCreation:String;
 begin
     Result:='';
-    Result:=Format('%s =  new %s( %s, %s, %d , this  %s);',[self.Name,self.wx_Class,GetCppString(self.Wx_Title),self.Wx_Message,Wx_MaxValue,GetProgressDialogStyleString(Wx_ProgressDialogStyle)] );
+    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s( %s, %s, %d , this  %s);',[self.Name,self.wx_Class,GetCppString(self.Wx_Title),self.Wx_Message,Wx_MaxValue,GetProgressDialogStyleString(Wx_ProgressDialogStyle)] );
 
     if not WX_AutoShow then
         Result:=Result+#13+self.Name+'->Show(false);'

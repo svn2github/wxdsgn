@@ -53,7 +53,9 @@ type
         FWx_ProxyBGColorString : TWxColorString;
         { Storage for property Wx_ProxyFGColorString }
         FWx_ProxyFGColorString : TWxColorString;
-        
+
+        FWx_Comments : TStrings;
+
         { Storage for property Wx_ToolTip }
         FWx_ToolTip : String;
         { Storage for property Wx_VerticalAlignment }
@@ -168,6 +170,9 @@ type
         property Wx_VerticalAlignment : TWxSizerVerticalAlignment
              read FWx_VerticalAlignment write FWx_VerticalAlignment
              default wxSZALIGN_CENTER_VERTICAL;
+
+        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
         property InvisibleBGColorString:String read FInvisibleBGColorString write FInvisibleBGColorString;
         property InvisibleFGColorString:String read FInvisibleFGColorString write FInvisibleFGColorString;
 
@@ -201,6 +206,8 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     FWx_Comments := TStringList.Create;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -320,6 +327,7 @@ begin
 
      FWx_PropertyList.add('Font : Font');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+     FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
@@ -342,7 +350,7 @@ function TWxStaticBitmap.GenerateEnumControlIDs:String;
 begin
      Result:='';
      if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-        Result:=Format('%s = %d , ',[Wx_IDName,Wx_IDValue]);
+        Result:=Format('%s = %d, ',[Wx_IDName,Wx_IDValue]);
 end;
 
 function TWxStaticBitmap.GenerateControlIDs:String;
@@ -362,7 +370,7 @@ var
      strColorStr:String;
      strStyle,parentName,strAlignment,strBitmapArrayName:String;
 begin
-     Result:='';
+     Result:= '';
     strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
     if trim(strStyle) <> '' then
        strStyle:=',' +strStyle;
@@ -381,12 +389,12 @@ begin
     begin
          //Result := ''+'wxBitmap'
          strBitmapArrayName:=self.Name+'_BITMAP';
-         Result:='wxBitmap '+strBitmapArrayName+'('+self.Name+'_XPM'+');';
+         Result:= GetCommentString(self.FWx_Comments.Text) + 'wxBitmap '+strBitmapArrayName+'('+self.Name+'_XPM'+');';
     end;
     if Result <> '' then
        Result:=Result+#13+Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] )
     else
-       Result:=Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] );
+       Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),strBitmapArrayName,self.Left,self.Top,self.width,self.Height,strStyle] );
 
 
     if trim(self.Wx_ToolTip) <> '' then
