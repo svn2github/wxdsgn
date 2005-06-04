@@ -3351,7 +3351,7 @@ var
   e: TEditor;
   pt: TPoint;
 begin
-  e := GetEditor;
+ e := GetEditor;
   if assigned(e) then
   begin
     pt := tbSpecials.ClientToScreen(point(Togglebtn.Left, Togglebtn.Top + togglebtn.Height));
@@ -4477,8 +4477,11 @@ begin
   if assigned(e) then
   begin
     if e.isForm then
-       actDesignerCut.Execute
-      else
+      if JvInspProperties.Focused then  // If property inspector is focused, then cut text
+        actWxPropertyInspectorCut.Execute
+      else   // Otherwise form component is selected so cut whole component (control and code)
+        actDesignerCut.Execute
+       else
          e.Text.CutToClipboard
   end;
 
@@ -4488,14 +4491,19 @@ procedure TMainForm.actCopyExecute(Sender: TObject);
 var
   e: TEditor;
 begin
+
   e := GetEditor;
-  if assigned(e) then
+
+   if assigned(e) then
   begin
     if e.isForm then
+      if JvInspProperties.Focused then  // If property inspector is focused, then copy text
+        actWxPropertyInspectorCopy.Execute
+      else   // Otherwise form component is selected so copy whole component (control and code)
         actDesignerCopy.Execute
     else
-        e.Text.CopyToClipboard;
-  end;
+     e.Text.CopyToClipboard;
+    end;
 end;
 
 procedure TMainForm.actPasteExecute(Sender: TObject);
@@ -4506,8 +4514,11 @@ begin
   if assigned(e) then
   begin
     if e.isForm then
+      if JvInspProperties.Focused then  // If property inspector is focused, then paste text
+        actWxPropertyInspectorPaste.Execute
+      else   // Otherwise form component is selected so paste whole component (control and code)
         actDesignerPaste.Execute
-    else
+      else
         e.Text.PasteFromClipboard;
    end;
 end;
@@ -5729,6 +5740,7 @@ var
   e: TEditor;
 begin
   e := GetEditor;
+
   if assigned(e) then
   begin
     if e.isForm then
@@ -9824,7 +9836,7 @@ procedure TMainForm.ELDesigner1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
 
- { if Shift = [ssCtrl] then
+  if Shift = [ssCtrl] then
   begin
     if (Key = Ord('C')) then
       ELDesigner1.Copy;
@@ -9833,7 +9845,7 @@ begin
     if (Key = Ord('V')) then
       ELDesigner1.Paste;
   end;
- } 
+
 end;
 {$ENDIF}
 
@@ -12190,7 +12202,7 @@ end;
 procedure TMainForm.actWxPropertyInspectorCopyExecute(Sender: TObject);
 begin
 {$IFDEF WX_BUILD}
-    SendMessage(GetFocus, WM_COPY, 0, 0);
+     SendMessage(GetFocus, WM_COPY, 0, 0);
 {$ENDIF}
 end;
 

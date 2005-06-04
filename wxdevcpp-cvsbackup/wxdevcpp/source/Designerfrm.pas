@@ -55,7 +55,7 @@ type
       Shift: TShiftState);
     procedure SetFrameProperties();
     procedure SetDialogProperties();
-     
+
   private
     { Private declarations }
     FWxFrm_IDName: string;
@@ -311,7 +311,7 @@ type
     procedure SetBGColor(strValue:String);
 
     property synEdit: TSynEdit read fsynEdit write fsynEdit;
-    
+ 
   end;
 
 var
