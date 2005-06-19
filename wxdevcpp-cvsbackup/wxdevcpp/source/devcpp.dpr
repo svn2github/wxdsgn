@@ -22,27 +22,21 @@ program devcpp;
 {$R 'icons.res' 'icons.rc'}
 {%File 'LangIDs.inc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}
-
-{$IFDEF WIN32}
 {$R 'webupdate\selfupdater.res' 'webupdate\selfupdater.rc'}
-{$ENDIF}
-{$IFDEF LINUX}
-{$R 'webupdate/selfupdater.res' 'webupdate/selfupdater.rc'}
-{$ENDIF}
-
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-{$IFDEF WIN32}
-  {$IFDEF WX_BUILD}
-  madExcept,madLinkDisAsm, madScreenShot, MemCheck in 'MemCheck.pas', inifiles,
-  {$ENDIF}  
-  Windows, Forms, sysUtils, SHFolder, Dialogs,
-{$ENDIF}
-{$IFDEF LINUX}
-  QForms, sysUtils, QDialogs,
-{$ENDIF}
+  madExcept,
+  madLinkDisAsm,
+  madScreenShot,
+  MemCheck in 'MemCheck.pas',
+  inifiles,
+  Windows,
+  Forms,
+  SHFolder,
+  Dialogs,
+  sysUtils,
   main in 'main.pas' {MainForm},
   MultiLangSupport in 'MultiLangSupport.pas',
   Splash in 'Splash.pas' {SplashForm},
@@ -108,20 +102,12 @@ uses
   ParamsFrm in 'ParamsFrm.pas' {ParamsForm},
   CompilerOptionsFrame in 'CompilerOptionsFrame.pas' {CompOptionsFrame: TFrame},
   CompileProgressFm in 'CompileProgressFm.pas' {CompileProgressForm},
-{$IFDEF WIN32}
-  WebThread in 'webupdate\WebThread.pas',
   WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
-{$ENDIF}
-{$IFDEF LINUX}
-  WebThread in 'webupdate/WebThread.pas',
-  WebUpdate in 'webupdate/WebUpdate.pas' {WebUpdateForm},
-{$ENDIF}
+  WebThread in 'webupdate\WebThread.pas',
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas' 
-  
-  {$IFDEF WX_BUILD},
+  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
   WxUtils in 'components\wxUtils.pas',
   WxBitmapButton in 'components\WxBitmapButton.pas',
@@ -325,7 +311,7 @@ begin
 
   Application.Initialize;
   Application.Title := 'wx-devcpp';
-  Application.CreateForm(TMainForm, MainForm);  
+  Application.CreateForm(TMainForm, MainForm);
   MainForm.Hide; // hide it
 
 

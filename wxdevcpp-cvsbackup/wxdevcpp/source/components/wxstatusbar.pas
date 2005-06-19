@@ -18,7 +18,7 @@ unit WxStatusBar;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, 
-     Forms, Graphics, Comctrls, WxUtils,WxSizerPanel;
+     Forms, Graphics, Comctrls, WxUtils,WxSizerPanel, Dialogs;
 
 type
   TWxStatusBar = class(TStatusBar,IWxComponentInterface,IWxDialogNonInsertableInterface,IWxStatusBarInterface,IWxContainerInterface,IWxContainerAndSizerInterface)
@@ -85,7 +85,6 @@ type
         procedure SetProxyFGColorString(value:String);
         procedure SetProxyBGColorString(value:String);
         
-        procedure DummySizerNonInsertableInterfaceProcedure;
         function GenerateLastCreationCode:String;
                 
     public
@@ -278,52 +277,23 @@ end;
 
 function TWxStatusBar.GenerateEventTableEntries(CurrClassName:String):String;
 begin
-
      Result:='';
-
-//     if trim(EVT_TEXT_ENTER) <> '' then
-//     begin
-//          Result:=Format('EVT_TEXT_ENTER(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_TEXT_ENTER]) +'';
-//     end;
-//
-//     if trim(EVT_UPDATE_UI) <> '' then
-//     begin
-//          Result:=Result+#13+Format('EVT_UPDATE_UI(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_UPDATE_UI]) +'';
-//     end;
-//
-//     if trim(EVT_TEXT) <> '' then
-//     begin
-//          Result:=Result+#13+Format('EVT_TEXT(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_TEXT]) +'';
-//     end;
-//
-//     if trim(EVT_TEXT_MAXLEN) <> '' then
-//     begin
-//          Result:=Result+#13+Format('EVT_TEXT_MAXLEN(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_TEXT_MAXLEN]) +'';
-//     end;
-//
-//     if trim(EVT_TEXT_URL) <> '' then
-//     begin
-//          Result:=Result+#13+Format('EVT_TEXT_URL(%s,%s::%s)',[WX_IDName,CurrClassName,EVT_TEXT_URL]) +'';
-//     end;
-
 end;
 
 function TWxStatusBar.GenerateGUIControlCreation:String;
-
-
-     var
+var
        I: Integer;
      strColorStr:String;
      strStyle,parentName,strAlignment:String;
 begin
      Result:='';
 
-//    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
-//       parentName:=GetWxWidgetParent(self)
-//    else
-//       parentName:=self.Parent.name;
+    { if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
+       parentName:=GetWxWidgetParent(self)
+    else
+       parentName:=self.Parent.name; }
 
-    parentName:=GetWxWidgetParent(self);
+   parentName:=GetWxWidgetParent(self);
 
    strStyle:=GetScrollbarSpecificStyle(self.Wx_GeneralStyle,Wx_StatusbarStyleSet);
 
@@ -389,7 +359,6 @@ begin
          Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StretchFactor,strAlignment,self.Wx_Border]);
     end;
 
-
 end;
 
 function TWxStatusBar.GenerateGUIControlDeclaration:String;
@@ -406,7 +375,7 @@ end;
 
 function TWxStatusBar.GenerateImageInclude: string;
 begin
-
+   Result:='';
 end;
 
 function TWxStatusBar.GetEventList:TStringlist;
@@ -427,7 +396,7 @@ end;
 
 function TWxStatusBar.GetParameterFromEventName(EventName: string):String;
 begin
-
+  Result:='';
 end;
 
 function TWxStatusBar.GetPropertyList:TStringList;
@@ -442,7 +411,7 @@ end;
 
 function TWxStatusBar.GetTypeFromEventName(EventName: string):string;
 begin
-
+  Result:='';
 end;
 
 function TWxStatusBar.GetWxClassName:String;
@@ -516,14 +485,9 @@ begin
    self.Font.Color:=GetColorFromString(value);
 end;
 
-procedure TWxStatusBar.DummySizerNonInsertableInterfaceProcedure;
-begin
-end;
-
 function TWxStatusBar.GenerateLastCreationCode:String;
 begin
     Result:='';
 end;
-
 
 end.

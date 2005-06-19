@@ -354,9 +354,9 @@ begin
      Result:='';
     strStyle:=GetSpinButtonSpecificStyle(self.Wx_GeneralStyle,Wx_SpinButtonStyle);
     if strStyle = '' then
-    begin
-        strStyle:=', wxSP_ARROW_KEYS ';
-    end;
+         strStyle := ', wxSP_ARROW_KEYS'
+    else
+        strStyle := ',' + strStyle;
 
     //Last comma is removed because it depends on the user selection of the properties.
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s, %d, %d, %d);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,strStyle,self.MinValue,Self.MaxValue,Value] );

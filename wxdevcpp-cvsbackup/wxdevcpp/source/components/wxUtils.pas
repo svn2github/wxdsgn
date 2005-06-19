@@ -140,7 +140,7 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
                         wxST_NO_AUTORESIZE);
     TWxLbStyleSet = set of TWxLbStyleItem;
 
-    TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
+     TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
                             wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NOHIDESEL,
                             wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP, wxTE_CHARWRAP, wxTE_BESTWRAP, wxTE_CAPITALIZE,
                             wxTE_MULTILINE, wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
@@ -174,7 +174,7 @@ TWxDesignerType = (dtWxDialog,dtWxFrame,dtWxWizard);
     TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
     TWxRBStyleSet = set of TWxRBStyleItem;
 
-    TWxGAgOrientation = (wxGA_HORIZONTAL, wxGA_VERTICAL);
+    TWxGagOrientation = (wxGA_HORIZONTAL, wxGA_VERTICAL);
     
     TWxgagStyleItem = (wxGA_SMOOTH);
     TWxgagStyleSet = Set of TWxgagStyleItem;
@@ -402,8 +402,7 @@ end;
   public
     class procedure RegisterAsDefaultItem;
   end;
-
-
+  
 function GetGridSelectionToString(grdsel:TWxGridSelection):String;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
@@ -2015,8 +2014,8 @@ begin
      strLst.add('wxTE_CENTRE');
 
   if wxTE_RIGHT in edtdStyle then
-        strLst.add('wxTE_RIGHT');
-
+         strLst.add('wxTE_RIGHT');
+  
   if wxTE_DONTWRAP in edtdStyle then
     strLst.add('wxTE_DONTWRAP');
 
@@ -2310,8 +2309,6 @@ begin
       Result := Result + ' | ' + strA
   end;
 
-  if trim(Result) <> '' then
-    Result := ', ' + Result;
 end;
 
 function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;sldrstyle:TWxsldrStyleSet):String;
@@ -5123,3 +5120,4 @@ begin
 end;
 
 end.
+

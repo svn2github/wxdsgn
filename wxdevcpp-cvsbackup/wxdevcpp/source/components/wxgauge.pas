@@ -39,9 +39,9 @@ type
         { Storage for property Wx_FGColor }
         FWx_FGColor : TColor;
         { Storage for property Wx_GaugeOrientation }
-        FWx_GaugeOrientation : TWxGAgOrientation;
+        FWx_GaugeOrientation : TWxGagOrientation;
         { Storage for property Wx_GaugeStyle }
-        FWx_GaugeStyle : TWxGAgStyleSet;
+        FWx_GaugeStyle : TWxGagStyleSet;
         { Storage for property Wx_GeneralStyle }
         FWx_GeneralStyle : TWxStdStyleSet;
         { Storage for property Wx_HelpText }
@@ -70,6 +70,7 @@ type
         FInvisibleFGColorString : String;
         FWx_Validator : String;
         FWx_Comments : TStrings;
+        FLastOrientation : TWxGagOrientation;
 
       { Private methods of TWxGauge }
         { Method to set variable and property values and create objects }
@@ -134,7 +135,7 @@ type
              read FWx_Enabled write FWx_Enabled
              default True;
         property Wx_FGColor : TColor read FWx_FGColor write FWx_FGColor;
-        property Wx_GaugeOrientation : TWxGAgOrientation
+        property Wx_GaugeOrientation : TWxGagOrientation
              read FWx_GaugeOrientation write FWx_GaugeOrientation;
         property Wx_GaugeStyle : TWxGAgStyleSet
              read FWx_GaugeStyle write FWx_GaugeStyle;
@@ -172,6 +173,7 @@ type
 
         property Wx_Validator : String read FWx_Validator write FWx_Validator;
         property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+        property LastOrientation : TWxGagOrientation read FLastOrientation write FLastOrientation;
 
   end;
 
@@ -204,7 +206,7 @@ begin
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
      FWx_Comments := TStringList.Create;
-
+   
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -277,7 +279,7 @@ begin
 
      FWx_PropertyList.add('Font : Font');
 
-     FWx_PropertyList.add('Checked : Checked');
+      FWx_PropertyList.add('Checked : Checked');
      FWx_PropertyList.add('Wx_RadioButtonStyle:Radio Button Style');
 
      FWx_PropertyList.add('wxRB_GROUP:wxRB_GROUP');
@@ -355,11 +357,20 @@ begin
        GetGaugeSpecificStyle(self.Wx_GeneralStyle,Wx_GaugeStyle);
 
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
-           strStyle := ', 0, ' + self.Wx_Validator;
-   
+           strStyle := ', wxGA_HORIZONTAL, ' + self.Wx_Validator;
+          strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName, GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Max,self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
@@ -402,6 +413,40 @@ begin
 
          Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StretchFactor,strAlignment,self.Wx_Border]);
     end;
+
+     if wxGA_SMOOTH in Wx_GaugeStyle then Smooth := True else Smooth := False;
+
+      // Set border style
+    if wxSUNKEN_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvLowered;
+         self.BevelOuter := bvLowered;
+         self.BevelKind := bkSoft;
+       end
+    else if wxRAISED_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvRaised;
+         self.BevelOuter := bvRaised;
+         self.BevelKind := bkSoft;
+       end
+     else if wxNO_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvNone;
+         self.BevelOuter := bvNone;
+         self.BevelKind := bkNone;
+       end
+     else if wxDOUBLE_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvSpace;
+         self.BevelOuter := bvSpace;
+         self.BevelKind := bkTile;
+       end
+    else
+       begin
+         self.BevelInner := bvNone;
+         self.BevelOuter := bvNone;
+         self.BevelKind := bkNone;
+       end;
 end;
 
 function TWxGauge.GenerateGUIControlDeclaration:String;
@@ -532,6 +577,8 @@ begin
 end;
 
 function TWxGauge.GetGaugeOrientation(Wx_GaugeOrientation : TWxGAgOrientation) : string;
+var
+  temp : Integer;
 begin
 Result:='';
     if  Wx_GaugeOrientation = wxGA_VERTICAL then
@@ -539,15 +586,25 @@ Result:='';
         Result:= ', wxGA_VERTICAL';
         self.Orientation := pbVertical;
         FWx_ControlOrientation := wxControlVertical;
-         exit;
+
     end;
-     if  Wx_GaugeOrientation = wxGA_HORIZONTAL then
+
+    if  Wx_GaugeOrientation = wxGA_HORIZONTAL then
     begin
         Result:= ', wxGA_HORIZONTAL';
         self.Orientation := pbHorizontal;
         FWx_ControlOrientation := wxControlHorizontal;
-          exit;
+
     end;
+
+    if (FLastOrientation <> Wx_GaugeOrientation) then
+     begin
+       FLastOrientation := Wx_GaugeOrientation;
+       temp := Width;
+       Width := Height;
+       Height := temp;
+       inherited SetBounds(Left, Top, Width, Height);
+     end;
 
 end;
 

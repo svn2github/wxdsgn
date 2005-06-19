@@ -92,10 +92,10 @@ type
     //function HandleExists(Menu: HMENU): Boolean;
     //function GetHandle: HMENU; virtual;
     function ItemExists(AItem: TWxCustomMenuItem): Boolean;
-    function GetItem(Index: Integer): TWxCustomMenuItem;
-    procedure SetItem(Index : Integer; Item : TWxCustomMenuItem);
     function GetCount: Integer;
     procedure Click(Sender: TObject); virtual;
+    function GetItem(Index: Integer): TWxCustomMenuItem;
+    procedure SetItem(Index : Integer; Item : TWxCustomMenuItem);
     //function GetItemFromHandle(Menu: HMenu): TWxCustomMenuItem;
   public
     //property Handle: HMenu read GetHandle;
@@ -109,7 +109,7 @@ type
     procedure DefineProperties(Filer : TFiler);override;
     procedure LoadFromStream(Stream : TStream);
     procedure SaveToStream(Stream : TStream);
-
+  
   published
 //    property Break: TMenuBreak read FBreak write SetBreak default mbNone;
 //    property Caption: string read FCaption write SetCaption;
@@ -159,7 +159,7 @@ begin
   FWX_BITMAP:=TPicture.Create;
   FItems:=TList.Create;
   FWx_Enabled:=true;
-  inherited Create;//(owner);
+  inherited Create; //(owner);
 end;
 
 destructor TWxCustomMenuItem.Destroy;

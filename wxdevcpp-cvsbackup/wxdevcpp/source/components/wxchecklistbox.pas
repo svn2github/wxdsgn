@@ -389,10 +389,20 @@ begin
        strStyle := GetCheckListBoxSelectorStyle(Wx_ListboxSubStyle);
 
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
            strStyle := ', 0, ' + self.Wx_Validator;
+
+              strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',[self.Name,self.Wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 

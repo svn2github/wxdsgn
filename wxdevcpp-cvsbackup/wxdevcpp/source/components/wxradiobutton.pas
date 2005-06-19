@@ -301,11 +301,21 @@ begin
     strStyle:=GetRadioButtonSpecificStyle(self.Wx_GeneralStyle,Wx_RadioButtonStyle);
 
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
            strStyle := ', 0, ' + self.Wx_Validator;
-   
+
+              strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then

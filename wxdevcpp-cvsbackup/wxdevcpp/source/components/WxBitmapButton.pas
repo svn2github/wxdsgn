@@ -38,7 +38,7 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
-
+      
         FWx_Comments : TStrings;
 
       { Private methods of TWxButton }
@@ -126,7 +126,7 @@ type
         property Wx_BITMAP: TPicture read FWx_BITMAP write SetButtonBitmap;
         property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
-  end;
+     end;
 
 procedure Register;
 
@@ -281,6 +281,10 @@ var
 begin
     Result:='';
     strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
+    if (strStyle = '') then
+       strStyle := ', wxBU_AUTODRAW, ' + GetCppString(Name)
+    else
+       strStyle := strStyle + ', ' + GetCppString(Name);
 
 //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
 //       parentName:=GetWxWidgetParent(self)
@@ -425,7 +429,7 @@ end;
 
 procedure TWxBitmapButton.SetIDValue(IDValue:longInt);
 begin
-     Wx_IDValue:=IDVAlue;
+     Wx_IDValue:=IDValue;
 end;
 
 procedure TWxBitmapButton.SetStretchFactor(intValue:Integer);

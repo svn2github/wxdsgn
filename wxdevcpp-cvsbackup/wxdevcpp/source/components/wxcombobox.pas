@@ -395,11 +395,21 @@ begin
 
     //Last comma is removed because it depends on the user selection of the properties.
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
            strStyle := ', 0, ' + self.Wx_Validator;
-   
+
+         strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+
     Result:=Result +#13+Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,'arrayStringFor_'+self.Name,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then

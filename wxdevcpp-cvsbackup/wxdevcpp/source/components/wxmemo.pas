@@ -18,7 +18,8 @@ unit WxMemo;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-     Forms, Graphics, Stdctrls, Wxutils, ExtCtrls, WxSizerPanel, Dialogs, xprocs;
+     Forms, Graphics, Stdctrls, Wxutils, ExtCtrls, WxSizerPanel, Dialogs,
+     xprocs;
 
 type
   TWxMemo = class(TMemo,IWxComponentInterface)
@@ -468,10 +469,21 @@ function TWxMemo.GenerateGUIControlCreation:String;
     //   strStyle:=',' +strStyle;
 
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
-           strStyle := ', 0, ' + self.Wx_Validator;
+           strStyle := ', wxTB_HORIZONTAL | wxNO_BORDER, ' + self.Wx_Validator;
+
+         strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+
 
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue), GetCppString(''), self.Left,self.Top,self.width,self.Height,strStyle] );
 
@@ -533,6 +545,58 @@ function TWxMemo.GenerateGUIControlCreation:String;
 
          Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StretchFactor,strAlignment,self.Wx_Border]);
     end;
+
+    // Change the text justification in the form designer
+ if wxTE_CENTRE in Wx_EditStyle then
+     self.Alignment := taCenter
+  else if wxTE_RIGHT in Wx_EditStyle then
+         self.Alignment := taRightJustify
+  else
+    self.Alignment := taLeftJustify;
+
+     // Set border style
+    if wxSUNKEN_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvLowered;
+         self.BevelOuter := bvLowered;
+         self.BevelKind := bkSoft;
+       end
+    else if wxRAISED_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvRaised;
+         self.BevelOuter := bvRaised;
+         self.BevelKind := bkSoft;
+       end
+     else if wxNO_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvNone;
+         self.BevelOuter := bvNone;
+         self.BevelKind := bkNone;
+       end
+     else if wxDOUBLE_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvSpace;
+         self.BevelOuter := bvSpace;
+         self.BevelKind := bkTile;
+       end
+    else
+       begin
+         self.BevelInner := bvNone;
+         self.BevelOuter := bvNone;
+         self.BevelKind := bkNone;
+       end;
+
+    if wxHSCROLL in self.Wx_GeneralStyle then
+        self.ScrollBars := ssHorizontal;
+
+    if wxVSCROLL in self.Wx_GeneralStyle then
+        self.ScrollBars := ssVertical;
+
+    if not(wxHSCROLL in self.Wx_GeneralStyle) and not(wxVSCROLL in self.Wx_GeneralStyle) then
+        self.ScrollBars := ssNone;
+
+    if (wxHSCROLL in self.Wx_GeneralStyle) and (wxVSCROLL in self.Wx_GeneralStyle) then
+        self.ScrollBars := ssBoth;
 
 end;
 

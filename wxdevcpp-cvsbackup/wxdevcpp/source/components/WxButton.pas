@@ -14,7 +14,7 @@ type
     
   TWxButton = class(TButton,IWxComponentInterface,IWxToolBarInsertableInterface,IWxToolBarNonInsertableInterface)
     private
-        FCanvas: TCanvas;
+          FCanvas: TCanvas;
         FOnDrawButton: TDrawButtonEvent;    
       { Private fields of TWxButton }
 
@@ -132,6 +132,7 @@ type
 
         property OnDrawButton: TDrawButtonEvent read FOnDrawButton write FOnDrawButton;
         property Color;
+
   end;
 
 procedure Register;
@@ -142,7 +143,7 @@ procedure Register;
 begin
      { Register TWxButton with wxWidgets as its
        default page on the Delphi component palette }
-     RegisterComponents('wxWidgets', [TWxButton]);
+      RegisterComponents('wxWidgets', [TWxButton]);
 end;
 
 { Method to set variable and property values and create objects }
@@ -183,7 +184,8 @@ constructor TWxButton.Create(AOwner: TComponent);
 begin
      inherited Create(AOwner);
     FCanvas := TCanvas.Create;
-    AutoInitialize;
+ 
+     AutoInitialize;
 
     { Code to perform other tasks when the component is created }
 
@@ -285,11 +287,21 @@ begin
     parentName:=GetWxWidgetParent(self);
 
     if trim(self.FWx_Validator) <> '' then
+    begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
            strStyle := ', 0, ' + self.Wx_Validator;
-           
+
+       strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
     if trim(self.Wx_ToolTip) <> '' then
@@ -338,6 +350,8 @@ begin
     begin
         Result:=Result +#13+Format('%s->AddControl(%s);',[self.Parent.Name,self.Name]);
     end;
+
+
 end;
 
 function TWxButton.GenerateGUIControlDeclaration:String;

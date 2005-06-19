@@ -1,7 +1,7 @@
 // $Id$
 //
 
-unit WxMenuBar;
+unit WxMenuBar;                        
 
 interface
 
@@ -69,8 +69,7 @@ type
         property Wx_Caption : String read FWx_Caption write FWx_Caption;
         property Wx_MenuItems : TWxCustomMenuItem  read FWx_MenuItems  write FWx_MenuItems;
         property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
-
-  end;
+   end;
 
 procedure Register;
 
@@ -135,9 +134,10 @@ end;
 procedure TWxMenuBar.AutoDestroy;
 begin
     Glyph.Assign(nil);
-     FWx_PropertyList.Free;
+    FWx_PropertyList.Free;
     FWx_MenuItems.Free;
     FMainMenu.Destroy;
+     
 end; { of AutoDestroy }
 
 procedure TWxMenuBar.Loaded;
@@ -145,6 +145,7 @@ begin
     inherited Loaded;
     ///Do all stuff here
     self.BuildMenus(self.Wx_MenuItems);
+
 end;
 
 
@@ -158,9 +159,10 @@ begin
      FWx_PropertyList.add('wx_Class:Base Class');
      FWx_PropertyList.add('Wx_Caption :Caption');
      FWx_PropertyList.add('Name : Name');
-     FWx_PropertyList.add('Wx_MenuItems: Menu Items');
+     FWx_PropertyList.add ('Wx_MenuItems: Menu Items');
      FWx_PropertyList.add('Wx_Comments:Comments');
-
+    
+      
 end;
 
 destructor TWxMenuBar.Destroy;
@@ -572,7 +574,7 @@ function TWxMenuBar.GetMaxID:Integer;
 var
   I: Integer;
   retValue:Integer;
-  
+
   function GetMaxIDFromSubMenu(submnu:TWxCustomMenuItem):Integer;
   var
     myretValue:Integer;

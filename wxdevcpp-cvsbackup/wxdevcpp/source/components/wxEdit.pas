@@ -17,11 +17,11 @@ unit WxEdit;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, 
-     Forms, Graphics, Stdctrls, WxUtils, ExtCtrls, WxSizerPanel,WxToolBar;
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+     Forms, Graphics, Stdctrls, WxUtils, ExtCtrls, WxSizerPanel,WxToolBar, JvEdit;
 
 type
-  TWxEdit = class(TEdit,IWxComponentInterface,IWxToolBarInsertableInterface,IWxToolBarNonInsertableInterface)
+  TWxEdit = class(TJvEdit,IWxComponentInterface,IWxToolBarInsertableInterface,IWxToolBarNonInsertableInterface)
     private
       { Private fields of TWxEdit }
         { Storage for property EVT_TEXT }
@@ -232,8 +232,9 @@ begin
      FWx_ProxyFGColorString := TWxColorString.Create;
      defaultBGColor:=self.color;
      defaultFGColor:=self.font.color;
+     BorderStyle := bsNone;
      FWx_Comments := TStringList.Create;
-
+     
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -259,6 +260,15 @@ begin
           PasswordChar:='*'
      else
           PasswordChar:=#0;
+
+  // Change the text justification in the form designer
+  if wxTE_CENTRE in value then
+     self.Alignment := taCenter
+  else if wxTE_RIGHT in value then
+     self.Alignment := taRightJustify
+  else
+     self.Alignment := taLeftJustify;
+    
 end;
 
 { Override OnChange handler from TEdit,IWxComponentInterface }
@@ -325,8 +335,7 @@ begin
 
      FWx_PropertyList.add('Wx_Enable :Enabled');
      FWx_PropertyList.add('Wx_Visible :Visible');
-     FWx_PropertyList.add('Text : Text ');
-     FWx_PropertyList.add('Name : Name');
+      FWx_PropertyList.add('Name : Name');
      FWx_PropertyList.add('Left : Left');
      FWx_PropertyList.add('Top : Top');
      FWx_PropertyList.add('Width : Width');
@@ -360,6 +369,7 @@ begin
      FWx_PropertyList.Add('wxTE_PROCESS_TAB:wxTE_PROCESS_TAB');
      FWx_PropertyList.Add('wxTE_PASSWORD:wxTE_PASSWORD');
      FWx_PropertyList.Add('wxTE_READONLY:wxTE_READONLY');
+     FWx_PropertyList.Add('wxTE_MULTILINE:wxTE_MULTILINE');
      FWx_PropertyList.Add('wxTE_RICH:wxTE_RICH');
      FWx_PropertyList.Add('wxTE_RICH2:wxTE_RICH2');
      FWx_PropertyList.Add('wxTE_AUTO_URL:wxTE_AUTO_URL');
@@ -469,10 +479,21 @@ begin
     strStyle:=GetEditSpecificStyle(self.Wx_GeneralStyle,self.Wx_EditStyle);
 
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
-           strStyle := ', 0, ' + self.Wx_Validator;
+           strStyle := ', wxTB_HORIZONTAL | wxNO_BORDER, ' + self.Wx_Validator;
+
+       strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+
 
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Text),self.Left,self.Top,self.width,self.Height,strStyle] );
 
@@ -520,6 +541,38 @@ begin
         Result:=Result +#13+Format('%s->AddControl(%s);',[self.Parent.Name,self.Name]);
     end;
 
+    // Set border style
+    if wxSUNKEN_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvLowered;
+         self.BevelOuter := bvLowered;
+         self.BevelKind := bkSoft;
+       end
+    else if wxRAISED_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvRaised;
+         self.BevelOuter := bvRaised;
+         self.BevelKind := bkSoft;
+       end
+     else if wxNO_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvNone;
+         self.BevelOuter := bvNone;
+         self.BevelKind := bkNone;
+       end
+     else if wxDOUBLE_BORDER in self.Wx_GeneralStyle then
+       begin
+         self.BevelInner := bvSpace;
+         self.BevelOuter := bvSpace;
+         self.BevelKind := bkTile;
+       end
+    else
+       begin
+         self.BevelInner := bvNone;
+         self.BevelOuter := bvNone;
+         self.BevelKind := bkNone;
+       end;
+    
 end;
 
 function TWxEdit.GenerateGUIControlDeclaration:String;
@@ -683,4 +736,5 @@ procedure TWxEdit.DummyToolBarInsertableInterfaceProcedure;
 begin
 //
 end;
+
 end.

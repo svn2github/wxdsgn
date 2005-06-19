@@ -211,6 +211,8 @@ begin
      defaultFGColor:=self.font.color;
      FWx_Comments := TStringList.Create;
 
+     AutoSize := true;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -238,7 +240,7 @@ end;
 
 constructor TWxStaticText.Create(AOwner: TComponent);
 begin
-     AutoSize:=false;
+
      { Call the Create method of the parent class }
      inherited Create(AOwner);
      { AutoInitialize sets the initial values of variables and      }
@@ -338,9 +340,7 @@ begin
 end;
 
 function TWxStaticText.GenerateGUIControlCreation:String;
-
-
-     var
+var
      strColorStr:String;
      strStyle,parentName,strAlignment:String;
 begin
@@ -356,12 +356,10 @@ begin
 
     strStyle:=GetLabelSpecificStyle(Wx_GeneralStyle,Wx_LabelStyle);
 
-      if trim(self.FWx_Validator) <> '' then
-       if trim(strStyle) <> '' then
-           strStyle := strStyle + ', ' + self.Wx_Validator
-       else
-           strStyle := ', 0, ' + self.Wx_Validator;
+    if trim(strStyle) = '' then
+        strStyle := ', 0';
 
+    strStyle := strStyle + ', ' + GetCppString(Name);
 
     //Last comma is removed because it depends on the user selection of the properties.
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.Wx_Class,ParentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),GetCppString(self.Caption),self.Left,self.Top,self.width,self.Height,strStyle] );
@@ -405,6 +403,24 @@ begin
     begin
         Result:=Result +#13+Format('%s->AddControl(%s);',[self.Parent.Name,self.Name]);
     end;
+
+  // Change the text justification in the form designer
+  if wxALIGN_LEFT in Wx_LabelStyle then
+     self.Alignment := taLeftJustify;
+
+  if wxALIGN_CENTRE in Wx_LabelStyle then
+     self.Alignment := taCenter;
+
+  if wxALIGN_RIGHT in Wx_LabelStyle then
+         self.Alignment := taRightJustify;
+
+  if wxST_NO_AUTORESIZE in Wx_LabelStyle then
+       self.AutoSize := False
+  else
+  begin
+       self.AutoSize := True;
+       self.Repaint;
+  end;
 
 end;
 
@@ -515,7 +531,7 @@ begin
      { Code to check and adjust W and H }
 
      { Update the component size if we adjusted W or H }
-     if (W <> Width) or (H <> Height) then
+    if (W <> Width) or (H <> Height) then
         inherited SetBounds(Left, Top, W, H);
 
      { Code to update dimensions of any owned sub-components
@@ -524,6 +540,7 @@ begin
 
      Message.Result := 0;
 end;
+ 
 function TWxStaticText.GetFGColor:string;
 begin
    Result:=FInvisibleFGColorString;

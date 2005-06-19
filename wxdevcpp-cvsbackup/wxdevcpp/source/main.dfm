@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 183
-  Top = 132
+  Left = 260
+  Top = 113
   Width = 638
   Height = 444
   Color = clBtnFace
@@ -25,9 +25,9 @@ object MainForm: TMainForm
   TextHeight = 13
   object SplitterLeft: TSplitter
     Left = 209
-    Top = 100
+    Top = 102
     Width = 4
-    Height = 162
+    Height = 160
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -45,9 +45,9 @@ object MainForm: TMainForm
   end
   object SplitterRight: TSplitter
     Left = 460
-    Top = 100
+    Top = 102
     Width = 3
-    Height = 162
+    Height = 160
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -737,12 +737,11 @@ object MainForm: TMainForm
     Left = 0
     Top = 16
     Width = 630
-    Height = 84
+    Height = 86
     Align = alTop
     AutoDock = False
     AutoSize = True
-    BevelInner = bvNone
-    BevelKind = bkSoft
+    BevelInner = bvSpace
     RowSize = 28
     TabOrder = 1
     OnContextPopup = ControlBar1ContextPopup
@@ -1133,9 +1132,9 @@ object MainForm: TMainForm
   end
   object PageControl: TPageControl
     Left = 213
-    Top = 100
+    Top = 102
     Width = 247
-    Height = 162
+    Height = 160
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1193,18 +1192,18 @@ object MainForm: TMainForm
   end
   object pnlControlHolder: TPanel
     Left = 463
-    Top = 100
+    Top = 102
     Width = 167
-    Height = 162
+    Height = 160
     Align = alRight
     TabOrder = 6
     Visible = False
   end
   object pnlBrowsers: TPanel
     Left = 0
-    Top = 100
+    Top = 102
     Width = 209
-    Height = 162
+    Height = 160
     Align = alLeft
     DockSite = True
     TabOrder = 7

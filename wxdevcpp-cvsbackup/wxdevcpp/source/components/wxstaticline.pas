@@ -64,6 +64,7 @@ type
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
         FWx_LIOrientation : TWx_LIOrientation;
+        FLastOrientation : TWx_LIOrientation;
         FWx_Comments : TStrings;
       { Private methods of TWxStaticLine }
         { Method to set variable and property values and create objects }
@@ -175,6 +176,7 @@ type
         property Wx_LIOrientation : TWx_LIOrientation read FWx_LIOrientation write FWx_LIOrientation;
 
         property Wx_Length : Integer read FWx_Length write FWx_Length;
+        property LastOrientation : TWx_LIOrientation read FLastOrientation write FLastOrientation;
   end;
 
 procedure Register;
@@ -205,6 +207,8 @@ begin
      defaultBGColor:=clBtnFace;
      defaultFGColor:=self.font.color;
      FWx_Comments := TStringList.Create;
+     LastOrientation := FWx_LIOrientation;
+
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -361,9 +365,9 @@ begin
     strStyle:= GetStdStyleString(self.Wx_GeneralStyle);
 
     if (strStyle <> '') then
-        strStyle := GetLineOrientation(FWx_LIOrientation) + ' | ' + strStyle
+        strStyle := GetLineOrientation(FWx_LIOrientation) + ' | ' + strStyle + ', ' + GetCppString(Name)
     else
-         strStyle :=  GetLineOrientation(FWx_LIOrientation);
+         strStyle :=  GetLineOrientation(FWx_LIOrientation) + ', ' + GetCppString(Name);
 
   if (FWx_LIOrientation = wxLI_HORIZONTAL) then
         Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,FWx_Length,0,strStyle])
@@ -407,6 +411,15 @@ begin
 
          Result:=Result +#13+Format('%s->Add(%s,%d,%s,%d);',[self.Parent.Name,self.Name,self.Wx_StretchFactor,strAlignment,self.Wx_Border]);
     end;
+
+    if (FWx_LIOrientation = wxLI_HORIZONTAL) then
+    begin
+        if (self.FWx_Length <> Width) then
+                Width := self.FWx_Length
+    end
+    else
+         if (self.FWx_Length <> Height) then
+                Height := self.FWx_Length;
 
 end;
 
@@ -589,6 +602,8 @@ begin
 end;
 
 function TWxStaticLine.GetLineOrientation(value : TWx_LIOrientation) : string;
+var
+  temp : Integer;
 begin
 Result:='';
     if  value = wxLI_VERTICAL then
@@ -599,6 +614,15 @@ Result:='';
       begin
         Result:= ', wxLI_HORIZONTAL';
       end;
+
+    if (FLastOrientation <> FWx_LIOrientation) then
+     begin
+       FLastOrientation := FWx_LIOrientation;
+       temp := Width;
+       Width := Height;
+       Height := temp;
+       inherited SetBounds(Left, Top, Width, Height);
+     end;
 
 end;
 

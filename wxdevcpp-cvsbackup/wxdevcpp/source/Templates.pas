@@ -176,6 +176,13 @@ begin
       fOptions.Objfiles.DelimitedText := ReadString(cProject, 'ObjFiles', '');
         fOptions.Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
         fOptions.Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
+
+        {$IFDEF WX_BUILD}
+        // Tony Reina 11 June 2005
+        // This is needed to grab the MakeIncludes from the template file of a new project
+        fOptions.MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
+      {$ENDIF}
+
         fOptions.ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
         fOptions.cmdLines.Compiler:= ReadString(cProject, 'Compiler', '');
         fOptions.cmdLines.CppCompiler:= ReadString(cProject, 'CppCompiler', '');

@@ -42,7 +42,7 @@ uses
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
   ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
   wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr, ExceptionFilterUnit,
-  DesignerOptions
+  DesignerOptions, JvExStdCtrls, JvEdit
   {$ENDIF}
   ;
 {$ENDIF}
@@ -4147,9 +4147,9 @@ begin
       fCompiler.Project := fProject;
 
       {$IFDEF WX_BUILD}
-      if (GetTemplate.Name = 'wxWidgets Frame') then
+      if strContains('wxWidgets Frame', GetTemplate.Name) then
           NewWxProjectCode(dtWxFrame)
-      else if (GetTemplate.Name = 'wxWidgets Dialog') then
+      else if strContains('wxWidgets Dialog', GetTemplate.Name) then
           NewWxProjectCode(dtWxDialog);
       {$ENDIF}
 
@@ -9463,10 +9463,10 @@ begin
               TWxToolBar(SelectedComponent).Parent:=ELDesigner1.DesignControl;
           end;
 
-          if(SelectedComponent is TWxStatusBar) then
+         if(SelectedComponent is TWxStatusBar) then
           begin
             TWxStatusBar(SelectedComponent).Parent:=ELDesigner1.DesignControl;
-          end;
+          end;   
           //////////////////////////////////////////////////////////////////////
 
       if GetWxWindowControls(ELDesigner1.DesignControl) = 1 then
@@ -10907,6 +10907,7 @@ var
   CppEditor, Hppeditor: TSynEdit;
   strClassName:String;
 begin
+
     Result:=false;
     e:=self.GetEditor(self.PageControl.ActivePageIndex);
     if not Assigned(e) then
@@ -11012,6 +11013,7 @@ begin
     e.GetDesignerCPPEditor.InsertString('', true);
     e.UpdateDesignerData;
   end;
+
 end;
 
 function TMainForm.CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string;var ErrorString:String): Boolean;

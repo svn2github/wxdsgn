@@ -485,10 +485,20 @@ begin
     strStyle := GetSBOrientation(self.Wx_SBOrientation) + strStyle;
 
       if trim(self.FWx_Validator) <> '' then
+      begin
        if trim(strStyle) <> '' then
            strStyle := strStyle + ', ' + self.Wx_Validator
        else
-           strStyle := ', 0, ' + self.Wx_Validator;
+           strStyle := ', wxSB_HORIZONTAL, ' + self.Wx_Validator;
+
+              strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
     Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',[self.Name,self.wx_Class,parentName,GetWxIDString(self.Wx_IDName,self.Wx_IDValue),self.Left,self.Top,self.width,self.Height,strStyle] );
 

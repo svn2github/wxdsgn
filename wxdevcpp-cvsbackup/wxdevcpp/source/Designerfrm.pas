@@ -1567,8 +1567,8 @@ begin
 
             if IsControlWxStatusBar(TControl(Components[i])) then
             begin
-            if (TWinControl(Components[i]).Controls[J] is TWxScrollBar) then
-            else
+//malcolm             if (TWinControl(Components[i]).Controls[J] is TWxScrollBar) then
+//malcolm            else
              //strLst.add(Format('%s->SetFieldsCount(%d);',[self.Components[i].Name]));
                 strLst.add(Format('this->SetStatusBar(%s);',[self.Components[i].Name]));
             end;
@@ -1868,3 +1868,5 @@ begin
 
 end;
 end.
+
+
