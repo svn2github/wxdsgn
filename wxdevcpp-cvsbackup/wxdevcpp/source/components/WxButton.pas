@@ -12,7 +12,7 @@ type
   TDrawButtonEvent = procedure(Control: TWinControl;
     Rect: TRect; State: TOwnerDrawState) of object;
     
-  TWxButton = class(TButton,IWxComponentInterface,IWxToolBarInsertableInterface,IWxToolBarNonInsertableInterface)
+  TWxButton = class(TMultiLineBtn,IWxComponentInterface,IWxToolBarInsertableInterface,IWxToolBarNonInsertableInterface)
     private
           FCanvas: TCanvas;
         FOnDrawButton: TDrawButtonEvent;    
@@ -351,6 +351,21 @@ begin
         Result:=Result +#13+Format('%s->AddControl(%s);',[self.Parent.Name,self.Name]);
     end;
 
+    // Set the button caption horizontal alignment
+    if (wxBU_LEFT in Wx_ButtonStyle) then
+       HorizAlign := halLeft
+    else if (wxBU_RIGHT in Wx_ButtonStyle) then
+       HorizAlign := halRight
+    else
+       HorizAlign := halCentre;
+
+    // Set the button caption horizontal alignment
+    if (wxBU_TOP in Wx_ButtonStyle) then
+       VerticalAlign := valTop
+    else if (wxBU_BOTTOM in Wx_ButtonStyle) then
+       VerticalAlign := valBottom
+    else
+       VerticalAlign := valCentre;
 
 end;
 

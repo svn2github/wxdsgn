@@ -16,7 +16,7 @@ type
         FWx_Class : String;
         FWx_Caption:String;
         FWx_Comments : TStrings;
-
+      
         FWx_PropertyList : TStringList;
         FWx_MenuItems: TWxCustomMenuItem;
         FMainMenu: TMainMenu;
@@ -69,6 +69,7 @@ type
         property Wx_Caption : String read FWx_Caption write FWx_Caption;
         property Wx_MenuItems : TWxCustomMenuItem  read FWx_MenuItems  write FWx_MenuItems;
         property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+
    end;
 
 procedure Register;
@@ -90,7 +91,7 @@ begin
      Glyph.Handle:=LoadBitmap(hInstance, 'TWxMenuBar');
      FMainMenu := TMainMenu.Create(Self.Parent);
      FWx_Comments := TStringList.Create;
-
+   
 end; { of AutoInitialize }
 
 procedure TWxMenuBar.BuildMenus(value: TWxCustomMenuItem);
@@ -137,7 +138,7 @@ begin
     FWx_PropertyList.Free;
     FWx_MenuItems.Free;
     FMainMenu.Destroy;
-     
+
 end; { of AutoDestroy }
 
 procedure TWxMenuBar.Loaded;
@@ -161,7 +162,6 @@ begin
      FWx_PropertyList.add('Name : Name');
      FWx_PropertyList.add ('Wx_MenuItems: Menu Items');
      FWx_PropertyList.add('Wx_Comments:Comments');
-    
       
 end;
 

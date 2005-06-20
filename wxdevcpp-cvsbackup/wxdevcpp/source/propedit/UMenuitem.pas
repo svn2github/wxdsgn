@@ -99,7 +99,7 @@ type
     procedure ForceOK;
      function GetValidMenuName(str:String):string;
     function NextValue(str:String):string;
-    procedure CopyMenuItem(var SrcMenuItem,DesMenuItem:TWxCustomMenuItem);
+    procedure CopyMenuItem(SrcMenuItem :TWxCustomMenuItem; var DesMenuItem:TWxCustomMenuItem);
 
     //property MenuItems:TWxCustomMenuItem read FMenuItems write SetMenuItems;
   end;
@@ -542,9 +542,18 @@ begin
    end;
 end;
 function TMenuItemForm.GetValidMenuName(str:String):string;
+var
+   i : Integer;
 begin
     //FixMe
     Result:=UpperCase(trim(str));
+
+    // Added by Termit
+    // In polish language use code page 8859-2 or Win-1250 with character up to 127 code
+    //change characters up to 127 code
+    For i:=1 to Length(Result) do If Ord(Result[i]) > 127 Then Result[i] :=
+'_';
+
     strSearchReplace(Result,' ','',[srAll]);
     strSearchReplace(Result,'&','_',[srAll]);
     strSearchReplace(Result,'\t','_',[srAll]);    
@@ -585,7 +594,7 @@ begin
 
 end;
 
-procedure TMenuItemForm.CopyMenuItem(var SrcMenuItem,DesMenuItem:TWxCustomMenuItem);
+procedure TMenuItemForm.CopyMenuItem(SrcMenuItem:TWxCustomMenuItem;var DesMenuItem:TWxCustomMenuItem);
 begin
     DesMenuItem.Wx_Caption:=SrcMenuItem.Wx_Caption;
     DesMenuItem.Wx_HelpText:=SrcMenuItem.Wx_HelpText;
@@ -754,9 +763,9 @@ end;
 procedure TMenuItemForm.MoveMenuUp(Sender: TObject);
 var
    NodeBefore, NodeSelect : TTreeNode;
-   MenuItem: TWxCustomMenuItem;
-   index_select, index_previous, IDValue : Integer;
-   IDName, Name, Caption : String;
+   MenuItemBefore, MenuItemSelect : TWxCustomMenuItem;
+   index_select, index_previous : Integer;
+
 begin
 
 // Tony Reina 16 June 2005
@@ -764,9 +773,6 @@ begin
 //   tvMenuItem is a TTreeNode that just displays the order on the menu editor form
 //   FMenuItems is a TWxCustomMenuItem that actually holds the menu order and is used to update the C++ code that's created
 //   so we need to modify both to have any effect
-
-  index_select := tvMenuItem.Selected.Index;  // Get the current index
-  index_previous := tvMenuItem.Selected.GetPrev.Index;  // Get the next index
 
   NodeSelect := tvMenuItem.Selected; // Get the current node
   NodeBefore := tvMenuItem.Selected.GetPrev; // Get the previous node
@@ -774,66 +780,47 @@ begin
   if (NodeBefore <> nil) then
     begin
 
-  if NodeSelect.HasChildren or NodeBefore.HasChildren
-       or (NodeSelect.Parent <> nil) or (NodeBefore.Parent <> nil) then
-    begin
+     if (NodeSelect.Parent <> nil) xor (NodeBefore.Parent <> nil) then
+   begin
 
-    MessageDlg('parent or child', mtError, [mbOK], 0);
+   MessageDlg('here', mtError, [mbOK], 0);
 
- {   IDValue := TWxCustomMenuItem(NodeBefore.Data).Wx_IDValue;
-    IDName := TWxCustomMenuItem(NodeBefore.Data).Wx_IDName;
-    Caption := TWxCustomMenuItem(NodeBefore.Data).Wx_Caption;
-    Name := TWxCustomMenuItem(NodeBefore.Data).Wx_Name;
+        if (NodeSelect.Parent <> nil) then
+                NodeSelect := NodeSelect.Parent;
 
-    FMenuItems.Items[index_previous].Wx_IDValue := TWxCustomMenuItem(NodeSelect.Data).Wx_IDValue;
-    FMenuItems.Items[index_previous].Wx_Name := TWxCustomMenuItem(NodeSelect.Data).Wx_Name;
-   FMenuItems.Items[index_previous].Wx_IDName := TWxCustomMenuItem(NodeSelect.Data).Wx_IDName;
-   FMenuItems.Items[index_previous].Wx_Caption := TWxCustomMenuItem(NodeSelect.Data).Wx_Caption;
+        if (NodeBefore.Parent <> nil) then
+                NodeBefore := NodeBefore.Parent;
 
-    FMenuItems.Items[index_select].Wx_IDValue := IDValue;
-    FMenuItems.Items[index_select].Wx_Name := Name;
-   FMenuItems.Items[index_select].Wx_IDName := IDName;
-   FMenuItems.Items[index_select].Wx_Caption := Caption;
-      }
-     tvMenuItem.Selected.MoveTo(tvMenuItem.Selected.GetPrev, naInsert); // Move the selected node before the previous one
+   end;
+
+   index_select := NodeSelect.Index;  // Get the current index
+  index_previous := NodeBefore.Index;  // Get the next index
+
+    MenuItemSelect := TWxCustomMenuItem.Create(nil);
+   MenuItemBefore := TWxCustomMenuItem.Create(nil);
+   CopyMenuItem(TWxCustomMenuItem(NodeSelect.Data), MenuItemSelect);
+   CopyMenuItem(TWxCustomMenuItem(NodeBefore.Data), MenuItemBefore);
+
+   FMenuItems.Items[index_previous] := MenuItemSelect;
+   FMenuItems.Items[index_select] := MenuItemBefore;
+
+   NodeSelect.MoveTo(NodeBefore, naInsert); // Move the selected node before the previous one
+
+   UpdateMenuItemDataFromScreenData(TWxCustomMenuItem(NodeSelect.Data));
+    DisableUpdate;
+
 
    //   ForceOK; // Only allow OK and CANCEL buttons
 
-    end
-  else
-   begin
-
-   IDValue := TWxCustomMenuItem(NodeBefore.Data).Wx_IDValue;
-    IDName := TWxCustomMenuItem(NodeBefore.Data).Wx_IDName;
-    Caption := TWxCustomMenuItem(NodeBefore.Data).Wx_Caption;
-    Name := TWxCustomMenuItem(NodeBefore.Data).Wx_Name;
-
-    FMenuItems.Items[index_previous].Wx_IDValue := TWxCustomMenuItem(NodeSelect.Data).Wx_IDValue;
-    FMenuItems.Items[index_previous].Wx_Name := TWxCustomMenuItem(NodeSelect.Data).Wx_Name;
-   FMenuItems.Items[index_previous].Wx_IDName := TWxCustomMenuItem(NodeSelect.Data).Wx_IDName;
-   FMenuItems.Items[index_previous].Wx_Caption := TWxCustomMenuItem(NodeSelect.Data).Wx_Caption;
-
-    FMenuItems.Items[index_select].Wx_IDValue := IDValue;
-    FMenuItems.Items[index_select].Wx_Name := Name;
-   FMenuItems.Items[index_select].Wx_IDName := IDName;
-   FMenuItems.Items[index_select].Wx_Caption := Caption;
-
-     tvMenuItem.Selected.MoveTo(tvMenuItem.Selected.GetPrev, naInsert); // Move the selected node before the previous one
-
-      ForceOK; // Only allow OK and CANCEL buttons
-
-      end;
-
-     end;
+    end;
 
 end;
 
 procedure TMenuItemForm.MoveMenuDown(Sender: TObject);
 var
    NodeSelect, NodeAfter : TTreeNode;
-   MenuItem: TWxCustomMenuItem;
-   index_select, index_next, IDValue : Integer;
-   IDName, Name, Caption : String;
+   MenuItemAfter, MenuItemSelect : TWxCustomMenuItem;
+   index_select, index_next : Integer;
 
 begin
 
@@ -843,68 +830,45 @@ begin
 //   FMenuItems is a TWxCustomMenuItem that actually holds the menu order and is used to update the C++ code that's created
 //   so we need to modify both to have any effect
 
-  index_select := tvMenuItem.Selected.Index;  // Get the current index
-  index_next := tvMenuItem.Selected.GetNext.Index;  // Get the next index
-
   NodeSelect := tvMenuItem.Selected; // Get the current node
   NodeAfter := tvMenuItem.Selected.GetNext; // Get the next node
 
   if (NodeAfter <> nil) then
-    begin
+  begin
 
-    if NodeSelect.HasChildren or NodeAfter.HasChildren
-       or (NodeSelect.Parent <> nil) or (NodeAfter.Parent <> nil) then
-    begin
+   MenuItemSelect := TWxCustomMenuItem.Create(nil);
+   MenuItemAfter := TWxCustomMenuItem.Create(nil);
 
-    MessageDlg('parent or child', mtError, [mbOK], 0);
+   if (NodeSelect.Parent <> nil) xor (NodeAfter.Parent <> nil) then
+   begin
+       MessageDlg('here', mtError, [mbOK], 0);
 
-   { IDValue := TWxCustomMenuItem(NodeAfter.Data).Wx_IDValue;
-    IDName := TWxCustomMenuItem(NodeAfter.Data).Wx_IDName;
-    Caption := TWxCustomMenuItem(NodeAfter.Data).Wx_Caption;
-    Name := TWxCustomMenuItem(NodeAfter.Data).Wx_Name;
+        if (NodeSelect.Parent <> nil) then
+                NodeSelect := NodeSelect.Parent;
 
+        if (NodeAfter.Parent <> nil) then
+                NodeAfter := NodeAfter.Parent;
 
-    FMenuItems.Items[index_next].Wx_IDValue := TWxCustomMenuItem(NodeSelect.Data).Wx_IDValue;
-    FMenuItems.Items[index_next].Wx_Name := TWxCustomMenuItem(NodeSelect.Data).Wx_Name;
-   FMenuItems.Items[index_next].Wx_IDName := TWxCustomMenuItem(NodeSelect.Data).Wx_IDName;
-   FMenuItems.Items[index_next].Wx_Caption := TWxCustomMenuItem(NodeSelect.Data).Wx_Caption;
+   end;
 
-    FMenuItems.Items[index_select].Wx_IDValue := IDValue;
-    FMenuItems.Items[index_select].Wx_Name := Name;
-   FMenuItems.Items[index_select].Wx_IDName := IDName;
-   FMenuItems.Items[index_select].Wx_Caption := Caption;
-     }
+    index_select := NodeSelect.Index;  // Get the current index
+  index_next := NodeAfter.Index;  // Get the next index
 
-    NodeAfter.MoveTo(NodeSelect, naInsert);  // Move the selected node after the next node
+   CopyMenuItem(TWxCustomMenuItem(NodeSelect.Data), MenuItemSelect);
+   CopyMenuItem(TWxCustomMenuItem(NodeAfter.Data), MenuItemAfter);
 
-  //  ForceOK; // Only allow OK and CANCEL buttons
-    end
-    else
-      begin
+   FMenuItems.Items[index_next] := MenuItemSelect;
+   FMenuItems.Items[index_select] := MenuItemAfter;
 
-    IDValue := TWxCustomMenuItem(NodeAfter.Data).Wx_IDValue;
-    IDName := TWxCustomMenuItem(NodeAfter.Data).Wx_IDName;
-    Caption := TWxCustomMenuItem(NodeAfter.Data).Wx_Caption;
-    Name := TWxCustomMenuItem(NodeAfter.Data).Wx_Name;
+   NodeAfter.MoveTo(NodeSelect, naInsert); // Move the selected node before the previous one
 
+   //   ForceOK; // Only allow OK and CANCEL buttons
 
-    FMenuItems.Items[index_next].Wx_IDValue := TWxCustomMenuItem(NodeSelect.Data).Wx_IDValue;
-    FMenuItems.Items[index_next].Wx_Name := TWxCustomMenuItem(NodeSelect.Data).Wx_Name;
-   FMenuItems.Items[index_next].Wx_IDName := TWxCustomMenuItem(NodeSelect.Data).Wx_IDName;
-   FMenuItems.Items[index_next].Wx_Caption := TWxCustomMenuItem(NodeSelect.Data).Wx_Caption;
+ //  MenuItemSelect.Destroy;
+ //  MenuItemAfter.Destroy;
+   
+   end;
 
-    FMenuItems.Items[index_select].Wx_IDValue := IDValue;
-    FMenuItems.Items[index_select].Wx_Name := Name;
-   FMenuItems.Items[index_select].Wx_IDName := IDName;
-   FMenuItems.Items[index_select].Wx_Caption := Caption;
-
-    NodeAfter.MoveTo(NodeSelect, naInsert);  // Move the selected node after the next node
-
-    ForceOK; // Only allow OK and CANCEL buttons
-
-    end;
-
-    end;
 end;
 
 end.

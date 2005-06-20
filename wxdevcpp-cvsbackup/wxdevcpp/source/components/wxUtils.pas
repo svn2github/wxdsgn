@@ -54,6 +54,43 @@ type
         property Y:Integer read FY write FY default 0;
   end;
 
+
+// Added by Tony Reina 20 June 2006
+// We need a TButton class that will allow for the caption to be aligned
+// I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
+//  BEGIN: TMultiLineBtn
+type
+  THorizAlign = (halLeft,halRight,halCentre);
+  TVerticalAlign = (valTop,valBottom,valCentre);
+
+TMultiLineBtn = class(TButton)
+  private
+    fMultiLine: Boolean;
+    fHorizAlign : THorizAlign;
+    fVerticalAlign :TVerticalAlign;
+    procedure SetMultiLine(Value: Boolean);
+    procedure SetHorizAlign(Value: THorizAlign);
+    procedure SetVerticalAlign(Value: TVerticalAlign);
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property HorizAlign: THorizAlign 
+      read fHorizAlign 
+      write setHorizAlign 
+      default halCentre;
+    property VerticalAlign :TVerticalAlign 
+      read fVerticalAlign 
+      write setVerticalAlign 
+      default valCentre;
+    property MultiLine: Boolean 
+      read fMultiLine 
+      write SetMultiLine 
+      default True;
+  end;
+// END: TMultiLineBtn
+
 TWxSizerVerticalAlignment = (wxSZALIGN_TOP,wxSZALIGN_BOTTOM,wxSZALIGN_CENTER_VERTICAL,wxSZALIGN_GROW_VERTICAL);
 TWxSizerHorizontalAlignment = (wxSZALIGN_LEFT,wxSZALIGN_RIGHT,wxSZALIGN_CENTER_HORIZONTAL,wxSZALIGN_GROW_HORIZONTAL);
 TWxControlOrientation = (wxControlVertical,wxControlHorizontal,wxControlNone);
@@ -5118,6 +5155,69 @@ begin
   NewValue := Value + [iifEditButton];
   inherited SetFlags(NewValue);
 end;
+
+
+// Added by Tony Reina 20 June 2006
+// We need a TButton class that will allow for the caption to be aligned
+// I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
+//  BEGIN: TMultiLineBtn
+constructor TMultiLineBtn.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fMultiLine     :=True;
+  fHorizAlign    := halCentre;
+  fVerticalAlign := valCentre;
+end;
+
+procedure TMultiLineBtn.SetVerticalAlign(Value: TVerticalAlign);
+begin
+  if fVerticalAlign<>Value then
+  begin
+    fVerticalAlign:=Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TMultiLineBtn.SetHorizAlign(Value: THorizAlign);
+begin
+  if fHorizAlign<>Value then
+  begin
+    fHorizAlign:=Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TMultiLineBtn.SetMultiLine(Value: Boolean);
+begin
+  if fMultiLine<>Value then
+  begin
+    fMultiLine:=Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TMultiLineBtn.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  case VerticalAlign of
+    valTop    :  Params.Style:=Params.Style or BS_TOP;
+    valBottom :  Params.Style:=Params.Style or BS_BOTTOM;
+    valCentre :  Params.Style:=Params.Style or BS_VCENTER;
+  end;
+
+  case HorizAlign of
+    halLeft   :  Params.Style:=Params.Style or BS_LEFT;
+    halRight  :  Params.Style:=Params.Style or BS_RIGHT;
+    halCentre :  Params.Style:=Params.Style or BS_CENTER;
+  end;
+
+  if MultiLine then
+    Params.Style:=Params.Style or BS_MULTILINE
+  else
+    Params.Style:=Params.Style and not BS_MULTILINE;
+end;
+
+// END: TMultiLineBtn
 
 end.
 
