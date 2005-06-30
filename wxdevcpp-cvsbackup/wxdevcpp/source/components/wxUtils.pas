@@ -553,7 +553,7 @@ implementation
 
 uses DesignerFrm,wxlistCtrl,WxStaticBitmap,WxBitmapButton,WxSizerPanel,WxToolButton,
      UColorEdit,UMenuitem,WxCustomMenuItem,WxPopupMenu,WxMenuBar,
-     WxNonVisibleBaseComponent,wxBitBtn;
+     WxNonVisibleBaseComponent;
 
 function GetTotalHtOfAllToolBarAndStatusBar(ParentControl:TWinControl):Integer;
 var
@@ -4833,9 +4833,6 @@ begin
   if  strClassName = UpperCase('TWxBitmapButton') then
     PictureEdit.Image1.Picture.Assign(TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
 
-  if  strClassName = UpperCase('TWxBitBtn') then
-    PictureEdit.Image1.Picture.Assign(TWxBitBtn(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
-
   if  strClassName = UpperCase('TWxToolButton') then
     PictureEdit.Image1.Picture.Assign(TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
 
@@ -4879,13 +4876,6 @@ begin
             TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.assign(picObj);
             TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent:=true;
             TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
-        end;
-
-        if  strClassName = UpperCase('TWxBitBtn') then
-        begin
-            TWxBitBtn(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.assign(picObj);
-            TWxBitBtn(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent:=true;
-            TWxBitBtn(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
         end;
 
         if  strClassName = UpperCase('TWxToolButton') then

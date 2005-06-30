@@ -38,7 +38,7 @@ type
         FWx_PropertyList : TStringList;
         FInvisibleBGColorString : String;
         FInvisibleFGColorString : String;
-      
+        FWx_Validator : String;
         FWx_Comments : TStrings;
 
       { Private methods of TWxButton }
@@ -125,7 +125,8 @@ type
         property Color;
         property Wx_BITMAP: TPicture read FWx_BITMAP write SetButtonBitmap;
         property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
-
+             property Wx_Validator : String read FWx_Validator write FWx_Validator;
+   
      end;
 
 procedure Register;
@@ -224,6 +225,8 @@ begin
     FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
     FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
+    FWx_PropertyList.add('Wx_Validator : Validator code');
+
     FWx_EventList.add('EVT_BUTTON:OnClick');
     FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
@@ -281,10 +284,22 @@ var
 begin
     Result:='';
     strStyle:=GetButtonSpecificStyle(self.Wx_GeneralStyle,Wx_ButtonStyle);
-    if (strStyle = '') then
-       strStyle := ', wxBU_AUTODRAW, ' + GetCppString(Name)
-    else
+
+    if trim(self.FWx_Validator) <> '' then
+    begin
+       if trim(strStyle) <> '' then
+           strStyle := strStyle + ', ' + self.Wx_Validator
+       else
+           strStyle := ', wxBU_AUTODRAW, ' + self.Wx_Validator;
+
        strStyle := strStyle + ', ' + GetCppString(Name);
+
+    end
+    else
+      if trim(strStyle) <> '' then
+           strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+      else
+           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
 //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
 //       parentName:=GetWxWidgetParent(self)

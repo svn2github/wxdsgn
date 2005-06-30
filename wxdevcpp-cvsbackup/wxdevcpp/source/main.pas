@@ -1205,7 +1205,7 @@ uses
 
   {$IFDEF WX_BUILD}
   ,WxBoxSizer, WxStaticBoxSizer,WxGridSizer,
-  WxButton, wxBitBtn, WxBitmapButton,WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
+  WxButton, WxBitmapButton,WXCheckBox, WxComboBox, WxEdit, WxGauge, WxListBox, Wxlistctrl,
   WxMemo, WXRadioButton, WxScrollBar,wxGrid,
   WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
   WxStaticText, WxTreeCtrl, WxControlPanel,CompFileIo, WXFlexGridSizer,
@@ -9004,7 +9004,7 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.ReadClass;
 begin
-  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton,TWxBitBtn, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
+  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
   RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine]);
   RegisterClasses([TWxPanel,TWXListBook, TWxNoteBook, TWxStatusBar, TWxToolBar]);
   RegisterClasses([TWxNoteBookPage,TWxchecklistbox,TWxSplitterWindow]);
@@ -10135,9 +10135,6 @@ begin
 
                     if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton') then
                         GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);
-
-                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitBtn') then
-                        GenerateXPMDirectly(TWxBitBtn(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);
 
                     if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton') then
                         GenerateXPMDirectly(TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap,SelectedComponent.Name,e.FileName);

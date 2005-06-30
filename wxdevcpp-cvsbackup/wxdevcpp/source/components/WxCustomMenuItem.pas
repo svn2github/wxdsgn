@@ -69,7 +69,7 @@ type
     FWx_Checked : Boolean;
     FWX_BITMAP:TPicture;
     FWx_Comments : TStrings;
-
+    FItems: TList;
     FAdded: Boolean;
     //FParentHandle: HMENU;
     FPosInParent: Integer;
@@ -77,7 +77,6 @@ type
     FPopUp,
     FChecked,
     FEnabled: Boolean;
-    FItems: TList;
     FCaption: string;
     //FHandle: HMENU;
     FOnClick: TNotifyEvent;
@@ -109,7 +108,7 @@ type
     procedure DefineProperties(Filer : TFiler);override;
     procedure LoadFromStream(Stream : TStream);
     procedure SaveToStream(Stream : TStream);
-  
+
   published
 //    property Break: TMenuBreak read FBreak write SetBreak default mbNone;
 //    property Caption: string read FCaption write SetCaption;
@@ -136,6 +135,8 @@ type
     property WX_BITMAP:TPicture read FWX_BITMAP write FWX_BITMAP;
     property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
 
+    property Wx_Items : TList read FItems write FItems;
+ 
   end;
 
   TwxCustomMenuItemWrapper = class (TComponent)

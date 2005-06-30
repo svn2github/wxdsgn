@@ -17,7 +17,7 @@ type
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
     tvMenuItem: TTreeView;
-    Label1: TLabel;
+     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label5: TLabel;
@@ -58,8 +58,7 @@ type
     Image1: TImage;
     Button3: TButton;
     txtIDName: TComboBox;
-    SpinButton1: TSpinButton;
-    procedure btnInsertClick(Sender: TObject);
+     procedure btnInsertClick(Sender: TObject);
     procedure btnSubmenuClick(Sender: TObject);
     procedure txtCaptionKeyDown(Sender: TObject; var Key: Word;Shift: TShiftState);
     procedure btnDeleteClick(Sender: TObject);
@@ -76,14 +75,18 @@ type
     procedure btBrowseClick(Sender: TObject);
     procedure btNewOnMenuClick(Sender: TObject);
     procedure btNewUpdateUIClick(Sender: TObject);
-    procedure MoveMenuUp(Sender: TObject);
-    procedure MoveMenuDown(Sender: TObject);
+     procedure MoveMenuDown(Sender: TObject);
+    procedure tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure tvMenuItemDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+     
   private
     { Private declarations }
     FMaxID:Integer;
     FCounter:Integer;
     FSubMenuItemCreationClicked:Boolean;
     procedure AddMenuClass(const S:string);
+    Procedure MoveNode(SourceNode, TargetNode : TTreeNode);
   public
     { Public declarations }
     FMenuItems:TWxCustomMenuItem;
@@ -185,7 +188,6 @@ begin
     cbOnUpdateUI.Enabled:=true;
     btNewOnMenu.Enabled:=true;
     btNewUpdateUI.Enabled:=true;
-    SpinButton1.Enabled := true;
 
 end;
 
@@ -214,7 +216,6 @@ begin
     cbOnUpdateUI.Enabled:=false;
     btNewOnMenu.Enabled:=false;
     btNewUpdateUI.Enabled:=false;
-    SpinButton1.Enabled := false;
 
 end;
 
@@ -243,8 +244,7 @@ begin
     cbOnUpdateUI.Enabled:=false;
     btNewOnMenu.Enabled:=false;
     btNewUpdateUI.Enabled:=false;
-    SpinButton1.Enabled := false;
-
+  
 end;
 
 
@@ -259,7 +259,7 @@ begin
     MenuItem:= TWxCustomMenuItem.Create(nil);//(TWxCustomMenuItem(tvMenuItem.Selected.Data));
     inc(FCounter);
     Inc(FMaxID);
-    
+
     MenuItem.Wx_Caption:= 'SubMenuItem'+IntToStr(FCounter);
     MenuItem.Wx_IDValue:= FMaxID;
     curMnuItem:=TWxCustomMenuItem(tvMenuItem.Selected.Data);
@@ -760,62 +760,6 @@ begin
     btNewUpdateUI.Enabled:=false;
 end;
 
-procedure TMenuItemForm.MoveMenuUp(Sender: TObject);
-var
-   NodeBefore, NodeSelect : TTreeNode;
-   MenuItemBefore, MenuItemSelect : TWxCustomMenuItem;
-   index_select, index_previous : Integer;
-
-begin
-
-// Tony Reina 16 June 2005
-// There are 2 objects for the menu:
-//   tvMenuItem is a TTreeNode that just displays the order on the menu editor form
-//   FMenuItems is a TWxCustomMenuItem that actually holds the menu order and is used to update the C++ code that's created
-//   so we need to modify both to have any effect
-
-  NodeSelect := tvMenuItem.Selected; // Get the current node
-  NodeBefore := tvMenuItem.Selected.GetPrev; // Get the previous node
-
-  if (NodeBefore <> nil) then
-    begin
-
-     if (NodeSelect.Parent <> nil) xor (NodeBefore.Parent <> nil) then
-   begin
-
-   MessageDlg('here', mtError, [mbOK], 0);
-
-        if (NodeSelect.Parent <> nil) then
-                NodeSelect := NodeSelect.Parent;
-
-        if (NodeBefore.Parent <> nil) then
-                NodeBefore := NodeBefore.Parent;
-
-   end;
-
-   index_select := NodeSelect.Index;  // Get the current index
-  index_previous := NodeBefore.Index;  // Get the next index
-
-    MenuItemSelect := TWxCustomMenuItem.Create(nil);
-   MenuItemBefore := TWxCustomMenuItem.Create(nil);
-   CopyMenuItem(TWxCustomMenuItem(NodeSelect.Data), MenuItemSelect);
-   CopyMenuItem(TWxCustomMenuItem(NodeBefore.Data), MenuItemBefore);
-
-   FMenuItems.Items[index_previous] := MenuItemSelect;
-   FMenuItems.Items[index_select] := MenuItemBefore;
-
-   NodeSelect.MoveTo(NodeBefore, naInsert); // Move the selected node before the previous one
-
-   UpdateMenuItemDataFromScreenData(TWxCustomMenuItem(NodeSelect.Data));
-    DisableUpdate;
-
-
-   //   ForceOK; // Only allow OK and CANCEL buttons
-
-    end;
-
-end;
-
 procedure TMenuItemForm.MoveMenuDown(Sender: TObject);
 var
    NodeSelect, NodeAfter : TTreeNode;
@@ -836,12 +780,12 @@ begin
   if (NodeAfter <> nil) then
   begin
 
+ { MoveNode(NodeAfter, NodeSelect);
    MenuItemSelect := TWxCustomMenuItem.Create(nil);
    MenuItemAfter := TWxCustomMenuItem.Create(nil);
 
    if (NodeSelect.Parent <> nil) xor (NodeAfter.Parent <> nil) then
    begin
-       MessageDlg('here', mtError, [mbOK], 0);
 
         if (NodeSelect.Parent <> nil) then
                 NodeSelect := NodeSelect.Parent;
@@ -866,9 +810,85 @@ begin
 
  //  MenuItemSelect.Destroy;
  //  MenuItemAfter.Destroy;
+ }
    
    end;
 
+end;
+
+procedure TMenuItemForm.MoveNode(SourceNode, TargetNode : TTreeNode);
+begin
+
+ //  TargetNode.MoveTo(SourceNode, naInsert);
+
+     FMenuItems.Wx_Items.Move(SourceNode.Index, TargetNode.Index);
+
+
+ // MessageDlg(Format('Source = %d, Target = %d', [SourceNode.Index, TargetNode.Index]), mtError, [mbOK], 0);
+
+
+end;
+
+// http://users.iafrica.com/d/da/dart/zen/Articles/TTreeView/TTreeView_eg13.html
+// The drag-drop code was modified from Andre .v.d. Merwe's website
+// Source code was released as public domain
+procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+      TargetNode : TTreeNode;
+      SourceNode : TTreeNode;
+begin
+ /////////////////////////////////////////
+   // Something has just been droped
+   /////////////////////////////////////////
+
+      with tvMenuItem do
+      begin
+            {Get the node the item was dropped on}
+         TargetNode := GetNodeAt(  X,  Y  );
+            {Just to make things a bit easier}
+         SourceNode := Selected;
+
+         {Make sure something was droped onto}
+         if(  TargetNode = nil  ) then
+         begin
+            EndDrag(  false  );
+            Exit;
+         end;
+
+            {Dropping onto self or onto parent?}
+         if(  (TargetNode = Selected) or
+              (TargetNode = Selected.Parent)
+           ) then
+         begin
+            MessageBeep(  MB_ICONEXCLAMATION  );
+            ShowMessage(  'Destination node is the same as the source node'  );
+            EndDrag(  false  );
+            Exit;
+         end;
+
+       {Drag drop was valid so move the nodes}
+       MoveNode(SourceNode, TargetNode);
+
+       {Show the nodes that were just moved}
+       TargetNode.Expand(  true  );
+end;
+end;
+
+procedure TMenuItemForm.tvMenuItemDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+    /////////////////////////////////////////
+   // Decide if drag-drop is to be allowed
+   /////////////////////////////////////////
+
+      Accept := false;
+
+         {Only accept drag and drop from a TTreeView}
+      if(  Sender is TTreeView  ) then
+            {Only accept from self}
+         if(  TTreeView(Sender) = tvMenuItem  ) then
+            Accept := true;
 end;
 
 end.
