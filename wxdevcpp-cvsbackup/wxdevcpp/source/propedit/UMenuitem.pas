@@ -75,11 +75,10 @@ type
     procedure btBrowseClick(Sender: TObject);
     procedure btNewOnMenuClick(Sender: TObject);
     procedure btNewUpdateUIClick(Sender: TObject);
-     procedure MoveMenuDown(Sender: TObject);
-    procedure tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
+     procedure tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure tvMenuItemDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-     
+  
   private
     { Private declarations }
     FMaxID:Integer;
@@ -99,8 +98,7 @@ type
     procedure SetMenuItemsDes(ThisOwnerControl,ThisParentControl:TWinControl;SourceMenuItems:TWxCustomMenuItem;DestMenuItems:TWxCustomMenuItem);
     procedure EnableUpdate;
     procedure DisableUpdate;
-    procedure ForceOK;
-     function GetValidMenuName(str:String):string;
+    function GetValidMenuName(str:String):string;
     function NextValue(str:String):string;
     procedure CopyMenuItem(SrcMenuItem :TWxCustomMenuItem; var DesMenuItem:TWxCustomMenuItem);
 
@@ -188,34 +186,6 @@ begin
     cbOnUpdateUI.Enabled:=true;
     btNewOnMenu.Enabled:=true;
     btNewUpdateUI.Enabled:=true;
-
-end;
-
-procedure TMenuItemForm.ForceOK;
-begin
-    btApply.Enabled:=false;
-    btEdit.Enabled:=false;
-    tvMenuItem.Enabled:=false;
-    btnSubmenu.Enabled:=false;
-    btnInsert.Enabled:=false;
-    btnDelete.Enabled:=false;
-    btnOK.Enabled:=true;
-    btnCancel.Enabled:=true;
-
-    txtCaption.Enabled:=false;
-    txtHint.Enabled:=false;
-    txtIDName.Enabled:=false;
-    txtIDValue.Enabled:=false;
-    cbEnabled.Enabled:=false;
-    cbVisible.Enabled:=false;
-    cbChecked.Enabled:=false;
-    bmpMenuImage.Enabled:=false;
-    btBrowse.Enabled:=false;
-    cbMenuType.Enabled:=false;
-    cbOnMenu.Enabled:=false;
-    cbOnUpdateUI.Enabled:=false;
-    btNewOnMenu.Enabled:=false;
-    btNewUpdateUI.Enabled:=false;
 
 end;
 
@@ -760,80 +730,95 @@ begin
     btNewUpdateUI.Enabled:=false;
 end;
 
-procedure TMenuItemForm.MoveMenuDown(Sender: TObject);
-var
-   NodeSelect, NodeAfter : TTreeNode;
-   MenuItemAfter, MenuItemSelect : TWxCustomMenuItem;
-   index_select, index_next : Integer;
-
-begin
-
-// Tony Reina 16 June 2005
-// There are 2 objects for the menu:
-//   tvMenuItem is a TTreeNode that just displays the order on the menu editor form
-//   FMenuItems is a TWxCustomMenuItem that actually holds the menu order and is used to update the C++ code that's created
-//   so we need to modify both to have any effect
-
-  NodeSelect := tvMenuItem.Selected; // Get the current node
-  NodeAfter := tvMenuItem.Selected.GetNext; // Get the next node
-
-  if (NodeAfter <> nil) then
-  begin
-
- { MoveNode(NodeAfter, NodeSelect);
-   MenuItemSelect := TWxCustomMenuItem.Create(nil);
-   MenuItemAfter := TWxCustomMenuItem.Create(nil);
-
-   if (NodeSelect.Parent <> nil) xor (NodeAfter.Parent <> nil) then
-   begin
-
-        if (NodeSelect.Parent <> nil) then
-                NodeSelect := NodeSelect.Parent;
-
-        if (NodeAfter.Parent <> nil) then
-                NodeAfter := NodeAfter.Parent;
-
-   end;
-
-    index_select := NodeSelect.Index;  // Get the current index
-  index_next := NodeAfter.Index;  // Get the next index
-
-   CopyMenuItem(TWxCustomMenuItem(NodeSelect.Data), MenuItemSelect);
-   CopyMenuItem(TWxCustomMenuItem(NodeAfter.Data), MenuItemAfter);
-
-   FMenuItems.Items[index_next] := MenuItemSelect;
-   FMenuItems.Items[index_select] := MenuItemAfter;
-
-   NodeAfter.MoveTo(NodeSelect, naInsert); // Move the selected node before the previous one
-
-   //   ForceOK; // Only allow OK and CANCEL buttons
-
- //  MenuItemSelect.Destroy;
- //  MenuItemAfter.Destroy;
- }
-   
-   end;
-
-end;
-
 procedure TMenuItemForm.MoveNode(SourceNode, TargetNode : TTreeNode);
+var
+  Node : TTreeNode;
+  indiciesarray : Array of Integer;
+  sourceindex, targetindex : Integer;
+  level : Integer;
+  SourceItem, TargetItem : TWxCustomMenuItem;
 begin
 
- //  TargetNode.MoveTo(SourceNode, naInsert);
+   sourceindex := SourceNode.Index;
+   targetindex := TargetNode.Index;
 
-     FMenuItems.Wx_Items.Move(SourceNode.Index, TargetNode.Index);
 
+  // Tony Reina 1 July 2005
+  // Basic idea:
+  // We want to insert the source item into the target item and then delete the old source pointer.
+  // So in reality this is just moving around memory pointers on the heap.
+  //
+  // Problem: The insert and delete commands for a TList only affect the tree level being pointed to.
+  // For example, let's say we have P1, P2, P3, and P4 on the root level.
+  // P3 has children C1, C2, C3. C4 has children D1, D2, D3, D4. D2 has children E1, E2, and E3.
+  // If we ask for the index of D4, Delphi gives us 3 (since Delphi starts counting at 0).
+  // If we ask for the index of P4, Delphi also gives us 3. So the index is only with respect to the level.
+  // If we just do a FMenuItems.Wx_Items.Delete(3) it will always delete P4.
+  // To affect D4, we need to essentially do a FMenuItems.Items[2].Items[3].Wx_Items.Delete(3);
+  // To affect E1, we need to do a FMenuItems.Items[2].Items[3].Items[1].Delete(0);
+  //
+  // Approach:
+  //   1. We need to work backward on the node to determine the indicies
+  //      of all of the parents for that node. For example, E1->D2->C4->P3.
+  //   2. We point SourceItem at the top level of FMenuItems
+  //   3. We cycle down through the levels using the array of indicies
+  //      we've found in step 1 (except for the very last index (which will
+  //      be at the level we want to work on).
+  //      --> This cycling is essentially just moving the variable's pointer down the levels
+  //
+  Node := SourceNode;
+  SetLength(indiciesarray, SourceNode.Level + 1); // Dynamically size the array (.Level is 0-based count)
+  indiciesarray[0] := Node.Index;
+  for level := 1 to SourceNode.Level do
+   begin
+       Node := Node.Parent;  // Point the node to the parent node
+       indiciesarray[level] := Node.Index;  // Record the index of the current node
+   end ;
 
- // MessageDlg(Format('Source = %d, Target = %d', [SourceNode.Index, TargetNode.Index]), mtError, [mbOK], 0);
+  // Get source pointer
+  SourceItem := FMenuItems;  // Point to the menu
 
+  // Move the pointer down through the parents
+  for level := SourceNode.Level downto 1 do
+       SourceItem := SourceItem.Items[indiciesarray[level]];
+
+  // Now do the same procedure for the target node
+  
+  // Get target pointer
+  TargetItem := FMenuItems;
+  Node := TargetNode;
+
+  SetLength(indiciesarray, TargetNode.Level + 1); // .Level is 0-based count
+  indiciesarray[0] := Node.Index;
+  for level := 1 to TargetNode.Level do
+   begin
+      Node := Node.Parent; // Point the node to the parent node
+      indiciesarray[level] := Node.Index;  // Record the index of the current node
+    end ;
+
+   for level := TargetNode.Level downto 1 do
+       TargetItem := TargetItem.Items[indiciesarray[level]];
+
+   // At this point, SourceItem and TargetItem point to the correct level
+   //   in the menu. Just need to insert the source at the target and delete
+   //   the original source pointer.
+   
+   // Change the TList (this is what generates the code and gets saved)
+    TargetItem.Wx_Items.Insert(targetindex, SourceItem.Wx_Items[sourceindex]);
+    if (sourceindex > targetindex) and (TargetNode.Level = SourceNode.Level) then
+        SourceItem.Wx_Items.Delete(sourceindex + 1)
+    else
+     SourceItem.Wx_Items.Delete(sourceindex);
+
+    // Change the Treeview (this is what is displayed, but doesn't set the code)
+    SourceNode.MoveTo(TargetNode, naInsert);
 
 end;
 
 // http://users.iafrica.com/d/da/dart/zen/Articles/TTreeView/TTreeView_eg13.html
 // The drag-drop code was modified from Andre .v.d. Merwe's website
 // Source code was released as public domain
-procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
       TargetNode : TTreeNode;
       SourceNode : TTreeNode;
@@ -845,33 +830,29 @@ begin
       with tvMenuItem do
       begin
             {Get the node the item was dropped on}
-         TargetNode := GetNodeAt(  X,  Y  );
+         TargetNode := GetNodeAt( X, Y );
             {Just to make things a bit easier}
          SourceNode := Selected;
 
          {Make sure something was droped onto}
-         if(  TargetNode = nil  ) then
+         if( TargetNode = nil ) then
          begin
-            EndDrag(  false  );
+            EndDrag( false );
             Exit;
          end;
 
             {Dropping onto self or onto parent?}
-         if(  (TargetNode = Selected) or
-              (TargetNode = Selected.Parent)
-           ) then
+         if( (TargetNode = Selected) or (TargetNode = Selected.Parent) ) then
          begin
-            MessageBeep(  MB_ICONEXCLAMATION  );
-            ShowMessage(  'Destination node is the same as the source node'  );
-            EndDrag(  false  );
+            MessageBeep(MB_ICONEXCLAMATION);
+            ShowMessage( 'Destination node is the same as the source node' );
+            EndDrag( false );
             Exit;
          end;
 
        {Drag drop was valid so move the nodes}
        MoveNode(SourceNode, TargetNode);
 
-       {Show the nodes that were just moved}
-       TargetNode.Expand(  true  );
 end;
 end;
 
@@ -884,10 +865,10 @@ begin
 
       Accept := false;
 
-         {Only accept drag and drop from a TTreeView}
-      if(  Sender is TTreeView  ) then
+      {Only accept drag and drop from a TTreeView}
+      if( Sender is TTreeView ) then
             {Only accept from self}
-         if(  TTreeView(Sender) = tvMenuItem  ) then
+         if( TTreeView(Sender) = tvMenuItem ) then
             Accept := true;
 end;
 
