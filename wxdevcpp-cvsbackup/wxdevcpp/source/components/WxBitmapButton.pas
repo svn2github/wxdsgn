@@ -299,7 +299,7 @@ begin
       if trim(strStyle) <> '' then
            strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
       else
-           strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+           strStyle := ', wxBU_AUTODRAW, wxDefaultValidator, ' + GetCppString(Name);
 
 //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
 //       parentName:=GetWxWidgetParent(self)
