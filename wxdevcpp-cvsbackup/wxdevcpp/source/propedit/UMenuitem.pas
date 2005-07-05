@@ -621,7 +621,8 @@ begin
             if  tvMenuItem.Selected.Parent <> nil then
             begin
                 tvMenuItem.Selected:=tvMenuItem.Selected.Parent;
-                tvMenuItem.Selected.Expand(false);
+              //  tvMenuItem.Selected.Expand(false);
+                tvMenuItem.Selected.Expand(true);
             end;
         end;
         FSubMenuItemCreationClicked:=false;
@@ -742,7 +743,6 @@ begin
    sourceindex := SourceNode.Index;
    targetindex := TargetNode.Index;
 
-
   // Tony Reina 1 July 2005
   // Basic idea:
   // We want to insert the source item into the target item and then delete the old source pointer.
@@ -804,14 +804,18 @@ begin
    //   the original source pointer.
    
    // Change the TList (this is what generates the code and gets saved)
-    TargetItem.Wx_Items.Insert(targetindex, SourceItem.Wx_Items[sourceindex]);
-    if (sourceindex > targetindex) and (TargetNode.Level = SourceNode.Level) then
+   // Let's insert this AFTER the target node (targetindex + 1)
+    TargetItem.Wx_Items.Insert(targetindex + 1, SourceItem.Wx_Items[sourceindex]);
+    if (sourceindex > (targetindex + 1)) and (TargetNode.Level = SourceNode.Level) then
         SourceItem.Wx_Items.Delete(sourceindex + 1)
     else
      SourceItem.Wx_Items.Delete(sourceindex);
 
-    // Change the Treeview (this is what is displayed, but doesn't set the code)
-    SourceNode.MoveTo(TargetNode, naInsert);
+     // Change the Treeview (this is what is displayed, but doesn't set the code)
+    if (TargetNode.GetNextSibling <> nil) then
+        SourceNode.MoveTo(TargetNode.GetNextSibling, naInsert)
+    else
+        SourceNode.MoveTo(TargetNode, naAdd);
 
 end;
 
@@ -869,7 +873,8 @@ begin
       if( Sender is TTreeView ) then
             {Only accept from self}
          if( TTreeView(Sender) = tvMenuItem ) then
-            Accept := true;
+             Accept := true;
+
 end;
 
 end.

@@ -2819,6 +2819,19 @@ begin
     actMsgCopy.Caption := Strings[ID_SHEET_POP_COPY];
     actMsgClear.Caption := Strings[ID_SHEET_POP_CLEAR];
 
+{$IFDEF WX_BUILD}
+actDesignerCopy.Caption := Strings[ID_ITEM_COPY];
+actDesignerCut.Caption := Strings[ID_ITEM_CUT];
+actDesignerPaste.Caption := Strings[ID_ITEM_PASTE];
+actDesignerDelete.Caption := Strings[ID_ITEM_DELETE];
+actWxPropertyInspectorCut.Caption := Strings[ID_ITEM_CUT];
+actWxPropertyInspectorCopy.Caption := Strings[ID_ITEM_COPY];
+actWxPropertyInspectorPaste.Caption := Strings[ID_ITEM_PASTE];
+actWxPropertyInspectorDelete.Caption := Strings[ID_ITEM_DELETE];
+actNewwxDialog.Caption := Strings[ID_TB_NEW] + ' wxDialog';
+actNewWxFrame.Caption := Strings[ID_TB_NEW] + ' wxFrame';
+{$ENDIF}
+
     // controls
     CompilerOutput.Columns[0].Caption := Strings[ID_COL_LINE];
     CompilerOutput.Columns[1].Caption := Strings[ID_COL_FILE];
@@ -11000,7 +11013,7 @@ begin
     Cppeditor.Lines.Append('{');
     Cppeditor.Lines.Append(#9'// insert your code here');
     if not AnsiSameText(trim(VarArguments),'void') then
-    Cppeditor.Lines.Append(#9'event.Skip();');
+    Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
     Line := CppEditor.Lines.Count;
 
     Cppeditor.Lines.Append('}');
@@ -11138,7 +11151,7 @@ begin
     Cppeditor.Lines.Append('{');
     Cppeditor.Lines.Append(#9'// insert your code here');
     if not AnsiSameText(trim(VarArguments),'void') then
-    Cppeditor.Lines.Append(#9'event.Skip();');
+    Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
     Line := CppEditor.Lines.Count;
 
     Cppeditor.Lines.Append('}');

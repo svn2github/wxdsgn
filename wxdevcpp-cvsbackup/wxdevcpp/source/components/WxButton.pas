@@ -5,7 +5,7 @@ unit WxButton;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, 
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,  MultiLangSupport,
      Forms, Graphics, Stdctrls, Wxutils, ExtCtrls, WxSizerPanel,WxToolBar;
 
 type
@@ -197,14 +197,14 @@ begin
      FWx_PropertyList.add('Wx_IDValue : IDValue ');
      FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
      FWx_PropertyList.add('Caption : Label');
-     FWx_PropertyList.add('Name : Name');
+     FWx_PropertyList.add('Name :' + Lang.Strings[ID_NP_PRJNAME]);
      FWx_PropertyList.add('Left : Left');
      FWx_PropertyList.add('Top : Top');
-     FWx_PropertyList.add('Width : Width');
+     FWx_PropertyList.add('Width :' + Lang.Strings[ID_EOPT_WIDTH]);
      FWx_PropertyList.add('Height:Height');
-     FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
-     FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
-     FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
+     FWx_PropertyList.add('Wx_ProxyBGColorString:' + Lang.Strings[ID_EOPT_BACK] + ' ' + Lang.Strings[ID_EOPT_COLOR]);
+     FWx_PropertyList.add('Wx_ProxyFGColorString:' + Lang.Strings[ID_EOPT_FORE] + ' ' + Lang.Strings[ID_EOPT_COLOR]);
+     FWx_PropertyList.add('Wx_GeneralStyle: ' + Lang.Strings[ID_EOPT_GENTAB] + ' ' + Lang.Strings[ID_NEWVAR_COMMENTSSTYLE]);
      FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
      FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
      FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
@@ -218,8 +218,8 @@ begin
      FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
      FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
      FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-     FWx_PropertyList.add('Font : Font');
-     FWx_PropertyList.add('Wx_ButtonStyle:Button Style');
+     FWx_PropertyList.add('Font :' + Lang.Strings[ID_EOPT_FONT]);
+     FWx_PropertyList.add('Wx_ButtonStyle:Button ' + Lang.Strings[ID_NEWVAR_COMMENTSSTYLE]);
      FWx_PropertyList.add('wxBU_LEFT:wxBU_LEFT');
      FWx_PropertyList.add('wxBU_TOP:wxBU_TOP');
      FWx_PropertyList.add('wxBU_RIGHT:wxBU_RIGHT');
@@ -229,9 +229,9 @@ begin
      FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
      FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
      FWx_PropertyList.add('Wx_Validator : Validator code');
-     FWx_PropertyList.add('Default   : Default');
+     FWx_PropertyList.add('Default :' + Lang.Strings[ID_BTN_DEFAULT]);
 
-     FWx_PropertyList.add('Wx_Comments:Comments');
+     FWx_PropertyList.add('Wx_Comments:' + Lang.Strings[ID_ITEM_COMMENTSELECTION]);
 
      FWx_EventList.add('EVT_BUTTON:OnClick');
      FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
