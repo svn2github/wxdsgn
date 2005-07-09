@@ -834,7 +834,7 @@ begin
       // Let's insert this as a child of the target node
       TargetItem := TargetItem.Items[targetindex];
 
-      if (TargetItem.Wx_Items.Count = 0) then  // If there are no children, then we need to Create them
+      if (not TargetNode.HasChildren) then  // If there are no children, then we need to Create them
               TargetItem.Create(self.Parent);
 
       TargetItem.Wx_Items.Add(SourceItem.Wx_Items[sourceindex]);
