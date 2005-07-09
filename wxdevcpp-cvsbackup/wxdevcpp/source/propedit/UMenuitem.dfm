@@ -238,16 +238,22 @@ object MenuItemForm: TMenuItemForm
       Top = 13
       Width = 241
       Height = 281
-      AutoExpand = True
+      Hint = 
+        'TO RE-ORDER MENU'#13#10'=================='#13#10#13#10'* Left click, drag and d' +
+        'rop = Item moves after the drop point'#13#10'* SHIFT + left click, dra' +
+        'g and drop = Item becomes child of the drop point'
       DragMode = dmAutomatic
       HideSelection = False
       Indent = 19
+      ParentShowHint = False
       PopupMenu = PopupMenu1
       ReadOnly = True
+      ShowHint = True
       TabOrder = 0
       OnChange = tvMenuItemChange
       OnDragDrop = tvMenuItemDragDrop
       OnDragOver = tvMenuItemDragOver
+      OnKeyDown = tvMenuItemKeyDown
     end
   end
   object btnOK: TButton

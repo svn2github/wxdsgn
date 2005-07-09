@@ -16,7 +16,6 @@ type
         FWx_Class : String;
         FWx_Caption:String;
         FWx_Comments : TStrings;
-      
         FWx_PropertyList : TStringList;
         FWx_MenuItems: TWxCustomMenuItem;
         FMainMenu: TMainMenu;

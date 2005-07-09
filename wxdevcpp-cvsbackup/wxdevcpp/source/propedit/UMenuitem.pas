@@ -78,12 +78,15 @@ type
      procedure tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure tvMenuItemDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
+    procedure tvMenuItemKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   
   private
     { Private declarations }
     FMaxID:Integer;
     FCounter:Integer;
     FSubMenuItemCreationClicked:Boolean;
+    FShiftDown : Boolean;
     procedure AddMenuClass(const S:string);
     Procedure MoveNode(SourceNode, TargetNode : TTreeNode);
   public
@@ -147,8 +150,27 @@ begin
 
     MenuItem.Wx_IDValue:= FMaxID;
     MenuItem.Wx_Caption:= 'MenuItem'+IntToStr(FCounter);
-    Node:= tvMenuItem.Items.AddChildObject(nil, MenuItem.Wx_Caption, MenuItem);
-    FMenuItems.Add(MenuItem,FMenuItems.count);
+
+    if (tvMenuItem.Items.Count = 0) then  // No other nodes exist so let's add the first
+        begin
+            Node:= tvMenuItem.Items.AddChildObject(nil, MenuItem.Wx_Caption, MenuItem);
+            FMenuItems.Add(MenuItem,FMenuItems.count)
+        end
+
+    else
+
+        if (tvMenuItem.Selected.GetNext <> nil) then    // Other nodes exist, let's insert it
+            begin
+                // New behavior inserts the node after the currently selected node
+                Node:= tvMenuItem.Items.InsertObject(tvMenuItem.Selected.GetNext, MenuItem.Wx_Caption, MenuItem);
+                FMenuItems.Wx_Items.Insert(Node.Index, MenuItem)
+            end
+        else
+            begin
+                Node:= tvMenuItem.Items.AddChildObject(nil, MenuItem.Wx_Caption, MenuItem);
+                FMenuItems.Add(MenuItem,FMenuItems.count)
+            end;
+
     tvMenuItem.Selected:=Node;
     tvMenuItem.SetFocus;
     EnableUpdate;
@@ -799,23 +821,56 @@ begin
    for level := TargetNode.Level downto 1 do
        TargetItem := TargetItem.Items[indiciesarray[level]];
 
-   // At this point, SourceItem and TargetItem point to the correct level
-   //   in the menu. Just need to insert the source at the target and delete
-   //   the original source pointer.
-   
-   // Change the TList (this is what generates the code and gets saved)
-   // Let's insert this AFTER the target node (targetindex + 1)
-    TargetItem.Wx_Items.Insert(targetindex + 1, SourceItem.Wx_Items[sourceindex]);
-    if (sourceindex > (targetindex + 1)) and (TargetNode.Level = SourceNode.Level) then
-        SourceItem.Wx_Items.Delete(sourceindex + 1)
-    else
-     SourceItem.Wx_Items.Delete(sourceindex);
+ 
+     if (FShiftDown) then    // Shift, drag, and drop = Add as a child
 
-     // Change the Treeview (this is what is displayed, but doesn't set the code)
-    if (TargetNode.GetNextSibling <> nil) then
-        SourceNode.MoveTo(TargetNode.GetNextSibling, naInsert)
-    else
-        SourceNode.MoveTo(TargetNode, naAdd);
+      begin
+
+      // At this point, SourceItem and TargetItem point to the correct level
+      //   in the menu. Just need to insert the source at the target and delete
+      //   the original source pointer.
+
+      // Change the TList (this is what generates the code and gets saved)
+      // Let's insert this as a child of the target node
+      TargetItem := TargetItem.Items[targetindex];
+
+      if (TargetItem.Wx_Items.Count = 0) then  // If there are no children, then we need to Create them
+              TargetItem.Create(self.Parent);
+
+      TargetItem.Wx_Items.Add(SourceItem.Wx_Items[sourceindex]);
+      SourceItem.Wx_Items.Delete(sourceindex);
+
+       // Change the Treeview (this is what is displayed, but doesn't set the code)
+       SourceNode.MoveTo(TargetNode, naAddChild)
+
+       end
+
+     else   // Drag and drop = Add as a sibling
+
+      begin
+
+      // At this point, SourceItem and TargetItem point to the correct level
+      //   in the menu. Just need to insert the source at the target and delete
+      //   the original source pointer.
+
+      // Change the TList (this is what generates the code and gets saved)
+      // Let's insert this AFTER the target node (targetindex + 1)
+      TargetItem.Wx_Items.Insert(targetindex + 1, SourceItem.Wx_Items[sourceindex]);
+      if (sourceindex > (targetindex + 1)) and (TargetNode.Level = SourceNode.Level) then
+        SourceItem.Wx_Items.Delete(sourceindex + 1)
+      else
+        SourceItem.Wx_Items.Delete(sourceindex);
+    
+       // Change the Treeview (this is what is displayed, but doesn't set the code)
+        if (TargetNode.GetNextSibling <> nil) then
+            SourceNode.MoveTo(TargetNode.GetNextSibling, naInsert)
+        else
+            SourceNode.MoveTo(TargetNode, naAdd);
+
+      end;
+
+     // Remove shift down flag
+     FShiftDown := False;
 
 end;
 
@@ -824,10 +879,10 @@ end;
 // Source code was released as public domain
 procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
-      TargetNode : TTreeNode;
-      SourceNode : TTreeNode;
+      TargetNode, SourceNode : TTreeNode;
+    
 begin
- /////////////////////////////////////////
+   /////////////////////////////////////////
    // Something has just been droped
    /////////////////////////////////////////
 
@@ -845,8 +900,8 @@ begin
             Exit;
          end;
 
-            {Dropping onto self or onto parent?}
-         if( (TargetNode = Selected) or (TargetNode = Selected.Parent) ) then
+            {Dropping onto self?}
+         if( (TargetNode = Selected) ) then
          begin
             MessageBeep(MB_ICONEXCLAMATION);
             ShowMessage( 'Destination node is the same as the source node' );
@@ -854,6 +909,27 @@ begin
             Exit;
          end;
 
+          {Dropping a parent onto a child node? No No!}
+         if ( TargetNode.HasAsParent(SourceNode) ) then
+         begin
+            MessageBeep(MB_ICONEXCLAMATION);
+            ShowMessage( 'You can''t move a parent to a child' );
+            EndDrag( false );
+            Exit;
+         end;
+
+         {Dropping an empty child onto the root level? Mal says not on my watch!}
+         if ( TargetNode.Level = 0 )
+             and ( not SourceNode.HasChildren )
+             and ( SourceNode.Level <> 0 )
+             and not FShiftDown then
+         begin
+            MessageBeep(MB_ICONEXCLAMATION);
+            ShowMessage( 'Mal says "You can''t move an empty child to root"' );
+            EndDrag( false );
+            Exit;
+         end;
+          
        {Drag drop was valid so move the nodes}
        MoveNode(SourceNode, TargetNode);
 
@@ -874,6 +950,15 @@ begin
             {Only accept from self}
          if( TTreeView(Sender) = tvMenuItem ) then
              Accept := true;
+
+end;
+
+procedure TMenuItemForm.tvMenuItemKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+    if (ssShift in Shift) then
+        FShiftDown := true;
 
 end;
 

@@ -11013,7 +11013,7 @@ begin
     Cppeditor.Lines.Append('{');
     Cppeditor.Lines.Append(#9'// insert your code here');
     if not AnsiSameText(trim(VarArguments),'void') then
-    Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
+    //Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
     Line := CppEditor.Lines.Count;
 
     Cppeditor.Lines.Append('}');
@@ -11151,7 +11151,7 @@ begin
     Cppeditor.Lines.Append('{');
     Cppeditor.Lines.Append(#9'// insert your code here');
     if not AnsiSameText(trim(VarArguments),'void') then
-    Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
+    //Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
     Line := CppEditor.Lines.Count;
 
     Cppeditor.Lines.Append('}');
