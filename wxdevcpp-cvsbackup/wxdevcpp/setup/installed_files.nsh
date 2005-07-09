@@ -27,10 +27,9 @@ find -type d -exec echo "  RMDir  {}" \; | \
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry" /version "3.2"'
   
    ; Added for wx-devcpp  -- START
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets-2.6.1contrib.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets-2.6.1.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets-2.6.1samples.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\wxWidgets-2.6.1wxsamples.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgetsContrib}"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgets}"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgetsSamples}"'
   ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
   ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
   ;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'
@@ -199,6 +198,7 @@ find -type d -exec echo "  RMDir  {}" \; | \
   Delete "$INSTDIR\Templates\wxWidgets\wxDlg.cpp.code"
   Delete "$INSTDIR\Templates\wxWidgets\wxFrame.h.code"
   Delete "$INSTDIR\Templates\wxWidgets\wxFrame.cpp.code"
+  Delete "$INSTDIR\Templates\wxWidgets\wx_precompiled_headers.h"
   ; Added for wx-devcpp  -- END
   
   Delete "$INSTDIR\copying.txt"
