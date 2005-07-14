@@ -6,10 +6,13 @@
 //
 //---------------------------------------------------------------------------
 
-// For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
-
-#include "%DEVCPP_DIR%Templates\wxWidgets\wx_precompiled_headers.h"
+#ifdef __BORLANDC__
+        #pragma hdrstop
+#endif
+#ifndef WX_PRECOMP
+        #include <wx/wx.h>
+#endif
 
 class %CLASS_NAME%App:public wxApp
 {

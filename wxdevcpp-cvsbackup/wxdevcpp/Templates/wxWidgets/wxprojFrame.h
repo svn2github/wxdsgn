@@ -8,7 +8,13 @@
 #ifndef __%FILE_NAME%_HPP_
 #define __%FILE_NAME%_HPP_
 
-#include "%DEVCPP_DIR%Templates\wxWidgets\wx_precompiled_headers.h"
+#include <wx/wxprec.h>
+#ifdef __BORLANDC__
+        #pragma hdrstop
+#endif
+#ifndef WX_PRECOMP
+        #include <wx/wx.h>
+#endif
 
 //Do not add custom headers.
 //wx-dvcpp designer will remove them

@@ -8,10 +8,13 @@
 #ifndef __%CLASS_NAME%_HPP_
 #define __%CLASS_NAME%_HPP_
 
-// For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
-
-#include "%DEVCPP_DIR%Templates\wxWidgets\wx_precompiled_headers.h"
+#ifdef __BORLANDC__
+        #pragma hdrstop
+#endif
+#ifndef WX_PRECOMP
+        #include <wx/wx.h>
+#endif
 
 //Do not add custom headers.
 //wx-dvcpp designer will remove them
