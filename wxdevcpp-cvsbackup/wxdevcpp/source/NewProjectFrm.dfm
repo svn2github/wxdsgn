@@ -4,7 +4,7 @@ object NewProjectForm: TNewProjectForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New Project'
-  ClientHeight = 267
+  ClientHeight = 281
   ClientWidth = 508
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,12 +18,12 @@ object NewProjectForm: TNewProjectForm
   OnDestroy = FormDestroy
   DesignSize = (
     508
-    267)
+    281)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
     Left = 6
-    Top = 171
+    Top = 177
     Width = 496
     Height = 3
     Anchors = [akLeft, akRight, akBottom]
@@ -31,7 +31,7 @@ object NewProjectForm: TNewProjectForm
   end
   object lblPrjName: TLabel
     Left = 8
-    Top = 185
+    Top = 199
     Width = 34
     Height = 13
     Anchors = [akLeft, akRight, akBottom]
@@ -74,7 +74,7 @@ object NewProjectForm: TNewProjectForm
   end
   object Label2: TLabel
     Left = 16
-    Top = 165
+    Top = 179
     Width = 87
     Height = 13
     Anchors = [akLeft, akBottom]
@@ -82,7 +82,7 @@ object NewProjectForm: TNewProjectForm
   end
   object pnlDesc: TPanel
     Left = 8
-    Top = 113
+    Top = 127
     Width = 495
     Height = 42
     Anchors = [akLeft, akRight, akBottom]
@@ -112,7 +112,7 @@ object NewProjectForm: TNewProjectForm
   end
   object btnOk: TBitBtn
     Left = 241
-    Top = 236
+    Top = 250
     Width = 81
     Height = 24
     Anchors = [akRight, akBottom]
@@ -142,7 +142,7 @@ object NewProjectForm: TNewProjectForm
   end
   object btnCancel: TBitBtn
     Left = 329
-    Top = 236
+    Top = 250
     Width = 83
     Height = 24
     Anchors = [akRight, akBottom]
@@ -153,7 +153,7 @@ object NewProjectForm: TNewProjectForm
   end
   object Panel1: TPanel
     Left = 284
-    Top = 183
+    Top = 197
     Width = 216
     Height = 42
     Anchors = [akRight, akBottom]
@@ -189,7 +189,7 @@ object NewProjectForm: TNewProjectForm
   end
   object edProjectName: TEdit
     Left = 16
-    Top = 204
+    Top = 218
     Width = 258
     Height = 21
     Anchors = [akLeft, akRight, akBottom]
@@ -199,7 +199,7 @@ object NewProjectForm: TNewProjectForm
     Left = 8
     Top = 8
     Width = 495
-    Height = 105
+    Height = 119
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvLowered
     Tabs.Strings = (
@@ -210,7 +210,7 @@ object NewProjectForm: TNewProjectForm
       Left = 0
       Top = 23
       Width = 495
-      Height = 82
+      Height = 96
       Align = alClient
       BevelOuter = bvRaised
       BevelKind = bkSoft
@@ -235,7 +235,7 @@ object NewProjectForm: TNewProjectForm
   end
   object btnHelp: TBitBtn
     Left = 426
-    Top = 236
+    Top = 250
     Width = 75
     Height = 24
     Anchors = [akRight, akBottom]
@@ -245,7 +245,7 @@ object NewProjectForm: TNewProjectForm
   end
   object Edit1: TEdit
     Left = 80
-    Top = 209
+    Top = 223
     Width = 201
     Height = 21
     Anchors = [akLeft, akRight, akBottom]

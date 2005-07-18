@@ -3315,12 +3315,6 @@ object MainForm: TMainForm
       ShortCut = 16470
       OnExecute = actWxPropertyInspectorPasteExecute
     end
-    object actWxPropertyInspectorDelete: TAction
-      Category = 'Designer'
-      Caption = 'Delete'
-      ShortCut = 46
-      OnExecute = actWxPropertyInspectorDeleteExecute
-    end
   end
   object ApplicationEvents1: TApplicationEvents
     OnActivate = ApplicationEvents1Activate

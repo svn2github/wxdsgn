@@ -156,15 +156,15 @@ begin
 
  {$IFDEF WX_BUILD}
     Includes.Text := StringReplace(R1.Includes.Text,
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
     Libs.Text := StringReplace(R1.Libs.Text,
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
     PrivateResource := StringReplace(R1.PrivateResource,
-      '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+      '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
     ResourceIncludes.Text := StringReplace(R1.ResourceIncludes.Text,
-          '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+          '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
     MakeIncludes.Text := StringReplace(R1.MakeIncludes.Text,
-       '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+       '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
  {$ELSE}
     Includes.Text := R1.Includes.Text;
     Libs.Text := R1.Libs.Text;

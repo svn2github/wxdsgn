@@ -45,7 +45,7 @@ OutputDir=..
 UnitOutputDir=units
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme;components
+SearchPath=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;..\CompUsedBy_WX_BUILD\theme;components
 Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;SynEdit_D6_PE
 Conditionals=BETAVERSION;_DEBUG;WX_BUILD;madExcept
 DebugSourceDirs=
@@ -93,14 +93,16 @@ Item1=BETAVERSION;_DEBUG;WX_BUILD;;madExcept
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=7
-Item0=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme;components
-Item1=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme
-Item2=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;..\CompUsedBy_WX_BUILD\theme\Theme Explorer
-Item3=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages
-Item4=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages
-Item5=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6
-Item6=$(DELPHI)\Lib\Debug;D:\Projects\Delphi\d6comps\collections\jcl\jcl\lib\d6\debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip
+Count=9
+Item0=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;..\CompUsedBy_WX_BUILD\theme;components
+Item1=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;C:\CompUsedBy_WX_BUILD\GraphicEx;C:\CompUsedBy_WX_BUILD\extlib;C:\CompUsedBy_WX_BUILD\jcl\source;C:\CompUsedBy_WX_BUILD\jvcl\packages;C:\CompUsedBy_WX_BUILD\theme;components
+Item2=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme;components
+Item3=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme
+Item4=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages;..\CompUsedBy_WX_BUILD\theme\Theme Explorer
+Item5=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages;..\CompUsedBy_WX_BUILD\jcl\source;..\CompUsedBy_WX_BUILD\jvcl\packages
+Item6=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6;..\CompUsedBy_WX_BUILD\GraphicEx;..\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages
+Item7=$(DELPHI)\Lib\Debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip;C:\Program Files\GExperts for Delphi 6
+Item8=$(DELPHI)\Lib\Debug;D:\Projects\Delphi\d6comps\collections\jcl\jcl\lib\d6\debug;vcl;vcl\parser;vcl\synedit\source;vcl\codetooltip
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=units

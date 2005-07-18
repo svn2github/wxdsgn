@@ -648,7 +648,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     actWxPropertyInspectorCut: TAction;
     actWxPropertyInspectorCopy: TAction;
     actWxPropertyInspectorPaste: TAction;
-    actWxPropertyInspectorDelete: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1217,7 +1216,8 @@ uses
   WxColourDialog ,WxPageSetupDialog, wxTimer,WxNonVisibleBaseComponent,
   WxSplitterWindow,
   CreateOrderFm,
-  ViewIDForm
+  ViewIDForm,
+  WxToggleButton
   {$ENDIF} // END OF IFEDEF WX_BUILD
   ;
 {$ENDIF}
@@ -1342,7 +1342,7 @@ begin
   with WxPropertyInspectorMenuDelete do
   begin
     Name := 'WxPropertyInspectorMenuDelete';
-    Action := actWxPropertyInspectorDelete;
+    Action := actDelete;
    end;
 
   with DesignerPopup do
@@ -2827,7 +2827,6 @@ actDesignerDelete.Caption := Strings[ID_ITEM_DELETE];
 actWxPropertyInspectorCut.Caption := Strings[ID_ITEM_CUT];
 actWxPropertyInspectorCopy.Caption := Strings[ID_ITEM_COPY];
 actWxPropertyInspectorPaste.Caption := Strings[ID_ITEM_PASTE];
-actWxPropertyInspectorDelete.Caption := Strings[ID_ITEM_DELETE];
 actNewwxDialog.Caption := Strings[ID_TB_NEW] + ' wxDialog';
 actNewWxFrame.Caption := Strings[ID_TB_NEW] + ' wxFrame';
 {$ENDIF}
@@ -8809,9 +8808,9 @@ var
   begin
     Result := True;
     try
-      strFileSrc := strLst.text;
+       strFileSrc := strLst.text;
       strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName),[srAll]);
-      strSearchReplace(strFileSrc, '%DEVCPP_DIR%', devDirs.Default,[srAll]);
+      strSearchReplace(strFileSrc, '%DEVCPP_DIR%', devDirs.Exec,[srAll]);
       strSearchReplace(strFileSrc, '%AUTHOR_NAME%', strAuthor, [srAll]);
       strSearchReplace(strFileSrc, '%DATE_STRING%', strDate, [srAll]);
       strSearchReplace(strFileSrc, '%CLASS_NAME%', strClassName, [srAll]);
@@ -8940,7 +8939,7 @@ var
     try
       strFileSrc := strLst.text;
       strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName),[srAll]);
-      strSearchReplace(strFileSrc, '%DEVCPP_DIR%', devDirs.Default,[srAll]);
+      strSearchReplace(strFileSrc, '%DEVCPP_DIR%', devDirs.Exec,[srAll]);
       strSearchReplace(strFileSrc, '%AUTHOR_NAME%', strAuthor, [srAll]);
       strSearchReplace(strFileSrc, '%DATE_STRING%', strDate, [srAll]);
       strSearchReplace(strFileSrc, '%CLASS_NAME%', strClassName, [srAll]);
@@ -9017,7 +9016,7 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.ReadClass;
 begin
-  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
+  RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton, TWxToggleButton,TWxCheckBox,TWxRadioButton, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl]);
   RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine]);
   RegisterClasses([TWxPanel,TWXListBook, TWxNoteBook, TWxStatusBar, TWxToolBar]);
   RegisterClasses([TWxNoteBookPage,TWxchecklistbox,TWxSplitterWindow]);
@@ -9057,7 +9056,7 @@ begin
   begin
     //Dont forget to add semicolon at the end of the string
     WriteString('Palette', 'Sizers','TWxBoxSizer;TWxStaticBoxSizer;TWxGridSizer;TWxFlexGridSizer;');
-    strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxEdit;TWxMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;';
+    strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxToggleButton;TWxEdit;TWxMemo;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;';
     strTemp:=strTemp+'TWxSlider;TWxStaticLine;TWxStaticBitmap;TWxStatusBar;TWxChecklistbox;TWxSpinCtrl;';
     WriteString('Palette', 'Controls',strTemp);
     WriteString('Palette', 'Window','TWxPanel;TWxNoteBook;TWxNoteBookPage;TWxGrid;TWxScrolledWindow;TWxHtmlWindow;TWxSplitterWindow;');
@@ -12226,9 +12225,14 @@ begin
 end;
 
 procedure TMainForm.actWxPropertyInspectorDeleteExecute(Sender: TObject);
+
 begin
 {$IFDEF WX_BUILD}
-    SendMessage(GetFocus, WM_CLEAR, 0, 0);
+    if (GetFocus <> 0) then
+         SendMessage(GetFocus, WM_CLEAR, 0, 0)
+    else
+        MessageDlg('nothing selected', mtError, [mbOK], 0);
+
 {$ENDIF}
 end;
 

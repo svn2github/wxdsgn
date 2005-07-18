@@ -141,6 +141,7 @@ uses
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
   UColorEdit in 'propedit\UColorEdit.pas' {ColorEdit},
   WxButton in 'components\WxButton.pas',
+  WxToggleButton in 'components\WxToggleButton.pas',
   WXListBook in 'components\wxlistbook.pas',
   WxNotebook in 'components\wxnotebook.pas',
   WxStatusBar in 'components\wxstatusbar.pas',

@@ -891,28 +891,28 @@ begin
     // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
 
     fOptions.cmdLines.Compiler := StringReplace(Read('Compiler', ''),
-       '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+       '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
       fOptions.cmdLines.CppCompiler := StringReplace(Read('CppCompiler', ''),
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
       fOptions.cmdLines.Linker := StringReplace(Read('Linker', ''),
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
       fOptions.ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
       fOptions.Libs.DelimitedText := StringReplace(Read('Libs', ''),
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
       fOptions.Includes.DelimitedText := StringReplace(Read('Includes', ''),
-         '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
       fOptions.PrivateResource := StringReplace(Read('PrivateResource', ''),
-            '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+            '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
       fOptions.ResourceIncludes.DelimitedText :=
            StringReplace(Read('ResourceIncludes', ''),
-               '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+               '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
       fOptions.MakeIncludes.DelimitedText :=
           StringReplace(Read('MakeIncludes', ''),
-             '%DEVCPP_DIR%', devDirs.Default, [rfReplaceAll]);
+             '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
     {$ELSE}
       fOptions.cmdLines.Compiler := Read('Compiler', '');
