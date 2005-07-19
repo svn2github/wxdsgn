@@ -150,6 +150,7 @@ uses
   wxNoteBookPage in 'components\wxNoteBookPage.pas',
   WxCheckListBox in 'components\wxchecklistbox.pas',
   wxspinctrl in 'components\wxspinctrl.pas',
+  wxChoice in 'components\wxchoice.pas',
   wxHtmlWindow in 'components\wxHtmlWindow.pas',
   WxScrolledWindow in 'components\WxScrolledWindow.pas',
   WxSeparator in 'components\WxSeparator.pas',
