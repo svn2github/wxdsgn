@@ -1,85 +1,92 @@
 // $Id$
-//
+
 
 unit wxPageSetupDialog;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,wxUtils,WxNonVisibleBaseComponent;
+  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
 type
-  TWxPageSetupDialog = class(TWxNonVisibleBaseComponent,IWxComponentInterface)
+  TWxPageSetupDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
   private
     { Private declarations }
-        FWx_Class : String;
-        FWx_PropertyList : TStringList;
-        FMarginTopLeftX: Integer;
-        FMarginTopLeftY: Integer;
+    FWx_Class: string;
+    FWx_PropertyList: TStringList;
+    FMarginTopLeftX: integer;
+    FMarginTopLeftY: integer;
 
-        FMarginBottomRightX: Integer;
-        FMarginBottomRightY: Integer;
+    FMarginBottomRightX: integer;
+    FMarginBottomRightY: integer;
 
-        FMinMarginTopLeftX: Integer;
-        FMinMarginTopLeftY: Integer;
+    FMinMarginTopLeftX: integer;
+    FMinMarginTopLeftY: integer;
 
-        FMinMarginBottomRightX: Integer;
-        FMinMarginBottomRightY: Integer;
+    FMinMarginBottomRightX: integer;
+    FMinMarginBottomRightY: integer;
 
-        FPaperId:TWxPaperSizeItem;
+    FPaperId: TWxPaperSizeItem;
 
 
-        procedure AutoInitialize;
-        procedure AutoDestroy;
+    procedure AutoInitialize;
+    procedure AutoDestroy;
 
   protected
 
   public
-        constructor Create(AOwner: TComponent); override;
-        destructor Destroy; override;
-        function GenerateControlIDs:String;
-        function GenerateEnumControlIDs:String;
-        function GenerateEventTableEntries(CurrClassName:String):String;
-        function GenerateGUIControlCreation:String;
-        function GenerateGUIControlDeclaration:String;
-        function GenerateHeaderInclude:String;
-        function GenerateImageInclude: string;
-        function GetEventList:TStringlist;
-        function GetIDName:String;
-        function GetIDValue:LongInt;
-        function GetParameterFromEventName(EventName: string):String;
-        function GetPropertyList:TStringList;
-        function GetStretchFactor:Integer;
-        function GetTypeFromEventName(EventName: string):string;
-        function GetWxClassName:String;
-        procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-        procedure SetIDName(IDName:String);
-        procedure SetIDValue(IDValue:longInt);
-        procedure SetStretchFactor(intValue:Integer);
-        procedure SetWxClassName(wxClassName:String);
-        function GetFGColor:string;
-        procedure SetFGColor(strValue:String);
-        function GetBGColor:string;
-        procedure SetBGColor(strValue:String);
-        procedure SetProxyFGColorString(value:String);
-        procedure SetProxyBGColorString(value:String);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function GenerateControlIDs: string;
+    function GenerateEnumControlIDs: string;
+    function GenerateEventTableEntries(CurrClassName: string): string;
+    function GenerateGUIControlCreation: string;
+    function GenerateXRCControlCreation(IndentString: string): TStringList;
+    function GenerateGUIControlDeclaration: string;
+    function GenerateHeaderInclude: string;
+    function GenerateImageInclude: string;
+    function GetEventList: TStringList;
+    function GetIDName: string;
+    function GetIDValue: longint;
+    function GetParameterFromEventName(EventName: string): string;
+    function GetPropertyList: TStringList;
+    function GetStretchFactor: integer;
+    function GetTypeFromEventName(EventName: string): string;
+    function GetWxClassName: string;
+    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+    procedure SetIDName(IDName: string);
+    procedure SetIDValue(IDValue: longint);
+    procedure SetStretchFactor(intValue: integer);
+    procedure SetWxClassName(wxClassName: string);
+    function GetFGColor: string;
+    procedure SetFGColor(strValue: string);
+    function GetBGColor: string;
+    procedure SetBGColor(strValue: string);
+    procedure SetProxyFGColorString(Value: string);
+    procedure SetProxyBGColorString(Value: string);
   published
     { Published declarations }
-        property Wx_Class : String read FWx_Class write FWx_Class;
+    property Wx_Class: string Read FWx_Class Write FWx_Class;
 
-        property Wx_MarginTopLeftX: Integer read FMarginTopLeftX write FMarginTopLeftX;
-        property Wx_MarginBottomRightX: Integer read FMarginBottomRightX write FMarginBottomRightX;
-        property Wx_MinMarginTopLeftX: Integer read FMinMarginTopLeftX write FMinMarginTopLeftX;
-        property Wx_MinMarginBottomRightX: Integer read FMinMarginBottomRightX write FMinMarginBottomRightX;
+    property Wx_MarginTopLeftX: integer Read FMarginTopLeftX Write FMarginTopLeftX;
+    property Wx_MarginBottomRightX: integer
+      Read FMarginBottomRightX Write FMarginBottomRightX;
+    property Wx_MinMarginTopLeftX: integer Read FMinMarginTopLeftX
+      Write FMinMarginTopLeftX;
+    property Wx_MinMarginBottomRightX: integer
+      Read FMinMarginBottomRightX Write FMinMarginBottomRightX;
 
-        property Wx_MarginTopLeftY: Integer read FMarginTopLeftY write FMarginTopLeftY;
-        property Wx_MarginBottomRightY: Integer read FMarginBottomRightY write FMarginBottomRightY;
-        property Wx_MinMarginTopLeftY: Integer read FMinMarginTopLeftY write FMinMarginTopLeftY;
-        property Wx_MinMarginBottomRightY: Integer read FMinMarginBottomRightY write FMinMarginBottomRightY;
+    property Wx_MarginTopLeftY: integer Read FMarginTopLeftY Write FMarginTopLeftY;
+    property Wx_MarginBottomRightY: integer
+      Read FMarginBottomRightY Write FMarginBottomRightY;
+    property Wx_MinMarginTopLeftY: integer Read FMinMarginTopLeftY
+      Write FMinMarginTopLeftY;
+    property Wx_MinMarginBottomRightY: integer
+      Read FMinMarginBottomRightY Write FMinMarginBottomRightY;
 
 
-        property Wx_PaperId:TWxPaperSizeItem read FPaperId write FPaperId;
-    end;
+    property Wx_PaperId: TWxPaperSizeItem Read FPaperId Write FPaperId;
+  end;
 
 procedure Register;
 
@@ -93,100 +100,125 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxPageSetupDialog.AutoInitialize;
 begin
-     FWx_PropertyList := TStringList.Create;
-     FWx_Class := 'wxPageSetupDialog';
-     Glyph.Handle:=LoadBitmap(hInstance, 'TWxPageSetupDialog');
+  FWx_PropertyList := TStringList.Create;
+  FWx_Class    := 'wxPageSetupDialog';
+  Glyph.Handle := LoadBitmap(hInstance, 'TWxPageSetupDialog');
 
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
 procedure TWxPageSetupDialog.AutoDestroy;
 begin
-     FWx_PropertyList.Free;
+  FWx_PropertyList.Destroy;
+  Glyph.Assign(nil);
 end; { of AutoDestroy }
 
 constructor TWxPageSetupDialog.Create(AOwner: TComponent);
 begin
-     { Call the Create method of the container's parent class       }
-     inherited Create(AOwner);
+  { Call the Create method of the container's parent class       }
+  inherited Create(AOwner);
 
-     { AutoInitialize method is generated by Component Create.      }
-     AutoInitialize;
+  { AutoInitialize method is generated by Component Create.      }
+  AutoInitialize;
 
-     FWx_PropertyList.add('Name:Name');
-     FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Wx_Class:Base Class');
 
-     FWx_PropertyList.add('Wx_MarginTopLeftX:MarginTopLeftX');
-     FWx_PropertyList.add('Wx_MarginBottomRightX:MarginBottomRightX');
-     FWx_PropertyList.add('Wx_MinMarginTopLeftX: MinMarginTopLeftX');
-     FWx_PropertyList.add('Wx_MinMarginBottomRightX:MinMarginBottomRightX');
+  FWx_PropertyList.add('Wx_MarginTopLeftX:MarginTopLeftX');
+  FWx_PropertyList.add('Wx_MarginBottomRightX:MarginBottomRightX');
+  FWx_PropertyList.add('Wx_MinMarginTopLeftX: MinMarginTopLeftX');
+  FWx_PropertyList.add('Wx_MinMarginBottomRightX:MinMarginBottomRightX');
 
-     FWx_PropertyList.add('Wx_MarginTopLeftY:MarginTopLeftY');
-     FWx_PropertyList.add('Wx_MarginBottomRightY:MarginBottomRightY');
-     FWx_PropertyList.add('Wx_MinMarginTopLeftY: MinMarginTopLeftY');
-     FWx_PropertyList.add('Wx_MinMarginBottomRightY:MinMarginBottomRightY');
+  FWx_PropertyList.add('Wx_MarginTopLeftY:MarginTopLeftY');
+  FWx_PropertyList.add('Wx_MarginBottomRightY:MarginBottomRightY');
+  FWx_PropertyList.add('Wx_MinMarginTopLeftY: MinMarginTopLeftY');
+  FWx_PropertyList.add('Wx_MinMarginBottomRightY:MinMarginBottomRightY');
 
-     FWx_PropertyList.add('Wx_PaperId:PaperId');
+  FWx_PropertyList.add('Wx_PaperId:PaperId');
 end;
 
 destructor TWxPageSetupDialog.Destroy;
 begin
-     { AutoDestroy, which is generated by Component Create, frees any   }
-     { objects created by AutoInitialize.                               }
-     AutoDestroy;
+  { AutoDestroy, which is generated by Component Create, frees any   }
+  { objects created by AutoInitialize.                               }
+  AutoDestroy;
 
-     { Here, free any other dynamic objects that the component methods  }
-     { created but have not yet freed.  Also perform any other clean-up }
-     { operations needed before the component is destroyed.             }
+  { Here, free any other dynamic objects that the component methods  }
+  { created but have not yet freed.  Also perform any other clean-up }
+  { operations needed before the component is destroyed.             }
 
-     { Last, free the component by calling the Destroy method of the    }
-     { parent class.                                                    }
-     inherited Destroy;
+  { Last, free the component by calling the Destroy method of the    }
+  { parent class.                                                    }
+  inherited Destroy;
 end;
 
-function TWxPageSetupDialog.GenerateControlIDs:String;
+function TWxPageSetupDialog.GenerateControlIDs: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxPageSetupDialog.GenerateEnumControlIDs:String;
+function TWxPageSetupDialog.GenerateEnumControlIDs: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxPageSetupDialog.GenerateEventTableEntries(CurrClassName:String):String;
+function TWxPageSetupDialog.GenerateEventTableEntries(CurrClassName: string): string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxPageSetupDialog.GenerateGUIControlCreation:String;
+function TWxPageSetupDialog.GenerateXRCControlCreation(IndentString: string):
+TStringList;
+begin
+
+  Result := TStringList.Create;
+
+  try
+    Result.Add(IndentString + Format('<object class="%s" name="%s">',
+      [self.Wx_Class, self.Name]));
+    Result.Add(IndentString + '</object>');
+
+  except
+    Result.Free;
+    raise;
+  end;
+
+end;
+
+function TWxPageSetupDialog.GenerateGUIControlCreation: string;
 var
-     strFlag,strStyle:String;
+  strFlag, strStyle: string;
 
 begin
-    Result:='';
-    Result:= self.Name+'_Data = new wxPageSetupDialogData();' ;
-    Result:=Result+#13+self.Name+'_Data->SetMarginTopLeft(wxPoint('+Format('%d,%d',[Wx_MarginTopLeftX,Wx_MarginTopLeftY])+'));' ;
-    Result:=Result+#13+self.Name+'_Data->SetMarginBottomRight(wxPoint('+Format('%d,%d',[Wx_MarginBottomRightX,Wx_MarginBottomRightY])+'));' ;
-    Result:=Result+#13+self.Name+'_Data->SetMinMarginTopLeft(wxPoint('+Format('%d,%d',[Wx_MinMarginTopLeftX,Wx_MinMarginTopLeftY])+'));' ;
-    Result:=Result+#13+self.Name+'_Data->SetMinMarginBottomRight(wxPoint('+Format('%d,%d',[Wx_MinMarginBottomRightX,Wx_MinMarginBottomRightY])+'));' ;
-    Result:=Result+#13+self.Name+'_Data->SetPaperId('+PaperIDToString(Wx_PaperId) +');';
-    Result:=Result+#13+Format('%s =  new %s(this, %s);',[self.Name,self.wx_Class,self.Name+'_Data'] );
+  Result := '';
+  Result := self.Name + '_Data = new wxPageSetupDialogData();';
+  Result := Result + #13 + self.Name + '_Data->SetMarginTopLeft(wxPoint(' +
+    Format('%d,%d', [Wx_MarginTopLeftX, Wx_MarginTopLeftY]) + '));';
+  Result := Result + #13 + self.Name + '_Data->SetMarginBottomRight(wxPoint(' +
+    Format('%d,%d', [Wx_MarginBottomRightX, Wx_MarginBottomRightY]) + '));';
+  Result := Result + #13 + self.Name + '_Data->SetMinMarginTopLeft(wxPoint(' +
+    Format('%d,%d', [Wx_MinMarginTopLeftX, Wx_MinMarginTopLeftY]) + '));';
+  Result := Result + #13 + self.Name + '_Data->SetMinMarginBottomRight(wxPoint(' +
+    Format('%d,%d', [Wx_MinMarginBottomRightX, Wx_MinMarginBottomRightY]) + '));';
+  Result := Result + #13 + self.Name + '_Data->SetPaperId(' +
+    PaperIDToString(Wx_PaperId) + ');';
+  Result := Result + #13 + Format('%s =  new %s(this, %s);',
+    [self.Name, self.wx_Class, self.Name + '_Data']);
 
 end;
 
-function TWxPageSetupDialog.GenerateGUIControlDeclaration:String;
+function TWxPageSetupDialog.GenerateGUIControlDeclaration: string;
 begin
-     Result:='';
-     Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
-     Result:=Result+#13+Format('wxPageSetupDialogData *%s_Data;',[trim(Self.Name)]);
+  Result := '';
+  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+  Result := Result + #13 + Format('wxPageSetupDialogData *%s_Data;', [trim(Self.Name)]);
 end;
 
-function TWxPageSetupDialog.GenerateHeaderInclude:String;
+function TWxPageSetupDialog.GenerateHeaderInclude: string;
 begin
-     Result:='';
-     Result:='#include <wx/printdlg.h>';
-     Result:=Result+#13+'#include <wx/cmndata.h>';
+  Result := '';
+  Result := '#include <wx/printdlg.h>';
+  Result := Result + #13 + '#include <wx/cmndata.h>';
 end;
 
 function TWxPageSetupDialog.GenerateImageInclude: string;
@@ -194,93 +226,95 @@ begin
 
 end;
 
-function TWxPageSetupDialog.GetEventList:TStringlist;
+function TWxPageSetupDialog.GetEventList: TStringList;
 begin
-Result:=nil;
+  Result := nil;
 end;
 
-function TWxPageSetupDialog.GetIDName:String;
-begin
-
-end;
-
-function TWxPageSetupDialog.GetIDValue:LongInt;
-begin
-    Result :=0;
-end;
-
-function TWxPageSetupDialog.GetParameterFromEventName(EventName: string):String;
+function TWxPageSetupDialog.GetIDName: string;
 begin
 
 end;
 
-function TWxPageSetupDialog.GetStretchFactor:Integer;
+function TWxPageSetupDialog.GetIDValue: longint;
 begin
-//
+  Result := 0;
 end;
 
-function TWxPageSetupDialog.GetPropertyList:TStringList;
-begin
-     Result:=FWx_PropertyList;
-end;
-
-function TWxPageSetupDialog.GetTypeFromEventName(EventName: string):string;
+function TWxPageSetupDialog.GetParameterFromEventName(EventName: string): string;
 begin
 
 end;
 
-function TWxPageSetupDialog.GetWxClassName:String;
-begin
-     if trim(wx_Class) = '' then
-        wx_Class:='wxFindReplaceDialog';
-     Result:=wx_Class;
-end;
-
-procedure TWxPageSetupDialog.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-begin
-    //
-end;
-
-procedure TWxPageSetupDialog.SetIDName(IDName:String);
+function TWxPageSetupDialog.GetStretchFactor: integer;
 begin
 
 end;
 
-procedure TWxPageSetupDialog.SetIDValue(IDValue:longInt);
+function TWxPageSetupDialog.GetPropertyList: TStringList;
+begin
+  Result := FWx_PropertyList;
+end;
+
+function TWxPageSetupDialog.GetTypeFromEventName(EventName: string): string;
 begin
 
 end;
 
-procedure TWxPageSetupDialog.SetStretchFactor(intValue:Integer);
+function TWxPageSetupDialog.GetWxClassName: string;
+begin
+  if trim(wx_Class) = '' then
+    wx_Class := 'wxFindReplaceDialog';
+  Result := wx_Class;
+end;
+
+procedure TWxPageSetupDialog.SaveControlOrientation(
+  ControlOrientation: TWxControlOrientation);
+begin
+
+end;
+
+procedure TWxPageSetupDialog.SetIDName(IDName: string);
+begin
+
+end;
+
+procedure TWxPageSetupDialog.SetIDValue(IDValue: longint);
+begin
+
+end;
+
+procedure TWxPageSetupDialog.SetStretchFactor(intValue: integer);
 begin
 end;
 
-procedure TWxPageSetupDialog.SetWxClassName(wxClassName:String);
+procedure TWxPageSetupDialog.SetWxClassName(wxClassName: string);
 begin
-     wx_Class:=wxClassName;
+  wx_Class := wxClassName;
 end;
 
-function TWxPageSetupDialog.GetFGColor:string;
+function TWxPageSetupDialog.GetFGColor: string;
 begin
 
 end;
 
-procedure TWxPageSetupDialog.SetFGColor(strValue:String);
-begin
-end;
-    
-function TWxPageSetupDialog.GetBGColor:string;
+procedure TWxPageSetupDialog.SetFGColor(strValue: string);
 begin
 end;
 
-procedure TWxPageSetupDialog.SetBGColor(strValue:String);
-begin
-end;
-procedure TWxPageSetupDialog.SetProxyFGColorString(value:String);
+function TWxPageSetupDialog.GetBGColor: string;
 begin
 end;
 
-procedure TWxPageSetupDialog.SetProxyBGColorString(value:String);
+procedure TWxPageSetupDialog.SetBGColor(strValue: string);
+begin
+end;
+
+procedure TWxPageSetupDialog.SetProxyFGColorString(Value: string);
+begin
+end;
+
+procedure TWxPageSetupDialog.SetProxyBGColorString(Value: string);
 begin
 end;
 

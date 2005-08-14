@@ -2,10 +2,10 @@ object dmMain: TdmMain
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Left = 234
-  Top = 147
-  Height = 354
-  Width = 494
+  Left = 391
+  Top = 56
+  Height = 403
+  Width = 578
   object Cpp: TSynCppSyn
     DefaultFilter = 'C++ files (*.cpp,*.h,*.hpp)|*.cpp;*.h;*.hpp'
     AsmAttri.Foreground = clBlue
@@ -10181,5 +10181,13 @@ object dmMain: TdmMain
       8001E0177FF77FF78003F01F1B771BBB801FF01F6B776B5BC03FF83F6B6B6B5B
       FE7FFC7F6B6B6B5BFFFFFEFF196B19B100000000000000000000000000000000
       000000000000}
+  end
+  object SynXMLSyn1: TSynXMLSyn
+    DefaultFilter = 
+      'XML Files (*.xml;*.xsd;*.xsl;*.xslt;*.dtd)|*.xml;*.xsd;*.xsl;*.x' +
+      'slt;*.dtd'
+    WantBracesParsed = False
+    Left = 40
+    Top = 320
   end
 end

@@ -19,6 +19,7 @@
 
 program devcpp;
 
+
 {$R 'icons.res' 'icons.rc'}
 {%File 'LangIDs.inc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}
@@ -174,7 +175,8 @@ uses
   wxMessageDialog in 'components\wxMessageDialog.pas',
   uFileWatch in 'uFileWatch.pas',
   wxsplitterwindow in 'components\wxsplitterwindow.pas',
-  DesignerOptions in 'DesignerOptions.pas' {DesignerForm};
+  DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
+  SynHighlighterXML in 'components\SynHighlighterXML.pas';
 
 {$R *.res}
 {$R winxp.res}

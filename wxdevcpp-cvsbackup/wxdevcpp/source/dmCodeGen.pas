@@ -536,10 +536,17 @@ var
     i:Integer;
 begin
     Result:=TStringList.Create;
-    for i := StartPos+1 to EndPos-1 do
-    begin
-        Result.Add(synEdit.Lines[i]);
+
+    try
+      for i := StartPos+1 to EndPos-1 do
+      begin
+         Result.Add(synEdit.Lines[i]);
+      end;
+    except
+      Result.Free;
+      raise;
     end;
+    
 end;
 
 

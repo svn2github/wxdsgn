@@ -860,8 +860,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure PackageManagerItemClick(Sender: TObject);
     procedure actAbortCompilationUpdate(Sender: TObject);
     procedure actAbortCompilationExecute(Sender: TObject);
-    procedure ProjectViewKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure RemoveItem(Node: TTreeNode);
     procedure ProjectViewChanging(Sender: TObject; Node: TTreeNode;
       var AllowChange: Boolean);
@@ -967,7 +965,9 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure actNewwxDialogExecute(Sender: TObject);
     procedure LeftPageControlUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure ApplicationEvents1Activate(Sender: TObject);
-  {$ENDIF}
+    procedure ProjectViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+   {$ENDIF}
 
   private
     fTab: integer;
@@ -2909,7 +2909,7 @@ var
     s: string;
   idx: integer;
   CFilter, CppFilter, HFilter: Integer;
-  boolIsForm,boolIsRC:Boolean;
+  boolIsForm,boolIsRC,boolISXRC:Boolean;
 begin
   Result := True;
   idx := -1;
@@ -2920,12 +2920,14 @@ begin
       idx := fProject.GetUnitFromString(e.TabSheet.Caption);
       boolIsForm:=iswxForm(e.TabSheet.Caption);
       boolIsRC:=isRCExt(e.TabSheet.Caption);
+      boolIsXRC:=isXRCExt(e.TabSheet.Caption);
     end
     else
     begin
       idx := fProject.Units.Indexof(e.FileName);
       boolIsForm:=iswxForm(e.FileName);
       boolIsRC:=isRCExt(e.FileName);
+      boolIsXRC:=isXRCExt(e.FileName);
     end;
     if fProject.Options.UseGPP then
     begin
@@ -2946,7 +2948,7 @@ begin
 
     if e.IsRes then
     begin
-      BuildFilter(flt, [FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);
+      BuildFilter(flt, [FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS, FLT_XRC{$ENDIF}]);
       dext := RC_EXT;
       CFilter := 2;
       CppFilter := 2;
@@ -2958,6 +2960,15 @@ begin
     begin
       BuildFilter(flt, [FLT_WXFORMS]);
       dext := WXFORM_EXT;
+      CFilter := 2;
+      CppFilter := 2;
+      HFilter := 2;
+    end;
+
+    if boolIsXRC then
+    begin
+      BuildFilter(flt, [FLT_XRC]);
+      dext := XRC_EXT;
       CFilter := 2;
       CppFilter := 2;
       HFilter := 2;
@@ -2989,10 +3000,14 @@ begin
     begin
         dext := RC_EXT;
     end;
+    if boolIsXRC then
+    begin
+        dext := XRC_EXT;
+    end;
     CFilter := 5;
     CppFilter := 6;
     HFilter := 3;
-  end;
+ end;
 
   if e.FileName = '' then
     s := e.TabSheet.Caption
@@ -3174,6 +3189,17 @@ begin
                     SaveFileInternal(eX);
             end;
         end;
+        // XRC
+        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
+        begin
+            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
+            if assigned(eX) then
+            begin
+                if eX.Modified then
+                    SaveFileInternal(eX);
+            end;
+        end;
+        // XRC
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
@@ -3232,7 +3258,7 @@ end;
 function TMainForm.CloseEditor(index: integer; Rem: boolean): Boolean;
 var
   e: TEditor;
-  cppEditor,hppEditor,wxEditor:TEditor;
+  cppEditor,hppEditor,wxEditor,wxXRCEditor:TEditor;
   EditorFilename:String;
   Saved:Boolean;
 
@@ -3301,6 +3327,16 @@ begin
         CloseEditorInternal(wxEditor);
     end;
 
+    wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
+    if assigned(wxXRCEditor) then begin
+        if Saved then begin
+            wxXRCEditor.Modified:=true;
+            SaveFile(wxXRCEditor);
+        end
+        Else
+            wxXRCEditor.Modified:=false;
+        CloseEditorInternal(wxXRCEditor);
+    end;
   end
   else
 {$ENDIF}
@@ -3993,6 +4029,12 @@ begin
                 MainForm.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
           end;
 
+           if FileExists(ChangeFileExt(EditorFilename, XRC_EXT)) then
+          begin
+            if not isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
+                MainForm.OpenFile(ChangeFileExt(EditorFilename, XRC_EXT), true);
+          end;
+
           if FileExists(ChangeFileExt(EditorFilename, H_EXT)) then
           begin
             if not isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
@@ -4220,7 +4262,7 @@ var
 begin
   prj := -1;
   if not BuildFilter(flt, ftOpen) then
-    if not BuildFilter(flt, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]) then
+    if not BuildFilter(flt, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS,FLT_XRC{$ENDIF}]) then
     begin
         flt := FLT_ALLFILES;
         if assigned(fProject) then
@@ -4867,7 +4909,7 @@ var
 begin
   if not assigned(fProject) then exit;
 
-  if not BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_RES, FLT_HEADS {$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]) then
+  if not BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_RES, FLT_HEADS {$IFDEF WX_BUILD},FLT_WXFORMS,FLT_XRC{$ENDIF}]) then
     BuildFilter(flt, ftAll);
 
   with dmMain.OpenDialog do
@@ -5567,6 +5609,10 @@ end;
 
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+{$IFDEF WX_BUILD}
+  var
+   i : Integer;
+ {$ENDIF}
 begin
   case key of
 {$IFDEF WIN32}
@@ -5577,6 +5623,37 @@ begin
 {$ENDIF}
       if ssCtrl in Shift then ShowDebug;
 end;
+    
+{$IFDEF WX_BUILD}
+if MainForm.ELDesigner1.Active and not JvInspProperties.Focused and not JvInspEvents.Focused then   // If Designer Form is in focus
+begin
+  case key of
+// Move the wx components around
+  vk_Left :
+    for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
+        ELDesigner1.SelectedControls.Items[i].Left := ELDesigner1.SelectedControls.Items[i].Left - 1;
+   vk_Right :
+    for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
+        ELDesigner1.SelectedControls.Items[i].Left := ELDesigner1.SelectedControls.Items[i].Left + 1;
+
+   vk_Up :
+    for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
+        ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top - 1;
+
+   vk_Down :
+    for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
+        ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top + 1;
+
+ end;
+
+
+ ELDesigner1.OnModified(Sender);
+
+ MessageControl.Hide;
+ end;
+
+{$ENDIF}
+
 end;
 
 function TMainForm.GetEditor(const index: integer): TEditor;
@@ -6239,13 +6316,12 @@ begin
           end;
           EnableDesignerControls;
           e.ActivateDesigner
-
         end
         else
         {$ENDIF}
         begin
           {$IFDEF WX_BUILD}
-          MainForm.ELDesigner1.Active:=false;
+           MainForm.ELDesigner1.Active:=false;
           //MainForm.ELDesigner1.DesignControl:=nil;
           {$ENDIF}
           e.Text.SetFocus;
@@ -7333,42 +7409,6 @@ begin
   end
 end;
 
-procedure TMainForm.ProjectViewKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
-    RemoveItem(ProjectView.Selected)
-  else if (Key = VK_ESCAPE) and (Shift = []) then
-  begin
-    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
-      GetEditor(-1).Activate;
-  end
-  else if (Key = VK_ESCAPE) and (Shift = [ssShift]) then
-  begin
-    actProjectManager.Checked := False;
-    actProjectManagerExecute(nil);
-    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
-      GetEditor(-1).Activate;
-  end
-  else if (Key = VK_RETURN) and Assigned(ProjectView.Selected) then
-  begin
-    if ProjectView.Selected.Data <> Pointer(-1) then { if not a directory }
-    begin
-      OpenUnit;
-      if Shift = [ssShift] then
-      begin
-        {
-          crap hack, SHIFT+ENTER=open file and close projman
-          I *really* don't think it's the acceptable interface idea.
-          Can't find a better one though.
-        }
-        actProjectManager.Checked := False;
-        actProjectManagerExecute(nil);
-      end;
-    end;
-  end;
-end;
-
 procedure TMainForm.ProjectViewChanging(Sender: TObject; Node: TTreeNode;
   var AllowChange: Boolean);
 begin
@@ -8390,6 +8430,14 @@ begin
       end;
 
 
+    strFileName := ChangeFileExt(strFileName, XRC_EXT);
+    OpenFile(strFileName);
+    if Assigned(fProject) and (InProject = true)then
+    begin
+        FolderNode:=fProject.Node;
+        NewUnit:=fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+    end;
+
     strFileName := ChangeFileExt(strFileName, WXFORM_EXT);
     strShortFileName := ExtractFileName(strFileName);
     NewDesigner := TEditor.Create;
@@ -8400,7 +8448,6 @@ begin
         NewUnit:=fProject.AddUnit(strFileName, FolderNode, false); // add under folder
         NewUnit.Editor:=NewDesigner;
     end;
-
 
   NewDesigner.Init(InProject, strShortFileName, strFileName, TRUE);
 
@@ -8643,6 +8690,15 @@ begin
         //CppParser1.ReParseFile(strAppFileName, True); //new cc
     end;
 
+    // Add XRC file to the project
+    strFileName := ChangeFileExt(strFileName, XRC_EXT);
+    OpenFile(strFileName);
+    if Assigned(fProject) and (InProject = true) then
+    begin
+        FolderNode:=fProject.Node;
+        NewUnit:=fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+    end;
+
     // Add wxForm to the project
     strFileName := ChangeFileExt(strFileName, WXFORM_EXT);
     strShortFileName := ExtractFileName(strFileName);
@@ -8742,7 +8798,7 @@ end;
 function TMainForm.CreateSourceCodes(strCppFile,strHppFile:String;FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string; dsgnType:TWxDesignerType): Boolean;
 var
   strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: string;
-  strLstHeaderCode,strLstSourceCode:TStringList;
+  strLstHeaderCode,strLstSourceCode, strLstXRCCode:TStringList;
 
   function GetStyleString: string;
   var
@@ -8856,7 +8912,22 @@ begin
   Result := SaveStringToFile(cppCode, ChangeFileExt(strFileName, CPP_EXT));
   //Create Source Code for the Cpp, H, and Form Files
   if Result then
+  begin
     Result := SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
+
+    strLstXRCCode := TStringList.Create;
+    strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
+    strLstXRCCode.Add('<resource version="2.3.0.1">');
+    strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
+
+    // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
+
+    //strLstXRCCode.Add('</object>');
+    strLstXRCCode.Add('</resource>');
+    Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
+    strLstXRCCode.Destroy
+
+end;
 
 end;
 {$ENDIF}
@@ -8872,7 +8943,7 @@ function TMainForm.CreateAppSourceCodes(strCppFile,strHppFile, strAppCppFile, st
 // wxform file for the new project.
 var
   strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: string;
-  strLstHeaderCode,strLstSourceCode,strLstAppHeaderCode,strLstAppSourceCode:TStringList;
+  strLstHeaderCode,strLstSourceCode,strLstAppHeaderCode,strLstAppSourceCode, strLstXRCCode:TStringList;
 
   function GetStyleString: string;
   var
@@ -9008,7 +9079,22 @@ begin
     Result := SaveStringToFile(appcppCode, ChangeFileExt(fProject.FileName, '') +  APP_SUFFIX + CPP_EXT);
 
     if Result then
-    Result := SaveStringToFile('#include <wx/msw/wx.rc>', ChangeFileExt(fProject.FileName, '') +  APP_SUFFIX + '.rc');
+      begin
+        strLstXRCCode := TStringList.Create;
+        strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
+        strLstXRCCode.Add('<resource version="2.3.0.1">');
+        strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
+
+       // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
+
+        //strLstXRCCode.Add('</object>');
+        strLstXRCCode.Add('</resource>');
+        Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
+        strLstXRCCode.Destroy
+      end;
+
+    if Result then
+       Result := SaveStringToFile('#include <wx/msw/wx.rc>', ChangeFileExt(fProject.FileName, '') +  APP_SUFFIX + '.rc');
 
 end;
 {$ENDIF}
@@ -9413,7 +9499,6 @@ end;
 {$ENDIF}
 
 
-
 {$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
 var
@@ -9423,7 +9508,8 @@ var
   strClass: string;
   e: TEditor;
 begin
-  FirstComponentBeingDeleted:='';
+
+ FirstComponentBeingDeleted:='';
   if ELDesigner1.SelectedControls.Count > 0 then
   begin
     compObj := ELDesigner1.SelectedControls[0];
@@ -10714,7 +10800,7 @@ begin
       end;
     end;
   end; // for
-
+    
   if boolFound = False then
   begin
     Exit;
@@ -12236,6 +12322,43 @@ begin
 {$ENDIF}
 end;
 
+
+procedure TMainForm.ProjectViewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
+    RemoveItem(ProjectView.Selected)
+    else if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
+      GetEditor(-1).Activate;
+  end
+  else if (Key = VK_ESCAPE) and (Shift = [ssShift]) then
+  begin
+    actProjectManager.Checked := False;
+    actProjectManagerExecute(nil);
+    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
+      GetEditor(-1).Activate;
+  end
+  else if (Key = VK_RETURN) and Assigned(ProjectView.Selected) then
+  begin
+    if ProjectView.Selected.Data <> Pointer(-1) then { if not a directory }
+    begin
+      OpenUnit;
+      if Shift = [ssShift] then
+      begin
+        {
+          crap hack, SHIFT+ENTER=open file and close projman
+          I *really* don't think it's the acceptable interface idea.
+          Can't find a better one though.
+        }
+        actProjectManager.Checked := False;
+        actProjectManagerExecute(nil);
+      end;
+    end;
+  end;
+end;
+
 initialization
 {$IFDEF WX_BUILD}
 //    TJvInspectorAlignItem.RegisterAsDefaultItem;
@@ -12246,7 +12369,7 @@ initialization
 //    TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
     TWxJvInspectorTStringsItem.RegisterAsDefaultItem;
     TJvInspectorMyFontItem.RegisterAsDefaultItem;
-    TJvInspectorMenuItem.RegisterAsDefaultItem;    
+    TJvInspectorMenuItem.RegisterAsDefaultItem;
     TJvInspectorBitmapItem.RegisterAsDefaultItem;
     TJvInspectorListColumnsItem.RegisterAsDefaultItem;
     TJvInspectorColorEditItem.RegisterAsDefaultItem;

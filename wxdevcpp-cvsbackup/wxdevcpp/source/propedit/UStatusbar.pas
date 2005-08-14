@@ -1,3 +1,5 @@
+// $Id
+
 unit UStatusbar;
 
 interface
@@ -44,14 +46,12 @@ implementation
 
 procedure TStatusBarForm.fillListInfo;
 var
-  I: Integer;
+  I: integer;
 begin
   lbxColumnNames.Items.BeginUpdate;
   lbxColumnNames.Items.Clear;
   for I := 0 to StatusBarObj.Panels.Count - 1 do // Iterate
-  begin
-    lbxColumnNames.Items.Add(StatusBarObj.Panels[i].Text);
-  end; // for
+    lbxColumnNames.Items.Add(StatusBarObj.Panels[i].Text); // for
   lbxColumnNames.Items.EndUpdate;
 end;
 
@@ -60,14 +60,14 @@ var
   lstColumn: TStatusPanel;
 begin
 
-  lstColumn := StatusBarObj.Panels.Add;
+  lstColumn      := StatusBarObj.Panels.Add;
   lstColumn.Text := txtCaption.Text;
   lstColumn.Width := StrToInt(txtWidth.Text);
 
   fillListInfo;
 
   txtCaption.Text := '';
-  txtWidth.Text := '50';
+  txtWidth.Text   := '50';
 end;
 
 procedure TStatusBarForm.Button1Click(Sender: TObject);
@@ -78,7 +78,7 @@ end;
 
 procedure TStatusBarForm.btDeleteClick(Sender: TObject);
 var
-  intColPos: Integer;
+  intColPos: integer;
 begin
   if lbxColumnNames.ItemIndex = -1 then
     Exit;
@@ -87,9 +87,7 @@ begin
   StatusBarObj.Panels.Delete(intColPos);
 
   if lbxColumnNames.Items.Count > 0 then
-  begin
     lbxColumnNames.ItemIndex := 0;
-  end;
   lbxColumnNamesClick(lbxColumnNames);
 end;
 
@@ -99,7 +97,7 @@ begin
     Exit;
 
   txtCaption.Text := StatusBarObj.Panels[lbxColumnNames.ItemIndex].Text;
-  txtWidth.Text := IntToStr(StatusBarObj.Panels[lbxColumnNames.ItemIndex].Width);
+  txtWidth.Text   := IntToStr(StatusBarObj.Panels[lbxColumnNames.ItemIndex].Width);
 
 end;
 

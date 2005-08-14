@@ -1,75 +1,77 @@
 // $Id$
-//
 
-unit WxMenuBar;                        
+
+unit WxMenuBar;
 
 interface
 
 uses
-  Windows, Forms,Messages, SysUtils, Classes,WxNonVisibleBaseComponent,
-  Wxutils,WxSizerPanel,Menus,WxCustomMenuItem,dbugintf;
+  Windows, Forms, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
+  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf;
 
 type
-  TWxMenuBar = class(TWxNonVisibleBaseComponent,IWxComponentInterface,IWxDialogNonInsertableInterface)
+  TWxMenuBar = class(TWxNonVisibleBaseComponent, IWxComponentInterface,
+    IWxDialogNonInsertableInterface)
   private
     { Private declarations }
-        FWx_Class : String;
-        FWx_Caption:String;
-        FWx_Comments : TStrings;
-        FWx_PropertyList : TStringList;
-        FWx_MenuItems: TWxCustomMenuItem;
-        FMainMenu: TMainMenu;
-        procedure AutoInitialize;
-        procedure AutoDestroy;
+    FWx_Class: string;
+    FWx_Caption: string;
+    FWx_Comments: TStrings;
+    FWx_PropertyList: TStringList;
+    FWx_MenuItems: TWxCustomMenuItem;
+    FMainMenu: TMainMenu;
+    procedure AutoInitialize;
+    procedure AutoDestroy;
   protected
     { Protected declarations }
   public
     { Public declarations }
-        constructor Create(AOwner: TComponent); override;
-        destructor Destroy; override;
-        procedure Loaded; override;
-        procedure BuildMenus(value: TWxCustomMenuItem);
-        function GenerateControlIDs:String;
-        function GenerateEnumControlIDs:String;
-        function GenerateEventTableEntries(CurrClassName:String):String;
-        function GenerateGUIControlCreation:String;
-        function GenerateGUIControlDeclaration:String;
-        function GetMenuItemCode:String;
-        function GetCodeForOneMenuItem(parentName:String;item:TWxCustomMenuItem):string;
-        function GenerateHeaderInclude:String;
-        function GenerateImageInclude: string;
-        function GetEventList:TStringlist;
-        function GetIDName:String;
-        function GetIDValue:LongInt;
-        function GetParameterFromEventName(EventName: string):String;
-        function GetPropertyList:TStringList;
-        function GetStretchFactor:Integer;
-        function GetTypeFromEventName(EventName: string):string;
-        function GetWxClassName:String;
-        procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-        procedure SetIDName(IDName:String);
-        function GetMaxID:Integer;
-        procedure SetIDValue(IDValue:longInt);
-        procedure SetStretchFactor(intValue:Integer);
-        procedure SetWxClassName(wxClassName:String);
-        function GetFGColor:string;
-        procedure SetFGColor(strValue:String);
-        function GetBGColor:string;
-        procedure SetBGColor(strValue:String);
-        procedure SetProxyFGColorString(value:String);
-        procedure SetProxyBGColorString(value:String);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Loaded; override;
+    procedure BuildMenus(Value: TWxCustomMenuItem);
+    function GenerateControlIDs: string;
+    function GenerateEnumControlIDs: string;
+    function GenerateEventTableEntries(CurrClassName: string): string;
+    function GenerateGUIControlCreation: string;
+    function GenerateXRCControlCreation(IndentString: string): TStringList;
+    function GenerateGUIControlDeclaration: string;
+    function GetMenuItemCode: string;
+    function GetCodeForOneMenuItem(parentName: string; item: TWxCustomMenuItem): string;
+    function GenerateHeaderInclude: string;
+    function GenerateImageInclude: string;
+    function GetEventList: TStringList;
+    function GetIDName: string;
+    function GetIDValue: longint;
+    function GetParameterFromEventName(EventName: string): string;
+    function GetPropertyList: TStringList;
+    function GetStretchFactor: integer;
+    function GetTypeFromEventName(EventName: string): string;
+    function GetWxClassName: string;
+    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+    procedure SetIDName(IDName: string);
+    function GetMaxID: integer;
+    procedure SetIDValue(IDValue: longint);
+    procedure SetStretchFactor(intValue: integer);
+    procedure SetWxClassName(wxClassName: string);
+    function GetFGColor: string;
+    procedure SetFGColor(strValue: string);
+    function GetBGColor: string;
+    procedure SetBGColor(strValue: string);
+    procedure SetProxyFGColorString(Value: string);
+    procedure SetProxyBGColorString(Value: string);
 
-        //function GetSubComponent: TPersistent;
-        //procedure SetSubComponent(Value: TPersistent);
+    //function GetSubComponent: TPersistent;
+    //procedure SetSubComponent(Value: TPersistent);
 
   published
     { Published declarations }
-        property Wx_Class : String read FWx_Class write FWx_Class;
-        property Wx_Caption : String read FWx_Caption write FWx_Caption;
-        property Wx_MenuItems : TWxCustomMenuItem  read FWx_MenuItems  write FWx_MenuItems;
-        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+    property Wx_Class: string Read FWx_Class Write FWx_Class;
+    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
+    property Wx_MenuItems: TWxCustomMenuItem Read FWx_MenuItems Write FWx_MenuItems;
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-   end;
+  end;
 
 procedure Register;
 
@@ -82,575 +84,730 @@ begin
   RegisterComponents('wxWidgets', [TWxMenuBar]);
 end;
 
-procedure TWxMenuBar.AutoInitialize;
-begin
-     FWx_PropertyList := TStringList.Create;
-     FWx_Class := 'wxMenuBar';
-     FWx_MenuItems:=TWxCustomMenuItem.Create(self.Parent);
-     Glyph.Handle:=LoadBitmap(hInstance, 'TWxMenuBar');
-     FMainMenu := TMainMenu.Create(Self.Parent);
-     FWx_Comments := TStringList.Create;
-   
-end; { of AutoInitialize }
+procedure TWxMenuBar.BuildMenus(Value: TWxCustomMenuItem);
 
-procedure TWxMenuBar.BuildMenus(value: TWxCustomMenuItem);
-
-    procedure CreateSubMenu(SubMenuItems:TWxCustomMenuItem);
-    var
-      I: Integer;
-      mnuItem:TMenuItem;
+  procedure CreateSubMenu(SubMenuItems: TWxCustomMenuItem);
+  var
+    I: integer;
+    mnuItem: TMenuItem;
+  begin
+    for I := 0 to SubMenuItems.Count - 1 do    // Iterate
     begin
-        for I := 0 to SubMenuItems.Count - 1 do    // Iterate
-        begin
-            mnuItem:=TMenuItem.Create(self.parent);
-            mnuItem.Caption:=SubMenuItems.Items[i].Wx_Caption;
-            FMainMenu.Items.Add(mnuItem);
-            if SubMenuItems.Items[i].Count > 0 then
-            begin
-                CreateSubMenu(SubMenuItems.Items[i]);
-            end;
-        end;    // for
-    end;
+      mnuItem := TMenuItem.Create(self.parent);
+      mnuItem.Caption := SubMenuItems.Items[i].Wx_Caption;
+      FMainMenu.Items.Add(mnuItem);
+      if SubMenuItems.Items[i].Count > 0 then
+        CreateSubMenu(SubMenuItems.Items[i]);
+    end;    // for
+  end;
 
 var
-    i:Integer;
-    mnuItem:TMenuItem;
+  i: integer;
+  mnuItem: TMenuItem;
 begin
-    FMainMenu.Items.Clear;
+  FMainMenu.Items.Clear;
 
-    for I := 0 to value.Count - 1 do    // Iterate
-    begin
-        mnuItem:=TMenuItem.Create(self.parent);
-        mnuItem.Caption:=value.Items[i].Wx_Caption;
-        FMainMenu.Items.Add(mnuItem);
-        if value.Items[i].Count > 0 then
-        begin
-            CreateSubMenu(value.Items[i]);
-        end;
-    end;    // for
+  for I := 0 to Value.Count - 1 do    // Iterate
+  begin
+    mnuItem := TMenuItem.Create(self.parent);
+    mnuItem.Caption := Value.Items[i].Wx_Caption;
+    FMainMenu.Items.Add(mnuItem);
+    if Value.Items[i].Count > 0 then
+      CreateSubMenu(Value.Items[i]);
+  end;    // for
 end;
+
+procedure TWxMenuBar.AutoInitialize;
+begin
+  FWx_PropertyList := TStringList.Create;
+  FWx_Class     := 'wxMenuBar';
+  FWx_MenuItems := TWxCustomMenuItem.Create(self.Parent);
+  Glyph.Handle  := LoadBitmap(hInstance, 'TWxMenuBar');
+  FMainMenu     := TMainMenu.Create(Self.Parent);
+  FWx_Comments  := TStringList.Create;
+
+end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
 procedure TWxMenuBar.AutoDestroy;
 begin
-    Glyph.Assign(nil);
-    FWx_PropertyList.Free;
-    FWx_MenuItems.Free;
-    FMainMenu.Destroy;
+  Glyph.Assign(nil);
+  FWx_PropertyList.Destroy;
+  FWx_MenuItems.Destroy;
+  FMainMenu.Destroy;
+  FWx_Comments.Destroy;
 
 end; { of AutoDestroy }
 
 procedure TWxMenuBar.Loaded;
 begin
-    inherited Loaded;
-    ///Do all stuff here
-    self.BuildMenus(self.Wx_MenuItems);
+  inherited Loaded;
+  ///Do all stuff here
+  self.BuildMenus(self.Wx_MenuItems);
 
 end;
 
 
 constructor TWxMenuBar.Create(AOwner: TComponent);
 begin
-     { Call the Create method of the container's parent class       }
-     inherited Create(AOwner);
-     { AutoInitialize method is generated by Component Create.      }
-     AutoInitialize;
-     { Code to perform other tasks when the component is created }
-     FWx_PropertyList.add('wx_Class:Base Class');
-     FWx_PropertyList.add('Wx_Caption :Caption');
-     FWx_PropertyList.add('Name : Name');
-     FWx_PropertyList.add ('Wx_MenuItems: Menu Items');
-     FWx_PropertyList.add('Wx_Comments:Comments');
-      
+  { Call the Create method of the container's parent class       }
+  inherited Create(AOwner);
+  { AutoInitialize method is generated by Component Create.      }
+  AutoInitialize;
+  { Code to perform other tasks when the component is created }
+  FWx_PropertyList.add('wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_Caption :Caption');
+  FWx_PropertyList.add('Name : Name');
+  FWx_PropertyList.add('Wx_MenuItems: Menu Items');
+  FWx_PropertyList.add('Wx_Comments:Comments');
+
 end;
 
 destructor TWxMenuBar.Destroy;
 begin
-     { AutoDestroy, which is generated by Component Create, frees any   }
-     { objects created by AutoInitialize.                               }
-     AutoDestroy;
-     inherited Destroy;
+  { AutoDestroy, which is generated by Component Create, frees any   }
+  { objects created by AutoInitialize.                               }
+  AutoDestroy;
+  inherited Destroy;
 end;
 
-function TWxMenuBar.GenerateEnumControlIDs:String;
+function TWxMenuBar.GenerateEnumControlIDs: string;
 var
-  I: Integer;
-  retValue:Integer;
-  strF:String;
-  strLst:TStringList;
+  I:      integer;
+  retValue: integer;
+  strF:   string;
+  strLst: TStringList;
 
-  procedure GetEnumControlIDFromSubMenu(idstrList:TStringList;submnu:TWxCustomMenuItem);
+  procedure GetEnumControlIDFromSubMenu(idstrList: TStringList;
+    submnu: TWxCustomMenuItem);
   var
-    myretValue:Integer;
-    J:Integer;
-    strData:String;
+    myretValue: integer;
+    J: integer;
+    strData: string;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-        strData:=''+submnu.Items[J].Wx_IDName+' = '+IntToStr(submnu.Items[J].wx_IDValue) +  ', ';
-        idstrList.add(strData);
+      strData := '' + submnu.Items[J].Wx_IDName + ' = ' + IntToStr(
+        submnu.Items[J].wx_IDValue) + ', ';
+      idstrList.add(strData);
 
-        if submnu.items[J].Count > 0 then
-        begin
-            GetEnumControlIDFromSubMenu(idstrList,submnu.items[J]);
-        end;
+      if submnu.items[J].Count > 0 then
+        GetEnumControlIDFromSubMenu(idstrList, submnu.items[J]);
     end;    // for
   end;
 
 begin
 
-    Result :='';
-    strLst:=TStringList.Create;
+  Result := '';
+  strLst := TStringList.Create;
 
-    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
-    begin
-        strF:=' '+Wx_MenuItems.Items[i].Wx_IDName+' = '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue) +', ';
-        if trim(strF) <> '' then
-        begin
-            strLst.add(strF);
-        end;
+  for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+  begin
+    strF := ' ' + Wx_MenuItems.Items[i].Wx_IDName + ' = ' + IntToStr(
+      Wx_MenuItems.Items[i].wx_IDValue) + ', ';
+    if trim(strF) <> '' then
+      strLst.add(strF);
 
-        if Wx_MenuItems.items[i].Count > 0 then
-        begin
-            GetEnumControlIDFromSubMenu(strLst,Wx_MenuItems.items[i]);
-        end
-    end;    // for
-    Result:=strLst.Text;
-    strLst.Destroy;
+    if Wx_MenuItems.items[i].Count > 0 then
+      GetEnumControlIDFromSubMenu(strLst, Wx_MenuItems.items[i])
+  end;    // for
+  Result := strLst.Text;
+  strLst.Destroy;
 
 end;
 
-function TWxMenuBar.GenerateControlIDs:String;
+function TWxMenuBar.GenerateControlIDs: string;
 var
-  I: Integer;
-  retValue:Integer;
-  strF:String;
-  strLst:TStringList;
+  I:      integer;
+  retValue: integer;
+  strF:   string;
+  strLst: TStringList;
 
-  procedure GetControlIDFromSubMenu(idstrList:TStringList;submnu:TWxCustomMenuItem);
+  procedure GetControlIDFromSubMenu(idstrList: TStringList; submnu: TWxCustomMenuItem);
   var
-    myretValue:Integer;
-    J:Integer;
-    strData:String;
+    myretValue: integer;
+    J: integer;
+    strData: string;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-        strData:='#define '+submnu.Items[J].Wx_IDName+'  '+IntToStr(submnu.Items[J].wx_IDValue) +  ' ';
-        idstrList.add(strData);
+      strData := '#define ' + submnu.Items[J].Wx_IDName + '  ' + IntToStr(
+        submnu.Items[J].wx_IDValue) + ' ';
+      idstrList.add(strData);
 
-        if submnu.items[J].Count > 0 then
-        begin
-            GetControlIDFromSubMenu(idstrList,submnu.items[J]);
-        end;
+      if submnu.items[J].Count > 0 then
+        GetControlIDFromSubMenu(idstrList, submnu.items[J]);
     end;    // for
   end;
 
 begin
 
-    Result :='';
-    strLst:=TStringList.Create;
+  Result := '';
+  strLst := TStringList.Create;
 
-    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
-    begin
-        strF:='#define '+Wx_MenuItems.Items[i].Wx_IDName+'  '+IntToStr(Wx_MenuItems.Items[i].wx_IDValue) +' ';
-        if trim(strF) <> '' then
-        begin
-            strLst.add(strF);
-        end;
+  for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+  begin
+    strF := '#define ' + Wx_MenuItems.Items[i].Wx_IDName + '  ' + IntToStr(
+      Wx_MenuItems.Items[i].wx_IDValue) + ' ';
+    if trim(strF) <> '' then
+      strLst.add(strF);
 
-        if Wx_MenuItems.items[i].Count > 0 then
-        begin
-            GetControlIDFromSubMenu(strLst,Wx_MenuItems.items[i]);
-        end
-    end;    // for
-    Result:=strLst.Text;
-    strLst.Destroy;
+    if Wx_MenuItems.items[i].Count > 0 then
+      GetControlIDFromSubMenu(strLst, Wx_MenuItems.items[i])
+  end;    // for
+  Result := strLst.Text;
+  strLst.Destroy;
 
 end;
 
 
-function TWxMenuBar.GenerateEventTableEntries(CurrClassName:String):String;
+function TWxMenuBar.GenerateEventTableEntries(CurrClassName: string): string;
 var
-  I: Integer;
-  retValue:Integer;
-  strF:String;
-  strLst:TStringList;
+  I:      integer;
+  retValue: integer;
+  strF:   string;
+  strLst: TStringList;
 
-  procedure GenerateEventTableEntriesFromSubMenu(idstrList:TStringList;submnu:TWxCustomMenuItem);
+  procedure GenerateEventTableEntriesFromSubMenu(idstrList: TStringList;
+    submnu: TWxCustomMenuItem);
   var
-    myretValue:Integer;
-    J:Integer;
-    strData:String;
+    myretValue: integer;
+    J: integer;
+    strData: string;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
-    begin
-        if submnu.items[J].Count > 0 then
-        begin
-            GenerateEventTableEntriesFromSubMenu(idstrList,submnu.items[J]);
-        end
-        else
-        begin
-            if trim(submnu.Items[j].EVT_Menu) <> '' then
-                strLst.add('EVT_MENU('+submnu.Items[j].Wx_IDName +', '+CurrClassName +'::'+submnu.Items[j].EVT_Menu+')');
+      if submnu.items[J].Count > 0 then
+        GenerateEventTableEntriesFromSubMenu(idstrList, submnu.items[J])
+      else begin
+        if trim(submnu.Items[j].EVT_Menu) <> '' then
+          strLst.add('EVT_MENU(' + submnu.Items[j].Wx_IDName +
+            ', ' + CurrClassName + '::' + submnu.Items[j].EVT_Menu + ')');
 
-            if trim(submnu.Items[j].EVT_UPDATE_UI) <> '' then
-                strLst.add('EVT_UPDATE_UI('+submnu.Items[j].Wx_IDName +', '+CurrClassName +'::'+submnu.Items[j].EVT_UPDATE_UI+')');
-        end;
-    end;    // for
+        if trim(submnu.Items[j].EVT_UPDATE_UI) <> '' then
+          strLst.add('EVT_UPDATE_UI(' + submnu.Items[j].Wx_IDName +
+            ', ' + CurrClassName + '::' + submnu.Items[j].EVT_UPDATE_UI + ')');
+      end;    // for
   end;
 
 begin
 
-    Result :='';
-    strLst:=TStringList.Create;
+  Result := '';
+  strLst := TStringList.Create;
 
-    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
-    begin
-        if Wx_MenuItems.items[i].Count > 0 then
-        begin
-            GenerateEventTableEntriesFromSubMenu(strLst,Wx_MenuItems.items[i]);
-        end
-        else
-        begin
-            if trim(Wx_MenuItems.Items[i].EVT_Menu) <> '' then
-                strLst.add('EVT_MENU('+Wx_MenuItems.Items[i].Wx_IDName +', '+CurrClassName +'::'+Wx_MenuItems.Items[i].EVT_Menu+')');
+  for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+    if Wx_MenuItems.items[i].Count > 0 then
+      GenerateEventTableEntriesFromSubMenu(strLst, Wx_MenuItems.items[i])
+    else begin
+      if trim(Wx_MenuItems.Items[i].EVT_Menu) <> '' then
+        strLst.add('EVT_MENU(' + Wx_MenuItems.Items[i].Wx_IDName +
+          ', ' + CurrClassName + '::' + Wx_MenuItems.Items[i].EVT_Menu + ')');
 
-            if trim(Wx_MenuItems.Items[i].EVT_UPDATE_UI) <> '' then
-                strLst.add('EVT_UPDATE_UI('+Wx_MenuItems.Items[i].Wx_IDName +', '+CurrClassName +'::'+Wx_MenuItems.Items[i].EVT_UPDATE_UI+')');
+      if trim(Wx_MenuItems.Items[i].EVT_UPDATE_UI) <> '' then
+        strLst.add('EVT_UPDATE_UI(' + Wx_MenuItems.Items[i].Wx_IDName +
+          ', ' + CurrClassName + '::' + Wx_MenuItems.Items[i].EVT_UPDATE_UI + ')');
 
-        end;
     end;    // for
-    Result:=strLst.Text;
-    strLst.Destroy;
+  Result := strLst.Text;
+  strLst.Destroy;
 end;
 
-function TWxMenuBar.GenerateGUIControlCreation:String;
+function TWxMenuBar.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
-     strColorStr:String;
-     strStyle,parentName,strAlignment:String;
-     strMenucodeData:String;
-begin
-     Result:='';
-    parentName:=GetWxWidgetParent(self);
+  i: integer;
+  tempstring: TStringList;
 
-    //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
-    if trim(strStyle) <> '' then
-       strStyle:=',' +strStyle;
-    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s(%s);',[self.Name,self.Wx_Class,strStyle] );
-    strMenucodeData:=GetMenuItemCode;
-    Result:=Result+#13+strMenucodeData;
-    Result:=Result+#13+'this->SetMenuBar('+self.Name+');';
+  function GetXRCCodeFromSubMenu(IndentString: string;
+    submnu: TWxCustomMenuItem): TStringList;
+  var
+    i: integer;
+    tempstring: TStringList;
+
+  begin
+
+    Result := TStringList.Create;
+
+    try
+
+      for i := 0 to submnu.Count - 1 do    // Iterate
+        if submnu.items[i].Count > 0 then
+        begin
+
+          Result.Add(IndentString + '  <object class ="wxMenuItem" name="menuitem">');
+          Result.Add(IndentString + '    ' + Format('<ID>%d</ID>',
+            [submnu.Items[i].Wx_IDValue]));
+          Result.Add(IndentString + '    ' + Format('<IDident>%s</IDident>',
+            [submnu.Items[i].Wx_IDName]));
+          Result.Add(IndentString + '    ' + Format('<label>%s</label>',
+            [XML_Label(submnu.Items[i].Wx_Caption)]));
+          Result.Add(IndentString + '    ' + Format('<help>%s</help>',
+            [XML_Label(submnu.Items[i].Wx_HelpText)]));
+
+          tempstring := GetXRCCodeFromSubMenu(IndentString + '      ', submnu.Items[i]);
+          try
+
+            Result.AddStrings(tempstring);
+          finally
+            tempstring.Free;
+          end;
+
+          if (submnu.Items[i].Wx_Checked) then
+            Result.Add(IndentString + '    <checked>1</checked>')
+          else
+            Result.Add(IndentString + '    <checked>0</checked>');
+
+          if (submnu.Items[i].Wx_Enabled) then
+            Result.Add(IndentString + '    <enable>1</enable>')
+          else
+            Result.Add(IndentString + '    <enable>0</enable>');
+
+
+          Result.Add(IndentString + '  </object>');
+
+        end
+        else begin
+
+          Result.Add(IndentString + '  <object class ="wxMenuItem" name="menuitem">');
+          Result.Add(IndentString + '    ' + Format('<ID>%d</ID>',
+            [submnu.Items[i].Wx_IDValue]));
+          Result.Add(IndentString + '    ' + Format('<IDident>%s</IDident>',
+            [submnu.Items[i].Wx_IDName]));
+          Result.Add(IndentString + '    ' + Format('<label>%s</label>',
+            [XML_Label(submnu.Items[i].Wx_Caption)]));
+          Result.Add(IndentString + '    ' + Format('<help>%s</help>',
+            [XML_Label(submnu.Items[i].Wx_HelpText)]));
+
+          if (submnu.Items[i].Wx_Checked) then
+            Result.Add(IndentString + '    <checked>1</checked>')
+          else
+            Result.Add(IndentString + '    <checked>0</checked>');
+
+          if (submnu.Items[i].Wx_Enabled) then
+            Result.Add(IndentString + '    <enable>1</enable>')
+          else
+            Result.Add(IndentString + '    <enable>0</enable>');
+
+          Result.Add(IndentString + '  </object>');
+
+        end;
+
+    except
+
+      Result.Free;
+      raise;
+
+    end;
+
+  end;
+
+begin
+
+  Result := TStringList.Create;
+
+  try
+
+    Result.Add(IndentString + Format('<object class="%s" name="%s">',
+      [self.Wx_Class, self.Name]));
+
+    for i := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+      if Wx_MenuItems.items[i].Count > 0 then
+      begin
+
+        Result.Add(IndentString + '  <object class ="wxMenu" name="menu">');
+        Result.Add(IndentString + '    ' + Format('<ID>%d</ID>',
+          [Wx_MenuItems.Items[i].Wx_IDValue]));
+        Result.Add(IndentString + '    ' + Format('<IDident>%s</IDident>',
+          [Wx_MenuItems.Items[i].Wx_IDName]));
+        Result.Add(IndentString + '    ' + Format('<label>%s</label>',
+          [XML_Label(Wx_MenuItems.Items[i].Wx_Caption)]));
+        Result.Add(IndentString + '    ' + Format('<help>%s</help>',
+          [XML_Label(Wx_MenuItems.Items[i].Wx_HelpText)]));
+
+        if (Wx_MenuItems.Items[i].Wx_Checked) then
+          Result.Add(IndentString + '    <checked>1</checked>')
+        else
+          Result.Add(IndentString + '    <checked>0</checked>');
+
+        if (Wx_MenuItems.Items[i].Wx_Enabled) then
+          Result.Add(IndentString + '    <enable>1</enable>')
+        else
+          Result.Add(IndentString + '    <enable>0</enable>');
+
+        tempstring := GetXRCCodeFromSubMenu(IndentString + '      ',
+          Wx_MenuItems.items[i]);
+        try
+          Result.AddStrings(tempstring)
+        finally
+          tempstring.Free;
+        end;
+
+        Result.Add(IndentString + '  </object>');
+
+      end
+      else begin
+
+        Result.Add(IndentString + '  <object class ="wxMenu" name="menu">');
+        Result.Add(IndentString + '    ' + Format('<ID>%d</ID>',
+          [Wx_MenuItems.Items[i].Wx_IDValue]));
+        Result.Add(IndentString + '    ' + Format('<IDident>%s</IDident>',
+          [Wx_MenuItems.Items[i].Wx_IDName]));
+        Result.Add(IndentString + '    ' + Format('<label>%s</label>',
+          [XML_Label(Wx_MenuItems.Items[i].Wx_Caption)]));
+        Result.Add(IndentString + '    ' + Format('<help>%s</help>',
+          [XML_Label(Wx_MenuItems.Items[i].Wx_HelpText)]));
+
+        if (Wx_MenuItems.Items[i].Wx_Checked) then
+          Result.Add(IndentString + '    <checked>1</checked>')
+        else
+          Result.Add(IndentString + '    <checked>0</checked>');
+
+        if (Wx_MenuItems.Items[i].Wx_Enabled) then
+          Result.Add(IndentString + '    <enable>1</enable>')
+        else
+          Result.Add(IndentString + '    <enable>0</enable>');
+
+        Result.Add(IndentString + '  </object>');
+
+      end;
+
+    Result.Add(IndentString + '</object>');
+
+  except
+    Result.Free;
+    raise;
+  end;
 end;
 
-function TWxMenuBar.GetCodeForOneMenuItem(parentName:String;item:TWxCustomMenuItem):String;
+function TWxMenuBar.GenerateGUIControlCreation: string;
+var
+  strColorStr:     string;
+  strStyle, parentName, strAlignment: string;
+  strMenucodeData: string;
 begin
-    Result:='';
-    if item.Count < 1 then
-    begin
-        if item.Wx_MenuItemStyle = wxMnuItm_Separator then
-            Result:=parentName+'->AppendSeparator();'
-        else
-        begin
-            if item.WX_BITMAP.Bitmap.Handle <> 0 then
-            begin
-                Result:=' wxMenuItem * '+item.Wx_IDName+'_mnuItem_obj = new wxMenuItem ('+Format('%s, %s, %s, %s, %s',[parentName,item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)])+');';
-                Result:=Result+#13+#10+'wxBitmap '+item.Wx_IDName+'_mnuItem_obj_BMP('+ item.Wx_IDName+'_XPM);';
-                Result:=Result+#13+#10+item.Wx_IDName+'_mnuItem_obj->SetBitmap('+item.Wx_IDName+'_mnuItem_obj_BMP);';
-                Result:=Result+#13+#10+parentName+'->Append('+item.Wx_IDName+'_mnuItem_obj);';
-            end
-            else
-            begin
-                Result:=parentName+'->Append('+ Format('%s, %s, %s, %s',[item.Wx_IDName,GetCppString(item.Wx_Caption),GetCppString(item.Wx_HelpText),GetMenuKindAsText(item.Wx_MenuItemStyle)]) +');';
-            end;
+  Result     := '';
+  parentName := GetWxWidgetParent(self);
 
-            if item.Wx_Checked then
-            begin
-                Result:=Result+#13+#10+parentName+'->Check('+ item.Wx_IDName +',true);';
-            end;
+  //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
+  if trim(strStyle) <> '' then
+    strStyle := ',' + strStyle;
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s =  new %s(%s);', [self.Name, self.Wx_Class, strStyle]);
+  strMenucodeData := GetMenuItemCode;
+  Result := Result + #13 + strMenucodeData;
+  Result := Result + #13 + 'this->SetMenuBar(' + self.Name + ');';
+end;
 
-            if not item.Wx_Enabled then
-            begin
-                Result:=Result+#13+#10+parentName+'->Enable('+ item.Wx_IDName +',false);';
-            end;
-        end;
+function TWxMenuBar.GetCodeForOneMenuItem(parentName: string;
+  item: TWxCustomMenuItem): string;
+begin
+  Result := '';
+  if item.Count < 1 then
+    if item.Wx_MenuItemStyle = wxMnuItm_Separator then
+      Result := parentName + '->AppendSeparator();'
+    else begin
+      if item.WX_BITMAP.Bitmap.Handle <> 0 then
+      begin
+        Result := ' wxMenuItem * ' + item.Wx_IDName +
+          '_mnuItem_obj = new wxMenuItem (' + Format('%s, %s, %s, %s, %s',
+          [parentName, item.Wx_IDName, GetCppString(item.Wx_Caption), GetCppString(
+          item.Wx_HelpText), GetMenuKindAsText(item.Wx_MenuItemStyle)]) + ');';
+        Result := Result + #13 + #10 + 'wxBitmap ' + item.Wx_IDName +
+          '_mnuItem_obj_BMP(' +
+          item.Wx_IDName + '_XPM);';
+        Result := Result + #13 + #10 + item.Wx_IDName + '_mnuItem_obj->SetBitmap(' +
+          item.Wx_IDName + '_mnuItem_obj_BMP);';
+        Result := Result + #13 + #10 + parentName + '->Append(' +
+          item.Wx_IDName + '_mnuItem_obj);';
+      end
+      else
+        Result := parentName + '->Append(' +
+          Format('%s, %s, %s, %s', [item.Wx_IDName, GetCppString(item.Wx_Caption),
+          GetCppString(item.Wx_HelpText),
+          GetMenuKindAsText(item.Wx_MenuItemStyle)]) + ');';
+
+      if item.Wx_Checked then
+        Result := Result + #13 + #10 + parentName + '->Check(' +
+          item.Wx_IDName + ',true);';
+
+      if not item.Wx_Enabled then
+        Result := Result + #13 + #10 + parentName + '->Enable(' +
+          item.Wx_IDName + ',false);';
     end;
 end;
 
-function TWxMenuBar.GetMenuItemCode:String;
+function TWxMenuBar.GetMenuItemCode: string;
 var
-  I: Integer;
-  retValue:Integer;
-  strF:String;
-  strLst:TStringList;
+  I:      integer;
+  retValue: integer;
+  strF:   string;
+  strLst: TStringList;
 
-  procedure GetCodeFromSubMenu(submnustrlst:TStringList;submnu:TWxCustomMenuItem);
+  procedure GetCodeFromSubMenu(submnustrlst: TStringList; submnu: TWxCustomMenuItem);
   var
-    myretValue:Integer;
-    J:Integer;
-    parentItemName,strV:String;
+    myretValue: integer;
+    J: integer;
+    parentItemName, strV: string;
   begin
-    Result:='';
-    parentItemName:=submnu.wx_IDName+'_Mnu_Obj';
+    Result := '';
+    parentItemName := submnu.wx_IDName + '_Mnu_Obj';
     submnustrlst.add(strV);
 
     for J := 0 to submnu.Count - 1 do    // Iterate
-    begin
-        if submnu.items[J].Count > 0 then
-        begin
-            strV:=Format('wxMenu *%s = new wxMenu(%s);',[submnu.items[J].wx_IDName+'_Mnu_Obj','0']);
-            strLst.add(strV);
+      if submnu.items[J].Count > 0 then
+      begin
+        strV := Format('wxMenu *%s = new wxMenu(%s);',
+          [submnu.items[J].wx_IDName + '_Mnu_Obj', '0']);
+        strLst.add(strV);
 
-            GetCodeFromSubMenu(submnustrlst,submnu.items[J]);
-            strV:=parentItemName+'->Append('+format('%s, %s, %s',[submnu.items[J].Wx_IDNAME,GetCppString(submnu.items[J].Wx_Caption),submnu.items[J].Wx_IDName+'_Mnu_Obj'])+');';
-            strLst.add(strV);
-        end
-        Else
+        GetCodeFromSubMenu(submnustrlst, submnu.items[J]);
+        strV := parentItemName + '->Append(' + format(
+          '%s, %s, %s', [submnu.items[J].Wx_IDNAME,
+          GetCppString(submnu.items[J].Wx_Caption),
+          submnu.items[J].Wx_IDName + '_Mnu_Obj']) + ');';
+        strLst.add(strV);
+      end
+      else begin
+        strV := GetCodeForOneMenuItem(parentItemName, submnu.items[J]);
+        if trim(strV) <> '' then
         begin
-            strV:=GetCodeForOneMenuItem(parentItemName,submnu.items[J]);
-            if trim(strV) <> '' then
-            begin
-                strLst.add(strV);
-                strLst.add('');
-                //sendDebug(strV);
-            end;
+          strLst.add(strV);
+          strLst.add('');
+          //sendDebug(strV);
         end;
-    end;    // for
+      end;    // for
   end;
 
 begin
 
-    Result :='';
-    strLst:=TStringList.Create;
-    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+  Result := '';
+  strLst := TStringList.Create;
+  for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+    if Wx_MenuItems.items[i].Count > 0 then
     begin
-        if Wx_MenuItems.items[i].Count > 0 then
-        begin
-            //_("%s") --- Wx_MenuItems.Items[i].Wx_Caption,
-            strF:=Format('wxMenu *%s = new wxMenu(%s);',[Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj','0']);
-            strLst.add(strF);
-            //
-            strF:=Format('%s->Append(%s, %s);',[self.Name,Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj',GetCppString(Wx_MenuItems.Items[i].Wx_Caption)]);
-            strLst.add(strF);
-            GetCodeFromSubMenu(strLst,Wx_MenuItems.items[i]);
-            //strLst.add(self.Name+'->Append('+Wx_MenuItems.items[i].Wx_IDName+',_("'+Wx_MenuItems.items[i].Wx_Caption+'"),'+Wx_MenuItems.items[i].Wx_IDName+'_Mnu_Obj ' +');');
-        end
-        Else
-        begin
-            //_("%s"), - Wx_MenuItems.Items[i].Wx_Caption,
-            strF:=Format('wxMenu *%s = new wxMenu(%s);',[Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj','0']);
-            //strF:=GetCodeForOneMenuItem(self.Name,Wx_MenuItems.Items[i]);
+      //_("%s") --- Wx_MenuItems.Items[i].Wx_Caption,
+      strF := Format('wxMenu *%s = new wxMenu(%s);',
+        [Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj', '0']);
+      strLst.add(strF);
 
-            if trim(strF) <> '' then
-            begin
-                strLst.add(strF);
-                strF:=Format('%s->Append(%s, %s);',[self.Name,Wx_MenuItems.Items[i].Wx_IDName+'_Mnu_Obj',GetCppString(Wx_MenuItems.Items[i].Wx_Caption)]);
-                strLst.add(strF);
-                strLst.add('');
-            end;
-        end;
+      strF := Format('%s->Append(%s, %s);',
+        [self.Name, Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj', GetCppString(
+        Wx_MenuItems.Items[i].Wx_Caption)]);
+      strLst.add(strF);
+      GetCodeFromSubMenu(strLst, Wx_MenuItems.items[i]);
+      //strLst.add(self.Name+'->Append('+Wx_MenuItems.items[i].Wx_IDName+',_("'+Wx_MenuItems.items[i].Wx_Caption+'"),'+Wx_MenuItems.items[i].Wx_IDName+'_Mnu_Obj ' +');');
+    end
+    else begin
+      //_("%s"), - Wx_MenuItems.Items[i].Wx_Caption,
+      strF := Format('wxMenu *%s = new wxMenu(%s);',
+        [Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj', '0']);
+      //strF:=GetCodeForOneMenuItem(self.Name,Wx_MenuItems.Items[i]);
+
+      if trim(strF) <> '' then
+      begin
+        strLst.add(strF);
+        strF := Format('%s->Append(%s, %s);',
+          [self.Name, Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj', GetCppString(
+          Wx_MenuItems.Items[i].Wx_Caption)]);
+        strLst.add(strF);
+        strLst.add('');
+      end;
     end;    // for
-    Result:=strLst.Text;
-    strLst.Destroy;
+  Result := strLst.Text;
+  strLst.Destroy;
 
 end;
 
-function TWxMenuBar.GenerateGUIControlDeclaration:String;
+function TWxMenuBar.GenerateGUIControlDeclaration: string;
 begin
-     Result:='';
-     Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
+  Result := '';
+  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 
-function TWxMenuBar.GenerateHeaderInclude:String;
+function TWxMenuBar.GenerateHeaderInclude: string;
 begin
-     Result:='';
-     Result:='#include <wx/menu.h>';
+  Result := '';
+  Result := '#include <wx/menu.h>';
 end;
 
 
 function TWxMenuBar.GenerateImageInclude: string;
 var
-  I: Integer;
-  retValue:Integer;
-  strF:String;
-  strLst:TStringList;
+  I:      integer;
+  retValue: integer;
+  strF:   string;
+  strLst: TStringList;
 
-  procedure GetImageIncludeFromSubMenu(idstrList:TStringList;submnu:TWxCustomMenuItem);
+  procedure GetImageIncludeFromSubMenu(idstrList: TStringList;
+    submnu: TWxCustomMenuItem);
   var
-    myretValue:Integer;
-    J:Integer;
-    strData:String;
+    myretValue: integer;
+    J: integer;
+    strData: string;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-        if submnu.Items[J].WX_BITMAP.Bitmap.Handle <> 0 then
-            strData:='#include "'+submnu.Items[J].Wx_IDName+'_XPM.xpm"'
-        else
-            strData:='';
-        if strData <> '' then
-            idstrList.add(strData);
+      if submnu.Items[J].WX_BITMAP.Bitmap.Handle <> 0 then
+        strData := '#include "' + submnu.Items[J].Wx_IDName + '_XPM.xpm"'
+      else
+        strData := '';
+      if strData <> '' then
+        idstrList.add(strData);
 
-        if submnu.items[J].Count > 0 then
-        begin
-            GetImageIncludeFromSubMenu(idstrList,submnu.items[J]);
-        end;
+      if submnu.items[J].Count > 0 then
+        GetImageIncludeFromSubMenu(idstrList, submnu.items[J]);
     end;    // for
   end;
 
 begin
 
-    Result :='';
-    strLst:=TStringList.Create;
+  Result := '';
+  strLst := TStringList.Create;
 
-    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
-    begin
-        if Wx_MenuItems.Items[i].wx_Bitmap.Bitmap.Handle <> 0 then
-            strF:='#include "'+Wx_MenuItems.Items[i].Wx_IDName+'_XPM.xpm"'
-        else
-            strF:='';
-        if trim(strF) <> '' then
-        begin
-            strLst.add(strF);
-        end;
+  for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+  begin
+    if Wx_MenuItems.Items[i].wx_Bitmap.Bitmap.Handle <> 0 then
+      strF := '#include "' + Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm"'
+    else
+      strF := '';
+    if trim(strF) <> '' then
+      strLst.add(strF);
 
-        if Wx_MenuItems.items[i].Count > 0 then
-        begin
-            GetImageIncludeFromSubMenu(strLst,Wx_MenuItems.items[i]);
-        end
-    end;    // for
-    Result:=strLst.Text;
-    strLst.Destroy;
+    if Wx_MenuItems.items[i].Count > 0 then
+      GetImageIncludeFromSubMenu(strLst, Wx_MenuItems.items[i])
+  end;    // for
+  Result := strLst.Text;
+  strLst.Destroy;
 
 end;
 
-function TWxMenuBar.GetEventList:TStringlist;
+function TWxMenuBar.GetEventList: TStringList;
 begin
-Result:=nil;
+  Result := nil;
 end;
 
-function TWxMenuBar.GetIDName:String;
+function TWxMenuBar.GetIDName: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxMenuBar.GetIDValue:LongInt;
+function TWxMenuBar.GetIDValue: longint;
 begin
-    result:=GetMaxID;
+  Result := GetMaxID;
 end;
 
-function TWxMenuBar.GetParameterFromEventName(EventName: string):String;
+function TWxMenuBar.GetParameterFromEventName(EventName: string): string;
 begin
 
 end;
 
-function TWxMenuBar.GetStretchFactor:Integer;
-begin
-//
-end;
-
-function TWxMenuBar.GetPropertyList:TStringList;
-begin
-     Result:=FWx_PropertyList;
-end;
-
-function TWxMenuBar.GetTypeFromEventName(EventName: string):string;
+function TWxMenuBar.GetStretchFactor: integer;
 begin
 
 end;
 
-function TWxMenuBar.GetWxClassName:String;
+function TWxMenuBar.GetPropertyList: TStringList;
 begin
-     if trim(wx_Class) = '' then
-        wx_Class:='wxMenu';
-     Result:=wx_Class;
+  Result := FWx_PropertyList;
 end;
 
-procedure TWxMenuBar.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
+function TWxMenuBar.GetTypeFromEventName(EventName: string): string;
 begin
-    //
+
 end;
 
-function TWxMenuBar.GetMaxID:Integer;
+function TWxMenuBar.GetWxClassName: string;
+begin
+  if trim(wx_Class) = '' then
+    wx_Class := 'wxMenu';
+  Result := wx_Class;
+end;
+
+procedure TWxMenuBar.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+begin
+
+end;
+
+function TWxMenuBar.GetMaxID: integer;
 var
-  I: Integer;
-  retValue:Integer;
+  I: integer;
+  retValue: integer;
 
-  function GetMaxIDFromSubMenu(submnu:TWxCustomMenuItem):Integer;
+  function GetMaxIDFromSubMenu(submnu: TWxCustomMenuItem): integer;
   var
-    myretValue:Integer;
-    J:Integer;
+    myretValue: integer;
+    J: integer;
   begin
-    Result :=submnu.Wx_IDValue;
+    Result := submnu.Wx_IDValue;
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-        if submnu.items[J].Wx_IDValue > Result then
-            Result:=submnu.items[J].Wx_IDValue;
-        if submnu.items[J].Count > 0 then
-        begin
-            myretValue:=GetMaxIDFromSubMenu(submnu.items[J]);
-            if myretValue > Result then
-                Result:=myretValue;
-        end;
+      if submnu.items[J].Wx_IDValue > Result then
+        Result := submnu.items[J].Wx_IDValue;
+      if submnu.items[J].Count > 0 then
+      begin
+        myretValue := GetMaxIDFromSubMenu(submnu.items[J]);
+        if myretValue > Result then
+          Result := myretValue;
+      end;
     end;    // for
   end;
 
 begin
-    Result :=Wx_MenuItems.Wx_IDValue;
-    for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+  Result := Wx_MenuItems.Wx_IDValue;
+  for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
+  begin
+    if Wx_MenuItems.items[i].Wx_IDValue > Result then
+      Result := Wx_MenuItems.items[i].Wx_IDValue;
+    if Wx_MenuItems.items[i].Count > 0 then
     begin
-        if Wx_MenuItems.items[i].Wx_IDValue > Result then
-            Result:=Wx_MenuItems.items[i].Wx_IDValue;
-        if Wx_MenuItems.items[i].Count > 0 then
-        begin
-            retValue:=GetMaxIDFromSubMenu(Wx_MenuItems.items[i]);
-            if retValue > Result then
-                Result:=retValue;
-        end;
-    end;    // for
+      retValue := GetMaxIDFromSubMenu(Wx_MenuItems.items[i]);
+      if retValue > Result then
+        Result := retValue;
+    end;
+  end;    // for
 end;
 
 
-procedure TWxMenuBar.SetIDName(IDName:String);
+procedure TWxMenuBar.SetIDName(IDName: string);
 begin
 
 end;
 
-procedure TWxMenuBar.SetIDValue(IDValue:longInt);
+procedure TWxMenuBar.SetIDValue(IDValue: longint);
 begin
 
 end;
 
-procedure TWxMenuBar.SetStretchFactor(intValue:Integer);
+procedure TWxMenuBar.SetStretchFactor(intValue: integer);
 begin
 end;
 
-procedure TWxMenuBar.SetWxClassName(wxClassName:String);
+procedure TWxMenuBar.SetWxClassName(wxClassName: string);
 begin
-     wx_Class:=wxClassName;
+  wx_Class := wxClassName;
 end;
 
-function TWxMenuBar.GetFGColor:string;
+function TWxMenuBar.GetFGColor: string;
 begin
 
 end;
 
-procedure TWxMenuBar.SetFGColor(strValue:String);
-begin
-end;
-
-function TWxMenuBar.GetBGColor:string;
+procedure TWxMenuBar.SetFGColor(strValue: string);
 begin
 end;
 
-procedure TWxMenuBar.SetBGColor(strValue:String);
-begin
-end;
-procedure TWxMenuBar.SetProxyFGColorString(value:String);
+function TWxMenuBar.GetBGColor: string;
 begin
 end;
 
-procedure TWxMenuBar.SetProxyBGColorString(value:String);
+procedure TWxMenuBar.SetBGColor(strValue: string);
+begin
+end;
+
+procedure TWxMenuBar.SetProxyFGColorString(Value: string);
+begin
+end;
+
+procedure TWxMenuBar.SetProxyBGColorString(Value: string);
 begin
 end;
 
 end.
-

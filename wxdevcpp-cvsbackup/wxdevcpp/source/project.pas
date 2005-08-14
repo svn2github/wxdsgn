@@ -318,7 +318,7 @@ begin
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
       {$IFDEF WX_BUILD}
-      BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS, FLT_WXFORMS]);
+      BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS, FLT_WXFORMS, FLT_XRC]);
       WxFilter:=5;
       {$ENDIF}
       DefaultExt := CPP_EXT;
@@ -331,7 +331,7 @@ begin
     begin
       BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS]);
       {$IFDEF WX_BUILD}
-      BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS, FLT_WXFORMS]);
+      BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS, FLT_WXFORMS, FLT_XRC]);
       WxFilter:=5;
       {$ENDIF}
       DefaultExt := C_EXT;
@@ -348,6 +348,16 @@ begin
         CppFilter := 2;
         HFilter := 2;
     end;
+
+    if isXRCExt(FileName) then
+    begin
+        BuildFilter(flt, [FLT_XRC]);
+        DefaultExt := XRC_EXT;
+        CFilter := 2;
+        CppFilter := 2;
+        HFilter := 2;
+    end;
+
     if isWxForm(FileName) then
     begin
         BuildFilter(flt, [FLT_WXFORMS]);

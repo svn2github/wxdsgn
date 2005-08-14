@@ -102,7 +102,7 @@ end;
 
 procedure TNewProjectForm.FormDestroy(Sender: TObject);
 begin
-  fTemplates.Free;
+ // fTemplates.Free;
 end;
 
 procedure TNewProjectForm.AddTemplate(FileName: string);
@@ -187,7 +187,10 @@ begin
       rbC.Enabled := True;
 
     //     edProjectName.Text:= LTemplate.ProjectName;
+
   end;
+
+
 end;
 
 procedure TNewProjectForm.LoadText;

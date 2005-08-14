@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 260
-  Top = 113
+  Left = 354
+  Top = 102
   Width = 638
   Height = 444
   Color = clBtnFace
@@ -1212,9 +1212,9 @@ object MainForm: TMainForm
       Top = 16
       Width = 192
       Height = 201
-      ActivePage = ProjectSheet
+      ActivePage = ClassSheet
       Images = dmMain.ProjectImage_NewLook
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 0
       OnUnDock = LeftPageControlUnDock
       object ProjectSheet: TTabSheet

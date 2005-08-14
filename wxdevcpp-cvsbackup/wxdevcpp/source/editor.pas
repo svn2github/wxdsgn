@@ -195,6 +195,7 @@ type
   public
     procedure ActivateDesigner;
     procedure UpdateDesignerData;
+    procedure UpdateXRC;
     function GetDesigner: TfrmNewForm;
     procedure InitDesignerData(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet);
     function GetDesignerHPPFileName: string;
@@ -365,6 +366,7 @@ begin
     fText.Visible := false;
 
     fDesigner.Visible := True;
+
     fDesigner.Left := 8;
     fDesigner.Top := 8;
 
@@ -1241,6 +1243,7 @@ procedure TEditor.EditorKeyPress(Sender: TObject; var Key: Char);
 var
   P: TPoint;
 begin
+
   if Key = char($7F) then // happens when doing ctrl+backspace with completion on
     exit;
   if fCompletionBox.Enabled then
@@ -2278,11 +2281,12 @@ begin
   begin
     if Assigned(fDesigner) then
     begin
-      MainForm.ELDesigner1.Active := False;
+       MainForm.ELDesigner1.Active := False;
       try
         MainForm.ELDesigner1.DesignControl:=nil;
         MainForm.ELDesigner1.DesignControl := fDesigner;
         MainForm.ELDesigner1.Active := True;
+
       except
         if isForm then
         begin
@@ -2337,6 +2341,7 @@ begin
       end;
     end;
   end;
+  UpdateXRC;
 end;
 {$ENDIF}
 
@@ -2526,6 +2531,59 @@ begin
 end;
 
 
+{$ENDIF}
+
+{$IFDEF WX_BUILD}
+procedure TEditor.UpdateXRC;
+var
+  e: TEditor;
+  i : Integer;
+  wxcompInterface: IWxComponentInterface;
+
+begin
+  if isForm then
+  begin
+
+    if FileExists(ChangeFileExt(FileName, XRC_EXT)) then
+    begin
+      MainForm.OpenFile(ChangeFileExt(FileName, XRC_EXT), true);
+
+      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, XRC_EXT));
+
+      if Assigned(e) then
+      begin
+        try
+          GenerateXRC(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
+          e.Modified:=true;
+        except
+        end;
+        e.InsertString('', false);
+      end;
+
+    {  if Assigned(e) then
+      begin
+        try
+           e.Text.ClearAll;
+
+           e.Text.Lines.Append('<?xml version="1.0" encoding="ISO-8859-1"?>');
+           e.Text.Lines.Append('<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.3.0.1">');
+
+          
+          GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
+          e.Modified:=true;
+
+           e.Text.Lines.Append('</object>');
+           e.Text.Lines.Append('</object>');
+           e.Text.Lines.Append('</resource>');
+
+        except
+        end;
+      end;
+      }
+    end;
+     
+  end;
+end;
 {$ENDIF}
 
 end.

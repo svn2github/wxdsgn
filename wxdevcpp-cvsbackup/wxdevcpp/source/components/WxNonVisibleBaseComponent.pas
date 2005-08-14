@@ -1,5 +1,5 @@
 // $Id$
-//
+
 
 unit WxNonVisibleBaseComponent;
 
@@ -16,7 +16,7 @@ type
     { Protected declarations }
   public
     { Public declarations }
-    procedure WMPaint(var messageV:TWMPaint); message WM_PAINT;
+    procedure WMPaint(var messageV: TWMPaint); message WM_PAINT;
   published
     property Glyph;
     { Published declarations }
@@ -31,14 +31,15 @@ begin
   RegisterComponents('wxWidgets', [TWxNonVisibleBaseComponent]);
 end;
 
-procedure TWxNonVisibleBaseComponent.WMPaint(var messageV:TWMPaint);
+procedure TWxNonVisibleBaseComponent.WMPaint(var messageV: TWMPaint);
 begin
-    self.Caption:='';
-    self.Height:=27;
-    self.Width:=28;
-    self.BringToFront;
-    SetWindowPos(self.Handle, HWND_TOPMOST, 0,0,0,0, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
-    inherited;
+  self.Caption := '';
+  self.Height  := 27;
+  self.Width   := 28;
+  self.BringToFront;
+  SetWindowPos(self.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE or
+    SWP_NOMOVE or SWP_NOSIZE);
+  inherited;
 end;
 
 

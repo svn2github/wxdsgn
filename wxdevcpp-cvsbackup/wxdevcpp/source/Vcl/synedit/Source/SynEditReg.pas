@@ -95,6 +95,7 @@ uses
   SynEditOptionsDialog,
   SynHighlighterCpp,
   SynHighlighterRC,
+  SynHighlighterXML,
 {$ENDIF}
   Classes;
 
@@ -142,7 +143,8 @@ begin
     //classic
     TSynCppSyn, 
     // other
-    TSynRCSyn
+    TSynRCSyn,
+    TSynXMLSyn
   ]);
 end;
 

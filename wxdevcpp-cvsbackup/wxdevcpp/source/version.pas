@@ -140,6 +140,7 @@ resourcestring
   FLT_PROJECTS = 'Dev-C++ project (*.dev)|*.dev';
 {$IFDEF WX_BUILD}
   FLT_WXFORMS = 'wxWidgets Forms (*.wxForm)|*.wxForm';
+  FLT_XRC = 'XRC/XML files (*.xml) |*.xml';
 {$ENDIF}
   FLT_HEADS = 'Header files (*.h;*.hpp;*.rh;*.hh)|*.h;*.hpp;*.rh;*.hh';
   FLT_CS = 'C source files (*.c)|*.c';
@@ -170,6 +171,7 @@ const
 {$IFDEF WX_BUILD}
   APP_SUFFIX = 'App';
   WXFORM_EXT = '.wxform';
+  XRC_EXT = '.xml';
 {$ENDIF}
   PATH_LEN = 512;
   CONFIG_PARAM = '-c';
@@ -178,7 +180,7 @@ const
   cTypes: array[0..0] of string[4] = (C_EXT);
   cppTypes:  array[0..4] of string[4] = (CPP_EXT, CC_EXT, CXX_EXT, CP2_EXT, CP_EXT);
   headTypes: array[0..2] of string[4] = (H_EXT, HPP_EXT, RH_EXT);
-  resTypes: array[0..2] of string[4] = (RES_EXT, RC_EXT, RH_EXT);
+  resTypes: array[0..3] of string[4] = (RES_EXT, RC_EXT, RH_EXT, XRC_EXT);
   objTypes: array[0..0] of string = (OBJ_EXT);
 
   // GDB commands and Displays

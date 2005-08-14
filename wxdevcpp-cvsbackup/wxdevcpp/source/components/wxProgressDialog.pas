@@ -1,69 +1,72 @@
 // $Id$
-//
+
 
 unit wxProgressDialog;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,wxUtils,WxNonVisibleBaseComponent;
+  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
 type
-  TWxProgressDialog = class(TWxNonVisibleBaseComponent,IWxComponentInterface)
+  TWxProgressDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
   private
     { Private declarations }
-        FWx_Class : String;
-        FWx_PropertyList : TStringList;
-        FWx_ProgressDialogStyle:TWxProgressDialogStyleSet;
-        FWx_Title: String;
-        FWX_MAXValue:Integer;
-        FWX_AutoShow:Boolean;
-        FWx_Message: String;
-        FWx_Comments : TStrings;
-        
-        procedure AutoInitialize;
-        procedure AutoDestroy;
+    FWx_Class: string;
+    FWx_PropertyList: TStringList;
+    FWx_ProgressDialogStyle: TWxProgressDialogStyleSet;
+    FWx_Title: string;
+    FWX_MAXValue: integer;
+    FWX_AutoShow: boolean;
+    FWx_Message: string;
+    FWx_Comments: TStrings;
+
+    procedure AutoInitialize;
+    procedure AutoDestroy;
 
   protected
 
   public
-        constructor Create(AOwner: TComponent); override;
-        destructor Destroy; override;
-        function GenerateControlIDs:String;
-        function GenerateEnumControlIDs:String;
-        function GenerateEventTableEntries(CurrClassName:String):String;
-        function GenerateGUIControlCreation:String;
-        function GenerateGUIControlDeclaration:String;
-        function GenerateHeaderInclude:String;
-        function GenerateImageInclude: string;
-        function GetEventList:TStringlist;
-        function GetIDName:String;
-        function GetIDValue:LongInt;
-        function GetParameterFromEventName(EventName: string):String;
-        function GetPropertyList:TStringList;
-        function GetStretchFactor:Integer;
-        function GetTypeFromEventName(EventName: string):string;
-        function GetWxClassName:String;
-        procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-        procedure SetIDName(IDName:String);
-        procedure SetIDValue(IDValue:longInt);
-        procedure SetStretchFactor(intValue:Integer);
-        procedure SetWxClassName(wxClassName:String);
-        function GetFGColor:string;
-        procedure SetFGColor(strValue:String);
-        function GetBGColor:string;
-        procedure SetBGColor(strValue:String);
-        procedure SetProxyFGColorString(value:String);
-        procedure SetProxyBGColorString(value:String);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function GenerateControlIDs: string;
+    function GenerateEnumControlIDs: string;
+    function GenerateEventTableEntries(CurrClassName: string): string;
+    function GenerateGUIControlCreation: string;
+    function GenerateXRCControlCreation(IndentString: string): TStringList;
+    function GenerateGUIControlDeclaration: string;
+    function GenerateHeaderInclude: string;
+    function GenerateImageInclude: string;
+    function GetEventList: TStringList;
+    function GetIDName: string;
+    function GetIDValue: longint;
+    function GetParameterFromEventName(EventName: string): string;
+    function GetPropertyList: TStringList;
+    function GetStretchFactor: integer;
+    function GetTypeFromEventName(EventName: string): string;
+    function GetWxClassName: string;
+    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+    procedure SetIDName(IDName: string);
+    procedure SetIDValue(IDValue: longint);
+    procedure SetStretchFactor(intValue: integer);
+    procedure SetWxClassName(wxClassName: string);
+    function GetFGColor: string;
+    procedure SetFGColor(strValue: string);
+    function GetBGColor: string;
+    procedure SetBGColor(strValue: string);
+    procedure SetProxyFGColorString(Value: string);
+    procedure SetProxyBGColorString(Value: string);
   published
     { Published declarations }
-        property Wx_Class : String read FWx_Class write FWx_Class;
-        property Wx_Message: String read FWx_Message write FWx_Message;
-        property Wx_Title: String read FWx_Title write FWx_Title;
-        property WX_MAXValue: integer read FWX_MAXValue write FWX_MAXValue default 100;
-        property WX_AutoShow: boolean read FWX_AutoShow write FWX_AutoShow default false;        
-        property Wx_ProgressDialogStyle:TWxProgressDialogStyleSet read FWx_ProgressDialogStyle write FWx_ProgressDialogStyle;
-        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+    property Wx_Class: string Read FWx_Class Write FWx_Class;
+    property Wx_Message: string Read FWx_Message Write FWx_Message;
+    property Wx_Title: string Read FWx_Title Write FWx_Title;
+    property WX_MAXValue: integer Read FWX_MAXValue Write FWX_MAXValue default 100;
+    property WX_AutoShow: boolean Read FWX_AutoShow Write FWX_AutoShow default False;
+
+    property Wx_ProgressDialogStyle: TWxProgressDialogStyleSet
+      Read FWx_ProgressDialogStyle Write FWx_ProgressDialogStyle;
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
   end;
 
@@ -78,87 +81,108 @@ end;
 
 procedure TWxProgressDialog.AutoInitialize;
 begin
-     FWx_PropertyList := TStringList.Create;
-     FWx_Class := 'wxProgressDialog';
-     Glyph.Handle:=LoadBitmap(hInstance, 'TWxProgressDialog');
-     FWX_MAXValue:=100;
-     FWX_AutoShow:=false;
-     FWx_ProgressDialogStyle :=[wxPD_AUTO_HIDE,wxPD_APP_MODAL];
-     FWx_Comments := TStringList.Create;
+  FWx_PropertyList := TStringList.Create;
+  FWx_Class    := 'wxProgressDialog';
+  Glyph.Handle := LoadBitmap(hInstance, 'TWxProgressDialog');
+  FWX_MAXValue := 100;
+  FWX_AutoShow := False;
+  FWx_ProgressDialogStyle := [wxPD_AUTO_HIDE, wxPD_APP_MODAL];
+  FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
 procedure TWxProgressDialog.AutoDestroy;
 begin
-     FWx_PropertyList.Free;
+  FWx_PropertyList.Destroy;
+  FWx_Comments.Destroy;
+  Glyph.Assign(nil);
 end; { of AutoDestroy }
 
 constructor TWxProgressDialog.Create(AOwner: TComponent);
 begin
-     { Call the Create method of the container's parent class       }
-     inherited Create(AOwner);
+  { Call the Create method of the container's parent class       }
+  inherited Create(AOwner);
 
-     AutoInitialize;
-     { Code to perform other tasks when the component is created }
-     FWx_PropertyList.add('Wx_ProgressDialogStyle:Progress Dialog Style');
-     FWx_PropertyList.add('wxPD_APP_MODAL:wxPD_APP_MODAL');
-     FWx_PropertyList.add('wxPD_SMOOTH:wxPD_SMOOTH');
-     FWx_PropertyList.add('wxPD_CAN_SKIP:wxPD_CAN_SKIP');
-     FWx_PropertyList.add('wxPD_AUTO_HIDE:wxPD_AUTO_HIDE');
-     FWx_PropertyList.add('wxPD_CAN_ABORT:wxPD_CAN_ABORT');
-     FWx_PropertyList.add('wxPD_ELAPSED_TIME:wxPD_ELAPSED_TIME');
-     FWx_PropertyList.add('wxPD_ESTIMATED_TIME:wxPD_ESTIMATED_TIME');
-     FWx_PropertyList.add('wxPD_REMAINING_TIME:wxPD_REMAINING_TIME');
-     FWx_PropertyList.add('Wx_Message:Message');
-     FWx_PropertyList.add('Wx_Title:Title');
-     FWx_PropertyList.add('WX_MAXValue:MAX Value');
-     FWx_PropertyList.add('WX_AutoShow:Auto Show');
-     FWx_PropertyList.add('Name:Name');
-     FWx_PropertyList.add('Wx_Class:Base Class');
-     FWx_PropertyList.add('Wx_Comments:Comments');
+  AutoInitialize;
+  { Code to perform other tasks when the component is created }
+  FWx_PropertyList.add('Wx_ProgressDialogStyle:Progress Dialog Style');
+  FWx_PropertyList.add('wxPD_APP_MODAL:wxPD_APP_MODAL');
+  FWx_PropertyList.add('wxPD_SMOOTH:wxPD_SMOOTH');
+  FWx_PropertyList.add('wxPD_CAN_SKIP:wxPD_CAN_SKIP');
+  FWx_PropertyList.add('wxPD_AUTO_HIDE:wxPD_AUTO_HIDE');
+  FWx_PropertyList.add('wxPD_CAN_ABORT:wxPD_CAN_ABORT');
+  FWx_PropertyList.add('wxPD_ELAPSED_TIME:wxPD_ELAPSED_TIME');
+  FWx_PropertyList.add('wxPD_ESTIMATED_TIME:wxPD_ESTIMATED_TIME');
+  FWx_PropertyList.add('wxPD_REMAINING_TIME:wxPD_REMAINING_TIME');
+  FWx_PropertyList.add('Wx_Message:Message');
+  FWx_PropertyList.add('Wx_Title:Title');
+  FWx_PropertyList.add('WX_MAXValue:MAX Value');
+  FWx_PropertyList.add('WX_AutoShow:Auto Show');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
 destructor TWxProgressDialog.Destroy;
 begin
-     AutoDestroy;
-     inherited Destroy;
+  AutoDestroy;
+  inherited Destroy;
 end;
 
-function TWxProgressDialog.GenerateControlIDs:String;
+function TWxProgressDialog.GenerateControlIDs: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxProgressDialog.GenerateEnumControlIDs:String;
+function TWxProgressDialog.GenerateEnumControlIDs: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxProgressDialog.GenerateEventTableEntries(CurrClassName:String):String;
+function TWxProgressDialog.GenerateEventTableEntries(CurrClassName: string): string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxProgressDialog.GenerateGUIControlCreation:String;
+function TWxProgressDialog.GenerateGUIControlCreation: string;
 begin
-    Result:='';
-    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s( %s, %s, %d , this  %s);',[self.Name,self.wx_Class,GetCppString(self.Wx_Title),self.Wx_Message,Wx_MaxValue,GetProgressDialogStyleString(Wx_ProgressDialogStyle)] );
+  Result := '';
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s =  new %s( %s, %s, %d , this  %s);',
+    [self.Name, self.wx_Class, GetCppString(self.Wx_Title), self.Wx_Message,
+    Wx_MaxValue, GetProgressDialogStyleString(Wx_ProgressDialogStyle)]);
 
-    if not WX_AutoShow then
-        Result:=Result+#13+self.Name+'->Show(false);'
+  if not WX_AutoShow then
+    Result := Result + #13 + self.Name + '->Show(false);'
 end;
 
-function TWxProgressDialog.GenerateGUIControlDeclaration:String;
+function TWxProgressDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
 begin
-     Result:='';
-     Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
+
+  Result := TStringList.Create;
+
+  try
+    Result.Add(IndentString + Format('<object class="%s" name="%s">',
+      [self.Wx_Class, self.Name]));
+    Result.Add(IndentString + '</object>');
+  except
+    Result.Free;
+    raise;
+  end;
+
 end;
 
-function TWxProgressDialog.GenerateHeaderInclude:String;
+function TWxProgressDialog.GenerateGUIControlDeclaration: string;
 begin
-     Result:='';
-     Result:='#include <wx/progdlg.h>';
+  Result := '';
+  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+end;
+
+function TWxProgressDialog.GenerateHeaderInclude: string;
+begin
+  Result := '';
+  Result := '#include <wx/progdlg.h>';
 end;
 
 function TWxProgressDialog.GenerateImageInclude: string;
@@ -166,93 +190,95 @@ begin
 
 end;
 
-function TWxProgressDialog.GetEventList:TStringlist;
+function TWxProgressDialog.GetEventList: TStringList;
 begin
-Result:=nil;
+  Result := nil;
 end;
 
-function TWxProgressDialog.GetIDName:String;
-begin
-
-end;
-
-function TWxProgressDialog.GetIDValue:LongInt;
-begin
-Result:=0;
-end;
-
-function TWxProgressDialog.GetParameterFromEventName(EventName: string):String;
+function TWxProgressDialog.GetIDName: string;
 begin
 
 end;
 
-function TWxProgressDialog.GetStretchFactor:Integer;
+function TWxProgressDialog.GetIDValue: longint;
 begin
-//
+  Result := 0;
 end;
 
-function TWxProgressDialog.GetPropertyList:TStringList;
-begin
-     Result:=FWx_PropertyList;
-end;
-
-function TWxProgressDialog.GetTypeFromEventName(EventName: string):string;
+function TWxProgressDialog.GetParameterFromEventName(EventName: string): string;
 begin
 
 end;
 
-function TWxProgressDialog.GetWxClassName:String;
-begin
-     if trim(wx_Class) = '' then
-        wx_Class:='wxProgressDialog';
-     Result:=wx_Class;
-end;
-
-procedure TWxProgressDialog.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-begin
-    //
-end;
-
-procedure TWxProgressDialog.SetIDName(IDName:String);
+function TWxProgressDialog.GetStretchFactor: integer;
 begin
 
 end;
 
-procedure TWxProgressDialog.SetIDValue(IDValue:longInt);
+function TWxProgressDialog.GetPropertyList: TStringList;
+begin
+  Result := FWx_PropertyList;
+end;
+
+function TWxProgressDialog.GetTypeFromEventName(EventName: string): string;
 begin
 
 end;
 
-procedure TWxProgressDialog.SetStretchFactor(intValue:Integer);
+function TWxProgressDialog.GetWxClassName: string;
+begin
+  if trim(wx_Class) = '' then
+    wx_Class := 'wxProgressDialog';
+  Result := wx_Class;
+end;
+
+procedure TWxProgressDialog.SaveControlOrientation(
+  ControlOrientation: TWxControlOrientation);
+begin
+
+end;
+
+procedure TWxProgressDialog.SetIDName(IDName: string);
+begin
+
+end;
+
+procedure TWxProgressDialog.SetIDValue(IDValue: longint);
+begin
+
+end;
+
+procedure TWxProgressDialog.SetStretchFactor(intValue: integer);
 begin
 end;
 
-procedure TWxProgressDialog.SetWxClassName(wxClassName:String);
+procedure TWxProgressDialog.SetWxClassName(wxClassName: string);
 begin
-     wx_Class:=wxClassName;
+  wx_Class := wxClassName;
 end;
 
-function TWxProgressDialog.GetFGColor:string;
+function TWxProgressDialog.GetFGColor: string;
 begin
 
 end;
 
-procedure TWxProgressDialog.SetFGColor(strValue:String);
-begin
-end;
-    
-function TWxProgressDialog.GetBGColor:string;
+procedure TWxProgressDialog.SetFGColor(strValue: string);
 begin
 end;
 
-procedure TWxProgressDialog.SetBGColor(strValue:String);
-begin
-end;
-procedure TWxProgressDialog.SetProxyFGColorString(value:String);
+function TWxProgressDialog.GetBGColor: string;
 begin
 end;
 
-procedure TWxProgressDialog.SetProxyBGColorString(value:String);
+procedure TWxProgressDialog.SetBGColor(strValue: string);
+begin
+end;
+
+procedure TWxProgressDialog.SetProxyFGColorString(Value: string);
+begin
+end;
+
+procedure TWxProgressDialog.SetProxyBGColorString(Value: string);
 begin
 end;
 

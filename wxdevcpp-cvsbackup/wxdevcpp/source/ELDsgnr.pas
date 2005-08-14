@@ -3313,8 +3313,8 @@ end;
 destructor TELCustomDesigner.Destroy;
 begin
   Active := False;
-  FGrid.Free;
-  FSelectedControls.Free;
+  FGrid.Destroy;
+  FSelectedControls.Destroy;
   inherited;
 end;
 

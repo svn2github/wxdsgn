@@ -25,6 +25,10 @@ unit datamod;
 interface
 
 uses
+{$IFDEF WX_BUILD}
+SynHighlighterXML,
+{$ENDIF}
+
 {$IFDEF WIN32}
   SysUtils, Classes, Menus, Dialogs, ImgList, Controls,
   SynEditExport, SynExportHTML, SynExportRTF,
@@ -66,6 +70,7 @@ type
     ResourceDialog: TOpenDialog;
     SynHint: TSynCompletionProposal;
     ClassImages: TImageList;
+    SynXMLSyn1: TSynXMLSyn;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -234,8 +239,13 @@ begin
     else
     begin
       ext := ExtractFileExt(FileName);
-      if AnsiCompareText(ext, RC_EXT) = 0 then
+      if AnsiCompareText(ext, RC_EXT) = 0
+      then
         result := Res
+      {$IFDEF WX_BUILD}
+      else if (AnsiCompareText(ext, XRC_EXT) = 0) then
+          result := SynXMLSyn1
+      {$ENDIF}
       else
       begin
         tmp := TStringList.Create;

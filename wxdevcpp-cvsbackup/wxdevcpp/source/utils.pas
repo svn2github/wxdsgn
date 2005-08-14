@@ -75,6 +75,7 @@ function ExtractComponentPropertyName(const S: string): string;
 function ExtractComponentPropertyCaption(const S: string): string;
 function iswxForm(FileName: string): Boolean;
 function isRCExt(FileName: string): boolean;
+function isXRCExt(FileName: string): boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
 {$ENDIF}
 
@@ -192,6 +193,14 @@ end;
 function isRCExt(FileName: string): boolean;
 begin
   if LowerCase(ExtractFileExt(FileName)) = LowerCase(RC_EXT) then
+    Result := true
+  else
+    result := False;
+end;
+
+function isXRCExt(FileName: string): boolean;
+begin
+  if LowerCase(ExtractFileExt(FileName)) = LowerCase(XRC_EXT) then
     Result := true
   else
     result := False;
@@ -515,12 +524,12 @@ function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean; ov
 begin
   value:= FLT_BASE +FLT_ALLFILES;
   case FLTStyle of
-   ftOpen: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);  
+   ftOpen: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS,FLT_XRC{$ENDIF}]);
    ftHelp: result:= BuildFilter(value, [FLT_HELPS]);
    ftPrj: result:= BuildFilter(value, [FLT_PROJECTS]);
-   ftSrc: result:= BuildFilter(value, [FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS]);
+   ftSrc: result:= BuildFilter(value, [FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS{$IFDEF WX_BUILD},FLT_XRC{$ENDIF}]);
    ftAll: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_RES, FLT_CS,
-     FLT_CPPS {$IFDEF WX_BUILD},FLT_WXFORMS{$ENDIF}]);   
+     FLT_CPPS {$IFDEF WX_BUILD},FLT_WXFORMS,FLT_XRC{$ENDIF}]);   
   else
    result:= TRUE;
   end;

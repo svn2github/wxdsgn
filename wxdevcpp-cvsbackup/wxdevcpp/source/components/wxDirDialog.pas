@@ -1,64 +1,66 @@
 // $Id$
-//
 
-unit wxDirDialog;
+
+unit WxDirDialog;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,wxUtils,WxNonVisibleBaseComponent;
+  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
 type
-  TWxDirDialog = class(TWxNonVisibleBaseComponent,IWxComponentInterface)
+  TWxDirDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
   private
     { Private declarations }
-        FWx_Class : String;
-        FWx_Comments : TStrings;
-        FWx_PropertyList : TStringList;
-        FWx_Message: String;
-        FWx_DefaultDir: String;
-        FWx_DirDialogStyle : TWxDirDialogStyleSet;
-        procedure AutoInitialize;
-        procedure AutoDestroy;
+    FWx_Class: string;
+    FWx_Comments: TStrings;
+    FWx_PropertyList: TStringList;
+    FWx_Message: string;
+    FWx_DefaultDir: string;
+    FWx_DirDialogStyle: TWxDirDialogStyleSet;
+    procedure AutoInitialize;
+    procedure AutoDestroy;
 
   protected
 
   public
-        constructor Create(AOwner: TComponent); override;
-        destructor Destroy; override;
-        function GenerateControlIDs:String;
-        function GenerateEnumControlIDs:String;
-        function GenerateEventTableEntries(CurrClassName:String):String;
-        function GenerateGUIControlCreation:String;
-        function GenerateGUIControlDeclaration:String;
-        function GenerateHeaderInclude:String;
-        function GenerateImageInclude: string;
-        function GetEventList:TStringlist;
-        function GetIDName:String;
-        function GetIDValue:LongInt;
-        function GetParameterFromEventName(EventName: string):String;
-        function GetPropertyList:TStringList;
-        function GetStretchFactor:Integer;
-        function GetTypeFromEventName(EventName: string):string;
-        function GetWxClassName:String;
-        procedure SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-        procedure SetIDName(IDName:String);
-        procedure SetIDValue(IDValue:longInt);
-        procedure SetStretchFactor(intValue:Integer);
-        procedure SetWxClassName(wxClassName:String);
-        function GetFGColor:string;
-        procedure SetFGColor(strValue:String);
-        function GetBGColor:string;
-        procedure SetBGColor(strValue:String);
-        procedure SetProxyFGColorString(value:String);
-        procedure SetProxyBGColorString(value:String);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function GenerateControlIDs: string;
+    function GenerateEnumControlIDs: string;
+    function GenerateEventTableEntries(CurrClassName: string): string;
+    function GenerateGUIControlCreation: string;
+    function GenerateXRCControlCreation(IndentString: string): TStringList;
+    function GenerateGUIControlDeclaration: string;
+    function GenerateHeaderInclude: string;
+    function GenerateImageInclude: string;
+    function GetEventList: TStringList;
+    function GetIDName: string;
+    function GetIDValue: longint;
+    function GetParameterFromEventName(EventName: string): string;
+    function GetPropertyList: TStringList;
+    function GetStretchFactor: integer;
+    function GetTypeFromEventName(EventName: string): string;
+    function GetWxClassName: string;
+    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+    procedure SetIDName(IDName: string);
+    procedure SetIDValue(IDValue: longint);
+    procedure SetStretchFactor(intValue: integer);
+    procedure SetWxClassName(wxClassName: string);
+    function GetFGColor: string;
+    procedure SetFGColor(strValue: string);
+    function GetBGColor: string;
+    procedure SetBGColor(strValue: string);
+    procedure SetProxyFGColorString(Value: string);
+    procedure SetProxyBGColorString(Value: string);
   published
     { Published declarations }
-        property Wx_Class : String read FWx_Class write FWx_Class;
-        property Wx_Message: String read FWx_Message write FWx_Message;
-        property Wx_DefaultDir: String read FWx_DefaultDir write FWx_DefaultDir;
-        property Wx_DirDialogStyle:TWxDirDialogStyleSet read FWx_DirDialogStyle write FWx_DirDialogStyle;
-        property Wx_Comments : TStrings read FWx_Comments write FWx_Comments;
+    property Wx_Class: string Read FWx_Class Write FWx_Class;
+    property Wx_Message: string Read FWx_Message Write FWx_Message;
+    property Wx_DefaultDir: string Read FWx_DefaultDir Write FWx_DefaultDir;
+    property Wx_DirDialogStyle: TWxDirDialogStyleSet
+      Read FWx_DirDialogStyle Write FWx_DirDialogStyle;
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
   end;
 
@@ -74,96 +76,116 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxDirDialog.AutoInitialize;
 begin
-     FWx_PropertyList := TStringList.Create;
-     FWx_Class := 'wxDirDialog';
-     FWx_Message:='Choose a directory';
-     Glyph.Handle:=LoadBitmap(hInstance, 'TWxDirDialog');
-     FWx_Comments := TStringList.Create;
+  FWx_PropertyList := TStringList.Create;
+  FWx_Class    := 'wxDirDialog';
+  FWx_Message  := 'Choose a directory';
+  Glyph.Handle := LoadBitmap(hInstance, 'TWxDirDialog');
+  FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
 procedure TWxDirDialog.AutoDestroy;
 begin
-     FWx_PropertyList.Free;
+  FWx_PropertyList.Destroy;
+  FWx_Comments.Destroy;
+  Glyph.Assign(nil);
 end; { of AutoDestroy }
 
 constructor TWxDirDialog.Create(AOwner: TComponent);
 begin
-     { Call the Create method of the container's parent class       }
-     inherited Create(AOwner);
+  { Call the Create method of the container's parent class       }
+  inherited Create(AOwner);
 
-     { AutoInitialize sets the initial values of variables          }
-     { (including subcomponent variables) and properties;           }
-     { also, it creates objects for properties of standard          }
-     { Delphi object types (e.g., TFont, TTimer, TPicture)          }
-     { and for any variables marked as objects.                     }
-     { AutoInitialize method is generated by Component Create.      }
-     AutoInitialize;
+  { AutoInitialize sets the initial values of variables          }
+  { (including subcomponent variables) and properties;           }
+  { also, it creates objects for properties of standard          }
+  { Delphi object types (e.g., TFont, TTimer, TPicture)          }
+  { and for any variables marked as objects.                     }
+  { AutoInitialize method is generated by Component Create.      }
+  AutoInitialize;
 
-     { Code to perform other tasks when the component is created }
-     { Code to perform other tasks when the component is created }
-     FWx_PropertyList.add('Wx_DirDialogStyle:Dir Dialog Style');     
-     FWx_PropertyList.add('wxDD_NEW_DIR_BUTTON:wxDD_NEW_DIR_BUTTON');
+  { Code to perform other tasks when the component is created }
+  { Code to perform other tasks when the component is created }
+  FWx_PropertyList.add('Wx_DirDialogStyle:Dir Dialog Style');
+  FWx_PropertyList.add('wxDD_NEW_DIR_BUTTON:wxDD_NEW_DIR_BUTTON');
 
-     FWx_PropertyList.add('Wx_DefaultDir:Default Dir');
-     FWx_PropertyList.add('Wx_Message:Message');
-     FWx_PropertyList.add('Name:Name');
-     FWx_PropertyList.add('Wx_Class:Base Class');
-     FWx_PropertyList.add('Wx_Comments:Comments');
+  FWx_PropertyList.add('Wx_DefaultDir:Default Dir');
+  FWx_PropertyList.add('Wx_Message:Message');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
 destructor TWxDirDialog.Destroy;
 begin
-     { AutoDestroy, which is generated by Component Create, frees any   }
-     { objects created by AutoInitialize.                               }
-     AutoDestroy;
+  { AutoDestroy, which is generated by Component Create, frees any   }
+  { objects created by AutoInitialize.                               }
+  AutoDestroy;
 
-     { Here, free any other dynamic objects that the component methods  }
-     { created but have not yet freed.  Also perform any other clean-up }
-     { operations needed before the component is destroyed.             }
+  { Here, free any other dynamic objects that the component methods  }
+  { created but have not yet freed.  Also perform any other clean-up }
+  { operations needed before the component is destroyed.             }
 
-     { Last, free the component by calling the Destroy method of the    }
-     { parent class.                                                    }
-     inherited Destroy;
+  { Last, free the component by calling the Destroy method of the    }
+  { parent class.                                                    }
+  inherited Destroy;
 end;
 
-function TWxDirDialog.GenerateControlIDs:String;
+function TWxDirDialog.GenerateControlIDs: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
 
-function TWxDirDialog.GenerateEnumControlIDs:String;
+function TWxDirDialog.GenerateEnumControlIDs: string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxDirDialog.GenerateEventTableEntries(CurrClassName:String):String;
+function TWxDirDialog.GenerateEventTableEntries(CurrClassName: string): string;
 begin
-     Result:='';
+  Result := '';
 end;
 
-function TWxDirDialog.GenerateGUIControlCreation:String;
+function TWxDirDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
+begin
+
+  Result := TStringList.Create;
+
+  try
+    Result.Add(IndentString + Format('<object class="%s" name="%s">',
+      [self.Wx_Class, self.Name]));
+    Result.Add(IndentString + '</object>');
+  except
+    Result.Free;
+    raise;
+  end;
+
+end;
+
+function TWxDirDialog.GenerateGUIControlCreation: string;
 var
-     strType,strStyle:String;
+  strType, strStyle: string;
 begin
-     Result:='';
-    strStyle:=GetDirDialogStyleString(self.Wx_DirDialogStyle);
-    Result:= GetCommentString(self.FWx_Comments.Text) + Format('%s =  new %s(this, %s, %s%s);',[self.Name,self.wx_Class,GetCppString(wx_Message),GetCppString(wx_DefaultDir),strStyle] );
+  Result   := '';
+  strStyle := GetDirDialogStyleString(self.Wx_DirDialogStyle);
+  Result   := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s =  new %s(this, %s, %s%s);', [self.Name, self.wx_Class,
+    GetCppString(wx_Message), GetCppString(wx_DefaultDir), strStyle]);
 end;
 
-function TWxDirDialog.GenerateGUIControlDeclaration:String;
+function TWxDirDialog.GenerateGUIControlDeclaration: string;
 begin
-     Result:='';
-     Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
+  Result := '';
+  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 
-function TWxDirDialog.GenerateHeaderInclude:String;
+function TWxDirDialog.GenerateHeaderInclude: string;
 begin
-     Result:='';
-     Result:='#include <wx/dirdlg.h>';
+  Result := '';
+  Result := '#include <wx/dirdlg.h>';
 end;
 
 function TWxDirDialog.GenerateImageInclude: string;
@@ -171,93 +193,94 @@ begin
 
 end;
 
-function TWxDirDialog.GetEventList:TStringlist;
+function TWxDirDialog.GetEventList: TStringList;
 begin
-Result:=nil;
+  Result := nil;
 end;
 
-function TWxDirDialog.GetIDName:String;
-begin
-
-end;
-
-function TWxDirDialog.GetIDValue:LongInt;
-begin
-Result:=0;
-end;
-
-function TWxDirDialog.GetParameterFromEventName(EventName: string):String;
+function TWxDirDialog.GetIDName: string;
 begin
 
 end;
 
-function TWxDirDialog.GetStretchFactor:Integer;
+function TWxDirDialog.GetIDValue: longint;
 begin
-//
+  Result := 0;
 end;
 
-function TWxDirDialog.GetPropertyList:TStringList;
-begin
-     Result:=FWx_PropertyList;
-end;
-
-function TWxDirDialog.GetTypeFromEventName(EventName: string):string;
+function TWxDirDialog.GetParameterFromEventName(EventName: string): string;
 begin
 
 end;
 
-function TWxDirDialog.GetWxClassName:String;
-begin
-     if trim(wx_Class) = '' then
-        wx_Class:='wxDirDialog';
-     Result:=wx_Class;
-end;
-
-procedure TWxDirDialog.SaveControlOrientation(ControlOrientation:TWxControlOrientation);
-begin
-    //
-end;
-
-procedure TWxDirDialog.SetIDName(IDName:String);
+function TWxDirDialog.GetStretchFactor: integer;
 begin
 
 end;
 
-procedure TWxDirDialog.SetIDValue(IDValue:longInt);
+function TWxDirDialog.GetPropertyList: TStringList;
+begin
+  Result := FWx_PropertyList;
+end;
+
+function TWxDirDialog.GetTypeFromEventName(EventName: string): string;
 begin
 
 end;
 
-procedure TWxDirDialog.SetStretchFactor(intValue:Integer);
+function TWxDirDialog.GetWxClassName: string;
 begin
+  if trim(wx_Class) = '' then
+    wx_Class := 'wxDirDialog';
+  Result := wx_Class;
 end;
 
-procedure TWxDirDialog.SetWxClassName(wxClassName:String);
-begin
-     wx_Class:=wxClassName;
-end;
-
-function TWxDirDialog.GetFGColor:string;
+procedure TWxDirDialog.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
 begin
 
 end;
 
-procedure TWxDirDialog.SetFGColor(strValue:String);
+procedure TWxDirDialog.SetIDName(IDName: string);
 begin
+
 end;
-    
-function TWxDirDialog.GetBGColor:string;
+
+procedure TWxDirDialog.SetIDValue(IDValue: longint);
+begin
+
+end;
+
+procedure TWxDirDialog.SetStretchFactor(intValue: integer);
 begin
 end;
 
-procedure TWxDirDialog.SetBGColor(strValue:String);
+procedure TWxDirDialog.SetWxClassName(wxClassName: string);
 begin
+  wx_Class := wxClassName;
 end;
-procedure TWxDirDialog.SetProxyFGColorString(value:String);
+
+function TWxDirDialog.GetFGColor: string;
+begin
+
+end;
+
+procedure TWxDirDialog.SetFGColor(strValue: string);
 begin
 end;
 
-procedure TWxDirDialog.SetProxyBGColorString(value:String);
+function TWxDirDialog.GetBGColor: string;
+begin
+end;
+
+procedure TWxDirDialog.SetBGColor(strValue: string);
+begin
+end;
+
+procedure TWxDirDialog.SetProxyFGColorString(Value: string);
+begin
+end;
+
+procedure TWxDirDialog.SetProxyBGColorString(Value: string);
 begin
 end;
 
