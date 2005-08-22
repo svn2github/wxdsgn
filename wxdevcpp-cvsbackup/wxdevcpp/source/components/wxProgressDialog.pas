@@ -212,7 +212,7 @@ end;
 
 function TWxProgressDialog.GetStretchFactor: integer;
 begin
-
+    Result := 1;
 end;
 
 function TWxProgressDialog.GetPropertyList: TStringList;

@@ -238,9 +238,9 @@ begin
   end;
 end;
 
-function TWxTimer.GetStretchFactor: integer;
+function TWxTimer.GetStretchFactor: Integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxTimer.GetPropertyList: TStringList;

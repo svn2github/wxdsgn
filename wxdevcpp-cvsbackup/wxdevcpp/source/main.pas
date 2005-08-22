@@ -963,7 +963,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     function IsFromScrollBarShowing:boolean;
     procedure actNewWxFrameExecute(Sender: TObject);
     procedure actNewwxDialogExecute(Sender: TObject);
-    procedure LeftPageControlUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure ApplicationEvents1Activate(Sender: TObject);
     procedure ProjectViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -2380,6 +2379,7 @@ var
   intParamCount:Integer;
 begin
   idx := 0;
+  intParamCount := 0;
   while idx <= intParamCount do
   begin
     if (strLst[idx] = CONFIG_PARAM) then
@@ -2912,6 +2912,7 @@ var
   boolIsForm,boolIsRC,boolISXRC:Boolean;
 begin
   Result := True;
+  boolIsForm := False; boolIsRC := False; boolISXRC := False;
   idx := -1;
   if assigned(fProject) then
   begin
@@ -3268,14 +3269,14 @@ var
     begin
         dmMain.AddtoHistory(eX.FileName);
         eX.Close;
-        eX:=nil; // because closing the editor will destroy it
+        //eX:=nil; // because closing the editor will destroy it
     end
     else
     begin
         if eX.IsRes or (not Assigned(fProject)) then
         begin
             eX.Close;
-            eX:=nil; // because closing the editor will destroy it
+            //eX:=nil; // because closing the editor will destroy it
         end
         else if assigned(fProject) then
             fProject.CloseUnit(fProject.Units.Indexof(eX));
@@ -3550,8 +3551,7 @@ procedure TMainForm.CppCommentString(e: TEditor);
 var
   I: Integer;
     startXY,endXY:TBufferCoord;
-    strLine:string;
-begin
+   begin
     if assigned(e) = false then
         exit;
     if e.Text.SelAvail then
@@ -3989,7 +3989,7 @@ end;
 procedure TMainForm.OpenUnit;
 var
   Node: TTreeNode;
-  i, idx: integer;
+  i : integer;
   pt: TPoint;
   e: TEditor;
   EditorFilename:String;
@@ -4010,7 +4010,7 @@ begin
       //as assigned by the user like VC++
       if OpenWithAssignedProgram(fProject.Units[i].FileName) = true then
         Exit;
-      idx := FileIsOpen(fProject.Units[i].FileName, TRUE);
+      FileIsOpen(fProject.Units[i].FileName, TRUE);
       //Added By wx
       if isFileOpenedinEditor(fProject.Units[i].FileName) then
         e :=GetEditorFromFileName(fProject.Units[i].FileName)
@@ -5369,7 +5369,6 @@ begin
     try
         (Sender as TAction).Enabled := (e.Text.Text <> '');
     except
-        e:=nil;
     end;
   end
   else
@@ -8435,7 +8434,7 @@ begin
     if Assigned(fProject) and (InProject = true)then
     begin
         FolderNode:=fProject.Node;
-        NewUnit:=fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+        fProject.AddUnit(strFileName, FolderNode, false); // add under folder
     end;
 
     strFileName := ChangeFileExt(strFileName, WXFORM_EXT);
@@ -8696,7 +8695,7 @@ begin
     if Assigned(fProject) and (InProject = true) then
     begin
         FolderNode:=fProject.Node;
-        NewUnit:=fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+        fProject.AddUnit(strFileName, FolderNode, false); // add under folder
     end;
 
     // Add wxForm to the project
@@ -8913,7 +8912,7 @@ begin
   //Create Source Code for the Cpp, H, and Form Files
   if Result then
   begin
-    Result := SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
+    SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
 
     strLstXRCCode := TStringList.Create;
     strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
@@ -9438,6 +9437,7 @@ var
   e: TEditor;
   boolContrainer:boolean;
 begin
+   boolContrainer := False;
   ///SaveProjectFiles(strProjectFile,True,false);
   intCtrlPos := cbxControlsx.Items.IndexOfObject(AControl);
   //boolContrainer:=(IsControlWxContainer(AControl) or IsControlWxSizer(AControl));
@@ -10407,7 +10407,7 @@ end;
 {$IFDEF WX_BUILD}
 function TMainForm.LocateFunction(strFunctionName:String):boolean;
 begin
-
+   Result := False;
 end;
 {$ENDIF}
 
@@ -10749,7 +10749,6 @@ begin
 
     if AnsiSameText(strFunctionName, St2._Command) then
     begin
-      intLineNum:=St2._DeclImplLine;
       strFname:=St2._DeclImplFileName;
       Result := True;
       Break;
@@ -10760,7 +10759,6 @@ end;
 
 
 var
-  intFunctionCounter:Integer;
   strOldFunctionName:string;
   strFname:String;
   intLineNum:Integer;
@@ -10772,14 +10770,18 @@ var
   VarType: string;
   VarArguments: string;
   St: PStatement;
-  ClsName, strEName: string;
+  ClsName : string;
   boolFound: Boolean;
-  intfObj: IWxComponentInterface;
   e: TEditor;
   CppEditor, Hppeditor: TSynEdit;
 begin
   Result := False;
   boolFound := False;
+  AddScopeStr := False;
+  intLineNum := 0;
+  Line := 0;
+  St := nil;
+  
   e := GetEditor(Self.PageControl.ActivePageIndex);
 
   if not Assigned(e) then
@@ -10806,7 +10808,6 @@ begin
     Exit;
   end;
 
-  intFunctionCounter:=0;
   strOldFunctionName:=strFunctionName;
 
   if isFunctionAvailableInEditor(St._ID,strOldFunctionName,intLineNum,strFname) then
@@ -10995,15 +10996,17 @@ var
   VarType: string;
   VarArguments: string;
   St: PStatement;
-  ClsName, strEName: string;
+  ClsName : string;
   boolFound: Boolean;
-  intfObj: IWxComponentInterface;
   e: TEditor;
   CppEditor, Hppeditor: TSynEdit;
   strClassName:String;
 begin
 
     Result:=false;
+    boolFound := false;
+    St := nil;
+    
     e:=self.GetEditor(self.PageControl.ActivePageIndex);
     if not Assigned(e) then
         Exit;
@@ -11129,6 +11132,7 @@ var
   e: TEditor;
   CppEditor, Hppeditor: TSynEdit;
 begin
+  St := nil;
   Result := False;
   boolFound := False;
   e := GetEditor(Self.PageControl.ActivePageIndex);
@@ -11288,10 +11292,9 @@ var
   //    _InProject: Boolean;
 
 begin
+  Result := False;
   if not isCurrentPageDesigner then
     Exit;
-
-  Result := True;
 
   classname:=trim(classname);
 
@@ -11341,6 +11344,7 @@ begin
       end;
     end;
   end;
+  Result := True;
 end;
 {$ENDIF}
 
@@ -11570,13 +11574,12 @@ end;
 function TMainForm.ReplaceClassNameInEditor(strLst:TStringList;edt:TEditor;FromClassName, ToClassName:string):boolean;
 var
   I: Integer;
-  J: Integer;
-  lineNum,startLine:Integer;
+  lineNum :Integer;
   lineStr:String;
-  NotFound:boolean;
 begin
+    Result := False;
     if strLst.Count < 1 then
-        exit;
+         exit;
         
     for I := 0 to strLst.Count - 1 do    // Iterate
     begin
@@ -11587,10 +11590,7 @@ begin
             continue;
         try
             lineStr:=edt.Text.Lines[lineNum];
-            if not strContainsU(FromClassName,lineStr) then
-                NotFound:=true
-            else
-                NotFound:=false;
+
             strSearchReplace(lineStr,FromClassName,ToClassName,[srWord, srCase, srAll]);
             edt.Text.Lines[lineNum]:=lineStr;
         except
@@ -11612,6 +11612,8 @@ begin
         end;        
     end;    // for
 
+    Result := True;
+    
 end;
 
 function TMainForm.GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string): Boolean;
@@ -11623,7 +11625,6 @@ var
   cppEditor,hppEditor:TEditor;
   cppFName,hppFName:String;
   //LineNumber:Integer;
-  LineString:string;
 begin
   HppStrLst.clear;
   CppStrLst.clear;
@@ -12239,15 +12240,6 @@ end;
 procedure TMainForm.actNewwxDialogExecute(Sender: TObject);
 begin
     CreateNewDialogOrFrameCode(dtWxDialog);
-end;
-
-procedure TMainForm.LeftPageControlUnDock(Sender: TObject;
-  Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
-var
-    i:integer;
-begin
-    i:=10;
-    i:=i+1;
 end;
 
 procedure TMainForm.OnFileChangeNotify(Sender: TObject; ChangeType: TChangeType);

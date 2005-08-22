@@ -323,7 +323,6 @@ function TWxGridSizer.GenerateXRCControlCreation(IndentString: string): TStringL
 var
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   tempstring: TStringList;
 begin
 
@@ -364,8 +363,7 @@ end;
 
 function TWxGridSizer.GenerateGUIControlCreation: string;
 var
-  strColorStr: string;
-  strStyle, strAlignment: string;
+  strAlignment: string;
   parentName:  string;
 begin
 
@@ -501,9 +499,7 @@ procedure TWxGridSizer.WMPaint(var Message: TWMPaint);
 var
   maxWidth, maxHt: integer;
   totalmaxWidth, totalmaxHt: integer;
-  orimaxWidth, orimaxHt: integer;
-  i, j:    integer;
-  TotalControlCount: integer;
+  i :    integer;
   coordTop, coordLeft: integer;
   intAlignment: integer;
   oriRows: integer;
@@ -518,7 +514,6 @@ begin
   self.Caption := '';
 
   maxWidth := -1;
-  maxHt    := -1;
 
   totalmaxWidth := 0;
   totalmaxHt    := 0;

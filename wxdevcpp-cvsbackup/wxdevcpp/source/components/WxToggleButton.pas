@@ -53,7 +53,6 @@ type
     { Protected fields of TWxToggleButton }
 
     { Protected methods of TWxToggleButton }
-    procedure Click; override;
 
   public
     { Public fields and properties of TWxToggleButton }
@@ -90,6 +89,7 @@ type
     procedure SetProxyBGColorString(Value: string);
   public
     property Canvas: TCanvas Read FCanvas;
+    procedure Click; override;
 
   published
     { Published properties of TWxToggleButton }

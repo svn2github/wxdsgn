@@ -168,7 +168,7 @@ end;
 
 function TWxColourDialog.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxColourDialog.GetPropertyList: TStringList;

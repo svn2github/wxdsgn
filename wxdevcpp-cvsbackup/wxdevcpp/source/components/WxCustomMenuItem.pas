@@ -72,10 +72,10 @@ type
     FItems: TList;
     FAdded: boolean;
     //FParentHandle: HMENU;
-    FPosInParent: integer;
+    //FPosInParent: integer;
     //FBreak: TMenuBreak;
-    FPopUp, FChecked, FEnabled: boolean;
-    FCaption: string;
+    FPopUp, FEnabled: boolean;
+    //FCaption: string;
     //FHandle: HMENU;
     FOnClick: TNotifyEvent;
     //function AppendTo(Menu: HMENU; Position: Word): Boolean;
@@ -243,6 +243,7 @@ end;
 
 function TWxCustomMenuItem.GetItem(Index: integer): TWxCustomMenuItem;
 begin
+   Result := nil;
   if FItems = nil then
     exit;
   Result := FItems[Index];

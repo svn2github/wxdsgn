@@ -377,7 +377,9 @@ begin
    if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart,
       intManualBlockEnd) then
       strlstManualCode := GetBlockCode(synEdit, strClassName,
-        btManualCode, intManualBlockStart, intManualBlockEnd);
+        btManualCode, intManualBlockStart, intManualBlockEnd)
+   else
+      strlstManualCode := TStringList.Create;
 
     try
 
@@ -471,7 +473,6 @@ procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: string;
 var
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   tempstring: TStringList;
 begin
 
@@ -659,7 +660,7 @@ var
   strXPMContent: string;
 
 begin
-  xpmFileDir := IncludetrailingBackslash(ExtractFileDir(strFileName));
+  xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
 
   if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
   begin
@@ -668,9 +669,9 @@ begin
 
     if not fileexists(xpmFileDir + frmNewForm.Wx_Name + '_XPM.xpm') then
     begin
+      fileStrlst    := TStringList.Create;
       try
-        fileStrlst    := TStringList.Create;
-        strXPMContent :=
+         strXPMContent :=
           GetXPMFromTPicture(frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
         if trim(strXPMContent) <> '' then
         begin
@@ -694,8 +695,8 @@ begin
         continue;
       if not fileexists(xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm') then
       begin
+        fileStrlst    := TStringList.Create;
         try
-          fileStrlst    := TStringList.Create;
           strXPMContent :=
             GetXPMFromTPicture(frmNewForm.Components[I].Name, TWxStaticBitmap(
             frmNewForm.Components[I]).Picture.Bitmap);
@@ -716,8 +717,8 @@ begin
         continue;
       if not fileexists(xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm') then
       begin
+         fileStrlst    := TStringList.Create;
         try
-          fileStrlst    := TStringList.Create;
           strXPMContent :=
             GetXPMFromTPicture(frmNewForm.Components[I].Name, TWxToolButton(
             frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
@@ -1401,7 +1402,7 @@ end;
 
 function TfrmNewForm.GenerateXRCControlCreation(IndentString: string): TStringList;
 begin
-
+  Result := TStringList.Create;
 end;
 
 function TfrmNewForm.GenerateGUIControlCreation: string;

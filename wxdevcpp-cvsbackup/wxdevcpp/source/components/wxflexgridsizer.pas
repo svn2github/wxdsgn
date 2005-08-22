@@ -317,8 +317,7 @@ function TWxFlexGridSizer.GenerateXRCControlCreation(IndentString: string): TStr
 var
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
-  tempstring: TStringList;
+ tempstring: TStringList;
 begin
 
   Result := TStringList.Create;
@@ -357,8 +356,7 @@ end;
 
 function TWxFlexGridSizer.GenerateGUIControlCreation: string;
 var
-  strColorStr: string;
-  strStyle, strAlignment: string;
+  strAlignment: string;
   parentName:  string;
 begin
 
@@ -494,10 +492,7 @@ procedure TWxFlexGridSizer.WMPaint(var Message: TWMPaint);
 var
   maxWidth, maxHt: integer;
   totalmaxWidth, totalmaxHt, tmpHtofRow, tmpTotalWt, tmpWtofCol: integer;
-  orimaxWidth, orimaxHt: integer;
-  nextX:   integer;
-  i, j, k: integer;
-  TotalControlCount: integer;
+   i, k: integer;
   coordTop, coordLeft: integer;
   intAlignment: integer;
   oriRows: integer;
@@ -515,7 +510,6 @@ begin
   self.Caption := '';
 
   maxWidth := -1;
-  maxHt    := -1;
 
   totalmaxWidth := 0;
   totalmaxHt    := 0;
@@ -545,7 +539,6 @@ begin
 
   end;
 
-  intTemp    := totalmaxHt;
   totalmaxHt := 0;
   for i := 0 to oriRows - 1 do
   begin

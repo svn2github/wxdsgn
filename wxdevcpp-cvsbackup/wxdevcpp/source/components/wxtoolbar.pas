@@ -378,7 +378,6 @@ function TWxToolbar.GenerateXRCControlCreation(IndentString: string): TStringLis
 var
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   tempstring: TStringList;
 begin
 

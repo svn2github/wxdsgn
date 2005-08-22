@@ -167,7 +167,7 @@ end;
 
 function TWxDirDialog.GenerateGUIControlCreation: string;
 var
-  strType, strStyle: string;
+  strStyle: string;
 begin
   Result   := '';
   strStyle := GetDirDialogStyleString(self.Wx_DirDialogStyle);
@@ -215,7 +215,7 @@ end;
 
 function TWxDirDialog.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxDirDialog.GetPropertyList: TStringList;

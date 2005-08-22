@@ -324,7 +324,6 @@ var
   strOrientation: string;
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   tempstring: TStringList;
 begin
 
@@ -368,8 +367,6 @@ end;
 
 function TWxStaticBoxSizer.GenerateGUIControlCreation: string;
 var
-  strColorStr: string;
-  strStyle:    string;
   strOrientation, strAlignment, staticBoxName: string;
   parentName:  string;
 begin

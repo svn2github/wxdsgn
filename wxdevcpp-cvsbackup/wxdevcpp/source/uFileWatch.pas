@@ -94,7 +94,9 @@ var
 begin
   if FindFirst(FileName, faAnyFile, r) = 0 then begin
     SysUtils.FindClose(r);
+    {$WARNINGS OFF}
     Result := r.FindData.ftLastWriteTime;
+    {$WARNINGS ON}
   end else begin
     Result.dwLowDateTime := 0;
     Result.dwHighDateTime := 0;

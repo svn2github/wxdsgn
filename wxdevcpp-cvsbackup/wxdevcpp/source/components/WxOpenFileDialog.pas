@@ -230,7 +230,7 @@ end;
 
 function TWxOpenFileDialog.GetStretchFactor: integer;
 begin
-
+    Result := 1;
 end;
 
 function TWxOpenFileDialog.GetPropertyList: TStringList;

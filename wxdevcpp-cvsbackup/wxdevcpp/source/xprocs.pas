@@ -1726,7 +1726,7 @@ const
     BlockSize = 1024 * 16;
 var
     FSource, FTarget: Integer;
-    FFileSize: Longint;
+   // FFileSize: Longint;
     BRead, Bwrite: Word;
     Buffer: Pointer;
 begin
@@ -1734,7 +1734,7 @@ begin
     FSource := FileOpen(SourceFile, fmOpenRead + fmShareDenyNone); { Open Source }
     if FSource >= 0 then
     try
-        FFileSize := FileSeek(FSource, 0, soFromEnd);
+        //FFileSize := FileSeek(FSource, 0, soFromEnd);
         FTarget := FileCreate(TargetFile); { Open Target }
         try
             getmem(Buffer, BlockSize);
@@ -2109,6 +2109,7 @@ end;
 
 {$IFDEF Win32}
 
+{$WARNINGS OFF}
 function timeZoneOffset: Integer;
 var
     aTimeZoneInfo: TTimeZoneInformation;
@@ -2118,6 +2119,7 @@ begin
     else
         Result := 0;
 end;
+{$WARNINGS ON}
 {$ENDIF}
 
 { Communications Functions }
@@ -2336,11 +2338,15 @@ end;
 
 procedure sysDelay(aMs: Longint);
 var
-    TickCount: LongInt;
+    startCount, currentCount: LongInt;
 begin
-    TickCount := GetTickCount;
-    while GetTickCount - TickCount < aMs do
-        Application.ProcessMessages;
+    startCount := GetTickCount;
+    currentCount := GetTickCount;
+    while currentCount - startCount < aMs do
+    begin
+        currentCount := GetTickCount;
+        Application.ProcessMessages
+    end;
 end;
 
 procedure sysBeep;
@@ -2352,9 +2358,8 @@ function sysColorDepth: Integer;
 var
     aDC: hDC;
 begin
-    Result := 0;
+    aDC := GetDC(0);
     try
-        aDC := GetDC(0);
         Result := 1 shl (GetDeviceCaps(aDC, PLANES) * GetDeviceCaps(aDC, BITSPIXEL));
     finally
         ReleaseDC(0, aDC);
@@ -2646,6 +2651,7 @@ begin
                 Result := False;
         end;
     finally
+        Result := True;
         aRegistry.Free;
     end;
 end;
@@ -2688,6 +2694,7 @@ procedure TPersistentRect.Assign(Source: TPersistent);
 var
     Value: TPersistentRect;
 begin
+    Value := nil;
     if Value is TPersistentRect then
     begin
         Value := Source as TPersistentRect;

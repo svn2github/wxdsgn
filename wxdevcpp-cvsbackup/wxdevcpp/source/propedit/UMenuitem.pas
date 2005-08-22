@@ -86,7 +86,7 @@ type
     FCounter: integer;
     FSubMenuItemCreationClicked: boolean;
     FShiftDown: boolean;
-    procedure AddMenuClass(const S: string);
+    //procedure AddMenuClass(const S: string);
     procedure MoveNode(SourceNode, TargetNode: TTreeNode);
   public
     { Public declarations }
@@ -138,10 +138,10 @@ end;
 
 {$ENDIF}
 
-procedure TMenuItemForm.AddMenuClass(const S: string);
-begin
-  tvMenuItem.Items.AddChild(nil, S);
-end;
+//procedure TMenuItemForm.AddMenuClass(const S: string);
+//begin
+//  tvMenuItem.Items.AddChild(nil, S);
+//end;
 
 procedure TMenuItemForm.btnInsertClick(Sender: TObject);
 var
@@ -700,8 +700,6 @@ end;
 procedure TMenuItemForm.btBrowseClick(Sender: TObject);
 var
   PictureEdit: TPictureEdit;
-  picObj:      Tpicture;
-  strClassName: string;
 begin
   PictureEdit := TPictureEdit.Create(self);
   PictureEdit.Image1.Picture.Assign(bmpMenuImage.Picture);

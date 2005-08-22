@@ -1216,7 +1216,6 @@ object MainForm: TMainForm
       Images = dmMain.ProjectImage_NewLook
       TabIndex = 1
       TabOrder = 0
-      OnUnDock = LeftPageControlUnDock
       object ProjectSheet: TTabSheet
         Caption = 'Project'
         ImageIndex = -1

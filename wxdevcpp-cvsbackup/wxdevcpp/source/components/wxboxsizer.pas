@@ -290,7 +290,6 @@ var
   strOrientation: string;
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   tempstring: TStringList;
 begin
 
@@ -491,9 +490,8 @@ procedure TWxBoxSizer.WMPaint(var Message: TWMPaint);
 var
   maxWidth, maxHt: integer;
   totalmaxWidth, totalmaxHt: integer;
-  startX, nextX: integer;
+  startX : integer;
   i: integer;
-  TotalControlCount: integer;
   coordTop, coordLeft: integer;
   intAlignment: integer;
   wxcompInterface: IWxComponentInterface;

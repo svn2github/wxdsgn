@@ -235,7 +235,7 @@ end;
 
 function TWxFindReplaceDialog.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxFindReplaceDialog.GetPropertyList: TStringList;

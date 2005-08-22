@@ -239,7 +239,7 @@ end;
 
 function TWxPrintDialog.GetStretchFactor: integer;
 begin
-
+    Result := 1;
 end;
 
 function TWxPrintDialog.GetPropertyList: TStringList;

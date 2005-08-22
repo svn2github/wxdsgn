@@ -630,6 +630,7 @@ procedure TEditor.TurnOnBreakpoint(line: integer);
 var
 index:integer;
 begin
+  index := 0;
   if(line > 0) and (line <= fText.Lines.Count) then
     begin
       fText.InvalidateLine(line);
@@ -704,6 +705,7 @@ function TEditor.ToggleBreakpoint(Line: integer): boolean;
 var
   idx: integer;
 begin
+  idx := 0;
   result := FALSE;
   if (line > 0) and (line <= fText.Lines.Count) then
   begin
@@ -2537,8 +2539,6 @@ end;
 procedure TEditor.UpdateXRC;
 var
   e: TEditor;
-  i : Integer;
-  wxcompInterface: IWxComponentInterface;
 
 begin
   if isForm then

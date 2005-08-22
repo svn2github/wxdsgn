@@ -365,7 +365,6 @@ function TWxHtmlWindow.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
   strStyle, parentName, strAlignment: string;
-  i: integer;
 begin
   Result := '';
 

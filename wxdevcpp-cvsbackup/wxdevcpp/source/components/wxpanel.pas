@@ -286,7 +286,6 @@ end;
 function TWxPanel.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   i: integer;
   tempstring: TStringList;
 begin

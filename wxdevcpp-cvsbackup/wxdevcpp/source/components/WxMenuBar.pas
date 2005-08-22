@@ -174,14 +174,12 @@ end;
 function TWxMenuBar.GenerateEnumControlIDs: string;
 var
   I:      integer;
-  retValue: integer;
   strF:   string;
   strLst: TStringList;
 
   procedure GetEnumControlIDFromSubMenu(idstrList: TStringList;
     submnu: TWxCustomMenuItem);
   var
-    myretValue: integer;
     J: integer;
     strData: string;
   begin
@@ -219,13 +217,11 @@ end;
 function TWxMenuBar.GenerateControlIDs: string;
 var
   I:      integer;
-  retValue: integer;
   strF:   string;
   strLst: TStringList;
 
   procedure GetControlIDFromSubMenu(idstrList: TStringList; submnu: TWxCustomMenuItem);
   var
-    myretValue: integer;
     J: integer;
     strData: string;
   begin
@@ -264,16 +260,12 @@ end;
 function TWxMenuBar.GenerateEventTableEntries(CurrClassName: string): string;
 var
   I:      integer;
-  retValue: integer;
-  strF:   string;
   strLst: TStringList;
 
   procedure GenerateEventTableEntriesFromSubMenu(idstrList: TStringList;
     submnu: TWxCustomMenuItem);
   var
-    myretValue: integer;
     J: integer;
-    strData: string;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
       if submnu.items[J].Count > 0 then
@@ -479,8 +471,7 @@ end;
 
 function TWxMenuBar.GenerateGUIControlCreation: string;
 var
-  strColorStr:     string;
-  strStyle, parentName, strAlignment: string;
+  strStyle, parentName : string;
   strMenucodeData: string;
 begin
   Result     := '';
@@ -537,13 +528,11 @@ end;
 function TWxMenuBar.GetMenuItemCode: string;
 var
   I:      integer;
-  retValue: integer;
   strF:   string;
   strLst: TStringList;
 
   procedure GetCodeFromSubMenu(submnustrlst: TStringList; submnu: TWxCustomMenuItem);
   var
-    myretValue: integer;
     J: integer;
     parentItemName, strV: string;
   begin
@@ -632,14 +621,12 @@ end;
 function TWxMenuBar.GenerateImageInclude: string;
 var
   I:      integer;
-  retValue: integer;
   strF:   string;
   strLst: TStringList;
 
   procedure GetImageIncludeFromSubMenu(idstrList: TStringList;
     submnu: TWxCustomMenuItem);
   var
-    myretValue: integer;
     J: integer;
     strData: string;
   begin
@@ -701,7 +688,7 @@ end;
 
 function TWxMenuBar.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxMenuBar.GetPropertyList: TStringList;

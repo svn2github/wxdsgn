@@ -26,7 +26,7 @@ type
   private
     { Private fields of TWxSpinCtrl }
     { Storage for property ControlOrientation }
-    FControlOrientation: TWxControlOrientation;
+    //FControlOrientation: TWxControlOrientation;
     { Storage for property EVT_SPINCTRL }
     FEVT_SPINCTRL: string;
     { Storage for property EVT_SPIN_DOWN }
@@ -382,7 +382,6 @@ end;
 function TWxSpinCtrl.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
-  i: integer;
   strStyle, parentName, strAlignment: string;
 begin
 

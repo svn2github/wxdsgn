@@ -172,7 +172,7 @@ end;
 
 function TWxFontDialog.GetStretchFactor: integer;
 begin
-
+    Result := 1;
 end;
 
 function TWxFontDialog.GetPropertyList: TStringList;

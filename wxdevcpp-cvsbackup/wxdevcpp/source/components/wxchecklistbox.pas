@@ -558,7 +558,7 @@ end;
 
 function TWxCheckListBox.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxCheckListBox.GetTypeFromEventName(EventName: string): string;

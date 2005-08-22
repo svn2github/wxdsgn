@@ -24,7 +24,10 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, Menus, XPMenu, ComCtrls, FileCtrl;
+  StdCtrls, Buttons, ExtCtrls, Menus, XPMenu, ComCtrls,
+{$WARNINGS OFF}
+  FileCtrl;
+{$WARNINGS ON}
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,

@@ -54,7 +54,6 @@ type
     { Protected fields of TWxButton }
 
     { Protected methods of TWxButton }
-    procedure Click; override;
 
   public
     { Public fields and properties of TWxButton }
@@ -89,6 +88,8 @@ type
     procedure SetBGColor(strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
+    procedure Click; override;
+
   public
     property Canvas: TCanvas Read FCanvas;
 

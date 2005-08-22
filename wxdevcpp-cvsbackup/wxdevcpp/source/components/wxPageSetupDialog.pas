@@ -186,9 +186,6 @@ begin
 end;
 
 function TWxPageSetupDialog.GenerateGUIControlCreation: string;
-var
-  strFlag, strStyle: string;
-
 begin
   Result := '';
   Result := self.Name + '_Data = new wxPageSetupDialogData();';
@@ -248,7 +245,7 @@ end;
 
 function TWxPageSetupDialog.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxPageSetupDialog.GetPropertyList: TStringList;

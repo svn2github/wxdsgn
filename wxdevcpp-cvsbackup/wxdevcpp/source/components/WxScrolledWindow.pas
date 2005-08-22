@@ -260,9 +260,7 @@ var
   tempstring: TStringList;
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
-
-begin
+ begin
 
   Result := TStringList.Create;
 

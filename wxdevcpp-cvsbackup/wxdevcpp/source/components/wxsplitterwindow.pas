@@ -52,7 +52,7 @@ type
 
     procedure AutoInitialize;
     procedure AutoDestroy;
-    procedure SetWx_EventList(Value: TStringList);
+   // procedure SetWx_EventList(Value: TStringList);
 
   protected
     procedure Click; override;
@@ -177,10 +177,10 @@ begin
   FWx_Comments.Destroy;
 end; { of AutoDestroy }
 
-procedure TWxSplitterWindow.SetWx_EventList(Value: TStringList);
-begin
-  FWx_EventList.Assign(Value);
-end;
+//procedure TWxSplitterWindow.SetWx_EventList(Value: TStringList);
+//begin
+ // FWx_EventList.Assign(Value);
+//end;
 
 procedure TWxSplitterWindow.Click;
 begin
@@ -484,9 +484,8 @@ procedure TWxSplitterWindow.WMPaint(var Message: TWMPaint);
 var
   maxWidth, maxHt: integer;
   totalmaxWidth, totalmaxHt: integer;
-  startX, nextX: integer;
+  startX : integer;
   i: integer;
-  TotalControlCount: integer;
   coordTop, coordLeft: integer;
   intAlignment: integer;
   wxcompInterface: IWxComponentInterface;
@@ -669,8 +668,6 @@ var
   strFirstControl, strSecondControl, strOrientation: string;
 
   function GenerateParentSizerCode: string;
-  var
-    strAlignment: string;
   begin
 
   end;

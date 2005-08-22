@@ -298,7 +298,6 @@ function TWxNotebook.GenerateXRCControlCreation(IndentString: string): TStringLi
 var
   i: integer;
   wxcompInterface: IWxComponentInterface;
-  CntIntf: IWxContainerAndSizerInterface;
   tempstring: TStringList;
 begin
 

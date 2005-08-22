@@ -869,14 +869,13 @@ function GetMaxIDofWxForm(ParentControl: TWinControl): integer;
 var
   wxcompInterface: IWxComponentInterface;
   i:      integer;
-  maxval: integer;
 begin
   Result := 0;
   for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
     if ParentControl.Components[i].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then
     begin
-      maxval := wxcompInterface.GetIDValue;
+      //maxval := wxcompInterface.GetIDValue;
       //sendDeBug(IntToStr(maxval));
       if wxcompInterface.GetIDValue > Result then
         Result := wxcompInterface.GetIDValue;
@@ -2798,6 +2797,7 @@ label
   end;
 
 begin
+  cindex := 0;
   Result := '';
   Result := GetXPMFromTPictureXXX(XPMName, delphiBitmap);
   exit;
@@ -2908,7 +2908,9 @@ begin
         end;
         Inc(cpos);
       end;
-      outline[cpp * (xpos + 1) + 1] := #0;
+      //outline[cpp * (xpos + 1) + 1] := #0;  // xpos is undefined after loop
+      outline[cpp * (cpos^ + 1) + 1] := #0; // i think cpos is the intended variable instead
+
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
       else
@@ -3032,6 +3034,8 @@ label
 
 begin
 
+  cindex := 0;
+
   Result := '';
   begin
     //   Form1.Enabled:=False;
@@ -3143,7 +3147,8 @@ begin
         end;
         Inc(cpos);
       end;
-      outline[cpp * (xpos + 1) + 1] := #0;
+      //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
+      outline[cpp * (cpos^ + 1) + 1] := #0; // i think cpos^ is the intended variable instead
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
       else
@@ -3265,6 +3270,8 @@ label
 
 begin
 
+cindex := 0;
+
   Result := '';
   begin
     //   Form1.Enabled:=False;
@@ -3363,7 +3370,9 @@ begin
         end;
         Inc(cpos);
       end;
-      outline[cpp * (xpos + 1) + 1] := #0;
+
+      //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
+      outline[cpp * (cpos^ + 1) + 1] := #0;  // i think cpos is the intended variable instead
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
       else
@@ -3389,7 +3398,10 @@ var
   strXPMContent: string;
 
 begin
-  xpmFileDir := IncludetrailingBackslash(ExtractFileDir(strFileName));
+
+Result := True;
+
+  xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
 
   if bmp.handle <> 0 then
   begin
@@ -3475,6 +3487,10 @@ var
 label
   Finish1;
 begin
+  Result := True;
+  iHeight := 0; iWidth := 0; colors := 0; cpp := 0;
+  palitem := nil;
+
   begin
     AssignFile(F, strFname);
     Reset(F);
@@ -4879,11 +4895,8 @@ end;
 procedure TJvInspectorMenuItem.Edit;
 var
   mnuDlg:    TMenuItemForm;
-  mnuItem:   TMenuItem;
-  testMnu:   TMenuItem;
   pMenuItem: TWxPopupMenu;
   mbItem:    TWxMenuBar;
-  ownerComp: TWinControl;
   maxControlValue: integer;
 begin
   mnuDlg := TMenuItemForm.Create(Inspector);
@@ -4893,9 +4906,17 @@ begin
       pMenuItem := TWxPopupMenu(TJvInspectorPropData(Self.GetData()).Instance);
       maxControlValue := GetMaxIDofWxForm(pMenuItem.parent);
       mnuDlg.SetMaxID(maxControlValue);
-      ownerComp := pMenuItem.parent;
       mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem, TWxCustomMenuItem(
         pMenuItem.Wx_MenuItems), mnuDlg.FMenuItems);
+
+         if mnuDlg.ShowModal <> mrOk then
+      exit;
+
+       pMenuItem.Wx_MenuItems.Destroy;
+      pMenuItem.Wx_MenuItems := TWxCustomMenuItem.Create(pMenuItem);
+      mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem, mnuDlg.FMenuItems,
+        TWxCustomMenuItem(pMenuItem.Wx_MenuItems));
+
     end;
 
     if (TJvInspectorPropData(Self.GetData()).Instance is TWxMenuBar) then
@@ -4903,48 +4924,23 @@ begin
       mbItem := TWxMenuBar(TJvInspectorPropData(Self.GetData()).Instance);
       maxControlValue := GetMaxIDofWxForm(mbItem.parent);
       mnuDlg.SetMaxID(maxControlValue);
-      ownerComp := mbItem.parent;
       mnuDlg.SetMenuItemsDes(mbItem.Parent, mbItem, TWxCustomMenuItem(
         mbItem.Wx_MenuItems), mnuDlg.FMenuItems);
-    end;
 
-    if mnuDlg.ShowModal <> mrOk then
+         if mnuDlg.ShowModal <> mrOk then
       exit;
 
-    if (TJvInspectorPropData(Self.GetData()).Instance is TWxMenuBar) then
-    begin
-      mbItem.Wx_MenuItems.Destroy;
+         mbItem.Wx_MenuItems.Destroy;
       mbItem.Wx_MenuItems := TWxCustomMenuItem.Create(mbItem);
       mnuDlg.SetMenuItemsDes(mbItem.Parent, mbItem, mnuDlg.FMenuItems,
         TWxCustomMenuItem(mbItem.Wx_MenuItems));
       mbItem.BuildMenus(mbItem.Wx_MenuItems);
-    end;
 
-    if (TJvInspectorPropData(Self.GetData()).Instance is TWxPopupMenu) then
-    begin
-      pMenuItem.Wx_MenuItems.Destroy;
-      pMenuItem.Wx_MenuItems := TWxCustomMenuItem.Create(pMenuItem);
-      mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem, mnuDlg.FMenuItems,
-        TWxCustomMenuItem(pMenuItem.Wx_MenuItems));
     end;
 
     if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
       TJvInspector(GetInspector).OnDataValueChanged(nil, Data);
-
-    //        if prevColor <> fnt.Color then
-    //        begin
-    //            if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(IID_IWxComponentInterface, compIntf) then
-    //            begin
-    //                ColorInt := ColorToRGB(fnt.Color);
-    //                compIntf.SetFGColor('CUS:'+IntToStr(GetRValue(ColorInt))+','+IntToStr(GetGValue(ColorInt))+',' + IntToStr(GetBValue(ColorInt)));
-    //            end;
-    //        end;
-
-    //        if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
-    //        begin
-    //            TJvInspector(GetInspector).OnDataValueChanged(nil,Data);
-    //        end;
-
+      
   finally
     mnuDlg.Destroy;
   end;
@@ -4978,9 +4974,7 @@ end;
 procedure TJvInspectorFileNameEditItem.Edit;
 var
   FileOpenForm: TOpenDialog;
-  strFileNameValue: string;
   WxFileNameString: TWxFileNameString;
-  compIntf: IWxComponentInterface;
 begin
 
   WxFileNameString := TWxFileNameString(Data.AsOrdinal);

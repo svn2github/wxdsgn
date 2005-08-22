@@ -231,7 +231,7 @@ end;
 
 function TWxMessageDialog.GetStretchFactor: integer;
 begin
-
+   Result := 1;
 end;
 
 function TWxMessageDialog.GetPropertyList: TStringList;

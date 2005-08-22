@@ -552,7 +552,7 @@ function TWxListBox.GetStretchFactor: integer;
   { var }
   { . . . }
 begin
-
+   Result := 1;
 end;
 
 function TWxListBox.GetTypeFromEventName(EventName: string): string;
