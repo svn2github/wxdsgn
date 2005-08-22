@@ -420,7 +420,8 @@ begin
     else
       strStyle := ', 0, ' + self.Wx_Validator;
 
-  Result := Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);', [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Left, self.Top, self.Width, self.Height, strStyle]);
+  Result := Format('wxArrayString arrayStringFor_%s;', [self.Name]);
+  Result := Result + #13 + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), arrayStringFor_%s%s);', [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Left, self.Top, self.Width, self.Height, self.Name, strStyle]);
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',

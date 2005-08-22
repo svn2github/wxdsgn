@@ -431,11 +431,12 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+  Result := Format('wxArrayString arrayStringFor_%s;', [self.Name]);
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), (wxArrayString)NULL%s);',
+    Result + #13 + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), arrayStringFor_%s);',
     [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.Left, self.Top, self.Width, self.Height, strStyle]);
+    self.Left, self.Top, self.Width, self.Height, self.Name, strStyle]);
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
