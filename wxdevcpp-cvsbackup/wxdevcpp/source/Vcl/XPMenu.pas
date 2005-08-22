@@ -2253,8 +2253,6 @@ end;
 
 procedure TXPMenu.SetActive(const Value: boolean);
 begin
-  if Value = FActive then exit;
-
   FActive := Value;
   if FActive then
     InitItems(FForm, true, true)
