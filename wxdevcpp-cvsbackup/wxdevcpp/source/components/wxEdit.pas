@@ -225,7 +225,7 @@ begin
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor := self.color;
   defaultFGColor := self.font.color;
-  BorderStyle    := bsNone;
+  BorderStyle    := bsSingle;
   FWx_Comments   := TStringList.Create;
 
 end; { of AutoInitialize }
