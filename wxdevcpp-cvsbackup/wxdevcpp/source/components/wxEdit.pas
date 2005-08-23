@@ -495,7 +495,7 @@ begin
     if trim(strStyle) <> '' then
       strStyle := ', ' + strStyle + ', ' + self.Wx_Validator
     else
-      strStyle := ', wxTB_HORIZONTAL | wxNO_BORDER, ' + self.Wx_Validator;
+      strStyle := ', 0, ' + self.Wx_Validator;
 
     strStyle := strStyle + ', ' + GetCppString(Name);
 
