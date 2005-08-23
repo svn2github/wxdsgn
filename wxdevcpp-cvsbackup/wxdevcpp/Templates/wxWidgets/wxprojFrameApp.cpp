@@ -3,6 +3,7 @@
 // Name:        %PROJECT_NAME%App.cpp
 // Author:      %AUTHOR_NAME%
 // Created:     %DATE_STRING%
+// Description: 
 //
 //---------------------------------------------------------------------------
 
@@ -13,10 +14,10 @@ IMPLEMENT_APP(%CLASS_NAME%App)
 
 bool %CLASS_NAME%App::OnInit()
 {
-    %CLASS_NAME% *myFrame = new  %CLASS_NAME%(NULL);
-    SetTopWindow(myFrame);
-    myFrame->Show(TRUE);		
-    return TRUE;
+    %CLASS_NAME%* frame = new %CLASS_NAME%(NULL);
+    SetTopWindow(frame);
+    frame->Show(true);		
+    return true;
 }
  
 int %CLASS_NAME%App::OnExit()
