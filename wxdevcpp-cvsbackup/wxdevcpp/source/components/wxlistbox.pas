@@ -411,8 +411,9 @@ begin
   strStyle := GetListBoxSelectorStyle(Wx_ListboxSubStyle);
 
   if trim(strStyle) <> '' then
-    strStyle := ', ' + strStyle + ' | ' + GetListBoxSpecificStyle(
-      self.Wx_GeneralStyle, Wx_ListboxStyle);
+    strStyle := ', ' + strStyle;
+  if GetListBoxSpecificStyle(self.Wx_GeneralStyle, Wx_ListboxStyle) <> '' then
+    strStyle := strStyle + ' | ' + GetListBoxSpecificStyle(self.Wx_GeneralStyle, Wx_ListboxStyle);
 
   if trim(self.FWx_Validator) <> '' then
     if trim(strStyle) <> '' then
