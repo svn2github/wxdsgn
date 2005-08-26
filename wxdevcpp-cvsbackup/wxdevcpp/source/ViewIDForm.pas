@@ -4,16 +4,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls,wxUtils, ComCtrls;
+  StdCtrls, Buttons, ExtCtrls,wxUtils, ComCtrls, XPMenu, devcfg;
 
 type
   TViewControlIDsForm = class(TForm)
-    Bevel1: TBevel;
     btClose: TBitBtn;
+    XPMenu: TXPMenu;
     ControlListBox: TListView;
     procedure FormCreate(Sender: TObject);
     procedure btCloseClick(Sender: TObject);
     procedure btRefreshClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FMainControl:TWinControl;
@@ -74,6 +75,14 @@ begin
     if FMainControl = nil then
         exit;
     FMainControl.repaint;
+end;
+
+procedure TViewControlIDsForm.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
 end;
 
 end.

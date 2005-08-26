@@ -24,11 +24,11 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons;
+  Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
-  QDialogs, QStdCtrls, QButtons;
+  QDialogs, QStdCtrls, QButtons, devcfg;
 {$ENDIF}
 
 type
@@ -41,8 +41,10 @@ type
     OpenDialog: TOpenDialog;
     OkBtn: TBitBtn;
     CancelBtn: TBitBtn;
+    XPMenu: TXPMenu;
     procedure LoadBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     procedure LoadText;
     { Private declarations }
@@ -85,6 +87,14 @@ end;
 procedure TParamsForm.FormCreate(Sender: TObject);
 begin
   LoadText;
+end;
+
+procedure TParamsForm.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
 end;
 
 end.
