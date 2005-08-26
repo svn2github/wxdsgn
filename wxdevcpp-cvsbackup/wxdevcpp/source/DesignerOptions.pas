@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, StdCtrls, Buttons,INIFiles,devCfg;
+  Dialogs, ComCtrls, StdCtrls, Buttons,INIFiles,devCfg, XPMenu, ExtCtrls;
 
 type
   TDesignerForm = class(TForm)
@@ -30,10 +30,14 @@ type
     cbSizeHints: TCheckBox;
     cbMoveHints: TCheckBox;
     cbInsertHints: TCheckBox;
+    XPMenu: TXPMenu;
+    Bevel1: TBevel;
+    Bevel2: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure lbGridYStepUpDownClick(Sender: TObject; Button: TUDBtnType);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -110,6 +114,14 @@ procedure TDesignerForm.lbGridYStepUpDownClick(Sender: TObject;
   Button: TUDBtnType);
 begin
     lbGridYStep.Caption:=IntToStr(lbGridYStepUpDown.position);
+end;
+
+procedure TDesignerForm.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
 end;
 
 end.
