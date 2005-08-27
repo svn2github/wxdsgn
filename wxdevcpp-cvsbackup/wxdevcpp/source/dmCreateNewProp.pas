@@ -29,13 +29,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 unit dmCreateNewProp;
 
 interface
-
+{$Warnings Off}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvAppStorage,
   JvAppRegistryStorage, JvComponent, FileCtrl, JvFormPlacement, version,
   XPMenu, devcfg;
-
+{$Warnings On}
 type
   TfrmCreateFormProp = class(TForm)
     Label1: TLabel;

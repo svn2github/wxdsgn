@@ -530,8 +530,6 @@ begin
   lblInsertCaret.Caption := Lang[ID_EOPT_INSCARET];
   lblOverCaret.Caption := Lang[ID_EOPT_OVERCARET];
   cbMatch.Caption := Lang[ID_EOPT_MATCH];
-
-{$MESSAGE 'need to add to translations}
   cbHighCurrLine.Caption :=      Lang[ID_EOPT_HIGHLIGHTCURRLINE];
 
   cboInsertCaret.Clear;
