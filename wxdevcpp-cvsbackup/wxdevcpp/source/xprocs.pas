@@ -2647,13 +2647,18 @@ begin
                     dtCurrency: WriteCurrency(aValue, Value);
                     dtTime: WriteTime(aValue, Value);
                 end
-            else
-                Result := False;
-        end;
-    finally
-        Result := True;
-        aRegistry.Free;
+	    else
+		raise Exception.CreateFmt('', []);
+	end;
+    except
+	begin
+	    Result := false;
+	    aRegistry.Free;
+	    exit;
+	end
     end;
+    Result := True;
+    aRegistry.Free;
 end;
 
 {$ENDIF}
@@ -2935,7 +2940,6 @@ begin
     SetLength(Result, Length(AStr));
     Sp := PChar(AStr);
     Rp := PChar(Result);
-    Cp := Sp;
     try
         while Sp^ <> #0 do
         begin
