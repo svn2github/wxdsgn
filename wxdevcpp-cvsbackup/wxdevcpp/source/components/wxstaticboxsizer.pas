@@ -391,12 +391,15 @@ begin
   begin
     if (self.Parent is TForm) then
       parentName := 'this'
+    else if (self.Parent.ClassName = 'TWxPanel') then
+      if self.Parent.Parent is TForm then
+	parentName := 'this'
+      else if (self.Parent.Parent.ClassName <> 'TWxNotebook') then
+	parentName := self.Parent.Name
+      else
+	parentName := self.Parent.Parent.Name
     else
       parentName := self.Parent.Name;
-
-    //        result:=Format('wxStaticBox* %s = new wxStaticBox(%s, wxID_ANY, %s);',[staticBoxName,parentName,GetCppString(self.Wx_Caption)]);
-    //        Result:=Result+#13+Format('wxStaticBoxSizer* %s = new wxStaticBoxSizer(%s,%s);',[self.Name,staticBoxName,strOrientation]);
-
     Result := Result + #13 + Format('%s->SetSizer(%s);', [parentName, self.Name]);
     Result := Result + #13 + Format('%s->SetAutoLayout(TRUE);', [parentName]);
   end

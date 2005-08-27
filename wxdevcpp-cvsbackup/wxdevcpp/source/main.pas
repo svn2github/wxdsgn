@@ -9881,15 +9881,15 @@ begin
     Else
     begin
         if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxDialogNonInsertableInterface,dlgInterface) then
-        begin
-            ShowErrorAndReset('You cannot insert this control in Dialog. Use this control only in wxFrame.');
+	begin
+	    ShowErrorAndReset('You cannot insert this control in Dialog. Use this control only in wxFrame.');
             exit;
         end;
     end;
 
 
-        if TWinControl(AControlClass.NewInstance) is TWxSizerPanel then
-        begin
+        if TWinControl(AControlClass.NewInstance) is TWxSizerPanel AND not StrContainsU(CurrentParent.ClassName, 'TWxPanel') then
+	begin
             if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
             begin
                 if isSizerAvailable(ELDesigner1.DesignControl) = false then

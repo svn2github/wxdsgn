@@ -17,7 +17,7 @@ unit WxBoxSizer;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, dbugIntf;
+  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, dbugIntf, Dialogs;
 
 type
   TWxBoxSizer = class(TWxSizerPanel, IWxComponentInterface,
@@ -362,6 +362,13 @@ begin
   begin
     if (self.Parent is TForm) then
       parentName := 'this'
+    else if (self.Parent.ClassName = 'TWxPanel') then
+      if self.Parent.Parent is TForm then
+	parentName := 'this'
+      else if (self.Parent.Parent.ClassName <> 'TWxNotebook') then
+	parentName := self.Parent.Name
+      else
+	parentName := self.Parent.Parent.Name
     else
       parentName := self.Parent.Name;
     Result := Result + #13 + Format('%s->SetSizer(%s);', [parentName, self.Name]);
