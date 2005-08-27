@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Buttons, ExtCtrls;
+  StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
 
 type
   TTreeviewForm = class(TForm)
@@ -29,6 +29,8 @@ type
     Button5: TButton;
     Button6: TButton;
     TreeView1: TTreeView;
+    XPMenu: TXPMenu;
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -44,5 +46,13 @@ implementation
 
 
 
+
+procedure TTreeviewForm.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
+end;
 
 end.

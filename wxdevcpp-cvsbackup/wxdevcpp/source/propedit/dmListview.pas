@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Buttons, ExtCtrls;
+  StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
 
 type
   TListviewForm = class(TForm)
@@ -25,6 +25,7 @@ type
     lbxColumnNames: TListBox;
     GroupBox3: TGroupBox;
     LstViewObj: TListView;
+    XPMenu: TXPMenu;
     procedure btAddClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
@@ -125,3 +126,4 @@ begin
 end;
 
 end.
+

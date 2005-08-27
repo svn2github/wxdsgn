@@ -3,7 +3,7 @@ object ColorEdit: TColorEdit
   Top = 184
   BorderStyle = bsDialog
   Caption = 'Color Editor'
-  ClientHeight = 186
+  ClientHeight = 169
   ClientWidth = 474
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,18 +13,12 @@ object ColorEdit: TColorEdit
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
-    Left = 8
-    Top = 8
-    Width = 457
-    Height = 145
-    Shape = bsFrame
-  end
   object Label1: TLabel
-    Left = 136
-    Top = 124
+    Left = 128
+    Top = 116
     Width = 10
     Height = 13
     Caption = 'R'
@@ -36,8 +30,8 @@ object ColorEdit: TColorEdit
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 191
-    Top = 124
+    Left = 183
+    Top = 116
     Width = 10
     Height = 13
     Caption = 'G'
@@ -49,8 +43,8 @@ object ColorEdit: TColorEdit
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 240
-    Top = 124
+    Left = 232
+    Top = 116
     Width = 9
     Height = 13
     Caption = 'B'
@@ -62,15 +56,15 @@ object ColorEdit: TColorEdit
     ParentFont = False
   end
   object Label4: TLabel
-    Left = 373
-    Top = 16
+    Left = 381
+    Top = 8
     Width = 65
     Height = 13
     Caption = 'Color Preview'
   end
   object btnOK: TBitBtn
-    Left = 9
-    Top = 159
+    Left = 306
+    Top = 142
     Width = 78
     Height = 23
     Caption = 'OK'
@@ -103,71 +97,119 @@ object ColorEdit: TColorEdit
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 384
-    Top = 159
+    Left = 388
+    Top = 142
     Width = 78
     Height = 23
     TabOrder = 1
     Kind = bkCancel
   end
+  object rbDefaultColor: TRadioButton
+    Left = 8
+    Top = 16
+    Width = 111
+    Height = 17
+    Caption = 'Use Default Color'
+    Checked = True
+    TabOrder = 2
+    TabStop = True
+    OnClick = rbDefaultColorClick
+  end
   object rbStandardColor: TRadioButton
-    Left = 16
-    Top = 56
+    Left = 8
+    Top = 48
     Width = 111
     Height = 17
     Caption = 'Use Standard Color'
-    TabOrder = 2
+    TabOrder = 3
     OnClick = rbStandardColorClick
   end
   object rbSystemColor: TRadioButton
-    Left = 16
-    Top = 88
+    Left = 8
+    Top = 80
     Width = 111
     Height = 17
     Caption = 'Use System Color'
-    TabOrder = 3
+    TabOrder = 4
     OnClick = rbSystemColorClick
   end
   object rbCustomColor: TRadioButton
-    Left = 16
-    Top = 120
+    Left = 8
+    Top = 112
     Width = 111
     Height = 17
     Caption = 'Use Custom Color'
-    TabOrder = 4
+    TabOrder = 5
     OnClick = rbCustomColorClick
   end
-  object cbStandardColor: TComboBox
-    Left = 136
-    Top = 56
-    Width = 209
+  object txtRed: TEdit
+    Left = 141
+    Top = 112
+    Width = 32
     Height = 21
-    Style = csDropDownList
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 6
+    Text = '000'
+    OnChange = txtRedChange
+  end
+  object txtGreen: TEdit
+    Left = 195
+    Top = 112
+    Width = 32
+    Height = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGreen
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 7
+    Text = '000'
+    OnChange = txtRedChange
+  end
+  object txtBlue: TEdit
+    Left = 245
+    Top = 112
+    Width = 32
+    Height = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 8
+    Text = '000'
+    OnChange = txtRedChange
+  end
+  object btChoose: TButton
+    Left = 288
+    Top = 112
+    Width = 68
+    Height = 21
+    Caption = 'Choose'
     Enabled = False
-    ItemHeight = 13
-    ItemIndex = 0
-    TabOrder = 5
-    Text = 'wxBLACK'
-    OnChange = cbStandardColorChange
-    Items.Strings = (
-      'wxBLACK'
-      'wxWHITE'
-      'wxRED'
-      'wxBLUE'
-      'wxGREEN'
-      'wxCYAN'
-      'wxLIGHT_GREY')
+    TabOrder = 9
+    OnClick = btChooseClick
   end
   object cbSystemColor: TComboBox
-    Left = 136
-    Top = 88
-    Width = 209
+    Left = 128
+    Top = 80
+    Width = 230
     Height = 21
     Style = csDropDownList
     Enabled = False
     ItemHeight = 13
     ItemIndex = 0
-    TabOrder = 6
+    TabOrder = 10
     Text = 'wxSYS_COLOUR_SCROLLBAR  '
     OnChange = cbSystemColorChange
     Items.Strings = (
@@ -203,78 +245,30 @@ object ColorEdit: TColorEdit
       'wxSYS_COLOUR_3DHILIGHT'
       'wxSYS_COLOUR_BTNHILIGHT')
   end
-  object txtRed: TEdit
-    Left = 149
-    Top = 120
-    Width = 32
+  object cbStandardColor: TComboBox
+    Left = 128
+    Top = 48
+    Width = 230
     Height = 21
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clRed
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    ReadOnly = True
-    TabOrder = 7
-    Text = '000'
-    OnChange = txtRedChange
-  end
-  object txtGreen: TEdit
-    Left = 203
-    Top = 120
-    Width = 32
-    Height = 21
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGreen
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    ReadOnly = True
-    TabOrder = 8
-    Text = '000'
-    OnChange = txtRedChange
-  end
-  object txtBlue: TEdit
-    Left = 253
-    Top = 120
-    Width = 32
-    Height = 21
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlue
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    ReadOnly = True
-    TabOrder = 9
-    Text = '000'
-    OnChange = txtRedChange
-  end
-  object rbDefaultColor: TRadioButton
-    Left = 16
-    Top = 24
-    Width = 111
-    Height = 17
-    Caption = 'Use Default Color'
-    Checked = True
-    TabOrder = 10
-    TabStop = True
-    OnClick = rbDefaultColorClick
-  end
-  object btChoose: TButton
-    Left = 296
-    Top = 122
-    Width = 49
-    Height = 19
-    Caption = 'Choose'
+    Style = csDropDownList
     Enabled = False
+    ItemHeight = 13
+    ItemIndex = 0
     TabOrder = 11
-    OnClick = btChooseClick
+    Text = 'wxBLACK'
+    OnChange = cbStandardColorChange
+    Items.Strings = (
+      'wxBLACK'
+      'wxWHITE'
+      'wxRED'
+      'wxBLUE'
+      'wxGREEN'
+      'wxCYAN'
+      'wxLIGHT_GREY')
   end
   object pnlPreview: TPanel
-    Left = 360
-    Top = 32
+    Left = 368
+    Top = 24
     Width = 97
     Height = 113
     BevelInner = bvSpace
@@ -301,7 +295,37 @@ object ColorEdit: TColorEdit
       'ColorN=FFFFFFFF'
       'ColorO=FFFFFFFF'
       'ColorP=FFFFFFFF')
-    Left = 48
-    Top = 8
+    Left = 8
+    Top = 140
+  end
+  object XPMenu: TXPMenu
+    DimLevel = 30
+    GrayLevel = 10
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Color = clBtnFace
+    DrawMenuBar = False
+    IconBackColor = clBtnFace
+    MenuBarColor = clBtnFace
+    SelectColor = clHighlight
+    SelectBorderColor = clHighlight
+    SelectFontColor = clMenuText
+    DisabledColor = clInactiveCaption
+    SeparatorColor = clBtnFace
+    CheckedColor = clHighlight
+    IconWidth = 24
+    DrawSelect = True
+    UseSystemColors = True
+    UseDimColor = False
+    OverrideOwnerDraw = False
+    Gradient = False
+    FlatMenu = False
+    AutoDetect = False
+    Active = False
+    Left = 45
+    Top = 140
   end
 end

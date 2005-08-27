@@ -8,12 +8,11 @@ uses
 
 type
   TStringsForm = class(TForm)
-    Bevel1: TBevel;
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
     btnHelp: TBitBtn;
-    Memo1: TMemo;
     Label1: TLabel;
+    Memo1: TMemo;
     procedure Memo1Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -37,6 +36,10 @@ end;
 procedure TStringsForm.FormShow(Sender: TObject);
 begin
     Memo1.SetFocus;
+    if devData.XPTheme then
+      XPMenu.Active := true
+    else
+      XPMenu.Active := false;
 end;
 
 end.

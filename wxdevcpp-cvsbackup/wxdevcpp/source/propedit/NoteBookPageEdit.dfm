@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 628
   Top = 167
-  Width = 333
+  Width = 316
   Height = 303
   Caption = 'Form1'
   Color = clBtnFace
@@ -21,7 +21,7 @@ object Form1: TForm1
     Shape = bsFrame
   end
   object btnOK: TBitBtn
-    Left = 9
+    Left = 134
     Top = 239
     Width = 78
     Height = 23
@@ -29,7 +29,7 @@ object Form1: TForm1
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 216
+    Left = 218
     Top = 239
     Width = 78
     Height = 23

@@ -4,27 +4,28 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls,wxutils, JvExButtons, JvButtons;
+  Dialogs, StdCtrls, Buttons, ExtCtrls,wxutils, JvExButtons, JvButtons,
+  XPMenu, devcfg;
 
 type
   TColorEdit = class(TForm)
-    Bevel1: TBevel;
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
+    colorDlg: TColorDialog;
+    XPMenu: TXPMenu;
+    rbDefaultColor: TRadioButton;
     rbStandardColor: TRadioButton;
     rbSystemColor: TRadioButton;
     rbCustomColor: TRadioButton;
-    cbStandardColor: TComboBox;
-    cbSystemColor: TComboBox;
     txtRed: TEdit;
-    txtGreen: TEdit;
-    txtBlue: TEdit;
-    rbDefaultColor: TRadioButton;
     Label1: TLabel;
     Label2: TLabel;
+    txtGreen: TEdit;
     Label3: TLabel;
+    txtBlue: TEdit;
     btChoose: TButton;
-    colorDlg: TColorDialog;
+    cbSystemColor: TComboBox;
+    cbStandardColor: TComboBox;
     pnlPreview: TPanel;
     Label4: TLabel;
     procedure btChooseClick(Sender: TObject);
@@ -36,6 +37,7 @@ type
     procedure cbStandardColorChange(Sender: TObject);
     procedure cbSystemColorChange(Sender: TObject);
     procedure txtRedChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -204,6 +206,14 @@ var
 begin
     clr:= RGB(StrToInt(txtRed.Text),StrToInt(txtGreen.Text),StrToInt(txtBlue.Text)) ;
     pnlPreview.Color:=clr;    
+end;
+
+procedure TColorEdit.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
 end;
 
 end.

@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Buttons, ExtCtrls;
+  StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
 
 type
   TStatusBarForm = class(TForm)
@@ -24,6 +24,7 @@ type
     btAdd: TButton;
     lbxColumnNames: TListBox;
     StatusBarObj: TStatusBar;
+    XPMenu: TXPMenu;
     procedure btAddClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
