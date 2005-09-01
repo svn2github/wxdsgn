@@ -11,13 +11,13 @@ uses
 
 type
   TCreationOrderForm = class(TForm)
-    Bevel1: TBevel;
     btClose: TBitBtn;
+    btRefresh: TBitBtn;
+    XPMenu: TXPMenu;
+    GroupBox1: TGroupBox;
     ControlListBox: TListBox;
     btMoveUp: TBitBtn;
     btMoveDown: TBitBtn;
-    btRefresh: TBitBtn;
-    XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
     procedure btMoveUpClick(Sender: TObject);
     procedure btMoveDownClick(Sender: TObject);
@@ -47,6 +47,10 @@ end;
 
 procedure TCreationOrderForm.FormCreate(Sender: TObject);
 begin
+    if devData.XPTheme then
+        XPMenu.Active := true
+    else
+        XPMenu.Active := false;
     FMainControl:=nil;
 end;
 

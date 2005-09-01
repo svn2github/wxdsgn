@@ -47,13 +47,14 @@ type
     TemplateLabel: TLabel;
     btnHelp: TBitBtn;
     XPMenu: TXPMenu;
-    Label2: TGroupBox;
     lblPrjName: TLabel;
-    edProjectName: TEdit;
+    Label2: TGroupBox;
     GroupBox1: TGroupBox;
     rbC: TRadioButton;
-    rbCpp: TRadioButton;
     cbDefault: TCheckBox;
+    rbCpp: TRadioButton;
+    edProjectName: TEdit;
+    Label1: TLabel;
     procedure ProjViewChange(Sender: TObject; Item: TListItem;
       Change: TItemChange);
     procedure FormCreate(Sender: TObject);

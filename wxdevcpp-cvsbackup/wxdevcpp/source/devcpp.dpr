@@ -37,7 +37,9 @@ program devcpp;
 uses
   madExcept,
   madLinkDisAsm,
-  madScreenShot,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   MemCheck in 'MemCheck.pas',
   inifiles,
   Windows,
@@ -328,7 +330,7 @@ begin
 
 
   Application.Initialize;
-  Application.Title := 'wx-devcpp';
+  Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
   MainForm.Hide; // hide it
 

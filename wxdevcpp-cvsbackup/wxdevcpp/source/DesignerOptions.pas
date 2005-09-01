@@ -30,9 +30,9 @@ type
     cbSizeHints: TCheckBox;
     cbMoveHints: TCheckBox;
     cbInsertHints: TCheckBox;
-    XPMenu: TXPMenu;
     Bevel1: TBevel;
     Bevel2: TBevel;
+    XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
@@ -55,6 +55,10 @@ uses main,ELDsgnr;
 
 procedure TDesignerForm.FormCreate(Sender: TObject);
 begin
+    if devData.XPTheme then
+        XPMenu.Active := true
+    else
+        XPMenu.Active := false;
     cbGridVisible.Checked:=MainForm.ELDesigner1.Grid.Visible;
     lbGridXStep.Caption := IntToStr (MainForm.ELDesigner1.Grid.XStep);
     lbGridXStepUpDown.Position:=MainForm.ELDesigner1.Grid.XStep;

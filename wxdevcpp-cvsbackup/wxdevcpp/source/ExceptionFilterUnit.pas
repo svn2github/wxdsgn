@@ -40,6 +40,8 @@ begin
   end;
 end;
 
+{$IfNDef MadExcept3}
 initialization
   RegisterExceptionHandler(ExceptionFilter, stTrySyncCallOnSuccess);
+{$EndIf}
 end.
