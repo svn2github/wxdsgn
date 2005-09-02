@@ -521,7 +521,7 @@ begin
 
     devCompiler.OptionStr := OptionsStr;
     CompOptionsFrame1.FillOptions(nil);
-{$IdDef WX_BUILD}
+{$IfDef WX_BUILD}
     if isVC then
     begin
       is_vc.Checked := true;
@@ -659,7 +659,7 @@ end;
 
 procedure TCompForm.is_vcClick(Sender: TObject);
 begin
-{$IfDef}
+{$IfDef WX_BUILD}
   if is_vc.Checked then
     lbldllwrap.Caption := 'link : '
   else
