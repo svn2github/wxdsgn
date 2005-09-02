@@ -181,7 +181,9 @@ begin
   end;
 
    //RNC
+{$IfDef WX_BUILD}
    devCompilerSet.IsVC := is_vc.Checked;
+{$EndIf}
    devCompilerSet.CmdOpts:= Commands.Lines.Text;
    devCompilerSet.AddtoLink:= cbLinkerAdd.Checked;
    devCompilerSet.AddtoComp:= cbCompAdd.Checked;
@@ -204,7 +206,9 @@ begin
     windresName := devCompilerSet.windresName;
     dllwrapName := devCompilerSet.dllwrapName;
     gprofName := devCompilerSet.gprofName;
+{$IfDef WX_BUILD}
     IsVC := devCompilerSet.IsVC;
+{$EndIf}
   end;
 
   with devDirs do
@@ -239,7 +243,9 @@ begin
      Commands.Lines.Text:= devCompilerSet.CmdOpts;
      cbCompAdd.Checked:= devCompilerSet.AddtoComp;
     // cbCompAdd.Checked:= AddToComp;
+{$IfDef WX_BUILD}
      is_vc.Checked := devCompilerSet.IsVC;
+{$EndIf}
      //Linker.Lines.Text:= LinkOpts;
      Linker.Lines.Text:= devCompilerSet.LinkOpts;
      cbLinkerAdd.Checked:= devCompilerSet.AddtoLink;
@@ -476,14 +482,6 @@ begin
   grpCompSet.Caption := Lang[ID_COPT_COMPSETS];
 end;
 
-function booltostr(val: boolean) : string;
-begin
-  if val then
-    Result := 'true'
-  else
-    Result := 'false';
-end;
-
 procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
 begin
   devCompilerSet.OptionsStr := devCompiler.OptionStr;
@@ -492,7 +490,9 @@ begin
 
   devCompilerSet.AddtoLink:=cbLinkerAdd.Checked;
   devCompilerSet.AddtoComp:=cbCompAdd.Checked;
+{$IfDef WX_BUILD}
   devCompilerSet.IsVC := is_vc.Checked;
+{$EndIf}
   devCompilerSet.SaveSet(currentSet);
 
   devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
@@ -521,7 +521,7 @@ begin
 
     devCompiler.OptionStr := OptionsStr;
     CompOptionsFrame1.FillOptions(nil);
-
+{$IdDef WX_BUILD}
     if isVC then
     begin
       is_vc.Checked := true;
@@ -535,6 +535,7 @@ begin
       lblwindres.Caption := 'windres : '
     end;
   end;
+{$EndIf}
 end;
 
 procedure TCompForm.btnBrws1Click(Sender: TObject);
@@ -658,10 +659,12 @@ end;
 
 procedure TCompForm.is_vcClick(Sender: TObject);
 begin
+{$IfDef}
   if is_vc.Checked then
     lbldllwrap.Caption := 'link : '
   else
     lbldllwrap.Caption := 'dllwrap : ';
+{$EndIf}
 end;
 
 end.
