@@ -661,9 +661,25 @@ procedure TCompForm.is_vcClick(Sender: TObject);
 begin
 {$IfDef WX_BUILD}
   if is_vc.Checked then
-    lbldllwrap.Caption := 'link : '
+  begin
+    lbldllwrap.Caption := 'link : ';
+    lblgprof.Enabled := false;
+    GProfEdit.Enabled := false;
+    btnBrowse8.Enabled := false;
+    lblgdb.Enabled := false;
+    GdbEdit.Enabled := false;
+    BtnBrowse5.Enabled := false;
+  end
   else
+  begin
     lbldllwrap.Caption := 'dllwrap : ';
+    lblgprof.Enabled := true;
+    GProfEdit.Enabled := true;
+    btnBrowse8.Enabled := true;
+    lblgdb.Enabled := true;
+    GdbEdit.Enabled := true;
+    BtnBrowse5.Enabled := true;
+  end;
 {$EndIf}
 end;
 
