@@ -24,11 +24,11 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
+  Dialogs, StdCtrls, Buttons;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
-  QDialogs, QStdCtrls, QButtons, devcfg;
+  QDialogs, QStdCtrls, QButtons;
 {$ENDIF}
 
 type
@@ -37,11 +37,9 @@ type
     OkBtn: TBitBtn;
     Cancel: TBitBtn;
     Edit1: TEdit;
-    XPMenu: TXPMenu;
     procedure ListClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure ListDblClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -122,14 +120,6 @@ begin
     ModalResult := mrOk;
     DoClose(a);
   end;
-end;
-
-procedure TSelectResource.FormShow(Sender: TObject);
-begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
 end;
 
 end.

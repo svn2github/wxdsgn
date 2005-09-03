@@ -152,7 +152,7 @@ begin
             strData:=#9+strData;
 
         if strData <> '' then
-	    synEdit.Lines.Insert(BlockStart + 1,strData);
+            synEdit.Lines.Insert(BlockStart + 1,strData);
     end;    // for
     //synEdit.Lines.Insert(BlockStart + 1,'');
 
@@ -188,7 +188,7 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,#9#9+Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1,#9+Trim(strlst[i]));
     end;    // for
 
     //synEdit.Lines.Insert(BlockStart + 1,'');
@@ -219,7 +219,7 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-        synEdit.Lines.Insert(BlockStart + 1,#9#9+Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1,#9+Trim(strlst[i]));
     end;    // for
     //synEdit.Lines.Insert(BlockStart + 1,'');
 
@@ -258,7 +258,7 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,#9 + Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1,#9+Trim(strlst[i]));
     end;    // for
     synEdit.Lines.Insert(BlockStart + 1,'');
 
@@ -298,7 +298,7 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
     end;    // for
 
     strlst.Destroy;
@@ -329,7 +329,7 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1, #9#9#9 + Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
     end;    // for
 
     strlst.Destroy;
@@ -356,7 +356,7 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
     end;    // for
 
     strlst.Destroy;

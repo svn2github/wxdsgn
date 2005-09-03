@@ -671,7 +671,7 @@ begin
     begin
       fileStrlst    := TStringList.Create;
       try
-         strXPMContent :=
+        strXPMContent :=
           GetXPMFromTPicture(frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
         if trim(strXPMContent) <> '' then
         begin
@@ -717,9 +717,9 @@ begin
         continue;
       if not fileexists(xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm') then
       begin
-         fileStrlst    := TStringList.Create;
+        fileStrlst    := TStringList.Create;
         try
-          strXPMContent :=
+           strXPMContent :=
             GetXPMFromTPicture(frmNewForm.Components[I].Name, TWxToolButton(
             frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
           if trim(strXPMContent) = '' then
@@ -796,6 +796,11 @@ begin
 
   end;
 
+end;
+
+function TfrmNewForm.GenerateXRCControlCreation(IndentString: string): TStringList;
+begin
+   Result := TStringList.Create;
 end;
 
 procedure TfrmNewForm.SetFrameProperties();
@@ -1398,11 +1403,6 @@ begin
   else if (strEqual(self.Wx_Class, 'wxFrame')) then
     Result := 'wxDEFAULT_FRAME_STYLE';
 
-end;
-
-function TfrmNewForm.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
-  Result := TStringList.Create;
 end;
 
 function TfrmNewForm.GenerateGUIControlCreation: string;

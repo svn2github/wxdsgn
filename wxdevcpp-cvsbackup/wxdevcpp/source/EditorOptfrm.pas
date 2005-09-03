@@ -53,6 +53,21 @@ type
     lblGutterFontSize: TLabel;
     cboGutterSize: TComboBox;
     tabGeneral: TTabSheet;
+    bvlEditor: TBevel;
+    lblEditorOpts: TLabel;
+    cbEHomeKey: TCheckBox;
+    cbSmartScroll: TCheckBox;
+    cbAutoIndent: TCheckBox;
+    cbInsertMode: TCheckBox;
+    cbTabtoSpaces: TCheckBox;
+    cbSmartTabs: TCheckBox;
+    cbHalfPage: TCheckBox;
+    cbPastEOF: TCheckBox;
+    cbPastEOL: TCheckBox;
+    cbFindText: TCheckBox;
+    cbTrailingBlanks: TCheckBox;
+    cbScrollHint: TCheckBox;
+    cbDoubleLine: TCheckBox;
     tabSyntax: TTabSheet;
     cpForeground: TColorPickerButton;
     cpBackground: TColorPickerButton;
@@ -75,6 +90,9 @@ type
     pnlEditorPreview: TPanel;
     lblTabSize: TLabel;
     seTabSize: TSpinEdit;
+    Bevel1: TBevel;
+    cbSmartUnIndent: TCheckBox;
+    cbGroupUndo: TCheckBox;
     grpMargin: TGroupBox;
     lblMarginWidth: TLabel;
     lblMarginColor: TLabel;
@@ -98,10 +116,17 @@ type
     btnOk: TBitBtn;
     btnCancel: TBitBtn;
     btnHelp: TBitBtn;
+    cbDropFiles: TCheckBox;
+    cbSpecialChars: TCheckBox;
     cboQuickColor: TComboBox;
     lblElements: TLabel;
     lblSpeed: TLabel;
+    Bevel2: TBevel;
     CodeIns: TSynEdit;
+    Bevel3: TBevel;
+    Bevel4: TBevel;
+    Panel1: TPanel;
+    cbDefaultintoprj: TCheckBox;
     tabClassBrowsing: TTabSheet;
     chkEnableClassBrowser: TCheckBox;
     btnSaveSyntax: TSpeedButton;
@@ -123,6 +148,7 @@ type
     chkCCCache: TCheckBox;
     btnCCCnew: TSpeedButton;
     btnCCCdelete: TSpeedButton;
+    cbParserHints: TCheckBox;
     CppTokenizer1: TCppTokenizer;
     CppParser1: TCppParser;
     lbCCC: TListBox;
@@ -135,27 +161,7 @@ type
     edGutterWidth: TSpinEdit;
     cbHighCurrLine: TCheckBox;
     cpHighColor: TColorPickerButton;
-    lblEditorOpts: TGroupBox;
     cbAppendNewline: TCheckBox;
-    cbSpecialChars: TCheckBox;
-    cbDropFiles: TCheckBox;
-    cbGroupUndo: TCheckBox;
-    cbSmartUnIndent: TCheckBox;
-    cbTrailingBlanks: TCheckBox;
-    cbTabtoSpaces: TCheckBox;
-    cbSmartTabs: TCheckBox;
-    cbInsertMode: TCheckBox;
-    cbAutoIndent: TCheckBox;
-    cbPastEOL: TCheckBox;
-    cbFindText: TCheckBox;
-    cbHalfPage: TCheckBox;
-    cbScrollHint: TCheckBox;
-    cbParserHints: TCheckBox;
-    cbSmartScroll: TCheckBox;
-    cbDoubleLine: TCheckBox;
-    cbEHomeKey: TCheckBox;
-    cbPastEOF: TCheckBox;
-    cbDefaultintoprj: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -528,6 +534,8 @@ begin
   lblInsertCaret.Caption := Lang[ID_EOPT_INSCARET];
   lblOverCaret.Caption := Lang[ID_EOPT_OVERCARET];
   cbMatch.Caption := Lang[ID_EOPT_MATCH];
+
+{$MESSAGE 'need to add to translations}
   cbHighCurrLine.Caption :=      Lang[ID_EOPT_HIGHLIGHTCURRLINE];
 
   cboInsertCaret.Clear;

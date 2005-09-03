@@ -457,7 +457,6 @@ begin
   // update MRU
   fMRU.Assign(UpdMRU);
   UpdMRU.Free;
-  MainForm.XPMenu.Active := MainForm.XPMenu.Active;
 end;
 
 { ---------- Code Insert Methods ---------- }

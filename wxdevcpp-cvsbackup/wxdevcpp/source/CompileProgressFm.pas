@@ -1,4 +1,7 @@
 {
+
+    $Id$
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -24,7 +27,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls, XPMenu, devcfg;
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -38,23 +41,23 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     Memo1: TMemo;
-    pb: TProgressBar;
     Label1: TLabel;
     lblCompiler: TLabel;
-    Bevel1: TBevel;
+    Label3: TLabel;
     lblStatus: TLabel;
+    Label5: TLabel;
+    lblFile: TLabel;
+    Bevel1: TBevel;
     Bevel2: TBevel;
     Bevel3: TBevel;
-    lblFile: TLabel;
-    Label5: TLabel;
-    Label3: TLabel;
+    Bevel4: TBevel;
     Label2: TLabel;
-    lblErr: TLabel;
-    Bevel5: TBevel;
     Label4: TLabel;
-    Bevel6: TBevel;
+    lblErr: TLabel;
     lblWarn: TLabel;
-    XPMenu: TXPMenu;
+    Bevel5: TBevel;
+    Bevel6: TBevel;
+    pb: TProgressBar;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -73,10 +76,6 @@ implementation
 procedure TCompileProgressForm.FormShow(Sender: TObject);
 begin
   PageControl1.ActivePageIndex := 0;
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
 end;
 
 procedure TCompileProgressForm.FormClose(Sender: TObject;

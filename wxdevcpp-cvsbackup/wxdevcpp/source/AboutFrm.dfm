@@ -1,9 +1,9 @@
 object AboutForm: TAboutForm
-  Left = 537
-  Top = 174
+  Left = 374
+  Top = 200
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'About wx-Dev-C++'
+  Caption = 'About wx-Dev-C++ :-)'
   ClientHeight = 425
   ClientWidth = 393
   Color = clBtnFace
@@ -18,11 +18,11 @@ object AboutForm: TAboutForm
   PixelsPerInch = 96
   TextHeight = 13
   object VersionLabel: TLabel
-    Left = 210
+    Left = 216
     Top = 75
-    Width = 108
+    Width = 38
     Height = 13
-    Caption = 'Dev-C++ Core Version '
+    Caption = 'Version '
   end
   object CopyrightLabel: TLabel
     Left = 8
@@ -37,7 +37,7 @@ object AboutForm: TAboutForm
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object banner: TImage
+  object Image1: TImage
     Left = 8
     Top = 8
     Width = 376
@@ -2299,26 +2299,6 @@ object AboutForm: TAboutForm
     Stretch = True
     Transparent = True
   end
-  object wxdevcopyright: TLabel
-    Left = 8
-    Top = 107
-    Width = 369
-    Height = 13
-    Caption = 'wxWidgets Designer and portions - Copyright (c) Guru Kathiresan'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object wxdevcpp_version: TLabel
-    Left = 210
-    Top = 90
-    Width = 124
-    Height = 13
-    Caption = 'Form Designer Version 6.8'
-  end
   object btnOk: TBitBtn
     Left = 310
     Top = 394
@@ -2330,16 +2310,16 @@ object AboutForm: TAboutForm
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 125
+    Top = 112
     Width = 379
-    Height = 135
+    Height = 121
     Caption = 'GNU General Public License : '
     TabOrder = 1
     object LicenseText: TMemo
       Left = 8
       Top = 16
       Width = 361
-      Height = 109
+      Height = 95
       Lines.Strings = (
         'GNU GENERAL PUBLIC LICENSE'
         ''
@@ -3075,21 +3055,21 @@ object AboutForm: TAboutForm
   end
   object GroupBox2: TGroupBox
     Left = 8
-    Top = 268
+    Top = 240
     Width = 378
-    Height = 117
+    Height = 145
     Caption = 'Web sites / email : '
     TabOrder = 2
     object BloodLabel: TLabel
       Left = 16
-      Top = 32
+      Top = 56
       Width = 146
       Height = 13
       Caption = 'Bloodshed Software web site : '
     end
     object BloodSite: TLabel
       Left = 168
-      Top = 32
+      Top = 56
       Width = 125
       Height = 13
       Cursor = crHandPoint
@@ -3104,14 +3084,14 @@ object AboutForm: TAboutForm
     end
     object MingwLabel: TLabel
       Left = 16
-      Top = 48
+      Top = 72
       Width = 124
       Height = 13
       Caption = 'Mingw compiler web site : '
     end
     object MingwSite: TLabel
       Left = 168
-      Top = 48
+      Top = 72
       Width = 106
       Height = 13
       Cursor = crHandPoint
@@ -3126,14 +3106,14 @@ object AboutForm: TAboutForm
     end
     object ForumLabel: TLabel
       Left = 16
-      Top = 64
+      Top = 88
       Width = 129
       Height = 13
       Caption = 'Dev-C++ discussion forum :'
     end
     object ForumSite: TLabel
       Left = 168
-      Top = 64
+      Top = 88
       Width = 156
       Height = 13
       Cursor = crHandPoint
@@ -3148,14 +3128,14 @@ object AboutForm: TAboutForm
     end
     object MailLabel: TLabel
       Left = 16
-      Top = 80
+      Top = 104
       Width = 126
       Height = 13
       Caption = 'Dev-C++ users mailing list :'
     end
     object MailSite: TLabel
       Left = 168
-      Top = 80
+      Top = 104
       Width = 201
       Height = 13
       Cursor = crHandPoint
@@ -3170,40 +3150,18 @@ object AboutForm: TAboutForm
     end
     object eMailLabel: TLabel
       Left = 16
-      Top = 96
+      Top = 120
       Width = 118
       Height = 13
       Caption = 'Dev-C++ Resource Site :'
     end
     object eMailSite: TLabel
       Left = 168
-      Top = 96
+      Top = 120
       Width = 148
       Height = 13
       Cursor = crHandPoint
       Caption = 'http://www.bloodshed.net/dev'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      OnClick = LabelClick
-    end
-    object wxdevcpp_websitelbl: TLabel
-      Left = 16
-      Top = 16
-      Width = 105
-      Height = 13
-      Caption = 'wx-devcpp Web Site :'
-    end
-    object wxdevcpp_website: TLabel
-      Left = 168
-      Top = 16
-      Width = 149
-      Height = 13
-      Cursor = crHandPoint
-      Caption = 'http://wxdsgn.sourceforge.net/'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -3557,7 +3515,7 @@ object AboutForm: TAboutForm
     FlatMenu = False
     AutoDetect = True
     Active = False
-    Left = 350
-    Top = 250
+    Left = 200
+    Top = 184
   end
 end

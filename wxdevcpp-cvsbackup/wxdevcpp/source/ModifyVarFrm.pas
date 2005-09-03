@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
+  Dialogs, StdCtrls, Buttons;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -39,9 +39,7 @@ type
     NameEdit: TEdit;
     ValueEdit: TEdit;
     ValueLabel: TLabel;
-    XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     procedure LoadText;
     { Private declarations }
@@ -71,14 +69,6 @@ end;
 procedure TModifyVarForm.FormCreate(Sender: TObject);
 begin
   LoadText;
-end;
-
-procedure TModifyVarForm.FormShow(Sender: TObject);
-begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
 end;
 
 end.

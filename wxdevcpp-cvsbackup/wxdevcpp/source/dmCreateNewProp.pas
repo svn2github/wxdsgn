@@ -29,13 +29,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 unit dmCreateNewProp;
 
 interface
-{$Warnings Off}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvAppStorage,
-  JvAppRegistryStorage, JvComponent, FileCtrl, JvFormPlacement, version,
-  XPMenu, devcfg;
-{$Warnings On}
+  StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder,
+  JvFormPlacement, JvComponent, JvAppStorage, JvAppRegistryStorage, version,
+  JvSelectDirectory;
+
 type
   TfrmCreateFormProp = class(TForm)
     Label1: TLabel;
@@ -55,6 +55,7 @@ type
     txtAuthorName: TEdit;
     JvFormStorage1: TJvFormStorage;
     JvAppRegistryStorage1: TJvAppRegistryStorage;
+    JvBrwrFldrDlg: TJvSelectDirectory;
     Label6: TLabel;
     cbUseCaption: TCheckBox;
     cbResizeBorder: TCheckBox;
@@ -65,11 +66,9 @@ type
     cbMinButton: TCheckBox;
     cbMaxButton: TCheckBox;
     cbCloseButton: TCheckBox;
-    XPMenu: TXPMenu;
     procedure btBrowseClick(Sender: TObject);
     procedure btCreateClick(Sender: TObject);
     procedure btCancelClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -84,11 +83,13 @@ implementation
 {$R *.DFM}
 
 procedure TfrmCreateFormProp.btBrowseClick(Sender: TObject);
-var
-dir : string;
 begin
-  SelectDirectory('Select a directory', '', dir);
-  txtSaveTo.text := dir;
+  JvBrwrFldrDlg.InitialDir:=txtSaveTo.Text;
+
+  if not JvBrwrFldrDlg.execute then
+    exit;
+  txtSaveTo.text := JvBrwrFldrDlg.Directory;
+
 end;
 
 procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
@@ -159,14 +160,6 @@ end;
 procedure TfrmCreateFormProp.btCancelClick(Sender: TObject);
 begin
   close;
-end;
-
-procedure TfrmCreateFormProp.FormShow(Sender: TObject);
-begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
 end;
 
 end.

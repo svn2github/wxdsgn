@@ -1,4 +1,7 @@
 {
+
+    $Id$
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -24,7 +27,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, XPMenu;
+  Dialogs, StdCtrls, ComCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -35,7 +38,6 @@ type
   TDebugForm = class(TForm)
     lvItems: TListView;
     btnClose: TButton;
-    XPMenu: TXPMenu;
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure AddItem(const Text, Value: string);
@@ -80,11 +82,6 @@ begin
     AddItem('devDirs.Cpp', Cpp);
     AddItem('devDirs.Lib', Lib);
     AddItem('devDirs.OriginalPath', OriginalPath);
-
-    if devData.XPTheme then
-      XPMenu.Active := true
-    else
-      XPMenu.Active := false;
   end;
 end;
 
