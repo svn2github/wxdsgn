@@ -2909,7 +2909,7 @@ begin
         Inc(cpos);
       end;
       //outline[cpp * (xpos + 1) + 1] := #0;  // xpos is undefined after loop
-      outline[cpp * (cpos^ + 1) + 1] := #0; // i think cpos is the intended variable instead
+      outline[cpp * iWidth + 1] := #0; // i think iWidth intended variable instead
 
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
@@ -3147,8 +3147,8 @@ begin
         end;
         Inc(cpos);
       end;
+      outline[cpp * iWidth + 1] := #0; // xpos is undefined after loop
       //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
-      outline[cpp * (cpos^ + 1) + 1] := #0; // i think cpos^ is the intended variable instead
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
       else
@@ -3372,7 +3372,7 @@ cindex := 0;
       end;
 
       //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
-      outline[cpp * (cpos^ + 1) + 1] := #0;  // i think cpos is the intended variable instead
+      outline[cpp * iWidth + 1] := #0;  // i think iWidth is the intended variable instead
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
       else
