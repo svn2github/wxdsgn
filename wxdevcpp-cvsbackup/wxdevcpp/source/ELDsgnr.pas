@@ -2556,6 +2556,7 @@ begin
   FForm := TDPForm.Create(nil);
   TDPForm(FForm).FDesignPanel := Self;
   FForm.Visible := True;
+  FForm.SetFocus;
 end;
 
 procedure TELCustomDesignPanel.CreateParams(var Params: TCreateParams);
@@ -3267,9 +3268,9 @@ var
   LS: string;
 begin
   if AIsActiveNeeded then
-    LS := 'Designer mast be active'
+    LS := 'Designer must be active'
   else
-    LS := 'Designer mast be inactive';
+    LS := 'Designer must be inactive';
   if Active <> AIsActiveNeeded then
     raise EELDesigner.Create(LS);
 end;

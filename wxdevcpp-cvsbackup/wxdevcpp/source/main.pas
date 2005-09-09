@@ -5627,11 +5627,11 @@ begin
 {$ENDIF}
       if ssCtrl in Shift then ShowDebug;
 end;
-    
+
 {$IFDEF WX_BUILD}
-if MainForm.ELDesigner1.Active and not JvInspProperties.Focused and not JvInspEvents.Focused then   // If Designer Form is in focus
+if (ssCtrl in Shift) and MainForm.ELDesigner1.Active and not JvInspProperties.Focused and not JvInspEvents.Focused then   // If Designer Form is in focus
 begin
-  case key of
+ case key of
 // Move the wx components around
   vk_Left :
     for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
@@ -5653,9 +5653,7 @@ begin
 
  ELDesigner1.OnModified(Sender);
 
- MessageControl.Hide;
  end;
-
 {$ENDIF}
 
 end;
@@ -9702,6 +9700,7 @@ begin
     if Assigned(ELDesigner1.DesignControl) then
     begin
         ELDesigner1.Active:=True;
+        ELDesigner1.DesignControl.SetFocus;
     end;
   except
     cbxControlsx.Enabled := true;

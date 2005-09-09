@@ -220,6 +220,7 @@ object frmCreateFormProp: TfrmCreateFormProp
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppRegistryStorage1
+    AppStoragePath = '%FORM_NAME%'
     StoredProps.Strings = (
       'txtAuthorName.Text'
       'txtClassName.Text'

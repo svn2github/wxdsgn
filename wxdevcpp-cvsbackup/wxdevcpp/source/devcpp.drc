@@ -8,233 +8,236 @@
   resources were bound to the produced executable.
 */
 
-#define compiler_cDots 64784
-#define compiler_cAppendStr 64785
-#define compiler_cAppendStr 64786
-#define main_cEXEName 64800
-#define main_cPrjName 64801
-#define main_cPrjFile 64802
-#define main_cPrjPath 64803
-#define main_cCurSrc 64804
-#define main_cSrcPath 64805
-#define main_cDevVer 64806
-#define main_cDefault 64807
-#define main_cExecDir 64808
-#define main_cSrcList 64809
-#define main_cWordxy 64810
-#define compiler_cAppendStr 64811
-#define compiler_cCmdLine 64812
-#define compiler_cMakeLine 64813
-#define compiler_cSingleFileMakeLine 64814
-#define compiler_cMake 64815
-#define JclResources_RsIntelCacheDescr82 64816
-#define JclResources_RsIntelCacheDescr83 64817
-#define JclResources_RsIntelCacheDescr84 64818
-#define JclResources_RsIntelCacheDescr85 64819
-#define JclResources_RsIntelCacheDescr86 64820
-#define JclResources_RsIntelCacheDescr87 64821
-#define JclResources_RsIntelCacheDescrB0 64822
-#define JclResources_RsIntelCacheDescrB3 64823
-#define JclResources_RsIntelCacheDescrF0 64824
-#define JclResources_RsIntelCacheDescrF1 64825
-#define Templates_cTemplate 64826
-#define Templates_cEditor 64827
-#define Templates_cProject 64828
-#define ELSConsts_SELDsgnrControlLockedDel 64829
-#define ELSConsts_SELDsgnrControlsLockedDel 64830
-#define ELSConsts_SELDsgnrClipboardFormat 64831
-#define JclResources_RsIntelCacheDescr5B 64832
-#define JclResources_RsIntelCacheDescr5C 64833
-#define JclResources_RsIntelCacheDescr5D 64834
-#define JclResources_RsIntelCacheDescr60 64835
-#define JclResources_RsIntelCacheDescr66 64836
-#define JclResources_RsIntelCacheDescr67 64837
-#define JclResources_RsIntelCacheDescr68 64838
-#define JclResources_RsIntelCacheDescr70 64839
-#define JclResources_RsIntelCacheDescr71 64840
-#define JclResources_RsIntelCacheDescr72 64841
-#define JclResources_RsIntelCacheDescr79 64842
-#define JclResources_RsIntelCacheDescr7A 64843
-#define JclResources_RsIntelCacheDescr7B 64844
-#define JclResources_RsIntelCacheDescr7C 64845
-#define JclResources_RsIntelCacheDescr7D 64846
-#define JclResources_RsIntelCacheDescr7F 64847
-#define JclResources_RsIntelCacheDescr0C 64848
-#define JclResources_RsIntelCacheDescr22 64849
-#define JclResources_RsIntelCacheDescr23 64850
-#define JclResources_RsIntelCacheDescr25 64851
-#define JclResources_RsIntelCacheDescr29 64852
-#define JclResources_RsIntelCacheDescr2C 64853
-#define JclResources_RsIntelCacheDescr30 64854
-#define JclResources_RsIntelCacheDescr40 64855
-#define JclResources_RsIntelCacheDescr41 64856
-#define JclResources_RsIntelCacheDescr42 64857
-#define JclResources_RsIntelCacheDescr43 64858
-#define JclResources_RsIntelCacheDescr44 64859
-#define JclResources_RsIntelCacheDescr45 64860
-#define JclResources_RsIntelCacheDescr50 64861
-#define JclResources_RsIntelCacheDescr51 64862
-#define JclResources_RsIntelCacheDescr52 64863
-#define JclResources_RsRTTIParamCount 64864
-#define JclResources_RsRTTIReturnType 64865
-#define JclResources_RsRTTIMaxLen 64866
-#define JclResources_RsRTTIElSize 64867
-#define JclResources_RsRTTIElType 64868
-#define JclResources_RsRTTIElNeedCleanup 64869
-#define JclResources_RsRTTIVarType 64870
-#define JclResources_RsDeclarationFormat 64871
-#define JclResources_RsBlankSearchString 64872
-#define JclResources_RsIntelCacheDescr01 64873
-#define JclResources_RsIntelCacheDescr02 64874
-#define JclResources_RsIntelCacheDescr03 64875
-#define JclResources_RsIntelCacheDescr04 64876
-#define JclResources_RsIntelCacheDescr06 64877
-#define JclResources_RsIntelCacheDescr08 64878
-#define JclResources_RsIntelCacheDescr0A 64879
-#define JclResources_RsRTTIName 64880
-#define JclResources_RsRTTIType 64881
-#define JclResources_RsRTTIFlags 64882
-#define JclResources_RsRTTIGUID 64883
-#define JclResources_RsRTTITypeKind 64884
-#define JclResources_RsRTTIOrdinalType 64885
-#define JclResources_RsRTTIMinValue 64886
-#define JclResources_RsRTTIMaxValue 64887
-#define JclResources_RsRTTINameList 64888
-#define JclResources_RsRTTIClassName 64889
-#define JclResources_RsRTTIParent 64890
-#define JclResources_RsRTTIPropCount 64891
-#define JclResources_RsRTTIUnitName 64892
-#define JclResources_RsRTTIBasedOn 64893
-#define JclResources_RsRTTIFloatType 64894
-#define JclResources_RsRTTIMethodKind 64895
-#define JclResources_RsRTTIConst 64896
-#define JclResources_RsRTTIArrayOf 64897
-#define JclResources_RsRTTIOut 64898
-#define JclResources_RsRTTIOrdinal 64899
-#define JclResources_RsRTTITrue 64900
-#define JclResources_RsRTTIFalse 64901
-#define JclResources_RsRTTITypeError 64902
-#define JclResources_RsRTTITypeInfoAt 64903
-#define JclResources_RsRTTIPropRead 64904
-#define JclResources_RsRTTIPropWrite 64905
-#define JclResources_RsRTTIPropStored 64906
-#define JclResources_RsRTTIField 64907
-#define JclResources_RsRTTIStaticMethod 64908
-#define JclResources_RsRTTIVirtualMethod 64909
-#define JclResources_RsRTTIIndex 64910
-#define JclResources_RsRTTIDefault 64911
-#define JvResources_RsClBtnText 64912
-#define JvResources_RsClInactiveCaptionText 64913
-#define JvResources_RsClBtnHighlight 64914
-#define JvResources_RsCl3DDkShadow 64915
-#define JvResources_RsCl3DLight 64916
-#define JvResources_RsClInfoText 64917
-#define JvResources_RsClInfoBk 64918
-#define JclResources_RsFileUtilsNoVersionInfo 64919
-#define JclResources_RsUnableToOpenKeyRead 64920
-#define JclResources_RsUnableToOpenKeyWrite 64921
-#define JclResources_RsUnableToAccessValue 64922
-#define JclResources_RsWrongDataType 64923
-#define JclResources_RsInconsistentPath 64924
-#define JclResources_RsRTTIValueOutOfRange 64925
-#define JclResources_RsRTTIUnknownIdentifier 64926
-#define JclResources_RsRTTIVar 64927
-#define JvResources_RsClActiveCaption 64928
-#define JvResources_RsClInactiveCaption 64929
-#define JvResources_RsClMenu 64930
-#define JvResources_RsClWindow 64931
-#define JvResources_RsClWindowFrame 64932
-#define JvResources_RsClMenuText 64933
-#define JvResources_RsClWindowText 64934
-#define JvResources_RsClCaptionText 64935
-#define JvResources_RsClActiveBorder 64936
-#define JvResources_RsClInactiveBorder 64937
-#define JvResources_RsClAppWorkSpace 64938
-#define JvResources_RsClHighlight 64939
-#define JvResources_RsClHighlightText 64940
-#define JvResources_RsClBtnFace 64941
-#define JvResources_RsClBtnShadow 64942
-#define JvResources_RsClGrayText 64943
-#define JvResources_RsClTeal 64944
-#define JvResources_RsClGray 64945
-#define JvResources_RsClSilver 64946
-#define JvResources_RsClRed 64947
-#define JvResources_RsClLime 64948
-#define JvResources_RsClYellow 64949
-#define JvResources_RsClBlue 64950
-#define JvResources_RsClFuchsia 64951
-#define JvResources_RsClAqua 64952
-#define JvResources_RsClWhite 64953
-#define JvResources_RsClMoneyGreen 64954
-#define JvResources_RsClSkyBlue 64955
-#define JvResources_RsClCream 64956
-#define JvResources_RsClMedGray 64957
-#define JvResources_RsClScrollBar 64958
-#define JvResources_RsClBackground 64959
-#define JvResources_RsEInstanceAlreadyExists 64960
-#define JvResources_RsENameAlreadyExistsForInstance 64961
-#define JvResources_RsEInstanceNonexistent 64962
-#define JvResources_RsEMethodAlreadyExists 64963
-#define JvResources_RsENameAlreadyExistsForMethod 64964
-#define JvResources_RsEJvAssertSetTopIndex 64965
-#define JvResources_RsEJvAssertInspectorPainter 64966
-#define JvResources_RsEJvAssertDataParent 64967
-#define JvResources_RsEJvAssertParent 64968
-#define JvResources_RsEJvAssertPropInfo 64969
-#define JvResources_RsClBlack 64970
-#define JvResources_RsClMaroon 64971
-#define JvResources_RsClGreen 64972
-#define JvResources_RsClOlive 64973
-#define JvResources_RsClNavy 64974
-#define JvResources_RsClPurple 64975
-#define JvResources_RsEJvInspNoGenReg 64976
-#define JvResources_RsEJvInspPaintNotActive 64977
-#define JvResources_RsEJvInspPaintOnlyUsedOnce 64978
-#define JvResources_RsEInspectorInternalError 64979
-#define JvResources_RsESpecifierBeforeSeparator 64980
-#define JvResources_RsEDOrDDOnlyOnce 64981
-#define JvResources_RsEMOrMMOnlyOnce 64982
-#define JvResources_RsEYYOrYYYYOnlyOnce 64983
-#define JvResources_RsEOnlyDOrDDAllowed 64984
-#define JvResources_RsEOnlyMOrMMAllowed 64985
-#define JvResources_RsEOnlyYYOrYYYYAllowed 64986
-#define JvResources_RsEOnlyTwoSeparators 64987
-#define JvResources_RsEOnlyDMYSAllowed 64988
-#define JvResources_RsEDOrDDRequired 64989
-#define JvResources_RsEMOrMMRequired 64990
-#define JvResources_RsEYYOrYYYYRequired 64991
-#define JvResources_RsJvInspItemUnInitialized 64992
-#define JvResources_RsJvInspItemUnassigned 64993
-#define JvResources_RsJvInspItemNoValue 64994
-#define JvResources_RsStringListEditorCaption 64995
-#define JvResources_RsXLinesCaption 64996
-#define JvResources_RsOneLineCaption 64997
-#define JvResources_RsEJvInspItemHasParent 64998
-#define JvResources_RsEJvInspItemNotAChild 64999
-#define JvResources_RsEJvInspItemColNotFound 65000
-#define JvResources_RsEJvInspItemItemIsNotCol 65001
-#define JvResources_RsEJvInspItemInvalidPropValue 65002
-#define JvResources_RsEJvInspDataNoAccessAs 65003
-#define JvResources_RsEJvInspDataNotInit 65004
-#define JvResources_RsEJvInspDataNotAssigned 65005
-#define JvResources_RsEJvInspDataNoValue 65006
-#define JvResources_RsEJvInspDataStrTooLong 65007
-#define JvResources_RsButtonCancelCaption 65008
-#define JvResources_RsUndoItem 65009
-#define JvResources_RsCutItem 65010
-#define JvResources_RsCopyItem 65011
-#define JvResources_RsPasteItem 65012
-#define JvResources_RsDeleteItem 65013
-#define JvResources_RsSelectAllItem 65014
-#define JvResources_RsEUnableToCreateKey 65015
-#define JvResources_RsEEnumeratingRegistry 65016
-#define JvResources_RsEInvalidType 65017
-#define JvResources_RsEUnknownBaseType 65018
-#define JvResources_RsEInvalidPath 65019
-#define JvResources_RsENotAUniqueRootPath 65020
-#define JvResources_RsECircularReferenceOfStorages 65021
-#define JvResources_RsEInvalidCaretOwner 65022
-#define JvResources_RsJvInspItemValueException 65023
+#define compiler_cMakeLine 64784
+#define compiler_cSingleFileMakeLine 64785
+#define compiler_cMake 64786
+#define compiler_cDots 64787
+#define compiler_cAppendStr 64788
+#define compiler_cAppendStr 64789
+#define ELSConsts_SELDsgnrControlLockedDel 64800
+#define ELSConsts_SELDsgnrControlsLockedDel 64801
+#define ELSConsts_SELDsgnrClipboardFormat 64802
+#define main_cEXEName 64803
+#define main_cPrjName 64804
+#define main_cPrjFile 64805
+#define main_cPrjPath 64806
+#define main_cCurSrc 64807
+#define main_cSrcPath 64808
+#define main_cDevVer 64809
+#define main_cDefault 64810
+#define main_cExecDir 64811
+#define main_cSrcList 64812
+#define main_cWordxy 64813
+#define compiler_cAppendStr 64814
+#define compiler_cCmdLine 64815
+#define JclResources_RsIntelCacheDescr7C 64816
+#define JclResources_RsIntelCacheDescr7D 64817
+#define JclResources_RsIntelCacheDescr7F 64818
+#define JclResources_RsIntelCacheDescr82 64819
+#define JclResources_RsIntelCacheDescr83 64820
+#define JclResources_RsIntelCacheDescr84 64821
+#define JclResources_RsIntelCacheDescr85 64822
+#define JclResources_RsIntelCacheDescr86 64823
+#define JclResources_RsIntelCacheDescr87 64824
+#define JclResources_RsIntelCacheDescrB0 64825
+#define JclResources_RsIntelCacheDescrB3 64826
+#define JclResources_RsIntelCacheDescrF0 64827
+#define JclResources_RsIntelCacheDescrF1 64828
+#define Templates_cTemplate 64829
+#define Templates_cEditor 64830
+#define Templates_cProject 64831
+#define JclResources_RsIntelCacheDescr51 64832
+#define JclResources_RsIntelCacheDescr52 64833
+#define JclResources_RsIntelCacheDescr5B 64834
+#define JclResources_RsIntelCacheDescr5C 64835
+#define JclResources_RsIntelCacheDescr5D 64836
+#define JclResources_RsIntelCacheDescr60 64837
+#define JclResources_RsIntelCacheDescr66 64838
+#define JclResources_RsIntelCacheDescr67 64839
+#define JclResources_RsIntelCacheDescr68 64840
+#define JclResources_RsIntelCacheDescr70 64841
+#define JclResources_RsIntelCacheDescr71 64842
+#define JclResources_RsIntelCacheDescr72 64843
+#define JclResources_RsIntelCacheDescr78 64844
+#define JclResources_RsIntelCacheDescr79 64845
+#define JclResources_RsIntelCacheDescr7A 64846
+#define JclResources_RsIntelCacheDescr7B 64847
+#define JclResources_RsIntelCacheDescr08 64848
+#define JclResources_RsIntelCacheDescr0A 64849
+#define JclResources_RsIntelCacheDescr0C 64850
+#define JclResources_RsIntelCacheDescr22 64851
+#define JclResources_RsIntelCacheDescr23 64852
+#define JclResources_RsIntelCacheDescr25 64853
+#define JclResources_RsIntelCacheDescr29 64854
+#define JclResources_RsIntelCacheDescr2C 64855
+#define JclResources_RsIntelCacheDescr30 64856
+#define JclResources_RsIntelCacheDescr40 64857
+#define JclResources_RsIntelCacheDescr41 64858
+#define JclResources_RsIntelCacheDescr42 64859
+#define JclResources_RsIntelCacheDescr43 64860
+#define JclResources_RsIntelCacheDescr44 64861
+#define JclResources_RsIntelCacheDescr45 64862
+#define JclResources_RsIntelCacheDescr50 64863
+#define JclResources_RsRTTIMethodKind 64864
+#define JclResources_RsRTTIParamCount 64865
+#define JclResources_RsRTTIReturnType 64866
+#define JclResources_RsRTTIMaxLen 64867
+#define JclResources_RsRTTIElSize 64868
+#define JclResources_RsRTTIElType 64869
+#define JclResources_RsRTTIElNeedCleanup 64870
+#define JclResources_RsRTTIVarType 64871
+#define JclResources_RsDeclarationFormat 64872
+#define JclResources_RsBlankSearchString 64873
+#define JclResources_RsIntelCacheDescr00 64874
+#define JclResources_RsIntelCacheDescr01 64875
+#define JclResources_RsIntelCacheDescr02 64876
+#define JclResources_RsIntelCacheDescr03 64877
+#define JclResources_RsIntelCacheDescr04 64878
+#define JclResources_RsIntelCacheDescr06 64879
+#define JclResources_RsRTTIDefault 64880
+#define JclResources_RsRTTIName 64881
+#define JclResources_RsRTTIType 64882
+#define JclResources_RsRTTIFlags 64883
+#define JclResources_RsRTTIGUID 64884
+#define JclResources_RsRTTITypeKind 64885
+#define JclResources_RsRTTIOrdinalType 64886
+#define JclResources_RsRTTIMinValue 64887
+#define JclResources_RsRTTIMaxValue 64888
+#define JclResources_RsRTTINameList 64889
+#define JclResources_RsRTTIClassName 64890
+#define JclResources_RsRTTIParent 64891
+#define JclResources_RsRTTIPropCount 64892
+#define JclResources_RsRTTIUnitName 64893
+#define JclResources_RsRTTIBasedOn 64894
+#define JclResources_RsRTTIFloatType 64895
+#define JclResources_RsRTTIVar 64896
+#define JclResources_RsRTTIConst 64897
+#define JclResources_RsRTTIArrayOf 64898
+#define JclResources_RsRTTIOut 64899
+#define JclResources_RsRTTIOrdinal 64900
+#define JclResources_RsRTTITrue 64901
+#define JclResources_RsRTTIFalse 64902
+#define JclResources_RsRTTITypeError 64903
+#define JclResources_RsRTTITypeInfoAt 64904
+#define JclResources_RsRTTIPropRead 64905
+#define JclResources_RsRTTIPropWrite 64906
+#define JclResources_RsRTTIPropStored 64907
+#define JclResources_RsRTTIField 64908
+#define JclResources_RsRTTIStaticMethod 64909
+#define JclResources_RsRTTIVirtualMethod 64910
+#define JclResources_RsRTTIIndex 64911
+#define JvResources_RsCl3DDkShadow 64912
+#define JvResources_RsCl3DLight 64913
+#define JvResources_RsClInfoText 64914
+#define JvResources_RsClInfoBk 64915
+#define ComConst_SOleError 64916
+#define ComConst_SNoMethod 64917
+#define ComConst_SVarNotObject 64918
+#define ComConst_STooManyParams 64919
+#define JclResources_RsFileUtilsNoVersionInfo 64920
+#define JclResources_RsUnableToOpenKeyRead 64921
+#define JclResources_RsUnableToOpenKeyWrite 64922
+#define JclResources_RsUnableToAccessValue 64923
+#define JclResources_RsWrongDataType 64924
+#define JclResources_RsInconsistentPath 64925
+#define JclResources_RsRTTIValueOutOfRange 64926
+#define JclResources_RsRTTIUnknownIdentifier 64927
+#define JvResources_RsClWindow 64928
+#define JvResources_RsClWindowFrame 64929
+#define JvResources_RsClMenuText 64930
+#define JvResources_RsClWindowText 64931
+#define JvResources_RsClCaptionText 64932
+#define JvResources_RsClActiveBorder 64933
+#define JvResources_RsClInactiveBorder 64934
+#define JvResources_RsClAppWorkSpace 64935
+#define JvResources_RsClHighlight 64936
+#define JvResources_RsClHighlightText 64937
+#define JvResources_RsClBtnFace 64938
+#define JvResources_RsClBtnShadow 64939
+#define JvResources_RsClGrayText 64940
+#define JvResources_RsClBtnText 64941
+#define JvResources_RsClInactiveCaptionText 64942
+#define JvResources_RsClBtnHighlight 64943
+#define JvResources_RsClRed 64944
+#define JvResources_RsClLime 64945
+#define JvResources_RsClYellow 64946
+#define JvResources_RsClBlue 64947
+#define JvResources_RsClFuchsia 64948
+#define JvResources_RsClAqua 64949
+#define JvResources_RsClWhite 64950
+#define JvResources_RsClMoneyGreen 64951
+#define JvResources_RsClSkyBlue 64952
+#define JvResources_RsClCream 64953
+#define JvResources_RsClMedGray 64954
+#define JvResources_RsClScrollBar 64955
+#define JvResources_RsClBackground 64956
+#define JvResources_RsClActiveCaption 64957
+#define JvResources_RsClInactiveCaption 64958
+#define JvResources_RsClMenu 64959
+#define JvResources_RsEMethodAlreadyExists 64960
+#define JvResources_RsENameAlreadyExistsForMethod 64961
+#define JvResources_RsEJvAssertSetTopIndex 64962
+#define JvResources_RsEJvAssertInspectorPainter 64963
+#define JvResources_RsEJvAssertDataParent 64964
+#define JvResources_RsEJvAssertParent 64965
+#define JvResources_RsEJvAssertPropInfo 64966
+#define JvResources_RsClBlack 64967
+#define JvResources_RsClMaroon 64968
+#define JvResources_RsClGreen 64969
+#define JvResources_RsClOlive 64970
+#define JvResources_RsClNavy 64971
+#define JvResources_RsClPurple 64972
+#define JvResources_RsClTeal 64973
+#define JvResources_RsClGray 64974
+#define JvResources_RsClSilver 64975
+#define JvResources_RsEInspectorInternalError 64976
+#define JvResources_RsESpecifierBeforeSeparator 64977
+#define JvResources_RsEDOrDDOnlyOnce 64978
+#define JvResources_RsEMOrMMOnlyOnce 64979
+#define JvResources_RsEYYOrYYYYOnlyOnce 64980
+#define JvResources_RsEOnlyDOrDDAllowed 64981
+#define JvResources_RsEOnlyMOrMMAllowed 64982
+#define JvResources_RsEOnlyYYOrYYYYAllowed 64983
+#define JvResources_RsEOnlyTwoSeparators 64984
+#define JvResources_RsEOnlyDMYSAllowed 64985
+#define JvResources_RsEDOrDDRequired 64986
+#define JvResources_RsEMOrMMRequired 64987
+#define JvResources_RsEYYOrYYYYRequired 64988
+#define JvResources_RsEInstanceAlreadyExists 64989
+#define JvResources_RsENameAlreadyExistsForInstance 64990
+#define JvResources_RsEInstanceNonexistent 64991
+#define JvResources_RsStringListEditorCaption 64992
+#define JvResources_RsXLinesCaption 64993
+#define JvResources_RsOneLineCaption 64994
+#define JvResources_RsEJvInspItemHasParent 64995
+#define JvResources_RsEJvInspItemNotAChild 64996
+#define JvResources_RsEJvInspItemColNotFound 64997
+#define JvResources_RsEJvInspItemItemIsNotCol 64998
+#define JvResources_RsEJvInspItemInvalidPropValue 64999
+#define JvResources_RsEJvInspDataNoAccessAs 65000
+#define JvResources_RsEJvInspDataNotInit 65001
+#define JvResources_RsEJvInspDataNotAssigned 65002
+#define JvResources_RsEJvInspDataNoValue 65003
+#define JvResources_RsEJvInspDataStrTooLong 65004
+#define JvResources_RsEJvInspNoGenReg 65005
+#define JvResources_RsEJvInspPaintNotActive 65006
+#define JvResources_RsEJvInspPaintOnlyUsedOnce 65007
+#define JvResources_RsPasteItem 65008
+#define JvResources_RsDeleteItem 65009
+#define JvResources_RsSelectAllItem 65010
+#define JvResources_RsRootValueReplaceFmt 65011
+#define JvResources_RsEUnableToCreateKey 65012
+#define JvResources_RsEEnumeratingRegistry 65013
+#define JvResources_RsEInvalidType 65014
+#define JvResources_RsEUnknownBaseType 65015
+#define JvResources_RsEInvalidPath 65016
+#define JvResources_RsENotAUniqueRootPath 65017
+#define JvResources_RsECircularReferenceOfStorages 65018
+#define JvResources_RsEInvalidCaretOwner 65019
+#define JvResources_RsJvInspItemValueException 65020
+#define JvResources_RsJvInspItemUnInitialized 65021
+#define JvResources_RsJvInspItemUnassigned 65022
+#define JvResources_RsJvInspItemNoValue 65023
 #define GraphicStrings_gesUpsampling 65024
 #define GraphicStrings_gesTransfering 65025
 #define GraphicStrings_gesLZ77Error 65026
@@ -246,11 +249,11 @@
 #define GraphicStrings_gesJPEGBogusTableField 65032
 #define GraphicStrings_gesJPEGFractionalLine 65033
 #define GraphicStrings_gesWarning 65034
-#define ComConst_SOleError 65035
-#define ComConst_SNoMethod 65036
-#define ComConst_SVarNotObject 65037
-#define ComConst_STooManyParams 65038
-#define JvResources_RsButtonOKCaption 65039
+#define JvResources_RsButtonOKCaption 65035
+#define JvResources_RsButtonCancelCaption 65036
+#define JvResources_RsUndoItem 65037
+#define JvResources_RsCutItem 65038
+#define JvResources_RsCopyItem 65039
 #define GraphicStrings_gesStreamReadError 65040
 #define GraphicStrings_gesUnsupportedFeature 65041
 #define GraphicStrings_gesInvalidCRC 65042
@@ -749,9 +752,15 @@
 #define SysConst_SDiskFull 65535
 STRINGTABLE
 BEGIN
+	compiler_cMakeLine,	"%s -f \"%s\" all"
+	compiler_cSingleFileMakeLine,	"%s -f \"%s\" %s"
+	compiler_cMake,	" make"
 	compiler_cDots,	"..."
 	compiler_cAppendStr,	"%s -L\"%s\""
 	compiler_cAppendStr,	"%s -I\"%s\" "
+	ELSConsts_SELDsgnrControlLockedDel,	"Control \"%s\" or some of it chidrens can not\r be deleted becouse they are locked"
+	ELSConsts_SELDsgnrControlsLockedDel,	"Some controls is locked. Can not delete controls."
+	ELSConsts_SELDsgnrClipboardFormat,	"Extension Library designer components"
 	main_cEXEName,	"<EXENAME>"
 	main_cPrjName,	"<PROJECTNAME>"
 	main_cPrjFile,	"<PROJECTFILE>"
@@ -765,9 +774,9 @@ BEGIN
 	main_cWordxy,	"<WORDXY>"
 	compiler_cAppendStr,	"%s %s"
 	compiler_cCmdLine,	"%s \"%s\" -o \"%s\" %s %s %s"
-	compiler_cMakeLine,	"%s -f \"%s\" all"
-	compiler_cSingleFileMakeLine,	"%s -f \"%s\" %s"
-	compiler_cMake,	" make"
+	JclResources_RsIntelCacheDescr7C,	"2° Level cache, 1 MBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size"
+	JclResources_RsIntelCacheDescr7D,	"2° Level cache, 2 MByte, 8-way set associative, 64byte line size"
+	JclResources_RsIntelCacheDescr7F,	"2° Level cache, 512 KByte, 2-way set associative, 64-byte line size"
 	JclResources_RsIntelCacheDescr82,	"2° Level cache, 256 KBytes, 8-way associative, 32 Bytes line size"
 	JclResources_RsIntelCacheDescr83,	"2° Level cache, 512 KBytes, 8-way associative, 32 Bytes line size"
 	JclResources_RsIntelCacheDescr84,	"2° Level cache, 1 MBytes, 8-way associative, 32 Bytes line size"
@@ -781,9 +790,8 @@ BEGIN
 	Templates_cTemplate,	"Template"
 	Templates_cEditor,	"Editor"
 	Templates_cProject,	"Project"
-	ELSConsts_SELDsgnrControlLockedDel,	"Control \"%s\" or some of it chidrens can not\r be deleted becouse they are locked"
-	ELSConsts_SELDsgnrControlsLockedDel,	"Some controls is locked. Can not delete controls."
-	ELSConsts_SELDsgnrClipboardFormat,	"Extension Library designer components"
+	JclResources_RsIntelCacheDescr51,	"Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 128 Entries"
+	JclResources_RsIntelCacheDescr52,	"Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 256 Entries"
 	JclResources_RsIntelCacheDescr5B,	"Data TLB, 4 KBytes and 4 MBytes pages, 64 Entries"
 	JclResources_RsIntelCacheDescr5C,	"Data TLB, 4 KBytes and 4 MBytes pages, 128 Entries"
 	JclResources_RsIntelCacheDescr5D,	"Data TLB, 4 KBytes and 4 MBytes pages, 256 Entries"
@@ -794,17 +802,17 @@ BEGIN
 	JclResources_RsIntelCacheDescr70,	"Trace cache, 12 KµOps, 8-way set associative"
 	JclResources_RsIntelCacheDescr71,	"Trace cache, 16 KµOps, 8-way set associative"
 	JclResources_RsIntelCacheDescr72,	"Trace cache, 32 KµOps, 8-way set associative"
+	JclResources_RsIntelCacheDescr78,	"2° Level cache, 1 MBytes, 4-way set associative, 64 Bytes line size"
 	JclResources_RsIntelCacheDescr79,	"2° Level cache, 128 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size"
 	JclResources_RsIntelCacheDescr7A,	"2° Level cache, 256 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size"
 	JclResources_RsIntelCacheDescr7B,	"2° Level cache, 512 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size"
-	JclResources_RsIntelCacheDescr7C,	"2° Level cache, 1 MBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size"
-	JclResources_RsIntelCacheDescr7D,	"2° Level cache, 2 MByte, 8-way set associative, 64byte line size"
-	JclResources_RsIntelCacheDescr7F,	"2° Level cache, 512 KByte, 2-way set associative, 64-byte line size"
+	JclResources_RsIntelCacheDescr08,	"16KB instruction cache, 4-way set associative, 32 byte line size"
+	JclResources_RsIntelCacheDescr0A,	"8KB data cache 2-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr0C,	"16KB data cache, 4-way set associative, 32 byte line size"
-	JclResources_RsIntelCacheDescr22,	"3° Level cache, 512 KBytes, 4-way set associative, 2 lines per sector, 64 Bytes sector size"
-	JclResources_RsIntelCacheDescr23,	"3° Level cache, 1 MBytes, 8-way set associative, 2 lines per sector, 64 Bytes sector size"
-	JclResources_RsIntelCacheDescr25,	"3° Level cache, 2 MBytes, 8-way set associative, 2 lines per sector, 64 byte line size"
-	JclResources_RsIntelCacheDescr29,	"3° Level cache, 4M Bytes, 8-way set associative, 2 lines per sector, 64 byte line size"
+	JclResources_RsIntelCacheDescr22,	"3° Level cache, 512 KBytes, 4-way set associative, 2 lines per sector, 128 byte sector size"
+	JclResources_RsIntelCacheDescr23,	"3° Level cache, 1 MBytes, 8-way set associative, 2 lines per sector, 128 byte sector size"
+	JclResources_RsIntelCacheDescr25,	"3° Level cache, 2 MBytes, 8-way set associative, 2 lines per sector, 128 byte line size"
+	JclResources_RsIntelCacheDescr29,	"3° Level cache, 4M Bytes, 8-way set associative, 2 lines per sector, 128 byte line size"
 	JclResources_RsIntelCacheDescr2C,	"1° Level data cache: 32K Bytes, 8-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescr30,	"1° Level instruction cache: 32K Bytes, 8-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescr40,	"No L2 cache"
@@ -814,8 +822,7 @@ BEGIN
 	JclResources_RsIntelCacheDescr44,	"Unified cache, 32 byte cache line, 4-way set associative, 1Mb"
 	JclResources_RsIntelCacheDescr45,	"Unified cache, 32 byte cache line, 4-way set associative, 2Mb"
 	JclResources_RsIntelCacheDescr50,	"Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 64 Entries"
-	JclResources_RsIntelCacheDescr51,	"Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 128 Entries"
-	JclResources_RsIntelCacheDescr52,	"Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 256 Entries"
+	JclResources_RsRTTIMethodKind,	"Method kind: "
 	JclResources_RsRTTIParamCount,	"Parameter count: "
 	JclResources_RsRTTIReturnType,	"Return type: "
 	JclResources_RsRTTIMaxLen,	"Max length: "
@@ -825,13 +832,13 @@ BEGIN
 	JclResources_RsRTTIVarType,	"Variant type: "
 	JclResources_RsDeclarationFormat,	"// Declaration for '%s' not supported."
 	JclResources_RsBlankSearchString,	"Search string cannot be blank"
+	JclResources_RsIntelCacheDescr00,	"Null descriptor"
 	JclResources_RsIntelCacheDescr01,	"Instruction TLB, 4Kb pages, 4-way set associative, 32 entries"
 	JclResources_RsIntelCacheDescr02,	"Instruction TLB, 4Mb pages, fully associative, 2 entries"
 	JclResources_RsIntelCacheDescr03,	"Data TLB, 4Kb pages, 4-way set associative, 64 entries"
 	JclResources_RsIntelCacheDescr04,	"Data TLB, 4Mb pages, 4-way set associative, 8 entries"
 	JclResources_RsIntelCacheDescr06,	"8KB instruction cache, 4-way set associative, 32 byte line size"
-	JclResources_RsIntelCacheDescr08,	"16KB instruction cache, 4-way set associative, 32 byte line size"
-	JclResources_RsIntelCacheDescr0A,	"8KB data cache 2-way set associative, 32 byte line size"
+	JclResources_RsRTTIDefault,	"default"
 	JclResources_RsRTTIName,	"Name: "
 	JclResources_RsRTTIType,	"Type: "
 	JclResources_RsRTTIFlags,	"Flags: "
@@ -847,7 +854,7 @@ BEGIN
 	JclResources_RsRTTIUnitName,	"Unit name: "
 	JclResources_RsRTTIBasedOn,	"Based on: "
 	JclResources_RsRTTIFloatType,	"Float type: "
-	JclResources_RsRTTIMethodKind,	"Method kind: "
+	JclResources_RsRTTIVar,	"var "
 	JclResources_RsRTTIConst,	"const "
 	JclResources_RsRTTIArrayOf,	"array of "
 	JclResources_RsRTTIOut,	"out "
@@ -863,14 +870,14 @@ BEGIN
 	JclResources_RsRTTIStaticMethod,	"static method"
 	JclResources_RsRTTIVirtualMethod,	"virtual method"
 	JclResources_RsRTTIIndex,	"index"
-	JclResources_RsRTTIDefault,	"default"
-	JvResources_RsClBtnText,	"Button text"
-	JvResources_RsClInactiveCaptionText,	"Inactive window title bar text"
-	JvResources_RsClBtnHighlight,	"Button highlight"
 	JvResources_RsCl3DDkShadow,	"Dark shadow 3D elements"
 	JvResources_RsCl3DLight,	"Highlight 3D elements"
 	JvResources_RsClInfoText,	"Tooltip text"
 	JvResources_RsClInfoBk,	"Tooltip background"
+	ComConst_SOleError,	"OLE error %.8x"
+	ComConst_SNoMethod,	"Method '%s' not supported by automation object"
+	ComConst_SVarNotObject,	"Variant does not reference an automation object"
+	ComConst_STooManyParams,	"Dispatch methods do not support more than 64 parameters"
 	JclResources_RsFileUtilsNoVersionInfo,	"File contains no version information"
 	JclResources_RsUnableToOpenKeyRead,	"Unable to open key \"%s\" for read"
 	JclResources_RsUnableToOpenKeyWrite,	"Unable to open key \"%s\" for write"
@@ -879,10 +886,6 @@ BEGIN
 	JclResources_RsInconsistentPath,	"\"%s\" does not match RootKey"
 	JclResources_RsRTTIValueOutOfRange,	"Value out of range (%s)."
 	JclResources_RsRTTIUnknownIdentifier,	"Unknown identifier '%s'."
-	JclResources_RsRTTIVar,	"var "
-	JvResources_RsClActiveCaption,	"Active window title bar"
-	JvResources_RsClInactiveCaption,	"Inactive window title bar"
-	JvResources_RsClMenu,	"Menu background"
 	JvResources_RsClWindow,	"Window background"
 	JvResources_RsClWindowFrame,	"Window frame"
 	JvResources_RsClMenuText,	"Menu text"
@@ -896,9 +899,9 @@ BEGIN
 	JvResources_RsClBtnFace,	"Button face"
 	JvResources_RsClBtnShadow,	"Button shadow"
 	JvResources_RsClGrayText,	"Dimmed text"
-	JvResources_RsClTeal,	"Teal"
-	JvResources_RsClGray,	"Gray"
-	JvResources_RsClSilver,	"Silver"
+	JvResources_RsClBtnText,	"Button text"
+	JvResources_RsClInactiveCaptionText,	"Inactive window title bar text"
+	JvResources_RsClBtnHighlight,	"Button highlight"
 	JvResources_RsClRed,	"Red"
 	JvResources_RsClLime,	"Lime"
 	JvResources_RsClYellow,	"Yellow"
@@ -912,9 +915,9 @@ BEGIN
 	JvResources_RsClMedGray,	"Medium gray"
 	JvResources_RsClScrollBar,	"Scrollbar"
 	JvResources_RsClBackground,	"Desktop background"
-	JvResources_RsEInstanceAlreadyExists,	"Instance already exists with another name"
-	JvResources_RsENameAlreadyExistsForInstance,	"Name already exists for another instance"
-	JvResources_RsEInstanceNonexistent,	"Instance does not exist"
+	JvResources_RsClActiveCaption,	"Active window title bar"
+	JvResources_RsClInactiveCaption,	"Inactive window title bar"
+	JvResources_RsClMenu,	"Menu background"
 	JvResources_RsEMethodAlreadyExists,	"Method already exists with another name"
 	JvResources_RsENameAlreadyExistsForMethod,	"Name already exists for another method"
 	JvResources_RsEJvAssertSetTopIndex,	"TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1"
@@ -928,9 +931,9 @@ BEGIN
 	JvResources_RsClOlive,	"Olive green"
 	JvResources_RsClNavy,	"Navy blue"
 	JvResources_RsClPurple,	"Purple"
-	JvResources_RsEJvInspNoGenReg,	"Unable to create generic item registration list"
-	JvResources_RsEJvInspPaintNotActive,	"Painter is not the active painter of the specified inspector"
-	JvResources_RsEJvInspPaintOnlyUsedOnce,	"Inspector painter can only be linked to one inspector"
+	JvResources_RsClTeal,	"Teal"
+	JvResources_RsClGray,	"Gray"
+	JvResources_RsClSilver,	"Silver"
 	JvResources_RsEInspectorInternalError,	"Internal error: two data instances pointing to the same data are registered"
 	JvResources_RsESpecifierBeforeSeparator,	"A specifier should be placed before and after a separator"
 	JvResources_RsEDOrDDOnlyOnce,	"'d' or 'dd' should appear only once"
@@ -944,9 +947,9 @@ BEGIN
 	JvResources_RsEDOrDDRequired,	"'d' or 'dd' are required"
 	JvResources_RsEMOrMMRequired,	"'m' or 'mm' are required"
 	JvResources_RsEYYOrYYYYRequired,	"'yy' or 'yyyy' are required"
-	JvResources_RsJvInspItemUnInitialized,	"(uninitialized)"
-	JvResources_RsJvInspItemUnassigned,	"(unassigned)"
-	JvResources_RsJvInspItemNoValue,	"(no value)"
+	JvResources_RsEInstanceAlreadyExists,	"Instance already exists with another name"
+	JvResources_RsENameAlreadyExistsForInstance,	"Name already exists for another instance"
+	JvResources_RsEInstanceNonexistent,	"Instance does not exist"
 	JvResources_RsStringListEditorCaption,	"String list editor"
 	JvResources_RsXLinesCaption,	" lines"
 	JvResources_RsOneLineCaption,	"1 line"
@@ -960,13 +963,13 @@ BEGIN
 	JvResources_RsEJvInspDataNotAssigned,	"Data not assigned"
 	JvResources_RsEJvInspDataNoValue,	"Data has no value"
 	JvResources_RsEJvInspDataStrTooLong,	"String too long"
-	JvResources_RsButtonCancelCaption,	"Cancel"
-	JvResources_RsUndoItem,	"&Undo"
-	JvResources_RsCutItem,	"Cu&t"
-	JvResources_RsCopyItem,	"&Copy"
+	JvResources_RsEJvInspNoGenReg,	"Unable to create generic item registration list"
+	JvResources_RsEJvInspPaintNotActive,	"Painter is not the active painter of the specified inspector"
+	JvResources_RsEJvInspPaintOnlyUsedOnce,	"Inspector painter can only be linked to one inspector"
 	JvResources_RsPasteItem,	"&Paste"
 	JvResources_RsDeleteItem,	"&Delete"
 	JvResources_RsSelectAllItem,	"Select &All"
+	JvResources_RsRootValueReplaceFmt,	"The Default Root Value \"%s\" has been replaced with \"%s\".\r\nPlease change the value in the FileVersionInfo Project Properties."
 	JvResources_RsEUnableToCreateKey,	"Unable to create key '%s'"
 	JvResources_RsEEnumeratingRegistry,	"Error enumerating registry"
 	JvResources_RsEInvalidType,	"Invalid type"
@@ -976,6 +979,9 @@ BEGIN
 	JvResources_RsECircularReferenceOfStorages,	"Circular reference of storages"
 	JvResources_RsEInvalidCaretOwner,	"%s: cannot be created without a valid Owner"
 	JvResources_RsJvInspItemValueException,	"Exception "
+	JvResources_RsJvInspItemUnInitialized,	"(uninitialized)"
+	JvResources_RsJvInspItemUnassigned,	"(unassigned)"
+	JvResources_RsJvInspItemNoValue,	"(no value)"
 	GraphicStrings_gesUpsampling,	"Upsampling..."
 	GraphicStrings_gesTransfering,	"Transfering..."
 	GraphicStrings_gesLZ77Error,	"LZ77 decompression error."
@@ -987,11 +993,11 @@ BEGIN
 	GraphicStrings_gesJPEGBogusTableField,	"Bogus JPEG tables field."
 	GraphicStrings_gesJPEGFractionalLine,	"Fractional JPEG scanline unsupported."
 	GraphicStrings_gesWarning,	"Warning"
-	ComConst_SOleError,	"OLE error %.8x"
-	ComConst_SNoMethod,	"Method '%s' not supported by automation object"
-	ComConst_SVarNotObject,	"Variant does not reference an automation object"
-	ComConst_STooManyParams,	"Dispatch methods do not support more than 64 parameters"
 	JvResources_RsButtonOKCaption,	"&OK"
+	JvResources_RsButtonCancelCaption,	"Cancel"
+	JvResources_RsUndoItem,	"&Undo"
+	JvResources_RsCutItem,	"Cu&t"
+	JvResources_RsCopyItem,	"&Copy"
 	GraphicStrings_gesStreamReadError,	"Stream read error in %s file."
 	GraphicStrings_gesUnsupportedFeature,	"Cannot load image. %s not supported for %s files."
 	GraphicStrings_gesInvalidCRC,	"Cannot load image. CRC error found in %s file."

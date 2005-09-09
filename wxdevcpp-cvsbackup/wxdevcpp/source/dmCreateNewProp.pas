@@ -135,7 +135,7 @@ procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
 
     if boolExisit then
     begin
-      if MessageDlg('Some Source Files with Same File Name Already Exisit.' + #13
+      if MessageDlg('Some Source Files with Same File Name Already Exist.' + #13
         + #10 + '' + #13 + #10 + 'Do you want to overwrite them ?.', mtError,
         [mbYES, mbNO], 0) <> mrYES then
       begin
