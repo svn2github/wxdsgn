@@ -392,23 +392,22 @@ begin
 
   if (trim(strStyle) <> '') then
     strStyle := ', ' + GetLineOrientation(FWx_LIOrientation) +
-      ' | ' + strStyle + ', ' + GetCppString(Name)
+      ' | ' + strStyle
   else
-    strStyle := ', ' + GetLineOrientation(FWx_LIOrientation) +
-      ', ' + GetCppString(Name);
+    strStyle := ', ' + GetLineOrientation(FWx_LIOrientation);
 
   if (FWx_LIOrientation = wxLI_HORIZONTAL) then
     Result := GetCommentString(self.FWx_Comments.Text) +
       Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
-      self.Left, self.Top, FWx_Length, 0, strStyle])
+      self.Left, self.Top, FWx_Length, -1, strStyle])
   else
     Result := GetCommentString(self.FWx_Comments.Text) +
       Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
-      self.Left, self.Top, 0, FWx_Length, strStyle]);
+      self.Left, self.Top, -1, FWx_Length, strStyle]);
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
