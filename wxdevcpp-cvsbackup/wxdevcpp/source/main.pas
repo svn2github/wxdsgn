@@ -1541,6 +1541,7 @@ begin
     ClipboardFormat := 'Extension Library designer components';
     PopupMenu := DesignerPopup;
     SnapToGrid:=false;
+    GenerateXRC :=false;
     //Grid.XStep:=4;
     //Grid.YStep:=4;
     OnContextPopup :=ELDesigner1ContextPopup;
@@ -1559,6 +1560,7 @@ begin
         ELDesigner1.Grid.XStep:=ini.ReadInteger('wxWidgets','lbGridXStepUpDown',ELDesigner1.Grid.XStep);
         ELDesigner1.Grid.YStep:=ini.ReadInteger('wxWidgets','lbGridYStepUpDown',ELDesigner1.Grid.YStep);
         ELDesigner1.SnapToGrid:=ini.ReadBool('wxWidgets','cbSnapToGrid',ELDesigner1.SnapToGrid);
+        ELDesigner1.GenerateXRC:=ini.ReadBool('wxWidgets','cbGenerateXRC',ELDesigner1.GenerateXRC);
 
         if ini.ReadBool('wxWidgets','cbControlHints',true) then
             ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints + [htControl]
@@ -3204,6 +3206,7 @@ begin
             end;
         end;
         // XRC
+
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
@@ -3213,7 +3216,7 @@ begin
                     SaveFileInternal(eX);
             end;
         end;
-
+        
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT));
@@ -3331,6 +3334,7 @@ begin
         CloseEditorInternal(wxEditor);
     end;
 
+
     wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
     if assigned(wxXRCEditor) then begin
         if Saved then begin
@@ -3340,8 +3344,8 @@ begin
         Else
             wxXRCEditor.Modified:=false;
         CloseEditorInternal(wxXRCEditor);
-    end;
-  end
+    end
+   end
   else
 {$ENDIF}
     CloseEditorInternal(e);
@@ -4033,7 +4037,7 @@ begin
                 MainForm.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
           end;
 
-           if FileExists(ChangeFileExt(EditorFilename, XRC_EXT)) then
+          if FileExists(ChangeFileExt(EditorFilename, XRC_EXT)) then
           begin
             if not isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
                 MainForm.OpenFile(ChangeFileExt(EditorFilename, XRC_EXT), true);
@@ -5649,8 +5653,7 @@ begin
         ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top + 1;
 
  end;
-
-
+   
  ELDesigner1.OnModified(Sender);
 
  end;
@@ -8431,7 +8434,6 @@ begin
         end;
       end;
 
-
     strFileName := ChangeFileExt(strFileName, XRC_EXT);
     OpenFile(strFileName);
     if Assigned(fProject) and (InProject = true)then
@@ -8439,7 +8441,7 @@ begin
         FolderNode:=fProject.Node;
         fProject.AddUnit(strFileName, FolderNode, false); // add under folder
     end;
-
+   
     strFileName := ChangeFileExt(strFileName, WXFORM_EXT);
     strShortFileName := ExtractFileName(strFileName);
     NewDesigner := TEditor.Create;
@@ -8917,17 +8919,20 @@ begin
   begin
     SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
 
-    strLstXRCCode := TStringList.Create;
-    strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
-    strLstXRCCode.Add('<resource version="2.3.0.1">');
-    strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
+    if (MainForm.ELDesigner1.GenerateXRC) then
+    begin
+      strLstXRCCode := TStringList.Create;
+      strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
+      strLstXRCCode.Add('<resource version="2.3.0.1">');
+      strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
 
-    // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
+      // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
 
-    //strLstXRCCode.Add('</object>');
-    strLstXRCCode.Add('</resource>');
-    Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
-    strLstXRCCode.Destroy
+      //strLstXRCCode.Add('</object>');
+      strLstXRCCode.Add('</resource>');
+      Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
+      strLstXRCCode.Destroy
+    end;
 
 end;
 
@@ -9080,7 +9085,7 @@ begin
    if Result then
     Result := SaveStringToFile(appcppCode, ChangeFileExt(fProject.FileName, '') +  APP_SUFFIX + CPP_EXT);
 
-    if Result then
+    if Result and MainForm.ELDesigner1.GenerateXRC then
       begin
         strLstXRCCode := TStringList.Create;
         strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
@@ -9403,6 +9408,9 @@ end;
 procedure TMainForm.ELDesigner1ChangeSelection(Sender: TObject);
 begin
   try
+
+     { Make sure Designer Form has the focus }
+     ELDesigner1.DesignControl.SetFocus;
     { clear inspector }
 
     { delete design control from selection }

@@ -227,6 +227,7 @@ type
   private
     FActivating: Boolean;
     FActive: Boolean;
+    FGenerateXRC : Boolean;
     FClipboardFormat: string;
     FClipboardFormatWord: Word;
     FClipbrdFormatRegistered: Boolean;
@@ -305,6 +306,7 @@ type
     procedure DragOver(ASource, ATarget: TObject; AX, AY: Integer; AState: TDragState;
       var AAccept: Boolean); dynamic;
     property Active: Boolean read FActive write SetActive;
+    property GenerateXRC : Boolean read FGenerateXRC write FGenerateXRC;
     property DesignControl: TWinControl read FDesignControl write SetDesignControl;
     property SelectedControls: TELDesignerSelectedControls read FSelectedControls;
     property DesignControlVisible: Boolean read GetDesignControlVisible write SetDesignControlVisible;
@@ -381,6 +383,7 @@ type
     property PopupMenu;
     property ShowingHints;
     property SnapToGrid;
+    property GenerateXRC;
     property OnChangeSelection;
     property OnContextPopup;
     property OnControlDeleted;  // @mh

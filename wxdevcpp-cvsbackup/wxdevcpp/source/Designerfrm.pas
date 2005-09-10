@@ -54,7 +54,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure SetFrameProperties();
     procedure SetDialogProperties();
-
+    
   private
     { Private declarations }
     FWxFrm_IDName: string;
@@ -1690,7 +1690,6 @@ begin
  {$IFDEF WX_BUILD}
   // Tony Reina 24 July 2005 - I don't think this procedure ever gets called.
   //MainForm.ELDesigner1KeyDown(Sender,Key, Shift);
-
 {$ENDIF}
 end;
 

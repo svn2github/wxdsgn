@@ -160,7 +160,7 @@ object DesignerForm: TDesignerForm
       object GroupBox3: TGroupBox
         Left = 8
         Top = 168
-        Width = 377
+        Width = 121
         Height = 137
         Caption = 'Hints'
         TabOrder = 1
@@ -204,6 +204,14 @@ object DesignerForm: TDesignerForm
           State = cbChecked
           TabOrder = 3
         end
+      end
+      object cbGenerateXRC: TCheckBox
+        Left = 192
+        Top = 192
+        Width = 129
+        Height = 17
+        Caption = 'Generate XRC Code'
+        TabOrder = 2
       end
     end
   end

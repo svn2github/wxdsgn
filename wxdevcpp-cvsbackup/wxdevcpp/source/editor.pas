@@ -2288,7 +2288,6 @@ begin
         MainForm.ELDesigner1.DesignControl:=nil;
         MainForm.ELDesigner1.DesignControl := fDesigner;
         MainForm.ELDesigner1.Active := True;
-
       except
         if isForm then
         begin
@@ -2343,7 +2342,8 @@ begin
       end;
     end;
   end;
-  UpdateXRC;
+  if MainForm.ELDesigner1.GenerateXRC then
+     UpdateXRC;
 end;
 {$ENDIF}
 
@@ -2560,6 +2560,8 @@ begin
         e.InsertString('', false);
       end;
 
+      end;
+
     {  if Assigned(e) then
       begin
         try
@@ -2580,7 +2582,6 @@ begin
         end;
       end;
       }
-    end;
      
   end;
 end;

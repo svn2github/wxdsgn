@@ -30,6 +30,7 @@ type
     cbSizeHints: TCheckBox;
     cbMoveHints: TCheckBox;
     cbInsertHints: TCheckBox;
+    cbGenerateXRC: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
@@ -59,6 +60,8 @@ begin
     lbGridYStepUpDown.Position:=MainForm.ELDesigner1.Grid.YStep;
     cbSnapToGrid.Checked:=MainForm.ELDesigner1.SnapToGrid;
 
+    cbGenerateXRC.Checked:=MainForm.ELDesigner1.GenerateXRC;
+
     cbControlHints.Checked:= htControl in MainForm.ELDesigner1.ShowingHints;
     cbSizeHints.Checked:=htSize in MainForm.ELDesigner1.ShowingHints;
     cbMoveHints.Checked:=htMove in MainForm.ELDesigner1.ShowingHints;
@@ -74,6 +77,7 @@ begin
 
     MainForm.ELDesigner1.Grid.YStep:=lbGridYStepUpDown.Position;
     MainForm.ELDesigner1.SnapToGrid:=cbSnapToGrid.Checked;
+    MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
 
     if cbControlHints.Checked then
         MainForm.ELDesigner1.ShowingHints:=MainForm.ELDesigner1.ShowingHints + [htControl];
@@ -84,9 +88,12 @@ begin
     if cbInsertHints.Checked then
         MainForm.ELDesigner1.ShowingHints := [htInsert] + MainForm.ELDesigner1.ShowingHints;
 
+
+
     ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
     try
         ini.WriteBool('wxWidgets','cbGridVisible',cbGridVisible.checked);
+        ini.WriteBool('wxWidgets','cbGenerateXRC',cbGenerateXRC.checked);
         ini.WriteInteger('wxWidgets','lbGridXStepUpDown',lbGridXStepUpDown.Position);
         ini.WriteInteger('wxWidgets','lbGridYStepUpDown',lbGridYStepUpDown.Position);
         ini.WriteBool('wxWidgets','cbSnapToGrid',cbSnapToGrid.Checked);
