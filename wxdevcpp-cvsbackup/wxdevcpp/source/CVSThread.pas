@@ -1,7 +1,4 @@
 {
-
-    $Id$
-
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -211,14 +208,14 @@ end;
 //    keybd_event(LoByte(Key), 0, 0, 0);
 //    keybd_event(LoByte(Key), 0, KEYEVENTF_KEYUP, 0);
 //  end;
-{$IFDEF WIN32}
+//{$IFDEF WIN32}
 //  keybd_event(VK_RETURN, 0, 0, 0);
 //  keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0);
-{$ENDIF}
-{$IFDEF LINUX}
+//{$ENDIF}
+//{$IFDEF LINUX}
 //  keybd_event(XK_RETURN, 0, 0, 0);
 //  keybd_event(XK_RETURN, 0, KEYEVENTF_KEYUP, 0);
-{$ENDIF}
+//{$ENDIF}
 //end;
 
 end.

@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, Forms, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
-  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf;
+  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils;
 
 type
   TWxMenuBar = class(TWxNonVisibleBaseComponent, IWxComponentInterface,
@@ -185,9 +185,12 @@ var
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-      strData := '' + submnu.Items[J].Wx_IDName + ' = ' + IntToStr(
-        submnu.Items[J].wx_IDValue) + ', ';
-      idstrList.add(strData);
+      if not AnsiStartsStr('wxID', submnu.Items[J].Wx_IDName) then
+      begin
+        strData := '' + submnu.Items[J].Wx_IDName + ' = ' + IntToStr(
+          submnu.Items[J].wx_IDValue) + ', ';
+        idstrList.add(strData);
+      end;
 
       if submnu.items[J].Count > 0 then
         GetEnumControlIDFromSubMenu(idstrList, submnu.items[J]);
@@ -201,10 +204,13 @@ begin
 
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
   begin
-    strF := ' ' + Wx_MenuItems.Items[i].Wx_IDName + ' = ' + IntToStr(
-      Wx_MenuItems.Items[i].wx_IDValue) + ', ';
-    if trim(strF) <> '' then
-      strLst.add(strF);
+    if not AnsiStartsStr('wxID', Wx_MenuItems.Items[i].Wx_IDName) then
+    begin
+      strF := ' ' + Wx_MenuItems.Items[i].Wx_IDName + ' = ' + IntToStr(
+        Wx_MenuItems.Items[i].wx_IDValue) + ', ';
+      if trim(strF) <> '' then
+        strLst.add(strF);
+    end;
 
     if Wx_MenuItems.items[i].Count > 0 then
       GetEnumControlIDFromSubMenu(strLst, Wx_MenuItems.items[i])

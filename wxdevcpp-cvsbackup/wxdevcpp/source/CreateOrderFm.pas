@@ -7,21 +7,23 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls,wxUtils;
+  StdCtrls, Buttons, ExtCtrls, wxUtils, devcfg, XPMenu;
 
 type
   TCreationOrderForm = class(TForm)
-    Bevel1: TBevel;
     btClose: TBitBtn;
+    btRefresh: TBitBtn;
+    XPMenu: TXPMenu;
+    GroupBox1: TGroupBox;
     ControlListBox: TListBox;
     btMoveUp: TBitBtn;
     btMoveDown: TBitBtn;
-    btRefresh: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure btMoveUpClick(Sender: TObject);
     procedure btMoveDownClick(Sender: TObject);
     procedure btCloseClick(Sender: TObject);
     procedure btRefreshClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FMainControl:TWinControl;
@@ -45,6 +47,10 @@ end;
 
 procedure TCreationOrderForm.FormCreate(Sender: TObject);
 begin
+    if devData.XPTheme then
+        XPMenu.Active := true
+    else
+        XPMenu.Active := false;
     FMainControl:=nil;
 end;
 
@@ -108,6 +114,14 @@ begin
     if FMainControl = nil then
         exit;
     FMainControl.repaint;
+end;
+
+procedure TCreationOrderForm.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
 end;
 
 end.

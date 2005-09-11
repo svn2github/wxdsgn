@@ -2913,11 +2913,8 @@ var
   CFilter, CppFilter, HFilter: Integer;
   boolIsForm,boolIsRC,boolISXRC:Boolean;
 begin
-  boolIsForm := False;
-  boolIsRC := False;
-  boolISXRC := False;
-
   Result := True;
+  boolIsForm := False; boolIsRC := False; boolISXRC := False;
   idx := -1;
   if assigned(fProject) then
   begin
@@ -3206,7 +3203,6 @@ begin
             end;
         end;
         // XRC
-
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
@@ -3216,7 +3212,7 @@ begin
                     SaveFileInternal(eX);
             end;
         end;
-        
+
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT));
@@ -3275,14 +3271,14 @@ var
     begin
         dmMain.AddtoHistory(eX.FileName);
         eX.Close;
-     //   eX:=nil; // because closing the editor will destroy it
+        //eX:=nil; // because closing the editor will destroy it
     end
     else
     begin
         if eX.IsRes or (not Assigned(fProject)) then
         begin
             eX.Close;
-       //     eX:=nil; // because closing the editor will destroy it
+            //eX:=nil; // because closing the editor will destroy it
         end
         else if assigned(fProject) then
             fProject.CloseUnit(fProject.Units.Indexof(eX));
@@ -3334,7 +3330,6 @@ begin
         CloseEditorInternal(wxEditor);
     end;
 
-
     wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
     if assigned(wxXRCEditor) then begin
         if Saved then begin
@@ -3344,8 +3339,8 @@ begin
         Else
             wxXRCEditor.Modified:=false;
         CloseEditorInternal(wxXRCEditor);
-    end
-   end
+    end;
+  end
   else
 {$ENDIF}
     CloseEditorInternal(e);
@@ -3558,8 +3553,7 @@ procedure TMainForm.CppCommentString(e: TEditor);
 var
   I: Integer;
     startXY,endXY:TBufferCoord;
-   
-begin
+   begin
     if assigned(e) = false then
         exit;
     if e.Text.SelAvail then
@@ -4018,7 +4012,7 @@ begin
       //as assigned by the user like VC++
       if OpenWithAssignedProgram(fProject.Units[i].FileName) = true then
         Exit;
-      //idx := FileIsOpen(fProject.Units[i].FileName, TRUE);
+      FileIsOpen(fProject.Units[i].FileName, TRUE);
       //Added By wx
       if isFileOpenedinEditor(fProject.Units[i].FileName) then
         e :=GetEditorFromFileName(fProject.Units[i].FileName)
@@ -4037,7 +4031,7 @@ begin
                 MainForm.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
           end;
 
-          if FileExists(ChangeFileExt(EditorFilename, XRC_EXT)) then
+           if FileExists(ChangeFileExt(EditorFilename, XRC_EXT)) then
           begin
             if not isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
                 MainForm.OpenFile(ChangeFileExt(EditorFilename, XRC_EXT), true);
@@ -5374,11 +5368,10 @@ begin
   begin
   //Added for wx problems.
   //Some weird error pops when doing an Update
-   // try
+    try
         (Sender as TAction).Enabled := (e.Text.Text <> '');
-  //  except
-  //      e:=nil;
-  //  end;
+    except
+    end;
   end
   else
     (Sender as TAction).Enabled := false;
@@ -5631,11 +5624,11 @@ begin
 {$ENDIF}
       if ssCtrl in Shift then ShowDebug;
 end;
-
+    
 {$IFDEF WX_BUILD}
 if (ssCtrl in Shift) and MainForm.ELDesigner1.Active and not JvInspProperties.Focused and not JvInspEvents.Focused then   // If Designer Form is in focus
 begin
- case key of
+  case key of
 // Move the wx components around
   vk_Left :
     for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
@@ -5653,10 +5646,12 @@ begin
         ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top + 1;
 
  end;
-   
+
+
  ELDesigner1.OnModified(Sender);
 
  end;
+
 {$ENDIF}
 
 end;
@@ -8434,6 +8429,7 @@ begin
         end;
       end;
 
+
     strFileName := ChangeFileExt(strFileName, XRC_EXT);
     OpenFile(strFileName);
     if Assigned(fProject) and (InProject = true)then
@@ -8441,7 +8437,7 @@ begin
         FolderNode:=fProject.Node;
         fProject.AddUnit(strFileName, FolderNode, false); // add under folder
     end;
-   
+
     strFileName := ChangeFileExt(strFileName, WXFORM_EXT);
     strShortFileName := ExtractFileName(strFileName);
     NewDesigner := TEditor.Create;
@@ -8921,17 +8917,17 @@ begin
 
     if (MainForm.ELDesigner1.GenerateXRC) then
     begin
-      strLstXRCCode := TStringList.Create;
-      strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
-      strLstXRCCode.Add('<resource version="2.3.0.1">');
-      strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
+    strLstXRCCode := TStringList.Create;
+    strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
+    strLstXRCCode.Add('<resource version="2.3.0.1">');
+    strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
 
-      // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
+    // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
 
-      //strLstXRCCode.Add('</object>');
-      strLstXRCCode.Add('</resource>');
-      Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
-      strLstXRCCode.Destroy
+    //strLstXRCCode.Add('</object>');
+    strLstXRCCode.Add('</resource>');
+    Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
+    strLstXRCCode.Destroy
     end;
 
 end;
@@ -9449,7 +9445,6 @@ var
   boolContrainer:boolean;
 begin
    boolContrainer := False;
-
   ///SaveProjectFiles(strProjectFile,True,false);
   intCtrlPos := cbxControlsx.Items.IndexOfObject(AControl);
   //boolContrainer:=(IsControlWxContainer(AControl) or IsControlWxSizer(AControl));
@@ -9894,15 +9889,15 @@ begin
     Else
     begin
         if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxDialogNonInsertableInterface,dlgInterface) then
-        begin
-            ShowErrorAndReset('You cannot insert this control in Dialog. Use this control only in wxFrame.');
+	begin
+	    ShowErrorAndReset('You cannot insert this control in Dialog. Use this control only in wxFrame.');
             exit;
         end;
     end;
 
 
-        if TWinControl(AControlClass.NewInstance) is TWxSizerPanel then
-        begin
+        if TWinControl(AControlClass.NewInstance) is TWxSizerPanel AND not StrContainsU(CurrentParent.ClassName, 'TWxPanel') then
+	begin
             if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
             begin
                 if isSizerAvailable(ELDesigner1.DesignControl) = false then
@@ -10420,7 +10415,7 @@ end;
 {$IFDEF WX_BUILD}
 function TMainForm.LocateFunction(strFunctionName:String):boolean;
 begin
-  Result := True;
+   Result := False;
 end;
 {$ENDIF}
 
@@ -10762,7 +10757,6 @@ begin
 
     if AnsiSameText(strFunctionName, St2._Command) then
     begin
-     // intLineNum:=St2._DeclImplLine;
       strFname:=St2._DeclImplFileName;
       Result := True;
       Break;
@@ -10789,12 +10783,13 @@ var
   e: TEditor;
   CppEditor, Hppeditor: TSynEdit;
 begin
+  Result := False;
+  boolFound := False;
+  AddScopeStr := False;
   intLineNum := 0;
   Line := 0;
   St := nil;
-  AddScopeStr := False;
-  Result := False;
-  boolFound := False;
+  
   e := GetEditor(Self.PageControl.ActivePageIndex);
 
   if not Assigned(e) then
@@ -11015,9 +11010,11 @@ var
   CppEditor, Hppeditor: TSynEdit;
   strClassName:String;
 begin
-    St := nil;
-    boolFound := False;
+
     Result:=false;
+    boolFound := false;
+    St := nil;
+    
     e:=self.GetEditor(self.PageControl.ActivePageIndex);
     if not Assigned(e) then
         Exit;
@@ -11307,8 +11304,6 @@ begin
   if not isCurrentPageDesigner then
     Exit;
 
-  Result := True;
-
   classname:=trim(classname);
 
   //CppParser1.GetClassesList(TStrings());
@@ -11357,6 +11352,7 @@ begin
       end;
     end;
   end;
+  Result := True;
 end;
 {$ENDIF}
 
@@ -11591,7 +11587,7 @@ var
 begin
     Result := False;
     if strLst.Count < 1 then
-        exit;
+         exit;
         
     for I := 0 to strLst.Count - 1 do    // Iterate
     begin
@@ -11602,6 +11598,7 @@ begin
             continue;
         try
             lineStr:=edt.Text.Lines[lineNum];
+
             strSearchReplace(lineStr,FromClassName,ToClassName,[srWord, srCase, srAll]);
             edt.Text.Lines[lineNum]:=lineStr;
         except
@@ -11623,6 +11620,8 @@ begin
         end;        
     end;    // for
 
+    Result := True;
+    
 end;
 
 function TMainForm.GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string): Boolean;
@@ -11633,6 +11632,7 @@ var
   strParserClassName: string;
   cppEditor,hppEditor:TEditor;
   cppFName,hppFName:String;
+  //LineNumber:Integer;
 begin
   HppStrLst.clear;
   CppStrLst.clear;

@@ -159,21 +159,21 @@ begin
   Caption:=                  Lang[ID_RPLC];
   lblFind.Caption:=          Lang[ID_RPLC_FINDTEXT];
   lblReplace.Caption:=       Lang[ID_RPLC_REPLACETEXT];
-  grpOptions.Caption:=       '  '+Lang[ID_RPLC_GRP_OPTIONS] +'  ';
+  grpOptions.Caption:=       Lang[ID_RPLC_GRP_OPTIONS];
   cbMatchCase.Caption:=      Lang[ID_RPLC_CASE];
   cbWholeWord.Caption:=      Lang[ID_RPLC_WHOLEWORD];
   cbPrompt.Caption:=         Lang[ID_RPLC_PROMPT];
   grpDirection.Caption:=     Lang[ID_RPLC_GRP_DIRECTION];
   rbForward.Caption:=        Lang[ID_RPLC_FORWARD];
   rbBackward.Caption:=       Lang[ID_RPLC_BACKWARD];
-  grpScope.Caption:=         '  '+Lang[ID_RPLC_GRP_SCOPE]+'  ';
+  grpScope.Caption:=         Lang[ID_RPLC_GRP_SCOPE];
   rbGlobal.Caption:=         Lang[ID_RPLC_GLOBAL];
   rbSelectedOnly.Caption:=   Lang[ID_RPLC_SELONLY];
   grpOrigin.Caption:=        Lang[ID_RPLC_GRP_ORIGIN];
   rbFromCursor.Caption:=     Lang[ID_RPLC_CURSOR];
   rbEntireScope.Caption:=    Lang[ID_RPLC_ENTIRE];
 
-  btnReplace.Caption:=       Lang[ID_BTN_OK];
+  btnReplace.Caption:=       Lang[ID_BTN_REPLACE];
   btnCancel.Caption:=        Lang[ID_BTN_CANCEL];
   btnReplaceAll.Caption:=    Lang[ID_BTN_REPLACEALL];
 

@@ -248,6 +248,7 @@ begin
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
   FWx_PropertyList.add('Wx_Validator : Validator code');
+  FWx_PropertyList.add('Wx_Enabled : Enabled');
   FWx_PropertyList.add('Default :' + Lang.Strings[ID_BTN_DEFAULT]);
 
   FWx_PropertyList.add('Wx_Comments:' + Lang.Strings[ID_ITEM_COMMENTSELECTION]);

@@ -4,7 +4,7 @@ object NewClassForm: TNewClassForm
   BorderStyle = bsDialog
   Caption = 'New class'
   ClientHeight = 470
-  ClientWidth = 369
+  ClientWidth = 372
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -161,7 +161,7 @@ object NewClassForm: TNewClassForm
     TabOrder = 6
   end
   object btnCreate: TButton
-    Left = 105
+    Left = 215
     Top = 436
     Width = 75
     Height = 25
@@ -172,7 +172,7 @@ object NewClassForm: TNewClassForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 189
+    Left = 290
     Top = 436
     Width = 75
     Height = 25
@@ -276,8 +276,9 @@ object NewClassForm: TNewClassForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 9
+    Top = 427
   end
 end

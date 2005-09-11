@@ -4,7 +4,7 @@ object CompForm: TCompForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Compiler options'
-  ClientHeight = 390
+  ClientHeight = 423
   ClientWidth = 451
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,12 +20,12 @@ object CompForm: TCompForm
   OnCreate = FormCreate
   DesignSize = (
     451
-    390)
+    423)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn
     Left = 200
-    Top = 357
+    Top = 390
     Width = 80
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -55,7 +55,7 @@ object CompForm: TCompForm
   end
   object btnCancel: TBitBtn
     Left = 280
-    Top = 357
+    Top = 390
     Width = 84
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -85,7 +85,7 @@ object CompForm: TCompForm
   end
   object btnDefault: TBitBtn
     Left = 8
-    Top = 357
+    Top = 391
     Width = 81
     Height = 25
     Caption = '&Default'
@@ -108,7 +108,7 @@ object CompForm: TCompForm
   end
   object btnHelp: TBitBtn
     Left = 369
-    Top = 357
+    Top = 390
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -118,106 +118,37 @@ object CompForm: TCompForm
   end
   object MainPages: TPageControl
     Left = 4
-    Top = 10
+    Top = 4
     Width = 440
-    Height = 337
-    ActivePage = tabDirectories
-    TabIndex = 2
+    Height = 378
+    ActivePage = tabPrograms
+    TabIndex = 3
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
-      DesignSize = (
-        432
-        309)
-      object lblDelay: TLabel
-        Left = 16
-        Top = 228
-        Width = 70
-        Height = 13
-        Caption = 'Compile Delay:'
-      end
-      object lblDelayMsg: TLabel
-        Left = 166
-        Top = 215
-        Width = 251
-        Height = 38
-        AutoSize = False
-        Caption = 
-          'Enables a delay in milliseconds if make complains about makefile' +
-          #39's time stamp (in compile log)'
-        Layout = tlCenter
-        WordWrap = True
-      end
-      object cbCompAdd: TCheckBox
-        Left = 16
-        Top = 60
-        Width = 409
-        Height = 17
-        Anchors = [akLeft, akTop, akRight]
-        Caption = 'Add the following commands when calling the compiler:'
-        TabOrder = 0
-      end
-      object Commands: TMemo
-        Left = 28
-        Top = 78
-        Width = 390
-        Height = 43
-        Anchors = [akLeft, akTop, akRight]
-        ScrollBars = ssVertical
-        TabOrder = 1
-        WantReturns = False
-      end
-      object seCompDelay: TSpinEdit
-        Left = 103
-        Top = 223
-        Width = 54
-        Height = 22
-        MaxValue = 0
-        MinValue = 0
-        TabOrder = 2
-        Value = 650
-      end
       object grpMakefileGen: TGroupBox
-        Left = 16
-        Top = 256
-        Width = 401
+        Left = 6
+        Top = 302
+        Width = 420
         Height = 41
         Caption = '  Makefile generation:  '
-        TabOrder = 3
+        TabOrder = 0
         object cbFastDep: TCheckBox
           Left = 8
-          Top = 16
+          Top = 17
           Width = 385
           Height = 17
           Caption = 'Use fast but imperfect dependency generation'
           TabOrder = 0
         end
       end
-      object cbLinkerAdd: TCheckBox
-        Left = 16
-        Top = 131
-        Width = 373
-        Height = 17
-        Anchors = [akLeft, akTop, akRight]
-        Caption = 'Add these commands to the linker command line'
-        TabOrder = 4
-      end
-      object Linker: TMemo
-        Left = 28
-        Top = 152
-        Width = 390
-        Height = 57
-        ScrollBars = ssVertical
-        TabOrder = 5
-        WantReturns = False
-      end
       object grpCompSet: TGroupBox
-        Left = 12
-        Top = 4
-        Width = 417
-        Height = 53
+        Left = 6
+        Top = 6
+        Width = 420
+        Height = 69
         Caption = 'Compiler set to configure'
-        TabOrder = 6
+        TabOrder = 1
         object btnAddCompilerSet: TSpeedButton
           Left = 338
           Top = 20
@@ -338,6 +269,93 @@ object CompForm: TCompForm
             'gcc 2.95'
             'gcc 3.2')
         end
+        object is_vc: TCheckBox
+          Left = 8
+          Top = 46
+          Width = 401
+          Height = 17
+          Caption = 'Is this compiler a Visual C++ Compiler?'
+          TabOrder = 1
+          OnClick = is_vcClick
+        end
+      end
+      object cmdline: TGroupBox
+        Left = 6
+        Top = 80
+        Width = 420
+        Height = 220
+        Caption = 'Compiler Command Line'
+        TabOrder = 2
+        DesignSize = (
+          420
+          220)
+        object lblDelay: TLabel
+          Left = 6
+          Top = 194
+          Width = 70
+          Height = 13
+          Caption = 'Compile Delay:'
+        end
+        object lblDelayMsg: TLabel
+          Left = 158
+          Top = 186
+          Width = 247
+          Height = 28
+          AutoSize = False
+          Caption = 
+            'Enables a delay in milliseconds if make complains about makefile' +
+            #39's time stamp (in compile log)'
+          Transparent = True
+          Layout = tlCenter
+          WordWrap = True
+        end
+        object cbCompAdd: TCheckBox
+          Left = 8
+          Top = 16
+          Width = 401
+          Height = 17
+          Anchors = [akLeft, akTop, akRight]
+          Caption = 'Add the following commands when calling the compiler:'
+          TabOrder = 0
+        end
+        object Commands: TMemo
+          Left = 23
+          Top = 37
+          Width = 388
+          Height = 58
+          Anchors = [akLeft, akTop, akRight]
+          ScrollBars = ssVertical
+          TabOrder = 1
+          WantReturns = False
+        end
+        object cbLinkerAdd: TCheckBox
+          Left = 6
+          Top = 100
+          Width = 373
+          Height = 17
+          Anchors = [akLeft, akTop, akRight]
+          Caption = 'Add these commands to the linker command line'
+          TabOrder = 2
+        end
+        object Linker: TMemo
+          Left = 23
+          Top = 122
+          Width = 388
+          Height = 58
+          ScrollBars = ssVertical
+          TabOrder = 3
+          WantReturns = False
+        end
+        object seCompDelay: TSpinEdit
+          Left = 83
+          Top = 190
+          Width = 60
+          Height = 22
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 4
+          Value = 650
+        end
       end
     end
     object tabCodeGen: TTabSheet
@@ -346,28 +364,28 @@ object CompForm: TCompForm
         Left = 0
         Top = 0
         Width = 432
-        Height = 309
+        Height = 350
         Align = alClient
         TabOrder = 0
         inherited Splitter1: TSplitter
-          Height = 309
+          Height = 350
         end
         inherited tv: TTreeView
-          Height = 309
+          Height = 350
         end
         inherited vle: TValueListEditor
           Width = 307
-          Height = 309
+          Height = 350
         end
       end
     end
     object tabDirectories: TTabSheet
       Caption = 'Directories'
       object DirTabs: TdevTabs
-        Left = 11
-        Top = 12
-        Width = 413
-        Height = 297
+        Left = 0
+        Top = 0
+        Width = 432
+        Height = 350
         Tabs.Strings = (
           'Binaries'
           'Libraries'
@@ -377,11 +395,11 @@ object CompForm: TCompForm
         OnChange = DirTabsChange
         OnChanging = DirTabsChanging
         DesignSize = (
-          413
-          297)
+          432
+          350)
         object btnUp: TSpeedButton
-          Left = 385
-          Top = 101
+          Left = 404
+          Top = 154
           Width = 23
           Height = 22
           Anchors = [akRight, akBottom]
@@ -432,8 +450,8 @@ object CompForm: TCompForm
           OnClick = UpDownClick
         end
         object btnDown: TSpeedButton
-          Left = 385
-          Top = 131
+          Left = 404
+          Top = 184
           Width = 23
           Height = 22
           Anchors = [akRight, akBottom]
@@ -484,8 +502,8 @@ object CompForm: TCompForm
           OnClick = UpDownClick
         end
         object btnBrowse: TSpeedButton
-          Left = 359
-          Top = 231
+          Left = 404
+          Top = 243
           Width = 23
           Height = 22
           Glyph.Data = {
@@ -520,8 +538,8 @@ object CompForm: TCompForm
         object lstDirs: TListBox
           Left = 8
           Top = 27
-          Width = 371
-          Height = 194
+          Width = 390
+          Height = 247
           Anchors = [akLeft, akTop, akRight, akBottom]
           ItemHeight = 13
           TabOrder = 0
@@ -530,8 +548,8 @@ object CompForm: TCompForm
         end
         object edEntry: TEdit
           Left = 8
-          Top = 231
-          Width = 347
+          Top = 284
+          Width = 390
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
           TabOrder = 1
@@ -541,7 +559,7 @@ object CompForm: TCompForm
         object btnDelInval: TButton
           Tag = 4
           Left = 323
-          Top = 265
+          Top = 318
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -552,7 +570,7 @@ object CompForm: TCompForm
         object btnDelete: TButton
           Tag = 3
           Left = 218
-          Top = 265
+          Top = 318
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -564,7 +582,7 @@ object CompForm: TCompForm
         object btnAdd: TButton
           Tag = 2
           Left = 113
-          Top = 265
+          Top = 318
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -576,7 +594,7 @@ object CompForm: TCompForm
         object btnReplace: TButton
           Tag = 1
           Left = 8
-          Top = 265
+          Top = 318
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -590,68 +608,76 @@ object CompForm: TCompForm
     object tabPrograms: TTabSheet
       Caption = 'Programs'
       object lblProgramsText: TLabel
-        Left = 20
-        Top = 8
+        Left = 12
+        Top = 12
         Width = 371
         Height = 26
         Caption = 
           'You may want to change the programs filenames that are used in D' +
           'ev-C++ (for example when using a cross compiler) :'
+        Transparent = True
         WordWrap = True
       end
       object lblgcc: TLabel
-        Left = 16
-        Top = 64
+        Left = 12
+        Top = 56
         Width = 27
         Height = 13
         Caption = 'gcc : '
+        Transparent = True
       end
       object lblgpp: TLabel
-        Left = 16
-        Top = 92
+        Left = 12
+        Top = 84
         Width = 27
         Height = 13
         Caption = 'g++ : '
+        Transparent = True
       end
       object lblmake: TLabel
-        Left = 16
-        Top = 120
+        Left = 12
+        Top = 112
         Width = 35
         Height = 13
         Caption = 'make : '
+        Transparent = True
       end
       object lblgdb: TLabel
-        Left = 16
-        Top = 148
+        Left = 12
+        Top = 196
         Width = 27
         Height = 13
         Caption = 'gdb : '
+        Transparent = True
       end
       object lblwindres: TLabel
-        Left = 16
-        Top = 176
+        Left = 12
+        Top = 140
         Width = 45
         Height = 13
         Caption = 'windres : '
+        Transparent = True
       end
       object lbldllwrap: TLabel
-        Left = 16
-        Top = 204
+        Left = 12
+        Top = 168
         Width = 42
         Height = 13
         Caption = 'dllwrap : '
+        Transparent = True
       end
       object lblgprof: TLabel
-        Left = 16
-        Top = 232
+        Left = 12
+        Top = 224
         Width = 33
         Height = 13
         Caption = 'gprof : '
+        Transparent = True
       end
       object btnBrws2: TSpeedButton
         Tag = 2
-        Left = 403
-        Top = 59
+        Left = 397
+        Top = 51
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -685,8 +711,8 @@ object CompForm: TCompForm
       end
       object btnBrowse3: TSpeedButton
         Tag = 3
-        Left = 403
-        Top = 88
+        Left = 397
+        Top = 80
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -720,8 +746,8 @@ object CompForm: TCompForm
       end
       object btnBrowse4: TSpeedButton
         Tag = 4
-        Left = 403
-        Top = 116
+        Left = 397
+        Top = 108
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -755,8 +781,8 @@ object CompForm: TCompForm
       end
       object btnBrowse5: TSpeedButton
         Tag = 5
-        Left = 403
-        Top = 144
+        Left = 397
+        Top = 192
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -790,8 +816,8 @@ object CompForm: TCompForm
       end
       object btnBrowse6: TSpeedButton
         Tag = 6
-        Left = 403
-        Top = 172
+        Left = 397
+        Top = 136
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -825,8 +851,8 @@ object CompForm: TCompForm
       end
       object btnBrowse7: TSpeedButton
         Tag = 7
-        Left = 403
-        Top = 200
+        Left = 397
+        Top = 164
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -860,8 +886,8 @@ object CompForm: TCompForm
       end
       object btnBrowse8: TSpeedButton
         Tag = 8
-        Left = 403
-        Top = 228
+        Left = 397
+        Top = 220
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -894,57 +920,57 @@ object CompForm: TCompForm
         OnClick = btnBrws1Click
       end
       object GccEdit: TEdit
-        Left = 72
-        Top = 60
-        Width = 324
+        Left = 68
+        Top = 52
+        Width = 315
         Height = 21
         TabOrder = 0
         OnChange = GccEditChange
       end
       object GppEdit: TEdit
-        Left = 72
-        Top = 88
-        Width = 324
+        Left = 68
+        Top = 80
+        Width = 315
         Height = 21
         TabOrder = 1
         OnChange = GppEditChange
       end
       object MakeEdit: TEdit
-        Left = 72
-        Top = 116
-        Width = 324
+        Left = 68
+        Top = 108
+        Width = 315
         Height = 21
         TabOrder = 2
         OnChange = MakeEditChange
       end
       object GdbEdit: TEdit
-        Left = 72
-        Top = 144
-        Width = 324
+        Left = 68
+        Top = 192
+        Width = 315
         Height = 21
         TabOrder = 3
         OnChange = GdbEditChange
       end
       object WindresEdit: TEdit
-        Left = 72
-        Top = 172
-        Width = 324
+        Left = 68
+        Top = 136
+        Width = 315
         Height = 21
         TabOrder = 4
         OnChange = WindresEditChange
       end
       object DllwrapEdit: TEdit
-        Left = 72
-        Top = 200
-        Width = 324
+        Left = 68
+        Top = 164
+        Width = 315
         Height = 21
         TabOrder = 5
         OnChange = DllwrapEditChange
       end
       object GprofEdit: TEdit
-        Left = 72
-        Top = 228
-        Width = 324
+        Left = 68
+        Top = 220
+        Width = 315
         Height = 21
         TabOrder = 6
         OnChange = GprofEditChange
@@ -977,8 +1003,9 @@ object CompForm: TCompForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 256
-    Top = 280
+    Left = 93
+    Top = 390
   end
 end

@@ -54,7 +54,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure SetFrameProperties();
     procedure SetDialogProperties();
-    
+
   private
     { Private declarations }
     FWxFrm_IDName: string;
@@ -671,7 +671,7 @@ begin
     begin
       fileStrlst    := TStringList.Create;
       try
-        strXPMContent :=
+         strXPMContent :=
           GetXPMFromTPicture(frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
         if trim(strXPMContent) <> '' then
         begin
@@ -717,9 +717,9 @@ begin
         continue;
       if not fileexists(xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm') then
       begin
-        fileStrlst    := TStringList.Create;
+         fileStrlst    := TStringList.Create;
         try
-           strXPMContent :=
+          strXPMContent :=
             GetXPMFromTPicture(frmNewForm.Components[I].Name, TWxToolButton(
             frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
           if trim(strXPMContent) = '' then
@@ -796,11 +796,6 @@ begin
 
   end;
 
-end;
-
-function TfrmNewForm.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
-   Result := TStringList.Create;
 end;
 
 procedure TfrmNewForm.SetFrameProperties();
@@ -1405,6 +1400,11 @@ begin
 
 end;
 
+function TfrmNewForm.GenerateXRCControlCreation(IndentString: string): TStringList;
+begin
+  Result := TStringList.Create;
+end;
+
 function TfrmNewForm.GenerateGUIControlCreation: string;
 var
   I, J, MaxToolWidth, MaxToolHt, MaxSepValue: integer;
@@ -1690,6 +1690,7 @@ begin
  {$IFDEF WX_BUILD}
   // Tony Reina 24 July 2005 - I don't think this procedure ever gets called.
   //MainForm.ELDesigner1KeyDown(Sender,Key, Shift);
+
 {$ENDIF}
 end;
 

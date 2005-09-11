@@ -15,6 +15,7 @@ object ParamsForm: TParamsForm
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object grpParameters: TGroupBox
@@ -100,7 +101,38 @@ object ParamsForm: TParamsForm
   object OpenDialog: TOpenDialog
     DefaultExt = '.exe'
     Filter = 'Applications (*.exe)|*.exe'
-    Left = 24
-    Top = 88
+    Left = 8
+    Top = 136
+  end
+  object XPMenu: TXPMenu
+    DimLevel = 30
+    GrayLevel = 10
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Color = clBtnFace
+    DrawMenuBar = False
+    IconBackColor = clBtnFace
+    MenuBarColor = clBtnFace
+    SelectColor = clHighlight
+    SelectBorderColor = clHighlight
+    SelectFontColor = clMenuText
+    DisabledColor = clInactiveCaption
+    SeparatorColor = clBtnFace
+    CheckedColor = clHighlight
+    IconWidth = 24
+    DrawSelect = True
+    UseSystemColors = True
+    UseDimColor = False
+    OverrideOwnerDraw = False
+    Gradient = False
+    FlatMenu = False
+    AutoDetect = False
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
+    Active = False
+    Left = 43
+    Top = 135
   end
 end

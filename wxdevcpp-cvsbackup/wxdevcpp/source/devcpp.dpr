@@ -23,16 +23,23 @@ program devcpp;
 {$R 'icons.res' 'icons.rc'}
 {%File 'LangIDs.inc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}
+
+{$IFDEF WIN32}
 {$R 'webupdate\selfupdater.res' 'webupdate\selfupdater.rc'}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R 'webupdate/selfupdater.res' 'webupdate/selfupdater.rc'}
+{$ENDIF}
+
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  madExcept,
+  madLinkDisAsm,
   madListHardware,
   madListProcesses,
   madListModules,
-  madExcept,
-  madLinkDisAsm,
   MemCheck in 'MemCheck.pas',
   inifiles,
   Windows,
@@ -105,12 +112,19 @@ uses
   ParamsFrm in 'ParamsFrm.pas' {ParamsForm},
   CompilerOptionsFrame in 'CompilerOptionsFrame.pas' {CompOptionsFrame: TFrame},
   CompileProgressFm in 'CompileProgressFm.pas' {CompileProgressForm},
-  WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
+{$IFDEF WIN32}
   WebThread in 'webupdate\WebThread.pas',
+  WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
+{$ENDIF}
+{$IFDEF LINUX}
+  WebThread in 'webupdate/WebThread.pas',
+  WebUpdate in 'webupdate/WebUpdate.pas' {WebUpdateForm},
+{$ENDIF}
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
+  ImageTheme in 'ImageTheme.pas' 
+  {$IFDEF WX_BUILD},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
   WxUtils in 'components\wxUtils.pas',
   WxBitmapButton in 'components\WxBitmapButton.pas',
@@ -316,7 +330,7 @@ begin
 
 
   Application.Initialize;
-  Application.Title := 'wx-devcpp';
+  Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
   MainForm.Hide; // hide it
 

@@ -3,8 +3,8 @@ object NewTemplateForm: TNewTemplateForm
   Top = 182
   BorderStyle = bsDialog
   Caption = 'New Template'
-  ClientHeight = 321
-  ClientWidth = 358
+  ClientHeight = 326
+  ClientWidth = 380
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,12 +17,11 @@ object NewTemplateForm: TNewTemplateForm
   PixelsPerInch = 96
   TextHeight = 13
   object devPages1: TPageControl
-    Left = 0
-    Top = 0
-    Width = 358
+    Left = 8
+    Top = 8
+    Width = 364
     Height = 281
     ActivePage = pgTemplate
-    Align = alTop
     TabIndex = 0
     TabOrder = 0
     object pgTemplate: TTabSheet
@@ -294,8 +293,8 @@ object NewTemplateForm: TNewTemplateForm
     end
   end
   object btnCreate: TButton
-    Left = 100
-    Top = 290
+    Left = 222
+    Top = 295
     Width = 75
     Height = 25
     Caption = 'Create'
@@ -304,8 +303,8 @@ object NewTemplateForm: TNewTemplateForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 184
-    Top = 290
+    Left = 297
+    Top = 295
     Width = 75
     Height = 25
     Cancel = True
@@ -317,8 +316,8 @@ object NewTemplateForm: TNewTemplateForm
     DefaultExt = 'ico'
     Filter = 'Icons (*.ico)|*.ico'
     Title = 'Open icon'
-    Left = 295
-    Top = 286
+    Left = 48
+    Top = 296
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -346,8 +345,9 @@ object NewTemplateForm: TNewTemplateForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 104
-    Top = 184
+    Left = 8
+    Top = 296
   end
 end

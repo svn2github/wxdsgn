@@ -2,7 +2,7 @@ object CPUForm: TCPUForm
   Left = 255
   Top = 183
   Width = 569
-  Height = 476
+  Height = 487
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'CPU Window'
   Color = clBtnFace
@@ -20,20 +20,20 @@ object CPUForm: TCPUForm
   OnCreate = FormCreate
   DesignSize = (
     561
-    449)
+    453)
   PixelsPerInch = 96
   TextHeight = 13
   object gbAsm: TGroupBox
     Left = 8
     Top = 8
     Width = 402
-    Height = 433
+    Height = 435
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Assembler Code :'
     TabOrder = 0
     DesignSize = (
       402
-      433)
+      435)
     object lblFunc: TLabel
       Left = 8
       Top = 19
@@ -54,7 +54,7 @@ object CPUForm: TCPUForm
       Left = 8
       Top = 44
       Width = 385
-      Height = 381
+      Height = 383
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -115,7 +115,7 @@ object CPUForm: TCPUForm
   end
   object CloseBtn: TBitBtn
     Left = 417
-    Top = 416
+    Top = 417
     Width = 137
     Height = 25
     Anchors = [akRight, akBottom]
@@ -352,6 +352,7 @@ object CPUForm: TCPUForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 144
     Top = 120

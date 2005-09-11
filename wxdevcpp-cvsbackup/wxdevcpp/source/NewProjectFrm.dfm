@@ -21,64 +21,13 @@ object NewProjectForm: TNewProjectForm
     281)
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
-    Left = 6
-    Top = 177
-    Width = 496
-    Height = 3
-    Anchors = [akLeft, akRight, akBottom]
-    Shape = bsTopLine
-  end
   object lblPrjName: TLabel
-    Left = 8
-    Top = 199
+    Left = 80
+    Top = 64
     Width = 34
     Height = 13
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Name: '
-  end
-  object btnBrws2: TSpeedButton
-    Tag = 2
-    Left = 283
-    Top = 207
-    Width = 23
-    Height = 22
-    Glyph.Data = {
-      36030000424D3603000000000000360000002800000010000000100000000100
-      18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
-      00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
-      BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
-      00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
-      00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
-      BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
-      00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000
-      000000000000000000000000000000000000000000000000000000BFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBF00000000AEFF0096DB0096DB0096DB0096DB0096DB00
-      96DB0096DB0082BE000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
-      00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF00AEFF00AEFF00AEFF00
-      AEFF00AEFF0096DB000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
-      00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF5DCCFF5DCCFF5DCCFF5D
-      CCFF5DCCFF00AEFF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF686868BDEBFF
-      5DCCFF5DCCFF000000000000000000000000000000000000BFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
-      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
-    Visible = False
-  end
-  object Label2: TLabel
-    Left = 16
-    Top = 179
-    Width = 87
-    Height = 13
-    Anchors = [akLeft, akBottom]
-    Caption = '  Project Options:  '
   end
   object pnlDesc: TPanel
     Left = 8
@@ -88,7 +37,7 @@ object NewProjectForm: TNewProjectForm
     Anchors = [akLeft, akRight, akBottom]
     BevelInner = bvRaised
     Color = clWindow
-    TabOrder = 5
+    TabOrder = 3
     object lblDesc: TLabel
       Left = 4
       Top = 4
@@ -151,50 +100,6 @@ object NewProjectForm: TNewProjectForm
     OnClick = btnCancelClick
     Kind = bkCancel
   end
-  object Panel1: TPanel
-    Left = 284
-    Top = 197
-    Width = 216
-    Height = 42
-    Anchors = [akRight, akBottom]
-    BevelInner = bvRaised
-    BevelOuter = bvLowered
-    TabOrder = 2
-    object rbC: TRadioButton
-      Left = 8
-      Top = 3
-      Width = 65
-      Height = 17
-      Caption = '&C project'
-      TabOrder = 0
-    end
-    object rbCpp: TRadioButton
-      Left = 112
-      Top = 3
-      Width = 73
-      Height = 17
-      Caption = 'C&++ project'
-      Checked = True
-      TabOrder = 1
-      TabStop = True
-    end
-    object cbDefault: TCheckBox
-      Left = 8
-      Top = 21
-      Width = 201
-      Height = 17
-      Caption = '&Make default language'
-      TabOrder = 2
-    end
-  end
-  object edProjectName: TEdit
-    Left = 16
-    Top = 218
-    Width = 258
-    Height = 21
-    Anchors = [akLeft, akRight, akBottom]
-    TabOrder = 3
-  end
   object TabsMain: TdevTabs
     Left = 8
     Top = 8
@@ -239,27 +144,69 @@ object NewProjectForm: TNewProjectForm
     Width = 75
     Height = 24
     Anchors = [akRight, akBottom]
-    TabOrder = 6
+    TabOrder = 4
     OnClick = btnHelpClick
     Kind = bkHelp
   end
-  object Edit1: TEdit
-    Left = 80
-    Top = 223
-    Width = 201
-    Height = 21
-    Anchors = [akLeft, akRight, akBottom]
-    TabOrder = 7
-    Visible = False
-  end
-  object CheckBox1: TCheckBox
+  object Label2: TGroupBox
     Left = 8
-    Top = 210
-    Width = 65
-    Height = 17
-    Caption = 'Save To'
-    TabOrder = 8
-    Visible = False
+    Top = 173
+    Width = 495
+    Height = 71
+    Caption = 'Project Options'
+    TabOrder = 5
+    DesignSize = (
+      495
+      71)
+    object Label1: TLabel
+      Left = 7
+      Top = 15
+      Width = 31
+      Height = 13
+      Caption = 'Name:'
+    end
+    object GroupBox1: TGroupBox
+      Left = 268
+      Top = 14
+      Width = 219
+      Height = 48
+      TabOrder = 0
+      object rbC: TRadioButton
+        Left = 7
+        Top = 5
+        Width = 65
+        Height = 17
+        Caption = '&C project'
+        TabOrder = 0
+      end
+      object cbDefault: TCheckBox
+        Left = 7
+        Top = 25
+        Width = 201
+        Height = 17
+        Caption = '&Make default language'
+        TabOrder = 1
+      end
+      object rbCpp: TRadioButton
+        Left = 102
+        Top = 5
+        Width = 73
+        Height = 17
+        Caption = 'C&++ project'
+        Checked = True
+        TabOrder = 2
+        TabStop = True
+      end
+    end
+    object edProjectName: TEdit
+      Left = 7
+      Top = 30
+      Width = 250
+      Height = 21
+      Anchors = []
+      AutoSize = False
+      TabOrder = 1
+    end
   end
   object ImageList1: TImageList
     Height = 32
@@ -2426,7 +2373,7 @@ object NewProjectForm: TNewProjectForm
     FlatMenu = False
     AutoDetect = True
     Active = False
-    Left = 136
-    Top = 56
+    Left = 7
+    Top = 247
   end
 end

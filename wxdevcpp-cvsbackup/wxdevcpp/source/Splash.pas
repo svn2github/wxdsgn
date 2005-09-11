@@ -36,7 +36,6 @@ type
     Panel: TPanel;
     Image: TImage;
     StatusBar: TStatusBar;
-    Image1: TImage;
     procedure FormCreate(Sender: TObject);
     procedure ImageClick(Sender: TObject);
   end;

@@ -45,7 +45,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=$(DELPHI)\Lib\Debug;C:\wxdevcpp\source\Vcl\synedit\Source
+SearchPath=$(DELPHI)\Lib\Debug;D:\My C++ Applications\wxdevcpp\source\Vcl\synedit\Source
 Packages=vcl;rtl;vclx;VclSmp;dbrtl;adortl;vcldb;bdertl;vcldbx;dsnap;cds;bdecds;ibxpress;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;dbexpress;dbxcds;dclOffice2k;ClassBrowsing;soaprtl;dclDesignExperienceD6;elpackD6;ExtLib_D6;sakEmail_D6;JvStdCtrlsD6R;JvCtrlsD6R
 Conditionals=SYN_DELPHI_PE
 DebugSourceDirs=
@@ -81,8 +81,6 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-[Excluded Packages]
-c:\program files\borland\delphi6\Bin\dclshlctrls60.bpl=Shell Control Property and Component Editors
 [HistoryLists\hlConditionals]
 Count=1
 Item0=SYN_DELPHI_PE
@@ -90,6 +88,7 @@ Item0=SYN_DELPHI_PE
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=2
-Item0=$(DELPHI)\Lib\Debug;C:\wxdevcpp\source\Vcl\synedit\Source
-Item1=$(DELPHI)\Lib\Debug;C:\wxdevcpp\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\GraphicEx;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Theme Explorer;C:\Program Files\GExperts for Delphi 6;C:\wxdevcpp\source\Vcl\codetooltip;C:\wxdevcpp\source\Vcl\Dpanel;C:\wxdevcpp\source\Vcl\synedit\Source
+Count=3
+Item0=$(DELPHI)\Lib\Debug;D:\My C++ Applications\wxdevcpp\source\Vcl\synedit\Source
+Item1=$(DELPHI)\Lib\Debug;C:\wxdevcpp\source\Vcl\synedit\Source
+Item2=$(DELPHI)\Lib\Debug;C:\wxdevcpp\CompUsedBy_WX_BUILD\extlib;C:\wxdevcpp\CompUsedBy_WX_BUILD\GraphicEx;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Packages;C:\wxdevcpp\CompUsedBy_WX_BUILD\theme\Theme Explorer;C:\Program Files\GExperts for Delphi 6;C:\wxdevcpp\source\Vcl\codetooltip;C:\wxdevcpp\source\Vcl\Dpanel;C:\wxdevcpp\source\Vcl\synedit\Source

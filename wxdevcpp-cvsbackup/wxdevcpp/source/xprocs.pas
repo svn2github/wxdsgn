@@ -89,8 +89,6 @@ interface
 
 {.$DEFINE German}
 {.$DEFINE English}
-{$WARNINGS OFF}
-{$HINTS OFF}
 
 uses
 {$IFDEF Win32}Windows, Registry, {$ELSE}WinTypes, WinProcs, {$ENDIF}
@@ -1728,7 +1726,7 @@ const
     BlockSize = 1024 * 16;
 var
     FSource, FTarget: Integer;
-    FFileSize: Longint;
+   // FFileSize: Longint;
     BRead, Bwrite: Word;
     Buffer: Pointer;
 begin
@@ -1736,7 +1734,7 @@ begin
     FSource := FileOpen(SourceFile, fmOpenRead + fmShareDenyNone); { Open Source }
     if FSource >= 0 then
     try
-        FFileSize := FileSeek(FSource, 0, soFromEnd);
+        //FFileSize := FileSeek(FSource, 0, soFromEnd);
         FTarget := FileCreate(TargetFile); { Open Target }
         try
             getmem(Buffer, BlockSize);
@@ -2111,14 +2109,17 @@ end;
 
 {$IFDEF Win32}
 
+{$WARNINGS OFF}
 function timeZoneOffset: Integer;
 var
     aTimeZoneInfo: TTimeZoneInformation;
 begin
-    GetTimeZoneInformation(aTimeZoneInfo);
-    Result := aTimeZoneInfo.Bias
-
+    if GetTimeZoneInformation(aTimeZoneInfo) <> -1 then
+        Result := aTimeZoneInfo.Bias
+    else
+        Result := 0;
 end;
+{$WARNINGS ON}
 {$ENDIF}
 
 { Communications Functions }
@@ -2343,8 +2344,8 @@ begin
     TickCountNow := GetTickCount;
     while TickCountNow - TickCountStart < aMs do
     begin
-        Application.ProcessMessages;
-        TickCountNow := GetTickCount
+        TickCountNow := GetTickCount;
+        Application.ProcessMessages
     end;
 end;
 
@@ -2357,9 +2358,8 @@ function sysColorDepth: Integer;
 var
     aDC: hDC;
 begin
-    Result := 0;
+    aDC := GetDC(0);
     try
-        aDC := GetDC(0);
         Result := 1 shl (GetDeviceCaps(aDC, PLANES) * GetDeviceCaps(aDC, BITSPIXEL));
     finally
         ReleaseDC(0, aDC);
@@ -2647,13 +2647,18 @@ begin
                     dtCurrency: WriteCurrency(aValue, Value);
                     dtTime: WriteTime(aValue, Value);
                 end
-            else
-                Result := False;
-        end;
-    finally
-        Result := True;
-        aRegistry.Free;
+	    else
+		raise Exception.CreateFmt('', []);
+	end;
+    except
+	begin
+	    Result := false;
+	    aRegistry.Free;
+	    exit;
+	end
     end;
+    Result := True;
+    aRegistry.Free;
 end;
 
 {$ENDIF}
@@ -2692,10 +2697,15 @@ end;
 
 procedure TPersistentRect.Assign(Source: TPersistent);
 var
-   Value : TPersistentRect;
+    Value: TPersistentRect;
 begin
+    Value := nil;
+    if Value is TPersistentRect then
+    begin
         Value := Source as TPersistentRect;
         FRect := rectBounds(Value.Left, Value.Top, Value.Width, Value.Height);
+        exit;
+    end;
     inherited Assign(Source);
 end;
 
@@ -2930,7 +2940,6 @@ begin
     SetLength(Result, Length(AStr));
     Sp := PChar(AStr);
     Rp := PChar(Result);
-    Cp := Sp;
     try
         while Sp^ <> #0 do
         begin
@@ -3033,5 +3042,3 @@ finalization
 {$ENDIF}
 end.
 
-{$HINTS ON}
-{$WARNINGS ON}

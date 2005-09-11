@@ -66,7 +66,7 @@ object ToolForm: TToolForm
   OnShow = FormShow
   DesignSize = (
     292
-    293)
+    286)
   PixelsPerInch = 96
   TextHeight = 13
   object grpCurrent: TGroupBox
@@ -141,8 +141,8 @@ object ToolForm: TToolForm
     end
   end
   object btnClose: TBitBtn
-    Left = 101
-    Top = 258
+    Left = 106
+    Top = 254
     Width = 89
     Height = 25
     Anchors = [akBottom]
@@ -312,8 +312,9 @@ object ToolForm: TToolForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 10
+    Top = 252
   end
 end

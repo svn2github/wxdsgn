@@ -2,8 +2,8 @@ object DesignerForm: TDesignerForm
   Left = 527
   Top = 161
   BorderStyle = bsDialog
-  Caption = 'wx Designer Form Designer Options'
-  ClientHeight = 404
+  Caption = 'Form Designer Options'
+  ClientHeight = 294
   ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,12 +16,12 @@ object DesignerForm: TDesignerForm
   OnCreate = FormCreate
   DesignSize = (
     418
-    404)
+    294)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn
-    Left = 161
-    Top = 372
+    Left = 163
+    Top = 262
     Width = 80
     Height = 25
     Anchors = [akRight, akBottom]
@@ -50,8 +50,8 @@ object DesignerForm: TDesignerForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 241
-    Top = 372
+    Left = 243
+    Top = 262
     Width = 80
     Height = 25
     Anchors = [akRight, akBottom]
@@ -59,8 +59,8 @@ object DesignerForm: TDesignerForm
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 332
-    Top = 372
+    Left = 334
+    Top = 262
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -69,52 +69,65 @@ object DesignerForm: TDesignerForm
   end
   object PageControl1: TPageControl
     Left = 8
-    Top = 16
+    Top = 8
     Width = 401
-    Height = 345
+    Height = 250
     ActivePage = TabSheet1
+    Anchors = [akLeft, akTop, akRight, akBottom]
     TabIndex = 0
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'Designer Options'
       object GroupBox1: TGroupBox
-        Left = 8
-        Top = 16
-        Width = 377
-        Height = 137
+        Left = 4
+        Top = 4
+        Width = 385
+        Height = 110
         Caption = 'Form grid'
         TabOrder = 0
+        object Bevel2: TBevel
+          Left = 135
+          Top = 60
+          Width = 68
+          Height = 18
+        end
+        object Bevel1: TBevel
+          Left = 135
+          Top = 36
+          Width = 68
+          Height = 18
+        end
         object Label6: TLabel
-          Left = 16
-          Top = 56
-          Width = 29
+          Left = 9
+          Top = 39
+          Width = 120
           Height = 13
-          Caption = 'XStep'
+          Caption = 'X coordinate grid interval:'
         end
         object Label7: TLabel
-          Left = 128
-          Top = 56
-          Width = 29
+          Left = 8
+          Top = 63
+          Width = 120
           Height = 13
-          Caption = 'YStep'
+          Caption = 'Y coordinate grid interval:'
         end
         object lbGridXStep: TLabel
-          Left = 56
-          Top = 56
+          Left = 138
+          Top = 39
           Width = 6
           Height = 13
           Caption = '8'
         end
         object lbGridYStep: TLabel
-          Left = 168
-          Top = 56
+          Left = 138
+          Top = 63
           Width = 6
           Height = 13
           Caption = '8'
         end
         object cbGridVisible: TCheckBox
-          Left = 16
-          Top = 24
+          Left = 8
+          Top = 15
           Width = 97
           Height = 17
           Caption = 'Visible'
@@ -123,8 +136,8 @@ object DesignerForm: TDesignerForm
           TabOrder = 0
         end
         object cbSnapToGrid: TCheckBox
-          Left = 16
-          Top = 96
+          Left = 8
+          Top = 85
           Width = 97
           Height = 17
           Caption = 'Snap to grid'
@@ -133,10 +146,10 @@ object DesignerForm: TDesignerForm
           TabOrder = 1
         end
         object lbGridXStepUpDown: TUpDown
-          Left = 80
-          Top = 49
+          Left = 202
+          Top = 36
           Width = 16
-          Height = 24
+          Height = 18
           Min = 2
           Max = 30
           Position = 8
@@ -145,10 +158,10 @@ object DesignerForm: TDesignerForm
           OnClick = lbGridXStepUpDownClick
         end
         object lbGridYStepUpDown: TUpDown
-          Left = 184
-          Top = 52
+          Left = 202
+          Top = 60
           Width = 16
-          Height = 24
+          Height = 18
           Min = 2
           Max = 30
           Position = 8
@@ -158,15 +171,15 @@ object DesignerForm: TDesignerForm
         end
       end
       object GroupBox3: TGroupBox
-        Left = 8
-        Top = 168
-        Width = 121
-        Height = 137
+        Left = 4
+        Top = 118
+        Width = 221
+        Height = 97
         Caption = 'Hints'
         TabOrder = 1
         object cbControlHints: TCheckBox
-          Left = 16
-          Top = 24
+          Left = 8
+          Top = 15
           Width = 97
           Height = 17
           Caption = 'Control'
@@ -175,8 +188,8 @@ object DesignerForm: TDesignerForm
           TabOrder = 0
         end
         object cbSizeHints: TCheckBox
-          Left = 16
-          Top = 48
+          Left = 8
+          Top = 35
           Width = 97
           Height = 17
           Caption = 'Size'
@@ -185,8 +198,8 @@ object DesignerForm: TDesignerForm
           TabOrder = 1
         end
         object cbMoveHints: TCheckBox
-          Left = 16
-          Top = 72
+          Left = 8
+          Top = 55
           Width = 97
           Height = 17
           Caption = 'Move'
@@ -195,8 +208,8 @@ object DesignerForm: TDesignerForm
           TabOrder = 2
         end
         object cbInsertHints: TCheckBox
-          Left = 16
-          Top = 96
+          Left = 8
+          Top = 75
           Width = 97
           Height = 17
           Caption = 'Insert'
@@ -206,13 +219,46 @@ object DesignerForm: TDesignerForm
         end
       end
       object cbGenerateXRC: TCheckBox
-        Left = 192
-        Top = 192
+        Left = 256
+        Top = 128
         Width = 129
         Height = 17
         Caption = 'Generate XRC Code'
+        Checked = True
+        State = cbChecked
         TabOrder = 2
       end
     end
+  end
+  object XPMenu: TXPMenu
+    DimLevel = 30
+    GrayLevel = 10
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Color = clBtnFace
+    DrawMenuBar = False
+    IconBackColor = clBtnFace
+    MenuBarColor = clBtnFace
+    SelectColor = clHighlight
+    SelectBorderColor = clHighlight
+    SelectFontColor = clMenuText
+    DisabledColor = clInactiveCaption
+    SeparatorColor = clBtnFace
+    CheckedColor = clHighlight
+    IconWidth = 24
+    DrawSelect = True
+    UseSystemColors = True
+    UseDimColor = False
+    OverrideOwnerDraw = False
+    Gradient = False
+    FlatMenu = False
+    AutoDetect = False
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
+    Active = False
+    Left = 10
+    Top = 265
   end
 end

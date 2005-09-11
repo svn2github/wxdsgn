@@ -75,18 +75,18 @@ object frmReplace: TfrmReplace
     end
   end
   object btnReplace: TButton
-    Left = 8
+    Left = 181
     Top = 219
     Width = 80
     Height = 24
-    Caption = 'Ok'
+    Caption = 'Replace One'
     Default = True
     ModalResult = 1
     TabOrder = 6
     OnClick = btnReplaceClick
   end
   object btnCancel: TButton
-    Left = 254
+    Left = 8
     Top = 219
     Width = 80
     Height = 24
@@ -183,7 +183,7 @@ object frmReplace: TfrmReplace
     TabOrder = 1
   end
   object btnReplaceAll: TButton
-    Left = 94
+    Left = 261
     Top = 219
     Width = 74
     Height = 24
@@ -218,8 +218,9 @@ object frmReplace: TfrmReplace
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 93
+    Top = 218
   end
 end

@@ -3,7 +3,7 @@ object NewVarForm: TNewVarForm
   Top = 138
   BorderStyle = bsDialog
   Caption = 'New variable'
-  ClientHeight = 449
+  ClientHeight = 447
   ClientWidth = 349
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -33,7 +33,7 @@ object NewVarForm: TNewVarForm
   end
   object Label3: TLabel
     Left = 52
-    Top = 172
+    Top = 154
     Width = 31
     Height = 13
     Alignment = taRightJustify
@@ -41,7 +41,7 @@ object NewVarForm: TNewVarForm
   end
   object Label4: TLabel
     Left = 52
-    Top = 224
+    Top = 206
     Width = 31
     Height = 13
     Alignment = taRightJustify
@@ -49,14 +49,14 @@ object NewVarForm: TNewVarForm
   end
   object Label6: TLabel
     Left = 8
-    Top = 68
+    Top = 59
     Width = 62
     Height = 13
     Caption = 'Implement in:'
   end
   object rgScope: TRadioGroup
     Left = 8
-    Top = 96
+    Top = 83
     Width = 333
     Height = 41
     Caption = 'Access scope'
@@ -96,7 +96,7 @@ object NewVarForm: TNewVarForm
   end
   object chkReadFunc: TCheckBox
     Left = 8
-    Top = 148
+    Top = 130
     Width = 333
     Height = 17
     Caption = 'Create member function to read from this variable'
@@ -105,7 +105,7 @@ object NewVarForm: TNewVarForm
   end
   object chkWriteFunc: TCheckBox
     Left = 8
-    Top = 200
+    Top = 182
     Width = 333
     Height = 17
     Caption = 'Create member function to write to this variable'
@@ -114,7 +114,7 @@ object NewVarForm: TNewVarForm
   end
   object txtReadFunc: TEdit
     Left = 88
-    Top = 168
+    Top = 150
     Width = 253
     Height = 21
     TabOrder = 6
@@ -123,7 +123,7 @@ object NewVarForm: TNewVarForm
   end
   object txtWriteFunc: TEdit
     Left = 88
-    Top = 220
+    Top = 202
     Width = 253
     Height = 21
     TabOrder = 9
@@ -131,8 +131,8 @@ object NewVarForm: TNewVarForm
     OnChange = cmbTypeChange
   end
   object btnCreate: TButton
-    Left = 95
-    Top = 416
+    Left = 191
+    Top = 411
     Width = 75
     Height = 25
     Caption = 'Create'
@@ -142,8 +142,8 @@ object NewVarForm: TNewVarForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 179
-    Top = 416
+    Left = 266
+    Top = 411
     Width = 75
     Height = 25
     Cancel = True
@@ -153,7 +153,7 @@ object NewVarForm: TNewVarForm
   end
   object cmbClass: TComboBox
     Left = 88
-    Top = 64
+    Top = 55
     Width = 253
     Height = 21
     AutoDropDown = True
@@ -170,30 +170,30 @@ object NewVarForm: TNewVarForm
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 252
+    Top = 231
     Width = 333
-    Height = 153
+    Height = 174
     Caption = 'Comment'
     TabOrder = 10
     object Label5: TLabel
       Left = 8
-      Top = 20
+      Top = 17
       Width = 56
       Height = 13
       Caption = 'Description:'
     end
     object Label7: TLabel
       Left = 8
-      Top = 128
+      Top = 148
       Width = 26
       Height = 13
       Caption = 'Style:'
     end
     object memDescr: TMemo
       Left = 16
-      Top = 36
+      Top = 33
       Width = 309
-      Height = 81
+      Height = 103
       Lines.Strings = (
         'memDescr')
       ScrollBars = ssBoth
@@ -202,7 +202,7 @@ object NewVarForm: TNewVarForm
     end
     object cmbComment: TComboBox
       Left = 40
-      Top = 124
+      Top = 144
       Width = 205
       Height = 21
       Style = csDropDownList
@@ -218,7 +218,7 @@ object NewVarForm: TNewVarForm
   end
   object chkInlineR: TCheckBox
     Left = 288
-    Top = 148
+    Top = 130
     Width = 53
     Height = 17
     Alignment = taLeftJustify
@@ -228,7 +228,7 @@ object NewVarForm: TNewVarForm
   end
   object chkInlineW: TCheckBox
     Left = 288
-    Top = 200
+    Top = 182
     Width = 53
     Height = 17
     Alignment = taLeftJustify
@@ -262,8 +262,9 @@ object NewVarForm: TNewVarForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 10
+    Top = 412
   end
 end

@@ -36,8 +36,8 @@ const
 
 resourcestring
   // misc strings
-  DEVCPP = 'Dev-C++';
-  DEVCPP_VERSION       = '4.9.9.2-wx-beta-6.8';
+  DEVCPP = 'wxDev-C++';
+  DEVCPP_VERSION    = '4.9.9.2';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
@@ -101,8 +101,8 @@ resourcestring
   PACKAGES_DIR         = 'Packages' + pd;
 
   // file fxtensions
-  LIB_EXT = '.a';
-  OBJ_EXT = '.o';
+  LIB_EXT = '.lib';
+  OBJ_EXT = '.obj';
   DLL_EXT = '.dll';
   EXE_EXT = '.exe';
   DEV_EXT = '.dev';

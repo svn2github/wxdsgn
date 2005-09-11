@@ -56,9 +56,13 @@ type
     Timer1: TTimer;
     Fish: TPanel;
     FishImage: TImage;
-    Image1: TImage;
+    banner: TImage;
     XPMenu: TXPMenu;
     Image2: TImage;
+    wxdevcopyright: TLabel;
+    wxdevcpp_websitelbl: TLabel;
+    wxdevcpp_website: TLabel;
+    wxdevcpp_version: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnAuthorsClick(Sender: TObject);
@@ -70,14 +74,6 @@ type
     procedure FishImageClick(Sender: TObject);
   private
     procedure LoadText;
-  {$IFDEF WX_BUILD}
-  public
-    Label3 : TLabel;
-    lbwxdecppLabel: TLabel;
-    lbwxdecppSite: TLabel;
-
-    procedure CreateWxSpecifics;
-  {$ENDIF}
   end;
 
 implementation
@@ -114,61 +110,6 @@ begin
   btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
   btnAuthors.Caption := Lang[ID_BTN_AUTHOR];
 end;
-{$IFDEF WX_BUILD}
-procedure TAboutForm.CreateWxSpecifics;
-begin
-  Label3 := TLabel.Create(Self);
-  with Label3 do
-  begin
-    Name := 'Label3';
-    Parent := Self;
-    Left := 8;
-    Top := 90;
-    Width := 372;
-    Height := 13;
-    Caption := 'wxWidgets Designer and portions - Copyright (c) Guru Kathiresan';
-    Font.Charset := DEFAULT_CHARSET;
-    Font.Color := clWindowText;
-    Font.Height := -11;
-    Font.Name := 'MS Sans Serif';
-    Font.Style := [fsBold];
-    ParentFont := False;
-  end;
-
-  lbwxdecppLabel := TLabel.Create(Self);
-  lbwxdecppSite := TLabel.Create(Self);
-  with lbwxdecppLabel do
-  begin
-    Name := 'lbwxdecppLabel';
-    Parent := GroupBox2;
-    Left := 16;
-    Top := 16;
-    Width := 103;
-    Height := 13;
-    Caption := 'wx-devcpp web site : ';
-  end;
-
-  with lbwxdecppSite do
-  begin
-    Name := 'lbwxdecppSite';
-    Parent := GroupBox2;
-    Left := 168;
-    Top := 16;
-    Width := 144;
-    Height := 13;
-    Cursor := crHandPoint;
-    Caption := 'http://wxdsgn.sourceforge.net';
-    Font.Charset := DEFAULT_CHARSET;
-    Font.Color := clBlue;
-    Font.Height := -11;
-    Font.Name := 'MS Sans Serif';
-    Font.Style := [fsUnderline];
-    ParentFont := False;
-    OnClick := LabelClick;
-  end;
-
-end;
-{$ENDIF}
 
 procedure TAboutForm.LabelClick(Sender: TObject);
 var s : string;
@@ -182,12 +123,7 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
-{$IFDEF WX_BUILD}
-  CreateWxSpecifics;
-{$ENDIF}
   LoadText;
-  if FileExists(devData.Splash) then
-    Image1.Picture.LoadFromFile(devData.Splash);
 end;
 
 procedure TAboutForm.btnAuthorsClick(Sender: TObject);
@@ -202,7 +138,6 @@ const MessageText =
     '- Blue theme: Thomas Thron'#13#10
     {$IFDEF WX_BUILD}
     +
-    ''#13#10+
     '- wxWidgets Designer Extension: Guru Kathiresan, Tony Reina, Malcolm Nealon.'#13#10
     {$ENDIF}
     ;

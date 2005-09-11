@@ -523,6 +523,9 @@ begin
         Exit;
     end;
 
+    // CAN THIS BE REMOVED?
+    // X isn't defined after the loop
+    //Result := Result + X;
 end;
 
 function ComponentToString(Component: TComponent): string;
@@ -1571,6 +1574,10 @@ begin
         Result := FALSE;
         try
      // Exception: Restore the components name
+     // CAN THIS BE REMOVED?
+    //  X isn't defined after the loop
+            //Components[X].Name := Name;
+            //Maybe it should be this instead?
             Components[Low(Components)].Name := Name;
         except;
         end;
@@ -1712,6 +1719,11 @@ begin
             end;
     except
         Result := FALSE;
+        // Can this be removed?
+        // X isn't defined after the loop
+        //if (Components[X].Name <> Name) then
+        //    Components[X].Name := Name;
+        // Maybe it should be this instead?
         if (Components[Low(Components)].Name <> Name) then
             Components[Low(Components)].Name := Name;
     end;
@@ -1882,7 +1894,6 @@ begin
     Stream := nil;
     sHeaderInfo := nil;
     Index := 0;
-
     Result := (FileExists(FileName));
 
   // Try to create buffers and try to load the resource file

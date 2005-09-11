@@ -36,40 +36,32 @@ uses
 
 type
   TFilePropertiesForm = class(TForm)
-    Label1: TLabel;
+    btnOK: TButton;
+    XPMenu: TXPMenu;
+    GroupBox1: TGroupBox;
     Label2: TLabel;
+    lblProject: TLabel;
+    lblRelative: TLabel;
+    lblAbsolute: TLabel;
+    Label1: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    cmbFiles: TComboBox;
+    GroupBox2: TGroupBox;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label11: TLabel;
+    Label8: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    lblFilename: TLabel;
-    lblProject: TLabel;
-    lblSize: TLabel;
     lblTotal: TLabel;
     lblCode: TLabel;
     lblComments: TLabel;
-    lblEmpty: TLabel;
-    Bevel1: TBevel;
-    Bevel2: TBevel;
-    Bevel3: TBevel;
-    Bevel4: TBevel;
-    Bevel5: TBevel;
-    Bevel6: TBevel;
-    Bevel7: TBevel;
-    btnOK: TButton;
-    Bevel8: TBevel;
-    Label8: TLabel;
-    lblIncludes: TLabel;
-    cmbFiles: TComboBox;
-    Label9: TLabel;
-    Label10: TLabel;
-    lblAbsolute: TLabel;
-    lblRelative: TLabel;
-    Bevel9: TBevel;
-    Label11: TLabel;
     lblTimestamp: TLabel;
-    XPMenu: TXPMenu;
+    lblIncludes: TLabel;
+    lblSize: TLabel;
+    lblEmpty: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnOKClick(Sender: TObject);
@@ -247,7 +239,7 @@ begin
     Includes := 0;
     Comments := 0;
   end;
-  lblFilename.Caption := MinimizeName(FileName, lblFilename.Canvas, 285);
+  
   if Assigned(MainForm.fProject) then begin
     lblProject.Caption := MainForm.fProject.Name;
     lblRelative.Caption := ExtractRelativePath(MainForm.fProject.Directory, Filename)

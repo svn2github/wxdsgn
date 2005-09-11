@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, StdCtrls, Buttons,INIFiles,devCfg;
+  Dialogs, ComCtrls, StdCtrls, Buttons,INIFiles,devCfg, XPMenu, ExtCtrls;
 
 type
   TDesignerForm = class(TForm)
@@ -30,11 +30,15 @@ type
     cbSizeHints: TCheckBox;
     cbMoveHints: TCheckBox;
     cbInsertHints: TCheckBox;
+    Bevel1: TBevel;
+    Bevel2: TBevel;
+    XPMenu: TXPMenu;
     cbGenerateXRC: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure lbGridYStepUpDownClick(Sender: TObject; Button: TUDBtnType);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -52,6 +56,10 @@ uses main,ELDsgnr;
 
 procedure TDesignerForm.FormCreate(Sender: TObject);
 begin
+    if devData.XPTheme then
+        XPMenu.Active := true
+    else
+        XPMenu.Active := false;
     cbGridVisible.Checked:=MainForm.ELDesigner1.Grid.Visible;
     lbGridXStep.Caption := IntToStr (MainForm.ELDesigner1.Grid.XStep);
     lbGridXStepUpDown.Position:=MainForm.ELDesigner1.Grid.XStep;
@@ -59,7 +67,6 @@ begin
     lbGridYStep.Caption := IntToStr (MainForm.ELDesigner1.Grid.YStep);
     lbGridYStepUpDown.Position:=MainForm.ELDesigner1.Grid.YStep;
     cbSnapToGrid.Checked:=MainForm.ELDesigner1.SnapToGrid;
-
     cbGenerateXRC.Checked:=MainForm.ELDesigner1.GenerateXRC;
 
     cbControlHints.Checked:= htControl in MainForm.ELDesigner1.ShowingHints;
@@ -88,8 +95,6 @@ begin
     if cbInsertHints.Checked then
         MainForm.ELDesigner1.ShowingHints := [htInsert] + MainForm.ELDesigner1.ShowingHints;
 
-
-
     ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
     try
         ini.WriteBool('wxWidgets','cbGridVisible',cbGridVisible.checked);
@@ -117,6 +122,14 @@ procedure TDesignerForm.lbGridYStepUpDownClick(Sender: TObject;
   Button: TUDBtnType);
 begin
     lbGridYStep.Caption:=IntToStr(lbGridYStepUpDown.position);
+end;
+
+procedure TDesignerForm.FormShow(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu.Active := true
+  else
+    XPMenu.Active := false;
 end;
 
 end.

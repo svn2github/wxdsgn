@@ -19,7 +19,7 @@ object NewMemberForm: TNewMemberForm
   TextHeight = 13
   object Label1: TLabel
     Left = 8
-    Top = 12
+    Top = 11
     Width = 58
     Height = 13
     Caption = 'Return type:'
@@ -40,14 +40,14 @@ object NewMemberForm: TNewMemberForm
   end
   object Label4: TLabel
     Left = 8
-    Top = 92
+    Top = 82
     Width = 62
     Height = 13
     Caption = 'Implement in:'
   end
   object rgScope: TRadioGroup
     Left = 8
-    Top = 120
+    Top = 106
     Width = 149
     Height = 97
     Caption = 'Access scope'
@@ -94,8 +94,8 @@ object NewMemberForm: TNewMemberForm
     Text = 'txtArguments'
   end
   object btnCreate: TButton
-    Left = 95
-    Top = 440
+    Left = 193
+    Top = 448
     Width = 75
     Height = 25
     Caption = 'Create'
@@ -105,8 +105,8 @@ object NewMemberForm: TNewMemberForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 179
-    Top = 440
+    Left = 268
+    Top = 448
     Width = 75
     Height = 25
     Cancel = True
@@ -116,7 +116,7 @@ object NewMemberForm: TNewMemberForm
   end
   object cmbClass: TComboBox
     Left = 88
-    Top = 88
+    Top = 79
     Width = 253
     Height = 21
     AutoDropDown = True
@@ -133,30 +133,30 @@ object NewMemberForm: TNewMemberForm
   end
   object grpComment: TGroupBox
     Left = 8
-    Top = 228
+    Top = 211
     Width = 333
-    Height = 182
+    Height = 199
     Caption = 'Comment'
     TabOrder = 6
     object Label5: TLabel
       Left = 8
-      Top = 20
+      Top = 17
       Width = 56
       Height = 13
       Caption = 'Description:'
     end
     object Label7: TLabel
       Left = 8
-      Top = 152
+      Top = 172
       Width = 26
       Height = 13
       Caption = 'Style:'
     end
     object memDescr: TMemo
       Left = 16
-      Top = 36
+      Top = 33
       Width = 309
-      Height = 105
+      Height = 127
       Lines.Strings = (
         'memDescr')
       ScrollBars = ssBoth
@@ -165,7 +165,7 @@ object NewMemberForm: TNewMemberForm
     end
     object cmbComment: TComboBox
       Left = 40
-      Top = 148
+      Top = 168
       Width = 209
       Height = 21
       Style = csDropDownList
@@ -189,14 +189,14 @@ object NewMemberForm: TNewMemberForm
   end
   object grpAttr: TGroupBox
     Left = 168
-    Top = 120
+    Top = 106
     Width = 173
     Height = 97
     Caption = 'Attributes'
     TabOrder = 5
     object chkStatic: TCheckBox
-      Left = 12
-      Top = 20
+      Left = 9
+      Top = 16
       Width = 53
       Height = 17
       Caption = 'Static'
@@ -204,8 +204,8 @@ object NewMemberForm: TNewMemberForm
       OnClick = chkStaticClick
     end
     object chkVirtual: TCheckBox
-      Left = 12
-      Top = 44
+      Left = 9
+      Top = 34
       Width = 57
       Height = 17
       Caption = 'Virtual'
@@ -213,8 +213,8 @@ object NewMemberForm: TNewMemberForm
       OnClick = chkStaticClick
     end
     object chkPure: TCheckBox
-      Left = 96
-      Top = 44
+      Left = 9
+      Top = 72
       Width = 57
       Height = 17
       Caption = 'Pure'
@@ -222,8 +222,8 @@ object NewMemberForm: TNewMemberForm
       OnClick = chkStaticClick
     end
     object chkInline: TCheckBox
-      Left = 12
-      Top = 72
+      Left = 9
+      Top = 53
       Width = 57
       Height = 17
       Caption = 'Inline'
@@ -257,8 +257,9 @@ object NewMemberForm: TNewMemberForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 9
+    Top = 443
   end
 end

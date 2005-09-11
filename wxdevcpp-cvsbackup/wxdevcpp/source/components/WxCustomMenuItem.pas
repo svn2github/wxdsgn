@@ -209,7 +209,7 @@ begin
   // OList owns it's objects so we free them
   for i := 0 to pred(FItems.Count) do
     if FItems[i] <> nil then
-       TWxCustomMenuItem(FItems[i]).Free;
+      TWxCustomMenuItem(FItems[i]).Free;
   // then we clear the underlying list
   FItems.Clear;
 end;

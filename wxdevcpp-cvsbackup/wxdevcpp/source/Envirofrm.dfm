@@ -29,6 +29,7 @@ object EnviroForm: TEnviroForm
     Height = 353
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
+    MultiLine = True
     TabIndex = 0
     TabOrder = 0
     OnChange = PagesMainChange
@@ -38,7 +39,7 @@ object EnviroForm: TEnviroForm
       ShowHint = False
       DesignSize = (
         392
-        325)
+        307)
       object cbBackups: TCheckBox
         Left = 8
         Top = 29
@@ -214,7 +215,7 @@ object EnviroForm: TEnviroForm
         Width = 75
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 2
         Items.Strings = (
           'Bottom'
@@ -608,7 +609,7 @@ object EnviroForm: TEnviroForm
       Caption = 'External Programs'
       DesignSize = (
         392
-        325)
+        307)
       object lblExternal: TLabel
         Left = 8
         Top = 8
@@ -618,7 +619,7 @@ object EnviroForm: TEnviroForm
       end
       object btnExtAdd: TSpeedButton
         Left = 98
-        Top = 286
+        Top = 268
         Width = 99
         Height = 25
         Anchors = [akBottom]
@@ -627,7 +628,7 @@ object EnviroForm: TEnviroForm
       end
       object btnExtDel: TSpeedButton
         Left = 199
-        Top = 286
+        Top = 268
         Width = 99
         Height = 25
         Anchors = [akBottom]
@@ -638,7 +639,7 @@ object EnviroForm: TEnviroForm
         Left = 16
         Top = 24
         Width = 360
-        Height = 255
+        Height = 237
         Anchors = [akLeft, akTop, akRight, akBottom]
         KeyOptions = [keyEdit, keyAdd, keyDelete]
         Options = [goVertLine, goHorzLine, goEditing, goAlwaysShowEditor, goThumbTracking]
@@ -659,7 +660,7 @@ object EnviroForm: TEnviroForm
       ShowHint = False
       DesignSize = (
         392
-        325)
+        307)
       object lblAssocFileTypes: TLabel
         Left = 8
         Top = 8
@@ -669,7 +670,7 @@ object EnviroForm: TEnviroForm
       end
       object lblAssocDesc: TLabel
         Left = 16
-        Top = 262
+        Top = 244
         Width = 355
         Height = 49
         Anchors = [akLeft, akRight, akBottom]
@@ -683,7 +684,7 @@ object EnviroForm: TEnviroForm
         Left = 16
         Top = 24
         Width = 356
-        Height = 235
+        Height = 217
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         TabOrder = 0
@@ -823,8 +824,8 @@ object EnviroForm: TEnviroForm
     Kind = bkHelp
   end
   object dlgPic: TOpenPictureDialog
-    Left = 134
-    Top = 298
+    Left = 8
+    Top = 368
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -853,7 +854,7 @@ object EnviroForm: TEnviroForm
     FlatMenu = False
     AutoDetect = True
     Active = False
-    Left = 168
-    Top = 296
+    Left = 40
+    Top = 368
   end
 end

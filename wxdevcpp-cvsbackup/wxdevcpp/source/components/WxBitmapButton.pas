@@ -194,7 +194,7 @@ begin
   self.Caption := '';
 
   FWx_PropertyList.add('Wx_Comments:Comments');
-
+  FWx_PropertyList.add('Wx_Enabled :Enabled');
   FWx_PropertyList.add('wx_Class:Base Class');
   FWx_PropertyList.add('Wx_Hidden :Hidden');
   FWx_PropertyList.add('Wx_Border : Border ');
