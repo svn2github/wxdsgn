@@ -1576,8 +1576,8 @@ begin
         try
           SysUtils.ForceDirectories(Options.ExeOutput);
         except
-          MessageDlg('Could not create executable output directory: "'
-            + Options.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
+          //MessageDlg('Could not create executable output directory: "'
+          //  + Options.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
           exit;
         end;
     Result := GetRealPath(IncludeTrailingPathDelimiter(Options.ExeOutput) +
