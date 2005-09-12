@@ -8429,13 +8429,15 @@ begin
         end;
       end;
 
-
-    strFileName := ChangeFileExt(strFileName, XRC_EXT);
-    OpenFile(strFileName);
-    if Assigned(fProject) and (InProject = true)then
+    if (MainForm.ELDesigner1.GenerateXRC) then
     begin
-        FolderNode:=fProject.Node;
-        fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+        strFileName := ChangeFileExt(strFileName, XRC_EXT);
+        OpenFile(strFileName);
+        if Assigned(fProject) and (InProject = true)then
+        begin
+            FolderNode:=fProject.Node;
+            fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+        end;
     end;
 
     strFileName := ChangeFileExt(strFileName, WXFORM_EXT);

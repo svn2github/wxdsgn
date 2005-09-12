@@ -111,7 +111,7 @@ procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
 
     if trim(txtClassName.Text) = '' then
     begin
-      MessageDlg('Enter a proper Class name', mtError, [mbOK], 0);
+      MessageDlg('Enter a proper class name', mtError, [mbOK], 0);
       txtClassName.SetFocus;
       exit;
     end;

@@ -3,7 +3,7 @@ object DesignerForm: TDesignerForm
   Top = 161
   BorderStyle = bsDialog
   Caption = 'Form Designer Options'
-  ClientHeight = 294
+  ClientHeight = 320
   ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,12 +16,12 @@ object DesignerForm: TDesignerForm
   OnCreate = FormCreate
   DesignSize = (
     418
-    294)
+    320)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn
     Left = 163
-    Top = 262
+    Top = 288
     Width = 80
     Height = 25
     Anchors = [akRight, akBottom]
@@ -51,7 +51,7 @@ object DesignerForm: TDesignerForm
   end
   object btnCancel: TBitBtn
     Left = 243
-    Top = 262
+    Top = 288
     Width = 80
     Height = 25
     Anchors = [akRight, akBottom]
@@ -60,7 +60,7 @@ object DesignerForm: TDesignerForm
   end
   object btnHelp: TBitBtn
     Left = 334
-    Top = 262
+    Top = 288
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -71,7 +71,7 @@ object DesignerForm: TDesignerForm
     Left = 8
     Top = 8
     Width = 401
-    Height = 250
+    Height = 276
     ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabIndex = 0
@@ -82,8 +82,8 @@ object DesignerForm: TDesignerForm
         Left = 4
         Top = 4
         Width = 385
-        Height = 110
-        Caption = 'Form grid'
+        Height = 133
+        Caption = 'Form Options'
         TabOrder = 0
         object Bevel2: TBevel
           Left = 135
@@ -169,11 +169,21 @@ object DesignerForm: TDesignerForm
           Wrap = False
           OnClick = lbGridYStepUpDownClick
         end
+        object cbGenerateXRC: TCheckBox
+          Left = 8
+          Top = 107
+          Width = 129
+          Height = 17
+          Caption = 'Generate XRC Code'
+          Checked = True
+          State = cbChecked
+          TabOrder = 4
+        end
       end
       object GroupBox3: TGroupBox
         Left = 4
-        Top = 118
-        Width = 221
+        Top = 145
+        Width = 385
         Height = 97
         Caption = 'Hints'
         TabOrder = 1
@@ -218,16 +228,6 @@ object DesignerForm: TDesignerForm
           TabOrder = 3
         end
       end
-      object cbGenerateXRC: TCheckBox
-        Left = 256
-        Top = 128
-        Width = 129
-        Height = 17
-        Caption = 'Generate XRC Code'
-        Checked = True
-        State = cbChecked
-        TabOrder = 2
-      end
     end
   end
   object XPMenu: TXPMenu
@@ -258,7 +258,7 @@ object DesignerForm: TDesignerForm
     AutoDetect = False
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 10
-    Top = 265
+    Left = 8
+    Top = 288
   end
 end
