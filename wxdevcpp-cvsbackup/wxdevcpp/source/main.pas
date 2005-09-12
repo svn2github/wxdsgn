@@ -11507,12 +11507,13 @@ end;
 procedure TMainForm.actDesignerDeleteExecute(Sender: TObject);
 begin
 {$IFDEF WX_BUILD}
-    if IsFromScrollBarShowing then
+  {  if IsFromScrollBarShowing then
     begin
         MessageDlg('The Designer Form is scrolled. '+#13+#10+''+#13+#10+'Please resize the form to hide the scrollbar before deleting controls.', mtError, [mbOK], 0);
         exit;
     end;
-
+   }
+   
    //SelectedComponent:=ELDesigner1.DesignControl;
    BuildProperties(ELDesigner1.DesignControl,true);
    DisablePropertyBuilding:=true;

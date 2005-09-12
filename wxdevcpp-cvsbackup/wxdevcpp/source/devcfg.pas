@@ -1159,6 +1159,7 @@ begin
   AddOption('Warnings', false, true, true, false, 0, '', 'Miscellaneous', [], sl);
   AddOption('Use Precompiled headers', false, true, true, false, 0, '/YX', 'Miscellaneous', [], nil);
   AddOption('Disable incremental linking', false, false, false, true, 0, '/INCREMENTAL:NO', 'Miscellaneous', [], nil);
+
 end;
 
 procedure TdevCompiler.AddOption(_Name: string; _IsGroup, _IsC, _IsCpp, IsLinker: boolean; _Value: integer;

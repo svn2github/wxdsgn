@@ -1,10 +1,3 @@
-{
-$Id$
-Todo:
-Deffered:
-wxSingleChoiceDialog,TWxTextEntryDialog
-}
-
 { ****************************************************************** }
 { $Id$                                                               }
  {                                                                    }
@@ -101,7 +94,7 @@ type
     function GenerateControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
     function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: String): TStringList;
+    function GenerateXRCControlCreation(IndentString: string): TStringList;
     function GenerateGUIControlDeclaration: string;
     function GenerateHeaderInclude: string;
     function GenerateImageInclude: string;
@@ -508,12 +501,14 @@ function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet)
 //Todo :
 function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;
   cbxstyle: TWxcbxStyleSet): string;
-function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet; tvstyle: TWxTvStyleSet): string;
+function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;
+  tvstyle: TWxTvStyleSet): string;
 function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;
   rbstyle: TWxrbStyleSet): string;
 function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;
   lbxstyle: TWxlbxStyleSet): string;
-function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet; gagstyle: TWxgagStyleSet): string;
+function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
+  gagstyle: TWxgagStyleSet): string;
 function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
   scbrstyle: TWxsbrStyleSet): string;
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -580,12 +575,14 @@ function GetNonVisualComponentCount(frmMainObj: TForm): integer;
 
 function GetWxIDString(strID: string; intID: longint): string;
 function IsValidClass(comp: TComponent): boolean;
-function GetEventNameFromDisplayName(strDisplayName: string; strlst: TStringList): string;
+function GetEventNameFromDisplayName(strDisplayName: string;
+  strlst: TStringList): string;
 function AlignmentToStr(taPos: TAlignment): string;
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: boolean = True);
 function GetXPMFromTPicture(XPMName: string; delphiBitmap: TBitmap): string;
 function GetXPMFromTPictureXXX(XPMName: string; delphiBitmap: TBitmap): string;
-function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strFileName: string): boolean;
+function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;
+  strFileName: string): boolean;
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
 function GetCommentString(str: string): string;
@@ -607,7 +604,7 @@ function GetTotalHtOfAllToolBarAndStatusBar(ParentControl: TWinControl): integer
 function GetPredefinedwxIds: TStringList;
 function IsIDPredefined(str: string; strlst: TStringList): boolean;
 
-function XML_Label(str: string) : string;
+function XML_Label(str: string): string;
 
 implementation
 
@@ -615,16 +612,16 @@ uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxTo
   UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
   WxNonVisibleBaseComponent;
 
-function XML_Label(str : string) : string;
+function XML_Label(str: string): string;
 begin
 
-// Some string characters need to be changed for the XRC format
-// See http://cvs.wxwidgets.org/viewcvs.cgi/wxWidgets/docs/tech/tn0014.txt?rev=1.18&content-type=text/vnd.viewcvs-markup
-// Section 3. "Common attribute types", Subsection "String"
-    strChange(str, '_', '__');
-    strChange(str, '&', '_');
-    strChange(str, '/', '//');
-    Result := str;
+  // Some string characters need to be changed for the XRC format
+  // See http://cvs.wxwidgets.org/viewcvs.cgi/wxWidgets/docs/tech/tn0014.txt?rev=1.18&content-type=text/vnd.viewcvs-markup
+  // Section 3. "Common attribute types", Subsection "String"
+  strChange(str, '_', '__');
+  strChange(str, '&', '_');
+  strChange(str, '/', '//');
+  Result := str;
 
 end;
 
@@ -868,18 +865,16 @@ end;
 function GetMaxIDofWxForm(ParentControl: TWinControl): integer;
 var
   wxcompInterface: IWxComponentInterface;
-  i:      integer;
+  i: integer;
 begin
   Result := 0;
   for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
     if ParentControl.Components[i].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then
-    begin
-      //maxval := wxcompInterface.GetIDValue;
-      //sendDeBug(IntToStr(maxval));
       if wxcompInterface.GetIDValue > Result then
-        Result := wxcompInterface.GetIDValue;
-    end; // for
+        Result := wxcompInterface.GetIDValue//maxval := wxcompInterface.GetIDValue;
+      //sendDeBug(IntToStr(maxval));
+  ; // for
 
   if Result = 0 then
     Result := 1000;
@@ -990,32 +985,37 @@ var
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
-  if wxCHK_2STATE in stdStyle then
-    strLst.add('wxCHK_2STATE ');
 
-  if wxCHK_3STATE in stdStyle then
-    strLst.add('wxCHK_3STATE ');
+  try
 
-  if wxCHK_ALLOW_3RD_STATE_FOR_USER in stdStyle then
-    strLst.add('wxCHK_ALLOW_3RD_STATE_FOR_USER');
+    if wxCHK_2STATE in stdStyle then
+      strLst.add('wxCHK_2STATE ');
 
-  if wxALIGN_RIGHT_CB in stdStyle then
-    strLst.add('wxALIGN_RIGHT');
+    if wxCHK_3STATE in stdStyle then
+      strLst.add('wxCHK_3STATE ');
 
-  //  if wxCB_SORT in stdStyle then
-  //    strLst.add('wxALIGN_RIGHT ');
+    if wxCHK_ALLOW_3RD_STATE_FOR_USER in stdStyle then
+      strLst.add('wxCHK_ALLOW_3RD_STATE_FOR_USER');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxALIGN_RIGHT_CB in stdStyle then
+      strLst.add('wxALIGN_RIGHT');
+
+    //  if wxCB_SORT in stdStyle then
+    //    strLst.add('wxALIGN_RIGHT ');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetTreeviewStyleString(stdStyle: TWxtvStyleSet): string;
@@ -1024,59 +1024,63 @@ var
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
-  if wxTR_EDIT_LABELS in stdStyle then
-    strLst.add('wxTR_EDIT_LABELS');
 
-  if wxTR_NO_BUTTONS in stdStyle then
-    strLst.add('wxTR_NO_BUTTONS');
+  try
+    if wxTR_EDIT_LABELS in stdStyle then
+      strLst.add('wxTR_EDIT_LABELS');
 
-  if wxTR_HAS_BUTTONS in stdStyle then
-    strLst.add('wxTR_HAS_BUTTONS');
+    if wxTR_NO_BUTTONS in stdStyle then
+      strLst.add('wxTR_NO_BUTTONS');
 
-  if wxTR_TWIST_BUTTONS in stdStyle then
-    strLst.add('wxTR_TWIST_BUTTONS');
+    if wxTR_HAS_BUTTONS in stdStyle then
+      strLst.add('wxTR_HAS_BUTTONS');
 
-  if wxTR_NO_LINES in stdStyle then
-    strLst.add('wxTR_NO_LINES');
+    if wxTR_TWIST_BUTTONS in stdStyle then
+      strLst.add('wxTR_TWIST_BUTTONS');
 
-  if wxTR_FULL_ROW_HIGHLIGHT in stdStyle then
-    strLst.add('wxTR_FULL_ROW_HIGHLIGHT');
+    if wxTR_NO_LINES in stdStyle then
+      strLst.add('wxTR_NO_LINES');
 
-  if wxTR_LINES_AT_ROOT in stdStyle then
-    strLst.add('wxTR_LINES_AT_ROOT');
+    if wxTR_FULL_ROW_HIGHLIGHT in stdStyle then
+      strLst.add('wxTR_FULL_ROW_HIGHLIGHT');
 
-  if wxTR_HIDE_ROOT in stdStyle then
-    strLst.add('wxTR_HIDE_ROOT');
+    if wxTR_LINES_AT_ROOT in stdStyle then
+      strLst.add('wxTR_LINES_AT_ROOT');
 
-  if wxTR_ROW_LINES in stdStyle then
-    strLst.add('wxTR_ROW_LINES');
+    if wxTR_HIDE_ROOT in stdStyle then
+      strLst.add('wxTR_HIDE_ROOT');
 
-  if wxTR_HAS_VARIABLE_ROW_HEIGHT in stdStyle then
-    strLst.add('wxTR_HAS_VARIABLE_ROW_HEIGHT');
+    if wxTR_ROW_LINES in stdStyle then
+      strLst.add('wxTR_ROW_LINES');
 
-  if wxTR_SINGLE in stdStyle then
-    strLst.add('wxTR_SINGLE');
+    if wxTR_HAS_VARIABLE_ROW_HEIGHT in stdStyle then
+      strLst.add('wxTR_HAS_VARIABLE_ROW_HEIGHT');
 
-  if wxTR_MULTIPLE in stdStyle then
-    strLst.add('wxTR_MULTIPLE');
+    if wxTR_SINGLE in stdStyle then
+      strLst.add('wxTR_SINGLE');
 
-  if wxTR_EXTENDED in stdStyle then
-    strLst.add('wxTR_EXTENDED');
+    if wxTR_MULTIPLE in stdStyle then
+      strLst.add('wxTR_MULTIPLE');
 
-  if wxTR_DEFAULT_STYLE in stdStyle then
-    strLst.add('wxTR_DEFAULT_STYLE');
+    if wxTR_EXTENDED in stdStyle then
+      strLst.add('wxTR_EXTENDED');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxTR_DEFAULT_STYLE in stdStyle then
+      strLst.add('wxTR_DEFAULT_STYLE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): string;
@@ -1084,24 +1088,29 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxRB_GROUP in stdStyle then
-    strLst.add('wxRB_GROUP');
 
-  if wxRB_SINGLE in stdStyle then
-    strLst.add('wxRB_SINGLE');
+  try
+    if wxRB_GROUP in stdStyle then
+      strLst.add('wxRB_GROUP');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxRB_SINGLE in stdStyle then
+      strLst.add('wxRB_SINGLE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetListboxStyleString(stdStyle: TWxlbxStyleSet): string;
@@ -1111,38 +1120,42 @@ var
 begin
   strLst := TStringList.Create;
 
-  // if wxLB_SINGLE  in stdStyle then
-  //   strLst.add('wxLB_SINGLE');
+  try
+    // if wxLB_SINGLE  in stdStyle then
+    //   strLst.add('wxLB_SINGLE');
 
-  // if wxLB_MULTIPLE  in stdStyle then
-  //  strLst.add('wxLB_MULTIPLE');
+    // if wxLB_MULTIPLE  in stdStyle then
+    //  strLst.add('wxLB_MULTIPLE');
 
-  // if wxLB_EXTENDED   in stdStyle then
-  //   strLst.add('wxLB_EXTENDED');
+    // if wxLB_EXTENDED   in stdStyle then
+    //   strLst.add('wxLB_EXTENDED');
 
-  if wxLB_HSCROLL in stdStyle then
-    strLst.add('wxLB_HSCROLL');
+    if wxLB_HSCROLL in stdStyle then
+      strLst.add('wxLB_HSCROLL');
 
-  if wxLB_ALWAYS_SB in stdStyle then
-    strLst.add('wxLB_ALWAYS_SB');
+    if wxLB_ALWAYS_SB in stdStyle then
+      strLst.add('wxLB_ALWAYS_SB');
 
-  if wxLB_NEEDED_SB in stdStyle then
-    strLst.add('wxLB_NEEDED_SB');
+    if wxLB_NEEDED_SB in stdStyle then
+      strLst.add('wxLB_NEEDED_SB');
 
-  if wxLB_NEEDED_SB in stdStyle then
-    strLst.add('wxLB_SORT');
+    if wxLB_NEEDED_SB in stdStyle then
+      strLst.add('wxLB_SORT');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetGaugeStyleString(stdStyle: TWxgagStyleSet): string;
@@ -1150,21 +1163,28 @@ var
   I:      integer;
   strLst: TStringList;
 begin
-  strLst := TStringList.Create;
-  if wxGA_SMOOTH in stdStyle then
-    strLst.add('wxGA_SMOOTH');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+  strLst := TStringList.Create;
+
+  try
+    if wxGA_SMOOTH in stdStyle then
+      strLst.add('wxGA_SMOOTH');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
 end;
 
 function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): string;
@@ -1172,21 +1192,28 @@ var
   I:      integer;
   strLst: TStringList;
 begin
-  strLst := TStringList.Create;
-  if wxST_SIZEGRIP in stdStyle then
-    strLst.add('wxST_SIZEGRIP');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+  strLst := TStringList.Create;
+
+  try
+    if wxST_SIZEGRIP in stdStyle then
+      strLst.add('wxST_SIZEGRIP');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
 end;
 
 function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): string;
@@ -1194,12 +1221,15 @@ var
   I:      integer;
   strLst: TStringList;
 begin
-  strLst := TStringList.Create;
-  if wxSP_ARROW_KEYS in stdStyle then
-    strLst.add('wxSP_ARROW_KEYS');
 
-  if wxSP_WRAP in stdStyle then
-    strLst.add('wxSP_WRAP');
+  strLst := TStringList.Create;
+
+  try
+    if wxSP_ARROW_KEYS in stdStyle then
+      strLst.add('wxSP_ARROW_KEYS');
+
+    if wxSP_WRAP in stdStyle then
+      strLst.add('wxSP_WRAP');
 
  { if wxSP_HORIZONTAL in stdStyle then
     strLst.add('wxSP_HORIZONTAL');
@@ -1207,17 +1237,20 @@ begin
   if wxSP_VERTICAL in stdStyle then
     strLst.add('wxSP_VERTICAL');
   }
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
+
 end;
 
 function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
@@ -1225,33 +1258,38 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxSL_AUTOTICKS in stdStyle then
-    strLst.add('wxSL_AUTOTICKS');
 
-  if wxSL_LABELS in stdStyle then
-    strLst.add('wxSL_LABELS');
+  try
+    if wxSL_AUTOTICKS in stdStyle then
+      strLst.add('wxSL_AUTOTICKS');
 
-  if wxSL_LEFT in stdStyle then
-    strLst.add('wxSL_LEFT');
+    if wxSL_LABELS in stdStyle then
+      strLst.add('wxSL_LABELS');
 
-  if wxSL_RIGHT in stdStyle then
-    strLst.add('wxSL_RIGHT');
+    if wxSL_LEFT in stdStyle then
+      strLst.add('wxSL_LEFT');
 
-  if wxSL_TOP in stdStyle then
-    strLst.add('wxSL_TOP');
+    if wxSL_RIGHT in stdStyle then
+      strLst.add('wxSL_RIGHT');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxSL_TOP in stdStyle then
+      strLst.add('wxSL_TOP');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 
@@ -1260,41 +1298,45 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxCAL_SUNDAY_FIRST in stdStyle then
-    strLst.add('wxCAL_SUNDAY_FIRST');
 
-  if wxCAL_MONDAY_FIRST in stdStyle then
-    strLst.add('wxCAL_MONDAY_FIRST');
+  try
+    if wxCAL_SUNDAY_FIRST in stdStyle then
+      strLst.add('wxCAL_SUNDAY_FIRST');
 
-  if wxCAL_SHOW_HOLIDAYS in stdStyle then
-    strLst.add('wxCAL_SHOW_HOLIDAYS');
+    if wxCAL_MONDAY_FIRST in stdStyle then
+      strLst.add('wxCAL_MONDAY_FIRST');
 
-  if wxCAL_NO_YEAR_CHANGE in stdStyle then
-    strLst.add('wxCAL_NO_YEAR_CHANGE');
+    if wxCAL_SHOW_HOLIDAYS in stdStyle then
+      strLst.add('wxCAL_SHOW_HOLIDAYS');
 
-  if wxCAL_NO_MONTH_CHANGE in stdStyle then
-    strLst.add('wxCAL_NO_MONTH_CHANGE');
+    if wxCAL_NO_YEAR_CHANGE in stdStyle then
+      strLst.add('wxCAL_NO_YEAR_CHANGE');
 
-  if wxCAL_SHOW_SURROUNDING_WEEKS in stdStyle then
-    strLst.add('wxCAL_SHOW_SURROUNDING_WEEKS');
+    if wxCAL_NO_MONTH_CHANGE in stdStyle then
+      strLst.add('wxCAL_NO_MONTH_CHANGE');
 
-  if wxCAL_SEQUENTIAL_MONTH_SELECTION in stdStyle then
-    strLst.add('wxCAL_SEQUENTIAL_MONTH_SELECTION');
+    if wxCAL_SHOW_SURROUNDING_WEEKS in stdStyle then
+      strLst.add('wxCAL_SHOW_SURROUNDING_WEEKS');
 
+    if wxCAL_SEQUENTIAL_MONTH_SELECTION in stdStyle then
+      strLst.add('wxCAL_SEQUENTIAL_MONTH_SELECTION');
 
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
 end;
 
 
@@ -1303,36 +1345,44 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxNB_LEFT in stdStyle then
-    strLst.add('wxNB_LEFT');
 
-  if wxNB_RIGHT in stdStyle then
-    strLst.add('wxNB_RIGHT');
+  try
 
-  if wxNB_BOTTOM in stdStyle then
-    strLst.add('wxNB_BOTTOM');
+    if wxNB_LEFT in stdStyle then
+      strLst.add('wxNB_LEFT');
 
-  if wxNB_FIXEDWIDTH in stdStyle then
-    strLst.add('wxNB_FIXEDWIDTH');
+    if wxNB_RIGHT in stdStyle then
+      strLst.add('wxNB_RIGHT');
 
-  if wxNB_MULTILINE in stdStyle then
-    strLst.add('wxNB_MULTILINE');
+    if wxNB_BOTTOM in stdStyle then
+      strLst.add('wxNB_BOTTOM');
 
-  if wxNB_NOPAGETHEME in stdStyle then
-    strLst.add('wxNB_NOPAGETHEME');
+    if wxNB_FIXEDWIDTH in stdStyle then
+      strLst.add('wxNB_FIXEDWIDTH');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxNB_MULTILINE in stdStyle then
+      strLst.add('wxNB_MULTILINE');
+
+    if wxNB_NOPAGETHEME in stdStyle then
+      strLst.add('wxNB_NOPAGETHEME');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
 end;
 
 function GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): string;
@@ -1340,24 +1390,29 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxRA_SPECIFY_ROWS in stdStyle then
-    strLst.add('wxRA_SPECIFY_ROWS');
 
-  if wxRA_SPECIFY_COLS in stdStyle then
-    strLst.add('wxRA_SPECIFY_COLS');
+  try
+    if wxRA_SPECIFY_ROWS in stdStyle then
+      strLst.add('wxRA_SPECIFY_ROWS');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxRA_SPECIFY_COLS in stdStyle then
+      strLst.add('wxRA_SPECIFY_COLS');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): string;
@@ -1365,21 +1420,26 @@ var
   I:      integer;
   strLst: TStringList;
 begin
-  strLst := TStringList.Create;
-  if wxST_SIZEGRIP in stdStyle then
-    strLst.add('wxST_SIZEGRIP');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+  strLst := TStringList.Create;
+
+  try
+    if wxST_SIZEGRIP in stdStyle then
+      strLst.add('wxST_SIZEGRIP');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 
@@ -1390,47 +1450,50 @@ var
 begin
   strLst := TStringList.Create;
 
-  if wxTB_FLAT in stdStyle then
-    strLst.add('wxTB_FLAT');
+  try
+    if wxTB_FLAT in stdStyle then
+      strLst.add('wxTB_FLAT');
 
-  if wxTB_DOCKABLE in stdStyle then
-    strLst.add('wxTB_DOCKABLE');
+    if wxTB_DOCKABLE in stdStyle then
+      strLst.add('wxTB_DOCKABLE');
 
-  if wxTB_HORIZONTAL in stdStyle then
-    strLst.add('wxTB_HORIZONTAL');
+    if wxTB_HORIZONTAL in stdStyle then
+      strLst.add('wxTB_HORIZONTAL');
 
-  if wxTB_VERTICAL in stdStyle then
-    strLst.add('wxTB_VERTICAL');
+    if wxTB_VERTICAL in stdStyle then
+      strLst.add('wxTB_VERTICAL');
 
-  if wxTB_TEXT in stdStyle then
-    strLst.add('wxTB_TEXT');
+    if wxTB_TEXT in stdStyle then
+      strLst.add('wxTB_TEXT');
 
-  if wxTB_NOICONS in stdStyle then
-    strLst.add('wxTB_NOICONS');
+    if wxTB_NOICONS in stdStyle then
+      strLst.add('wxTB_NOICONS');
 
-  if wxTB_NODIVIDER in stdStyle then
-    strLst.add('wxTB_NODIVIDER');
+    if wxTB_NODIVIDER in stdStyle then
+      strLst.add('wxTB_NODIVIDER');
 
-  if wxTB_NOALIGN in stdStyle then
-    strLst.add('wxTB_NOALIGN');
+    if wxTB_NOALIGN in stdStyle then
+      strLst.add('wxTB_NOALIGN');
 
-  if wxTB_HORZ_LAYOUT in stdStyle then
-    strLst.add('wxTB_HORZ_LAYOUT');
+    if wxTB_HORZ_LAYOUT in stdStyle then
+      strLst.add('wxTB_HORZ_LAYOUT');
 
-  if wxTB_HORZ_TEXT in stdStyle then
-    strLst.add('wxTB_HORZ_TEXT');
+    if wxTB_HORZ_TEXT in stdStyle then
+      strLst.add('wxTB_HORZ_TEXT');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetScrolledWindowStyleString(stdStyle: TWxScrWinStyleSet): string;
@@ -1440,20 +1503,24 @@ var
 begin
   strLst := TStringList.Create;
 
-  if wxRETAINED in stdStyle then
-    strLst.add('wxRETAINED');
+  try
+    if wxRETAINED in stdStyle then
+      strLst.add('wxRETAINED');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
 
 end;
 
@@ -1463,75 +1530,84 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxHW_SCROLLBAR_NEVER in stdStyle then
-    strLst.add('wxHW_SCROLLBAR_NEVER');
+  try
 
-  if wxHW_SCROLLBAR_AUTO in stdStyle then
-    strLst.add('wxHW_SCROLLBAR_AUTO');
+    if wxHW_SCROLLBAR_NEVER in stdStyle then
+      strLst.add('wxHW_SCROLLBAR_NEVER');
 
-  if wxHW_NO_SELECTION in stdStyle then
-    strLst.add('wxHW_NO_SELECTION ');
+    if wxHW_SCROLLBAR_AUTO in stdStyle then
+      strLst.add('wxHW_SCROLLBAR_AUTO');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxHW_NO_SELECTION in stdStyle then
+      strLst.add('wxHW_NO_SELECTION ');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
 
 end;
-
-
 
 function GetSplitterWindowStyleString(stdStyle: TWxSplitterWinStyleSet): string;
 var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxSP_3D in stdStyle then
-    strLst.add('wxSP_3D');
+  try
+    if wxSP_3D in stdStyle then
+      strLst.add('wxSP_3D');
 
-  if wxSP_3DSASH in stdStyle then
-    strLst.add('wxSP_3DSASH');
+    if wxSP_3DSASH in stdStyle then
+      strLst.add('wxSP_3DSASH');
 
-  if wxSP_3DBORDER in stdStyle then
-    strLst.add('wxSP_3DBORDER ');
+    if wxSP_3DBORDER in stdStyle then
+      strLst.add('wxSP_3DBORDER ');
 
-  if wxSP_BORDER in stdStyle then
-    strLst.add('wxSP_BORDER');
+    if wxSP_BORDER in stdStyle then
+      strLst.add('wxSP_BORDER');
 
-  if wxSP_NOBORDER in stdStyle then
-    strLst.add('wxSP_NOBORDER');
+    if wxSP_NOBORDER in stdStyle then
+      strLst.add('wxSP_NOBORDER');
 
-  if wxSP_NO_XP_THEME in stdStyle then
-    strLst.add('wxSP_NO_XP_THEME ');
+    if wxSP_NO_XP_THEME in stdStyle then
+      strLst.add('wxSP_NO_XP_THEME ');
 
-  if wxSP_PERMIT_UNSPLIT in stdStyle then
-    strLst.add('wxSP_PERMIT_UNSPLIT');
+    if wxSP_PERMIT_UNSPLIT in stdStyle then
+      strLst.add('wxSP_PERMIT_UNSPLIT');
 
-  if wxSP_LIVE_UPDATE in stdStyle then
-    strLst.add('wxSP_LIVE_UPDATE');
+    if wxSP_LIVE_UPDATE in stdStyle then
+      strLst.add('wxSP_LIVE_UPDATE');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
 
 end;
 
@@ -1541,35 +1617,39 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxHIDE_READONLY in stdStyle then
-    strLst.add('wxHIDE_READONLY');
+  try
+    if wxHIDE_READONLY in stdStyle then
+      strLst.add('wxHIDE_READONLY');
 
-  if wxOVERWRITE_PROMPT in stdStyle then
-    strLst.add('wxOVERWRITE_PROMPT');
+    if wxOVERWRITE_PROMPT in stdStyle then
+      strLst.add('wxOVERWRITE_PROMPT');
 
-  if wxFILE_MUST_EXIST in stdStyle then
-    strLst.add('wxFILE_MUST_EXIST');
+    if wxFILE_MUST_EXIST in stdStyle then
+      strLst.add('wxFILE_MUST_EXIST');
 
-  if wxMULTIPLE in stdStyle then
-    strLst.add('wxMULTIPLE');
+    if wxMULTIPLE in stdStyle then
+      strLst.add('wxMULTIPLE');
 
-  if wxCHANGE_DIR in stdStyle then
-    strLst.add('wxCHANGE_DIR');
+    if wxCHANGE_DIR in stdStyle then
+      strLst.add('wxCHANGE_DIR');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else begin
-    Result := ' | ';
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]; // for
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := ' | ';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
   end;
-  //sendDebug(Result);
-  strLst.Destroy;
 
 end;
 
@@ -1578,24 +1658,28 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxDD_NEW_DIR_BUTTON in stdStyle then
-    strLst.add('wxDD_NEW_DIR_BUTTON');
+  try
+    if wxDD_NEW_DIR_BUTTON in stdStyle then
+      strLst.add('wxDD_NEW_DIR_BUTTON');
 
 
-  if strLst.Count = 0 then
-    Result := ''
-  else begin
-    Result := ', ';
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]; // for
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := ', ';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
   end;
-  //sendDebug(Result);
-  strLst.Destroy;
 
 end;
 
@@ -1605,97 +1689,105 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxPD_APP_MODAL in stdStyle then
-    strLst.add('wxPD_APP_MODAL');
+  try
+    if wxPD_APP_MODAL in stdStyle then
+      strLst.add('wxPD_APP_MODAL');
 
-  if wxPD_SMOOTH in stdStyle then
-    strLst.add('wxPD_SMOOTH');
+    if wxPD_SMOOTH in stdStyle then
+      strLst.add('wxPD_SMOOTH');
 
-  if wxPD_CAN_SKIP in stdStyle then
-    strLst.add('wxPD_CAN_SKIP');
+    if wxPD_CAN_SKIP in stdStyle then
+      strLst.add('wxPD_CAN_SKIP');
 
-  if wxPD_AUTO_HIDE in stdStyle then
-    strLst.add('wxPD_AUTO_HIDE');
+    if wxPD_AUTO_HIDE in stdStyle then
+      strLst.add('wxPD_AUTO_HIDE');
 
-  if wxPD_CAN_ABORT in stdStyle then
-    strLst.add('wxPD_CAN_ABORT ');
+    if wxPD_CAN_ABORT in stdStyle then
+      strLst.add('wxPD_CAN_ABORT ');
 
-  if wxPD_ELAPSED_TIME in stdStyle then
-    strLst.add('wxPD_ELAPSED_TIME ');
+    if wxPD_ELAPSED_TIME in stdStyle then
+      strLst.add('wxPD_ELAPSED_TIME ');
 
-  if wxPD_ESTIMATED_TIME in stdStyle then
-    strLst.add('wxPD_ESTIMATED_TIME');
+    if wxPD_ESTIMATED_TIME in stdStyle then
+      strLst.add('wxPD_ESTIMATED_TIME');
 
-  if wxPD_REMAINING_TIME in stdStyle then
-    strLst.add('wxPD_REMAINING_TIME ');
+    if wxPD_REMAINING_TIME in stdStyle then
+      strLst.add('wxPD_REMAINING_TIME ');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else begin
-    Result := ', ';
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]; // for
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := ', ';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
   end;
-  //sendDebug(Result);
-  strLst.Destroy;
 
 end;
-
 
 function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet): string;
 var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxOK in stdStyle then
-    strLst.add('wxOK');
+  try
+    if wxOK in stdStyle then
+      strLst.add('wxOK');
 
-  if wxCANCEL in stdStyle then
-    strLst.add('wxCANCEL');
+    if wxCANCEL in stdStyle then
+      strLst.add('wxCANCEL');
 
-  if wxYES_NO in stdStyle then
-    strLst.add('wxYES_NO');
+    if wxYES_NO in stdStyle then
+      strLst.add('wxYES_NO');
 
-  if wxYES_DEFAULT in stdStyle then
-    strLst.add('wxYES_DEFAULT');
+    if wxYES_DEFAULT in stdStyle then
+      strLst.add('wxYES_DEFAULT');
 
-  if wxNO_DEFAULT in stdStyle then
-    strLst.add('wxNO_DEFAULT');
+    if wxNO_DEFAULT in stdStyle then
+      strLst.add('wxNO_DEFAULT');
 
-  if wxICON_EXCLAMATION in stdStyle then
-    strLst.add('wxICON_EXCLAMATION');
+    if wxICON_EXCLAMATION in stdStyle then
+      strLst.add('wxICON_EXCLAMATION');
 
-  if wxICON_HAND in stdStyle then
-    strLst.add('wxICON_HAND');
+    if wxICON_HAND in stdStyle then
+      strLst.add('wxICON_HAND');
 
-  if wxICON_ERROR in stdStyle then
-    strLst.add('wxICON_ERROR');
+    if wxICON_ERROR in stdStyle then
+      strLst.add('wxICON_ERROR');
 
-  if wxICON_QUESTION in stdStyle then
-    strLst.add('wxICON_QUESTION');
+    if wxICON_QUESTION in stdStyle then
+      strLst.add('wxICON_QUESTION');
 
-  if wxICON_INFORMATION in stdStyle then
-    strLst.add('wxICON_INFORMATION');
+    if wxICON_INFORMATION in stdStyle then
+      strLst.add('wxICON_INFORMATION');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else begin
-    Result := ', ';
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]; // for
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := ', ';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
   end;
-  //sendDebug(Result);
-  strLst.Destroy;
 
 end;
 
@@ -1704,29 +1796,35 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxFR_DOWN in stdStyle then
-    strLst.add('wxFR_DOWN');
+  try
 
-  if wxFR_WHOLEWORD in stdStyle then
-    strLst.add('wxFR_WHOLEWORD');
+    if wxFR_DOWN in stdStyle then
+      strLst.add('wxFR_DOWN');
 
-  if wxFR_MATCHCASE in stdStyle then
-    strLst.add('wxFR_MATCHCASE ');
+    if wxFR_WHOLEWORD in stdStyle then
+      strLst.add('wxFR_WHOLEWORD');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else begin
-    Result := '';
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]; // for
+    if wxFR_MATCHCASE in stdStyle then
+      strLst.add('wxFR_MATCHCASE ');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := '';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
   end;
-  //sendDebug(Result);
-  strLst.Destroy;
 
 end;
 
@@ -1736,32 +1834,36 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
 
-  if wxFR_REPLACEDIALOG in stdStyle then
-    strLst.add('wxFR_REPLACEDIALOG');
+  try
+    if wxFR_REPLACEDIALOG in stdStyle then
+      strLst.add('wxFR_REPLACEDIALOG');
 
-  if wxFR_NOUPDOWN in stdStyle then
-    strLst.add('wxFR_NOUPDOWN ');
+    if wxFR_NOUPDOWN in stdStyle then
+      strLst.add('wxFR_NOUPDOWN ');
 
-  if wxFR_NOMATCHCASE in stdStyle then
-    strLst.add('wxFR_NOMATCHCASE');
+    if wxFR_NOMATCHCASE in stdStyle then
+      strLst.add('wxFR_NOMATCHCASE');
 
-  if wxFR_NOWHOLEWORD in stdStyle then
-    strLst.add('wxFR_NOWHOLEWORD');
+    if wxFR_NOWHOLEWORD in stdStyle then
+      strLst.add('wxFR_NOWHOLEWORD');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else begin
-    Result := ', ';
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]; // for
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := ', ';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
   end;
-  //sendDebug(Result);
-  strLst.Destroy;
 
 end;
 
@@ -1773,30 +1875,35 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxCB_SIMPLE in stdStyle then
-    strLst.add('wxCB_SIMPLE');
 
-  if wxCB_DROPDOWN in stdStyle then
-    strLst.add('wxCB_DROPDOWN');
+  try
+    if wxCB_SIMPLE in stdStyle then
+      strLst.add('wxCB_SIMPLE');
 
-  if wxCB_READONLY in stdStyle then
-    strLst.add('wxCB_READONLY');
+    if wxCB_DROPDOWN in stdStyle then
+      strLst.add('wxCB_DROPDOWN');
 
-  if wxCB_SORT in stdStyle then
-    strLst.add('wxCB_SORT');
+    if wxCB_READONLY in stdStyle then
+      strLst.add('wxCB_READONLY');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxCB_SORT in stdStyle then
+      strLst.add('wxCB_SORT');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetDlgStyleString(stdStyle: TWxDlgStyleSet; wxclassname: string): string;
@@ -1804,73 +1911,81 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxCAPTION in stdStyle then
-    strLst.add('wxCAPTION');
 
-  if wxRESIZE_BORDER in stdStyle then
-    strLst.add('wxRESIZE_BORDER');
+  try
 
-  if wxSYSTEM_MENU in stdStyle then
-    strLst.add('wxSYSTEM_MENU');
+    if wxCAPTION in stdStyle then
+      strLst.add('wxCAPTION');
 
-  if wxTHICK_FRAME in stdStyle then
-    strLst.add('wxTHICK_FRAME');
+    if wxRESIZE_BORDER in stdStyle then
+      strLst.add('wxRESIZE_BORDER');
 
-  if wxSTAY_ON_TOP in stdStyle then
-    strLst.add('wxSTAY_ON_TOP');
+    if wxSYSTEM_MENU in stdStyle then
+      strLst.add('wxSYSTEM_MENU');
 
-  if strEqual(wxclassname, 'wxDialog') then
-    if wxDIALOG_NO_PARENT in stdStyle then
-      strLst.add('wxDIALOG_NO_PARENT');
+    if wxTHICK_FRAME in stdStyle then
+      strLst.add('wxTHICK_FRAME');
 
-  if wxDIALOG_EX_CONTEXTHELP in stdStyle then
-    strLst.add('wxDIALOG_EX_CONTEXTHELP');
+    if wxSTAY_ON_TOP in stdStyle then
+      strLst.add('wxSTAY_ON_TOP');
 
-  if wxFRAME_EX_CONTEXTHELP in stdStyle then
-    strLst.add('wxFRAME_EX_CONTEXTHELP');
+    if strEqual(wxclassname, 'wxDialog') then
+      if wxDIALOG_NO_PARENT in stdStyle then
+        strLst.add('wxDIALOG_NO_PARENT');
 
-  if wxMINIMIZE_BOX in stdStyle then
-    strLst.add('wxMINIMIZE_BOX');
+    if wxDIALOG_EX_CONTEXTHELP in stdStyle then
+      strLst.add('wxDIALOG_EX_CONTEXTHELP');
 
-  if wxMAXIMIZE_BOX in stdStyle then
-    strLst.add('wxMAXIMIZE_BOX');
+    if wxFRAME_EX_CONTEXTHELP in stdStyle then
+      strLst.add('wxFRAME_EX_CONTEXTHELP');
 
-  if wxCLOSE_BOX in stdStyle then
-    strLst.add('wxCLOSE_BOX');
+    if wxMINIMIZE_BOX in stdStyle then
+      strLst.add('wxMINIMIZE_BOX');
 
-  if wxNO_3D in stdStyle then
-    strLst.add('wxNO_3D');
+    if wxMAXIMIZE_BOX in stdStyle then
+      strLst.add('wxMAXIMIZE_BOX');
 
-  if wxMINIMIZE in stdStyle then
-    strLst.add('wxMINIMIZE');
+    if wxCLOSE_BOX in stdStyle then
+      strLst.add('wxCLOSE_BOX');
 
-  if wxMAXIMIZE in stdStyle then
-    strLst.add('wxMAXIMIZE');
+    if wxNO_3D in stdStyle then
+      strLst.add('wxNO_3D');
 
-  if wxFRAME_TOOL_WINDOW in stdStyle then
-    strLst.add('wxFRAME_TOOL_WINDOW');
+    if wxMINIMIZE in stdStyle then
+      strLst.add('wxMINIMIZE');
 
-  if wxFRAME_NO_TASKBAR in stdStyle then
-    strLst.add('wxFRAME_NO_TASKBAR');
+    if wxMAXIMIZE in stdStyle then
+      strLst.add('wxMAXIMIZE');
 
-  if wxFRAME_FLOAT_ON_PARENT in stdStyle then
-    strLst.add('wxFRAME_FLOAT_ON_PARENT');
+    if wxFRAME_TOOL_WINDOW in stdStyle then
+      strLst.add('wxFRAME_TOOL_WINDOW');
 
-  if wxFRAME_SHAPED in stdStyle then
-    strLst.add('wxFRAME_SHAPED');
+    if wxFRAME_NO_TASKBAR in stdStyle then
+      strLst.add('wxFRAME_NO_TASKBAR');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxFRAME_FLOAT_ON_PARENT in stdStyle then
+      strLst.add('wxFRAME_FLOAT_ON_PARENT');
+
+    if wxFRAME_SHAPED in stdStyle then
+      strLst.add('wxFRAME_SHAPED');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
 end;
 
 function GetButtonStyleString(stdStyle: TWxBtnStyleSet): string;
@@ -1880,35 +1995,40 @@ var
 begin
 
   strLst := TStringList.Create;
-  if wxBU_AUTODRAW in stdStyle then
-    strLst.add('wxBU_AUTODRAW');
 
-  if wxBU_LEFT in stdStyle then
-    strLst.add('wxBU_LEFT');
+  try
+    if wxBU_AUTODRAW in stdStyle then
+      strLst.add('wxBU_AUTODRAW');
 
-  if wxBU_TOP in stdStyle then
-    strLst.add('wxBU_TOP');
+    if wxBU_LEFT in stdStyle then
+      strLst.add('wxBU_LEFT');
 
-  if wxBU_RIGHT in stdStyle then
-    strLst.add('wxBU_RIGHT');
+    if wxBU_TOP in stdStyle then
+      strLst.add('wxBU_TOP');
 
-  if wxBU_EXACTFIT in stdStyle then
-    strLst.add('wxBU_EXACTFIT');
+    if wxBU_RIGHT in stdStyle then
+      strLst.add('wxBU_RIGHT');
 
-  if wxBU_BOTTOM in stdStyle then
-    strLst.add('wxBU_BOTTOM');
+    if wxBU_EXACTFIT in stdStyle then
+      strLst.add('wxBU_EXACTFIT');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxBU_BOTTOM in stdStyle then
+      strLst.add('wxBU_BOTTOM');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetLbStyleString(stdStyle: TWxLbStyleSet): string;
@@ -1918,29 +2038,35 @@ var
 begin
 
   strLst := TStringList.Create;
-  if wxALIGN_LEFT in stdStyle then
-    strLst.add('wxALIGN_LEFT');
 
-  if wxALIGN_RIGHT in stdStyle then
-    strLst.add('wxALIGN_RIGHT');
+  try
 
-  if wxALIGN_CENTRE in stdStyle then
-    strLst.add('wxALIGN_CENTRE');
+    if wxALIGN_LEFT in stdStyle then
+      strLst.add('wxALIGN_LEFT');
 
-  if wxST_NO_AUTORESIZE in stdStyle then
-    strLst.add('wxST_NO_AUTORESIZE');
+    if wxALIGN_RIGHT in stdStyle then
+      strLst.add('wxALIGN_RIGHT');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxALIGN_CENTRE in stdStyle then
+      strLst.add('wxALIGN_CENTRE');
+
+    if wxST_NO_AUTORESIZE in stdStyle then
+      strLst.add('wxST_NO_AUTORESIZE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
+
 end;
 
 function GetEdtStyleString(edtdStyle: TWxEdtGeneralStyleSet): string;
@@ -1948,72 +2074,78 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxTE_PROCESS_ENTER in edtdStyle then
-    strLst.add('wxTE_PROCESS_ENTER');
 
-  if wxTE_PROCESS_TAB in edtdStyle then
-    strLst.add('wxTE_PROCESS_TAB');
+  try
 
-  if wxTE_PASSWORD in edtdStyle then
-    strLst.add('wxTE_PASSWORD');
+    if wxTE_PROCESS_ENTER in edtdStyle then
+      strLst.add('wxTE_PROCESS_ENTER');
 
-  if wxTE_READONLY in edtdStyle then
-    strLst.add('wxTE_READONLY');
+    if wxTE_PROCESS_TAB in edtdStyle then
+      strLst.add('wxTE_PROCESS_TAB');
 
-  if wxTE_RICH in edtdStyle then
-    strLst.add('wxTE_RICH');
+    if wxTE_PASSWORD in edtdStyle then
+      strLst.add('wxTE_PASSWORD');
 
-  if wxTE_RICH2 in edtdStyle then
-    strLst.add('wxTE_RICH2');
+    if wxTE_READONLY in edtdStyle then
+      strLst.add('wxTE_READONLY');
 
-  if wxTE_AUTO_URL in edtdStyle then
-    strLst.add('wxTE_AUTO_URL');
+    if wxTE_RICH in edtdStyle then
+      strLst.add('wxTE_RICH');
 
-  if wxTE_NOHIDESEL in edtdStyle then
-    strLst.add('wxTE_NOHIDESEL');
+    if wxTE_RICH2 in edtdStyle then
+      strLst.add('wxTE_RICH2');
 
-  if wxTE_LEFT in edtdStyle then
-    strLst.add('wxTE_LEFT');
+    if wxTE_AUTO_URL in edtdStyle then
+      strLst.add('wxTE_AUTO_URL');
 
-  if wxTE_CENTRE in edtdStyle then
-    strLst.add('wxTE_CENTRE');
+    if wxTE_NOHIDESEL in edtdStyle then
+      strLst.add('wxTE_NOHIDESEL');
 
-  if wxTE_RIGHT in edtdStyle then
-    strLst.add('wxTE_RIGHT');
+    if wxTE_LEFT in edtdStyle then
+      strLst.add('wxTE_LEFT');
 
-  if wxTE_DONTWRAP in edtdStyle then
-    strLst.add('wxTE_DONTWRAP');
+    if wxTE_CENTRE in edtdStyle then
+      strLst.add('wxTE_CENTRE');
 
-  if wxTE_BESTWRAP in edtdStyle then
-    strLst.add('wxTE_BESTWRAP');
+    if wxTE_RIGHT in edtdStyle then
+      strLst.add('wxTE_RIGHT');
 
-  if wxTE_CHARWRAP in edtdStyle then
-    strLst.add('wxTE_CHARWRAP');
+    if wxTE_DONTWRAP in edtdStyle then
+      strLst.add('wxTE_DONTWRAP');
 
-  if wxTE_LINEWRAP in edtdStyle then
-    strLst.add('wxTE_LINEWRAP');
+    if wxTE_BESTWRAP in edtdStyle then
+      strLst.add('wxTE_BESTWRAP');
 
-  if wxTE_WORDWRAP in edtdStyle then
-    strLst.add('wxTE_WORDWRAP');
+    if wxTE_CHARWRAP in edtdStyle then
+      strLst.add('wxTE_CHARWRAP');
 
-  if wxTE_CAPITALIZE in edtdStyle then
-    strLst.add('wxTE_CAPITALIZE');
+    if wxTE_LINEWRAP in edtdStyle then
+      strLst.add('wxTE_LINEWRAP');
 
-  if wxTE_MULTILINE in edtdStyle then
-    strLst.add('wxTE_MULTILINE');
+    if wxTE_WORDWRAP in edtdStyle then
+      strLst.add('wxTE_WORDWRAP');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxTE_CAPITALIZE in edtdStyle then
+      strLst.add('wxTE_CAPITALIZE');
+
+    if wxTE_MULTILINE in edtdStyle then
+      strLst.add('wxTE_MULTILINE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -2052,66 +2184,71 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxLC_LIST in lstvwstyle then
-    strLst.add('wxLC_LIST');
 
-  if wxLC_REPORT in lstvwstyle then
-    strLst.add('wxLC_REPORT ');
+  try
+    if wxLC_LIST in lstvwstyle then
+      strLst.add('wxLC_LIST');
 
-  if wxLC_VIRTUAL in lstvwstyle then
-    strLst.add('wxLC_VIRTUAL');
+    if wxLC_REPORT in lstvwstyle then
+      strLst.add('wxLC_REPORT ');
 
-  if wxLC_ICON in lstvwstyle then
-    strLst.add('wxLC_ICON');
+    if wxLC_VIRTUAL in lstvwstyle then
+      strLst.add('wxLC_VIRTUAL');
 
-  if wxLC_SMALL_ICON in lstvwstyle then
-    strLst.add('wxLC_SMALL_ICON');
+    if wxLC_ICON in lstvwstyle then
+      strLst.add('wxLC_ICON');
 
-  if wxLC_ALIGN_TOP in lstvwstyle then
-    strLst.add('wxLC_ALIGN_TOP');
+    if wxLC_SMALL_ICON in lstvwstyle then
+      strLst.add('wxLC_SMALL_ICON');
 
-  if wxLC_ALIGN_LEFT in lstvwstyle then
-    strLst.add('wxLC_ALIGN_LEFT');
+    if wxLC_ALIGN_TOP in lstvwstyle then
+      strLst.add('wxLC_ALIGN_TOP');
 
-  if wxLC_AUTOARRANGE in lstvwstyle then
-    strLst.add('wxLC_AUTOARRANGE');
+    if wxLC_ALIGN_LEFT in lstvwstyle then
+      strLst.add('wxLC_ALIGN_LEFT');
 
-  if wxLC_USER_TEXT in lstvwstyle then
-    strLst.add('wxLC_USER_TEXT');
+    if wxLC_AUTOARRANGE in lstvwstyle then
+      strLst.add('wxLC_AUTOARRANGE');
 
-  if wxLC_EDIT_LABELS in lstvwstyle then
-    strLst.add('wxLC_EDIT_LABELS');
+    if wxLC_USER_TEXT in lstvwstyle then
+      strLst.add('wxLC_USER_TEXT');
 
-  if wxLC_NO_HEADER in lstvwstyle then
-    strLst.add('wxLC_NO_HEADER');
+    if wxLC_EDIT_LABELS in lstvwstyle then
+      strLst.add('wxLC_EDIT_LABELS');
 
-  if wxLC_SINGLE_SEL in lstvwstyle then
-    strLst.add('wxLC_SINGLE_SEL');
+    if wxLC_NO_HEADER in lstvwstyle then
+      strLst.add('wxLC_NO_HEADER');
 
-  if wxLC_SORT_ASCENDING in lstvwstyle then
-    strLst.add('wxLC_SORT_ASCENDING');
+    if wxLC_SINGLE_SEL in lstvwstyle then
+      strLst.add('wxLC_SINGLE_SEL');
 
-  if wxLC_SORT_DESCENDING in lstvwstyle then
-    strLst.add('wxLC_SORT_DESCENDING');
+    if wxLC_SORT_ASCENDING in lstvwstyle then
+      strLst.add('wxLC_SORT_ASCENDING');
 
-  if wxLC_HRULES in lstvwstyle then
-    strLst.add('wxLC_HRULES');
+    if wxLC_SORT_DESCENDING in lstvwstyle then
+      strLst.add('wxLC_SORT_DESCENDING');
 
-  if wxLC_VRULES in lstvwstyle then
-    strLst.add('wxLC_VRULES');
+    if wxLC_HRULES in lstvwstyle then
+      strLst.add('wxLC_HRULES');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxLC_VRULES in lstvwstyle then
+      strLst.add('wxLC_VRULES');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -2147,7 +2284,8 @@ begin
 
 end;
 
-function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet; tvstyle: TWxTVStyleSet): string;
+function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;
+  tvstyle: TWxTVStyleSet): string;
 var
   strA: string;
 begin
@@ -2191,7 +2329,8 @@ begin
 
 end;
 
-function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet; gagstyle: TWxgagStyleSet): string;
+function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
+  gagstyle: TWxgagStyleSet): string;
 var
   strA: string;
 begin
@@ -2431,14 +2570,20 @@ function RGBFormatStrToColor(strColorValue: string): TColor;
 var
   strLst: TStringList;
 begin
-  strLst := TStringList.Create;
-  strTokenToStrings(strColorValue, ',', strLst);
-  if strLst.Count > 2 then
-    Result := RGB(StrToInt(strLst[0]), StrToInt(strLst[1]), StrToInt(strLst[2]))
-  else
-    Result := RGB(0, 0, 0);
 
-  strLst.Destroy;
+  strLst := TStringList.Create;
+
+  try
+
+    strTokenToStrings(strColorValue, ',', strLst);
+    if strLst.Count > 2 then
+      Result := RGB(StrToInt(strLst[0]), StrToInt(strLst[1]), StrToInt(strLst[2]))
+    else
+      Result := RGB(0, 0, 0);
+
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetColorFromString(strColorValue: string): TColor;
@@ -2517,63 +2662,69 @@ var
   I:      integer;
   strLst: TStringList;
 begin
+
   strLst := TStringList.Create;
-  if wxSIMPLE_BORDER in stdStyle then
-    strLst.add('wxSIMPLE_BORDER');
 
-  if wxDOUBLE_BORDER in stdStyle then
-    strLst.add('wxDOUBLE_BORDER');
+  try
 
-  if wxSUNKEN_BORDER in stdStyle then
-    strLst.add('wxSUNKEN_BORDER');
+    if wxSIMPLE_BORDER in stdStyle then
+      strLst.add('wxSIMPLE_BORDER');
 
-  if wxRAISED_BORDER in stdStyle then
-    strLst.add('wxRAISED_BORDER');
+    if wxDOUBLE_BORDER in stdStyle then
+      strLst.add('wxDOUBLE_BORDER');
 
-  if wxSTATIC_BORDER in stdStyle then
-    strLst.add('wxSTATIC_BORDER');
+    if wxSUNKEN_BORDER in stdStyle then
+      strLst.add('wxSUNKEN_BORDER');
 
-  if wxTRANSPARENT_WINDOW in stdStyle then
-    strLst.add('wxTRANSPARENT_WINDOW');
+    if wxRAISED_BORDER in stdStyle then
+      strLst.add('wxRAISED_BORDER');
 
-  if wxTAB_TRAVERSAL in stdStyle then
-    strLst.add('wxTAB_TRAVERSAL');
+    if wxSTATIC_BORDER in stdStyle then
+      strLst.add('wxSTATIC_BORDER');
 
-  if wxWANTS_CHARS in stdStyle then
-    strLst.add('wxWANTS_CHARS');
+    if wxTRANSPARENT_WINDOW in stdStyle then
+      strLst.add('wxTRANSPARENT_WINDOW');
 
-  if wxNO_FULL_REPAINT_ON_RESIZE in stdStyle then
-    strLst.add('wxNO_FULL_REPAINT_ON_RESIZE');
+    if wxTAB_TRAVERSAL in stdStyle then
+      strLst.add('wxTAB_TRAVERSAL');
 
-  if wxVSCROLL in stdStyle then
-    strLst.add('wxVSCROLL');
+    if wxWANTS_CHARS in stdStyle then
+      strLst.add('wxWANTS_CHARS');
 
-  if wxHSCROLL in stdStyle then
-    strLst.add('wxHSCROLL');
+    if wxNO_FULL_REPAINT_ON_RESIZE in stdStyle then
+      strLst.add('wxNO_FULL_REPAINT_ON_RESIZE');
 
-  if wxCLIP_CHILDREN in stdStyle then
-    strLst.add('wxCLIP_CHILDREN');
+    if wxVSCROLL in stdStyle then
+      strLst.add('wxVSCROLL');
 
-  if wxNO_BORDER in stdStyle then
-    strLst.add('wxNO_BORDER');
+    if wxHSCROLL in stdStyle then
+      strLst.add('wxHSCROLL');
 
-  if wxALWAYS_SHOW_SB in stdStyle then
-    strLst.add('wxALWAYS_SHOW_SB');
+    if wxCLIP_CHILDREN in stdStyle then
+      strLst.add('wxCLIP_CHILDREN');
 
-  if wxFULL_REPAINT_ON_RESIZE in stdStyle then
-    strLst.add('wxFULL_REPAINT_ON_RESIZE');
+    if wxNO_BORDER in stdStyle then
+      strLst.add('wxNO_BORDER');
 
-  if strLst.Count = 0 then
-    Result := ''
-  else
-    for I := 0 to strLst.Count - 1 do // Iterate
-      if i <> strLst.Count - 1 then
-        Result := Result + strLst[i] + ' | '
-      else
-        Result := Result + strLst[i]// for
-  ;
-  //sendDebug(Result);
-  strLst.Destroy;
+    if wxALWAYS_SHOW_SB in stdStyle then
+      strLst.add('wxALWAYS_SHOW_SB');
+
+    if wxFULL_REPAINT_ON_RESIZE in stdStyle then
+      strLst.add('wxFULL_REPAINT_ON_RESIZE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
 end;
 
 function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -2808,13 +2959,13 @@ begin
     //   Form2.Show;
     StrPCopy(usechrs, ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
     pal     := TList.Create;                    { Create TList to form our palette }
-  //  delphiBitmap.Transparent := True;
+    //  delphiBitmap.Transparent := True;
     iWidth  := delphiBitmap.Width;
     iHeight := delphiBitmap.Height;
-  //  if iWidth > 180 then
-  //    iWidth := 180;
-  //  if iHeight > 180 then
-  //    iHeight := 180;
+    //  if iWidth > 180 then
+    //    iWidth := 180;
+    //  if iHeight > 180 then
+    //    iHeight := 180;
     GetMem(image, SizeOf(integer) * iWidth * iHeight); { Allocate space for image }
     { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
     cpos := @image^;     { This will be a pointer to current position in image }
@@ -2843,8 +2994,8 @@ begin
         cpos^ := cindex;                { Store palette index for this pixel }
         Inc(cpos);                                 { Move on to next pixel }
       end//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-      //      Application.ProcessMessages;
-      //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+    //      Application.ProcessMessages;
+    //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
     ;
 
     //AssignFile(F,SaveDialog1.Filename);
@@ -2909,7 +3060,8 @@ begin
         Inc(cpos);
       end;
       //outline[cpp * (xpos + 1) + 1] := #0;  // xpos is undefined after loop
-      outline[cpp * (cpos^ + 1) + 1] := #0; // i think cpos is the intended variable instead
+      outline[cpp * (cpos^ + 1) + 1] := #0;
+      // i think cpos is the intended variable instead
 
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
@@ -3078,8 +3230,8 @@ begin
         cpos^ := cindex;                { Store palette index for this pixel }
         Inc(cpos);                                 { Move on to next pixel }
       end//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-      //      Application.ProcessMessages;
-      //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+    //      Application.ProcessMessages;
+    //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
     ;
 
     //AssignFile(F,SaveDialog1.Filename);
@@ -3270,7 +3422,7 @@ label
 
 begin
 
-cindex := 0;
+  cindex := 0;
 
   Result := '';
   begin
@@ -3313,8 +3465,8 @@ cindex := 0;
         cpos^ := cindex;                { Store palette index for this pixel }
         Inc(cpos);                                 { Move on to next pixel }
       end//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-      //      Application.ProcessMessages;
-      //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+    //      Application.ProcessMessages;
+    //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
     ;
 
     //AssignFile(F,SaveDialog1.Filename);
@@ -3372,7 +3524,8 @@ cindex := 0;
       end;
 
       //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
-      outline[cpp * (cpos^ + 1) + 1] := #0;  // i think cpos is the intended variable instead
+      outline[cpp * (cpos^ + 1) + 1] := #0;
+      // i think cpos is the intended variable instead
       if ypos < iHeight - 1 then
         StrCat(outline, '",')
       else
@@ -3391,7 +3544,8 @@ cindex := 0;
   end;
 end;
 
-function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strFileName: string): boolean;
+function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;
+  strFileName: string): boolean;
 var
   xpmFileDir:    string;
   fileStrlst:    TStringList;
@@ -3399,7 +3553,7 @@ var
 
 begin
 
-Result := True;
+  Result := True;
 
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
 
@@ -3487,8 +3641,11 @@ var
 label
   Finish1;
 begin
-  Result := True;
-  iHeight := 0; iWidth := 0; colors := 0; cpp := 0;
+  Result  := True;
+  iHeight := 0;
+  iWidth  := 0;
+  colors  := 0;
+  cpp     := 0;
   palitem := nil;
 
   begin
@@ -3557,7 +3714,8 @@ begin
         rgb1   := HexVal(cp1[0]) * 16 + HexVal(cp1[1]);
         rgb2   := HexVal(cp1[hexc]) * 16 + HexVal(cp1[hexc + 1]);
         rgb3   := HexVal(cp1[2 * hexc]) * 16 + HexVal(cp1[2 * hexc + 1]);
-        palitem^.color := longint(rgb1) + 256 * longint(rgb2) + 256 * 256 * longint(rgb3);
+        palitem^.color := longint(rgb1) + 256 * longint(rgb2) + 256 *
+          256 * longint(rgb3);
       end;
       pal.Add(palitem);
     end;
@@ -4742,7 +4900,6 @@ begin
     PictureEdit.Image1.Picture.Assign(
       TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
 
-
   if strClassName = UpperCase('TWxStaticBitmap') then
     PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(
       TJvInspectorPropData(Self.GetData()).Instance).picture);
@@ -4750,7 +4907,6 @@ begin
   if strClassName = UpperCase('TFrmNewForm') then
     PictureEdit.Image1.Picture.Assign(
       TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON);
-
 
   //  if UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName) = UpperCase('TWxStaticBitmap') then
   //    PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture);
@@ -4909,10 +5065,10 @@ begin
       mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem, TWxCustomMenuItem(
         pMenuItem.Wx_MenuItems), mnuDlg.FMenuItems);
 
-         if mnuDlg.ShowModal <> mrOk then
-      exit;
+      if mnuDlg.ShowModal <> mrOk then
+        exit;
 
-       pMenuItem.Wx_MenuItems.Destroy;
+      pMenuItem.Wx_MenuItems.Destroy;
       pMenuItem.Wx_MenuItems := TWxCustomMenuItem.Create(pMenuItem);
       mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem, mnuDlg.FMenuItems,
         TWxCustomMenuItem(pMenuItem.Wx_MenuItems));
@@ -4927,10 +5083,10 @@ begin
       mnuDlg.SetMenuItemsDes(mbItem.Parent, mbItem, TWxCustomMenuItem(
         mbItem.Wx_MenuItems), mnuDlg.FMenuItems);
 
-         if mnuDlg.ShowModal <> mrOk then
-      exit;
+      if mnuDlg.ShowModal <> mrOk then
+        exit;
 
-         mbItem.Wx_MenuItems.Destroy;
+      mbItem.Wx_MenuItems.Destroy;
       mbItem.Wx_MenuItems := TWxCustomMenuItem.Create(mbItem);
       mnuDlg.SetMenuItemsDes(mbItem.Parent, mbItem, mnuDlg.FMenuItems,
         TWxCustomMenuItem(mbItem.Wx_MenuItems));
@@ -4940,7 +5096,7 @@ begin
 
     if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
       TJvInspector(GetInspector).OnDataValueChanged(nil, Data);
-      
+
   finally
     mnuDlg.Destroy;
   end;
@@ -4973,7 +5129,7 @@ end;
 
 procedure TJvInspectorFileNameEditItem.Edit;
 var
-  FileOpenForm: TOpenDialog;
+  FileOpenForm:     TOpenDialog;
   WxFileNameString: TWxFileNameString;
 begin
 

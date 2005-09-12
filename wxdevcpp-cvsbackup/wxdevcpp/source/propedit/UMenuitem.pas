@@ -162,16 +162,16 @@ begin
   end
 
   else
-  if (tvMenuItem.Selected.GetNext <> nil) then
-    // Other nodes exist, let's insert it
+  if (tvMenuItem.Selected.GetNextSibling <> nil) then
+    // Other siblings exist, let's insert it
   begin
-    // New behavior inserts the node after the currently selected node
-    Node := tvMenuItem.Items.InsertObject(tvMenuItem.Selected.GetNext,
+     // New behavior inserts the node after the currently selected node
+    Node := tvMenuItem.Items.InsertObject(tvMenuItem.Selected.GetNextSibling,
       MenuItem.Wx_Caption, MenuItem);
     FMenuItems.Wx_Items.Insert(Node.Index, MenuItem)
   end
   else begin
-    Node := tvMenuItem.Items.AddChildObject(nil,
+     Node := tvMenuItem.Items.AddChildObject(nil,
       MenuItem.Wx_Caption, MenuItem);
     FMenuItems.Add(MenuItem, FMenuItems.Count)
   end;
