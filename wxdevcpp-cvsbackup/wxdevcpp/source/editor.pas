@@ -2545,6 +2545,7 @@ begin
   if isForm then
   begin
 
+    if (MainForm.ELDesigner1.GenerateXRC) then
     if FileExists(ChangeFileExt(FileName, XRC_EXT)) then
     begin
       MainForm.OpenFile(ChangeFileExt(FileName, XRC_EXT), true);
@@ -2569,7 +2570,7 @@ begin
            e.Text.Lines.Append('<?xml version="1.0" encoding="ISO-8859-1"?>');
            e.Text.Lines.Append('<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.3.0.1">');
 
-          
+
           GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
           e.Modified:=true;
 
@@ -2582,7 +2583,7 @@ begin
       end;
       }
     end;
-     
+
   end;
 end;
 {$ENDIF}

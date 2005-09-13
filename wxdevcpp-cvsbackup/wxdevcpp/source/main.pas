@@ -3192,7 +3192,9 @@ begin
                     SaveFileInternal(eX);
             end;
         end;
+
         // XRC
+        if (MainForm.ELDesigner1.GenerateXRC) then
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
@@ -3202,7 +3204,7 @@ begin
                     SaveFileInternal(eX);
             end;
         end;
-        // XRC
+
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
@@ -3330,15 +3332,18 @@ begin
         CloseEditorInternal(wxEditor);
     end;
 
-    wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
-    if assigned(wxXRCEditor) then begin
-        if Saved then begin
-            wxXRCEditor.Modified:=true;
-            SaveFile(wxXRCEditor);
-        end
-        Else
-            wxXRCEditor.Modified:=false;
-        CloseEditorInternal(wxXRCEditor);
+    if (MainForm.ELDesigner1.GenerateXRC) then
+    begin
+      wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
+      if assigned(wxXRCEditor) then begin
+         if Saved then begin
+             wxXRCEditor.Modified:=true;
+             SaveFile(wxXRCEditor);
+         end
+         Else
+             wxXRCEditor.Modified:=false;
+         CloseEditorInternal(wxXRCEditor);
+      end;
     end;
   end
   else
@@ -4031,6 +4036,7 @@ begin
                 MainForm.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
           end;
 
+          if (MainForm.ELDesigner1.GenerateXRC) then
            if FileExists(ChangeFileExt(EditorFilename, XRC_EXT)) then
           begin
             if not isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
@@ -8693,12 +8699,15 @@ begin
     end;
 
     // Add XRC file to the project
+    if (MainForm.ELDesigner1.GenerateXRC) then
+    begin
     strFileName := ChangeFileExt(strFileName, XRC_EXT);
     OpenFile(strFileName);
     if Assigned(fProject) and (InProject = true) then
     begin
         FolderNode:=fProject.Node;
         fProject.AddUnit(strFileName, FolderNode, false); // add under folder
+    end;
     end;
 
     // Add wxForm to the project
