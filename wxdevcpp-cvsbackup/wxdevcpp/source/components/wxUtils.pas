@@ -24,7 +24,7 @@ interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
-  UPicEdit, xprocs, DbugIntf, TypInfo, Menus, UStatusbar, JvInspector;
+  UPicEdit, xprocs, DbugIntf, TypInfo, Menus, UStatusbar, JvInspector, version;
 
 const
   IID_IWxComponentInterface: TGUID  = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
@@ -605,6 +605,7 @@ function GetPredefinedwxIds: TStringList;
 function IsIDPredefined(str: string; strlst: TStringList): boolean;
 
 function XML_Label(str: string): string;
+function CreateBlankXRC: TStringList;
 
 implementation
 
@@ -873,7 +874,7 @@ begin
       wxcompInterface) then
       if wxcompInterface.GetIDValue > Result then
         Result := wxcompInterface.GetIDValue//maxval := wxcompInterface.GetIDValue;
-      //sendDeBug(IntToStr(maxval));
+    //sendDeBug(IntToStr(maxval));
   ; // for
 
   if Result = 0 then
@@ -5242,5 +5243,26 @@ begin
 end;
 
 // END: TMultiLineBtn
+
+function CreateBlankXRC: TStringList;
+begin
+
+  Result := TStringList.Create;
+
+  try
+
+    Result.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
+    Result.Add('<resource version="2.3.0.1">');
+    Result.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
+
+    // Result.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
+
+    //Result.Add('</object>');
+    Result.Add('</resource>');
+
+  except
+    Result.Destroy;
+  end;
+end;
 
 end.

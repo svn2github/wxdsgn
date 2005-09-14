@@ -2344,7 +2344,7 @@ begin
     end;
   end;
   if MainForm.ELDesigner1.GenerateXRC then
-  UpdateXRC;
+     UpdateXRC;
 end;
 {$ENDIF}
 

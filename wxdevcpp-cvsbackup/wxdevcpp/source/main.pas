@@ -3332,19 +3332,17 @@ begin
         CloseEditorInternal(wxEditor);
     end;
 
-    if (MainForm.ELDesigner1.GenerateXRC) then
-    begin
-      wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
-      if assigned(wxXRCEditor) then begin
-         if Saved then begin
-             wxXRCEditor.Modified:=true;
-             SaveFile(wxXRCEditor);
-         end
-         Else
-             wxXRCEditor.Modified:=false;
-         CloseEditorInternal(wxXRCEditor);
-      end;
+    wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
+    if assigned(wxXRCEditor) then begin
+       if Saved then begin
+          wxXRCEditor.Modified:=true;
+          SaveFile(wxXRCEditor);
+       end
+    Else
+       wxXRCEditor.Modified:=false;
+       CloseEditorInternal(wxXRCEditor);
     end;
+
   end
   else
 {$ENDIF}
@@ -8928,15 +8926,7 @@ begin
 
     if (MainForm.ELDesigner1.GenerateXRC) then
     begin
-    strLstXRCCode := TStringList.Create;
-    strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
-    strLstXRCCode.Add('<resource version="2.3.0.1">');
-    strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
-
-    // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
-
-    //strLstXRCCode.Add('</object>');
-    strLstXRCCode.Add('</resource>');
+    strLstXRCCode := CreateBlankXRC;
     Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
     strLstXRCCode.Destroy
     end;
@@ -9094,15 +9084,7 @@ begin
 
     if Result and MainForm.ELDesigner1.GenerateXRC then
       begin
-        strLstXRCCode := TStringList.Create;
-        strLstXRCCode.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
-        strLstXRCCode.Add('<resource version="2.3.0.1">');
-        strLstXRCCode.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
-
-       // strLstXRCCode.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
-
-        //strLstXRCCode.Add('</object>');
-        strLstXRCCode.Add('</resource>');
+        strLstXRCCode := CreateBlankXRC;
         Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
         strLstXRCCode.Destroy
       end;
