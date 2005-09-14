@@ -562,18 +562,6 @@ begin
 
   if self.Parent is TForm then
   begin
-    if (totalmaxWidth < 100) then
-      self.Parent.ClientWidth := 100
-    else
-      self.Parent.ClientWidth := tmpTotalWt;
-    //self.Columns * (maxWidth+2* self.FSpaceValue);
-
-    if (totalmaxht < 45) then
-      self.Parent.ClientHeight := 35 + GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
-    else
-      self.Parent.ClientHeight :=
-        totalmaxHt + GetTotalHtOfAllToolBarAndStatusBar(self.Parent);
-
     self.Align := alClient;
   end
   else begin

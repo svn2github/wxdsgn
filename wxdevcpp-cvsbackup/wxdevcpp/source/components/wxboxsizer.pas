@@ -542,29 +542,6 @@ begin
 
   if self.Parent is TForm then
   begin
-    if (totalmaxWidth < 100) then
-      self.Parent.ClientWidth := 100
-    else if self.Orientation = wxHorizontal then
-      self.Parent.ClientWidth := totalmaxWidth
-    else
-      self.Parent.ClientWidth := maxWidth + 2 * self.FSpaceValue;
-
-    if (totalmaxht < 45) then
-      self.Parent.ClientHeight :=
-        35 + GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
-    else if self.Orientation = wxHorizontal then
-    begin
-      if maxht + 2 * self.FSpaceValue < 35 then
-        self.Parent.ClientHeight :=
-          35 + GetTotalHtOfAllToolBarAndStatusBar(self.Parent)
-      else
-        self.Parent.ClientHeight :=
-          maxht + self.FSpaceValue + self.FSpaceValue +
-          GetTotalHtOfAllToolBarAndStatusBar(self.Parent);
-    end
-    else
-      self.Parent.ClientHeight :=
-        totalmaxht + GetTotalHtOfAllToolBarAndStatusBar(self.Parent);
     self.Align := alClient;
   end
   else begin
