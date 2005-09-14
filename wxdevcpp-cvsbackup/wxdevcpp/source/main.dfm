@@ -27,7 +27,7 @@ object MainForm: TMainForm
     Left = 209
     Top = 102
     Width = 4
-    Height = 160
+    Height = 152
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -35,7 +35,7 @@ object MainForm: TMainForm
   end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 262
+    Top = 254
     Width = 630
     Height = 4
     Cursor = crVSplit
@@ -47,7 +47,7 @@ object MainForm: TMainForm
     Left = 460
     Top = 102
     Width = 3
-    Height = 160
+    Height = 152
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -56,7 +56,7 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 266
+    Top = 258
     Width = 630
     Height = 113
     ActivePage = CompSheet
@@ -1110,7 +1110,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 379
+    Top = 371
     Width = 630
     Height = 19
     Panels = <
@@ -1134,7 +1134,7 @@ object MainForm: TMainForm
     Left = 213
     Top = 102
     Width = 247
-    Height = 160
+    Height = 152
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1194,7 +1194,7 @@ object MainForm: TMainForm
     Left = 463
     Top = 102
     Width = 167
-    Height = 160
+    Height = 152
     Align = alRight
     TabOrder = 6
     Visible = False
@@ -1203,7 +1203,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 209
-    Height = 160
+    Height = 152
     Align = alLeft
     DockSite = True
     TabOrder = 7
@@ -1212,9 +1212,9 @@ object MainForm: TMainForm
       Top = 16
       Width = 192
       Height = 201
-      ActivePage = ClassSheet
+      ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 0
       object ProjectSheet: TTabSheet
         Caption = 'Project'

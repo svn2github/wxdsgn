@@ -9906,45 +9906,44 @@ begin
         end;
     end;
 
-
-        if TWinControl(AControlClass.NewInstance) is TWxSizerPanel AND not StrContainsU(CurrentParent.ClassName, 'TWxPanel') then
-	begin
-            if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
+    if TWinControl(AControlClass.NewInstance) is TWxSizerPanel AND not StrContainsU(CurrentParent.ClassName, 'TWxPanel') then
+    begin
+        if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
+        begin
+            if isSizerAvailable(ELDesigner1.DesignControl) = false then
             begin
-                if isSizerAvailable(ELDesigner1.DesignControl) = false then
+                if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
                 begin
-                    if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
-                    begin
-                        ShowErrorAndReset('You cannot add a sizer if you have other standard components.'+#13+#10+''+#13+#10+'Please remove all the controls before adding a sizer.');
-                        exit;
-                    end;
+                    ShowErrorAndReset('You cannot add a sizer if you have other standard components.'+#13+#10+''+#13+#10+'Please remove all the controls before adding a sizer.');
+                    exit;
                 end;
             end;
         end;
+    end;
 
-        PreviousComponent:=nil;       
+    PreviousComponent:=nil;
 
-        if TWinControl(AControlClass.NewInstance) is TWxNoteBookPage then
+    if TWinControl(AControlClass.NewInstance) is TWxNoteBookPage then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
         begin
-            if ELDesigner1.SelectedControls.count = 0 then
-            begin
-                   ShowErrorAndReset('Please select a NoteBook and drop the page.');
-                   exit;
-            end;
-            //AControlClass.
-            PreviousComponent:=ELDesigner1.SelectedControls[0];
-            if (ELDesigner1.SelectedControls[0] is TWxNoteBookPage) then
-            begin
-                PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
-                exit;
-            end;
-
-            if not (ELDesigner1.SelectedControls[0] is TWxNoteBook) then
-            begin
-                ShowErrorAndReset('Please select a NoteBook and drop the page.');
-                exit;
-            end;
+               ShowErrorAndReset('Please select a NoteBook and drop the page.');
+               exit;
         end;
+        //AControlClass.
+        PreviousComponent:=ELDesigner1.SelectedControls[0];
+        if (ELDesigner1.SelectedControls[0] is TWxNoteBookPage) then
+        begin
+            PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
+            exit;
+        end;
+
+        if not (ELDesigner1.SelectedControls[0] is TWxNoteBook) then
+        begin
+            ShowErrorAndReset('Please select a NoteBook and drop the page.');
+            exit;
+        end;
+    end;
 end;
 {$ENDIF}
 
