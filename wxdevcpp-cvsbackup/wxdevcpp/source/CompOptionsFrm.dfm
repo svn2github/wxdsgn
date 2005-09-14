@@ -121,8 +121,8 @@ object CompForm: TCompForm
     Top = 4
     Width = 440
     Height = 378
-    ActivePage = tabPrograms
-    TabIndex = 3
+    ActivePage = tabCompiler
+    TabIndex = 0
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
@@ -146,7 +146,7 @@ object CompForm: TCompForm
         Left = 6
         Top = 6
         Width = 420
-        Height = 69
+        Height = 49
         Caption = 'Compiler set to configure'
         TabOrder = 1
         object btnAddCompilerSet: TSpeedButton
@@ -269,36 +269,27 @@ object CompForm: TCompForm
             'gcc 2.95'
             'gcc 3.2')
         end
-        object is_vc: TCheckBox
-          Left = 8
-          Top = 46
-          Width = 401
-          Height = 17
-          Caption = 'Is this compiler a Visual C++ Compiler?'
-          TabOrder = 1
-          OnClick = is_vcClick
-        end
       end
       object cmdline: TGroupBox
         Left = 6
-        Top = 80
+        Top = 62
         Width = 420
-        Height = 220
+        Height = 238
         Caption = 'Compiler Command Line'
         TabOrder = 2
         DesignSize = (
           420
-          220)
+          238)
         object lblDelay: TLabel
           Left = 6
-          Top = 194
+          Top = 207
           Width = 70
           Height = 13
           Caption = 'Compile Delay:'
         end
         object lblDelayMsg: TLabel
           Left = 158
-          Top = 186
+          Top = 199
           Width = 247
           Height = 28
           AutoSize = False
@@ -322,15 +313,15 @@ object CompForm: TCompForm
           Left = 23
           Top = 37
           Width = 388
-          Height = 58
+          Height = 65
           Anchors = [akLeft, akTop, akRight]
           ScrollBars = ssVertical
           TabOrder = 1
           WantReturns = False
         end
         object cbLinkerAdd: TCheckBox
-          Left = 6
-          Top = 100
+          Left = 8
+          Top = 107
           Width = 373
           Height = 17
           Anchors = [akLeft, akTop, akRight]
@@ -339,16 +330,16 @@ object CompForm: TCompForm
         end
         object Linker: TMemo
           Left = 23
-          Top = 122
+          Top = 128
           Width = 388
-          Height = 58
+          Height = 65
           ScrollBars = ssVertical
           TabOrder = 3
           WantReturns = False
         end
         object seCompDelay: TSpinEdit
           Left = 83
-          Top = 190
+          Top = 203
           Width = 60
           Height = 22
           MaxValue = 0
