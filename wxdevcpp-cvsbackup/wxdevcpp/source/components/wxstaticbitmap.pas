@@ -325,6 +325,12 @@ begin
   FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
   FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
 
+  FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
+  FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
+  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
+  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
+  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+  
   FWx_PropertyList.add('Font : Font');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
   FWx_PropertyList.add('Wx_Comments:Comments');
