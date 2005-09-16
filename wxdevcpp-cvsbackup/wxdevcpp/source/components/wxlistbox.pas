@@ -60,6 +60,8 @@ type
     FWx_EventList: TStringList;
     FWx_PropertyList: TStringList;
 
+    FWx_Comments: TStrings;
+    
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
 
@@ -169,6 +171,7 @@ type
     property InvisibleFGColorString: string
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
   end;
 
 procedure Register;
@@ -194,6 +197,7 @@ begin
   FWx_IDValue := -1;
   FWx_StretchFactor := 0;
   FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+  FWx_Comments := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -202,6 +206,7 @@ procedure TWxListBox.AutoDestroy;
 begin
   FWx_EventList.Destroy;
   FWx_PropertyList.Destroy;
+  FWx_Comments.Destroy;
 end; { of AutoDestroy }
 
 { Override OnClick handler from TListBox,IWxComponentInterface }
@@ -267,6 +272,7 @@ begin
   FWx_PropertyList.add('Width:Width');
   FWx_PropertyList.add('Height:Height');
   FWx_PropertyList.add('Wx_Validator : Validator code');
+  FWx_PropertyList.add('Wx_Comments:Comments');
 
   FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
   FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -422,7 +428,7 @@ begin
       strStyle := ', 0, ' + self.Wx_Validator;
 
   Result := Format('wxArrayString arrayStringFor_%s;', [self.Name]);
-  Result := Result + #13 + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), arrayStringFor_%s%s);', [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Left, self.Top, self.Width, self.Height, self.Name, strStyle]);
+  Result := GetCommentString(self.FWx_Comments.Text) + Result + #13 + Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), arrayStringFor_%s%s);', [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Left, self.Top, self.Width, self.Height, self.Name, strStyle]);
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -535,7 +541,23 @@ function TWxListBox.GetParameterFromEventName(EventName: string): string;
   { var }
   { . . . }
 begin
+   if EventName = 'EVT_LISTBOX' then
+  begin
+    Result := 'wxCommandEvent& event';
+    exit;
+  end;
 
+  if EventName = 'EVT_UPDATE_UI' then
+  begin
+    Result := 'wxUpdateUIEvent& event';
+    exit;
+  end;
+
+  if EventName = 'EVT_LISTBOX_DCLICK' then
+  begin
+    Result := 'wxCommandEvent& event';
+    exit;
+  end;
 end;
 
 function TWxListBox.GetPropertyList: TStringList;
@@ -558,24 +580,7 @@ end;
 
 function TWxListBox.GetTypeFromEventName(EventName: string): string;
 begin
-
-  if EventName = 'EVT_LISTBOX' then
-  begin
-    Result := 'wxCommandEvent& event';
-    exit;
-  end;
-
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-
-  if EventName = 'EVT_LISTBOX_DCLICK' then
-  begin
-    Result := 'wxCommandEvent& event';
-    exit;
-  end;
+   Result := 'void';
 end;
 
 function TWxListBox.GetWxClassName: string;
