@@ -136,7 +136,9 @@ type
   public
     procedure Init(In_Project: boolean; Caption_, File_name: string; DoOpen: boolean; const IsRes: boolean = FALSE);
     destructor Destroy; override;
+    {$IFDEF WX_BUILD}
     procedure Close; // New fnc for wx
+    {$ENDIF}
     // RNC set the breakpoints for this file when it is opened
     procedure SetBreakPointsOnOpen;
 
@@ -156,7 +158,9 @@ type
     procedure SearchAgain;
     procedure Exportto(const isHTML: boolean);
     procedure InsertString(const Value: string; const move: boolean);
+    {$IFDEF WX_BUILD}
     procedure SetString(const Value: string); // new fnc for wx
+    {$ENDIF}
     function GetWordAtCursor: string;
     procedure SetErrorFocus(const Col, Line: integer);
     procedure SetActiveBreakpointFocus(const Line: integer);

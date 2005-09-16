@@ -204,6 +204,8 @@ end;
 procedure TCustomXPToolTip.CreateParams(var Params: TCreateParams);
 begin
  inherited;
+{TODO: 'winnt: The next line breaks tooltip on nt which crashes anyway'}
+ if IsWin2kOrLater then
  Params.ExStyle := Params.ExStyle or WS_EX_LAYERED;
 end;
 

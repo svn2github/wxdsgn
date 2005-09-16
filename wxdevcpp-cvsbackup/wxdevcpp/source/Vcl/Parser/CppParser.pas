@@ -1226,7 +1226,8 @@ begin
         FName := StringReplace(FName, '>', '', [rfReplaceAll]);
         FName := StringReplace(FName, '"', '', [rfReplaceAll]);
         FullFName := LowerCase(ExpandFileName(GetFullFileName(FName)));
-        PIncludesRec(fIncludesList[fIncludesList.Count - 1])^.IncludeFiles := PIncludesRec(fIncludesList[fIncludesList.Count - 1])^.IncludeFiles + AnsiQuotedStr(FullFName, '"') + ',';
+         with PIncludesRec(fIncludesList[fIncludesList.Count - 1])^ do
+          IncludeFiles := IncludeFiles + AnsiQuotedStr(FullFName, '"') + ',';
         IsGlobal := IsGlobalFile(FullFName);
         if {not fReparsing and}((fParseGlobalHeaders and IsGlobal) or (fParseLocalHeaders and not IsGlobal)) then begin
           AddFileToScan(FullFName);
@@ -1662,7 +1663,8 @@ begin
     end;
   finally
     // remove last comma
-    Delete(PIncludesRec(fIncludesList[fIncludesList.Count - 1])^.IncludeFiles, Length(PIncludesRec(fIncludesList[fIncludesList.Count - 1])^.IncludeFiles), 1);
+    with PIncludesRec(fIncludesList[fIncludesList.Count - 1])^ do
+  	       Delete(IncludeFiles, Length(IncludeFiles), 1);
     fSkipList.Clear;
     fCurrentClassLevel.Clear;
     FCurrentClass.Clear;
@@ -1682,6 +1684,8 @@ procedure TCppParser.Reset(KeepLoaded: boolean = True);
 var
   I: integer;
   I1: integer;
+  s: PStatement;
+  p: Pointer;
 begin
   if Assigned(fOnBusy) then
     fOnBusy(Self);
@@ -1698,28 +1702,33 @@ begin
   else
     I := 0;
   while I < fStatementList.Count do
-    if not KeepLoaded or (KeepLoaded and not PStatement(fStatementList[I])^._Loaded) then begin
-      I1 := fScannedFiles.IndexOf(PStatement(fStatementList[I])^._Filename);
+
+    begin
+      s := PStatement(fStatementList[I]);
+      if not KeepLoaded or (KeepLoaded and not s^._Loaded) then begin
+         I1 := fScannedFiles.IndexOf(s^._Filename);
       if I1 = -1 then
-        I1 := fScannedFiles.IndexOf(PStatement(fStatementList[I])^._DeclImplFileName);
+        I1 := fScannedFiles.IndexOf(s^._DeclImplFileName);
       if I1 <> -1 then
         fScannedFiles.Delete(I1);
-      I1 := fCacheContents.IndexOf(PStatement(fStatementList[I])^._Filename);
+      I1 := fCacheContents.IndexOf(s^._Filename);
       if I1 = -1 then
-        I1 := fCacheContents.IndexOf(PStatement(fStatementList[I])^._DeclImplFileName);
+        I1 := fCacheContents.IndexOf(s^._DeclImplFileName);
       if I1 <> -1 then
         fCacheContents.Delete(I1);
-      Dispose(PStatement(fStatementList[I]));
+      Dispose(s);
       fStatementList.Delete(I);
     end
     else
       Inc(I);
+  end;
   fStatementList.Pack;
 
   if not KeepLoaded then begin
     while fIncludesList.Count > 0 do begin
-      if Assigned(fIncludesList[fIncludesList.Count - 1]) then
-        Dispose(PIncludesRec(fIncludesList[fIncludesList.Count - 1]));
+      p := fIncludesList[fIncludesList.Count - 1];
+      if p <> nil then
+        Dispose(PIncludesRec(p));
       fIncludesList.Delete(fIncludesList.Count - 1);
     end;
     fNextID := 0;
@@ -2107,11 +2116,14 @@ end;
 procedure TCppParser.Save(FileName: TFileName);
 var
   hFile: integer;
-  I, I2, tmp, HowMany: integer;
+  I, I2, HowMany: integer;
   MAGIC: array[0..7] of Char;
-  P: array[0..4095] of Char;
+  P: PChar;
+  bufsize: Integer;
 begin
   MAGIC := 'CPPP 0.1';
+  GetMem(P, 4096 + 1);
+  bufsize := 4096; 
   fCacheContents.Assign(fScannedFiles);
   if FileExists(FileName) then
     DeleteFile(FileName);
@@ -2124,7 +2136,8 @@ begin
     FileWrite(hFile, HowMany, SizeOf(Integer));
     for I := 0 to fStatementList.Count - 1 do begin
       with PStatement(fStatementList[I])^ do begin
-        if Length(_FullText) > SizeOf(P) then begin
+{
+        if Length(_FullText) > 4095 then begin
           tmp := FileSeek(hFile, 0, 1);  // retrieve currrent pos
           FileSeek(hFile, SizeOf(Magic), 0); // seek to the number of statements
           HowMany := HowMany - 1;
@@ -2132,6 +2145,7 @@ begin
           FileSeek(hFile, tmp, 0); // seek to original offset
           Continue;
         end;
+}
         FileWrite(hFile, _ID, SizeOf(integer));
         FileWrite(hFile, _ParentID, SizeOf(integer));
         FileWrite(hFile, _Kind, SizeOf(byte));
@@ -2142,40 +2156,85 @@ begin
         FileWrite(hFile, _Line, SizeOf(integer));
         I2 := Length(_FullText);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _FullText);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_Type);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _Type);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_Command);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _Command);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_Args);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _Args);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_ScopelessCmd);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _ScopelessCmd);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_DeclImplFileName);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _DeclImplFileName);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_FileName);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _FileName);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_InheritsFromIDs);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _InheritsFromIDs);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
         I2 := Length(_InheritsFromClasses);
         FileWrite(hFile, I2, SizeOf(Integer));
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
         StrPCopy(P, _InheritsFromClasses);
-        FileWrite(hFile, P, I2);
+        FileWrite(hFile, P^, I2);
       end;
     end;
 
@@ -2185,26 +2244,44 @@ begin
     for I := 0 to fScannedFiles.Count - 1 do begin
       I2 := Length(fScannedFiles[I]);
       FileWrite(hFile, I2, SizeOf(Integer));
+      if I2 > bufsize then
+      begin
+        ReallocMem(P, I2 + 1);
+        bufsize := I2;
+      end;
       StrPCopy(P, fScannedFiles[I]);
-      FileWrite(hFile, P, I2);
+      FileWrite(hFile, P^, I2);
     end;
 
     // write file includes list for each file scanned
     I := fIncludesList.Count - 1;
     FileWrite(hFile, I, SizeOf(Integer));
     for I := 0 to fIncludesList.Count - 1 do begin
-      I2 := Length(PIncludesRec(fIncludesList[I])^.BaseFile);
+      with PIncludesRec(fIncludesList[I])^ do begin
+        I2 := Length(BaseFile);
       FileWrite(hFile, I2, SizeOf(Integer));
-      StrPCopy(P, PIncludesRec(fIncludesList[I])^.BaseFile);
-      FileWrite(hFile, P, I2);
-      I2 := Length(PIncludesRec(fIncludesList[I])^.IncludeFiles);
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
+        StrPCopy(P, BaseFile);
+        FileWrite(hFile, P^, I2);
+        I2 := Length(IncludeFiles);
       FileWrite(hFile, I2, SizeOf(Integer));
-      StrPCopy(P, PIncludesRec(fIncludesList[I])^.IncludeFiles);
-      FileWrite(hFile, P, I2);
+        if I2 > bufsize then
+        begin
+          ReallocMem(P, I2 + 1);
+          bufsize := I2;
+        end;
+        StrPCopy(P, IncludeFiles);
+        FileWrite(hFile, P^, I2);
+      end;
     end;
     FileClose(hFile);
   end;
   fBaseIndex := fNextID;
+  FreeMem(P, bufsize + 1);
 end;
 
 procedure TCppParser.Load(FileName: TFileName);
@@ -2214,10 +2291,13 @@ var
   I, I2: integer;
   MAGIC: array[0..7] of Char;
   Statement: PStatement;
-  Buf: array[0..4095] of Char;
+  Buf: PChar;
+  bufsize: Integer;
   ID_offset, ID_last: integer;
   P: PIncludesRec;
 begin
+  GetMem(Buf, 4096 + 1);
+  bufsize := 4096;
   Reset;
   ID_Offset := fNextID;
   ID_Last := ID_Offset;
@@ -2240,40 +2320,85 @@ begin
           FileRead(hFile, _Line, SizeOf(integer));
 
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _FullText := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _Type := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _Command := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _Args := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _ScopelessCmd := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _DeclImplFileName := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _FileName := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _InheritsFromIDs := Buf;
           FileRead(hFile, I2, SizeOf(Integer));
-          FillChar(Buf, SizeOf(Buf), 0);
-          FileRead(hFile, Buf, I2);
+          if I2 > bufsize then
+          begin
+            ReallocMem(Buf, I2 + 1);
+            bufsize := I2;
+          end;
+          FileRead(hFile, Buf^, I2);
+          FillChar((Buf + I2)^, 1, 0);
           _InheritsFromClasses := Buf;
           _Loaded := True;
           _NoCompletion := False;
@@ -2297,8 +2422,13 @@ begin
       FileRead(hFile, HowMany, SizeOf(Integer));
       for I := 0 to HowMany do begin
         FileRead(hFile, I2, SizeOf(Integer));
-        FillChar(Buf, SizeOf(Buf), 0);
-        FileRead(hFile, Buf, I2);
+        if I2 > bufsize then
+        begin
+          ReallocMem(Buf, I2 + 1);
+          bufsize := I2;
+        end;
+        FileRead(hFile, Buf^, I2);
+        FillChar((Buf + I2)^, 1, 0);
         if fScannedFiles.IndexOf(Buf) = -1 then
           fScannedFiles.Add(Buf);
         if fCacheContents.IndexOf(Buf) = -1 then
@@ -2310,12 +2440,22 @@ begin
       for I := 0 to HowMany do begin
         P := New(PIncludesRec);
         FileRead(hFile, I2, SizeOf(Integer));
-        FillChar(Buf, SizeOf(Buf), 0);
-        FileRead(hFile, Buf, I2);
+        if I2 > bufsize then
+        begin
+          ReallocMem(Buf, I2 + 1);
+          bufsize := I2;
+        end;
+        FileRead(hFile, Buf^, I2);
+        FillChar((Buf + I2)^, 1, 0);
         P^.BaseFile := Buf;
         FileRead(hFile, I2, SizeOf(Integer));
-        FillChar(Buf, SizeOf(Buf), 0);
-        FileRead(hFile, Buf, I2);
+        if I2 > bufsize then
+        begin
+          ReallocMem(Buf, I2 + 1);
+          bufsize := I2;
+        end;
+        FileRead(hFile, Buf^, I2);
+        FillChar((Buf + I2)^, 1, 0);
         P^.IncludeFiles := Buf;
         fIncludesList.Add(P);
       end;
@@ -2324,6 +2464,7 @@ begin
   end;
   fNextID := ID_Last + 1;
   fBaseIndex := fStatementList.Count;
+  FreeMem(Buf, bufsize + 1);
   PostProcessInheritance;
 end;
 

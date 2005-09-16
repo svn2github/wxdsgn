@@ -118,10 +118,11 @@ begin
   Result := Assigned(fMonitor);
 end;
 
-//procedure TdevFileMonitor.MonitorTerminated(Sender: TObject);
-//begin
-//  fMonitor := nil;
-//end;
+{procedure TdevFileMonitor.MonitorTerminated(Sender: TObject);
+begin
+  fMonitor := nil;
+end;
+}
 
 {
 procedure TdevFileMonitor.Notify(ChangeType: TdevMonitorChangeType;
