@@ -11182,7 +11182,7 @@ begin
       intfObj.GetEventList));
     VarType := intfObj.GetTypeFromEventName(strEName);
     VarArguments := intfObj.GetParameterFromEventName(strEName);
-  end;
+   end;
 
   if trim(VarType) = '' then
     VarType := 'void';
