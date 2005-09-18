@@ -9451,6 +9451,7 @@ begin
       begin
         FirstComponentBeingDeleted:=ELDesigner1.SelectedControls[0].Name;
       end;
+
       SelectedComponent:=GetCurrentDesignerForm();
       BuildProperties(GetCurrentDesignerForm());
 

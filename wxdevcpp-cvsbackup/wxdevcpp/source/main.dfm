@@ -1212,9 +1212,9 @@ object MainForm: TMainForm
       Top = 16
       Width = 192
       Height = 201
-      ActivePage = ProjectSheet
+      ActivePage = ClassSheet
       Images = dmMain.ProjectImage_NewLook
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 0
       object ProjectSheet: TTabSheet
         Caption = 'Project'
@@ -1223,7 +1223,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 173
+          Height = 172
           Align = alClient
           ChangeDelay = 1
           DragMode = dmAutomatic
@@ -1255,7 +1255,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 173
+          Height = 172
           Align = alClient
           Images = dmMain.ClassImages
           ReadOnly = True
@@ -1290,7 +1290,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 173
+          Height = 172
           Align = alClient
           Images = dmMain.MenuImages_NewLook
           Indent = 19

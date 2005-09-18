@@ -234,6 +234,10 @@ begin
 end;
 
 function TWxNoteBookPage.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+  i: integer;
+  wxcompInterface: IWxComponentInterface;
+  tempstring: TStringList;
 begin
 
   Result := TStringList.Create;
@@ -244,6 +248,21 @@ begin
     Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
     Result.Add(IndentString + Format('<label>%s</label>', [XML_Label(self.Caption)]));
+
+    for i := 0 to self.ControlCount - 1 do // Iterate
+      if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        // Only add the XRC control if it is a child of the top-most parent (the form)
+        //  If it is a child of a sizer, panel, or other object, then it's XRC code
+        //  is created in GenerateXRCControlCreation of that control.
+        if (self.Controls[i].GetParentComponent.Name = self.Name) then
+        begin
+          tempstring := wxcompInterface.GenerateXRCControlCreation('  ' + IndentString);
+          try
+            Result.AddStrings(tempstring)
+          finally
+            tempstring.Free
+          end
+        end; // for
 
     Result.Add(IndentString + '</object>');
 

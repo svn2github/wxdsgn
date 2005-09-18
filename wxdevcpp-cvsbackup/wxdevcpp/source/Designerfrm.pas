@@ -290,6 +290,7 @@ var
   CntIntf: IWxContainerAndSizerInterface;
   strTemp: string;
 begin
+
   if GetBlockStartAndEndPos(synEdit, strClassName,
     btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
   begin
@@ -465,7 +466,7 @@ begin
 
     strLst.Destroy;
   end;
-
+  
 end;
 
 procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: string;
