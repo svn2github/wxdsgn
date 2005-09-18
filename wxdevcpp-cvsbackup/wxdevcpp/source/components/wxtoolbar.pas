@@ -385,12 +385,12 @@ begin
 
   try
     Result.Add(IndentString + Format('<object class="wxToolBar" name="%s">', [self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    //Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    //Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    //Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    //Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetToolBarSpecificStyle(self.Wx_GeneralStyle, self.Wx_ToolbarStyleSet)]));
 
     for i := 0 to self.ControlCount - 1 do // Iterate
@@ -525,6 +525,26 @@ end;
 function TWxToolBar.GetParameterFromEventName(EventName: string): string;
 begin
 
+  if EventName = 'EVT_UPDATE_UI' then
+  begin
+    Result := 'wxUpdateUIEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_MENU' then
+  begin
+    Result := 'wxMenuEvent& event';
+    exit;
+  end;
+   if EventName = 'EVT_TOOL_ENTER' then
+  begin
+    Result := 'wxCommandEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TOOL_RCLICKED' then
+  begin
+    Result := 'wxCommandEvent& event';
+    exit;
+  end;
 end;
 
 function TWxToolBar.GetPropertyList: TStringList;
@@ -562,7 +582,7 @@ end;
 
 procedure TWxToolBar.SetIDValue(IDValue: longint);
 begin
-  Wx_IDValue := IDVAlue;
+  Wx_IDValue := IDValue;
 end;
 
 procedure TWxToolBar.SetStretchFactor(intValue: integer);

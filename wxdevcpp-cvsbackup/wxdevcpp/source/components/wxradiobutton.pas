@@ -307,19 +307,19 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<label>%s</label>', [XML_Label(self.Caption)]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetRadioButtonSpecificStyle(self.Wx_GeneralStyle, Wx_RadioButtonStyle)]));
 
     if self.Checked then
-      Result.Add(IndentString + '<value>1</value>')
+      Result.Add(IndentString + '  <value>1</value>')
     else
-      Result.Add(IndentString + '<value>0</value>');
+      Result.Add(IndentString + '  <value>0</value>');
 
     Result.Add(IndentString + '</object>');
 
@@ -507,7 +507,7 @@ end;
 
 procedure TWxRadioButton.SetIDValue(IDValue: longint);
 begin
-  Wx_IDValue := IDVAlue;
+  Wx_IDValue := IDValue;
 end;
 
 procedure TWxRadioButton.SetStretchFactor(intValue: integer);

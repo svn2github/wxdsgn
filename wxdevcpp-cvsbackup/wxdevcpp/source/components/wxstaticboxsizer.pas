@@ -338,8 +338,8 @@ begin
     else
       strOrientation := 'wxHORIZONTAL';
 
-    Result.Add(IndentString + Format('<orient>%s</orient>', [strOrientation]));
-    Result.Add(IndentString + Format('<label>%s</label>', [self.Wx_Caption]));
+    Result.Add(IndentString + Format('  <orient>%s</orient>', [strOrientation]));
+    Result.Add(IndentString + Format('  <label>%s</label>', [self.Wx_Caption]));
 
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
@@ -348,7 +348,7 @@ begin
         //  is created in GenerateXRCControlCreation of that control.
         if (self.Controls[i].GetParentComponent.Name = self.Name) then
         begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('  ' + IndentString);
+          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
           try
             Result.AddStrings(tempstring)
           finally

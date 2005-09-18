@@ -325,10 +325,10 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<rows>%d</rows>', [self.rows]));
-    Result.Add(IndentString + Format('<cols>%d</cols>', [self.columns]));
-    Result.Add(IndentString + Format('<vgap>%d</vgap>', [self.rowSpacing]));
-    Result.Add(IndentString + Format('<hgap>%d</hgap>', [self.columnSpacing]));
+    Result.Add(IndentString + Format('  <rows>%d</rows>', [self.rows]));
+    Result.Add(IndentString + Format('  <cols>%d</cols>', [self.columns]));
+    Result.Add(IndentString + Format('  <vgap>%d</vgap>', [self.rowSpacing]));
+    Result.Add(IndentString + Format('  <hgap>%d</hgap>', [self.columnSpacing]));
 
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
@@ -337,7 +337,7 @@ begin
         //  is created in GenerateXRCControlCreation of that control.
         if (self.Controls[i].GetParentComponent.Name = self.Name) then
         begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('  ' + IndentString);
+          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
           try
             Result.AddStrings(tempstring);
           finally

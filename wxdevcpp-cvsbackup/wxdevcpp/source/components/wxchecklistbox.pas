@@ -376,18 +376,18 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + '<content>');
+    Result.Add(IndentString + '  <content>');
 
     // 9 Aug 2005 Tony Reina - Looks like we don't have a way to set checked status
     for i := 0 to self.Items.Count - 1 do
-      Result.Add(IndentString + '  <item checked="0">' + self.Items[i] + '</item>');
+      Result.Add(IndentString + '    <item checked="0">' + self.Items[i] + '</item>');
 
-    Result.Add(IndentString + '</content>');
+    Result.Add(IndentString + '  </content>');
 
     Result.Add(IndentString + '</object>');
 

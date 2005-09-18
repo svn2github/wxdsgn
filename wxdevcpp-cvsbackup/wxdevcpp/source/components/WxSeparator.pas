@@ -317,11 +317,6 @@ end;
 
 function TWxSeparator.GetParameterFromEventName(EventName: string): string;
 begin
-  if EventName = 'EVT_BUTTON' then
-  begin
-    Result := 'wxCommandEvent& event';
-    exit;
-  end;
   if EventName = 'EVT_UPDATE_UI' then
   begin
     Result := 'wxUpdateUIEvent& event';

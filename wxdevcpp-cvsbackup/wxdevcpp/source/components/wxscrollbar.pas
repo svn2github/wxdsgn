@@ -455,20 +455,20 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    //Result.Add(IndentString + Format('<value>%d</value>', [self.Position]));
-    //Result.Add(IndentString + Format('<range>%d</range>', [self.Max]));
+    //Result.Add(IndentString + Format('  <value>%d</value>', [self.Position]));
+    //Result.Add(IndentString + Format('  <range>%d</range>', [self.Max]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetStdStyleString(self.Wx_GeneralStyle)]));
-    Result.Add(IndentString + Format('<orient>%s</orient>',
+    Result.Add(IndentString + Format('  <orient>%s</orient>',
       [GetSBOrientation(self.Wx_SBOrientation)]));
 
-    // Result.Add(IndentString + Format('<value>%d</value>', [);
+    // Result.Add(IndentString + Format('  <value>%d</value>', [);
 
     Result.Add(IndentString + '</object>');
 

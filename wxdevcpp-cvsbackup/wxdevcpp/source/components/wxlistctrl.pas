@@ -605,12 +605,12 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetListViewSpecificStyle(Wx_GeneralStyle, Wx_ListviewStyle)]));
     Result.Add(IndentString + '</object>');
   except
@@ -824,9 +824,9 @@ begin
     Result := 'wxListEvent& event';
     exit;
   end;
-  if EventName = 'EVT_UPDATE_UI' then
+ if EventName = 'EVT_UPDATE_UI' then
   begin
-    Result := 'wxListEvent& event';
+    Result := 'wxUpdateUIEvent& event';
     exit;
   end;
 end;

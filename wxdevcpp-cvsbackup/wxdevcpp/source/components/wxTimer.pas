@@ -175,7 +175,7 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<interval>%d</interval>', [self.Wx_Interval]));
+    Result.Add(IndentString + Format('  <interval>%d</interval>', [self.Wx_Interval]));
     Result.Add(IndentString + '</object>');
   except
     Result.Free;

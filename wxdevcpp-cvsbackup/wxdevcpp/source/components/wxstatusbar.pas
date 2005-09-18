@@ -305,14 +305,14 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    // Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    // Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    // Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    // Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<fields>%d</fields>', [self.Panels.Count]));
+    Result.Add(IndentString + Format('  <fields>%d</fields>', [self.Panels.Count]));
 
-    temp := IndentString + '<widths>';
+    temp := IndentString + '  <widths>';
 
     for I := 0 to Panels.Count - 2 do    // Iterate
       temp := temp + Format('%d, ', [self.Panels.items[i].Width]);
@@ -321,7 +321,7 @@ begin
 
     Result.Add(temp);
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetScrollbarSpecificStyle(self.Wx_GeneralStyle, Wx_StatusbarStyleSet)]));
     Result.Add(IndentString + '</object>');
 

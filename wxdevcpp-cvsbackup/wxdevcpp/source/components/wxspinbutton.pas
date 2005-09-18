@@ -354,19 +354,19 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<min>%d</min>', [self.Min]));
-    Result.Add(IndentString + Format('<max>%d</max>', [self.Max]));
-    Result.Add(IndentString + Format('<value>%d</value>', [self.Position]));
+    Result.Add(IndentString + Format('  <min>%d</min>', [self.Min]));
+    Result.Add(IndentString + Format('  <max>%d</max>', [self.Max]));
+    Result.Add(IndentString + Format('  <value>%d</value>', [self.Position]));
 
-    Result.Add(IndentString + Format('<orient>%s</orient>',
+    Result.Add(IndentString + Format('  <orient>%s</orient>',
       [GetSpinButtonOrientation(Wx_SpinButtonOrientation)]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle)]));
 
     Result.Add(IndentString + '</object>');

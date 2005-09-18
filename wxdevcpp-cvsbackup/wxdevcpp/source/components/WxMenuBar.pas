@@ -331,16 +331,16 @@ var
         begin
 
           Result.Add(IndentString + '  <object class ="wxMenuItem" name="menuitem">');
-          Result.Add(IndentString + '    ' + Format('<ID>%d</ID>',
+          Result.Add(IndentString + '    ' + Format('  <ID>%d</ID>',
             [submnu.Items[i].Wx_IDValue]));
-          Result.Add(IndentString + '    ' + Format('<IDident>%s</IDident>',
+          Result.Add(IndentString + '    ' + Format('  <IDident>%s</IDident>',
             [submnu.Items[i].Wx_IDName]));
-          Result.Add(IndentString + '    ' + Format('<label>%s</label>',
+          Result.Add(IndentString + '    ' + Format('  <label>%s</label>',
             [XML_Label(submnu.Items[i].Wx_Caption)]));
-          Result.Add(IndentString + '    ' + Format('<help>%s</help>',
+          Result.Add(IndentString + '    ' + Format('  <help>%s</help>',
             [XML_Label(submnu.Items[i].Wx_HelpText)]));
 
-          tempstring := GetXRCCodeFromSubMenu(IndentString + '      ', submnu.Items[i]);
+          tempstring := GetXRCCodeFromSubMenu(IndentString + '        ', submnu.Items[i]);
           try
 
             Result.AddStrings(tempstring);
@@ -349,14 +349,14 @@ var
           end;
 
           if (submnu.Items[i].Wx_Checked) then
-            Result.Add(IndentString + '    <checked>1</checked>')
+            Result.Add(IndentString + '      <checked>1</checked>')
           else
-            Result.Add(IndentString + '    <checked>0</checked>');
+            Result.Add(IndentString + '      <checked>0</checked>');
 
           if (submnu.Items[i].Wx_Enabled) then
-            Result.Add(IndentString + '    <enable>1</enable>')
+            Result.Add(IndentString + '      <enable>1</enable>')
           else
-            Result.Add(IndentString + '    <enable>0</enable>');
+            Result.Add(IndentString + '      <enable>0</enable>');
 
 
           Result.Add(IndentString + '  </object>');
@@ -365,24 +365,24 @@ var
         else begin
 
           Result.Add(IndentString + '  <object class ="wxMenuItem" name="menuitem">');
-          Result.Add(IndentString + '    ' + Format('<ID>%d</ID>',
+          Result.Add(IndentString + '    ' + Format('  <ID>%d</ID>',
             [submnu.Items[i].Wx_IDValue]));
-          Result.Add(IndentString + '    ' + Format('<IDident>%s</IDident>',
+          Result.Add(IndentString + '    ' + Format('  <IDident>%s</IDident>',
             [submnu.Items[i].Wx_IDName]));
-          Result.Add(IndentString + '    ' + Format('<label>%s</label>',
+          Result.Add(IndentString + '    ' + Format('  <label>%s</label>',
             [XML_Label(submnu.Items[i].Wx_Caption)]));
-          Result.Add(IndentString + '    ' + Format('<help>%s</help>',
+          Result.Add(IndentString + '    ' + Format('  <help>%s</help>',
             [XML_Label(submnu.Items[i].Wx_HelpText)]));
 
           if (submnu.Items[i].Wx_Checked) then
-            Result.Add(IndentString + '    <checked>1</checked>')
+            Result.Add(IndentString + '      <checked>1</checked>')
           else
-            Result.Add(IndentString + '    <checked>0</checked>');
+            Result.Add(IndentString + '      <checked>0</checked>');
 
           if (submnu.Items[i].Wx_Enabled) then
-            Result.Add(IndentString + '    <enable>1</enable>')
+            Result.Add(IndentString + '      <enable>1</enable>')
           else
-            Result.Add(IndentString + '    <enable>0</enable>');
+            Result.Add(IndentString + '      <enable>0</enable>');
 
           Result.Add(IndentString + '  </object>');
 

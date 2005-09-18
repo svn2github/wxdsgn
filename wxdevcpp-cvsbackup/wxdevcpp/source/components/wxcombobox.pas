@@ -398,19 +398,19 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle)]));
 
-    Result.Add('<content>');
+    Result.Add('  <content>');
     for i := 0 to self.Items.Count - 1 do
-      Result.Add(IndentString + '  <item checked="0">' + self.Items[i] + '</item>');
+      Result.Add(IndentString + '    <item checked="0">' + self.Items[i] + '</item>');
 
-    Result.Add('</content>');
+    Result.Add('  </content>');
     Result.Add(IndentString + '</object>');
   except
     Result.Free;
