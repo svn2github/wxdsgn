@@ -120,8 +120,7 @@ type
     property OnMouseUp;
     property EVT_LISTBOX: string Read FEVT_LISTBOX Write FEVT_LISTBOX;
     property EVT_CHECKLISTBOX: string Read FEVT_CHECKLISTBOX Write FEVT_CHECKLISTBOX;
-    property EVT_LISTBOX_DCLICK: string Read FEVT_LISTBOX_DCLICK
-      Write FEVT_LISTBOX_DCLICK;
+    property EVT_LISTBOX_DCLICK: string Read FEVT_LISTBOX_DCLICK Write FEVT_LISTBOX_DCLICK;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
@@ -304,9 +303,8 @@ begin
 
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
-  FWx_EventList.add('EVT_CHECKLISTBOX:OnCheckListBox');
-  FWx_EventList.add('EVT_LISTBOX:OnEnter');
-  FWx_EventList.add('EVT_TEXT:OnSelected');
+  FWx_EventList.add('EVT_CHECKLISTBOX:OnChecklistbox');
+  FWx_EventList.add('EVT_LISTBOX:OnSelected');
   FWx_EventList.add('EVT_LISTBOX_DCLICK:OnDoubleClicked');
 
 end;
@@ -351,18 +349,17 @@ begin
     Result := Format('EVT_CHECKLISTBOX(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_CHECKLISTBOX]) + '';
 
-
   if trim(EVT_LISTBOX) <> '' then
-    Result := Format('EVT_LISTBOX(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_LISTBOX(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_LISTBOX]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 
   if trim(EVT_LISTBOX_DCLICK) <> '' then
     Result := Result + #13 + Format('EVT_LISTBOX_DCLICK(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_LISTBOX_DCLICK]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 
 end;
 
@@ -537,15 +534,15 @@ begin
     exit;
   end;
 
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-
   if EventName = 'EVT_LISTBOX_DCLICK' then
   begin
     Result := 'wxCommandEvent& event';
+    exit;
+  end;
+
+  if EventName = 'EVT_UPDATE_UI' then
+  begin
+    Result := 'wxUpdateUIEvent& event';
     exit;
   end;
 

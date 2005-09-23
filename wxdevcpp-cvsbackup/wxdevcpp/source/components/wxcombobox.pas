@@ -333,7 +333,7 @@ begin
   FWx_PropertyList.add('wxCB_SORT:wxCB_SORT');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
-  FWx_EventList.add('EVT_CHECKBOX:OnSelected');
+  FWx_EventList.add('EVT_COMBOBOX:OnSelected');
   FWx_EventList.add('EVT_TEXT:OnUpdated');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 

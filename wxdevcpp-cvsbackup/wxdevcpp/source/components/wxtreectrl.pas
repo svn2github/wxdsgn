@@ -25,20 +25,26 @@ type
   private
     { Private fields of TWxTreeCtrl }
     FEVT_TREE_BEGIN_DRAG: string;
-    FEVT_TREE_BEGIN_LABEL_EDIT: string;
     FEVT_TREE_BEGIN_RDRAG: string;
-    FEVT_TREE_DELETE_ITEM: string;
+    FEVT_TREE_END_DRAG: string;
+    FEVT_TREE_BEGIN_LABEL_EDIT: string;
     FEVT_TREE_END_LABEL_EDIT: string;
+    FEVT_TREE_DELETE_ITEM: string;
     FEVT_TREE_GET_INFO: string;
+    FEVT_TREE_SET_INFO: string;
     FEVT_TREE_ITEM_ACTIVATED: string;
     FEVT_TREE_ITEM_COLLAPSED: string;
     FEVT_TREE_ITEM_COLLAPSING: string;
     FEVT_TREE_ITEM_EXPANDED: string;
     FEVT_TREE_ITEM_EXPANDING: string;
-    FEVT_TREE_KEY_DOWN: string;
+    FEVT_TREE_ITEM_RIGHT_CLICK: string;
+    FEVT_TREE_ITEM_MIDDLE_CLICK: string;
     FEVT_TREE_SEL_CHANGED: string;
     FEVT_TREE_SEL_CHANGING: string;
-    FEVT_TREE_SET_INFO: string;
+    FEVT_TREE_KEY_DOWN: string;
+    FEVT_TREE_ITEM_GETTOOLTIP: string;
+    FEVT_TREE_ITEM_MENU: string;
+    FEVT_TREE_STATE_IMAGE_CLICK: string;
     FEVT_UPDATE_UI: string;
     FWx_BGColor: TColor;
     FWx_Border: integer;
@@ -125,33 +131,27 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property EVT_TREE_BEGIN_DRAG: string Read FEVT_TREE_BEGIN_DRAG
-      Write FEVT_TREE_BEGIN_DRAG;
-    property EVT_TREE_BEGIN_LABEL_EDIT: string
-      Read FEVT_TREE_BEGIN_LABEL_EDIT Write FEVT_TREE_BEGIN_LABEL_EDIT;
-    property EVT_TREE_BEGIN_RDRAG: string Read FEVT_TREE_BEGIN_RDRAG
-      Write FEVT_TREE_BEGIN_RDRAG;
-    property EVT_TREE_DELETE_ITEM: string Read FEVT_TREE_DELETE_ITEM
-      Write FEVT_TREE_DELETE_ITEM;
-    property EVT_TREE_END_LABEL_EDIT: string
-      Read FEVT_TREE_END_LABEL_EDIT Write FEVT_TREE_END_LABEL_EDIT;
+    property EVT_TREE_BEGIN_DRAG: string Read FEVT_TREE_BEGIN_DRAG Write FEVT_TREE_BEGIN_DRAG;
+    property EVT_TREE_BEGIN_RDRAG: string Read FEVT_TREE_BEGIN_RDRAG Write FEVT_TREE_BEGIN_RDRAG;
+    property EVT_TREE_END_DRAG: string Read FEVT_TREE_END_DRAG Write FEVT_TREE_END_DRAG;
+    property EVT_TREE_BEGIN_LABEL_EDIT: string Read FEVT_TREE_BEGIN_LABEL_EDIT Write FEVT_TREE_BEGIN_LABEL_EDIT;
+    property EVT_TREE_END_LABEL_EDIT: string Read FEVT_TREE_END_LABEL_EDIT Write FEVT_TREE_END_LABEL_EDIT;
+    property EVT_TREE_DELETE_ITEM: string Read FEVT_TREE_DELETE_ITEM Write FEVT_TREE_DELETE_ITEM;
     property EVT_TREE_GET_INFO: string Read FEVT_TREE_GET_INFO Write FEVT_TREE_GET_INFO;
-    property EVT_TREE_ITEM_ACTIVATED: string
-      Read FEVT_TREE_ITEM_ACTIVATED Write FEVT_TREE_ITEM_ACTIVATED;
-    property EVT_TREE_ITEM_COLLAPSED: string
-      Read FEVT_TREE_ITEM_COLLAPSED Write FEVT_TREE_ITEM_COLLAPSED;
-    property EVT_TREE_ITEM_COLLAPSING: string
-      Read FEVT_TREE_ITEM_COLLAPSING Write FEVT_TREE_ITEM_COLLAPSING;
-    property EVT_TREE_ITEM_EXPANDED: string
-      Read FEVT_TREE_ITEM_EXPANDED Write FEVT_TREE_ITEM_EXPANDED;
-    property EVT_TREE_ITEM_EXPANDING: string
-      Read FEVT_TREE_ITEM_EXPANDING Write FEVT_TREE_ITEM_EXPANDING;
-    property EVT_TREE_KEY_DOWN: string Read FEVT_TREE_KEY_DOWN Write FEVT_TREE_KEY_DOWN;
-    property EVT_TREE_SEL_CHANGED: string Read FEVT_TREE_SEL_CHANGED
-      Write FEVT_TREE_SEL_CHANGED;
-    property EVT_TREE_SEL_CHANGING: string
-      Read FEVT_TREE_SEL_CHANGING Write FEVT_TREE_SEL_CHANGING;
     property EVT_TREE_SET_INFO: string Read FEVT_TREE_SET_INFO Write FEVT_TREE_SET_INFO;
+    property EVT_TREE_ITEM_ACTIVATED: string Read FEVT_TREE_ITEM_ACTIVATED Write FEVT_TREE_ITEM_ACTIVATED;
+    property EVT_TREE_ITEM_COLLAPSED: string Read FEVT_TREE_ITEM_COLLAPSED Write FEVT_TREE_ITEM_COLLAPSED;
+    property EVT_TREE_ITEM_COLLAPSING: string Read FEVT_TREE_ITEM_COLLAPSING Write FEVT_TREE_ITEM_COLLAPSING;
+    property EVT_TREE_ITEM_EXPANDED: string Read FEVT_TREE_ITEM_EXPANDED Write FEVT_TREE_ITEM_EXPANDED;
+    property EVT_TREE_ITEM_EXPANDING: string Read FEVT_TREE_ITEM_EXPANDING Write FEVT_TREE_ITEM_EXPANDING;
+    property EVT_TREE_ITEM_RIGHT_CLICK: string Read FEVT_TREE_ITEM_RIGHT_CLICK Write FEVT_TREE_ITEM_RIGHT_CLICK;
+    property EVT_TREE_ITEM_MIDDLE_CLICK: string Read FEVT_TREE_ITEM_MIDDLE_CLICK Write FEVT_TREE_ITEM_MIDDLE_CLICK;
+    property EVT_TREE_SEL_CHANGED: string Read FEVT_TREE_SEL_CHANGED Write FEVT_TREE_SEL_CHANGED;
+    property EVT_TREE_SEL_CHANGING: string Read FEVT_TREE_SEL_CHANGING Write FEVT_TREE_SEL_CHANGING;
+    property EVT_TREE_KEY_DOWN: string Read FEVT_TREE_KEY_DOWN Write FEVT_TREE_KEY_DOWN;
+    property EVT_TREE_ITEM_GETTOOLTIP: string Read FEVT_TREE_ITEM_GETTOOLTIP Write FEVT_TREE_ITEM_GETTOOLTIP;
+    property EVT_TREE_ITEM_MENU: string Read FEVT_TREE_ITEM_MENU Write FEVT_TREE_ITEM_MENU;
+    property EVT_TREE_STATE_IMAGE_CLICK: string Read FEVT_TREE_STATE_IMAGE_CLICK Write FEVT_TREE_STATE_IMAGE_CLICK;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
@@ -350,10 +350,9 @@ begin
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
-  FWx_EventList.add('EVT_TREE_SEL_CHANGED   :  OnSelChanged ');
-  FWx_EventList.add('EVT_TREE_SEL_CHANGING   :  OnSelChanging ');
   FWx_EventList.add('EVT_TREE_BEGIN_DRAG   :  OnBeginDrag ');
   FWx_EventList.add('EVT_TREE_BEGIN_RDRAG   :  OnBeginRDrag ');
+  FWx_EventList.add('EVT_TREE_END_DRAG   :  OnEndDrag ');
   FWx_EventList.add('EVT_TREE_BEGIN_LABEL_EDIT   :  OnBeginLabelEdit ');
   FWx_EventList.add('EVT_TREE_END_LABEL_EDIT   :  OnEndLabelEdit');
   FWx_EventList.add('EVT_TREE_DELETE_ITEM   :  OnDeleteItem ');
@@ -364,7 +363,14 @@ begin
   FWx_EventList.add('EVT_TREE_ITEM_COLLAPSING   :  OnItemCollapsing');
   FWx_EventList.add('EVT_TREE_ITEM_EXPANDED   :  OnItemExpanded');
   FWx_EventList.add('EVT_TREE_ITEM_EXPANDING   :  OnItemExpanding');
+  FWx_EventList.add('EVT_TREE_ITEM_RIGHT_CLICK   :  OnItemRClick');
+  FWx_EventList.add('EVT_TREE_ITEM_MIDDLE_CLICK   :  OnItemMClick');
+  FWx_EventList.add('EVT_TREE_SEL_CHANGED   :  OnSelChanged ');
+  FWx_EventList.add('EVT_TREE_SEL_CHANGING   :  OnSelChanging ');
   FWx_EventList.add('EVT_TREE_KEY_DOWN   :  OnKeyDown');
+  FWx_EventList.add('EVT_TREE_ITEM_GETTOOLTIP   :  OnItemGetTooltip');
+  FWx_EventList.add('EVT_TREE_ITEM_MENU   :  OnItemMenu');
+  FWx_EventList.add('EVT_TREE_STATE_IMAGE_CLICK   :  On3StateImageClick');
   FWx_EventList.add('EVT_UPDATE_UI   :  OnUpdate');
 
 end;
@@ -403,20 +409,18 @@ function TWxTreeCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
-  if trim(EVT_TREE_SEL_CHANGED) <> '' then
-    Result := Format('EVT_TREE_SEL_CHANGED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGED]) + '';
-
-  if trim(EVT_TREE_SEL_CHANGING) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_SEL_CHANGING(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGING]) + '';
   if trim(EVT_TREE_BEGIN_DRAG) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_BEGIN_DRAG(%s,%s::%s)',
+    Result := Format('EVT_TREE_BEGIN_DRAG(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_BEGIN_DRAG]) + '';
 
   if trim(EVT_TREE_BEGIN_RDRAG) <> '' then
     Result := Result + #13 + Format('EVT_TREE_BEGIN_RDRAG(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_BEGIN_RDRAG]) + '';
+
+  if trim(EVT_TREE_END_DRAG) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_END_DRAG(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_END_DRAG]) + '';
+
   if trim(EVT_TREE_BEGIN_LABEL_EDIT) <> '' then
     Result := Result + #13 + Format('EVT_TREE_BEGIN_LABEL_EDIT(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_BEGIN_LABEL_EDIT]) + '';
@@ -424,6 +428,7 @@ begin
   if trim(EVT_TREE_END_LABEL_EDIT) <> '' then
     Result := Result + #13 + Format('EVT_TREE_END_LABEL_EDIT(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_END_LABEL_EDIT]) + '';
+
   if trim(EVT_TREE_DELETE_ITEM) <> '' then
     Result := Result + #13 + Format('EVT_TREE_DELETE_ITEM(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_DELETE_ITEM]) + '';
@@ -431,6 +436,7 @@ begin
   if trim(EVT_TREE_GET_INFO) <> '' then
     Result := Result + #13 + Format('EVT_TREE_GET_INFO(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_GET_INFO]) + '';
+
   if trim(EVT_TREE_SET_INFO) <> '' then
     Result := Result + #13 + Format('EVT_TREE_SET_INFO(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_SET_INFO]) + '';
@@ -438,6 +444,7 @@ begin
   if trim(EVT_TREE_ITEM_ACTIVATED) <> '' then
     Result := Result + #13 + Format('EVT_TREE_ITEM_ACTIVATED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_ITEM_ACTIVATED]) + '';
+
   if trim(EVT_TREE_ITEM_COLLAPSED) <> '' then
     Result := Result + #13 + Format('EVT_TREE_ITEM_COLLAPSED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_ITEM_COLLAPSED]) + '';
@@ -445,6 +452,7 @@ begin
   if trim(EVT_TREE_ITEM_COLLAPSING) <> '' then
     Result := Result + #13 + Format('EVT_TREE_ITEM_COLLAPSING(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_ITEM_COLLAPSING]) + '';
+
   if trim(EVT_TREE_ITEM_EXPANDED) <> '' then
     Result := Result + #13 + Format('EVT_TREE_ITEM_EXPANDED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_ITEM_EXPANDED]) + '';
@@ -452,9 +460,38 @@ begin
   if trim(EVT_TREE_ITEM_EXPANDING) <> '' then
     Result := Result + #13 + Format('EVT_TREE_ITEM_EXPANDING(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_ITEM_EXPANDING]) + '';
+
+  if trim(EVT_TREE_ITEM_RIGHT_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_ITEM_RIGHT_CLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_ITEM_RIGHT_CLICK]) + '';
+
+  if trim(EVT_TREE_ITEM_MIDDLE_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_ITEM_MIDDLE_CLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_ITEM_MIDDLE_CLICK]) + '';
+
+  if trim(EVT_TREE_SEL_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_SEL_CHANGED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGED]) + '';
+
+  if trim(EVT_TREE_SEL_CHANGING) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_SEL_CHANGING(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGING]) + '';
+
   if trim(EVT_TREE_KEY_DOWN) <> '' then
     Result := Result + #13 + Format('EVT_TREE_KEY_DOWN(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TREE_KEY_DOWN]) + '';
+
+  if trim(EVT_TREE_ITEM_GETTOOLTIP) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_ITEM_GETTOOLTIP(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_ITEM_GETTOOLTIP]) + '';
+
+  if trim(EVT_TREE_ITEM_MENU) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_ITEM_MENU(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_ITEM_MENU]) + '';
+
+  if trim(EVT_TREE_STATE_IMAGE_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_TREE_STATE_IMAGE_CLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TREE_STATE_IMAGE_CLICK]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
@@ -589,22 +626,17 @@ end;
 
 function TWxTreeCtrl.GetParameterFromEventName(EventName: string): string;
 begin
-  if EventName = 'EVT_TREE_SEL_CHANGED' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_SEL_CHANGING' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
   if EventName = 'EVT_TREE_BEGIN_DRAG' then
   begin
     Result := 'wxTreeEvent& event';
     exit;
   end;
   if EventName = 'EVT_TREE_BEGIN_RDRAG' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_END_DRAG' then
   begin
     Result := 'wxTreeEvent& event';
     exit;
@@ -659,7 +691,42 @@ begin
     Result := 'wxTreeEvent& event';
     exit;
   end;
+  if EventName = 'EVT_TREE_ITEM_RIGHT_CLICK' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_ITEM_MIDDLE_CLICK' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_SEL_CHANGED' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_SEL_CHANGING' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
   if EventName = 'EVT_TREE_KEY_DOWN' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_ITEM_GETTOOLTIP' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_ITEM_MENU' then
+  begin
+    Result := 'wxTreeEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_TREE_STATE_IMAGE_CLICK' then
   begin
     Result := 'wxTreeEvent& event';
     exit;

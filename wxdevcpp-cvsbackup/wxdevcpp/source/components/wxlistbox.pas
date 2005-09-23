@@ -130,7 +130,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     //For Backward compatibility
-    property EVT_TEXT: string Read FEVT_LISTBOX;
+ //   property EVT_TEXT: string Read FEVT_LISTBOX;
     property EVT_LISTBOX: string Read FEVT_LISTBOX Write FEVT_LISTBOX;
     property EVT_LISTBOX_DCLICK: string
       Read FEVT_LISTBOX_DCLICK Write FEVT_LISTBOX_DCLICK;
@@ -310,7 +310,7 @@ begin
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
 
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-  FWx_EventList.add('EVT_LISTBOX:OnEnter');
+  FWx_EventList.add('EVT_LISTBOX:OnSelected');
   FWx_EventList.add('EVT_LISTBOX_DCLICK:OnDoubleClicked');
 
 end;
@@ -358,13 +358,13 @@ begin
   if trim(EVT_LISTBOX) <> '' then
     Result := Format('EVT_LISTBOX(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_LISTBOX]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-
   if trim(EVT_LISTBOX_DCLICK) <> '' then
     Result := Result + #13 + Format('EVT_LISTBOX_DCLICK(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_LISTBOX_DCLICK]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 
 end;
 
