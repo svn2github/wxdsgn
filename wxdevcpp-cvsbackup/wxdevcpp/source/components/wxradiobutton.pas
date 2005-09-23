@@ -25,8 +25,7 @@ type
     IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface)
   private
     { Private fields of TWxRadioButton }
-    FEVT_CHECKBOX: string;
-    FEVT_TEXT: string;
+    FEVT_RADIOBUTTON: string;
     FEVT_UPDATE_UI: string;
     FWx_BGColor: TColor;
     FWx_Border: integer;
@@ -113,8 +112,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property EVT_CHECKBOX: string Read FEVT_CHECKBOX Write FEVT_CHECKBOX;
-    property EVT_TEXT: string Read FEVT_TEXT Write FEVT_TEXT;
+    property EVT_RADIOBUTTON: string Read FEVT_RADIOBUTTON Write FEVT_RADIOBUTTON;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
@@ -253,7 +251,7 @@ begin
   FWx_PropertyList.add('Wx_Validator : Validator code');
   FWx_PropertyList.add('Wx_Comments:Comments');
 
-  FWx_EventList.add('EVT_CHECKBOX:OnClick');
+  FWx_EventList.add('EVT_RADIOBUTTON:OnClick');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
 end;
@@ -291,9 +289,9 @@ end;
 function TWxRadioButton.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
-  if trim(EVT_CHECKBOX) <> '' then
+  if trim(EVT_RADIOBUTTON) <> '' then
     Result := Format('EVT_RADIOBUTTON(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_CHECKBOX]) + '';
+      [WX_IDName, CurrClassName, EVT_RADIOBUTTON]) + '';
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
