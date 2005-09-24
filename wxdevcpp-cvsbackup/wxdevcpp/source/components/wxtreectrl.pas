@@ -371,7 +371,7 @@ begin
   FWx_EventList.add('EVT_TREE_ITEM_GETTOOLTIP   :  OnItemGetTooltip');
   FWx_EventList.add('EVT_TREE_ITEM_MENU   :  OnItemMenu');
   FWx_EventList.add('EVT_TREE_STATE_IMAGE_CLICK   :  On3StateImageClick');
-  FWx_EventList.add('EVT_UPDATE_UI   :  OnUpdate');
+  FWx_EventList.add('EVT_UPDATE_UI   :  OnUpdateUI');
 
 end;
 
