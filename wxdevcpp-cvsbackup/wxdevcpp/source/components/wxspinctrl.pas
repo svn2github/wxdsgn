@@ -284,8 +284,8 @@ begin
 
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
-  FWx_EventList.add('EVT_SPINCTRL:OnSelected');
-  FWx_EventList.add('EVT_TEXT:OnUpdated');
+  FWx_EventList.add('EVT_SPINCTRL:OnUpdated');
+  FWx_EventList.add('EVT_TEXT:OnTextUpdated');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
   FWx_EventList.add('EVT_SPIN_DOWN:OnSpinDown');
@@ -341,17 +341,17 @@ begin
     Result := Result + #13 + Format('EVT_TEXT(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+  if trim(EVT_SPIN_UP) <> '' then
+    Result := Result + #13 + Format('EVT_SPIN_UP(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_SPIN_UP]) + '';
 
   if trim(EVT_SPIN_DOWN) <> '' then
     Result := Result + #13 + Format('EVT_SPIN_DOWN(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_SPIN_DOWN]) + '';
 
-  if trim(EVT_SPIN_UP) <> '' then
-    Result := Result + #13 + Format('EVT_SPIN_UP(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPIN_UP]) + '';
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 end;
 
 function TWxSpinCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -497,7 +497,6 @@ begin
     Result := 'wxCommandEvent& event ';
     exit;
   end;
-
   if EventName = 'EVT_UPDATE_UI' then
   begin
     Result := 'wxUpdateUIEvent& event';

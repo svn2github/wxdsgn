@@ -462,7 +462,7 @@ begin
   FWx_EventList.add('EVT_LIST_COL_DRAGGING:OnColDragging');
   FWx_EventList.add('EVT_LIST_COL_END_DRAG:OnColEndDrag');
   FWx_EventList.add('EVT_LIST_CACHE_HINT:OnCacheHint');
-  FWx_EventList.add('EVT_UPDATE_UI:OnUpdate');
+  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
   FWx_ListviewStyle := [wxLC_REPORT];
   ViewStyle := vsReport;

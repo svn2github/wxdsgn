@@ -293,7 +293,7 @@ begin
   FWx_EventList.add('EVT_SPIN : OnUpdated');
   FWx_EventList.add('EVT_SPIN_UP : OnUp');
   FWx_EventList.add('EVT_SPIN_DOWN : OnDown');
-  FWx_EventList.add('EVT_UPDATE_UI : OnUpdate');
+  FWx_EventList.add('EVT_UPDATE_UI : OnUpdateUI');
 
 end;
 

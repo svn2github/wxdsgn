@@ -21,29 +21,31 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxSizerPanel;
 
 type
-  TWxScrollBar = class(TScrollBar, IWxComponentInterface, IWxStatusBarInterface)
+//  TWxScrollBar = class(TScrollBar, IWxComponentInterface, IWxStatusBarInterface)
+  TWxScrollBar = class(TScrollBar, IWxComponentInterface)
   private
     { Private fields of TWxScrollBar }
+
     { Storage for property EVT_COMMAND_SCROLL }
     FEVT_COMMAND_SCROLL: string;
-    { Storage for property EVT_COMMAND_SCROLL_BOTTOM }
-    FEVT_COMMAND_SCROLL_BOTTOM: string;
-    { Storage for property EVT_COMMAND_SCROLL_ENDSCROLL }
-    FEVT_COMMAND_SCROLL_ENDSCROLL: string;
-    { Storage for property EVT_COMMAND_SCROLL_LINEDOWN }
-    FEVT_COMMAND_SCROLL_LINEDOWN: string;
-    { Storage for property EVT_COMMAND_SCROLL_LINEUP }
-    FEVT_COMMAND_SCROLL_LINEUP: string;
-    { Storage for property EVT_COMMAND_SCROLL_PAGEDOWN }
-    FEVT_COMMAND_SCROLL_PAGEDOWN: string;
-    { Storage for property EVT_COMMAND_SCROLL_PAGEUP }
-    FEVT_COMMAND_SCROLL_PAGEUP: string;
-    { Storage for property EVT_COMMAND_SCROLL_THUMBRELEASE }
-    FEVT_COMMAND_SCROLL_THUMBRELEASE: string;
-    { Storage for property EVT_COMMAND_SCROLL_THUMBTRACK }
-    FEVT_COMMAND_SCROLL_THUMBTRACK: string;
     { Storage for property EVT_COMMAND_SCROLL_TOP }
     FEVT_COMMAND_SCROLL_TOP: string;
+    { Storage for property EVT_COMMAND_SCROLL_BOTTOM }
+    FEVT_COMMAND_SCROLL_BOTTOM: string;
+    { Storage for property EVT_COMMAND_SCROLL_LINEUP }
+    FEVT_COMMAND_SCROLL_LINEUP: string;
+    { Storage for property EVT_COMMAND_SCROLL_LINEDOWN }
+    FEVT_COMMAND_SCROLL_LINEDOWN: string;
+    { Storage for property EVT_COMMAND_SCROLL_PAGEUP }
+    FEVT_COMMAND_SCROLL_PAGEUP: string;
+    { Storage for property EVT_COMMAND_SCROLL_PAGEDOWN }
+    FEVT_COMMAND_SCROLL_PAGEDOWN: string;
+    { Storage for property EVT_COMMAND_SCROLL_THUMBTRACK }
+    FEVT_COMMAND_SCROLL_THUMBTRACK: string;
+    { Storage for property EVT_COMMAND_SCROLL_THUMBRELEASE }
+    FEVT_COMMAND_SCROLL_THUMBRELEASE: string;
+    { Storage for property EVT_COMMAND_SCROLL_ENDSCROLL }
+    FEVT_COMMAND_SCROLL_ENDSCROLL: string;
     { Storage for property EVT_SCROLLBAR }
     FEVT_SCROLLBAR: string;
     { Storage for property EVT_UPDATE_UI }
@@ -152,26 +154,16 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property EVT_COMMAND_SCROLL: string Read FEVT_COMMAND_SCROLL
-      Write FEVT_COMMAND_SCROLL;
-    property EVT_COMMAND_SCROLL_BOTTOM: string
-      Read FEVT_COMMAND_SCROLL_BOTTOM Write FEVT_COMMAND_SCROLL_BOTTOM;
-    property EVT_COMMAND_SCROLL_ENDSCROLL: string
-      Read FEVT_COMMAND_SCROLL_ENDSCROLL Write FEVT_COMMAND_SCROLL_ENDSCROLL;
-    property EVT_COMMAND_SCROLL_LINEDOWN: string
-      Read FEVT_COMMAND_SCROLL_LINEDOWN Write FEVT_COMMAND_SCROLL_LINEDOWN;
-    property EVT_COMMAND_SCROLL_LINEUP: string
-      Read FEVT_COMMAND_SCROLL_LINEUP Write FEVT_COMMAND_SCROLL_LINEUP;
-    property EVT_COMMAND_SCROLL_PAGEDOWN: string
-      Read FEVT_COMMAND_SCROLL_PAGEDOWN Write FEVT_COMMAND_SCROLL_PAGEDOWN;
-    property EVT_COMMAND_SCROLL_PAGEUP: string
-      Read FEVT_COMMAND_SCROLL_PAGEUP Write FEVT_COMMAND_SCROLL_PAGEUP;
-    property EVT_COMMAND_SCROLL_THUMBRELEASE: string
-      Read FEVT_COMMAND_SCROLL_THUMBRELEASE Write FEVT_COMMAND_SCROLL_THUMBRELEASE;
-    property EVT_COMMAND_SCROLL_THUMBTRACK: string
-      Read FEVT_COMMAND_SCROLL_THUMBTRACK Write FEVT_COMMAND_SCROLL_THUMBTRACK;
-    property EVT_COMMAND_SCROLL_TOP: string
-      Read FEVT_COMMAND_SCROLL_TOP Write FEVT_COMMAND_SCROLL_TOP;
+    property EVT_COMMAND_SCROLL: string Read FEVT_COMMAND_SCROLL Write FEVT_COMMAND_SCROLL;
+    property EVT_COMMAND_SCROLL_TOP: string Read FEVT_COMMAND_SCROLL_TOP Write FEVT_COMMAND_SCROLL_TOP;
+    property EVT_COMMAND_SCROLL_BOTTOM: string Read FEVT_COMMAND_SCROLL_BOTTOM Write FEVT_COMMAND_SCROLL_BOTTOM;
+    property EVT_COMMAND_SCROLL_LINEUP: string Read FEVT_COMMAND_SCROLL_LINEUP Write FEVT_COMMAND_SCROLL_LINEUP;
+    property EVT_COMMAND_SCROLL_LINEDOWN: string Read FEVT_COMMAND_SCROLL_LINEDOWN Write FEVT_COMMAND_SCROLL_LINEDOWN;
+    property EVT_COMMAND_SCROLL_PAGEUP: string Read FEVT_COMMAND_SCROLL_PAGEUP Write FEVT_COMMAND_SCROLL_PAGEUP;
+    property EVT_COMMAND_SCROLL_PAGEDOWN: string Read FEVT_COMMAND_SCROLL_PAGEDOWN Write FEVT_COMMAND_SCROLL_PAGEDOWN;
+    property EVT_COMMAND_SCROLL_THUMBTRACK: string Read FEVT_COMMAND_SCROLL_THUMBTRACK Write FEVT_COMMAND_SCROLL_THUMBTRACK;
+    property EVT_COMMAND_SCROLL_THUMBRELEASE: string Read FEVT_COMMAND_SCROLL_THUMBRELEASE Write FEVT_COMMAND_SCROLL_THUMBRELEASE;
+    property EVT_COMMAND_SCROLL_ENDSCROLL: string Read FEVT_COMMAND_SCROLL_ENDSCROLL Write FEVT_COMMAND_SCROLL_ENDSCROLL;
     property EVT_SCROLLBAR: string Read FEVT_SCROLLBAR Write FEVT_SCROLLBAR;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
@@ -351,18 +343,18 @@ begin
 
   FWx_PropertyList.add('Wx_Comments:Comments');
 
-  FWx_EventList.add('EVT_SCROLLBAR : OnUpdated');
+  FWx_EventList.add('EVT_SCROLLBAR : OnScrollbar');
   FWx_EventList.add('EVT_COMMAND_SCROLL   :  OnScroll');
   FWx_EventList.add('EVT_COMMAND_SCROLL_TOP   :  OnScrollTop');
   FWx_EventList.add('EVT_COMMAND_SCROLL_BOTTOM   :  OnScrollBottom');
   FWx_EventList.add('EVT_COMMAND_SCROLL_LINEUP   :  OnScrollLineUp');
-  FWx_EventList.add('EVT_COMMAND_SCROLL_LINEDOWN   :  OScrollLineDown');
+  FWx_EventList.add('EVT_COMMAND_SCROLL_LINEDOWN   :  OnScrollLineDown');
   FWx_EventList.add('EVT_COMMAND_SCROLL_PAGEUP   :  OnScrollPageUp');
   FWx_EventList.add('EVT_COMMAND_SCROLL_PAGEDOWN   :  OnScrollPageDown');
   FWx_EventList.add('EVT_COMMAND_SCROLL_THUMBTRACK   :  OnScrollThumbtrack');
   FWx_EventList.add('EVT_COMMAND_SCROLL_THUMBRELEASE   :  OnScrollThumbRelease');
-  FWx_EventList.add('EVT_COMMAND_SCROLL_ENDSCROLL   :  OnScroll');
-  FWx_EventList.add('EVT_UPDATE_UI   :  OnUpdate');
+  FWx_EventList.add('EVT_COMMAND_SCROLL_ENDSCROLL   :  OnScrollEnd');
+  FWx_EventList.add('EVT_UPDATE_UI   :  OnUpdateUI');
 
 end;
 
@@ -407,14 +399,14 @@ begin
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL]) + '';
 
-
   if trim(EVT_COMMAND_SCROLL_TOP) <> '' then
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL_TOP(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_TOP]) + '';
 
   if trim(EVT_COMMAND_SCROLL_BOTTOM) <> '' then
-    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_BOTTOM%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_BOTTOM(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_BOTTOM]) + '';
+
   if trim(EVT_COMMAND_SCROLL_LINEUP) <> '' then
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL_LINEUP(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_LINEUP]) + '';
@@ -422,6 +414,7 @@ begin
   if trim(EVT_COMMAND_SCROLL_LINEDOWN) <> '' then
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL_LINEDOWN(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_LINEDOWN]) + '';
+
   if trim(EVT_COMMAND_SCROLL_PAGEUP) <> '' then
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL_PAGEUP(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_PAGEUP]) + '';
@@ -429,6 +422,7 @@ begin
   if trim(EVT_COMMAND_SCROLL_PAGEDOWN) <> '' then
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL_PAGEDOWN(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_PAGEDOWN]) + '';
+
   if trim(EVT_COMMAND_SCROLL_THUMBTRACK) <> '' then
     Result := Result + #13 + Format('EVT_COMMAND_SCROLL_THUMBTRACK(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMMAND_SCROLL_THUMBTRACK]) + '';
@@ -601,7 +595,7 @@ function TWxScrollBar.GetParameterFromEventName(EventName: string): string;
 begin
   if EventName = 'EVT_SCROLLBAR' then
   begin
-    Result := 'wxScrollEvent& event';
+    Result := 'wxCommandEvent& event';
     exit;
   end;
   if EventName = 'EVT_COMMAND_SCROLL' then
