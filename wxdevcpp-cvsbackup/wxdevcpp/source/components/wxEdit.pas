@@ -457,14 +457,14 @@ begin
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('  <style>%s</style>',
+    Result.Add(IndentString + Format('<style>%s</style>',
       [GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle)]));
-    Result.Add(IndentString + Format('  <value>%s</value>', [XML_Label(self.Caption)]));
+    Result.Add(IndentString + Format('<value>%s</value>', [XML_Label(self.Caption)]));
     Result.Add(IndentString + '</object>');
 
   except
@@ -516,8 +516,9 @@ begin
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
 
-  Result := Result + #13 + Format('%s->SetMaxLength(%d);',
-    [self.Name, self.Wx_MaxLength]);
+  if self.Wx_MaxLength <> 0 then
+    Result := Result + #13 + Format('%s->SetMaxLength(%d);',
+      [self.Name, self.Wx_MaxLength]);
 
   if self.Wx_Hidden then
     Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
