@@ -353,7 +353,7 @@ begin
 
 
   if trim(EVT_LISTBOX) <> '' then
-    Result := Format('EVT_LISTBOX(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_LISTBOX(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_LISTBOX]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then

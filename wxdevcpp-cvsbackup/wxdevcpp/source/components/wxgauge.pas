@@ -504,6 +504,12 @@ end;
 function TWxGauge.GetParameterFromEventName(EventName: string): string;
 begin
 
+if EventName = 'EVT_UPDATE_UI' then
+  begin
+    Result := 'wxUpdateUIEvent& event';
+    exit;
+  end;
+
 end;
 
 function TWxGauge.GetPropertyList: TStringList;
