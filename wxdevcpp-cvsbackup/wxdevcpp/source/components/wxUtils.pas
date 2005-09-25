@@ -39,6 +39,9 @@ const
   IDD_IWxStatusBarInterface: TGUID  = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
   IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
 
+var
+   StringFormat : string;
+   
 type
 
   TWxPoint = class(TComponent)
@@ -3606,7 +3609,7 @@ begin
   end
   else begin
     strSearchReplace(str, '"', '\"', [srAll]);
-    Result := 'wxT("' + str + '")';
+    Result := StringFormat + '("' + str + '")';
   end
 end;
 

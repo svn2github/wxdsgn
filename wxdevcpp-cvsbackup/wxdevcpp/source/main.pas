@@ -1562,6 +1562,13 @@ begin
         ELDesigner1.SnapToGrid:=ini.ReadBool('wxWidgets','cbSnapToGrid',ELDesigner1.SnapToGrid);
         ELDesigner1.GenerateXRC:=ini.ReadBool('wxWidgets','cbGenerateXRC',ELDesigner1.GenerateXRC);
 
+        // String format tells us what function to wrap strings with in the generated C++ code
+        // Possible values are wxT(), _T(), and _()
+        StringFormat := ini.ReadString('wxWidgets', 'cbStringFormat', StringFormat);
+        // if there's no preference saved in the ini file, then default to wxT()
+        if trim(StringFormat) = '' then
+           StringFormat := 'wxT';
+        
         if ini.ReadBool('wxWidgets','cbControlHints',true) then
             ELDesigner1.ShowingHints:=ELDesigner1.ShowingHints + [htControl]
         else

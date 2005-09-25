@@ -15,7 +15,7 @@ type
     btnOk: TBitBtn;
     btnCancel: TBitBtn;
     btnHelp: TBitBtn;
-    PageControl1: TPageControl;
+    PageControl2: TPageControl;
     TabSheet1: TTabSheet;
     GroupBox1: TGroupBox;
     Label6: TLabel;
@@ -34,12 +34,16 @@ type
     Bevel1: TBevel;
     Bevel2: TBevel;
     XPMenu: TXPMenu;
+    TabSheet2: TTabSheet;
     cbGenerateXRC: TCheckBox;
+    cbStringFormat: TComboBox;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure lbGridYStepUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure FormShow(Sender: TObject);
+    procedure cbStringFormatChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -69,6 +73,7 @@ begin
   lbGridYStepUpDown.Position := MainForm.ELDesigner1.Grid.YStep;
   cbSnapToGrid.Checked  := MainForm.ELDesigner1.SnapToGrid;
   cbGenerateXRC.Checked := MainForm.ELDesigner1.GenerateXRC;
+  cbStringFormat.Text := StringFormat;
 
   cbControlHints.Checked := htControl in MainForm.ELDesigner1.ShowingHints;
   cbSizeHints.Checked    := htSize in MainForm.ELDesigner1.ShowingHints;
@@ -139,6 +144,7 @@ begin
     ini.WriteBool('wxWidgets', 'cbSizeHints', cbSizeHints.Checked);
     ini.WriteBool('wxWidgets', 'cbMoveHints', cbMoveHints.Checked);
     ini.WriteBool('wxWidgets', 'cbInsertHints', cbInsertHints.Checked);
+    ini.WriteString('wxWidgets', 'cbStringFormat', cbStringFormat.Text);
   except
     ini.Destroy;
   end;
@@ -161,6 +167,13 @@ begin
     XPMenu.Active := True
   else
     XPMenu.Active := False;
+end;
+
+procedure TDesignerForm.cbStringFormatChange(Sender: TObject);
+begin
+
+ StringFormat := cbStringFormat.Text;
+ 
 end;
 
 end.

@@ -72,8 +72,8 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 468
     Height = 265
-    ActivePage = tabOutputDir
-    TabIndex = 5
+    ActivePage = tabVersion
+    TabIndex = 7
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'

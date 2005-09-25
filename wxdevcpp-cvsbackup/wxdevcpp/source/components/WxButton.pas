@@ -6,7 +6,7 @@ unit WxButton;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, MultiLangSupport,
-  Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, WxToolBar;
+  Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, WxToolBar, Dialogs;
 
 type
   TDrawButtonEvent = procedure(Control: TWinControl; Rect: TRect;
@@ -46,6 +46,8 @@ type
     FInvisibleFGColorString: string;
     FWx_Validator: string;
     FWx_Comments: TStrings;
+    FWx_Height : integer;
+    FWx_Width : integer;
 
     procedure AutoInitialize;
     procedure AutoDestroy;
@@ -59,6 +61,9 @@ type
     { Public fields and properties of TWxButton }
     defaultBGColor: TColor;
     defaultFGColor: TColor;
+    defaultHeight : integer;
+    defaultWidth : integer;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GenerateControlIDs: string;
@@ -89,7 +94,7 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure Click; override;
-
+    procedure EvaluateHeightWidth;
   public
     property Canvas: TCanvas Read FCanvas;
 
@@ -134,6 +139,8 @@ type
     property Wx_VerticalAlignment: TWxSizerVerticalAlignment
       Read FWx_VerticalAlignment Write FWx_VerticalAlignment default
       wxSZALIGN_CENTER_VERTICAL;
+    property Wx_Height : integer Read FWx_Height Write FWx_Height;
+    property Wx_Width : integer Read FWx_Width Write FWx_Width;
 
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
@@ -215,8 +222,8 @@ begin
   FWx_PropertyList.add('Name :' + Lang.Strings[ID_NP_PRJNAME]);
   FWx_PropertyList.add('Left : Left');
   FWx_PropertyList.add('Top : Top');
-  FWx_PropertyList.add('Width :' + Lang.Strings[ID_EOPT_WIDTH]);
-  FWx_PropertyList.add('Height:Height');
+  FWx_PropertyList.add('Wx_Width :' + Lang.Strings[ID_EOPT_WIDTH]);
+  FWx_PropertyList.add('Wx_Height:Height');
   FWx_PropertyList.add('Wx_ProxyBGColorString:' + Lang.Strings[ID_EOPT_BACK] +
     ' ' + Lang.Strings[ID_EOPT_COLOR]);
   FWx_PropertyList.add('Wx_ProxyFGColorString:' + Lang.Strings[ID_EOPT_FORE] +
@@ -305,7 +312,7 @@ begin
     Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Wx_Width, self.Wx_Height]));
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
@@ -319,13 +326,70 @@ begin
 
 end;
 
+// This procedure allows the user to input -1 into the height and/or width
+// property fields.
+procedure TWxButton.EvaluateHeightWidth;
+begin
+
+   if self.defaultHeight <> self.Height then // component stretched with mouse
+       begin
+         self.defaultHeight := self.Height;
+         FWx_Height := self.Height
+       end
+
+  // If height input is -1, then display the default height
+  else if (self.Wx_Height = -1) then
+     self.Height := self.defaultHeight
+
+  else if (self.Wx_Height >= 0) then  // height was changed in property editor
+   begin
+     self.Height := FWx_Height;
+     self.defaultHeight := FWx_Height
+   end
+  else // No inputs < -1 so let's switch it to default height
+    begin
+     FWx_Height := self.defaultHeight;
+     self.Height := self.defaultHeight
+    end;
+
+  if self.defaultWidth <> self.Width then // component stretched with mouse
+       begin
+         self.defaultWidth := self.Width;
+         FWx_Width := self.Width
+       end
+
+  // If width input is -1, then display the default width
+  else if (self.Wx_Width = -1) then
+     self.Height := self.defaultHeight
+
+  else if (self.Wx_Width >= 0) then  // width was changed in property editor
+   begin
+     self.Width := FWx_Width;
+     self.defaultWidth := FWx_Width
+   end
+  else // No inputs < -1 so let's switch it to default width
+    begin
+     FWx_Width := self.defaultWidth;
+     self.Height := self.defaultWidth
+    end;
+
+  // Don't allow left and top to be < 0
+  if self.Left < 0 then self.Left := 0;
+  if self.Top < 0 then self.Top := 0;
+  
+end;
+
 function TWxButton.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
   strStyle:    string;
   parentName, strAlignment: string;
+
 begin
   Result     := '';
+
+  EvaluateHeightWidth;
+
   strStyle   := GetButtonSpecificStyle(self.Wx_GeneralStyle, Wx_ButtonStyle);
   parentName := GetWxWidgetParent(self);
 
@@ -348,7 +412,7 @@ begin
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    GetCppString(self.Text), self.Left, self.Top, self.Width, self.Height, strStyle]);
+    GetCppString(self.Text), self.Left, self.Top, self.Wx_Width, self.Wx_Height, strStyle]);
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',

@@ -67,7 +67,7 @@ object DesignerForm: TDesignerForm
     TabOrder = 2
     Kind = bkHelp
   end
-  object PageControl1: TPageControl
+  object PageControl2: TPageControl
     Left = 8
     Top = 8
     Width = 401
@@ -82,7 +82,7 @@ object DesignerForm: TDesignerForm
         Left = 4
         Top = 4
         Width = 385
-        Height = 133
+        Height = 117
         Caption = 'Form Options'
         TabOrder = 0
         object Bevel2: TBevel
@@ -169,22 +169,12 @@ object DesignerForm: TDesignerForm
           Wrap = False
           OnClick = lbGridYStepUpDownClick
         end
-        object cbGenerateXRC: TCheckBox
-          Left = 8
-          Top = 107
-          Width = 129
-          Height = 17
-          Caption = 'Generate XRC Code'
-          Checked = True
-          State = cbChecked
-          TabOrder = 4
-        end
       end
       object GroupBox3: TGroupBox
         Left = 4
-        Top = 145
+        Top = 144
         Width = 385
-        Height = 97
+        Height = 98
         Caption = 'Hints'
         TabOrder = 1
         object cbControlHints: TCheckBox
@@ -227,6 +217,41 @@ object DesignerForm: TDesignerForm
           State = cbChecked
           TabOrder = 3
         end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Code Generation Options'
+      ImageIndex = 1
+      object Label1: TLabel
+        Left = 8
+        Top = 48
+        Width = 118
+        Height = 13
+        Caption = 'String Internationalization'
+      end
+      object cbGenerateXRC: TCheckBox
+        Left = 8
+        Top = 19
+        Width = 129
+        Height = 17
+        Caption = 'Generate XRC Code'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+      end
+      object cbStringFormat: TComboBox
+        Left = 136
+        Top = 44
+        Width = 73
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 0
+        Text = 'wxT'
+        OnChange = cbStringFormatChange
+        Items.Strings = (
+          'wxT'
+          '_'
+          '_T')
       end
     end
   end
