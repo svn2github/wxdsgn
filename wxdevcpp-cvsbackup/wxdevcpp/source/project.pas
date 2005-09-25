@@ -955,6 +955,7 @@ begin
       fOptions.SupportXPThemes := Read('SupportXPThemes', False);
       fOptions.CompilerSet := Read('CompilerSet', devCompiler.CompilerSet);
       fOptions.CompilerOptions := Read('CompilerSettings', devCompiler.OptionStr);
+      devCompiler.OptionStr := devCompiler.OptionStr;
       if fOptions.CompilerSet > devCompilerSet.Sets.Count - 1 then begin
         fOptions.CompilerSet := devCompiler.CompilerSet;
         MessageDlg('The compiler set you have selected for this project, no longer '+
