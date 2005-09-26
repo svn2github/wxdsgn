@@ -289,33 +289,28 @@ var
 
   function GetPrototypeName(const S: string): string;
   var
-    iStart, iLen : Integer;
+    iStart, iLen: Integer;
   begin
     Result := '';
-
     iStart := AnsiPos('(', S);
-   
+
     if iStart > 0 then
     begin
 
       // Skip blanks and TAB's
       repeat
-        if (iStart > 1) then
-         Dec(iStart);
-      until not (S[iStart] in [#32,#9]) or (iStart <= 1);
-
+        Dec(iStart);
+      until not (S[iStart] in [#32,#9]);
+      Inc(iStart);
+    
+      Dec(iStart);
       iLen := 0;
       repeat
-         if (iStart > 1) then
-            Dec(iStart);
-         Inc(iLen);
-      until (S[iStart] in [#0..#32]) or (iStart <= 1);
-
-      if (iLen > (iStart + 1)) and (iLen <= Length(S)) then
-         Result := Copy(S, iStart + 1, iLen);
-         
+        Dec(iStart);
+        Inc(iLen);
+      until (S[iStart] in [#0..#32]);
+      Result := Copy(S, iStart+1, iLen);
     end;
-
   end;
   
   function CountCommas(const S: string): Integer;
@@ -999,7 +994,8 @@ begin
   
   ASSERT(nil <> FToolTips, 'FToolTips must not be nil');
   ASSERT(nil <> FEditor, 'FEditor must not be nil');
-  ASSERT(nil <> FEditor.Highlighter, 'FEditor.Highlighter must not be nil');
+  if (FEditor.Highlighter = nil) then
+  exit;
 
   //get highlighter attribute and check if the cursor is not within
   //string or comment etc.
