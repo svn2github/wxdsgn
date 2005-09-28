@@ -3009,7 +3009,7 @@ begin
     if (cpp <> rval) then
       Inc(cpp);
     //Writeln(F,'/* XPM */');
-    Result := Result + '/* ' + XPMName + ' XPM */' + #13;
+    Result := Result + '/* XPM */' + #13;
     StrFmt(outline, 'static char *%s', [XPMName]);
     strLine := outline;
     cp      := StrScan(outline, '.');
@@ -3019,6 +3019,8 @@ begin
     strLine := outline;
     //Writeln(F,outline);
     Result  := Result + outline + #13;
+    Result := Result + '/* ' + XPMName + ' */' + #13;
+
     StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
     strLine := outline;
     //Writeln(F,outline);
@@ -3245,7 +3247,7 @@ begin
     if (cpp <> rval) then
       Inc(cpp);
     //Writeln(F,'/* XPM */');
-    Result := Result + '/* ' + XPMName + ' XPM */' + #13;
+    Result := Result + '/* XPM */' + #13;
     StrFmt(outline, 'static char *%s', [XPMName]);
     strLine := outline;
     cp      := StrScan(outline, '.');
@@ -3255,6 +3257,7 @@ begin
     strLine := outline;
     //Writeln(F,outline);
     Result  := Result + outline + #13;
+    Result := Result + '/* ' + XPMName + ' */' + #13;
     StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
     strLine := outline;
     //Writeln(F,outline);
@@ -3480,7 +3483,7 @@ begin
     if (cpp <> rval) then
       Inc(cpp);
     //Writeln(F,'/* XPM */');
-    Result := Result + '/* ' + XPMName + ' XPM */' + #13;
+    Result := Result + '/* XPM */' + #13;
     StrFmt(outline, 'static char *%s', [XPMName]);
     strLine := outline;
     cp      := StrScan(outline, '.');
@@ -3490,6 +3493,7 @@ begin
     strLine := outline;
     //Writeln(F,outline);
     Result  := Result + outline + #13;
+    Result := Result + '/* ' + XPMName + ' */' + #13;
     StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
     strLine := outline;
     //Writeln(F,outline);
