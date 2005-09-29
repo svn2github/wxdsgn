@@ -25,6 +25,8 @@ type
     IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface)
   private
     { Private fields of TWxRadioButton }
+    FEVT_CHECKBOX: string;
+    FEVT_TEXT: string;
     FEVT_RADIOBUTTON: string;
     FEVT_UPDATE_UI: string;
     FWx_BGColor: TColor;
@@ -112,6 +114,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property EVT_CHECKBOX: string Read FEVT_CHECKBOX Write FEVT_RADIOBUTTON;
+    property EVT_TEXT: string Read FEVT_TEXT Write FEVT_TEXT;
     property EVT_RADIOBUTTON: string Read FEVT_RADIOBUTTON Write FEVT_RADIOBUTTON;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
