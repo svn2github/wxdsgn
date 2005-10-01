@@ -26,6 +26,7 @@ type
     FWx_Class: string;
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_Default: boolean;
+    FWx_Value: boolean;
     FWx_Enabled: boolean;
     FWx_EventList: TStringList;
     FWx_FGColor: TColor;
@@ -108,6 +109,7 @@ type
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_Default: boolean Read FWx_Default Write FWx_Default;
+    property Wx_Value: boolean Read FWx_Value Write FWx_Value;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
     property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
     property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
@@ -239,7 +241,8 @@ begin
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
   FWx_PropertyList.add('Wx_Validator : Validator code');
-  FWx_PropertyList.add('Default :' + Lang.Strings[ID_BTN_DEFAULT]);
+//  FWx_PropertyList.add('Default :' + Lang.Strings[ID_BTN_DEFAULT]);
+  FWx_PropertyList.add('Wx_Value : Value');
 
   FWx_PropertyList.add('Wx_Comments:' + Lang.Strings[ID_ITEM_COMMENTSELECTION]);
 
@@ -354,8 +357,8 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
-  if self.Default then
-    Result := Result + #13 + Format('%s->SetDefault();', [self.Name]);
+  if self.Wx_Value then
+    Result := Result + #13 + Format('%s->SetValue(true);',[self.Name]);
 
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
