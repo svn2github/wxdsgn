@@ -3201,13 +3201,13 @@ begin
     //   Form2.Show;
     StrPCopy(usechrs, ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
     pal     := TList.Create;                    { Create TList to form our palette }
-    delphiBitmap.Transparent := True;
+  //  delphiBitmap.Transparent := True;
     iWidth  := delphiBitmap.Width;
     iHeight := delphiBitmap.Height;
-    if iWidth > 180 then
-      iWidth := 180;
-    if iHeight > 180 then
-      iHeight := 180;
+ //   if iWidth > 180 then
+ //     iWidth := 180;
+ //   if iHeight > 180 then
+ //     iHeight := 180;
     GetMem(image, SizeOf(integer) * iWidth * iHeight); { Allocate space for image }
     { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
     cpos := @image^;     { This will be a pointer to current position in image }
@@ -3440,10 +3440,10 @@ begin
     pal     := TList.Create;                    { Create TList to form our palette }
     iWidth  := delphiBitmap.Width;
     iHeight := delphiBitmap.Height;
-    if iWidth > 180 then
-      iWidth := 180;
-    if iHeight > 180 then
-      iHeight := 180;
+  //  if iWidth > 180 then
+  //    iWidth := 180;
+  //  if iHeight > 180 then
+  //    iHeight := 180;
     GetMem(image, SizeOf(integer) * iWidth * iHeight); { Allocate space for image }
     { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
     cpos := @image^;     { This will be a pointer to current position in image }
