@@ -219,7 +219,7 @@ begin
   FWx_PropertyList.add('Wx_IDValue : IDValue ');
   FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
   FWx_PropertyList.add('Caption : Label');
-  FWx_PropertyList.add('Name :' + Lang.Strings[ID_NP_PRJNAME]);
+  FWx_PropertyList.add('Name : Name');
   FWx_PropertyList.add('Left : Left');
   FWx_PropertyList.add('Top : Top');
   FWx_PropertyList.add('Wx_Width :' + Lang.Strings[ID_EOPT_WIDTH]);
