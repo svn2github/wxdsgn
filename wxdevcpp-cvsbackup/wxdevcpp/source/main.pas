@@ -11208,7 +11208,7 @@ begin
     Exit;
   end;
 
-  S := #9;
+  S := #9#9;
   S := S + VarType + ' ' + VarName + '(' + VarArguments + ')';
   S := S + ';';
   boolInspectorDataClear:=False;

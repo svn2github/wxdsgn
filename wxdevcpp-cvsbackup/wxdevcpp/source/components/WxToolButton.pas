@@ -373,7 +373,7 @@ function TWxToolButton.GetParameterFromEventName(EventName: string): string;
 begin
   if EventName = 'EVT_MENU' then
   begin
-    Result := 'wxMenuEvent& event';
+    Result := 'wxCommandEvent& event';
     exit;
   end;
   if EventName = 'EVT_UPDATE_UI' then
