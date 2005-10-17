@@ -379,10 +379,6 @@ begin
   parentName := GetWxWidgetParent(self);
   strStyle   := GetRadioboxOrientation(Wx_RadioBoxStyle);
 
-
-//  DrawRadiobox(Wx_RadioBoxStyle);
-
-
   if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
   Result := GetCommentString(self.FWx_Comments.Text) +
@@ -545,12 +541,6 @@ begin
 end;
 
 procedure TWxRadioBox.Paint;
-var
- H: Integer;
- RH: Integer;
- R: TRect;
- Flags: Longint;
- S: string;
 begin
      { Make this component look like its parent component by calling
        its parent's Paint method. }

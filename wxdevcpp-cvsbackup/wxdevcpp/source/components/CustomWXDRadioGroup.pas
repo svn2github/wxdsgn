@@ -47,12 +47,10 @@ type
 CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    procedure SetButtonFontColor(Value: TColor);
   protected
     { Protected declarations }
     procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;
-    function CanModify: Boolean; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     property Columns: Integer read FColumns write SetColumns default 1;
     property Rows: Integer read FRows write SetRows default 1;
@@ -77,8 +75,6 @@ CM_ENABLEDCHANGED;
     property BiDiMode;
     property Caption;
     property Color;
-//    property Columns;
-//    property Rows;
     Property MajorDimension;
     Property Orientation;
     property Ctl3D;
@@ -222,6 +218,8 @@ var
   textlength: Integer;
 
 begin
+   ALeft :=  0;
+   ATop :=  0;
   if (FButtons.Count <> 0) and not FReading then
   begin
   // get the length in pixels of the longest radio button label
@@ -256,9 +254,6 @@ begin
             FRows := (FButtons.Count div FMajorDimension) +1;
           end;
       end;
-
-//    SetLength(MyRadioButtonArray, FRows, FColumns);
-//    ButtonsPerCol := FRows;
 
     ButtonWidth := 24 + textlength;
     ButtonHeight := 19;
@@ -437,17 +432,8 @@ begin
   ArrangeButtons;
 end;
 
-function TCustomWXDRadioGroup.CanModify: Boolean;
-begin
-  Result := True;
-end;
-
 procedure TCustomWXDRadioGroup.GetChildren(Proc: TGetChildProc; Root:
 TComponent);
-begin
-end;
-
-procedure TCustomWXDRadioGroup.SetButtonFontColor(Value: TColor);
 begin
 end;
 
