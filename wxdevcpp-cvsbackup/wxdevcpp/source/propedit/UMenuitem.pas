@@ -352,6 +352,9 @@ begin
   if cmenu.Wx_MenuItemStyle = wxMnuItm_Check then
     cbMenuType.ItemIndex := 2;
 
+  if cmenu.Wx_MenuItemStyle = wxMnuItm_History then
+    cbMenuType.ItemIndex := 4;
+
   cbOnMenu.Text     := cmenu.EVT_Menu;
   cbOnUpdateUI.Text := cmenu.EVT_UPDATE_UI;
 
@@ -394,7 +397,11 @@ begin
   else if cbMenuType.ItemIndex = 3 then
     cmenu.Wx_MenuItemStyle := wxMnuItm_Radio
   else if cbMenuType.ItemIndex = 2 then
-    cmenu.Wx_MenuItemStyle := wxMnuItm_Check;
+    cmenu.Wx_MenuItemStyle := wxMnuItm_Check
+  else if cbMenuType.ItemIndex = 4 then
+  begin
+    cmenu.Wx_MenuItemStyle := wxMnuItm_History;
+  end;
 
   cmenu.EVT_Menu := cbOnMenu.Text;
   cmenu.EVT_UPDATE_UI := cbOnUpdateUI.Text;
@@ -618,6 +625,8 @@ begin
   DesMenuItem.Wx_MenuItemStyle := SrcMenuItem.Wx_MenuItemStyle;
   DesMenuItem.EVT_Menu      := SrcMenuItem.EVT_Menu;
   DesMenuItem.EVT_UPDATE_UI := SrcMenuItem.EVT_UPDATE_UI;
+  DesMenuItem.Wx_FileHistory := SrcMenuItem.Wx_FileHistory;
+
 end;
 
 procedure TMenuItemForm.txtCaptionExit(Sender: TObject);
@@ -689,6 +698,12 @@ begin
 
   if cbMenuType.ItemIndex = 1 then
     txtCaption.Text := '---';
+
+  if cbMenuType.ItemIndex = 4 then
+  begin
+    txtCaption.Text := 'Recent Files';
+    cbEnabled.Enabled := False
+    end;
 
   if (cbMenuType.ItemIndex = 2) or (cbMenuType.ItemIndex = 3) then
     cbChecked.Enabled := True
