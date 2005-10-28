@@ -291,7 +291,7 @@ type
   TWxSplitterWinStyleSet  = set of TWxSplitterWinStyleItem;
 
   TWxMenuItemStyleItem = (wxMnuItm_Normal, wxMnuItm_Separator,
-    wxMnuItm_Radio, wxMnuItm_Check);
+    wxMnuItm_Radio, wxMnuItm_Check, wxMnuItm_History);
 
   TWxToolbottonItemStyleItem = (wxITEM_NORMAL, wxITEM_RADIO, wxITEM_CHECK);
 

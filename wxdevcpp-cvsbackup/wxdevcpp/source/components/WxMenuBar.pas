@@ -19,6 +19,7 @@ type
     FWx_Comments: TStrings;
     FWx_PropertyList: TStringList;
     FWx_MenuItems: TWxCustomMenuItem;
+    FWx_HasHistory: boolean;
     FMainMenu: TMainMenu;
     procedure AutoInitialize;
     procedure AutoDestroy;
@@ -70,6 +71,7 @@ type
     property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
     property Wx_MenuItems: TWxCustomMenuItem Read FWx_MenuItems Write FWx_MenuItems;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+    property Wx_HasHistory: boolean Read FWx_HasHistory Write FWx_HasHistory;
 
   end;
 
@@ -125,6 +127,7 @@ begin
   Glyph.Handle  := LoadBitmap(hInstance, 'TWxMenuBar');
   FMainMenu     := TMainMenu.Create(Self.Parent);
   FWx_Comments  := TStringList.Create;
+  FWx_HasHistory := false;
 
 end; { of AutoInitialize }
 
@@ -278,7 +281,11 @@ var
         GenerateEventTableEntriesFromSubMenu(idstrList, submnu.items[J])
       else begin
         if trim(submnu.Items[j].EVT_Menu) <> '' then
-          strLst.add('EVT_MENU(' + submnu.Items[j].Wx_IDName +
+          if submnu.Items[j].Wx_MenuItemStyle = wxMnuItm_History  then
+            strLst.add('EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9'  +
+            ', ' + CurrClassName + '::' + submnu.Items[j].EVT_Menu + ')')
+          else
+            strLst.add('EVT_MENU(' + submnu.Items[j].Wx_IDName +
             ', ' + CurrClassName + '::' + submnu.Items[j].EVT_Menu + ')');
 
         if trim(submnu.Items[j].EVT_UPDATE_UI) <> '' then
@@ -297,6 +304,10 @@ begin
       GenerateEventTableEntriesFromSubMenu(strLst, Wx_MenuItems.items[i])
     else begin
       if trim(Wx_MenuItems.Items[i].EVT_Menu) <> '' then
+        if Wx_MenuItems.Items[i].Wx_MenuItemStyle = wxMnuItm_History then
+        strLst.add('EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9' +
+                  ', ' + CurrClassName + '::' + Wx_MenuItems.Items[i].EVT_Menu + ')')
+        else
         strLst.add('EVT_MENU(' + Wx_MenuItems.Items[i].Wx_IDName +
           ', ' + CurrClassName + '::' + Wx_MenuItems.Items[i].EVT_Menu + ')');
 
@@ -500,6 +511,16 @@ begin
   if item.Count < 1 then
     if item.Wx_MenuItemStyle = wxMnuItm_Separator then
       Result := parentName + '->AppendSeparator();'
+    else if item.Wx_MenuItemStyle = wxMnuItm_History then
+    begin
+      Wx_HasHistory := true;
+//      Result := Result + #13 + parentName + '->AppendSeparator();';
+      Result := Result + #13 + 'm_fileHistory = new wxFileHistory(9,wxID_FILE1);';
+      Result := Result + #13 + 'm_fileHistory->UseMenu( ' + parentName + ' );';
+      Result := Result + #13 + 'gPrefs->SetPath(wxT("/RecentFiles"));';
+      Result := Result + #13 + 'm_fileHistory->Load(*gPrefs); ' ;
+      Result := Result + #13 + 'gPrefs->SetPath(wxT(".."));'
+    end
     else begin
       if item.WX_BITMAP.Bitmap.Handle <> 0 then
       begin
@@ -615,12 +636,17 @@ function TWxMenuBar.GenerateGUIControlDeclaration: string;
 begin
   Result := '';
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+  if Wx_HasHistory = true then
+    Result := Result + #13 + 'wxFileHistory *m_fileHistory;';// + #13 + 'wxFileConfig *m_fileConfig;';
 end;
 
 function TWxMenuBar.GenerateHeaderInclude: string;
 begin
   Result := '';
   Result := '#include <wx/menu.h>';
+  if Wx_HasHistory = true then
+    Result := Result + #13 + '#include <wx/config.h> // Needed For wxFileHistory' + #13 + '#include <wx/docview.h> // Needed For wxFileHistory';
+
 end;
 
 

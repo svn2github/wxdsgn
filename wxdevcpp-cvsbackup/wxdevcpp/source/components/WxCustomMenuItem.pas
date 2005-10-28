@@ -69,6 +69,7 @@ type
     FWx_Checked: boolean;
     FWX_BITMAP: TPicture;
     FWx_Comments: TStrings;
+    FWx_FileHistory: boolean;
     FItems: TList;
     FAdded: boolean;
     //FParentHandle: HMENU;
@@ -136,6 +137,7 @@ type
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
     property Wx_Items: TList Read FItems Write FItems;
+    property Wx_FileHistory: boolean Read FWx_FileHistory Write FWx_FileHistory;
 
   end;
 
@@ -160,6 +162,7 @@ begin
   FWX_BITMAP  := TPicture.Create;
   FItems      := TList.Create;
   FWx_Enabled := True;
+  FWx_FileHistory := false;
   inherited Create; //(owner);
 end;
 
