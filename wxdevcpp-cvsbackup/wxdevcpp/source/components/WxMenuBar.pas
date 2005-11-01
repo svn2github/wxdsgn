@@ -517,9 +517,11 @@ begin
 //      Result := Result + #13 + parentName + '->AppendSeparator();';
       Result := Result + #13 + 'm_fileHistory = new wxFileHistory(9,wxID_FILE1);';
       Result := Result + #13 + 'm_fileHistory->UseMenu( ' + parentName + ' );';
-      Result := Result + #13 + 'gPrefs->SetPath(wxT("/RecentFiles"));';
-      Result := Result + #13 + 'm_fileHistory->Load(*gPrefs); ' ;
-      Result := Result + #13 + 'gPrefs->SetPath(wxT(".."));'
+      Result := Result + #13 + 'm_fileConfig = new wxConfig("' + ChangeFileExt(ExtractFileName(MainForm.fProject.FileName), '') + '");';
+      Result := Result + #13 + 'wxConfigBase::Set( m_fileConfig );';
+      Result := Result + #13 + 'm_fileConfig->SetPath(wxT("/RecentFiles"));';
+      Result := Result + #13 + 'm_fileHistory->Load(*m_fileConfig); ' ;
+      Result := Result + #13 + 'm_fileConfig->SetPath(wxT(".."));'
     end
     else begin
       if item.WX_BITMAP.Bitmap.Handle <> 0 then
@@ -637,7 +639,7 @@ begin
   Result := '';
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
   if Wx_HasHistory = true then
-    Result := Result + #13 + 'wxFileHistory *m_fileHistory;';// + #13 + 'wxFileConfig *m_fileConfig;';
+    Result := Result + #13 + 'wxFileHistory *m_fileHistory; // the most recently opened files' + #13 + 'wxConfig *m_fileConfig; // Used to save the file history (can be used for other data too) ';
 end;
 
 function TWxMenuBar.GenerateHeaderInclude: string;
