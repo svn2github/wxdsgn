@@ -297,6 +297,7 @@ end;
 function TWxStatusBar.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
   I:    integer;
+  min1used: boolean;
   temp: string;
 begin
 
@@ -314,10 +315,18 @@ begin
 
     temp := IndentString + '  <widths>';
 
+    min1used := false;
     for I := 0 to Panels.Count - 2 do    // Iterate
-      temp := temp + Format('%d, ', [self.Panels.items[i].Width]);
+        begin
+            if self.Panels.items[i].Width = -1 then
+                min1used := true;
+            temp := temp + Format('%d, ', [self.Panels.items[i].Width]);
+        end;
+    if min1used = false then
+        temp := temp + '-1</widths>'
+    else
+        temp := temp + Format('%d, ', [self.Panels.items[Panels.Count-1].Width]) + '</widths>';
 
-    temp := temp + '-1</widths>';
 
     Result.Add(temp);
 
@@ -337,6 +346,7 @@ var
   I: integer;
   strColorStr: string;
   strStyle, parentName, strAlignment: string;
+  min1used: boolean;
 begin
   Result := '';
 
@@ -367,13 +377,24 @@ begin
     Result := Result + #13 + Format('int %s_Widths[%d];',
       [self.Name, self.Panels.Count]);
 
+    min1used := false;
     for I := 0 to Panels.Count - 1 do    // Iterate
       if I = (Panels.Count - 1) then
-        Result := Result + #13 + Format('%s_Widths[%d] = %d;', [self.Name, I, -1])
+          if min1used = false then
+              Result := Result + #13 + Format('%s_Widths[%d] = %d;', [self.Name, I, -1])
+          else
+              Result := Result + #13 + Format('%s_Widths[%d] = %d;',
+          [self.Name, I, self.Panels.items[i].Width])
       else
-        Result := Result + #13 + Format('%s_Widths[%d] = %d;',
-          [self.Name, I, self.Panels.items[i].Width]);    // for
+          begin
+              if self.Panels.items[i].Width = -1 then
+                  min1used := true;
 
+              Result := Result + #13 + Format('%s_Widths[%d] = %d;',
+              [self.Name, I, self.Panels.items[i].Width]);    
+          end;
+            // for loop end
+            
     Result := Result + #13 + Format('%s->SetStatusWidths(%d,%s_Widths);',
       [self.Name, self.Panels.Count, self.Name]);
 
