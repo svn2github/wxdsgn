@@ -530,6 +530,7 @@ begin
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
   if FWx_FiletoLoad = '' then
+    begin
     for i := 0 to self.Lines.Count - 1 do
       if i = self.Lines.Count - 1 then
         Result :=
@@ -538,6 +539,10 @@ begin
       else
         Result := Result + #13 + Format('%s->AppendText(%s);',
           [self.Name, GetCppString(self.Lines[i])]);
+
+        Result := Result + #13 + self.Name + '->SetFocus();';
+        Result := Result + #13 + self.Name + '->SetInsertionPointEnd();';
+    end;
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
