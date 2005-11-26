@@ -1265,7 +1265,9 @@ begin
     LoadLayout;
   end;
   RebuildNodes;
-  //   MainForm.ProjectView.FullExpand;
+
+  devCompilerSet.LoadSet(fOptions.CompilerSet);
+  devCompilerSet.AssignToCompiler();
 end;
 
 { end XXXKF changed }
