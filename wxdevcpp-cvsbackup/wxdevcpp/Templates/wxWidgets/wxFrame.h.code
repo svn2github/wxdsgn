@@ -59,7 +59,7 @@ class %CLASS_NAME% : public wxFrame
 		
 	public:
 		void %CLASS_NAME%Close(wxCloseEvent& event);
-		void CreateGUIControls(void);
+		void CreateGUIControls();
 };
 
 #endif

@@ -46,6 +46,6 @@ void %CLASS_NAME%::CreateGUIControls(void)
 
 void %CLASS_NAME%::%CLASS_NAME%Close(wxCloseEvent& event)
 {
-    Destroy();
+	Destroy();
+	event.Skip();
 }
- 

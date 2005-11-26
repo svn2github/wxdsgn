@@ -74,20 +74,18 @@ type
 
     Includes: TStrings;
     Libs: TStrings;
-   PrivateResource: String; // Dev-C++ will overwrite this file
+    PrivateResource: String; // Dev-C++ will overwrite this file
     ResourceIncludes: TStringList;
     MakeIncludes: TStringList;
     useGPP: boolean;
     Icon: string;
 
-   ExeOutput: String;
-   ObjectOutput: String;
-
+    ExeOutput: String;
+    ObjectOutput: String;
     OverrideOutput: boolean;
     OverridenOutput: string;
 
     HostApplication: string;
-
     IncludeVersionInfo: boolean;
     SupportXPThemes: boolean;
     CompilerSet: integer;

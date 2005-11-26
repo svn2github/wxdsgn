@@ -8398,7 +8398,6 @@ begin
   end;
 
   ini.free;
-
   CreateStatus := CreateSourceCodes(strCppFile,strHppFile,FCreateFormPropObj, strCppCode, strHCode, dsgnType);
   if CreateStatus then
   begin
@@ -8610,7 +8609,12 @@ begin
   end;
 
   ini.free;
-
+  with fProject.Options do
+  begin
+    compilerSet := devCompiler.compilerSet;
+    CompilerOptions := devCompilerSet.optionsstr;
+  end;
+  
   // Call CreateAppSourceCodes to replace the keywords in our template files
   //  and create the new project files
   CreateStatus := CreateAppSourceCodes(strCppFile,strHppFile,strAppCppFile,strAppHppFile,FCreateFormPropObj,

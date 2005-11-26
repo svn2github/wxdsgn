@@ -30,7 +30,7 @@ END_EVENT_TABLE()
 %CLASS_NAME%::%CLASS_NAME%(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &position, const wxSize& size, long style)
 : wxDialog(parent, id, title, position, size, style)
 {
-    CreateGUIControls();
+	CreateGUIControls();
 }
 
 %CLASS_NAME%::~%CLASS_NAME%() {} 
@@ -46,6 +46,6 @@ void %CLASS_NAME%::CreateGUIControls(void)
 
 void %CLASS_NAME%::%CLASS_NAME%Close(wxCloseEvent& event)
 {
-    Destroy();
+	Destroy();
+	event.Skip();
 }
- 
