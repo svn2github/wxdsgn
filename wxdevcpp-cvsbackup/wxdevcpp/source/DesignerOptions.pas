@@ -15,7 +15,7 @@ type
     btnOk: TBitBtn;
     btnCancel: TBitBtn;
     btnHelp: TBitBtn;
-    PageControl2: TPageControl;
+    notebook: TPageControl;
     TabSheet1: TTabSheet;
     GroupBox1: TGroupBox;
     Label6: TLabel;
@@ -35,9 +35,10 @@ type
     Bevel2: TBevel;
     XPMenu: TXPMenu;
     TabSheet2: TTabSheet;
+    codegen: TGroupBox;
     cbGenerateXRC: TCheckBox;
-    cbStringFormat: TComboBox;
     Label1: TLabel;
+    cbStringFormat: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
