@@ -171,9 +171,7 @@ var
   opt, opt1: TCompilerOption;
   I: integer;
 begin
-  if (vle.Strings.Count = 0) then
-    Exit;
-  if vle.Strings.Count >= ARow then
+  if vle.Strings.Count <= ARow then
     Exit;
   opt := devCompiler.Options[Integer(vle.Strings.Objects[ARow])];
 
