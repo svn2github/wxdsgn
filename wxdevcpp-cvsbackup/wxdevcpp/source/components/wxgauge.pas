@@ -362,7 +362,9 @@ begin
   strStyle := GetGaugeSpecificStyle(self.Wx_GeneralStyle, Wx_GaugeStyle);
 
   if (trim(strStyle) <> '') then
-    strStyle := ', ' + GetGaugeOrientation(Wx_GaugeOrientation) + '|' + strStyle;
+    strStyle := ', ' + GetGaugeOrientation(Wx_GaugeOrientation) + '|' + strStyle
+  else
+    strStyle := ', ' + GetGaugeOrientation(Wx_GaugeOrientation);
 
   if trim(self.FWx_Validator) <> '' then
   begin
@@ -372,11 +374,8 @@ begin
       strStyle := ', wxGA_HORIZONTAL, ' + self.Wx_Validator;
     strStyle := strStyle + ', ' + GetCppString(Name);
 
-  end
-  else if trim(strStyle) <> '' then
-    strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
-  else
-    strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
+  end;
+  strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name);
 
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',
