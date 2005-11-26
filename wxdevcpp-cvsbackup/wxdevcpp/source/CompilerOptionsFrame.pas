@@ -173,7 +173,8 @@ var
 begin
   if (vle.Strings.Count = 0) then
     Exit;
-
+  if vle.Strings.Count >= ARow then
+    Exit;
   opt := devCompiler.Options[Integer(vle.Strings.Objects[ARow])];
 
   if Value = 'Yes' then
@@ -182,7 +183,8 @@ begin
     opt.optValue := 0 //False
   else if opt.optChoices = nil then
     Exit
-  else begin
+  else
+  begin
     for i := 0 to opt.optChoices.Count - 1 do
       if Value = opt.optChoices.Names[i] then begin
         opt.optValue := i;
