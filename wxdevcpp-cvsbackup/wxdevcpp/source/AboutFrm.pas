@@ -138,7 +138,8 @@ const MessageText =
     '- Blue theme: Thomas Thron'#13#10
     {$IFDEF WX_BUILD}
     +
-    '- wxWidgets Designer Extension: Guru Kathiresan, Tony Reina, Malcolm Nealon.'#13#10
+    '- wxWidgets Designer Extension: Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'#13#10 +
+    '- Runtime Compiler Changing: Joel Low, Tony Reina'
     {$ENDIF}
     ;
 begin
