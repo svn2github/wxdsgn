@@ -62,12 +62,11 @@ begin
         exit;
 
     ControlListBox.Items.Clear;
-
     for I := 0 to FMainControl.ControlCount - 1 do    // Iterate
     begin
-        ControlListBox.AddItem(FMainControl.Controls[i].Name,FMainControl.Controls[i]);
-    end;    // for
-
+        if FMainControl.Controls[i].Name <> '' then
+            ControlListBox.AddItem(FMainControl.Controls[i].Name, FMainControl.Controls[i]);
+    end;
 end;
 
 procedure TCreationOrderForm.btMoveUpClick(Sender: TObject);
