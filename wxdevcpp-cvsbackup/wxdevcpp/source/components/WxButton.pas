@@ -6,7 +6,7 @@ unit WxButton;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, MultiLangSupport,
-  Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, WxToolBar, Dialogs;
+  Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, WxToolBar;
 
 type
   TDrawButtonEvent = procedure(Control: TWinControl; Rect: TRect;
@@ -330,6 +330,12 @@ end;
 // property fields.
 procedure TWxButton.EvaluateHeightWidth;
 begin
+                   
+   // If position inputs are < 0, then make them 0
+   if (self.Top < 0) then
+      self.Top := 0;
+   if (self.Left < 0) then
+      self.Left := 0;
 
    if self.defaultHeight <> self.Height then // component stretched with mouse
        begin
@@ -372,10 +378,6 @@ begin
      FWx_Width := self.defaultWidth;
      self.Height := self.defaultWidth
     end;
-
-  // Don't allow left and top to be < 0
-  if self.Left < 0 then self.Left := 0;
-  if self.Top < 0 then self.Top := 0;
   
 end;
 
