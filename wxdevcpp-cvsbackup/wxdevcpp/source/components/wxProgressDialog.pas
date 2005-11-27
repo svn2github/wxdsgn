@@ -150,7 +150,7 @@ begin
   Result := '';
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s =  new %s( %s, %s, %d , this  %s);',
-    [self.Name, self.wx_Class, GetCppString(self.Wx_Title), self.Wx_Message,
+    [self.Name, self.wx_Class, GetCppString(self.Wx_Title), GetCppString(self.Wx_Message),
     Wx_MaxValue, GetProgressDialogStyleString(Wx_ProgressDialogStyle)]);
 
   if not WX_AutoShow then
