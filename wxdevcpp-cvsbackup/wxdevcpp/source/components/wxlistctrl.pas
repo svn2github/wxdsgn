@@ -301,9 +301,8 @@ procedure TWxListCtrl.SetWx_ListviewStyle(Value: TWxLVStyleSet);
 begin
 
   if wxLC_LIST in Value then
-    if (wxLC_LIST in FWx_ListviewStyle) then
-
-    else begin
+    if not (wxLC_LIST in FWx_ListviewStyle) then
+    begin
       Value     := Value - [wxLC_REPORT] - [wxLC_ICON] - [wxLC_SMALL_ICON];
       ViewStyle := vsList;
       FWx_ListviewStyle := Value;
@@ -311,9 +310,8 @@ begin
     end;
 
   if wxLC_REPORT in Value then
-    if (wxLC_REPORT in FWx_ListviewStyle) then
-
-    else begin
+    if not (wxLC_REPORT in FWx_ListviewStyle) then
+    begin
       Value     := Value - [wxLC_LIST] - [wxLC_ICON] - [wxLC_SMALL_ICON];
       ViewStyle := vsreport;
       FWx_ListviewStyle := Value;
@@ -321,9 +319,8 @@ begin
     end;
 
   if wxLC_ICON in Value then
-    if (wxLC_ICON in FWx_ListviewStyle) then
-
-    else begin
+    if not (wxLC_ICON in FWx_ListviewStyle) then
+    begin
       Value     := Value - [wxLC_LIST] - [wxLC_REPORT] - [wxLC_SMALL_ICON];
       ViewStyle := vsIcon;
       FWx_ListviewStyle := Value;
@@ -331,19 +328,24 @@ begin
     end;
 
   if wxLC_SMALL_ICON in Value then
-    if (wxLC_SMALL_ICON in FWx_ListviewStyle) then
-
-    else begin
+    if not (wxLC_SMALL_ICON in FWx_ListviewStyle) then
+    begin
       Value     := Value - [wxLC_LIST] - [wxLC_REPORT] - [wxLC_ICON];
       ViewStyle := vsSmallIcon;
       FWx_ListviewStyle := Value;
       exit;
     end;
 
-  Value     := Value + [wxLC_REPORT] - [wxLC_LIST] - [wxLC_ICON] - [wxLC_SMALL_ICON];
-  ViewStyle := vsReport;
-  FWx_ListviewStyle := Value;
-
+  if (not (wxLC_REPORT in FWx_ListviewStyle)) and (not (wxLC_LIST in FWx_ListviewStyle))
+      and (not (wxLC_ICON in FWx_ListviewStyle)) and (not (wxLC_SMALL_ICON in FWx_ListviewStyle)) then
+  begin
+    Value     := Value + [wxLC_REPORT] - [wxLC_LIST] - [wxLC_ICON] - [wxLC_SMALL_ICON];
+    ViewStyle := vsReport;
+    FWx_ListviewStyle := Value;
+  end
+  else
+    //No change in any type value
+    FWx_ListviewStyle := Value;
 end;
 
 { Override OnKeyPress handler from TListView,IWxComponentInterface }
