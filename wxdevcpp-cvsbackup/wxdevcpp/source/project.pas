@@ -172,6 +172,7 @@ type
 
     property UseCustomMakefile: boolean read fUseCustomMakefile write SetUseCustomMakefile;
     property CustomMakefile: string read fCustomMakefile write SetCustomMakefile;
+
   public
     constructor Create(nFileName, nName: string);
     destructor Destroy; override;
@@ -924,6 +925,9 @@ begin
           StringReplace(Read('MakeIncludes', ''),
              '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
+{$IfDef VC_BUILD}
+    fOptions.PreprocDefines := Read('PreprocDefines', '');
+{$EndIf}
     {$ELSE}
       fOptions.cmdLines.Compiler := Read('Compiler', '');
       fOptions.cmdLines.CppCompiler := Read('CppCompiler', '');
@@ -1026,6 +1030,9 @@ begin
     Write('Compiler', fOptions.cmdLines.Compiler);
     Write('CppCompiler', fOptions.cmdLines.CppCompiler);
     Write('Linker', fOptions.cmdLines.Linker);
+{$IfDef VC_BUILD}
+    Write('PreprocDefines', fOptions.PreprocDefines);
+{$EndIf}
     Write('IsCpp', fOptions.UseGpp);
     Write('Icon', ExtractRelativePath(Directory, fOptions.Icon));
     Write('ExeOutput', fOptions.ExeOutput);

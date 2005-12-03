@@ -59,13 +59,13 @@ object MainForm: TMainForm
     Top = 241
     Width = 630
     Height = 130
-    ActivePage = LogSheet
+    ActivePage = CompSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     OnChange = MessageControlChange
     OnChanging = MessageControlChanging
@@ -200,7 +200,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 638
-          Height = 73
+          Height = 72
           Anchors = [akLeft, akTop, akRight, akBottom]
           ReadOnly = True
           ScrollBars = ssVertical
@@ -1209,9 +1209,9 @@ object MainForm: TMainForm
       Top = 16
       Width = 192
       Height = 201
-      ActivePage = ClassSheet
+      ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 0
       object ProjectSheet: TTabSheet
         Caption = 'Project'
@@ -1220,7 +1220,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 173
+          Height = 172
           Align = alClient
           ChangeDelay = 1
           DragMode = dmAutomatic
@@ -1252,7 +1252,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 173
+          Height = 172
           Align = alClient
           Images = dmMain.ClassImages
           ReadOnly = True
@@ -1287,7 +1287,7 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 184
-          Height = 173
+          Height = 172
           Align = alClient
           Images = dmMain.MenuImages_NewLook
           Indent = 19

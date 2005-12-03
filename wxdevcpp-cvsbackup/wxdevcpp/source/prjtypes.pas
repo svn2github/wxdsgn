@@ -91,6 +91,9 @@ type
     CompilerSet: integer;
     CompilerOptions: string;
     VersionInfo: TProjVersionInfo;
+{$IfDef VC_BUILD}
+    PreprocDefines: string;
+{$EndIf}
   end;
 
 procedure InitOptionsRec(var Rec: TProjOptions);
@@ -174,6 +177,9 @@ begin
     cmdLines.Compiler := R1.cmdLines.Compiler;
     cmdLines.CppCompiler := R1.cmdLines.CppCompiler;
     cmdLines.Linker := R1.cmdLines.Linker;
+{$IfDef VC_BUILD}
+    PreprocDefines := R1.PreprocDefines;
+{$EndIf}
     useGPP := R1.useGPP;
     icon := R1.icon;
     ExeOutput := R1.ExeOutput;
