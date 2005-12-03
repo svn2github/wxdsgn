@@ -6,13 +6,18 @@ Description=A basic Frame for wxWidgets applications.
 Catagory=Basic
 
 [Project]
+Name=wxProject
 UnitCount=0
 Type=0
 Cpp=1
-ResourceIncludes=
-Compiler=/D_UNICODE_@@_/D__WXMSW___@@_/DWIN32_@@_/DWXUSINGDLL_@@_/D_WIN32_IE=0x0600_@@_/DwxUSE_UNICODE_MSLU=1_@@_/W4_@@_
-CppCompiler=/D_UNICODE_@@_/D__WXMSW___@@_/DWIN32_@@_/DWXUSINGDLL_@@_/D_WIN32_IE=0x0600_@@_/DwxUSE_UNICODE_MSLU=1_@@_/W4_@@_
-Linker=wxmsw27u.lib_@@_wxtiff.lib_@@_wxjpeg.lib_@@_wxpng.lib_@@_wxzlib.lib_@@_wxregexu.lib_@@_wxexpat.lib_@@_kernel32.lib_@@_user32.lib_@@_gdi32.lib_@@_comdlg32.lib_@@_winspool.lib_@@_winmm.lib_@@_shell32.lib_@@_comctl32.lib_@@_ole32.lib_@@_oleaut32.lib_@@_uuid.lib_@@_rpcrt4.lib_@@_advapi32.lib_@@_wsock32.lib_@@_odbc32.lib_@@_opengl32.lib_@@_
+ResourceIncludes="%DEVCPP_DIR%include"
+Compiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-fvtable-thunks_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@_
+Linker=-lwxmsw26_@@_-lwxmsw26_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
+Name=wxWindows Project
 IsCpp=1
+CppCompiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@_
+CompilerSettings=0000000001001000000000
+CompilerSet=0
 IncludeVersionInfo=0
 SupportXPThemes=0
+
