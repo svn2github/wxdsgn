@@ -145,14 +145,20 @@ function GetTopmostItemAncestor(Item: TMenuItem): string;
 var
   CurMenu: TMenu;
 begin
-  Result:=Item.GetParentMenu.Name;
-  CurMenu:=Item.GetParentMenu;
-  if CurMenu is TMainMenu then
-    while Item<>nil do
-    begin
-      if Item.Caption<>'' then Result:=Item.Caption;
-      Item:=Item.Parent;
-    end
+  Result := '';
+
+  //Check to make sure we have a valid reference
+  if Item.GetParentMenu <> nil then
+  begin
+    Result:=Item.GetParentMenu.Name;
+    CurMenu:=Item.GetParentMenu;
+    if CurMenu is TMainMenu then
+      while Item<>nil do
+      begin
+        if Item.Caption<>'' then Result:=Item.Caption;
+        Item:=Item.Parent;
+      end
+  end
 end;
 
 procedure TdevShortcuts.Load;
