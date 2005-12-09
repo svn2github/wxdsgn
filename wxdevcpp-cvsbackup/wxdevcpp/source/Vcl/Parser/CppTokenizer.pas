@@ -23,7 +23,7 @@ interface
 
 uses 
 {$IFDEF WIN32}
-  Windows, Classes, SysUtils, StrUtils, ComCtrls, dialogs;
+  Windows, Classes, SysUtils, StrUtils, ComCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   Classes, SysUtils, StrUtils, QComCtrls;
@@ -592,13 +592,11 @@ begin
   len := Length(Result);
   fTmpOutput^ := #0;
   I := 1;
-  while I < len do begin
+  while I <= len do begin
     // simplify spaces
     if Result[I] in [' ', #9] then begin
-      while (Result[I] in [' ', #9]) and (I < len) do
-      begin
+      while (Result[I] in [' ', #9]) and (I <= len) do
         Inc(I);
-      end;
       StrLCat(StrEnd(fTmpOutput), ' ', 1);
     end;
     // remove comments
@@ -620,7 +618,7 @@ begin
           end;
       end;
     end;
-    if I < len then
+    if I <= len then
       if not (Result[I] in [' ', #9]) then
         StrLCat(StrEnd(fTmpOutput), @Result[I], 1);
     Inc(I);
