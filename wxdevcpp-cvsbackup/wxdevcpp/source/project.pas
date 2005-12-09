@@ -1265,9 +1265,7 @@ begin
     LoadLayout;
   end;
   RebuildNodes;
-
-  devCompilerSet.LoadSet(fOptions.CompilerSet);
-  devCompilerSet.AssignToCompiler();
+  //   MainForm.ProjectView.FullExpand;
 end;
 
 { end XXXKF changed }
@@ -2195,4 +2193,197 @@ end;
 
 function TUnitList.GetItem(index: integer): TProjUnit;
 begin
-  result := TProjUnit(fList[index
+  result := TProjUnit(fList[index]);
+end;
+
+procedure TUnitList.SetItem(index: integer; value: TProjUnit);
+begin
+  fList[index] := value;
+end;
+
+function TUnitList.Indexof(Editor: TEditor): integer;
+begin
+  result := Indexof(editor.FileName);
+end;
+
+function TUnitList.Indexof(FileName: string): integer;
+var
+  s1, s2: String;
+begin
+  for result := 0 to pred(fList.Count) do
+  begin
+    s1 := GetRealPath(TProjUnit(fList[result]).FileName,
+      TProjUnit(fList[result]).fParent.Directory);
+    s2 := GetRealPath(FileName, TProjUnit(fList[result]).fParent.Directory);
+    if CompareText(s1, s2) = 0 then exit;
+  end;
+  result := -1;
+end;
+
+function TUnitList.Indexof(Node: TTreeNode): integer;
+begin
+  for result := 0 to pred(fList.Count) do
+    if TProjUnit(fList[result]).Node = Node then exit;
+  result := -1;
+end;
+
+
+{ TdevINI }
+
+destructor TdevINI.Destroy;
+begin
+  if assigned(fIniFile) then
+    fIniFile.Free;
+  inherited;
+end;
+
+procedure TdevINI.SetFileName(const Value: string);
+begin
+  fFileName := Value;
+  if not assigned(fINIFile) then
+    fINIFile := TmemINIFile.Create(fFileName)
+  else
+    fINIFile.ReName(fFileName, FALSE);
+end;
+
+procedure TdevINI.SetSection(const Value: string);
+begin
+  fSection := Value;
+end;
+
+// reads a boolean value from fsection
+function TdevINI.Read(Name: string; Default: boolean): boolean;
+begin
+  result := fINIFile.ReadBool(fSection, Name, Default);
+end;
+
+// reads a integer value from fsection
+function TdevINI.Read(Name: string; Default: integer): integer;
+begin
+  result := fINIFile.ReadInteger(fSection, Name, Default);
+end;
+
+// reads unit filename for passed index
+function TdevINI.Read(index: integer): string;
+begin
+  result := fINIFile.ReadString('Unit' + inttostr(index + 1), 'FileName', '');
+end;
+
+// reads a string subitem from a unit entry
+function TdevINI.Read(index: integer; Item: string; default: string): string;
+begin
+  result := fINIFile.ReadString('Unit' + inttostr(index + 1), Item, default);
+end;
+
+// reads a boolean subitem from a unit entry
+function TdevINI.Read(index: integer; Item: string; default: boolean): boolean;
+begin
+  result := fINIFile.ReadBool('Unit' + inttostr(index + 1), Item, default);
+end;
+
+// reads an integer subitem from a unit entry
+function TdevINI.Read(index: integer; Item: string; default: integer): integer;
+begin
+  result := fINIFile.ReadInteger('Unit' + inttostr(index + 1), Item, default);
+end;
+
+// reads string value from fsection
+function TdevINI.Read(Name, Default: string): string;
+begin
+  result := fINIFile.ReadString(fSection, Name, Default);
+end;
+
+// write unit entry for passed index
+procedure TdevINI.Write(index: integer; value: string);
+begin
+  finifile.WriteString('Unit' + inttostr(index + 1), 'FileName', value);
+end;
+
+// write a string subitem in a unit entry
+procedure TdevINI.Write(index: integer; Item: string; Value: string);
+begin
+  finifile.WriteString('Unit' + inttostr(index + 1), Item, Value);
+end;
+
+// write a boolean subitem in a unit entry
+procedure TdevINI.Write(index: integer; Item: string; Value: boolean);
+begin
+  finifile.WriteBool('Unit' + inttostr(index + 1), Item, Value);
+end;
+
+// write an integer subitem in a unit entry
+procedure TdevINI.Write(index: integer; Item: string; Value: integer);
+begin
+  finifile.WriteInteger('Unit' + inttostr(index + 1), Item, Value);
+end;
+
+// write string value to fsection
+procedure TdevINI.Write(Name, value: string);
+begin
+  finifile.WriteString(fSection, Name, Value);
+end;
+
+// write boolean value to fsection
+procedure TdevINI.Write(Name: string; value: boolean);
+begin
+  fINIFile.WriteBool(fSection, Name, Value);
+end;
+
+// write integer value to fsection
+procedure TdevINI.Write(Name: string; value: integer);
+begin
+  fINIFile.WriteInteger(fSection, Name, Value);
+end;
+
+procedure TdevINI.UpdateFile;
+begin
+{$WARN SYMBOL_PLATFORM OFF}
+  if not FileExists(FileName) or (FileExists(FileName) and (FileGetAttr(FileName) and faReadOnly = 0)) then
+{$WARN SYMBOL_PLATFORM ON}
+    fINIFile.UpdateFile;
+end;
+
+procedure TdevINI.ClearSection(const Section: string = '');
+var
+  s: string;
+  tmp: TStringList;
+  idx: integer;
+begin
+  if Section = '' then
+    s := fSection
+  else
+    s := Section;
+
+  if not finifile.SectionExists(s) then exit;
+  tmp := TStringList.Create;
+  try
+    finifile.ReadSectionValues(s, tmp);
+    if tmp.Count = 0 then exit;
+    for idx := 0 to pred(tmp.Count) do
+      finifile.DeleteKey(s, tmp[idx]);
+  finally
+    tmp.Free;
+  end;
+end;
+
+procedure TdevINI.EraseUnit(const index: integer);
+var
+  s: string;
+begin
+  s := 'Unit' + inttostr(index + 1);
+  if finifile.SectionExists(s) then
+    finifile.EraseSection(s);
+end;
+
+procedure TdevINI.DeleteKey(const value: string);
+begin
+  if ValueExists(value) then
+    finifile.DeleteKey(fSection, value);
+end;
+
+function TdevINI.ValueExists(const value: string): boolean;
+begin
+  result := finifile.ValueExists(fSection, value);
+end;
+
+end.
