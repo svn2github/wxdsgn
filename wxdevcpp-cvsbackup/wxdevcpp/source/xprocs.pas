@@ -2780,7 +2780,7 @@ end;
 {$IFDEF Win32}
 
 { TPersistentRegistry }
-
+{$IFDEF WX_BUILD}{$HINTS OFF}{$ENDIF}
 function TPersistentRegistry.ReadComponent(const Name: string;
     Owner, Parent: TComponent): TComponent;
 var
@@ -2815,6 +2815,7 @@ begin
         MemStream.Free;
     end;
 end;
+{$IFDEF WX_BUILD}{$HINTS ON}{$ENDIF}
 
 procedure TPersistentRegistry.WriteComponent(const Name: string; Component: TComponent);
 var
