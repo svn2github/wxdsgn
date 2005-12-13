@@ -1583,7 +1583,7 @@ end;
 procedure TEditor.EditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y:Integer);
 var s, s1: string;
     p : TBufferCoord;
-  	I,j: integer;
+  	I,j,slen: integer;
     attr:TSynHighlighterAttributes;
 begin
   fHintTimer.Enabled := false;
@@ -1613,13 +1613,19 @@ begin
     begin
       j := Length(s1);
       while (I < j) and (s1[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_']) do
-      Inc(I);
+      Inc(I); 
     end;
     P.Char:=I;
     Dec(I);
+
     if (s1 <> '') then
-      while (I <> 0) and (s1[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.', '-', '>', '&', '*']) do
+    begin
+      slen := Length(s1);
+      //index of S was not checked before we use it.
+      //The debugger mode crash is due to this.
+      while (slen >= I) and (I <> 0) and (s1[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.', '-', '>', '&', '*']) do
       Dec(I, 1);
+    end;
     s := Copy(s1, I + 1, p.Char - I - 1);
     {if s<>MainForm.fDebugger.WatchVar then begin
       Application.HideHint;
