@@ -595,8 +595,11 @@ begin
   while I <= len do begin
     // simplify spaces
     if Result[I] in [' ', #9] then begin
-      while (Result[I] in [' ', #9]) and (I <= len) do
-        Inc(I);
+      //Result's  Index is not checked before using it,
+      //so it is causing problems when parsing some
+      //header files
+        while (I <= len) and (Result[I] in [' ', #9])  do
+            Inc(I);
       StrLCat(StrEnd(fTmpOutput), ' ', 1);
     end;
     // remove comments
