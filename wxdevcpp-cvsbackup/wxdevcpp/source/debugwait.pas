@@ -314,8 +314,10 @@ end;
 function TDebugWait.CreateClassNodes(node : TDebugNode; s : string; i : integer) : integer;
 var parent, newnode : TDebugNode;
     j{, count}     : integer;
+    slen : integer;
   first: boolean;
 begin
+  slen := Length(s);
   first := false;
   if (i = -1) then begin
     first := true;
@@ -327,16 +329,21 @@ begin
   while (s[i] <> '') do begin
     if (s[i] = '{') then begin
       j := i + 1;
-      while ((s[j] <> '') and (s[j] <> '}')) do begin
+      //S's Idex are not checked, so the fix includes an additional check
+      while ((j < slen) and (s[j] <> '') and (s[j] <> '}')) do begin
         j := j + 1;
       end;
-      if s[j] = '}' then begin
+      if ((j < slen) and (s[j] = '}')) then begin
         i := i + 1;
         continue;
       end;
 {      count := count + 1;}
       newnode := TDebugNode.Create;
       i := i + 1;
+
+      if (i >= slen) then
+        break;
+
       if (s[i] = '') then
         break;
       j := 1;
@@ -627,6 +634,9 @@ begin
   pos := 1;
   len := Length(Reader.Output);
   while pos < len do begin
+    if (Pos> Length(Reader.Output)) then
+     break;
+
     SkipSpaces;
     if Reader.Output[pos] = #26 then begin // Ctrl + Z char
       an := GetNextAnnotation;
