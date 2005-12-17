@@ -253,6 +253,15 @@ var
 begin
   if tvMenuItem.Selected = nil then
     Exit;
+  if TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_MenuItemStyle = wxMnuItm_History then
+     begin
+     MessageBeep(MB_ICONEXCLAMATION);
+      ShowMessage('Tony says "You can''t add children to the recent file history"');
+      Exit;
+     end
+     else
+     begin
+
   FSubMenuItemCreationClicked := True;
   MenuItem := TWxCustomMenuItem.Create(nil);
   //(TWxCustomMenuItem(tvMenuItem.Selected.Data));
@@ -273,7 +282,7 @@ begin
   txtIDValue.Text := IntToStr(FMaxID);
   txtCaption.Text := 'SubMenuItem' + IntToStr(FCounter);
   txtCaption.SetFocus;
-
+  end;
 end;
 
 procedure TMenuItemForm.txtCaptionKeyDown(Sender: TObject; var Key: word;
