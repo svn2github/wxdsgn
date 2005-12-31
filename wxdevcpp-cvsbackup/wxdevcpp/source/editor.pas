@@ -31,7 +31,7 @@ uses
   DevCodeToolTip, SynAutoIndent,utils
 
   {$IFDEF WX_BUILD}
-    ,Designerfrm, CompFileIo, wxutils
+    ,Designerfrm, CompFileIo, wxutils,DbugIntf
   {$ENDIF}
     ;
 {$ENDIF}
@@ -2311,10 +2311,16 @@ begin
 end;
 {$ENDIF}
 
+function GetElapsedTimeStr(StartTime : Longint):String;
+begin
+  Result := Format('%.2f seconds', [(GetTickCount - StartTime) / 1000]);
+end;
+
 {$IFDEF WX_BUILD}
 procedure TEditor.UpdateDesignerData;
 var
   e: TEditor;
+  StartTimeX:LongInt;
 begin
   if isForm then
   begin
@@ -2328,12 +2334,17 @@ begin
       e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, CPP_EXT));
       if Assigned(e) then
       begin
+        e.Text.BeginUpdate;
+        StartTimeX := GetTickCount();
         try
           GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
           e.Modified:=true;
         except
         end;
         e.InsertString('', false);
+        e.Text.EndUpdate;
+        SendDebug('CPP Generation = ' + GetElapsedTimeStr(StartTimeX));
+
       end;
 
     end;
@@ -2344,12 +2355,16 @@ begin
       e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
       if Assigned(e) then
       begin
+      StartTimeX := GetTickCount();
+        e.Text.BeginUpdate;
         try
           GenerateHpp(fDesigner, fDesigner.Wx_Name, e.Text);
           e.Modified:=true;
         except
         end;
         e.InsertString('', false);
+        e.Text.EndUpdate;
+        SendDebug('HXX Generation = ' + GetElapsedTimeStr(StartTimeX));
       end;
     end;
   end;
@@ -2564,12 +2579,14 @@ begin
 
       if Assigned(e) then
       begin
+        e.Text.BeginUpdate;
         try
           GenerateXRC(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
           e.Modified:=true;
         except
         end;
         e.InsertString('', false);
+        e.Text.EndUpdate;
       end;
 
     {  if Assigned(e) then
