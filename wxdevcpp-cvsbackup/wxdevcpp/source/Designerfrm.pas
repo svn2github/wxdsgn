@@ -290,13 +290,10 @@ var
   CntIntf: IWxContainerAndSizerInterface;
   strTemp: string;
 begin
-
-  if GetBlockStartAndEndPos(synEdit, strClassName,
-    btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
+  if GetBlockStartAndEndPos(synEdit, strClassName,btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
-    DeleteAllClassNameGUIItemsCreation(synEdit, strClassName,
-      intBlockStart, intBlockEnd);
+    DeleteAllClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd);
 
     //    if frmNewForm.Wx_DesignerType = dtWxFrame then
     //        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateExtraCodeForFrame);
@@ -304,118 +301,99 @@ begin
 
     isSizerAvailable := False;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
-      if frmNewForm.Components[i].GetInterface(
-        IID_IWxContainerAndSizerInterface, CntIntf) then
+    begin
+      if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
         //if frmNewForm.Components[i] is TWxSizerPanel then
       begin
         isSizerAvailable := True;
         break;
       end;
+    end;
 
     if isSizerAvailable then
     begin
-      AddClassNameGUIItemsCreation(synEdit, strClassName,
-        intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
+      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
       //Add the Code Generation Items that need to be added after the creation with new
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
-        if not frmNewForm.Components[i].GetInterface(
-          IID_IWxContainerAndSizerInterface, CntIntf) then
+        if not frmNewForm.Components[i].GetInterface( IID_IWxContainerAndSizerInterface, CntIntf) then
           continue;
         strTemp := CntIntf.GenerateLastCreationCode;
         if trim(strTemp) = '' then
           continue;
-        AddClassNameGUIItemsCreation(synEdit, strClassName,
-          intBlockStart, intBlockEnd, strTemp);
-        AddClassNameGUIItemsCreation(synEdit, strClassName,
-          intBlockStart, intBlockEnd, '');
+        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
+        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
       end; // for
     end;
 
     if not isSizerAvailable then
+    begin
       for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
       begin
-        if frmNewForm.Components[i].GetInterface(
-          IID_IWxContainerAndSizerInterface, CntIntf) then
+        if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
           continue;
-        if frmNewForm.Components[i].GetInterface(
-          IID_IWxComponentInterface, wxcompInterface) then
-          AddClassNameGUIItemsCreation(synEdit, strClassName,
-            intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
-        AddClassNameGUIItemsCreation(synEdit, strClassName,
-          intBlockStart, intBlockEnd, '');
+        if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
       end// for
-
+    end
     else
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
         //            if frmNewForm.Components[i] is TPanel then
         //                continue;
-        if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-          wxcompInterface) then
+        if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         begin
           strTemp := wxcompInterface.GenerateGUIControlCreation;
-          AddClassNameGUIItemsCreation(synEdit, strClassName,
-            intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+          AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
         end;
-        AddClassNameGUIItemsCreation(synEdit, strClassName,
-          intBlockStart, intBlockEnd, '');
+        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
       end// for
     ;
 
     //Form data should come first, if not the child will be resized to
     if not isSizerAvailable then
-      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd,
-        frmNewForm.GenerateGUIControlCreation);
+      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
   end;
 
   // Event
-  if GetBlockStartAndEndPos(synEdit, strClassName,
-    btClassNameEventTableEntries, intBlockStart, intBlockEnd) then
+  if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries, intBlockStart, intBlockEnd) then
   begin
     GetStartAndEndBlockStrings('', btManualCode, strStartStr, strEndStr);
 
-   if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart,
-      intManualBlockEnd) then
-      strlstManualCode := GetBlockCode(synEdit, strClassName,
-        btManualCode, intManualBlockStart, intManualBlockEnd)
+   if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd) then
+      strlstManualCode := GetBlockCode(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd)
    else
       strlstManualCode := TStringList.Create;
 
     try
 
-    DeleteAllClassNameEventTableEntries(synEdit, strClassName,
-      intBlockStart, intBlockEnd);
+    DeleteAllClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd);
 
     strEventTableEnd := 'END_EVENT_TABLE()';
-    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
-      strEventTableEnd, False);
+    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEventTableEnd, False);
 
 
     //EVT_CLOSE(%CLASS_NAME%:: OnQuit )
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
       wxcompInterface := nil;
-      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-        wxcompInterface) then
+      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
       begin
         strEntry := wxcompInterface.GenerateEventTableEntries(strClassName);
         //SendDebug(strEntry);
-        AddClassNameEventTableEntries(synEdit, strClassName,
-          intBlockStart, intBlockEnd, strEntry);
+        AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEntry);
       end;
       //AddClassNameEventTableEntries(strCppSrc, strClassName, intBlockStart, intBlockEnd, '');
     end; // for
          //Form data should come first, if not the child will be resized to
     strEntry := frmNewForm.GenerateEventTableEntries(strClassName);
     //SendDebug(strEntry);
-    AddClassNameEventTableEntries(synEdit, strClassName,
-      intBlockStart, intBlockEnd, strEntry);
+    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart,intBlockEnd, strEntry);
 
-    //Manual Code Clear Declaration and Creation Field
+     //Manual Code Clear Declaration and Creation Field
 
-    AddClassNameEventTableEntries(synEdit, strClassName,
-      intBlockStart, intBlockEnd, strEndStr);
+    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart,intBlockEnd, strEndStr);
     for I := strlstManualCode.Count - 1 downto 0 do    // Iterate
       AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
         strlstManualCode[i]);    // for
@@ -424,27 +402,22 @@ begin
    strlstManualCode.Destroy;
     end;
 
-    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
-      strStartStr);
+    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,strStartStr);
       
-    strEventTableStart := Format('BEGIN_EVENT_TABLE(%s,%s)',
-      [frmNewForm.Wx_Name, frmNewForm.Wx_Class]);
-    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
-      strEventTableStart, False);
+    strEventTableStart := Format('BEGIN_EVENT_TABLE(%s,%s)',[frmNewForm.Wx_Name, frmNewForm.Wx_Class]);
+    AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,strEventTableStart, False);
   end;
 
   //Adding XPM Header files
   //A stupid way to find
-  if GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes, intBlockStart,
-    intBlockEnd) then
+  if GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes, intBlockStart,intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
     DeleteAllClassNameIncludeHeader(synEdit, strClassName, intBlockStart, intBlockEnd);
     strHdrValue := '';
     strLst      := TStringList.Create;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
-      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-        wxcompInterface) then
+      if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
       begin
         strHdrValue := wxcompInterface.GenerateImageInclude;
         if strLst.indexOf(strHdrValue) = -1 then
@@ -460,8 +433,7 @@ begin
       if strLst.indexOf(strHdrValue) = -1 then
       begin
         strLst.add(strHdrValue);
-        AddClassNameIncludeHeader(synEdit, strClassName,
-          intBlockStart, intBlockEnd, strHdrValue);
+        AddClassNameIncludeHeader(synEdit, strClassName, intBlockStart, intBlockEnd, strHdrValue);
       end;
 
     strLst.Destroy;

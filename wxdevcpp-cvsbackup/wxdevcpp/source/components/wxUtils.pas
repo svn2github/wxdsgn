@@ -24,7 +24,8 @@ interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
-  UPicEdit, xprocs, DbugIntf, TypInfo, Menus, UStatusbar, JvInspector, version;
+  UPicEdit, xprocs, DbugIntf, TypInfo, Menus, UStatusbar, JvInspector, version,
+  DateUtils;
 
 const
   IID_IWxComponentInterface: TGUID  = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
@@ -208,6 +209,9 @@ type
   //newly Added
   TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
   TWxCmbStyleSet  = set of TWxCmbStyleItem;
+
+  TWxPickCalStyleItem = (wxDP_SPIN , wxDP_DROPDOWN , wxDP_DEFAULT , wxDP_ALLOWNONE , wxDP_SHOWCENTURY);
+  TWxPickCalStyleSet  = set of TWxPickCalStyleItem;
 
   TWxLBxStyleSubItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED);
   TWxLBxStyleSubSet  = set of TWxLBxStyleSubItem;
@@ -480,6 +484,7 @@ function GetGaugeStyleString(stdStyle: TWxgagStyleSet): string;
 function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): string;
 function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): string;
 function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
+function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): string;
  //function GetStaticBoxStyleString(stdStyle:TWxsbxStyleSet):String;
  //function GetStaticLineStyleString(stdStyle:TWxslnStyleSet):String;
  //function GetStaticBitmapStyleString(stdStyle:TWxsbtmpStyleSet):String;
@@ -521,8 +526,8 @@ function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
 //function GetStaticBoxSpecificStyle(stdstyle: TWxStdStyleSet;sbxstyle:TWxsbxStyleSet):String;
 //function GetStaticLineSpecificStyle(stdstyle: TWxStdStyleSet;slnstyle:TWxslnStyleSet):String;
 //function GetStaticBitmapSpecificStyle(stdstyle: TWxStdStyleSet;sbtmpstyle:TWxsbtmpStyleSet):String;
-function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-  calctrlstyle: TWxcalctrlStyleSet): string;
+function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet; calctrlstyle: TWxcalctrlStyleSet): string;
+function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet; calctrlstyle: TWxPickCalStyleSet): string;
 //function GetCheckListBoxSpecificStyle(stdstyle: TWxStdStyleSet;cklbxstyle:TWxcklbxStyleSet):String;
 //function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
 function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -609,12 +614,40 @@ function IsIDPredefined(str: string; strlst: TStringList): boolean;
 
 function XML_Label(str: string): string;
 function CreateBlankXRC: TStringList;
+function GetWxMonthFromIndex(MonthIndex:Integer):String;
+function GetDateToString(dt:TDateTime):string;
 
 implementation
 
 uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxToolButton,
   UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
   WxNonVisibleBaseComponent;
+
+function GetDateToString(dt:TDateTime):String;
+var
+    AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond:word;
+begin
+  DecodeDateTime(dt,AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond);
+  Result:= Format('%d/%d/%d',[AMonth,ADay,AYear]);
+end;
+
+function GetWxMonthFromIndex(MonthIndex:Integer):String;
+begin
+    case MonthIndex of
+        1: Result:= 'wxDateTime::Jan';
+        2: Result:= 'wxDateTime::Feb';
+        3: Result:= 'wxDateTime::Mar';
+        4: Result:= 'wxDateTime::Apr';
+        5: Result:= 'wxDateTime::May';
+        6: Result:= 'wxDateTime::Jun';
+        7: Result:= 'wxDateTime::Jul';
+        8: Result:= 'wxDateTime::Aug';
+        9: Result:= 'wxDateTime::Sep';
+        10: Result:= 'wxDateTime::Oct';
+        11: Result:= 'wxDateTime::Nov';
+        12: Result:= 'wxDateTime::Dec';
+    end;
+end;
 
 function XML_Label(str: string): string;
 begin
@@ -1296,6 +1329,44 @@ begin
   end;
 end;
 
+function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): string;
+var
+  I:      integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+    if wxDP_SPIN  in stdStyle then
+      strLst.add('wxDP_SPIN');
+
+    if wxDP_DROPDOWN in stdStyle then
+      strLst.add('wxDP_DROPDOWN');
+
+    if wxDP_DEFAULT in stdStyle then
+      strLst.add('wxDP_DEFAULT');
+
+    if wxDP_ALLOWNONE  in stdStyle then
+      strLst.add('wxDP_ALLOWNONE');
+
+    if wxDP_SHOWCENTURY in stdStyle then
+      strLst.add('wxDP_SHOWCENTURY');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
+end;
 
 function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): string;
 var
@@ -2420,6 +2491,21 @@ var
 begin
   Result := GetStdStyleString(stdstyle);
   strA   := trim(GetCalendarCtrlStyleString(calctrlstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+end;
+
+function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
+  calctrlstyle: TWxPickCalStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA   := trim(GetPickCalStyleString(calctrlstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA

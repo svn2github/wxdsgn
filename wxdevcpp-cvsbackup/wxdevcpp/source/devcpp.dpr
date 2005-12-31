@@ -35,11 +35,9 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  madScreenShot,
   madExcept,
   madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   MemCheck in 'MemCheck.pas',
   inifiles,
   Windows,
@@ -194,7 +192,8 @@ uses
   DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
   SynHighlighterXML in 'components\SynHighlighterXML.pas',
   CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas',
-  wxRadioBox in 'components\wxRadioBox.pas';
+  wxRadioBox in 'components\wxRadioBox.pas',
+  wxDatePickerCtrl in 'components\wxDatePickerCtrl.pas';
 
 {$R *.res}
 {$R winxp.res}
