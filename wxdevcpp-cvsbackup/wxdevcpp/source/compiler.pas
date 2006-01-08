@@ -333,6 +333,7 @@ var
   Output, Cmd, Includes, GppStr: String;
   l: TStringList;
   i: integer;
+  startflag : boolean;
 begin
   Result := '';
   OnLineOutput(nil, 'Finding dependencies for file: ' + TheFile);
@@ -360,13 +361,32 @@ begin
     end;
     l := TStringList.Create;
     l.Text := Output;
+    startflag:=false;
     for i := 0 to l.Count - 2 do
       if system.Pos(': warning:', l[i]) = 0 then
-        result := result + l[i];
+       begin
+       // GAR 1/1/06
+       // Basically, FindDeps runs a compiler command which outputs the
+       // list of dependent filenames.
+       // The return value is a big string with each line ending in \
+       // to signify a line continuation
+       // Here, I'm just verifying that the line ends in \ and chopping
+       // it off.
+       // startflag just keeps us from picking up the first few output
+       // lines of the command (which we don't need)
+            if startflag then   begin
+               result := trim(result + l[i]);
+               if AnsiEndsStr('\', result) then
+                  Delete(result, Length(result), 1);
+               end;
+            if system.Pos(': ', l[i]) > 0 then
+              startflag := true;
+       end;
     l.Free;
-    Delete(Result, 1, Pos(': ', Result) + 1);
-    Delete(Result, 1, Length(ExtractRelativePath(Makefile, TheFile)) + 1);
-    Result := StringReplace(Result, '\ ', ' ', [rfReplaceAll]);
+  //  Delete(Result, 1, Pos(': ', Result) + 1);
+  //  Delete(Result, 1, Length(ExtractRelativePath(Makefile, TheFile)) + 1);
+   // Result := StringReplace(Result, '\ ', ' ', [rfReplaceAll]);
+
   end;
 end;
 
