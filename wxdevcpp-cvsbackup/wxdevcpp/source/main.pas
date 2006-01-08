@@ -648,7 +648,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     NewWxFrameItem: TMenuItem;
     N73: TMenuItem;
     actNewWxFrame: TAction;
-    JvInspectorBorlandPainter1: TJvInspectorBorlandPainter;
     DebugStopBtn: TToolButton;
     actWxPropertyInspectorCut: TAction;
     actWxPropertyInspectorCopy: TAction;

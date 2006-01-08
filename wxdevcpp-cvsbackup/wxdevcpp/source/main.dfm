@@ -27,7 +27,7 @@ object MainForm: TMainForm
     Left = 209
     Top = 102
     Width = 4
-    Height = 135
+    Height = 143
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -35,7 +35,7 @@ object MainForm: TMainForm
   end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 237
+    Top = 245
     Width = 630
     Height = 4
     Cursor = crVSplit
@@ -47,7 +47,7 @@ object MainForm: TMainForm
     Left = 460
     Top = 102
     Width = 3
-    Height = 135
+    Height = 143
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -56,7 +56,7 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 241
+    Top = 249
     Width = 630
     Height = 130
     ActivePage = LogSheet
@@ -134,7 +134,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -189,13 +189,13 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 393
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           393
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
@@ -216,7 +216,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 97
+        Height = 98
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -631,7 +631,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 610
-            Height = 44
+            Height = 45
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -1107,7 +1107,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 371
+    Top = 379
     Width = 630
     Height = 19
     Panels = <
@@ -1131,7 +1131,7 @@ object MainForm: TMainForm
     Left = 213
     Top = 102
     Width = 247
-    Height = 135
+    Height = 143
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1191,7 +1191,7 @@ object MainForm: TMainForm
     Left = 463
     Top = 102
     Width = 167
-    Height = 135
+    Height = 143
     Align = alRight
     TabOrder = 6
     Visible = False
@@ -1200,7 +1200,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 209
-    Height = 135
+    Height = 143
     Align = alLeft
     DockSite = True
     TabOrder = 7
@@ -3504,10 +3504,5 @@ object MainForm: TMainForm
     Options = [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw]
     Left = 272
     Top = 288
-  end
-  object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
-    DrawNameEndEllipsis = False
-    Left = 424
-    Top = 296
   end
 end

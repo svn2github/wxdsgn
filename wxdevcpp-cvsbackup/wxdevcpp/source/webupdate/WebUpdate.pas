@@ -126,7 +126,8 @@ const
   MAGIC_HEADER = '{WebUpdate_config_file}';
   CONF_FILE = 'webupdate.conf';
 //  DEFAULT_MIRROR = 'Andreas Aberg''s server=http://vUpdate.servebeer.com/';  // 'bloodshed.net (Bloodshed server)=http://haiku.bloodshed.net/dev/webupdate/';
-  DEFAULT_MIRROR = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
+ // DEFAULT_MIRROR = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
+   DEFAULT_MIRROR = 'Dev-C++ primary devpak server=http://http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
   DEFAULT_MIRROR_2 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
 
 var

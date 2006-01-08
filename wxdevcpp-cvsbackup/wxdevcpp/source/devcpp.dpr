@@ -35,7 +35,9 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  madScreenShot,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   madExcept,
   madLinkDisAsm,
   MemCheck in 'MemCheck.pas',

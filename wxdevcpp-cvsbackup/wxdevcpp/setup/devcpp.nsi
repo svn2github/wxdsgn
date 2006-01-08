@@ -4,16 +4,16 @@
 ; http://nsis.sourceforge.net/
 
 !define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.8beta"
+!define WXDEVCPP_VERSION "6.9beta"
 !define PROGRAM_NAME "wx-devcpp"
 !define DEFAULT_START_MENU_DIRECTORY "wx-devcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
 !define HAVE_MINGW
 !define NEW_INTERFACE
 
-!define wxWidgets "wxWidgets-2.6.1.entry" ; name of wxWidgets devpak entry in devcpp
-!define wxWidgetsContrib "wxWidgets-2.6.1contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
-!define wxWidgetsSamples "wxWidgets-2.6.1wxsamples.entry" ; name of wxWidgets samples devpak entry in devcpp
+!define wxWidgets "wxWidgets-2.6.2.entry" ; name of wxWidgets devpak entry in devcpp
+!define wxWidgetsContrib "wxWidgets-2.6.2contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
+!define wxWidgetsSamples "wxWidgets-2.6.2samples.entry" ; name of wxWidgets samples devpak entry in devcpp
 
 Var LOCAL_APPDATA
 
@@ -118,15 +118,15 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "English"
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Catalan"
- ; !insertmacro MUI_LANGUAGE "Chinese"
- ; !insertmacro MUI_LANGUAGE "Chinese_TC"
+  ;!insertmacro MUI_LANGUAGE "Chinese"
+  ;!insertmacro MUI_LANGUAGE "Chinese_TC"
   !insertmacro MUI_LANGUAGE "Croatian"
   !insertmacro MUI_LANGUAGE "Czech"
   !insertmacro MUI_LANGUAGE "Danish"
   !insertmacro MUI_LANGUAGE "Dutch"
   !insertmacro MUI_LANGUAGE "Estonian"
   !insertmacro MUI_LANGUAGE "French"
- ; !insertmacro MUI_LANGUAGE "Galego"
+  ;!insertmacro MUI_LANGUAGE "Galego"
   !insertmacro MUI_LANGUAGE "German"
   !insertmacro MUI_LANGUAGE "Greek"
   !insertmacro MUI_LANGUAGE "Hungarian"
@@ -141,7 +141,7 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "Slovak"
   !insertmacro MUI_LANGUAGE "Slovenian"
   !insertmacro MUI_LANGUAGE "Spanish"
- ; !insertmacro MUI_LANGUAGE "SpanishCastellano"
+  ;!insertmacro MUI_LANGUAGE "SpanishCastellano"
   !insertmacro MUI_LANGUAGE "Swedish"
   !insertmacro MUI_LANGUAGE "Turkish"
   !insertmacro MUI_LANGUAGE "Ukrainian"
@@ -157,7 +157,7 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
  
   File "devcpp.exe"
   File "copying.txt"
-  File "News.txt"
+  File "wxdevcpp ${WXDEVCPP_VERSION} changes.html"
   File "packman.exe"
   SetOutPath $INSTDIR\Lang
   File "Lang\English.*"
@@ -671,7 +671,7 @@ SectionEnd
 ; Functions
 
 Function .onInit
-  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program. Please do not install this version of ${PROGRAM_NAME} over an existing installation."
+  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program. Please do not install this version of ${PROGRAM_NAME} over an existing installation (i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
 
   !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd

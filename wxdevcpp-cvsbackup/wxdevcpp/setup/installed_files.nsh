@@ -18,13 +18,15 @@ find -type d -exec echo "  RMDir  {}" \; | \
 ;--------------------------------------------
 
 !ifdef HAVE_MINGW 
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\binutils.entry" /version "2.15.91-20040904-1"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-core.entry" /version "3.4.2-20040916-1"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-g++.entry" /version "3.4.2-20040916-1"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gdb.entry" /version "5.2.1-1"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\make.entry" /version "3.80.0-3"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\mingw-runtime.entry" /version "3.7"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry" /version "3.2"'
+
+;ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\binutils.entry" /version "2.15.91-20040904-1"'  // You can specify the version to uninstall if necessary
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\binutils.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-core.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-g++.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gdb.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\make.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\mingw-runtime.entry"'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry"'
   
    ; Added for wx-devcpp  -- START
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgetsContrib}"'
@@ -109,6 +111,10 @@ find -type d -exec echo "  RMDir  {}" \; | \
   Delete "$INSTDIR\Icons\Ufo.ico"
   Delete "$INSTDIR\Icons\Window.ico"
   Delete "$INSTDIR\Icons\mainicon.ico"
+  Delete "$INSTDIR\Lang\Arabic.lng"
+  Delete "$INSTDIR\Lang\Arabic.tips"
+  Delete "$INSTDIR\Lang\Belarussian.lng"
+  Delete "$INSTDIR\Lang\Belarussian.tips"
   Delete "$INSTDIR\Lang\Bulgarian.lng"
   Delete "$INSTDIR\Lang\Catalan.lng"
   Delete "$INSTDIR\Lang\Catalan.tips"
@@ -123,6 +129,10 @@ find -type d -exec echo "  RMDir  {}" \; | \
   Delete "$INSTDIR\Lang\Dutch.tips"
   Delete "$INSTDIR\Lang\English.lng"
   Delete "$INSTDIR\Lang\English.tips"
+  Delete "$INSTDIR\Lang\English_UK.lng"
+  Delete "$INSTDIR\Lang\English_UK.tips"
+  Delete "$INSTDIR\Lang\Euskera.lng"
+  Delete "$INSTDIR\Lang\Euskera.tips"
   Delete "$INSTDIR\Lang\Estonian.lng"
   Delete "$INSTDIR\Lang\Estonian.tips"
   Delete "$INSTDIR\Lang\French.lng"
@@ -132,6 +142,8 @@ find -type d -exec echo "  RMDir  {}" \; | \
   Delete "$INSTDIR\Lang\German.lng"
   Delete "$INSTDIR\Lang\German.tips"
   Delete "$INSTDIR\Lang\Greek.lng"
+  Delete "$INSTDIR\Lang\Hebrew.lng"
+  Delete "$INSTDIR\Lang\Hebrew.tips"
   Delete "$INSTDIR\Lang\Hungarian.lng"
   Delete "$INSTDIR\Lang\Hungarian.tips"
   Delete "$INSTDIR\Lang\Italian.lng"
@@ -146,6 +158,8 @@ find -type d -exec echo "  RMDir  {}" \; | \
   Delete "$INSTDIR\Lang\Polish.tips"
   Delete "$INSTDIR\Lang\Portuguese.lng"
   Delete "$INSTDIR\Lang\Portuguese.tips"
+  Delete "$INSTDIR\Lang\Portuguese_BR.lng"
+  Delete "$INSTDIR\Lang\Portuguese_BR.tips"
   Delete "$INSTDIR\Lang\Romanian.lng"
   Delete "$INSTDIR\Lang\Romanian.tips"
   Delete "$INSTDIR\Lang\Russian.lng"
@@ -202,7 +216,7 @@ find -type d -exec echo "  RMDir  {}" \; | \
   ; Added for wx-devcpp  -- END
   
   Delete "$INSTDIR\copying.txt"
-  Delete "$INSTDIR\news.txt"
+  Delete "$INSTDIR\wxdevcpp ${WXDEVCPP_VERSION} changes.html"
   Delete "$INSTDIR\devcpp.map"
   Delete "$INSTDIR\Packages\DevCppHelp.entry"
   Delete "$INSTDIR\Packages\Dev-C++_Map.entry"
