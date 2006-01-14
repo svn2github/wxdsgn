@@ -107,7 +107,14 @@ var
   i: integer;
   mnuItem: TMenuItem;
 begin
+
   FMainMenu.Items.Clear;
+  if (FMainMenu.Owner <> self.parent) then
+  begin
+    FMainMenu.Destroy;
+    FMainMenu := nil;
+    FMainMenu := TMainMenu.Create(Self.Parent);
+  end;
 
   for I := 0 to Value.Count - 1 do    // Iterate
   begin
@@ -137,7 +144,8 @@ begin
   Glyph.Assign(nil);
   FWx_PropertyList.Destroy;
   FWx_MenuItems.Destroy;
-  FMainMenu.Destroy;
+  if FMainMenu <> nil then
+    FMainMenu.Destroy;
   FWx_Comments.Destroy;
 
 end; { of AutoDestroy }
@@ -544,9 +552,13 @@ begin
           GetCppString(item.Wx_HelpText),
           GetMenuKindAsText(item.Wx_MenuItemStyle)]) + ');';
 
+    if ((item.Wx_MenuItemStyle = wxMnuItm_Radio) or (item.Wx_MenuItemStyle = wxMnuItm_Check)) then
+    begin
       if item.Wx_Checked then
-        Result := Result + #13 + #10 + parentName + '->Check(' +
-          item.Wx_IDName + ',true);';
+        Result := Result + #13 + #10 + parentName + '->Check(' + item.Wx_IDName + ',true);' 
+      else
+        Result := Result + #13 + #10 + parentName + '->Check(' + item.Wx_IDName + ',false);';
+    end;
 
       if not item.Wx_Enabled then
         Result := Result + #13 + #10 + parentName + '->Enable(' +

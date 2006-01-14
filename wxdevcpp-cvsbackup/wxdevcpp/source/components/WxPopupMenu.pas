@@ -315,9 +315,13 @@ begin
           GetCppString(item.Wx_HelpText),
           GetMenuKindAsText(item.Wx_MenuItemStyle)]) + ');';
 
+    if ((item.Wx_MenuItemStyle = wxMnuItm_Radio) or (item.Wx_MenuItemStyle = wxMnuItm_Check)) then
+    begin
       if item.Wx_Checked then
-        Result := Result + #13 + #10 + parentName + '->Check(' +
-          item.Wx_IDName + ',true);';
+        Result := Result + #13 + #10 + parentName + '->Check(' + item.Wx_IDName + ',true);' 
+      else
+        Result := Result + #13 + #10 + parentName + '->Check(' + item.Wx_IDName + ',false);';
+    end;
 
       if not item.Wx_Enabled then
         Result := Result + #13 + #10 + parentName + '->Enable(' +
