@@ -184,9 +184,9 @@ begin
   strStyle := GetFileDialogStyleString(self.Wx_DialogStyle);
 
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s =  new %s(this, %s, %s, %s, "%s", %s);',
+    Format('%s =  new %s(this, %s, %s, %s, %s, %s);',
     [self.Name, self.wx_Class, GetCppString(wx_Message), GetCppString(
-    wx_DefaultDir), GetCppString(wx_DefaultFile), wx_Extensions, strType + strStyle]);
+    wx_DefaultDir), GetCppString(wx_DefaultFile), GetCppString(wx_Extensions), strType + strStyle]);
 end;
 
 function TWxSaveFileDialog.GenerateGUIControlDeclaration: string;

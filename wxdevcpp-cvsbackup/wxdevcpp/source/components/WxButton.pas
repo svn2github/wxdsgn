@@ -231,6 +231,7 @@ begin
   FWx_PropertyList.add('Wx_GeneralStyle: ' + Lang.Strings[ID_EOPT_GENTAB] +
     ' ' + Lang.Strings[ID_NEWVAR_COMMENTSSTYLE]);
   FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+  FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
   FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
   FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
   FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
