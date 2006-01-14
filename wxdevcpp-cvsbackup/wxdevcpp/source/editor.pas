@@ -355,7 +355,7 @@ begin
 
 {$IFDEF WX_BUILD}
     if fEditorType = etForm then
-      ReadComponentFromFile(fDesigner, FileName);
+      ReloadForm();
 {$ENDIF}
 
   except
@@ -2311,16 +2311,16 @@ begin
 end;
 {$ENDIF}
 
-function GetElapsedTimeStr(StartTime : Longint):String;
+(*function GetElapsedTimeStr(StartTime : Longint):String;
 begin
   Result := Format('%.2f seconds', [(GetTickCount - StartTime) / 1000]);
 end;
+*)
 
 {$IFDEF WX_BUILD}
 procedure TEditor.UpdateDesignerData;
 var
   e: TEditor;
-  StartTimeX:LongInt;
 begin
   if isForm then
   begin
@@ -2335,7 +2335,6 @@ begin
       if Assigned(e) then
       begin
         e.Text.BeginUpdate;
-        StartTimeX := GetTickCount();
         try
           GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
           e.Modified:=true;
@@ -2343,7 +2342,6 @@ begin
         end;
         e.InsertString('', false);
         e.Text.EndUpdate;
-        SendDebug('CPP Generation = ' + GetElapsedTimeStr(StartTimeX));
 
       end;
 
@@ -2355,7 +2353,6 @@ begin
       e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
       if Assigned(e) then
       begin
-      StartTimeX := GetTickCount();
         e.Text.BeginUpdate;
         try
           GenerateHpp(fDesigner, fDesigner.Wx_Name, e.Text);
@@ -2364,7 +2361,6 @@ begin
         end;
         e.InsertString('', false);
         e.Text.EndUpdate;
-        SendDebug('HXX Generation = ' + GetElapsedTimeStr(StartTimeX));
       end;
     end;
   end;
