@@ -1128,7 +1128,7 @@ WxPropertyInspectorPopup:TPopupMenu;
   FileWatching:Boolean;
 {$ENDIF}
 
-	function SaveFileInternal(e: TEditor): Boolean;
+	function SaveFileInternal(e: TEditor ; bParseFile:Boolean = true): Boolean;
 
 {$IFDEF WX_BUILD}
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
@@ -2917,12 +2917,14 @@ end;
 
 function TMainForm.SaveFileAs(e: TEditor): Boolean;
 var
+  I: Integer;
   dext,
     flt,
     s: string;
   idx: integer;
   CFilter, CppFilter, HFilter: Integer;
   boolIsForm,boolIsRC,boolISXRC:Boolean;
+  ccFile,hfile:String;
 begin
   Result := True;
   boolIsForm := False; boolIsRC := False; boolISXRC := False;
@@ -3078,26 +3080,56 @@ begin
         MessageDlg(Lang[ID_ERR_SAVEFILE] + ' "' + s + '"', mtError, [mbOk], 0);
         Result := False;
       end;
+//Bug fix for 1337392 : This fix Parse the Cpp file when we save the header file provided
+//the Cpp file is already saved. 
+//Dont change the way steps by which the file is parsed.
 
       if assigned(fProject) then
         fProject.SaveUnitAs(idx, e.FileName)
       else
         e.TabSheet.Caption := ExtractFileName(e.FileName);
-
-      if ClassBrowser1.Enabled then begin
+      if ClassBrowser1.Enabled then
+      begin
+        CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
         CppParser1.AddFileToScan(e.FileName); //new cc
         CppParser1.ParseList;
         ClassBrowser1.CurrentFile := e.FileName;
+        CppParser1.ReParseFile(e.FileName, true); //new cc
+        //if the source is in the caache and the heades file is not in the cache
+        //then we need to reparse the Cpp file to make sure the intialially
+        //parsed cpp file is reset
+        if  ( (GetFileTyp(e.FileName) = utHead)) then
+        begin 
+            CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
+            if trim(ccFile) <> '' then
+            begin
+                idx := -1;
+                for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
+                begin
+                    if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
+                    begin
+                        ccFile := CppParser1.ScannedFiles[i];
+                        idx:=i;
+                        break;
+                    end;
+                end;    // for
+                if idx <> -1 then
+                begin
+                    CppParser1.ReParseFile(ccFile, true); //new cc
+                end;
+            end;
+        end;
       end;
     end else
       Result := False;
   end;
 end;
 
-function TMainForm.SaveFileInternal(e: TEditor): Boolean;
+function TMainForm.SaveFileInternal(e: TEditor ; bParseFile:Boolean): Boolean;
 var
-  idx: Integer;
+  idx,index,I: Integer;
   wa: boolean;
+  ccFile,hFile:String;
 begin
   Result := True;
   if FileExists(e.FileName) and (FileGetAttr(e.FileName) and faReadOnly <> 0) then begin
@@ -3137,10 +3169,32 @@ begin
        end;
        try
 		if idx <> -1 then
-        if ClassBrowser1.Enabled then begin
+        if ClassBrowser1.Enabled  and bParseFile then
+        begin
           CppParser1.ReParseFile(fProject.units[idx].FileName, True); //new cc
           if e.TabSheet = PageControl.ActivePage then
             ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
+          if  ( (GetFileTyp(e.FileName) = utHead)) then
+          begin
+              CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
+              if (trim(ccFile) <> '') then
+              begin
+                  index := -1;
+                  for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
+                  begin
+                      if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
+                      begin
+                          ccFile := CppParser1.ScannedFiles[i];
+                          index:=i;
+                          break;
+                      end;
+                  end;    // for
+                  if index <> -1 then
+                  begin
+                      CppParser1.ReParseFile(ccFile, true); //new cc
+                  end;
+              end;
+          end;
         end;
     except
          MessageDlg(Format('Error reparsing file %s', [e.FileName]),
@@ -3157,11 +3211,33 @@ begin
                 Lines.Add('');
       e.Text.Lines.SaveToFile(e.FileName);
       e.Modified := false;
-      if ClassBrowser1.Enabled then begin
+      if ClassBrowser1.Enabled   and bParseFile then
+      begin
         CppParser1.ReParseFile(e.FileName, False); //new cc
         if e.TabSheet = PageControl.ActivePage then
           ClassBrowser1.CurrentFile := e.FileName;
-      end;
+          if  ( (GetFileTyp(e.FileName) = utHead)) then
+          begin
+              CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
+              if (trim(ccFile) <> '') then
+              begin
+                  index := -1;
+                  for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
+                  begin
+                      if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
+                      begin
+                          ccFile := CppParser1.ScannedFiles[i];
+                          index:=i;
+                          break;
+                      end;
+                  end;    // for
+                  if index <> -1 then
+                  begin
+                      CppParser1.ReParseFile(ccFile, true); //new cc
+                  end;
+              end;
+          end;
+        end;
       //        CppParser1.AddFileToScan(e.FileName);
       //        CppParser1.ParseList;
     except
@@ -3179,16 +3255,23 @@ end;
 function TMainForm.SaveFile(e: TEditor): Boolean;
 {$IFDEF WX_BUILD}
 var
-    EditorFilename:String;
+    EditorFilename, hFile,cppFile:String;
     eX:TEditor;
+    bHModified,bCppModified:Boolean;
 {$ENDIF}
 begin
     Result:=false;
+    bHModified:=false;
+    bCppModified:=false;
+
     if not assigned(e) then
         exit;
 
-    result:=SaveFileInternal(e);
-
+//Bug fix for 1123460 : Save the files first and the do a re-parse.
+//If you dont save all the files first then cpp functions and header functions of save class 
+//will be added in the class browser and duplicates will be there.
+//Some times the functions will be not associated with the class and 
+//there by will not be shown in the function assignment drop down box of the events.
 
 {$IFDEF WX_BUILD}
     EditorFilename:=e.FileName;
@@ -3200,7 +3283,7 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX);
+                    SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3212,17 +3295,7 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX);
-            end;
-        end;
-
-        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
-        begin
-            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
-            if assigned(eX) then
-            begin
-                if eX.Modified then
-                    SaveFileInternal(eX);
+                    SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3232,11 +3305,43 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX);
+                begin
+                    bHModified:=true;
+                    SaveFileInternal(eX,false);
+                    hFile := eX.FileName;
+                end;
             end;
         end;
-    end;
+
+        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
+        begin
+            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
+            if assigned(eX) then
+            begin
+                if eX.Modified then
+                begin
+                    bCppModified:=true;
+                    SaveFileInternal(eX,false);
+                    cppFile := eX.FileName;
+                end;
+            end;
+        end;
+
+        if (bHModified =true ) then
+        begin
+            if ClassBrowser1.Enabled then
+                CppParser1.ReParseFile(hFile,true);
+        end;
+
+        if (bCppModified =true ) then
+        begin
+            if ClassBrowser1.Enabled then
+                CppParser1.ReParseFile(cppFile,true);
+        end;
+    end
+    else
    {$ENDIF}
+        result:=SaveFileInternal(e);
 
 end;
 
@@ -4338,9 +4443,27 @@ var
   idx: integer;
   wa: boolean;
   e: TEditor;
+  fileLstToParse:TStringList;
+  uType:TUnitType;
 begin
   wa := devFileMonitor1.Active;
   devFileMonitor1.Deactivate;
+  fileLstToParse:=TStringList.Create;
+  //When we save all, the files are not parsed and the class functions are not update.
+  //We collect the list of files that will be saved and then we reparse them later.
+  if ClassBrowser1.Enabled then
+  begin
+    for idx := 0 to pred(PageControl.PageCount) do
+    begin
+      e := GetEditor(idx);
+      uType := GetFileTyp(e.FileName);
+      if (e.Modified) and ( (uType = utsrc) or (uType = utHead) )then
+      begin
+          fileLstToParse.Add(e.FileName);
+      end;
+    end;
+  end;
+  
   if assigned(fProject) then begin
     fProject.Save;
     UpdateAppTitle;
@@ -4354,6 +4477,14 @@ begin
       if not SaveFile(GetEditor(idx)) then
         Break;
   end;
+  if ClassBrowser1.Enabled then
+  begin
+    for idx := 0 to fileLstToParse.Count-1 do
+    begin
+      CppParser1.ReParseFile(fileLstToParse[idx],true);
+    end;
+  end;
+  fileLstToParse.Destroy;
 
   if wa then
     devFileMonitor1.Activate;
@@ -8648,7 +8779,6 @@ begin
         begin
             CppParser1.AddFileToScan(strFileName,true);
         end;
-        //CppParser1.ReParseFile(strFileName, True); //new cc
     end;
 
     // Open the .cpp file generated by CreateAppSourceCodes and add it to the project
@@ -8679,7 +8809,6 @@ begin
         begin
             CppParser1.AddFileToScan(strAppFileName,true);
         end;
-        //CppParser1.ReParseFile(strAppFileName, True); //new cc
     end;
 
 
@@ -8693,8 +8822,9 @@ begin
         if ClassBrowser1.Enabled then
         begin
             CppParser1.AddFileToScan(strAppFileName,true);
+            CppParser1.ReParseFile(strAppFileName, True); //new cc
+            ClassBrowser1.UpdateView;
         end;
-        //CppParser1.ReParseFile(strAppFileName, True); //new cc
     end;
 
     // Add resource file to the project
@@ -9122,6 +9252,8 @@ begin
   RegisterClasses([TWxOpenFileDialog,TWxSaveFileDialog,TWxFontDialog, TwxMessageDialog,TWxProgressDialog,TWxPrintDialog,TWxFindReplaceDialog,TWxDirDialog,TWxColourDialog]);
   RegisterClasses([TWxPageSetupDialog]);
   RegisterClasses([TwxTimer]);
+
+  RegisterClasses([TMainMenu]);
 
 end;
 {$ENDIF}
@@ -10248,7 +10380,7 @@ begin
                     if UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm') then
                         GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap,e.GetDesigner.Wx_Name,e.FileName);
 
-                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TStaticBitmap') then
+                    if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxStaticBitmap') then
                         GenerateXPMDirectly(TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Picture.Bitmap,SelectedComponent.Name,e.FileName);
 
                     if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton') then
