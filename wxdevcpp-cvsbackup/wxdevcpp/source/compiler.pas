@@ -433,7 +433,8 @@ begin
         else
           writeln(F, #9 + '$(CC) -S ' + GenMakePath(tfile) +
             ' -o nul $(CFLAGS)');
-      end else
+      end 
+      else
       begin
         if PerfectDepCheck and not fSingleFile then
                   writeln(F, GenMakePath2(ofile) + ': ' + GenMakePath2(tfile) + ' ' +
@@ -510,7 +511,8 @@ procedure TCompiler.WriteMakeClean(var F: TextFile);
 begin
   Writeln(F);
   Writeln(F, 'clean: clean-custom');
-  Writeln(F, #9 + '${RM} $(OBJ) $(BIN)');
+  Writeln(F, 'clean: ');
+  Writeln(F, #9 + '$(RM) $(OBJ) $(BIN)');
 end;
 
 procedure TCompiler.CreateMakefile;

@@ -2311,9 +2311,9 @@ begin
 end;
 {$ENDIF}
 
-(*function GetElapsedTimeStr(StartTime : Longint):String;
+function GetElapsedTimeStr(StartTime : LongWord):String;
 begin
-  Result := Format('%.2f seconds', [(GetTickCount - StartTime) / 1000]);
+  Result := Format('%.3f seconds', [(GetTickCount - StartTime) / 1000]);
 end;
 *)
 
@@ -2342,6 +2342,7 @@ begin
         end;
         e.InsertString('', false);
         e.Text.EndUpdate;
+        MainForm.StatusBar.Panels[3].Text := ('C++ Source Generation: ' + GetElapsedTimeStr(StartTimeX));
 
       end;
 
@@ -2361,6 +2362,7 @@ begin
         end;
         e.InsertString('', false);
         e.Text.EndUpdate;
+        MainForm.StatusBar.Panels[3].Text := MainForm.StatusBar.Panels[3].Text + (' / Header Declaration Generation = ' + GetElapsedTimeStr(StartTimeX));
       end;
     end;
   end;

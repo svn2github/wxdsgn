@@ -12,11 +12,39 @@ Type=0
 Cpp=1
 ResourceIncludes="%DEVCPP_DIR%include"
 Compiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-fvtable-thunks_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@_
-Linker=-lwxmsw26_@@_-lwxmsw26_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
+Linker=-mwindows_@@_-lwxmsw26_@@_-lwxmsw26_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
 Name=wxWindows Project
+PreprocDefines=__WXMSW___@@___GNUWIN32___@@___WIN95___@@_
 IsCpp=1
 CppCompiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_-D__WXMSW___@@_-D__GNUWIN32___@@_-D__WIN95___@@_
 CompilerSettings=0000000001001000000000
 CompilerSet=0
 IncludeVersionInfo=0
 SupportXPThemes=0
+
+[CompilerSet 0]
+ObjFiles=
+Includes=
+Libs=
+ResourceIncludes="%DEVCPP_DIR%include"
+MakeIncludes=
+Compiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_
+CppCompiler=-fno-rtti_@@_-fno-exceptions_@@_-fno-pcc-struct-return_@@_-fstrict-aliasing_@@_-Wall_@@_
+Linker=-mwindows_@@_-lwxmsw26_@@_-lwxmsw26_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng_@@_-lwxzlib_@@_-lwxregex_@@_-lwxexpat_@@_-lkernel32_@@_-luser32_@@_-lgdi32_@@_-lcomdlg32_@@_-lwinspool_@@_-lwinmm_@@_-lshell32_@@_-lcomctl32_@@_-lole32_@@_-loleaut32_@@_-luuid_@@_-lrpcrt4_@@_-ladvapi32_@@_-lwsock32_@@_-lodbc32_@@_-lopengl32_@@_
+PreprocDefines=__WXMSW___@@___GNUWIN32___@@___WIN95___@@_
+IsCpp=1
+CompilerSettings=0000000001001a00000000
+
+
+[CompilerSet 1]
+ObjFiles=
+Includes=
+Libs=
+ResourceIncludes="%DEVCPP_DIR%Include"
+MakeIncludes=
+Compiler=_@@_
+CppCompiler=_@@_
+Linker=wxmsw26.lib_@@_wxtiff.lib_@@_wxjpeg.lib_@@_wxpng.lib_@@_wxzlib.lib_@@_wxregex.lib_@@_wxexpat.lib_@@_
+PreprocDefines=__WXMSW___@@_WXUSINGDLL_@@_
+IsCpp=1
+CompilerSettings=0000000001001a00000000000000000100000000

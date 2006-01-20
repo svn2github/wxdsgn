@@ -1,7 +1,7 @@
 [GeneralSettings]
 AppendMapFileToBinary=1
 HandleExceptions=1
-CheckForFrozenMainThread=1
+CheckForFrozenMainThread=0
 FreezeTimeout=120000
 ShowExceptionBox=1
 SuspendAllRunningThreads=1
@@ -138,7 +138,7 @@ GeneralDontCreateBugReport=0
 GeneralDontCreateScreenshot=0
 GeneralDontSuspendThreads=1
 GeneralDontCallHandlers=0
-GeneralShowBox=1
+GeneralShowBox=0
 GeneralAssis=SaveAssistant
 [Assistants]
 Assistant1=SendAssistant|Send Assistant|ContactForm|DetailsForm|ScrShotForm
