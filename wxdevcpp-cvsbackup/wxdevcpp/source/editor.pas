@@ -2315,15 +2315,16 @@ function GetElapsedTimeStr(StartTime : LongWord):String;
 begin
   Result := Format('%.3f seconds', [(GetTickCount - StartTime) / 1000]);
 end;
-*)
 
 {$IFDEF WX_BUILD}
 procedure TEditor.UpdateDesignerData;
 var
   e: TEditor;
+  STartTimeX: longword;
 begin
   if isForm then
   begin
+    StartTimeX := GetTickCount;
     Modified:=true;
     InsertDefaultText;
 
@@ -2350,6 +2351,7 @@ begin
 
     if FileExists(ChangeFileExt(FileName, H_EXT)) then
     begin
+      StartTimeX := GetTickCount;
       MainForm.OpenFile(ChangeFileExt(FileName, H_EXT), true);
       e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
       if Assigned(e) then
