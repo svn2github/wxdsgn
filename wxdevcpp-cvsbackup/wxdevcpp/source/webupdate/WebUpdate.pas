@@ -127,7 +127,7 @@ const
   CONF_FILE = 'webupdate.conf';
 //  DEFAULT_MIRROR = 'Andreas Aberg''s server=http://vUpdate.servebeer.com/';  // 'bloodshed.net (Bloodshed server)=http://haiku.bloodshed.net/dev/webupdate/';
  // DEFAULT_MIRROR = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
-   DEFAULT_MIRROR = 'Dev-C++ primary devpak server=http://http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
+   DEFAULT_MIRROR = 'Dev-C++ primary devpak server=http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
   DEFAULT_MIRROR_2 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
 
 var
@@ -156,8 +156,15 @@ var
 begin
   if fErrorsList.Count > 0 then
 {$IFDEF WIN32}
+{$IFDEF WX_BUILD}
+begin
+{$ENDIF}
     MessageBox(Self.Handle, 'Could not connect to remote site. The remote site might be down, or your connection ' +
       'to the Internet might not be working...'#13#10#13#10'Please try another mirror site...', '', MB_ICONERROR or MB_OK)
+{$IFDEF WX_BUILD}         ;
+    ShowMessage(BASE_URL);
+    end
+{$ENDIF}
 {$ENDIF}
 {$IFDEF LINUX}
     MessageDlg('Could not connect to remote site. The remote site might be down, or your connection ' +
