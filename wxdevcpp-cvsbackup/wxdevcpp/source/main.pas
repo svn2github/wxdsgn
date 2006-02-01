@@ -10080,7 +10080,7 @@ begin
     begin
         if ELDesigner1.SelectedControls.count = 0 then
         begin
-               ShowErrorAndReset('Please select the Toolbar and drop the control.');
+               ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
                exit;
         end;
         //AControlClass.
@@ -10093,7 +10093,7 @@ begin
 
         if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
         begin
-            ShowErrorAndReset('Please select the Toolbar and drop the control.');
+            ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
             exit;
         end;
     end;
@@ -10102,7 +10102,7 @@ begin
     begin
         if ELDesigner1.SelectedControls.count = 0 then
         begin
-               ShowErrorAndReset('Please select the Toolbar and drop the control.');
+               ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
                exit;
         end;
         //AControlClass.
@@ -10115,7 +10115,7 @@ begin
 
         if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
         begin
-            ShowErrorAndReset('Please select the Toolbar and drop the control.');
+            ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
             exit;
         end;
     end;
