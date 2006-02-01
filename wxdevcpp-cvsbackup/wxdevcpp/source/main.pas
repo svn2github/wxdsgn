@@ -10074,6 +10074,51 @@ begin
             exit;
         end;
     end;
+
+    /// Fix for Bug Report #1060562
+    if TWinControl(AControlClass.NewInstance) is TWxToolButton then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
+        begin
+               ShowErrorAndReset('Please select the Toolbar and drop the control.');
+               exit;
+        end;
+        //AControlClass.
+        PreviousComponent:=ELDesigner1.SelectedControls[0];
+        if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+        begin
+            PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
+            exit;
+        end;
+
+        if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+        begin
+            ShowErrorAndReset('Please select the Toolbar and drop the control.');
+            exit;
+        end;
+    end;
+
+    if TControl(AControlClass.NewInstance) is TWxSeparator then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
+        begin
+               ShowErrorAndReset('Please select the Toolbar and drop the control.');
+               exit;
+        end;
+        //AControlClass.
+        PreviousComponent:=ELDesigner1.SelectedControls[0];
+        if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+        begin
+            PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
+            exit;
+        end;
+
+        if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+        begin
+            ShowErrorAndReset('Please select the Toolbar and drop the control.');
+            exit;
+        end;
+    end;
 end;
 {$ENDIF}
 
