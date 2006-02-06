@@ -1,0 +1,54 @@
+** Help topics for Dev-C++ 5 help file **
+
+- Introduction -> done
+
+- GNU General Public License -> done
+
+- Credits -> done
+
+- System Requirements -> done
+
+- Tutorial
+
+- Basic steps : -> done
+
+  + Creating a project -> done
+  + Adding removing files -> done
+  + Managing project options -> done
+    explanation of :
+    - resource files
+    - libraries and their directories
+  + [Probably more to add ...]
+
+- Compiling and Running : -> done (may be improved)
+  + Compile and linking process
+  + Executing your program
+
+- Debugging within Dev-C++ :
+  + Debug process
+  + Integrated debugging commands
+
+- Dev-C++ Templates and Packages
+  + Integrated templates
+  + Getting and installing Packages
+    + what are packages and what do they provide ?
+    + bloodshed.net/dev
+    + packman.exe
+
+- Options
+  + Compiler Options
+  + Environment Options
+    + Languages
+    + Themes
+  + Editor Options
+    + Class Browser
+    + Shortcuts -> done
+
+- Getting Help
+  + FAQ
+  + Mailing list / Forum
+  + Authors -> done
+
+- An Introduction to C programming -> done
+- (and why not an introduction to C++ if possible ;)
+    	
