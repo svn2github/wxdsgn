@@ -37,7 +37,7 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'wxDev-C++';
-  DEVCPP_VERSION    = '4.9.9.2';
+  DEVCPP_VERSION    = '6.10';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
