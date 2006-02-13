@@ -35,7 +35,6 @@ uses
 
 type
   TAboutForm = class(TForm)
-    VersionLabel: TLabel;
     btnOk: TBitBtn;
     CopyrightLabel: TLabel;
     GroupBox1: TGroupBox;
@@ -62,7 +61,6 @@ type
     wxdevcopyright: TLabel;
     wxdevcpp_websitelbl: TLabel;
     wxdevcpp_website: TLabel;
-    wxdevcpp_version: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnAuthorsClick(Sender: TObject);

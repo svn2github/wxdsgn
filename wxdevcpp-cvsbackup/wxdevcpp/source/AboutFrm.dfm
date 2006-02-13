@@ -17,19 +17,12 @@ object AboutForm: TAboutForm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object VersionLabel: TLabel
-    Left = 210
-    Top = 75
-    Width = 108
-    Height = 13
-    Caption = 'Dev-C++ Core Version '
-  end
   object CopyrightLabel: TLabel
     Left = 8
     Top = 74
-    Width = 194
+    Width = 312
     Height = 13
-    Caption = 'Copyright (c) Bloodshed Software '
+    Caption = 'Dev-C++ Code Base Copyright (c) Bloodshed Software '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -2301,23 +2294,16 @@ object AboutForm: TAboutForm
   end
   object wxdevcopyright: TLabel
     Left = 8
-    Top = 107
-    Width = 369
+    Top = 91
+    Width = 339
     Height = 13
-    Caption = 'wxWidgets Designer and portions - Copyright (c) Guru Kathiresan'
+    Caption = 'Form Designer Copyright (c) wxDev-C++ Development Team'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
-  end
-  object wxdevcpp_version: TLabel
-    Left = 210
-    Top = 90
-    Width = 124
-    Height = 13
-    Caption = 'Form Designer Version 6.8'
   end
   object btnOk: TBitBtn
     Left = 310
@@ -2330,16 +2316,16 @@ object AboutForm: TAboutForm
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 125
+    Top = 112
     Width = 379
-    Height = 135
+    Height = 148
     Caption = 'GNU General Public License : '
     TabOrder = 1
     object LicenseText: TMemo
       Left = 8
       Top = 16
       Width = 361
-      Height = 109
+      Height = 122
       Lines.Strings = (
         'GNU GENERAL PUBLIC LICENSE'
         ''
@@ -3193,9 +3179,9 @@ object AboutForm: TAboutForm
     object wxdevcpp_websitelbl: TLabel
       Left = 16
       Top = 16
-      Width = 105
+      Width = 108
       Height = 13
-      Caption = 'wx-devcpp Web Site :'
+      Caption = 'wxDev-C++ Web Site :'
     end
     object wxdevcpp_website: TLabel
       Left = 168
