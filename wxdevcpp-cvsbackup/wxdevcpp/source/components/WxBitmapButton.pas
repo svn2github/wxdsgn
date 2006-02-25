@@ -328,7 +328,7 @@ begin
 
   end
   else if trim(strStyle) <> '' then
-    strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+    strStyle := ', ' + strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
   else
     strStyle := ', wxBU_AUTODRAW, wxDefaultValidator, ' + GetCppString(Name);
 
