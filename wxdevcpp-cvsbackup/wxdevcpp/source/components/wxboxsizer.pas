@@ -332,7 +332,6 @@ end;
 
 function TWxBoxSizer.GenerateGUIControlCreation: string;
 var
-  strColorStr: string;
   strOrientation, strAlignment: string;
   parentName:  string;
 begin
@@ -342,21 +341,6 @@ begin
     strOrientation := 'wxHORIZONTAL';
 
   Result := Format('wxBoxSizer* %s = new wxBoxSizer(%s);', [self.Name, strOrientation]);
-
-  strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
-
-  strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
-
-
-  strColorStr := GetWxFontDeclaration(self.Font);
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
   if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent))) then
   begin
