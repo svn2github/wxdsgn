@@ -282,6 +282,7 @@ var
   intBlockStart, intBlockEnd: integer;
   intManualBlockStart, intManualBlockEnd: integer;
   wxcompInterface: IWxComponentInterface;
+  varIntf:IWxVariableAssignmentInterface;
   strEntry, strEventTableStart, strEventTableEnd: string;
   isSizerAvailable: boolean;
   strHdrValue: string;
@@ -355,6 +356,46 @@ begin
     if not isSizerAvailable then
       AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
   end;
+
+  // RHS Variable
+  if GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) then
+  begin
+    DeleteAllRHSVariableList(synEdit, strClassName,intBlockStart, intBlockEnd);
+      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+      begin
+        //            if frmNewForm.Components[i] is TPanel then
+        //                continue;
+        if frmNewForm.Components[i].GetInterface(IID_IWxVariableAssignmentInterface, varIntf) then
+        begin
+            strTemp :=varIntf.GetRHSVariableAssignment;
+            if (strTemp) = '' then
+                continue;
+          AddRHSVariableList(synEdit, strClassName,intBlockStart, intBlockEnd, varIntf.GetRHSVariableAssignment);
+        end;
+        AddRHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd, '');
+      end// for;
+
+  end;
+
+  // LHS Variable
+  if GetBlockStartAndEndPos(synEdit, strClassName, btLHSVariables, intBlockStart, intBlockEnd) then
+  begin
+    DeleteAllLHSVariableList(synEdit, strClassName,intBlockStart, intBlockEnd);
+      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+      begin
+        //            if frmNewForm.Components[i] is TPanel then
+        //                continue;
+        if frmNewForm.Components[i].GetInterface(IID_IWxVariableAssignmentInterface, varIntf) then
+        begin
+            strTemp :=varIntf.GetLHSVariableAssignment;
+            if (strTemp) = '' then
+                continue;
+          AddLHSVariableList(synEdit, strClassName,intBlockStart, intBlockEnd, varIntf.GetLHSVariableAssignment);
+        end;
+        AddLHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd, '');
+      end// for;
+  end;
+
 
   // Event
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries, intBlockStart, intBlockEnd) then
