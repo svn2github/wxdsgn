@@ -1182,6 +1182,7 @@ WxPropertyInspectorPopup:TPopupMenu;
     function GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string): Boolean;
 
     function LocateFunction(strFunctionName:String):boolean;
+    procedure SimulationOfSplitMove;
    {$ENDIF}
 
   end;
@@ -1262,7 +1263,23 @@ const
   INT_SWITCH= 12;
   INT_CPP_COMMENT= 13;
 
+//Fixme Later for Resizing the browser
+procedure TMainForm.SimulationOfSplitMove;
+var
+  pntSplitPosition : TSmallPoint;
+begin
+  frmInspectorDock.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
+  LeftPageControl.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
 
+ pntSplitPosition.x := frmInspectorDock.Width + 2;
+ pntSplitPosition.y := 5;
+ pnlBrowsers.Perform (WM_LBUTTONDOWN,MK_LBUTTON ,Integer(pntSplitPosition));
+ pntSplitPosition.x := 280;
+ pnlBrowsers.Perform (WM_MOUSEMOVE, MK_LBUTTON ,Integer(pntSplitPosition));
+ pnlBrowsers.Perform (WM_LBUTTONUP,0 ,Integer(pntSplitPosition));
+ Application.ProcessMessages;
+
+end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -1717,9 +1734,9 @@ begin
   frmInspectorDock.Height:=500;
   //frmInspectorDock.Visible:=true;
   LeftPageControl.Height:=400;
-  frmInspectorDock.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
+  frmInspectorDock.ManualDock(pnlBrowsers,nil,alTop);
   frmInspectorDock.Visible:=true;
-  LeftPageControl.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
+  LeftPageControl.ManualDock(pnlBrowsers,nil,alTop);
   //frmInspectorDock.Height:=400;
   //pnlBrowsers.Height:=500;
   LeftPageControl.Height:=600;
@@ -7807,15 +7824,15 @@ begin
   //LeftPageControl.Visible := false;
   pnlBrowsers.Visible := False;
 
-  (Sender as TForm).RemoveControl(LeftPageControl);
-  if LeftPageControl.visible = false then
-  	LeftPageControl.visible :=true;
-  LeftPageControl.Left := 0;
-  LeftPageControl.Top := ControlBar1.Height;
-  LeftPageControl.Align := alLeft;
+  (Sender as TForm).RemoveControl(pnlBrowsers);
+  if pnlBrowsers.visible = false then
+  	pnlBrowsers.visible :=true;
+  pnlBrowsers.Left := 0;
+  pnlBrowsers.Top := ControlBar1.Height;
+  pnlBrowsers.Align := alLeft;
   pnlBrowsers.Visible := True;
   //LeftPageControl.Visible := true;
-  InsertControl(LeftPageControl);
+  InsertControl(pnlBrowsers);
   ProjectToolWindow.Free;
   ProjectToolWindow := nil;
 
@@ -7855,24 +7872,24 @@ begin
     ProjectToolWindow := TForm.Create(self);
     with ProjectToolWindow do begin
       Caption := Lang.Strings[ID_TB_PROJECT];
-      Top := self.Top + LeftPageControl.Top;
-      Left := self.Left + LeftPageControl.Left;
-      Height := LeftPageControl.Height;
-      Width := LeftPageControl.Width;
+      Top := self.Top + pnlBrowsers.Top;
+      Left := self.Left + pnlBrowsers.Left;
+      Height := pnlBrowsers.Height;
+      Width := pnlBrowsers.Width;
       FormStyle := fsStayOnTop;
       OnClose := ProjectWindowClose;
       BorderStyle := bsSizeable;
       BorderIcons := [biSystemMenu];
       pnlBrowsers.Visible := False;
       //LeftPageControl.Visible := false;
-      self.RemoveControl(LeftPageControl);
+      self.RemoveControl(pnlBrowsers);
 
-      LeftPageControl.Left := 0;
-      LeftPageControl.Top := 0;
-      LeftPageControl.Align := alClient;
+      pnlBrowsers.Left := 0;
+      pnlBrowsers.Top := 0;
+      pnlBrowsers.Align := alClient;
       pnlBrowsers.Visible := True;
       //LeftPageControl.Visible := true;
-      ProjectToolWindow.InsertControl(LeftPageControl);
+      ProjectToolWindow.InsertControl(pnlBrowsers);
 
       ProjectToolWindow.Show;
       if assigned(fProject) then
@@ -10156,6 +10173,7 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.BuildProperties(Comp: TControl;boolForce:Boolean);
 var
+  I,JK: Integer;
     strValue:String;
     strSelName,strCompName:String;
 begin
@@ -10209,21 +10227,38 @@ end;
 
   if strValue = '1*NoData' then
     exit;
+
+  JvInspProperties.BeginUpdate;
+  JK:= JvInspProperties.Root.Count - 1;
   try
-    JvInspProperties.BeginUpdate;
-    JvInspProperties.Root.Clear;
+    for I := JK  downto 0 do    // Iterate
+    begin
+        try
+        JvInspProperties.Root.Delete(I);
+        except
+        end;
+    end;    // for
     TJvInspectorPropData.New(JvInspProperties.Root, Comp);
-    JvInspProperties.EndUpdate;
   except
   end;
+  JvInspProperties.EndUpdate;
 
+  JvInspEvents.BeginUpdate;
+  JK := JvInspEvents.Root.Count - 1;
   try
-    JvInspEvents.BeginUpdate;
+    for I := JK downto 0 do    // Iterate
+    begin
+        try
+        JvInspEvents.Root.Delete(I);
+        except
+        end;
+    end;    // for
     JvInspEvents.Root.Clear;
     TJvInspectorPropData.New(JvInspEvents.Root, Comp);
-    JvInspEvents.EndUpdate;
   except
   end;
+  JvInspEvents.EndUpdate;
+  
 end;
 {$ENDIF}
 
