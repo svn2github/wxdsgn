@@ -33,7 +33,7 @@ interface
 uses classes, Sysutils, DbugIntf,xprocs,synEdit;
 
 type
-    TBlockType = (btManualCode,btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btClassNameEnumControlIdentifiers,btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration);
+    TBlockType = (btManualCode,btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btClassNameEnumControlIdentifiers,btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration,btLHSVariables,btRHSVariables);
 
 function GetStartAndEndBlockStrings(ClassNameString: string; blockType: TBlockType; var StartString, EndString: string): Boolean;
 
@@ -64,6 +64,12 @@ function DeleteAllClassNameIncludeHeader(synEdit:TSynEdit; ClassNameString: stri
 
 function AddClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; EvtString: string;useTabChar:Boolean = true): Boolean;
 function DeleteAllClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+
+function AddRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
+function DeleteAllRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+
+function AddLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
+function DeleteAllLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
 
 
 implementation
@@ -170,6 +176,82 @@ function DeleteAllClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: 
 begin
     Result:= True;
     DeleteBlock(synEdit, ClassNameString, btClassNameEventTableEntries);
+end;
+
+function AddRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
+var
+    i:Integer;
+    strlst:TStringList;
+    strData:string;
+begin
+    Result:= True;
+    if trim(VarString) = '' then
+        exit;
+    strlst:=TStringList.Create;
+    strlst.Text:=VarString;
+    //strlst.Delimiter:=#13;
+    //DelimitedText:=EvtString;
+
+    //strTokenToStrings(EvtString,#13,strlst);
+
+
+    for i := strlst.Count - 1 downto 0 do    // Iterate
+    begin
+        strData:=Trim(strlst[i]);
+        if useTabChar then
+            strData:=#9+strData;
+
+        if strData <> '' then
+	    synEdit.Lines.Insert(BlockStart + 1,strData);
+    end;    // for
+    //synEdit.Lines.Insert(BlockStart + 1,'');
+
+    strlst.Destroy;
+    //synEdit.Lines.Insert(BlockStart + 1, #9EvtString);
+end;
+
+function DeleteAllRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+begin
+    Result:= True;
+    DeleteBlock(synEdit, ClassNameString, btRHSVariables);
+end;
+
+function AddLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
+var
+    i:Integer;
+    strlst:TStringList;
+    strData:string;
+begin
+    Result:= True;
+    if trim(VarString) = '' then
+        exit;
+    strlst:=TStringList.Create;
+    strlst.Text:=VarString;
+    //strlst.Delimiter:=#13;
+    //DelimitedText:=EvtString;
+
+    //strTokenToStrings(EvtString,#13,strlst);
+
+
+    for i := strlst.Count - 1 downto 0 do    // Iterate
+    begin
+        strData:=Trim(strlst[i]);
+        if useTabChar then
+            strData:=#9+strData;
+
+        if strData <> '' then
+	    synEdit.Lines.Insert(BlockStart + 1,strData);
+    end;    // for
+    //synEdit.Lines.Insert(BlockStart + 1,'');
+
+    strlst.Destroy;
+    //synEdit.Lines.Insert(BlockStart + 1, #9EvtString);
+end;
+
+function DeleteAllLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+begin
+    Result:= True;
+    DeleteBlock(synEdit, ClassNameString, btLHSVariables);
 end;
 
 function AddDialogStyleDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
@@ -442,7 +524,20 @@ begin
         Exit;
     end;
 
+    if blockType = btRHSVariables then
+    begin
+        StartString := '////RHS Variables Start';
+        EndString := '////RHS Variables End';
+        Exit;
+    end;
 
+    if blockType = btLHSVariables then
+    begin
+        StartString := '////LHS Variables Start';
+        EndString := '////LHS Variables End';
+        Exit;
+    end;
+    
 end;
 
 function GetBlockStartString(ClassNameString: string; blockType: TBlockType): string;
