@@ -2242,19 +2242,38 @@ procedure TEditor.DoOnCodeCompletion(Sender: TObject; const AStatement: TStateme
 //  this event is triggered whenever the codecompletion box is going to make its work,
 //  or in other words, when it did a codecompletion ...
 //
+var
+    bUnIntialisedToolTip:Boolean;
 begin
   // disable the tooltip here, becasue we check against Enabled
   // in the 'EditorStatusChange' event to prevent it's redrawing there
   if FCodeToolTip <> nil then
   begin
+
     //FCodeToolTip may not be initialized under some
     //circumstances when create TEditor
     //I suspect it's in TProject.OpenUnit --specu
-  FCodeToolTip.Enabled := False;
-  FCodeToolTip.ReleaseHandle;
-  FCodeToolTip.Show;
-  FCodeToolTip.Select(AStatement._FullText);
-  FCodeToolTip.Enabled := True;
+
+    //fixme - Guru: I'm checking if the tooltip is created if not
+    // I create a new one on the fly
+    bUnIntialisedToolTip:=false;
+    try
+        FCodeToolTip.Enabled := False;
+    except
+        bUnIntialisedToolTip:=true;
+    end;
+    if bUnIntialisedToolTip then
+    begin
+        FCodeToolTip:=nil;
+        FCodeToolTip := TDevCodeToolTip.Create(Application);
+        FCodeToolTip.Editor := FText;
+        FCodeToolTip.Parser := MainForm.CppParser1;
+    end;
+    FCodeToolTip.Enabled := False;
+    FCodeToolTip.ReleaseHandle;
+    FCodeToolTip.Show;
+    FCodeToolTip.Select(AStatement._FullText);
+    FCodeToolTip.Enabled := True;
   end;
 
   // ???: when we don't invalidate the SynEditor here, it occurs sometimes
@@ -2613,6 +2632,7 @@ begin
 
   end;
 end;
+
 {$ENDIF}
 
 end.
