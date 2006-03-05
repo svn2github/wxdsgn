@@ -20,7 +20,6 @@ type
     FWx_PropertyList: TStringList;
     FWx_MenuItems: TWxCustomMenuItem;
     FWx_HasHistory: boolean;
-    FMainMenu: TMainMenu;
     procedure AutoInitialize;
     procedure AutoDestroy;
   protected
@@ -97,7 +96,7 @@ procedure TWxMenuBar.BuildMenus(Value: TWxCustomMenuItem);
     begin
       mnuItem := TMenuItem.Create(self.parent);
       mnuItem.Caption := SubMenuItems.Items[i].Wx_Caption;
-      FMainMenu.Items.Add(mnuItem);
+      //FMainMenu.Items.Add(mnuItem);
       if SubMenuItems.Items[i].Count > 0 then
         CreateSubMenu(SubMenuItems.Items[i]);
     end;    // for
@@ -108,19 +107,21 @@ var
   mnuItem: TMenuItem;
 begin
 
-  FMainMenu.Items.Clear;
+  //FMainMenu.Items.Clear;
+  {
   if (FMainMenu.Owner <> self.parent) then
   begin
     FMainMenu.Destroy;
     FMainMenu := nil;
     FMainMenu := TMainMenu.Create(Self.Parent);
   end;
-
+  }
+  
   for I := 0 to Value.Count - 1 do    // Iterate
   begin
     mnuItem := TMenuItem.Create(self.parent);
     mnuItem.Caption := Value.Items[i].Wx_Caption;
-    FMainMenu.Items.Add(mnuItem);
+    //FMainMenu.Items.Add(mnuItem);
     if Value.Items[i].Count > 0 then
       CreateSubMenu(Value.Items[i]);
   end;    // for
@@ -132,7 +133,7 @@ begin
   FWx_Class     := 'wxMenuBar';
   FWx_MenuItems := TWxCustomMenuItem.Create(self.Parent);
   Glyph.Handle  := LoadBitmap(hInstance, 'TWxMenuBar');
-  FMainMenu     := TMainMenu.Create(Self.Parent);
+  //FMainMenu     := TMainMenu.Create(Self.Parent);
   FWx_Comments  := TStringList.Create;
   FWx_HasHistory := false;
 
@@ -144,8 +145,15 @@ begin
   Glyph.Assign(nil);
   FWx_PropertyList.Destroy;
   FWx_MenuItems.Destroy;
+  {
   if FMainMenu <> nil then
+  begin
+    try
     FMainMenu.Destroy;
+    except
+    end;
+  end;
+  }
   FWx_Comments.Destroy;
 
 end; { of AutoDestroy }
