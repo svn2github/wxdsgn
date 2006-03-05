@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
   TWxDatePickerCtrl = class(TComboBox, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxDatePickerCtrl }
     { Storage for property EVT_DATE_CHANGED }
@@ -72,6 +72,9 @@ type
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
+
 
     { Private methods of TWxComboBox }
     { Method to set variable and property values and create objects }
@@ -126,6 +129,9 @@ type
     procedure SetProxyBGColorString(Value: string);
     procedure DummyToolBarInsertableInterfaceProcedure;
     procedure SetWx_Date(Value:TDateTime);
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+        
   published
     { Published properties of TWxComboBox }
     property OnChange;
@@ -178,6 +184,9 @@ type
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+    
   end;
 
 procedure Register;
@@ -329,9 +338,12 @@ begin
   FWx_PropertyList.add('wxDP_DROPDOWN:wxDP_DROPDOWN');
   FWx_PropertyList.add('wxDP_DEFAULT :wxDP_DEFAULT ');
   FWx_PropertyList.add('wxDP_ALLOWNONE :wxDP_ALLOWNONE ');
-    FWx_PropertyList.add('wxDP_SHOWCENTURY :wxDP_SHOWCENTURY ');
+  FWx_PropertyList.add('wxDP_SHOWCENTURY :wxDP_SHOWCENTURY ');
 
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_DATE_CHANGED:OnDateChanged');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -652,6 +664,22 @@ end;
 procedure TWxDatePickerCtrl.DummyToolBarInsertableInterfaceProcedure;
 begin
 
+end;
+
+function TWxDatePickerCtrl.GetLHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
+end;
+
+function TWxDatePickerCtrl.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
 end;
 
 end.

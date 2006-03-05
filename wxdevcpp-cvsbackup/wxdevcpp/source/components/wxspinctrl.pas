@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
   TWxSpinCtrl = class(TSpinEdit, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxSpinCtrl }
     { Storage for property ControlOrientation }
@@ -80,6 +80,8 @@ type
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
 
     { Private methods of TWxSpinCtrl }
     { Method to set variable and property values and create objects }
@@ -128,7 +130,9 @@ type
     procedure SetBGColor(strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
-
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+    
   published
     { Published properties of TWxSpinCtrl }
     property EVT_SPINCTRL: string Read FEVT_SPINCTRL Write FEVT_SPINCTRL;
@@ -173,6 +177,9 @@ type
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property MaxValue default 100;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
 
   end;
 
@@ -284,6 +291,10 @@ begin
   FWx_PropertyList.add('wxSP_WRAP:wxSP_WRAP');
 
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
+
 
   FWx_EventList.add('EVT_SPINCTRL:OnUpdated');
   FWx_EventList.add('EVT_TEXT:OnTextUpdated');
@@ -602,6 +613,28 @@ begin
   self.Font.Color := GetColorFromString(Value);
 end;
 
+function TWxSpinCtrl.GetLHSVariableAssignment:String;
+var
+    nPos:Integer;
+begin
+    Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    nPos := pos('|',Wx_LHSValue);
+    if (UpperCase(copy(Wx_LHSValue,0,2)) = 'F:') and (nPos <> -1) then
+    begin
+        Result:= Format('%s = %s(%s->GetValue());',[copy(Wx_LHSValue,3,nPos-3),copy(Wx_LHSValue,nPos+1,length(Wx_LHSValue)),self.Name])
+    end
+    else
+        Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
+end;
 
+function TWxSpinCtrl.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
+end;
 
 end.

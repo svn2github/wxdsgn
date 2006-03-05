@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
   TWxRadioButton = class(TRadioButton, IWxComponentInterface,
-    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface)
+    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxRadioButton }
     FEVT_CHECKBOX: string;
@@ -53,6 +53,8 @@ type
     FInvisibleFGColorString: string;
     FWx_Validator: string;
     FWx_Comments: TStrings;
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
 
     { Private methods of TWxRadioButton }
     procedure AutoInitialize;
@@ -100,7 +102,9 @@ type
     procedure SetBGColor(strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
-
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+    
   published
     { Published properties of TWxRadioButton }
     property OnClick;
@@ -152,6 +156,9 @@ type
     property InvisibleFGColorString: string
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
 
   end;
 
@@ -255,6 +262,9 @@ begin
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
   FWx_PropertyList.add('Wx_Validator : Validator code');
   FWx_PropertyList.add('Wx_Comments:Comments');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_RADIOBUTTON:OnClick');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -562,5 +572,16 @@ begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
 end;
+
+function TWxRadioButton.GetLHSVariableAssignment:String;
+begin
+    Result:= '';
+end;
+
+function TWxRadioButton.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+end;
+
 
 end.

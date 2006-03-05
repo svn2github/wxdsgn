@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
   TWxEdit = class(TJvEdit, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxEdit }
     { Storage for property EVT_TEXT }
@@ -77,6 +77,8 @@ type
     FInvisibleFGColorString: string;
     FWx_MaxLength: integer;
     FWx_Comments: TStrings;
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
 
     { Private methods of TWxEdit }
     { Method to set variable and property values and create objects }
@@ -134,6 +136,8 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure DummyToolBarInsertableInterfaceProcedure;
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
 
   published
     { Published properties of TWxEdit }
@@ -191,10 +195,15 @@ type
     property Wx_VerticalAlignment: TWxSizerVerticalAlignment
       Read FWx_VerticalAlignment Write FWx_VerticalAlignment default
       wxSZALIGN_CENTER_VERTICAL;
+
     property InvisibleBGColorString: string
       Read FInvisibleBGColorString Write FInvisibleBGColorString;
     property InvisibleFGColorString: string
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
+
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+
 
   end;
 
@@ -384,6 +393,9 @@ begin
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
 
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_TEXT_ENTER:OnEnter');
   FWx_EventList.add('EVT_TEXT:OnUpdated');
@@ -761,5 +773,32 @@ procedure TWxEdit.DummyToolBarInsertableInterfaceProcedure;
 begin
 
 end;
+
+function TWxEdit.GetLHSVariableAssignment:String;
+var
+    nPos:Integer;
+    str1,str2:String;
+
+begin
+    Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    nPos := pos('|',Wx_LHSValue);
+    if (UpperCase(copy(Wx_LHSValue,0,2)) = 'F:') and (nPos <> -1) then
+    begin
+        Result:= Format('%s = %s(%s->GetValue());',[copy(Wx_LHSValue,3,nPos-3),copy(Wx_LHSValue,nPos+1,length(Wx_LHSValue)),self.Name])
+    end
+    else
+        Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
+end;
+
+function TWxEdit.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
+end;
+
 
 end.

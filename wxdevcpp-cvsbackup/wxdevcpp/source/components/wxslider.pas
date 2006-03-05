@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
   TWxSlider = class(TTrackBar, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxSlider }
    { Storage for property EVT_COMMAND_SCROLL }
@@ -95,6 +95,8 @@ type
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
 
     { Private methods of TWxSlider }
     { Method to set variable and property values and create objects }
@@ -148,7 +150,9 @@ type
 
     function GetSliderOrientation(Value: TWx_SliderOrientation): string;
     function GetSliderRange(Value: TWx_SliderRange): string;
-
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+    
   published
     { Published properties of TWxSlider }
     property OnKeyDown;
@@ -206,6 +210,9 @@ type
     property InvisibleFGColorString: string
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+      
   end;
 
 procedure Register;
@@ -335,6 +342,10 @@ begin
   FWx_PropertyList.add('Wx_SliderOrientation  : Orientation');
 
   FWx_PropertyList.add('Wx_Comments:Comments');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
+
   FWx_EventList.add('EVT_SLIDER : OnSlider');
 
   FWx_EventList.add('EVT_COMMAND_SCROLL   :  OnScroll');
@@ -790,6 +801,16 @@ begin
     Result := ' | wxSL_INVERSE ';
     exit;
   end;
+end;
+
+function TWxSlider.GetLHSVariableAssignment:String;
+begin
+    Result:= '';
+end;
+
+function TWxSlider.GetRHSVariableAssignment:String;
+begin
+    Result:='';
 end;
 
 end.

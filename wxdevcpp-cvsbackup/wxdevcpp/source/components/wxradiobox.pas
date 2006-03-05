@@ -20,7 +20,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, MultiLangSupport
   Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, WxToolBar, Dialogs, Math, CustomWXDRadioGroup;
 
 type
-  TWxRadioBox = class(TWXDRadioGroup, IWxComponentInterface)
+  TWxRadioBox = class(TWXDRadioGroup, IWxComponentInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxRadioBox }
     FEVT_RADIOBOX: string;
@@ -52,6 +52,8 @@ type
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
     FWx_Selection: integer;
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
 
     { Private methods of TWxRadioBox }
     procedure AutoInitialize;
@@ -102,6 +104,9 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GetRadioboxOrientation(Wx_RadioBoxStyle: TWxrbxStyleItem) : string;
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+        
   published
     { Published properties of TWxRadioBox }
     property OnDblClick;
@@ -149,6 +154,9 @@ type
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
     property Wx_Selection: integer Read FWx_Selection Write FWx_Selection default 1;
+
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
 
   end;
 
@@ -290,6 +298,10 @@ begin
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
   FWx_PropertyList.add('Wx_Comments:Comments');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
+
   FWx_EventList.add('EVT_RADIOBOX:OnClick');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
@@ -635,12 +647,15 @@ begin
   end;
 end;
 
+function TWxRadioBox.GetLHSVariableAssignment:String;
+begin
+    Result:= '';
+end;
 
-
-
-
-
-
+function TWxRadioBox.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+end;
 
 
 end.

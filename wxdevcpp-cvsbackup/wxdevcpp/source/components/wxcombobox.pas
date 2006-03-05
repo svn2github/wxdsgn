@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
   TWxComboBox = class(TComboBox, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxComboBox }
     { Storage for property EVT_COMBOBOX }
@@ -74,7 +74,10 @@ type
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
-    FWx_Comments: TStrings;
+    FWx_Comments: TStrings;    
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
+
 
     { Private methods of TWxComboBox }
     { Method to set variable and property values and create objects }
@@ -128,7 +131,9 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure DummyToolBarInsertableInterfaceProcedure;
-
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+    
   published
     { Published properties of TWxComboBox }
     property OnChange;
@@ -182,6 +187,9 @@ type
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
 
   end;
 
@@ -333,6 +341,9 @@ begin
   FWx_PropertyList.add('wxCB_READONLY:wxCB_READONLY');
   FWx_PropertyList.add('wxCB_SORT:wxCB_SORT');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_COMBOBOX:OnSelected');
   FWx_EventList.add('EVT_TEXT:OnUpdated');
@@ -665,6 +676,41 @@ end;
 
 procedure TWxComboBox.DummyToolBarInsertableInterfaceProcedure;
 begin
+
+end;
+
+function TWxComboBox.GetLHSVariableAssignment:String;
+var
+    nPos:Integer;
+    str1,str2:String;
+begin
+    Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    nPos := pos('|',Wx_LHSValue);
+    if UpperCase(copy(Wx_LHSValue,0,2)) = 'I:' then
+        Result:= Format('%s = %s->GetSelection();',[copy(Wx_LHSValue,3,length(Wx_LHSValue)),self.Name])
+    else if (UpperCase(copy(Wx_LHSValue,0,3)) = 'IF:') and (nPos <> -1) then
+    begin
+        Result:= Format('%s = %s(%s->GetSelection());',[copy(Wx_LHSValue,4,nPos-4),copy(Wx_LHSValue,nPos+1,length(Wx_LHSValue)),self.Name])
+    end
+    else if (UpperCase(copy(Wx_LHSValue,0,2)) = 'F:') and (nPos <> -1) then
+    begin
+        Result:= Format('%s = %s(%s->GetValue());',[copy(Wx_LHSValue,3,nPos-3),copy(Wx_LHSValue,nPos+1,length(Wx_LHSValue)),self.Name])
+    end
+    else
+        Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
+end;
+
+function TWxComboBox.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    if UpperCase(copy(Wx_RHSValue,0,2)) = 'I:' then
+        Result:= Format('%s->SetSelection(%s);',[self.Name,copy(Wx_RHSValue,3,length(Wx_RHSValue))])
+    else
+        Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
 
 end;
 

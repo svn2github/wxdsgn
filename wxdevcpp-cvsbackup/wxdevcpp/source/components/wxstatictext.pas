@@ -32,7 +32,7 @@ http://torry.net/tools/components/compcreation/cc.zip
 
 type
   TWxStaticText = class(TStaticText, IWxComponentInterface,
-    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface)
+    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxStaticText }
     { Storage for property Wx_BGColor }
@@ -77,7 +77,9 @@ type
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
-
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
+    
     { Private methods of TWxStaticText }
     { Method to set variable and property values and create objects }
     procedure AutoInitialize;
@@ -128,7 +130,9 @@ type
 
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
-
+    
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
 
   published
     { Published properties of TWxStaticText }
@@ -175,6 +179,9 @@ type
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+    
   end;
 
 procedure Register;
@@ -299,6 +306,9 @@ begin
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
   FWx_PropertyList.add('Wx_Comments:Comments');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
 end;
 
@@ -613,5 +623,22 @@ begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
 end;
+
+function TWxStaticText.GetLHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
+end;
+
+function TWxStaticText.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
+end;
+
 
 end.
