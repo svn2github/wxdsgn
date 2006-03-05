@@ -16,7 +16,7 @@
   todo:
   1) StaticText needs Style
   2)Scrollbar need to have the vertical and horizontal poperties
-  
+
 *}
 unit WxUtils;
 
@@ -39,10 +39,11 @@ const
   IID_IWxToolBarInterface: TGUID    = '{518BF32C-F961-4148-B506-F60A9D21AD15}';
   IDD_IWxStatusBarInterface: TGUID  = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
   IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
+  IID_IWxVariableAssignmentInterface: TGUID  = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
 
 var
    StringFormat : string;
-   
+
 type
 
   TWxPoint = class(TComponent)
@@ -167,6 +168,12 @@ type
   IWxCollectionInterface = interface
     ['{DC147ECD-47A2-4334-A113-CD9B794CBCE1}']
     function GetMaxID: integer;
+  end;
+
+  IWxVariableAssignmentInterface = Interface
+    ['{624949E8-E46C-4EF9-B4DA-BC8532617513}']
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
   end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
