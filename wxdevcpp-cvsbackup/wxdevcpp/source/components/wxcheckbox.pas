@@ -31,7 +31,7 @@ http://torry.net/tools/components/compcreation/cc.zip
 
 type
   TWxCheckBox = class(TCheckBox, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxCheckBox }
     { Storage for property EVT_CHECKBOX }
@@ -80,7 +80,9 @@ type
     FInvisibleFGColorString: string;
     FWx_Validator: string;
     FWx_Comments: TStrings;
-
+    FWx_LHSValue : String;
+    FWx_RHSValue : String;
+    
     { Private methods of TWxCheckBox }
     { Method to set variable and property values and create objects }
     procedure AutoInitialize;
@@ -130,7 +132,9 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure DummyToolBarInsertableInterfaceProcedure;
-
+    function GetLHSVariableAssignment:String;
+    function GetRHSVariableAssignment:String;
+    
   published
     { Published properties of TWxCheckBox }
     property OnClick;
@@ -186,6 +190,9 @@ type
     property InvisibleFGColorString: string
       Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
+    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
+    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+      
   end;
 
 procedure Register;
@@ -330,6 +337,9 @@ begin
   FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
   FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_CHECKBOX:OnClick');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -648,6 +658,22 @@ end;
 procedure TWxCheckBox.DummyToolBarInsertableInterfaceProcedure;
 begin
 
+end;
+
+function TWxCheckBox.GetLHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
+end;
+
+function TWxCheckBox.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
 end;
 
 end.
