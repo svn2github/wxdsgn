@@ -54,16 +54,14 @@ begin
     ControlListBox.Items.Clear;
     for I := 0 to FMainControl.ComponentCount - 1 do    // Iterate
     begin
-        if FMainControl.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface) then
+        if (FMainControl.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface)) and (wxcompInterface.GetIDName <> '') then
         begin
             lstitem := ControlListBox.Items.Add;
             lstitem.Caption:=IntToStr(wxcompInterface.GetIDValue);
             lstitem.SubItems.Add(wxcompInterface.GetIDName);
             lstitem.SubItems.Add(FMainControl.Components[i].Name);
         end;
-
     end;    // for
-
 end;
 
 procedure TViewControlIDsForm.btCloseClick(Sender: TObject);
