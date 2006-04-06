@@ -98,29 +98,29 @@ begin
 
   if (MainForm.ELDesigner1.GenerateXRC = False) and (cbGenerateXRC.Checked) then
   begin
-
     FileName := ChangeFileExt(MainForm.GetCurrentFileName, XRC_EXT);
     MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
 
-    if not MainForm.fProject.FileAlreadyExists(FileName) then
+    //create the file
+    if not MainForm.isFileOpenedinEditor(FileName) then
     begin
-      if not MainForm.isFileOpenedinEditor(FileName) then
-      begin
-        strLstXRCCode := CreateBlankXRC;
-        SaveStringToFile(strLstXRCCode.Text, FileName);
-        strLstXRCCode.Destroy;
-      end;
+      strLstXRCCode := CreateBlankXRC;
+      SaveStringToFile(strLstXRCCode.Text, FileName);
+      strLstXRCCode.Destroy;
+    end;
 
+    //then add the unit
+    if (MainForm.fProject <> nil) and (not MainForm.fProject.FileAlreadyExists(FileName)) then
+    begin
       node := Mainform.fProject.Node;
       MainForm.fProject.AddUnit(FileName, node, False);
     end
   end
-  else begin
-
+  else
+  begin
     MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
-    MainForm.fProject.CloseUnit(MainForm.fProject.GetUnitFromString(
-      ExtractFileName(FileName)));
-
+    if (MainForm.fProject <> nil) then
+      MainForm.fProject.CloseUnit(MainForm.fProject.GetUnitFromString(ExtractFileName(FileName)));
   end;
 
   if cbControlHints.Checked then
