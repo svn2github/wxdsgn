@@ -138,11 +138,6 @@ end;
 
 {$ENDIF}
 
-//procedure TMenuItemForm.AddMenuClass(const S: string);
-//begin
-//  tvMenuItem.Items.AddChild(nil, S);
-//end;
-
 procedure TMenuItemForm.btnInsertClick(Sender: TObject);
 var
   MenuItem: TWxCustomMenuItem;
@@ -213,7 +208,6 @@ begin
   cbOnUpdateUI.Enabled := True;
   btNewOnMenu.Enabled  := True;
   btNewUpdateUI.Enabled := True;
-
 end;
 
 procedure TMenuItemForm.DisableUpdate;
@@ -679,7 +673,6 @@ begin
       if tvMenuItem.Selected.Parent <> nil then
       begin
         tvMenuItem.Selected := tvMenuItem.Selected.Parent;
-        //  tvMenuItem.Selected.Expand(false);
         tvMenuItem.Selected.Expand(True);
       end;
     FSubMenuItemCreationClicked := False;
@@ -696,8 +689,6 @@ begin
   end;
   EnableUpdate;
   txtCaption.SetFocus;
-  //UpdateMenuItemDataFromScreenData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
-
 end;
 
 procedure TMenuItemForm.cbMenuTypeChange(Sender: TObject);
@@ -706,7 +697,12 @@ begin
     exit;
 
   if cbMenuType.ItemIndex = 1 then
+  begin
     txtCaption.Text := '---';
+    txtIDName.Text := 'wxID_STATIC';
+    if tvMenuItem.Selected <> nil then
+      tvMenuItem.Selected.Text := txtCaption.Text;
+  end;
 
   if cbMenuType.ItemIndex = 4 then
   begin
