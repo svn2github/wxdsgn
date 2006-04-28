@@ -546,7 +546,26 @@ end;
 function TMenuItemForm.GetValidMenuName(str: string): string;
 var
   i: integer;
+  lastTabIndex: integer;
+
+  function AnsiPosR(const needle, haystack: string) : Integer;
+  var
+    Temp: String;
+  begin
+    for Result := Length(haystack) downto 0 do
+    begin
+      Temp := Copy(haystack, Result, Length(needle));
+      //Do we have a match?
+      if Temp = needle then
+        break;
+    end;
+  end;
 begin
+  //Strip the string starting from the last \t
+  lastTabIndex := AnsiPosR('\t', str);
+  if lastTabIndex > 0 then
+    str := Copy(str, 0, lastTabIndex - 1);
+  
   //FixMe
   Result := UpperCase(trim(str));
 
@@ -559,7 +578,7 @@ begin
         '_';
 
   strSearchReplace(Result, ' ', '', [srAll]);
-  strSearchReplace(Result, '&', '_', [srAll]);
+  strSearchReplace(Result, '&', '', [srAll]);
   strSearchReplace(Result, '\t', '_', [srAll]);
   strSearchReplace(Result, '-', '_', [srAll]);
   strSearchReplace(Result, '~', '_', [srAll]);
@@ -628,18 +647,17 @@ begin
   OldName := TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_Caption;
   TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_Caption := txtCaption.Text;
 
-  if UpperCase('ID_MNU_' + trim(OldName) + '_' + txtIDValue.Text) =
-    UpperCase(trim(txtIDName.Text) + '_' + txtIDValue.Text) then
+  if (UpperCase('ID_MNU_' + trim(OldName) + '_' + txtIDValue.Text) =
+    UpperCase(trim(txtIDName.Text) + '_' + txtIDValue.Text)) or
+    (trim(txtIDName.Text) = '') then
   begin
-    txtIDName.Text := 'ID_MNU_' + GetValidMenuName(txtCaption.Text) + '_' + txtIDValue.Text;
+    txtIDName.Text := 'ID_MNU_' + GetValidMenuName(txtCaption.Text);
+    //Conditionally append the menu ID, since -1 is now a valid value
+    //(to let the enum decide on the ID)
+    if trim(txtIDValue.Text) <> '-1' then
+      txtIDName.Text := txtIDName.Text + '_' + txtIDValue.Text;
     TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_IDName := txtIDName.Text;
     exit;
-  end;
-
-  if trim(txtIDName.Text) = '' then
-  begin
-    txtIDName.Text := 'ID_MNU_' + GetValidMenuName(txtCaption.Text) + '_' + txtIDValue.Text;
-    TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_IDName := txtIDName.Text;
   end;
 end;
 
