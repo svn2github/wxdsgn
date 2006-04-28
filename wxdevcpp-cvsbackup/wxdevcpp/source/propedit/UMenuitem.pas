@@ -9,8 +9,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, TypInfo, WxCustomMenuItem, Menus, DateUtils, ExtCtrls,
-  xprocs, wxUtils, UPicEdit, Spin;
+  StdCtrls, Menus, ExtCtrls, WxCustomMenuItem, DateUtils, xprocs, wxUtils,
+  UPicEdit, Spin, strUtils, ComCtrls;
 
 type
   TMenuItemForm = class(TForm)
@@ -23,13 +23,11 @@ type
     Label5: TLabel;
     Label8: TLabel;
     Label12: TLabel;
-    Label13: TLabel;
     cbMenuType: TComboBox;
     txtCaption: TEdit;
     cbChecked: TComboBox;
     cbEnabled: TComboBox;
     txtHint: TEdit;
-    cbVisible: TComboBox;
     btnOK: TButton;
     btnCancel: TButton;
     btnInsert: TButton;
@@ -53,11 +51,11 @@ type
     btApply: TButton;
     bmpMenuImage: TImage;
     btEdit: TButton;
-    btNewOnMenu: TButton;
-    btNewUpdateUI: TButton;
     Image1: TImage;
     Button3: TButton;
     txtIDName: TComboBox;
+    btNewOnMenu: TButton;
+    btNewUpdateUI: TButton;
     procedure btnInsertClick(Sender: TObject);
     procedure btnSubmenuClick(Sender: TObject);
     procedure txtCaptionKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
@@ -79,6 +77,7 @@ type
     procedure tvMenuItemDragOver(Sender, Source: TObject; X, Y: integer;
       State: TDragState; var Accept: boolean);
     procedure tvMenuItemKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure txtIDNameChange(Sender: TObject);
 
   private
     { Private declarations }
@@ -197,9 +196,8 @@ begin
   txtCaption.Enabled   := True;
   txtHint.Enabled      := True;
   txtIDName.Enabled    := True;
-  txtIDValue.Enabled   := True;
+  txtIDValue.Enabled   := not AnsiStartsStr('wxID', txtIDName.Text);
   cbEnabled.Enabled    := True;
-  cbVisible.Enabled    := True;
   cbChecked.Enabled    := True;
   bmpMenuImage.Enabled := True;
   btBrowse.Enabled     := True;
@@ -226,7 +224,6 @@ begin
   txtIDName.Enabled    := False;
   txtIDValue.Enabled   := False;
   cbEnabled.Enabled    := False;
-  cbVisible.Enabled    := False;
   cbChecked.Enabled    := False;
   bmpMenuImage.Enabled := False;
   btBrowse.Enabled     := False;
@@ -331,11 +328,6 @@ begin
   else
     cbEnabled.ItemIndex := 0;
 
-  if cmenu.Wx_Hidden then
-    cbVisible.ItemIndex := 0
-  else
-    cbVisible.ItemIndex := 1;
-
   if cmenu.Wx_Checked then
     cbChecked.ItemIndex := 1
   else
@@ -378,11 +370,6 @@ begin
     cmenu.Wx_Enabled := True
   else
     cmenu.Wx_Enabled := False;
-
-  if cbVisible.ItemIndex = 1 then
-    cmenu.Wx_Hidden := False
-  else
-    cmenu.Wx_Hidden := True;
 
   if cbChecked.ItemIndex = 1 then
     cmenu.Wx_Checked := True
@@ -538,7 +525,6 @@ begin
 
   cbOnMenu.Items.Assign(strLst);
   cbOnUpdateUI.Items.Assign(strLst);
-
   strLst.Destroy;
 end;
 
@@ -1000,6 +986,11 @@ begin
   if (ssShift in Shift) then
     FShiftDown := True;
 
+end;
+
+procedure TMenuItemForm.txtIDNameChange(Sender: TObject);
+begin
+  txtIDValue.Enabled := not AnsiStartsStr('wxID', txtIDName.Text);
 end;
 
 end.
