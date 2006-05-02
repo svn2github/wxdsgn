@@ -1397,8 +1397,24 @@ end;
 procedure TProject.SaveUnitLayout(e: TEditor; Index: integer);
 var
   layIni: TIniFile;
+  filepath: string;
 begin
-  layIni := TIniFile.Create(ChangeFileExt(Filename, '.layout'));
+  //Get the path of the layout file
+  filepath := ChangeFileExt(Filename, '.layout');
+
+  //Is the file read-only?
+  if FileExists(filepath) and (FileGetAttr(filepath) and faReadOnly <> 0) then
+  begin
+    // file is read-only
+    if MessageDlg(Format(Lang[ID_MSG_FILEISREADONLY], [filepath]),mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      Exit;
+    if FileSetAttr(filepath, FileGetAttr(filepath) - faReadOnly) <> 0 then begin
+      MessageDlg(Format(Lang[ID_MSG_FILEREADONLYERROR], [filepath]), mtError, [mbOk], 0);
+      //NinjaNL Exit;
+    end;
+  end;
+
+  layIni := TIniFile.Create(filepath);
   try
     if Assigned(e) then begin
       layIni.WriteInteger('Editor_' + IntToStr(Index), 'CursorCol', e.Text.CaretX);
