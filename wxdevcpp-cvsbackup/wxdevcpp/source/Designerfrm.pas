@@ -65,6 +65,7 @@ type
     FWxFrm_Hidden: boolean;
     FWxFrm_GeneralStyle: TWxStdStyleSet;
     FWxFrm_DialogStyle: TWxDlgStyleSet;
+    FWxFrm_SizeToContents: Boolean;
     fsynEdit: TSynEdit;
 
     FEVT_CHAR, FEVT_KEY_UP, FEVT_KEY_DOWN, FEVT_ERASE_BACKGROUND,
@@ -84,11 +85,7 @@ type
 
     FWx_Name: string;
     FWx_ICON: TPicture;
-    { Storage for property Wx_StretchFactor }
-    FWx_StretchFactor: integer;
-    { Storage for property Wx_ProxyBGColorString }
     FWx_ProxyBGColorString: TWxColorString;
-    { Storage for property Wx_ProxyFGColorString }
     FWx_ProxyFGColorString: TWxColorString;
     FWxDesignerType: TWxDesignerType;
 
@@ -103,15 +100,12 @@ type
     property Wx_Center: boolean Read FWxFrm_Center Write FWxFrm_Center;
     property Wx_Hidden: boolean Read FWxFrm_Hidden Write FWxFrm_Hidden;
     property Wx_ToolTips: string Read FWxFrm_ToolTips Write FWxFrm_ToolTips;
+    property Wx_SizeToContents: boolean Read FWxFrm_SizeToContents Write FWxFrm_SizeToContents;
+
     property Wx_GeneralStyle: TWxStdStyleSet
       Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
-
     property Wx_DialogStyle: TWxDlgStyleSet
       Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
-
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
-
     property Wx_ProxyBGColorString: TWxColorString
       Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
     property Wx_ProxyFGColorString: TWxColorString
@@ -752,76 +746,82 @@ end;
 
 procedure TfrmNewForm.SetDialogProperties();
 begin
+  //Free the old property list
+  if Assigned(wx_PropertyList) then
+     wx_PropertyList.Free;
 
+  //Create the new one
   wx_PropertyList := TStringList.Create;
 
   try
+    wx_PropertyList.Add('Wx_IDName:ID Name');
+    wx_PropertyList.Add('Wx_IDValue:ID Value');
+    wx_PropertyList.Add('Wx_Class:Class');
+    wx_PropertyList.Add('Wx_Center:Center');
+    wx_PropertyList.Add('Wx_HelpText:Help Text');
+    wx_PropertyList.Add('Wx_ToolTips:Tooltip');
+    wx_PropertyList.Add('Wx_Hidden:Hidden');
+    wx_PropertyList.Add('Caption:Title');
+    wx_PropertyList.Add('Height:Height');
+    wx_PropertyList.Add('Width:Width');
+    wx_PropertyList.Add('Left:Left');
+    wx_PropertyList.Add('Top:Top');
+    wx_PropertyList.Add('Font:Font');
+    wx_PropertyList.Add('Wx_SizeToContents:Size to Contents');
+    
+    wx_PropertyList.Add('Wx_GeneralStyle:General Style');
+    wx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+    wx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
+    wx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
+    wx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
+    wx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
+    wx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
+    wx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
+    wx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+    wx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
+    wx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
+    wx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
+    wx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+    wx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+    wx_PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
+    wx_PropertyList.Add('wxFULL_REPAINT_ON_RESIZE:wxFULL_REPAINT_ON_RESIZE');
 
-  wx_PropertyList.Add('Wx_IDName:IDName');
-  wx_PropertyList.Add('Wx_IDValue:IDValue');
-  wx_PropertyList.Add('Wx_Class:Class');
-  wx_PropertyList.Add('Wx_Center:Center');
-  wx_PropertyList.Add('Wx_HelpText:HelpText');
-  wx_PropertyList.Add('Wx_ToolTips:ToolTips');
-  wx_PropertyList.Add('Wx_Hidden:Hidden');
-  wx_PropertyList.Add('Caption:Title');
-  wx_PropertyList.Add('Height:Height');
-  wx_PropertyList.Add('Width:Width');
-  wx_PropertyList.Add('Left:Left');
-  wx_PropertyList.Add('Top:Top');
-  wx_PropertyList.Add('Font:Font');
-
-  wx_PropertyList.Add('Wx_GeneralStyle:GeneralStyle');
-  wx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-  wx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-  wx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-  wx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-  wx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  wx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  wx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  wx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-  wx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-  wx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-  wx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-  wx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-  wx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
-  wx_PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
-  wx_PropertyList.Add('wxFULL_REPAINT_ON_RESIZE:wxFULL_REPAINT_ON_RESIZE');
-
-  wx_PropertyList.Add('Wx_DialogStyle:DialogStyle');
-  wx_PropertyList.Add('wxCAPTION:wxCAPTION');
-  wx_PropertyList.Add('wxNO_3D:wxNO_3D');
-  wx_PropertyList.Add('wxRESIZE_BORDER:wxRESIZE_BORDER');
-  wx_PropertyList.Add('wxSYSTEM_MENU:wxSYSTEM_MENU');
-  wx_PropertyList.Add('wxTHICK_FRAME:wxTHICK_FRAME');
-  wx_PropertyList.Add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
-  wx_PropertyList.Add('wxDIALOG_NO_PARENT:wxDIALOG_NO_PARENT');
-  wx_PropertyList.Add('wxDIALOG_EX_CONTEXTHELP:wxDIALOG_EX_CONTEXTHELP');
-  wx_PropertyList.Add('wxMINIMIZE_BOX:wxMINIMIZE_BOX');
-  wx_PropertyList.Add('wxMAXIMIZE_BOX:wxMAXIMIZE_BOX');
-  wx_PropertyList.Add('wxCLOSE_BOX:wxCLOSE_BOX');
-  wx_PropertyList.Add('Wx_Name:Name');
-  wx_PropertyList.Add('Wx_ICON:Icon');
-
+    wx_PropertyList.Add('Wx_DialogStyle:Dialog Style');
+    wx_PropertyList.Add('wxCAPTION:wxCAPTION');
+    wx_PropertyList.Add('wxNO_3D:wxNO_3D');
+    wx_PropertyList.Add('wxRESIZE_BORDER:wxRESIZE_BORDER');
+    wx_PropertyList.Add('wxSYSTEM_MENU:wxSYSTEM_MENU');
+    wx_PropertyList.Add('wxTHICK_FRAME:wxTHICK_FRAME');
+    wx_PropertyList.Add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
+    wx_PropertyList.Add('wxDIALOG_NO_PARENT:wxDIALOG_NO_PARENT');
+    wx_PropertyList.Add('wxDIALOG_EX_CONTEXTHELP:wxDIALOG_EX_CONTEXTHELP');
+    wx_PropertyList.Add('wxMINIMIZE_BOX:wxMINIMIZE_BOX');
+    wx_PropertyList.Add('wxMAXIMIZE_BOX:wxMAXIMIZE_BOX');
+    wx_PropertyList.Add('wxCLOSE_BOX:wxCLOSE_BOX');
+    wx_PropertyList.Add('Wx_Name:Name');
+    wx_PropertyList.Add('Wx_ICON:Icon');
   except
-
-  wx_PropertyList.Free;
-  raise;
-
+    wx_PropertyList.Free;
+    raise;
   end;
-
 end;
 
 procedure TfrmNewForm.SetFrameProperties();
 begin
+  //Free the old property list
+  if Assigned(wx_PropertyList) then
+     wx_PropertyList.Free;
 
+  //Create the new one
   wx_PropertyList := TStringList.Create;
-  wx_PropertyList.Add('Wx_IDName:IDName');
-  wx_PropertyList.Add('Wx_IDValue:IDValue');
+
+  wx_PropertyList.Add('Wx_SizeToContents:Size to Contents');
+  wx_PropertyList.Add('Wx_IDName:ID Name');
+  wx_PropertyList.Add('Wx_IDValue:ID Value');
   wx_PropertyList.Add('Wx_Class:Class');
   wx_PropertyList.Add('Wx_Center:Center');
-  wx_PropertyList.Add('Wx_HelpText:HelpText');
-  wx_PropertyList.Add('Wx_ToolTips:ToolTips');
+  wx_PropertyList.Add('Wx_HelpText:Help Text');
+  wx_PropertyList.Add('Wx_ToolTips:Tooltip');
   wx_PropertyList.Add('Wx_Hidden:Hidden');
   wx_PropertyList.Add('Caption:Title');
   wx_PropertyList.Add('Height:Height');
@@ -830,7 +830,7 @@ begin
   wx_PropertyList.Add('Top:Top');
   wx_PropertyList.Add('Font:Font');
 
-  wx_PropertyList.Add('Wx_GeneralStyle:GeneralStyle');
+  wx_PropertyList.Add('Wx_GeneralStyle:General Style');
   wx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
   wx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
   wx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
@@ -847,7 +847,7 @@ begin
   wx_PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
   wx_PropertyList.Add('wxFULL_REPAINT_ON_RESIZE:wxFULL_REPAINT_ON_RESIZE');
 
-  wx_PropertyList.Add('Wx_DialogStyle:FrameStyle');
+  wx_PropertyList.Add('Wx_DialogStyle:Frame Style');
   wx_PropertyList.Add('wxCAPTION:wxCAPTION');
   wx_PropertyList.Add('wxNO_3D:wxNO_3D');
   wx_PropertyList.Add('wxRESIZE_BORDER:wxRESIZE_BORDER');
@@ -1179,12 +1179,12 @@ end;
 
 function TfrmNewForm.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := 0;
 end;
 
 procedure TfrmNewForm.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  //Do nothing, stretch factor doesn't apply to TLWs!
 end;
 
 function TfrmNewForm.GetEventList: TStringList;
@@ -1424,7 +1424,6 @@ var
   I, J, MaxToolWidth, MaxToolHt, MaxSepValue: integer;
   strLst: TStringList;
   isSizerAvailable: boolean;
-
 begin
   strLst := TStringList.Create;
 
@@ -1463,17 +1462,12 @@ begin
           strLst.add(Format('%s->SetToolSeparation(%d);',
             [self.Components[i].Name, MaxSepValue]));
         strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
-        strLst.add(Format('this->SetToolBar(%s);', [self.Components[i].Name]));
+        strLst.add(Format('SetToolBar(%s);', [self.Components[i].Name]));
       end;
 
       if IsControlWxStatusBar(TControl(Components[i])) then
-        strLst.add(Format('this->SetStatusBar(%s);', [self.Components[i].Name]))
-      //malcolm             if (TWinControl(Components[i]).Controls[J] is TWxScrollBar) then
-      //malcolm            else
-      //strLst.add(Format('%s->SetFieldsCount(%d);',[self.Components[i].Name]));
-      ;
-    end// for
-  ;
+        strLst.add(Format('SetStatusBar(%s);', [self.Components[i].Name]));
+    end;
 
   isSizerAvailable := False;
   for I := 0 to self.ComponentCount - 1 do // Iterate
@@ -1483,31 +1477,34 @@ begin
       break;
     end;
 
-  if isSizerAvailable then
+  strLst.add(Format('SetTitle(%s);', [GetCppString(self.Caption)]));
+
+  if assigned(Wx_ICON) then
+    if Wx_ICON.Bitmap.Handle = 0 then
+      strLst.add('SetIcon(wxNullIcon);')
+    else
+    begin
+      strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +
+        self.Wx_Name + '_XPM' + ');');
+      strLst.add('SetIcon(' + self.Wx_Name + '_XPM' + ');');
+    end;
+
+  if self.Wx_Center then
+    strLst.add('Center();');
+
+  if trim(self.Wx_ToolTips) <> '' then
+    strLst.add(Format('SetToolTip(%s);', [GetCppString(self.Wx_ToolTips)]));
+
+  if isSizerAvailable and Wx_SizeToContents then
   begin
+    if strLst.Count <> 0 then
+      strLst.add('');
     strLst.add('GetSizer()->Fit(this);');
     strLst.add('GetSizer()->SetSizeHints(this);');
   end
   else
-    strLst.add(Format('this->SetSize(%d,%d,%d,%d);', [self.left, self.top,
+    strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top,
       self.Width, self.Height]));
-
-  strLst.add(Format('this->SetTitle(%s);', [GetCppString(self.Caption)]));
-
-  if self.Wx_Center then
-    strLst.add('this->Center();');
-
-  if assigned(Wx_ICON) then
-    if Wx_ICON.Bitmap.Handle = 0 then
-      strLst.add('this->SetIcon(wxNullIcon);')
-    else begin
-      strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +
-        self.Wx_Name + '_XPM' + ');');
-      strLst.add('this->SetIcon(' + self.Wx_Name + '_XPM' + ');');
-    end;
-
-  if trim(self.Wx_ToolTips) <> '' then
-    strLst.add(Format('this->SetToolTip(%s);', [GetCppString(self.Wx_ToolTips)]));
 
   Result := strLst.Text;
   strLst.Destroy;
@@ -1583,19 +1580,16 @@ end;
 
 procedure TfrmNewForm.CreateInitVars;
 begin
-  //intControlMaxValue:=1001;
-  Wx_IDName   := 'ID_DIALOG1';
-  Wx_IDValue  := 1000;
-  Wx_Class    := 'wxDialog';
-  Caption     := 'New Project';
-  Wx_Center   := False;
-  Wx_ToolTips := '';
-  Wx_Hidden   := False;
-
-  self.OldCreateOrder := True;
-
-  FWx_ICON := TPicture.Create;
-
+  OldCreateOrder    := True;
+  Caption           := 'New Project';
+  Wx_IDName         := 'ID_DIALOG1';
+  Wx_IDValue        := 1000;
+  Wx_Class          := 'wxDialog';
+  Wx_Center         := False;
+  Wx_ToolTips       := '';
+  Wx_Hidden         := False;
+  Wx_SizeToContents := True;
+  Wx_Icon           := TPicture.Create;
   SetDialogProperties();
 
   FWx_EventList := TStringList.Create;
@@ -1649,9 +1643,6 @@ begin
   FWx_EventList.add('  EVT_MENU_HIGHLIGHT_ALL :OnMenuHightLightAll');
   FWx_EventList.add('  EVT_MOUSEWHEEL :OnMouseWheel');
   FWx_EventList.add('  EVT_MOUSE_EVENTS :OnMouseEvents');
-
-  //FWx_EventList.add('  EVT_UPDATE_UI:OnUpdateUI');
-
 end;
 
 procedure TfrmNewForm.FormCreate(Sender: TObject);
@@ -1701,11 +1692,8 @@ end;
 
 procedure TfrmNewForm.FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
 begin
- {$IFDEF WX_BUILD}
   // Tony Reina 24 July 2005 - I don't think this procedure ever gets called.
   //MainForm.ELDesigner1KeyDown(Sender,Key, Shift);
-
-{$ENDIF}
 end;
 
 function TfrmNewForm.GetFGColor: string;
