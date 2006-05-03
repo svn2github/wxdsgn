@@ -64,8 +64,7 @@ begin
     ControlListBox.Items.Clear;
     for I := 0 to FMainControl.ControlCount - 1 do    // Iterate
     begin
-        if FMainControl.Controls[i].Name <> '' then
-            ControlListBox.AddItem(FMainControl.Controls[i].Name, FMainControl.Controls[i]);
+      ControlListBox.AddItem(FMainControl.Controls[i].Name, FMainControl.Controls[i]);
     end;
 end;
 
