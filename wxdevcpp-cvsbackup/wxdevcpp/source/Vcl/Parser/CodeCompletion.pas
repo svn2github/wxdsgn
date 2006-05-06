@@ -492,7 +492,7 @@ begin
     Result := -1;
 
   // after that, consider string comparison
-  if Result = 0 then
+  if (Result = 0) and (Item1 <> nil) and (Item2 <> nil) then
     Result := AnsiCompareText(PStatement(Item1)^._ScopelessCmd, PStatement(Item2)^._ScopelessCmd);
 end;
 
