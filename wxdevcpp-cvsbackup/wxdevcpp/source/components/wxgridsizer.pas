@@ -368,7 +368,7 @@ var
 begin
 
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('wxGridSizer* %s = new wxGridSizer(%d,%d,%d,%d);',
+    Format('%s = new wxGridSizer(%d,%d,%d,%d);',
     [self.Name, self.rows, self.columns, self.rowSpacing, self.columnSpacing]);
   if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent))) then
   begin

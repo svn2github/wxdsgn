@@ -360,7 +360,7 @@ var
   parentName:  string;
 begin
 
-  Result := Format('wxFlexGridSizer* %s = new wxFlexGridSizer(%d,%d,%d,%d);',
+  Result := Format('%s = new wxFlexGridSizer(%d,%d,%d,%d);',
     [self.Name, self.rows, self.columns, self.rowSpacing, self.columnSpacing]);
   if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent))) then
   begin

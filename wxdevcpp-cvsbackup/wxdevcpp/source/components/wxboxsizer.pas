@@ -340,7 +340,7 @@ begin
   else
     strOrientation := 'wxHORIZONTAL';
 
-  Result := Format('wxBoxSizer* %s = new wxBoxSizer(%s);', [self.Name, strOrientation]);
+  Result := Format('%s = new wxBoxSizer(%s);', [self.Name, strOrientation]);
 
   if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent))) then
   begin
