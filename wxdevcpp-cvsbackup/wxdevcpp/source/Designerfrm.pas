@@ -85,6 +85,7 @@ type
 
     FWx_Name: string;
     FWx_ICON: TPicture;
+    FWx_StretchFactor: integer;
     FWx_ProxyBGColorString: TWxColorString;
     FWx_ProxyFGColorString: TWxColorString;
     FWxDesignerType: TWxDesignerType;
@@ -106,6 +107,8 @@ type
       Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
     property Wx_DialogStyle: TWxDlgStyleSet
       Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
+    property Wx_StretchFactor: integer Read FWx_StretchFactor
+      Write FWx_StretchFactor default 0;
     property Wx_ProxyBGColorString: TWxColorString
       Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
     property Wx_ProxyFGColorString: TWxColorString
@@ -804,6 +807,7 @@ begin
     wx_PropertyList.Free;
     raise;
   end;
+
 end;
 
 procedure TfrmNewForm.SetFrameProperties();
@@ -1424,6 +1428,7 @@ var
   I, J, MaxToolWidth, MaxToolHt, MaxSepValue: integer;
   strLst: TStringList;
   isSizerAvailable: boolean;
+
 begin
   strLst := TStringList.Create;
 
@@ -1478,7 +1483,7 @@ begin
     end;
 
   strLst.add(Format('SetTitle(%s);', [GetCppString(self.Caption)]));
-
+  
   if assigned(Wx_ICON) then
     if Wx_ICON.Bitmap.Handle = 0 then
       strLst.add('SetIcon(wxNullIcon);')
@@ -1489,22 +1494,23 @@ begin
       strLst.add('SetIcon(' + self.Wx_Name + '_XPM' + ');');
     end;
 
-  if self.Wx_Center then
-    strLst.add('Center();');
-
   if trim(self.Wx_ToolTips) <> '' then
     strLst.add(Format('SetToolTip(%s);', [GetCppString(self.Wx_ToolTips)]));
 
-  if isSizerAvailable and Wx_SizeToContents then
+  if isSizerAvailable then
   begin
     if strLst.Count <> 0 then
       strLst.add('');
     strLst.add('GetSizer()->Fit(this);');
-    strLst.add('GetSizer()->SetSizeHints(this);');
+    if Wx_SizeToContents then
+        strLst.add('GetSizer()->SetSizeHints(this);');
   end
   else
     strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top,
       self.Width, self.Height]));
+      
+  if self.Wx_Center then
+    strLst.add('Center();');
 
   Result := strLst.Text;
   strLst.Destroy;
