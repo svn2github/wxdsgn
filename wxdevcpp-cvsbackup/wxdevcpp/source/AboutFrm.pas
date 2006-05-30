@@ -57,7 +57,6 @@ type
     FishImage: TImage;
     banner: TImage;
     XPMenu: TXPMenu;
-    Image2: TImage;
     wxdevcopyright: TLabel;
     wxdevcpp_websitelbl: TLabel;
     wxdevcpp_website: TLabel;
