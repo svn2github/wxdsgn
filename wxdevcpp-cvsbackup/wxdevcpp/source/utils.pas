@@ -77,13 +77,12 @@ function iswxForm(FileName: string): Boolean;
 function isRCExt(FileName: string): boolean;
 function isXRCExt(FileName: string): boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
-{$ENDIF}
 
-{Guru: Functions}
 function DuplicateAppInstWdw: HWND;
 function SwitchToPrevInst(Wnd: HWND): Boolean;
-
-{Guru: End Functions}
+function ParseCommandLineArguments(cmdLine: string) : TStringList;
+function SubstituteMakeParams(str: string) : string;
+{$ENDIF}
 
 function IsWinNT : boolean;
 
@@ -1088,6 +1087,76 @@ begin
       exit;
     end;
 end;
+
+{$IfDef WX_BUILD}
+function ParseCommandLineArguments(cmdLine: string) : TStringList;
+var
+  i: integer;
+  tmp: string;
+  inquote: boolean;
+begin
+  Result := TStringList.Create;
+  inquote := false;
+
+  for i := 1 to Length(cmdLine) do
+  begin
+    if cmdLine[i] = '"' then
+      inquote := not inquote
+    else if cmdLine[i] = ' ' then
+      if not inquote then
+      begin
+        Result.Add(tmp);
+        tmp := '';
+      end
+      else
+        tmp := tmp + cmdLine[i]
+    else
+      tmp := tmp + cmdLine[i];
+  end;
+
+  if tmp <> '' then
+    Result.Add(tmp);
+end;
+
+function SubstituteMakeParams(str: string) : string;
+var
+  MakeVar: String;
+  MakeArgs: TStringList;
+  Matched: Boolean;
+  Idx: integer;
+  i: integer;
+begin
+  Result := str;
+  MakeArgs := ParseCommandLineArguments(devCompiler.MakeOpts);
+
+  while Pos('$(', Result) <> 0 do
+  begin
+    MakeVar := Copy(Result, Pos('$(', Result) + 2, Pos(')', Result) - Pos('$(', Result) - 2);
+    Matched := false;
+
+    for i := 0 to MakeArgs.Count - 1 do
+    begin
+      //Get the name/value pair
+      Idx := Pos('=', MakeArgs[i]);
+      if Copy(MakeArgs[i], 0, Idx - 1) = MakeVar then
+      begin
+        Matched := true;
+        Result := AnsiReplaceStr(Result, '$(' + MakeVar + ')', Copy(MakeArgs[i], Idx + 1, Length(MakeArgs[i])));
+        Continue;
+      end;
+    end;
+
+    //Replace with an empty string if we havn't found the parameter
+    if not Matched then
+    begin
+      Result := AnsiReplaceStr(Result, '$(' + MakeVar + ')', '');
+    end;
+  end;
+
+  //Free the memory
+  MakeArgs.Destroy;
+end;
+{$EndIf}
 
 end.
 
