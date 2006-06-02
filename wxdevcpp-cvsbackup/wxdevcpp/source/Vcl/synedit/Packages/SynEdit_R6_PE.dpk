@@ -66,6 +66,7 @@ contains
   SynExportHTML in '..\Source\SynExportHTML.pas',
   SynExportRTF in '..\Source\SynExportRTF.pas',
   SynHighlighterCpp in '..\Source\SynHighlighterCpp.pas',
+  SynHighlighterXML in '..\Source\SynHighlighterXML.pas',
   SynHighlighterMulti in '..\Source\SynHighlighterMulti.pas',
   SynHighlighterRC in '..\Source\SynHighlighterRC.pas',
   SynMacroRecorder in '..\Source\SynMacroRecorder.pas',
