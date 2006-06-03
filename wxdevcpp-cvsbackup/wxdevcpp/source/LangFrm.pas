@@ -143,11 +143,12 @@ begin
   GetUserName(s, d);
 {$IFDEF BETAVERSION}
   MessageBox(Self.Handle,
-    PChar('This is a beta version of wx-devcpp.'
-              +'Please report bugs at https://sourceforge.net/tracker/?group_id=95606&atid=611982. We provide updates often, so be sure to check for them in Tools menu, Check for Updates/Packages.'+ #13#13
-              +'Your config files will be stored in ' +  ExtractFileDir(devData.INIFile) + #13
-              +'Otherwise, you can pass the following parameter to wx-devcpp : -c c:\config_file_directory'),
-    PChar('Beta version Notice'), MB_OK);
+             PChar('This is a beta version of wxDev-C++.'#13#13
+             +WrapText('Please report bugs to https://sourceforge.net/tracker/?group_id=95606&atid=611982.', 85) +#13
+             +WrapText('Your configuration files will be stored in ' +  ExtractFileDir(devData.INIFile) + '.', 85) + #13#13
+             +'You can change the directory in Tools > Environment Options > Files & Directories or ' + #13
+             +'pass -c "Configuration File Directory" when starting wxDev-C++.'),
+             PChar('Beta version notice'), MB_OK);
 {$ENDIF}
 end;
 
