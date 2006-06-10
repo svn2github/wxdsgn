@@ -24,13 +24,6 @@ program devcpp;
 {%File 'LangIDs.inc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}
 
-{$IFDEF WIN32}
-{$R 'webupdate\selfupdater.res' 'webupdate\selfupdater.rc'}
-{$ENDIF}
-{$IFDEF LINUX}
-{$R 'webupdate/selfupdater.res' 'webupdate/selfupdater.rc'}
-{$ENDIF}
-
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
