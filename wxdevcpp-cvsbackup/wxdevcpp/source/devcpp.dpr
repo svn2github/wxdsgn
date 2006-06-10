@@ -185,7 +185,6 @@ uses
   uFileWatch in 'uFileWatch.pas',
   wxsplitterwindow in 'components\wxsplitterwindow.pas',
   DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
-  SynHighlighterXML in 'components\SynHighlighterXML.pas',
   CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas',
   wxRadioBox in 'components\wxRadioBox.pas',
   wxDatePickerCtrl in 'components\wxDatePickerCtrl.pas';
