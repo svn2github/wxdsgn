@@ -3,21 +3,24 @@ unit UPicEdit;
 interface
 
 uses
-   GraphicEX,Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, ExtDlgs,jpeg;
+  GraphicEX, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, Buttons, ExtDlgs,jpeg, XPMenu;
 
 type
   TPictureEdit = class(TForm)
-    Bevel1: TBevel;
-    btnOK: TBitBtn;
     btnCancel: TBitBtn;
+    OpenDialog1: TOpenPictureDialog;
+    grpImage: TGroupBox;
     btnLoad: TButton;
     btnSave: TButton;
-    btnClear: TButton;
     Panel1: TPanel;
     Image1: TImage;
-    OpenDialog1: TOpenPictureDialog;
+    btnClear: TButton;
+    btnOK: TBitBtn;
+    XPMenu1: TXPMenu;
     procedure btnLoadClick(Sender: TObject);
+    procedure btnClearClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,8 +32,14 @@ var
 
 implementation
 
-uses wxutils;
+uses wxutils, devCfg;
 {$R *.DFM}
+
+procedure TPictureEdit.FormCreate(Sender: TObject);
+begin
+  if devData.XPTheme then
+    XPMenu1.Active := true;
+end;
 
 procedure TPictureEdit.btnLoadClick(Sender: TObject);
 var
@@ -125,6 +134,15 @@ begin
         bmpObj.destroy;
     end;
 
+end;
+
+procedure TPictureEdit.btnClearClick(Sender: TObject);
+var
+    bmpObj: TBitmap;
+begin
+    bmpObj := TBitmap.Create;
+    Image1.Picture.Bitmap.Assign(bmpObj);
+    bmpObj.Destroy;
 end;
 
 end.

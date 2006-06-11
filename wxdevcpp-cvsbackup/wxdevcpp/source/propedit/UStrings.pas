@@ -4,42 +4,56 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls;
+  StdCtrls, Buttons, ExtCtrls, XPMenu;
 
 type
   TStringsForm = class(TForm)
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
     btnHelp: TBitBtn;
-    Label1: TLabel;
-    Memo1: TMemo;
-    procedure Memo1Change(Sender: TObject);
+    grpMemo: TGroupBox;
+    Memo: TMemo;
+    XPMenu: TXPMenu;
+
+    procedure MemoChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    OnContentsChanged: TNotifyEvent;
   end;
 
 var
   StringsForm: TStringsForm;
 
 implementation
+uses
+  devCfg;
 
 {$R *.DFM}
 
-procedure TStringsForm.Memo1Change(Sender: TObject);
+procedure TStringsForm.MemoChange(Sender: TObject);
+var
+  lbl: string;
 begin
-    Label1.Caption:=IntToStr(Memo1.Lines.Count)+'Line';
+    if Memo.Lines.Count = 1 then
+        lbl := ' Line'
+    else
+        lbl := ' Lines';
+    
+    grpMemo.Caption := IntToStr(Memo.Lines.Count) + lbl;
+
+    //Broadcast the event
+    if Assigned(OnContentsChanged) then
+        OnContentsChanged(Sender);
 end;
 
 procedure TStringsForm.FormShow(Sender: TObject);
 begin
-    Memo1.SetFocus;
+    Memo.SetFocus;
     if devData.XPTheme then
-      XPMenu.Active := true
-    else
-      XPMenu.Active := false;
+        XPMenu.Active := true;
 end;
 
 end.

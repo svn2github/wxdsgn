@@ -109,25 +109,6 @@ object StatusBarForm: TStatusBarForm
       Text = '50'
     end
   end
-  object Button1: TButton
-    Left = 312
-    Top = 171
-    Width = 75
-    Height = 25
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 2
-    OnClick = Button1Click
-  end
-  object Button2: TButton
-    Left = 397
-    Top = 171
-    Width = 75
-    Height = 25
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 3
-  end
   object StatusBarObj: TStatusBar
     Left = 0
     Top = 201
@@ -135,6 +116,22 @@ object StatusBarForm: TStatusBarForm
     Height = 19
     Panels = <>
     SimplePanel = False
+  end
+  object btnOK: TBitBtn
+    Left = 322
+    Top = 172
+    Width = 75
+    Height = 25
+    TabOrder = 3
+    Kind = bkOK
+  end
+  object btnCancel: TBitBtn
+    Left = 398
+    Top = 172
+    Width = 75
+    Height = 25
+    TabOrder = 4
+    Kind = bkCancel
   end
   object XPMenu: TXPMenu
     DimLevel = 30

@@ -14,8 +14,6 @@ type
     GroupBox2: TGroupBox;
     Label2: TLabel;
     Label4: TLabel;
-    Button1: TButton;
-    Button2: TButton;
     txtCaption: TEdit;
     txtWidth: TEdit;
     btMoveDown: TButton;
@@ -25,8 +23,9 @@ type
     lbxColumnNames: TListBox;
     StatusBarObj: TStatusBar;
     XPMenu: TXPMenu;
+    btnOK: TBitBtn;
+    btnCancel: TBitBtn;
     procedure btAddClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
     procedure lbxColumnNamesClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -46,11 +45,14 @@ var
   StatusBarForm: TStatusBarForm;
 
 implementation
-
 {$R *.DFM}
+uses
+  devCfg;
 
 procedure TStatusBarForm.FormCreate(Sender: TObject);
 begin
+  if devData.XPTheme then
+    XPMenu.Active := true;
   lastIdx := -1;
 end;
 
@@ -80,24 +82,21 @@ begin
   lastIdx := lbxColumnNames.ItemIndex;
 end;
 
-procedure TStatusBarForm.Button1Click(Sender: TObject);
-begin
-  Close;
-  ModalResult := mrOk;
-end;
-
 procedure TStatusBarForm.btDeleteClick(Sender: TObject);
 var
   intColPos: integer;
 begin
-  if lbxColumnNames.ItemIndex = -1 then
-    Exit;
   intColPos := lbxColumnNames.ItemIndex;
+  if intColPos = -1 then
+    Exit;
+
   lbxColumnNames.DeleteSelected;
   StatusBarObj.Panels.Delete(intColPos);
 
-  if lbxColumnNames.Items.Count > 0 then
-    lbxColumnNames.ItemIndex := 0;
+  if lbxColumnNames.ItemIndex > lbxColumnNames.Items.Count then
+    lbxColumnNames.ItemIndex := 0
+  else
+    lbxColumnNames.ItemIndex := -1;
   lbxColumnNamesClick(lbxColumnNames);
 end;
 
@@ -106,7 +105,8 @@ begin
   //Should we enable the buttons?
   btDelete.Enabled   := lbxColumnNames.ItemIndex <> -1;
   btMoveUp.Enabled   := lbxColumnNames.ItemIndex > 0;
-  btMoveDown.Enabled := lbxColumnNames.ItemIndex < lbxColumnNames.Count - 1;
+  btMoveDown.Enabled := (lbxColumnNames.ItemIndex <> -1) and
+                        (lbxColumnNames.ItemIndex <> lbxColumnNames.Count - 1);
 
   if lbxColumnNames.ItemIndex = -1 then
   begin

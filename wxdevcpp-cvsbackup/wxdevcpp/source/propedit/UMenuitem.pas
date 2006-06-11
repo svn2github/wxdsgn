@@ -10,7 +10,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, WxCustomMenuItem, DateUtils, xprocs, wxUtils,
-  UPicEdit, Spin, strUtils, ComCtrls;
+  UPicEdit, Spin, strUtils, ComCtrls, XPMenu;
 
 type
   TMenuItemForm = class(TForm)
@@ -38,7 +38,6 @@ type
     Delete1: TMenuItem;
     N1: TMenuItem;
     CreateSubmenu1: TMenuItem;
-    MainMenu1: TMainMenu;
     GroupBox3: TGroupBox;
     Label4: TLabel;
     cbOnMenu: TComboBox;
@@ -49,13 +48,15 @@ type
     Label10: TLabel;
     btBrowse: TButton;
     btApply: TButton;
-    bmpMenuImage: TImage;
     btEdit: TButton;
     Image1: TImage;
     Button3: TButton;
     txtIDName: TComboBox;
     btNewOnMenu: TButton;
     btNewUpdateUI: TButton;
+    pnlMenuImage: TPanel;
+    bmpMenuImage: TImage;
+    XPMenu: TXPMenu;
     procedure btnInsertClick(Sender: TObject);
     procedure btnSubmenuClick(Sender: TObject);
     procedure txtCaptionKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
@@ -113,10 +114,9 @@ var
   MenuItemForm: TMenuItemForm;
 
 implementation
-
 {$R *.DFM}
 
-uses Main, CreateOrderFm;
+uses Main, CreateOrderFm, devCfg;
 
 {$IFDEF DELPHI3}
 constructor TMenuItemForm.Create(AOwner: TComponent{; Designer: TFormDesigner});
@@ -211,13 +211,13 @@ end;
 procedure TMenuItemForm.DisableUpdate;
 begin
   btApply.Enabled    := False;
-  btEdit.Enabled     := True;
   tvMenuItem.Enabled := True;
   btnSubmenu.Enabled := True;
   btnInsert.Enabled  := True;
-  btnDelete.Enabled  := True;
   btnOK.Enabled      := True;
   btnCancel.Enabled  := True;
+  btEdit.Enabled     := tvMenuItem.Selected <> nil;
+  btnDelete.Enabled  := tvMenuItem.Selected <> nil;
 
   txtCaption.Enabled   := False;
   txtHint.Enabled      := False;
@@ -512,14 +512,14 @@ procedure TMenuItemForm.FormCreate(Sender: TObject);
 var
   strLst: TStringList;
 begin
-  FSubMenuItemCreationClicked := False;
+  if devData.XPTheme then
+    XPMenu.Active := true;
   tvMenuItem.Items.Clear;
+  FSubMenuItemCreationClicked := False;
   txtIDName.Items.Assign(MainForm.strStdwxIDList);
 
   FMenuItems := TWxCustomMenuItem.Create(nil);
   FMaxID     := 2000;
-  //if FDesigner <> nil then
-  //   FDesigner.GetComponentNames(GetTypeData(TypeInfo(TMenuItem)), AddMenuClass);
   strLst     := TStringList.Create;
   MainForm.GetFunctionsFromSource(MainForm.GetCurrentClassName, strLst);
 
@@ -530,12 +530,17 @@ end;
 
 procedure TMenuItemForm.tvMenuItemChange(Sender: TObject; Node: TTreeNode);
 begin
+  //Update the button states
+  btEdit.Enabled     := Node <> nil;
+  btnDelete.Enabled  := Node <> nil;
+
+  //Exit if we don't have a selected node
   if Node = nil then
     Exit;
+
+  //Otherwise update the editor data
   with TWxCustomMenuItem(Node.Data) do
   begin
-
-    //txtName.Text:= Name;
     txtCaption.Text := Wx_Caption;
     txtIDValue.Text := IntToStr(Wx_IDValue);
     txtIDName.Text  := Wx_IDName;

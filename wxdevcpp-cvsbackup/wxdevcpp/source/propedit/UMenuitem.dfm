@@ -12,7 +12,6 @@ object MenuItemForm: TMenuItemForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  Menu = MainMenu1
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
@@ -23,7 +22,7 @@ object MenuItemForm: TMenuItemForm
     Left = 264
     Top = 8
     Width = 316
-    Height = 214
+    Height = 218
     Caption = 'Properties'
     TabOrder = 0
     object Label1: TLabel
@@ -35,64 +34,56 @@ object MenuItemForm: TMenuItemForm
     end
     object Label2: TLabel
       Left = 10
-      Top = 44
+      Top = 46
       Width = 36
       Height = 13
       Caption = 'Caption'
     end
     object Label3: TLabel
       Left = 10
-      Top = 114
+      Top = 118
       Width = 43
       Height = 13
       Caption = 'Checked'
     end
     object Label5: TLabel
       Left = 10
-      Top = 136
+      Top = 142
       Width = 39
       Height = 13
       Caption = 'Enabled'
     end
     object Label8: TLabel
       Left = 10
-      Top = 159
+      Top = 166
       Width = 19
       Height = 13
       Caption = 'Hint'
     end
     object Label12: TLabel
       Left = 10
-      Top = 65
+      Top = 70
       Width = 42
       Height = 13
       Caption = 'ID Name'
     end
     object Label7: TLabel
       Left = 10
-      Top = 89
+      Top = 94
       Width = 41
       Height = 13
       Caption = 'ID Value'
     end
     object Label10: TLabel
       Left = 10
-      Top = 185
+      Top = 190
       Width = 37
       Height = 13
       Caption = 'Bitmaps'
     end
-    object bmpMenuImage: TImage
-      Left = 67
-      Top = 182
-      Width = 33
-      Height = 25
-      Center = True
-      Transparent = True
-    end
     object Image1: TImage
       Left = 189
-      Top = 182
+      Top = 186
       Width = 33
       Height = 25
       Center = True
@@ -118,7 +109,7 @@ object MenuItemForm: TMenuItemForm
     end
     object txtCaption: TEdit
       Left = 67
-      Top = 40
+      Top = 42
       Width = 240
       Height = 21
       Enabled = False
@@ -129,7 +120,7 @@ object MenuItemForm: TMenuItemForm
     end
     object cbChecked: TComboBox
       Left = 67
-      Top = 110
+      Top = 114
       Width = 74
       Height = 21
       Style = csDropDownList
@@ -144,7 +135,7 @@ object MenuItemForm: TMenuItemForm
     end
     object cbEnabled: TComboBox
       Left = 67
-      Top = 133
+      Top = 138
       Width = 74
       Height = 21
       Style = csDropDownList
@@ -159,7 +150,7 @@ object MenuItemForm: TMenuItemForm
     end
     object txtHint: TEdit
       Left = 67
-      Top = 156
+      Top = 162
       Width = 240
       Height = 21
       Enabled = False
@@ -167,7 +158,7 @@ object MenuItemForm: TMenuItemForm
     end
     object txtIDValue: TEdit
       Left = 67
-      Top = 86
+      Top = 90
       Width = 240
       Height = 21
       Enabled = False
@@ -175,7 +166,7 @@ object MenuItemForm: TMenuItemForm
     end
     object btBrowse: TButton
       Left = 111
-      Top = 183
+      Top = 187
       Width = 45
       Height = 21
       Caption = 'Browse'
@@ -185,7 +176,7 @@ object MenuItemForm: TMenuItemForm
     end
     object Button3: TButton
       Left = 234
-      Top = 183
+      Top = 188
       Width = 45
       Height = 21
       Caption = 'Browse'
@@ -196,13 +187,29 @@ object MenuItemForm: TMenuItemForm
     end
     object txtIDName: TComboBox
       Left = 67
-      Top = 62
+      Top = 66
       Width = 240
       Height = 21
       Enabled = False
       ItemHeight = 13
       TabOrder = 2
       OnChange = txtIDNameChange
+    end
+    object pnlMenuImage: TPanel
+      Left = 67
+      Top = 186
+      Width = 33
+      Height = 23
+      BevelOuter = bvLowered
+      TabOrder = 9
+      object bmpMenuImage: TImage
+        Left = 0
+        Top = 0
+        Width = 33
+        Height = 23
+        Center = True
+        Transparent = True
+      end
     end
   end
   object GroupBox2: TGroupBox
@@ -214,9 +221,9 @@ object MenuItemForm: TMenuItemForm
     TabOrder = 1
     object tvMenuItem: TTreeView
       Left = 8
-      Top = 15
+      Top = 18
       Width = 235
-      Height = 263
+      Height = 255
       Hint = 
         'Left click, drag and drop to move item after drop point.'#13#10'Shift ' +
         '+ left click, then drag and drop to make item child of drop poin' +
@@ -254,7 +261,7 @@ object MenuItemForm: TMenuItemForm
     TabOrder = 3
   end
   object btnInsert: TButton
-    Left = 107
+    Left = 108
     Top = 298
     Width = 75
     Height = 25
@@ -268,6 +275,7 @@ object MenuItemForm: TMenuItemForm
     Width = 75
     Height = 25
     Caption = 'Delete'
+    Enabled = False
     TabOrder = 5
     OnClick = btnDeleteClick
   end
@@ -288,39 +296,39 @@ object MenuItemForm: TMenuItemForm
     Caption = 'Events'
     TabOrder = 7
     object Label4: TLabel
-      Left = 5
+      Left = 8
       Top = 19
       Width = 41
       Height = 13
       Caption = 'OnMenu'
     end
     object Label6: TLabel
-      Left = 4
+      Left = 8
       Top = 42
       Width = 60
       Height = 13
       Caption = 'OnUpdateUI'
     end
     object cbOnMenu: TComboBox
-      Left = 72
+      Left = 77
       Top = 15
-      Width = 170
+      Width = 160
       Height = 21
       Enabled = False
       ItemHeight = 13
       TabOrder = 0
     end
     object cbOnUpdateUI: TComboBox
-      Left = 72
+      Left = 77
       Top = 39
-      Width = 170
+      Width = 160
       Height = 21
       Enabled = False
       ItemHeight = 13
       TabOrder = 1
     end
     object btNewOnMenu: TButton
-      Left = 248
+      Left = 245
       Top = 14
       Width = 62
       Height = 23
@@ -330,7 +338,7 @@ object MenuItemForm: TMenuItemForm
       OnClick = btNewOnMenuClick
     end
     object btNewUpdateUI: TButton
-      Left = 248
+      Left = 245
       Top = 39
       Width = 62
       Height = 21
@@ -341,7 +349,7 @@ object MenuItemForm: TMenuItemForm
     end
   end
   object btApply: TButton
-    Left = 184
+    Left = 186
     Top = 298
     Width = 74
     Height = 25
@@ -356,6 +364,7 @@ object MenuItemForm: TMenuItemForm
     Width = 76
     Height = 25
     Caption = 'Edit'
+    Enabled = False
     TabOrder = 9
     OnClick = btEditClick
   end
@@ -377,7 +386,35 @@ object MenuItemForm: TMenuItemForm
       OnClick = CreateSubmenu1Click
     end
   end
-  object MainMenu1: TMainMenu
-    Left = 532
+  object XPMenu: TXPMenu
+    DimLevel = 30
+    GrayLevel = 10
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Color = clBtnFace
+    DrawMenuBar = False
+    IconBackColor = clBtnFace
+    MenuBarColor = clBtnFace
+    SelectColor = clHighlight
+    SelectBorderColor = clHighlight
+    SelectFontColor = clMenuText
+    DisabledColor = clInactiveCaption
+    SeparatorColor = clBtnFace
+    CheckedColor = clHighlight
+    IconWidth = 24
+    DrawSelect = True
+    UseSystemColors = True
+    UseDimColor = False
+    OverrideOwnerDraw = False
+    Gradient = False
+    FlatMenu = False
+    AutoDetect = False
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
+    Active = False
+    Left = 531
+    Top = 65535
   end
 end
