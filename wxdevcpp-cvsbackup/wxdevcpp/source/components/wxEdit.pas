@@ -18,11 +18,11 @@ unit WxEdit;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxSizerPanel, WxToolBar, JvEdit;
+  Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxSizerPanel, WxToolBar, UValidator, JvEdit;
 
 type
   TWxEdit = class(TJvEdit, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface,  IWxValidatorInterface)
   private
     { Private fields of TWxEdit }
     { Storage for property EVT_TEXT }
@@ -79,6 +79,7 @@ type
     FWx_Comments: TStrings;
     FWx_LHSValue : String;
     FWx_RHSValue : String;
+    FWx_ProxyValidatorString : TWxValidatorString;
 
     { Private methods of TWxEdit }
     { Method to set variable and property values and create objects }
@@ -106,6 +107,9 @@ type
     { Public methods of TWxEdit }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetValidatorString:TWxValidatorString;
+    procedure SetValidatorString(Value:TWxValidatorString);
+
     function GenerateControlIDs: string;
     function GenerateEnumControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
@@ -132,6 +136,9 @@ type
 
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetValidator:String;
+    procedure SetValidator(value:String);
 
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
@@ -185,6 +192,8 @@ type
 
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
+
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
     property Wx_StretchFactor: integer Read FWx_StretchFactor
       Write FWx_StretchFactor default 0;
@@ -218,6 +227,28 @@ begin
   RegisterComponents('wxWidgets', [TWxEdit]);
 end;
 
+function TWxEdit.GetValidatorString:TWxValidatorString;
+begin
+    Result := FWx_ProxyValidatorString;
+    Result.FstrValidatorValue := Wx_Validator;
+end;
+
+procedure TWxEdit.SetValidatorString(Value:TWxValidatorString);
+begin
+    FWx_ProxyValidatorString.FstrValidatorValue := Value.FstrValidatorValue;
+    Wx_Validator := Value.FstrValidatorValue;
+end;
+
+function TWxEdit.GetValidator:String;
+begin
+    Result := Wx_Validator;
+end;
+
+procedure TWxEdit.SetValidator(value:String);
+begin
+    Wx_Validator := value;
+end;
+
 { Method to set variable and property values and create objects }
 procedure TWxEdit.AutoInitialize;
 begin
@@ -236,6 +267,7 @@ begin
   defaultFGColor := self.font.color;
   BorderStyle    := bsSingle;
   FWx_Comments   := TStringList.Create;
+  FWx_ProxyValidatorString := TwxValidatorString.Create;
 
 end; { of AutoInitialize }
 
@@ -247,6 +279,7 @@ begin
   FWx_ProxyBGColorString.Destroy;
   FWx_ProxyFGColorString.Destroy;
   FWx_Comments.Destroy;
+  FWx_ProxyValidatorString.Destroy;
 end; { of AutoDestroy }
 
 { Read method for property Wx_EditStyle }
@@ -336,6 +369,8 @@ begin
   FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
   FWx_PropertyList.add('Wx_MaxLength :MaxLength ');
 
+  FWx_PropertyList.add('Wx_ProxyValidatorString : Validator');
+
   FWx_PropertyList.add('Wx_Enable :Enabled');
   FWx_PropertyList.add('Wx_Visible :Visible');
   FWx_PropertyList.add('Name : Name');
@@ -346,7 +381,6 @@ begin
   FWx_PropertyList.add('Text:Text');
 
   FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.add('Wx_Validator : Validator code');
 
   FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
   FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
@@ -503,12 +537,14 @@ begin
 
   strStyle := GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle);
 
-  if trim(self.FWx_Validator) <> '' then
+  
+
+  if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then
   begin
     if trim(strStyle) <> '' then
-      strStyle := ', ' + strStyle + ', ' + self.Wx_Validator
+      strStyle := ', ' + strStyle + ', ' + Wx_ProxyValidatorString.strValidatorValue
     else
-      strStyle := ', 0, ' + self.Wx_Validator;
+      strStyle := ', 0, ' + Wx_ProxyValidatorString.strValidatorValue;
 
     strStyle := strStyle + ', ' + GetCppString(Name);
 
@@ -698,7 +734,7 @@ end;
 procedure TWxEdit.Loaded;
 begin
   inherited Loaded;
-
+  BorderStyle    := bsSingle;
      { Perform any component setup that depends on the property
        values having been set }
 

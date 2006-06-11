@@ -12599,6 +12599,7 @@ initialization
     TJvInspectorColorEditItem.RegisterAsDefaultItem;
     TJvInspectorFileNameEditItem.RegisterAsDefaultItem;
     TJvInspectorStatusBarItem.RegisterAsDefaultItem;
+    TJvInspectorValidatorItem.RegisterAsDefaultItem;
 {$ENDIF}
 
 finalization

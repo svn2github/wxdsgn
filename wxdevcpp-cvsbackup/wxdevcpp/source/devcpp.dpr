@@ -139,6 +139,7 @@ uses
   WxStaticText in 'components\wxstatictext.pas',
   WxTreeCtrl in 'components\wxtreectrl.pas',
   UStatusbar in 'propedit\UStatusbar.pas' {StatusBarForm},
+  UValidator in 'propedit\UValidator.pas' {wxValidator},
   dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
   WXGridSizer in 'components\wxgridsizer.pas',
   WXBoxSizer in 'components\wxboxsizer.pas',

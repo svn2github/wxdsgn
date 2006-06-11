@@ -24,7 +24,7 @@ interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
-  UPicEdit, xprocs, DbugIntf, TypInfo, Menus, UStatusbar, JvInspector, version,
+  UPicEdit, xprocs, DbugIntf, TypInfo, Menus, UStatusbar, UValidator, JvInspector, version,
   DateUtils;
 
 const
@@ -40,6 +40,7 @@ const
   IDD_IWxStatusBarInterface: TGUID  = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
   IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
   IID_IWxVariableAssignmentInterface: TGUID  = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
+  IID_IWxValidatorInterface: TGUID  = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
 
 var
    StringFormat : string;
@@ -174,6 +175,12 @@ type
     ['{624949E8-E46C-4EF9-B4DA-BC8532617513}']
     function GetLHSVariableAssignment:String;
     function GetRHSVariableAssignment:String;
+  end;
+
+  IWxValidatorInterface = Interface
+    ['{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}']
+    function GetValidator:String;
+    procedure SetValidator(value:String);
   end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
@@ -360,6 +367,21 @@ type
     property strColorValue: string Read FstrColorValue Write FstrColorValue;
   end;
 
+  TWxValidatorString = class(TComponent)
+  public
+    FstrValidatorValue: string;
+    FValidatorType: Integer;
+    FFilterType: Integer;
+    FValidatorVarName:String;
+    constructor Create;
+    destructor destroy;
+  published
+    property strValidatorValue: string Read FstrValidatorValue Write FstrValidatorValue;
+    //property ValidatorType: Integer Read FValidatorType Write FValidatorType ;
+    //property FilterType: Integer Read FFilterType Write FFilterType ;
+    //property strValidatorVarName: string Read FValidatorVarName Write FValidatorVarName;
+  end;
+
   // Added 11 May 2005 - Tony
   TWxFileNameString = class
   public
@@ -476,6 +498,20 @@ type
     function GetDisplayValue: string; override;
     procedure SetDisplayValue(const Value: string); override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
+
+  TJvInspectorValidatorItem = class(TJvCustomInspectorItem)
+  protected
+    procedure ContentsChanged(Sender: TObject);
+    function GetDisplayValue: string; override;
+    procedure Edit; override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+    procedure SetDisplayValue(const Value: string); override;
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
   public
     class procedure RegisterAsDefaultItem;
   end;
@@ -629,6 +665,16 @@ implementation
 uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxToolButton,
   UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
   WxNonVisibleBaseComponent;
+
+constructor TWxValidatorString.Create;
+begin
+    inherited Create(nil);
+end;
+
+destructor TWxValidatorString.destroy;
+begin
+    inherited Destroy;
+end;
 
 function GetDateToString(dt:TDateTime):String;
 var
@@ -4605,6 +4651,82 @@ begin
     lbl.Caption := '1 line';
   if Assigned(OnContentsChanged) then
     OnContentsChanged(Sender);
+end;
+//=== {TJvInspectorValidatorItem } ===========================================
+constructor TJvInspectorValidatorItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+end;
+
+procedure TJvInspectorValidatorItem.SetFlags(const Value:
+TInspectorItemFlags);
+var
+ NewValue: TInspectorItemFlags;
+begin
+ NewValue := Value + [iifEditButton];
+ inherited SetFlags(NewValue);
+end;
+
+procedure TJvInspectorValidatorItem.ContentsChanged(Sender: TObject);
+var
+  Obj: TStrings;
+begin
+  Obj      := TStrings(Data.AsOrdinal);
+  Obj.Text := TMemo(Sender).Lines.Text;
+end;
+
+function TJvInspectorValidatorItem.GetDisplayValue: string;
+begin
+  Result := 'Edit Validator Items';
+end;
+
+procedure TJvInspectorValidatorItem.SetDisplayValue;
+begin
+
+end;
+
+
+class procedure TJvInspectorValidatorItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxValidatorString)));
+end;
+
+procedure TJvInspectorValidatorItem.Edit;
+var
+  ValidatorForm: TwxValidator;
+  wxValidatorstring : TWxValidatorString;
+    compIntf: IWxValidatorInterface;  
+begin
+
+wxValidatorString := TWxValidatorString(Data.AsOrdinal);
+
+  ValidatorForm := TwxValidator.Create(GetParentForm(Inspector));
+  try
+
+    ValidatorForm.SetValidatorString(wxValidatorString.strValidatorValue);
+
+    if ValidatorForm.ShowModal <> mrOk then
+      exit;
+
+    wxValidatorString.FstrValidatorValue := ValidatorForm.GetValidatorString;
+
+    if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
+      IID_IWxValidatorInterface, compIntf) then
+    begin
+      if AnsiSameText(Data.Name, 'Wx_ProxyValidatorString') then
+        compIntf.SetValidator(wxValidatorString.FstrValidatorValue);
+    end;
+
+    if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+      TJvInspector(GetInspector).OnDataValueChanged(nil, Data);
+
+  finally
+    ValidatorForm.Destroy;
+  end;
+
 end;
 
 //=== { TJvInspectorTStringsItem } ===========================================
