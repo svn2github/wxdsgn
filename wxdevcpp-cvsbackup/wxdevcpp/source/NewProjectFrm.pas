@@ -38,7 +38,6 @@ type
   TNewProjectForm = class(TForm)
     btnOk: TBitBtn;
     btnCancel: TBitBtn;
-    ImageList1: TImageList;
     ImageList: TImageList;
     TabsMain: TdevTabs;
     ProjView: TListView;
@@ -78,20 +77,14 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  MultiLangSupport, utils, datamod, FileCtrl, devcfg, version,
-  project, prjtypes;
+  FileCtrl,
 {$ENDIF}
-{$IFDEF LINUX}
-  MultiLangSupport, utils, datamod, devcfg, version,
-  project, prjtypes;
-{$ENDIF}
-
+  MultiLangSupport, utils, datamod, devcfg, version, project, prjtypes;
 {$R *.dfm}
 
 procedure TNewProjectForm.FormCreate(Sender: TObject);
 begin
   fTemplates := TList.Create;
-  //  edProjectFile.Text:= devDirs.Default +edProjectName.Text;
   LoadText;
   ReadTemplateIndex;
   edProjectName.Text := format(Lang[ID_NEWPROJECT], [dmMain.GetNumber]);
@@ -99,7 +92,7 @@ end;
 
 procedure TNewProjectForm.FormDestroy(Sender: TObject);
 begin
- // fTemplates.Free;
+  fTemplates.Free;
 end;
 
 procedure TNewProjectForm.AddTemplate(FileName: string);
@@ -166,7 +159,6 @@ begin
   if not assigned(ProjView.Selected) then
   begin
     TemplateLabel.Caption := '';
-    //     edProjectName.Text:= '';
     btnOk.Enabled := False;
   end
   else
@@ -182,12 +174,7 @@ begin
       rbCpp.Checked := True;
      end else
       rbC.Enabled := True;
-
-    //     edProjectName.Text:= LTemplate.ProjectName;
-
   end;
-
-
 end;
 
 procedure TNewProjectForm.LoadText;
@@ -233,15 +220,9 @@ begin
       TabsMain.Tabs.Append(LTemplate.Catagory);
   end;
 
-  // create current page
-  if TabsMain.TabIndex > 0 then
-    ProjView.LargeImages := ImageList1
-  else
-    ProjView.LargeImages := ImageList;
-
   ProjView.Items.Clear;
-  for idx := pred(ImageList1.Count) downto 1 do
-    ImageList1.Delete(idx);
+  for idx := pred(ImageList.Count) downto 5 do
+    ImageList.Delete(idx);
 
   for idx := 0 to pred(fTemplates.Count) do
   begin
@@ -252,14 +233,13 @@ begin
       Item := ProjView.Items.Add;
       Item.Caption := LTemplate.Name;
       Item.Data := pointer(idx);
-      //        ShowMessage(LTemplate.Name + ': ' + LTemplate.OptionsRec.icon);
-        fName:= ValidateFile(LTemplate.OptionsRec.Icon, ExtractFilePath(LTemplate.FileName));
+      fName:= ValidateFile(LTemplate.OptionsRec.Icon, ExtractFilePath(LTemplate.FileName));
       if fName <> '' then
       begin
         LIcon := TIcon.Create;
         try
-            LIcon.LoadFromFile(ExpandFileto(fName, ExtractFilePath(LTemplate.FileName)));
-          Item.ImageIndex := ImageList1.AddIcon(LIcon);
+          LIcon.LoadFromFile(ExpandFileto(fName, ExtractFilePath(LTemplate.FileName)));
+          Item.ImageIndex := ImageList.AddIcon(LIcon);
           if Item.ImageIndex = -1 then
             Item.ImageIndex := 0;
         finally
