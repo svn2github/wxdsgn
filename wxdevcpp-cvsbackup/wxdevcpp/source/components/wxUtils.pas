@@ -41,6 +41,7 @@ const
   IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
   IID_IWxVariableAssignmentInterface: TGUID  = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
   IID_IWxValidatorInterface: TGUID  = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
+  IID_IWxSplitterInterface: TGUID  = '{900F32A7-3864-4827-9039-85C053504BDB}';
 
 var
    StringFormat : string;
@@ -182,6 +183,12 @@ type
     function GetValidator:String;
     procedure SetValidator(value:String);
   end;
+
+  IWxSplitterInterface = Interface
+    ['{900F32A7-3864-4827-9039-85C053504BDB}']
+  end;
+
+
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
     wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW,

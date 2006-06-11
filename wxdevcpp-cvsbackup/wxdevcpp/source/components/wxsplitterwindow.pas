@@ -22,7 +22,7 @@ uses WinTypes, WinProcs, Messages, Classes, Controls,
 
 type
   TWxSplitterWindow = class(TPanel, IWxComponentInterface, IWxWindowInterface,
-    IWxContainerInterface, IWxContainerAndSizerInterface)
+    IWxContainerInterface, IWxContainerAndSizerInterface,IWxSplitterInterface)
   private
     FOrientation: TWxSizerOrientation;
     FSpaceValue: integer;
@@ -491,6 +491,7 @@ var
   intAlignment: integer;
   wxcompInterface: IWxComponentInterface;
   cntIntf: IWxContainerInterface;
+  splitIntf: IWxSplitterInterface;  
 begin
   intAlignment := 1;
      { Make this component look like its parent component by calling
@@ -561,7 +562,14 @@ begin
   else begin
 
     if self.parent.GetInterface(IDD_IWxContainerInterface, cntIntf) then
-      self.Align := alClient
+    begin
+      if self.parent.GetInterface(IID_IWxSplitterInterface, splitIntf) then
+      begin
+        self.Align := alNone;
+      end
+      else
+        self.Align := alClient;
+    end
     else
       self.Align := alNone;
 
