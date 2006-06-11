@@ -96,31 +96,37 @@ begin
   MainForm.ELDesigner1.Grid.YStep := lbGridYStepUpDown.Position;
   MainForm.ELDesigner1.SnapToGrid := cbSnapToGrid.Checked;
 
-  if (MainForm.ELDesigner1.GenerateXRC = False) and (cbGenerateXRC.Checked) then
+  if (MainForm.fProject <> nil) then
   begin
-    FileName := ChangeFileExt(MainForm.GetCurrentFileName, XRC_EXT);
-    MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
-
-    //create the file
-    if not MainForm.isFileOpenedinEditor(FileName) then
+    if (MainForm.ELDesigner1.GenerateXRC = False) and (cbGenerateXRC.Checked) then
     begin
-      strLstXRCCode := CreateBlankXRC;
-      SaveStringToFile(strLstXRCCode.Text, FileName);
-      strLstXRCCode.Destroy;
-    end;
+      FileName := ChangeFileExt(MainForm.GetCurrentFileName, XRC_EXT);
+      MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
 
-    //then add the unit
-    if (MainForm.fProject <> nil) and (not MainForm.fProject.FileAlreadyExists(FileName)) then
-    begin
-      node := Mainform.fProject.Node;
-      MainForm.fProject.AddUnit(FileName, node, False);
+      if not MainForm.fProject.FileAlreadyExists(FileName) then
+      begin
+        if not MainForm.isFileOpenedinEditor(FileName) then
+        begin
+          strLstXRCCode := CreateBlankXRC;
+          SaveStringToFile(strLstXRCCode.Text, FileName);
+          strLstXRCCode.Destroy;
+        end;
+
+        node := Mainform.fProject.Node;
+        MainForm.fProject.AddUnit(FileName, node, False);
+      end
     end
-  end
-  else
-  begin
-    MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
-    if (MainForm.fProject <> nil) then
+    else
+    begin
+      MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
       MainForm.fProject.CloseUnit(MainForm.fProject.GetUnitFromString(ExtractFileName(FileName)));
+    end;
+  end
+  else if not MainForm.isFileOpenedinEditor(FileName) then
+  begin
+    strLstXRCCode := CreateBlankXRC;
+    SaveStringToFile(strLstXRCCode.Text, FileName);
+    strLstXRCCode.Destroy;
   end;
 
   if cbControlHints.Checked then
