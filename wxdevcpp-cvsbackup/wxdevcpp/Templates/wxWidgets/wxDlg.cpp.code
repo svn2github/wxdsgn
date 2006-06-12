@@ -3,7 +3,7 @@
 // Name:        %FILE_NAME%.cpp
 // Author:      %AUTHOR_NAME%
 // Created:     %DATE_STRING%
-// Description: 
+// Description: %CLASS_NAME% class implementation
 //
 //---------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@
 BEGIN_EVENT_TABLE(%CLASS_NAME%, wxDialog)
 	////Manual Code Start
 	////Manual Code End
-	EVT_CLOSE(%CLASS_NAME%::%CLASS_NAME%Close)
+	EVT_CLOSE(%CLASS_NAME%::OnClose)
 END_EVENT_TABLE()
 ////Event Table End
 
@@ -33,19 +33,20 @@ END_EVENT_TABLE()
 	CreateGUIControls();
 }
 
-%CLASS_NAME%::~%CLASS_NAME%() {} 
-
-void %CLASS_NAME%::CreateGUIControls(void)
+%CLASS_NAME%::~%CLASS_NAME%()
 {
-    //Do not add custom code here
+} 
+
+void %CLASS_NAME%::CreateGUIControls()
+{
+	//Do not add custom code here
 	//wxDev-C++ designer will remove them.
 	//Add the custom code before or after the blocks
 	////GUI Items Creation Start
 	////GUI Items Creation End
 }
 
-void %CLASS_NAME%::%CLASS_NAME%Close(wxCloseEvent& event)
+void %CLASS_NAME%::OnClose(wxCloseEvent& /*event*/)
 {
 	Destroy();
-	event.Skip();
 }

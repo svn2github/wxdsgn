@@ -16,7 +16,7 @@ bool %CLASS_NAME%App::OnInit()
 {
     %CLASS_NAME%* frame = new %CLASS_NAME%(NULL);
     SetTopWindow(frame);
-    frame->Show(true);		
+    frame->Show();
     return true;
 }
  
