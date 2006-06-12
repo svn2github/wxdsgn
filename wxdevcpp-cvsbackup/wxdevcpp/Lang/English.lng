@@ -423,7 +423,7 @@ Ver=1
 # -- TO 579
 
 #About form
-580=About Dev-C++ :)
+580=About Dev-C++
 581=inseculous@users.sourceforge.net
 582=GNU General Public License
 583=Contact Information
@@ -532,15 +532,15 @@ Ver=1
 701=Compiler
 702=Directories
 703=Settings
-704=Linker
+704=Linker:
 705=Programs
 
 710=Binaries
 711=Libraries
 712=C Includes
 713=C++ Includes
-720=C compiler
-721=C++ compiler
+720=C compiler:
+721=C++ compiler:
 722=Compiler:
 725=Support all ANSI standard C programs
 726=Attempt to support some aspects of traditional C preprocessors
@@ -657,12 +657,12 @@ Ver=1
 905=Library
 906=Browse
 907=Type:
-908=Win32 GUI
-909=Win32 Console
-910=Win32 Static Lib
-911=Win32 DLL
+908=Windows GUI Application
+909=Windows Console Application
+910=Windows Static Library
+911=Windows Dynamic Library
 912=Compile as C++
-913=Additional Command-line options:
+913=Parameters
 914=Compiler:
 915=Linker Options/Optional Libs or Object files:
 916=Library Directories
@@ -976,7 +976,7 @@ Ver=1
 3223=Auto-increment build number on compile
 3224=Use custom Makefile (do not generate a Makefile, use this one)
 3225=Information about customizing the Makefile...
-3226=&Include the following files into the Makefile:
+3226=Include the following files into the Makefile
 
 # More compiler options
 3400=Strip executable
