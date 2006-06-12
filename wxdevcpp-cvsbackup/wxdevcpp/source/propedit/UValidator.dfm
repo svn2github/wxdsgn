@@ -16,7 +16,7 @@ object wxValidator: TwxValidator
   PixelsPerInch = 96
   TextHeight = 13
   object btnOK: TBitBtn
-    Left = 245
+    Left = 247
     Top = 165
     Width = 75
     Height = 25
@@ -24,7 +24,7 @@ object wxValidator: TwxValidator
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 321
+    Left = 323
     Top = 165
     Width = 75
     Height = 25
@@ -126,5 +126,35 @@ object wxValidator: TwxValidator
       Height = 21
       TabOrder = 0
     end
+  end
+  object XPMenu1: TXPMenu
+    DimLevel = 30
+    GrayLevel = 10
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Color = clBtnFace
+    DrawMenuBar = False
+    IconBackColor = clBtnFace
+    MenuBarColor = clBtnFace
+    SelectColor = clHighlight
+    SelectBorderColor = clHighlight
+    SelectFontColor = clMenuText
+    DisabledColor = clInactiveCaption
+    SeparatorColor = clBtnFace
+    CheckedColor = clHighlight
+    IconWidth = 24
+    DrawSelect = True
+    UseSystemColors = True
+    UseDimColor = False
+    OverrideOwnerDraw = False
+    Gradient = False
+    FlatMenu = False
+    AutoDetect = False
+    Active = False
+    Left = 8
+    Top = 163
   end
 end

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, xprocs;
+  Dialogs, StdCtrls, Buttons, ExtCtrls, xprocs, XPMenu;
 
 type
   TwxValidator = class(TForm)
@@ -20,6 +20,7 @@ type
     FilterStyle: TComboBox;
     ValidatorCommand: TGroupBox;
     ValidatorString: TEdit;
+    XPMenu1: TXPMenu;
 
     procedure ValidatorTypeChange(Sender: TObject);
     procedure OnChange(Sender: TObject);
@@ -39,7 +40,8 @@ var
   wxValidator: TwxValidator;
 
 implementation
-
+uses
+  devCfg;
 {$R *.dfm}
 
 function TwxValidator.GetValidatorString: string;
@@ -122,6 +124,9 @@ end;
 procedure TwxValidator.FormCreate(Sender: TObject);
 begin
   ValidatorTypeChange(Sender);
+
+  if devData.XPTheme then
+    XPMenu1.Active := true;
 end;
 
 procedure TwxValidator.GenerateCode;
