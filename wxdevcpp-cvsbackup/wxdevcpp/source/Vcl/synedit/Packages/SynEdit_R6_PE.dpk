@@ -1,7 +1,5 @@
 package SynEdit_R6_PE;
 
-{ $Id$ }
-
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -71,6 +69,7 @@ contains
   SynHighlighterRC in '..\Source\SynHighlighterRC.pas',
   SynMacroRecorder in '..\Source\SynMacroRecorder.pas',
   SynMemo in '..\Source\SynMemo.pas',
-  SynRegExpr in '..\Source\SynRegExpr.pas';
+  SynRegExpr in '..\Source\SynRegExpr.pas',
+  SynHighlighterManager in '..\Source\SynHighlighterManager.pas';
 
 end.
