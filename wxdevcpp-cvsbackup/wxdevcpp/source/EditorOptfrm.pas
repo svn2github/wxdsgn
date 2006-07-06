@@ -688,9 +688,9 @@ begin
     cbMatch.Checked := Match;
     cbDefaultintoprj.Checked := DefaulttoPrj;
 
-     cbHighCurrLine.Checked :=       HighCurrLine;
-     cpHighColor.SelectionColor :=   HighColor;
-     cpHighColor.Enabled :=          cbHighCurrLine.Checked;
+    cbHighCurrLine.Checked := HighCurrLine;
+    cpHighColor.SelectionColor := HighColor;
+    cpHighColor.Enabled := cbHighCurrLine.Checked;
 
     StrtoPoint(fGutColor, Syntax.Values[cGut]);
     StrtoPoint(fbpColor, Syntax.Values[cBP]);
@@ -826,7 +826,7 @@ begin
     HalfPageScroll := cbHalfPage.Checked;
     ScrollHint := cbScrollHint.Checked;
     SpecialChars := cbSpecialChars.Checked;
-     AppendNewline:=       cbAppendNewline.Checked;
+    AppendNewline:= cbAppendNewline.Checked;
 
     MarginVis := cbMarginVis.Checked;
     MarginSize := edMarginWidth.Value;
@@ -835,8 +835,8 @@ begin
     OverwriteCaret := cboOverwriteCaret.ItemIndex;
     Match := cbMatch.Checked;
 
-     HighCurrLine :=       cbHighCurrLine.Checked;
-     HighColor :=          cpHighColor.SelectionColor;
+    HighCurrLine := cbHighCurrLine.Checked;
+    HighColor := cpHighColor.SelectionColor;
 
     UseSyntax := cbSyntaxHighlight.Checked;
     SyntaxExt := edSyntaxExt.Text;
@@ -856,7 +856,6 @@ begin
     LeadZero := cbLeadZero.Checked;
     FirstLineZero := cbFirstZero.Checked;
     InsDropFiles := cbDropFiles.Checked;
-
     ParserHints := cbParserHints.Checked;
 
     // load in attributes
