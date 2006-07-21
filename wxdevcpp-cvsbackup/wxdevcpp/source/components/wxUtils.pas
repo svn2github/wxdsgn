@@ -1236,7 +1236,7 @@ begin
     if wxLB_NEEDED_SB in stdStyle then
       strLst.add('wxLB_NEEDED_SB');
 
-    if wxLB_NEEDED_SB in stdStyle then
+    if wxLB_SORT in stdStyle then
       strLst.add('wxLB_SORT');
 
     if strLst.Count = 0 then
