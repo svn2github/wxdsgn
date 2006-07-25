@@ -23,11 +23,11 @@ program devcpp;
 {$R 'icons.res' 'icons.rc'}
 {%File 'LangIDs.inc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}
-
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  madScreenShot,
   madListHardware,
   madListProcesses,
   madListModules,
@@ -116,9 +116,29 @@ uses
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas' 
-  {$IFDEF WX_BUILD},
+  ImageTheme in 'ImageTheme.pas'
+{$IFDEF WX_BUILD},
+  Wxcontrolpanel in 'components\Wxcontrolpanel.pas',
+  uFileWatch in 'uFileWatch.pas',
+  
+  //New form files
+  dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
+  DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
+  //MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
+  ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
+  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
+  
+  //Property editors
+  dmListview in 'propedit\dmListview.pas' {ListviewForm},
+  UStrings in 'propedit\UStrings.pas' {StringsForm},
+  UStatusbar in 'propedit\UStatusbar.pas' {StatusBarForm},
+  UPicEdit in 'propedit\UPicEdit.pas' {PictureEdit},
+  UColorEdit in 'propedit\UColorEdit.pas' {ColorEdit},
+  UMenuitem in 'propedit\UMenuitem.pas' {MenuItemForm},
+  UValidator in 'propedit\UValidator.pas' {wxValidator},
+  
+  //UI components
   WxUtils in 'components\wxUtils.pas',
   WxBitmapButton in 'components\WxBitmapButton.pas',
   WXCheckBox in 'components\wxcheckbox.pas',
@@ -129,7 +149,7 @@ uses
   WxListBox in 'components\wxlistbox.pas',
   Wxlistctrl in 'components\wxlistctrl.pas',
   WxMemo in 'components\wxmemo.pas',
-  WXRadioButton in 'components\wxradiobutton.pas',
+  WxRadioButton in 'components\wxradiobutton.pas',
   WxScrollBar in 'components\wxscrollbar.pas',
   WxSlider in 'components\wxslider.pas',
   WxSpinButton in 'components\wxspinbutton.pas',
@@ -138,57 +158,47 @@ uses
   WxStaticLine in 'components\wxstaticline.pas',
   WxStaticText in 'components\wxstatictext.pas',
   WxTreeCtrl in 'components\wxtreectrl.pas',
-  UStatusbar in 'propedit\UStatusbar.pas' {StatusBarForm},
-  UValidator in 'propedit\UValidator.pas' {wxValidator},
-  dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
-  WXGridSizer in 'components\wxgridsizer.pas',
-  WXBoxSizer in 'components\wxboxsizer.pas',
-  WXFlexGridSizer in 'components\wxflexgridsizer.pas',
-  ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
-  UPicEdit in 'propedit\UPicEdit.pas' {PictureEdit},
-  WXStaticBoxSizer in 'components\wxstaticboxsizer.pas',
-  WXSizerPanel in 'components\WXSizerPanel.pas',
-  Wxcontrolpanel in 'components\Wxcontrolpanel.pas' {$ENDIF},
-  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
-  UColorEdit in 'propedit\UColorEdit.pas' {ColorEdit},
+  WxGridSizer in 'components\wxgridsizer.pas',
+  WxBoxSizer in 'components\wxboxsizer.pas',
+  WxFlexGridSizer in 'components\wxflexgridsizer.pas',
+  WxStaticBoxSizer in 'components\wxstaticboxsizer.pas',
+  WxSizerPanel in 'components\WXSizerPanel.pas',
   WxButton in 'components\WxButton.pas',
   WxToggleButton in 'components\WxToggleButton.pas',
-  WXListBook in 'components\wxlistbook.pas',
+  WxListBook in 'components\wxlistbook.pas',
   WxNotebook in 'components\wxnotebook.pas',
   WxStatusBar in 'components\wxstatusbar.pas',
   WxToolBar in 'components\wxtoolbar.pas',
   WxPanel in 'components\wxpanel.pas',
-  wxNoteBookPage in 'components\wxNoteBookPage.pas',
+  WxNoteBookPage in 'components\wxNoteBookPage.pas',
   WxCheckListBox in 'components\wxchecklistbox.pas',
-  wxspinctrl in 'components\wxspinctrl.pas',
-  wxChoice in 'components\wxchoice.pas',
-  wxHtmlWindow in 'components\wxHtmlWindow.pas',
+  Wxspinctrl in 'components\wxspinctrl.pas',
+  WxChoice in 'components\wxchoice.pas',
+  WxHtmlWindow in 'components\wxHtmlWindow.pas',
   WxScrolledWindow in 'components\WxScrolledWindow.pas',
   WxSeparator in 'components\WxSeparator.pas',
   WxToolButton in 'components\WxToolButton.pas',
   WxNonVisibleBaseComponent in 'components\WxNonVisibleBaseComponent.pas',
   WxMenuBar in 'components\WxMenuBar.pas',
   WxPopupMenu in 'components\WxPopupMenu.pas',
-  UMenuitem in 'propedit\UMenuitem.pas' {MenuItemForm},
   WxCustomMenuItem in 'components\WxCustomMenuItem.pas',
   WxOpenFileDialog in 'components\WxOpenFileDialog.pas',
   WxSaveFileDialog in 'components\WxSaveFileDialog.pas',
-  wxFontDialog in 'components\wxFontDialog.pas',
-  wxColourDialog in 'components\wxColourDialog.pas',
-  wxDirDialog in 'components\wxDirDialog.pas',
-  wxFindReplaceDialog in 'components\wxFindReplaceDialog.pas',
-  wxPrintDialog in 'components\wxPrintDialog.pas',
-  wxProgressDialog in 'components\wxProgressDialog.pas',
-  wxTimer in 'components\wxTimer.pas',
-  wxPageSetupDialog in 'components\wxPageSetupDialog.pas',
-  dmListview in 'propedit\dmListview.pas' {ListviewForm},
-  wxMessageDialog in 'components\wxMessageDialog.pas',
-  uFileWatch in 'uFileWatch.pas',
-  wxsplitterwindow in 'components\wxsplitterwindow.pas',
-  DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
-  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas',
-  wxRadioBox in 'components\wxRadioBox.pas',
-  wxDatePickerCtrl in 'components\wxDatePickerCtrl.pas';
+  WxFontDialog in 'components\wxFontDialog.pas',
+  WxColourDialog in 'components\wxColourDialog.pas',
+  WxDirDialog in 'components\wxDirDialog.pas',
+  WxFindReplaceDialog in 'components\wxFindReplaceDialog.pas',
+  WxPrintDialog in 'components\wxPrintDialog.pas',
+  WxProgressDialog in 'components\wxProgressDialog.pas',
+  WxTimer in 'components\wxTimer.pas',
+  WxPageSetupDialog in 'components\wxPageSetupDialog.pas',
+  WxMessageDialog in 'components\wxMessageDialog.pas',
+  Wxsplitterwindow in 'components\wxsplitterwindow.pas',
+  WxRadioBox in 'components\wxRadioBox.pas',
+  WxDatePickerCtrl in 'components\wxDatePickerCtrl.pas',
+  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas'
+{$ENDIF}
+;
 
 {$R *.res}
 {$R winxp.res}
@@ -228,6 +238,12 @@ begin
 {$IFDEF MEM_DEBUG}
   MemChk;
 {$ENDIF MEM_DEBUG}
+
+  //initialize our global variables
+  //Check with Joel
+  //LIB_EXT := '.lib';
+  //OBJ_EXT := '.o';
+
   strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
   
   if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then  begin
@@ -321,15 +337,11 @@ begin
     if boolCanStart = false then
         exit;
   end;
-
   devTheme := TdevTheme.Create;
-
-
   Application.Initialize;
   Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
   MainForm.Hide; // hide it
-
 
   if not devData.NoSplashScreen then
   begin
@@ -342,8 +354,6 @@ begin
   // make the creation when the splashscreen is displayed
   // because it takes quite a while ...
   TMainFormHack(MainForm).DoCreateEverything;
-
-
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
@@ -353,7 +363,6 @@ begin
   // apply the window placement. this method forced
   // the form to show,
   TMainFormHack(MainForm).DoApplyWindowPlacement;
-
   if not devData.NoSplashScreen then
     SplashForm.Free;
 

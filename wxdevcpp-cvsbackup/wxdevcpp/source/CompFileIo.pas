@@ -985,10 +985,12 @@ begin
                 else // Restore it's original name
                     TComponent(pObject).Name := s;
             except
-                Result := FALSE;
+                // Restore it's original name
                 if (not bCreated) then
-       // Restore it's original name
-                    TComponent(pObjects[X]^).Name := s;
+                  TComponent(pObjects[X]^).Name := s;
+
+                //Rethrow the exception
+                raise;
             end;
         end
         else if (Y <= Counts[2]) then
@@ -1025,7 +1027,7 @@ begin
 
         Inc(X);
     except
-        Result := FALSE;
+        raise;
     end;
 
   // Throw away the trash

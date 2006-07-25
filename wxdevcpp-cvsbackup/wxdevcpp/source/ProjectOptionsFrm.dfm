@@ -4,8 +4,8 @@ object frmProjectOptions: TfrmProjectOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Options'
-  ClientHeight = 315
-  ClientWidth = 481
+  ClientHeight = 346
+  ClientWidth = 552
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,8 @@ object frmProjectOptions: TfrmProjectOptions
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn
-    Left = 193
-    Top = 280
+    Left = 262
+    Top = 315
     Width = 93
     Height = 24
     Caption = '&OK'
@@ -49,8 +49,8 @@ object frmProjectOptions: TfrmProjectOptions
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 286
-    Top = 280
+    Left = 355
+    Top = 315
     Width = 93
     Height = 24
     Caption = '&Cancel'
@@ -59,8 +59,8 @@ object frmProjectOptions: TfrmProjectOptions
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 398
-    Top = 280
+    Left = 467
+    Top = 315
     Width = 77
     Height = 24
     TabOrder = 2
@@ -70,16 +70,16 @@ object frmProjectOptions: TfrmProjectOptions
   object PageControl: TPageControl
     Left = 7
     Top = 8
-    Width = 468
-    Height = 265
-    ActivePage = tabVersion
-    TabIndex = 7
+    Width = 537
+    Height = 300
+    ActivePage = tabGeneral
+    TabIndex = 0
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
       object lblPrjName: TLabel
         Left = 8
-        Top = 13
+        Top = 11
         Width = 31
         Height = 13
         Caption = 'Name:'
@@ -96,7 +96,7 @@ object frmProjectOptions: TfrmProjectOptions
       object lblPrjFname: TLabel
         Left = 88
         Top = 48
-        Width = 353
+        Width = 435
         Height = 13
         AutoSize = False
         Caption = 'lblPrjFname'
@@ -113,7 +113,7 @@ object frmProjectOptions: TfrmProjectOptions
       object lblPrjUnits: TLabel
         Left = 88
         Top = 88
-        Width = 353
+        Width = 435
         Height = 13
         AutoSize = False
         Caption = 'lblPrjUnits'
@@ -122,7 +122,7 @@ object frmProjectOptions: TfrmProjectOptions
       object lblPrjOutputFname: TLabel
         Left = 88
         Top = 68
-        Width = 353
+        Width = 435
         Height = 13
         AutoSize = False
         Caption = 'lblPrjOutputFname'
@@ -137,17 +137,17 @@ object frmProjectOptions: TfrmProjectOptions
         Transparent = True
       end
       object grpIcon: TGroupBox
-        Left = 12
-        Top = 129
+        Left = 8
+        Top = 110
         Width = 205
         Height = 96
         Caption = 'Icon:'
         TabOrder = 0
         object btnIconBrwse: TBitBtn
           Left = 88
-          Top = 40
+          Top = 39
           Width = 105
-          Height = 22
+          Height = 23
           Hint = 'Select a custom icon'
           Caption = 'Browse...'
           TabOrder = 0
@@ -184,7 +184,7 @@ object frmProjectOptions: TfrmProjectOptions
           Left = 88
           Top = 13
           Width = 105
-          Height = 24
+          Height = 23
           Hint = 'Select a icon from Dev-C++'#39's icon collection'
           Caption = 'Library'
           TabOrder = 1
@@ -221,7 +221,7 @@ object frmProjectOptions: TfrmProjectOptions
           Left = 88
           Top = 65
           Width = 105
-          Height = 22
+          Height = 23
           Hint = 'Do not use an icon for this project'
           Caption = 'Remove'
           Enabled = False
@@ -256,48 +256,48 @@ object frmProjectOptions: TfrmProjectOptions
             0000686868BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
         end
         object Panel1: TPanel
-          Left = 22
-          Top = 29
-          Width = 44
-          Height = 44
+          Left = 14
+          Top = 20
+          Width = 60
+          Height = 60
           BevelOuter = bvLowered
           TabOrder = 3
           object Icon: TImage
             Left = 6
             Top = 6
-            Width = 32
-            Height = 32
+            Width = 48
+            Height = 48
             Center = True
             Stretch = True
           end
         end
       end
       object grpType: TGroupBox
-        Left = 224
-        Top = 129
-        Width = 220
+        Left = 220
+        Top = 110
+        Width = 300
         Height = 96
         Caption = 'Type:'
         TabOrder = 1
         object lstType: TListBox
           Left = 8
           Top = 17
-          Width = 201
+          Width = 280
           Height = 56
           IntegralHeight = True
           ItemHeight = 13
           Items.Strings = (
-            'Win32 GUI'
-            'Win32 Console'
-            'Win32 Static Lib'
-            'Win32 DLL')
+            'Windows GUI Application'
+            'Windows Console Application'
+            'Windows Static Library'
+            'Windows Dynamic Library')
           TabOrder = 0
           OnClick = lstTypeClick
         end
         object chkSupportXP: TCheckBox
           Left = 7
           Top = 75
-          Width = 202
+          Width = 280
           Height = 17
           Caption = 'Support Windows XP Themes'
           TabOrder = 1
@@ -305,8 +305,8 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object edProjectName: TEdit
         Left = 87
-        Top = 10
-        Width = 354
+        Top = 8
+        Width = 435
         Height = 21
         Hint = 
           'Note: The exe filename is taken from the project filename not th' +
@@ -327,8 +327,8 @@ object frmProjectOptions: TfrmProjectOptions
       object lvFiles: TTreeView
         Left = 8
         Top = 20
-        Width = 210
-        Height = 210
+        Width = 225
+        Height = 240
         HideSelection = False
         Indent = 19
         MultiSelect = True
@@ -338,10 +338,10 @@ object frmProjectOptions: TfrmProjectOptions
         OnChange = lvFilesChange
       end
       object grpUnitOptions: TGroupBox
-        Left = 226
-        Top = 16
-        Width = 229
-        Height = 216
+        Left = 240
+        Top = 15
+        Width = 280
+        Height = 246
         Caption = 'Unit Options'
         TabOrder = 1
         object lblPriority: TLabel
@@ -356,7 +356,7 @@ object frmProjectOptions: TfrmProjectOptions
         object chkCompile: TCheckBox
           Left = 8
           Top = 44
-          Width = 217
+          Width = 260
           Height = 17
           Caption = 'Include in compilation process'
           TabOrder = 0
@@ -365,7 +365,7 @@ object frmProjectOptions: TfrmProjectOptions
         object chkCompileCpp: TCheckBox
           Left = 8
           Top = 80
-          Width = 217
+          Width = 260
           Height = 17
           Caption = 'Compile unit as C++'
           TabOrder = 1
@@ -373,8 +373,8 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkOverrideBuildCmd: TCheckBox
           Left = 8
-          Top = 100
-          Width = 217
+          Top = 98
+          Width = 260
           Height = 17
           Caption = 'Override build command'
           TabOrder = 2
@@ -382,9 +382,9 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object txtOverrideBuildCmd: TMemo
           Left = 28
-          Top = 122
-          Width = 189
-          Height = 81
+          Top = 115
+          Width = 240
+          Height = 120
           Lines.Strings = (
             'txtOverrideBuildCmd')
           ScrollBars = ssBoth
@@ -395,16 +395,16 @@ object frmProjectOptions: TfrmProjectOptions
         object chkLink: TCheckBox
           Left = 8
           Top = 62
-          Width = 217
+          Width = 260
           Height = 17
           Caption = 'Include in linking process'
           TabOrder = 4
           OnClick = chkCompileClick
         end
         object spnPriority: TSpinEdit
-          Left = 116
+          Left = 115
           Top = 16
-          Width = 105
+          Width = 155
           Height = 22
           MaxValue = 0
           MinValue = 0
@@ -417,11 +417,11 @@ object frmProjectOptions: TfrmProjectOptions
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
       DesignSize = (
-        460
-        237)
+        529
+        272)
       object lblCompilerSet: TLabel
-        Left = 8
-        Top = 36
+        Left = 7
+        Top = 31
         Width = 43
         Height = 13
         Caption = 'Compiler:'
@@ -429,9 +429,9 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object lblCompileInfo: TLabel
         Left = 8
-        Top = 0
-        Width = 451
-        Height = 33
+        Top = 8
+        Width = 515
+        Height = 17
         AutoSize = False
         Caption = 
           'NOTE: These settings will override the global Compiler Options a' +
@@ -449,103 +449,109 @@ object frmProjectOptions: TfrmProjectOptions
       inline CompOptionsFrame1: TCompOptionsFrame
         Left = 9
         Top = 60
-        Width = 448
-        Height = 170
+        Width = 513
+        Height = 205
         Anchors = [akLeft, akTop, akRight, akBottom]
         TabOrder = 0
         inherited Splitter1: TSplitter
-          Height = 170
+          Left = 140
+          Height = 205
         end
         inherited tv: TTreeView
-          Height = 170
+          Width = 140
+          Height = 205
         end
         inherited vle: TValueListEditor
-          Width = 318
-          Height = 170
+          Left = 145
+          Width = 368
+          Height = 205
           Align = alNone
+          RowHeights = (
+            18)
         end
       end
       object cmbCompiler: TComboBox
-        Left = 72
-        Top = 32
-        Width = 383
+        Left = 74
+        Top = 28
+        Width = 450
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
+        OnChange = cmbCompilerChange
       end
     end
     object tabCompOpts: TTabSheet
-      Caption = 'Options'
-      object lblAdditions: TLabel
-        Left = 6
-        Top = 6
-        Width = 173
-        Height = 13
-        Caption = '  Additional Command Line Options:  '
-        Transparent = True
-      end
+      Caption = 'Command Line Options'
       object lblCompiler: TLabel
-        Left = 10
-        Top = 24
-        Width = 137
+        Left = 8
+        Top = 8
+        Width = 156
         Height = 13
         AutoSize = False
         Caption = 'Compiler:'
         Transparent = True
       end
       object lblCppCompiler: TLabel
-        Left = 163
-        Top = 24
-        Width = 141
+        Left = 186
+        Top = 8
+        Width = 156
         Height = 13
         AutoSize = False
         Caption = 'C++ Compiler:'
         Transparent = True
       end
       object lblLinker: TLabel
-        Left = 310
-        Top = 24
-        Width = 141
+        Left = 351
+        Top = 8
+        Width = 164
         Height = 13
         AutoSize = False
         Caption = 'Linker options / Optional libraries or object files :'
         Transparent = True
       end
+      object lbldefines: TLabel
+        Left = 8
+        Top = 158
+        Width = 117
+        Height = 13
+        Caption = 'Preprocessor Definitions:'
+        Transparent = True
+      end
       object edCompiler: TMemo
-        Left = 10
-        Top = 40
-        Width = 140
-        Height = 190
+        Left = 8
+        Top = 24
+        Width = 156
+        Height = 130
         Lines.Strings = (
           'edCompiler')
         ScrollBars = ssBoth
         TabOrder = 0
       end
       object edCppCompiler: TMemo
-        Left = 163
-        Top = 40
-        Width = 140
-        Height = 190
+        Left = 186
+        Top = 24
+        Width = 156
+        Height = 130
         Lines.Strings = (
           'edCppCompiler')
         ScrollBars = ssBoth
         TabOrder = 1
       end
       object edLinker: TMemo
-        Left = 312
-        Top = 40
-        Width = 138
-        Height = 158
+        Left = 353
+        Top = 24
+        Width = 164
+        Height = 207
         Lines.Strings = (
           'edLinker')
         ScrollBars = ssBoth
         TabOrder = 2
       end
       object AddLibBtn: TBitBtn
-        Left = 313
-        Top = 203
-        Width = 138
+        Left = 354
+        Top = 239
+        Width = 164
         Height = 25
         Caption = 'Add Library or Object'
         TabOrder = 3
@@ -578,12 +584,22 @@ object frmProjectOptions: TfrmProjectOptions
           BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
           BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
       end
+      object edDefines: TMemo
+        Left = 8
+        Top = 175
+        Width = 335
+        Height = 90
+        Lines.Strings = (
+          'edDefines')
+        ScrollBars = ssBoth
+        TabOrder = 4
+      end
     end
     object tabFilesDir: TTabSheet
       Caption = 'Directories'
       object btnUp: TSpeedButton
-        Left = 421
-        Top = 77
+        Left = 500
+        Top = 100
         Width = 23
         Height = 22
         Enabled = False
@@ -633,8 +649,8 @@ object frmProjectOptions: TfrmProjectOptions
         OnClick = UpDownClick
       end
       object btnDown: TSpeedButton
-        Left = 421
-        Top = 101
+        Left = 500
+        Top = 124
         Width = 23
         Height = 22
         Enabled = False
@@ -684,8 +700,8 @@ object frmProjectOptions: TfrmProjectOptions
         OnClick = UpDownClick
       end
       object btnBrowse: TSpeedButton
-        Left = 415
-        Top = 176
+        Left = 500
+        Top = 210
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -718,9 +734,9 @@ object frmProjectOptions: TfrmProjectOptions
         OnClick = BrowseClick
       end
       object SubTabs: TdevTabs
-        Left = 10
-        Top = 10
-        Width = 439
+        Left = 0
+        Top = 0
+        Width = 530
         Height = 24
         Tabs.Strings = (
           'Libraries'
@@ -731,18 +747,18 @@ object frmProjectOptions: TfrmProjectOptions
         OnChanging = SubTabsChanging
       end
       object lstList: TListBox
-        Left = 14
-        Top = 38
-        Width = 395
-        Height = 131
+        Left = 8
+        Top = 28
+        Width = 480
+        Height = 175
         ItemHeight = 13
         TabOrder = 1
         OnClick = ListClick
       end
       object btnAdd: TButton
         Tag = 2
-        Left = 159
-        Top = 207
+        Left = 162
+        Top = 240
         Width = 75
         Height = 23
         Caption = '&Add'
@@ -752,8 +768,8 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object btnDelete: TButton
         Tag = 3
-        Left = 241
-        Top = 207
+        Left = 244
+        Top = 240
         Width = 75
         Height = 23
         Caption = '&Delete'
@@ -763,8 +779,8 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object btnReplace: TButton
         Tag = 1
-        Left = 78
-        Top = 207
+        Left = 81
+        Top = 240
         Width = 75
         Height = 23
         Caption = '&Replace'
@@ -773,17 +789,17 @@ object frmProjectOptions: TfrmProjectOptions
         OnClick = ButtonClick
       end
       object edEntry: TEdit
-        Left = 14
-        Top = 177
-        Width = 395
+        Left = 8
+        Top = 211
+        Width = 480
         Height = 21
         TabOrder = 5
         OnChange = EditChange
       end
       object btnDelInval: TButton
         Tag = 4
-        Left = 323
-        Top = 207
+        Left = 326
+        Top = 240
         Width = 81
         Height = 23
         Caption = 'Delete Invalid'
@@ -795,8 +811,8 @@ object frmProjectOptions: TfrmProjectOptions
       Caption = 'Build Options'
       object grpOutDirectories: TGroupBox
         Left = 8
-        Top = 12
-        Width = 442
+        Top = 8
+        Width = 515
         Height = 119
         Caption = 'Directories'
         TabOrder = 0
@@ -819,7 +835,7 @@ object frmProjectOptions: TfrmProjectOptions
           Transparent = True
         end
         object btnExeOutDir: TSpeedButton
-          Left = 410
+          Left = 480
           Top = 38
           Width = 23
           Height = 22
@@ -853,7 +869,7 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = BrowseExecutableOutDirClick
         end
         object btnObjOutDir: TSpeedButton
-          Left = 410
+          Left = 480
           Top = 86
           Width = 23
           Height = 22
@@ -889,29 +905,29 @@ object frmProjectOptions: TfrmProjectOptions
         object edExeOutput: TEdit
           Left = 10
           Top = 38
-          Width = 393
+          Width = 460
           Height = 21
           TabOrder = 0
         end
         object edObjOutput: TEdit
           Left = 10
           Top = 86
-          Width = 393
+          Width = 460
           Height = 21
           TabOrder = 1
         end
       end
       object edOverridenOutput: TEdit
-        Left = 28
-        Top = 208
-        Width = 420
+        Left = 24
+        Top = 155
+        Width = 497
         Height = 21
         TabOrder = 1
       end
       object chkOverrideOutput: TCheckBox
-        Left = 12
-        Top = 188
-        Width = 425
+        Left = 8
+        Top = 135
+        Width = 515
         Height = 17
         Caption = 'Override output filename:'
         TabOrder = 2
@@ -920,36 +936,9 @@ object frmProjectOptions: TfrmProjectOptions
     end
     object tabMakefile: TTabSheet
       Caption = 'Makefile'
-      object InfoMakeBtn: TSpeedButton
-        Left = 13
-        Top = 64
-        Width = 433
-        Height = 25
-        Caption = 'Information about customizing the Makefile...'
-        Flat = True
-        Glyph.Data = {
-          DE010000424DDE01000000000000760000002800000024000000120000000100
-          0400000000006801000000000000000000001000000000000000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333336633
-          3333333333333FF3333333330000333333364463333333333333388F33333333
-          00003333333E66433333333333338F38F3333333000033333333E66333333333
-          33338FF8F3333333000033333333333333333333333338833333333300003333
-          3333446333333333333333FF3333333300003333333666433333333333333888
-          F333333300003333333E66433333333333338F38F333333300003333333E6664
-          3333333333338F38F3333333000033333333E6664333333333338F338F333333
-          0000333333333E6664333333333338F338F3333300003333344333E666433333
-          333F338F338F3333000033336664333E664333333388F338F338F33300003333
-          E66644466643333338F38FFF8338F333000033333E6666666663333338F33888
-          3338F3330000333333EE666666333333338FF33333383333000033333333EEEE
-          E333333333388FFFFF8333330000333333333333333333333333388888333333
-          0000}
-        NumGlyphs = 2
-        OnClick = InfoMakeBtnClick
-      end
       object btnCustomMakeBrowse: TSpeedButton
-        Left = 421
-        Top = 32
+        Left = 495
+        Top = 27
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -981,229 +970,246 @@ object frmProjectOptions: TfrmProjectOptions
           BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
         OnClick = btnCustomMakeBrowseClick
       end
-      object IncMakeLabel: TLabel
-        Left = 12
-        Top = 95
-        Width = 202
-        Height = 13
-        Caption = '&Include the following files into the Makefile:'
-        Transparent = True
-      end
-      object btnMakeBrowse: TSpeedButton
-        Left = 421
-        Top = 176
-        Width = 23
-        Height = 22
-        Glyph.Data = {
-          36030000424D3603000000000000360000002800000010000000100000000100
-          18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
-          BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
-          BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000
-          000000000000000000000000000000000000000000000000000000BFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBF00000000AEFF0096DB0096DB0096DB0096DB0096DB00
-          96DB0096DB0082BE000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
-          00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF00AEFF00AEFF00AEFF00
-          AEFF00AEFF0096DB000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
-          00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF5DCCFF5DCCFF5DCCFF5D
-          CCFF5DCCFF00AEFF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF686868BDEBFF
-          5DCCFF5DCCFF000000000000000000000000000000000000BFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
-        OnClick = btnMakeBrowseClick
-      end
-      object btnMakDown: TSpeedButton
-        Left = 421
-        Top = 141
-        Width = 23
-        Height = 22
-        Enabled = False
-        Glyph.Data = {
-          36050000424D360500000000000036040000280000000F000000100000000100
-          0800000000000001000000000000000000000001000000010000000000000000
-          80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
-          A60000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
-          0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
-          000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
-          400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
-          8000C0DCC0008040000000000000000080000080000000808000800000008000
-          800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
-          FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
-          0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
-          8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
-          FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
-          0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
-          000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
-          400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
-          8000C0DCC0008040000000000000000080000080000000808000800000008000
-          800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
-          FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
-          0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
-          8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
-          FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
-          0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
-          000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
-          400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
-          8000C0DCC0008040000000000000000080000080000000808000800000008000
-          800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
-          FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
-          0000FFFF00008080000000FF000000800000F0FBFF00A4A0A000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000D0D0D0D0D0D
-          0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
-          0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D000D0D0D0D0D0D0D000D0D0D0D0D0D
-          0006000D0D0D0D0D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0006
-          06060606000D0D0D0D000D0D0D0006060606060606000D0D0D000D0D00000000
-          060606000000000D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0D00
-          060606000D0D0D0D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0D00
-          000000000D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
-          0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D00}
-        OnClick = btnMakClick
-      end
-      object btnMakUp: TSpeedButton
-        Left = 421
-        Top = 117
-        Width = 23
-        Height = 22
-        Enabled = False
-        Glyph.Data = {
-          36050000424D360500000000000036040000280000000F000000100000000100
-          0800000000000001000000000000000000000001000000010000000000000000
-          80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
-          A60000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
-          0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
-          000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
-          400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
-          8000C0DCC0008040000000000000000080000080000000808000800000008000
-          800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
-          FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
-          0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
-          8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
-          FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
-          0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
-          000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
-          400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
-          8000C0DCC0008040000000000000000080000080000000808000800000008000
-          800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
-          FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
-          0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
-          8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
-          FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
-          0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
-          000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
-          400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
-          8000C0DCC0008040000000000000000080000080000000808000800000008000
-          800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
-          FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
-          0000FFFF00008080000000FF000000800000F0FBFF00A4A0A000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000D0D0D0D0D0D
-          0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
-          0D0D0D0D0D0D0D0D0D000D0D0D0D0D00000000000D0D0D0D0D000D0D0D0D0D00
-          060606000D0D0D0D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0D00
-          060606000D0D0D0D0D000D0D00000000060606000000000D0D000D0D0D000606
-          0606060606000D0D0D000D0D0D0D000606060606000D0D0D0D000D0D0D0D0D00
-          060606000D0D0D0D0D000D0D0D0D0D0D0006000D0D0D0D0D0D000D0D0D0D0D0D
-          0D000D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
-          0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D00}
-        OnClick = btnMakClick
-      end
       object cbUseCustomMakefile: TCheckBox
-        Left = 16
-        Top = 12
-        Width = 429
+        Left = 8
+        Top = 8
+        Width = 510
         Height = 17
         Caption = 'Use custom Makefile (do not generate a Makefile, use this one)'
         TabOrder = 0
         OnClick = cbUseCustomMakefileClick
       end
       object edCustomMakefile: TEdit
-        Left = 36
-        Top = 32
-        Width = 377
+        Left = 25
+        Top = 28
+        Width = 460
         Height = 21
         ReadOnly = True
         TabOrder = 1
         Text = 'edCustomMakefile'
       end
-      object MakeIncludes: TListBox
-        Left = 12
-        Top = 112
-        Width = 401
-        Height = 57
-        ItemHeight = 13
+      object grpMakefileCustomize: TGroupBox
+        Left = 8
+        Top = 55
+        Width = 198
+        Height = 208
+        Caption = 'Customizing the Makefile'
         TabOrder = 2
-        OnClick = MakeIncludesClick
-        OnDrawItem = MakeIncludesDrawItem
+        object lblMakefileCustomize: TLabel
+          Left = 8
+          Top = 17
+          Width = 180
+          Height = 185
+          AutoSize = False
+          Caption = 'lblMakefileCustomize'
+          Transparent = True
+        end
       end
-      object edMakeInclude: TEdit
-        Left = 12
-        Top = 176
-        Width = 401
-        Height = 21
+      object grpIncMake: TGroupBox
+        Left = 210
+        Top = 55
+        Width = 310
+        Height = 208
+        Caption = 'Include the following files into the Makefile'
         TabOrder = 3
-        OnChange = edMakeIncludeChange
-      end
-      object btnMakReplace: TButton
-        Tag = 1
-        Left = 78
-        Top = 207
-        Width = 75
-        Height = 23
-        Caption = '&Replace'
-        Enabled = False
-        TabOrder = 4
-        OnClick = MakButtonClick
-      end
-      object btnMakAdd: TButton
-        Tag = 2
-        Left = 159
-        Top = 207
-        Width = 75
-        Height = 23
-        Caption = '&Add'
-        Enabled = False
-        TabOrder = 5
-        OnClick = MakButtonClick
-      end
-      object btnMakDelete: TButton
-        Tag = 3
-        Left = 241
-        Top = 207
-        Width = 75
-        Height = 23
-        Caption = '&Delete'
-        Enabled = False
-        TabOrder = 6
-        OnClick = MakButtonClick
-      end
-      object btnMakDelInval: TButton
-        Tag = 4
-        Left = 323
-        Top = 207
-        Width = 81
-        Height = 23
-        Caption = 'Delete Invalid'
-        Enabled = False
-        TabOrder = 7
-        OnClick = MakButtonClick
+        object btnMakDown: TSpeedButton
+          Left = 280
+          Top = 83
+          Width = 23
+          Height = 22
+          Enabled = False
+          Glyph.Data = {
+            36050000424D360500000000000036040000280000000F000000100000000100
+            0800000000000001000000000000000000000001000000010000000000000000
+            80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
+            A60000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
+            0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
+            000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
+            400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
+            8000C0DCC0008040000000000000000080000080000000808000800000008000
+            800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
+            FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
+            0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
+            8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
+            FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
+            80000080000000808000800000008000800080800000C0C0C000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
+            0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
+            000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
+            400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
+            8000C0DCC0008040000000000000000080000080000000808000800000008000
+            800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
+            FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
+            0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
+            8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
+            FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
+            80000080000000808000800000008000800080800000C0C0C000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
+            0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
+            000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
+            400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
+            8000C0DCC0008040000000000000000080000080000000808000800000008000
+            800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
+            FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
+            0000FFFF00008080000000FF000000800000F0FBFF00A4A0A000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000D0D0D0D0D0D
+            0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
+            0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D000D0D0D0D0D0D0D000D0D0D0D0D0D
+            0006000D0D0D0D0D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0006
+            06060606000D0D0D0D000D0D0D0006060606060606000D0D0D000D0D00000000
+            060606000000000D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0D00
+            060606000D0D0D0D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0D00
+            000000000D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
+            0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D00}
+          OnClick = btnMakClick
+        end
+        object btnMakUp: TSpeedButton
+          Left = 280
+          Top = 59
+          Width = 23
+          Height = 22
+          Enabled = False
+          Glyph.Data = {
+            36050000424D360500000000000036040000280000000F000000100000000100
+            0800000000000001000000000000000000000001000000010000000000000000
+            80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
+            A60000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
+            0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
+            000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
+            400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
+            8000C0DCC0008040000000000000000080000080000000808000800000008000
+            800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
+            FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
+            0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
+            8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
+            FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
+            80000080000000808000800000008000800080800000C0C0C000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
+            0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
+            000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
+            400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
+            8000C0DCC0008040000000000000000080000080000000808000800000008000
+            800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
+            FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
+            0000FFFF00008080000000FF00000080000000FFFF00008080000000FF000000
+            8000FF00FF0080008000FFFBF0008080400000FF800000404000A4C8F0000080
+            FF00A0A0A40000408000FF00800040008000C0DCC00080400000000000000000
+            80000080000000808000800000008000800080800000C0C0C000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFF000000
+            0000C0C0C00080808000FF00000080000000FFFF00008080000000FF00000080
+            000000FFFF00008080000000FF0000008000FF00FF0080008000FFFBF0008080
+            400000FF800000404000A4C8F0000080FF00A0A0A40000408000FF0080004000
+            8000C0DCC0008040000000000000000080000080000000808000800000008000
+            800080800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00
+            FF00FFFF0000FFFFFF00FFFFFF0000000000C0C0C00080808000FF0000008000
+            0000FFFF00008080000000FF000000800000F0FBFF00A4A0A000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000D0D0D0D0D0D
+            0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
+            0D0D0D0D0D0D0D0D0D000D0D0D0D0D00000000000D0D0D0D0D000D0D0D0D0D00
+            060606000D0D0D0D0D000D0D0D0D0D00060606000D0D0D0D0D000D0D0D0D0D00
+            060606000D0D0D0D0D000D0D00000000060606000000000D0D000D0D0D000606
+            0606060606000D0D0D000D0D0D0D000606060606000D0D0D0D000D0D0D0D0D00
+            060606000D0D0D0D0D000D0D0D0D0D0D0006000D0D0D0D0D0D000D0D0D0D0D0D
+            0D000D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D
+            0D0D0D0D0D0D0D0D0D000D0D0D0D0D0D0D0D0D0D0D0D0D0D0D00}
+          OnClick = btnMakClick
+        end
+        object btnMakeBrowse: TSpeedButton
+          Left = 280
+          Top = 150
+          Width = 23
+          Height = 22
+          Glyph.Data = {
+            36030000424D3603000000000000360000002800000010000000100000000100
+            18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
+            BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
+            BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000
+            000000000000000000000000000000000000000000000000000000BFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBF00000000AEFF0096DB0096DB0096DB0096DB0096DB00
+            96DB0096DB0082BE000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
+            00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF00AEFF00AEFF00AEFF00
+            AEFF00AEFF0096DB000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
+            00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF5DCCFF5DCCFF5DCCFF5D
+            CCFF5DCCFF00AEFF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF686868BDEBFF
+            5DCCFF5DCCFF000000000000000000000000000000000000BFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
+          OnClick = btnMakeBrowseClick
+        end
+        object MakeIncludes: TListBox
+          Left = 8
+          Top = 17
+          Width = 265
+          Height = 125
+          ItemHeight = 13
+          TabOrder = 0
+          OnClick = MakeIncludesClick
+          OnDrawItem = MakeIncludesDrawItem
+        end
+        object edMakeInclude: TEdit
+          Left = 8
+          Top = 151
+          Width = 265
+          Height = 21
+          TabOrder = 1
+          OnChange = edMakeIncludeChange
+        end
+        object btnMakDelInval: TButton
+          Tag = 4
+          Left = 229
+          Top = 178
+          Width = 75
+          Height = 23
+          Caption = 'Delete Invalid'
+          Enabled = False
+          TabOrder = 2
+          OnClick = MakButtonClick
+        end
+        object btnMakDelete: TButton
+          Tag = 3
+          Left = 156
+          Top = 178
+          Width = 70
+          Height = 23
+          Caption = '&Delete'
+          Enabled = False
+          TabOrder = 3
+          OnClick = MakButtonClick
+        end
+        object btnMakAdd: TButton
+          Tag = 2
+          Left = 83
+          Top = 178
+          Width = 70
+          Height = 23
+          Caption = '&Add'
+          Enabled = False
+          TabOrder = 4
+          OnClick = MakButtonClick
+        end
+        object btnMakReplace: TButton
+          Tag = 1
+          Left = 8
+          Top = 178
+          Width = 70
+          Height = 23
+          Caption = '&Replace'
+          Enabled = False
+          TabOrder = 5
+          OnClick = MakButtonClick
+        end
       end
     end
     object tabVersion: TTabSheet
@@ -1211,70 +1217,62 @@ object frmProjectOptions: TfrmProjectOptions
       object chkVersionInfo: TCheckBox
         Left = 8
         Top = 8
-        Width = 433
+        Width = 510
         Height = 17
-        Caption = 'Include version info in project'
+        Caption = 'Include version information in project'
         TabOrder = 0
         OnClick = chkVersionInfoClick
       end
       object grpVersion: TGroupBox
         Left = 8
-        Top = 34
-        Width = 442
-        Height = 195
+        Top = 30
+        Width = 235
+        Height = 150
         Caption = 'Version details'
         TabOrder = 1
         object lblVerMajor: TLabel
-          Left = 12
-          Top = 20
+          Left = 9
+          Top = 22
           Width = 29
           Height = 13
           Caption = 'Major:'
           Transparent = True
         end
         object lblVerMinor: TLabel
-          Left = 72
-          Top = 20
+          Left = 9
+          Top = 47
           Width = 29
           Height = 13
           Caption = 'Minor:'
           Transparent = True
         end
         object lblVerRel: TLabel
-          Left = 132
-          Top = 20
+          Left = 9
+          Top = 72
           Width = 42
           Height = 13
           Caption = 'Release:'
           Transparent = True
         end
         object lblVerBuild: TLabel
-          Left = 192
-          Top = 20
+          Left = 9
+          Top = 97
           Width = 26
           Height = 13
           Caption = 'Build:'
           Transparent = True
         end
-        object lblVerAdditional: TLabel
-          Left = 12
-          Top = 80
-          Width = 69
-          Height = 13
-          Caption = 'Additional info:'
-          Transparent = True
-        end
-        object lblVerLang: TLabel
-          Left = 272
-          Top = 20
+        object lblLanguage: TLabel
+          Left = 9
+          Top = 122
           Width = 51
           Height = 13
           Caption = 'Language:'
           Transparent = True
         end
         object spnMajor: TSpinEdit
-          Left = 12
-          Top = 36
+          Left = 65
+          Top = 17
           Width = 57
           Height = 22
           MaxValue = 0
@@ -1283,8 +1281,8 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object spnMinor: TSpinEdit
-          Left = 72
-          Top = 36
+          Left = 65
+          Top = 42
           Width = 57
           Height = 22
           MaxValue = 0
@@ -1293,8 +1291,8 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object spnRelease: TSpinEdit
-          Left = 132
-          Top = 36
+          Left = 65
+          Top = 67
           Width = 57
           Height = 22
           MaxValue = 0
@@ -1303,8 +1301,8 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object spnBuild: TSpinEdit
-          Left = 192
-          Top = 36
+          Left = 65
+          Top = 92
           Width = 57
           Height = 22
           MaxValue = 0
@@ -1312,35 +1310,72 @@ object frmProjectOptions: TfrmProjectOptions
           TabOrder = 3
           Value = 0
         end
+        object cmbLangID: TComboBox
+          Left = 65
+          Top = 118
+          Width = 160
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 0
+          TabOrder = 4
+        end
+      end
+      object grpAdditional: TGroupBox
+        Left = 250
+        Top = 30
+        Width = 270
+        Height = 230
+        Caption = 'Additional info:'
+        TabOrder = 2
         object vleVersion: TValueListEditor
-          Left = 12
-          Top = 96
-          Width = 418
-          Height = 81
+          Left = 9
+          Top = 21
+          Width = 250
+          Height = 200
+          DefaultColWidth = 90
           DisplayOptions = [doAutoColResize, doKeyColFixed]
           FixedCols = 1
           Options = [goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goThumbTracking]
-          TabOrder = 6
+          TabOrder = 0
           ColWidths = (
-            150
-            262)
+            90
+            154)
+          RowHeights = (
+            17)
         end
-        object cmbLangID: TComboBox
-          Left = 272
-          Top = 36
-          Width = 158
-          Height = 21
-          Style = csDropDownList
-          ItemHeight = 13
-          TabOrder = 4
-        end
-        object chkAutoIncBuild: TCheckBox
-          Left = 12
-          Top = 60
-          Width = 413
+      end
+      object grpAutoInc: TGroupBox
+        Left = 8
+        Top = 185
+        Width = 235
+        Height = 75
+        Caption = 'Build number increment'
+        TabOrder = 3
+        object radAutoIncBuildOnCompile: TRadioButton
+          Left = 9
+          Top = 34
+          Width = 213
           Height = 17
-          Caption = 'Auto-increment build number on compile'
-          TabOrder = 5
+          Caption = 'Auto-Increment build number on compile'
+          TabOrder = 0
+        end
+        object radAutoIncBuildOnRebuild: TRadioButton
+          Left = 9
+          Top = 51
+          Width = 213
+          Height = 17
+          Caption = 'Auto-Increment build number on rebuild'
+          TabOrder = 1
+        end
+        object radNoAutoIncBuild: TRadioButton
+          Left = 9
+          Top = 17
+          Width = 213
+          Height = 18
+          Caption = 'Don'#39't Auto-Increment build number'
+          Checked = True
+          TabOrder = 2
+          TabStop = True
         end
       end
     end
@@ -1351,20 +1386,20 @@ object frmProjectOptions: TfrmProjectOptions
       'ib|Resource file (.rc)|*.rc|All files (*.*)|*.*'
     Options = [ofHideReadOnly, ofAllowMultiSelect]
     Title = 'Open object file'
-    Left = 41
-    Top = 279
+    Left = 35
+    Top = 312
   end
   object dlgPic: TOpenPictureDialog
     DefaultExt = 'ico'
     Filter = 'Icons (*.ico)|*.ico'
     Title = 'Open icon'
-    Left = 9
-    Top = 279
+    Left = 8
+    Top = 312
   end
   object dlgMakeInclude: TOpenDialog
     Filter = 'Makefile Addons (*.mak)|*.mak|All Files (*.*)|*.*'
-    Left = 73
-    Top = 279
+    Left = 63
+    Top = 312
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -1394,21 +1429,21 @@ object frmProjectOptions: TfrmProjectOptions
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 171
-    Top = 280
+    Left = 147
+    Top = 312
   end
   object OpenLibDialog: TOpenDialog
     Filter = 
       'Library (*.a;*.lib)|*.a;*.lib|Object (*.o;*.obj)|*.o;*.obj|All f' +
       'iles (*.*)|*.*'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
-    Left = 105
-    Top = 279
+    Left = 91
+    Top = 312
   end
   object dlgCustomMake: TOpenDialog
     Filter = 'All Files (*.*)|*.*'
     FilterIndex = 0
-    Left = 137
-    Top = 279
+    Left = 119
+    Top = 312
   end
 end
