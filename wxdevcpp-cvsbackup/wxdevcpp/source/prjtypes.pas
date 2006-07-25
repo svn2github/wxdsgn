@@ -58,7 +58,8 @@ type
     OriginalFilename: string;
     ProductName: string;
     ProductVersion: string;
-    AutoIncBuildNr: boolean;
+    AutoIncBuildNrOnCompile: boolean;
+    AutoIncBuildNrOnRebuild: boolean;
   end;
 
   TProjOptions = record
@@ -91,6 +92,9 @@ type
     CompilerSet: integer;
     CompilerOptions: string;
     VersionInfo: TProjVersionInfo;
+{$IfDef VC_BUILD}
+    PreprocDefines: string;
+{$EndIf}
   end;
 
 procedure InitOptionsRec(var Rec: TProjOptions);
@@ -133,14 +137,15 @@ begin
     VersionInfo.CharsetID := $04E4; // Windows multilingual
     VersionInfo.CompanyName := '';
     VersionInfo.FileVersion := '';
-    VersionInfo.FileDescription := 'Developed using the Dev-C++ IDE';
+    VersionInfo.FileDescription := '';
     VersionInfo.InternalName := '';
     VersionInfo.LegalCopyright := '';
     VersionInfo.LegalTrademarks := '';
     VersionInfo.OriginalFilename := '';
     VersionInfo.ProductName := '';
     VersionInfo.ProductVersion := '';
-    VersionInfo.AutoIncBuildNr := False;
+    VersionInfo.AutoIncBuildNrOnCompile := False;
+    VersionInfo.AutoIncBuildNrOnRebuild := False;
   end;
 end;
 
@@ -174,6 +179,9 @@ begin
     cmdLines.Compiler := R1.cmdLines.Compiler;
     cmdLines.CppCompiler := R1.cmdLines.CppCompiler;
     cmdLines.Linker := R1.cmdLines.Linker;
+{$IfDef VC_BUILD}
+    PreprocDefines := R1.PreprocDefines;
+{$EndIf}
     useGPP := R1.useGPP;
     icon := R1.icon;
     ExeOutput := R1.ExeOutput;
@@ -188,3 +196,4 @@ begin
 end;
 
 end.
+

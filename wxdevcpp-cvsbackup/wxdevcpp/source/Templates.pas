@@ -52,9 +52,8 @@ type
     fDesc: string;
     fCatagory: string;
     fPrjName: string;
-   fProjectIcon: String;
+    fProjectIcon: string;
     fIconIndex: integer;
-
     fTemplate: TmeminiFile;
     fVersion: integer;
 
@@ -135,68 +134,71 @@ begin
   with fTemplate do
   begin
      fVersion:= ReadInteger(cTemplate, 'Ver', 0);
-    // read entries for both old and new
+     // read entries for both old and new
      // template info
      fName:= ReadString(cTemplate, 'Name', 'NoName');
      fDesc:= ReadString(cTemplate, 'Description', 'NoDesc');
      fCatagory:= ReadString(cTemplate, 'Catagory', '');
      fIconIndex:= ReadInteger(cTemplate, 'IconIndex', 0);
 
-    // project info
+     // project info
      fPrjName:= ReadString(cProject, 'Name', '');
-    if fPrjName = '' then
-      fPrjName:= fName;
+     if fPrjName = '' then
+       fPrjName:= fName;
 
-    if fName = '' then
-      fName:= fPrjName;
+     if fName = '' then
+       fName:= fPrjName;
 
-    // read old style
-    if (fVersion <= 0) then
-    begin
-        fOptions.icon:= ReadString(cTemplate, 'Icon', '');
-      if ReadBool(cProject, 'Console', FALSE) then
-         fOptions.typ:= dptCon
-      else 
-      if ReadBool(cProject, 'DLL', FALSE) then
-          fOptions.typ:= dptDyn
-      else
-          fOptions.Typ:= dptGUI;
+     // read old style
+     if (fVersion <= 0) then
+     begin
+         fOptions.icon:= ReadString(cTemplate, 'Icon', '');
+       if ReadBool(cProject, 'Console', FALSE) then
+          fOptions.typ:= dptCon
+       else
+       if ReadBool(cProject, 'DLL', FALSE) then
+           fOptions.typ:= dptDyn
+       else
+           fOptions.Typ:= dptGUI;
 
-      fOptions.Libs.Append(ReadString(cProject, 'Libs', ''));
-      fOptions.Includes.Append(ReadString(cProject, 'Includes', ''));
+       fOptions.Libs.Append(ReadString(cProject, 'Libs', ''));
+       fOptions.Includes.Append(ReadString(cProject, 'Includes', ''));
 
-        fOptions.useGPP:= ReadBool(cProject, 'Cpp', TRUE);
-        fOptions.cmdLines.Compiler:= ReadString(cProject, 'CompilerOptions', '');
-    end
-    else // read new style
-    begin
-        fOptions.icon:= ReadString(cTemplate, 'Icon', '');
-        ProjectIcon:= ReadString(cProject, 'ProjectIcon', '');
-        fOptions.typ:= ReadInteger(cProject, 'Type', 0); // default = gui
-      fOptions.Objfiles.DelimitedText := ReadString(cProject, 'ObjFiles', '');
-        fOptions.Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
-        fOptions.Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
+         fOptions.useGPP:= ReadBool(cProject, 'Cpp', TRUE);
+         fOptions.cmdLines.Compiler:= ReadString(cProject, 'CompilerOptions', '');
+     end
+     else // read new style
+     begin
+         fOptions.icon:= ReadString(cTemplate, 'Icon', '');
+         ProjectIcon:= ReadString(cProject, 'ProjectIcon', '');
+         fOptions.typ:= ReadInteger(cProject, 'Type', 0); // default = gui
+         fOptions.Objfiles.DelimitedText := ReadString(cProject, 'ObjFiles', '');
+         fOptions.Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
+         fOptions.Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
 
-        {$IFDEF WX_BUILD}
-        // Tony Reina 11 June 2005
-        // This is needed to grab the MakeIncludes from the template file of a new project
-        fOptions.MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
-      {$ENDIF}
+{$IFDEF WX_BUILD}
+         // Tony Reina 11 June 2005
+         // This is needed to grab the MakeIncludes from the template file of a new project
+         fOptions.MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
+         {$IFDEF VC_BUILD}
+         fOptions.PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
+         {$ENDIF}
+{$ENDIF}
 
-        fOptions.ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
-        fOptions.cmdLines.Compiler:= ReadString(cProject, 'Compiler', '');
-        fOptions.cmdLines.CppCompiler:= ReadString(cProject, 'CppCompiler', '');
-        fOptions.cmdLines.Linker:= ReadString(cProject, 'Linker', '');
-        fOptions.useGPP:= ReadBool(cProject, 'IsCpp', FALSE);
-        fOptions.IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
-        fOptions.SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
+         fOptions.ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
+         fOptions.cmdLines.Compiler:= ReadString(cProject, 'Compiler', '');
+         fOptions.cmdLines.CppCompiler:= ReadString(cProject, 'CppCompiler', '');
+         fOptions.cmdLines.Linker:= ReadString(cProject, 'Linker', '');
+         fOptions.useGPP:= ReadBool(cProject, 'IsCpp', FALSE);
+         fOptions.IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
+         fOptions.SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
 
-        // RNC -- 07-23-04 Added the ability to set an output dir in a template
-        fOptions.ExeOutput:= ReadString(cProject, 'ExeOutput', '');
-        fOptions.ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
-        fOptions.CompilerOptions:= ReadString(cProject, 'CompilerSettings','');
-      // units are read on demand
-    end;
+         // RNC -- 07-23-04 Added the ability to set an output dir in a template
+         fOptions.ExeOutput:= ReadString(cProject, 'ExeOutput', '');
+         fOptions.ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
+         fOptions.CompilerOptions:= ReadString(cProject, 'CompilerSettings','');
+         // units are read on demand
+      end;
   end;
 end;
 
@@ -387,4 +389,5 @@ begin
 end;
 
 end.
+
 

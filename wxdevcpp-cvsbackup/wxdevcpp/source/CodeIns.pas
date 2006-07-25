@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, Variants, Classes, Graphics, Controls, Forms,
-  Spin, ExtCtrls, Buttons, StdCtrls, XPMenu;
+  ExtCtrls, Buttons, StdCtrls, XPMenu, Spin;
 {$ENDIF}
 {$IFDEF LINUX}
   Variants, Classes, QGraphics, QControls, QForms,

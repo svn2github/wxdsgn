@@ -70,8 +70,6 @@ type
     lblgprof: TLabel;
     GprofEdit: TEdit;
     XPMenu: TXPMenu;
-    grpMakefileGen: TGroupBox;
-    cbFastDep: TCheckBox;
     CompOptionsFrame1: TCompOptionsFrame;
     grpCompSet: TGroupBox;
     cmbCompilerSetComp: TComboBox;
@@ -87,13 +85,19 @@ type
     btnBrowse7: TSpeedButton;
     btnBrowse8: TSpeedButton;
     cmdline: TGroupBox;
-    cbCompAdd: TCheckBox;
     Commands: TMemo;
-    cbLinkerAdd: TCheckBox;
     Linker: TMemo;
     lblDelay: TLabel;
     seCompDelay: TSpinEdit;
     lblDelayMsg: TLabel;
+    cbCompAdd: TLabel;
+    cbLinkerAdd: TLabel;
+    CompilerTypes: TComboBox;
+    CompilerTypeLbl: TLabel;
+    cbFastDep: TCheckBox;
+    cbMakeAdd: TLabel;
+    Make: TMemo;
+    
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -114,21 +118,21 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnBrws1Click(Sender: TObject);
     procedure cmbCompilerSetCompChange(Sender: TObject);
+    procedure LoadOptions();
     procedure btnAddCompilerSetClick(Sender: TObject);
     procedure btnDelCompilerSetClick(Sender: TObject);
     procedure btnRenameCompilerSetClick(Sender: TObject);
-    procedure GccEditChange(Sender: TObject);
-    procedure GppEditChange(Sender: TObject);
-    procedure MakeEditChange(Sender: TObject);
-    procedure GdbEditChange(Sender: TObject);
-    procedure WindresEditChange(Sender: TObject);
-    procedure DllwrapEditChange(Sender: TObject);
-    procedure GprofEditChange(Sender: TObject);
+    procedure SaveSettings();
+    procedure CompilerTypesClick(Sender: TObject);
+
   private
     fBins: string;
     fLibs: string;
     fC: string;
     fCpp: string;
+{$IfDef VC_BUILD}
+    fRC: string;
+{$EndIf}
     procedure SetOptions;
     procedure UpdateButtons;
     procedure LoadText;
@@ -137,7 +141,7 @@ type
 var
   NumOpt: integer;
   currentSet: integer;
-
+  
 implementation
 
 uses 
@@ -157,20 +161,45 @@ const
     'CompOpt_CodeGen',
     'CompOpt_Linker');
 
+procedure TCompForm.SaveSettings;
+begin
+{$IFDEF VC_BUILD}
+  devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
+{$ENDIF}
+  devCompilerSet.gccName := GccEdit.Text;
+  devCompilerSet.gppName := GppEdit.Text;
+  devCompilerSet.makeName := MakeEdit.Text;
+  devCompilerSet.gdbName := GdbEdit.Text;
+  devCompilerSet.windresName := WindresEdit.Text;
+  devCompilerSet.dllwrapName := DllwrapEdit.Text;
+  devCompilerSet.gprofName := GprofEdit.Text;
+
+  devCompilerSet.BinDir := fBins;
+  devCompilerSet.CDir := fC;
+  devCompilerSet.CppDir := fCpp;
+  devCompilerSet.LibDir := fLibs;
+{$IfDef VC_BUILD}
+  devCompilerSet.RCDir  := fRC;
+{$EndIf}
+
+  devCompilerSet.CmdOpts  := Commands.Lines.Text;
+  devCompilerSet.LinkOpts := Linker.Lines.Text;
+{$IfDef VC_BUILD}
+  devCompilerSet.MakeOpts := Make.Lines.Text;
+{$EndIf}
+  devCompilerSet.OptionsStr := devCompiler.OptionStr;
+  devCompilerSet.SaveSet(currentSet);
+  devCompilerSet.SaveSettings;
+end;
+
 procedure TCompForm.btnCancelClick(Sender: TObject);
 begin
-     devCompiler.CompilerSet:=cmbCompilerSetComp.ItemIndex;
+  devCompiler.CompilerSet:=cmbCompilerSetComp.ItemIndex;
   Close;
 end;
 
 procedure TCompForm.btnOkClick(Sender: TObject);
 begin
-  if cbCompAdd.Checked and (Commands.Text = '') then
-  begin
-    MessageDlg('You have selected the "Add commands" option but no commands have been specified.', MtError, [MbOK], 0);
-    cbCompAdd.Checked := False;
-  end;
-
   if (fBins = '') then
   begin
     MessageDlg('You have not indicated the location of your binaries (compiler).'#13' Please do so now.', mtWarning, [mbOK], 0);
@@ -178,29 +207,14 @@ begin
     exit;
   end;
 
-   //RNC
-   devCompilerSet.CmdOpts:= Commands.Lines.Text;
-   devCompilerSet.AddtoLink:= cbLinkerAdd.Checked;
-   devCompilerSet.AddtoComp:= cbCompAdd.Checked;
-   devCompilerSet.LinkOpts:= Linker.Lines.Text;
-   devCompilerSet.OptionsStr := devCompiler.OptionStr;
-   devCompilerSet.SaveSet(currentSet);
-   devCompilerSet.SaveSettings;
-
+  self.SaveSettings;
+  devCompilerSet.AssignToCompiler;
   with devCompiler do
   begin
     Delay := seCompDelay.Value;
     FastDep := cbFastDep.Checked;
     CompilerSet := cmbCompilerSetComp.ItemIndex;
     devCompilerSet.Sets.Assign(cmbCompilerSetComp.Items);
-
-    gccName := devCompilerSet.gccName;
-    gppName := devCompilerSet.gppName;
-    makeName := devCompilerSet.makeName;
-    gdbName := devCompilerSet.gdbName;
-    windresName := devCompilerSet.windresName;
-    dllwrapName := devCompilerSet.dllwrapName;
-    gprofName := devCompilerSet.gprofName;
   end;
 
   with devDirs do
@@ -209,8 +223,10 @@ begin
     C := fC;
     Cpp := fCpp;
     Lib := fLibs;
+{$IfDef VC_BUILD}
+    RC := fRC;
+{$EndIf}
   end;
-
   // Set Path with New Bins
   SetPath(fBins);
 
@@ -228,18 +244,13 @@ procedure TCompForm.SetOptions;
 begin
   with devCompiler do
   begin
-    seCompDelay.Value := Delay;
-    cbFastDep.Checked := FastDep;
-//RNC
-     //Commands.Lines.Text:= CmdOpts;
-     Commands.Lines.Text:= devCompilerSet.CmdOpts;
-     cbCompAdd.Checked:= devCompilerSet.AddtoComp;
-    // cbCompAdd.Checked:= AddToComp;
-     //Linker.Lines.Text:= LinkOpts;
-     Linker.Lines.Text:= devCompilerSet.LinkOpts;
-     cbLinkerAdd.Checked:= devCompilerSet.AddtoLink;
-    // cbLinkerAdd.Checked:= AddtoLink;
-
+    seCompDelay.Value   := Delay;
+    cbFastDep.Checked   := FastDep;
+    Commands.Lines.Text := CmdOpts;
+    Linker.Lines.Text   := LinkOpts;
+{$IfDef VC_BUILD}
+    Make.Lines.Text     := MakeOpts;
+{$EndIf}
 
     cmbCompilerSetComp.Items.Clear;
     cmbCompilerSetComp.Items.Assign(devCompilerSet.Sets);
@@ -251,7 +262,7 @@ begin
 
     currentSet := cmbCompilerSetComp.ItemIndex;
     devCompilerSet.LoadSet(CompilerSet);
-    cmbCompilerSetCompChange(nil);
+    LoadOptions;
   end;
 end;
 
@@ -275,6 +286,9 @@ begin
     1: StrtoList(fLibs, TStrings(lstDirs.Items));
     2: StrtoList(fC, TStrings(lstDirs.Items));
     3: StrtoList(fCpp, TStrings(lstDirs.Items));
+{$IfDef VC_BUILD}
+    4: StrtoList(fRC, TStrings(lstDirs.Items));
+{$EndIf}
   end;
   edEntry.Clear;
   UpdateButtons;
@@ -338,13 +352,11 @@ begin
     1: fLibs := ListtoStr(lstDirs.Items);
     2: fC := ListtoStr(lstDIrs.Items);
     3: fCpp := ListtoStr(lstDirs.Items);
+{$IfDef VC_BUILD}
+    4: fRC := ListtoStr(lstDirs.Items);
+{$EndIf}
   end;
   edEntry.SetFocus;
-
-  devCompilerSet.BinDir := fBins;
-  devCompilerSet.CDir := fC;
-  devCompilerSet.CppDir := fCpp;
-  devCompilerSet.LibDir := fLibs;
 end;
 
 procedure TCompForm.UpDownClick(Sender: TObject);
@@ -371,13 +383,10 @@ begin
     1: fLibs := ListtoStr(lstDirs.Items);
     2: fC := ListtoStr(lstDIrs.Items);
     3: fCpp := ListtoStr(lstDirs.Items);
+{$IfDef VC_BUILD}
+    4: fRC  := ListtoStr(lstDirs.Items);
+{$EndIf}
   end;
-
-  devCompilerSet.BinDir := fBins;
-  devCompilerSet.CDir := fC;
-  devCompilerSet.CppDir := fCpp;
-  devCompilerSet.LibDir := fLibs;
-
   UpdateButtons;
 end;
 
@@ -444,6 +453,9 @@ begin
   DirTabs.Tabs.Append(Lang[ID_COPT_LIB]);
   DirTabs.Tabs.Append(Lang[ID_COPT_INCC]);
   DirTabs.Tabs.Append(Lang[ID_COPT_INCCPP]);
+{$IfDef VC_BUILD}
+  DirTabs.Tabs.Append('Resource Includes');
+{$EndIf}
 
   //buttons
   btnReplace.Caption := Lang[ID_BTN_REPLACE];
@@ -460,9 +472,6 @@ begin
   lblDelay.Caption := Lang[ID_COPT_DELAY];
   lblDelayMsg.Caption := Lang[ID_COPT_DELAYMSG];
   cbLinkerAdd.Caption := Lang[ID_COPT_LINKADD];
-
-  //controls (code gen tab)
-  grpMakefileGen.Caption := '  ' + Lang[ID_COPT_MAKEFILEGEN] + '  ';
   cbFastDep.Caption := Lang[ID_COPT_FASTDEP];
 
   // conrols (Programs tab)
@@ -473,41 +482,44 @@ end;
 
 procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
 begin
-  devCompilerSet.OptionsStr := devCompiler.OptionStr;
-  devCompilerSet.CmdOpts:=Commands.Lines.Text;
-  devCompilerSet.LinkOpts:=Linker.Lines.Text;
-
-  devCompilerSet.AddtoLink:=cbLinkerAdd.Checked;
-  devCompilerSet.AddtoComp:=cbCompAdd.Checked;
-  devCompilerSet.SaveSet(currentSet);
-
+  SaveSettings;
   devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
   currentSet := cmbCompilerSetComp.ItemIndex;
-
-  with devCompilerSet do begin
-    fBins := BinDir;
-    fC := CDir;
-    fCpp := CppDir;
-    fLibs := LibDir;
-    Commands.Lines.Text:= CmdOpts;
-    Linker.Lines.Text:= LinkOpts;
-    cbCompAdd.Checked:=AddtoComp;
-    cbLinkerAdd.Checked:=AddtoLink;
-  end;
-  DirTabsChange(DirTabs);
-
-  with devCompilerSet do begin
-    GccEdit.Text := gccName;
-    GppEdit.Text := gppName;
-    GdbEdit.Text := gdbName;
-    MakeEdit.Text := makeName;
-    WindresEdit.Text := windresName;
-    DllwrapEdit.Text := dllwrapName;
-    GprofEdit.Text := gprofName;
-
-    devCompiler.OptionStr := OptionsStr;
-    CompOptionsFrame1.FillOptions(nil);
+  LoadOptions();
 end;
+
+procedure TCompForm.LoadOptions();
+begin
+  with devCompilerSet do begin
+    fBins                   := BinDir;
+    fC                      := CDir;
+    fCpp                    := CppDir;
+    fLibs                   := LibDir;
+{$IfDef VC_BUILD}
+    fRC                     := RCDir;
+{$EndIf}
+
+    Commands.Lines.Text     := CmdOpts;
+    Linker.Lines.Text       := LinkOpts;
+{$IFDEF VC_BUILD}
+    Make.Lines.Text         := MakeOpts;
+    CompilerTypes.ItemIndex := CompilerType;
+{$ENDIF}
+    DirTabsChange(DirTabs);
+
+    GccEdit.Text            := gccName;
+    GppEdit.Text            := gppName;
+    GdbEdit.Text            := gdbName;
+    MakeEdit.Text           := makeName;
+    WindresEdit.Text        := windresName;
+    DllwrapEdit.Text        := dllwrapName;
+    GprofEdit.Text          := gprofName;
+
+    devCompiler.AddDefaultOptions;
+    devCompiler.OptionStr   := OptionsStr;
+    CompOptionsFrame1.FillOptions(nil);
+    CompilerTypesClick(nil);
+  end;
 end;
 
 procedure TCompForm.btnBrws1Click(Sender: TObject);
@@ -543,13 +555,6 @@ begin
   dmMain.OpenDialog.FileName:=IncludeTrailingPathDelimiter(dmMain.OpenDialog.InitialDir)+Obj.Text;
   if dmMain.OpenDialog.Execute then begin
     Obj.Text := ExtractFileName(dmMain.OpenDialog.FileName);
-    devCompilerSet.gccName := GccEdit.Text;
-    devCompilerSet.gppName := GppEdit.Text;
-    devCompilerSet.gdbName := GdbEdit.Text;
-    devCompilerSet.makeName := MakeEdit.Text;
-    devCompilerSet.windresName := WindresEdit.Text;
-    devCompilerSet.dllwrapName := DllwrapEdit.Text;
-    devCompilerSet.gprofName := GprofEdit.Text;
   end;
 end;
 
@@ -594,39 +599,49 @@ begin
   cmbCompilerSetComp.ItemIndex := cmbCompilerSetComp.Items.IndexOf(S);
 end;
 
-procedure TCompForm.GccEditChange(Sender: TObject);
+procedure TCompForm.CompilerTypesClick(Sender: TObject);
 begin
-  devCompilerSet.gccName := GccEdit.Text;
-end;
+{$IFDEF VC_BUILD}
+  cbFastDep.Enabled := CompilerTypes.ItemIndex = ID_COMPILER_MINGW;
+  devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
+  devCompilerSet.SettoDefaults;
+  devCompiler.AddDefaultOptions;
+  devCompiler.OptionStr := devCompilerSet.OptionsStr;
+  CompOptionsFrame1.FillOptions(nil);
 
-procedure TCompForm.GppEditChange(Sender: TObject);
-begin
-  devCompilerSet.gppName := GppEdit.Text;
-end;
-
-procedure TCompForm.MakeEditChange(Sender: TObject);
-begin
-  devCompilerSet.makeName := MakeEdit.Text;
-end;
-
-procedure TCompForm.GdbEditChange(Sender: TObject);
-begin
-  devCompilerSet.gdbName := GdbEdit.Text;
-end;
-
-procedure TCompForm.WindresEditChange(Sender: TObject);
-begin
-  devCompilerSet.windresName := WindresEdit.Text;
-end;
-
-procedure TCompForm.DllwrapEditChange(Sender: TObject);
-begin
-  devCompilerSet.dllwrapName := DllwrapEdit.Text;
-end;
-
-procedure TCompForm.GprofEditChange(Sender: TObject);
-begin
-  devCompilerSet.gprofName := GprofEdit.Text;
+  //Set the labels
+  case CompilerTypes.ItemIndex of
+    ID_COMPILER_MINGW:
+      begin
+        lblwindres.Caption := 'windres : ';
+        lbldllwrap.Caption := 'dllwrap : ';
+        lblgprof.Caption := 'gprof : ';
+        lblgprof.Enabled := true;
+        gprofEdit.Enabled := true;
+        btnbrowse8.Enabled := true;
+      end;
+    ID_COMPILER_VC:
+      begin
+        lblwindres.Caption := 'rc : ';
+        lbldllwrap.Caption := 'link : ';
+        lblgprof.Caption := 'mt : ';
+        lblgprof.Enabled := false;
+        gprofEdit.Enabled := false;
+        btnbrowse8.Enabled := false;
+        cbFastDep.Checked := true;
+      end;
+    ID_COMPILER_VC2005:
+      begin
+        lblwindres.Caption := 'rc : ';
+        lbldllwrap.Caption := 'link : ';
+        lblgprof.Caption := 'mt : ';
+        lblgprof.Enabled := true;
+        gprofEdit.Enabled := true;
+        btnbrowse8.Enabled := true;
+        cbFastDep.Checked := true;
+      end;
+  end;
+{$ENDIF}
 end;
 
 end.

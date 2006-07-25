@@ -355,7 +355,7 @@ begin
 
 {$IFDEF WX_BUILD}
     if fEditorType = etForm then
-      ReloadForm();
+      ReloadForm;
 {$ENDIF}
 
   except
@@ -479,7 +479,6 @@ begin
   FCodeToolTip := TDevCodeToolTip.Create(Application);
   FCodeToolTip.Editor := FText;
   FCodeToolTip.Parser := MainForm.CppParser1;
-
   
   {** Modified by Peter **}
   // The Editor must have 'Auto Indent' activated  to use FAutoIndent.
@@ -2235,8 +2234,8 @@ begin
   end;
 end;
 
-{** Modified by Peter **}
-// added on 25th march 2004
+//this event is triggered whenever the codecompletion box is going to do the actual
+//code completion
 procedure TEditor.DoOnCodeCompletion(Sender: TObject; const AStatement: TStatement; const AIndex: Integer);
 //
 //  this event is triggered whenever the codecompletion box is going to make its work,
@@ -2247,7 +2246,7 @@ var
 begin
   // disable the tooltip here, becasue we check against Enabled
   // in the 'EditorStatusChange' event to prevent it's redrawing there
-  if FCodeToolTip <> nil then
+  if assigned(FCodeToolTip)then
   begin
 
     //FCodeToolTip may not be initialized under some
@@ -2293,8 +2292,6 @@ begin
 fText.InvalidateGutter;
 end;
 
-////
-
 {$IFDEF WX_BUILD}
 function TEditor.isForm: Boolean;
 begin
@@ -2303,9 +2300,7 @@ begin
   else
     Result := false;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TEditor.ActivateDesigner;
 begin
   if isForm then
@@ -2328,18 +2323,16 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
-function GetElapsedTimeStr(StartTime : LongWord):String;
-begin
-  Result := Format('%.3f seconds', [(GetTickCount - StartTime) / 1000]);
-end;
-
-{$IFDEF WX_BUILD}
 procedure TEditor.UpdateDesignerData;
 var
   e: TEditor;
   STartTimeX: longword;
+
+  function GetElapsedTimeStr(StartTime : LongWord):String;
+  begin
+    Result := Format('%.3f seconds', [(GetTickCount - StartTime) / 1000]);
+  end;
 begin
   if isForm then
   begin
@@ -2390,9 +2383,7 @@ begin
   if MainForm.ELDesigner1.GenerateXRC then
      UpdateXRC;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TEditor.GetDesigner: TfrmNewForm;
 begin
   if isForm then
@@ -2400,9 +2391,7 @@ begin
   else
     Result := nil;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TEditor.InitDesignerData(strFName, strCName, strFTitle: string;
   dlgSStyle: TWxDlgStyleSet);
 begin
@@ -2411,9 +2400,7 @@ begin
   fDesignerStyle := dlgSStyle;
   fDesignerDefaultData := True;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TEditor.GetDesignerHPPFileName: string;
 begin
   if not isForm then
@@ -2422,9 +2409,7 @@ begin
   if FileExists(ChangeFileExt(FileName, H_EXT)) then
     Result := ChangeFileExt(FileName, H_EXT);
 end;
-{$ENDIF}
 
-  {$IFDEF WX_BUILD}
 function TEditor.GetDesignerCPPFileName: string;
 begin
   if not isForm then
@@ -2433,9 +2418,7 @@ begin
   if FileExists(ChangeFileExt(FileName, CPP_EXT)) then
     Result := ChangeFileExt(FileName, CPP_EXT);
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TEditor.GetDesignerHPPText: TSynEdit;
 var
   e: TEditor;
@@ -2458,10 +2441,6 @@ begin
   end;
 end;
 
-{$ENDIF}
-
-{$IFDEF WX_BUILD}
-
 function TEditor.GetDesignerCPPText: TSynEdit;
 var
   e: TEditor;
@@ -2483,24 +2462,17 @@ begin
     end;
   end;
 end;
-  {$ENDIF}
 
-  {$IFDEF WX_BUILD}
 function TEditor.IsDesignerHPPOpened: Boolean;
 begin
     Result := MainForm.isFileOpenedinEditor(ChangeFileExt(FileName, H_EXT));
 end;
-{$ENDIF}
-
-{$IFDEF WX_BUILD}
 
 function TEditor.IsDesignerCPPOpened: Boolean;
 begin
     Result := MainForm.isFileOpenedinEditor(ChangeFileExt(FileName, CPP_EXT));
 end;
-{$ENDIF}
 
-  {$IFDEF WX_BUILD}
 function TEditor.GetDesignerHPPEditor: TEditor;
 var
   e: TEditor;
@@ -2521,9 +2493,7 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TEditor.GetDesignerCPPEditor: TEditor;
 var
   e: TEditor;
@@ -2545,22 +2515,10 @@ begin
     end;
   end;
 end;
-{$ENDIF}
-
-{$IFDEF WX_BUILD}
 
 procedure TEditor.ReloadForm;
-var
-    I:Integer;
 begin
-    if not self.isForm then
-        exit;
-    //Delete all the Components and
-    for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
-    begin
-        self.fDesigner.Components[i].Destroy;
-    end;    // for
-    ReadComponentFromFile(self.fDesigner, self.FileName);
+    ReloadFormFromFile(self.FileName);
 end;
 
 procedure TEditor.ReloadFormFromFile(strFilename:String);
@@ -2569,18 +2527,23 @@ var
 begin
     if not self.isForm then
         exit;
-    //Delete all the Components and
-    for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
-    begin
-        self.fDesigner.Components[i].Destroy;
-    end;    // for
-    ReadComponentFromFile(self.fDesigner, strFilename);
+
+    try
+        //Delete all the Components and
+        for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
+        begin
+            self.fDesigner.Components[i].Destroy;
+        end;    // for
+
+        ReadComponentFromFile(self.fDesigner, strFilename);
+    except
+        on e: Exception do
+        begin
+            MessageBox(0, PChar(e.Message), 'wxDev-C++', MB_ICONHAND or MB_OK or MB_TASKMODAL);
+        end;
+    end;
 end;
 
-
-{$ENDIF}
-
-{$IFDEF WX_BUILD}
 procedure TEditor.UpdateXRC;
 var
   e: TEditor;

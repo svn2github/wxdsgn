@@ -171,7 +171,7 @@ var
   opt, opt1: TCompilerOption;
   I: integer;
 begin
-  if vle.Strings.Count <= ARow then
+  if ((vle.Strings.Count <= ARow) or (vle.Strings.Count = 0)) then
     Exit;
   opt := devCompiler.Options[Integer(vle.Strings.Objects[ARow])];
 
@@ -181,8 +181,7 @@ begin
     opt.optValue := 0 //False
   else if opt.optChoices = nil then
     Exit
-  else
-  begin
+  else begin
     for i := 0 to opt.optChoices.Count - 1 do
       if Value = opt.optChoices.Names[i] then begin
         opt.optValue := i;

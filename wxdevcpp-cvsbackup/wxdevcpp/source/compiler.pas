@@ -27,6 +27,9 @@ unit compiler;
 
 interface
 uses
+{$IFDEF VC_BUILD}
+xprocs,
+{$ENDIF}
 {$IFDEF WIN32}
   Windows, SysUtils, Dialogs, StdCtrls, ComCtrls, Forms,
   devrun, version, project, utils, prjtypes, Classes, Graphics;
@@ -59,7 +62,7 @@ type
     DoCheckSyntax: Boolean;
     fWarnCount: integer;
     fSingleFile: boolean;
-    fOriginalSet: integer;
+    fOriginalSet : integer;
     procedure DoLogEntry(const msg: string);
     procedure DoOutput(const s, s2, s3: string);
     procedure DoResOutput(const s, s2, s3: string);
@@ -98,12 +101,18 @@ type
     property ErrorCount: integer read fErrCount;
     procedure OnAbortCompile(Sender: TObject);
     procedure AbortThread;
+{$IFDEF VC_BUILD}
+    procedure ParseLine(Line: String);
+{$ENDIF}
   protected
     fCompileParams: string;
     fCppCompileParams: string;
     fLibrariesParams: string;
     fIncludesParams: string;
     fCppIncludesParams: string;
+{$IfDef VC_BUILD}
+    fRcIncludesParams: string;
+{$EndIf}
     fBinDirs: string;
     fUserParams: string;
     fDevRun: TDevRun;
@@ -124,6 +133,9 @@ type
     function NewMakeFile(var F: TextFile): boolean; virtual;
     procedure WriteMakeClean(var F: TextFile); virtual;
     procedure WriteMakeObjFilesRules(var F: TextFile); virtual;
+{$IfDef VC_BUILD}
+    function PreProcDefines(): string;
+{$EndIf}
   end;
 
 implementation
@@ -149,7 +161,6 @@ begin
   if assigned(fOnResOutput) then
     fOnResOutput(s, s2, s3);
 end;
-
 
 function TCompiler.GetMakeFile: string;
 begin
@@ -178,7 +189,7 @@ begin
     dptStat: CreateStaticMakeFile;
     dptDyn: CreateDynamicMakeFile;
   else
-    CreateMakeFile;
+    CreateMakeFile;    
   end;
   if FileExists(fMakeFile) then
     FileSetDate(fMakefile, DateTimeToFileDate(Now)); // fix the "Clock skew detected" warning ;)
@@ -191,13 +202,21 @@ resourcestring
   cAppendStr = '%s %s';
 
 var
-  ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, ofile, tfile, tmp: string;
+  ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, ofile, tfile,tmp: string;
   i: integer;
+{$IFNDEF VC_BUILD}
   opt: TCompilerOption;
   idx: integer;
-
+{$EndIf}
 begin
   Objects := '';
+
+{$IfDef VC_BUILD}
+  // create the object output directory if we have to
+  if (fProject.Options.ObjectOutput <> '') and (not DirectoryExists(fProject.Options.ObjectOutput)) then
+    ForceDirectories(GetRealPath(SubstituteMakeParams(fProject.Options.ObjectOutput), fProject.Directory));
+{$EndIf}
+
   for i := 0 to Pred(fProject.Units.Count) do
   begin
     if GetFileTyp(fProject.Units[i].FileName) = utRes then
@@ -212,10 +231,12 @@ begin
     begin
       if fProject.Options.ObjectOutput <> '' then
       begin
+{$IfNDef VC_BUILD}
         if not DirectoryExists(fProject.Options.ObjectOutput) then
           MkDir(fProject.Options.ObjectOutput);
+{$EndIf}
         ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
-         ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)), True, True);
+        ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)), True, True);
         Objects := Format(cAppendStr, [Objects, ofile]);
         if fProject.Units[i].Link then
           LinkObjects := Format(cAppendStr, [LinkObjects, ofile]);
@@ -232,10 +253,12 @@ begin
   if Length(fProject.Options.PrivateResource) = 0 then
     ObjResFile := ''
   else begin
-    if fProject.Options.ObjectOutput<>'' then begin
+    if fProject.Options.ObjectOutput <> '' then begin
+{$IfNDef VC_BUILD}
       if not DirectoryExists(fProject.Options.ObjectOutput) then
         MkDir(fProject.Options.ObjectOutput);
-      ObjResFile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput)+ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
+{$EndIf}
+      ObjResFile := ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
       ObjResFile := GenMakePath(ExtractRelativePath(fProject.FileName, ObjResFile));
     end
   else
@@ -243,24 +266,36 @@ begin
   end;
 
   if (devCompiler.gppName <> '') then
-    Comp_ProgCpp := devCompiler.gppName
+  {$IFDEF VC_BUILD}
+    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.compilerType = ID_COMPILER_VC2005) then
+      Comp_ProgCpp := devCompiler.gppName + ' /nologo'
+    else
+  {$ENDIF}
+      Comp_ProgCpp := devCompiler.gppName
   else
     Comp_ProgCpp := GPP_PROGRAM;
 
   if (devCompiler.gccName <> '') then
-    Comp_Prog := devCompiler.gccName
+  {$IFDEF VC_BUILD}
+    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.compilerType = ID_COMPILER_VC2005) then
+      Comp_Prog := devCompiler.gccName + ' /nologo'
+    else
+  {$ENDIF}
+      Comp_Prog := devCompiler.gccName
   else
+{$IFDEF VC_BUILD}
     Comp_Prog := GCC_PROGRAM;
-
-  if devCompiler.FindOption('-g3', opt, idx) then
+{$ELSE}
+   if devCompiler.FindOption('-g3', opt, idx) then
     if (fProject.Options.CompilerOptions <> '') and (fProject.Options.CompilerOptions[idx + 1] = '1') then begin
       Comp_ProgCpp := Comp_ProgCpp + ' -D__DEBUG__';
       Comp_Prog := Comp_Prog + ' -D__DEBUG__';
     end;
+{$ENDIF}
 
-  GetCompileParams;
-  GetLibrariesParams;
-  GetIncludesParams;
+    GetCompileParams;
+    GetLibrariesParams;
+    GetIncludesParams;
 
   fMakefile := fProject.Directory + DEV_MAKE_FILE;
   DoLogEntry('Building Makefile: "' + fMakefile + '"');
@@ -277,23 +312,40 @@ begin
   end;
   result := true;
   writeln(F, '# Project: ' + fProject.Name);
+{$IFDEF VC_BUILD}
+    writeln(F, '# Makefile created by ' + DEVCPP + ' ' + DEVCPP_VERSION +
+             ' on ' + FormatDateTime('dd/mm/yy hh:nn', Now));
+    writeln(F, '# Compiler: ' + devCompiler.Name);
+    writeln(F, '# CompilerType: ' + inttostr(devCompiler.CompilerType));
+{$ELSE}
   writeln(F, '# Makefile created by Dev-C++ ' + DEVCPP_VERSION);
-  writeln(F);
+{$ENDIF}
   if DoCheckSyntax then
   begin
     writeln(F, '# This Makefile is written for syntax check!');
     writeln(F, '# Regenerate it if you want to use this Makefile to build.');
-    writeln(F);
   end;
-  writeln(F, 'CPP  = ' + Comp_ProgCpp);
-  writeln(F, 'CC   = ' + Comp_Prog);
+  writeln(F);
+  writeln(F, 'CPP       = ' + Comp_ProgCpp);
+  writeln(F, 'CC        = ' + Comp_Prog);
   if (devCompiler.windresName <> '') then
-    writeln(F, 'WINDRES = ' + devCompiler.windresName)
+    writeln(F, 'WINDRES   = ' + devCompiler.windresName)
   else
-    writeln(F, 'WINDRES = ' + WINDRES_PROGRAM);
-  writeln(F, 'RES  = ' + ObjResFile);
-  writeln(F, 'OBJ  =' + Objects + ' $(RES)');
-  writeln(F, 'LINKOBJ  =' + LinkObjects + ' $(RES)');
+    writeln(F, 'WINDRES   = ' + WINDRES_PROGRAM);
+  writeln(F, 'RES       = ' + ObjResFile);
+  writeln(F, 'OBJ       =' + Objects + ' $(RES)');
+  writeln(F, 'LINKOBJ   =' + LinkObjects + ' $(RES)');
+{$IfDef VC_BUILD} 
+  writeln(F, 'LIBS      =' + StringReplace(fLibrariesParams, '\', '/', [rfReplaceAll]));
+  writeln(F, 'INCS      =' + StringReplace(fIncludesParams, '\', '/', [rfReplaceAll]));
+  writeln(F, 'CXXINCS   =' + StringReplace(fCppIncludesParams, '\', '/', [rfReplaceAll]));
+  writeln(F, 'RCINCS    =' + StringReplace(fRcIncludesParams, '\', '/', [rfReplaceAll]));
+  writeln(F, 'BIN       = ' + GenMakePath(ExtractRelativePath(Makefile, fProject.Executable)));
+  writeln(F, 'DEFINES   = ' + PreprocDefines);
+  writeln(F, 'CXXFLAGS  = $(CXXINCS) $(DEFINES) ' + fCppCompileParams);
+  writeln(F, 'CFLAGS    = $(INCS) $(DEFINES) ' + fCompileParams);
+  writeln(F, 'GPROF     = ' + devCompilerSet.gprofName);
+{$Else}
   tmp := StringReplace(fLibrariesParams, '\', '/', [rfReplaceAll]);
   writeln(F, 'LIBS = ' + tmp);
   tmp := StringReplace(fIncludesParams, '\', '/', [rfReplaceAll]);
@@ -302,20 +354,34 @@ begin
   writeln(F, 'CXXINCS = ' + tmp);
   writeln(F, 'BIN  = ' + GenMakePath(ExtractRelativePath(
     Makefile, fProject.Executable)));
+  writeln(F, 'CXXFLAGS  = $(CXXINCS) ' + fCppCompileParams);
+  writeln(F, 'CFLAGS    = $(INCS) ' + fCompileParams);
+{$EndIf}
+  writeln(F, 'RM        = rm -f');
 
-  writeln(F, 'CXXFLAGS = $(CXXINCS)' + fCppCompileParams);
-  writeln(F, 'CFLAGS = $(INCS)' + fCompileParams);
-  writeln(F, 'RM = rm -f');
+{$IFDEF VC_BUILD}
+  if (devCompiler.CompilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    if (assigned(fProject) and (fProject.Options.typ = dptStat)) then
+      writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
+    else
+      writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo')
+  else if devCompiler.CompilerType <> ID_COMPILER_MINGW then
+    writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
+  else
+    if (assigned(fProject) and (fProject.Options.typ = dptStat)) then
+        writeln(F, 'LINK      = ar')
+    else if fProject.Options.useGPP then
+      writeln(F, 'LINK      = ' + Comp_ProgCpp)
+    else
+      writeln(F, 'LINK      = ' + Comp_Prog);
+{$ENDIF}
 
   Writeln(F, '');
   if DoCheckSyntax then
     Writeln(F,'.PHONY: all all-before all-after clean clean-custom $(OBJ) $(BIN)')
   else
     Writeln(F, '.PHONY: all all-before all-after clean clean-custom');
-  Writeln(F, '');
-  Writeln(F, 'all: all-before ' +
-    GenMakePath(ExtractRelativePath(Makefile, fProject.Executable)) +
-    ' all-after');
+  Writeln(F, 'all: all-before ' + GenMakePath(ExtractRelativePath(Makefile, fProject.Executable)) + ' all-after');
   Writeln(F, '');
 
   for i := 0 to fProject.Options.MakeIncludes.Count - 1 do
@@ -350,7 +416,11 @@ begin
     GppStr := GPP_PROGRAM;
 
   Includes := StringReplace(Includes, '\', '/', [rfReplaceAll]);
+  {$IFDEF VC_BUILD}
+  Cmd := GppStr + ' ' + Includes + ' ' + GenMakePath2(ExtractRelativePath(Makefile, TheFile));
+  {$ELSE}
   Cmd := GppStr + ' -MM ' + Includes + ' ' + GenMakePath2(ExtractRelativePath(Makefile, TheFile));
+  {$ENDIF}
   Output := RunAndGetOutput(Cmd, ExtractFileDir(Makefile), nil, nil, nil, True);
 
   if (Length(Output) > 0) then  begin
@@ -393,8 +463,12 @@ end;
 procedure TCompiler.WriteMakeObjFilesRules(var F: TextFile);
 var
   i: integer;
+{$IfNDef VC_BUILD}
   ShortPath: string;
- ResIncludes: String;
+  ResIncludes: String;
+{$Else}
+  RCDir: String;
+{$EndIf}
   tfile, ofile, ResFiles, tmp: string;
 begin
   for i := 0 to pred(fProject.Units.Count) do
@@ -411,13 +485,16 @@ begin
       tfile := ExtractFileName(tFile)
     else
       tfile := ExtractRelativePath(Makefile, tfile);
+
     if GetFileTyp(tfile) <> utHead then
     begin
       writeln(F);
       if fProject.Options.ObjectOutput <> '' then
       begin
+{$IfNDef VC_BUILD}
         if not DirectoryExists(fProject.Options.ObjectOutput) then
           MkDir(fProject.Options.ObjectOutput);
+{$EndIf}
         ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
         ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)));
       end
@@ -426,21 +503,28 @@ begin
 
       if DoCheckSyntax then
       begin
-              writeln(F, GenMakePath2(ofile) + ':' + GenMakePath2(tfile));
+        writeln(F, GenMakePath2(ofile) + ':' + GenMakePath2(tfile));
+
         if fProject.Units[i].CompileCpp then
+        {$IFDEF VC_BUILD}
+          writeln(F, #9'$(CPP) ' + format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) + ' $(CXXFLAGS)')
+        else
+          writeln(F, #9'$(CC) ' + format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) + ' $(CFLAGS)');
+        {$ELSE}
           writeln(F, #9 + '$(CPP) -S ' + GenMakePath(tfile) +
             ' -o nul $(CXXFLAGS)')
         else
           writeln(F, #9 + '$(CC) -S ' + GenMakePath(tfile) +
             ' -o nul $(CFLAGS)');
-      end 
+        {$ENDIF}
+      end
       else
       begin
         if PerfectDepCheck and not fSingleFile then
                   writeln(F, GenMakePath2(ofile) + ': ' + GenMakePath2(tfile) + ' ' +
             FindDeps(fProject.Directory + tfile))
         else
-                  writeln(F, GenMakePath2(ofile) + ': ' + GenMakePath2(tfile));
+          writeln(F, GenMakePath2(ofile) + ': ' + GenMakePath2(tfile));
 
         if fProject.Units[i].OverrideBuildCmd and (fProject.Units[i].BuildCmd <> '') then  begin
           tmp := fProject.Units[i].BuildCmd;
@@ -449,11 +533,17 @@ begin
         end
         else begin
           if fProject.Units[i].CompileCpp then
-            writeln(F, #9 + '$(CPP) -c ' + GenMakePath(tfile) +
+          {$IFDEF VC_BUILD}
+            writeln(F, #9 + '$(CPP) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), ofile]) + ' $(CXXFLAGS)')
+          else
+            writeln(F, #9 + '$(CC) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), ofile]) + ' $(CFLAGS)');
+          {$ELSE}
+                 writeln(F, #9 + '$(CPP) -c ' + GenMakePath(tfile) +
               ' -o ' + ofile + ' $(CXXFLAGS)')
           else
             writeln(F, #9 + '$(CC) -c ' + GenMakePath(tfile) +
               ' -o ' + ofile + ' $(CFLAGS)');
+          {$ENDIF}
         end;
       end;
     end;
@@ -462,8 +552,8 @@ begin
   if (Length(fProject.Options.PrivateResource) > 0) then
   begin
     ResFiles := '';
+{$IfNDef VC_BUILD}
     ResIncludes := ' ';
-
     // for some strange reason, lately, windres doesn't like long filenames
     // in "--include-dir"...
     for i := 0 to fProject.Options.ResourceIncludes.Count - 1 do
@@ -471,47 +561,65 @@ begin
       ShortPath := GetShortName(fProject.Options.ResourceIncludes[i]);
       // only add include-dir if it is existing dir...
       if ShortPath <> '' then
-        ResIncludes := ResIncludes + ' --include-dir ' +
+	ResIncludes := ResIncludes + ' --include-dir ' +
           GenMakePath(ShortPath);
-    end;
+      end;
+{$ENDIF}
 
     for i := 0 to fProject.Units.Count - 1 do
     begin
       if GetFileTyp(fProject.Units[i].FileName) <> utRes then
         Continue;
-      tfile := ExtractRelativePath(fProject.Executable,
-        fProject.Units[i].FileName);
-      if FileExists(GetRealPath(tfile, fProject.Directory)) then
-              ResFiles := ResFiles + GenMakePath2(tfile) + ' ';
+      if FileExists(GetRealPath(fProject.Units[i].FileName, fProject.Directory)) then
+        ResFiles := ResFiles + GenMakePath2(ExtractRelativePath(fProject.Directory,
+                                            fProject.Units[i].FileName)) + ' ';
     end;
-
     writeln(F);
-
+{$IfNDef VC_BUILD}
       if fProject.Options.ObjectOutput<>'' then
         ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput)+ChangeFileExt(fProject.Options.PrivateResource, RES_EXT)
       else
         ofile := ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
       ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ofile));//GenMakePath(ExtractRelativePath(Makefile, ChangeFileExt(fProject.Options.PrivateResource, RES_EXT)));
       tfile := GenMakePath(ExtractRelativePath(fProject.FileName, fProject.Options.PrivateResource));
+{$ELSE}
+    //Get the path of the resource
+    ofile := ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
+    if (fProject.Options.ObjectOutput <> '') then
+      RCDir := fProject.Options.ObjectOutput
+    else
+      RCDir := fProject.Directory;
+    RCDir := IncludeTrailingPathDelimiter(GetRealPath(RCDir, fProject.Directory));
+
+    //Then get the path to the resource object relative to our project directory
+    ofile := GenMakePath(ExtractRelativePath(fProject.Directory, ofile));
+    tfile := GenMakePath(ExtractRelativePath(fProject.FileName, fProject.Options.PrivateResource));
+{$ENDIF}
     if DoCheckSyntax then
     begin
       writeln(F, ofile + ':');
-      writeln(F, #9 + '$(WINDRES) -i ' + tfile +
+{$IFDEF VC_BUILD}
+      writeln(F, #9 + '$(WINDRES) ' + format(devCompiler.ResourceFormat, [string('$(RES)')]) + ' $(RCINCS) ' + tfile);
+{$ELSE}
+       writeln(F, #9 + '$(WINDRES) -i ' + tfile +
             ' --input-format=rc -o nul -O coff' + ResIncludes)
+{$ENDIF}
     end else
     begin
       writeln(F, ofile + ': ' + tfile + ' ' + ResFiles);
-      writeln(F, #9 + '$(WINDRES) -i ' + tfile +
+{$IFDEF VC_BUILD}
+      writeln(F, #9 + '$(WINDRES) ' + format(devCompiler.ResourceFormat, [string('$(RES)')]) + ' $(RCINCS) ' + tfile);
+{$ELSE}
+        writeln(F, #9 + '$(WINDRES) -i ' + tfile +
             ' --input-format=rc -o ' + ofile + ' -O coff' + ResIncludes);
+{$ENDIF}
     end;
   end;
 end;
 
 procedure TCompiler.WriteMakeClean(var F: TextFile);
 begin
-  Writeln(F);
   Writeln(F, 'clean: clean-custom');
-  Writeln(F, 'clean: ');
   Writeln(F, #9 + '$(RM) $(OBJ) $(BIN)');
 end;
 
@@ -521,12 +629,25 @@ var
 begin
   if not NewMakeFile(F) then
     exit;
-  writeln(F, '$(BIN): $(OBJ)');// CL: changed from $(LINKOBJ) to $(OBJ), in order to call overrided buid commands not included in linking
+  writeln(F, '$(BIN): $(OBJ)');
+
   if not DoCheckSyntax then
-    if fProject.Options.useGPP then
-      writeln(F, #9 + '$(CPP) $(LINKOBJ) -o "' + ExtractRelativePath(Makefile,fProject.Executable) + '" $(LIBS)')
-    else
-      writeln(F, #9 + '$(CC) $(LINKOBJ) -o "' + ExtractRelativePath(Makefile,fProject.Executable) + '" $(LIBS)');
+{$IFDEF VC_BUILD}
+  begin
+    writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)]) + ' $(LIBS)');
+    if devCompiler.compilerType = ID_COMPILER_VC2005 then
+    begin
+      writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
+      writeln(F, #9 + '@rm "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest"');
+    end;
+  end;
+{$ELSE}
+     if fProject.Options.useGPP then
+        writeln(F, #9 + '$(CPP) $(LINKOBJ) -o "' + ExtractRelativePath(Makefile,fProject.Executable) + '" $(LIBS)')
+      else
+        writeln(F, #9 + '$(CC) $(LINKOBJ) -o "' + ExtractRelativePath(Makefile,fProject.Executable) + '" $(LIBS)');
+{$ENDIF}
+
   WriteMakeObjFilesRules(F);
   Flush(F);
   CloseFile(F);
@@ -541,8 +662,15 @@ begin
   writeln(F, '$(BIN): $(LINKOBJ)');
   if not DoCheckSyntax then
   begin
-    writeln(F, #9 + 'ar r $(BIN) $(LINKOBJ)');
-    writeln(F, #9 + 'ranlib $(BIN)');
+{$IFDEF VC_BUILD}
+    if devCompiler.CompilerType <> ID_COMPILER_MINGW then
+      writeln(F, #9 + '$(LINK) ' + format(devCompiler.LibFormat, ['$(BIN)']) + ' $(LINKOBJ) $(LIBS)')
+    else
+      writeln(F, #9 + '$(LINK) ' + format(devCompiler.LibFormat, ['$(BIN)']) + ' $(LINKOBJ)');
+{$ELSE}
+     writeln(F, #9 + 'ar r $(BIN) $(LINKOBJ)');
+      writeln(F, #9 + 'ranlib $(BIN)');
+{$ENDIF}
   end;
   WriteMakeObjFilesRules(F);
   Flush(F);
@@ -555,11 +683,12 @@ var  F: TextFile;
 begin
   if not NewMakeFile(F) then
     exit;
+ { //confirm with joel
   if (devCompiler.dllwrapName <> '') then
     writeln(F, 'DLLWRAP=' + devCompiler.dllwrapName)
   else
     writeln(F, 'DLLWRAP=' + DLLWRAP_PROGRAM);
-
+}
   pfile := ExtractFilePath(Project.Executable);
   tfile := pfile + 'lib' + ExtractFileName(Project.Executable);
   if FileSamePath(tfile, Project.Directory) then
@@ -573,12 +702,19 @@ begin
 
   if not DoCheckSyntax then
   begin
-    if fProject.Options.useGPP then
-      writeln(F, #9 + '$(DLLWRAP) --output-def $(DEFFILE) ' +
-        '--driver-name c++ --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)')
-    else
-      writeln(F, #9 + '$(DLLWRAP) --output-def $(DEFFILE) ' +
-        '--implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)');
+{$IFDEF VC_BUILD}
+    writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, ['$(STATICLIB)', '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+    if devCompiler.compilerType = ID_COMPILER_VC2005 then
+    begin
+      writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
+      writeln(F, #9 + '@rm "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest"');
+    end;
+{$ELSE}
+   if fProject.Options.useGPP then
+        writeln(F, #9 + '$(DLLWRAP) --output-def $(DEFFILE) ' + '--driver-name c++ --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)')
+      else
+        writeln(F, #9 + '$(DLLWRAP) --output-def $(DEFFILE) ' + '--implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)');
+{$ENDIF}
   end;
 
   WriteMakeObjFilesRules(F);
@@ -601,25 +737,24 @@ begin
     fCppCompileParams := '';
     fUserParams := '';
 
-    {     if Assigned(fProject) and fProject.Options.useGPP then
-           fUserParams := fProject.Options.cmdlines.CppCompiler
-         else if Assigned(fProject) then
-           fUserParams := fProject.Options.cmdlines.Compiler; }
     if Assigned(fProject) then begin
       fCppCompileParams := StringReplace(fProject.Options.cmdlines.CppCompiler, '_@@_', ' ', [rfReplaceAll]);
       fCompileParams := StringReplace(fProject.Options.cmdlines.Compiler, '_@@_',' ', [rfReplaceAll]);
     end;
 
-     //RNC
+   {$IFDEF VC_BUILD}
+    if CmdOpts <> '' then
+      AppendStr(fUserParams, CmdOpts);
+   {$ELSE}
+   //RNC
      //if (CmdOpts <> '') and AddtoComp then
-     if (devCompilerSet.CmdOpts <> '') and devCompilerSet.AddtoComp then
+     if (devCompilerSet.CmdOpts <> '') then
       AppendStr(fUserParams, devCompilerSet.CmdOpts);
       //AppendStr(fUserParams, cmdOpts);
+   {$ENDIF}
 
     AppendStr(fCompileParams, fUserParams);
     AppendStr(fCppCompileParams, fUserParams);
-
-
 
     for I := 0 to devCompiler.OptionsCount - 1 do
       // consider project specific options for the compiler
@@ -629,7 +764,8 @@ begin
         not (fProject.Options.typ in devCompiler.Options[I].optExcludeFromTypes)
         ) or
         // else global compiler options
-      (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
+      (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then
+      begin
         if devCompiler.Options[I].optIsC then begin
           if Assigned(devCompiler.Options[I].optChoices) then begin
             if Assigned(fProject) then
@@ -661,6 +797,142 @@ begin
   end;
 end;
 
+procedure TCompiler.GetLibrariesParams;
+{$IFNDEF VC_BUILD}
+resourcestring
+  cAppendStr = '%s -L"%s"';
+{$ENDIF}
+var
+  i, val: integer;
+{$IFDEF VC_BUILD}cAppendStr : string;{$ENDIF}
+begin
+  fLibrariesParams := '';
+{$IFDEF VC_BUILD}
+  cAppendStr := '%s ' + devCompiler.LinkerPaths;
+  fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
+
+  if devCompilerSet.LinkOpts <> '' then
+    fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
+  if (fTarget = ctProject) and assigned(fProject) then
+  begin
+    for i := 0 to pred(fProject.Options.Libs.Count) do
+      fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.Options.Libs[i]]);
+    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.Options.cmdLines.Linker, '_@@_', ' ', [rfReplaceAll]);
+  end;
+{$ELSE}
+
+  fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
+  if devCompilerSet.LinkOpts <> '' then
+    fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
+  if (fTarget = ctProject) and assigned(fProject) then begin
+    for i := 0 to pred(fProject.Options.Libs.Count) do
+      fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.Options.Libs[i]]);
+    // got sick of "symbol 'blah blah' is deprecated"
+    if fProject.Options.typ = dptGUI then
+      fLibrariesParams := fLibrariesParams + ' -mwindows';
+    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.Options.cmdLines.Linker, '_@@_', ' ', [rfReplaceAll]);
+  end;
+
+{$ENDIF}
+
+  if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
+    fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
+
+  fLibrariesParams := fLibrariesParams + ' ';
+  for I := 0 to devCompiler.OptionsCount - 1 do
+    // consider project specific options for the compiler
+    if (
+      Assigned(fProject) and
+      (I < Length(fProject.Options.CompilerOptions)) and
+      not (fProject.Options.typ in devCompiler.Options[I].optExcludeFromTypes)
+      ) or
+      // else global compiler options
+    (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
+      if devCompiler.Options[I].optIsLinker then
+        if Assigned(devCompiler.Options[I].optChoices) then begin
+          if Assigned(fProject) then
+            val :=devCompiler.ConvertCharToValue(fProject.Options.CompilerOptions[I +1])
+          else
+            val := devCompiler.Options[I].optValue;
+          if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
+              fLibrariesParams := fLibrariesParams
+                + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
+        end
+        else if (Assigned(fProject) and (StrToIntDef(fProject.Options.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
+            fLibrariesParams := fLibrariesParams
+              + devCompiler.Options[I].optSetting + ' ';
+    end;
+
+end;
+
+procedure TCompiler.GetIncludesParams;
+{$IFNDEF VC_BUILD}
+resourcestring
+  cAppendStr = '%s -I"%s" ';
+{$ENDIF}
+var
+  i: integer;
+{$IFDEF VC_BUILD}cAppendStr : string;{$ENDIF}
+begin
+  fIncludesParams := '';
+  fCppIncludesParams := '';
+
+{$IFDEF VC_BUILD}
+  cAppendStr := '%s ' + devCompiler.IncludeFormat;
+  fIncludesParams := CommaStrToStr(devDirs.C, cAppendStr);
+  fCppIncludesParams := CommaStrToStr(devDirs.Cpp, cAppendStr);
+  fRcIncludesParams := CommaStrToStr(devDirs.RC, cAppendStr);
+
+  if (fTarget = ctProject) and assigned(fProject) then begin
+    for i := 0 to pred(fProject.Options.Includes.Count) do
+      if directoryExists(fProject.Options.Includes[i]) then begin
+        fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.Options.Includes[i]]);
+        fCppIncludesParams := format(cAppendStr, [fCppIncludesParams, fProject.Options.Includes[i]]);
+      end;
+    for i := 0 to pred(fProject.Options.ResourceIncludes.Count) do
+      if directoryExists(fProject.Options.ResourceIncludes[i]) then
+        fRcIncludesParams := format(cAppendStr, [fRcIncludesParams, fProject.Options.ResourceIncludes[i]]);
+  end;
+{$ELSE}
+
+  fIncludesParams := CommaStrToStr(devDirs.C, cAppendStr);
+  fCppIncludesParams := CommaStrToStr(devDirs.Cpp, cAppendStr);
+
+  if (fTarget = ctProject) and assigned(fProject) then
+    for i := 0 to pred(fProject.Options.Includes.Count) do
+      if directoryExists(fProject.Options.Includes[i]) then  begin
+        fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.Options.Includes[i]]);
+        fCppIncludesParams := format(cAppendStr, [fCppIncludesParams, fProject.Options.Includes[i]]);
+      end;
+{$ENDIF}
+
+end;
+
+{$IFDEF VC_BUILD}
+function TCompiler.PreProcDefines: string;
+var
+i: integer;
+values: TStringList;
+tempvalues: string;
+begin
+  Result := '';
+  if assigned(fProject) then
+  begin
+    values := TStringList.Create;
+    tempvalues := StringReplace(fProject.Options.PreProcDefines, '_@@_', #10, [rfReplaceAll]);
+    strTokenToStrings(tempvalues, #10, values);
+
+    for i := 0 to values.Count - 1 do
+    begin
+      Result := Result + ' ' + Format(devCompiler.PreprocDefines, [values[i]]);
+    end;
+
+    //Clean up
+    values.Destroy;
+  end;
+end;
+{$ENDIF}
+
 procedure TCompiler.ShowResults;
 begin
   // display compile results dialog
@@ -675,7 +947,6 @@ end;
 
 procedure TCompiler.Compile(SingleFile: string);
 resourcestring
-  cCmdLine = '%s "%s" -o "%s" %s %s %s';
   cMakeLine = '%s -f "%s" all';
   cSingleFileMakeLine = '%s -f "%s" %s';
   cMake = ' make';
@@ -684,7 +955,13 @@ var
   cmdline: string;
   s: string;
   ofile: string;
+  cCmdLine: string;
 begin
+{$IfDef VC_BUILD}
+  cCmdLine := devCompiler.SingleCompile;
+{$Else}
+  cCmdLine := '%s "%s" /Fo "%s" %s %s %s';
+{$EndIf}
   fSingleFile := SingleFile <> '';
   fRunAfterCompileFinish := FALSE;
   if Assigned(fDevRun) then
@@ -713,28 +990,29 @@ begin
     if SingleFile <> '' then   begin
       if fProject.Options.ObjectOutput <> '' then
       begin
+{$IfNDef VC_BUILD}
         if not DirectoryExists(fProject.Options.ObjectOutput) then
           MkDir(fProject.Options.ObjectOutput);
+{$EndIf}
         ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(SingleFile);
         ofile := GenMakePath(ExtractRelativePath(fProject.FileName,ChangeFileExt(ofile, OBJ_EXT)));
       end
       else
         ofile := GenMakePath(ExtractRelativePath(fProject.FileName,ChangeFileExt(SingleFile, OBJ_EXT)));
       if (devCompiler.makeName <> '') then
-        cmdline := format(cSingleFileMakeLine, [devCompiler.makeName, fMakeFile,ofile])
+        cmdline := format(cSingleFileMakeLine, [devCompiler.makeName, fMakeFile,ofile]) + ' ' + devCompiler.makeopts
       else
-        cmdline := format(cSingleFileMakeLine, [MAKE_PROGRAM, fMakeFile, ofile]);
+        cmdline := format(cSingleFileMakeLine, [MAKE_PROGRAM, fMakeFile, ofile]) + ' ' + devCompiler.makeopts;
     end
     else begin
       if (devCompiler.makeName <> '') then
-        cmdline := format(cMakeLine, [devCompiler.makeName, fMakeFile])
+        cmdline := format(cMakeLine, [devCompiler.makeName, fMakeFile]) + ' ' + devCompiler.makeopts
       else
-        cmdline := format(cMakeLine, [MAKE_PROGRAM, fMakeFile]);
+        cmdline := format(cMakeLine, [MAKE_PROGRAM, fMakeFile]) + ' ' + devCompiler.makeopts;
     end;
 
     DoLogEntry(format(Lang[ID_EXECUTING], [cMake + cDots]));
     DoLogEntry(cmdline);
-    //DoLogEntry('Compiler Delay: '+inttostr(devCompiler.Delay));
     Sleep(devCompiler.Delay);
     LaunchThread(cmdline, ExtractFilePath(Project.FileName));
   end
@@ -743,8 +1021,10 @@ begin
       s := devCompiler.windresName
     else
       s := WINDRES_PROGRAM;
-    cmdline := s + ' --input-format=rc -i ' + fSourceFile + ' -o ' +
+{$IFNDEF VC_BUILD}
+   cmdline := s + ' --input-format=rc -i ' + fSourceFile + ' -o ' +
       ChangeFileExt(fSourceFile, OBJ_EXT);
+{$ENDIF}
     DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
     DoLogEntry(cmdline);
   end
@@ -761,9 +1041,19 @@ begin
           [s, fSourceFile, 'nul', fCppCompileParams,
           fCppIncludesParams, fLibrariesParams])
       else
-        cmdline := format(cCmdLine,
-          [s, fSourceFile, ChangeFileExt(fSourceFile, EXE_EXT),
-          fCppCompileParams, fCppIncludesParams, fLibrariesParams]);
+{$IFDEF VC_BUILD}
+      begin
+        if (devCompiler.CompilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+          cmdline := format(cCmdLine,
+            [s, fSourceFile, fCppCompileParams, fCppIncludesParams, fLibrariesParams])
+        else
+{$ENDIF}
+          cmdline := format(cCmdLine,
+            [s, fSourceFile, ChangeFileExt(fSourceFile, EXE_EXT),
+      	    fCppCompileParams, fCppIncludesParams, fLibrariesParams]);
+{$IFDEF VC_BUILD}
+      end;
+{$ENDIF}
       DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
       DoLogEntry(cmdline);
     end
@@ -848,7 +1138,7 @@ end;
 
 function TCompiler.Clean: Boolean;
 const
-  cCleanLine = '%s clean -f "%s"';
+  cCleanLine = '%s clean -f "%s" %s';
   cmsg = ' make clean';
 var
   cmdLine: string;
@@ -880,7 +1170,7 @@ begin
       s := devCompiler.makeName
     else
       s := MAKE_PROGRAM;
-    cmdLine := Format(cCleanLine, [s, fMakeFile]);
+    cmdLine := Format(cCleanLine, [s, fMakeFile, devCompiler.MakeOpts]);
     LaunchThread(cmdLine, fProject.Directory);
   end else
     Result := False;
@@ -921,7 +1211,8 @@ begin
       s := devCompiler.makeName
     else
       s := MAKE_PROGRAM;
-    cmdLine := Format(cCleanLine, [s, fMakeFile]);
+    
+    cmdLine := Format(cCleanLine, [s, fMakeFile]) + ' ' + devCompiler.makeopts;;
     LaunchThread(cmdLine, fProject.Directory);
   end  else  begin
     Compile;
@@ -995,9 +1286,221 @@ end;
 
 procedure TCompiler.OnLineOutput(Sender: TObject; const Line: String);
 begin
+{$IFDEF VC_BUILD}
+  ParseLine(Line);
+{$ENDIF}
   DoLogEntry(Line);
   ProcessProgressForm(Line);
 end;
+
+{$IFDEF VC_BUILD}
+procedure TCompiler.ParseLine(Line: String);
+var
+LowerLine: string;
+cpos: integer;
+begin
+  try
+    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    begin
+      if (Pos('Command line error', Line) > 0) then
+      begin
+	Inc(fErrCount);
+      end
+      else if (Pos('Command line warning', Line) > 0) then
+      begin
+	Inc(fWarnCount);
+      end
+      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) = 0) and (Pos('include file', Line) = 0) then
+      begin
+	Inc(fErrCount);
+      end
+      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) > 0) then
+      begin
+	Inc(fErrCount);
+      end
+      else if (Pos('fatal error', Line) > 0) and (Pos('include file', Line) > 0) then
+      begin
+	Inc(fErrCount);
+      end
+      else if (Pos('error', Line) > 0) and (Pos('ambiguous', Line) = 0) then
+      begin
+	Inc(fErrCount);
+      end
+      else if (Pos('error', Line) > 0) then
+      begin
+	Inc(fErrCount);
+      end
+      else if (Pos('warning ', Line) > 0) then
+      begin
+	Inc(fWarnCount);
+      end
+    else if devCompiler.CompilerType = ID_COMPILER_MINGW then
+    begin
+      LowerLine := LowerCase(Line);
+
+      { Make errors }
+      if (Pos('make.exe: ***', LowerCase(Line)) > 0) and
+        (Pos('Clock skew detected. Your build may be incomplete',
+        LowerCase(Line)) <= 0) then
+      begin
+        if fErrCount = 0 then
+          fErrCount := 1;
+      end;
+
+      { windres errors }
+      if Pos('windres.exe: ', LowerCase(Line)) > 0 then
+      begin
+        { Delete 'windres.exe :' }
+        Delete(Line, 1, 13);
+
+        cpos := GetLastPos('warning: ', Line);
+        if cpos > 0 then
+        begin
+          { Delete 'warning: ' }
+          Delete(Line, 1, 9);
+          cpos := Pos(':', Line);
+          Delete(Line, 1, cpos);
+          Inc(fWarnCount);
+        end
+        else
+        begin
+          { Does it contain a filename and line number? }
+          cpos := GetLastPos(':', Line);
+          if (cpos > 0) and (Pos(':', Line) <> cpos) then
+          begin
+            Delete(Line, cpos, Length(Line) - cpos + 1);
+            cpos := GetLastPos(':', Line);
+            Delete(Line, cpos, Length(Line) - 1);
+          end;
+          Inc(fErrCount);
+        end;
+      end;
+
+
+      { foo.c: In function 'bar': }
+      if Pos('In function', Line) > 0 then
+      begin
+        { Get message }
+        cpos := GetLastPos(': ', Line);
+        Delete(Line, cpos, Length(Line) - cpos + 1);
+        Inc(fWarnCount);
+      end;
+
+      { In file included from C:/foo.h:1, }
+      if Pos('In file included from ', Line) > 0 then
+      begin
+        Delete(Line, Length(Line), 1);
+        cpos := GetLastPos(':', Line);
+        Delete(Line, cpos, Length(Line) - cpos + 1);
+      end;
+
+      { from blabla.c:1: }
+      if Pos('                 from ', Line) > 0 then
+      begin
+        Delete(Line, Length(Line), 1);
+        cpos := GetLastPos(':', Line);
+        Delete(Line, cpos, Length(Line) - cpos + 1);
+      end;
+
+
+      { foo.cpp: In method `bool MyApp::Bar()': }
+      cpos := GetLastPos('In method `', Line);
+      // GCC >= 3.2 support
+      if cpos <= 0 then
+        { foo.cpp: In member function `bool MyApp::Bar()': }
+        cpos := GetLastPos('In member function `', Line);
+      if cpos <= 0 then
+        { foo.cpp: In constructor `MyApp::MyApp()': }
+        cpos := GetLastPos('In constructor `', Line);
+      if cpos <= 0 then
+        { foo.cpp: In destructor `MyApp::MyApp()': }
+        cpos := GetLastPos('In destructor `', Line);
+      if cpos > 0 then
+      begin
+        Delete(Line, cpos - 2, Length(Line) - cpos + 3);
+      end;
+
+
+      { C:\TEMP\foo.o(.text+0xc)://C/bar.c: undefined reference to `hello' }
+      cpos := Pos('undefined reference to ', Line);
+      if cpos > 0 then
+      begin
+        Inc(fErrCount);
+      end;
+
+
+      { foo.cpp:1:[2:] bar.h: No such file or directory }
+      cpos := GetLastPos('No such file or directory', Line);
+      if cpos > 0 then
+      begin
+        Inc(fErrCount);
+      end;
+
+      { foo.cpp:1: candidates are: FooClass::Bar(void) }
+      cpos := GetLastPos(': candidates are: ', Line);
+      if cpos > 0 then
+      begin
+        Delete(Line, cpos, Length(Line) - cpos + 1);
+        cpos := GetLastPos(':', Line);
+        Delete(Line, cpos, Length(Line) - cpos + 1);
+      end;
+
+      { Other messages }
+      cpos := GetLastPos(': ', Line);
+
+      // there is no reason to run the following block if cpos=0.
+      // the bug appeared when added an "all-after" Makefile rule
+      // with the following contents:
+      //
+      // all-after:
+     //     copy $(BIN) c:\$(BIN)
+      //
+      // the following block of code freaked-out with the ":"!
+      if cpos > 0 then begin // mandrav fix
+        Delete(Line, cpos + 2, Length(Line) - cpos - 1);
+
+        cpos := Pos('warning: ', Line);
+        if cpos > 0 then
+        begin
+          Inc(fWarnCount);
+          Delete(Line, cpos - 2, Length(Line) - cpos + 2);
+        end
+        else
+        begin
+          Inc(fErrCount);
+        end;
+
+        // GCC >= 3.2. support
+        if Pos(': error', Line) > 0 then begin
+          Delete(Line, Pos(': error', Line), Length(Line) - cpos + 1);
+          cpos := GetLastPos(':', Line);
+          Delete(Line, cpos, Length(Line) - cpos + 1);
+        end
+        else begin
+          cpos := GetLastPos(':', Line);
+           if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos - 1), -1) <> -1 then
+           begin
+             Delete(Line, cpos, Length(Line) - cpos + 1);
+             //filename may also contain column as "filename:line:col"
+             cpos := GetLastPos(':', Line);
+             if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos), -1) <> -1 then
+             begin
+               Delete(Line, cpos, Length(Line) - cpos + 1);
+             end;
+           end;
+        end;
+      end;
+    end;
+    end;
+  except
+  end;
+  with CompileProgressForm do
+  begin
+      lblErr.Caption := IntToStr(fErrCount);
+      lblWarn.Caption := IntToStr(fWarnCount);
+  end
+end;
+{$ENDIF}
 
 procedure TCompiler.ParseResults;
 var
@@ -1009,6 +1512,7 @@ var
   Line, LowerLine: string;
   Messages, IMod: Integer;
   gcc, gpp: string;
+  
 begin
   Messages := 0;
   LOutput := TStringList.Create;
@@ -1026,29 +1530,156 @@ begin
     IMod := CalcMod(pred(LOutput.Count));
 
     // Concatenate errors which are on multiple lines
-    for curLine := 0 to pred(LOutput.Count) do begin
-      if (curLine > 0) and AnsiStartsStr('   ', LOutput[curLine]) then begin
-        O_Msg := LOutput[curLine];
-        Delete(O_Msg, 1, 2);
-        LOutput[curLine - 1] := LOutput[curLine - 1] + O_Msg;
+{$IFDEF VC_BUILD}
+      for curLine := 0 to pred(LOutput.Count) do begin
+        if (curLine > 0) and AnsiStartsStr('   ', LOutput[curLine]) then begin
+          O_Msg := LOutput[curLine];
+          Delete(O_Msg, 1, 2);
+          LOutput[curLine - 1] := LOutput[curLine - 1] + O_Msg;
+        end;
       end;
-    end;
+{$ENDIF}
 
     for curLine := 0 to pred(LOutput.Count) do
     begin
-      if (IMod = 0) or (curLine mod IMod = 0) then
-        Application.ProcessMessages;
+    if (IMod = 0) or (curLine mod IMod = 0) then
+      Application.ProcessMessages;
 
-      if Messages > 500 then
+    if Messages > 500 then
+    begin
+      DoOutput('', '', '[General Error] Too many messages; abort.');
+      DoOutput('', '', 'There must be something terribly wrong with ' +
+        'your code. Please fix it.');
+      Break;
+    end;
+
+    Line := LOutput.Strings[curLine];
+    LowerLine := LowerCase(Line);
+
+{$IFDEF VC_BUILD}
+    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    begin
+      //Do we have to ignore this message?
+      if
+	(Line = '') or //Empty line?!
+	(Copy(Line, 1, Length(devCompiler.gccName)) = devCompiler.gccName) or
+        (Copy(Line, 1, Length(devCompiler.gppName)) = devCompiler.gppName) or
+	(Copy(Line, 1, Length(devCompiler.dllwrapName)) = devCompiler.dllwrapName) or
+	(Copy(Line, 1, Length(devCompiler.windresName)) = devCompiler.windresName) or
+        (Copy(Line, 1, Length(devCompiler.gprofName)) = devCompiler.gprofName) or
+        (Copy(Line, 1, 5) = 'rm -f') or
+	(Copy(Line, 1, 19) = '   Creating library') or
+	(Length(Line) = 2) or//One word lines?
+	(Pos('*** [', Line) > 0) or
+	(((Pos('.c', Line) > 0) or (Pos('.cpp', Line) > 0)) and (Pos('(', Line) = 0)) or
+	(Pos('Nothing to be done for', Line) > 0) or
+	(Pos('while trying to match the argument list', Line) > 0) or
+        (Line = 'Generating code') or
+        (Line = 'Finished generating code')
+      then
+	continue;
+
+      if (Pos('Command line error', Line) > 0) then
       begin
-        DoOutput('', '', '[General Error] Too many messages; abort.');
-        DoOutput('', '', 'There must be something terribly wrong with ' +
-          'your code. Please fix it.');
-        Break;
-      end;
+	O_Msg := '[Command Line Error ' + Copy(Line, Pos('error ', Line) + 7, Pos(' : ', Line) + 1) + '] ';
+	O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
+	Inc(fErrCount);
+      end
+      else if (Pos('Command line warning', Line) > 0) then
+      begin
+	O_Msg := '[Command Line Warning ' + Copy(Line, Pos('warning ', Line) + 9, Pos(' : ', Line) + 1) + '] ';
+	O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
+	Inc(fWarnCount);
+      end
+      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) = 0) and (Pos('include file', Line) = 0) then
+      begin
+	O_Msg := '[Error ' + Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6) + '] ';
+	O_Msg := O_Msg + Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
+	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+	O_File := Copy(Line, 0, Pos('(', Line) - 1);
+	Inc(fErrCount);
+      end
+      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) > 0) then
+      begin
+	O_Msg := '[Error ' + Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6);
+	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1) + '] #error: ';
+	O_Msg := O_Msg + Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
+	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+	O_File := Copy(Line, 0, Pos('(', Line) - 1);
+	Inc(fErrCount);
+      end
+      else if (Pos('fatal error', Line) > 0) and (Pos('include file', Line) > 0) then
+      begin
+	O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6);
+	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
+	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
+	O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
+	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+	O_File := Copy(Line, 0, Pos('(', Line) - 1);
+	Inc(fErrCount);
+      end
+      else if (Pos('error', Line) > 0) and (Pos('ambiguous', Line) = 0) then
+      begin
+	O_Msg := Copy(Line, Pos('error ', Line) + 6, 7);
+	if Pos(':', O_Msg) > 0 then
+	  O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
+	O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
+	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+	O_File := Copy(Line, 0, Pos('(', Line) - 1);
+	Inc(fErrCount);
+      end
+      else if (Pos('error', Line) > 0) then
+      begin
+	O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
+	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
+	O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Pos('function', Line) + 8 - (Pos(O_Msg, Line) + Length(O_Msg) + 2));
+	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+	O_File := Copy(Line, 0, Pos('(', Line) - 1);
+	DoOutput(O_Line, O_file, O_Msg);
+	O_Msg := Copy(Line, Pos('could be', Line), Length(Line));
+	Inc(fErrCount);
+      end
+      else if (Pos('could be ', Line) > 0) or (Pos('or       ', Line) > 0) then
+      begin
+	O_Msg := Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
+      end
+      else if (Pos('warning ', Line) > 0) then
+      begin
+	O_Msg := Copy(Line, Pos('warning', Line) + 8, Pos('warning', Line) + 15);
+	if (Pos(':', O_Msg) > 0) then
+	  O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
 
+	O_Msg := '[Warning ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 1, Length(Line));
+	O_File := Copy(Line, 0, Pos('(', Line) - 1);
+	O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
+        Inc(fWarnCount);
+      end
+      else if (Pos(': ', Line) > 0) then
+      begin
+	//Line number
+	O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
+	O_File := Trim(Copy(Line, 0, Pos('(', Line) - 1));
+        if fProject <> nil then
+	    O_File := ExtractRelativePath(fProject.FileName, O_File);
+	O_Msg := Copy(Line, Pos(': ', Line) + 2, Length(Line));
+      end
+      else
+      begin
+      	O_Msg := Line;
+      end;
+        Inc(Messages);
+        DoOutput(O_Line, O_file, O_Msg);
+    end
+    else //ID_COMPILER_MINGW
+    begin
       Line := LOutput.Strings[curLine];
       LowerLine := LowerCase(Line);
+{$ENDIF}
       { Is this a compiler message? }
       if (Pos(':', Line) <= 0) or
         (CompareText(Copy(LowerLine, 1, 7), gpp) = 0) or
@@ -1374,8 +2005,9 @@ begin
           		O_Msg := '[Build Error] ' + O_Msg;
 
         DoOutput(O_Line, O_file, O_Msg);
-      end; // mandrav fix
-    end;
+      end;
+    {$IFDEF VC_BUILD}end;{$ENDIF}
+  end;
   finally
     Application.ProcessMessages;
     if devCompiler.SaveLog then
@@ -1393,75 +2025,6 @@ begin
   // there are no compiler errors/warnings
   if (Assigned(fOnSuccess)) then
     fOnSuccess(Messages);
-end;
-
-procedure TCompiler.GetLibrariesParams;
-resourcestring
-  cAppendStr = '%s -L"%s"';
-var
-  i, val: integer;
-begin
-  fLibrariesParams := '';
-  fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
-//RNC
-  if (devCompilerSet.LinkOpts <> '') and devCompilerSet.AddtoLink then
-    fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
-  if (fTarget = ctProject) and assigned(fProject) then begin
-    for i := 0 to pred(fProject.Options.Libs.Count) do
-      fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.Options.Libs[i]]);
-    // got sick of "symbol 'blah blah' is deprecated"
-    if fProject.Options.typ = dptGUI then
-      fLibrariesParams := fLibrariesParams + ' -mwindows';
-    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.Options.cmdLines.Linker, '_@@_', ' ', [rfReplaceAll]);
-  end;
-  if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
-    fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
-
-  fLibrariesParams := fLibrariesParams + ' ';
-  for I := 0 to devCompiler.OptionsCount - 1 do
-    // consider project specific options for the compiler
-    if (
-      Assigned(fProject) and
-      (I < Length(fProject.Options.CompilerOptions)) and
-      not (fProject.Options.typ in devCompiler.Options[I].optExcludeFromTypes)
-      ) or
-      // else global compiler options
-    (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
-      if devCompiler.Options[I].optIsLinker then
-        if Assigned(devCompiler.Options[I].optChoices) then begin
-          if Assigned(fProject) then
-            val :=devCompiler.ConvertCharToValue(fProject.Options.CompilerOptions[I +1])
-          else
-            val := devCompiler.Options[I].optValue;
-          if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
-              fLibrariesParams := fLibrariesParams
-                + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
-        end
-        else if (Assigned(fProject) and (StrToIntDef(fProject.Options.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
-            fLibrariesParams := fLibrariesParams
-              + devCompiler.Options[I].optSetting + ' ';
-    end;
-
-end;
-
-procedure TCompiler.GetIncludesParams;
-resourcestring
-  cAppendStr = '%s -I"%s" ';
-var
-  i: integer;
-begin
-  fIncludesParams := '';
-  fCppIncludesParams := '';
-
-  fIncludesParams := CommaStrToStr(devDirs.C, cAppendStr);
-  fCppIncludesParams := CommaStrToStr(devDirs.Cpp, cAppendStr);
-
-  if (fTarget = ctProject) and assigned(fProject) then
-    for i := 0 to pred(fProject.Options.Includes.Count) do
-      if directoryExists(fProject.Options.Includes[i]) then  begin
-        fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.Options.Includes[i]]);
-        fCppIncludesParams := format(cAppendStr, [fCppIncludesParams, fProject.Options.Includes[i]]);
-      end;
 end;
 
 function TCompiler.GetCompiling: Boolean;
@@ -1492,7 +2055,7 @@ begin
 
   if devCompiler.CompilerSet = fProject.Options.CompilerSet then
     Exit;
-
+  
   devCompilerSet.LoadSet(fProject.Options.CompilerSet);
   devCompilerSet.AssignToCompiler;
   devCompiler.CompilerSet := fProject.Options.CompilerSet;
@@ -1569,7 +2132,6 @@ var
 begin
   if not Assigned(CompileProgressForm) then
     Exit;
-
   with CompileProgressForm do begin
     // report currently compiling file
     if not Assigned(fProject) then begin
@@ -1583,7 +2145,11 @@ begin
     // the progress reported is the index of the unit in the project
     prog := pb.Position;
     OK := False;
+{$IFDEF VC_BUILD}
+    schk := Pos(devCompiler.CheckSyntaxFormat, Line) > 0;
+{$ELSE}
     schk := Pos('-o nul ', Line) > 0;
+{$ENDIF}
     if schk then
       act := 'Syntax checking'
     else begin
@@ -1593,11 +2159,45 @@ begin
       else
         act := '';
     end;
-    fil := '';
-    for I := 0 to fProject.Units.Count - 1 do begin
-      srch := ExtractFilename(fProject.Units[I].FileName);
-      if Pos(srch, Line) > 0 then begin
-        fil := srch;
+
+{$IFDEF VC_BUILD}
+    if Pos('/Yc', Line) > 0 then
+    begin
+      OK := false;
+      act := 'Precompiling';
+      fil := '';
+
+      for i := Pos('/Yc', Line) + 3 to Length(Line) - Pos('/Yc', Line) + 3 do begin
+       if (Line[i] = '"') then
+         OK := not OK;
+
+       if ((Line[i] = ' ') or ((Line[i] = '"') and (OK))) then
+         break
+       else
+         fil := fil + Line[i];
+      end;
+    end
+    else
+    begin
+{$ENDIF}
+      fil := '';
+      for I := 0 to fProject.Units.Count - 1 do begin
+{$IfNDef VC_BUILD}
+        srch := ExtractFilename(fProject.Units[I].FileName);
+        if Pos(srch, Line) > 0 then begin
+          fil := srch;
+          prog := I + 1;
+          if not schk then
+            act := 'Compiling';
+          OK := True;
+          Break;
+        end;
+      end;
+{$Else}
+      srch := ' ' + GenMakePath(ExtractRelativePath(fProject.FileName, fProject.Units[I].FileName), False, True) + ' ';
+      if Pos(srch, Line) > 0 then
+      begin
+        fil := ExtractFilename(fProject.Units[I].FileName);
         prog := I + 1;
         if not schk then
           act := 'Compiling';
@@ -1605,8 +2205,10 @@ begin
         Break;
       end;
     end;
-    if not OK then begin
-      srch := ExtractFileName(fProject.Options.PrivateResource);
+{$EndIf}
+    if not OK then
+    begin
+      srch := ExtractFileName(SubstituteMakeParams(fProject.Options.PrivateResource));
       if Pos(srch, Line) > 0 then begin
         fil := srch;
         prog := pb.Max - 1;
@@ -1614,6 +2216,7 @@ begin
           act := 'Compiling';
         lblFile.Caption := srch;
       end;
+
       srch := ExtractFileName(fProject.Executable);
       if (Pos(srch, Line) > 0) and (Pos('rm -f', Line) > 0) then begin
         fil := srch;
@@ -1629,12 +2232,38 @@ begin
           act := 'Linking';
         lblFile.Caption := srch;
       end;
+
+{$IfDef VC_BUILD}
+      if (devCompiler.CompilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+      begin
+        //Check for the manifest tool
+        srch := devCompiler.gprofName;
+        if (devCompiler.CompilerType = ID_COMPILER_VC2005) and (Pos(UpperCase(srch), UpperCase(Trim(Line))) = 1) then
+        begin
+          act := 'Embedding manifest';
+          fil := Copy(Line, Pos(UpperCase('/outputresource:'), UpperCase(Line)) + 17, Length(Line));
+          fil := Copy(fil, 0, Pos(Line, '"'));
+        end;
+
+        //Link-time code generation?
+        srch := 'Generating code';
+        if (Pos(UpperCase(srch), UpperCase(Trim(Line)))) = 1 then
+        begin
+          act := 'Generating code';
+        end;
+      end;
+{$Endif}
     end;
-    Memo1.Lines.Add(act + ' ' + fil);
+
+  if act + ' ' + fil <> ' ' then
+    Memo1.Lines.Add(Trim(act + ' ' + fil));
+  if trim(act) <> '' then
     lblStatus.Caption := act + '...';
+  if trim(fil) <> '' then
     lblFile.Caption := fil;
-    if (fil <> '') and (pb.Position < pb.Max) then
-      pb.Position := prog;
+  if (fil <> '') and (pb.Position < pb.Max) then
+    pb.Position := prog;
+
   end;
   Application.ProcessMessages;
 end;
@@ -1649,4 +2278,5 @@ begin
 end;
 
 end.
+
 
