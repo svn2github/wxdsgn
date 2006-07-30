@@ -124,7 +124,6 @@ uses
   dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
   DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
-  MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
   ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
   
