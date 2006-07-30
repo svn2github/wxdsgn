@@ -312,6 +312,8 @@ Ver=1
 455=Highlight current line
 456=Sets to System HighlightText value
 457=Sets to WhiteSpace value
+458=Code folding
+459=Show indent guides
 
 # through 459 for additions
 
@@ -679,6 +681,7 @@ Ver=1
 926=O&verride output filename
 927=Add Library or Object
 928=%d files [%d sources, %d headers, %d resources]
+929=Preprocessor Definitions:
 
 #New template form
 930=Name:
@@ -968,17 +971,33 @@ Ver=1
 3215=Release:
 3216=Build:
 3217=Language:
-3218=Additional information:
+3218=Additional information
 3219=Override build command
 3220=Output file
 3221=Include in linking
 3222=Build priority:
-3223=Auto-increment build number on compile
+3223=Build number increment
 3224=Use custom Makefile (do not generate a Makefile, use this one)
 3225=Information about customizing the Makefile...
 3226=Include the following files into the Makefile
+3227=Auto-Increment build number on compile
+3228=Auto-Increment build number on rebuild
+3229=Don't Auto-Increment build number
+3230=Precompiled Headers
+3231=No precompiled header
+3232=Create precompiled header
+3233=Use precompiled header
 
 # More compiler options
 3400=Strip executable
 3401=Generate instructions for the following machine
 3402=Enable use of processor specific built-in functions
+
+# Compiler output messages
+3600=[General Error] %s
+3601=[Resource Error] %s
+3602=[Linker Error] %s
+3603=[Makefile Generation Warning] %s
+
+3610=There are too many errors; output parsing stopped
+3611=For precompiled headers to be used one header and one source file must be set to 'Create precompiled header' in Project Options; precompiled headers not used
