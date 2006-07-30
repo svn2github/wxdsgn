@@ -58,7 +58,7 @@ begin
      ClientWidth:= Image.Width;
      ClientHeight:= Image.Height + StatusBar.Height;
   end;
-  StatusBar.SimpleText := 'Bloodshed Dev-C++ '+ DEVCPP_VERSION +'. Loading...';
+  StatusBar.SimpleText := 'wxDev-C++ '+ DEVCPP_VERSION +'. Loading...';
 end;
 
 procedure TSplashForm.ImageClick(Sender: TObject);

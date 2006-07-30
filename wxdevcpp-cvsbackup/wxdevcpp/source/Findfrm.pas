@@ -77,7 +77,8 @@ var
 
 implementation
 
-uses 
+uses
+  Search_Center,
 {$IFDEF WIN32}
   Main, Dialogs, MultiLangSupport, devcfg;
 {$ENDIF}
@@ -141,6 +142,11 @@ begin
     FindTabs.Tabs.Append(Lang[ID_FIND_FINDALLTAB]);
   end;
   FindTabs.TabIndex := 0;
+
+  //Set the state of the Find in Project radiobutton
+  rbProjectFiles.Enabled := Assigned(SearchCenter.Project);
+  if not rbProjectFiles.Enabled then
+    rbOpenFiles.Checked := true;
 end;
 
 procedure TfrmFind.FormClose(Sender: TObject; var Action: TCloseAction);

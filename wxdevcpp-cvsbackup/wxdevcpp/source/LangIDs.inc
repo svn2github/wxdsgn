@@ -406,7 +406,6 @@ const
   ID_EOPT_HINTHIGHLIGHT            = 456;
   ID_EOPT_HINTWHITESPACE           = 457;
 
-
     // Display Tab
   ID_EOPT_EDFONT                   = 460;
   ID_EOPT_FONT                     = 461;
@@ -777,11 +776,12 @@ const
   ID_POPT_COMP                     = 914;
   ID_POPT_LINKER                   = 915;
   ID_POPT_LIBDIRS                  = 916;
-  ID_POPT_RESDIRS                  = 921;
+  ID_POPT_RESFILES                 = 917;
   ID_POPT_INCDIRS                  = 918;
   ID_POPT_OPENICO                  = 919;
   ID_POPT_OPENOBJ                  = 920;
-  ID_POPT_RESFILES                 = 917;
+  ID_POPT_RESDIRS                  = 921;
+
   // build output tab
   ID_POPT_OUTDIRGRP                = 923;
   ID_POPT_EXEOUT                   = 924;
@@ -789,6 +789,7 @@ const
   ID_POPT_OVERRIDEOUT              = 926;
   ID_POPT_ADDLIBRARY               = 927;
   ID_POPT_UNITSFORMAT              = 928;
+  ID_POPT_DEFINES                  = 929;
 
   //New template form
   ID_NEWTPL_NAME                   = 930;
@@ -1096,13 +1097,29 @@ const
   ID_POPT_OUTPUTFILENAME           = 3220;
   ID_POPT_LINKUNIT                 = 3221;
   ID_POPT_BUILDPRIORITY            = 3222;
-  ID_POPT_VAUTOINCBUILDNR          = 3223;
+  ID_POPT_AUTOINCGRP               = 3223;
   ID_POPT_USECUSTOMMAKEFILE        = 3224;
   ID_POPT_INFOCUSTOMMAKEFILE       = 3225;
   ID_POPT_INCFILEMAKEFILE          = 3226;
+  ID_POPT_VAUTOINCBUILDNR_COMPILE  = 3227;
+  ID_POPT_VAUTOINCBUILDNR_REBUILD  = 3228;
+  ID_POPT_VAUTOINCBUILDNR_NONE     = 3229;
+  ID_POPT_PCH                      = 3230;
+  ID_POPT_NOPCH                    = 3231;
+  ID_POPT_CREATEPCH                = 3232;
+  ID_POPT_USEPCH                   = 3233;
   // free to 3400
 
-  // New compilter options
+  // New compiler options
   ID_COPT_STRIP                    = 3400;
   ID_COPT_ARCH                     = 3401;
-  ID_COPT_BUILTINPROC              = 3402;     
+  ID_COPT_BUILTINPROC              = 3402;
+
+  // Compiler output messages
+  ID_COMPMSG_GENERALERROR          = 3600;
+  ID_COMPMSG_RESOURCEERROR         = 3601;
+  ID_COMPMSG_LINKERERROR           = 3602;
+  ID_COMPMSG_MAKEFILEWARNING       = 3603;
+
+  ID_COMPMSG_TOOMANYMSGS           = 3610;
+  ID_COMPMSG_PCHINCOMPLETE         = 3611;  

@@ -84,7 +84,7 @@ object frmFind: TfrmFind
     end
   end
   object btnFind: TButton
-    Left = 8
+    Left = 135
     Top = 222
     Width = 80
     Height = 24
@@ -96,7 +96,7 @@ object frmFind: TfrmFind
     OnClick = btnFindClick
   end
   object btnCancel: TButton
-    Left = 212
+    Left = 218
     Top = 222
     Width = 80
     Height = 24
@@ -230,7 +230,7 @@ object frmFind: TfrmFind
     FlatMenu = False
     AutoDetect = True
     Active = False
-    Left = 136
-    Top = 56
+    Left = 10
+    Top = 219
   end
 end

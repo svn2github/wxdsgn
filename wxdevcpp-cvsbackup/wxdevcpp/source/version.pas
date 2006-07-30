@@ -24,6 +24,10 @@ unit version;
 
 interface
 
+var
+  LIB_EXT: string;
+  OBJ_EXT: string;
+  
 const
   GCC_VERSION          = '3.4.2';
   //path delimiter
@@ -100,13 +104,7 @@ resourcestring
   THEME_DIR            = 'Themes' + pd;
   PACKAGES_DIR         = 'Packages' + pd;
 
-  {$IFDEF VC_BUILD}
-  XML_OPTIONS_FILE = 'devcpp_compiler_options.xml';
-  {$ENDIF}
-
   // file fxtensions
-  LIB_EXT = '.lib';
-  OBJ_EXT = '.obj';
   DLL_EXT = '.dll';
   EXE_EXT = '.exe';
   DEV_EXT = '.dev';
@@ -168,6 +166,7 @@ const
   CP2_EXT = '.c++';
   CP_EXT = '.cp';
   H_EXT = '.h';
+  PCH_EXT = '.pch';
   HPP_EXT = '.hpp';
   RC_EXT = '.rc';
   RES_EXT = '.res';
