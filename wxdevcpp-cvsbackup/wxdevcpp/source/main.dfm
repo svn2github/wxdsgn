@@ -27,7 +27,7 @@ object MainForm: TMainForm
     Left = 209
     Top = 102
     Width = 4
-    Height = 143
+    Height = 135
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
@@ -35,7 +35,7 @@ object MainForm: TMainForm
   end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 245
+    Top = 237
     Width = 630
     Height = 4
     Cursor = crVSplit
@@ -47,7 +47,7 @@ object MainForm: TMainForm
     Left = 460
     Top = 102
     Width = 3
-    Height = 143
+    Height = 135
     Cursor = crHSplit
     Align = alRight
     AutoSnap = False
@@ -56,16 +56,16 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 249
+    Top = 241
     Width = 630
     Height = 130
-    ActivePage = LogSheet
+    ActivePage = CompSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     OnChange = MessageControlChange
     OnChanging = MessageControlChanging
@@ -78,7 +78,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -134,7 +134,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 98
+        Height = 97
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -189,18 +189,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 393
-        Height = 98
+        Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           393
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 638
-          Height = 73
+          Height = 72
           Anchors = [akLeft, akTop, akRight, akBottom]
           ReadOnly = True
           ScrollBars = ssVertical
@@ -216,7 +216,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 98
+        Height = 97
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -631,7 +631,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 610
-            Height = 45
+            Height = 44
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -1107,7 +1107,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 379
+    Top = 371
     Width = 630
     Height = 19
     Panels = <
@@ -1131,7 +1131,7 @@ object MainForm: TMainForm
     Left = 213
     Top = 102
     Width = 247
-    Height = 143
+    Height = 135
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 3
@@ -1191,7 +1191,7 @@ object MainForm: TMainForm
     Left = 463
     Top = 102
     Width = 167
-    Height = 143
+    Height = 135
     Align = alRight
     TabOrder = 6
     Visible = False
@@ -1200,7 +1200,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 209
-    Height = 143
+    Height = 135
     Align = alLeft
     DockSite = True
     TabOrder = 7
@@ -1209,9 +1209,9 @@ object MainForm: TMainForm
       Top = 16
       Width = 192
       Height = 201
-      ActivePage = ClassSheet
+      ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 0
       object ProjectSheet: TTabSheet
         Caption = 'Project'
@@ -1933,6 +1933,7 @@ object MainForm: TMainForm
       object FullscreenmodeItem: TMenuItem
         Action = actFullScreen
         AutoCheck = True
+        Enabled = False
       end
       object N36: TMenuItem
         Caption = '-'
@@ -3496,6 +3497,7 @@ object MainForm: TMainForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 544
     Top = 200

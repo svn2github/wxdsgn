@@ -77,8 +77,6 @@ type
     chkOverrideOutput: TCheckBox;
     XPMenu: TXPMenu;
     tabFiles: TTabSheet;
-    lvFiles: TTreeView;
-    lblProjectFiles: TLabel;
     grpUnitOptions: TGroupBox;
     chkCompile: TCheckBox;
     chkCompileCpp: TCheckBox;
@@ -148,6 +146,8 @@ type
     btnMakDelete: TButton;
     btnMakAdd: TButton;
     btnMakReplace: TButton;
+    grpPch: TRadioGroup;
+    lvFiles: TTreeView;
     procedure ListClick(Sender: TObject);
     procedure EditChange(SEnder: TObject);
     procedure ButtonClick(Sender: TObject);
@@ -185,6 +185,7 @@ type
     procedure cbUseCustomMakefileClick(Sender: TObject);
     procedure MakeIncludesDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
+    procedure grpPchClick(Sender: TObject);
   private
     fOptions: TProjOptions;
     fIcon: string;
@@ -348,7 +349,9 @@ end;
 procedure TfrmProjectOptions.ListClick(Sender: TObject);
 begin
   UpdateButtons;
-  edEntry.Text:= lstList.Items[lstList.Itemindex];
+
+  if lstList.Itemindex <> -1 then
+    edEntry.Text:= lstList.Items[lstList.Itemindex];
 end;
 
 procedure TfrmProjectOptions.UpDownClick(Sender: TObject);
@@ -422,6 +425,7 @@ begin
       fProject.UseCustomMakefile := true
     else
       fProject.UseCustomMakefile := false;
+
     fProject.CustomMakefile:=edCustomMakefile.Text;
     MakeIncludes.Clear;
     MakeIncludes.AddStrings(Self.MakeIncludes.Items);
@@ -564,6 +568,7 @@ begin
   lvFiles.Items[0].Expand(False);
   chkCompile.Enabled:=False;
   chkLink.Enabled:=False;
+  lblPriority.Enabled:=False;
   spnPriority.Enabled:=False;
   chkCompileCpp.Enabled:=False;
   chkOverrideBuildCmd.Enabled:=False;
@@ -576,6 +581,15 @@ begin
   SubTabsChange(Self);
   UpdateMakButtons();
   CompOptionsFrame1.FillOptions(fProject);
+
+  //PCH radiobox
+  grpPch.Enabled := False;
+  grpPch.OnClick := nil;
+  if (fProject.PchHead = -1) and (fProject.PchSource = -1) then
+    grpPch.ItemIndex := 0
+  else
+    grpPch.ItemIndex := 2;
+  grpPch.OnClick := grpPchClick;
 end;
 
 procedure TfrmProjectOptions.btnIconLibClick(Sender: TObject);
@@ -649,6 +663,7 @@ begin
   tabCompOpts.Caption:=               Lang[ID_PARAM_CAPTION];
   PageControl.Pages[3].Caption:=      Lang[ID_POPT_ADDITIONAL];
   lblCompiler.Caption:=               Lang[ID_POPT_COMP];
+  lblDefines.Caption:=                Lang[ID_POPT_DEFINES];
   lblCppCompiler.Caption:=            Lang[ID_COPT_GRP_CPP];
   lblLinker.Caption:=                 Lang[ID_COPT_LINKERTAB];
   AddLibBtn.Caption:=                 Lang[ID_POPT_ADDLIBRARY];
@@ -701,7 +716,6 @@ begin
 
   // files tab
   tabFiles.Caption:=                  Lang[ID_POPT_FILESTAB];
-  lblProjectFiles.Caption:=           Lang[ID_POPT_PROJFILES];
   lblCompilerSet.Caption:=            Lang[ID_POPT_COMP];
   lblCompileInfo.Caption:=            Lang[ID_POPT_COMPINFO];
   grpUnitOptions.Caption:=            Lang[ID_POPT_UNITOPTS];
@@ -710,6 +724,10 @@ begin
   chkCompileCpp.Caption:=             Lang[ID_POPT_UNITUSEGPP];
   chkOverrideBuildCmd.Caption:=       Lang[ID_POPT_OVERRIDEBUILDCMD];
   chkLink.Caption:=                   Lang[ID_POPT_LINKUNIT];
+  grpPch.Caption:=                    Lang[ID_POPT_PCH];
+  grpPch.Items[0]:=                   Lang[ID_POPT_NOPCH];
+  grpPch.Items[1]:=                   Lang[ID_POPT_CREATEPCH];
+  grpPch.Items[2]:=                   Lang[ID_POPT_USEPCH];    
 
   // version info tab
   tabVersion.Caption:=                Lang[ID_POPT_VERTAB];
@@ -721,7 +739,10 @@ begin
   lblVerBuild.Caption:=               Lang[ID_POPT_VBUILD];
   lblLanguage.Caption:=               Lang[ID_POPT_VLANG];
   grpAdditional.Caption:=             Lang[ID_POPT_VADDITIONAL];
-  radAutoIncBuildOnCompile.Caption := Lang[ID_POPT_VAUTOINCBUILDNR];
+  grpAutoInc.Caption:=                Lang[ID_POPT_AUTOINCGRP];
+  radAutoIncBuildOnCompile.Caption:=  Lang[ID_POPT_VAUTOINCBUILDNR_COMPILE];
+  radAutoIncBuildOnRebuild.Caption:=  Lang[ID_POPT_VAUTOINCBUILDNR_REBUILD];
+  radNoAutoIncBuild.Caption :=        Lang[ID_POPT_VAUTOINCBUILDNR_NONE];
 end;
 
 procedure TfrmProjectOptions.btnRemoveIconClick(Sender: TObject);
@@ -833,7 +854,9 @@ end;
 procedure TfrmProjectOptions.MakeIncludesClick(Sender: TObject);
 begin
   UpdateMakButtons;
-  edMakeInclude.Text := MakeIncludes.Items[MakeIncludes.Itemindex];
+
+  if MakeIncludes.Itemindex <> -1 then
+    edMakeInclude.Text := MakeIncludes.Items[MakeIncludes.Itemindex];
 end;
 
 procedure TfrmProjectOptions.btnHelpClick(Sender: TObject);
@@ -877,12 +900,14 @@ procedure TfrmProjectOptions.lvFilesChange(Sender: TObject;
 var
   idx: integer;
 begin
-  if not Assigned(Node) then begin
+  if not Assigned(Node) then
+  begin
     chkCompile.Enabled := False;
     chkCompileCpp.Enabled := False;
     chkLink.Enabled := False;
     chkOverrideBuildCmd.Enabled := False;
     txtOverrideBuildCmd.Enabled := False;
+    lblPriority.Enabled := False;
     spnPriority.Enabled := False;
     Exit;
   end;
@@ -894,6 +919,7 @@ begin
   chkOverrideBuildCmd.OnClick := nil;
   txtOverrideBuildCmd.OnChange := nil;
   spnPriority.OnChange := nil;
+  grpPch.OnClick := nil;
 
   idx := Integer(Node.Data);
   if (Node.Level>0) and (idx<>-1) then begin // unit
@@ -909,17 +935,29 @@ begin
     chkCompileCpp.Checked := fProject.Units[idx].CompileCpp;
     chkLink.Enabled:=chkCompile.Enabled and (GetFileTyp(fProject.Units[idx].FileName) <> utRes);
     chkLink.Checked := fProject.Units[idx].Link;
+    lblPriority.Enabled := chkCompile.Checked and chkCompile.Enabled;
     spnPriority.Enabled := chkCompile.Checked and chkCompile.Enabled;
     spnPriority.Value := fProject.Units[idx].Priority;
     chkOverrideBuildCmd.Enabled:=chkCompile.Checked and (lvFiles.SelectionCount=1) and not (GetFileTyp(fProject.Units[idx].FileName) in [utHead, utRes]);
     txtOverrideBuildCmd.Enabled:=chkOverrideBuildCmd.Enabled and chkOverrideBuildCmd.Checked;
+
+    //Handle the PCH
+    grpPch.Enabled := GetFileTyp(fProject.Units[idx].FileName) in [utSrc, utHead];
+    if (fProject.PchHead = -1) and (fProject.PchSource = -1) then
+      grpPch.ItemIndex := 0
+    else if (fProject.PchHead = idx) or (fProject.PchSource = idx) then
+      grpPch.ItemIndex := 1
+    else
+      grpPch.ItemIndex := 2;
   end
   else begin
+    grpPch.Enabled := False;
     chkCompile.Enabled := False;
     chkCompileCpp.Enabled := False;
     chkLink.Enabled := False;
     chkOverrideBuildCmd.Enabled := False;
     txtOverrideBuildCmd.Enabled := False;
+    lblPriority.Enabled := False;
     spnPriority.Enabled := False;
   end;
 
@@ -930,6 +968,7 @@ begin
   chkOverrideBuildCmd.OnClick := chkCompileClick;
   txtOverrideBuildCmd.OnChange := txtOverrideBuildCmdChange;
   spnPriority.OnChange := spnPriorityChange;
+  grpPch.OnClick := grpPchClick;
 end;
 
 procedure TfrmProjectOptions.chkCompileClick(Sender: TObject);
@@ -964,6 +1003,7 @@ begin
         txtOverrideBuildCmd.OnChange := nil;
         txtOverrideBuildCmd.Text:=StringReplace(txtOverrideBuildCmd.Text, '<CRTAB>', #13#10, [rfReplaceAll]);
 
+        lblPriority.Enabled := chkCompile.Checked;
         spnPriority.Enabled := chkCompile.Checked;
         chkOverrideBuildCmd.Enabled:=chkCompile.Checked and (GetFileTyp(fProject.Units[idx].FileName) <> utRes);
         if chkCompile.Checked and (GetFileTyp(fProject.Units[idx].FileName)=utOther) then begin
@@ -1024,11 +1064,10 @@ begin
   cmbLangID.Items.Clear;
   for I := 0 to Languages.Count - 1 do
     cmbLangID.Items.Add(Languages.Name[I]);
-  if Languages.Count > fOptions.VersionInfo.LanguageID then begin
+
   S := Languages.NameFromLocaleID[fOptions.VersionInfo.LanguageID];
   if S <> '' then
     cmbLangID.ItemIndex := cmbLangID.Items.IndexOf(S);
-end;
 end;
 
 procedure TfrmProjectOptions.chkVersionInfoClick(Sender: TObject);
@@ -1191,6 +1230,55 @@ procedure TfrmProjectOptions.MakeIncludesDrawItem(Control: TWinControl;
 begin
   btnMakUp.Enabled := MakeIncludes.Items.Count > 0;
   btnMakDown.Enabled := MakeIncludes.Items.Count > 0;
+end;
+
+procedure TfrmProjectOptions.grpPchClick(Sender: TObject);
+var
+  idx, i: integer;
+  SrcProcessed, HProcessed: Boolean;
+  
+  procedure ApplyToNode(Index: integer; Header: Boolean; Selection: integer);
+  begin
+    case Selection of
+    1:
+      if Header then
+        fProject.PchHead := Index
+      else
+        fProject.PchSource := Index;
+    2:
+      if Header and (Index = fProject.PchHead) then
+        fProject.PchHead := -1
+      else if (not Header) and (Index = fProject.PchSource) then
+        fProject.PchSource := -1;
+    end;
+  end;
+begin
+  if grpPch.ItemIndex = 0 then
+  begin
+    fProject.PchHead := -1;
+    fProject.PchSource := -1;
+  end
+  else
+  begin
+    HProcessed := false;
+    SrcProcessed := false;
+
+    for I := 0 to lvFiles.SelectionCount-1 do
+    begin
+      idx := Integer(lvFiles.Selections[I].Data);
+      if idx <> -1 then
+        if (GetFileTyp(fProject.Units[idx].FileName) = utHead) and (not HProcessed) then
+        begin
+          HProcessed := true;
+          ApplyToNode(idx, true, grpPch.ItemIndex);
+        end
+        else if (GetFileTyp(fProject.Units[idx].FileName) = utSrc) and (not SrcProcessed) then
+        begin
+          SrcProcessed := true;
+          ApplyToNode(idx, false, grpPch.ItemIndex);
+        end;
+    end;
+  end;
 end;
 
 end.

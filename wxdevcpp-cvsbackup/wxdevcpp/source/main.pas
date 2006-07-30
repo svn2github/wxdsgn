@@ -1,8 +1,3 @@
-{$A+,B-,C-,D+,E-,F-,G+,H+,I-,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U+,V+,W+,X+,Y-,Z1}
-{$MINSTACKSIZE $00004000}
-{$MAXSTACKSIZE $00100000}
-{$IMAGEBASE $00400000}
-{$APPTYPE GUI}
 {
     $Id$
 
@@ -46,8 +41,8 @@ uses
 {$IFDEF WX_BUILD}
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
   ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
-  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr, 
-  DesignerOptions, JvExStdCtrls, JvEdit, JvComponentBase,ShlObj, ActiveX
+  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr, ExceptionFilterUnit,
+  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX
   {$ENDIF}
   ;
 {$ENDIF}
@@ -8410,11 +8405,7 @@ begin
 
   if Assigned(CurrentEditor) and Assigned(CurrentEditor.CodeToolTip) then
   begin
-  	//Added for wx Problems
-    try
-      CurrentEditor.CodeToolTip.ReleaseHandle;
-    except
-    end;
+    CurrentEditor.CodeToolTip.ReleaseHandle;
   end;
 end;
 
@@ -8615,14 +8606,7 @@ begin
   //Destroy the dialog if we own it
   if OwnsDlg then
     frm.Destroy;
-	(*check
-  if not CreateStatus then
-  begin
-    //Add localization here
-    Application.MessageBox(PChar('Unable to Create wxForm'),'New wxWidgets Form', MB_ICONQUESTION + MB_OK);
-    Exit;
-  end;
-  *)
+
   currFile := ChangeFileExt(BaseFilename, H_EXT);
   if insertProj = 1 then
   begin
@@ -8680,7 +8664,6 @@ begin
                'The addition of event handlers and other features of the Form ' +
                'Designer won''t work properly.' + #13#10#13#10 +
                'Please enable the Class Browser.', mtInformation, [mbOK], 0);
-//Make the ClassView Update itself
 end;
 
 procedure TMainForm.NewWxProjectCode(dsgnType:TWxDesignerType);
@@ -8804,8 +8787,8 @@ begin
       FNewFormObj.Caption := strFTitle;
       FNewFormObj.Wx_DialogStyle := dlgSStyle; //[wxCaption,wxResize_Border,wxSystem_Menu,wxThick_Frame,wxMinimize_Box,wxMaximize_Box,wxClose_Box];
       FNewFormObj.Wx_Name := strCName;
-      FNewFormObj.EVT_CLOSE:=strCName+'Close';
       FNewFormObj.Wx_Center:=True;
+      FNewFormObj.EVT_CLOSE:='OnClose';
       WriteComponentsToFile([FNewFormObj], ChangeFileExt(strFName, wxform_Ext));
     except
       Result := False;
@@ -8826,9 +8809,6 @@ begin
   if frm.cbUseCaption.checked then
     dlgStyle := [wxCAPTION];
 
-  if frm.cbUseCaption.Checked then
-    dlgStyle := dlgStyle + [wxCAPTION];
-
   if frm.cbResizeBorder.checked then
     dlgStyle := dlgStyle + [wxRESIZE_BORDER];
 
@@ -8841,10 +8821,9 @@ begin
   if frm.cbStayOnTop.checked then
     dlgStyle := dlgStyle + [wxSTAY_ON_TOP];
 
-  if (dsgnType = dtWxDialog) then
-          if frm.cbNoParent.Checked then
-                dlgStyle := dlgStyle + [wxDIALOG_NO_PARENT];
-                
+  if frm.cbNoParent.checked then
+    dlgStyle := dlgStyle + [wxDIALOG_NO_PARENT];
+
   if frm.cbMinButton.checked then
     dlgStyle := dlgStyle + [wxMINIMIZE_BOX];
 
@@ -8866,9 +8845,6 @@ var
   Author: string;
   Title: string;
 begin
-  //Result := False;
-  if not assigned(frm) then
-    exit;
   //Determine the window style
   if frm.cbUseCaption.checked then
     WindowStyle := 'wxCAPTION | ';

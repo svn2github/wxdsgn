@@ -103,6 +103,9 @@ type
     fIncludeFormat: string;
     fDllFormat: string;
     fLibFormat: string;
+    fPchCreateFormat: string;
+    fPchUseFormat: string;
+    fPchFileFormat: string;
     fSingleCompile: string;
     fPreprocDefines: string;
 {$EndIf}
@@ -139,6 +142,9 @@ type
     property CompilerType: integer read fCompilerType write fCompilerType;
     property CheckSyntaxFormat: string read fCheckSyntaxFormat write fCheckSyntaxFormat;
     property OutputFormat: string read fOutputFormat write fOutputFormat;
+    property PchCreateFormat: string read fPchCreateFormat write fPchCreateFormat;
+    property PchUseFormat: string read fPchUseFormat write fPchUseFormat;
+    property PchFileFormat: string read fPchFileFormat write fPchFileFormat;
     property ResourceIncludeFormat: string read fResourceIncludeFormat write fResourceIncludeFormat;
     property ResourceFormat: string read fResourceFormat write fResourceFormat;
     property LinkerFormat: string read fLinkerFormat write fLinkerFormat;
@@ -200,6 +206,9 @@ type
     fIncludeFormat: string;
     fDllFormat: string;
     fLibFormat: string;
+    fPchCreateFormat: string;
+    fPchUseFormat: string;
+    fPchFileFormat: string;
     fSingleCompile: string;
     fPreprocDefines: string;
 {$EndIf}
@@ -214,9 +223,9 @@ type
 
     fcmdOpts: string;  // command-line adds for compiler
     flinkopts: string; // command-line adds for linker
-//$IfDef VC_BUILD}
+{$IfDef VC_BUILD}
     fMakeOpts: string;
-//$EndIf}
+{$EndIf}
     fSaveLog: boolean; // Save Compiler Output
     fDelay: integer;   // delay in milliseconds -- for compiling
 
@@ -254,14 +263,17 @@ type
  published
     property CmdOpts: string read fcmdOpts write fcmdOpts;
     property LinkOpts: string read flinkOpts write flinkOpts;
-//$IfDef VC_BUILD
+{$IfDef VC_BUILD}
     property MakeOpts: string read fMakeOpts write fMakeOpts;
-//$EndIf
+{$EndIf}
     property FastDep: Boolean read fFastDep write fFastDep;
 {$IfDef VC_BUILD}
     property CompilerType: integer read fCompilerType write fCompilerType;
     property CheckSyntaxFormat: string read fCheckSyntaxFormat write fCheckSyntaxFormat;
     property OutputFormat: string read fOutputFormat write fOutputFormat;
+    property PchCreateFormat: string read fPchCreateFormat write fPchCreateFormat;
+    property PchUseFormat: string read fPchUseFormat write fPchUseFormat;
+    property PchFileFormat: string read fPchFileFormat write fPchFileFormat;
     property ResourceIncludeFormat: string read fResourceIncludeFormat write fResourceIncludeFormat;
     property ResourceFormat: string read fResourceFormat write fResourceFormat;
     property LinkerFormat: string read fLinkerFormat write fLinkerFormat;
@@ -336,8 +348,8 @@ type
   published
     property Enabled: boolean read fEnabled write fEnabled;
     property ViewStyle: integer read fCBViewStyle write fCBViewStyle;
-   property ParseLocalHeaders: boolean read fParseLocalHeaders write fParseLocalHeaders;
-   property ParseGlobalHeaders: boolean read fParseGlobalHeaders write fParseGlobalHeaders;
+    property ParseLocalHeaders: boolean read fParseLocalHeaders write fParseLocalHeaders;
+    property ParseGlobalHeaders: boolean read fParseGlobalHeaders write fParseGlobalHeaders;
     property ShowFilter: integer read fShowFilter write fShowFilter;
     property UseColors: boolean read fUseColors write fUseColors;
    property ShowInheritedMembers: boolean read fShowInheritedMembers write fShowInheritedMembers;
@@ -469,7 +481,7 @@ type
     fSmartTabs: boolean; // Tab to next no whitespace char
     fSmartUnindent: boolean; // on backspace move to prev non-whitespace char
     fSpecialChar: boolean; // special line characters visible
-   fAppendNewline: boolean;    // append newline character to the end of line
+    fAppendNewline: boolean;    // append newline character to the end of line
     fTabtoSpaces: boolean; // convert tabs to spaces
     fAutoCloseBrace: boolean; // insert closing braces
     fMarginColor: TColor; // Color of right margin
@@ -477,8 +489,8 @@ type
     fDefaultIntoPrj: boolean; // Insert Default Source Code into "empty" project
     fParserHints: boolean; // Show parser's hint for the word under the cursor
     fMatch: boolean; // Highlight matching parenthesis
-   fHighCurrLine: boolean;     // Highlight current line
-   fHighColor: TColor;         // Color of current line when highlighted
+    fHighCurrLine: boolean;     // Highlight current line
+    fHighColor: TColor;         // Color of current line when highlighted
 
   public
     constructor Create;
@@ -538,8 +550,8 @@ type
 
     property ParserHints: boolean read fParserHints write fParserHints;
     property Match: boolean read fMatch write fMatch;
-   property HighCurrLine: boolean read fHighCurrLine write fHighCurrLine;
-   property HighColor: TColor read fHighColor write fHighColor;
+    property HighCurrLine: boolean read fHighCurrLine write fHighCurrLine;
+    property HighColor: TColor read fHighColor write fHighColor;
 
   end;
 
@@ -2002,6 +2014,9 @@ begin
   devCompiler.IncludeFormat         := devCompilerSet.IncludeFormat;
   devCompiler.DllFormat             := devCompilerSet.DllFormat;
   devCompiler.LibFormat             := devCompilerSet.LibFormat;
+  devCompiler.PchCreateFormat       := devCompilerSet.PchCreateFormat;
+  devCompiler.PchUseFormat          := devCompilerSet.PchUseFormat;
+  devCompiler.PchFileFormat         := devCompilerSet.PchFileFormat; 
   devCompiler.SingleCompile         := devCompilerSet.SingleCompile;
   devCompiler.PreprocDefines        := devCompilerSet.PreprocDefines;
 {$ENDIF}
@@ -2296,6 +2311,12 @@ begin
       fSingleCompile         := LoadSetting(key, 'SingleCompile');
     if LoadSetting(key, 'PreprocDefines') <> '' then
       fPreprocDefines        := LoadSetting(key, 'PreprocDefines');
+    if LoadSetting(key, 'PchCreateFormat') <> '' then
+      fPchCreateFormat       := LoadSetting(key, 'PchCreateFormat');
+    if LoadSetting(key, 'PchUseFormat') <> '' then
+      fPchUseFormat          := LoadSetting(key, 'PchUseFormat');
+    if LoadSetting(key, 'PchFileFormat') <> '' then
+      fPchFileFormat         := LoadSetting(key, 'PchFileFormat');
     {$ENDIF}
   end;
 end;
@@ -2365,6 +2386,9 @@ begin
     SaveSetting(key, 'IncludeFormat', fIncludeFormat);
     SaveSetting(key, 'DllFormat', fDllFormat);
     SaveSetting(key, 'LibFormat', fLibFormat);
+    SaveSetting(key, 'PchCreateFormat', PchCreateFormat);
+    SaveSetting(key, 'PchUseFormat', PchUseFormat);
+    SaveSetting(key, 'PchFileFormat', PchFileFormat);
     SaveSetting(key, 'SingleCompile', fSingleCompile);
     SaveSetting(key, 'PreprocDefines', fPreprocDefines);
 {$EndIf}
@@ -2406,12 +2430,15 @@ begin
     fCheckSyntaxFormat      := '/Zs';
     fOutputFormat           := '/c %s /Fo%s';
     fResourceIncludeFormat  := '/I%s';
-    fResourceFormat         := '/r /fo"%s"';
+    fResourceFormat         := '/r /fo%s';
     fLinkerFormat           := '/out:"%s"';
     fLinkerPaths            := '/libpath:"%s"';
     fIncludeFormat          := '/I"%s"';
     fDllFormat              := '/dll /implib:"%s" /out:"%s"';
     fLibFormat              := '/lib /nologo /out:"%s"';
+    fPchCreateFormat        := '/Yc%s';
+    fPchUseFormat           := '/Yu%s';
+    fPchFileFormat          := '/Fp%s';
     fSingleCompile          := '%s /nologo "%s" %s %s /link %s';
     fPreprocDefines         := '/D%s';
   end
@@ -2426,6 +2453,9 @@ begin
     fIncludeFormat          := '-I"%s"';
     fDllFormat              := '--out-implib "%s" -o %s';
     fLibFormat              := 'rcu "%s"';
+    fPchCreateFormat        := '';
+    fPchUseFormat           := '';
+    fPchFileFormat          := '';
     fSingleCompile          := '%s "%s" -o "%s" %s %s %s';
     fPreprocDefines         := '-D%s';
   end;

@@ -72,8 +72,8 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 537
     Height = 300
-    ActivePage = tabGeneral
-    TabIndex = 0
+    ActivePage = tabFiles
+    TabIndex = 1
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -316,34 +316,13 @@ object frmProjectOptions: TfrmProjectOptions
     end
     object tabFiles: TTabSheet
       Caption = 'Files'
-      object lblProjectFiles: TLabel
-        Left = 8
-        Top = 4
-        Width = 57
-        Height = 13
-        Caption = 'Project files:'
-        Transparent = True
-      end
-      object lvFiles: TTreeView
-        Left = 8
-        Top = 20
-        Width = 225
-        Height = 240
-        HideSelection = False
-        Indent = 19
-        MultiSelect = True
-        MultiSelectStyle = [msControlSelect, msShiftSelect, msSiblingOnly]
-        ReadOnly = True
-        TabOrder = 0
-        OnChange = lvFilesChange
-      end
       object grpUnitOptions: TGroupBox
-        Left = 240
-        Top = 15
+        Left = 242
+        Top = 4
         Width = 280
-        Height = 246
+        Height = 185
         Caption = 'Unit Options'
-        TabOrder = 1
+        TabOrder = 0
         object lblPriority: TLabel
           Left = 8
           Top = 20
@@ -355,7 +334,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkCompile: TCheckBox
           Left = 8
-          Top = 44
+          Top = 40
           Width = 260
           Height = 17
           Caption = 'Include in compilation process'
@@ -364,7 +343,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkCompileCpp: TCheckBox
           Left = 8
-          Top = 80
+          Top = 76
           Width = 260
           Height = 17
           Caption = 'Compile unit as C++'
@@ -373,7 +352,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkOverrideBuildCmd: TCheckBox
           Left = 8
-          Top = 98
+          Top = 94
           Width = 260
           Height = 17
           Caption = 'Override build command'
@@ -381,10 +360,10 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = chkCompileClick
         end
         object txtOverrideBuildCmd: TMemo
-          Left = 28
-          Top = 115
+          Left = 26
+          Top = 112
           Width = 240
-          Height = 120
+          Height = 60
           Lines.Strings = (
             'txtOverrideBuildCmd')
           ScrollBars = ssBoth
@@ -394,7 +373,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkLink: TCheckBox
           Left = 8
-          Top = 62
+          Top = 58
           Width = 260
           Height = 17
           Caption = 'Include in linking process'
@@ -412,6 +391,33 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
           OnChange = spnPriorityChange
         end
+      end
+      object grpPch: TRadioGroup
+        Left = 242
+        Top = 193
+        Width = 280
+        Height = 70
+        Caption = 'Precompiled Headers'
+        ItemIndex = 0
+        Items.Strings = (
+          'No precompiled header'
+          'Create precompiled header'
+          'Use precompiled header')
+        TabOrder = 1
+        OnClick = grpPchClick
+      end
+      object lvFiles: TTreeView
+        Left = 6
+        Top = 7
+        Width = 225
+        Height = 255
+        HideSelection = False
+        Indent = 19
+        MultiSelect = True
+        MultiSelectStyle = [msControlSelect, msShiftSelect, msSiblingOnly]
+        ReadOnly = True
+        TabOrder = 2
+        OnChange = lvFilesChange
       end
     end
     object tabCompiler: TTabSheet
@@ -476,13 +482,13 @@ object frmProjectOptions: TfrmProjectOptions
         Width = 450
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
     end
     object tabCompOpts: TTabSheet
-      Caption = 'Command Line Options'
+      Caption = 'Parameters'
       object lblCompiler: TLabel
         Left = 8
         Top = 8
@@ -502,12 +508,12 @@ object frmProjectOptions: TfrmProjectOptions
         Transparent = True
       end
       object lblLinker: TLabel
-        Left = 351
+        Left = 354
         Top = 8
         Width = 164
         Height = 13
         AutoSize = False
-        Caption = 'Linker options / Optional libraries or object files :'
+        Caption = 'Linker:'
         Transparent = True
       end
       object lbldefines: TLabel
@@ -813,12 +819,12 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 8
         Width = 515
-        Height = 119
+        Height = 115
         Caption = 'Directories'
         TabOrder = 0
         object lblExeOutput: TLabel
           Left = 10
-          Top = 22
+          Top = 17
           Width = 132
           Height = 13
           Caption = '&Executable output directory:'
@@ -827,7 +833,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object lblObjOutput: TLabel
           Left = 10
-          Top = 70
+          Top = 65
           Width = 126
           Height = 13
           Caption = '&Object file output directory:'
@@ -836,7 +842,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object btnExeOutDir: TSpeedButton
           Left = 480
-          Top = 38
+          Top = 33
           Width = 23
           Height = 22
           Glyph.Data = {
@@ -870,7 +876,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object btnObjOutDir: TSpeedButton
           Left = 480
-          Top = 86
+          Top = 81
           Width = 23
           Height = 22
           Glyph.Data = {
@@ -904,14 +910,14 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object edExeOutput: TEdit
           Left = 10
-          Top = 38
+          Top = 33
           Width = 460
           Height = 21
           TabOrder = 0
         end
         object edObjOutput: TEdit
           Left = 10
-          Top = 86
+          Top = 81
           Width = 460
           Height = 21
           TabOrder = 1
@@ -919,14 +925,14 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object edOverridenOutput: TEdit
         Left = 24
-        Top = 155
+        Top = 150
         Width = 497
         Height = 21
         TabOrder = 1
       end
       object chkOverrideOutput: TCheckBox
         Left = 8
-        Top = 135
+        Top = 130
         Width = 515
         Height = 17
         Caption = 'Override output filename:'
@@ -1219,7 +1225,7 @@ object frmProjectOptions: TfrmProjectOptions
         Top = 8
         Width = 510
         Height = 17
-        Caption = 'Include version information in project'
+        Caption = 'Include version infofmation in project'
         TabOrder = 0
         OnClick = chkVersionInfoClick
       end
@@ -1316,7 +1322,7 @@ object frmProjectOptions: TfrmProjectOptions
           Width = 160
           Height = 21
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 4
         end
       end

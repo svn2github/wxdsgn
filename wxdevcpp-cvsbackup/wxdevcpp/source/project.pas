@@ -146,6 +146,8 @@ type
     fCmdLineArgs: string;
     fUseCustomMakefile: boolean;
     fCustomMakefile: string;
+    fPchHead: integer;
+    fPchSource: integer;
     function GetDirectory: string;
     function GetExecutableName: string;
     procedure SetFileName(value: string);
@@ -170,7 +172,8 @@ type
     property Modified: boolean read GetModified write SetModified;
 
     property CmdLineArgs: string read fCmdLineArgs write SetCmdLineArgs;
-
+    property PchHead: integer read fPchHead write fPchHead;
+    property PchSource: integer read fPchSource write fPchSource;
     property UseCustomMakefile: boolean read fUseCustomMakefile write SetUseCustomMakefile;
     property CustomMakefile: string read fCustomMakefile write SetCustomMakefile;
 
@@ -451,6 +454,8 @@ constructor TProject.Create(nFileName, nName: string);
 begin
   inherited Create;
   fNode := nil;
+  fPchHead := -1;
+  fPchSource := -1;
   fFolders := TStringList.Create;
   fFolders.Duplicates := dupIgnore;
   fFolders.Sorted := True;
@@ -564,16 +569,6 @@ begin
   // in many cases (like in importing a MSVC project)
   // the project's resource file has already the
   // <project_filename>.res filename.
-  
-  {//check with joel  	
-  if Length(Options.PrivateResource) > 0 then begin
-    Res := GetRealPath(Options.PrivateResource, Directory);
-    if ChangeFileExt(Res, DEV_EXT) = FileName then
-      Res := ChangeFileExt(FileName, '_private' + RC_EXT);
-  end
-  else
-    Res := ChangeFileExt(FileName, '_private' + RC_EXT);
-  }
   Res := ChangeFileExt(FileName, '_private' + RC_EXT);
   Res := StringReplace(ExtractRelativePath(FileName, Res), ' ', '_', [rfReplaceAll]);
 
@@ -905,6 +900,8 @@ begin
   begin
     Section := 'Project';
     fName := Read('name', '');
+    PchHead := Read('PchHead', -1);
+    PchSource := Read('PchSource', -1);
     fOptions.Ver := Read('Ver', -1);
     fOptions.Icon := Read('icon', '');
     if (fOptions.Ver > 0) then //ver > 0 is at least a v5 project
@@ -1039,6 +1036,8 @@ begin
     Section := 'Project';
 
     Write('FileName', ExtractRelativePath(Directory, fFileName));
+    Write('PchHead', PchHead);
+    Write('PchSource', PchSource);
     Write('Name', fName);
     Write('Type', fOptions.typ);
     Write('Ver', 2);
@@ -1495,6 +1494,20 @@ begin
 
     UpdateNodeIndexes();
     SetModified(TRUE);
+
+    //is this the PCH file?
+    if index = PchHead then
+      PchHead := -1
+    else if index = PchSource then
+      PchSource := -1
+    else
+    begin
+      //The header or source file unit may have moved
+      if (PchHead <> -1) and (PchHead > index) then
+        PchHead := PchHead - 1;
+      if (PchSource <> -1) and (PchSource > index) then
+        PchSource := PchSource - 1;
+    end;
   end
   else // pick from list
     with TRemoveUnitForm.Create(MainForm) do
@@ -1858,11 +1871,10 @@ begin
         CopyFile(PChar(fOptions.Icon), PChar(ExpandFileto(IconFileName,
           Directory)), False);
         fOptions.Icon := IconFileName;
-        // force save of private resource to force rebuild, since icon has changed...
-        BuildPrivateResource(True);
-      end
-      else
-        BuildPrivateResource;
+      end;
+
+      // rebuild the resource file
+      BuildPrivateResource;
 
       // update the projects main node caption
       if edProjectName.Text <> '' then

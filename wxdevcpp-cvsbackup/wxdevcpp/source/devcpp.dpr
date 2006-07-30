@@ -27,7 +27,6 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  madScreenShot,
   madListHardware,
   madListProcesses,
   madListModules,
@@ -125,7 +124,7 @@ uses
   dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
   DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
-  //MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
+  MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
   ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
   
@@ -197,8 +196,7 @@ uses
   WxRadioBox in 'components\wxRadioBox.pas',
   WxDatePickerCtrl in 'components\wxDatePickerCtrl.pas',
   CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas'
-{$ENDIF}
-;
+{$ENDIF};
 
 {$R *.res}
 {$R winxp.res}
@@ -240,9 +238,8 @@ begin
 {$ENDIF MEM_DEBUG}
 
   //initialize our global variables
-  //Check with Joel
-  //LIB_EXT := '.lib';
-  //OBJ_EXT := '.o';
+  LIB_EXT := '.lib';
+  OBJ_EXT := '.o';
 
   strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
   

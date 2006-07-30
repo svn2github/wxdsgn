@@ -25,10 +25,10 @@ uses
 {$IFDEF WIN32}
   Windows, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, CodeCompletion, CppParser,
   Menus, ImgList, ComCtrls, StdCtrls, ExtCtrls, SynEdit, SynEditKeyCmds, version, Grids,
-   SynCompletionProposal, StrUtils, SynEditTypes,  SynEditHighlighter,
+   SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter,
 
   {** Modified by Peter **}
-  DevCodeToolTip, SynAutoIndent,utils
+  DevCodeToolTip, SynAutoIndent, utils
 
   {$IFDEF WX_BUILD}
     ,Designerfrm, CompFileIo, wxutils,DbugIntf
@@ -223,7 +223,8 @@ type
 
 implementation
 
-uses 
+uses
+  MigrateFrm,
 {$IFDEF WIN32}
   main, project, MultiLangSupport, devcfg, Search_Center,
   datamod, GotoLineFrm, Macros;
@@ -1457,8 +1458,7 @@ begin
   I := fText.CaretX;
   Dec(I, 1);
   NestedPar := 0;
-  AllowPar := ((Length(fText.LineText) > 1) and (Copy(fText.LineText, I - 1, 2) = ').')) or
-    		   (Length(fText.LineText) > 2) and (Copy(fText.LineText, I - 2, 3) = ')->');
+  AllowPar := true;
   while (I <> 0) and (fText.LineText <> '') and (fText.LineText[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.', '-', '>', ':', '(', ')', '[', ']']) do begin
     if (fText.LineText[I] = ')') then begin
       if not AllowPar then
@@ -1585,6 +1585,7 @@ var s, s1: string;
   	I,j,slen: integer;
     attr:TSynHighlighterAttributes;
 begin
+try
   fHintTimer.Enabled := false;
 
   //check if not comment or string
@@ -1639,7 +1640,7 @@ begin
   else if s = '' then
     fText.Hint := '';
 
-  if s<>'' then begin
+  if s <> '' then begin
     if ssCtrl in Shift then
       fText.Cursor := crHandPoint
     else
@@ -1647,6 +1648,8 @@ begin
   end
   else
     fText.Cursor := crIBeam;
+except
+end;
 end;
 
 procedure TEditor.EditorHintTimer(sender: TObject);
@@ -2237,40 +2240,16 @@ end;
 //this event is triggered whenever the codecompletion box is going to do the actual
 //code completion
 procedure TEditor.DoOnCodeCompletion(Sender: TObject; const AStatement: TStatement; const AIndex: Integer);
-//
-//  this event is triggered whenever the codecompletion box is going to make its work,
-//  or in other words, when it did a codecompletion ...
-//
-var
-    bUnIntialisedToolTip:Boolean;
 begin
   // disable the tooltip here, becasue we check against Enabled
   // in the 'EditorStatusChange' event to prevent it's redrawing there
-  if assigned(FCodeToolTip)then
+
+  //FCodeToolTip may not be initialized under some
+  //circumstances when create TEditor
+  //I suspect it's in TProject.OpenUnit --specu
+  if assigned(FCodeToolTip) then
   begin
-
-    //FCodeToolTip may not be initialized under some
-    //circumstances when create TEditor
-    //I suspect it's in TProject.OpenUnit --specu
-
-    //fixme - Guru: I'm checking if the tooltip is created if not
-    // I create a new one on the fly
-    bUnIntialisedToolTip:=false;
-    try
-        FCodeToolTip.Enabled := False;
-    except
-        bUnIntialisedToolTip:=true;
-    end;
-    if bUnIntialisedToolTip then
-    begin
-        FCodeToolTip:=nil;
-        FCodeToolTip := TDevCodeToolTip.Create(Application);
-        FCodeToolTip.Editor := FText;
-        FCodeToolTip.Parser := MainForm.CppParser1;
-    end;
     FCodeToolTip.Enabled := False;
-    FCodeToolTip.ReleaseHandle;
-    FCodeToolTip.Show;
     FCodeToolTip.Select(AStatement._FullText);
     FCodeToolTip.Enabled := True;
   end;
@@ -2524,6 +2503,7 @@ end;
 procedure TEditor.ReloadFormFromFile(strFilename:String);
 var
     I:Integer;
+    MigrateDlg: TMigrateFrm;
 begin
     if not self.isForm then
         exit;
@@ -2539,7 +2519,17 @@ begin
     except
         on e: Exception do
         begin
-            MessageBox(0, PChar(e.Message), 'wxDev-C++', MB_ICONHAND or MB_OK or MB_TASKMODAL);
+          MigrateDlg := TMigrateFrm.Create(Application.MainForm);
+          MigrateDlg.Source.Text := strFilename;
+          MigrateDlg.Source.ReadOnly := true;
+          MigrateDlg.btnSource.Enabled := false;
+
+          //Show the dialog, and see if the user did what we wanted
+          if MigrateDlg.ShowModal = mrOK then
+            ReloadFormFromFile(strFilename);
+
+          //Destroy the dialog
+          MigrateDlg.Destroy;
         end;
     end;
 end;
