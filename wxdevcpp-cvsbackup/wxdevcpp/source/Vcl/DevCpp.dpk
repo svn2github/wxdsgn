@@ -4,6 +4,7 @@ package DevCpp;
 {$R 'devReg.dcr'}
 {$R 'devShortcuts.dcr'}
 {$R 'XPMenu.dcr'}
+{$R 'DockManagerPro.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -44,6 +45,7 @@ contains
   devFileMonitor in 'devFileMonitor.pas',
   devMonitorThread in 'devMonitorThread.pas',
   devMonitorTypes in 'devMonitorTypes.pas',
-  XPMenu in 'XPMenu.pas';
+  XPMenu in 'XPMenu.pas',
+  DockManagerPro in 'DockManagerPro.pas';
 
 end.

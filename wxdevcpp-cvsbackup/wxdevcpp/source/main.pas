@@ -42,7 +42,7 @@ uses
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
   ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
   wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr, ExceptionFilterUnit,
-  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX
+  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX, DockManagerPro
   {$ENDIF}
   ;
 {$ENDIF}
@@ -647,7 +647,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     actWxPropertyInspectorCut: TAction;
     actWxPropertyInspectorCopy: TAction;
     actWxPropertyInspectorPaste: TAction;
-    procedure FormCreate(Sender: TObject);
+    DockManagerPro1: TDockManagerPro;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
@@ -1283,27 +1283,21 @@ begin
 
 end;
 
-procedure TMainForm.FormCreate(Sender: TObject);
-begin
-  // copied all to DoCreate
-end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.DoCreateWxSpecificItems;
 var
   I: Integer;
   ini :TiniFile;
 begin
-  //PopuP menu
+  //Popup menu
   frmInspectorDock:=TForm.Create(self);
-  //frmClassBrwsDock:=TForm.Create(self);
+  frmInspectorDock.Hint := 'Property Inspector';
 
   frmControlsDock:=TForm.Create(self);
   strChangedFileList:=TStringList.Create;
   strStdwxIDList:=GetPredefinedwxIds;
   FWatchList:=TList.Create;
   FileWatching:=false;
-  //LeftPageControl.Owner:=frmClassBrwsDock;
-  //LeftPageControl.Parent:=frmClassBrwsDock;
 
   WxPropertyInspectorPopup := TPopupMenu.Create(Self);
   WxPropertyInspectorMenuEdit := TMenuItem.Create(Self);
@@ -1639,7 +1633,6 @@ begin
     Align := alClient;
     BevelOuter := bvNone;
     TabOrder := 0;
-    //OnResize := Panel21Resize;
   end;
   with cbxControlsx do
   begin
@@ -1739,22 +1732,12 @@ begin
   end;
 
   intControlCount := 1000;
-  //frmInspectorDock.Width:=100;
-  frmInspectorDock.Height:=500;
-  //frmInspectorDock.Visible:=true;
-  LeftPageControl.Height:=400;
-  frmInspectorDock.ManualDock(pnlBrowsers,nil,alTop);
-  frmInspectorDock.Visible:=true;
-  LeftPageControl.ManualDock(pnlBrowsers,nil,alTop);
-  //frmInspectorDock.Height:=400;
-  //pnlBrowsers.Height:=500;
-  LeftPageControl.Height:=600;
+  frmInspectorDock.ManualDock(pnlBrowsers, nil, alBottom);
+  frmInspectorDock.Visible := true;
+  frmInspectorDock.Height := 200;
 
-//  for I := 0 to pnlBrowsers.DockClientCount - 1 do    // Iterate
-//  begin
-//        pnlBrowsers.DockClients[];
-//  end;    // for
-
+  LeftPageControl.ManualDock(pnlBrowsers, nil, alTop);
+  LeftPageControl.Height := 600;
 
   //Design Control specifics
   lbxControls := TListBox.Create(Self);
@@ -1848,11 +1831,9 @@ begin
   //Setting data for the newly created GUI
   LoadComponents;
   intControlCount := 1000;
-
-  //ELPropertyInspector1.Designer:=self.ELDesigner1;
-
 end;
 {$ENDIF}
+
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
@@ -1900,15 +1881,24 @@ procedure TMainForm.DoCreateEverything;
 // So while 'Creating' the form is hidden and when it's done, it's displayed
 // without 'lag' and it's immediately ready to use ...
 //
+  procedure SetSplashStatus(str: string);
+  begin
+    if assigned(SplashForm) then
+      SplashForm.StatusBar.SimpleText := str + '...';
+  end;
 begin
 {$IFDEF WX_BUILD}
+  SetSplashStatus('Loading wxWidgets extensions');
   DoCreateWxSpecificItems;
 {$ENDIF}
   fFirstShow := TRUE;
+
+  // register file associations and DDE services
   DDETopic := DevCppDDEServer.Name;
-  CheckAssociations; // register file associations and DDE services <-- !!!
+  CheckAssociations;
   DragAcceptFiles(Self.Handle, TRUE);
   dmMain := TdmMain.Create(Self);
+
   // Set Path
   devDirs.OriginalPath := GetEnvironmentVariable('PATH');
   SetPath(devDirs.Bins);
@@ -1919,13 +1909,11 @@ begin
 
   // set visiblity to previous sessions state
   actProjectManager.Checked := devData.ProjectView;
-  { begin XXXKF changed}
   if devData.ClassView then
     LeftPageControl.ActivePage := ClassSheet
   else
     LeftPageControl.ActivePage := ProjectSheet;
   actProjectManagerExecute(nil);
-  { end XXXKF changed}
   LeftPageControl.Width := devData.ProjectWidth;
   actStatusbar.Checked := devData.Statusbar;
   actStatusbarExecute(nil);
@@ -1947,10 +1935,11 @@ begin
   MessageControl.Height := devData.OutputHeight;
   fmsgHeight := MessageControl.Height;
 
-  {*** Modified by Peter ***}
+  SetSplashStatus('Loading themes');
   devImageThemes := TDevImageThemeFactory.Create;
   devImageThemes.LoadFromDirectory(devDirs.Themes);
 
+  SetSplashStatus('Loading languages');
   if devData.First or (devData.Language = '') then
   begin
     if devData.First then
@@ -1960,33 +1949,12 @@ begin
       LoadTheme;
     devData.FileDate := FileAge(Application.ExeName);
     devData.First := FALSE;
-    //     SaveOptions;
   end
-  else begin
+  else
     Lang.Open(devData.Language);
-    {.$IFNDEF DEBUG}
-    {   if devData.Version <> DEVCPP_VERSION then begin
-         if MessageDlg('Old configuration files of Dev-C++ have been found on your system.' +#10#13+
-                       'This could cause your new Dev-C++ version to not work properly. ' + #10#13 +
-                       'Do you want to delete those files  ?' + #10#13 +
-                       'If you answer "No" you may need to setup the compiler directories in Compiler Options',
-                       mtWarning, [mbYes, mbNo], 0) = mrYes then begin
-           if not DeleteFile(devData.INIFile) then
-             MessageDlg('Could not delete ' + devData.Inifile, mtError, [mbOK], 0);
-           if not DeleteFile(ChangeFileExt(devData.INIFile, '.cfg')) then
-             MessageDlg('Could not delete ' + ChangeFileExt(devData.Inifile, '.cfg'), mtError, [mbOK], 0);
-           devData.FileDate := FileAge(Application.ExeName);
-           MessageDlg('Dev-C++ will now close, please restart it', mtInformation, [mbOK], 0);
-           Application.Terminate;
-         end
-         else
-           devData.FileDate := FileAge(Application.ExeName);
-        end;
-    {$ENDIF}
-  end;
 
   devData.Version := DEVCPP_VERSION;
-
+  SetSplashStatus('Loading 3rd-party tools');
   with fTools do
   begin
     Menu := ToolsMenu;
@@ -1996,23 +1964,17 @@ begin
   end;
 
   LoadText(FALSE);
-
   devShortcuts1.Filename := devDirs.Config + DEV_SHORTCUTS_FILE;
 
   //Some weird problem when upgrading to new version
   try
-  devShortcuts1.Load;
+    devShortcuts1.Load;
   except
   end;
 
   Application.HelpFile := ValidateFile(DEV_MAINHELP_FILE, devDirs.Help, TRUE);
-  { copied this part of code to 'DoApplyWindowPlacement' because it forces the form to show
 
-  if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
-   SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
-  else if not CacheCreated then // this is so weird, but the following call seems to take a lot of time to execute
-   Self.Position:= poScreenCenter;      }
-
+  SetSplashStatus('Initializing workspace');
   if not DevData.ShowOutput then
     OpenCloseMessageSheet(FALSE);
   actCompOnNeed.Checked := devData.OutputOnNeed;
@@ -2047,22 +2009,20 @@ begin
 
   MainForm.Constraints.MaxHeight := Monitor.Height;
   MainForm.Constraints.MaxWidth := Monitor.Width;
-
-  //  Application.HintHidePause:=20000;
-
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
 
-  { *** RNC Create breakpoint list *** }
   BreakPointList := TList.create;
+  SetSplashStatus('Loading code completion cache');
   InitClassBrowser(true {not CacheCreated});
+
+{$IFDEF WX_BUILD}
   //variable for clearing up inspector data.
   //Added because there is a AV when adding a function
   //from the event list
-  {$IFDEF WX_BUILD}
   boolInspectorDataClear:=True;
   DisablePropertyBuilding:=false;
-  {$ENDIF}
+{$ENDIF}
 end;
 { *** RNC add global breakpoint *** }
 procedure TMainForm.AddBreakPointToList(line_number: integer; e: TEditor; filename:string);
@@ -3818,7 +3778,6 @@ begin
         actProjectManager.Execute;
 
       CheckForDLLProfiling;
-
       UpdateAppTitle;
       ScanActiveProject;
     end
@@ -4578,22 +4537,6 @@ begin
   fCompiler.Project := nil;
   dmMain.AddtoHistory(fProject.FileName);
 
-  // not true anymore, this resulted in an AV
-  {
-  // mandrav: close all open project resources (the project does *not* closes them itself...)
-  I := 0;
-  while I < PageControl.PageCount do begin
-    if TEditor(PageControl.Pages[i].Tag).IsRes and TEditor(PageControl.Pages[i].Tag).InProject then
-      TEditor(PageControl.Pages[i].Tag).Close
-    else
-    begin
-      if TEditor(PageControl.Pages[i].Tag).isForm() then begin
-      	TEditor(PageControl.Pages[i].Tag).Close;
-      end;
-      Inc(I);
-    end;
-  end;}
-
   try
     FreeandNil(fProject);
   except
@@ -4705,38 +4648,34 @@ procedure TMainForm.actCutExecute(Sender: TObject);
 var
   e: TEditor;
 begin
-
   e := GetEditor;
   if assigned(e) then
   begin
     if e.isForm then
-      if JvInspProperties.Focused then  // If property inspector is focused, then cut text
+      if (JvInspProperties.Focused) or (JvInspEvents.Focused) then  // If property inspector is focused, then cut text
         actWxPropertyInspectorCut.Execute
       else   // Otherwise form component is selected so cut whole component (control and code)
         actDesignerCut.Execute
-       else
-         e.Text.CutToClipboard
+    else
+      e.Text.CutToClipboard
   end;
-
 end;
 
 procedure TMainForm.actCopyExecute(Sender: TObject);
 var
   e: TEditor;
 begin
-
   e := GetEditor;
-
-   if assigned(e) then
+  if assigned(e) then
   begin
     if e.isForm then
-      if JvInspProperties.Focused then  // If property inspector is focused, then copy text
+      if (JvInspProperties.Focused) or (JvInspEvents.Focused) then  // If property inspector is focused, then copy text
         actWxPropertyInspectorCopy.Execute
       else   // Otherwise form component is selected so copy whole component (control and code)
         actDesignerCopy.Execute
     else
-     e.Text.CopyToClipboard;
-    end;
+      e.Text.CopyToClipboard;
+  end;
 end;
 
 procedure TMainForm.actPasteExecute(Sender: TObject);
@@ -4747,12 +4686,12 @@ begin
   if assigned(e) then
   begin
     if e.isForm then
-      if JvInspProperties.Focused then  // If property inspector is focused, then paste text
+      if (JvInspProperties.Focused) or (JvInspEvents.Focused) then  // If property inspector is focused, then paste text
         actWxPropertyInspectorPaste.Execute
       else   // Otherwise form component is selected so paste whole component (control and code)
         actDesignerPaste.Execute
-      else
-        e.Text.PasteFromClipboard;
+    else
+      e.Text.PasteFromClipboard;
    end;
 end;
 
@@ -5225,16 +5164,12 @@ begin
   ResSheet.Highlighted := false;
   SizeFile.Text := '';
   TotalErrors.Text := '0';
-  //if actCompOutput.Checked or actCompOnNeed.Checked then
-  // begin
 
   if not devData.ShowProgress then begin
     // if no compile progress window, open the compiler output
     OpenCloseMessageSheet(True);
     MessageControl.ActivePage := LogSheet;
   end;
-
-  // end;
 
   e := GetEditor;
   fCompiler.Target := ctNone;
@@ -5267,7 +5202,6 @@ begin
   end;
 
   fCompiler.PerfectDepCheck := not devCompiler.FastDep;
-
   // increment the build number
   if Assigned(fProject) then
   begin
@@ -5275,12 +5209,9 @@ begin
       fProject.Options.VersionInfo.AutoIncBuildNrOnCompile or
       (fProject.Options.VersionInfo.AutoIncBuildNrOnRebuild and rebuild)
     ) then
-    begin
       fProject.IncrementBuildNumber;
-      fProject.BuildPrivateResource;
-    end;
+    fProject.BuildPrivateResource;
   end;
-
   Result := True;
 end;
 
@@ -5291,12 +5222,8 @@ begin
     MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0);
     Exit;
   end;
-  if not PrepareForCompile(false) then
-    Exit;
-  if fCompiler.Target = ctProject then
-    DeleteFile(fProject.Executable);
-  fCompiler.Compile;
-  Application.ProcessMessages;
+  if PrepareForCompile(false) then
+    fCompiler.Compile;
 end;
 
 procedure TMainForm.actRunExecute(Sender: TObject);
@@ -5330,9 +5257,8 @@ begin
     MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0);
     Exit;
   end;
-  if not PrepareForCompile(false) then
-    Exit;
-  fCompiler.CompileAndRun;
+  if PrepareForCompile(false) then
+    fCompiler.CompileAndRun;
 end;
 
 procedure TMainForm.actRebuildExecute(Sender: TObject);
@@ -8393,42 +8319,29 @@ end;
 
 
 procedure TMainForm.HideCodeToolTip;
-//
-// added on 23rd may 2004 by peter_
-// belongs to this problem:
-// https://sourceforge.net/tracker/?func=detail&atid=110639&aid=957025&group_id=10639
-//
 var
   CurrentEditor: TEditor;
 begin
   CurrentEditor := GetEditor(PageControl.ActivePageIndex);
-
   if Assigned(CurrentEditor) and Assigned(CurrentEditor.CodeToolTip) then
-  begin
     CurrentEditor.CodeToolTip.ReleaseHandle;
-  end;
 end;
 
 
 procedure TMainForm.ApplicationEvents1Deactivate(Sender: TObject);
-//
-// added on 23rd may 2004 by peter_
-//
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   //This is a custom File Watcher used specifically for
   //wx-devcpp because the current implementation
   //is somewhat erratic in my machine
 var
-    fwatchThread:TFileWatch;
-    i:Integer;
-  {$ENDIF}
+  fwatchThread:TFileWatch;
+  i:Integer;
+{$ENDIF}
 begin
-  try
-  	HideCodeToolTip;
-  except
-  end;
+  // Hide the tooltip since we no longer have focus
+  HideCodeToolTip;
 
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   devFileMonitor1.Deactivate;
   FWatchList.Clear;
   FileWatching:=true;
@@ -8451,9 +8364,9 @@ procedure TMainForm.PageControlChanging(Sender: TObject;
 //
 begin
   HideCodeToolTip;
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   DisableDesignerControls;
-  {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TMainForm.mnuCVSClick(Sender: TObject);
@@ -12310,12 +12223,6 @@ end;
 
 procedure TMainForm.WndProc(var Message: TMessage);
 begin
-  if (Message.Msg = WM_ACTIVATE) then
-  begin
-    if (Message.WParam = WA_INACTIVE) then
-      HideCodeToolTip;
-  end;
-
   //Call the default event handlers
   inherited;
 end;

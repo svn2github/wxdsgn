@@ -69,7 +69,6 @@ contains
   SynHighlighterRC in '..\Source\SynHighlighterRC.pas',
   SynMacroRecorder in '..\Source\SynMacroRecorder.pas',
   SynMemo in '..\Source\SynMemo.pas',
-  SynRegExpr in '..\Source\SynRegExpr.pas',
-  SynHighlighterManager in '..\Source\SynHighlighterManager.pas';
+  SynRegExpr in '..\Source\SynRegExpr.pas';
 
 end.
