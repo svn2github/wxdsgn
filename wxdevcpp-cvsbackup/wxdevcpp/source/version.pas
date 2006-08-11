@@ -184,7 +184,6 @@ const
   cppTypes:  array[0..4] of string[4] = (CPP_EXT, CC_EXT, CXX_EXT, CP2_EXT, CP_EXT);
   headTypes: array[0..2] of string[4] = (H_EXT, HPP_EXT, RH_EXT);
   resTypes: array[0..3] of string[4] = (RES_EXT, RC_EXT, RH_EXT, XRC_EXT);
-  objTypes: array[0..0] of string = (OBJ_EXT);
 
   // GDB commands and Displays
   GDB_FILE = 'file';

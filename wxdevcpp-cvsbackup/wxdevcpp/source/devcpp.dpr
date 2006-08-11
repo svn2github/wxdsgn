@@ -95,7 +95,6 @@ uses
   CPUFrm in 'CPUFrm.pas' {CPUForm},
   FileAssocs in 'FileAssocs.pas',
   TipOfTheDayFm in 'TipOfTheDayFm.pas' {TipOfTheDayForm},
-  ExceptionsAnalyzer in 'ExceptionsAnalyzer.pas' {frmExceptionsAnalyzer},
   CVSFm in 'CVSFm.pas' {CVSForm},
   WindowListFrm in 'WindowListFrm.pas' {WindowListForm},
   CVSThread in 'CVSThread.pas',
@@ -104,19 +103,13 @@ uses
   ParamsFrm in 'ParamsFrm.pas' {ParamsForm},
   CompilerOptionsFrame in 'CompilerOptionsFrame.pas' {CompOptionsFrame: TFrame},
   CompileProgressFm in 'CompileProgressFm.pas' {CompileProgressForm},
-{$IFDEF WIN32}
   WebThread in 'webupdate\WebThread.pas',
   WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
-{$ENDIF}
-{$IFDEF LINUX}
-  WebThread in 'webupdate/WebThread.pas',
-  WebUpdate in 'webupdate/WebUpdate.pas' {WebUpdateForm},
-{$ENDIF}
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas'
-{$IFDEF WX_BUILD},
+  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},{$ENDIF}
+{$IFDEF WX_BUILD}
   Wxcontrolpanel in 'components\Wxcontrolpanel.pas',
   uFileWatch in 'uFileWatch.pas',
   
@@ -236,13 +229,10 @@ begin
   MemChk;
 {$ENDIF MEM_DEBUG}
 
-  //initialize our global variables
-  LIB_EXT := '.lib';
-  OBJ_EXT := '.o';
-
   strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
-  
-  if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then  begin
+
+  if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then
+  begin
     if not DirectoryExists(ParamStr(2)) then begin
       MessageDlg('The directory "' + ParamStr(2) + '" doesn''t exist. Dev-C++ will now quit, please create the directory first.', mtError, [mbOK], 0);
       Application.Terminate;
@@ -251,7 +241,8 @@ begin
     devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + strIniFile;
     ConfigMode := CFG_PARAM;
   end
-  else if IsWinNT then begin
+  else if IsWinNT then
+  begin
      //default dir should be %APPDATA%\Dev-Cpp
      strLocalAppData := '';
      if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
@@ -346,16 +337,14 @@ begin
     SplashForm.Update;
   end;
 
-  {*** modified by peter ***}
-  // make the creation when the splashscreen is displayed
-  // because it takes quite a while ...
+  // do all the initialization when the splash screen is displayed
+  // because it takes quite a while to complete
   TMainFormHack(MainForm).DoCreateEverything;
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
   Application.CreateForm(TWebUpdateForm, WebUpdateForm);
 
-  {*** modified by peter ***}
   // apply the window placement. this method forced
   // the form to show,
   TMainFormHack(MainForm).DoApplyWindowPlacement;

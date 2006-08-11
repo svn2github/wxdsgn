@@ -398,7 +398,6 @@ begin
      All I have to do when I want the actual string back, is call StringReplace() et voila :)
     }
 
-    // mandrav: start
      cmdlines.Linker:= edLinker.Lines.Text;
      cmdLines.Compiler:='';
      for I:=0 to edCompiler.Lines.Count-1 do
@@ -409,12 +408,9 @@ begin
      cmdLines.Linker:='';
      for I:=0 to edLinker.Lines.Count-1 do
       cmdLines.Linker := cmdLines.Linker + edLinker.Lines[I] + '_@@_';
-    // mandrav: end
-{$IfDef VC_BUILD}
      PreprocDefines := '';
      for I:=0 to edDefines.Lines.Count-1 do
       PreprocDefines := PreprocDefines + edDefines.Lines[I] + '_@@_';
-{$EndIf}
      typ:= lstType.ItemIndex;
 
     ExeOutput := edExeOutput.Text;
@@ -484,9 +480,7 @@ begin
   edCompiler.Lines.Text:= StringReplace(fOptions.cmdlines.Compiler, '_@@_', #13#10, [rfReplaceAll]);
   edCppCompiler.Lines.Text:= StringReplace(fOptions.cmdlines.CppCompiler, '_@@_', #13#10, [rfReplaceAll]);
   edLinker.Lines.Text:= StringReplace(fOptions.cmdlines.Linker, '_@@_', #13#10, [rfReplaceAll]);
-{$IfDef VC_BUILD}
   edDefines.Lines.Text := StringReplace(fOptions.PreProcDefines, '_@@_', #13#10, [rfReplaceAll]);
-{$EndIf}
   edProjectName.Text:= fProject.Name;
   lblPrjFname.Caption:=fProject.FileName;
   lblPrjOutputFname.Caption:=fProject.Executable;
@@ -1084,20 +1078,14 @@ begin
 end;
 
 procedure TfrmProjectOptions.cmbCompilerChange(Sender: TObject);
-{$IfDef VC_BUILD}
 var currOpts: string;
-{$ENDIF}
 begin
-{$IfDef VC_BUILD}
   currOpts := devCompiler.OptionStr;
   devCompiler.CompilerSet := cmbCompiler.ItemIndex;
   devCompiler.AddDefaultOptions;
-{$EndIf}
   devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
   devCompilerSet.AssignToCompiler;
-{$IfDef VC_BUILD}
   devCompiler.OptionStr := currOpts;
-{$EndIf}
   CompOptionsFrame1.FillOptions(fProject);
 end;
 
@@ -1149,18 +1137,10 @@ begin
   else
     ofile := GenMakePath(ChangeFileExt(tfile, OBJ_EXT));
 
-{$IFDEF VC_BUILD}
-    if fProject.Units[idx].CompileCpp then
-      Result := #9 + '$(CPP) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), ofile]) + ' $(CXXFLAGS)'
-    else
-      Result := #9 + '$(CC) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), ofile]) + ' $(CFLAGS)';
-{$ELSE}
-     if fProject.Units[idx].CompileCpp then
-    Result := '$(CPP) -c ' + GenMakePath(tfile) + ' -o ' + ofile + ' $(CXXFLAGS)'
+  if fProject.Units[idx].CompileCpp then
+    Result := #9 + '$(CPP) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), ofile]) + ' $(CXXFLAGS)'
   else
-    Result := '$(CC) -c ' + GenMakePath(tfile) + ' -o ' + ofile + ' $(CFLAGS)';
-
-{$ENDIF}
+    Result := #9 + '$(CC) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), ofile]) + ' $(CFLAGS)';
 end;
 
 procedure TfrmProjectOptions.txtOverrideBuildCmdChange(Sender: TObject);

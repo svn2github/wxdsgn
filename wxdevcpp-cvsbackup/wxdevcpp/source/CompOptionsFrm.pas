@@ -130,9 +130,7 @@ type
     fLibs: string;
     fC: string;
     fCpp: string;
-{$IfDef VC_BUILD}
     fRC: string;
-{$EndIf}
     procedure SetOptions;
     procedure UpdateButtons;
     procedure LoadText;
@@ -163,9 +161,7 @@ const
 
 procedure TCompForm.SaveSettings;
 begin
-{$IFDEF VC_BUILD}
   devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
-{$ENDIF}
   devCompilerSet.gccName := GccEdit.Text;
   devCompilerSet.gppName := GppEdit.Text;
   devCompilerSet.makeName := MakeEdit.Text;
@@ -178,15 +174,11 @@ begin
   devCompilerSet.CDir := fC;
   devCompilerSet.CppDir := fCpp;
   devCompilerSet.LibDir := fLibs;
-{$IfDef VC_BUILD}
   devCompilerSet.RCDir  := fRC;
-{$EndIf}
 
   devCompilerSet.CmdOpts  := Commands.Lines.Text;
   devCompilerSet.LinkOpts := Linker.Lines.Text;
-{$IfDef VC_BUILD}
   devCompilerSet.MakeOpts := Make.Lines.Text;
-{$EndIf}
   devCompilerSet.OptionsStr := devCompiler.OptionStr;
   devCompilerSet.SaveSet(currentSet);
   devCompilerSet.SaveSettings;
@@ -223,9 +215,7 @@ begin
     C := fC;
     Cpp := fCpp;
     Lib := fLibs;
-{$IfDef VC_BUILD}
     RC := fRC;
-{$EndIf}
   end;
   // Set Path with New Bins
   SetPath(fBins);
@@ -248,9 +238,7 @@ begin
     cbFastDep.Checked   := FastDep;
     Commands.Lines.Text := CmdOpts;
     Linker.Lines.Text   := LinkOpts;
-{$IfDef VC_BUILD}
     Make.Lines.Text     := MakeOpts;
-{$EndIf}
 
     cmbCompilerSetComp.Items.Clear;
     cmbCompilerSetComp.Items.Assign(devCompilerSet.Sets);
@@ -286,9 +274,7 @@ begin
     1: StrtoList(fLibs, TStrings(lstDirs.Items));
     2: StrtoList(fC, TStrings(lstDirs.Items));
     3: StrtoList(fCpp, TStrings(lstDirs.Items));
-{$IfDef VC_BUILD}
     4: StrtoList(fRC, TStrings(lstDirs.Items));
-{$EndIf}
   end;
   edEntry.Clear;
   UpdateButtons;
@@ -352,9 +338,7 @@ begin
     1: fLibs := ListtoStr(lstDirs.Items);
     2: fC := ListtoStr(lstDIrs.Items);
     3: fCpp := ListtoStr(lstDirs.Items);
-{$IfDef VC_BUILD}
     4: fRC := ListtoStr(lstDirs.Items);
-{$EndIf}
   end;
   edEntry.SetFocus;
 end;
@@ -383,9 +367,7 @@ begin
     1: fLibs := ListtoStr(lstDirs.Items);
     2: fC := ListtoStr(lstDIrs.Items);
     3: fCpp := ListtoStr(lstDirs.Items);
-{$IfDef VC_BUILD}
     4: fRC  := ListtoStr(lstDirs.Items);
-{$EndIf}
   end;
   UpdateButtons;
 end;
@@ -453,9 +435,7 @@ begin
   DirTabs.Tabs.Append(Lang[ID_COPT_LIB]);
   DirTabs.Tabs.Append(Lang[ID_COPT_INCC]);
   DirTabs.Tabs.Append(Lang[ID_COPT_INCCPP]);
-{$IfDef VC_BUILD}
   DirTabs.Tabs.Append('Resource Includes');
-{$EndIf}
 
   //buttons
   btnReplace.Caption := Lang[ID_BTN_REPLACE];
@@ -495,16 +475,12 @@ begin
     fC                      := CDir;
     fCpp                    := CppDir;
     fLibs                   := LibDir;
-{$IfDef VC_BUILD}
     fRC                     := RCDir;
-{$EndIf}
 
     Commands.Lines.Text     := CmdOpts;
     Linker.Lines.Text       := LinkOpts;
-{$IFDEF VC_BUILD}
     Make.Lines.Text         := MakeOpts;
     CompilerTypes.ItemIndex := CompilerType;
-{$ENDIF}
     DirTabsChange(DirTabs);
 
     GccEdit.Text            := gccName;
@@ -566,9 +542,9 @@ begin
   if not InputQuery(Lang[ID_COPT_NEWCOMPSET], Lang[ID_COPT_PROMPTNEWCOMPSET], S) or (S='') then
     Exit;
 
+  devCompilerSet.Sets.Add(S);
   cmbCompilerSetComp.ItemIndex := cmbCompilerSetComp.Items.Add(S);
   cmbCompilerSetCompChange(nil);
-  devCompilerSet.Sets.Add(S);
 end;
 
 procedure TCompForm.btnDelCompilerSetClick(Sender: TObject);
@@ -601,7 +577,6 @@ end;
 
 procedure TCompForm.CompilerTypesClick(Sender: TObject);
 begin
-{$IFDEF VC_BUILD}
   devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
   devCompilerSet.SettoDefaults;
   devCompiler.AddDefaultOptions;
@@ -638,7 +613,6 @@ begin
         btnbrowse8.Enabled := true;
       end;
   end;
-{$ENDIF}
 end;
 
 end.

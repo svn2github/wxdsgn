@@ -180,9 +180,7 @@ begin
          // Tony Reina 11 June 2005
          // This is needed to grab the MakeIncludes from the template file of a new project
          fOptions.MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
-         {$IFDEF VC_BUILD}
          fOptions.PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
-         {$ENDIF}
 {$ENDIF}
 
          fOptions.ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
