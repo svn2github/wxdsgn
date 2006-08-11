@@ -929,6 +929,8 @@ begin
   devCodeCompletion.Delay := tbCompletionDelay.Position;
   devCodeCompletion.BackColor := cpCompletionBackground.SelectionColor;
   devCodeCompletion.UseCacheFiles := chkCCCache.Checked;
+  if chkCCCache.Tag = 1 then
+    CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
 
   // CLASS_BROWSING //
   devClassBrowsing.Enabled := chkEnableClassBrowser.Checked;
@@ -1608,13 +1610,23 @@ begin
     if OpenDialog.Execute then begin
       Application.ProcessMessages;
       Screen.Cursor := crHourglass;
+
+      //Track the cache parse progress
+      HasProgressStarted := false;
+      CppParser1.OnStartParsing := CppParser1StartParsing;
+      CppParser1.OnEndParsing := CppParser1EndParsing;
+      CppParser1.OnTotalProgress := CppParser1TotalProgress;
+
+      //Add the files to scan and then parse the list
       for I := 0 to OpenDialog.Files.Count - 1 do
         CppParser1.AddFileToScan(OpenDialog.Files[I]);
       CppParser1.ParseList;
-      CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
-      lbCCC.Items.Assign(CppParser1.CacheContents);
       Screen.Cursor := crDefault;
       chkCCCache.Tag := 1; // mark modified
+
+      //Finally append the new items unto the listbox
+      for I := 0 to OpenDialog.Files.Count - 1 do
+        lbCCC.Items.Add(AnsiStrLower(PChar(OpenDialog.Files[I])));
     end;
   end;
 end;
