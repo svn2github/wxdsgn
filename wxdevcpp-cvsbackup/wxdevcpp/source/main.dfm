@@ -15,7 +15,6 @@ object MainForm: TMainForm
   Position = poDefault
   OnClose = FormClose
   OnContextPopup = FormContextPopup
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnPaint = FormPaint
@@ -116,7 +115,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -134,7 +133,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -189,18 +188,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 393
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           393
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 638
-          Height = 72
+          Height = 74
           Anchors = [akLeft, akTop, akRight, akBottom]
           ReadOnly = True
           ScrollBars = ssVertical
@@ -216,7 +215,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 97
+        Height = 98
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -597,7 +596,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 610
-            Height = 66
+            Height = 67
             Align = alClient
             Columns = <
               item
@@ -631,7 +630,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 610
-            Height = 44
+            Height = 45
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -683,7 +682,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1202,6 +1201,7 @@ object MainForm: TMainForm
     Width = 209
     Height = 135
     Align = alLeft
+    UseDockManager = False
     DockSite = True
     TabOrder = 7
     object LeftPageControl: TPageControl
@@ -1209,6 +1209,7 @@ object MainForm: TMainForm
       Top = 16
       Width = 192
       Height = 201
+      Hint = 'Project Inspector'
       ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
       TabIndex = 0
@@ -3506,5 +3507,18 @@ object MainForm: TMainForm
     Options = [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw]
     Left = 272
     Top = 288
+  end
+  object DockManagerPro1: TDockManagerPro
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = []
+    CaptionStartColor = clBtnFace
+    CaptionEndColor = clBtnFace
+    TransparentButton = True
+    Control = pnlBrowsers
+    Left = 542
+    Top = 128
   end
 end
