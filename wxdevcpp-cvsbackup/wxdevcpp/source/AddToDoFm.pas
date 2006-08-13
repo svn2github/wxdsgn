@@ -127,7 +127,7 @@ end;
 
 procedure TAddToDoForm.txtUserKeyPress(Sender: TObject; var Key: Char);
 begin
-  if not (Key in ['a'..'z', 'A'..'Z', '0'..'9', '_', #8, #13, #27]) then begin
+  if not (Key in ['a'..'z', 'A'..'Z', '0'..'9', '_', ' ', #8, #13, #27]) then begin
     Key := #0;
     Exit;
   end;
