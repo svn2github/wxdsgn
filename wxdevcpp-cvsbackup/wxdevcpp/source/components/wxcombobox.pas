@@ -682,7 +682,7 @@ end;
 function TWxComboBox.GetLHSVariableAssignment:String;
 var
     nPos:Integer;
-    str1,str2:String;
+    
 begin
     Result:='';
     if trim(Wx_LHSValue) = '' then

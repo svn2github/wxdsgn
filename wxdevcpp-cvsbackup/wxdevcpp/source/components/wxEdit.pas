@@ -813,8 +813,7 @@ end;
 function TWxEdit.GetLHSVariableAssignment:String;
 var
     nPos:Integer;
-    str1,str2:String;
-
+   
 begin
     Result:='';
     if trim(Wx_LHSValue) = '' then
