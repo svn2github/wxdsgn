@@ -118,12 +118,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnBrws1Click(Sender: TObject);
     procedure cmbCompilerSetCompChange(Sender: TObject);
-    procedure LoadOptions();
     procedure btnAddCompilerSetClick(Sender: TObject);
     procedure btnDelCompilerSetClick(Sender: TObject);
     procedure btnRenameCompilerSetClick(Sender: TObject);
-    procedure SaveSettings();
     procedure CompilerTypesClick(Sender: TObject);
+    procedure LoadOptions;
+    procedure SaveSettings;
 
   private
     fBins: string;
@@ -139,6 +139,7 @@ type
 var
   NumOpt: integer;
   currentSet: integer;
+  previousSet : integer;
   
 implementation
 
@@ -186,7 +187,7 @@ end;
 
 procedure TCompForm.btnCancelClick(Sender: TObject);
 begin
-  devCompiler.CompilerSet:=cmbCompilerSetComp.ItemIndex;
+  devCompiler.CompilerSet:=previousSet;  // Return to initial compiler set
   Close;
 end;
 
@@ -222,12 +223,20 @@ begin
 
   devDirs.SaveSettings;
   devCompiler.SaveSettings;
+
+  // The Tools->Compiler Options window shouldn't change the compiler for the
+  // current project. That should only be possible from Project->Project Settings.
+  // So at the very end, let's just go back to the original compiler index
+  // (which is what the project was set to)
+  devCompiler.CompilerSet := previousSet;
 end;
 
 procedure TCompForm.FormActivate(Sender: TObject);
 begin
   SetOptions;
   DirTabsChange(Self);
+  currentSet := devCompiler.CompilerSet;
+  previousSet := currentSet;  // Remember the initial compiler index
 end;
 
 procedure TCompForm.SetOptions;
@@ -465,12 +474,13 @@ begin
   SaveSettings;
   devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
   currentSet := cmbCompilerSetComp.ItemIndex;
-  LoadOptions();
+  LoadOptions;
 end;
 
-procedure TCompForm.LoadOptions();
+procedure TCompForm.LoadOptions;
 begin
-  with devCompilerSet do begin
+  with devCompilerSet do
+  begin
     fBins                   := BinDir;
     fC                      := CDir;
     fCpp                    := CppDir;
@@ -616,3 +626,4 @@ begin
 end;
 
 end.
+

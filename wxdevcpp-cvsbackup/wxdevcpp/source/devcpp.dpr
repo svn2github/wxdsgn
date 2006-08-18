@@ -27,8 +27,6 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  madListHardware,
-  madListProcesses,
   madListModules,
   madExcept,
   madLinkDisAsm,

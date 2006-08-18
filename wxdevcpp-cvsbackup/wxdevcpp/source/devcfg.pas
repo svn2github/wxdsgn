@@ -2127,21 +2127,23 @@ begin
   //check if make is in path + bins directory
   if devDirs.OriginalPath = '' then // first time only
     devDirs.OriginalPath := GetEnvironmentVariable('PATH');
-  SetPath(devDirs.Bins);
-  makeSig := RunAndGetOutput(devCompilerSet.makeName + ' --v',
-    ExtractFileDir(Application.ExeName), nil, nil, nil);
 
+  SetPath(devDirs.Exec + 'bin;' + devDirs.Bins);
+   makeSig := RunAndGetOutput(devDirs.Exec + 'bin\' + devCompilerSet.makeName + ' --v',
+    ExtractFileDir(Application.ExeName), nil, nil, nil);
+   
   if Pos('GNU Make', makeSig) = 0 then
   begin
     //check for mingw32-make first before adding the path to bin dir
     //process it later
     mingwmakeSig := RunAndGetOutput('mingw32-make --v',
-      ExtractFileDir(Application.ExeName), nil, nil, nil);
+      ExtractFileDir(devDirs.Exec + 'bin\' + Application.ExeName), nil, nil, nil);
 
     //check if make is found if Dev-C++'s bin directory is added to path
     SetPath(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
      + BIN_DIR);
-    makeSig := RunAndGetOutput(devCompilerSet.makeName + ' --v',
+     makeSig := RunAndGetOutput(devDirs.Exec + 'bin\' +
+     devCompilerSet.makeName + ' --v',
       ExtractFileDir(Application.ExeName), nil, nil, nil);
   end;
 end;
