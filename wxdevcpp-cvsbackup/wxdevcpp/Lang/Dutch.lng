@@ -133,8 +133,7 @@ Ver=2
 232=&Volgende
 233=V&orige
 234=Alles &Sluiten
-235=%s versie %s volledig scherm. Druk op F11 om de werkbalken de verbergen of om naar normale mode te gaan.
-236=Sluit alles behalve dit
+235=%s versie %s volledig scherm. Druk Shift-F12 om de werkbalken de verbergen of F12 om naar normale mode te gaan.236=Sluit alles behalve dit
 237=Lijst...
 
 #Help menu
@@ -314,6 +313,10 @@ Ver=2
 451=Toon verborgen lijn karakters
 452=Toon editor-tips
 453=Selectie komt overeen met tussenruimten
+454=Verzeker dat het bestand eindigd met een nieuwe lijn
+455=Markeer huidige lijn
+456=Stel in als systeem MarkeerTekst waarde
+457=Stel in als WhiteSpace waarde
 
 # through 459 for additions
 
@@ -534,7 +537,7 @@ Ver=2
 700=Compiler opties
 701=Compiler
 702=Mappen
-703=Code Generation/Optimizations
+703=Code Generatie/Optimalisatie
 704=Linker
 705=Programma's
 710=Binaries
@@ -800,7 +803,7 @@ Ver=2
 2001=Alleen-lezen
 2002=Invoegen
 2003=Overschrijven
-2004=Project %d
+2004=Project%d
 2005=Geef een ander bestandsnaam op a.u.b.
 2006=%d Lijnen in bestand
 2007=Bestand hernoemen
@@ -862,7 +865,7 @@ Ver=2
 2804=CVS Programmabestand
 2805=Compressie-niveau
 2806=Gebruik SSH in plaats van RSH
-2807=Templates-directory
+2807=Sjablonen-map
 2808=Selecteer Templates-directory
 2809=Gebruik XP Thema
 2810=Externe programma's
