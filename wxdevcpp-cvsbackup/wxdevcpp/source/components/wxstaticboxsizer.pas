@@ -380,10 +380,10 @@ begin
   parentName := GetWxWidgetParent(self);
 
   Result     := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new wxStaticBox(%s, wxID_ANY, %s);',
+    Format('wxStaticBox *%s = new wxStaticBox(%s, wxID_ANY, %s);',
     [staticBoxName, parentName, GetCppString(self.Wx_Caption)]);
   Result     := Result + #13 +
-    Format('wxStaticBoxSizer* %s = new wxStaticBoxSizer(%s,%s);',
+    Format('%s = new wxStaticBoxSizer(%s,%s);',
     [self.Name, staticBoxName, strOrientation]);
   parentName := self.Parent.Name;
 
