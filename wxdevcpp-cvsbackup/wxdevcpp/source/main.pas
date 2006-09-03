@@ -1034,7 +1034,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure OpenProject(s: string);
     function FileIsOpen(const s: string; inprj: boolean = FALSE): integer;
     function GetEditor(const index: integer = -1): TEditor;
-    function GetEditorFromFileName(ffile: string): TEditor;
+    function GetEditorFromFileName(ffile: string; donotReOpen:boolean = false): TEditor;
     procedure GotoBreakpoint(bfile: string; bline: integer);
     procedure RemoveActiveBreakpoints;
     procedure AddDebugVar(s: string);
@@ -3400,7 +3400,7 @@ begin
   //Guru: My Code starts here
   EditorFilename:=e.FileName;
   if FileExists(ChangeFileExt(e.FileName,WXFORM_EXT)) then begin
-    cppEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
+    cppEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT),true);
     if assigned(cppEditor) then begin
         if Saved then begin
             cppEditor.Modified:=true;
@@ -6032,7 +6032,7 @@ begin
   end;
 end;
 
-function TMainForm.GetEditorFromFileName(ffile: string): TEditor;
+function TMainForm.GetEditorFromFileName(ffile: string; donotReOpen:boolean): TEditor;
 var
   index, index2: integer; //mandrav
   e: TEditor;
@@ -6069,7 +6069,14 @@ begin
       //mandrav
       index2 := FileIsOpen(ExpandFileName(fProject.Directory + ffile), TRUE);
       if index2 = -1 then
+      begin
+        if (donotReOpen = true) then
+        begin
+            result := nil;
+            exit;
+        end;
         result := fProject.OpenUnit(index)
+      end
       else
         result := GetEditor(index2);
       //mandrav - end
@@ -8798,7 +8805,11 @@ begin
   DateStr   := DateTimeToStr(now);
   Author    := Trim(frm.txtAuthorName.Text);
   Title     := Trim(frm.txtTitle.Text);
-
+  if (FileExists(template) = false) then
+  begin
+    ShowMessage('Unable to find Template file '+template);
+    exit;
+  end;
   //Load the strings from file
   TemplateStrings := TStringList.Create;
   try
