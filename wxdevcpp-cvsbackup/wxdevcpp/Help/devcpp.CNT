@@ -1,12 +1,24 @@
 :Base devcpp.hlp
 :Title Dev-C++ Help File
-1 Dev-C++ 5
+1 Dev-C++ 6
 2 Introduction=ID_INTRODUCTION
 2 GNU General Public License=ID_GPL
 2 System Requirements=ID_SYSTEMREQUIREMENTS
 2 Credits=ID_CREDITS
 2 Tutorial=ID_TUTORIAL@tutorial.hlp
 2 Getting Started=ID_GETTINGSTARTED
+2 wxDev-C++ IDE
+3 wxDev-C++ IDE=ID_WXDEV_IDE
+3 Editor Panel=ID_EDITOR_PANEL
+3 Compiler Panel=ID_COMPILER_PANEL
+3 Gui Controls Panel=ID_GUICONTROLS_PANEL
+3 Properties Panel
+4 Properties Browser=ID_PROPERTIES_PANEL
+4 Events Browser=ID_EVENTS_PANEL
+3 Projects Panel
+4 Projects Tab=ID_PROJECTS_PANEL
+4 Class Browser=ID_CLASSES_PANEL
+4 Debug Tab=ID_DISPLAYDEBUG
 2 Basic Steps
 3 Creating a Project=ID_CREATEPROJECT
 3 Adding/Removing files=ID_ADDREMPROJECT
@@ -33,11 +45,14 @@
 3 Compiler Options=ID_COMPILEROPTIONS
 3 Environment Options=ID_ENVIRONMENT
 3 Editor Options
-4 Editor settings=ID_EDITORSETTINGS
-4 Class Browser/Code Completion=ID_CLASSBROWSER
+4 Editor settings (General Tab)=ID_EDITORSETTINGS
+4 Display, Syntax + Code Tabs=ID_DISPLAYSYNTAX_PANEL
+4 Class Browser Tab (+Code Completion)=ID_CLASSBROWSER
 4 Shortcuts=ID_SHORTCUTS
+2 Menu Options
 2 Getting help
 3 FAQ (Frequently Asked Questions)=ID_FAQ
+3 Further Reading=ID_BOOKS
 3 Mailing List / Forum=ID_MAILINGLIST
 3 Contacting Authors=ID_AUTHORS
 1 An Introduction to C Programming
