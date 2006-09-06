@@ -464,10 +464,13 @@ begin
     if (fProject.PchHead <> -1) and (fProject.PchSource <> -1) then
     begin
       if fProject.Options.ObjectOutput <> '' then
+      begin
         PCHObj := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput);
+        PCHFile := PCHObj;
+      end;
       PCHObj := GenMakePath2(PCHObj + ExtractRelativePath(Makefile, GetRealPath(ChangeFileExt(fProject.Units[fProject.PchSource].FileName, OBJ_EXT), fProject.Directory)));
       PCHHead := ExtractRelativePath(fProject.Directory, fProject.Units[fProject.PchHead].FileName);
-      PCHFile := GenMakePath(IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(PCHHead) + PCH_EXT);
+      PCHFile := GenMakePath(PCHFile + ExtractFileName(PCHHead) + PCH_EXT);
     end
     else if (fProject.PchHead <> -1) or (fProject.PchSource <> -1) then
     begin
@@ -753,7 +756,7 @@ begin
     fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.Options.cmdLines.Linker, '_@@_', ' ', [rfReplaceAll]);
   end;
 
-  //TODO:lowjoel:What does this do?
+  //TODO: lowjoel:What does this do?
   if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
     fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
 
@@ -1174,44 +1177,27 @@ end;
 
 procedure TCompiler.ParseLine(Line: String);
 var
-LowerLine: string;
-cpos: integer;
+  LowerLine: string;
+  cpos: integer;
 begin
   try
     if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
-    begin
       if (Pos('Command line error', Line) > 0) then
-      begin
-	Inc(fErrCount);
-      end
+        Inc(fErrCount)
       else if (Pos('Command line warning', Line) > 0) then
-      begin
-	Inc(fWarnCount);
-      end
+        Inc(fWarnCount)
       else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) = 0) and (Pos('include file', Line) = 0) then
-      begin
-	Inc(fErrCount);
-      end
+        Inc(fErrCount)
       else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) > 0) then
-      begin
-	Inc(fErrCount);
-      end
+        Inc(fErrCount)
       else if (Pos('fatal error', Line) > 0) and (Pos('include file', Line) > 0) then
-      begin
-	Inc(fErrCount);
-      end
+        Inc(fErrCount)
       else if (Pos('error', Line) > 0) and (Pos('ambiguous', Line) = 0) then
-      begin
-	Inc(fErrCount);
-      end
+        Inc(fErrCount)
       else if (Pos('error', Line) > 0) then
-      begin
-	Inc(fErrCount);
-      end
+        Inc(fErrCount)
       else if (Pos('warning ', Line) > 0) then
-      begin
-	Inc(fWarnCount);
-      end
+        Inc(fWarnCount)
     else if devCompiler.CompilerType = ID_COMPILER_MINGW then
     begin
       LowerLine := LowerCase(Line);
@@ -1331,7 +1317,7 @@ begin
       // with the following contents:
       //
       // all-after:
-     //     copy $(BIN) c:\$(BIN)
+      //     copy $(BIN) c:\$(BIN)
       //
       // the following block of code freaked-out with the ":"!
       if cpos > 0 then begin // mandrav fix
@@ -1368,7 +1354,6 @@ begin
            end;
         end;
       end;
-    end;
     end;
   except
   end;
@@ -1407,7 +1392,7 @@ begin
     IMod := CalcMod(pred(LOutput.Count));
 
     // Concatenate errors which are on multiple lines
-    if devCompiler.compilerType = ID_COMPILER_MINGW then begin
+    if devCompiler.compilerType = ID_COMPILER_MINGW then
       for curLine := 0 to pred(LOutput.Count) do begin
         if (curLine > 0) and AnsiStartsStr('   ', LOutput[curLine]) then begin
           O_Msg := LOutput[curLine];
@@ -1415,7 +1400,6 @@ begin
           LOutput[curLine - 1] := LOutput[curLine - 1] + O_Msg;
         end;
       end;
-    end;
 
     for curLine := 0 to pred(LOutput.Count) do
     begin
@@ -1435,119 +1419,127 @@ begin
     begin
       //Do we have to ignore this message?
       if
-	(Line = '') or //Empty line?!
-	(Copy(Line, 1, Length(devCompiler.gccName)) = devCompiler.gccName) or
+        (Line = '') or //Empty line?!
+        (Copy(Line, 1, Length(devCompiler.gccName)) = devCompiler.gccName) or
         (Copy(Line, 1, Length(devCompiler.gppName)) = devCompiler.gppName) or
-	(Copy(Line, 1, Length(devCompiler.dllwrapName)) = devCompiler.dllwrapName) or
-	(Copy(Line, 1, Length(devCompiler.windresName)) = devCompiler.windresName) or
+        (Copy(Line, 1, Length(devCompiler.dllwrapName)) = devCompiler.dllwrapName) or
+        (Copy(Line, 1, Length(devCompiler.windresName)) = devCompiler.windresName) or
         (Copy(Line, 1, Length(devCompiler.gprofName)) = devCompiler.gprofName) or
         (Copy(Line, 1, Length(RmExe)) = RmExe) or
-	(Copy(Line, 1, 19) = '   Creating library') or
-	(Length(Line) = 2) or//One word lines?
-	(Pos('*** [', Line) > 0) or
-	(((Pos('.c', Line) > 0) or (Pos('.cpp', Line) > 0)) and (Pos('(', Line) = 0)) or
-	(Pos('Nothing to be done for', Line) > 0) or
-	(Pos('while trying to match the argument list', Line) > 0) or
+        (Copy(Line, 1, 19) = '   Creating library') or
+        (Length(Line) = 2) or//One word lines?
+        (Pos('*** [', Line) > 0) or
+        (((Pos('.c', Line) > 0) or (Pos('.cpp', Line) > 0)) and (Pos('(', Line) = 0)) or
+        (Pos('Nothing to be done for', Line) > 0) or
+        (Pos('while trying to match the argument list', Line) > 0) or
         (Line = 'Generating code') or
         (Line = 'Finished generating code')
       then
-	continue;
+        continue;
 
       if (Pos('Command line error', Line) > 0) then
       begin
-	O_Msg := '[Command Line Error ' + Copy(Line, Pos('error ', Line) + 7, Pos(' : ', Line) + 1) + '] ';
-	O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
-	Inc(fErrCount);
+        O_Msg := '[Command Line Error ' + Copy(Line, Pos('error ', Line) + 7, Pos(' : ', Line) + 1) + '] ';
+        O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
+        Inc(fErrCount);
       end
       else if (Pos('Command line warning', Line) > 0) then
       begin
-	O_Msg := '[Command Line Warning ' + Copy(Line, Pos('warning ', Line) + 9, Pos(' : ', Line) + 1) + '] ';
-	O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
-	Inc(fWarnCount);
-      end
-      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) = 0) and (Pos('include file', Line) = 0) then
-      begin
-	O_Msg := '[Error ' + Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6) + '] ';
-	O_Msg := O_Msg + Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
-	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-	O_File := Copy(Line, 0, Pos('(', Line) - 1);
-	Inc(fErrCount);
+        O_Msg := '[Command Line Warning ' + Copy(Line, Pos('warning ', Line) + 9, Pos(' : ', Line) + 1) + '] ';
+        O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
+        Inc(fWarnCount);
       end
       else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) > 0) then
       begin
-	O_Msg := '[Error ' + Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6);
-	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1) + '] #error: ';
-	O_Msg := O_Msg + Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
-	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-	O_File := Copy(Line, 0, Pos('(', Line) - 1);
-	Inc(fErrCount);
+        O_Msg := '[Error ' + Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6);
+        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1) + '] #error: ';
+        O_Msg := O_Msg + Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
+        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        Inc(fErrCount);
       end
       else if (Pos('fatal error', Line) > 0) and (Pos('include file', Line) > 0) then
       begin
-	O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6);
-	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
-	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
-	O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
-	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-	O_File := Copy(Line, 0, Pos('(', Line) - 1);
-	Inc(fErrCount);
+        O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
+        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
+        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
+        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
+        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        Inc(fErrCount);
+      end
+      else if Pos('fatal error', Line) > 0 then
+      begin
+        CPos := Pos('error ', Line);
+        O_Msg := '[Error ' + Copy(Line, CPos + 6, Pos(': ', Copy(Line, CPos, Length(Line))) - 7) + '] ';
+        O_Msg := O_Msg + Copy(Line, Pos(': ', Copy(Line, CPos, Length(Line))) + CPos, Length(Line));
+        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        Inc(fErrCount);
+      end
+      else if (Pos('error LNK', Line) > 0) then
+      begin
+        O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
+        O_Msg := Copy(O_Msg, 0, Pos(': ', O_Msg) - 1);
+        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 1, Length(Line));
+        O_File := Trim(Copy(Line, 0, Pos(':', Line) - 1));
+        Inc(fErrCount);
       end
       else if (Pos('error', Line) > 0) and (Pos('ambiguous', Line) = 0) then
       begin
-	O_Msg := Copy(Line, Pos('error ', Line) + 6, 7);
-	if Pos(':', O_Msg) > 0 then
-	  O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
-	O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
-	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-	O_File := Copy(Line, 0, Pos('(', Line) - 1);
-	Inc(fErrCount);
+        O_Msg := Copy(Line, Pos('error ', Line) + 6, 7);
+        if Pos(':', O_Msg) > 0 then
+          O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
+        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
+        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        Inc(fErrCount);
       end
       else if (Pos('error', Line) > 0) then
       begin
-	O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
-	O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
-	O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Pos('function', Line) + 8 - (Pos(O_Msg, Line) + Length(O_Msg) + 2));
-	O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-	O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-	O_File := Copy(Line, 0, Pos('(', Line) - 1);
-	DoOutput(O_Line, O_file, O_Msg);
-	O_Msg := Copy(Line, Pos('could be', Line), Length(Line));
-	Inc(fErrCount);
+        O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
+        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
+        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Pos('function', Line) + 8 - (Pos(O_Msg, Line) + Length(O_Msg) + 2));
+        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
+        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
+        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        DoOutput(O_Line, O_file, O_Msg);
+        O_Msg := Copy(Line, Pos('could be', Line), Length(Line));
+        Inc(fErrCount);
       end
       else if (Pos('could be ', Line) > 0) or (Pos('or       ', Line) > 0) then
-      begin
-	O_Msg := Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
-      end
+        O_Msg := Copy(Line, GetLastPos(': ', Line) + 2, Length(Line))
       else if (Pos('warning ', Line) > 0) then
       begin
-	O_Msg := Copy(Line, Pos('warning', Line) + 8, Pos('warning', Line) + 15);
-	if (Pos(':', O_Msg) > 0) then
-	  O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
+        O_Msg := Copy(Line, Pos('warning', Line) + 8, Pos('warning', Line) + 15);
+        if (Pos(':', O_Msg) > 0) then
+          O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
 
-	O_Msg := '[Warning ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 1, Length(Line));
-	O_File := Copy(Line, 0, Pos('(', Line) - 1);
-	O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
+        O_Msg := '[Warning ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 1, Length(Line));
+        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
         Inc(fWarnCount);
       end
       else if (Pos(': ', Line) > 0) then
       begin
-	//Line number
-	O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
-	O_File := Trim(Copy(Line, 0, Pos('(', Line) - 1));
+        //Line number
+        O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
+        O_File := Trim(Copy(Line, 0, Pos('(', Line) - 1));
         if fProject <> nil then
-	    O_File := ExtractRelativePath(fProject.FileName, O_File);
-	O_Msg := Copy(Line, Pos(': ', Line) + 2, Length(Line));
+          O_File := ExtractRelativePath(fProject.FileName, O_File);
+        O_Msg := Copy(Line, Pos(': ', Line) + 2, Length(Line));
       end
       else
       begin
       	O_Msg := Line;
       end;
-        Inc(Messages);
-        DoOutput(O_Line, O_file, O_Msg);
+
+      Inc(Messages);
+      DoOutput(O_Line, O_file, O_Msg);
     end
     else //ID_COMPILER_MINGW
     begin
