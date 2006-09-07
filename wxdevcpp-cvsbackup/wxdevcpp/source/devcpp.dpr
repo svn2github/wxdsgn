@@ -27,6 +27,8 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  madListHardware,
+  madListProcesses,
   madListModules,
   madExcept,
   madLinkDisAsm,
@@ -106,8 +108,7 @@ uses
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},{$ENDIF}
-{$IFDEF WX_BUILD}
+  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
   Wxcontrolpanel in 'components\Wxcontrolpanel.pas',
   uFileWatch in 'uFileWatch.pas',
   
@@ -115,6 +116,7 @@ uses
   dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
   DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
+  MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
   ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
   
@@ -154,7 +156,6 @@ uses
   WxSizerPanel in 'components\WXSizerPanel.pas',
   WxButton in 'components\WxButton.pas',
   WxToggleButton in 'components\WxToggleButton.pas',
-  WxListBook in 'components\wxlistbook.pas',
   WxNotebook in 'components\wxnotebook.pas',
   WxStatusBar in 'components\wxstatusbar.pas',
   WxToolBar in 'components\wxtoolbar.pas',
