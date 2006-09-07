@@ -597,27 +597,27 @@ begin
   case CompilerTypes.ItemIndex of
     ID_COMPILER_MINGW:
       begin
-        lblwindres.Caption := 'windres : ';
-        lbldllwrap.Caption := 'dllwrap : ';
-        lblgprof.Caption := 'gprof : ';
+        //lblwindres.Caption := 'windres : ';
+        //lbldllwrap.Caption := 'dllwrap : ';
+        //lblgprof.Caption := 'gprof : ';
         lblgprof.Enabled := true;
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;
       end;
     ID_COMPILER_VC:
       begin
-        lblwindres.Caption := 'rc : ';
-        lbldllwrap.Caption := 'link : ';
-        lblgprof.Caption := 'mt : ';
+        //lblwindres.Caption := 'rc : ';
+        //lbldllwrap.Caption := 'link : ';
+        //lblgprof.Caption := 'mt : ';
         lblgprof.Enabled := false;
         gprofEdit.Enabled := false;
         btnbrowse8.Enabled := false;
       end;
     ID_COMPILER_VC2005:
       begin
-        lblwindres.Caption := 'rc : ';
-        lbldllwrap.Caption := 'link : ';
-        lblgprof.Caption := 'mt : ';
+        //lblwindres.Caption := 'rc : ';
+        //lbldllwrap.Caption := 'link : ';
+        //lblgprof.Caption := 'mt : ';
         lblgprof.Enabled := true;
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;

@@ -1,11 +1,11 @@
 object CompForm: TCompForm
-  Left = 411
+  Left = 391
   Top = 242
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Compiler options'
   ClientHeight = 430
-  ClientWidth = 451
+  ClientWidth = 484
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object CompForm: TCompForm
   OnActivate = FormActivate
   OnCreate = FormCreate
   DesignSize = (
-    451
+    484
     430)
   PixelsPerInch = 96
   TextHeight = 13
@@ -54,7 +54,7 @@ object CompForm: TCompForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 282
+    Left = 298
     Top = 397
     Width = 84
     Height = 25
@@ -107,7 +107,7 @@ object CompForm: TCompForm
     NumGlyphs = 2
   end
   object btnHelp: TBitBtn
-    Left = 371
+    Left = 395
     Top = 397
     Width = 75
     Height = 25
@@ -119,17 +119,17 @@ object CompForm: TCompForm
   object MainPages: TPageControl
     Left = 6
     Top = 5
-    Width = 440
-    Height = 386
-    ActivePage = tabCompiler
-    TabIndex = 0
+    Width = 467
+    Height = 388
+    ActivePage = tabPrograms
+    TabIndex = 3
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
       object grpCompSet: TGroupBox
         Left = 6
         Top = 4
-        Width = 420
+        Width = 443
         Height = 95
         Caption = 'Compiler set to configure'
         TabOrder = 0
@@ -286,12 +286,12 @@ object CompForm: TCompForm
       object cmdline: TGroupBox
         Left = 5
         Top = 107
-        Width = 420
+        Width = 444
         Height = 247
         Caption = 'Compiler Command Line'
         TabOrder = 1
         DesignSize = (
-          420
+          444
           247)
         object lblDelay: TLabel
           Left = 10
@@ -337,7 +337,7 @@ object CompForm: TCompForm
         object Commands: TMemo
           Left = 10
           Top = 32
-          Width = 400
+          Width = 424
           Height = 45
           Anchors = [akLeft, akTop, akRight]
           ScrollBars = ssVertical
@@ -379,19 +379,20 @@ object CompForm: TCompForm
       inline CompOptionsFrame1: TCompOptionsFrame
         Left = 0
         Top = 0
-        Width = 432
-        Height = 358
+        Width = 459
+        Height = 360
         Align = alClient
         TabOrder = 0
         inherited Splitter1: TSplitter
-          Height = 358
+          Height = 360
         end
         inherited tv: TTreeView
-          Height = 358
+          Height = 360
         end
         inherited vle: TValueListEditor
-          Width = 307
-          Height = 358
+          Width = 334
+          Height = 360
+          DefaultColWidth = 170
           Strings.Strings = (
             '=')
         end
@@ -402,8 +403,8 @@ object CompForm: TCompForm
       object DirTabs: TdevTabs
         Left = 0
         Top = 0
-        Width = 432
-        Height = 358
+        Width = 449
+        Height = 361
         Tabs.Strings = (
           'Binaries'
           'Libraries'
@@ -414,11 +415,11 @@ object CompForm: TCompForm
         OnChange = DirTabsChange
         OnChanging = DirTabsChanging
         DesignSize = (
-          432
-          358)
+          449
+          361)
         object btnUp: TSpeedButton
-          Left = 404
-          Top = 162
+          Left = 421
+          Top = 165
           Width = 23
           Height = 22
           Anchors = [akRight, akBottom]
@@ -469,8 +470,8 @@ object CompForm: TCompForm
           OnClick = UpDownClick
         end
         object btnDown: TSpeedButton
-          Left = 404
-          Top = 192
+          Left = 421
+          Top = 195
           Width = 23
           Height = 22
           Anchors = [akRight, akBottom]
@@ -521,7 +522,7 @@ object CompForm: TCompForm
           OnClick = UpDownClick
         end
         object btnBrowse: TSpeedButton
-          Left = 404
+          Left = 420
           Top = 243
           Width = 23
           Height = 22
@@ -557,8 +558,8 @@ object CompForm: TCompForm
         object lstDirs: TListBox
           Left = 8
           Top = 27
-          Width = 390
-          Height = 255
+          Width = 407
+          Height = 258
           Anchors = [akLeft, akTop, akRight, akBottom]
           ItemHeight = 13
           TabOrder = 0
@@ -567,8 +568,8 @@ object CompForm: TCompForm
         end
         object edEntry: TEdit
           Left = 8
-          Top = 292
-          Width = 390
+          Top = 295
+          Width = 407
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
           TabOrder = 1
@@ -578,7 +579,7 @@ object CompForm: TCompForm
         object btnDelInval: TButton
           Tag = 4
           Left = 323
-          Top = 326
+          Top = 329
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -589,7 +590,7 @@ object CompForm: TCompForm
         object btnDelete: TButton
           Tag = 3
           Left = 218
-          Top = 326
+          Top = 329
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -601,7 +602,7 @@ object CompForm: TCompForm
         object btnAdd: TButton
           Tag = 2
           Left = 113
-          Top = 326
+          Top = 329
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -613,7 +614,7 @@ object CompForm: TCompForm
         object btnReplace: TButton
           Tag = 1
           Left = 8
-          Top = 326
+          Top = 329
           Width = 90
           Height = 23
           Anchors = [akLeft, akBottom]
@@ -638,64 +639,64 @@ object CompForm: TCompForm
         WordWrap = True
       end
       object lblgcc: TLabel
-        Left = 12
+        Left = 48
         Top = 56
-        Width = 27
+        Width = 58
         Height = 13
-        Caption = 'gcc : '
+        Caption = 'C compiler : '
         Transparent = True
       end
       object lblgpp: TLabel
-        Left = 12
-        Top = 84
-        Width = 27
+        Left = 35
+        Top = 88
+        Width = 71
         Height = 13
-        Caption = 'g++ : '
+        Caption = 'C++ Compiler : '
         Transparent = True
       end
       object lblmake: TLabel
-        Left = 12
+        Left = 70
         Top = 112
-        Width = 35
+        Width = 36
         Height = 13
-        Caption = 'make : '
+        Caption = 'Make : '
         Transparent = True
       end
       object lblgdb: TLabel
-        Left = 12
-        Top = 196
-        Width = 27
+        Left = 56
+        Top = 200
+        Width = 50
         Height = 13
-        Caption = 'gdb : '
+        Caption = 'Debugger:'
         Transparent = True
       end
       object lblwindres: TLabel
-        Left = 12
-        Top = 140
-        Width = 45
+        Left = 8
+        Top = 144
+        Width = 98
         Height = 13
-        Caption = 'windres : '
+        Caption = 'Resource Compiler : '
         Transparent = True
       end
       object lbldllwrap: TLabel
-        Left = 12
+        Left = 68
         Top = 168
-        Width = 42
+        Width = 38
         Height = 13
-        Caption = 'dllwrap : '
+        Caption = 'Linker : '
         Transparent = True
       end
       object lblgprof: TLabel
-        Left = 12
+        Left = 43
         Top = 224
-        Width = 33
+        Width = 63
         Height = 13
-        Caption = 'gprof : '
+        Caption = 'Code Profiler:'
         Transparent = True
       end
       object btnBrws2: TSpeedButton
         Tag = 2
-        Left = 397
+        Left = 429
         Top = 51
         Width = 23
         Height = 22
@@ -730,7 +731,7 @@ object CompForm: TCompForm
       end
       object btnBrowse3: TSpeedButton
         Tag = 3
-        Left = 397
+        Left = 429
         Top = 80
         Width = 23
         Height = 22
@@ -765,7 +766,7 @@ object CompForm: TCompForm
       end
       object btnBrowse4: TSpeedButton
         Tag = 4
-        Left = 397
+        Left = 429
         Top = 108
         Width = 23
         Height = 22
@@ -800,7 +801,7 @@ object CompForm: TCompForm
       end
       object btnBrowse5: TSpeedButton
         Tag = 5
-        Left = 397
+        Left = 429
         Top = 192
         Width = 23
         Height = 22
@@ -835,7 +836,7 @@ object CompForm: TCompForm
       end
       object btnBrowse6: TSpeedButton
         Tag = 6
-        Left = 397
+        Left = 429
         Top = 136
         Width = 23
         Height = 22
@@ -870,7 +871,7 @@ object CompForm: TCompForm
       end
       object btnBrowse7: TSpeedButton
         Tag = 7
-        Left = 397
+        Left = 429
         Top = 164
         Width = 23
         Height = 22
@@ -905,7 +906,7 @@ object CompForm: TCompForm
       end
       object btnBrowse8: TSpeedButton
         Tag = 8
-        Left = 397
+        Left = 429
         Top = 220
         Width = 23
         Height = 22
@@ -939,49 +940,49 @@ object CompForm: TCompForm
         OnClick = btnBrws1Click
       end
       object GccEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 52
         Width = 315
         Height = 21
         TabOrder = 0
       end
       object GppEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 80
         Width = 315
         Height = 21
         TabOrder = 1
       end
       object MakeEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 108
         Width = 315
         Height = 21
         TabOrder = 2
       end
       object GdbEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 192
         Width = 315
         Height = 21
         TabOrder = 5
       end
       object WindresEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 136
         Width = 315
         Height = 21
         TabOrder = 3
       end
       object DllwrapEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 164
         Width = 315
         Height = 21
         TabOrder = 4
       end
       object GprofEdit: TEdit
-        Left = 68
+        Left = 108
         Top = 220
         Width = 315
         Height = 21
