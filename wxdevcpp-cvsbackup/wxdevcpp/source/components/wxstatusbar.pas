@@ -27,16 +27,13 @@ type
   private
     { Private fields of TWxStatusBar }
     FOrientation: TWxSizerOrientation;
-    FSpaceValue: integer;
     FWx_Caption: string;
     FWx_Class: string;
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_EventList: TStringList;
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     FWx_IDName: string;
     FWx_IDValue: integer;
     FWx_StretchFactor: integer;
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
@@ -48,6 +45,8 @@ type
     FWx_HelpText: string;
     FWx_Border: integer;
     FWx_Comments: TStrings;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
 
     { Private methods of TWxStatusBar }
     procedure AutoInitialize;
@@ -72,23 +71,27 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
+    
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
-
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
-
     function GenerateLastCreationCode: string;
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
 
   public
     { Public fields and properties of TWxStatusBar }
@@ -105,40 +108,32 @@ type
     property OnResize;
     property Orientation: TWxSizerOrientation
       Read FOrientation Write FOrientation default wxHorizontal;
-    property SpaceValue: integer Read FSpaceValue Write FSpaceValue default 5;
     property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-
     property Wx_StatusbarStyleSet: TWxsbrStyleSet
       Read FWx_StatusbarStyleSet Write FWx_StatusbarStyleSet;
     property Wx_GeneralStyle: TWxStdStyleSet
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
 
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
-    property InvisibleBGColorString: string
-      Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string
-      Read FInvisibleFGColorString Write FInvisibleFGColorString;
-
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled;
-    property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
   end;
 
 procedure Register;
@@ -157,13 +152,12 @@ procedure TWxStatusBar.AutoInitialize;
 begin
   FWx_PropertyList := TStringList.Create;
   FOrientation  := wxHorizontal;
-  FSpaceValue   := 5;
   FWx_Class     := 'wxStatusBar';
   FWx_EventList := TStringList.Create;
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
+  FWx_Alignment  := wxALIGN_CENTER;
+  FWx_BorderAlignment := [wxAll];
   FWx_IDValue   := -1;
   FWx_StretchFactor := 0;
-  FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
   FWx_Enabled   := True;
   FWx_Comments  := TStringList.Create;
 
@@ -241,10 +235,13 @@ begin
   FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
 
   //FWx_PropertyList.add('Font : Font');
-
-  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-
+  FWx_PropertyList.add('Wx_Alignment : Alignment');
+  FWx_PropertyList.add('Wx_BorderAlignment : Borders');
+  FWx_PropertyList.add('wxTOP : wxTOP');
+  FWx_PropertyList.add('wxLEFT : wxLEFT');
+  FWx_PropertyList.add('wxRIGHT : wxRIGHT');
+  FWx_PropertyList.add('wxBOTTOM : wxBOTTOM');
+  FWx_PropertyList.add('wxALL : wxALL');
   FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
 
   FWx_PropertyList.add('wxST_SIZEGRIP:wxST_SIZEGRIP');
@@ -432,15 +429,7 @@ begin
 
   if (self.Parent is TWxSizerPanel) then
   begin
-    strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) +
-      ' | ' + SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-    if wx_ControlOrientation = wxControlVertical then
-      strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | wxALL';
-
-    if wx_ControlOrientation = wxControlHorizontal then
-      strAlignment := SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-
-
+    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
@@ -493,12 +482,32 @@ end;
 
 function TWxStatusBar.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxStatusBar.GetTypeFromEventName(EventName: string): string;
 begin
   Result := '';
+end;
+
+function TWxStatusBar.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxStatusBar.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxStatusBar.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxStatusBar.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 function TWxStatusBar.GetWxClassName: string;
@@ -525,7 +534,7 @@ end;
 
 procedure TWxStatusBar.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
 end;
 
 procedure TWxStatusBar.SetWxClassName(wxClassName: string);

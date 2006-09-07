@@ -27,7 +27,6 @@ type
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_HelpText: string;
     FWx_Hidden: boolean;
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     FWx_IDName: string;
     FWx_IDValue: longint;
     FWx_ProxyBGColorString: TWxColorString;
@@ -35,11 +34,12 @@ type
     FWx_StretchFactor: integer;
     FWx_ToolTip: string;
     FWx_Bitmap: TPicture;
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
 
     { Private methods of TWxButton }
 
@@ -74,13 +74,11 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -89,6 +87,13 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure SetButtonBitmap(Value: TPicture);
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
 
   published
     { Published properties of TWxButton }
@@ -101,7 +106,6 @@ type
     property EVT_BUTTON: string Read FEVT_BUTTON Write FEVT_BUTTON;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
-    property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
     property Wx_ButtonStyle: TWxBtnStyleSet Read FWx_ButtonStyle Write FWx_ButtonStyle;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
@@ -114,29 +118,23 @@ type
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_ProxyBGColorString: TWxColorString
-      Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString
-      Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
-    property InvisibleBGColorString: string
-      Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string
-      Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property Color;
     property Wx_BITMAP: TPicture Read FWx_BITMAP Write SetButtonBitmap;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
   end;
 
 procedure Register;
@@ -150,24 +148,24 @@ end;
 
 procedure TWxSeparator.AutoInitialize;
 begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Border   := 5;
-  FWx_Class    := 'wxToolBarTool';
-  FWx_Enabled  := True;
-  FWx_EventList := TStringList.Create;
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
-  FWx_IDValue  := -1;
-  FWx_StretchFactor := 0;
-  FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+  FWx_PropertyList       := TStringList.Create;
+  FWx_Comments           := TStringList.Create;
+  FWx_EventList          := TStringList.Create;
+  FWx_Border             := 5;
+  FWx_Class              := 'wxToolBarTool';
+  FWx_Enabled            := True;
+  FWx_Alignment          := wxALIGN_CENTER;
+  FWx_BorderAlignment    := [wxAll];
+  FWx_IDValue            := -1;
+  FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-  Caption      := '';
-  FWx_Bitmap   := TPicture.Create;
-  self.Style   := tbsDivider;
-  self.Width   := 5;
-  FWx_Comments := TStringList.Create;
+  defaultBGColor         := self.color;
+  defaultFGColor         := self.font.color;
+  Caption                := '';
+  FWx_Bitmap             := TPicture.Create;
+  self.Style             := tbsDivider;
+  self.Width             := 5;
 end; { of AutoInitialize }
 
 
@@ -193,20 +191,7 @@ begin
 
   AutoInitialize;
   self.Caption := '';
-
-  //FWx_PropertyList.add('wx_Class:Base Class');
-  //FWx_PropertyList.add('Wx_Hidden :Hidden');
-  //FWx_PropertyList.add('Wx_Border : Border ');
-  //FWx_PropertyList.add('Wx_HelpText :HelpText ');
-  //FWx_PropertyList.add('Wx_IDName : IDName ');
-  //FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  //FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-  //FWx_PropertyList.add('Name : Name');
-  //FWx_PropertyList.add('Left : Left');
-  //FWx_PropertyList.add('Top : Top');
-  FWx_PropertyList.add('Width : Width');
-  //FWx_PropertyList.add('Height:Height');
-
+  FWx_PropertyList.add('Width:Width');
   FWx_PropertyList.add('Wx_Comments:Comments');
 
   FWx_EventList.add('EVT_BUTTON:OnClick');
@@ -331,12 +316,32 @@ end;
 
 function TWxSeparator.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxSeparator.GetTypeFromEventName(EventName: string): string;
 begin
 
+end;             
+
+function TWxSeparator.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxSeparator.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxSeparator.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxSeparator.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 function TWxSeparator.GetWxClassName: string;
@@ -363,7 +368,7 @@ end;
 
 procedure TWxSeparator.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
 end;
 
 procedure TWxSeparator.SetWxClassName(wxClassName: string);

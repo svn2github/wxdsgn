@@ -35,13 +35,11 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -49,6 +47,14 @@ type
     procedure SetBGColor(strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
+
   published
     { Published declarations }
     property Wx_Class: string Read FWx_Class Write FWx_Class;
@@ -174,6 +180,24 @@ end;
 function TWxColourDialog.GetPropertyList: TStringList;
 begin
   Result := FWx_PropertyList;
+end;
+
+function TWxColourDialog.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := [];
+end;
+
+procedure TWxColourDialog.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+end;
+
+function TWxColourDialog.GetBorderWidth: integer;
+begin
+  Result := 0;
+end;
+
+procedure TWxColourDialog.SetBorderWidth(width: integer);
+begin
 end;
 
 function TWxColourDialog.GetTypeFromEventName(EventName: string): string;

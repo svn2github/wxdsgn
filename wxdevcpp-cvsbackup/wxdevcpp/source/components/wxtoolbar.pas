@@ -26,18 +26,15 @@ type
   private
     { Private fields of TWxToolBar }
     FOrientation: TWxSizerOrientation;
-    FSpaceValue: integer;
     FWx_Caption: string;
     FWx_Class: string;
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_EventList: TStringList;
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     FWx_ToolbarStyleSet: TWxtbrStyleSet;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_IDName: string;
     FWx_IDValue: integer;
     FWx_StretchFactor: integer;
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
@@ -47,6 +44,8 @@ type
     FWx_HelpText: string;
     FWx_Border: integer;
     FWx_Comments: TStrings;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
 
     FEVT_TOOL: string;
     FEVT_MENU: string;
@@ -87,13 +86,19 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
+
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -121,30 +126,19 @@ type
     property OnResize;
     property Orientation: TWxSizerOrientation
       Read FOrientation Write FOrientation default wxHorizontal;
-    property SpaceValue: integer Read FSpaceValue Write FSpaceValue default 5;
     property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
     property Wx_ToolbarStyleSet: TWxtbrStyleSet
       Read FWx_ToolbarStyleSet Write FWx_ToolbarStyleSet;
     property Wx_GeneralStyle: TWxStdStyleSet
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
-
     property Wx_StretchFactor: integer Read FWx_StretchFactor
       Write FWx_StretchFactor default 0;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default
-      wxSZALIGN_CENTER_VERTICAL;
-
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
     property InvisibleBGColorString: string
@@ -156,7 +150,12 @@ type
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+
+    property Wx_Alignment: TWxSizerAlignment
+      Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment
+      Write SetBorderAlignment default [wxALL];
 
     property EVT_TOOL: string Read FEVT_TOOL Write FEVT_TOOL;
     property EVT_MENU: string Read FEVT_MENU Write FEVT_MENU;
@@ -179,17 +178,16 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxToolBar.AutoInitialize;
 begin
-  FWx_PropertyList := TStringList.Create;
-  FOrientation  := wxHorizontal;
-  FSpaceValue   := 5;
-  FWx_Class     := 'wxToolBar';
-  FWx_EventList := TStringList.Create;
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
-  FWx_IDValue   := -1;
-  FWx_StretchFactor := 0;
-  FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
-  FWx_Enabled   := True;
-  FWx_Comments  := TStringList.Create;
+  FWx_PropertyList    := TStringList.Create;
+  FOrientation        := wxHorizontal;
+  FWx_Class           := 'wxToolBar';
+  FWx_EventList       := TStringList.Create;
+  FWx_Alignment       := wxALIGN_CENTER;
+  FWx_BorderAlignment := [wxALL];
+  FWx_IDValue         := -1;
+  FWx_StretchFactor   := 0;
+  FWx_Enabled         := True;
+  FWx_Comments        := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -246,51 +244,34 @@ begin
   AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_SpinButtonStyle:Spin Control Style');
-  FWx_PropertyList.add('Items :Items');
-  FWx_PropertyList.add('wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Hidden :Hidden');
-  FWx_PropertyList.add('Wx_Border : Border ');
-  FWx_PropertyList.add('Wx_Default :WxDefault ');
-  FWx_PropertyList.add('Wx_HelpText :HelpText ');
-  FWx_PropertyList.add('Wx_IDName : IDName ');
-  FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-  FWx_PropertyList.add('Text:Text');
-  FWx_PropertyList.add('Name:Name');
   FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Enabled:Enabled');
-  FWx_PropertyList.add('Left:Left');
-  FWx_PropertyList.add('Top:Top');
-  FWx_PropertyList.add('Width:Width');
-  FWx_PropertyList.add('Height:Height');
-  FWx_PropertyList.add('Wx_GeneralStyle : General Styles');
-  FWx_PropertyList.add('Wx_ToolbarStyleSet : Toolbar Styles');
+  FWx_PropertyList.add('Wx_Hidden:Hidden');
+  FWx_PropertyList.add('Wx_HelpText:Help Text');
+  FWx_PropertyList.add('Wx_IDName:ID Name');
+  FWx_PropertyList.add('Wx_IDValue:ID Value');
+  FWx_PropertyList.add('Wx_ToolTip:Tooltip');
+  FWx_PropertyList.add('Wx_Comments:Comments');
+  FWx_PropertyList.Add('Wx_Validator:Validator code');
+  FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
+  FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
-  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+  FWx_PropertyList.add('Wx_GeneralStyle:General Styles');
+  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
   FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
   FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
   FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
   FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
   FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
   FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
   FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
   FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
   FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
 
-  FWx_PropertyList.add('Wx_Comments:Comments');
-
-  FWx_PropertyList.add('Font : Font');
-
-  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-
-  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
-
+  FWx_PropertyList.add('Wx_ToolbarStyleSet:Toolbar Styles');
   FWx_PropertyList.add('wxTB_FLAT:wxTB_FLAT');
   FWx_PropertyList.add('wxTB_DOCKABLE:wxTB_DOCKABLE');
   FWx_PropertyList.add('wxTB_HORIZONTAL:wxTB_HORIZONTAL');
@@ -302,6 +283,13 @@ begin
   FWx_PropertyList.add('wxTB_HORZ_LAYOUT:wxTB_HORZ_LAYOUT');
   FWx_PropertyList.add('wxTB_HORZ_TEXT:wxTB_HORZ_TEXT');
 
+  FWx_PropertyList.add('Font:Font');
+  FWx_PropertyList.add('Text:Text');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Left:Left');
+  FWx_PropertyList.add('Top:Top');
+  FWx_PropertyList.add('Width:Width');
+  FWx_PropertyList.add('Height:Height');
 
   FWx_EventList.add('EVT_TOOL:OnTool');
   FWx_EventList.add('EVT_MENU:OnMenu');
@@ -474,14 +462,7 @@ begin
 
   if (self.Parent is TWxSizerPanel) then
   begin
-    strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) +
-      ' | ' + SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-    if wx_ControlOrientation = wxControlVertical then
-      strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | wxALL';
-
-    if wx_ControlOrientation = wxControlHorizontal then
-      strAlignment := SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-
+    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
 
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
@@ -555,7 +536,7 @@ end;
 
 function TWxToolBar.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxToolBar.GetTypeFromEventName(EventName: string): string;
@@ -588,7 +569,27 @@ end;
 
 procedure TWxToolBar.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
+end;
+
+function TWxToolBar.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxToolBar.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxToolBar.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxToolBar.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 procedure TWxToolBar.SetWxClassName(wxClassName: string);

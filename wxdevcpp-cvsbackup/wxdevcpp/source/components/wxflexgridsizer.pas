@@ -18,7 +18,7 @@ unit WxFlexGridSizer;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel;
+  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, dbugintf;
 
 type
   TWxFlexGridSizer = class(TWxSizerPanel, IWxComponentInterface,
@@ -33,27 +33,26 @@ type
     FRowSpacing: integer;
     { Storage for property Rows }
     FRows: integer;
-    { Storage for property SpaceValue }
-    FSpaceValue: integer;
+    { Storage for property FWx_Border }
+    FWx_Border: integer;
     { Storage for property Wx_Class }
     FWx_Class: string;
     { Storage for property Wx_ControlOrientation }
     FWx_ControlOrientation: TWxControlOrientation;
     { Storage for property Wx_EventList }
     FWx_EventList: TStringList;
-    { Storage for property Wx_HorizontalAlignment }
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
     FWx_IDValue: integer;
     { Storage for property Wx_StretchFactor }
     FWx_StretchFactor: integer;
-    { Storage for property Wx_VerticalAlignment }
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
+
     { Private methods of TWxFlexGridSizer }
     { Method to set variable and property values and create objects }
     procedure AutoInitialize;
@@ -90,13 +89,11 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -105,8 +102,16 @@ type
 
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     function maxHeightOfRow(rowIndex: integer): integer;
-    function maxWidthOfColumn(colIndex, totalRows: integer): integer;
+    function maxWidthOfColumn(colIndex: integer): integer;
     function GenerateLastCreationCode: string;
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
+
   published
     { Published properties of TWxFlexGridSizer }
     property OnClick;
@@ -125,28 +130,20 @@ type
     property Columns: integer Read FColumns Write FColumns default 2;
     property RowSpacing: integer Read FRowSpacing Write FRowSpacing default 0;
     property Rows: integer Read FRows Write FRows default 2;
-    property SpaceValue: integer Read FSpaceValue Write FSpaceValue default 5;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write SetWx_EventList;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
 
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default
-      wxSZALIGN_CENTER_VERTICAL;
-    property InvisibleBGColorString: string
-      Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string
-      Read FInvisibleFGColorString Write FInvisibleFGColorString;
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
   end;
 
 procedure Register;
@@ -163,18 +160,18 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxFlexGridSizer.AutoInitialize;
 begin
-  FWx_PropertyList := TStringList.Create;
-  FColumnSpacing := 0;
-  FColumns  := 2;
-  FRowSpacing := 0;
-  FRows     := 2;
-  FSpaceValue := 5;
-  FWx_Class := 'wxFlexGridSizer';
-  FWx_EventList := TStringList.Create;
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
-  FWx_IDValue := -1;
-  FWx_StretchFactor := 0;
-  FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
+  FWx_PropertyList    := TStringList.Create;
+  FColumnSpacing      := 0;
+  FColumns            := 2;
+  FRowSpacing         := 0;
+  FRows               := 2;
+  Wx_Border           := 5;
+  FWx_Class           := 'wxFlexGridSizer';
+  FWx_EventList       := TStringList.Create;
+  FWx_Alignment       := wxALIGN_CENTER;
+  FWx_BorderAlignment := [wxAll];
+  FWx_IDValue         := -1;
+  FWx_StretchFactor   := 0;
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
@@ -255,24 +252,31 @@ begin
   AutoInitialize;
 
   { Code to perform other tasks when the container is created    }
-  FWx_PropertyList.add('wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_IDName : IDName ');
-  FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  FWx_PropertyList.add('Name : Name');
-  FWx_PropertyList.add('Left : Left');
-  FWx_PropertyList.add('Top : Top');
-  FWx_PropertyList.add('Width : Width');
-  FWx_PropertyList.add('Height:Height');
-  FWx_PropertyList.add('Orientation : Orientation');
-  FWx_PropertyList.add('SpaceValue : Border');
-  FWx_PropertyList.add('Rows : Rows');
-  FWx_PropertyList.add('Columns : Columns');
-  FWx_PropertyList.add('RowSpacing : RowSpacing');
-  FWx_PropertyList.add('ColumnSpacing : ColumnSpacing');
+  FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_IDName:ID Name');
+  FWx_PropertyList.add('Wx_IDValue:ID Value');
 
-  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
+  FWx_PropertyList.add('Wx_Alignment:Alignment');
+  FWx_PropertyList.add('Wx_Border: Border');
+  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
+  FWx_PropertyList.add('wxALL:wxALL');
+  FWx_PropertyList.add('wxTOP:wxTOP');
+  FWx_PropertyList.add('wxLEFT:wxLEFT');
+  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
+  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
+
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Left:Left');
+  FWx_PropertyList.add('Top:Top');
+  FWx_PropertyList.add('Width:Width');
+  FWx_PropertyList.add('Height:Height');
+  
+  FWx_PropertyList.add('Orientation:Orientation');
+  FWx_PropertyList.add('Rows:Rows');
+  FWx_PropertyList.add('Columns:Columns');
+  FWx_PropertyList.add('RowSpacing:RowSpacing');
+  FWx_PropertyList.add('ColumnSpacing:ColumnSpacing');
 
 end;
 
@@ -359,8 +363,7 @@ var
   strAlignment: string;
   parentName:  string;
 begin
-
-  Result := Format('%s = new wxFlexGridSizer(%d,%d,%d,%d);',
+  Result := Format('%s = new wxFlexGridSizer(%d, %d, %d, %d);',
     [self.Name, self.rows, self.columns, self.rowSpacing, self.columnSpacing]);
   if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent))) then
   begin
@@ -376,20 +379,13 @@ begin
     else
       parentName := self.Parent.Name;
     Result := Result + #13 + Format('%s->SetSizer(%s);', [parentName, self.Name]);
-    Result := Result + #13 + Format('%s->SetAutoLayout(TRUE);', [parentName]);
+    Result := Result + #13 + Format('%s->SetAutoLayout(true);', [parentName]);
   end
   else begin
-    strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) +
-      ' | ' + SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-    if wx_ControlOrientation = wxControlVertical then
-      strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | wxALL';
-
-    if wx_ControlOrientation = wxControlHorizontal then
-      strAlignment := SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+    Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.SpaceValue]);
+      self.Wx_Border]);
   end;
 end;
 
@@ -400,7 +396,7 @@ end;
 
 function TWxFlexGridSizer.GenerateHeaderInclude: string;
 begin
-  //Result:='#include<wx/button.h>';
+  Result:='#include <wx/sizer.h>';
 end;
 
 function TWxFlexGridSizer.GenerateImageInclude: string;
@@ -445,12 +441,32 @@ end;
 
 function TWxFlexGridSizer.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxFlexGridSizer.GetTypeFromEventName(EventName: string): string;
 begin
 
+end;
+
+function TWxFlexGridSizer.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxFlexGridSizer.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxFlexGridSizer.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxFlexGridSizer.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 function TWxFlexGridSizer.GetWxClassName: string;
@@ -487,7 +503,7 @@ end;
 
 procedure TWxFlexGridSizer.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
 end;
 
 procedure TWxFlexGridSizer.SetWxClassName(wxClassName: string);
@@ -497,75 +513,53 @@ end;
 
 procedure TWxFlexGridSizer.WMPaint(var Message: TWMPaint);
 var
-  maxWidth, maxHt: integer;
-  totalmaxWidth, totalmaxHt, tmpHtofRow, tmpTotalWt, tmpWtofCol: integer;
-   i, k: integer;
-  coordTop, coordLeft: integer;
-  intAlignment: integer;
+  i, j: integer;
   oriRows: integer;
   rowCount, colCount: integer;
-  intTemp: integer;
-  wxcompInterface: IWxComponentInterface;
+  coordTop, coordLeft: integer;
+  tmpHtofRow, tmpWtofCol: integer;
+  totalmaxWidth, totalmaxHt: integer;
+  controlWidth, controlHeight: integer;
+
   cntIntf: IWxContainerInterface;
+  wxCompInterface: IWxComponentInterface;
   splitIntf: IWxSplitterInterface;
-
 begin
-  intAlignment := 1;
-     { Make this component look like its parent component by calling
-       its parent's Paint method. }
+  self.Caption  := '';
 
-
-  self.Caption := '';
-
-  maxWidth := -1;
-
-  totalmaxWidth := 0;
-  totalmaxHt    := 0;
-
-  maxHt := 2 * self.FSpaceValue;
-
+  //Calculate the number of rows ths control has
   oriRows := self.ControlCount div self.Columns;
   if oriRows * self.Columns < self.ControlCount then
     oriRows := oriRows + 1;
 
-
-  for i := 0 to self.ControlCount - 1 do
-  begin
-    if IsControlWxNonVisible(Controls[i]) then
-      continue;
-    //Calculate the total size for all childens
-    totalmaxWidth := totalmaxWidth + self.Controls[i].Width + 2 * self.FSpaceValue;
-    totalmaxHt    := totalmaxHt + self.Controls[i].Height + 2 * self.FSpaceValue;
-
-    if self.Controls[i].Width > maxWidth then
-      maxWidth := self.Controls[i].Width;
-
-    if self.Controls[i].Height > maxHt then
-      maxHt := self.Controls[i].Height;
-    if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
-      wxcompInterface.SaveControlOrientation(wxControlNone);
-
-  end;
-
+  //Determine the maximum height
   totalmaxHt := 0;
   for i := 0 to oriRows - 1 do
   begin
     tmpHtofRow := maxHeightOfRow(i);
-    totalmaxHt := totalmaxHt + tmpHtofRow + (2 * self.FSpaceValue);
+    totalmaxHt := totalmaxHt + tmpHtofRow + RowSpacing;
   end;
 
-  tmpTotalWt := 0;
+  //And the maximum width
+  totalmaxWidth := 0;
   for i := 0 to columns - 1 do
   begin
-    tmpWtofCol := maxWidthOfColumn(i, oriRows);
-    tmpTotalWt := tmpTotalWt + tmpWtofCol + (2 * self.FSpaceValue);
+    tmpWtofCol := maxWidthOfColumn(i);
+    totalmaxWidth := totalmaxWidth + tmpWtofCol + ColumnSpacing;
   end;
+
+  //Remove the column spacing from the last column and row
+  if columns <> 0 then
+    totalmaxWidth := totalmaxWidth - ColumnSpacing;
+  if oriRows <> 0 then
+    totalmaxHt := totalmaxHt - RowSpacing;
 
   if self.Parent is TForm then
   begin
     self.Align := alClient;
   end
-  else begin
+  else
+  begin
     if self.parent.GetInterface(IDD_IWxContainerInterface, cntIntf) then
     begin
       if self.parent.GetInterface(IID_IWxSplitterInterface, splitIntf) then
@@ -578,64 +572,73 @@ begin
     else
       self.Align := alNone;
 
-    if (totalmaxWidth < 4 * self.FSpaceValue) then
-      self.Width := 4 * self.FSpaceValue
+    if totalmaxWidth = 0 then
+      self.Width := 20
     else
-      self.Width := tmpTotalWt;//self.Columns * (maxWidth+2* self.FSpaceValue);
+      self.Width := totalmaxWidth;
 
-    if (totalmaxht < 4 * self.FSpaceValue) then
-      self.Height := 4 * self.FSpaceValue
+    if totalmaxht = 0 then
+      self.Height := 20
     else
-      self.Height := totalmaxHt; //OriRows * (maxHt+2* self.FSpaceValue);
-
+      self.Height := totalmaxHt;
   end;
 
-  //startX:=FSpaceValue;
-  rowCount := 0;
   colCount := 0;
+  rowCount := 0;
 
   for i := 0 to self.ControlCount - 1 do
   begin
+    //Skip nonvisible controls
     if IsControlWxNonVisible(Controls[i]) then
       continue;
 
-    maxHt    := maxHeightOfRow(RowCount);
-    maxWidth := maxWidthOfColumn(colCount, oriRows);
+    //Calculate the base position of the control
+    coordTop := 0;
+    coordLeft := 0;
+    for j := 0 to rowCount - 1 do
+      coordTop := coordTop + maxHeightOfRow(j) + RowSpacing;
+    for j := 0 to colCount - 1 do
+      coordLeft := coordLeft + maxWidthOfColumn(j) + ColumnSpacing;
 
-    intTemp := 0;
-    for k := 0 to rowCount - 1 do
-      intTemp := intTemp + maxHeightOfRow(k);
+    //Calculate the base dimensions of the control
+    controlWidth := Controls[i].Width;
+    controlHeight := Controls[i].Height;
 
-    tmpWtofCol := 0;
-    for k := 0 to ColCount - 1 do
-      tmpWtofCol := tmpWtofCol + maxWidthOfColumn(k, oriRows);
-
-    //sendDebug('Ht = '+IntToStr(maxHt));
-
-    if intAlignment = 0 then
+    //Add the control's borders
+    if Controls[i].GetInterface(IID_IWxComponentInterface, wxCompInterface) then
     begin
-      self.Controls[i].Top  :=
-        (FSpaceValue * (2 * (rowCount + 1) - 1)) + maxHt * rowCount;
-      self.Controls[i].left :=
-        (FSpaceValue * (2 * (colCount + 1) - 1)) + maxWidth * colCount;
+      if (wxTOP in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+      begin
+        coordTop := coordTop + wxCompInterface.GetBorderWidth;
+        controlHeight := controlHeight + wxCompInterface.GetBorderWidth;
+      end;
+      if (wxBOTTOM in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+        controlHeight := controlHeight + wxCompInterface.GetBorderWidth;
+      if (wxLEFT in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+      begin
+        coordLeft := coordLeft + wxCompInterface.GetBorderWidth;
+        controlWidth := controlWidth + wxCompInterface.GetBorderWidth;
+      end;
+      if (wxRIGHT in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+        controlWidth := controlWidth + wxCompInterface.GetBorderWidth;
     end;
 
-    if intAlignment = 1 then
-    begin
-      coordLeft := (maxWidth - self.Controls[i].Width) div 2;
-      coordTop  := (maxHt - self.Controls[i].Height) div 2;
+    //Then centre the control
+    coordTop := coordTop + (maxHeightOfRow(rowCount) - controlHeight) div 2;
+    coordLeft := coordLeft + (maxWidthOfColumn(colCount) - controlWidth) div 2;
 
-      self.Controls[i].Top  :=
-        (FSpaceValue * (2 * (rowCount + 1) - 1)) + intTemp + coordTop;
-      self.Controls[i].left :=
-        (FSpaceValue * (2 * (colCount + 1) - 1)) + tmpWtofCol + coordLeft;
-    end;
+    //Move the control to the given position
+    self.Controls[i].Top := coordTop;
+    self.Controls[i].left := coordLeft;
 
-    Inc(ColCount);
-    if ColCount + 1 > Columns then
+    //Increment the column that we want to fill
+    Inc(colCount);
+
+    //Increment the row if we are done with the current row
+    if colCount >= Columns then
     begin
-      ColCount := 0;
-      Inc(RowCount);
+      colCount := 0;
+      Inc(rowCount);
     end;
   end;
 
@@ -645,40 +648,84 @@ end;
 
 function TWxFlexGridSizer.maxHeightOfRow(rowIndex: integer): integer;
 var
+  controlHeight: integer;
   startItem, endItem, i: integer;
+  wxCompInterface: IWxComponentInterface;
 begin
   startItem := rowIndex * columns;
   endItem   := rowIndex * columns + columns - 1;
   Result    := 0;
-  for i := 0 to self.ControlCount - 1 do
+
+  //Do we have controls in the first place?
+  if startItem > ControlCount then
+    Exit;
+
+  //Make sure the end item is lesser than the number of controls
+  if endItem >= self.ControlCount then
+    endItem := self.ControlCount - 1;
+  for i := startItem to endItem do
   begin
     if IsControlWxNonVisible(Controls[i]) then
       continue;
-    //sendDebug('name = '+ self.Controls[i].name +' ht = '+IntToStr(self.Controls[i].Height)+' i = '+IntToStr(i) + ' Start = '+IntToStr(startItem) + '  End = '+IntToStr(endItem));
-    if (i >= startItem) and (i <= endItem) then
-      if Result < self.Controls[i].Height then
-        Result := self.Controls[i].Height;
 
+    //Calculate the height of this control
+    controlHeight := self.Controls[i].Height;
+
+    //Add the child's borders
+    if Controls[i].GetInterface(IID_IWxComponentInterface, wxCompInterface) then
+    begin
+      if (wxTOP in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+      begin
+        controlHeight := controlHeight + wxCompInterface.GetBorderWidth;
+      end;
+      if (wxBOTTOM in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+      begin
+        controlHeight := controlHeight + wxCompInterface.GetBorderWidth;
+      end;
+    end;
+
+    //And see if the height is greatere than the original
+    if Result < controlHeight then
+        Result := controlHeight;
   end;
 end;
 
-function TWxFlexGridSizer.maxWidthOfColumn(colIndex, totalRows: integer): integer;
+function TWxFlexGridSizer.maxWidthOfColumn(colIndex: integer): integer;
 var
-  startItem, i: integer;
+  i: integer;
+  controlWidth: integer;
+  wxCompInterface: IWxComponentInterface;
 begin
   Result := 0;
-  for i := 0 to self.ControlCount - 1 do
+  i := colIndex;
+
+  while i < self.ControlCount do
   begin
     if IsControlWxNonVisible(Controls[i]) then
       continue;
-    startItem := (i mod columns);
-    //if not((colIndex = 0) and (i = 0) ) then
-    //startItem:=1;
 
-    if startItem = colIndex then
-      if Result < self.Controls[i].Width then
-        Result := self.Controls[i].Width;
+    //Calculate the width of this control
+    controlWidth := self.Controls[i].Width;
 
+    //Add the borders
+    if Controls[i].GetInterface(IID_IWxComponentInterface, wxCompInterface) then
+    begin
+      if (wxLEFT in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+      begin
+        controlWidth := controlWidth + wxCompInterface.GetBorderWidth;
+      end;
+      if (wxRIGHT in wxCompInterface.GetBorderAlignment) or (wxALL in wxCompInterface.GetBorderAlignment) then
+      begin
+        controlWidth := controlWidth + wxCompInterface.GetBorderWidth;
+      end;
+    end;
+
+    //Update the result
+    if Result < controlWidth then
+      Result := controlWidth;
+
+    //Increment the current control
+    i := i + self.Columns;
   end;
 end;
 

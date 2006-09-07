@@ -64,8 +64,6 @@ type
     FWx_HelpText: string;
     { Storage for property Wx_Hidden }
     FWx_Hidden: boolean;
-    { Storage for property Wx_HorizontalAlignment }
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
@@ -79,11 +77,10 @@ type
     { Storage for property Wx_ToolTip }
     FWx_ToolTip: string;
     FWx_Comments: TStrings;
-
-    { Storage for property Wx_VerticalAlignment }
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_EventList: TStringList;
     FWx_PropertyList: TStringList;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
 
     FGridSelection: TWxGridSelection;
 
@@ -143,13 +140,11 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -157,6 +152,13 @@ type
     procedure SetBGColor(strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
 
   published
     { Published properties of TWxGrid }
@@ -215,11 +217,9 @@ type
       Write SetVirtualLabelRowSize default 5;
 
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
-    property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    { TWxEdtGeneralStyleSet }
     property Wx_EditStyle: TWxEdtGeneralStyleSet
       Read GetWx_EditStyle Write SetWx_EditStyle;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
@@ -228,29 +228,23 @@ type
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
     property Wx_GridSelection: TWxGridSelection
       Read FGridSelection Write FGridSelection default wxGridSelectCells;
-    property Wx_ProxyBGColorString: TWxColorString
-      Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString
-      Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
-    property InvisibleBGColorString: string
-      Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string
-      Read FInvisibleFGColorString Write FInvisibleFGColorString;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+
+    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
   end;
 
 procedure Register;
@@ -273,10 +267,10 @@ begin
   FWx_Border     := 5;
   FWx_Class      := 'wxGrid';
   FWx_Enabled    := True;
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
+  FWx_Alignment  := wxALIGN_CENTER;
+  FWx_BorderAlignment := [wxAll];
   FWx_IDValue    := -1;
   FWx_StretchFactor := 0;
-  FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor := self.color;
@@ -428,40 +422,28 @@ begin
   SetVirtualColCount(self.ColCount);
 
   { Code to perform other tasks when the component is created }
-  { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_Enabled :Enabled');
-  FWx_PropertyList.add('Wx_Class :Base Class');
-  FWx_PropertyList.add('Wx_Hidden :Hidden');
-  FWx_PropertyList.add('Wx_Border : Border ');
-  FWx_PropertyList.add('Wx_HelpText :HelpText ');
-  FWx_PropertyList.add('Wx_IDName : IDName ');
-  FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-  FWx_PropertyList.add('Wx_Enable :Enabled');
-  FWx_PropertyList.add('Wx_Visible :Visible');
-  FWx_PropertyList.add('Text : Text ');
-  FWx_PropertyList.add('Name : Name');
-  FWx_PropertyList.add('Left : Left');
-  FWx_PropertyList.add('Top : Top');
-  FWx_PropertyList.add('Width : Width');
-  FWx_PropertyList.add('Height:Height');
-
+  FWx_PropertyList.add('Wx_Enabled:Enabled');
+  FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_Hidden:Hidden');
+  FWx_PropertyList.add('Wx_Default:Default');
+  FWx_PropertyList.add('Wx_HelpText:Help Text');
+  FWx_PropertyList.add('Wx_IDName:ID Name');
+  FWx_PropertyList.add('Wx_IDValue:ID Value');
+  FWx_PropertyList.add('Wx_ToolTip:Tooltip');
+  FWx_PropertyList.add('Wx_Comments:Comments');
+  FWx_PropertyList.Add('Wx_Validator:Validator code');
   FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
   FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
-  FWx_PropertyList.add('Wx_Comments:Comments');
-
-  FWx_PropertyList.Add('Wx_RowCount:Row Count');
-  FWx_PropertyList.Add('Wx_ColCount:Column Count');
-  FWx_PropertyList.Add('DefaultColWidth:Column Width');
-  FWx_PropertyList.Add('DefaultRowHeight:Row Height');
-
-  FWx_PropertyList.Add('Wx_LabelColSize:Label Column Width');
-  FWx_PropertyList.Add('Wx_LabelRowSize:Label Row Height');
-
-
-  FWx_PropertyList.Add('Wx_GridSelection:Grid Selection');
-
+  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
+  FWx_PropertyList.add('Wx_Alignment:Alignment');
+  FWx_PropertyList.add('Wx_Border: Border');
+  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
+  FWx_PropertyList.add('wxALL:wxALL');
+  FWx_PropertyList.add('wxTOP:wxTOP');
+  FWx_PropertyList.add('wxLEFT:wxLEFT');
+  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
+  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
 
   FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
   FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
@@ -480,12 +462,21 @@ begin
   FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
   FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
 
-  FWx_PropertyList.add('Font : Font');
+  FWx_PropertyList.add('Font:Font');
+  FWx_PropertyList.add('Text:Text ');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Left:Left');
+  FWx_PropertyList.add('Top:Top');
+  FWx_PropertyList.add('Width:Width');
+  FWx_PropertyList.add('Height:Height');
 
-  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-
-  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+  FWx_PropertyList.Add('Wx_RowCount:Row Count');
+  FWx_PropertyList.Add('Wx_ColCount:Column Count');
+  FWx_PropertyList.Add('DefaultColWidth:Column Width');
+  FWx_PropertyList.Add('DefaultRowHeight:Row Height');
+  FWx_PropertyList.Add('Wx_LabelColSize:Label Column Width');
+  FWx_PropertyList.Add('Wx_LabelRowSize:Label Row Height');
+  FWx_PropertyList.Add('Wx_GridSelection:Grid Selection');
 
   FWx_EventList.add('EVT_GRID_CELL_LEFT_CLICK:OnCellLeftClick');
   FWx_EventList.add('EVT_GRID_CELL_RIGHT_CLICK:OnCellRightClick');
@@ -726,15 +717,7 @@ begin
 
   if (self.Parent is TWxSizerPanel) then
   begin
-    strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) +
-      ' | ' + SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-    if wx_ControlOrientation = wxControlVertical then
-      strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | wxALL';
-
-    if wx_ControlOrientation = wxControlHorizontal then
-      strAlignment := SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-
-
+    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
@@ -887,12 +870,32 @@ end;
 
 function TWxGrid.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxGrid.GetTypeFromEventName(EventName: string): string;
 begin
 
+end;
+
+function TWxGrid.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxGrid.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxGrid.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxGrid.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 function TWxGrid.GetWxClassName: string;
@@ -919,7 +922,7 @@ end;
 
 procedure TWxGrid.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
 end;
 
 procedure TWxGrid.SetWxClassName(wxClassName: string);

@@ -31,6 +31,7 @@ type
     FEVT_TEXT: string;
     { Storage for property EVT_UPDATE_UI }
     FEVT_UPDATE_UI: string;
+    FEVT_TEXT_ENTER: string;
     { Storage for property Wx_BGColor }
     FWx_BGColor: TColor;
     { Storage for property Wx_Border }
@@ -39,6 +40,8 @@ type
     FWx_Class: string;
     { Storage for property Wx_ComboboxStyle }
     FWx_ComboboxStyle: TWxCmbStyleSet;
+    { Storage for property Wx_EditStyle }
+    FWx_EditStyle: TWxEdtGeneralStyleSet;
     { Storage for property Wx_ControlOrientation }
     FWx_ControlOrientation: TWxControlOrientation;
     { Storage for property Wx_DefaultItem }
@@ -53,8 +56,6 @@ type
     FWx_HelpText: string;
     { Storage for property Wx_Hidden }
     FWx_Hidden: boolean;
-    { Storage for property Wx_HorizontalAlignment }
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
@@ -68,16 +69,15 @@ type
     { Storage for property Wx_ToolTip }
     FWx_ToolTip: string;
     FWx_Validator: string;
-    { Storage for property Wx_VerticalAlignment }
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_EventList: TStringList;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
-    FWx_Comments: TStrings;    
+    FWx_Comments: TStrings;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
     FWx_LHSValue : String;
     FWx_RHSValue : String;
-
 
     { Private methods of TWxComboBox }
     { Method to set variable and property values and create objects }
@@ -114,13 +114,11 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -133,6 +131,13 @@ type
     procedure DummyToolBarInsertableInterfaceProcedure;
     function GetLHSVariableAssignment:String;
     function GetRHSVariableAssignment:String;
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
     
   published
     { Published properties of TWxComboBox }
@@ -151,11 +156,13 @@ type
     property EVT_COMBOBOX: string Read FEVT_COMBOBOX Write FEVT_COMBOBOX;
     property EVT_TEXT: string Read FEVT_TEXT Write FEVT_TEXT;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+    property EVT_TEXT_ENTER: string Read FEVT_TEXT_ENTER Write FEVT_TEXT_ENTER;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
-    property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ComboboxStyle: TWxCmbStyleSet
       Read FWx_ComboboxStyle Write FWx_ComboboxStyle;
+    property Wx_EditStyle: TWxEdtGeneralStyleSet
+      Read FWx_EditStyle Write FWx_EditStyle;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_DefaultItem: integer Read FWx_DefaultItem
@@ -166,31 +173,24 @@ type
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_ProxyBGColorString: TWxColorString
-      Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString
-      Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
-    property InvisibleBGColorString: string
-      Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string
-      Read FInvisibleFGColorString Write FInvisibleFGColorString;
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
     property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
     property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
-
   end;
 
 procedure Register;
@@ -213,10 +213,10 @@ begin
   FWx_Class      := 'wxComboBox';
   FWx_DefaultItem := -1;
   FWx_Enabled    := True;
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
+  FWx_Alignment  := wxALIGN_CENTER;
+  FWx_BorderAlignment := [wxAll];
   FWx_IDValue    := -1;
   FWx_StretchFactor := 0;
-  FWx_VerticalAlignment := wxSZALIGN_CENTER_VERTICAL;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor := self.color;
@@ -288,67 +288,86 @@ begin
   AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_ComboboxStyle:Combobox Style');
-  FWx_PropertyList.add('Items :Items');
-  FWx_PropertyList.add('wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Hidden :Hidden');
-  FWx_PropertyList.add('Wx_Border : Border ');
-  FWx_PropertyList.add('Wx_Default :WxDefault ');
-  FWx_PropertyList.add('Wx_HelpText :HelpText ');
-  FWx_PropertyList.add('Wx_IDName : IDName ');
-  FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-  FWx_PropertyList.add('Text:Text');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
   FWx_PropertyList.add('Wx_Enabled:Enabled');
-  FWx_PropertyList.add('Left:Left');
-  FWx_PropertyList.add('Top:Top');
-  FWx_PropertyList.add('Width:Width');
-  FWx_PropertyList.add('Height:Height');
-  FWx_PropertyList.add('Wx_GeneralStyle : General Styles');
-  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-  FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
-  FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-  FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-  FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-  FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
-  FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-  FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-  FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-  FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-
-  FWx_PropertyList.Add('Wx_Validator : Validator code');
+  FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_Hidden:Hidden');
+  FWx_PropertyList.add('Wx_Default:Default');
+  FWx_PropertyList.add('Wx_HelpText:Help Text');
+  FWx_PropertyList.add('Wx_IDName:ID Name');
+  FWx_PropertyList.add('Wx_IDValue:ID Value');
+  FWx_PropertyList.add('Wx_ToolTip:Tooltip');
   FWx_PropertyList.add('Wx_Comments:Comments');
+  FWx_PropertyList.Add('Wx_Validator:Validator code');
+  FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
+  FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
 
-  FWx_PropertyList.add('Font : Font');
+  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
+  FWx_PropertyList.add('Wx_Alignment:Alignment');
+  FWx_PropertyList.add('Wx_Border: Border');
+  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
+  FWx_PropertyList.add('wxALL:wxALL');
+  FWx_PropertyList.add('wxTOP:wxTOP');
+  FWx_PropertyList.add('wxLEFT:wxLEFT');
+  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
+  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
 
-  FWx_PropertyList.add('Checked : Checked');
-  FWx_PropertyList.add('Wx_RadioButtonStyle:Radio Button Style');
-
-  FWx_PropertyList.add('wxRB_GROUP:wxRB_GROUP');
-  FWx_PropertyList.add('wxRB_SINGLE:wxRB_SINGLE');
-
-  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-
+  FWx_PropertyList.add('Wx_ComboboxStyle:Combobox Style');
   FWx_PropertyList.add('wxCB_SIMPLE:wxCB_SIMPLE');
   FWx_PropertyList.add('wxCB_DROPDOWN:wxCB_DROPDOWN');
   FWx_PropertyList.add('wxCB_READONLY:wxCB_READONLY');
   FWx_PropertyList.add('wxCB_SORT:wxCB_SORT');
-  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+
+  FWx_PropertyList.Add('Wx_EditStyle:Edit Style');
+  FWx_PropertyList.Add('wxTE_PROCESS_ENTER:wxTE_PROCESS_ENTER');
+  FWx_PropertyList.Add('wxTE_PROCESS_TAB:wxTE_PROCESS_TAB');
+  FWx_PropertyList.Add('wxTE_PASSWORD:wxTE_PASSWORD');
+  FWx_PropertyList.Add('wxTE_READONLY:wxTE_READONLY');
+  FWx_PropertyList.Add('wxTE_MULTILINE:wxTE_MULTILINE');
+  FWx_PropertyList.Add('wxTE_RICH:wxTE_RICH');
+  FWx_PropertyList.Add('wxTE_RICH2:wxTE_RICH2');
+  FWx_PropertyList.Add('wxTE_AUTO_URL:wxTE_AUTO_URL');
+  FWx_PropertyList.Add('wxTE_NOHIDESEL:wxTE_NOHIDESEL');
+  FWx_PropertyList.Add('wxTE_LEFT:wxTE_LEFT');
+  FWx_PropertyList.Add('wxTE_CENTRE:wxTE_CENTRE');
+  FWx_PropertyList.Add('wxTE_RIGHT:wxTE_RIGHT');
+  FWx_PropertyList.Add('wxTE_LINEWRAP:wxTE_LINEWRAP');
+  FWx_PropertyList.Add('wxTE_DONTWRAP:wxTE_DONTWRAP');
+  FWx_PropertyList.Add('wxTE_CHARWRAP:wxTE_CHARWRAP');
+  FWx_PropertyList.Add('wxTE_BESTWRAP:wxTE_BESTWRAP');
+  FWx_PropertyList.Add('wxTE_CAPITALIZE:wxTE_CAPITALIZE');
+
+  FWx_PropertyList.add('Wx_GeneralStyle:General Styles');
+  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
+  FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+  FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
+  FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
+  FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
+  FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
+  FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
+  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
+  FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
+  FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
+  FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
+
+  FWx_PropertyList.add('Items:Items');
+  FWx_PropertyList.add('Text:Text');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Left:Left');
+  FWx_PropertyList.add('Top:Top');
+  FWx_PropertyList.add('Width:Width');
+  FWx_PropertyList.add('Height:Height');
+  FWx_PropertyList.add('Font:Font');
 
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_COMBOBOX:OnSelected');
   FWx_EventList.add('EVT_TEXT:OnUpdated');
+  FWx_EventList.add('EVT_TEXT_ENTER:OnTextEnter');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-
 end;
 
 destructor TWxComboBox.Destroy;
@@ -399,6 +418,10 @@ begin
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_ENTER(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
+
 end;
 
 function TWxComboBox.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -416,7 +439,7 @@ begin
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle)]));
+      [GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle, Wx_EditStyle)]));
 
     Result.Add('  <content>');
     for i := 0 to self.Items.Count - 1 do
@@ -440,7 +463,7 @@ begin
   Result := '';
 
   parentName := GetWxWidgetParent(self);
-  strStyle   := GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle);
+  strStyle   := GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle, Wx_EditStyle);
 
   if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
@@ -506,16 +529,8 @@ begin
 
   if (self.Parent is TWxSizerPanel) then
   begin
-    strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) +
-      ' | ' + SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-    if wx_ControlOrientation = wxControlVertical then
-      strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | wxALL';
-
-    if wx_ControlOrientation = wxControlHorizontal then
-      strAlignment := SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-
-
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+      strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+      Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
@@ -561,21 +576,13 @@ end;
 function TWxComboBox.GetParameterFromEventName(EventName: string): string;
 begin
   if EventName = 'EVT_COMBOBOX' then
-  begin
-    Result := 'wxCommandEvent& event ';
-    exit;
-  end;
-  if EventName = 'EVT_TEXT' then
-  begin
-    Result := 'wxCommandEvent& event ';
-    exit;
-  end;
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
+    Result := 'wxCommandEvent& event '
+  else if EventName = 'EVT_TEXT' then
+    Result := 'wxCommandEvent& event '
+  else if EventName = 'EVT_TEXT_ENTER' then
+    Result := 'wxCommandEvent& event'
+  else if EventName = 'EVT_UPDATE_UI' then
     Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-
 end;
 
 function TWxComboBox.GetPropertyList: TStringList;
@@ -585,12 +592,32 @@ end;
 
 function TWxComboBox.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxComboBox.GetTypeFromEventName(EventName: string): string;
 begin
 
+end;
+
+function TWxComboBox.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxComboBox.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxComboBox.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxComboBox.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 function TWxComboBox.GetWxClassName: string;
@@ -626,7 +653,7 @@ end;
 
 procedure TWxComboBox.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
 end;
 
 procedure TWxComboBox.SetWxClassName(wxClassName: string);
@@ -682,7 +709,6 @@ end;
 function TWxComboBox.GetLHSVariableAssignment:String;
 var
     nPos:Integer;
-    
 begin
     Result:='';
     if trim(Wx_LHSValue) = '' then

@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvAppStorage,
   JvAppRegistryStorage, JvComponent, FileCtrl, JvFormPlacement, version,
-  XPMenu, devcfg;
+  XPMenu, devcfg, JvComponentBase;
 {$Warnings On}
 type
   TfrmCreateFormProp = class(TForm)
@@ -134,8 +134,8 @@ procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
 
     if boolExisit then
     begin
-      if MessageDlg('Some Source Files with Same File Name Already Exist.' + #13
-        + #10 + '' + #13 + #10 + 'Do you want to overwrite them ?.', mtError,
+      if MessageDlg('Some source files with same file name already exist.' + #13
+        + #10 + '' + #13 + #10 + 'Do you want to overwrite them?', mtError,
         [mbYES, mbNO], 0) <> mrYES then
       begin
         exit;

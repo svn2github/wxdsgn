@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
-  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf;
+  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils, dialogs;
 
 type
   TWxPopupMenu = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
@@ -42,14 +42,12 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     function GetMaxID: integer;
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -58,8 +56,12 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
-    //function GetSubComponent: TPersistent;
-    //procedure SetSubComponent(Value: TPersistent);
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
 
   published
     { Published declarations }
@@ -136,30 +138,47 @@ var
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
-      strData := '' + submnu.Items[J].Wx_IDName + ' = ' + IntToStr(
-        submnu.Items[J].wx_IDValue) + ' , ';
-      idstrList.add(strData);
+      if not AnsiStartsStr('wxID', submnu.Items[J].Wx_IDName) then
+      begin
+        strData := submnu.Items[J].Wx_IDName;
 
+        //Do we want to specify an ID?
+        if submnu.Items[J].wx_IDValue <> -1 then
+          strData := strData + ' = ' + IntToStr(submnu.Items[J].wx_IDValue);
+
+        //Add the string
+        idstrList.add(strData + ',');
+      end;
+
+      //Sub-sub menus
       if submnu.items[J].Count > 0 then
         GetEnumControlIDFromSubMenu(idstrList, submnu.items[J]);
-    end;    // for
+    end;
   end;
 
 begin
-
   Result := '';
   strLst := TStringList.Create;
 
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
   begin
-    strF := '' + Wx_MenuItems.Items[i].Wx_IDName + ' = ' + IntToStr(
-      Wx_MenuItems.Items[i].wx_IDValue) + ' , ';
-    if trim(strF) <> '' then
-      strLst.add(strF);
+    if not AnsiStartsStr('wxID', Wx_MenuItems.Items[i].Wx_IDName) then
+    begin
+      strF := Wx_MenuItems.Items[i].Wx_IDName;
 
+      //Do we want to specify an ID?
+      if Wx_MenuItems.Items[i].wx_IDValue <> -1 then
+        strF := strF + ' = ' + IntToStr(Wx_MenuItems.Items[i].wx_IDValue);
+
+      //Do we add?
+      if trim(strF) <> '' then
+        strLst.add(strF + ',');
+    end;
+    
+    //Add the subitems
     if Wx_MenuItems.items[i].Count > 0 then
-      GetEnumControlIDFromSubMenu(strLst, Wx_MenuItems.items[i])
-  end;    // for
+      GetEnumControlIDFromSubMenu(strLst, Wx_MenuItems.items[i]);
+  end;
   Result := strLst.Text;
   strLst.Destroy;
 
@@ -270,21 +289,10 @@ begin
 end;
 
 function TWxPopupMenu.GenerateGUIControlCreation: string;
-var
-  strStyle, parentName : string;
-  strMenucodeData: string;
 begin
-  Result     := '';
-  parentName := GetWxWidgetParent(self);
-
-  //strStyle:=GetStdStyleString(self.Wx_GeneralStyle);
-  if trim(strStyle) <> '' then
-    strStyle := ',' + strStyle;
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s %s );', [self.Name, self.Wx_Class, GetCppString(
-    Wx_Caption), strStyle]);
-  strMenucodeData := GetMenuItemCode;
-  Result := Result + #13 + strMenucodeData;
+    Format('%s = new %s(%s);', [self.Name, self.Wx_Class, GetCppString(Wx_Caption)]);
+  Result := Result + GetMenuItemCode;
 end;
 
 function TWxPopupMenu.GetCodeForOneMenuItem(parentName: string;
@@ -340,7 +348,6 @@ var
     J: integer;
     parentItemName, strV: string;
   begin
-    Result := '';
     strV   := 'wxMenu *' + submnu.wx_IDName + '_Obj = new wxMenu();';
     parentItemName := submnu.wx_IDName + '_Obj';
     submnustrlst.add(strV);
@@ -348,6 +355,7 @@ var
     for J := 0 to submnu.Count - 1 do    // Iterate
       if submnu.items[J].Count > 0 then
       begin
+        submnustrlst.Add('');
         GetCodeFromSubMenu(submnustrlst, submnu.items[J]);
         strV := parentItemName + '->Append(' + format(
           '%s, %s, %s', [submnu.items[J].Wx_IDNAME,
@@ -360,15 +368,11 @@ var
         if trim(strV) <> '' then
         begin
           strLst.add(strV);
-          strLst.add('');
-          //sendDebug(strV);
         end;
       end;    // for
   end;
 
 begin
-
-  Result := '';
   strLst := TStringList.Create;
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
     if Wx_MenuItems.items[i].Count > 0 then
@@ -376,19 +380,19 @@ begin
       GetCodeFromSubMenu(strLst, Wx_MenuItems.items[i]);
       strLst.add(self.Name + '->Append(' + Wx_MenuItems.items[i].Wx_IDName +
         ', ' + GetCppString(Wx_MenuItems.items[i].Wx_Caption) + ', ' +
-        Wx_MenuItems.items[i].Wx_IDName + '_Obj ' + ');');
+        Wx_MenuItems.items[i].Wx_IDName + '_Obj' + ');');
     end
     else begin
       strF := GetCodeForOneMenuItem(self.Name, Wx_MenuItems.Items[i]);
       if trim(strF) <> '' then
       begin
         strLst.add(strF);
-        strLst.add('');
       end;
     end;    // for
-  Result := strLst.Text;
-  strLst.Destroy;
 
+  //Send the result back
+  Result := trim(strLst.Text); //remove the trailing newline
+  strLst.Destroy;
 end;
 
 function TWxPopupMenu.GenerateGUIControlDeclaration: string;
@@ -485,6 +489,24 @@ end;
 function TWxPopupMenu.GetTypeFromEventName(EventName: string): string;
 begin
 
+end;
+
+function TWxPopupMenu.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := [];
+end;
+
+procedure TWxPopupMenu.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+end;
+
+function TWxPopupMenu.GetBorderWidth: integer;
+begin
+  Result := 0;
+end;
+
+procedure TWxPopupMenu.SetBorderWidth(width: integer);
+begin
 end;
 
 function TWxPopupMenu.GetWxClassName: string;

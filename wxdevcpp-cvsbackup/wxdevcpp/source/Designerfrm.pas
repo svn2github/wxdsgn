@@ -85,147 +85,16 @@ type
 
     FWx_Name: string;
     FWx_ICON: TPicture;
-    FWx_StretchFactor: integer;
     FWx_ProxyBGColorString: TWxColorString;
     FWx_ProxyFGColorString: TWxColorString;
     FWxDesignerType: TWxDesignerType;
-
-    procedure SetDesignerType(Value: TWxDesignerType);
-
-  published
-    property Wx_ICON: TPicture Read FWx_ICON Write FWx_ICON;
-    property Wx_Name: string Read FWx_Name Write FWx_Name;
-    property Wx_IDName: string Read FWxFrm_IDName Write FWxFrm_IDName;
-    property Wx_IDValue: longint Read FWxFrm_IDValue Write FWxFrm_IDValue;
-    property Wx_Class: string Read FWxFrm_Class Write FWxFrm_Class;
-    property Wx_Center: boolean Read FWxFrm_Center Write FWxFrm_Center;
-    property Wx_Hidden: boolean Read FWxFrm_Hidden Write FWxFrm_Hidden;
-    property Wx_ToolTips: string Read FWxFrm_ToolTips Write FWxFrm_ToolTips;
-    property Wx_SizeToContents: boolean Read FWxFrm_SizeToContents Write FWxFrm_SizeToContents;
-
-    property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
-    property Wx_DialogStyle: TWxDlgStyleSet
-      Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
-    property Wx_ProxyBGColorString: TWxColorString
-      Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString
-      Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-
-    property Wx_DesignerType: TWxDesignerType
-      Read FWxDesignerType Write SetDesignerType default dtWxDialog;
-
-    property EVT_CHAR: string Read FEVT_CHAR Write FEVT_CHAR;
-
-    property EVT_KEY_UP: string Read FEVT_KEY_UP Write FEVT_KEY_UP;
-
-    property EVT_KEY_DOWN: string Read FEVT_KEY_DOWN Write FEVT_KEY_DOWN;
-
-    property EVT_ERASE_BACKGROUND: string Read FEVT_ERASE_BACKGROUND
-      Write FEVT_ERASE_BACKGROUND;
-
-    property EVT_SIZE: string Read FEVT_SIZE Write FEVT_SIZE;
-
-    property EVT_SET_FOCUS: string Read FEVT_SET_FOCUS Write FEVT_SET_FOCUS;
-
-    property EVT_KILL_FOCUS: string Read FEVT_KILL_FOCUS Write FEVT_KILL_FOCUS;
-
-    property EVT_ENTER_WINDOW: string Read FEVT_ENTER_WINDOW Write FEVT_ENTER_WINDOW;
-
-    property EVT_LEAVE_WINDOW: string Read FEVT_LEAVE_WINDOW Write FEVT_LEAVE_WINDOW;
-
-    property EVT_MOTION: string Read FEVT_MOTION Write FEVT_MOTION;
-
-    property EVT_LEFT_DOWN: string Read FEVT_LEFT_DOWN Write FEVT_LEFT_DOWN;
-
-    property EVT_LEFT_UP: string Read FEVT_LEFT_UP Write FEVT_LEFT_UP;
-
-    property EVT_RIGHT_DOWN: string Read FEVT_RIGHT_DOWN Write FEVT_RIGHT_DOWN;
-
-    property EVT_RIGHT_UP: string Read FEVT_RIGHT_UP Write FEVT_RIGHT_UP;
-
-    property EVT_MIDDLE_DOWN: string Read FEVT_MIDDLE_DOWN Write FEVT_MIDDLE_DOWN;
-
-    property EVT_MIDDLE_UP: string Read FEVT_MIDDLE_UP Write FEVT_MIDDLE_UP;
-
-    property EVT_LEFT_DCLICK: string Read FEVT_LEFT_DCLICK Write FEVT_LEFT_DCLICK;
-
-    property EVT_RIGHT_DCLICK: string Read FEVT_RIGHT_DCLICK Write FEVT_RIGHT_DCLICK;
-
-    property EVT_MIDDLE_DCLICK: string Read FEVT_MIDDLE_DCLICK Write FEVT_MIDDLE_DCLICK;
-
-    property EVT_PAINT: string Read FEVT_PAINT Write FEVT_PAINT;
-
-    property EVT_INIT_DIALOG: string Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
-
-    property EVT_SCROLLWIN: string Read FEVT_SCROLLWIN Write FEVT_SCROLLWIN;
-
-    property EVT_SCROLLWIN_TOP: string Read FEVT_SCROLLWIN_TOP Write FEVT_SCROLLWIN_TOP;
-
-    property EVT_SCROLLWIN_BOTTOM: string Read FEVT_SCROLLWIN_BOTTOM
-      Write FEVT_SCROLLWIN_BOTTOM;
-
-    property EVT_SCROLLWIN_LINEUP: string Read FEVT_SCROLLWIN_LINEUP
-      Write FEVT_SCROLLWIN_LINEUP;
-
-    property EVT_SCROLLWIN_LINEDOWN: string
-      Read FEVT_SCROLLWIN_LINEDOWN Write FEVT_SCROLLWIN_LINEDOWN;
-
-    property EVT_SCROLLWIN_PAGEUP: string Read FEVT_SCROLLWIN_PAGEUP
-      Write FEVT_SCROLLWIN_PAGEUP;
-
-    property EVT_SCROLLWIN_PAGEDOWN: string
-      Read FEVT_SCROLLWIN_PAGEDOWN Write FEVT_SCROLLWIN_PAGEDOWN;
-
-    property EVT_SCROLLWIN_THUMBTRACK: string
-      Read FEVT_SCROLLWIN_THUMBTRACK Write FEVT_SCROLLWIN_THUMBTRACK;
-
-    property EVT_SCROLLWIN_THUMBRELEASE: string
-      Read FEVT_SCROLLWIN_THUMBRELEASE Write FEVT_SCROLLWIN_THUMBRELEASE;
-
-    property EVT_SYS_COLOUR_CHANGED: string
-      Read FEVT_SYS_COLOUR_CHANGED Write FEVT_SYS_COLOUR_CHANGED;
-
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-
-    property EVT_CLOSE: string Read FEVT_CLOSE Write FEVT_CLOSE;
-
-    property EVT_IDLE: string Read FEVT_IDLE Write FEVT_IDLE;
-    property EVT_ACTIVATE: string Read FEVT_ACTIVATE Write FEVT_ACTIVATE;
-    property EVT_ACTIVATE_APP: string Read FEVT_ACTIVATE_APP Write FEVT_ACTIVATE_APP;
-    property EVT_QUERY_END_SESSION: string Read FEVT_QUERY_END_SESSION
-      Write FEVT_QUERY_END_SESSION;
-    property EVT_END_SESSION: string Read FEVT_END_SESSION Write FEVT_END_SESSION;
-    property EVT_DROP_FILES: string Read FEVT_DROP_FILES Write FEVT_DROP_FILES;
-    property EVT_SPLITTER_SASH_POS_CHANGED: string
-      Read FEVT_SPLITTER_SASH_POS_CHANGED Write FEVT_SPLITTER_SASH_POS_CHANGED;
-    property EVT_SPLITTER_UNSPLIT: string Read FEVT_SPLITTER_UNSPLIT
-      Write FEVT_SPLITTER_UNSPLIT;
-    property EVT_SPLITTER_DCLICK: string Read FEVT_SPLITTER_DCLICK
-      Write FEVT_SPLITTER_DCLICK;
-    property EVT_JOY_BUTTON_DOWN: string Read FEVT_JOY_BUTTON_DOWN
-      Write FEVT_JOY_BUTTON_DOWN;
-    property EVT_JOY_BUTTON_UP: string Read FEVT_JOY_BUTTON_UP Write FEVT_JOY_BUTTON_UP;
-    property EVT_JOY_MOVE: string Read FEVT_JOY_MOVE Write FEVT_JOY_MOVE;
-    property EVT_JOY_ZMOVE: string Read FEVT_JOY_ZMOVE Write FEVT_JOY_ZMOVE;
-    property EVT_MENU_OPEN: string Read FEVT_MENU_OPEN Write FEVT_MENU_OPEN;
-    property EVT_MENU_CLOSE: string Read FEVT_MENU_CLOSE Write FEVT_MENU_CLOSE;
-    property EVT_MENU_HIGHLIGHT_ALL: string
-      Read FEVT_MENU_HIGHLIGHT_ALL Write FEVT_MENU_HIGHLIGHT_ALL;
-    property EVT_MOUSEWHEEL: string Read FEVT_MOUSEWHEEL Write FEVT_MOUSEWHEEL;
-    property EVT_MOUSE_EVENTS: string Read FEVT_MOUSE_EVENTS Write FEVT_MOUSE_EVENTS;
-
-  public
-    { Public declarations }
-    //intControlMaxValue:Integer;
     wx_PropertyList: TStringList;
     FWx_EventList: TStringList;
+    
+  public
     function GenerateControlIDs: string;
     function GenerateEnumControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
-    //function GenerateExtraCodeForFrame:string;
     function GenerateGUIControlCreation: string;
     function GenerateXRCControlCreation(IndentString: string): TStringList;
     function GenerateGUIControlDeclaration: string;
@@ -244,15 +113,93 @@ type
     function GetParameterFromEventName(EventName: string): string;
     function GetTypeFromEventName(EventName: string): string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+    
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
+    procedure SetDesignerType(Value: TWxDesignerType);
+
+  published
+    property EVT_CHAR: string Read FEVT_CHAR Write FEVT_CHAR;
+    property EVT_KEY_UP: string Read FEVT_KEY_UP Write FEVT_KEY_UP;
+    property EVT_KEY_DOWN: string Read FEVT_KEY_DOWN Write FEVT_KEY_DOWN;
+    property EVT_ERASE_BACKGROUND: string Read FEVT_ERASE_BACKGROUND Write FEVT_ERASE_BACKGROUND;
+    property EVT_SIZE: string Read FEVT_SIZE Write FEVT_SIZE;
+    property EVT_SET_FOCUS: string Read FEVT_SET_FOCUS Write FEVT_SET_FOCUS;
+    property EVT_KILL_FOCUS: string Read FEVT_KILL_FOCUS Write FEVT_KILL_FOCUS;
+    property EVT_ENTER_WINDOW: string Read FEVT_ENTER_WINDOW Write FEVT_ENTER_WINDOW;
+    property EVT_LEAVE_WINDOW: string Read FEVT_LEAVE_WINDOW Write FEVT_LEAVE_WINDOW;
+    property EVT_MOTION: string Read FEVT_MOTION Write FEVT_MOTION;
+    property EVT_LEFT_DOWN: string Read FEVT_LEFT_DOWN Write FEVT_LEFT_DOWN;
+    property EVT_LEFT_UP: string Read FEVT_LEFT_UP Write FEVT_LEFT_UP;
+    property EVT_RIGHT_DOWN: string Read FEVT_RIGHT_DOWN Write FEVT_RIGHT_DOWN;
+    property EVT_RIGHT_UP: string Read FEVT_RIGHT_UP Write FEVT_RIGHT_UP;
+    property EVT_MIDDLE_DOWN: string Read FEVT_MIDDLE_DOWN Write FEVT_MIDDLE_DOWN;
+    property EVT_MIDDLE_UP: string Read FEVT_MIDDLE_UP Write FEVT_MIDDLE_UP;
+    property EVT_LEFT_DCLICK: string Read FEVT_LEFT_DCLICK Write FEVT_LEFT_DCLICK;
+    property EVT_RIGHT_DCLICK: string Read FEVT_RIGHT_DCLICK Write FEVT_RIGHT_DCLICK;
+    property EVT_MIDDLE_DCLICK: string Read FEVT_MIDDLE_DCLICK Write FEVT_MIDDLE_DCLICK;
+    property EVT_PAINT: string Read FEVT_PAINT Write FEVT_PAINT;
+    property EVT_INIT_DIALOG: string Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
+    property EVT_SCROLLWIN: string Read FEVT_SCROLLWIN Write FEVT_SCROLLWIN;
+    property EVT_SCROLLWIN_TOP: string Read FEVT_SCROLLWIN_TOP Write FEVT_SCROLLWIN_TOP;
+    property EVT_SCROLLWIN_BOTTOM: string Read FEVT_SCROLLWIN_BOTTOM Write FEVT_SCROLLWIN_BOTTOM;
+    property EVT_SCROLLWIN_LINEUP: string Read FEVT_SCROLLWIN_LINEUP Write FEVT_SCROLLWIN_LINEUP;
+    property EVT_SCROLLWIN_LINEDOWN: string Read FEVT_SCROLLWIN_LINEDOWN Write FEVT_SCROLLWIN_LINEDOWN;
+    property EVT_SCROLLWIN_PAGEUP: string Read FEVT_SCROLLWIN_PAGEUP Write FEVT_SCROLLWIN_PAGEUP;
+    property EVT_SCROLLWIN_PAGEDOWN: string Read FEVT_SCROLLWIN_PAGEDOWN Write FEVT_SCROLLWIN_PAGEDOWN;
+    property EVT_SCROLLWIN_THUMBTRACK: string Read FEVT_SCROLLWIN_THUMBTRACK Write FEVT_SCROLLWIN_THUMBTRACK;
+    property EVT_SCROLLWIN_THUMBRELEASE: string Read FEVT_SCROLLWIN_THUMBRELEASE Write FEVT_SCROLLWIN_THUMBRELEASE;
+    property EVT_SYS_COLOUR_CHANGED: string Read FEVT_SYS_COLOUR_CHANGED Write FEVT_SYS_COLOUR_CHANGED;
+    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+    property EVT_CLOSE: string Read FEVT_CLOSE Write FEVT_CLOSE;
+    property EVT_IDLE: string Read FEVT_IDLE Write FEVT_IDLE;
+    property EVT_ACTIVATE: string Read FEVT_ACTIVATE Write FEVT_ACTIVATE;
+    property EVT_ACTIVATE_APP: string Read FEVT_ACTIVATE_APP Write FEVT_ACTIVATE_APP;
+    property EVT_QUERY_END_SESSION: string Read FEVT_QUERY_END_SESSION Write FEVT_QUERY_END_SESSION;
+    property EVT_END_SESSION: string Read FEVT_END_SESSION Write FEVT_END_SESSION;
+    property EVT_DROP_FILES: string Read FEVT_DROP_FILES Write FEVT_DROP_FILES;
+    property EVT_SPLITTER_SASH_POS_CHANGED: string Read FEVT_SPLITTER_SASH_POS_CHANGED Write FEVT_SPLITTER_SASH_POS_CHANGED;
+    property EVT_SPLITTER_UNSPLIT: string Read FEVT_SPLITTER_UNSPLIT Write FEVT_SPLITTER_UNSPLIT;
+    property EVT_SPLITTER_DCLICK: string Read FEVT_SPLITTER_DCLICK Write FEVT_SPLITTER_DCLICK;
+    property EVT_JOY_BUTTON_DOWN: string Read FEVT_JOY_BUTTON_DOWN Write FEVT_JOY_BUTTON_DOWN;
+    property EVT_JOY_BUTTON_UP: string Read FEVT_JOY_BUTTON_UP Write FEVT_JOY_BUTTON_UP;
+    property EVT_JOY_MOVE: string Read FEVT_JOY_MOVE Write FEVT_JOY_MOVE;
+    property EVT_JOY_ZMOVE: string Read FEVT_JOY_ZMOVE Write FEVT_JOY_ZMOVE;
+    property EVT_MENU_OPEN: string Read FEVT_MENU_OPEN Write FEVT_MENU_OPEN;
+    property EVT_MENU_CLOSE: string Read FEVT_MENU_CLOSE Write FEVT_MENU_CLOSE;
+    property EVT_MENU_HIGHLIGHT_ALL: string Read FEVT_MENU_HIGHLIGHT_ALL Write FEVT_MENU_HIGHLIGHT_ALL;
+    property EVT_MOUSEWHEEL: string Read FEVT_MOUSEWHEEL Write FEVT_MOUSEWHEEL;
+    property EVT_MOUSE_EVENTS: string Read FEVT_MOUSE_EVENTS Write FEVT_MOUSE_EVENTS;
 
     property synEdit: TSynEdit Read fsynEdit Write fsynEdit;
+    property Wx_ICON: TPicture Read FWx_ICON Write FWx_ICON;
+    property Wx_Name: string Read FWx_Name Write FWx_Name;
+    property Wx_IDName: string Read FWxFrm_IDName Write FWxFrm_IDName;
+    property Wx_IDValue: longint Read FWxFrm_IDValue Write FWxFrm_IDValue;
+    property Wx_Class: string Read FWxFrm_Class Write FWxFrm_Class;
+    property Wx_Center: boolean Read FWxFrm_Center Write FWxFrm_Center;
+    property Wx_Hidden: boolean Read FWxFrm_Hidden Write FWxFrm_Hidden;
+    property Wx_ToolTips: string Read FWxFrm_ToolTips Write FWxFrm_ToolTips;
+    property Wx_SizeToContents: boolean Read FWxFrm_SizeToContents Write FWxFrm_SizeToContents;
 
+    property Wx_GeneralStyle: TWxStdStyleSet Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
+    property Wx_DialogStyle: TWxDlgStyleSet Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
+    property Wx_DesignerType: TWxDesignerType Read FWxDesignerType Write SetDesignerType default dtWxDialog;
+
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+
+    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
   end;
 
 var
@@ -288,20 +235,15 @@ var
   CntIntf: IWxContainerAndSizerInterface;
   strTemp: string;
 begin
-  if GetBlockStartAndEndPos(synEdit, strClassName,btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
+  if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
-    DeleteAllClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd);
-
-    //    if frmNewForm.Wx_DesignerType = dtWxFrame then
-    //        AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart,intBlockEnd, frmNewForm.GenerateExtraCodeForFrame);
-
-
+    DeleteAllClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd);
+    
     isSizerAvailable := False;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
       if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
-        //if frmNewForm.Components[i] is TWxSizerPanel then
       begin
         isSizerAvailable := True;
         break;
@@ -311,10 +253,11 @@ begin
     if isSizerAvailable then
     begin
       AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
+      
       //Add the Code Generation Items that need to be added after the creation with new
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
-        if not frmNewForm.Components[i].GetInterface( IID_IWxContainerAndSizerInterface, CntIntf) then
+        if not frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
           continue;
         strTemp := CntIntf.GenerateLastCreationCode;
         if trim(strTemp) = '' then
@@ -338,16 +281,13 @@ begin
     else
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
-        //            if frmNewForm.Components[i] is TPanel then
-        //                continue;
         if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         begin
           strTemp := wxcompInterface.GenerateGUIControlCreation;
           AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
         end;
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-      end// for
-    ;
+      end;// for
 
     //Form data should come first, if not the child will be resized to
     if not isSizerAvailable then
@@ -393,15 +333,14 @@ begin
       end// for;
   end;
 
-
-  // Event
+  // Event table
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries, intBlockStart, intBlockEnd) then
   begin
     GetStartAndEndBlockStrings('', btManualCode, strStartStr, strEndStr);
 
-   if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd) then
+    if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd) then
       strlstManualCode := GetBlockCode(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd)
-   else
+    else
       strlstManualCode := TStringList.Create;
 
     try
@@ -476,7 +415,6 @@ begin
 
     strLst.Destroy;
   end;
-  
 end;
 
 procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: string;
@@ -490,7 +428,7 @@ begin
   synEdit.Clear;
   synEdit.Lines.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
   synEdit.Lines.Add('<resource version="2.3.0.1">');
-  synEdit.Lines.Add('<!-- Created by wx-devcpp ' + DEVCPP_VERSION + ' -->');
+  synEdit.Lines.Add('<!-- Created by wxDev-C++ ' + DEVCPP_VERSION + ' -->');
 
   synEdit.Lines.Add(Format('<object class="%s" name="%s">',
     [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
@@ -1188,12 +1126,29 @@ end;
 
 procedure TfrmNewForm.SetStretchFactor(intValue: integer);
 begin
-  //Do nothing, stretch factor doesn't apply to TLWs!
 end;
 
 function TfrmNewForm.GetEventList: TStringList;
 begin
   Result := FWx_EventList;
+end;
+
+function TfrmNewForm.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := [];
+end;
+
+procedure TfrmNewForm.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+end;
+
+function TfrmNewForm.GetBorderWidth: integer;
+begin
+  Result := 0;
+end;
+
+procedure TfrmNewForm.SetBorderWidth(width: integer);
+begin
 end;
 
 procedure TfrmNewForm.FormMove(var Msg: TWMMove);

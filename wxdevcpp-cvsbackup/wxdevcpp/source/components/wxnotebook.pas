@@ -25,16 +25,13 @@ type
     IWxContainerAndSizerInterface, IWxWindowInterface)
   private
     FOrientation: TWxSizerOrientation;
-    FSpaceValue: integer;
     FWx_Caption: string;
     FWx_Class: string;
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_EventList: TStringList;
-    FWx_HorizontalAlignment: TWxSizerHorizontalAlignment;
     FWx_IDName: string;
     FWx_IDValue: integer;
     FWx_StretchFactor: integer;
-    FWx_VerticalAlignment: TWxSizerVerticalAlignment;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
@@ -46,6 +43,8 @@ type
     FWx_NoteBookStyle: TWxnbxStyleSet;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_Comments: TStrings;
+    FWx_Alignment: TWxSizerAlignment;
+    FWx_BorderAlignment: TWxBorderAlignment;
 
     FWx_ProxyBGColorString: TWxColorString;
     FWx_ProxyFGColorString: TWxColorString;
@@ -81,13 +80,11 @@ type
     function GetIDValue: longint;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
-    function GetStretchFactor: integer;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: longint);
-    procedure SetStretchFactor(intValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -96,53 +93,49 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GenerateLastCreationCode: string;
+    procedure SetNotebookStyle(style: TWxnbxStyleSet);
+
+    function GetBorderAlignment: TWxBorderAlignment;
+    procedure SetBorderAlignment(border: TWxBorderAlignment);
+    function GetBorderWidth: integer;
+    procedure SetBorderWidth(width: integer);
+    function GetStretchFactor: integer;
+    procedure SetStretchFactor(intValue: integer);
 
   published
-    property Orientation: TWxSizerOrientation
-      Read FOrientation Write FOrientation default wxHorizontal;
-    property SpaceValue: integer Read FSpaceValue Write FSpaceValue default 5;
-    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_ControlOrientation: TWxControlOrientation
-      Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
-    property Wx_HorizontalAlignment: TWxSizerHorizontalAlignment
-      Read FWx_HorizontalAlignment Write FWx_HorizontalAlignment default
-      wxSZALIGN_CENTER_HORIZONTAL;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_StrechFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor;
-    property Wx_StretchFactor: integer Read FWx_StretchFactor
-      Write FWx_StretchFactor default 0;
-    property Wx_VerticalAlignment: TWxSizerVerticalAlignment
-      Read FWx_VerticalAlignment Write FWx_VerticalAlignment default wxSZALIGN_CENTER_VERTICAL;
-    property InvisibleBGColorString: string
-      Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string
-      Read FInvisibleFGColorString Write FInvisibleFGColorString;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_Border: integer Read FWx_Border Write FWx_Border default 5;
-    property Wx_NoteBookStyle: TWxnbxStyleSet
-      Read FWx_NoteBookStyle Write FWx_NoteBookStyle;
-    property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWx_GeneralStyle Write FWx_GeneralStyle;
-
-    property Wx_ProxyBGColorString: TWxColorString
-      Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString
-      Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
-
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property EVT_NOTEBOOK_PAGE_CHANGED: string
       Read FEVT_NOTEBOOK_PAGE_CHANGED Write FEVT_NOTEBOOK_PAGE_CHANGED;
     property EVT_NOTEBOOK_PAGE_CHANGING: string
       Read FEVT_NOTEBOOK_PAGE_CHANGING Write FEVT_NOTEBOOK_PAGE_CHANGING;
+    
+    property Orientation: TWxSizerOrientation
+      Read FOrientation Write FOrientation default wxHorizontal;
+    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
+    property Wx_Class: string Read FWx_Class Write FWx_Class;
+    property Wx_ControlOrientation: TWxControlOrientation
+      Read FWx_ControlOrientation Write FWx_ControlOrientation;
+    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
+    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
+    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
+    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
+    property Wx_NoteBookStyle: TWxnbxStyleSet Read FWx_NoteBookStyle Write SetNotebookStyle;
+    property Wx_GeneralStyle: TWxStdStyleSet Read FWx_GeneralStyle Write FWx_GeneralStyle;
 
+    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+    
+    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+
+    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
   end;
 
 procedure Register;
@@ -156,26 +149,21 @@ end;
 
 procedure TWxNotebook.AutoInitialize;
 begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_EventList    := TStringList.Create;
-
-  FOrientation := wxHorizontal;
-  FSpaceValue  := 5;
-  FWx_Class    := 'wxNotebook';
-  FWx_IDValue  := -1;
-  FWx_StretchFactor := 0;
-  FWx_Border   := 5;
-  FWx_Enabled  := True;
-
-  FWx_HorizontalAlignment := wxSZALIGN_CENTER_HORIZONTAL;
-  FWx_VerticalAlignment   := wxSZALIGN_CENTER_VERTICAL;
-
-  //FWx_ProxyBGColorString := TWxColorString.Create;
-  //FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-
-  FWx_Comments := TStringList.Create;
+  FWx_PropertyList       := TStringList.Create;
+  FWx_EventList          := TStringList.Create;
+  FWx_Comments           := TStringList.Create;
+  FOrientation           := wxHorizontal;
+  FWx_Class              := 'wxNotebook';
+  FWx_IDValue            := -1;
+  FWx_StretchFactor      := 0;
+  FWx_Border             := 5;
+  FWx_Enabled            := True;
+  FWx_Alignment          := wxALIGN_CENTER;
+  FWx_BorderAlignment    := [wxAll];
+  FWx_ProxyBGColorString := TWxColorString.Create;
+  FWx_ProxyFGColorString := TWxColorString.Create;
+  defaultBGColor         := self.color;
+  defaultFGColor         := self.font.color;
 
 end; { of AutoInitialize }
 
@@ -190,45 +178,48 @@ end; { of AutoDestroy }
 constructor TWxNotebook.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   AutoInitialize;
-  FWx_PropertyList.add('Wx_Enabled :Enabled');
-  FWx_PropertyList.add('Wx_Class :Base Class');
-  FWx_PropertyList.add('Wx_Hidden :Hidden');
-  FWx_PropertyList.add('Wx_Border : Border ');
-  FWx_PropertyList.add('Wx_HelpText :HelpText ');
-  FWx_PropertyList.add('Wx_IDName : IDName ');
-  FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-  FWx_PropertyList.add('Wx_Enable :Enabled');
-  FWx_PropertyList.add('Wx_Visible :Visible');
-  FWx_PropertyList.add('Text : Text ');
-  FWx_PropertyList.add('Name : Name');
-  FWx_PropertyList.add('Left : Left');
-  FWx_PropertyList.add('Top : Top');
-  FWx_PropertyList.add('Width : Width');
-  FWx_PropertyList.add('Height:Height');
+  
+  FWx_PropertyList.add('Wx_Enabled:Enabled');
+  FWx_PropertyList.add('Wx_Class:Base Class');
+  FWx_PropertyList.add('Wx_Hidden:Hidden');
+  FWx_PropertyList.add('Wx_Default:Default');
+  FWx_PropertyList.add('Wx_HelpText:Help Text');
+  FWx_PropertyList.add('Wx_IDName:ID Name');
+  FWx_PropertyList.add('Wx_IDValue:ID Value');
+  FWx_PropertyList.add('Wx_ToolTip:Tooltip');
+  FWx_PropertyList.add('Wx_Comments:Comments');
+  FWx_PropertyList.Add('Wx_Validator:Validator code');
   FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
   FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
-  FWx_PropertyList.add('Wx_GeneralStyle: General Styles');
-  FWx_PropertyList.add('Wx_NoteBookStyle: NoteBook Styles');
 
-  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
+  FWx_PropertyList.add('Wx_Alignment:Alignment');
+  FWx_PropertyList.add('Wx_Border: Border');
+  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
+  FWx_PropertyList.add('wxALL:wxALL');
+  FWx_PropertyList.add('wxTOP:wxTOP');
+  FWx_PropertyList.add('wxLEFT:wxLEFT');
+  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
+  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
+
+  FWx_PropertyList.add('Wx_GeneralStyle:General Styles');
+  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
   FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
   FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
   FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
   FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
   FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
   FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
   FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
   FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
   FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
 
+  FWx_PropertyList.add('Wx_NoteBookStyle:Notebook Styles');
   FWx_PropertyList.Add('wxNB_LEFT:wxNB_LEFT');
   FWx_PropertyList.Add('wxNB_RIGHT:wxNB_RIGHT');
   FWx_PropertyList.Add('wxNB_BOTTOM:wxNB_BOTTOM');
@@ -236,16 +227,17 @@ begin
   FWx_PropertyList.Add('wxNB_MULTILINE:wxNB_MULTILINE');
   FWx_PropertyList.Add('wxNB_NOPAGETHEME:wxNB_NOPAGETHEME');
 
-  FWx_PropertyList.add('Font : Font');
-  FWx_PropertyList.add('Wx_HorizontalAlignment : HorizontalAlignment');
-  FWx_PropertyList.add('Wx_VerticalAlignment   : VerticalAlignment');
-  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
+  FWx_PropertyList.add('Font:Font');
+  FWx_PropertyList.add('Text:Text ');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Left:Left');
+  FWx_PropertyList.add('Top:Top');
+  FWx_PropertyList.add('Width:Width');
+  FWx_PropertyList.add('Height:Height');
 
-  FWx_EventList.add('EVT_NOTEBOOK_PAGE_CHANGED:OnPageChanged');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+  FWx_EventList.add('EVT_NOTEBOOK_PAGE_CHANGED:OnPageChanged');
   FWx_EventList.add('EVT_NOTEBOOK_PAGE_CHANGING:OnPageChanging');
-
-  FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 
@@ -398,14 +390,7 @@ begin
 
   if (self.Parent is TWxSizerPanel) then
   begin
-    strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) +
-      ' | ' + SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-    if wx_ControlOrientation = wxControlVertical then
-      strAlignment := SizerAlignmentToStr(Wx_HorizontalAlignment) + ' | wxALL';
-
-    if wx_ControlOrientation = wxControlHorizontal then
-      strAlignment := SizerAlignmentToStr(Wx_VerticalAlignment) + ' | wxALL';
-
+    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
@@ -474,12 +459,32 @@ end;
 
 function TWxNoteBook.GetStretchFactor: integer;
 begin
-  Result := Wx_StretchFactor;
+  Result := FWx_StretchFactor;
 end;
 
 function TWxNoteBook.GetTypeFromEventName(EventName: string): string;
 begin
 
+end;
+
+function TWxNoteBook.GetBorderAlignment: TWxBorderAlignment;
+begin
+  Result := FWx_BorderAlignment;
+end;
+
+procedure TWxNoteBook.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+  FWx_BorderAlignment := border;
+end;
+
+function TWxNoteBook.GetBorderWidth: integer;
+begin
+  Result := FWx_Border;
+end;
+
+procedure TWxNoteBook.SetBorderWidth(width: integer);
+begin
+  FWx_Border := width;
 end;
 
 function TWxNoteBook.GetWxClassName: string;
@@ -494,6 +499,12 @@ begin
   wx_ControlOrientation := ControlOrientation;
 end;
 
+procedure TWxNotebook.SetNotebookStyle(style: TWxnbxStyleSet);
+begin
+  FWx_NotebookStyle := style;
+  self.MultiLine := wxNB_MULTILINE in FWx_NotebookStyle;
+end;
+
 procedure TWxNoteBook.SetIDName(IDName: string);
 begin
   wx_IDName := IDName;
@@ -506,7 +517,7 @@ end;
 
 procedure TWxNoteBook.SetStretchFactor(intValue: integer);
 begin
-  Wx_StretchFactor := intValue;
+  FWx_StretchFactor := intValue;
 end;
 
 procedure TWxNoteBook.SetWxClassName(wxClassName: string);
