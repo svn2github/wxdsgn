@@ -1204,6 +1204,7 @@ object MainForm: TMainForm
     UseDockManager = False
     DockSite = True
     TabOrder = 7
+    OnUnDock = pnlBrowsersUnDock
     object LeftPageControl: TPageControl
       Left = 9
       Top = 16

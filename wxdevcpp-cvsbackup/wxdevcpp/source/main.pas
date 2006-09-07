@@ -887,6 +887,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure AddWatchBtnClick(Sender: TObject);
     procedure ReportWindowClose(Sender: TObject; var Action: TCloseAction);
     procedure FloatingPojectManagerItemClick(Sender: TObject);
+    procedure FloatingPropertyInspectorClick(Sender: TObject);
     procedure lvBacktraceDblClick(Sender: TObject);
     procedure actCompileCurrentFileExecute(Sender: TObject);
     procedure actCompileCurrentFileUpdate(Sender: TObject);
@@ -964,6 +965,8 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure ApplicationEvents1Activate(Sender: TObject);
     procedure ProjectViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure WndProc(var Message: TMessage); override;
+    procedure pnlBrowsersUnDock(Sender: TObject; Client: TControl;
+      NewTarget: TWinControl; var Allow: Boolean);
 {$ENDIF}
 
   private
@@ -974,6 +977,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     fProjectCount: integer;
     fCompiler: TCompiler;
     ProjectToolWindow: TForm;
+    PropertiesToolWindow: TForm;
     ReportToolWindow: TForm;
     bProjectLoading: boolean;
     OldLeft: integer;
@@ -1015,7 +1019,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure DoCVSAction(Sender: TObject; whichAction: TCVSAction);
     procedure WordToHelpKeyword;
     procedure OnHelpSearchWord(sender: TObject);
-    procedure ProjectWindowClose(Sender: TObject; var Action: TCloseAction);
     procedure SetupProjectView;
     procedure BuildOpenWith;
     procedure RebuildClassesToolbar;
@@ -1214,7 +1217,7 @@ uses
   WxMemo, WXRadioButton, WxScrollBar,wxGrid,
   WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
   WxStaticText, WxTreeCtrl, WxControlPanel,CompFileIo, WXFlexGridSizer,
-  wxPanel,wxlistbook,wxnotebook,wxstatusbar,wxtoolbar,
+  wxPanel,wxnotebook,wxstatusbar,wxtoolbar,
   wxNoteBookPage,wxchecklistbox,wxspinctrl,WxScrolledWindow,
   WxHtmlWindow,WxToolButton,WxSeparator,WxPopupMenu,WxMenuBar,
   WxOpenFileDialog,WxSaveFileDialog,WxFontDialog,
@@ -1288,10 +1291,17 @@ procedure TMainForm.DoCreateWxSpecificItems;
 var
   I: Integer;
   ini :TiniFile;
+  FloatingProperties: TMenuItem;
 begin
   //Popup menu
-  frmInspectorDock:=TForm.Create(self);
+  frmInspectorDock := TForm.Create(self);
   frmInspectorDock.Hint := 'Property Inspector';
+
+  FloatingProperties := TMenuItem.Create(MainMenu);
+  FloatingProperties.Checked := False;
+  FloatingProperties.OnClick := FloatingPropertyInspectorClick;
+  FloatingProperties.Caption := 'Floating Property Inspector';
+  ViewMenu.Insert(7, FloatingProperties);
 
   frmControlsDock:=TForm.Create(self);
   strChangedFileList:=TStringList.Create;
@@ -2369,7 +2379,6 @@ end;
 
 //This function is derived from the pre parsecmdline function.
 //This is also used when activating the devcpp's previous instance
-
 procedure TMainForm.ParseCustomCmdLine(strLst:TStringList);
 var
   idx: integer;
@@ -2572,13 +2581,13 @@ begin
           TEditor(PageControl.Pages[idx2].Tag).Activate
         else // open file
         begin
-          {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
           if iswxForm(szFileName) then
           begin
             OpenFile(ChangeFileExt(szFileName, H_EXT), True);
             OpenFile(ChangeFileExt(szFileName, CPP_EXT), true);
           end;
-          {$ENDIF}
+{$ENDIF}
           OpenFile(szFileName);
         end;
       end;
@@ -3586,13 +3595,13 @@ begin
     OpenProject(s)
   else
   begin
-    {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
     if iswxForm(s) then
     begin
       OpenFile(ChangeFileExt(s, H_EXT), True);
       OpenFile(ChangeFileExt(s, CPP_EXT), true);
     end;
-    {$ENDIF}
+{$ENDIF}
     OpenFile(s);
   end;
 end;
@@ -6428,9 +6437,10 @@ begin
       e := GetEditor(intActivePage);
       if Assigned(e) then
       begin
-        {$IFDEF WX_BUILD}
-        if e.isForm() then
+{$IFDEF WX_BUILD}
+        if e.isForm then
         begin
+          //TODO: lowjoel: Must we really disable and re-enable the designer?
           try
             MainForm.ELDesigner1.Active:=false;
             MainForm.ELDesigner1.DesignControl:=e.GetDesigner;
@@ -6440,12 +6450,12 @@ begin
           e.ActivateDesigner
         end
         else
-        {$ENDIF}
+{$ENDIF}
         begin
-          {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
            MainForm.ELDesigner1.Active:=false;
           //MainForm.ELDesigner1.DesignControl:=nil;
-          {$ENDIF}
+{$ENDIF}
           e.Text.SetFocus;
           ClassBrowser1.CurrentFile := e.FileName;
         end;
@@ -6465,9 +6475,9 @@ begin
 
   Else
   begin
-    //ToDO: I have to make sure I dont repeat the same code
+    //TODO: Guru: I have to make sure I dont repeat the same code
     //I have in the if clause
-    {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
     if intActivePage > -1 then
     begin
         e := GetEditor(intActivePage);
@@ -6481,7 +6491,7 @@ begin
 
         end;
     end;
-    {$ENDIF}
+{$ENDIF}
   end;
 end;
 
@@ -6530,12 +6540,14 @@ procedure TMainForm.PageControlMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   I: integer;
+  Allow: Boolean;
 begin
   I := PageControl.IndexOfTabAt(X, Y);
   if Button = mbRight then begin // select new tab even with right mouse button
     if I > -1 then begin
       PageControl.ActivePageIndex := I;
-      PageControlChange(nil);
+      PageControl.OnChanging(PageControl, Allow);
+      PageControl.OnChange(PageControl);
     end;
   end
   else // see if it's a drag operation
@@ -6906,8 +6918,7 @@ begin
     // everything is fine. (I smell another SynEdit bug?)
     e.TabSheet.SetFocus;
 {$IFDEF WX_BUILD}
-    if not e.isForm then
-      e.Text.SetFocus;
+    e.Activate;
 {$ELSE}
     e.Text.SetFocus;
 {$ENDIF}
@@ -7789,28 +7800,6 @@ begin
   end;
 end;
 
-procedure TMainForm.ProjectWindowClose(Sender: TObject; var Action: TCloseAction);
-begin
-  FloatingPojectManagerItem.Checked := False;
-  //LeftPageControl.Visible := false;
-  pnlBrowsers.Visible := False;
-
-  (Sender as TForm).RemoveControl(pnlBrowsers);
-  if pnlBrowsers.visible = false then
-  	pnlBrowsers.visible :=true;
-  pnlBrowsers.Left := 0;
-  pnlBrowsers.Top := ControlBar1.Height;
-  pnlBrowsers.Align := alLeft;
-  pnlBrowsers.Visible := True;
-  //LeftPageControl.Visible := true;
-  InsertControl(pnlBrowsers);
-  ProjectToolWindow.Free;
-  ProjectToolWindow := nil;
-
-  if assigned(fProject) then
-    fProject.SetNodeValue(ProjectView.TopItem); // nodes needs to be recreated
-end;
-
 procedure TMainForm.ReportWindowClose(Sender: TObject; var Action: TCloseAction);
 begin
   FloatingReportWindowItem.Checked := False;
@@ -7834,38 +7823,111 @@ begin
     AddDebugVar(s);
 end;
 
+procedure TMainForm.pnlBrowsersUnDock(Sender: TObject; Client: TControl;
+  NewTarget: TWinControl; var Allow: Boolean);
+begin
+  {FloatingPojectManagerItem.Checked := True;
+  ProjectToolWindow := TForm(NewTarget);
+  LeftPageControl.Parent := ProjectToolWindow;}
+  Allow := False;
+end;
+
 procedure TMainForm.FloatingPojectManagerItemClick(Sender: TObject);
 begin
   FloatingPojectManagerItem.Checked := not FloatingPojectManagerItem.Checked;
   if assigned(ProjectToolWindow) then
-    ProjectToolWindow.Close
-  else begin
+  begin
+    LeftPageControl.Left := 0;
+    LeftPageControl.Top := ControlBar1.Height;
+    LeftPageControl.Align := alNone;
+
+    ProjectToolWindow.RemoveControl(LeftPageControl);
+    ProjectToolWindow.Free;
+    ProjectToolWindow := nil;
+    
+    pnlBrowsers.InsertControl(LeftPageControl);
+    DockManagerPro1.InsertComponent(LeftPageControl);
+    DockManagerPro1.Refresh;
+
+    if assigned(fProject) then
+      fProject.SetNodeValue(ProjectView.TopItem); // nodes needs to be recreated
+  end
+  else
+  begin
     ProjectToolWindow := TForm.Create(self);
-    with ProjectToolWindow do begin
+    with ProjectToolWindow do
+    begin
       Caption := Lang.Strings[ID_TB_PROJECT];
-      Top := self.Top + pnlBrowsers.Top;
-      Left := self.Left + pnlBrowsers.Left;
-      Height := pnlBrowsers.Height;
-      Width := pnlBrowsers.Width;
+      Top := (LeftPageControl.ClientOrigin).y;
+      Left := (LeftPageControl.ClientOrigin).x;
+      Height := LeftPageControl.Height;
+      Width := LeftPageControl.Width;
       FormStyle := fsStayOnTop;
-      OnClose := ProjectWindowClose;
-      BorderStyle := bsSizeable;
+      BorderStyle := bsToolWindow;
       BorderIcons := [biSystemMenu];
-      pnlBrowsers.Visible := False;
-      //LeftPageControl.Visible := false;
-      self.RemoveControl(pnlBrowsers);
-
-      pnlBrowsers.Left := 0;
-      pnlBrowsers.Top := 0;
-      pnlBrowsers.Align := alClient;
-      pnlBrowsers.Visible := True;
-      //LeftPageControl.Visible := true;
-      ProjectToolWindow.InsertControl(pnlBrowsers);
-
-      ProjectToolWindow.Show;
-      if assigned(fProject) then
-        fProject.SetNodeValue(ProjectView.TopItem); // nodes needs to be recreated
+      LeftPageControl.Visible := False;
+      pnlBrowsers.RemoveControl(LeftPageControl);
     end;
+
+    LeftPageControl.Left := 0;
+    LeftPageControl.Top := 0;
+    LeftPageControl.Align := alClient;
+    LeftPageControl.Visible := True;
+    ProjectToolWindow.InsertControl(LeftPageControl);
+    ProjectToolWindow.Show;
+
+    if assigned(fProject) then
+      fProject.SetNodeValue(ProjectView.TopItem); // nodes needs to be recreated
+  end;
+end;
+
+procedure TMainForm.FloatingPropertyInspectorClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if assigned(PropertiesToolWindow) then
+  begin
+    frmInspectorDock.Visible := False;
+    frmInspectorDock.Left   := 0;
+    frmInspectorDock.Top    := ControlBar1.Height;
+    frmInspectorDock.Align  := alNone;
+    frmInspectorDock.Parent := pnlBrowsers;
+
+    PropertiesToolWindow.RemoveControl(frmInspectorDock);
+    PropertiesToolWindow.Free;
+    PropertiesToolWindow := nil;
+
+    pnlBrowsers.InsertControl(frmInspectorDock);
+    pnlBrowsers.Refresh;
+    DockManagerPro1.InsertComponent(frmInspectorDock);
+    DockManagerPro1.Refresh;
+    frmInspectorDock.Visible := True;
+  end
+  else
+  begin
+    PropertiesToolWindow := TForm.Create(Self);
+    with PropertiesToolWindow do
+    begin
+      Caption := frmInspectorDock.Hint;
+      Top := (frmInspectorDock.ClientOrigin).y;
+      Left := (frmInspectorDock.ClientOrigin).x;
+      Height := frmInspectorDock.Height;
+      Width := frmInspectorDock.Width;
+      FormStyle := fsStayOnTop;
+      BorderStyle := bsToolWindow;
+      BorderIcons := [biSystemMenu];
+    end;
+
+    frmInspectorDock.Visible := False;
+    pnlBrowsers.RemoveControl(frmInspectorDock);
+
+    frmInspectorDock.Parent := PropertiesToolWindow;
+    frmInspectorDock.Left := 0;
+    frmInspectorDock.Top := 0;
+    frmInspectorDock.Align := alClient;
+    frmInspectorDock.Visible := True;
+
+    PropertiesToolWindow.InsertControl(frmInspectorDock);
+    PropertiesToolWindow.Show;
   end;
 end;
 
@@ -8361,7 +8423,7 @@ begin
     fwatchThread.Active:=true;
     FWatchList.Add(fwatchThread)
   end;    // for
-  {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TMainForm.PageControlChanging(Sender: TObject;
@@ -8516,8 +8578,12 @@ begin
     INI.free;
   end;
 
+  //Create the output folder if the folder does not exist
+  BaseFilename := IncludeTrailingBackslash(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text) + H_EXT;
+  if not DirectoryExists(GetRealPath(ExtractFileDir(BaseFilename))) then
+    ForceDirectories(GetRealPath(ExtractFileDir(BaseFilename)));
+
   //OK, load the template and parse and save it
-  BaseFilename := IncludeTrailingBackslash(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);
   ParseAndSaveTemplate(StrHppFile, ChangeFileExt(BaseFilename, H_EXT), frm);
   ParseAndSaveTemplate(StrCppFile, ChangeFileExt(BaseFilename, CPP_EXT), frm);
   GetIntialFormData(frm, strFName, strCName, strFTitle,dlgSStyle, dsgnType);
@@ -8848,7 +8914,7 @@ procedure TMainForm.ReadClass;
 begin
   RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer,TWxGridSizer,TWxFlexGridSizer,TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton, TWxToggleButton,TWxCheckBox,TWxRadioButton, TWxChoice, TWxComboBox, TWxGauge, TWxGrid,TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar, TWxSpinButton, TWxTreeCtrl, TWxRadioBox]);
   RegisterClasses([TWXStaticBitmap, TWxstaticbox, TWxslider, TWxStaticLine,TWxDatePickerCtrl]);
-  RegisterClasses([TWxPanel,TWXListBook, TWxNoteBook, TWxStatusBar, TWxToolBar]);
+  RegisterClasses([TWxPanel, TWxNoteBook, TWxStatusBar, TWxToolBar]);
   RegisterClasses([TWxNoteBookPage,TWxchecklistbox,TWxSplitterWindow]);
   RegisterClasses([TWxSpinCtrl,TWxScrolledWindow,TWxHtmlWindow,TWxToolButton,TWxSeparator]);
   RegisterClasses([TWxPopupMenu,TWxMenuBar]);
@@ -9310,9 +9376,9 @@ begin
 
   if (AControl is TWinControl) then
   begin
-    //todo: Try to create an interface to make sure whether a container has a limiting controls.
-    //If someone is dropping more than one control then we'll make the
-    //controls's parent as the parent of SplitterWindow
+    //TODO: Guru: Try to create an interface to make sure whether a container has
+    //a limiting control. If someone is dropping more than one control then we'll
+    //make the controls's parent as the parent of SplitterWindow
     if (TWinControl(AControl).Parent <> nil) and  (TWinControl(AControl).Parent is TWxSplitterWindow) then
     begin
         if TWinControl(AControl).Parent.ControlCount > 2 then
@@ -9473,17 +9539,16 @@ end;
 {$IFDEF WX_BUILD}
 procedure TMainForm.EnableDesignerControls;
 begin
-//I have no clue why I'm getting an error at this place.
+  //TODO: Guru: I have no clue why I'm getting an error at this place.
   try
     if Assigned(ELDesigner1.DesignControl) then
     begin
         ELDesigner1.Active:=True;
         ELDesigner1.DesignControl.SetFocus;
     end;
-  except
+  finally
     cbxControlsx.Enabled := true;
   end;
-  cbxControlsx.Enabled := true;
   pgCtrlObjectInspector.Enabled := true;
   JvInspProperties.Enabled := true;
   JvInspEvents.Enabled := true;
@@ -9512,7 +9577,7 @@ var
   I: Integer;
 begin
     Result:=0;
-    //Weird error remover ... Shitty solution.
+    //TODO: Guru: Weird error remover ... Shitty solution.
     FirstComponentBeingDeleted:='';
 
     if winCtrl = nil then
@@ -9535,7 +9600,7 @@ var
   I: Integer;
 begin
     Result:=false;
-    //Weird error remover ... Shitty solution.
+    //TODO: Guru: Weird error remover ... Shitty solution.
     FirstComponentBeingDeleted:='';
 
     if winCtrl = nil then
@@ -10358,7 +10423,7 @@ begin
         end;
       end;
 
-      //Guru: ToDo: add functions to make sure the files are saved properly
+      //TODO: Guru: add functions to make sure the files are saved properly
       if SelectedComponent <> nil then
       begin
         str := JvInspEvents.Selected.DisplayName;
