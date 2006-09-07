@@ -288,7 +288,7 @@ type
     wxTB_HORZ_TEXT);
   TWxtbrStyleSet  = set of TWxtbrStyleItem;
 
-  TWxLvView = (wxLC_ICON, wxLC_SMALL_ICON, wxLC_LIST, wxLC_REPORT, wxLC_VIRTUAL, wxLC_TILE);
+  TWxLvView = (wxLC_ICON, wxLC_SMALL_ICON, wxLC_LIST, wxLC_REPORT, wxLC_VIRTUAL{$IFDEF PRIVATE_BUILD}, wxLC_TILE{$ENDIF});
   TWxLVStyleItem = (wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
     wxLC_EDIT_LABELS, wxLC_GROUPS, wxLC_NO_HEADER, wxLC_NO_SORT_HEADER,
     wxLC_SINGLE_SEL, wxLC_SORT_ASCENDING, wxLC_SORT_DESCENDING,
@@ -2334,8 +2334,10 @@ begin
       strLst.add('wxLC_ICON');
     wxLC_SMALL_ICON:
       strLst.add('wxLC_SMALL_ICON');
+{$IFDEF PRIVATE_BUILD}
     wxLC_TILE:
       strLst.add('wxLC_TILE');
+{$ENDIF}
   end;
   
   try

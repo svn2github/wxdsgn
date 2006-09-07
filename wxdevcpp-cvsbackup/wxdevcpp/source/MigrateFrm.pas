@@ -78,7 +78,7 @@ begin
     Strings.SaveToFile(Source.Text + '.bak');
 
   //Interate over the file's lines
-  while true do
+  while i < Strings.Count do
   begin
     //SpaceValue
     if Pos('SpaceValue', Trim(Strings[i])) = 1 then
@@ -121,7 +121,7 @@ begin
     end
 
     //wxTE_PROCESS_ENTER
-    else if (Pos('wxPROCESS_ENTER', Trim(Strings[i])) > Pos('Wx_ComboboxStyle', Trim(Strings[i]))) then
+    else if (Pos('wxPROCESS_ENTER', Trim(Strings[i])) > Pos('Wx_ComboboxStyle', Trim(Strings[i]))) and (Pos('Wx_ComboboxStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxPROCESS_ENTER,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxPROCESS_ENTER', '');
@@ -131,7 +131,7 @@ begin
     end
 
     //wxLC_* constants
-    else if (Pos('wxLC_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) then
+    else if (Pos('wxLC_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_ICON,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_ICON', '');
@@ -139,7 +139,7 @@ begin
       Strings.Add('Wx_ListviewView = wxLC_ICON');
       Inc(Changes);
     end
-    else if (Pos('wxLC_SMALL_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) then
+    else if (Pos('wxLC_SMALL_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_SMALL_ICON,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_SMALL_ICON', '');
@@ -147,7 +147,7 @@ begin
       Strings.Add('Wx_ListviewView = wxLC_SMALL_ICON');
       Inc(Changes);
     end
-    else if (Pos('wxLC_LIST', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) then
+    else if (Pos('wxLC_LIST', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_LIST,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_LIST', '');
@@ -155,15 +155,17 @@ begin
       Strings.Add('Wx_ListviewView = wxLC_LIST');
       Inc(Changes);
     end
-    else if (Pos('wxLC_REPORT', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) then
+    else if (Pos('wxLC_REPORT', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
+      showmessage(Strings[I]);
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_REPORT', '');
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT', '');
+      showmessage(Strings[I]);
       Strings.Add('Wx_ListviewView = wxLC_REPORT');
       Inc(Changes);
     end
-    else if (Pos('wxLC_VIRTUAL', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) then
+    else if (Pos('wxLC_VIRTUAL', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_VIRTUAL,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_VIRTUAL', '');
@@ -171,7 +173,8 @@ begin
       Strings.Add('Wx_ListviewView = wxLC_VIRTUAL');
       Inc(Changes);
     end
-    else if (Pos('wxLC_TILE', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) then
+{$IFDEF PRIVATE_BUILD}
+    else if (Pos('wxLC_TILE', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_TILE,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_TILE', '');
@@ -179,23 +182,24 @@ begin
       Strings.Add('Wx_ListviewView = wxLC_TILE');
       Inc(Changes);
     end
+{$ENDIF}
 
     //wxALIGN_LEFT for wxStaticText
-    else if (Pos('wxALIGN_LEFT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) then
+    else if (Pos('wxALIGN_LEFT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_LEFT,', 'wxST_ALIGN_LEFT,');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_LEFT', ', wxST_ALIGN_LEFT');
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_LEFT', 'wxST_ALIGN_LEFT');
       Inc(Changes);
     end
-    else if (Pos('wxALIGN_CENTRE', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) then
+    else if (Pos('wxALIGN_CENTRE', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_CENTRE,', 'wxST_ALIGN_CENTRE,');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_CENTRE', ', wxST_ALIGN_CENTRE');
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_CENTRE', 'wxST_ALIGN_CENTRE');
       Inc(Changes);
     end
-    else if (Pos('wxALIGN_RIGHT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) then
+    else if (Pos('wxALIGN_RIGHT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
     begin
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_RIGHT,', 'wxST_ALIGN_RIGHT,');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_RIGHT', ', wxST_ALIGN_RIGHT');
@@ -209,12 +213,7 @@ begin
     Self.Changes.Caption := inttostr(Changes);
     Line.Caption := inttostr(i + 1) + '/' + inttostr(Strings.Count);
     Application.ProcessMessages;
-
-    //Do we break?
-    if i >= Strings.Count - 1 then
-      Break
-    else
-      Inc(I);
+    Inc(I);
   end;
 
   //Save the file

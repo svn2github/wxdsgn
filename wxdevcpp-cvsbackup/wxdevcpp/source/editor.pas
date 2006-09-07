@@ -223,15 +223,12 @@ type
 
 implementation
 
-uses 
-{$IFDEF WIN32}
-  main, project, MultiLangSupport, devcfg, Search_Center,
-  datamod, GotoLineFrm, Macros;
-{$ENDIF}
+uses
+  MigrateFrm, Main, project, MultiLangSupport, devcfg, Search_Center, datamod,
+  GotoLineFrm, Macros
 {$IFDEF LINUX}
-  Xlib, main, project, MultiLangSupport, devcfg, Search_Center, utils,
-  datamod, GotoLineFrm, Macros;
-{$ENDIF}
+  ,Xlib, utils
+{$ENDIF};
 
 { TDebugGutter }
 
@@ -2523,25 +2520,30 @@ end;
 
 procedure TEditor.ReloadFormFromFile(strFilename:String);
 var
-    I:Integer;
+  I:Integer;
 begin
-    if not self.isForm then
-        exit;
+  if not self.isForm then
+    exit;
 
-    try
-        //Delete all the Components and
-        for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
-        begin
-            self.fDesigner.Components[i].Destroy;
-        end;    // for
+  try
+    //Delete all the Components
+    for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
+    begin
+      self.fDesigner.Components[i].Destroy;
+    end;    // for
 
-        ReadComponentFromFile(self.fDesigner, strFilename);
-    except
-        on e: Exception do
-        begin
-            MessageBox(0, PChar(e.Message), 'wxDev-C++', MB_ICONHAND or MB_OK or MB_TASKMODAL);
-        end;
-    end;
+    ReadComponentFromFile(self.fDesigner, strFilename);
+  except
+    on e: Exception do
+      with TMigrateFrm.Create(Application.MainForm) do
+      begin
+        Source.Text := strFileName;
+        if ShowModal = mrOK then
+          ReloadFormFromFile(strFileName);
+        
+        Destroy;
+      end;
+  end;
 end;
 
 procedure TEditor.UpdateXRC;
