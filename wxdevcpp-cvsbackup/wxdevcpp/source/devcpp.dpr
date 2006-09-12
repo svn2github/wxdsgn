@@ -27,9 +27,14 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  FastMM4,
+  //FastCode,
+  madScreenShot,
+{$IFNDEF OLD_MADSHI}
   madListHardware,
   madListProcesses,
   madListModules,
+{$ENDIF}
   madExcept,
   madLinkDisAsm,
   MemCheck in 'MemCheck.pas',

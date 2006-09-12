@@ -41,7 +41,10 @@ uses
 {$IFDEF WX_BUILD}
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
   ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
-  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr, ExceptionFilterUnit,
+  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr,
+  {$IFNDEF OLD_MADSHI}
+  ExceptionFilterUnit,
+  {$ENDIF}
   DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX, DockManagerPro
   {$ENDIF}
   ;
