@@ -431,7 +431,7 @@ begin;
           //Now that tempstr contains the path, does it exist, hence we can depend on it?
           if FileExists(GetRealPath(tempstr, path)) then
           begin
-            Result := Result + ' ' + GenMakePath(ExtractRelativePath(fProject.Directory, GetRealPath(tempstr, path)));
+            Result := Result + ' ' + GenMakePath2(ExtractRelativePath(fProject.Directory, GetRealPath(tempstr, path)));
 
             //Now that we have it, recurse!
             Result := result + FindDeps(GetRealPath(tempstr, path), VisitedFiles);

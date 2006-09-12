@@ -45,8 +45,9 @@ uses
   {$IFNDEF OLD_MADSHI}
   ExceptionFilterUnit,
   {$ENDIF}
-  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX, DockManagerPro
-  {$ENDIF}
+  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX, DockManagerPro,
+  SynEditHighlighter, SynHighlighterMulti
+{$ENDIF}
   ;
 {$ENDIF}
 {$IFDEF LINUX}

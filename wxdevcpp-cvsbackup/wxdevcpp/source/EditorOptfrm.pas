@@ -22,14 +22,15 @@ unit EditorOptfrm;
 interface
 
 uses
+  dbugintf,
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms,
   Dialogs, ComCtrls, devTabs, StdCtrls, ExtCtrls, Spin, ColorPickerButton,
   SynEdit, SynEditHighlighter, SynHighlighterCpp, CheckLst, SynMemo,
-  Buttons, ClassBrowser, CppParser, CppTokenizer, StrUtils, XPMenu;
+  Buttons, ClassBrowser, CppParser, CppTokenizer, StrUtils, XPMenu, Classes;
 {$ENDIF}
 {$IFDEF LINUX}
-  SysUtils, Variants, Classes, QGraphics, QControls, QForms,
+  SysUtils, Variants, QGraphics, QControls, QForms,
   QDialogs, QComCtrls, devTabs, QStdCtrls, QExtCtrls, ColorPickerButton,
   QSynEdit, QSynEditHighlighter, QSynHighlighterCpp, QCheckLst, QSynMemo,
   QButtons, ClassBrowser, CppParser, CppTokenizer, StrUtils, Types;
@@ -211,6 +212,7 @@ type
     procedure OnGutterClick(Sender: TObject; Button: TMouseButton; X, Y,
       Line: Integer; Mark: TSynEditMark);
     procedure cbHighCurrLineClick(Sender: TObject);
+    procedure seTabSizeChange(Sender: TObject);
   private
     ffgColor: TColor;
     fbgColor: TColor;
@@ -236,17 +238,20 @@ type
     procedure LoadSyntax(Value: string);
     procedure FillSyntaxSets;
     procedure FillCCC;
+    function CompactFilename(filename: string): string;
   end;
 
 var
   EditorOptForm: TEditorOptForm;
+  function PathCompactPath(hDC: HDC; lpszPath: PChar; dx: UINT): Boolean; stdcall;
+  external 'shlwapi.dll' name 'PathCompactPathA';
 
 implementation
 
 uses 
 {$IFDEF WIN32}
-  shlobj, MultiLangSupport, devcfg, version, utils, CodeIns, datamod, IniFiles, editor,
-  main;
+  shlobj, MultiLangSupport, devcfg, version, utils, CodeIns, datamod,
+  IniFiles, editor, main;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, MultiLangSupport, devcfg, version, utils, CodeIns, datamod, IniFiles, editor,
@@ -446,6 +451,7 @@ begin
   if fGutter then
   begin
     pnlGutterPreview.Font.Name := cboGutterFont.Text;
+    CppEdit.Gutter.Font.Name := cboGutterFont.Text;
     Size := cboGutterSize.Text;
     LoadFontSize;
     cboGutterSize.Text := Size;
@@ -612,18 +618,26 @@ begin
     append('');
     append('int main(int argc, char **argv)');
     append('{');
-    append(' int numbers[20];');
-    append(' float average, total; //breakpoint');
-    append(' for (int i = 0; i <= 19; i++)');
-    append(' { // active breakpoint');
-    append('  numbers[i] = i;');
-    append('  Total += i; // error line');
-    append(' }');
-    append(' average = total / 20;');
-    append(' cout << numbers[0] << "\n" << numbers[19] << "\n";');
-    append(' cout << "total: " << total << "\nAverage: " << average;');
-    append(' printf("\n\nPress any key...");');
-    append(' getch();');
+    append(#9'int numbers[20];');
+    append(#9'float average, total; //breakpoint');
+    append(#9'for (int i = 0; i <= 19; i++)');
+    append(#9'{ // active breakpoint');
+    append(#9#9'numbers[i] = i;');
+    append(#9#9'Total += i; // error line');
+    append(#9'}');
+    append(#9'_asm {');
+    append(#9#9'mov dword ptr [numbers], 3 ;This is a comment in Assembly');
+    append(#9#9'push eax');
+    append(#9#9'push ebx');
+    append(#9#9'mov eax, 0');
+    append(#9#9'mov ebx, 0');
+    append(#9#9'call _main');
+    append(#9'}');
+    append(#9'average = total / 20;');
+    append(#9'cout << numbers[0] << "\n" << numbers[19] << "\n";');
+    append(#9'cout << "total: " << total << "\nAverage: " << average;');
+    append(#9'printf("\n\nPress any key...");');
+    append(#9'getch();');
     append('}');
   end;
 end;
@@ -1182,6 +1196,7 @@ begin
           Attr := cppEdit.Highlighter.WhiteSpaceAttribute;
         if assigned(Attr) then
         begin
+          Senddebug(Attr.Name);
           ElementList.ItemIndex := ElementList.Items.Indexof(Attr.Name);
           ElementListClick(Self);
         end;
@@ -1626,7 +1641,7 @@ begin
 
       //Finally append the new items unto the listbox
       for I := 0 to OpenDialog.Files.Count - 1 do
-        lbCCC.Items.Add(AnsiStrLower(PChar(OpenDialog.Files[I])));
+        lbCCC.Items.Add(CompactFilename(OpenDialog.Files[I]));
     end;
   end;
 end;
@@ -1645,17 +1660,20 @@ begin
     CppParser1.OnStartParsing := CppParser1StartParsing;
     CppParser1.OnEndParsing := CppParser1EndParsing;
     CppParser1.OnTotalProgress := CppParser1TotalProgress;
-    lbCCC.Items.Assign(CppParser1.CacheContents);
+    lbCCC.Items.Clear;
     chkCCCache.Tag := 1; // mark modified
   end;
 end;
 
 procedure TEditorOptForm.FillCCC;
+var
+  I: Integer;
 begin
   Screen.Cursor := crHourglass;
   Application.ProcessMessages;
   CppParser1.Load(devDirs.Config + DEV_COMPLETION_CACHE);
-  lbCCC.Items.Assign(CppParser1.CacheContents);
+  for I := 0 to CppParser1.CacheContents.Count - 1 do
+    lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
   Screen.Cursor := crDefault;
 end;
 
@@ -1665,6 +1683,16 @@ begin
   lbCCC.Enabled := chkCCCache.Checked;
   btnCCCnew.Enabled := chkCCCache.Checked;
   btnCCCdelete.Enabled := chkCCCache.Checked;
+end;
+
+function TEditorOptForm.CompactFilename(filename: string): string;
+var
+  DC: HDC;
+begin
+  //Get a handle to the DC
+  DC := lbCCC.Canvas.Handle;
+  PathCompactPath(DC, PChar(filename), lbCCC.ClientWidth);
+  Result := filename;
 end;
 
 procedure TEditorOptForm.CppParser1StartParsing(Sender: TObject);
@@ -1716,6 +1744,11 @@ end;
 procedure TEditorOptForm.cbHighCurrLineClick(Sender: TObject);
 begin
   cpHighColor.Enabled := cbHighCurrLine.Checked;
+end;
+
+procedure TEditorOptForm.seTabSizeChange(Sender: TObject);
+begin
+  CppEdit.TabWidth := seTabSize.Value;
 end;
 
 end.

@@ -530,36 +530,44 @@ begin
     
     CodeComplForm.lbCompletion.Visible := False;
 
-    C := GetClass(Phrase);
-    M := GetMember(Phrase);
-    D := GetHasDot(Phrase); // and (M<>'');
-    if not D or (D and (C <> '')) then try
-      Screen.Cursor := crHourglass;
-      // only perform new search if just invoked
-      if not CodeComplForm.Showing then begin
-        fCompletionStatementList.Clear;
-        fFullCompletionStatementList.Clear;
-        fIncludedFiles.CommaText := fParser.GetFileIncludes(Filename);
-        GetCompletionFor(C, M, D);
-        fFullCompletionStatementList.Assign(fCompletionStatementList);
+    if Trim(Phrase) <> '' then
+    begin
+      C := GetClass(Phrase);
+      M := GetMember(Phrase);
+      D := GetHasDot(Phrase); // and (M<>'');
+      if not D or (D and (C <> '')) then
+      try
+        Screen.Cursor := crHourglass;
+        // only perform new search if just invoked
+        if not CodeComplForm.Showing then begin
+          fCompletionStatementList.Clear;
+          fFullCompletionStatementList.Clear;
+          fIncludedFiles.CommaText := fParser.GetFileIncludes(Filename);
+          GetCompletionFor(C, M, D);
+          fFullCompletionStatementList.Assign(fCompletionStatementList);
+        end;
+        // perform filtering in list
+        FilterList(C, M, D);
+      finally
+        Screen.Cursor := crDefault;
       end;
-      // perform filtering in list
-      FilterList(C, M, D);
-    finally
-      Screen.Cursor := crDefault;
-    end;
 
-    CodeComplForm.lbCompletion.Visible := True;
-    if fCompletionStatementList.Count > 0 then begin
-      fCompletionStatementList.Sort(@ListSort);
-      SetWindowPos(CodeComplForm.Handle, 0, CodeComplForm.Left, CodeComplForm.Top, fWidth, fHeight, SWP_NOZORDER);
-      CodeComplForm.lbCompletion.Repaint;
-      CodeComplForm.Show;
-      CodeComplForm.lbCompletion.SetFocus;
-      if CodeComplForm.lbCompletion.Items.Count > 0 then
-        CodeComplForm.lbCompletion.ItemIndex := 0;
+      CodeComplForm.lbCompletion.Visible := True;
+      if fCompletionStatementList.Count > 0 then
+      begin
+        fCompletionStatementList.Sort(@ListSort);
+        SetWindowPos(CodeComplForm.Handle, 0, CodeComplForm.Left, CodeComplForm.Top, fWidth, fHeight, SWP_NOZORDER);
+        CodeComplForm.lbCompletion.Repaint;
+        CodeComplForm.Show;
+        CodeComplForm.lbCompletion.SetFocus;
+        if CodeComplForm.lbCompletion.Items.Count > 0 then
+          CodeComplForm.lbCompletion.ItemIndex := 0;
+      end
+      else
+        CodeComplForm.Hide;
     end
     else
+      //Empty phrase string
       CodeComplForm.Hide;
   end;
 end;

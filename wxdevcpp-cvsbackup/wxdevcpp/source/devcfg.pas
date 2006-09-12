@@ -1748,7 +1748,7 @@ begin
   fUseSyn := TRUE;
   //last ; is for files with no extension
   //which should be treated as cpp header files
-  fSynExt:= 'c;cpp;h;hpp;cc;cxx;cp;hp;rh;';
+  fSynExt:= 'c;cpp;h;hpp;cc;cxx;cp;hp;rh;inl;';
 
   fParserHints := TRUE;
   fMatch := false;

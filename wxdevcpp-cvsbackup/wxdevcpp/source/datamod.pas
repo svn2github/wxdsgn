@@ -34,7 +34,7 @@ SynHighlighterXML,
   SynEditExport, SynExportHTML, SynExportRTF,
   SynEditHighlighter, SynHighlighterCpp, SynEditPrint,
   oysUtils, CodeIns, SynHighlighterRC, SynCompletionProposal,
-  SynEditMiscClasses, SynEditSearch;
+  SynEditMiscClasses, SynEditSearch, SynHighlighterAsm, SynHighlighterMulti;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QMenus, QDialogs, QImgList, QControls,
@@ -47,6 +47,8 @@ SynHighlighterXML,
 type
   TdmMain = class(TDataModule)
     Cpp: TSynCppSyn;
+    Res: TSynRCSyn;
+    XML: TSynXMLSyn;
     SynExporterRTF: TSynExporterRTF;
     SynExporterHTML: TSynExporterHTML;
     PrinterSetupDialog: TPrinterSetupDialog;
@@ -56,7 +58,6 @@ type
     ProjectImage_Gnome: TImageList;
     MenuImages_Gnome: TImageList;
     HelpImages_Gnome: TImageList;
-    Res: TSynRCSyn;
     MenuImages_NewLook: TImageList;
     ProjectImage_NewLook: TImageList;
     HelpImages_NewLook: TImageList;
@@ -70,7 +71,8 @@ type
     ResourceDialog: TOpenDialog;
     SynHint: TSynCompletionProposal;
     ClassImages: TImageList;
-    SynXMLSyn1: TSynXMLSyn;
+    Assembly: TSynAsmSyn;
+    CppMultiSyn: TSynMultiSyn;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -141,6 +143,10 @@ procedure TdmMain.DataModuleCreate(Sender: TObject);
 begin
   fMRU := ToysStringList.Create;
   fCodeList := TCodeInsList.Create;
+
+  //Set up the syntax highlighter stuff
+  CppMultiSyn.Schemes[0].StartExpr := '(asm|_asm|__asm)('#32'|'#9'|'#13'|'#10')(['#32#9#13#10']*)\{';
+  CppMultiSyn.Schemes[0].EndExpr   := '\}';
 end;
 
 procedure TdmMain.DataModuleDestroy(Sender: TObject);
@@ -222,6 +228,16 @@ begin
     StringAttri.Assign(cpp.StringAttri);
     SymbolAttri.Assign(cpp.SymbolAttri);
   end;
+  with Assembly do
+  begin
+    CommentAttri.Assign(cpp.CommentAttri);
+    IdentifierAttri.Assign(cpp.IdentifierAttri);
+    KeyAttri.Assign(cpp.KeyAttri);
+    NumberAttri.Assign(cpp.NumberAttri);
+    SpaceAttri.Assign(cpp.SpaceAttri);
+    StringAttri.Assign(cpp.StringAttri);
+    SymbolAttri.Assign(cpp.SymbolAttri);
+  end;
 end;
 
 function TdmMain.GetHighlighter(const FileName: string): TSynCustomHighlighter;
@@ -235,17 +251,18 @@ begin
   if devEditor.UseSyntax then
   begin
     if (FileName = '') or (AnsiPos(Lang[ID_UNTITLED], FileName) = 1) then
-      result := cpp
+      result := CppMultiSyn
     else
     begin
       ext := ExtractFileExt(FileName);
-      if AnsiCompareText(ext, RC_EXT) = 0
-      then
+      if AnsiCompareText(ext, RC_EXT) = 0 then
         result := Res
-      {$IFDEF WX_BUILD}
+      else if (AnsiCompareText(ext, '.s') = 0) or (AnsiCompareText(ext, '.asm') = 0) then
+        result := Assembly
+{$IFDEF WX_BUILD}
       else if (AnsiCompareText(ext, XRC_EXT) = 0) then
-          result := SynXMLSyn1
-      {$ENDIF}
+        result := Xml
+{$ENDIF}
       else
       begin
         tmp := TStringList.Create;
@@ -256,10 +273,10 @@ begin
           if tmp.Count > 0 then
             for idx := 0 to pred(tmp.Count) do
               if AnsiCompareText(Ext, tmp[idx]) = 0 then
-                begin
-                result := cpp;
-                  Exit;
-                end;
+              begin
+                result := CppMultiSyn;
+                Exit;
+              end;
         finally
           tmp.Free;
         end;

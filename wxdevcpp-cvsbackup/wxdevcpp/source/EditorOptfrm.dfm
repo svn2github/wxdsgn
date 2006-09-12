@@ -80,6 +80,7 @@ object EditorOptForm: TEditorOptForm
         MinValue = 0
         TabOrder = 2
         Value = 0
+        OnChange = seTabSizeChange
       end
       object grpMargin: TGroupBox
         Left = 248
@@ -487,7 +488,7 @@ object EditorOptForm: TEditorOptForm
           Width = 180
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -498,7 +499,7 @@ object EditorOptForm: TEditorOptForm
           Width = 86
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -543,7 +544,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -553,7 +554,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -692,7 +693,7 @@ object EditorOptForm: TEditorOptForm
         Gutter.LeftOffset = 6
         Gutter.ShowLineNumbers = True
         HideSelection = True
-        Highlighter = cpp
+        Highlighter = dmMain.CppMultiSyn
         Options = [eoAutoIndent, eoDisableScrollArrows, eoDragDropEditing, eoHideShowScrollbars, eoNoCaret, eoNoSelection, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTrimTrailingSpaces]
         ReadOnly = True
         ScrollHintFormat = shfTopToBottom
@@ -796,8 +797,8 @@ object EditorOptForm: TEditorOptForm
         Top = 5
         Width = 396
         Height = 325
-        ActivePage = tabCPDefault
-        TabIndex = 1
+        ActivePage = tabCPInserts
+        TabIndex = 0
         TabOrder = 0
         object tabCPInserts: TTabSheet
           Caption = 'Inserts'

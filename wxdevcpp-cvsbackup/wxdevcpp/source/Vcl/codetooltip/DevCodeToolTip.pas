@@ -109,6 +109,16 @@ begin
       AToolTips.Add(PStatement(FList.Items[I])^._FullText);
     end;
   finally
+    // add the default casting "functions"
+    AToolTips.Add('dest_type reinterpret_cast<dest_type>(src_type src)');
+    AToolTips.Add('dest_type dynamic_cast<dest_type>(src_type src)');
+    AToolTips.Add('dest_type static_cast<dest_type>(src_type src)');
+    AToolTips.Add('dest_type const_cast<(const)(volatile) type>(src_type src)');
+
+    // and RTTI
+    AToolTips.Add('type_info& typeid(type)');
+    AToolTips.Add('type_info& typeid(object)');
+
     AToolTips.EndUpdate;
   end;
 end;

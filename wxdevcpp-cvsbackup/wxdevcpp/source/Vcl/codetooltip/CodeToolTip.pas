@@ -186,7 +186,6 @@ type
     procedure Paint; override;
     function PaintToolTip: Integer; virtual;
     function RemoveEditor(AEditor: TCustomSynEdit): boolean; virtual;
-    procedure RethinkCoordAndActivate; virtual;
     procedure SetEditor(const Value: TCustomSynEdit); virtual; 
     property ActivateKey: TShortCut read FActivateKey write FActivateKey; 
     property Editor: TCustomSynEdit read FEditor write SetEditor;
@@ -200,6 +199,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Select(ToolTip: string): Integer; virtual;
+    procedure RethinkCoordAndActivate; virtual;
     procedure Show; virtual;
   end;
 
@@ -221,7 +221,8 @@ type
 
   
 implementation
-
+uses
+  dbugintf;
 // contains the up/down buttons
 // i tried to draw them using DrawFrameControl first,
 // but it looked very bad, so I use a bitmap instead.
@@ -253,6 +254,7 @@ var
       Identifiers[c] := True;
 
     Identifiers['_'] := True;
+    Identifiers['~'] := True;
   end;
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -260,21 +262,41 @@ var
   function PreviousWordString(S: string; Index: Integer):string;
   var
     I: Integer;
-  begin
- 
-    Result := '';
+    TplArgs: Integer;
 
+    procedure SkipSpaces;
+    begin
+      repeat
+        Dec(Index);
+      until (Index = 0) or (not (S[Index] in [#32,#9]));
+    end;
+  begin
+    Result := '';
     if (Index <= 1) or (S = '') then
       Exit;
 
-    I := Index;
+    // Skip blanks and tabs
+    SkipSpaces;
 
-    // Skip blanks and TAB's
-    repeat
-      Dec(Index);
-    until not (S[Index] in [#32,#9]);
+    // Skip template parameters
+    if S[Index] = '>' then //template parameter
+    begin
+      TplArgs := 1;
+      repeat
+      begin
+        Dec(Index);
+        case S[Index] of
+          '>':
+            Inc(TplArgs);
+          '<':
+            Dec(TplArgs);
+        end;
+      end;
+      until (TplArgs = 0) or (Index = 0);
+    end;
+
     Inc(Index);
-
+    I := Index;
     repeat
       Dec(Index);
       if Index < 2 then
@@ -288,33 +310,8 @@ var
   end;
 
   function GetPrototypeName(const S: string): string;
-  var
-    iStart, iLen : Integer;
   begin
-    Result := '';
-
-    iStart := AnsiPos('(', S);
-
-    if iStart > 0 then
-    begin
-
-      // Skip blanks and TAB's
-      repeat
-        if (iStart > 1) then
-         Dec(iStart);
-      until not (S[iStart] in [#32,#9]) or (iStart <= 1);
-
-      iLen := 0;
-      repeat
-         if (iStart > 1) then
-            Dec(iStart);
-         Inc(iLen);
-      until (S[iStart] in [#0..#32]) or (iStart <= 1);
-
-      if (iLen > (iStart + 1)) and (iLen <= Length(S)) then
-         Result := Copy(S, iStart + 1, iLen);
-
-    end;
+    Result := PreviousWordString(S, AnsiPos('(', S));
   end;
   
   function CountCommas(const S: string): Integer;
@@ -401,12 +398,7 @@ constructor TBaseCodeToolTip.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-{$IFDEF USE_XPTOOLTIP}
-  DropShadow := False;
-{$ENDIF}
-  
   FLookupEditor := TSynEdit.Create(Self);
-
   FOptions := [ttoHideOnEsc,ttoCurrentArgumentBlackOnly,shoFindBestMatchingToolTip];
   
   FBmp := TBitmap.Create;
@@ -537,9 +529,9 @@ begin
   Result := GetPrototypeName(FToolTips.Strings[FSelIndex]);
          
   // current commacount fits still in the selected tooltip and just do nothing
-  if ToolTip = FToolTips.Strings[FSelIndex] then
-    if CountCommas(FToolTips.Strings[FSelIndex]) <= CommaIndex then Exit;
-
+  if (FSelIndex < FToolTips.Count) and (ToolTip = FToolTips.Strings[FSelIndex]) then
+    if CountCommas(FToolTips.Strings[FSelIndex]) <= CommaIndex then
+      Exit;
 
   // loop through the list and find the closest matching tooltip
   // we compare the comma counts
@@ -578,6 +570,8 @@ function TBaseCodeToolTip.GetCommaIndex(P: PChar; BraceStart, CurPos: Integer):I
 //  it progressed one comma.
 var
   I: Integer;
+  Parentheses: Integer;
+  TplArgs: Integer;
 
   // skip to EOL
   procedure SkipLine;
@@ -611,17 +605,16 @@ var
   procedure SkipStrings;
   begin
     Inc(i);
-
     repeat
       case P[i] of
-        // make sure not to skip inline string "'s
-        // for example, a c string: "Hello \"Bond, James\"..."
-        // This is ONE string only and we dont want to count commas in it
+        // Don't skip escaped strings. For example: "Hello \"Bond, James\"..."
+        // This is one string only and we do not want to count commas in it
         '\':
-          if P[i+1] = '"' then
+          if P[i + 1] = '"' then
             Inc(i);
             
-        '"': Break;
+        '"':
+          Break;
       end;
       Inc(i);
       if i > CurPos then
@@ -630,15 +623,16 @@ var
   end;
 
 begin
-
   Result := 0;
+  TplArgs := 0;
+  Parentheses := 0;
   I := BraceStart;
-
-  while I < CurPos do
+  
+  while I <= CurPos do
   begin
     case P[i] of
       // strings
-      '"': 
+      '"':
         SkipStrings;
 
       // comments
@@ -651,9 +645,21 @@ begin
 
       // commas
       ',':
-        Inc(Result);
-    end;
+        if (Parentheses = 0) and (TplArgs = 0) then
+          Inc(Result);
 
+      // parentheses
+      '(':
+        Inc(Parentheses);
+      ')':
+        Dec(Parentheses);
+
+      // template arguments
+      '<':
+        Inc(TplArgs);
+      '>':
+        Dec(TplArgs);
+    end;
     Inc(i);
   end;
 end;
@@ -775,8 +781,7 @@ begin
   BracePos := AnsiPos('(', Caption);
   if BracePos > 0 then
   begin
-
-    CurParam := 0;  
+    CurParam := 0;
     WidthParam := 4; // left start position in pixels
       
     // clear the backbuffer
@@ -825,7 +830,7 @@ begin
     end;
   end;
 
-  Result := WidthParam+6;
+  Result := WidthParam + 6;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -854,13 +859,13 @@ var
   Pt: TPoint;
   NewWidth: Integer;
   CaretXYPix: TPoint;
+  RelativeRect: TRect;
   YPos: Integer;
 begin
   CaretXYPix := FEditor.RowColumnToPixels(FEditor.DisplayXY);
-
   Pt := FEditor.ClientToScreen(Point(CaretXYPix.X, CaretXYPix.Y));
-  Dec(Pt.X, cHorzFix);
 
+  Dec(Pt.X, cHorzFix);
   Dec(Pt.Y, FEditor.LineHeight);
 
   YPos := Pt.Y;
@@ -872,13 +877,27 @@ begin
 
   // this displays the rect below the current line and at the
   // same position where the token begins
-  Pt := FEditor.ClientToScreen(FEditor.RowColumnToPixels(FEditor.BufferToDisplayPos(FEditor.CharIndexToRowCol(FTokenPos))));
+  Pt := FEditor.RowColumnToPixels(FEditor.BufferToDisplayPos(FEditor.CharIndexToRowCol(FTokenPos)));
 
-  ActivateHint(Rect(Pt.X, 
-                    YPos+2+FEditor.LineHeight, 
-                    Pt.X+NewWidth, 
-                    YPos+4+Canvas.TextHeight('Wg')+FEditor.LineHeight), 
-                Caption);
+  // because we do not want to overflow the screen, we need to calculate the relative
+  // positions to see if the hint should be hidden
+  RelativeRect.Left := {CaretXYPix.X} Pt.x - cHorzFix - FEditor.Gutter.Width;
+  RelativeRect.Right := RelativeRect.Left + NewWidth;
+  RelativeRect.Top := CaretXYPix.Y + 2 + FEditor.LineHeight;
+  RelativeRect.Bottom := RelativeRect.Top + 2 + Canvas.TextHeight('Wg');
+  if ((NewWidth < FEditor.Width - cHorzFix - FEditor.Gutter.Width) and ((RelativeRect.Left < 0) or (RelativeRect.Right > FEditor.Width))) or
+     (RelativeRect.Top < 0) or (RelativeRect.Bottom > FEditor.Height) then
+  begin
+    DestroyHandle; //Destroy the handle but don't mark ourselves as inactive
+    Exit;
+  end;
+
+  Pt := FEditor.ClientToScreen(Pt);
+  ActivateHint(Rect(Pt.X,
+                    YPos+2+FEditor.LineHeight,
+                    Pt.X+NewWidth,
+                    YPos+4+Canvas.TextHeight('Wg')+FEditor.LineHeight),
+               Caption);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -963,14 +982,14 @@ var
   CurPos: Integer;
   P: PChar;
   I: Integer;
-  nBraces: Integer;
+  nBraces, nTplArgs: Integer;
   S: string;
   Idx: Integer;
   S1: string;
   nCommas: Integer;
   ProtoFound: Boolean;
   attr: TSynHighlighterAttributes;
-  attrstr: String; //dummy string
+  attrstr: string;
       
   // skip c/c++ commentblocks 
   procedure SkipCommentBlock;
@@ -999,7 +1018,11 @@ begin
   ASSERT(nil <> FToolTips, 'FToolTips must not be nil');
   ASSERT(nil <> FEditor, 'FEditor must not be nil');
   if (FEditor.Highlighter = nil) then
-  exit;
+    exit;
+
+  // get the current position in the text
+  Idx := FEditor.SelStart - 1;
+  CurPos := FEditor.SelStart - 1;
 
   //get highlighter attribute and check if the cursor is not within
   //string or comment etc.
@@ -1009,35 +1032,30 @@ begin
       if (attr = StringAttribute) or (attr = CommentAttribute) then
         Exit;
 
-  // get the current position in the text
-  Idx := FEditor.SelStart;
-  CurPos := FEditor.SelStart;
-  
   // get a pointer to the text
-  P := PChar(FEditor.Lines.Text);
+  P := PChar(FEditor.Text);
 
   // set the braced count to its initial value
   // when a closing brace is right behind the cursor
   // we increase it by 1
-  nBraces := -1;
-
-  if P[CurPos-1] = ')' then Inc(nBraces,1);
-  if P[CurPos] = ')' then Inc(nBraces,1);
-    
-  I := 1;
+  nTplArgs := 0;
+  nBraces := 1;
   nCommas := 0;
+  I := 1;
   
   // this loop is used to find an open function like
   // foo(i, ...
   while I < FMaxScanLength do
   begin
     case P[CurPos] of
-       
       '/':
         if P[CurPos-1] = '*' then
           SkipCommentBlock;
 
       ')':
+        Inc(nBraces);
+
+      '(':
         begin
           Dec(nBraces);
           if nBraces = 0 then
@@ -1047,20 +1065,18 @@ begin
           end;
         end;
 
-      '(':
-        begin
-          Inc(nBraces);
-          if nBraces = 0 then
-          begin
-            Inc(CurPos);
-            Break;
-          end;
-        end;
+        '<':
+          Dec(nTplArgs);
+        '>':
+          Inc(nTplArgs);
 
       ',':
-        Inc(nCommas);
-        
-      #0: Exit;
+        if (nBraces = 1) and (nTplArgs = 0) then
+          //Only when we are in the function we are trying to fill
+          Inc(nCommas);
+
+      #0:
+        Exit;
     end;
 
     Dec(CurPos);
@@ -1074,101 +1090,99 @@ begin
     Inc(I);
   end;
 
-  // when the tooltip is not activated yet
-  // we don't have an index, so we set it to zero
-  // by index i mean the index of an overloaded function
-  if not Activated then 
+  // when the tooltip is not activated yet we don't have an index of a function
+  // prototype to display, so we set it to zero
+  if not Activated then
   begin
     FSelIndex := 0;
     FCustomSelIndex := False;
   end;
 
-  // get the previous word, this is the word infron
-  // of the brace. for example from
-  // foo(int a, int b
-  // the previous word would be 'foo'  
+  // get the previous word, this is the word infront of the brace. for example from
+  // foo(int a, int b) the previous word would be 'foo'  
   S := PreviousWordString(P, CurPos);
 
+  // populate the tooltips list (the entire list of possible tooltips)
   DoBeforeShow(FToolTips, S);
 
   // get the current token position in the text
   // this is where the prototypename usually starts
-  FTokenPos := CurPos - Length(S)-1;
+  FTokenPos := CurPos - Length(S) - 1;
 
-
-  // check if the token is added to the list
+  // if the function name is empty just skip over it
   ProtoFound := False;
-  for I := 0 to FToolTips.Count-1 do
+  if Trim(S) <> '' then
   begin
-    S1 := GetPrototypeName(FToolTips.Strings[I]);
-    if S1 = S then
+    // iterate over all the tooltips, eliminating "wrong" tooltips from the list
+    I := 0;
+    while I < FToolTips.Count do
     begin
-      ProtoFound := True;
-      if not Activated then FSelIndex := I;      
-      Break;
-    enD;
+      S1 := GetPrototypeName(FToolTips.Strings[I]);
+      if (S1 = S) and (AnsiPos('(', FToolTips.Strings[I]) > 0) then
+      begin
+        if (not Activated) and (not ProtoFound) then
+          FSelIndex := I;
+        ProtoFound := True;
+        Inc(I);
+      end
+      else
+        FToolTips.Delete(I);
+    end;
+
+    if not ProtoFound then
+      SendDebug('Unknown function: ' + S);
   end;
 
-  // if it is not found then empty the string sp
-  // the tooltip just hides then
-  if not ProtoFound then S := '';
-  
-  
-  if (S <> '') then
+  if (Trim(S) <> '') and ProtoFound then
   begin  
-    // when the user has choosen an own index, ermm when he clicked
-    // either the UP or DOWN button, we don't try to find the closest
-    // tooltip anymore, we simply use the current selection index
+    // when the user has choosen his own index, when he clicked
+    // either the UP or DOWN button, don't try to find the closest
+    // tooltip, use the selected index as the string
     if (shoFindBestMatchingToolTip in FOptions) then
       if not FCustomSelIndex then
-        S := FindClosestToolTip(S, nCommas);   
+        S := FindClosestToolTip(S, nCommas);
 
     if (FToolTips.Count > 0) and (FSelIndex < FToolTips.Count) then
       S := FToolTips.Strings[FSelIndex];  
-  end;
 
-      
-  if S <> '' then
-  begin       
     // set the hint caption
     Caption := S;
-    
+
     // we use the LookupEditor to get the highlighter-attributes
     // from. check the DrawAdvanced method!
     FLookupEditor.Text := S;
     FLookupEditor.Highlighter := FEditor.Highlighter;
 
-    // get the index of the current bracket where the cursor it
-    FCurParamIndex := GetCommaIndex(P, CurPos, Idx-1);
-    RethinkCoordAndActivate;    
+    // get the index of the current bracket where the cursor is
+    FCurParamIndex := GetCommaIndex(P, CurPos, Idx);
+    RethinkCoordAndActivate;
   end
-  else
-  if (AnsiPos(Chr(FCurCharW), FEndWhenChr) > 0) then
+  else if (AnsiPos(Chr(FCurCharW), FEndWhenChr) > 0) then
     ReleaseHandle
   else
   // Make sure when we are before a brace, to release the hint.
   // hel_function(
   //            ^-- If we are here, we must hide it!
-  case FCurCharW of
+    case FCurCharW of
 {$IFDEF WIN32}
-    VK_LEFT,
-    VK_RIGHT,
-    VK_UP,
-    VK_DOWN,
-    VK_BACK: ReleaseHandle;
+      VK_LEFT,
+      VK_RIGHT,
+      VK_UP,
+      VK_DOWN,
+      VK_BACK: ReleaseHandle;
 {$ENDIF}
 {$IFDEF LINUX}
-    XK_LEFT,
-    XK_RIGHT,
-    XK_UP,
-    XK_DOWN,
-    XK_BackSpace: ReleaseHandle;
+      XK_LEFT,
+      XK_RIGHT,
+      XK_UP,
+      XK_DOWN,
+      XK_BackSpace: ReleaseHandle;
 {$ENDIF}
-  else
-    // Braces dont match? Then hide ..
-    if nBraces <> 0 then
-      ReleaseHandle;
-  end;
+    else
+      // Braces dont match? Then hide ..
+      if nBraces <> 0 then
+        ReleaseHandle;
+    end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

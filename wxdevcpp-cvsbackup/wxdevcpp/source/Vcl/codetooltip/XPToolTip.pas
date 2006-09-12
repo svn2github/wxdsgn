@@ -189,11 +189,13 @@ const
 begin     
   if IsWinXP then
   begin
-    if FDropShadow then SetClassLong(Handle,GCL_STYLE, GetClassLong(Handle, GCL_STYLE) or CS_DROPSHADOW) 
-    else SetClassLong(Handle,GCL_STYLE, GetClassLong(Handle, GCL_STYLE) and not CS_DROPSHADOW);
+    if FDropShadow then
+      SetClassLong(Handle, GCL_STYLE, GetClassLong(Handle, GCL_STYLE) or CS_DROPSHADOW)
+    else
+      SetClassLong(Handle, GCL_STYLE, GetClassLong(Handle, GCL_STYLE) and not CS_DROPSHADOW);
   end;
-  
-  //SetAlphaBlend(FAlphaBlend); 
+
+  SetAlphaBlend(FAlphaBlend);
   SetAlphaBlendValue(FAlphaBlendValue);      
   
   inherited;
@@ -213,7 +215,7 @@ end;
  
 procedure TCustomXPToolTip.SetAlphaBlend(Value: Boolean);
 const
- WS_EX_LAYERED = $80000;
+  WS_EX_LAYERED = $80000;
 begin
   FAlphaBlend := Value;
   

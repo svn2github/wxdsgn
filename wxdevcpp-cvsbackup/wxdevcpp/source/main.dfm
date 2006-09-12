@@ -1305,8 +1305,8 @@ object MainForm: TMainForm
   end
   object MainMenu: TMainMenu
     Images = dmMain.MenuImages_Gnome
-    Left = 350
-    Top = 79
+    Left = 493
+    Top = 130
     object FileMenu: TMenuItem
       Action = actFileMenu
       object mnuNew: TMenuItem
@@ -1982,8 +1982,8 @@ object MainForm: TMainForm
     end
   end
   object EditorPopupMenu: TPopupMenu
-    Left = 275
-    Top = 172
+    Left = 603
+    Top = 102
     object Close1: TMenuItem
       Action = actClose
     end
@@ -2202,8 +2202,8 @@ object MainForm: TMainForm
   end
   object UnitPopup: TPopupMenu
     MenuAnimation = [maBottomToTop]
-    Left = 275
-    Top = 127
+    Left = 548
+    Top = 102
     object RemoveFilefromprojectPopItem: TMenuItem
       Action = actUnitRemove
     end
@@ -2289,8 +2289,8 @@ object MainForm: TMainForm
   end
   object ProjectPopup: TPopupMenu
     MenuAnimation = [maBottomToTop]
-    Left = 299
-    Top = 163
+    Left = 576
+    Top = 102
     object NewunitinprojectPopItem: TMenuItem
       Tag = 2
       Action = actProjectNew
@@ -2343,8 +2343,8 @@ object MainForm: TMainForm
     end
   end
   object HelpPop: TPopupMenu
-    Left = 350
-    Top = 84
+    Left = 465
+    Top = 102
     object HelponDevPopupItem: TMenuItem
       Caption = '&Help on Dev-C++'
       OnClick = HelpMenuItemClick
@@ -2355,8 +2355,8 @@ object MainForm: TMainForm
   end
   object alMain: TActionList
     Images = dmMain.MenuImages_Gnome
-    Left = 104
-    Top = 76
+    Left = 521
+    Top = 130
     object actViewCPU: TAction
       Category = 'Debug'
       Caption = '&View CPU Window'
@@ -3319,13 +3319,13 @@ object MainForm: TMainForm
     OnActivate = ApplicationEvents1Activate
     OnDeactivate = ApplicationEvents1Deactivate
     OnIdle = ApplicationEvents1Idle
-    Left = 298
-    Top = 138
+    Left = 549
+    Top = 130
   end
   object MessagePopup: TPopupMenu
     OnPopup = MessagePopupPopup
-    Left = 275
-    Top = 224
+    Left = 465
+    Top = 130
     object MsgCopyItem: TMenuItem
       Action = actMsgCopy
     end
@@ -3338,8 +3338,8 @@ object MainForm: TMainForm
   end
   object CppTokenizer1: TCppTokenizer
     LogTokens = False
-    Left = 332
-    Top = 276
+    Left = 604
+    Top = 130
   end
   object CppParser1: TCppParser
     Enabled = True
@@ -3350,8 +3350,8 @@ object MainForm: TMainForm
     LogStatements = False
     OnStartParsing = CppParser1StartParsing
     OnEndParsing = CppParser1EndParsing
-    Left = 236
-    Top = 164
+    Left = 465
+    Top = 158
   end
   object CodeCompletion1: TCodeCompletion
     Parser = CppParser1
@@ -3367,8 +3367,8 @@ object MainForm: TMainForm
     OnResize = CodeCompletion1Resize
     OnlyGlobals = False
     CurrentClass = 0
-    Left = 492
-    Top = 180
+    Left = 577
+    Top = 130
   end
   object devShortcuts1: TdevShortcuts
     Filename = 'devshortcuts.cfg'
@@ -3380,12 +3380,12 @@ object MainForm: TMainForm
     MultiLangStrings.HeaderShortcut = 'Shortcut assigned'
     MultiLangStrings.OK = 'OK'
     MultiLangStrings.Cancel = 'Cancel'
-    Left = 444
-    Top = 232
+    Left = 548
+    Top = 158
   end
   object BrowserPopup: TPopupMenu
-    Left = 472
-    Top = 108
+    Left = 493
+    Top = 102
     object mnuBrowserGotoDecl: TMenuItem
       Action = actBrowserGotoDecl
     end
@@ -3449,8 +3449,8 @@ object MainForm: TMainForm
   end
   object DebugVarsPopup: TPopupMenu
     OnPopup = DebugVarsPopupPopup
-    Left = 440
-    Top = 196
+    Left = 521
+    Top = 102
     object AddwatchPop: TMenuItem
       Action = actAddWatch
     end
@@ -3470,8 +3470,8 @@ object MainForm: TMainForm
   end
   object DevCppDDEServer: TDdeServerConv
     OnExecuteMacro = DevCppDDEServerExecuteMacro
-    Left = 588
-    Top = 80
+    Left = 603
+    Top = 158
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -3501,13 +3501,13 @@ object MainForm: TMainForm
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 544
-    Top = 200
+    Left = 493
+    Top = 158
   end
   object ThemeManager1: TThemeManager
     Options = [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw]
-    Left = 272
-    Top = 288
+    Left = 521
+    Top = 158
   end
   object DockManagerPro1: TDockManagerPro
     Font.Charset = DEFAULT_CHARSET
@@ -3519,7 +3519,7 @@ object MainForm: TMainForm
     CaptionEndColor = clBtnFace
     TransparentButton = True
     Control = pnlBrowsers
-    Left = 542
-    Top = 128
+    Left = 576
+    Top = 158
   end
 end

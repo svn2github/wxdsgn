@@ -68,11 +68,11 @@ type
     fRes: boolean;
     fModified: boolean;
     fText: TSynEdit;
-    {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
     fDesigner: TfrmNewForm;
     fScrollDesign: TScrollBox;
     fEditorType: TEditorType;
-   {$ENDIF}
+{$ENDIF}
        
     fTabSheet: TTabSheet;
     fErrorLine: integer;
@@ -80,20 +80,24 @@ type
     fErrSetting: boolean;
     fDebugGutter: TDebugGutter;
     fOnBreakPointToggle: TBreakpointToggleEvent;
-    fHintTimer: TTimer;
+    fDebugHintTimer: TTimer;
     fCurrentHint: string;
     //////// CODE-COMPLETION - mandrav /////////////
+    flastStartParenthesis: integer;
     fCompletionEatSpace: boolean;
+    fToolTipTimer: TTimer;
     fTimer: TTimer;
     fTimerKey: Char;
     fCompletionBox: TCodeCompletion;
     fRunToCursorLine: integer;
     fFunctionArgs: TSynCompletionProposal;
     fLastParamFunc: TList;
-    FCodeToolTip: TDevCodeToolTip; {** Modified by Peter **}
-    FAutoIndent: TSynAutoIndent; {** Modified by Peter **}
+    FCodeToolTip: TDevCodeToolTip;
+    FAutoIndent: TSynAutoIndent;
     procedure CompletionTimer(Sender: TObject);
+    procedure ToolTipTimer(Sender: TObject);
     procedure CodeRushLikeEditorKeyPress(Sender: TObject; var Key: Char);
+    procedure EditorOnScroll(Sender: TObject; ScrollBar: TScrollBarKind);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -107,7 +111,6 @@ type
     function GetModified: boolean;
     procedure SetModified(value: boolean);
 
-    // RNC 07.02.2004 -- new methods, explaination at definition
     procedure TurnOffBreakpoint(line: integer);
     procedure TurnOnBreakpoint(line: integer);
 
@@ -123,7 +126,7 @@ type
       aFiles: TStrings);
     procedure EditorDblClick(Sender: TObject);
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y:Integer);
-    procedure EditorHintTimer(sender: TObject);
+    procedure DebugHintTimer(sender: TObject);
 
     procedure SetFileName(value: string);
     procedure DrawGutterImages(ACanvas: TCanvas; AClip: TRect;
@@ -136,9 +139,9 @@ type
   public
     procedure Init(In_Project: boolean; Caption_, File_name: string; DoOpen: boolean; const IsRes: boolean = FALSE);
     destructor Destroy; override;
-    {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
     procedure Close; // New fnc for wx
-    {$ENDIF}
+{$ENDIF}
     // RNC set the breakpoints for this file when it is opened
     procedure SetBreakPointsOnOpen;
 
@@ -189,9 +192,7 @@ type
     property TabSheet: TTabSheet read fTabSheet write fTabSheet;
 
     property CodeToolTip: TDevCodeToolTip read FCodeToolTip; // added on 23rd may 2004 by peter_
-
-    //Guru's Code
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   private
     fDesignerClassName, fDesignerTitle: string;
     fDesignerStyle: TWxDlgStyleSet;
@@ -216,7 +217,7 @@ type
     procedure ReloadForm;
     procedure ReloadFormFromFile(strFilename:String);
     function isForm: Boolean;    
-    {$ENDIF}
+{$ENDIF}
 
     
   end;
@@ -261,6 +262,7 @@ procedure TEditor.Init(In_Project: boolean; Caption_, File_name: string;
 var
   s: string;
   pt: TPoint;
+  allowChange: Boolean;
 begin
   fModified := false;
   fErrorLine := -1;
@@ -268,34 +270,32 @@ begin
   fRunToCursorLine := -1;
   fRes := IsRes;
   fInProject := In_Project;
+  flastStartParenthesis := -1;
   fLastParamFunc := nil;
   if File_name = '' then
     fFileName := Caption_
   else
     fFileName := File_name;
 
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   if iswxForm(fFileName) then
     fEditorType := etForm
   else
     fEditorType := etSource;
-  {$ENDIF}
+{$ENDIF}
 
   fTabSheet := TTabSheet.Create(MainForm.PageControl);
   fTabSheet.Caption := Caption_;
   fTabSheet.PageControl := MainForm.PageControl;
   fTabSheet.TabVisible := FALSE;
-  { This is to have a pointer to the TEditor using
-    the PageControl in MainForm }
+  // This is to have a pointer to the TEditor using the PageControl in MainForm
   fTabSheet.Tag := integer(self);
 
   fOnBreakpointToggle := MainForm.OnBreakpointToggle;
-
-
   fText := TSynEdit.Create(fTabSheet);
   fText.Parent := fTabSheet;
 
- {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   if fEditorType = etForm then
   begin
     //Dont allow anyone to edit the text content
@@ -307,7 +307,6 @@ begin
     fScrollDesign.Color := clWhite;
 
     fDesigner := TfrmNewForm.Create(fScrollDesign);
-    //fDesigner.Parent:=fScrollDesign;
     fDesigner.synEdit := fText;
     fDesigner.Visible := False;
     SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or
@@ -316,58 +315,53 @@ begin
     ShowWindow(fDesigner.Handle, Sw_ShowNormal);
 
     fScrollDesign.ScrollInView(fDesigner);
-
     fScrollDesign.HorzScrollBar.Visible:=true;
     fScrollDesign.VertScrollBar.Visible:=true;
     fScrollDesign.AutoScroll:=true;
     fScrollDesign.VertScrollBar.Position := fScrollDesign.VertScrollBar.Range
-    
-
   end
   else
-  {$ENDIF}
   begin
-   {$IFDEF WX_BUILD}
     fDesigner := nil;
-   {$ENDIF}
     fText.Align := alClient;
   end;
-
-  if (DoOpen) then
-  try
-    fText.Lines.LoadFromFile(FileName);
-    fNew := False;
-    if devData.Backups then // create a backup of the file
-    begin
-      s := ExtractfileExt(FileName);
-      insert('~', s, pos('.', s) + 1);
-      delete(s, length(s) - 1, 1);
-       if devEditor.AppendNewline then
-         with fText do
-           if Lines.Count > 0 then
-             if Lines[Lines.Count -1] <> '' then
-               Lines.Add('');
-      fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
-    end;
-
-{$IFDEF WX_BUILD}
-    if fEditorType = etForm then
-      ReloadForm;
+{$ELSE}
+  fText.Align := alClient;
 {$ENDIF}
 
-  except
-    raise;
-  end
+  if (DoOpen) then
+    try
+      fText.Lines.LoadFromFile(FileName);
+      fNew := False;
+      if devData.Backups then // create a backup of the file
+      begin
+        s := ExtractfileExt(FileName);
+        insert('~', s, pos('.', s) + 1);
+        delete(s, length(s) - 1, 1);
+          if devEditor.AppendNewline then
+            with fText do
+              if Lines.Count > 0 then
+                if Lines[Lines.Count -1] <> '' then
+                  Lines.Add('');
+        fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
+      end;
+
+{$IFDEF WX_BUILD}
+      if fEditorType = etForm then
+        ReloadForm;
+{$ENDIF}
+    except
+      raise;
+    end
   else
     fNew := True;
 
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   if fEditorType = etForm then
   begin
     fText.Visible := false;
 
     fDesigner.Visible := True;
-
     fDesigner.Left := 8;
     fDesigner.Top := 8;
 
@@ -383,23 +377,25 @@ begin
         fDesigner.Wx_IDValue := 1000;
 
       if fDesignerStyle <> [] then
-      fDesigner.Wx_DialogStyle := fDesignerStyle;
+        fDesigner.Wx_DialogStyle := fDesignerStyle;
 
       if Trim(fDesignerTitle) <> '' then
         fDesigner.Caption := Self.fDesignerTitle;
     end;
-
   end
   else
-  {$ENDIF}
-  begin
+{$ENDIF}
     fText.Visible := True;
-  end;
 
-  fHintTimer := TTimer.Create(Application);
-  fHintTimer.Interval := 1000;
-  fHintTimer.OnTimer := EditorHintTimer;
-  fHintTimer.Enabled := False;
+  fDebugHintTimer := TTimer.Create(Application);
+  fDebugHintTimer.Interval := 1000;
+  fDebugHintTimer.OnTimer := DebugHintTimer;
+  fDebugHintTimer.Enabled := False;
+
+  fToolTipTimer := TTimer.Create(Application);
+  fToolTipTimer.Interval := 100;
+  fToolTipTimer.OnTimer := ToolTipTimer;
+  fToolTipTimer.Enabled := False;
 
   fText.PopupMenu := MainForm.EditorPopupMenu;
   fText.Font.Color := clWindowText;
@@ -416,6 +412,7 @@ begin
   fText.OnMouseDown := EditorMouseDown;
   fText.OnPaintTransient := EditorPaintTransient;
   fText.OnKeyPress := CodeRushLikeEditorKeyPress;
+  fText.OnScroll := EditorOnScroll;
 
   fText.MaxScrollWidth:=4096; // bug-fix #600748
   fText.MaxUndo := 4096;
@@ -423,18 +420,17 @@ begin
   devEditor.AssignEditor(fText);
   if not fNew then
     fText.Highlighter := dmMain.GetHighlighter(fFileName)
-  else 
-   if fRes then
+  else if fRes then
     fText.Highlighter := dmMain.Res
   else
     fText.Highlighter := dmMain.cpp;
 
 {$IFDEF WX_BUILD}
-   if self.isForm then
-   begin
-        fText.Highlighter := dmMain.Res;
-        fDesigner.PopupMenu:=MainForm.DesignerPopup;
-   end;
+  if self.isForm then
+  begin
+    fText.Highlighter := dmMain.Res;
+    fDesigner.PopupMenu:=MainForm.DesignerPopup;
+  end;
 {$ENDIF}
 
   // update the selected text color
@@ -442,21 +438,22 @@ begin
   fText.SelectedColor.Background := pt.X;
   fText.SelectedColor.Foreground := pt.Y;
 
+  // select the new editor
+  MainForm.PageControl.OnChanging(MainForm.PageControl, allowChange);
   fTabSheet.PageControl.ActivePage := fTabSheet;
   fTabSheet.TabVisible := TRUE;
+
   fDebugGutter := TDebugGutter.Create(self);
   Application.ProcessMessages;
-
   InitCompletion;
 
-  {** Modified by Peter **}
   fFunctionArgs := TSynCompletionProposal.Create(fText);
   with fFunctionArgs do begin
     EndOfTokenChr := '';
-    //TriggerChars:='('; {** Modified by Peter **}
+
     // we dont need triggerchars here anymore, because the tooltips
     // are handled by FCodeToolTip now
-    TriggerChars := ''; {** Modified by Peter **}
+    TriggerChars := '';
     TimerInterval := devCodeCompletion.Delay;
     DefaultType := ctParams;
     OnExecute := FunctionArgsExecute;
@@ -466,32 +463,29 @@ begin
     ShortCut := Menus.ShortCut(Word(VK_SPACE), [ssCtrl, ssShift]);
 {$ENDIF}
 {$IFDEF LINUX}
-    ShortCut:=Menus.ShortCut(Word(XK_SPACE), [ssCtrl, ssShift]);
+    ShortCut := Menus.ShortCut(Word(XK_SPACE), [ssCtrl, ssShift]);
 {$ENDIF}
   end;
 
-   
-  {** Modified by Peter **}
   // create the codetooltip
   FCodeToolTip := TDevCodeToolTip.Create(Application);
   FCodeToolTip.Editor := FText;
   FCodeToolTip.Parser := MainForm.CppParser1;
-  
-  {** Modified by Peter **}
+  FCodeToolTip.DropShadow := True;
+
   // The Editor must have 'Auto Indent' activated  to use FAutoIndent.
   // It's under Tools | Editor Options and then the General tab
   FAutoIndent := TSynAutoIndent.Create(Application);
   FAutoIndent.Editor := FText;
   FAutoIndent.IndentChars := '{:';
   FAutoIndent.UnIndentChars := '}';
-
-  
   fText.OnMouseMove := EditorMouseMove;
 
   // monitor this file for outside changes
   MainForm.devFileMonitor1.Files.Add(fFileName);
   MainForm.devFileMonitor1.Refresh(True);
-  // RNC set any breakpoints that should be set in this file
+
+  // set any breakpoints that should be set in this file
   SetBreakPointsOnOpen;
 end;
 
@@ -500,10 +494,10 @@ var
   idx: integer;
   lastActPage: Integer;
 begin
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   if isForm then
-    MainForm.SelectedComponent:=nil;
-  {$ENDIF}
+    MainForm.SelectedComponent := nil;
+{$ENDIF}
 
   idx := MainForm.devFileMonitor1.Files.IndexOf(fFileName);
   if idx <> -1 then begin
@@ -512,21 +506,28 @@ begin
     MainForm.devFileMonitor1.Refresh(False);
   end;
 
-  if Assigned(fHintTimer) then begin
-    fHintTimer.Enabled := False;
-    FreeAndNil(fHintTimer);
+  if Assigned(fDebugHintTimer) then
+  begin
+    fDebugHintTimer.Enabled := False;
+    FreeAndNil(fDebugHintTimer);
+  end;
+
+  if Assigned(fToolTipTimer) then
+  begin
+    fToolTipTimer.Enabled := False;
+    FreeAndNil(fToolTipTimer);
   end;
 
   DestroyCompletion;
   FreeAndNil(fText);
 
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   if Assigned(fDesigner) then
   begin
     FreeAndNil(fDesigner);
     FreeAndNil(fScrollDesign);
   end;
-  {$ENDIF}
+{$ENDIF}
 
   //this activates the previous tab if the last one was
   //closed, instead of moving to the first one
@@ -542,42 +543,51 @@ begin
     end;
   end;
 
-  {** Modified by Peter **}
-  if Assigned(FCodeToolTip) then FreeAndNil(FCodeToolTip);
+  if Assigned(FCodeToolTip) then
+    FreeAndNil(FCodeToolTip);
 
-  {** Modified by Peter **}
-  if Assigned(FAutoIndent) then FreeAndNil(FAutoIndent);
+  if Assigned(FAutoIndent) then
+    FreeAndNil(FAutoIndent);
 
   inherited;
 end;
 
 procedure TEditor.Activate;
+var
+  Allow: Boolean;
 begin
   if assigned(fTabSheet) then
   begin
+    //Broadcast the page change event
+    fTabSheet.PageControl.OnChanging(fTabSheet.PageControl, Allow);
+
+    //Then do the actual changing
     fTabSheet.PageControl.Show;
     fTabSheet.PageControl.ActivePage := fTabSheet;
     if fText.Visible then
       fText.SetFocus;
-  {$IFDEF WX_BUILD}
+
+{$IFDEF WX_BUILD}
     if isForm then
     begin
-      try
+      //TODO: lowjoel: Must we really disable and re-enable the designer?
+      {try
         MainForm.ELDesigner1.Active:=false;
         MainForm.ELDesigner1.DesignControl:=fDesigner;
       except
-      end;
+      end;}
       MainForm.EnableDesignerControls;
       fDesigner.OnResize:=fDesigner.NewFormResize;
     end
     else
       MainForm.DisableDesignerControls;
-  {$ENDIF}
+{$ENDIF}
 
     if MainForm.ClassBrowser1.Enabled {$IFDEF WX_BUILD} or isForm {$ENDIF} then
-      MainForm.PageControlChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent
-
-
+    begin
+      MainForm.PageControl.OnChanging(MainForm.PageControl, allow);
+      MainForm.PageControl.OnChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent
+    end;
   end;
 end;
 
@@ -860,7 +870,6 @@ begin
   end;
 end;
 
-
 procedure TEditor.EditorStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
@@ -900,24 +909,105 @@ begin
     Panels[3].Text := format(Lang[ID_LINECOUNT], [fText.Lines.Count]);
   end;
 
-   
-  {** Modified by Peter **}
   if (scCaretX in Changes) or (scCaretY in Changes) then
-  begin
     if assigned(FCodeToolTip) and FCodeToolTip.Enabled then
     begin
-      // when the hint is already activated when call
-      // ShowHint again, because the current arugment could have
-      // been changed, so we need to make another arg in bold
-      if FCodeToolTip.Activated then
-        FCodeToolTip.Show
-      else
-        // it's not showing yet, so we check if the cursor
-        // is at the bracket and when it is, we show the hint
-        if assigned(FText) and (not FText.SelAvail) and (FText.SelStart > 1) and (Copy(FText.Text, FText.SelStart-1, 1) = '(') then
-          FCodeToolTip.Show;
+      fToolTipTimer.Enabled := False;
+      fToolTipTimer.Enabled := True;
+    end;
+end;
+
+procedure TEditor.ToolTipTimer(Sender: TObject);
+var
+  startParenthesis: integer;
+
+  function Max(a, b: integer): Integer;
+  begin
+    if a > b then
+      Result := a
+    else
+      Result := b;
+  end;
+
+  function FindStart: integer;
+  var
+    FillingParameter: Boolean;
+    Brackets: Integer;
+    I: Integer;
+  begin
+    //Give the current selection index, we need to find the start of the function
+    FillingParameter := False;
+    I := FText.SelStart;
+    Brackets := -1;
+    Result := -1;
+    
+    while I > 0 do
+    begin
+      case FText.Text[I] of
+        ')':
+          Dec(Brackets);
+        '(':
+          begin
+            Inc(Brackets);
+            if Brackets = 0 then
+            begin
+              Result := I;
+              Exit;
+            end
+          end;
+        #10, #13:
+          //Make sure we are not within a function call
+          if not FillingParameter then
+          begin
+            //Skip whitespace so we can see what is the last character
+            while (I > 1) and (FText.Text[I - 1] in [#10, #13, #9, ' ']) do
+              Dec(I); //Previous character is whitespace, skip it
+
+            //Is the character a comma or an opening parenthesis?
+            if not (FText.Text[I - 1] in [',', '(']) then
+              Exit;
+          end;
+        '{', '}':
+          Exit;
+        ',':
+          FillingParameter := True;
+        else
+          FillingParameter := False;
+      end;
+
+      Dec(I);
     end;
   end;
+begin
+  // stop the timer so we don't recurse
+  fToolTipTimer.Enabled := False;
+  startParenthesis := FindStart;
+
+  // check if the last parenthesis selected is the same one as the one we
+  // have now. Otherwise, we should get rid of the tooltip
+  if startParenthesis <> flastStartParenthesis then
+    FCodeToolTip.ReleaseHandle;
+
+  // when the hint is already activated when call
+  // ShowHint again, because the current arugment could have
+  // been changed, so we need to make another arg in bold
+  if FCodeToolTip.Activated then
+    FCodeToolTip.Show
+  else
+    // it's not showing yet, so we check if the cursor
+    // is in the bracket and when it is, we show the hint.
+    if assigned(FText) and (not FText.SelAvail) and (FText.SelStart > 1) and (startParenthesis <> -1) then
+      FCodeToolTip.Show;
+
+  // cache the current parenthesis index so that we can check if we
+  // have changed since we first displayed it
+  flastStartParenthesis := startParenthesis;
+end;
+
+procedure TEditor.EditorOnScroll(Sender: TObject; ScrollBar: TScrollBarKind);
+begin
+  if assigned(FCodeToolTip) and (FCodeToolTip.Caption <> '') and FCodeToolTip.Activated then
+    FCodeToolTip.RethinkCoordAndActivate;
 end;
 
 procedure TEditor.ExportTo(const isHTML: boolean);
@@ -972,28 +1062,6 @@ begin
     GotoForm.Free;
   end;
 end;
-
-{
-procedure TEditor.GotoLine;
-var
- pt: TPoint;
-begin
-  with TGotoLineForm.Create(fText) do
-   try
-    pt.x:= (fText.Width div 2) - (Width div 2);
-    pt.y:= fText.Top;
-    pt:= fText.ClienttoScreen(pt);
-    Left:= pt.x;
-    Top:= pt.y;
-    Line.Value:= fText.CaretY;
-    if ShowModal = mrok then
-     fText.CaretXY:= point(fText.CaretX, Line.Value);
-    Activate;
-   finally
-    Free;
-   end;
-end;
-}
 
 procedure TEditor.SetString(const Value: string);
 begin
@@ -1455,27 +1523,34 @@ begin
   Dec(I, 1);
   NestedPar := 0;
   AllowPar := ((Length(fText.LineText) > 1) and (Copy(fText.LineText, I - 1, 2) = ').')) or
-    		   (Length(fText.LineText) > 2) and (Copy(fText.LineText, I - 2, 3) = ')->');
-  while (I <> 0) and (fText.LineText <> '') and (fText.LineText[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.', '-', '>', ':', '(', ')', '[', ']']) do begin
-    if (fText.LineText[I] = ')') then begin
+              (Length(fText.LineText) > 2) and (Copy(fText.LineText, I - 2, 3) = ')->');
+  while (I <> 0) and (fText.LineText <> '') and (fText.LineText[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.', '-', '>', ':', '(', ')', '[', ']', '~']) do
+  begin
+    if (fText.LineText[I] = ')') then
       if not AllowPar then
         Break
       else
-        Inc(NestedPar);
-    end
-    else if fText.LineText[I] = '(' then begin
-      if AllowPar then begin
+        Inc(NestedPar)
+    else if fText.LineText[I] = '(' then
+      if AllowPar then
         if NestedPar > 0 then
           Dec(NestedPar)
         else
-          AllowPar := False;
-      end
+          AllowPar := False
       else
         Break;
-    end;
     Dec(I, 1);
   end;
-  Result := Copy(fText.LineText, I + 1, fText.CaretX - I - 1);
+
+  //Since the current character is _invalid_ we need to increment it by one
+  Inc(I);
+
+  //If the string starts with a delimiter we should remove it
+  while (I <= Length(fText.LineText)) and (fText.LineText[I] in ['.', '-', '>', ':', '(', ')', '[', ']']) do
+    Inc(I);
+
+  //Then extract the relevant string
+  Result := Copy(fText.LineText, I, fText.CaretX - I);
 end;
 
 procedure TEditor.SetEditorText(Key: Char);
@@ -1493,8 +1568,15 @@ begin
       FuncAddOn := '().'
     else if Key = '>' then
       FuncAddOn := '()->'
+{$IFDEF WIN32}
+    else if Key = Char(vk_Return) then
+{$ENDIF}
+{$IFDEF LINUX}
+    else if Key=Char(Xk_Return) then
+{$ENDIF}
+      FuncAddOn := '()'
     else
-      FuncAddOn := '()';
+      FuncAddOn := '(';
   end
   else begin
 {$IFDEF WIN32}
@@ -1512,20 +1594,13 @@ begin
       FuncAddOn := Key;
   end;
 
-  if ST <> nil then begin
+  if ST <> nil then
+  begin
     Phrase := ST^._Command;
 
     // if already has a selection, delete it
     if fText.SelAvail then
       fText.SelText := '';
-
-    // find the end of the word and delete from caretx to end of word
-    CurrSel := fText.SelEnd;
-    I := CurrSel;
-    while (I < Length(fText.Text)) and (fText.Text[I] in ['A'..'Z', 'a'..'z','0'..'9', '_']) do
-      Inc(I);
-    fText.SelEnd := I;
-    fText.SelText := '';
 
     // find the start of the word
     CurrSel := fText.SelStart;
@@ -1543,11 +1618,9 @@ begin
     // if we added "()" move caret inside parenthesis
     // only if Key<>'.' and Key<>'>'
     // and function takes arguments...
-    if (not (Key in ['.', '>']))
-    and (FuncAddOn<>'')
-    and ( (Length(ST^._Args)>2) or (ST^._Args='()') ) then begin
+    if (not (Key in ['.', '>'])) and (FuncAddOn <> '') and (Length(ST^._Args) > 2) then
+    begin
       fText.CaretX := fText.CaretX - Length(FuncAddOn) + 1;
-      // popup the arguments hint now
       fFunctionArgs.ExecuteEx(Phrase, fText.DisplayX, fText.DisplayY, ctParams);
     end;
   end;
@@ -1582,7 +1655,7 @@ var s, s1: string;
   	I,j,slen: integer;
     attr:TSynHighlighterAttributes;
 begin
-  fHintTimer.Enabled := false;
+  fDebugHintTimer.Enabled := false;
 
   //check if not comment or string
   //if yes - exit without hint
@@ -1629,8 +1702,8 @@ begin
     end;}
   end;
 
-  if (s <> '') and (not fHintTimer.Enabled) then begin
-    fHintTimer.Enabled := true;
+  if (s <> '') and (not fDebugHintTimer.Enabled) then begin
+    fDebugHintTimer.Enabled := true;
     fCurrentHint := s;
   end
   else if s = '' then
@@ -1646,14 +1719,14 @@ begin
     fText.Cursor := crIBeam;
 end;
 
-procedure TEditor.EditorHintTimer(sender: TObject);
+procedure TEditor.DebugHintTimer(sender: TObject);
 var
   r: TRect;
   p: TPoint;
   st: PStatement;
   M: TMemoryStream;
 begin
-  fHintTimer.Enabled := false;
+  fDebugHintTimer.Enabled := false;
   p := fText.ScreenToClient(Mouse.CursorPos);
   // is the mouse still inside the editor?
   if (p.X <= 0) or (p.X >= fText.Width) or
@@ -1740,108 +1813,6 @@ begin
     FText.ExecuteCommand(ecBlockUnIndent, #0, nil);
   end;
 end;
-
-
-(*
-// SynEdit has an indent/unindent command, no need to make it the hard way
-procedure TEditor.IndentSelection;
-var
-  TabString: string; // customize depending on devEditor values
-  S: string;
-  Offset: integer;
-  ss: integer;
-  backup: TPoint;
-begin
-  // init TabString
-  if not devEditor.TabToSpaces then // keep tabs
-{$IFDEF WIN32}
-    TabString:=Char(VK_TAB)
-  else
-    TabString:=StringOfChar(Char(VK_SPACE), devEditor.TabSize);
-{$ENDIF}
-{$IFDEF LINUX}
-    TabString:=Char(XK_TAB)
-  else
-    TabString:=StringOfChar(Char(XK_SPACE), devEditor.TabSize);
-{$ENDIF}
-
-  if Text.SelAvail then begin // has selection
-    backup:=Text.CaretXY;
-    Text.BeginUpdate;
-    ss:=Text.SelStart;
-    S:=#10+Text.SelText;
-    Offset:=0;
-    if S[Length(S)]=#10 then begin // if the selection ends with a newline, eliminate it
-      if S[Length(S)-1]=#13 then // do we ignore 1 or 2 chars?
-        Offset:=2
-      else
-        Offset:=1;
-      S:=Copy(S, 1, Length(S)-Offset);
-    end;
-    S:=StringReplace(S, #10, #10+TabString, [rfReplaceAll]);
-    if Offset=1 then
-      S:=S+#10
-    else if Offset=2 then
-      S:=S+#13#10;
-    Text.SelText:=Copy(S, 2, Length(S)-1);
-    Text.SelStart:=ss;
-    Text.SelEnd:=ss+Length(S)-1;
-    Text.EndUpdate;
-    Text.CaretXY:=backup;
-  end
-  else // no selection; easy stuff ;)
-    Text.LineText:=TabString+Text.LineText;
-  Text.Modified:=True;
-end;
-
-
-procedure TEditor.UnindentSelection;
-var
-  TabString: string; // customize depending on devEditor values
-  S: string;
-  ss: integer;
-  backup: TPoint;
-begin
-  // init TabString
-{$IFDEF WIN32}
-  TabString:=StringOfChar(Char(VK_SPACE), devEditor.TabSize);
-{$ENDIF}
-{$IFDEF LINUX}
-  TabString:=StringOfChar(Char(XK_SPACE), devEditor.TabSize);
-{$ENDIF}
-
-  if Text.SelAvail then begin // has selection
-    backup:=Text.CaretXY;
-    Text.BeginUpdate;
-    ss:=Text.SelStart;
-    S:=Text.SelText;
-    if Length(S)>=Length(TabString) then // sanity check
-    begin
-      if Copy(S,1,1)=#9 then
-        S:=Copy(S, 2, Length(S)-1)
-      else if Copy(S, 1, Length(TabString))=TabString then // if it starts with indent
-        S:=Copy(S, Length(TabString)+1, Length(S)-Length(TabString)); // remove it
-    end;
-    S:=StringReplace(S, #10+TabString, #10#9, [rfReplaceAll]);
-    S:=StringReplace(S, #10#9, #10, [rfReplaceAll]);
-    Text.SelText:=S;
-    Text.SelStart:=ss;
-    Text.SelEnd:=ss+Length(S);
-    Text.EndUpdate;
-    Text.CaretXY:=backup;
-  end
-  else // no selection; easy stuff ;)
-    if Length(Text.LineText)>=Length(TabString) then
-    begin
-      if Copy(Text.LineText,1,1)=#9 then
-        Text.LineText:=Copy(Text.LineText, 2, Length(Text.LineText)-1)
-      else if Copy(Text.LineText, 1, Length(TabString))=TabString then
-        Text.LineText:=Copy(Text.LineText, Length(TabString)+1, Length(Text.LineText)-Length(TabString));
-    end;
-  Text.Modified:=True;
-end;
-*)
-
 
 {** Modified by Peter **}
 procedure TEditor.UncommentSelection;
@@ -2193,39 +2164,6 @@ begin
     end;
 
     CanExecute := FoundMatch;
-
-    
-    {** Modified by Peter **}
-    // no longer needed, check 'DoOnCodeCompletion' below ...
-    {
-    if FoundMatch then
-    begin
-      FCodeToolTip.Show;
-      TmpX := TSynCompletionProposal(Sender).Form.InsertList.Count;
-      if TmpX > 0 then
-      begin
-        LookUp := TSynCompletionProposal(Sender).Form.ItemList.Strings[TmpX];
-        FCodeToolTip.Select(LookUp);
-      end;
-    end;  }
-
-    {** Modified by Peter **}
-    { removed old tooltip stuff
-    TSynCompletionProposal(Sender).ItemList.Clear;
-    if CanExecute then begin
-      for I:=0 to sl.Count-1 do begin
-        P:=PStatement(sl[I]);
-        TSynCompletionProposal(Sender).Form.CurrentIndex := TmpLocation;
-        if P^._ScopelessCmd <> TSynCompletionProposal(Sender).PreviousWord then begin
-          if (P^._Args<>'') then begin
-            if (P^._Args[1]='(') then
-              TSynCompletionProposal(Sender).ItemList.Add(Copy(P^._Args, 2, Length(P^._Args)-2))
-            else
-              TSynCompletionProposal(Sender).ItemList.Add(P^._Args);
-          end;
-        end;
-      end;
-    end }
   finally
 
   end;
@@ -2238,6 +2176,7 @@ procedure TEditor.DoOnCodeCompletion(Sender: TObject; const AStatement: TStateme
 //  this event is triggered whenever the codecompletion box is going to make its work,
 //  or in other words, when it did a codecompletion ...
 //
+{$IFNDEF PRIVATE_BUILD}
 var
     bUnIntialisedToolTip:Boolean;
 begin
@@ -2245,13 +2184,10 @@ begin
   // in the 'EditorStatusChange' event to prevent it's redrawing there
   if assigned(FCodeToolTip)then
   begin
-
-    //FCodeToolTip may not be initialized under some
-    //circumstances when create TEditor
-    //I suspect it's in TProject.OpenUnit --specu
-
-    //fixme - Guru: I'm checking if the tooltip is created if not
-    // I create a new one on the fly
+    //TODO: specu: FCodeToolTip may not be initialized under some circumstances
+    //             when creating TEditor. I suspect it's in TProject.OpenUnit
+    //TODO: Guru: I'm checking if the tooltip is created; if it isn't, create a
+    //            new one on the fly
     bUnIntialisedToolTip:=false;
     try
         FCodeToolTip.Enabled := False;
@@ -2270,11 +2206,18 @@ begin
     FCodeToolTip.Show;
     FCodeToolTip.Select(AStatement._FullText);
     FCodeToolTip.Enabled := True;
+    FCodeToolTip.Show;
   end;
+{$ELSE}
+begin
+  Assert(FCodeToolTip <> nil);
+  FCodeToolTip.Select(AStatement._FullText);
+  FCodeToolTip.Enabled := True;
+  FCodeToolTip.Show;
+{$ENDIF}
 
-  // ???: when we don't invalidate the SynEditor here, it occurs sometimes
-  //      that fragments of the codecompletion listbox are stuff displayed
-  //      on the SynEdit. - strange :)
+  //When we don't invalidate the SynEditor here, it occurs sometimes that
+  //fragments of the codecompletion listbox are stuff displayed on the SynEdit
   fText.Invalidate;
 end;
 
