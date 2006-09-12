@@ -4014,15 +4014,15 @@ procedure TRegExpr.Error (AErrorID : integer);
   e : ERegExpr;
  begin
   fLastError := AErrorID; // dummy stub - useless because will raise exception
-  if AErrorID < 1000 // compilation error ?
+  {if AErrorID < 1000 // compilation error ?
    then e := ERegExpr.Create (ErrorMsg (AErrorID) // yes - show error pos
              + ' (pos ' + IntToStr (CompilerErrorPos) + ')')
    else e := ERegExpr.Create (ErrorMsg (AErrorID));
   e.ErrorCode := AErrorID;
   e.CompilerErrorPos := CompilerErrorPos;
-  raise e
+  raise e }
    {$IFDEF reRealExceptionAddr}
-   At ReturnAddr; //###0.938
+   //At ReturnAddr; //###0.938
    {$ENDIF}
  end; { of procedure TRegExpr.Error
 --------------------------------------------------------------}

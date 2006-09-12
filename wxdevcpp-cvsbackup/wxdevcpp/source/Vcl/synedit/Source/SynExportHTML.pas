@@ -138,9 +138,9 @@ begin
   fReplaceReserved['™'] := '&trade;';
   fReplaceReserved['©'] := '&copy;';
   fReplaceReserved['®'] := '&reg;';
-  fReplaceReserved['À'] := '&Agrave;';
+ { fReplaceReserved['À'] := '&Agrave;';  //###mod russian HTML export
   fReplaceReserved['Á'] := '&Aacute;';
-  fReplaceReserved['Â'] := '&Acirc;';
+  fReplaceReserved['Â'] := '&Acirc;';     
   fReplaceReserved['Ã'] := '&Atilde;';
   fReplaceReserved['Ä'] := '&Auml;';
   fReplaceReserved['Å'] := '&Aring;';
@@ -157,7 +157,7 @@ begin
   fReplaceReserved['Ð'] := '&ETH;';
   fReplaceReserved['Ñ'] := '&Ntilde;';
   fReplaceReserved['Ò'] := '&Ograve;';
-  fReplaceReserved['Ó'] := '&Oacute;';
+  fReplaceReserved['Ó'] := '&Oacute;';   
   fReplaceReserved['Ô'] := '&Ocirc;';
   fReplaceReserved['Õ'] := '&Otilde;';
   fReplaceReserved['Ö'] := '&Ouml;';
@@ -181,7 +181,7 @@ begin
   fReplaceReserved['é'] := '&eacute;';
   fReplaceReserved['ê'] := '&ecirc;';
   fReplaceReserved['ë'] := '&euml;';
-  fReplaceReserved['ì'] := '&igrave;';
+  fReplaceReserved['ì'] := '&igrave;'; 
   fReplaceReserved['í'] := '&iacute;';
   fReplaceReserved['î'] := '&icirc;';
   fReplaceReserved['ï'] := '&iuml;';
@@ -199,7 +199,7 @@ begin
   fReplaceReserved['ü'] := '&uuml;';
   fReplaceReserved['ý'] := '&yacute;';
   fReplaceReserved['þ'] := '&thorn;';
-  fReplaceReserved['ÿ'] := '&yuml;';
+  fReplaceReserved['ÿ'] := '&yuml;';  }
   fReplaceReserved['¡'] := '&iexcl;';
   fReplaceReserved['¢'] := '&cent;';
   fReplaceReserved['£'] := '&pound;';
@@ -207,7 +207,8 @@ begin
   fReplaceReserved['¥'] := '&yen;';
   fReplaceReserved['¦'] := '&brvbar;';
   fReplaceReserved['§'] := '&sect;';
-  fReplaceReserved['¨'] := '&uml;';
+  //fReplaceReserved['¨'] := '&uml;';    //###mod russian HTML export
+  //fReplaceReserved['¸'] := '&cedil;';  //###mod russian HTML export
   fReplaceReserved['ª'] := '&ordf;';
   fReplaceReserved['«'] := '&laquo;';
   fReplaceReserved['¬'] := '&shy;';
@@ -219,7 +220,6 @@ begin
   fReplaceReserved['´'] := '&acute;';
   fReplaceReserved['µ'] := '&micro;';
   fReplaceReserved['·'] := '&middot;';
-  fReplaceReserved['¸'] := '&cedil;';
   fReplaceReserved['¹'] := '&sup1;';
   fReplaceReserved['º'] := '&ordm;';
   fReplaceReserved['»'] := '&raquo;';
@@ -332,8 +332,10 @@ function TSynExporterHTML.GetFooter: string;
 begin
   Result := '';
   if fExportAsText then
-    Result := '</span>'#13#10'</code></pre>'#13#10;
-  if not fCreateHTMLFragment and fExportAsText then
+    Result := '</span>'#13#10'</code></pre>'#13#10
+  else
+    Result := '</code></pre><!--EndFragment-->';
+  if not(fCreateHTMLFragment and fExportAsText) then
     Result := Result + '</body>'#13#10'</html>';
 end;
 
@@ -345,9 +347,8 @@ end;
 function TSynExporterHTML.GetHeader: string;
 const
   DescriptionSize = 105;
-  HeaderSize = 47;
-  FooterSize1 = 58;
-  FooterSize2 = 24;
+  FooterSize1 = 47;
+  FooterSize2 = 31;
   NativeHeader = 'Version:0.9'#13#10 +
                  'StartHTML:%.10d'#13#10 +
                  'EndHTML:%.10d'#13#10 +
@@ -358,7 +359,8 @@ const
                      '<html xmlns="http://www.w3.org/1999/xhtml">'#13#10 +
                      '<head>'#13#10 +
                      '<title>%s</title>'#13#10 +
-                     '<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />'#13#10 +
+                   //'<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />'#13#10 + 
+                     '<meta http-equiv="Content-Type" content="text/html; charset=win-1251" />'#13#10 + //###mod russian HTML export
                      '<meta name="generator" content="SynEdit HTML exporter" />'#13#10 +
                      '<style type="text/css">'#13#10 +
                      '<!--'#13#10 +
@@ -368,9 +370,8 @@ const
                      '</style>'#13#10 +
                      '</head>'#13#10 +
                      '<body>'#13#10;
-
 var
-  Styles, Header: string;
+  Styles, Header, Header2: string;
 begin
   EnumHighlighterAttris(Highlighter, True, AttriToCSSCallback, [@Styles]);
 
@@ -389,14 +390,12 @@ begin
   else
   begin
     // Described in http://msdn.microsoft.com/library/sdkdoc/htmlclip/htmlclipboard.htm
+    Header2 := '<!--StartFragment--><pre><code>';
     Result := Format(NativeHeader, [DescriptionSize,
-      DescriptionSize + Length(Header) + GetBufferSize + FooterSize1,
+      DescriptionSize + Length(Header) + Length(Header2) + GetBufferSize + FooterSize1,
       DescriptionSize + Length(Header),
-      DescriptionSize + Length(Header) + GetBufferSize + FooterSize2]);
-      Result := Result + Header;
-
-    Result := Result + '<!--StartFragment--><pre><code>';
-    AddData('</code></pre><!--EndFragment-->');
+      DescriptionSize + Length(Header) + Length(Header2) + GetBufferSize + FooterSize2]);
+    Result := Result + Header + Header2;
   end;
 end;
 

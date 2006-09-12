@@ -244,6 +244,7 @@ end;
 procedure TSynEditPrinterInfo.UpdatePrinter;
 begin
   FIsUpdated := True;
+  Printer.Refresh;
   if Printer.Printers.Count <= 0 then
   begin
     FillDefault;

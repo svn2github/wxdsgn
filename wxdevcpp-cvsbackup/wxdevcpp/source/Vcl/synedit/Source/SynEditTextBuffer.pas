@@ -176,6 +176,9 @@ type
     crGroupBreak,
     crDeleteAll,
     crWhiteSpaceAdd //for undo/redo of adding a character past EOL and repositioning the caret
+    //### Code Folding ###
+    ,crDeleteCollapsedFold
+    //### End Code Folding ###		
     );
 
   TSynEditUndoItem = class(TPersistent)
@@ -186,6 +189,10 @@ type
     fChangeEndPos: TBufferCoord;
     fChangeStr: string;
     fChangeNumber: integer;
+    //### Code Folding ###
+    fChangeData: Pointer;
+    fChangeIndex: Integer;
+    //### End Code Folding ###		
   public
     procedure Assign(Source: TPersistent); override;
     property ChangeReason: TSynChangeReason read fChangeReason;
@@ -194,6 +201,10 @@ type
     property ChangeEndPos: TBufferCoord read fChangeEndPos;
     property ChangeStr: string read fChangeStr;
     property ChangeNumber: integer read fChangeNumber;
+    //### Code Folding ###
+    property ChangeData: Pointer read fChangeData;
+    property ChangeIndex: Integer read fChangeIndex;
+    //### End Code Folding ###		
   end;
 
   TSynEditUndoList = class(TPersistent)
@@ -206,6 +217,7 @@ type
     fMaxUndoActions: integer;
     fNextChangeNumber: integer;
     fInitialChangeNumber: integer;
+    fInsideRedo: boolean;
     fOnAddedUndo: TNotifyEvent;
     procedure EnsureMaxEntries;
     function GetCanUndo: boolean;
@@ -218,8 +230,15 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+		
+    //### Code Folding ###
     procedure AddChange(AReason: TSynChangeReason; const AStart, AEnd: TBufferCoord;
-      const ChangeText: string; SelMode: TSynSelectionMode);
+      const ChangeText: string; SelMode: TSynSelectionMode; Data: Pointer = nil;
+      Index: Integer = 0);
+    //### End Code Folding ###
+		
+    {procedure AddChange(AReason: TSynChangeReason; const AStart, AEnd: TBufferCoord;
+      const ChangeText: string; SelMode: TSynSelectionMode); }
     procedure BeginBlock;
     procedure Clear;
     procedure EndBlock;
@@ -243,6 +262,7 @@ type
     property BlockCount: integer read fBlockCount;
     property MaxUndoActions: integer read fMaxUndoActions
       write SetMaxUndoActions;
+    property InsideRedo: boolean read fInsideRedo write fInsideRedo;
     property OnAddedUndo: TNotifyEvent read fOnAddedUndo write fOnAddedUndo;
   end;
 
@@ -780,6 +800,8 @@ begin
 end;
 
 procedure TSynEditStringList.InsertLines(Index, NumLines: integer);
+var
+	c_Line: Integer;
 begin
   if (Index < 0) or (Index > fCount) then
     ListIndexOutOfBounds(Index);
@@ -791,7 +813,15 @@ begin
         System.Move(fList^[Index], fList^[Index + NumLines],
           (fCount - Index) * SynEditStringRecSize);
       end;
-      FillChar(fList^[Index], NumLines * SynEditStringRecSize, 0);
+      for c_Line := Index to Index + NumLines -1 do
+			  with fList^[c_Line] do 
+				begin
+			    Pointer(fString) := nil;
+			    fObject := nil;
+			    fRange := NullRange;
+			    fExpandedLength := -1;
+			    fFlags := [sfExpandedLengthUnknown];
+			  end;
       Inc(fCount, NumLines);
       if Assigned(OnInserted) then
         OnInserted( Self, Index, NumLines );
@@ -1093,6 +1123,7 @@ begin
   fItems := TList.Create;
   fMaxUndoActions := 1024;
   fNextChangeNumber := 1;
+  fInsideRedo := False;
 end;
 
 destructor TSynEditUndoList.Destroy;
@@ -1122,13 +1153,17 @@ begin
     fLockCount:=TSynEditUndoList(Source).fLockCount;
     fMaxUndoActions:=TSynEditUndoList(Source).fMaxUndoActions;
     fNextChangeNumber:=TSynEditUndoList(Source).fNextChangeNumber;
+    fInsideRedo:=TSynEditUndoList(Source).fInsideRedo;
   end
   else
     inherited Assign(Source);
 end;
 
+{procedure TSynEditUndoList.AddChange(AReason: TSynChangeReason; const AStart,
+  AEnd: TBufferCoord; const ChangeText: string; SelMode: TSynSelectionMode);  }
 procedure TSynEditUndoList.AddChange(AReason: TSynChangeReason; const AStart,
-  AEnd: TBufferCoord; const ChangeText: string; SelMode: TSynSelectionMode);
+  AEnd: TBufferCoord; const ChangeText: string; SelMode: TSynSelectionMode;
+  Data: Pointer = nil; Index: Integer = 0);  
 var
   NewItem: TSynEditUndoItem;
 begin
@@ -1141,6 +1176,12 @@ begin
         fChangeStartPos := AStart;
         fChangeEndPos := AEnd;
         fChangeStr := ChangeText;
+				
+        //### Code Folding ###
+        fChangeData := Data;
+        fChangeIndex := Index;
+        //### End Code Folding ###				
+				
         if fBlockChangeNumber <> 0 then
           fChangeNumber := fBlockChangeNumber
         else begin
@@ -1281,7 +1322,6 @@ begin
   else
     result := TSynEditUndoItem(fItems[fItems.Count - 1]).fChangeReason;
 end;
-
 
 procedure TSynEditUndoList.AddGroupBreak;
 var

@@ -49,7 +49,10 @@ uses
   SynEditMiscClasses,
 {$ENDIF}
   SysUtils,
-  Classes;
+  Classes,
+  //### Code Folding ###
+  SynEditCodeFolding;
+  //### End Code Folding ###
 
 {$IFNDEF SYN_CLX}
 type
@@ -91,7 +94,8 @@ type
 {$ENDIF}
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
-    property Name: string read fName;
+  //property Name: string read fName;
+    property Name: string read fName write fName; //###mod htm export
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   published
     property Background: TColor read fBackground write SetBackground
@@ -118,15 +122,22 @@ const
   SYN_ATTR_SYMBOL            =   5;
 
 type
+	TCodeFoldingSkipFunc = function(var Ptr: PChar; var Line: Integer): Boolean of object; // pjura
+  TCodeFoldingSkipFuncArr = array of TCodeFoldingSkipFunc;
+
   TSynCustomHighlighter = class(TComponent)
   private
-    fAttributes: TStringList;
+    //fAttributes: TStringList; //###mod htm export
     fAttrChangeHooks: TSynNotifyEventChain;
     fUpdateCount: integer;
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
+    //### Code Folding ###
+    fFoldRegions: TFoldRegions;
+    //### End Code Folding ###
     procedure SetEnabled(const Value: boolean);
   protected
+    fAttributes: TStringList; //###mod htm export
     fDefaultFilter: string;
     fUpdateChange: boolean;
     procedure Loaded; override;
@@ -152,6 +163,9 @@ type
     class function GetCapabilities: TSynHighlighterCapabilities; virtual;
     class function GetLanguageName: string; virtual;
   public
+  	SkipFunctions: TCodeFoldingSkipFuncArr;
+    function SkipCrLf(var Ptr: PChar; var Line: Integer): Boolean; // pjura
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
@@ -200,6 +214,10 @@ type
       index SYN_ATTR_SYMBOL read GetDefaultAttribute;
     property WhitespaceAttribute: TSynHighlighterAttributes
       index SYN_ATTR_WHITESPACE read GetDefaultAttribute;
+
+    //### Code Folding ###
+    property FoldRegions: TFoldRegions read fFoldRegions;
+    //### End Code Folding ###
   published
     property DefaultFilter: string read GetDefaultFilter write SetDefaultFilter
       stored IsFilterStored;
@@ -653,6 +671,10 @@ begin
   fAttrChangeHooks := TSynNotifyEventChain.CreateEx(Self);
   fDefaultFilter := '';
   fEnabled := True;
+  
+  //### Code Folding ###
+  fFoldRegions := TFoldRegions.Create(TFoldRegionItem);
+  //### End Code Folding ###
 end;
 
 destructor TSynCustomHighlighter.Destroy;
@@ -661,6 +683,10 @@ begin
   FreeHighlighterAttributes;
   fAttributes.Free;
   fAttrChangeHooks.Free;
+  
+  //### Code Folding ###
+  fFoldRegions.Free;
+  //### End Code Folding ###
 end;
 
 procedure TSynCustomHighlighter.BeginUpdate;
@@ -952,7 +978,39 @@ begin
   DefHighlightChange( nil );
 end;
 
+function TSynCustomHighlighter.SkipCrLf(var Ptr: PChar;
+  var Line: Integer): Boolean;
+begin
+	Result := False;
+  
+	repeat
+  	// Win
+		if ((Ptr^ = #13) and ((Ptr+1)^ = #10)) or ((Ptr^ = #10) and ((Ptr+1)^ = #13)) then
+  		repeat
+  			Inc(Ptr, 2);
+  			Inc(Line);
+        Result := True;
+  		until not (((Ptr^ = #13) and ((Ptr+1)^ = #10)) or ((Ptr^ = #10) and ((Ptr+1)^ = #13)));
+    // Unix
+  	if Ptr^ = #13 then
+  		repeat
+  			Inc(Ptr);
+        Inc(Line);
+        Result := True;
+  		until Ptr^ <> #13;
+    // Mac
+  	if Ptr^ = #10 then
+  		repeat
+  			Inc(Ptr);
+      	Inc(Line);
+        Result := True;
+  		until Ptr^ <> #10;
+  until (Ptr^ <> #10) and (Ptr^ <> #13);
+end;
+
 {$IFNDEF SYN_CPPB_1}
+{ TSkipFuncList }
+
 initialization
   G_PlaceableHighlighters := TSynHighlighterList.Create;
 finalization

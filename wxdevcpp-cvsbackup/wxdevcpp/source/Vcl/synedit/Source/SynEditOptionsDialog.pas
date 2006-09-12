@@ -75,9 +75,6 @@ uses
   Registry,
   ExtCtrls,
   Buttons,
-  {$IFDEF SYN_DELPHI_4_UP}
-  ImgList,
-  {$ENDIF}
   Menus,
   SynEdit,
   SynEditHighlighter,
@@ -85,7 +82,7 @@ uses
   SynEditKeyCmds,
 {$ENDIF}
   Classes,
-  SysUtils;
+  SysUtils, ImgList;
 
 type
 {$IFNDEF SYN_DELPHI_4_UP}
@@ -295,8 +292,8 @@ type
     function GetExtended: Boolean;
     procedure SetExtended(const Value: Boolean);
   public
-    constructor create(AOwner : TComponent); override;
-    destructor destroy; override;
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
     function Execute(EditOptions : TSynEditorOptionsContainer) : Boolean;
     property Form: TfmEditorOptionsDialog read FForm;
   published
@@ -336,8 +333,8 @@ type
     procedure SetOptions(const Value: TSynEditorOptions);
     procedure SetSynGutter(const Value: TSynGutter);
   public
-    constructor create(AOwner : TComponent); override;
-    destructor destroy; override;
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
     procedure Assign(Source : TPersistent); override;
     procedure AssignTo(Dest : TPersistent); override;
   published
@@ -571,7 +568,7 @@ var I : Integer;
 begin
   //Gutter
   ckGutterVisible.Checked:= FSynEdit.Gutter.Visible;
-  ckGutterAutosize.Checked:= FSynEdit.Gutter.Visible;
+  ckGutterAutosize.Checked:= FSynEdit.Gutter.AutoSize;
   ckGutterShowLineNumbers.Checked:= FSynEdit.Gutter.ShowLineNumbers;
   ckGutterShowLeaderZeros.Checked:= FSynEdit.Gutter.LeadingZeros;
   ckGutterStartAtZero.Checked:= FSynEdit.Gutter.ZeroStart;

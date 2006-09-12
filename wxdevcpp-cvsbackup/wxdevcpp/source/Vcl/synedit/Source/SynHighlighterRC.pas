@@ -177,7 +177,7 @@ type
    constructor Create(aOwner: TComponent); override;
    destructor Destroy; override;
    function GetDefaultAttribute(index: integer): TSynHighlighterAttributes; override;
-   function GetEOL: boolean; override;
+   function GetEol: boolean; override;
    function GetRange: pointer; override;
    function GetTokenID: TtkTokenKind;
    procedure SetLine(NewValue: string; LineNumber: integer); override;
@@ -1030,8 +1030,13 @@ end;
 
 procedure TSynRCSyn.UnknownProc;
 begin
+{$IFDEF SYN_MBCSSUPPORT}
+  if FLine[Run] in LeadBytes then
+    Inc(Run, 2)
+  else
+{$ENDIF}
   inc(Run);
-  fTokenID:= tkSymbol;
+  fTokenID := tkUnknown;
 end;
 
 procedure TSynRCSyn.Next;

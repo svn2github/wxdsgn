@@ -80,7 +80,8 @@ uses
   Classes;
 
 type
-  SynCompletionType = (ctCode, ctHint, ctParams);
+  TSynCompletionType = (ctCode, ctHint, ctParams);
+  SynCompletionType = TSynCompletionType; // Keep an alias to old name for now. 
 
   TSynForm = {$IFDEF SYN_COMPILER_3_UP}TCustomForm{$ELSE}TForm{$ENDIF};
 
@@ -581,7 +582,7 @@ uses
 {$IFDEF SYN_CLX}
   QSynEditTextBuffer,
   QSynEditMiscProcs,
-  QSynEditKeyConst;
+  QSynEditKeyConst, SynEditKeyConst;
 {$ELSE}
   SynEditTextBuffer,
   SynEditMiscProcs,
@@ -1382,7 +1383,7 @@ begin
           OnValidate(Self, Shift, #0); //GBN 15/11/2001
       SYNEDIT_TAB:
         if  (FCompleteWithTab) and Assigned(OnValidate) then
-          OnValidate(Self, Shift, #0); 
+          OnValidate(Self, Shift, #0);
       SYNEDIT_ESCAPE:
       begin
         if Assigned(OnCancel) then
@@ -1402,8 +1403,7 @@ begin
             if Assigned(CurrentEditor) then
               (CurrentEditor as TCustomSynEdit).CommandProcessor(ecLeft, #0, nil);
 
-            if Assigned(OnCancel) then
-              OnCancel(Self);
+            if Assigned(OnCancel) then OnCancel(Self);  
           end;
         end;
       SYNEDIT_RIGHT:
@@ -1417,8 +1417,7 @@ begin
                 C := #32;
 
               if (C = #9) or (C = #32) or (C in FWordBreakChars) then
-                if Assigned(OnCancel) then
-                  OnCancel(Self)
+                if Assigned(OnCancel) then OnCancel(Self)
                 else
               else
                 CurrentString := CurrentString + C;
@@ -1477,7 +1476,9 @@ begin
   begin
     case Key of
       #13, #27:; // These keys are already handled by KeyDown
-      #32..'z':
+    //#32..'z':  //###mod no complete by space
+      #33..'z':  //###mod no complete by space
+
         begin
           if (Key in FWordBreakChars) and Assigned(OnValidate) then
           begin
@@ -2360,7 +2361,8 @@ procedure TSynBaseCompletionProposal.ExecuteEx(s: string; x, y: integer; Kind : 
 
     if tmpY + tmpHeight > GetWorkAreaHeight then
     begin
-      tmpY := tmpY - tmpHeight - (Form.CurrentEditor  as TCustomSynEdit).LineHeight -2;
+      //tmpY := tmpY - tmpHeight - (Form.CurrentEditor  as TCustomSynEdit).LineHeight -2;
+      tmpY := tmpY - tmpHeight -2;//###mod access violation
       if tmpY < 0 then
         tmpY := 0;
     end;

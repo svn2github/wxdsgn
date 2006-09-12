@@ -118,6 +118,7 @@ const
   ecSelEditorBottom = ecEditorBottom + ecSelection;
   ecSelGotoXY       = ecGotoXY + ecSelection;  // Data = PPoint
 
+	ecSelWord         = 198;
   ecSelectAll       = 199;  // Select entire contents of editor, cursor to end
 
   ecCopy            = 201;  // Copy selection to clipboard
@@ -201,7 +202,16 @@ const
   ecString          = 630;  //Insert a whole string
 
   ecUserFirst       = 1001; // Start of user-defined commands
-
+	
+  //### Code Folding ###
+  ecCollapse = ecUserFirst + 100;
+  ecUncollapse = ecUserFirst + 101;
+  ecCollapseLevel = ecUserFirst + 102;
+  ecUncollapseLevel = ecUserFirst + 103;
+  ecCollapseAll = ecUserFirst + 104;
+  ecUncollapseAll = ecUserFirst + 105;
+  ecCollapseCurrent = ecUserFirst + 109;
+  //### End Code Folding ###
 type
   ESynKeyError = class(Exception);
 
@@ -316,7 +326,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..99] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..107] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -352,6 +362,7 @@ const
     (Value: ecSelEditorTop; Name: 'ecSelEditorTop'),
     (Value: ecSelEditorBottom; Name: 'ecSelEditorBottom'),
     (Value: ecSelGotoXY; Name: 'ecSelGotoXY'),
+    (Value: ecSelWord; Name: 'ecSelWord'),
     (Value: ecSelectAll; Name: 'ecSelectAll'),
     (Value: ecDeleteLastChar; Name: 'ecDeleteLastChar'),
     (Value: ecDeleteChar; Name: 'ecDeleteChar'),
@@ -416,7 +427,16 @@ const
     (Value: ecUpperCaseBlock; Name: 'ecUpperCaseBlock'),
     (Value: ecLowerCaseBlock; Name: 'ecLowerCaseBlock'),
     (Value: ecToggleCaseBlock; Name: 'ecToggleCaseBlock'),
-    (Value: ecString; Name:'ecString'));
+    (Value: ecString; Name:'ecString'),
+  //### Code Folding ###
+    (Value: ecCollapse; Name: 'ecCollapse'),
+    (Value: ecUncollapse; Name: 'ecUncollapse'),
+    (Value: ecCollapseLevel; Name: 'ecCollapseLevel'),
+    (Value: ecUncollapseLevel; Name: 'ecUncollapseLevel'),
+    (Value: ecCollapseAll; Name: 'ecCollapseAll'),
+    (Value: ecUncollapseAll; Name: 'ecUncollapseAll'),
+    (Value: ecCollapseCurrent; Name: 'ecCollapseCurrent'));
+  //### End Code Folding ###
 
 procedure GetEditorCommandValues(Proc: TGetStrProc);
 var
@@ -704,6 +724,7 @@ var
   x: integer;
 begin
   Result := -1;
+  if (Code=0)and(SS=[]) then exit; //###mod key(0)=ecNone
   for x := 0 to Count-1 do
     if (Items[x].Key = Code) and (Items[x].Shift = SS) and (Items[x].Key2 = 0)
     then begin
@@ -718,6 +739,7 @@ var
   x: integer;
 begin
   Result := -1;
+  if (Code1=0)and(Code2=0)and(SS1=[])and(SS2=[]) then exit;  //###mod key(0)=ecNone
   for x := 0 to Count-1 do
     if (Items[x].Key = Code1) and (Items[x].Shift = SS1) and
        (Items[x].Key2 = Code2) and (Items[x].Shift2 = SS2) then

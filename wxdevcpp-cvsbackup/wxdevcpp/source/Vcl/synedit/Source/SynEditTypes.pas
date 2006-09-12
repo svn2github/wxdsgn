@@ -44,7 +44,8 @@ unit SynEditTypes;
 interface
 
 const
-  TSynSpecialChars = ['À'..'Ö', 'Ø'..'ö', 'ø'..'ÿ'];
+  //TSynSpecialChars = ['À'..'Ö', 'Ø'..'ö', 'ø'..'ÿ'];
+  TSynSpecialChars = ['À'..'ß', #184,#168, 'à'..'ÿ'];     //###mod select yo
   TSynValidStringChars = ['_', '0'..'9', 'A'..'Z', 'a'..'z'] + TSynSpecialChars;
   TSynWordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
                         ')', '{', '}', '^', '-', '=', '+', '-', '*', '/', '\',
