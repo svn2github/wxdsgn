@@ -880,13 +880,6 @@ type
     procedure UnHookTextBuffer;
     
     //### Code Folding ###
-    function InsertLineAt(aLine:Integer;Line:String):Boolean;
-
-    function GetTotalLineCount:Integer;
-    function GetOriginalLineAt(aLine:Integer):String;
-    function SetOriginalLineAt(aLine:Integer;Line:String):boolean;
-    function InsertToOriginalLineAt(aLine:Integer;Line:String):boolean;
-
     function GetUncollapsedStrings: TStrings;
     procedure CollapseAll;
     procedure CollapseCurrent;
@@ -10875,7 +10868,7 @@ begin
         IdChars := Highlighter.IdentChars
       else
         IdChars := TSynValidStringChars;
-    if (XY.Char >= 1) and (XY.Char <= Len + 1) and (Line[XY.Char] in IdChars) then
+    if (XY.Char >= 1) and (XY.Char <= Len ) and (Line[XY.Char] in IdChars) then
     begin
       Stop := XY.Char;
       while (Stop <= Len) and (Line[Stop] in IdChars) do
@@ -11631,43 +11624,6 @@ begin                                                             //
         end                                                       //
   until (Line^ <> #9) and (Line^ <> #32);                         //
 end;                                                              //###mod IndentGiudes calculation fix
-
-function TCustomSynEdit.InsertLineAt(aLine:Integer;Line:String):Boolean;
-var
-    i:Integer;
-begin
-    for i :=0 to  fAllFoldRanges.Count -1 do
-    begin
-        //fAllFoldRanges.
-    end;
-end;
-
-function TCustomSynEdit.GetTotalLineCount:Integer;
-var
-    i:Integer;
-begin
-    Result:=Lines.Count;
-    for i :=0 to  fAllFoldRanges.AllCount -1 do
-    begin                      
-        with fAllFoldRanges[i] do
-        begin
-            Result := Result + CollapsedLines.Count;
-        end;
-    end;
-
-end;
-
-function TCustomSynEdit.GetOriginalLineAt(aLine:Integer):String;
-begin
-end;
-
-function TCustomSynEdit.SetOriginalLineAt(aLine:Integer;Line:String):boolean;
-begin
-end;
-
-function TCustomSynEdit.InsertToOriginalLineAt(aLine:Integer;Line:String):boolean;
-begin
-end;
 
 function TCustomSynEdit.GetUncollapsedStrings: TStrings;
 begin
