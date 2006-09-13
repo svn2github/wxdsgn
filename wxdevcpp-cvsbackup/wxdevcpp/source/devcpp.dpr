@@ -28,7 +28,7 @@ program devcpp;
 
 uses
   FastMM4,
-  //FastCode,
+  FastCode,
   madScreenShot,
 {$IFNDEF OLD_MADSHI}
   madListHardware,
