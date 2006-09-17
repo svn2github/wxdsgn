@@ -4,16 +4,28 @@
 ; http://nsis.sourceforge.net/
 
 !define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.9beta"
+!define WXDEVCPP_VERSION "6.10beta"
 !define PROGRAM_NAME "wx-devcpp"
 !define DEFAULT_START_MENU_DIRECTORY "wx-devcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
 !define HAVE_MINGW
+!define HAVE_MSVC
 !define NEW_INTERFACE
 
-!define wxWidgets "wxWidgets-2.6.2.entry" ; name of wxWidgets devpak entry in devcpp
-!define wxWidgetsContrib "wxWidgets-2.6.2contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
-!define wxWidgetsSamples "wxWidgets-2.6.2samples.entry" ; name of wxWidgets samples devpak entry in devcpp
+!define wxWidgets_version "2.7.0"
+!define wxWidgets_name "wxWidgets_2_7_0"
+
+!define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
+!define wxWidgets_mingw "${wxWidgets_name}_gcc.entry"   ; name of the wxWidgets gcc entry
+
+!define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
+!define wxWidgets_msvc "${wxWidgets_name}_vc.entry"   ; name of the wxWidgets vc entry
+
+!define wxWidgetsContrib_devpak "${wxWidgets_name}contrib.devpak"  ; name of the contrib devpak
+!define wxWidgetsContrib "${wxWidgets_name}contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
+
+!define wxWidgetsSamples_devpak "${wxWidgets_name}samples.devpak"  ; name of the samples devpak
+!define wxWidgetsSamples "${wxWidgets_name}samples.entry" ; name of wxWidgets samples devpak entry in devcpp
 
 Var LOCAL_APPDATA
 
@@ -95,6 +107,8 @@ UninstPage instfiles
 
   Var STARTMENU_FOLDER
 
+  !define MUI_COMPONENTSPAGE_SMALLDESC
+
   !insertmacro MUI_PAGE_LICENSE "copying.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave  ; Check if default directory name is valid
@@ -118,7 +132,7 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "English"
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Catalan"
-  ;!insertmacro MUI_LANGUAGE "Chinese"
+ ; !insertmacro MUI_LANGUAGE "Chinese"
   ;!insertmacro MUI_LANGUAGE "Chinese_TC"
   !insertmacro MUI_LANGUAGE "Croatian"
   !insertmacro MUI_LANGUAGE "Czech"
@@ -152,12 +166,12 @@ UninstPage instfiles
 # [Files]
 
 Section "${PROGRAM_NAME} program files (required)" SectionMain
-  SectionIn 1 2 RO
+  SectionIn 1 2 3 RO
   SetOutPath $INSTDIR
  
   File "devcpp.exe"
   File "copying.txt"
-  File "wxdevcpp ${WXDEVCPP_VERSION} changes.html"
+  ;File "wxdevcpp ${WXDEVCPP_VERSION} changes.html"
   File "packman.exe"
   SetOutPath $INSTDIR\Lang
   File "Lang\English.*"
@@ -166,60 +180,15 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   SetOutPath $INSTDIR\bin
   File "bin\rm.exe"
 
- ; Added for wx-devcpp  -- START
-
-  ; Replace the text %DEVCPPINSTALLDIR% in the template files with
-  ; whatever installation directory the user selected during
-  ; the install
-  
-  ; 00-wxWindows.template
-  Push "%DEVCPPINSTALLDIR%" #text to be replaced
-  Push $INSTDIR #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\00-wxWidgets.template #file to replace in
-  Call AdvReplaceInFile
-
-
-  ; 0-wxWindows.template
-  Push "%DEVCPPINSTALLDIR%" #text to be replaced
-  Push $INSTDIR #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\0-wxWidgets.template #file to replace in
-  Call AdvReplaceInFile
-
-
-  ; 1-empty.template
-  Push "%DEVCPPINSTALLDIR%" #text to be replaced
-  Push $INSTDIR #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\Templates\1-empty.template #file to replace in
-  Call AdvReplaceInFile
-  ; end replacing text within template files
-  
-  SetOutPath $INSTDIR\Templates\wxWidgets
-  File "Templates\wxWidgets\*"
-
-  SetOutPath $INSTDIR\wx\art
-  File /r "wx\art\*"
-  SetOutPath $INSTDIR\wx\contrib
-  File /r "wx\contrib\*"
-  SetOutPath $INSTDIR\wx\locale
-  File /r "wx\locale\*"
-  
-  SetOutPath $INSTDIR\wx\samples\widgets
-  File /r "wx\samples\widgets\*"
-  
-  Push "%DEVCPPINSTALLDIR%" #text to be replaced
-  Push $INSTDIR #replace with
-  Push all #replace all occurrences
-  Push all #replace all occurrences
-  Push $INSTDIR\wx\samples\widgets\widgets.dev #file to replace in
-  Call AdvReplaceInFile
-  
-  ; Added for wx-devcpp  -- END
+  ; Find all installed devpaks and uninstall them
+  FindFirst $0 $1 $INSTDIR\Packages\*.entry
+loop_devpaks:
+  StrCmp $1 "" done_devpaks
+  DetailPrint 'Uninstalling package $1'
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\$1"'
+  FindNext $0 $1
+  Goto loop_devpaks
+done_devpaks:
 
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
@@ -238,39 +207,6 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
 
 SectionEnd
 
-Section "Example files" SectionExamples
-  SectionIn 1 2
-  SetOutPath $INSTDIR\Examples
-  SetOutPath $INSTDIR\Examples\FileEditor
-  File "Examples\FileEditor\*"
-  SetOutPath $INSTDIR\Examples\Hello
-  File "Examples\Hello\*"
-  SetOutPath $INSTDIR\Examples\Jackpot
-  File "Examples\Jackpot\*"
-  SetOutPath $INSTDIR\Examples\MDIApp
-  File "Examples\MDIApp\*"
-  SetOutPath $INSTDIR\Examples\OpenGL
-  File "Examples\OpenGL\*"
-  SetOutPath $INSTDIR\Examples\Simpwin
-  File "Examples\Simpwin\*"
-  SetOutPath $INSTDIR\Examples\WinAnim
-  File "Examples\WinAnim\*"
-  SetOutPath $INSTDIR\Examples\WinMenu
-  File "Examples\WinMenu\*"
-  SetOutPath $INSTDIR\Examples\WinTest
-  File "Examples\WinTest\*"
-  
-  ; Added for wx-devcpp  -- START
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgetsSamples}"'
-  SetOutPath $INSTDIR\Packages
-  File "Packages\${wxWidgetsSamples}"
-  SetOutPath $INSTDIR\wx\samples
-  File /r "wx\samples\*"
-  
-  SetOutPath $INSTDIR
-  
-SectionEnd
-
 Section "Help files" SectionHelp
   SectionIn 1 2
   SetOutPath $INSTDIR\Help
@@ -281,9 +217,6 @@ Section "Help files" SectionHelp
   
   ; Added for wx-devcpp  -- START
   SetOutPath $INSTDIR\Help
-  File "Help\wx.hlp"
-  File "Help\wx.chm"  ; From Mal's devpak
-  File "Help\wx.cnt"
   File "Help\wx.gid"
   File "Help\devhelp.ini"
   File "Help\wx-devcpp Tutorial Help.chm"
@@ -297,36 +230,78 @@ Section "Icon files" SectionIcons
   SectionIn 1 2
   SetOutPath $INSTDIR\Icons
   File "Icons\*.ico"
-  #SetOutPath $INSTDIR\Themes
-  #File /r "Themes\*"
   
   SetOutPath $INSTDIR
   
 SectionEnd
 
+SectionGroup /e "wxWidgets ${wxWidgets_version} library" SectionGroupwxWidgets
+
+!ifdef HAVE_MINGW
+
+Section "Mingw gcc build" SectionwxWidgetsMingw
+
+  SectionIn 1 2
+  
+  SetOutPath $INSTDIR\Packages
+  File "Packages\${wxWidgets_mingw_devpak}"   ; Copy the devpak over
+
+  ; Install wxWidgets Mingw gcc library through the devpak
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_mingw_devpak}"'
+  Delete "$INSTDIR\Packages\${wxWidgets_mingw_devpak}"   ; Delete the original devpak (its files should be installed now)
+
+SectionEnd
+!endif
+
+!ifdef HAVE_MSVC
+
+Section /o "MS VC 2005 build" SectionwxWidgetsMSVC
+
+  SectionIn 1
+  
+  SetOutPath $INSTDIR\Packages
+  File "Packages\${wxWidgets_msvc_devpak}"   ; Copy the devpak over
+
+  ; Install wxWidgets MS VC 2005 library through the devpak
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_msvc_devpak}"'
+  Delete "$INSTDIR\Packages\${wxWidgets_msvc_devpak}"   ; Delete the original devpak (its files should be installed now)
+
+SectionEnd
+
+!endif
+
+Section /o "wxWidgets contrib" SectionwxWidgetsContrib
+
+  SectionIn 1
+  
+  SetOutPath $INSTDIR\Packages
+  
+  File "Packages\${wxWidgetsContrib_devpak}"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContrib_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsContrib_devpak}"
+
+SectionEnd
+
+Section /o "wxWidgets samples" SectionwxWidgetsSamples
+
+  SectionIn 1
+  
+  SetOutPath $INSTDIR\Packages
+  
+  File "Packages\${wxWidgetsSamples_devpak}"   ; Copy the devpak over
+
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"
+
+SectionEnd
+
+SectionGroupEnd
+
 !ifdef HAVE_MINGW
 Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   SectionIn 1 2
   SetOutPath $INSTDIR
-  ; uninstall previous packages
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\binutils.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-core.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-g++.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gcc-objc.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\gdb.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\make.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\mingw-runtime.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\w32api.entry"'
   
-  ; Added for wx-devcpp  -- START
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgetsContrib}"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\${wxWidgets}"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libpng.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libtiff.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\libjpeg.entry"'
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\zlib.entry"'
-  ; Added for wx-devcpp  -- END
-
   File /r "bin"
   File /r "include"
   File /r "lib"
@@ -340,15 +315,6 @@ Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
   File "Packages\make.entry"
   File "Packages\mingw-runtime.entry"
   File "Packages\w32api.entry"
-  
-  ; Added for wx-devcpp  -- START
-  ;File "Packages\zlib.entry"
-  ;File "Packages\libjpeg.entry"
-  ;File "Packages\libtiff.entry"
-  ;File "Packages\libpng.entry"
-  File "Packages\${wxWidgets}"
-  File "Packages\${wxWidgetsContrib}"
-  ; Added for wx-devcpp  -- END
   
   ; Add links to START MENU
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -382,14 +348,6 @@ exists:
   
 SectionEnd
 !endif
-
-# Section "Updater and bug reporter (vUpdate/vRoach)"
-#   SectionIn 1 2
-#   SetOutPath $INSTDIR
-#   File "vUpdate.exe"
-#   File "vRoach.exe"
-#   SetOutPath $INSTDIR
-# SectionEnd
 
 Section "Language files" SectionLangs
   SectionIn 1
@@ -635,12 +593,20 @@ SectionEnd
 !ifdef NEW_INTERFACE
 
   LangString DESC_SectionMain ${LANG_ENGLISH} "The ${PROGRAM_NAME} IDE (Integrated Development Environment), package manager and templates"
-  LangString DESC_SectionExamples ${LANG_ENGLISH} "Example projects for simple console and GUI applications"
   LangString DESC_SectionHelp ${LANG_ENGLISH} "Help on using ${PROGRAM_NAME} and programming in C"
   LangString DESC_SectionIcons ${LANG_ENGLISH} "Various icons that you can use in your programs"
+  LangString DESC_SectionGroupwxWidgets ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries and include files"
 !ifdef HAVE_MINGW
+  LangString DESC_SectionwxWidgetsMingw ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries and include files compiled with Mingw gcc"
   LangString DESC_SectionMingw ${LANG_ENGLISH} "The MinGW gcc compiler and associated tools, headers and libraries"
 !endif
+!ifdef HAVE_MSVC
+  LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries and include files compiled with MS VC 2005"
+!endif
+
+  LangString DESC_SectionwxWidgetsContrib ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory"
+  LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} samples directory"
+
   LangString DESC_SectionLangs ${LANG_ENGLISH} "The ${PROGRAM_NAME} interface translated to different languages (other than English which is built-in)"
   LangString DESC_SectionAssocs ${LANG_ENGLISH} "Use ${PROGRAM_NAME} as the default application for opening these types of files"
   LangString DESC_SectionShortcuts ${LANG_ENGLISH} "Create a '${PROGRAM_NAME}' program group with shortcuts, in the start menu"
@@ -650,12 +616,19 @@ SectionEnd
 
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionMain} $(DESC_SectionMain)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionExamples} $(DESC_SectionExamples)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionHelp} $(DESC_SectionHelp)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionIcons} $(DESC_SectionIcons)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgets} $(DESC_SectionGroupwxWidgets)
 !ifdef HAVE_MINGW
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMingw} $(DESC_SectionwxWidgetsMingw)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionMingw} $(DESC_SectionMingw)
 !endif
+!ifdef HAVE_MSVC
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMSVC} $(DESC_SectionwxWidgetsMSVC)
+!endif
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContrib} $(DESC_SectionwxWidgetsContrib)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsSamples} $(DESC_SectionwxWidgetsSamples)
+
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionLangs} $(DESC_SectionLangs)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionAssocs} $(DESC_SectionAssocs)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionShortcuts} $(DESC_SectionShortcuts)
@@ -671,9 +644,12 @@ SectionEnd
 ; Functions
 
 Function .onInit
-  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program. Please do not install this version of ${PROGRAM_NAME} over an existing installation (i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
+  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation$\r$\n(i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
 
   !insertmacro MUI_LANGDLL_DISPLAY
+  
+  SetCurInstType 1  ; Indexed from 0
+  
 FunctionEnd
 
 !ifndef NEW_INTERFACE
@@ -1052,7 +1028,7 @@ bypass_startupmenu:
   Delete "$INSTDIR\devcpp.ci"
 
 Done:
-  MessageBox MB_OK "${PROGRAM_NAME} has been uninstalled. Please now delete the $INSTDIR directory if it doesn't contain some of your documents"
+  MessageBox MB_OK "${PROGRAM_NAME} has been uninstalled.$\r$\nPlease now delete the $INSTDIR directory if it doesn't contain some of your documents"
 
 SectionEnd
 
