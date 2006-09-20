@@ -656,7 +656,7 @@ object CompForm: TCompForm
       end
       object lblmake: TLabel
         Left = 70
-        Top = 112
+        Top = 120
         Width = 36
         Height = 13
         Caption = 'Make : '
@@ -664,7 +664,7 @@ object CompForm: TCompForm
       end
       object lblgdb: TLabel
         Left = 56
-        Top = 200
+        Top = 216
         Width = 50
         Height = 13
         Caption = 'Debugger:'
@@ -672,7 +672,7 @@ object CompForm: TCompForm
       end
       object lblwindres: TLabel
         Left = 8
-        Top = 144
+        Top = 152
         Width = 98
         Height = 13
         Caption = 'Resource Compiler : '
@@ -680,7 +680,7 @@ object CompForm: TCompForm
       end
       object lbldllwrap: TLabel
         Left = 68
-        Top = 168
+        Top = 184
         Width = 38
         Height = 13
         Caption = 'Linker : '
@@ -688,7 +688,7 @@ object CompForm: TCompForm
       end
       object lblgprof: TLabel
         Left = 43
-        Top = 224
+        Top = 248
         Width = 63
         Height = 13
         Caption = 'Code Profiler:'
@@ -732,7 +732,7 @@ object CompForm: TCompForm
       object btnBrowse3: TSpeedButton
         Tag = 3
         Left = 429
-        Top = 80
+        Top = 83
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -767,7 +767,7 @@ object CompForm: TCompForm
       object btnBrowse4: TSpeedButton
         Tag = 4
         Left = 429
-        Top = 108
+        Top = 115
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -802,7 +802,7 @@ object CompForm: TCompForm
       object btnBrowse5: TSpeedButton
         Tag = 5
         Left = 429
-        Top = 192
+        Top = 211
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -837,7 +837,7 @@ object CompForm: TCompForm
       object btnBrowse6: TSpeedButton
         Tag = 6
         Left = 429
-        Top = 136
+        Top = 147
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -872,7 +872,7 @@ object CompForm: TCompForm
       object btnBrowse7: TSpeedButton
         Tag = 7
         Left = 429
-        Top = 164
+        Top = 179
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -907,7 +907,7 @@ object CompForm: TCompForm
       object btnBrowse8: TSpeedButton
         Tag = 8
         Left = 429
-        Top = 220
+        Top = 243
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -940,50 +940,50 @@ object CompForm: TCompForm
         OnClick = btnBrws1Click
       end
       object GccEdit: TEdit
-        Left = 108
-        Top = 52
+        Left = 112
+        Top = 56
         Width = 315
         Height = 21
         TabOrder = 0
       end
       object GppEdit: TEdit
-        Left = 108
-        Top = 80
+        Left = 112
+        Top = 84
         Width = 315
         Height = 21
         TabOrder = 1
       end
       object MakeEdit: TEdit
-        Left = 108
-        Top = 108
+        Left = 112
+        Top = 116
         Width = 315
         Height = 21
         TabOrder = 2
       end
       object GdbEdit: TEdit
-        Left = 108
-        Top = 192
+        Left = 112
+        Top = 212
         Width = 315
         Height = 21
         TabOrder = 5
       end
       object WindresEdit: TEdit
-        Left = 108
-        Top = 136
+        Left = 112
+        Top = 148
         Width = 315
         Height = 21
         TabOrder = 3
       end
       object DllwrapEdit: TEdit
-        Left = 108
-        Top = 164
+        Left = 112
+        Top = 180
         Width = 315
         Height = 21
         TabOrder = 4
       end
       object GprofEdit: TEdit
-        Left = 108
-        Top = 220
+        Left = 112
+        Top = 244
         Width = 315
         Height = 21
         TabOrder = 6
