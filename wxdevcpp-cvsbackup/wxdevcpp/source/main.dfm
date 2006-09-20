@@ -194,12 +194,12 @@ object MainForm: TMainForm
         TabOrder = 1
         DesignSize = (
           393
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 638
-          Height = 74
+          Height = 73
           Anchors = [akLeft, akTop, akRight, akBottom]
           ReadOnly = True
           ScrollBars = ssVertical
@@ -215,7 +215,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 98
+        Height = 97
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -630,7 +630,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 610
-            Height = 45
+            Height = 44
             Align = alClient
             Lines.Strings = (
               'Debugger output')

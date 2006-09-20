@@ -2120,11 +2120,12 @@ procedure TMainForm.DoApplyWindowPlacement;
 // we only want to display the form when it's ready and fully inited/created
 //
 begin
+
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
-    SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
-  else
-  if not CacheCreated then // this is so weird, but the following call seems to take a lot of time to execute
-    Self.Position := poScreenCenter;
+    SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
+  //else
+  //if not CacheCreated then // this is so weird, but the following call seems to take a lot of time to execute
+   // Self.Position := poScreenCenter;
 
   Show;
 end;

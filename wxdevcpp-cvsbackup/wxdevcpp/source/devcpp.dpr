@@ -29,7 +29,6 @@ program devcpp;
 uses
   FastMM4,
   FastCode,
-  madScreenShot,
 {$IFNDEF OLD_MADSHI}
   madListHardware,
   madListProcesses,
@@ -320,8 +319,9 @@ begin
     devDirs.Config := IncludeTrailingBackslash(ParamStr(2))
   else if ConfigMode = CFG_USER then
     devDirs.Config := UserHome;
-  devData.ReadConfigData;
 
+  devData.ReadConfigData;
+  
   if devData.SingleInstance then
   begin
     boolCanStart:=CanStart;

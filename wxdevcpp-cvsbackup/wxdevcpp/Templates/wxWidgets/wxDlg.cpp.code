@@ -23,7 +23,7 @@
 BEGIN_EVENT_TABLE(%CLASS_NAME%, wxDialog)
 	////Manual Code Start
 	////Manual Code End
-	EVT_CLOSE(%CLASS_NAME%::%CLASS_NAME%Close)
+	EVT_CLOSE(%CLASS_NAME%::OnClose)
 END_EVENT_TABLE()
 ////Event Table End
 
@@ -46,7 +46,7 @@ void %CLASS_NAME%::CreateGUIControls()
 	////GUI Items Creation End
 }
 
-void %CLASS_NAME%::%CLASS_NAME%Close(wxCloseEvent& /*event*/)
+void %CLASS_NAME%::OnClose(wxCloseEvent& /*event*/)
 {
 	Destroy();
 }

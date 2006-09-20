@@ -58,7 +58,7 @@ class %CLASS_NAME% : public wxFrame
 		};
 		
 	private:
-		void %CLASS_NAME%Close(wxCloseEvent& event);
+		void OnClose(wxCloseEvent& event);
 		void CreateGUIControls();
 };
 
