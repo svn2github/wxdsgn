@@ -4010,8 +4010,6 @@ procedure TRegExpr.Error (AErrorID : integer);
    mov  eax,[ebp+4]
   end;
 {$ENDIF}
- var
-  e : ERegExpr;
  begin
   fLastError := AErrorID; // dummy stub - useless because will raise exception
   {if AErrorID < 1000 // compilation error ?

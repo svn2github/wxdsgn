@@ -1,7 +1,5 @@
 package SynEdit_R6_PE;
 
-{ $Id$ }
-
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -127,6 +125,7 @@ contains
   SynURIOpener in '..\Source\SynURIOpener.pas',
   SynHighlighterDOT in '..\Source\SynHighlighterDOT.pas',
   SynHighlighterVrml97 in '..\Source\SynHighlighterVrml97.pas',
-  SynHighlighterEiffel in '..\Source\SynHighlighterEiffel.pas';
+  SynHighlighterEiffel in '..\Source\SynHighlighterEiffel.pas',
+  SynEditCodeFolding in '..\Source\SynEditCodeFolding.pas';
 
 end.
