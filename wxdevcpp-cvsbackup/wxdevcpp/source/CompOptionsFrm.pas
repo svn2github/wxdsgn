@@ -76,7 +76,6 @@ type
     btnAddCompilerSet: TSpeedButton;
     btnDelCompilerSet: TSpeedButton;
     btnRenameCompilerSet: TSpeedButton;
-    btnBrowse: TSpeedButton;
     btnBrws2: TSpeedButton;
     btnBrowse3: TSpeedButton;
     btnBrowse4: TSpeedButton;
@@ -97,6 +96,7 @@ type
     cbFastDep: TCheckBox;
     cbMakeAdd: TLabel;
     Make: TMemo;
+    btnBrowse: TSpeedButton;
     
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
@@ -597,27 +597,21 @@ begin
   case CompilerTypes.ItemIndex of
     ID_COMPILER_MINGW:
       begin
-        //lblwindres.Caption := 'windres : ';
-        //lbldllwrap.Caption := 'dllwrap : ';
-        //lblgprof.Caption := 'gprof : ';
+        lblgprof.Caption := 'Code Profiler:';
         lblgprof.Enabled := true;
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;
       end;
     ID_COMPILER_VC:
       begin
-        //lblwindres.Caption := 'rc : ';
-        //lbldllwrap.Caption := 'link : ';
-        //lblgprof.Caption := 'mt : ';
+        lblgprof.Caption := 'Manifest Tool:';
         lblgprof.Enabled := false;
         gprofEdit.Enabled := false;
         btnbrowse8.Enabled := false;
       end;
     ID_COMPILER_VC2005:
       begin
-        //lblwindres.Caption := 'rc : ';
-        //lbldllwrap.Caption := 'link : ';
-        //lblgprof.Caption := 'mt : ';
+        lblgprof.Caption := 'Manifest Tool:';
         lblgprof.Enabled := true;
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;
