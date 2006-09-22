@@ -8525,6 +8525,8 @@ var
   strCppFile,strHppFile:String;
   INI: Tinifile;
 
+  strLstXRCCode: TStringList;
+
 begin
   //Get the path of our templates
   TemplatesDir := IncludeTrailingBackslash(GetRealPath(devDirs.Templates, ExtractFileDir(Application.ExeName)));
@@ -8593,6 +8595,15 @@ begin
   ParseAndSaveTemplate(StrCppFile, ChangeFileExt(BaseFilename, CPP_EXT), frm);
   GetIntialFormData(frm, strFName, strCName, strFTitle,dlgSStyle, dsgnType);
   CreateFormFile(strFName, strCName, strFTitle, dlgSStyle,dsgnType);
+
+  //NinjaNL If we have Generate XRC turned on then we need to create a blank XRC file on project initialisation
+    if (MainForm.ELDesigner1.GenerateXRC)// or (cbGenerateXRC.Checked)
+    then
+    begin
+      strLstXRCCode := CreateBlankXRC;
+      SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(BaseFilename, XRC_EXT));
+      strLstXRCCode.Destroy;
+    end;
 
   //Destroy the dialog if we own it
   if OwnsDlg then
