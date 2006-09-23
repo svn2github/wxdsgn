@@ -60,6 +60,9 @@ type
     btnCheck: TBitBtn;
     btnClose: TBitBtn;
     XPMenu: TXPMenu;
+    btnDownload: TBitBtn;
+    procedure GetUpdateInfo(Sender: TObject);
+    procedure DownloadFiles(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lvClick(Sender: TObject);
     procedure lvChange(Sender: TObject; Item: TListItem;
@@ -84,8 +87,6 @@ type
     ColumnToSort: integer;
     SortAscending: boolean;
     FormInitialized: Boolean;
-    procedure GetUpdateInfo(Sender: TObject);
-    procedure DownloadFiles(Sender: TObject);
     function CheckFile(Filename: string): boolean;
     procedure ClearList;
     procedure FillList(Filter: string);
@@ -125,10 +126,9 @@ uses
 const
   MAGIC_HEADER = '{WebUpdate_config_file}';
   CONF_FILE = 'webupdate.conf';
-//  DEFAULT_MIRROR = 'Andreas Aberg''s server=http://vUpdate.servebeer.com/';  // 'bloodshed.net (Bloodshed server)=http://haiku.bloodshed.net/dev/webupdate/';
- // DEFAULT_MIRROR = 'PlanetMirror.com=http://public.planetmirror.com/pub/devcpp/';
-   DEFAULT_MIRROR = 'Dev-C++ primary devpak server=http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
-  DEFAULT_MIRROR_2 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
+  DEFAULT_MIRROR_1 = 'wxDev-C++ DevPak server=http://joelsplace.sg/projects/wxdsgn/devpaks/';
+  DEFAULT_MIRROR_2 = 'Dev-C++ primary devpak server=http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
+  DEFAULT_MIRROR_3 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
 
 var
   BASE_URL: string;
@@ -156,15 +156,10 @@ var
 begin
   if fErrorsList.Count > 0 then
 {$IFDEF WIN32}
-{$IFDEF WX_BUILD}
-begin
-{$ENDIF}
-    MessageBox(Self.Handle, 'Could not connect to remote site. The remote site might be down, or your connection ' +
-      'to the Internet might not be working...'#13#10#13#10'Please try another mirror site...', '', MB_ICONERROR or MB_OK)
-{$IFDEF WX_BUILD}         ;
-    ShowMessage(BASE_URL);
-    end
-{$ENDIF}
+    MessageBox(Self.Handle, 'Could not connect to remote site. The remote site ' +
+                            'might be down, or your connection to the Internet ' +
+                            'might not be working.'#13#10#13#10'Please try another ' +
+                            'mirror site.', 'WebUpdate Error', MB_ICONERROR or MB_OK)
 {$ENDIF}
 {$IFDEF LINUX}
     MessageDlg('Could not connect to remote site. The remote site might be down, or your connection ' +
@@ -175,8 +170,6 @@ begin
       FileExists(PUpdateRec(wThread.Files[0])^.TempFilename) then begin
       tmp := PUpdateRec(wThread.Files[0])^.TempFilename;
       if CheckFile(PUpdateRec(wThread.Files[0])^.TempFilename) then begin
-        btnCheck.OnClick := DownloadFiles;
-        btnCheck.Caption := '&Download selected';
         memDescr.Lines.Clear;
         memDescr.Lines.Add('Step 1: Select the updates you want to download.');
         memDescr.Lines.Add('Step 2: Press "Download selected" to download the selected updates from the server.');
@@ -426,9 +419,9 @@ begin
     for I := 0 to sl.Count - 1 do begin
       P := New(PUpdateRec);
       P^.Name := Ini.ReadString(sl[I], 'Name', '');
-      if P^.Name = '' then begin
+      if P^.Name = '' then
         P^.Name := sl[I];
-      end;      P^.Description := Ini.ReadString(sl[I], 'Description', '');
+      P^.Description := Ini.ReadString(sl[I], 'Description', '');
       P^.RemoteFilename := Ini.ReadString(sl[I], 'RemoteFilename', '');
       P^.LocalFilename := Ini.ReadString(sl[I], 'LocalFilename', '');
       P^.Group := Ini.ReadString(sl[I], 'Group', '');
@@ -553,6 +546,7 @@ end;
 procedure TWebUpdateForm.CalcTotalSize;
 var
   I: integer;
+  Files: string;
   Total: cardinal;
   dTotal: double;
   Count: integer;
@@ -560,13 +554,20 @@ begin
   Total := 0;
   Count := 0;
   for I := 0 to fUpdateList.Count - 1 do
-    if PUpdateRec(fUpdateList[I])^.Selected then begin
+    if PUpdateRec(fUpdateList[I])^.Selected then
+    begin
       Total := Total + PUpdateRec(fUpdateList[I])^.Size;
       Inc(Count);
     end;
 
-  dTotal := Total / 1.0;
-  lblTotalSize.Caption := Format('%d files total, %d KB (%0.0n Bytes)', [Count, Total div 1024, dTotal]);
+  if Count = 1 then
+    Files := 'file'
+  else
+    Files := 'files';
+
+  dTotal := Total;
+  btnDownload.Enabled := Count > 0;
+  lblTotalSize.Caption := Format('%d %s selected, %d KB (%0.0n Bytes)', [Count, Files, Total div 1024, dTotal]);
 end;
 
 procedure TWebUpdateForm.DownloadFiles(Sender: TObject);
@@ -586,9 +587,9 @@ begin
     Exit;
   end;
   DisableForm;
-  //lv.Enabled := False;
 
   fErrorsList.Clear;
+  btnDownload.Enabled := false;
   wThread := TWebThread.Create(True);
   wThread.OnTerminate := wDownloadTerminate;
   wThread.OnMessage := wThreadMessage;
@@ -698,9 +699,11 @@ begin
   end;
 
   // add default mirror if list is empty
-  if fMirrorList.Count = 0 then begin
-    fMirrorList.Add(DEFAULT_MIRROR);
+  if fMirrorList.Count = 0 then
+  begin
+    fMirrorList.Add(DEFAULT_MIRROR_1);
     fMirrorList.Add(DEFAULT_MIRROR_2);
+    fMirrorList.Add(DEFAULT_MIRROR_3);
   end;
 
   cmbMirrors.Items.Clear;
@@ -885,8 +888,6 @@ begin
     ProgressBar1.Position := 0;
     lblStatus.Caption := 'Disconnected';
     CalcTotalSize;
-    btnCheck.Caption := 'Check for &updates';
-    btnCheck.OnClick := GetUpdateInfo;
     fSelfUpdate := '';
     cmbGroups.Items.Add(AllGroupsText);
     cmbGroups.ItemIndex := 0;
@@ -923,7 +924,7 @@ begin
 
   with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
     try
-      devcppversion2 := ReadString(WEBUPDATE_SECTION, 'Dev-C++ Update', '');
+      devcppversion2 := ReadString(WEBUPDATE_SECTION, 'wxDev-C++ Update', '');
       packmanversion2 := ReadString(WEBUPDATE_SECTION, 'PackMan', '');
     finally
       Free;
@@ -933,7 +934,7 @@ begin
   if (devcppversion <> '') and (devcppversion <> devcppversion2) then
     with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
       try
-        WriteString(WEBUPDATE_SECTION, 'Dev-C++ Update', devcppversion);
+        WriteString(WEBUPDATE_SECTION, 'wxDev-C++ Update', devcppversion);
       finally
         Free;
       end;

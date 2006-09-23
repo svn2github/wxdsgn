@@ -23,7 +23,7 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Classes, SysUtils, WinInet;
+  Windows, Classes, SysUtils, WinInet, dialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   Classes, SysUtils;
@@ -138,7 +138,8 @@ begin
       Synchronize(AlertMainThread);
     end;
 
-    for I := 0 to fFilesList.Count - 1 do begin
+    for I := 0 to fFilesList.Count - 1 do
+    begin
       with PUpdateRec(fFilesList[I])^ do
       begin
         if Pos('http://', LowerCase(RemoteFilename)) = 1 then

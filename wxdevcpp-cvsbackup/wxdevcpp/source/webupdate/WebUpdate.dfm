@@ -4,7 +4,7 @@ object WebUpdateForm: TWebUpdateForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'WebUpdate'
-  ClientHeight = 453
+  ClientHeight = 445
   ClientWidth = 577
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -47,7 +47,7 @@ object WebUpdateForm: TWebUpdateForm
     Top = 320
     Width = 73
     Height = 13
-    Caption = 'File description:'
+    Caption = '&File description:'
   end
   object Label4: TLabel
     Left = 8
@@ -59,14 +59,14 @@ object WebUpdateForm: TWebUpdateForm
   end
   object Label5: TLabel
     Left = 152
-    Top = 136
+    Top = 134
     Width = 33
     Height = 13
     Caption = 'Status:'
   end
   object lblStatus: TLabel
     Left = 212
-    Top = 136
+    Top = 134
     Width = 40
     Height = 13
     Caption = 'lblStatus'
@@ -88,8 +88,8 @@ object WebUpdateForm: TWebUpdateForm
     Align = alTop
   end
   object Image1: TImage
-    Left = 20
-    Top = 8
+    Left = 17
+    Top = 5
     Width = 32
     Height = 32
     AutoSize = True
@@ -190,11 +190,11 @@ object WebUpdateForm: TWebUpdateForm
       E0000007F000000FF800001FFC00003FFE00007FFF8001FFFFF00FFF}
   end
   object Label6: TLabel
-    Left = 64
-    Top = 14
-    Width = 340
+    Left = 58
+    Top = 13
+    Width = 298
     Height = 19
-    Caption = 'Welcome to the Dev-C++ WebUpdate module'
+    Caption = 'Welcome to WebUpdate for wxDev-C++'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBtnFace
     Font.Height = -16
@@ -206,9 +206,9 @@ object WebUpdateForm: TWebUpdateForm
   object Label7: TLabel
     Left = 8
     Top = 56
-    Width = 104
+    Width = 107
     Height = 13
-    Caption = '&Select devpak server:'
+    Caption = '&Select DevPak server:'
     FocusControl = cmbMirrors
   end
   object Bevel2: TBevel
@@ -366,7 +366,7 @@ object WebUpdateForm: TWebUpdateForm
         Width = 120
       end>
     ReadOnly = True
-    TabOrder = 0
+    TabOrder = 3
     ViewStyle = vsReport
     OnChange = lvChange
     OnClick = lvClick
@@ -381,7 +381,7 @@ object WebUpdateForm: TWebUpdateForm
     Height = 73
     ReadOnly = True
     ScrollBars = ssVertical
-    TabOrder = 1
+    TabOrder = 4
   end
   object cmbGroups: TComboBox
     Left = 8
@@ -396,30 +396,31 @@ object WebUpdateForm: TWebUpdateForm
   end
   object ProgressBar1: TProgressBar
     Left = 152
-    Top = 156
+    Top = 154
     Width = 417
     Height = 16
     Min = 0
     Max = 100
-    TabOrder = 3
+    TabOrder = 6
   end
   object cmbMirrors: TComboBox
     Left = 8
     Top = 72
-    Width = 561
+    Width = 426
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
-    TabOrder = 4
+    TabOrder = 0
     OnChange = cmbMirrorsChange
   end
   object btnCheck: TBitBtn
-    Left = 8
-    Top = 420
-    Width = 153
-    Height = 25
-    Caption = 'Check for &updates'
-    TabOrder = 5
+    Left = 436
+    Top = 72
+    Width = 130
+    Height = 23
+    Caption = 'Check for &Updates'
+    TabOrder = 1
+    OnClick = GetUpdateInfo
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
       18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
@@ -447,15 +448,16 @@ object WebUpdateForm: TWebUpdateForm
       BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
       BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
       BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
+    Spacing = 6
   end
   object btnClose: TBitBtn
-    Left = 456
-    Top = 420
-    Width = 111
-    Height = 25
+    Left = 494
+    Top = 415
+    Width = 75
+    Height = 23
     Cancel = True
     Caption = '&Close'
-    TabOrder = 6
+    TabOrder = 5
     OnClick = btnCloseClick
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
@@ -484,6 +486,45 @@ object WebUpdateForm: TWebUpdateForm
       BFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BFBF
       BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
       BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
+    Spacing = 8
+  end
+  object btnDownload: TBitBtn
+    Left = 359
+    Top = 415
+    Width = 130
+    Height = 23
+    Caption = '&Download Selected'
+    Enabled = False
+    TabOrder = 7
+    OnClick = DownloadFiles
+    Glyph.Data = {
+      36030000424D3603000000000000360000002800000010000000100000000100
+      18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000BFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBF00000000E0FF00B0C8000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBF000000000000BFBFBFBFBFBFBFBFBF00000000E0FF00B0C80000
+      00BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF00000000E0FF00B0C800000000
+      000000000000000000E0FF00B0C8000000000000000000BFBFBFBFBFBFBFBFBF
+      BFBFBF00000000E0FF00B0C800000000BAD300B0C800B0C800E0FF00B0C800B0
+      C800B0C800B0C8000000BFBFBF00000000000000000000E0FF00B0C800000000
+      000000000000BAD300E0FF00E0FF00E0FF00E0FF00E0FF00000000000000E0FF
+      00B0C800B0C800E0FF00B0C800B0C800B0C800B0C840404000BAD300B0C80000
+      00000000000000BFBFBF00000000E0FF00E0FF00E0FFFFFFFF00E0FF00E0FF00
+      E0FF00E0FF40404000BAD300B0C8000000BFBFBFBFBFBFBFBFBFBFBFBF000000
+      00000068686800E0FF00B0C840404040404040404000000000E0FF00E0FF0000
+      00BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF00000000E0FF00B0C8404040BF
+      BFBFBFBFBFBFBFBF000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBF00000000E0FF00E0FF404040BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000BFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+      BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
+    Spacing = 6
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -512,7 +553,7 @@ object WebUpdateForm: TWebUpdateForm
     FlatMenu = False
     AutoDetect = False
     Active = False
-    Left = 408
-    Top = 120
+    Left = 8
+    Top = 415
   end
 end
