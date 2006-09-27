@@ -302,7 +302,8 @@ end;
 
 procedure TCompForm.lstDirsDblClick(Sender: TObject);
 begin
-  edEntry.Text := lstDirs.Items[lstDirs.ItemIndex];
+  if lstDirs.ItemIndex <> -1 then
+    edEntry.Text := lstDirs.Items[lstDirs.ItemIndex];
 end;
 
 procedure TCompForm.edEntryChange(Sender: TObject);
