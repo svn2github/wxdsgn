@@ -684,7 +684,7 @@ begin
           if ResFile[ResFile.Count -1] <> '' then
             ResFile.Add('');
       if not DirectoryExists(SubstituteMakeParams(RCDir)) then
-        MkDir(SubstituteMakeParams(RCDir));
+        ForceDirectories(SubstituteMakeParams(RCDir));
       ResFile.SaveToFile(Res);
     end;
     fOptions.PrivateResource := Res;
