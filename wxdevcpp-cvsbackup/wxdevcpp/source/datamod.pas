@@ -1,3 +1,13 @@
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q+,R+,S-,T-,U+,V+,W+,X+,Y+,Z1}
+{$MINSTACKSIZE $00004000}
+{$MAXSTACKSIZE $00100000}
+{$IMAGEBASE $00400000}
+{$APPTYPE GUI}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q+,R+,S-,T-,U+,V+,W+,X+,Y+,Z1}
+{$MINSTACKSIZE $00004000}
+{$MAXSTACKSIZE $00100000}
+{$IMAGEBASE $00400000}
+{$APPTYPE GUI}
 {
 
     $Id$
@@ -132,8 +142,8 @@ var
 
 implementation
 
-uses 
-  devcfg, IniFiles, utils, version, main, MultiLangSupport;
+uses
+  devcfg, IniFiles, utils, version, main, MultiLangSupport, windows;
 
 {$R *.dfm}
 
@@ -145,8 +155,10 @@ begin
   fCodeList := TCodeInsList.Create;
 
   //Set up the syntax highlighter stuff
-  CppMultiSyn.Schemes[0].StartExpr := '(asm|_asm|__asm)('#32'|'#9'|'#13'|'#10')(['#32#9#13#10']*)\{';
+  CppMultiSyn.Schemes[0].StartExpr := '(asm|_asm|__asm)(['#32#9']*)\{';
   CppMultiSyn.Schemes[0].EndExpr   := '\}';
+  CppMultiSyn.Schemes[1].StartExpr := '(asm|_asm|__asm)(['#32#9']+)';
+  CppMultiSyn.Schemes[1].EndExpr := '$';
 end;
 
 procedure TdmMain.DataModuleDestroy(Sender: TObject);
@@ -380,10 +392,9 @@ begin
 end;
 
 procedure TdmMain.RebuildMRU;
-// this function sorts the MRU by bringing the .dev files
-// to the top of the list. It doesn't alter the order in
-// other ways... The return value is the Index
-// of the first non .dev file
+  // this function sorts the MRU by bringing the .dev files to the top of the list.
+  // It doesn't alter the order in other ways... The return value is the Index of
+  // the first non .dev file
   function SortMRU: integer;
   var
     I, C: integer;
@@ -409,31 +420,35 @@ procedure TdmMain.RebuildMRU;
       end;
     Result := C;
   end;
+const
+  WM_SETREDRAW = $000B;
 var
-  Stop,
-    Counter,
-    idx: integer;
   Item: TMenuItem;
   NonDev: integer;
   UpdMRU: ToysStringList;
+  Stop, Counter, idx: integer;
 begin
   if not assigned(fMRUMenu) then exit;
   for idx := pred(fMRUMenu.Count) downto fMRUOffset do
     fMRUMenu[idx].Free;
 
-  // Initialize a new MRU...
-  // We 'll be adding in this *only* the entries that
-  // are going to fMRUMenu.
-  // After that, we 'll replace the fMRU with UpdMRU.
-  // That way the MRU is always up to date and does not contain
-  // excess elements.
-  UpdMRU := ToysStringList.Create;
+  // Freeze the screen before doing anything
+  if MainForm.Visible then
+  begin
+    MainForm.Refresh;
+    MainForm.Update;
+    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(false), 0);
+  end;
 
+  // Initialize a new MRU... We'll be adding in this *only* the entries that are
+  // going to fMRUMenu. After that, we 'll replace the fMRU with UpdMRU. That
+  // way the MRU is always up to date and does not contain excess elements.
+  UpdMRU := ToysStringList.Create;
   Counter := 0;
 
   // Build the .dev recent files entries (*.dev)
+  // TODO: Make the number of project files configurable?
   NonDev := SortMRU;
-  // 4 .devs max - make it configurable?
   if NonDev > 4 then
     Stop := 4
   else
@@ -449,9 +464,9 @@ begin
     fMRUMenu.Add(Item);
     Inc(Counter);
   end;
+
   if (fMRUMenu.Count - fMRUOffset) > 0 then
     fMRUMenu.InsertNewLineAfter(fMRUMenu.Items[fMRUMenu.Count - 1]);
-
 
   // Now build the other recent files entries (*.cpp, *.h, etc)
   if (fMRU.Count - NonDev) > fMRUMax then
@@ -474,7 +489,11 @@ begin
   // update MRU
   fMRU.Assign(UpdMRU);
   UpdMRU.Free;
-  MainForm.XPMenu.Active := MainForm.XPMenu.Active;
+  MainForm.XPMenu.Refresh;
+
+  // Thaw and redraw the screen
+  if MainForm.Visible then
+    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
 end;
 
 { ---------- Code Insert Methods ---------- }
