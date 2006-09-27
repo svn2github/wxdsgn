@@ -87,6 +87,7 @@ procedure TfrmCreateFormProp.btBrowseClick(Sender: TObject);
 var
 dir : string;
 begin
+  dir := txtSaveTo.text;
   if SelectDirectory('Select a directory', '', dir) then
     txtSaveTo.text := dir;
 end;
