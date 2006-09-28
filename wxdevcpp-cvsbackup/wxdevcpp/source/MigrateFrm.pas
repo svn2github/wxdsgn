@@ -28,27 +28,34 @@ uses
 
 type
   TMigrateFrm = class(TForm)
-    grpFiles: TGroupBox;
+    XPMenu1: TXPMenu;
+    btnNext: TButton;
+    Page1: TPanel;
+    intro: TLabel;
+    filename: TLabel;
     lblSource: TLabel;
+    chkBackup: TCheckBox;
     Source: TEdit;
     btnSource: TJvBitBtn;
-    chkBackup: TCheckBox;
-    btnGo: TButton;
-    grpStatus: TGroupBox;
-    Progress: TProgressBar;
+    Page2: TPanel;
+    progress_lbl: TLabel;
     lblAction: TLabel;
-    bvlStatus: TBevel;
-    Action: TLabel;
-    lblLine: TLabel;
     Line: TLabel;
+    Action: TLabel;
+    bvlStatus: TBevel;
     bvlLine: TBevel;
+    lblLine: TLabel;
     lblChanges: TLabel;
-    Changes: TLabel;
     bvlChanges: TBevel;
-    XPMenu1: TXPMenu;
-    procedure btnGoClick(Sender: TObject);
+    Changes: TLabel;
+    Progress: TProgressBar;
+    Page3: TPanel;
+    finish: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure btnNextClick(Sender: TObject);
+  private
+    procedure CleanUp;
   end;
 
 implementation
@@ -56,7 +63,36 @@ uses
   StrUtils;
 {$R *.dfm}
 
-procedure TMigrateFrm.btnGoClick(Sender: TObject);
+procedure TMigrateFrm.btnNextClick(Sender: TObject);
+begin
+  case btnNext.Tag of
+    0:
+      begin
+        Page1.Visible := False;
+        Page2.Visible := True;
+        Page3.Visible := False;
+        btnNext.Tag := 1;
+        Application.ProcessMessages;
+        CleanUp;
+      end;
+    1:
+      begin
+        Page1.Visible := False;
+        Page2.Visible := False;
+        Page3.Visible := True;
+        btnNext.Tag := 2;
+        btnNext.Caption := '&Finish';
+        Application.ProcessMessages;
+      end;
+    2:
+      begin
+        ModalResult := mrOK;
+        Close;
+      end;
+  end;
+end;
+
+procedure TMigrateFrm.CleanUp();
 var
   Position: integer;
   Changes: integer;
@@ -64,7 +100,7 @@ var
   i: integer;
 begin
   //Create our array
-  btnGo.Enabled := false;
+  btnNext.Enabled := false;
   Strings := TStringList.Create;
   Changes := 0;
   i := 0;
@@ -222,7 +258,7 @@ begin
 
   //Free our memory
   Strings.Destroy;
-  btnGo.Enabled := true;
+  btnNext.Enabled := true;
   Action.Caption := 'Done';
 end;
 
@@ -235,6 +271,7 @@ end;
 
 procedure TMigrateFrm.FormCreate(Sender: TObject);
 begin
+  btnNext.Tag := 0;
   if devData.XPTheme then
     XPMenu1.Active := true;
 end;

@@ -4,7 +4,7 @@ object MigrateFrm: TMigrateFrm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'wxForm Migration Tool'
-  ClientHeight = 261
+  ClientHeight = 235
   ClientWidth = 595
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,35 +18,66 @@ object MigrateFrm: TMigrateFrm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object grpFiles: TGroupBox
-    Left = 8
-    Top = 8
-    Width = 580
-    Height = 92
-    Caption = 'Files'
-    TabOrder = 0
+  object Page1: TPanel
+    Left = 6
+    Top = 6
+    Width = 585
+    Height = 200
+    BevelOuter = bvNone
+    TabOrder = 1
+    object intro: TLabel
+      Left = 0
+      Top = 0
+      Width = 586
+      Height = 45
+      AutoSize = False
+      Caption = 
+        'wxDev-C++ has detected that you were attemtping to load an old w' +
+        'xForm file which contains data fields which has changed since th' +
+        'e previous release. This wizard will walk you through the steps ' +
+        'to bringing your form files up-to-date with the latest version.'
+      Transparent = True
+      WordWrap = True
+    end
+    object filename: TLabel
+      Left = 0
+      Top = 45
+      Width = 186
+      Height = 13
+      Caption = 'Let'#39's begin by selecting a file to update.'
+    end
     object lblSource: TLabel
-      Left = 8
-      Top = 17
+      Left = 0
+      Top = 69
       Width = 56
       Height = 13
       Caption = 'Source File:'
     end
-    object Source: TEdit
-      Left = 70
-      Top = 15
-      Width = 435
-      Height = 21
+    object chkBackup: TCheckBox
+      Left = 0
+      Top = 89
+      Width = 225
+      Height = 17
+      Caption = 'Back up old wxForm file before updating it'
+      Checked = True
+      State = cbChecked
       TabOrder = 0
+    end
+    object Source: TEdit
+      Left = 66
+      Top = 66
+      Width = 455
+      Height = 21
+      TabOrder = 1
       Text = 'Source'
     end
     object btnSource: TJvBitBtn
-      Left = 510
-      Top = 14
+      Left = 525
+      Top = 65
       Width = 60
       Height = 23
       Caption = 'Open'
-      TabOrder = 1
+      TabOrder = 2
       Glyph.Data = {
         36030000424D3603000000000000360000002800000010000000100000000100
         18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
@@ -80,104 +111,117 @@ object MigrateFrm: TMigrateFrm
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = []
     end
-    object chkBackup: TCheckBox
-      Left = 8
-      Top = 42
-      Width = 560
-      Height = 17
-      Caption = 'Back up old wxForm file before updating it'
-      Checked = True
-      State = cbChecked
-      TabOrder = 2
-    end
-    object btnGo: TButton
-      Left = 495
-      Top = 60
-      Width = 75
-      Height = 23
-      Caption = 'Go'
-      TabOrder = 3
-      OnClick = btnGoClick
+  end
+  object Page3: TPanel
+    Left = 6
+    Top = 6
+    Width = 585
+    Height = 200
+    BevelOuter = bvNone
+    TabOrder = 3
+    Visible = False
+    object finish: TLabel
+      Left = 0
+      Top = 0
+      Width = 586
+      Height = 45
+      AutoSize = False
+      Caption = 
+        'The migration tool has successfully completed updating your form' +
+        ' file for use with the latest version of wxDev-C++. Press '#39'Finis' +
+        'h'#39' to exit the tool and reload the form.'
+      Transparent = True
+      WordWrap = True
     end
   end
-  object grpStatus: TGroupBox
-    Left = 8
-    Top = 110
-    Width = 580
-    Height = 140
-    Caption = 'Status'
-    TabOrder = 1
+  object Page2: TPanel
+    Left = 6
+    Top = 6
+    Width = 585
+    Height = 200
+    BevelOuter = bvNone
+    TabOrder = 2
+    Visible = False
     object bvlChanges: TBevel
-      Left = 65
-      Top = 67
-      Width = 505
+      Left = 57
+      Top = 124
+      Width = 525
       Height = 21
     end
     object bvlLine: TBevel
-      Left = 65
-      Top = 40
-      Width = 505
+      Left = 57
+      Top = 97
+      Width = 525
       Height = 21
     end
+    object bvlStatus: TBevel
+      Left = 57
+      Top = 70
+      Width = 525
+      Height = 21
+    end
+    object progress_lbl: TLabel
+      Left = 0
+      Top = 0
+      Width = 363
+      Height = 13
+      Caption = 
+        'Please wait while the migration tool converts your form file to ' +
+        'the latest format.'
+    end
     object lblAction: TLabel
-      Left = 8
-      Top = 17
+      Left = 0
+      Top = 74
       Width = 50
       Height = 13
       AutoSize = False
       Caption = 'Action:'
       Transparent = True
     end
-    object bvlStatus: TBevel
-      Left = 65
-      Top = 13
-      Width = 505
-      Height = 21
+    object Line: TLabel
+      Left = 61
+      Top = 101
+      Width = 515
+      Height = 13
+      AutoSize = False
+      Transparent = True
     end
     object Action: TLabel
-      Left = 69
-      Top = 17
-      Width = 495
+      Left = 61
+      Top = 74
+      Width = 515
       Height = 13
       AutoSize = False
       Caption = 'Idle'
       Transparent = True
     end
     object lblLine: TLabel
-      Left = 8
-      Top = 44
+      Left = 0
+      Top = 101
       Width = 23
       Height = 13
       Caption = 'Line:'
     end
-    object Line: TLabel
-      Left = 69
-      Top = 44
-      Width = 495
-      Height = 13
-      AutoSize = False
-      Transparent = True
-    end
     object lblChanges: TLabel
-      Left = 8
-      Top = 71
+      Left = 0
+      Top = 128
       Width = 45
       Height = 13
       AutoSize = False
       Caption = 'Changes:'
     end
     object Changes: TLabel
-      Left = 69
-      Top = 71
-      Width = 495
+      Left = 61
+      Top = 128
+      Width = 515
       Height = 13
       AutoSize = False
       Transparent = True
     end
     object Progress: TProgressBar
-      Left = 8
-      Top = 100
-      Width = 560
+      Left = 0
+      Top = 157
+      Width = 585
       Height = 28
       Min = 0
       Max = 100
@@ -185,6 +229,15 @@ object MigrateFrm: TMigrateFrm
       Step = 1
       TabOrder = 0
     end
+  end
+  object btnNext: TButton
+    Left = 517
+    Top = 210
+    Width = 75
+    Height = 23
+    Caption = 'Ne&xt >'
+    TabOrder = 0
+    OnClick = btnNextClick
   end
   object XPMenu1: TXPMenu
     DimLevel = 30
