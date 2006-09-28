@@ -1056,7 +1056,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure RemoveAllBreakPointFromList();
     function GetBreakPointIndex(line_number: integer; e:TEditor) : integer;
     procedure RemoveBreakPointAtIndex(index:integer);
-    //function BreakPointForFile(filename : string) : integer;
 
 {$IFDEF WX_BUILD}
     procedure SurroundString(e: TEditor;strStart,strEnd:String);
@@ -2099,33 +2098,17 @@ begin
   end;
 end;
 
-{function TMainForm.BreakPointForFile(filename : string) : integer;
-var
-  i : integer;
-begin
-  Result := -1;
-  for i:=0 to BreakPointList.Count -1 do
-  begin
-      if PBreakPointEntry(BreakPointList.Items[i])^.file_name = filename then begin
-          Result := PBreakPointEntry(BreakPointList.Items[i])^.line;
-      end;
-  end;
-end;   }
-
-{*** modified by peter ***}
 procedure TMainForm.DoApplyWindowPlacement;
 //
-// This method is called from devcpp.dpr !
+// This method is called from devcpp.dpr!
 // It's called at the very last, because it forces the form to show and
 // we only want to display the form when it's ready and fully inited/created
 //
 begin
-
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
-    SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-  //else
-  //if not CacheCreated then // this is so weird, but the following call seems to take a lot of time to execute
-   // Self.Position := poScreenCenter;
+    SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
+  else if not CacheCreated then // this is so weird, but the following call seems to take a lot of time to execute
+    Self.Position := poScreenCenter;
 
   Show;
 end;
@@ -2135,23 +2118,14 @@ procedure TMainForm.LoadTheme;
 var
   Idx: Integer;
 begin
-  //Some weird problems I have seen
-  try
-    XPMenu.Active := devData.XPTheme;
-  except
-  end;
+  //TODO: lowjoel: Do these lines give exceptions?
+  XPMenu.Active := devData.XPTheme;
+  WebUpdateForm.XPMenu.Active := devData.XPTheme;
 
-  try
-    if assigned(WebUpdateForm) then
-        WebUpdateForm.XPMenu.Active := devData.XPTheme;
-  except
-  end;
-
-  //if devData.Theme = '' then
   if devImageThemes.IndexOf(devData.Theme) < 0 then
     devData.Theme := devImageThemes.Themes[0].Title; // 0 = New look (see ImageTheme.pas)
 
-// make sure the theme in question is in the list
+  //make sure the theme in question is in the list
   Idx := devImageThemes.IndexOf(devData.Theme);
   if Idx > -1 then
   begin
@@ -2175,7 +2149,6 @@ begin
       HelpPop.Images := CurrentTheme.HelpImages;
       DebugVarsPopup.Images := CurrentTheme.MenuImages;
       ClassBrowser1.Images := CurrentTheme.BrowserImages;
-
 
       //this prevent a bug in the VCL
       DDebugBtn.Glyph := nil;
@@ -2202,59 +2175,6 @@ begin
 
   fTools.BuildMenu; // reapply icons to tools
 end;
-
-(*procedure TMainForm.LoadTheme;
-begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
-  if devData.Theme = '' then
-    devData.Theme := DEV_INTERNAL_THEME;
-  with devtheme do
-   begin
-     if not SetTheme(devData.Theme) then Exit;
-     alMain.Images:= Menus;
-     MainMenu.Images:= Menus;
-     ProjectView.Images:= Projects;
-     MessageControl.Images:= Menus;
-     tbMain.Images:= Menus;
-     tbCompile.Images:= Menus;
-     tbOptions.Images:= Menus;
-     tbProject.Images:= Menus;
-     tbClasses.Images:= Menus;
-     tbedit.Images:= Menus;
-     tbSearch.Images:= Menus;
-     tbSpecials.Images:= Specials;
-
-     HelpMenu.SubMenuImages:= Help;
-     HelpPop.Images:= Help;
-
-     DebugVarsPopup.Images:=Menus;
-
-     //this prevent a bug in the VCL
-     DDebugBtn.Glyph := nil;
-     NextStepBtn.Glyph := nil;
-     StepOverBtn.Glyph := nil;
-     StepIntoBtn.Glyph := nil;
-     AddWatchBtn.Glyph := nil;
-     RemoveWatchBtn.Glyph := nil;
-     RuntocursorBtn.Glyph := nil;
-     StopExecBtn.Glyph := nil;
-
-     Menus.GetBitmap(32, DDebugBtn.Glyph);
-     Menus.GetBitmap(18, NextStepBtn.Glyph);
-     Menus.GetBitmap(14, StepOverBtn.Glyph);
-     Menus.GetBitmap(14, StepIntoBtn.Glyph);
-     Menus.GetBitmap(21, AddWatchBtn.Glyph);
-     Menus.GetBitmap(5, RemoveWatchBtn.Glyph);
-     Menus.GetBitmap(24, RuntocursorBtn.Glyph);
-     Menus.GetBitmap(11, StopExecBtn.Glyph);
-
-     AddWatchBtn.Glyph.TransparentColor := clWhite;
-   end;
-   fTools.BuildMenu; // reapply icons to tools
-end; *)
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
@@ -2306,10 +2226,10 @@ begin
     Exit;
   end;
 
-  //Guru : If we dont disable the designer, AV will popup
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
+  //Guru: Disable the designer to prevent an access violation
   DisableDesignerControls;
-  {$ENDIF}
+{$ENDIF}
 
   GetWindowPlacement(Self.Handle, @devData.WindowPlacement);
 
@@ -2350,13 +2270,14 @@ begin
   fDebugger.Free;
   dmMain.Free;
   devImageThemes.Free;
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   strChangedFileList.Free; //Used for wx's Own File watch functions
   strStdwxIDList.Free;//Used for
   FWatchList.Free; //Used for wx's Own File watch functions
-  {$ENDIF WX_BUILD}
+{$ENDIF WX_BUILD}
   tmpcount := BreakPointList.Count - 1;
-{** RNC Clean up the global breakpoint list *** }
+
+  //Clean up the global breakpoint list
   for i := tmpcount downto 0 do
   begin
     dispose(BreakPointList.Items[i]);
@@ -2464,6 +2385,14 @@ begin
   aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
   if aFile = '' then exit;
 
+  // Freeze the screen before doing anything
+  if MainForm.Visible then
+  begin
+    MainForm.Refresh;
+    MainForm.Update;
+    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(false), 0);
+  end;
+  
   // delete between "Dev-C++ Help" and first separator
   idx2 := HelpMenu.IndexOf(HelpSep1);
   for idx := pred(idx2) downto 1 do
@@ -2476,8 +2405,8 @@ begin
 
   HelpMenu.SubMenuImages := devImageThemes.CurrentTheme.HelpImages; //devTheme.Help;
 
-// since 4.9.6.9, a standard menu entry appeared in HelpPop (Help On DevCpp)
-// so items.clear is not good anymore...
+  // since 4.9.6.9, a standard menu entry appeared in HelpPop (Help On DevCpp)
+  // so items.clear is not good anymore...
   while HelpPop.Items.Count > 1 do
     HelpPop.Items.Delete(HelpPop.Items.Count - 1);
 
@@ -2488,8 +2417,13 @@ begin
     else
       fHelpFiles.Clear;
 
-     ini.ReadSections(fHelpFiles);
-    if fHelpFiles.Count = 0 then exit;
+    ini.ReadSections(fHelpFiles);
+    if fHelpFiles.Count = 0 then
+    begin
+      if MainForm.Visible then
+        SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
+      exit;
+    end;
 
     for idx := 0 to pred(fHelpFiles.Count) do
     begin
@@ -2534,6 +2468,12 @@ begin
     end;
   finally
     ini.free;
+  end;
+
+  if MainForm.Visible then
+  begin
+    XPMenu.Refresh;
+    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
   end;
 end;
 
@@ -8596,14 +8536,17 @@ begin
   GetIntialFormData(frm, strFName, strCName, strFTitle,dlgSStyle, dsgnType);
   CreateFormFile(strFName, strCName, strFTitle, dlgSStyle,dsgnType);
 
-  //NinjaNL If we have Generate XRC turned on then we need to create a blank XRC file on project initialisation
-    if (MainForm.ELDesigner1.GenerateXRC)// or (cbGenerateXRC.Checked)
-    then
-    begin
-      strLstXRCCode := CreateBlankXRC;
-      SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(BaseFilename, XRC_EXT));
+  //NinjaNL: If we have Generate XRC turned on then we need to create a blank XRC
+  //         file on project initialisation
+  if (MainForm.ELDesigner1.GenerateXRC) then
+  begin
+    strLstXRCCode := CreateBlankXRC;
+    try
+      strLstXRCCode.SaveToFile(ChangeFileExt(BaseFilename, XRC_EXT));
+    finally
       strLstXRCCode.Destroy;
     end;
+  end;
 
   //Destroy the dialog if we own it
   if OwnsDlg then
@@ -8941,23 +8884,17 @@ begin
   RegisterClasses([TMainMenu]);
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.Panel2Resize(Sender: TObject);
 begin
   cbxControlsx.Width := Panel2.Width;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.PalleteListPanelResize(Sender: TObject);
 begin
   Palettes.Width := PalleteListPanel.Width;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.LoadDefaultPalette;
 // Load default palette when palette not exists
 var
@@ -8978,14 +8915,11 @@ begin
     WriteString('Palette', 'Menu','TWxMenuBar;TWxPopupMenu;');
     WriteString('Palette', 'Dialogs','TWxOpenFileDialog;TWxSaveFileDialog;TWxProgressDialog;TWxColourDialog;TWxDirDialog;TWxFindReplaceDialog;TWxFontDialog;TWxPageSetupDialog;TWxPrintDialog;TWxMessageDialog;');
     WriteString('Palette', 'System','TWxTimer;');
-    //Deffered: TWxSingleChoiceDialog;TWxTextEntryDialog;
     WriteInteger('Version','IniVersion',IniVersion);
   end;
   IniFile.Destroy;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.LoadComponents;
 // Dynamic loading components
 var
@@ -9049,9 +8983,7 @@ begin
     IniFile.Destroy;
   end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.CreatePalettePage(PaletteLst:TStringList;PalettePage: string);
 // Create component of palette page (page name is PalettePage)
 var
@@ -9118,9 +9050,7 @@ begin
   if lbxControls.Items.Count > 0 then
     lbxControls.ItemIndex := 0;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.lbxControlsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
@@ -9176,9 +9106,7 @@ begin
     LineTo(ClientWidth, Rect.Bottom - 1);
   end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.PalettesChange(Sender: TObject);
 var
     allPalletes:TStringList;
@@ -9201,9 +9129,7 @@ begin
   end;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.lbxControlsClick(Sender: TObject);
 begin
   if lbxControls.ItemIndex <> -1 then
@@ -9211,9 +9137,7 @@ begin
     SelectedComponentName := lbxControls.Items[lbxControls.ItemIndex];
   end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
 CurrentControl: TControl;
@@ -9290,9 +9214,7 @@ begin
 
   end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1ControlDeleted(Sender: TObject;
   AControl: TControl);
 var
@@ -9347,9 +9269,7 @@ begin
     e.UpdateDesignerData;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1ControlHint(Sender: TObject;
   AControl: TControl; var AHint: string);
 var
@@ -9360,10 +9280,7 @@ begin
     AHint := Format('%s:%s', [AControl.name, compIntf.GetWxClassName]);
   end;
 end;
-{$ENDIF}
 
-
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
 var
   I: Integer;
@@ -9499,17 +9416,13 @@ begin
   ELDesigner1.DesignControl.Refresh;
   ELDesigner1.DesignControl.Repaint;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.resetPallete;
 begin
   if lbxControls.count > 0 then
     lbxControls.ItemIndex := 0;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.DisableDesignerControls;
 begin
 
@@ -9550,9 +9463,7 @@ begin
     boolInspectorDataClear := true;
   cbxControlsx.Items.Clear;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.EnableDesignerControls;
 begin
   //TODO: Guru: I have no clue why I'm getting an error at this place.
@@ -9576,9 +9487,7 @@ begin
   //PageControl.PopupMenu:=nil;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1ControlInserting(Sender: TObject;
   var AControlClass: TControlClass);
   
@@ -10102,9 +10011,7 @@ begin
   Item.Hidden := not boolOk;
   //Item.Hidden:= false;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TMainForm.GetCurrentFileName:string;
 var
       e: TEditor;
@@ -10245,9 +10152,7 @@ begin
     UpdateDefaultFormContent;
   end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.JvInspEventsAfterItemCreate(Sender: TObject;
   Item: TJvCustomInspectorItem);
 var
@@ -10304,9 +10209,7 @@ begin
   Item.Hidden := not boolOk;
   //Item.Hidden:= false;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TMainForm.isCurrentPageDesigner: Boolean;
 var
   e: TEditor;
@@ -10328,16 +10231,12 @@ begin
   else
     Result := True;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TMainForm.LocateFunction(strFunctionName:String):boolean;
 begin
    Result := False;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TMainForm.GetCurrentDesignerForm: TfrmNewForm;
 var
   e: TEditor;
@@ -10352,9 +10251,7 @@ begin
   if e.isForm then
     Result := e.GetDesigner();
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.JvInspEventsDataValueChanged(Sender: TObject;
   Data: TJvCustomInspectorData);
 var
@@ -10568,9 +10465,7 @@ begin
   end;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.JvInspEventsItemValueChanged(Sender: TObject;
   Item: TJvCustomInspectorItem);
 begin
@@ -10580,9 +10475,7 @@ begin
   if JvInspEvents.Selected.Visible = False then
     Exit;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
 begin
     Value.Clear;
@@ -10652,8 +10545,7 @@ begin
   end;
 
 end;
-{$ENDIF}
-{$IFDEF WX_BUILD}
+
 function TMainForm.LocateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string): Boolean;
 
 function isFunctionAvailableInEditor(intClassID:Integer;strFunctionName:String;intLineNum:Integer;strFname:String):boolean;
@@ -10802,11 +10694,7 @@ begin
     e.UpdateDesignerData;
     boolInspectorDataClear:=False;
   end;
-
 end;
-{$ENDIF}
-
-{$IFDEF WX_BUILD}
 
 function TMainForm.isCurrentFormFilesNeedToBeSaved:Boolean;
 var
@@ -11183,9 +11071,7 @@ begin
   end;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TMainForm.GetFunctionsFromSource(classname: string; var strLstFuncs:
   TStringList): Boolean;
 var
@@ -11272,9 +11158,7 @@ begin
   end;
   Result := True;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.UpdateDefaultFormContent;
 var
   e: TEditor;
@@ -11289,9 +11173,7 @@ begin
 
   e.UpdateDesignerData;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.cbxControlsxChange(Sender: TObject);
 var
   strCompName: string;
@@ -11356,7 +11238,7 @@ begin
 {$IFDEF WX_BUILD}
   if ELDesigner1.CanCopy then
     ELDesigner1.Copy;
- {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TMainForm.actDesignerCutExecute(Sender: TObject);
@@ -11495,9 +11377,7 @@ begin
   end;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 function TMainForm.ReplaceClassNameInEditor(strLst:TStringList;edt:TEditor;FromClassName, ToClassName:string):boolean;
 var
   I: Integer;
@@ -11830,9 +11710,7 @@ begin
   //FileName,FromClassName,ToClassName
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.est1Click(Sender: TObject);
 var
   I: Integer;
@@ -11881,14 +11759,6 @@ begin
 
     strParserClassName := PStatement(CppParser1.Statements[i])._ScopeCmd;
     strLst.Add('_ScopeCmd : ' + strParserClassName);
-
-//    intColon := Pos('::', strParserClassName);
-//    if intColon <> 0 then
-//    begin
-//      strParserClassName := Copy(strParserClassName, 0, intColon - 1);
-//    end
-//    else
-//      Continue;
 
     strParserFunctionName := PStatement(CppParser1.Statements[i])._FullText;
         strLst.Add('strParserFunctionName : ' +strParserFunctionName );
@@ -11966,17 +11836,13 @@ begin
   e.InsertString('',false);
   strLst.Destroy;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.JvInspPropertiesItemValueChanged(Sender: TObject;
   Item: TJvCustomInspectorItem);
 begin
 //sendDebug('Yes it is changed!!!');
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.DesignerOptionsClick(Sender: TObject);
 var
     DesignerForm: TDesignerForm;
@@ -12178,8 +12044,6 @@ begin
         strOp:='opInsert';
     if Operation = opRemove then
         strOp:='opRemove';
-
-    //sendDebug('In ELDesigner Notification - ' + strOp);
 end;
 {$ENDIF}
 
@@ -12272,7 +12136,6 @@ begin
          SendMessage(GetFocus, WM_CLEAR, 0, 0)
     else
         MessageDlg('nothing selected', mtError, [mbOK], 0);
-
 {$ENDIF}
 end;
 
@@ -12301,11 +12164,9 @@ if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
       OpenUnit;
       if Shift = [ssShift] then
       begin
-        {
-          crap hack, SHIFT+ENTER=open file and close projman
-          I *really* don't think it's the acceptable interface idea.
-          Can't find a better one though.
-        }
+        //TODO: crap hack, SHIFT+ENTER=open file and close projman I *really*
+        //      don't think it's the acceptable interface idea. Can't find a
+        //      better one though.
         actProjectManager.Checked := False;
         actProjectManagerExecute(nil);
       end;
@@ -12369,16 +12230,8 @@ begin
   if (not bSuccess) then
     Result := ShortPathName;
 end;
-{$EndIf}
 
 initialization
-{$IFDEF WX_BUILD}
-//    TJvInspectorAlignItem.RegisterAsDefaultItem;
-//    TJvInspectorAnchorsItem.RegisterAsDefaultItem;
-//    TJvInspectorColorItem.RegisterAsDefaultItem;
-//    TJvInspectorTImageIndexItem.RegisterAsDefaultItem;
-//    TJvInspectorListItemsItem.RegisterAsDefaultItem;
-//    TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
     TWxJvInspectorTStringsItem.RegisterAsDefaultItem;
     TJvInspectorMyFontItem.RegisterAsDefaultItem;
     TJvInspectorMenuItem.RegisterAsDefaultItem;
