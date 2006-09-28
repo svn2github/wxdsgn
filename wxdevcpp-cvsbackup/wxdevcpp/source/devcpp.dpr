@@ -343,11 +343,11 @@ begin
 
   // do all the initialization when the splash screen is displayed
   // because it takes quite a while to complete
-  TMainFormHack(MainForm).DoCreateEverything;
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
   Application.CreateForm(TWebUpdateForm, WebUpdateForm);
+  TMainFormHack(MainForm).DoCreateEverything;
 
   // apply the window placement. this method forced
   // the form to show,
