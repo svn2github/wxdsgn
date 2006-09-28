@@ -218,11 +218,12 @@ type
     destructor Destroy; override;
     procedure InitComponent(Comp: TComponent); // Tom: Added for usage by the main program ."Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
     procedure ActivateMenuItem(MenuItem: TMenuItem; SubMenus: boolean); // +jt
+    procedure Refresh;
     property Form: TScrollingWinControl read FForm write SetForm;
 // +jt
     property IsWXP: boolean read FIsWXP;
-   property IsW2k: boolean read FIsW2k;
-   property IsWNT: boolean read FIsWNT;
+    property IsW2k: boolean read FIsW2k;
+    property IsWNT: boolean read FIsWNT;
 //   property TransparentColor: TColor read FTransparentColor write FTransparentColor;
 // +jt
   published
@@ -2256,13 +2257,15 @@ begin
   if Value = FActive then exit;
 
   FActive := Value;
-  if FActive then
-    InitItems(FForm, true, true)
-  else
-    InitItems(FForm, false, true);
+  Refresh;
 
   if FForm.Handle <> 0 then
     Windows.DrawMenuBar(FForm.Handle);
+end;
+
+procedure TXPMenu.Refresh;
+begin
+  InitItems(FForm, FActive, true);
 end;
 
 procedure TXPMenu.SetAutoDetect(const Value: boolean);
@@ -2629,15 +2632,12 @@ begin
     XPMenuManager.Notification(AComponent, Operation);
 
   inherited Notification(AComponent, Operation);
-  if not FActive then exit;
-  if not FAutoDetect then exit;
+  if (not FActive) or (not FAutoDetect) then
+    Exit;
   if (Operation = opInsert) and
-     ((AComponent is TMenuItem) or (AComponent is TToolButton) or
-      (AComponent is TControlBar)) then
-  begin
+     ((AComponent is TMenuItem) or (AComponent is TToolButton) or (AComponent is TControlBar)) then
     if not (csDesigning in ComponentState) then
       InitItem(AComponent, true, true);  // Tom: This will process this new component
-  end;
 end;
 
 
