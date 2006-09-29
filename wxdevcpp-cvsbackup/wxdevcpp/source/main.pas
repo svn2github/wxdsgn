@@ -45,8 +45,9 @@ uses
   {$IFNDEF OLD_MADSHI}
   ExceptionFilterUnit,
   {$ENDIF}
-  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX, DockManagerPro,
-  SynEditHighlighter, SynHighlighterMulti
+  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX,
+  SynEditHighlighter, SynHighlighterMulti, JvComponentBase,
+  JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle
 {$ENDIF}
   ;
 {$ENDIF}
@@ -59,14 +60,13 @@ uses
   CVSFm, ImageTheme, Types;
 {$ENDIF}
 type
-    { *** RNC make the breakpoints global ***}
-    TBreakPointEntry = record
-        file_name    : String;
-        line    : integer;
-        editor : TEditor;
-        breakPointIndex:integer;
-    end;
-PBreakPointEntry = ^TBreakPointEntry;
+  TBreakPointEntry = record
+    file_name    : String;
+    line    : integer;
+    editor : TEditor;
+    breakPointIndex:integer;
+  end;
+  PBreakPointEntry = ^TBreakPointEntry;
   TMainForm = class(TForm)
     MainMenu: TMainMenu;
     FileMenu: TMenuItem;
@@ -566,11 +566,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     Login1: TMenuItem;
     Logout1: TMenuItem;
     N66: TMenuItem;
-    LeftPageControl: TPageControl;
-    ProjectSheet: TTabSheet;
-    ProjectView: TTreeView;
-    ClassSheet: TTabSheet;
-    ClassBrowser1: TClassBrowser;
     DebugSubPages: TPageControl;
     tabVars: TTabSheet;
     PanelDebug: TPanel;
@@ -584,7 +579,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     lblSendCommandGdb: TLabel;
     edGdbCommand: TEdit;
     GdbCommandBtn: TButton;
-    FloatingPojectManagerItem: TMenuItem;
+    FloatingProjectManagerItem: TMenuItem;
     actCompileCurrentFile: TAction;
     Compilecurrentfile1: TMenuItem;
     actSaveProjectAs: TAction;
@@ -595,8 +590,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     cmbMembers: TComboBox;
     N17: TMenuItem;
     ToolClassesItem: TMenuItem;
-    DebugLeftSheet: TTabSheet;
-    DebugTree: TTreeView;
     DebugPanel: TPanel;
     NextStepBtn: TSpeedButton;
     StepIntoBtn: TSpeedButton;
@@ -643,7 +636,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     N71: TMenuItem;
     N72: TMenuItem;
     N70: TMenuItem;
-    pnlBrowsers: TPanel;
     NewWxFrameItem: TMenuItem;
     N73: TMenuItem;
     actNewWxFrame: TAction;
@@ -651,7 +643,16 @@ PBreakPointEntry = ^TBreakPointEntry;
     actWxPropertyInspectorCut: TAction;
     actWxPropertyInspectorCopy: TAction;
     actWxPropertyInspectorPaste: TAction;
-    DockManagerPro1: TDockManagerPro;
+    DockServer: TJvDockServer;
+    DockStyle: TJvDockVSNetStyle;
+    LeftPageControl: TPageControl;
+    ProjectSheet: TTabSheet;
+    ProjectView: TTreeView;
+    ClassSheet: TTabSheet;
+    ClassBrowser1: TClassBrowser;
+    DebugLeftSheet: TTabSheet;
+    DebugTree: TTreeView;
+    pnlBrowsers: TPanel;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
@@ -890,7 +891,7 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure actCVSLogoutExecute(Sender: TObject);
     procedure AddWatchBtnClick(Sender: TObject);
     procedure ReportWindowClose(Sender: TObject; var Action: TCloseAction);
-    procedure FloatingPojectManagerItemClick(Sender: TObject);
+    procedure FloatingProjectManagerItemClick(Sender: TObject);
     procedure FloatingPropertyInspectorClick(Sender: TObject);
     procedure lvBacktraceDblClick(Sender: TObject);
     procedure actCompileCurrentFileExecute(Sender: TObject);
@@ -968,9 +969,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     procedure actNewwxDialogExecute(Sender: TObject);
     procedure ApplicationEvents1Activate(Sender: TObject);
     procedure ProjectViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure WndProc(var Message: TMessage); override;
-    procedure pnlBrowsersUnDock(Sender: TObject; Client: TControl;
-      NewTarget: TWinControl; var Allow: Boolean);
 {$ENDIF}
 
   private
@@ -981,7 +979,6 @@ PBreakPointEntry = ^TBreakPointEntry;
     fProjectCount: integer;
     fCompiler: TCompiler;
     ProjectToolWindow: TForm;
-    PropertiesToolWindow: TForm;
     ReportToolWindow: TForm;
     bProjectLoading: boolean;
     OldLeft: integer;
@@ -1120,9 +1117,8 @@ public
   lbxControls: TListBox;
   PalleteListPanel: TPanel;
   Palettes: TComboBox;
-  frmInspectorDock:TForm;
-  //frmClassBrwsDock:TForm;
-  frmControlsDock:TForm;
+  frmProjMgrDock:TJvDockableForm;
+  frmInspectorDock:TJvDockableForm;
   strChangedFileList:TStringList;
   strStdwxIDList:TStringList;
   FWatchList:TList;
@@ -1186,7 +1182,6 @@ public
     function GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string): Boolean;
 
     function LocateFunction(strFunctionName:String):boolean;
-    procedure SimulationOfSplitMove;
 {$ENDIF}
 
   end;
@@ -1207,7 +1202,7 @@ uses
   ShellAPI, IniFiles, Clipbrd, MultiLangSupport, version,
   devcfg, datamod, helpfrm, NewProjectFrm, AboutFrm, PrintFrm,
   CompOptionsFrm, EditorOptfrm, Incrementalfrm, Search_Center, Envirofrm,
-  SynEdit, SynEditTypes,
+  SynEdit, SynEditTypes, JvAppIniStorage, JvAppStorage,
   CheckForUpdate, debugfrm, Types, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
@@ -1271,24 +1266,6 @@ const
   INT_SWITCH= 12;
   INT_CPP_COMMENT= 13;
 
-//Fixme Later for Resizing the browser
-procedure TMainForm.SimulationOfSplitMove;
-var
-  pntSplitPosition : TSmallPoint;
-begin
-  frmInspectorDock.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
-  LeftPageControl.ManualDock(pnlBrowsers,pnlBrowsers,alTop);
-
- pntSplitPosition.x := frmInspectorDock.Width + 2;
- pntSplitPosition.y := 5;
- pnlBrowsers.Perform (WM_LBUTTONDOWN,MK_LBUTTON ,Integer(pntSplitPosition));
- pntSplitPosition.x := 280;
- pnlBrowsers.Perform (WM_MOUSEMOVE, MK_LBUTTON ,Integer(pntSplitPosition));
- pnlBrowsers.Perform (WM_LBUTTONUP,0 ,Integer(pntSplitPosition));
- Application.ProcessMessages;
-
-end;
-
 {$IFDEF WX_BUILD}
 procedure TMainForm.DoCreateWxSpecificItems;
 var
@@ -1296,17 +1273,54 @@ var
   ini :TiniFile;
   FloatingProperties: TMenuItem;
 begin
-  //Popup menu
-  frmInspectorDock := TForm.Create(self);
-  frmInspectorDock.Hint := 'Property Inspector';
+  //Project inspector
+  frmProjMgrDock := TJvDockableForm.Create(Self);
+  with frmProjMgrDock do
+  begin
+    Name := 'frmProjMgrDock';
+    Hint := 'Project Inspector';
+    Caption := 'Project Inspector';
+    FormStyle := fsStayOnTop;
+    BorderStyle := bsSizeToolWin;
+
+    DockableControl := Self;
+    DockClient.DockStyle := DockStyle;
+    DockClient.DirectDrag := false;
+    DockClient.EachOtherDock := true;
+    Font.Name := 'MS Sans Serif';
+  end;
+
+  //Reparent the project inspector
+  LeftPageControl.Align := alClient;
+  pnlBrowsers.RemoveControl(LeftPageControl);
+  frmProjMgrDock.InsertControl(LeftPageControl);
+  LeftPageControl.Parent := frmProjMgrDock;
+  RemoveControl(pnlBrowsers);
+  pnlBrowsers.Destroy;
+
+  //Property Inspector
+  frmInspectorDock := TJvDockableForm.Create(Self);
+  with frmInspectorDock do
+  begin
+    Name := 'frmInspectorDock';
+    Hint := 'Property Inspector';
+    Caption := 'Property Inspector';
+    FormStyle := fsStayOnTop;
+    BorderStyle := bsSizeToolWin;
+
+    DockableControl := Self;
+    DockClient.DockStyle := DockStyle;
+    DockClient.DirectDrag := false;
+    DockClient.EachOtherDock := true;
+    Font.Name := 'MS Sans Serif';
+  end;
 
   FloatingProperties := TMenuItem.Create(MainMenu);
   FloatingProperties.Checked := False;
   FloatingProperties.OnClick := FloatingPropertyInspectorClick;
-  FloatingProperties.Caption := 'Floating Property Inspector';
+  FloatingProperties.Caption := 'Show Property Inspector';
   ViewMenu.Insert(7, FloatingProperties);
 
-  frmControlsDock:=TForm.Create(self);
   strChangedFileList:=TStringList.Create;
   strStdwxIDList:=GetPredefinedwxIds;
   FWatchList:=TList.Create;
@@ -1638,6 +1652,7 @@ begin
   with pnlMainInsp do
   begin
     Name := 'pnlMainInsp';
+    Caption := '';
     Parent := frmInspectorDock;
     Left := 0;
     Top := 0;
@@ -1744,15 +1759,8 @@ begin
     OnItemSelected:= OnPropertyItemSelected;
   end;
 
-  intControlCount := 1000;
-  frmInspectorDock.ManualDock(pnlBrowsers, nil, alBottom);
-  frmInspectorDock.Visible := true;
-  frmInspectorDock.Height := 200;
-
-  LeftPageControl.ManualDock(pnlBrowsers, nil, alTop);
-  LeftPageControl.Height := 600;
-
   //Design Control specifics
+  intControlCount := 1000;
   lbxControls := TListBox.Create(Self);
   PalleteListPanel := TPanel.Create(Self);
   Palettes := TComboBox.Create(Self);
@@ -1886,14 +1894,11 @@ begin
 end;
 
 
+// This method is called from devcpp.dpr. I removed it from OnCreate, because
+// all this stuff take pretty much time and it makes the application like it
+// hangs. So while 'Creating' the form is hidden and when it's done, it's
+// displayed without 'lag' and it's immediately ready to use ...
 procedure TMainForm.DoCreateEverything;
-//
-// This method is called from devcpp.dpr !
-// I removed it from OnCreate, because all this stuff
-// take pretty much time and it makes the application like it hangs.
-// So while 'Creating' the form is hidden and when it's done, it's displayed
-// without 'lag' and it's immediately ready to use ...
-//
   procedure SetSplashStatus(str: string);
   begin
     if assigned(SplashForm) then
@@ -1903,6 +1908,19 @@ begin
 {$IFDEF WX_BUILD}
   SetSplashStatus('Loading wxWidgets extensions');
   DoCreateWxSpecificItems;
+
+  //TODO: lowjoel: Add Layout retrieval from the INI file.
+{  JvAppIniFileStorage := TJvAppIniFileStorage.Create(Application);
+  JvAppIniFileStorage.FileName := ExtractFilePath(devData.INIFile) + 'layout' + INI_EXT;
+  JvAppIniFileStorage.Location := flCustom;
+  JvAppIniFileStorage.Reload;
+  JvAppIniFileStorage.BeginUpdate;
+  try
+    LoadDockTreeFromAppStorage(JvAppIniFileStorage);
+  finally
+    JvAppIniFileStorage.EndUpdate;
+    JvAppIniFileStorage.Destroy;
+  end;}
 {$ENDIF}
   fFirstShow := TRUE;
 
@@ -2098,12 +2116,10 @@ begin
   end;
 end;
 
+// This method is called from devcpp.dpr. It's called at the very last, because
+// it forces the form to show and we only want to display the form when it's
+// ready and fully created
 procedure TMainForm.DoApplyWindowPlacement;
-//
-// This method is called from devcpp.dpr!
-// It's called at the very last, because it forces the form to show and
-// we only want to display the form when it's ready and fully inited/created
-//
 begin
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
@@ -2111,6 +2127,8 @@ begin
     Self.Position := poScreenCenter;
 
   Show;
+  frmProjMgrDock.Show;
+  frmInspectorDock.Show;
 end;
 
 
@@ -2118,7 +2136,6 @@ procedure TMainForm.LoadTheme;
 var
   Idx: Integer;
 begin
-  //TODO: lowjoel: Do these lines give exceptions?
   XPMenu.Active := devData.XPTheme;
   WebUpdateForm.XPMenu.Active := devData.XPTheme;
 
@@ -2209,6 +2226,8 @@ begin
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  JvAppIniFileStorage: TJvAppIniFileStorage;
 begin
   if assigned(fProject) then
     actCloseProject.Execute;
@@ -2232,6 +2251,19 @@ begin
 {$ENDIF}
 
   GetWindowPlacement(Self.Handle, @devData.WindowPlacement);
+  JvAppIniFileStorage := TJvAppIniFileStorage.Create(Self);
+  JvAppIniFileStorage.FileName := ExtractFilePath(devData.INIFile) + 'layout' + INI_EXT;
+  JvAppIniFileStorage.AutoFlush := True;
+  JvAppIniFileStorage.AutoReload := True;
+  JvAppIniFileStorage.BeginUpdate;
+  try
+    SaveDockTreeToAppStorage(JvAppIniFileStorage);
+  finally
+    JvAppIniFileStorage.Location := flCustom;
+    JvAppIniFileStorage.EndUpdate;
+    JvAppIniFileStorage.Flush;
+    JvAppIniFileStorage.Destroy;
+  end;
 
   devData.ClassView := LeftPageControl.ActivePage = ClassSheet;
   devData.ToolbarMainX := tbMain.Left;
@@ -2642,7 +2674,7 @@ begin
     tbOptions.Caption := Strings[ID_TOOLOPTIONS];
     tbSpecials.Caption := Strings[ID_TOOLSPECIAL];
     actViewToDoList.Caption := Strings[ID_VIEWTODO_MENUITEM];
-    FloatingPojectManagerItem.Caption := Strings[ID_ITEM_FLOATWINDOW];
+    FloatingProjectManagerItem.Caption := Strings[ID_ITEM_FLOATPROJECT];
     FloatingReportWindowItem.Caption := Strings[ID_ITEM_FLOATREPORT];
     GotoprojectmanagerItem.Caption := Strings[ID_ITEM_GOTOPROJECTVIEW];
     GoToClassBrowserItem.Caption := Strings[ID_ITEM_GOTOCLASSBROWSER];
@@ -3492,19 +3524,40 @@ begin
 end;
 
 procedure TMainForm.OpenCloseMessageSheet;
+const
+  Step = 15;
+var
+  Stop: Integer;
 begin
-  //  devData.ShowOutput:= _Show;
   if Assigned(ReportToolWindow) then
     exit;
+
+  //Then slide the tabs
   with MessageControl do
     if _Show then
-      Height := fmsgHeight
+    begin
+      while Height < fmsgHeight - Step do
+      begin
+        Height := Height + Step;
+        Application.ProcessMessages;
+        Sleep(10);
+      end;
+      Height := fmsgHeight;
+      CloseSheet.TabVisible := True;
+    end
     else
     begin
-      Height := Height - CompSheet.Height;
       ActivePageIndex := -1;
+      CloseSheet.TabVisible := False;
+      Stop := Height - CompSheet.Height;
+      while Height > Stop + Step do
+      begin
+        Height := Height - Step;
+        Application.ProcessMessages;
+        Sleep(10);
+      end;
+      Height := Stop;
     end;
-  CloseSheet.TabVisible := _Show;
   Statusbar.Top := Self.ClientHeight;
 end;
 
@@ -3518,10 +3571,10 @@ begin
       MessageControl.ActivePageIndex := 0;
     end
     else
-      OpenCloseMessageSheet(false); //MessageControl.Height <> fmsgHeight)
+      OpenCloseMessageSheet(False);
   end
   else
-    OpenCloseMessageSheet(TRUE);
+    OpenCloseMessageSheet(True);
 end;
 
 procedure TMainForm.MessageControlChanging(Sender: TObject;
@@ -4677,14 +4730,10 @@ procedure TMainForm.actProjectManagerExecute(Sender: TObject);
 begin
   if (DebugSubPages.Parent <> self) and assigned(ProjectToolWindow) then
     ProjectToolWindow.Close;
-    if actProjectManager.Checked then
-    begin
-    	//if the panel which holds the Browser Tab is
-    	//visible, v'll make it visible
-    	if LeftPageControl.Visible = false then
-			LeftPageControl.Visible:=true;
-    end;
-  pnlBrowsers.Visible := actProjectManager.Checked;
+
+  // If the panel which holds the Browser Tab is visible, we'll make it visible
+  if (actProjectManager.Checked) and (LeftPageControl.Visible = false) then
+    LeftPageControl.Visible:=true;
   devData.ProjectView := actProjectManager.Checked;
 end;
 
@@ -7768,112 +7817,22 @@ begin
     AddDebugVar(s);
 end;
 
-procedure TMainForm.pnlBrowsersUnDock(Sender: TObject; Client: TControl;
-  NewTarget: TWinControl; var Allow: Boolean);
+procedure TMainForm.FloatingProjectManagerItemClick(Sender: TObject);
 begin
-  {FloatingPojectManagerItem.Checked := True;
-  ProjectToolWindow := TForm(NewTarget);
-  LeftPageControl.Parent := ProjectToolWindow;}
-  Allow := False;
-end;
-
-procedure TMainForm.FloatingPojectManagerItemClick(Sender: TObject);
-begin
-  FloatingPojectManagerItem.Checked := not FloatingPojectManagerItem.Checked;
-  if assigned(ProjectToolWindow) then
-  begin
-    LeftPageControl.Left := 0;
-    LeftPageControl.Top := ControlBar1.Height;
-    LeftPageControl.Align := alNone;
-
-    ProjectToolWindow.RemoveControl(LeftPageControl);
-    ProjectToolWindow.Free;
-    ProjectToolWindow := nil;
-    
-    pnlBrowsers.InsertControl(LeftPageControl);
-    DockManagerPro1.InsertComponent(LeftPageControl);
-    DockManagerPro1.Refresh;
-
-    if assigned(fProject) then
-      fProject.SetNodeValue(ProjectView.TopItem); // nodes needs to be recreated
-  end
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    frmProjMgrDock.Show
   else
-  begin
-    ProjectToolWindow := TForm.Create(self);
-    with ProjectToolWindow do
-    begin
-      Caption := Lang.Strings[ID_TB_PROJECT];
-      Top := (LeftPageControl.ClientOrigin).y;
-      Left := (LeftPageControl.ClientOrigin).x;
-      Height := LeftPageControl.Height;
-      Width := LeftPageControl.Width;
-      FormStyle := fsStayOnTop;
-      BorderStyle := bsToolWindow;
-      BorderIcons := [biSystemMenu];
-      LeftPageControl.Visible := False;
-      pnlBrowsers.RemoveControl(LeftPageControl);
-    end;
-
-    LeftPageControl.Left := 0;
-    LeftPageControl.Top := 0;
-    LeftPageControl.Align := alClient;
-    LeftPageControl.Visible := True;
-    ProjectToolWindow.InsertControl(LeftPageControl);
-    ProjectToolWindow.Show;
-
-    if assigned(fProject) then
-      fProject.SetNodeValue(ProjectView.TopItem); // nodes needs to be recreated
-  end;
+    frmProjMgrDock.Hide;
 end;
 
 procedure TMainForm.FloatingPropertyInspectorClick(Sender: TObject);
 begin
   TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
-  if assigned(PropertiesToolWindow) then
-  begin
-    frmInspectorDock.Visible := False;
-    frmInspectorDock.Left   := 0;
-    frmInspectorDock.Top    := ControlBar1.Height;
-    frmInspectorDock.Align  := alNone;
-    frmInspectorDock.Parent := pnlBrowsers;
-
-    PropertiesToolWindow.RemoveControl(frmInspectorDock);
-    PropertiesToolWindow.Free;
-    PropertiesToolWindow := nil;
-
-    pnlBrowsers.InsertControl(frmInspectorDock);
-    pnlBrowsers.Refresh;
-    DockManagerPro1.InsertComponent(frmInspectorDock);
-    DockManagerPro1.Refresh;
-    frmInspectorDock.Visible := True;
-  end
+  if TMenuItem(Sender).Checked then
+    frmInspectorDock.Show
   else
-  begin
-    PropertiesToolWindow := TForm.Create(Self);
-    with PropertiesToolWindow do
-    begin
-      Caption := frmInspectorDock.Hint;
-      Top := (frmInspectorDock.ClientOrigin).y;
-      Left := (frmInspectorDock.ClientOrigin).x;
-      Height := frmInspectorDock.Height;
-      Width := frmInspectorDock.Width;
-      FormStyle := fsStayOnTop;
-      BorderStyle := bsToolWindow;
-      BorderIcons := [biSystemMenu];
-    end;
-
-    frmInspectorDock.Visible := False;
-    pnlBrowsers.RemoveControl(frmInspectorDock);
-
-    frmInspectorDock.Parent := PropertiesToolWindow;
-    frmInspectorDock.Left := 0;
-    frmInspectorDock.Top := 0;
-    frmInspectorDock.Align := alClient;
-    frmInspectorDock.Visible := True;
-
-    PropertiesToolWindow.InsertControl(frmInspectorDock);
-    PropertiesToolWindow.Show;
-  end;
+    frmInspectorDock.Hide;
 end;
 
 procedure TMainForm.SetProjCompOpt(idx: integer; Value: boolean);
@@ -11900,6 +11859,7 @@ begin
     vwCtrlIDsFormObj.PopulateControlList;
     vwCtrlIDsFormObj.ShowModal;
 end;
+
 procedure TMainForm.ChangeCreationOrder1Click(Sender: TObject);
 var
     Control: TWinControl;
@@ -12077,12 +12037,12 @@ begin
 end;
 
 procedure TMainForm.ApplicationEvents1Activate(Sender: TObject);
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
 var
    I:Integer;
-  {$ENDIF}
+{$ENDIF}
 begin
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   FileWatching := false;
   devFileMonitor1.Deactivate;
   for I := 0 to FWatchList.Count - 1 do    // Iterate
@@ -12104,7 +12064,7 @@ begin
   end;
   strChangedFileList.Clear;
 
-  {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TMainForm.actWxPropertyInspectorCutExecute(Sender: TObject);
@@ -12139,7 +12099,6 @@ begin
 {$ENDIF}
 end;
 
-
 procedure TMainForm.ProjectViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -12172,12 +12131,6 @@ if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
       end;
     end;
   end;
-end;
-
-procedure TMainForm.WndProc(var Message: TMessage);
-begin
-  //Call the default event handlers
-  inherited;
 end;
 
 {$IfDef WX_BUILD}

@@ -194,7 +194,7 @@ object MainForm: TMainForm
         TabOrder = 1
         DesignSize = (
           393
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
@@ -215,7 +215,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 97
+        Height = 98
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -630,7 +630,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 610
-            Height = 44
+            Height = 45
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -1201,13 +1201,13 @@ object MainForm: TMainForm
     Width = 209
     Height = 135
     Align = alLeft
+    Caption = 'pnlBrowsers'
     UseDockManager = False
     DockSite = True
     TabOrder = 7
-    OnUnDock = pnlBrowsersUnDock
     object LeftPageControl: TPageControl
       Left = 9
-      Top = 16
+      Top = 9
       Width = 192
       Height = 201
       Hint = 'Project Inspector'
@@ -1639,9 +1639,9 @@ object MainForm: TMainForm
       object N63: TMenuItem
         Caption = '-'
       end
-      object FloatingPojectManagerItem: TMenuItem
-        Caption = '&Floating Project Manager'
-        OnClick = FloatingPojectManagerItemClick
+      object FloatingProjectManagerItem: TMenuItem
+        Caption = 'Show &Project Manager'
+        OnClick = FloatingProjectManagerItemClick
       end
       object FloatingReportwindowItem: TMenuItem
         Caption = 'Floating &Report window'
@@ -3338,7 +3338,7 @@ object MainForm: TMainForm
   end
   object CppTokenizer1: TCppTokenizer
     LogTokens = False
-    Left = 604
+    Left = 602
     Top = 130
   end
   object CppParser1: TCppParser
@@ -3367,7 +3367,7 @@ object MainForm: TMainForm
     OnResize = CodeCompletion1Resize
     OnlyGlobals = False
     CurrentClass = 0
-    Left = 577
+    Left = 575
     Top = 130
   end
   object devShortcuts1: TdevShortcuts
@@ -3470,7 +3470,7 @@ object MainForm: TMainForm
   end
   object DevCppDDEServer: TDdeServerConv
     OnExecuteMacro = DevCppDDEServerExecuteMacro
-    Left = 603
+    Left = 576
     Top = 158
   end
   object XPMenu: TXPMenu
@@ -3509,17 +3509,33 @@ object MainForm: TMainForm
     Left = 521
     Top = 158
   end
-  object DockManagerPro1: TDockManagerPro
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Arial'
-    Font.Style = []
-    CaptionStartColor = clBtnFace
-    CaptionEndColor = clBtnFace
-    TransparentButton = True
-    Control = pnlBrowsers
-    Left = 576
+  object DockServer: TJvDockServer
+    LeftSplitterStyle.Cursor = crHSplit
+    LeftSplitterStyle.ParentColor = False
+    RightSplitterStyle.Cursor = crHSplit
+    RightSplitterStyle.ParentColor = False
+    TopSplitterStyle.Cursor = crVSplit
+    TopSplitterStyle.ParentColor = False
+    BottomSplitterStyle.Cursor = crVSplit
+    BottomSplitterStyle.ParentColor = False
+    DockStyle = DockStyle
+    Left = 604
     Top = 158
+  end
+  object DockStyle: TJvDockVSNetStyle
+    AlwaysShowGrabber = True
+    TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
+    TabServerOption.ActiveFont.Color = clWindowText
+    TabServerOption.ActiveFont.Height = -11
+    TabServerOption.ActiveFont.Name = 'MS Sans Serif'
+    TabServerOption.ActiveFont.Style = []
+    TabServerOption.InactiveFont.Charset = DEFAULT_CHARSET
+    TabServerOption.InactiveFont.Color = 5395794
+    TabServerOption.InactiveFont.Height = -11
+    TabServerOption.InactiveFont.Name = 'MS Sans Serif'
+    TabServerOption.InactiveFont.Style = []
+    TabServerOption.ShowCloseButtonOnTabs = False
+    Left = 465
+    Top = 186
   end
 end

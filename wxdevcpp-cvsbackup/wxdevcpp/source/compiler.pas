@@ -136,7 +136,8 @@ type
 implementation
 
 uses
-  MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils, dbugintf;
+  MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils, RegExpr,
+  DbugIntf;
 
 constructor TCompiler.Create;
 begin
@@ -1177,27 +1178,45 @@ end;
 
 procedure TCompiler.ParseLine(Line: String);
 var
+  RegEx: TRegExpr;
   LowerLine: string;
   cpos: integer;
 begin
+  RegEx := TRegExpr.Create;
+  
   try
     if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
-      if (Pos('Command line error', Line) > 0) then
-        Inc(fErrCount)
-      else if (Pos('Command line warning', Line) > 0) then
-        Inc(fWarnCount)
-      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) = 0) and (Pos('include file', Line) = 0) then
-        Inc(fErrCount)
-      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) > 0) then
-        Inc(fErrCount)
-      else if (Pos('fatal error', Line) > 0) and (Pos('include file', Line) > 0) then
-        Inc(fErrCount)
-      else if (Pos('error', Line) > 0) and (Pos('ambiguous', Line) = 0) then
-        Inc(fErrCount)
-      else if (Pos('error', Line) > 0) then
-        Inc(fErrCount)
-      else if (Pos('warning ', Line) > 0) then
-        Inc(fWarnCount)
+    begin
+      //Check for command line errors
+      RegEx.Expression := 'Command line error (.*) : (.*)';
+      if RegEx.Exec(Line) then
+        Inc(fErrCount);
+
+      //Command line warnings
+      RegEx.Expression := 'Command line warning (.*) : (.*)';
+      if RegEx.Exec(Line) then
+        Inc(fWarnCount);
+
+      //Fatal error
+      RegEx.Expression := '(.*)\(([0-9]+)\) : fatal error ([^:]*): (.*)';
+      if Regex.Exec(Line) then
+        Inc(fErrCount);
+
+      //LINK fatal error
+      RegEx.Expression := 'LINK : fatal error ([^:]*): (.*)';
+      if RegEx.Exec(Line) then
+        Inc(fErrCount);
+
+      //General compiler error
+      RegEx.Expression := '(.*)\(([0-9]+)\) : error ([^:]*): (.*)';
+      if RegEx.Exec(Line) then
+        Inc(fErrCount);
+
+      //Compiler warning
+      RegEx.Expression := '(.*)\(([0-9]+)\) : warning ([^:]*): (.*)';
+      if RegEx.Exec(Line) then
+        Inc(fWarnCount);
+    end
     else if devCompiler.CompilerType = ID_COMPILER_MINGW then
     begin
       LowerLine := LowerCase(Line);
@@ -1355,13 +1374,16 @@ begin
         end;
       end;
     end;
-  except
+  finally
+    RegEx.Destroy;
   end;
-  with CompileProgressForm do
-  begin
-      lblErr.Caption := IntToStr(fErrCount);
-      lblWarn.Caption := IntToStr(fWarnCount);
-  end
+
+  if Assigned(CompileProgressForm) then
+    with CompileProgressForm do
+    begin
+        lblErr.Caption := IntToStr(fErrCount);
+        lblWarn.Caption := IntToStr(fWarnCount);
+    end
 end;
 
 procedure TCompiler.ParseResults;
@@ -1374,11 +1396,14 @@ var
   Line, LowerLine: string;
   Messages, IMod: Integer;
   gcc, gpp: string;
+  RegEx: TRegExpr;
   
 begin
   Messages := 0;
-  LOutput := TStringList.Create;
   fErrCount := 0;
+  RegEx := TRegExpr.Create;
+  LOutput := TStringList.Create;
+
   if (devCompiler.gccName <> '') then
     gcc := devCompiler.gccName
   else
@@ -1387,6 +1412,7 @@ begin
     gpp := devCompiler.gppName
   else
     gpp := GPP_PROGRAM;
+
   try
     LOutput.Text := fdevRun.Output;
     IMod := CalcMod(pred(LOutput.Count));
@@ -1403,17 +1429,20 @@ begin
 
     for curLine := 0 to pred(LOutput.Count) do
     begin
-    if (IMod = 0) or (curLine mod IMod = 0) then
-      Application.ProcessMessages;
+      if (IMod = 0) or (curLine mod IMod = 0) then
+        Application.ProcessMessages;
 
-    if Messages > 500 then
-    begin
-      DoOutput('', '', Format(Lang[ID_COMPMSG_GENERALERROR], [Lang[ID_COMPMSG_TOOMANYMSGS]]));
-      Break;
-    end;
+      if Messages > 500 then
+      begin
+        DoOutput('', '', Format(Lang[ID_COMPMSG_GENERALERROR], [Lang[ID_COMPMSG_TOOMANYMSGS]]));
+        Break;
+      end;
 
-    Line := LOutput.Strings[curLine];
-    LowerLine := LowerCase(Line);
+      Line := LOutput.Strings[curLine];
+      LowerLine := LowerCase(Line);
+      O_Msg := '';
+      O_Line := '';
+      O_File := '';
 
     if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
     begin
@@ -1437,109 +1466,76 @@ begin
       then
         continue;
 
-      if (Pos('Command line error', Line) > 0) then
+      //Check for command line errors
+      if RegEx.Exec(Line, 'Command line error ([^:]*) : (.*)') then
       begin
-        O_Msg := '[Command Line Error ' + Copy(Line, Pos('error ', Line) + 7, Pos(' : ', Line) + 1) + '] ';
-        O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
+        O_Msg := RegEx.Substitute('[Command line error $1] $2');
         Inc(fErrCount);
       end
-      else if (Pos('Command line warning', Line) > 0) then
+      //Command line warnings
+      else if RegEx.Exec(Line, 'Command line warning ([^:]*) : (.*)') then
       begin
-        O_Msg := '[Command Line Warning ' + Copy(Line, Pos('warning ', Line) + 9, Pos(' : ', Line) + 1) + '] ';
-        O_Msg := O_Msg + Copy(Line, GetLastPos(' : ', Line) + 3, Length(Line));
+        O_Msg := RegEx.Substitute('[Command line warning $1] $2');
         Inc(fWarnCount);
       end
-      else if (Pos('fatal error', Line) > 0) and (Pos('#error', Line) > 0) then
+      //Fatal error
+      else if Regex.Exec(Line, '(.*)\(([0-9]+)\) : fatal error ([^:]*): (.*)') then
       begin
-        O_Msg := '[Error ' + Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 6);
-        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1) + '] #error: ';
-        O_Msg := O_Msg + Copy(Line, GetLastPos(': ', Line) + 2, Length(Line));
-        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        O_Msg := RegEx.Substitute('[Error $3] $4');
+        O_Line := RegEx.Substitute('$2');
+        O_File := RegEx.Substitute('$1');
         Inc(fErrCount);
       end
-      else if (Pos('fatal error', Line) > 0) and (Pos('include file', Line) > 0) then
+      //LINK fatal error
+      else if RegEx.Exec(Line, 'LINK : fatal error ([^:]*): (.*)') then
       begin
-        O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
-        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
-        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
-        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
-        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        O_Msg := RegEx.Substitute('[Error $1] $2');
         Inc(fErrCount);
       end
-      else if Pos('fatal error', Line) > 0 then
+      //General compiler error
+      else if RegEx.Exec(Line, '(.*)\(([0-9]+)\) : error ([^:]*): (.*)') then
       begin
-        CPos := Pos('error ', Line);
-        O_Msg := '[Error ' + Copy(Line, CPos + 6, Pos(': ', Copy(Line, CPos, Length(Line))) - 7) + '] ';
-        O_Msg := O_Msg + Copy(Line, Pos(': ', Copy(Line, CPos, Length(Line))) + CPos, Length(Line));
-        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-        O_File := Copy(Line, 0, Pos('(', Line) - 1);
+        O_Msg := RegEx.Substitute('[Error $3] $4');
+        O_Line := RegEx.Substitute('$2');
+        O_File := RegEx.Substitute('$1');
         Inc(fErrCount);
       end
-      else if (Pos('error LNK', Line) > 0) then
+      //Compiler warning
+      else if RegEx.Exec(Line, '(.*)\(([0-9]+)\) : warning ([^:]*): (.*)') then
       begin
-        O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
-        O_Msg := Copy(O_Msg, 0, Pos(': ', O_Msg) - 1);
-        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 1, Length(Line));
-        O_File := Trim(Copy(Line, 0, Pos(':', Line) - 1));
-        Inc(fErrCount);
-      end
-      else if (Pos('error', Line) > 0) and (Pos('ambiguous', Line) = 0) then
-      begin
-        O_Msg := Copy(Line, Pos('error ', Line) + 6, 7);
-        if Pos(':', O_Msg) > 0 then
-          O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
-        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Length(Line));
-        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-        O_File := Copy(Line, 0, Pos('(', Line) - 1);
-        Inc(fErrCount);
-      end
-      else if (Pos('error', Line) > 0) then
-      begin
-        O_Msg := Copy(Line, Pos('error ', Line) + 6, GetLastPos(': ', Line) - Pos('error ', Line) - 7);
-        O_Msg := Copy(O_Msg, 0, GetLastPos(': ', O_Msg) - 1);
-        O_Msg := '[Error ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 2, Pos('function', Line) + 8 - (Pos(O_Msg, Line) + Length(O_Msg) + 2));
-        O_Line := Copy(Line, Pos('(', Line) + 1, Length(Line));
-        O_Line := Copy(O_Line, 0, Pos(')', O_Line) - 1);
-        O_File := Copy(Line, 0, Pos('(', Line) - 1);
-        DoOutput(O_Line, O_file, O_Msg);
-        O_Msg := Copy(Line, Pos('could be', Line), Length(Line));
-        Inc(fErrCount);
-      end
-      else if (Pos('could be ', Line) > 0) or (Pos('or       ', Line) > 0) then
-        O_Msg := Copy(Line, GetLastPos(': ', Line) + 2, Length(Line))
-      else if (Pos('warning ', Line) > 0) then
-      begin
-        O_Msg := Copy(Line, Pos('warning', Line) + 8, Pos('warning', Line) + 15);
-        if (Pos(':', O_Msg) > 0) then
-          O_Msg := Copy(O_Msg, 0, Pos(':', O_Msg) - 1);
-
-        O_Msg := '[Warning ' + O_Msg + '] ' + Copy(Line, Pos(O_Msg, Line) + Length(O_Msg) + 1, Length(Line));
-        O_File := Copy(Line, 0, Pos('(', Line) - 1);
-        O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
+        O_Msg := RegEx.Substitute('[Warning $3] $4');
+        O_Line := RegEx.Substitute('$2');
+        O_File := RegEx.Substitute('$1');
         Inc(fWarnCount);
       end
-      else if (Pos(': ', Line) > 0) then
+      //LINK error
+      else if RegEx.Exec(Line, '(.*)\((.*)\) : error ([^:]*): (.*)') then
       begin
-        //Line number
-        O_Line := Copy(Line, Pos('(', Line) + 1, Pos(')', Line) - Pos('(', Line) - 1);
-        O_File := Trim(Copy(Line, 0, Pos('(', Line) - 1));
-        if fProject <> nil then
-          O_File := ExtractRelativePath(fProject.FileName, O_File);
-        O_Msg := Copy(Line, Pos(': ', Line) + 2, Length(Line));
+        O_Msg := RegEx.Substitute('[Error $3] $4');
+        O_File := RegEx.Substitute('$2');
+        Inc(FErrCount);
       end
+      else if RegEx.Exec(Line, '(.*) : error ([^:]*): (.*)') then
+      begin
+        O_Msg := RegEx.Substitute('[Error $2] $3');
+        O_File := RegEx.Substitute('$1');
+        Inc(fErrCount);
+      end
+      else if RegEx.Exec(Line, 'LINK : warning ([^:]*): (.*)') then
+      begin
+        O_Msg := RegEx.Substitute('[Warning $1] $2');
+        Inc(fWarnCount);
+      end
+      //General compiler errors can produce extra filenames at the end. Take those into account
+      else if RegEx.Exec(Line, '( +)(.*)\(([0-9]+)\)(| ): (could be|or|see declaration of) ''(.*)''') then
+      begin
+        O_Msg := RegEx.Substitute('$1$5 $6');
+        O_Line := RegEx.Substitute('$3');
+        O_File := RegEx.Substitute('$2');
+      end
+      //Do we have any spare messages floating around?
       else
-      begin
-      	O_Msg := Line;
-      end;
-
-      Inc(Messages);
-      DoOutput(O_Line, O_file, O_Msg);
+        O_Msg := Line;
     end
     else //ID_COMPILER_MINGW
     begin
@@ -1637,7 +1633,7 @@ begin
           Inc(Messages);
           Inc(fErrCount);
           DoResOutput(O_Line, O_file, O_Msg);
-		  DoOutput(O_Line, O_file, Format(Lang[ID_COMPMSG_RESOURCEERROR], [O_Msg]));
+          DoOutput(O_Line, O_file, Format(Lang[ID_COMPMSG_RESOURCEERROR], [O_Msg]));
           Continue;
         end;
       end;
@@ -1810,7 +1806,7 @@ begin
           { Delete 'warning: ' }
           Delete(Line, cpos - 2, Length(Line) - cpos + 2);
         end
-		else if Pos('Info: ', Line) = 1 then
+        else if Pos('Info: ', Line) = 1 then
         begin
            O_Line := '';
            O_file := '';
@@ -1866,14 +1862,16 @@ begin
 
         { This is an error in the Makefile }
         if (MakeFile <> '') and SameFileName(Makefile, GetRealPath(O_file)) then
-			if Pos('[Warning] ', O_Msg) <> 1 then
-          		O_Msg := '[Build Error] ' + O_Msg;
-
-        DoOutput(O_Line, O_file, O_Msg);
+          if Pos('[Warning] ', O_Msg) <> 1 then
+            O_Msg := '[Build Error] ' + O_Msg;
       end;
     end;
+
+    Inc(Messages);
+    DoOutput(O_Line, O_file, O_Msg);
   end;
   finally
+    RegEx.Destroy;
     Application.ProcessMessages;
     if devCompiler.SaveLog then
     try
