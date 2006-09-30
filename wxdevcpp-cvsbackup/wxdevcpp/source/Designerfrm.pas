@@ -117,7 +117,9 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
-    
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+        
     function GetBorderAlignment: TWxBorderAlignment;
     procedure SetBorderAlignment(border: TWxBorderAlignment);
     function GetBorderWidth: integer;
@@ -1655,6 +1657,15 @@ procedure TfrmNewForm.FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftS
 begin
   // Tony Reina 24 July 2005 - I don't think this procedure ever gets called.
   //MainForm.ELDesigner1KeyDown(Sender,Key, Shift);
+end;
+
+function TfrmNewForm.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TfrmNewForm.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TfrmNewForm.GetFGColor: string;
