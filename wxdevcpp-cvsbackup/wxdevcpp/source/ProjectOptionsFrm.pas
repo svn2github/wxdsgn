@@ -1082,7 +1082,6 @@ var currOpts: string;
 begin
   currOpts := devCompiler.OptionStr;
   devCompiler.CompilerSet := cmbCompiler.ItemIndex;
-  devCompiler.AddDefaultOptions;
   devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
   devCompilerSet.AssignToCompiler;
   devCompiler.OptionStr := currOpts;

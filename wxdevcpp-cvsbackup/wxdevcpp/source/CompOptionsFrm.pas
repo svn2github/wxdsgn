@@ -212,14 +212,13 @@ begin
 
   with devDirs do
   begin
-    Bins := fBins;
     C := fC;
     Cpp := fCpp;
     Lib := fLibs;
     RC := fRC;
+    Bins := fBins;
+    SetPath(Bins);
   end;
-  // Set Path with New Bins
-  SetPath(fBins);
 
   devDirs.SaveSettings;
   devCompiler.SaveSettings;

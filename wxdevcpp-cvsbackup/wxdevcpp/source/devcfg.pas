@@ -1509,14 +1509,18 @@ end;
 
 procedure TdevCompiler.SetCompilerSet(const Value: integer);
 begin
- if fCompilerSet=Value then Exit;
+  // No need to continue
+  if fCompilerSet = Value then
+    Exit;
   if not Assigned(devCompilerSet) then
     devCompilerSet := TdevCompilerSet.Create;
   devCompilerSet.LoadSet(Value);
+
+  // Set the options for the compiler
+  AddDefaultOptions;
+
   // Programs
   fCompilerSet := Value;
-  if devDirs.OriginalPath = '' then // first time only
-    devDirs.OriginalPath := GetEnvironmentVariable('PATH');
   SetPath(devDirs.Bins);
   devCompilerSet.LoadSet(Value);
   fgccName := devCompilerSet.gccName;
@@ -1621,6 +1625,7 @@ begin
   fLang := fExec + LANGUAGE_DIR;
   fTemp := fExec + TEMPLATE_DIR;
   fThemes := fExec + THEME_DIR;
+  fOldPath := GetEnvironmentVariable('PATH');
 end;
 
 procedure TdevDirs.LoadSettings;
@@ -2041,7 +2046,9 @@ var
   maindir: String;
   makeSig, mingwmakeSig: String;
 begin
-  if Index<0 then Exit;
+  if Index < 0 then
+    Exit;
+  
   with devData do
   begin
     key := OPT_COMPILERSETS + '_' + IntToStr(Index);
@@ -2125,26 +2132,65 @@ begin
    end;
 
   //check if make is in path + bins directory
-  if devDirs.OriginalPath = '' then // first time only
-    devDirs.OriginalPath := GetEnvironmentVariable('PATH');
-
-  SetPath(devDirs.Exec + 'bin;' + devDirs.Bins);
-   makeSig := RunAndGetOutput(devDirs.Exec + 'bin\' + devCompilerSet.makeName + ' --v',
-    ExtractFileDir(Application.ExeName), nil, nil, nil);
+  SetPath(devDirs.Bins);
+  makeSig := RunAndGetOutput(devCompilerSet.makeName + ' --v',
+             ExtractFileDir(Application.ExeName), nil, nil, nil);
    
   if Pos('GNU Make', makeSig) = 0 then
   begin
-    //check for mingw32-make first before adding the path to bin dir
-    //process it later
+    //check for mingw32-make first before adding the path to bin dir process it later
     mingwmakeSig := RunAndGetOutput('mingw32-make --v',
       ExtractFileDir(devDirs.Exec + 'bin\' + Application.ExeName), nil, nil, nil);
 
-    //check if make is found if Dev-C++'s bin directory is added to path
-    SetPath(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
-     + BIN_DIR);
-     makeSig := RunAndGetOutput(devDirs.Exec + 'bin\' +
-     devCompilerSet.makeName + ' --v',
+    if Pos('GNU Make', makeSig) > 0 then
+    begin
+      msg := 'wxDev-C++ was unable to find GNU Make with current settings however ' +
+             'there''s GNU Make in Dev-C++''s bin directory. Would you like to ' +
+             'add this path to current Bin path?'#13#10#13#10 +
+             'Unless you know exactly what you''re doing, it is recommended that ' +
+             'you click Yes';
+      if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
+                   BIN_DIR + ';' + fBinDir;
+    end
+
+    //check if "mingw32-make" is available and is GNU Make
+    else if Pos('GNU Make', mingwmakeSig) > 0 then
+    begin
+      msg := 'wxDev-C++ was unable to find GNU Make with current settings however ' +
+             'there''s mingw32-make that seems to be GNU Make. Would you like wxDev-C++ ' +
+             'to adjust the settings for you to use mingw32-make?'#13#10#13#10 +
+             'Unless you know exactly what you''re doing, it is recommended that ' +
+             'you click Yes';
+      if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      begin
+        devCompilerSet.makeName := 'mingw32-make';
+        devCompiler.makeName := 'mingw32-make';
+      end;	 
+    end
+
+    //check if "mingw32-make" is available in bin directory
+    else
+    begin
+      mingwmakeSig := RunAndGetOutput('mingw32-make --v',
       ExtractFileDir(Application.ExeName), nil, nil, nil);
+      if Pos('GNU Make', mingwmakeSig) > 0 then
+      begin
+        msg := 'wxDev-C++ was unable to find GNU Make in PATH or in wxDev-C++''s ' +
+               'bin directory. However, there''s mingw32-make that seems to be ' +
+               'GNU Make in the bin directory. Would you like wxDev-C++ to adjust ' +
+               'the Binary path to use this mingw32-make?'#13#10#13#10 +
+               'Unless you know exactly what you''re doing, it is recommended that ' +
+               'you click Yes';
+        if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        begin
+          fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+                     + BIN_DIR + ';' + fBinDir;
+          devCompilerSet.makeName := 'mingw32-make';
+          devCompiler.makeName := 'mingw32-make';
+        end;
+      end;
+    end;
   end;
 end;
 

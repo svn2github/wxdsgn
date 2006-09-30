@@ -380,23 +380,27 @@ var
   OldPath: array[0..PATH_LEN] of char;
   NewPath: string;
 begin
-  if add <> '' then
-    if Add[length(Add)] <> ';' then
-    Add:= Add +';';
+  if (add <> '') and (Add[length(Add)] <> ';') then
+    Add := Add +';';
 
   // PATH environment variable does *not* like quotes in paths...
   // Even if there are spaces in pathnames, it doesn't matter.
   // It splits them up by the ';'
-  Add:=StringReplace(Add, '"', '', [rfReplaceAll]);
+  Add := StringReplace(Add, '"', '', [rfReplaceAll]);
 
   if UseOriginal then
-   NewPath:= Add+ devDirs.OriginalPath
+  begin
+    //TODO: lowjoel: We should have loaded all the PATH values at start up, so
+    //               just assert. Remove this once we are sure the thing will be
+    //               non empty
+    Assert(devDirs.OriginalPath <> '');
+    NewPath:= Add + devDirs.OriginalPath;
+  end
   else
   begin
     GetEnvironmentVariable(pchar('PATH'), @OldPath, PATH_LEN);
-     NewPath:= Add +string(OldPath);
+    NewPath:= Add + string(OldPath);
   end;
-
   SetEnvironmentVariable(pchar('PATH'), pchar(NewPath));
 end;
 
