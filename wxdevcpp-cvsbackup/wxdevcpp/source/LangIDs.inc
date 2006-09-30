@@ -128,7 +128,7 @@ const
   ID_ITEM_GOTOFUNCTION             = 181;
 
   //view menu
-  ID_ITEM_FLOATWINDOW              = 182;
+  ID_ITEM_FLOATPROJECT             = 182;
   ID_ITEM_GOTOPROJECTVIEW          = 183;
   ID_ITEM_GOTOCLASSBROWSER         = 184;
   ID_ITEM_PROJECTVIEW              = 185;
