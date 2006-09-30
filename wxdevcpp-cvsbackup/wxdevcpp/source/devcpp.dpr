@@ -36,7 +36,6 @@ uses
 {$ENDIF}
   madExcept,
   madLinkDisAsm,
-  MemCheck in 'MemCheck.pas',
   inifiles,
   Windows,
   Forms,
@@ -236,7 +235,7 @@ begin
                     'you have sufficient privilieges to write to it.'#10#13#10#13 +
                     'wxDev-C++ will now exit.');
         Application.Terminate;
-      end
+      end;
     devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + strIniFile;
     ConfigMode := CFG_PARAM;
   end
