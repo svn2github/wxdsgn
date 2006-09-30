@@ -128,6 +128,8 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
   end;
 
   IWxDialogNonInsertableInterface = interface
@@ -212,6 +214,9 @@ type
     wxTE_MULTILINE, wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
   TWxEdtGeneralStyleSet  = set of TWxEdtGeneralStyleItem;
 
+  TWxRichTextStyleItem = (wxRE_READONLY,wxRE_MULTILINE);
+  TWxRichTextStyleSet  = set of TWxRichTextStyleItem;
+
   //  TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
   // TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
 
@@ -228,6 +233,9 @@ type
   //newly Added
   TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
   TWxCmbStyleSet  = set of TWxCmbStyleItem;
+
+  TWxOwnCmbStyleItem = (wxODCB_DCLICK_CYCLES, wxODCB_STD_CONTROL_PAINT);
+  TWxOwnCmbStyleSet  = set of TWxOwnCmbStyleItem;
 
   TWxPickCalStyleItem = (wxDP_SPIN , wxDP_DROPDOWN , wxDP_DEFAULT , wxDP_ALLOWNONE , wxDP_SHOWCENTURY);
   TWxPickCalStyleSet  = set of TWxPickCalStyleItem;
@@ -263,6 +271,9 @@ type
   TWxsldrStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT, wxSL_RIGHT, wxSL_TOP, wxSL_BOTTOM);
   TWxsldrStyleSet  = set of TWxsldrStyleItem;
 
+  TWxHyperLnkStyleItem = (wxHL_ALIGN_LEFT, wxHL_ALIGN_RIGHT, wxHL_ALIGN_CENTRE, wxHL_CONTEXTMENU, wxHL_DEFAULT_STYLE);
+  TWxHyperLnkStyleSet  = set of TWxHyperLnkStyleItem;
+
   //TWxslnStyleSet = Set of TWxslnStyleItem ;
   //TWxsbtmpStyleSet = Set of TWxsbtmpStyleItem ;
   //TWxsbxStyleSet = Set of TWxsbxStyleItem ;
@@ -297,8 +308,8 @@ type
 
   TWxTVStyleItem = (wxTR_EDIT_LABELS, wxTR_NO_BUTTONS, wxTR_HAS_BUTTONS,
     wxTR_TWIST_BUTTONS, wxTR_NO_LINES, wxTR_FULL_ROW_HIGHLIGHT,
-    wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES,
-    wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE,
+    wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES,wxTR_COLUMN_LINES,
+    wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE,wxTR_SHOW_ROOT_LABEL_ONLY,
     wxTR_MULTIPLE, wxTR_EXTENDED,
     wxTR_DEFAULT_STYLE);
   TWxTVStyleSet  = set of TWxTVStyleItem;
@@ -345,7 +356,7 @@ type
 
   TWxMessageDialogStyleItem = (wxOK, wxCANCEL, wxYES_NO, wxYES_DEFAULT,
     wxNO_DEFAULT, wxICON_EXCLAMATION, wxICON_HAND, wxICON_ERROR, wxICON_QUESTION,
-    wxICON_INFORMATION);
+    wxICON_INFORMATION,wxCENTRE);
   TWxMessageDialogStyleSet  = set of TWxMessageDialogStyleItem;
 
   TWxPaperSizeItem = (wxPAPER_NONE, wxPAPER_LETTER, wxPAPER_LEGAL,
@@ -364,6 +375,9 @@ type
 
   //Sizer orientation
   TWxSizerOrientation = (wxVertical, wxHorizontal);
+
+  TWxMediaCtrlControl = (wxMEDIACTRLPLAYERCONTROLS_NONE , wxMEDIACTRLPLAYERCONTROLS_STEP , wxMEDIACTRLPLAYERCONTROLS_VOLUME );
+  TWxMediaCtrlControls = set of TWxMediaCtrlControl;
 
   TWxColorString = class
   public
@@ -526,6 +540,7 @@ type
 function GetGridSelectionToString(grdsel: TWxGridSelection): string;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
+function GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): string;
 function GetCheckboxStyleString(stdStyle: TWxcbxStyleSet): string;
 function GetTreeviewStyleString(stdStyle: TWxTVStyleSet): string;
 function GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): string;
@@ -534,6 +549,9 @@ function GetGaugeStyleString(stdStyle: TWxgagStyleSet): string;
 function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): string;
 function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): string;
 function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
+function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): string;
+
+
 function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): string;
  //function GetStaticBoxStyleString(stdStyle:TWxsbxStyleSet):String;
  //function GetStaticLineStyleString(stdStyle:TWxslnStyleSet):String;
@@ -552,6 +570,9 @@ function GetSplitterWindowStyleString(stdStyle: TWxSplitterWinStyleSet): string;
 function GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): string;
 function GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): string;
 function GetProgressDialogStyleString(stdStyle: TWxProgressDialogStyleSet): string;
+function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle:TWxEdtGeneralStyleSet): string;
+function GetMediaCtrlStyle(mediaStyle:TWxMediaCtrlControl): string;
+function GetMediaCtrlStyleString(mediaStyle:TWxMediaCtrlControls): string;
 function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet): string;
 function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): string;
 function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet): string;
@@ -568,13 +589,15 @@ function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
   gagstyle: TWxgagStyleSet): string;
 function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
   scbrstyle: TWxsbrStyleSet): string;
-function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
-  sbtnstyle: TWxsbtnStyleSet; edtstyle: TWxEdtGeneralStyleSet): string;
+function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;edtstyle: TWxHyperLnkStyleSet): string;  
+function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet; sbtnstyle: TWxsbtnStyleSet; edtstyle: TWxEdtGeneralStyleSet): string;
+
 function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
   sldrstyle: TWxsldrStyleSet): string;
 //function GetStaticBoxSpecificStyle(stdstyle: TWxStdStyleSet;sbxstyle:TWxsbxStyleSet):String;
 //function GetStaticLineSpecificStyle(stdstyle: TWxStdStyleSet;slnstyle:TWxslnStyleSet):String;
 //function GetStaticBitmapSpecificStyle(stdstyle: TWxStdStyleSet;sbtmpstyle:TWxsbtmpStyleSet):String;
+function GetDateVariableExpansion(value:TDateTime):string;
 function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet; calctrlstyle: TWxcalctrlStyleSet): string;
 function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet; calctrlstyle: TWxPickCalStyleSet): string;
 //function GetCheckListBoxSpecificStyle(stdstyle: TWxStdStyleSet;cklbxstyle:TWxcklbxStyleSet):String;
@@ -596,17 +619,22 @@ function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;
   splitterWinStyle: TWxSplitterWinStyleSet): string;
 
 /////////////////////////////
+function GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxRichTextStyleSet): string;
 
 function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
   lstvwstyle: TWxLVStyleSet; view: TWxLvView): string;
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxEdtGeneralStyleSet): string;
+
 function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxBtnStyleSet): string;
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxLbStyleSet): string;
 function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
   cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet): string;
+function GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+  cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;owncmbstyle: TWxOwnCmbStyleSet): string;
+
 function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxDlgStyleSet;
   wxclassname: string): string;
 
@@ -1340,6 +1368,44 @@ begin
 
 end;
 
+function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): string;
+var
+  I:      integer;
+  strLst: TStringList;
+begin
+  strLst:= TStringList.Create;
+  try
+    if wxHL_ALIGN_LEFT in stdStyle then
+      strLst.add('wxHL_ALIGN_LEFT');
+
+    if wxHL_ALIGN_RIGHT in stdStyle then
+      strLst.add('wxHL_ALIGN_RIGHT');
+
+    if wxHL_ALIGN_CENTRE in stdStyle then
+      strLst.add('wxHL_ALIGN_CENTRE');
+
+    if wxHL_CONTEXTMENU in stdStyle then
+      strLst.add('wxHL_CONTEXTMENU');
+
+    if wxHL_DEFAULT_STYLE in stdStyle then
+      strLst.add('wxHL_DEFAULT_STYLE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
+end;
+
+
 function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
 var
   I:      integer;
@@ -1862,6 +1928,55 @@ begin
 
 end;
 
+function GetMediaCtrlStyle(mediaStyle:TWxMediaCtrlControl): string;
+begin
+    if wxMEDIACTRLPLAYERCONTROLS_NONE = mediaStyle then
+      Result:='wxMEDIACTRLPLAYERCONTROLS_NONE';
+
+    if wxMEDIACTRLPLAYERCONTROLS_STEP = mediaStyle then
+      Result:='wxMEDIACTRLPLAYERCONTROLS_STEP';
+
+    if wxMEDIACTRLPLAYERCONTROLS_VOLUME = mediaStyle then
+      Result:='wxMEDIACTRLPLAYERCONTROLS_VOLUME';
+
+end;
+
+function GetMediaCtrlStyleString(mediaStyle:TWxMediaCtrlControls): string;
+var
+  I:      integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+    if wxMEDIACTRLPLAYERCONTROLS_NONE in mediaStyle then
+      strLst.add('wxMEDIACTRLPLAYERCONTROLS_NONE');
+
+    if wxMEDIACTRLPLAYERCONTROLS_STEP in mediaStyle then
+      strLst.add('wxMEDIACTRLPLAYERCONTROLS_STEP');
+
+    if wxMEDIACTRLPLAYERCONTROLS_VOLUME in mediaStyle then
+      strLst.add('wxMEDIACTRLPLAYERCONTROLS_VOLUME');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else begin
+      Result := ' ';
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]; // for
+    end;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
+end;
+
 function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet): string;
 var
   I:      integer;
@@ -1901,10 +2016,13 @@ begin
     if wxICON_INFORMATION in stdStyle then
       strLst.add('wxICON_INFORMATION');
 
+    if wxCENTRE in stdStyle then
+      strLst.add('wxCENTRE');
+
     if strLst.Count = 0 then
       Result := ''
     else begin
-      Result := ', ';
+      Result := ' ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
@@ -2033,6 +2151,37 @@ begin
     strLst.Destroy;
   end;
 end;
+
+function GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): string;
+var
+  I:      integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+    if wxODCB_DCLICK_CYCLES in stdStyle then
+      strLst.add('wxODCB_DCLICK_CYCLES');
+
+    if wxODCB_STD_CONTROL_PAINT in stdStyle then
+      strLst.add('wxODCB_STD_CONTROL_PAINT');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
+end;
+
 
 function GetDlgStyleString(stdStyle: TWxDlgStyleSet; wxclassname: string): string;
 var
@@ -2197,6 +2346,38 @@ begin
 
 end;
 
+function GetRichTextStyleString(edtdStyle: TWxRichTextStyleSet): string;
+var
+  I:      integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+
+    if wxRE_READONLY in edtdStyle then
+      strLst.add('wxRE_READONLY');
+
+    if wxRE_MULTILINE in edtdStyle then
+      strLst.add('wxRE_MULTILINE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+  finally
+    strLst.Destroy;
+  end;
+
+end;
+
 function GetEdtStyleString(edtdStyle: TWxEdtGeneralStyleSet): string;
 var
   I:      integer;
@@ -2276,6 +2457,27 @@ begin
   end;
 end;
 
+function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle:TWxEdtGeneralStyleSet): string;
+var
+  strA,strB:String;
+begin
+  strA   := trim(GetMessageDialogStyleString(stdStyle));
+  strB   := trim(GetEdtStyleString(edtStyle));
+
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+  if strB <> '' then
+    if trim(Result) = '' then
+      Result := strB
+    else
+      Result := Result + ' | ' + strB;
+end;
+
+
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxEdtGeneralStyleSet): string;
 var
@@ -2289,6 +2491,19 @@ begin
     else
       Result := Result + ' | ' + strA;
 
+end;
+
+function GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxRichTextStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA   := trim(GetRichTextStyleString(dlgstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
 end;
 
 function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -2310,6 +2525,37 @@ begin
       Result := strB
     else
       Result := Result + ' | ' + strB;
+end;
+
+function GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+  cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;owncmbstyle: TWxOwnCmbStyleSet): string;
+var
+  strA: string;
+  strB: string;
+  strC: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA   := trim(GetComboxBoxStyleString(cmbstyle));
+  strB   := trim(GetEdtStyleString(edtstyle));
+  strC   := trim(GetOwnComboxBoxStyleString(Owncmbstyle));
+
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+  if strB <> '' then
+    if trim(Result) = '' then
+      Result := strB
+    else
+      Result := Result + ' | ' + strB;
+
+  if strC <> '' then
+    if trim(Result) = '' then
+      Result := strC
+    else
+      Result := Result + ' | ' + strC;
 end;
 
 
@@ -2498,6 +2744,22 @@ begin
 
 end;
 
+function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;edtstyle: TWxHyperLnkStyleSet): string;
+var
+  strA: string;
+  strB: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA   := trim(GetHyperLnkStyleString(edtstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+end;
+
+
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   sbtnstyle: TWxsbtnStyleSet; edtstyle: TWxEdtGeneralStyleSet): string;
 var
@@ -2553,6 +2815,13 @@ end;
  //  if trim(Result) <> '' then
  //    Result := ', ' + Result;
  //end;
+function GetDateVariableExpansion(value:TDateTime):string;
+var
+  Year, Month, Day: Word;
+begin
+  DecodeDate(value,Year, Month, Day);
+  Result:= Format('wxDateTime(%d,(wxDateTime::Month)%d,%d)',[Day,Month,Year]);
+end;
 
 function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
   calctrlstyle: TWxcalctrlStyleSet): string;
