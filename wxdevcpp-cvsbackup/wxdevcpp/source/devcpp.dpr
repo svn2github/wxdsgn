@@ -202,7 +202,7 @@ uses
 {$R DBREG.DCR}
 {$ENDIF}
 
-//wx-addition Single Instance feature
+//Single Instance feature
 function CanStart: Boolean;
 var
   Wdw: HWND;
@@ -214,63 +214,56 @@ begin
     Result := not SwitchToPrevInst(Wdw);
 end;
 
-type
-  TMainFormHack = class(TMainForm);
-
 const
-    WXVERSION = 6;
+  WXVERSION = 6;
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
-    UserHome, strLocalAppData, strAppData, strIniFile: String;
-    tempc: array [0..MAX_PATH] of char;
-  boolCanStart:Boolean;
-  iniFile:TIniFile;
-  versionNum:Integer;
+  UserHome, strLocalAppData, strAppData, strIniFile: String;
+  tempc: array [0..MAX_PATH] of char;
+  iniFile: TIniFile;
+  versionNum: Integer;
 
 begin
-{$IFDEF MEM_DEBUG}
-  MemChk;
-{$ENDIF MEM_DEBUG}
-
   strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
 
   if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then
   begin
-    if not DirectoryExists(ParamStr(2)) then begin
-      MessageDlg('The directory "' + ParamStr(2) + '" doesn''t exist. Dev-C++ will now quit, please create the directory first.', mtError, [mbOK], 0);
-      Application.Terminate;
-      exit;
-    end;
+    if not DirectoryExists(ParamStr(2)) then
+      if not ForceDirectories(ParamStr(2)) then
+      begin
+        ShowMessage('The configuration directory does not exist and we were unable to ' +
+                    'create it. Please check that the path is not read-only and that ' +
+                    'you have sufficient privilieges to write to it.'#10#13#10#13 +
+                    'wxDev-C++ will now exit.');
+        Application.Terminate;
+      end
     devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + strIniFile;
     ConfigMode := CFG_PARAM;
   end
   else if IsWinNT then
   begin
-     //default dir should be %APPDATA%\Dev-Cpp
-     strLocalAppData := '';
-     if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
-       strLocalAppData := IncludeTrailingBackslash(String(tempc));
+    //default dir should be %APPDATA%\Dev-Cpp
+    strLocalAppData := '';
+    if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
+      strLocalAppData := IncludeTrailingBackslash(String(tempc));
 
-     strAppData := '';
-     if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
-       strAppData := IncludeTrailingBackslash(String(tempc));
+    strAppData := '';
+    if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
+      strAppData := IncludeTrailingBackslash(String(tempc));
 
-     if (strLocalAppData <> '') and
-     FileExists(strLocalAppData + strIniFile) then begin
-       UserHome := strLocalAppData;
-       devData.INIFile := UserHome + strIniFile;
-       ConfigMode := CFG_USER;
-     end
-     else if (strAppData <> '')
-     and FileExists(strAppData + strIniFile) then begin
-       UserHome := strAppData;
-       devData.INIFile := UserHome + strIniFile;
+    if (strLocalAppData <> '') and FileExists(strLocalAppData + strIniFile) then begin
+      UserHome := strLocalAppData;
+      devData.INIFile := UserHome + strIniFile;
       ConfigMode := CFG_USER;
     end
-     else if (strAppData <> '')
-     and (DirectoryExists(strAppData + 'Dev-Cpp') or CreateDir(strAppData + 'Dev-Cpp')) then begin
-       UserHome := strAppData + 'Dev-Cpp\';
-       devData.INIFile := UserHome + strIniFile;
+    else if (strAppData <> '') and FileExists(strAppData + strIniFile) then begin
+      UserHome := strAppData;
+      devData.INIFile := UserHome + strIniFile;
+      ConfigMode := CFG_USER;
+    end
+    else if (strAppData <> '') and (DirectoryExists(strAppData + 'Dev-Cpp') or CreateDir(strAppData + 'Dev-Cpp')) then begin
+      UserHome := strAppData + 'Dev-Cpp\';
+      devData.INIFile := UserHome + strIniFile;
       ConfigMode := CFG_USER;
     end
     else
@@ -280,34 +273,25 @@ begin
     devData.INIFile := ChangeFileExt(Application.EXEName, INI_EXT);
 
   if trim(devData.INIFile) <> '' then
-  begin
     if FileExists(devData.INIFile) then
     begin
-        iniFile:=TIniFile.Create(devData.INIFile);
-        try
-            versionNum:=iniFile.ReadInteger('Program','Version',-1);
-            if versionNum <> WXVERSION then
-            begin
-                DeleteFile(devData.INIFile);
-            end;
-        finally
-            iniFile.Destroy;
-        end;
-    end;
-    iniFile:=TIniFile.Create(devData.INIFile);
-    try
-         iniFile.WriteInteger('Program','Version',WXVERSION);
-    finally
+      iniFile:=TIniFile.Create(devData.INIFile);
+      try
+        versionNum:=iniFile.ReadInteger('Program', 'Version', -1);
+        if versionNum <> WXVERSION then
+          DeleteFile(devData.INIFile);
+        iniFile.WriteInteger('Program', 'Version', WXVERSION);
+      finally
         iniFile.Destroy;
+      end;
     end;
-  end;
 
   devData.UseRegistry := FALSE;
   devData.BoolAsWords := FALSE;
   devData.INISection := OPT_OPTIONS;
 
   // support for user-defined alternate ini file (permanent, but overriden by command-line -c)
-  if ConfigMode <> CFG_PARAM then  begin
+  if ConfigMode <> CFG_PARAM then begin
     StandardConfigFile := devData.INIFile;
     CheckForAltConfigFile(devData.INIFile);
     if UseAltConfigFile and (AltConfigFile <> '') and FileExists(AltConfigFile) then
@@ -323,16 +307,12 @@ begin
   devData.ReadConfigData;
   
   if devData.SingleInstance then
-  begin
-    boolCanStart:=CanStart;
-    if boolCanStart = false then
-        exit;
-  end;
+    if not CanStart then
+      exit;
   devTheme := TdevTheme.Create;
   Application.Initialize;
   Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
-  MainForm.Hide; // hide it
 
   if not devData.NoSplashScreen then
   begin
@@ -347,11 +327,11 @@ begin
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
   Application.CreateForm(TWebUpdateForm, WebUpdateForm);
-  TMainFormHack(MainForm).DoCreateEverything;
+  MainForm.DoCreateEverything;
 
   // apply the window placement. this method forced
   // the form to show,
-  TMainFormHack(MainForm).DoApplyWindowPlacement;
+  MainForm.DoApplyWindowPlacement;
   if not devData.NoSplashScreen then
     SplashForm.Free;
 

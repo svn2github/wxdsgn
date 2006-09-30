@@ -1024,16 +1024,15 @@ type
     procedure BuildOpenWith;
     procedure RebuildClassesToolbar;
     procedure PrepareDebugger;
-    procedure HideCodeToolTip; // added on 23rd may 2004 by peter_
-    procedure ParseCustomCmdLine(strLst:TStringList); //Added By Guru
-    procedure SurroundWithClick(Sender: TObject);     //Added By Guru
-  protected
-    {$IFDEF WX_BUILD}
+    procedure HideCodeToolTip;
+{$IFDEF WX_BUILD}
+    procedure ParseCustomCmdLine(strLst:TStringList);
+    procedure SurroundWithClick(Sender: TObject);
     procedure DoCreateWxSpecificItems;
-   {$ENDIF}
-    procedure DoCreateEverything; // added by peter
-    procedure DoApplyWindowPlacement; // added by peter
+{$ENDIF}
   public
+    procedure DoCreateEverything;
+    procedure DoApplyWindowPlacement;
     procedure OpenFile(s: string; withoutActivation: Boolean = false); // Modified for wx
     procedure OpenProject(s: string);
     function FileIsOpen(const s: string; inprj: boolean = FALSE): integer;
@@ -1311,7 +1310,7 @@ begin
 
     DockableControl := Self;
     DockClient.DockStyle := DockStyle;
-    DockClient.DirectDrag := false;
+    DockClient.DirectDrag := True;
     DockClient.EachOtherDock := true;
     Font.Name := 'MS Sans Serif';
   end;
@@ -1930,11 +1929,6 @@ begin
   CheckAssociations;
   DragAcceptFiles(Self.Handle, TRUE);
   dmMain := TdmMain.Create(Self);
-
-  // Set Path
-  devDirs.OriginalPath := GetEnvironmentVariable('PATH');
-  SetPath(devDirs.Bins);
-
   fHelpfiles := ToysStringList.Create;
   fTools := TToolController.Create;
   Caption := DEVCPP + ' ' + DEVCPP_VERSION;
