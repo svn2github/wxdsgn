@@ -1224,7 +1224,9 @@ uses
   WxSplitterWindow,WxDatePickerCtrl,
   CreateOrderFm,
   ViewIDForm,
-  WxToggleButton, wxRadioBox
+  WxToggleButton, wxRadioBox,WxOwnerDrawnComboBox,wxStc,wxRichTextCtrl,wxTreeListCtrl,wxCalendarCtrl,
+  wxTextEntryDialog,WxPasswordEntryDialog,WxSingleChoiceDialog,WxMultiChoiceDialog,
+  wxHyperLinkCtrl,wxDialUpManager,wxHtmlEasyPrinting,WxMediaCtrl
 {$ENDIF}
   ;
 {$ENDIF}
@@ -1251,7 +1253,6 @@ const
   cLogTab = 2;
   cDebugTab = 3;
   cFindTab = 4;
-  IniVersion = 1;
   INT_BRACES= 1;
   INT_TRY_CATCH= 2;
   INT_TRY_FINALLY= 3;
@@ -4107,7 +4108,9 @@ var
   pt: TPoint;
   e: TEditor;
   EditorFilename:String;
+  AlreadyActivated:boolean;
 begin
+  AlreadyActivated := false;
   if assigned(ProjectView.Selected) then
     Node := ProjectView.Selected
   else
@@ -4172,11 +4175,13 @@ begin
             else
             begin
                 GetEditorFromFileName(EditorFilename).Activate;
+                AlreadyActivated := true;
             end;
           end;
         end;
 {$ENDIF}
-        e.Activate;
+        if AlreadyActivated = false then
+          e.Activate;
       end;
     end;
 end;
@@ -8839,7 +8844,7 @@ begin
   RegisterClasses([TWxOpenFileDialog,TWxSaveFileDialog,TWxFontDialog, TwxMessageDialog,TWxProgressDialog,TWxPrintDialog,TWxFindReplaceDialog,TWxDirDialog,TWxColourDialog]);
   RegisterClasses([TWxPageSetupDialog]);
   RegisterClasses([TwxTimer]);
-
+  RegisterClasses([TwxTreeListCtrl,TWxRichTextCtrl,TWxStyledTextCtrl,TWxCalendarCtrl,TWxOwnerDrawnComboBox,TWxTextEntryDialog,TWxPasswordEntryDialog,TWxSingleChoiceDialog,TWxMultiChoiceDialog,TwxHyperLinkCtrl,TwxDialUpManager,TwxHtmlEasyPrinting,TWxMediaCtrl]);
   RegisterClasses([TMainMenu]);
 
 end;
@@ -8874,7 +8879,8 @@ begin
     WriteString('Palette', 'Menu','TWxMenuBar;TWxPopupMenu;');
     WriteString('Palette', 'Dialogs','TWxOpenFileDialog;TWxSaveFileDialog;TWxProgressDialog;TWxColourDialog;TWxDirDialog;TWxFindReplaceDialog;TWxFontDialog;TWxPageSetupDialog;TWxPrintDialog;TWxMessageDialog;');
     WriteString('Palette', 'System','TWxTimer;');
-    WriteInteger('Version','IniVersion',IniVersion);
+    WriteString('Palette', 'UnOfficial','TwxTreeListCtrl;TWxRichTextCtrl;TWxStyledTextCtrl;TWxCalendarCtrl;TWxOwnerDrawnComboBox;TWxTextEntryDialog;TWxPasswordEntryDialog;TWxSingleChoiceDialog;TWxMultiChoiceDialog;TwxHyperLinkCtrl;TwxDialUpManager;TwxHtmlEasyPrinting;TWxMediaCtrl;');
+    WriteString('Version','IniVersion',DEVCPP_VERSION);
   end;
   IniFile.Destroy;
 end;
@@ -8887,14 +8893,14 @@ var
   PalettePage: string;
   strPalette: string;
   IniFile: TIniFile;
-  intIniVersion:Integer;
+  strIniVersion:String;
 begin
   IniFile := TIniFile.Create(IncludeTrailingBackSlash(ExtractFileDir(Application.ExeName))+'devcpp.pallete');
   PaletteList := TStringList.Create;
   try
-    intIniVersion:=IniFile.ReadInteger('Version','IniVersion',0);
+    strIniVersion:=IniFile.ReadString('Version','IniVersion','');
 
-    if intIniVersion <> IniVersion then
+    if AnsiSameText(strIniVersion,DEVCPP_VERSION) = false then
         IniFile.EraseSection('Palette');
 
     ReadClass;
@@ -9009,7 +9015,39 @@ begin
   if lbxControls.Items.Count > 0 then
     lbxControls.ItemIndex := 0;
 end;
-
+function GetBitmapFromName(strName:String):String;
+begin
+    if UpperCase(strName) = 'TWXTREELISTCTRL' then
+    begin
+      Result:='TWXTREECTRL';;
+      exit;
+    end;
+    if UpperCase(strName) = 'TWXPASSWORDENTRYDIALOG' then
+    begin
+      Result:='TWXTEXTENTRYDIALOG';;
+      exit;
+    end;
+    if UpperCase(strName) = 'TWXMULTICHOICEDIALOG' then
+    begin
+      Result:='TWXSINGLECHOICEDIALOG';
+      exit;
+    end;
+    if (UpperCase(strName) = 'TWXOWNERDRAWNCOMBOBOX') or (UpperCase(strName) = 'TWXCHOICE') then
+    begin
+      Result:='TWXCOMBOBOX';
+      exit;
+    end;
+    if UpperCase(strName) = 'TWXSTYLEDTEXTCTRL' then
+    begin
+      Result:='TWXRICHTEXTCTRL';
+      exit;
+    end;
+    if UpperCase(strName) = 'TWXCALENDARCTRL' then
+    begin
+      Result:='TWXDATEPICKERCTRL';
+      exit;
+    end;
+end;
 procedure TMainForm.lbxControlsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
@@ -9042,7 +9080,13 @@ begin
       AnsiUpper(ResName);
 
       Bitmap.Handle := LoadBitmap(hInstance, ResName);
-
+      if(Bitmap.Handle = 0 ) then
+      begin
+        ComponentName:=GetBitmapFromName(ComponentName);
+        StrPLCopy(ResName, ComponentName, SizeOf(ResName));
+        AnsiUpper(ResName);
+        Bitmap.Handle := LoadBitmap(hInstance, ResName);
+      end;
       Bitmap.Transparent := True;
       Draw(Rect.Left + 1, Rect.Top + 1, Bitmap);
       Inc(Rect.Left, Bitmap.Width + 5);
