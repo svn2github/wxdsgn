@@ -132,6 +132,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     
@@ -575,6 +578,15 @@ begin
     inherited SetBounds(Left, Top, W, H);
 
   Message.Result := 0;
+end;
+
+function TWxStaticText.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxStaticText.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxStaticText.GetFGColor: string;

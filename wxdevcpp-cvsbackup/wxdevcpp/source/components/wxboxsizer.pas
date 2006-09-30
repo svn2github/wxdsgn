@@ -89,6 +89,9 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     function GenerateLastCreationCode: string;
 
     function GetBorderAlignment: TWxBorderAlignment;
@@ -688,6 +691,15 @@ begin
 
   //Call the base class' paint handler 
   inherited;
+end;
+
+function TWxBoxSizer.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxBoxSizer.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxBoxSizer.GetFGColor: string;

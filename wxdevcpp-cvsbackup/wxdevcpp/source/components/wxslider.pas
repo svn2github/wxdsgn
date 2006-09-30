@@ -141,6 +141,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -734,6 +737,15 @@ end;
 procedure TWxSlider.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxSlider.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxSlider.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxSlider.GetFGColor: string;

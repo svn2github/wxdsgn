@@ -50,6 +50,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -117,6 +121,7 @@ begin
   FWx_PropertyList.add('Wx_DialogStyle:Message Dialog Style');
 
   FWx_PropertyList.add('wxOK:wxOK');
+  FWx_PropertyList.add('wxCENTRE:wxCENTRE');
   FWx_PropertyList.add('wxCANCEL:wxCANCEL');
   FWx_PropertyList.add('wxYES_NO:wxYES_NO');
   FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
@@ -299,6 +304,16 @@ procedure TWxMessageDialog.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxMessageDialog.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxMessageDialog.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxMessageDialog.GetFGColor: string;
 begin

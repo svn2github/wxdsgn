@@ -101,6 +101,11 @@ type
 
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
+
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     function GenerateLastCreationCode: string;
 
@@ -652,6 +657,16 @@ begin
 
   inherited;
 end;
+
+function TWxGridSizer.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxGridSizer.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxGridSizer.GetFGColor: string;
 begin

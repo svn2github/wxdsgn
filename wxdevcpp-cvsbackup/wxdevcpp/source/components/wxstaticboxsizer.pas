@@ -101,6 +101,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     function GenerateLastCreationCode: string;
 
     function GetBorderAlignment: TWxBorderAlignment;
@@ -723,6 +727,15 @@ begin
   end;
 
   inherited;
+
+end;
+
+function TWxStaticBoxSizer.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxStaticBoxSizer.SetGenericColor(strVariableName,strValue: string);
+begin
 
 end;
 

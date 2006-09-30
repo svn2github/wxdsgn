@@ -98,6 +98,8 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GetCheckListBoxSelectorStyle(Value: TWxLBxStyleSubItem): string;
@@ -614,6 +616,16 @@ procedure TWxCheckListBox.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxCheckListBox.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxCheckListBox.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxCheckListBox.GetFGColor: string;
 begin

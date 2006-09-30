@@ -100,6 +100,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GetRadioboxOrientation(Wx_RadioBoxStyle: TWxrbxStyleItem) : string;
@@ -604,6 +608,15 @@ end;
 procedure TWxRadioBox.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxRadioBox.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxRadioBox.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxRadioBox.GetFGColor: string;

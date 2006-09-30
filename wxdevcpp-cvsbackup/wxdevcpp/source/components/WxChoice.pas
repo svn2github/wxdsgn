@@ -118,6 +118,8 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);    
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     
@@ -615,6 +617,16 @@ procedure TWxChoice.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxChoice.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxChoice.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxChoice.GetFGColor: string;
 begin

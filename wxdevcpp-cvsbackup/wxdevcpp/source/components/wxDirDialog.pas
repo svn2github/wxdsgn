@@ -52,6 +52,9 @@ type
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     function GetBorderAlignment: TWxBorderAlignment;
     procedure SetBorderAlignment(border: TWxBorderAlignment);
     function GetBorderWidth: integer;
@@ -282,6 +285,16 @@ procedure TWxDirDialog.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxDirDialog.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxDirDialog.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxDirDialog.GetFGColor: string;
 begin

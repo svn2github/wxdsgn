@@ -92,6 +92,10 @@ type
     procedure SetBGColor(strValue: string);
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     function GenerateLastCreationCode: string;
     procedure SetNotebookStyle(style: TWxnbxStyleSet);
 
@@ -524,6 +528,16 @@ procedure TWxNoteBook.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxNoteBook.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxNoteBook.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxNoteBook.GetFGColor: string;
 begin

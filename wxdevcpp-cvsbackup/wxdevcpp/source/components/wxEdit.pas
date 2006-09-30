@@ -137,6 +137,10 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
+
     function GetBorderAlignment: TWxBorderAlignment;
     procedure SetBorderAlignment(border: TWxBorderAlignment);
     function GetBorderWidth: integer;
@@ -763,6 +767,15 @@ end;
 procedure TWxEdit.SetValidator(value:String);
 begin
   Wx_Validator := value;
+end;
+
+function TWxEdit.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxEdit.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxEdit.GetFGColor: string;

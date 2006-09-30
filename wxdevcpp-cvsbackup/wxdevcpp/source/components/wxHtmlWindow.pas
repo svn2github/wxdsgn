@@ -95,6 +95,11 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+    
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -542,6 +547,16 @@ procedure TWxHtmlWindow.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxHtmlWindow.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxHtmlWindow.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxHtmlWindow.GetFGColor: string;
 begin

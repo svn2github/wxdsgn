@@ -78,6 +78,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GenerateLastCreationCode: string;
@@ -477,6 +480,15 @@ end;
 procedure TWxScrolledWindow.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxScrolledWindow.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxScrolledWindow.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxScrolledWindow.GetFGColor: string;

@@ -96,6 +96,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GenerateLastCreationCode: string;
@@ -502,6 +505,16 @@ procedure TWxPanel.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxPanel.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxPanel.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxPanel.GetFGColor: string;
 begin

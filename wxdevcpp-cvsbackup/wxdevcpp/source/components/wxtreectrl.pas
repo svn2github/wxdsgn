@@ -114,6 +114,10 @@ type
 
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+    
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -330,6 +334,8 @@ begin
   FWx_PropertyList.Add('wxTR_MULTIPLE:wxTR_MULTIPLE');
   FWx_PropertyList.Add('wxTR_EXTENDED:wxTR_EXTENDED');
   FWx_PropertyList.Add('wxTR_DEFAULT_STYLE:wxTR_DEFAULT_STYLE');
+  FWx_PropertyList.Add('wxTR_COLUMN_LINES:wxTR_COLUMN_LINES');
+  FWx_PropertyList.Add('wxTR_SHOW_ROOT_LABEL_ONLY:wxTR_SHOW_ROOT_LABEL_ONLY');
 
   FWx_PropertyList.add('Font:Font');
   FWx_PropertyList.add('Items:Items');
@@ -793,6 +799,15 @@ end;
 procedure TWxTreeCtrl.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxTreeCtrl.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxTreeCtrl.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxTreeCtrl.GetFGColor: string;

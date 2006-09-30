@@ -132,6 +132,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GetSBOrientation(Wx_SBOrientation: TWx_SBOrientation): string;
@@ -708,6 +711,15 @@ end;
 procedure TWxScrollBar.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxScrollBar.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxScrollBar.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxScrollBar.GetFGColor: string;

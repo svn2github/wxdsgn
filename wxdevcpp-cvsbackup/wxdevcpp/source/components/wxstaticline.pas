@@ -111,6 +111,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -606,6 +609,15 @@ begin
        via their SetBounds methods }
 
   Message.Result := 0;
+end;
+
+function TWxStaticLine.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxStaticLine.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxStaticLine.GetFGColor: string;

@@ -97,6 +97,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure Click; override;
@@ -584,6 +588,15 @@ end;
 procedure TWxButton.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxButton.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxButton.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxButton.GetFGColor: string;

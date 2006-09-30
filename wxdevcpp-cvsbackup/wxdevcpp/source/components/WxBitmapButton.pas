@@ -83,6 +83,9 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure SetButtonBitmap(Value: TPicture);
@@ -505,6 +508,15 @@ end;
 procedure TWxBitmapButton.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxBitmapButton.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxBitmapButton.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxBitmapButton.GetFGColor: string;

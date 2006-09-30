@@ -52,6 +52,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -295,6 +299,16 @@ procedure TWxSaveFileDialog.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
+
+function TWxSaveFileDialog.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxSaveFileDialog.SetGenericColor(strVariableName,strValue: string);
+begin
+
+end;
+
 
 function TWxSaveFileDialog.GetFGColor: string;
 begin

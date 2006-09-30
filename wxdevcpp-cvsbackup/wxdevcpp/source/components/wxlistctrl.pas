@@ -157,6 +157,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
@@ -859,6 +862,15 @@ end;
 procedure TWxListCtrl.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxListCtrl.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxListCtrl.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxListCtrl.GetFGColor: string;

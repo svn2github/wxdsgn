@@ -121,6 +121,10 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     procedure DummyToolBarInsertableInterfaceProcedure;
@@ -622,6 +626,15 @@ end;
 procedure TWxDatePickerCtrl.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxDatePickerCtrl.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxDatePickerCtrl.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxDatePickerCtrl.GetFGColor: string;

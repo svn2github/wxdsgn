@@ -114,6 +114,9 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GetGaugeOrientation(Wx_GaugeOrientation: TWxGAgOrientation): string;
@@ -565,6 +568,15 @@ end;
 procedure TWxGauge.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxGauge.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxGauge.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxGauge.GetFGColor: string;

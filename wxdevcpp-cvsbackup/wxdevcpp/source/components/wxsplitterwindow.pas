@@ -87,6 +87,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     function GenerateLastCreationCode: string;
 
     function GetBorderAlignment: TWxBorderAlignment;
@@ -649,6 +653,15 @@ begin
   end;}
 
   inherited;
+end;
+
+function TWxSplitterWindow.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxSplitterWindow.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxSplitterWindow.GetFGColor: string;

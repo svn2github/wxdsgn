@@ -82,6 +82,10 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
+
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
     function GenerateLastCreationCode: string;
@@ -540,6 +544,15 @@ end;
 procedure TWxStatusBar.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
+end;
+
+function TWxStatusBar.GetGenericColor(strVariableName:String): string;
+begin
+
+end;
+procedure TWxStatusBar.SetGenericColor(strVariableName,strValue: string);
+begin
+
 end;
 
 function TWxStatusBar.GetFGColor: string;
