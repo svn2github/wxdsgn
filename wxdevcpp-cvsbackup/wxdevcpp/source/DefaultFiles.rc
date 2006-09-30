@@ -1,6 +1,8 @@
 English lng ..\lang\English.lng
 
 NOIMG BITMAP ".\images\noimg.bmp"
+MEDIAPLAYERIMG BITMAP ".\images\media-player.bmp"
+
 
 /* default order of highlighter component
    may be good idea to make more concrete
