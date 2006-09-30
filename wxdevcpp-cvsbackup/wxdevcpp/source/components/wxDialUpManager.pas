@@ -15,13 +15,6 @@ type
     FWx_Class: string;
     FWx_PropertyList: TStringList;
     FWx_EventList   : TStringList;
-    FWx_FromPage: integer;
-    FWx_MaxPage: integer;
-    FWx_MinPage: integer;
-    FWx_NumberOfCopies: integer;
-    FWx_PrintToFile: boolean;
-    FWx_Selection: boolean;
-    FWx_ToPage: integer;
     FWx_Comments: TStrings;
     FEVT_DIALUP_CONNECTED:String;
     FEVT_DIALUP_DISCONNECTED:String;

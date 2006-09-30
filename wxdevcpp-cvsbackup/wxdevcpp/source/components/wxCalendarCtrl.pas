@@ -348,10 +348,6 @@ begin
 end;
 
 function TWxCalendarCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-  wxcompInterface: IWxComponentInterface;
-  i: integer;
-  tempstring: TStringList;
 begin
 
   Result := TStringList.Create;

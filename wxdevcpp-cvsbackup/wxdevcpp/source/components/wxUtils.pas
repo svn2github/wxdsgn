@@ -2747,7 +2747,6 @@ end;
 function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;edtstyle: TWxHyperLnkStyleSet): string;
 var
   strA: string;
-  strB: string;
 begin
   Result := GetStdStyleString(stdstyle);
   strA   := trim(GetHyperLnkStyleString(edtstyle));
