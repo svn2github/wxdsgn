@@ -1553,6 +1553,8 @@ begin
   Wx_Hidden         := False;
   Wx_SizeToContents := True;
   Wx_Icon           := TPicture.Create;
+  self.AutoScroll:=false;
+  
   SetDialogProperties();
 
   FWx_EventList := TStringList.Create;
