@@ -791,15 +791,26 @@ end;
 procedure TCompiler.GetIncludesParams;
 var
   i: integer;
-  cAppendStr : string;
+  cAppendStr, cRCString : string;
+  strLst: TStringList;
 begin
   fIncludesParams := '';
   fCppIncludesParams := '';
   cAppendStr := '%s ' + devCompiler.IncludeFormat;
   fIncludesParams := CommaStrToStr(devDirs.C, cAppendStr);
   fCppIncludesParams := CommaStrToStr(devDirs.Cpp, cAppendStr);
-  fRcIncludesParams := CommaStrToStr(devDirs.RC, '%s ' + devCompiler.ResourceIncludeFormat);
 
+  strLst := TStringList.Create;
+  strTokenToStrings(devDirs.RC, ';', strLst);
+  cRCString := '';
+  for i := 0 to strLst.Count-1 do
+  begin
+    cRCString := cRCString + GetShortName(strLst.Strings[i]) + ';';
+  end;
+  fRcIncludesParams := CommaStrToStr(cRCString, '%s ' + devCompiler.ResourceIncludeFormat);
+  
+  strLst.Destroy;
+  	
   if (fTarget = ctProject) and assigned(fProject) then begin
     for i := 0 to pred(fProject.Options.Includes.Count) do
       if directoryExists(fProject.Options.Includes[i]) then begin
@@ -808,7 +819,7 @@ begin
       end;
     for i := 0 to pred(fProject.Options.ResourceIncludes.Count) do
       if directoryExists(fProject.Options.ResourceIncludes[i]) then
-        fRcIncludesParams := format(cAppendStr, [fRcIncludesParams, fProject.Options.ResourceIncludes[i]]);
+        fRcIncludesParams := format(cAppendStr, [fRcIncludesParams, GetShortName(fProject.Options.ResourceIncludes[i])]);
   end;
 end;
 

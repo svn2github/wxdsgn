@@ -1616,7 +1616,12 @@ begin
   fCppDir:= ValidatePaths(fDefault
     + StringReplace(CPP_INCLUDE_DIR, ';', ';' + fDefault, [rfReplaceAll]), tempstr);
   fLibDir:= ValidatePaths(fDefault + LIB_DIR, tempstr);
+  {$IFDEF WX_BUILD}
+  fRCDir := ValidatePaths(fDefault
+    + StringReplace(RC_INCLUDE_DIR, ';', ';' + fDefault, [rfReplaceAll]), tempstr);
+  {$ELSE}
   fRCDir := '';
+  {$ENDIF}
 
   fExec := ExtractFilePath(Application.ExeName);
   fConfig:= fExec;
@@ -2040,7 +2045,7 @@ end;
 procedure TdevCompilerSet.LoadSetDirs(Index: integer);
 var
   key: string;
-  goodBinDir, goodCDir, goodCppDir, goodLibDir: String;
+  goodBinDir, goodCDir, goodCppDir, goodLibDir {$IFDEF WX_BUILD}, goodRCDir{$ENDIF}: String;
   msg: String;
   tempStr: String;
   maindir: String;
@@ -2048,7 +2053,7 @@ var
 begin
   if Index < 0 then
     Exit;
-  
+
   with devData do
   begin
     key := OPT_COMPILERSETS + '_' + IntToStr(Index);
@@ -2094,6 +2099,15 @@ begin
        msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
        msg := msg + #13#10 + #13#10;
      end;
+     {$IFDEF WX_BUILD}
+     goodRCDir := ValidatePaths(fRCDir, tempStr);
+     if tempStr <> '' then
+     begin
+       msg := msg + 'Following resource compiler directories don''t exist:' + #13#10;
+       msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
+       msg := msg + #13#10 + #13#10;
+     end;
+     {$ENDIF}
      if msg <> '' then
      begin
        msg := msg + 'Would you like Dev-C++ to remove them for you '
@@ -2110,11 +2124,15 @@ begin
          fCDir := goodCDir;
          fCppDir := goodCppDir;
          fLibDir := goodLibDir;
-         fRCDir := '';
+         fRCDir := goodRCDir;
 
-         //additionally insert default paths:
+          //additionally insert default paths:
          maindir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
          tempStr := '';
+
+         fRCDir := maindir + RC_INCLUDE_DIR + ';' + fRCDir;
+         fRCDir := ValidatePaths(fRCDir, tempStr);
+         devDirs.RC := fRCDir;
          fBinDir := maindir + BIN_DIR + ';' + fBinDir;
          fBinDir := ValidatePaths(fBinDir, tempStr);
          devDirs.Bins := fBinDir;

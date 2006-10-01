@@ -63,29 +63,33 @@ resourcestring
   // default directories
   BIN_DIR = 'Bin';
   LIB_DIR = 'lib';
+  {$IFDEF WX_BUILD}
+  RC_INCLUDE_DIR  = 'include';
+  {$ENDIF}
   C_INCLUDE_DIR = 'include';
   CPP_INCLUDE_DIR      =
 //The Dir are taken from bottom to up. So I added the dir in the inverted order in which
-//they are picked by the parser.                       
+//they are picked by the parser.
   {$IFDEF WX_BUILD}
-                       'include' + pd + 'wx;'
-                       + 'include' + pd + 'wx' + pd + 'xrc;'
-                       + 'include' + pd + 'wx' + pd + 'xml;'
-                       + 'include' + pd + 'wx' + pd + 'svg;'
-                       + 'include' + pd + 'wx' + pd + 'stc;'
-                       + 'include' + pd + 'wx' + pd + 'protocol;'
-                       + 'include' + pd + 'wx' + pd + 'plot;'
-                       + 'include' + pd + 'wx' + pd + 'ogl;'
-                       + 'include' + pd + 'wx' + pd + 'net;'
-                       + 'include' + pd + 'wx' + pd + 'mmedia;'
-                       + 'include' + pd + 'wx' + pd + 'html;'
-                       + 'include' + pd + 'wx' + pd + 'gizmos;'
-                       + 'include' + pd + 'wx' + pd + 'fl;'
-                       + 'include' + pd + 'wx' + pd + 'animate;'
-                       + 'include' + pd + 'wx' + pd + 'generic;'
-                       + 'include' + pd + 'wx' + pd + 'msw;'  +
+                       'include' + pd + 'common' + pd + 'wx;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xrc;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xml;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'svg;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'stc;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'protocol;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'plot;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'ogl;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'net;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'mmedia;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'html;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'gizmos;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'fl;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'animate;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'generic;'
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'msw;'  +
+
   {$ENDIF}
-                        'include'
+                       'include'
                        //one of below directories will be deleted if don't exist, later
                        + ';include' + pd + 'c++' + pd + GCC_VERSION
                        + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'
@@ -97,6 +101,7 @@ resourcestring
                        + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include'
 
                        ;
+
   LANGUAGE_DIR         = 'Lang' + pd;
   ICON_DIR             = 'Icons' + pd;
   HELP_DIR             = 'Help' + pd;
