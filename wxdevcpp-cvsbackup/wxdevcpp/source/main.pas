@@ -975,6 +975,7 @@ type
     fTab: integer;
     fmsgHeight: integer;
     fHelpfiles: ToysStringList;
+    FloatingPropertiesItem: TMenuItem;
     fTools: TToolController;
     fProjectCount: integer;
     fCompiler: TCompiler;
@@ -1026,6 +1027,7 @@ type
     procedure PrepareDebugger;
     procedure HideCodeToolTip;
 {$IFDEF WX_BUILD}
+	procedure OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
     procedure ParseCustomCmdLine(strLst:TStringList);
     procedure SurroundWithClick(Sender: TObject);
     procedure DoCreateWxSpecificItems;
@@ -1271,7 +1273,6 @@ procedure TMainForm.DoCreateWxSpecificItems;
 var
   I: Integer;
   ini :TiniFile;
-  FloatingProperties: TMenuItem;
   lbDockClient1: TJvDockClient;
   lbDockClient2: TJvDockClient;
 begin
@@ -1284,12 +1285,13 @@ begin
     Caption := 'Project Inspector';
     BorderStyle := bsSizeToolWin;
     Color := clBtnFace;
+    Width:=300;
     DockSite := True;
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
     Font.Name := 'MS Sans Serif';
-    width:=300;
+    OnClose := OnDockableFormClosed;
     lbDockClient1 := TJvDockClient.Create(frmProjMgrDock);
     with lbDockClient1 do
     begin
@@ -1317,12 +1319,13 @@ begin
     Caption := 'Property Inspector';
     BorderStyle := bsSizeToolWin;
     Color := clBtnFace;
+    width:=300;
     DockSite := True;
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
-    Font.Name := 'MS Sans Serif';
-    width:=300;
+    Font.Name := 'MS Sans Serif';    
+    OnClose := OnDockableFormClosed;
     lbDockClient2 := TJvDockClient.Create(frmInspectorDock);
     with lbDockClient2 do
     begin
@@ -1331,17 +1334,25 @@ begin
       DockStyle := MainForm.DockStyle;
     end;
   end;
-
-  ShowDockForm(frmProjMgrDock);
-  ShowDockForm(frmInspectorDock);
+  
   frmProjMgrDock.ManualDock(DockServer.LeftDockPanel);
   frmInspectorDock.ManualDock(DockServer.LeftDockPanel,nil,alBottom);
+    
+  ShowDockForm(frmProjMgrDock);
+  ShowDockForm(frmInspectorDock);
 
-  FloatingProperties := TMenuItem.Create(MainMenu);
-  FloatingProperties.Checked := False;
-  FloatingProperties.OnClick := FloatingPropertyInspectorClick;
-  FloatingProperties.Caption := 'Show Property Inspector';
-  ViewMenu.Insert(7, FloatingProperties);
+
+   //Add the property inspector view menu item
+   FloatingPropertiesItem := TMenuItem.Create(MainMenu);
+   FloatingPropertiesItem.Checked := False;
+   FloatingPropertiesItem.OnClick := FloatingPropertyInspectorClick;
+   FloatingPropertiesItem.Caption := 'Show Property Inspector';
+   ViewMenu.Insert(7, FloatingPropertiesItem);
+ 
+   //Check both "view" items
+   FloatingPropertiesItem.Checked :=True;
+   FloatingProjectManagerItem.Checked := True;
+
 
   strChangedFileList:=TStringList.Create;
   strStdwxIDList:=GetPredefinedwxIds;
@@ -2063,7 +2074,16 @@ begin
   BreakPointList := TList.create;
   SetSplashStatus('Loading code completion cache');
   InitClassBrowser(true {not CacheCreated});
-
+   //Settle the docking sizes
+   DockServer.LeftDockPanel.Width := 200;
+   //DockServer.TopDockPanel.Width := 300;
+   //DockServer.RightDockPanel.Width := 300;
+   //DockServer.BottomDockPanel.Width := 300;
+   DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
+   //DockServer.TopDockPanel.JvDockManager.GrabberSize := 22;
+   //DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
+   //DockServer.BottomDockPanel.JvDockManager.GrabberSize := 22;
+   
 {$IFDEF WX_BUILD}
   //variable for clearing up inspector data.
   //Added because there is a AV when adding a function
@@ -2144,8 +2164,6 @@ begin
     Self.Position := poScreenCenter;
 
   Show;
-  frmProjMgrDock.Show;
-  frmInspectorDock.Show;
 end;
 
 
@@ -2153,9 +2171,15 @@ procedure TMainForm.LoadTheme;
 var
   Idx: Integer;
 begin
-  XPMenu.Active := devData.XPTheme;
-  WebUpdateForm.XPMenu.Active := devData.XPTheme;
+  try
+    XPMenu.Active := devData.XPTheme;
+  except
+  end;
 
+  try
+    WebUpdateForm.XPMenu.Active := devData.XPTheme;
+  except
+  end;
   if devImageThemes.IndexOf(devData.Theme) < 0 then
     devData.Theme := devImageThemes.Themes[0].Title; // 0 = New look (see ImageTheme.pas)
 
@@ -2241,6 +2265,21 @@ begin
     fFirstShow := FALSE;
   end;
 end;
+
+{$IFDEF WX_BUILD}
+procedure TMainForm.OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
+begin
+  //Sanity check
+  if not (Sender is TForm) then
+    Exit;
+
+  //Update the menu list
+  if TForm(Sender) = frmInspectorDock then
+    FloatingPropertiesItem.Checked := False
+  else if TForm(Sender) = frmProjMgrDock then
+    FloatingProjectManagerItem.Checked := False;
+end;
+{$ENDIF}
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
@@ -2433,6 +2472,14 @@ var
 begin
   aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
   if aFile = '' then exit;
+
+  // Freeze the screen before doing anything
+  if MainForm.Visible then
+  begin
+    MainForm.Refresh;
+    MainForm.Update;
+    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(false), 0);
+  end;
   
   // delete between "Dev-C++ Help" and first separator
   idx2 := HelpMenu.IndexOf(HelpSep1);
@@ -2460,7 +2507,11 @@ begin
 
     ini.ReadSections(fHelpFiles);
     if fHelpFiles.Count = 0 then
+    begin
+      if MainForm.Visible then
+        SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
       exit;
+    end;
 
     for idx := 0 to pred(fHelpFiles.Count) do
     begin
@@ -2507,7 +2558,11 @@ begin
     ini.free;
   end;
 
-  XPMenu.Refresh;
+  if MainForm.Visible then
+  begin
+    XPMenu.Refresh;
+    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
+  end;
 end;
 
 procedure TMainForm.SetHints;
@@ -10263,7 +10318,7 @@ var
   boolIsFilesDirty: Boolean;
   componentInstance:TComponent;
   propertyName,wxClassName,propDisplayName:string;
-
+  strNewValue:String;
 procedure SetPropertyValue(Comp:TComponent;strPropName,strPropValue:String);
 var
   PropInfo: PPropInfo;
@@ -10276,6 +10331,7 @@ begin
 end;
 
 begin
+  strNewValue := Data.AsString;
   try
 
     if JvInspEvents.Selected = nil then
@@ -10292,7 +10348,7 @@ begin
     if not e.isForm then
       Exit;
 
-    if Data.AsString = '<Add New Function>' then
+    if strNewValue = '<Add New Function>' then
     begin
         if not ClassBrowser1.Enabled then
         begin
@@ -10360,7 +10416,7 @@ begin
         propertyName:=Data.Name;
         wxClassName:=Trim(e.getDesigner().Wx_Name);
         propDisplayName:=JvInspEvents.Selected.DisplayName;
-        if CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
+        if MainForm.CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
         begin
 
           //This is causing AV, so I moved this operation to
@@ -10385,8 +10441,7 @@ begin
         //LocateFunction(Data,Trim(e.getDesigner().Wx_Name),SelectedComponent, str, JvInspEvents.Selected.DisplayName);
     end;
 
-
-    if Data.AsString = '<Goto Function>' then
+    if strNewValue= '<Goto Function>' then
     begin
         if not ClassBrowser1.Enabled then
         begin
@@ -10457,7 +10512,7 @@ begin
     end;
 
 
-    if Data.AsString = '<Remove Function>' then
+    if strNewValue = '<Remove Function>' then
     begin
       Data.AsString := '';
     end;
@@ -11067,7 +11122,7 @@ begin
     e.GetDesignerCPPEditor.InsertString('', true);
 
     boolInspectorDataClear:=False;
-    OpenFile(e.GetDesignerCPPFileName);
+    //OpenFile(e.GetDesignerCPPFileName);
     boolInspectorDataClear:=False;
     e.UpdateDesignerData;
     boolInspectorDataClear:=False;
