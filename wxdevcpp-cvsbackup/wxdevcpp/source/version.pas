@@ -64,14 +64,15 @@ resourcestring
   BIN_DIR = 'Bin';
   LIB_DIR = 'lib';
   {$IFDEF WX_BUILD}
-  RC_INCLUDE_DIR  = 'include';
+  RC_INCLUDE_DIR  = 'include'+ pd + 'common';
   {$ENDIF}
   C_INCLUDE_DIR = 'include';
   CPP_INCLUDE_DIR      =
 //The Dir are taken from bottom to up. So I added the dir in the inverted order in which
 //they are picked by the parser.
   {$IFDEF WX_BUILD}
-                       'include' + pd + 'common' + pd + 'wx;'
+                       'include' + pd + 'common;'
+                       +'include' + pd + 'common' + pd + 'wx;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xrc;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xml;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'svg;'
