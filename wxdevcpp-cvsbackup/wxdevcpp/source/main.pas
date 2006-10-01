@@ -2433,14 +2433,6 @@ var
 begin
   aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
   if aFile = '' then exit;
-
-  // Freeze the screen before doing anything
-  if MainForm.Visible then
-  begin
-    MainForm.Refresh;
-    MainForm.Update;
-    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(false), 0);
-  end;
   
   // delete between "Dev-C++ Help" and first separator
   idx2 := HelpMenu.IndexOf(HelpSep1);
@@ -2468,11 +2460,7 @@ begin
 
     ini.ReadSections(fHelpFiles);
     if fHelpFiles.Count = 0 then
-    begin
-      if MainForm.Visible then
-        SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
       exit;
-    end;
 
     for idx := 0 to pred(fHelpFiles.Count) do
     begin
@@ -2519,11 +2507,7 @@ begin
     ini.free;
   end;
 
-  if MainForm.Visible then
-  begin
-    XPMenu.Refresh;
-    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
-  end;
+  XPMenu.Refresh;
 end;
 
 procedure TMainForm.SetHints;
