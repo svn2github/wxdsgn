@@ -55,6 +55,9 @@ const
   ID_COMPILER_MINGW = 0;
   ID_COMPILER_VC = 1;
   ID_COMPILER_VC2005 = 2;
+  ID_COMPILER_DMAR = 3;
+  ID_COMPILER_BOR = 4;
+  ID_COMPILER_OWAT = 5;
   
 type
   // the comments are an example of the record
@@ -126,6 +129,7 @@ type
     procedure LoadSet(Index: integer);
     procedure LoadSetDirs(Index: integer);
     procedure LoadSetProgs(Index: integer);
+    procedure LoadDefaultCompilerDefaults;
     procedure AssignToCompiler;
     function SetName(Index: integer): string;
 
@@ -383,6 +387,7 @@ type
   // global directories
   TdevDirs = class(TCFGOptions)
   private
+    fCompilerType:Integer;
     fThemes: string; // Themes Directory
     fIcons: string; // Icon Library
     fHelp: string; // Help
@@ -421,6 +426,7 @@ type
     property RC: string read fRCDir write fRCDir;
     property Templates: string read fTemp write fTemp;
     property Themes: string read fThemes write fThemes;
+    property CompilerType: integer read fCompilerType write fCompilerType; 
   end;
 
   // editor options -- syntax, synedit options, etc...
@@ -770,7 +776,8 @@ function ValidatePaths(dirList: String; var badDirs: String): String;
 var
   strs: TStrings;
   i,j: Integer;
-  currdir: String;
+  currdir: String;  
+  newdir:string;
 
   function makeFullPath(dir: String): String;
   begin
@@ -808,13 +815,14 @@ begin
       strs.Add(dirList)
     else
     begin
-      strs.Add(Copy(dirList, 1, Pos(';', dirList) -1));
+      newdir := makeFullPath(Copy(dirList, 1, Pos(';', dirList) -1));
+      strs.Add(newdir);
       Delete(dirList, 1, Pos(';', dirList));
     end;
   until Pos(';', dirList) = 0;
 
   //eliminate duplicates
-  for i := strs.Count -2 downto 0 do
+  for i := strs.Count -1 downto 0 do
     for j := strs.Count -1 downto i + 1 do
       if (Trim(strs[j]) = '') or
         ( makeFullPath(Trim(strs[i])) = makeFullPath(Trim(strs[j])) ) then
@@ -1487,13 +1495,13 @@ begin
     SaveSetting(key, 'Delay', inttostr(fDelay));
     SaveBoolSetting(key, 'Log', fSaveLog);
 
-    SaveSetting(key, GCC_PROGRAM, fgccName);
-    SaveSetting(key, GPP_PROGRAM, fgppName);
-    SaveSetting(key, GDB_PROGRAM, fgdbName);
-    SaveSetting(key, MAKE_PROGRAM, fmakeName);
-    SaveSetting(key, WINDRES_PROGRAM, fwindresName);
-    SaveSetting(key, DLLWRAP_PROGRAM, fdllwrapName);
-    SaveSetting(key, GPROF_PROGRAM, fgprofName);
+    SaveSetting(key, CP_PROGRAM(CompilerType), fgccName);
+    SaveSetting(key, CPP_PROGRAM(CompilerType), fgppName);
+    SaveSetting(key, DBG_PROGRAM(CompilerType), fgdbName);
+    SaveSetting(key, MAKE_PROGRAM(CompilerType), fmakeName);
+    SaveSetting(key, RES_PROGRAM(CompilerType), fwindresName);
+    SaveSetting(key, DLL_PROGRAM(CompilerType), fdllwrapName);
+    SaveSetting(key, PROF_PROGRAM(CompilerType), fgprofName);
     SaveSetting(key, 'CompilerSet', IntToStr(fCompilerSet));
 
     S := '';
@@ -1509,18 +1517,14 @@ end;
 
 procedure TdevCompiler.SetCompilerSet(const Value: integer);
 begin
-  // No need to continue
-  if fCompilerSet = Value then
-    Exit;
+ if fCompilerSet=Value then Exit;
   if not Assigned(devCompilerSet) then
     devCompilerSet := TdevCompilerSet.Create;
   devCompilerSet.LoadSet(Value);
-
-  // Set the options for the compiler
-  AddDefaultOptions;
-
   // Programs
   fCompilerSet := Value;
+  if devDirs.OriginalPath = '' then // first time only
+    devDirs.OriginalPath := GetEnvironmentVariable('PATH');
   SetPath(devDirs.Bins);
   devCompilerSet.LoadSet(Value);
   fgccName := devCompilerSet.gccName;
@@ -1583,13 +1587,13 @@ begin
   fFastDep := FALSE;
 
   // Programs
-  fgccName := GCC_PROGRAM;
-  fgppName := GPP_PROGRAM;
-  fgdbName := GDB_PROGRAM;
-  fmakeName := MAKE_PROGRAM;
-  fwindresName := WINDRES_PROGRAM;
-  fgprofName := GPROF_PROGRAM;
-  fdllwrapName := DLLWRAP_PROGRAM;
+  fgccName := CP_PROGRAM(CompilerType);
+  fgppName := CPP_PROGRAM(CompilerType);
+  fgdbName := DBG_PROGRAM(CompilerType);
+  fmakeName := MAKE_PROGRAM(CompilerType);
+  fwindresName := RES_PROGRAM(CompilerType);
+  fgprofName := PROF_PROGRAM(CompilerType);
+  fdllwrapName := DLL_PROGRAM(CompilerType);
   fCompilerSet := 0;
 
   AddDefaultOptions;
@@ -1602,6 +1606,7 @@ constructor TdevDirs.Create;
 begin
   inherited Create;
   Name := OPT_DIRS;
+  fCompilerType := 0;
   SettoDefaults;
   LoadSettings;
 end;
@@ -1611,14 +1616,14 @@ var
   tempstr: String;
 begin
   fDefault:= IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
-  fBinDir:= ValidatePaths(fDefault + BIN_DIR, tempstr);
-  fCDir:= ValidatePaths(fDefault + C_INCLUDE_DIR, tempstr);
+  fBinDir:= ValidatePaths(fDefault + BIN_DIR(fCompilerType), tempstr);
+  fCDir:= ValidatePaths(fDefault + C_INCLUDE_DIR(fCompilerType), tempstr);
   fCppDir:= ValidatePaths(fDefault
-    + StringReplace(CPP_INCLUDE_DIR, ';', ';' + fDefault, [rfReplaceAll]), tempstr);
-  fLibDir:= ValidatePaths(fDefault + LIB_DIR, tempstr);
+    + StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
+  fLibDir:= ValidatePaths(fDefault + LIB_DIR(fCompilerType), tempstr);
   {$IFDEF WX_BUILD}
   fRCDir := ValidatePaths(fDefault
-    + StringReplace(RC_INCLUDE_DIR, ';', ';' + fDefault, [rfReplaceAll]), tempstr);
+    + StringReplace(RC_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
   {$ELSE}
   fRCDir := '';
   {$ENDIF}
@@ -1970,6 +1975,20 @@ begin
 end;
 
 { TdevCompilerSet }
+procedure TdevCompilerSet.LoadDefaultCompilerDefaults;
+begin
+  devCompilerSet.BinDir := BIN_DIR(CompilerType);
+  devCompilerSet.CDir := C_INCLUDE_DIR(CompilerType);
+  devCompilerSet.CppDir := CPP_INCLUDE_DIR(CompilerType);
+  devCompilerSet.LibDir := LIB_DIR(CompilerType);
+
+  devDirs.Bins := devCompilerSet.BinDir;
+  devDirs.C := devCompilerSet.CDir;
+  devDirs.Cpp := devCompilerSet.CppDir;
+  devDirs.Lib := devCompilerSet.LibDir;
+
+
+end;
 
 procedure TdevCompilerSet.AssignToCompiler;
 begin
@@ -2130,19 +2149,19 @@ begin
          maindir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
          tempStr := '';
 
-         fRCDir := maindir + RC_INCLUDE_DIR + ';' + fRCDir;
+         fRCDir := maindir + RC_INCLUDE_DIR(CompilerType) + ';' + fRCDir;
          fRCDir := ValidatePaths(fRCDir, tempStr);
          devDirs.RC := fRCDir;
-         fBinDir := maindir + BIN_DIR + ';' + fBinDir;
+         fBinDir := maindir + BIN_DIR(CompilerType) + ';' + fBinDir;
          fBinDir := ValidatePaths(fBinDir, tempStr);
          devDirs.Bins := fBinDir;
-         fCDir := C_INCLUDE_DIR + ';' + fCDir;
+         fCDir := C_INCLUDE_DIR(CompilerType) + ';' + fCDir;
          fCDir := ValidatePaths(fCDir, tempStr);
          devDirs.C := fCDir;
-         fCppDir := CPP_INCLUDE_DIR + ';' + fCppDir;
+         fCppDir := CPP_INCLUDE_DIR(CompilerType) + ';' + fCppDir;
          fCppDir := ValidatePaths(fCppDir, tempStr);
          devDirs.Cpp := fCppDir;
-         fLibDir := LIB_DIR + ';' + fLibDir;
+         fLibDir := LIB_DIR(CompilerType) + ';' + fLibDir;
          fLibDir := ValidatePaths(fLibDir, tempStr);
          devDirs.Lib := fLibDir;
        end;
@@ -2169,7 +2188,7 @@ begin
              'you click Yes';
       if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
-                   BIN_DIR + ';' + fBinDir;
+                   BIN_DIR(CompilerType) + ';' + fBinDir;
     end
 
     //check if "mingw32-make" is available and is GNU Make
@@ -2203,7 +2222,7 @@ begin
         if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
           fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
-                     + BIN_DIR + ';' + fBinDir;
+                     + BIN_DIR(CompilerType) + ';' + fBinDir;
           devCompilerSet.makeName := 'mingw32-make';
           devCompiler.makeName := 'mingw32-make';
         end;
@@ -2226,20 +2245,20 @@ begin
     self.SetToDefaults;
 
       // Programs
-    fgccName := LoadSetting(key, GCC_PROGRAM);
-      if fgccName='' then fgccName:=GCC_PROGRAM;
-    fgppName := LoadSetting(key, GPP_PROGRAM);
-      if fgppName='' then fgppName:=GPP_PROGRAM;
-    fgdbName := LoadSetting(key, GDB_PROGRAM);
-      if fgdbName='' then fgdbName:=GDB_PROGRAM;
-    fmakeName := LoadSetting(key, MAKE_PROGRAM);
-      if fmakeName='' then fmakeName:=MAKE_PROGRAM;
-    fwindresName := LoadSetting(key, WINDRES_PROGRAM);
-      if fwindresName='' then fwindresName:=WINDRES_PROGRAM;
-    fgprofName := LoadSetting(key, GPROF_PROGRAM);
-      if fgprofName='' then fgprofName:=GPROF_PROGRAM;
-    fdllwrapName := LoadSetting(key, DLLWRAP_PROGRAM);
-      if fdllwrapName='' then fdllwrapName:=DLLWRAP_PROGRAM;
+    fgccName := LoadSetting(key, CP_PROGRAM(CompilerType));
+      if fgccName='' then fgccName:=CP_PROGRAM(CompilerType);
+    fgppName := LoadSetting(key, CPP_PROGRAM(CompilerType));
+      if fgppName='' then fgppName:=CPP_PROGRAM(CompilerType);
+    fgdbName := LoadSetting(key, DBG_PROGRAM(CompilerType));
+      if fgdbName='' then fgdbName:=DBG_PROGRAM(CompilerType);
+    fmakeName := LoadSetting(key, MAKE_PROGRAM(CompilerType));
+      if fmakeName='' then fmakeName:=MAKE_PROGRAM(CompilerType);
+    fwindresName := LoadSetting(key, RES_PROGRAM(CompilerType));
+      if fwindresName='' then fwindresName:=RES_PROGRAM(CompilerType);
+    fgprofName := LoadSetting(key, PROF_PROGRAM(CompilerType));
+      if fgprofName='' then fgprofName:=PROF_PROGRAM(CompilerType);
+    fdllwrapName := LoadSetting(key, DLL_PROGRAM(CompilerType));
+      if fdllwrapName='' then fdllwrapName:=DLL_PROGRAM(CompilerType);
 
     fOptions     := LoadSetting(key, 'Options');
     fCmdOptions  := LoadSetting(key, 'cmdline');
@@ -2315,13 +2334,13 @@ begin
   begin
     key := OPT_COMPILERSETS + '_' + IntToStr(Index);
     // Programs
-    SaveSetting(key, GCC_PROGRAM, fgccName);
-    SaveSetting(key, GPP_PROGRAM, fgppName);
-    SaveSetting(key, GDB_PROGRAM, fgdbName);
-    SaveSetting(key, MAKE_PROGRAM, fmakeName);
-    SaveSetting(key, WINDRES_PROGRAM, fwindresName);
-    SaveSetting(key, GPROF_PROGRAM, fgprofName);
-    SaveSetting(key, DLLWRAP_PROGRAM, fdllwrapName);
+    SaveSetting(key, CP_PROGRAM(CompilerType), fgccName);
+    SaveSetting(key, CPP_PROGRAM(CompilerType), fgppName);
+    SaveSetting(key, DBG_PROGRAM(CompilerType), fgdbName);
+    SaveSetting(key, MAKE_PROGRAM(CompilerType), fmakeName);
+    SaveSetting(key, RES_PROGRAM(CompilerType), fwindresName);
+    SaveSetting(key, PROF_PROGRAM(CompilerType), fgprofName);
+    SaveSetting(key, DLL_PROGRAM(CompilerType), fdllwrapName);
     SaveSetting(key, 'Options', fOptions);
     SaveSetting(key, 'cmdline', fCmdOptions);
     SaveSetting(key, 'LinkLine', fLinkOptions);
@@ -2361,13 +2380,13 @@ end;
 procedure TdevCompilerSet.SettoDefaults;
 begin
   // Programs
-  fgccName     := GCC_PROGRAM;
-  fgppName     := GPP_PROGRAM;
-  fgdbName     := GDB_PROGRAM;
-  fmakeName    := MAKE_PROGRAM;
-  fwindresName := WINDRES_PROGRAM;
-  fgprofName   := GPROF_PROGRAM;
-  fdllwrapName := DLLWRAP_PROGRAM;
+  fgccName     := CP_PROGRAM(CompilerType);
+  fgppName     := CPP_PROGRAM(CompilerType);
+  fgdbName     := DBG_PROGRAM(CompilerType);
+  fmakeName    := MAKE_PROGRAM(CompilerType);
+  fwindresName := RES_PROGRAM(CompilerType);
+  fgprofName   := PROF_PROGRAM(CompilerType);
+  fdllwrapName := DLL_PROGRAM(CompilerType);
   fCmdOptions  := '';
   fLinkOptions := '';
   fMakeOptions := '';

@@ -260,7 +260,7 @@ begin
     else
       Comp_ProgCpp := devCompiler.gppName
   else
-    Comp_ProgCpp := GPP_PROGRAM;
+    Comp_ProgCpp := CPP_PROGRAM(devCompiler.CompilerType);
 
   if (devCompiler.gccName <> '') then
     if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.compilerType = ID_COMPILER_VC2005) then
@@ -268,7 +268,7 @@ begin
     else
       Comp_Prog := devCompiler.gccName
   else
-    Comp_Prog := GCC_PROGRAM;
+    Comp_Prog := CP_PROGRAM(devCompiler.CompilerType);
 
   GetCompileParams;
   GetLibrariesParams;
@@ -295,6 +295,9 @@ begin
     ID_COMPILER_MINGW : writeln(F, '# Compiler Type: MingW 3');
     ID_COMPILER_VC    : writeln(F, '# Compiler Type: Visual C++ .NET 2003');
     ID_COMPILER_VC2005: writeln(F, '# Compiler Type: Visual C++ 2005');
+    ID_COMPILER_DMAR : writeln(F, '# Compiler Type: Digital Mars');
+    ID_COMPILER_BOR    : writeln(F, '# Compiler Type: Borland C++ 5.5');
+    ID_COMPILER_OWAT: writeln(F, '# Compiler Type: OpenWatCom');
   end;
   writeln(F, Format('# Makefile created by %s %s on %s',
                     [DEVCPP, DEVCPP_VERSION, FormatDateTime('dd/mm/yy hh:nn', Now)]));
@@ -310,7 +313,7 @@ begin
   if (devCompiler.windresName <> '') then
     writeln(F, 'WINDRES   = ' + devCompiler.windresName)
   else
-    writeln(F, 'WINDRES   = ' + WINDRES_PROGRAM);
+    writeln(F, 'WINDRES   = ' + RES_PROGRAM(devCompiler.CompilerType));
   writeln(F, 'OBJ       =' + Objects);
   writeln(F, 'LINKOBJ   =' + LinkObjects);
   writeln(F, 'LIBS      =' + StringReplace(fLibrariesParams, '\', '/', [rfReplaceAll]));
@@ -906,13 +909,13 @@ begin
       if (devCompiler.makeName <> '') then
         cmdline := format(cSingleFileMakeLine, [devCompiler.makeName, fMakeFile,ofile]) + ' ' + devCompiler.makeopts
       else
-        cmdline := format(cSingleFileMakeLine, [MAKE_PROGRAM, fMakeFile, ofile]) + ' ' + devCompiler.makeopts;
+        cmdline := format(cSingleFileMakeLine, [MAKE_PROGRAM(devCompiler.CompilerType), fMakeFile, ofile]) + ' ' + devCompiler.makeopts;
     end
     else begin
       if (devCompiler.makeName <> '') then
         cmdline := format(cMakeLine, [devCompiler.makeName, fMakeFile]) + ' ' + devCompiler.makeopts
       else
-        cmdline := format(cMakeLine, [MAKE_PROGRAM, fMakeFile]) + ' ' + devCompiler.makeopts;
+        cmdline := format(cMakeLine, [MAKE_PROGRAM(devCompiler.CompilerType), fMakeFile]) + ' ' + devCompiler.makeopts;
     end;
 
     DoLogEntry(format(Lang[ID_EXECUTING], [cMake + cDots]));
@@ -924,7 +927,7 @@ begin
     if (devCompiler.windresName <> '') then
       s := devCompiler.windresName
     else
-      s := WINDRES_PROGRAM;
+      s := RES_PROGRAM(devCompiler.CompilerType);
     
     cmdline := s + ' ' + GenMakePath(fSourceFile) + Format(devCompiler.ResourceFormat, [GenMakePath(ChangeFileExt(fSourceFile, OBJ_EXT))]);
     DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
@@ -937,7 +940,7 @@ begin
       if (devCompiler.gppName <> '') then
         s := devCompiler.gppName
       else
-        s := GPP_PROGRAM;
+        s := CPP_PROGRAM(devCompiler.CompilerType);
       if DoCheckSyntax then
         cmdline := format(cCmdLine,
           [s, fSourceFile, 'nul', fCppCompileParams,
@@ -960,7 +963,7 @@ begin
       if (devCompiler.gccName <> '') then
         s := devCompiler.gccName
       else
-        s := GCC_PROGRAM;
+        s := CP_PROGRAM(devCompiler.CompilerType);
       if DoCheckSyntax then
         cmdline := format(cCmdLine,
           [s, fSourceFile, 'nul', fCompileParams,
@@ -1064,7 +1067,7 @@ begin
     if (devCompiler.makeName <> '') then
       s := devCompiler.makeName
     else
-      s := MAKE_PROGRAM;
+      s := MAKE_PROGRAM(devCompiler.CompilerType);
     cmdLine := Format(cCleanLine, [s, fMakeFile, devCompiler.MakeOpts]);
     LaunchThread(cmdLine, fProject.Directory);
   end else
@@ -1103,7 +1106,7 @@ begin
     if (devCompiler.makeName <> '') then
       s := devCompiler.makeName
     else
-      s := MAKE_PROGRAM;
+      s := MAKE_PROGRAM(devCompiler.CompilerType);
     
     cmdLine := Format(cCleanLine, [s, fMakeFile]) + ' ' + devCompiler.makeopts;
     LaunchThread(cmdLine, fProject.Directory);
@@ -1418,12 +1421,11 @@ begin
   if (devCompiler.gccName <> '') then
     gcc := devCompiler.gccName
   else
-    gcc := GCC_PROGRAM;
+    gcc := CP_PROGRAM(devCompiler.CompilerType);
   if (devCompiler.gppName <> '') then
     gpp := devCompiler.gppName
   else
-    gpp := GPP_PROGRAM;
-
+    gpp := CPP_PROGRAM(devCompiler.CompilerType);
   try
     LOutput.Text := fdevRun.Output;
     IMod := CalcMod(pred(LOutput.Count));

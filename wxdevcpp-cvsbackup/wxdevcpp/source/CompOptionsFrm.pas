@@ -588,10 +588,23 @@ end;
 procedure TCompForm.CompilerTypesClick(Sender: TObject);
 begin
   devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
+  if (Sender <> nil) then
+  begin
+    devDirs.CompilerType := CompilerTypes.ItemIndex;
+    devDirs.SettoDefaults;
+  end;
   devCompilerSet.SettoDefaults;
   devCompiler.AddDefaultOptions;
   devCompiler.OptionStr := devCompilerSet.OptionsStr;
   CompOptionsFrame1.FillOptions(nil);
+
+  //In order to remove the recursive call from loadOptions
+  //we just check if the paramter sent by the calling function is
+  //nil.
+  if (Sender <> nil) then
+  begin
+    LoadOptions;
+  end;
 
   //Set the labels
   case CompilerTypes.ItemIndex of

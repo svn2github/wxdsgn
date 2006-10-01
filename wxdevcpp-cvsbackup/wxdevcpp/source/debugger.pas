@@ -303,7 +303,7 @@ begin
   if (devCompiler.gdbName <> '') then
     gdb := devCompiler.gdbName
   else
-    gdb := GDB_PROGRAM;
+    gdb := DBG_PROGRAM(devCompiler.CompilerType);
   // Launch process
   // RNC add quotes to the include directories (in case they have spaces)
   inc := StringReplace(fIncDirs, '  -', '"  -', [rfReplaceAll]);

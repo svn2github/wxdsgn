@@ -61,16 +61,39 @@ resourcestring
   DEV_BLUE_THEME = 'Blue';
   DEV_INTERNAL_THEME = 'New Look';
   // default directories
-  BIN_DIR = 'Bin';
-  LIB_DIR = 'lib';
-  {$IFDEF WX_BUILD}
-  RC_INCLUDE_DIR  = 'include'+ pd + 'common';
-  {$ENDIF}
-  C_INCLUDE_DIR = 'include';
-  CPP_INCLUDE_DIR      =
+  GCC_BIN_DIR = 'Bin;';
+  GCC_LIB_DIR = 'Lib;';
+  GCC_C_INCLUDE_DIR = 'Include;';
+  GCC_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+  //Vc++
+  VC_BIN_DIR = 'Bin'+pd+'VC;Bin;';
+  VC_LIB_DIR = 'Lib'+pd+'VC';
+  VC_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC;';
+  VC_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+  //DMAR
+  DMARS_BIN_DIR = 'Bin;Bin'+pd+'dmars;';
+  DMARS_LIB_DIR = 'Lib'+pd+'dmars;';
+  DMARS_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'dmars;';
+  DMARS_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+  //Borland
+  BORLAND_BIN_DIR = 'Bin;Bin'+pd+'borland;';
+  BORLAND_LIB_DIR = 'Lib'+pd+'borland;';
+  BORLAND_C_INCLUDE_DIR = 'Include'+pd+'borland;Include'+pd+'common;';
+  BORLAND_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+  //Borland
+  WATCOM_BIN_DIR = 'Bin;Bin'+pd+'watcom;';
+  WATCOM_LIB_DIR = 'Lib'+pd+'watcom;';
+  WATCOM_C_INCLUDE_DIR = 'Include'+pd+'watcom;Include'+pd+'common;';
+  WATCOM_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+
+  COMMON_CPP_INCLUDE_DIR      =
 //The Dir are taken from bottom to up. So I added the dir in the inverted order in which
 //they are picked by the parser.
-  {$IFDEF WX_BUILD}
                        'include' + pd + 'common;'
                        +'include' + pd + 'common' + pd + 'wx;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xrc;'
@@ -87,10 +110,10 @@ resourcestring
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'fl;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'animate;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'generic;'
-                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'msw;'  +
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'msw;'  ;
 
-  {$ENDIF}
-                       'include'
+  GCC_CPP_INCLUDE_DIR  =
+                        ';include'
                        //one of below directories will be deleted if don't exist, later
                        + ';include' + pd + 'c++' + pd + GCC_VERSION
                        + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'
@@ -99,9 +122,20 @@ resourcestring
                        + ';include' + pd + 'c++' + pd + '3.3.1'
                        + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'mingw32'
                        + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'backward'
-                       + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include'
+                       + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include;'
+					   ;
 
-                       ;
+  VC_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'VC;'+'include'+pd+'common;';
+
+  BORLAND_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'borland;'+'include'+pd+'common;';
+
+  DMARS_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'dmars;' + 'include'+pd+'common;';
+
+  WATCOM_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'watcom;'+'include'+pd+'common;';
 
   LANGUAGE_DIR         = 'Lang' + pd;
   ICON_DIR             = 'Icons' + pd;
@@ -121,14 +155,49 @@ resourcestring
   SYNTAX_EXT = '.syntax';
 
   // programs
-  MAKE_PROGRAM = 'make.exe';
-  GCC_PROGRAM = 'gcc.exe';
-  GPP_PROGRAM = 'g++.exe';
-  GDB_PROGRAM = 'gdb.exe';
-  WINDRES_PROGRAM = 'windres.exe';
-  DLLWRAP_PROGRAM = 'dllwrap.exe';
-  GPROF_PROGRAM = 'gprof.exe';
   PACKMAN_PROGRAM = 'packman.exe';
+
+  GCC_MAKE_PROGRAM = 'mingw32-make.exe';
+  GCC_CP_PROGRAM = 'gcc.exe';
+  GCC_CPP_PROGRAM = 'g++.exe';
+  GCC_DBG_PROGRAM = 'gdb.exe';
+  GCC_RES_PROGRAM = 'windres.exe';
+  GCC_DLL_PROGRAM = 'dllwrap.exe';
+  GCC_PROF_PROGRAM = 'gprof.exe';
+
+
+  VC_MAKE_PROGRAM = 'mingw32-make.exe';
+  VC_CP_PROGRAM = 'cl.exe';
+  VC_CPP_PROGRAM = 'cl.exe';
+  VC_DBG_PROGRAM = 'cdb.exe';
+  VC_RES_PROGRAM = 'res.exe';
+  VC_DLL_PROGRAM = 'link.exe';
+  VC_PROF_PROGRAM = '';
+
+
+  DMARS_MAKE_PROGRAM = 'mingw32-make.exe';
+  DMARS_CP_PROGRAM = 'cl.exe';
+  DMARS_CPP_PROGRAM = 'cl.exe';
+  DMARS_DBG_PROGRAM = 'cdb.exe';
+  DMARS_RES_PROGRAM = 'rcc.exe';
+  DMARS_DLL_PROGRAM = 'link.exe';
+  DMARS_PROF_PROGRAM = '';
+
+  BORLAND_MAKE_PROGRAM = 'mingw32-make.exe';
+  BORLAND_CP_PROGRAM = 'borgcc.exe';
+  BORLAND_CPP_PROGRAM = 'borg++.exe';
+  BORLAND_DBG_PROGRAM = 'borgdb.exe';
+  BORLAND_RES_PROGRAM = 'borwindres.exe';
+  BORLAND_DLL_PROGRAM = 'link.exe';
+  BORLAND_PROF_PROGRAM = 'borgprof.exe';
+
+  WATCOM_MAKE_PROGRAM = 'mingw32-make.exe';
+  WATCOM_CP_PROGRAM = 'owatgcc.exe';
+  WATCOM_CPP_PROGRAM = 'owatg++.exe';
+  WATCOM_DBG_PROGRAM = 'owatgdb.exe';
+  WATCOM_RES_PROGRAM = 'owatwindres.exe';
+  WATCOM_DLL_PROGRAM = 'link.exe';
+  WATCOM_PROF_PROGRAM = 'owatgprof.exe';
 
   // option sections
   OPT_DIRS = 'Directories';
@@ -262,9 +331,283 @@ const
   GPROF_CMD_GENFLAT = '-p';
   GPROF_CMD_GENMAP = '-q';
 
+  function MAKE_PROGRAM(CompilerID:Integer):String;
+  function CP_PROGRAM(CompilerID:Integer):String;
+  function CPP_PROGRAM(CompilerID:Integer):String;
+  function DBG_PROGRAM(CompilerID:Integer):String;
+  function RES_PROGRAM(CompilerID:Integer):String;
+  function DLL_PROGRAM(CompilerID:Integer):String;
+  function PROF_PROGRAM(CompilerID:Integer):String;
+
+   // default directories
+  function BIN_DIR(CompilerID:Integer):String;
+  function LIB_DIR(CompilerID:Integer):String;
+  function C_INCLUDE_DIR(CompilerID:Integer):String;
+  function CPP_INCLUDE_DIR(CompilerID:Integer):String;
+  function RC_INCLUDE_DIR(CompilerID:Integer):String;
 var
   DevCppDir: string;
 
 implementation
+uses devcfg;
+
+function MAKE_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_MAKE_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_MAKE_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_MAKE_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_MAKE_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_MAKE_PROGRAM;
+
+  end;
+
+end;
+
+function CP_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_CP_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_CP_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_CP_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_CP_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_CP_PROGRAM;
+
+  end;
+end;
+
+function CPP_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_CPP_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_CPP_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_CPP_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_CPP_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_CPP_PROGRAM;
+  end;
+end;
+
+
+function DBG_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_DBG_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_DBG_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_DBG_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_DBG_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_DBG_PROGRAM;
+  end;
+end;
+
+function RES_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_RES_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_RES_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_RES_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_RES_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_RES_PROGRAM;
+  end;
+end;
+
+function DLL_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_DLL_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_DLL_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_DLL_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_DLL_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_DLL_PROGRAM;
+
+  end;
+end;
+
+function PROF_PROGRAM(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_PROF_PROGRAM;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_PROF_PROGRAM;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_PROF_PROGRAM;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_PROF_PROGRAM;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_PROF_PROGRAM;
+
+  end;
+end;
+
+function BIN_DIR(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_BIN_DIR;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_BIN_DIR;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_BIN_DIR;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_BIN_DIR;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_BIN_DIR;
+  end;
+end;
+
+function LIB_DIR(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_LIB_DIR;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_LIB_DIR;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_LIB_DIR;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_LIB_DIR;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_LIB_DIR;
+
+  end;
+end;
+
+function C_INCLUDE_DIR(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_C_INCLUDE_DIR;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_C_INCLUDE_DIR;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_C_INCLUDE_DIR;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_C_INCLUDE_DIR;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_C_INCLUDE_DIR;
+  end;
+end;
+
+function CPP_INCLUDE_DIR(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := COMMON_CPP_INCLUDE_DIR + GCC_CPP_INCLUDE_DIR;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := COMMON_CPP_INCLUDE_DIR + VC_CPP_INCLUDE_DIR;
+
+      ID_COMPILER_DMAR:
+        Result := COMMON_CPP_INCLUDE_DIR + DMARS_CPP_INCLUDE_DIR ;
+
+      ID_COMPILER_BOR:
+        Result := COMMON_CPP_INCLUDE_DIR+ BORLAND_CPP_INCLUDE_DIR ;
+
+      ID_COMPILER_OWAT:
+        Result := COMMON_CPP_INCLUDE_DIR+ WATCOM_CPP_INCLUDE_DIR ;
+  end;
+end;
+
+function RC_INCLUDE_DIR(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_RC_INCLUDE_DIR;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_RC_INCLUDE_DIR;
+
+      ID_COMPILER_DMAR:
+        Result := DMARS_RC_INCLUDE_DIR;
+
+      ID_COMPILER_BOR:
+        Result := BORLAND_RC_INCLUDE_DIR;
+
+      ID_COMPILER_OWAT:
+        Result := WATCOM_RC_INCLUDE_DIR;
+  end;
+end;
 
 end.

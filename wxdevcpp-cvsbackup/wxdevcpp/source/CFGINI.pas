@@ -323,11 +323,15 @@ end;
 
 function TCFGINI.LoadSetting(const key, Entry: string): string;
 begin
+  if Entry = '' then
+    exit;
   result := fini.ReadString(Key, Entry, '');
 end;
 
 function TCFGINI.LoadSetting(val: boolean; const key, Entry: string): string;
 begin
+  if Entry = '' then
+    exit;
   result := fini.ReadString(Key, Entry, '');
   if result = '' then begin
     if val then
@@ -345,6 +349,8 @@ end;
 
 procedure TCFGINI.SaveSetting(const key, entry, value: string);
 begin
+  if Entry = '' then
+    exit;
   fini.WriteString(Key, Entry, Value);
 end;
 
