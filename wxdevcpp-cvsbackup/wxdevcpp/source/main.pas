@@ -1116,8 +1116,8 @@ public
   lbxControls: TListBox;
   PalleteListPanel: TPanel;
   Palettes: TComboBox;
-  frmProjMgrDock:TJvDockableForm;
-  frmInspectorDock:TJvDockableForm;
+  frmProjMgrDock:TForm;
+  frmInspectorDock:TForm;
   strChangedFileList:TStringList;
   strStdwxIDList:TStringList;
   FWatchList:TList;
@@ -1272,23 +1272,33 @@ var
   I: Integer;
   ini :TiniFile;
   FloatingProperties: TMenuItem;
+  lbDockClient1: TJvDockClient;
+  lbDockClient2: TJvDockClient;
 begin
   //Project inspector
-  frmProjMgrDock := TJvDockableForm.Create(Self);
+  frmProjMgrDock := TForm.Create(self);
   with frmProjMgrDock do
   begin
     Name := 'frmProjMgrDock';
     Hint := 'Project Inspector';
     Caption := 'Project Inspector';
-    FormStyle := fsStayOnTop;
     BorderStyle := bsSizeToolWin;
-
-    DockableControl := Self;
-    DockClient.DockStyle := DockStyle;
-    DockClient.DirectDrag := false;
-    DockClient.EachOtherDock := true;
+    Color := clBtnFace;
+    DockSite := True;
+    DragKind := dkDock;
+    DragMode := dmAutomatic;
+    FormStyle := fsStayOnTop;
     Font.Name := 'MS Sans Serif';
+    width:=300;
+    lbDockClient1 := TJvDockClient.Create(frmProjMgrDock);
+    with lbDockClient1 do
+    begin
+       Name := 'lbDockClient1';
+       DirectDrag := True;
+       DockStyle := MainForm.DockStyle;
+    end;
   end;
+
 
   //Reparent the project inspector
   LeftPageControl.Align := alClient;
@@ -1299,21 +1309,33 @@ begin
   pnlBrowsers.Destroy;
 
   //Property Inspector
-  frmInspectorDock := TJvDockableForm.Create(Self);
+  frmInspectorDock := TForm.Create(self);
   with frmInspectorDock do
   begin
     Name := 'frmInspectorDock';
     Hint := 'Property Inspector';
     Caption := 'Property Inspector';
-    FormStyle := fsStayOnTop;
     BorderStyle := bsSizeToolWin;
-
-    DockableControl := Self;
-    DockClient.DockStyle := DockStyle;
-    DockClient.DirectDrag := True;
-    DockClient.EachOtherDock := true;
+    Color := clBtnFace;
+    DockSite := True;
+    DragKind := dkDock;
+    DragMode := dmAutomatic;
+    FormStyle := fsStayOnTop;
     Font.Name := 'MS Sans Serif';
+    width:=300;
+    lbDockClient2 := TJvDockClient.Create(frmInspectorDock);
+    with lbDockClient2 do
+    begin
+      Name := 'lbDockClient2';
+      DirectDrag := True;
+      DockStyle := MainForm.DockStyle;
+    end;
   end;
+
+  ShowDockForm(frmProjMgrDock);
+  ShowDockForm(frmInspectorDock);
+  frmProjMgrDock.ManualDock(DockServer.LeftDockPanel);
+  frmInspectorDock.ManualDock(DockServer.LeftDockPanel,nil,alBottom);
 
   FloatingProperties := TMenuItem.Create(MainMenu);
   FloatingProperties.Checked := False;
