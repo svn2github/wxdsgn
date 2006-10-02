@@ -1437,10 +1437,6 @@ begin
         begin
           Inc(fWarnCount);
           Delete(Line, cpos - 2, Length(Line) - cpos + 2);
-        end
-        else
-        begin
-          Inc(fErrCount);
         end;
 
         // GCC >= 3.2. support
@@ -1904,8 +1900,8 @@ begin
         end
         else
         begin
+          //We have no idea what this is, just call it a normal message
           Delete(Line, Length(Line) - 1, 1);
-          Inc(fErrCount);
         end;
         Inc(Messages);
 
