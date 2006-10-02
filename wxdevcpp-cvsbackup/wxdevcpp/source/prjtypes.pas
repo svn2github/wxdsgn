@@ -68,9 +68,21 @@ type
     Objfiles: TStrings;
 
     cmdLines: record
-      Compiler: string;
-      CppCompiler: string;
-      Linker: string;
+      GCC_Compiler: string;
+      GCC_CppCompiler: string;
+      GCC_Linker: string;
+      VC_Compiler: string;
+      VC_CppCompiler: string;
+      VC_Linker: string;
+      BORLAND_Compiler: string;
+      BORLAND_CppCompiler: string;
+      BORLAND_Linker: string;
+      DMARS_Compiler: string;
+      DMARS_CppCompiler: string;
+      DMARS_Linker: string;
+      WATCOM_Compiler: string;
+      WATCOM_CppCompiler: string;
+      WATCOM_Linker: string;
     end;
 
     Includes: TStrings;
@@ -92,7 +104,12 @@ type
     CompilerSet: integer;
     CompilerOptions: string;
     VersionInfo: TProjVersionInfo;
-    PreprocDefines: string;
+
+    GCC_PreprocDefines: string;
+    VC_PreprocDefines: string;
+    DMARS_PreprocDefines: string;
+    BORLAND_PreprocDefines: string;
+    WATCOM_PreprocDefines: string;
   end;
 
 procedure InitOptionsRec(var Rec: TProjOptions);
@@ -174,10 +191,31 @@ begin
     MakeIncludes.Text := R1.MakeIncludes.Text;
  {$ENDIF}
 
-    cmdLines.Compiler := R1.cmdLines.Compiler;
-    cmdLines.CppCompiler := R1.cmdLines.CppCompiler;
-    cmdLines.Linker := R1.cmdLines.Linker;
-    PreprocDefines := R1.PreprocDefines;
+    cmdLines.GCC_Compiler := R1.cmdLines.GCC_Compiler;
+    cmdLines.GCC_CppCompiler := R1.cmdLines.GCC_CppCompiler;
+    cmdLines.GCC_Linker := R1.cmdLines.GCC_Linker;
+    GCC_PreprocDefines := R1.GCC_PreprocDefines;
+    
+    cmdLines.VC_Compiler := R1.cmdLines.VC_Compiler;
+    cmdLines.VC_CppCompiler := R1.cmdLines.VC_CppCompiler;
+    cmdLines.VC_Linker := R1.cmdLines.VC_Linker;
+    VC_PreprocDefines := R1.VC_PreprocDefines;
+    
+    cmdLines.DMARS_Compiler := R1.cmdLines.DMARS_Compiler;
+    cmdLines.DMARS_CppCompiler := R1.cmdLines.DMARS_CppCompiler;
+    cmdLines.DMARS_Linker := R1.cmdLines.DMARS_Linker;
+    DMARS_PreprocDefines := R1.DMARS_PreprocDefines;
+    
+    cmdLines.BORLAND_Compiler := R1.cmdLines.BORLAND_Compiler;
+    cmdLines.BORLAND_CppCompiler := R1.cmdLines.BORLAND_CppCompiler;
+    cmdLines.BORLAND_Linker := R1.cmdLines.BORLAND_Linker;
+    BORLAND_PreprocDefines := R1.BORLAND_PreprocDefines;
+    
+    cmdLines.WATCOM_Compiler := R1.cmdLines.WATCOM_Compiler;
+    cmdLines.WATCOM_CppCompiler := R1.cmdLines.WATCOM_CppCompiler;
+    cmdLines.WATCOM_Linker := R1.cmdLines.WATCOM_Linker;
+    WATCOM_PreprocDefines := R1.WATCOM_PreprocDefines;
+                    
     useGPP := R1.useGPP;
     icon := R1.icon;
     ExeOutput := R1.ExeOutput;

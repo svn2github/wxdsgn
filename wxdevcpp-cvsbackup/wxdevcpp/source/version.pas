@@ -118,11 +118,7 @@ resourcestring
                        + ';include' + pd + 'c++' + pd + GCC_VERSION
                        + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'mingw32'
                        + ';include' + pd + 'c++' + pd + GCC_VERSION + pd + 'backward'
-                       + ';lib' + pd + 'gcc' + pd + 'mingw32' + pd + GCC_VERSION + pd + 'include'
-                       + ';include' + pd + 'c++' + pd + '3.3.1'
-                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'mingw32'
-                       + ';include' + pd + 'c++' + pd + '3.3.1' + pd + 'backward'
-                       + ';lib' + pd + 'gcc-lib' + pd + 'mingw32' + pd + '3.3.1' + pd + 'include;'
+                       + ';lib' + pd + 'gcc' + pd + 'mingw32' + pd + GCC_VERSION + pd + 'include;'
 					   ;
 
   VC_CPP_INCLUDE_DIR  =
@@ -209,7 +205,11 @@ resourcestring
   OPT_COMPILERSETS = 'CompilerSets';
   WEBUPDATE_SECTION = 'WEBUPDATE';
 
-  DEFCOMPILERSET = 'Default compiler';
+  GCC_DEFCOMPILERSET = 'Default GCC compiler';
+  VC_DEFCOMPILERSET = 'Default VC compiler';
+  DMARS_DEFCOMPILERSET = 'Default DigitalMars compiler';
+  BORLAND_DEFCOMPILERSET = 'Default Borland compiler';
+  WATCOM_DEFCOMPILERSET = 'Default Watcom compiler';
 
   //Filters
   FLT_BASE = 'All known Files||';
@@ -338,6 +338,7 @@ const
   function RES_PROGRAM(CompilerID:Integer):String;
   function DLL_PROGRAM(CompilerID:Integer):String;
   function PROF_PROGRAM(CompilerID:Integer):String;
+  function DEFCOMPILERSET(CompilerID:Integer):String;
 
    // default directories
   function BIN_DIR(CompilerID:Integer):String;
@@ -345,11 +346,104 @@ const
   function C_INCLUDE_DIR(CompilerID:Integer):String;
   function CPP_INCLUDE_DIR(CompilerID:Integer):String;
   function RC_INCLUDE_DIR(CompilerID:Integer):String;
+
+  function CPP_INI_LABEL(CompilerID:Integer):String;
+  function C_INI_LABEL(CompilerID:Integer):String;
+  function LINKER_INI_LABEL(CompilerID:Integer):String;
+  function PREPROC_INI_LABEL(CompilerID:Integer):String;  
 var
   DevCppDir: string;
 
 implementation
 uses devcfg;
+
+function CPP_INI_LABEL(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := 'CppCompiler';
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := 'VC_CppCompiler';
+
+      ID_COMPILER_DMARS:
+        Result := 'DMARS_CppCompiler';
+
+      ID_COMPILER_BORLAND:
+        Result := 'BORLAND_CppCompiler';
+
+      ID_COMPILER_WATCOM:
+        Result := 'WATCOM_CppCompiler';
+  end;
+
+end;
+
+
+function C_INI_LABEL(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := 'Compiler';
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := 'VC_Compiler';
+
+      ID_COMPILER_DMARS:
+        Result := 'DMARS_Compiler';
+
+      ID_COMPILER_BORLAND:
+        Result := 'BORLAND_Compiler';
+
+      ID_COMPILER_WATCOM:
+        Result := 'WATCOM_Compiler';
+  end;
+end;
+
+
+function LINKER_INI_LABEL(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := 'Linker';
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := 'VC_Linker';
+
+      ID_COMPILER_DMARS:
+        Result := 'DMARS_Linker';
+
+      ID_COMPILER_BORLAND:
+        Result := 'BORLAND_Linker';
+
+      ID_COMPILER_WATCOM:
+        Result := 'WATCOM_Linker';
+  end;
+end;
+
+function PREPROC_INI_LABEL(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := 'PreprocDefines';
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := 'VC_PreprocDefines';
+
+      ID_COMPILER_DMARS:
+        Result := 'DMARS_PreprocDefines';
+
+      ID_COMPILER_BORLAND:
+        Result := 'BORLAND_PreprocDefines';
+
+      ID_COMPILER_WATCOM:
+        Result := 'WATCOM_PreprocDefines';
+  end;
+end;
+
 
 function MAKE_PROGRAM(CompilerID:Integer):String;
 begin
@@ -361,13 +455,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_MAKE_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_MAKE_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_MAKE_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_MAKE_PROGRAM;
 
   end;
@@ -384,13 +478,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_CP_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_CP_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_CP_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_CP_PROGRAM;
 
   end;
@@ -406,13 +500,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_CPP_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_CPP_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_CPP_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_CPP_PROGRAM;
   end;
 end;
@@ -428,13 +522,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_DBG_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_DBG_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_DBG_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_DBG_PROGRAM;
   end;
 end;
@@ -449,13 +543,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_RES_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_RES_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_RES_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_RES_PROGRAM;
   end;
 end;
@@ -470,17 +564,39 @@ begin
       ID_COMPILER_VC:
           Result := VC_DLL_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_DLL_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_DLL_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_DLL_PROGRAM;
 
   end;
 end;
+
+function DEFCOMPILERSET(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_DEFCOMPILERSET;
+
+      ID_COMPILER_VC2005,
+      ID_COMPILER_VC:
+          Result := VC_DEFCOMPILERSET;
+
+      ID_COMPILER_DMARS:
+        Result := DMARS_DEFCOMPILERSET;
+
+      ID_COMPILER_BORLAND:
+        Result := BORLAND_DEFCOMPILERSET;
+
+      ID_COMPILER_WATCOM:
+        Result := WATCOM_DEFCOMPILERSET;
+  end;
+end;
+
 
 function PROF_PROGRAM(CompilerID:Integer):String;
 begin
@@ -492,13 +608,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_PROF_PROGRAM;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_PROF_PROGRAM;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_PROF_PROGRAM;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_PROF_PROGRAM;
 
   end;
@@ -514,13 +630,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_BIN_DIR;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_BIN_DIR;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_BIN_DIR;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_BIN_DIR;
   end;
 end;
@@ -535,13 +651,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_LIB_DIR;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_LIB_DIR;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_LIB_DIR;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_LIB_DIR;
 
   end;
@@ -557,13 +673,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_C_INCLUDE_DIR;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_C_INCLUDE_DIR;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_C_INCLUDE_DIR;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_C_INCLUDE_DIR;
   end;
 end;
@@ -578,13 +694,13 @@ begin
       ID_COMPILER_VC:
           Result := COMMON_CPP_INCLUDE_DIR + VC_CPP_INCLUDE_DIR;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := COMMON_CPP_INCLUDE_DIR + DMARS_CPP_INCLUDE_DIR ;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := COMMON_CPP_INCLUDE_DIR+ BORLAND_CPP_INCLUDE_DIR ;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := COMMON_CPP_INCLUDE_DIR+ WATCOM_CPP_INCLUDE_DIR ;
   end;
 end;
@@ -599,13 +715,13 @@ begin
       ID_COMPILER_VC:
           Result := VC_RC_INCLUDE_DIR;
 
-      ID_COMPILER_DMAR:
+      ID_COMPILER_DMARS:
         Result := DMARS_RC_INCLUDE_DIR;
 
-      ID_COMPILER_BOR:
+      ID_COMPILER_BORLAND:
         Result := BORLAND_RC_INCLUDE_DIR;
 
-      ID_COMPILER_OWAT:
+      ID_COMPILER_WATCOM:
         Result := WATCOM_RC_INCLUDE_DIR;
   end;
 end;

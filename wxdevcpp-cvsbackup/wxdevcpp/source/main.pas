@@ -7382,7 +7382,7 @@ begin
   if (fProject.Options.typ in [dptDyn, dptStat]) and (opt.optValue > 0) then begin
     // project is a lib or a dll, and profiling is enabled
     // check for the existence of "-lgmon" in project's linker options
-    if AnsiPos('-lgmon', fProject.Options.cmdLines.Linker) = 0 then
+    if AnsiPos('-lgmon', fProject.Options.cmdLines.GCC_Linker) = 0 then
       // does not have -lgmon
       // warn the user that we should update its project options and include
       // -lgmon in linker options, or else the compilation will fail
@@ -7393,7 +7393,7 @@ begin
         'chances are that your library''s compilation will fail...', mtConfirmation,
         [mbYes, mbNo], 0) = mrYes then begin
         opts := fProject.Options;
-        opts.cmdLines.Linker := fProject.Options.cmdLines.Linker + ' -lgmon';
+        opts.cmdLines.GCC_Linker := fProject.Options.cmdLines.GCC_Linker + ' -lgmon';
         fProject.Options := opts;
         fProject.Modified := True;
       end;

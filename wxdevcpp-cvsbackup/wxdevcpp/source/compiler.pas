@@ -113,7 +113,11 @@ type
     fDevRun: TDevRun;
     fRunAfterCompileFinish: boolean;
     fAbortThread: boolean;
-
+    
+    function GetCppOption(compilerIndex:Integer):String;
+    function GetCOption(compilerIndex:Integer):String;
+    function GetLinkerOption(compilerIndex:Integer):String;
+    function GetPreprocOption(compilerIndex:Integer):String;
     procedure CreateMakefile; virtual;
     procedure CreateStaticMakefile; virtual;
     procedure CreateDynamicMakefile; virtual;
@@ -295,9 +299,9 @@ begin
     ID_COMPILER_MINGW : writeln(F, '# Compiler Type: MingW 3');
     ID_COMPILER_VC    : writeln(F, '# Compiler Type: Visual C++ .NET 2003');
     ID_COMPILER_VC2005: writeln(F, '# Compiler Type: Visual C++ 2005');
-    ID_COMPILER_DMAR : writeln(F, '# Compiler Type: Digital Mars');
-    ID_COMPILER_BOR    : writeln(F, '# Compiler Type: Borland C++ 5.5');
-    ID_COMPILER_OWAT: writeln(F, '# Compiler Type: OpenWatCom');
+    ID_COMPILER_DMARS : writeln(F, '# Compiler Type: Digital Mars');
+    ID_COMPILER_BORLAND    : writeln(F, '# Compiler Type: Borland C++ 5.5');
+    ID_COMPILER_WATCOM: writeln(F, '# Compiler Type: OpenWatCom');
   end;
   writeln(F, Format('# Makefile created by %s %s on %s',
                     [DEVCPP, DEVCPP_VERSION, FormatDateTime('dd/mm/yy hh:nn', Now)]));
@@ -530,7 +534,7 @@ begin
           tmp := PCHObj + ' '
         else
           tmp := '';
-        
+
         if PerfectDepCheck and not fSingleFile then
           writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile) + FindDeps(fProject.Directory + tfile))
         else
@@ -676,6 +680,78 @@ begin
   CloseFile(F);
 end;
 
+function TCompiler.GetCppOption(compilerIndex:Integer):String;
+begin
+  case compilerIndex of
+    ID_COMPILER_MINGW:
+          Result:=fProject.Options.cmdlines.GCC_Compiler;
+    ID_COMPILER_VC,
+    ID_COMPILER_VC2005:
+          Result:=fProject.Options.cmdlines.VC_Compiler;
+    ID_COMPILER_DMARS:
+          Result:=fProject.Options.cmdlines.DMARS_Compiler;
+    ID_COMPILER_BORLAND:
+          Result:=fProject.Options.cmdlines.BORLAND_Compiler;
+    ID_COMPILER_WATCOM:
+          Result:=fProject.Options.cmdlines.WATCOM_Compiler;
+  end;
+end;
+
+function TCompiler.GetCOption(compilerIndex:Integer):String;
+begin
+  case compilerIndex of
+    ID_COMPILER_MINGW:
+          Result:=fProject.Options.cmdlines.GCC_Compiler;
+    ID_COMPILER_VC,
+    ID_COMPILER_VC2005:
+          Result:=fProject.Options.cmdlines.VC_Compiler;
+    ID_COMPILER_DMARS:
+          Result:=fProject.Options.cmdlines.DMARS_Compiler;
+    ID_COMPILER_BORLAND:
+          Result:=fProject.Options.cmdlines.BORLAND_Compiler;
+    ID_COMPILER_WATCOM:
+          Result:=fProject.Options.cmdlines.WATCOM_Compiler;
+  end;
+
+end;
+
+function TCompiler.GetLinkerOption(compilerIndex:Integer):String;
+begin
+  case compilerIndex of
+    ID_COMPILER_MINGW:
+          Result:=fProject.Options.cmdlines.GCC_Linker;
+    ID_COMPILER_VC,
+    ID_COMPILER_VC2005:
+          Result:=fProject.Options.cmdlines.VC_Linker;
+    ID_COMPILER_DMARS:
+          Result:=fProject.Options.cmdlines.DMARS_Linker;
+    ID_COMPILER_BORLAND:
+          Result:=fProject.Options.cmdlines.BORLAND_Linker;
+    ID_COMPILER_WATCOM:
+          Result:=fProject.Options.cmdlines.WATCOM_Linker;
+  end;
+
+end;
+
+function TCompiler.GetPreprocOption(compilerIndex:Integer):String;
+begin
+  case compilerIndex of
+    ID_COMPILER_MINGW:
+          Result:=fProject.Options.GCC_PreprocDefines;
+    ID_COMPILER_VC,
+    ID_COMPILER_VC2005:
+          Result:=fProject.Options.VC_PreprocDefines;
+    ID_COMPILER_DMARS:
+          Result:=fProject.Options.DMARS_PreprocDefines;
+    ID_COMPILER_BORLAND:
+          Result:=fProject.Options.BORLAND_PreprocDefines;
+    ID_COMPILER_WATCOM:
+          Result:=fProject.Options.WATCOM_PreprocDefines;
+  end;
+
+end;
+
+
 procedure TCompiler.GetCompileParams;
   procedure AppendStr(var s: string; value: string);
   begin
@@ -692,8 +768,8 @@ begin
     fUserParams := '';
 
     if Assigned(fProject) then begin
-      fCppCompileParams := StringReplace(fProject.Options.cmdlines.CppCompiler, '_@@_', ' ', [rfReplaceAll]);
-      fCompileParams := StringReplace(fProject.Options.cmdlines.Compiler, '_@@_',' ', [rfReplaceAll]);
+      fCppCompileParams := StringReplace(GetCppOption(devCompiler.CompilerType), '_@@_', ' ', [rfReplaceAll]);
+      fCompileParams := StringReplace(GetCOption(devCompiler.CompilerType), '_@@_',' ', [rfReplaceAll]);
     end;
 
     if CmdOpts <> '' then
@@ -757,7 +833,7 @@ begin
   begin
     for i := 0 to pred(fProject.Options.Libs.Count) do
       fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.Options.Libs[i]]);
-    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.Options.cmdLines.Linker, '_@@_', ' ', [rfReplaceAll]);
+    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(GetLinkerOption(devCompiler.CompilerType), '_@@_', ' ', [rfReplaceAll]);
   end;
 
   //TODO: lowjoel:What does this do?
@@ -836,7 +912,7 @@ begin
   if assigned(fProject) then
   begin
     values := TStringList.Create;
-    tempvalues := StringReplace(fProject.Options.PreProcDefines, '_@@_', #10, [rfReplaceAll]);
+    tempvalues := StringReplace(GetPreProcOption(devCompiler.CompilerType), '_@@_', #10, [rfReplaceAll]);
     strTokenToStrings(tempvalues, #10, values);
 
     for i := 0 to values.Count - 1 do

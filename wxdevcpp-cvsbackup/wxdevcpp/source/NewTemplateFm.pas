@@ -251,12 +251,12 @@ procedure TNewTemplateForm.FillExtras;
 begin
   memCompiler.Clear;
   memLinker.Clear;
-  if TempProject.Options.cmdLines.Compiler <> '' then
-    memCompiler.Lines.Add(StringReplace(TempProject.Options.cmdLines.Compiler, '_@@_', #13#10, [rfReplaceAll]));
-  if TempProject.Options.cmdLines.CppCompiler <> '' then
-    memCppCompiler.Lines.Add(StringReplace(TempProject.Options.cmdLines.CppCompiler, '_@@_', #13#10, [rfReplaceAll]));
-  if TempProject.Options.cmdLines.Linker <> '' then
-    memLinker.Lines.Add(StringReplace(TempProject.Options.cmdLines.Linker, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.Options.cmdLines.GCC_Compiler <> '' then
+    memCompiler.Lines.Add(StringReplace(TempProject.Options.cmdLines.GCC_Compiler, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.Options.cmdLines.GCC_CppCompiler <> '' then
+    memCppCompiler.Lines.Add(StringReplace(TempProject.Options.cmdLines.GCC_CppCompiler, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.Options.cmdLines.GCC_Linker <> '' then
+    memLinker.Lines.Add(StringReplace(TempProject.Options.cmdLines.GCC_Linker, '_@@_', #13#10, [rfReplaceAll]));
 end;
 
 procedure TNewTemplateForm.FillIconsList;

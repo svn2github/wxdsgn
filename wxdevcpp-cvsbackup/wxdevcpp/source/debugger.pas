@@ -408,18 +408,18 @@ begin
         // look for "-s" in all the possible ways
         // NOTE: can't just search for "-s" because we might get confused with
         //       some other option starting with "-s...."
-        spos := Pos('-s ', opts.cmdLines.Linker); // following more opts
+        spos := Pos('-s ', opts.cmdLines.GCC_Linker); // following more opts
         if spos = 0 then
-          spos := Pos('-s'#13, opts.cmdLines.Linker); // end of line
+          spos := Pos('-s'#13, opts.cmdLines.GCC_Linker); // end of line
         if spos = 0 then
-          spos:=Pos('-s_@@_', opts.cmdLines.Linker); // end of line (dev 4.9.7.3+)
+          spos:=Pos('-s_@@_', opts.cmdLines.GCC_Linker); // end of line (dev 4.9.7.3+)
         if (spos = 0) and
-          (Length(opts.cmdLines.Linker) >= 2) and // end of string
-           (Copy(opts.cmdLines.Linker, Length(opts.cmdLines.Linker)-1, 2) = '-s') then
-          spos := Length(opts.cmdLines.Linker) - 1;
+          (Length(opts.cmdLines.GCC_Linker) >= 2) and // end of string
+           (Copy(opts.cmdLines.GCC_Linker, Length(opts.cmdLines.GCC_Linker)-1, 2) = '-s') then
+          spos := Length(opts.cmdLines.GCC_Linker) - 1;
         // if found, delete it
         if spos>0 then begin
-          Delete(opts.cmdLines.Linker, spos, 2);
+          Delete(opts.cmdLines.GCC_Linker, spos, 2);
           MainForm.fProject.Options := opts;
         end;
       end;

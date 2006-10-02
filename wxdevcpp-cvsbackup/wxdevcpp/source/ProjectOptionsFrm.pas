@@ -148,6 +148,8 @@ type
     btnMakReplace: TButton;
     grpPch: TRadioGroup;
     lvFiles: TTreeView;
+    Label1: TLabel;
+    cbxCompilerType: TComboBox;
     procedure ListClick(Sender: TObject);
     procedure EditChange(SEnder: TObject);
     procedure ButtonClick(Sender: TObject);
@@ -186,7 +188,9 @@ type
     procedure MakeIncludesDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure grpPchClick(Sender: TObject);
+    procedure cbxCompilerTypeChange(Sender: TObject);
   private
+    fPreviousIndex:Integer;
     fOptions: TProjOptions;
     fIcon: string;
     fProject: TProject;
@@ -198,6 +202,16 @@ type
     procedure InitVersionInfo;
     function DefaultBuildCommand(idx: integer): string;
     procedure SaveDirSettings;
+    procedure SetCppOption(CompilerIndex:Integer;strCppOption:String);
+    procedure SetCOption(CompilerIndex:Integer;strCOption:String);
+    procedure SetLinkerOption(CompilerIndex:Integer;strLinkerOption:String);
+    procedure SetPreProcOption(CompilerIndex:Integer;strPreProcOption:String);
+    function GetCppOption(CompilerIndex:Integer):String;
+    function GetCOption(CompilerIndex:Integer):String;
+    function GetLinkerOption(CompilerIndex:Integer):String;
+    function GetPreProcOption(CompilerIndex:Integer):String;
+    procedure InternalLoadCompilerOption(CompilerIndex:Integer);
+    procedure InternalSaveCompilerOption(CompilerIndex:Integer);
   public
     property Options: TProjOptions read GetOptions write SetOptions;
     property Project: TProject read fProject write fProject;
@@ -373,6 +387,143 @@ begin
   UpdateButtons;
 end;
 
+procedure TfrmProjectOptions.SetCppOption(CompilerIndex:Integer;strCppOption:String);
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        fOptions.cmdlines.GCC_CPPCompiler:=strCppOption;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        fOptions.cmdlines.VC_CPPCompiler:=strCppOption;
+    ID_COMPILER_DMARS:
+        fOptions.cmdlines.DMARS_CPPCompiler:=strCppOption;
+    ID_COMPILER_BORLAND:
+        fOptions.cmdlines.BORLAND_CPPCompiler:=strCppOption;
+    ID_COMPILER_WATCOM:
+        fOptions.cmdlines.WATCOM_CPPCompiler:=strCppOption;
+  end;
+end;
+
+procedure TfrmProjectOptions.SetCOption(CompilerIndex:Integer;strCOption:String);
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        fOptions.cmdlines.GCC_Compiler:=strCOption;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        fOptions.cmdlines.VC_Compiler:=strCOption;
+    ID_COMPILER_DMARS:
+        fOptions.cmdlines.DMARS_Compiler:=strCOption;
+    ID_COMPILER_BORLAND:
+        fOptions.cmdlines.BORLAND_Compiler:=strCOption;
+    ID_COMPILER_WATCOM:
+        fOptions.cmdlines.WATCOM_Compiler:=strCOption;
+  end;
+end;
+
+procedure TfrmProjectOptions.SetLinkerOption(CompilerIndex:Integer;strLinkerOption:String);
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        fOptions.cmdlines.GCC_Linker:=strLinkerOption;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        fOptions.cmdlines.VC_Linker:=strLinkerOption;
+    ID_COMPILER_DMARS:
+        fOptions.cmdlines.DMARS_Linker:=strLinkerOption;
+    ID_COMPILER_BORLAND:
+        fOptions.cmdlines.BORLAND_Linker:=strLinkerOption;
+    ID_COMPILER_WATCOM:
+        fOptions.cmdlines.WATCOM_Linker:=strLinkerOption;
+  end;
+end;
+
+procedure TfrmProjectOptions.SetPreProcOption(CompilerIndex:Integer;strPreProcOption:String);
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        fOptions.GCC_PreProcDefines:=strPreProcOption;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        fOptions.VC_PreProcDefines:=strPreProcOption;
+    ID_COMPILER_DMARS:
+        fOptions.DMARS_PreProcDefines:=strPreProcOption;
+    ID_COMPILER_BORLAND:
+        fOptions.BORLAND_PreProcDefines:=strPreProcOption;
+    ID_COMPILER_WATCOM:
+        fOptions.WATCOM_PreProcDefines:=strPreProcOption;
+  end;
+end;
+
+function TfrmProjectOptions.GetCppOption(CompilerIndex:Integer):String;
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        Result:=fOptions.cmdlines.GCC_CPPCompiler;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        Result:=fOptions.cmdlines.VC_CPPCompiler;
+    ID_COMPILER_DMARS:
+        Result:=fOptions.cmdlines.DMARS_CPPCompiler;
+    ID_COMPILER_BORLAND:
+        Result:=fOptions.cmdlines.BORLAND_CPPCompiler;
+    ID_COMPILER_WATCOM:
+        Result:=fOptions.cmdlines.WATCOM_CPPCompiler;
+  end;
+end;
+
+function TfrmProjectOptions.GetCOption(CompilerIndex:Integer):String;
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        Result:=fOptions.cmdlines.GCC_Compiler;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        Result:=fOptions.cmdlines.VC_Compiler;
+    ID_COMPILER_DMARS:
+        Result:=fOptions.cmdlines.DMARS_Compiler;
+    ID_COMPILER_BORLAND:
+        Result:=fOptions.cmdlines.BORLAND_Compiler;
+    ID_COMPILER_WATCOM:
+        Result:=fOptions.cmdlines.WATCOM_Compiler;
+  end;
+end;
+
+function TfrmProjectOptions.GetLinkerOption(CompilerIndex:Integer):String;
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        Result:=fOptions.cmdlines.GCC_Linker;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        Result:=fOptions.cmdlines.VC_Linker;
+    ID_COMPILER_DMARS:
+        Result:=fOptions.cmdlines.DMARS_Linker;
+    ID_COMPILER_BORLAND:
+        Result:=fOptions.cmdlines.BORLAND_Linker;
+    ID_COMPILER_WATCOM:
+        Result:=fOptions.cmdlines.WATCOM_Linker;
+  end;
+end;
+
+function TfrmProjectOptions.GetPreProcOption(CompilerIndex:Integer):String;
+begin
+  case CompilerIndex of
+    ID_COMPILER_MINGW:
+        Result:=fOptions.GCC_PreProcDefines;
+    ID_COMPILER_VC2005,
+    ID_COMPILER_VC:
+        Result:=fOptions.VC_PreProcDefines;
+    ID_COMPILER_DMARS:
+        Result:=fOptions.DMARS_PreProcDefines;
+    ID_COMPILER_BORLAND:
+        Result:=fOptions.BORLAND_PreProcDefines;
+    ID_COMPILER_WATCOM:
+        Result:=fOptions.WATCOM_PreProcDefines;
+  end;
+end;
+
+
 function TfrmProjectOptions.GetOptions: TProjOptions;
 var
   I: integer;
@@ -398,20 +549,8 @@ begin
      All I have to do when I want the actual string back, is call StringReplace() et voila :)
     }
 
-     cmdlines.Linker:= edLinker.Lines.Text;
-     cmdLines.Compiler:='';
-     for I:=0 to edCompiler.Lines.Count-1 do
-      cmdLines.Compiler := cmdLines.Compiler + edCompiler.Lines[I] + '_@@_';
-     cmdLines.CppCompiler:='';
-     for I:=0 to edCppCompiler.Lines.Count-1 do
-      cmdLines.CppCompiler := cmdLines.CppCompiler + edCppCompiler.Lines[I] + '_@@_';
-     cmdLines.Linker:='';
-     for I:=0 to edLinker.Lines.Count-1 do
-      cmdLines.Linker := cmdLines.Linker + edLinker.Lines[I] + '_@@_';
-     PreprocDefines := '';
-     for I:=0 to edDefines.Lines.Count-1 do
-      PreprocDefines := PreprocDefines + edDefines.Lines[I] + '_@@_';
-     typ:= lstType.ItemIndex;
+    InternalSaveCompilerOption(cbxCompilerType.ItemIndex);
+    typ:= lstType.ItemIndex;
 
     ExeOutput := edExeOutput.Text;
     ObjectOutput := edObjOutput.Text;
@@ -462,6 +601,40 @@ begin
   result:= fOptions;
 end;
 
+procedure TfrmProjectOptions.InternalSaveCompilerOption(CompilerIndex:Integer);
+var
+  strCppOption,strCOption,strLinkerOption,PreprocDefines:String;
+  I:Integer;
+begin
+     strLinkerOption:= edLinker.Lines.Text;
+     strCOption:='';
+     for I:=0 to edCompiler.Lines.Count-1 do
+      strCOption := strCOption + edCompiler.Lines[I] + '_@@_';
+     strCppOption:='';
+     for I:=0 to edCppCompiler.Lines.Count-1 do
+      strCppOption := strCppOption + edCppCompiler.Lines[I] + '_@@_';
+     strLinkerOption:='';
+     for I:=0 to edLinker.Lines.Count-1 do
+      strLinkerOption := strLinkerOption + edLinker.Lines[I] + '_@@_';
+     PreprocDefines := '';
+     for I:=0 to edDefines.Lines.Count-1 do
+      PreprocDefines := PreprocDefines + edDefines.Lines[I] + '_@@_';
+
+      SetCppOption(CompilerIndex,strCppOption);
+      SetCOption(CompilerIndex,strCOption);
+      SetLinkerOption(CompilerIndex,strLinkerOption);
+      SetPreProcOption(CompilerIndex,PreprocDefines);
+end;
+
+
+procedure TfrmProjectOptions.InternalLoadCompilerOption(CompilerIndex:Integer);
+begin
+  edCompiler.Lines.Text:= StringReplace(GetCOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
+  edCppCompiler.Lines.Text:= StringReplace(GetCppOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
+  edLinker.Lines.Text:= StringReplace(GetLinkerOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
+  edDefines.Lines.Text := StringReplace(GetPreProcOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
+end;
+
 procedure TfrmProjectOptions.SetOptions(Value: TProjOptions);
 var
   idx, cntSrc, cntHdr, cntRes: integer;
@@ -477,10 +650,9 @@ begin
 
   // General Tab
   lstType.ItemIndex:= fOptions.typ;
-  edCompiler.Lines.Text:= StringReplace(fOptions.cmdlines.Compiler, '_@@_', #13#10, [rfReplaceAll]);
-  edCppCompiler.Lines.Text:= StringReplace(fOptions.cmdlines.CppCompiler, '_@@_', #13#10, [rfReplaceAll]);
-  edLinker.Lines.Text:= StringReplace(fOptions.cmdlines.Linker, '_@@_', #13#10, [rfReplaceAll]);
-  edDefines.Lines.Text := StringReplace(fOptions.PreProcDefines, '_@@_', #13#10, [rfReplaceAll]);
+
+  InternalLoadCompilerOption(cbxCompilerType.ItemIndex);
+
   edProjectName.Text:= fProject.Name;
   lblPrjFname.Caption:=fProject.FileName;
   lblPrjOutputFname.Caption:=fProject.Executable;
@@ -572,6 +744,8 @@ begin
   devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
   CompOptionsFrame1.FillOptions(fProject);
   devCompiler.OptionStr:=fOptions.CompilerOptions;
+  cbxCompilerType.itemIndex:=devCompilerSet.CompilerType;
+  cbxCompilerTypeChange(Sender);  
   SubTabsChange(Self);
   UpdateMakButtons();
   CompOptionsFrame1.FillOptions(fProject);
@@ -619,6 +793,10 @@ end;
 
 procedure TfrmProjectOptions.FormCreate(Sender: TObject);
 begin
+  //Set the default compiler as GCC
+  fPreviousIndex:=0;
+  cbxCompilerType.ItemIndex:=0;
+
   cmbLangID.Sorted := True;
   InitVersionInfo;
   LoadText;
@@ -1086,6 +1264,8 @@ begin
   devCompilerSet.AssignToCompiler;
   devCompiler.OptionStr := currOpts;
   CompOptionsFrame1.FillOptions(fProject);
+  cbxCompilerType.itemIndex:=devCompilerSet.CompilerType;
+  cbxCompilerTypeChange(Sender);
 end;
 
 procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
@@ -1258,6 +1438,13 @@ begin
         end;
     end;
   end;
+end;
+
+procedure TfrmProjectOptions.cbxCompilerTypeChange(Sender: TObject);
+begin
+  InternalSaveCompilerOption(fPreviousIndex);
+  InternalLoadCompilerOption(cbxCompilerType.ItemIndex);
+  fPreviousIndex:=cbxCompilerType.ItemIndex;
 end;
 
 end.

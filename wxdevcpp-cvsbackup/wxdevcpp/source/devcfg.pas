@@ -55,9 +55,9 @@ const
   ID_COMPILER_MINGW = 0;
   ID_COMPILER_VC = 1;
   ID_COMPILER_VC2005 = 2;
-  ID_COMPILER_DMAR = 3;
-  ID_COMPILER_BOR = 4;
-  ID_COMPILER_OWAT = 5;
+  ID_COMPILER_DMARS = 3;
+  ID_COMPILER_BORLAND = 4;
+  ID_COMPILER_WATCOM = 5;
   
 type
   // the comments are an example of the record
@@ -878,9 +878,21 @@ begin
   // load the preferred compiler set
   if devCompilerSet.Sets.Count=0 then begin
     // init first-run
-    devCompilerSet.Sets.Add(DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(GCC_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(VC_DEFCOMPILERSET);
     devCompilerSet.WriteSets;
+        
+    devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
+    devCompilerSet.LoadSetProgs(0);
+    devCompilerSet.LoadSetDirs(0);
     devCompilerSet.SaveSet(0);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC;
+    devCompilerSet.LoadSetProgs(1);
+    devCompilerSet.LoadSetDirs(1);
+    devCompilerSet.SaveSet(1);
+    //Guru: todo: Add More Compiler default sets here
+
   end;
   devCompilerSet.LoadSet(devCompiler.CompilerSet);
   devCompiler.AddDefaultOptions;
@@ -2374,7 +2386,7 @@ begin
   if (Index >= 0) and (Index < devCompilerSet.Sets.Count) then
     Result := devCompilerSet.Sets[Index]
   else
-    Result := DEFCOMPILERSET;
+    Result := DEFCOMPILERSET(CompilerType);
 end;
 
 procedure TdevCompilerSet.SettoDefaults;

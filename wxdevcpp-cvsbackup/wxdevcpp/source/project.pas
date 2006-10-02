@@ -912,31 +912,42 @@ begin
 
     // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
 
-    fOptions.cmdLines.Compiler := StringReplace(Read('Compiler', ''),
-       '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.CppCompiler := StringReplace(Read('CppCompiler', ''),
-         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.Linker := StringReplace(Read('Linker', ''),
-         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),
-         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.Libs.DelimitedText := StringReplace(Read('Libs', ''),
-         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.Includes.DelimitedText := StringReplace(Read('Includes', ''),
-         '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.GCC_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_MINGW), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.GCC_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_MINGW), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.GCC_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_MINGW), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.GCC_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_MINGW), '');
 
-      fOptions.PrivateResource := StringReplace(Read('PrivateResource', ''),
-            '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.VC_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_VC), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.VC_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_VC), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.VC_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_VC), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.VC_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_VC), '');
 
-      fOptions.ResourceIncludes.DelimitedText :=
-           StringReplace(Read('ResourceIncludes', ''),
-               '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
-      fOptions.MakeIncludes.DelimitedText :=
-          StringReplace(Read('MakeIncludes', ''),
-             '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.DMARS_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_DMARS), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.DMARS_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_DMARS), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.DMARS_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_DMARS), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.DMARS_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_DMARS), '');
 
-      fOptions.PreprocDefines := Read('PreprocDefines', '');
+
+      fOptions.cmdLines.BORLAND_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_BORLAND), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.BORLAND_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_BORLAND), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.BORLAND_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_BORLAND), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.BORLAND_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_BORLAND), '');
+
+      fOptions.cmdLines.WATCOM_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_WATCOM), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.WATCOM_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_WATCOM), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.cmdLines.WATCOM_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_WATCOM), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.WATCOM_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_WATCOM), '');
+
+      fOptions.ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.Libs.DelimitedText := StringReplace(Read('Libs', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.Includes.DelimitedText := StringReplace(Read('Includes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+     
+      fOptions.PrivateResource := StringReplace(Read('PrivateResource', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.ResourceIncludes.DelimitedText :=StringReplace(Read('ResourceIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fOptions.MakeIncludes.DelimitedText :=StringReplace(Read('MakeIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+
+
 {$ELSE}
       fOptions.cmdLines.Compiler := Read('Compiler', '');
       fOptions.cmdLines.CppCompiler := Read('CppCompiler', '');
@@ -1016,7 +1027,7 @@ begin
       fOptions.ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
       fOptions.ObjFiles.Add(read('ObjFiles', ''));
       fOptions.Includes.Add(Read('IncludeDirs', ''));
-      fOPtions.cmdLines.Compiler := Read('CompilerOptions', '');
+      fOPtions.cmdLines.GCC_Compiler := Read('CompilerOptions', '');
       fOptions.usegpp := Read('Use_GPP', FALSE);
       fOptions.ExeOutput := Read('ExeOutput', '');
       fOptions.ObjectOutput := Read('ObjectOutput', '');
@@ -1045,10 +1056,32 @@ begin
     Write('PrivateResource', fOptions.PrivateResource);
     Write('ResourceIncludes', fOptions.ResourceIncludes.DelimitedText);
     Write('MakeIncludes', fOptions.MakeIncludes.DelimitedText);
-    Write('Compiler', fOptions.cmdLines.Compiler);
-    Write('CppCompiler', fOptions.cmdLines.CppCompiler);
-    Write('Linker', fOptions.cmdLines.Linker);
-    Write('PreprocDefines', fOptions.PreprocDefines);
+
+    Write(C_INI_LABEL(ID_COMPILER_MINGW),fOptions.cmdLines.GCC_Compiler);
+    Write(CPP_INI_LABEL(ID_COMPILER_MINGW), fOptions.cmdLines.GCC_CppCompiler);
+    Write(LINKER_INI_LABEL(ID_COMPILER_MINGW),fOptions.cmdLines.GCC_Linker);
+    Write(PREPROC_INI_LABEL(ID_COMPILER_MINGW),fOptions.GCC_PreProcDefines);
+
+    Write(C_INI_LABEL(ID_COMPILER_VC), fOptions.cmdLines.VC_Compiler);
+    Write(CPP_INI_LABEL(ID_COMPILER_VC),fOptions.cmdLines.VC_CppCompiler);
+    Write(LINKER_INI_LABEL(ID_COMPILER_VC), fOptions.cmdLines.VC_Linker);
+    Write(PREPROC_INI_LABEL(ID_COMPILER_VC), fOptions.VC_PreProcDefines);
+
+    Write(C_INI_LABEL(ID_COMPILER_DMARS), fOptions.cmdLines.DMARS_Compiler);
+    Write(CPP_INI_LABEL(ID_COMPILER_DMARS), fOptions.cmdLines.DMARS_CppCompiler);
+    Write(LINKER_INI_LABEL(ID_COMPILER_DMARS), fOptions.cmdLines.DMARS_Linker);
+    Write(PREPROC_INI_LABEL(ID_COMPILER_DMARS), fOptions.DMARS_PreProcDefines);
+
+    Write(C_INI_LABEL(ID_COMPILER_BORLAND), fOptions.cmdLines.BORLAND_Compiler);
+    Write(CPP_INI_LABEL(ID_COMPILER_BORLAND), fOptions.cmdLines.BORLAND_CppCompiler);
+    Write(LINKER_INI_LABEL(ID_COMPILER_BORLAND), fOptions.cmdLines.BORLAND_Linker);
+    Write(PREPROC_INI_LABEL(ID_COMPILER_BORLAND), fOptions.BORLAND_PreProcDefines);
+
+    Write(C_INI_LABEL(ID_COMPILER_WATCOM), fOptions.cmdLines.WATCOM_Compiler);
+    Write(CPP_INI_LABEL(ID_COMPILER_WATCOM), fOptions.cmdLines.WATCOM_CppCompiler);
+    Write(LINKER_INI_LABEL(ID_COMPILER_WATCOM), fOptions.cmdLines.WATCOM_Linker);
+    Write(PREPROC_INI_LABEL(ID_COMPILER_WATCOM), fOptions.WATCOM_PreProcDefines);
+
     Write('IsCpp', fOptions.UseGpp);
     Write('Icon', ExtractRelativePath(Directory, fOptions.Icon));
     Write('ExeOutput', fOptions.ExeOutput);
