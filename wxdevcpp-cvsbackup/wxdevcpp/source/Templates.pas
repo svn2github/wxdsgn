@@ -180,25 +180,35 @@ begin
          // Tony Reina 11 June 2005
          // This is needed to grab the MakeIncludes from the template file of a new project
          fOptions.MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
-         fOptions.GCC_PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
+
 {$ENDIF}
 
          fOptions.ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
          fOptions.cmdLines.GCC_Compiler:= ReadString(cProject, 'Compiler', '');
          fOptions.cmdLines.GCC_CppCompiler:= ReadString(cProject, 'CppCompiler', '');
          fOptions.cmdLines.GCC_Linker:= ReadString(cProject, 'Linker', '');
+         fOptions.GCC_PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
+
          fOptions.cmdLines.VC_Compiler:= ReadString(cProject, 'VC_Compiler', '');
          fOptions.cmdLines.VC_CppCompiler:= ReadString(cProject, 'VC_CppCompiler', '');
          fOptions.cmdLines.VC_Linker:= ReadString(cProject, 'VC_Linker', '');
+         fOptions.VC_PreprocDefines := ReadString(cProject, 'VC_PreprocDefines', '');
+
          fOptions.cmdLines.DMARS_Compiler:= ReadString(cProject, 'DMARS_Compiler', '');
          fOptions.cmdLines.DMARS_CppCompiler:= ReadString(cProject, 'DMARS_CppCompiler', '');
          fOptions.cmdLines.DMARS_Linker:= ReadString(cProject, 'DMARS_Linker', '');
+         fOptions.DMARS_PreprocDefines := ReadString(cProject, 'DMARS_PreprocDefines', '');
+
          fOptions.cmdLines.BORLAND_Compiler:= ReadString(cProject, 'BORLAND_Compiler', '');
          fOptions.cmdLines.BORLAND_CppCompiler:= ReadString(cProject, 'BORLAND_CppCompiler', '');
          fOptions.cmdLines.BORLAND_Linker:= ReadString(cProject, 'BORLAND_Linker', '');
+         fOptions.BORLAND_PreprocDefines := ReadString(cProject, 'BORLAND_PreprocDefines', '');
+
          fOptions.cmdLines.WATCOM_Compiler:= ReadString(cProject, 'WATCOM_Compiler', '');
          fOptions.cmdLines.WATCOM_CppCompiler:= ReadString(cProject, 'WATCOM_CppCompiler', '');
          fOptions.cmdLines.WATCOM_Linker:= ReadString(cProject, 'WATCOM_Linker', '');
+         fOptions.WATCOM_PreprocDefines := ReadString(cProject, 'WATCOM_PreprocDefines', '');
+
          fOptions.useGPP:= ReadBool(cProject, 'IsCpp', FALSE);
          fOptions.IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
          fOptions.SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);

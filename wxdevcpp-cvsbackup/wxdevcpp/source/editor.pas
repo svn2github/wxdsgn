@@ -2290,11 +2290,11 @@ begin
         e.Text.BeginUpdate;
         try
           GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
-          e.Modified:=true;
         except
         end;
-        e.InsertString('', false);
         e.Text.EndUpdate;
+        e.Modified:=true;
+        e.InsertString('', false);
         MainForm.StatusBar.Panels[3].Text := ('C++ Source Generation: ' + GetElapsedTimeStr(StartTimeX));
 
       end;
@@ -2311,11 +2311,11 @@ begin
         e.Text.BeginUpdate;
         try
           GenerateHpp(fDesigner, fDesigner.Wx_Name, e.Text);
-          e.Modified:=true;
         except
         end;
-        e.InsertString('', false);
         e.Text.EndUpdate;
+        e.Modified:=true;
+        e.InsertString('', false);
         MainForm.StatusBar.Panels[3].Text := MainForm.StatusBar.Panels[3].Text + (' / Header Declaration Generation = ' + GetElapsedTimeStr(StartTimeX));
       end;
     end;
@@ -2509,11 +2509,11 @@ begin
         e.Text.BeginUpdate;
         try
           GenerateXRC(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
-          e.Modified:=true;
         except
         end;
-        e.InsertString('', false);
         e.Text.EndUpdate;
+        e.Modified:=true;
+        e.InsertString('', false);
       end;
 
     {  if Assigned(e) then

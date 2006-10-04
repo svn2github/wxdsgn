@@ -68,7 +68,7 @@ resourcestring
 
   //Vc++
   VC_BIN_DIR = 'Bin'+pd+'VC;Bin;';
-  VC_LIB_DIR = 'Lib'+pd+'VC';
+  VC_LIB_DIR = 'Lib'+pd+'vc2005';
   VC_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC;';
   VC_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
 
@@ -166,7 +166,7 @@ resourcestring
   VC_CP_PROGRAM = 'cl.exe';
   VC_CPP_PROGRAM = 'cl.exe';
   VC_DBG_PROGRAM = 'cdb.exe';
-  VC_RES_PROGRAM = 'res.exe';
+  VC_RES_PROGRAM = 'rc.exe';
   VC_DLL_PROGRAM = 'link.exe';
   VC_PROF_PROGRAM = '';
 

@@ -883,14 +883,21 @@ begin
     devCompilerSet.WriteSets;
         
     devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
+    devdirs.fCompilerType:=0;
+    devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(0);
     devCompilerSet.LoadSetDirs(0);
     devCompilerSet.SaveSet(0);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC;
+    devdirs.fCompilerType:=1;
+    devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(1);
     devCompilerSet.LoadSetDirs(1);
     devCompilerSet.SaveSet(1);
+    //Reset the compiler type back to GCC
+    devdirs.fCompilerType:=1;
+    devdirs.SettoDefaults;
     //Guru: todo: Add More Compiler default sets here
 
   end;
