@@ -894,7 +894,7 @@ begin
     for i := 0 to pred(fProject.Options.Includes.Count) do
       if directoryExists(fProject.Options.Includes[i]) then begin
         fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.Options.Includes[i]]);
-        fCppIncludesParams := format('%s ' + devCompiler.ResourceIncludeFormat, [fCppIncludesParams, fProject.Options.Includes[i]]);
+        fCppIncludesParams := format('%s ' + devCompiler.IncludeFormat, [fCppIncludesParams, fProject.Options.Includes[i]]);
       end;
     for i := 0 to pred(fProject.Options.ResourceIncludes.Count) do
       if directoryExists(fProject.Options.ResourceIncludes[i]) then
