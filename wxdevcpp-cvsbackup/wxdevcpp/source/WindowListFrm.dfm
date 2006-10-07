@@ -29,7 +29,7 @@ object WindowListForm: TWindowListForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 243
+    Height = 239
     Align = alLeft
     AutoSize = False
   end
@@ -37,24 +37,24 @@ object WindowListForm: TWindowListForm
     Left = 340
     Top = 6
     Width = 6
-    Height = 243
+    Height = 239
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 249
+    Top = 245
     Width = 346
-    Height = 41
+    Height = 38
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
       346
-      41)
+      38)
     object OkBtn: TBitBtn
       Left = 158
-      Top = 10
+      Top = 7
       Width = 91
       Height = 25
       Anchors = [akRight, akBottom]
@@ -83,7 +83,7 @@ object WindowListForm: TWindowListForm
     end
     object CancelBtn: TBitBtn
       Left = 249
-      Top = 10
+      Top = 7
       Width = 91
       Height = 25
       Anchors = [akRight, akBottom]
@@ -96,48 +96,15 @@ object WindowListForm: TWindowListForm
     Left = 6
     Top = 6
     Width = 334
-    Height = 243
+    Height = 239
     Align = alClient
     Caption = 'Select the window you want to edit :'
     TabOrder = 1
-    object Label4: TLabel
-      Left = 2
-      Top = 15
-      Width = 330
-      Height = 3
-      Align = alTop
-      AutoSize = False
-    end
-    object Label5: TLabel
-      Left = 2
-      Top = 18
-      Width = 6
-      Height = 217
-      Align = alLeft
-      AutoSize = False
-    end
-    object Label6: TLabel
-      Left = 326
-      Top = 18
-      Width = 6
-      Height = 217
-      Align = alRight
-      AutoSize = False
-    end
-    object Label7: TLabel
-      Left = 2
-      Top = 235
-      Width = 330
-      Height = 6
-      Align = alBottom
-      AutoSize = False
-    end
     object UnitList: TListBox
-      Left = 8
+      Left = 10
       Top = 18
-      Width = 318
+      Width = 315
       Height = 212
-      Align = alClient
       IntegralHeight = True
       ItemHeight = 13
       TabOrder = 0
@@ -171,8 +138,9 @@ object WindowListForm: TWindowListForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 8
+    Top = 251
   end
 end

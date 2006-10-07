@@ -41,10 +41,6 @@ type
     UnitList: TListBox;
     Label2: TLabel;
     Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
-    Label7: TLabel;
     XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
     procedure UnitListDblClick(Sender: TObject);

@@ -3,7 +3,7 @@ object EnviroForm: TEnviroForm
   Top = 198
   BorderStyle = bsDialog
   Caption = 'Environment Options'
-  ClientHeight = 426
+  ClientHeight = 416
   ClientWidth = 421
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object EnviroForm: TEnviroForm
   OnShow = FormShow
   DesignSize = (
     421
-    426)
+    416)
   PixelsPerInch = 96
   TextHeight = 13
   object PagesMain: TPageControl
@@ -30,7 +30,6 @@ object EnviroForm: TEnviroForm
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
-    TabIndex = 0
     TabOrder = 0
     OnChange = PagesMainChange
     object tabGeneral: TTabSheet
@@ -53,7 +52,7 @@ object EnviroForm: TEnviroForm
       end
       object cbMinOnRun: TCheckBox
         Left = 8
-        Top = 50
+        Top = 49
         Width = 382
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -75,7 +74,7 @@ object EnviroForm: TEnviroForm
       end
       object cbShowBars: TCheckBox
         Left = 8
-        Top = 72
+        Top = 69
         Width = 382
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -86,7 +85,7 @@ object EnviroForm: TEnviroForm
       end
       object cbShowMenu: TCheckBox
         Left = 8
-        Top = 93
+        Top = 89
         Width = 382
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -98,9 +97,9 @@ object EnviroForm: TEnviroForm
       end
       object rgbAutoOpen: TRadioGroup
         Left = 8
-        Top = 141
+        Top = 131
         Width = 189
-        Height = 90
+        Height = 80
         Caption = '   Auto Open  '
         Items.Strings = (
           'All Project Files'
@@ -110,7 +109,7 @@ object EnviroForm: TEnviroForm
       end
       object cbdblFiles: TCheckBox
         Left = 8
-        Top = 114
+        Top = 109
         Width = 382
         Height = 17
         Anchors = [akLeft, akTop, akRight]
@@ -120,36 +119,36 @@ object EnviroForm: TEnviroForm
         TabOrder = 6
       end
       object gbDebugger: TGroupBox
-        Left = 207
-        Top = 141
+        Left = 206
+        Top = 131
         Width = 182
-        Height = 90
+        Height = 65
         Caption = '  Debug Variable Browser  '
         TabOrder = 7
         object cbWatchHint: TCheckBox
-          Left = 8
-          Top = 22
+          Left = 10
+          Top = 17
           Width = 170
-          Height = 27
+          Height = 21
           Caption = 'Watch variable under mouse'
           TabOrder = 0
         end
         object cbWatchError: TCheckBox
-          Left = 8
-          Top = 56
+          Left = 10
+          Top = 36
           Width = 170
-          Height = 17
+          Height = 21
           Caption = 'Report watch errors'
           TabOrder = 1
         end
       end
       object cbSingleInstance: TCheckBox
-        Left = 7
+        Left = 8
         Top = 9
-        Width = 447
+        Width = 382
         Height = 17
         Anchors = [akLeft, akTop, akRight]
-        Caption = 'Allow only one instance of Dev-CPP'
+        Caption = 'Allow only one instance of wxDev-C++'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 8
@@ -236,7 +235,7 @@ object EnviroForm: TEnviroForm
         Left = 8
         Top = 155
         Width = 186
-        Height = 90
+        Height = 80
         Caption = '  Open/Save Dialog Style  '
         Items.Strings = (
           'Windows 2k (sidebar)'
@@ -262,23 +261,23 @@ object EnviroForm: TEnviroForm
       end
       object gbProgress: TGroupBox
         Left = 203
-        Top = 155
+        Top = 154
         Width = 184
-        Height = 90
+        Height = 65
         Caption = 'Compilation Progress Window '
         TabOrder = 7
         object cbShowProgress: TCheckBox
-          Left = 14
-          Top = 30
-          Width = 163
+          Left = 10
+          Top = 17
+          Width = 165
           Height = 17
           Caption = '&Show during compilation'
           TabOrder = 0
         end
         object cbAutoCloseProgress: TCheckBox
-          Left = 14
-          Top = 54
-          Width = 163
+          Left = 10
+          Top = 36
+          Width = 165
           Height = 17
           Caption = '&Auto close after compile'
           TabOrder = 1
@@ -291,35 +290,35 @@ object EnviroForm: TEnviroForm
       ShowHint = False
       object lblUserDir: TLabel
         Left = 8
-        Top = 93
+        Top = 90
         Width = 111
         Height = 13
         Caption = 'User'#39's Default Directory'
       end
       object lblTemplatesDir: TLabel
         Left = 8
-        Top = 141
+        Top = 138
         Width = 94
         Height = 13
         Caption = 'Templates Directory'
       end
       object lblSplash: TLabel
         Left = 8
-        Top = 279
+        Top = 276
         Width = 101
         Height = 13
         Caption = 'Splash Screen Image'
       end
       object lblIcoLib: TLabel
         Left = 8
-        Top = 189
+        Top = 186
         Width = 80
         Height = 13
         Caption = 'Icon Library Path'
       end
       object lblLangPath: TLabel
         Left = 8
-        Top = 234
+        Top = 231
         Width = 73
         Height = 13
         Caption = 'Language Path'
@@ -327,7 +326,7 @@ object EnviroForm: TEnviroForm
       object btnDefBrws: TSpeedButton
         Tag = 1
         Left = 366
-        Top = 108
+        Top = 105
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -362,7 +361,7 @@ object EnviroForm: TEnviroForm
       object btnOutputbrws: TSpeedButton
         Tag = 2
         Left = 365
-        Top = 157
+        Top = 154
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -397,7 +396,7 @@ object EnviroForm: TEnviroForm
       object btnBrwIcon: TSpeedButton
         Tag = 3
         Left = 365
-        Top = 205
+        Top = 202
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -432,7 +431,7 @@ object EnviroForm: TEnviroForm
       object btnBrwLang: TSpeedButton
         Tag = 5
         Left = 365
-        Top = 250
+        Top = 247
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -467,7 +466,7 @@ object EnviroForm: TEnviroForm
       object btnBrwSplash: TSpeedButton
         Tag = 4
         Left = 365
-        Top = 295
+        Top = 292
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -501,7 +500,7 @@ object EnviroForm: TEnviroForm
       end
       object edUserDir: TEdit
         Left = 16
-        Top = 109
+        Top = 106
         Width = 344
         Height = 21
         ReadOnly = True
@@ -510,7 +509,7 @@ object EnviroForm: TEnviroForm
       end
       object edTemplatesDir: TEdit
         Left = 16
-        Top = 157
+        Top = 154
         Width = 344
         Height = 21
         ReadOnly = True
@@ -519,7 +518,7 @@ object EnviroForm: TEnviroForm
       end
       object edSplash: TEdit
         Left = 16
-        Top = 295
+        Top = 292
         Width = 344
         Height = 21
         ReadOnly = True
@@ -528,7 +527,7 @@ object EnviroForm: TEnviroForm
       end
       object edIcoLib: TEdit
         Left = 16
-        Top = 205
+        Top = 202
         Width = 344
         Height = 21
         ReadOnly = True
@@ -537,7 +536,7 @@ object EnviroForm: TEnviroForm
       end
       object edLang: TEdit
         Left = 16
-        Top = 250
+        Top = 247
         Width = 344
         Height = 21
         ReadOnly = True
@@ -546,7 +545,7 @@ object EnviroForm: TEnviroForm
       end
       object gbAltConfig: TGroupBox
         Left = 8
-        Top = 12
+        Top = 9
         Width = 381
         Height = 73
         Caption = ' Alternate Configuration File '
@@ -618,19 +617,19 @@ object EnviroForm: TEnviroForm
         Caption = 'External programs associations:'
       end
       object btnExtAdd: TSpeedButton
-        Left = 99
+        Left = 120
         Top = 290
-        Width = 99
-        Height = 25
+        Width = 75
+        Height = 23
         Anchors = [akBottom]
         Caption = 'Add'
         OnClick = btnExtAddClick
       end
       object btnExtDel: TSpeedButton
-        Left = 201
+        Left = 200
         Top = 290
-        Width = 99
-        Height = 25
+        Width = 75
+        Height = 23
         Anchors = [akBottom]
         Caption = 'Delete'
         OnClick = btnExtDelClick
@@ -776,7 +775,7 @@ object EnviroForm: TEnviroForm
   end
   object btnOk: TBitBtn
     Left = 164
-    Top = 394
+    Top = 386
     Width = 80
     Height = 25
     Anchors = [akRight, akBottom]
@@ -806,7 +805,7 @@ object EnviroForm: TEnviroForm
   end
   object btnCancel: TBitBtn
     Left = 244
-    Top = 394
+    Top = 386
     Width = 80
     Height = 25
     Anchors = [akRight, akBottom]
@@ -815,7 +814,7 @@ object EnviroForm: TEnviroForm
   end
   object btnHelp: TBitBtn
     Left = 335
-    Top = 394
+    Top = 386
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -825,7 +824,7 @@ object EnviroForm: TEnviroForm
   end
   object dlgPic: TOpenPictureDialog
     Left = 8
-    Top = 368
+    Top = 385
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -853,8 +852,9 @@ object EnviroForm: TEnviroForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 40
-    Top = 368
+    Left = 36
+    Top = 385
   end
 end

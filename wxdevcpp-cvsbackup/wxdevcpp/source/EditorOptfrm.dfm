@@ -32,7 +32,6 @@ object EditorOptForm: TEditorOptForm
     Height = 365
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 0
     OnChange = PagesMainChange
     object tabGeneral: TTabSheet
@@ -207,7 +206,7 @@ object EditorOptForm: TEditorOptForm
         Top = 4
         Width = 399
         Height = 188
-        Caption = 'lblEditorOpts'
+        Caption = ' Editor Options: '
         TabOrder = 6
         object cbAppendNewline: TCheckBox
           Left = 8
@@ -488,7 +487,7 @@ object EditorOptForm: TEditorOptForm
           Width = 180
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -499,7 +498,7 @@ object EditorOptForm: TEditorOptForm
           Width = 86
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -544,7 +543,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -554,7 +553,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -798,7 +797,6 @@ object EditorOptForm: TEditorOptForm
         Width = 396
         Height = 325
         ActivePage = tabCPInserts
-        TabIndex = 0
         TabOrder = 0
         object tabCPInserts: TTabSheet
           Caption = 'Inserts'
@@ -972,7 +970,6 @@ object EditorOptForm: TEditorOptForm
         Width = 397
         Height = 302
         ActivePage = tabCBBrowser
-        TabIndex = 0
         TabOrder = 1
         OnChange = devPages1Change
         object tabCBBrowser: TTabSheet
@@ -1121,16 +1118,12 @@ object EditorOptForm: TEditorOptForm
             Height = 29
             LineSize = 50
             Max = 1500
-            Orientation = trHorizontal
             PageSize = 50
             Frequency = 50
             Position = 500
-            SelEnd = 0
-            SelStart = 0
             TabOrder = 1
             ThumbLength = 16
             TickMarks = tmTopLeft
-            TickStyle = tsAuto
             OnChange = tbCompletionDelayChange
           end
           object chkEnableCompletion: TCheckBox
@@ -1165,8 +1158,6 @@ object EditorOptForm: TEditorOptForm
             Top = 164
             Width = 89
             Height = 16
-            Min = 0
-            Max = 100
             TabOrder = 4
             Visible = False
           end
@@ -1271,6 +1262,7 @@ object EditorOptForm: TEditorOptForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 104
     Top = 376
