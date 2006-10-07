@@ -265,7 +265,7 @@ begin
   FWx_Hidden             := False;
   FWx_Alignment          := wxALIGN_CENTER;
   FWx_BorderAlignment    := [wxAll];
-  FWx_Include            := '#include <wx/treelist.h>';
+  FWx_Include            := '#include <wx/treelistctrl.h>';
   FWx_IDValue            := -1;
   FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
