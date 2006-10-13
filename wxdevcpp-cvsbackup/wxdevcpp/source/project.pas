@@ -1672,9 +1672,9 @@ begin
     result := Base;
 
   if Length(Options.ExeOutput) > 0 then begin
-    if not DirectoryExists(GetRealPath(SubstituteMakeParams(Options.ExeOutput))) then
+    if not DirectoryExists(GetRealPath(SubstituteMakeParams(Options.ExeOutput), GetDirectory)) then
         try
-          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(Options.ExeOutput)));
+          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(Options.ExeOutput), GetDirectory));
         except
           MessageDlg('Could not create executable output directory: "'
             + Options.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
