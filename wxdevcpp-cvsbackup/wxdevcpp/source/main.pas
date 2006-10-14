@@ -854,6 +854,7 @@ type
     procedure edGdbCommandKeyPress(Sender: TObject; var Key: Char);
     procedure actExecParamsExecute(Sender: TObject);
     procedure DevCppDDEServerExecuteMacro(Sender: TObject; Msg: TStrings);
+    procedure FormPaint(Sender: TObject);
     procedure actShowTipsExecute(Sender: TObject);
     procedure actBrowserUseColorsExecute(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
@@ -1026,7 +1027,7 @@ type
     procedure PrepareDebugger;
     procedure HideCodeToolTip;
 {$IFDEF WX_BUILD}
-	procedure OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
+    procedure OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
     procedure ParseCustomCmdLine(strLst:TStringList);
     procedure SurroundWithClick(Sender: TObject);
     procedure DoCreateWxSpecificItems;
@@ -1104,6 +1105,7 @@ public
   JvInspectorDotNETPainter2: TJvInspectorBorlandPainter;
 
   ELDesigner1: TELDesigner;
+  
   //Specific to Object inspector
   Panel2: TPanel;
   cbxControlsx: TComboBox;
@@ -1117,6 +1119,7 @@ public
   lbxControls: TListBox;
   PalleteListPanel: TPanel;
   Palettes: TComboBox;
+  //Docking components
   frmProjMgrDock:TForm;
   frmInspectorDock:TForm;
   strChangedFileList:TStringList;
@@ -1124,8 +1127,7 @@ public
   FWatchList:TList;
   FileWatching:Boolean;
 {$ENDIF}
-
-	function SaveFileInternal(e: TEditor ; bParseFile:Boolean = true): Boolean;
+  function SaveFileInternal(e: TEditor ; bParseFile:Boolean = true): Boolean;
 
 {$IFDEF WX_BUILD}
 private
@@ -1285,12 +1287,14 @@ begin
     BorderStyle := bsSizeToolWin;
     Color := clBtnFace;
     Width:=300;
+
     DockSite := True;
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
     Font.Name := 'MS Sans Serif';
     OnClose := OnDockableFormClosed;
+
     lbDockClient1 := TJvDockClient.Create(frmProjMgrDock);
     with lbDockClient1 do
     begin
@@ -1299,7 +1303,6 @@ begin
        DockStyle := MainForm.DockStyle;
     end;
   end;
-
 
   //Reparent the project inspector
   LeftPageControl.Align := alClient;
@@ -1318,13 +1321,15 @@ begin
     Caption := 'Property Inspector';
     BorderStyle := bsSizeToolWin;
     Color := clBtnFace;
-    width:=300;
+    Width:=300;
+
     DockSite := True;
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
-    Font.Name := 'MS Sans Serif';    
+    Font.Name := 'MS Sans Serif';
     OnClose := OnDockableFormClosed;
+
     lbDockClient2 := TJvDockClient.Create(frmInspectorDock);
     with lbDockClient2 do
     begin
@@ -1333,25 +1338,22 @@ begin
       DockStyle := MainForm.DockStyle;
     end;
   end;
-  
+
   frmProjMgrDock.ManualDock(DockServer.LeftDockPanel);
   frmInspectorDock.ManualDock(DockServer.LeftDockPanel,nil,alBottom);
-    
   ShowDockForm(frmProjMgrDock);
   ShowDockForm(frmInspectorDock);
 
+  //Add the property inspector view menu item
+  FloatingPropertiesItem := TMenuItem.Create(MainMenu);
+  FloatingPropertiesItem.Checked := False;
+  FloatingPropertiesItem.OnClick := FloatingPropertyInspectorClick;
+  FloatingPropertiesItem.Caption := 'Show Property Inspector';
+  ViewMenu.Insert(7, FloatingPropertiesItem);
 
-   //Add the property inspector view menu item
-   FloatingPropertiesItem := TMenuItem.Create(MainMenu);
-   FloatingPropertiesItem.Checked := False;
-   FloatingPropertiesItem.OnClick := FloatingPropertyInspectorClick;
-   FloatingPropertiesItem.Caption := 'Show Property Inspector';
-   ViewMenu.Insert(7, FloatingPropertiesItem);
- 
-   //Check both "view" items
-   FloatingPropertiesItem.Checked :=True;
-   FloatingProjectManagerItem.Checked := True;
-
+  //Check both "view" items
+  FloatingPropertiesItem.Checked :=True;
+  FloatingProjectManagerItem.Checked := True;
 
   strChangedFileList:=TStringList.Create;
   strStdwxIDList:=GetPredefinedwxIds;
@@ -2073,9 +2075,12 @@ begin
   BreakPointList := TList.create;
   SetSplashStatus('Loading code completion cache');
   InitClassBrowser(true {not CacheCreated});
-   //Settle the docking sizes
-   DockServer.LeftDockPanel.Width := 200;
-   DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
+
+  //Settle the docking sizes
+  DockServer.LeftDockPanel.Width := 200;
+  DockServer.RightDockPanel.Width := 0;
+  DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
+  DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
 
 {$IFDEF WX_BUILD}
   //variable for clearing up inspector data.
@@ -2085,6 +2090,7 @@ begin
   DisablePropertyBuilding:=false;
 {$ENDIF}
 end;
+
 { *** RNC add global breakpoint *** }
 procedure TMainForm.AddBreakPointToList(line_number: integer; e: TEditor; filename:string);
 var
@@ -2150,25 +2156,6 @@ end;
 // it forces the form to show and we only want to display the form when it's
 // ready and fully created
 procedure TMainForm.DoApplyWindowPlacement;
-  procedure Redraw(Item: TComponent);
-  var
-    I, J: Integer;
-  begin
-    for I := 0 to Item.ComponentCount - 1 do
-    begin
-      //if Item.Components[I].ComponentCount <> 0 then
-        Redraw(Item.Components[I]);
-
-      if Item.Components[I] is TPageControl then
-        for J := 0 to TPageControl(Item.Components[I]).PageCount - 1 do
-          Redraw(TPageControl(Item.Components[I]).Pages[J]);
-      if Item.Components[I] is TControl then
-        TControl(Item.Components[I]).Refresh;
-    end;
-
-    if Item is TControl then
-      (Item as TControl).Refresh;
-  end;
 begin
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
@@ -2176,7 +2163,6 @@ begin
     Self.Position := poScreenCenter;
 
   Show;
-  Redraw(Self);
 end;
 
 
@@ -2486,14 +2472,6 @@ begin
   aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
   if aFile = '' then exit;
 
-  // Freeze the screen before doing anything
-  if MainForm.Visible then
-  begin
-    MainForm.Refresh;
-    MainForm.Update;
-    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(false), 0);
-  end;
-  
   // delete between "Dev-C++ Help" and first separator
   idx2 := HelpMenu.IndexOf(HelpSep1);
   for idx := pred(idx2) downto 1 do
@@ -2520,11 +2498,7 @@ begin
 
     ini.ReadSections(fHelpFiles);
     if fHelpFiles.Count = 0 then
-    begin
-      if MainForm.Visible then
-        SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
       exit;
-    end;
 
     for idx := 0 to pred(fHelpFiles.Count) do
     begin
@@ -2541,6 +2515,7 @@ begin
           idx2 := HelpMenu.IndexOf(HelpSep2);
 
         Item := TMenuItem.Create(HelpMenu);
+        XPMenu.InitComponent(Item);
         with Item do begin
           Caption := fHelpFiles.Names[idx];
           if ini.ReadBool(fHelpFiles.Names[idx], 'SearchWord', false) then
@@ -2569,12 +2544,6 @@ begin
     end;
   finally
     ini.free;
-  end;
-
-  if MainForm.Visible then
-  begin
-    XPMenu.Refresh;
-    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
   end;
 end;
 
@@ -3209,7 +3178,7 @@ begin
          Exit;
        end;
        try
-		if idx <> -1 then
+        if idx <> -1 then
         if ClassBrowser1.Enabled  and bParseFile then
         begin
           CppParser1.ReParseFile(fProject.units[idx].FileName, True); //new cc
@@ -3318,14 +3287,13 @@ begin
     EditorFilename:=e.FileName;
     if FileExists(ChangeFileExt(EditorFilename,WXFORM_EXT)) then
     begin
-        Result:=true;
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT));
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    Result:=Result and SaveFileInternal(eX,false);
+                    SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3337,7 +3305,7 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    Result:=Result and SaveFileInternal(eX,false);
+                    SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3349,7 +3317,7 @@ begin
                 if eX.Modified then
                 begin
                     bHModified:=true;
-                    Result:=Result and SaveFileInternal(eX,false);
+                    SaveFileInternal(eX,false);
                     hFile := eX.FileName;
                 end;
             end;
@@ -3363,7 +3331,7 @@ begin
                 if eX.Modified then
                 begin
                     bCppModified:=true;
-                    Result:=Result and SaveFileInternal(eX,false);
+                    SaveFileInternal(eX,false);
                     cppFile := eX.FileName;
                 end;
             end;
@@ -3530,7 +3498,7 @@ begin
 
   end
   else
-  	if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
+  if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
       ClassBrowser1.Clear;
 end;
 
@@ -4438,8 +4406,7 @@ begin
 
   fname:=Lang[ID_UNTITLED] +inttostr(dmMain.GetNum) + '.rc';
   NewEditor := TEditor.Create;
-  NewEditor.init(InProject, fname, '',
-  	FALSE, TRUE);
+  NewEditor.init(InProject, fname, '', FALSE, TRUE);
   NewEditor.Activate;
 
   if InProject and Assigned(fProject) then begin
@@ -4634,7 +4601,7 @@ begin
   try
     FreeandNil(fProject);
   except
-  	fProject:=nil;
+    fProject:=nil;
   end;
 
   ProjectView.Items.Clear;
@@ -5011,8 +4978,8 @@ var
     NewName: string;
 begin
   if not assigned(fProject) then exit;
-  if not assigned(ProjectView.Selected) or
-  	(ProjectView.Selected.Level < 1) then exit;
+  if not assigned(ProjectView.Selected) or (ProjectView.Selected.Level < 1) then
+    Exit;
 
   if ProjectView.Selected.Data = Pointer(-1) then
     Exit;
@@ -5648,7 +5615,7 @@ begin
   case MessageControl.ActivePageIndex of
     cCompTab:
       if assigned(CompilerOutput.Selected) then begin
-     	Clipboard.AsText:= StringReplace(
+        Clipboard.AsText:= StringReplace(
                         StringReplace(
                         CompilerOutput.Selected.Caption +' ' +
                         CompilerOutput.Selected.SubItems.Text
@@ -6551,12 +6518,6 @@ begin
 {$IFDEF WX_BUILD}
         if e.isForm then
         begin
-          //TODO: lowjoel: Must we really disable and re-enable the designer?
-          try
-            //MainForm.ELDesigner1.Active:=false;
-            //MainForm.ELDesigner1.DesignControl:=e.GetDesigner;
-          except
-          end;
           EnableDesignerControls;
           e.ActivateDesigner
         end
@@ -6565,13 +6526,11 @@ begin
         begin
 {$IFDEF WX_BUILD}
            MainForm.ELDesigner1.Active:=false;
-          //MainForm.ELDesigner1.DesignControl:=nil;
 {$ENDIF}
           e.Text.SetFocus;
           ClassBrowser1.CurrentFile := e.FileName;
         end;
-        if e.isForm = false then
-        begin
+        if not e.isForm then
           for i := 1 to 9 do
             if e.Text.GetBookMark(i, x, y) then begin
               TogglebookmarksPopItem.Items[i - 1].Checked := true;
@@ -6581,7 +6540,6 @@ begin
               TogglebookmarksPopItem.Items[i - 1].Checked := false;
               TogglebookmarksItem.Items[i - 1].Checked := false;
             end;
-        end;
       end;
     end;
   end
@@ -7630,21 +7588,31 @@ begin
   end;
   for i := 0 to pred(PageControl.PageCount) do
   begin
-    if (i >= 9) then break;
+    //Stop if we are doing more than 9 editors (Don't let the window menu grow too long)
+    if (i >= 9) then
+      Break;
+
+    //Create a menu item and register it with XPMenu
     e := GetEditor(i);
     Item := TMenuItem.Create(self);
+    XPMenu.InitComponent(Item);
+
+    //Associate a menu action
     Act := TAction.Create(Item);
-    //     Act.ActionList:=alMain;
     Act.Name := 'dynactOpenEditorByTag';
     Act.Tag := i;
     Act.OnExecute := dynactOpenEditorByTagExecute;
     Item.Action := Act;
+
+    //Set up the item caption
     if e.FileName = '' then
       Item.Caption := '&' + chr(49 + i) + ' Unnamed'
     else
       Item.Caption := '&' + chr(49 + i) + ' ' + e.FileName;
     if e.Modified then
       Item.Caption := Item.Caption + ' *';
+
+    //And insert it into our menu
     WindowMenu.Insert(WindowMenu.Count - 1, Item);
   end;
 end;
@@ -7832,20 +7800,19 @@ begin
     w.Free;
   end;
 end;
-{ begin XXXKF }
+
 procedure TMainForm.ProjectViewCompare(Sender: TObject; Node1,
   Node2: TTreeNode; Data: Integer; var Compare: Integer);
 begin
   if (Node1.Data = pointer(-1)) and (Node2.Data = pointer(-1)) then
     Compare := AnsiCompareStr(Node1.Text, Node2.Text)
-  else
-  	if Node1.Data = pointer(-1) then Compare := -1
-   else
-   	if Node2.Data = pointer(-1) then Compare := +1
+  else if Node1.Data = pointer(-1) then
+    Compare := -1
+  else if Node2.Data = pointer(-1) then
+    Compare := +1
   else
     Compare := AnsiCompareStr(Node1.Text, Node2.Text);
 end;
-{ end XXXKF }
 
 procedure TMainForm.ProjectViewKeyPress(Sender: TObject; var Key: Char);
 begin
@@ -8296,8 +8263,9 @@ begin
 end;
 
 procedure TMainForm.actAttachProcessExecute(Sender: TObject);
-var idx : integer;
-  	s: string;
+var
+  idx : integer;
+  s: string;
 begin
   PrepareDebugger;
   if assigned(fProject) then begin
@@ -8341,9 +8309,10 @@ begin
 end;
 
 procedure TMainForm.actModifyWatchExecute(Sender: TObject);
-var s, val: string;
-  	i: integer;
-  	n: TTreeNode;
+var
+  s, val: string;
+  i: integer;
+  n: TTreeNode;
 begin
   if (not Assigned(DebugTree.Selected)) or (not fDebugger.Executing) then
     exit;
@@ -8379,8 +8348,9 @@ begin
 end;
 
 procedure TMainForm.RefreshContext;
-var idx, idx2: integer;
-  	s: string;
+var
+  idx, idx2: integer;
+  s: string;
 begin
   // I'm not sure we should send again debug variables, GDB sends weird results for uninitialized objects (which is quite always the case)
   for idx := 0 to DebugTree.Items.Count - 1 do begin
@@ -8395,7 +8365,8 @@ begin
 end;
 
 procedure TMainForm.ClearallWatchPopClick(Sender: TObject);
-var	node: TTreeNode;
+var
+  node: TTreeNode;
 begin
   node := DebugTree.TopItem;
   while Assigned(Node) do begin
@@ -8451,9 +8422,6 @@ end;
 
 procedure TMainForm.PageControlChanging(Sender: TObject;
   var AllowChange: Boolean);
-//
-// added on 23rd may 2004 by peter_
-//
 var
   e:TEditor;
 begin
@@ -8461,11 +8429,10 @@ begin
 {$IFDEF WX_BUILD}
   if (PageControl.ActivePageIndex <> -1) then
   begin
-    e:=GetEditor(PageControl.ActivePageIndex);
-    if (e.isForm ) then
+    e := GetEditor(PageControl.ActivePageIndex);
+    if e.isForm then
       DisableDesignerControls;
   end;
-
 {$ENDIF}
 end;
 
@@ -8584,7 +8551,7 @@ begin
 
   //Ask the user what he wants to do if the project parameter is set to 'prompt' (2)
   if Assigned(fProject) and (insertProj = 2) then
-    if MessageBox(0, PChar(Lang[ID_MSG_NEWRES]), 'wxDev-C++', MB_ICONQUESTION or MB_YESNO) = 6 then
+    if MessageBox(Self.Handle, PChar(Lang[ID_MSG_NEWRES]), 'wxDev-C++', MB_ICONQUESTION or MB_YESNO) = 6 then
       insertProj := 1
     else
       insertProj := 0
@@ -8769,7 +8736,7 @@ begin
   with fProject.CurrentProfile do
   begin
     CompilerSet := devCompiler.compilerSet;
-    fProject.CurrentProfile.CompilerOptions:=devCompilerSet.OptionsStr;
+    CompilerOptions := devCompilerSet.OptionsStr;
   end;
 
   //Then add the application initialization code
@@ -9102,7 +9069,7 @@ var
   Temp := 1;
 
   while True do
-  begin                    
+  begin
     Pos1 := NPos(';', ComponentNames, Temp, Length(ComponentNames));
     if Pos1 = 0 then
       Break;
@@ -9272,7 +9239,7 @@ begin
     if ELDesigner1.SelectedControls.Count > 0 then
     begin
         DesignerMenuSelectParent.Clear;
-        DesignerMenuSelectParent.Enabled := true;
+        DesignerMenuSelectParent.Enabled := True;
         
         CurrentControl := ELDesigner1.SelectedControls.Items[0];
         while CurrentControl.Parent <> nil do
@@ -9409,24 +9376,24 @@ end;
 procedure TMainForm.ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
 var
   I: Integer;
-  compObj: Tcomponent;
+  compObj: TComponent;
   wxcompInterface: IWxComponentInterface;
   strClass: string;
   e: TEditor;
 begin
-
- FirstComponentBeingDeleted:='';
+  FirstComponentBeingDeleted := '';
   if ELDesigner1.SelectedControls.Count > 0 then
   begin
     compObj := ELDesigner1.SelectedControls[0];
     ELDesigner1.SelectedControls[0].BringToFront;
     ELDesigner1.SelectedControls[0].Visible:=true;
-    //sendDebug('Parent= ' + ELDesigner1.SelectedControls[0].Parent.Name);
+    
     if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
     begin
       strClass := wxcompInterface.GetWxClassName;
       SelectedComponent := compObj;
     end;
+
     cbxControlsx.ItemIndex :=
       cbxControlsx.Items.AddObject(ELDesigner1.SelectedControls[0].Name + ':' +
       strClass, ELDesigner1.SelectedControls[0]);
@@ -9437,12 +9404,9 @@ begin
     //TODO: Guru: Try to create an interface to make sure whether a container has
     //a limiting control. If someone is dropping more than one control then we'll
     //make the controls's parent as the parent of SplitterWindow
-    if (TWinControl(AControl).Parent <> nil) and  (TWinControl(AControl).Parent is TWxSplitterWindow) then
-    begin
-        if TWinControl(AControl).Parent.ControlCount > 2 then
-            TWinControl(AControl).Parent:= TWinControl(AControl).Parent.Parent;
-    end;
-  end;
+    if (TWinControl(AControl).Parent <> nil) and (TWinControl(AControl).Parent is TWxSplitterWindow) then
+      if TWinControl(AControl).Parent.ControlCount > 2 then
+        TWinControl(AControl).Parent:= TWinControl(AControl).Parent.Parent;
 
 
   if SelectedComponent <> nil then
@@ -9525,17 +9489,14 @@ begin
   //This makes the Sizers get painted properly.
   if ELDesigner1.SelectedControls.Count > 0 then
   begin
-        compObj:=ELDesigner1.SelectedControls[0].parent;
-
-        if compObj is TWinControl then
-        begin
-            while(compObj <> nil) do
-            begin
-                TWinControl(compObj).refresh;
-                TWinControl(compObj).repaint;
-                TWinControl(compObj):=TWinControl(compObj).parent;
-            end;    // for
-        end;
+    compObj:=ELDesigner1.SelectedControls[0].parent;
+    if compObj is TWinControl then
+      while (compObj <> nil) do
+      begin
+        TWinControl(compObj).refresh;
+        TWinControl(compObj).repaint;
+        TWinControl(compObj):=TWinControl(compObj).parent;
+      end;    // for
   end;
 
   ELDesigner1.DesignControl.Refresh;
@@ -9595,8 +9556,8 @@ begin
   try
     if Assigned(ELDesigner1.DesignControl) then
     begin
-        //ELDesigner1.Active:=True;
-        //ELDesigner1.DesignControl.SetFocus;
+        ELDesigner1.Active:=True;
+        ELDesigner1.DesignControl.SetFocus;
     end;
   finally
     cbxControlsx.Enabled := true;
@@ -9869,9 +9830,7 @@ begin
         end;
     end;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -9887,9 +9846,7 @@ begin
   end;
 
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.ELDesigner1Modified(Sender: TObject);
 var
   e: TEditor;
@@ -9901,9 +9858,7 @@ begin
   if Assigned(e) then
     e.UpdateDesignerData;
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.BuildProperties(Comp: TControl;boolForce:Boolean);
 var
   I,JK: Integer;
@@ -10421,14 +10376,12 @@ end;
 
 begin
   try
-
+    //Do some sanity checks
     if JvInspEvents.Selected = nil then
       Exit;
 
     if JvInspEvents.Selected.Visible = False then
       Exit;
-
-    strNewValue := Data.AsString;
 
     e := GetEditor(PageControl.ActivePage.TabIndex);
     if not Assigned(e) then
@@ -10437,51 +10390,45 @@ begin
     if not e.isForm then
       Exit;
 
+    //Then get the value as a string
+    strNewValue := Data.AsString;
+
+    //See we have to do with our new value
     if strNewValue = '<Add New Function>' then
     begin
-        if not ClassBrowser1.Enabled then
-        begin
-            MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Event handlers wont work', mtWarning, [mbOK], 0);
-            Data.AsString := '';
-            Exit;
-        end;
+      if not ClassBrowser1.Enabled then
+      begin
+        MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Event handlers wont work', mtWarning, [mbOK], 0);
+        Data.AsString := '';
+        Exit;
+      end;
 
       boolIsFilesDirty := false;
-
       if e.IsDesignerHPPOpened then
-      begin
         boolIsFilesDirty := e.GetDesignerHPPEditor.Modified;
-      end;
 
       if not boolIsFilesDirty then
-      begin
         if e.IsDesignerCPPOpened then
           boolIsFilesDirty := e.GetDesignerCPPEditor.Modified;
-      end;
 
       if boolIsFilesDirty then
       begin
-        if MessageDlg('Unable to Add Function.' + #13 + #10 +
-          'Corresponding Source Files are not saved.' + #13 + #10 + '' + #13 +
-          #10
-          + 'Do you want to save the source to add new function ?',
-          mtConfirmation,
-          [mbYes, mbNo], 0) <> mrYes then
+        if MessageBox(Self.Handle, PChar('Adding a new event handler requires that the source files be saved,'#10#13 +
+                                         'however, the files have not been saved to disk.'#10#13#10#13 +
+                                         'Do you want to save the files now?'), PChar(Application.Title),
+                      MB_ICONQUESTION or MB_YESNO or MB_TASKMODAL or MB_DEFBUTTON1) <> mrYES then
         begin
           Data.AsString := '';
           Exit;
         end;
+        
         if e.IsDesignerHPPOpened then
-        begin
           //This wont open a new editor window
           SaveFile(e.GetDesignerHPPEditor);
-        end;
 
         if e.IsDesignerCPPOpened then
-        begin
           //This wont open a new editor window
           SaveFile(e.GetDesignerCPPEditor);
-        end;
       end;
 
       //TODO: Guru: add functions to make sure the files are saved properly
@@ -10490,29 +10437,23 @@ begin
         str := JvInspEvents.Selected.DisplayName;
 
         if SelectedComponent is TfrmNewForm then
-        begin
-          str := TfrmNewForm(SelectedComponent).Wx_Name + Copy(str, 3,
-            Length(str));
-        end
+          str := TfrmNewForm(SelectedComponent).Wx_Name + Copy(str, 3, Length(str))
         else
           str := SelectedComponent.Name + Copy(str, 3, Length(str));
 
         Data.AsString := str;
         str := Trim(str);
 
-        //SendDebug(JvInspEvents.Selected.Data.Name);
         componentInstance:=SelectedComponent;
         propertyName:=Data.Name;
         wxClassName:=Trim(e.getDesigner().Wx_Name);
         propDisplayName:=JvInspEvents.Selected.DisplayName;
         if MainForm.CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
         begin
-
           //This is causing AV, so I moved this operation to
           //CreateFunctionInEditor
           //Data.AsString := str;
           SetPropertyValue(componentInstance,propertyName,str);
-
         end
         else
         begin
@@ -10523,57 +10464,38 @@ begin
             MessageDlg(ErrorString, mtError, [mbOK], 0);
         end;
       end;
-
-    end
-    Else
-    begin
-        //LocateFunction(Data,Trim(e.getDesigner().Wx_Name),SelectedComponent, str, JvInspEvents.Selected.DisplayName);
     end;
 
     if strNewValue= '<Goto Function>' then
     begin
-        if not ClassBrowser1.Enabled then
-        begin
-            MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Event handlers locate functions wont work', mtWarning, [mbOK], 0);
-            Data.AsString := strGlobalCurrentFunction;
-            Exit;
-        end;
+      if not ClassBrowser1.Enabled then
+      begin
+        MessageDlg('The Class Browser has been disabled.'#13#10#13#10 +
+                   'All event handling automation code will not work.', mtError, [mbOK], 0);
+        Data.AsString := strGlobalCurrentFunction;
+        Exit;
+      end;
         
       boolIsFilesDirty := false;
-
       if e.IsDesignerHPPOpened then
-      begin
         boolIsFilesDirty := e.GetDesignerHPPEditor.Modified;
-      end;
 
       if not boolIsFilesDirty then
-      begin
         if e.IsDesignerCPPOpened then
           boolIsFilesDirty := e.GetDesignerCPPEditor.Modified;
-      end;
 
       if boolIsFilesDirty then
       begin
-        if MessageDlg('Unable to Locate Function.' + #13 + #10 +
-          'Corresponding Source Files are not saved.' + #13 + #10 + '' + #13 +
-          #10
-          + 'Do you want to save the source to add new function ?',
-          mtConfirmation,
-          [mbYes, mbNo], 0) <> mrYes then
+        if MessageDlg('The corresponding source files have not been saved. '#10#13#10#13+
+                      'Do you want to save them before continuing?', mtConfirmation, [mbYes, mbNo], 0) = mrYES then
         begin
-          Data.AsString := '';
-          Exit;
-        end;
-        if e.IsDesignerHPPOpened then
-        begin
-          //This wont open a new editor window
-          SaveFile(e.GetDesignerHPPEditor);
-        end;
+          if e.IsDesignerHPPOpened then
+            //This wont open a new editor window
+            SaveFile(e.GetDesignerHPPEditor);
 
-        if e.IsDesignerCPPOpened then
-        begin
-          //This wont open a new editor window
-          SaveFile(e.GetDesignerCPPEditor);
+          if e.IsDesignerCPPOpened then
+            //This wont open a new editor window
+            SaveFile(e.GetDesignerCPPEditor);
         end;
       end;
 
@@ -10582,35 +10504,19 @@ begin
       if SelectedComponent <> nil then
       begin
         str := trim(Data.AsString);
-//
-//        if SelectedComponent is TfrmNewForm then
-//        begin
-//          str := TfrmNewForm(SelectedComponent).Wx_Name + Copy(str, 3,
-//            Length(str));
-//        end
-//        else
-//          str := SelectedComponent.Name + Copy(str, 3, Length(str));
-//
-//        Data.AsString := str;
-//        str := Trim(str);
-
         LocateFunctionInEditor(Data,Trim(e.getDesigner().Wx_Name),SelectedComponent, str, JvInspEvents.Selected.DisplayName);
-        exit;
+        Exit;
       end;
-
     end;
-
 
     if strNewValue = '<Remove Function>' then
-    begin
       Data.AsString := '';
-    end;
 
     UpdateDefaultFormContent;
-
   except
+    on E: Exception do
+      MessageBox(Self.Handle, PChar(E.Message), PChar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
   end;
-
 end;
 
 procedure TMainForm.JvInspEventsItemValueChanged(Sender: TObject;
@@ -11452,20 +11358,9 @@ end;
 procedure TMainForm.actDesignerDeleteExecute(Sender: TObject);
 begin
 {$IFDEF WX_BUILD}
-  {  if IsFromScrollBarShowing then
-    begin
-        MessageDlg('The Designer Form is scrolled. '+#13+#10+''+#13+#10+'Please resize the form to hide the scrollbar before deleting controls.', mtError, [mbOK], 0);
-        exit;
-    end;
-   }
-   
-   //SelectedComponent:=ELDesigner1.DesignControl;
    BuildProperties(ELDesigner1.DesignControl,true);
    DisablePropertyBuilding:=true;
-   try
-    ELDesigner1.DeleteSelectedControls;
-   except
-   end;
+   ELDesigner1.DeleteSelectedControls;
    DisablePropertyBuilding:=false;
 
    ELDesigner1.SelectedControls.Clear;
