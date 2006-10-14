@@ -218,7 +218,6 @@ type
     destructor Destroy; override;
     procedure InitComponent(Comp: TComponent); // Tom: Added for usage by the main program ."Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
     procedure ActivateMenuItem(MenuItem: TMenuItem; SubMenus: boolean); // +jt
-    procedure Refresh;
     property Form: TScrollingWinControl read FForm write SetForm;
 // +jt
     property IsWXP: boolean read FIsWXP;
@@ -557,16 +556,19 @@ var
 begin
   if (Comp is TMainMenu) and (xcMainMenu in XPControls) and (TMainMenu(Comp).Tag <> 999)then
   begin
+    TMainMenu(Comp).OwnerDraw := Enable;
     for x := 0 to TMainMenu(Comp).Items.Count - 1 do
-    begin
-      TMainMenu(Comp).OwnerDraw := Enable;
-      //Activate(TMainMenu(Comp).Items[x]);
       ItrateMenu(TMainMenu(Comp).Items[x]);
-    end;
-   // Selly way to force top menu in other forms to repaint
+    
+    // Selly way to force top menu in other forms to repaint
     S := TMainMenu(Comp).Items[0].Caption;
     TMainMenu(Comp).Items[0].Caption := '';
     TMainMenu(Comp).Items[0].Caption := S;
+  end;
+
+  if (Comp is TMenuItem) and (xcMainMenu in XPControls) then
+  begin
+    ItrateMenu(TMenuItem(Comp));
   end;
 
   if (Comp is TPopupMenu) and (xcPopupMenu in XPControls) then
@@ -579,7 +581,7 @@ begin
     end;
   end;
 
-  {$IFDEF VER5U}
+{$IFDEF VER5U}
   if (Comp is TToolBar) and (xcToolBar in FXPControls) then
     if not (csDesigning in ComponentState) then
     begin
@@ -606,7 +608,7 @@ begin
       if Update then
         TToolBar(Comp).Invalidate;
     end;
-  {$ENDIF}
+{$ENDIF}
 
   if (Comp is TControlBar) and (xcControlBar in FXPControls) then
     if not (csDesigning in ComponentState) then
@@ -722,8 +724,6 @@ begin
       end;
 
   // Recursive call for possible containers.
-
-
   // Do recursive call for RadioGroups
   if (((Comp is TCustomRadioGroup)) and (xccGroupBox in FXPContainers)) then
     self.InitItems(Comp as TWinControl, Enable, Update);
@@ -2257,15 +2257,10 @@ begin
   if Value = FActive then exit;
 
   FActive := Value;
-  Refresh;
+  InitItems(FForm, FActive, true);
 
   if FForm.Handle <> 0 then
     Windows.DrawMenuBar(FForm.Handle);
-end;
-
-procedure TXPMenu.Refresh;
-begin
-  InitItems(FForm, FActive, true);
 end;
 
 procedure TXPMenu.SetAutoDetect(const Value: boolean);

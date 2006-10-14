@@ -420,8 +420,6 @@ procedure TdmMain.RebuildMRU;
       end;
     Result := C;
   end;
-const
-  WM_SETREDRAW = $000B;  
 var
   Item: TMenuItem;
   NonDev: integer;
@@ -431,14 +429,6 @@ begin
   if not assigned(fMRUMenu) then exit;
   for idx := pred(fMRUMenu.Count) downto fMRUOffset do
     fMRUMenu[idx].Free;
-
-  // Freeze the screen before doing anything
-  if MainForm.Visible then
-  begin
-    MainForm.Refresh;
-    MainForm.Update;
-    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(false), 0);
-  end;
   
   // Initialize a new MRU... We'll be adding in this *only* the entries that are
   // going to fMRUMenu. After that, we 'll replace the fMRU with UpdMRU. That
@@ -489,12 +479,10 @@ begin
   // update MRU
   fMRU.Assign(UpdMRU);
   UpdMRU.Free;
-  MainForm.XPMenu.Refresh;
 
-  // Thaw and redraw the screen
-  if MainForm.Visible then
-    SendMessage(MainForm.Handle, WM_SETREDRAW, integer(true), 0);
-  
+  // redraw the menu
+  if Assigned(fMRUMenu) then
+    MainForm.XPMenu.InitComponent(fMRUMenu);
 end;
 
 { ---------- Code Insert Methods ---------- }
