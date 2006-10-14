@@ -24,6 +24,8 @@ unit version;
 
 interface
 
+uses xprocs,SysUtils,Registry,Windows,Classes,utils;
+
 var
   LIB_EXT: string;
   OBJ_EXT: string;
@@ -67,10 +69,21 @@ resourcestring
   GCC_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
 
   //Vc++
-  VC_BIN_DIR = 'Bin'+pd+'VC;Bin;';
-  VC_LIB_DIR = 'Lib'+pd+'vc2005';
-  VC_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC;';
-  VC_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+  VC2005_BIN_DIR = 'Bin'+pd+'VC2005;Bin;';
+  VC2005_LIB_DIR = 'Lib'+pd+'VC2005';
+  VC2005_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC2005;';
+  VC2005_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+  VC2003_BIN_DIR = 'Bin'+pd+'VC2003;Bin;';
+  VC2003_LIB_DIR = 'Lib'+pd+'VC2003';
+  VC2003_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC2003;';
+  VC2003_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
+  VC6_BIN_DIR = 'Bin'+pd+'VC6;Bin;';
+  VC6_LIB_DIR = 'Lib'+pd+'VC6';
+  VC6_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC6;';
+  VC6_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+
 
   //DMAR
   DMARS_BIN_DIR = 'Bin;Bin'+pd+'dmars;';
@@ -121,9 +134,14 @@ resourcestring
                        + ';lib' + pd + 'gcc' + pd + 'mingw32' + pd + GCC_VERSION + pd + 'include;'
 					   ;
 
-  VC_CPP_INCLUDE_DIR  =
-                        ';include'+pd+'VC;'+'include'+pd+'common;';
+  VC2005_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'VC2005;'+'include'+pd+'common;';
 
+  VC2003_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'VC2003;'+'include'+pd+'common;';
+
+  VC6_CPP_INCLUDE_DIR  =
+                        ';include'+pd+'VC6;'+'include'+pd+'common;';
   BORLAND_CPP_INCLUDE_DIR  =
                         ';include'+pd+'borland;'+'include'+pd+'common;';
 
@@ -206,7 +224,9 @@ resourcestring
   WEBUPDATE_SECTION = 'WEBUPDATE';
 
   GCC_DEFCOMPILERSET = 'Default GCC compiler';
-  VC_DEFCOMPILERSET = 'Default VC compiler';
+  VC2005_DEFCOMPILERSET = 'Default VC2005 compiler';
+  VC2003_DEFCOMPILERSET = 'Default VC2003 compiler';
+  VC6_DEFCOMPILERSET = 'Default VC6 compiler';
   DMARS_DEFCOMPILERSET = 'Default DigitalMars compiler';
   BORLAND_DEFCOMPILERSET = 'Default Borland compiler';
   WATCOM_DEFCOMPILERSET = 'Default Watcom compiler';
@@ -231,6 +251,13 @@ resourcestring
   cABP = 'Active Breakpoints';
   cGut = 'Gutter';
   cSel = 'Selected text';
+
+  COMPILER_INI_LABEL = 'CompilerSettings';
+  CPP_INI_LABEL = 'CppCompiler';
+  C_INI_LABEL = 'Compiler';
+  LINKER_INI_LABEL = 'Linker';
+  PREPROC_INI_LABEL = 'PreprocDefines';
+
 
 const
   //  source file extensions
@@ -347,103 +374,23 @@ const
   function CPP_INCLUDE_DIR(CompilerID:Integer):String;
   function RC_INCLUDE_DIR(CompilerID:Integer):String;
 
-  function CPP_INI_LABEL(CompilerID:Integer):String;
-  function C_INI_LABEL(CompilerID:Integer):String;
-  function LINKER_INI_LABEL(CompilerID:Integer):String;
-  function PREPROC_INI_LABEL(CompilerID:Integer):String;  
+  function GetRefinedPathList(StrPathValue,strVSInstallPath,strVCPPInstallPath,strFSDKInstallDir:String):String;
+  function GetVC2003AndVC2005Path(versionString:String;PathType:integer):String;
+  function GetVC6Path(PathType:integer):String;
+  function GetVC2005Include:String;
+  function GetVC2003Include:String;
+  function GetVC6Include:String;
+  function GetVC2005Bin:String;
+  function GetVC2003Bin:String;
+  function GetVC6Bin:String;
+  function GetVC2005Lib:String;
+  function GetVC2003Lib:String;
+  function GetVC6Lib:String;
 var
   DevCppDir: string;
 
 implementation
 uses devcfg;
-
-function CPP_INI_LABEL(CompilerID:Integer):String;
-begin
-  case CompilerID of
-      ID_COMPILER_MINGW :
-          Result := 'CppCompiler';
-
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := 'VC_CppCompiler';
-
-      ID_COMPILER_DMARS:
-        Result := 'DMARS_CppCompiler';
-
-      ID_COMPILER_BORLAND:
-        Result := 'BORLAND_CppCompiler';
-
-      ID_COMPILER_WATCOM:
-        Result := 'WATCOM_CppCompiler';
-  end;
-
-end;
-
-
-function C_INI_LABEL(CompilerID:Integer):String;
-begin
-  case CompilerID of
-      ID_COMPILER_MINGW :
-          Result := 'Compiler';
-
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := 'VC_Compiler';
-
-      ID_COMPILER_DMARS:
-        Result := 'DMARS_Compiler';
-
-      ID_COMPILER_BORLAND:
-        Result := 'BORLAND_Compiler';
-
-      ID_COMPILER_WATCOM:
-        Result := 'WATCOM_Compiler';
-  end;
-end;
-
-
-function LINKER_INI_LABEL(CompilerID:Integer):String;
-begin
-  case CompilerID of
-      ID_COMPILER_MINGW :
-          Result := 'Linker';
-
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := 'VC_Linker';
-
-      ID_COMPILER_DMARS:
-        Result := 'DMARS_Linker';
-
-      ID_COMPILER_BORLAND:
-        Result := 'BORLAND_Linker';
-
-      ID_COMPILER_WATCOM:
-        Result := 'WATCOM_Linker';
-  end;
-end;
-
-function PREPROC_INI_LABEL(CompilerID:Integer):String;
-begin
-  case CompilerID of
-      ID_COMPILER_MINGW :
-          Result := 'PreprocDefines';
-
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := 'VC_PreprocDefines';
-
-      ID_COMPILER_DMARS:
-        Result := 'DMARS_PreprocDefines';
-
-      ID_COMPILER_BORLAND:
-        Result := 'BORLAND_PreprocDefines';
-
-      ID_COMPILER_WATCOM:
-        Result := 'WATCOM_PreprocDefines';
-  end;
-end;
-
 
 function MAKE_PROGRAM(CompilerID:Integer):String;
 begin
@@ -452,7 +399,8 @@ begin
           Result := GCC_MAKE_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_MAKE_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -475,7 +423,8 @@ begin
           Result := GCC_CP_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_CP_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -497,7 +446,8 @@ begin
           Result := GCC_CPP_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_CPP_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -519,7 +469,8 @@ begin
           Result := GCC_DBG_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_DBG_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -540,7 +491,8 @@ begin
           Result := GCC_RES_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_RES_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -561,7 +513,8 @@ begin
           Result := GCC_DLL_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_DLL_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -582,9 +535,14 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_DEFCOMPILERSET;
 
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := VC_DEFCOMPILERSET;
+      ID_COMPILER_VC2005:
+          Result := VC2005_DEFCOMPILERSET;
+
+      ID_COMPILER_VC2003:
+          Result := VC2003_DEFCOMPILERSET;
+
+      ID_COMPILER_VC6:
+          Result := VC6_DEFCOMPILERSET;
 
       ID_COMPILER_DMARS:
         Result := DMARS_DEFCOMPILERSET;
@@ -605,7 +563,8 @@ begin
           Result := GCC_PROF_PROGRAM;
 
       ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
+      ID_COMPILER_VC2003,
+      ID_COMPILER_VC6:
           Result := VC_PROF_PROGRAM;
 
       ID_COMPILER_DMARS:
@@ -626,9 +585,14 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_BIN_DIR;
 
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := VC_BIN_DIR;
+      ID_COMPILER_VC2005:
+          Result := VC2005_BIN_DIR + GetVC2005Bin;
+          
+      ID_COMPILER_VC2003:
+          Result := VC2003_BIN_DIR + GetVC2003Bin;
+
+      ID_COMPILER_VC6:
+          Result := VC6_BIN_DIR + GetVC6Bin;
 
       ID_COMPILER_DMARS:
         Result := DMARS_BIN_DIR;
@@ -647,9 +611,14 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_LIB_DIR;
 
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := VC_LIB_DIR;
+      ID_COMPILER_VC2005:
+        Result := VC2005_LIB_DIR+ GetVC2005Lib;
+
+      ID_COMPILER_VC2003:
+        Result := VC2003_LIB_DIR+  GetVC2003Lib;
+        
+      ID_COMPILER_VC6:
+          Result := VC6_LIB_DIR+   GetVC6Lib;
 
       ID_COMPILER_DMARS:
         Result := DMARS_LIB_DIR;
@@ -669,9 +638,14 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_C_INCLUDE_DIR;
 
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := VC_C_INCLUDE_DIR;
+      ID_COMPILER_VC2005:
+        Result := COMMON_CPP_INCLUDE_DIR+ VC2005_C_INCLUDE_DIR + GetVC2005Include;
+
+      ID_COMPILER_VC2003:
+        Result := COMMON_CPP_INCLUDE_DIR+ VC2003_C_INCLUDE_DIR+ GetVC2003Include;
+
+      ID_COMPILER_VC6:
+          Result := COMMON_CPP_INCLUDE_DIR+ VC6_C_INCLUDE_DIR+ GetVC6Include;
 
       ID_COMPILER_DMARS:
         Result := DMARS_C_INCLUDE_DIR;
@@ -690,9 +664,14 @@ begin
       ID_COMPILER_MINGW :
           Result := COMMON_CPP_INCLUDE_DIR + GCC_CPP_INCLUDE_DIR;
 
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := COMMON_CPP_INCLUDE_DIR + VC_CPP_INCLUDE_DIR;
+      ID_COMPILER_VC2005:
+          Result := GetVC2005Include + VC2005_CPP_INCLUDE_DIR + COMMON_CPP_INCLUDE_DIR;
+
+      ID_COMPILER_VC2003:
+          Result := GetVC2003Include + VC2003_CPP_INCLUDE_DIR + COMMON_CPP_INCLUDE_DIR;
+
+      ID_COMPILER_VC6:
+          Result := GetVC6Include + VC6_CPP_INCLUDE_DIR + COMMON_CPP_INCLUDE_DIR;
 
       ID_COMPILER_DMARS:
         Result := COMMON_CPP_INCLUDE_DIR + DMARS_CPP_INCLUDE_DIR ;
@@ -711,9 +690,14 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_RC_INCLUDE_DIR;
 
-      ID_COMPILER_VC2005,
-      ID_COMPILER_VC:
-          Result := VC_RC_INCLUDE_DIR;
+      ID_COMPILER_VC2005:
+          Result := GetVC2005Include + VC2005_RC_INCLUDE_DIR;
+
+      ID_COMPILER_VC2003:
+          Result := GetVC2003Include + VC2003_RC_INCLUDE_DIR;
+
+      ID_COMPILER_VC6:
+          Result := GetVC6Include + VC6_RC_INCLUDE_DIR;
 
       ID_COMPILER_DMARS:
         Result := DMARS_RC_INCLUDE_DIR;
@@ -724,6 +708,176 @@ begin
       ID_COMPILER_WATCOM:
         Result := WATCOM_RC_INCLUDE_DIR;
   end;
+end;
+
+
+function GetVC6Path(PathType:integer):String;
+var
+  strInclude,strBin,strLib,TempString:String;
+  reverseList:TStringList;
+  i:Integer;
+begin
+  TempString := 'Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Directories\';
+
+  case  PathType of
+      0:
+        begin
+          TempString := TempString + 'Include Dirs';
+          strInclude :=regReadValue(HKEY_CURRENT_USER,TempString,dtString);
+          Result:=';'+strInclude+';';
+        end;
+      1:
+        begin
+          TempString := TempString + 'Path Dirs';
+          strBin :=regReadValue(HKEY_CURRENT_USER,TempString,dtString);
+          Result:=';'+strBin+';';
+        end;
+      2:
+        begin
+
+          TempString := TempString + 'Library Dirs';
+          strLib :=regReadValue(HKEY_CURRENT_USER,TempString,dtString);
+          Result:=';'+strLib+';';
+        end;
+  end;
+  reverseList:=TStringList.Create;
+  Split(Result,';',reverseList);
+  Result:='';
+  for i := reverseList.Count-1 downto 0 do
+  begin
+    Result:=Result+';'+reverseList[i];
+  end;
+
+  //reverseList.destroy;
+  Result:=Result+';';
+
+end;
+
+function GetRefinedPathList(StrPathValue,strVSInstallPath,strVCPPInstallPath,strFSDKInstallDir:String):String;
+var
+   strLst:TStringList;
+   i:Integer;
+begin
+    strLst:=TStringList.Create;
+    strVCPPInstallPath := IncludeTrailingPathDelimiter(strVCPPInstallPath);
+    strVSInstallPath := IncludeTrailingPathDelimiter(strVSInstallPath);
+    StrPathValue:=StringReplace(StrPathValue,'$(VCInstallDir)',strVCPPInstallPath,[rfReplaceAll,rfIgnoreCase]);
+    StrPathValue:=StringReplace(StrPathValue,'$(VSInstallDir)',strVSInstallPath,[rfReplaceAll,rfIgnoreCase]);
+    Result:=StrPathValue;
+    Split(Result,';',strLst);
+    Result:='';
+    for i:=strLst.Count -1 downto 0 do
+        Result:=Result+';' + strLst[i];
+    strLst.Destroy;
+end;
+
+function GetVC2003AndVC2005Path(versionString:String;PathType:integer):String;
+var
+    strVSInstallDir,
+    strVCPPInstallDir,
+    strInclude,
+    strBin,
+    strLib,
+    strFSDKInstallDir:String;
+    TempString:String;
+    reg:TRegistry;
+Begin
+    reg:=TRegistry.Create;
+    reg.RootKey:=HKEY_LOCAL_MACHINE;
+
+    TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VC\',[VersionString]);
+    if (reg.OpenKey(TempString,false) = false) then
+       exit;
+    strVCPPInstallDir:=reg.ReadString('ProductDir');
+    reg.CloseKey;
+
+    TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VS\',[VersionString]);
+    if (reg.OpenKey(TempString,false) = false) then
+       exit;
+    strVSInstallDir:=reg.ReadString('ProductDir');
+    reg.CloseKey;
+
+    TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\FRAMEWORKSDK\';
+    if (reg.OpenKey(TempString,false)) then
+    begin
+         strFSDKInstallDir:=reg.ReadString(VersionString);
+    end;
+    reg.CloseKey;
+
+    TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\VC\VC_OBJECTS_PLATFORM_INFO\Win32\Directories\',[VersionString]);
+    if (reg.OpenKey(TempString,false)) then
+    begin
+      case  PathType of
+      0:
+        begin
+          strInclude:=reg.ReadString('Include Dirs');
+          if Trim(strInclude) = '' then
+            strInclude:='$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include';
+          Result:=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir);
+        end;
+      1:
+        begin
+          strBin:=reg.ReadString('Path Dirs');
+          if Trim(strBin) = '' then
+            strBin:='$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
+          Result:=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir);
+        end;
+      2:
+        begin
+          strLib:=reg.ReadString('Library Dirs');
+          if Trim(strLib) = '' then
+            strLib:= '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
+          Result:=GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir);
+        end;
+      end;
+    end;
+  reg.CloseKey;
+  reg.destroy;
+end;
+
+function GetVC2005Include:String;
+begin
+    Result:=GetVC2003AndVC2005Path('8.0',0);
+end;
+
+function GetVC2003Include:String;
+begin
+    Result:=GetVC2003AndVC2005Path('7.1',0);
+end;
+
+function GetVC6Include:String;
+begin
+  Result:=GetVC6Path(0);
+end;
+
+function GetVC2005Bin:String;
+begin
+    Result:=GetVC2003AndVC2005Path('8.0',1);
+end;
+
+function GetVC2003Bin:String;
+begin
+    Result:=GetVC2003AndVC2005Path('7.1',1);
+end;
+
+function GetVC6Bin:String;
+begin
+  Result:=GetVC6Path(1);
+end;
+
+function GetVC2005Lib:String;
+begin
+    Result:=GetVC2003AndVC2005Path('8.0',2);
+end;
+
+function GetVC2003Lib:String;
+begin
+    Result:=GetVC2003AndVC2005Path('7.1',2);
+end;
+
+function GetVC6Lib:String;
+begin
+    Result:=GetVC6Path(2);
 end;
 
 end.

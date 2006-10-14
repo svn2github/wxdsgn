@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 354
-  Top = 102
+  Left = 283
+  Top = 106
   Width = 638
   Height = 444
   Color = clBtnFace
@@ -17,7 +17,6 @@ object MainForm: TMainForm
   OnContextPopup = FormContextPopup
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
-  OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -115,7 +114,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 98
+        Height = 97
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -133,7 +132,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 98
+        Height = 97
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -188,18 +187,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 393
-        Height = 98
+        Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           393
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 638
-          Height = 73
+          Height = 71
           Anchors = [akLeft, akTop, akRight, akBottom]
           ReadOnly = True
           ScrollBars = ssVertical
@@ -215,7 +214,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 98
+        Height = 97
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
@@ -596,7 +595,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 610
-            Height = 67
+            Height = 66
             Align = alClient
             Columns = <
               item
@@ -630,7 +629,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 610
-            Height = 45
+            Height = 44
             Align = alClient
             Lines.Strings = (
               'Debugger output')
@@ -682,7 +681,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 618
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1201,6 +1200,7 @@ object MainForm: TMainForm
     Width = 209
     Height = 135
     Align = alLeft
+    BevelOuter = bvNone
     Caption = 'pnlBrowsers'
     UseDockManager = False
     DockSite = True
@@ -3519,6 +3519,7 @@ object MainForm: TMainForm
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
     DockStyle = DockStyle
+    CustomDock = False
     Left = 604
     Top = 158
   end

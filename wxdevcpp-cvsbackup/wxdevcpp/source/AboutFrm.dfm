@@ -1,10 +1,10 @@
 object AboutForm: TAboutForm
-  Left = 537
-  Top = 174
+  Left = 358
+  Top = 202
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'About wx-Dev-C++'
-  ClientHeight = 425
+  ClientHeight = 396
   ClientWidth = 393
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -2208,7 +2208,7 @@ object AboutForm: TAboutForm
   end
   object btnOk: TBitBtn
     Left = 310
-    Top = 394
+    Top = 367
     Width = 75
     Height = 25
     Caption = '&OK'
@@ -2963,89 +2963,23 @@ object AboutForm: TAboutForm
     Left = 8
     Top = 268
     Width = 378
-    Height = 117
+    Height = 93
     Caption = 'Web sites / email : '
     TabOrder = 2
-    object BloodLabel: TLabel
+    object LBForumLabel: TLabel
       Left = 16
-      Top = 32
-      Width = 146
+      Top = 40
+      Width = 133
       Height = 13
-      Caption = 'Bloodshed Software web site : '
+      Caption = 'wxDev-C++ Support Forum :'
     end
-    object BloodSite: TLabel
+    object LbForumSite: TLabel
       Left = 168
-      Top = 32
-      Width = 125
+      Top = 40
+      Width = 145
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://www.bloodshed.net'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      OnClick = LabelClick
-    end
-    object MingwLabel: TLabel
-      Left = 16
-      Top = 48
-      Width = 124
-      Height = 13
-      Caption = 'Mingw compiler web site : '
-    end
-    object MingwSite: TLabel
-      Left = 168
-      Top = 48
-      Width = 106
-      Height = 13
-      Cursor = crHandPoint
-      Caption = 'http://www.mingw.org'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      OnClick = LabelClick
-    end
-    object ForumLabel: TLabel
-      Left = 16
-      Top = 64
-      Width = 129
-      Height = 13
-      Caption = 'Dev-C++ discussion forum :'
-    end
-    object ForumSite: TLabel
-      Left = 168
-      Top = 64
-      Width = 156
-      Height = 13
-      Cursor = crHandPoint
-      Caption = 'http://www.bloodshed.net/forum'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      OnClick = LabelClick
-    end
-    object MailLabel: TLabel
-      Left = 16
-      Top = 80
-      Width = 126
-      Height = 13
-      Caption = 'Dev-C++ users mailing list :'
-    end
-    object MailSite: TLabel
-      Left = 168
-      Top = 80
-      Width = 201
-      Height = 13
-      Cursor = crHandPoint
-      Caption = 'http://www.bloodshed.net/devcpp-ml.html'
+      Caption = 'http://wxforum.shadonet.com/viewforum.php?f=28'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -3056,18 +2990,18 @@ object AboutForm: TAboutForm
     end
     object eMailLabel: TLabel
       Left = 16
-      Top = 96
-      Width = 118
+      Top = 64
+      Width = 79
       Height = 13
-      Caption = 'Dev-C++ Resource Site :'
+      Caption = 'wxWidgets Site :'
     end
     object eMailSite: TLabel
       Left = 168
-      Top = 96
-      Width = 148
+      Top = 64
+      Width = 98
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://www.bloodshed.net/dev'
+      Caption = 'http://wxwidgets.org'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -3101,7 +3035,7 @@ object AboutForm: TAboutForm
   end
   object btnAuthors: TBitBtn
     Left = 227
-    Top = 394
+    Top = 367
     Width = 83
     Height = 25
     Caption = '&Authors'
@@ -3139,7 +3073,7 @@ object AboutForm: TAboutForm
   end
   object btnUpdateCheck: TBitBtn
     Left = 8
-    Top = 394
+    Top = 367
     Width = 185
     Height = 25
     Caption = '&Check for updates'

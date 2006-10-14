@@ -559,7 +559,7 @@ begin
   if assigned(fTabSheet) then
   begin
     //Broadcast the page change event
-    fTabSheet.PageControl.OnChanging(fTabSheet.PageControl, Allow);
+    //fTabSheet.PageControl.OnChanging(fTabSheet.PageControl, Allow);
 
     //Then do the actual changing
     fTabSheet.PageControl.Show;
@@ -933,16 +933,18 @@ var
   var
     FillingParameter: Boolean;
     Brackets: Integer;
-    I: Integer;
+    I,TxtLength: Integer;
   begin
     //Give the current selection index, we need to find the start of the function
     FillingParameter := False;
     I := FText.SelStart;
     Brackets := -1;
     Result := -1;
-    
-    while I > 0 do
+    TxtLength := length(FText.Text);
+    while (I > 0) do
     begin
+      if (I < 0) or (I >= TxtLength) then
+        break;
       case FText.Text[I] of
         ')':
           Dec(Brackets);

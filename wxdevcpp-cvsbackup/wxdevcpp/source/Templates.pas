@@ -22,7 +22,7 @@ unit Templates;
 interface
 
 uses 
-  Classes, Types, IniFiles, prjtypes;
+  Classes, Types, IniFiles, prjtypes,devcfg;
 
 type
   TTemplateUnit = record
@@ -47,7 +47,7 @@ type
   TTemplate = class
   private
     fFileName: string;
-    fOptions: TProjOptions;
+    fOptions: TProjectProfileList;
     fName: string;
     fDesc: string;
     fCatagory: string;
@@ -77,7 +77,7 @@ type
     property Description: string read fDesc write fDesc;
     property FileName: string read fFileName write fFileName;
     property Name: string read fName write fName;
-    property OptionsRec: TProjOptions read fOptions write fOptions;
+    property OptionsRec: TProjectProfileList read fOptions write fOptions;
     property ProjectName: string read fPrjName write fPrjName;
     property ProjectIcon: string read fProjectIcon write fProjectIcon;
     property UnitCount: integer read GetUnitCount;
@@ -106,16 +106,21 @@ resourcestring
 
 constructor TTemplate.Create;
 begin
-  initOptionsRec(fOptions);
+  fOptions:=TProjectProfileList.Create;
 end;
 
 destructor TTemplate.Destroy;
 begin
-  fTemplate.Free;
+  fOptions.Free;
   inherited;
 end;
 
 procedure TTemplate.ReadTemplateFile(const FileName: string);
+var
+  NewProfile:TProjProfile;
+  ProfileCount:Integer;
+  i:Integer;
+  CurrenProfileName:String;
 begin
   if assigned(fTemplate) then fTemplate.Free;
   if FileExists(FileName) then
@@ -133,14 +138,13 @@ begin
 
   with fTemplate do
   begin
-     fVersion:= ReadInteger(cTemplate, 'Ver', 0);
+     fVersion:= ReadInteger(cTemplate, 'Ver', -1);
      // read entries for both old and new
      // template info
      fName:= ReadString(cTemplate, 'Name', 'NoName');
      fDesc:= ReadString(cTemplate, 'Description', 'NoDesc');
      fCatagory:= ReadString(cTemplate, 'Catagory', '');
      fIconIndex:= ReadInteger(cTemplate, 'IconIndex', 0);
-
      // project info
      fPrjName:= ReadString(cProject, 'Name', '');
      if fPrjName = '' then
@@ -148,76 +152,95 @@ begin
 
      if fName = '' then
        fName:= fPrjName;
+     if (fVersion < 3) then
+     begin
+        NewProfile:=TProjProfile.Create;
+        fOptions.Add(NewProfile);
+     end;
 
      // read old style
      if (fVersion <= 0) then
      begin
-         fOptions.icon:= ReadString(cTemplate, 'Icon', '');
+         fOptions[0].icon:= ReadString(cTemplate, 'Icon', '');
        if ReadBool(cProject, 'Console', FALSE) then
-          fOptions.typ:= dptCon
+          fOptions[0].typ:= dptCon
        else
        if ReadBool(cProject, 'DLL', FALSE) then
-           fOptions.typ:= dptDyn
+           fOptions[0].typ:= dptDyn
        else
-           fOptions.Typ:= dptGUI;
+           fOptions[0].Typ:= dptGUI;
 
-       fOptions.Libs.Append(ReadString(cProject, 'Libs', ''));
-       fOptions.Includes.Append(ReadString(cProject, 'Includes', ''));
+       fOptions[0].Libs.Append(ReadString(cProject, 'Libs', ''));
+       fOptions[0].Includes.Append(ReadString(cProject, 'Includes', ''));
 
          fOptions.useGPP:= ReadBool(cProject, 'Cpp', TRUE);
-         fOptions.cmdLines.GCC_Compiler:= ReadString(cProject, 'CompilerOptions', '');
+         fOptions[0].Compiler:= ReadString(cProject, 'CompilerOptions', '');
+         fOptions[0].compilerType:= ID_COMPILER_MINGW;
      end
-     else // read new style
+     else if (fVersion = 1) or  (fVersion = 2) then
      begin
-         fOptions.icon:= ReadString(cTemplate, 'Icon', '');
+         fOptions[0].compilerType:= ID_COMPILER_MINGW;
+         fOptions[0].icon:= ReadString(cTemplate, 'Icon', '');
          ProjectIcon:= ReadString(cProject, 'ProjectIcon', '');
-         fOptions.typ:= ReadInteger(cProject, 'Type', 0); // default = gui
-         fOptions.Objfiles.DelimitedText := ReadString(cProject, 'ObjFiles', '');
-         fOptions.Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
-         fOptions.Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
+         fOptions[0].typ:= ReadInteger(cProject, 'Type', 0); // default = gui
+         //fOptions.Objfiles.DelimitedText := ReadString(cProject, 'ObjFiles', '');
+         fOptions[0].Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
+         fOptions[0].Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
 
 {$IFDEF WX_BUILD}
          // Tony Reina 11 June 2005
          // This is needed to grab the MakeIncludes from the template file of a new project
-         fOptions.MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
+         fOptions[0].MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
 
 {$ENDIF}
+         fOptions[0].ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
+         fOptions[0].Compiler:= ReadString(cProject, 'Compiler', '');
+         fOptions[0].CppCompiler:= ReadString(cProject, 'CppCompiler', '');
+         fOptions[0].Linker:= ReadString(cProject, 'Linker', '');
+         fOptions[0].PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
+         fOptions[0].CompilerOptions := ReadString(cProject, COMPILER_INI_LABEL, '');
 
-         fOptions.ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
-         fOptions.cmdLines.GCC_Compiler:= ReadString(cProject, 'Compiler', '');
-         fOptions.cmdLines.GCC_CppCompiler:= ReadString(cProject, 'CppCompiler', '');
-         fOptions.cmdLines.GCC_Linker:= ReadString(cProject, 'Linker', '');
-         fOptions.GCC_PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
-
-         fOptions.cmdLines.VC_Compiler:= ReadString(cProject, 'VC_Compiler', '');
-         fOptions.cmdLines.VC_CppCompiler:= ReadString(cProject, 'VC_CppCompiler', '');
-         fOptions.cmdLines.VC_Linker:= ReadString(cProject, 'VC_Linker', '');
-         fOptions.VC_PreprocDefines := ReadString(cProject, 'VC_PreprocDefines', '');
-
-         fOptions.cmdLines.DMARS_Compiler:= ReadString(cProject, 'DMARS_Compiler', '');
-         fOptions.cmdLines.DMARS_CppCompiler:= ReadString(cProject, 'DMARS_CppCompiler', '');
-         fOptions.cmdLines.DMARS_Linker:= ReadString(cProject, 'DMARS_Linker', '');
-         fOptions.DMARS_PreprocDefines := ReadString(cProject, 'DMARS_PreprocDefines', '');
-
-         fOptions.cmdLines.BORLAND_Compiler:= ReadString(cProject, 'BORLAND_Compiler', '');
-         fOptions.cmdLines.BORLAND_CppCompiler:= ReadString(cProject, 'BORLAND_CppCompiler', '');
-         fOptions.cmdLines.BORLAND_Linker:= ReadString(cProject, 'BORLAND_Linker', '');
-         fOptions.BORLAND_PreprocDefines := ReadString(cProject, 'BORLAND_PreprocDefines', '');
-
-         fOptions.cmdLines.WATCOM_Compiler:= ReadString(cProject, 'WATCOM_Compiler', '');
-         fOptions.cmdLines.WATCOM_CppCompiler:= ReadString(cProject, 'WATCOM_CppCompiler', '');
-         fOptions.cmdLines.WATCOM_Linker:= ReadString(cProject, 'WATCOM_Linker', '');
-         fOptions.WATCOM_PreprocDefines := ReadString(cProject, 'WATCOM_PreprocDefines', '');
-
-         fOptions.useGPP:= ReadBool(cProject, 'IsCpp', FALSE);
-         fOptions.IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
-         fOptions.SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
+         fOptions.useGPP:= ReadBool(cProject, 'IsCpp', true);
+         fOptions[0].IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
+         fOptions[0].SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
 
          // RNC -- 07-23-04 Added the ability to set an output dir in a template
-         fOptions.ExeOutput:= ReadString(cProject, 'ExeOutput', '');
-         fOptions.ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
-         fOptions.CompilerOptions:= ReadString(cProject, 'CompilerSettings','');
+         fOptions[0].ExeOutput:= ReadString(cProject, 'ExeOutput', '');
+         fOptions[0].ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
          // units are read on demand
+      end
+      else // read new style
+      begin
+        ProfileCount:=ReadInteger(cProject, 'ProfilesCount', 0);
+        for i:=0 to ProfileCount -1 do
+        begin
+          CurrenProfileName:='Profile'+IntToStr(i);
+          NewProfile := TProjProfile.Create;
+          NewProfile.ProfileName:= ReadString(CurrenProfileName,'ProfileName','');
+          NewProfile.typ:= ReadInteger(CurrenProfileName,'Type',0);
+          NewProfile.compilerType:= ReadInteger(CurrenProfileName,'CompilerType',ID_COMPILER_MINGW);
+          NewProfile.Compiler:= ReadString(CurrenProfileName,'Compiler','');
+          NewProfile.CppCompiler:= ReadString(CurrenProfileName,'CppCompiler','');
+          NewProfile.Linker:= ReadString(CurrenProfileName,'Linker','');
+          NewProfile.ObjFiles.DelimitedText:=ReadString(CurrenProfileName,'ObjFiles','');
+          NewProfile.Includes.DelimitedText:=ReadString(CurrenProfileName,'Includes','');
+          NewProfile.Libs.DelimitedText:=ReadString(CurrenProfileName,'Libs','');
+          NewProfile.PrivateResource:= ReadString(CurrenProfileName,'PrivateResource','');
+          NewProfile.ResourceIncludes.DelimitedText:=ReadString(CurrenProfileName,'ResourceIncludes','');
+          NewProfile.MakeIncludes.DelimitedText:=ReadString(CurrenProfileName,'MakeIncludes','');
+          NewProfile.Icon:= ReadString(CurrenProfileName,'Icon','');
+          NewProfile.ExeOutput := ReadString(CurrenProfileName,'ExeOutput','');
+          NewProfile.ObjectOutput := ReadString(CurrenProfileName,'ObjectOutput','');
+          NewProfile.OverrideOutput := ReadBool(CurrenProfileName,'OverrideOutput',false);
+          NewProfile.OverridenOutput := ReadString(CurrenProfileName,'OverridenOutput','');
+          NewProfile.HostApplication := ReadString(CurrenProfileName,'HostApplication','');
+          NewProfile.IncludeVersionInfo := ReadBool(CurrenProfileName,'IncludeVersionInfo',false);
+          NewProfile.SupportXPThemes:= ReadBool(CurrenProfileName,'SupportXPThemes',false);
+          NewProfile.CompilerSet := ReadInteger(CurrenProfileName,'CompilerSet',0);
+          NewProfile.CompilerOptions := ReadString(CurrenProfileName,'CompilerOptions','');
+          NewProfile.PreprocDefines:= ReadString(CurrenProfileName,'PreprocDefines','');
+          fOptions.Add(NewProfile);
+        end;
       end;
   end;
 end;

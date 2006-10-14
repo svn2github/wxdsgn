@@ -391,7 +391,7 @@ var
   opt: TCompilerOption;
   idx: integer;
   spos: integer;
-  opts: TProjOptions;
+  opts: TProjProfile;
 begin
   CloseDebugger(nil);
   if (MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
@@ -400,34 +400,34 @@ begin
       if not Assigned(MainForm.fProject) then
         devCompiler.Options[idx]:=opt; // set global debugging option only if not working with a project
 
-      MainForm.SetProjCompOpt(idx, True); // set the project's correpsonding option too
+      MainForm.SetProjCompOpt(ID_COMPILER_MINGW,idx, True); // set the project's correpsonding option too
 
       // remove "-s" from the linker''s command line
       if Assigned(MainForm.fProject) then begin
-        opts := MainForm.fProject.Options;
+        opts := MainForm.fProject.CurrentProfile;
         // look for "-s" in all the possible ways
         // NOTE: can't just search for "-s" because we might get confused with
         //       some other option starting with "-s...."
-        spos := Pos('-s ', opts.cmdLines.GCC_Linker); // following more opts
+        spos := Pos('-s ', opts.Linker); // following more opts
         if spos = 0 then
-          spos := Pos('-s'#13, opts.cmdLines.GCC_Linker); // end of line
+          spos := Pos('-s'#13, opts.Linker); // end of line
         if spos = 0 then
-          spos:=Pos('-s_@@_', opts.cmdLines.GCC_Linker); // end of line (dev 4.9.7.3+)
+          spos:=Pos('-s_@@_', opts.Linker); // end of line (dev 4.9.7.3+)
         if (spos = 0) and
-          (Length(opts.cmdLines.GCC_Linker) >= 2) and // end of string
-           (Copy(opts.cmdLines.GCC_Linker, Length(opts.cmdLines.GCC_Linker)-1, 2) = '-s') then
-          spos := Length(opts.cmdLines.GCC_Linker) - 1;
+          (Length(opts.Linker) >= 2) and // end of string
+           (Copy(opts.Linker, Length(opts.Linker)-1, 2) = '-s') then
+          spos := Length(opts.Linker) - 1;
         // if found, delete it
         if spos>0 then begin
-          Delete(opts.cmdLines.GCC_Linker, spos, 2);
-          MainForm.fProject.Options := opts;
+          Delete(opts.Linker, spos, 2);
+          MainForm.fProject.CurrentProfile.CopyProfileFrom(opts);
         end;
       end;
       if devCompiler.FindOption('-s', opt, idx) then begin
         opt.optValue := 0;
         if not Assigned(MainForm.fProject) then
           devCompiler.Options[idx]:=opt; // set global debugging option only if not working with a project
-        MainForm.SetProjCompOpt(idx, False); // set the project's correpsonding option too
+        MainForm.SetProjCompOpt(ID_COMPILER_MINGW,idx, False); // set the project's correpsonding option too
       end;
       MainForm.actRebuildExecute(nil);
     end;

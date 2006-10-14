@@ -854,7 +854,6 @@ type
     procedure edGdbCommandKeyPress(Sender: TObject; var Key: Char);
     procedure actExecParamsExecute(Sender: TObject);
     procedure DevCppDDEServerExecuteMacro(Sender: TObject; Msg: TStrings);
-    procedure FormPaint(Sender: TObject);
     procedure actShowTipsExecute(Sender: TObject);
     procedure actBrowserUseColorsExecute(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
@@ -1044,7 +1043,7 @@ type
     procedure RemoveActiveBreakpoints;
     procedure AddDebugVar(s: string);
     procedure OnBreakpointToggle(index: integer; BreakExists: boolean);
-    procedure SetProjCompOpt(idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
+    procedure SetProjCompOpt(compilerType:Integer;idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
     function CloseEditor(index: integer; Rem: boolean): Boolean;
     procedure RefreshContext;
 
@@ -2076,14 +2075,8 @@ begin
   InitClassBrowser(true {not CacheCreated});
    //Settle the docking sizes
    DockServer.LeftDockPanel.Width := 200;
-   //DockServer.TopDockPanel.Width := 300;
-   //DockServer.RightDockPanel.Width := 300;
-   //DockServer.BottomDockPanel.Width := 300;
    DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
-   //DockServer.TopDockPanel.JvDockManager.GrabberSize := 22;
-   //DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
-   //DockServer.BottomDockPanel.JvDockManager.GrabberSize := 22;
-   
+
 {$IFDEF WX_BUILD}
   //variable for clearing up inspector data.
   //Added because there is a AV when adding a function
@@ -2157,6 +2150,25 @@ end;
 // it forces the form to show and we only want to display the form when it's
 // ready and fully created
 procedure TMainForm.DoApplyWindowPlacement;
+  procedure Redraw(Item: TComponent);
+  var
+    I, J: Integer;
+  begin
+    for I := 0 to Item.ComponentCount - 1 do
+    begin
+      //if Item.Components[I].ComponentCount <> 0 then
+        Redraw(Item.Components[I]);
+
+      if Item.Components[I] is TPageControl then
+        for J := 0 to TPageControl(Item.Components[I]).PageCount - 1 do
+          Redraw(TPageControl(Item.Components[I]).Pages[J]);
+      if Item.Components[I] is TControl then
+        TControl(Item.Components[I]).Refresh;
+    end;
+
+    if Item is TControl then
+      (Item as TControl).Refresh;
+  end;
 begin
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
@@ -2164,6 +2176,7 @@ begin
     Self.Position := poScreenCenter;
 
   Show;
+  Redraw(Self);
 end;
 
 
@@ -2973,7 +2986,7 @@ begin
       boolIsRC:=isRCExt(e.FileName);
       boolIsXRC:=isXRCExt(e.FileName);
     end;
-    if fProject.Options.UseGPP then
+    if fProject.Profiles.UseGPP then
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
       dext := CPP_EXT;
@@ -3072,7 +3085,7 @@ begin
     end else
     begin
       if Assigned(fProject) then
-        if fProject.Options.useGPP then
+        if fProject.Profiles.useGPP then
           FilterIndex := CppFilter
         else
           FilterIndex := CFilter
@@ -3305,13 +3318,14 @@ begin
     EditorFilename:=e.FileName;
     if FileExists(ChangeFileExt(EditorFilename,WXFORM_EXT)) then
     begin
+        Result:=true;
         if isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT));
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX,false);
+                    Result:=Result and SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3323,7 +3337,7 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX,false);
+                    Result:=Result and SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3335,7 +3349,7 @@ begin
                 if eX.Modified then
                 begin
                     bHModified:=true;
-                    SaveFileInternal(eX,false);
+                    Result:=Result and SaveFileInternal(eX,false);
                     hFile := eX.FileName;
                 end;
             end;
@@ -3349,7 +3363,7 @@ begin
                 if eX.Modified then
                 begin
                     bCppModified:=true;
-                    SaveFileInternal(eX,false);
+                    Result:=Result and SaveFileInternal(eX,false);
                     cppFile := eX.FileName;
                 end;
             end;
@@ -3409,7 +3423,7 @@ var
   e: TEditor;
   cppEditor,hppEditor,wxEditor,wxXRCEditor:TEditor;
   EditorFilename:String;
-  Saved:Boolean;
+  Saved,IsFileAForm:Boolean;
 
   procedure CloseEditorInternal(eX: TEditor);
   begin
@@ -3436,7 +3450,6 @@ begin
   e := GetEditor(index);
   if not assigned(e) then exit;
   if not AskBeforeClose(e, Rem,Saved) then Exit;
-
   Result := True;
 {$IFDEF WX_BUILD}
   //Guru: My Code starts here
@@ -3454,7 +3467,7 @@ begin
     end;
 
 
-    hppEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT));
+    hppEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT),true);
     if assigned(hppEditor) then begin
         if Saved then begin
             hppEditor.Modified:=true;
@@ -3465,7 +3478,7 @@ begin
         CloseEditorInternal(hppEditor);
     end;
 
-    wxEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT));
+    wxEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT),true);
     if assigned(wxEditor) then begin
         if Saved then begin
             wxEditor.Modified:=true;
@@ -3473,10 +3486,18 @@ begin
         end
         Else
             wxEditor.Modified:=false;
+        if (e.isForm) then
+        begin
+          IsFileAForm:=boolInspectorDataClear;
+          boolInspectorDataClear:=true;
+          DisableDesignerControls();
+          boolInspectorDataClear:=IsFileAForm;
+        end;
+
         CloseEditorInternal(wxEditor);
     end;
 
-    wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
+    wxXRCEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT),true);
     if assigned(wxXRCEditor) then begin
        if Saved then begin
           wxXRCEditor.Modified:=true;
@@ -3500,7 +3521,13 @@ begin
     {$IFDEF WX_BUILD}
     if not e.isForm then
     {$ENDIF}
-        e.Text.SetFocus;
+        e.Text.SetFocus
+    else
+    begin
+        EnableDesignerControls;
+        e.ActivateDesigner;
+    end;
+
   end
   else
   	if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
@@ -4373,7 +4400,7 @@ begin
         Exit;
       end;
       fCompiler.Project := fProject;
-      with fProject.Options do
+      with fProject.CurrentProfile do
       begin
         CompilerSet := devCompiler.compilerSet;
         CompilerOptions := devCompiler.OptionStr;
@@ -5269,8 +5296,8 @@ begin
   if Assigned(fProject) then
   begin
     if (
-      fProject.Options.VersionInfo.AutoIncBuildNrOnCompile or
-      (fProject.Options.VersionInfo.AutoIncBuildNrOnRebuild and rebuild)
+      fProject.CurrentProfile.VersionInfo.AutoIncBuildNrOnCompile or
+      (fProject.CurrentProfile.VersionInfo.AutoIncBuildNrOnRebuild and rebuild)
     ) then
       fProject.IncrementBuildNumber;
     fProject.BuildPrivateResource;
@@ -5388,12 +5415,12 @@ begin
       MessageDlg(Lang[ID_ERR_PROJECTNOTCOMPILED], mtWarning, [mbOK], 0);
       exit;
     end;
-    if fProject.Options.typ = dptDyn then begin
-      if fProject.Options.HostApplication = '' then begin
+    if fProject.CurrentProfile.typ = dptDyn then begin
+      if fProject.CurrentProfile.HostApplication = '' then begin
         MessageDlg(Lang[ID_ERR_HOSTMISSING], mtWarning, [mbOK], 0);
         exit;
       end
-      else if not FileExists(fProject.Options.HostApplication) then begin
+      else if not FileExists(fProject.CurrentProfile.HostApplication) then begin
         MessageDlg(Lang[ID_ERR_HOSTNOTEXIST], mtWarning, [mbOK], 0);
         exit;
       end;
@@ -5402,8 +5429,8 @@ begin
     fDebugger.FileName := '"' + StringReplace(fProject.Executable, '\', '\\', [rfReplaceAll]) + '"';
 
     // add to the debugger the project include dirs
-    for idx := 0 to fProject.Options.Includes.Count - 1 do
-      fDebugger.AddIncludeDir(fProject.Options.Includes[idx]);
+    for idx := 0 to fProject.CurrentProfile.Includes.Count - 1 do
+      fDebugger.AddIncludeDir(fProject.CurrentProfile.Includes[idx]);
 
     fDebugger.Execute;
     fDebugger.SendCommand(GDB_FILE, fDebugger.FileName);
@@ -5419,8 +5446,8 @@ begin
      for idx:=0 to BreakPointList.Count -1 do begin
         PBreakPointEntry(BreakPointList.Items[idx])^.breakPointIndex := fDebugger.AddBreakpoint(idx);
     end;
-    if fProject.Options.typ = dptDyn then begin
-      fDebugger.SendCommand(GDB_EXECFILE, '"' + StringReplace(fProject.Options.HostApplication, '\', '\\', [rfReplaceAll])+ '"');
+    if fProject.CurrentProfile.typ = dptDyn then begin
+      fDebugger.SendCommand(GDB_EXECFILE, '"' + StringReplace(fProject.CurrentProfile.HostApplication, '\', '\\', [rfReplaceAll])+ '"');
     end
   end
   else
@@ -5970,29 +5997,41 @@ procedure TMainForm.actUndoUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
+  //Added for wx: Try catch for Some weird On Close Error
   e := GetEditor;
-  actUndo.Enabled := assigned(e) and e.Text.CanUndo;
+  try
+    actUndo.Enabled := assigned(e) and e.Text.CanUndo;
+  except
+  end;
 end;
 
 procedure TMainForm.actRedoUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
-  actRedo.enabled := assigned(e) and e.Text.CanRedo;
+  //Added for wx: Try catch for Some weird On Close Error
+  try
+    e := GetEditor;
+    actRedo.enabled := assigned(e) and e.Text.CanRedo;
+  except
+  end;
 end;
 
 procedure TMainForm.actCutUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
-  if assigned(e) then
-  begin
-    if e.isForm then
-        actCut.Enabled := e.isForm
-    else
-      actCut.Enabled := assigned(e) and e.Text.SelAvail;
+  //Added for wx: Try catch for Some weird On Close Error
+  try
+    e := GetEditor;
+    if assigned(e) then
+    begin
+      if e.isForm then
+          actCut.Enabled := e.isForm
+      else
+        actCut.Enabled := assigned(e) and e.Text.SelAvail;
+    end;
+  except
   end;
 end;
 
@@ -6000,30 +6039,40 @@ procedure TMainForm.actCopyUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
+  //Added for wx: Try catch for Some weird On Close Error
+  try
+    e := GetEditor;
 
-  if assigned(e) then
-  begin
-    if e.isForm then
-        actCopy.Enabled := e.isForm
-    else
-        actCopy.Enabled := assigned(e) and e.Text.SelAvail;
+    if assigned(e) then
+    begin
+      if e.isForm then
+          actCopy.Enabled := e.isForm
+      else
+          actCopy.Enabled := assigned(e) and e.Text.SelAvail;
+    end;
+  except
   end;
+  
 end;
 
 procedure TMainForm.actPasteUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
+  //Added for wx: Try catch for Some weird On Close Error
+  try
+    e := GetEditor;
 
-  if assigned(e) then
-  begin
-    if e.isForm then
-        actPaste.Enabled := e.isForm
-    else
-      actPaste.Enabled := assigned(e) and e.Text.CanPaste;
+    if assigned(e) then
+    begin
+      if e.isForm then
+          actPaste.Enabled := e.isForm
+      else
+        actPaste.Enabled := assigned(e) and e.Text.CanPaste;
+    end;
+  except
   end;
+
 end;
 
 procedure TMainForm.actSaveUpdate(Sender: TObject);
@@ -6043,17 +6092,25 @@ procedure TMainForm.actSaveAsUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
-  actSaveAs.Enabled := assigned(e);
+  //Added for wx: Try catch for Some weird On Close Error
+  try
+    e := GetEditor;
+    actSaveAs.Enabled := assigned(e);
+  except
+  end;
 end;
 
 procedure TMainForm.actFindNextUpdate(Sender: TObject);
 var
   e: TEditor;
 begin
-  e := GetEditor;
-  // ** need to also check if a search has already happened
-  actFindNext.Enabled := assigned(e) and (e.Text.Text <> '');
+  //Added for wx: Try catch for Some weird On Close Error
+  try
+    e := GetEditor;
+    // ** need to also check if a search has already happened
+    actFindNext.Enabled := assigned(e) and (e.Text.Text <> '');
+  except
+  end;
 end;
 
 procedure TMainForm.MessageControlContextPopup(Sender: TObject;
@@ -6258,8 +6315,8 @@ begin
       ProjectDir := fProject.Directory;
       for I := 0 to fProject.Units.Count - 1 do
         AddFileToScan(fProject.Units[I].FileName, True);
-      for I := 0 to fProject.Options.Includes.Count - 1 do
-        AddProjectIncludePath(fProject.Options.Includes[I]);
+      for I := 0 to fProject.CurrentProfile.Includes.Count - 1 do
+        AddProjectIncludePath(fProject.CurrentProfile.Includes[I]);
     end
     else begin
       e := GetEditor;
@@ -6466,7 +6523,7 @@ end;
 procedure TMainForm.actUpdateExecute(Sender: TObject);
 begin
   if Assigned(fProject) then
-    (Sender as TCustomAction).Enabled := not (fProject.Options.typ = dptStat)
+    (Sender as TCustomAction).Enabled := not (fProject.CurrentProfile.typ = dptStat)
   else
     (Sender as TCustomAction).Enabled := PageControl.PageCount > 0;
 end;
@@ -6474,7 +6531,7 @@ end;
 procedure TMainForm.actRunUpdate(Sender: TObject);
 begin
   if Assigned(fProject) then
-    (Sender as TCustomAction).Enabled := not (fProject.Options.typ = dptStat) and not devExecutor.Running and not fDebugger.Executing and not fCompiler.Compiling
+    (Sender as TCustomAction).Enabled := not (fProject.CurrentProfile.typ = dptStat) and not devExecutor.Running and not fDebugger.Executing and not fCompiler.Compiling
   else
     (Sender as TCustomAction).Enabled := (PageControl.PageCount > 0) and not devExecutor.Running and not fDebugger.Executing and not fCompiler.Compiling;
 end;
@@ -6496,8 +6553,8 @@ begin
         begin
           //TODO: lowjoel: Must we really disable and re-enable the designer?
           try
-            MainForm.ELDesigner1.Active:=false;
-            MainForm.ELDesigner1.DesignControl:=e.GetDesigner;
+            //MainForm.ELDesigner1.Active:=false;
+            //MainForm.ELDesigner1.DesignControl:=e.GetDesigner;
           except
           end;
           EnableDesignerControls;
@@ -6513,16 +6570,18 @@ begin
           e.Text.SetFocus;
           ClassBrowser1.CurrentFile := e.FileName;
         end;
-
-        for i := 1 to 9 do
-          if e.Text.GetBookMark(i, x, y) then begin
-            TogglebookmarksPopItem.Items[i - 1].Checked := true;
-            TogglebookmarksItem.Items[i - 1].Checked := true;
-          end
-          else begin
-            TogglebookmarksPopItem.Items[i - 1].Checked := false;
-            TogglebookmarksItem.Items[i - 1].Checked := false;
-          end;
+        if e.isForm = false then
+        begin
+          for i := 1 to 9 do
+            if e.Text.GetBookMark(i, x, y) then begin
+              TogglebookmarksPopItem.Items[i - 1].Checked := true;
+              TogglebookmarksItem.Items[i - 1].Checked := true;
+            end
+            else begin
+              TogglebookmarksPopItem.Items[i - 1].Checked := false;
+              TogglebookmarksItem.Items[i - 1].Checked := false;
+            end;
+        end;
       end;
     end;
   end
@@ -6570,7 +6629,7 @@ end;
 procedure TMainForm.actProgramResetUpdate(Sender: TObject);
 begin
   if Assigned(fProject) then
-    (Sender as TCustomAction).Enabled := not (fProject.Options.typ = dptStat) and devExecutor.Running
+    (Sender as TCustomAction).Enabled := not (fProject.CurrentProfile.typ = dptStat) and devExecutor.Running
   else
     (Sender as TCustomAction).Enabled := (PageControl.PageCount > 0) and devExecutor.Running;
 end;
@@ -6852,11 +6911,12 @@ var
   idxP, idxD: integer;
   prof, deb: boolean;
 begin
+  //todo: disable profiling for non gcc compilers
   // see if profiling is enabled
   prof := devCompiler.FindOption('-pg', optP, idxP);
   if prof then begin
     if Assigned(fProject) then begin
-      if (fProject.Options.CompilerOptions <> '') and (fProject.Options.CompilerOptions[idxP + 1] = '1') then
+      if (fProject.CurrentProfile.CompilerOptions <> '') and (fProject.CurrentProfile.CompilerOptions[idxP + 1] = '1') then
         prof := true
       else
         prof := false;
@@ -6868,7 +6928,7 @@ begin
   deb := devCompiler.FindOption('-g3', optD, idxD);
   if deb then begin
     if Assigned(fProject) then begin
-      if (fProject.Options.CompilerOptions <> '') and (fProject.Options.CompilerOptions[idxD + 1] = '1') then
+      if (fProject.CurrentProfile.CompilerOptions <> '') and (fProject.CurrentProfile.CompilerOptions[idxD + 1] = '1') then
         deb := true
       else
         deb := false;
@@ -6881,11 +6941,11 @@ begin
     if MessageDlg(Lang[ID_MSG_NOPROFILE], mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
       optP.optValue := 1;
       if Assigned(fProject) then
-        SetProjCompOpt(idxP, True);
+        SetProjCompOpt(ID_COMPILER_MINGW,idxP, True);
       devCompiler.Options[idxP] := optP;
       optD.optValue := 1;
       if Assigned(fProject) then
-        SetProjCompOpt(idxD, True);
+        SetProjCompOpt(ID_COMPILER_MINGW,idxD, True);
       devCompiler.Options[idxD] := optD;
 
       // Check for strip executable
@@ -6893,7 +6953,7 @@ begin
         optD.optValue := 0;
         if not Assigned(MainForm.fProject) then
           devCompiler.Options[idxD] := optD; // set global debugging option only if not working with a project
-        MainForm.SetProjCompOpt(idxD, False);// set the project's correpsonding option too
+        MainForm.SetProjCompOpt(ID_COMPILER_MINGW,idxD, False);// set the project's correpsonding option too
       end;
 
       actRebuildExecute(nil);
@@ -7368,7 +7428,7 @@ end;
 
 procedure TMainForm.CheckForDLLProfiling;
 var
-  opts: TProjOptions;
+  opts: TProjProfile;
   opt: TCompilerOption;
   idx: integer;
 begin
@@ -7379,10 +7439,12 @@ begin
   if not devCompiler.FindOption('-pg', opt, idx) then
     Exit;
 
-  if (fProject.Options.typ in [dptDyn, dptStat]) and (opt.optValue > 0) then begin
+  opts :=TProjProfile.Create;
+  
+  if (fProject.CurrentProfile.typ in [dptDyn, dptStat]) and (opt.optValue > 0) then begin
     // project is a lib or a dll, and profiling is enabled
     // check for the existence of "-lgmon" in project's linker options
-    if AnsiPos('-lgmon', fProject.Options.cmdLines.GCC_Linker) = 0 then
+    if AnsiPos('-lgmon', fProject.CurrentProfile.Linker) = 0 then
       // does not have -lgmon
       // warn the user that we should update its project options and include
       // -lgmon in linker options, or else the compilation will fail
@@ -7392,9 +7454,9 @@ begin
         'If you choose No, and you do not disable profiling from the Compiler Options ' +
         'chances are that your library''s compilation will fail...', mtConfirmation,
         [mbYes, mbNo], 0) = mrYes then begin
-        opts := fProject.Options;
-        opts.cmdLines.GCC_Linker := fProject.Options.cmdLines.GCC_Linker + ' -lgmon';
-        fProject.Options := opts;
+        opts.CopyProfileFrom(fProject.CurrentProfile);
+        opts.Linker := fProject.CurrentProfile.Linker + ' -lgmon';
+        fProject.CurrentProfile.CopyProfileFrom(opts);
         fProject.Modified := True;
       end;
   end;
@@ -7406,8 +7468,8 @@ begin
   try
     ParamsForm.ParamEdit.Text := fCompiler.RunParams;
     if Assigned(fProject) then
-      ParamsForm.HostEdit.Text := fProject.Options.HostApplication;
-    if (not Assigned(fProject)) or (fProject.Options.typ <> dptDyn) then
+      ParamsForm.HostEdit.Text := fProject.CurrentProfile.HostApplication;
+    if (not Assigned(fProject)) or (fProject.CurrentProfile.typ <> dptDyn) then
       ParamsForm.DisableHost;
     if (ParamsForm.ShowModal = mrOk) then begin
       fCompiler.RunParams := ParamsForm.ParamEdit.Text;
@@ -7453,15 +7515,6 @@ begin
     end;
     Application.BringToFront;
   end;
-end;
-
-procedure TMainForm.FormPaint(Sender: TObject);
-begin
-  OnPaint := nil; // don't re-enter here ;)
-  inherited;
-
-  if devData.ShowTipsOnStart and (ParamCount = 0) then  // do not show tips if dev-c++ is launched with a file
-    actShowTips.Execute;
 end;
 
 procedure TMainForm.actShowTipsExecute(Sender: TObject);
@@ -7895,20 +7948,26 @@ begin
     frmInspectorDock.Hide;
 end;
 
-procedure TMainForm.SetProjCompOpt(idx: integer; Value: boolean);
+procedure TMainForm.SetProjCompOpt(compilerType:Integer;idx: integer; Value: boolean);
 var
-  projOpt: TProjOptions;
+  projOpt: TProjProfile;
 begin
+  projOpt:= TProjProfile.Create;
+  //fix this for all compilers
   if Assigned(fProject) then begin
-    projOpt := fProject.Options;
-    if idx <= Length(projOpt.CompilerOptions) then begin
-      if Value then
-        projOpt.CompilerOptions[idx + 1] := '1'
-      else
-        projOpt.CompilerOptions[idx + 1] := '0';
-      fProject.Options := projOpt;
+    projOpt := fProject.CurrentProfile;
+    if (compilerType = ID_COMPILER_MINGW) then
+    begin
+      if idx <= Length(projOpt.CompilerOptions) then begin
+        if Value then
+            projOpt.CompilerOptions[idx + 1] := '1'
+        else
+            projOpt.CompilerOptions[idx + 1] := '0';
+        fProject.CurrentProfile.CopyProfileFrom(projOpt);
+      end;
     end;
   end;
+  projOpt.Destroy;
 end;
 
 procedure TMainForm.SetupProjectView;
@@ -8228,7 +8287,7 @@ end;
 
 procedure TMainForm.actAttachProcessUpdate(Sender: TObject);
 begin
-  if assigned(fProject) and (fProject.Options.typ = dptDyn) then begin
+  if assigned(fProject) and (fProject.CurrentProfile.typ = dptDyn) then begin
     (Sender as TCustomAction).Visible := true;
     (Sender as TCustomAction).Enabled := not devExecutor.Running;
   end
@@ -8261,8 +8320,8 @@ begin
         fDebugger.FileName := '"' + StringReplace(fProject.Executable, '\', '\\', [rfReplaceAll]) + '"';
 
         // add to the debugger the project include dirs
-        for idx := 0 to fProject.Options.Includes.Count - 1 do
-          fDebugger.AddIncludeDir(fProject.Options.Includes[idx]);
+        for idx := 0 to fProject.CurrentProfile.Includes.Count - 1 do
+          fDebugger.AddIncludeDir(fProject.CurrentProfile.Includes[idx]);
 
         fDebugger.Execute;
         fDebugger.SendCommand(GDB_FILE, fDebugger.FileName);
@@ -8395,10 +8454,18 @@ procedure TMainForm.PageControlChanging(Sender: TObject;
 //
 // added on 23rd may 2004 by peter_
 //
+var
+  e:TEditor;
 begin
   HideCodeToolTip;
 {$IFDEF WX_BUILD}
-  DisableDesignerControls;
+  if (PageControl.ActivePageIndex <> -1) then
+  begin
+    e:=GetEditor(PageControl.ActivePageIndex);
+    if (e.isForm ) then
+      DisableDesignerControls;
+  end;
+
 {$ENDIF}
 end;
 
@@ -8699,10 +8766,10 @@ begin
   INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
   INI.free;
   
-  with fProject.Options do
+  with fProject.CurrentProfile do
   begin
     CompilerSet := devCompiler.compilerSet;
-    CompilerOptions := devCompilerSet.optionsstr;
+    fProject.CurrentProfile.CompilerOptions:=devCompilerSet.OptionsStr;
   end;
 
   //Then add the application initialization code
@@ -9035,7 +9102,7 @@ var
   Temp := 1;
 
   while True do
-  begin
+  begin                    
     Pos1 := NPos(';', ComponentNames, Temp, Length(ComponentNames));
     if Pos1 = 0 then
       Break;
@@ -9528,8 +9595,8 @@ begin
   try
     if Assigned(ELDesigner1.DesignControl) then
     begin
-        ELDesigner1.Active:=True;
-        ELDesigner1.DesignControl.SetFocus;
+        //ELDesigner1.Active:=True;
+        //ELDesigner1.DesignControl.SetFocus;
     end;
   finally
     cbxControlsx.Enabled := true;
@@ -9842,6 +9909,7 @@ var
   I,JK: Integer;
     strValue:String;
     strSelName,strCompName:String;
+    strInspSelectedItem:String;
 begin
 
 if not boolForce then
@@ -9850,6 +9918,12 @@ begin
     exit;
   if assigned(SelectedComponent) then
     strSelName:=SelectedComponent.Name;
+
+  if JvInspProperties.Showing then
+  begin
+    if JvInspProperties.Selected <> nil then
+      strInspSelectedItem:= JvInspProperties.Selected.DisplayName;
+  end;
 
   if assigned(comp) then
     strCompName:=comp.Name;
@@ -9893,6 +9967,21 @@ end;
 
   if strValue = '1*NoData' then
     exit;
+
+  if JvInspProperties.Showing then
+  begin
+    for i:=0 to JvInspProperties.Root.Count -1 do
+    begin
+      if AnsiSameText(strInspSelectedItem,JvInspProperties.Root.Items[i].DisplayName) then
+        begin
+          JvInspProperties.FocusedItem:=JvInspProperties.Root.Items[i];
+          //JvInspProperties.Root.Items[i].InitEdit;
+          //JvInspProperties.TopIndex:=i;
+          //JvInspProperties.se
+          //Selected:= JvInspProperties.Root.Items[i];
+        end;
+    end;
+  end;
 
   JvInspProperties.BeginUpdate;
   JK:= JvInspProperties.Root.Count - 1;
@@ -10139,7 +10228,7 @@ begin
     begin
         if not ClassBrowser1.Enabled then
         begin
-            MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Class Names in the sources are not Changed', mtWarning, [mbOK], 0);
+            //MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Class Names in the sources are not Changed', mtWarning, [mbOK], 0);
            // if Assigned(JvInspProperties.Selected.Data) and (Trim(PreviousStringValue) <> '') then
            //     JvInspProperties.Selected.Data.AsString:=PreviousStringValue;
             Exit;
@@ -10331,7 +10420,6 @@ begin
 end;
 
 begin
-  strNewValue := Data.AsString;
   try
 
     if JvInspEvents.Selected = nil then
@@ -10340,6 +10428,7 @@ begin
     if JvInspEvents.Selected.Visible = False then
       Exit;
 
+    strNewValue := Data.AsString;
 
     e := GetEditor(PageControl.ActivePage.TabIndex);
     if not Assigned(e) then

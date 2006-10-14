@@ -105,6 +105,7 @@ var
 begin
   fProject := Proj;
   tv.Items.Clear;
+  tv.Items.BeginUpdate;
   for I := 0 to devCompiler.OptionsCount - 1 do
     CreateSectionNode(nil, devCompiler.Options[I].optSection);
 {$IFDEF WIN32}
@@ -116,6 +117,7 @@ begin
 {$ENDIF}
   if tv.Items.Count > 0 then
     tv.Selected := tv.Items.Item[0];
+  tv.Items.EndUpdate;
 end;
 
 procedure TCompOptionsFrame.tvChange(Sender: TObject; Node: TTreeNode);
@@ -139,10 +141,10 @@ begin
 
   vle.OnSetEditText := nil;
   vle.Strings.Clear;
-
+  vle.Strings.BeginUpdate;
   NodePath := SectionPath(Node);
   for I := 0 to devCompiler.OptionsCount - 1 do begin
-    ShowOption := (not Assigned(fProject)) or (Assigned(fProject) and not (fProject.Options.typ in devCompiler.Options[I].optExcludeFromTypes));
+    ShowOption := (not Assigned(fProject)) or (Assigned(fProject) and not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes));
     if ShowOption and (AnsiCompareText(devCompiler.Options[I].optSection, NodePath) = 0) then begin
       if Assigned(devCompiler.Options[I].optChoices) and (devCompiler.Options[I].optValue < devCompiler.Options[I].optChoices.Count) then
         idx := vle.InsertRow(devCompiler.Options[I].optName, devCompiler.Options[I].optChoices.Names[devCompiler.Options[I].optValue], True)
@@ -163,6 +165,7 @@ begin
   end;
   vle.ColWidths[0] := vle.ClientWidth - 64;
   vle.OnSetEditText := vleSetEditText;
+  vle.Strings.EndUpdate;
 end;
 
 procedure TCompOptionsFrame.vleSetEditText(Sender: TObject; ACol,

@@ -52,12 +52,14 @@ const
   BoolVal10: array[0..27] of string = ('0', '1', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',   // Had to use letters for multiple choices
     'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
     's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+    
   ID_COMPILER_MINGW = 0;
-  ID_COMPILER_VC = 1;
-  ID_COMPILER_VC2005 = 2;
-  ID_COMPILER_DMARS = 3;
-  ID_COMPILER_BORLAND = 4;
-  ID_COMPILER_WATCOM = 5;
+  ID_COMPILER_VC2005 = 1;
+  ID_COMPILER_VC2003 = 2;
+  ID_COMPILER_VC6 = 3;
+  ID_COMPILER_DMARS = 4;
+  ID_COMPILER_BORLAND = 5;
+  ID_COMPILER_WATCOM = 6;
   
 type
   // the comments are an example of the record
@@ -879,7 +881,10 @@ begin
   if devCompilerSet.Sets.Count=0 then begin
     // init first-run
     devCompilerSet.Sets.Add(GCC_DEFCOMPILERSET);
-    devCompilerSet.Sets.Add(VC_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(VC2005_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(VC2003_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(VC6_DEFCOMPILERSET);
+
     devCompilerSet.WriteSets;
         
     devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
@@ -889,12 +894,26 @@ begin
     devCompilerSet.LoadSetDirs(0);
     devCompilerSet.SaveSet(0);
 
-    devCompilerSet.CompilerType :=ID_COMPILER_VC;
-    devdirs.fCompilerType:=1;
+    devCompilerSet.CompilerType :=ID_COMPILER_VC2005;
+    devdirs.fCompilerType:=ID_COMPILER_VC2005;
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(1);
     devCompilerSet.LoadSetDirs(1);
     devCompilerSet.SaveSet(1);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC2003;
+    devdirs.fCompilerType:=ID_COMPILER_VC2003;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(2);
+    devCompilerSet.LoadSetDirs(2);
+    devCompilerSet.SaveSet(2);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC6;
+    devdirs.fCompilerType:=ID_COMPILER_VC6;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(3);
+    devCompilerSet.LoadSetDirs(3);
+    devCompilerSet.SaveSet(3);
     //Reset the compiler type back to GCC
     devdirs.fCompilerType:=1;
     devdirs.SettoDefaults;
@@ -1160,7 +1179,7 @@ begin
   //Begin by clearing the compiler options list
   devCompiler.ClearOptions;
 
-  if (devCompilerSet.CompilerType = ID_COMPILER_VC) or (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
+  if (devCompilerSet.CompilerType = ID_COMPILER_VC6)or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) or (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
   begin
     sl := TStringList.Create;
     sl.Add('Neither  =');
@@ -1180,7 +1199,7 @@ begin
     AddOption('Omit frame pointers', false, true, true, false, 0, '/Oy', 'Code Optimization', [], nil);
 
     //Code generation
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
     begin
         sl := TStringList.Create;
         sl.Add('Blended model=B');
@@ -1199,7 +1218,7 @@ begin
 
     sl := TStringList.Create;
     sl.Add('Disable=');
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
         sl.Add('Enable=/Gf');
     sl.Add('Enable Read-Only  =/GF');
     AddOption('String Pooling', false, true, true, false, 0, '', 'Code Generation', [], sl);
@@ -1242,7 +1261,7 @@ begin
     AddOption('Enable C++ RTTI', false, false, true, false, 0, '/GR', 'Code Generation', [], nil);
     AddOption('Enable Minimal Rebuild', false, true, true, false, 0, '/Gm', 'Code Generation', [], nil);
     AddOption('Enable Link-time Code Generation', false, true, true, true, 0, '/GL', 'Code Generation', [], nil);
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
     begin
         AddOption('Enable Pentium FDIV fix', false, true, true, false, 1, '/QIfdiv', 'Code Generation', [], nil);
         AddOption('Enable Pentium 0x0F fix', false, true, true, false, 1, '/QI0f', 'Code Generation', [], nil);
@@ -1271,7 +1290,7 @@ begin
     sl.Add('Old-Style Debugging Information=/Z7');
     sl.Add('Include line numbers only=/Zd');
     AddOption('Debugging', false, true, true, false, 0, '', 'Language Options', [], sl);
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
         AddOption('Enable Extensions', false, true, true, false, 1, '/Ze', 'Language Options', [], nil);
     AddOption('Omit library name in object file', false, true, true, false, 0,  '/Zl', 'Language Options', [], nil);
     AddOption('Generate function prototypes', false, true, true, false, 0, '/Zg', 'Language Options', [], nil);
@@ -1279,7 +1298,7 @@ begin
         AddOption('Enable OpenMP 2.0 Language Extensions', false, false, true, false, 0, '/openmp', 'Language Options', [], nil);
 
 
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003)then
     begin
         AddOption('Enforce Standard C++ scoping', false, false, true, false, 0, '/Zc:forScope', 'Language Options', [], nil);
         AddOption('Make wchar_t a native type', false, false, true, false, 0, '/Zc:wchar_t', 'Language Options', [], nil);
@@ -1300,7 +1319,7 @@ begin
     sl.Add('Level 1=/W1');
     sl.Add('None=/w');
     AddOption('Warning Level', false, true, true, false, 0, '', 'Miscellaneous', [], sl);
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
         AddOption('Use Precompiled headers', false, true, true, false, 0, '/YX', 'Miscellaneous', [], nil);
     AddOption('Enable 64-bit porting warnings', false, true, true, false, 0, '/Wp64', 'Miscellaneous', [], nil);
     AddOption('Disable incremental linking', false, false, false, true, 0, '/INCREMENTAL:NO', 'Miscellaneous', [], nil);
@@ -1633,15 +1652,19 @@ end;
 procedure TdevDirs.SettoDefaults;
 var
   tempstr: String;
+  newstr:string;
 begin
   fDefault:= IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
   fBinDir:= ValidatePaths(fDefault + BIN_DIR(fCompilerType), tempstr);
   fCDir:= ValidatePaths(fDefault + C_INCLUDE_DIR(fCompilerType), tempstr);
-  fCppDir:= ValidatePaths(fDefault
-    + StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
+  newstr:=CPP_INCLUDE_DIR(fCompilerType);
+  if (fCompilerType = ID_COMPILER_VC6) or (fCompilerType = ID_COMPILER_VC2003) or (fCompilerType = ID_COMPILER_VC2005) then
+    fCppDir:= ValidatePaths(fDefault + StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]) + CPP_INCLUDE_DIR(fCompilerType), tempstr)
+  else
+    fCppDir:= ValidatePaths(fDefault + CPP_INCLUDE_DIR(fCompilerType)+ StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
   fLibDir:= ValidatePaths(fDefault + LIB_DIR(fCompilerType), tempstr);
   {$IFDEF WX_BUILD}
-  fRCDir := ValidatePaths(fDefault
+  fRCDir := ValidatePaths(fDefault + RC_INCLUDE_DIR(fCompilerType)  
     + StringReplace(RC_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
   {$ELSE}
   fRCDir := '';
@@ -1775,7 +1798,7 @@ begin
 
   fInsertMode := TRUE;
   fAutoIndent := TRUE;
-  fSmartTabs := TRUE;
+  fSmartTabs := FALSE;
   fSmartUnindent := TRUE;
   fTabtoSpaces := TRUE;
 
@@ -1868,7 +1891,7 @@ begin
       if fShowScrollHint then
         Options := Options + [eoShowScrollHint];
       if fSmartTabs then
-        Options := Options + [eoSmartTabs];
+        Options := Options - [eoSmartTabs];
       if fSmartTabs then
         Options := Options + [eoSmartTabDelete];
       if fTabtoSpaces then
@@ -2057,6 +2080,8 @@ begin
   end;
 
   devCompiler.OptionStr := devCompilerSet.OptionsStr;
+  devCompiler.AddDefaultOptions;
+
 end;
 
 constructor TdevCompilerSet.Create;
@@ -2410,7 +2435,7 @@ begin
   fLinkOptions := '';
   fMakeOptions := '';
 
-  if (CompilerType = ID_COMPILER_VC) or (CompilerType = ID_COMPILER_VC2005) then
+  if (CompilerType = ID_COMPILER_VC6) or (CompilerType = ID_COMPILER_VC2003) or (CompilerType = ID_COMPILER_VC2005) then
   begin
     fCheckSyntaxFormat      := '/Zs';
     fOutputFormat           := '/c %s /Fo%s';

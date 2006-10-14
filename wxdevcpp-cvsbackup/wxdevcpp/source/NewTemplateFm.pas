@@ -251,24 +251,24 @@ procedure TNewTemplateForm.FillExtras;
 begin
   memCompiler.Clear;
   memLinker.Clear;
-  if TempProject.Options.cmdLines.GCC_Compiler <> '' then
-    memCompiler.Lines.Add(StringReplace(TempProject.Options.cmdLines.GCC_Compiler, '_@@_', #13#10, [rfReplaceAll]));
-  if TempProject.Options.cmdLines.GCC_CppCompiler <> '' then
-    memCppCompiler.Lines.Add(StringReplace(TempProject.Options.cmdLines.GCC_CppCompiler, '_@@_', #13#10, [rfReplaceAll]));
-  if TempProject.Options.cmdLines.GCC_Linker <> '' then
-    memLinker.Lines.Add(StringReplace(TempProject.Options.cmdLines.GCC_Linker, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.CurrentProfile.Compiler <> '' then
+    memCompiler.Lines.Add(StringReplace(TempProject.CurrentProfile.Compiler, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.CurrentProfile.CppCompiler <> '' then
+    memCppCompiler.Lines.Add(StringReplace(TempProject.CurrentProfile.CppCompiler, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.CurrentProfile.Linker <> '' then
+    memLinker.Lines.Add(StringReplace(TempProject.CurrentProfile.Linker, '_@@_', #13#10, [rfReplaceAll]));
 end;
 
 procedure TNewTemplateForm.FillIconsList;
 begin
   lstIcons.Items.Clear;
-  if TempProject.Options.Icon <> '' then begin
-    IconFiles[0] := ExpandFileto(TempProject.Options.Icon, TempProject.Directory);
+  if TempProject.CurrentProfile.Icon <> '' then begin
+    IconFiles[0] := ExpandFileto(TempProject.CurrentProfile.Icon, TempProject.Directory);
     Icons[0] := TIcon.Create;
-    Icons[0].LoadFromFile(ExpandFileto(TempProject.Options.Icon, TempProject.Directory));
-    IconFiles[1] := ExpandFileto(TempProject.Options.Icon, TempProject.Directory);
+    Icons[0].LoadFromFile(ExpandFileto(TempProject.CurrentProfile.Icon, TempProject.Directory));
+    IconFiles[1] := ExpandFileto(TempProject.CurrentProfile.Icon, TempProject.Directory);
     Icons[1] := TIcon.Create;
-    Icons[1].LoadFromFile(ExpandFileto(TempProject.Options.Icon, TempProject.Directory));
+    Icons[1].LoadFromFile(ExpandFileto(TempProject.CurrentProfile.Icon, TempProject.Directory));
   end
   else begin
     IconFiles[0] := '';
@@ -294,7 +294,7 @@ procedure TNewTemplateForm.CreateTemplate;
 var
   tmpIni: TIniFile;
   I, C: integer;
-  S, filename: string;
+  S, filename,ProfileName: string;
 begin
   filename := devDirs.Templates + cmbName.Text + '.template';
   if FileExists(filename) then begin
@@ -307,7 +307,7 @@ begin
   end;
   tmpIni := TIniFile.Create(filename);
   with tmpIni do try
-    WriteInteger('Template', 'ver', 1);
+    WriteInteger('Template', 'ver', 3);
     WriteString('Template', 'Name', cmbName.Text);
     if IconFiles[0] <> '' then begin
       CopyFile(PChar(IconFiles[0]), PChar(devDirs.Templates + cmbName.Text + '.ico'), False);
@@ -325,25 +325,29 @@ begin
         CopyFile(PChar(TempProject.Units[I].FileName), PChar(devDirs.Templates + S), False);
         Inc(C);
       end;
-
-    WriteInteger('Project', 'UnitCount', C);
-    WriteInteger('Project', 'Type', Integer(TempProject.Options.typ));
-    WriteBool('Project', 'IsCpp', TempProject.Options.useGPP);
-    WriteString('Project', 'Compiler', StringReplace(memCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
-    WriteString('Project', 'CppCompiler', StringReplace(memCppCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
-    WriteString('Project', 'Linker', StringReplace(memLinker.Text, #13#10, '_@@_', [rfReplaceAll]));
-    WriteString('Project', 'CompilerSettings', TempProject.Options.CompilerOptions);
-    WriteInteger('Project', 'CompilerSet', TempProject.Options.CompilerSet);
-    WriteBool('Project', 'IncludeVersionInfo', TempProject.Options.IncludeVersionInfo);
-    WriteBool('Project', 'SupportXPThemes', TempProject.Options.SupportXPThemes);
+    WriteBool('Project', 'IsCpp', TempProject.Profiles.useGPP);
+    for i:= 0 to TempProject.Profiles.Count -1 do
+    Begin
+      ProfileName:='Profile'+IntToStr(i);
+      WriteString(ProfileName, 'ProfileName', TempProject.Profiles[i].ProfileName);
+    WriteInteger(ProfileName, 'UnitCount', C);
+    WriteInteger(ProfileName, 'Type', Integer(TempProject.Profiles[i].typ));
+    WriteString(ProfileName, 'Compiler', StringReplace(memCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
+    WriteString(ProfileName, 'CppCompiler', StringReplace(memCppCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
+    WriteString(ProfileName, 'Linker', StringReplace(memLinker.Text, #13#10, '_@@_', [rfReplaceAll]));
+    WriteString(ProfileName, COMPILER_INI_LABEL, TempProject.Profiles[i].CompilerOptions);
+    WriteInteger(ProfileName, 'CompilerSet', TempProject.Profiles[i].CompilerSet);
+    WriteBool(ProfileName, 'IncludeVersionInfo', TempProject.Profiles[i].IncludeVersionInfo);
+    WriteBool(ProfileName, 'SupportXPThemes', TempProject.Profiles[i].SupportXPThemes);
 
     if cbInclude.Checked then
-      WriteString('Project', 'Includes', TempProject.Options.Includes.DelimitedText);
+      WriteString(ProfileName, 'Includes', TempProject.Profiles[i].Includes.DelimitedText);
     if cbLibrary.Checked then
-      WriteString('Project', 'Libs', TempProject.Options.Libs.DelimitedText);
+      WriteString(ProfileName, 'Libs', TempProject.Profiles[i].Libs.DelimitedText);
     if cbRessource.Checked then
-      WriteString('Project', 'ResourceIncludes', TempProject.Options.ResourceIncludes.DelimitedText);
-
+      WriteString(ProfileName, 'ResourceIncludes', TempProject.Profiles[i].ResourceIncludes.DelimitedText);
+    end;
+    
     if txtProjName.Text = '' then
       WriteString('Project', 'Name', cmbName.Text)
     else
@@ -352,6 +356,7 @@ begin
       CopyFile(PChar(IconFiles[1]), PChar(devDirs.Templates + cmbName.Text + '.project.ico'), False);
       WriteString('Project', 'ProjectIcon', cmbName.Text + '.project.ico');
     end;
+
     MessageDlg('The new template has been created!'#10#10 +
       'You can find it as "' + cmbName.Text + '" under the "' + cmbCateg.Text + '" tab in the "New project" dialog.',
       mtInformation, [mbOk], 0);

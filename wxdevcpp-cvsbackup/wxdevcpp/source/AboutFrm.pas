@@ -40,14 +40,8 @@ type
     GroupBox1: TGroupBox;
     LicenseText: TMemo;
     GroupBox2: TGroupBox;
-    BloodLabel: TLabel;
-    BloodSite: TLabel;
-    MingwLabel: TLabel;
-    MingwSite: TLabel;
-    ForumLabel: TLabel;
-    ForumSite: TLabel;
-    MailLabel: TLabel;
-    MailSite: TLabel;
+    LBForumLabel: TLabel;
+    LbForumSite: TLabel;
     eMailLabel: TLabel;
     eMailSite: TLabel;
     btnAuthors: TBitBtn;
@@ -93,15 +87,7 @@ begin
   Caption := Lang[ID_AB_CAPTION];
   GroupBox1.Caption := Lang[ID_AB_LICENSE];
   GroupBox2.Caption := Lang[ID_AB_WEBCAP];
-  BloodLabel.Caption := Lang[ID_AB_LBLBLOODSITE];
-  MingwLabel.Caption := Lang[ID_AB_LBLMINGWSITE];
-  ForumLabel.Caption := Lang[ID_AB_LBLFORUM];
-  MailLabel.Caption := Lang[ID_AB_LBLMAIL];
   //EMailLabel.Caption:=     Lang[ID_AB_LBLEMAIL];
-  BloodSite.Caption := Lang[ID_AB_BLOODSITE];
-  MingwSite.Caption := Lang[ID_AB_MINGWSITE];
-  ForumSite.Caption := Lang[ID_AB_FORUMS];
-  MailSite.Caption := Lang[ID_AB_MAILLIST];
   //eMailSite.Caption:=      Lang[ID_AB_AUTHOR];
   btnOk.Caption := Lang[ID_BTN_OK];
   btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
@@ -126,19 +112,16 @@ end;
 procedure TAboutForm.btnAuthorsClick(Sender: TObject);
 const MessageText =
     'Authors:'#13#10#13#10 +
-    '- Development: Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'#13#10 +
-    '- Contributors: Peter Schraut, Marek Januszewski'#13#10 +
+    {$IFDEF WX_BUILD}
+    '- wxDevC++ Development: Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'#13#10 +
+    {$ENDIF}
+    '- DevC++ Development: Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'#13#10 +
+    '- DevC++ Contributors: Peter Schraut, Marek Januszewski'#13#10 +
     '- Mingw compiler system: Mumit Khan, J.J. Var Der Heidjen, Colin Hendrix and GNU developers'#13#10 +
     '- Splash screen and association icons: Matthijs Crielaard: '#13#10 +
     '- New Look theme: Gerard Caulfield'#13#10 +
     '- Gnome icons: Gnome designers'#13#10 +
-    '- Blue theme: Thomas Thron'#13#10
-    {$IFDEF WX_BUILD}
-    +
-    '- wxWidgets Designer Extension: Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'#13#10 +
-    '- Runtime Compiler Changing: Joel Low, Tony Reina'
-    {$ENDIF}
-    ;
+    '- Blue theme: Thomas Thron'#13#10;
 begin
   MessageBeep($F);
   MessageDlg(MessageText, MtInformation, [MbOK], 0);

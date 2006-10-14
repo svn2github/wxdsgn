@@ -114,10 +114,6 @@ type
     fRunAfterCompileFinish: boolean;
     fAbortThread: boolean;
     
-    function GetCppOption(compilerIndex:Integer):String;
-    function GetCOption(compilerIndex:Integer):String;
-    function GetLinkerOption(compilerIndex:Integer):String;
-    function GetPreprocOption(compilerIndex:Integer):String;
     procedure CreateMakefile; virtual;
     procedure CreateStaticMakefile; virtual;
     procedure CreateDynamicMakefile; virtual;
@@ -182,14 +178,14 @@ begin
     exit;
   end
   else begin
-    if fProject.UseCustomMakefile then begin
-      fMakefile := fProject.CustomMakefile;
+    if fProject.CurrentProfile.UseCustomMakefile then begin
+      fMakefile := fProject.CurrentProfile.CustomMakefile;
       Exit;
     end;
   end;
   if Assigned(CompileProgressForm) then
     CompileProgressForm.btnClose.Enabled := False;
-  case Project.Options.typ of
+  case Project.CurrentProfile.typ of
     dptStat: CreateStaticMakeFile;
     dptDyn: CreateDynamicMakeFile;
   else
@@ -212,8 +208,8 @@ begin
   Objects := '';
 
   // create the object output directory if we have to
-  if (fProject.Options.ObjectOutput <> '') and (not DirectoryExists(fProject.Options.ObjectOutput)) then
-    ForceDirectories(GetRealPath(SubstituteMakeParams(fProject.Options.ObjectOutput), fProject.Directory));
+  if (fProject.CurrentProfile.ObjectOutput <> '') and (not DirectoryExists(fProject.CurrentProfile.ObjectOutput)) then
+    ForceDirectories(GetRealPath(SubstituteMakeParams(fProject.CurrentProfile.ObjectOutput), fProject.Directory));
 
   for i := 0 to Pred(fProject.Units.Count) do
   begin
@@ -226,9 +222,9 @@ begin
     tfile := ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName);
     if GetFileTyp(tfile) <> utHead then
     begin
-      if fProject.Options.ObjectOutput <> '' then
+      if fProject.CurrentProfile.ObjectOutput <> '' then
       begin
-        ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
+        ofile := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
         ofile := ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT));
         Objects := Format(cAppendStr, [Objects, GenMakePath2(ofile)]);
         if fProject.Units[i].Link then
@@ -242,16 +238,16 @@ begin
     end;
   end;
 
-  if Length(fProject.Options.PrivateResource) = 0 then
+  if Length(fProject.CurrentProfile.PrivateResource) = 0 then
     ObjResFile := ''
   else
   begin
-    if fProject.Options.ObjectOutput <> '' then begin
-      ObjResFile := ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
+    if fProject.CurrentProfile.ObjectOutput <> '' then begin
+      ObjResFile := ChangeFileExt(fProject.CurrentProfile.PrivateResource, RES_EXT);
       ObjResFile := ExtractRelativePath(fProject.FileName, ObjResFile);
     end
     else
-      ObjResFile := ExtractRelativePath(fProject.FileName, ChangeFileExt(fProject.Options.PrivateResource, RES_EXT));
+      ObjResFile := ExtractRelativePath(fProject.FileName, ChangeFileExt(fProject.CurrentProfile.PrivateResource, RES_EXT));
 
     //Make the resource file into a usable path
     LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ObjResFile)]);
@@ -259,7 +255,7 @@ begin
   end;
 
   if (devCompiler.gppName <> '') then
-    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.compilerType = ID_COMPILER_VC2005) then
+    if (devCompiler.compilerType = ID_COMPILER_VC6) or (devCompiler.compilerType = ID_COMPILER_VC2005) or (devCompiler.compilerType = ID_COMPILER_VC2003)then
       Comp_ProgCpp := devCompiler.gppName + ' /nologo'
     else
       Comp_ProgCpp := devCompiler.gppName
@@ -267,7 +263,7 @@ begin
     Comp_ProgCpp := CPP_PROGRAM(devCompiler.CompilerType);
 
   if (devCompiler.gccName <> '') then
-    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.compilerType = ID_COMPILER_VC2005) then
+    if (devCompiler.compilerType = ID_COMPILER_VC6) or (devCompiler.compilerType = ID_COMPILER_VC2005) or (devCompiler.compilerType = ID_COMPILER_VC2003) then
       Comp_Prog := devCompiler.gccName + ' /nologo'
     else
       Comp_Prog := devCompiler.gccName
@@ -297,7 +293,8 @@ begin
   writeln(F, '# Compiler: ' + devCompiler.Name);
   case devCompiler.CompilerType of
     ID_COMPILER_MINGW : writeln(F, '# Compiler Type: MingW 3');
-    ID_COMPILER_VC    : writeln(F, '# Compiler Type: Visual C++ .NET 2003');
+    ID_COMPILER_VC6    : writeln(F, '# Compiler Type: Visual C++ 6');
+    ID_COMPILER_VC2003   : writeln(F, '# Compiler Type: Visual C++ .NET 2003');    
     ID_COMPILER_VC2005: writeln(F, '# Compiler Type: Visual C++ 2005');
     ID_COMPILER_DMARS : writeln(F, '# Compiler Type: Digital Mars');
     ID_COMPILER_BORLAND    : writeln(F, '# Compiler Type: Borland C++ 5.5');
@@ -331,17 +328,17 @@ begin
   writeln(F, 'GPROF     = ' + devCompilerSet.gprofName);
   writeln(F, 'RM        = ' + RmExe);
 
-  if (devCompiler.CompilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
-    if (assigned(fProject) and (fProject.Options.typ = dptStat)) then
+  if (devCompiler.CompilerType = ID_COMPILER_VC6) or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
       writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
     else
       writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo')
   else if devCompiler.CompilerType <> ID_COMPILER_MINGW then
     writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
   else
-    if (assigned(fProject) and (fProject.Options.typ = dptStat)) then
+    if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
         writeln(F, 'LINK      = ar')
-    else if fProject.Options.useGPP then
+    else if fProject.Profiles.useGPP then
       writeln(F, 'LINK      = ' + Comp_ProgCpp)
     else
       writeln(F, 'LINK      = ' + Comp_Prog);
@@ -354,10 +351,10 @@ begin
   Writeln(F, 'all: all-before $(BIN) all-after');
   Writeln(F, '');
 
-  for i := 0 to fProject.Options.MakeIncludes.Count - 1 do
+  for i := 0 to fProject.CurrentProfile.MakeIncludes.Count - 1 do
   begin
     Writeln(F, 'include ' +
-      GenMakePath(fProject.Options.MakeIncludes.Strings[i]));
+      GenMakePath(fProject.CurrentProfile.MakeIncludes.Strings[i]));
   end;
 
   WriteMakeClean(F);
@@ -471,9 +468,9 @@ begin
   try
     if (fProject.PchHead <> -1) and (fProject.PchSource <> -1) then
     begin
-      if fProject.Options.ObjectOutput <> '' then
+      if fProject.CurrentProfile.ObjectOutput <> '' then
       begin
-        PCHObj := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput);
+        PCHObj := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput);
         PCHFile := PCHObj;
       end;
       PCHObj := GenMakePath2(PCHObj + ExtractRelativePath(Makefile, GetRealPath(ChangeFileExt(fProject.Units[fProject.PchSource].FileName, OBJ_EXT), fProject.Directory)));
@@ -511,9 +508,9 @@ begin
     if GetFileTyp(tfile) <> utHead then
     begin
       writeln(F);
-      if fProject.Options.ObjectOutput <> '' then
+      if fProject.CurrentProfile.ObjectOutput <> '' then
       begin
-        ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
+        ofile := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
         ofile := ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT));
       end
       else
@@ -571,7 +568,7 @@ begin
     end;
   end;
 
-  if (Length(fProject.Options.PrivateResource) > 0) then
+  if (Length(fProject.CurrentProfile.PrivateResource) > 0) then
   begin
     ResFiles := '';
     for i := 0 to fProject.Units.Count - 1 do
@@ -585,16 +582,16 @@ begin
     writeln(F);
 
     //Get the path of the resource
-    ofile := ChangeFileExt(fProject.Options.PrivateResource, RES_EXT);
-    if (fProject.Options.ObjectOutput <> '') then
-      RCDir := fProject.Options.ObjectOutput
+    ofile := ChangeFileExt(fProject.CurrentProfile.PrivateResource, RES_EXT);
+    if (fProject.CurrentProfile.ObjectOutput <> '') then
+      RCDir := fProject.CurrentProfile.ObjectOutput
     else
       RCDir := fProject.Directory;
     RCDir := IncludeTrailingPathDelimiter(GetRealPath(RCDir, fProject.Directory));
 
     //Then get the path to the resource object relative to our project directory
     ofile := GenMakePath2(ExtractRelativePath(fProject.Directory, ofile));
-    tfile := ExtractRelativePath(fProject.FileName, fProject.Options.PrivateResource);
+    tfile := ExtractRelativePath(fProject.FileName, fProject.CurrentProfile.PrivateResource);
 
     writeln(F, ofile + ': ' + GenMakePath2(tfile) + ' ' + ResFiles);
     writeln(F, #9 + '$(WINDRES) ' + format(devCompiler.ResourceFormat, [GenMakePath(ChangeFileExt(tfile, RES_EXT)) + ' $(RCINCS) ' + GenMakePath(tfile)]));
@@ -680,78 +677,6 @@ begin
   CloseFile(F);
 end;
 
-function TCompiler.GetCppOption(compilerIndex:Integer):String;
-begin
-  case compilerIndex of
-    ID_COMPILER_MINGW:
-          Result:=fProject.Options.cmdlines.GCC_Compiler;
-    ID_COMPILER_VC,
-    ID_COMPILER_VC2005:
-          Result:=fProject.Options.cmdlines.VC_Compiler;
-    ID_COMPILER_DMARS:
-          Result:=fProject.Options.cmdlines.DMARS_Compiler;
-    ID_COMPILER_BORLAND:
-          Result:=fProject.Options.cmdlines.BORLAND_Compiler;
-    ID_COMPILER_WATCOM:
-          Result:=fProject.Options.cmdlines.WATCOM_Compiler;
-  end;
-end;
-
-function TCompiler.GetCOption(compilerIndex:Integer):String;
-begin
-  case compilerIndex of
-    ID_COMPILER_MINGW:
-          Result:=fProject.Options.cmdlines.GCC_Compiler;
-    ID_COMPILER_VC,
-    ID_COMPILER_VC2005:
-          Result:=fProject.Options.cmdlines.VC_Compiler;
-    ID_COMPILER_DMARS:
-          Result:=fProject.Options.cmdlines.DMARS_Compiler;
-    ID_COMPILER_BORLAND:
-          Result:=fProject.Options.cmdlines.BORLAND_Compiler;
-    ID_COMPILER_WATCOM:
-          Result:=fProject.Options.cmdlines.WATCOM_Compiler;
-  end;
-
-end;
-
-function TCompiler.GetLinkerOption(compilerIndex:Integer):String;
-begin
-  case compilerIndex of
-    ID_COMPILER_MINGW:
-          Result:=fProject.Options.cmdlines.GCC_Linker;
-    ID_COMPILER_VC,
-    ID_COMPILER_VC2005:
-          Result:=fProject.Options.cmdlines.VC_Linker;
-    ID_COMPILER_DMARS:
-          Result:=fProject.Options.cmdlines.DMARS_Linker;
-    ID_COMPILER_BORLAND:
-          Result:=fProject.Options.cmdlines.BORLAND_Linker;
-    ID_COMPILER_WATCOM:
-          Result:=fProject.Options.cmdlines.WATCOM_Linker;
-  end;
-
-end;
-
-function TCompiler.GetPreprocOption(compilerIndex:Integer):String;
-begin
-  case compilerIndex of
-    ID_COMPILER_MINGW:
-          Result:=fProject.Options.GCC_PreprocDefines;
-    ID_COMPILER_VC,
-    ID_COMPILER_VC2005:
-          Result:=fProject.Options.VC_PreprocDefines;
-    ID_COMPILER_DMARS:
-          Result:=fProject.Options.DMARS_PreprocDefines;
-    ID_COMPILER_BORLAND:
-          Result:=fProject.Options.BORLAND_PreprocDefines;
-    ID_COMPILER_WATCOM:
-          Result:=fProject.Options.WATCOM_PreprocDefines;
-  end;
-
-end;
-
-
 procedure TCompiler.GetCompileParams;
   procedure AppendStr(var s: string; value: string);
   begin
@@ -768,8 +693,8 @@ begin
     fUserParams := '';
 
     if Assigned(fProject) then begin
-      fCppCompileParams := StringReplace(GetCppOption(devCompiler.CompilerType), '_@@_', ' ', [rfReplaceAll]);
-      fCompileParams := StringReplace(GetCOption(devCompiler.CompilerType), '_@@_',' ', [rfReplaceAll]);
+      fCppCompileParams := StringReplace(fProject.CurrentProfile.CppCompiler, '_@@_', ' ', [rfReplaceAll]);
+      fCompileParams := StringReplace(fProject.CurrentProfile.Compiler, '_@@_',' ', [rfReplaceAll]);
     end;
 
     if CmdOpts <> '' then
@@ -781,8 +706,8 @@ begin
       // consider project specific options for the compiler
       if (
         Assigned(fProject) and
-        (I < Length(fProject.Options.CompilerOptions)) and
-        not (fProject.Options.typ in devCompiler.Options[I].optExcludeFromTypes)
+        (I < Length(fProject.CurrentProfile.CompilerOptions)) and
+        not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)
         ) or
         // else global compiler options
       (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then
@@ -790,25 +715,25 @@ begin
         if devCompiler.Options[I].optIsC then begin
           if Assigned(devCompiler.Options[I].optChoices) then begin
             if Assigned(fProject) then
-              val := devCompiler.ConvertCharToValue(fProject.Options.CompilerOptions[I+ 1])
+              val := devCompiler.ConvertCharToValue(fProject.CurrentProfile.CompilerOptions[I+ 1])
             else
               val := devCompiler.Options[I].optValue;
             if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
               AppendStr(fCompileParams, devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]]);
           end
-          else if (Assigned(fProject) and (StrToIntDef(fProject.Options.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
+          else if (Assigned(fProject) and (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
             AppendStr(fCompileParams, devCompiler.Options[I].optSetting);
         end;
         if devCompiler.Options[I].optIsCpp then begin
           if Assigned(devCompiler.Options[I].optChoices) then begin
             if Assigned(fProject) then
-              val := devCompiler.ConvertCharToValue(fProject.Options.CompilerOptions[I+ 1])
+              val := devCompiler.ConvertCharToValue(fProject.CurrentProfile.CompilerOptions[I+ 1])
             else
               val := devCompiler.Options[I].optValue;
             if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
               AppendStr(fCppCompileParams, devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]]);
           end
-          else if (Assigned(fProject) and (StrToIntDef(fProject.Options.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
+          else if (Assigned(fProject) and (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
             AppendStr(fCppCompileParams, devCompiler.Options[I].optSetting);
         end;
       end;
@@ -831,9 +756,9 @@ begin
     fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
   if (fTarget = ctProject) and assigned(fProject) then
   begin
-    for i := 0 to pred(fProject.Options.Libs.Count) do
-      fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.Options.Libs[i]]);
-    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(GetLinkerOption(devCompiler.CompilerType), '_@@_', ' ', [rfReplaceAll]);
+    for i := 0 to pred(fProject.CurrentProfile.Libs.Count) do
+      fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.CurrentProfile.Libs[i]]);
+    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.CurrentProfile.Linker, '_@@_', ' ', [rfReplaceAll]);
   end;
 
   //TODO: lowjoel:What does this do?
@@ -845,22 +770,22 @@ begin
     // consider project specific options for the compiler
     if (
       Assigned(fProject) and
-      (I < Length(fProject.Options.CompilerOptions)) and
-      not (fProject.Options.typ in devCompiler.Options[I].optExcludeFromTypes)
+      (I < Length(fProject.CurrentProfile.CompilerOptions)) and
+      not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)
       ) or
       // else global compiler options
     (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
       if devCompiler.Options[I].optIsLinker then
         if Assigned(devCompiler.Options[I].optChoices) then begin
           if Assigned(fProject) then
-            val :=devCompiler.ConvertCharToValue(fProject.Options.CompilerOptions[I +1])
+            val :=devCompiler.ConvertCharToValue(fProject.CurrentProfile.CompilerOptions[I +1])
           else
             val := devCompiler.Options[I].optValue;
           if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
               fLibrariesParams := fLibrariesParams
                 + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
         end
-        else if (Assigned(fProject) and (StrToIntDef(fProject.Options.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
+        else if (Assigned(fProject) and (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
             fLibrariesParams := fLibrariesParams
               + devCompiler.Options[I].optSetting + ' ';
     end;
@@ -891,14 +816,14 @@ begin
   strLst.Destroy;
   	
   if (fTarget = ctProject) and assigned(fProject) then begin
-    for i := 0 to pred(fProject.Options.Includes.Count) do
-      if directoryExists(fProject.Options.Includes[i]) then begin
-        fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.Options.Includes[i]]);
+    for i := 0 to pred(fProject.CurrentProfile.Includes.Count) do
+      if directoryExists(fProject.CurrentProfile.Includes[i]) then begin
+        fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.CurrentProfile.Includes[i]]);
         fCppIncludesParams := format('%s ' + devCompiler.IncludeFormat, [fCppIncludesParams, fProject.Options.Includes[i]]);
       end;
-    for i := 0 to pred(fProject.Options.ResourceIncludes.Count) do
-      if directoryExists(fProject.Options.ResourceIncludes[i]) then
-        fRcIncludesParams := format(cAppendStr, [fRcIncludesParams, GetShortName(fProject.Options.ResourceIncludes[i])]);
+    for i := 0 to pred(fProject.CurrentProfile.ResourceIncludes.Count) do
+      if directoryExists(fProject.CurrentProfile.ResourceIncludes[i]) then
+        fRcIncludesParams := format(cAppendStr, [fRcIncludesParams, GetShortName(fProject.CurrentProfile.ResourceIncludes[i])]);
   end;
 end;
 
@@ -912,7 +837,7 @@ begin
   if assigned(fProject) then
   begin
     values := TStringList.Create;
-    tempvalues := StringReplace(GetPreProcOption(devCompiler.CompilerType), '_@@_', #10, [rfReplaceAll]);
+    tempvalues := StringReplace(fProject.CurrentProfile.PreprocDefines, '_@@_', #10, [rfReplaceAll]);
     strTokenToStrings(tempvalues, #10, values);
 
     for i := 0 to values.Count - 1 do
@@ -975,9 +900,9 @@ begin
 
     if SingleFile <> '' then
     begin
-      if fProject.Options.ObjectOutput <> '' then
+      if fProject.CurrentProfile.ObjectOutput <> '' then
       begin
-        ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput) + ExtractFileName(SingleFile);
+        ofile := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput) + ExtractFileName(SingleFile);
         ofile := GenMakePath(ExtractRelativePath(fProject.FileName,ChangeFileExt(ofile, OBJ_EXT)));
       end
       else
@@ -1023,7 +948,7 @@ begin
           fCppIncludesParams, fLibrariesParams])
       else
       begin
-        if (devCompiler.CompilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+        if (devCompiler.CompilerType = ID_COMPILER_VC6) or (devCompiler.CompilerType = ID_COMPILER_VC2003)or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
           cmdline := format(cCmdLine,
             [s, fSourceFile, fCppCompileParams, fCppIncludesParams, fLibrariesParams])
         else
@@ -1065,20 +990,20 @@ begin
   if fTarget = ctNone then  exit;
   if fTarget = ctProject then
   begin
-    if fProject.Options.typ = dptStat then
+    if fProject.CurrentProfile.typ = dptStat then
       MessageDlg(Lang[ID_ERR_NOTEXECUTABLE], mtError, [mbOK], 0)
     else if not FileExists(fProject.Executable) then
       MessageDlg(Lang[ID_ERR_PROJECTNOTCOMPILED], mtWarning, [mbOK], 0)
-    else if fProject.Options.typ = dptDyn then begin
-      if fProject.Options.HostApplication = '' then
+    else if fProject.CurrentProfile.typ = dptDyn then begin
+      if fProject.CurrentProfile.HostApplication = '' then
         MessageDlg(Lang[ID_ERR_HOSTMISSING], mtWarning, [mbOK], 0)
-      else if not FileExists(fProject.Options.HostApplication) then
+      else if not FileExists(fProject.CurrentProfile.HostApplication) then
         MessageDlg(Lang[ID_ERR_HOSTNOTEXIST], mtWarning, [mbOK], 0)
       else begin // execute DLL's host application
         if devData.MinOnRun then
           Application.Minimize;
-        devExecutor.ExecuteAndWatch(fProject.Options.HostApplication, fRunParams,
-         						 ExtractFileDir(fProject.Options.HostApplication), True, INFINITE, RunTerminate);
+        devExecutor.ExecuteAndWatch(fProject.CurrentProfile.HostApplication, fRunParams,
+         						 ExtractFileDir(fProject.CurrentProfile.HostApplication), True, INFINITE, RunTerminate);
       end;
     end
     else begin // execute normally
@@ -1275,7 +1200,7 @@ begin
   RegEx := TRegExpr.Create;
   
   try
-    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    if (devCompiler.compilerType = ID_COMPILER_VC6)or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
     begin
       //Check for command line errors
       RegEx.Expression := 'Command line error (.*) : (.*)';
@@ -1529,7 +1454,7 @@ begin
       O_Line := '';
       O_File := '';
 
-    if (devCompiler.compilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    if (devCompiler.compilerType = ID_COMPILER_VC6)or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
     begin
       //Do we have to ignore this message?
       if
@@ -1901,7 +1826,7 @@ begin
         else
         begin
           //We have no idea what this is, just call it a normal message
-          Delete(Line, Length(Line) - 1, 1);
+          Delete(Line, Length(Line) - 1, 1);          
         end;
         Inc(Messages);
 
@@ -2001,12 +1926,12 @@ begin
   if not Assigned(fProject) then
     Exit;
 
-  if devCompiler.CompilerSet = fProject.Options.CompilerSet then
+  if devCompiler.CompilerSet = fProject.CurrentProfile.CompilerSet then
     Exit;
   
-  devCompilerSet.LoadSet(fProject.Options.CompilerSet);
+  devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler;
-  devCompiler.CompilerSet := fProject.Options.CompilerSet;
+  devCompiler.CompilerSet := fProject.CurrentProfile.CompilerSet;
 end;
 
 procedure TCompiler.SetProject(Project: TProject);
@@ -2150,7 +2075,7 @@ begin
     end;
     if not OK then
     begin
-      srch := ExtractFileName(SubstituteMakeParams(fProject.Options.PrivateResource));
+      srch := ExtractFileName(SubstituteMakeParams(fProject.CurrentProfile.PrivateResource));
       if Pos(srch, Line) > 0 then begin
         fil := srch;
         prog := pb.Max - 1;
@@ -2175,7 +2100,7 @@ begin
         lblFile.Caption := srch;
       end;
 
-      if (devCompiler.CompilerType = ID_COMPILER_VC) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+      if (devCompiler.CompilerType = ID_COMPILER_VC6) or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
       begin
         //Check for the manifest tool
         srch := devCompiler.gprofName;

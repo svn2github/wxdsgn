@@ -133,13 +133,13 @@ end;
 
 function TNewProjectForm.GetTemplate: TTemplate;
 var
-  Opts: TProjOptions;
+  Opts: TProjectProfileList;
 begin
-  InitOptionsRec(Opts);
+  Opts:=TProjectProfileList.Create;
   if assigned(ProjView.Selected) then
   begin
     result := TTemplate(fTemplates[integer(ProjView.Selected.Data)]);
-    Opts := result.OptionsRec;
+    Opts.CopyDataFrom(result.OptionsRec);
   end
   else
   begin
@@ -148,7 +148,7 @@ begin
   end;
   result.ProjectName := edProjectName.Text;
   Opts.useGPP := rbCpp.Checked;
-  result.OptionsRec := Opts;
+  result.OptionsRec.CopyDataFrom(Opts);
 end;
 
 procedure TNewProjectForm.ProjViewChange(Sender: TObject; Item: TListItem;
@@ -233,7 +233,7 @@ begin
       Item := ProjView.Items.Add;
       Item.Caption := LTemplate.Name;
       Item.Data := pointer(idx);
-      fName:= ValidateFile(LTemplate.OptionsRec.Icon, ExtractFilePath(LTemplate.FileName));
+      fName:= ValidateFile(LTemplate.OptionsRec[0].Icon, ExtractFilePath(LTemplate.FileName));
       if fName <> '' then
       begin
         LIcon := TIcon.Create;

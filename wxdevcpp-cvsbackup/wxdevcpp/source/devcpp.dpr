@@ -26,7 +26,7 @@ program devcpp;
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
-uses
+uses  
   FastMM4,
   FastCode,
 {$IFNDEF OLD_MADSHI}
@@ -36,6 +36,7 @@ uses
 {$ENDIF}
   madExcept,
   madLinkDisAsm,
+  madScreenShot,
   inifiles,
   Windows,
   Forms,
@@ -333,6 +334,9 @@ begin
   MainForm.DoApplyWindowPlacement;
   if not devData.NoSplashScreen then
     SplashForm.Free;
+
+  if devData.ShowTipsOnStart and (ParamCount = 0) then  // do not show tips if dev-c++ is launched with a file
+    MainForm.actShowTips.Execute;
 
   Application.Run;
 end.

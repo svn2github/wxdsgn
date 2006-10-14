@@ -72,10 +72,6 @@ type
     XPMenu: TXPMenu;
     CompOptionsFrame1: TCompOptionsFrame;
     grpCompSet: TGroupBox;
-    cmbCompilerSetComp: TComboBox;
-    btnAddCompilerSet: TSpeedButton;
-    btnDelCompilerSet: TSpeedButton;
-    btnRenameCompilerSet: TSpeedButton;
     btnBrws2: TSpeedButton;
     btnBrowse3: TSpeedButton;
     btnBrowse4: TSpeedButton;
@@ -97,6 +93,11 @@ type
     cbMakeAdd: TLabel;
     Make: TMemo;
     btnBrowse: TSpeedButton;
+    cmbCompilerSetComp: TComboBox;
+    btnAddCompilerSet: TSpeedButton;
+    btnDelCompilerSet: TSpeedButton;
+    btnRenameCompilerSet: TSpeedButton;
+    Label1: TLabel;
     
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
@@ -615,13 +616,8 @@ begin
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;
       end;
-    ID_COMPILER_VC:
-      begin
-        lblgprof.Caption := 'Manifest Tool:';
-        lblgprof.Enabled := false;
-        gprofEdit.Enabled := false;
-        btnbrowse8.Enabled := false;
-      end;
+    ID_COMPILER_VC6,
+    ID_COMPILER_VC2003,
     ID_COMPILER_VC2005:
       begin
         lblgprof.Caption := 'Manifest Tool:';

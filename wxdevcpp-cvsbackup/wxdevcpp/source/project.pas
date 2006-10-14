@@ -48,18 +48,26 @@ type
     procedure Write(Name, value: string); overload;
     procedure Write(Name: string; value: boolean); overload;
     procedure Write(Name: string; value: integer); overload;
-    procedure Write(index: integer; value: string); overload;
-    procedure Write(index: integer; Item: string; Value: string); overload;
-    procedure Write(index: integer; Item: string; Value: boolean); overload;
-    procedure Write(index: integer; Item: string; Value: integer); overload;
+    procedure WriteUnit(index: integer; value: string); overload;
+    procedure WriteUnit(index: integer; Item: string; Value: string); overload;
+    procedure WriteUnit(index: integer; Item: string; Value: boolean); overload;
+    procedure WriteUnit(index: integer; Item: string; Value: integer); overload;
+
+    procedure WriteProfile(index: integer; Item: string; Value: string); overload;
+    procedure WriteProfile(index: integer; Item: string; Value: boolean); overload;
+    procedure WriteProfile(index: integer; Item: string; Value: integer); overload;
 
     function Read(Name, Default: string): string; overload;
     function Read(Name: string; Default: boolean): boolean; overload;
     function Read(Name: string; Default: integer): integer; overload;
-    function Read(index: integer): string; overload; // read unit entry
-    function Read(index: integer; Item: string; default: string): string;overload;
-    function Read(index: integer; Item: string; default: boolean): boolean;overload;
-    function Read(index: integer; Item: string; default: integer): integer;overload;
+    function ReadUnit(index: integer): string; overload; // read unit entry
+    function ReadUnit(index: integer; Item: string; default: string): string;overload;
+    function ReadUnit(index: integer; Item: string; default: boolean): boolean;overload;
+    function ReadUnit(index: integer; Item: string; default: integer): integer;overload;
+
+    function ReadProfile(index: integer; Item: string; default: string): string;overload;
+    function ReadProfile(index: integer; Item: string; default: boolean): boolean;overload;
+    function ReadProfile(index: integer; Item: string; default: integer): integer;overload;
 
     function ValueExists(const value: string): boolean;
     procedure DeleteKey(const value: string);
@@ -72,7 +80,6 @@ type
   end;
 
   TProjUnit = class;
-
   TUnitList = class
   private
     fList: TObjectList;
@@ -133,7 +140,8 @@ type
   TProject = class
   private
     fUnits: TUnitList;
-    fOptions: TProjOptions;
+    //fOptions: TProjOptions;
+    fProfiles:TProjectProfileList;
     finiFile: Tdevini;
     fName: string;
     fFileName: string;
@@ -144,22 +152,25 @@ type
     fFolderNodes: TObjectList;
     { end XXXKF }
     fCmdLineArgs: string;
-    fUseCustomMakefile: boolean;
-    fCustomMakefile: string;
     fPchHead: integer;
     fPchSource: integer;
+    fDefaultProfileIndex:Integer;
+    fCurrentProfileIndex:Integer;
+    fPrevVersion:Integer;
     function GetDirectory: string;
     function GetExecutableName: string;
     procedure SetFileName(value: string);
     procedure SetNode(value: TTreeNode);
     function GetModified: boolean;
+    function GetCurrentProfile:TProjProfile;
+    procedure SetCurrentProfile(Value:TProjProfile);
     procedure SetModified(value: boolean);
     procedure SortUnitsByPriority;
     procedure SetCmdLineArgs(const Value: string);
-    procedure SetCustomMakefile(const Value: string);
-    procedure SetUseCustomMakefile(const Value: boolean);
+    //procedure SetCustomMakefile(const Value: string);
+    //procedure SetUseCustomMakefile(const Value: boolean);
   public
-    property Options: TProjOptions read fOptions write fOptions;
+    //property Options: TProjOptions read fOptions write fOptions;
     property Name: string read fName write fName;
     property FileName: string read fFileName write SetFileName;
     property Node: TTreeNode read fNode write SetNode;
@@ -168,14 +179,20 @@ type
     property Executable: string read GetExecutableName;
 
     property Units: TUnitList read fUnits write fUnits;
+    property Profiles: TProjectProfileList read fProfiles write fProfiles;
     property INIFile: TdevINI read fINIFile write fINIFile;
     property Modified: boolean read GetModified write SetModified;
 
     property CmdLineArgs: string read fCmdLineArgs write SetCmdLineArgs;
     property PchHead: integer read fPchHead write fPchHead;
     property PchSource: integer read fPchSource write fPchSource;
-    property UseCustomMakefile: boolean read fUseCustomMakefile write SetUseCustomMakefile;
-    property CustomMakefile: string read fCustomMakefile write SetCustomMakefile;
+
+    property CurrentProfileIndex: integer read fCurrentProfileIndex write fCurrentProfileIndex;
+    property CurrentProfile : TProjProfile read GetCurrentProfile write SetCurrentProfile;
+    property DefaultProfileIndex : Integer read fDefaultProfileIndex write fDefaultProfileIndex;
+
+    //property UseCustomMakefile: boolean read fUseCustomMakefile write SetUseCustomMakefile;
+    //property CustomMakefile: string read fCustomMakefile write SetCustomMakefile;
 
   public
     constructor Create(nFileName, nName: string);
@@ -193,6 +210,7 @@ type
     procedure Save;
     procedure LoadLayout;
     procedure LoadUnitLayout(e: TEditor; Index: integer);
+    procedure LoadProfiles;
     procedure SaveLayout;
     procedure SaveUnitLayout(e: TEditor; Index: integer);
     function MakeProjectNode: TTreeNode;
@@ -319,7 +337,7 @@ begin
      boolwxForm:=iswxForm(FileName);
     {$ENDIF}
 
-    if fParent.Options.useGPP then
+    if fParent.Profiles.useGPP then
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
       {$IFDEF WX_BUILD}
@@ -382,7 +400,7 @@ begin
       FilterIndex := HFilter;
     end else
     begin
-      if fParent.Options.useGPP then
+      if fParent.Profiles.useGPP then
         FilterIndex := CppFilter
       else
         FilterIndex := CFilter;
@@ -463,6 +481,7 @@ begin
   fFolderNodes := TObjectList.Create;
   fFolderNodes.OwnsObjects := false;
   { end XXXKF }
+  fProfiles:=TProjectProfileList.Create;
   fUnits := TUnitList.Create;
   fFileName := nFileName;
   finiFile := TdevINI.Create;
@@ -475,7 +494,6 @@ begin
   end;
   finiFile.Section := 'Project';
 
-  InitOptionsRec(fOptions);
   if nName = DEV_INTERNAL_OPEN then
     Open
   else
@@ -493,14 +511,10 @@ begin
   fFolders.Free;
   fFolderNodes.Free;
   fIniFile.Free;
+  fProfiles.Free;
   fUnits.Free;
   if (fNode <> nil) and (not fNode.Deleting) then
     fNode.Free;
-  fOptions.Includes.Free;
-  fOptions.Libs.Free;
-  fOptions.ResourceIncludes.Free;
-  fOptions.MakeIncludes.Free;
-  fOptions.ObjFiles.Free;
   inherited;
 end;
 
@@ -539,6 +553,7 @@ var
   ResFile, Original: TStringList;
   Res, Def, Icon, RCDir: String;
   comp, i: Integer;
+  RcLocationDir:String;
 begin
   comp := 0;
   for i := 0 to Units.Count - 1 do
@@ -547,8 +562,8 @@ begin
         Inc(comp);
 
   // if the project has a custom object directory, put the file in there
-  if (Options.ObjectOutput <> '') then
-    RCDir := IncludeTrailingPathDelimiter(GetRealPath(Options.ObjectOutput, Directory))
+  if (CurrentProfile.ObjectOutput <> '') then
+    RCDir := IncludeTrailingPathDelimiter(GetRealPath(CurrentProfile.ObjectOutput, Directory))
   else
     RCDir := Directory;
   
@@ -557,8 +572,8 @@ begin
   // and does not include the XP style manifest
   // and does not include version info
   // then do not create a private resource file
-  if (comp = 0) and (not fOptions.SupportXPThemes) and (not fOptions.IncludeVersionInfo) and (fOptions.Icon = '') then begin
-    fOptions.PrivateResource := '';
+  if (comp = 0) and (not CurrentProfile.SupportXPThemes) and (not CurrentProfile.IncludeVersionInfo) and (CurrentProfile.Icon = '') then begin
+    CurrentProfile.PrivateResource := '';
     exit;
   end;
 
@@ -583,20 +598,26 @@ begin
   ResFile.Add('/* DO NOT EDIT! */');
   ResFile.Add('');
 
-  if fOptions.IncludeVersionInfo then begin
+  if CurrentProfile.IncludeVersionInfo then begin
     ResFile.Add('#include <windows.h> // include for version info constants');
     ResFile.Add('');
   end;
 
+  if trim(CurrentProfile.ObjectOutput) <> '' then
+    RcLocationDir:='../'
+  else
+    RcLocationDir:='';
   for i := 0 to Units.Count - 1 do
     if GetFileTyp(Units[i].FileName) = utRes then
       if Units[i].Compile then
-        ResFile.Add('#include "' + GenMakePath(ExtractRelativePath(Directory, Units[i].FileName), False, False) + '"');
+      begin
+        ResFile.Add('#include "'+RcLocationDir+ GenMakePath(ExtractRelativePath(Directory, Units[i].FileName), False, False) + '"');
+      end;
 
-  if Length(Options.Icon) > 0 then
+  if Length(CurrentProfile.Icon) > 0 then
   begin
     ResFile.Add('');
-    Icon := GetRealPath(Options.Icon, Directory);
+    Icon := GetRealPath(CurrentProfile.Icon, Directory);
     if FileExists(Icon) then
     begin
       Icon := ExtractRelativePath(FileName, Icon);
@@ -604,31 +625,31 @@ begin
       ResFile.Add('A ICON MOVEABLE PURE LOADONCALL DISCARDABLE "' + Icon + '"')
     end
     else
-      fOptions.Icon := '';
+      CurrentProfile.Icon := '';
   end;
 
-  if fOptions.SupportXPThemes then begin
+  if CurrentProfile.SupportXPThemes then begin
     ResFile.Add('');
     ResFile.Add('//');
     ResFile.Add('// SUPPORT FOR WINDOWS XP THEMES:');
     ResFile.Add('// THIS WILL MAKE THE PROGRAM USE THE COMMON CONTROLS');
     ResFile.Add('// LIBRARY VERSION 6.0 (IF IT IS AVAILABLE)');
     ResFile.Add('//');
-    if (Options.ExeOutput <> '') then
-      ResFile.Add('1 24 "' + GenMakePath2(IncludeTrailingPathDelimiter(SubstituteMakeParams(Options.ExeOutput)) + ExtractFileName(SubstituteMakeParams(Executable))) + '.Manifest"')
+    if (CurrentProfile.ExeOutput <> '') then
+      ResFile.Add('1 24 "' + GenMakePath2(IncludeTrailingPathDelimiter(SubstituteMakeParams(CurrentProfile.ExeOutput)) + ExtractFileName(SubstituteMakeParams(Executable))) + '.Manifest"')
     else
       ResFile.Add('1 24 "' + ExtractFileName(Executable) + '.Manifest"');
   end;
 
-  if fOptions.IncludeVersionInfo then begin
+  if CurrentProfile.IncludeVersionInfo then begin
     ResFile.Add('');
     ResFile.Add('//');
     ResFile.Add('// TO CHANGE VERSION INFORMATION, EDIT PROJECT OPTIONS...');
     ResFile.Add('//');
     ResFile.Add('1 VERSIONINFO');
-    ResFile.Add('FILEVERSION ' + Format('%d,%d,%d,%d',[fOptions.VersionInfo.Major, fOptions.VersionInfo.Minor, fOptions.VersionInfo.Release, fOptions.VersionInfo.Build]));
-    ResFile.Add('PRODUCTVERSION ' + Format('%d,%d,%d,%d',[fOptions.VersionInfo.Major, fOptions.VersionInfo.Minor,fOptions.VersionInfo.Release, fOptions.VersionInfo.Build]));
-    case fOptions.typ of
+    ResFile.Add('FILEVERSION ' + Format('%d,%d,%d,%d',[CurrentProfile.VersionInfo.Major, CurrentProfile.VersionInfo.Minor, CurrentProfile.VersionInfo.Release, CurrentProfile.VersionInfo.Build]));
+    ResFile.Add('PRODUCTVERSION ' + Format('%d,%d,%d,%d',[CurrentProfile.VersionInfo.Major, CurrentProfile.VersionInfo.Minor,CurrentProfile.VersionInfo.Release, CurrentProfile.VersionInfo.Build]));
+    case CurrentProfile.typ of
       dptGUI,
         dptCon: ResFile.Add('FILETYPE VFT_APP');
       dptStat: ResFile.Add('FILETYPE VFT_STATIC_LIB');
@@ -637,24 +658,24 @@ begin
     ResFile.Add('{');
     ResFile.Add('  BLOCK "StringFileInfo"');
     ResFile.Add('	 {');
-    ResFile.Add('		 BLOCK "' + Format('%4.4x%4.4x',[fOptions.VersionInfo.LanguageID, fOptions.VersionInfo.CharsetID]) + '"');
+    ResFile.Add('		 BLOCK "' + Format('%4.4x%4.4x',[CurrentProfile.VersionInfo.LanguageID, CurrentProfile.VersionInfo.CharsetID]) + '"');
     ResFile.Add('		 {');
-    ResFile.Add('			 VALUE "CompanyName", "' + fOptions.VersionInfo.CompanyName +'"');
-    ResFile.Add('			 VALUE "FileVersion", "' + fOptions.VersionInfo.FileVersion +'"');
-    ResFile.Add('			 VALUE "FileDescription", "' +fOptions.VersionInfo.FileDescription + '"');
-    ResFile.Add('			 VALUE "InternalName", "' + fOptions.VersionInfo.InternalName+ '"');
-    ResFile.Add('			 VALUE "LegalCopyright", "' + fOptions.VersionInfo.LegalCopyright + '"');
-    ResFile.Add('			 VALUE "LegalTrademarks", "' + fOptions.VersionInfo.LegalTrademarks + '"');
-    ResFile.Add('			 VALUE "OriginalFilename", "' + fOptions.VersionInfo.OriginalFilename + '"');
-    ResFile.Add('			 VALUE "ProductName", "' + fOptions.VersionInfo.ProductName +'"');
-    ResFile.Add('			 VALUE "ProductVersion", "' +fOptions.VersionInfo.ProductVersion + '"');
+    ResFile.Add('			 VALUE "CompanyName", "' + CurrentProfile.VersionInfo.CompanyName +'"');
+    ResFile.Add('			 VALUE "FileVersion", "' + CurrentProfile.VersionInfo.FileVersion +'"');
+    ResFile.Add('			 VALUE "FileDescription", "' +CurrentProfile.VersionInfo.FileDescription + '"');
+    ResFile.Add('			 VALUE "InternalName", "' + CurrentProfile.VersionInfo.InternalName+ '"');
+    ResFile.Add('			 VALUE "LegalCopyright", "' + CurrentProfile.VersionInfo.LegalCopyright + '"');
+    ResFile.Add('			 VALUE "LegalTrademarks", "' + CurrentProfile.VersionInfo.LegalTrademarks + '"');
+    ResFile.Add('			 VALUE "OriginalFilename", "' + CurrentProfile.VersionInfo.OriginalFilename + '"');
+    ResFile.Add('			 VALUE "ProductName", "' + CurrentProfile.VersionInfo.ProductName +'"');
+    ResFile.Add('			 VALUE "ProductVersion", "' +CurrentProfile.VersionInfo.ProductVersion + '"');
     ResFile.Add('		 }');
     ResFile.Add('	 }');
 
     // additional block for windows 95->NT
     ResFile.Add('  BLOCK "VarFileInfo"');
     ResFile.Add('	 {');
-    ResFile.Add('		 VALUE "Translation", ' + Format('0x%4.4x, %4.4d',[fOptions.VersionInfo.LanguageID, fOptions.VersionInfo.CharsetID]));
+    ResFile.Add('		 VALUE "Translation", ' + Format('0x%4.4x, %4.4d',[CurrentProfile.VersionInfo.LanguageID, CurrentProfile.VersionInfo.CharsetID]));
     ResFile.Add('	 }');
 
     ResFile.Add('}');
@@ -687,20 +708,20 @@ begin
         ForceDirectories(SubstituteMakeParams(RCDir));
       ResFile.SaveToFile(Res);
     end;
-    fOptions.PrivateResource := Res;
+    CurrentProfile.PrivateResource := Res;
   end
   else
   begin
     if FileExists(Res) then
       DeleteFile(PChar(Res));
     Res := ChangeFileExt(Res, RES_EXT);
-    fOptions.PrivateResource := '';
+    CurrentProfile.PrivateResource := '';
   end;
   if FileExists(Res) then
     FileSetDate(Res, DateTimeToFileDate(Now));// fix the "Clock skew detected" warning ;)
 
   // create XP manifest
-  if fOptions.SupportXPThemes then begin
+  if CurrentProfile.SupportXPThemes then begin
     ResFile.Clear;
     ResFile.Add('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>');
     ResFile.Add('<assembly');
@@ -744,20 +765,20 @@ begin
   ResFile.Add('#define ' + Def);
   ResFile.Add('');
   ResFile.Add('/* VERSION DEFINITIONS */');
-  ResFile.Add('#define VER_STRING'#9 + Format('"%d.%d.%d.%d"', [fOptions.VersionInfo.Major, fOptions.VersionInfo.Minor,fOptions.VersionInfo.Release, fOptions.VersionInfo.Build]));
-  ResFile.Add('#define VER_MAJOR'#9 + IntToStr(fOptions.VersionInfo.Major));
-  ResFile.Add('#define VER_MINOR'#9 + IntToStr(fOptions.VersionInfo.Minor));
-  ResFile.Add('#define VER_RELEASE'#9 + IntToStr(fOptions.VersionInfo.Release));
-  ResFile.Add('#define VER_BUILD'#9 + IntToStr(fOptions.VersionInfo.Build));
-  ResFile.Add('#define COMPANY_NAME'#9'"' + fOptions.VersionInfo.CompanyName +'"');
-  ResFile.Add('#define FILE_VERSION'#9'"' + fOptions.VersionInfo.FileVersion +'"');
-  ResFile.Add('#define FILE_DESCRIPTION'#9'"' +fOptions.VersionInfo.FileDescription + '"');
-  ResFile.Add('#define INTERNAL_NAME'#9'"' + fOptions.VersionInfo.InternalName +'"');
-  ResFile.Add('#define LEGAL_COPYRIGHT'#9'"' + fOptions.VersionInfo.LegalCopyright + '"');
-  ResFile.Add('#define LEGAL_TRADEMARKS'#9'"' +fOptions.VersionInfo.LegalTrademarks + '"');
-  ResFile.Add('#define ORIGINAL_FILENAME'#9'"' +fOptions.VersionInfo.OriginalFilename + '"');
-  ResFile.Add('#define PRODUCT_NAME'#9'"' + fOptions.VersionInfo.ProductName +'"');
-  ResFile.Add('#define PRODUCT_VERSION'#9'"' +fOptions.VersionInfo.ProductVersion + '"');
+  ResFile.Add('#define VER_STRING'#9 + Format('"%d.%d.%d.%d"', [CurrentProfile.VersionInfo.Major, CurrentProfile.VersionInfo.Minor,CurrentProfile.VersionInfo.Release, CurrentProfile.VersionInfo.Build]));
+  ResFile.Add('#define VER_MAJOR'#9 + IntToStr(CurrentProfile.VersionInfo.Major));
+  ResFile.Add('#define VER_MINOR'#9 + IntToStr(CurrentProfile.VersionInfo.Minor));
+  ResFile.Add('#define VER_RELEASE'#9 + IntToStr(CurrentProfile.VersionInfo.Release));
+  ResFile.Add('#define VER_BUILD'#9 + IntToStr(CurrentProfile.VersionInfo.Build));
+  ResFile.Add('#define COMPANY_NAME'#9'"' + CurrentProfile.VersionInfo.CompanyName +'"');
+  ResFile.Add('#define FILE_VERSION'#9'"' + CurrentProfile.VersionInfo.FileVersion +'"');
+  ResFile.Add('#define FILE_DESCRIPTION'#9'"' +CurrentProfile.VersionInfo.FileDescription + '"');
+  ResFile.Add('#define INTERNAL_NAME'#9'"' + CurrentProfile.VersionInfo.InternalName +'"');
+  ResFile.Add('#define LEGAL_COPYRIGHT'#9'"' + CurrentProfile.VersionInfo.LegalCopyright + '"');
+  ResFile.Add('#define LEGAL_TRADEMARKS'#9'"' +CurrentProfile.VersionInfo.LegalTrademarks + '"');
+  ResFile.Add('#define ORIGINAL_FILENAME'#9'"' +CurrentProfile.VersionInfo.OriginalFilename + '"');
+  ResFile.Add('#define PRODUCT_NAME'#9'"' + CurrentProfile.VersionInfo.ProductName +'"');
+  ResFile.Add('#define PRODUCT_VERSION'#9'"' +CurrentProfile.VersionInfo.ProductVersion + '"');
   ResFile.Add('');
   ResFile.Add('#endif /*'+Def +'*/');
   ResFile.SaveToFile(Res);
@@ -812,7 +833,7 @@ begin
  {$ENDIF}
     begin
         Compile := True;
-    	CompileCpp:=Self.Options.useGPP;
+    	CompileCpp:=Self.Profiles.useGPP;
         Link := True;
     end;    
     Priority := 1000;
@@ -864,12 +885,12 @@ begin
     case GetFileTyp(s) of
       utSrc, utHead: begin
           Compile := True;
-          CompileCpp := Self.Options.useGPP;
+          CompileCpp := Self.Profiles.useGPP;
           Link := True;
         end;
       utRes: begin
           Compile := True;
-          CompileCpp := Self.Options.useGPP;
+          CompileCpp := Self.Profiles.useGPP;
           Link := False;
           // if a resource was added, force (re)creation of private resource...
           BuildPrivateResource(True);
@@ -902,229 +923,210 @@ begin
     fName := Read('name', '');
     PchHead := Read('PchHead', -1);
     PchSource := Read('PchSource', -1);
-    fOptions.Ver := Read('Ver', -1);
-    fOptions.Icon := Read('icon', '');
-    if (fOptions.Ver > 0) then //ver > 0 is at least a v5 project
+    Profiles.Ver := Read('Ver', -1);
+    //CurrentProfile.Icon := Read('icon', '');
+
+    if (Profiles.Ver > 0) and (Profiles.Ver < 3) then //ver > 0 is at least a v5 project
     begin
-      fOptions.typ := Read('type', 0);
+      SetModified(TRUE);
+      fProfiles[0].typ := Read('type', 0);
+      fProfiles.UseGpp := Read('IsCpp', true);
 
 {$IFDEF WX_BUILD}
 
     // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
 
-      fOptions.cmdLines.GCC_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_MINGW), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.GCC_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_MINGW), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.GCC_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_MINGW), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.GCC_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_MINGW), '');
+      fProfiles[0].Compiler := StringReplace(Read(C_INI_LABEL, ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].CppCompiler := StringReplace(Read(CPP_INI_LABEL, ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].Linker := StringReplace(Read(LINKER_INI_LABEL, ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].PreprocDefines := Read(PREPROC_INI_LABEL, '');
 
-      fOptions.cmdLines.VC_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_VC), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.VC_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_VC), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.VC_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_VC), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.VC_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_VC), '');
+      fProfiles[0].ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].Libs.DelimitedText := StringReplace(Read('Libs', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].Includes.DelimitedText := StringReplace(Read('Includes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
-
-      fOptions.cmdLines.DMARS_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_DMARS), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.DMARS_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_DMARS), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.DMARS_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_DMARS), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.DMARS_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_DMARS), '');
-
-
-      fOptions.cmdLines.BORLAND_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_BORLAND), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.BORLAND_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_BORLAND), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.BORLAND_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_BORLAND), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.BORLAND_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_BORLAND), '');
-
-      fOptions.cmdLines.WATCOM_Compiler := StringReplace(Read(C_INI_LABEL(ID_COMPILER_WATCOM), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.WATCOM_CppCompiler := StringReplace(Read(CPP_INI_LABEL(ID_COMPILER_WATCOM), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.cmdLines.WATCOM_Linker := StringReplace(Read(LINKER_INI_LABEL(ID_COMPILER_WATCOM), ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.WATCOM_PreprocDefines := Read(PREPROC_INI_LABEL(ID_COMPILER_WATCOM), '');
-
-      fOptions.ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.Libs.DelimitedText := StringReplace(Read('Libs', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.Includes.DelimitedText := StringReplace(Read('Includes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-     
-      fOptions.PrivateResource := StringReplace(Read('PrivateResource', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.ResourceIncludes.DelimitedText :=StringReplace(Read('ResourceIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fOptions.MakeIncludes.DelimitedText :=StringReplace(Read('MakeIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].PrivateResource := StringReplace(Read('PrivateResource', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].ResourceIncludes.DelimitedText :=StringReplace(Read('ResourceIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].MakeIncludes.DelimitedText :=StringReplace(Read('MakeIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
 
 {$ELSE}
-      fOptions.cmdLines.Compiler := Read('Compiler', '');
-      fOptions.cmdLines.CppCompiler := Read('CppCompiler', '');
-      fOptions.cmdLines.Linker := Read('Linker', '');
-      fOptions.ObjFiles.DelimitedText := Read('ObjFiles', '');
-      fOptions.Libs.DelimitedText := Read('Libs', '');
-      fOptions.Includes.DelimitedText := Read('Includes', '');
+      fProfiles[0].Compiler := Read('Compiler', '');
+      fProfiles[0].CppCompiler := Read('CppCompiler', '');
+      fProfiles[0].Linker := Read('Linker', '');
+      fProfiles[0].ObjFiles.DelimitedText := Read('ObjFiles', '');
+      fProfiles[0].Libs.DelimitedText := Read('Libs', '');
+      fProfiles[0].Includes.DelimitedText := Read('Includes', '');
 
-      fOptions.PrivateResource := Read('PrivateResource', '');
-      fOptions.ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
-      fOptions.MakeIncludes.DelimitedText := Read('MakeIncludes', '');
-
+      fProfiles[0].PrivateResource := Read('PrivateResource', '');
+      fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
+      fProfiles[0].MakeIncludes.DelimitedText := Read('MakeIncludes', '');
 {$ENDIF}
+      fProfiles[0].ExeOutput := Read('ExeOutput', 'GCC');
+      fProfiles[0].ObjectOutput := Read('ObjectOutput', 'GCC');
 
-      fOptions.UseGpp := Read('IsCpp', FALSE);
-      fOptions.ExeOutput := Read('ExeOutput', '');
-      fOptions.ObjectOutput := Read('ObjectOutput', '');
-      fOptions.OverrideOutput := Read('OverrideOutput', FALSE);
-      fOptions.OverridenOutput := Read('OverrideOutputName', '');
-      fOptions.HostApplication := Read('HostApplication', '');
+      if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
+        fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
+      else
+        if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
+          fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput;
+                
+      fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
+      fProfiles[0].OverridenOutput := Read('OverrideOutputName', '');
+      fProfiles[0].HostApplication := Read('HostApplication', '');
 
       fFolders.CommaText := Read('Folders', '');
       fCmdLineArgs := Read('CommandLine', '');
 
-      fUseCustomMakefile := Read('UseCustomMakefile', FALSE);
-      fCustomMakefile := Read('CustomMakefile', '');
+      fProfiles[0].UseCustomMakefile := Read('UseCustomMakefile', FALSE);
+      fProfiles[0].CustomMakefile := Read('CustomMakefile', '');
 
-      fOptions.IncludeVersionInfo := Read('IncludeVersionInfo', False);
-      fOptions.SupportXPThemes := Read('SupportXPThemes', False);
-      fOptions.CompilerSet := Read('CompilerSet', devCompiler.CompilerSet);
-      fOptions.CompilerOptions := Read('CompilerSettings', devCompiler.OptionStr);
+      fProfiles[0].IncludeVersionInfo := Read('IncludeVersionInfo', False);
+      fProfiles[0].SupportXPThemes := Read('SupportXPThemes', False);
+      fProfiles[0].CompilerSet := Read('CompilerSet', devCompiler.CompilerSet);
+
+      fProfiles[0].CompilerOptions := Read(COMPILER_INI_LABEL, devCompiler.OptionStr);
+
       devCompiler.OptionStr := devCompiler.OptionStr;
-      if fOptions.CompilerSet > devCompilerSet.Sets.Count - 1 then begin
-        fOptions.CompilerSet := devCompiler.CompilerSet;
+      if fProfiles[0].CompilerSet > devCompilerSet.Sets.Count - 1 then begin
+        fProfiles[0].CompilerSet := devCompiler.CompilerSet;
         MessageDlg('The compiler set you have selected for this project, no longer '+
                    'exists.'#10'It will be substituted by the global compiler set...',
                    mtError, [mbOk], 0);
       end;
 
       Section := 'VersionInfo';
-      fOptions.VersionInfo.Major := Read('Major', 0);
-      fOptions.VersionInfo.Minor := Read('Minor', 1);
-      fOptions.VersionInfo.Release := Read('Release', 1);
-      fOptions.VersionInfo.Build := Read('Build', 1);
-      fOptions.VersionInfo.LanguageID := Read('LanguageID', $0409);
-      fOptions.VersionInfo.CharsetID := Read('CharsetID', $04E4);
-      fOptions.VersionInfo.CompanyName := Read('CompanyName', '');
-      fOptions.VersionInfo.FileVersion := Read('FileVersion', '0.1');
-      fOptions.VersionInfo.FileDescription := Read('FileDescription','');
-      fOptions.VersionInfo.InternalName := Read('InternalName', '');
-      fOptions.VersionInfo.LegalCopyright := Read('LegalCopyright', '');
-      fOptions.VersionInfo.LegalTrademarks := Read('LegalTrademarks', '');
-      fOptions.VersionInfo.OriginalFilename := Read('OriginalFilename',ExtractFilename(Executable));
-      fOptions.VersionInfo.ProductName := Read('ProductName', Name);
-      fOptions.VersionInfo.ProductVersion := Read('ProductVersion', '0.1');
+      fProfiles[0].VersionInfo.Major := Read('Major', 0);
+      fProfiles[0].VersionInfo.Minor := Read('Minor', 1);
+      fProfiles[0].VersionInfo.Release := Read('Release', 1);
+      fProfiles[0].VersionInfo.Build := Read('Build', 1);
+      fProfiles[0].VersionInfo.LanguageID := Read('LanguageID', $0409);
+      fProfiles[0].VersionInfo.CharsetID := Read('CharsetID', $04E4);
+      fProfiles[0].VersionInfo.CompanyName := Read('CompanyName', '');
+      fProfiles[0].VersionInfo.FileVersion := Read('FileVersion', '0.1');
+      fProfiles[0].VersionInfo.FileDescription := Read('FileDescription','');
+      fProfiles[0].VersionInfo.InternalName := Read('InternalName', '');
+      fProfiles[0].VersionInfo.LegalCopyright := Read('LegalCopyright', '');
+      fProfiles[0].VersionInfo.LegalTrademarks := Read('LegalTrademarks', '');
+      fProfiles[0].VersionInfo.OriginalFilename := Read('OriginalFilename',ExtractFilename(Executable));
+      fProfiles[0].VersionInfo.ProductName := Read('ProductName', Name);
+      fProfiles[0].VersionInfo.ProductVersion := Read('ProductVersion', '0.1');
 
       // increment the build number if the version is 2
-      if fOptions.Ver >= 2 then
+      if Profiles.Ver >= 2 then
       begin
-        fOptions.VersionInfo.AutoIncBuildNrOnRebuild := Read('AutoIncBuildNrOnRebuild', False);
-        fOptions.VersionInfo.AutoIncBuildNrOnCompile := Read('AutoIncBuildNrOnCompile', False);
+        fProfiles[0].VersionInfo.AutoIncBuildNrOnRebuild := Read('AutoIncBuildNrOnRebuild', False);
+        fProfiles[0].VersionInfo.AutoIncBuildNrOnCompile := Read('AutoIncBuildNrOnCompile', False);
       end
       else
-        fOptions.VersionInfo.AutoIncBuildNrOnCompile := Read('AutoIncBuildNr', False);
+        fProfiles[0].VersionInfo.AutoIncBuildNrOnCompile := Read('AutoIncBuildNr', False);
     end
     else
+    if (Profiles.Ver = -1) then
     begin // dev-c < 4
+      SetModified(TRUE);
       if not Read('NoConsole', TRUE) then
-        fOptions.typ := dptCon
-      else 
-      	if Read('IsDLL', FALSE) then
-        fOptions.Typ := dptDyn
+        fProfiles[0].typ := dptCon
       else
-        fOptions.typ := dptGUI;
+      	if Read('IsDLL', FALSE) then
+        fProfiles[0].Typ := dptDyn
+      else
+        fProfiles[0].typ := dptGUI;
 
-      fOptions.PrivateResource := Read('PrivateResource', '');
-      fOptions.ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
-      fOptions.ObjFiles.Add(read('ObjFiles', ''));
-      fOptions.Includes.Add(Read('IncludeDirs', ''));
-      fOPtions.cmdLines.GCC_Compiler := Read('CompilerOptions', '');
-      fOptions.usegpp := Read('Use_GPP', FALSE);
-      fOptions.ExeOutput := Read('ExeOutput', '');
-      fOptions.ObjectOutput := Read('ObjectOutput', '');
-      fOptions.OverrideOutput := Read('OverrideOutput', FALSE);
-      fOptions.OverridenOutput := Read('OverrideOutputName', '');
-      fOptions.HostApplication := Read('HostApplication', '');
+      fProfiles[0].PrivateResource := Read('PrivateResource', '');
+      fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
+      fProfiles[0].ObjFiles.Add(read('ObjFiles', ''));
+      fProfiles[0].Includes.Add(Read('IncludeDirs', ''));
+      fProfiles[0].Compiler := Read('CompilerOptions', '');
+      fProfiles.usegpp := Read('Use_GPP', FALSE);
+      fProfiles[0].ExeOutput := Read('ExeOutput', 'GCC');
+      fProfiles[0].ObjectOutput := Read('ObjectOutput', 'GCC');
+
+      if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
+        fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
+      else
+        if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
+          fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput;
+
+      fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
+      fProfiles[0].OverridenOutput := Read('OverrideOutputName', '');
+      fProfiles[0].HostApplication := Read('HostApplication', '');
     end;
   end;
 end;
 
 procedure TProject.UpdateFile;
+var
+  i:Integer;
 begin
   with finifile do
   begin
     Section := 'Project';
-
     Write('FileName', ExtractRelativePath(Directory, fFileName));
     Write('PchHead', PchHead);
     Write('PchSource', PchSource);
     Write('Name', fName);
-    Write('Type', fOptions.typ);
-    Write('Ver', 2);
-    Write('ObjFiles', fOptions.ObjFiles.DelimitedText);
-    Write('Includes', fOptions.Includes.DelimitedText);
-    Write('Libs', fOptions.Libs.DelimitedText);
-    Write('PrivateResource', fOptions.PrivateResource);
-    Write('ResourceIncludes', fOptions.ResourceIncludes.DelimitedText);
-    Write('MakeIncludes', fOptions.MakeIncludes.DelimitedText);
-
-    Write(C_INI_LABEL(ID_COMPILER_MINGW),fOptions.cmdLines.GCC_Compiler);
-    Write(CPP_INI_LABEL(ID_COMPILER_MINGW), fOptions.cmdLines.GCC_CppCompiler);
-    Write(LINKER_INI_LABEL(ID_COMPILER_MINGW),fOptions.cmdLines.GCC_Linker);
-    Write(PREPROC_INI_LABEL(ID_COMPILER_MINGW),fOptions.GCC_PreProcDefines);
-
-    Write(C_INI_LABEL(ID_COMPILER_VC), fOptions.cmdLines.VC_Compiler);
-    Write(CPP_INI_LABEL(ID_COMPILER_VC),fOptions.cmdLines.VC_CppCompiler);
-    Write(LINKER_INI_LABEL(ID_COMPILER_VC), fOptions.cmdLines.VC_Linker);
-    Write(PREPROC_INI_LABEL(ID_COMPILER_VC), fOptions.VC_PreProcDefines);
-
-    Write(C_INI_LABEL(ID_COMPILER_DMARS), fOptions.cmdLines.DMARS_Compiler);
-    Write(CPP_INI_LABEL(ID_COMPILER_DMARS), fOptions.cmdLines.DMARS_CppCompiler);
-    Write(LINKER_INI_LABEL(ID_COMPILER_DMARS), fOptions.cmdLines.DMARS_Linker);
-    Write(PREPROC_INI_LABEL(ID_COMPILER_DMARS), fOptions.DMARS_PreProcDefines);
-
-    Write(C_INI_LABEL(ID_COMPILER_BORLAND), fOptions.cmdLines.BORLAND_Compiler);
-    Write(CPP_INI_LABEL(ID_COMPILER_BORLAND), fOptions.cmdLines.BORLAND_CppCompiler);
-    Write(LINKER_INI_LABEL(ID_COMPILER_BORLAND), fOptions.cmdLines.BORLAND_Linker);
-    Write(PREPROC_INI_LABEL(ID_COMPILER_BORLAND), fOptions.BORLAND_PreProcDefines);
-
-    Write(C_INI_LABEL(ID_COMPILER_WATCOM), fOptions.cmdLines.WATCOM_Compiler);
-    Write(CPP_INI_LABEL(ID_COMPILER_WATCOM), fOptions.cmdLines.WATCOM_CppCompiler);
-    Write(LINKER_INI_LABEL(ID_COMPILER_WATCOM), fOptions.cmdLines.WATCOM_Linker);
-    Write(PREPROC_INI_LABEL(ID_COMPILER_WATCOM), fOptions.WATCOM_PreProcDefines);
-
-    Write('IsCpp', fOptions.UseGpp);
-    Write('Icon', ExtractRelativePath(Directory, fOptions.Icon));
-    Write('ExeOutput', fOptions.ExeOutput);
-    Write('ObjectOutput', fOptions.ObjectOutput);
-    Write('OverrideOutput', fOptions.OverrideOutput);
-    Write('OverrideOutputName', fOptions.OverridenOutput);
-    Write('HostApplication', fOptions.HostApplication);
-
+    Write('Ver', 3);
+    Write('IsCpp', fProfiles.UseGpp);
+    Write('ProfilesCount', fProfiles.Count);
+    Write('ProfileIndex', CurrentProfileIndex);
     Write('Folders', fFolders.CommaText);
-    Write('CommandLine', fCmdLineArgs);
 
-    Write('UseCustomMakefile', fUseCustomMakefile);
-    Write('CustomMakefile', fCustomMakefile);
+    for i := 0 to fProfiles.Count-1 do
+    begin    
+      WriteProfile(i,'ProfileName', fProfiles[i].ProfileName);
+      WriteProfile(i,'Type', fProfiles[i].typ);
+      WriteProfile(i,'ObjFiles', fProfiles[i].ObjFiles.DelimitedText);
+      WriteProfile(i,'Includes', fProfiles[i].Includes.DelimitedText);
+      WriteProfile(i,'Libs', fProfiles[i].Libs.DelimitedText);
+      WriteProfile(i,'PrivateResource', fProfiles[i].PrivateResource);
+      WriteProfile(i,'ResourceIncludes', fProfiles[i].ResourceIncludes.DelimitedText);
+      WriteProfile(i,'MakeIncludes', fProfiles[i].MakeIncludes.DelimitedText);
 
-    Write('IncludeVersionInfo', fOptions.IncludeVersionInfo);
-    Write('SupportXPThemes', fOptions.SupportXPThemes);
-    Write('CompilerSet', fOptions.CompilerSet);
-    Write('CompilerSettings', fOptions.CompilerOptions);
+      WriteProfile(i,C_INI_LABEL,fProfiles[i].Compiler);
+      WriteProfile(i,CPP_INI_LABEL, fProfiles[i].CppCompiler);
+      WriteProfile(i,LINKER_INI_LABEL,fProfiles[i].Linker);
+      WriteProfile(i,PREPROC_INI_LABEL,fProfiles[i].PreProcDefines);
+      WriteProfile(i,COMPILER_INI_LABEL, fProfiles[i].CompilerOptions);
 
-    Section := 'VersionInfo';
-    Write('Major', fOptions.VersionInfo.Major);
-    Write('Minor', fOptions.VersionInfo.Minor);
-    Write('Release', fOptions.VersionInfo.Release);
-    Write('Build', fOptions.VersionInfo.Build);
-    Write('LanguageID', fOptions.VersionInfo.LanguageID);
-    Write('CharsetID', fOptions.VersionInfo.CharsetID);
-    Write('CompanyName', fOptions.VersionInfo.CompanyName);
-    Write('FileVersion', fOptions.VersionInfo.FileVersion);
-    Write('FileDescription', fOptions.VersionInfo.FileDescription);
-    Write('InternalName', fOptions.VersionInfo.InternalName);
-    Write('LegalCopyright', fOptions.VersionInfo.LegalCopyright);
-    Write('LegalTrademarks', fOptions.VersionInfo.LegalTrademarks);
-    Write('OriginalFilename', fOptions.VersionInfo.OriginalFilename);
-    Write('ProductName', fOptions.VersionInfo.ProductName);
-    Write('ProductVersion', fOptions.VersionInfo.ProductVersion);
-    Write('AutoIncBuildNrOnRebuild', fOptions.VersionInfo.AutoIncBuildNrOnRebuild);
-    Write('AutoIncBuildNrOnCompile', fOptions.VersionInfo.AutoIncBuildNrOnCompile);
-    DeleteKey('AutoIncBuildNr');
+      WriteProfile(i,'Icon', ExtractRelativePath(Directory, fProfiles[i].Icon));
+      WriteProfile(i,'ExeOutput', fProfiles[i].ExeOutput);
+      WriteProfile(i,'ObjectOutput', fProfiles[i].ObjectOutput);
+      WriteProfile(i,'OverrideOutput', fProfiles[i].OverrideOutput);
+      WriteProfile(i,'OverrideOutputName', fProfiles[i].OverridenOutput);
+      WriteProfile(i,'HostApplication', fProfiles[i].HostApplication);
 
-    Section := 'Project';
+      WriteProfile(i,'CommandLine', fCmdLineArgs);
 
-    if fOptions.Ver <= 0 then
+      WriteProfile(i,'UseCustomMakefile', fProfiles[i].UseCustomMakefile);
+      WriteProfile(i,'CustomMakefile', fProfiles[i].CustomMakefile);
+
+      WriteProfile(i,'IncludeVersionInfo', fProfiles[i].IncludeVersionInfo);
+      WriteProfile(i,'SupportXPThemes', fProfiles[i].SupportXPThemes);
+      WriteProfile(i,'CompilerSet', fProfiles[i].CompilerSet);
+      WriteProfile(i,'compilerType', fProfiles[i].CompilerType);
+      WriteProfile(i,'Major', fProfiles[i].VersionInfo.Major);
+      WriteProfile(i,'Minor', fProfiles[i].VersionInfo.Minor);
+      WriteProfile(i,'Release', fProfiles[i].VersionInfo.Release);
+      WriteProfile(i,'Build', fProfiles[i].VersionInfo.Build);
+      WriteProfile(i,'LanguageID', fProfiles[i].VersionInfo.LanguageID);
+      WriteProfile(i,'CharsetID', fProfiles[i].VersionInfo.CharsetID);
+      WriteProfile(i,'CompanyName', fProfiles[i].VersionInfo.CompanyName);
+      WriteProfile(i,'FileVersion', fProfiles[i].VersionInfo.FileVersion);
+      WriteProfile(i,'FileDescription', fProfiles[i].VersionInfo.FileDescription);
+      WriteProfile(i,'InternalName', fProfiles[i].VersionInfo.InternalName);
+      WriteProfile(i,'LegalCopyright', fProfiles[i].VersionInfo.LegalCopyright);
+      WriteProfile(i,'LegalTrademarks', fProfiles[i].VersionInfo.LegalTrademarks);
+      WriteProfile(i,'OriginalFilename', fProfiles[i].VersionInfo.OriginalFilename);
+      WriteProfile(i,'ProductName', fProfiles[i].VersionInfo.ProductName);
+      WriteProfile(i,'ProductVersion', fProfiles[i].VersionInfo.ProductVersion);
+      WriteProfile(i,'AutoIncBuildNrOnRebuild', fProfiles[i].VersionInfo.AutoIncBuildNrOnRebuild);
+      WriteProfile(i,'AutoIncBuildNrOnCompile', fProfiles[i].VersionInfo.AutoIncBuildNrOnCompile);
+      DeleteKey('AutoIncBuildNr');
+    end;
+    if fPrevVersion <= 2 then
     begin
+        Section := 'Project';
       //delete outdated dev4 project options
       DeleteKey('NoConsole');
       DeleteKey('IsDLL');
@@ -1132,6 +1134,79 @@ begin
       DeleteKey('IncludeDirs');
       DeleteKey('CompilerOptions');
       DeleteKey('Use_GPP');
+      //delete outdated dev5 ver 1 and 2 keys project options
+      DeleteKey('ObjFiles');
+      DeleteKey('Includes');
+      DeleteKey('Libs');
+      DeleteKey('PrivateResource');
+      DeleteKey('ResourceIncludes');
+      DeleteKey('MakeIncludes');
+      DeleteKey('Compiler');
+      DeleteKey('CppCompiler');
+      DeleteKey('Linker');
+      DeleteKey('PreprocDefines');
+      DeleteKey('Icon');
+      DeleteKey('UseCustomMakefile');
+      DeleteKey('CustomMakefile');
+      DeleteKey('IncludeVersionInfo');
+      DeleteKey('SupportXPThemes');
+      DeleteKey('CompilerSet');
+      DeleteKey('CompilerSettings');
+      DeleteKey('ExeOutput');
+      DeleteKey('ObjectOutput');
+      DeleteKey('OverrideOutput');
+      DeleteKey('OverrideOutputName');
+      DeleteKey('HostApplication');
+
+      DeleteKey('VC2005_Compiler');
+      DeleteKey('VC2005_CppCompiler');
+      DeleteKey('VC2005_Linker');
+      DeleteKey('VC2005_PreprocDefines');
+      DeleteKey('VC2003_Compiler');
+      DeleteKey('VC2003_CppCompiler');
+      DeleteKey('VC2003_Linker');
+      DeleteKey('VC2003_PreprocDefines');
+      DeleteKey('VC6_Compiler');
+      DeleteKey('VC6_CppCompiler');
+      DeleteKey('VC6_Linker');
+      DeleteKey('VC6_PreprocDefines');
+      DeleteKey('DMARS_Compiler');
+      DeleteKey('DMARS_CppCompiler');
+      DeleteKey('DMARS_Linker');
+      DeleteKey('DMARS_PreprocDefines');
+      DeleteKey('BORLAND_Compiler');
+      DeleteKey('BORLAND_CppCompiler');
+      DeleteKey('BORLAND_Linker');
+      DeleteKey('BORLAND_PreprocDefines');
+      DeleteKey('WATCOM_Compiler');
+      DeleteKey('WATCOM_CppCompiler');
+      DeleteKey('WATCOM_Linker');
+      DeleteKey('WATCOM_PreprocDefines');
+      DeleteKey('VC2005_CompilerSettings');
+      DeleteKey('VC2003_CompilerSettings');
+      DeleteKey('VC6_CompilerSettings');
+      DeleteKey('DMARS_CompilerSettings');
+      DeleteKey('BORLAND_CompilerSettings');
+      DeleteKey('WATCOM_CompilerSettings');
+
+      Section := 'VersionInfo';
+      DeleteKey('Major');
+      DeleteKey('Minor');
+      DeleteKey('Release');
+      DeleteKey('Build');
+      DeleteKey('LanguageID');
+      DeleteKey('CharsetID');
+      DeleteKey('CompanyName');
+      DeleteKey('FileVersion');
+      DeleteKey('FileDescription');
+      DeleteKey('InternalName');
+      DeleteKey('LegalCopyright');
+      DeleteKey('LegalTrademarks');
+      DeleteKey('OriginalFilename');
+      DeleteKey('ProductName');
+      DeleteKey('ProductVersion');
+      DeleteKey('AutoIncBuildNrOnRebuild');
+      DeleteKey('AutoIncBuildNrOnCompile');
     end;
   end;
 end;
@@ -1168,20 +1243,20 @@ begin
       // saved new file or an existing file add to project file
       if (New and not Dirty) or not New then
       begin
-        finifile.Write(Count, ExtractRelativePath(Directory,fUnits[idx].FileName));
+        finifile.WriteUnit(Count, ExtractRelativePath(Directory,fUnits[idx].FileName));
         inc(Count);
       end;
       case GetFileTyp(fUnits[idx].FileName) of
         utHead,
-          utSrc: finifile.Write(idx, 'CompileCpp', CompileCpp);
+          utSrc: finifile.WriteUnit(idx, 'CompileCpp', CompileCpp);
         utRes: if Folder = '' then Folder := 'Resources';
       end;
-      finifile.Write(idx, 'Folder', Folder);
-      finifile.Write(idx, 'Compile', Compile);
-      finifile.Write(idx, 'Link', Link);
-      finifile.Write(idx, 'Priority', Priority);
-      finifile.Write(idx, 'OverrideBuildCmd', OverrideBuildCmd);
-      finifile.Write(idx, 'BuildCmd', BuildCmd);
+      finifile.WriteUnit(idx, 'Folder', Folder);
+      finifile.WriteUnit(idx, 'Compile', Compile);
+      finifile.WriteUnit(idx, 'Link', Link);
+      finifile.WriteUnit(idx, 'Priority', Priority);
+      finifile.WriteUnit(idx, 'OverrideBuildCmd', OverrideBuildCmd);
+      finifile.WriteUnit(idx, 'BuildCmd', BuildCmd);
     end;
     inc(idx);
   end;
@@ -1269,7 +1344,8 @@ begin
       end;
   end;
 {$WARN SYMBOL_PLATFORM ON}
-
+  //First Load the Profile before doing anything
+  LoadProfiles;
   Update;
   fNode := MakeProjectNode;
 
@@ -1283,7 +1359,7 @@ begin
     NewUnit := TProjUnit.Create(Self);
     with NewUnit do
     begin
-      FileName := ExpandFileto(finifile.Read(i), Directory);
+      FileName := ExpandFileto(finifile.ReadUnit(i), Directory);
       if not FileExists(FileName) then
       begin
         Application.MessageBox(PChar(Format(Lang[ID_ERR_FILENOTFOUND],
@@ -1291,17 +1367,17 @@ begin
         SetModified(TRUE);
         Continue;
       end;
-      Folder := finifile.Read(i, 'Folder', '');
+      Folder := finifile.ReadUnit(i, 'Folder', '');
 
-      Compile := finifile.Read(i, 'Compile', True);
-        if finifile.Read(i, 'CompileCpp', 2)=2 then // check if feature not present in this file
-        CompileCpp := Self.Options.useGPP
+      Compile := finifile.ReadUnit(i, 'Compile', True);
+        if finifile.ReadUnit(i, 'CompileCpp', 2)=2 then // check if feature not present in this file
+        CompileCpp := Self.fProfiles.useGPP
       else
-        CompileCpp := finifile.Read(i, 'CompileCpp', False);
-      Link := finifile.Read(i, 'Link', True);
-      Priority := finifile.Read(i, 'Priority', 1000);
-      OverrideBuildCmd := finifile.Read(i, 'OverrideBuildCmd', False);
-      BuildCmd := finifile.Read(i, 'BuildCmd', '');
+        CompileCpp := finifile.ReadUnit(i, 'CompileCpp', False);
+      Link := finifile.ReadUnit(i, 'Link', True);
+      Priority := finifile.ReadUnit(i, 'Priority', 1000);
+      OverrideBuildCmd := finifile.ReadUnit(i, 'OverrideBuildCmd', False);
+      BuildCmd := finifile.ReadUnit(i, 'BuildCmd', '');
 
       Editor := nil;
       New := FALSE;
@@ -1323,12 +1399,129 @@ begin
     LoadLayout;
   end;
   RebuildNodes;
-
-  devCompilerSet.LoadSet(fOptions.CompilerSet);
+  devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler();
 end;
 
 { end XXXKF changed }
+procedure TProject.LoadProfiles;
+var
+    i,profilecount:Integer;
+    NewProfile:TProjProfile;
+begin
+  finifile.Section := 'Project';
+  profilecount:=finifile.Read('ProfilesCount',0);
+  fProfiles.useGPP:=finifile.Read('useGPP',true);
+  CurrentProfileIndex:=finifile.Read('ProfileIndex',0);
+  fPrevVersion:=finifile.Read('Ver',-1);
+
+  if (CurrentProfileIndex > profilecount -1) or (CurrentProfileIndex < 0 )then
+  begin
+    CurrentProfileIndex:=0;
+  end;
+
+
+  if profilecount <=0 then
+  begin
+    CurrentProfileIndex:=0;
+    Profiles.Ver:=fPrevVersion;
+    NewProfile:=TProjProfile.Create;
+    NewProfile.ProfileName:= 'GCC';
+    NewProfile.typ:= 0;
+    NewProfile.compilerType:= ID_COMPILER_MINGW;
+    NewProfile.Compiler:= '';
+    NewProfile.CppCompiler:= '';
+    NewProfile.Linker:= '';
+    NewProfile.ObjFiles.DelimitedText:='';
+    NewProfile.Includes.DelimitedText:='';
+    NewProfile.Libs.DelimitedText:='';
+    NewProfile.PrivateResource:= '';
+    NewProfile.ResourceIncludes.DelimitedText:='';
+    NewProfile.MakeIncludes.DelimitedText:='';
+    NewProfile.Icon:= '';
+    NewProfile.ExeOutput := 'GCC';
+    NewProfile.ObjectOutput := 'GCC';
+    NewProfile.OverrideOutput := false;
+    NewProfile.OverridenOutput := '';
+    NewProfile.HostApplication := '';
+    NewProfile.IncludeVersionInfo := false;
+    NewProfile.SupportXPThemes:= false;
+    NewProfile.CompilerSet := 0;
+    NewProfile.CompilerOptions := '';
+    NewProfile.PreprocDefines:= '';
+
+    NewProfile.VersionInfo.Major := 0;
+    NewProfile.VersionInfo.Minor := 1;
+    NewProfile.VersionInfo.Release := 1;
+    NewProfile.VersionInfo.Build := 1;
+    NewProfile.VersionInfo.LanguageID := $0409;
+    NewProfile.VersionInfo.CharsetID := $04E4;
+    NewProfile.VersionInfo.CompanyName := '';
+    NewProfile.VersionInfo.FileVersion := '0.1';
+    NewProfile.VersionInfo.FileDescription := '';
+    NewProfile.VersionInfo.InternalName := '';
+    NewProfile.VersionInfo.LegalCopyright := '';
+    NewProfile.VersionInfo.LegalTrademarks := '';
+    NewProfile.VersionInfo.OriginalFilename := ChangeFileExt(ExtractFilename(self.fFileName),'.exe');
+    NewProfile.VersionInfo.ProductName := Name;
+    NewProfile.VersionInfo.ProductVersion := '0.1';
+    fProfiles.Add(NewProfile);
+    exit;
+  end;
+
+  for i := 0 to pred(profilecount) do
+  begin
+      NewProfile:=TProjProfile.Create;
+      NewProfile.ProfileName:= finifile.ReadProfile(i,'ProfileName','');
+      NewProfile.typ:= finifile.ReadProfile(i,'Type',0);
+      //fixme: Check if the Compiler is an acceptable one
+      NewProfile.compilerType:= finifile.ReadProfile(i,'CompilerType',ID_COMPILER_MINGW);
+      NewProfile.Compiler:= finifile.ReadProfile(i,'Compiler','');
+      NewProfile.CppCompiler:= finifile.ReadProfile(i,'CppCompiler','');
+      NewProfile.Linker:= finifile.ReadProfile(i,'Linker','');
+      NewProfile.ObjFiles.DelimitedText:=finifile.ReadProfile(i,'ObjFiles','');
+      NewProfile.Includes.DelimitedText:=finifile.ReadProfile(i,'Includes','');
+      NewProfile.Libs.DelimitedText:=finifile.ReadProfile(i,'Libs','');
+      NewProfile.PrivateResource:= finifile.ReadProfile(i,'PrivateResource','');
+      NewProfile.ResourceIncludes.DelimitedText:=finifile.ReadProfile(i,'ResourceIncludes','');
+      NewProfile.MakeIncludes.DelimitedText:=finifile.ReadProfile(i,'MakeIncludes','');
+      NewProfile.Icon:= finifile.ReadProfile(i,'Icon','');
+      NewProfile.ExeOutput := finifile.ReadProfile(i,'ExeOutput','');
+      NewProfile.ObjectOutput := finifile.ReadProfile(i,'ObjectOutput','');
+      NewProfile.OverrideOutput := finifile.ReadProfile(i,'OverrideOutput',false);
+      NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverridenOutput','');
+      NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
+      NewProfile.IncludeVersionInfo := finifile.ReadProfile(i,'IncludeVersionInfo',false);
+      NewProfile.SupportXPThemes:= finifile.ReadProfile(i,'SupportXPThemes',false);
+      NewProfile.compilerType:= finifile.ReadProfile(i,'CompilerType',0);
+      NewProfile.CompilerSet := finifile.ReadProfile(i,'CompilerSet',0);
+      if (NewProfile.CompilerSet > devCompilerSet.Sets.Count-1) then
+      begin
+        //fixme: Log to String and Show at the end;
+        NewProfile.compilerType:=GetClosestMatchingCompilerSet(NewProfile.compilerType);
+      end;
+      NewProfile.CompilerOptions := finifile.ReadProfile(i,'CompilerOptions','');
+      NewProfile.PreprocDefines:= finifile.ReadProfile(i,'PreprocDefines','');
+
+      NewProfile.VersionInfo.Major := finifile.ReadProfile(i,'Major', 0);
+      NewProfile.VersionInfo.Minor := finifile.ReadProfile(i,'Minor', 1);
+      NewProfile.VersionInfo.Release := finifile.ReadProfile(i,'Release', 1);
+      NewProfile.VersionInfo.Build := finifile.ReadProfile(i,'Build', 1);
+      NewProfile.VersionInfo.LanguageID := finifile.ReadProfile(i,'LanguageID', $0409);
+      NewProfile.VersionInfo.CharsetID := finifile.ReadProfile(i,'CharsetID', $04E4);
+      NewProfile.VersionInfo.CompanyName := finifile.ReadProfile(i,'CompanyName', '');
+      NewProfile.VersionInfo.FileVersion := finifile.ReadProfile(i,'FileVersion', '0.1');
+      NewProfile.VersionInfo.FileDescription := finifile.ReadProfile(i,'FileDescription','');
+      NewProfile.VersionInfo.InternalName := finifile.ReadProfile(i,'InternalName', '');
+      NewProfile.VersionInfo.LegalCopyright := finifile.ReadProfile(i,'LegalCopyright', '');
+      NewProfile.VersionInfo.LegalTrademarks := finifile.ReadProfile(i,'LegalTrademarks', '');
+      NewProfile.VersionInfo.OriginalFilename := finifile.ReadProfile(i,'OriginalFilename',ChangeFileExt(ExtractFilename(self.fFileName),'.exe'));
+      NewProfile.VersionInfo.ProductName := finifile.ReadProfile(i,'ProductName', Name);
+      NewProfile.VersionInfo.ProductVersion := finifile.ReadProfile(i,'ProductVersion', '0.1');
+
+      fProfiles.Add(NewProfile);
+  end;
+end;
 
 procedure TProject.LoadLayout;
 var
@@ -1629,7 +1822,7 @@ begin
     end;
     Node.Text := ExtractFileName(sFileName);
     New := False;
-    fInifile.Write(i, ExtractRelativePath(Directory, sFileName));
+    fInifile.WriteUnit(i, ExtractRelativePath(Directory, sFileName));
   end;
   Modified := true;
 end;
@@ -1653,17 +1846,17 @@ function TProject.GetExecutableName: string;
 var
   Base: string;
 begin
-  if fOptions.OverrideOutput and (fOptions.OverridenOutput <> '') then
-    Base := ExtractFilePath(Filename) + fOptions.OverridenOutput
+  if CurrentProfile.OverrideOutput and (CurrentProfile.OverridenOutput <> '') then
+    Base := ExtractFilePath(Filename) + CurrentProfile.OverridenOutput
   else
     Base := ChangeFileExt(Filename, '');
 
   // only mess with file extension if not supplied by the user
   // if he supplied one, then we assume he knows what he's doing...
   if ExtractFileExt(Base) = '' then begin
-    if fOptions.typ = dptStat then
+    if CurrentProfile.typ = dptStat then
       result := ChangeFileExt(Base, LIB_EXT)
-    else if fOptions.typ = dptDyn then
+    else if CurrentProfile.typ = dptDyn then
       result := ChangeFileExt(Base, DLL_EXT)
     else
       result := ChangeFileExt(Base, EXE_EXT);
@@ -1671,16 +1864,16 @@ begin
   else
     result := Base;
 
-  if Length(Options.ExeOutput) > 0 then begin
-    if not DirectoryExists(GetRealPath(SubstituteMakeParams(Options.ExeOutput), GetDirectory)) then
+  if Length(CurrentProfile.ExeOutput) > 0 then begin
+    if not DirectoryExists(GetRealPath(SubstituteMakeParams(CurrentProfile.ExeOutput), GetDirectory)) then
         try
-          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(Options.ExeOutput), GetDirectory));
+          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(CurrentProfile.ExeOutput),GetDirectory));
         except
           MessageDlg('Could not create executable output directory: "'
-            + Options.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
+            + CurrentProfile.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
           exit;
         end;
-    Result := GetRealPath(IncludeTrailingPathDelimiter(Options.ExeOutput) +
+    Result := GetRealPath(IncludeTrailingPathDelimiter(CurrentProfile.ExeOutput) +
       ExtractFileName(Result));
   end;
 
@@ -1709,22 +1902,22 @@ end;
 
 procedure TProject.AddLibrary(s: string);
 begin
-  fOptions.Libs.Add(s);
+  CurrentProfile.Libs.Add(s);
 end;
 
 procedure TProject.AddInclude(s: string);
 begin
-  fOptions.Includes.Add(s);
+  CurrentProfile.Includes.Add(s);
 end;
 
 procedure TProject.RemoveLibrary(index: integer);
 begin
-  fOptions.Libs.Delete(index);
+  CurrentProfile.Libs.Delete(index);
 end;
 
 procedure TProject.RemoveInclude(index: integer);
 begin
-  fOptions.Includes.Delete(index);
+  CurrentProfile.Includes.Delete(index);
 end;
 
 function TProject.ListUnitStr(const sep: char): string;
@@ -1759,6 +1952,23 @@ begin
     if fUnits[idx].Dirty then ismod := TRUE;
 
   result := fModified or ismod;
+end;
+
+function TProject.GetCurrentProfile:TProjProfile;
+begin
+  if (fCurrentProfileIndex < 0) or (fCurrentProfileIndex > fProfiles.count-1) then
+  begin
+    Result:=nil;
+    exit;
+  end;
+  Result:=fProfiles[fCurrentProfileIndex];
+//
+end;
+procedure TProject.SetCurrentProfile(Value:TProjProfile);
+begin
+  if (fCurrentProfileIndex < 0) or (fCurrentProfileIndex > fProfiles.count-1) then
+    exit;
+  fProfiles[fCurrentProfileIndex]:=Value;
 end;
 
 procedure TProject.SetModified(value: boolean);
@@ -1865,77 +2075,66 @@ end;
 procedure TProject.ShowOptions;
 var
   IconFileName: String;
-  L, I: TStrings;
-  R: TStringList;
+  dlg:TfrmProjectOptions;
 begin
-  L := TStringList.Create;
-  I := TStringList.Create;
-  R := TStringList.Create;
-  with TfrmProjectOptions.Create(MainForm) do
+  dlg:=TfrmProjectOptions.Create(MainForm);
+
   try
-    Project := Self;
-
-    L.AddStrings(fOptions.Libs);
-    I.AddStrings(fOptions.Includes);
-    R.AddStrings(fOptions.ResourceIncludes);
-
-    Options := fOptions;
-    btnRemoveIcon.Enabled := Length(Options.Icon) > 0;
-    if ShowModal = mrOk then
+    dlg.Project := Self;
+    //Internal toe the TfrmProjectOptions SetProfile function the
+    //CopyDataFrom function of the profile is called
+    dlg.Profiles := Self.fProfiles;
+    dlg.CurrentProfileIndex := self.CurrentProfileIndex;
+    dlg.btnRemoveIcon.Enabled := Length(CurrentProfile.Icon) > 0;
+    if dlg.ShowModal = mrOk then
     begin
       SetModified(TRUE);
       SortUnitsByPriority;
       RebuildNodes;
-
-      fOptions := Options;
-
+      fProfiles.CopyDataFrom(dlg.Profiles);
       IconFileName := ChangeFileExt(ExtractFileName(FileName), '.ico');
+      self.CurrentProfileIndex := dlg.CurrentProfileIndex;
       {** why deleting the icon ? *
       if Length(fOptions.Icon) = 0 then
       begin
           DeleteFile(PChar(IconFileName));
       end else}
-      if (CompareText(IconFileName, fOptions.Icon) <> 0) and (fOptions.Icon <> '') then
+      if (CompareText(IconFileName, CurrentProfile.Icon) <> 0) and (CurrentProfile.Icon <> '') then
       begin
-        CopyFile(PChar(fOptions.Icon), PChar(ExpandFileto(IconFileName,
-          Directory)), False);
-        fOptions.Icon := IconFileName;
+        CopyFile(PChar(CurrentProfile.Icon), PChar(ExpandFileto(IconFileName,Directory)), False);
+        CurrentProfile.Icon := IconFileName;
       end;
 
       // rebuild the resource file
       BuildPrivateResource;
 
       // update the projects main node caption
-      if edProjectName.Text <> '' then
+      if dlg.edProjectName.Text <> '' then
       begin
-        fName := edProjectName.Text;
+        fName := dlg.edProjectName.Text;
         fNode.Text := fName;
       end;
-    end
-    else begin
-      fOptions.Libs.Clear;
-      fOptions.Libs.AddStrings(L);
-      fOptions.Includes.Clear;
-      fOptions.Includes.AddStrings(I);
-      fOptions.ResourceIncludes.Clear;
-      fOptions.ResourceIncludes.AddStrings(R);
     end;
   finally
-    L.Free;
-    I.Free;
-    R.Free;
-    Free;
+    dlg.Free;
   end;
+  //fixme: Temp Code
+  devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
+  devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
+  devCompilerSet.AssignToCompiler();
+  devCompiler.OptionStr:=CurrentProfile.CompilerOptions;
+
 end;
 
 function TProject.AssignTemplate(const aFileName: string; const aTemplate:TTemplate): boolean;
 var
-  Options: TProjOptions;
+  Options: TProjectProfileList;
   idx: integer;
   s, s2: string;
  OriginalIcon, DestIcon: String;
 begin
   result := TRUE;
+  Options:=TProjectProfileList.Create;
   try
     if aTemplate.Version = -1 then
     begin
@@ -1955,8 +2154,8 @@ begin
     fName := aTemplate.ProjectName;
     finifile.FileName := aFileName;
 
-    Options := aTemplate.OptionsRec;
-    AssignOptionsRec(Options, fOptions);
+    Options.CopyDataFrom(aTemplate.OptionsRec);
+    fProfiles.CopyDataFrom(Options);
 
     if Length(aTemplate.ProjectIcon) > 0 then
     begin
@@ -1965,7 +2164,8 @@ begin
       DestIcon := ExpandFileTo(ExtractFileName(ChangeFileExt(FileName,
         '.ico')), Directory);
       CopyFile(PChar(OriginalIcon), PChar(DestIcon), False);
-      fOptions.Icon := ExtractFileName(DestIcon);
+      //fixme: Not sure what will come here
+      CurrentProfile.Icon := ExtractFileName(DestIcon);
     end;
 
     if aTemplate.Version > 0 then // new multi units
@@ -2029,7 +2229,7 @@ begin
       begin
         Editor := TEditor.Create;
         Editor.init(TRUE, FileName, FileName, FALSE);
-        if fOptions.useGPP then
+        if fProfiles.useGPP then
           s := aTemplate.OldData.CppText
         else
           s := aTemplate.OldData.CText;
@@ -2045,6 +2245,7 @@ begin
   except
     result := FALSE;
   end;
+  Options.Free;
 end;
 
 { begin XXXKF changed }
@@ -2152,7 +2353,7 @@ end;
 
 procedure TProject.SetHostApplication(s: string);
 begin
-  fOptions.HostApplication := s;
+  CurrentProfile.HostApplication := s;
 end;
 
 procedure TProject.CheckProjectFileForUpdate;
@@ -2175,9 +2376,9 @@ begin
       sl.Delimiter := ';';
       sl.DelimitedText := oldRes;
       for i := 0 to sl.Count - 1 do begin
-        finifile.Write(uCount + i, 'Filename', sl[i]);
-        finifile.Write(uCount + i, 'Folder', 'Resources');
-        finifile.Write(uCount + i, 'Compile', True);
+        finifile.WriteUnit(uCount + i, 'Filename', sl[i]);
+        finifile.WriteUnit(uCount + i, 'Folder', 'Resources');
+        finifile.WriteUnit(uCount + i, 'Compile', True);
       end;
       fIniFile.Write('UnitCount', uCount + sl.Count);
       oldRes := finifile.Read('Folders', '');
@@ -2238,10 +2439,10 @@ end;
 
 procedure TProject.IncrementBuildNumber;
 begin
-  Inc(fOptions.VersionInfo.Build);
+  Inc(CurrentProfile.VersionInfo.Build);
   SetModified(True);
 end;
-
+(*
 procedure TProject.SetCustomMakefile(const Value: string);
 begin
   if (Value <> fCustomMakefile) then begin
@@ -2257,6 +2458,7 @@ begin
     SetModified(true);
   end;
 end;
+*)
 
 { TUnitList }
 
@@ -2365,27 +2567,45 @@ begin
 end;
 
 // reads unit filename for passed index
-function TdevINI.Read(index: integer): string;
+function TdevINI.ReadUnit(index: integer): string;
 begin
   result := fINIFile.ReadString('Unit' + inttostr(index + 1), 'FileName', '');
 end;
 
 // reads a string subitem from a unit entry
-function TdevINI.Read(index: integer; Item: string; default: string): string;
+function TdevINI.ReadUnit(index: integer; Item: string; default: string): string;
 begin
   result := fINIFile.ReadString('Unit' + inttostr(index + 1), Item, default);
 end;
 
 // reads a boolean subitem from a unit entry
-function TdevINI.Read(index: integer; Item: string; default: boolean): boolean;
+function TdevINI.ReadUnit(index: integer; Item: string; default: boolean): boolean;
 begin
   result := fINIFile.ReadBool('Unit' + inttostr(index + 1), Item, default);
 end;
 
 // reads an integer subitem from a unit entry
-function TdevINI.Read(index: integer; Item: string; default: integer): integer;
+function TdevINI.ReadUnit(index: integer; Item: string; default: integer): integer;
 begin
   result := fINIFile.ReadInteger('Unit' + inttostr(index + 1), Item, default);
+end;
+
+// reads a string subitem from a Profile entry
+function TdevINI.ReadProfile(index: integer; Item: string; default: string): string;
+begin
+  result := fINIFile.ReadString('Profile' + inttostr(index + 1), Item, default);
+end;
+
+// reads a boolean subitem from a Profile entry
+function TdevINI.ReadProfile(index: integer; Item: string; default: boolean): boolean;
+begin
+  result := fINIFile.ReadBool('Profile' + inttostr(index + 1), Item, default);
+end;
+
+// reads an integer subitem from a Profile entry
+function TdevINI.ReadProfile(index: integer; Item: string; default: integer): integer;
+begin
+  result := fINIFile.ReadInteger('Profile' + inttostr(index + 1), Item, default);
 end;
 
 // reads string value from fsection
@@ -2395,28 +2615,47 @@ begin
 end;
 
 // write unit entry for passed index
-procedure TdevINI.Write(index: integer; value: string);
+procedure TdevINI.WriteUnit(index: integer; value: string);
 begin
   finifile.WriteString('Unit' + inttostr(index + 1), 'FileName', value);
 end;
 
 // write a string subitem in a unit entry
-procedure TdevINI.Write(index: integer; Item: string; Value: string);
+procedure TdevINI.WriteUnit(index: integer; Item: string; Value: string);
 begin
   finifile.WriteString('Unit' + inttostr(index + 1), Item, Value);
 end;
 
 // write a boolean subitem in a unit entry
-procedure TdevINI.Write(index: integer; Item: string; Value: boolean);
+procedure TdevINI.WriteUnit(index: integer; Item: string; Value: boolean);
 begin
   finifile.WriteBool('Unit' + inttostr(index + 1), Item, Value);
 end;
 
 // write an integer subitem in a unit entry
-procedure TdevINI.Write(index: integer; Item: string; Value: integer);
+procedure TdevINI.WriteUnit(index: integer; Item: string; Value: integer);
 begin
   finifile.WriteInteger('Unit' + inttostr(index + 1), Item, Value);
 end;
+
+// write a string subitem in a Profile entry
+procedure TdevINI.WriteProfile(index: integer; Item: string; Value: string);
+begin
+  finifile.WriteString('Profile' + inttostr(index + 1), Item, Value);
+end;
+
+// write a boolean subitem in a Profile entry
+procedure TdevINI.WriteProfile(index: integer; Item: string; Value: boolean);
+begin
+  finifile.WriteBool('Profile' + inttostr(index + 1), Item, Value);
+end;
+
+// write an integer subitem in a Profile entry
+procedure TdevINI.WriteProfile(index: integer; Item: string; Value: integer);
+begin
+  finifile.WriteInteger('Profile' + inttostr(index + 1), Item, Value);
+end;
+
 
 // write string value to fsection
 procedure TdevINI.Write(Name, value: string);

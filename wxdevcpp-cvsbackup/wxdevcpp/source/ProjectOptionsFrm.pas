@@ -148,8 +148,12 @@ type
     btnMakReplace: TButton;
     grpPch: TRadioGroup;
     lvFiles: TTreeView;
-    Label1: TLabel;
-    cbxCompilerType: TComboBox;
+    btnAddProfileSet: TSpeedButton;
+    btnDelProfileSet: TSpeedButton;
+    btnRenameProfileSet: TSpeedButton;
+    Label2: TLabel;
+    cmbProfileSetComp: TComboBox;
+    btnCopyProfileSet: TSpeedButton;
     procedure ListClick(Sender: TObject);
     procedure EditChange(SEnder: TObject);
     procedure ButtonClick(Sender: TObject);
@@ -188,33 +192,33 @@ type
     procedure MakeIncludesDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure grpPchClick(Sender: TObject);
-    procedure cbxCompilerTypeChange(Sender: TObject);
+    procedure cmbProfileSetCompChange(Sender: TObject);
+    procedure btnAddProfileSetClick(Sender: TObject);
+    procedure btnDelProfileSetClick(Sender: TObject);
+    procedure btnRenameProfileSetClick(Sender: TObject);
+    procedure btnCopyProfileSetClick(Sender: TObject);
   private
-    fPreviousIndex:Integer;
-    fOptions: TProjOptions;
+    fProfiles: TProjectProfileList;
     fIcon: string;
     fProject: TProject;
-    procedure SetOptions(Value: TProjOptions);
-    function GetOptions: TProjOptions;
+    fCurrentProfileIndex:Integer;
+    procedure UpdateUIWithCurrentProfile;
+    procedure UpdateCurrentProfileDataFromUI;
+    procedure UpdateProfileList(ProfileIndex:integer);
+    procedure SetProfiles(Value: TProjectProfileList);
+    function GetProfiles: TProjectProfileList;
     procedure UpdateButtons;
     procedure UpdateMakButtons;
     procedure LoadText;
     procedure InitVersionInfo;
     function DefaultBuildCommand(idx: integer): string;
     procedure SaveDirSettings;
-    procedure SetCppOption(CompilerIndex:Integer;strCppOption:String);
-    procedure SetCOption(CompilerIndex:Integer;strCOption:String);
-    procedure SetLinkerOption(CompilerIndex:Integer;strLinkerOption:String);
-    procedure SetPreProcOption(CompilerIndex:Integer;strPreProcOption:String);
-    function GetCppOption(CompilerIndex:Integer):String;
-    function GetCOption(CompilerIndex:Integer):String;
-    function GetLinkerOption(CompilerIndex:Integer):String;
-    function GetPreProcOption(CompilerIndex:Integer):String;
-    procedure InternalLoadCompilerOption(CompilerIndex:Integer);
-    procedure InternalSaveCompilerOption(CompilerIndex:Integer);
+    function GetCurrentProfile:TProjProfile;
   public
-    property Options: TProjOptions read GetOptions write SetOptions;
     property Project: TProject read fProject write fProject;
+    property Profiles: TProjectProfileList read GetProfiles write SetProfiles;
+    property CurrentProfile:TProjProfile read GetCurrentProfile;
+    property CurrentProfileIndex : Integer read fCurrentProfileIndex write fCurrentProfileIndex;
   end;
 
 implementation
@@ -310,24 +314,24 @@ begin
    1: begin
         lstList.Items[lstList.ItemIndex] := TrimRight(edEntry.Text);
         case SubTabs.TabIndex of
-          0 : fOptions.Libs[lstList.ItemIndex] := TrimRight(edEntry.Text);
-          1 : fOptions.Includes[lstList.ItemIndex] := TrimRight(edEntry.Text);
-          2 : fOptions.ResourceIncludes[lstList.ItemIndex] := TrimRight(edEntry.Text);
+          0 : CurrentProfile.Libs[lstList.ItemIndex] := TrimRight(edEntry.Text);
+          1 : CurrentProfile.Includes[lstList.ItemIndex] := TrimRight(edEntry.Text);
+          2 : CurrentProfile.ResourceIncludes[lstList.ItemIndex] := TrimRight(edEntry.Text);
         end;
       end;
    2: begin
         lstList.Items.Add(TrimRight(edEntry.Text));
         case SubTabs.TabIndex of
-          0 : fOptions.Libs.Add(TrimRight(edEntry.Text));
-          1 : fOptions.Includes.Add(TrimRight(edEntry.Text));
-          2 : fOptions.ResourceIncludes.Add(TrimRight(edEntry.Text));
+          0 : CurrentProfile.Libs.Add(TrimRight(edEntry.Text));
+          1 : CurrentProfile.Includes.Add(TrimRight(edEntry.Text));
+          2 : CurrentProfile.ResourceIncludes.Add(TrimRight(edEntry.Text));
         end;
       end;
    3: begin
         case SubTabs.TabIndex of
-          0 : fOptions.Libs.Delete(lstList.ItemIndex);
-          1 : fOptions.Includes.Delete(lstList.ItemIndex);
-          2 : fOptions.ResourceIncludes.Delete(lstList.ItemIndex);
+          0 : CurrentProfile.Libs.Delete(lstList.ItemIndex);
+          1 : CurrentProfile.Includes.Delete(lstList.ItemIndex);
+          2 : CurrentProfile.ResourceIncludes.Delete(lstList.ItemIndex);
         end;
         lstList.DeleteSelected;
       end;
@@ -337,15 +341,15 @@ begin
        for idx:= pred(lstList.Items.Count) downto 0 do
             case SubTabs.TabIndex of
          0: if not DirectoryExists(lstList.Items[idx]) then begin
-                  fOptions.Libs.Delete(idx);
+                  CurrentProfile.Libs.Delete(idx);
                   lstList.Items.Delete(idx);
                 end;
          1: if not DirectoryExists(lstList.Items[idx]) then begin
-                  fOptions.Includes.Delete(idx);
+                  CurrentProfile.Includes.Delete(idx);
                   lstList.Items.Delete(idx);
                 end;
          2: if not DirectoryExists(lstList.Items[idx]) then begin
-                  fOptions.ResourceIncludes.Delete(idx);
+                  CurrentProfile.ResourceIncludes.Delete(idx);
                   lstList.Items.Delete(idx);
                 end;
             end;
@@ -387,148 +391,73 @@ begin
   UpdateButtons;
 end;
 
-procedure TfrmProjectOptions.SetCppOption(CompilerIndex:Integer;strCppOption:String);
+function TfrmProjectOptions.GetCurrentProfile:TProjProfile;
 begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        fOptions.cmdlines.GCC_CPPCompiler:=strCppOption;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        fOptions.cmdlines.VC_CPPCompiler:=strCppOption;
-    ID_COMPILER_DMARS:
-        fOptions.cmdlines.DMARS_CPPCompiler:=strCppOption;
-    ID_COMPILER_BORLAND:
-        fOptions.cmdlines.BORLAND_CPPCompiler:=strCppOption;
-    ID_COMPILER_WATCOM:
-        fOptions.cmdlines.WATCOM_CPPCompiler:=strCppOption;
+  if (fCurrentProfileIndex <0 ) or (fCurrentProfileIndex > fProfiles.Count -1) then
+  begin
+    Result:=nil;
+    exit;
+  end;
+  Result:=fProfiles[fCurrentProfileIndex];
+end;
+
+function TfrmProjectOptions.GetProfiles: TProjectProfileList;
+begin
+  //UpdateCurrentProfileDataFromUI;
+  result:= fProfiles;
+end;
+
+procedure TfrmProjectOptions.SetProfiles(Value: TProjectProfileList);
+begin
+  fProfiles.CopyDataFrom(Value);
+  //Load the profiles First
+  cmbProfileSetComp.Clear;
+
+  if fProfiles.Count = 0 then
+    exit;
+
+  UpdateProfileList(-1);
+  if Assigned(fProject) = false then
+  begin
+    ShowMessage('Project Not Intialised');
+    exit;
+  end;
+
+  if (fProject.DefaultProfileIndex > fProfiles.count -1) or (fProject.DefaultProfileIndex < 0 ) then
+  begin
+    fProject.DefaultProfileIndex := 0;
+  end;
+  CurrentProfileIndex:=fProject.CurrentProfileIndex;
+  cmbProfileSetComp.ItemIndex:=CurrentProfileIndex;
+  cmbProfileSetCompChange(nil);
+End;
+
+procedure TfrmProjectOptions.UpdateProfileList(ProfileIndex:integer);
+var
+  i:Integer;
+begin
+  cmbProfileSetComp.Clear;
+  for i:= 0 to  fProfiles.count -1 do
+  begin
+    if trim(fProfiles.Items[i].ProfileName) <> '' then
+      cmbProfileSetComp.Items.Add(fProfiles.Items[i].ProfileName)
+    else
+      cmbProfileSetComp.Items.Add('NoName_'+IntToStr(i));
+  end;
+  if (ProfileIndex <> -1) then
+  begin
+    cmbProfileSetComp.ItemIndex:=ProfileIndex;  
   end;
 end;
 
-procedure TfrmProjectOptions.SetCOption(CompilerIndex:Integer;strCOption:String);
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        fOptions.cmdlines.GCC_Compiler:=strCOption;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        fOptions.cmdlines.VC_Compiler:=strCOption;
-    ID_COMPILER_DMARS:
-        fOptions.cmdlines.DMARS_Compiler:=strCOption;
-    ID_COMPILER_BORLAND:
-        fOptions.cmdlines.BORLAND_Compiler:=strCOption;
-    ID_COMPILER_WATCOM:
-        fOptions.cmdlines.WATCOM_Compiler:=strCOption;
-  end;
-end;
-
-procedure TfrmProjectOptions.SetLinkerOption(CompilerIndex:Integer;strLinkerOption:String);
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        fOptions.cmdlines.GCC_Linker:=strLinkerOption;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        fOptions.cmdlines.VC_Linker:=strLinkerOption;
-    ID_COMPILER_DMARS:
-        fOptions.cmdlines.DMARS_Linker:=strLinkerOption;
-    ID_COMPILER_BORLAND:
-        fOptions.cmdlines.BORLAND_Linker:=strLinkerOption;
-    ID_COMPILER_WATCOM:
-        fOptions.cmdlines.WATCOM_Linker:=strLinkerOption;
-  end;
-end;
-
-procedure TfrmProjectOptions.SetPreProcOption(CompilerIndex:Integer;strPreProcOption:String);
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        fOptions.GCC_PreProcDefines:=strPreProcOption;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        fOptions.VC_PreProcDefines:=strPreProcOption;
-    ID_COMPILER_DMARS:
-        fOptions.DMARS_PreProcDefines:=strPreProcOption;
-    ID_COMPILER_BORLAND:
-        fOptions.BORLAND_PreProcDefines:=strPreProcOption;
-    ID_COMPILER_WATCOM:
-        fOptions.WATCOM_PreProcDefines:=strPreProcOption;
-  end;
-end;
-
-function TfrmProjectOptions.GetCppOption(CompilerIndex:Integer):String;
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        Result:=fOptions.cmdlines.GCC_CPPCompiler;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        Result:=fOptions.cmdlines.VC_CPPCompiler;
-    ID_COMPILER_DMARS:
-        Result:=fOptions.cmdlines.DMARS_CPPCompiler;
-    ID_COMPILER_BORLAND:
-        Result:=fOptions.cmdlines.BORLAND_CPPCompiler;
-    ID_COMPILER_WATCOM:
-        Result:=fOptions.cmdlines.WATCOM_CPPCompiler;
-  end;
-end;
-
-function TfrmProjectOptions.GetCOption(CompilerIndex:Integer):String;
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        Result:=fOptions.cmdlines.GCC_Compiler;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        Result:=fOptions.cmdlines.VC_Compiler;
-    ID_COMPILER_DMARS:
-        Result:=fOptions.cmdlines.DMARS_Compiler;
-    ID_COMPILER_BORLAND:
-        Result:=fOptions.cmdlines.BORLAND_Compiler;
-    ID_COMPILER_WATCOM:
-        Result:=fOptions.cmdlines.WATCOM_Compiler;
-  end;
-end;
-
-function TfrmProjectOptions.GetLinkerOption(CompilerIndex:Integer):String;
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        Result:=fOptions.cmdlines.GCC_Linker;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        Result:=fOptions.cmdlines.VC_Linker;
-    ID_COMPILER_DMARS:
-        Result:=fOptions.cmdlines.DMARS_Linker;
-    ID_COMPILER_BORLAND:
-        Result:=fOptions.cmdlines.BORLAND_Linker;
-    ID_COMPILER_WATCOM:
-        Result:=fOptions.cmdlines.WATCOM_Linker;
-  end;
-end;
-
-function TfrmProjectOptions.GetPreProcOption(CompilerIndex:Integer):String;
-begin
-  case CompilerIndex of
-    ID_COMPILER_MINGW:
-        Result:=fOptions.GCC_PreProcDefines;
-    ID_COMPILER_VC2005,
-    ID_COMPILER_VC:
-        Result:=fOptions.VC_PreProcDefines;
-    ID_COMPILER_DMARS:
-        Result:=fOptions.DMARS_PreProcDefines;
-    ID_COMPILER_BORLAND:
-        Result:=fOptions.BORLAND_PreProcDefines;
-    ID_COMPILER_WATCOM:
-        Result:=fOptions.WATCOM_PreProcDefines;
-  end;
-end;
-
-
-function TfrmProjectOptions.GetOptions: TProjOptions;
+procedure TfrmProjectOptions.UpdateCurrentProfileDataFromUI;
 var
   I: integer;
+  strCppOption,strCOption,strLinkerOption,strPreprocDefines:String;
 begin
-  with fOptions do
+  if CurrentProfile = nil then
+    exit;
+  with CurrentProfile do
   begin
      Icon:= fIcon;
     { I had to remove the delimiter text thing, since it causes the edit box to add
@@ -549,63 +478,6 @@ begin
      All I have to do when I want the actual string back, is call StringReplace() et voila :)
     }
 
-    InternalSaveCompilerOption(cbxCompilerType.ItemIndex);
-    typ:= lstType.ItemIndex;
-
-    ExeOutput := edExeOutput.Text;
-    ObjectOutput := edObjOutput.Text;
-    OverrideOutput := chkOverrideOutput.Checked;
-    OverridenOutput := edOverridenOutput.Text;
-    if cbUseCustomMakefile.Checked and FileExists(edCustomMakefile.Text) then
-      fProject.UseCustomMakefile := true
-    else
-      fProject.UseCustomMakefile := false;
-
-    fProject.CustomMakefile:=edCustomMakefile.Text;
-    MakeIncludes.Clear;
-    MakeIncludes.AddStrings(Self.MakeIncludes.Items);
-
-    fOptions.SupportXPThemes:=chkSupportXP.Checked;
-    fOptions.CompilerSet:=cmbCompiler.ItemIndex;
-    fOptions.IncludeVersionInfo:=chkVersionInfo.Checked;
-
-    fOptions.VersionInfo.Major                   :=spnMajor.Value;
-    fOptions.VersionInfo.Minor                   :=spnMinor.Value;
-    fOptions.VersionInfo.Release                 :=spnRelease.Value;
-    fOptions.VersionInfo.Build                   :=spnBuild.Value;
-    fOptions.VersionInfo.AutoIncBuildNrOnCompile :=radAutoIncBuildOnCompile.Checked;
-    fOptions.VersionInfo.AutoIncBuildNrOnRebuild :=radAutoIncBuildOnRebuild.Checked;
-
-    fOptions.VersionInfo.FileDescription:=   vleVersion.Cells[1, 0];
-    fOptions.VersionInfo.FileVersion:=       vleVersion.Cells[1, 1];
-    fOptions.VersionInfo.ProductName:=       vleVersion.Cells[1, 2];
-    fOptions.VersionInfo.ProductVersion:=    vleVersion.Cells[1, 3];
-    fOptions.VersionInfo.OriginalFilename:=  vleVersion.Cells[1, 4];
-    fOptions.VersionInfo.InternalName:=      vleVersion.Cells[1, 5];
-    fOptions.VersionInfo.CompanyName:=       vleVersion.Cells[1, 6];
-    fOptions.VersionInfo.LegalCopyright:=    vleVersion.Cells[1, 7];
-    fOptions.VersionInfo.LegalTrademarks:=   vleVersion.Cells[1, 8];
-
-    if cmbLangID.ItemIndex>-1 then
-    begin
-      for I := 0 to Languages.Count-1 do
-      begin
-          if SameText(Languages.Name[I], cmbLangID.Text) then
-          begin
-            FOptions.VersionInfo.LanguageID := Languages.LocaleID[I];
-            Break;
-          end;
-        end;
-    end;
-  end;
-  result:= fOptions;
-end;
-
-procedure TfrmProjectOptions.InternalSaveCompilerOption(CompilerIndex:Integer);
-var
-  strCppOption,strCOption,strLinkerOption,PreprocDefines:String;
-  I:Integer;
-begin
      strLinkerOption:= edLinker.Lines.Text;
      strCOption:='';
      for I:=0 to edCompiler.Lines.Count-1 do
@@ -616,31 +488,73 @@ begin
      strLinkerOption:='';
      for I:=0 to edLinker.Lines.Count-1 do
       strLinkerOption := strLinkerOption + edLinker.Lines[I] + '_@@_';
-     PreprocDefines := '';
+     strPreprocDefines := '';
      for I:=0 to edDefines.Lines.Count-1 do
-      PreprocDefines := PreprocDefines + edDefines.Lines[I] + '_@@_';
+      strPreprocDefines := strPreprocDefines + edDefines.Lines[I] + '_@@_';
 
-      SetCppOption(CompilerIndex,strCppOption);
-      SetCOption(CompilerIndex,strCOption);
-      SetLinkerOption(CompilerIndex,strLinkerOption);
-      SetPreProcOption(CompilerIndex,PreprocDefines);
+    CurrentProfile.CppCompiler:= strCppOption;
+    CurrentProfile.Compiler:= strCOption;
+    CurrentProfile.Linker:=strLinkerOption;
+    CurrentProfile.PreProcDefines:=strPreprocDefines;
+    CurrentProfile.CompilerOptions:=devCompiler.OptionStr;
+    CurrentProfile.CompilerType:=devCompiler.CompilerType;
+
+    typ:= lstType.ItemIndex;
+
+    ExeOutput := edExeOutput.Text;
+    ObjectOutput := edObjOutput.Text;
+    OverrideOutput := chkOverrideOutput.Checked;
+    OverridenOutput := edOverridenOutput.Text;
+    if cbUseCustomMakefile.Checked and FileExists(edCustomMakefile.Text) then
+      CurrentProfile.UseCustomMakefile := true
+    else
+      CurrentProfile.UseCustomMakefile := false;
+
+    CurrentProfile.CustomMakefile:=edCustomMakefile.Text;
+    MakeIncludes.Clear;
+    MakeIncludes.AddStrings(Self.MakeIncludes.Items);
+
+    CurrentProfile.SupportXPThemes:=chkSupportXP.Checked;
+    CurrentProfile.CompilerSet:=cmbCompiler.ItemIndex;
+
+    CurrentProfile.IncludeVersionInfo:=chkVersionInfo.Checked;
+
+    CurrentProfile.VersionInfo.Major                   :=spnMajor.Value;
+    CurrentProfile.VersionInfo.Minor                   :=spnMinor.Value;
+    CurrentProfile.VersionInfo.Release                 :=spnRelease.Value;
+    CurrentProfile.VersionInfo.Build                   :=spnBuild.Value;
+    CurrentProfile.VersionInfo.AutoIncBuildNrOnCompile :=radAutoIncBuildOnCompile.Checked;
+    CurrentProfile.VersionInfo.AutoIncBuildNrOnRebuild :=radAutoIncBuildOnRebuild.Checked;
+
+    CurrentProfile.VersionInfo.FileDescription:=   vleVersion.Cells[1, 0];
+    CurrentProfile.VersionInfo.FileVersion:=       vleVersion.Cells[1, 1];
+    CurrentProfile.VersionInfo.ProductName:=       vleVersion.Cells[1, 2];
+    CurrentProfile.VersionInfo.ProductVersion:=    vleVersion.Cells[1, 3];
+    CurrentProfile.VersionInfo.OriginalFilename:=  vleVersion.Cells[1, 4];
+    CurrentProfile.VersionInfo.InternalName:=      vleVersion.Cells[1, 5];
+    CurrentProfile.VersionInfo.CompanyName:=       vleVersion.Cells[1, 6];
+    CurrentProfile.VersionInfo.LegalCopyright:=    vleVersion.Cells[1, 7];
+    CurrentProfile.VersionInfo.LegalTrademarks:=   vleVersion.Cells[1, 8];
+
+    if cmbLangID.ItemIndex>-1 then
+    begin
+      for I := 0 to Languages.Count-1 do
+      begin
+          if SameText(Languages.Name[I], cmbLangID.Text) then
+          begin
+            CurrentProfile.VersionInfo.LanguageID := Languages.LocaleID[I];
+            Break;
+          end;
+        end;
+    end;
+  end;
 end;
 
-
-procedure TfrmProjectOptions.InternalLoadCompilerOption(CompilerIndex:Integer);
-begin
-  edCompiler.Lines.Text:= StringReplace(GetCOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
-  edCppCompiler.Lines.Text:= StringReplace(GetCppOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
-  edLinker.Lines.Text:= StringReplace(GetLinkerOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
-  edDefines.Lines.Text := StringReplace(GetPreProcOption(CompilerIndex), '_@@_', #13#10, [rfReplaceAll]);
-end;
-
-procedure TfrmProjectOptions.SetOptions(Value: TProjOptions);
+procedure TfrmProjectOptions.UpdateUIWithCurrentProfile;
 var
   idx, cntSrc, cntHdr, cntRes: integer;
-begin
-  fOptions:= Value;
-  fIcon:= GetRealPath(fOptions.Icon, fProject.Directory);
+Begin
+  fIcon:= GetRealPath(CurrentProfile.Icon, fProject.Directory);
   if (fIcon <> '') and (FileExists(fIcon)) then
   try
     Icon.Picture.LoadFromFile(fIcon);
@@ -649,9 +563,12 @@ begin
   end;
 
   // General Tab
-  lstType.ItemIndex:= fOptions.typ;
+  lstType.ItemIndex:= CurrentProfile.typ;
 
-  InternalLoadCompilerOption(cbxCompilerType.ItemIndex);
+  edCompiler.Lines.Text:= StringReplace(CurrentProfile.Compiler, '_@@_', #13#10, [rfReplaceAll]);
+  edCppCompiler.Lines.Text:= StringReplace(CurrentProfile.CPPCompiler, '_@@_', #13#10, [rfReplaceAll]);
+  edLinker.Lines.Text:= StringReplace(CurrentProfile.Linker, '_@@_', #13#10, [rfReplaceAll]);
+  edDefines.Lines.Text := StringReplace(CurrentProfile.PreprocDefines , '_@@_', #13#10, [rfReplaceAll]);
 
   edProjectName.Text:= fProject.Name;
   lblPrjFname.Caption:=fProject.FileName;
@@ -666,30 +583,36 @@ begin
       utRes: Inc(cntRes);
     end;
   lblPrjUnits.Caption:=Format(Lang[ID_POPT_UNITSFORMAT], [fProject.Units.Count, cntSrc, cntHdr, cntRes]);
-  chkSupportXP.Checked:=fOptions.SupportXPThemes;
-
-  // Output tab
-  edExeOutput.Text := fOptions.ExeOutput;
-  edObjOutput.Text := fOptions.ObjectOutput;
-  chkOverrideOutput.Checked := fOptions.OverrideOutput;
-  if fOptions.OverridenOutput<>'' then
-    edOverridenOutput.Text := ExtractFilename(fOptions.OverridenOutput)
-  else
-    edOverridenOutput.Text := ExtractFilename(fProject.Executable);
-  edOverridenOutput.Enabled:=fOptions.OverrideOutput;
-
-  // Makefile tab
-  cbUseCustomMakefile.Checked:=fProject.UseCustomMakefile;
-  edCustomMakefile.Text:=fProject.CustomMakefile;
-  cbUseCustomMakefileClick(nil);
-  MakeIncludes.Items.AddStrings(fOptions.MakeIncludes);
+  chkSupportXP.Checked:=CurrentProfile.SupportXPThemes;
 
   // Files tab
   cmbCompiler.Items.Assign(devCompilerSet.Sets);
-  cmbCompiler.ItemIndex:=fOptions.CompilerSet;
+  cmbCompiler.ItemIndex:=CurrentProfile.CompilerSet;
+
+  //
+  cmbCompiler.ItemIndex:=CurrentProfile.CompilerSet;
+  cmbCompilerChange(nil);
+
+  // Output tab
+  edExeOutput.Text := CurrentProfile.ExeOutput;
+  edObjOutput.Text := CurrentProfile.ObjectOutput;
+  chkOverrideOutput.Checked := CurrentProfile.OverrideOutput;
+  if CurrentProfile.OverridenOutput<>'' then
+    edOverridenOutput.Text := ExtractFilename(CurrentProfile.OverridenOutput)
+  else
+    edOverridenOutput.Text := ExtractFilename(fProject.Executable);
+  edOverridenOutput.Enabled:=CurrentProfile.OverrideOutput;
+
+  // Makefile tab
+  cbUseCustomMakefile.Checked:=CurrentProfile.UseCustomMakefile;
+  edCustomMakefile.Text:=CurrentProfile.CustomMakefile;
+  cbUseCustomMakefileClick(nil);
+  MakeIncludes.Clear;
+  MakeIncludes.Items.AddStrings(CurrentProfile.MakeIncludes);
 
   // Version tab
   InitVersionInfo;
+
 end;
 
 procedure TfrmProjectOptions.SaveDirSettings;
@@ -698,9 +621,9 @@ var
 begin
   sl := nil;
   case SubTabs.TabIndex of
-   0: sl:= fOptions.Libs;
-   1: sl:= fOptions.Includes;
-   2: sl:= fOptions.ResourceIncludes;
+   0: sl:= CurrentProfile.Libs;
+   1: sl:= CurrentProfile.Includes;
+   2: sl:= CurrentProfile.ResourceIncludes;
   end;
   if assigned(sl) then
   begin
@@ -717,10 +640,12 @@ end;
 
 procedure TfrmProjectOptions.SubTabsChange(Sender: TObject);
 begin
+  if fProfiles = nil then
+    exit;
   case SubTabs.TabIndex of
-   0: lstList.Items:= fOptions.Libs;
-   1: lstList.Items:= fOptions.Includes;
-   2: lstList.Items:= fOptions.ResourceIncludes;
+   0: lstList.Items:= CurrentProfile.Libs;
+   1: lstList.Items:= CurrentProfile.Includes;
+   2: lstList.Items:= CurrentProfile.ResourceIncludes;
   end;
   UpdateButtons;
 end;
@@ -740,12 +665,10 @@ begin
   chkOverrideBuildCmd.Enabled:=False;
   txtOverrideBuildCmd.Enabled:=False;
   txtOverrideBuildCmd.Text:='';
-  chkSupportXP.Enabled:=fOptions.typ=dptGUI;
+  chkSupportXP.Enabled:=CurrentProfile.typ=dptGUI;
   devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
   CompOptionsFrame1.FillOptions(fProject);
-  devCompiler.OptionStr:=fOptions.CompilerOptions;
-  cbxCompilerType.itemIndex:=devCompilerSet.CompilerType;
-  cbxCompilerTypeChange(Sender);  
+  devCompiler.OptionStr:=CurrentProfile.CompilerOptions;
   SubTabsChange(Self);
   UpdateMakButtons();
   CompOptionsFrame1.FillOptions(fProject);
@@ -793,13 +716,11 @@ end;
 
 procedure TfrmProjectOptions.FormCreate(Sender: TObject);
 begin
-  //Set the default compiler as GCC
-  fPreviousIndex:=0;
-  cbxCompilerType.ItemIndex:=0;
-
   cmbLangID.Sorted := True;
-  InitVersionInfo;
+  fProfiles:=TProjectProfileList.Create;
+  //InitVersionInfo;
   LoadText;
+  fCurrentProfileIndex:=0;
 end;
 
 procedure TfrmProjectOptions.LoadText;
@@ -899,7 +820,7 @@ begin
   grpPch.Caption:=                    Lang[ID_POPT_PCH];
   grpPch.Items[0]:=                   Lang[ID_POPT_NOPCH];
   grpPch.Items[1]:=                   Lang[ID_POPT_CREATEPCH];
-  grpPch.Items[2]:=                   Lang[ID_POPT_USEPCH];    
+  grpPch.Items[2]:=                   Lang[ID_POPT_USEPCH];
 
   // version info tab
   tabVersion.Caption:=                Lang[ID_POPT_VERTAB];
@@ -933,8 +854,9 @@ var
   Dir: WideString;
 {$ENDIF}
 begin
-  if fProject.Options.ExeOutput<>'' then
-    Dir:=ExpandFileto(fProject.Options.ExeOutput, fProject.Directory)
+  //todo: Check if we need to use CUrrent Profile here
+  if fProject.CurrentProfile.ExeOutput<>'' then
+    Dir:=ExpandFileto(fProject.CurrentProfile.ExeOutput, fProject.Directory)
   else
     Dir:=fProject.Directory;
   SelectDirectory('Select Directory', '', Dir);
@@ -950,8 +872,8 @@ var
   Dir: WideString;
 {$ENDIF}
 begin
-  if fProject.Options.ObjectOutput<>'' then
-    Dir:=ExpandFileto(fProject.Options.ObjectOutput, fProject.Directory)
+  if fProject.CurrentProfile.ObjectOutput<>'' then
+    Dir:=ExpandFileto(fProject.CurrentProfile.ObjectOutput, fProject.Directory)
   else
     Dir:=fProject.Directory;
   SelectDirectory('Select Directory', '', Dir);
@@ -1062,6 +984,7 @@ begin
     CanClose := False;
   end;
   if CanClose then begin
+    devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
     devCompilerSet.LoadSet(devCompiler.CompilerSet);
     devCompilerSet.AssignToCompiler;
   end;
@@ -1212,32 +1135,32 @@ var
   I: integer;
   S: string;
 begin
-  chkVersionInfo.Checked := fOptions.IncludeVersionInfo;
+  chkVersionInfo.Checked := CurrentProfile.IncludeVersionInfo;
   chkVersionInfoClick(nil);
 
-  spnMajor.Value := fOptions.VersionInfo.Major;
-  spnMinor.Value := fOptions.VersionInfo.Minor;
-  spnRelease.Value := fOptions.VersionInfo.Release;
-  spnBuild.Value := fOptions.VersionInfo.Build;
-  radAutoIncBuildOnCompile.Checked := fOptions.VersionInfo.AutoIncBuildNrOnCompile;
-  radAutoIncBuildOnRebuild.Checked := fOptions.VersionInfo.AutoIncBuildNrOnRebuild;
+  spnMajor.Value := CurrentProfile.VersionInfo.Major;
+  spnMinor.Value := CurrentProfile.VersionInfo.Minor;
+  spnRelease.Value := CurrentProfile.VersionInfo.Release;
+  spnBuild.Value := CurrentProfile.VersionInfo.Build;
+  radAutoIncBuildOnCompile.Checked := CurrentProfile.VersionInfo.AutoIncBuildNrOnCompile;
+  radAutoIncBuildOnRebuild.Checked := CurrentProfile.VersionInfo.AutoIncBuildNrOnRebuild;
 
   vleVersion.Strings.Clear;
-  vleVersion.InsertRow('File Description',  fOptions.VersionInfo.FileDescription,   True);
-  vleVersion.InsertRow('File Version', fOptions.VersionInfo.FileVersion, True);
-  vleVersion.InsertRow('Product Name', fOptions.VersionInfo.ProductName, True);
-  vleVersion.InsertRow('Product Version',   fOptions.VersionInfo.ProductVersion,    True);
-  vleVersion.InsertRow('Original Filename', fOptions.VersionInfo.OriginalFilename,  True);
-  vleVersion.InsertRow('Internal Name',     fOptions.VersionInfo.InternalName,      True);
-  vleVersion.InsertRow('Company Name', fOptions.VersionInfo.CompanyName, True);
-  vleVersion.InsertRow('Legal Copyright',   fOptions.VersionInfo.LegalCopyright,    True);
-  vleVersion.InsertRow('Legal Trademarks',  fOptions.VersionInfo.LegalTrademarks,   True);
+  vleVersion.InsertRow('File Description',  CurrentProfile.VersionInfo.FileDescription,   True);
+  vleVersion.InsertRow('File Version', CurrentProfile.VersionInfo.FileVersion, True);
+  vleVersion.InsertRow('Product Name', CurrentProfile.VersionInfo.ProductName, True);
+  vleVersion.InsertRow('Product Version',   CurrentProfile.VersionInfo.ProductVersion,    True);
+  vleVersion.InsertRow('Original Filename', CurrentProfile.VersionInfo.OriginalFilename,  True);
+  vleVersion.InsertRow('Internal Name',     CurrentProfile.VersionInfo.InternalName,      True);
+  vleVersion.InsertRow('Company Name', CurrentProfile.VersionInfo.CompanyName, True);
+  vleVersion.InsertRow('Legal Copyright',   CurrentProfile.VersionInfo.LegalCopyright,    True);
+  vleVersion.InsertRow('Legal Trademarks',  CurrentProfile.VersionInfo.LegalTrademarks,   True);
 
   cmbLangID.Items.Clear;
   for I := 0 to Languages.Count - 1 do
     cmbLangID.Items.Add(Languages.Name[I]);
 
-  S := Languages.NameFromLocaleID[fOptions.VersionInfo.LanguageID];
+  S := Languages.NameFromLocaleID[CurrentProfile.VersionInfo.LanguageID];
   if S <> '' then
     cmbLangID.ItemIndex := cmbLangID.Items.IndexOf(S);
 end;
@@ -1258,19 +1181,18 @@ end;
 procedure TfrmProjectOptions.cmbCompilerChange(Sender: TObject);
 var currOpts: string;
 begin
-  currOpts := devCompiler.OptionStr;
+  currOpts := CurrentProfile.CompilerOptions;
   devCompiler.CompilerSet := cmbCompiler.ItemIndex;
   devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
   devCompilerSet.AssignToCompiler;
   devCompiler.OptionStr := currOpts;
   CompOptionsFrame1.FillOptions(fProject);
-  cbxCompilerType.itemIndex:=devCompilerSet.CompilerType;
-  cbxCompilerTypeChange(Sender);
 end;
 
 procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
 begin
-  devCompilerSet.LoadSet(fOptions.CompilerSet);
+  devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
+  devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler;
 end;
 
@@ -1282,7 +1204,7 @@ end;
 procedure TfrmProjectOptions.btnOkClick(Sender: TObject);
 begin
   SaveDirSettings;
-  fOptions.CompilerOptions := devCompiler.OptionStr;
+  UpdateCurrentProfileDataFromUI;
 end;
 
 procedure TfrmProjectOptions.AddLibBtnClick(Sender: TObject);
@@ -1308,9 +1230,9 @@ begin
     Exit;
 
   tfile := ExtractFileName(fProject.Units[idx].FileName);
-  if fProject.Options.ObjectOutput <> '' then
+  if fProject.Profiles[CurrentProfileIndex].ObjectOutput <> '' then
   begin
-    ofile := IncludeTrailingPathDelimiter(fProject.Options.ObjectOutput)+ExtractFileName(tfile);
+    ofile := IncludeTrailingPathDelimiter(fProject.Profiles[CurrentProfileIndex].ObjectOutput)+ExtractFileName(tfile);
     ofile := GenMakePath(ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)));
   end
   else
@@ -1440,11 +1362,82 @@ begin
   end;
 end;
 
-procedure TfrmProjectOptions.cbxCompilerTypeChange(Sender: TObject);
+procedure TfrmProjectOptions.cmbProfileSetCompChange(Sender: TObject);
 begin
-  InternalSaveCompilerOption(fPreviousIndex);
-  InternalLoadCompilerOption(cbxCompilerType.ItemIndex);
-  fPreviousIndex:=cbxCompilerType.ItemIndex;
+  if cmbProfileSetComp.ItemIndex = -1 then
+    exit;
+  //Save the values
+  if (Sender <> nil ) then
+    UpdateCurrentProfileDataFromUI;
+  CurrentProfileIndex:=cmbProfileSetComp.ItemIndex;
+  UpdateUIWithCurrentProfile;
+end;
+
+procedure TfrmProjectOptions.btnAddProfileSetClick(Sender: TObject);
+var
+  S: string;
+  NewProfile:TProjProfile;
+begin
+  S := 'New Profile';
+  if not InputQuery('New Profile', 'Enter a new Profile', S) or (S='') then
+    Exit;
+  //fixme: Fix the Output Directory to have only valid characters
+  NewProfile:=TProjProfile.Create;
+  NewProfile.ProfileName:=S;
+  NewProfile.ObjectOutput:=S;
+  NewProfile.ExeOutput:=S;
+  fProfiles.Add(NewProfile);
+  UpdateProfileList(cmbProfileSetComp.ItemIndex);
+end;
+
+procedure TfrmProjectOptions.btnDelProfileSetClick(Sender: TObject);
+begin
+  if cmbProfileSetComp.Items.Count=1 then begin
+    MessageDlg(Lang[ID_COPT_CANTDELETECOMPSET], mtError, [mbOk], 0);
+    Exit;
+  end;
+
+  if MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation, [mbYes, mbNo], 0)=mrNo then
+    Exit;
+
+  fProfiles.Remove(cmbProfileSetComp.ItemIndex);
+  cmbProfileSetComp.ItemIndex := 0;
+  CurrentProfileIndex:= 0;
+  UpdateProfileList(0);
+  cmbProfileSetCompChange(cmbProfileSetComp);
+end;
+
+procedure TfrmProjectOptions.btnRenameProfileSetClick(Sender: TObject);
+var
+  S: string;
+begin
+  S := cmbProfileSetComp.Text;
+  if not InputQuery(Lang[ID_COPT_RENAMECOMPSET], Lang[ID_COPT_PROMPTRENAMECOMPSET], S) or (S='') or (S=cmbProfileSetComp.Text) then
+    Exit;
+
+  CurrentProfile.ProfileName:=S;
+  UpdateProfileList(cmbProfileSetComp.ItemIndex);
+end;
+
+procedure TfrmProjectOptions.btnCopyProfileSetClick(Sender: TObject);
+var
+  S: string;
+  NewProfile:TProjProfile;
+begin
+  S := 'New Profile';
+  if not InputQuery('Copy Profile', 'Enter a new Profile', S) or (S='') then
+    Exit;
+  //fixme: Fix the Output Directory to have only valid characters
+  NewProfile:=TProjProfile.Create;
+  NewProfile.CopyProfileFrom(CurrentProfile);
+  NewProfile.ProfileName:=S;
+  NewProfile.ObjectOutput:=S;
+  NewProfile.ExeOutput:=S;
+  fProfiles.Add(NewProfile);
+  UpdateProfileList(cmbProfileSetComp.ItemIndex);
+  cmbProfileSetComp.ItemIndex:=cmbProfileSetComp.Items.count-1;
+  cmbProfileSetCompChange(cmbProfileSetComp);
+
 end;
 
 end.

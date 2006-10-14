@@ -71,6 +71,7 @@ type
   TCheckAbortFunc = procedure(var AbortThread: boolean) of object;
   
 {$IFDEF WX_BUILD}
+function GetClosestMatchingCompilerSet(CompilerType:Integer):Integer;
 function ExtractComponentPropertyName(const S: string): string;
 function ExtractComponentPropertyCaption(const S: string): string;
 function iswxForm(FileName: string): Boolean;
@@ -82,6 +83,7 @@ function DuplicateAppInstWdw: HWND;
 function SwitchToPrevInst(Wnd: HWND): Boolean;
 function ParseCommandLineArguments(cmdLine: string) : TStringList;
 function SubstituteMakeParams(str: string) : string;
+procedure Split(const str1:string;const sep:string;var LT:TStringList);
 {$ENDIF}
 
 function IsWinNT : boolean;
@@ -158,7 +160,20 @@ uses
 {$ENDIF}
 {$IFDEF LINUX}
   devcfg, version, QGraphics, StrUtils, MultiLangSupport, main, editor;
-{$ENDIF}  
+{$ENDIF}
+
+function GetClosestMatchingCompilerSet(CompilerType:Integer):Integer;
+var
+  i:Integer;
+begin
+  //fixme: Not sure how to navigate the CompilerSet to check for the Compiler Type;
+  Result:=0;
+
+  for i:=0 to devCompilerSet.Sets.Count-1 do
+  begin
+      //devCompilerSet.SetName()
+  end;
+end;
 function ExtractComponentPropertyName(const S: string): string;
 var
   SepaPos: integer;
@@ -1161,6 +1176,29 @@ begin
   MakeArgs.Destroy;
 end;
 {$EndIf}
+
+procedure Split(const str1:string;const sep:string;var LT:TStringList);
+var
+   i:Integer; {Holds the Real Pos}
+   t:String; {Holds the String}
+   i2:integer; {Holds the second pos}
+begin
+     i:=1;
+     t:=str1;
+     repeat
+           t:=RightStr(t,Length(t)-i-Length(sep)+1);{Gets the right of the the string at the pos of the separator}
+           i:=Pos (sep,t);{Gets the pos(Holds it)}
+           i2:=Pos(sep,t); {The real pos(USes it)}
+           if LeftStr(t,i2-1)= '' then {Checks if the string is empty}
+           begin{Do nothing if is}
+           end
+           else
+           begin
+                LT.Add(LeftStr(t,i2-1)); {Adds to the TStringList}
+           end;
+     until i=0;{^Does above until the no more seperators}
+end;
+
 
 end.
 
