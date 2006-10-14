@@ -3293,7 +3293,7 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX,false);
+                    Result := SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3305,7 +3305,7 @@ begin
             if assigned(eX) then
             begin
                 if eX.Modified then
-                    SaveFileInternal(eX,false);
+                    Result := SaveFileInternal(eX,false);
             end;
         end;
 
@@ -3317,7 +3317,7 @@ begin
                 if eX.Modified then
                 begin
                     bHModified:=true;
-                    SaveFileInternal(eX,false);
+                    Result := SaveFileInternal(eX,false);
                     hFile := eX.FileName;
                 end;
             end;
@@ -3331,7 +3331,7 @@ begin
                 if eX.Modified then
                 begin
                     bCppModified:=true;
-                    SaveFileInternal(eX,false);
+                    Result := SaveFileInternal(eX,false);
                     cppFile := eX.FileName;
                 end;
             end;
@@ -3351,7 +3351,7 @@ begin
     end
     else
    {$ENDIF}
-        result:=SaveFileInternal(e);
+        Result := SaveFileInternal(e);
 
 end;
 
