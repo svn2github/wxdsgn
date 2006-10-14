@@ -6,7 +6,7 @@ interface
 
 implementation
 
-uses Classes,windows,madExcept,JvInspector,ELDsgnr,sysutils;
+uses Classes, Windows, madExcept, JvInspector, ELDsgnr, sysutils, Forms;
 
 // GAR 1/8/06
 // Looks like this needs to be the procedure definition for the newer versions of madExcept (> 2.8)
@@ -29,29 +29,32 @@ procedure ExceptionFilter(const exceptIntf : IMEException; var Handled : Boolean
 //                          var canContinue : boolean;
 //                          var handled     : boolean);
 
+  procedure ShowError(AMessage: string);
+  begin
+    MessageBox(Application.MainForm.Handle, PChar(AMessage), PChar(Application.Title), MB_ICONERROR or MB_TASKMODAL);
+    Handled := True;
+  end;
 
+const
+  PromptMsg = #13#10#13#10'Please press Escape to restore the previous value.';
 begin
+  //Do we have an ACTIVE exception?!
+  if exceptObject = nil then
+    Exit;
+
   //This is for People who try to enter caption or Label information in the Name Property
-  if (exceptObject <> nil) and (exceptObject is EComponentError) then begin
-    MessageBox(0, pchar(EComponentError(exceptObject).Message +#13+#10+#13+#10+'After closing this message Box, press escape to restore last value.'), 'Error...', MB_ICONERROR or MB_TASKMODAL);
-    handled := true;
-  end;
+  if exceptObject is EComponentError then
+    ShowError(EComponentError(exceptObject).Message + PromptMsg)
   //This is for screwing up some Property Inspector Editor specifics like Entering Data
-  // in the Orientation Information
-  if (exceptObject <> nil) and (exceptObject is EJvInspectorItem) then begin
-    MessageBox(0, pchar(EJvInspectorItem(exceptObject).Message+#13+#10+#13+#10+'After closing this message Box, press escape to restore last value.'), 'Error...', MB_ICONERROR or MB_TASKMODAL);
-    handled := true;
-  end;
-  //For some Weird Designer Errors.
-  if (exceptObject <> nil) and (exceptObject is EELDesigner) then begin
-    MessageBox(0, pchar(EELDesigner(exceptObject).Message+#13+#10+#13+#10+'After closing this message Box, press escape to restore last value.'), 'Error...', MB_ICONERROR or MB_TASKMODAL);
-    handled := true;
-  end;
+  //in the Orientation Information
+  else if exceptObject is EJvInspectorItem then
+    ShowError(EComponentError(exceptObject).Message + PromptMsg)
+  //For some weird designer errors.
+  else if exceptObject is EELDesigner then
+    ShowError(EELDesigner(exceptObject).Message)
   //If user accidently entered text to a Integer field
-  if (exceptObject <> nil) and (exceptObject is EConvertError) then begin
-    MessageBox(0, pchar(EConvertError(exceptObject).Message+#13+#10+#13+#10+'After closing this message Box, press escape to restore last value.'), 'Error...', MB_ICONERROR or MB_TASKMODAL);
-    handled := true;
-  end;
+  else if exceptObject is EConvertError then
+    ShowError(EConvertError(exceptObject).Message + PromptMsg);
 end;
 
 initialization
