@@ -10197,10 +10197,12 @@ object dmMain: TdmMain
       item
         EndExpr = '\}'
         Highlighter = Assembly
+        MarkerAttri.Background = clNone
         SchemeName = 'Assembly'
       end
       item
         Highlighter = Assembly
+        MarkerAttri.Background = clNone
         SchemeName = 'Shorthand Assembly'
       end>
     DefaultHighlighter = Cpp
