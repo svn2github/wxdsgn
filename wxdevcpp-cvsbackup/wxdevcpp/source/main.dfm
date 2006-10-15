@@ -3504,11 +3504,6 @@ object MainForm: TMainForm
     Left = 493
     Top = 158
   end
-  object ThemeManager1: TThemeManager
-    Options = [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw]
-    Left = 521
-    Top = 158
-  end
   object DockServer: TJvDockServer
     LeftSplitterStyle.Cursor = crHSplit
     LeftSplitterStyle.ParentColor = False

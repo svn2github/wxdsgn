@@ -41,10 +41,14 @@ uses
 {$IFDEF WX_BUILD}
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
   ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
-  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ThemeMgr,
-  {$IFNDEF OLD_MADSHI}
+  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch,
+{$IFNDEF COMPILER_7_UP}
+  ThemeMgr,
+  ThemeSrv,
+{$ENDIF}
+{$IFNDEF OLD_MADSHI}
   ExceptionFilterUnit,
-  {$ENDIF}
+{$ENDIF}
   DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX,
   SynEditHighlighter, SynHighlighterMulti, JvComponentBase,
   JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle
@@ -609,7 +613,6 @@ type
     ClearallWatchPop: TMenuItem;
     actNewwxDialog: TAction;
     NewWxDialogItem: TMenuItem;
-    ThemeManager1: TThemeManager;
     actDesignerCopy: TAction;
     actDesignerCut: TAction;
     actDesignerPaste: TAction;
@@ -854,7 +857,6 @@ type
     procedure edGdbCommandKeyPress(Sender: TObject; var Key: Char);
     procedure actExecParamsExecute(Sender: TObject);
     procedure DevCppDDEServerExecuteMacro(Sender: TObject; Msg: TStrings);
-    procedure FormPaint(Sender: TObject);
     procedure actShowTipsExecute(Sender: TObject);
     procedure actBrowserUseColorsExecute(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
@@ -2172,6 +2174,11 @@ var
 begin
   try
     XPMenu.Active := devData.XPTheme;
+{$IFNDEF COMPILER_7_UP}
+    //Initialize theme support
+    with TThemeManager.Create(MainForm) do
+      Options := [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw];
+{$ENDIF}
   except
   end;
 
@@ -9408,43 +9415,32 @@ begin
       if TWinControl(AControl).Parent.ControlCount > 2 then
         TWinControl(AControl).Parent:= TWinControl(AControl).Parent.Parent;
 
-
-  if SelectedComponent <> nil then
-  begin
-    if (SelectedComponent is TWxNoteBookPage) then
+    if SelectedComponent <> nil then
     begin
-        //SelectedComponent.Owner:=PreviousComponent;
-        TWinControl(SelectedComponent).Parent:=TWinControl(PreviousComponent);
-        TWxNoteBookPage(SelectedComponent).PageControl:=TPageControl(PreviousComponent);
-    end;
-
-    if(SelectedComponent is TWxNonVisibleBaseComponent) then
-    begin
-        TWxNonVisibleBaseComponent(SelectedComponent).Parent:=ELDesigner1.DesignControl;
-    end;
-
-    if TfrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
-    begin
-          //////////////////////////////////////////////////////////////////////
-          if(SelectedComponent is TWxToolBar) then
-          begin              
-              TWxToolBar(SelectedComponent).Parent:=ELDesigner1.DesignControl;
-          end;
-
-         if(SelectedComponent is TWxStatusBar) then
-          begin
-            TWxStatusBar(SelectedComponent).Parent:=ELDesigner1.DesignControl;
-          end;   
-          //////////////////////////////////////////////////////////////////////
-
-      if GetWxWindowControls(ELDesigner1.DesignControl) = 1 then
+      if (SelectedComponent is TWxNoteBookPage) then
       begin
-          if IsControlWxWindow(Tcontrol(SelectedComponent)) then
-          begin
-            if TWincontrol(SelectedComponent).Parent is TForm then
-                TWincontrol(SelectedComponent).Align:=alClient;
-          end;
+        TWinControl(SelectedComponent).Parent := TWinControl(PreviousComponent);
+        TWxNoteBookPage(SelectedComponent).PageControl := TPageControl(PreviousComponent);
       end;
+
+      if (SelectedComponent is TWxNonVisibleBaseComponent) then
+        TWxNonVisibleBaseComponent(SelectedComponent).Parent := ELDesigner1.DesignControl;
+
+      if TfrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
+      begin
+        if (SelectedComponent is TWxToolBar) then
+          TWxToolBar(SelectedComponent).Parent:=ELDesigner1.DesignControl;
+
+        if (SelectedComponent is TWxStatusBar) then
+          TWxStatusBar(SelectedComponent).Parent:=ELDesigner1.DesignControl;
+      end;
+
+      //Like wxWidgets' default behaviour, fill the whole screen if only one control
+      //is on the screen
+      if GetWxWindowControls(ELDesigner1.DesignControl) = 1 then
+        if IsControlWxWindow(Tcontrol(SelectedComponent)) then
+          if TWincontrol(SelectedComponent).Parent is TForm then
+            TWincontrol(SelectedComponent).Align := alClient;
     end;
   end;
 
@@ -9453,18 +9449,14 @@ begin
   begin
     compObj := ELDesigner1.SelectedControls[i];
     if compObj is TWinControl then
-    begin
-        //if we drop a control to image oor other static
-        //controls that are derived from TWxControlPanel
-        if TWinControl(compObj).Parent is TWxControlPanel then
-        begin
-            try
-                if assigned(TWinControl(compObj).parent.parent) then
-                    TWinControl(compObj).parent:=TWinControl(compObj).parent.parent;
-            except
-            end;
+      //if we drop a control to image or other static controls that are derived
+      //from TWxControlPanel
+      if TWinControl(compObj).Parent is TWxControlPanel then
+        try
+          if assigned(TWinControl(compObj).parent.parent) then
+            TWinControl(compObj).parent:=TWinControl(compObj).parent.parent;
+        except
         end;
-    end;
 
     try
       if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
@@ -9654,181 +9646,158 @@ begin
 end;
 
 begin
-
   if trim(SelectedComponentName) = '' then
   begin
     exit;
   end;
 
-  AControlClass := TControlClass(GetClass(SelectedComponentName));
-    if AControlClass = nil then
+  if TFrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
+  begin
+    if strContainsU(SelectedComponentName,'TWxStatusBar') then
     begin
-        exit;
+      if GetAvailableControlCount(ELDesigner1.DesignControl,'TWxStatusBar') > 0 then
+      begin
+        ShowErrorAndReset('You cannot have more than one Statusbar');
+        Exit;
+      end;
     end;
 
-
-    if ELDesigner1.SelectedControls.count > 0 then
+    if strContainsU(SelectedComponentName,'TWxMenuBar') then
     begin
-        CurrentParent:=TWinControl(ELDesigner1.SelectedControls[0]);
-    end
-    else
-    begin
-        CurrentParent:=nil;
-        CurrentParent:=ELDesigner1.DesignControl;
+      if GetAvailableControlCount(ELDesigner1.DesignControl,'TWxMenuBar') > 0 then
+      begin
+        ShowErrorAndReset('You cannot have more than one MenuBar');
+        Exit;
+      end;
     end;
 
-    if TFrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
+    if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarInsertableInterface,tlbrInterface) then
     begin
-        if strContainsU(SelectedComponentName,'TWxStatusBar') then
-        begin
-            if GetAvailableControlCount(ELDesigner1.DesignControl,'TWxStatusBar') > 0 then
-            begin
-              ShowErrorAndReset('You cannot have more than one Statusbar');
-              exit;
-            end;
-        end;
-         {BugFix for #1064084} 
-//        if strContainsU(SelectedComponentName,'TWxToolBar') then
-//        begin
-//            if GetAvailableControlCount(ELDesigner1.DesignControl,'TWxToolBar') > 0 then
-//            begin
-//              ShowErrorAndReset('You cannot have more than one ToolBar');
-//              exit;
-//            end;
-//        end;
-
-        if strContainsU(SelectedComponentName,'TWxMenuBar') then
-        begin
-            if GetAvailableControlCount(ELDesigner1.DesignControl,'TWxMenuBar') > 0 then
-            begin
-              ShowErrorAndReset('You cannot have more than one MenuBar');
-              exit;
-            end;
-        end;
-
-      if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarInsertableInterface,tlbrInterface) then
+      if not (StrContainsU(CurrentParent.ClassName,'TWxToolBar')) then
       begin
-          if not (StrContainsU(CurrentParent.ClassName,'TWxToolBar')) then
-          begin
-              if not (TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarNonInsertableInterface,nontlbrInterface)) then
-              begin
-                ShowErrorAndReset('You cannot insert Toolbar control in Dialog. Use Toolbar only in wxFrame.');
-                exit;
-              end;
-          end;
-      end
-      else
-      begin
-        if not (strContainsU(CurrentParent.ClassName,'TFrmNewForm')=true) then
+        if not (TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarNonInsertableInterface,nontlbrInterface)) then
         begin
-            if CurrentParent.Parent <> nil then
-            begin
-                if (StrContainsU(CurrentParent.Parent.ClassName,'TWxToolBar')) then
-                begin
-                    ShowErrorAndReset('You cannot insert this control in ToolBar');
-                    exit;
-                end;
-            end;
-        end;
-        if (StrContainsU(CurrentParent.ClassName,'TWxToolBar')) then
-        begin
-            ShowErrorAndReset('You cannot insert this control in ToolBar');
-            exit;
+          ShowErrorAndReset('You cannot insert Toolbar control in Dialog. Use Toolbar only in wxFrame.');
+          Exit;
         end;
       end;
     end
-    Else
+    else
     begin
-        if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxDialogNonInsertableInterface,dlgInterface) then
-	begin
-	    ShowErrorAndReset('You cannot insert this control in Dialog. Use this control only in wxFrame.');
-            exit;
+      if not (strContainsU(CurrentParent.ClassName,'TFrmNewForm')=true) then
+      begin
+        if CurrentParent.Parent <> nil then
+        begin
+          if (StrContainsU(CurrentParent.Parent.ClassName,'TWxToolBar')) then
+          begin
+            ShowErrorAndReset('You cannot insert this control in ToolBar');
+            Exit;
+          end;
         end;
+      end;
+
+      if (StrContainsU(CurrentParent.ClassName,'TWxToolBar')) then
+      begin
+        ShowErrorAndReset('You cannot insert this control in ToolBar');
+        Exit;
+      end;
+    end;
+  end
+  else
+  begin
+    if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxDialogNonInsertableInterface,dlgInterface) then
+    begin
+      ShowErrorAndReset('You cannot insert this control in Dialog. Use this control only in wxFrame.');
+      Exit;
+    end;
+  end;
+
+  if TWinControl(AControlClass.NewInstance) is TWxSizerPanel AND not StrContainsU(CurrentParent.ClassName, 'TWxPanel') then
+  begin
+    if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
+    begin
+      if isSizerAvailable(ELDesigner1.DesignControl) = false then
+      begin
+        if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
+        begin
+          ShowErrorAndReset('You cannot add a sizer if you have other standard components.'+#13+#10+''+#13+#10+'Please remove all the controls before adding a sizer.');
+          Exit;
+        end;
+      end;
+    end;
+  end;
+
+  PreviousComponent := nil;
+
+  if TWinControl(AControlClass.NewInstance) is TWxNoteBookPage then
+  begin
+    if ELDesigner1.SelectedControls.count = 0 then
+    begin
+      ShowErrorAndReset('Please select a NoteBook and drop the page.');
+      Exit;
     end;
 
-    if TWinControl(AControlClass.NewInstance) is TWxSizerPanel AND not StrContainsU(CurrentParent.ClassName, 'TWxPanel') then
+    //AControlClass.
+    PreviousComponent:=ELDesigner1.SelectedControls[0];
+    if (ELDesigner1.SelectedControls[0] is TWxNoteBookPage) then
     begin
-        if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
-        begin
-            if isSizerAvailable(ELDesigner1.DesignControl) = false then
-            begin
-                if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
-                begin
-                    ShowErrorAndReset('You cannot add a sizer if you have other standard components.'+#13+#10+''+#13+#10+'Please remove all the controls before adding a sizer.');
-                    exit;
-                end;
-            end;
-        end;
+      PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
+      Exit;
     end;
 
-    PreviousComponent:=nil;
-
-    if TWinControl(AControlClass.NewInstance) is TWxNoteBookPage then
+    if not (ELDesigner1.SelectedControls[0] is TWxNoteBook) then
     begin
-        if ELDesigner1.SelectedControls.count = 0 then
-        begin
-               ShowErrorAndReset('Please select a NoteBook and drop the page.');
-               exit;
-        end;
-        //AControlClass.
-        PreviousComponent:=ELDesigner1.SelectedControls[0];
-        if (ELDesigner1.SelectedControls[0] is TWxNoteBookPage) then
-        begin
-            PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
-            exit;
-        end;
+      ShowErrorAndReset('Please select a NoteBook and drop the page.');
+      Exit;
+    end;
+  end;
 
-        if not (ELDesigner1.SelectedControls[0] is TWxNoteBook) then
-        begin
-            ShowErrorAndReset('Please select a NoteBook and drop the page.');
-            exit;
-        end;
+  /// Fix for Bug Report #1060562
+  if TWinControl(AControlClass.NewInstance) is TWxToolButton then
+  begin
+    if ELDesigner1.SelectedControls.count = 0 then
+    begin
+      ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
+      Exit;
     end;
 
-    /// Fix for Bug Report #1060562
-    if TWinControl(AControlClass.NewInstance) is TWxToolButton then
+    //AControlClass.
+    PreviousComponent:=ELDesigner1.SelectedControls[0];
+    if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
     begin
-        if ELDesigner1.SelectedControls.count = 0 then
-        begin
-               ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
-               exit;
-        end;
-        //AControlClass.
-        PreviousComponent:=ELDesigner1.SelectedControls[0];
-        if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
-        begin
-            PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
-            exit;
-        end;
-
-        if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
-        begin
-            ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
-            exit;
-        end;
+      PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
+      Exit;
     end;
 
-    if TControl(AControlClass.NewInstance) is TWxSeparator then
+    if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
     begin
-        if ELDesigner1.SelectedControls.count = 0 then
-        begin
-               ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
-               exit;
-        end;
-        //AControlClass.
-        PreviousComponent:=ELDesigner1.SelectedControls[0];
-        if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
-        begin
-            PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
-            exit;
-        end;
-
-        if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
-        begin
-            ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
-            exit;
-        end;
+      ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
+      Exit;
     end;
+  end;
+
+  if TControl(AControlClass.NewInstance) is TWxSeparator then
+  begin
+    if ELDesigner1.SelectedControls.count = 0 then
+    begin
+      ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
+      Exit;
+    end;
+
+    //AControlClass.
+    PreviousComponent:=ELDesigner1.SelectedControls[0];
+    if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+    begin
+      PreviousComponent:=ELDesigner1.SelectedControls[0].Parent;
+      Exit;
+    end;
+
+    if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+    begin
+      ShowErrorAndReset('Please select the Toolbar FIRST and then drop this control into the Toolbar.');
+      Exit;
+    end;
+  end;
 end;
 
 procedure TMainForm.ELDesigner1KeyDown(Sender: TObject; var Key: Word;
