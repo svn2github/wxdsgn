@@ -46,9 +46,6 @@ type
     eMailSite: TLabel;
     btnAuthors: TBitBtn;
     btnUpdateCheck: TBitBtn;
-    Timer1: TTimer;
-    Fish: TPanel;
-    FishImage: TImage;
     banner: TImage;
     XPMenu: TXPMenu;
     wxdevcopyright: TLabel;
@@ -58,11 +55,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnAuthorsClick(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);
-    procedure btnAuthorsDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure btnAuthorsDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure Timer1Timer(Sender: TObject);
-    procedure FishImageClick(Sender: TObject);
   private
     procedure LoadText;
   end;
@@ -112,16 +104,16 @@ end;
 procedure TAboutForm.btnAuthorsClick(Sender: TObject);
 const MessageText =
     'Authors:'#13#10#13#10 +
-    {$IFDEF WX_BUILD}
-    '- wxDevC++ Development: Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'#13#10 +
-    {$ENDIF}
-    '- DevC++ Development: Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'#13#10 +
-    '- DevC++ Contributors: Peter Schraut, Marek Januszewski'#13#10 +
-    '- Mingw compiler system: Mumit Khan, J.J. Var Der Heidjen, Colin Hendrix and GNU developers'#13#10 +
-    '- Splash screen and association icons: Matthijs Crielaard: '#13#10 +
+{$IFDEF WX_BUILD}
+    '- wxDev-C++ Development: Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'#13#10 +
+{$ENDIF}
+    '- Dev-Cpp Development: Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'#13#10 +
+    '- Dev-Cpp Contributors: Peter Schraut, Marek Januszewski'#13#10 +
+    '- MingW compiler system: Mumit Khan, J.J. Var Der Heidjen, Colin Hendrix and GNU developers'#13#10 +
+    '- Splash screen and association icons: Matthijs Crielaard'#13#10 +
     '- New Look theme: Gerard Caulfield'#13#10 +
     '- Gnome icons: Gnome designers'#13#10 +
-    '- Blue theme: Thomas Thron'#13#10;
+    '- Blue theme: Thomas Thron';
 begin
   MessageBeep($F);
   MessageDlg(MessageText, MtInformation, [MbOK], 0);
@@ -131,39 +123,6 @@ procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
 begin
   //CheckUpdate(Self); old check for update
   MainForm.actUpdateCheckExecute(sender);
-end;
-
-procedure TAboutForm.btnAuthorsDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-  Accept := True;
-end;
-
-procedure TAboutForm.btnAuthorsDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-begin
-  Fish.Left := 0 - Fish.Width;
-  Fish.Top := Random(Height - Fish.Height - (Fish.Height div 3));
-  Fish.Tag := 0;
-  Timer1.Enabled := True;
-end;
-
-procedure TAboutForm.Timer1Timer(Sender: TObject);
-begin
-  if ((Fish.Tag = 0) and (Fish.Left > Width + 10)) or
-    ((Fish.Tag <> 1) and (Fish.Left < 0 - Fish.Width - 10)) then
-    Timer1.Enabled := False;
-
-  if Fish.Tag = 0 then
-    Fish.Left := Fish.Left + 5
-  else
-    Fish.Left := Fish.Left - 5;
-  Fish.Top := Fish.Top + 1;
-end;
-
-procedure TAboutForm.FishImageClick(Sender: TObject);
-begin
-  Fish.Tag := not Fish.Tag;
 end;
 
 end.
