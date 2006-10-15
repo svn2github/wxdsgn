@@ -477,10 +477,8 @@ begin
   fFolders := TStringList.Create;
   fFolders.Duplicates := dupIgnore;
   fFolders.Sorted := True;
-  { begin XXXKF }
   fFolderNodes := TObjectList.Create;
   fFolderNodes.OwnsObjects := false;
-  { end XXXKF }
   fProfiles:=TProjectProfileList.Create;
   fUnits := TUnitList.Create;
   fFileName := nFileName;
@@ -526,7 +524,6 @@ begin
   MainForm.ProjectView.FullExpand;
 end;
 
-{ begin XXXKF changed }
 function TProject.MakeNewFileNode(s: string; IsFolder: boolean; NewParent: TTreeNode): TTreeNode;
 begin
   MakeNewFileNode := MainForm.ProjectView.Items.AddChild(NewParent, s);
@@ -539,14 +536,7 @@ begin
     MakeNewFileNode.SelectedIndex := 1;
     MakeNewFileNode.ImageIndex := 1;
   end;
-
-  {
-    KF: in my opinion, such a blanket expand is a bit too much for large prjs
-    MainForm.ProjectView.FullExpand;
-    moved to RebuildTreeNodes now
-    }
 end;
-{ end XXXKF changed }
 
 procedure TProject.BuildPrivateResource(ForceSave: boolean = False);
 var
@@ -791,11 +781,9 @@ end;
 
 function TProject.NewUnit(NewProject : boolean; CustomFileName: String): integer;
 var
-  newunit: TProjUnit;
   s: string;
-  { begin XXXKF changed }
+  newunit: TProjUnit;
   ParentNode, CurNode: TTreeNode;
-  { end XXXKF changed }
 begin
   NewUnit := TProjUnit.Create(Self);
   ParentNode := Node;
@@ -830,7 +818,7 @@ begin
         Link := false;
     end
     else
- {$ENDIF}
+{$ENDIF}
     begin
         Compile := True;
     	CompileCpp:=Self.Profiles.useGPP;
@@ -846,7 +834,6 @@ begin
   end;
 end;
 
-{ begin XXXKF changed }
 function TProject.AddUnit(s: string; pFolder: TTreeNode; Rebuild: Boolean): TProjUnit;
 var
   NewUnit: TProjUnit;
@@ -913,7 +900,6 @@ begin
     NewUnit.Free;
   end;
 end;
-{ end XXXKF changed }
 
 procedure TProject.Update;
 begin
@@ -933,23 +919,19 @@ begin
       fProfiles.UseGpp := Read('IsCpp', true);
 
 {$IFDEF WX_BUILD}
-
-    // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
-
-      fProfiles[0].Compiler := StringReplace(Read(C_INI_LABEL, ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fProfiles[0].CppCompiler := StringReplace(Read(CPP_INI_LABEL, ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fProfiles[0].Linker := StringReplace(Read(LINKER_INI_LABEL, ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
+      fProfiles[0].Compiler := StringReplace(Read(C_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].CppCompiler := StringReplace(Read(CPP_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].Linker := StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
       fProfiles[0].PreprocDefines := Read(PREPROC_INI_LABEL, '');
 
-      fProfiles[0].ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fProfiles[0].Libs.DelimitedText := StringReplace(Read('Libs', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fProfiles[0].Includes.DelimitedText := StringReplace(Read('Includes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].Libs.DelimitedText := StringReplace(Read('Libs', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].Includes.DelimitedText := StringReplace(Read('Includes', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
-      fProfiles[0].PrivateResource := StringReplace(Read('PrivateResource', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fProfiles[0].ResourceIncludes.DelimitedText :=StringReplace(Read('ResourceIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-      fProfiles[0].MakeIncludes.DelimitedText :=StringReplace(Read('MakeIncludes', ''),'%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-
-
+      fProfiles[0].PrivateResource := StringReplace(Read('PrivateResource', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].ResourceIncludes.DelimitedText :=StringReplace(Read('ResourceIncludes', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
+      fProfiles[0].MakeIncludes.DelimitedText :=StringReplace(Read('MakeIncludes', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 {$ELSE}
       fProfiles[0].Compiler := Read('Compiler', '');
       fProfiles[0].CppCompiler := Read('CppCompiler', '');
@@ -962,8 +944,8 @@ begin
       fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
       fProfiles[0].MakeIncludes.DelimitedText := Read('MakeIncludes', '');
 {$ENDIF}
-      fProfiles[0].ExeOutput := Read('ExeOutput', 'GCC');
-      fProfiles[0].ObjectOutput := Read('ObjectOutput', 'GCC');
+      fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
+      fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
 
       if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
         fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
@@ -984,7 +966,6 @@ begin
       fProfiles[0].IncludeVersionInfo := Read('IncludeVersionInfo', False);
       fProfiles[0].SupportXPThemes := Read('SupportXPThemes', False);
       fProfiles[0].CompilerSet := Read('CompilerSet', devCompiler.CompilerSet);
-
       fProfiles[0].CompilerOptions := Read(COMPILER_INI_LABEL, devCompiler.OptionStr);
 
       devCompiler.OptionStr := devCompiler.OptionStr;
@@ -1021,8 +1002,7 @@ begin
       else
         fProfiles[0].VersionInfo.AutoIncBuildNrOnCompile := Read('AutoIncBuildNr', False);
     end
-    else
-    if (Profiles.Ver = -1) then
+    else if (Profiles.Ver = -1) then
     begin // dev-c < 4
       SetModified(TRUE);
       if not Read('NoConsole', TRUE) then
@@ -1039,8 +1019,8 @@ begin
       fProfiles[0].Includes.Add(Read('IncludeDirs', ''));
       fProfiles[0].Compiler := Read('CompilerOptions', '');
       fProfiles.usegpp := Read('Use_GPP', FALSE);
-      fProfiles[0].ExeOutput := Read('ExeOutput', 'GCC');
-      fProfiles[0].ObjectOutput := Read('ObjectOutput', 'GCC');
+      fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
+      fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
 
       if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
         fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
@@ -1126,7 +1106,7 @@ begin
     end;
     if fPrevVersion <= 2 then
     begin
-        Section := 'Project';
+      Section := 'Project';
       //delete outdated dev4 project options
       DeleteKey('NoConsole');
       DeleteKey('IsDLL');
@@ -1237,7 +1217,7 @@ begin
       end;
 {$WARN SYMBOL_PLATFORM ON}
 
-      if (not rd_only) and (not fUnits[idx].Save) and New then
+      if (not rd_only) and (fUnits[idx] <> nil) and (not fUnits[idx].Save) and New then
         Exit;
 
       // saved new file or an existing file add to project file
@@ -1263,8 +1243,6 @@ begin
   finifile.Write('UnitCount', Count);
   Result := True;
 end;
-
-{ begin XXXKF }
 
 function TProject.FolderNodeFromName(name: string): TTreeNode;
 var
@@ -1321,10 +1299,6 @@ begin
   for idx := 0 to pred(fUnits.Count) do
     fUnits[idx].Node.Data := pointer(idx);
 end;
-
-{ end XXXKF }
-
-{ begin XXXKF changed }
 
 // open is used to determine if layout info is present in the file.
 // if it is present the users AutoOpen settings are ignored,
@@ -1403,7 +1377,6 @@ begin
   devCompilerSet.AssignToCompiler();
 end;
 
-{ end XXXKF changed }
 procedure TProject.LoadProfiles;
 var
     i,profilecount:Integer;
@@ -1421,12 +1394,12 @@ begin
   end;
 
 
-  if profilecount <=0 then
+  if profilecount <= 0 then
   begin
     CurrentProfileIndex:=0;
     Profiles.Ver:=fPrevVersion;
     NewProfile:=TProjProfile.Create;
-    NewProfile.ProfileName:= 'GCC';
+    NewProfile.ProfileName:= devCompiler.Name;
     NewProfile.typ:= 0;
     NewProfile.compilerType:= ID_COMPILER_MINGW;
     NewProfile.Compiler:= '';
@@ -1439,8 +1412,8 @@ begin
     NewProfile.ResourceIncludes.DelimitedText:='';
     NewProfile.MakeIncludes.DelimitedText:='';
     NewProfile.Icon:= '';
-    NewProfile.ExeOutput := 'GCC';
-    NewProfile.ObjectOutput := 'GCC';
+    NewProfile.ExeOutput := NewProfile.ProfileName;
+    NewProfile.ObjectOutput := NewProfile.ProfileName;
     NewProfile.OverrideOutput := false;
     NewProfile.OverridenOutput := '';
     NewProfile.HostApplication := '';
@@ -1637,10 +1610,6 @@ begin
       except
       end;
     end;
-
-    {   ** not good !!** if fModified then
-         finiFile.UpdateFile; }
-
   finally
     layIni.Free;
   end;
@@ -1789,7 +1758,6 @@ begin
   end;
 end;
 
-{ begin XXXKF changed, doesn't help much though :-( }
 procedure TProject.CloseUnit(index: integer);
 begin
   if (index < 0) or (index > pred(fUnits.Count)) then exit;
@@ -1803,7 +1771,6 @@ begin
     end;
   end;
 end;
-{ end XXXKF changed }
 
 procedure TProject.SaveUnitAs(i: integer; sFileName: string);
 begin
@@ -1962,8 +1929,8 @@ begin
     exit;
   end;
   Result:=fProfiles[fCurrentProfileIndex];
-//
 end;
+
 procedure TProject.SetCurrentProfile(Value:TProjProfile);
 begin
   if (fCurrentProfileIndex < 0) or (fCurrentProfileIndex > fProfiles.count-1) then
