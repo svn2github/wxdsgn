@@ -93,7 +93,7 @@ type
     CustomMakefile: string;
 
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
     procedure CopyProfileFrom(R1: TProjProfile);
   end;
 
