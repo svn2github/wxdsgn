@@ -4,7 +4,7 @@ object frmProjectOptions: TfrmProjectOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Options'
-  ClientHeight = 426
+  ClientHeight = 375
   ClientWidth = 552
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,8 +20,8 @@ object frmProjectOptions: TfrmProjectOptions
   PixelsPerInch = 96
   TextHeight = 13
   object btnAddProfileSet: TSpeedButton
-    Left = 381
-    Top = 18
+    Left = 450
+    Top = 8
     Width = 22
     Height = 22
     Hint = 'Adds  a new profile set'
@@ -43,8 +43,8 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnAddProfileSetClick
   end
   object btnDelProfileSet: TSpeedButton
-    Left = 405
-    Top = 18
+    Left = 473
+    Top = 8
     Width = 22
     Height = 22
     Hint = 'Deletes the selected profile set'
@@ -82,8 +82,8 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnDelProfileSetClick
   end
   object btnRenameProfileSet: TSpeedButton
-    Left = 429
-    Top = 18
+    Left = 496
+    Top = 8
     Width = 22
     Height = 22
     Hint = 'Renames the selected profile set'
@@ -114,15 +114,15 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnRenameProfileSetClick
   end
   object Label2: TLabel
-    Left = 14
-    Top = 22
+    Left = 10
+    Top = 11
     Width = 71
     Height = 13
     Caption = 'Project Profile :'
   end
   object btnCopyProfileSet: TSpeedButton
-    Left = 453
-    Top = 18
+    Left = 520
+    Top = 8
     Width = 22
     Height = 22
     Hint = 'Copy and Create the selected profile set'
@@ -157,7 +157,7 @@ object frmProjectOptions: TfrmProjectOptions
   end
   object btnOk: TBitBtn
     Left = 262
-    Top = 395
+    Top = 344
     Width = 93
     Height = 24
     Caption = '&OK'
@@ -186,7 +186,7 @@ object frmProjectOptions: TfrmProjectOptions
   end
   object btnCancel: TBitBtn
     Left = 355
-    Top = 395
+    Top = 344
     Width = 93
     Height = 24
     Caption = '&Cancel'
@@ -196,7 +196,7 @@ object frmProjectOptions: TfrmProjectOptions
   end
   object btnHelp: TBitBtn
     Left = 467
-    Top = 395
+    Top = 344
     Width = 77
     Height = 24
     TabOrder = 2
@@ -205,11 +205,10 @@ object frmProjectOptions: TfrmProjectOptions
   end
   object PageControl: TPageControl
     Left = 7
-    Top = 48
+    Top = 35
     Width = 537
-    Height = 337
-    ActivePage = tabGeneral
-    TabIndex = 0
+    Height = 305
+    ActivePage = tabCompiler
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -456,7 +455,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 242
         Top = 4
         Width = 280
-        Height = 221
+        Height = 187
         Caption = 'Unit Options'
         TabOrder = 0
         object lblPriority: TLabel
@@ -499,7 +498,7 @@ object frmProjectOptions: TfrmProjectOptions
           Left = 26
           Top = 112
           Width = 240
-          Height = 97
+          Height = 63
           Lines.Strings = (
             'txtOverrideBuildCmd')
           ScrollBars = ssBoth
@@ -530,7 +529,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object grpPch: TRadioGroup
         Left = 242
-        Top = 225
+        Top = 195
         Width = 280
         Height = 70
         Caption = 'Precompiled Headers'
@@ -546,7 +545,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 6
         Top = 7
         Width = 225
-        Height = 290
+        Height = 260
         HideSelection = False
         Indent = 19
         MultiSelect = True
@@ -560,7 +559,7 @@ object frmProjectOptions: TfrmProjectOptions
       Caption = 'Compiler'
       DesignSize = (
         529
-        309)
+        277)
       object lblCompilerSet: TLabel
         Left = 7
         Top = 31
@@ -592,21 +591,21 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 9
         Top = 60
         Width = 513
-        Height = 242
+        Height = 210
         Anchors = [akLeft, akTop, akRight, akBottom]
         TabOrder = 0
         inherited Splitter1: TSplitter
           Left = 140
-          Height = 242
+          Height = 210
         end
         inherited tv: TTreeView
           Width = 140
-          Height = 242
+          Height = 210
         end
         inherited vle: TValueListEditor
           Left = 145
           Width = 368
-          Height = 241
+          Height = 210
           Align = alNone
           RowHeights = (
             18)
@@ -654,7 +653,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object lbldefines: TLabel
         Left = 8
-        Top = 190
+        Top = 160
         Width = 117
         Height = 13
         Caption = 'Preprocessor Definitions:'
@@ -664,7 +663,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 24
         Width = 156
-        Height = 161
+        Height = 130
         Lines.Strings = (
           'edCompiler')
         ScrollBars = ssBoth
@@ -674,7 +673,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 186
         Top = 24
         Width = 156
-        Height = 161
+        Height = 130
         Lines.Strings = (
           'edCppCompiler')
         ScrollBars = ssBoth
@@ -684,7 +683,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 353
         Top = 24
         Width = 164
-        Height = 241
+        Height = 210
         Lines.Strings = (
           'edLinker')
         ScrollBars = ssBoth
@@ -692,7 +691,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object AddLibBtn: TBitBtn
         Left = 354
-        Top = 271
+        Top = 242
         Width = 164
         Height = 25
         Caption = 'Add Library or Object'
@@ -728,7 +727,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object edDefines: TMemo
         Left = 8
-        Top = 207
+        Top = 177
         Width = 335
         Height = 90
         Lines.Strings = (
@@ -741,7 +740,7 @@ object frmProjectOptions: TfrmProjectOptions
       Caption = 'Directories'
       object btnUp: TSpeedButton
         Left = 500
-        Top = 100
+        Top = 96
         Width = 23
         Height = 22
         Enabled = False
@@ -843,7 +842,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object btnBrowse: TSpeedButton
         Left = 500
-        Top = 250
+        Top = 220
         Width = 23
         Height = 22
         Glyph.Data = {
@@ -892,7 +891,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 28
         Width = 480
-        Height = 213
+        Height = 185
         ItemHeight = 13
         TabOrder = 1
         OnClick = ListClick
@@ -900,7 +899,7 @@ object frmProjectOptions: TfrmProjectOptions
       object btnAdd: TButton
         Tag = 2
         Left = 162
-        Top = 280
+        Top = 250
         Width = 75
         Height = 23
         Caption = '&Add'
@@ -911,7 +910,7 @@ object frmProjectOptions: TfrmProjectOptions
       object btnDelete: TButton
         Tag = 3
         Left = 244
-        Top = 280
+        Top = 250
         Width = 75
         Height = 23
         Caption = '&Delete'
@@ -922,7 +921,7 @@ object frmProjectOptions: TfrmProjectOptions
       object btnReplace: TButton
         Tag = 1
         Left = 81
-        Top = 280
+        Top = 250
         Width = 75
         Height = 23
         Caption = '&Replace'
@@ -932,7 +931,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object edEntry: TEdit
         Left = 8
-        Top = 251
+        Top = 220
         Width = 480
         Height = 21
         TabOrder = 5
@@ -941,7 +940,7 @@ object frmProjectOptions: TfrmProjectOptions
       object btnDelInval: TButton
         Tag = 4
         Left = 326
-        Top = 280
+        Top = 250
         Width = 81
         Height = 23
         Caption = 'Delete Invalid'
@@ -1134,28 +1133,29 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 55
         Width = 198
-        Height = 242
+        Height = 210
         Caption = 'Customizing the Makefile'
         TabOrder = 2
         object lblMakefileCustomize: TLabel
           Left = 8
           Top = 17
-          Width = 180
-          Height = 216
+          Width = 183
+          Height = 185
           AutoSize = False
           Caption = 'lblMakefileCustomize'
           Transparent = True
+          WordWrap = True
         end
       end
       object grpIncMake: TGroupBox
-        Left = 210
+        Left = 215
         Top = 55
-        Width = 310
-        Height = 242
+        Width = 305
+        Height = 210
         Caption = 'Include the following files into the Makefile'
         TabOrder = 3
         object btnMakDown: TSpeedButton
-          Left = 280
+          Left = 275
           Top = 83
           Width = 23
           Height = 22
@@ -1206,8 +1206,8 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = btnMakClick
         end
         object btnMakUp: TSpeedButton
-          Left = 280
-          Top = 59
+          Left = 275
+          Top = 60
           Width = 23
           Height = 22
           Enabled = False
@@ -1257,8 +1257,8 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = btnMakClick
         end
         object btnMakeBrowse: TSpeedButton
-          Left = 280
-          Top = 182
+          Left = 275
+          Top = 154
           Width = 23
           Height = 22
           Glyph.Data = {
@@ -1293,8 +1293,8 @@ object frmProjectOptions: TfrmProjectOptions
         object MakeIncludes: TListBox
           Left = 8
           Top = 17
-          Width = 265
-          Height = 160
+          Width = 260
+          Height = 130
           ItemHeight = 13
           TabOrder = 0
           OnClick = MakeIncludesClick
@@ -1302,16 +1302,16 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object edMakeInclude: TEdit
           Left = 8
-          Top = 183
-          Width = 265
+          Top = 155
+          Width = 260
           Height = 21
           TabOrder = 1
           OnChange = edMakeIncludeChange
         end
         object btnMakDelInval: TButton
           Tag = 4
-          Left = 229
-          Top = 210
+          Left = 224
+          Top = 184
           Width = 75
           Height = 23
           Caption = 'Delete Invalid'
@@ -1321,8 +1321,8 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object btnMakDelete: TButton
           Tag = 3
-          Left = 156
-          Top = 210
+          Left = 152
+          Top = 184
           Width = 70
           Height = 23
           Caption = '&Delete'
@@ -1332,8 +1332,8 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object btnMakAdd: TButton
           Tag = 2
-          Left = 83
-          Top = 210
+          Left = 80
+          Top = 184
           Width = 70
           Height = 23
           Caption = '&Add'
@@ -1344,7 +1344,7 @@ object frmProjectOptions: TfrmProjectOptions
         object btnMakReplace: TButton
           Tag = 1
           Left = 8
-          Top = 210
+          Top = 184
           Width = 70
           Height = 23
           Caption = '&Replace'
@@ -1466,14 +1466,14 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 250
         Top = 30
         Width = 270
-        Height = 267
+        Height = 235
         Caption = 'Additional info:'
         TabOrder = 2
         object vleVersion: TValueListEditor
           Left = 9
           Top = 21
           Width = 250
-          Height = 236
+          Height = 205
           DefaultColWidth = 90
           DisplayOptions = [doAutoColResize, doKeyColFixed]
           FixedCols = 1
@@ -1488,7 +1488,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object grpAutoInc: TGroupBox
         Left = 8
-        Top = 222
+        Top = 190
         Width = 235
         Height = 75
         Caption = 'Build number increment'
@@ -1523,9 +1523,9 @@ object frmProjectOptions: TfrmProjectOptions
     end
   end
   object cmbProfileSetComp: TComboBox
-    Left = 90
-    Top = 19
-    Width = 281
+    Left = 86
+    Top = 8
+    Width = 360
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
@@ -1543,19 +1543,19 @@ object frmProjectOptions: TfrmProjectOptions
     Options = [ofHideReadOnly, ofAllowMultiSelect]
     Title = 'Open object file'
     Left = 35
-    Top = 392
+    Top = 343
   end
   object dlgPic: TOpenPictureDialog
     DefaultExt = 'ico'
     Filter = 'Icons (*.ico)|*.ico'
     Title = 'Open icon'
     Left = 8
-    Top = 392
+    Top = 343
   end
   object dlgMakeInclude: TOpenDialog
     Filter = 'Makefile Addons (*.mak)|*.mak|All Files (*.*)|*.*'
     Left = 63
-    Top = 392
+    Top = 343
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -1586,7 +1586,7 @@ object frmProjectOptions: TfrmProjectOptions
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 147
-    Top = 392
+    Top = 343
   end
   object OpenLibDialog: TOpenDialog
     Filter = 
@@ -1594,12 +1594,12 @@ object frmProjectOptions: TfrmProjectOptions
       'iles (*.*)|*.*'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Left = 91
-    Top = 392
+    Top = 343
   end
   object dlgCustomMake: TOpenDialog
     Filter = 'All Files (*.*)|*.*'
     FilterIndex = 0
     Left = 119
-    Top = 392
+    Top = 343
   end
 end
