@@ -957,6 +957,7 @@ begin
       if Profiles.Ver < 3 then
       begin
         SetModified(TRUE);
+        Section := 'Project';
         fProfiles[0].typ := Read('type', 0);
         fProfiles.UseGpp := Read('IsCpp', true);
 
@@ -988,11 +989,10 @@ begin
 {$ENDIF}
         fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
         fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
-
         if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
           fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
         else if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
-            fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput;
+          fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput;
 
         fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
         fProfiles[0].OverridenOutput := Read('OverrideOutputName', '');
@@ -1050,7 +1050,7 @@ end;
 
 procedure TProject.UpdateFile;
 var
-  i:Integer;
+  i: Integer;
 begin
   with finifile do
   begin
@@ -1065,7 +1065,7 @@ begin
     Write('ProfileIndex', CurrentProfileIndex);
     Write('Folders', fFolders.CommaText);
 
-    for i := 0 to fProfiles.Count-1 do
+    for i := 0 to fProfiles.Count - 1 do
     begin    
       WriteProfile(i,'ProfileName', fProfiles[i].ProfileName);
       WriteProfile(i,'Type', fProfiles[i].typ);
@@ -1126,7 +1126,6 @@ begin
       DeleteKey('IncludeVersionInfo');
       DeleteKey('SupportXPThemes');
       DeleteKey('CompilerSet');
-      DeleteKey('CompilerSettings');
       DeleteKey('ExeOutput');
       DeleteKey('ObjectOutput');
       DeleteKey('OverrideOutput');
@@ -1407,14 +1406,12 @@ begin
     NewProfile.SupportXPThemes:= finifile.ReadProfile(i,'SupportXPThemes',false);
     NewProfile.compilerType:= finifile.ReadProfile(i,'CompilerType',0);
     NewProfile.CompilerSet := finifile.ReadProfile(i,'CompilerSet',0);
-    if (NewProfile.CompilerSet > devCompilerSet.Sets.Count-1) then
-    begin
+    if NewProfile.CompilerSet > devCompilerSet.Sets.Count - 1 then
       //TODO: Guru: Log to String and Show at the end;
       NewProfile.compilerType:=GetClosestMatchingCompilerSet(NewProfile.compilerType);
-    end;
 
-    NewProfile.CompilerOptions := finifile.ReadProfile(i,'CompilerOptions','');
-    NewProfile.PreprocDefines:= finifile.ReadProfile(i,'PreprocDefines','');
+    NewProfile.CompilerOptions := finifile.ReadProfile(i, COMPILER_INI_LABEL, '');
+    NewProfile.PreprocDefines:= finifile.ReadProfile(i, 'PreprocDefines', '');
     fProfiles.Add(NewProfile);
   end;
 end;
