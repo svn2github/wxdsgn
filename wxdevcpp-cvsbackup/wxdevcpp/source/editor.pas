@@ -559,7 +559,7 @@ begin
   if assigned(fTabSheet) then
   begin
     //Broadcast the page change event
-    //fTabSheet.PageControl.OnChanging(fTabSheet.PageControl, Allow);
+    fTabSheet.PageControl.OnChanging(fTabSheet.PageControl, Allow);
 
     //Then do the actual changing
     fTabSheet.PageControl.Show;
@@ -567,27 +567,9 @@ begin
     if fText.Visible then
       fText.SetFocus;
 
-{$IFDEF WX_BUILD}
-    if isForm then
-    begin
-      //TODO: lowjoel: Must we really disable and re-enable the designer?
-      {try
-        MainForm.ELDesigner1.Active:=false;
-        MainForm.ELDesigner1.DesignControl:=fDesigner;
-      except
-      end;}
-      MainForm.EnableDesignerControls;
-      fDesigner.OnResize:=fDesigner.NewFormResize;
-    end
-    else
-      MainForm.DisableDesignerControls;
-{$ENDIF}
-
+    //Call the post-change event handler
     if MainForm.ClassBrowser1.Enabled {$IFDEF WX_BUILD} or isForm {$ENDIF} then
-    begin
-      MainForm.PageControl.OnChanging(MainForm.PageControl, allow);
       MainForm.PageControl.OnChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent
-    end;
   end;
 end;
 
@@ -698,10 +680,9 @@ begin
   fText.OnKeyPress := nil;
 
 {$IFDEF WX_BUILD}
+  //Disable all the form designer features since we no longer exist
   if isForm then
-  begin
     MainForm.DisableDesignerControls;
-  end;
 {$ENDIF}
   try
     Free;
@@ -933,17 +914,21 @@ var
   var
     FillingParameter: Boolean;
     Brackets: Integer;
-    I,TxtLength: Integer;
+    I: Integer;
   begin
     //Give the current selection index, we need to find the start of the function
     FillingParameter := False;
     I := FText.SelStart;
     Brackets := -1;
     Result := -1;
-    TxtLength := length(FText.Text);
-    while (I > 0) do
+    
+    //Make sure the offset is valid
+    if I > Length(FText.Text) then
+      Exit;
+    
+    while I > 0 do
     begin
-      if (I < 0) or (I >= TxtLength) then
+      if (I < 0) then
         break;
       case FText.Text[I] of
         ')':
@@ -966,8 +951,9 @@ var
               Dec(I); //Previous character is whitespace, skip it
 
             //Is the character a comma or an opening parenthesis?
-            if not (FText.Text[I - 1] in [',', '(']) then
-              Exit;
+            if I > 2 then
+              if not (FText.Text[I - 1] in [',', '(']) then
+                Exit;
           end;
         '{', '}':
           Exit;
@@ -2212,10 +2198,14 @@ begin
   end;
 {$ELSE}
 begin
-  Assert(FCodeToolTip <> nil);
-  FCodeToolTip.Select(AStatement._FullText);
-  FCodeToolTip.Enabled := True;
-  FCodeToolTip.Show;
+  try
+    Assert(FCodeToolTip <> nil);
+    FCodeToolTip.Select(AStatement._FullText);
+    FCodeToolTip.Enabled := True;
+    FCodeToolTip.Show;
+  except
+    ShowMessage(inttostr(integer(FCodeToolTip)) + '/' + inttostr(integer(@AStatement)));
+  end;
 {$ENDIF}
 
   //When we don't invalidate the SynEditor here, it occurs sometimes that
