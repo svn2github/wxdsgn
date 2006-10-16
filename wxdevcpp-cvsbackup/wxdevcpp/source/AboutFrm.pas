@@ -26,7 +26,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, XPMenu;
+  StdCtrls, Buttons, ExtCtrls, XPMenu, ComCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -36,24 +36,40 @@ uses
 type
   TAboutForm = class(TForm)
     btnOk: TBitBtn;
-    CopyrightLabel: TLabel;
-    GroupBox1: TGroupBox;
-    LicenseText: TMemo;
-    GroupBox2: TGroupBox;
-    LBForumLabel: TLabel;
-    LbForumSite: TLabel;
-    eMailLabel: TLabel;
-    eMailSite: TLabel;
-    btnAuthors: TBitBtn;
     btnUpdateCheck: TBitBtn;
     banner: TImage;
     XPMenu: TXPMenu;
+    Container: TPageControl;
+    Version: TTabSheet;
+    wxWebsite: TLabel;
+    ForumSite: TLabel;
+    wxdevcppWebsite: TLabel;
+    wxdevcppWebsiteLabel: TLabel;
+    ForumLabel: TLabel;
+    wxWebLabel: TLabel;
+    License: TTabSheet;
+    Authors: TTabSheet;
+    LicenseText: TMemo;
+    lblAuthors_wxDevCpp: TLabel;
+    Label2: TLabel;
+    lblAuthors_DevCpp: TLabel;
+    Label4: TLabel;
+    lblContributors: TLabel;
+    Label3: TLabel;
+    lblMingW: TLabel;
+    Label5: TLabel;
+    lblSplash: TLabel;
+    Label6: TLabel;
+    lblNewLook: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    lblGnome: TLabel;
+    Gnome: TLabel;
+    CopyrightLabel: TLabel;
     wxdevcopyright: TLabel;
-    wxdevcpp_websitelbl: TLabel;
-    wxdevcpp_website: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure btnAuthorsClick(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);
   private
     procedure LoadText;
@@ -77,13 +93,11 @@ begin
   else
     XPMenu.Active := false;
   Caption := Lang[ID_AB_CAPTION];
-  GroupBox1.Caption := Lang[ID_AB_LICENSE];
-  GroupBox2.Caption := Lang[ID_AB_WEBCAP];
-  //EMailLabel.Caption:=     Lang[ID_AB_LBLEMAIL];
-  //eMailSite.Caption:=      Lang[ID_AB_AUTHOR];
+  License.Caption := Lang[ID_AB_LICENSE];
+  Version.Caption := Lang[ID_AB_VERSCAP];
   btnOk.Caption := Lang[ID_BTN_OK];
   btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
-  btnAuthors.Caption := Lang[ID_BTN_AUTHOR];
+  Authors.Caption := Lang[ID_BTN_AUTHOR];
 end;
 
 procedure TAboutForm.LabelClick(Sender: TObject);
@@ -101,27 +115,8 @@ begin
   LoadText;
 end;
 
-procedure TAboutForm.btnAuthorsClick(Sender: TObject);
-const MessageText =
-    'Authors:'#13#10#13#10 +
-{$IFDEF WX_BUILD}
-    '- wxDev-C++ Development: Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'#13#10 +
-{$ENDIF}
-    '- Dev-Cpp Development: Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'#13#10 +
-    '- Dev-Cpp Contributors: Peter Schraut, Marek Januszewski'#13#10 +
-    '- MingW compiler system: Mumit Khan, J.J. Var Der Heidjen, Colin Hendrix and GNU developers'#13#10 +
-    '- Splash screen and association icons: Matthijs Crielaard'#13#10 +
-    '- New Look theme: Gerard Caulfield'#13#10 +
-    '- Gnome icons: Gnome designers'#13#10 +
-    '- Blue theme: Thomas Thron';
-begin
-  MessageBeep($F);
-  MessageDlg(MessageText, MtInformation, [MbOK], 0);
-end;
-
 procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
 begin
-  //CheckUpdate(Self); old check for update
   MainForm.actUpdateCheckExecute(sender);
 end;
 
