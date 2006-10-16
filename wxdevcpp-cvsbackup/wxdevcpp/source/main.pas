@@ -9830,118 +9830,71 @@ end;
 
 procedure TMainForm.BuildProperties(Comp: TControl;boolForce:Boolean);
 var
-  I,JK: Integer;
-    strValue:String;
-    strSelName,strCompName:String;
-    strInspSelectedItem:String;
+  I: Integer;
+  strValue:String;
+  strSelName,strCompName:String;
 begin
-
-if not boolForce then
-begin
- if  DisablePropertyBuilding = true then
-    exit;
-  if assigned(SelectedComponent) then
-    strSelName:=SelectedComponent.Name;
-
-  if JvInspProperties.Showing then
+  if not boolForce then
   begin
-    if JvInspProperties.Selected <> nil then
-      strInspSelectedItem:= JvInspProperties.Selected.DisplayName;
+    if DisablePropertyBuilding = true then
+      Exit;
+    if Assigned(SelectedComponent) then
+      strSelName := SelectedComponent.Name;
+    if Assigned(comp) then
+      strCompName := comp.Name;
+
+    PreviousStringValue := '';
+    if AnsiSameText(strSelName,strCompName) then
+    begin
+      SelectedComponent := Comp;
+      Exit;
+    end;
+
+    if FirstComponentBeingDeleted = Comp.Name then
+      Exit;
   end;
-
-  if assigned(comp) then
-    strCompName:=comp.Name;
-
-  PreviousStringValue := '';
-
-  if AnsiSameText(strSelName,strCompName) then
-  begin
-        SelectedComponent:=Comp;
-        Exit;
-  end;
-
-  if FirstComponentBeingDeleted = Comp.Name then
-    exit;
 
   if Comp = nil then
     Exit;
-
-//  if SelectedComponent = Comp then
-//    exit;
-end
-else
-begin
-  if Comp = nil then
-    Exit;
-end;
 
   SelectedComponent := Comp;
 
-    if JvInspProperties.Root <> nil then
-    begin
-        if JvInspProperties.Root.Data <> nil then
-        begin
-            try
-                strValue:=TWinControl(TJvInspectorPropData(JvInspProperties.Root.Data).Instance).Name;
-            except
-                strValue:='1*NoData';
-            end;
-        end;
-    end;
-
-  if strValue = '1*NoData' then
-    exit;
-
-  if JvInspProperties.Showing then
-  begin
-    for i:=0 to JvInspProperties.Root.Count -1 do
-    begin
-      if AnsiSameText(strInspSelectedItem,JvInspProperties.Root.Items[i].DisplayName) then
-        begin
-          JvInspProperties.FocusedItem:=JvInspProperties.Root.Items[i];
-          //JvInspProperties.Root.Items[i].InitEdit;
-          //JvInspProperties.TopIndex:=i;
-          //JvInspProperties.se
-          //Selected:= JvInspProperties.Root.Items[i];
-        end;
-    end;
-  end;
+  if JvInspProperties.Root <> nil then
+    if JvInspProperties.Root.Data <> nil then
+      try
+        strValue:=TWinControl(TJvInspectorPropData(JvInspProperties.Root.Data).Instance).Name;
+      except
+        Exit;
+      end;
 
   JvInspProperties.BeginUpdate;
-  JK:= JvInspProperties.Root.Count - 1;
   try
-    for I := JK  downto 0 do    // Iterate
-    begin
-        try
+    for I := JvInspProperties.Root.Count - 1 downto 0 do    // Iterate
+      try
         JvInspProperties.Root.Delete(I);
-        except
-        end;
-    end;    // for
+      except
+      end;
     TJvInspectorPropData.New(JvInspProperties.Root, Comp);
+    JvInspProperties.EndUpdate;
   except
   end;
-  JvInspProperties.EndUpdate;
 
   JvInspEvents.BeginUpdate;
-  JK := JvInspEvents.Root.Count - 1;
   try
-    for I := JK downto 0 do    // Iterate
+    for I := JvInspEvents.Root.Count - 1 downto 0 do    // Iterate
     begin
-        try
+      try
         JvInspEvents.Root.Delete(I);
-        except
-        end;
+      except
+      end;
     end;    // for
     JvInspEvents.Root.Clear;
     TJvInspectorPropData.New(JvInspEvents.Root, Comp);
   except
   end;
   JvInspEvents.EndUpdate;
-  
 end;
-{$ENDIF}
 
-{$IFDEF WX_BUILD}
 procedure TMainForm.BuildComponentList(Designer: TfrmNewForm);
 var
   i: Integer;
