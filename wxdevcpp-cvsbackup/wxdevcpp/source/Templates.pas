@@ -183,7 +183,6 @@ begin
          fOptions[0].icon:= ReadString(cTemplate, 'Icon', '');
          ProjectIcon:= ReadString(cProject, 'ProjectIcon', '');
          fOptions[0].typ:= ReadInteger(cProject, 'Type', 0); // default = gui
-         //fOptions.Objfiles.DelimitedText := ReadString(cProject, 'ObjFiles', '');
          fOptions[0].Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
          fOptions[0].Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
 
@@ -191,8 +190,8 @@ begin
          // Tony Reina 11 June 2005
          // This is needed to grab the MakeIncludes from the template file of a new project
          fOptions[0].MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
-
 {$ENDIF}
+
          fOptions[0].ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
          fOptions[0].Compiler:= ReadString(cProject, 'Compiler', '');
          fOptions[0].CppCompiler:= ReadString(cProject, 'CppCompiler', '');

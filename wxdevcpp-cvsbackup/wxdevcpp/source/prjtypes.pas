@@ -145,6 +145,25 @@ begin
   CompilerSet := 0;
   CompilerOptions := devCompiler.OptionStr;
   IncludeVersionInfo := False;
+
+  typ:= 0;
+  compilerType:= ID_COMPILER_MINGW;
+  Compiler:= '';
+  CppCompiler:= '';
+  Linker:= '';
+  ObjFiles.DelimitedText:='';
+  Includes.DelimitedText:='';
+  Libs.DelimitedText:='';
+  PrivateResource:= '';
+  ResourceIncludes.DelimitedText:='';
+  MakeIncludes.DelimitedText:='';
+  Icon:= '';
+  OverrideOutput := false;
+  OverridenOutput := '';
+  HostApplication := '';
+  IncludeVersionInfo := false;
+  SupportXPThemes:= false;
+  PreprocDefines:= '';
 end;
 
 destructor TProjProfile.Destroy;
@@ -221,7 +240,7 @@ var
 begin
   for i:= Count -1 downto 0 do
   begin
-    //fixme: check for MemLeak here
+    ///TODO: Guru: check for a memory leak
     //if self[i] <> nil then
     //  self[i].Destroy;
     Remove(i);

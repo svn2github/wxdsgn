@@ -166,7 +166,7 @@ function GetClosestMatchingCompilerSet(CompilerType:Integer):Integer;
 var
   i:Integer;
 begin
-  //fixme: Not sure how to navigate the CompilerSet to check for the Compiler Type;
+  //TODO: Guru: How do we navigate the CompilerSet to check for the Compiler Type?
   Result:=0;
 
   for i:=0 to devCompilerSet.Sets.Count-1 do

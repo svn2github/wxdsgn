@@ -10610,13 +10610,15 @@ begin
     e:=GetEditorFromFileName(strFname);
     if assigned(e) then
     begin
-        //Fixme: check for valiud line num here
-        e.Text.CaretX:=0;
-        e.Text.CaretX:=intLineNum;
-        OpenFile(e.GetDesignerCPPFileName);
+      //TODO: check for a valid line number
+      e.Text.CaretX:=0;
+      e.Text.CaretX:=intLineNum;
+      OpenFile(e.GetDesignerCPPFileName);
     end;
     boolInspectorDataClear:=False;
   end;
+
+  //TODO: lowjoel: Unreachable code?
   exit;
 
   boolInspectorDataClear:=False;

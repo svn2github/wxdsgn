@@ -115,7 +115,7 @@ var
 begin
   if (devCompiler.gprofName <> '') then
     Cmd := devCompiler.gprofName
-  else //fixme: MC fix
+  else
     Cmd := PROF_PROGRAM(0);
   if Assigned(MainForm.fProject) then begin
     Dir := ExtractFilePath(MainForm.fProject.Executable);
@@ -184,7 +184,7 @@ var
 begin
   if (devCompiler.gprofName <> '') then
     Cmd := devCompiler.gprofName
-  else //fixme: MC fix
+  else
     Cmd := PROF_PROGRAM(0);
 
   if Assigned(MainForm.fProject) then begin

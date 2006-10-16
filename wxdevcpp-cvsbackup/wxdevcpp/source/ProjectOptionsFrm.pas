@@ -1381,7 +1381,8 @@ begin
   S := 'New Profile';
   if not InputQuery('New Profile', 'Enter a new Profile', S) or (S='') then
     Exit;
-  //fixme: Fix the Output Directory to have only valid characters
+
+  //TODO: Guru: Fix the Output Directory to have only valid characters
   NewProfile:=TProjProfile.Create;
   NewProfile.ProfileName:=S;
   NewProfile.ObjectOutput:=S;
@@ -1427,7 +1428,8 @@ begin
   S := 'New Profile';
   if not InputQuery('Copy Profile', 'Enter a new Profile', S) or (S='') then
     Exit;
-  //fixme: Fix the Output Directory to have only valid characters
+  
+  //TODO: Guru: Fix the Output Directory to have only valid characters
   NewProfile:=TProjProfile.Create;
   NewProfile.CopyProfileFrom(CurrentProfile);
   NewProfile.ProfileName:=S;
