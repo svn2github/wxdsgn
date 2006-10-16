@@ -186,7 +186,7 @@ resourcestring
   VC_DBG_PROGRAM = 'cdb.exe';
   VC_RES_PROGRAM = 'rc.exe';
   VC_DLL_PROGRAM = 'link.exe';
-  VC_PROF_PROGRAM = '';
+  VC_PROF_PROGRAM = 'mt.exe';
 
 
   DMARS_MAKE_PROGRAM = 'mingw32-make.exe';
@@ -278,7 +278,7 @@ const
   WXFORM_EXT = '.wxform';
   XRC_EXT = '.xml';
 {$ENDIF}
-  PATH_LEN = 512;
+  PATH_LEN = 16384;
   CONFIG_PARAM = '-c';
 
   // file type arrays used in getfileex in utils
