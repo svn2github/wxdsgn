@@ -519,22 +519,22 @@ begin
 
     CurrentProfile.IncludeVersionInfo:=chkVersionInfo.Checked;
 
-    CurrentProfile.VersionInfo.Major                   :=spnMajor.Value;
-    CurrentProfile.VersionInfo.Minor                   :=spnMinor.Value;
-    CurrentProfile.VersionInfo.Release                 :=spnRelease.Value;
-    CurrentProfile.VersionInfo.Build                   :=spnBuild.Value;
-    CurrentProfile.VersionInfo.AutoIncBuildNrOnCompile :=radAutoIncBuildOnCompile.Checked;
-    CurrentProfile.VersionInfo.AutoIncBuildNrOnRebuild :=radAutoIncBuildOnRebuild.Checked;
+    Project.VersionInfo.Major                   :=spnMajor.Value;
+    Project.VersionInfo.Minor                   :=spnMinor.Value;
+    Project.VersionInfo.Release                 :=spnRelease.Value;
+    Project.VersionInfo.Build                   :=spnBuild.Value;
+    Project.VersionInfo.AutoIncBuildNrOnCompile :=radAutoIncBuildOnCompile.Checked;
+    Project.VersionInfo.AutoIncBuildNrOnRebuild :=radAutoIncBuildOnRebuild.Checked;
 
-    CurrentProfile.VersionInfo.FileDescription:=   vleVersion.Cells[1, 0];
-    CurrentProfile.VersionInfo.FileVersion:=       vleVersion.Cells[1, 1];
-    CurrentProfile.VersionInfo.ProductName:=       vleVersion.Cells[1, 2];
-    CurrentProfile.VersionInfo.ProductVersion:=    vleVersion.Cells[1, 3];
-    CurrentProfile.VersionInfo.OriginalFilename:=  vleVersion.Cells[1, 4];
-    CurrentProfile.VersionInfo.InternalName:=      vleVersion.Cells[1, 5];
-    CurrentProfile.VersionInfo.CompanyName:=       vleVersion.Cells[1, 6];
-    CurrentProfile.VersionInfo.LegalCopyright:=    vleVersion.Cells[1, 7];
-    CurrentProfile.VersionInfo.LegalTrademarks:=   vleVersion.Cells[1, 8];
+    Project.VersionInfo.FileDescription:=   vleVersion.Cells[1, 0];
+    Project.VersionInfo.FileVersion:=       vleVersion.Cells[1, 1];
+    Project.VersionInfo.ProductName:=       vleVersion.Cells[1, 2];
+    Project.VersionInfo.ProductVersion:=    vleVersion.Cells[1, 3];
+    Project.VersionInfo.OriginalFilename:=  vleVersion.Cells[1, 4];
+    Project.VersionInfo.InternalName:=      vleVersion.Cells[1, 5];
+    Project.VersionInfo.CompanyName:=       vleVersion.Cells[1, 6];
+    Project.VersionInfo.LegalCopyright:=    vleVersion.Cells[1, 7];
+    Project.VersionInfo.LegalTrademarks:=   vleVersion.Cells[1, 8];
 
     if cmbLangID.ItemIndex>-1 then
     begin
@@ -542,7 +542,7 @@ begin
       begin
           if SameText(Languages.Name[I], cmbLangID.Text) then
           begin
-            CurrentProfile.VersionInfo.LanguageID := Languages.LocaleID[I];
+            Project.VersionInfo.LanguageID := Languages.LocaleID[I];
             Break;
           end;
         end;
@@ -1138,29 +1138,29 @@ begin
   chkVersionInfo.Checked := CurrentProfile.IncludeVersionInfo;
   chkVersionInfoClick(nil);
 
-  spnMajor.Value := CurrentProfile.VersionInfo.Major;
-  spnMinor.Value := CurrentProfile.VersionInfo.Minor;
-  spnRelease.Value := CurrentProfile.VersionInfo.Release;
-  spnBuild.Value := CurrentProfile.VersionInfo.Build;
-  radAutoIncBuildOnCompile.Checked := CurrentProfile.VersionInfo.AutoIncBuildNrOnCompile;
-  radAutoIncBuildOnRebuild.Checked := CurrentProfile.VersionInfo.AutoIncBuildNrOnRebuild;
+  spnMajor.Value := Project.VersionInfo.Major;
+  spnMinor.Value := Project.VersionInfo.Minor;
+  spnRelease.Value := Project.VersionInfo.Release;
+  spnBuild.Value := Project.VersionInfo.Build;
+  radAutoIncBuildOnCompile.Checked := Project.VersionInfo.AutoIncBuildNrOnCompile;
+  radAutoIncBuildOnRebuild.Checked := Project.VersionInfo.AutoIncBuildNrOnRebuild;
 
   vleVersion.Strings.Clear;
-  vleVersion.InsertRow('File Description',  CurrentProfile.VersionInfo.FileDescription,   True);
-  vleVersion.InsertRow('File Version', CurrentProfile.VersionInfo.FileVersion, True);
-  vleVersion.InsertRow('Product Name', CurrentProfile.VersionInfo.ProductName, True);
-  vleVersion.InsertRow('Product Version',   CurrentProfile.VersionInfo.ProductVersion,    True);
-  vleVersion.InsertRow('Original Filename', CurrentProfile.VersionInfo.OriginalFilename,  True);
-  vleVersion.InsertRow('Internal Name',     CurrentProfile.VersionInfo.InternalName,      True);
-  vleVersion.InsertRow('Company Name', CurrentProfile.VersionInfo.CompanyName, True);
-  vleVersion.InsertRow('Legal Copyright',   CurrentProfile.VersionInfo.LegalCopyright,    True);
-  vleVersion.InsertRow('Legal Trademarks',  CurrentProfile.VersionInfo.LegalTrademarks,   True);
+  vleVersion.InsertRow('File Description',  Project.VersionInfo.FileDescription,   True);
+  vleVersion.InsertRow('File Version',      Project.VersionInfo.FileVersion,       True);
+  vleVersion.InsertRow('Product Name',      Project.VersionInfo.ProductName,       True);
+  vleVersion.InsertRow('Product Version',   Project.VersionInfo.ProductVersion,    True);
+  vleVersion.InsertRow('Original Filename', Project.VersionInfo.OriginalFilename,  True);
+  vleVersion.InsertRow('Internal Name',     Project.VersionInfo.InternalName,      True);
+  vleVersion.InsertRow('Company Name',      Project.VersionInfo.CompanyName,       True);
+  vleVersion.InsertRow('Legal Copyright',   Project.VersionInfo.LegalCopyright,    True);
+  vleVersion.InsertRow('Legal Trademarks',  Project.VersionInfo.LegalTrademarks,   True);
 
   cmbLangID.Items.Clear;
   for I := 0 to Languages.Count - 1 do
     cmbLangID.Items.Add(Languages.Name[I]);
 
-  S := Languages.NameFromLocaleID[CurrentProfile.VersionInfo.LanguageID];
+  S := Languages.NameFromLocaleID[Project.VersionInfo.LanguageID];
   if S <> '' then
     cmbLangID.ItemIndex := cmbLangID.Items.IndexOf(S);
 end;
