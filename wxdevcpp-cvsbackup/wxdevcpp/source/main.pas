@@ -5270,8 +5270,8 @@ begin
   if Assigned(fProject) then
   begin
     if (
-      fProject.CurrentProfile.VersionInfo.AutoIncBuildNrOnCompile or
-      (fProject.CurrentProfile.VersionInfo.AutoIncBuildNrOnRebuild and rebuild)
+      fProject.VersionInfo.AutoIncBuildNrOnCompile or
+      (fProject.VersionInfo.AutoIncBuildNrOnRebuild and rebuild)
     ) then
       fProject.IncrementBuildNumber;
     fProject.BuildPrivateResource;
