@@ -819,7 +819,7 @@ begin
     for i := 0 to pred(fProject.CurrentProfile.Includes.Count) do
       if directoryExists(fProject.CurrentProfile.Includes[i]) then begin
         fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.CurrentProfile.Includes[i]]);
-        fCppIncludesParams := format('%s ' + devCompiler.IncludeFormat, [fCppIncludesParams, fProject.Options.Includes[i]]);
+        fCppIncludesParams := format('%s ' + devCompiler.IncludeFormat, [fCppIncludesParams, fProject.CurrentProfile.Includes[i]]);
       end;
     for i := 0 to pred(fProject.CurrentProfile.ResourceIncludes.Count) do
       if directoryExists(fProject.CurrentProfile.ResourceIncludes[i]) then
@@ -1163,11 +1163,11 @@ procedure TCompiler.OnCompilationTerminated(Sender: TObject);
 begin
   ParseResults;
   EndProgressForm;
-
-  fDevRun := nil;
   DoLogEntry(Lang[ID_EXECUTIONTERM]);
 
-  if (fErrCount = 0) and not fAbortThread then
+  if fAbortThread then
+    DoLogEntry(Lang[ID_COMPILEABORT])
+  else if (fErrCount = 0) and (fDevRun.ExitCode = 0) then
   begin
     DoLogEntry(Lang[ID_COMPILESUCCESS]);
     if (fRunAfterCompileFinish) then
@@ -1175,12 +1175,11 @@ begin
       ReleaseProgressForm;
       Run;
     end;
-  end
-  else 
-  	if fAbortThread then
-      DoLogEntry(Lang[ID_COMPILEABORT]);
+  end;
 
-  fRunAfterCompileFinish := FALSE;
+  //Clean up
+  fDevRun := nil;
+  fRunAfterCompileFinish := False;
   Application.ProcessMessages;
 end;
 
@@ -1466,7 +1465,7 @@ begin
         (Copy(Line, 1, Length(devCompiler.gprofName)) = devCompiler.gprofName) or
         (Copy(Line, 1, Length(RmExe)) = RmExe) or
         (Copy(Line, 1, 19) = '   Creating library') or
-        (Length(Line) = 2) or//One word lines?
+        (Length(Line) = 2) or //One word lines?
         (Pos('*** [', Line) > 0) or
         (((Pos('.c', Line) > 0) or (Pos('.cpp', Line) > 0)) and (Pos('(', Line) = 0)) or
         (Pos('Nothing to be done for', Line) > 0) or

@@ -23,10 +23,10 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Classes, Windows, Dialogs, utils;
+  Classes, Windows, Dialogs, utils, SysUtils;
 {$ENDIF}
 {$IFDEF LINUX}
-  Classes, QDialogs, utils;
+  Classes, QDialogs, utils, SysUtils;
 {$ENDIF}
 
 type
@@ -36,6 +36,7 @@ type
   private
     TheMsg     : String;
     CurrentLine: String;
+    fExitCode  : Integer;
     FLineOutput: TLineOutputEvent;
     fCheckAbort: TCheckAbortFunc;
   protected
@@ -50,6 +51,7 @@ type
     Output: string;
     property OnLineOutput: TLineOutputEvent read FLineOutput write FLineOutput;
     property OnCheckAbort: TCheckAbortFunc read FCheckAbort write FCheckAbort;
+    property ExitCode: Integer read fExitCode;
   end;
 
 implementation
@@ -80,7 +82,8 @@ end;
 procedure TDevRun.Execute;
 begin
   Output := RunAndGetOutput(Command, Directory, Self.ShowError,
-    LineOutput, FCheckAbort);
+    LineOutput, FCheckAbort, True);
+  fExitCode := StrToInt(Copy(Output, GetLastPos(' ', Output), Length(Output)));
 end;
 
 end.
