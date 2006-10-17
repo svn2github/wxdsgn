@@ -516,17 +516,8 @@ const
   ID_AB_CAPTION                    = 580;
   ID_AB_AUTHOR2                    = 581;
   ID_AB_LICENSE                    = 582;
-  ID_AB_WEBCAP                     = 583;
-  ID_AB_LBLBLOODSITE               = 584;
-  ID_AB_LBLMINGWSITE               = 585;
-  ID_AB_LBLFORUM                   = 586;
-  ID_AB_LBLMAIL                    = 587;
-  ID_AB_LBLEMAIL                   = 588;
-  ID_AB_BLOODSITE                  = 589;
-  ID_AB_MINGWSITE                  = 590;
-  ID_AB_FORUMS                     = 591;
-  ID_AB_MAILLIST                   = 592;
-  ID_AB_AUTHOR                     = 593;
+  ID_AB_VERSCAP                    = 583;
+  // free to 593, they used to be the contact information
   ID_AB_UPDATE                     = 594;
 
   //Code Inserts Edit

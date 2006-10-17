@@ -131,10 +131,10 @@ Ver=1
 237=&List...
 
 #Help menu
-240=&About Dev-C++...
+240=&About wxDev-C++...
 241=&Check for Updates/Packages...
 242=C&ustomize Help Menu...
-243=&Help on Dev-C++
+243=&Help on wxDev-C++
 
 #Debug Menu
 245=&Debug
@@ -412,7 +412,7 @@ Ver=1
 
 #Tool Menu Macros
 560=Returns default directory
-561=Returns dev-c++ working directory
+561=Returns wxDev-C++ working directory
 562=Returns the compiled filename
 563=Returns the path to either the current project or source file
 564=Returns the filename of either the current project or source file
@@ -421,24 +421,13 @@ Ver=1
 567=Returns the path of current source file
 568=Returns a space seperated list of source files from the current project
 569=Returns the word at the cursor in the active editor
-570=Returns dev-c++ version
+570=Returns wxDev-C++ version
 # -- TO 579
 
 #About form
-580=About Dev-C++
-581=inseculous@users.sourceforge.net
+580=About wxDev-C++
 582=GNU General Public License
-583=Contact Information
-584=Bloodshed Software Website:
-585=Mingw Compiler Website:
-586=Dev-C++ discussion forums:
-587=Dev-C++ users mailing list:
-588=Authors e-mail:
-589=http://www.bloodshed.net
-590=http://www.mingw.org
-591=http://www.bloodshed.net/forum
-592=http://www.bloodshed.net/devcpp-ml.html
-593=haiku@bloodshed.net
+583=Version Information
 594=&Check for updates
 
 #Code Inserts Entry Edit form
@@ -576,7 +565,7 @@ Ver=1
 760=Do &not optimize
 761=Optimize more
 
-770=You may want to change the programs filenames that are used in Dev-C++ (for example when using a cross compiler) :
+770=You may want to change the programs filenames that are used in wxDev-C++ (for example when using a cross compiler) :
 771=Compiler set to configure:
 772=New compiler set
 773=Enter the new set name:
@@ -614,7 +603,7 @@ Ver=1
 810= Print Selection Only
 
 #Update Form
-820=Check for Update of Dev-C++
+820=Check for Update of wxDev-C++
 821=Task:
 822=Results:
 823=Release Version:
@@ -646,9 +635,9 @@ Ver=1
 851=Select Visual C++ project file
 852=Import options
 853=Configuration to import
-854=Dev-C++ project filename
-855=The MS Visual C++ project file has been imported and converted to a Dev-C++ project succesfully! Do you want to open it now?
-856=Cannot locate target configuration "%s" (this is probably a bug in Dev-C++)...
+854=wxDev-C++ project filename
+855=The MS Visual C++ project file has been imported and converted to a wxDev-C++ project succesfully! Do you want to open it now?
+856=Cannot locate target configuration "%s" (this is probably a bug in wxDev-C++)...
 
 #Project Options form
 900=Project Options
@@ -857,7 +846,7 @@ Ver=1
 # Environment Options (more)
 2800=File Associations
 2801=File Types:
-2802=Just check or un-check for which file types Dev-C++ will be registered as the default application to open them...
+2802=Just check or un-check for which file types wxDev-C++ will be registered as the default application to open them...
 2803=CVS Support
 2804=CVS Program File
 2805=Compression Level
