@@ -72,9 +72,11 @@ begin
   //Call the Create method of the container's parent class
   inherited Create(AOwner);
 
+{$IFDEF COMPILER_7_UP}
   //Set the background colour for Delphi to draw
   Self.ParentColor := True;
   Self.ParentBackground := True;
+{$ENDIF}
 end;
 
 end.

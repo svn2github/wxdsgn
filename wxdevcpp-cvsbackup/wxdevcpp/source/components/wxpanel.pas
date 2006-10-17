@@ -170,9 +170,11 @@ begin
   defaultBGColor         := self.color;
   defaultFGColor         := self.font.color;
 
+{$IFDEF COMPILER_7_UP}
   //Set the background colour for Delphi to draw
   Self.ParentColor := False;
   Self.ParentBackground := False;
+{$ENDIF}
 end; { of AutoInitialize }
 
 
