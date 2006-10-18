@@ -26,7 +26,6 @@ object MainForm: TMainForm
     Top = 102
     Width = 4
     Height = 135
-    Cursor = crHSplit
     AutoSnap = False
     MinSize = 45
     ResizeStyle = rsUpdate
@@ -44,9 +43,7 @@ object MainForm: TMainForm
   object SplitterRight: TSplitter
     Left = 460
     Top = 102
-    Width = 3
     Height = 135
-    Cursor = crHSplit
     Align = alRight
     AutoSnap = False
     MinSize = 45
@@ -63,7 +60,6 @@ object MainForm: TMainForm
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 0
     TabOrder = 0
     OnChange = MessageControlChange
     OnChanging = MessageControlChanging
@@ -218,7 +214,6 @@ object MainForm: TMainForm
         ActivePage = tabVars
         Align = alClient
         Style = tsFlatButtons
-        TabIndex = 0
         TabOrder = 0
         OnChange = DebugSubPagesChange
         object tabVars: TTabSheet
@@ -1122,7 +1117,6 @@ object MainForm: TMainForm
         Width = 50
       end>
     ParentFont = True
-    SimplePanel = False
     UseSystemFont = False
   end
   object PageControl: TPageControl
@@ -1213,7 +1207,6 @@ object MainForm: TMainForm
       Hint = 'Project Inspector'
       ActivePage = ProjectSheet
       Images = dmMain.ProjectImage_NewLook
-      TabIndex = 0
       TabOrder = 0
       object ProjectSheet: TTabSheet
         Caption = 'Project'
@@ -3380,7 +3373,7 @@ object MainForm: TMainForm
     MultiLangStrings.HeaderShortcut = 'Shortcut assigned'
     MultiLangStrings.OK = 'OK'
     MultiLangStrings.Cancel = 'Cancel'
-    Left = 548
+    Left = 521
     Top = 158
   end
   object BrowserPopup: TPopupMenu
@@ -3470,7 +3463,7 @@ object MainForm: TMainForm
   end
   object DevCppDDEServer: TDdeServerConv
     OnExecuteMacro = DevCppDDEServerExecuteMacro
-    Left = 576
+    Left = 549
     Top = 158
   end
   object XPMenu: TXPMenu
@@ -3496,7 +3489,7 @@ object MainForm: TMainForm
     UseSystemColors = True
     UseDimColor = False
     OverrideOwnerDraw = False
-    Gradient = False
+    Gradient = True
     FlatMenu = False
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
@@ -3515,7 +3508,7 @@ object MainForm: TMainForm
     BottomSplitterStyle.ParentColor = False
     DockStyle = DockStyle
     CustomDock = False
-    Left = 604
+    Left = 577
     Top = 158
   end
   object DockStyle: TJvDockVSNetStyle
@@ -3531,7 +3524,7 @@ object MainForm: TMainForm
     TabServerOption.InactiveFont.Name = 'MS Sans Serif'
     TabServerOption.InactiveFont.Style = []
     TabServerOption.ShowCloseButtonOnTabs = False
-    Left = 465
-    Top = 186
+    Left = 605
+    Top = 158
   end
 end
