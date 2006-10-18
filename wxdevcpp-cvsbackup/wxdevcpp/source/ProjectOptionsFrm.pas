@@ -588,10 +588,7 @@ Begin
   // Files tab
   cmbCompiler.Items.Assign(devCompilerSet.Sets);
   cmbCompiler.ItemIndex:=CurrentProfile.CompilerSet;
-
-  //
-  cmbCompiler.ItemIndex:=CurrentProfile.CompilerSet;
-  cmbCompilerChange(nil);
+  cmbCompiler.OnChange(cmbCompiler);
 
   // Output tab
   edExeOutput.Text := CurrentProfile.ExeOutput;

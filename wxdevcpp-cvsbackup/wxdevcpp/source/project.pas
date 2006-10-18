@@ -1384,7 +1384,7 @@ begin
     NewProfile.ExeOutput := finifile.ReadProfile(i,'ExeOutput','');
     NewProfile.ObjectOutput := finifile.ReadProfile(i,'ObjectOutput','');
     NewProfile.OverrideOutput := finifile.ReadProfile(i,'OverrideOutput',false);
-    NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverridenOutput','');
+    NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverrideOutputName','');
     NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
     NewProfile.IncludeVersionInfo := finifile.ReadProfile(i,'IncludeVersionInfo',false);
     NewProfile.SupportXPThemes:= finifile.ReadProfile(i,'SupportXPThemes',false);

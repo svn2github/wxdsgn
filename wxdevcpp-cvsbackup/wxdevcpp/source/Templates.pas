@@ -231,7 +231,7 @@ begin
           NewProfile.ExeOutput := ReadString(CurrenProfileName,'ExeOutput','');
           NewProfile.ObjectOutput := ReadString(CurrenProfileName,'ObjectOutput','');
           NewProfile.OverrideOutput := ReadBool(CurrenProfileName,'OverrideOutput',false);
-          NewProfile.OverridenOutput := ReadString(CurrenProfileName,'OverridenOutput','');
+          NewProfile.OverridenOutput := ReadString(CurrenProfileName,'OverrideOutputName','');
           NewProfile.HostApplication := ReadString(CurrenProfileName,'HostApplication','');
           NewProfile.IncludeVersionInfo := ReadBool(CurrenProfileName,'IncludeVersionInfo',false);
           NewProfile.SupportXPThemes:= ReadBool(CurrenProfileName,'SupportXPThemes',false);
