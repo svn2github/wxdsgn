@@ -9647,9 +9647,11 @@ end;
 
 begin
   if trim(SelectedComponentName) = '' then
-  begin
-    exit;
-  end;
+    Exit;
+
+  AControlClass := TControlClass(GetClass(SelectedComponentName));
+  if AControlClass = nil then
+    Exit;
 
   if TFrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
   begin
