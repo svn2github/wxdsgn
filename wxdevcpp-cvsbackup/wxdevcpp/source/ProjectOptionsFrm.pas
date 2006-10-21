@@ -442,7 +442,7 @@ begin
     if trim(fProfiles.Items[i].ProfileName) <> '' then
       cmbProfileSetComp.Items.Add(fProfiles.Items[i].ProfileName)
     else
-      cmbProfileSetComp.Items.Add('NoName_'+IntToStr(i));
+      cmbProfileSetComp.Items.Add('[No name]');
   end;
   if (ProfileIndex <> -1) then
   begin
