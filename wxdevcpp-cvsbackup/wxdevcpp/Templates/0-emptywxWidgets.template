@@ -1,8 +1,8 @@
 [Template]
 ver=3
-Name=wxWidgets Dialog
+Name=Empty wxWidgets Project
 IconIndex=0
-Description=A basic dialog for wxWidgets applications.
+Description=An empty wxWidgets project
 Catagory=Basic
 ProfilesCount = 2
 
