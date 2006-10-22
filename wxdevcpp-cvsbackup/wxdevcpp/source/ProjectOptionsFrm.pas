@@ -437,17 +437,16 @@ var
   i:Integer;
 begin
   cmbProfileSetComp.Clear;
-  for i:= 0 to  fProfiles.count -1 do
+  for i := 0 to fProfiles.count -1 do
   begin
     if trim(fProfiles.Items[i].ProfileName) <> '' then
       cmbProfileSetComp.Items.Add(fProfiles.Items[i].ProfileName)
     else
-      cmbProfileSetComp.Items.Add('[No name]');
+      cmbProfileSetComp.Items.Add('Profile ' + IntToStr(i + 1));
   end;
+
   if (ProfileIndex <> -1) then
-  begin
-    cmbProfileSetComp.ItemIndex:=ProfileIndex;  
-  end;
+    cmbProfileSetComp.ItemIndex := ProfileIndex;
 end;
 
 procedure TfrmProjectOptions.UpdateCurrentProfileDataFromUI;
