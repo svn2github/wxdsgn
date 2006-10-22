@@ -1153,9 +1153,7 @@ begin
   fWatchError := true;
 end;
 
-
 { TCompilerOpts }
-
 procedure TdevCompiler.AddDefaultOptions;
 var
   i : integer;
@@ -1177,7 +1175,7 @@ begin
   fOptions.Clear;
 
   //Begin by clearing the compiler options list
-  devCompiler.ClearOptions;
+  ClearOptions;
 
   if (devCompilerSet.CompilerType = ID_COMPILER_VC6)or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) or (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
   begin
@@ -1210,8 +1208,7 @@ begin
     end;
 
     sl := TStringList.Create;
-    sl.Add('None=');
-    sl.Add('__cdecl=/Gd');
+    sl.Add('__cdecl=');
     sl.Add('__fastcall  =/Gr');
     sl.Add('__stdcall=/Gz');
     AddOption('Calling Convention', false, true, true, false, 0, '', 'Code Generation', [], sl);
@@ -1219,37 +1216,37 @@ begin
     sl := TStringList.Create;
     sl.Add('Disable=');
     if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
-        sl.Add('Enable=/Gf');
-    sl.Add('Enable Read-Only  =/GF');
+      sl.Add('Enable=/Gf');
+    sl.Add('Enable (Read-Only)  =/GF');
     AddOption('String Pooling', false, true, true, false, 0, '', 'Code Generation', [], sl);
 
     sl := TStringList.Create;
-    sl.Add('Default=');
-    sl.Add('Compile for CLR  =/clr');
+    sl.Add('Compile native code  =');
+    sl.Add('Compile for CLR=/clr');
     sl.Add('No assembly=/clr:noAssembly');
     if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
     begin
-        sl.Add('IL-only output file=/clr:pure');
-        sl.Add('Verifiable IL-only output=/clr:safe');
-        sl.Add('Use old syntax=/clr:oldSyntax');
-        sl.Add('Enable initial AppDomain behaviour  =/clr:initialAppDomain');
+      sl.Add('IL-only output file=/clr:pure');
+      sl.Add('Verifiable IL-only output=/clr:safe');
+      sl.Add('Use old syntax=/clr:oldSyntax');
+      sl.Add('Enable initial AppDomain behaviour  =/clr:initialAppDomain');
     end;
     AddOption('Common Language Runtime', false, true, true, false, 0, '', 'Code Generation', [], sl);
 
     if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
     begin
-        sl := TStringList.Create;
-        sl.Add('Precise  =precise');
-        sl.Add('Fast=fast');
-        sl.Add('Strict=strict');
-        AddOption('Floating-Point Model', false, true, true, false, 0, '', 'Code Generation', [], sl);
+      sl := TStringList.Create;
+      sl.Add('Precise  =precise');
+      sl.Add('Fast=fast');
+      sl.Add('Strict=strict');
+      AddOption('Floating-Point Model', false, true, true, false, 0, '', 'Code Generation', [], sl);
     end;
     
     sl := TStringList.Create;
     sl.Add('None=');
     sl.Add('SSE=/arch:SSE');
     sl.Add('SSE2  =/arch:SSE2');
-    AddOption('Minimum CPU architecture', false, true, true, false, 0, '', 'Code Generation', [], sl);
+    AddOption('Extended instruction set', false, true, true, false, 0, '', 'Code Generation', [], sl);
 
     sl := TStringList.Create;
     sl.Add('No Exceptions=');
@@ -1260,24 +1257,24 @@ begin
     AddOption('Enable _pexit function call', false, true, true, false, 0, '/GH', 'Code Generation', [], nil);
     AddOption('Enable C++ RTTI', false, false, true, false, 0, '/GR', 'Code Generation', [], nil);
     AddOption('Enable Minimal Rebuild', false, true, true, false, 0, '/Gm', 'Code Generation', [], nil);
-    AddOption('Enable Link-time Code Generation', false, true, true, true, 0, '/GL', 'Code Generation', [], nil);
+    AddOption('Enable Link-Time Code Generation', false, true, true, false, 0, '/GL', 'Code Generation', [], nil);
     if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
     begin
-        AddOption('Enable Pentium FDIV fix', false, true, true, false, 1, '/QIfdiv', 'Code Generation', [], nil);
-        AddOption('Enable Pentium 0x0F fix', false, true, true, false, 1, '/QI0f', 'Code Generation', [], nil);
-        AddOption('Use FIST instead of ftol()', false, true, true, false, 1, '/QIfist', 'Code Generation', [], nil);
+      AddOption('Enable Pentium FDIV fix', false, true, true, false, 1, '/QIfdiv', 'Code Generation', [], nil);
+      AddOption('Enable Pentium 0x0F fix', false, true, true, false, 1, '/QI0f', 'Code Generation', [], nil);
+      AddOption('Use FIST instead of ftol()', false, true, true, false, 1, '/QIfist', 'Code Generation', [], nil);
     end;
-    AddOption('Extern C defaults to nothrow', false, false, true, false, 0, '/EHc', 'Code Generation', [], nil);
-    AddOption('Seperate functions for linker', false, false, false, true, 0, '/Gy', 'Code Generation', [], nil);
+    AddOption('extern "C" implies nothrow', false, false, true, false, 0, '/EHc', 'Code Generation', [], nil);
+    AddOption('Enable function-level linking', false, false, false, true, 0, '/Gy', 'Code Generation', [], nil);
     AddOption('Use fibre-safe TLS accesses', false, true, true, false, 0, '/GT', 'Code Generation', [], nil);
 
     //Checks
     sl := TStringList.Create;
     sl.Add('None=');
-    sl.Add('Force Stack Checks=/Ge');
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
+      sl.Add('Enable stack probes=/Ge');
     sl.Add('Control Stack Checking Calls  =/GS');
     AddOption('Stack checks', false, true, true, false, 0, '', 'Code Checks', [], sl);
-    AddOption('Release build checks', false, true, true, false, 0, '/RTC1', 'Code Checks', [], nil);
     AddOption('Type conversion Checks', false, true, true, false, 0, '/RTCc', 'Code Checks', [], nil);
     AddOption('Stack Frame runtime checking', false, true, true, false, 0, '/RTCs', 'Code Checks', [], nil);
     AddOption('Check for Variable Usage', false, true, true, false, 0, '/RTCu', 'Code Checks', [], nil);
@@ -1291,36 +1288,34 @@ begin
     sl.Add('Include line numbers only=/Zd');
     AddOption('Debugging', false, true, true, false, 0, '', 'Language Options', [], sl);
     if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
-        AddOption('Enable Extensions', false, true, true, false, 1, '/Ze', 'Language Options', [], nil);
+      AddOption('Enable Extensions', false, true, true, false, 1, '/Ze', 'Language Options', [], nil);
     AddOption('Omit library name in object file', false, true, true, false, 0,  '/Zl', 'Language Options', [], nil);
     AddOption('Generate function prototypes', false, true, true, false, 0, '/Zg', 'Language Options', [], nil);
     if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
-        AddOption('Enable OpenMP 2.0 Language Extensions', false, false, true, false, 0, '/openmp', 'Language Options', [], nil);
-
+      AddOption('Enable OpenMP 2.0 Language Extensions', false, false, true, false, 0, '/openmp', 'Language Options', [], nil);
 
     if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003)then
     begin
-        AddOption('Enforce Standard C++ scoping', false, false, true, false, 0, '/Zc:forScope', 'Language Options', [], nil);
-        AddOption('Make wchar_t a native type', false, false, true, false, 0, '/Zc:wchar_t', 'Language Options', [], nil);
+      AddOption('Enforce Standard C++ scoping', false, false, true, false, 0, '/Zc:forScope', 'Language Options', [], nil);
+      AddOption('Make wchar_t a native type', false, false, true, false, 0, '/Zc:wchar_t', 'Language Options', [], nil);
     end
     else
     begin
-        AddOption('Don''t Enforce Standard C++ scoping', false, false, true, false, 0, '/Zc:forScope-', 'Language Options', [], nil);
-        AddOption('Don''t Make wchar_t a native type', false, false, true, false, 0, '/Zc:wchar_t-', 'Language Options', [], nil);
+      AddOption('Don''t Enforce Standard C++ scoping', false, false, true, false, 0, '/Zc:forScope-', 'Language Options', [], nil);
+      AddOption('Don''t Make wchar_t a native type', false, false, true, false, 0, '/Zc:wchar_t-', 'Language Options', [], nil);
     end;
 
     //Miscellaneous
     AddOption('Treat warnings as errors', false, true, true, false, 0, '/WX', 'Miscellaneous', [], nil);
     sl := TStringList.Create;
-    sl.Add('Default  =');
-    sl.Add('Level 4=/W4');
-    sl.Add('Level 3=/W3');
+    sl.Add('Default (Level 1)  =');
     sl.Add('Level 2=/W2');
-    sl.Add('Level 1=/W1');
+    sl.Add('Level 3=/W3');
+    sl.Add('Level 4=/W4');
     sl.Add('None=/w');
     AddOption('Warning Level', false, true, true, false, 0, '', 'Miscellaneous', [], sl);
     if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
-        AddOption('Use Precompiled headers', false, true, true, false, 0, '/YX', 'Miscellaneous', [], nil);
+      AddOption('Enable automatic precompiled headers', false, true, true, false, 0, '/YX', 'Miscellaneous', [], nil);
     AddOption('Enable 64-bit porting warnings', false, true, true, false, 0, '/Wp64', 'Miscellaneous', [], nil);
     AddOption('Disable incremental linking', false, false, false, true, 0, '/INCREMENTAL:NO', 'Miscellaneous', [], nil);
   end
@@ -2034,39 +2029,39 @@ end;
 
 procedure TdevCompilerSet.AssignToCompiler;
 begin
-  devCompiler.Name                  := devCompilerSet.Name;
-  devCompiler.gccName               := devCompilerSet.gccName;
-  devCompiler.gppName               := devCompilerSet.gppName;
-  devCompiler.gdbName               := devCompilerSet.gdbName;
-  devCompiler.makeName              := devCompilerSet.makeName;
-  devCompiler.windresName           := devCompilerSet.windresName;
-  devCompiler.dllwrapName           := devCompilerSet.dllwrapName;
-  devCompiler.gprofName             := devCompilerSet.gprofName;
-  devCompiler.fcmdOpts              := devCompilerSet.fCmdOptions;
-  devCompiler.flinkopts             := devCompilerSet.fLinkOptions;
-  devCompiler.fMakeOpts             := devCompilerSet.fMakeOptions;
-  devCompiler.compilerType          := devCompilerSet.compilerType;
-  devCompiler.CheckSyntaxFormat     := devCompilerSet.CheckSyntaxFormat;
-  devCompiler.OutputFormat          := devCompilerSet.OutputFormat;
-  devCompiler.ResourceIncludeFormat := devCompilerSet.ResourceIncludeFormat;
-  devCompiler.ResourceFormat        := devCompilerSet.ResourceFormat;
-  devCompiler.LinkerFormat          := devCompilerSet.LinkerFormat;
-  devCompiler.LinkerPaths           := devCompilerSet.LinkerPaths;
-  devCompiler.IncludeFormat         := devCompilerSet.IncludeFormat;
-  devCompiler.DllFormat             := devCompilerSet.DllFormat;
-  devCompiler.LibFormat             := devCompilerSet.LibFormat;
-  devCompiler.PchCreateFormat       := devCompilerSet.PchCreateFormat;
-  devCompiler.PchUseFormat          := devCompilerSet.PchUseFormat;
-  devCompiler.PchFileFormat         := devCompilerSet.PchFileFormat; 
-  devCompiler.SingleCompile         := devCompilerSet.SingleCompile;
-  devCompiler.PreprocDefines        := devCompilerSet.PreprocDefines;
+  devCompiler.Name                  := Name;
+  devCompiler.gccName               := gccName;
+  devCompiler.gppName               := gppName;
+  devCompiler.gdbName               := gdbName;
+  devCompiler.makeName              := makeName;
+  devCompiler.windresName           := windresName;
+  devCompiler.dllwrapName           := dllwrapName;
+  devCompiler.gprofName             := gprofName;
+  devCompiler.fcmdOpts              := fCmdOptions;
+  devCompiler.flinkopts             := fLinkOptions;
+  devCompiler.fMakeOpts             := fMakeOptions;
+  devCompiler.compilerType          := compilerType;
+  devCompiler.CheckSyntaxFormat     := CheckSyntaxFormat;
+  devCompiler.OutputFormat          := OutputFormat;
+  devCompiler.ResourceIncludeFormat := ResourceIncludeFormat;
+  devCompiler.ResourceFormat        := ResourceFormat;
+  devCompiler.LinkerFormat          := LinkerFormat;
+  devCompiler.LinkerPaths           := LinkerPaths;
+  devCompiler.IncludeFormat         := IncludeFormat;
+  devCompiler.DllFormat             := DllFormat;
+  devCompiler.LibFormat             := LibFormat;
+  devCompiler.PchCreateFormat       := PchCreateFormat;
+  devCompiler.PchUseFormat          := PchUseFormat;
+  devCompiler.PchFileFormat         := PchFileFormat;
+  devCompiler.SingleCompile         := SingleCompile;
+  devCompiler.PreprocDefines        := PreprocDefines;
 
   // we have to set the devDirs too
-  devDirs.Bins := devCompilerSet.BinDir;
-  devDirs.C := devCompilerSet.CDir;
-  devDirs.Cpp := devCompilerSet.CppDir;
-  devDirs.Lib := devCompilerSet.LibDir;
-  devDirs.RC := devCompilerSet.RCDir;
+  devDirs.Bins := BinDir;
+  devDirs.C := CDir;
+  devDirs.Cpp := CppDir;
+  devDirs.Lib := LibDir;
+  devDirs.RC := RCDir;
 
   if devCompiler.CompilerType = ID_COMPILER_MINGW then
   begin
@@ -2074,14 +2069,13 @@ begin
     LIB_EXT := '.a';
   end
   else
+  begin
     OBJ_EXT := '.obj';
     LIB_EXT := '.lib';
-  begin
   end;
 
-  devCompiler.OptionStr := devCompilerSet.OptionsStr;
+  devCompiler.OptionStr := OptionsStr;
   devCompiler.AddDefaultOptions;
-
 end;
 
 constructor TdevCompilerSet.Create;
@@ -2267,7 +2261,7 @@ begin
         begin
           fBinDir := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
                      + BIN_DIR(CompilerType) + ';' + fBinDir;
-          devCompilerSet.makeName := 'mingw32-make';
+          makeName := 'mingw32-make';
           devCompiler.makeName := 'mingw32-make';
         end;
       end;
