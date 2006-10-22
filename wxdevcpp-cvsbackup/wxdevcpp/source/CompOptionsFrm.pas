@@ -605,9 +605,7 @@ begin
   //we just check if the paramter sent by the calling function is
   //nil.
   if (Sender <> nil) then
-  begin
     LoadOptions;
-  end;
 
   //Set the labels
   case CompilerTypes.ItemIndex of
@@ -632,7 +630,10 @@ end;
 
 procedure TCompForm.btnRefreshCompilerSettingsClick(Sender: TObject);
 begin
-  if MessageDlg('This action will reset the include/lib paths to the default settings.'+#10+#13+'Do you want to continue ?'+#10+#13+#10+#13+'If you have installed the selected compiler after installing wx-Devcpp, then it is safe to click "Yes"',mtWarning,[mbYes,mbNo],0) = mrYes then
+  if MessageDlg('Are you sure you wish to reset all the compiler settings to their defaults?'#10#13#10#13 +
+                'To redetect the necessary compiler, include and library paths, or if you have '#10#13 +
+                'installed the selected compiler after installing wxDev-C++, select Yes.', mtConfirmation,
+                [mbYes, mbNo], Self.Handle) = mrYes then
     CompilerTypesClick(CompilerTypes);
 end;
 
