@@ -98,6 +98,7 @@ type
     btnDelCompilerSet: TSpeedButton;
     btnRenameCompilerSet: TSpeedButton;
     Label1: TLabel;
+    btnRefreshCompilerSettings: TSpeedButton;
     
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
@@ -125,6 +126,7 @@ type
     procedure CompilerTypesClick(Sender: TObject);
     procedure LoadOptions;
     procedure SaveSettings;
+    procedure btnRefreshCompilerSettingsClick(Sender: TObject);
 
   private
     fBins: string;
@@ -626,6 +628,12 @@ begin
         btnbrowse8.Enabled := true;
       end;
   end;
+end;
+
+procedure TCompForm.btnRefreshCompilerSettingsClick(Sender: TObject);
+begin
+  if MessageDlg('This action will reset the include/lib paths to the default settings.'+#10+#13+'Do you want to continue ?'+#10+#13+#10+#13+'If you have installed the selected compiler after installing wx-Devcpp, then it is safe to click "Yes"',mtWarning,[mbYes,mbNo],0) = mrYes then
+    CompilerTypesClick(CompilerTypes);
 end;
 
 end.

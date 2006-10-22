@@ -1046,7 +1046,7 @@ type
     procedure RemoveActiveBreakpoints;
     procedure AddDebugVar(s: string);
     procedure OnBreakpointToggle(index: integer; BreakExists: boolean);
-    procedure SetProjCompOpt(compilerType:Integer;idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
+    procedure SetProjCompOpt(idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
     function CloseEditor(index: integer; Rem: boolean): Boolean;
     procedure RefreshContext;
 
@@ -5382,6 +5382,12 @@ var
   idx, idx2: integer;
   s: string;
 begin
+   if (assigned(fProject) and (fProject.CurrentProfile.compilerType <> ID_COMPILER_MINGW)) then
+   begin
+      ShowMessage('Debugging is Disabled for Non-MingW compilers.');
+      exit;
+   end;
+
   PrepareDebugger;
   if assigned(fProject) then
   begin
@@ -6878,6 +6884,11 @@ var
 begin
   //todo: disable profiling for non gcc compilers
   // see if profiling is enabled
+  if (assigned(fProject) and (fProject.CurrentProfile.compilerType <> ID_COMPILER_MINGW)) then
+  begin
+    ShowMessage('Profiling is Disabled for Non-MingW compilers.') ;
+    exit;
+  end;
   prof := devCompiler.FindOption('-pg', optP, idxP);
   if prof then begin
     if Assigned(fProject) then begin
@@ -6906,11 +6917,11 @@ begin
     if MessageDlg(Lang[ID_MSG_NOPROFILE], mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
       optP.optValue := 1;
       if Assigned(fProject) then
-        SetProjCompOpt(ID_COMPILER_MINGW,idxP, True);
+        SetProjCompOpt(idxP, True);
       devCompiler.Options[idxP] := optP;
       optD.optValue := 1;
       if Assigned(fProject) then
-        SetProjCompOpt(ID_COMPILER_MINGW,idxD, True);
+        SetProjCompOpt(idxD, True);
       devCompiler.Options[idxD] := optD;
 
       // Check for strip executable
@@ -6918,7 +6929,7 @@ begin
         optD.optValue := 0;
         if not Assigned(MainForm.fProject) then
           devCompiler.Options[idxD] := optD; // set global debugging option only if not working with a project
-        MainForm.SetProjCompOpt(ID_COMPILER_MINGW,idxD, False);// set the project's correpsonding option too
+        MainForm.SetProjCompOpt(idxD, False);// set the project's correpsonding option too
       end;
 
       actRebuildExecute(nil);
@@ -7922,23 +7933,20 @@ begin
     frmInspectorDock.Hide;
 end;
 
-procedure TMainForm.SetProjCompOpt(compilerType:Integer;idx: integer; Value: boolean);
+procedure TMainForm.SetProjCompOpt(idx: integer; Value: boolean);
 var
   projOpt: TProjProfile;
 begin
   projOpt:= TProjProfile.Create;
   //fix this for all compilers
   if Assigned(fProject) then begin
-    projOpt := fProject.CurrentProfile;
-    if (compilerType = ID_COMPILER_MINGW) then
-    begin
-      if idx <= Length(projOpt.CompilerOptions) then begin
-        if Value then
-            projOpt.CompilerOptions[idx + 1] := '1'
-        else
-            projOpt.CompilerOptions[idx + 1] := '0';
-        fProject.CurrentProfile.CopyProfileFrom(projOpt);
-      end;
+    projOpt.CopyProfileFrom(fProject.CurrentProfile);
+    if idx <= Length(projOpt.CompilerOptions) then begin
+      if Value then
+        projOpt.CompilerOptions[idx + 1] := '1'
+      else
+        projOpt.CompilerOptions[idx + 1] := '0';
+      fProject.CurrentProfile.CopyProfileFrom(projOpt);
     end;
   end;
   projOpt.Destroy;

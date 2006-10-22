@@ -400,7 +400,7 @@ begin
       if not Assigned(MainForm.fProject) then
         devCompiler.Options[idx]:=opt; // set global debugging option only if not working with a project
 
-      MainForm.SetProjCompOpt(ID_COMPILER_MINGW,idx, True); // set the project's correpsonding option too
+      MainForm.SetProjCompOpt(idx, True); // set the project's correpsonding option too
 
       // remove "-s" from the linker''s command line
       if Assigned(MainForm.fProject) then begin
@@ -427,7 +427,7 @@ begin
         opt.optValue := 0;
         if not Assigned(MainForm.fProject) then
           devCompiler.Options[idx]:=opt; // set global debugging option only if not working with a project
-        MainForm.SetProjCompOpt(ID_COMPILER_MINGW,idx, False); // set the project's correpsonding option too
+        MainForm.SetProjCompOpt(idx, False); // set the project's correpsonding option too
       end;
       MainForm.actRebuildExecute(nil);
     end;

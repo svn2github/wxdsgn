@@ -551,6 +551,7 @@ var
   ResFile, Original: TStringList;
   Res, Def, Icon, RCDir: String;
   comp, i: Integer;
+  outDir:String;
 begin
   comp := 0;
   for i := 0 to Units.Count - 1 do
@@ -563,7 +564,29 @@ begin
     RCDir := IncludeTrailingPathDelimiter(GetRealPath(CurrentProfile.ObjectOutput, Directory))
   else
     RCDir := Directory;
-  
+  //If the Output and Exe dir doesnt exists then Create them
+  if (DirectoryExists(RCDir) = false) then
+  begin
+    if (ForceDirectories(RCDir) = false) then
+    begin
+      ShowMessage('Unable to create Object Files Output directory for Saving Resource file.');
+      exit;
+    end;
+  end;
+
+  if (CurrentProfile.ExeOutput <> '') then
+  begin
+    outDir:=IncludeTrailingPathDelimiter(GetRealPath(CurrentProfile.ExeOutput, Directory));
+    if (DirectoryExists(outDir) = false) then
+    begin
+      if (ForceDirectories(outDir) = false) then
+      begin
+        ShowMessage('Unable to create Exe File Output directory for Saving Resource file.');
+        exit;
+      end;
+    end;
+  end;
+
   // if project has no other resources included
   // and does not have an icon
   // and does not include the XP style manifest

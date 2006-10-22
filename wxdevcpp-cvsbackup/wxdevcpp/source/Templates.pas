@@ -147,6 +147,12 @@ begin
      fIconIndex:= ReadInteger(cTemplate, 'IconIndex', 0);
      // project info
      fPrjName:= ReadString(cProject, 'Name', '');
+     ProfileCount:=ReadInteger(cProject, 'ProfilesCount', 0);
+     //If there is no Profile Count then we'll assume the
+     //template as version 1
+     if ((ProfileCount=0) and (fVersion = 3)) then
+      fVersion := 1;
+
      if fPrjName = '' then
        fPrjName:= fName;
 
