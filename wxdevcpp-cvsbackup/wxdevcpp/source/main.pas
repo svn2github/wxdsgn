@@ -971,6 +971,7 @@ type
     procedure actNewwxDialogExecute(Sender: TObject);
     procedure ApplicationEvents1Activate(Sender: TObject);
     procedure ProjectViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure tmrInspectorHelperTimer(Sender: TObject);
 {$ENDIF}
 
   private
@@ -984,6 +985,8 @@ type
     ProjectToolWindow: TForm;
     ReportToolWindow: TForm;
     bProjectLoading: boolean;
+    fstrCppFileToOpen:string;
+    tmrInspectorHelper:TTimer;
     OldLeft: integer;
     OldTop: integer;
     OldWidth: integer;
@@ -1279,6 +1282,9 @@ var
   lbDockClient1: TJvDockClient;
   lbDockClient2: TJvDockClient;
 begin
+  tmrInspectorHelper:=TTimer.Create(self);
+  tmrInspectorHelper.Enabled:=false;
+  tmrInspectorHelper.Interval:=500;
   //Project inspector
   frmProjMgrDock := TForm.Create(self);
   with frmProjMgrDock do
@@ -2347,7 +2353,8 @@ begin
 
   devData.ProjectWidth := LeftPageControl.Width;
   devData.OutputHeight := fmsgHeight;
-
+  //Delete Event Insp Timee
+  tmrInspectorHelper.destroy;
   SaveOptions;
 end;
 
@@ -9328,14 +9335,28 @@ var
   intCtrlPos,i: Integer;
   e: TEditor;
   boolContrainer:boolean;
+  strCompName:String;
+  wxcompInterface:IWxComponentInterface;
 begin
    boolContrainer := False;
   ///SaveProjectFiles(strProjectFile,True,false);
-  intCtrlPos := cbxControlsx.Items.IndexOfObject(AControl);
+  intCtrlPos := -1;
   //boolContrainer:=(IsControlWxContainer(AControl) or IsControlWxSizer(AControl));
+  for i:=cbxControlsx.Items.Count -1 downto 0 do
+  begin
+    if AControl.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+    begin
+      strCompName:= AControl.Name +':'+wxcompInterface.GetWxClassName;
+      if AnsiSameText(cbxControlsx.Items[i], strCompName) then
+      begin
+        cbxControlsx.Items.Delete(i);
+        intCtrlPos:=i;
+      end;
+    end;
+  end;
+
   if intCtrlPos <> -1 then
   begin
-    cbxControlsx.Items.Delete(intCtrlPos);
     if isCurrentPageDesigner then
     begin
       intCtrlPos := cbxControlsx.Items.IndexOfObject(GetCurrentDesignerForm());
@@ -9399,10 +9420,10 @@ begin
   FirstComponentBeingDeleted := '';
   if ELDesigner1.SelectedControls.Count > 0 then
   begin
-    compObj := ELDesigner1.SelectedControls[0];
-    ELDesigner1.SelectedControls[0].BringToFront;
-    ELDesigner1.SelectedControls[0].Visible:=true;
-    
+    compObj := ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count-1];
+    ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count-1].BringToFront;
+    ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count-1].Visible:=true;
+
     if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
     begin
       strClass := wxcompInterface.GetWxClassName;
@@ -9410,8 +9431,8 @@ begin
     end;
 
     cbxControlsx.ItemIndex :=
-      cbxControlsx.Items.AddObject(ELDesigner1.SelectedControls[0].Name + ':' +
-      strClass, ELDesigner1.SelectedControls[0]);
+      cbxControlsx.Items.AddObject(ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count-1].Name + ':' +
+      strClass, ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count-1]);
   end;
 
   if (AControl is TWinControl) then
@@ -10295,6 +10316,7 @@ var
   componentInstance:TComponent;
   propertyName,wxClassName,propDisplayName:string;
   strNewValue:String;
+  bOpenFile:Boolean;
 procedure SetPropertyValue(Comp:TComponent;strPropName,strPropValue:String);
 var
   PropInfo: PPropInfo;
@@ -10307,6 +10329,8 @@ begin
 end;
 
 begin
+  bOpenFile:=false;
+  fstrCppFileToOpen:='';
   try
     //Do some sanity checks
     if JvInspEvents.Selected = nil then
@@ -10372,8 +10396,9 @@ begin
           str := TfrmNewForm(SelectedComponent).Wx_Name + Copy(str, 3, Length(str))
         else
           str := SelectedComponent.Name + Copy(str, 3, Length(str));
-
+        JvInspEvents.OnDataValueChanged:=nil;
         Data.AsString := str;
+        JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
         str := Trim(str);
 
         componentInstance:=SelectedComponent;
@@ -10382,10 +10407,12 @@ begin
         propDisplayName:=JvInspEvents.Selected.DisplayName;
         if MainForm.CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
         begin
+           bOpenFile:=true;
           //This is causing AV, so I moved this operation to
           //CreateFunctionInEditor
           //Data.AsString := str;
           SetPropertyValue(componentInstance,propertyName,str);
+          fstrCppFileToOpen:=e.GetDesignerCPPEditor.FileName;
         end
         else
         begin
@@ -10448,6 +10475,11 @@ begin
   except
     on E: Exception do
       MessageBox(Self.Handle, PChar(E.Message), PChar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
+  end;
+  if (bOpenFile) then
+  begin
+    tmrInspectorHelper.OnTimer:=tmrInspectorHelperTimer;
+    tmrInspectorHelper.Enabled:=true;
   end;
 end;
 
@@ -12199,6 +12231,15 @@ begin
   // give back the original path if unsuccessful
   if (not bSuccess) then
     Result := ShortPathName;
+end;
+
+procedure TMainForm.tmrInspectorHelperTimer(Sender: TObject);
+begin
+  if fstrCppFileToOpen = '' then
+    exit;
+  tmrInspectorHelper.Enabled:=false;
+  OpenFile(fstrCppFileToOpen);
+  fstrCppFileToOpen:='';
 end;
 
 initialization
