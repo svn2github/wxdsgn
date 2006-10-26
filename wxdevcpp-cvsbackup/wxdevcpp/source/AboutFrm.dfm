@@ -2231,6 +2231,7 @@ object AboutForm: TAboutForm
     Width = 376
     Height = 285
     ActivePage = Version
+    TabIndex = 0
     TabOrder = 2
     object Version: TTabSheet
       Caption = 'Version Information'
@@ -2328,7 +2329,7 @@ object AboutForm: TAboutForm
       end
     end
     object License: TTabSheet
-      Caption = 'GNU General Public License'
+      Caption = 'GNU License'
       ImageIndex = 1
       object LicenseText: TMemo
         Left = 0
@@ -2975,7 +2976,7 @@ object AboutForm: TAboutForm
       object Label2: TLabel
         Left = 150
         Top = 5
-        Width = 210
+        Width = 185
         Height = 26
         Caption = 'Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'
         WordWrap = True
@@ -2990,7 +2991,7 @@ object AboutForm: TAboutForm
       object Label4: TLabel
         Left = 150
         Top = 35
-        Width = 210
+        Width = 177
         Height = 26
         Caption = 'Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'
         WordWrap = True
@@ -3020,7 +3021,7 @@ object AboutForm: TAboutForm
       object Label5: TLabel
         Left = 149
         Top = 82
-        Width = 210
+        Width = 188
         Height = 26
         Caption = 
           'Mumit Khan, J.J. Var Der Heidjen, Colin Hendrix and GNU develope' +

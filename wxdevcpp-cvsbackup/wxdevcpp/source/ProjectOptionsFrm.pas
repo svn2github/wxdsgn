@@ -571,7 +571,7 @@ Begin
 
   edProjectName.Text:= fProject.Name;
   lblPrjFname.Caption:=fProject.FileName;
-  lblPrjOutputFname.Caption:=fProject.Executable;
+  lblPrjOutputFname.Caption:=fProject.GetExecutableNameExt(CurrentProfile);
   cntSrc:=0;
   cntHdr:=0;
   cntRes:=0;
@@ -596,7 +596,7 @@ Begin
   if CurrentProfile.OverridenOutput<>'' then
     edOverridenOutput.Text := ExtractFilename(CurrentProfile.OverridenOutput)
   else
-    edOverridenOutput.Text := ExtractFilename(fProject.Executable);
+    edOverridenOutput.Text := ExtractFilename(fProject.GetExecutableNameExt(CurrentProfile));
   edOverridenOutput.Enabled:=CurrentProfile.OverrideOutput;
 
   // Makefile tab

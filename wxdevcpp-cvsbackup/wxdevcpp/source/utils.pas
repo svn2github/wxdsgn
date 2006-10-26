@@ -83,7 +83,7 @@ function DuplicateAppInstWdw: HWND;
 function SwitchToPrevInst(Wnd: HWND): Boolean;
 function ParseCommandLineArguments(cmdLine: string) : TStringList;
 function SubstituteMakeParams(str: string) : string;
-procedure Split(const str1:string;const sep:string;var LT:TStringList);
+function StrToArrays(str, r: string; var temp: TStringList): Boolean;
 {$ENDIF}
 
 function IsWinNT : boolean;
@@ -1177,26 +1177,21 @@ begin
 end;
 {$EndIf}
 
-procedure Split(const str1:string;const sep:string;var LT:TStringList);
+function StrToArrays(str, r: string; var temp: TStringList): Boolean;
 var
-   i:Integer; {Holds the Real Pos}
-   t:String; {Holds the String}
-   i2:integer; {Holds the second pos}
+  j: Integer;
 begin
-     i:=1;
-     t:=str1;
-     repeat
-           t:=RightStr(t,Length(t)-i-Length(sep)+1);{Gets the right of the the string at the pos of the separator}
-           i:=Pos (sep,t);{Gets the pos(Holds it)}
-           i2:=Pos(sep,t); {The real pos(USes it)}
-           if LeftStr(t,i2-1)= '' then {Checks if the string is empty}
-           begin{Do nothing if is}
-           end
-           else
-           begin
-                LT.Add(LeftStr(t,i2-1)); {Adds to the TStringList}
-           end;
-     until i=0;{^Does above until the no more seperators}
+  if temp <> nil then
+  begin
+    temp.Clear;
+    while str <> '' do
+    begin
+      j := Pos(r, str);
+      if j = 0 then j := Length(str) + 1;
+      temp.Add(Copy(Str, 1, j - 1));
+      Delete(Str, 1, j + Length(r) - 1);
+    end;
+  end;
 end;
 
 

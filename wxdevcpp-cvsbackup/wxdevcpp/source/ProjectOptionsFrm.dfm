@@ -40,6 +40,8 @@ object frmProjectOptions: TfrmProjectOptions
       0202020202020202031918030202020202020202020202020319190302020202
       0202020202020202020303020202020202020202020202020202020202020202
       0202}
+    ParentShowHint = False
+    ShowHint = True
     OnClick = btnAddProfileSetClick
   end
   object btnDelProfileSet: TSpeedButton
@@ -79,6 +81,8 @@ object frmProjectOptions: TfrmProjectOptions
       0202020202020202020202020202020202020202020202020202020202020202
       0202020202020202020202020202}
     NumGlyphs = 2
+    ParentShowHint = False
+    ShowHint = True
     OnClick = btnDelProfileSetClick
   end
   object btnRenameProfileSet: TSpeedButton
@@ -111,6 +115,8 @@ object frmProjectOptions: TfrmProjectOptions
       6562085E44002C3418050518015758595A5B5C5F3C00323A18050518014F534B
       503F144D0046003E180505180101010101015452174913401805050518181818
       1818181818181818050505050505050505050505050505050505}
+    ParentShowHint = False
+    ShowHint = True
     OnClick = btnRenameProfileSetClick
   end
   object Label2: TLabel
@@ -125,7 +131,7 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 22
     Height = 22
-    Hint = 'Copy and Create the selected profile set'
+    Hint = 'Copy Selected and Create a new profile set'
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
       18000000000000030000120B0000120B00000000000000000000FF00FFFF00FF
@@ -153,6 +159,8 @@ object frmProjectOptions: TfrmProjectOptions
       FEFEFEFEFEFEFEFCFBFEFAF6A0675BE5A154DC832AFF00FFFF00FFFF00FFFF00
       FFFF00FFFF00FFFF00FFE1A577D1926DD1926DD1926DD1926DD1926DA0675BEB
       9E43FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
+    ParentShowHint = False
+    ShowHint = True
     OnClick = btnCopyProfileSetClick
   end
   object btnOk: TBitBtn
@@ -208,7 +216,8 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 35
     Width = 537
     Height = 305
-    ActivePage = tabGeneral
+    ActivePage = tabCompOpts
+    TabIndex = 3
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -617,7 +626,7 @@ object frmProjectOptions: TfrmProjectOptions
         Width = 450
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -1458,7 +1467,7 @@ object frmProjectOptions: TfrmProjectOptions
           Width = 160
           Height = 21
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 4
         end
       end

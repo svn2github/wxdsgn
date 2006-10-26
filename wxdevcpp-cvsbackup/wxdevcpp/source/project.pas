@@ -203,6 +203,7 @@ type
     procedure LoadProfiles;
     procedure SaveLayout;
     procedure SaveUnitLayout(e: TEditor; Index: integer);
+    function GetExecutableNameExt(projProfile:TProjProfile): string;
     function MakeProjectNode: TTreeNode;
     function MakeNewFileNode(s: string; IsFolder: boolean; NewParent: TTreeNode): TTreeNode;
     procedure BuildPrivateResource(ForceSave: boolean = False);
@@ -1734,21 +1735,21 @@ begin
   result := fUnits.Indexof(t);
 end;
 
-function TProject.GetExecutableName: string;
+function TProject.GetExecutableNameExt(projProfile:TProjProfile): string;
 var
   Base: string;
 begin
-  if CurrentProfile.OverrideOutput and (CurrentProfile.OverridenOutput <> '') then
-    Base := ExtractFilePath(Filename) + CurrentProfile.OverridenOutput
+  if projProfile.OverrideOutput and (projProfile.OverridenOutput <> '') then
+    Base := ExtractFilePath(Filename) + projProfile.OverridenOutput
   else
     Base := ChangeFileExt(Filename, '');
 
   // only mess with file extension if not supplied by the user
   // if he supplied one, then we assume he knows what he's doing...
   if ExtractFileExt(Base) = '' then begin
-    if CurrentProfile.typ = dptStat then
+    if projProfile.typ = dptStat then
       result := ChangeFileExt(Base, LIB_EXT)
-    else if CurrentProfile.typ = dptDyn then
+    else if projProfile.typ = dptDyn then
       result := ChangeFileExt(Base, DLL_EXT)
     else
       result := ChangeFileExt(Base, EXE_EXT);
@@ -1756,21 +1757,27 @@ begin
   else
     result := Base;
 
-  if Length(CurrentProfile.ExeOutput) > 0 then begin
-    if not DirectoryExists(GetRealPath(SubstituteMakeParams(CurrentProfile.ExeOutput), GetDirectory)) then
+  if Length(projProfile.ExeOutput) > 0 then begin
+    if not DirectoryExists(GetRealPath(SubstituteMakeParams(projProfile.ExeOutput), GetDirectory)) then
         try
-          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(CurrentProfile.ExeOutput),GetDirectory));
+          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(projProfile.ExeOutput),GetDirectory));
         except
           MessageDlg('Could not create executable output directory: "'
-            + CurrentProfile.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
+            + projProfile.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
           exit;
         end;
-    Result := GetRealPath(IncludeTrailingPathDelimiter(CurrentProfile.ExeOutput) +
+    Result := GetRealPath(IncludeTrailingPathDelimiter(projProfile.ExeOutput) +
       ExtractFileName(Result));
   end;
 
   //Replace the MAKE command parameters
   Result := SubstituteMakeParams(Result);
+end;
+
+
+function TProject.GetExecutableName: string;
+begin
+  Result:=GetExecutableNameExt(CurrentProfile);
 end;
 
 function TProject.GetFullUnitFileName(const index: integer): string;
