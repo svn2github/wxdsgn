@@ -820,10 +820,8 @@ begin
     Filename := s;
     New := True;
     Editor := nil;
-    { begin XXXKF changed }
     CurNode := MakeNewFileNode(ExtractFileName(FileName), false, ParentNode);
     NewUnit.Node := CurNode;
-    { end XXXKF changed }
     result := fUnits.Add(NewUnit);
     CurNode.Data := pointer(result);
     Dirty := TRUE;
@@ -2137,8 +2135,6 @@ begin
   Options.Free;
 end;
 
-{ begin XXXKF changed }
-
 procedure TProject.RebuildNodes;
 var
   idx: integer;
@@ -2189,7 +2185,6 @@ begin
   fNode.Expand(False);
   MainForm.ProjectView.Items.EndUpdate;
 end;
-{ end XXXKF changed }
 
 procedure TProject.UpdateFolders;
   procedure RunNode(Node: TTreeNode);
