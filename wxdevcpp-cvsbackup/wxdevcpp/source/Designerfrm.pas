@@ -44,7 +44,7 @@ uses
 
 type
 
-  TfrmNewForm = class(TForm, IWxComponentInterface)
+  TfrmNewForm = class(TForm, IWxComponentInterface,IWxDesignerFormInterface)
     procedure CreateInitVars;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -127,6 +127,9 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
     procedure SetDesignerType(Value: TWxDesignerType);
+    //Form Interface functions
+    function GetFormName: string;
+    procedure SetFormName(StrValue: string);
 
   published
     property EVT_CHAR: string Read FEVT_CHAR Write FEVT_CHAR;
@@ -1709,6 +1712,16 @@ begin
     Wx_Class := 'wxWizard';
   FWxDesignerType := Value;
 
+end;
+
+function TfrmNewForm.GetFormName: string;
+begin
+  Result:=FWx_Name;
+end;
+
+procedure TfrmNewForm.SetFormName(StrValue: string);
+begin
+  FWx_Name:=strValue;
 end;
 
 end.

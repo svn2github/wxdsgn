@@ -210,8 +210,8 @@ begin
          fOptions[0].SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
 
          // RNC -- 07-23-04 Added the ability to set an output dir in a template
-         fOptions[0].ExeOutput:= ReadString(cProject, 'ExeOutput', '');
-         fOptions[0].ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
+         fOptions[0].ExeOutput:= StripInvalidChars(ReadString(cProject, 'ExeOutput', ''));
+         fOptions[0].ObjectOutput:= StripInvalidChars(ReadString(cProject, 'ObjectOutput', ''));
          // units are read on demand
       end
       else // read new style
@@ -234,8 +234,8 @@ begin
           NewProfile.ResourceIncludes.DelimitedText:=ReadString(CurrenProfileName,'ResourceIncludes','');
           NewProfile.MakeIncludes.DelimitedText:=ReadString(CurrenProfileName,'MakeIncludes','');
           NewProfile.Icon:= ReadString(CurrenProfileName,'Icon','');
-          NewProfile.ExeOutput := ReadString(CurrenProfileName,'ExeOutput','');
-          NewProfile.ObjectOutput := ReadString(CurrenProfileName,'ObjectOutput','');
+          NewProfile.ExeOutput := StripInvalidChars(ReadString(CurrenProfileName,'ExeOutput',''));
+          NewProfile.ObjectOutput := StripInvalidChars(ReadString(CurrenProfileName,'ObjectOutput',''));
           NewProfile.OverrideOutput := ReadBool(CurrenProfileName,'OverrideOutput',false);
           NewProfile.OverridenOutput := ReadString(CurrenProfileName,'OverrideOutputName','');
           NewProfile.HostApplication := ReadString(CurrenProfileName,'HostApplication','');

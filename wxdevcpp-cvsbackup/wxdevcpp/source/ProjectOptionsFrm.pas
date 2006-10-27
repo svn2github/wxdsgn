@@ -500,8 +500,8 @@ begin
 
     typ:= lstType.ItemIndex;
 
-    ExeOutput := edExeOutput.Text;
-    ObjectOutput := edObjOutput.Text;
+    ExeOutput := StripInvalidChars(edExeOutput.Text);
+    ObjectOutput := StripInvalidChars(edObjOutput.Text);
     OverrideOutput := chkOverrideOutput.Checked;
     OverridenOutput := edOverridenOutput.Text;
     if cbUseCustomMakefile.Checked and FileExists(edCustomMakefile.Text) then
@@ -856,7 +856,7 @@ begin
   else
     Dir:=fProject.Directory;
   SelectDirectory('Select Directory', '', Dir);
-  edExeOutput.Text := ExtractRelativePath(fProject.Directory, Dir);
+  edExeOutput.Text := StripInvalidChars(ExtractRelativePath(fProject.Directory, Dir));
 end;
 
 procedure TfrmProjectOptions.BrowseObjDirClick(Sender: TObject);
@@ -873,7 +873,7 @@ begin
   else
     Dir:=fProject.Directory;
   SelectDirectory('Select Directory', '', Dir);
-  edObjOutput.Text := ExtractRelativePath(fProject.Directory, Dir);
+  edObjOutput.Text := StripInvalidChars(ExtractRelativePath(fProject.Directory, Dir));
 end;
 
 procedure TfrmProjectOptions.btnMakeBrowseClick(Sender: TObject);
@@ -1381,8 +1381,8 @@ begin
   //TODO: Guru: Fix the Output Directory to have only valid characters
   NewProfile:=TProjProfile.Create;
   NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=S;
-  NewProfile.ExeOutput:=S;
+  NewProfile.ObjectOutput:=StripInvalidChars(S);
+  NewProfile.ExeOutput:=StripInvalidChars(S);
   fProfiles.Add(NewProfile);
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
 end;
@@ -1429,8 +1429,8 @@ begin
   NewProfile:=TProjProfile.Create;
   NewProfile.CopyProfileFrom(CurrentProfile);
   NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=S;
-  NewProfile.ExeOutput:=S;
+  NewProfile.ObjectOutput:=StripInvalidChars(S);
+  NewProfile.ExeOutput:=StripInvalidChars(S);
   fProfiles.Add(NewProfile);
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
   cmbProfileSetComp.ItemIndex:=cmbProfileSetComp.Items.count-1;
