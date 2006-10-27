@@ -7,8 +7,8 @@
 //
 //---------------------------------------------------------------------------
 
-#ifndef __%PROJECT_NAME%App_h__
-#define __%PROJECT_NAME%App_h__
+#ifndef __%CAP_CLASS_NAME%App_h__
+#define __%CAP_CLASS_NAME%App_h__
 
 #ifdef __BORLANDC__
 	#pragma hdrstop
