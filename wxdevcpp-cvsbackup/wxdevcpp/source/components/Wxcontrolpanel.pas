@@ -18,10 +18,10 @@ unit WxControlPanel;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls;
+  Forms, Graphics, ExtCtrls,wxUtils;
 
 type
-  TWxControlPanel = class(TPanel)
+  TWxControlPanel = class(TPanel,IWxControlPanelInterface)
   private
     { Private fields of TWxControlPanel }
 

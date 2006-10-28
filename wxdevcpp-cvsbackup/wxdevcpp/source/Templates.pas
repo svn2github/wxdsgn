@@ -161,6 +161,7 @@ begin
      if (fVersion < 3) then
      begin
         NewProfile:=TProjProfile.Create;
+        NewProfile.ProfileName:='MingW';
         fOptions.Add(NewProfile);
      end;
 
@@ -212,6 +213,15 @@ begin
          // RNC -- 07-23-04 Added the ability to set an output dir in a template
          fOptions[0].ExeOutput:= StripInvalidChars(ReadString(cProject, 'ExeOutput', ''));
          fOptions[0].ObjectOutput:= StripInvalidChars(ReadString(cProject, 'ObjectOutput', ''));
+         if (trim(fOptions[0].ExeOutput) = '') and (trim(fOptions[0].ObjectOutput) <> '') then
+          fOptions[0].ExeOutput:=StripInvalidChars(fOptions[0].ObjectOutput)
+         else if (trim(fOptions[0].ExeOutput) <> '') and (trim(fOptions[0].ObjectOutput) = '') then
+          fOptions[0].ObjectOutput:=StripInvalidChars(fOptions[0].ExeOutput)
+         else if ((fOptions[0].ExeOutput = '') and (fOptions[0].ObjectOutput = '') ) then
+         begin
+          fOptions[0].ObjectOutput:=StripInvalidChars(fOptions[0].ProfileName);
+          fOptions[0].ExeOutput:=StripInvalidChars(fOptions[0].ProfileName);
+         end;
          // units are read on demand
       end
       else // read new style

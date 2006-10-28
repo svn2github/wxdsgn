@@ -998,7 +998,12 @@ begin
         if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
           fProfiles[0].ExeOutput:=StripInvalidChars(fProfiles[0].ObjectOutput)
         else if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
-          fProfiles[0].ObjectOutput:=StripInvalidChars(fProfiles[0].ExeOutput);
+          fProfiles[0].ObjectOutput:=StripInvalidChars(fProfiles[0].ExeOutput)
+        else if ((fProfiles[0].ExeOutput = '') and (fProfiles[0].ObjectOutput = '') ) then
+        begin
+          fProfiles[0].ObjectOutput:=StripInvalidChars(fProfiles[0].ProfileName);
+          fProfiles[0].ExeOutput:=StripInvalidChars(fProfiles[0].ProfileName);
+        end;
 
         fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
         fProfiles[0].OverridenOutput := Read('OverrideOutputName', '');

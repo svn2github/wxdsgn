@@ -21,7 +21,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, ExtCtrls, WxUtils, wxCalendarBase,WxSizerPanel;
 
 type
-  TWxCalendarCtrl = class(TrmCalendar, IWxComponentInterface)
+  TWxCalendarCtrl = class(TrmCustomCalendar, IWxComponentInterface,IWxControlPanelInterface)
   private
     { Private fields of TWxCalendarCtrl }
     {Property Listing}

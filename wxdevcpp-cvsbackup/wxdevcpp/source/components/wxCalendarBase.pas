@@ -246,6 +246,7 @@ end;
 destructor TrmCustomCalendar.destroy;
 begin
   fCalendarGrid.free;
+  fCalendarGrid:=nil;
   fLabel1.free;
   fCalendarFont.free;
   fCalendarColors.free;

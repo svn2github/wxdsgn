@@ -31,13 +31,17 @@ type
     { Protected fields of TWxSizerPanel }
 
     { Protected methods of TWxSizerPanel }
+    procedure Click; override;
+    procedure KeyPress(var Key: char); override;
+    procedure Loaded; override;
+    procedure Paint; override;
 
   public
     { Public fields and properties of TWxSizerPanel }
 
     { Public methods of TWxSizerPanel }
     constructor Create(AOwner: TComponent); override;
-    procedure Layout; overload; virtual; abstract;
+    destructor Destroy; override;
 
   published
     { Published properties of TWxSizerPanel }
@@ -67,16 +71,37 @@ begin
   RegisterComponents('Standard', [TWxSizerPanel]);
 end;
 
+{ Override OnClick handler from TPanel }
+procedure TWxSizerPanel.Click;
+begin
+  inherited Click;
+end;
+
+{ Override OnKeyPress handler from TPanel }
+procedure TWxSizerPanel.KeyPress(var Key: char);
+begin
+  inherited KeyPress(Key);
+end;
+
 constructor TWxSizerPanel.Create(AOwner: TComponent);
 begin
-  //Call the Create method of the container's parent class
   inherited Create(AOwner);
-
-{$IFDEF COMPILER_7_UP}
-  //Set the background colour for Delphi to draw
-  Self.ParentColor := True;
-  Self.ParentBackground := True;
-{$ENDIF}
 end;
+
+destructor TWxSizerPanel.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TWxSizerPanel.Loaded;
+begin
+  inherited Loaded;
+end;
+
+procedure TWxSizerPanel.Paint;
+begin
+  inherited Paint;
+end;
+
 
 end.

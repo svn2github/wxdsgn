@@ -849,14 +849,21 @@ var
 {$IFDEF LINUX}
   Dir: WideString;
 {$ENDIF}
+ TempDir:String;
 begin
   //todo: Check if we need to use CUrrent Profile here
   if fProject.CurrentProfile.ExeOutput<>'' then
     Dir:=ExpandFileto(fProject.CurrentProfile.ExeOutput, fProject.Directory)
   else
     Dir:=fProject.Directory;
-  SelectDirectory('Select Directory', '', Dir);
-  edExeOutput.Text := StripInvalidChars(ExtractRelativePath(fProject.Directory, Dir));
+  if SelectDirectory('Select Directory', '', Dir) = false then
+    exit;
+  TempDir:=ExtractRelativePath(fProject.Directory, Dir);
+  if DirectoryExists(TempDir) then
+    TempDir:=GetShortName(TempDir)
+  else
+    TempDir:=StripInvalidChars(TempDir);
+  edExeOutput.Text := TempDir;
 end;
 
 procedure TfrmProjectOptions.BrowseObjDirClick(Sender: TObject);
@@ -867,13 +874,20 @@ var
 {$IFDEF LINUX}
   Dir: WideString;
 {$ENDIF}
+ TempDir:String;
 begin
   if fProject.CurrentProfile.ObjectOutput<>'' then
     Dir:=ExpandFileto(fProject.CurrentProfile.ObjectOutput, fProject.Directory)
   else
     Dir:=fProject.Directory;
-  SelectDirectory('Select Directory', '', Dir);
-  edObjOutput.Text := StripInvalidChars(ExtractRelativePath(fProject.Directory, Dir));
+  if SelectDirectory('Select Directory', '', Dir) = false then
+    exit;
+  TempDir:=ExtractRelativePath(fProject.Directory, Dir);
+  if DirectoryExists(TempDir) then
+    TempDir:=GetShortName(TempDir)
+  else
+    TempDir:=StripInvalidChars(TempDir);
+  edObjOutput.Text := TempDir;
 end;
 
 procedure TfrmProjectOptions.btnMakeBrowseClick(Sender: TObject);

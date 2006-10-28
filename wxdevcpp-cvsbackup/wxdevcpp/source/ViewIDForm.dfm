@@ -56,7 +56,17 @@ object ViewControlIDsForm: TViewControlIDsForm
       SortType = stText
       TabOrder = 0
       ViewStyle = vsReport
+      OnAdvancedCustomDrawItem = ControlListBoxAdvancedCustomDrawItem
     end
+  end
+  object cbHideZeroValueID: TCheckBox
+    Left = 8
+    Top = 232
+    Width = 145
+    Height = 17
+    Caption = 'Hide ID with Zero Values'
+    TabOrder = 2
+    OnClick = cbHideZeroValueIDClick
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -86,7 +96,7 @@ object ViewControlIDsForm: TViewControlIDsForm
     AutoDetect = False
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 8
-    Top = 228
+    Left = 48
+    Top = 164
   end
 end

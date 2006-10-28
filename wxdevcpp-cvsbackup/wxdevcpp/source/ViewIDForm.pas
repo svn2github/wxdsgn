@@ -12,10 +12,15 @@ type
     XPMenu: TXPMenu;
     GroupBox1: TGroupBox;
     ControlListBox: TListView;
+    cbHideZeroValueID: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btCloseClick(Sender: TObject);
     procedure btRefreshClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ControlListBoxAdvancedCustomDrawItem(Sender: TCustomListView;
+      Item: TListItem; State: TCustomDrawState; Stage: TCustomDrawStage;
+      var DefaultDraw: Boolean);
+    procedure cbHideZeroValueIDClick(Sender: TObject);
   private
     { Private declarations }
     FMainControl:TWinControl;
@@ -44,8 +49,8 @@ end;
 
 procedure TViewControlIDsForm.PopulateControlList;
 var
-  I: Integer;
-  lstitem:TListItem ;
+  I,J: Integer;
+  lstitem,lstitem2:TListItem ;
   wxcompInterface: IWxComponentInterface;
 begin
     if FMainControl = nil then
@@ -56,12 +61,36 @@ begin
     begin
         if (FMainControl.Components[i].GetInterface(IID_IWxComponentInterface,wxcompInterface)) and (wxcompInterface.GetIDName <> '') then
         begin
+            if (0 = wxcompInterface.GetIDValue) and (cbHideZeroValueID.Checked) then
+              continue; 
             lstitem := ControlListBox.Items.Add;
             lstitem.Caption:=IntToStr(wxcompInterface.GetIDValue);
             lstitem.SubItems.Add(wxcompInterface.GetIDName);
             lstitem.SubItems.Add(FMainControl.Components[i].Name);
+            lstitem.SubItems.Add('');
         end;
     end;    // for
+    //Find Duplicates and change the Color
+    for I := 0 to ControlListBox.Items.Count - 1 do    // Iterate
+    begin
+        lstitem := ControlListBox.Items[i];
+        if ((lstitem.Caption = '') or (lstitem.Caption = '0')) then
+          continue;
+        for J := 0 to ControlListBox.Items.Count - 1 do    // Iterate
+        begin
+          if J = I then
+            continue;
+          lstitem2 := ControlListBox.Items[J];
+          if ((lstitem2.Caption = '') or (lstitem2.Caption = '0')) then
+            continue;
+          if lstitem.Caption = lstitem2.Caption then
+          begin
+            lstitem2.SubItems[2]:='d';
+            lstitem.SubItems[2]:='d';
+          end;
+        end;
+    end;    // for
+
 end;
 
 procedure TViewControlIDsForm.btCloseClick(Sender: TObject);
@@ -82,6 +111,29 @@ begin
     XPMenu.Active := true
   else
     XPMenu.Active := false;
+end;
+
+procedure TViewControlIDsForm.ControlListBoxAdvancedCustomDrawItem(
+  Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+var
+  strItemValue:String;
+begin
+
+    if item.subitems.count < 3 then
+        exit;
+
+    strItemValue:=item.subitems[2];
+    if ((strItemValue = 'd') or (strItemValue = 'D')) then
+        ControlListBox.Canvas.brush.color:=$00EAADEA // { $00EAADEA}$006963B6
+//    else
+//        if strItemValue = 'S' then
+//          lstvwUrls.Canvas.brush.color:=$00EAEAAD; //{ $0099CD32;}$0093CAB1;
+end;
+
+procedure TViewControlIDsForm.cbHideZeroValueIDClick(Sender: TObject);
+begin
+  PopulateControlList;
 end;
 
 end.

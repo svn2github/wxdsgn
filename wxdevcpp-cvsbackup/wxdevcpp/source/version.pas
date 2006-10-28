@@ -804,6 +804,9 @@ begin
         end;
       end;
     end;
+
+    Result:=strFSDKInstallDir;
+    
     strLst.Destroy;
     reg.CloseKey;
     reg2.CloseKey;
@@ -829,75 +832,119 @@ Begin
     reg2:=TRegistry.Create;
     reg.RootKey:=HKEY_LOCAL_MACHINE;
     reg2.RootKey:=HKEY_LOCAL_MACHINE;
-
-    TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VC\',[VersionString]);
-    if (reg.OpenKey(TempString,false) = false) then
-       exit;
-    strVCPPInstallDir:=reg.ReadString('ProductDir');
-    reg.CloseKey;
-
-    TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VS\',[VersionString]);
-    if (reg.OpenKey(TempString,false) = false) then
-       exit;
-    strVSInstallDir:=reg.ReadString('ProductDir');
-    reg.CloseKey;
-
-    if (strVCPPInstallDir ='') then
-    begin
-      if versionString = '7.1' then
-        strVCPPInstallDir:='c:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\';
-      if versionString = '8.0' then
-        strVCPPInstallDir:='c:\Program Files\Microsoft Visual Studio\Vc8\';
-    end;
-
-    TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\FRAMEWORKSDK\';
-    if (reg.OpenKey(TempString,false)) then
-    begin
-         strFSDKInstallDir:=reg.ReadString(VersionString);
-         if trim(strFSDKInstallDir) = '' then
-         begin
-            strFSDKInstallDir:=reg.ReadString('8.0');
-            if trim(strFSDKInstallDir) = '' then
-              strFSDKInstallDir:=reg.ReadString('7.1');
-         end;
-    end;
-    reg.CloseKey;
-
-    strWinSDKDir := GetWinSDKDir;
-
-    TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\VC\VC_OBJECTS_PLATFORM_INFO\Win32\Directories\',[VersionString]);
-    if (reg.OpenKey(TempString,false)) then
-    begin
-      case  PathType of
-      0:
-        begin
-          strInclude:=reg.ReadString('Include Dirs');
-          if Trim(strInclude) = '' then
-            strInclude:='$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
-          strInclude:=strInclude+';$(WinSDKDir)include;';
-          Result:=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
-        end;
-      1:
-        begin
-          strBin:=reg.ReadString('Path Dirs');
-          if Trim(strBin) = '' then
-            strBin:='$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
-          strBin:= strBin +';$(WinSDKDir)bin;';
-          Result:=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
-        end;
-      2:
-        begin
-          strLib:=reg.ReadString('Library Dirs');
-          if Trim(strLib) = '' then
-            strLib:= '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
-          strLib:= strLib +';$(WinSDKDir)lib;';
-          Result:=GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
-        end;
+    try
+      TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VC\',[VersionString]);
+      if (reg.OpenKey(TempString,false) = false) then
+        strVCPPInstallDir :=''
+      else
+      begin
+        strVCPPInstallDir:=reg.ReadString('ProductDir');
+        reg.CloseKey;
       end;
-    end;
-  reg.CloseKey;
+      
+      if strVCPPInstallDir = '' then
+      begin
+        TempString :='SOFTWARE\Microsoft\VisualStudio\SxS\VC7\';
+        if reg2.OpenKey(TempString,false) = false then
+        begin
+          reg.destroy;
+          reg2.destroy;
+          exit;
+        end;
+        strVCPPInstallDir:=reg2.ReadString(versionString);
+        reg2.CloseKey;
+      end;
+
+      TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VS\',[VersionString]);
+      if (reg.OpenKey(TempString,false) = false) then
+        strVSInstallDir:=''
+      else
+      begin
+        strVSInstallDir:=reg.ReadString('ProductDir');
+        reg.CloseKey;
+      end;
+      
+      if strVSInstallDir = '' then
+      begin
+        TempString :='SOFTWARE\Microsoft\VisualStudio\SxS\VS7\';
+        if reg2.OpenKey(TempString,false) = false then
+        begin
+          reg.destroy;
+          reg2.destroy;
+          exit;
+        end;
+        strVSInstallDir:=reg2.ReadString(versionString);
+        reg2.CloseKey;
+      end;
+
+      if (strVCPPInstallDir ='') then
+      begin
+        if versionString = '7.1' then
+          strVCPPInstallDir:='c:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\';
+        if versionString = '8.0' then
+          strVCPPInstallDir:='c:\Program Files\Microsoft Visual Studio\Vc8\';
+      end;
+
+      TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\FRAMEWORKSDK\';
+      if (reg.OpenKey(TempString,false)) then
+      begin
+          strFSDKInstallDir:=reg.ReadString(VersionString);
+          if trim(strFSDKInstallDir) = '' then
+          begin
+              strFSDKInstallDir:=reg.ReadString('8.0');
+              if trim(strFSDKInstallDir) = '' then
+                strFSDKInstallDir:=reg.ReadString('7.1');
+           end;
+      end;
+      reg.CloseKey;
+
+      strWinSDKDir := GetWinSDKDir;
+
+      TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\VC\VC_OBJECTS_PLATFORM_INFO\Win32\Directories\',[VersionString]);
+      if (reg.OpenKey(TempString,false)) then
+      begin
+        strInclude:=reg.ReadString('Include Dirs');
+        strBin:=reg.ReadString('Path Dirs');
+        strLib:=reg.ReadString('Library Dirs');
+        reg.CloseKey;
+      end
+      else
+      begin
+        strInclude:='';
+        strBin:='';
+        strLib:='';
+      end;
+      case  PathType of
+        0:
+          begin
+
+            if Trim(strInclude) = '' then
+              strInclude:='$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
+            strInclude:=strInclude+';$(WinSDKDir)include;';
+            Result:=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
+          end;
+        1:
+          begin
+
+            if Trim(strBin) = '' then
+              strBin:='$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
+            strBin:= strBin +';$(WinSDKDir)bin;';
+            Result:=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
+          end;
+        2:
+          begin
+            if Trim(strLib) = '' then
+              strLib:= '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
+            strLib:= strLib +';$(WinSDKDir)lib;';
+            Result:=GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
+          end;
+      end;
+  finally
+  end;
+
   reg.destroy;
   reg2.destroy;
+
 end;
 
 function GetVC2005Include:String;

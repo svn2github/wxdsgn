@@ -941,6 +941,7 @@ type
     procedure ELDesigner1ControlHint(Sender: TObject; AControl: TControl;var AHint: string);
     procedure ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
     procedure ELDesigner1ControlInserting(Sender: TObject;var AControlClass: TControlClass);
+    procedure ELDesigner1ControlDoubleClick(Sender: TObject);
     procedure ELDesigner1KeyDown(Sender: TObject; var Key: Word;Shift: TShiftState);
     procedure ELDesigner1Modified(Sender: TObject);
     procedure JvInspPropertiesAfterItemCreate(Sender: TObject;Item: TJvCustomInspectorItem);
@@ -1233,7 +1234,7 @@ uses
   ViewIDForm,
   WxToggleButton, wxRadioBox,WxOwnerDrawnComboBox,wxStc,wxRichTextCtrl,wxTreeListCtrl,wxCalendarCtrl,
   wxTextEntryDialog,WxPasswordEntryDialog,WxSingleChoiceDialog,WxMultiChoiceDialog,
-  wxHyperLinkCtrl,wxDialUpManager,wxHtmlEasyPrinting,WxMediaCtrl
+  wxHyperLinkCtrl,wxDialUpManager,wxHtmlEasyPrinting,WxMediaCtrl,WxBitmapComboBox
 {$ENDIF}
   ;
 {$ENDIF}
@@ -1641,6 +1642,8 @@ begin
     OnControlHint := ELDesigner1ControlHint;
     OnControlInserted := ELDesigner1ControlInserted;
     OnControlInserting := ELDesigner1ControlInserting;
+    OnDblClick:=ELDesigner1ControlDoubleClick;
+    
     OnKeyDown := ELDesigner1KeyDown;
     OnModified := ELDesigner1Modified;
   end;
@@ -8955,7 +8958,7 @@ begin
   RegisterClasses([TWxOpenFileDialog,TWxSaveFileDialog,TWxFontDialog, TwxMessageDialog,TWxProgressDialog,TWxPrintDialog,TWxFindReplaceDialog,TWxDirDialog,TWxColourDialog]);
   RegisterClasses([TWxPageSetupDialog]);
   RegisterClasses([TwxTimer]);
-  RegisterClasses([TwxTreeListCtrl,TWxRichTextCtrl,TWxStyledTextCtrl,TWxCalendarCtrl,TWxOwnerDrawnComboBox,TWxTextEntryDialog,TWxPasswordEntryDialog,TWxSingleChoiceDialog,TWxMultiChoiceDialog,TwxHyperLinkCtrl,TwxDialUpManager,TwxHtmlEasyPrinting,TWxMediaCtrl]);
+  RegisterClasses([TwxTreeListCtrl,TWxRichTextCtrl,TWxStyledTextCtrl,TWxCalendarCtrl,TWxOwnerDrawnComboBox,TWxTextEntryDialog,TWxPasswordEntryDialog,TWxSingleChoiceDialog,TWxMultiChoiceDialog,TwxHyperLinkCtrl,TwxDialUpManager,TwxHtmlEasyPrinting,TWxMediaCtrl,TWxBitmapComboBox]);
   RegisterClasses([TMainMenu]);
 
 end;
@@ -8984,13 +8987,19 @@ begin
     WriteString('Palette', 'Sizers','TWxBoxSizer;TWxStaticBoxSizer;TWxGridSizer;TWxFlexGridSizer;');
     strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxToggleButton;TWxEdit;TWxMemo;TWxCheckBox;TWxChoice;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;TWxRadioBox;TWxDatePickerCtrl;';
     strTemp:=strTemp+'TWxSlider;TWxStaticLine;TWxStaticBitmap;TWxStatusBar;TWxChecklistbox;TWxSpinCtrl;';
+    strTemp:=strTemp+'TWxOwnerDrawnComboBox;TWxCalendarCtrl;TWxRichTextCtrl;TWxStyledTextCtrl;TwxHyperLinkCtrl;';
+
     WriteString('Palette', 'Controls',strTemp);
+
     WriteString('Palette', 'Window','TWxPanel;TWxNoteBook;TWxNoteBookPage;TWxGrid;TWxScrolledWindow;TWxHtmlWindow;TWxSplitterWindow;');
     WriteString('Palette', 'Toolbar','TWxToolBar;TWxToolButton;TWxSeparator;TWxEdit;TWxCheckBox;TWxRadioButton;TWxComboBox;TWxSpinCtrl;');
     WriteString('Palette', 'Menu','TWxMenuBar;TWxPopupMenu;');
-    WriteString('Palette', 'Dialogs','TWxOpenFileDialog;TWxSaveFileDialog;TWxProgressDialog;TWxColourDialog;TWxDirDialog;TWxFindReplaceDialog;TWxFontDialog;TWxPageSetupDialog;TWxPrintDialog;TWxMessageDialog;');
-    WriteString('Palette', 'System','TWxTimer;');
-    WriteString('Palette', 'UnOfficial','TwxTreeListCtrl;TWxRichTextCtrl;TWxStyledTextCtrl;TWxCalendarCtrl;TWxOwnerDrawnComboBox;TWxTextEntryDialog;TWxPasswordEntryDialog;TWxSingleChoiceDialog;TWxMultiChoiceDialog;TwxHyperLinkCtrl;TwxDialUpManager;TwxHtmlEasyPrinting;TWxMediaCtrl;');
+    strTemp:='TWxOpenFileDialog;TWxSaveFileDialog;TWxProgressDialog;TWxColourDialog;TWxDirDialog;TWxFindReplaceDialog;';
+    strTemp:=strTemp+'TWxFontDialog;TWxPageSetupDialog;TWxPrintDialog;TWxMessageDialog;TWxTextEntryDialog;TWxPasswordEntryDialog;TWxSingleChoiceDialog;TWxMultiChoiceDialog;TwxHtmlEasyPrinting;';
+    WriteString('Palette', 'Dialogs',strTemp);
+    WriteString('Palette', 'System','TWxTimer;TWxDialUpManager;');
+    WriteString('Palette', 'MMedia','TWxMediaCtrl;');
+    WriteString('Palette', 'UnOfficial','TWxTreeListCtrl;');
     WriteString('Version','IniVersion',DEVCPP_VERSION);
   end;
   IniFile.Destroy;
@@ -9422,6 +9431,7 @@ var
   wxcompInterface: IWxComponentInterface;
   strClass: string;
   e: TEditor;
+  wxControlPanelInterface:IWxControlPanelInterface;
 begin
   FirstComponentBeingDeleted := '';
   if ELDesigner1.SelectedControls.Count > 0 then
@@ -9486,12 +9496,15 @@ begin
     if compObj is TWinControl then
       //if we drop a control to image or other static controls that are derived
       //from TWxControlPanel
-      if TWinControl(compObj).Parent is TWxControlPanel then
+
+      if TWinControl(compObj).Parent.GetInterface(IID_IWxControlPanelInterface,wxControlPanelInterface) then
+      begin
         try
           if assigned(TWinControl(compObj).parent.parent) then
             TWinControl(compObj).parent:=TWinControl(compObj).parent.parent;
         except
         end;
+      end;
 
     try
       if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
@@ -9601,9 +9614,39 @@ begin
 
 end;
 
+procedure TMainForm.ELDesigner1ControlDoubleClick(Sender: TObject);
+var
+  i,nSlectedItem:Integer;
+begin
+  if JvInspEvents.Root.Count = 0 then
+    exit;
+  nSlectedItem:=-1;
+  for i:=0 to JvInspEvents.Root.Count -1 do
+  Begin
+      if JvInspEvents.Root.Items[i].Hidden = false then
+      begin
+        nSlectedItem:=i;
+        break;
+      end;
+  end;
+  if nSlectedItem = -1 then
+    exit;
+  if JvInspEvents.Root.Items[nSlectedItem].Data.AsString <> '' then
+    exit;
+
+  JvInspEvents.Show;
+  //If we dont select it then the Selection Event wont get fired
+  JvInspEvents.SelectedIndex:=JvInspEvents.Root.Items[nSlectedItem].DisplayIndex;
+  JvInspEvents.OnDataValueChanged:=nil;
+  JvInspEvents.Root.Items[nSlectedItem].Data.AsString:='<Add New Function>';
+  JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
+  JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
+  JvInspEventsDataValueChanged(nil,JvInspEvents.Root.Items[nSlectedItem].Data);  
+end;
+
 procedure TMainForm.ELDesigner1ControlInserting(Sender: TObject;
   var AControlClass: TControlClass);
-  
+
 var
       dlgInterface:IWxDialogNonInsertableInterface;
       tlbrInterface:IWxToolBarInsertableInterface;
@@ -10384,15 +10427,18 @@ begin
 
       if boolIsFilesDirty then
       begin
+        (*
         if MessageBox(Self.Handle, PChar('Adding a new event handler requires that the source files be saved,'#10#13 +
                                          'however, the files have not been saved to disk.'#10#13#10#13 +
                                          'Do you want to save the files now?'), PChar(Application.Title),
                       MB_ICONQUESTION or MB_YESNO or MB_TASKMODAL or MB_DEFBUTTON1) <> mrYES then
+
         begin
           Data.AsString := '';
           Exit;
         end;
-        
+        *)
+
         if e.IsDesignerHPPOpened then
           //This wont open a new editor window
           SaveFile(e.GetDesignerHPPEditor);
@@ -10427,6 +10473,10 @@ begin
           //CreateFunctionInEditor
           //Data.AsString := str;
           SetPropertyValue(componentInstance,propertyName,str);
+          JvInspEvents.OnDataValueChanged:=nil;
+          Data.AsString := str;
+          //JvInspEvents.Root.DoneEdit(true);
+          JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
           fstrCppFileToOpen:=e.GetDesignerCPPEditor.FileName;
         end
         else
@@ -10460,8 +10510,7 @@ begin
 
       if boolIsFilesDirty then
       begin
-        if MessageDlg('The corresponding source files have not been saved. '#10#13#10#13+
-                      'Do you want to save them before continuing?', mtConfirmation, [mbYes, mbNo], 0) = mrYES then
+        //if MessageDlg('The corresponding source files have not been saved. '#10#13#10#13+'Do you want to save them before continuing?', mtConfirmation, [mbYes, mbNo], 0) = mrYES then
         begin
           if e.IsDesignerHPPOpened then
             //This wont open a new editor window
@@ -10485,6 +10534,8 @@ begin
 
     if strNewValue = '<Remove Function>' then
       Data.AsString := '';
+
+    JvInspEvents.Root.DoneEdit(true);
 
     UpdateDefaultFormContent;
   except

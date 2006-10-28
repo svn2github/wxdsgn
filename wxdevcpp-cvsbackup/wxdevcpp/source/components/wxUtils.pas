@@ -43,6 +43,7 @@ const
   IID_IWxVariableAssignmentInterface: TGUID   = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
   IID_IWxValidatorInterface: TGUID            = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
   IID_IWxSplitterInterface: TGUID             = '{900F32A7-3864-4827-9039-85C053504BDB}';
+  IID_IWxControlPanelInterface: TGUID         = '{077d51a0-6628-11db-bd13-0800200c9a66}';
 
 var
    StringFormat : string;
@@ -197,6 +198,11 @@ type
   IWxSplitterInterface = Interface
     ['{900F32A7-3864-4827-9039-85C053504BDB}']
   end;
+
+  IWxControlPanelInterface = Interface
+    ['{077d51a0-6628-11db-bd13-0800200c9a66}']
+  end;
+
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
     wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW,
