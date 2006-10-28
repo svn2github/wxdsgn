@@ -30,6 +30,7 @@ uses
 
 const
   IID_IWxComponentInterface: TGUID            = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
+  IID_IWxDesignerFormInterface: TGUID         = '{3e8e18a0-6515-11db-bd13-0800200c9a66}';
   IID_IWxDialogNonInsertableInterface: TGUID  = '{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}';
   IID_IWxToolBarInsertableInterface: TGUID    = '{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}';
   IID_IWxToolBarNonInsertableInterface: TGUID = '{6A81CF27-1269-4BD6-9C5D-16F88293B66B}';
@@ -131,6 +132,13 @@ type
     function GetGenericColor(strVariableName:String): string;
     procedure SetGenericColor(strVariableName,strValue: string);
   end;
+
+  IWxDesignerFormInterface = interface
+    ['{3e8e18a0-6515-11db-bd13-0800200c9a66}']
+    function GetFormName: string;
+    procedure SetFormName(StrValue: string);
+  end;
+
 
   IWxDialogNonInsertableInterface = interface
     ['{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}']
@@ -537,6 +545,9 @@ type
     class procedure RegisterAsDefaultItem;
   end;
 
+function ConvertLibsToCurrentVersion(strValue:String):string;
+function Convert25LibsToCurrentVersion(strValue:String):string;
+function Convert26LibsToCurrentVersion(strValue:String):string;
 function GetGridSelectionToString(grdsel: TWxGridSelection): string;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
@@ -701,6 +712,22 @@ uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxTo
 constructor TWxValidatorString.Create;
 begin
   inherited Create(nil);
+end;
+
+function ConvertLibsToCurrentVersion(strValue:String):string;
+begin
+  Result:=Convert25LibsToCurrentVersion(strValue);
+  Result:=Convert26LibsToCurrentVersion(Result);
+  //
+end;
+function Convert25LibsToCurrentVersion(strValue:String):string;
+begin
+  Result:=StringReplace(strValue,'wxmsw25','wxmsw27',[rfReplaceAll]);
+end;
+
+function Convert26LibsToCurrentVersion(strValue:String):string;
+begin
+  Result:=StringReplace(strValue,'wxmsw26','wxmsw27',[rfReplaceAll]);
 end;
 
 function GetDateToString(dt:TDateTime):String;
@@ -2475,6 +2502,11 @@ begin
       Result := strB
     else
       Result := Result + ' | ' + strB;
+
+    if Result <> '' then
+    begin
+      Result := ',' + Result;
+    end;
 end;
 
 
