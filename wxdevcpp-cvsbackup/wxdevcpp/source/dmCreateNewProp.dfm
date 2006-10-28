@@ -80,6 +80,19 @@ object frmCreateFormProp: TfrmCreateFormProp
     Caption = 'Default Style'
     Transparent = True
   end
+  object Label4: TLabel
+    Left = 8
+    Top = 203
+    Width = 81
+    Height = 13
+    Caption = 'Compiler Profile ='
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
   object txtSaveTo: TEdit
     Left = 88
     Top = 56
@@ -226,9 +239,18 @@ object frmCreateFormProp: TfrmCreateFormProp
     State = cbChecked
     TabOrder = 16
   end
+  object ProfileNameSelect: TComboBox
+    Left = 90
+    Top = 201
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    ItemHeight = 13
+    TabOrder = 17
+  end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppRegistryStorage1
-    AppStoragePath = '%FORM_NAME%'
+    AppStoragePath = 'frmCreateFormProp\'
     StoredProps.Strings = (
       'txtAuthorName.Text'
       'txtClassName.Text'
@@ -237,7 +259,7 @@ object frmCreateFormProp: TfrmCreateFormProp
       'txtTitle.Text')
     StoredValues = <>
     Left = 39
-    Top = 196
+    Top = 148
   end
   object JvAppRegistryStorage1: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -245,7 +267,7 @@ object frmCreateFormProp: TfrmCreateFormProp
     Root = 'Software\dlgHelper'
     SubStorages = <>
     Left = 4
-    Top = 195
+    Top = 147
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -274,7 +296,7 @@ object frmCreateFormProp: TfrmCreateFormProp
     FlatMenu = False
     AutoDetect = False
     Active = False
-    Left = 72
-    Top = 196
+    Left = 384
+    Top = 148
   end
 end

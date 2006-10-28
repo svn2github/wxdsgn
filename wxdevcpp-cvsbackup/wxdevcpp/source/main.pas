@@ -8487,6 +8487,7 @@ function TMainForm.CreateCreateFormDlg(dsgnType:TWxDesignerType; insertProj:inte
 var
   SuggestedFilename: string;
   INI: Tinifile;
+  i : integer;
 begin
   if filenamebase = '' then
     SuggestedFilename := Lang[ID_UNTITLED] + inttostr(dmMain.GetNum)
@@ -8519,6 +8520,13 @@ begin
   INI := TiniFile.Create(devDirs.Config + 'devcpp.ini');
   Result.txtAuthorName.Text := INI.ReadString('wxWidgets', 'Author', GetLoginName);
   INI.free;
+
+  // Add compiler profile names to the dropdown box
+  Result.ProfileNameSelect.Clear;
+  for i := 0 to fProject.Profiles.Count-1 do
+    Result.ProfileNameSelect.Items.Add(fProject.Profiles.Items[i].ProfileName);
+
+  Result.ProfileNameSelect.ItemIndex := 0; // default compiler profile selection
 
   //Decide where the file will be stored
   if insertProj = 1 then
@@ -8596,6 +8604,9 @@ begin
       frm.Destroy;
       exit;
     end;
+
+    fProject.CurrentProfileIndex := frm.ProfileNameSelect.ItemIndex;
+    fProject.DefaultProfileIndex := frm.ProfileNameSelect.ItemIndex;
 
     //Wow, the user clicked OK: save the user name
     INI := TiniFile.Create(devDirs.Config + 'devcpp.ini');
@@ -8758,11 +8769,8 @@ begin
   INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
   INI.free;
   
-  with fProject.CurrentProfile do
-  begin
-    CompilerSet := devCompiler.compilerSet;
-    CompilerOptions := devCompilerSet.OptionsStr;
-  end;
+  fProject.CurrentProfileIndex := frm.ProfileNameSelect.ItemIndex;
+  fProject.DefaultProfileIndex := frm.ProfileNameSelect.ItemIndex;
 
   //Then add the application initialization code
   BaseFilename := Trim(ChangeFileExt(fProject.FileName, '')) + APP_SUFFIX;
