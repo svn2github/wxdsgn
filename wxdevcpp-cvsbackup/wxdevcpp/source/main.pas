@@ -1141,7 +1141,7 @@ private
     procedure CreateNewDialogOrFrameCode(dsgnType:TWxDesignerType; frm:TfrmCreateFormProp; insertProj:integer);
     procedure NewWxProjectCode(dsgnType:TWxDesignerType);
     procedure ParseAndSaveTemplate(template, destination: string; frm:TfrmCreateFormProp);
-    function CreateCreateFormDlg(dsgnType:TWxDesignerType; insertProj:integer; filenamebase: string = ''): TfrmCreateFormProp;
+    function CreateCreateFormDlg(dsgnType:TWxDesignerType; insertProj:integer;projShow:boolean;filenamebase: string = ''): TfrmCreateFormProp;
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
 public
     procedure ReadClass;
@@ -8483,7 +8483,7 @@ end;
 
 // Create a dialog that will be destroyed by the client code
 function TMainForm.CreateCreateFormDlg(dsgnType:TWxDesignerType; insertProj:integer;
-                                       filenamebase: string): TfrmCreateFormProp;
+                                       projShow:boolean;filenamebase: string): TfrmCreateFormProp;
 var
   SuggestedFilename: string;
   INI: Tinifile;
@@ -8522,12 +8522,20 @@ begin
   INI.free;
 
   // Add compiler profile names to the dropdown box
-  Result.ProfileNameSelect.Clear;
-  for i := 0 to fProject.Profiles.Count-1 do
-    Result.ProfileNameSelect.Items.Add(fProject.Profiles.Items[i].ProfileName);
-
-  Result.ProfileNameSelect.ItemIndex := 0; // default compiler profile selection
-
+  if (fProject <> nil) and (projShow = true) then // if nil, then this is not part of a project (so no profile)
+  begin
+    Result.ProfileNameSelect.Show;
+    Result.ProfileLabel.Show;
+    Result.ProfileNameSelect.Clear;
+    for i := 0 to fProject.Profiles.Count-1 do
+      Result.ProfileNameSelect.Items.Add(fProject.Profiles.Items[i].ProfileName);
+    Result.ProfileNameSelect.ItemIndex := fProject.DefaultProfileIndex; // default compiler profile selection
+  end
+  else
+  begin
+    Result.ProfileNameSelect.Hide;
+     Result.ProfileLabel.Hide;
+  end;
   //Decide where the file will be stored
   if insertProj = 1 then
     Result.txtSaveTo.Text := IncludeTrailingBackslash(ExtractFileDir(fProject.FileName))
@@ -8596,18 +8604,13 @@ begin
   if (not Assigned(frm)) then
   begin
     //Get an instance of the dialog
-    frm := CreateCreateFormDlg(dsgnType, insertProj);
-
+    frm := CreateCreateFormDlg(dsgnType, insertProj,false);
     //Show the dialog
     if frm.showModal <> mrOK then
     begin
       frm.Destroy;
       exit;
     end;
-
-    fProject.CurrentProfileIndex := frm.ProfileNameSelect.ItemIndex;
-    fProject.DefaultProfileIndex := frm.ProfileNameSelect.ItemIndex;
-
     //Wow, the user clicked OK: save the user name
     INI := TiniFile.Create(devDirs.Config + 'devcpp.ini');
     INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
@@ -8757,20 +8760,23 @@ begin
   end;
 
   //Create an instance of the form creation dialog and show it
-  frm := CreateCreateFormDlg(dsgnType, 1, ChangeFileExt(ExtractFileName(fProject.FileName),''));
+  frm := CreateCreateFormDlg(dsgnType, 1, true,ChangeFileExt(ExtractFileName(fProject.FileName),''));
   if frm.showModal <> mrOK then
   begin
-    frm.Destroy;
+  frm.Destroy;
     exit;
   end;
 
+  // Change the current profile to what the user selected in the new project dialog
+  fProject.CurrentProfileIndex := frm.ProfileNameSelect.ItemIndex;
+  fProject.DefaultProfileIndex := frm.ProfileNameSelect.ItemIndex;
+  
+
+  
   //Write the current strings back as the default
   INI := TiniFile.Create(devDirs.Config + 'devcpp.ini');
   INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
   INI.free;
-  
-  fProject.CurrentProfileIndex := frm.ProfileNameSelect.ItemIndex;
-  fProject.DefaultProfileIndex := frm.ProfileNameSelect.ItemIndex;
 
   //Then add the application initialization code
   BaseFilename := Trim(ChangeFileExt(fProject.FileName, '')) + APP_SUFFIX;

@@ -80,12 +80,12 @@ object frmCreateFormProp: TfrmCreateFormProp
     Caption = 'Default Style'
     Transparent = True
   end
-  object Label4: TLabel
+  object ProfileLabel: TLabel
     Left = 8
     Top = 203
-    Width = 81
+    Width = 100
     Height = 13
-    Caption = 'Compiler Profile ='
+    Caption = 'Default Profile to Use'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -240,9 +240,9 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 16
   end
   object ProfileNameSelect: TComboBox
-    Left = 90
+    Left = 112
     Top = 201
-    Width = 145
+    Width = 139
     Height = 21
     Style = csDropDownList
     ItemHeight = 13

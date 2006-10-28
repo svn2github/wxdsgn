@@ -67,7 +67,7 @@ type
     cbCloseButton: TCheckBox;
     XPMenu: TXPMenu;
     ProfileNameSelect: TComboBox;
-    Label4: TLabel;
+    ProfileLabel: TLabel;
     procedure btBrowseClick(Sender: TObject);
     procedure btCreateClick(Sender: TObject);
     procedure btCancelClick(Sender: TObject);
