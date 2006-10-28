@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvAppStorage,
   JvAppRegistryStorage, JvComponent, FileCtrl, JvFormPlacement, version,
-  XPMenu, devcfg, JvComponentBase;
+  XPMenu, devcfg, JvComponentBase, utils;
 {$Warnings On}
 type
   TfrmCreateFormProp = class(TForm)
@@ -105,19 +105,33 @@ procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
       exit;
     end;
 
-    if trim(txtFileName.Text) = '' then
+    if ValidateFileName(txtFileName.Text) > 0 then
     begin
-      MessageDlg('Enter a proper file name', mtError, [mbOK], 0);
+      if(MessageDlg('Your file name is not valid. Do you want it fixed automatically?',mtError, [mbYes, mbNo],0) = mrYes) then
+        begin
+          txtFileName.Text := CreateValidFileName(txtFileName.Text);
+        end
+      else
+        begin
+          MessageDlg('Valid file names cannot contain "*:\/<>|, or spaces. Please fix.',mtError, [mbOK],0);
       txtFileName.SetFocus;
       exit;
     end;
+      end;
 
-    if trim(txtClassName.Text) = '' then
+    if (ValidateClassName(txtClassName.Text) > 0) then
     begin
-      MessageDlg('Enter a proper class name', mtError, [mbOK], 0);
+      if(MessageDlg('Your class name is not valid. Do you want it fixed automatically?',mtError, [mbYes, mbNo],0) = mrYes) then
+        begin
+          txtClassName.Text := CreateValidClassName(txtClassName.Text);
+        end
+      else
+        begin
+          MessageDlg('Valid name must on start with a number and can only contain alphanumeric character or an underscore. Please fix.',mtError, [mbOK],0);
       txtClassName.SetFocus;
       exit;
     end;
+      end;
 
     Result := true;
   end;
@@ -171,5 +185,4 @@ begin
   else
     XPMenu.Active := false;
 end;
-
 end.

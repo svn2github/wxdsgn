@@ -1159,8 +1159,8 @@ end;
 procedure TfrmNewForm.FormMove(var Msg: TWMMove);
 begin
   inherited;
-  //    if MainForm.ELDesigner1.Active then
-  //       SetModifiedFlag;
+  //if MainForm.ELDesigner1.Active then
+  //  SetModifiedFlag;
 end;
 
 function TfrmNewForm.GenerateControlIDs: string;
@@ -1633,7 +1633,7 @@ end;
 
 procedure TfrmNewForm.FormResize(Sender: TObject);
 begin
-  //MainForm.ELDesigner1Modified(MainForm.ELDesigner1);
+  MainForm.ELDesigner1Modified(MainForm.ELDesigner1);
 end;
 
 procedure TfrmNewForm.NewFormResize(Sender: TObject);

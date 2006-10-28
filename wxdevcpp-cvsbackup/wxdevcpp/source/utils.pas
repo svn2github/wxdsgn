@@ -84,6 +84,11 @@ function SwitchToPrevInst(Wnd: HWND): Boolean;
 function ParseCommandLineArguments(cmdLine: string) : TStringList;
 function SubstituteMakeParams(str: string) : string;
 function StrToArrays(str, r: string; var temp: TStringList): Boolean;
+// SofT's class name/filename validator
+function ValidateClassName(ClassName: String) :Integer;
+function CreateValidClassName(ClassName: String) :String;
+function ValidateFileName(FileName: String): Integer;
+function CreateValidFileName(FileName: String): String;
 {$ENDIF}
 
 function IsWinNT : boolean;
@@ -1201,6 +1206,323 @@ begin
   Result:=true;
 end;
 
+{$IfDef WX_BUILD}
+{This unit contains 4 functions designed to validate and correct C++ class names
+and windows file names. The functions are as follows
 
+ValidateClassName       Takes a string and returns an integer containing the
+                        number of errors found. It checks for empty class names,
+                        names which don't contain only alphanumeric characters
+                        or underscores. It also checks that the name is not a
+                        reserved keyword.
+
+CreateValidClassName    Takes a string containing the class name and returns a
+                        string containing a 'fixed' class name. It runs through
+                        the checks above, if an empty class name is found then
+                        a default one is used. Any illegal characters are
+                        replaced with an underscore. This may make strange
+                        looking names but they are legal.
+
+ValidateFileName        Takes a string containing the file name and returns an
+                        integer containing the number of errors found. It checks
+                        for empty filenames, names which contain "*?\/|:<>, also
+                        spaces since these can choke the make program
+
+CreateValidFileName     Takes a string containing the filename and returns a
+                        string containing a legal filename. If the string is
+                        empty a default name is filled in, otherwise any
+                        illegal characters are replaced with an underscore.
+
+Example usage of these functions.
+
+  if(ValidateClassName(Edit1.Text) > 0 ) then
+  begin
+     if MessageDlg('Your class name contains errors, do you want it fixed automatically?',mtError,[mbYes, mbNo],0) = mrYes then
+     begin
+         Edit2.Text := CreateValidClassName(Edit1.Text);
+     end
+     else
+     begin
+        MessageDlg('Please fix the class name yourself, class names can only contain alphanumeric characters and an underscore, they cannot be reserved keywords or start with numbers',mtWarning,[mbOK],0);
+     end;
+  end;
+
+This copyright to Sof.T 2006 and provided under the GPL license version 2 or
+later at your preference.}
+function ValidateClassName(ClassName: String) :Integer;
+var
+    NumberOfErrors, LoopIndex : integer;
+    ReservedKeywordList : TStrings;
+begin
+
+    NumberOfErrors := 0;
+
+    //Check we have a name to work with
+    if Length(ClassName) < 1 then
+    begin
+        NumberOfErrors := NumberOfErrors+1;
+    end
+    //Check the first character is not a number
+    else if (ClassName[1] in ['0'..'9']) then
+    begin
+        NumberOfErrors := NumberOfErrors + 1;
+    end;
+
+    //Look for invalid characters in the class name
+    for LoopIndex := 1 to Length(ClassName) do
+    begin
+        //if not((ClassName[LoopIndex] in ['a'..'z']) or (ClassName[LoopIndex] in ['A'..'Z']) or (ClassName[LoopIndex] in ['0'..'9']) or (ClassName[LoopIndex] = '_')) then
+        if not((ClassName[LoopIndex] in ['a'..'z','A'..'Z','0'..'9','_'])) then
+        begin
+            NumberOfErrors := NumberOfErrors + 1;
+        end;
+    end;
+
+    //Check we haven't ended up with a reserved keyword
+    ReservedKeywordList := TStringList.Create;
+    try
+        //Build the list of reserved keywords
+        ReservedKeywordList.Add('asm');
+        ReservedKeywordList.Add('do');
+        ReservedKeywordList.Add('if');
+        ReservedKeywordList.Add('return');
+        ReservedKeywordList.Add('typedef');
+        ReservedKeywordList.Add('auto');
+        ReservedKeywordList.Add('double');
+        ReservedKeywordList.Add('inline');
+        ReservedKeywordList.Add('short');
+        ReservedKeywordList.Add('typeid');
+        ReservedKeywordList.Add('bool');
+        ReservedKeywordList.Add('dynamic_cast');
+        ReservedKeywordList.Add('int');
+        ReservedKeywordList.Add('signed');
+        ReservedKeywordList.Add('union');
+        ReservedKeywordList.Add('break');
+        ReservedKeywordList.Add('else');
+        ReservedKeywordList.Add('long');
+        ReservedKeywordList.Add('sizeof');
+        ReservedKeywordList.Add('unsigned');
+        ReservedKeywordList.Add('case');
+        ReservedKeywordList.Add('enum');
+        ReservedKeywordList.Add('mutable');
+        ReservedKeywordList.Add('static');
+        ReservedKeywordList.Add('using');
+        ReservedKeywordList.Add('catch');
+        ReservedKeywordList.Add('explicit');
+        ReservedKeywordList.Add('namespace');
+        ReservedKeywordList.Add('static_cast');
+        ReservedKeywordList.Add('virtual');
+        ReservedKeywordList.Add('char');
+        ReservedKeywordList.Add('export');
+        ReservedKeywordList.Add('new');
+        ReservedKeywordList.Add('struct');
+        ReservedKeywordList.Add('void');
+        ReservedKeywordList.Add('class');
+        ReservedKeywordList.Add('extern');
+        ReservedKeywordList.Add('operator');
+        ReservedKeywordList.Add('switch');
+        ReservedKeywordList.Add('volatile');
+        ReservedKeywordList.Add('const');
+        ReservedKeywordList.Add('false');
+        ReservedKeywordList.Add('private');
+        ReservedKeywordList.Add('template');
+        ReservedKeywordList.Add('wchar_t');
+        ReservedKeywordList.Add('const_cast');
+        ReservedKeywordList.Add('float');
+        ReservedKeywordList.Add('protected');
+        ReservedKeywordList.Add('this');
+        ReservedKeywordList.Add('while');
+        ReservedKeywordList.Add('continue');
+        ReservedKeywordList.Add('for');
+        ReservedKeywordList.Add('public');
+        ReservedKeywordList.Add('throw');
+        ReservedKeywordList.Add('default');
+        ReservedKeywordList.Add('friend');
+        ReservedKeywordList.Add('register');
+        ReservedKeywordList.Add('true');
+        ReservedKeywordList.Add('delete');
+        ReservedKeywordList.Add('goto');
+        ReservedKeywordList.Add('reinterpret_cast');
+        ReservedKeywordList.Add('try');
+
+        //Now check our ClassName against list of reserved keywords
+        for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
+        begin
+            if(CompareStr(ReservedKeywordList[LoopIndex],ClassName) = 0) then
+            begin
+                NumberOfErrors := NumberOfErrors + 1;
+            end;
+        end;
+
+    finally
+        ReservedKeywordList.Free;	{ destroy the list object }
+    end;
+
+   Result := NumberOfErrors;
+
+end;
+
+function CreateValidClassName(ClassName: String) :String;
+var
+    ValidClassName : String;
+    LoopIndex : integer;
+    ReservedKeywordList : TStrings;
+begin
+
+    ValidClassName := ClassName;
+
+    //Check we have a name to work with, if not then assign a safe one
+    if Length(ValidClassName) < 1 then
+        ValidClassName := 'DefaultClassName';
+
+    //Look for invalid characters in the class name. Replace with '_'
+    for LoopIndex := 1 to Length(ValidClassName) do
+    begin
+        if not((ValidClassName[LoopIndex] in ['a'..'z','A'..'Z','0'..'9','_'])) then
+        begin
+            ValidClassName[LoopIndex] := '_';
+        end;
+    end;
+
+    //Check the first character is not a number if so add '_' in front
+    if (ValidClassName[1] in ['0'..'9']) then
+    begin
+        Insert('_',ValidClassName,0);
+    end;
+
+    //Check we haven't ended up with a reserved keyword
+    ReservedKeywordList := TStringList.Create;
+    try
+        //Build the list of reserved keywords
+        ReservedKeywordList.Add('asm');
+        ReservedKeywordList.Add('do');
+        ReservedKeywordList.Add('if');
+        ReservedKeywordList.Add('return');
+        ReservedKeywordList.Add('typedef');
+        ReservedKeywordList.Add('auto');
+        ReservedKeywordList.Add('double');
+        ReservedKeywordList.Add('inline');
+        ReservedKeywordList.Add('short');
+        ReservedKeywordList.Add('typeid');
+        ReservedKeywordList.Add('bool');
+        ReservedKeywordList.Add('dynamic_cast');
+        ReservedKeywordList.Add('int');
+        ReservedKeywordList.Add('signed');
+        ReservedKeywordList.Add('union');
+        ReservedKeywordList.Add('break');
+        ReservedKeywordList.Add('else');
+        ReservedKeywordList.Add('long');
+        ReservedKeywordList.Add('sizeof');
+        ReservedKeywordList.Add('unsigned');
+        ReservedKeywordList.Add('case');
+        ReservedKeywordList.Add('enum');
+        ReservedKeywordList.Add('mutable');
+        ReservedKeywordList.Add('static');
+        ReservedKeywordList.Add('using');
+        ReservedKeywordList.Add('catch');
+        ReservedKeywordList.Add('explicit');
+        ReservedKeywordList.Add('namespace');
+        ReservedKeywordList.Add('static_cast');
+        ReservedKeywordList.Add('virtual');
+        ReservedKeywordList.Add('char');
+        ReservedKeywordList.Add('export');
+        ReservedKeywordList.Add('new');
+        ReservedKeywordList.Add('struct');
+        ReservedKeywordList.Add('void');
+        ReservedKeywordList.Add('class');
+        ReservedKeywordList.Add('extern');
+        ReservedKeywordList.Add('operator');
+        ReservedKeywordList.Add('switch');
+        ReservedKeywordList.Add('volatile');
+        ReservedKeywordList.Add('const');
+        ReservedKeywordList.Add('false');
+        ReservedKeywordList.Add('private');
+        ReservedKeywordList.Add('template');
+        ReservedKeywordList.Add('wchar_t');
+        ReservedKeywordList.Add('const_cast');
+        ReservedKeywordList.Add('float');
+        ReservedKeywordList.Add('protected');
+        ReservedKeywordList.Add('this');
+        ReservedKeywordList.Add('while');
+        ReservedKeywordList.Add('continue');
+        ReservedKeywordList.Add('for');
+        ReservedKeywordList.Add('public');
+        ReservedKeywordList.Add('throw');
+        ReservedKeywordList.Add('default');
+        ReservedKeywordList.Add('friend');
+        ReservedKeywordList.Add('register');
+        ReservedKeywordList.Add('true');
+        ReservedKeywordList.Add('delete');
+        ReservedKeywordList.Add('goto');
+        ReservedKeywordList.Add('reinterpret_cast');
+        ReservedKeywordList.Add('try');
+
+        //Now check our ValidClassName against list of reserved keywords
+        //If we find a match flag error and add '_' to the start of the name
+        for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
+        begin
+            if(CompareStr(ReservedKeywordList[LoopIndex],ValidClassName) = 0) then
+            begin
+                Insert('_',ValidClassName,0);
+            end;
+        end;
+
+    finally
+        ReservedKeywordList.Free;	{ destroy the list object }
+    end;
+
+   Result := ValidClassName;
+
+end;
+
+
+function ValidateFileName(FileName: String): Integer;
+var
+    NumberOfErrors, LoopIndex : integer;
+begin
+
+    NumberOfErrors := 0;
+
+    if Length(FileName) < 1 then
+        NumberOfErrors := NumberOfErrors+1;
+
+    //Look for invalid characters in the file name
+    for LoopIndex := 1 to Length(FileName) do
+    begin
+        if ((FileName[LoopIndex] in ['"','*','/',':','<','>','?','\','|'])) then
+        begin
+            NumberOfErrors := NumberOfErrors+1;
+        end;
+    end;
+
+    Result := NumberOfErrors;
+
+end;
+
+function CreateValidFileName(FileName: String): String;
+var
+    ValidFileName : String;
+    LoopIndex : integer;
+begin
+
+    ValidFileName := FileName;
+
+    if Length(ValidFileName) < 1 then
+        ValidFileName := 'DefaultFileName';
+
+    //Look for invalid characters in the file name. Replace with '_'
+    for LoopIndex := 1 to Length(ValidFileName) do
+    begin
+        if ((ValidFileName[LoopIndex] in ['"','*','/',':','<','>','?','\','|'])) then
+        begin
+            ValidFileName[LoopIndex] := '_';
+        end;
+    end;
+
+    Result := ValidFileName;
+
+end;
+
+{$ENDIF}
 end.
 

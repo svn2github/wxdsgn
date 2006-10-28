@@ -8506,13 +8506,13 @@ begin
   //Suggest a filename to the user
   if dsgnType = dtWxFrame then
   begin
-    Result.txtFileName.Text := SuggestedFilename + 'Frm';
-    Result.txtClassName.Text := SuggestedFilename + 'Frm';
+    Result.txtFileName.Text := CreateValidFileName(SuggestedFilename + 'Frm');
+    Result.txtClassName.Text := CreateValidClassName(SuggestedFilename + 'Frm');
   end
   else
   begin
-    Result.txtFileName.Text := SuggestedFilename + 'Dlg';
-    Result.txtClassName.Text := SuggestedFilename + 'Dlg';
+    Result.txtFileName.Text := CreateValidFileName(SuggestedFilename + 'Dlg');
+    Result.txtClassName.Text := CreateValidClassName(SuggestedFilename + 'Dlg');
   end;
 
   // Open the ini file and see if we have any default values for author, class, license
@@ -9329,6 +9329,12 @@ begin
   try
 
      { Make sure Designer Form has the focus }
+    if ELDesigner1 = nil then
+      exit;
+
+    if ELDesigner1.DesignControl = nil then
+      exit;
+
      ELDesigner1.DesignControl.SetFocus;
     { clear inspector }
 
@@ -10441,18 +10447,6 @@ begin
 
       if boolIsFilesDirty then
       begin
-        (*
-        if MessageBox(Self.Handle, PChar('Adding a new event handler requires that the source files be saved,'#10#13 +
-                                         'however, the files have not been saved to disk.'#10#13#10#13 +
-                                         'Do you want to save the files now?'), PChar(Application.Title),
-                      MB_ICONQUESTION or MB_YESNO or MB_TASKMODAL or MB_DEFBUTTON1) <> mrYES then
-
-        begin
-          Data.AsString := '';
-          Exit;
-        end;
-        *)
-
         if e.IsDesignerHPPOpened then
           //This wont open a new editor window
           SaveFile(e.GetDesignerHPPEditor);
