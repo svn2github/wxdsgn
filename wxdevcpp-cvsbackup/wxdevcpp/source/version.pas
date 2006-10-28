@@ -824,8 +824,6 @@ var
     TempString:String;
     reg:TRegistry;
     reg2:TRegistry;
-    strLst:TStringList;
-    i:Integer;
 Begin
     reg:=TRegistry.Create;
     reg2:=TRegistry.Create;
