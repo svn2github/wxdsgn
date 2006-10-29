@@ -4392,11 +4392,16 @@ begin
       else if strContains('wxWidgets Dialog', GetTemplate.Name) then
           NewWxProjectCode(dtWxDialog);
       {$ENDIF}
-
-      devCompiler.CompilerSet:=fProject.CurrentProfile.CompilerSet;
+      //Do not change the Order of these calls
+      //DevCompiler Set Start
       devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
+      devCompiler.CompilerSet:=fProject.CurrentProfile.CompilerSet;
       devCompilerSet.AssignToCompiler();
+      SetPath(devDirs.Bins); //Since the Path automatically, we have to force it.
+                             //If this call is removed then the new bin wont be
+                             //set to the system
       devCompiler.OptionStr:=fProject.CurrentProfile.CompilerOptions;
+      //DevCompiler Set End
 
       if not devData.ProjectView then
         actProjectManager.Execute;

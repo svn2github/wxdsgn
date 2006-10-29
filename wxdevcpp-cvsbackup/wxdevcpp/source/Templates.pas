@@ -252,7 +252,7 @@ begin
           NewProfile.IncludeVersionInfo := ReadBool(CurrenProfileName,'IncludeVersionInfo',false);
           NewProfile.SupportXPThemes:= ReadBool(CurrenProfileName,'SupportXPThemes',false);
           NewProfile.CompilerSet := ReadInteger(CurrenProfileName,'CompilerSet',0);
-          NewProfile.CompilerOptions := ReadString(CurrenProfileName,'CompilerOptions','');
+          NewProfile.CompilerOptions := ReadString(CurrenProfileName,COMPILER_INI_LABEL,'');
           NewProfile.PreprocDefines:= ReadString(CurrenProfileName,'PreprocDefines','');
           fOptions.Add(NewProfile);
         end;
