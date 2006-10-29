@@ -10660,7 +10660,7 @@ end;
 
 function TMainForm.LocateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string): Boolean;
 
-function isFunctionAvailableInEditor(intClassID:Integer;strFunctionName:String;intLineNum:Integer;strFname:String):boolean;
+function isFunctionAvailableInEditor(intClassID:Integer;strFunctionName:String;var intLineNum:Integer;var strFname:String):boolean;
 var
     i:Integer;
     St2 : PStatement;
@@ -10680,6 +10680,7 @@ begin
     if AnsiSameText(strFunctionName, St2._Command) then
     begin
       strFname:=St2._DeclImplFileName;
+      intLineNum:=St2._DeclImplLine;
       Result := True;
       Break;
     end;
@@ -10749,7 +10750,7 @@ begin
     begin
       //TODO: check for a valid line number
       e.Text.CaretX:=0;
-      e.Text.CaretX:=intLineNum;
+      e.Text.CaretY:=intLineNum;
       OpenFile(e.GetDesignerCPPFileName);
     end;
     boolInspectorDataClear:=False;
