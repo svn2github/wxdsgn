@@ -46,7 +46,7 @@ CompilerSet=0
 compilerType=0
 
 [Profile1]
-ProfileName=MS VC++
+ProfileName=MS VC++ 2005
 Type=0
 ObjFiles=
 Includes=
