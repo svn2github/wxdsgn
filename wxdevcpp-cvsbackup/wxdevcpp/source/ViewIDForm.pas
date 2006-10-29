@@ -10,9 +10,8 @@ type
   TViewControlIDsForm = class(TForm)
     btClose: TBitBtn;
     XPMenu: TXPMenu;
-    GroupBox1: TGroupBox;
-    ControlListBox: TListView;
     cbHideZeroValueID: TCheckBox;
+    ControlListBox: TListView;
     procedure FormCreate(Sender: TObject);
     procedure btCloseClick(Sender: TObject);
     procedure btRefreshClick(Sender: TObject);

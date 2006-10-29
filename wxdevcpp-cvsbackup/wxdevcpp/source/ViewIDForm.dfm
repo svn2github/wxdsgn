@@ -5,7 +5,7 @@ object ViewControlIDsForm: TViewControlIDsForm
   BorderStyle = bsDialog
   Caption = 'Control IDs'
   ClientHeight = 262
-  ClientWidth = 441
+  ClientWidth = 439
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object ViewControlIDsForm: TViewControlIDsForm
   PixelsPerInch = 96
   TextHeight = 13
   object btClose: TBitBtn
-    Left = 358
+    Left = 357
     Top = 229
     Width = 75
     Height = 25
@@ -27,46 +27,39 @@ object ViewControlIDsForm: TViewControlIDsForm
     TabOrder = 0
     OnClick = btCloseClick
   end
-  object GroupBox1: TGroupBox
-    Left = 8
-    Top = 8
-    Width = 425
-    Height = 214
-    TabOrder = 1
-    object ControlListBox: TListView
-      Left = 8
-      Top = 11
-      Width = 409
-      Height = 193
-      Columns = <
-        item
-          Caption = 'ID'
-          Width = 60
-        end
-        item
-          Caption = 'ID Name'
-          Width = 125
-        end
-        item
-          Caption = 'Control Name'
-          Width = 200
-        end>
-      GridLines = True
-      RowSelect = True
-      SortType = stText
-      TabOrder = 0
-      ViewStyle = vsReport
-      OnAdvancedCustomDrawItem = ControlListBoxAdvancedCustomDrawItem
-    end
-  end
   object cbHideZeroValueID: TCheckBox
     Left = 8
     Top = 232
     Width = 145
     Height = 17
-    Caption = 'Hide ID with Zero Values'
-    TabOrder = 2
+    Caption = 'Hide IDs with a value of 0'
+    TabOrder = 1
     OnClick = cbHideZeroValueIDClick
+  end
+  object ControlListBox: TListView
+    Left = 8
+    Top = 11
+    Width = 423
+    Height = 210
+    Columns = <
+      item
+        Caption = 'ID'
+        Width = 60
+      end
+      item
+        Caption = 'ID Name'
+        Width = 130
+      end
+      item
+        Caption = 'Control Name'
+        Width = 210
+      end>
+    GridLines = True
+    RowSelect = True
+    SortType = stText
+    TabOrder = 2
+    ViewStyle = vsReport
+    OnAdvancedCustomDrawItem = ControlListBoxAdvancedCustomDrawItem
   end
   object XPMenu: TXPMenu
     DimLevel = 30
