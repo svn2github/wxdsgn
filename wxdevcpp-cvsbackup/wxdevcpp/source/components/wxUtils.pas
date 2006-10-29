@@ -724,7 +724,11 @@ function ConvertLibsToCurrentVersion(strValue:String):string;
 begin
   Result:=Convert25LibsToCurrentVersion(strValue);
   Result:=Convert26LibsToCurrentVersion(Result);
-  //
+  //Auto -mwindows flag addition
+  if AnsiContainsText(Result,'-lwxmsw') and (AnsiContainsText(Result,'-mwindows') = false) then
+  begin
+    Result:='-mwindows_@@_'+Result;
+  end;
 end;
 function Convert25LibsToCurrentVersion(strValue:String):string;
 begin
