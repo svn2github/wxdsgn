@@ -193,11 +193,9 @@ begin
     end
     else if (Pos('wxLC_REPORT', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
-      showmessage(Strings[I]);
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT,', '');
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_REPORT', '');
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT', '');
-      showmessage(Strings[I]);
       Strings.Add('Wx_ListviewView = wxLC_REPORT');
       Inc(Changes);
     end

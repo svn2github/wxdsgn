@@ -60,8 +60,6 @@ type
     Label5: TLabel;
     lblSplash: TLabel;
     Label6: TLabel;
-    lblNewLook: TLabel;
-    Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
     lblGnome: TLabel;
@@ -94,7 +92,7 @@ begin
     XPMenu.Active := true
   else
     XPMenu.Active := false;
-  Caption := Lang[ID_AB_CAPTION];
+  Caption := 'About wxDev-C++';
   License.Caption := Lang[ID_AB_LICENSE];
   Version.Caption := Lang[ID_AB_VERSCAP];
   btnOk.Caption := Lang[ID_BTN_OK];

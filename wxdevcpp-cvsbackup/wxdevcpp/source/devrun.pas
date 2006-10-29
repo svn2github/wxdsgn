@@ -80,10 +80,16 @@ begin
 end;
 
 procedure TDevRun.Execute;
+var
+  retValue:String;
 begin
   Output := RunAndGetOutput(Command, Directory, Self.ShowError,
     LineOutput, FCheckAbort, True);
-  fExitCode := StrToInt(Copy(Output, GetLastPos(' ', Output), Length(Output)));
+  retValue:=Copy(Output, GetLastPos(' ', Output), Length(Output));
+  if IsNumeric(retValue) then
+    fExitCode := StrToInt(retValue)
+  else
+    fExitCode := -1;
 end;
 
 end.

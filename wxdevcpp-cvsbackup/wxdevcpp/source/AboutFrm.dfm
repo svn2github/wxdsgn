@@ -2990,29 +2990,41 @@ object AboutForm: TAboutForm
       ImageIndex = 2
       object lblAuthors_wxDevCpp: TLabel
         Left = 4
-        Top = 4
+        Top = 36
         Width = 124
         Height = 13
         Caption = 'wxDev-C++ Development:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
       end
       object Label2: TLabel
         Left = 150
-        Top = 5
-        Width = 185
+        Top = 37
+        Width = 173
         Height = 26
         Caption = 'Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
         WordWrap = True
       end
       object lblAuthors_DevCpp: TLabel
         Left = 4
-        Top = 51
+        Top = 75
         Width = 111
         Height = 13
         Caption = 'Dev-C++ Development:'
       end
       object Label4: TLabel
         Left = 150
-        Top = 51
+        Top = 75
         Width = 177
         Height = 26
         Caption = 'Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'
@@ -3020,14 +3032,14 @@ object AboutForm: TAboutForm
       end
       object lblContributors: TLabel
         Left = 4
-        Top = 88
+        Top = 112
         Width = 104
         Height = 13
         Caption = 'Dev-C++ Contributors:'
       end
       object Label3: TLabel
         Left = 149
-        Top = 89
+        Top = 113
         Width = 164
         Height = 13
         Caption = 'Peter Schraut, Marek Januszewski'
@@ -3035,14 +3047,14 @@ object AboutForm: TAboutForm
       end
       object lblMingW: TLabel
         Left = 4
-        Top = 113
+        Top = 137
         Width = 117
         Height = 13
         Caption = 'MingW Compiler System:'
       end
       object Label5: TLabel
         Left = 149
-        Top = 114
+        Top = 138
         Width = 188
         Height = 26
         Caption = 
@@ -3052,32 +3064,17 @@ object AboutForm: TAboutForm
       end
       object lblSplash: TLabel
         Left = 4
-        Top = 151
+        Top = 175
         Width = 72
         Height = 13
         Caption = 'Splash Screen:'
       end
       object Label6: TLabel
         Left = 149
-        Top = 152
+        Top = 176
         Width = 80
         Height = 13
         Caption = 'Matthijs Crielaard'
-        WordWrap = True
-      end
-      object lblNewLook: TLabel
-        Left = 4
-        Top = 176
-        Width = 88
-        Height = 13
-        Caption = 'New Look Theme:'
-      end
-      object Label7: TLabel
-        Left = 149
-        Top = 177
-        Width = 75
-        Height = 13
-        Caption = 'Gerard Caulfield'
         WordWrap = True
       end
       object Label8: TLabel

@@ -2020,6 +2020,7 @@ begin
       LoadTheme;
     devData.FileDate := FileAge(Application.ExeName);
     devData.First := FALSE;
+    SaveOptions;
   end
   else
     Lang.Open(devData.Language);
@@ -4385,18 +4386,17 @@ begin
         Exit;
       end;
       fCompiler.Project := fProject;
-      with fProject.CurrentProfile do
-      begin
-        CompilerSet := devCompiler.compilerSet;
-        CompilerOptions := devCompiler.OptionStr;
-      end;
-
       {$IFDEF WX_BUILD}
       if strContains('wxWidgets Frame', GetTemplate.Name) then
           NewWxProjectCode(dtWxFrame)
       else if strContains('wxWidgets Dialog', GetTemplate.Name) then
           NewWxProjectCode(dtWxDialog);
       {$ENDIF}
+
+      devCompiler.CompilerSet:=fProject.CurrentProfile.CompilerSet;
+      devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
+      devCompilerSet.AssignToCompiler();
+      devCompiler.OptionStr:=fProject.CurrentProfile.CompilerOptions;
 
       if not devData.ProjectView then
         actProjectManager.Execute;
