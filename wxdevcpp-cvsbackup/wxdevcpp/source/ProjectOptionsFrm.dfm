@@ -24,7 +24,7 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 22
     Height = 22
-    Hint = 'Adds  a new profile set'
+    Hint = 'Create a new profile'
     Glyph.Data = {
       9E010000424D9E010000000000009E0000002800000010000000100000000100
       08000000000000010000120B0000120B00001A0000001A00000000000000FFFF
@@ -49,7 +49,7 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 22
     Height = 22
-    Hint = 'Deletes the selected profile set'
+    Hint = 'Delete the current profile'
     Glyph.Data = {
       8A030000424D8A030000000000008A0100002800000020000000100000000100
       08000000000000020000C30E0000C30E0000550000005500000000000000FFFF
@@ -90,7 +90,7 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 22
     Height = 22
-    Hint = 'Renames the selected profile set'
+    Hint = 'Rename the current profile'
     Glyph.Data = {
       D6020000424DD602000000000000D60100002800000010000000100000000100
       08000000000000010000120B0000120B0000680000006800000000000000FFFF
@@ -131,7 +131,7 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 8
     Width = 22
     Height = 22
-    Hint = 'Copy Selected and Create a new profile set'
+    Hint = 'Duplicate the current profile'
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
       18000000000000030000120B0000120B00000000000000000000FF00FFFF00FF
@@ -216,8 +216,7 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 35
     Width = 537
     Height = 305
-    ActivePage = tabCompOpts
-    TabIndex = 3
+    ActivePage = tabGeneral
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -626,7 +625,7 @@ object frmProjectOptions: TfrmProjectOptions
         Width = 450
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -1467,7 +1466,7 @@ object frmProjectOptions: TfrmProjectOptions
           Width = 160
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 4
         end
       end
