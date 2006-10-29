@@ -85,7 +85,7 @@ var
 begin
   Output := RunAndGetOutput(Command, Directory, Self.ShowError,
     LineOutput, FCheckAbort, True);
-  retValue:=Copy(Output, GetLastPos(' ', Output), Length(Output));
+  retValue:=trim(Copy(Output, GetLastPos(' ', Output), Length(Output)));
   if IsNumeric(retValue) then
     fExitCode := StrToInt(retValue)
   else
