@@ -18,7 +18,7 @@ ProfileIndex=1
 Folders=
 
 [Profile0]
-ProfileName=Mingw gcc
+ProfileName=MingW 3.4.2
 Type=0
 ObjFiles=
 Includes=
@@ -32,8 +32,8 @@ Linker=-mwindows_@@_-lwxmsw27_@@_-lwxmsw27_gl_@@_-lwxtiff_@@_-lwxjpeg_@@_-lwxpng
 PreprocDefines=__WXMSW___@@___GNUWIN32___@@___WIN95___@@_
 CompilerSettings=0000000001001000000000
 Icon=
-ExeOutput=Output_Mingw
-ObjectOutput=Output_Mingw
+ExeOutput=Output\MingW 3.4.2
+ObjectOutput=Output\MingW 3.4.2
 OverrideOutput=0
 OverrideOutputName=
 HostApplication=
@@ -46,7 +46,7 @@ CompilerSet=0
 compilerType=0
 
 [Profile1]
-ProfileName=MS VC++ 2005
+ProfileName=Visual C++ 2005
 Type=0
 ObjFiles=
 Includes=
@@ -57,11 +57,11 @@ MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=wxmsw27.lib_@@_wxmsw27_gl.lib_@@_wxtiff.lib_@@_wxjpeg.lib_@@_wxpng.lib_@@_wxzlib.lib_@@_wxregex.lib_@@_wxexpat.lib_@@_kernel32.lib_@@_user32.lib_@@_gdi32.lib_@@_comdlg32.lib_@@_winspool.lib_@@_winmm.lib_@@_shell32.lib_@@_comctl32.lib_@@_ole32.lib_@@_oleaut32.lib_@@_uuid.lib_@@_rpcrt4.lib_@@_advapi32.lib_@@_wsock32.lib_@@_odbc32.lib_@@_opengl32.lib_@@_
-PreprocDefines=__WXMSW___@@_
+PreprocDefines=_@@_
 CompilerSettings=000000000000010000000000000000000000
 Icon=
-ExeOutput=Output_VC2005
-ObjectOutput=Output_VC2005
+ExeOutput=Output\Visual C++ 2005
+ObjectOutput=Output\Visual C++ 2005
 OverrideOutput=0
 OverrideOutputName=
 HostApplication=
@@ -72,4 +72,3 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=1
 compilerType=1
-
