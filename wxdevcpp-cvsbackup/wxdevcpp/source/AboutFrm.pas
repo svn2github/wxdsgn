@@ -66,8 +66,8 @@ type
     Gnome: TLabel;
     CopyrightLabel: TLabel;
     wxdevcopyright: TLabel;
-    Label1: TLabel;
-    Label10: TLabel;
+    BookLabel: TLabel;
+    Book: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);

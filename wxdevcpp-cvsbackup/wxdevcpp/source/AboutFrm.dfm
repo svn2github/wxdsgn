@@ -1,11 +1,11 @@
 object AboutForm: TAboutForm
-  Left = 357
+  Left = 356
   Top = 202
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'About wxDev-C++'
-  ClientHeight = 395
-  ClientWidth = 394
+  ClientHeight = 396
+  ClientWidth = 395
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2231,13 +2231,12 @@ object AboutForm: TAboutForm
     Width = 376
     Height = 285
     ActivePage = Version
-    TabIndex = 0
     TabOrder = 2
     object Version: TTabSheet
       Caption = 'Version Information'
       object wxWebsite: TLabel
         Left = 139
-        Top = 123
+        Top = 83
         Width = 98
         Height = 13
         Cursor = crHandPoint
@@ -2252,7 +2251,7 @@ object AboutForm: TAboutForm
       end
       object ForumSite: TLabel
         Left = 139
-        Top = 96
+        Top = 64
         Width = 241
         Height = 13
         Cursor = crHandPoint
@@ -2267,7 +2266,7 @@ object AboutForm: TAboutForm
       end
       object wxdevcppWebsite: TLabel
         Left = 139
-        Top = 69
+        Top = 45
         Width = 149
         Height = 13
         Cursor = crHandPoint
@@ -2282,61 +2281,35 @@ object AboutForm: TAboutForm
       end
       object wxdevcppWebsiteLabel: TLabel
         Left = 4
-        Top = 69
+        Top = 45
         Width = 100
         Height = 13
         Caption = 'wxDev-C++ Website:'
       end
       object ForumLabel: TLabel
         Left = 4
-        Top = 96
+        Top = 64
         Width = 130
         Height = 13
         Caption = 'wxDev-C++ Support Forum:'
       end
       object wxWebLabel: TLabel
         Left = 4
-        Top = 123
+        Top = 83
         Width = 76
         Height = 13
         Caption = 'wxWidgets Site:'
       end
-      object CopyrightLabel: TLabel
+      object BookLabel: TLabel
         Left = 4
-        Top = 36
-        Width = 312
-        Height = 13
-        Caption = 'Dev-C++ Code Base Copyright (c) Bloodshed Software '
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object wxdevcopyright: TLabel
-        Left = 4
-        Top = 13
-        Width = 330
-        Height = 13
-        Caption = 'Copyright (c) 2003 - 2006  wxDev-C++ Development Team'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label1: TLabel
-        Left = 4
-        Top = 155
+        Top = 102
         Width = 89
         Height = 13
         Caption = 'wxDev-C++ Book :'
       end
-      object Label10: TLabel
+      object Book: TLabel
         Left = 139
-        Top = 155
+        Top = 102
         Width = 189
         Height = 13
         Cursor = crHandPoint
@@ -2349,9 +2322,35 @@ object AboutForm: TAboutForm
         ParentFont = False
         OnClick = LabelClick
       end
+      object CopyrightLabel: TLabel
+        Left = 4
+        Top = 4
+        Width = 312
+        Height = 13
+        Caption = 'Dev-C++ Code Base Copyright (c) Bloodshed Software '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object wxdevcopyright: TLabel
+        Left = 4
+        Top = 21
+        Width = 339
+        Height = 13
+        Caption = 'Form Designer Copyright (c) wxDev-C++ Development Team'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
     end
     object License: TTabSheet
-      Caption = 'GNU License'
+      Caption = 'GNU General Public License'
       ImageIndex = 1
       object LicenseText: TMemo
         Left = 0
@@ -2990,41 +2989,29 @@ object AboutForm: TAboutForm
       ImageIndex = 2
       object lblAuthors_wxDevCpp: TLabel
         Left = 4
-        Top = 36
+        Top = 4
         Width = 124
         Height = 13
         Caption = 'wxDev-C++ Development:'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
       end
       object Label2: TLabel
         Left = 150
-        Top = 37
-        Width = 173
+        Top = 5
+        Width = 185
         Height = 26
         Caption = 'Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
         WordWrap = True
       end
       object lblAuthors_DevCpp: TLabel
         Left = 4
-        Top = 75
+        Top = 35
         Width = 111
         Height = 13
         Caption = 'Dev-C++ Development:'
       end
       object Label4: TLabel
         Left = 150
-        Top = 75
+        Top = 35
         Width = 177
         Height = 26
         Caption = 'Colin Laplace, Mike Berg, Hongli Lai, Yiannis Mandravellos'
@@ -3032,14 +3019,14 @@ object AboutForm: TAboutForm
       end
       object lblContributors: TLabel
         Left = 4
-        Top = 112
-        Width = 104
+        Top = 64
+        Width = 59
         Height = 13
-        Caption = 'Dev-C++ Contributors:'
+        Caption = 'Contributors:'
       end
       object Label3: TLabel
         Left = 149
-        Top = 113
+        Top = 65
         Width = 164
         Height = 13
         Caption = 'Peter Schraut, Marek Januszewski'
@@ -3047,14 +3034,14 @@ object AboutForm: TAboutForm
       end
       object lblMingW: TLabel
         Left = 4
-        Top = 137
+        Top = 81
         Width = 117
         Height = 13
         Caption = 'MingW Compiler System:'
       end
       object Label5: TLabel
         Left = 149
-        Top = 138
+        Top = 82
         Width = 188
         Height = 26
         Caption = 
@@ -3064,29 +3051,44 @@ object AboutForm: TAboutForm
       end
       object lblSplash: TLabel
         Left = 4
-        Top = 175
+        Top = 111
         Width = 72
         Height = 13
         Caption = 'Splash Screen:'
       end
       object Label6: TLabel
         Left = 149
-        Top = 176
+        Top = 112
         Width = 80
         Height = 13
         Caption = 'Matthijs Crielaard'
         WordWrap = True
       end
+      object lblNewLook: TLabel
+        Left = 4
+        Top = 128
+        Width = 88
+        Height = 13
+        Caption = 'New Look Theme:'
+      end
+      object Label7: TLabel
+        Left = 149
+        Top = 129
+        Width = 75
+        Height = 13
+        Caption = 'Gerard Caulfield'
+        WordWrap = True
+      end
       object Label8: TLabel
         Left = 4
-        Top = 201
+        Top = 145
         Width = 60
         Height = 13
         Caption = 'Blue Theme:'
       end
       object Label9: TLabel
         Left = 149
-        Top = 202
+        Top = 146
         Width = 69
         Height = 13
         Caption = 'Thomas Thron'
@@ -3094,14 +3096,14 @@ object AboutForm: TAboutForm
       end
       object lblGnome: TLabel
         Left = 4
-        Top = 226
+        Top = 162
         Width = 73
         Height = 13
         Caption = 'Gnome Theme:'
       end
       object Gnome: TLabel
         Left = 149
-        Top = 227
+        Top = 163
         Width = 84
         Height = 13
         Caption = 'Gnome Designers'
