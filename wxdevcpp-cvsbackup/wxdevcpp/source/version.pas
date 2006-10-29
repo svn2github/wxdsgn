@@ -805,7 +805,10 @@ begin
       end;
     end;
 
-    Result:=strFSDKInstallDir;
+    if trim(strFSDKInstallDir) = '' then
+      Result:='Invalid_SDK_DIR'
+    else
+      Result:=strFSDKInstallDir;
     
     strLst.Destroy;
     reg.CloseKey;
@@ -897,8 +900,16 @@ Begin
            end;
       end;
       reg.CloseKey;
+      
+      //Guru : Make sure we set some invalid names to the dir,
+      //otherwise with the empty string it will set \include and
+      //this will be mapped to mingW's Include path
+      if (strVSInstallDir ='') then
+        strVSInstallDir:='VSInstall_INVALID_FOLDER';
 
       strWinSDKDir := GetWinSDKDir;
+      if (strWinSDKDir ='') then
+        strWinSDKDir:='WinSDK_INVALID_FOLDER';
 
       TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\VC\VC_OBJECTS_PLATFORM_INFO\Win32\Directories\',[VersionString]);
       if (reg.OpenKey(TempString,false)) then
