@@ -19,34 +19,34 @@ object frmCreateFormProp: TfrmCreateFormProp
   TextHeight = 13
   object Label1: TLabel
     Left = 8
-    Top = 11
-    Width = 56
+    Top = 10
+    Width = 59
     Height = 13
-    Caption = 'Class Name'
+    Caption = 'Class Name:'
     Transparent = True
   end
   object Label2: TLabel
     Left = 8
-    Top = 59
-    Width = 41
+    Top = 58
+    Width = 44
     Height = 13
-    Caption = 'Save To'
+    Caption = 'Save To:'
     Transparent = True
   end
   object Label3: TLabel
     Left = 8
-    Top = 35
-    Width = 45
+    Top = 34
+    Width = 50
     Height = 13
-    Caption = 'File name'
+    Caption = 'File Name:'
     Transparent = True
   end
   object Label5: TLabel
     Left = 8
-    Top = 83
-    Width = 20
+    Top = 82
+    Width = 23
     Height = 13
-    Caption = 'Title'
+    Caption = 'Title:'
     Transparent = True
   end
   object Bevel1: TBevel
@@ -66,26 +66,26 @@ object frmCreateFormProp: TfrmCreateFormProp
   end
   object Label8: TLabel
     Left = 8
-    Top = 107
-    Width = 31
+    Top = 106
+    Width = 34
     Height = 13
-    Caption = 'Author'
+    Caption = 'Author:'
     Transparent = True
   end
   object Label6: TLabel
     Left = 7
-    Top = 131
-    Width = 60
+    Top = 133
+    Width = 68
     Height = 13
-    Caption = 'Default Style'
+    Caption = 'Window Style:'
     Transparent = True
   end
   object ProfileLabel: TLabel
     Left = 8
-    Top = 203
-    Width = 100
+    Top = 205
+    Width = 67
     Height = 13
-    Caption = 'Default Profile to Use'
+    Caption = 'Project profile:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -96,7 +96,7 @@ object frmCreateFormProp: TfrmCreateFormProp
   object txtSaveTo: TEdit
     Left = 88
     Top = 56
-    Width = 297
+    Width = 275
     Height = 21
     ReadOnly = True
     TabOrder = 2
@@ -104,23 +104,23 @@ object frmCreateFormProp: TfrmCreateFormProp
   object txtClassName: TEdit
     Left = 88
     Top = 8
-    Width = 240
+    Width = 235
     Height = 21
     TabOrder = 0
   end
   object txtFileName: TEdit
     Left = 88
     Top = 32
-    Width = 240
+    Width = 235
     Height = 21
     TabOrder = 1
   end
   object btBrowse: TButton
-    Left = 396
+    Left = 370
     Top = 56
-    Width = 25
-    Height = 20
-    Caption = '...'
+    Width = 50
+    Height = 21
+    Caption = 'Browse'
     TabOrder = 3
     OnClick = btBrowseClick
   end
@@ -141,7 +141,7 @@ object frmCreateFormProp: TfrmCreateFormProp
     OnClick = btCancelClick
   end
   object btCreate: TButton
-    Left = 274
+    Left = 272
     Top = 200
     Width = 75
     Height = 25
@@ -240,9 +240,9 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 16
   end
   object ProfileNameSelect: TComboBox
-    Left = 112
+    Left = 88
     Top = 201
-    Width = 139
+    Width = 175
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
@@ -258,7 +258,7 @@ object frmCreateFormProp: TfrmCreateFormProp
       'txtSaveTo.Text'
       'txtTitle.Text')
     StoredValues = <>
-    Left = 39
+    Left = 30
     Top = 148
   end
   object JvAppRegistryStorage1: TJvAppRegistryStorage
@@ -266,8 +266,8 @@ object frmCreateFormProp: TfrmCreateFormProp
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Root = 'Software\dlgHelper'
     SubStorages = <>
-    Left = 4
-    Top = 147
+    Left = 3
+    Top = 148
   end
   object XPMenu: TXPMenu
     DimLevel = 30
