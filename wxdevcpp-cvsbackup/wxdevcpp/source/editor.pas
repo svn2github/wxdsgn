@@ -159,6 +159,7 @@ type
     procedure GotoLineNr(Nr: integer);
     function Search(const isReplace: boolean): boolean;
     procedure SearchAgain;
+    procedure SearchKeyNavigation(MoveForward:Boolean = true);
     procedure Exportto(const isHTML: boolean);
     procedure InsertString(const Value: string; const move: boolean);
     {$IFDEF WX_BUILD}
@@ -1147,6 +1148,53 @@ begin
       mtInformation, [mbOk], 0);
 end;
 
+procedure TEditor.SearchKeyNavigation(MoveForward:Boolean);
+var
+  Options: TSynSearchOptions;
+  return,MidCursorPos: integer;
+  s:String;
+  bSelected:boolean;
+begin
+  bSelected:=false;
+  if (fText.SelText = '') then
+    s := GetWordAtCursor
+  else
+  begin
+    s := fText.SelText;
+    bSelected:=true;
+  end;
+
+  SearchCenter.Editor := Self;
+  SearchCenter.AssignSearchEngine;
+  SearchCenter.FindText := s;
+
+  if not SearchCenter.SingleFile then exit;
+  if SearchCenter.FindText = '' then begin
+    exit;
+  end;
+  Options := SearchCenter.Options;
+  Exclude(Options, ssoEntireScope);
+
+  if (MoveForward) then
+    Exclude(Options, ssoBackwards)
+  else
+    Include(Options, ssoBackwards);
+
+  return := fText.SearchReplace(SearchCenter.FindText,SearchCenter.ReplaceText,Options);
+  if bSelected = false then
+  begin
+    if fText.SelEnd - fText.SelStart <> 1 then
+    begin
+      MidCursorPos := fText.SelEnd - ((fText.SelEnd-fText.SelStart) div 2);
+      fText.SelStart:= MidCursorPos;
+      fText.SelEnd:= MidCursorPos;
+    end;
+  end;
+
+  if return <> 0 then
+    Activate
+end;
+
 procedure TEditor.SetErrorFocus(const Col, Line: integer);
 begin
   fErrSetting := TRUE;
@@ -1302,7 +1350,7 @@ var
   P: TPoint;
 begin
 
-  if Key = char($7F) then // happens when doing ctrl+backspace with completion on
+if Key = char($7F) then // happens when doing ctrl+backspace with completion on
     exit;
   if fCompletionBox.Enabled then
   begin
@@ -1390,6 +1438,23 @@ begin
       Abort;
     end;
   end;
+
+{$IFDEF WIN32}
+  if (Key = VK_UP) or (Key = VK_DOWN) then
+{$ENDIF}
+{$IFDEF LINUX}
+  if (Key = XK_UP) or (Key = VK_DOWN) then
+{$ENDIF}
+  begin
+    if (ssCtrl in Shift) and (ssAlt in Shift) then
+    begin
+      if Key = VK_UP then
+        SearchKeyNavigation(false)
+      else
+        SearchKeyNavigation(true);
+    end;
+  end;
+
 
   if fCompletionBox.Enabled then begin
     fCompletionBox.OnKeyPress := EditorKeyPress;

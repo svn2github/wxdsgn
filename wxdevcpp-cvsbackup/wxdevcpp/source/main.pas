@@ -9656,17 +9656,30 @@ begin
   end;
   if nSlectedItem = -1 then
     exit;
-  if JvInspEvents.Root.Items[nSlectedItem].Data.AsString <> '' then
-    exit;
 
   JvInspEvents.Show;
   //If we dont select it then the Selection Event wont get fired
   JvInspEvents.SelectedIndex:=JvInspEvents.Root.Items[nSlectedItem].DisplayIndex;
-  JvInspEvents.OnDataValueChanged:=nil;
-  JvInspEvents.Root.Items[nSlectedItem].Data.AsString:='<Add New Function>';
-  JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
-  JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
-  JvInspEventsDataValueChanged(nil,JvInspEvents.Root.Items[nSlectedItem].Data);  
+
+  if JvInspEvents.Root.Items[nSlectedItem].Data.AsString <> '' then
+  begin
+    strGlobalCurrentFunction:=JvInspEvents.Root.Items[nSlectedItem].Data.AsString;
+    JvInspEvents.OnDataValueChanged:=nil;
+    JvInspEvents.Root.Items[nSlectedItem].Data.AsString:='<Goto Function>';
+    JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
+    JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
+    JvInspEventsDataValueChanged(nil,JvInspEvents.Root.Items[nSlectedItem].Data);
+    exit;
+  end
+  else
+  begin
+    JvInspEvents.OnDataValueChanged:=nil;
+    JvInspEvents.Root.Items[nSlectedItem].Data.AsString:='<Add New Function>';
+    JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
+    JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
+    JvInspEventsDataValueChanged(nil,JvInspEvents.Root.Items[nSlectedItem].Data);
+    exit;
+  end;
 end;
 
 procedure TMainForm.ELDesigner1ControlInserting(Sender: TObject;
@@ -10438,7 +10451,9 @@ begin
       if not ClassBrowser1.Enabled then
       begin
         MessageDlg('Class Browser is not enabled.'+#13+#10+''+#13+#10+'Event handlers wont work', mtWarning, [mbOK], 0);
+        JvInspEvents.OnDataValueChanged:=nil;
         Data.AsString := '';
+        JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
         Exit;
       end;
 
@@ -10541,7 +10556,8 @@ begin
       begin
         str := trim(Data.AsString);
         LocateFunctionInEditor(Data,Trim(e.getDesigner().Wx_Name),SelectedComponent, str, JvInspEvents.Selected.DisplayName);
-        Exit;
+        fstrCppFileToOpen:=e.GetDesignerCPPEditor.FileName;
+        bOpenFile:=true;
       end;
     end;
 
