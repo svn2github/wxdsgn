@@ -272,19 +272,19 @@ begin
   else
     devData.INIFile := ChangeFileExt(Application.EXEName, INI_EXT);
 
-  if trim(devData.INIFile) <> '' then
-    if FileExists(devData.INIFile) then
-    begin
-      iniFile:=TIniFile.Create(devData.INIFile);
-      try
-        versionNum:=iniFile.ReadInteger('Program', 'Version', -1);
-        if versionNum <> WXVERSION then
-          DeleteFile(devData.INIFile);
-        iniFile.WriteInteger('Program', 'Version', WXVERSION);
-      finally
-        iniFile.Destroy;
-      end;
-    end;
+  if FileExists(devData.INIFile+'.ver') = false then
+  begin
+    DeleteFile(devData.INIFile);
+  end;
+  iniFile:=TIniFile.Create(devData.INIFile+'.ver');
+  try
+    versionNum:=iniFile.ReadInteger('Program', 'Version', -1);
+  if versionNum <> WXVERSION then
+    DeleteFile(devData.INIFile);
+    iniFile.WriteInteger('Program', 'Version', WXVERSION);
+  finally
+    iniFile.Destroy;
+  end;
 
   devData.UseRegistry := FALSE;
   devData.BoolAsWords := FALSE;
