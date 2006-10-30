@@ -198,7 +198,7 @@ var
   i:Integer;
 begin
   Result   := '';
-  strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle);
+  strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle,false);
   
     Result := GetCommentString(self.FWx_Comments.Text) +
     'wxArrayString arrayStringFor_' + self.Name + ';';

@@ -197,7 +197,7 @@ var
   strStyle: string;
 begin
   Result   := '';
-  strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle);
+  strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle,false);
   Result   := GetCommentString(self.FWx_Comments.Text) +
     Format('%s =  new %s(this, %s, %s%s);', [self.Name, self.wx_Class,
     GetCppString(wx_Message), GetCppString(wx_Caption), strStyle]);

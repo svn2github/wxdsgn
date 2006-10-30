@@ -590,7 +590,7 @@ function GetProgressDialogStyleString(stdStyle: TWxProgressDialogStyleSet): stri
 function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle:TWxEdtGeneralStyleSet): string;
 function GetMediaCtrlStyle(mediaStyle:TWxMediaCtrlControl): string;
 function GetMediaCtrlStyleString(mediaStyle:TWxMediaCtrlControls): string;
-function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet): string;
+function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;NoEndComma:Boolean): string;
 function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): string;
 function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet): string;
 
@@ -2014,7 +2014,7 @@ begin
 
 end;
 
-function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet): string;
+function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;NoEndComma:Boolean): string;
 var
   I:      integer;
   strLst: TStringList;
@@ -2072,6 +2072,10 @@ begin
     strLst.Destroy;
   end;
 
+  if (Result <> '') AND (NoEndComma = false) then
+  begin
+    Result := ',' + Result;
+  end;
 end;
 
 function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): string;
@@ -2498,7 +2502,7 @@ function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtSt
 var
   strA,strB:String;
 begin
-  strA   := trim(GetMessageDialogStyleString(stdStyle));
+  strA   := trim(GetMessageDialogStyleString(stdStyle,true));
   strB   := trim(GetEdtStyleString(edtStyle));
 
   if strA <> '' then
