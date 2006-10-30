@@ -435,8 +435,10 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   StrCpy $WXBOOK_INSTALLED "Yes"
   
   SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "Help\Programming with wxDev-C++.pdf"
-
+  
+ ; '"$R0\acrord32.exe" "$INSTDIR\Help\Programming with wxDev-C++.pdf"'
+ ; ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AcroRd32.exe" "Path" ; Find Adobe Acrobat install path
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
 SectionEnd
 
 SectionGroupEnd
