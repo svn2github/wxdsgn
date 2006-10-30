@@ -110,7 +110,6 @@ function IncludeQuoteIfNeeded(s : string) : string;
 
 
 // Added by MikeB
-function StripInvalidChars(const strValue: string):String;
 procedure LoadFilefromResource(const FileName: string; ms: TMemoryStream);
 
 function ValidateFile(const FileName: string; const WorkPath: string;
@@ -475,11 +474,6 @@ begin
   end
   else
      result:= '';
-end;
-
-function StripInvalidChars(const strValue: string):String;
-begin
-  Result:=StringReplace(strValue,' ','', [rfReplaceAll]);
 end;
 
 procedure LoadFilefromResource(const FileName: string; ms: TMemoryStream);

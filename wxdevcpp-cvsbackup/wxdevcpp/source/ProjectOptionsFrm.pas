@@ -500,8 +500,8 @@ begin
 
     typ:= lstType.ItemIndex;
 
-    ExeOutput := StripInvalidChars(edExeOutput.Text);
-    ObjectOutput := StripInvalidChars(edObjOutput.Text);
+    ExeOutput := edExeOutput.Text;
+    ObjectOutput := edObjOutput.Text;
     OverrideOutput := chkOverrideOutput.Checked;
     OverridenOutput := edOverridenOutput.Text;
     if cbUseCustomMakefile.Checked and FileExists(edCustomMakefile.Text) then
@@ -862,7 +862,7 @@ begin
   if DirectoryExists(TempDir) then
     TempDir:=GetShortName(TempDir)
   else
-    TempDir:=StripInvalidChars(TempDir);
+    TempDir:=TempDir;
   edExeOutput.Text := TempDir;
 end;
 
@@ -886,7 +886,7 @@ begin
   if DirectoryExists(TempDir) then
     TempDir:=GetShortName(TempDir)
   else
-    TempDir:=StripInvalidChars(TempDir);
+    TempDir:=TempDir;
   edObjOutput.Text := TempDir;
 end;
 
@@ -1395,8 +1395,8 @@ begin
   //TODO: Guru: Fix the Output Directory to have only valid characters
   NewProfile:=TProjProfile.Create;
   NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=StripInvalidChars(S);
-  NewProfile.ExeOutput:=StripInvalidChars(S);
+  NewProfile.ObjectOutput:=S;
+  NewProfile.ExeOutput:=S;
   fProfiles.Add(NewProfile);
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
 end;
@@ -1443,8 +1443,8 @@ begin
   NewProfile:=TProjProfile.Create;
   NewProfile.CopyProfileFrom(CurrentProfile);
   NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=StripInvalidChars(S);
-  NewProfile.ExeOutput:=StripInvalidChars(S);
+  NewProfile.ObjectOutput:=S;
+  NewProfile.ExeOutput:=S;
   fProfiles.Add(NewProfile);
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
   cmbProfileSetComp.ItemIndex:=cmbProfileSetComp.Items.count-1;

@@ -594,7 +594,10 @@ begin
     tfile := ExtractRelativePath(fProject.FileName, fProject.CurrentProfile.PrivateResource);
 
     writeln(F, ofile + ': ' + GenMakePath2(tfile) + ' ' + ResFiles);
-    writeln(F, #9 + '$(WINDRES) ' + format(devCompiler.ResourceFormat, [GenMakePath(ChangeFileExt(tfile, RES_EXT)) + ' $(RCINCS) ' + GenMakePath(tfile)]));
+    if devCompiler.CompilerType = ID_COMPILER_MINGW then
+      writeln(F, #9 + '$(WINDRES) ' + format(devCompiler.ResourceFormat, [GenMakePath(ChangeFileExt(tfile, RES_EXT)) + ' $(RCINCS) ' + GenMakePath(GetShortName(tfile))]))
+    else
+      writeln(F, #9 + '$(WINDRES) ' + format(devCompiler.ResourceFormat, [GenMakePath(ChangeFileExt(tfile, RES_EXT)) + ' $(RCINCS) ' + GenMakePath(tfile)]))
   end;
 end;
 

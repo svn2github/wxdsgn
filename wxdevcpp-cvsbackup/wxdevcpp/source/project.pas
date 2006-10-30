@@ -646,7 +646,7 @@ begin
     ResFile.Add('// Windows XP Manifest file: wxDev-C++ currently only supports having');
     ResFile.Add('// comctl32.dll version 6 as the only dependant assembly.');
     if (CurrentProfile.ExeOutput <> '') then
-      ResFile.Add('1 24 "' + GenMakePath2(IncludeTrailingPathDelimiter(SubstituteMakeParams(CurrentProfile.ExeOutput)) + ExtractFileName(SubstituteMakeParams(Executable))) + '.Manifest"')
+      ResFile.Add('1 24 "' + GenMakePath(IncludeTrailingPathDelimiter(SubstituteMakeParams(CurrentProfile.ExeOutput)) + ExtractFileName(SubstituteMakeParams(Executable)) + '.Manifest"', false, false))
     else
       ResFile.Add('1 24 "' + ExtractFileName(Executable) + '.Manifest"');
   end;
@@ -993,16 +993,16 @@ begin
         fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
         fProfiles[0].MakeIncludes.DelimitedText := Read('MakeIncludes', '');
 {$ENDIF}
-        fProfiles[0].ExeOutput := StripInvalidChars(Read('ExeOutput', fProfiles[0].ProfileName));
-        fProfiles[0].ObjectOutput := StripInvalidChars(Read('ObjectOutput', fProfiles[0].ProfileName));
+        fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
+        fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
         if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
-          fProfiles[0].ExeOutput:=StripInvalidChars(fProfiles[0].ObjectOutput)
+          fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
         else if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
-          fProfiles[0].ObjectOutput:=StripInvalidChars(fProfiles[0].ExeOutput)
+          fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput
         else if ((fProfiles[0].ExeOutput = '') and (fProfiles[0].ObjectOutput = '') ) then
         begin
-          fProfiles[0].ObjectOutput:=StripInvalidChars(fProfiles[0].ProfileName);
-          fProfiles[0].ExeOutput:=StripInvalidChars(fProfiles[0].ProfileName);
+          fProfiles[0].ObjectOutput:=fProfiles[0].ProfileName;
+          fProfiles[0].ExeOutput:=fProfiles[0].ProfileName;
         end;
 
         fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
@@ -1043,14 +1043,14 @@ begin
       fProfiles[0].Includes.Add(Read('IncludeDirs', ''));
       fProfiles[0].Compiler := Read('CompilerOptions', '');
       fProfiles.usegpp := Read('Use_GPP', FALSE);
-      fProfiles[0].ExeOutput := StripInvalidChars(Read('ExeOutput', fProfiles[0].ProfileName));
-      fProfiles[0].ObjectOutput := StripInvalidChars(Read('ObjectOutput', fProfiles[0].ProfileName));
+      fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
+      fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
 
       if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
-        fProfiles[0].ExeOutput:=StripInvalidChars(fProfiles[0].ObjectOutput)
+        fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
       else
         if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
-          fProfiles[0].ObjectOutput:=StripInvalidChars(fProfiles[0].ExeOutput);
+          fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput;
 
       fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
       fProfiles[0].OverridenOutput := Read('OverrideOutputName', '');
@@ -1384,8 +1384,8 @@ begin
     Profiles.Ver:=fPrevVersion;
     NewProfile:=TProjProfile.Create;
     NewProfile.ProfileName := 'Default Profile';
-    NewProfile.ExeOutput := StripInvalidChars(NewProfile.ProfileName);
-    NewProfile.ObjectOutput := StripInvalidChars(NewProfile.ProfileName);
+    NewProfile.ExeOutput := NewProfile.ProfileName;
+    NewProfile.ObjectOutput := NewProfile.ProfileName;
     fProfiles.Add(NewProfile);
     Exit;
   end;
@@ -1408,8 +1408,8 @@ begin
     NewProfile.ResourceIncludes.DelimitedText:=finifile.ReadProfile(i,'ResourceIncludes','');
     NewProfile.MakeIncludes.DelimitedText:=finifile.ReadProfile(i,'MakeIncludes','');
     NewProfile.Icon:= finifile.ReadProfile(i,'Icon','');
-    NewProfile.ExeOutput := StripInvalidChars(finifile.ReadProfile(i,'ExeOutput',''));
-    NewProfile.ObjectOutput := StripInvalidChars(finifile.ReadProfile(i,'ObjectOutput',''));
+    NewProfile.ExeOutput := finifile.ReadProfile(i,'ExeOutput','');
+    NewProfile.ObjectOutput := finifile.ReadProfile(i,'ObjectOutput','');
     NewProfile.OverrideOutput := finifile.ReadProfile(i,'OverrideOutput',false);
     NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverrideOutputName','');
     NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
