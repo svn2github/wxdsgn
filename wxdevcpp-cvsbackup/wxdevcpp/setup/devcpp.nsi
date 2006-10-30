@@ -12,28 +12,51 @@
 !define HAVE_MSVC
 !define NEW_INTERFACE
 
-!define wxWidgets_version "2.7.0"
-!define wxWidgets_name "wxWidgets_2_7_0"
+!define wxWidgets_version "2.7.1"
+!define wxWidgets_name "wxWidgets_2_7_1"
 
-!define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
-!define wxWidgets_mingw "${wxWidgets_name}_gcc.entry"   ; name of the wxWidgets gcc entry
+!ifdef HAVE_MINGW
 
-!define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
-!define wxWidgets_msvc "${wxWidgets_name}_vc.entry"   ; name of the wxWidgets vc entry
+  !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
+  !define wxWidgets_mingw "${wxWidgets_name}_gcc.entry"   ; name of the wxWidgets gcc entry
 
-!define wxWidgetsContrib_devpak "${wxWidgets_name}contrib.devpak"  ; name of the contrib devpak
-!define wxWidgetsContrib "${wxWidgets_name}contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
+  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.devpak"  ; name of the contrib devpak
+  !define wxWidgetsContribGcc "${wxWidgets_name}_gcc_contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
 
-!define wxWidgetsSamples_devpak "${wxWidgets_name}samples.devpak"  ; name of the samples devpak
-!define wxWidgetsSamples "${wxWidgets_name}samples.entry" ; name of wxWidgets samples devpak entry in devcpp
+  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_Extras.devpak"  ; name of the samples devpak
+  !define wxWidgetsExtrasGcc "${wxWidgets_name}_gcc_Extras.entry" ; name of wxWidgets samples devpak entry in devcpp
+
+!endif
+
+!ifdef HAVE_MSVC
+
+  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
+  !define wxWidgets_msvc "${wxWidgets_name}_vc.entry"   ; name of the wxWidgets vc entry
+
+  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.devpak"  ; name of the contrib devpak
+  !define wxWidgetsContribMSVC "${wxWidgets_name}_vc_contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
+
+!endif
+
+!define wxWidgetsCommon_devpak "${wxWidgets_name}_common.devpak"  ; name of the samples devpak
+!define wxWidgetsCommon "${wxWidgets_name}_common.entry" ; name of wxWidgets samples devpak entry in devcpp
+
+!define wxWidgetsSamples_devpak "${wxWidgets_name}_samples.devpak"  ; name of the samples devpak
+!define wxWidgetsSamples "${wxWidgets_name}_samples.entry" ; name of wxWidgets samples devpak entry in devcpp
 
 Var LOCAL_APPDATA
+Var USE_MINGW
+Var USE_MSVC
+Var RUN_WXDEVCPP
+Var RUN_WXBOOK
+Var WXBOOK_INSTALLED
 
 !ifdef NEW_INTERFACE
 ;--------------------------------
 ;Include Modern UI
 
   !include "MUI.nsh"
+  !include "Sections.nsh"
 
 !endif
 
@@ -55,7 +78,7 @@ LicenseText "${PROGRAM_NAME} is distributed under the GNU General Public License
 LicenseData "copying.txt"
 
 # [Directory Selection]
-InstallDir "C:\Dev-Cpp"
+InstallDir "$PROGRAMFILES\Dev-Cpp"
 DirText "Select the directory to install ${PROGRAM_NAME} to :"
 
 # [Additional Installer Settings ]
@@ -75,7 +98,7 @@ SetDatablockOptimize on
 XPStyle on
 
 InstType "Full" ;1
-InstType "Typical" ;2
+InstType "Minimal" ;2
 
 ComponentText "Choose components"
 
@@ -107,10 +130,14 @@ UninstPage instfiles
 
   Var STARTMENU_FOLDER
 
+  ; Display custom page which allows user to select which compiler(s) to install for
+  Page custom CustomInstallOptions
+  
   !define MUI_COMPONENTSPAGE_SMALLDESC
 
   !insertmacro MUI_PAGE_LICENSE "copying.txt"
   !insertmacro MUI_PAGE_COMPONENTS
+  
   !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave  ; Check if default directory name is valid
 
   !define MUI_STARTMENUPAGE_DEFAULTFOLDER ${DEFAULT_START_MENU_DIRECTORY}
@@ -119,9 +146,13 @@ UninstPage instfiles
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   
-  !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe"
-  !define MUI_FINISHPAGE_NOREBOOTSUPPORT
-  !insertmacro MUI_PAGE_FINISH
+  ; Display custom page which allows user to select which programs to run
+  Page custom InstallCompleteOptions
+
+ ; !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe" 
+  
+  ;!define MUI_FINISHPAGE_NOREBOOTSUPPORT
+  ;!insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -163,6 +194,10 @@ UninstPage instfiles
 !endif ;NEW_INTERFACE
 ;--------------------------------
 
+ReserveFile "CustomInstallPage.ini"
+ReserveFile "InstallCompletePage.ini"
+!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
+
 # [Files]
 
 Section "${PROGRAM_NAME} program files (required)" SectionMain
@@ -190,6 +225,15 @@ loop_devpaks:
   Goto loop_devpaks
 done_devpaks:
 
+  SetOutPath $INSTDIR
+
+  ; All compilers will use the Mingw make system so they all need binutils
+  File /r "bin"
+  File /r "libexec"
+  SetOutPath $INSTDIR\Packages
+  File "Packages\binutils.entry"
+  File "Packages\make.entry"
+ 
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
 
@@ -207,39 +251,22 @@ done_devpaks:
 
 SectionEnd
 
-Section "Help files" SectionHelp
-  SectionIn 1 2
-  SetOutPath $INSTDIR\Help
-  File "Help\DevCpp.hlp"
-  File "Help\DevCpp.cnt"
+Section "wxWidgets ${wxWidgets_version} common files" SectionwxWidgetsCommon
+  SectionIn 1 2 RO
+
   SetOutPath $INSTDIR\Packages
-  File "Packages\DevCppHelp.entry"
-  
-  ; Added for wx-devcpp  -- START
-  SetOutPath $INSTDIR\Help
-  File "Help\wx.gid"
-  File "Help\devhelp.ini"
-  File "Help\wx-devcpp Tutorial Help.chm"
-  ; Added for wx-devcpp  -- END
 
-  SetOutPath $INSTDIR
+  File "Packages\${wxWidgetsCommon_devpak}"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsCommon_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsCommon_devpak}"
 
 SectionEnd
 
-Section "Icon files" SectionIcons
-  SectionIn 1 2
-  SetOutPath $INSTDIR\Icons
-  File "Icons\*.ico"
-  
-  SetOutPath $INSTDIR
-  
-SectionEnd
-
-SectionGroup /e "wxWidgets ${wxWidgets_version} library" SectionGroupwxWidgets
+SectionGroup /e "Mingw gcc wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsGCC
 
 !ifdef HAVE_MINGW
 
-Section "Mingw gcc build" SectionwxWidgetsMingw
+Section "Libraries" SectionwxWidgetsMingw
 
   SectionIn 1 2
   
@@ -253,41 +280,71 @@ Section "Mingw gcc build" SectionwxWidgetsMingw
 SectionEnd
 !endif
 
-!ifdef HAVE_MSVC
-
-Section /o "MS VC 2005 build" SectionwxWidgetsMSVC
-
+Section /o "Contribs" SectionwxWidgetsContribGcc
   SectionIn 1
   
+  SetOutPath $INSTDIR\Packages
+  
+  File "Packages\${wxWidgetsContribGcc_devpak}"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContribGcc_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsContribGcc_devpak}"
+
+SectionEnd
+
+Section /o "Extras" SectionwxWidgetsExtrasGcc
+
+  SectionIn 1
+
+  SetOutPath $INSTDIR\Packages
+
+  File "Packages\${wxWidgetsExtrasGcc_devpak}"   ; Copy the devpak over
+
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsExtrasGcc_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsExtrasGcc_devpak}"
+
+SectionEnd
+
+SectionGroupEnd
+
+!ifdef HAVE_MSVC
+
+SectionGroup /e "MS VC++ 2005 wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMSVC
+
+Section /o "Libraries" SectionwxWidgetsMSVC
+
+  SectionIn 1
+
   SetOutPath $INSTDIR\Packages
   File "Packages\${wxWidgets_msvc_devpak}"   ; Copy the devpak over
 
   ; Install wxWidgets MS VC 2005 library through the devpak
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_msvc_devpak}"'
   Delete "$INSTDIR\Packages\${wxWidgets_msvc_devpak}"   ; Delete the original devpak (its files should be installed now)
+  
+SectionEnd
+
+Section /o "Contribs" SectionwxWidgetsContribMSVC
+
+  SectionIn 1
+
+  SetOutPath $INSTDIR\Packages
+
+  File "Packages\${wxWidgetsContribMSVC_devpak}"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContribMSVC_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsContribMSVC_devpak}"
 
 SectionEnd
+
+SectionGroupEnd
 
 !endif
 
-Section /o "wxWidgets contrib" SectionwxWidgetsContrib
+Section "Samples" SectionwxWidgetsSamples
 
   SectionIn 1
-  
+
   SetOutPath $INSTDIR\Packages
-  
-  File "Packages\${wxWidgetsContrib_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContrib_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsContrib_devpak}"
 
-SectionEnd
-
-Section /o "wxWidgets samples" SectionwxWidgetsSamples
-
-  SectionIn 1
-  
-  SetOutPath $INSTDIR\Packages
-  
   File "Packages\${wxWidgetsSamples_devpak}"   ; Copy the devpak over
 
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"'
@@ -295,24 +352,19 @@ Section /o "wxWidgets samples" SectionwxWidgetsSamples
 
 SectionEnd
 
-SectionGroupEnd
 
 !ifdef HAVE_MINGW
-Section "Mingw compiler system (binaries, headers and libraries)" SectionMingw
+Section "Mingw compiler system (headers and libraries)" SectionMingw
   SectionIn 1 2
   SetOutPath $INSTDIR
   
-  File /r "bin"
   File /r "include"
   File /r "lib"
-  File /r "libexec"
   File /r "mingw32"
   SetOutPath $INSTDIR\Packages
-  File "Packages\binutils.entry"
   File "Packages\gcc-core.entry"
   File "Packages\gcc-g++.entry"
   File "Packages\gdb.entry"
-  File "Packages\make.entry"
   File "Packages\mingw-runtime.entry"
   File "Packages\w32api.entry"
   
@@ -341,13 +393,62 @@ exists:
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
-
+  
 !insertmacro MUI_STARTMENU_WRITE_END
 
   SetOutPath $INSTDIR
   
 SectionEnd
 !endif
+
+SectionGroup /e "Help files" SectionGroupHelp
+
+Section /o "${PROGRAM_NAME} help" SectionHelp
+
+  SectionIn 1 2
+  SetOutPath $INSTDIR\Help
+  File "Help\DevCpp.hlp"
+  File "Help\DevCpp.cnt"
+  SetOutPath $INSTDIR\Packages
+  File "Packages\DevCppHelp.entry"
+
+  ; Added for wx-devcpp  -- START
+  SetOutPath $INSTDIR\Help
+  File "Help\wx.gid"
+  File "Help\devhelp.ini"
+  File "Help\wx-devcpp Tutorial Help.chm"
+  File "Help\wx.hlp"
+  File "Help\wx.chm"
+  ; Added for wx-devcpp  -- END
+
+  SetOutPath $INSTDIR
+
+SectionEnd
+
+Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
+
+  SectionIn 1
+
+  SetOutPath $INSTDIR\Help
+  File "Help\Programming with wxDev-C++.pdf"
+  
+  StrCpy $WXBOOK_INSTALLED "Yes"
+  
+  SetOutPath $INSTDIR
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "Help\Programming with wxDev-C++.pdf"
+
+SectionEnd
+
+SectionGroupEnd
+
+Section "Icon files" SectionIcons
+  SectionIn 1 2
+  SetOutPath $INSTDIR\Icons
+  File "Icons\*.ico"
+
+  SetOutPath $INSTDIR
+
+SectionEnd
 
 Section "Language files" SectionLangs
   SectionIn 1
@@ -587,25 +688,90 @@ Section "Remove all previous configuration files" SectionConfig
   
 SectionEnd
 
+; Custom Install Options Page allows the user to select programs to run after installation
+Function InstallCompleteOptions
+
+  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "InstallCompletePage.ini"
+
+  !insertmacro MUI_HEADER_TEXT "Installation complete for ${PROGRAM_NAME}" "Do you want to run the programs now?"
+  
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "InstallCompletePage.ini" "Field 2" "Flags" ""
+
+  StrCmp $WXBOOK_INSTALLED "No" 0 +3   ; If wx pdf book isn't installed, then don't give that option
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "InstallCompletePage.ini" "Field 2" "State" "0"
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "InstallCompletePage.ini" "Field 2" "Flags" "DISABLED"
+  
+  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "InstallCompletePage.ini"
+
+  ;Read a value from an CustomInstallPage INI file
+  !insertmacro MUI_INSTALLOPTIONS_READ $RUN_WXDEVCPP "InstallCompletePage.ini" "Field 1" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $RUN_WXBOOK "InstallCompletePage.ini" "Field 2" "State"
+
+  StrCmp $RUN_WXBOOK "1" 0 +3
+  ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AcroRd32.exe" "Path" ; Find Adobe Acrobat install path
+  Exec '"$R0\acrord32.exe" "$INSTDIR\Help\Programming with wxDev-C++.pdf"'
+ 
+  StrCmp $RUN_WXDEVCPP "1" 0 +2
+  Exec '"$INSTDIR\devcpp.exe"'
+
+FunctionEnd
+
+; Custom Install Options Page allows the user to select which compiler(s) to use
+Function CustomInstallOptions
+
+  !insertmacro MUI_HEADER_TEXT "$(TEXT_IO_TITLE)" "$(TEXT_IO_SUBTITLE)"
+  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "CustomInstallPage.ini"
+  
+  ;Read a value from an CustomInstallPage INI file
+  !insertmacro MUI_INSTALLOPTIONS_READ $USE_MINGW "CustomInstallPage.ini" "Field 2" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $USE_MSVC "CustomInstallPage.ini" "Field 3" "State"
+
+  StrCpy $WXBOOK_INSTALLED "No" ; Initialize variable
+
+  ; Select the compiler sections according to which compiler types the user has chosen
+  SectionSetFlags ${SectionwxWidgetsMingw} $USE_MINGW
+  SectionSetFlags ${SectionwxWidgetsContribGcc} $USE_MINGW
+  SectionSetFlags ${SectionwxWidgetsExtrasGcc} $USE_MINGW
+  
+  SectionSetFlags ${SectionwxWidgetsMSVC} $USE_MSVC
+  SectionSetFlags ${SectionwxWidgetsContribMSVC} $USE_MSVC
+  
+  StrCmp $USE_MSVC "1" 0 +2
+    Call CheckMSVC   ; Check to see if user really has MSVC installed
+
+FunctionEnd
+
 ;--------------------------------
 
 # [Sections' descriptions (on mouse over)]
 !ifdef NEW_INTERFACE
 
+  LangString TEXT_IO_TITLE ${LANG_ENGLISH} "InstallOptions page"
+  LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "Compiler Selection for ${PROGRAM_NAME}"
+
   LangString DESC_SectionMain ${LANG_ENGLISH} "The ${PROGRAM_NAME} IDE (Integrated Development Environment), package manager and templates"
-  LangString DESC_SectionHelp ${LANG_ENGLISH} "Help on using ${PROGRAM_NAME} and programming in C"
-  LangString DESC_SectionIcons ${LANG_ENGLISH} "Various icons that you can use in your programs"
-  LangString DESC_SectionGroupwxWidgets ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries and include files"
+  
+  LangString DESC_SectionwxWidgetsCommon ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} common include files. All compilers use these files."
+
 !ifdef HAVE_MINGW
-  LangString DESC_SectionwxWidgetsMingw ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries and include files compiled with Mingw gcc"
+  LangString DESC_SectionGroupwxWidgetsGCC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} for Mingw gcc"
+  LangString DESC_SectionwxWidgetsMingw ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries compiled with Mingw gcc"
   LangString DESC_SectionMingw ${LANG_ENGLISH} "The MinGW gcc compiler and associated tools, headers and libraries"
+  LangString DESC_SectionwxWidgetsContribGcc ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory for Mingw gcc"
+  LangString DESC_SectionwxWidgetsExtrasGcc ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} extras directory"
 !endif
 !ifdef HAVE_MSVC
-  LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries and include files compiled with MS VC 2005"
+  LangString DESC_SectionGroupwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} for MS VC++ 2005"
+  LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries compiled with MS VC 2005"
+  LangString DESC_SectionwxWidgetsContribMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory for MS VC++ 2005"
 !endif
 
-  LangString DESC_SectionwxWidgetsContrib ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory"
   LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} samples directory"
+  
+  LangString DESC_SectionGroupHelp ${LANG_ENGLISH} "Documentation for ${PROGRAM_NAME}"
+  LangString DESC_SectionHelp ${LANG_ENGLISH} "Help on using ${PROGRAM_NAME} and programming in C"
+  LangString DESC_SectionWxBook ${LANG_ENGLISH} "Sof.T's book on using ${PROGRAM_NAME} and programming in C/C++"
+  LangString DESC_SectionIcons ${LANG_ENGLISH} "Various icons that you can use in your programs"
 
   LangString DESC_SectionLangs ${LANG_ENGLISH} "The ${PROGRAM_NAME} interface translated to different languages (other than English which is built-in)"
   LangString DESC_SectionAssocs ${LANG_ENGLISH} "Use ${PROGRAM_NAME} as the default application for opening these types of files"
@@ -616,18 +782,29 @@ SectionEnd
 
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionMain} $(DESC_SectionMain)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionHelp} $(DESC_SectionHelp)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionIcons} $(DESC_SectionIcons)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgets} $(DESC_SectionGroupwxWidgets)
+    
+     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsCommon} $(DESC_SectionwxWidgetsCommon)
+
 !ifdef HAVE_MINGW
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsGCC} $(DESC_SectionGroupwxWidgetsGCC)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMingw} $(DESC_SectionwxWidgetsMingw)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionMingw} $(DESC_SectionMingw)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContribGcc} $(DESC_SectionwxWidgetsContribGcc)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsExtrasGcc} $(DESC_SectionwxWidgetsExtrasGcc)
 !endif
 !ifdef HAVE_MSVC
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsMSVC} $(DESC_SectionGroupwxWidgetsMSVC)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMSVC} $(DESC_SectionwxWidgetsMSVC)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContribMSVC} $(DESC_SectionwxWidgetsContribMSVC)
 !endif
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContrib} $(DESC_SectionwxWidgetsContrib)
+
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsExamples} $(DESC_SectionGroupwxWidgetsExamples)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsSamples} $(DESC_SectionwxWidgetsSamples)
+    
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupHelp} $(DESC_SectionGroupHelp)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionHelp} $(DESC_SectionHelp)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionWxBook} $(DESC_SectionWxBook)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionIcons} $(DESC_SectionIcons)
 
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionLangs} $(DESC_SectionLangs)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionAssocs} $(DESC_SectionAssocs)
@@ -644,12 +821,21 @@ SectionEnd
 ; Functions
 
 Function .onInit
-  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation$\r$\n(i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
 
+  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation$\r$\n(i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
+ 
   !insertmacro MUI_LANGDLL_DISPLAY
-  
-  SetCurInstType 1  ; Indexed from 0
-  
+
+  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "CustomInstallPage.ini"
+
+  SetCurInstType 0  ; Indexed from 0
+
+FunctionEnd
+
+Function .onSelChange
+
+   Call CheckMSVC ; Check to see if we've selected to install wxWidgets devpak with MS VC++
+
 FunctionEnd
 
 !ifndef NEW_INTERFACE
@@ -766,9 +952,50 @@ Function StrCSpnReverse
  Exch $R0
 FunctionEnd
 
+#Check to see if user wants the MS VC++ devpak. If so, message box to remind him to download the SDK and compiler
+Function CheckMSVC
+
+  SectionGetFlags ${SectionwxWidgetsMSVC} $R0  ; Is wxWidgetsMSVC section is checked?
+  IntOp $R0 $R0 & ${SF_SELECTED}
+  IntCmp $R0 ${SF_SELECTED} detectvc
+
+  Abort
+
+detectvc:    ; Try to detect the MS VC compiler
+ 
+  ; VS C++ 8.0 Free Version
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0\Setup\VS" "MSMDir"
+  IfErrors 0 detectsdk   ; If it's detected, then we probably don't need to remind user to install it.
+
+  ; VS C++ 8.0 Enterprise Version
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0\Setup\VS" "ProductDir"
+  IfErrors 0 detectsdk   ; If it's detected, then we probably don't need to remind user to install it.
+
+  Goto show
+  
+detectsdk:    ; Try to detect the MS SDK
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\SxS\FrameworkSDK" "8.0"
+  IfErrors 0 dontshow  ; If it's detected, then we probably don't need to remind user to install it.
+
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\SxS\FrameworkSDK" "7.1"
+  IfErrors 0 dontshow   ; If it's detected, then we probably don't need to remind user to install it.
+  
+show:
+  ;Remind user to download and install MS VC++ and the MS SDK
+  MessageBox MB_OK|MB_ICONINFORMATION "You've selected to install the wxWidgets MS VC++ 2005 devpak.$\r$\n\
+             If you have the MS VC++ 2005 compiler and MS SDK installed, then please continue.$\r$\n\
+             If not, then please download and install before you install ${PROGRAM_NAME}.$\r$\n\
+             You can find them at the official Microsoft website.$\r$\n\
+             http://msdn.microsoft.com/vstudio/express/visualc/"
+
+dontshow:
+
+FunctionEnd
+
+
 #Verify the installation directory
 Function dirLeave
-  Push "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:-_\"
+  Push "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:-_\ "
   Push $INSTDIR
   Call StrCSpnReverse
   Pop $R0
