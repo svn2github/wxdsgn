@@ -81,11 +81,11 @@ object frmCreateFormProp: TfrmCreateFormProp
     Transparent = True
   end
   object ProfileLabel: TLabel
-    Left = 8
+    Left = 7
     Top = 205
-    Width = 67
+    Width = 77
     Height = 13
-    Caption = 'Project profile:'
+    Caption = 'Selected Profile:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
