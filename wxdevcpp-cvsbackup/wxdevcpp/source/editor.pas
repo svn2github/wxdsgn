@@ -1438,7 +1438,7 @@ begin
       Abort;
     end;
   end;
-
+{$IFDEF GURUS_BUILD}
 {$IFDEF WIN32}
   if (Key = VK_UP) or (Key = VK_DOWN) then
 {$ENDIF}
@@ -1454,7 +1454,7 @@ begin
         SearchKeyNavigation(true);
     end;
   end;
-
+{$ENDIF} //GURUS_BUILD
 
   if fCompletionBox.Enabled then begin
     fCompletionBox.OnKeyPress := EditorKeyPress;
