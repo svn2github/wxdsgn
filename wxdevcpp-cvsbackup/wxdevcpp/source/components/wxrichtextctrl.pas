@@ -23,23 +23,15 @@ type
   TWxRichTextCtrl = class(TRichEdit, IWxComponentInterface,IWxVariableAssignmentInterface)
   private
     { Private fields of TWxRichTextCtrl }
-    { Storage for property EVT_TEXT }
-    FEVT_COMMAND_RICHTEXT_ITEM_SELECTED: string;
-    { Storage for property EVT_TEXT_ENTER }
-    FEVT_COMMAND_RICHTEXT_ITEM_DESELECTED: string;
-    { Storage for property EVT_TEXT_MAXLEN }
-    FEVT_COMMAND_RICHTEXT_LEFT_CLICK: string;
-    { Storage for property EVT_TEXT_URL }
-    FEVT_COMMAND_RICHTEXT_MIDDLE_CLICK: string;
-    { Storage for property EVT_TEXT_URL }
-    FEVT_COMMAND_RICHTEXT_RIGHT_CLICK: string;
-    { Storage for property EVT_TEXT_URL }
-    FEVT_COMMAND_RICHTEXT_LEFT_DCLICK: string;
-
-    FEVT_COMMAND_RICHTEXT_RETURN: string;
-
-    { Storage for property EVT_UPDATE_UI }
+    FEVT_RICHTEXT_ITEM_SELECTED: string;
+    FEVT_RICHTEXT_ITEM_DESELECTED: string;
+    FEVT_RICHTEXT_LEFT_CLICK: string;
+    FEVT_RICHTEXT_RIGHT_CLICK: string;
+    FEVT_RICHTEXT_MIDDLE_CLICK: string;
+    FEVT_RICHTEXT_LEFT_DCLICK: string;
+    FEVT_RICHTEXT_RETURN: string;
     FEVT_UPDATE_UI: string;
+    
     { Storage for property Wx_BGColor }
     FWx_BGColor: TColor;
     { Storage for property Wx_Border }
@@ -168,18 +160,18 @@ type
     property EVT_TEXT_MAXLEN: string Read FEVT_TEXT_MAXLEN Write FEVT_TEXT_MAXLEN;
     property EVT_TEXT_URL: string Read FEVT_TEXT_URL Write FEVT_TEXT_URL;
     *)
-    property EVT_COMMAND_RICHTEXT_ITEM_SELECTED: string Read FEVT_COMMAND_RICHTEXT_ITEM_SELECTED Write FEVT_COMMAND_RICHTEXT_ITEM_SELECTED;
+    property EVT_RICHTEXT_ITEM_SELECTED: string Read FEVT_RICHTEXT_ITEM_SELECTED Write FEVT_RICHTEXT_ITEM_SELECTED;
     { Storage for property EVT_TEXT_ENTER }
-    property EVT_COMMAND_RICHTEXT_ITEM_DESELECTED: string Read FEVT_COMMAND_RICHTEXT_ITEM_DESELECTED Write FEVT_COMMAND_RICHTEXT_ITEM_DESELECTED;
+    property EVT_RICHTEXT_ITEM_DESELECTED: string Read FEVT_RICHTEXT_ITEM_DESELECTED Write FEVT_RICHTEXT_ITEM_DESELECTED;
     { Storage for property EVT_TEXT_MAXLEN }
-    property EVT_COMMAND_RICHTEXT_LEFT_CLICK: string Read FEVT_COMMAND_RICHTEXT_LEFT_CLICK Write FEVT_COMMAND_RICHTEXT_LEFT_CLICK;
+    property EVT_RICHTEXT_LEFT_CLICK: string Read FEVT_RICHTEXT_LEFT_CLICK Write FEVT_RICHTEXT_LEFT_CLICK;
     { Storage for property EVT_TEXT_URL }
-    property EVT_COMMAND_RICHTEXT_MIDDLE_CLICK: string Read FEVT_COMMAND_RICHTEXT_MIDDLE_CLICK Write FEVT_COMMAND_RICHTEXT_MIDDLE_CLICK;
+    property EVT_RICHTEXT_MIDDLE_CLICK: string Read FEVT_RICHTEXT_MIDDLE_CLICK Write FEVT_RICHTEXT_MIDDLE_CLICK;
     { Storage for property EVT_TEXT_URL }
-    property EVT_COMMAND_RICHTEXT_RIGHT_CLICK: string Read FEVT_COMMAND_RICHTEXT_RIGHT_CLICK Write FEVT_COMMAND_RICHTEXT_RIGHT_CLICK;
+    property EVT_RICHTEXT_RIGHT_CLICK: string Read FEVT_RICHTEXT_RIGHT_CLICK Write FEVT_RICHTEXT_RIGHT_CLICK;
     { Storage for property EVT_TEXT_URL }
-    property EVT_COMMAND_RICHTEXT_LEFT_DCLICK: string Read FEVT_COMMAND_RICHTEXT_LEFT_DCLICK Write FEVT_COMMAND_RICHTEXT_LEFT_DCLICK;
-    property EVT_COMMAND_RICHTEXT_RETURN: string Read FEVT_COMMAND_RICHTEXT_RETURN Write FEVT_COMMAND_RICHTEXT_RETURN;
+    property EVT_RICHTEXT_LEFT_DCLICK: string Read FEVT_RICHTEXT_LEFT_DCLICK Write FEVT_RICHTEXT_LEFT_DCLICK;
+    property EVT_RICHTEXT_RETURN: string Read FEVT_RICHTEXT_RETURN Write FEVT_RICHTEXT_RETURN;
 
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
@@ -374,14 +366,13 @@ begin
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
   FWx_EventList.add('EVT_TEXT_MAXLEN:OnMaxLen');
   FWx_EventList.add('EVT_TEXT_URL:OnClickUrl');
-
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_ITEM_SELECTED:OnItemSelected ');
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_ITEM_DESELECTED:OnItemDeSelected ');
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_LEFT_CLICK:OnClick ');
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_MIDDLE_CLICK:OnMiddleClick ');
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_RIGHT_CLICK:OnRightClick ');
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_LEFT_DCLICK:OnDoubleClick ');
-  FWx_EventList.add('EVT_COMMAND_RICHTEXT_RETURN:OnReturn ');
+  FWx_EventList.add('EVT_RICHTEXT_ITEM_SELECTED:OnItemSelected ');
+  FWx_EventList.add('EVT_RICHTEXT_ITEM_DESELECTED:OnItemDeSelected ');
+  FWx_EventList.add('EVT_RICHTEXT_LEFT_CLICK:OnClick ');
+  FWx_EventList.add('EVT_RICHTEXT_MIDDLE_CLICK:OnMiddleClick ');
+  FWx_EventList.add('EVT_RICHTEXT_RIGHT_CLICK:OnRightClick ');
+  FWx_EventList.add('EVT_RICHTEXT_LEFT_DCLICK:OnDoubleClick ');
+  FWx_EventList.add('EVT_RICHTEXT_RETURN:OnReturn ');
 
 
 end;
@@ -421,38 +412,38 @@ function TWxRichTextCtrl.GenerateEventTableEntries(CurrClassName: string): strin
 begin
   Result := '';
 
-  if trim(EVT_COMMAND_RICHTEXT_ITEM_SELECTED) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_ITEM_SELECTED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_ITEM_SELECTED]) + '';
+  if trim(EVT_RICHTEXT_ITEM_SELECTED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_SELECTED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_ITEM_SELECTED]) + '';
 
-  if trim(EVT_COMMAND_RICHTEXT_ITEM_DESELECTED) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_ITEM_DESELECTED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_ITEM_DESELECTED]) + '';
+  if trim(EVT_RICHTEXT_ITEM_DESELECTED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_DESELECTED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_ITEM_DESELECTED]) + '';
 
-  if trim(EVT_COMMAND_RICHTEXT_LEFT_CLICK) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_LEFT_CLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_LEFT_CLICK]) + '';
+  if trim(EVT_RICHTEXT_LEFT_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_LEFT_CLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_LEFT_CLICK]) + '';
 
-  if trim(EVT_COMMAND_RICHTEXT_MIDDLE_CLICK) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_MIDDLE_CLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_MIDDLE_CLICK]) + '';
+  if trim(EVT_RICHTEXT_RIGHT_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_RIGHT_CLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_RIGHT_CLICK]) + '';
 
-  if trim(EVT_COMMAND_RICHTEXT_RIGHT_CLICK) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_RIGHT_CLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_RIGHT_CLICK]) + '';
+  if trim(EVT_RICHTEXT_MIDDLE_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_MIDDLE_CLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_MIDDLE_CLICK]) + '';
 
-  if trim(EVT_COMMAND_RICHTEXT_LEFT_DCLICK) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_LEFT_DCLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_LEFT_DCLICK]) + '';
+  if trim(EVT_RICHTEXT_LEFT_DCLICK) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_LEFT_DCLICK(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_LEFT_DCLICK]) + '';
 
-  if trim(EVT_COMMAND_RICHTEXT_RETURN) <> '' then
-    Result := Format('EVT_COMMAND_RICHTEXT_RETURN(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COMMAND_RICHTEXT_RETURN]) + '';
+  if trim(EVT_RICHTEXT_RETURN) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_RETURN(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_RETURN]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-            
+
 (*
   if trim(EVT_TEXT_ENTER) <> '' then
     Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
@@ -674,13 +665,13 @@ end;
 
 function TWxRichTextCtrl.GetParameterFromEventName(EventName: string): string;
 begin
-  if (EventName = 'EVT_COMMAND_RICHTEXT_ITEM_SELECTED')  or
-     (EventName = 'EVT_COMMAND_RICHTEXT_ITEM_DESELECTED') or
-     (EventName = 'EVT_COMMAND_RICHTEXT_LEFT_CLICK') or
-     (EventName = 'EVT_COMMAND_RICHTEXT_MIDDLE_CLICK') or
-     (EventName = 'EVT_COMMAND_RICHTEXT_RIGHT_CLICK') or
-     (EventName = 'EVT_COMMAND_RICHTEXT_LEFT_DCLICK') or
-     (EventName = 'EVT_COMMAND_RICHTEXT_RETURN') then
+  if (EventName = 'EVT_RICHTEXT_ITEM_SELECTED')  or
+     (EventName = 'EVT_RICHTEXT_ITEM_DESELECTED') or
+     (EventName = 'EVT_RICHTEXT_LEFT_CLICK') or
+     (EventName = 'EVT_RICHTEXT_RIGHT_CLICK') or
+     (EventName = 'EVT_RICHTEXT_MIDDLE_CLICK') or
+     (EventName = 'EVT_RICHTEXT_LEFT_DCLICK') or
+     (EventName = 'EVT_RICHTEXT_RETURN') then
   begin
     Result := 'wxRichTextEvent& event';
     exit;

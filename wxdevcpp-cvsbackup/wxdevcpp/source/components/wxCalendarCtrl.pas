@@ -340,7 +340,7 @@ begin
 
   if trim(EVT_CALENDAR_YEAR) <> '' then
     Result := Result + #13 + Format('EVT_CALENDAR_YEAR(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+      [WX_IDName, CurrClassName, EVT_CALENDAR_YEAR]) + '';
 
   if trim(EVT_CALENDAR_WEEKDAY_CLICKED) <> '' then
     Result := Result + #13 + Format('EVT_CALENDAR_WEEKDAY_CLICKED(%s,%s::%s)',
