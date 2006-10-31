@@ -9006,7 +9006,7 @@ begin
     WriteString('Palette', 'Sizers','TWxBoxSizer;TWxStaticBoxSizer;TWxGridSizer;TWxFlexGridSizer;');
     strTemp:='TWxStaticText;TWxButton;TWxBitmapButton;TWxToggleButton;TWxEdit;TWxMemo;TWxCheckBox;TWxChoice;TWxRadioButton;TWxComboBox;TWxListBox;TWXListCtrl;TWxTreeCtrl;TWxGauge;TWxScrollBar;TWxSpinButton;TWxstaticbox;TWxRadioBox;TWxDatePickerCtrl;';
     strTemp:=strTemp+'TWxSlider;TWxStaticLine;TWxStaticBitmap;TWxStatusBar;TWxChecklistbox;TWxSpinCtrl;';
-    strTemp:=strTemp+'TWxOwnerDrawnComboBox;TWxCalendarCtrl;TWxRichTextCtrl;TwxHyperLinkCtrl;';
+    strTemp:=strTemp+'TWxOwnerDrawnComboBox;TWxCalendarCtrl;TWxRichTextCtrl;TWxStyledTextCtrl;TwxHyperLinkCtrl;';
 
     WriteString('Palette', 'Controls',strTemp);
 
