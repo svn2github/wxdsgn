@@ -234,6 +234,14 @@ done_devpaks:
   File "Packages\binutils.entry"
   File "Packages\make.entry"
  
+  SetOutPath $INSTDIR\Packages
+
+  ; Install Dev-C++ examples
+  File "Packages\devcpp_examples.DevPak"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\devcpp_examples.DevPak"'
+  Delete  "$INSTDIR\Packages\devcpp_examples.DevPak"
+
+
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
 
@@ -435,10 +443,8 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   StrCpy $WXBOOK_INSTALLED "Yes"
   
   SetOutPath $INSTDIR
-  
- ; '"$R0\acrord32.exe" "$INSTDIR\Help\Programming with wxDev-C++.pdf"'
- ; ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AcroRd32.exe" "Path" ; Find Adobe Acrobat install path
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
+  
 SectionEnd
 
 SectionGroupEnd
@@ -997,12 +1003,12 @@ FunctionEnd
 
 #Verify the installation directory
 Function dirLeave
-  Push "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:-_\ "
+  Push "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:-_\ ()"
   Push $INSTDIR
   Call StrCSpnReverse
   Pop $R0
   StrCmp $R0 "" +3
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Installation directory cannot contain: '$R0'. Only letters, numbers and ':-_\' are allowed."
+  MessageBox MB_OK|MB_ICONEXCLAMATION "Installation directory cannot contain: '$R0'. Only letters, numbers and ':-_\ ()' are allowed."
   Abort
 
   GetInstDirError $0
