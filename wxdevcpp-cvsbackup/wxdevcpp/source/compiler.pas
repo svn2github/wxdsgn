@@ -679,7 +679,13 @@ begin
 
   if not DoCheckSyntax then
   begin
-    writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+    if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (fProject.Profiles.useGpp) then
+    begin
+        writeln(F, #9 + '$(LINK) --driver-name c++  ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+    end
+    else
+        writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
       writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
