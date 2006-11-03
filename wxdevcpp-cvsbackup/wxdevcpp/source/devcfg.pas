@@ -2454,7 +2454,7 @@ begin
     fLinkerFormat           := '-o "%s"';
     fLinkerPaths            := '-L"%s"';
     fIncludeFormat          := '-I"%s"';
-    fDllFormat              := '--implib "%s" -o %s';
+    fDllFormat              := '--implib "%s" --output-def %s  -o %s';
     fLibFormat              := 'rcu "%s"';
     fPchCreateFormat        := '';
     fPchUseFormat           := '';
