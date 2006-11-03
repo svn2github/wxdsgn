@@ -68,6 +68,8 @@ type
   end;
 
   TDebugWait = class(TThread)
+  private
+    fReaderBuffer:string;
   public
     Event: THandle;
     Reader: TDebugReader;
@@ -185,21 +187,21 @@ end;
 
 procedure TDebugWait.SkipSpaces;
 begin
-  while (pos < len) and (Reader.Output[pos] in SPACES) do
+  while (pos < len) and (fReaderBuffer[pos] in SPACES) do
     pos := pos + 1;
 end;
 
 procedure TDebugWait.NextAnnotation;
 begin
-  while (pos < len) and (Reader.Output[pos] <> #26) do
+  while (pos < len) and (fReaderBuffer[pos] <> #26) do
     pos := pos + 1;
 end;
 
 function TDebugWait.GetNextString: string;
 begin
   Result := '';
-  while (pos < len) and (not (Reader.Output[pos] in SPACES)) do begin
-    Result := Result + Reader.Output[pos];
+  while (pos < len) and (not (fReaderBuffer[pos] in SPACES)) do begin
+    Result := Result + fReaderBuffer[pos];
     pos := pos + 1;
   end;
 end;
@@ -207,8 +209,8 @@ end;
 function TDebugWait.GetNextLine: string;
 begin
   Result := '';
-  while (pos < len) and (not (Reader.Output[pos] in [#13, #10])) do begin
-    Result := Result + Reader.Output[pos];
+  while (pos < len) and (not (fReaderBuffer[pos] in [#13, #10])) do begin
+    Result := Result + fReaderBuffer[pos];
     pos := pos + 1;
   end;
 end;
@@ -216,7 +218,7 @@ end;
 function TDebugWait.GetNextAnnotation: TAnnotateType;
 var s : string;
 begin
-  while (pos < len) and (Reader.Output[pos] = #26) do
+  while (pos < len) and (fReaderBuffer[pos] = #26) do
     pos := pos + 1;
   s := GetNextString;
   if s = T_PROMPT then
@@ -632,13 +634,14 @@ var
   Node: TDebugNode;
 begin
   pos := 1;
-  len := Length(Reader.Output);
+  fReaderBuffer :=Reader.Output;
+  len := Length(fReaderBuffer);
   while pos < len do begin
-    if (Pos> Length(Reader.Output)) then
+    if (Pos> Length(fReaderBuffer)) then
      break;
 
     SkipSpaces;
-    if Reader.Output[pos] = #26 then begin // Ctrl + Z char
+    if fReaderBuffer[pos] = #26 then begin // Ctrl + Z char
       an := GetNextAnnotation;
       case an of
         TPrompt     : begin
