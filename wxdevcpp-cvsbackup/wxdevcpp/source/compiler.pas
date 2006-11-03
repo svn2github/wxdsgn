@@ -333,11 +333,11 @@ begin
       writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
     else
       writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo')
-  else if devCompiler.CompilerType <> ID_COMPILER_MINGW then
-    writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
-  else
-    if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
-        writeln(F, 'LINK      = ar')
+  else if devCompiler.CompilerType = ID_COMPILER_MINGW then
+    if (assigned(fProject) and (fProject.CurrentProfile.typ = dptDyn)) then
+      writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
+    else if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
+      writeln(F, 'LINK      = ar')
     else if fProject.Profiles.useGPP then
       writeln(F, 'LINK      = ' + Comp_ProgCpp)
     else
@@ -650,7 +650,9 @@ begin
 end;
 
 procedure TCompiler.CreateDynamicMakefile;
-var  F: TextFile;
+var
+  backward, forward: integer;
+  F: TextFile;
   pfile, tfile: string;
 begin
   if not NewMakeFile(F) then
@@ -661,13 +663,23 @@ begin
     tfile := ExtractFileName(tFile)
   else
     tfile := ExtractRelativePath(Makefile, tfile);
-  writeln(F, 'STATICLIB = ' + GenMakePath(ChangeFileExt(tfile, LIB_EXT)));
-  writeln(F);
+
+  //If we are MingW then change the library name to start with lib
+  if devCompiler.CompilerType = ID_COMPILER_MINGW then
+  begin
+    Forward := GetLastPos('/', tfile);
+    Backward := GetLastPos('\', tfile);
+    if Backward > Forward then
+      Insert('lib', tfile, Backward + 1)
+    else
+      Insert('lib', tfile, Forward + 1);
+  end;
+
   writeln(F, '$(BIN): $(LINKOBJ)');
 
   if not DoCheckSyntax then
   begin
-    writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, ['$(STATICLIB)', '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+    writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
       writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
