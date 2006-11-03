@@ -7685,6 +7685,10 @@ begin
     actProjectManagerExecute(nil);
   end;
   LeftPageControl.ActivePageIndex := 0;
+  if frmProjMgrDock.Visible = false then
+  begin
+    FloatingProjectManagerItemClick(FloatingProjectManagerItem);
+  end;
   ProjectView.SetFocus;
 end;
 
@@ -7871,6 +7875,11 @@ begin
     actProjectManagerExecute(nil);
   end;
   LeftPageControl.ActivePageIndex := 1;
+  if frmProjMgrDock.Visible = false then
+  begin
+    FloatingProjectManagerItemClick(FloatingProjectManagerItem);
+  end;
+
   if ClassBrowser1.Visible And ClassBrowser1.Enabled then
     ClassBrowser1.SetFocus;
 end;
