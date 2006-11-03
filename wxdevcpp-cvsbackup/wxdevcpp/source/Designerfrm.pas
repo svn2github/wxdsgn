@@ -132,6 +132,7 @@ type
     procedure SetFormName(StrValue: string);
 
   published
+    property EVT_INIT_DIALOG: string Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
     property EVT_CHAR: string Read FEVT_CHAR Write FEVT_CHAR;
     property EVT_KEY_UP: string Read FEVT_KEY_UP Write FEVT_KEY_UP;
     property EVT_KEY_DOWN: string Read FEVT_KEY_DOWN Write FEVT_KEY_DOWN;
@@ -152,7 +153,6 @@ type
     property EVT_RIGHT_DCLICK: string Read FEVT_RIGHT_DCLICK Write FEVT_RIGHT_DCLICK;
     property EVT_MIDDLE_DCLICK: string Read FEVT_MIDDLE_DCLICK Write FEVT_MIDDLE_DCLICK;
     property EVT_PAINT: string Read FEVT_PAINT Write FEVT_PAINT;
-    property EVT_INIT_DIALOG: string Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
     property EVT_SCROLLWIN: string Read FEVT_SCROLLWIN Write FEVT_SCROLLWIN;
     property EVT_SCROLLWIN_TOP: string Read FEVT_SCROLLWIN_TOP Write FEVT_SCROLLWIN_TOP;
     property EVT_SCROLLWIN_BOTTOM: string Read FEVT_SCROLLWIN_BOTTOM Write FEVT_SCROLLWIN_BOTTOM;
@@ -605,32 +605,40 @@ begin
 end;
 
 
-procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: string;
-  onlyForForm: boolean);
+procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: string;onlyForForm: boolean);
 var
   I: integer;
-  xpmFileDir: string;
+  xpmFileDir,xpmNewFileDir: string;
   fileStrlst: TStringList;
-  strXPMContent: string;
+  strXPMContent,frmName: string;
 
 begin
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
+  xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
+  if DirectoryExists(xpmNewFileDir) = false then
+  begin
+   if ForceDirectories(xpmNewFileDir) = true then
+     xpmFileDir:=xpmNewFileDir;
+  end
+  else
+    xpmFileDir:=xpmNewFileDir;
+    
+  xpmFileDir := IncludetrailingPathDelimiter(xpmFileDir);
 
   if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
   begin
     if onlyForForm then
-      DeleteFile(xpmFileDir + frmNewForm.Wx_Name + '_XPM.xpm');
+      DeleteFile(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm');
 
-    if not fileexists(xpmFileDir + frmNewForm.Wx_Name + '_XPM.xpm') then
+    if not fileexists(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm') then
     begin
       fileStrlst    := TStringList.Create;
       try
-         strXPMContent :=
-          GetXPMFromTPicture(frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
+         strXPMContent := GetXPMFromTPicture('Self_'+frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
         if trim(strXPMContent) <> '' then
         begin
           fileStrlst.Add(strXPMContent);
-          fileStrlst.SaveToFile(xpmFileDir + frmNewForm.Wx_Name + '_XPM.xpm');
+          fileStrlst.SaveToFile(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm');
         end;
       except
       end;
@@ -641,24 +649,22 @@ begin
   if onlyForForm = True then
     exit;
 
+  frmName:=frmNewForm.Wx_Name+'_';
   for I := 0 to frmNewForm.ComponentCount - 1 do    // Iterate
   begin
     if frmNewForm.Components[I] is TWxStaticBitmap then
     begin
       if TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap.handle = 0 then
         continue;
-      if not fileexists(xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm') then
+      if not fileexists(xpmFileDir + frmName+frmNewForm.Components[I].Name + '_XPM.xpm') then
       begin
         fileStrlst    := TStringList.Create;
         try
-          strXPMContent :=
-            GetXPMFromTPicture(frmNewForm.Components[I].Name, TWxStaticBitmap(
-            frmNewForm.Components[I]).Picture.Bitmap);
+          strXPMContent :=GetXPMFromTPicture(frmName+frmNewForm.Components[I].Name, TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap);
           if trim(strXPMContent) = '' then
             continue;
           fileStrlst.Add(strXPMContent);
-          fileStrlst.SaveToFile(
-            xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm');
+          fileStrlst.SaveToFile(xpmFileDir + frmName+frmNewForm.Components[I].Name + '_XPM.xpm');
         except
         end;
         fileStrlst.Destroy;
@@ -669,18 +675,16 @@ begin
     begin
       if TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap.handle = 0 then
         continue;
-      if not fileexists(xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm') then
+      if not fileexists(xpmFileDir + frmName+frmNewForm.Components[I].Name + '_XPM.xpm') then
       begin
          fileStrlst    := TStringList.Create;
         try
           strXPMContent :=
-            GetXPMFromTPicture(frmNewForm.Components[I].Name, TWxToolButton(
-            frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
+            GetXPMFromTPicture(frmName+frmNewForm.Components[I].Name, TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
           if trim(strXPMContent) = '' then
             continue;
           fileStrlst.Add(strXPMContent);
-          fileStrlst.SaveToFile(
-            xpmFileDir + frmNewForm.Components[I].Name + '_XPM.xpm');
+          fileStrlst.SaveToFile(xpmFileDir + frmName+frmNewForm.Components[I].Name + '_XPM.xpm');
         except
         end;
         fileStrlst.Destroy;
@@ -1449,9 +1453,8 @@ begin
       strLst.add('SetIcon(wxNullIcon);')
     else
     begin
-      strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +
-        self.Wx_Name + '_XPM' + ');');
-      strLst.add('SetIcon(' + self.Wx_Name + '_XPM' + ');');
+      //strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +Self_'+self.Wx_Name + '_XPM' + ');');
+      strLst.add('SetIcon(' + 'Self_'+self.Wx_Name + '_XPM' + ');');
     end;
 
   if trim(self.Wx_ToolTips) <> '' then
@@ -1493,7 +1496,7 @@ begin
   Result := '';
   if assigned(Wx_ICON) then
     if Wx_ICON.Bitmap.Handle <> 0 then
-      Result := '#include "' + self.wx_Name + '_XPM.xpm"';
+      Result := '#include "Images/Self_'+ self.wx_Name + '_XPM.xpm"';
 end;
 
 

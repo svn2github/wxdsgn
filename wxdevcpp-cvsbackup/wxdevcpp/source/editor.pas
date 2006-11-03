@@ -658,10 +658,15 @@ end;
 procedure TEditor.SetBreakPointsOnOpen;
 var
   i: integer;
+  strFileNameInTab:String;
 begin
+  if Trim(self.FileName) = '' then
+    strFileNameInTab:=self.TabSheet.Caption
+  else
+    strFileNameInTab:=ExtractFileName(self.FileName);
   for i:=0 to BreakPointList.Count -1 do
   begin
-      if PBreakPointEntry(BreakPointList.Items[i])^.file_name = self.TabSheet.Caption then begin
+      if UpperCase(PBreakPointEntry(BreakPointList.Items[i])^.file_name) =  strFileNameInTab then begin
           InsertBreakpoint(PBreakPointEntry(BreakPointList.Items[i])^.line);
           PBreakPointEntry(BreakPointList.Items[i])^.editor := self;
       end;
