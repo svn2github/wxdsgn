@@ -112,6 +112,7 @@ type
     procedure SetProxyBGColorString(Value: string);
     procedure DummySizerNonInsertableInterfaceProcedure;
     function GenerateLastCreationCode: string;
+    procedure SetToolbarStyle(Value:TWxtbrStyleSet);
 
   published
     { Published properties of TWxToolBar }
@@ -135,7 +136,7 @@ type
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
     property Wx_ToolbarStyleSet: TWxtbrStyleSet
-      Read FWx_ToolbarStyleSet Write FWx_ToolbarStyleSet;
+      Read FWx_ToolbarStyleSet Write SetToolbarStyle;
     property Wx_GeneralStyle: TWxStdStyleSet
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
@@ -191,6 +192,7 @@ begin
   FWx_StretchFactor   := 0;
   FWx_Enabled         := True;
   FWx_Comments        := TStringList.Create;
+  self.ShowCaptions   := false;
 
 end; { of AutoInitialize }
 
@@ -657,5 +659,16 @@ function TWxToolBar.GenerateLastCreationCode: string;
 begin
   Result := '';
 end;
+
+procedure TWxToolBar.SetToolbarStyle(Value:TWxtbrStyleSet);
+begin
+    if (wxTB_TEXT in Value) or (wxTB_HORZ_TEXT in Value) then
+      self.ShowCaptions:=true
+    else
+      self.ShowCaptions:=false;       
+    FWx_ToolbarStyleSet:=Value;
+end;
+
+
 
 end.

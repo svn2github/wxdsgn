@@ -44,6 +44,7 @@ const
   IID_IWxValidatorInterface: TGUID            = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
   IID_IWxSplitterInterface: TGUID             = '{900F32A7-3864-4827-9039-85C053504BDB}';
   IID_IWxControlPanelInterface: TGUID         = '{077d51a0-6628-11db-bd13-0800200c9a66}';
+  IID_IWxThirdPartyComponentInterface: TGUID  = '{ead81650-6903-11db-bd13-0800200c9a66}';
 
 var
    StringFormat : string;
@@ -203,6 +204,12 @@ type
     ['{077d51a0-6628-11db-bd13-0800200c9a66}']
   end;
 
+  IWxThirdPartyComponentInterface = Interface
+    ['{ead81650-6903-11db-bd13-0800200c9a66}']
+    function GetHeaderLocation:string;
+    function GetLibName(CompilerTye:Integer):string;
+    function IsLibAddedAtEnd(CompilerTye:Integer):boolean;
+  end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
     wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW,
@@ -681,14 +688,14 @@ function AlignmentToStr(taPos: TAlignment): string;
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: boolean = True);
 function GetXPMFromTPicture(XPMName: string; delphiBitmap: TBitmap): string;
 function GetXPMFromTPictureXXX(XPMName: string; delphiBitmap: TBitmap): string;
-function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;
-  strFileName: string): boolean;
+function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;strParentName:string;strFileName: string): boolean;
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
 function GetCommentString(str: string): string;
 
 function GetWxFontDeclaration(fnt: TFont): string;
 
+function GetDesignerFormName(cntrl: TControl): string;
 function GetWxWidgetParent(cntrl: TControl): string;
 function GetWxWindowControls(wnCtrl: TWinControl): integer;
 function GetAvailableControlCount(ParentControl: TWinControl;
@@ -958,6 +965,37 @@ begin
   else
     Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
       strWeight + ', ' + strUnderline + ')';
+end;
+
+function GetDesignerFormName(cntrl: TControl): string;
+var
+  ParentCtrl,PrevParentCtrl:TControl;
+
+begin
+  ParentCtrl:= cntrl.Parent;
+  if ParentCtrl = nil then
+  begin
+    if cntrl is TfrmNewForm then
+    begin
+      Result:=TfrmNewForm(cntrl).Wx_Name;
+      exit;
+    end;
+  end;
+  
+  while (ParentCtrl <> nil ) do
+  begin
+    PrevParentCtrl := ParentCtrl;
+    ParentCtrl:=ParentCtrl.Parent;
+    if ParentCtrl = nil then
+    begin
+      if PrevParentCtrl is TfrmNewForm then
+        Result:= TfrmNewForm(PrevParentCtrl).Wx_Name
+      else
+        Result:='';
+      exit;
+    end;
+  end;
+
 end;
 
 function GetWxWidgetParent(cntrl: TControl): string;
@@ -4085,10 +4123,9 @@ begin
   end;
 end;
 
-function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;
-  strFileName: string): boolean;
+function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strParentName:string;strFileName: string): boolean;
 var
-  xpmFileDir:    string;
+  xpmFileDir,xpmNewFileDir:    string;
   fileStrlst:    TStringList;
   strXPMContent: string;
 
@@ -4097,17 +4134,27 @@ begin
   Result := True;
 
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
+  xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
+  if DirectoryExists(xpmNewFileDir) = false then
+  begin
+   if ForceDirectories(xpmNewFileDir) = true then
+     xpmFileDir:=xpmNewFileDir;
+  end
+  else
+    xpmFileDir:=xpmNewFileDir;
+
+  xpmFileDir := IncludetrailingPathDelimiter(xpmFileDir);
 
   if bmp.handle <> 0 then
   begin
     fileStrlst := TStringList.Create;
     try
-      strXPMContent := GetXPMFromTPicture(strCompName, bmp);
+      strXPMContent := GetXPMFromTPicture(strParentName+'_'+strCompName, bmp);
       //strRawXPMContent:=GetRawXPMFromTPicture(strCompName,bmp);
       if trim(strXPMContent) <> '' then
       begin
         fileStrlst.Add(strXPMContent);
-        fileStrlst.SaveToFile(xpmFileDir + strCompName + '_XPM.xpm');
+        fileStrlst.SaveToFile(xpmFileDir + strParentName+'_'+strCompName + '_XPM.xpm');
 
       end;
       //            if trim(strRawXPMContent) <> '' then

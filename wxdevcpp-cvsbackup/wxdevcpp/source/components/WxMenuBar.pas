@@ -557,8 +557,7 @@ begin
           [parentName, item.Wx_IDName, GetCppString(item.Wx_Caption), GetCppString(
           item.Wx_HelpText), GetMenuKindAsText(item.Wx_MenuItemStyle)]) + ');';
         Result := Result + #13 + #10 + 'wxBitmap ' + item.Wx_IDName +
-          '_mnuItem_obj_BMP(' +
-          item.Wx_IDName + '_XPM);';
+          '_mnuItem_obj_BMP(' +GetDesignerFormName(self)+'_'+item.Wx_IDName + '_XPM);';
         Result := Result + #13 + #10 + item.Wx_IDName + '_mnuItem_obj->SetBitmap(' +
           item.Wx_IDName + '_mnuItem_obj_BMP);';
         Result := Result + #13 + #10 + parentName + '->Append(' +
@@ -689,7 +688,7 @@ var
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
       if submnu.Items[J].WX_BITMAP.Bitmap.Handle <> 0 then
-        strData := '#include "' + submnu.Items[J].Wx_IDName + '_XPM.xpm"'
+        strData := '#include "Images/' + GetDesignerFormName(self)+'_'+submnu.Items[J].Wx_IDName + '_XPM.xpm"'
       else
         strData := '';
       if strData <> '' then
@@ -708,7 +707,7 @@ begin
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
   begin
     if Wx_MenuItems.Items[i].wx_Bitmap.Bitmap.Handle <> 0 then
-      strF := '#include "' + Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm"'
+      strF := '#include "Images/' + GetDesignerFormName(self)+'_'+Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm"'
     else
       strF := '';
     if trim(strF) <> '' then

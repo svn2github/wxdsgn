@@ -15,7 +15,7 @@ type
   private
     FEVT_MENU: string;
     FEVT_UPDATE_UI: string;
-
+    FWx_Caption: string;
     FWx_BKColor: TColor;
     FWx_Border: integer;
     FWx_ButtonStyle: TWxBtnStyleSet;
@@ -62,6 +62,7 @@ type
     { Public methods of TWxButton }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded; override;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     function GenerateControlIDs: string;
     function GenerateEnumControlIDs: string;
@@ -112,6 +113,7 @@ type
     property OnMouseUp;
     property EVT_MENU: string Read FEVT_MENU Write FEVT_MENU;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+    property Wx_Caption: String Read FWx_Caption Write FWx_Caption;
     property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
     property Wx_ButtonStyle: TWxBtnStyleSet Read FWx_ButtonStyle Write FWx_ButtonStyle;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
@@ -151,6 +153,9 @@ procedure Register;
 
 implementation
 
+uses
+  WxToolbar;
+  
 procedure Register;
 begin
   RegisterComponents('wxWidgets', [TWxToolButton]);
@@ -161,6 +166,7 @@ begin
   FWx_PropertyList       := TStringList.Create;
   FWx_Border             := 5;
   FWx_Class              := 'wxToolBarTool';
+  FWx_Caption            := '';
   FWx_Enabled            := True;
   FWx_EventList          := TStringList.Create;
   FWx_Alignment          := wxALIGN_CENTER;
@@ -193,6 +199,13 @@ begin
   FWx_Comments.Destroy;
 end; { of AutoDestroy }
 
+procedure TWxToolButton.Loaded;
+begin
+  inherited Loaded;
+  if self.Caption <> '' then
+    FWx_Caption:=self.Caption;
+  self.Caption :='';
+end;
 
 procedure TWxToolButton.SetWx_EventList(Value: TStringList);
 begin
@@ -204,15 +217,14 @@ begin
   inherited Create(AOwner);
 
   AutoInitialize;
-  self.Caption := '';
-  
+  self.Caption := '';  
   FWx_PropertyList.add('Wx_HelpText:Help Text');
   FWx_PropertyList.add('Wx_IDName:ID Name');
   FWx_PropertyList.add('Wx_IDValue:ID Value');
   FWx_PropertyList.add('Wx_ToolTip:Tooltip');
   FWx_PropertyList.add('Name:Name');
   FWx_PropertyList.add('ToolKind:Type');
-  FWx_PropertyList.add('Caption:Label');
+  FWx_PropertyList.add('Wx_Caption:Label');
   FWx_PropertyList.add('Wx_Bitmap:Bitmap');
   FWx_PropertyList.add('Wx_Comments:Comments');
 
@@ -229,6 +241,13 @@ end;
 
 procedure TWxToolButton.WMPaint(var Message: TWMPaint);
 begin
+  if Parent is TWxToolbar then
+  begin
+    if TWxToolbar(Parent).ShowCaptions = true then
+      self.Caption := FWx_Caption
+    else
+      self.Caption := '';
+  end;
   inherited;
 end;
 
@@ -314,19 +333,16 @@ begin
 
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
-      strFirstBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' +
-        self.Name + '_XPM' + ');';
+      strFirstBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
 
   if assigned(Wx_DISABLE_BITMAP) then
     if Wx_DISABLE_BITMAP.Bitmap.Handle <> 0 then
-      strSecondBitmap := 'wxBitmap ' + self.Name + '_DISABLE_BITMAP' +
-        ' (' + self.Name + '_DISABLE_BITMAP_XPM' + ');';
+      strSecondBitmap := 'wxBitmap ' + self.Name + '_DISABLE_BITMAP' +' (' + GetDesignerFormName(self)+'_'+self.Name + '_DISABLE_BITMAP_XPM' + ');';
 
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    strFirstBitmap + #13 + strSecondBitmap;
+  Result := GetCommentString(self.FWx_Comments.Text) + strFirstBitmap + #13 + strSecondBitmap;
   Result := Result + #13 + Format('%s->AddTool(%s, %s, %s, %s, %s, %s, %s);',
     [parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), GetCppString(
-    self.Caption), self.Name + '_BITMAP', self.Name + '_DISABLE_BITMAP',
+    self.Wx_Caption), self.Name + '_BITMAP', self.Name + '_DISABLE_BITMAP',
     GetToolButtonKindAsText(ToolKind), GetCppString(self.Wx_ToolTip),
     GetCppString(self.Wx_HelpText)]);
 
@@ -346,7 +362,7 @@ function TWxToolButton.GenerateImageInclude: string;
 begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
-      Result := '#include "' + self.Name + '_XPM.xpm"';
+      Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"';
 end;
 
 function TWxToolButton.GetEventList: TStringList;

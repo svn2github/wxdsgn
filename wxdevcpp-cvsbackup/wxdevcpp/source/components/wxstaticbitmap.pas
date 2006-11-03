@@ -415,7 +415,7 @@ begin
     //Result := ''+'wxBitmap'
     strBitmapArrayName := self.Name + '_BITMAP';
     Result := GetCommentString(self.FWx_Comments.Text) +
-      'wxBitmap ' + strBitmapArrayName + '(' + self.Name + '_XPM' + ');';
+      'wxBitmap ' + strBitmapArrayName + '(' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
   end;
   if Result <> '' then
     Result := Result + #13 + Format(
@@ -486,7 +486,7 @@ function TWxStaticBitmap.GenerateImageInclude: string;
 begin
   Result := '';
   if self.Picture.Bitmap.Handle <> 0 then
-    Result := '#include "' + self.Name + '_XPM.xpm"'
+    Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"'
 end;
 
 function TWxStaticBitmap.GetEventList: TStringList;

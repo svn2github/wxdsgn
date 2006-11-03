@@ -141,6 +141,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    //The first Event will be the default to get created when the user double clicks it
+	property EVT_TREE_ITEM_ACTIVATED: string Read FEVT_TREE_ITEM_ACTIVATED Write FEVT_TREE_ITEM_ACTIVATED;
     property EVT_TREE_BEGIN_DRAG: string Read FEVT_TREE_BEGIN_DRAG Write FEVT_TREE_BEGIN_DRAG;
     property EVT_TREE_BEGIN_RDRAG: string Read FEVT_TREE_BEGIN_RDRAG Write FEVT_TREE_BEGIN_RDRAG;
     property EVT_TREE_END_DRAG: string Read FEVT_TREE_END_DRAG Write FEVT_TREE_END_DRAG;
@@ -149,7 +151,6 @@ type
     property EVT_TREE_DELETE_ITEM: string Read FEVT_TREE_DELETE_ITEM Write FEVT_TREE_DELETE_ITEM;
     property EVT_TREE_GET_INFO: string Read FEVT_TREE_GET_INFO Write FEVT_TREE_GET_INFO;
     property EVT_TREE_SET_INFO: string Read FEVT_TREE_SET_INFO Write FEVT_TREE_SET_INFO;
-    property EVT_TREE_ITEM_ACTIVATED: string Read FEVT_TREE_ITEM_ACTIVATED Write FEVT_TREE_ITEM_ACTIVATED;
     property EVT_TREE_ITEM_COLLAPSED: string Read FEVT_TREE_ITEM_COLLAPSED Write FEVT_TREE_ITEM_COLLAPSED;
     property EVT_TREE_ITEM_COLLAPSING: string Read FEVT_TREE_ITEM_COLLAPSING Write FEVT_TREE_ITEM_COLLAPSING;
     property EVT_TREE_ITEM_EXPANDED: string Read FEVT_TREE_ITEM_EXPANDED Write FEVT_TREE_ITEM_EXPANDED;

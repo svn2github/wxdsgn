@@ -346,7 +346,7 @@ begin
 
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
-      Result := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + self.Name + '_XPM' + ');';
+      Result := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
 
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
@@ -410,7 +410,7 @@ function TWxBitmapButton.GenerateImageInclude: string;
 begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
-      Result := '#include "' + self.Name + '_XPM.xpm"';
+      Result := '#include "Images/'+ GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm"';
 end;
 
 function TWxBitmapButton.GetEventList: TStringList;

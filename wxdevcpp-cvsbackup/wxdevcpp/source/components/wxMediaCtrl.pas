@@ -393,24 +393,25 @@ end;
 
 function TWxMediaCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
+  Result := '';
   if trim(EVT_MEDIA_STOP) <> '' then
-    Result := Format('EVT_MEDIA_STOP(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_MEDIA_STOP(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_MEDIA_STOP]) + '';
 
   if trim(EVT_MEDIA_LOADED) <> '' then
-    Result := Format('EVT_MEDIA_LOADED(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_MEDIA_LOADED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_MEDIA_LOADED]) + '';
 
   if trim(EVT_MEDIA_PLAY) <> '' then
-    Result := Format('EVT_MEDIA_PLAY(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_MEDIA_PLAY(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_MEDIA_PLAY]) + '';
 
   if trim(EVT_MEDIA_PAUSE) <> '' then
-    Result := Format('EVT_MEDIA_PAUSE(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_MEDIA_PAUSE(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_MEDIA_PAUSE]) + '';
 
   if trim(EVT_MEDIA_FINISHED) <> '' then
-    Result := Format('EVT_MEDIA_FINISHED(%s,%s::%s)',
+    Result := Result + #13 + Format('EVT_MEDIA_FINISHED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_MEDIA_FINISHED]) + '';
 end;
 

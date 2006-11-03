@@ -175,6 +175,8 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property EVT_LIST_ITEM_ACTIVATED: string
+      Read FEVT_LIST_ITEM_ACTIVATED Write FEVT_LIST_ITEM_ACTIVATED;
     property EVT_LIST_BEGIN_DRAG: string Read FEVT_LIST_BEGIN_DRAG
       Write FEVT_LIST_BEGIN_DRAG;
     property EVT_LIST_BEGIN_LABEL_EDIT: string
@@ -201,8 +203,6 @@ type
       Read FEVT_LIST_END_LABEL_EDIT Write FEVT_LIST_END_LABEL_EDIT;
     property EVT_LIST_INSERT_ITEM: string Read FEVT_LIST_INSERT_ITEM
       Write FEVT_LIST_INSERT_ITEM;
-    property EVT_LIST_ITEM_ACTIVATED: string
-      Read FEVT_LIST_ITEM_ACTIVATED Write FEVT_LIST_ITEM_ACTIVATED;
     property EVT_LIST_ITEM_DESELECTED: string
       Read FEVT_LIST_ITEM_DESELECTED Write FEVT_LIST_ITEM_DESELECTED;
     property EVT_LIST_ITEM_FOCUSED: string
