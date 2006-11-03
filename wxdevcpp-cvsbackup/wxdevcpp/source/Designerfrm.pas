@@ -442,7 +442,7 @@ begin
   synEdit.Lines.Add(Format('<ID>%d</ID>', [frmNewForm.Wx_IDValue]));
   synEdit.Lines.Add(Format('<pos>%d,%d</pos>', [frmNewForm.Left, frmNewForm.Top]));
   synEdit.Lines.Add(Format('<size>%d,%d</size>',
-    [frmNewForm.Height, frmNewForm.Width]));
+    [frmNewForm.Width, frmNewForm.Height]));
 
   if GetStdStyleString(frmNewForm.Wx_GeneralStyle) = '' then
     if strEqual(frmNewForm.Wx_class, 'WxFrame') then
