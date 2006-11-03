@@ -1,5 +1,6 @@
-set WXWIN=c:\wxWidgets-2.7.0-1
-path=c:\Dev-Cpp\bin;%path%
+CALL common_vars.bat
+
+cd %WXWIN%
 
 cd contrib\samples\
 del makefile.*

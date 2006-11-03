@@ -1,5 +1,6 @@
-set WXWIN=c:\wxWidgets-2.7.0-1
-path=c:\Dev-Cpp\bin;%path%
+CALL common_vars.bat
+
+cd %WXWIN%
 
 rem ;we can't use this
 cd samples
@@ -18,7 +19,7 @@ del access\*.dsp
 del access\*.vc?
 del access\*.pro 
 del access\descrip.mms
-rd access
+rd  access
 
 cd animate
 del makefile.*

@@ -1,5 +1,6 @@
-set WXWIN=c:\wxWidgets
-path=c:\Progra~1\Dev-Cpp\bin;%path%
+CALL common_vars.bat
+
+cd %WXWIN%
 
 rem build the main distribution of wxWidgets
 cd build\msw
