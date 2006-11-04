@@ -86,11 +86,13 @@ type
     FCounter: integer;
     FSubMenuItemCreationClicked: boolean;
     FShiftDown: boolean;
+    FMenuName:String;
     //procedure AddMenuClass(const S: string);
     procedure MoveNode(SourceNode, TargetNode: TTreeNode);
   public
     { Public declarations }
     FMenuItems: TWxCustomMenuItem;
+    constructor Create(AOwner: TComponent;ParentMenuName:String);
     procedure SetMaxID(Value: integer);
 
     procedure UpdateScreenDataFromMenuItemData(cmenu: TWxCustomMenuItem);
@@ -118,15 +120,11 @@ implementation
 
 uses Main, CreateOrderFm, devCfg;
 
-{$IFDEF DELPHI3}
-constructor TMenuItemForm.Create(AOwner: TComponent{; Designer: TFormDesigner});
+constructor TMenuItemForm.Create(AOwner: TComponent;ParentMenuName:String);
 begin
-  //FDesigner:= Designer;
-
+  FMenuName:=ParentMenuName;
   inherited Create(AOwner);
 end;
-
-{$ENDIF}
 
 {$IFDEF DELPHI4}
 constructor TMenuItemForm.Create(AOwner: TComponent{; Designer: IFormDesigner});
@@ -396,7 +394,7 @@ begin
   cmenu.EVT_Menu := cbOnMenu.Text;
   cmenu.EVT_UPDATE_UI := cbOnUpdateUI.Text;
   FName := MainForm.GetCurrentFileName;
-  GenerateXPMDirectly(cmenu.WX_BITMAP.Bitmap, cmenu.wx_IDName, FName);
+  GenerateXPMDirectly(cmenu.WX_BITMAP.Bitmap, cmenu.wx_IDName, FMenuName,FName);
 end;
 
 procedure TMenuItemForm.SetMaxID(Value: integer);

@@ -5651,8 +5651,14 @@ var
   pMenuItem: TWxPopupMenu;
   mbItem:    TWxMenuBar;
   maxControlValue: integer;
+  MenuName:String;
 begin
-  mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector));
+  try
+  if (TJvInspectorPropData(Self.GetData()).Instance is TControl) then
+      MenuName:=TControl(TJvInspectorPropData(Self.GetData()).Instance).Name;
+  except
+  end;
+  mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector),MenuName);
   try
     if (TJvInspectorPropData(Self.GetData()).Instance is TWxPopupMenu) then
     begin
