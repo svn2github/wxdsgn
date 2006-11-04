@@ -679,12 +679,15 @@ begin
 
   if not DoCheckSyntax then
   begin
-    if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (fProject.Profiles.useGpp) then
-    begin
-        writeln(F, #9 + '$(LINK) --driver-name c++  ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), GenMakePath(ChangeFileExt(tfile, '.def')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
-    end
+    if (devCompiler.CompilerType = ID_COMPILER_MINGW) then
+        if (fProject.Profiles.useGpp) then
+        begin
+                writeln(F, #9 + '$(LINK) --driver-name c++  ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), GenMakePath(ChangeFileExt(tfile, '.def')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+        end
+        else
+                writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), GenMakePath(ChangeFileExt(tfile, '.def')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)')
     else
-        writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), GenMakePath(ChangeFileExt(tfile, '.def')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+        writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
 
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
