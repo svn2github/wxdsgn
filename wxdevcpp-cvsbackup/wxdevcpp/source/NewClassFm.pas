@@ -110,7 +110,7 @@ begin
   finally
     sl.Free;
   end;
-  if Assigned(MainForm.ClassBrowser1.Selected) and (PStatement(MainForm.ClassBrowser1.Selected.Data)^._Kind = skClass) then begin
+  if Assigned(MainForm.ClassBrowser1.Selected) and (MainForm.ClassBrowser1.IsNodeAFolder(MainForm.ClassBrowser1.Selected)=false) and (PStatement(MainForm.ClassBrowser1.Selected.Data)^._Kind = skClass) then begin
     cmbClass.ItemIndex := cmbClass.Items.IndexOf(PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
     chkInherit.Checked := True;
   end

@@ -142,6 +142,7 @@ type
     procedure AddFolder(S: string; Node: TTreeNode);
     procedure RemoveFolder(S: string);
     procedure RenameFolder(Old, New: string);
+    function IsNodeAFolder(FolderNode: TTreeNode): Boolean;
     function FolderCount: integer;
     procedure SetUpdateOn;
     procedure SetUpdateOff;
@@ -820,6 +821,19 @@ begin
     if AnsiCompareText(fFolders[I].Name, Folder) = 0 then begin
       Result := fFolders[I].Node;
       Break;
+    end;
+end;
+
+function TClassBrowser.IsNodeAFolder(FolderNode: TTreeNode): Boolean;
+var
+  I: integer;
+begin
+  Result := false;
+  for I := Low(fFolders) to High(fFolders) do
+    if FolderNode = fFolders[I].Node then
+    begin
+      Result:=true;
+      break;
     end;
 end;
 
