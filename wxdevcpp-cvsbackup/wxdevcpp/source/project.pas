@@ -22,7 +22,7 @@ unit project;
 interface
 
 uses
-  Utils, StrUtils,
+  Utils, StrUtils,jvsimplexml,
 {$IFDEF WIN32}
   IniFiles, SysUtils, Dialogs, ComCtrls, Editor, Contnrs,
   Classes, Controls, version, prjtypes, Templates, Forms,
@@ -234,6 +234,7 @@ type
     procedure SetNodeValue(value: TTreeNode);
     procedure CheckProjectFileForUpdate;
     procedure IncrementBuildNumber;
+    function ExportToExternalProject(const aFileName:string):boolean;
   end;
 
 implementation
@@ -1075,6 +1076,25 @@ begin
     Write('ProfilesCount', fProfiles.Count);
     Write('ProfileIndex', CurrentProfileIndex);
     Write('Folders', fFolders.CommaText);
+    //Save the Version Info
+    Section := 'VersionInfo';
+    Write('Major', VersionInfo.Major);
+    Write('Minor', VersionInfo.Minor);
+    Write('Release', VersionInfo.Release);
+    Write('Build', VersionInfo.Build);
+    Write('LanguageID', VersionInfo.LanguageID);
+    Write('CharsetID', VersionInfo.CharsetID);
+    Write('CompanyName', VersionInfo.CompanyName);
+    Write('FileVersion', VersionInfo.FileVersion);
+    Write('FileDescription',VersionInfo.FileDescription);
+    Write('InternalName', VersionInfo.InternalName);
+    Write('LegalCopyright', VersionInfo.LegalCopyright);
+    Write('LegalTrademarks', VersionInfo.LegalTrademarks);
+    Write('OriginalFilename',VersionInfo.OriginalFilename);
+    Write('ProductName', VersionInfo.ProductName);
+    Write('ProductVersion', VersionInfo.ProductVersion);
+    Write('AutoIncBuildNrOnRebuild', VersionInfo.AutoIncBuildNrOnRebuild);
+    Write('AutoIncBuildNrOnCompile', VersionInfo.AutoIncBuildNrOnCompile);
 
     for i := 0 to fProfiles.Count - 1 do
     begin    
@@ -2337,6 +2357,59 @@ procedure TProject.IncrementBuildNumber;
 begin
   Inc(VersionInfo.Build);
   SetModified(True);
+end;
+
+function TProject.ExportToExternalProject(const aFileName:string):boolean;
+var
+  xmlObj:TJvSimpleXML;
+  mkelement,exeelement:TJvSimpleXMLElemClassic;
+  strFileNames:String;
+  i:Integer;
+
+  function GetAppTypeString(apptyp:Integer):string;
+  begin
+    case apptyp of
+    dptGUI:
+      Result:='GUI';
+    dptCon:
+      Result:='console';
+    dptStat:
+      Result:='lib';
+    dptDyn:
+      Result:='dll';
+    end;
+  end;  
+  function GetAppTag(apptyp:Integer):string;
+  begin
+    case apptyp of
+    dptGUI,
+    dptCon:
+      Result:='exe';
+    dptStat:
+      Result:='lib';
+    dptDyn:
+      Result:='dll';
+    end;
+  end;
+begin
+  xmlObj:=TJvSimpleXML.Create(nil);
+  mkelement:=xmlObj.Root.Container.Add('makefile');
+
+  exeelement:=mkelement.Container.Add(GetAppTag(CurrentProfile.typ));
+  for i:= 0 to fUnits.count -1 do
+  begin
+    strFileNames := strFileNames + ' '+fUnits[i].FileName;
+  end;
+  exeelement.Container.Add('sources',strFileNames);
+
+  if (CurrentProfile.typ = dptGUI) or  (CurrentProfile.typ = dptCon) then
+    exeelement.Container.Add('app-type',GetAppTypeString(CurrentProfile.typ));
+  //Add Include and Lib directories   
+  try
+  xmlObj.SaveToFile(aFileName);
+  except
+  end;  
+  xmlObj.Destroy;
 end;
 
 { TUnitList }
