@@ -266,6 +266,12 @@ begin
     result := SaveAs
   else
   try
+    //Update the XPMs if we dont have them in the disk
+    if assigned(fEditor)then
+    begin
+      if (fEditor.isForm) then
+        fEditor.GetDesigner.CreateNewXPMs(fEditor.FileName);
+    end;
     // if no editor created open one save file and close
     // creates a blank file.
     if (not assigned(fEditor) and not FileExists(fFileName)) then
@@ -284,7 +290,7 @@ begin
       fEditor:=nil; // because closing the editor will destroy it
       //FreeAndNil(fEditor);
     end
-    else 
+    else
     if assigned(fEditor) and fEditor.Modified then
     begin
        if devEditor.AppendNewline then
@@ -1440,7 +1446,6 @@ begin
     if NewProfile.CompilerSet > devCompilerSet.Sets.Count - 1 then
       //TODO: Guru: Log to String and Show at the end;
       NewProfile.compilerType:=GetClosestMatchingCompilerSet(NewProfile.compilerType);
-
     NewProfile.CompilerOptions := finifile.ReadProfile(i, COMPILER_INI_LABEL, '');
     NewProfile.PreprocDefines:= finifile.ReadProfile(i, 'PreprocDefines', '');
     fProfiles.Add(NewProfile);
@@ -2410,6 +2415,7 @@ begin
   except
   end;  
   xmlObj.Destroy;
+  Result:=true;
 end;
 
 { TUnitList }

@@ -180,7 +180,7 @@ begin
        fOptions[0].Libs.Append(ReadString(cProject, 'Libs', ''));
        fOptions[0].Includes.Append(ReadString(cProject, 'Includes', ''));
 
-         fOptions.useGPP:= ReadBool(cProject, 'Cpp', TRUE);
+         fOptions.useGPP:= ReadBool(cProject, 'Cpp', false);
          fOptions[0].Compiler:= ReadString(cProject, 'CompilerOptions', '');
          fOptions[0].compilerType:= ID_COMPILER_MINGW;
      end
@@ -206,7 +206,7 @@ begin
          fOptions[0].PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
          fOptions[0].CompilerOptions := ReadString(cProject, COMPILER_INI_LABEL, '');
 
-         fOptions.useGPP:= ReadBool(cProject, 'IsCpp', true);
+         fOptions.useGPP:= ReadBool(cProject, 'IsCpp', false);
          fOptions[0].IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
          fOptions[0].SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
 
