@@ -123,7 +123,17 @@ resourcestring
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'fl;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'animate;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'generic;'
-                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'msw;'  ;
+                       + 'include' + pd + 'common' + pd+ 'wx' + pd + 'msw;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'things;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'treemultictrl;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'sheet;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'plotctrl;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'ifm;'
+                       + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'chartart;'                                                                     
+                       ;
+
 
   GCC_CPP_INCLUDE_DIR  =
                         ';include'
