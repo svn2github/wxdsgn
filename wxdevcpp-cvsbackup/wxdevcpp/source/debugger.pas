@@ -395,6 +395,10 @@ var
 begin
   CloseDebugger(nil);
   if (MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
+    if Assigned(MainForm.fProject) and (trim(MainForm.fProject.CurrentProfile.CompilerOptions) = '') then
+    begin
+      MainForm.fProject.CurrentProfile.CompilerOptions := StringOfChar('0',devCompiler.OptionsCount);
+    end;
     if devCompiler.FindOption('-g3', opt, idx) then begin
       opt.optValue := 1;
       if not Assigned(MainForm.fProject) then
