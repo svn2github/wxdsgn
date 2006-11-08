@@ -517,9 +517,14 @@ begin
     Result := 'wxUpdateUIEvent& event';
     exit;
   end;
+  if EventName = 'EVT_TOOL' then
+  begin
+    Result := 'wxCommandEvent& event';
+    exit;
+  end;  
   if EventName = 'EVT_MENU' then
   begin
-    Result := 'wxMenuEvent& event';
+    Result := 'wxCommandEvent& event';
     exit;
   end;
    if EventName = 'EVT_TOOL_ENTER' then

@@ -21,7 +21,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, ExtCtrls, WxUtils, Wxcontrolpanel, WxSizerPanel;
 
 type
-  TWxStaticBitmap = class(TWxControlPanel, IWxComponentInterface)
+  TWxStaticBitmap = class(TWxControlPanel, IWxComponentInterface,IWxImageContainerInterface)
   private
     { Private fields of TWxStaticBitmap }
     { Storage for property Picture }
@@ -60,6 +60,7 @@ type
     FInvisibleFGColorString: string;
     FWx_Alignment: TWxSizerAlignment;
     FWx_BorderAlignment: TWxBorderAlignment;
+    fBitmapCount:Integer;
 
     { Private methods of TWxStaticBitmap }
     { Method to set variable and property values and create objects }
@@ -70,6 +71,10 @@ type
     function GetPicture: TPicture;
     { Write method for property Picture }
     procedure SetPicture(Value: TPicture);
+
+    function GetBitmapCount:Integer;
+    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+    function GetPropertyName(Idx:Integer):String;
 
   protected
     { Protected fields of TWxStaticBitmap }
@@ -648,6 +653,23 @@ procedure TWxStaticBitmap.SetProxyBGColorString(Value: string);
 begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
+end;
+
+function TWxStaticBitmap.GetBitmapCount:Integer;
+begin
+  Result:=1;
+end;
+
+function TWxStaticBitmap.GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+begin
+  bmp:=Picture.Bitmap;
+  PropertyName:=Name;
+  Result:=true;
+end;
+
+function TWxStaticBitmap.GetPropertyName(Idx:Integer):String;
+begin
+  Result:=Name;
 end;
 
 end.

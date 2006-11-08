@@ -45,6 +45,7 @@ const
   IID_IWxSplitterInterface: TGUID             = '{900F32A7-3864-4827-9039-85C053504BDB}';
   IID_IWxControlPanelInterface: TGUID         = '{077d51a0-6628-11db-bd13-0800200c9a66}';
   IID_IWxThirdPartyComponentInterface: TGUID  = '{ead81650-6903-11db-bd13-0800200c9a66}';
+  IID_IWxImageContainerInterface: TGUID       = '{10619130-6bd4-11db-bd13-0800200c9a66}';
 
 var
    StringFormat : string;
@@ -209,6 +210,13 @@ type
     function GetHeaderLocation:string;
     function GetLibName(CompilerTye:Integer):string;
     function IsLibAddedAtEnd(CompilerTye:Integer):boolean;
+  end;
+
+  IWxImageContainerInterface = Interface
+    ['{10619130-6bd4-11db-bd13-0800200c9a66}']
+    function GetBitmapCount:Integer;
+    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+    function GetPropertyName(Idx:Integer):String;
   end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
@@ -4130,6 +4138,8 @@ var
   strXPMContent: string;
 
 begin
+  if bmp = nil then
+    exit;
 
   Result := True;
 

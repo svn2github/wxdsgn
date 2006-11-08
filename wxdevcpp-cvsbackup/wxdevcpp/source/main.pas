@@ -1039,6 +1039,7 @@ type
     procedure DoCreateWxSpecificItems;
 {$ENDIF}
   public
+    procedure actDebugExecuteX(Sender: TObject);
     procedure DoCreateEverything;
     procedure DoApplyWindowPlacement;
     procedure OpenFile(s: string; withoutActivation: Boolean = false); // Modified for wx
@@ -3317,6 +3318,7 @@ begin
             begin
                 if eX.Modified then
                     Result := SaveFileInternal(eX,false);
+                eX.GetDesigner.CreateNewXPMs(eX.FileName);
             end;
         end;
 
@@ -3477,7 +3479,7 @@ begin
         end
         Else
             wxEditor.Modified:=false;
-        if (e.isForm) then
+        if (wxEditor.isForm) then
         begin
           IsFileAForm:=boolInspectorDataClear;
           boolInspectorDataClear:=true;
@@ -5397,17 +5399,28 @@ begin
 end;
 
 procedure TMainForm.actDebugExecute(Sender: TObject);
-var
-  e: TEditor;
-  idx, idx2: integer;
-  s: string;
 begin
    if (assigned(fProject) and (fProject.CurrentProfile.compilerType <> ID_COMPILER_MINGW)) then
    begin
       ShowMessage('Debugging is Disabled for Non-MingW compilers.');
       exit;
    end;
+   
+  if fCompiler.Compiling then
+  begin
+    MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0);
+    Exit;
+  end;
+  if PrepareForCompile(false) then
+    fCompiler.CompileAndDebug;
+end;
 
+procedure TMainForm.actDebugExecuteX(Sender: TObject);
+var
+  e: TEditor;
+  idx, idx2: integer;
+  s: string;
+begin
   PrepareDebugger;
   if assigned(fProject) then
   begin
@@ -5537,7 +5550,7 @@ end;
 procedure TMainForm.actDebugUpdate(Sender: TObject);
 begin
   (Sender as TCustomAction).Enabled := (assigned(fProject) or (PageControl.PageCount > 0)) and
-    not devExecutor.Running;
+    (not devExecutor.Running) and (not fDebugger.Executing);
 end;
 
 procedure TMainForm.actCompileUpdate(Sender: TObject);

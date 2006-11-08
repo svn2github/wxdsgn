@@ -44,7 +44,7 @@ uses
 
 type
 
-  TfrmNewForm = class(TForm, IWxComponentInterface,IWxDesignerFormInterface)
+  TfrmNewForm = class(TForm, IWxComponentInterface,IWxDesignerFormInterface,IWxImageContainerInterface)
     procedure CreateInitVars;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -54,6 +54,10 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure SetFrameProperties();
     procedure SetDialogProperties();
+
+    function GetBitmapCount:Integer;
+    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+    function GetPropertyName(Idx:Integer):String;
 
   private
     { Private declarations }
@@ -130,6 +134,8 @@ type
     //Form Interface functions
     function GetFormName: string;
     procedure SetFormName(StrValue: string);
+
+    procedure CreateNewXPMs(strFileName:String);
 
   published
     property EVT_INIT_DIALOG: string Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
@@ -1725,6 +1731,52 @@ end;
 procedure TfrmNewForm.SetFormName(StrValue: string);
 begin
   FWx_Name:=strValue;
+end;
+
+procedure TfrmNewForm.CreateNewXPMs(strFileName:String);
+var
+  i,j:Integer;
+  imgCtrl:IWxImageContainerInterface;
+  bmp:TBitmap;
+  strPropertyName,strComponentName,strXPMFileName:String;
+begin
+  for i:= 0 to self.ComponentCount -1 Do
+  begin
+    if self.Components[i].GetInterface(IID_IWxImageContainerInterface,imgCtrl) = false then
+      continue;
+    for j := 0 to imgCtrl.GetBitmapCount -1 Do
+    begin
+      strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
+      if FileExists(strXPMFileName) then
+        continue;
+      bmp:=nil;
+      imgCtrl.GetBitmap(j,bmp,strPropertyName);
+      if bmp <> nil then
+        GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
+    end;
+  end;
+  strXPMFileName:='Images\Self_'+wx_Name+'.xpm';
+  if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> nil) then
+  begin
+    GenerateXPMDirectly(Wx_ICON.Bitmap,'Self',wx_Name,strFileName);
+  end;
+end;
+
+function TfrmNewForm.GetBitmapCount:Integer;
+begin
+  Result:=1;
+end;
+
+function TfrmNewForm.GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+begin
+  bmp.Assign(Wx_ICON.Bitmap);
+  Result:=true;
+end;
+
+
+function TfrmNewForm.GetPropertyName(Idx:Integer):String;
+begin
+  Result:=wx_Name;
 end;
 
 end.

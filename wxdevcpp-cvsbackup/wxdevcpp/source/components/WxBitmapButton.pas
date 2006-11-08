@@ -9,7 +9,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 
 type
 
-  TWxBitmapButton = class(TBitBtn, IWxComponentInterface)
+  TWxBitmapButton = class(TBitBtn, IWxComponentInterface,IWxImageContainerInterface)
   private
     FEVT_BUTTON: string;
     FEVT_UPDATE_UI: string;
@@ -39,6 +39,7 @@ type
     FInvisibleFGColorString: string;
     FWx_Validator: string;
     FWx_Comments: TStrings;
+    fBitmapCount:Integer;
 
     { Private methods of TWxButton }
 
@@ -46,6 +47,9 @@ type
     procedure AutoDestroy;
     procedure SetWx_EventList(Value: TStringList);
 
+    function GetBitmapCount:Integer;
+    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+    function GetPropertyName(Idx:Integer):String;
   protected
     { Protected fields of TWxButton }
 
@@ -564,6 +568,23 @@ begin
   if not assigned(Value) then
     exit;
   self.Glyph.Assign(Value.Bitmap);
+end;
+
+function TWxBitmapButton.GetBitmapCount:Integer;
+begin
+  Result:=1;
+end;
+
+function TWxBitmapButton.GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+begin
+  bmp:= Wx_Bitmap.Bitmap;
+  PropertyName:=Name;
+  Result:=true;
+end;
+
+function TWxBitmapButton.GetPropertyName(Idx:Integer):String;
+begin
+  Result:=Name;
 end;
 
 end.

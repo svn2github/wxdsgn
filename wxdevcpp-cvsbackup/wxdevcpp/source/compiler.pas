@@ -79,6 +79,7 @@ type
     procedure Compile(SingleFile: string = ''); virtual;
     procedure Run; virtual;
     procedure CompileAndRun; virtual;
+    procedure CompileAndDebug; virtual;    
     procedure Debug; virtual;
     function Clean: Boolean; virtual;
     function RebuildAll: Boolean; virtual;
@@ -112,6 +113,7 @@ type
     fUserParams: string;
     fDevRun: TDevRun;
     fRunAfterCompileFinish: boolean;
+    fDebugAfterCompileFinish: boolean;
     fAbortThread: boolean;
     
     procedure CreateMakefile; virtual;
@@ -137,7 +139,7 @@ implementation
 
 uses
   MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils, RegExpr,
-  DbugIntf;
+  DbugIntf,main;
 
 constructor TCompiler.Create;
 begin
@@ -901,6 +903,7 @@ begin
   cCmdLine := devCompiler.SingleCompile;
   fSingleFile := SingleFile <> '';
   fRunAfterCompileFinish := FALSE;
+  fDebugAfterCompileFinish:= FALSE;
   if Assigned(fDevRun) then
   begin
     MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0);
@@ -1055,6 +1058,14 @@ procedure TCompiler.CompileAndRun;
 begin
   Compile;
   fRunAfterCompileFinish := TRUE;
+  fDebugAfterCompileFinish:= FALSE;
+end;
+
+procedure TCompiler.CompileAndDebug;
+begin
+  Compile;
+  fRunAfterCompileFinish := FALSE;
+  fDebugAfterCompileFinish:= TRUE;
 end;
 
 procedure TCompiler.Debug;
@@ -1198,6 +1209,11 @@ begin
     begin
       ReleaseProgressForm;
       Run;
+    end
+    else if (fDebugAfterCompileFinish) then
+    begin
+      ReleaseProgressForm;
+      MainForm.actDebugExecuteX(nil);
     end;
   end;
 

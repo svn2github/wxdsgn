@@ -11,7 +11,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
 type
 
   TWxToolButton = class(TBitBtn, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
+    IWxToolBarNonInsertableInterface,IWxImageContainerInterface)
   private
     FEVT_MENU: string;
     FEVT_UPDATE_UI: string;
@@ -43,6 +43,7 @@ type
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignment;
     FWx_BorderAlignment: TWxBorderAlignment;
+    fBitmapCount:Integer;
     { Private methods of TWxButton }
 
     procedure AutoInitialize;
@@ -102,6 +103,9 @@ type
     procedure SetBorderWidth(width: integer);
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
+    function GetBitmapCount:Integer;
+    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+    function GetPropertyName(Idx:Integer):String;
     
   published
     { Published properties of TWxButton }
@@ -523,6 +527,23 @@ begin
   if not assigned(Value) then
     exit;
   FWx_DISABLE_BITMAP.Assign(Value);
+end;
+
+function TWxToolButton.GetBitmapCount:Integer;
+begin
+  Result:=1; //fixme later
+end;
+
+function TWxToolButton.GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+begin
+  bmp:= Wx_Bitmap.Bitmap;
+  PropertyName:=Name;
+  Result:=true;
+end;
+
+function TWxToolButton.GetPropertyName(Idx:Integer):String;
+begin
+  Result:=Name;
 end;
 
 
