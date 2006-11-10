@@ -245,6 +245,7 @@ begin
   defaultFGColor           := self.font.color;
   BorderStyle              := bsSingle;
   FWx_Comments             := TStringList.Create;
+  AutoSize               := False;
 
 end; { of AutoInitialize }
 
@@ -510,6 +511,8 @@ begin
 
   parentName := GetWxWidgetParent(self);
 
+  AutoSize               := False;
+  
   strStyle := GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle);
 
   if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then

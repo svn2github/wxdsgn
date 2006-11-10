@@ -211,6 +211,7 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxMemo.AutoInitialize;
 begin
+
   FWx_EventList          := TStringList.Create;
   FWx_PropertyList       := TStringList.Create;
   FWx_Border             := 5;
@@ -227,6 +228,7 @@ begin
   defaultFGColor         := self.font.color;
   FWx_LoadFromFile       := TWxFileNameString.Create;
   FWx_Comments           := TStringList.Create;
+  AutoSize               := False;
 
 end; { of AutoInitialize }
 
@@ -470,6 +472,8 @@ begin
   //    else
   //       parentName:=self.Parent.name;
 
+  AutoSize               := False;
+  
   parentName := GetWxWidgetParent(self);
 
   Wx_EditStyle := Wx_EditStyle + [wxTE_MULTILINE];
