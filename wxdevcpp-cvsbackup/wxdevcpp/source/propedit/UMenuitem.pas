@@ -12,6 +12,7 @@ uses
   StdCtrls, Menus, ExtCtrls, WxCustomMenuItem, DateUtils, xprocs, wxUtils,
   UPicEdit, Spin, strUtils, ComCtrls, XPMenu;
 
+{$WARNINGS OFF}
 type
   TMenuItemForm = class(TForm)
     GroupBox1: TGroupBox;
@@ -87,12 +88,13 @@ type
     FSubMenuItemCreationClicked: boolean;
     FShiftDown: boolean;
     FMenuName:String;
-    //procedure AddMenuClass(const S: string);
+
     procedure MoveNode(SourceNode, TargetNode: TTreeNode);
+
   public
     { Public declarations }
     FMenuItems: TWxCustomMenuItem;
-    constructor Create(AOwner: TComponent;ParentMenuName:String);
+    constructor Create(AOwner: TComponent; ParentMenuName:String);
     procedure SetMaxID(Value: integer);
 
     procedure UpdateScreenDataFromMenuItemData(cmenu: TWxCustomMenuItem);
@@ -106,11 +108,9 @@ type
     procedure DisableUpdate;
     function GetValidMenuName(str: string): string;
     function NextValue(str: string): string;
-    procedure CopyMenuItem(SrcMenuItem: TWxCustomMenuItem;
-      var DesMenuItem: TWxCustomMenuItem);
-
-    //property MenuItems:TWxCustomMenuItem read FMenuItems write SetMenuItems;
+    procedure CopyMenuItem(SrcMenuItem: TWxCustomMenuItem; var DesMenuItem: TWxCustomMenuItem);
   end;
+{$WARNINGS ON}
 
 var
   MenuItemForm: TMenuItemForm;
@@ -132,7 +132,6 @@ begin
   //FDesigner:= Designer;
   inherited Create(AOwner);
 end;
-
 {$ENDIF}
 
 procedure TMenuItemForm.btnInsertClick(Sender: TObject);
@@ -233,7 +232,6 @@ begin
 
 end;
 
-
 procedure TMenuItemForm.btnSubmenuClick(Sender: TObject);
 var
   Node:     TTreeNode;
@@ -253,7 +251,6 @@ begin
 
   FSubMenuItemCreationClicked := True;
   MenuItem := TWxCustomMenuItem.Create(nil);
-  //(TWxCustomMenuItem(tvMenuItem.Selected.Data));
   Inc(FCounter);
   Inc(FMaxID);
 
@@ -266,7 +263,6 @@ begin
     tvMenuItem.Selected := Node;
   curMnuItem.Add(MenuItem, curMnuItem.Count);
   tvMenuItem.SetFocus;
-  //btApply.SetFocus;
   EnableUpdate;
   txtIDValue.Text := IntToStr(FMaxID);
   txtCaption.Text := 'SubMenuItem' + IntToStr(FCounter);
@@ -285,12 +281,13 @@ procedure TMenuItemForm.btnDeleteClick(Sender: TObject);
 begin
   if tvMenuItem.Selected = nil then
     Exit;
-  //TWxCustomMenuItem(tvMenuItem.Selected.Data).
+
   if tvMenuItem.Selected.Parent <> nil then
     TWxCustomMenuItem(tvMenuItem.Selected.Parent.Data).Remove(
       TWxCustomMenuItem(tvMenuItem.Selected.Data))
   else
     FMenuItems.Remove(TWxCustomMenuItem(tvMenuItem.Selected.Data));
+
   tvMenuItem.Items.Delete(tvMenuItem.Selected);
   tvMenuItem.SetFocus;
   if tvMenuItem.Selected <> nil then
@@ -350,7 +347,6 @@ begin
 
   cbOnMenu.Text     := cmenu.EVT_Menu;
   cbOnUpdateUI.Text := cmenu.EVT_UPDATE_UI;
-
 end;
 
 procedure TMenuItemForm.UpdateMenuItemDataFromScreenData(cmenu: TWxCustomMenuItem);
@@ -440,7 +436,7 @@ begin
   FCounter := 0;
   for I := SourceMenuItems.Count - 1 downto 0 do
   begin
-    //FixMe:
+    //TODO: Guru: <Blank Todo string>
     aItem := TWxCustomMenuItem.Create(ThisParentControl);
     Item  := (SourceMenuItems.Items[I]);
     S     := Item.Wx_Caption;
@@ -492,7 +488,7 @@ begin
   FCounter := 0;
   for I := 0 to SourceMenuItems.Count - 1 do
   begin
-    //FixMe:
+    //TODO: Guru: <Blank Todo string>
     aItem := TWxCustomMenuItem.Create(ThisParentControl);
     Item  := (SourceMenuItems.Items[I]);
     S     := Item.Wx_Caption;
@@ -569,7 +565,7 @@ begin
   if lastTabIndex > 0 then
     str := Copy(str, 0, lastTabIndex - 1);
   
-  //FixMe
+  //TODO: Guru: <Blank Todo string>
   Result := UpperCase(trim(str));
 
   // Added by Termit
@@ -752,7 +748,7 @@ begin
   if MainForm.isCurrentFormFilesNeedToBeSaved = True then
   begin
     if MessageDlg('Files need to be saved before adding one.' +
-      #13 + #10 + 'Would you like to save the files before adding the function ?',
+      #13 + #10 + 'Would you like to save the files before adding the function?',
       mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
       exit;
     if MainForm.saveCurrentFormFiles = False then
@@ -807,7 +803,6 @@ var
   level: integer;
   SourceItem, TargetItem: TWxCustomMenuItem;
 begin
-
   sourceindex := SourceNode.Index;
   targetindex := TargetNode.Index;
 
@@ -874,8 +869,8 @@ begin
   begin
 
     // At this point, SourceItem and TargetItem point to the correct level
-    //   in the menu. Just need to insert the source at the target and delete
-    //   the original source pointer.
+    // in the menu. Just need to insert the source at the target and delete
+    // the original source pointer.
 
     // Change the TList (this is what generates the code and gets saved)
     // Let's insert this as a child of the target node
@@ -892,14 +887,12 @@ begin
     SourceNode.MoveTo(TargetNode, naAddChild)
 
   end
-
   else   // Drag and drop = Add as a sibling
-
   begin
 
     // At this point, SourceItem and TargetItem point to the correct level
-    //   in the menu. Just need to insert the source at the target and delete
-    //   the original source pointer.
+    // in the menu. Just need to insert the source at the target and delete
+    // the original source pointer.
 
     // Change the TList (this is what generates the code and gets saved)
     // Let's insert this AFTER the target node (targetindex + 1)
@@ -919,21 +912,15 @@ begin
 
   // Remove shift down flag
   FShiftDown := False;
-
 end;
 
- // http://users.iafrica.com/d/da/dart/zen/Articles/TTreeView/TTreeView_eg13.html
- // The drag-drop code was modified from Andre .v.d. Merwe's website
- // Source code was released as public domain
+//http://users.iafrica.com/d/da/dart/zen/Articles/TTreeView/TTreeView_eg13.html
+//The drag-drop code was modified from Andre .v.d. Merwe's website
+//Source code was released as public domain
 procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X, Y: integer);
 var
   TargetNode, SourceNode: TTreeNode;
-
 begin
-  /////////////////////////////////////////
-  // Something has just been droped
-  /////////////////////////////////////////
-
   with tvMenuItem do
   begin
     {Get the node the item was dropped on}
@@ -979,34 +966,26 @@ begin
 
     {Drag drop was valid so move the nodes}
     MoveNode(SourceNode, TargetNode);
-
   end;
 end;
 
 procedure TMenuItemForm.tvMenuItemDragOver(Sender, Source: TObject;
   X, Y: integer; State: TDragState; var Accept: boolean);
 begin
-  /////////////////////////////////////////
-  // Decide if drag-drop is to be allowed
-  /////////////////////////////////////////
-
   Accept := False;
 
-  {Only accept drag and drop from a TTreeView}
+  //Only accept drag and drop from a TTreeView
   if (Sender is TTreeView) then
-    {Only accept from self}
+    //Only accept from self
     if (TTreeView(Sender) = tvMenuItem) then
       Accept := True;
-
 end;
 
 procedure TMenuItemForm.tvMenuItemKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-
   if (ssShift in Shift) then
     FShiftDown := True;
-
 end;
 
 procedure TMenuItemForm.txtIDNameChange(Sender: TObject);
