@@ -1,6 +1,11 @@
 program Packman;
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
 {$IFDEF WIN32}
   Forms,
 {$ENDIF}
@@ -25,6 +30,7 @@ uses
   ziptypes in 'unzip\ZIPTYPES.PAS';
 
 {$R *.res}
+{$R ../winxp.res}
 
 begin
   Application.Initialize;

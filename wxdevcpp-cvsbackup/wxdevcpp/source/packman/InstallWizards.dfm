@@ -34,6 +34,7 @@ object InstallWizard: TInstallWizard
     Align = alTop
     BevelOuter = bvLowered
     Color = clWhite
+    ParentBackground = False
     TabOrder = 0
     object Image1: TImage
       Left = 8
@@ -1262,7 +1263,6 @@ object InstallWizard: TInstallWizard
         Top = 72
         Width = 359
         Height = 20
-        Min = 0
         Max = 4
         Smooth = True
         TabOrder = 0

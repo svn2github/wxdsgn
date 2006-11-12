@@ -18,6 +18,7 @@
 }
 
 unit main;
+{$R ../../winxp.res}
 
 interface
 
@@ -365,7 +366,8 @@ var tw      : TTarWriter;
 begin
   // Make TAR
   BuildForm.GroupBox.Caption := 'Building tar archive...';
-  BuildForm.ProgressBar.StepIt;
+  BuildForm.ProgressBar.Max := (FileList.Count + 1) * 2;
+  BuildForm.ProgressBar.StepBy(1);
   Application.ProcessMessages;
 
   tarstr := ChangeFileExt(FileName, '.tar');
@@ -382,48 +384,65 @@ begin
         else if (ExtractFileName(sl[j]) <> ExtractFileName(FileName)) and
                 (ExtractFileName(sl[j]) <> ExtractFileName(tarstr)) then
           tw.AddFile(sl[j]);
+        Application.ProcessMessages;
       end;
       sl.Free;
     end
     else
       tw.AddFile(TFileItem(FileList[i]).Source);
+
+    BuildForm.ProgressBar.StepIt;
+    Application.ProcessMessages;
   end;
-  if edReadMe.Text <> '' then begin
+
+  if edReadMe.Text <> '' then
     if FileExists(edReadMe.Text) then
       tw.AddFile(edReadMe.Text)
     else
-      MessageDlg('Your readme file doesn''t exist! You will need to correct it and build again the package', mtWarning, [mbOK], 0);
-  end;
+      if MessageDlg('Your readme file doesn''t exist. Do you want to abort the creation of the package?', mtConfirmation , [mbYES, mbNO], 0) = mrYes then
+        Exit;
+
   if edLicense.Text <> '' then begin
     if FileExists(edLicense.Text) then
       tw.AddFile(edLicense.Text)
     else
-      MessageDlg('Your license file doesn''t exist! You will need to correct it and build again the package', mtWarning, [mbOK], 0);
+      if MessageDlg('Your license file doesn''t exist. Do you want to abort the creation of the package?', mtConfirmation, [mbYES, mbNO], 0) = mrYes then
+        Exit;
   end;
   tw.Finalize;
   tw.Free;
 
-  // Make Bzip2
-  BuildForm.GroupBox.Caption := 'Building Bzip2 archive...';
-  BuildForm.ProgressBar.StepBy(4);
-  Application.ProcessMessages;
+  // Make the Bzip2 file
   bzfile := TFileStream.Create(ChangeFileExt(FileName, '.DevPak'), fmCreate);
   tarfile := TFileStream.Create(tarstr, fmOpenRead);
   bz2 := TBZCompressionStream.Create(bs5, bzfile);
+
+  // Set the status in the UI
+  BuildForm.GroupBox.Caption := 'Building Bzip2 archive...';
+  BuildForm.ProgressBar.StepBy(4);
+  BuildForm.ProgressBar.Max := (TarFile.Size div BufferSize) * 2;
+  BuildForm.ProgressBar.Position := TarFile.Size div BufferSize;
+  Application.ProcessMessages;
+
+  // Write the BZip2 file
   k := tarfile.Read(Buffer, BufferSize);
   while k > 0 do begin
     bz2.Write(Buffer, k);
     k := tarfile.Read(Buffer, BufferSize);
+    BuildForm.ProgressBar.StepIt;
+    Application.ProcessMessages;
   end;
-  BuildForm.ProgressBar.StepBy(5);
-  Application.ProcessMessages;
+
+  // Close the files we opened
   bz2.Destroy;
   bzfile.Destroy;
   tarfile.Destroy;
   if FileExists(tarstr) then
     DeleteFile(tarstr);
+
+  // Sucess message
   MessageDlg('Your Dev-C++ Package has been successfully created to ' +
-             ChangeFileExt(FileName, '.DevPak') +'. It is now ready for testing and distribution :)',
+             ChangeFileExt(FileName, '.DevPak') +'. It is now ready for testing and distribution.',
              mtInformation, [mbOK], 0);
 end;
 
