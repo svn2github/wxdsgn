@@ -101,7 +101,8 @@ function RunAndGetOutput(Cmd, WorkDir: string;
   ErrFunc: TErrFunc; LineOutputFunc: TLineOutputFunc;
   CheckAbortFunc: TCheckAbortFunc;
   ShowReturnValue: Boolean = True): string;
-function GetShortName(FileName: string): string;
+function GetShortName(const FileName: string): string;
+function GetLongName(const ShortPathName: string): String;
 procedure ShowError(Msg: String);
 
 function CommaStrToStr(s : string; formatstr : string) : string;
@@ -161,7 +162,7 @@ implementation
 
 uses 
 {$IFDEF WIN32}
-  devcfg, version, Graphics, StrUtils, MultiLangSupport, main, editor;
+  ShlObj, ActiveX, devcfg, version, Graphics, StrUtils, MultiLangSupport, main, editor;
 {$ENDIF}
 {$IFDEF LINUX}
   devcfg, version, QGraphics, StrUtils, MultiLangSupport, main, editor;
@@ -504,12 +505,62 @@ begin
   FreeResource(HRes);
 end;
 
-function GetShortName(FileName: string): string;
+function GetShortName(const FileName: string): string;
 var
   pFileName: array[0..2048] of char;
 begin
   GetShortPathName(pchar(FileName), pFileName, 2048);
   result:= strpas(pFileName);
+end;
+
+//Takes a 8.3 filename and makes it into a Long filename.
+//Courtesy of http://www.martinstoeckli.ch/delphi/delphi.html
+function GetLongName(const ShortPathName: String): String;
+var
+  hKernel32Dll: THandle;
+  fncGetLongPathName: function (lpszShortPath: LPCTSTR; lpszLongPath: LPTSTR;
+    cchBuffer: DWORD): DWORD stdcall;
+  bSuccess: Boolean;
+  szBuffer: array[0..MAX_PATH] of Char;
+  pDesktop: IShellFolder;
+  swShortPath: WideString;
+  iEaten: ULONG;
+  pItemList: PItemIDList;
+  iAttributes: ULONG;
+begin
+  // try to find the function "GetLongPathNameA" (Windows 98/2000)
+  hKernel32Dll := GetModuleHandle('Kernel32.dll');
+  if (hKernel32Dll <> 0) then
+    @fncGetLongPathName := GetProcAddress(hKernel32Dll, 'GetLongPathNameA')
+  else
+    @fncGetLongPathName := nil;
+  // use the function "GetLongPathNameA" if available
+  bSuccess := False;
+  if (Assigned(fncGetLongPathName)) then
+  begin
+    bSuccess := fncGetLongPathName(PChar(ShortPathName), szBuffer,
+      SizeOf(szBuffer)) > 0;
+    if bSuccess then
+      Result := szBuffer;
+  end;
+  // use an alternative way of getting the path (Windows 95/NT)
+  if (not bSuccess) and Succeeded(SHGetDesktopFolder(pDesktop)) then
+  begin
+    swShortPath := ShortPathName;
+    iAttributes := 0;
+    if Succeeded(pDesktop.ParseDisplayName(0, nil, POLESTR(swShortPath),
+      iEaten, pItemList, iAttributes)) then
+    begin
+      bSuccess := SHGetPathFromIDList(pItemList, szBuffer);
+      if bSuccess then
+        Result := szBuffer;
+      // release ItemIdList (SHGetMalloc is superseded)
+      CoTaskMemFree(pItemList);
+    end;
+  end;
+  // give back the original path if unsuccessful
+  if (not bSuccess) then
+    Result := ShortPathName;
 end;
 
 procedure ShowError(Msg: String);
