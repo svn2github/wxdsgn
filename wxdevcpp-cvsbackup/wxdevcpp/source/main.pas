@@ -49,9 +49,8 @@ uses
 {$IFNDEF OLD_MADSHI}
   ExceptionFilterUnit,
 {$ENDIF}
-  DesignerOptions, JvExStdCtrls, JvEdit, ShlObj, ActiveX,
-  SynEditHighlighter, SynHighlighterMulti, JvComponentBase,
-  JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle
+  DesignerOptions, JvExStdCtrls, JvEdit, SynEditHighlighter, SynHighlighterMulti,
+  JvComponentBase, JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle
 {$ENDIF}
   ;
 {$ENDIF}
@@ -1194,10 +1193,6 @@ public
 {$ENDIF}
 
   end;
-
-{$IfDef WX_BUILD}
-function GetLongPath(const ShortPathName: String): String;
-{$EndIf}
 
 var
   MainForm: TMainForm;
@@ -2433,18 +2428,18 @@ begin
     if FileExists(strLst[idx]) then begin
       if GetFileTyp(strLst[idx]) = utPrj then
       begin
-        OpenProject(GetLongPath(strLst[idx]));
+        OpenProject(GetLongName(strLst[idx]));
         break; // only open 1 project
       end
       else begin
 {$IFDEF WX_BUILD}
         if iswxForm(strLst[idx]) then
         begin
-          OpenFile(GetLongPath(ChangeFileExt(strLst[idx], H_EXT)), True);
-          OpenFile(GetLongPath(ChangeFileExt(strLst[idx], CPP_EXT)), true);
+          OpenFile(GetLongName(ChangeFileExt(strLst[idx], H_EXT)), True);
+          OpenFile(GetLongName(ChangeFileExt(strLst[idx], CPP_EXT)), true);
         end;
 {$ENDIF}
-        OpenFile(GetLongPath(strLst[idx]));
+        OpenFile(GetLongName(strLst[idx]));
       end;
     end;
     inc(idx);
@@ -12306,56 +12301,6 @@ if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
 end;
 
 {$IfDef WX_BUILD}
-//Takes a 8.3 filename and makes it into a Long filename.
-//Courtesy of http://www.martinstoeckli.ch/delphi/delphi.html
-function GetLongPath(const ShortPathName: String): String;
-var
-  hKernel32Dll: THandle;
-  fncGetLongPathName: function (lpszShortPath: LPCTSTR; lpszLongPath: LPTSTR;
-    cchBuffer: DWORD): DWORD stdcall;
-  bSuccess: Boolean;
-  szBuffer: array[0..MAX_PATH] of Char;
-  pDesktop: IShellFolder;
-  swShortPath: WideString;
-  iEaten: ULONG;
-  pItemList: PItemIDList;
-  iAttributes: ULONG;
-begin
-  // try to find the function "GetLongPathNameA" (Windows 98/2000)
-  hKernel32Dll := GetModuleHandle('Kernel32.dll');
-  if (hKernel32Dll <> 0) then
-    @fncGetLongPathName := GetProcAddress(hKernel32Dll, 'GetLongPathNameA')
-  else
-    @fncGetLongPathName := nil;
-  // use the function "GetLongPathNameA" if available
-  bSuccess := False;
-  if (Assigned(fncGetLongPathName)) then
-  begin
-    bSuccess := fncGetLongPathName(PChar(ShortPathName), szBuffer,
-      SizeOf(szBuffer)) > 0;
-    if bSuccess then
-      Result := szBuffer;
-  end;
-  // use an alternative way of getting the path (Windows 95/NT)
-  if (not bSuccess) and Succeeded(SHGetDesktopFolder(pDesktop)) then
-  begin
-    swShortPath := ShortPathName;
-    iAttributes := 0;
-    if Succeeded(pDesktop.ParseDisplayName(0, nil, POLESTR(swShortPath),
-      iEaten, pItemList, iAttributes)) then
-    begin
-      bSuccess := SHGetPathFromIDList(pItemList, szBuffer);
-      if bSuccess then
-        Result := szBuffer;
-      // release ItemIdList (SHGetMalloc is superseded)
-      CoTaskMemFree(pItemList);
-    end;
-  end;
-  // give back the original path if unsuccessful
-  if (not bSuccess) then
-    Result := ShortPathName;
-end;
-
 procedure TMainForm.tmrInspectorHelperTimer(Sender: TObject);
 begin
   if fstrCppFileToOpen = '' then
