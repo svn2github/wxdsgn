@@ -19,11 +19,6 @@
 
 program devcpp;
 
-
-{$R 'icons.res' 'icons.rc'}
-{%File 'LangIDs.inc'}
-{$R 'DefaultFiles.res' 'DefaultFiles.rc'}
-{$R 'LangFrm.res' 'LangFrm.rc'}
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses  
@@ -193,8 +188,11 @@ uses
   CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas'
 {$ENDIF};
 
+{$R 'winxp.res'}
+{$R 'icons.res' 'icons.rc'}
+{$R 'DefaultFiles.res' 'DefaultFiles.rc'}
+{$R 'LangFrm.res' 'LangFrm.rc'}
 {$R *.res}
-{$R winxp.res}
 
 {$IFDEF WX_BUILD}
 {$R STDREG.DCR}

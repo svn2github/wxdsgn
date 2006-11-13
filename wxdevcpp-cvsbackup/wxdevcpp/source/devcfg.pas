@@ -59,6 +59,7 @@ const
   ID_COMPILER_DMARS = 4;
   ID_COMPILER_BORLAND = 5;
   ID_COMPILER_WATCOM = 6;
+  ID_COMPILER_VC = [ID_COMPILER_VC6, ID_COMPILER_VC2003, ID_COMPILER_VC2005];
   
 type
   // the comments are an example of the record
@@ -1176,7 +1177,7 @@ begin
   //Begin by clearing the compiler options list
   ClearOptions;
 
-  if (devCompilerSet.CompilerType = ID_COMPILER_VC6)or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) or (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
+  if devCompilerSet.CompilerType in ID_COMPILER_VC then
   begin
     sl := TStringList.Create;
     sl.Add('Neither  =');
@@ -1293,7 +1294,7 @@ begin
     if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
       AddOption('Enable OpenMP 2.0 Language Extensions', false, false, true, false, 0, '/openmp', 'Language Options', [], nil);
 
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003)then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
     begin
       AddOption('Enforce Standard C++ scoping', false, false, true, false, 0, '/Zc:forScope', 'Language Options', [], nil);
       AddOption('Make wchar_t a native type', false, false, true, false, 0, '/Zc:wchar_t', 'Language Options', [], nil);
@@ -1652,7 +1653,7 @@ begin
   fBinDir:= ValidatePaths(fDefault + BIN_DIR(fCompilerType), tempstr);
   fCDir:= ValidatePaths(fDefault + C_INCLUDE_DIR(fCompilerType), tempstr);
   newstr:=CPP_INCLUDE_DIR(fCompilerType);
-  if (fCompilerType = ID_COMPILER_VC6) or (fCompilerType = ID_COMPILER_VC2003) or (fCompilerType = ID_COMPILER_VC2005) then
+  if fCompilerType in ID_COMPILER_VC then
     fCppDir:= ValidatePaths(fDefault + StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]) + CPP_INCLUDE_DIR(fCompilerType), tempstr)
   else
     fCppDir:= ValidatePaths(fDefault + CPP_INCLUDE_DIR(fCompilerType)+ StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
@@ -2066,11 +2067,13 @@ begin
   begin
     OBJ_EXT := '.o';
     LIB_EXT := '.a';
+    PCH_EXT := '.h.gch';
   end
   else
   begin
     OBJ_EXT := '.obj';
     LIB_EXT := '.lib';
+    PCH_EXT := '.pch';
   end;
 
   devCompiler.OptionStr := OptionsStr;
@@ -2428,7 +2431,7 @@ begin
   fLinkOptions := '';
   fMakeOptions := '';
 
-  if (CompilerType = ID_COMPILER_VC6) or (CompilerType = ID_COMPILER_VC2003) or (CompilerType = ID_COMPILER_VC2005) then
+  if CompilerType in ID_COMPILER_VC then
   begin
     fCheckSyntaxFormat      := '/Zs';
     fOutputFormat           := '/c %s /Fo%s';

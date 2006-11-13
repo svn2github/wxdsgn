@@ -204,7 +204,7 @@ resourcestring
   cAppendStr = '%s %s';
 
 var
-  ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, ofile, tfile: string;
+  ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, tfile: string;
   i: integer;
 begin
   Objects := '';
@@ -215,29 +215,26 @@ begin
 
   for i := 0 to Pred(fProject.Units.Count) do
   begin
-    if GetFileTyp(fProject.Units[i].FileName) = utRes then
+    if (GetFileTyp(fProject.Units[i].FileName) = utRes) or
+       ((not fProject.Units[i].Compile) and (not fProject.Units[i].Link)) then
       Continue;
 
-    if (not fProject.Units[i].Compile) and (not fProject.Units[i].Link) then
-      Continue;
+    if fProject.CurrentProfile.ObjectOutput <> '' then
+    begin
+      tfile := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
+      tfile := ExtractRelativePath(fProject.FileName, tfile);
+    end
+    else
+      tfile := ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName);
 
-    tfile := ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName);
     if GetFileTyp(tfile) <> utHead then
     begin
-      if fProject.CurrentProfile.ObjectOutput <> '' then
-      begin
-        ofile := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput) + ExtractFileName(fProject.Units[i].FileName);
-        ofile := ExtractRelativePath(fProject.FileName, ChangeFileExt(ofile, OBJ_EXT));
-        Objects := Format(cAppendStr, [Objects, GenMakePath2(ofile)]);
-        if fProject.Units[i].Link then
-          LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ofile)]);
-      end
-      else begin
-        Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(tfile, OBJ_EXT))]);
-        if fProject.Units[i].Link then
-          LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
-      end;
-    end;
+      Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(tfile, OBJ_EXT))]);
+      if fProject.Units[i].Link then
+        LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
+    end
+    else if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (I = fProject.PchHead) then
+      Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName), PCH_EXT))]);
   end;
 
   if Length(fProject.CurrentProfile.PrivateResource) = 0 then
@@ -256,16 +253,16 @@ begin
     Objects := Format(cAppendStr, [Objects, GenMakePath2(ObjResFile)]);
   end;
 
-  if (devCompiler.gppName <> '') then
-    if (devCompiler.compilerType = ID_COMPILER_VC6) or (devCompiler.compilerType = ID_COMPILER_VC2005) or (devCompiler.compilerType = ID_COMPILER_VC2003)then
+  if devCompiler.gppName <> '' then
+    if devCompiler.compilerType in ID_COMPILER_VC then
       Comp_ProgCpp := devCompiler.gppName + ' /nologo'
     else
       Comp_ProgCpp := devCompiler.gppName
   else
     Comp_ProgCpp := CPP_PROGRAM(devCompiler.CompilerType);
 
-  if (devCompiler.gccName <> '') then
-    if (devCompiler.compilerType = ID_COMPILER_VC6) or (devCompiler.compilerType = ID_COMPILER_VC2005) or (devCompiler.compilerType = ID_COMPILER_VC2003) then
+  if devCompiler.gccName <> '' then
+    if devCompiler.compilerType in ID_COMPILER_VC then
       Comp_Prog := devCompiler.gccName + ' /nologo'
     else
       Comp_Prog := devCompiler.gccName
@@ -330,7 +327,7 @@ begin
   writeln(F, 'GPROF     = ' + devCompilerSet.gprofName);
   writeln(F, 'RM        = ' + RmExe);
 
-  if (devCompiler.CompilerType = ID_COMPILER_VC6) or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+  if devCompiler.CompilerType in ID_COMPILER_VC then
     if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
       writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
     else
@@ -468,28 +465,41 @@ begin
   PCHObj := '';
 
   try
-    if (fProject.PchHead <> -1) and (fProject.PchSource <> -1) then
+    if devCompiler.CompilerType = ID_COMPILER_MINGW then
     begin
-      if fProject.CurrentProfile.ObjectOutput <> '' then
+      if fProject.PchHead <> -1 then
       begin
-        PCHObj := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput);
-        PCHFile := PCHObj;
+        PCHObj := GenMakePath2(ExtractRelativePath(Makefile, GetRealPath(ChangeFileExt(fProject.Units[fProject.PchHead].FileName, PCH_EXT), fProject.Directory)));
+        PCHHead := ExtractRelativePath(fProject.Directory, fProject.Units[fProject.PchHead].FileName);
+        PCHFile := GenMakePath(ExtractFileName(PCHHead) + PCH_EXT);
       end;
-      PCHObj := GenMakePath2(PCHObj + ExtractRelativePath(Makefile, GetRealPath(ChangeFileExt(fProject.Units[fProject.PchSource].FileName, OBJ_EXT), fProject.Directory)));
-      PCHHead := ExtractRelativePath(fProject.Directory, fProject.Units[fProject.PchHead].FileName);
-      PCHFile := GenMakePath(PCHFile + ExtractFileName(PCHHead) + PCH_EXT);
     end
-    else if (fProject.PchHead <> -1) or (fProject.PchSource <> -1) then
+    else
     begin
-      DoOutput('', '', Format(Lang[ID_COMPMSG_MAKEFILEWARNING], [Lang[ID_COMPMSG_PCHINCOMPLETE]]));
-      Inc(fWarnCount);
+      if (fProject.PchHead <> -1) and (fProject.PchSource <> -1) then
+      begin
+        if fProject.CurrentProfile.ObjectOutput <> '' then
+        begin
+          PCHObj := IncludeTrailingPathDelimiter(fProject.CurrentProfile.ObjectOutput);
+          PCHFile := PCHObj;
+        end;
+        PCHObj := GenMakePath2(PCHObj + ExtractRelativePath(Makefile, GetRealPath(ChangeFileExt(fProject.Units[fProject.PchSource].FileName, OBJ_EXT), fProject.Directory)));
+        PCHHead := ExtractRelativePath(fProject.Directory, fProject.Units[fProject.PchHead].FileName);
+        PCHFile := GenMakePath(PCHFile + ExtractFileName(PCHHead) + PCH_EXT);
+      end
+      else if (fProject.PchHead <> -1) or (fProject.PchSource <> -1) then
+      begin
+        DoOutput('', '', Format(Lang[ID_COMPMSG_MAKEFILEWARNING], [Lang[ID_COMPMSG_PCHINCOMPLETE]]));
+        Inc(fWarnCount);
+      end;
     end;
   except
     on e: Exception do
-    begin
-      DoOutput('', '', Format(Lang[ID_COMPMSG_MAKEFILEWARNING], [Lang[ID_COMPMSG_PCHINCOMPLETE]]));
-      Inc(fWarnCount);
-    end;
+      if devCompiler.CompilerType in ID_COMPILER_VC then
+      begin
+        DoOutput('', '', Format(Lang[ID_COMPMSG_MAKEFILEWARNING], [Lang[ID_COMPMSG_PCHINCOMPLETE]]));
+        Inc(fWarnCount);
+      end;
   end;
 
   for i := 0 to pred(fProject.Units.Count) do
@@ -549,14 +559,51 @@ begin
           //Decide on whether we pass a PCH creation or usage argument
           with devCompiler do
           begin
-            if (PCHHead <> '') and (PchFileFormat <> '') and (PchUseFormat <> '') and (PchCreateFormat <> '') then
+            tmp := '';
+            if CompilerType in ID_COMPILER_VC then
             begin
-              if I <> fProject.PchSource then
-                tmp := PchUseFormat
-              else
-                tmp := PchCreateFormat;
-              tmp := Format(' ' + tmp + ' ' + PchFileFormat, [GenMakePath(PCHHead), PCHFile]);
-            end
+              if PCHHead <> '' then
+              begin
+                if I <> fProject.PchSource then
+                  tmp := PchUseFormat
+                else
+                  tmp := PchCreateFormat;
+                tmp := Format(' ' + tmp + ' ' + PchFileFormat, [GenMakePath(PCHHead), PCHFile]);
+              end
+            end;
+          end;
+
+          if fProject.Units[i].CompileCpp then
+            writeln(F, #9 + '$(CPP) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) + tmp + ' $(CXXFLAGS)')
+          else
+            writeln(F, #9 + '$(CC) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) + tmp + ' $(CFLAGS)');
+        end;
+      end;
+    end
+    else if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (I = fProject.PchHead) and (PchHead <> '') then
+    begin
+      if not DoCheckSyntax then
+      begin
+        writeln(F);
+        ofile := ChangeFileExt(tfile, '.h.gch');
+
+        if PerfectDepCheck then
+          writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile) + FindDeps(fProject.Directory + tfile))
+        else
+          writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile));
+
+        if fProject.Units[i].OverrideBuildCmd and (fProject.Units[i].BuildCmd <> '') then  begin
+          tmp := fProject.Units[i].BuildCmd;
+          tmp := StringReplace(tmp, '<CRTAB>', #10#9, [rfReplaceAll]);
+          writeln(F, #9 + tmp);
+        end
+        else
+        begin
+          //Decide on whether we pass a PCH creation or usage argument
+          with devCompiler do
+          begin
+            if (PCHHead <> '') and (PchCreateFormat <> '') then
+              tmp := Format(' ' + PchCreateFormat, [GenMakePath(PCHHead)])
             else
               tmp := '';
           end;
@@ -638,7 +685,7 @@ var
 begin
   if not NewMakeFile(F) then
     exit;
-  writeln(F, '$(BIN): $(LINKOBJ)');
+  writeln(F, '$(BIN): $(OBJ)');
   if not DoCheckSyntax then
   begin
     if devCompiler.CompilerType <> ID_COMPILER_MINGW then
@@ -677,7 +724,7 @@ begin
       Insert('lib', tfile, Forward + 1);
   end;
 
-  writeln(F, '$(BIN): $(LINKOBJ)');
+  writeln(F, '$(BIN): $(OBJ)');
 
   if not DoCheckSyntax then
   begin
@@ -975,7 +1022,7 @@ begin
           fCppIncludesParams, fLibrariesParams])
       else
       begin
-        if (devCompiler.CompilerType = ID_COMPILER_VC6) or (devCompiler.CompilerType = ID_COMPILER_VC2003)or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+        if devCompiler.CompilerType in ID_COMPILER_VC then
           cmdline := format(cCmdLine,
             [s, fSourceFile, fCppCompileParams, fCppIncludesParams, fLibrariesParams])
         else
@@ -1239,7 +1286,7 @@ begin
   RegEx := TRegExpr.Create;
   
   try
-    if (devCompiler.compilerType = ID_COMPILER_VC6)or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    if devCompiler.compilerType in ID_COMPILER_VC then
     begin
       //Check for command line errors
       RegEx.Expression := 'Command line error (.*) : (.*)';
@@ -1493,7 +1540,7 @@ begin
       O_Line := '';
       O_File := '';
 
-    if (devCompiler.compilerType = ID_COMPILER_VC6)or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+    if devCompiler.compilerType in ID_COMPILER_VC then
     begin
       //Do we have to ignore this message?
       if
@@ -2109,6 +2156,13 @@ begin
         if not schk then
           act := 'Compiling';
         OK := True;
+
+        //Is it a header file being compiled?
+        if (ExtractFileExt(fil) = H_EXT) or (ExtractFileExt(fil) = HPP_EXT) then
+        begin
+          act := 'Precompiling';
+          prog := 1;
+        end;
         Break;
       end;
     end;
@@ -2139,7 +2193,7 @@ begin
         lblFile.Caption := srch;
       end;
 
-      if (devCompiler.CompilerType = ID_COMPILER_VC6) or (devCompiler.CompilerType = ID_COMPILER_VC2003) or (devCompiler.CompilerType = ID_COMPILER_VC2005) then
+      if devCompiler.CompilerType in ID_COMPILER_VC then
       begin
         //Check for the manifest tool
         srch := devCompiler.gprofName;
