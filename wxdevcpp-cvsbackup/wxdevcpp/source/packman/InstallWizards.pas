@@ -26,7 +26,7 @@ type
     NextBtn: TBitBtn;
     Cancel: TBitBtn;
     Notebook1: TNotebook;
-    Label3: TLabel;
+    Label3: TLabel;      
     Label4: TLabel;
     Label5: TLabel;
     ReadmeMemo: TMemo;
