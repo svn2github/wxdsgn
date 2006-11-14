@@ -60,7 +60,6 @@ type
     FInvisibleFGColorString: string;
     FWx_Alignment: TWxSizerAlignment;
     FWx_BorderAlignment: TWxBorderAlignment;
-    fBitmapCount:Integer;
 
     { Private methods of TWxStaticBitmap }
     { Method to set variable and property values and create objects }

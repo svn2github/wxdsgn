@@ -39,7 +39,6 @@ type
     FInvisibleFGColorString: string;
     FWx_Validator: string;
     FWx_Comments: TStrings;
-    fBitmapCount:Integer;
 
     { Private methods of TWxButton }
 

@@ -43,7 +43,6 @@ type
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignment;
     FWx_BorderAlignment: TWxBorderAlignment;
-    fBitmapCount:Integer;
     { Private methods of TWxButton }
 
     procedure AutoInitialize;
