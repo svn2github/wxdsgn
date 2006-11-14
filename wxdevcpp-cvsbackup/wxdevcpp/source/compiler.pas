@@ -776,15 +776,11 @@ begin
     AppendStr(fCompileParams, fUserParams);
     AppendStr(fCppCompileParams, fUserParams);
 
-    for I := 0 to devCompiler.OptionsCount - 1 do
+    for I := 0 to OptionsCount - 1 do
       // consider project specific options for the compiler
-      if (
-        Assigned(fProject) and
-        (I < Length(fProject.CurrentProfile.CompilerOptions)) and
-        not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)
-        ) or
-        // else global compiler options
-      (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then
+      if (Assigned(fProject) and (I < Length(fProject.CurrentProfile.CompilerOptions)) and
+           not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)) or
+         (not Assigned(fProject) and (Options[I].optValue > 0)) then
       begin
         if devCompiler.Options[I].optIsC then begin
           if Assigned(devCompiler.Options[I].optChoices) then begin
@@ -881,15 +877,13 @@ begin
   strLst := TStringList.Create;
   strTokenToStrings(devDirs.RC, ';', strLst);
   cRCString := '';
-  for i := 0 to strLst.Count-1 do
-  begin
+  for i := 0 to strLst.Count - 1 do
     cRCString := cRCString + GetShortName(strLst.Strings[i]) + ';';
-  end;
   fRcIncludesParams := CommaStrToStr(cRCString, '%s ' + devCompiler.ResourceIncludeFormat);
-  
   strLst.Destroy;
-  	
-  if (fTarget = ctProject) and assigned(fProject) then begin
+
+  if (fTarget = ctProject) and assigned(fProject) then
+  begin
     for i := 0 to pred(fProject.CurrentProfile.Includes.Count) do
       if directoryExists(fProject.CurrentProfile.Includes[i]) then begin
         fIncludesParams := format(cAppendStr, [fIncludesParams, fProject.CurrentProfile.Includes[i]]);

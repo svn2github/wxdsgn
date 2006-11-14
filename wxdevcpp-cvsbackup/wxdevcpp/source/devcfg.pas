@@ -2023,8 +2023,6 @@ begin
   devDirs.C := devCompilerSet.CDir;
   devDirs.Cpp := devCompilerSet.CppDir;
   devDirs.Lib := devCompilerSet.LibDir;
-
-
 end;
 
 procedure TdevCompilerSet.AssignToCompiler;
@@ -2076,8 +2074,8 @@ begin
     PCH_EXT := '.pch';
   end;
 
-  devCompiler.OptionStr := OptionsStr;
   devCompiler.AddDefaultOptions;
+  devCompiler.OptionStr := OptionsStr;
 end;
 
 constructor TdevCompilerSet.Create;
