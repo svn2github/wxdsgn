@@ -695,7 +695,7 @@ begin
   end;
 
   //Get the real path (after substituting in the make variables)
-  if ResFile.Count > 3 then
+  if ResFile.Count > 2 then
   begin
     if FileExists(Res) and not ForceSave then
     begin
