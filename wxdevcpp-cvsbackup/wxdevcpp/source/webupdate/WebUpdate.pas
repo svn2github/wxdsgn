@@ -128,7 +128,7 @@ const
   CONF_FILE = 'webupdate.conf';
   DEFAULT_MIRROR_1 = 'wxDev-C++ DevPak server=http://joelsplace.sg/projects/wxdsgn/devpaks/';
   DEFAULT_MIRROR_2 = 'Dev-C++ primary devpak server=http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
-  DEFAULT_MIRROR_3 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
+  DEFAULT_MIRROR_3 = 'devpaks.org Community Devpaks=http://devpaks.org/';
 
 var
   BASE_URL: string;
@@ -163,7 +163,7 @@ begin
 {$ENDIF}
 {$IFDEF LINUX}
     MessageDlg('Could not connect to remote site. The remote site might be down, or your connection ' +
-      'to the Internet might not be working...'#13#10#13#10'Please try another mirror site...', mtError, [mbOk], 0)
+      'to the Internet might not be working.'#13#10#13#10'Please try another mirror.', mtError, [mbOk], Handle)
 {$ENDIF}
   else begin
     if (wThread.LastMessage = wumrDisconnect) and
@@ -190,37 +190,39 @@ var
   PackProcessInfo: TProcessInformation;
   PackStartupInfo: TStartupInfo;
 begin
-  if fErrorsList.Count = 0 then
-    MessageDlg('The updates you selected have been downloaded. Now they will ' +
-      'be installed.',
-      mtInformation, [mbOk], 0)
-  else if fErrorsList.Count > 0 then begin
+  if fErrorsList.Count > 0 then begin
     Dest := '';
     for I := 0 to fErrorsList.Count - 1 do
       Dest := Dest + fErrorsList[I] + #13#10;
-    MessageDlg('The following files were not downloaded due to errors...'#13#10#13#10 + Dest, mtError, [mbOk], 0);
+    Dest := 'The following files were not downloaded due to errors:'#13#10#13#10 + Dest;
     if fErrorsList.Count < wThread.Files.Count then
-      if MessageDlg('Some updates were retrieved though. Do you want to install them?',
-        mtConfirmation, [mbYes, mbNo], 0) = mrNo then begin
+    begin
+      if MessageDlg(Dest + #13#10#13'However, some updates were retrieved. Do you want to install them?',
+        mtConfirmation, [mbYes, mbNo], Handle) = mrNo then begin
         wThread := nil;
         EnableForm;
         Exit;
       end;
+    end
+    else
+      MessageDlg(Dest, mtError, [mbOk], Handle);
   end;
+
   for I := 0 to wThread.Files.Count - 1 do begin
     if FileExists(PUpdateRec(wThread.Files[I])^.TempFilename) then begin
       if PUpdateRec(wThread.Files[I])^.Execute then begin
         PackFileName := ExtractFilePath(Application.ExeName) + PACKAGES_DIR + ExtractFileName(PUpdateRec(wThread.Files[I])^.LocalFilename);
         ForceDirectories(ExtractFilePath(Application.ExeName) + PACKAGES_DIR); // Create <devcpp>\Packages
         DeleteFile(PackFileName);
-        //Win9x does not support MoveFileEx
-        if MoveFile(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(PackFileName)) = BOOL(False) then
+
+        if not MoveFile(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(PackFileName)) then
         begin
-          MessageDlg('Could not move file: ' + PUpdateRec(wThread.Files[I])^.TempFilename +
-          ' to ' + PackFileName + #13#10 + SysErrorMessage(GetLastError), mtWarning, [mbOK], 0);
+          MessageDlg(Format('The file %s could not be moved to %s. (Error %d: %s)',
+            [PUpdateRec(wThread.Files[I])^.TempFilename, PackFileName, GetLastError, SysErrorMessage(GetLastError)])
+            , mtWarning, [mbOK], Handle);
         end
-        else if FileExists(ExtractFilePath(Application.ExeName) + PACKMAN_PROGRAM) then begin
-          //start Packman.exe
+        else if FileExists(ExtractFilePath(Application.ExeName) + PACKMAN_PROGRAM) then
+        begin
           FillChar(PackStartupInfo, SizeOf(PackStartupInfo), #0);
           with PackStartupInfo do begin
             cb := SizeOf(PackStartupInfo);
@@ -228,6 +230,7 @@ begin
             dwFlags := STARTF_USESHOWWINDOW;
             wShowWindow := SW_SHOW;
           end;
+
           if CreateProcess(nil, PChar(ExtractFilePath(Application.ExeName) + PACKMAN_PROGRAM
             + ' /auto "' + PackFileName + '"'), nil, nil, False, NORMAL_PRIORITY_CLASS,
             nil, PChar(ExtractFilePath(Application.ExeName)),
@@ -239,20 +242,25 @@ begin
               CloseHandle(PackProcessInfo.hProcess);
               CloseHandle(PackProcessInfo.hThread);
               if PackExitCode = Cardinal(PACKMAN_EXITCODE_NO_ERROR) then
-                WriteInstalled(I, True)
-              else
-                MessageDlg('PackMan.exe failed to install the package or the installation was cancelled!', mtError, [mbOK], 0);
+                WriteInstalled(I, True);
           end
           else
-            MessageDlg('Couldn''t start PackMan.exe !', mtError, [mbOK], 0);
+            MessageDlg('The Package Manager could not be started. Check that it is accessible by you.', mtError, [mbOK], Handle);
         end
         else
-          MessageDlg('Could not find PackMan.exe in Dev-C++ folder !', mtError, [mbOK], 0);
+          if MessageDlg('The Package Manager could not be found; all other devpaks will fail to install.'#13#10#13#10 +
+              'Do you want to abort the installation stage?', mtError, [mbYes, mbNo], Handle) = mrYes then
+          begin
+            wThread := nil;
+            EnableForm;
+            Exit;
+          end;
       end
       else begin
-        Dest := {BasePath + } ReplaceMacros(PUpdateRec(wThread.Files[I])^.InstallPath + '\' + PUpdateRec(wThread.Files[I])^.LocalFilename);
+        Dest := ReplaceMacros(PUpdateRec(wThread.Files[I])^.InstallPath + '\' + PUpdateRec(wThread.Files[I])^.LocalFilename);
         ForceDirectories(ExtractFilePath(Dest));
-        if CopyFile(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(Dest), False) then begin
+        if CopyFile(PChar(PUpdateRec(wThread.Files[I])^.TempFilename), PChar(Dest), False) then
+        begin
           DeleteFile(PUpdateRec(wThread.Files[I])^.TempFilename);
           WriteInstalled(I, False);
         end
@@ -262,18 +270,19 @@ begin
             WriteInstalled(I, False);
           end
           else
-            MessageDlg('Could not install file: ' + Dest, mtError, [mbOK], 0);
+            MessageDlg('The file ' + Dest + ' could not be installed.', mtError, [mbOK], Handle);
         end;
         if LowerCase(PUpdateRec(wThread.Files[I])^.LocalFilename) = LowerCase(DEV_WEBMIRRORS_FILE) then
           GetMirrorList;
       end;
     end;
   end;
- // MessageDlg('The downloaded updates were installed. The WebUpdate window will now close.', mtInformation, [mbOk], 0);
+
   UpdateSelf;
   for i := 0 to fUpdateList.Count - 1 do
     if Assigned(fUpdateList[i]) then
       PUpdateRec(fUpdateList[i])^.Selected := GetSelected(i);
+  
   CalcTotalSize;
   EnableForm;
   wThread := nil;
@@ -574,18 +583,15 @@ procedure TWebUpdateForm.DownloadFiles(Sender: TObject);
 var
   I, Count: integer;
 begin
-  if Assigned(wThread) then begin
-    MessageDlg('Already downloading!', mtInformation, [mbCancel], 0);
+  if Assigned(wThread) then
     Exit;
-  end;
+
   Count := 0;
   for I := 0 to fUpdateList.Count - 1 do
     if PUpdateRec(fUpdateList[I])^.Selected then
       Inc(Count);
-  if Count = 0 then begin
-    MessageDlg('You have not selected anything!', mtError, [mbOk], 0);
-    Exit;
-  end;
+
+  Assert(Count <> 0, 'The form should disable the download button when no downloads are selected.');
   DisableForm;
 
   fErrorsList.Clear;
@@ -605,13 +611,10 @@ procedure TWebUpdateForm.GetUpdateInfo(Sender: TObject);
 var
   P: PUpdateRec;
 begin
-  if Assigned(wThread) then begin
-    MessageDlg('Already checking!', mtInformation, [mbCancel], 0);
+  if Assigned(wThread) then
     Exit;
-  end;
 
   fUpdateList.Clear;
-
   P := New(PUpdateRec);
   P^.Name := 'info on available updates';
   P^.RemoteFilename := CONF_FILE;
@@ -650,40 +653,26 @@ end;
 
 procedure TWebUpdateForm.UpdateSelf;
 var
-  SU: TResourceStream;
-//  TempPath: array[0..MAX_PATH + 1] of Char;
-  TempFile: string;
-  ErrMsg: string;
+  I: Integer;
+  Parameters: String;
 begin
   if fSelfUpdate = '' then
     Exit;
-  try
-    CopyFile(PChar(Application.ExeName), PChar(ChangeFileExt(Application.ExeName, '.exe.BACKUP')), False);
-  except
-    MessageDlg('Could not make a backup of devcpp.exe, please verify from your system administrator that you have enough permissions to update Dev-C++.', mtWarning, [mbOK], 0);
-    Exit;
-  end;
-  CopyFile(PChar(fSelfUpdate), PChar(ChangeFileExt(Application.ExeName, '.Update')), False);
-  DeleteFile(fSelfUpdate);
-  fSelfUpdate := ChangeFileExt(Application.ExeName, '.Update');
-  ErrMsg := 'Update failed...'#10 +
-    'Please update ''' + ExtractFileName(Application.ExeName) + ''' manually:'#10#10 +
-    'Copy ''' + fSelfUpdate + ''' to ''' + Application.ExeName + '''';
-  SU := TResourceStream.Create(HInstance, 'SELFUPDATER', 'EXE');
-  try
-  //  GetTempPath(MAX_PATH + 1, TempPath); // was causing a BSOD under some systems...
-    TempFile := 'updater.exe';
-    SU.SaveToFile(TempFile);
-    Application.ProcessMessages;
-    ShellExecute(0,
-      'open',
-      PChar(TempFile),
-      PChar(fSelfUpdate + ' ' + Application.ExeName + ' "Self Updating" "Self-updated succesfully!" "' + ErrMsg + '"'),
-      nil,
-      SW_HIDE);
-  finally
-    SU.Free;
-  end;
+
+  //Get the whole list of parameters to pass to the new process
+  for I := 1 to ParamCount do
+    Parameters := Parameters + '"' + ParamStr(I) + '" ';
+
+  //Warn the user
+  MessageDlg('An update for wxDev-C++ was downloaded, and wxDev-C++ needs to be restarted.'#13#10#13#10 +
+    'Press OK to continue. wxDev-C++ will be automatically restarted at the end of the update.', mtInformation, [mbOK], Handle);
+
+  //Call the package manager
+  ShellExecute(Handle, 'open', PChar(PACKMAN_PROGRAM),
+               PChar('/update "' + fSelfUpdate + '" "' + Application.ExeName + '" ' + Parameters), nil, SW_SHOW);
+
+  //Then terminate this process
+  Application.MainForm.Close;
 end;
 
 procedure TWebUpdateForm.GetMirrorList;
@@ -769,18 +758,20 @@ end;
 
 procedure TWebUpdateForm.EnableForm;
 begin
-  cmbMirrors.Enabled := true;
-  cmbGroups.Enabled := true;
-  lv.Enabled := true;
-  btnCheck.Enabled := true;
+  cmbMirrors.Enabled := True;
+  cmbGroups.Enabled := True;
+  lv.Enabled := True;
+  btnCheck.Enabled := True;
+  btnClose.Enabled := True;
 end;
 
 procedure TWebUpdateForm.DisableForm;
 begin
-  cmbMirrors.Enabled := false;
-  cmbGroups.Enabled := false;
-  lv.Enabled := false;
-  btnCheck.Enabled := false;
+  cmbMirrors.Enabled := False;
+  cmbGroups.Enabled := False;
+  lv.Enabled := False;
+  btnCheck.Enabled := False;
+  btnClose.Enabled := False
 end;
 
 procedure TWebUpdateForm.CreateParams(var params: TCreateParams);
@@ -901,10 +892,8 @@ end;
 procedure TWebUpdateForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
-  if Assigned(wThread) then begin
-    MessageDlg('Please wait until download is complete.', mtInformation, [mbCancel], 0);
+  if Assigned(wThread) then
     CanClose := False;
-  end;
 end;
 
 procedure TWebUpdateForm.CheckInstalledExes;
@@ -934,7 +923,11 @@ begin
   if (devcppversion <> '') and (devcppversion <> devcppversion2) then
     with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
       try
+{$IFDEF PRIVATE_BUILD}
+        WriteString(WEBUPDATE_SECTION, 'wxDev-C++ Alpha Release', devcppversion);
+{$ELSE}
         WriteString(WEBUPDATE_SECTION, 'wxDev-C++ Update', devcppversion);
+{$ENDIF}
       finally
         Free;
       end;
