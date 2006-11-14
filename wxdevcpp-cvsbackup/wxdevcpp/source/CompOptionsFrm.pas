@@ -335,8 +335,8 @@ var
   idx: integer;
 begin
   case (Sender as TComponent).Tag of
-    1: lstDirs.Items[lstDirs.ItemIndex] := TrimRight(edEntry.Text);
-    2: lstDirs.Items.Add(TrimRight(edEntry.Text));
+    1: lstDirs.Items[lstDirs.ItemIndex] := ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text));
+    2: lstDirs.Items.Add(ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text)));
     3: lstDirs.DeleteSelected;
     4:
     for idx:= pred(lstDirs.Items.Count) downto 0 do
