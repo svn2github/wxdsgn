@@ -1,0 +1,15 @@
+[Setup]
+Version=2
+AppName=wxWidgets _WXVER_ Mingw gcc
+AppVerName=wxWidgets _WXVER_
+AppVersion=_WXVER_
+MenuName=
+Description=wxWidgets monolithic, ansi Mingw gcc build
+Url=http://www.wxwidgets.org
+Readme=_WXWIN_\README-MSW.txt
+License=_WXWIN_\docs\licence.txt
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+gcc_lib=<app>\lib\

@@ -1,0 +1,16 @@
+[Setup]
+Version=2
+AppName=wxWidgets _WXVER_ common
+AppVerName=wxWidgets _WXVER_
+AppVersion=_WXVER_
+MenuName=
+Description=wxWidgets common include files and templates
+Url=http://www.wxwidgets.org
+Readme=_WXWIN_\README-MSW.txt
+License=_WXWIN_\docs\licence.txt
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+include=<app>\include\common\
+Templates=<app>\Templates\
