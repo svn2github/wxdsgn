@@ -31,6 +31,7 @@ object frmShortcutsEditor: TfrmShortcutsEditor
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
+    Transparent = False
   end
   object lblTip: TLabel
     Left = 4

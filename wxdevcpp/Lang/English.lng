@@ -152,6 +152,7 @@ Ver=1
 257=A&ttach to process...
 258=&Modify value
 259=&Clear all
+#more at 390
 
 #context menus
 # project menu
@@ -242,7 +243,7 @@ Ver=1
 354=Save Project
 355=Select a Help File
 
-357=New Variable  Watch
+357=New Variable Watch
 358=Enter Variable Name:
 359=Modify Variable Watch
 360=New Variable Name:
@@ -259,6 +260,9 @@ Ver=1
 382=Indent
 383=Unindent
 384=Swap header/source
+
+#Debug menu (more)
+390=&Restart
 
 #Editor Options Dialog 400-499
 400=Editor Options
