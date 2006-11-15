@@ -30,7 +30,7 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 365
-    ActivePage = tabGeneral
+    ActivePage = tabDisplay
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     OnChange = PagesMainChange
@@ -381,19 +381,19 @@ object EditorOptForm: TEditorOptForm
     object tabDisplay: TTabSheet
       Caption = 'Display'
       object grpGutter: TGroupBox
-        Left = 6
+        Left = 4
         Top = 138
-        Width = 398
+        Width = 399
         Height = 165
         Caption = '  Gutter  '
         TabOrder = 1
         DesignSize = (
-          398
+          399
           165)
         object lblGutterFont: TLabel
           Left = 8
           Top = 71
-          Width = 21
+          Width = 22
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Font'
@@ -401,7 +401,7 @@ object EditorOptForm: TEditorOptForm
         object lblGutterWidth: TLabel
           Left = 321
           Top = 71
-          Width = 28
+          Width = 29
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Width'
@@ -410,7 +410,7 @@ object EditorOptForm: TEditorOptForm
         object lblGutterFontSize: TLabel
           Left = 200
           Top = 71
-          Width = 20
+          Width = 21
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Size'
@@ -468,7 +468,7 @@ object EditorOptForm: TEditorOptForm
         object pnlGutterPreview: TPanel
           Left = 12
           Top = 114
-          Width = 373
+          Width = 374
           Height = 40
           Anchors = [akLeft, akRight, akBottom]
           BevelOuter = bvLowered
@@ -484,7 +484,7 @@ object EditorOptForm: TEditorOptForm
         object cboGutterFont: TComboBox
           Left = 12
           Top = 87
-          Width = 180
+          Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
           ItemHeight = 13
@@ -495,7 +495,7 @@ object EditorOptForm: TEditorOptForm
         object cboGutterSize: TComboBox
           Left = 208
           Top = 87
-          Width = 86
+          Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
           ItemHeight = 13
@@ -515,14 +515,14 @@ object EditorOptForm: TEditorOptForm
         end
       end
       object grpEditorFont: TGroupBox
-        Left = 6
-        Top = 6
-        Width = 398
+        Left = 4
+        Top = 4
+        Width = 399
         Height = 109
         Caption = '  Editor Font  '
         TabOrder = 0
         DesignSize = (
-          398
+          399
           109)
         object lblEditorSize: TLabel
           Left = 200
@@ -561,7 +561,7 @@ object EditorOptForm: TEditorOptForm
         object pnlEditorPreview: TPanel
           Left = 12
           Top = 60
-          Width = 373
+          Width = 374
           Height = 40
           Anchors = [akLeft, akRight, akBottom]
           BevelOuter = bvLowered
