@@ -428,7 +428,13 @@ begin
       CppEdit.Refresh;
     end
     else
+    begin
       pnlGutterPreview.Font.Size := strtoint(cboGutterSize.Text);
+      CppEdit.Gutter.Font.Name := cboGutterFont.Text;
+      CppEdit.Gutter.Font.Size := strtoint(cboGutterSize.Text);
+      CppEdit.Gutter.Width := strtoint(edGutterWidth.Text);
+      CppEdit.Refresh;
+    end;
   except
     if Sender = cboEditorSize then begin
       cboEditorSize.Text := '10';
@@ -455,6 +461,11 @@ begin
     Size := cboGutterSize.Text;
     LoadFontSize;
     cboGutterSize.Text := Size;
+
+    CppEdit.Gutter.Font.Name := cboGutterFont.Text;
+    CppEdit.Gutter.Font.Size := strtoint(cboGutterSize.Text);
+    CppEdit.Gutter.Width := strtoint(edGutterWidth.Text);
+    CppEdit.Refresh;
   end
   else
   begin
@@ -1097,8 +1108,9 @@ var
   pt: TPoint;
   s: string;
 begin
-  if not fUpdate then exit;
-  if ElementList.ItemIndex <0 then exit;
+  if (not fUpdate) or (ElementList.ItemIndex < 0) then
+    Exit;
+
   if ElementList.ItemIndex > pred(cpp.AttrCount) then
   begin
     pt.x := cpBackground.SelectionColor;
@@ -1115,24 +1127,24 @@ begin
       s := ElementList.Items[ElementList.ItemIndex];
 
       // if either value is clnone set to Whitespace color values
-        if pt.x = clNone then pt.x:= fbgColor;
-        if pt.y = clNone then pt.y:= ffgColor;
+      if pt.x = clNone then
+        pt.x:= fbgColor;
+      if pt.y = clNone then
+        pt.y:= ffgColor;
+
       if AnsiCompareText(s, cSel) = 0 then
         fSelColor := pt
-        else
-        if AnsiCompareText(s, cBP) = 0 then
+      else if AnsiCompareText(s, cBP) = 0 then
         fBPColor := pt
-        else
-        if AnsiCompareText(s, cABP) = 0 then
+      else if AnsiCompareText(s, cABP) = 0 then
         fABPColor := pt
-        else
-         if AnsiCompareText(s, cerr) = 0 then
+      else if AnsiCompareText(s, cerr) = 0 then
         fErrColor := pt;
     end
   end
   else
   begin
-     Attr:= TSynHighlighterAttributes.Create(ElementList.Items[ElementList.ItemIndex]);
+    Attr := TSynHighlighterAttributes.Create(ElementList.Items[ElementList.ItemIndex]);
     Attr.Assign(cpp.Attribute[ElementList.ItemIndex]);
     with Attr do
     try
@@ -1144,20 +1156,26 @@ begin
         ffgColor := Foreground;
         fbgColor := Background;
       end;
+
       Style := [];
-       if cbBold.checked then Style:= Style +[fsBold];
-       if cbItalic.Checked then Style:= Style +[fsItalic];
-       if cbUnderlined.Checked then Style:= Style +[fsUnderline];
+      if cbBold.checked then
+        Style:= Style + [fsBold];
+      if cbItalic.Checked then
+        Style:= Style +[fsItalic];
+      if cbUnderlined.Checked then
+        Style:= Style +[fsUnderline];
       cpp.Attribute[ElementList.ItemIndex].Assign(Attr);
     finally
       Free;
     end;
   end;
+
   // invalidate special lines
   cppEdit.InvalidateLine(cSelection);
   cppEdit.InvalidateLine(cBreakLine);
   cppEdit.InvalidateLine(cABreakLine);
   cppEdit.InvalidateLine(cErrorLine);
+  cppEdit.Highlighter := cpp;
   cboQuickColor.ItemIndex := -1;
 end;
 
