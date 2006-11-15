@@ -116,14 +116,11 @@ object NewClassForm: TNewClassForm
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
-      ItemIndex = 2
       TabOrder = 0
-      Text = 'public'
       Items.Strings = (
         'private'
         'protected'
-        'public'
-        'published')
+        'public')
     end
     object txtIncFile: TEdit
       Left = 124

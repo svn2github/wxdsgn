@@ -160,7 +160,6 @@ begin
       0: VarScope := scsPrivate;
       1: VarScope := scsProtected;
       2: VarScope := scsPublic;
-      3: VarScope := scsPublished;
     else
       VarScope := scsPublic;
     end;

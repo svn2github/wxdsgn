@@ -3,7 +3,7 @@ object NewMemberForm: TNewMemberForm
   Top = 144
   BorderStyle = bsDialog
   Caption = 'New member function'
-  ClientHeight = 480
+  ClientHeight = 451
   ClientWidth = 350
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -49,13 +49,12 @@ object NewMemberForm: TNewMemberForm
     Left = 8
     Top = 106
     Width = 149
-    Height = 97
+    Height = 80
     Caption = 'Access scope'
     Items.Strings = (
       'Private'
       'Protected'
-      'Public'
-      'Published')
+      'Public')
     TabOrder = 4
   end
   object cmbType: TComboBox
@@ -94,8 +93,8 @@ object NewMemberForm: TNewMemberForm
     Text = 'txtArguments'
   end
   object btnCreate: TButton
-    Left = 193
-    Top = 448
+    Left = 192
+    Top = 422
     Width = 75
     Height = 25
     Caption = 'Create'
@@ -106,7 +105,7 @@ object NewMemberForm: TNewMemberForm
   end
   object btnCancel: TButton
     Left = 268
-    Top = 448
+    Top = 422
     Width = 75
     Height = 25
     Cancel = True
@@ -133,7 +132,7 @@ object NewMemberForm: TNewMemberForm
   end
   object grpComment: TGroupBox
     Left = 8
-    Top = 211
+    Top = 195
     Width = 333
     Height = 199
     Caption = 'Comment'
@@ -181,17 +180,17 @@ object NewMemberForm: TNewMemberForm
   end
   object chkToDo: TCheckBox
     Left = 12
-    Top = 416
+    Top = 400
     Width = 329
     Height = 17
-    Caption = 'Add ToDo item'
+    Caption = 'Add To-do item'
     TabOrder = 7
   end
   object grpAttr: TGroupBox
     Left = 168
     Top = 106
     Width = 173
-    Height = 97
+    Height = 80
     Caption = 'Attributes'
     TabOrder = 5
     object chkStatic: TCheckBox
@@ -213,8 +212,8 @@ object NewMemberForm: TNewMemberForm
       OnClick = chkStaticClick
     end
     object chkPure: TCheckBox
-      Left = 9
-      Top = 72
+      Left = 97
+      Top = 34
       Width = 57
       Height = 17
       Caption = 'Pure'
@@ -260,6 +259,6 @@ object NewMemberForm: TNewMemberForm
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 9
-    Top = 443
+    Top = 420
   end
 end
