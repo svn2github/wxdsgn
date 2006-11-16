@@ -39,7 +39,8 @@ END_EVENT_TABLE()
 
 void %CLASS_NAME%::CreateGUIControls()
 {
-	//Do not add custom code here
+	//Do not add custom code between
+        //GUI Items Creation Start and GUI Items Creation End.
 	//wxDev-C++ designer will remove them.
 	//Add the custom code before or after the blocks
 	////GUI Items Creation Start
