@@ -52,8 +52,8 @@ cd %DEVPAKDIR%
 %STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_common.DevPackage
 %STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_gcc.DevPackage
 
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN%" -o wxWidgets_%WXVER%_common.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN%" -o wxWidgets_%WXVER%_gcc.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_gcc.DevPackage
 
 rem Copy the wxWidgets libs and include files to the new devpak directory
 xcopy /S %WXWIN%\lib\gcc_lib gcc_lib\
