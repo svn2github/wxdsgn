@@ -670,7 +670,7 @@ begin
     writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)]) + ' $(LIBS)');
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
-      writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
+      writeln(F, #9 + '$(GPROF) -notify_resource_update /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
       writeln(F, #9 + '@$(RM) "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest"');
     end;
   end;
