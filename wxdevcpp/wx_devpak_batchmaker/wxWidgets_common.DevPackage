@@ -6,11 +6,11 @@ AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets common include files and templates
 Url=http://www.wxwidgets.org
-Readme=_WXWIN_\README-MSW.txt
-License=_WXWIN_\docs\licence.txt
+Readme=docs\readme.txt
+License=docs\licence.txt
 Picture=
 Dependencies=
 Reboot=0
 [Files]
-include=<app>\include\common\
-Templates=<app>\Templates\
+common\include=<app>\include\common\
+common\Templates=<app>\Templates\

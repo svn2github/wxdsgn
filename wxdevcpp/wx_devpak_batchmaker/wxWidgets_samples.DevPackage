@@ -1,0 +1,18 @@
+[Setup]
+Version=2
+AppName=wxWidgets _WXVER_ Samples
+AppVerName=wxWidgets Samples
+AppVersion=_WXVER_
+MenuName=
+Description=A selection of samples from wxWidgets which compile correctly in wxDevCpp
+Url=http://www.wxwidgets.org
+Readme=docs\readme.txt
+License=docs\licence.txt
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+samples\samples=<app>\examples\wxWidgets\
+samples\samples\sample.ico=<app>\include\common\
+samples\art=<app>\examples\wxWidgets\art\
+samples\samples\sample.xpm=<app>\include\common\
