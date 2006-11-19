@@ -5,8 +5,8 @@ object frmReplace: TfrmReplace
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Replace Text'
-  ClientHeight = 251
-  ClientWidth = 343
+  ClientHeight = 405
+  ClientWidth = 303
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,38 +21,45 @@ object frmReplace: TfrmReplace
   TextHeight = 13
   object lblFind: TLabel
     Left = 8
-    Top = 12
+    Top = 8
     Width = 56
     Height = 13
     Caption = 'Text to find:'
     FocusControl = cboFindText
   end
   object lblReplace: TLabel
-    Left = 10
-    Top = 42
+    Left = 8
+    Top = 53
     Width = 65
     Height = 13
     Caption = 'Replace with:'
   end
+  object lblLookIn: TLabel
+    Left = 8
+    Top = 98
+    Width = 38
+    Height = 13
+    Caption = 'Look in:'
+  end
   object cboFindText: TComboBox
-    Left = 96
-    Top = 8
-    Width = 237
+    Left = 8
+    Top = 25
+    Width = 289
     Height = 21
     ItemHeight = 13
     TabOrder = 0
   end
   object grpOptions: TGroupBox
     Left = 8
-    Top = 64
-    Width = 160
-    Height = 80
+    Top = 143
+    Width = 289
+    Height = 98
     Caption = ' Options '
     TabOrder = 2
     object cbMatchCase: TCheckBox
       Left = 8
       Top = 16
-      Width = 150
+      Width = 270
       Height = 16
       Caption = 'C&ase sensitive'
       TabOrder = 0
@@ -60,7 +67,7 @@ object frmReplace: TfrmReplace
     object cbWholeWord: TCheckBox
       Left = 8
       Top = 36
-      Width = 150
+      Width = 270
       Height = 16
       Caption = '&Whole words only'
       TabOrder = 1
@@ -68,129 +75,97 @@ object frmReplace: TfrmReplace
     object cbPrompt: TCheckBox
       Left = 8
       Top = 54
-      Width = 150
+      Width = 270
       Height = 17
       Caption = '&Prompt on Replace'
       TabOrder = 2
     end
+    object cbRegex: TCheckBox
+      Left = 8
+      Top = 74
+      Width = 270
+      Height = 17
+      Caption = 'Use Regular Expressions'
+      TabOrder = 3
+    end
   end
   object btnReplace: TButton
-    Left = 181
-    Top = 219
+    Left = 144
+    Top = 376
     Width = 80
     Height = 24
-    Caption = 'Replace One'
+    Caption = 'Replace'
     Default = True
     ModalResult = 1
-    TabOrder = 6
+    TabOrder = 3
     OnClick = btnReplaceClick
   end
   object btnCancel: TButton
     Left = 8
-    Top = 219
+    Top = 376
     Width = 80
     Height = 24
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 8
+    TabOrder = 5
     OnClick = btnCancelClick
   end
-  object grpDirection: TGroupBox
-    Left = 175
-    Top = 64
-    Width = 160
-    Height = 80
-    Caption = ' Direction '
-    TabOrder = 3
-    object rbForward: TRadioButton
-      Left = 8
-      Top = 16
-      Width = 105
-      Height = 17
-      Caption = 'Forwar&d'
-      Checked = True
-      TabOrder = 0
-      TabStop = True
-    end
-    object rbBackward: TRadioButton
-      Left = 8
-      Top = 36
-      Width = 105
-      Height = 17
-      Caption = '&Backward'
-      TabOrder = 1
-    end
-  end
-  object grpScope: TGroupBox
-    Left = 8
-    Top = 150
-    Width = 160
-    Height = 60
-    Caption = ' Scope '
-    TabOrder = 4
-    object rbGlobal: TRadioButton
-      Left = 8
-      Top = 16
-      Width = 105
-      Height = 17
-      Caption = '&Global'
-      Checked = True
-      TabOrder = 0
-      TabStop = True
-    end
-    object rbSelectedOnly: TRadioButton
-      Left = 8
-      Top = 36
-      Width = 105
-      Height = 17
-      Caption = '&Selected only'
-      TabOrder = 1
-    end
-  end
-  object grpOrigin: TGroupBox
-    Left = 175
-    Top = 150
-    Width = 160
-    Height = 60
-    Caption = ' Origin '
-    TabOrder = 5
-    object rbFromCursor: TRadioButton
-      Left = 8
-      Top = 16
-      Width = 105
-      Height = 17
-      Caption = '&From cursor'
-      Checked = True
-      TabOrder = 0
-      TabStop = True
-    end
-    object rbEntireScope: TRadioButton
-      Left = 8
-      Top = 36
-      Width = 105
-      Height = 17
-      Caption = '&Entire scope'
-      TabOrder = 1
-    end
-  end
   object cboReplaceText: TComboBox
-    Left = 97
-    Top = 38
-    Width = 236
+    Left = 8
+    Top = 70
+    Width = 289
     Height = 21
     ItemHeight = 13
     TabOrder = 1
   end
   object btnReplaceAll: TButton
-    Left = 261
-    Top = 219
+    Left = 224
+    Top = 376
     Width = 74
     Height = 24
     Caption = 'Replace &All'
     ModalResult = 8
-    TabOrder = 7
+    TabOrder = 4
     OnClick = btnReplaceClick
+  end
+  object LookIn: TComboBox
+    Left = 8
+    Top = 115
+    Width = 289
+    Height = 21
+    Style = csDropDownList
+    ItemHeight = 13
+    ItemIndex = 1
+    TabOrder = 6
+    Text = 'Current File'
+    Items.Strings = (
+      'Selected Text'
+      'Current File')
+  end
+  object grpOrigin: TRadioGroup
+    Left = 8
+    Top = 248
+    Width = 290
+    Height = 57
+    Caption = 'Origin'
+    ItemIndex = 0
+    Items.Strings = (
+      'From Cursor'
+      'Whole File')
+    TabOrder = 7
+  end
+  object grpDirection: TRadioGroup
+    Left = 8
+    Top = 312
+    Width = 289
+    Height = 57
+    Caption = 'Direction'
+    ItemIndex = 0
+    Items.Strings = (
+      'Forward'
+      'Backward')
+    TabOrder = 8
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -221,6 +196,6 @@ object frmReplace: TfrmReplace
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 93
-    Top = 218
+    Top = 375
   end
 end

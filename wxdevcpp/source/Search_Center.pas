@@ -24,20 +24,21 @@ interface
 uses
 {$IFDEF WIN32}
  Classes, Types, Project, Editor, utils, SynEdit, ComCtrls,
- SynEditSearch, SynEditMiscClasses, SynEditTypes;
+ SynEditSearch, SynEditRegexSearch, SynEditMiscClasses, SynEditTypes;
 {$ENDIF}
 {$IFDEF LINUX}
  Classes, Types, Project, Editor, utils, QSynEdit, QComCtrls,
- QSynEditSearch, QSynEditMiscClasses, QSynEditTypes;
+ QSynEditSearch, QSynEditRegexSearch, QSynEditMiscClasses, QSynEditTypes;
 {$ENDIF}
 
 type
+  TLookIn = (liSelected, liFile, liProject, liOpen);
   TdevSearchProc = procedure(const SR: TdevSearchResult) of object;
 
   TdevSearchCenter = class(TObject)
   public
     function ExecuteSearch: boolean;
-   procedure AssignSearchEngine;
+    procedure AssignSearchEngine(Regex: Boolean = false);
   private
     fSingleFile: boolean;
     fReplace: boolean;
@@ -50,7 +51,7 @@ type
     fSynEdit: TSynEdit;
     fCurFile: string;
     fPC: TPageControl;
-    fSearchEngine: TSynEditSearch;
+    fSearchEngine: TSynEditSearchCustom;
     function RunSingleFile: boolean;
     function RunAllFiles: boolean;
     procedure EditorReplaceText(Sender: TObject; const aSearch,
@@ -78,31 +79,48 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  SysUtils, Controls, Dialogs, Findfrm, Replacefrm, version, MultiLangSupport;
+  Forms, SysUtils, Controls, Dialogs, Findfrm, Replacefrm, version, MultiLangSupport;
 {$ENDIF}
 {$IFDEF LINUX}
-  SysUtils, QControls, QDialogs, Findfrm, Replacefrm, version, MultiLangSupport;
+  QForms, SysUtils, QControls, QDialogs, Findfrm, Replacefrm, version, MultiLangSupport;
 {$ENDIF}
 
 { TdevSearchCenter }
 
-procedure TdevSearchCenter.AssignSearchEngine;
+procedure TdevSearchCenter.AssignSearchEngine(Regex: Boolean);
 begin
+  //Get the search engine right
+  if Regex then
+  begin
+    if Assigned(fSearchEngine) and not (fSearchEngine is TSynEditRegexSearch) then
+      FreeAndNil(fSearchEngine);
+    if not Assigned(fSearchEngine) then
+      fSearchEngine := TSynEditRegexSearch.Create(nil);
+  end
+  else
+  begin
+    if Assigned(fSearchEngine) and not (fSearchEngine is TSynEditSearch) then
+      FreeAndNil(fSearchEngine);
+    if not Assigned(fSearchEngine) then
+      fSearchEngine := TSynEditSearch.Create(nil);
+  end;
+
   if Assigned(fEditor) then
-    fEditor.Text.SearchEngine:=fSearchEngine;
+    fEditor.Text.SearchEngine := fSearchEngine;
+  fSynEdit.SearchEngine := fSearchEngine;
 end;
 
 function TdevSearchCenter.ExecuteSearch: boolean;
 var
   return: integer;
 begin
-  AssignSearchEngine;
   if fReplace then
   begin
     frmReplace.cboFindText.Text:= fFindText;
     return := frmReplace.ShowModal;
     if (return = mrOk) or (return = mrAll) then
     begin
+      AssignSearchEngine(frmReplace.Regex);
       fFindText:= frmReplace.cboFindText.Text;
       fReplaceText:= frmReplace.cboReplaceText.Text;
       fOptions:= frmReplace.SearchOptions;
@@ -110,12 +128,13 @@ begin
   end
   else
   begin
-    frmFind.FindAll:= not fSingleFile;
-    frmFind.cboFindText.Text:= fFindText;
-    return:= frmFind.ShowModal;
-    fSingleFile:=not frmFind.FindAll;
-    if (return = mrOk) then
+    frmFind.FindAll := not fSingleFile;
+    frmFind.cboFindText.Text := fFindText;
+    return := frmFind.ShowModal;
+    fSingleFile := not frmFind.FindAll;
+    if return = mrOk then
     begin
+      AssignSearchEngine(frmFind.Regex);
       fFindText:= frmFind.cboFindText.Text;
       fReplaceText:= '';
       fOptions:= frmFind.SearchOptions;
@@ -124,7 +143,7 @@ begin
 
   if not (return in [mrOk, mrAll]) then
     result:= FALSE
-  else if fReplace or (not frmFind.FindAll) then
+  else if fReplace or (frmFind.FindWhat in [liSelected, liFile]) then
     result:= RunSingleFile
   else
     result:= RunAllFiles;
@@ -146,7 +165,7 @@ end;
 function TdevSearchCenter.RunAllFiles: boolean;
 begin
   fReplaceText:= DEV_SEARCHLOOP;
-  if frmFind.rbProjectFiles.Checked then
+  if frmFind.FindWhat = liProject then
     Result:= RunProject
   else
     Result:= RunOpenFiles;
@@ -157,12 +176,7 @@ function TdevSearchCenter.RunProject: boolean;
 var
   idx: integer;
 begin
-  //TODO: lowjoel: The assert is here for temporary purposes. The Search dialog
-  //               disables project searching when no projects are around. Just
-  //               make sure.
-  Assert(assigned(fProject));
-
-  for idx:= 0 to pred(fProject.Units.Count) do
+  for idx := 0 to pred(fProject.Units.Count) do
   begin
     fCurFile:= fProject.Units[idx].FileName;
     if ExtractFilePath(fCurFile) = '' then
@@ -174,6 +188,7 @@ begin
       fSynEdit.Lines.LoadFromfile(fCurFile);
 
     fSynEdit.SearchReplace(fFindText, fReplaceText, fOptions);
+    Application.ProcessMessages;
   end;
   result:= True;
 end;
@@ -182,11 +197,12 @@ function TdevSearchCenter.RunOpenFiles: boolean;
 var
   idx: integer;
 begin
-  for idx:= 0 to pred(fPC.PageCount) do
+  for idx := 0 to pred(fPC.PageCount) do
   begin
     fCurFile:= TEditor(fPC.Pages[idx].Tag).FileName;
     fSynEdit.Lines:= TEditor(fPC.Pages[idx].Tag).Text.Lines;
     fSynEdit.SearchReplace(fFindText, fReplaceText, fOptions);
+    Application.ProcessMessages;
   end;
   result:= TRUE;
 end;
@@ -214,7 +230,6 @@ begin
   fSynEdit.OnReplaceText:= EditorReplaceText;
 
   fSearchEngine:=TSynEditSearch.Create(nil);
-  fSynEdit.SearchEngine:=fSearchEngine;
 end;
 
 destructor TdevSearchCenter.Destroy;

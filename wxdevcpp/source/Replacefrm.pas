@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  SynEdit, StdCtrls, SynEditTypes, XPMenu;
+  SynEdit, StdCtrls, SynEditTypes, XPMenu, ExtCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms,
@@ -40,30 +40,30 @@ type
     btnCancel: TButton;
     cbMatchCase: TCheckBox;
     cbWholeWord: TCheckBox;
-    grpDirection: TGroupBox;
-    rbForward: TRadioButton;
-    rbBackward: TRadioButton;
-    grpScope: TGroupBox;
-    rbGlobal: TRadioButton;
-    rbSelectedOnly: TRadioButton;
-    grpOrigin: TGroupBox;
-    rbFromCursor: TRadioButton;
-    rbEntireScope: TRadioButton;
     lblReplace: TLabel;
     cboReplaceText: TComboBox;
     cbPrompt: TCheckBox;
     btnReplaceAll: TButton;
     XPMenu: TXPMenu;
+    lblLookIn: TLabel;
+    LookIn: TComboBox;
+    cbRegex: TCheckBox;
+    grpOrigin: TRadioGroup;
+    grpDirection: TRadioGroup;
     procedure btnReplaceClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelClick(Sender: TObject);
+    
   private
     fSearchOptions: TSynSearchOptions;
     fClose: boolean;
+    fRegex: boolean;
     procedure LoadText;
+
   public
-    property SearchOptions: TSynSearchoptions read fSearchOptions write fSearchOptions;
+    property SearchOptions: TSynSearchOptions read fSearchOptions write fSearchOptions;
+    property Regex: boolean read fRegex write fRegex;
   end;
 
 var
@@ -73,7 +73,8 @@ implementation
 
 {$R *.dfm}
 
-uses 
+uses
+  Search_Center,
 {$IFDEF WIN32}
   Dialogs, MultiLangSupport, devcfg;
 {$ENDIF}
@@ -83,25 +84,19 @@ uses
 
 procedure TfrmReplace.btnReplaceClick(Sender: TObject);
 begin
-  if cboFindText.Text = '' then
+  if cboFindText.Text <> '' then
   begin
-    {MessageBox(Application.MainForm.Handle, PChar(Lang[ID_ERR_SEARCHCANNOTBEEMPTY]),
-     PChar(Lang[ID_WARN]), MB_OK or MB_ICONWARNING);
-    fClose:= False;}
-  end
-  else
-  begin
-     fSearchOptions:= [];
+    fSearchOptions := [];
+    Regex := cbRegex.Checked;
     if cboFindText.Items.Indexof(cboFindText.Text) = -1 then
       cboFindText.Items.Add(cboFindText.Text);
 
     if cboReplaceText.Items.IndexOf(cboReplaceText.Text) = -1 then
       cboReplaceText.Items.Add(cboReplaceText.Text);
 
-    if modalResult = mrok then
-      fSearchOptions:= [ssoReplace];
-
-    if ModalResult = mrAll then
+    if modalResult = mrOk then
+      fSearchOptions:= [ssoReplace]
+    else if ModalResult = mrAll then
       fSearchOptions:= [ssoReplaceAll];
 
     if cbPrompt.Checked then
@@ -113,13 +108,13 @@ begin
     if cbWholeWord.Checked then
       include(fSearchOptions, ssoWholeWord);
 
-    if rbBackward.checked then
+    if grpDirection.ItemIndex = 1 then
       include(fSearchOptions, ssoBackwards);
 
-    if rbSelectedOnly.Checked then
+    if TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) = liSelected then
       include(fSearchOptions, ssoSelectedOnly);
 
-    if rbEntireScope.Checked then
+    if grpOrigin.ItemIndex = 1 then
       include(fSearchOptions, ssoEntireScope);
      fClose:= True;
   end;
@@ -127,7 +122,7 @@ end;
 
 procedure TfrmReplace.FormShow(Sender: TObject);
 begin
-  ActiveControl:= cboFindText;
+  ActiveControl := cboFindText;
   LoadText;
 end;
 
@@ -157,21 +152,23 @@ begin
   else
     XPMenu.Active := false;
   Caption:=                  Lang[ID_RPLC];
+  LookIn.Items[0]:=          Lang[ID_RPLC_SELONLY];
+  
   lblFind.Caption:=          Lang[ID_RPLC_FINDTEXT];
   lblReplace.Caption:=       Lang[ID_RPLC_REPLACETEXT];
+
   grpOptions.Caption:=       Lang[ID_RPLC_GRP_OPTIONS];
   cbMatchCase.Caption:=      Lang[ID_RPLC_CASE];
   cbWholeWord.Caption:=      Lang[ID_RPLC_WHOLEWORD];
   cbPrompt.Caption:=         Lang[ID_RPLC_PROMPT];
+
   grpDirection.Caption:=     Lang[ID_RPLC_GRP_DIRECTION];
-  rbForward.Caption:=        Lang[ID_RPLC_FORWARD];
-  rbBackward.Caption:=       Lang[ID_RPLC_BACKWARD];
-  grpScope.Caption:=         Lang[ID_RPLC_GRP_SCOPE];
-  rbGlobal.Caption:=         Lang[ID_RPLC_GLOBAL];
-  rbSelectedOnly.Caption:=   Lang[ID_RPLC_SELONLY];
+  grpDirection.Items[0]:=    Lang[ID_RPLC_FORWARD];
+  grpDirection.Items[1]:=    Lang[ID_RPLC_BACKWARD];
+
   grpOrigin.Caption:=        Lang[ID_RPLC_GRP_ORIGIN];
-  rbFromCursor.Caption:=     Lang[ID_RPLC_CURSOR];
-  rbEntireScope.Caption:=    Lang[ID_RPLC_ENTIRE];
+  grpOrigin.Items[0]:=       Lang[ID_RPLC_CURSOR];
+  grpOrigin.Items[1]:=       Lang[ID_RPLC_ENTIRE];
 
   btnReplace.Caption:=       Lang[ID_BTN_REPLACE];
   btnCancel.Caption:=        Lang[ID_BTN_CANCEL];
