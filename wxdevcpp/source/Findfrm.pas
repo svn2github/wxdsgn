@@ -234,8 +234,16 @@ end;
 
 procedure TfrmFind.LookInChange(Sender: TObject);
 begin
-  grpOrigin.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
-  grpDirection.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
+  if LookIn.ItemIndex = -1 then
+  begin
+    grpOrigin.Enabled := False;
+    grpDirection.Enabled := False;
+  end
+  else
+  begin
+    grpOrigin.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
+    grpDirection.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
+  end;
 end;
 
 end.

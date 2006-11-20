@@ -1470,6 +1470,7 @@ begin
   begin
     if strLst.Count <> 0 then
       strLst.add('');
+    strLst.Add('GetSizer()->Layout();');
     strLst.add('GetSizer()->Fit(this);');
     if Wx_SizeToContents then
         strLst.add('GetSizer()->SetSizeHints(this);');
