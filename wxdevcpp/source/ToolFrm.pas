@@ -118,7 +118,7 @@ type
 implementation
 
 uses ToolEditFrm, inifiles, devcfg, utils, MultiLangSupport, datamod,
-  version;
+  version, main;
 
 {$R *.dfm}
 
@@ -316,6 +316,7 @@ begin
   for idx:= 0 to pred(fToolList.Count) do
     begin
      Item:= TMenuItem.Create(fMenu);
+     TMainForm(Application.MainForm).XPMenu.InitComponent(Item);
      Item.Caption:= fToolList.Items[idx].Title;
      Item.OnClick:= fOnClick;
      Item.Tag:= idx;
