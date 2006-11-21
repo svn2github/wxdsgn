@@ -1218,41 +1218,41 @@ begin
   rd_only := false;
   while idx <= pred(fUnits.Count) do
   begin
-    with fUnits[idx] do
-    begin
 {$WARN SYMBOL_PLATFORM OFF}
-      if fUnits[idx].Dirty and FileExists(fUnits[idx].FileName) and (FileGetAttr(fUnits[idx].FileName) and faReadOnly <> 0) then begin
-        // file is read-only
-        if MessageDlg(Format(Lang[ID_MSG_FILEISREADONLY],[fUnits[idx].FileName]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-          rd_only := false
-        else if FileSetAttr(fUnits[idx].FileName, FileGetAttr(fUnits[idx].FileName) - faReadOnly) <> 0 then begin
-          MessageDlg(Format(Lang[ID_MSG_FILEREADONLYERROR],[fUnits[idx].FileName]), mtError, [mbOk], 0);
-          rd_only := false;
-        end;
+    if fUnits[idx].Dirty and FileExists(fUnits[idx].FileName) and (FileGetAttr(fUnits[idx].FileName) and faReadOnly <> 0) then
+    begin
+      // file is read-only
+      if MessageDlg(Format(Lang[ID_MSG_FILEISREADONLY],[fUnits[idx].FileName]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+        rd_only := false
+      else if FileSetAttr(fUnits[idx].FileName, FileGetAttr(fUnits[idx].FileName) - faReadOnly) <> 0 then
+      begin
+        MessageDlg(Format(Lang[ID_MSG_FILEREADONLYERROR],[fUnits[idx].FileName]), mtError, [mbOk], 0);
+        rd_only := false;
       end;
+    end;
 {$WARN SYMBOL_PLATFORM ON}
 
-      if (not rd_only) and (fUnits[idx] <> nil) and (not fUnits[idx].Save) and New then
-        Exit;
+    if (not rd_only) and (fUnits[idx] <> nil) and (not fUnits[idx].Save) and fUnits[idx].New then
+      Exit;
 
-      // saved new file or an existing file add to project file
-      if (New and not Dirty) or not New then
-      begin
-        finifile.WriteUnit(Count, ExtractRelativePath(Directory,fUnits[idx].FileName));
-        inc(Count);
-      end;
-      case GetFileTyp(fUnits[idx].FileName) of
-        utHead,
-          utSrc: finifile.WriteUnit(idx, 'CompileCpp', CompileCpp);
-        utRes: if Folder = '' then Folder := 'Resources';
-      end;
-      finifile.WriteUnit(idx, 'Folder', Folder);
-      finifile.WriteUnit(idx, 'Compile', Compile);
-      finifile.WriteUnit(idx, 'Link', Link);
-      finifile.WriteUnit(idx, 'Priority', Priority);
-      finifile.WriteUnit(idx, 'OverrideBuildCmd', OverrideBuildCmd);
-      finifile.WriteUnit(idx, 'BuildCmd', BuildCmd);
+    // saved new file or an existing file add to project file
+    if (fUnits[idx].New and not fUnits[idx].Dirty) or not fUnits[idx].New then
+    begin
+      finifile.WriteUnit(Count, ExtractRelativePath(Directory,fUnits[idx].FileName));
+      inc(Count);
     end;
+    case GetFileTyp(fUnits[idx].FileName) of
+      utHead,
+        utSrc: finifile.WriteUnit(idx, 'CompileCpp', fUnits[idx].CompileCpp);
+      utRes: if fUnits[idx].Folder = '' then fUnits[idx].Folder := 'Resources';
+    end;
+
+    finifile.WriteUnit(idx, 'Folder', fUnits[idx].Folder);
+    finifile.WriteUnit(idx, 'Compile', fUnits[idx].Compile);
+    finifile.WriteUnit(idx, 'Link', fUnits[idx].Link);
+    finifile.WriteUnit(idx, 'Priority', fUnits[idx].Priority);
+    finifile.WriteUnit(idx, 'OverrideBuildCmd', fUnits[idx].OverrideBuildCmd);
+    finifile.WriteUnit(idx, 'BuildCmd', fUnits[idx].BuildCmd);
     inc(idx);
   end;
   finifile.Write('UnitCount', Count);
