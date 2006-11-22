@@ -23,7 +23,7 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Classes, editor, ComCtrls, datamod
+  Classes, editor, ComCtrls, datamod, xProcs
 {$ENDIF}
 {$IFDEF LINUX}
   Classes, editor, QComCtrls, datamod
@@ -193,8 +193,8 @@ begin
     CompilerOptions := R1.CompilerOptions;
 
     icon := R1.icon;
-    ExeOutput := R1.ExeOutput;
-    ObjectOutput := R1.ObjectOutput;
+    ExeOutput := strRemoveBadCharacters(R1.ExeOutput);
+    ObjectOutput := strRemoveBadCharacters(R1.ObjectOutput);
     OverrideOutput:=R1.OverrideOutput;
     OverridenOutput:= R1.OverridenOutput;
     HostApplication := R1.HostApplication;

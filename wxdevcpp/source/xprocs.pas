@@ -226,6 +226,7 @@ function strTokenCount(S: string; Seperator: Char): Integer;
 function strTokenAt(const S: string; Seperator: Char; At: Integer): string;
 procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 function strTokenFromStrings(Seperator: Char; List: TStrings): string;
+function strRemoveBadCharacters(S :string):string;
 
 function strUpper(const S: string): string;
 function strOemAnsi(const S: string): string;
@@ -738,6 +739,13 @@ begin
             Result := Result + Seperator + List[i]
         else
             Result := List[i];
+end;
+
+function strRemoveBadCharacters(S :string):string;
+begin
+    Result := StringReplace(S, ' ', '_', [rfReplaceAll]);  // Remove spaces from string
+    Result := StringReplace(Result, '"', '_', [rfReplaceAll]);  // Remove double quotes
+
 end;
 
 function strUpper(const S: string): string;

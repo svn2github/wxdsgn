@@ -28,7 +28,7 @@ uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtDlgs, StdCtrls, ExtCtrls, Buttons, ComCtrls, main, project,
-  devTabs, prjtypes, XPMenu, Spin, Grids, ValEdit, CompilerOptionsFrame;
+  devTabs, prjtypes, XPMenu, Spin, Grids, ValEdit, CompilerOptionsFrame, xProcs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -1395,8 +1395,8 @@ begin
   //TODO: Guru: Fix the Output Directory to have only valid characters
   NewProfile:=TProjProfile.Create;
   NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=S;
-  NewProfile.ExeOutput:=S;
+  NewProfile.ObjectOutput:=strRemoveBadCharacters(S);
+  NewProfile.ExeOutput:=strRemoveBadCharacters(S);
   fProfiles.Add(NewProfile);
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
 end;
