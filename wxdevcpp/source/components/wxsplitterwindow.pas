@@ -702,9 +702,9 @@ begin
 
   strOrientation := 'SplitHorizontally';
   if self.Orientation = wxVertical then
-    strOrientation := 'SplitVertically'
+    strOrientation := 'SplitHorizontally'
   else
-    strOrientation := 'SplitHorizontally';
+    strOrientation := 'SplitVertically';
 
   if self.ControlCount = 1 then
   begin

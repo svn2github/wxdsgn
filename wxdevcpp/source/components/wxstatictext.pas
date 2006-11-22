@@ -446,6 +446,7 @@ begin
   else begin
     self.AutoSize := True;
     self.Repaint;
+    self.SelectFirst;
   end;
 
 end;
