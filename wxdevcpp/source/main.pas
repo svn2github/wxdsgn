@@ -2082,7 +2082,9 @@ begin
 
   BreakPointList := TList.create;
   SetSplashStatus('Loading code completion cache');
+  CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
   InitClassBrowser(true {not CacheCreated});
+  CppParser1.OnCacheProgress := nil;
 
   //Settle the docking sizes
   DockServer.LeftDockPanel.Width := 200;
@@ -6259,6 +6261,7 @@ begin
   Screen.Cursor := crHourglass;
   if Full and CppParser1.Enabled then begin
     Application.ProcessMessages;
+    ProgressEvents[0] := CppParser1.OnCacheProgress;
     ClassBrowser1.Parser := nil;
     CodeCompletion1.Parser := nil;
     FreeAndNil(CppParser1);
@@ -6274,6 +6277,7 @@ begin
       OnStartParsing := CppParser1StartParsing;
       OnEndParsing := CppParser1EndParsing;
       OnTotalProgress := CppParser1TotalProgress;
+      OnCacheProgress := ProgressEvents[0];
       sl := TStringList.Create;
       try
         ExtractStrings([';'], [' '], PChar(devDirs.C), sl);

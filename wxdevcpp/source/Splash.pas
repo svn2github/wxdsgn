@@ -36,8 +36,12 @@ type
     Panel: TPanel;
     Image: TImage;
     StatusBar: TStatusBar;
+    ProgressBar: TProgressBar;
     procedure FormCreate(Sender: TObject);
     procedure ImageClick(Sender: TObject);
+
+  public
+    procedure OnCacheProgress(Sender: TObject; FileName: String; Total, Current: Integer);
   end;
 
 var
@@ -58,12 +62,25 @@ begin
      ClientWidth:= Image.Width;
      ClientHeight:= Image.Height + StatusBar.Height;
   end;
+
+  ProgressBar.Visible := False;
+  ProgressBar.Left := StatusBar.Width - ProgressBar.Width - 1;
+  ProgressBar.Top := StatusBar.Top + 2;
   StatusBar.SimpleText := 'wxDev-C++ '+ DEVCPP_VERSION +'. Loading...';
 end;
 
 procedure TSplashForm.ImageClick(Sender: TObject);
 begin
-  close;
+  Close;
+end;
+
+procedure TSplashForm.OnCacheProgress(Sender: TObject; FileName: String; Total,
+  Current: Integer);
+begin
+  ProgressBar.Visible := True;
+  ProgressBar.Max := Total;
+  ProgressBar.Position := Current;
+  Application.ProcessMessages;
 end;
 
 end.

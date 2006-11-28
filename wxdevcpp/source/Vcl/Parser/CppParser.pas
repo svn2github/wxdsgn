@@ -125,6 +125,7 @@ type
     fOnUpdate: TNotifyEvent;
     fOnFileProgress: TProgressEvent;
     fOnTotalProgress: TProgressEvent;
+    fOnCacheProgress: TProgressEvent;
     fLogStatements: boolean;
     fLaterScanning: boolean;
     fThisPointerID: integer;
@@ -232,6 +233,7 @@ type
     property OnLogStatement: TLogStatementEvent read fOnLogStatement write fOnLogStatement;
     property OnFileProgress: TProgressEvent read fOnFileProgress write fOnFileProgress;
     property OnTotalProgress: TProgressEvent read fOnTotalProgress write fOnTotalProgress;
+    property OnCacheProgress: TProgressEvent read fOnCacheProgress write fOnCacheProgress;
     property Tokenizer: TCppTokenizer read fTokenizer write fTokenizer;
     property Statements: TList read fStatementList write fStatementList;
     property ParseLocalHeaders: boolean read fParseLocalHeaders write fParseLocalHeaders;
@@ -2414,6 +2416,9 @@ begin
           end;
           if _ParentID <> -1 then
             _ParentID := _ParentID + ID_Offset;
+
+          if Assigned(fOnCacheProgress) then
+            fOnCacheProgress(Self, _Filename, HowMany, I);
         end;
         fStatementList.Add(Statement);
       end;
