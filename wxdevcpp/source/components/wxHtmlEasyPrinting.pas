@@ -182,12 +182,12 @@ begin
   Result := GetCommentString(self.FWx_Comments.Text);
 
   Result := Result + #13 + Format('%s =  new %s(%s,this);',
-    [self.Name, wx_Class,GetCppString(self.wx_Title)]);
-  
+    [self.Name, Wx_Class,GetCppString(self.wx_Title)]);
+
   if trim(wx_HeaderString) <> '' then
-	Result := Result + #13 + Format('%s->SetHeader(%s,%d)',[self.Name, GetCppString(self.wx_HeaderString),wx_HeaderPage]);
+	Result := Result + #13 + Format('%s->SetHeader(%s,%d);',[self.Name, GetCppString(self.wx_HeaderString),wx_HeaderPage]);
   if trim(wx_FooterString) <> '' then
-	Result := Result + #13 + Format('%s->SetFooter(%s,%d)',[self.Name, GetCppString(self.wx_FooterString),wx_FooterPage]);
+	Result := Result + #13 + Format('%s->SetFooter(%s,%d);',[self.Name, GetCppString(self.wx_FooterString),wx_FooterPage]);
 
 end;
 
@@ -263,9 +263,9 @@ end;
 
 function TWxHtmlEasyPrinting.GetWxClassName: string;
 begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxHtmlEasyPrinting';
-  Result := wx_Class;
+  if trim(Wx_Class) = '' then
+    Wx_Class := 'wxHtmlEasyPrinting';
+  Result := Wx_Class;
 end;
 
 procedure TWxHtmlEasyPrinting.SaveControlOrientation(
@@ -290,7 +290,7 @@ end;
 
 procedure TWxHtmlEasyPrinting.SetWxClassName(wxClassName: string);
 begin
-  wx_Class := wxClassName;
+  Wx_Class := wxClassName;
 end;
 
 function TWxHtmlEasyPrinting.GetFGColor: string;
