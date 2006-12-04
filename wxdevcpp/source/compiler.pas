@@ -331,16 +331,14 @@ begin
     if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
       writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
     else
-      begin
-        if devCompiler.CompilerType = ID_COMPILER_VC2005 then
-                writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo /manifest')
-        else
-                writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo');
-        end
+    begin
+      if devCompiler.CompilerType = ID_COMPILER_VC2005 then
+        writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo /manifest')
+      else
+        writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /nologo');
+    end
   else if devCompiler.CompilerType = ID_COMPILER_MINGW then
-    if (assigned(fProject) and (fProject.CurrentProfile.typ = dptDyn)) then
-      writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
-    else if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
+    if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
       writeln(F, 'LINK      = ar')
     else if fProject.Profiles.useGPP then
       writeln(F, 'LINK      = ' + Comp_ProgCpp)
@@ -708,6 +706,7 @@ procedure TCompiler.CreateDynamicMakefile;
 var
   backward, forward: integer;
   F: TextFile;
+  binary: string;
   pfile, tfile: string;
 begin
   if not NewMakeFile(F) then
@@ -734,19 +733,15 @@ begin
 
   if not DoCheckSyntax then
   begin
-    if (devCompiler.CompilerType = ID_COMPILER_MINGW) then
-        if (fProject.Profiles.useGpp) then
-        begin
-                writeln(F, #9 + '$(LINK) --driver-name c++  ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), GenMakePath(ChangeFileExt(tfile, '.def')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
-        end
-        else
-                writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), GenMakePath(ChangeFileExt(tfile, '.def')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)')
+    binary := GenMakePath(ExtractRelativePath(Makefile, fProject.Executable));
+    if devCompiler.CompilerType = ID_COMPILER_MINGW then
+      writeln(F, #9 + '$(LINK) -shared $(STATICLIB) $(LINKOBJ) $(LIBS) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), binary]))
     else
-        writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), '$(BIN)']) + ' $(LINKOBJ) $(LIBS)');
+      writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), binary]) + ' $(LINKOBJ) $(LIBS)');
 
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
-      writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
+      writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + ';#2"');
       writeln(F, #9 + '@rm "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest"');
     end;
   end;

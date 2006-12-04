@@ -22,7 +22,7 @@ unit Templates;
 interface
 
 uses 
-  Classes, Types, IniFiles, prjtypes,devcfg, xProcs;
+  Classes, Types, IniFiles, prjtypes,devcfg;
 
 type
   TTemplateUnit = record
@@ -211,16 +211,16 @@ begin
          fOptions[0].SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
 
          // RNC -- 07-23-04 Added the ability to set an output dir in a template
-         fOptions[0].ExeOutput:= strRemoveBadCharacters(ReadString(cProject, 'ExeOutput', ''));
-         fOptions[0].ObjectOutput:= strRemoveBadCharacters(ReadString(cProject, 'ObjectOutput', ''));
+         fOptions[0].ExeOutput:= ReadString(cProject, 'ExeOutput', '');
+         fOptions[0].ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
          if (trim(fOptions[0].ExeOutput) = '') and (trim(fOptions[0].ObjectOutput) <> '') then
           fOptions[0].ExeOutput:=fOptions[0].ObjectOutput
          else if (trim(fOptions[0].ExeOutput) <> '') and (trim(fOptions[0].ObjectOutput) = '') then
           fOptions[0].ObjectOutput:=fOptions[0].ExeOutput
          else if ((fOptions[0].ExeOutput = '') and (fOptions[0].ObjectOutput = '') ) then
          begin
-          fOptions[0].ObjectOutput:=strRemoveBadCharacters(fOptions[0].ProfileName);
-          fOptions[0].ExeOutput:=strRemoveBadCharacters(fOptions[0].ProfileName);
+          fOptions[0].ObjectOutput:=fOptions[0].ProfileName;
+          fOptions[0].ExeOutput:=fOptions[0].ProfileName;
          end;
          // units are read on demand
       end
@@ -244,8 +244,8 @@ begin
           NewProfile.ResourceIncludes.DelimitedText:=ReadString(CurrenProfileName,'ResourceIncludes','');
           NewProfile.MakeIncludes.DelimitedText:=ReadString(CurrenProfileName,'MakeIncludes','');
           NewProfile.Icon:= ReadString(CurrenProfileName,'Icon','');
-          NewProfile.ExeOutput := strRemoveBadCharacters(ReadString(CurrenProfileName,'ExeOutput',''));
-          NewProfile.ObjectOutput := strRemoveBadCharacters(ReadString(CurrenProfileName,'ObjectOutput',''));
+          NewProfile.ExeOutput := ReadString(CurrenProfileName,'ExeOutput','');
+          NewProfile.ObjectOutput := ReadString(CurrenProfileName,'ObjectOutput','');
           NewProfile.OverrideOutput := ReadBool(CurrenProfileName,'OverrideOutput',false);
           NewProfile.OverridenOutput := ReadString(CurrenProfileName,'OverrideOutputName','');
           NewProfile.HostApplication := ReadString(CurrenProfileName,'HostApplication','');

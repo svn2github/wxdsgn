@@ -26,7 +26,7 @@ uses
 {$IFDEF WIN32}
   IniFiles, SysUtils, Dialogs, ComCtrls, Editor, Contnrs,
   Classes, Controls, version, prjtypes, Templates, Forms,
-  Windows, xProcs;
+  Windows;
 {$ENDIF}
 {$IFDEF LINUX}
   IniFiles, SysUtils, QDialogs, QComCtrls, Editor, Contnrs,
@@ -937,7 +937,7 @@ begin
       // Load the project folders as well as other non-profile specifics
       fFolders.CommaText := Read('Folders', '');
       fCmdLineArgs := Read('CommandLine', '');
-
+      
       //Load the version information stuff before others.
       Section := 'VersionInfo';
       VersionInfo.Major := Read('Major', 0);
@@ -1000,16 +1000,16 @@ begin
         fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
         fProfiles[0].MakeIncludes.DelimitedText := Read('MakeIncludes', '');
 {$ENDIF}
-        fProfiles[0].ExeOutput := strRemoveBadCharacters(Read('ExeOutput', fProfiles[0].ProfileName));
-        fProfiles[0].ObjectOutput := strRemoveBadCharacters(Read('ObjectOutput', fProfiles[0].ProfileName));
+        fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
+        fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
         if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
           fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
         else if (trim(fProfiles[0].ExeOutput) <> '') and (trim(fProfiles[0].ObjectOutput) = '') then
           fProfiles[0].ObjectOutput:=fProfiles[0].ExeOutput
         else if ((fProfiles[0].ExeOutput = '') and (fProfiles[0].ObjectOutput = '') ) then
         begin
-          fProfiles[0].ObjectOutput:=strRemoveBadCharacters(fProfiles[0].ProfileName);
-          fProfiles[0].ExeOutput:=strRemoveBadCharacters(fProfiles[0].ProfileName);
+          fProfiles[0].ObjectOutput:=fProfiles[0].ProfileName;
+          fProfiles[0].ExeOutput:=fProfiles[0].ProfileName;
         end;
 
         fProfiles[0].OverrideOutput := Read('OverrideOutput', FALSE);
@@ -1050,8 +1050,8 @@ begin
       fProfiles[0].Includes.Add(Read('IncludeDirs', ''));
       fProfiles[0].Compiler := Read('CompilerOptions', '');
       fProfiles.usegpp := Read('Use_GPP', FALSE);
-      fProfiles[0].ExeOutput := strRemoveBadCharacters(Read('ExeOutput', fProfiles[0].ProfileName));
-      fProfiles[0].ObjectOutput := strRemoveBadCharacters(Read('ObjectOutput', fProfiles[0].ProfileName));
+      fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
+      fProfiles[0].ObjectOutput := Read('ObjectOutput', fProfiles[0].ProfileName);
 
       if (trim(fProfiles[0].ExeOutput) = '') and (trim(fProfiles[0].ObjectOutput) <> '') then
         fProfiles[0].ExeOutput:=fProfiles[0].ObjectOutput
@@ -1120,8 +1120,8 @@ begin
       WriteProfile(i,COMPILER_INI_LABEL, fProfiles[i].CompilerOptions);
 
       WriteProfile(i,'Icon', ExtractRelativePath(Directory, fProfiles[i].Icon));
-      WriteProfile(i,'ExeOutput', strRemoveBadCharacters(fProfiles[i].ExeOutput));
-      WriteProfile(i,'ObjectOutput', strRemoveBadCharacters(fProfiles[i].ObjectOutput));
+      WriteProfile(i,'ExeOutput', fProfiles[i].ExeOutput);
+      WriteProfile(i,'ObjectOutput', fProfiles[i].ObjectOutput);
       WriteProfile(i,'OverrideOutput', fProfiles[i].OverrideOutput);
       WriteProfile(i,'OverrideOutputName', fProfiles[i].OverridenOutput);
       WriteProfile(i,'HostApplication', fProfiles[i].HostApplication);
@@ -1410,9 +1410,8 @@ begin
     Profiles.Ver:=fPrevVersion;
     NewProfile:=TProjProfile.Create;
     NewProfile.ProfileName := 'Default Profile';
-
-    NewProfile.ExeOutput := strRemoveBadCharacters(NewProfile.ProfileName);
-    NewProfile.ObjectOutput := strRemoveBadCharacters(NewProfile.ProfileName);
+    NewProfile.ExeOutput := NewProfile.ProfileName;
+    NewProfile.ObjectOutput := NewProfile.ProfileName;
     fProfiles.Add(NewProfile);
     Exit;
   end;
@@ -1435,8 +1434,8 @@ begin
     NewProfile.ResourceIncludes.DelimitedText:=finifile.ReadProfile(i,'ResourceIncludes','');
     NewProfile.MakeIncludes.DelimitedText:=finifile.ReadProfile(i,'MakeIncludes','');
     NewProfile.Icon:= finifile.ReadProfile(i,'Icon','');
-    NewProfile.ExeOutput := strRemoveBadCharacters(finifile.ReadProfile(i,'ExeOutput',''));
-    NewProfile.ObjectOutput := strRemoveBadCharacters(finifile.ReadProfile(i,'ObjectOutput',''));
+    NewProfile.ExeOutput := finifile.ReadProfile(i,'ExeOutput','');
+    NewProfile.ObjectOutput := finifile.ReadProfile(i,'ObjectOutput','');
     NewProfile.OverrideOutput := finifile.ReadProfile(i,'OverrideOutput',false);
     NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverrideOutputName','');
     NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
