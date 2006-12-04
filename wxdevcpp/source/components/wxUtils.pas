@@ -39,6 +39,7 @@ const
   IDD_IWxContainerInterface: TGUID            = '{1149F8B7-04D7-466F-96FA-74C7383F2EFD}';
   IID_IWxToolBarInterface: TGUID              = '{518BF32C-F961-4148-B506-F60A9D21AD15}';
   IDD_IWxStatusBarInterface: TGUID            = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
+  IDD_IWxMenuBarInterface: TGUID              = '{b74eeaf0-7f08-11db-9fe1-0800200c9a66}';
   IDD_IWxCollectionInterface: TGUID           = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
   IID_IWxVariableAssignmentInterface: TGUID   = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
   IID_IWxValidatorInterface: TGUID            = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
@@ -178,6 +179,11 @@ type
 
   IWxStatusBarInterface = interface
     ['{4E9800A3-D948-4F48-A109-7F81B69ECAD3}']
+  end;
+
+  IWxMenuBarInterface = interface
+    ['{b74eeaf0-7f08-11db-9fe1-0800200c9a66}']
+    function GenerateXPM(strFileName:String):boolean;
   end;
 
   IWxCollectionInterface = interface
@@ -566,6 +572,7 @@ type
     class procedure RegisterAsDefaultItem;
   end;
 
+function UnixPathToDosPath(const Path: string): string;
 function ConvertLibsToCurrentVersion(strValue:String):string;
 function Convert25LibsToCurrentVersion(strValue:String):string;
 function Convert26LibsToCurrentVersion(strValue:String):string;
@@ -733,6 +740,21 @@ uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxTo
 constructor TWxValidatorString.Create;
 begin
   inherited Create(nil);
+end;
+
+function TranslateChar(const Str: string; FromChar, ToChar: Char): string;
+var
+  I: Integer;
+begin
+  Result := Str;
+  for I := 1 to Length(Result) do
+    if Result[I] = FromChar then
+      Result[I] := ToChar;
+end;
+
+function UnixPathToDosPath(const Path: string): string;
+begin
+  Result := TranslateChar(Path, '/', '\');
 end;
 
 function ConvertLibsToCurrentVersion(strValue:String):string;
@@ -941,38 +963,47 @@ begin
 
   Result := '';
   try
-    if fnt.Style = fntDefault.Style then
-      if fnt.Name = fntDefault.Name then
-        if fnt.Size = fntDefault.Size then
+    if fnt.Name = fntDefault.Name then
+      if fnt.Size = fntDefault.Size then
+      begin
+        if fnt.Style = fntDefault.Style then
         begin
           Result := '';
           exit;
+        end
+        else
+        begin
+          //Result := 'S_C';
+          //exit;          
         end;
+      end;
   finally
     fntDefault.Destroy;
   end;
+  //if Result <> 'S_C' then
+  begin
+    if fsItalic in fnt.Style then
+      strStyle := 'wxITALIC'
+    else
+      strStyle := 'wxNORMAL';
 
-  if fsItalic in fnt.Style then
-    strStyle := 'wxITALIC'
-  else
-    strStyle := 'wxNORMAL';
+    if fsBold in fnt.Style then
+      strWeight := 'wxBOLD'
+    else
+      strWeight := 'wxNORMAL';
 
-  if fsBold in fnt.Style then
-    strWeight := 'wxBOLD'
-  else
-    strWeight := 'wxNORMAL';
+    if fsUnderline in fnt.Style then
+      strUnderline := 'TRUE'
+    else
+      strUnderline := 'FALSE';
 
-  if fsUnderline in fnt.Style then
-    strUnderline := 'TRUE'
-  else
-    strUnderline := 'FALSE';
-
-  if fnt.Name <> defaultFontName then
-    Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
-      strWeight + ', ' + strUnderline + ', ' + GetCppString(fnt.Name) + ')'
-  else
-    Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
-      strWeight + ', ' + strUnderline + ')';
+    if fnt.Name <> defaultFontName then
+      Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
+        strWeight + ', ' + strUnderline + ', ' + GetCppString(fnt.Name) + ')'
+    else
+      Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
+        strWeight + ', ' + strUnderline + ')';
+  end;
 end;
 
 function GetDesignerFormName(cntrl: TControl): string;
@@ -4138,37 +4169,47 @@ var
   strXPMContent: string;
 
 begin
-  Result := False;
   if bmp = nil then
-    Exit;
+    exit;
+
+  Result := True;
 
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
-  xpmNewFileDir := IncludeTrailingPathDelimiter(xpmFileDir) + 'Images';
-  if not DirectoryExists(xpmNewFileDir) then
+  xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
+  if DirectoryExists(xpmNewFileDir) = false then
   begin
-    if ForceDirectories(xpmNewFileDir) then
-      xpmFileDir := xpmNewFileDir;
+   if ForceDirectories(xpmNewFileDir) = true then
+     xpmFileDir:=xpmNewFileDir;
   end
   else
     xpmFileDir:=xpmNewFileDir;
+
   xpmFileDir := IncludetrailingPathDelimiter(xpmFileDir);
 
   if bmp.handle <> 0 then
   begin
     fileStrlst := TStringList.Create;
     try
-      strXPMContent := GetXPMFromTPicture(strParentName + '_' + strCompName, bmp);
+      strXPMContent := GetXPMFromTPicture(strParentName+'_'+strCompName, bmp);
+      //strRawXPMContent:=GetRawXPMFromTPicture(strCompName,bmp);
       if trim(strXPMContent) <> '' then
       begin
         fileStrlst.Add(strXPMContent);
-        fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' + strCompName + '_XPM.xpm');
+        fileStrlst.SaveToFile(xpmFileDir + strParentName+'_'+strCompName + '_XPM.xpm');
+
       end;
+      //            if trim(strRawXPMContent) <> '' then
+      //            begin
+      //                fileStrlst.Clear;
+      //                fileStrlst.Add(strRawXPMContent);
+      //                fileStrlst.SaveToFile(xpmFileDir+strCompName+'_XPM-Raw.xpm');
+      //            end;
+
     except
     end;
     fileStrlst.Destroy;
   end;
 
-  Result := True;
 end;
 
 function GetCommentString(str: string): string;
@@ -5210,16 +5251,18 @@ var
   strColorValue: string;
   compIntf:      IWxComponentInterface;
 begin
-
   ColorEditForm := TColorEdit.Create(GetParentForm(Inspector));
   try
     if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
       IID_IWxComponentInterface, compIntf) then
     begin
+
       if AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') then
-        strColorValue := compIntf.GetBGColor;
-      if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
-        strColorValue := compIntf.GetFGColor;
+        strColorValue := compIntf.GetBGColor
+      else if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
+        strColorValue := compIntf.GetFGColor
+        else
+          strColorValue := compIntf.GetGenericColor(Data.Name);
     end;
 
     ColorEditForm.SetColorString(strColorValue);
@@ -5233,9 +5276,12 @@ begin
       IID_IWxComponentInterface, compIntf) then
     begin
       if AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') then
-        compIntf.SetBGColor(strColorValue);
-      if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
-        compIntf.SetFGColor(strColorValue);
+        compIntf.SetBGColor(strColorValue)
+      else
+        if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
+          compIntf.SetFGColor(strColorValue)
+        else
+          compIntf.SetGenericColor(Data.Name,strColorValue);
     end;
 
     if assigned(TJvInspector(GetInspector).OnDataValueChanged) then

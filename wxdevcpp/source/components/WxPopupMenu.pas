@@ -6,11 +6,12 @@ unit WxPopupMenu;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
-  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils, dialogs;
+  Windows, Controls,Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
+  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils, dialogs,
+  Graphics;
 
 type
-  TWxPopupMenu = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+  TWxPopupMenu = class(TWxNonVisibleBaseComponent, IWxComponentInterface,IWxMenuBarInterface)
   private
     { Private declarations }
     FWx_Class: string;
@@ -37,6 +38,7 @@ type
     function GetCodeForOneMenuItem(parentName: string; item: TWxCustomMenuItem): string;
     function GenerateHeaderInclude: string;
     function GenerateImageInclude: string;
+    function GenerateImageList(var strLst:TStringList;var imgLst:TImageList;var strNameLst:TStringList): boolean;
     function GetEventList: TStringList;
     function GetIDName: string;
     function GetIDValue: longint;
@@ -66,7 +68,8 @@ type
     procedure SetBorderWidth(width: integer);
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
-
+    function GenerateXPM(strFileName:String):boolean;
+    
   published
     { Published declarations }
     property Wx_Class: string Read FWx_Class Write FWx_Class;
@@ -414,11 +417,32 @@ end;
 
 function TWxPopupMenu.GenerateImageInclude: string;
 var
+    strLst,strNameList: TStringList;
+    imgLst:TImageList;
+    i:Integer;
+begin
+  Result:='';
+  strLst:= TStringList.Create;
+  strNameList:= TStringList.Create;
+  imgLst:=TImageList.Create(nil);
+  GenerateImageList(strLst,imgLst,strNameList);
+
+  for i:= 0 to strLst.Count -1 do
+  begin
+    strLst[i] :=  '#include "'+ strLst[i] + '"';
+  end;
+
+  Result:=strLst.Text;
+  strLst.destroy;
+  strNameList.destroy;
+  imgLst.destroy;
+end;
+
+function TWxPopupMenu.GenerateImageList(var strLst:TStringList;var imgLst:TImageList;var strNameLst:TStringList): boolean;
+var
   I:      integer;
   strF:   string;
-  strLst: TStringList;
-
-  procedure GetImageIncludeFromSubMenu(idstrList: TStringList;
+  procedure GetImageIncludeFromSubMenu(idstrList: TStringList;imgLstX:TImageList;strNameLstX:TStringList;
     submnu: TWxCustomMenuItem);
   var
     J: integer;
@@ -427,36 +451,41 @@ var
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
       if submnu.Items[J].WX_BITMAP.Bitmap.Handle <> 0 then
-        strData := '#include "' + submnu.Items[J].Wx_IDName + '_XPM.xpm"'
+        strData := 'Images/' + GetDesignerFormName(self)+'_'+submnu.Items[J].Wx_IDName + '_XPM.xpm'
       else
         strData := '';
       if strData <> '' then
+      begin
         idstrList.add(strData);
+        strNameLstX.Add(submnu.Items[J].Wx_IDName);
+        imgLstX.Add(submnu.Items[J].WX_BITMAP.Bitmap,nil);
+      end;
 
       if submnu.items[J].Count > 0 then
-        GetImageIncludeFromSubMenu(idstrList, submnu.items[J]);
+        GetImageIncludeFromSubMenu(idstrList, imgLstX,strNameLstX,submnu.items[J]);
     end;    // for
   end;
 
 begin
 
-  Result := '';
-  strLst := TStringList.Create;
+  Result := true;
 
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
   begin
     if Wx_MenuItems.Items[i].wx_Bitmap.Bitmap.Handle <> 0 then
-      strF := '#include "' + Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm"'
+      strF := 'Images/' + GetDesignerFormName(self)+'_'+Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm'
     else
       strF := '';
     if trim(strF) <> '' then
+    begin
       strLst.add(strF);
+      imgLst.Add(Wx_MenuItems.Items[i].wx_Bitmap.Bitmap,nil);
+      strNameLst.Add(Wx_MenuItems.Items[i].Wx_IDName);
+    end;
 
     if Wx_MenuItems.items[i].Count > 0 then
-      GetImageIncludeFromSubMenu(strLst, Wx_MenuItems.items[i])
+      GetImageIncludeFromSubMenu(strLst, imgLst,strNameLst,Wx_MenuItems.items[i])
   end;    // for
-  Result := strLst.Text;
-  strLst.Destroy;
 
 end;
 
@@ -617,6 +646,37 @@ end;
 
 procedure TWxPopupMenu.SetProxyBGColorString(Value: string);
 begin
+end;
+
+function TWxPopupMenu.GenerateXPM(strFileName:String):boolean;
+var
+    strLst,strNameList: TStringList;
+    imgLst:TImageList;
+    strXPMFileName,strFormName:String;
+    bmpX:TBitmap;
+    i:Integer;
+begin
+  Result:=false;
+  strLst:= TStringList.Create;
+  strNameList:= TStringList.Create;
+  imgLst:=TImageList.Create(nil);
+
+  GenerateImageList(strLst,imgLst,strNameList);
+  strFormName:=GetDesignerFormName(self);
+
+  for i:= 0 to strLst.Count -1 do
+  begin
+      strXPMFileName:=UnixPathToDosPath(IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+strLst[i]);
+      if FileExists(strXPMFileName) then
+        continue;
+      bmpX := TBitmap.Create;
+      imgLst.GetBitmap(i,bmpX);
+      if bmpX.handle  <> 0 then
+        GenerateXPMDirectly(bmpX,strNameList[i],strFormName,strFileName);
+      bmpX.Destroy;
+  end;
+  strLst.destroy;
+  strNameList.destroy;
 end;
 
 end.

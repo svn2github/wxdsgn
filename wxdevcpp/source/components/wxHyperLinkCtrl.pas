@@ -216,7 +216,7 @@ begin
   FWx_Comments           := TStringList.Create;
   FWx_Border             := 5;
   FWx_Class              := 'wxHyperlinkCtrl';
-  FWx_URL                := 'http://';
+  FWx_URL                := 'http://wxdsgn.sf.net';
   FWx_Enabled            := True;
   FWx_Alignment          := wxALIGN_CENTER;
   FWx_BorderAlignment    := [wxAll];
@@ -228,8 +228,11 @@ begin
   FWx_ProxyNormalColorString:= TWxColorString.Create;
   FWx_ProxyVisitedColorString:= TWxColorString.Create;
 
-  defaultBGColor         := clBtnFace;
+  InvisibleFGColorString:='STD:wxBLUE';
+  defaultBGColor         := clBtnFace;;
+  self.Font.Color        :=clBlue;
   defaultFGColor         := self.font.color;
+
   AutoSize               := True;
   Font.Style := Font.Style + [fsUnderline]; 
   Fwx_HyperLinkStyle := [wxHL_CONTEXTMENU];
@@ -287,12 +290,10 @@ begin
   FWx_PropertyList.add('Wx_IDValue:ID Value');
   FWx_PropertyList.add('Wx_ToolTip:Tooltip');
   FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
-  FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
-  FWx_PropertyList.add('Wx_ProxyHoverColorString:Hover Color');
-  FWx_PropertyList.add('Wx_ProxyNormalColorString:Normal Color');
-  FWx_PropertyList.add('Wx_ProxyVisitedColorString:Visited Color');
 
+  FWx_PropertyList.add('Wx_ProxyFGColorString:Normal Color');
+  FWx_PropertyList.add('Wx_ProxyHoverColorString:Hover Color');
+  FWx_PropertyList.add('Wx_ProxyVisitedColorString:Visited Color');
 
   FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
   FWx_PropertyList.add('Wx_Alignment:Alignment');
@@ -444,15 +445,26 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
+  //strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
+  //if strColorStr <> '' then
+  //  Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
+  //      [self.Name, strColorStr]);
+
+  //strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
+  //if strColorStr <> '' then
+  //  Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',[self.Name, strColorStr]);
+
+  strColorStr := trim(GetwxColorFromString(InvisibleHoverColorString));
+  if strColorStr <> '' then
+    Result := Result + #13 + Format('%s->SetHoverColour(%s);',[self.Name, strColorStr]);
+
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
+    Result := Result + #13 + Format('%s->SetNormalColour(%s);',[self.Name, strColorStr]);
 
-  strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
+  strColorStr := trim(GetwxColorFromString(InvisibleVisitedColorString));
   if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
+    Result := Result + #13 + Format('%s->SetVisitedColour(%s);',[self.Name, strColorStr]);
 
 
   strColorStr := GetWxFontDeclaration(self.Font);
@@ -620,11 +632,27 @@ end;
 
 function TWxHyperLinkCtrl.GetGenericColor(strVariableName:String): string;
 begin
-
+  Result:='';
+  if UpperCase(strVariableName) = UpperCase('Wx_ProxyHoverColorString') then
+    Result:= FInvisibleHoverColorString
+  else
+    if UpperCase(strVariableName) = UpperCase('Wx_ProxyNormalColorString') then
+      Result:=FInvisibleNormalColorString
+    else
+    if UpperCase(strVariableName) = UpperCase('Wx_ProxyVisitedColorString') then
+      Result:=FInvisibleVisitedColorString;
 end;
+
 procedure TWxHyperLinkCtrl.SetGenericColor(strVariableName,strValue: string);
 begin
-
+  if UpperCase(strVariableName) = UpperCase('Wx_ProxyHoverColorString') then
+    FInvisibleHoverColorString:=strValue
+  else
+    if UpperCase(strVariableName) = UpperCase('Wx_ProxyNormalColorString') then
+      FInvisibleNormalColorString:=strValue
+    else
+    if UpperCase(strVariableName) = UpperCase('Wx_ProxyVisitedColorString') then
+      FInvisibleVisitedColorString:=strValue;
 end;
 
 function TWxHyperLinkCtrl.GetFGColor: string;
