@@ -1470,7 +1470,6 @@ begin
   begin
     if strLst.Count <> 0 then
       strLst.add('');
-    strLst.Add('GetSizer()->Layout();');
     strLst.add('GetSizer()->Fit(this);');
     if Wx_SizeToContents then
         strLst.add('GetSizer()->SetSizeHints(this);');
@@ -1738,13 +1737,20 @@ procedure TfrmNewForm.CreateNewXPMs(strFileName:String);
 var
   i,j:Integer;
   imgCtrl:IWxImageContainerInterface;
+  mnuCtrl:IWxMenuBarInterface;
   bmp:TBitmap;
-  strPropertyName, strXPMFileName:String;
+  strPropertyName,strComponentName,strXPMFileName:String;
 begin
   for i:= 0 to self.ComponentCount -1 Do
   begin
     if self.Components[i].GetInterface(IID_IWxImageContainerInterface,imgCtrl) = false then
+    begin
+      if self.Components[i].GetInterface(IDD_IWxMenuBarInterface,mnuCtrl) = true then
+        mnuCtrl.GenerateXPM(strFileName);
       continue;
+    end;
+
+
     for j := 0 to imgCtrl.GetBitmapCount -1 Do
     begin
       strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
