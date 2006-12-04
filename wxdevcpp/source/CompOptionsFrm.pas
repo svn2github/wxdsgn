@@ -1,4 +1,6 @@
 {
+    $Id$
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -615,15 +617,33 @@ begin
         lblgprof.Enabled := true;
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;
+
+        lbldllwrap.Enabled := false;
+        DllwrapEdit.Enabled := false;
+        btnbrowse7.Enabled := false;
       end;
     ID_COMPILER_VC6,
-    ID_COMPILER_VC2003,
+    ID_COMPILER_VC2003:
+      begin
+        lblgprof.Caption := 'Manifest Tool:';
+        lblgprof.Enabled := false;
+        gprofEdit.Enabled := false;
+        btnbrowse8.Enabled := false;
+
+        lbldllwrap.Enabled := true;
+        DllwrapEdit.Enabled := true;
+        btnbrowse7.Enabled := true;
+      end;
     ID_COMPILER_VC2005:
       begin
         lblgprof.Caption := 'Manifest Tool:';
         lblgprof.Enabled := true;
         gprofEdit.Enabled := true;
         btnbrowse8.Enabled := true;
+
+        lbldllwrap.Enabled := true;
+        DllwrapEdit.Enabled := true;
+        btnbrowse7.Enabled := true;
       end;
   end;
 end;
