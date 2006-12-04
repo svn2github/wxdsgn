@@ -1128,9 +1128,6 @@ begin
       else
         FToolTips.Delete(I);
     end;
-
-    if not ProtoFound then
-      SendDebug('Unknown function: ' + S);
   end;
 
   if (Trim(S) <> '') and ProtoFound then
