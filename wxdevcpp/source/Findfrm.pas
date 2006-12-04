@@ -22,10 +22,10 @@ unit Findfrm;
 interface
 
 uses
-  Search_Center,
+  Search_Center, StrUtils,
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  SynEdit, StdCtrls, devTabs, SynEditTypes, XPMenu, ExtCtrls;
+  SynEdit, StdCtrls, devTabs, SynEditTypes, XPMenu, ExtCtrls, Menus;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms,
@@ -41,12 +41,32 @@ type
     grpOptions: TGroupBox;
     cbMatchCase: TCheckBox;
     cbWholeWord: TCheckBox;
-    XPMenu: TXPMenu;
     cbRegex: TCheckBox;
     grpOrigin: TRadioGroup;
     lblLookIn: TLabel;
     LookIn: TComboBox;
     grpDirection: TRadioGroup;
+    mnuBuild: TPopupMenu;
+    OneChar: TMenuItem;
+    ZeroChars: TMenuItem;
+    MoreOneChars: TMenuItem;
+    N1: TMenuItem;
+    BegLine: TMenuItem;
+    EndLine: TMenuItem;
+    CharRange: TMenuItem;
+    CharNotRange: TMenuItem;
+    N2: TMenuItem;
+    Tagged: TMenuItem;
+    orExp: TMenuItem;
+    N3: TMenuItem;
+    Newline: TMenuItem;
+    WNonalphanumericcharacters1: TMenuItem;
+    dDigit1: TMenuItem;
+    DNonnumericcharacters1: TMenuItem;
+    sWhitespacetnrf1: TMenuItem;
+    SNonwhitespacetnrf1: TMenuItem;
+    ZeroorOneCharacter1: TMenuItem;
+    XPMenu: TXPMenu;
     procedure btnFindClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -54,12 +74,13 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure LookInChange(Sender: TObject);
+    procedure OnBuildExpr(Sender: TObject);
   private
     fSearchOptions: TSynSearchOptions;
     fClose: boolean;
     fFindAll: boolean;
     fRegex: boolean;
-
+    
     procedure LoadText;
     function GetFindWhat: TLookIn;
 
@@ -136,7 +157,7 @@ begin
   if cboFindText.Text <> '' then
   begin
     if cboFindText.Items.IndexOf(cboFindText.Text) = -1 then
-      cboFindText.Items.Add(cboFindText.Text);
+      cboFindText.Items.Insert(0, cboFindText.Text);
 
     fSearchOptions := [];
 
@@ -244,6 +265,26 @@ begin
     grpOrigin.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
     grpDirection.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
   end;
+end;
+
+procedure TfrmFind.OnBuildExpr(Sender: TObject);
+var
+  Text: String;
+  selStart: Integer;
+begin
+  selStart := cboFindText.SelStart;
+  Text := (Sender as TMenuItem).Caption;
+  Text := Copy(Text, 1, Pos(' ', Text) - 1);
+  Text := AnsiReplaceStr(Text, '&', '');
+  cboFindText.SelText := Text;
+
+  //Do we go into the bracket?
+  cboFindText.SetFocus;
+  if (Text = '()') or (Text = '[]') or (Text = '[^]') then
+    cboFindText.SelStart := selStart + Length(Text) - 1
+  else
+    cboFindText.SelStart := selStart + Length(Text);
+  cboFindText.SelLength := 0;
 end;
 
 end.

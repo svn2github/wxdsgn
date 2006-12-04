@@ -68,6 +68,7 @@ object frmFind: TfrmFind
     Width = 289
     Height = 21
     ItemHeight = 13
+    PopupMenu = mnuBuild
     TabOrder = 2
   end
   object grpOptions: TGroupBox
@@ -136,6 +137,83 @@ object frmFind: TfrmFind
       'Backward')
     TabOrder = 6
   end
+  object mnuBuild: TPopupMenu
+    Left = 37
+    Top = 309
+    object OneChar: TMenuItem
+      Caption = '. Any One Character'
+      OnClick = OnBuildExpr
+    end
+    object ZeroorOneCharacter1: TMenuItem
+      Caption = '? Zero or One Character'
+      OnClick = OnBuildExpr
+    end
+    object ZeroChars: TMenuItem
+      Caption = '* Zero or More Characters'
+      OnClick = OnBuildExpr
+    end
+    object MoreOneChars: TMenuItem
+      Caption = '+ One or More Characters'
+      OnClick = OnBuildExpr
+    end
+    object CharRange: TMenuItem
+      Caption = '[] Characters in Range'
+      OnClick = OnBuildExpr
+    end
+    object CharNotRange: TMenuItem
+      Caption = '[^] Characters not in Range'
+      OnClick = OnBuildExpr
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object BegLine: TMenuItem
+      Caption = '^ Beginning of Line'
+      OnClick = OnBuildExpr
+    end
+    object EndLine: TMenuItem
+      Caption = '$ End of Line'
+      OnClick = OnBuildExpr
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object Tagged: TMenuItem
+      Caption = '() Tagged Expression'
+      OnClick = OnBuildExpr
+    end
+    object orExp: TMenuItem
+      Caption = '| Or'
+      OnClick = OnBuildExpr
+    end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object Newline: TMenuItem
+      Caption = '\w Alphanumeric characters and _ (a-zA-Z0-9_)'
+      OnClick = OnBuildExpr
+    end
+    object WNonalphanumericcharacters1: TMenuItem
+      Caption = '\W Non alphanumeric characters (^a-zA-Z0-9)'
+      OnClick = OnBuildExpr
+    end
+    object dDigit1: TMenuItem
+      Caption = '\d Numeric (1-9)'
+      OnClick = OnBuildExpr
+    end
+    object DNonnumericcharacters1: TMenuItem
+      Caption = '\D Non numeric characters (^1-9)'
+      OnClick = OnBuildExpr
+    end
+    object sWhitespacetnrf1: TMenuItem
+      Caption = '\s Whitespace ( \t\n\r\f)'
+      OnClick = OnBuildExpr
+    end
+    object SNonwhitespacetnrf1: TMenuItem
+      Caption = '\S Non whitespace (^ \t\n\r\f)'
+      OnClick = OnBuildExpr
+    end
+  end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
@@ -159,7 +237,7 @@ object frmFind: TfrmFind
     UseSystemColors = True
     UseDimColor = False
     OverrideOwnerDraw = False
-    Gradient = False
+    Gradient = True
     FlatMenu = False
     AutoDetect = True
     Active = False
