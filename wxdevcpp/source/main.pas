@@ -6233,6 +6233,7 @@ var
   e: TEditor;
   sl: TStringList;
   I: integer;
+  ProgressEvents: array[0..1] of TProgressEvent;
 begin
   CppParser1.Enabled := devClassBrowsing.Enabled;
   CppParser1.ParseLocalHeaders := devClassBrowsing.ParseLocalHeaders;
