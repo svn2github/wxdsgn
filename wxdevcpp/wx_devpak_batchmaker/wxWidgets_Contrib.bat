@@ -1,38 +1,73 @@
-CALL common_vars.bat
+md %WXWIN%\contrib\lib
+md %WXWIN%\contrib\lib\%1_lib
+cd /d %wxwin%
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\deprecated\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\fl\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\foldbar\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\gizmos\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\mmedia\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\net\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\ogl\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\plot\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\stc\makefile.%1
+%STARTDIR%\gsar -s..\..\..\lib\ -r..\..\lib\ -o contrib\build\svg\makefile.%1
 
-cd %WXWIN%
+IF "%1"=="gcc" SET MAKEPROG=mingw32-make
+IF "%1"=="vc" SET MAKEPROG=nmake
+IF "%1"=="dmc" SET MAKEPROG=make
+IF "%1"=="bcc" SET MAKEPROG=make
 
-cd contrib\build\deprecated
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_deprecated.txt 
+
+IF "%1"=="gcc" SET PATH=%gccpath%
+IF "%1"=="vc" SET PATH=%vcpath%
+IF "%1"=="dmc" SET PATH=%dmcpath%
+IF "%1"=="bcc" SET PATH=%bccpath%
+
+
+cd /d %wxwin%\contrib\build\deprecated
+
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_deprecated.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\fl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1  2> error_fl.txt
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp  2> error_%1_fl.txt
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\foldbar
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_foldbar.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_foldbar.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\gizmos
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_gizmos.txt 
-
-cd ..\ifm
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_ifm.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_gizmos.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\mmedia
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_mmedia.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_mmedia.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\net
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_net.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_net.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\ogl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_ogl.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_ogl.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\plot
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_plot.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_plot.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\stc
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_stc.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_stc.txt 
+if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\svg
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1  2> error_svg.txt
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp  2> error_%1_svg.txt
+if NOT errorlevel 1 goto CONTRIB_END
 
-pause
+:CONTRIB_BUILD_ERR
+SET BUILDRESULT=F
+:CONTRIB_END
+
+
+set path=%OLDPATH%

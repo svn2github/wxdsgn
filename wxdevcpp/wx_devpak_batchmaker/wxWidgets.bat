@@ -1,6 +1,14 @@
 CALL common_vars.bat
 
+cd /d %STARTDIR%
 
+rem remove a previously built devpak dir
+
+rd /S /Q %DEVPAKDIR%
+
+
+
+SET BUILDRESULT=P
 
 @echo --------------------------------------------------------------------
 @echo -
@@ -11,64 +19,173 @@ CALL common_vars.bat
 
 rem Copy the setup.h up one level
 del %WXWIN%\include\wx\setup.h
-cd %WXWIN%\include\wx\msw
+cd /d %WXWIN%\include\wx\msw
 %STARTDIR%\gsar -s#define:x20wxUSE_GLCANVAS:x20:x20:x20:x20:x20:x20:x200 -r#define:x20wxUSE_GLCANVAS:x20:x20:x20:x20:x20:x20:x201 -o setup.h
-%STARTDIR%\gsar -s##define:x20wxUSE_ODBC:x20:x20:x20:x20:x20:x20:x20:x20:x20:x200 -r#define:x20wxUSE_ODBC:x20:x20:x20:x20:x20:x20:x20:x20:x20:x201 -o setup.h
-%STARTDIR%\gsar -s##define:x20wxUSE_DATEPICKCTRL_GENERIC:x200 -r#define:x20wxUSE_DATEPICKCTRL_GENERIC:x201 -o setup.h
+%STARTDIR%\gsar -s#define:x20wxUSE_ODBC:x20:x20:x20:x20:x20:x20:x20:x20:x20:x200 -r#define:x20wxUSE_ODBC:x20:x20:x20:x20:x20:x20:x20:x20:x20:x201 -o setup.h
+%STARTDIR%\gsar -s#define:x20wxUSE_DATEPICKCTRL_GENERIC:x200 -r#define:x20wxUSE_DATEPICKCTRL_GENERIC:x201 -o setup.h
 copy setup.h ..\setup.h
 
-cd %WXWIN%
+rem If we don't build the libraries, we still copy the Include files 
+IF NOT "%BUILDBASE%"=="Y" GOTO BASE_COMMON
+
+cd /d %WXWIN%
 
 rem build the main distribution of wxWidgets
 cd build\msw
 
-rem Clean the wxWidgets directories
-rem mingw32-make -f makefile.gcc clean BUILD=release
+IF NOT "%BUILDGCC%"=="Y" GOTO VC_BASE_BUILD
 
-rem Build the wxWidgets libraries
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_base.txt
+CALL %STARTDIR%\wxWidgets_base.bat gcc
+IF NOT "%BUILDRESULT%"=="P" GOTO GCC_BASE_BUILD_ERR
 
-if errorlevel 1 goto BASE_BUILD_ERR
 
+:VC_BASE_BUILD
+IF NOT "%BUILDVC%"=="Y" GOTO DMC_BASE_BUILD
+
+CALL %STARTDIR%\wxWidgets_base.bat vc
+IF NOT "%BUILDRESULT%"=="P" GOTO VC_BASE_BUILD_ERR
+
+
+:DMC_BASE_BUILD
+IF NOT "%BUILDDMC%"=="Y" GOTO BCC_BASE_BUILD
+
+CALL %STARTDIR%\wxWidgets_base.bat dmc
+IF NOT "%BUILDRESULT%"=="P" GOTO DMC_BASE_BUILD_ERR
+
+
+:BCC_BASE_BUILD
+IF NOT "%BUILDBCC%"=="Y" GOTO BASE_DEVPAK
+
+CALL %STARTDIR%\wxWidgets_base.bat bcc
+IF NOT "%BUILDRESULT%"=="P" GOTO BCC_BASE_BUILD_ERR
+
+
+:BASE_DEVPAK
 @echo --------------------------------------------------------------------
-@echo -
+@echo - 
 @echo -    Prepare Base wxWidgets devpak
 @echo -
 @echo --------------------------------------------------------------------
 
-cd %STARTDIR%
 
-rem remove a previously built devpak dir
-
-rd /S /Q %DEVPAKDIR% 
-
-
+cd /d %STARTDIR%
 md %DEVPAKDIR%
+
+IF NOT "%BUILDGCC%"=="Y" GOTO VC_BASE_DEVPAK
+call %STARTDIR%\set_base gcc
+
+:VC_BASE_DEVPAK
+IF NOT "%BUILDVC%"=="Y" GOTO DMC_BASE_DEVPAK
+call %STARTDIR%\set_base vc
+
+:DMC_BASE_DEVPAK
+IF NOT "%BUILDDMC%"=="Y" GOTO BCC_BASE_DEVPAK
+call %STARTDIR%\set_base dmc
+
+:BCC_BASE_DEVPAK
+IF NOT "%BUILDBCC%"=="Y" GOTO BASE_COMMON
+call %STARTDIR%\set_base bcc
+
+
+:BASE_COMMON
+echo basecommon
+
+cd /d %STARTDIR%
+
+IF NOT EXIST %DEVPAKDIR% md %DEVPAKDIR%
 md %DEVPAKDIR%\docs
-copy %WXWIN%\docs\licence.txt %DEVPAKDIR%\docs\
-copy %WXWIN%\docs\readme.txt %DEVPAKDIR%\docs\
+copy /Y %WXWIN%\docs\licence.txt %DEVPAKDIR%\docs\
+copy /Y %WXWIN%\docs\readme.txt %DEVPAKDIR%\docs\
 
 copy wxWidgets_common.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_common.DevPackage
-copy wxWidgets_gcc.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_gcc.DevPackage
 
-cd %DEVPAKDIR%
-
+cd /d %devpakdir%
 %STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_common.DevPackage
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_gcc.DevPackage
-
 %STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_common.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_gcc.DevPackage
 
-rem Copy the wxWidgets libs and include files to the new devpak directory
-xcopy /S %WXWIN%\lib\gcc_lib gcc\gcc_lib\
-xcopy /S %WXWIN%\include common\include\
+md common
+md common\include
+md common\include\msvc
+md common\include\msvc\wx
+md common\include\wx
+md common\include\wx\aui
+md common\include\wx\common
+md common\include\wx\generic
+md common\include\wx\html
+md common\include\wx\msdos
+md common\include\wx\msw
+md common\include\wx\msw\ole
+md common\include\wx\msw\wince
+md common\include\wx\private
+md common\include\wx\protocol
+md common\include\wx\richtext
+md common\include\wx\univ
+md common\include\wx\unix
+md common\include\wx\xml
+md common\include\wx\xrc
 
-cd %STARTDIR%
+cd /d %DEVPAKDIR%\common\include
+copy /Y %WXWIN%\include\*.*
+
+cd %DEVPAKDIR%\common\include\msvc
+copy /Y %WXWIN%\include\msvc\*.*
+
+cd %DEVPAKDIR%\common\include\msvc\wx
+copy /Y %WXWIN%\include\msvc\wx\*.*
+
+cd %DEVPAKDIR%\common\include\wx
+copy /Y %WXWIN%\include\wx\*.*
+
+cd %DEVPAKDIR%\common\include\wx\aui
+copy /Y %WXWIN%\include\wx\aui\*.*
+
+cd %DEVPAKDIR%\common\include\wx\common
+copy /Y %WXWIN%\include\wx\common\*.*
+
+cd %DEVPAKDIR%\common\include\wx\generic
+copy /Y %WXWIN%\include\wx\generic\*.*
+
+cd %DEVPAKDIR%\common\include\wx\html
+copy /Y %WXWIN%\include\wx\html\*.*
+
+cd %DEVPAKDIR%\common\include\wx\msdos
+copy /Y %WXWIN%\include\wx\msdos\*.*
+
+cd %DEVPAKDIR%\common\include\wx\msw
+copy /Y %WXWIN%\include\wx\msw\*.*
+
+cd %DEVPAKDIR%\common\include\wx\msw\ole
+copy /Y %WXWIN%\include\wx\msw\ole\*.*
+
+cd %DEVPAKDIR%\common\include\wx\msw\wince
+copy /Y %WXWIN%\include\wx\msw\wince\*.*
+
+cd %DEVPAKDIR%\common\include\wx\private
+copy /Y %WXWIN%\include\wx\private\*.*
+
+cd %DEVPAKDIR%\common\include\wx\protocol
+copy /Y %WXWIN%\include\wx\protocol\*.*
+
+cd %DEVPAKDIR%\common\include\wx\richtext
+copy /Y %WXWIN%\include\wx\richtext\*.*
+
+cd %DEVPAKDIR%\common\include\wx\univ
+copy /Y %WXWIN%\include\wx\univ\*.*
+
+cd %DEVPAKDIR%\common\include\wx\unix
+copy /Y %WXWIN%\include\wx\unix\*.*
+
+cd %DEVPAKDIR%\common\include\wx\xml
+copy /Y %WXWIN%\include\wx\xml\*.*
+
+cd %DEVPAKDIR%\common\include\wx\xrc
+copy /Y %WXWIN%\include\wx\xrc\*.*
+
+cd /d %STARTDIR%
 md %DEVPAKDIR%\common\Templates
 md %DEVPAKDIR%\common\Templates\wxWidgets
 copy ..\Templates\*wx*.* %DEVPAKDIR%\common\Templates\
 copy ..\Templates\wxWidgets\wx*.* %DEVPAKDIR%\common\Templates\wxWidgets\
-
 
 
 @echo --------------------------------------------------------------------
@@ -77,62 +194,39 @@ copy ..\Templates\wxWidgets\wx*.* %DEVPAKDIR%\common\Templates\wxWidgets\
 @echo -
 @echo --------------------------------------------------------------------
 
-rem make the folder for contrib libraries
-cd %WXWIN%
-md contrib\lib\gcc_lib
 
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\deprecated\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\fl\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\foldbar\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\gizmos\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\mmedia\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\net\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\ogl\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\plot\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\stc\makefile.gcc
-%STARTDIR%\gsar -s..\..\..\lib\gcc_ -r..\..\lib\gcc_ -o contrib\build\svg\makefile.gcc
+IF NOT "%BUILDCONTRIB%"=="Y" GOTO COMMON_CONTRIB_DEVPAK
 
-cd contrib\build\deprecated
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_deprecated.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
 
-cd ..\fl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1  2> error_fl.txt
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+cd /d %WXWIN%
 
-cd ..\foldbar
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_foldbar.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+IF NOT "%BUILDGCC%"=="Y" GOTO VCMAKESCONT
 
-cd ..\gizmos
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_gizmos.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+CALL %STARTDIR%\wxWidgets_contrib.bat gcc
+IF NOT "%BUILDRESULT%"=="P" GOTO GCC_CONTRIB_BUILD_ERR
 
-cd ..\mmedia
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_mmedia.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
 
-cd ..\net
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_net.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+:VCMAKESCONT
+IF NOT "%BUILDVC%"=="Y" GOTO DMCMAKESCONT
 
-cd ..\ogl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_ogl.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+CALL %STARTDIR%\wxWidgets_contrib.bat vc
+IF NOT "%BUILDRESULT%"=="P" GOTO VC_CONTRIB_BUILD_ERR
 
-cd ..\plot
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_plot.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
 
-cd ..\stc
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_stc.txt 
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+:DMCMAKESCONT
+IF NOT "%BUILDDMC%"=="Y" GOTO BCCMAKESCONT
 
-cd ..\svg
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1  2> error_svg.txt
-if errorlevel 1 goto CONTRIB_BUILD_ERR
+CALL %STARTDIR%\wxWidgets_contrib.bat dmc
+IF NOT "%BUILDRESULT%"=="P" GOTO DMC_CONTRIB_BUILD_ERR
 
-FOR /R %WXWIN%\contrib\samples %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
+
+:BCCMAKESCONT
+IF NOT "%BUILDBCC%"=="Y" GOTO CONTDEP
+
+CALL %STARTDIR%\wxWidgets_contrib.bat bcc
+IF NOT "%BUILDRESULT%"=="P" GOTO BCC_CONTRIB_BUILD_ERR
+
+:CONTDEP
 
 @echo --------------------------------------------------------------------
 @echo -
@@ -143,186 +237,205 @@ FOR /R %WXWIN%\contrib\samples %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, d
 
 rem Write the files to subdirectory setup devpak
 
-cd %STARTDIR%
+IF NOT "%BUILDGCC%"=="Y" GOTO VC_CONT_DEVPAK
+call %STARTDIR%\set_contribs gcc
 
-copy wxWidgets_gcc_contrib.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_gcc_contrib.DevPackage
+:VC_CONT_DEVPAK
+IF NOT "%BUILDVC%"=="Y" GOTO DMC_CONT_DEVPAK
+call %STARTDIR%\set_contribs vc
 
-cd %DEVPAKDIR%
+:DMC_CONT_DEVPAK
+IF NOT "%BUILDDMC%"=="Y" GOTO BCC_CONT_DEVPAK
+call %STARTDIR%\set_contribs dmc
 
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_gcc_contrib.DevPackage
+:BCC_CONT_DEVPAK
+IF NOT "%BUILDBCC%"=="Y" GOTO COMMON_CONTRIB_DEVPAK
+call %STARTDIR%\set_contribs bcc
 
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_gcc_contrib.DevPackage
+:COMMON_CONTRIB_DEVPAK
 
-rem Copy the wxWidgets libs and include files to the new devpak directory
-xcopy /S %WXWIN%\contrib\lib\gcc_lib contrib\gcc_lib\
-xcopy /S %WXWIN%\contrib\include contrib\include\
-xcopy /S %WXWIN%\contrib\samples contrib\samples\
+FOR /R %WXWIN%\contrib\samples %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
+
+
+cd /d %STARTDIR%
+copy wxWidgets_contrib_common.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_contrib_common.DevPackage
+
+cd /d %DEVPAKDIR%
+
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_contrib_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_contrib_common.DevPackage
+
+IF NOT EXIST %DEVPAKDIR%\contrib md %DEVPAKDIR%\contrib
+IF NOT EXIST %DEVPAKDIR%\contrib\include md %DEVPAKDIR%\contrib\include
+IF NOT EXIST %DEVPAKDIR%\contrib\samples md %DEVPAKDIR%\contrib\samples
+
+xcopy %WXWIN%\contrib\include contrib\include\ /e /Y /Q
+xcopy %WXWIN%\contrib\samples contrib\samples\ /e /Y /Q
+
 
 @echo --------------------------------------------------------------------
 @echo -
 @echo -    Build 3rd Party wxWidgets Libraries
 @echo -
 @echo --------------------------------------------------------------------
+:BUILD3RDPARTY
+cd /d %WXWIN%
 
-cd %WXWIN%
-
-md 3rdParty
 md 3rdParty\art
-copy %WXCODE%\components\wxplotctrl\art\*.xpm %WXWIN%\3rdParty\art\
+copy %WXCODE%\wxplotctrl\art\*.xpm %WXWIN%\3rdParty\art\
 
-md 3rdParty\build
+
+
 md 3rdParty\build\chartart
-copy %STARTDIR%\chartart.gcc %WXWIN%\3rdParty\build\chartart\makefile.gcc
-
 md 3rdParty\build\plotctrl
-copy %STARTDIR%\plotctrl.gcc %WXWIN%\3rdParty\build\plotctrl\makefile.gcc
-
 md 3rdParty\build\scintilla
-copy %STARTDIR%\scintilla.gcc %WXWIN%\3rdParty\build\scintilla\makefile.gcc
-
 md 3rdParty\build\sheet
-copy %STARTDIR%\sheet.gcc %WXWIN%\3rdParty\build\sheet\makefile.gcc
-
 md 3rdParty\build\things
-copy %STARTDIR%\things.gcc %WXWIN%\3rdParty\build\things\makefile.gcc
-
 md 3rdParty\build\treelistctrl
-copy %STARTDIR%\treelistctrl.gcc %WXWIN%\3rdParty\build\treelistctrl\makefile.gcc
-
 md 3rdParty\build\treemultictrl
-copy %STARTDIR%\treemultictrl.gcc %WXWIN%\3rdParty\build\treemultictrl\makefile.gcc
 
 md 3rdParty\include
 md 3rdParty\include\wx
 md 3rdParty\include\wx\chartart
-copy %WXCODE%\components\wxchart\build\msw\*.rc %WXWIN%\3rdParty\build\msw\
+rem copy %WXCODE%\wxchart\build\msw\*.rc %WXWIN%\3rdParty\build\msw\
 
-copy %WXCODE%\components\wxchart\include\wx\*.h %WXWIN%\3rdParty\include\wx\
-copy %WXCODE%\components\wxchart\include\wx\chartart\chart*.* %WXWIN%\3rdParty\include\wx\chartart\
+copy %WXCODE%\wxchart\include\wx\*.h %WXWIN%\3rdParty\include\wx\
+copy %WXCODE%\wxchart\include\wx\chartart\*.* %WXWIN%\3rdParty\include\wx\chartart\
 
 md 3rdParty\include\wx\plotctrl
-copy %WXCODE%\components\wxplotctrl\include\wx\plotctrl\*.h %WXWIN%\3rdParty\include\wx\plotctrl\
+copy %WXCODE%\wxplotctrl\include\wx\plotctrl\*.h %WXWIN%\3rdParty\include\wx\plotctrl\
 
-copy %WXCODE%\components\wxscintilla\include\wx\*.h %WXWIN%\3rdParty\include\wx\
+copy %WXCODE%\wxscintilla\include\wx\*.h %WXWIN%\3rdParty\include\wx\
 
 md 3rdParty\include\wx\sheet
-copy %WXCODE%\components\wxsheet\include\wx\sheet\*.h %WXWIN%\3rdParty\include\wx\sheet\
+copy %WXCODE%\wxsheet\include\wx\sheet\*.h %WXWIN%\3rdParty\include\wx\sheet\
 
 md 3rdParty\include\wx\things
-copy %WXCODE%\components\wxthings\include\wx\things\*.h %WXWIN%\3rdParty\include\wx\things\
+copy %WXCODE%\wxthings\include\wx\things\*.h %WXWIN%\3rdParty\include\wx\things\
 
-copy %WXCODE%\components\treelistctrl\include\wx\*.h %WXWIN%\3rdParty\include\wx\
+copy %WXCODE%\treelistctrl\include\wx\*.h %WXWIN%\3rdParty\include\wx\
 
 md 3rdParty\include\wx\treemultictrl
-copy %WXCODE%\components\treemultictrl\contrib\include\wx\treemultictrl\*.h %WXWIN%\3rdParty\include\wx\treemultictrl
+copy %WXCODE%\treemultictrl\contrib\include\wx\treemultictrl\*.h %WXWIN%\3rdParty\include\wx\treemultictrl
 
 md 3rdParty\src
 md 3rdParty\src\chartart
-copy %WXCODE%\components\wxchart\src\*.c* %WXWIN%\3rdParty\src\chartart\
+copy %WXCODE%\wxchart\src\*.c* %WXWIN%\3rdParty\src\chartart\
  
 md 3rdParty\src\plotctrl
-copy %WXCODE%\components\wxplotctrl\src\*.c* %WXWIN%\3rdParty\src\plotctrl\
-copy %WXCODE%\components\wxplotctrl\src\*.h* %WXWIN%\3rdParty\src\plotctrl\
+copy %WXCODE%\wxplotctrl\src\*.c* %WXWIN%\3rdParty\src\plotctrl\
+copy %WXCODE%\wxplotctrl\src\*.h* %WXWIN%\3rdParty\src\plotctrl\
 
 md 3rdParty\src\scintilla
 md 3rdParty\src\scintilla\include
 md 3rdParty\src\scintilla\src
-copy %WXCODE%\components\wxscintilla\src\*.c* %WXWIN%\3rdParty\src\
-copy %WXCODE%\components\wxscintilla\src\*.h* %WXWIN%\3rdParty\src\
-copy %WXCODE%\components\wxscintilla\src\scintilla\include\*.h* %WXWIN%\3rdParty\src\scintilla\include\
-copy %WXCODE%\components\wxscintilla\src\scintilla\src\*.c* %WXWIN%\3rdParty\src\scintilla\src\
-copy %WXCODE%\components\wxscintilla\src\scintilla\src\*.h* %WXWIN%\3rdParty\src\scintilla\src\
+copy %WXCODE%\wxscintilla\src\*.c* %WXWIN%\3rdParty\src\
+copy %WXCODE%\wxscintilla\src\*.h* %WXWIN%\3rdParty\src\
+copy %WXCODE%\wxscintilla\src\scintilla\include\*.h* %WXWIN%\3rdParty\src\scintilla\include\
+copy %WXCODE%\wxscintilla\src\scintilla\src\*.c* %WXWIN%\3rdParty\src\scintilla\src\
+copy %WXCODE%\wxscintilla\src\scintilla\src\*.h* %WXWIN%\3rdParty\src\scintilla\src\
 
 md 3rdParty\src\sheet
-copy %WXCODE%\components\wxsheet\src\*.c* %WXWIN%\3rdParty\src\sheet\
+copy %WXCODE%\wxsheet\src\*.c* %WXWIN%\3rdParty\src\sheet\
 
 md 3rdParty\src\things
-copy %WXCODE%\components\wxthings\src\*.c* %WXWIN%\3rdParty\src\things\
+copy %WXCODE%\wxthings\src\*.c* %WXWIN%\3rdParty\src\things\
 
 md 3rdParty\src\treelistctrl
-copy %WXCODE%\components\treelistctrl\src\*.c* %WXWIN%\3rdParty\src\treelistctrl\
+copy %WXCODE%\treelistctrl\src\*.c* %WXWIN%\3rdParty\src\treelistctrl\
 
 md 3rdParty\src\treemultictrl
 md 3rdParty\src\treemultictrl\images
-copy %WXCODE%\components\treemultictrl\contrib\src\treemultictrl\*.c* %WXWIN%\3rdParty\src\treemultictrl\
-copy %WXCODE%\components\treemultictrl\contrib\src\treemultictrl\*.x* %WXWIN%\3rdParty\src\treemultictrl\
-copy %WXCODE%\components\treemultictrl\contrib\src\treemultictrl\images\*.p* %WXWIN%\3rdParty\src\treemultictrl\images\
+copy %WXCODE%\treemultictrl\contrib\src\treemultictrl\*.c* %WXWIN%\3rdParty\src\treemultictrl\
+copy %WXCODE%\treemultictrl\contrib\src\treemultictrl\*.x* %WXWIN%\3rdParty\src\treemultictrl\
+copy %WXCODE%\treemultictrl\contrib\src\treemultictrl\images\*.p* %WXWIN%\3rdParty\src\treemultictrl\images\
 
 
 md 3rdParty\samples
 md 3rdParty\samples\chartart
-copy %WXCODE%\components\wxchart\samples\*.* %WXWIN%\3rdParty\samples\chartart\
+copy %WXCODE%\wxchart\samples\*.* %WXWIN%\3rdParty\samples\chartart\
 
 md 3rdParty\samples\plotctrl
-copy %WXCODE%\components\wxplot\src\demowxplot\*.* %WXWIN%\3rdParty\samples\plotctrl\
+copy %WXCODE%\wxplotctrl\samples\plotctrl\wx*.* %WXWIN%\3rdParty\samples\plotctrl\
 
 md 3rdParty\samples\scintilla
-copy %WXCODE%\components\wxscintilla\samples\test\*.* %WXWIN%\3rdParty\samples\scintilla\
+copy %WXCODE%\wxscintilla\samples\test\*.* %WXWIN%\3rdParty\samples\scintilla\
 
 md 3rdParty\samples\sheet
-copy %WXCODE%\components\wxsheet\samples\sheet\*.* %WXWIN%\3rdParty\samples\sheet\
+copy %WXCODE%\wxsheet\samples\sheet\*.* %WXWIN%\3rdParty\samples\sheet\
 
 md 3rdParty\samples\things
 md 3rdParty\samples\things\filebrws
 md 3rdParty\samples\things\things
-copy %WXCODE%\components\wxthings\samples\filebrws\*.* %WXWIN%\3rdParty\samples\things\filebrws\
-copy %WXCODE%\components\wxthings\samples\*.* %WXWIN%\3rdParty\samples\things\things\
+copy %WXCODE%\wxthings\samples\filebrws\file*.* %WXWIN%\3rdParty\samples\things\filebrws\
+copy %WXCODE%\wxthings\samples\filebrws\wxfile*.* %WXWIN%\3rdParty\samples\things\filebrws\
+copy %WXCODE%\wxthings\samples\things\things*.* %WXWIN%\3rdParty\samples\things\things\
 
 md 3rdParty\samples\treelisttest
 md 3rdParty\samples\treelisttest\bitmaps
-copy %WXCODE%\components\treelistctrl\samples\treelisttest\*.c* %WXWIN%\3rdParty\samples\treelisttest\ 
-copy %WXCODE%\components\treelistctrl\samples\treelisttest\*.rc* %WXWIN%\3rdParty\samples\treelisttest\ 
-copy %WXCODE%\components\treelistctrl\samples\treelisttest\*.ic* %WXWIN%\3rdParty\samples\treelisttest\ 
-copy %WXCODE%\components\treelistctrl\samples\treelisttest\*.x* %WXWIN%\3rdParty\samples\treelisttest\bitmaps\ 
-copy %WXCODE%\components\treelistctrl\samples\treelisttest\*.b* %WXWIN%\3rdParty\samples\treelisttest\bitmaps\ 
+copy %WXCODE%\treelistctrl\samples\treelisttest\*.c* %WXWIN%\3rdParty\samples\treelisttest\ 
+copy %WXCODE%\treelistctrl\samples\treelisttest\*.rc* %WXWIN%\3rdParty\samples\treelisttest\ 
+copy %WXCODE%\treelistctrl\samples\treelisttest\*.ic* %WXWIN%\3rdParty\samples\treelisttest\ 
+copy %WXCODE%\treelistctrl\samples\treelisttest\bitmaps\*.x* %WXWIN%\3rdParty\samples\treelisttest\bitmaps\ 
+copy %WXCODE%\treelistctrl\samples\treelisttest\bitmaps\*.b* %WXWIN%\3rdParty\samples\treelisttest\bitmaps\ 
 
 md 3rdParty\samples\treemultictrl
-copy %WXCODE%\components\treemultictrl\contrib\src\*.* %WXWIN%\3rdParty\src\treemultictrl\
+copy %WXCODE%\treemultictrl\contrib\samples\treemultictrl\*.* %WXWIN%\3rdParty\src\treemultictrl\
 
-rem make the folder for 3rd party libraries
-md 3rdparty\lib
-md 3rdparty\lib\gcc_lib
 
+cd /d %WXWIN%
+rem change unix line endings to windows/dos line endings
+rem for /R ""%%G in (*.cpp *.h *.c) do %STARTDIR%\gsar -ud -o %%G
 
 
 rem Change the plotctrl files 
-rem %STARTDIR%\gsar -sWX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE -r//WX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE -o 3rdparty\include/wx/plotctrl/plotcurv.h
+%STARTDIR%\gsar -sWX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE -r//WX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE -o 3rdparty\include/wx/plotctrl/plotcurv.h
+%STARTDIR%\gsar -s#include:x20:x22wx/bitmap -r#include:x20:x22wx/window.h:x22:x0d:x0a#include:x20:x22wx/bitmap -o 3rdparty\include/wx/plotctrl/plotctrl.h
+
+rem Change the sheet files
+%STARTDIR%\gsar -sdcscreen:x2eh:x22:x0a#endif -rdcscreen:x2eh:x22:x0a#include:x20:x22wx/combobox:x2eh:x22:x0d:x0a#endif -o 3rdparty\src/sheet/sheet.cpp
+%STARTDIR%\gsar -sWX_DELEGATE_TO_CONTROL_CONTAINER(wxSheetSplitter) -rWX_DELEGATE_TO_CONTROL_CONTAINER(wxSheetSplitter,:x20wxWindow) -o 3rdparty\src/sheet/sheetspt.cpp
 
 rem Change the things files
 rem need to remove the change first if we have already done this once 
-%STARTDIR%\gsar -s#define:x20exp10(X):x20pow(10.0,:x20(X)) -r -o 3rdparty\src\things\matrix2d.cpp
+rem %STARTDIR%\gsar -s#define:x20exp10(X):x20pow(10.0,:x20(X)) -r -o 3rdparty\src\things\matrix2d.cpp
 rem now do the change
+rem %STARTDIR%\gsar -s#include:x20:x3cmath.h:x3e -r#include:x20:x3cmath.h:x3e:x0d:x0a#define:x20exp10(X):x20pow(10.0,:x20(X)) -o 3rdparty\src\things\matrix2d.cpp
 %STARTDIR%\gsar -s#include:x20:x3cmath.h:x3e -r#include:x20:x3cmath.h:x3e:x0d:x0a#define:x20exp10(X):x20pow(10.0,:x20(X)) -o 3rdparty\src\things\matrix2d.cpp
 
-cd 3rdparty\build\chartart
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_chartart.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\plotctrl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_plotctrl.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\scintilla
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1  2> error_scintilla.txt
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\sheet
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_sheet.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\things
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_things.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\treelistctrl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_treelist.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\treemultictrl
-mingw32-make -f makefile.gcc BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_treemultictrl.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
+rem Change the treelistctrl files
+%STARTDIR%\gsar -sscrolwin.h:x3e:x0a -rscrolwin.h:x3e:x0a#include:x20:x3cwx/dcmemory.h:x3e -o 3rdparty\src\treelistctrl\treelistctrl.cpp
 
 FOR /R %WXWIN%\3rdParty\samples\ %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
+
+rem make the folder for 3rd party libraries
+md 3rdparty\lib
+
+cd /d %WXWIN%
+IF NOT "%BUILDGCC%"=="Y" GOTO VCMAKE3rdp
+
+CALL %STARTDIR%\wxWidgets_3rdparty.bat gcc
+IF NOT "%BUILDRESULT%"=="P" GOTO GCC_3RDPARTY_BUILD_ERR
+
+:VCMAKE3rdp
+IF NOT "%BUILDVC%"=="Y" GOTO DMCMAKE3rdp
+CALL %STARTDIR%\wxWidgets_3rdparty.bat vc
+IF NOT "%BUILDRESULT%"=="P" GOTO VC_3RDPARTY_BUILD_ERR
+
+
+:DMCMAKE3rdp
+IF NOT "%BUILDDMC%"=="Y" GOTO BCCMAKE3rdp
+CALL %STARTDIR%\wxWidgets_3rdparty.bat dmc
+IF NOT "%BUILDRESULT%"=="P" GOTO DMC_3RDPARTY_BUILD_ERR
+
+
+:BCCMAKE3rdp
+IF NOT "%BUILDBCC%"=="Y" GOTO 3rdpDEP
+CALL %STARTDIR%\wxWidgets_3rdparty.bat bcc
+IF NOT "%BUILDRESULT%"=="P" GOTO BCC_3RDPARTY_BUILD_ERR
+
+
+:3rdpDEP
 
 @echo --------------------------------------------------------------------
 @echo -
@@ -333,45 +446,61 @@ FOR /R %WXWIN%\3rdParty\samples\ %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro,
 
 rem Write the files to subdirectory setup devpak
 
-cd %STARTDIR%
+IF NOT "%BUILDGCC%"=="Y" GOTO VC_EXT_DEVPAK
+call %STARTDIR%\set_extras gcc
 
-copy wxWidgets_gcc_extras.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_gcc_extras.DevPackage
+:VC_EXT_DEVPAK
+IF NOT "%BUILDVC%"=="Y" GOTO DMC_EXT_DEVPAK
+call %STARTDIR%\set_extras vc
 
-cd %DEVPAKDIR%
+:DMC_EXT_DEVPAK
+IF NOT "%BUILDDMC%"=="Y" GOTO BCC_EXT_DEVPAK
+call %STARTDIR%\set_extras dmc
 
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_gcc_extras.DevPackage
+:BCC_EXT_DEVPAK
+IF NOT "%BUILDBCC%"=="Y" GOTO EXT_COMMON
+call %STARTDIR%\set_extras bcc
 
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_gcc_extras.DevPackage
 
-rem Copy the wxWidgets libs and include files to the new devpak directory
-xcopy /S %WXWIN%\3rdparty\lib\gcc_lib extras\gcc_lib\
-xcopy /S %WXWIN%\3rdParty\include extras\include\
-xcopy /S %WXWIN%\3rdParty\samples extras\samples\
-copy %WXCODE%\components\wxchart\build\msw\wxchart.rc extras\
+:EXT_COMMON
+cd /d %STARTDIR%
+copy wxWidgets_extras_common.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_extras_common.DevPackage
+
+cd /d %DEVPAKDIR%
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_extras_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_extras_common.DevPackage
+
+xcopy %WXWIN%\3rdParty\include extras\include\ /e /Y /Q
+xcopy %WXWIN%\3rdParty\samples extras\samples\ /e /Y /Q
+copy %WXCODE%\wxchart\build\msw\wxchart.rc extras\
+
 
 :BUILD_OK
-
 FOR /R %WXWIN%\demos\ %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
 FOR /R %WXWIN%\samples\ %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
 
 
 rem Write the Sample files to subdirectory setup devpak
 
-cd %STARTDIR%
+cd /d %STARTDIR%
 
 copy wxWidgets_samples.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_samples.DevPackage
 
-cd %DEVPAKDIR%
+cd /d %DEVPAKDIR%
 
 %STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_samples.DevPackage
 
 %STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_samples.DevPackage
 
+md samples
+md samples\samples
+md samples\samples\generic
+
 rem Copy the wxWidgets demo and example files to the new devpak directory
-xcopy /S %WXWIN%\demos samples\samples\
-xcopy /S %WXWIN%\samples samples\samples\
-xcopy /S %WXWIN%\src\generic samples\samples\generic\
-xcopy /S %WXWIN%\art samples\art\
+xcopy %WXWIN%\demos samples\samples\ /e /Y /Q
+xcopy %WXWIN%\samples samples\samples\ /e /Y /Q
+xcopy %WXWIN%\src\generic samples\samples\generic\ /e /Y /Q
+xcopy %WXWIN%\art samples\art\ /e /Y /Q
 
 FOR /R %DEVPAKDIR% %%G IN (*.bak) DO del %%G
 
@@ -382,26 +511,120 @@ chdir /d %STARTDIR%
 
 goto EXIT
 
-
-
-:BASE_BUILD_ERR
+:GCC_BASE_BUILD_ERR
 @echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      GCC
 @echo X
 @echo      Base wxWidgets build failed
 @echo X
 @echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 goto ERROR_EXIT
 
-:CONTRIB_BUILD_ERR
+:VC_BASE_BUILD_ERR
 @echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Visual C++
+@echo X
+@echo      Base wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:DMC_BASE_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Digital Mars
+@echo X
+@echo      Base wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:BCC_BASE_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Borland
+@echo X
+@echo      Base wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:GCC_CONTRIB_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      GCC
 @echo X
 @echo      Contrib wxWidgets build failed
 @echo X
 @echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 goto ERROR_EXIT
 
-:3RDPARTY_BUILD_ERR
+:VC_CONTRIB_BUILD_ERR
 @echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Visual C++
+@echo X
+@echo      Contrib wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:DMC_CONTRIB_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Digital Mars
+@echo X
+@echo      Contrib wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:BCC_CONTRIB_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Borland
+@echo X
+@echo      Contrib wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:GCC_3RDPARTY_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      GCC
+@echo X
+@echo      3rd Party wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:VC_3RDPARTY_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Visual C++
+@echo X
+@echo      3rd Party wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:DMC_3RDPARTY_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Digital Mars
+@echo X
+@echo      3rd Party wxWidgets build failed
+@echo X
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+goto ERROR_EXIT
+
+:BCC_3RDPARTY_BUILD_ERR
+@echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+@echo X
+@echo      Borland
 @echo X
 @echo      3rd Party wxWidgets build failed
 @echo X
