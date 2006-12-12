@@ -1,0 +1,139 @@
+How to use the batch files to create a DevPak.
+
+Actually the batch file prepares almost everything for the creation of the devpaks needed by wxDev-C++
+
+Steps to create a DevPak.
+
+1. Fire up wxDev-C++ and use the Tools - Check for Updates function to install the Package Maker or PackMaker package.
+
+2. You might find it helpful to copy the PackMaker.exe file to the wx_devpak_batchmaker folder, and in fact once we develop a non-gui program to create the devpak's we'll need it placed here anyway.
+
+3. Download the following 3rd party components:- treelistctrl, treemultictrl, wxChart, wxPlotctrl, wxScintilla, wxSheet, wxThings.
+
+To download the components, point your browser to https://sourceforge.net/project/showfiles.php?group_id=51305&package_id=45182, and select from the list presented.
+
+4. Create a folder on your drive somewhere called wxCode (you can call it whatever you wish, just remember to enter the correct folder information when asked).
+
+5. Unzip the downloaded files into this folder. Be careful, since some decompression programs seem to create several folders under the one defined, and the batch file is written for a specific folder construction and will NOT work correctly if the folder structure is not followed correctly.
+
+6. Rename the folders to remove any suffixes or extra information (we want a folder wxChart- NOT wxChart-1.0)
+
+   You should be left with a folder structure like this
+
+\
+  wxCode
+        |
+        |---treelistctrl
+        |   |---docs
+        |   |   |---latex
+        |   |---include
+        |   |   |---wx
+        |   |---samples
+        |   |   |---treelisttest
+        |   |       |---bitmaps
+        |   |---src
+        |   |---website
+        |---treemultictrl
+        |   |---bin
+        |   |---build
+        |   |   |---bakefiles
+        |   |   |---msw
+        |   |---contrib
+        |   |   |---include
+        |   |   |   |---wx
+        |   |   |       |---treemultictrl
+        |   |   |---lib
+        |   |   |   |---xml
+        |   |   |---samples
+        |   |   |   |---treemultictrl
+        |   |   |---src
+        |   |       |---treemultictrl
+        |   |           |---images
+        |   |---doc
+        |   |   |---research
+        |   |---docs
+        |   |---pics
+        |---wxchart
+        |   |---build
+        |   |   |---msw
+        |   |---include
+        |   |   |---wx
+        |   |       |---chartart
+        |   |---lib
+        |   |---samples
+        |   |---src
+        |---wxplotctrl
+        |   |---art
+        |   |---build
+        |   |---docs
+        |   |---include
+        |   |   |---wx
+        |   |       |---plotctrl
+        |   |---samples
+        |   |   |---plotctrl
+        |   |---src
+        |---wxscintilla
+        |   |---build
+        |   |---include
+        |   |   |---wx
+        |   |---lib
+        |   |---samples
+        |   |   |---test
+        |   |---src
+        |   |   |---scintilla
+        |   |       |---include
+        |   |       |---src
+        |   |---website
+        |       |---images
+        |---wxsheet
+        |   |---build
+        |   |---docs
+        |   |---include
+        |   |   |---wx
+        |   |       |---sheet
+        |   |---lib
+        |   |---samples
+        |   |   |---sheet
+        |   |---src
+        |   |---website
+        |---wxthings
+            |---build
+            |---docs
+            |---include
+            |   |---wx
+            |       |---things
+            |---lib
+            |---samples
+            |   |---filebrws
+            |   |---things
+            |---src
+
+
+7. Download the version of wxWidgets you desire from the wxWidgets web site (http://www.wxwidgets.org/download)
+
+8. Install/decompress the wxWidgets library - remember to install it into a folder named to represent the version of wxWidgets being compiled (wxMSW-2.7.2, NOT just wxWidgets = although wxWidgets-2.7.2 is good). The batch file should work irrespective of the directory name, but it is more prudent to keep the version number when installing wxwidgets, since it is possible to have several versions of wxWidgets on the drive at the same time (which is useful in finding why what used to work doesn't anymore).
+
+9. change to the wx_devpak_batchmaker folder.
+
+10. Either 1) open a command window, type wxWidgets then press enter or
+           2) Double click (or select and press enter) wxWidgets.bat file.
+
+11. Answer the questions on the screen, or in ANY CASE the first 3, 
+what version are you building (2.7.2 is the default, so if you are building this version just press ENTER)?
+Where is the wxwidgets located? (default c:\wxMSW-2.7.2)
+where are the wxCode files located (default c:\wxCode)
+
+You can now leave the batch file to do its work, it is set up to create all libraries, for the GCC compiler. Should you wish to use another compiler, or only build a certain library, then answer the questiions on the screen, Y or N, doing nothing accepts the default answer after 5 seconds.
+
+12. Make a cup of coffee/tea/stiff drink and watch some television/read that book you've been putting off for some time/spend some quality time with your loved one, because you're in for a wait while the libraries are building.
+
+13. Examine the screen. If anything went wrong in the building of the libraries, then you should see a warning message, it is up to you to find and correct the errors. If there are no errors, then all the libraries have been built correctly, and the files needed to build the devpaks will have been copied to a folder beneath the wx_devpak_batchmaker folder named after the wxWIDGETS VERSION BEING BUILT (E.G. devpaks_2.7.2)
+
+14. Start the program PackMaker (see points 1 and 2 above)
+
+15. You are asked if you want to "create a new package" or "open an existing package". Go for "open an existing package". The batch process has placed suitable project files in the devpaks folder for you.
+
+16. In the screen presented choose your devpak. You might have to browse to the wx_devpak_batchmaker/devpaks folder. Choose the devpak file you wish to create (take for example "wxWidgets_2.7.2_common", select it and click on "Open"
+
+17. The required fields are already filled in for you, simply click on the "Build Package" Toolbutton (the one to the left of the smiley), and after a couple of seconds/minutes, you should be presented with a message saying that the devpak has been successfully completed. You can now opt to open another package file to build another devpak, or simply close the program, and retire safe in the knowledge that you are now able to maintain an up to the minute devpak for your wxDevC++ program, should it become necessary.
+

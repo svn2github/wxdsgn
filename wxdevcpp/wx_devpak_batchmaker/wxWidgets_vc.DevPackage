@@ -1,0 +1,15 @@
+[Setup]
+Version=2
+AppName=wxWidgets _WXVER_ MS VC 2005
+AppVerName=wxWidgets _WXVER_
+AppVersion=_WXVER_
+MenuName=
+Description=wxWidgets monolithic, ansi MS VC 2005 build
+Url=http://www.wxwidgets.org
+Readme=docs\readme.txt
+License=docs\licence.txt
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+vc\vc_lib=<app>\lib\vc2005\

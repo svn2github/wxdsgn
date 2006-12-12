@@ -1,10 +1,10 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Extras MinGW gcc
+AppName=wxWidgets _WXVER_ Extras common
 AppVerName=wxWidgets version _WXVER_ 3rd Party Components
 AppVersion=_WXVER_
 MenuName=
-Description=wxWidgets 3rd Party Components monolithic, ansi MinGW gcc build
+Description=wxWidgets 3rd Party Components common include files
 Url=http://WxCode.Sourceforge.net
 Readme=docs\readme.txt
 License=docs\licence.txt
@@ -12,4 +12,6 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-extras\gcc_lib=<app>\lib\
+extras\wxchart.rc=<app>\include\3rdparty\
+extras\include=<app>\include\3rdparty\
+extras\samples=<app>\examples\wxWidgets\

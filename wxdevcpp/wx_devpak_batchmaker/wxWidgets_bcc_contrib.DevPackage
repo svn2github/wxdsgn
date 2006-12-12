@@ -1,10 +1,10 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Contribs MinGW gcc
+AppName=wxWidgets _WXVER_ Contribs Borland 
 AppVerName=wxWidgets Contribs version _WXVER_ 
 AppVersion=_WXVER_
 MenuName=
-Description=wxWidgets Contribs monolithic, ansi MinGW gcc build
+Description=wxWidgets Contribs monolithic, ansi Borland build
 Url=www.wxwidgets.org
 Readme=docs\readme.txt
 License=docs\licence.txt
@@ -12,5 +12,5 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-contrib\gcc_lib=<app>\lib\
-[Icons]
+contrib\bcc_lib=<app>\lib\bcc\
+Icons]

@@ -1,0 +1,15 @@
+[Setup]
+Version=2
+AppName=wxWidgets _WXVER_ Borland
+AppVerName=wxWidgets _WXVER_
+AppVersion=_WXVER_
+MenuName=
+Description=wxWidgets monolithic, ansi Borland build
+Url=http://www.wxwidgets.org
+Readme=docs\readme.txt
+License=docs\licence.txt
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+bcc\bcc_lib=<app>\lib\bcc\
