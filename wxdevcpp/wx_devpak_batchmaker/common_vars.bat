@@ -8,13 +8,13 @@ echo off
 cls
 
 rem Default wxWidgets root directory
-set WXVER=2.7.2
+set WXVER=2.8.0
 
 echo What version of wxWidgets are you building (Default = %WXVER%)?
 set /P WXVER=
 set DEVPAKDIR=%STARTDIR%\devpaks_%WXVER%
 
-set WXWIN=c:\wxMSW-%WXVER%
+set WXWIN=c:\wxWidgets-%WXVER%
 
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
 set /P WXWIN=
