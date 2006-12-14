@@ -4,7 +4,7 @@
 ; http://nsis.sourceforge.net/
 
 !define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.10beta"
+!define WXDEVCPP_VERSION "6.10.1beta"
 !define PROGRAM_NAME "wx-devcpp"
 !define DEFAULT_START_MENU_DIRECTORY "wx-devcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
@@ -12,37 +12,32 @@
 !define HAVE_MSVC
 !define NEW_INTERFACE
 
-!define wxWidgets_version "2.7.1"
-!define wxWidgets_name "wxWidgets_2_7_1"
+!define wxWidgets_version "2.8.0"
+!define wxWidgets_name "wxWidgets_${wxWidgets_version}"
 
 !ifdef HAVE_MINGW
 
   !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
-  !define wxWidgets_mingw "${wxWidgets_name}_gcc.entry"   ; name of the wxWidgets gcc entry
-
+  
   !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.devpak"  ; name of the contrib devpak
-  !define wxWidgetsContribGcc "${wxWidgets_name}_gcc_contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
-
-  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_Extras.devpak"  ; name of the samples devpak
-  !define wxWidgetsExtrasGcc "${wxWidgets_name}_gcc_Extras.entry" ; name of wxWidgets samples devpak entry in devcpp
-
+ 
+  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.devpak"  ; name of the extras devpak
+ 
 !endif
 
 !ifdef HAVE_MSVC
 
   !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
-  !define wxWidgets_msvc "${wxWidgets_name}_vc.entry"   ; name of the wxWidgets vc entry
-
+ 
   !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.devpak"  ; name of the contrib devpak
-  !define wxWidgetsContribMSVC "${wxWidgets_name}_vc_contrib.entry" ; name of wxWidgets contrib devpak entry in devcpp
-
+ 
+  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.devpak"  ; name of the extras devpak
+ 
 !endif
 
-!define wxWidgetsCommon_devpak "${wxWidgets_name}_common.devpak"  ; name of the samples devpak
-!define wxWidgetsCommon "${wxWidgets_name}_common.entry" ; name of wxWidgets samples devpak entry in devcpp
+!define wxWidgetsCommon_devpak "${wxWidgets_name}_common.devpak"  ; name of the common includes devpak
 
 !define wxWidgetsSamples_devpak "${wxWidgets_name}_samples.devpak"  ; name of the samples devpak
-!define wxWidgetsSamples "${wxWidgets_name}_samples.entry" ; name of wxWidgets samples devpak entry in devcpp
 
 Var LOCAL_APPDATA
 Var USE_MINGW
@@ -293,6 +288,10 @@ Section /o "Contribs" SectionwxWidgetsContribGcc
   
   SetOutPath $INSTDIR\Packages
   
+  File "Packages\${wxWidgets_name}_contrib_common.DevPak"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"'
+  Delete  "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"
+
   File "Packages\${wxWidgetsContribGcc_devpak}"   ; Copy the devpak over
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContribGcc_devpak}"'
   Delete  "$INSTDIR\Packages\${wxWidgetsContribGcc_devpak}"
@@ -305,8 +304,11 @@ Section /o "Extras" SectionwxWidgetsExtrasGcc
 
   SetOutPath $INSTDIR\Packages
 
-  File "Packages\${wxWidgetsExtrasGcc_devpak}"   ; Copy the devpak over
+File "Packages\${wxWidgets_name}_extras_common.DevPak"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"'
+  Delete  "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"
 
+  File "Packages\${wxWidgetsExtrasGcc_devpak}"   ; Copy the devpak over
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsExtrasGcc_devpak}"'
   Delete  "$INSTDIR\Packages\${wxWidgetsExtrasGcc_devpak}"
 
@@ -337,12 +339,31 @@ Section /o "Contribs" SectionwxWidgetsContribMSVC
 
   SetOutPath $INSTDIR\Packages
 
+  File "Packages\${wxWidgets_name}_contrib_common.DevPak"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"'
+  Delete  "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"
+
   File "Packages\${wxWidgetsContribMSVC_devpak}"   ; Copy the devpak over
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContribMSVC_devpak}"'
   Delete  "$INSTDIR\Packages\${wxWidgetsContribMSVC_devpak}"
 
 SectionEnd
 
+Section /o "Extras" SectionwxWidgetsExtrasMSVC
+
+  SectionIn 1
+
+  SetOutPath $INSTDIR\Packages
+
+  File "Packages\${wxWidgets_name}_extras_common.DevPak"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"'
+  Delete  "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"
+
+  File "Packages\${wxWidgetsExtrasMSVC_devpak}"   ; Copy the devpak over
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsExtrasMSVC_devpak}"'
+  Delete  "$INSTDIR\Packages\${wxWidgetsExtrasMSVC_devpak}"
+
+SectionEnd
 SectionGroupEnd
 
 !endif
@@ -354,7 +375,6 @@ Section "Samples" SectionwxWidgetsSamples
   SetOutPath $INSTDIR\Packages
 
   File "Packages\${wxWidgetsSamples_devpak}"   ; Copy the devpak over
-
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"'
   Delete  "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"
 
@@ -743,6 +763,7 @@ Function CustomInstallOptions
   
   SectionSetFlags ${SectionwxWidgetsMSVC} $USE_MSVC
   SectionSetFlags ${SectionwxWidgetsContribMSVC} $USE_MSVC
+  SectionSetFlags ${SectionwxWidgetsExtrasMSVC} $USE_MSVC
   
   StrCmp $USE_MSVC "1" 0 +2
     Call CheckMSVC   ; Check to see if user really has MSVC installed
@@ -772,6 +793,7 @@ FunctionEnd
   LangString DESC_SectionGroupwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} for MS VC++ 2005"
   LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries compiled with MS VC 2005"
   LangString DESC_SectionwxWidgetsContribMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory for MS VC++ 2005"
+  LangString DESC_SectionwxWidgetsExtrasMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} extras directory for MS VC++ 2005"
 !endif
 
   LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} samples directory"
@@ -804,6 +826,7 @@ FunctionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsMSVC} $(DESC_SectionGroupwxWidgetsMSVC)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMSVC} $(DESC_SectionwxWidgetsMSVC)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContribMSVC} $(DESC_SectionwxWidgetsContribMSVC)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsExtrasMSVC} $(DESC_SectionwxWidgetsExtrasMSVC)
 !endif
 
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsExamples} $(DESC_SectionGroupwxWidgetsExamples)
