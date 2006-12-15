@@ -4169,10 +4169,9 @@ var
   strXPMContent: string;
 
 begin
+  Result := False;
   if bmp = nil then
-    exit;
-
-  Result := True;
+    Exit;
 
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
   xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
@@ -4191,25 +4190,16 @@ begin
     fileStrlst := TStringList.Create;
     try
       strXPMContent := GetXPMFromTPicture(strParentName+'_'+strCompName, bmp);
-      //strRawXPMContent:=GetRawXPMFromTPicture(strCompName,bmp);
       if trim(strXPMContent) <> '' then
       begin
         fileStrlst.Add(strXPMContent);
         fileStrlst.SaveToFile(xpmFileDir + strParentName+'_'+strCompName + '_XPM.xpm');
-
       end;
-      //            if trim(strRawXPMContent) <> '' then
-      //            begin
-      //                fileStrlst.Clear;
-      //                fileStrlst.Add(strRawXPMContent);
-      //                fileStrlst.SaveToFile(xpmFileDir+strCompName+'_XPM-Raw.xpm');
-      //            end;
-
     except
     end;
     fileStrlst.Destroy;
   end;
-
+  Result := True;
 end;
 
 function GetCommentString(str: string): string;
