@@ -252,6 +252,7 @@ implementation
 {$IFDEF LINUX}
 uses Libc;
 {$ENDIF}
+uses DbugIntf, utils;
 
 //helper functions for cross platform compilation
 {$IFDEF WIN32}
@@ -1973,7 +1974,7 @@ var
 begin
   Result := False;
   for I := 0 to fIncludePaths.Count - 1 do
-    if AnsiStartsText(fIncludePaths[I], Value) then begin
+    if AnsiStartsStr(LowerCase(GetShortName(ExtractFilePath(Value))), LowerCase(GetShortName(fIncludePaths[I]))) then begin
       Result := True;
       Break;
     end;
