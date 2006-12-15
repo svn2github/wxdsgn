@@ -1739,7 +1739,7 @@ var
   imgCtrl:IWxImageContainerInterface;
   mnuCtrl:IWxMenuBarInterface;
   bmp:TBitmap;
-  strPropertyName,strComponentName,strXPMFileName:String;
+  strPropertyName, strXPMFileName:String;
 begin
   for i:= 0 to self.ComponentCount -1 Do
   begin
