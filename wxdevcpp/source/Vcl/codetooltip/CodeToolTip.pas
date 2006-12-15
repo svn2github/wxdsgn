@@ -282,7 +282,7 @@ var
     if S[Index] = '>' then //template parameter
     begin
       TplArgs := 1;
-      repeat
+      while (TplArgs <> 0) and (Index > 1) do
       begin
         Dec(Index);
         case S[Index] of
@@ -292,7 +292,6 @@ var
             Dec(TplArgs);
         end;
       end;
-      until (TplArgs = 0) or (Index = 0);
     end;
 
     Inc(Index);
