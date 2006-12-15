@@ -3,8 +3,8 @@ object AddToDoForm: TAddToDoForm
   Top = 107
   BorderStyle = bsToolWindow
   Caption = 'Add To-Do item'
-  ClientHeight = 205
-  ClientWidth = 293
+  ClientHeight = 200
+  ClientWidth = 290
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -42,7 +42,7 @@ object AddToDoForm: TAddToDoForm
     Left = 8
     Top = 24
     Width = 277
-    Height = 89
+    Height = 95
     Lines.Strings = (
       'memDescr')
     ScrollBars = ssVertical
@@ -60,20 +60,20 @@ object AddToDoForm: TAddToDoForm
     Value = 1
   end
   object btnOK: TButton
-    Left = 67
+    Left = 131
     Top = 172
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'OK'
     Default = True
     TabOrder = 3
     OnClick = btnOKClick
   end
   object btnCancel: TButton
-    Left = 151
+    Left = 211
     Top = 172
     Width = 75
-    Height = 25
+    Height = 23
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
