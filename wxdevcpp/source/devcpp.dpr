@@ -1,4 +1,6 @@
 {
+    $Id$
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -21,7 +23,8 @@ program devcpp;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
-uses  
+uses
+  LanguagesDEPFix,
   FastMM4,
   FastCode,
 {$IFNDEF OLD_MADSHI}
@@ -31,7 +34,6 @@ uses
 {$ENDIF}
   madExcept,
   madLinkDisAsm,
-  madScreenShot,
   inifiles,
   Windows,
   Forms,
