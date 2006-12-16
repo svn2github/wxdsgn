@@ -1647,23 +1647,16 @@ end;
 procedure TdevDirs.SettoDefaults;
 var
   tempstr: String;
-  newstr:string;
 begin
-  fDefault:= IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
-  fBinDir:= ValidatePaths(fDefault + BIN_DIR(fCompilerType), tempstr);
-  fCDir:= ValidatePaths(fDefault + C_INCLUDE_DIR(fCompilerType), tempstr);
-  newstr:=CPP_INCLUDE_DIR(fCompilerType);
-  if fCompilerType in ID_COMPILER_VC then
-    fCppDir:= ValidatePaths(fDefault + StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]) + CPP_INCLUDE_DIR(fCompilerType), tempstr)
-  else
-    fCppDir:= ValidatePaths(fDefault + CPP_INCLUDE_DIR(fCompilerType)+ StringReplace(CPP_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
-  fLibDir:= ValidatePaths(fDefault + LIB_DIR(fCompilerType), tempstr);
-  {$IFDEF WX_BUILD}
-  fRCDir := ValidatePaths(fDefault + RC_INCLUDE_DIR(fCompilerType)  
-    + StringReplace(RC_INCLUDE_DIR(fCompilerType), ';', ';' + fDefault, [rfReplaceAll]), tempstr);
-  {$ELSE}
-  fRCDir := '';
-  {$ENDIF}
+  fBinDir := ValidatePaths(BIN_DIR(fCompilerType), tempstr);
+  fCDir   := ValidatePaths(C_INCLUDE_DIR(fCompilerType), tempstr);
+  fCppDir := ValidatePaths(CPP_INCLUDE_DIR(fCompilerType), tempstr);
+  fLibDir := ValidatePaths(LIB_DIR(fCompilerType), tempstr);
+{$IFDEF WX_BUILD}
+  fRCDir  := ValidatePaths(RC_INCLUDE_DIR(fCompilerType), tempstr);
+{$ELSE}
+  fRCDir  := '';
+{$ENDIF}
 
   fExec := ExtractFilePath(Application.ExeName);
   fConfig:= fExec;

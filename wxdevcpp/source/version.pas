@@ -1,5 +1,4 @@
 {
-
     $Id$
 
     This file is part of Dev-C++
@@ -52,7 +51,7 @@ resourcestring
   DEV_COMPLETION_CACHE = 'cache.ccc';
   DEV_DEFAULTCODE_FILE = 'defaultcode.cfg';
   DEV_SHORTCUTS_FILE = 'devshortcuts.cfg';
-  DEV_CLASSFOLDERS_FILE= 'classfolders.dcf';
+  DEV_CLASSFOLDERS_FILE = 'classfolders.dcf';
   DEV_WEBMIRRORS_FILE = 'mirrors.cfg';
   DEV_MAKE_FILE = 'Makefile.win';
   DEV_TOOLS_FILE = 'tools.ini';
@@ -63,6 +62,7 @@ resourcestring
   DEV_NEWLOOK_THEME = 'New Look';
   DEV_BLUE_THEME = 'Blue';
   DEV_INTERNAL_THEME = 'New Look';
+  
   // default directories
   GCC_BIN_DIR = 'Bin;';
   GCC_LIB_DIR = 'Lib;';
@@ -84,7 +84,6 @@ resourcestring
   VC6_LIB_DIR = 'Lib'+pd+'VC6';
   VC6_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC6;';
   VC6_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
-
 
   //DMAR
   DMARS_BIN_DIR = 'Bin;Bin'+pd+'dmars;';
