@@ -2252,10 +2252,10 @@ begin
 
     with devImageThemes do
     begin
+      //TODO: lowjoel: Update the images of the dockable windows too
       alMain.Images := CurrentTheme.MenuImages;
       MainMenu.Images := CurrentTheme.MenuImages;
       ProjectView.Images := CurrentTheme.ProjectImages;
-//      MessageControl.Images := CurrentTheme.MenuImages;
       tbMain.Images := CurrentTheme.MenuImages;
       tbCompile.Images := CurrentTheme.MenuImages;
       tbDebug.Images := CurrentTheme.MenuImages;
@@ -2277,6 +2277,8 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
+  //TODO: lowjoel: Do we need to track whether this is the first show? Can someone
+  //               trace into the code to see if this function is called more than once?
   if fFirstShow then
   begin
     LoadTheme;
@@ -2294,18 +2296,16 @@ begin
     dmMain.CodeOffset := 2;
     dmMain.LoadDataMod;
 
-    if ParamCount > 0 then ParseCmdLine;
+    if ParamCount > 0 then
+      ParseCmdLine;
 
-//    MessageControl.ActivePageIndex := 0;
-//    OpenCloseMessageSheet(devData.ShowOutput);
-
-{    if devData.MsgTabs then
+    //TODO: lowjoel: Can the tabs of the dockable forms be moved around?
+    {if devData.MsgTabs then
       MessageControl.TabPosition := tpTop
     else
       MessageControl.TabPosition := tpBottom;}
 
     SetupProjectView;
-
     fFirstShow := FALSE;
   end;
 end;
@@ -3576,6 +3576,8 @@ begin
     pt.X, pt.y, 0, Self.Handle, nil);
 end;
 
+//TODO: lowjoel: remove this function - the message sheet has been replaced by
+//               the new JVCL dockable tabs thing
 procedure TMainForm.OpenCloseMessageSheet;
 begin
   if Assigned(ReportToolWindow) then
@@ -4368,7 +4370,7 @@ begin
 
       devCompiler.CompilerSet:=fProject.CurrentProfile.CompilerSet;
       devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
-      devCompilerSet.AssignToCompiler();
+      devCompilerSet.AssignToCompiler;
       devCompiler.OptionStr:=fProject.CurrentProfile.CompilerOptions;
 
       if not devData.ProjectView then
@@ -5857,6 +5859,7 @@ var
    i : Integer;
 {$ENDIF}
 begin
+  //TODO: lowjoel: What on earth is this meant to do?!
   case key of
 {$IFDEF WIN32}
     VK_F6:
