@@ -54,22 +54,24 @@ type
     property SelectedComponent: string read GetSelectedComponent;
     
     procedure UnselectComponents;
-  end;
+  end;                  
 
 implementation
 uses
-  ImgList, WxBoxSizer, WxStaticBoxSizer, WxGridSizer, WxButton, WxBitmapButton,
-  WxCheckBox, WxChoice, WxComboBox, WxEdit, WxGauge, WxListBox, WxListCtrl,
-  WxMemo, WxRadioButton, WxScrollBar, WxGrid, WxSlider, WxSpinButton, WxStaticBitmap,
-  WxStaticBox, WxStaticLine, WxStaticText, WxControlPanel, WxTreeCtrl, WxFlexGridSizer,
-  WxPanel, WxNotebook, WxStatusBar, WxToolbar, WxNoteBookPage, WxCheckListBox,
-  WxSpinCtrl, WxScrolledWindow, WxHtmlWindow, WxToolButton, WxSeparator, WxPopupMenu,
-  WxMenuBar, WxOpenFileDialog, WxSaveFileDialog, WxFontDialog, WxMessageDialog,
+  ImgList, wxStdDialogButtonSizer, WxBoxSizer, WxStaticBoxSizer, WxGridSizer,
+  WxButton, WxBitmapButton, WxCheckBox, WxChoice, WxComboBox, WxEdit, WxGauge,
+  WxListBox, WxListCtrl, WxMemo, WxRadioButton, WxScrollBar, WxGrid, WxSlider,
+  WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine, WxStaticText,
+  WxControlPanel, WxTreeCtrl, WxFlexGridSizer, WxPanel, WxNotebook, WxStatusBar,
+  WxToolbar, WxNoteBookPage, WxCheckListBox, WxSpinCtrl, WxScrolledWindow,
+  WxHtmlWindow, WxToolButton, WxSeparator, WxPopupMenu, WxMenuBar,
+  WxOpenFileDialog, WxSaveFileDialog, WxFontDialog, WxMessageDialog,
   WxProgressDialog, WxPrintDialog, WxFindReplaceDialog, WxDirDialog, WxColourDialog,
-  WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow, WxDatePickerCtrl,
-  WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC, WxRichTextCtrl, WxTreeListCtrl,
-  WxCalendarCtrl, WxTextEntryDialog, WxPasswordEntryDialog, WxSingleChoiceDialog,
-  WxMultiChoiceDialog, WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl;
+  WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow,
+  WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
+  WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog,
+  WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog,
+  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl;
 
 const
   SearchPrompt = '(search component)';
@@ -79,7 +81,6 @@ begin
   //Create the base class
   inherited Create(Panel);
   Parent := Panel as TWinControl;
-//  Panel.InsertComponent(Self);
   Name := 'ComponentPalette';
 
   //Set up the size and alignment
@@ -105,8 +106,8 @@ begin
   ComponentImages := TImageList.Create(ComponentList);
   with ComponentImages do
   begin
-    Width := 24;
-    Height := 24;
+    Width := 16;
+    Height := 16;
   end;
 
   //And the tree-view browser
@@ -137,7 +138,10 @@ end;
 function TComponentPalette.GetAlternateName(Name: string): PChar;
 begin
   Name := UpperCase(Name);
-  if Name = 'TWXTREELISTCTRL' then
+  if (Name = 'TWXBOXSIZER') or (Name = 'TWXFLEXGRIDSIZER') or (Name = 'TWXGRIDSIZER') or
+     (Name = 'TWXSTATICBOXSIZER') or (Name = 'TWXSTDDIALOGBUTTONSIZER') then
+    Result := 'TWXSIZER'
+  else if Name = 'TWXTREELISTCTRL' then
     Result := 'TWXTREECTRL'
   else if Name = 'TWXPASSWORDENTRYDIALOG' then
     Result := 'TWXTEXTENTRYDIALOG'
@@ -147,8 +151,6 @@ begin
     Result := 'TWXCOMBOBOX'
   else if Name = 'TWXSTYLEDTEXTCTRL' then
     Result := 'TWXRICHTEXTCTRL'
-  else if Name = 'TWXCALENDARCTRL' then
-    Result := 'TWXDATEPICKERCTRL'
   else
     Result := '';
 end;
@@ -184,7 +186,8 @@ begin
     FolderIndex := ComponentImages.AddMasked(ComponentBitmap, clDefault);
 
     //Sizers
-    ComponentsList.Add('Sizers;TwxBoxSizer;TwxStaticBoxSizer;TwxGridSizer;TwxFlexGridSizer');
+    ComponentsList.Add('Sizers;TwxBoxSizer;TwxStaticBoxSizer;TwxGridSizer;TwxFlexGridSizer;' +
+                       'TwxStdDialogButtonSizer');
     //Controls
     ComponentsList.Add('"Common Controls";TwxStaticText;TwxButton;TwxBitmapButton;' +
                        'TwxToggleButton;TwxEdit;TwxMemo;TwxCheckBox;TwxChoice;' +
@@ -213,10 +216,10 @@ begin
                        'TwxMultiChoiceDialog;TwxHyperLinkCtrl;TwxDialUpManager;' +
                        'TwxHtmlEasyPrinting;TwxMediaCtrl');
 
-    RegisterClasses([TWxBoxSizer, TWxStaticBoxSizer, TWxGridSizer, TWxFlexGridSizer,
-                     TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton, TWxToggleButton,
-                     TWxCheckBox, TWxRadioButton, TWxChoice, TWxComboBox, TWxGauge,
-                     TWxGrid, TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar,
+    RegisterClasses([TWxStdDialogButtonSizer, TWxBoxSizer, TWxStaticBoxSizer, TWxGridSizer,
+                     TWxFlexGridSizer, TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,
+                     TWxToggleButton, TWxCheckBox, TWxRadioButton, TWxChoice, TWxComboBox,
+                     TWxGauge, TWxGrid, TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar,
                      TWxSpinButton, TWxTreeCtrl, TWxRadioBox, TWxStaticBitmap,
                      TWxstaticbox, TWxslider, TWxStaticLine, TWxDatePickerCtrl,
                      TWxPanel, TWxNoteBook, TWxStatusBar, TWxToolBar, TWxNoteBookPage,
@@ -270,7 +273,7 @@ begin
               Continue;
             end;
           end;
-          BitmapIndex := ComponentImages.AddMasked(ComponentBitmap, clDefault);
+          BitmapIndex := ComponentImages.AddMasked(ComponentBitmap, clFuchsia);
 
           //Then add the parent node, after which tell the tree-view that we do
           //not want images for the parent

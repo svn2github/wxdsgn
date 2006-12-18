@@ -89,6 +89,7 @@ type
   end;
   // END: TMultiLineBtn
 
+  TWxStdDialogButtons = set of (wxID_OK, wxID_YES, wxID_NO, wxID_CANCEL, wxID_HELP);
   TWxSizerAlignment = (wxALIGN_TOP, wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_BOTTOM,
     wxALIGN_CENTER, wxALIGN_CENTER_VERTICAL, wxALIGN_CENTER_HORIZONTAL, wxEXPAND);
   TWxBorderAlignment = set of(wxTOP, wxLEFT, wxRIGHT, wxBOTTOM, wxALL);
@@ -673,7 +674,7 @@ function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
   cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet): string;
 function GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
   cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;owncmbstyle: TWxOwnCmbStyleSet): string;
-
+function GetStdDialogButtonsSpecificStyle(btnstyle: TWxStdDialogButtons): string;
 function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxDlgStyleSet;
   wxclassname: string): string;
 
@@ -3315,6 +3316,25 @@ begin
     else
       Result := Result + ' | ' + strA;
 
+end;
+
+function GetStdDialogButtonsSpecificStyle(btnstyle: TWxStdDialogButtons): string;
+begin
+  if wxID_OK in btnstyle then
+    Result := Result + ' | wxOK';
+  if wxID_YES in btnstyle then
+    Result := Result + ' | wxYES';
+  if wxID_NO in btnstyle then
+    Result := Result + ' | wxNO';
+  if wxID_CANCEL in btnstyle then
+    Result := Result + ' | wxCANCEL';
+  if wxID_HELP in btnstyle then
+    Result := Result + ' | wxHELP';
+
+  if Result <> '' then
+    Result := Copy(Result, 4, Length(Result))
+  else
+    Result := '0';
 end;
 
 function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet;
