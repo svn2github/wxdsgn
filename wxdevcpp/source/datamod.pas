@@ -1,15 +1,4 @@
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q+,R+,S-,T-,U+,V+,W+,X+,Y+,Z1}
-{$MINSTACKSIZE $00004000}
-{$MAXSTACKSIZE $00100000}
-{$IMAGEBASE $00400000}
-{$APPTYPE GUI}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q+,R+,S-,T-,U+,V+,W+,X+,Y+,Z1}
-{$MINSTACKSIZE $00004000}
-{$MAXSTACKSIZE $00100000}
-{$IMAGEBASE $00400000}
-{$APPTYPE GUI}
 {
-
     $Id$
 
     This file is part of Dev-C++
@@ -36,9 +25,8 @@ interface
 
 uses
 {$IFDEF WX_BUILD}
-SynHighlighterXML,
+  SynHighlighterXML,
 {$ENDIF}
-
 {$IFDEF WIN32}
   SysUtils, Classes, Menus, Dialogs, ImgList, Controls,
   SynEditExport, SynExportHTML, SynExportRTF,
@@ -158,7 +146,7 @@ begin
   CppMultiSyn.Schemes[0].StartExpr := '(asm|_asm|__asm)(['#32#9']*)\{';
   CppMultiSyn.Schemes[0].EndExpr   := '\}';
   CppMultiSyn.Schemes[1].StartExpr := '(asm|_asm|__asm)(['#32#9']+)';
-  CppMultiSyn.Schemes[1].EndExpr := '$';
+  CppMultiSyn.Schemes[1].EndExpr := '(;*)$';
 end;
 
 procedure TdmMain.DataModuleDestroy(Sender: TObject);
