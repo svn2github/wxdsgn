@@ -163,16 +163,11 @@ end;
 
 destructor TWxStdDialogButtonSizer.Destroy;
 begin
-  AutoDestroy;                                         
+  AutoDestroy;
   inherited Destroy;
 end;
 
 function TWxStdDialogButtonSizer.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-  strOrientation: string;
-  i: integer;
-  wxcompInterface: IWxComponentInterface;
-  tempstring: TStringList;
 begin
   Result := TStringList.Create;
   //TODO: Tony: Implement this for XRC
@@ -180,8 +175,7 @@ end;
 
 function TWxStdDialogButtonSizer.GenerateGUIControlCreation: string;
 var
-  strOrientation, strAlignment: string;
-  parentName:  string;
+  strAlignment: string;
 begin
   //Create the sizer
   Result := Format('%s = CreateButtonSizer(%s);', [self.Name, GetStdDialogButtonsSpecificStyle(Wx_Buttons)]);
@@ -459,4 +453,3 @@ begin
 end;
 
 end.
- 

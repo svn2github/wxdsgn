@@ -8,7 +8,7 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-
+    
     Dev-C++ is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -912,7 +912,6 @@ type
     procedure doDebugAfterCompile(Sender: TObject);
 
 {$IFDEF WX_BUILD}
-    procedure Panel2Resize(Sender: TObject);
     procedure WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure ELDesigner1ChangeSelection(Sender: TObject);
@@ -930,7 +929,6 @@ type
     procedure JvInspEventsItemValueChanged(Sender: TObject;Item: TJvCustomInspectorItem);
     procedure cbxControlsxChange(Sender: TObject);
     procedure JvInspPropertiesBeforeSelection(Sender: TObject;NewItem: TJvCustomInspectorItem; var Allow: Boolean);
-    procedure est1Click(Sender: TObject);
     procedure JvInspPropertiesItemValueChanged(Sender: TObject;Item: TJvCustomInspectorItem);
     procedure ViewControlIDsClick(Sender: TObject);
     procedure AlignToGridClick(Sender: TObject);
@@ -960,7 +958,6 @@ type
     procedure StatusBarDrawPanel(StatusBar: TStatusBar;
       Panel: TStatusPanel; const Rect: TRect);
     procedure actViewToDoListUpdate(Sender: TObject);
-
 {$ENDIF}
 
   private
@@ -1058,13 +1055,13 @@ type
     function GetCurrentClassName:string;
     procedure GetFunctionList(strClassName:String;fncList:TStringList);
 {$ENDIF}
-private
+  private
     procedure UMEnsureRestored(var Msg: TMessage); message UM_ENSURERESTORED;
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
-protected
+  protected
     procedure CreateParams(var Params: TCreateParams); override;
 
-public
+  public
 {$IFDEF WX_BUILD}
   // Wx Property Inspector Popup Menu
   WxPropertyInspectorPopup:TPopupMenu;
@@ -1103,23 +1100,23 @@ public
 
   ELDesigner1: TELDesigner;
   
-  //Specific to Object inspector
-  Panel2: TPanel;
+  //Property Inspector controls
   cbxControlsx: TComboBox;
   pgCtrlObjectInspector: TPageControl;
-  pnlMainInsp:TPanel;
   TabProperty: TTabSheet;
-  JvInspProperties: TJvInspector;
   TabEvent: TTabSheet;
+  pnlMainInsp:TPanel;
+  JvInspProperties: TJvInspector;
   JvInspEvents: TJvInspector;
   
-  //Control palette
+  //Component palette
   ComponentPalette: TComponentPalette;
   
-  //Docking components
+  //Docking controls
   frmProjMgrDock:TForm;
   frmPaletteDock: TForm;
   frmInspectorDock:TForm;
+  
   strChangedFileList:TStringList;
   strStdwxIDList:TStringList;
   FWatchList:TList;
@@ -1128,14 +1125,14 @@ public
   function SaveFileInternal(e: TEditor ; bParseFile:Boolean = true): Boolean;
 
 {$IFDEF WX_BUILD}
-private
+  private
     procedure GetIntialFormData(frm: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType:TWxDesignerType);
     procedure CreateNewDialogOrFrameCode(dsgnType:TWxDesignerType; frm:TfrmCreateFormProp; insertProj:integer);
     procedure NewWxProjectCode(dsgnType:TWxDesignerType);
     procedure ParseAndSaveTemplate(template, destination: string; frm:TfrmCreateFormProp);
     function CreateCreateFormDlg(dsgnType:TWxDesignerType; insertProj:integer;projShow:boolean;filenamebase: string = ''): TfrmCreateFormProp;
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet;dsgnType:TWxDesignerType): Boolean;
-public
+  public
     procedure DisableDesignerControls;
     procedure EnableDesignerControls;
     procedure OnFileChangeNotify(Sender: TObject; ChangeType: TChangeType);
@@ -2107,6 +2104,8 @@ begin
 
   DockServer.BottomDockPanel.Height := 200;
   NewDocks.Free;
+  RemoveControl(MessageControl);
+  RemoveControl(SplitterBottom);
   MessageControl.Free;
   SplitterBottom.Free;
 end;
@@ -5394,7 +5393,9 @@ begin
     begin
       if Assigned(fDebugger) then
         fDebugger.Free;
+{$WARNINGS OFF 'Instance of TCDBDebugger containing abstract method...'}
       fDebugger := TCDBDebugger.Create;
+{$WARNINGS ON}
       Initialize;
     end;
   end;
@@ -8936,11 +8937,6 @@ begin
   end
 end;
 
-procedure TMainForm.Panel2Resize(Sender: TObject);
-begin
-  cbxControlsx.Width := Panel2.Width;
-end;
-
 procedure TMainForm.ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
   CurrentControl: TControl;
@@ -11349,132 +11345,6 @@ begin
 
   //FileName,FromClassName,ToClassName
 
-end;
-
-procedure TMainForm.est1Click(Sender: TObject);
-var
-  I: Integer;
-  strParserFunctionName, strParserClassName: string;
-  _FullText: string;
-  _Type: string;
-  _Command: string;
-  _Args: string;
-  _MethodArgs: string;
-  _ScopelessCmd: string;
-  _ScopeCmd: string;
-  _Kind: TStatementKind;
-  _InheritsFromIDs: string;
-    // list of inheriting IDs, in comma-separated string form
-  _InheritsFromClasses: string;
-    // list of inheriting class names, in comma-separated string form
-  _Scope: TStatementScope;
-  _ClassScope: TStatementClassScope;
-  _IsDeclaration: boolean;
-  _DeclImplLine: integer;
-  _Line: integer;
-  _DeclImplFileName: string;
-  _FileName: string;
-  _Visible: boolean;
-  _NoCompletion: boolean;
-  _Valid: boolean;
-  _Temporary: boolean;
-  _Loaded: boolean;
-  _InProject: Boolean;
-  e:TEditor;
-  strLst:TStringList;
-begin
-
-  e:=Self.GetEditorFromFileName('C:\Test.file');
-  if e=nil then
-    Exit;
-
-    strLst:=TStringList.Create;
-  for I := 0 to CppParser1.Statements.Count - 1 do // Iterate
-  begin
-    strLst.Add('');
-    strLst.Add('');
-    strLst.Add('---------------------------------------------------------------- ');
-    strLst.Add('StateMent # '+IntToStr(I));
-    strLst.Add(' ');
-
-    strParserClassName := PStatement(CppParser1.Statements[i])._ScopeCmd;
-    strLst.Add('_ScopeCmd : ' + strParserClassName);
-
-    strParserFunctionName := PStatement(CppParser1.Statements[i])._FullText;
-        strLst.Add('strParserFunctionName : ' +strParserFunctionName );
-
-    _ScopelessCmd := PStatement(CppParser1.Statements[i])._ScopelessCmd;
-        strLst.Add('_ScopelessCmd : ' +_ScopelessCmd);
-
-    _FullText := PStatement(CppParser1.Statements[i])._FullText;
-        strLst.Add('_FullText : ' +_FullText);
-
-    _Type := PStatement(CppParser1.Statements[i])._Type;
-        strLst.Add('_Type : ' + _Type);
-
-    _Command := PStatement(CppParser1.Statements[i])._Command;
-        strLst.Add('_Command : ' +_Command);
-
-    _Args := PStatement(CppParser1.Statements[i])._Args;
-        strLst.Add('_Args : ' +_Args);
-
-    _MethodArgs := PStatement(CppParser1.Statements[i])._MethodArgs;
-        strLst.Add('_MethodArgs : ' +_MethodArgs);
-
-    _ScopeCmd := PStatement(CppParser1.Statements[i])._ScopeCmd;
-        strLst.Add('_ScopeCmd : ' +_ScopeCmd);
-
-    _Kind := PStatement(CppParser1.Statements[i])._Kind;
-        strLst.Add('_Kind : ' +CppParser1.StatementKindStr(_Kind));
-
-    _InheritsFromIDs := PStatement(CppParser1.Statements[i])._InheritsFromIDs;
-        strLst.Add('_InheritsFromIDs : ' +_InheritsFromIDs);
-
-    _InheritsFromClasses := PStatement(CppParser1.Statements[i])._InheritsFromClasses;
-        strLst.Add('_InheritsFromClasses : ' +_InheritsFromClasses);
-
-    _Scope := PStatement(CppParser1.Statements[i])._Scope;
-        strLst.Add('_Scope : ' +CppParser1.StatementScopeStr(_Scope));
-
-    _ClassScope := PStatement(CppParser1.Statements[i])._ClassScope;
-        strLst.Add('_ClassScope : ' +CppParser1.StatementClassScopeStr(_ClassScope));
-
-    _IsDeclaration := PStatement(CppParser1.Statements[i])._IsDeclaration;
-        strLst.Add('_IsDeclaration : ' +BoolToStr(_IsDeclaration));
-
-    _DeclImplLine := PStatement(CppParser1.Statements[i])._DeclImplLine;
-        strLst.Add('_DeclImplLine : ' +IntToStr(_DeclImplLine));
-
-    _Line := PStatement(CppParser1.Statements[i])._Line;
-        strLst.Add('_Line : ' +IntToStr(_Line));
-
-    _DeclImplFileName := PStatement(CppParser1.Statements[i])._DeclImplFileName;
-        strLst.Add('_DeclImplFileName : ' +_DeclImplFileName);
-
-    _FileName := PStatement(CppParser1.Statements[i])._FileName;
-        strLst.Add('_FileName : ' +_FileName);
-
-    _Visible := PStatement(CppParser1.Statements[i])._Visible;
-        strLst.Add('_Visible : ' +BoolToStr(_Visible));
-
-    _NoCompletion := PStatement(CppParser1.Statements[i])._NoCompletion;
-        strLst.Add('_NoCompletion : ' +BoolToStr(_NoCompletion));
-
-    _Valid := PStatement(CppParser1.Statements[i])._Valid;
-        strLst.Add('_Valid : ' +BoolToStr(_Valid));
-
-    _Temporary := PStatement(CppParser1.Statements[i])._Temporary;
-        strLst.Add('_Temporary : ' +BoolToStr(_Temporary));
-
-    _Loaded := PStatement(CppParser1.Statements[i])._Loaded;
-        strLst.Add('_Loaded : ' +BoolToStr(_Loaded));
-
-    _InProject := PStatement(CppParser1.Statements[i])._InProject;
-        strLst.Add('_InProject : ' +BoolToStr(_InProject));
-  end; // for
-  e.Text.Lines.Assign(strLst);
-  e.InsertString('',false);
-  strLst.Destroy;
 end;
 
 procedure TMainForm.JvInspPropertiesItemValueChanged(Sender: TObject;
