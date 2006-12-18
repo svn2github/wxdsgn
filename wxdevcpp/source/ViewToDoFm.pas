@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, Menus, XPMenu;
+  Dialogs, StdCtrls, ComCtrls, Menus, XPMenu, ExtCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -46,10 +46,10 @@ type
 
   TViewToDoForm = class(TForm)
     lv: TListView;
-    btnClose: TButton;
+    controls: TPanel;
+    lblFilter: TLabel;
     chkNoDone: TCheckBox;
     cmbFilter: TComboBox;
-    lblFilter: TLabel;
     XPMenu: TXPMenu;
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
@@ -74,12 +74,13 @@ type
     fSortColumn: integer;
     function MatchesMask(SearchStr, MaskStr: string): boolean;
     procedure LoadText;
-    procedure BuildList;
     procedure AddFiles(Current, InProject, NotInProject, OpenOnly: boolean);
     procedure AddToDo(Filename: string);
+    procedure BuildList;
     function BreakupToDo(Filename: string; sl: TStrings; Line: integer; Token: string; HasUser, HasPriority: boolean): integer;
   public
     { Public declarations }
+    procedure RefreshList;
   end;
 
 var
@@ -87,7 +88,8 @@ var
 
 implementation
 
-uses main, editor, project, StrUtils, MultiLangSupport, devcfg;
+uses
+  main, editor, project, StrUtils, MultiLangSupport, devcfg, dbugintf, madstacktrace;
 
 {$R *.dfm}
 
@@ -243,6 +245,7 @@ end;
 
 procedure TViewToDoForm.FormShow(Sender: TObject);
 begin
+  XPMenu.Active := devData.XPTheme;
   cmbFilter.ItemIndex := 5;
   fToDoList.Clear;
   lv.Items.Clear;
@@ -269,7 +272,7 @@ begin
       Dispose(PToDoRec(fToDoList[0]));
       fToDoList.Delete(0);
     end;
-  fToDoList.Clear;
+
   fToDoList.Free;
 end;
 
@@ -296,26 +299,20 @@ end;
 procedure TViewToDoForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  Action := caFree;
+  Action := caHide;
 end;
 
 procedure TViewToDoForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
   Caption := Lang[ID_VIEWTODO_MENUITEM];
 
 {$IFDEF WIN32}
-  lv.Column[0].Caption := Lang[ID_VIEWTODO_DONE];
   lv.Column[1].Caption := Lang[ID_ADDTODO_PRIORITY];
   lv.Column[2].Caption := Lang[ID_ADDTODO_DESCRIPTION];
   lv.Column[3].Caption := Lang[ID_VIEWTODO_FILENAME];
   lv.Column[4].Caption := Lang[ID_ADDTODO_USER];
 {$ENDIF}
 {$IFDEF LINUX}
-  lv.Columns[0].Caption := Lang[ID_VIEWTODO_DONE];
   lv.Columns[1].Caption := Lang[ID_ADDTODO_PRIORITY];
   lv.Columns[2].Caption := Lang[ID_ADDTODO_DESCRIPTION];
   lv.Columns[3].Caption := Lang[ID_VIEWTODO_FILENAME];
@@ -323,7 +320,6 @@ begin
 {$ENDIF}
 
   chkNoDone.Caption := Lang[ID_VIEWTODO_NOSHOWDONE];
-  btnClose.Caption := Lang[ID_BTN_CLOSE];
   lblFilter.Caption := Lang[ID_VIEWTODO_FILTER];
   cmbFilter.Items[0] := Lang[ID_VIEWTODO_FILTERONE];
   cmbFilter.Items[1] := Lang[ID_VIEWTODO_FILTERTWO];
@@ -399,10 +395,8 @@ begin
     Exit;
 
   e := MainForm.GetEditorFromFilename(PToDoRec(lv.Selected.Data)^.Filename);
-  if Assigned(e) then begin
+  if Assigned(e) then
     e.GotoLineNr(PToDoRec(lv.Selected.Data)^.Line + 1);
-    Close;
-  end;
 end;
 
 procedure TViewToDoForm.chkNoDoneClick(Sender: TObject);
@@ -520,6 +514,11 @@ begin
     AddFiles(True, False, True, True); // default is the same with 5
   end;
   BuildList;
+end;
+
+procedure TViewToDoform.RefreshList;
+begin
+  cmbFilter.OnChange(nil);
 end;
 
 end.

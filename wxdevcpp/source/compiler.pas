@@ -65,7 +65,6 @@ type
     procedure DoResOutput(const s, s2, s3: string);
     function GetMakeFile: string;
     function GetCompiling: Boolean;
-    procedure RunTerminate(Sender: TObject);
     procedure InitProgressForm(Status: string);
     procedure EndProgressForm;
     procedure ReleaseProgressForm;
@@ -74,13 +73,11 @@ type
     procedure SwitchToOriginalCompilerSet; // switches the original compiler set to index
     procedure SetProject(Project: TProject);
   public
+    OnCompilationEnded: procedure(Sender: TObject) of object;
+
     procedure BuildMakeFile;
     procedure CheckSyntax; virtual;
     procedure Compile(SingleFile: string = ''); virtual;
-    procedure Run; virtual;
-    procedure CompileAndRun; virtual;
-    procedure CompileAndDebug; virtual;    
-    procedure Debug; virtual;
     function Clean: Boolean; virtual;
     function RebuildAll: Boolean; virtual;
     procedure ShowResults; virtual;
@@ -112,8 +109,6 @@ type
     fBinDirs: string;
     fUserParams: string;
     fDevRun: TDevRun;
-    fRunAfterCompileFinish: boolean;
-    fDebugAfterCompileFinish: boolean;
     fAbortThread: boolean;
     
     procedure CreateMakefile; virtual;
@@ -139,7 +134,7 @@ implementation
 
 uses
   MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils, RegExpr,
-  DbugIntf,main;
+  DbugIntf, SynEdit, SynEditHighlighter, SynEditTypes, datamod;
 
 constructor TCompiler.Create;
 begin
@@ -377,12 +372,11 @@ end;
 
 function TCompiler.FindDeps(TheFile: String; var VisitedFiles: TStringList): String;
 var
-  i: integer;
-  path: string;
-  start: integer;
-  tempstr: string;
-  Lines: TStringList;
+  Editor: TSynEdit;
+  i, Start: integer;
   Includes: TStringList;
+  Token, Quote, FilePath: string;
+  Attri: TSynHighlighterAttributes;
 
   function StartsStr(start: string; str: string) : Boolean;
   var
@@ -402,56 +396,68 @@ var
   end;
 begin;
   Result := '';
-  Lines := nil;
   Includes := nil;
-  path := Copy(TheFile, 0, GetLastPos('\', TheFile));
 
   //First check that we have not been visited
   if VisitedFiles.IndexOf(TheFile) <> -1 then
     Exit;
 
   //Otherwise mark ourselves as visited
+  Editor := TSynEdit.Create(Application);
+  Editor.Highlighter := dmMain.Cpp;
   VisitedFiles.Add(TheFile);
   Application.ProcessMessages;
   
   try
     //Load the lines of the file
-    Lines := TStringList.Create;
     Includes := TStringList.Create;
-    Lines.LoadFromFile(TheFile);
+    Editor.Lines.LoadFromFile(TheFile);
 
     //Iterate over the lines of the file
-    for i := 0 to Lines.Count - 1 do
-    begin
-      if StartsStr('#', Lines[i]) then
+    for i := 0 to Editor.Lines.Count - 1 do
+      if StartsStr('#', Editor.Lines[i]) then
       begin
-        start := Pos('#', Lines[i]);
+        Start := Pos('#', Editor.Lines[i]);
+        Editor.GetHighlighterAttriAtRowCol(BufferCoord(start, i + 1), Token, Attri);
 
-        //It's a preprocessor directive, yes, but is it an include?
-        if AnsiStartsStr('include', Copy(Lines[i], start + 1, Length(Lines[i]))) then
-        begin
-          tempstr := Copy(Lines[i], start + 1, Length(Lines[i])); //copy after #
-          tempstr := Copy(tempstr, Pos('include', tempstr) + 7, Length(tempstr)); //copy after 'include'
-          tempstr := Trim(tempstr);
-          tempstr := Copy(tempstr, 2, Length(tempstr) - 2); //Remove "" or <>
+        //Is it a preprocessor directive?
+        if Attri.Name <> 'Preprocessor' then
+          Continue;
 
-          //Now that tempstr contains the path, does it exist, hence we can depend on it?
-          if FileExists(GetRealPath(tempstr, path)) then
-          begin
-            Result := Result + ' ' + GenMakePath2(ExtractRelativePath(fProject.Directory, GetRealPath(tempstr, path)));
+        //Is it an include?
+        Token := Trim(Copy(Token, 2, Length(Token))); //copy after #
+        if not AnsiStartsStr('include', Token) then
+          Continue;
 
-            //Now that we have it, recurse!
-            Result := result + FindDeps(GetRealPath(tempstr, path), VisitedFiles);
-          end;
-        end;
+        //Extract the include filename
+        Token := Copy(Token, Pos('include', Token) + 7, Length(Token)); //copy after 'include'
+        Token := Trim(Token);
+
+        //Extract the type of closing quote
+        quote := Token[1];
+        if quote = '<' then
+          quote := '>';
+
+        //Remove the start and close quotes
+        Token := Copy(Token, 2, Length(Token));
+        Token := Copy(Token, 1, Pos(quote, Token) - 1); //Remove "" or <>
+
+        //Now that tempstr contains the path, does it exist, hence we can depend on it?
+        FilePath := GetRealPath(Token, ExtractFilePath(TheFile));
+        if not FileExists(FilePath) then
+          Continue;
+
+        //When we do get here, the file does exist. Convert the path to the one relative to the makefile
+        Result := Result + ' ' + GenMakePath2(ExtractRelativePath(fProject.Directory, FilePath));
+
+        //Recurse into the include
+        Result := result + FindDeps(FilePath, VisitedFiles);
       end;
-    end;
 
   finally
-    if Assigned (Lines) then
-      Lines.Destroy;
     if Assigned (Includes) then
       Includes.Destroy;
+    Editor.Free;
   end;
 end;
 
@@ -737,7 +743,7 @@ begin
     if devCompiler.CompilerType = ID_COMPILER_MINGW then
       writeln(F, #9 + '$(LINK) -shared $(STATICLIB) $(LINKOBJ) $(LIBS) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), binary]))
     else
-      writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), binary]) + ' $(LINKOBJ) $(LIBS)');
+      writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat, [GenMakePath(ChangeFileExt(tfile, '.lib')), binary]) + ' $(LINKOBJ) $(LIBS)');
 
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
@@ -944,8 +950,6 @@ var
 begin
   cCmdLine := devCompiler.SingleCompile;
   fSingleFile := SingleFile <> '';
-  fRunAfterCompileFinish := FALSE;
-  fDebugAfterCompileFinish:= FALSE;
   if Assigned(fDevRun) then
   begin
     MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0);
@@ -1047,72 +1051,6 @@ begin
     end;
     LaunchThread(cmdline, ExtractFilePath(fSourceFile));
   end;
-end;
-
-procedure TCompiler.RunTerminate(Sender: TObject);
-begin
-  Application.Restore;
-end;
-
-procedure TCompiler.Run;
-begin
-  if fTarget = ctNone then  exit;
-  if fTarget = ctProject then
-  begin
-    if fProject.CurrentProfile.typ = dptStat then
-      MessageDlg(Lang[ID_ERR_NOTEXECUTABLE], mtError, [mbOK], 0)
-    else if not FileExists(fProject.Executable) then
-      MessageDlg(Lang[ID_ERR_PROJECTNOTCOMPILED], mtWarning, [mbOK], 0)
-    else if fProject.CurrentProfile.typ = dptDyn then begin
-      if fProject.CurrentProfile.HostApplication = '' then
-        MessageDlg(Lang[ID_ERR_HOSTMISSING], mtWarning, [mbOK], 0)
-      else if not FileExists(fProject.CurrentProfile.HostApplication) then
-        MessageDlg(Lang[ID_ERR_HOSTNOTEXIST], mtWarning, [mbOK], 0)
-      else begin // execute DLL's host application
-        if devData.MinOnRun then
-          Application.Minimize;
-        devExecutor.ExecuteAndWatch(fProject.CurrentProfile.HostApplication, fRunParams,
-         						 ExtractFileDir(fProject.CurrentProfile.HostApplication), True, INFINITE, RunTerminate);
-      end;
-    end
-    else begin // execute normally
-      if devData.MinOnRun then
-        Application.Minimize;
-      devExecutor.ExecuteAndWatch(fProject.Executable, fRunParams,
-        ExtractFileDir(fProject.Executable), True, INFINITE, RunTerminate);
-    end;
-  end
-  else
-  begin
-    if not FileExists(ChangeFileExt(fSourceFile, EXE_EXT)) then
-      MessageDlg(Lang[ID_ERR_SRCNOTCOMPILED], mtWarning, [mbOK], 0)
-    else
-    begin
-      if devData.MinOnRun then
-        Application.Minimize;
-      devExecutor.ExecuteAndWatch(ChangeFileExt(fSourceFile, EXE_EXT),fRunParams,
-        ExtractFilePath(fSourceFile), True, INFINITE, RunTerminate);
-    end;
-  end;
-end;
-
-procedure TCompiler.CompileAndRun;
-begin
-  Compile;
-  fRunAfterCompileFinish := TRUE;
-  fDebugAfterCompileFinish:= FALSE;
-end;
-
-procedure TCompiler.CompileAndDebug;
-begin
-  Compile;
-  fRunAfterCompileFinish := FALSE;
-  fDebugAfterCompileFinish:= TRUE;
-end;
-
-procedure TCompiler.Debug;
-begin
-
 end;
 
 function TCompiler.Clean: Boolean;
@@ -1247,21 +1185,14 @@ begin
   else if (fErrCount = 0) and (fDevRun.ExitCode = 0) then
   begin
     DoLogEntry(Lang[ID_COMPILESUCCESS]);
-    if (fRunAfterCompileFinish) then
-    begin
-      ReleaseProgressForm;
-      Run;
-    end
-    else if (fDebugAfterCompileFinish) then
-    begin
-      ReleaseProgressForm;
-      MainForm.actDebugExecuteX(nil);
-    end;
+    Application.ProcessMessages;
+    if Assigned(OnCompilationEnded) then
+      OnCompilationEnded(Self);
   end;
 
   //Clean up
   fDevRun := nil;
-  fRunAfterCompileFinish := False;
+  OnCompilationEnded := nil;
   Application.ProcessMessages;
 end;
 

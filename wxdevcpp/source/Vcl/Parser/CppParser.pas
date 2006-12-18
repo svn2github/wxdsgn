@@ -1974,10 +1974,12 @@ var
 begin
   Result := False;
   for I := 0 to fIncludePaths.Count - 1 do
-    if AnsiStartsStr(LowerCase(GetShortName(ExtractFilePath(Value))), LowerCase(GetShortName(fIncludePaths[I]))) then begin
+  begin
+    if AnsiStartsStr(LowerCase(GetShortName(fIncludePaths[I])), LowerCase(GetShortName(ExtractFilePath(Value)))) then begin
       Result := True;
       Break;
     end;
+  end;
 end;
 
 procedure TCppParser.ReParseFile(FileName: TFileName; InProject: boolean; OnlyIfNotParsed: boolean; UpdateView: boolean);

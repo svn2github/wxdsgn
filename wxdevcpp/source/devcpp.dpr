@@ -72,7 +72,6 @@ uses
   editor in 'editor.pas',
   Envirofrm in 'Envirofrm.pas' {EnviroForm},
   debugwait in 'debugwait.pas',
-  debugreader in 'debugreader.pas',
   debugger in 'debugger.pas',
   CFGData in 'CFGData.pas',
   CFGINI in 'CFGINI.pas',
@@ -120,6 +119,7 @@ uses
   MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
   ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
+  ComponentPalette in 'components\ComponentPalette.pas',
   
   //Property editors
   dmListview in 'propedit\dmListview.pas' {ListviewForm},
@@ -197,9 +197,7 @@ uses
 {$R *.res}
 
 {$IFDEF WX_BUILD}
-{$R STDREG.DCR}
-{$R SYSREG.DCR}
-{$R DBREG.DCR}
+{$R STDREG.res}
 {$ENDIF}
 
 //Single Instance feature
@@ -329,8 +327,7 @@ begin
   Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   MainForm.DoCreateEverything;
 
-  // apply the window placement. this method forced
-  // the form to show,
+  // apply the window placement. this method forces the form to show.
   MainForm.DoApplyWindowPlacement;
   if not devData.NoSplashScreen then
     SplashForm.Free;

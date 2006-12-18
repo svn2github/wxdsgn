@@ -43,7 +43,7 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'wxDev-C++';
-  DEVCPP_VERSION    = '6.10';
+  DEVCPP_VERSION    = '6.11';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
@@ -133,7 +133,6 @@ resourcestring
                        + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'ifm;'
                        + 'include' + pd + 'common' + pd+ '3rdparty' + pd + 'wx'+ pd + 'chartart;'                                                                     
                        ;
-
 
   GCC_CPP_INCLUDE_DIR  =
                         ';include'
@@ -295,72 +294,6 @@ const
   cppTypes:  array[0..4] of string[4] = (CPP_EXT, CC_EXT, CXX_EXT, CP2_EXT, CP_EXT);
   headTypes: array[0..2] of string[4] = (H_EXT, HPP_EXT, RH_EXT);
   resTypes: array[0..3] of string[4] = (RES_EXT, RC_EXT, RH_EXT, XRC_EXT);
-
-  // GDB commands and Displays
-  GDB_FILE = 'file';
-  GDB_EXECFILE = 'exec-file';
-  GDB_RUN = 'run';
-  GDB_BREAK = 'break';
-  GDB_CONTINUE = 'continue';
-  GDB_NEXT = 'next';
-  GDB_STEP = 'step';
-  GDB_DISPLAY = 'display';
-  GDB_UNDISPLAY = 'undisplay';
-  GDB_PRINT = 'print';
-  GDB_SETVAR = 'set var';
-  GDB_DELETE = 'delete';
-  GDB_PROMPT = '(gdb) ';
-  GDB_BACKTRACE = 'bt';
-  GDB_DISASSEMBLE = 'disas';
-  GDB_SETFLAVOR = 'set disassembly-flavor';
-  GDB_INTEL = 'intel';
-  GDB_ATT = 'att';
-  GDB_REG = 'displ/x';
-  GDB_EAX = '$eax';
-  GDB_EBX = '$ebx';
-  GDB_ECX = '$ecx';
-  GDB_EDX = '$edx';
-  GDB_ESI = '$esi';
-  GDB_EDI = '$edi';
-  GDB_EBP = '$ebp';
-  GDB_ESP = '$esp';
-  GDB_EIP = '$eip';
-  GDB_CS = '$cs';
-  GDB_DS = '$ds';
-  GDB_SS = '$ss';
-  GDB_ES = '$es';
-  GDB_SETARGS = 'set args';
-  GDB_ATTACH = 'attach';
-  GDB_SET = 'set';
-
-  T_PROMPT = 'prompt';
-  T_BREAKPOINT = 'breakpoint';
-  T_SOURCE = 'source';
-  T_DISPLAY_EXPRESSION = 'display-expression';
-  T_DISPLAY_BEGIN = 'display-begin';
-  T_DISPLAY_VALUE = 'display-value';
-  T_DISPLAY_END = 'display-end';
-  T_FIELD_NAME = 'field-begin';
-  T_FIELD_VALUE = 'field-value';
-  T_FIELD_END = 'field-end';
-  T_GDB_ERROR = 'error';
-  T_GDB_ERRORBEGIN = 'error-begin';
-  T_FRAME_FUNCNAME = 'frame-function-name';
-  T_FRAME_ARGS = 'frame-args';
-  T_FRAME_ARG_BEGIN = 'arg-begin';
-  T_FRAME_ARG_NAME_END = 'arg-name-end';
-  T_FRAME_ARG_VALUE = 'arg-value';
-  T_FRAME_ARG_END = 'arg-end';
-  T_FRAME_SOURCEFILE = 'frame-source-file';
-  T_FRAME_SOURCELINE = 'frame-source-line';
-  T_DUMP = 'Dump';
-  T_OF = 'of';
-  T_POST_PROMPT = 'post-prompt';
-  T_ASM = 'assembler';
-  T_SIGNAL_STRING = 'signal-string';
-  T_SEGFAULT = 'Segmentation';
-  T_ARRAYSECTION_BEGIN = 'array-section-begin';
-  T_ARRAYSECTION_END = 'array-section-end';
 
   // GPROF commands and displays
   GPROF_CHECKFILE = 'gmon.out';

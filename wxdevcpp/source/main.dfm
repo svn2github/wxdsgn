@@ -1,8 +1,8 @@
 object MainForm: TMainForm
-  Left = 283
-  Top = 106
-  Width = 638
-  Height = 444
+  Left = 356
+  Top = 123
+  Width = 636
+  Height = 442
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,38 +21,20 @@ object MainForm: TMainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object SplitterLeft: TSplitter
-    Left = 209
-    Top = 102
-    Width = 4
-    Height = 135
-    AutoSnap = False
-    MinSize = 45
-    ResizeStyle = rsUpdate
-  end
   object SplitterBottom: TSplitter
     Left = 0
-    Top = 237
-    Width = 630
+    Top = 235
+    Width = 628
     Height = 4
     Cursor = crVSplit
     Align = alBottom
     OnCanResize = SplitterBottomCanResize
     OnMoved = SplitterBottomMoved
   end
-  object SplitterRight: TSplitter
-    Left = 460
-    Top = 102
-    Height = 135
-    Align = alRight
-    AutoSnap = False
-    MinSize = 45
-    ResizeStyle = rsUpdate
-  end
   object MessageControl: TPageControl
     Left = 0
-    Top = 241
-    Width = 630
+    Top = 239
+    Width = 628
     Height = 130
     ActivePage = CompSheet
     Align = alBottom
@@ -71,8 +53,8 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 618
-        Height = 98
+        Width = 616
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -109,7 +91,7 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 618
+        Width = 616
         Height = 97
         Align = alClient
         BevelKind = bkSoft
@@ -182,19 +164,19 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 393
+        Width = 391
         Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          393
+          391
           97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 638
-          Height = 71
+          Width = 378
+          Height = 75
           Anchors = [akLeft, akTop, akRight, akBottom]
           ReadOnly = True
           ScrollBars = ssVertical
@@ -209,387 +191,19 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 618
+        Width = 616
         Height = 97
-        ActivePage = tabVars
+        ActivePage = tabDebugOutput
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 0
-        OnChange = DebugSubPagesChange
-        object tabVars: TTabSheet
-          Caption = 'Debug'
-          object PanelDebug: TPanel
-            Left = 468
-            Top = 0
-            Width = 156
-            Height = 49
-            Align = alLeft
-            BevelOuter = bvLowered
-            TabOrder = 0
-            object AddWatchBtn: TSpeedButton
-              Left = 4
-              Top = 3
-              Width = 148
-              Height = 20
-              Action = actAddWatch
-              Flat = True
-              Glyph.Data = {
-                36030000424D3603000000000000360000002800000010000000100000000100
-                18000000000000030000120B0000120B00000000000000000000AFAFAFAFAFAF
-                AFAFAFAFAFAF8081812F34345A5B5BA6A6A6AFAFAFAFAFAFAFAFAFAFAFAFA1A1
-                A1858585A6A6A6AFAFAFAFAFAFAFAFAFAFAFAF777777606A6ACEE5E582909074
-                79796E6E6EAFAFAFAFAFAFA6A6A63D3D3D000000878787AFAFAFAFAFAFAFAFAF
-                AFAFAF3A3A3AB4C9C9D8F1F1D4ECECB2C6C65D6666696969AFAFAF3A3A3A0000
-                00454545A4A4A4AFAFAFAFAFAFAFAFAF6B6B6B8D9C9CD2EAEAD2EAEAC4DADAB3
-                C8C8ABBEBE6670700E0E0E0404044D4D4DABABABAFAFAFAFAFAFAFAFAF9E9E9E
-                6C6F6FB2C4C4CDE5E5A7BABA667272475050414848494C4C1515154B54547C7C
-                7CAFAFAFAFAFAFAFAFAFAFAFAF878787555E5EC6DDDDBFD6D6636F6F82919197
-                A9A9869696616C6C353B3BBACFCF7580803A3A3A949494AFAFAFAFAFAF282A2A
-                9DABABC5DCDCB3C7C7444B4BC4D3D3AFC0C096A7A7859494333838C5DBDBD5ED
-                ED99AAAA262929AFAFAFAFAFAF101111737E7EB9CFCFB2C7C74C5555CEDBDBCC
-                DADAA3B6B68D9E9E3F4646C7DEDED6EEEE9CAEAE4E5151AFAFAFAFAFAF202121
-                7C8181879595B1C7C76C7878818E8EC2D3D3A6BABA6E7A7A727F7FD2EAEAA8BB
-                BB595C5C9F9F9FAFAFAFAFAFAF333535DCE4E47478788A9A9AAABFBF717F7F3C
-                43433B4242788686C2D8D8BFD5D5464949A4A4A4AFAFAFAFAFAFAFAFAF343434
-                D0D1D1787F7FAFC5C5C1D7D7C5DDDDCBE3E3D0E8E8D3EBEBD6EFEF6B77776161
-                61AFAFAFAFAFAFAFAFAFAFAFAF26262682828293A1A1BCD3D3C0D7D7C3DADAC6
-                DEDECCE4E4D0E8E897A6A66E7070AFAFAFAFAFAFAFAFAFAFAFAFAFAFAF757575
-                1E1E1E6C7878B3C9C9BFD5D5C2D8D8C4DBDBC8E0E0B8CECE4148489D9D9DAFAF
-                AFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAF5B5B5B383A3A758383A0B2B2C0
-                D7D7BDD2D26B7575858585AFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAF
-                AFAFAFAFAFAFA6A6A65B5B5B4B4F4F5761618D9D9D575757AFAFAFAFAFAFAFAF
-                AFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAF97979785
-                85853A3D3D979797AFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAFAF}
-            end
-            object RemoveWatchBtn: TSpeedButton
-              Left = 4
-              Top = 26
-              Width = 148
-              Height = 20
-              Action = actRemoveWatch
-              Flat = True
-              Glyph.Data = {
-                36030000424D3603000000000000360000002800000010000000100000000100
-                18000000000000030000120B0000120B00000000000000000000AAAAAAAAAAAA
-                AAAAAA000000000000000000000000000000000000000000000000080808AAAA
-                AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA00000075977D72947A718F786E8D746B
-                8A7268856F67826D647D69000000080808080808AAAAAAAAAAAAAAAAAA000000
-                789A809AB2A05F786596AD9A5C72606B8A724C5B4F67836D536858617A670000
-                00080808080808AAAAAAAAAAAA000000637D68B4C5B75F786596AD9A4E5F526D
-                8A724C5C4F67836D48584C637A68000000080808080808080808AAAAAA000000
-                637D68B4C6B75F786596AD9A4E5F526D8A724C5C4F67836E48584D637A680000
-                00080808080808080808AAAAAA000000637D68B4C6B95F786596AD9B4F5F526D
-                8A724C5C4F67836E49584D637B68000000080808080808080808AAAAAA000000
-                637D68B4C6B95F786596AD9B4F5F526D8A724C5C4F68836E49584D637B680000
-                00080808080808AAAAAAAAAAAA000000637D68B4C6B95F786597AE9B4F5F526D
-                8A724C5C4F68846E49584D637B68000000AAAAAAAAAAAAAAAAAAAAAAAA000000
-                637D68252525252525252525252525252525252525252525252525637B680000
-                00AAAAAAAAAAAAAAAAAAAAAAAA0000002525256E8B73637B68637B685A6F5E52
-                64574553494B5B4F3D453F252525000000AAAAAAAAAAAAAAAAAA000000547363
-                6B8C748DAA948AA58F8AA58F74967C74967C68866F617966586E5D4B5A4D4552
-                48000000AAAAAAAAAAAA00000074967CABC0B0C8D6CED6E1DAB1C4BB94ADA091
-                AB9E8FAA9B8EA79A8CA59874967C576B5B000000AAAAAAAAAAAA0000008DA596
-                D2DED7B5C9BE98B3A496B1A295B0A094ADA091AB9E8FAA9B8EA79A8CA5988AA3
-                97000000AAAAAAAAAAAA000000ADC4B6B7CCBF9BB6A7B5C9BE5E6F65282E2B31
-                393522262491AB9E8FAA9B8EA79A8CA598000000AAAAAAAAAAAAAAAAAA252525
-                0000009EBAA8ABC1B4DDE7E17D8A83869F90434E4894ADA091AB9E0000000000
-                00AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA00000000000000000000000000
-                0000000000000000000000AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA}
-            end
-          end
-          object DebugPanel: TPanel
-            Left = 0
-            Top = 0
-            Width = 156
-            Height = 49
-            Align = alLeft
-            BevelOuter = bvLowered
-            TabOrder = 1
-            object NextStepBtn: TSpeedButton
-              Left = 4
-              Top = 3
-              Width = 148
-              Height = 20
-              Action = actNextStep
-              Flat = True
-              Glyph.Data = {
-                36040000424D3604000000000000360000002800000010000000100000000100
-                2000000000000004000000000000000000000000000000000000FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                0000316339000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                00007BAD840052845A00295A31000000000000000000FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                000084B5940073A584006B9C73004A7B5200315A39000000000000000000FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                00008CBD9C007BAD840073A584007BAD84006B9C73004A7B520042734A000000
-                000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                00008CBD9C007BAD84007BAD84007BAD84007BA584007BAD84006B9C73004A7B
-                5200425A42000000000000000000FF00FF00FF00FF00FF00FF00FF00FF000000
-                000094BD9C0084AD8C007BAD840084AD8C007BAD84007BAD840073A57B007BA5
-                84006B9C73004A845A00315A39000000000000000000FF00FF00FF00FF002929
-                2900FFFFFF00EFF7EF00EFF7EF00EFF7EF00EFF7EF00E7EFE700DEE7DE00D6E7
-                D600DEE7DE00EFF7EF00ADC6B5000000000000000000FF00FF00FF00FF000000
-                0000FFFFFF00EFF7EF00EFF7EF00EFF7EF00EFF7EF00EFF7EF00E7EFE700EFF7
-                F700C6DECE001818180000000000FF00FF00FF00FF00FF00FF00FF00FF000000
-                0000FFFFFF00F7F7F700F7F7F700EFF7EF00EFF7EF00F7F7F700C6DECE000000
-                000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                0000FFFFFF00F7F7F700EFF7EF00EFF7F700CEDECE000000000000000000FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                0000FFFFFF00EFF7F700D6E7D6000000000000000000FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                0000DEEFE7000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF000000
-                000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            end
-            object StepIntoBtn: TSpeedButton
-              Left = 4
-              Top = 26
-              Width = 148
-              Height = 20
-              Action = actStepSingle
-              Flat = True
-              Glyph.Data = {
-                36040000424D3604000000000000360000002800000010000000100000000100
-                2000000000000004000000000000000000000000000000000000FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF0000000000FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00000000002942310000000000FF00FF00FF00FF00FF00FF00FF00
-                FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00000000002942310000000000FF00FF00FF00FF00FF00
-                FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF0000000000008400000084000000000000000000000000
-                000000A5000000B5000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF000000000000000000009400000094000000A5
-                000000A5000000C6000000B5000000000000FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF0000000000000000000000
-                000000A5000000B5000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            end
-          end
-          object DebugPanel2: TPanel
-            Left = 156
-            Top = 0
-            Width = 156
-            Height = 49
-            Align = alLeft
-            BevelOuter = bvLowered
-            TabOrder = 2
-            object StepOverBtn: TSpeedButton
-              Left = 4
-              Top = 3
-              Width = 148
-              Height = 20
-              Action = actStepOver
-              Flat = True
-              Glyph.Data = {
-                36040000424D3604000000000000360000002800000010000000100000000100
-                2000000000000004000000000000000000000000000000000000FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF0000000000FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00000000002942310000000000FF00FF00FF00FF00FF00FF00FF00
-                FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00000000002942310000000000FF00FF00FF00FF00FF00
-                FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF0000000000008400000084000000000000000000000000
-                000000A5000000B5000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF000000000000000000009400000094000000A5
-                000000A5000000C6000000B5000000000000FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF0000000000000000000000
-                000000A5000000B5000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            end
-            object RunToCursorBtn: TSpeedButton
-              Left = 4
-              Top = 26
-              Width = 148
-              Height = 20
-              Action = actRunToCursor
-              Flat = True
-              Glyph.Data = {
-                36040000424D3604000000000000360000002800000010000000100000000100
-                2000000000000004000000000000000000000000000000000000FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF0000000000FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00000000002942310000000000FF00FF00FF00FF00FF00FF00FF00
-                FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00000000002942310000000000FF00FF00FF00FF00FF00
-                FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF0000000000008400000084000000000000000000000000
-                000000A5000000B5000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF000000000000000000009400000094000000A5
-                000000A5000000C6000000B5000000000000FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF0000000000000000000000
-                000000A5000000B5000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF000000000000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF0000000000FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            end
-          end
-          object DebugPanel3: TPanel
-            Left = 312
-            Top = 0
-            Width = 156
-            Height = 49
-            Align = alLeft
-            BevelOuter = bvLowered
-            TabOrder = 3
-            object DDebugBtn: TSpeedButton
-              Left = 4
-              Top = 3
-              Width = 148
-              Height = 20
-              Action = actDebug
-              Flat = True
-              Glyph.Data = {
-                36040000424D3604000000000000360000002800000010000000100000000100
-                2000000000000004000000000000000000000000000000000000FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FFFFFF00F7F7F700D6D6
-                D600E7E7E700FF00FF00EFEFF700FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00EFEFEF00CECECE00ADADAD00ADADAD00A5A5
-                A500737373009494AD00D6D6EF00FF00FF00FF00FF00FF00FF00FF00FF00EFEF
-                FF00F7F7FF00FFFFFF00D6D6D6009C9C9C00636363004A4A4A00313939005A5A
-                5A003131840052528400E7E7E700FF00FF00FF00FF00FF00FF00FF00FF00E7E7
-                E700A5A5C600C6C6D6005A635A00393939002929290021212100212929001821
-                520010107B004A4A5200C6C6C600F7F7F700FF00FF00FF00FF00FF00FF00EFEF
-                EF00636384004242A50021294A00182121003942390031393900212939000808
-                8C0021293100424242007B7B7B0094949400F7F7F700FF00FF00FF00FF00F7F7
-                F7008C8C8C0039427B000000AD002931420031393900424252000000A5002131
-                63002939390039424200636363007B7B7B00F7F7F700FF00FF00FF00FF00FF00
-                FF00CECECE0042524A0018298C000808A50018215A0018189400081094004263
-                5A0039524A003142420039393900A5A5A500FFFFFF00FF00FF00FF00FF00F7F7
-                F700A5A5A5009CA59C004A737B000000AD000000AD0008089C00424A5A005A84
-                7B004A6B630039524A006B6B6B00C6C6C600FFFFFF00FF00FF00FF00FF00FFFF
-                FF0084848400BDC6C6007B949C002939AD000000AD000000AD00181894005A7B
-                94005A847B0042635A00636B6B00CECECE00FF00FF00FF00FF00FF00FF00FF00
-                FF00C6C6C600393994000808AD003942B500A5BDCE006B73AD000000AD000000
-                AD0039529C004A6B63004A525200BDBDBD00FF00FF00FF00FF00FF00FF00EFEF
-                F7005252CE000000AD000000AD00BDCECE00C6D6D600C6DED600737B8C003142
-                A5002939A50052736B00393939008C8C8C00EFEFEF00FF00FF008C8CDE001010
-                B5000000AD000000AD009494DE00EFEFEF00A5BDB500B5CEC600A5BDBD007B9C
-                9C005A7B730063736B00ADADAD0094949400EFEFEF00FF00FF000000B5000000
-                AD001818B500BDBDEF00FF00FF00E7E7E7005A5A5A00849C9C0094B5AD00738C
-                840039635A0063736B00EFEFEF00A5A5A500FF00FF00FF00FF00ADADE7009C9C
-                DE00F7F7FF00FF00FF00FF00FF00F7F7F700737373009CADAD0052848C007384
-                8400C6CECE00EFEFEF00FF00FF00EFEFEF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FFFFFF0094949400E7E7E700FFFFFF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00E7E7E700EFEFEF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            end
-            object StopExecBtn: TSpeedButton
-              Left = 4
-              Top = 26
-              Width = 148
-              Height = 20
-              Action = actStopExecute
-              Flat = True
-              Glyph.Data = {
-                36040000424D3604000000000000360000002800000010000000100000000100
-                2000000000000004000000000000000000000000000000000000FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FFFFFF00F7F7F700D6D6
-                D600E7E7E700FF00FF00EFEFF700FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00EFEFEF00CECECE00ADADAD00ADADAD00A5A5
-                A500737373009494AD00D6D6EF00FF00FF00FF00FF00FF00FF00FF00FF00EFEF
-                FF00F7F7FF00FFFFFF00D6D6D6009C9C9C00636363004A4A4A00313939005A5A
-                5A003131840052528400E7E7E700FF00FF00FF00FF00FF00FF00FF00FF00E7E7
-                E700A5A5C600C6C6D6005A635A00393939002929290021212100212929001821
-                520010107B004A4A5200C6C6C600F7F7F700FF00FF00FF00FF00FF00FF00EFEF
-                EF00636384004242A50021294A00182121003942390031393900212939000808
-                8C0021293100424242007B7B7B0094949400F7F7F700FF00FF00FF00FF00F7F7
-                F7008C8C8C0039427B000000AD002931420031393900424252000000A5002131
-                63002939390039424200636363007B7B7B00F7F7F700FF00FF00FF00FF00FF00
-                FF00CECECE0042524A0018298C000808A50018215A0018189400081094004263
-                5A0039524A003142420039393900A5A5A500FFFFFF00FF00FF00FF00FF00F7F7
-                F700A5A5A5009CA59C004A737B000000AD000000AD0008089C00424A5A005A84
-                7B004A6B630039524A006B6B6B00C6C6C600FFFFFF00FF00FF00FF00FF00FFFF
-                FF0084848400BDC6C6007B949C002939AD000000AD000000AD00181894005A7B
-                94005A847B0042635A00636B6B00CECECE00FF00FF00FF00FF00FF00FF00FF00
-                FF00C6C6C600393994000808AD003942B500A5BDCE006B73AD000000AD000000
-                AD0039529C004A6B63004A525200BDBDBD00FF00FF00FF00FF00FF00FF00EFEF
-                F7005252CE000000AD000000AD00BDCECE00C6D6D600C6DED600737B8C003142
-                A5002939A50052736B00393939008C8C8C00EFEFEF00FF00FF008C8CDE001010
-                B5000000AD000000AD009494DE00EFEFEF00A5BDB500B5CEC600A5BDBD007B9C
-                9C005A7B730063736B00ADADAD0094949400EFEFEF00FF00FF000000B5000000
-                AD001818B500BDBDEF00FF00FF00E7E7E7005A5A5A00849C9C0094B5AD00738C
-                840039635A0063736B00EFEFEF00A5A5A500FF00FF00FF00FF00ADADE7009C9C
-                DE00F7F7FF00FF00FF00FF00FF00F7F7F700737373009CADAD0052848C007384
-                8400C6CECE00EFEFEF00FF00FF00EFEFEF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FFFFFF0094949400E7E7E700FFFFFF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00E7E7E700EFEFEF00FF00FF00FF00
-                FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
-            end
-          end
-        end
         object tabBacktrace: TTabSheet
-          Caption = 'Backtrace'
+          Caption = 'Stack Trace'
           ImageIndex = 1
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 610
+            Width = 608
             Height = 66
             Align = alClient
             Columns = <
@@ -608,6 +222,7 @@ object MainForm: TMainForm
               item
                 Caption = 'Line'
               end>
+            HideSelection = False
             ReadOnly = True
             RowSelect = True
             TabOrder = 0
@@ -617,17 +232,76 @@ object MainForm: TMainForm
             OnMouseMove = lvBacktraceMouseMove
           end
         end
+        object tabLocals: TTabSheet
+          Caption = 'Local Variables'
+          ImageIndex = 3
+          object lvLocals: TListView
+            Left = 0
+            Top = 0
+            Width = 608
+            Height = 66
+            Align = alClient
+            Columns = <
+              item
+                Caption = 'Name'
+                Width = 200
+              end
+              item
+                Caption = 'Value'
+                Width = 325
+              end
+              item
+                Caption = 'Location'
+                Width = 75
+              end>
+            ReadOnly = True
+            RowSelect = True
+            TabOrder = 0
+            ViewStyle = vsReport
+          end
+        end
+        object tabThreads: TTabSheet
+          Caption = 'Threads'
+          ImageIndex = 3
+          object lvThreads: TListView
+            Left = 0
+            Top = 0
+            Width = 608
+            Height = 66
+            Align = alClient
+            Columns = <
+              item
+                Width = 25
+              end
+              item
+                Caption = 'Index'
+              end
+              item
+                Caption = 'Thread ID'
+                Width = 575
+              end>
+            ReadOnly = True
+            RowSelect = True
+            TabOrder = 0
+            ViewStyle = vsReport
+            OnDblClick = lvThreadsDblClick
+          end
+        end
         object tabDebugOutput: TTabSheet
           Caption = 'Output'
           ImageIndex = 2
           object DebugOutput: TMemo
             Left = 0
             Top = 22
-            Width = 610
+            Width = 608
             Height = 44
             Align = alClient
-            Lines.Strings = (
-              'Debugger output')
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Courier New'
+            Font.Style = []
+            ParentFont = False
             ReadOnly = True
             ScrollBars = ssVertical
             TabOrder = 0
@@ -635,31 +309,31 @@ object MainForm: TMainForm
           object GdbOutputPanel: TPanel
             Left = 0
             Top = 0
-            Width = 610
+            Width = 608
             Height = 22
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
-            object lblSendCommandGdb: TLabel
-              Left = 4
-              Top = 0
-              Width = 118
+            object lblSendCommandDebugger: TLabel
+              Left = 0
+              Top = 2
+              Width = 137
               Height = 13
-              Caption = 'Send command to GDB :'
+              Caption = 'Send command to debugger:'
             end
             object edGdbCommand: TEdit
               Left = 160
               Top = 0
-              Width = 233
+              Width = 285
               Height = 21
               TabOrder = 0
               OnKeyPress = edGdbCommandKeyPress
             end
             object GdbCommandBtn: TButton
-              Left = 398
+              Left = 450
               Top = 0
               Width = 62
-              Height = 18
+              Height = 21
               Caption = 'Send'
               TabOrder = 1
               OnClick = GdbCommandBtnClick
@@ -675,7 +349,7 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 618
+        Width = 616
         Height = 97
         Align = alClient
         BevelOuter = bvRaised
@@ -726,7 +400,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar
     Left = 0
     Top = 16
-    Width = 630
+    Width = 628
     Height = 86
     Align = alTop
     AutoDock = False
@@ -807,7 +481,7 @@ object MainForm: TMainForm
     object tbCompile: TToolBar
       Left = 11
       Top = 30
-      Width = 166
+      Width = 130
       Height = 22
       AutoSize = True
       Caption = 'Compile and Run'
@@ -826,39 +500,37 @@ object MainForm: TMainForm
         Top = 0
         Action = actCompile
       end
-      object RunBtn: TToolButton
-        Left = 23
-        Top = 0
-        Action = actRun
-      end
       object RebuildAllBtn: TToolButton
-        Left = 46
+        Left = 23
         Top = 0
         Action = actRebuild
       end
+      object ToolButton2: TToolButton
+        Left = 46
+        Top = 0
+        Width = 8
+        Caption = 'ToolButton2'
+        ImageIndex = 49
+        Style = tbsSeparator
+      end
       object CompileAndRunBtn: TToolButton
-        Left = 69
+        Left = 54
         Top = 0
         Action = actCompRun
       end
+      object RunBtn: TToolButton
+        Left = 77
+        Top = 0
+        Action = actRun
+      end
       object ProgramResetBtn: TToolButton
-        Left = 92
+        Left = 100
         Top = 0
         Action = actProgramReset
       end
-      object DebugBtn: TToolButton
-        Left = 115
-        Top = 0
-        Action = actDebug
-      end
-      object DebugStopBtn: TToolButton
-        Left = 138
-        Top = 0
-        Action = actStopExecute
-      end
     end
     object tbOptions: TToolBar
-      Left = 190
+      Left = 317
       Top = 30
       Width = 46
       Height = 22
@@ -1002,9 +674,9 @@ object MainForm: TMainForm
       end
     end
     object tbSpecials: TToolBar
-      Left = 249
+      Left = 376
       Top = 30
-      Width = 243
+      Width = 231
       Height = 22
       AutoSize = True
       ButtonWidth = 60
@@ -1054,11 +726,14 @@ object MainForm: TMainForm
       Width = 466
       Height = 22
       AutoSize = True
-      Caption = 'tbClasses'
+      Caption = 'Classes'
+      DragKind = dkDock
       EdgeBorders = []
       EdgeInner = esNone
       EdgeOuter = esNone
       Flat = True
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 7
       object cmbClasses: TComboBox
         Left = 0
@@ -1097,11 +772,67 @@ object MainForm: TMainForm
         OnChange = cmbMembersChange
       end
     end
+    object tbDebug: TToolBar
+      Left = 154
+      Top = 30
+      Width = 150
+      Height = 22
+      AutoSize = True
+      Caption = 'Debug'
+      DragKind = dkDock
+      EdgeBorders = []
+      EdgeInner = esNone
+      EdgeOuter = esNone
+      Flat = True
+      Images = dmMain.MenuImages_Gnome
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
+      Wrapable = False
+      object DebugBtn: TToolButton
+        Left = 0
+        Top = 0
+        Action = actDebug
+      end
+      object DebugPauseBtn: TToolButton
+        Left = 23
+        Top = 0
+        Action = actPauseDebug
+      end
+      object DebugStopBtn: TToolButton
+        Left = 46
+        Top = 0
+        Action = actStopExecute
+      end
+      object DebugRestartBtn: TToolButton
+        Left = 69
+        Top = 0
+        Action = actRestartDebug
+      end
+      object ToolButton1: TToolButton
+        Left = 92
+        Top = 0
+        Width = 8
+        Caption = 'ToolButton1'
+        ImageIndex = 33
+        Style = tbsSeparator
+      end
+      object DebugStepOver: TToolButton
+        Left = 100
+        Top = 0
+        Action = actStepOver
+      end
+      object DebugStepInto: TToolButton
+        Left = 123
+        Top = 0
+        Action = actStepInto
+      end
+    end
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 371
-    Width = 630
+    Top = 369
+    Width = 628
     Height = 19
     Panels = <
       item
@@ -1114,42 +845,33 @@ object MainForm: TMainForm
         Width = 80
       end
       item
-        Width = 50
+        Width = 100
+      end
+      item
+        Style = psOwnerDraw
+        Width = 135
       end>
     ParentFont = True
     UseSystemFont = False
-  end
-  object PageControl: TPageControl
-    Left = 213
-    Top = 102
-    Width = 247
-    Height = 135
-    Align = alClient
-    PopupMenu = EditorPopupMenu
-    TabOrder = 3
-    OnChange = PageControlChange
-    OnChanging = PageControlChanging
-    OnDragDrop = PageControlDragDrop
-    OnDragOver = PageControlDragOver
-    OnMouseDown = PageControlMouseDown
+    OnDrawPanel = StatusBarDrawPanel
   end
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 630
+    Width = 628
     Height = 16
     Align = alTop
     BevelOuter = bvNone
     Caption = 
       'Dev-C++ version 5.0 full screen press shift+F12 to toggle Toolba' +
       'rs or F12 to go to normal mode.'
-    TabOrder = 4
+    TabOrder = 3
     Visible = False
     DesignSize = (
-      630
+      628
       16)
     object btnFullScrRevert: TSpeedButton
-      Left = 615
+      Left = 613
       Top = 0
       Width = 14
       Height = 14
@@ -1179,122 +901,122 @@ object MainForm: TMainForm
     Active = False
     OnNotifyChange = devFileMonitor1NotifyChange
   end
-  object pnlControlHolder: TPanel
-    Left = 463
-    Top = 102
-    Width = 167
-    Height = 135
-    Align = alRight
-    TabOrder = 6
-    Visible = False
+  object FormProgress: TProgressBar
+    Left = 488
+    Top = 214
+    Width = 134
+    Height = 17
+    TabOrder = 5
   end
-  object pnlBrowsers: TPanel
+  object LeftPageControl: TPageControl
     Left = 0
     Top = 102
-    Width = 209
-    Height = 135
+    Width = 192
+    Height = 133
+    ActivePage = ProjectSheet
     Align = alLeft
-    BevelOuter = bvNone
-    Caption = 'pnlBrowsers'
-    UseDockManager = False
-    DockSite = True
-    TabOrder = 7
-    object LeftPageControl: TPageControl
-      Left = 9
-      Top = 9
-      Width = 192
-      Height = 201
-      Hint = 'Project Inspector'
-      ActivePage = ProjectSheet
-      Images = dmMain.ProjectImage_NewLook
-      TabOrder = 0
-      object ProjectSheet: TTabSheet
-        Caption = 'Project'
-        ImageIndex = -1
-        object ProjectView: TTreeView
-          Left = 0
-          Top = 0
-          Width = 184
-          Height = 173
-          Align = alClient
-          ChangeDelay = 1
-          DragMode = dmAutomatic
-          HideSelection = False
-          HotTrack = True
-          Images = dmMain.ProjectImage_Gnome
-          Indent = 19
-          MultiSelect = True
-          MultiSelectStyle = [msControlSelect, msShiftSelect]
-          ReadOnly = True
-          RightClickSelect = True
-          SortType = stText
-          TabOrder = 0
-          OnClick = ProjectViewClick
-          OnCompare = ProjectViewCompare
-          OnContextPopup = ProjectViewContextPopup
-          OnDblClick = ProjectViewDblClick
-          OnDragDrop = ProjectViewDragDrop
-          OnDragOver = ProjectViewDragOver
-          OnKeyDown = ProjectViewKeyDown
-          OnKeyPress = ProjectViewKeyPress
-          OnMouseDown = ProjectViewMouseDown
-        end
-      end
-      object ClassSheet: TTabSheet
-        Caption = 'Classes'
-        ImageIndex = -1
-        object ClassBrowser1: TClassBrowser
-          Left = 0
-          Top = 0
-          Width = 184
-          Height = 173
-          Align = alClient
-          Images = dmMain.ClassImages
-          ReadOnly = True
-          Indent = 19
-          TabOrder = 0
-          PopupMenu = BrowserPopup
-          ShowFilter = sfAll
-          OnSelect = ClassBrowser1Select
-          Parser = CppParser1
-          ItemImages.Globals = 0
-          ItemImages.Classes = 1
-          ItemImages.VariablePrivate = 2
-          ItemImages.VariableProtected = 3
-          ItemImages.VariablePublic = 4
-          ItemImages.VariablePublished = 4
-          ItemImages.MethodPrivate = 5
-          ItemImages.MethodProtected = 6
-          ItemImages.MethodPublic = 7
-          ItemImages.MethodPublished = 7
-          ItemImages.InheritedMethodProtected = 8
-          ItemImages.InheritedMethodPublic = 10
-          ItemImages.InheritedVariableProtected = 9
-          ItemImages.InheritedVariablePublic = 11
-          UseColors = True
-          ShowInheritedMembers = False
-        end
-      end
-      object DebugLeftSheet: TTabSheet
-        Caption = 'Debug'
-        ImageIndex = -1
-        object DebugTree: TTreeView
-          Left = 0
-          Top = 0
-          Width = 184
-          Height = 173
-          Align = alClient
-          Images = dmMain.MenuImages_NewLook
-          Indent = 19
-          MultiSelectStyle = []
-          PopupMenu = DebugVarsPopup
-          ReadOnly = True
-          RightClickSelect = True
-          TabOrder = 0
-          OnKeyDown = DebugTreeKeyDown
-        end
+    Images = dmMain.ProjectImage_NewLook
+    TabOrder = 6
+    object ProjectSheet: TTabSheet
+      Caption = 'Project'
+      ImageIndex = -1
+      object ProjectView: TTreeView
+        Left = 0
+        Top = 0
+        Width = 184
+        Height = 105
+        Align = alClient
+        ChangeDelay = 1
+        DragMode = dmAutomatic
+        HideSelection = False
+        HotTrack = True
+        Images = dmMain.ProjectImage_Gnome
+        Indent = 19
+        MultiSelect = True
+        MultiSelectStyle = [msControlSelect, msShiftSelect]
+        ReadOnly = True
+        RightClickSelect = True
+        SortType = stText
+        TabOrder = 0
+        OnClick = ProjectViewClick
+        OnCompare = ProjectViewCompare
+        OnContextPopup = ProjectViewContextPopup
+        OnDblClick = ProjectViewDblClick
+        OnDragDrop = ProjectViewDragDrop
+        OnDragOver = ProjectViewDragOver
+        OnKeyDown = ProjectViewKeyDown
+        OnKeyPress = ProjectViewKeyPress
+        OnMouseDown = ProjectViewMouseDown
       end
     end
+    object ClassSheet: TTabSheet
+      Caption = 'Classes'
+      ImageIndex = -1
+      object ClassBrowser1: TClassBrowser
+        Left = 0
+        Top = 0
+        Width = 184
+        Height = 105
+        Align = alClient
+        Images = dmMain.ClassImages
+        ReadOnly = True
+        Indent = 19
+        TabOrder = 0
+        PopupMenu = BrowserPopup
+        ShowFilter = sfAll
+        OnSelect = ClassBrowser1Select
+        Parser = CppParser1
+        ItemImages.Globals = 0
+        ItemImages.Classes = 1
+        ItemImages.VariablePrivate = 2
+        ItemImages.VariableProtected = 3
+        ItemImages.VariablePublic = 4
+        ItemImages.VariablePublished = 4
+        ItemImages.MethodPrivate = 5
+        ItemImages.MethodProtected = 6
+        ItemImages.MethodPublic = 7
+        ItemImages.MethodPublished = 7
+        ItemImages.InheritedMethodProtected = 8
+        ItemImages.InheritedMethodPublic = 10
+        ItemImages.InheritedVariableProtected = 9
+        ItemImages.InheritedVariablePublic = 11
+        UseColors = True
+        ShowInheritedMembers = False
+      end
+    end
+    object DebugLeftSheet: TTabSheet
+      Caption = 'Debug'
+      ImageIndex = -1
+      object DebugTree: TTreeView
+        Left = 0
+        Top = 0
+        Width = 184
+        Height = 105
+        Align = alClient
+        Images = dmMain.MenuImages_NewLook
+        Indent = 19
+        MultiSelectStyle = []
+        PopupMenu = DebugVarsPopup
+        ReadOnly = True
+        RightClickSelect = True
+        TabOrder = 0
+        OnKeyDown = DebugTreeKeyDown
+      end
+    end
+  end
+  object PageControl: TPageControl
+    Left = 192
+    Top = 102
+    Width = 436
+    Height = 133
+    Align = alClient
+    PopupMenu = EditorPopupMenu
+    TabOrder = 7
+    OnChange = PageControlChange
+    OnChanging = PageControlChanging
+    OnDragDrop = PageControlDragDrop
+    OnDragOver = PageControlDragOver
+    OnMouseDown = PageControlMouseDown
   end
   object MainMenu: TMainMenu
     Images = dmMain.MenuImages_Gnome
@@ -1595,6 +1317,12 @@ object MainForm: TMainForm
           Checked = True
           OnClick = ToolbarClick
         end
+        object ToolDebugItem: TMenuItem
+          AutoCheck = True
+          Caption = '&Debug'
+          Checked = True
+          OnClick = ToolbarClick
+        end
         object ToolProjectItem: TMenuItem
           AutoCheck = True
           Caption = '&Project'
@@ -1626,7 +1354,7 @@ object MainForm: TMainForm
           OnClick = ToolbarClick
         end
       end
-      object oDolist1: TMenuItem
+      object ToDolist1: TMenuItem
         Action = actViewToDoList
       end
       object N63: TMenuItem
@@ -1726,15 +1454,18 @@ object MainForm: TMainForm
         Tag = 10
         Action = actDebug
       end
-      object AttachtoprocessItem: TMenuItem
-        Action = actAttachProcess
+      object Pause1: TMenuItem
+        Action = actPauseDebug
       end
       object StopExecution1: TMenuItem
         Action = actStopExecute
         ShortCut = 49265
       end
-      object mnuDebugParameters: TMenuItem
-        Action = actExecParams
+      object Restart1: TMenuItem
+        Action = actRestartDebug
+      end
+      object AttachtoprocessItem: TMenuItem
+        Action = actAttachProcess
       end
       object N18: TMenuItem
         Caption = '-'
@@ -1742,15 +1473,12 @@ object MainForm: TMainForm
       object TogglebreakpointItem: TMenuItem
         Action = actBreakPoint
       end
-      object DbgNextItem: TMenuItem
-        Action = actNextStep
-      end
-      object DbgSingleStep: TMenuItem
-        Action = actStepSingle
-        ShortCut = 8310
-      end
-      object StepoverItem: TMenuItem
+      object DbgStepOver: TMenuItem
         Action = actStepOver
+      end
+      object DbgStepInto: TMenuItem
+        Action = actStepInto
+        ShortCut = 8310
       end
       object RuntocursorItem: TMenuItem
         Action = actRunToCursor
@@ -1764,13 +1492,16 @@ object MainForm: TMainForm
       end
       object WatchItem: TMenuItem
         Action = actWatchItem
+        GroupIndex = 9
       end
       object ViewCPUItem: TMenuItem
         Action = actViewCPU
+        GroupIndex = 9
       end
     end
     object ToolsMenu: TMenuItem
       Action = actToolsMenu
+      GroupIndex = 9
       object CompileroptionsItem: TMenuItem
         Tag = 11
         Action = actCompOptions
@@ -1834,6 +1565,7 @@ object MainForm: TMainForm
     end
     object mnuCVS: TMenuItem
       Caption = 'CVS'
+      GroupIndex = 9
       OnClick = mnuCVSClick
       object mnuCVSCurrent: TMenuItem
         Caption = 'Current File...'
@@ -1919,6 +1651,7 @@ object MainForm: TMainForm
     end
     object WindowMenu: TMenuItem
       Action = actWindowMenu
+      GroupIndex = 9
       object CloseAllItem: TMenuItem
         Action = actCloseAll
       end
@@ -2735,8 +2468,8 @@ object MainForm: TMainForm
     object actDebug: TAction
       Tag = 6
       Category = 'Debug'
-      Caption = '&Debug'
-      ImageIndex = 32
+      Caption = '&Run'
+      ImageIndex = 54
       ShortCut = 119
       OnExecute = actDebugExecute
       OnUpdate = actDebugUpdate
@@ -2882,21 +2615,13 @@ object MainForm: TMainForm
       Caption = '&Edit watch'
       ImageIndex = 36
     end
-    object actNextStep: TAction
+    object actStepOver: TAction
       Category = 'Debug'
-      Caption = '&Next Step'
+      Caption = 'Step &Over'
       ImageIndex = 18
       ShortCut = 118
       OnExecute = actNextStepExecute
-      OnUpdate = actUpdateDebuggerRunning
-    end
-    object actStepOver: TAction
-      Category = 'Debug'
-      Caption = '&Continue'
-      ImageIndex = 14
-      ShortCut = 16502
-      OnExecute = actStepOverExecute
-      OnUpdate = actUpdateDebuggerRunning
+      OnUpdate = actUpdateDebuggerPaused
     end
     object actWatchItem: TAction
       Category = 'Debug'
@@ -2914,7 +2639,7 @@ object MainForm: TMainForm
     object actStopExecute: TAction
       Category = 'Debug'
       Caption = 'Stop Execution'
-      ImageIndex = 11
+      ImageIndex = 55
       ShortCut = 32881
       OnExecute = actStopExecuteExecute
       OnUpdate = actUpdateDebuggerRunning
@@ -3100,11 +2825,12 @@ object MainForm: TMainForm
       OnExecute = actCloseAllButThisExecute
       OnUpdate = actUpdatePageCount
     end
-    object actStepSingle: TAction
+    object actStepInto: TAction
       Category = 'Debug'
-      Caption = 'Step into'
+      Caption = '&Step Into'
+      ImageIndex = 57
       OnExecute = actStepSingleExecute
-      OnUpdate = actUpdateDebuggerRunning
+      OnUpdate = actUpdateDebuggerPaused
     end
     object actFileProperties: TAction
       Category = 'File'
@@ -3116,7 +2842,7 @@ object MainForm: TMainForm
       Category = 'View'
       Caption = 'To-Do list...'
       OnExecute = actViewToDoListExecute
-      OnUpdate = actUpdatePageorProject
+      OnUpdate = actViewToDoListUpdate
     end
     object actAddToDo: TAction
       Category = 'Edit'
@@ -3307,6 +3033,21 @@ object MainForm: TMainForm
       ShortCut = 16470
       OnExecute = actWxPropertyInspectorPasteExecute
     end
+    object actRestartDebug: TAction
+      Category = 'Debug'
+      Caption = '&Restart'
+      ImageIndex = 56
+      ShortCut = 8311
+      OnExecute = actRestartDebugExecute
+      OnUpdate = actUpdateDebuggerRunning
+    end
+    object actPauseDebug: TAction
+      Category = 'Debug'
+      Caption = 'Pause Execution'
+      ImageIndex = 58
+      OnExecute = actPauseDebugExecute
+      OnUpdate = actPauseDebugUpdate
+    end
   end
   object ApplicationEvents1: TApplicationEvents
     OnActivate = ApplicationEvents1Activate
@@ -3373,7 +3114,7 @@ object MainForm: TMainForm
     MultiLangStrings.HeaderShortcut = 'Shortcut assigned'
     MultiLangStrings.OK = 'OK'
     MultiLangStrings.Cancel = 'Cancel'
-    Left = 521
+    Left = 520
     Top = 158
   end
   object BrowserPopup: TPopupMenu
@@ -3463,7 +3204,7 @@ object MainForm: TMainForm
   end
   object DevCppDDEServer: TDdeServerConv
     OnExecuteMacro = DevCppDDEServerExecuteMacro
-    Left = 549
+    Left = 548
     Top = 158
   end
   object XPMenu: TXPMenu
@@ -3506,25 +3247,8 @@ object MainForm: TMainForm
     TopSplitterStyle.ParentColor = False
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
-    DockStyle = DockStyle
     CustomDock = False
-    Left = 577
-    Top = 158
-  end
-  object DockStyle: TJvDockVSNetStyle
-    AlwaysShowGrabber = True
-    TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
-    TabServerOption.ActiveFont.Color = clWindowText
-    TabServerOption.ActiveFont.Height = -11
-    TabServerOption.ActiveFont.Name = 'MS Sans Serif'
-    TabServerOption.ActiveFont.Style = []
-    TabServerOption.InactiveFont.Charset = DEFAULT_CHARSET
-    TabServerOption.InactiveFont.Color = 5395794
-    TabServerOption.InactiveFont.Height = -11
-    TabServerOption.InactiveFont.Name = 'MS Sans Serif'
-    TabServerOption.InactiveFont.Style = []
-    TabServerOption.ShowCloseButtonOnTabs = False
-    Left = 605
+    Left = 576
     Top = 158
   end
 end

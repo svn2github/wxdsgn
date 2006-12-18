@@ -560,7 +560,7 @@ type
     fAutoOpen: integer; // Auto Open Project Files Style
     fShowProject: boolean; // Show the project explorer
     fProjectWidth: integer;
-   fClassView: boolean;              // if true, shows the class view, else shows the file view
+    fClassView: boolean; // if true, shows the class view, else shows the file view
     fOutput: boolean; // show compiler message window
     fOutputOnNeed: boolean; // show compiler messages only when problem
     fOutputHeight: integer; // the height of the output window
@@ -586,6 +586,9 @@ type
     fToolbarCompile: boolean;
     fToolbarCompileX: integer;
     fToolbarCompileY: integer;
+    fToolbarDebug: boolean;
+    fToolbarDebugX: integer;
+    fToolbarDebugY: integer;
     fToolbarProject: boolean;
     fToolbarProjectX: integer;
     fToolbarProjectY: integer;
@@ -682,23 +685,26 @@ type
     property ToolbarEditX: integer read fToolbarEditX write fToolbarEditX;
     property ToolbarEditY: integer read fToolbarEditY write fToolbarEditY;
     property ToolbarCompile: boolean read fToolbarCompile write fToolbarCompile;
-   property ToolbarCompileX: integer read fToolbarCompileX write fToolbarCompileX;
-   property ToolbarCompileY: integer read fToolbarCompileY write fToolbarCompileY;
+    property ToolbarCompileX: integer read fToolbarCompileX write fToolbarCompileX;
+    property ToolbarCompileY: integer read fToolbarCompileY write fToolbarCompileY;
+    property ToolbarDebug: boolean read fToolbarDebug write fToolbarDebug;
+    property ToolbarDebugX: integer read fToolbarDebugX write fToolbarDebugX;
+    property ToolbarDebugY: integer read fToolbarDebugY write fToolbarDebugY;
     property ToolbarProject: boolean read fToolbarProject write fToolbarProject;
-   property ToolbarProjectX: integer read fToolbarProjectX write fToolbarProjectX;
-   property ToolbarProjectY: integer read fToolbarProjectY write fToolbarProjectY;
+    property ToolbarProjectX: integer read fToolbarProjectX write fToolbarProjectX;
+    property ToolbarProjectY: integer read fToolbarProjectY write fToolbarProjectY;
     property ToolbarOptions: boolean read fToolbarOptions write fToolbarOptions;
-   property ToolbarOptionsX: integer read fToolbarOptionsX write fToolbarOptionsX;
-   property ToolbarOptionsY: integer read fToolbarOptionsY write fToolbarOptionsY;
-   property ToolbarSpecials: boolean read fToolbarSpecials write fToolbarSpecials;
-   property ToolbarSpecialsX: integer read fToolbarSpecialsX write fToolbarSpecialsX;
-   property ToolbarSpecialsY: integer read fToolbarSpecialsY write fToolbarSpecialsY;
+    property ToolbarOptionsX: integer read fToolbarOptionsX write fToolbarOptionsX;
+    property ToolbarOptionsY: integer read fToolbarOptionsY write fToolbarOptionsY;
+    property ToolbarSpecials: boolean read fToolbarSpecials write fToolbarSpecials;
+    property ToolbarSpecialsX: integer read fToolbarSpecialsX write fToolbarSpecialsX;
+    property ToolbarSpecialsY: integer read fToolbarSpecialsY write fToolbarSpecialsY;
     property ToolbarSearch: boolean read fToolbarSearch write fToolbarSearch;
     property ToolbarSearchX: integer read fToolbarSearchX write fToolbarSearchX;
     property ToolbarSearchY: integer read fToolbarSearchY write fToolbarSearchY;
     property ToolbarClasses: boolean read fToolbarClasses write fToolbarClasses;
-   property ToolbarClassesX: integer read fToolbarClassesX write fToolbarClassesX;
-   property ToolbarClassesY: integer read fToolbarClassesY write fToolbarClassesY;
+    property ToolbarClassesX: integer read fToolbarClassesX write fToolbarClassesX;
+    property ToolbarClassesY: integer read fToolbarClassesY write fToolbarClassesY;
 
     // file associations
     property AssociateCpp: boolean read fAssociateCpp write fAssociateCpp;
@@ -1113,6 +1119,9 @@ begin
   fToolbarCompile := TRUE;
   fToolbarCompileX := 11;
   fToolbarCompileY := 30;
+  fToolbarDebug := TRUE;
+  fToolbarDebugX := 154;
+  fToolbarDebugY := 30;
   fToolbarProject := TRUE;
   fToolbarProjectX := 375;
   fToolbarProjectY := 2;

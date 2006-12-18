@@ -69,6 +69,7 @@ object CPUForm: TCPUForm
       Gutter.Font.Name = 'Terminal'
       Gutter.Font.Style = []
       Gutter.Visible = False
+      Highlighter = SynAsmSyn1
       Options = [eoAutoIndent, eoNoCaret, eoScrollPastEol, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces]
       ReadOnly = True
       RemovedKeystrokes = <
@@ -83,43 +84,13 @@ object CPUForm: TCPUForm
         end>
     end
   end
-  object gbSyntax: TGroupBox
-    Left = 417
-    Top = 8
-    Width = 137
-    Height = 57
-    Anchors = [akTop, akRight]
-    Caption = 'Assembler Syntax :'
-    TabOrder = 1
-    object rbIntel: TRadioButton
-      Tag = 1
-      Left = 80
-      Top = 24
-      Width = 49
-      Height = 17
-      Caption = 'Intel'
-      TabOrder = 0
-      OnClick = rbSyntaxClick
-    end
-    object rbATT: TRadioButton
-      Left = 16
-      Top = 24
-      Width = 57
-      Height = 17
-      Caption = 'AT&&T'
-      Checked = True
-      TabOrder = 1
-      TabStop = True
-      OnClick = rbSyntaxClick
-    end
-  end
   object CloseBtn: TBitBtn
     Left = 417
     Top = 417
     Width = 137
     Height = 25
     Anchors = [akRight, akBottom]
-    TabOrder = 2
+    TabOrder = 1
     Kind = bkClose
   end
   object gbRegisters: TGroupBox
@@ -129,7 +100,7 @@ object CPUForm: TCPUForm
     Height = 337
     Anchors = [akTop, akRight]
     Caption = 'Registers :'
-    TabOrder = 3
+    TabOrder = 2
     object lblEIP: TLabel
       Left = 8
       Top = 212
@@ -326,6 +297,20 @@ object CPUForm: TCPUForm
       TabOrder = 12
     end
   end
+  object rgSyntax: TRadioGroup
+    Left = 418
+    Top = 8
+    Width = 137
+    Height = 57
+    Anchors = [akTop, akRight]
+    Caption = 'Assembly Syntax'
+    ItemIndex = 0
+    Items.Strings = (
+      'Intel'
+      'AT&&T')
+    TabOrder = 3
+    OnClick = rgSyntaxClick
+  end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
@@ -354,7 +339,11 @@ object CPUForm: TCPUForm
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 144
-    Top = 120
+    Left = 37
+    Top = 420
+  end
+  object SynAsmSyn1: TSynAsmSyn
+    Left = 10
+    Top = 420
   end
 end

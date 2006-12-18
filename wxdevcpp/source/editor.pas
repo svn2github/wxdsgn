@@ -1,4 +1,6 @@
 {
+    $Id$
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -25,7 +27,7 @@ uses
 {$IFDEF WIN32}
   Windows, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, CodeCompletion, CppParser,
   Menus, ImgList, ComCtrls, StdCtrls, ExtCtrls, SynEdit, SynEditKeyCmds, version, Grids,
-   SynCompletionProposal, StrUtils, SynEditTypes,  SynEditHighlighter,
+  SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter,
 
   {** Modified by Peter **}
   DevCodeToolTip, SynAutoIndent,utils
@@ -79,7 +81,6 @@ type
     fActiveLine: integer;
     fErrSetting: boolean;
     fDebugGutter: TDebugGutter;
-    fOnBreakPointToggle: TBreakpointToggleEvent;
     fDebugHintTimer: TTimer;
     fCurrentHint: string;
     //////// CODE-COMPLETION - mandrav /////////////
@@ -127,6 +128,7 @@ type
     procedure EditorDblClick(Sender: TObject);
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y:Integer);
     procedure DebugHintTimer(sender: TObject);
+    procedure OnVariableHint(Hint: string);
 
     procedure SetFileName(value: string);
     procedure DrawGutterImages(ACanvas: TCanvas; AClip: TRect;
@@ -183,7 +185,6 @@ type
     procedure ReconfigCompletion;
     //////// CODE-COMPLETION - mandrav /////////////
 
-    property OnBreakpointToggle: TBreakpointToggleEvent read fOnBreakpointToggle write fOnBreakpointToggle;
     property FileName: string read fFileName write SetFileName;
     property InProject: boolean read fInProject write fInProject;
     property New: boolean read fNew write fNew;
@@ -227,7 +228,7 @@ implementation
 
 uses
   MigrateFrm, Main, project, MultiLangSupport, devcfg, Search_Center, datamod,
-  GotoLineFrm, Macros
+  GotoLineFrm, Macros, debugger
 {$IFDEF LINUX}
   ,Xlib, utils
 {$ENDIF};
@@ -292,7 +293,6 @@ begin
   // This is to have a pointer to the TEditor using the PageControl in MainForm
   fTabSheet.Tag := integer(self);
 
-  fOnBreakpointToggle := MainForm.OnBreakpointToggle;
   fText := TSynEdit.Create(fTabSheet);
   fText.Parent := fTabSheet;
 
@@ -620,57 +620,36 @@ end;
 // have been turned off.  By using these functions to explicitly turn on or turn
 // off a breakpoint, this cannot happen
 procedure TEditor.TurnOnBreakpoint(line: integer);
-var
-index:integer;
 begin
-  index := 0;
   if(line > 0) and (line <= fText.Lines.Count) then
-    begin
-      fText.InvalidateLine(line);
-      // RNC new synedit stuff
-      fText.InvalidateGutterLine(line);
-      MainForm.AddBreakPointToList(line, self, fFilename);
-      index := BreakPointList.Count -1;
+  begin
+    fText.InvalidateLine(line);
+    fText.InvalidateGutterLine(line);
+    MainForm.AddBreakPointToList(line, self);
   end;
-  if Assigned(fOnBreakpointToggle) then
-    fonBreakpointToggle(index, true);
 end;
 
 procedure TEditor.TurnOffBreakpoint(line: integer);
-var
-  index: integer;
 begin
   if(line > 0) and (line <= fText.Lines.Count) then
-    begin
-      fText.InvalidateLine(line);
-      // RNC new synedit stuff
-      fText.InvalidateGutterLine(line);
-      index := HasBreakPoint(line);
-      if index <> -1 then begin
-        index:=MainForm.RemoveBreakPointFromList(line, self);
-        if Assigned(fOnBreakpointToggle) then
-          fonBreakpointToggle(index, false);
-      end;
+  begin
+    fText.InvalidateLine(line);
+    fText.InvalidateGutterLine(line);
+    MainForm.RemoveBreakPointFromList(line, self);
   end;
 end;
 
 //RNC function to set breakpoints in a file when it is opened
 procedure TEditor.SetBreakPointsOnOpen;
 var
-  i: integer;
-  strFileNameInTab:String;
+  i: Integer;
 begin
-  if Trim(self.FileName) = '' then
-    strFileNameInTab:=self.TabSheet.Caption
-  else
-    strFileNameInTab:=ExtractFileName(self.FileName);
-  for i:=0 to BreakPointList.Count -1 do
-  begin
-      if UpperCase(PBreakPointEntry(BreakPointList.Items[i])^.file_name) =  strFileNameInTab then begin
-          InsertBreakpoint(PBreakPointEntry(BreakPointList.Items[i])^.line);
-          PBreakPointEntry(BreakPointList.Items[i])^.editor := self;
-      end;
-  end;
+  for i := 0 to debugger.Breakpoints.Count - 1 do
+    if PBreakpoint(debugger.Breakpoints.Items[i])^.Filename = fFilename then
+    begin
+      InsertBreakpoint(PBreakpoint(debugger.Breakpoints.Items[i])^.Line);
+      PBreakpoint(debugger.Breakpoints.Items[i])^.Editor := self;
+    end;
 end;
         
 procedure TEditor.Close;
@@ -696,54 +675,33 @@ begin
   end;
 end;
 
-
-
 function TEditor.ToggleBreakpoint(Line: integer): boolean;
-var
-  idx: integer;
 begin
-  idx := 0;
   result := FALSE;
   if (line > 0) and (line <= fText.Lines.Count) then
   begin
     fText.InvalidateGutterLine(line);
     fText.InvalidateLine(line);
-    idx := HasBreakPoint(Line);
+    
     //RNC moved the check to see if the debugger is running to here
-    if idx <> -1 then begin
-        if (MainForm.fDebugger.Executing and MainForm.fDebugger.IsBroken) or not MainForm.fDebugger.Executing then begin
-            idx := MainForm.RemoveBreakPointFromList(line, self);  // RNC
-        end
-        else if (MainForm.fDebugger.Executing and not MainForm.fDebugger.IsBroken) then begin
-            MessageDlg('Cannot remove a breakpoint while the debugger is executing.', mtError, [mbOK], 0);
-        end;
-    end
-    else begin
-        if (MainForm.fDebugger.Executing and MainForm.fDebugger.IsBroken) or not MainForm.fDebugger.Executing then begin
-           MainForm.AddBreakPointToList(line, self, self.TabSheet.Caption);   // RNC
-           idx := BreakPointList.Count -1;
-      result := TRUE;
-        end
-        else if (MainForm.fDebugger.Executing and not MainForm.fDebugger.IsBroken) then begin
-            MessageDlg('Cannot add a breakpoint while the debugger is executing.', mtError, [mbOK], 0);
-        end;
-    end;
+    if HasBreakPoint(Line) <> -1 then
+      MainForm.RemoveBreakPointFromList(line, self)
+    else
+      MainForm.AddBreakPointToList(line, self);
   end
   else
     fText.Invalidate;
-  if Assigned(fOnBreakpointToggle) then
-     fOnBreakpointToggle(idx, Result);
 end;
 
-//Rnc change to use the new list of breakpoints
 function TEditor.HasBreakPoint(line_number: integer): integer;
 begin
-  for result:= 0 to BreakPointList.Count-1 do begin
-    if PBreakPointEntry(BreakPointList.Items[result])^.editor = self then begin
-         if PBreakPointEntry(BreakPointList.Items[result])^.line = line_number then exit;
-    end;
-  end;
-  result := -1;
+  for Result:= 0 to debugger.Breakpoints.Count - 1 do
+    if PBreakpoint(debugger.Breakpoints.Items[Result])^.Editor = self then
+      if PBreakpoint(debugger.Breakpoints.Items[result])^.Line = line_number then
+        Exit;
+
+  //Cannot find an entry
+  Result := -1;
 end;
 
 procedure TEditor.EditorSpecialLineColors(Sender: TObject; Line: Integer;
@@ -1222,14 +1180,13 @@ procedure TEditor.SetActiveBreakpointFocus(const Line: integer);
 begin
   if (fActiveLine <> Line) and (fActiveLine <> -1) then
     fText.InvalidateLine(fActiveLine);
-   fText.InvalidateGutterLine(fActiveLine);
+  fText.InvalidateGutterLine(fActiveLine);
   fActiveLine := Line;
   fText.InvalidateLine(fActiveLine);
-   fText.InvalidateGutterLine(fActiveLine);
+  fText.InvalidateGutterLine(fActiveLine);
   fText.CaretY := Line;
   fText.EnsureCursorPosVisible;
-  // RNC -- 07.02.2004 This will clear the run to cursor value when a breakpoint is hit
-  {if Line = fRunToCursorLine then begin}
+
   if fRunToCursorLine <> -1 then begin
     TurnOffBreakpoint(fRunToCursorLine);
     fRunToCursorLine := -1;
@@ -1354,7 +1311,6 @@ procedure TEditor.EditorKeyPress(Sender: TObject; var Key: Char);
 var
   P: TPoint;
 begin
-
 if Key = char($7F) then // happens when doing ctrl+backspace with completion on
     exit;
   if fCompletionBox.Enabled then
@@ -1443,6 +1399,7 @@ begin
       Abort;
     end;
   end;
+
 {$IFDEF GURUS_BUILD}
 {$IFDEF WIN32}
   if (Key = VK_UP) or (Key = VK_DOWN) then
@@ -1726,7 +1683,7 @@ begin
       Exit;
     end;
 
-  if devEditor.ParserHints and  (not MainForm.fDebugger.Executing) then begin // editing - show declaration of word under cursor in a hint
+  if devEditor.ParserHints and (not MainForm.fDebugger.Executing) then begin // editing - show declaration of word under cursor in a hint
     p.Char := X;
     p.Line := Y;
     p := fText.DisplayToBufferPos(fText.PixelsToRowColumn(p.Char, p.Line));
@@ -1811,14 +1768,19 @@ begin
         fCompletionBox.ShowMsgHint(r, fCurrentHint);
       end;
     end
-    else if devData.WatchHint and MainForm.fDebugger.Executing then begin // debugging - evaluate var under cursor and show value in a hint
-      MainForm.fDebugger.SendCommand(GDB_DISPLAY, fCurrentHint);
-      {Sleep(25);
-      fText.Hint:=MainForm.fDebugger.WatchVar+': '+MainForm.fDebugger.WatchValue;
-      fText.ShowHint:=True;
-      Application.ActivateHint(Mouse.CursorPos);}
+    else if devData.WatchHint and MainForm.fDebugger.Executing then // debugging - evaluate var under cursor and show value in a hint
+    begin
+      MainForm.fDebugger.GetVariableHint(fCurrentHint);
+      MainForm.fDebugger.OnVariableHint := OnVariableHint;
     end;
   end;
+end;
+
+procedure TEditor.OnVariableHint(Hint: string);
+begin
+  fText.Hint := Hint;
+  fText.ShowHint := True;
+  Application.ActivateHint(Mouse.CursorPos);
 end;
 
 procedure TEditor.CommentSelection;
@@ -2075,7 +2037,6 @@ end;
 
 procedure TEditor.PaintMatchingBrackets(TransientType: TTransientType);
 const
-  BracketSet = ['{', '[', '(', '}', ']', ')'];
   OpenChars: array[0..2] of Char = ('{', '[', '(');
   CloseChars: array[0..2] of Char = ('}', ']', ')');
 
@@ -2084,37 +2045,87 @@ const
     Result:= fText.RowColumnToPixels(fText.BufferToDisplayPos(p));
   end;
 
+  procedure SetColors(Editor: TSynEdit; virtualCoord: TBufferCoord; Attri: TSynHighlighterAttributes);
+    function GetEditorBackgroundColor: TColor;
+    var
+      Attri: TSynHighlighterAttributes;
+      PhysicalIndex: Integer;
+    begin
+      PhysicalIndex := Editor.RowColToCharIndex(virtualCoord);
+
+      //Start by checking for selections
+      if (PhysicalIndex >= Editor.SelStart) and (PhysicalIndex < Editor.SelEnd) then
+        Result := Editor.SelectedColor.Background
+      else if (Editor.ActiveLineColor <> clNone) and (Editor.CaretY = virtualCoord.Line) then
+        Result := Editor.ActiveLineColor
+      else
+      begin
+        Result := Editor.Color;
+        if Editor.Highlighter <> nil then
+        begin
+          Attri := Editor.Highlighter.WhitespaceAttribute;
+          if (Attri <> nil) and (Attri.Background <> clNone) then
+            Result := Attri.Background;
+        end;
+      end;
+    end;
+
+    function GetEditorForegroundColor: TColor;
+    var
+      PhysicalIndex: Integer;
+    begin
+      PhysicalIndex := Editor.RowColToCharIndex(virtualCoord);
+
+      //Start by checking for selections
+      if (PhysicalIndex >= Editor.SelStart) and (PhysicalIndex < Editor.SelEnd) then
+        Result := Editor.SelectedColor.Foreground
+      else
+        Result := Editor.Font.Color;
+    end;
+  var
+    Special: Boolean;
+    Foreground, Background: TColor;
+  begin
+    //Initialize the editor colors to defaults
+    Foreground := GetEditorForegroundColor;
+    Background := GetEditorBackgroundColor;
+
+    Editor.OnSpecialLineColors(Self, virtualCoord.Line, Special, Foreground, Background);
+    Editor.Canvas.Brush.Style := bsSolid;
+    Editor.Canvas.Font.Assign(fText.Font);
+    Editor.Canvas.Font.Style := Attri.Style;
+    if TransientType = ttAfter then
+      fText.Canvas.Font.Style := Editor.Canvas.Font.Style + [fsBold];
+
+    Editor.Canvas.Brush.Color := Background;
+    Editor.Canvas.Font.Color := Foreground;
+  end;
+
 var
-    P: TBufferCoord;
-    Pix: TPoint;
-    S: String;
+  P: TBufferCoord;
+  Pix: TPoint;
+  S: String;
   I: Integer;
   Attri: TSynHighlighterAttributes;
 begin
   P := fText.CaretXY;
   fText.GetHighlighterAttriAtRowCol(P, S, Attri);
   if Assigned(Attri) and (fText.Highlighter.SymbolAttribute = Attri) and
-      (fText.CaretX<=length(fText.LineText) + 1) then begin
-    for i := 0 to 2 do begin
-      if (S = OpenChars[i]) or (S = CloseChars[i]) then begin
+     (fText.CaretX <= length(fText.LineText) + 1) then
+  begin
+    for i := 0 to 2 do
+    begin
+      if (S = OpenChars[i]) or (S = CloseChars[i]) then
+      begin
+        //Draw the brackets
+        SetColors(fText, P, Attri);
         Pix := CharToPixels(P);
-        fText.Canvas.Brush.Style := bsSolid;
-        fText.Canvas.Font.Assign(fText.Font);
-        fText.Canvas.Font.Style := Attri.Style;
-
-        if (TransientType = ttAfter) then begin
-          fText.Canvas.Font.Color:= fText.Highlighter.WhitespaceAttribute.Background;
-          fText.Canvas.Brush.Color := Attri.Foreground;
-        end
-        else begin
-          fText.Canvas.Font.Color := Attri.Foreground;
-          fText.Canvas.Brush.Color:= fText.Highlighter.WhitespaceAttribute.Background;
-        end;
-
         fText.Canvas.TextOut(Pix.X, Pix.Y, S);
-        P := fText.GetMatchingBracketEx(P);
 
-        if (P.Char > 0) and (P.Line > 0) then begin
+        P := fText.GetMatchingBracketEx(P);
+        if (P.Char > 0) and (P.Line > 0) then
+        begin
+          SetColors(fText, P, Attri);
           Pix := CharToPixels(P);
           if S = OpenChars[i] then
             fText.Canvas.TextOut(Pix.X, Pix.Y, CloseChars[i])
@@ -2138,17 +2149,12 @@ end;
 procedure TEditor.FunctionArgsExecute(Kind: SynCompletionType; Sender: TObject;
   var AString: String; var x, y: Integer; var CanExecute: Boolean);
 var
+  TmpX, savepos, StartX, ParenCounter: Integer;
   locline, lookup: String;
-  TmpX, savepos, StartX,
-  ParenCounter{,
-  TmpLocation}    : Integer;
   FoundMatch: Boolean;
-  {P: PStatement;}
   sl: TList;
 begin
-
   sl := nil;
-  {P := nil;}
   try
     with TSynCompletionProposal(Sender).Editor do
     begin
@@ -2161,14 +2167,13 @@ begin
       else
         dec(TmpX);
       FoundMatch := False;
-      {TmpLocation := 0;}
+
       while (TmpX > 0) and not (FoundMatch) do
       begin
-        if LocLine[TmpX] = ',' then begin
-          {inc(TmpLocation);}
-          dec(TmpX);
-        end
-        else if LocLine[TmpX] = ')' then begin
+        if LocLine[TmpX] = ',' then
+          Dec(TmpX)
+        else if LocLine[TmpX] = ')' then
+        begin
           //We found a close, go till it's opening paren
           ParenCounter := 1;
           dec(TmpX);
@@ -2199,7 +2204,6 @@ begin
                   sl := fLastParamFunc;
             end;
             if not Assigned(sl) then begin
-              //P:=MainForm.CppParser1.Locate(lookup, False);  // we should really avoid a Locate for each char typed, this call takes a long time to execute when the cache is huge
               sl := TList.Create;
               if MainForm.CppParser1.FillListOf(Lookup, False, sl) then begin  // and try to use only a minimum of FillListOf
                 if Assigned(fLastParamFunc) then
@@ -2275,6 +2279,7 @@ begin
     FCodeToolTip.Show;
   except
     ShowMessage(inttostr(integer(FCodeToolTip)) + '/' + inttostr(integer(@AStatement)));
+    raise;
   end;
 {$ENDIF}
 

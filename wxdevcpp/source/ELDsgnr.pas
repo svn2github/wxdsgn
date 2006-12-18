@@ -205,7 +205,7 @@ type
   TELDesignerOnValidateNameEvent = procedure(Sender: TObject;
     const AName: string; var AIsValidName: Boolean) of object;
   TELDesignerOnControlInsertingEvent = procedure(Sender: TObject;
-    var AControlClass: TControlClass) of object;
+    var AParent: TWinControl; var AControlClass: TControlClass) of object;
   TELDesignerOnControlInsertedEvent = procedure(Sender: TObject;
     AControl: TControl) of object;  // @mh
   TELDesignerOnControlDeletingEvent = procedure(Sender: TObject;
@@ -293,7 +293,7 @@ type
     procedure ValidateName(const AName: string; var AIsValidName: Boolean); virtual;
     procedure GetUniqueName(const ABaseName: string; var AUniqueName: string); virtual;
     procedure ChangeSelection; virtual;
-    procedure ControlInserting(var AControlClass: TControlClass); virtual;
+    procedure ControlInserting(var AParent: TWinControl; var AControlClass: TControlClass); virtual;
     procedure ControlInserted(AControl: TControl); virtual;
     procedure DoNotification(AnObject: TPersistent; Operation: TOperation); virtual;
     procedure ControlHint(AControl: TControl; var AHint: string); virtual;
@@ -1196,7 +1196,9 @@ begin
           if not (lmNoInsertIn in GetLockMode(LContainer)) and
             (LContainer <> nil) then
           begin
-            FDesigner.ControlInserting(FInsertedControlClass);
+            FDesigner.ControlInserting(LContainer, FInsertedControlClass);
+            LContainer := FindContainer(LContainer);
+
             if FInsertedControlClass <> nil then
             begin
               LInsertingControl := True;
@@ -3290,11 +3292,11 @@ begin
     OnControlInserted(Self, AControl);  // @mh
 end;
 
-procedure TELCustomDesigner.ControlInserting(
+procedure TELCustomDesigner.ControlInserting(var AParent: TWinControl;
   var AControlClass: TControlClass);
 begin
   if Assigned(OnControlInserting) then
-    OnControlInserting(Self, AControlClass);
+    OnControlInserting(Self, AParent, AControlClass);
 end;
 
 constructor TELCustomDesigner.Create(AOwner: TComponent);

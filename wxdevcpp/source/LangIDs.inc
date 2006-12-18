@@ -141,6 +141,7 @@ const
   // toolbars
   ID_TOOLMAIN                      = 191;
   ID_TOOLCOMPRUN                   = 192;
+  ID_TOOLDEBUG                     = 245;// ID_ITEM_DEBUG
   ID_TOOLPROJECT                   = 193;
   ID_TOOLOPTIONS                   = 194;
   ID_TOOLSPECIAL                   = 195;
@@ -206,8 +207,8 @@ const
   //debug menu
   ID_ITEM_DEBUG                    = 245; // moved from execute menu
   ID_ITEM_TOGGLEBREAK              = 246;
-  ID_ITEM_STEPNEXT                 = 247;
-  ID_ITEM_STEPOVER                 = 248;
+  ID_ITEM_STEPOVER                 = 247;
+  ID_ITEM_PAUSE                    = 248;
   ID_ITEM_WATCHADD                 = 249;
   ID_ITEM_WATCHITEMS               = 250;
   ID_ITEM_STOPEXECUTION            = 251;
@@ -219,6 +220,7 @@ const
   ID_ITEM_ATTACHPROCESS            = 257;
   ID_ITEM_MODIFYVALUE              = 258;
   ID_ITEM_CLEARALL                 = 259;
+  ID_ITEM_RESTART                  = 390;
 
   //free to 259 for menu items
 
@@ -229,6 +231,7 @@ const
   ID_POP_REMOVEFILE                = 262;
   ID_POP_PRJOPTIONS                = 263;
   ID_POP_EDITRES                   = 264;
+  //265 is used by the debug menu
   //free to 269 for project popup
 
   //unit popup
@@ -308,7 +311,7 @@ const
   ID_DEB_WATCHES                   = 330;
   ID_DEB_BACKTRACE                 = 331;
   ID_DEB_OUTPUT                    = 332;
-  ID_DEB_SENDGDBCOMMAND            = 333;
+  ID_DEB_SENDDEBUGCOMMAND          = 333;
   ID_DEB_SEND                      = 334;
   //free to 339 for column titles
 
@@ -884,6 +887,7 @@ const
   ID_MSG_SEGFAULT                  = 1021;
   ID_MSG_SOURCEMORERECENT          = 1022;
   ID_MSG_ATTACH                    = 1023;
+  ID_MSG_BREAKPOINT                = 1024;
 
   //errors 1500+
   ID_ERR_OPENFILE                  = 1500; // %s

@@ -2,51 +2,42 @@ object ViewToDoForm: TViewToDoForm
   Left = 192
   Top = 107
   Width = 565
-  Height = 237
+  Height = 230
   BorderStyle = bsSizeToolWin
   Caption = 'To-Do list'
   Color = clBtnFace
   Constraints.MinHeight = 136
   Constraints.MinWidth = 394
+  DockSite = True
+  DragKind = dkDock
+  DragMode = dmAutomatic
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  DesignSize = (
-    557
-    210)
   PixelsPerInch = 96
   TextHeight = 13
-  object lblFilter: TLabel
-    Left = 8
-    Top = 172
-    Width = 25
-    Height = 13
-    Anchors = [akLeft, akBottom]
-    Caption = 'Filter:'
-  end
   object lv: TListView
     Left = 0
     Top = 0
-    Width = 556
-    Height = 161
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Width = 557
+    Height = 155
+    Align = alClient
     Checkboxes = True
     Columns = <
       item
-        Caption = 'Done'
-        Width = 42
+        Width = 24
       end
       item
-        Caption = 'Pri'
-        Width = 32
+        Caption = 'Priority'
       end
       item
         Caption = 'Description'
@@ -72,52 +63,61 @@ object ViewToDoForm: TViewToDoForm
     OnDblClick = lvDblClick
     OnMouseDown = lvMouseDown
   end
-  object btnClose: TButton
-    Left = 477
-    Top = 176
-    Width = 75
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Cancel = True
-    Caption = 'Close'
+  object controls: TPanel
+    Left = 0
+    Top = 155
+    Width = 557
+    Height = 41
+    Align = alBottom
+    BevelOuter = bvNone
     TabOrder = 1
-    OnClick = btnCloseClick
-  end
-  object chkNoDone: TCheckBox
-    Left = 8
-    Top = 192
-    Width = 289
-    Height = 13
-    Anchors = [akLeft, akBottom]
-    Caption = 'Don'#39't show items marked as done'
-    TabOrder = 2
-    OnClick = chkNoDoneClick
-  end
-  object cmbFilter: TComboBox
-    Left = 52
-    Top = 168
-    Width = 245
-    Height = 21
-    Style = csDropDownList
-    Anchors = [akLeft, akBottom]
-    ItemHeight = 13
-    TabOrder = 3
-    OnChange = cmbFilterChange
-    Items.Strings = (
-      'All files (in project and not)'
-      'Open files only (in project and not)'
-      'All project files'
-      'Open project files only'
-      'Non-project open files'
-      'Current file only')
+    DesignSize = (
+      557
+      41)
+    object lblFilter: TLabel
+      Left = 6
+      Top = 5
+      Width = 25
+      Height = 13
+      Anchors = [akLeft, akBottom]
+      Caption = 'Filter:'
+    end
+    object chkNoDone: TCheckBox
+      Left = 6
+      Top = 25
+      Width = 289
+      Height = 13
+      Anchors = [akLeft, akBottom]
+      Caption = 'Don'#39't show items marked as done'
+      TabOrder = 0
+      OnClick = chkNoDoneClick
+    end
+    object cmbFilter: TComboBox
+      Left = 37
+      Top = 2
+      Width = 245
+      Height = 21
+      Style = csDropDownList
+      Anchors = [akLeft, akBottom]
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = cmbFilterChange
+      Items.Strings = (
+        'All files (in project and not)'
+        'Open files only (in project and not)'
+        'All project files'
+        'Open project files only'
+        'Non-project open files'
+        'Current file only')
+    end
   end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
-    Font.Charset = ANSI_CHARSET
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuText
     Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
+    Font.Name = 'Tahoma'
     Font.Style = []
     Color = clBtnFace
     DrawMenuBar = False
@@ -136,9 +136,8 @@ object ViewToDoForm: TViewToDoForm
     OverrideOwnerDraw = False
     Gradient = False
     FlatMenu = False
-    AutoDetect = True
+    AutoDetect = False
     Active = False
-    Left = 136
-    Top = 56
+    Left = 529
   end
 end

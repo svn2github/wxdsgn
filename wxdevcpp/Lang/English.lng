@@ -103,7 +103,7 @@ Ver=1
 
 #Execute menu
 210=&Compile
-211=&Run
+211=&Run without Debugging
 212=C&ompile && Run
 213=&Rebuild All
 214=C&lean
@@ -137,13 +137,13 @@ Ver=1
 243=&Help on wxDev-C++
 
 #Debug Menu
-245=&Debug
+245=&Run
 246=&Toggle Breakpoint
-247=&Next Step
-248=&Continue
+247=&Step Over
+248=&Pause Excution
 249=&Add Watch
 250=&Watch Variables
-251=Stop Execution
+251=St&op Execution
 252=&Edit watch
 253=&Remove watch
 254=Step &Into
@@ -223,7 +223,7 @@ Ver=1
 330=Watched Variables
 331=Backtrace
 332=Output
-333=Send command to GDB :
+333=Send command to debugger:
 334=Send
 
 # Specials toolbar items
@@ -481,16 +481,16 @@ Ver=1
 640=Find Text
 641=Find
 642=Find in Files
-643=&Text to Find
+643=Text to Find:
 644=Options:
 645=Case &Sensitive
 646=&Whole Words Only
 647=Where
-648=&Files in Project
-649=&Open Files
+648=Files in Project
+649=Open Files
 650=Scope
 651=&Global
-652=&Selected Only
+652=Selected Only
 653=Origin
 654=From Cursor
 655=Entire Scope
@@ -561,7 +561,7 @@ Ver=1
 752=Use fast but imperfect dependency generation
 753=Code profiling
 754=Generate profiling info for analysis
-755=Link an Objective  C program
+755=Link an Objective-C program
 756=Generate debugging information
 757=Do not use standard system startup files or libraries
 758=Do not create a console window
@@ -622,7 +622,7 @@ Ver=1
 833=User
 
 #ViewToDo form
-835=To-Do list...
+835=To-Do List
 836=Filename
 837=Done
 838=Don't show items marked as done
@@ -635,13 +635,13 @@ Ver=1
 845=Current file only
 
 #Import MSVC++ form
-850=Import MS Visual C++ project
+850=Import Visual C++ project
 851=Select Visual C++ project file
 852=Import options
 853=Configuration to import
 854=wxDev-C++ project filename
-855=The MS Visual C++ project file has been imported and converted to a wxDev-C++ project succesfully! Do you want to open it now?
-856=Cannot locate target configuration "%s" (this is probably a bug in wxDev-C++)...
+855=The Visual C++ project file has been imported and converted to a wxDev-C++ project successfully.<CR><CR>Do you want to open it now?
+856=Cannot locate target configuration "%s" (this is probably a bug in wxDev-C++)
 
 #Project Options form
 900=Project Options
@@ -652,10 +652,10 @@ Ver=1
 905=Library
 906=Browse
 907=Type:
-908=Windows GUI Application
-909=Windows Console Application
-910=Windows Static Library
-911=Windows Dynamic Library
+908=Windows (GUI) Application
+909=Console Application
+910=Static Library
+911=Dynamic Library
 912=Compile as C++
 913=Parameters
 914=Compiler:
@@ -766,9 +766,10 @@ Ver=1
 1018=Enter the new folder name:
 1019=The file %s is marked as read-only. Do you want to mark it as read-write? If no, the file will not be saved...
 1020=An error occured. The file %s was not marked as read-write and it was not saved...
-1021=An Access Violation (Segmentation Fault) raised in your program.
-1022=Source file is more recent than executable. Do you want to rebuild it ?
+1021=An Access Violation was raised in your program.<CR><CR>Do you want to break into the process?
+1022=The source file is more recent than the executable. Do you want to rebuild the project?
 1023=Please select the application you want to attach to:
+1024=A Breakpoint was raised in your program<CR><CR>Do you want to break into the process?
 
 # errors
 1500=Cannot open file %s
@@ -785,17 +786,17 @@ Ver=1
 1511=Template file %s wasn't found, Skipping.
 1512=No template assigned.
 1513=File %s is not found.
-1514=No Host Application was provided. You can set it in Execute menu, Parameters.
-1515=Host Application not found ! You can change it in Execute menu, Parameters.
+1514=No host application was provided. You can set it in Execute | Parameters.
+1515=The host application could not be found. Verify that the file exists, or change it to refer to the new application in Execute | Parameters.
 
 # misc
 2000=Untitled
-2001=ReadOnly
+2001=Read Only
 2002=Insert
 2003=Overwrite
 2004=Project%d
 2005=Please specify another filename.
-2006=%d Lines in file
+2006=%d lines in file
 2007=Rename file
 2008=Executing %s
 2009=Execution terminated
@@ -850,7 +851,7 @@ Ver=1
 # Environment Options (more)
 2800=File Associations
 2801=File Types:
-2802=Just check or un-check for which file types wxDev-C++ will be registered as the default application to open them...
+2802=Check the file types which you want wxDev-C++ to be registered as the default application to open them.
 2803=CVS Support
 2804=CVS Program File
 2805=Compression Level
@@ -864,8 +865,8 @@ Ver=1
 2813=External program associations:
 2814=Watch variable under mouse
 2815=Report watch errors
-2816=  Debug variables browser 
-2817=  Alternate Configuration File  
+2816=Debug variables browser
+2817=Alternate Configuration File
 2818=Use this alternate configuration file
 2819=You changed the configuration file to be used by the application.<CR>The new configuration file will *not* be used in the current session. Any configuration changes you do in this session, will be saved in the *currently* open configuration file.<CR><CR>It is suggested that you restart the application now, so that it starts using the new configuration file...
 
