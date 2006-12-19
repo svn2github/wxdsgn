@@ -940,9 +940,8 @@ begin
   if startParenthesis <> flastStartParenthesis then
     FCodeToolTip.ReleaseHandle;
 
-  // when the hint is already activated when call
-  // ShowHint again, because the current arugment could have
-  // been changed, so we need to make another arg in bold
+  // when the hint is already activated when call ShowHint again, because the
+  //current argument could have been changed, so we need to make another arg in bold
   if FCodeToolTip.Activated then
     FCodeToolTip.Show
   else
@@ -1711,10 +1710,6 @@ begin
       Dec(I, 1);
     end;
     s := Copy(s1, I + 1, p.Char - I - 1);
-    {if s<>MainForm.fDebugger.WatchVar then begin
-      Application.HideHint;
-      fCurrentHint := s;
-    end;}
   end;
 
   if (s <> '') and (not fDebugHintTimer.Enabled) then begin
@@ -1763,15 +1758,15 @@ begin
         M.Free;
       end;
       st := PStatement(MainForm.CppParser1.Locate(fCurrentHint, False));
-      if Assigned(st) then begin
+      if Assigned(st) and (not FCodeToolTip.Activated) then begin
         fCurrentHint := st^._FullText;
         fCompletionBox.ShowMsgHint(r, fCurrentHint);
       end;
     end
     else if devData.WatchHint and MainForm.fDebugger.Executing then // debugging - evaluate var under cursor and show value in a hint
     begin
-      MainForm.fDebugger.GetVariableHint(fCurrentHint);
       MainForm.fDebugger.OnVariableHint := OnVariableHint;
+      MainForm.fDebugger.GetVariableHint(fCurrentHint);
     end;
   end;
 end;
@@ -1780,7 +1775,8 @@ procedure TEditor.OnVariableHint(Hint: string);
 begin
   fText.Hint := Hint;
   fText.ShowHint := True;
-  Application.ActivateHint(Mouse.CursorPos);
+  if not FCodeToolTip.Activated then
+    Application.ActivateHint(Mouse.CursorPos);
 end;
 
 procedure TEditor.CommentSelection;

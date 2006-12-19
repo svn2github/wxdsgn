@@ -3,7 +3,7 @@ object LangForm: TLangForm
   Top = 245
   BorderIcons = []
   BorderStyle = bsDialog
-  Caption = 'Dev-C++ first time configuration'
+  Caption = 'wxDev-C++ First-Run Configuration'
   ClientHeight = 295
   ClientWidth = 416
   Color = clBtnFace
@@ -17,6 +17,247 @@ object LangForm: TLangForm
   OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 13
+  object FinishPanel: TPanel
+    Left = 144
+    Top = 8
+    Width = 266
+    Height = 249
+    BevelOuter = bvNone
+    TabOrder = 5
+    Visible = False
+    object Label6: TLabel
+      Left = 4
+      Top = 0
+      Width = 260
+      Height = 26
+      Caption = 
+        'Tht all we need to set up wxDev-C++ for use; Click OK to exit th' +
+        'is wizard and continue wxDev-C++'#39's start up.'
+      WordWrap = True
+    end
+    object Label4: TLabel
+      Left = 5
+      Top = 36
+      Width = 253
+      Height = 52
+      Caption = 
+        'If you need help using wxDev-C++, please refer to the wxDev-C++ ' +
+        'help file in the Help menu. You will also find a FAQ there (whic' +
+        'h is very important to read in case you have a problem) as well ' +
+        'as a C tutorial.'
+      WordWrap = True
+    end
+    object Label7: TLabel
+      Left = 4
+      Top = 97
+      Width = 255
+      Height = 65
+      Caption = 
+        'You can also download DevPaks (like libraries or tools) to use w' +
+        'ith wxDev-C++, as well as upgrade wxDev-C++ to the latest versio' +
+        'n by using WebUpdate, which you can find in Tools | Check for Up' +
+        'dates/Packages.'
+      WordWrap = True
+    end
+  end
+  object CachePanel: TPanel
+    Left = 144
+    Top = 8
+    Width = 266
+    Height = 249
+    BevelOuter = bvNone
+    TabOrder = 3
+    Visible = False
+    object Label2: TLabel
+      Left = 4
+      Top = 0
+      Width = 241
+      Height = 65
+      Caption = 
+        'wxDev-C++ can create a cache containing the declarations found i' +
+        'n global include files. This will speed up project load times as' +
+        ' it would remove the need to parse global include files every ti' +
+        'me one project is loaded.'
+      WordWrap = True
+    end
+    object Label3: TLabel
+      Left = 4
+      Top = 75
+      Width = 246
+      Height = 65
+      Caption = 
+        'Do you want to create the code completion cache now? This can ta' +
+        'ke several minutes, depending on the resources available on the ' +
+        'system. It is also possible to create this cache later in Editor' +
+        ' Options | Class Browsing | Completion.'
+      WordWrap = True
+    end
+    object ProgressPanel: TPanel
+      Left = 0
+      Top = 150
+      Width = 265
+      Height = 100
+      BevelOuter = bvNone
+      TabOrder = 1
+      Visible = False
+      object ParseLabel: TLabel
+        Left = 16
+        Top = 24
+        Width = 65
+        Height = 16
+        Caption = 'Parsing files...'
+        WordWrap = True
+      end
+      object pbCCCache: TProgressBar
+        Left = 14
+        Top = 62
+        Width = 235
+        Height = 16
+        TabOrder = 0
+        Visible = False
+      end
+    end
+    object BuildPanel: TPanel
+      Left = 0
+      Top = 150
+      Width = 265
+      Height = 100
+      BevelOuter = bvNone
+      TabOrder = 0
+      object LoadBtn: TSpeedButton
+        Left = 228
+        Top = 67
+        Width = 22
+        Height = 22
+        Glyph.Data = {
+          36030000424D3603000000000000360000002800000010000000100000000100
+          18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
+          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
+          BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
+          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
+          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
+          BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
+          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000
+          000000000000000000000000000000000000000000000000000000BFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBF00000000AEFF0096DB0096DB0096DB0096DB0096DB00
+          96DB0096DB0082BE000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
+          00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF00AEFF00AEFF00AEFF00
+          AEFF00AEFF0096DB000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
+          00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF5DCCFF5DCCFF5DCCFF5D
+          CCFF5DCCFF00AEFF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF686868BDEBFF
+          5DCCFF5DCCFF000000000000000000000000000000000000BFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
+          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
+        OnClick = LoadBtnClick
+      end
+      object YesCache: TRadioButton
+        Left = 8
+        Top = 0
+        Width = 241
+        Height = 17
+        Caption = 'Yes, create the cache now'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+      end
+      object NoCache: TRadioButton
+        Left = 8
+        Top = 18
+        Width = 233
+        Height = 17
+        Caption = 'No, do not create the cache'
+        TabOrder = 1
+      end
+      object DirCheckBox: TCheckBox
+        Left = 8
+        Top = 48
+        Width = 249
+        Height = 17
+        Caption = 'Parse this directory instead of the standard one:'
+        TabOrder = 2
+        OnClick = DirCheckBoxClick
+      end
+      object DirEdit: TEdit
+        Left = 25
+        Top = 68
+        Width = 200
+        Height = 21
+        Color = clInactiveCaptionText
+        Enabled = False
+        TabOrder = 3
+      end
+    end
+  end
+  object SecondPanel: TPanel
+    Left = 144
+    Top = 8
+    Width = 266
+    Height = 249
+    BevelOuter = bvNone
+    TabOrder = 4
+    Visible = False
+    object SecondLabel: TLabel
+      Left = 4
+      Top = 0
+      Width = 251
+      Height = 52
+      Caption = 
+        'wxDev-C++ can retrieve information from header files to help you' +
+        ' find function, class and variable type information easily throu' +
+        'gh a class browser and a code completion list. '
+      WordWrap = True
+    end
+    object Label5: TLabel
+      Left = 4
+      Top = 62
+      Width = 232
+      Height = 65
+      Caption = 
+        'Although this feature is useful, it requires more CPU power and ' +
+        'memory to function, and may not be suitable for all developers. ' +
+        'Do you want to use it? You can enable or disable it later in Edi' +
+        'tor Options | Class Browser.'
+      WordWrap = True
+    end
+    object Label8: TLabel
+      Left = 7
+      Top = 137
+      Width = 231
+      Height = 65
+      Caption = 
+        'Do note that the Class Browser is needed for the automatic gener' +
+        'ation of event handlers when designing wxWidgets Forms. Of cours' +
+        'e, you can still manually assign event handlers with the Class B' +
+        'rowser off.'
+      WordWrap = True
+    end
+    object YesClassBrowser: TRadioButton
+      Left = 20
+      Top = 210
+      Width = 169
+      Height = 17
+      Caption = 'Yes, I want to use this feature'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object NoClassBrowser: TRadioButton
+      Left = 20
+      Top = 230
+      Width = 209
+      Height = 17
+      Caption = 'No, I prefer to use wxDev-C++ without it'
+      TabOrder = 1
+    end
+  end
   object OkBtn: TBitBtn
     Left = 144
     Top = 264
@@ -81,12 +322,11 @@ object LangForm: TLangForm
     object Label1: TLabel
       Left = 0
       Top = 0
-      Width = 261
+      Width = 247
       Height = 39
       Caption = 
-        'This is the first time you have launched Dev-C++. You may config' +
-        'ure the startup settings now, or later change them from the Envi' +
-        'ronment options in the Tools menu.'
+        'This is the first time you have launched wxDev-C++. Here are som' +
+        'e questions to help configure wxDev-C++ to your liking.'
       WordWrap = True
     end
     object GroupBox1: TGroupBox
@@ -102,7 +342,7 @@ object LangForm: TLangForm
       Top = 176
       Width = 265
       Height = 73
-      Caption = 'Select your Dev-C++ theme :'
+      Caption = 'Select your wxDev-C++ theme :'
       TabOrder = 2
       object ThemeBox: TComboBox
         Left = 16
@@ -140,235 +380,6 @@ object LangForm: TLangForm
       Height = 97
       ItemHeight = 13
       TabOrder = 0
-    end
-  end
-  object FinishPanel: TPanel
-    Left = 144
-    Top = 8
-    Width = 266
-    Height = 249
-    BevelOuter = bvNone
-    TabOrder = 5
-    Visible = False
-    object Label6: TLabel
-      Left = 4
-      Top = 0
-      Width = 250
-      Height = 26
-      Caption = 
-        'Dev-C++ has been configured successfully, you may now click OK t' +
-        'o proceed to its loading.'
-      WordWrap = True
-    end
-    object Label4: TLabel
-      Left = 5
-      Top = 40
-      Width = 251
-      Height = 52
-      Caption = 
-        'If you need help using Dev-C++, please refer to the Dev-C++ help' +
-        ' file in the Help menu. You will also find there a FAQ (which is' +
-        ' very important to read in case you have a problem) and a C tuto' +
-        'rial.'
-      WordWrap = True
-    end
-    object Label7: TLabel
-      Left = 4
-      Top = 104
-      Width = 251
-      Height = 52
-      Caption = 
-        'You can also download packages (like libraries or tools) to use ' +
-        'with Dev-C++, and upgrade to the latest version by using WebUpda' +
-        'te, which you will find in Tools menu, Check for Updates/Package' +
-        's.'
-      WordWrap = True
-    end
-  end
-  object CachePanel: TPanel
-    Left = 144
-    Top = 8
-    Width = 266
-    Height = 249
-    BevelOuter = bvNone
-    TabOrder = 3
-    Visible = False
-    object Label2: TLabel
-      Left = 4
-      Top = 0
-      Width = 249
-      Height = 39
-      Caption = 
-        'You decided to use the code completion feature. To optimize this' +
-        ' process, it is recommended to create a cache of the standard he' +
-        'aders files.'
-      WordWrap = True
-    end
-    object Label3: TLabel
-      Left = 4
-      Top = 64
-      Width = 245
-      Height = 52
-      Caption = 
-        'Do you want to create the code completion cache now? This can ta' +
-        'ke several minutes. It is possible to create this cache later in' +
-        ' Editor Options, Class Browsing, Completion.'
-      WordWrap = True
-    end
-    object ProgressPanel: TPanel
-      Left = 0
-      Top = 134
-      Width = 265
-      Height = 114
-      BevelOuter = bvNone
-      TabOrder = 1
-      Visible = False
-      object ParseLabel: TLabel
-        Left = 16
-        Top = 24
-        Width = 65
-        Height = 13
-        Caption = 'Parsing files...'
-        WordWrap = True
-      end
-      object pbCCCache: TProgressBar
-        Left = 14
-        Top = 62
-        Width = 235
-        Height = 16
-        Min = 0
-        Max = 100
-        TabOrder = 0
-        Visible = False
-      end
-    end
-    object BuildPanel: TPanel
-      Left = 0
-      Top = 134
-      Width = 265
-      Height = 114
-      BevelOuter = bvNone
-      TabOrder = 0
-      object LoadBtn: TSpeedButton
-        Left = 228
-        Top = 79
-        Width = 22
-        Height = 22
-        Glyph.Data = {
-          36030000424D3603000000000000360000002800000010000000100000000100
-          18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
-          BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
-          BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
-          00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000
-          000000000000000000000000000000000000000000000000000000BFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBF00000000AEFF0096DB0096DB0096DB0096DB0096DB00
-          96DB0096DB0082BE000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
-          00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF00AEFF00AEFF00AEFF00
-          AEFF00AEFF0096DB000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
-          00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF5DCCFF5DCCFF5DCCFF5D
-          CCFF5DCCFF00AEFF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF686868BDEBFF
-          5DCCFF5DCCFF000000000000000000000000000000000000BFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
-          BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
-        OnClick = LoadBtnClick
-      end
-      object YesCache: TRadioButton
-        Left = 8
-        Top = 12
-        Width = 241
-        Height = 17
-        Caption = 'Yes, create the cache now'
-        Checked = True
-        TabOrder = 0
-        TabStop = True
-      end
-      object NoCache: TRadioButton
-        Left = 8
-        Top = 30
-        Width = 233
-        Height = 17
-        Caption = 'No, do not create the cache'
-        TabOrder = 1
-      end
-      object DirCheckBox: TCheckBox
-        Left = 8
-        Top = 60
-        Width = 249
-        Height = 17
-        Caption = 'Use this directory instead of the standard one:'
-        TabOrder = 2
-        OnClick = DirCheckBoxClick
-      end
-      object DirEdit: TEdit
-        Left = 32
-        Top = 80
-        Width = 192
-        Height = 21
-        Color = clInactiveCaptionText
-        Enabled = False
-        TabOrder = 3
-      end
-    end
-  end
-  object SecondPanel: TPanel
-    Left = 144
-    Top = 8
-    Width = 266
-    Height = 249
-    BevelOuter = bvNone
-    TabOrder = 4
-    Visible = False
-    object SecondLabel: TLabel
-      Left = 4
-      Top = 0
-      Width = 258
-      Height = 52
-      Caption = 
-        'Dev-C++ can retrieve information from headers files, to help you' +
-        ' find  functions, classes and variables prototypes easily, throu' +
-        'gh a class browser and a code completion list. '
-      WordWrap = True
-    end
-    object Label5: TLabel
-      Left = 4
-      Top = 72
-      Width = 235
-      Height = 65
-      Caption = 
-        'Although this feature is useful, it requires more CPU power and ' +
-        'memory, and may not be suitable for all developers. Do you want ' +
-        'to use it ? You can enable or disable it later in Editor Options' +
-        ', Class Browser.'
-      WordWrap = True
-    end
-    object YesClassBrowser: TRadioButton
-      Left = 20
-      Top = 168
-      Width = 169
-      Height = 17
-      Caption = 'Yes, I want to use this feature'
-      Checked = True
-      TabOrder = 0
-      TabStop = True
-    end
-    object NoClassBrowser: TRadioButton
-      Left = 20
-      Top = 192
-      Width = 209
-      Height = 17
-      Caption = 'No, I prefer to use Dev-C++ without it'
-      TabOrder = 1
     end
   end
   object PopupMenu: TPopupMenu

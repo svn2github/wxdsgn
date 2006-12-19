@@ -54,6 +54,11 @@ type
     ES: string;
   end;
   TRegistersCallback = procedure(Registers: TRegisters) of object;
+  TString = class
+  public
+    Str: string;
+    constructor Create(AStr: string);
+  end;
 
   PBreakpoint = ^TBreakpoint;
   TBreakpoint = class
@@ -332,7 +337,7 @@ implementation
 
 uses 
   main, devcfg, MultiLangSupport, cpufrm, prjtypes, StrUtils, dbugintf, RegExpr,
-  madstacktrace, Forms, utils;
+  madExcept, Forms, utils;
 
 function RegexEscape(str: string): string;
 begin
@@ -352,6 +357,11 @@ destructor TCommandWithResult.Destroy;
 begin
   CloseHandle(Event);
   Result.Free;
+end;
+
+constructor TString.Create(AStr: String);
+begin
+  Str := AStr;
 end;
 
 constructor TDebugger.Create;
@@ -631,7 +641,6 @@ var
   spos: integer;
   opts: TProjProfile;
 begin
-  //Todo: lowjoel: Add multiple-compiler support
   if MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     CloseDebugger(nil);
@@ -911,6 +920,7 @@ procedure TCDBDebugger.OnOutput(Output: string);
 const
   InputPrompt = '^([0-9]+):([0-9]+)>';
 var
+  NewLines: TStringList;
   RegExp: TRegExpr;
   CurLine: String;
 
@@ -971,9 +981,8 @@ var
   end;
 begin
   //Update the memo
-  SentCommand := False;
   RegExp := TRegExpr.Create;
-  MainForm.DebugOutput.Lines.BeginUpdate;
+  NewLines := TStringList.Create;
 
   try
     while Pos(#10, Output) > 0 do
@@ -983,7 +992,7 @@ begin
 
       //Process the output
       if not AnsiStartsStr('DBGHELP: ', CurLine) then
-        MainForm.DebugOutput.Lines.Add(CurLine);
+        NewLines.Add(CurLine);
       ParseOutput(CurLine);
 
       //Remove those that we've already processed
@@ -992,24 +1001,27 @@ begin
 
     if Length(Output) > 0 then
     begin
-      MainForm.DebugOutput.Lines.Add(Output);
+      NewLines.Add(Output);
       ParseOutput(Output);
     end;
   except
     on E: Exception do
-    begin
-      MainForm.DebugOutput.Lines.EndUpdate;
-      SendMessage(MainForm.DebugOutput.Handle, $00B6, 0, MainForm.DebugOutput.Lines.Count);
-      RegExp.Free;
-      raise;
-    end;
+      madExcept.HandleException;
+  end;
+
+  //Add the new lines to the edit control if we have any
+  if NewLines.Count <> 0 then
+  begin
+    MainForm.DebugOutput.Lines.BeginUpdate;
+    MainForm.DebugOutput.Lines.AddStrings(NewLines);
+    MainForm.DebugOutput.Lines.EndUpdate;
+    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
+                MainForm.DebugOutput.Lines.Count);
   end;
 
   //Clean up
-  MainForm.DebugOutput.Lines.EndUpdate;
-  SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-              MainForm.DebugOutput.Lines.Count);
   RegExp.Free;
+  NewLines.Free;
 end;
 
 procedure TCDBDebugger.AddIncludeDir(s: string);
@@ -1697,7 +1709,7 @@ begin
     Exit;
 
   Command := TCommand.Create;
-  Command.Data := TObject(name);
+  Command.Data := TString.Create(name);
   Command.OnResult := OnVariableHint;
 
   //Decide what command we should send - dv for locals, dt for structures
@@ -1716,8 +1728,8 @@ var
   I, Depth: Integer;
   RegExp: TRegExpr;
 begin
-  if (CurrentCommand <> nil) and (CurrentCommand.Data.ClassName = 'string') then
-    Name := string(CurrentCommand.Data);
+  Name := TString(CurrentCommand.Data).Str;
+  CurrentCommand.Data.Free;
   RegExp := TRegExpr.Create;
 
   if Pos('.', Name) <> 0 then
@@ -1888,6 +1900,7 @@ procedure TGDBDebugger.OnOutput(Output: string);
 var
   RegExp: TRegExpr;
   CurLine: String;
+  NewLines: TStringList;
 
   procedure StripCtrlChars(var line: string);
   var
@@ -1960,9 +1973,8 @@ var
   end;
 begin
   //Update the memo
-  SentCommand := False;
   RegExp := TRegExpr.Create;
-  MainForm.DebugOutput.Lines.BeginUpdate;
+  NewLines := TStringList.Create;
 
   while Pos(#13, Output) > 0 do
   begin
@@ -1971,7 +1983,7 @@ begin
 
     //Process the output
     StripCtrlChars(CurLine);
-    MainForm.DebugOutput.Lines.Add(CurLine);
+    NewLines.Add(CurLine);
     ParseOutput(CurLine);
 
     //Remove those that we've already processed
@@ -1980,14 +1992,22 @@ begin
 
   if Length(Output) > 0 then
   begin
-    MainForm.DebugOutput.Lines.Add(Output);
+    NewLines.Add(Output);
     ParseOutput(Output);
   end;
 
+  //Add the new lines to the edit control if we have any
+  if NewLines.Count <> 0 then
+  begin
+    MainForm.DebugOutput.Lines.BeginUpdate;
+    MainForm.DebugOutput.Lines.AddStrings(NewLines);
+    MainForm.DebugOutput.Lines.EndUpdate;
+    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
+                MainForm.DebugOutput.Lines.Count);
+  end;
+
   //Clean up
-  MainForm.DebugOutput.Lines.EndUpdate;
-  SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-              MainForm.DebugOutput.Lines.Count);
+  NewLines.Free;
   RegExp.Free;
 end;
 
@@ -2733,7 +2753,6 @@ begin
     Exit;
 
   Command := TCommand.Create;
-  Command.Data := TObject(name);
   Command.OnResult := OnVariableHint;
   Command.Command := 'print ' + name;
 

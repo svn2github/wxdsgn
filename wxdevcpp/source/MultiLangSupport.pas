@@ -246,16 +246,14 @@ begin
     with TLangForm.Create(Application.Mainform) do
     try
       UpdateList(fLangList);
-      if (ShowModal = mrOK) then
+      if ShowModal = mrOK then
         if Selected > -1 then
         begin
           Open(fLangList.Names[Selected]);
           devData.Language := FileFromDescription(fLangList.Names[Selected]);
         end
-     else begin
-
+        else
           Open(DEFAULT_LANG_FILE);
-        end;
     finally
       Free;
       fSelect := FALSE;

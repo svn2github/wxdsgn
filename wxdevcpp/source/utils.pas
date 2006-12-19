@@ -201,6 +201,7 @@ begin
   if SepaPos > 1 then
     Result := Copy(S, SepaPos + 1, Length(S));
 end;
+
 {$IFDEF WX_BUILD}
 function iswxForm(FileName: string): boolean;
 begin
@@ -226,8 +227,6 @@ begin
     result := False;
 end;
 
-{$ENDIF}
-{$IFDEF WX_BUILD}
 function SaveStringToFile(strContent, strFileName: string): Boolean;
 var
   strStringList: TStringList;
@@ -410,13 +409,7 @@ begin
   Add := StringReplace(Add, '"', '', [rfReplaceAll]);
 
   if UseOriginal then
-  begin
-    //TODO: lowjoel: We should have loaded all the PATH values at start up, so
-    //               just assert. Remove this once we are sure the thing will be
-    //               non empty
-    Assert(devDirs.OriginalPath <> '');
-    NewPath:= Add + devDirs.OriginalPath;
-  end
+    NewPath:= Add + devDirs.OriginalPath
   else
   begin
     GetEnvironmentVariable(pchar('PATH'), @OldPath, PATH_LEN);
@@ -867,7 +860,7 @@ begin
   if FromMenu.Count <= 0 then exit;
   for idx:= 0 to pred(FromMenu.Count) do
   begin
-     Item:= TMenuItem.Create(ToMenu);
+    Item:= TMenuItem.Create(ToMenu);
     with FromMenu.Items[idx] do
     begin
         Item.Caption:= Caption;

@@ -523,7 +523,10 @@ begin
   end;
   fCodeMenu.Visible := fCodeMenu.Count > 0;
   if assigned(fCodePop) then
+  begin
     CloneMenu(fCodeMenu, fCodePop);
+    MainForm.XPMenu.InitComponent(fCodePop);
+  end;
 end;
 
 procedure TdmMain.ExportToHtml(FileLines: TStrings; ExportFilename: string);

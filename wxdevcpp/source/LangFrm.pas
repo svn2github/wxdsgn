@@ -71,6 +71,7 @@ type
     Label6: TLabel;
     Label4: TLabel;
     Label7: TLabel;
+    Label8: TLabel;
     procedure PreviewBtnClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
@@ -118,6 +119,8 @@ begin
 end;
 
 procedure TLangForm.PreviewBtnClick(Sender: TObject);
+var
+  aPoint: TPoint;
 begin
   if ThemeBox.ItemIndex = 1 then
     PopupMenu.Images := dmMain.MenuImages_Gnome
@@ -125,8 +128,9 @@ begin
     PopupMenu.Images := dmMain.MenuImages_Blue
   else
     PopupMenu.Images := dmMain.MenuImages_NewLook;
-  PopupMenu.Popup(Left + PreviewBtn.Left + ThemeGroupBox.Left +
-    PreviewBtn.Width + 15, Top + PreviewBtn.Top + ThemeGroupBox.Top);
+  aPoint := Point(0, 0);
+  aPoint := PreviewBtn.ClientToScreen(aPoint);
+  PopupMenu.Popup(aPoint.X, aPoint.Y);
 end;
 
 procedure TLangForm.FormActivate(Sender: TObject);
@@ -148,7 +152,7 @@ begin
              +WrapText('Your configuration files will be stored in ' +  ExtractFileDir(devData.INIFile) + '.', 85) + #13#13
              +'You can change the directory in Tools > Environment Options > Files & Directories or ' + #13
              +'pass -c "Configuration File Directory" when starting wxDev-C++.'),
-             PChar('Beta version notice'), MB_OK);
+             PChar('Beta Version Notice'), MB_OK);
 {$ENDIF}
 end;
 
@@ -235,42 +239,14 @@ begin
       MainForm.CppParser1.OnEndParsing := CppParserEndParsing;
       MainForm.CppParser1.OnTotalProgress := CppParserTotalProgress;
       MainForm.CppParser1.Tokenizer := MainForm.CppTokenizer1;
-      MainForm.CppParser1.Enabled := true;
-
+      MainForm.CppParser1.Enabled := True;
       MainForm.ClassBrowser1.SetUpdateOff;
 
       s := TStringList.Create;
-
-      if (DirCheckBox.Checked) then
+      if DirCheckBox.Checked then
         StrToList(DirEdit.Text, s)
       else
-      begin
-
-        //we add the wx's MSW dir because lot of wx classes get screwed up
-        //by the forward declaration. Stupid C++ Forward declarations!
-        StrToList(
-        (*
-                    {$IFDEF WX_BUILD}
-                    CPP_INCLUDE_DIR_WX_MSW_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_GENERIC_INCLUDE + ';' +
-                    CPP_INCLUDE_DIR_WX_ANIMATE_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_FL_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_GIZMOS_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_HTML_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_MMEDIA_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_NET_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_OGL_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_PLOT_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_PROTOCOL_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_STC_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_SVG_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_XML_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_XRC_INCLUDE + ';'+
-                    CPP_INCLUDE_DIR_WX_INCLUDE + ';'+
-                    {$ENDIF}
-        *)
-                    devDirs.Cpp+';',s);
-      end;
+        StrToList(devDirs.Cpp, s);
 
       f := TStringList.Create;
        for i := 0 to s.Count - 1 do begin
@@ -282,22 +258,18 @@ begin
             MainForm.CppParser1.AddFileToScan(f[j]);
         end
         else
-           MessageDlg('Directory "' + s[i] + '" does not exists', mtWarning, [mbOK], 0);
+           MessageDlg('Directory "' + s[i] + '" does not exist.', mtWarning, [mbOK], 0);
       end;
       MainForm.CppParser1.ParseList;
-      ParseLabel.Caption := 'Finalizing... Please wait';
+      ParseLabel.Caption := 'Saving cache to disk...';
+      
       Application.ProcessMessages;
       MainForm.CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
-
-       MainForm.CppParser1.OnStartParsing := MainForm.CppParser1StartParsing;;
+      MainForm.CppParser1.OnStartParsing := MainForm.CppParser1StartParsing;
       MainForm.CppParser1.OnEndParsing := MainForm.CppParser1EndParsing;
       MainForm.CppParser1.OnTotalProgress := MainForm.CppParser1TotalProgress;
 
       MainForm.ClassBrowser1.SetUpdateOn;
-
-      { MainForm.ClassBrowser1.Parser := MainForm.CppParser1;
-        MainForm.CodeCompletion1.Parser := MainForm.CppParser1;}
-
       Application.ProcessMessages;
       Screen.Cursor := crDefault;
       s.Free;

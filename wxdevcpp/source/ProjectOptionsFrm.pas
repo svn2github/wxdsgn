@@ -851,7 +851,7 @@ var
 {$ENDIF}
  TempDir:String;
 begin
-  //todo: Check if we need to use CUrrent Profile here
+  //TODO: Check if we need to use Current Profile here
   if fProject.CurrentProfile.ExeOutput<>'' then
     Dir:=ExpandFileto(fProject.CurrentProfile.ExeOutput, fProject.Directory)
   else
