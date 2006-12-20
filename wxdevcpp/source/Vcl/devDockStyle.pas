@@ -1,10 +1,45 @@
+{
+    $Id: main.pas 741 2006-12-18 04:48:06Z lowjoel $
+
+    This file is part of wxDev-C++
+    Copyright (c) 2006 wxDev-C++ Developers
+
+    wxDev-C++ is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+    
+    wxDev-C++ is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Dev-C++; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
 unit devDockStyle;
 
 interface
 uses
-  JvDockVSNetStyle, Classes;
+  {$IFNDEF COMPILER_7_UP}TmSchema,{$ENDIF} JvDockVSNetStyle, JvDockTree, Windows,
+  Messages, Classes, Graphics, Controls;
 
 type
+  TdevDockTree = class(TJvDockVSNETTree)
+  protected
+    AutoHideButtonWidth: Integer;
+    AutoHideButtonHeight: Integer;
+    procedure DrawDockGrabber(Control: TControl; const aRect: TRect); override;
+    procedure DrawAutoHideButton(Zone: TJvDockZone; Left, Top: Integer); override;
+    procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; Left, Top: Integer); override;
+    function GetTopGrabbersHTFlag(const MousePos: TPoint; out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
+  public
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
+                       ADockStyle: TJvDockObservableStyle); override;
+  end;
+  
   TdevDockTabPanel = class(TJvDockVSNETTabPanel)
   public
     constructor Create(AOwner: TComponent); override;
@@ -34,6 +69,8 @@ type
   TdevDockChannel = class(TJvDockVSChannel)
   protected
     procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
   TdevDockPanel = class(TJvDockVSNETPanel)
@@ -48,8 +85,8 @@ type
 
 implementation
 uses
-  ComCtrls, Windows, Graphics, UxTheme, JvDockVIDStyle, madStackTrace, dialogs,
-  Dbugintf, Controls;
+  ComCtrls, UxTheme, JvDockVIDStyle, madStackTrace, Dialogs, Forms,
+  Dbugintf, StrUtils, SysUtils, JvDockControlForm, JvDockGlobals;
 
 procedure RotateBitmap(var src: TBitmap; degrees : integer);
 var
@@ -104,6 +141,158 @@ begin
   inherited;
   TabDockClass := TdevDockTabPageControl;
   DockPanelClass := TdevDockPanel;
+  DockPanelTreeClass := TdevDockTree;
+  ConjoinPanelTreeClass := TdevDockTree;
+end;
+
+constructor TdevDockTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
+                                ADockStyle: TJvDockObservableStyle);
+begin
+  inherited;
+  TopOffset := 4;
+  ButtonSplitter := 5;
+  ButtonWidth := ButtonHeight;
+  AutoHideButtonWidth := ButtonWidth;
+  AutoHideButtonHeight := ButtonHeight;
+end;
+
+procedure TdevDockTree.DrawDockGrabber(Control: TControl; const aRect: TRect);
+const
+  ExtentStr = 'ABCDEFHXfgkj';
+var
+  GrabberState: Integer;
+  ThemeData: HTheme;
+  DrawRect: TRect;
+begin
+  ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
+  if ThemeData = HTHEME(nil) then
+  begin
+    inherited;
+    Exit;
+  end;
+
+  //Decide on the state of the caption
+  if GetActiveControl = Control then
+    GrabberState := CS_ACTIVE
+  else
+    GrabberState := CS_INACTIVE;
+
+  //Draw the background of the caption
+  if IsThemeBackgroundPartiallyTransparent(ThemeData, WP_SMALLCAPTION, GrabberState) then
+    DrawThemeParentBackground(ThemeData, Canvas.Handle, @ARect);
+  DrawThemeBackground(ThemeData, Canvas.Handle, WP_SMALLCAPTION, GrabberState, ARect, nil);
+
+  //Then the text
+  DrawRect := aRect;
+  DrawRect.Left := DrawRect.Left + 6;
+  DrawRect.Top := DrawRect.Top + (Canvas.TextHeight(ExtentStr) div 2) - 3;
+  DrawRect.Right := DrawRect.Right - RightOffset - ButtonWidth - ButtonSplitter - AutoHideButtonWidth;
+  Canvas.Brush.Style := bsClear;
+  Canvas.Font.Style := [fsBold];
+  Canvas.Font.Color := clHighlightText;
+  DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS);
+
+  //Draw the pin
+  if DockSite.Align <> alClient then
+    DrawAutoHideButton(FindControlZone(Control), ARect.Right - RightOffset - ButtonWidth - ButtonSplitter - AutoHideButtonWidth,
+                       ARect.Top + TopOffset - 2);
+
+  //And the close button
+  if ShowCloseButtonOnGrabber or not (Control is TJvDockTabHostForm) then
+    DrawCloseButton(Canvas, FindControlZone(Control), ARect.Right - RightOffset - ButtonWidth, ARect.Top + TopOffset);
+end;
+
+procedure TdevDockTree.DrawAutoHideButton(Zone: TJvDockZone; Left, Top: Integer);
+var
+  PinState: Integer;
+  ThemeData: HTheme;
+  ARect: TRect;
+  AZone: TJvDockVSNETZone;
+begin
+  ThemeData := OpenThemeData(DockSite.Handle, 'EXPLORERBAR');
+  if ThemeData = HTHEME(nil) then
+  begin
+    inherited;
+    Exit;
+  end;
+
+  AutoHideButtonHeight := ButtonHeight + 3;
+
+  //Determine the state icon to use
+  AZone := TJvDockVSNETZone(Zone);
+  case AZone.AutoHideBtnState of
+    JvDockVSNetStyle.bsNormal:
+      PinState := EBHP_NORMAL;
+    JvDockVSNetStyle.bsUp:
+      PinState := EBHP_HOT;
+    JvDockVSNetStyle.bsDown:
+      PinState := EBHP_PRESSED;
+    else
+      PinState := EBHP_NORMAL;
+  end;
+
+  //Draw the pin icon
+  ARect := Rect(Left, Top, Left + AutoHideButtonWidth, Top + AutoHideButtonHeight);
+  if IsThemeBackgroundPartiallyTransparent(ThemeData, EBP_HEADERPIN, PinState) then
+    DrawThemeParentBackground(ThemeData, Canvas.Handle, @ARect);
+  DrawThemeBackground(ThemeData, Canvas.Handle, EBP_HEADERPIN, PinState, ARect, nil);
+end;
+
+procedure TdevDockTree.DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; Left, Top: Integer);
+var
+  ARect: TRect;
+  ButtonState: Integer;
+  ThemeData: HTHEME;
+  AZone: TJvDockVSNETZone;
+  ADockClient: TJvDockClient;
+begin
+  ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
+  if ThemeData = HTHEME(nil) then
+  begin
+    inherited;
+    Exit;
+  end;
+
+  AZone := TJvDockVSNETZone(Zone);
+  if AZone <> nil then
+  begin
+    ADockClient := FindDockClient(Zone.ChildControl);
+    if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
+      Exit;
+
+    //Determine the state of the button
+    case AZone.CloseBtnState of
+      JvDockVSNETStyle.bsUp:
+        ButtonState := CBS_HOT;
+      JvDockVSNETStyle.bsNormal:
+        ButtonState := CBS_NORMAL;
+      JvDockVSNETStyle.bsDown:
+        ButtonState := CBS_PUSHED;
+      else
+        ButtonState := CBS_NORMAL;
+    end;
+
+    ARect := Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight);
+    if IsThemeBackgroundPartiallyTransparent(ThemeData, WP_SMALLCLOSEBUTTON, ButtonState) then
+      DrawThemeParentBackground(ThemeData, Canvas.Handle, @ARect);
+    DrawThemeBackground(ThemeData, Canvas.Handle, WP_SMALLCLOSEBUTTON, ButtonState, ARect, nil);
+  end;
+end;
+
+function TdevDockTree.GetTopGrabbersHTFlag(const MousePos: TPoint;
+  out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone;
+begin
+  Result := inherited GetTopGrabbersHTFlag(MousePos, HTFlag, Zone);
+  if (Zone <> nil) and (DockSite.Align <> alClient) and (HTFlag <> HTCLOSE) then
+  begin
+    with Zone.ChildControl do
+      if PtInRect(Rect(
+        Left + Width - 2 * AutoHideButtonWidth - RightOffset - ButtonSplitter,
+        Top - GrabberSize + TopOffset - 1,
+        Left + Width - 1 * AutoHideButtonWidth - RightOffset - ButtonSplitter,
+        Top - GrabberSize + TopOffset + AutoHideButtonHeight), MousePos) then
+        HTFlag := HTAUTOHIDE;
+  end;
 end;
 
 constructor TdevDockTabPanel.Create(AOwner: TComponent);
@@ -162,8 +351,6 @@ begin
 
     //Calculate the values for this tab
     CurrTabWidth := TdevDockTabSheet(Page.Pages[I]).ShowTabWidth;
-    IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
-                 TabBottomOffset + CaptionTopOffset + 1);
     Tab.Width := CurrTabWidth;
     Tab.Height := PanelHeight - TabTopOffset;
 
@@ -177,6 +364,8 @@ begin
                         CompleteWidth + TabLeftOffset + CaptionLeftOffset,
                         PanelHeight,
                         CompleteWidth + TabLeftOffset + CurrTabWidth - CaptionRightOffset);
+        IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
+                       TabBottomOffset + CaptionTopOffset + 1);
       end;
 
       tpRight:
@@ -188,6 +377,8 @@ begin
                        CompleteWidth + TabLeftOffset + CaptionLeftOffset,
                        PanelHeight,
                        CompleteWidth + TabLeftOffset + CurrTabWidth - CaptionRightOffset);
+        IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
+                       TabBottomOffset + CaptionTopOffset + 1);
       end;
 
       tpTop:
@@ -196,9 +387,11 @@ begin
                        CompleteWidth + TabLeftOffset + CurrTabWidth, PanelHeight);
         LblRect := Rect(CompleteWidth + TabLeftOffset + CaptionLeftOffset +
                        Integer(ShowTabImages) * (ImageWidth + CaptionLeftOffset),
-                       TabTopOffset + CaptionTopOffset + 1,
+                       TabTopOffset + CaptionTopOffset + 5,
                        CompleteWidth + TabLeftOffset + CurrTabWidth - CaptionRightOffset,
                        PanelHeight);
+        IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
+                           TabBottomOffset + CaptionTopOffset + 5);
       end;
       
       tpBottom:
@@ -211,20 +404,44 @@ begin
                        TabBottomOffset + CaptionTopOffset + 1,
                        CompleteWidth + TabLeftOffset + CurrTabWidth - CaptionRightOffset,
                        PanelHeight);
+        IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
+                           TabBottomOffset + CaptionTopOffset + 1);
       end;
     end;
-    
+
     //Select the state of the image to be drawn
     if Page.ActivePageIndex = I then
     begin
       TabState := TIS_SELECTED;
-      LblRect.Top := LblRect.Top + 1;
-      IconPoint.Y := IconPoint.Y + 1;
+      case Page.TabPosition of
+        tpTop:
+        begin
+          LblRect.Top := LblRect.Top - 1;
+          IconPoint.Y := IconPoint.Y - 1;
+        end;
+        tpLeft,
+        tpBottom:
+        begin
+          LblRect.Top := LblRect.Top + 1;
+          IconPoint.Y := IconPoint.Y + 1;
+        end;
+      end;
     end
     else
     begin
-      Tab.Height := Tab.Height - 2;
-      TabRect.Bottom := TabRect.Bottom - 2;
+      case Page.TabPosition of
+        tpTop:
+        begin
+          Tab.Height := Tab.Height - 2;
+          TabRect.Top := TabRect.Top + 2;
+        end;
+        tpBottom:
+        begin
+          Tab.Height := Tab.Height - 2;
+          TabRect.Bottom := TabRect.Bottom - 2;
+        end;
+      end;
+
       if SelectHotIndex = I then
         TabState := TIS_HOT
       else
@@ -238,7 +455,14 @@ begin
     DrawThemeBackground(ThemeData, Tab.Canvas.Handle, TABP_TABITEM, TabState, ARect, nil);
 
     //Blit the rotated bitmap unto our canvas
-    RotateBitmap(Tab, 180);
+    case Page.TabPosition of
+      tpLeft:
+        RotateBitmap(Tab, 90);
+      tpBottom:
+        RotateBitmap(Tab, 180);
+      tpRight:
+        RotateBitmap(Tab, 270);
+    end;
     BitBlt(Canvas.Handle, TabRect.Left, TabRect.Top, TabRect.Right - TabRect.Left,
            TabRect.Bottom - TabRect.Top, Tab.Canvas.Handle, 0, 0, SRCCopy);
 
@@ -283,6 +507,12 @@ begin
   VSChannelClass := TdevDockChannel;
 end;
 
+constructor TdevDockChannel.Create(AOwner: TComponent);
+begin
+  inherited;
+  ChannelWidth := 23;
+end;
+
 procedure TdevDockChannel.Paint;
 var
   I: Integer;
@@ -291,6 +521,7 @@ var
   
   procedure DrawSingleBlock(Block: TJvDockVSBlock);
   var
+    Bmp: TBitmap;
     ARect: TRect;
     DrawRect: TRect;
     I: Integer;
@@ -352,15 +583,20 @@ var
       BitBlt(Canvas.Handle, DrawRect.Left, DrawRect.Top, DrawRect.Right - DrawRect.Left,
              DrawRect.Bottom - DrawRect.Top, Tab.Canvas.Handle, 0, 0, SRCCopy);
 
+      //See if we are able to get a bitmap for the current tab
+      Bmp := TBitmap.Create;
+      if Block.ImageList.GetBitmap(I, Bmp) then
+        Block.ImageList.Draw(Canvas, DrawRect.Left + 3, DrawRect.Top + 3, I);
+
       if Align in [alTop, alBottom] then
       begin
-        Inc(DrawRect.Left, 6);
+        Inc(DrawRect.Left, 6 + Bmp.Width);
         if Align = alBottom then
           Inc(DrawRect.Top, 3);
       end
       else if Align in [alLeft, alRight] then
       begin
-        Inc(DrawRect.Top, 6);
+        Inc(DrawRect.Top, 6 + Bmp.Height);
         if Align = alLeft then
           DrawRect.Left := 15
         else
@@ -376,6 +612,7 @@ var
       Canvas.Brush.Style := bsClear;
       DrawText(Canvas.Handle, PChar(Block.VSPane[I].DockForm.Caption), -1, DrawRect, DT_END_ELLIPSIS or DT_NOCLIP);
       SetGraphicsMode(Canvas.Handle, OldGraphicsMode);
+      Bmp.Free;
     end;
     CurrentPos := CurrentPos + BlockInterval;
   end;
