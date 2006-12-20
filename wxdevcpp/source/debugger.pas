@@ -63,10 +63,11 @@ type
   PBreakpoint = ^TBreakpoint;
   TBreakpoint = class
   public
-    Index: integer;
+    Index: Integer;
+    Valid: Boolean;
     Editor: TEditor;
     Filename: string;
-    Line: integer;
+    Line: Integer;
   end;
 
   PStackFrame = ^TStackFrame;
@@ -226,6 +227,7 @@ type
     procedure OnTrace;
 
     //Parser callbacks
+    procedure OnBreakpointSet(Output: TStringList);
     procedure OnRefreshContext(Output: TStringList);
     procedure OnVariableHint(Output: TStringList);
     procedure OnDisassemble(Output: TStringList);
@@ -368,7 +370,6 @@ constructor TDebugger.Create;
 begin
   CurOutput := TStringList.Create;
   SentCommand := False;
-  fNextBreakpoint := 0;
   fExecuting := False;
   fBusy := False;
 
@@ -924,6 +925,19 @@ var
   RegExp: TRegExpr;
   CurLine: String;
 
+  procedure FlushOutputBuffer;
+  begin
+    if NewLines.Count <> 0 then
+    begin
+      MainForm.DebugOutput.Lines.BeginUpdate;
+      MainForm.DebugOutput.Lines.AddStrings(NewLines);
+      MainForm.DebugOutput.Lines.EndUpdate;
+      SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
+                  MainForm.DebugOutput.Lines.Count);
+      NewLines.Clear;
+    end;
+  end;
+
   procedure ParseError(const line: string);
   begin                  
     if RegExp.Substitute('$3') = 'c0000005' then
@@ -961,6 +975,7 @@ var
       CurOutput.Clear;
 
       //Send the command, and do not send any more
+      FlushOutputBuffer;
       SendCommand;
 
       //Make sure we don't save the current line!
@@ -1010,14 +1025,7 @@ begin
   end;
 
   //Add the new lines to the edit control if we have any
-  if NewLines.Count <> 0 then
-  begin
-    MainForm.DebugOutput.Lines.BeginUpdate;
-    MainForm.DebugOutput.Lines.AddStrings(NewLines);
-    MainForm.DebugOutput.Lines.EndUpdate;
-    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-                MainForm.DebugOutput.Lines.Count);
-  end;
+  FlushOutputBuffer;
 
   //Clean up
   RegExp.Free;
@@ -1076,12 +1084,28 @@ begin
 end;
 
 procedure TCDBDebugger.RefreshBreakpoint(var breakpoint: TBreakpoint);
+var
+  Command: TCommand;
 begin
   if Executing then
   begin
     Inc(fNextBreakpoint);
+    breakpoint.Valid := True;
     breakpoint.Index := fNextBreakpoint;
-    QueueCommand('bp' + IntToStr(breakpoint.Index), '`' + breakpoint.Filename + ':' + IntToStr(breakpoint.Line) + '`');
+    Command := TCommand.Create;
+    Command.Data := breakpoint;
+    Command.Command := Format('bp%d `%s:%d`', [breakpoint.Index, breakpoint.Filename, breakpoint.Line]);
+    Command.OnResult := OnBreakpointSet;
+    QueueCommand(Command);
+  end;
+end;
+
+procedure TCDBDebugger.OnBreakpointSet(Output: TStringList);
+begin
+  with TBreakpoint(CurrentCommand.Data) do
+  begin
+    Valid := False;
+    Editor.InvalidateGutter;
   end;
 end;
 
@@ -1902,6 +1926,19 @@ var
   CurLine: String;
   NewLines: TStringList;
 
+  procedure FlushOutputBuffer;
+  begin
+    if NewLines.Count <> 0 then
+    begin
+      MainForm.DebugOutput.Lines.BeginUpdate;
+      MainForm.DebugOutput.Lines.AddStrings(NewLines);
+      MainForm.DebugOutput.Lines.EndUpdate;
+      SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
+                  MainForm.DebugOutput.Lines.Count);
+      NewLines.Clear;
+    end;
+  end;
+  
   procedure StripCtrlChars(var line: string);
   var
     Idx: Integer;
@@ -1952,6 +1989,7 @@ var
       CurOutput.Clear;
 
       //Send the command, and do not send any more
+      FlushOutputBuffer;
       SendCommand;
 
       //Make sure we don't save the current line!
@@ -1997,14 +2035,7 @@ begin
   end;
 
   //Add the new lines to the edit control if we have any
-  if NewLines.Count <> 0 then
-  begin
-    MainForm.DebugOutput.Lines.BeginUpdate;
-    MainForm.DebugOutput.Lines.AddStrings(NewLines);
-    MainForm.DebugOutput.Lines.EndUpdate;
-    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-                MainForm.DebugOutput.Lines.Count);
-  end;
+  FlushOutputBuffer;
 
   //Clean up
   NewLines.Free;
@@ -2087,6 +2118,7 @@ begin
   begin
     Inc(fNextBreakpoint);
     breakpoint.Index := fNextBreakpoint;
+    breakpoint.Valid := True;
     QueueCommand('break', Format('"%s:%d"', [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
   end;
 end;

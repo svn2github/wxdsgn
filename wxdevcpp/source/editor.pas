@@ -1218,8 +1218,17 @@ end;
 procedure TEditor.DrawGutterImages(ACanvas: TCanvas; AClip: TRect;
   FirstLine, LastLine: integer);
 var
-  LH, X, Y: integer;
-  ImgIndex: integer;
+  LH, X, Y: Integer;
+  ImgIndex: Integer;
+  BreakpointIdx: Integer;
+
+  function IsValidBreakpoint(Breakpoint: Integer): Boolean;
+  var
+    BP: PBreakpoint;
+  begin
+    BP := PBreakpoint(debugger.Breakpoints[Breakpoint]);
+    Result := Bp^.Valid;
+  end;
 begin
   X := 14;
   LH := fText.LineHeight;
@@ -1227,8 +1236,14 @@ begin
     + LH * (FirstLine - fText.TopLine);
 
   while FirstLine <= LastLine do begin
-    if HasBreakpoint(FirstLine) <> -1 then
-      ImgIndex := 0
+    BreakpointIdx := HasBreakpoint(FirstLine);
+    if BreakpointIdx  <> -1 then
+    begin
+      if (not MainForm.fDebugger.Executing) or IsValidBreakpoint(BreakpointIdx) then
+        ImgIndex := 0
+      else
+        ImgIndex := 3;
+    end
     else if fActiveLine = FirstLine then
       ImgIndex := 1
     else if fErrorLine = FirstLine then
