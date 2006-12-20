@@ -107,7 +107,7 @@ uses
   WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
-  PackmanExitCodesU in 'packman\PackmanExitCodesU.pas',
+  PackmanExitCodesU in '..\..\packman\PackmanExitCodesU.pas',
   ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
   Wxcontrolpanel in 'components\Wxcontrolpanel.pas',
   uFileWatch in 'uFileWatch.pas',
