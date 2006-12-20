@@ -131,11 +131,9 @@ const
   ID_ITEM_FLOATPROJECT             = 182;
   ID_ITEM_GOTOPROJECTVIEW          = 183;
   ID_ITEM_GOTOCLASSBROWSER         = 184;
-  ID_ITEM_PROJECTVIEW              = 185;
+  //185 is free
   ID_ITEM_STATUSBAR                = 186;
-  ID_SUB_COMPOUTPUT                = 187;
-  ID_ITEM_COMPOUTALWAYS            = 188;
-  ID_ITEM_COMPOUTONNEED            = 189;
+  //187 to 189 is free
   ID_SUB_TOOLBARS                  = 190;
 
   // toolbars
@@ -147,7 +145,6 @@ const
   ID_TOOLSPECIAL                   = 195;
   ID_TOOLEDIT                      = 196;
   ID_TOOLSEARCH                    = 197;
-  ID_ITEM_FLOATREPORT              = 198;
   //free to 199 for view menu
 
   //project menu
@@ -277,7 +274,7 @@ const
   ID_SHEET_RES                     = 301;
   ID_SHEET_COMPLOG                 = 302;
   ID_SHEET_FIND                    = 303;
-  ID_SHEET_CLOSE                   = 304;
+  //304 is free
   ID_SHEET_DEBUG                   = 305;
   // free to 310 for new sheets
 

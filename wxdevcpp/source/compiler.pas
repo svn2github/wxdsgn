@@ -83,6 +83,7 @@ type
     procedure ShowResults; virtual;
     function FindDeps(TheFile: String): String; Overload;
     function FindDeps(TheFile: String; var VisitedFiles: TStringList): String; Overload;
+    function UpToDate: Boolean;
 
     property Compiling: Boolean read GetCompiling;
     property Project: TProject read fProject write SetProject;
@@ -195,7 +196,7 @@ begin
 end;
 
 function TCompiler.NewMakeFile(var F: TextFile): boolean;
-resourcestring
+const
   cAppendStr = '%s %s';
 
 var
@@ -1956,6 +1957,37 @@ begin
     SwitchToProjectCompilerSet
   else
     SwitchToOriginalCompilerSet;
+end;
+
+function TCompiler.UpToDate: Boolean;
+var
+  sa: TSecurityAttributes;
+  tpi: TProcessInformation;
+  tsi: TStartupInfo;
+  ec: Cardinal;
+begin
+  Result := False;
+  Assert(fTarget = ctProject);
+  sa.nLength := SizeOf(TSecurityAttributes);
+  sa.lpSecurityDescriptor := nil;
+  sa.bInheritHandle := True;
+
+  FillChar(tsi, SizeOf(TStartupInfo), 0);
+  tsi.cb := SizeOf(TStartupInfo);
+  tsi.dwFlags := STARTF_USESHOWWINDOW;
+  if CreateProcess(nil, PChar(format('%s -f "%s" all', [devCompiler.makeName, MakeFile]) +
+                              ' ' + devCompiler.makeopts), @sa, @sa, true, 0, nil,
+                   nil, tsi, tpi) then
+  begin
+    //Wait for make to come up with a result
+    while WaitForSingleObject(tpi.hProcess, 100) = WAIT_TIMEOUT do
+      Application.ProcessMessages;
+
+    if GetExitCodeProcess(tpi.hProcess, ec) then
+      Result := ec = 0;
+  end;
+  CloseHandle(tpi.hProcess);
+  CloseHandle(tpi.hThread);
 end;
 
 procedure TCompiler.InitProgressForm(Status: string);

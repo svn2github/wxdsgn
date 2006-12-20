@@ -105,12 +105,7 @@ type
     N7: TMenuItem;
     GotolineItem: TMenuItem;
     ViewMenu: TMenuItem;
-    ProjectManagerItem: TMenuItem;
     StatusbarItem: TMenuItem;
-    CompileroutputItem: TMenuItem;
-    AlwaysShowItem: TMenuItem;
-    N37: TMenuItem;
-    ShowonlywhenneededItem: TMenuItem;
     ToolbarsItem: TMenuItem;
     ToolMainItem: TMenuItem;
     ToolCompileandRunItem: TMenuItem;
@@ -179,7 +174,6 @@ type
     ProjectOptionsBtn: TToolButton;
     HelpBtn: TToolButton;
     AboutBtn: TToolButton;
-    CloseSheet: TTabSheet;
     SaveAllBtn: TToolButton;
     EditorPopupMenu: TPopupMenu;
     UndoPopItem: TMenuItem;
@@ -263,10 +257,7 @@ type
     actReplace: TAction;
     actFindNext: TAction;
     actGoto: TAction;
-    actProjectManager: TAction;
     actStatusbar: TAction;
-    actCompOutput: TAction;
-    actCompOnNeed: TAction;
     actProjectNew: TAction;
     actProjectAdd: TAction;
     actProjectRemove: TAction;
@@ -317,7 +308,6 @@ type
     actMsgClear: TAction;
     MsgCopyItem: TMenuItem;
     MsgClearitem: TMenuItem;
-    N15: TMenuItem;
     actBreakPoint: TAction;
     actIncremental: TAction;
     IncrementalSearch1: TMenuItem;
@@ -378,7 +368,6 @@ type
     N25: TMenuItem;
     Programreset1: TMenuItem;
     CommentheaderMenuItem: TMenuItem;
-    SplitterBottom: TSplitter;
     actComment: TAction;
     actUncomment: TAction;
     actIndent: TAction;
@@ -557,11 +546,11 @@ type
     lvBacktrace: TListView;
     tabDebugOutput: TTabSheet;
     DebugOutput: TMemo;
-    GdbOutputPanel: TPanel;
+    DebuggerCmdPanel: TPanel;
     lblSendCommandDebugger: TLabel;
-    edGdbCommand: TEdit;
-    GdbCommandBtn: TButton;
-    FloatingProjectManagerItem: TMenuItem;
+    edCommand: TEdit;
+    btnSendCommand: TButton;
+    ShowProjectInspItem: TMenuItem;
     actCompileCurrentFile: TAction;
     Compilecurrentfile1: TMenuItem;
     actSaveProjectAs: TAction;
@@ -573,7 +562,6 @@ type
     N17: TMenuItem;
     ToolClassesItem: TMenuItem;
     N67: TMenuItem;
-    FloatingReportwindowItem: TMenuItem;
     N57: TMenuItem;
     AttachtoprocessItem: TMenuItem;
     actAttachProcess: TAction;
@@ -619,7 +607,7 @@ type
     ProjectView: TTreeView;
     ClassSheet: TTabSheet;
     ClassBrowser1: TClassBrowser;
-    DebugLeftSheet: TTabSheet;
+    tabWatches: TTabSheet;
     DebugTree: TTreeView;
     tabLocals: TTabSheet;
     lvLocals: TListView;
@@ -637,7 +625,7 @@ type
     DebugPauseBtn: TToolButton;
     tabThreads: TTabSheet;
     lvThreads: TListView;
-    FormProgress: TProgressBar;
+    prgFormProgress: TProgressBar;
     PageControl: TPageControl;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -647,10 +635,7 @@ type
     procedure ToggleBtnClick(Sender: TObject);
     procedure GotoBtnClick(Sender: TObject);
     procedure NewAllBtnClick(Sender: TObject);
-    procedure MessageControlChange(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
-    procedure MessageControlChanging(Sender: TObject;
-      var AllowChange: Boolean);
     procedure ProjectViewContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure ProjectViewDblClick(Sender: TObject);
@@ -659,9 +644,6 @@ type
     procedure ToolbarClick(Sender: TObject);
     procedure ControlBar1ContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
-    procedure SplitterBottomCanResize(Sender: TObject;
-      var NewSize: Integer; var Accept: Boolean);
-    procedure SplitterBottomMoved(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
 
     // action executes
@@ -689,10 +671,7 @@ type
     procedure actCopyExecute(Sender: TObject);
     procedure actPasteExecute(Sender: TObject);
     procedure actSelectAllExecute(Sender: TObject);
-    procedure actProjectManagerExecute(Sender: TObject);
     procedure actStatusbarExecute(Sender: TObject);
-    procedure actCompOutputExecute(Sender: TObject);
-    procedure actCompOnNeedExecute(Sender: TObject);
     procedure actFullScreenExecute(Sender: TObject);
     procedure actNextExecute(Sender: TObject);
     procedure actPrevExecute(Sender: TObject);
@@ -726,7 +705,6 @@ type
     procedure actProjectMakeFileExecute(Sender: TObject);
     procedure actMsgCopyExecute(Sender: TObject);
     procedure actMsgClearExecute(Sender: TObject);
-    procedure actMsgHideExecute(Sender: TObject);
     // action updates (need to make more specific)
     procedure actUpdatePageCount(Sender: TObject); // enable on pagecount> 0
     procedure actUpdateProject(Sender: TObject); // enable on fproject assigned
@@ -744,7 +722,6 @@ type
       var Handled: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure MessagePopupPopup(Sender: TObject);
     procedure actAddWatchExecute(Sender: TObject);
     procedure ProjectViewClick(Sender: TObject);
     procedure actNextStepExecute(Sender: TObject);
@@ -760,8 +737,6 @@ type
     procedure actSaveUpdate(Sender: TObject);
     procedure actSaveAsUpdate(Sender: TObject);
     procedure actFindNextUpdate(Sender: TObject);
-    procedure MessageControlContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
     procedure actFileMenuExecute(Sender: TObject);
     procedure actToolsMenuExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
@@ -833,9 +808,9 @@ type
     procedure actImportMSVCExecute(Sender: TObject);
     procedure AddWatchPopupItemClick(Sender: TObject);
     procedure actRunToCursorExecute(Sender: TObject);
-    procedure GdbCommandBtnClick(Sender: TObject);
+    procedure btnSendCommandClick(Sender: TObject);
     procedure ViewCPUItemClick(Sender: TObject);
-    procedure edGdbCommandKeyPress(Sender: TObject; var Key: Char);
+    procedure edCommandKeyPress(Sender: TObject; var Key: Char);
     procedure actExecParamsExecute(Sender: TObject);
     procedure DevCppDDEServerExecuteMacro(Sender: TObject; Msg: TStrings);
     procedure actShowTipsExecute(Sender: TObject);
@@ -872,9 +847,8 @@ type
     procedure actCVSLoginExecute(Sender: TObject);
     procedure actCVSLogoutExecute(Sender: TObject);
     procedure AddWatchBtnClick(Sender: TObject);
-    procedure ReportWindowClose(Sender: TObject; var Action: TCloseAction);
-    procedure FloatingProjectManagerItemClick(Sender: TObject);
-    procedure FloatingPropertyInspectorClick(Sender: TObject);
+    procedure ShowProjectInspItemClick(Sender: TObject);
+    procedure ShowPropertyInspItemClick(Sender: TObject);
     procedure lvBacktraceDblClick(Sender: TObject);
     procedure actCompileCurrentFileExecute(Sender: TObject);
     procedure actCompileCurrentFileUpdate(Sender: TObject);
@@ -889,7 +863,6 @@ type
     procedure DebugTreeKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DebugVarsPopupPopup(Sender: TObject);
-    procedure FloatingReportwindowItemClick(Sender: TObject);
     procedure actAttachProcessUpdate(Sender: TObject);
     procedure actAttachProcessExecute(Sender: TObject);
     procedure actModifyWatchExecute(Sender: TObject);
@@ -942,7 +915,6 @@ type
     procedure ChangeCreationOrder1Click(Sender: TObject);
     procedure SelectParentClick(Sender: TObject);
     procedure LockControlClick(Sender: TObject);
-    procedure ELDesigner1Notification(Sender: TObject;AnObject: TPersistent; Operation: TOperation);
     procedure OnPropertyItemSelected(Sender: TObject);
     function IsFromScrollBarShowing:boolean;
     procedure actNewWxFrameExecute(Sender: TObject);
@@ -961,15 +933,11 @@ type
 {$ENDIF}
 
   private
-    fTab: integer;
-    fmsgHeight: integer;
     fHelpfiles: ToysStringList;
-    FloatingPropertiesItem: TMenuItem;
+    ShowPropertyInspItem: TMenuItem;
     fTools: TToolController;
     fProjectCount: integer;
     fCompiler: TCompiler;
-    ProjectToolWindow: TForm;
-    ReportToolWindow: TForm;
     bProjectLoading: boolean;
     fstrCppFileToOpen:string;
     tmrInspectorHelper:TTimer;
@@ -999,9 +967,7 @@ type
     procedure LoadText(force: boolean);
     function SaveFile(e: TEditor): Boolean;
     function SaveFileAs(e: TEditor): Boolean;
-    procedure OpenCloseMessageSheet(const _Show: boolean);
     procedure OpenUnit;
-    procedure ClearMessageControl;
     function PrepareForCompile(rebuild: Boolean): Boolean;
     procedure LoadTheme;
     procedure ShowDebug;
@@ -1116,6 +1082,7 @@ type
   frmProjMgrDock:TForm;
   frmPaletteDock: TForm;
   frmInspectorDock:TForm;
+  frmReportDocks: array[0..4] of TForm;
   
   strChangedFileList:TStringList;
   strStdwxIDList:TStringList;
@@ -1141,7 +1108,7 @@ type
   public
     fProject: TProject;
     fDebugger: TDebugger;
-    CacheCreated: boolean;
+    CacheCreated: Boolean;
 
 {$IFDEF WX_BUILD}
     strGlobalCurrentFunction:String;
@@ -1174,7 +1141,7 @@ type
 
     function LocateFunction(strFunctionName:String):boolean;
 {$ENDIF}
-
+    property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
   end;
 
 var
@@ -1341,17 +1308,18 @@ begin
   frmInspectorDock.ManualDock(DockServer.LeftDockPanel, frmProjMgrDock, alBottom);
   ShowDockForm(frmProjMgrDock);
   ShowDockForm(frmInspectorDock);
+  HideDockForm(frmPaletteDock);
 
   //Add the property inspector view menu item
-  FloatingPropertiesItem := TMenuItem.Create(MainMenu);
-  FloatingPropertiesItem.Checked := False;
-  FloatingPropertiesItem.OnClick := FloatingPropertyInspectorClick;
-  FloatingPropertiesItem.Caption := 'Show Property Inspector';
-  ViewMenu.Insert(7, FloatingPropertiesItem);
+  ShowPropertyInspItem := TMenuItem.Create(MainMenu);
+  ShowPropertyInspItem.Checked := False;
+  ShowPropertyInspItem.OnClick := ShowPropertyInspItemClick;
+  ShowPropertyInspItem.Caption := 'Show Property Inspector';
+  ViewMenu.Insert(5, ShowPropertyInspItem);
 
   //Check both "view" items
-  FloatingPropertiesItem.Checked :=True;
-  FloatingProjectManagerItem.Checked := True;
+  ShowPropertyInspItem.Checked := True;
+  ShowProjectInspItem.Checked := True;
 
   strChangedFileList:=TStringList.Create;
   strStdwxIDList:=GetPredefinedwxIds;
@@ -1923,7 +1891,7 @@ begin
 {$ENDIF}
   fFirstShow := TRUE;
   ViewToDoForm := TViewToDoForm.Create(DockServer.BottomDockPanel);
-  AddDockTab(ViewToDoForm);
+//  AddDockTab(ViewToDoForm);
 
   // register file associations and DDE services
   DDETopic := DevCppDDEServer.Name;
@@ -1935,16 +1903,13 @@ begin
   Caption := DEVCPP + ' ' + DEVCPP_VERSION;
 
   // set visiblity to previous sessions state
-  actProjectManager.Checked := devData.ProjectView;
   if devData.ClassView then
     LeftPageControl.ActivePage := ClassSheet
   else
     LeftPageControl.ActivePage := ProjectSheet;
-  actProjectManagerExecute(nil);
-  LeftPageControl.Width := devData.ProjectWidth;
   actStatusbar.Checked := devData.Statusbar;
   actStatusbarExecute(nil);
-
+  
   fProjectCount := 0;
   fProject := nil;
   fCompiler := TCompiler.Create;
@@ -1957,9 +1922,6 @@ begin
   SearchCenter.SearchProc := MainSearchProc;
   SearchCenter.PageControl := PageControl;
 
-  MessageControl.Height := devData.OutputHeight;
-  fmsgHeight := MessageControl.Height;
-
   SetSplashStatus('Loading themes');
   devImageThemes := TDevImageThemeFactory.Create;
   devImageThemes.LoadFromDirectory(devDirs.Themes);
@@ -1970,8 +1932,6 @@ begin
     if devData.First then
       dmMain.InitHighlighterFirstTime;
     Lang.SelectLanguage;
-    if devData.ThemeChange then
-      LoadTheme;
     devData.FileDate := FileAge(Application.ExeName);
     devData.First := FALSE;
     SaveOptions;
@@ -2001,11 +1961,6 @@ begin
   Application.HelpFile := ValidateFile(DEV_MAINHELP_FILE, devDirs.Help, TRUE);
 
   SetSplashStatus('Initializing workspace');
-  if not DevData.ShowOutput then
-    OpenCloseMessageSheet(FALSE);
-  actCompOnNeed.Checked := devData.OutputOnNeed;
-  actCompOutput.Checked := devData.ShowOutput;
-
   ToolMainItem.checked := devData.ToolbarMain;
   ToolEditItem.Checked := devData.ToolbarEdit;
   ToolCompileandRunItem.Checked := devData.ToolbarCompile;
@@ -2040,20 +1995,6 @@ begin
   MainForm.Constraints.MaxWidth := Monitor.Width;
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
-  
-  SetSplashStatus('Loading code completion cache');
-  CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
-  InitClassBrowser(true {not CacheCreated});
-  CppParser1.OnCacheProgress := nil;
-
-  //Settle the docking sizes
-  DockServer.LeftDockPanel.Width := 200;
-  DockServer.RightDockPanel.Width := 170;
-  DockServer.BottomDockPanel.Height := 200;
-  DockServer.TopDockPanel.JvDockManager.GrabberSize := 22;
-  DockServer.BottomDockPanel.JvDockManager.GrabberSize := 22;
-  DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
-  DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
 
 {$IFDEF WX_BUILD}
   //variable for clearing up inspector data.
@@ -2063,15 +2004,17 @@ begin
   DisablePropertyBuilding:=false;
 {$ENDIF}
 
-  for I := 0 to MessageControl.PageCount - 2 do
+  for I := 0 to MessageControl.PageCount - 1 do
   begin
     NewDock := TForm.Create(self);
+    frmReportDocks[I] := NewDock;
     with NewDock do
     begin
-      dmMain.MenuImages_NewLook.GetIcon(MessageControl.Pages[I].ImageIndex, Icon);
+      Tag := MessageControl.Pages[I].ImageIndex;
       Name := MessageControl.Pages[I].Name + 'Dock';
       Caption := MessageControl.Pages[I].Caption;
       BorderStyle := bsSizeToolWin;
+      devImageThemes.CurrentTheme.MenuImages.GetIcon(Tag, Icon);
 
       DockSite := True;
       DragKind := dkDock;
@@ -2102,12 +2045,27 @@ begin
     end;
   end;
 
-  DockServer.BottomDockPanel.Height := 200;
+  //Settle the docking sizes
+  DockServer.LeftDockPanel.Width := 200;
+  DockServer.BottomDockPanel.Height := 175;
+  DockServer.TopDockPanel.JvDockManager.GrabberSize := 22;
+  DockServer.BottomDockPanel.JvDockManager.GrabberSize := 22;
+  DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
+  DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
+
+  //Clean up after ourselves
   NewDocks.Free;
   RemoveControl(MessageControl);
-  RemoveControl(SplitterBottom);
   MessageControl.Free;
-  SplitterBottom.Free;
+
+  //Make sure the status bar is BELOW the bottom dock panel
+  Statusbar.Top := Self.ClientHeight;
+
+  SetSplashStatus('Loading code completion cache');
+  if Assigned(SplashForm) then
+    CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
+  InitClassBrowser(true {not CacheCreated});
+  CppParser1.OnCacheProgress := nil;
 end;
 
 procedure TMainForm.AddBreakPointToList(line_number: integer; e: TEditor);
@@ -2212,7 +2170,6 @@ begin
     Self.Position := poScreenCenter;
 
   //Load the window layout from the INI file
-  //TODO: lowjoel: What if the layout.ini file is invalid?
   if FileExists(ExtractFilePath(devData.INIFile) + 'layout' + INI_EXT) then
     LoadDockTreeFromFile(ExtractFilePath(devData.INIFile) + 'layout' + INI_EXT);
 
@@ -2227,6 +2184,7 @@ var
 begin
   try
     XPMenu.Active := devData.XPTheme;
+    WebUpdateForm.XPMenu.Active := devData.XPTheme;
     ViewToDoForm.XPMenu.Active := devData.XPTheme;
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
@@ -2236,10 +2194,6 @@ begin
   except
   end;
 
-  try
-    WebUpdateForm.XPMenu.Active := devData.XPTheme;
-  except
-  end;
   if devImageThemes.IndexOf(devData.Theme) < 0 then
     devData.Theme := devImageThemes.Themes[0].Title; // 0 = New look (see ImageTheme.pas)
 
@@ -2251,10 +2205,15 @@ begin
 
     with devImageThemes do
     begin
-      //TODO: lowjoel: Update the images of the dockable windows too
       alMain.Images := CurrentTheme.MenuImages;
       MainMenu.Images := CurrentTheme.MenuImages;
       ProjectView.Images := CurrentTheme.ProjectImages;
+      MessagePopup.Images := CurrentTheme.MenuImages;
+      EditorPopupMenu.Images := CurrentTheme.MenuImages;
+      ProjectPopup.Images := CurrentTheme.MenuImages;
+      UnitPopup.Images := CurrentTheme.MenuImages;
+      DebugVarsPopup.Images := CurrentTheme.MenuImages;
+      
       tbMain.Images := CurrentTheme.MenuImages;
       tbCompile.Images := CurrentTheme.MenuImages;
       tbDebug.Images := CurrentTheme.MenuImages;
@@ -2266,8 +2225,13 @@ begin
       tbSpecials.Images := CurrentTheme.SpecialImages;
       HelpMenu.SubMenuImages := CurrentTheme.HelpImages;
       HelpPop.Images := CurrentTheme.HelpImages;
-      DebugVarsPopup.Images := CurrentTheme.MenuImages;
       ClassBrowser1.Images := CurrentTheme.BrowserImages;
+
+      //TODO: lowjoel: I can update the icon of the form, but how do you get JVCL
+      //               to update the image list copy that they have too?
+      //Copy the theme images for the report window
+      for Idx := 0 to Length(frmReportDocks) - 1 do
+        CurrentTheme.MenuImages.GetIcon(frmReportDocks[Idx].Tag, frmReportDocks[Idx].Icon);
     end;
   end;
 
@@ -2298,11 +2262,10 @@ begin
     if ParamCount > 0 then
       ParseCmdLine;
 
-    //TODO: lowjoel: Can the tabs of the dockable forms be moved around?
-    {if devData.MsgTabs then
-      MessageControl.TabPosition := tpTop
+    if devData.MsgTabs then
+      DockServer.DockStyle.TabServerOption.TabPosition := tpTop
     else
-      MessageControl.TabPosition := tpBottom;}
+      DockServer.DockStyle.TabServerOption.TabPosition := tpBottom;
 
     SetupProjectView;
     fFirstShow := FALSE;
@@ -2318,9 +2281,9 @@ begin
 
   //Update the menu list
   if TForm(Sender) = frmInspectorDock then
-    FloatingPropertiesItem.Checked := False
+    ShowPropertyInspItem.Checked := False
   else if TForm(Sender) = frmProjMgrDock then
-    FloatingProjectManagerItem.Checked := False;
+    ShowProjectInspItem.Checked := False;
 end;
 {$ENDIF}
 
@@ -2379,9 +2342,7 @@ begin
   devData.ToolbarClassesX := tbClasses.Left;
   devData.ToolbarClassesY := tbClasses.Top;
 
-  devData.ProjectWidth := LeftPageControl.Width;
-  devData.OutputHeight := fmsgHeight;
-  //Delete Event Insp Timee
+  //Delete Event Insp Timer
   tmrInspectorHelper.destroy;
   SaveOptions;
 end;
@@ -2718,12 +2679,8 @@ begin
     actGotoFunction.Caption := Strings[ID_ITEM_GOTOFUNCTION];
 
     // View Menu
-    actProjectManager.Caption := Strings[ID_ITEM_PROJECTVIEW];
     actStatusbar.Caption := Strings[ID_ITEM_STATUSBAR];
-    CompilerOutputItem.Caption := Strings[ID_SUB_COMPOUTPUT];
     ToolBarsItem.Caption := Strings[ID_SUB_TOOLBARS];
-    actCompOutput.Caption := Strings[ID_ITEM_COMPOUTALWAYS];
-    actCompOnNeed.Caption := Strings[ID_ITEM_COMPOUTONNEED];
 
     ToolMainItem.Caption := Strings[ID_TOOLMAIN];
     ToolEditItem.Caption := Strings[ID_TOOLEDIT];
@@ -2744,8 +2701,7 @@ begin
     tbSpecials.Caption := Strings[ID_TOOLSPECIAL];
     tbClasses.Caption := Strings[ID_LP_CLASSES];
     actViewToDoList.Caption := Strings[ID_VIEWTODO_MENUITEM];
-    FloatingProjectManagerItem.Caption := Strings[ID_ITEM_FLOATPROJECT];
-    FloatingReportWindowItem.Caption := Strings[ID_ITEM_FLOATREPORT];
+    ShowProjectInspItem.Caption := Strings[ID_ITEM_FLOATPROJECT];
     GotoprojectmanagerItem.Caption := Strings[ID_ITEM_GOTOPROJECTVIEW];
     GoToClassBrowserItem.Caption := Strings[ID_ITEM_GOTOCLASSBROWSER];
 
@@ -2866,12 +2822,11 @@ begin
     // Message Control
     // tabs
     CompSheet.Caption := Strings[ID_SHEET_COMP];
-    CloseSheet.Caption := Strings[ID_SHEET_CLOSE];
     ResSheet.Caption := Strings[ID_SHEET_RES];
     LogSheet.Caption := Strings[ID_SHEET_COMPLOG];
     FindSheet.Caption := Strings[ID_SHEET_FIND];
     DebugSheet.Caption := Strings[ID_SHEET_DEBUG];
-    DebugLeftSheet.Caption := Strings[ID_SHEET_DEBUG];
+    
     // popup menu
     actMsgCopy.Caption := Strings[ID_SHEET_POP_COPY];
     actMsgClear.Caption := Strings[ID_SHEET_POP_CLEAR];
@@ -2909,7 +2864,7 @@ actNewWxFrame.Caption := Strings[ID_TB_NEW] + ' wxFrame';
     lvBacktrace.Column[3].Caption := Strings[ID_COL_FLINE];
 
     lblSendCommandDebugger.Caption := Strings[ID_DEB_SENDDEBUGCOMMAND];
-    GdbCommandBtn.Caption := Strings[ID_DEB_SEND];
+    btnSendCommand.Caption := Strings[ID_DEB_SEND];
     tabBacktrace.Caption := Strings[ID_DEB_BACKTRACE];
     tabDebugOutput.Caption := Strings[ID_DEB_OUTPUT];
 
@@ -3575,51 +3530,6 @@ begin
     pt.X, pt.y, 0, Self.Handle, nil);
 end;
 
-//TODO: lowjoel: remove this function - the message sheet has been replaced by
-//               the new JVCL dockable tabs thing
-procedure TMainForm.OpenCloseMessageSheet;
-begin
-  if Assigned(ReportToolWindow) then
-    Exit;
-
-  with MessageControl do
-    if _Show then
-    begin
-      Height := fmsgHeight;
-      CloseSheet.TabVisible := True;
-    end
-    else
-    begin
-      ActivePageIndex := -1;
-      CloseSheet.TabVisible := False;
-      Height := Height - CompSheet.Height;
-    end;
-  Statusbar.Top := Self.ClientHeight;
-end;
-
-procedure TMainForm.MessageControlChange(Sender: TObject);
-begin
-  if MessageControl.ActivePage = ResSheet then
-    ResSheet.Highlighted := false;
-  if MessageControl.ActivePage = CloseSheet then begin
-    if Assigned(ReportToolWindow) then begin
-      ReportToolWindow.Close;
-      MessageControl.ActivePageIndex := 0;
-    end
-    else
-      OpenCloseMessageSheet(False);
-  end
-  else
-    OpenCloseMessageSheet(True);
-end;
-
-procedure TMainForm.MessageControlChanging(Sender: TObject;
-  var AllowChange: Boolean);
-begin
-  if MessageControl.ActivePage <> CloseSheet then
-    fTab := MessageControl.ActivePageIndex;
-end;
-
 procedure TMainForm.MRUClick(Sender: TObject);
 var
   s: string;
@@ -3818,8 +3728,8 @@ begin
 
       dmMain.RemoveFromHistory(s);
       // if project manager isn't open then open it
-      if not devData.ProjectView then
-        actProjectManager.Execute;
+      if not ShowProjectInspItem.Checked then
+        ShowProjectInspItem.OnClick(nil);
 
       CheckForDLLProfiling;
       UpdateAppTitle;
@@ -4038,14 +3948,7 @@ begin
     SubItems.Add(_Message);
   end;
   TotalErrors.Text := IntToStr(fCompiler.ErrorCount);
-
-  if MessageControl.ActivePage <> CompSheet then
-    MessageControl.ActivePage := CompSheet;
-
-  if actCompOnNeed.Checked then
-  begin
-    OpenCloseMessageSheet(TRUE);
-  end;
+  ShowDockForm(frmReportDocks[cCompTab]);
 end;
 
 procedure TMainForm.CompResOutputProc(const _Line, _Unit, _Message: string);
@@ -4054,7 +3957,6 @@ begin
     ResourceOutput.Items.Add('Line ' + _Line + ' in file ' + _Unit + ' : ' +_Message)
   else
     ResourceOutput.Items.Add(_Message);
-  ResSheet.Highlighted := true;
 end;
 
 procedure TMainForm.CompSuccessProc(const messages: integer);
@@ -4092,9 +3994,6 @@ begin
         Break;
       end;
   end;
-
-  if (messages = 0) and actCompOnNeed.Checked then
-    OpenCloseMessageSheet(FALSE);
 end;
 
 procedure TMainForm.LogEntryProc(const msg: string);
@@ -4360,20 +4259,22 @@ begin
         Exit;
       end;
       fCompiler.Project := fProject;
-      {$IFDEF WX_BUILD}
+
+{$IFDEF WX_BUILD}
       if strContains('wxWidgets Frame', GetTemplate.Name) then
-          NewWxProjectCode(dtWxFrame)
+        NewWxProjectCode(dtWxFrame)
       else if strContains('wxWidgets Dialog', GetTemplate.Name) then
-          NewWxProjectCode(dtWxDialog);
-      {$ENDIF}
+        NewWxProjectCode(dtWxDialog);
+{$ENDIF}
 
       devCompiler.CompilerSet:=fProject.CurrentProfile.CompilerSet;
       devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
       devCompilerSet.AssignToCompiler;
       devCompiler.OptionStr:=fProject.CurrentProfile.CompilerOptions;
 
-      if not devData.ProjectView then
-        actProjectManager.Execute;
+      if not ShowProjectInspItem.Checked then
+        ShowProjectInspItem.OnClick(nil);
+      UpdateAppTitle;
     end;
   finally
     Free;
@@ -4596,7 +4497,12 @@ begin
   end;
 
   ProjectView.Items.Clear;
-  ClearMessageControl;
+  CompilerOutput.Items.Clear;
+  FindOutput.Items.Clear;
+  ResourceOutput.Clear;
+  LogOutput.Clear;
+  DebugOutput.Clear;
+  
   UpdateAppTitle;
   ClassBrowser1.ProjectDir := '';
   CppParser1.Reset;
@@ -4777,51 +4683,11 @@ begin
     e.Text.ClearSelection;
 end;
 
-procedure TMainForm.actProjectManagerExecute(Sender: TObject);
-begin
-  if (DebugSubPages.Parent <> self) and assigned(ProjectToolWindow) then
-    ProjectToolWindow.Close;
-
-  // If the panel which holds the Browser Tab is visible, we'll make it visible
-  if (actProjectManager.Checked) and (LeftPageControl.Visible = false) then
-    LeftPageControl.Visible:=true;
-  devData.ProjectView := actProjectManager.Checked;
-end;
-
 procedure TMainForm.actStatusbarExecute(Sender: TObject);
 begin
   devData.Statusbar := actStatusbar.Checked;
   Statusbar.Visible := actStatusbar.Checked;
   Statusbar.Top := Self.ClientHeight;
-end;
-
-procedure TMainForm.actCompOutputExecute(Sender: TObject);
-begin
-  // sudo radio with actCompOnNeed
-  MessageControl.TabIndex := fTab;
-  if AlwaysShowItem.Checked then
-    OpenCloseMessageSheet(TRUE)
-  else if not actCompOnNeed.Checked then
-    OpenCloseMessageSheet(FALSE);
-
-  if actCompOutput.Checked then
-    actCompOnNeed.Checked := False
-  else if (not actCompOutput.Checked) and
-    (not actCompOnNeed.Checked) then
-    OpenCloseMessageSheet(False);
-  devData.ShowOutput := actCompOutput.Checked;
-  devData.OutputOnNeed := actCompOnNeed.Checked;
-end;
-
-procedure TMainForm.actCompOnNeedExecute(Sender: TObject);
-begin
-  if actCompOnNeed.Checked then
-    OpenCloseMessageSheet(FALSE)
-  else if (not actCompOutput.Checked) and
-    (not actCompOnNeed.Checked) then
-    OpenCloseMessageSheet(False);
-  devData.ShowOutput := actCompOutput.Checked;
-  devData.OutputOnNeed := actCompOnNeed.Checked;
 end;
 
 procedure TMainForm.btnFullScrRevertClick(Sender: TObject);
@@ -5146,10 +5012,7 @@ begin
   SearchCenter.Project := fProject;
   if assigned(e) then
     if e.Search(FALSE) then
-    begin
-      OpenCloseMessageSheet(TRUE);
-      MessageControl.ActivePage := FindSheet;
-    end;
+      ShowDockForm(frmReportDocks[cFindTab]);
   SearchCenter.Project := nil;
 end;
 
@@ -5160,10 +5023,7 @@ begin
   SearchCenter.Replace := false;
   SearchCenter.Editor := GetEditor;
   if SearchCenter.ExecuteSearch then
-  begin
-    OpenCloseMessageSheet(TRUE);
-    MessageControl.ActivePage := FindSheet;
-  end;
+    ShowDockForm(frmReportDocks[cFindTab]);
   SearchCenter.Project := nil;
 end;
 
@@ -5213,15 +5073,12 @@ begin
   LogOutput.Clear;
   CompilerOutput.Items.Clear;
   ResourceOutput.Items.Clear;
-  ResSheet.Highlighted := false;
   SizeFile.Text := '';
   TotalErrors.Text := '0';
 
-  if not devData.ShowProgress then begin
+  if not devData.ShowProgress then
     // if no compile progress window, open the compiler output
-    OpenCloseMessageSheet(True);
-    MessageControl.ActivePage := LogSheet;
-  end;
+    ShowDockForm(frmReportDocks[cLogTab]);
 
   e := GetEditor;
   fCompiler.Target := ctNone;
@@ -5408,13 +5265,12 @@ var
 begin
   //Recreate the debugger object
   InitializeDebugger;
-  
-  actStopExecute.Execute;
+
+  //Prepare the debugger environment
   DebugOutput.Clear;
-  LeftPageControl.ActivePage := DebugLeftSheet;
-  MessageControl.ActivePage := DebugSheet;
-  OpenCloseMessageSheet(True);
+  actStopExecute.Execute;
   fDebugger.ClearIncludeDirs;
+  ShowDockForm(frmReportDocks[cDebugTab]);
 
   // add to the debugger the global include dirs
   sl := TStringList.Create;
@@ -5503,8 +5359,20 @@ procedure TMainForm.actDebugExecute(Sender: TObject);
 begin
   if not fDebugger.Executing then
   begin
-    fCompiler.OnCompilationEnded := doDebugAfterCompile;
-    actCompile.Execute;
+    StatusBar.Panels[3].Text := 'Checking if project needs to be rebuilt...';
+    if not fCompiler.UpToDate then
+    begin
+      if MessageBox(Handle, 'The project you are working on is out of date. Do you ' +
+                    'want to rebuild the project before debugging?', 'wxDev-C++',
+                    MB_ICONQUESTION or MB_YESNOCANCEL) = mrYes then
+      begin
+        fCompiler.OnCompilationEnded := doDebugAfterCompile;
+        actCompile.Execute;        
+      end;
+    end
+    else
+      doDebugAfterCompile(Sender);
+    StatusBar.Panels[3].Text := '';
   end
   else if fDebugger.Paused then
   begin
@@ -5533,9 +5401,9 @@ begin
     begin
       SetupProjectView;
       if devData.MsgTabs then
-        MessageControl.TabPosition := tpTop
+        DockServer.DockStyle.TabServerOption.TabPosition := tpTop
       else
-        MessageControl.TabPosition := tpBottom;
+        DockServer.DockStyle.TabServerOption.TabPosition := tpBottom;
       if devData.FullScreen then
         ControlBar1.Visible := devData.ShowBars;
 
@@ -5599,16 +5467,10 @@ var
   e: TEditor;
 begin
   e := GetEditor;
-  if (assigned(e)) then
-  begin
-    //TODO: Guru: Proper solution?
-    try
-        (Sender as TAction).Enabled := (e.Text.Text <> '');
-    except
-    end;
-  end
-  else
-    (Sender as TAction).Enabled := false;
+  try
+    (Sender as TAction).Enabled := Assigned(e) and (e.Text.Text <> '');
+  except
+  end;
 end;
 
 procedure TMainForm.actUpdateDebuggerRunning(Sender: TObject);
@@ -5655,21 +5517,6 @@ begin
   Handled := TRUE;
 end;
 
-procedure TMainForm.SplitterBottomCanResize(Sender: TObject;
-  var NewSize: Integer; var Accept: Boolean);
-begin
-  accept := MessageControl.Height = fmsgHeight;
-end;
-
-procedure TMainForm.SplitterBottomMoved(Sender: TObject);
-begin
-  if MessageControl.ActivePageIndex <> -1 then begin
-    if MessageControl.Height > 0 then
-      fmsgHeight := MessageControl.Height;
-    OpenCloseMessageSheet(true);
-  end;
-end;
-
 procedure TMainForm.ApplicationEvents1Idle(Sender: TObject;
   var Done: Boolean);
 begin
@@ -5685,55 +5532,45 @@ begin
 end;
 
 procedure TMainForm.actMsgCopyExecute(Sender: TObject);
+var
+  PopupComp: TComponent;
 begin
-  case MessageControl.ActivePageIndex of
-    cCompTab:
-      if assigned(CompilerOutput.Selected) then begin
-        Clipboard.AsText:= StringReplace(
-                        StringReplace(
-                        CompilerOutput.Selected.Caption +' ' +
-                        CompilerOutput.Selected.SubItems.Text
-                        , #13#10, ' ', [rfReplaceAll])
-                        , #10, ' ', [rfReplaceAll])
-      end;
-
-    cResTab:
-      if Resourceoutput.ItemIndex <> -1 then
-        Clipboard.AsText := ResourceOutput.Items[ResourceOutput.ItemIndex];
-
-    cLogTab:
-      if LogOutput.Lines.Text <> '' then
-        if Length(LogOutput.SelText) > 0 then
-          Clipboard.AsText := LogOutput.SelText
-        else
-          Clipboard.AsText := LogOutput.Lines.Text;
-    cDebugTab:
-      if DebugSubPages.ActivePage = tabDebugOutput then
-        Clipboard.AsText := DebugOutput.SelText;
-    cFindTab:
-      if assigned(FindOutput.Selected) then
-        Clipboard.AsText := FindOutput.Selected.Caption + ' ' +
-          FindOutput.Selected.SubItems.Text;
-
+  PopupComp := MessagePopup.PopupComponent;
+  if PopupComp is TEdit then
+  begin
+    if TEdit(PopupComp).SelText <> '' then
+      Clipboard.AsText := TEdit(PopupComp).SelText
+    else if TEdit(PopupComp).Text <> '' then
+      Clipboard.AsText := TEdit(PopupComp).Text;
+  end
+  else if PopupComp is TMemo then
+  begin
+    if TMemo(PopupComp).SelText <> '' then
+      Clipboard.AsText := TMemo(PopupComp).SelText
+    else if TMemo(PopupComp).Lines.Text <> '' then
+      Clipboard.AsText := TMemo(PopupComp).Lines.Text;
+  end
+  else if PopupComp is TListView then
+  begin
+    if Assigned(TListView(PopupComp).Selected) then
+      Clipboard.AsText := StringReplace(StringReplace(Trim(TListView(PopupComp).Selected.Caption +
+                                                           ' ' + TListView(PopupComp).Selected.SubItems.Text),
+                                                      #13#10, ' ', [rfReplaceAll]),
+                                        #10, ' ', [rfReplaceAll]);
   end;
 end;
 
 procedure TMainForm.actMsgClearExecute(Sender: TObject);
+var
+  PopupComp: TComponent;
 begin
-  case MessageControl.ActivePageIndex of
-   cCompTab: CompilerOutput.Items.Clear;
-   cResTab:  ResourceOutput.Items.Clear;
-   cLogTab:  LogOutput.Clear;
-   cDebugTab:
-     if DebugSubPages.ActivePage = tabDebugOutput then
-       DebugOutput.Clear;
-   cFindTab: FindOutput.Items.Clear;
-  end;
-end;
-
-procedure TMainForm.actMsgHideExecute(Sender: TObject);
-begin
-  OpenCloseMessageSheet(MessageControl.Height <> fmsgHeight);
+  PopupComp := MessagePopup.PopupComponent;
+  if PopupComp is TEdit then
+    TEdit(PopupComp).Clear
+  else if PopupComp is TMemo then
+    TMemo(PopupComp).Clear
+  else if PopupComp is TListView then
+    TListView(PopupComp).Items.Clear;
 end;
 
 procedure TMainForm.actBreakPointExecute(Sender: TObject);
@@ -5910,18 +5747,6 @@ begin
     result := TEditor(PageControl.Pages[i].Tag);
 end;
 
-procedure TMainForm.MessagePopupPopup(Sender: TObject);
-begin
-  if (MessageControl.ActivePage = DebugSheet) and (DebugSubPages.ActivePage <> tabDebugOutput) then begin
-    MsgCopyItem.Enabled := false;
-    MsgClearItem.Enabled := false;
-  end
-  else begin
-    MsgCopyItem.Enabled := true;
-    MsgClearItem.Enabled := true;
-  end;
-end;
-
 procedure TMainForm.actAddWatchExecute(Sender: TObject);
 var
   s: string;
@@ -5966,7 +5791,7 @@ end;
 
 procedure TMainForm.actWatchItemExecute(Sender: TObject);
 begin
-  LeftPageControl.ActivePage := DebugLeftSheet;
+  DebugSubPages.ActivePage := tabWatches;
 end;
 
 procedure TMainForm.actRemoveWatchExecute(Sender: TObject);
@@ -6181,22 +6006,6 @@ begin
   except
   end;
 {$ENDIF}
-end;
-
-procedure TMainForm.MessageControlContextPopup(Sender: TObject;
-  MousePos: TPoint; var Handled: Boolean);
-begin
-  if MessageControl.Height <> fmsgHeight then
-    Handled := TRUE;
-end;
-
-procedure TMainForm.ClearMessageControl;
-begin
-  CompilerOutput.Items.Clear;
-  FindOutput.Items.Clear;
-  ResourceOutput.Clear;
-  LogOutput.Clear;
-  DebugOutput.Clear;
 end;
 
 procedure TMainForm.actFileMenuExecute(Sender: TObject);
@@ -7400,12 +7209,12 @@ begin
     fDebugger.Go;
 end;
 
-procedure TMainForm.GdbCommandBtnClick(Sender: TObject);
+procedure TMainForm.btnSendCommandClick(Sender: TObject);
 begin
   if fDebugger.Executing then
   begin
-    fDebugger.QueueCommand(edGdbCommand.Text, '');
-    edGdbCommand.Clear;
+    fDebugger.QueueCommand(edCommand.Text, '');
+    edCommand.Clear;
   end;
 end;
 
@@ -7419,10 +7228,10 @@ begin
   CPUForm.PopulateRegisters(fDebugger);
 end;
 
-procedure TMainForm.edGdbCommandKeyPress(Sender: TObject; var Key: Char);
+procedure TMainForm.edCommandKeyPress(Sender: TObject; var Key: Char);
 begin
   if key = #13 then
-    GdbCommandBtnClick(sender);
+    btnSendCommand.Click;
 end;
 
 procedure TMainForm.CheckForDLLProfiling;
@@ -7683,17 +7492,8 @@ end;
 
 procedure TMainForm.actGotoProjectManagerExecute(Sender: TObject);
 begin
-  if not actProjectManager.Checked then
-  begin
-    actProjectManager.Checked := True;
-    actProjectManagerExecute(nil);
-  end;
   LeftPageControl.ActivePageIndex := 0;
-  if frmProjMgrDock.Visible = false then
-  begin
-    FloatingProjectManagerItemClick(FloatingProjectManagerItem);
-  end;
-  ProjectView.SetFocus;
+  ShowDockForm(frmProjMgrDock);
 end;
 
 procedure TMainForm.actCVSImportExecute(Sender: TObject);
@@ -7873,19 +7673,8 @@ end;
 
 procedure TMainForm.GoToClassBrowserItemClick(Sender: TObject);
 begin
-  if not actProjectManager.Checked then
-  begin
-    actProjectManager.Checked := True;
-    actProjectManagerExecute(nil);
-  end;
   LeftPageControl.ActivePageIndex := 1;
-  if frmProjMgrDock.Visible = false then
-  begin
-    FloatingProjectManagerItemClick(FloatingProjectManagerItem);
-  end;
-
-  if ClassBrowser1.Visible And ClassBrowser1.Enabled then
-    ClassBrowser1.SetFocus;
+  ShowDockForm(frmProjMgrDock);
 end;
 
 procedure TMainForm.actBrowserShowInheritedExecute(Sender: TObject);
@@ -7920,22 +7709,6 @@ begin
   end;
 end;
 
-procedure TMainForm.ReportWindowClose(Sender: TObject; var Action: TCloseAction);
-begin
-  FloatingReportWindowItem.Checked := False;
-  MessageControl.Visible := false;
-  (Sender as TForm).RemoveControl(MessageControl);
-
-  MessageControl.Left := 0;
-  MessageControl.Top := SplitterBottom.Top;
-  MessageControl.Align := alBottom;
-  MessageControl.Visible := true;
-  InsertControl(MessageControl);
-  StatusBar.Top := MessageControl.Top + MessageControl.Height;
-  ReportToolWindow.Free;
-  ReportToolWindow := nil;
-end;
-
 procedure TMainForm.AddWatchBtnClick(Sender: TObject);
 var s: string;
 begin
@@ -7943,22 +7716,22 @@ begin
     AddDebugVar(s);
 end;
 
-procedure TMainForm.FloatingProjectManagerItemClick(Sender: TObject);
+procedure TMainForm.ShowProjectInspItemClick(Sender: TObject);
 begin
   TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
   if TMenuItem(Sender).Checked then
-    frmProjMgrDock.Show
+    ShowDockForm(frmProjMgrDock)
   else
-    frmProjMgrDock.Hide;
+    HideDockForm(frmProjMgrDock);
 end;
 
-procedure TMainForm.FloatingPropertyInspectorClick(Sender: TObject);
+procedure TMainForm.ShowPropertyInspItemClick(Sender: TObject);
 begin
   TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
   if TMenuItem(Sender).Checked then
-    frmInspectorDock.Show
+    ShowDockForm(frmInspectorDock)
   else
-    frmInspectorDock.Hide;
+    HideDockForm(frmInspectorDock);
 end;
 
 procedure TMainForm.SetProjCompOpt(idx: integer; Value: boolean);
@@ -8261,40 +8034,6 @@ begin
   RemoveWatchPop.Enabled := Assigned(DebugTree.Selected);
 end;
 
-procedure TMainForm.FloatingReportwindowItemClick(Sender: TObject);
-begin
-  FloatingReportWindowItem.Checked := not FloatingReportWindowItem.Checked;
-  if assigned(ReportToolWindow) then
-    ReportToolWindow.Close
-  else begin
-    OpenCloseMessageSheet(true);
-    if MessageControl.ActivePage = CloseSheet then
-      MessageControl.ActivePageIndex := 0;
-    ReportToolWindow := TForm.Create(self);
-    with ReportToolWindow do begin
-      Caption := Lang.Strings[ID_TB_REPORT];
-      Top := self.Top + MessageControl.Top;
-      Left := self.Left + MessageControl.Left;
-      Height := MessageControl.Height;
-      Width := MessageControl.Width;
-      FormStyle := fsStayOnTop;
-      OnClose := ReportWindowClose;
-      BorderStyle := bsSizeable;
-      BorderIcons := [biSystemMenu];
-      MessageControl.Visible := false;
-      self.RemoveControl(MessageControl);
-
-      MessageControl.Left := 0;
-      MessageControl.Top := 0;
-      MessageControl.Align := alClient;
-      MessageControl.Visible := true;
-      ReportToolWindow.InsertControl(MessageControl);
-
-      ReportToolWindow.Show;
-    end;
-  end;
-end;
-
 procedure TMainForm.actAttachProcessUpdate(Sender: TObject);
 begin
   if assigned(fProject) and (fProject.CurrentProfile.typ = dptDyn) then begin
@@ -8323,7 +8062,6 @@ begin
         for idx := 0 to fProject.CurrentProfile.Includes.Count - 1 do
           fDebugger.AddIncludeDir(fProject.CurrentProfile.Includes[idx]);
 
-        //Todo: lowjoel: What am I meant to do for this debugger part?
         fDebugger.Attach(Integer(ProcessListForm.ProcessList[ProcessListForm.ProcessCombo.ItemIndex]));
         fDebugger.RefreshBreakpoints;
         fDebugger.Go;
@@ -10098,7 +9836,7 @@ begin
           SaveFile(e.GetDesignerCPPEditor);
       end;
 
-      //TODO: Guru: add functions to make sure the files are saved properly
+      //TODO: Guru: add code to make sure the files are saved properly
       if SelectedComponent <> nil then
       begin
         str := JvInspEvents.Selected.DisplayName;
@@ -11558,18 +11296,6 @@ begin
     for I := 0 to ELDesigner1.SelectedControls.Count - 1 do
       ELDesigner1.LockControl(ELDesigner1.SelectedControls[I], []);
 end;
-
-procedure TMainForm.ELDesigner1Notification(Sender: TObject;
-  AnObject: TPersistent; Operation: TOperation);
-var
-    strOp:String;
-begin
-  //TODO: Guru: Dead code?
-  if Operation = opInsert then
-    strOp:='opInsert';
-  if Operation = opRemove then
-    strOp:='opRemove';
-end;
 {$ENDIF}
 
 procedure TMainForm.OnPropertyItemSelected(Sender: TObject);
@@ -11667,34 +11393,17 @@ end;
 procedure TMainForm.ProjectViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
+  if (Key = VK_DELETE) and Assigned(ProjectView.Selected) then
     RemoveItem(ProjectView.Selected)
-    else if (Key = VK_ESCAPE) and (Shift = []) then
+  else if Key = VK_ESCAPE then
   begin
-    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
-      GetEditor(-1).Activate;
-  end
-  else if (Key = VK_ESCAPE) and (Shift = [ssShift]) then
-  begin
-    actProjectManager.Checked := False;
-    actProjectManagerExecute(nil);
-    if PageControl.Visible And PageControl.Enabled And (PageControl.ActivePage<>nil) then
+    if PageControl.Visible and PageControl.Enabled and (PageControl.ActivePage <> nil) then
       GetEditor(-1).Activate;
   end
   else if (Key = VK_RETURN) and Assigned(ProjectView.Selected) then
   begin
     if ProjectView.Selected.Data <> Pointer(-1) then { if not a directory }
-    begin
       OpenUnit;
-      if Shift = [ssShift] then
-      begin
-        //TODO: crap hack, SHIFT+ENTER=open file and close projman I *really*
-        //      don't think it's the acceptable interface idea. Can't find a
-        //      better one though.
-        actProjectManager.Checked := False;
-        actProjectManagerExecute(nil);
-      end;
-    end;
   end;
 end;
 

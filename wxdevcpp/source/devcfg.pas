@@ -403,8 +403,6 @@ type
     fCppDir: string; // c++ includes
     fLibDir: string; // Libraries
     fRCDir: string; // Resource includes
-    //TODO: lowjoel: what does this do?
-    fMingw: string; // Mingw root -- should be set in installer if mingw included
     fOldPath: string; // Enviroment Path at program start
     procedure FixPaths;
   public
@@ -558,12 +556,7 @@ type
     fMRUMax: integer; // Max number of files in history list
     fBackup: boolean; // Create backup files
     fAutoOpen: integer; // Auto Open Project Files Style
-    fShowProject: boolean; // Show the project explorer
-    fProjectWidth: integer;
     fClassView: boolean; // if true, shows the class view, else shows the file view
-    fOutput: boolean; // show compiler message window
-    fOutputOnNeed: boolean; // show compiler messages only when problem
-    fOutputHeight: integer; // the height of the output window
     fStatusbar: boolean; // Statusbar Visible
     fFullScr: boolean; // IDE is Full screen
     fShowBars: boolean; // Show toolbars in FullScreen mode
@@ -666,12 +659,7 @@ type
     //Running Status Options
     property SingleInstance: boolean read fSingleInstance write fSingleInstance;
     property DefCpp: boolean read fDefCpp write fDefCpp;
-    property ShowOutput: boolean read fOutput write fOutput;
-    property OutputOnNeed: boolean read fOutputOnNeed write fOutputOnNeed;
-    property OutputHeight: integer read fOutputHeight write fOutputHeight;
-    property ProjectView: boolean read fShowProject write fShowProject;
     property ClassView: boolean read fClassView write fClassView;
-    property ProjectWidth: integer read fProjectWidth write fProjectWidth;
     property Statusbar: boolean read fStatusbar write fStatusbar;
     property FullScreen: boolean read fFullScr write fFullScr;
     property FindCols: string read fFindCols write fFindCols;
@@ -1097,12 +1085,7 @@ begin
   fMinOnRun := FALSE;
   fBackup := FALSE;
   fAutoOpen := 2;
-  fShowProject := TRUE;
   fClassView := False;
-  fProjectWidth := 161;
-  fOutput := false;
-  fOutputOnNeed := true;
-  fOutputHeight := 120;
   fStatusbar := TRUE;
   fSingleInstance := TRUE;
   fShowBars := FALSE;
@@ -1576,7 +1559,6 @@ begin
   fwindresName := devCompilerSet.windresName;
   fdllwrapName := devCompilerSet.dllwrapName;
   fgprofName := devCompilerSet.gprofName;
-    // TODO: basedir
 end;
 
 procedure TdevCompiler.SetOptions(Index: integer;
@@ -1695,7 +1677,6 @@ begin
   fIcons := ExtractRelativePath(fExec, fIcons);
   fLang := ExtractRelativePath(fExec, fLang);
   fTemp := ExtractRelativePath(fExec, fTemp);
-  fMingw := ExtractRelativePath(fExec, fMingw);
   fThemes := ExtractRelativePath(fExec, fThemes);
   devData.SaveObject(Self);
   FixPaths;
@@ -1718,8 +1699,6 @@ begin
     fTemp := fExec + fTemp;
   if ExtractFileDrive(fThemes) = '' then
     fThemes := fExec + fThemes;
-  if ExtractFileDrive(fMingw) = '' then
-    fMingw := fExec + fMingw;
 end;
 
 { TDevEditor }

@@ -21,16 +21,6 @@ object MainForm: TMainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object SplitterBottom: TSplitter
-    Left = 0
-    Top = 235
-    Width = 628
-    Height = 4
-    Cursor = crVSplit
-    Align = alBottom
-    OnCanResize = SplitterBottomCanResize
-    OnMoved = SplitterBottomMoved
-  end
   object MessageControl: TPageControl
     Left = 0
     Top = 239
@@ -43,9 +33,6 @@ object MainForm: TMainForm
     MultiLine = True
     PopupMenu = MessagePopup
     TabOrder = 0
-    OnChange = MessageControlChange
-    OnChanging = MessageControlChanging
-    OnContextPopup = MessageControlContextPopup
     object CompSheet: TTabSheet
       BorderWidth = 2
       Caption = 'Compiler'
@@ -54,7 +41,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -77,6 +64,7 @@ object MainForm: TMainForm
         ReadOnly = True
         RowSelect = True
         ParentShowHint = False
+        PopupMenu = MessagePopup
         ShowHint = True
         TabOrder = 0
         ViewStyle = vsReport
@@ -92,12 +80,13 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
         ItemHeight = 13
         ParentShowHint = False
+        PopupMenu = MessagePopup
         ShowHint = True
         TabOrder = 0
       end
@@ -110,7 +99,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -165,19 +154,20 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 391
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           391
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 378
-          Height = 75
+          Width = 390
+          Height = 80
           Anchors = [akLeft, akTop, akRight, akBottom]
+          PopupMenu = MessagePopup
           ReadOnly = True
           ScrollBars = ssVertical
           TabOrder = 0
@@ -192,10 +182,9 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 97
+        Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
-        Style = tsFlatButtons
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -204,7 +193,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 66
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -239,7 +228,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 66
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -267,7 +256,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 66
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -287,14 +276,33 @@ object MainForm: TMainForm
             OnDblClick = lvThreadsDblClick
           end
         end
+        object tabWatches: TTabSheet
+          Caption = 'Watches'
+          ImageIndex = -1
+          object DebugTree: TTreeView
+            Left = 0
+            Top = 0
+            Width = 608
+            Height = 70
+            Align = alClient
+            Images = dmMain.MenuImages_NewLook
+            Indent = 19
+            MultiSelectStyle = []
+            PopupMenu = DebugVarsPopup
+            ReadOnly = True
+            RightClickSelect = True
+            TabOrder = 0
+            OnKeyDown = DebugTreeKeyDown
+          end
+        end
         object tabDebugOutput: TTabSheet
           Caption = 'Output'
           ImageIndex = 2
           object DebugOutput: TMemo
             Left = 0
             Top = 22
-            Width = 608
-            Height = 44
+            Width = 606
+            Height = 47
             Align = alClient
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -302,14 +310,15 @@ object MainForm: TMainForm
             Font.Name = 'Courier New'
             Font.Style = []
             ParentFont = False
+            PopupMenu = MessagePopup
             ReadOnly = True
             ScrollBars = ssVertical
             TabOrder = 0
           end
-          object GdbOutputPanel: TPanel
+          object DebuggerCmdPanel: TPanel
             Left = 0
             Top = 0
-            Width = 608
+            Width = 606
             Height = 22
             Align = alTop
             BevelOuter = bvNone
@@ -321,22 +330,22 @@ object MainForm: TMainForm
               Height = 13
               Caption = 'Send command to debugger:'
             end
-            object edGdbCommand: TEdit
+            object edCommand: TEdit
               Left = 160
               Top = 0
               Width = 285
               Height = 21
               TabOrder = 0
-              OnKeyPress = edGdbCommandKeyPress
+              OnKeyPress = edCommandKeyPress
             end
-            object GdbCommandBtn: TButton
+            object btnSendCommand: TButton
               Left = 450
               Top = 0
               Width = 62
               Height = 21
               Caption = 'Send'
               TabOrder = 1
-              OnClick = GdbCommandBtnClick
+              OnClick = btnSendCommandClick
             end
           end
         end
@@ -350,7 +359,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -385,16 +394,13 @@ object MainForm: TMainForm
         RowSelect = True
         ParentFont = False
         ParentShowHint = False
+        PopupMenu = MessagePopup
         ShowHint = True
         TabOrder = 0
         ViewStyle = vsReport
         OnDblClick = FindOutputDblClick
         OnKeyDown = FindOutputKeyDown
       end
-    end
-    object CloseSheet: TTabSheet
-      Caption = 'Close'
-      ImageIndex = 9
     end
   end
   object ControlBar1: TControlBar
@@ -871,7 +877,7 @@ object MainForm: TMainForm
       628
       16)
     object btnFullScrRevert: TSpeedButton
-      Left = 613
+      Left = 607
       Top = 0
       Width = 14
       Height = 14
@@ -901,7 +907,7 @@ object MainForm: TMainForm
     Active = False
     OnNotifyChange = devFileMonitor1NotifyChange
   end
-  object FormProgress: TProgressBar
+  object prgFormProgress: TProgressBar
     Left = 488
     Top = 214
     Width = 134
@@ -912,7 +918,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 192
-    Height = 133
+    Height = 137
     ActivePage = ProjectSheet
     Align = alLeft
     Images = dmMain.ProjectImage_NewLook
@@ -924,7 +930,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 105
+        Height = 109
         Align = alClient
         ChangeDelay = 1
         DragMode = dmAutomatic
@@ -956,7 +962,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 105
+        Height = 109
         Align = alClient
         Images = dmMain.ClassImages
         ReadOnly = True
@@ -984,31 +990,12 @@ object MainForm: TMainForm
         ShowInheritedMembers = False
       end
     end
-    object DebugLeftSheet: TTabSheet
-      Caption = 'Debug'
-      ImageIndex = -1
-      object DebugTree: TTreeView
-        Left = 0
-        Top = 0
-        Width = 184
-        Height = 105
-        Align = alClient
-        Images = dmMain.MenuImages_NewLook
-        Indent = 19
-        MultiSelectStyle = []
-        PopupMenu = DebugVarsPopup
-        ReadOnly = True
-        RightClickSelect = True
-        TabOrder = 0
-        OnKeyDown = DebugTreeKeyDown
-      end
-    end
   end
   object PageControl: TPageControl
     Left = 192
     Top = 102
     Width = 436
-    Height = 133
+    Height = 137
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 7
@@ -1262,30 +1249,12 @@ object MainForm: TMainForm
     end
     object ViewMenu: TMenuItem
       Action = actViewMenu
-      object ProjectManagerItem: TMenuItem
-        Action = actProjectManager
-        AutoCheck = True
-      end
       object StatusbarItem: TMenuItem
         Action = actStatusbar
         AutoCheck = True
       end
-      object CompileroutputItem: TMenuItem
-        Caption = '&Compiler Output'
-        object AlwaysShowItem: TMenuItem
-          Action = actCompOutput
-          AutoCheck = True
-          GroupIndex = 1
-        end
-        object N37: TMenuItem
-          Caption = '-'
-          GroupIndex = 1
-        end
-        object ShowonlywhenneededItem: TMenuItem
-          Action = actCompOnNeed
-          AutoCheck = True
-          GroupIndex = 1
-        end
+      object ToDolist1: TMenuItem
+        Action = actViewToDoList
       end
       object ToolbarsItem: TMenuItem
         Caption = '&Toolbars'
@@ -1354,25 +1323,18 @@ object MainForm: TMainForm
           OnClick = ToolbarClick
         end
       end
-      object ToDolist1: TMenuItem
-        Action = actViewToDoList
-      end
       object N63: TMenuItem
         Caption = '-'
       end
-      object FloatingProjectManagerItem: TMenuItem
-        Caption = 'Show &Project Manager'
-        OnClick = FloatingProjectManagerItemClick
-      end
-      object FloatingReportwindowItem: TMenuItem
-        Caption = 'Floating &Report window'
-        OnClick = FloatingReportwindowItemClick
+      object ShowProjectInspItem: TMenuItem
+        Caption = 'Show &Project Inspector'
+        OnClick = ShowProjectInspItemClick
       end
       object N57: TMenuItem
         Caption = '-'
       end
       object GotoprojectmanagerItem: TMenuItem
-        Caption = 'Go to Project &Manager'
+        Caption = 'Go to Project &Inspector'
         ShortCut = 16497
         OnClick = actGotoProjectManagerExecute
       end
@@ -1708,6 +1670,7 @@ object MainForm: TMainForm
     end
   end
   object EditorPopupMenu: TPopupMenu
+    Images = dmMain.MenuImages_Gnome
     Left = 603
     Top = 102
     object Close1: TMenuItem
@@ -1758,7 +1721,6 @@ object MainForm: TMainForm
     end
     object InsertPopItem: TMenuItem
       Caption = '&Insert'
-      ImageIndex = 30
       object CommentheaderPopItem: TMenuItem
         Caption = 'Comment header'
       end
@@ -1867,11 +1829,9 @@ object MainForm: TMainForm
     end
     object TogglebookmarksPopItem: TMenuItem
       Caption = '&Toggle bookmarks'
-      ImageIndex = 31
     end
     object GotobookmarksPopItem: TMenuItem
       Caption = '&Goto bookmarks'
-      ImageIndex = 32
     end
     object N41: TMenuItem
       Caption = '-'
@@ -1927,6 +1887,7 @@ object MainForm: TMainForm
     end
   end
   object UnitPopup: TPopupMenu
+    Images = dmMain.MenuImages_Gnome
     MenuAnimation = [maBottomToTop]
     Left = 548
     Top = 102
@@ -2014,6 +1975,7 @@ object MainForm: TMainForm
     end
   end
   object ProjectPopup: TPopupMenu
+    Images = dmMain.MenuImages_Gnome
     MenuAnimation = [maBottomToTop]
     Left = 576
     Top = 102
@@ -2350,31 +2312,11 @@ object MainForm: TMainForm
       OnExecute = actGotoExecute
       OnUpdate = actUpdateEmptyEditor
     end
-    object actProjectManager: TAction
-      Category = 'View'
-      AutoCheck = True
-      Caption = '&Project Manager'
-      OnExecute = actProjectManagerExecute
-    end
     object actStatusbar: TAction
       Category = 'View'
       AutoCheck = True
       Caption = '&Statusbar'
       OnExecute = actStatusbarExecute
-    end
-    object actCompOutput: TAction
-      Category = 'View'
-      AutoCheck = True
-      Caption = '&Always show Compiler Output'
-      GroupIndex = 2
-      OnExecute = actCompOutputExecute
-    end
-    object actCompOnNeed: TAction
-      Category = 'View'
-      AutoCheck = True
-      Caption = '&Show only when needed'
-      GroupIndex = 2
-      OnExecute = actCompOnNeedExecute
     end
     object actProjectNew: TAction
       Tag = 1
@@ -3057,17 +2999,15 @@ object MainForm: TMainForm
     Top = 130
   end
   object MessagePopup: TPopupMenu
-    OnPopup = MessagePopupPopup
+    Images = dmMain.MenuImages_Gnome
     Left = 465
     Top = 130
     object MsgCopyItem: TMenuItem
       Action = actMsgCopy
+      ImageIndex = 16
     end
     object MsgClearitem: TMenuItem
       Action = actMsgClear
-    end
-    object N15: TMenuItem
-      Caption = '-'
     end
   end
   object CppTokenizer1: TCppTokenizer
@@ -3182,6 +3122,7 @@ object MainForm: TMainForm
     end
   end
   object DebugVarsPopup: TPopupMenu
+    Images = dmMain.MenuImages_Gnome
     OnPopup = DebugVarsPopupPopup
     Left = 521
     Top = 102
