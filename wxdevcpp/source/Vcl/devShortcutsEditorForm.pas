@@ -71,10 +71,10 @@ uses StrUtils;
 
 procedure TfrmShortcutsEditor.AddShortcut(M: TMenuItem; MenuName:string);
 begin
-  If (M.Action<>nil) and (LeftStr(M.Action.Name,6)='dynact') then
+  if (M.Action <> nil) and (LeftStr(M.Action.Name, 6) = 'dynact') then
     Exit;
   with lvShortcuts.Items.Add do begin
-    Caption := StripHotkey(MenuName+':'+(M.Caption));
+    Caption := StripHotkey(MenuName + ' | ' + (M.Caption));
     SubItems.Add(ShortCutToText(M.ShortCut));
     Data := M;
   end;
@@ -112,26 +112,36 @@ begin
     lvShortcuts.Selected.SubItems[0] := '';
     Exit;
   end;
-  if (Key>27) and (Key<=90) and (Shift=[]) then // if "normal" key, expect a shiftstate
+  if (Key > 27) and (Key <= 90) and (Shift = []) then // if "normal" key, expect a shiftstate
     Exit;
-  if (Key < 27) then // control key by itself
+  if (Key < 27) and (Shift = []) then // control key by itself
     Exit;
 
-  sct:=ShortCutToText(ShortCut(Key, Shift));
+  //Make sure the user does not select same-key combinations
+{$IFDEF WIN32}
+  if ((Key = VK_CONTROL) and (Shift = [ssCtrl])) or
+     ((Key = VK_SHIFT) and (Shift = [ssShift])) or
+     ((Key in [VK_MENU, VK_LMENU, VK_RMENU]) and (Shift = [ssAlt]))then
+{$ENDIF}
+{$IFDEF LINUX}
+  if ((Key = XK_CONTROL) and (Shift = [ssCtrl])) or
+     ((Key = XK_SHIFT) and (Shift = [ssShift])) or
+     ((Key in [XK_MENU, XK_LMENU, XK_RMENU]) and (Shift = [ssAlt]))then
+{$ENDIF}
+    Exit;
+
+  sct := ShortCutToText(ShortCut(Key, Shift));
   lvShortcuts.Selected.SubItems[0] := sct;
 
-  // we do no more check for other entries by the same name, as we used to,
-  // because we 've prepended the menu name so it should be unique...
-
-  // search other entries using this shortcut, and clear them
-  for I:=0 to lvShortcuts.Items.Count-1 do
-    if lvShortcuts.Items[I]<>lvShortcuts.Selected then
-      if lvShortcuts.Items[I].SubItems[0]=sct then
+  // search for other entries using this shortcut, and clear them
+  for I := 0 to lvShortcuts.Items.Count - 1 do
+    if lvShortcuts.Items[I] <> lvShortcuts.Selected then
+      if lvShortcuts.Items[I].SubItems[0] = sct then
         lvShortcuts.Items[I].SubItems[0] := '';
 
-  // don't let the keystroke propagate...
-  Key:=0;
-  Shift:=[];
+  // don't let the keystroke propagate
+  Key := 0;
+  Shift := [];
 end;
 
 procedure TfrmShortcutsEditor.lvShortcutsCustomDrawItem(
