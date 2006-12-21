@@ -34,7 +34,7 @@ uses
 
 type
   AssemblySyntax = (asATnT, asIntel);
-  ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads);
+  ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly, cdRegisters);
   ContextDataSet = set of ContextData;
   TCallback = procedure(Output: TStringList) of object;
   
@@ -48,10 +48,13 @@ type
     EBP: string;
     ESP: string;
     EIP: string;
+    EFLAGS: string;
     CS: string;
     DS: string;
     SS: string;
     ES: string;
+    GS: string;
+    FS: string;
   end;
   TRegistersCallback = procedure(Registers: TRegisters) of object;
   TString = class
@@ -205,7 +208,7 @@ type
     procedure ClearIncludeDirs; virtual; abstract;
 
     //Variable watches
-    procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches, cdThreads]); virtual; abstract;
+    procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly]); virtual; abstract;
     procedure AddWatch(varname: string); virtual; abstract;
     procedure RemoveWatch(varname: string); virtual; abstract;
     procedure ModifyVariable(varname, newvalue: string); virtual; abstract;
@@ -251,7 +254,8 @@ type
     procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
 
     //Variable watches
-    procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches, cdThreads]); override;
+    procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches,
+                             cdThreads, cdDisassembly, cdRegisters]); override;
     procedure AddWatch(varname: string); override;
     procedure RemoveWatch(varname: string); override;
 
@@ -312,7 +316,8 @@ type
     procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
 
     //Variable watches
-    procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches, cdThreads]); override;
+    procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches,
+                             cdThreads, cdDisassembly, cdRegisters]); override;
     procedure AddWatch(varname: string); override;
     procedure RemoveWatch(varname: string); override;
     procedure ModifyVariable(varname, newvalue: string); override;
@@ -1141,6 +1146,10 @@ begin
     Command.OnResult := OnThreads;
     QueueCommand(Command);
   end;
+  if cdDisassembly in refresh then
+    Disassemble;
+  if cdRegisters in refresh then
+    GetRegisters;
 
   //Then update the watches
   if (cdWatches in refresh) and Assigned(DebugTree) then
@@ -1680,6 +1689,9 @@ begin
           SS := RegExp.Substitute('$2');
           DS := RegExp.Substitute('$3');
           ES := RegExp.Substitute('$4');
+          FS := RegExp.Substitute('$5');
+          GS := RegExp.Substitute('$6');
+          EFLAGS := RegExp.Substitute('$7');
         end;
       end;
 
@@ -1698,22 +1710,43 @@ begin
   if (not Executing) or (not Paused) then
     Exit;
 
+  //If func is empty, assume the value of the reguister eip.
+  if func = '' then
+    func := 'eip';
+
   Command := TCommand.Create;
-  Command.Command := 'ub ' + func + ';u ' + func;
+  Command.Command := 'uf ' + func;
   Command.OnResult := OnDisassemble;
   QueueCommand(Command);
 end;
 
 procedure TCDBDebugger.OnDisassemble(Output: TStringList);
 var
-  I: Integer;
+  I, CurLine: Integer;
   RegExp: TRegExpr;
-  Disassembly: String;
+  CurFile: string;
+  Disassembly: string;
 begin
+  CurLine := -1;
   RegExp := TRegExpr.Create;
   for I := 0 to Output.Count - 1 do
     if RegExp.Exec(Output[I], '^(.*)!(.*) \[(.*) @ ([0-9]+)]:') then
+    begin
+      CurLine := StrToInt(RegExp.Substitute('$4'));
+      CurFile := RegExp.Substitute('$1!$2 [$3 @ ');
+      Disassembly := Disassembly + #9 + ';' + Output[I] + #10;
+    end
+    else if RegExp.Exec(Output[I], '^(.*)!(.*):') then
       Disassembly := Disassembly + #9 + ';' + Output[I] + #10
+    else if RegExp.Exec(Output[I], '^ +([0-9]+) +([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') then
+    begin
+      if StrToInt(RegExp.Substitute('$1')) <> CurLine then
+      begin
+        CurLine := StrToInt(RegExp.Substitute('$1'));
+        Disassembly := Disassembly + #9 + ';' + CurFile + RegExp.Substitute('$1') + ']:' + #10;
+      end;
+      Disassembly := Disassembly + RegExp.Substitute('$2$3$4$5$6$7$8') + #10;
+    end
     else if RegExp.Exec(Output[I], '^([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') then
       Disassembly := Disassembly + Output[I] + #10;
 
@@ -1825,7 +1858,7 @@ end;
 procedure TCDBDebugger.SetThread(thread: Integer);
 begin
   QueueCommand('~' + IntToStr(thread), 's');
-  RefreshContext([cdLocals, cdWatches, cdCallStack, cdThreads]);
+  RefreshContext;
 end;
 
 procedure TCDBDebugger.SetContext(frame: Integer);
@@ -2154,6 +2187,10 @@ begin
     Command.OnResult := OnThreads;
     QueueCommand(Command);
   end;
+  if cdDisassembly in refresh then
+    Disassemble;
+  if cdRegisters in refresh then
+    GetRegisters;
 
   //Then update the watches
   if (cdWatches in refresh) and Assigned(DebugTree) then
@@ -2683,6 +2720,21 @@ begin
   Command.Command := 'displ/x $es';
   Command.OnResult := OnRegisters;
   QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $fs';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $gs';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $eflags';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
 end;
 
 procedure TGDBDebugger.OnRegisters(Output: TStringList);
@@ -2731,6 +2783,12 @@ begin
           Registers.SS := Output[I]
         else if Reg = 'es' then
           Registers.ES := Output[I]
+        else if Reg = 'fs' then
+          Registers.FS := Output[I]
+        else if Reg = 'gs' then
+          Registers.GS := Output[I]
+        else if Reg = 'eflags' then
+          Registers.EFLAGS := Output[I]
         else
           Dec(RegistersFilled);
       end;
@@ -2739,7 +2797,7 @@ begin
   end;
 
   //Pass the locals list to the callback function that wants it
-  if (RegistersFilled = 13) and Assigned(TDebugger(Self).OnRegisters) then
+  if (RegistersFilled = 16) and Assigned(TDebugger(Self).OnRegisters) then
   begin
     TDebugger(Self).OnRegisters(Registers);
     Registers.Free;
@@ -2764,6 +2822,10 @@ end;
 
 procedure TGDBDebugger.OnDisassemble(Output: TStringList);
 begin
+  //Delete the first and last entries (Dump of assembler code for function X and End Dump)
+  Output.Delete(Output.Count - 1);
+  Output.Delete(0);
+
   //Pass the disassembly to the callback function that wants it
   if Assigned(TDebugger(Self).OnDisassemble) then
     TDebugger(Self).OnDisassemble(Output.Text);
@@ -2853,7 +2915,7 @@ end;
 procedure TGDBDebugger.SetThread(thread: Integer);
 begin
   QueueCommand('thread', IntToStr(thread));
-  RefreshContext([cdLocals, cdWatches, cdCallStack, cdThreads]);
+  RefreshContext;
 end;
 
 procedure TGDBDebugger.SetContext(frame: Integer);

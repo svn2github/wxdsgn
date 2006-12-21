@@ -25,7 +25,7 @@ uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, SynEdit, XPMenu, debugger,
-  SynEditHighlighter, SynHighlighterAsm, ExtCtrls;
+  SynEditHighlighter, SynHighlighterAsm, ExtCtrls, ComCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -35,54 +35,28 @@ uses
 type
   TCPUForm = class(TForm)
     gbAsm: TGroupBox;
-    CloseBtn: TBitBtn;
     edFunc: TEdit;
     lblFunc: TLabel;
     CodeList: TSynEdit;
     gbRegisters: TGroupBox;
-    lblEIP: TLabel;
-    EIPText: TEdit;
-    EAXText: TEdit;
-    lblEAX: TLabel;
-    EBXText: TEdit;
-    lblEBX: TLabel;
-    lblECX: TLabel;
-    ECXText: TEdit;
-    lblEDX: TLabel;
-    EDXText: TEdit;
-    lblESI: TLabel;
-    ESIText: TEdit;
-    lblEDI: TLabel;
-    EDIText: TEdit;
-    lblEBP: TLabel;
-    EBPText: TEdit;
-    lblESP: TLabel;
-    ESPText: TEdit;
-    lblCS: TLabel;
-    CSText: TEdit;
-    lblDS: TLabel;
-    DSText: TEdit;
-    lblSS: TLabel;
-    SSText: TEdit;
-    lblES: TLabel;
-    ESText: TEdit;
     XPMenu: TXPMenu;
     SynAsmSyn1: TSynAsmSyn;
     rgSyntax: TRadioGroup;
+    Registers: TListView;
+    CloseBtn: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure edFuncKeyPress(Sender: TObject; var Key: Char);
     procedure rgSyntaxClick(Sender: TObject);
+    procedure OnActiveLine(Sender: TObject; Line: Integer;
+      var Special: Boolean; var FG, BG: TColor);
+    procedure CloseBtnClick(Sender: TObject);
 
   private
     ActiveLine: integer;
     fDebugger: TDebugger;
 
     procedure LoadText;
-    procedure OnActiveLine(Sender: TObject; Line: Integer;
-      var Special: Boolean; var FG, BG: TColor);
-
-    //Callback functions
     procedure OnRegisters(Registers: TRegisters);
     procedure OnDisassembly(Disassembly: string);
 
@@ -105,7 +79,7 @@ uses
 procedure TCPUForm.FormCreate(Sender: TObject);
 begin
   ActiveLine := -1;
-  CodeList.OnSpecialLineColors := OnActiveLine;
+//  Registers.ReadOnly := True;
   LoadText;
 end;
 
@@ -127,9 +101,15 @@ end;
 
 procedure TCPUForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  Action := caFree;
   fDebugger.OnDisassemble := nil;
   fDebugger.OnRegisters := nil;
   CPUForm := nil;
+end;
+
+procedure TCPUForm.CloseBtnClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TCPUForm.rgSyntaxClick(Sender: TObject);
@@ -177,21 +157,25 @@ end;
 procedure TCPUForm.OnRegisters(Registers: TRegisters);
 begin
   with Registers do
-  begin
-    EAXText.Text := EAX;
-    EBXText.Text := EBX;
-    ECXText.Text := ECX;
-    EDXText.Text := EDX;
-    ESIText.Text := ESI;
-    EDIText.Text := EDI;
-    EBPText.Text := EBP;
-    ESPText.Text := ESP;
-    EIPText.Text := EIP;
-    CSText.Text := CS;
-    DSText.Text := DS;
-    SSText.Text := SS;
-    ESText.Text := ES;
-  end;
+    with Self.Registers do
+    begin
+      Items[0].SubItems.Add(EAX);
+      Items[1].SubItems.Add(EBX);
+      Items[2].SubItems.Add(ECX);
+      Items[3].SubItems.Add(EDX);
+      Items[4].SubItems.Add(ESI);
+      Items[5].SubItems.Add(EDI);
+      Items[6].SubItems.Add(EBP);
+      Items[7].SubItems.Add(ESP);
+      Items[8].SubItems.Add(EIP);
+      Items[9].SubItems.Add(CS);
+      Items[10].SubItems.Add(DS);
+      Items[11].SubItems.Add(SS);
+      Items[12].SubItems.Add(ES);
+      Items[13].SubItems.Add(FS);
+      Items[14].SubItems.Add(GS);
+      Items[15].SubItems.Add(EFLAGS);
+    end;
 end;
 
 procedure TCPUForm.OnActiveLine(Sender: TObject; Line: Integer;
@@ -212,7 +196,7 @@ var
 begin
   CodeList.Lines.Text := Disassembly;
   for i := 0 to CodeList.Lines.Count - 1 do
-    if pos(EIPText.Text, CodeList.Lines[i]) <> 0 then begin
+    if pos(Registers.Items[8].SubItems[0], CodeList.Lines[i]) <> 0 then begin
       if (ActiveLine <> i) and (ActiveLine <> -1) then
         CodeList.InvalidateLine(ActiveLine);
       ActiveLine := i + 1;

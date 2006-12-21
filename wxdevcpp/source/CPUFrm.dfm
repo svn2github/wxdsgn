@@ -1,13 +1,13 @@
 object CPUForm: TCPUForm
   Left = 255
   Top = 183
-  Width = 569
+  Width = 585
   Height = 487
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'CPU Window'
   Color = clBtnFace
-  Constraints.MinHeight = 476
-  Constraints.MinWidth = 569
+  Constraints.MinHeight = 487
+  Constraints.MinWidth = 585
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -19,20 +19,20 @@ object CPUForm: TCPUForm
   OnClose = FormClose
   OnCreate = FormCreate
   DesignSize = (
-    561
+    577
     453)
   PixelsPerInch = 96
   TextHeight = 13
   object gbAsm: TGroupBox
     Left = 8
     Top = 8
-    Width = 402
+    Width = 405
     Height = 435
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Assembler Code :'
     TabOrder = 0
     DesignSize = (
-      402
+      405
       435)
     object lblFunc: TLabel
       Left = 8
@@ -44,7 +44,7 @@ object CPUForm: TCPUForm
     object edFunc: TEdit
       Left = 88
       Top = 16
-      Width = 305
+      Width = 308
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
@@ -53,7 +53,7 @@ object CPUForm: TCPUForm
     object CodeList: TSynEdit
       Left = 8
       Top = 44
-      Width = 385
+      Width = 388
       Height = 383
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
@@ -72,6 +72,8 @@ object CPUForm: TCPUForm
       Highlighter = SynAsmSyn1
       Options = [eoAutoIndent, eoNoCaret, eoScrollPastEol, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces]
       ReadOnly = True
+      RightEdge = -1
+      OnSpecialLineColors = OnActiveLine
       RemovedKeystrokes = <
         item
           Command = ecContextHelp
@@ -84,223 +86,56 @@ object CPUForm: TCPUForm
         end>
     end
   end
-  object CloseBtn: TBitBtn
-    Left = 417
-    Top = 417
-    Width = 137
-    Height = 25
-    Anchors = [akRight, akBottom]
-    TabOrder = 1
-    Kind = bkClose
-  end
   object gbRegisters: TGroupBox
-    Left = 417
+    Left = 418
     Top = 72
-    Width = 138
-    Height = 337
-    Anchors = [akTop, akRight]
+    Width = 150
+    Height = 345
+    Anchors = [akTop, akRight, akBottom]
     Caption = 'Registers :'
-    TabOrder = 2
-    object lblEIP: TLabel
-      Left = 8
-      Top = 212
-      Width = 23
-      Height = 13
-      Caption = 'EIP :'
-    end
-    object lblEAX: TLabel
-      Left = 8
-      Top = 20
-      Width = 27
-      Height = 13
-      Caption = 'EAX :'
-    end
-    object lblEBX: TLabel
-      Left = 8
-      Top = 44
-      Width = 27
-      Height = 13
-      Caption = 'EBX :'
-    end
-    object lblECX: TLabel
-      Left = 8
-      Top = 68
-      Width = 27
-      Height = 13
-      Caption = 'ECX :'
-    end
-    object lblEDX: TLabel
-      Left = 8
-      Top = 92
-      Width = 28
-      Height = 13
-      Caption = 'EDX :'
-    end
-    object lblESI: TLabel
-      Left = 8
-      Top = 116
-      Width = 23
-      Height = 13
-      Caption = 'ESI :'
-    end
-    object lblEDI: TLabel
-      Left = 8
-      Top = 140
-      Width = 24
-      Height = 13
-      Caption = 'EDI :'
-    end
-    object lblEBP: TLabel
-      Left = 8
-      Top = 164
-      Width = 27
-      Height = 13
-      Caption = 'EBP :'
-    end
-    object lblESP: TLabel
-      Left = 8
-      Top = 188
-      Width = 27
-      Height = 13
-      Caption = 'ESP :'
-    end
-    object lblCS: TLabel
-      Left = 8
-      Top = 236
-      Width = 20
-      Height = 13
-      Caption = 'CS :'
-    end
-    object lblDS: TLabel
-      Left = 8
-      Top = 260
-      Width = 21
-      Height = 13
-      Caption = 'DS :'
-    end
-    object lblSS: TLabel
-      Left = 8
-      Top = 284
-      Width = 20
-      Height = 13
-      Caption = 'SS :'
-    end
-    object lblES: TLabel
-      Left = 8
-      Top = 308
-      Width = 20
-      Height = 13
-      Caption = 'ES :'
-    end
-    object EIPText: TEdit
-      Left = 40
-      Top = 208
-      Width = 90
-      Height = 21
-      ReadOnly = True
+    TabOrder = 1
+    DesignSize = (
+      150
+      345)
+    object Registers: TListView
+      Left = 9
+      Top = 21
+      Width = 133
+      Height = 313
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Columns = <
+        item
+          Caption = 'Register'
+          Width = 55
+        end
+        item
+          Caption = 'Value'
+          Width = 74
+        end>
+      ColumnClick = False
+      Items.Data = {
+        850100001000000000000000FFFFFFFFFFFFFFFF000000000000000003454158
+        00000000FFFFFFFFFFFFFFFF00000000000000000345425800000000FFFFFFFF
+        FFFFFFFF00000000000000000345435800000000FFFFFFFFFFFFFFFF00000000
+        000000000345445800000000FFFFFFFFFFFFFFFF000000000000000003455349
+        00000000FFFFFFFFFFFFFFFF00000000000000000345444900000000FFFFFFFF
+        FFFFFFFF00000000000000000345425000000000FFFFFFFFFFFFFFFF00000000
+        000000000345535000000000FFFFFFFFFFFFFFFF000000000000000003454950
+        00000000FFFFFFFFFFFFFFFF000000000000000002435300000000FFFFFFFFFF
+        FFFFFF000000000000000002445300000000FFFFFFFFFFFFFFFF000000000000
+        000002535300000000FFFFFFFFFFFFFFFF000000000000000002455300000000
+        FFFFFFFFFFFFFFFF000000000000000002465300000000FFFFFFFFFFFFFFFF00
+        0000000000000002475300000000FFFFFFFFFFFFFFFF00000000000000000645
+        464C414753}
+      RowSelect = True
       TabOrder = 0
-    end
-    object EAXText: TEdit
-      Left = 40
-      Top = 16
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 1
-    end
-    object EBXText: TEdit
-      Left = 40
-      Top = 40
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 2
-    end
-    object ECXText: TEdit
-      Left = 40
-      Top = 64
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 3
-    end
-    object EDXText: TEdit
-      Left = 40
-      Top = 88
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 4
-    end
-    object ESIText: TEdit
-      Left = 40
-      Top = 112
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 5
-    end
-    object EDIText: TEdit
-      Left = 40
-      Top = 136
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 6
-    end
-    object EBPText: TEdit
-      Left = 40
-      Top = 160
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 7
-    end
-    object ESPText: TEdit
-      Left = 40
-      Top = 184
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 8
-    end
-    object CSText: TEdit
-      Left = 40
-      Top = 232
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 9
-    end
-    object DSText: TEdit
-      Left = 40
-      Top = 256
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 10
-    end
-    object SSText: TEdit
-      Left = 40
-      Top = 280
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 11
-    end
-    object ESText: TEdit
-      Left = 40
-      Top = 304
-      Width = 90
-      Height = 21
-      ReadOnly = True
-      TabOrder = 12
+      ViewStyle = vsReport
     end
   end
   object rgSyntax: TRadioGroup
-    Left = 418
+    Left = 419
     Top = 8
-    Width = 137
+    Width = 150
     Height = 57
     Anchors = [akTop, akRight]
     Caption = 'Assembly Syntax'
@@ -308,8 +143,18 @@ object CPUForm: TCPUForm
     Items.Strings = (
       'Intel'
       'AT&&T')
-    TabOrder = 3
+    TabOrder = 2
     OnClick = rgSyntaxClick
+  end
+  object CloseBtn: TButton
+    Left = 418
+    Top = 421
+    Width = 150
+    Height = 23
+    Anchors = [akRight, akBottom]
+    Caption = '&Close'
+    TabOrder = 3
+    OnClick = CloseBtnClick
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -343,6 +188,8 @@ object CPUForm: TCPUForm
     Top = 420
   end
   object SynAsmSyn1: TSynAsmSyn
+    CommentAttri.Foreground = clHighlight
+    CommentAttri.Style = []
     Left = 10
     Top = 420
   end
