@@ -5791,6 +5791,7 @@ end;
 
 procedure TMainForm.actWatchItemExecute(Sender: TObject);
 begin
+  ShowDockForm(frmReportDocks[cDebugTab]);
   DebugSubPages.ActivePage := tabWatches;
 end;
 
