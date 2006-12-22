@@ -2,7 +2,7 @@ object RemoveUnitForm: TRemoveUnitForm
   Left = 267
   Top = 187
   Width = 354
-  Height = 317
+  Height = 310
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Remove from project'
   Color = clBtnFace
@@ -27,7 +27,7 @@ object RemoveUnitForm: TRemoveUnitForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 236
+    Height = 235
     Align = alLeft
     AutoSize = False
   end
@@ -35,23 +35,23 @@ object RemoveUnitForm: TRemoveUnitForm
     Left = 340
     Top = 6
     Width = 6
-    Height = 236
+    Height = 235
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 242
+    Top = 241
     Width = 346
-    Height = 41
+    Height = 35
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     object OkBtn: TBitBtn
-      Left = 6
-      Top = 10
-      Width = 91
-      Height = 25
+      Left = 176
+      Top = 5
+      Width = 80
+      Height = 23
       Caption = '&OK'
       Default = True
       ModalResult = 1
@@ -76,10 +76,10 @@ object RemoveUnitForm: TRemoveUnitForm
       NumGlyphs = 2
     end
     object CancelBtn: TBitBtn
-      Left = 97
-      Top = 10
-      Width = 91
-      Height = 25
+      Left = 261
+      Top = 5
+      Width = 80
+      Height = 23
       Caption = '&Cancel'
       TabOrder = 1
       Kind = bkCancel
@@ -89,7 +89,7 @@ object RemoveUnitForm: TRemoveUnitForm
     Left = 6
     Top = 6
     Width = 334
-    Height = 236
+    Height = 235
     Align = alClient
     Caption = 'Select the file to remove from the project :'
     TabOrder = 1
@@ -105,7 +105,7 @@ object RemoveUnitForm: TRemoveUnitForm
       Left = 2
       Top = 18
       Width = 6
-      Height = 210
+      Height = 209
       Align = alLeft
       AutoSize = False
     end
@@ -113,13 +113,13 @@ object RemoveUnitForm: TRemoveUnitForm
       Left = 326
       Top = 18
       Width = 6
-      Height = 210
+      Height = 209
       Align = alRight
       AutoSize = False
     end
     object Label7: TLabel
       Left = 2
-      Top = 228
+      Top = 227
       Width = 330
       Height = 6
       Align = alBottom
@@ -162,6 +162,7 @@ object RemoveUnitForm: TRemoveUnitForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 136
     Top = 56

@@ -359,10 +359,8 @@ end;
 
 procedure TNewClassForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_POP_NEWCLASS];
   Label1.Caption := Lang[ID_NEWCLASS_NAME];
   Label9.Caption := Lang[ID_NEWMEMB_ARGS];

@@ -147,10 +147,8 @@ procedure TfrmReplace.LoadText;
 var
   x: Integer;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption:=                  Lang[ID_RPLC];
   LookIn.Items[0]:=          Lang[ID_RPLC_SELONLY];
   

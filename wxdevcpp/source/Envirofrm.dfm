@@ -3,8 +3,8 @@ object EnviroForm: TEnviroForm
   Top = 198
   BorderStyle = bsDialog
   Caption = 'Environment Options'
-  ClientHeight = 416
-  ClientWidth = 421
+  ClientHeight = 415
+  ClientWidth = 417
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,8 +18,8 @@ object EnviroForm: TEnviroForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   DesignSize = (
-    421
-    416)
+    417
+    415)
   PixelsPerInch = 96
   TextHeight = 13
   object PagesMain: TPageControl
@@ -27,7 +27,7 @@ object EnviroForm: TEnviroForm
     Top = 8
     Width = 403
     Height = 375
-    ActivePage = tabGeneral
+    ActivePage = tabInterface
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
     TabOrder = 0
@@ -99,7 +99,7 @@ object EnviroForm: TEnviroForm
         Left = 8
         Top = 131
         Width = 189
-        Height = 80
+        Height = 75
         Caption = '   Auto Open  '
         Items.Strings = (
           'All Project Files'
@@ -113,7 +113,7 @@ object EnviroForm: TEnviroForm
         Width = 382
         Height = 17
         Anchors = [akLeft, akTop, akRight]
-        Caption = 'Double Click to Open Files'
+        Caption = 'Double-click to open Project Inspector files'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 6
@@ -122,22 +122,22 @@ object EnviroForm: TEnviroForm
         Left = 206
         Top = 131
         Width = 182
-        Height = 65
+        Height = 60
         Caption = '  Debug Variable Browser  '
         TabOrder = 7
         object cbWatchHint: TCheckBox
           Left = 10
-          Top = 17
+          Top = 15
           Width = 170
-          Height = 21
+          Height = 17
           Caption = 'Watch variable under mouse'
           TabOrder = 0
         end
         object cbWatchError: TCheckBox
           Left = 10
-          Top = 36
+          Top = 33
           Width = 170
-          Height = 21
+          Height = 17
           Caption = 'Report watch errors'
           TabOrder = 1
         end
@@ -235,7 +235,7 @@ object EnviroForm: TEnviroForm
         Left = 8
         Top = 155
         Width = 186
-        Height = 80
+        Height = 75
         Caption = '  Open/Save Dialog Style  '
         Items.Strings = (
           'Windows 2k (sidebar)'
@@ -263,12 +263,12 @@ object EnviroForm: TEnviroForm
         Left = 203
         Top = 154
         Width = 184
-        Height = 65
+        Height = 60
         Caption = 'Compilation Progress Window '
         TabOrder = 7
         object cbShowProgress: TCheckBox
           Left = 10
-          Top = 17
+          Top = 15
           Width = 165
           Height = 17
           Caption = '&Show during compilation'
@@ -276,7 +276,7 @@ object EnviroForm: TEnviroForm
         end
         object cbAutoCloseProgress: TCheckBox
           Left = 10
-          Top = 36
+          Top = 33
           Width = 165
           Height = 17
           Caption = '&Auto close after compile'
@@ -675,8 +675,8 @@ object EnviroForm: TEnviroForm
         Anchors = [akLeft, akRight, akBottom]
         AutoSize = False
         Caption = 
-          'Just check or un-check for which file types Dev-C++ will be regi' +
-          'stered as the default application to open them...'
+          'Check the file types which you want wxDev-C++ to be registered a' +
+          's the default application to open them.'
         WordWrap = True
       end
       object lstAssocFileTypes: TCheckListBox
@@ -774,10 +774,10 @@ object EnviroForm: TEnviroForm
     end
   end
   object btnOk: TBitBtn
-    Left = 164
+    Left = 155
     Top = 386
     Width = 80
-    Height = 25
+    Height = 23
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
@@ -804,10 +804,10 @@ object EnviroForm: TEnviroForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 244
+    Left = 240
     Top = 386
     Width = 80
-    Height = 25
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 3
     Kind = bkCancel
@@ -816,7 +816,7 @@ object EnviroForm: TEnviroForm
     Left = 335
     Top = 386
     Width = 75
-    Height = 25
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 1
     OnClick = btnHelpClick

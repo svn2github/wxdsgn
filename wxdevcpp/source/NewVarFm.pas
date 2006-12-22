@@ -365,10 +365,8 @@ end;
 
 procedure TNewVarForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_POP_NEWVAR];
   Label1.Caption := Lang[ID_NEWVAR_VARTYPE];
   Label2.Caption := Lang[ID_NEWVAR_VARNAME];

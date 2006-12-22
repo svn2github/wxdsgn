@@ -28,7 +28,7 @@ uses
 
 type
   TMigrateFrm = class(TForm)
-    XPMenu1: TXPMenu;
+    XPMenu: TXPMenu;
     btnNext: TButton;
     Page1: TPanel;
     intro: TLabel;
@@ -270,8 +270,8 @@ end;
 procedure TMigrateFrm.FormCreate(Sender: TObject);
 begin
   btnNext.Tag := 0;
-  if devData.XPTheme then
-    XPMenu1.Active := true;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
 end;
 
 end.

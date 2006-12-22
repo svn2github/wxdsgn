@@ -44,8 +44,8 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
-    Label7: TLabel;
     XPMenu: TXPMenu;
+    Label7: TLabel;
     procedure FormCreate(Sender: TObject);
   end;
 
@@ -58,10 +58,8 @@ uses
 
 procedure TRemoveUnitForm.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption:=           Lang[ID_RU];
   GroupBox.Caption:=  Lang[ID_RU_TEXT];
   OkBtn.Caption := Lang[ID_BTN_OK];

@@ -223,8 +223,6 @@ object MigrateFrm: TMigrateFrm
       Top = 157
       Width = 585
       Height = 28
-      Min = 0
-      Max = 100
       Smooth = True
       Step = 1
       TabOrder = 0
@@ -239,7 +237,7 @@ object MigrateFrm: TMigrateFrm
     TabOrder = 0
     OnClick = btnNextClick
   end
-  object XPMenu1: TXPMenu
+  object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
     Font.Charset = DEFAULT_CHARSET

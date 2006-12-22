@@ -179,6 +179,14 @@ begin
   fEdit.Parent := nil;
   fEdit.Highlighter := dmMain.Cpp;
   fFilename := '';
+
+  lblCode.Font.Style := [fsBold];
+  lblComments.Font.Style := [fsBold];
+  lblEmpty.Font.Style := [fsBold];
+  lblIncludes.Font.Style := [fsBold];
+  lblSize.Font.Style := [fsBold];
+  lblTimestamp.Font.Style := [fsBold];
+  lblTotal.Font.Style := [fsBold];
 end;
 
 procedure TFilePropertiesForm.FormClose(Sender: TObject;
@@ -194,10 +202,8 @@ end;
 
 procedure TFilePropertiesForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_ITEM_PROPERTIES];
   btnOK.Caption := Lang[ID_BTN_OK];
   Label1.Caption := Lang[ID_PROPS_FILENAME] + ':';

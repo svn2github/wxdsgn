@@ -2,8 +2,8 @@ object ImportMSVCForm: TImportMSVCForm
   Left = 277
   Top = 211
   BorderStyle = bsDialog
-  Caption = 'Import MS Visual C++(tm) project'
-  ClientHeight = 221
+  Caption = 'Import Visual C++ Project'
+  ClientHeight = 216
   ClientWidth = 365
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -27,17 +27,17 @@ object ImportMSVCForm: TImportMSVCForm
     Caption = 'Select Visual C++ project file:'
   end
   object btnBrowse: TSpeedButton
-    Left = 336
+    Left = 335
     Top = 24
     Width = 23
-    Height = 22
+    Height = 21
     Caption = '...'
     OnClick = btnBrowseClick
   end
   object txtVC: TEdit
     Left = 8
     Top = 24
-    Width = 329
+    Width = 325
     Height = 21
     TabOrder = 0
     Text = 'txtVC'
@@ -60,17 +60,9 @@ object ImportMSVCForm: TImportMSVCForm
     object lbDev: TLabel
       Left = 16
       Top = 68
-      Width = 122
+      Width = 135
       Height = 13
-      Caption = 'Dev-C++ project filename:'
-    end
-    object btnBrowseDev: TSpeedButton
-      Left = 314
-      Top = 84
-      Width = 23
-      Height = 22
-      Caption = '...'
-      OnClick = btnBrowseDevClick
+      Caption = 'wxDev-C++ project filename:'
     end
     object cmbConf: TComboBox
       Left = 16
@@ -90,22 +82,31 @@ object ImportMSVCForm: TImportMSVCForm
       Text = 'txtDev'
       OnChange = txtDevChange
     end
+    object btnBrowseDev: TButton
+      Left = 317
+      Top = 84
+      Width = 21
+      Height = 21
+      Caption = '...'
+      TabOrder = 2
+      OnClick = btnBrowseDevClick
+    end
   end
   object btnImport: TButton
-    Left = 103
-    Top = 188
+    Left = 205
+    Top = 185
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Import'
     Default = True
     TabOrder = 2
     OnClick = btnImportClick
   end
   object btnCancel: TButton
-    Left = 187
-    Top = 188
+    Left = 283
+    Top = 185
     Width = 75
-    Height = 25
+    Height = 23
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -113,12 +114,12 @@ object ImportMSVCForm: TImportMSVCForm
   end
   object OpenDialog1: TOpenDialog
     Filter = 'MSVC++ files|*.dsp'
-    Left = 212
-    Top = 48
+    Left = 36
+    Top = 182
   end
   object SaveDialog1: TSaveDialog
-    Left = 268
-    Top = 124
+    Left = 64
+    Top = 182
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -146,8 +147,9 @@ object ImportMSVCForm: TImportMSVCForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 8
+    Top = 182
   end
 end

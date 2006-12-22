@@ -1627,6 +1627,7 @@ var
   hMenuHandle: HMENU;
 
 begin
+  DesktopFont := True;
   CreateInitVars;
   if (Self.Handle <> 0) then
   begin

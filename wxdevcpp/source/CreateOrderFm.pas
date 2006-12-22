@@ -42,11 +42,12 @@ implementation
 
 procedure TCreationOrderForm.SetMainControl(winCtrl:TWinControl);
 begin
-    FMainControl:=winCtrl;
+    FMainControl := winCtrl;
 end;
 
 procedure TCreationOrderForm.FormCreate(Sender: TObject);
 begin
+    DesktopFont := True;
     if devData.XPTheme then
         XPMenu.Active := true
     else

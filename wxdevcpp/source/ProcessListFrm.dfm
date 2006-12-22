@@ -1,8 +1,8 @@
 object ProcessListForm: TProcessListForm
   Left = 413
   Top = 338
-  Width = 419
-  Height = 172
+  Width = 405
+  Height = 130
   BorderIcons = []
   Caption = 'Attach to process'
   Color = clBtnFace
@@ -17,45 +17,67 @@ object ProcessListForm: TProcessListForm
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
+  object MainLabel: TLabel
+    Left = 13
+    Top = 13
+    Width = 239
+    Height = 13
+    Caption = 'Please select the application you wish to attach to:'
+    WordWrap = True
+  end
   object OKBtn: TBitBtn
-    Left = 246
-    Top = 112
-    Width = 75
-    Height = 25
+    Left = 224
+    Top = 60
+    Width = 80
+    Height = 23
     TabOrder = 0
     Kind = bkOK
   end
   object CancelBtn: TBitBtn
-    Left = 326
-    Top = 112
-    Width = 75
-    Height = 25
+    Left = 309
+    Top = 60
+    Width = 80
+    Height = 23
     TabOrder = 1
     Kind = bkCancel
   end
-  object Panel1: TPanel
-    Left = 8
-    Top = 8
-    Width = 393
-    Height = 94
-    BevelInner = bvRaised
-    BevelOuter = bvLowered
+  object ProcessCombo: TComboBox
+    Left = 13
+    Top = 29
+    Width = 375
+    Height = 21
+    Style = csDropDownList
+    ItemHeight = 13
     TabOrder = 2
-    object MainLabel: TLabel
-      Left = 16
-      Top = 12
-      Width = 360
-      Height = 33
-      WordWrap = True
-    end
-    object ProcessCombo: TComboBox
-      Left = 16
-      Top = 56
-      Width = 361
-      Height = 21
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 0
-    end
+  end
+  object XPMenu: TXPMenu
+    DimLevel = 30
+    GrayLevel = 10
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Color = clBtnFace
+    DrawMenuBar = False
+    IconBackColor = clBtnFace
+    MenuBarColor = clBtnFace
+    SelectColor = clHighlight
+    SelectBorderColor = clHighlight
+    SelectFontColor = clMenuText
+    DisabledColor = clInactiveCaption
+    SeparatorColor = clBtnFace
+    CheckedColor = clHighlight
+    IconWidth = 24
+    DrawSelect = True
+    UseSystemColors = True
+    UseDimColor = False
+    OverrideOwnerDraw = False
+    Gradient = False
+    FlatMenu = False
+    AutoDetect = False
+    Active = False
+    Left = 14
+    Top = 55
   end
 end

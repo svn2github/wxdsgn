@@ -3,7 +3,7 @@ object ModifyVarForm: TModifyVarForm
   Top = 262
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Modify variable watch'
+  Caption = 'Modify Watched Variable'
   ClientHeight = 135
   ClientWidth = 297
   Color = clBtnFace
@@ -32,31 +32,31 @@ object ModifyVarForm: TModifyVarForm
     Caption = 'New value:'
   end
   object OkBtn: TBitBtn
-    Left = 136
+    Left = 125
     Top = 104
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 0
     Kind = bkOK
   end
   object CancelBtn: TBitBtn
-    Left = 214
+    Left = 210
     Top = 104
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 1
     Kind = bkCancel
   end
   object NameEdit: TEdit
     Left = 8
-    Top = 26
+    Top = 24
     Width = 281
     Height = 21
     TabOrder = 2
   end
   object ValueEdit: TEdit
     Left = 8
-    Top = 74
+    Top = 72
     Width = 281
     Height = 21
     TabOrder = 3

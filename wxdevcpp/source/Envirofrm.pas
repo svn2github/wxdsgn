@@ -363,10 +363,8 @@ end;
 
 procedure TEnviroForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_ENV];
 
   //Tabs

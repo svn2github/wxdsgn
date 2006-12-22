@@ -5,7 +5,7 @@ object AboutForm: TAboutForm
   BorderStyle = bsDialog
   Caption = 'About wxDev-C++'
   ClientHeight = 396
-  ClientWidth = 395
+  ClientWidth = 392
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2181,19 +2181,19 @@ object AboutForm: TAboutForm
     Stretch = True
   end
   object btnOk: TBitBtn
-    Left = 308
+    Left = 310
     Top = 365
     Width = 75
-    Height = 25
+    Height = 23
     Caption = '&OK'
     TabOrder = 0
     Kind = bkOK
   end
   object btnUpdateCheck: TBitBtn
-    Left = 173
+    Left = 175
     Top = 365
     Width = 130
-    Height = 25
+    Height = 23
     Caption = '&Check for updates'
     TabOrder = 1
     OnClick = btnUpdateCheckClick
@@ -2235,48 +2235,36 @@ object AboutForm: TAboutForm
     object Version: TTabSheet
       Caption = 'Version Information'
       object wxWebsite: TLabel
-        Left = 139
+        Left = 144
         Top = 83
         Width = 98
         Height = 13
         Cursor = crHandPoint
         Caption = 'http://wxwidgets.org'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlue
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsUnderline]
-        ParentFont = False
+        Color = clBtnFace
+        ParentColor = False
         OnClick = LabelClick
       end
       object ForumSite: TLabel
-        Left = 139
+        Left = 144
         Top = 64
         Width = 241
         Height = 13
         Cursor = crHandPoint
         Caption = 'http://wxforum.shadonet.com/viewforum.php?f=28'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlue
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsUnderline]
-        ParentFont = False
+        Color = clBtnFace
+        ParentColor = False
         OnClick = LabelClick
       end
       object wxdevcppWebsite: TLabel
-        Left = 139
+        Left = 144
         Top = 45
         Width = 149
         Height = 13
         Cursor = crHandPoint
         Caption = 'http://wxdsgn.sourceforge.net/'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlue
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsUnderline]
-        ParentFont = False
+        Color = clBtnFace
+        ParentColor = False
         OnClick = LabelClick
       end
       object wxdevcppWebsiteLabel: TLabel
@@ -2308,45 +2296,29 @@ object AboutForm: TAboutForm
         Caption = 'wxDev-C++ Book :'
       end
       object Book: TLabel
-        Left = 139
+        Left = 144
         Top = 102
         Width = 189
         Height = 13
         Cursor = crHandPoint
         Caption = 'http://wxdevcpp-book.sourceforge.net/'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlue
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsUnderline]
-        ParentFont = False
+        Color = clBtnFace
+        ParentColor = False
         OnClick = LabelClick
       end
       object CopyrightLabel: TLabel
         Left = 4
         Top = 4
-        Width = 312
+        Width = 260
         Height = 13
         Caption = 'Dev-C++ Code Base Copyright (c) Bloodshed Software '
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
       end
       object wxdevcopyright: TLabel
         Left = 4
-        Top = 21
-        Width = 339
+        Top = 20
+        Width = 284
         Height = 13
         Caption = 'Form Designer Copyright (c) wxDev-C++ Development Team'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
       end
     end
     object License: TTabSheet
@@ -3062,7 +3034,6 @@ object AboutForm: TAboutForm
         Width = 80
         Height = 13
         Caption = 'Matthijs Crielaard'
-        WordWrap = True
       end
       object lblNewLook: TLabel
         Left = 4
@@ -3077,7 +3048,6 @@ object AboutForm: TAboutForm
         Width = 75
         Height = 13
         Caption = 'Gerard Caulfield'
-        WordWrap = True
       end
       object Label8: TLabel
         Left = 4
@@ -3092,7 +3062,6 @@ object AboutForm: TAboutForm
         Width = 69
         Height = 13
         Caption = 'Thomas Thron'
-        WordWrap = True
       end
       object lblGnome: TLabel
         Left = 4

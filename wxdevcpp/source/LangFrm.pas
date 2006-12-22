@@ -138,6 +138,7 @@ var s : array [0..255] of char;
   d: DWORD;
   sl: TStrings;
 begin
+  DesktopFont := True;
   HasProgressStarted := false;
   sl := devTheme.ThemeList;
   ThemeBox.Items.AddStrings(sl);

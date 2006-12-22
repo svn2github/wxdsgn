@@ -55,6 +55,7 @@ uses
 
 procedure TSplashForm.FormCreate(Sender: TObject);
 begin
+  DesktopFont := True;
   if (devData.Splash <> '') and FileExists(devData.Splash) then
   begin
     Image.Picture.LoadFromFile(devData.Splash);

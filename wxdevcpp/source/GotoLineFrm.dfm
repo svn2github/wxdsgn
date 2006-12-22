@@ -4,8 +4,8 @@ object GotoLineForm: TGotoLineForm
   ActiveControl = Line
   BorderIcons = [biSystemMenu]
   BorderStyle = bsToolWindow
-  Caption = 'Go to line...'
-  ClientHeight = 79
+  Caption = 'Goto Line'
+  ClientHeight = 91
   ClientWidth = 246
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -29,9 +29,9 @@ object GotoLineForm: TGotoLineForm
     Caption = 'Go to line number :'
   end
   object Line: TSpinEdit
-    Left = 12
-    Top = 28
-    Width = 137
+    Left = 11
+    Top = 27
+    Width = 225
     Height = 22
     MaxValue = 2
     MinValue = 1
@@ -40,10 +40,10 @@ object GotoLineForm: TGotoLineForm
     OnKeyDown = LineKeyDown
   end
   object BtnOK: TButton
-    Left = 162
-    Top = 12
+    Left = 82
+    Top = 55
     Width = 75
-    Height = 25
+    Height = 23
     Caption = '&OK'
     Default = True
     ModalResult = 1
@@ -51,9 +51,9 @@ object GotoLineForm: TGotoLineForm
   end
   object BtnCancel: TButton
     Left = 162
-    Top = 45
+    Top = 55
     Width = 75
-    Height = 25
+    Height = 23
     Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 2
@@ -85,7 +85,7 @@ object GotoLineForm: TGotoLineForm
     FlatMenu = False
     AutoDetect = True
     Active = False
-    Left = 110
-    Top = 12
+    Left = 10
+    Top = 55
   end
 end

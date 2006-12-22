@@ -90,9 +90,9 @@ object frmReplace: TfrmReplace
     end
   end
   object btnReplace: TButton
-    Left = 144
+    Left = 143
     Top = 376
-    Width = 80
+    Width = 75
     Height = 24
     Caption = 'Replace'
     Default = True
@@ -101,9 +101,9 @@ object frmReplace: TfrmReplace
     OnClick = btnReplaceClick
   end
   object btnCancel: TButton
-    Left = 8
+    Left = 7
     Top = 376
-    Width = 80
+    Width = 75
     Height = 24
     Cancel = True
     Caption = 'Cancel'
@@ -120,9 +120,9 @@ object frmReplace: TfrmReplace
     TabOrder = 1
   end
   object btnReplaceAll: TButton
-    Left = 224
+    Left = 223
     Top = 376
-    Width = 74
+    Width = 75
     Height = 24
     Caption = 'Replace &All'
     ModalResult = 8

@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, MultiLangSupport;
+  Dialogs, StdCtrls, Buttons, ExtCtrls, MultiLangSupport, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -35,9 +35,9 @@ type
   TProcessListForm = class(TForm)
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
-    Panel1: TPanel;
-    ProcessCombo: TComboBox;
+    XPMenu: TXPMenu;
     MainLabel: TLabel;
+    ProcessCombo: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -53,8 +53,8 @@ var
 
 implementation
 
-uses 
-  tlhelp32;
+uses
+  tlhelp32, devcfg;
 
 {$R *.dfm}
 
@@ -87,6 +87,8 @@ end;
 
 procedure TProcessListForm.LoadText;
 begin
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_ITEM_ATTACHPROCESS];
   MainLabel.Caption := Lang[ID_MSG_ATTACH];
   MainLabel.Width := 360;

@@ -432,10 +432,8 @@ end;
 
 procedure TCompForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_COPT];
   //tabs
   tabCompiler.Caption := Lang[ID_COPT_COMPTAB];

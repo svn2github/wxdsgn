@@ -78,20 +78,18 @@ type
 implementation
 uses 
 {$IFDEF WIN32}
-  ShellAPI, devcfg, MultiLangSupport, CheckForUpdate, main;
+  ShellAPI, devcfg, MultiLangSupport, main;
 {$ENDIF}
 {$IFDEF LINUX}
-  devcfg, MultiLangSupport, CheckForUpdate, main;
+  devcfg, MultiLangSupport, main;
 {$ENDIF}
 
 {$R *.dfm}
 
 procedure TAboutForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := 'About wxDev-C++';
   License.Caption := Lang[ID_AB_LICENSE];
   Version.Caption := Lang[ID_AB_VERSCAP];
@@ -113,6 +111,16 @@ end;
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
   LoadText;
+  wxDevCopyright.Font.Style := [fsBold];
+  CopyrightLabel.Font.Style := [fsBold];
+  ForumSite.Font.Style := [fsUnderline];
+  ForumSite.Font.Color := clBlue;
+  wxdevcppWebsite.Font.Style := [fsUnderline];
+  wxdevcppWebsite.Font.Color := clBlue;
+  wxWebsite.Font.Style := [fsUnderline];
+  wxWebsite.Font.Color := clBlue;
+  Book.Font.Style := [fsUnderline];
+  Book.Font.Color := clBlue;
 end;
 
 procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);

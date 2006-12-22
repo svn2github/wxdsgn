@@ -72,11 +72,9 @@ implementation
 
 procedure TCompileProgressForm.FormShow(Sender: TObject);
 begin
+  DesktopFont := True;
   PageControl1.ActivePageIndex := 0;
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  XPMenu.Active := devData.XPTheme;
 end;
 
 procedure TCompileProgressForm.FormClose(Sender: TObject;

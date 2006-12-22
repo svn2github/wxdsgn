@@ -292,10 +292,8 @@ end;
 
 procedure TfrmHelpEdit.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_HE];
   lvFiles.Columns[0].Caption := Lang[ID_HE_COL1];
   lvFiles.Columns[1].Caption := Lang[ID_HE_COL2];

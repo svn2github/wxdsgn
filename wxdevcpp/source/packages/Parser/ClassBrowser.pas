@@ -292,6 +292,7 @@ end;
 constructor TClassBrowser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  DesktopFont := True;
   OnMouseUp := OnNodeChange;
   OnMouseDown := OnNodeChanging;
   DragMode := dmAutomatic;

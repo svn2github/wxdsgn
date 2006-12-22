@@ -57,7 +57,6 @@ object ProfileAnalysisForm: TProfileAnalysisForm
       Height = 405
       ActivePage = tabFlat
       Align = alClient
-      TabIndex = 0
       TabOrder = 0
       OnChange = PageControl1Change
       object tabFlat: TTabSheet

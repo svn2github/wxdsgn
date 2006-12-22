@@ -122,8 +122,6 @@ type
     chkEnableCompletion: TCheckBox;
     chkCBUseColors: TCheckBox;
     chkCCCache: TCheckBox;
-    btnCCCnew: TSpeedButton;
-    btnCCCdelete: TSpeedButton;
     CppTokenizer1: TCppTokenizer;
     CppParser1: TCppParser;
     lbCCC: TListBox;
@@ -157,6 +155,8 @@ type
     cbEHomeKey: TCheckBox;
     cbPastEOF: TCheckBox;
     cbDefaultintoprj: TCheckBox;
+    btnCCCnew: TButton;
+    btnCCCdelete: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -490,10 +490,8 @@ end;
 
 procedure TEditorOptForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   btnOk.Caption := Lang[ID_BTN_OK];
   btnCancel.Caption := Lang[ID_BTN_CANCEL];
   btnHelp.Caption := Lang[ID_BTN_HELP];

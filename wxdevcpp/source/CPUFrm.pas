@@ -79,16 +79,13 @@ uses
 procedure TCPUForm.FormCreate(Sender: TObject);
 begin
   ActiveLine := -1;
-//  Registers.ReadOnly := True;
   LoadText;
 end;
 
 procedure TCPUForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   with Lang do begin
     Caption := Strings[ID_CPU_CAPTION];
     gbAsm.Caption := Strings[ID_CPU_ASMCODE];

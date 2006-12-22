@@ -2,7 +2,7 @@ object FunctionSearchForm: TFunctionSearchForm
   Left = 283
   Top = 155
   BorderStyle = bsDialog
-  Caption = 'Goto function...'
+  Caption = 'Goto Function'
   ClientHeight = 329
   ClientWidth = 451
   Color = clBtnFace

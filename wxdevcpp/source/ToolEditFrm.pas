@@ -161,10 +161,8 @@ end;
 
 procedure TToolEditForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption:=              Lang[ID_TE];
   lblTitle.Caption:=     Lang[ID_TE_TITLE];
   lblProg.Caption:=      Lang[ID_TE_PROG];

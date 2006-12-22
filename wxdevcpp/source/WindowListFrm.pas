@@ -63,10 +63,8 @@ uses
 
 procedure TWindowListForm.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption:=           Lang[ID_WL];
   GroupBox.Caption:=  Lang[ID_WL_SELECT];
   OkBtn.Caption := Lang[ID_BTN_OK];

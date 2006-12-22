@@ -53,10 +53,10 @@ object WindowListForm: TWindowListForm
       346
       38)
     object OkBtn: TBitBtn
-      Left = 158
+      Left = 176
       Top = 7
-      Width = 91
-      Height = 25
+      Width = 80
+      Height = 23
       Anchors = [akRight, akBottom]
       Caption = '&OK'
       Default = True
@@ -82,10 +82,10 @@ object WindowListForm: TWindowListForm
       NumGlyphs = 2
     end
     object CancelBtn: TBitBtn
-      Left = 249
+      Left = 261
       Top = 7
-      Width = 91
-      Height = 25
+      Width = 80
+      Height = 23
       Anchors = [akRight, akBottom]
       Caption = '&Cancel'
       TabOrder = 1

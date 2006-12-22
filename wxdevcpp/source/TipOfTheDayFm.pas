@@ -229,10 +229,8 @@ end;
 
 procedure TTipOfTheDayForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_TIPS_CAPTION];
   lblTitle.Caption := Lang[ID_TIPS_DIDYOUKNOW];
   lblTip.Caption := Lang[ID_TIPS_NOTIPSTODISPLAY];

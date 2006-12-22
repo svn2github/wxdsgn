@@ -41,7 +41,6 @@ type
     ValueLabel: TLabel;
     XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     procedure LoadText;
     { Private declarations }
@@ -61,6 +60,9 @@ uses
 
 procedure TModifyVarForm.LoadText;
 begin
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
+
   Caption := Lang.Strings[ID_NV_MODIFYVALUE];
   VarNameLabel.Caption := Lang.Strings[ID_NV_VARNAME];
   ValueLabel.Caption := Lang.Strings[ID_NV_VARVALUE];
@@ -71,14 +73,6 @@ end;
 procedure TModifyVarForm.FormCreate(Sender: TObject);
 begin
   LoadText;
-end;
-
-procedure TModifyVarForm.FormShow(Sender: TObject);
-begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
 end;
 
 end.

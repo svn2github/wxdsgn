@@ -11,11 +11,7 @@ object ViewToDoForm: TViewToDoForm
   DockSite = True
   DragKind = dkDock
   DragMode = dmAutomatic
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
+  ParentFont = True
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poOwnerFormCenter
@@ -100,7 +96,9 @@ object ViewToDoForm: TViewToDoForm
       Style = csDropDownList
       Anchors = [akLeft, akBottom]
       ItemHeight = 13
+      ItemIndex = 5
       TabOrder = 1
+      Text = 'Current file only'
       OnChange = cmbFilterChange
       Items.Strings = (
         'All files (in project and not)'

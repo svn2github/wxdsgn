@@ -18,19 +18,19 @@ object PrintForm: TPrintForm
   PixelsPerInch = 96
   TextHeight = 13
   object btnCancel: TBitBtn
-    Left = 348
+    Left = 346
     Top = 156
-    Width = 75
-    Height = 24
+    Width = 80
+    Height = 23
     Caption = '&Cancel'
     TabOrder = 1
     Kind = bkCancel
   end
   object btnOk: TBitBtn
-    Left = 270
+    Left = 261
     Top = 156
-    Width = 75
-    Height = 24
+    Width = 80
+    Height = 23
     Caption = '&OK'
     TabOrder = 0
     Kind = bkOK
@@ -157,8 +157,9 @@ object PrintForm: TPrintForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 136
-    Top = 56
+    Left = 8
+    Top = 150
   end
 end

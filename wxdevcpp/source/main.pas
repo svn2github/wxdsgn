@@ -454,7 +454,7 @@ type
     mnuExecParameters: TMenuItem;
     DevCppDDEServer: TDdeServerConv;
     actShowTips: TAction;
-    ips1: TMenuItem;
+    Tips1: TMenuItem;
     N42: TMenuItem;
     Usecolors1: TMenuItem;
     actBrowserUseColors: TAction;
@@ -577,8 +577,6 @@ type
     ProgramResetBtn: TToolButton;
     SurroundWithPopItem: TMenuItem;
     trycatchPopItem: TMenuItem;
-    tryfinallyPopItem: TMenuItem;
-    trycatchfinallyPopItem: TMenuItem;
     N68: TMenuItem;
     CStyleCommentPopItem: TMenuItem;
     CppStyleCommentPopItem: TMenuItem;
@@ -1057,9 +1055,9 @@ type
   DesignerMenuAlignToMiddle : TMenuItem;
   DesignerMenuAlignToMiddleVertical, DesignerMenuAlignToMiddleHorizontal: TMenuItem;
   DesignerMenuLocked: TMenuItem;
-  DesignerMenuSep3:TMenuItem;
+  DesignerMenuSep3: TMenuItem;
   DesignerMenuDesignerOptions:TMenuItem;
-  DesignerMenuSep4:TMenuItem;
+  ToolsMenuDesignerOptions: TMenuItem;
 
   JvInspectorDotNETPainter1: TJvInspectorBorlandPainter;
   JvInspectorDotNETPainter2: TJvInspectorBorlandPainter;
@@ -1143,7 +1141,6 @@ type
 {$ENDIF}
     property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
   end;
-
 var
   MainForm: TMainForm;
 
@@ -1155,7 +1152,7 @@ uses
   devcfg, datamod, helpfrm, NewProjectFrm, AboutFrm, PrintFrm,
   CompOptionsFrm, EditorOptfrm, Incrementalfrm, Search_Center, Envirofrm,
   SynEdit, SynEditTypes, JvAppIniStorage, JvAppStorage,
-  CheckForUpdate, debugfrm, Types, Prjtypes, devExec,
+  debugfrm, Types, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
@@ -1197,17 +1194,15 @@ const
   cFindTab = 4;
   INT_BRACES= 1;
   INT_TRY_CATCH= 2;
-  INT_TRY_FINALLY= 3;
-  INT_TRY_CATCH_FINALLY= 4;
-  INT_C_COMMENT= 5;
-  INT_FOR= 6;
-  INT_FOR_I= 7;
-  INT_WHILE= 8;
-  INT_DO_WHILE= 9;
-  INT_IF= 10;
-  INT_IF_ELSE= 11;
-  INT_SWITCH= 12;
-  INT_CPP_COMMENT= 13;
+  INT_C_COMMENT= 3;
+  INT_FOR= 4;
+  INT_FOR_I= 5;
+  INT_WHILE= 6;
+  INT_DO_WHILE= 7;
+  INT_IF= 8;
+  INT_IF_ELSE= 9;
+  INT_SWITCH= 10;
+  INT_CPP_COMMENT= 11;
 
 {$IFDEF WX_BUILD}
 procedure TMainForm.DoCreateWxSpecificItems;
@@ -1221,8 +1216,12 @@ begin
   tmrInspectorHelper:=TTimer.Create(self);
   tmrInspectorHelper.Enabled:=false;
   tmrInspectorHelper.Interval:=500;
+  
   //Project inspector
   frmProjMgrDock := TForm.Create(self);
+  frmProjMgrDock.ParentFont := True;
+  frmProjMgrDock.Font.Assign(Font);
+  
   with frmProjMgrDock do
   begin
     Name := 'frmProjMgrDock';
@@ -1235,7 +1234,6 @@ begin
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
-    Font.Name := 'MS Sans Serif';
     OnClose := OnDockableFormClosed;
 
     lbDockClient1 := TJvDockClient.Create(frmProjMgrDock);
@@ -1253,6 +1251,8 @@ begin
 
   //Property Inspector
   frmInspectorDock := TForm.Create(self);
+  frmInspectorDock.ParentFont := True;
+  frmInspectorDock.Font.Assign(Font);
   with frmInspectorDock do
   begin
     Name := 'frmInspectorDock';
@@ -1265,7 +1265,6 @@ begin
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
-    Font.Name := 'MS Sans Serif';
     OnClose := OnDockableFormClosed;
 
     lbDockClient2 := TJvDockClient.Create(frmInspectorDock);
@@ -1278,6 +1277,8 @@ begin
   end;
 
   frmPaletteDock := TForm.Create(Self);
+  frmPaletteDock.ParentFont := True;
+  frmPaletteDock.Font.Assign(Font);
   ComponentPalette := TComponentPalette.Create(frmPaletteDock);
   with frmPaletteDock do
   begin
@@ -1291,7 +1292,6 @@ begin
     DragKind := dkDock;
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
-    Font.Name := 'MS Sans Serif';
     OnClose := OnDockableFormClosed;
 
     lbDockClient3 := TJvDockClient.Create(frmPaletteDock);
@@ -1356,9 +1356,9 @@ begin
   DesignerMenuAlignToLeft := TMenuItem.Create(DesignerMenuAlignHorizontal);
   DesignerMenuAlignToMiddleHorizontal := TMenuItem.Create(DesignerMenuAlignHorizontal);
   DesignerMenuAlignToRight := TMenuItem.Create(DesignerMenuAlignHorizontal);
-  DesignerMenuSep3 := TMenuItem.Create(Self);
+  DesignerMenuSep3 := TMenuItem.Create(DesignerPopup);
   DesignerMenuDesignerOptions:= TMenuItem.Create(Self);
-  DesignerMenuSep4:= TMenuItem.Create(Self);
+  ToolsMenuDesignerOptions := TMenuItem.Create(ToolsMenu);
 
   with WxPropertyInspectorPopup do
   begin
@@ -1460,12 +1460,6 @@ begin
     OnClick := ViewControlIDsClick;
   end;
 
-  with DesignerMenuSep3 do
-  begin
-    Name := 'DesignerMenuSep3';
-    Caption := '-';
-  end;
-
   with DesignerMenuAlign do
   begin
     Name := 'DesignerMenuAlign';
@@ -1533,19 +1527,25 @@ begin
     OnClick := AlignToBottomClick;
   end;
 
-  with DesignerMenuSep4 do
+  with DesignerMenuSep3 do
   begin
-    Name := 'DesignerMenuSep4';
+    Name := 'DesignerMenuSep3';
     Caption := '-';
   end;
-
   with DesignerMenuDesignerOptions do
   begin
     Name := 'DesignerMenuDesignerOptions';
-    Caption := 'View Designer Options';
+    Caption := 'Designer Options';
+    OnClick := DesignerOptionsClick;
+  end;
+  with ToolsMenuDesignerOptions do
+  begin
+    Name := 'ToolsMenuDesignerOptions';
+    Caption := 'Designer Options';
     OnClick := DesignerOptionsClick;
   end;
 
+  ToolsMenu.Insert(3, ToolsMenuDesignerOptions);
   WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuCut);
   WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuCopy);
   WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuPaste);
@@ -1563,21 +1563,19 @@ begin
   DesignerPopup.Items.Add(DesignerMenuSelectParent);
   DesignerPopup.Items.Add(DesignerMenuAlign);
   DesignerPopup.Items.Add(DesignerMenuLocked);
-  
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Add(DesignerMenuAlignToGrid);
-
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Add(DesignerMenuAlignHorizontal);
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Horizontal').MenuIndex].Add(DesignerMenuAlignToLeft);
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Horizontal').MenuIndex].Add(DesignerMenuAlignToMiddleHorizontal);
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Horizontal').MenuIndex].Add(DesignerMenuAlignToRight);
-
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Add(DesignerMenuAlignVertical);
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Vertical').MenuIndex].Add(DesignerMenuAlignToTop);
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Vertical').MenuIndex].Add(DesignerMenuAlignToMiddleVertical);
-  DesignerPopup.Items[DesignerPopup.Items.Find('Align').MenuIndex].Items[DesignerPopup.Items.Find('Align').Find('Vertical').MenuIndex].Add(DesignerMenuAlignToBottom);
-
   DesignerPopup.Items.Add(DesignerMenuSep3);
   DesignerPopup.Items.Add(DesignerMenuDesignerOptions);
+  
+  DesignerMenuAlign.Add(DesignerMenuAlignToGrid);
+  DesignerMenuAlign.Add(DesignerMenuAlignHorizontal);
+  DesignerMenuAlignHorizontal.Add(DesignerMenuAlignToLeft);
+  DesignerMenuAlignHorizontal.Add(DesignerMenuAlignToMiddleHorizontal);
+  DesignerMenuAlignHorizontal.Add(DesignerMenuAlignToRight);
+
+  DesignerMenuAlign.Add(DesignerMenuAlignVertical);
+  DesignerMenuAlignVertical.Add(DesignerMenuAlignToTop);
+  DesignerMenuAlignVertical.Add(DesignerMenuAlignToMiddleVertical);
+  DesignerMenuAlignVertical.Add(DesignerMenuAlignToBottom);
 
   //Object inspector Styles
   JvInspectorDotNETPainter1 := TJvInspectorBorlandPainter.Create(frmInspectorDock);
@@ -1768,45 +1766,29 @@ begin
     OnItemSelected:= OnPropertyItemSelected;
   end;
 
-  //Design Control specifics
-  trycatchPopItem.Tag:=INT_TRY_CATCH;
-  trycatchPopItem.OnClick:=SurroundWithClick;
-
-  tryfinallyPopItem.Tag:=INT_TRY_FINALLY;
-  tryfinallyPopItem.OnClick:=SurroundWithClick;
-
-  trycatchfinallyPopItem.Tag:=INT_TRY_CATCH_FINALLY;
-  trycatchfinallyPopItem.OnClick:=SurroundWithClick;
-
-  forloopPopItem.Tag:=INT_FOR;
-  forloopPopItem.OnClick:=SurroundWithClick;
-
-  forintloopPopItem.Tag:=INT_FOR_I;
-  forintloopPopItem.OnClick:=SurroundWithClick;
-
-  whileLoopPopItem.Tag:=INT_WHILE;
-  whileLoopPopItem.OnClick:=SurroundWithClick;
-
-  dowhileLoopPopItem.Tag:=INT_DO_WHILE;
-  dowhileLoopPopItem.OnClick:=SurroundWithClick;
-
-  ifLoopPopItem.Tag:=INT_IF;
-  ifLoopPopItem.OnClick:=SurroundWithClick;
-
-  ifelseloopPopItem.Tag:=INT_IF_ELSE;
-  ifelseloopPopItem.OnClick:=SurroundWithClick;
-
-  switchLoopPopItem.Tag:=INT_SWITCH;
-  switchLoopPopItem.OnClick:=SurroundWithClick;
-
-  bracesPopItem.Tag:=INT_BRACES;
-  bracesPopItem.OnClick:=SurroundWithClick;
-
-  CStyleCommentPopItem.Tag:=INT_C_COMMENT;
-  CStyleCommentPopItem.OnClick:=SurroundWithClick;
-
-  CPPStyleCommentPopItem.Tag:=INT_CPP_COMMENT;
-  CPPStyleCommentPopItem.OnClick:=SurroundWithClick;
+  //"Surround With" menu
+  trycatchPopItem.Tag            := INT_TRY_CATCH;
+  trycatchPopItem.OnClick        := SurroundWithClick;
+  forloopPopItem.Tag             := INT_FOR;
+  forloopPopItem.OnClick         := SurroundWithClick;
+  forintloopPopItem.Tag          := INT_FOR_I;
+  forintloopPopItem.OnClick      := SurroundWithClick;
+  whileLoopPopItem.Tag           := INT_WHILE;
+  whileLoopPopItem.OnClick       := SurroundWithClick;
+  dowhileLoopPopItem.Tag         := INT_DO_WHILE;
+  dowhileLoopPopItem.OnClick     := SurroundWithClick;
+  ifLoopPopItem.Tag              := INT_IF;
+  ifLoopPopItem.OnClick          := SurroundWithClick;
+  ifelseloopPopItem.Tag          := INT_IF_ELSE;
+  ifelseloopPopItem.OnClick      := SurroundWithClick;
+  switchLoopPopItem.Tag          := INT_SWITCH;
+  switchLoopPopItem.OnClick      := SurroundWithClick;
+  bracesPopItem.Tag              := INT_BRACES;
+  bracesPopItem.OnClick          := SurroundWithClick;
+  CStyleCommentPopItem.Tag       := INT_C_COMMENT;
+  CStyleCommentPopItem.OnClick   := SurroundWithClick;
+  CPPStyleCommentPopItem.Tag     := INT_CPP_COMMENT;
+  CPPStyleCommentPopItem.OnClick := SurroundWithClick;
 
   //Setting data for the newly created GUI
   intControlCount := 1000;
@@ -1881,9 +1863,22 @@ var
   end;
 begin
   //Initialize the docking style engine
+  DesktopFont := True;
   NewDocks := TList.Create;
   DockServer.DockStyle := TdevDockStyle.Create(Self);
   DockServer.DockStyle.TabServerOption.HotTrack := True;
+  with TJvDockVIDConjoinServerOption(DockServer.DockStyle.ConjoinServerOption) do
+  begin
+    ActiveFont.Assign(Font);
+    InactiveFont.Assign(Font);
+    InactiveFont.Color := clWhite;
+  end;
+  with TJvDockVIDTabServerOption(DockServer.DockStyle.TabServerOption) do
+  begin
+    ActiveFont.Assign(Font);
+    InactiveFont.Assign(Font);
+    InactiveFont.Color := clWhite;
+  end;
 
 {$IFDEF WX_BUILD}
   SetSplashStatus('Loading wxWidgets extensions');
@@ -1891,7 +1886,12 @@ begin
 {$ENDIF}
   fFirstShow := TRUE;
   ViewToDoForm := TViewToDoForm.Create(DockServer.BottomDockPanel);
-//  AddDockTab(ViewToDoForm);
+  with TJvDockClient.Create(ViewToDoForm) do
+  begin
+    Name := ViewToDoForm.Name + 'Client';
+    DirectDrag := True;
+    DockStyle := DockServer.DockStyle;
+  end;
 
   // register file associations and DDE services
   DDETopic := DevCppDDEServer.Name;
@@ -2007,6 +2007,8 @@ begin
   for I := 0 to MessageControl.PageCount - 1 do
   begin
     NewDock := TForm.Create(self);
+    NewDock.ParentFont := True;
+    NewDock.Font.Assign(Font);
     frmReportDocks[I] := NewDock;
     with NewDock do
     begin
@@ -2044,6 +2046,11 @@ begin
       Show;
     end;
   end;
+
+  //Dock the To do form
+  ViewToDoForm.ManualDock(DockServer.BottomDockPanel, nil, alRight);
+  ShowDockForm(ViewToDoForm);
+  ShowDockForm(frmReportDocks[0]);
 
   //Settle the docking sizes
   DockServer.LeftDockPanel.Width := 200;
@@ -3636,51 +3643,44 @@ var
   e: TEditor;
 begin
   e := GetEditor;
-  if assigned(e) = false then
-    exit;
+  if not Assigned(e) then
+    Exit;
 
-        case TMenuItem(Sender).Tag of    //
-          INT_BRACES:
-                SurroundString(e,'{','}');
+  case TMenuItem(Sender).Tag of
+    INT_BRACES:
+      SurroundString(e,'{','}');
 
-          INT_TRY_CATCH:
-                SurroundString(e,'try{','}catch() {}');
+    INT_TRY_CATCH:
+      SurroundString(e,'try{','}catch() {}');
 
-          INT_TRY_FINALLY:
-                SurroundString(e,'try{','}finally { }');
+    INT_C_COMMENT:
+      SurroundString(e,'/*','*/');
 
-          INT_TRY_CATCH_FINALLY:
-                SurroundString(e,'try{','}catch() { } finally{ }');
+    INT_FOR:
+      SurroundString(e,'for(){','}');
 
-          INT_C_COMMENT:
-                SurroundString(e,'/*','*/');
+    INT_FOR_I:
+      SurroundString(e,'for(int i=;i<;i++){','}');
 
-          INT_FOR:
-                SurroundString(e,'for(){','}');
+    INT_WHILE:
+      SurroundString(e,'while(){','}');
 
-          INT_FOR_I:
-                SurroundString(e,'for(int i=;i<;i++){','}');
+    INT_DO_WHILE:
+      SurroundString(e,'do{','}while();');
 
-          INT_WHILE:
-                SurroundString(e,'while(){','}');
+    INT_IF:
+      SurroundString(e,'if(){','}');
 
-          INT_DO_WHILE:
-                SurroundString(e,'do{','}while();');
+    INT_IF_ELSE:
+      SurroundString(e,'if(){','} else { }');
 
-          INT_IF:
-                SurroundString(e,'if(){','}');
+    INT_SWITCH:
+      SurroundString(e,'switch() { case 0:','}');
 
-          INT_IF_ELSE:
-                SurroundString(e,'if(){','} else { }');
+    INT_CPP_COMMENT:
+      CppCommentString(e);
 
-          INT_SWITCH:
-                SurroundString(e,'switch() { case 0:','}');
-
-          INT_CPP_COMMENT:
-                CppCommentString(e);
-
-        end;    // case
-
+  end;    // case
 end;
 
 procedure TMainForm.ToolItemClick(Sender: TObject);
@@ -7043,6 +7043,7 @@ end;
 procedure TMainForm.actAddToDoExecute(Sender: TObject);
 begin
   TAddToDoForm.Create(Self).ShowModal;
+  ViewToDoForm.RefreshList;
 end;
 
 procedure TMainForm.actProjectNewFolderExecute(Sender: TObject);

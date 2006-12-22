@@ -367,10 +367,8 @@ end;
 
 procedure TNewTemplateForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   with Lang do begin
     lblName.Caption := Strings[ID_NEWTPL_NAME];
     lblDescr.Caption := Strings[ID_NEWTPL_DESCRIPTION];

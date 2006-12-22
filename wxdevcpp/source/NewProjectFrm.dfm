@@ -4,7 +4,7 @@ object NewProjectForm: TNewProjectForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New Project'
-  ClientHeight = 281
+  ClientHeight = 276
   ClientWidth = 508
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,12 +18,12 @@ object NewProjectForm: TNewProjectForm
   OnDestroy = FormDestroy
   DesignSize = (
     508
-    281)
+    276)
   PixelsPerInch = 96
   TextHeight = 13
   object lblPrjName: TLabel
     Left = 80
-    Top = 64
+    Top = 59
     Width = 34
     Height = 13
     Anchors = [akLeft, akRight, akBottom]
@@ -31,9 +31,9 @@ object NewProjectForm: TNewProjectForm
   end
   object pnlDesc: TPanel
     Left = 8
-    Top = 127
+    Top = 122
     Width = 495
-    Height = 42
+    Height = 45
     Anchors = [akLeft, akRight, akBottom]
     Color = clWindow
     TabOrder = 3
@@ -45,24 +45,18 @@ object NewProjectForm: TNewProjectForm
       Caption = 'Description:'
     end
     object TemplateLabel: TLabel
-      Left = 16
-      Top = 20
+      Left = 17
+      Top = 19
       Width = 35
       Height = 13
       Caption = '<desc>'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
     end
   end
   object btnOk: TBitBtn
-    Left = 248
-    Top = 250
-    Width = 81
-    Height = 24
+    Left = 249
+    Top = 248
+    Width = 80
+    Height = 23
     Anchors = [akRight, akBottom]
     Caption = '&OK'
     Default = True
@@ -90,9 +84,9 @@ object NewProjectForm: TNewProjectForm
   end
   object btnCancel: TBitBtn
     Left = 334
-    Top = 250
-    Width = 83
-    Height = 24
+    Top = 248
+    Width = 80
+    Height = 23
     Anchors = [akRight, akBottom]
     Caption = '&Cancel'
     TabOrder = 1
@@ -100,10 +94,10 @@ object NewProjectForm: TNewProjectForm
     Kind = bkCancel
   end
   object TabsMain: TdevTabs
-    Left = 8
+    Left = 7
     Top = 8
     Width = 495
-    Height = 119
+    Height = 114
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvLowered
     Tabs.Strings = (
@@ -114,22 +108,16 @@ object NewProjectForm: TNewProjectForm
       Left = 0
       Top = 23
       Width = 495
-      Height = 96
+      Height = 91
       Align = alClient
       BorderStyle = bsNone
       Color = clWhite
       Columns = <>
       ColumnClick = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
       HideSelection = False
       IconOptions.AutoArrange = True
       LargeImages = ImageList
       ReadOnly = True
-      ParentFont = False
       TabOrder = 0
       OnChange = ProjViewChange
       OnDblClick = ProjViewDblClick
@@ -137,9 +125,9 @@ object NewProjectForm: TNewProjectForm
   end
   object btnHelp: TBitBtn
     Left = 429
-    Top = 250
+    Top = 248
     Width = 75
-    Height = 24
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 4
     OnClick = btnHelpClick
@@ -171,7 +159,7 @@ object NewProjectForm: TNewProjectForm
       object rbC: TRadioButton
         Left = 7
         Top = 5
-        Width = 65
+        Width = 100
         Height = 17
         Caption = '&C project'
         TabOrder = 0
@@ -185,9 +173,9 @@ object NewProjectForm: TNewProjectForm
         TabOrder = 1
       end
       object rbCpp: TRadioButton
-        Left = 102
+        Left = 110
         Top = 5
-        Width = 73
+        Width = 100
         Height = 17
         Caption = 'C&++ project'
         Checked = True

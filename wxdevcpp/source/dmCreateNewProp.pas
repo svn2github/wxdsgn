@@ -180,9 +180,7 @@ end;
 
 procedure TfrmCreateFormProp.FormShow(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
 end;
 end.

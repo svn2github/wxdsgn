@@ -3,7 +3,7 @@ object frmCreateFormProp: TfrmCreateFormProp
   Top = 208
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
-  Caption = 'Create new Dialog'
+  Caption = 'Create New Dialog'
   ClientHeight = 231
   ClientWidth = 430
   Color = clBtnFace
@@ -132,19 +132,19 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 4
   end
   object btCancel: TButton
-    Left = 349
+    Left = 347
     Top = 200
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Cancel'
     TabOrder = 7
     OnClick = btCancelClick
   end
   object btCreate: TButton
-    Left = 272
+    Left = 267
     Top = 200
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Create'
     Default = True
     TabOrder = 6

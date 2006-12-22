@@ -4,7 +4,7 @@ object frmFind: TfrmFind
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Find Text'
-  ClientHeight = 341
+  ClientHeight = 338
   ClientWidth = 303
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,12 +20,12 @@ object frmFind: TfrmFind
   OnShow = FormShow
   DesignSize = (
     303
-    341)
+    338)
   PixelsPerInch = 96
   TextHeight = 13
   object lblFind: TLabel
     Left = 8
-    Top = 8
+    Top = 9
     Width = 56
     Height = 13
     Caption = '&Text to find:'
@@ -33,16 +33,16 @@ object frmFind: TfrmFind
   end
   object lblLookIn: TLabel
     Left = 8
-    Top = 53
+    Top = 54
     Width = 39
     Height = 13
     Caption = 'Look In:'
   end
   object btnFind: TButton
-    Left = 135
-    Top = 311
-    Width = 80
-    Height = 24
+    Left = 143
+    Top = 309
+    Width = 75
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = 'Find'
     Default = True
@@ -51,10 +51,10 @@ object frmFind: TfrmFind
     OnClick = btnFindClick
   end
   object btnCancel: TButton
-    Left = 218
-    Top = 311
-    Width = 80
-    Height = 24
+    Left = 223
+    Top = 309
+    Width = 75
+    Height = 23
     Anchors = [akLeft, akBottom]
     Cancel = True
     Caption = 'Cancel'
@@ -240,6 +240,7 @@ object frmFind: TfrmFind
     Gradient = True
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 9
     Top = 309

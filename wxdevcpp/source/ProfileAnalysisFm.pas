@@ -299,10 +299,8 @@ end;
 
 procedure TProfileAnalysisForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_PROF_CAPTION];
   tabFlat.Caption := Lang[ID_PROF_TABFLAT];
   tabGraph.Caption := Lang[ID_PROF_TABGRAPH];

@@ -245,12 +245,12 @@ end;
 
 procedure TViewToDoForm.FormShow(Sender: TObject);
 begin
-  XPMenu.Active := devData.XPTheme;
   cmbFilter.ItemIndex := 5;
   fToDoList.Clear;
   lv.Items.Clear;
   AddFiles(True, False, True, True); // default is current only
   BuildList;
+  cmbFilter.ItemIndex := 5;
 end;
 
 procedure TViewToDoForm.btnCloseClick(Sender: TObject);
@@ -304,6 +304,8 @@ end;
 
 procedure TViewToDoForm.LoadText;
 begin
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_VIEWTODO_MENUITEM];
 
 {$IFDEF WIN32}

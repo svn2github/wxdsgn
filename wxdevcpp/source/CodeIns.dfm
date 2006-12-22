@@ -2,8 +2,8 @@ object frmCodeEdit: TfrmCodeEdit
   Left = 315
   Top = 126
   BorderStyle = bsToolWindow
-  Caption = '<> Code Insert Entry'
-  ClientHeight = 153
+  Caption = 'Code Insert Editor'
+  ClientHeight = 125
   ClientWidth = 302
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,45 +16,38 @@ object frmCodeEdit: TfrmCodeEdit
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
+  object lblMenu: TLabel
     Left = 8
     Top = 8
-    Width = 285
-    Height = 106
-    Shape = bsFrame
-  end
-  object lblMenu: TLabel
-    Left = 16
-    Top = 16
     Width = 54
     Height = 13
     Caption = 'Menu Text:'
   end
   object lblSec: TLabel
-    Left = 16
-    Top = 56
+    Left = 8
+    Top = 48
     Width = 39
     Height = 13
     Caption = 'Section:'
   end
   object lblDesc: TLabel
-    Left = 150
-    Top = 56
+    Left = 103
+    Top = 48
     Width = 53
     Height = 13
     Caption = 'Description'
   end
   object edMenuText: TEdit
-    Left = 24
-    Top = 32
-    Width = 262
+    Left = 8
+    Top = 22
+    Width = 285
     Height = 21
     TabOrder = 0
     OnChange = edMenuTextChange
   end
   object seSection: TSpinEdit
-    Left = 24
-    Top = 72
+    Left = 8
+    Top = 62
     Width = 67
     Height = 22
     MaxValue = 0
@@ -63,27 +56,27 @@ object frmCodeEdit: TfrmCodeEdit
     Value = 0
   end
   object btnOk: TBitBtn
-    Left = 129
-    Top = 121
+    Left = 139
+    Top = 94
     Width = 75
-    Height = 25
+    Height = 23
     Enabled = False
     TabOrder = 3
     OnClick = btnOkClick
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 215
-    Top = 121
+    Left = 219
+    Top = 94
     Width = 75
-    Height = 25
+    Height = 23
     TabOrder = 4
     Kind = bkCancel
   end
   object edDesc: TEdit
-    Left = 160
-    Top = 74
-    Width = 124
+    Left = 103
+    Top = 64
+    Width = 190
     Height = 21
     TabOrder = 2
   end
@@ -114,7 +107,7 @@ object frmCodeEdit: TfrmCodeEdit
     FlatMenu = False
     AutoDetect = True
     Active = False
-    Left = 136
-    Top = 56
+    Left = 8
+    Top = 93
   end
 end

@@ -154,6 +154,9 @@ begin
   ButtonWidth := ButtonHeight;
   AutoHideButtonWidth := ButtonWidth;
   AutoHideButtonHeight := ButtonHeight;
+
+  //The fonts that we use should be those that the main form uses
+  Canvas.Font.Assign(Application.MainForm.Font);
 end;
 
 procedure TdevDockTree.DrawDockGrabber(Control: TControl; const aRect: TRect);
@@ -603,7 +606,8 @@ var
           DrawRect.Left := 20;
         DrawRect.Right := DrawRect.Left + (DrawRect.Bottom - DrawRect.Top);
       end;
-      
+
+      Canvas.Font.Assign(Application.MainForm.Font);
       Canvas.Brush.Color := TabColor;
       Canvas.Pen.Color := clBlack;
 

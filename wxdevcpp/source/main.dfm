@@ -80,7 +80,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 98
+        Height = 97
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -99,7 +99,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 98
+        Height = 97
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -154,7 +154,7 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 391
-        Height = 98
+        Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
@@ -164,8 +164,8 @@ object MainForm: TMainForm
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 390
-          Height = 80
+          Width = 377
+          Height = 74
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -193,7 +193,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -228,7 +228,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -256,7 +256,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -359,7 +359,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -383,16 +383,10 @@ object MainForm: TMainForm
             Width = 450
           end>
         ColumnClick = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -7
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
         GridLines = True
         HideSelection = False
         ReadOnly = True
         RowSelect = True
-        ParentFont = False
         ParentShowHint = False
         PopupMenu = MessagePopup
         ShowHint = True
@@ -1659,13 +1653,16 @@ object MainForm: TMainForm
       end
       object Customize1: TMenuItem
         Action = actHelpCustomize
+        Caption = 'Customize Help Menu...'
       end
-      object ips1: TMenuItem
+      object Tips1: TMenuItem
         Action = actShowTips
+        Caption = 'Tip of the Day'
       end
       object AboutDevCppItem: TMenuItem
         Tag = 18
         Action = actAbout
+        Caption = 'About wxDev-C++...'
       end
     end
   end
@@ -1774,12 +1771,6 @@ object MainForm: TMainForm
       Caption = 'Surround With'
       object trycatchPopItem: TMenuItem
         Caption = 'try...catch'
-      end
-      object tryfinallyPopItem: TMenuItem
-        Caption = 'try...finally'
-      end
-      object trycatchfinallyPopItem: TMenuItem
-        Caption = 'try...catch...finally'
       end
       object N68: TMenuItem
         Caption = '-'

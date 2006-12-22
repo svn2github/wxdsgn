@@ -174,10 +174,8 @@ end;
 
 procedure TFunctionSearchForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := StringReplace(Lang[ID_ITEM_GOTOFUNCTION], '&', '', []);
   Label1.Caption := Lang[ID_GF_TEXT];
   lvEntries.Column[1].Caption := Lang[ID_GF_TYPE];

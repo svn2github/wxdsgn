@@ -64,10 +64,8 @@ uses Version, MultiLangSupport, devcfg, utils;
 
 procedure TIconForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_IF];
   btnOk.Caption := Lang[ID_IF_USEICO];
   btnCancel.Caption := Lang[ID_BTN_CANCEL];

@@ -2,7 +2,7 @@ object frmHelpEdit: TfrmHelpEdit
   Left = 272
   Top = 141
   Width = 350
-  Height = 394
+  Height = 395
   BorderStyle = bsSizeToolWin
   Caption = 'Help Menu Editor'
   Color = clBtnFace
@@ -19,14 +19,14 @@ object frmHelpEdit: TfrmHelpEdit
   OnCreate = FormCreate
   DesignSize = (
     342
-    367)
+    361)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn
-    Left = 11
-    Top = 336
-    Width = 90
-    Height = 24
+    Left = 81
+    Top = 341
+    Width = 80
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = 'OK'
     ModalResult = 1
@@ -51,26 +51,26 @@ object frmHelpEdit: TfrmHelpEdit
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 102
-    Top = 336
-    Width = 90
-    Height = 24
+    Left = 166
+    Top = 341
+    Width = 80
+    Height = 23
     Anchors = [akLeft, akBottom]
     TabOrder = 1
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 258
-    Top = 336
+    Left = 261
+    Top = 341
     Width = 75
-    Height = 24
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 2
     Kind = bkHelp
   end
   object grpOptions: TGroupBox
     Left = 8
-    Top = 198
+    Top = 206
     Width = 327
     Height = 128
     Anchors = [akLeft, akRight, akBottom]
@@ -88,8 +88,6 @@ object frmHelpEdit: TfrmHelpEdit
       Top = 31
       Width = 90
       Height = 22
-      ItemsEx.CaseSensitive = False
-      ItemsEx.SortType = stNone
       ItemsEx = <
         item
           Caption = 'None'
@@ -123,7 +121,6 @@ object frmHelpEdit: TfrmHelpEdit
           SelectedImageIndex = 6
         end>
       Style = csExDropDownList
-      StyleEx = []
       ItemHeight = 16
       TabOrder = 0
       OnSelect = cboIconSelect
@@ -175,9 +172,9 @@ object frmHelpEdit: TfrmHelpEdit
   end
   object lvFiles: TListView
     Left = 8
-    Top = 60
+    Top = 65
     Width = 326
-    Height = 131
+    Height = 132
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvLowered
     BevelKind = bkSoft
@@ -207,7 +204,7 @@ object frmHelpEdit: TfrmHelpEdit
   end
   object grpActions: TGroupBox
     Left = 8
-    Top = 1
+    Top = 8
     Width = 327
     Height = 48
     Anchors = [akLeft, akTop, akRight]
@@ -384,8 +381,9 @@ object frmHelpEdit: TfrmHelpEdit
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 216
-    Top = 296
+    Left = 8
+    Top = 338
   end
 end

@@ -307,10 +307,8 @@ end;
 
 procedure TNewMemberForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_POP_NEWMEMBER];
   Label1.Caption := Lang[ID_NEWVAR_VARTYPE];
   Label2.Caption := Lang[ID_NEWMEMB_MEMBNAME];

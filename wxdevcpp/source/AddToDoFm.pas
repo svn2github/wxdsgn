@@ -135,11 +135,8 @@ end;
 
 procedure TAddToDoForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
-  Caption := Lang[ID_ADDTODO_MENUITEM];
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Label1.Caption := Lang[ID_ADDTODO_DESCRIPTION] + ':';
   Label2.Caption := Lang[ID_ADDTODO_PRIORITY] + ':';
   Label3.Caption := Lang[ID_ADDTODO_USER] + ':';

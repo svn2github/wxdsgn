@@ -93,10 +93,10 @@ object NewMemberForm: TNewMemberForm
     Text = 'txtArguments'
   end
   object btnCreate: TButton
-    Left = 192
+    Left = 187
     Top = 422
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Create'
     Default = True
     ModalResult = 1
@@ -104,10 +104,10 @@ object NewMemberForm: TNewMemberForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 268
+    Left = 267
     Top = 422
     Width = 75
-    Height = 25
+    Height = 23
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2

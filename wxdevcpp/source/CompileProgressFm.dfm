@@ -28,7 +28,7 @@ object CompileProgressForm: TCompileProgressForm
     Left = 100
     Top = 183
     Width = 75
-    Height = 25
+    Height = 23
     Anchors = [akBottom]
     Cancel = True
     Caption = 'Cancel'
@@ -42,7 +42,6 @@ object CompileProgressForm: TCompileProgressForm
     Height = 152
     ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Progress'
@@ -80,7 +79,7 @@ object CompileProgressForm: TCompileProgressForm
       object lblCompiler: TLabel
         Left = 60
         Top = 12
-        Width = 185
+        Width = 50
         Height = 13
         Caption = 'lblCompiler'
         Font.Charset = DEFAULT_CHARSET
@@ -94,7 +93,7 @@ object CompileProgressForm: TCompileProgressForm
       object lblStatus: TLabel
         Left = 60
         Top = 40
-        Width = 185
+        Width = 40
         Height = 13
         Caption = 'lblStatus'
         Font.Charset = DEFAULT_CHARSET
@@ -115,7 +114,7 @@ object CompileProgressForm: TCompileProgressForm
       object lblFile: TLabel
         Left = 60
         Top = 68
-        Width = 185
+        Width = 34
         Height = 13
         Caption = 'lblFile'
         Font.Charset = DEFAULT_CHARSET
@@ -229,8 +228,6 @@ object CompileProgressForm: TCompileProgressForm
     Width = 265
     Height = 17
     Anchors = [akLeft, akRight, akBottom]
-    Min = 0
-    Max = 100
     TabOrder = 2
   end
   object XPMenu: TXPMenu

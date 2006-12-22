@@ -30,7 +30,7 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 365
-    ActivePage = tabDisplay
+    ActivePage = tabClassBrowsing
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     OnChange = PagesMainChange
@@ -364,7 +364,7 @@ object EditorOptForm: TEditorOptForm
           Width = 190
           Height = 17
           Hint = 'enhances home key positioning, similar to visual studio'
-          Caption = 'Enhance home key'
+          Caption = 'Enhanced home key'
           TabOrder = 17
         end
         object cbPastEOF: TCheckBox
@@ -393,7 +393,7 @@ object EditorOptForm: TEditorOptForm
         object lblGutterFont: TLabel
           Left = 8
           Top = 71
-          Width = 22
+          Width = 21
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Font'
@@ -401,7 +401,7 @@ object EditorOptForm: TEditorOptForm
         object lblGutterWidth: TLabel
           Left = 321
           Top = 71
-          Width = 29
+          Width = 28
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Width'
@@ -410,7 +410,7 @@ object EditorOptForm: TEditorOptForm
         object lblGutterFontSize: TLabel
           Left = 200
           Top = 71
-          Width = 21
+          Width = 20
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Size'
@@ -580,7 +580,7 @@ object EditorOptForm: TEditorOptForm
       Caption = 'Syntax'
       object cpForeground: TColorPickerButton
         Left = 153
-        Top = 23
+        Top = 22
         Width = 110
         Height = 22
         CustomText = 'Custom'
@@ -593,7 +593,7 @@ object EditorOptForm: TEditorOptForm
       end
       object cpBackground: TColorPickerButton
         Left = 153
-        Top = 77
+        Top = 74
         Width = 110
         Height = 24
         CustomText = 'Custom'
@@ -606,7 +606,7 @@ object EditorOptForm: TEditorOptForm
       end
       object lblForeground: TLabel
         Left = 153
-        Top = 8
+        Top = 7
         Width = 57
         Height = 13
         Caption = 'Foreground:'
@@ -813,7 +813,7 @@ object EditorOptForm: TEditorOptForm
           end
           object btnAdd: TButton
             Left = 309
-            Top = 8
+            Top = 10
             Width = 70
             Height = 23
             Caption = 'Add'
@@ -822,7 +822,7 @@ object EditorOptForm: TEditorOptForm
           end
           object btnEdit: TButton
             Left = 309
-            Top = 41
+            Top = 35
             Width = 70
             Height = 23
             Caption = 'Edit'
@@ -831,7 +831,7 @@ object EditorOptForm: TEditorOptForm
           end
           object btnRemove: TButton
             Left = 309
-            Top = 75
+            Top = 60
             Width = 70
             Height = 23
             Caption = 'Remove'
@@ -976,16 +976,16 @@ object EditorOptForm: TEditorOptForm
           Caption = 'Class browsing'
           object lblClassBrowserSample: TLabel
             Left = 8
-            Top = 156
+            Top = 148
             Width = 38
             Height = 13
             Caption = 'Sample:'
           end
           object ClassBrowser1: TClassBrowser
             Left = 52
-            Top = 158
+            Top = 148
             Width = 327
-            Height = 106
+            Height = 115
             Images = dmMain.ClassImages
             ReadOnly = True
             Indent = 19
@@ -1012,12 +1012,12 @@ object EditorOptForm: TEditorOptForm
             Left = 7
             Top = 6
             Width = 373
-            Height = 65
+            Height = 60
             Caption = 'Engine behaviour'
             TabOrder = 0
             object chkCBParseGlobalH: TCheckBox
               Left = 8
-              Top = 40
+              Top = 36
               Width = 360
               Height = 17
               Caption = 'Scan global files referenced in #include'#39's'
@@ -1025,7 +1025,7 @@ object EditorOptForm: TEditorOptForm
             end
             object chkCBParseLocalH: TCheckBox
               Left = 8
-              Top = 20
+              Top = 16
               Width = 360
               Height = 17
               Caption = 'Scan local files referenced in #include'#39's'
@@ -1034,14 +1034,14 @@ object EditorOptForm: TEditorOptForm
           end
           object gbCBView: TGroupBox
             Left = 6
-            Top = 77
+            Top = 72
             Width = 373
-            Height = 65
+            Height = 60
             Caption = 'View options'
             TabOrder = 1
             object chkCBUseColors: TCheckBox
               Left = 8
-              Top = 20
+              Top = 16
               Width = 360
               Height = 17
               Caption = 'Use colors'
@@ -1050,7 +1050,7 @@ object EditorOptForm: TEditorOptForm
             end
             object chkCBShowInherited: TCheckBox
               Left = 8
-              Top = 40
+              Top = 36
               Width = 360
               Height = 17
               Caption = 'Show inherited members'
@@ -1070,7 +1070,7 @@ object EditorOptForm: TEditorOptForm
           end
           object cpCompletionBackground: TColorPickerButton
             Left = 256
-            Top = 44
+            Top = 42
             Width = 112
             Height = 22
             CustomText = 'Custom'
@@ -1088,25 +1088,9 @@ object EditorOptForm: TEditorOptForm
             Height = 13
             Caption = 'Background color:'
           end
-          object btnCCCnew: TSpeedButton
-            Left = 292
-            Top = 113
-            Width = 89
-            Height = 22
-            Caption = 'Add files'
-            OnClick = btnCCCnewClick
-          end
-          object btnCCCdelete: TSpeedButton
-            Left = 292
-            Top = 137
-            Width = 89
-            Height = 22
-            Caption = 'Clear'
-            OnClick = btnCCCdeleteClick
-          end
           object lblCCCache: TLabel
             Left = 8
-            Top = 93
+            Top = 98
             Width = 68
             Height = 13
             Caption = 'Files in cache:'
@@ -1155,21 +1139,39 @@ object EditorOptForm: TEditorOptForm
           end
           object pbCCCache: TProgressBar
             Left = 292
-            Top = 164
+            Top = 168
             Width = 89
             Height = 16
             TabOrder = 4
             Visible = False
+          end
+          object btnCCCnew: TButton
+            Left = 292
+            Top = 113
+            Width = 90
+            Height = 23
+            Caption = 'Add'
+            TabOrder = 5
+            OnClick = btnCCCnewClick
+          end
+          object btnCCCdelete: TButton
+            Left = 292
+            Top = 140
+            Width = 90
+            Height = 23
+            Caption = 'Clear'
+            TabOrder = 6
+            OnClick = btnCCCdeleteClick
           end
         end
       end
     end
   end
   object btnOk: TBitBtn
-    Left = 163
+    Left = 166
     Top = 379
-    Width = 84
-    Height = 24
+    Width = 80
+    Height = 23
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     ModalResult = 1
@@ -1195,20 +1197,20 @@ object EditorOptForm: TEditorOptForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 248
+    Left = 251
     Top = 379
-    Width = 84
-    Height = 24
+    Width = 80
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 2
     OnClick = btnCancelClick
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 345
+    Left = 346
     Top = 379
     Width = 75
-    Height = 24
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 3
     OnClick = btnHelpClick

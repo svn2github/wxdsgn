@@ -117,146 +117,179 @@ end;
 
 procedure TTemplate.ReadTemplateFile(const FileName: string);
 var
-  NewProfile:TProjProfile;
-  ProfileCount:Integer;
-  i:Integer;
-  CurrenProfileName:String;
+  NewProfile: TProjProfile;
+  CurrentProfileName: String;
+  ProfileCount, i: Integer;
+
+  procedure VerifyProfile(var NewProfile: TProjProfile);
+  var
+    i, CurrentSet: Integer;
+  begin
+    //Store the old compiler set
+    CurrentSet := devCompiler.CompilerSet;
+    
+    //Do some sanity checking - if the profile states that we should be using a MingW compiler,
+    //then make sure the CompilerSet actually points to one that is of CompilerType.
+    devCompilerSet.LoadSet(NewProfile.CompilerSet);
+    if devCompilerSet.CompilerType <> NewProfile.compilerType then
+      for i := 0 to devCompilerSet.Sets.Count - 1 do
+      begin
+        devCompilerSet.LoadSet(i);
+        if devCompilerSet.CompilerType = NewProfile.compilerType then
+        begin
+          NewProfile.CompilerSet := i;
+          Break;
+        end;
+      end;
+
+    //Restore the old compiler set
+    devCompilerSet.LoadSet(CurrentSet);
+  end;
 begin
-  if assigned(fTemplate) then fTemplate.Free;
+  if Assigned(fTemplate) then
+    fTemplate.Free;
   if FileExists(FileName) then
   begin
-     fFileName:= FileName;
-     fTemplate:= TmemINIFile.Create(fFileName);
+    fFileName := FileName;
+    fTemplate := TmemINIFile.Create(fFileName);
   end
   else
   begin
-    MessageBox(Application.mainform.handle,
+    MessageBox(Application.MainForm.Handle,
       PChar(Format(Lang[ID_ERR_TEMPFNF], [fFileName])),
       PChar(Lang[ID_INFO]), MB_OK or MB_ICONINFORMATION);
-    exit;
+    Exit;
   end;
 
   with fTemplate do
   begin
-     fVersion:= ReadInteger(cTemplate, 'Ver', -1);
-     // read entries for both old and new
-     // template info
-     fName:= ReadString(cTemplate, 'Name', 'NoName');
-     fDesc:= ReadString(cTemplate, 'Description', 'NoDesc');
-     fCatagory:= ReadString(cTemplate, 'Catagory', '');
-     fIconIndex:= ReadInteger(cTemplate, 'IconIndex', 0);
-     // project info
-     fPrjName:= ReadString(cProject, 'Name', '');
-     ProfileCount:=ReadInteger(cProject, 'ProfilesCount', 0);
-     //If there is no Profile Count then we'll assume the
-     //template as version 1
-     if ((ProfileCount=0) and (fVersion = 3)) then
+    // read entries for both old and new template info
+    fVersion   := ReadInteger(cTemplate, 'Ver', -1);
+    fName      := ReadString(cTemplate, 'Name', 'NoName');
+    fDesc      := ReadString(cTemplate, 'Description', 'NoDesc');
+    fCatagory  := ReadString(cTemplate, 'Catagory', '');
+    fIconIndex := ReadInteger(cTemplate, 'IconIndex', 0);
+
+    // project info
+    fPrjName     := ReadString(cProject, 'Name', '');
+    ProfileCount := ReadInteger(cProject, 'ProfilesCount', 0);
+
+    //If there are no Profiles then we'll assume the template as version 1
+    if (ProfileCount = 0) and (fVersion = 3) then
       fVersion := 1;
 
-     if fPrjName = '' then
-       fPrjName:= fName;
+    if fPrjName = '' then
+      fPrjName:= fName;
 
-     if fName = '' then
-       fName:= fPrjName;
-     if (fVersion < 3) then
-     begin
-        NewProfile:=TProjProfile.Create;
-        NewProfile.ProfileName:='MingW';
-        fOptions.Add(NewProfile);
-     end;
+    if fName = '' then
+      fName:= fPrjName;
 
-     // read old style
-     if (fVersion <= 0) then
-     begin
-         fOptions[0].icon:= ReadString(cTemplate, 'Icon', '');
-       if ReadBool(cProject, 'Console', FALSE) then
-          fOptions[0].typ:= dptCon
-       else
-       if ReadBool(cProject, 'DLL', FALSE) then
-           fOptions[0].typ:= dptDyn
-       else
-           fOptions[0].Typ:= dptGUI;
+    if fVersion < 3 then
+    begin
+      NewProfile := TProjProfile.Create;
+      NewProfile.ProfileName := 'MingW';
+      fOptions.Add(NewProfile);
+    end;
 
-       fOptions[0].Libs.Append(ReadString(cProject, 'Libs', ''));
-       fOptions[0].Includes.Append(ReadString(cProject, 'Includes', ''));
+    // read old style
+    if fVersion <= 0 then
+    begin
+      fOptions[0].icon:= ReadString(cTemplate, 'Icon', '');
+      if ReadBool(cProject, 'Console', False) then
+        fOptions[0].typ := dptCon
+      else if ReadBool(cProject, 'DLL', False) then
+        fOptions[0].typ := dptDyn
+      else
+        fOptions[0].Typ := dptGUI;
 
-         fOptions.useGPP:= ReadBool(cProject, 'Cpp', false);
-         fOptions[0].Compiler:= ReadString(cProject, 'CompilerOptions', '');
-         fOptions[0].compilerType:= ID_COMPILER_MINGW;
-     end
-     else if (fVersion = 1) or  (fVersion = 2) then
-     begin
-         fOptions[0].compilerType:= ID_COMPILER_MINGW;
-         fOptions[0].icon:= ReadString(cTemplate, 'Icon', '');
-         ProjectIcon:= ReadString(cProject, 'ProjectIcon', '');
-         fOptions[0].typ:= ReadInteger(cProject, 'Type', 0); // default = gui
-         fOptions[0].Includes.DelimitedText:= ReadString(cProject, 'Includes', '');
-         fOptions[0].Libs.DelimitedText:= ReadString(cProject, 'Libs', '');
+      fOptions.useGPP          := ReadBool(cProject, 'Cpp', false);
+      fOptions[0].Compiler     := ReadString(cProject, 'CompilerOptions', '');
+      fOptions[0].CompilerType := ID_COMPILER_MINGW;
+      fOptions[0].Libs.Append(ReadString(cProject, 'Libs', ''));
+      fOptions[0].Includes.Append(ReadString(cProject, 'Includes', ''));
+
+      //Verify the profile's integrity
+      VerifyProfile(NewProfile);
+    end
+    else if (fVersion = 1) or (fVersion = 2) then
+    begin
+      ProjectIcon                        := ReadString(cProject, 'ProjectIcon', '');
+      fOptions.useGPP                    := ReadBool(cProject, 'IsCpp', false);
+      fOptions[0].compilerType           := ID_COMPILER_MINGW;
+      fOptions[0].icon                   := ReadString(cTemplate, 'Icon', '');
+      fOptions[0].typ                    := ReadInteger(cProject, 'Type', 0); // default = gui
+      fOptions[0].Includes.DelimitedText := ReadString(cProject, 'Includes', '');
+      fOptions[0].Libs.DelimitedText     := ReadString(cProject, 'Libs', '');
 
 {$IFDEF WX_BUILD}
-         // Tony Reina 11 June 2005
-         // This is needed to grab the MakeIncludes from the template file of a new project
-         fOptions[0].MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
+      // Tony Reina 11 June 2005
+      // This is needed to grab the MakeIncludes from the template file of a new project
+      fOptions[0].MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');
 {$ENDIF}
 
-         fOptions[0].ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
-         fOptions[0].Compiler:= ReadString(cProject, 'Compiler', '');
-         fOptions[0].CppCompiler:= ReadString(cProject, 'CppCompiler', '');
-         fOptions[0].Linker:= ReadString(cProject, 'Linker', '');
-         fOptions[0].PreprocDefines := ReadString(cProject, 'PreprocDefines', '');
-         fOptions[0].CompilerOptions := ReadString(cProject, COMPILER_INI_LABEL, '');
+      fOptions[0].ResourceIncludes.DelimitedText := ReadString(cProject, 'ResourceIncludes', '');
+      fOptions[0].Compiler                       := ReadString(cProject, 'Compiler', '');
+      fOptions[0].CppCompiler                    := ReadString(cProject, 'CppCompiler', '');
+      fOptions[0].Linker                         := ReadString(cProject, 'Linker', '');
+      fOptions[0].PreprocDefines                 := ReadString(cProject, 'PreprocDefines', '');
+      fOptions[0].CompilerOptions                := ReadString(cProject, COMPILER_INI_LABEL, '');
+      fOptions[0].IncludeVersionInfo             := ReadBool(cProject, 'IncludeVersionInfo', FALSE);
+      fOptions[0].SupportXPThemes                := ReadBool(cProject, 'SupportXPThemes', FALSE);
+      fOptions[0].ExeOutput                      := ReadString(cProject, 'ExeOutput', '');
+      fOptions[0].ObjectOutput                   := ReadString(cProject, 'ObjectOutput', '');
 
-         fOptions.useGPP:= ReadBool(cProject, 'IsCpp', false);
-         fOptions[0].IncludeVersionInfo:= ReadBool(cProject, 'IncludeVersionInfo', FALSE);
-         fOptions[0].SupportXPThemes:= ReadBool(cProject, 'SupportXPThemes', FALSE);
-
-         // RNC -- 07-23-04 Added the ability to set an output dir in a template
-         fOptions[0].ExeOutput:= ReadString(cProject, 'ExeOutput', '');
-         fOptions[0].ObjectOutput:= ReadString(cProject, 'ObjectOutput', '');
-         if (trim(fOptions[0].ExeOutput) = '') and (trim(fOptions[0].ObjectOutput) <> '') then
-          fOptions[0].ExeOutput:=fOptions[0].ObjectOutput
-         else if (trim(fOptions[0].ExeOutput) <> '') and (trim(fOptions[0].ObjectOutput) = '') then
-          fOptions[0].ObjectOutput:=fOptions[0].ExeOutput
-         else if ((fOptions[0].ExeOutput = '') and (fOptions[0].ObjectOutput = '') ) then
-         begin
-          fOptions[0].ObjectOutput:=fOptions[0].ProfileName;
-          fOptions[0].ExeOutput:=fOptions[0].ProfileName;
-         end;
-         // units are read on demand
-      end
-      else // read new style
+      if (Trim(fOptions[0].ExeOutput) = '') and (Trim(fOptions[0].ObjectOutput) <> '') then
+        fOptions[0].ExeOutput    := fOptions[0].ObjectOutput
+      else if (Trim(fOptions[0].ExeOutput) <> '') and (trim(fOptions[0].ObjectOutput) = '') then
+        fOptions[0].ObjectOutput := fOptions[0].ExeOutput
+      else if (fOptions[0].ExeOutput = '') and (fOptions[0].ObjectOutput = '') then
       begin
-        ProfileCount:=ReadInteger(cProject, 'ProfilesCount', 0);
-        for i:=0 to ProfileCount -1 do
-        begin
-          CurrenProfileName:='Profile'+IntToStr(i);
-          NewProfile := TProjProfile.Create;
-          NewProfile.ProfileName:= ReadString(CurrenProfileName,'ProfileName','');
-          NewProfile.typ:= ReadInteger(CurrenProfileName,'Type',0);
-          NewProfile.compilerType:= ReadInteger(CurrenProfileName,'CompilerType',ID_COMPILER_MINGW);
-          NewProfile.Compiler:= ReadString(CurrenProfileName,'Compiler','');
-          NewProfile.CppCompiler:= ReadString(CurrenProfileName,'CppCompiler','');
-          NewProfile.Linker:= ReadString(CurrenProfileName,'Linker','');
-          NewProfile.ObjFiles.DelimitedText:=ReadString(CurrenProfileName,'ObjFiles','');
-          NewProfile.Includes.DelimitedText:=ReadString(CurrenProfileName,'Includes','');
-          NewProfile.Libs.DelimitedText:=ReadString(CurrenProfileName,'Libs','');
-          NewProfile.PrivateResource:= ReadString(CurrenProfileName,'PrivateResource','');
-          NewProfile.ResourceIncludes.DelimitedText:=ReadString(CurrenProfileName,'ResourceIncludes','');
-          NewProfile.MakeIncludes.DelimitedText:=ReadString(CurrenProfileName,'MakeIncludes','');
-          NewProfile.Icon:= ReadString(CurrenProfileName,'Icon','');
-          NewProfile.ExeOutput := ReadString(CurrenProfileName,'ExeOutput','');
-          NewProfile.ObjectOutput := ReadString(CurrenProfileName,'ObjectOutput','');
-          NewProfile.OverrideOutput := ReadBool(CurrenProfileName,'OverrideOutput',false);
-          NewProfile.OverridenOutput := ReadString(CurrenProfileName,'OverrideOutputName','');
-          NewProfile.HostApplication := ReadString(CurrenProfileName,'HostApplication','');
-          NewProfile.IncludeVersionInfo := ReadBool(CurrenProfileName,'IncludeVersionInfo',false);
-          NewProfile.SupportXPThemes:= ReadBool(CurrenProfileName,'SupportXPThemes',false);
-          NewProfile.CompilerSet := ReadInteger(CurrenProfileName,'CompilerSet',0);
-          NewProfile.CompilerOptions := ReadString(CurrenProfileName,COMPILER_INI_LABEL,'');
-          NewProfile.PreprocDefines:= ReadString(CurrenProfileName,'PreprocDefines','');
-          fOptions.Add(NewProfile);
-        end;
+        fOptions[0].ObjectOutput:=fOptions[0].ProfileName;
+        fOptions[0].ExeOutput:=fOptions[0].ProfileName;
       end;
+
+      //Verify the profile's integrity
+      VerifyProfile(NewProfile);
+    end
+    else // read new style
+    begin
+      ProfileCount := ReadInteger(cProject, 'ProfilesCount', 0);
+      for i := 0 to ProfileCount - 1 do
+      begin
+        //Read the current profile's values
+        CurrentProfileName                        := 'Profile' + IntToStr(i);
+        NewProfile                                := TProjProfile.Create;
+        NewProfile.ProfileName                    := ReadString(CurrentProfileName,'ProfileName','');
+        NewProfile.typ                            := ReadInteger(CurrentProfileName,'Type',0);
+        NewProfile.compilerType                   := ReadInteger(CurrentProfileName,'CompilerType',ID_COMPILER_MINGW);
+        NewProfile.Compiler                       := ReadString(CurrentProfileName,'Compiler','');
+        NewProfile.CppCompiler                    := ReadString(CurrentProfileName,'CppCompiler','');
+        NewProfile.Linker                         := ReadString(CurrentProfileName,'Linker','');
+        NewProfile.ObjFiles.DelimitedText         := ReadString(CurrentProfileName,'ObjFiles','');
+        NewProfile.Includes.DelimitedText         := ReadString(CurrentProfileName,'Includes','');
+        NewProfile.Libs.DelimitedText             := ReadString(CurrentProfileName,'Libs','');
+        NewProfile.PrivateResource                := ReadString(CurrentProfileName,'PrivateResource','');
+        NewProfile.ResourceIncludes.DelimitedText := ReadString(CurrentProfileName,'ResourceIncludes','');
+        NewProfile.MakeIncludes.DelimitedText     := ReadString(CurrentProfileName,'MakeIncludes','');
+        NewProfile.Icon                           := ReadString(CurrentProfileName,'Icon','');
+        NewProfile.ExeOutput                      := ReadString(CurrentProfileName,'ExeOutput','');
+        NewProfile.ObjectOutput                   := ReadString(CurrentProfileName,'ObjectOutput','');
+        NewProfile.OverrideOutput                 := ReadBool(CurrentProfileName,'OverrideOutput',false);
+        NewProfile.OverridenOutput                := ReadString(CurrentProfileName,'OverrideOutputName','');
+        NewProfile.HostApplication                := ReadString(CurrentProfileName,'HostApplication','');
+        NewProfile.IncludeVersionInfo             := ReadBool(CurrentProfileName,'IncludeVersionInfo',false);
+        NewProfile.SupportXPThemes                := ReadBool(CurrentProfileName,'SupportXPThemes',false);
+        NewProfile.CompilerSet                    := ReadInteger(CurrentProfileName,'CompilerSet',0);
+        NewProfile.CompilerOptions                := ReadString(CurrentProfileName,COMPILER_INI_LABEL,'');
+        NewProfile.PreprocDefines                 := ReadString(CurrentProfileName,'PreprocDefines','');
+
+        //Verify the profile's integrity
+        VerifyProfile(NewProfile);
+
+        //Save the profile to the list of profiles available
+        fOptions.Add(NewProfile);
+      end;
+    end;
   end;
 end;
 

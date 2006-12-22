@@ -2,8 +2,8 @@ object FilePropertiesForm: TFilePropertiesForm
   Left = 287
   Top = 160
   BorderStyle = bsDialog
-  Caption = 'File properties'
-  ClientHeight = 265
+  Caption = 'Properties'
+  ClientHeight = 255
   ClientWidth = 409
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,10 +20,10 @@ object FilePropertiesForm: TFilePropertiesForm
   PixelsPerInch = 96
   TextHeight = 13
   object btnOK: TButton
-    Left = 167
-    Top = 232
+    Left = 328
+    Top = 225
     Width = 75
-    Height = 25
+    Height = 23
     Cancel = True
     Caption = 'OK'
     Default = True
@@ -158,95 +158,53 @@ object FilePropertiesForm: TFilePropertiesForm
       Caption = 'Empty lines:'
     end
     object lblTotal: TLabel
-      Left = 105
+      Left = 192
       Top = 13
-      Width = 90
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
     object lblCode: TLabel
-      Left = 105
+      Left = 192
       Top = 35
-      Width = 90
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
     object lblComments: TLabel
-      Left = 105
+      Left = 192
       Top = 57
-      Width = 90
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
     object lblTimestamp: TLabel
-      Left = 111
+      Left = 380
       Top = 79
-      Width = 272
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
     object lblIncludes: TLabel
-      Left = 273
+      Left = 380
       Top = 57
-      Width = 110
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
     object lblSize: TLabel
-      Left = 273
+      Left = 380
       Top = 35
-      Width = 110
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
     object lblEmpty: TLabel
-      Left = 273
+      Left = 380
       Top = 13
-      Width = 110
+      Width = 3
       Height = 13
       Alignment = taRightJustify
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
     end
   end
   object XPMenu: TXPMenu
@@ -275,6 +233,7 @@ object FilePropertiesForm: TFilePropertiesForm
     Gradient = False
     FlatMenu = False
     AutoDetect = True
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 10
     Top = 224

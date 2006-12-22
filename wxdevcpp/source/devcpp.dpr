@@ -24,14 +24,12 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  LanguagesDEPFix,
   FastMM4,
   FastCode,
-{$IFNDEF OLD_MADSHI}
+  LanguagesDEPFix,
   madListHardware,
   madListProcesses,
   madListModules,
-{$ENDIF}
   madExcept,
   madLinkDisAsm,
   inifiles,
@@ -76,10 +74,8 @@ uses
   CFGData in 'CFGData.pas',
   CFGINI in 'CFGINI.pas',
   CFGReg in 'CFGReg.pas',
-  CheckForUpdate in 'CheckForUpdate.pas',
   prjtypes in 'prjtypes.pas',
   debugfrm in 'debugfrm.pas' {DebugForm},
-  ResourceSelector in 'ResourceSelector.pas' {SelectResource},
   Macros in 'Macros.pas',
   devExec in 'devExec.pas',
   NewTemplateFm in 'NewTemplateFm.pas' {NewTemplateForm},
@@ -111,8 +107,6 @@ uses
   ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
   Wxcontrolpanel in 'components\Wxcontrolpanel.pas',
   uFileWatch in 'uFileWatch.pas',
-  
-  //New form files
   dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
   DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
   Designerfrm in 'Designerfrm.pas' {frmNewForm},
@@ -120,8 +114,6 @@ uses
   ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
   ComponentPalette in 'components\ComponentPalette.pas',
-  
-  //Property editors
   dmListview in 'propedit\dmListview.pas' {ListviewForm},
   UStrings in 'propedit\UStrings.pas' {StringsForm},
   UStatusbar in 'propedit\UStatusbar.pas' {StatusBarForm},
@@ -129,8 +121,6 @@ uses
   UColorEdit in 'propedit\UColorEdit.pas' {ColorEdit},
   UMenuitem in 'propedit\UMenuitem.pas' {MenuItemForm},
   UValidator in 'propedit\UValidator.pas' {wxValidator},
-  
-  //UI components
   WxUtils in 'components\wxUtils.pas',
   WxBitmapButton in 'components\WxBitmapButton.pas',
   WXCheckBox in 'components\wxcheckbox.pas',
@@ -187,8 +177,7 @@ uses
   Wxsplitterwindow in 'components\wxsplitterwindow.pas',
   WxRadioBox in 'components\wxRadioBox.pas',
   WxDatePickerCtrl in 'components\wxDatePickerCtrl.pas',
-  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas'
-{$ENDIF};
+  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas' {$ENDIF};
 
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
@@ -311,7 +300,6 @@ begin
   Application.Initialize;
   Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
-
   if not devData.NoSplashScreen then
   begin
     SplashForm := TSplashForm.Create(Application);

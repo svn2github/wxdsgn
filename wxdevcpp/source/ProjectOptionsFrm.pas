@@ -712,20 +712,19 @@ end;
 
 procedure TfrmProjectOptions.FormCreate(Sender: TObject);
 begin
-  cmbLangID.Sorted := True;
-  fProfiles:=TProjectProfileList.Create;
-  //InitVersionInfo;
   LoadText;
+  lblCompileInfo.Font.Color := clMaroon;
+  cmbLangID.Sorted := True;
+  fProfiles := TProjectProfileList.Create;
   fCurrentProfileIndex:=0;
 end;
 
 procedure TfrmProjectOptions.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption:= Lang[ID_POPT];
+  
   //tabs
   tabGeneral.Caption:=                Lang[ID_POPT_GENTAB];
   tabFilesDir.Caption:=               Lang[ID_POPT_DIRTAB];

@@ -41,12 +41,12 @@ type
     cmbConf: TComboBox;
     lbDev: TLabel;
     txtDev: TEdit;
-    btnBrowseDev: TSpeedButton;
     btnImport: TButton;
     btnCancel: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     XPMenu: TXPMenu;
+    btnBrowseDev: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -608,11 +608,10 @@ end;
 
 procedure TImportMSVCForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_MSVC_MENUITEM];
+  
   lbSelect.Caption := Lang[ID_MSVC_SELECTMSVC] + ':';
   lbConf.Caption := Lang[ID_MSVC_CONFIGURATION] + ':';
   lbDev.Caption := Lang[ID_MSVC_SELECTDEV] + ':';

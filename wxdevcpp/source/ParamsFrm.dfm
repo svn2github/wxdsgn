@@ -4,7 +4,7 @@ object ParamsForm: TParamsForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Parameters'
-  ClientHeight = 170
+  ClientHeight = 166
   ClientWidth = 297
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -83,18 +83,18 @@ object ParamsForm: TParamsForm
     end
   end
   object OkBtn: TBitBtn
-    Left = 136
-    Top = 138
-    Width = 75
-    Height = 25
+    Left = 125
+    Top = 135
+    Width = 80
+    Height = 23
     TabOrder = 2
     Kind = bkOK
   end
   object CancelBtn: TBitBtn
-    Left = 214
-    Top = 138
-    Width = 75
-    Height = 25
+    Left = 210
+    Top = 135
+    Width = 80
+    Height = 23
     TabOrder = 3
     Kind = bkCancel
   end

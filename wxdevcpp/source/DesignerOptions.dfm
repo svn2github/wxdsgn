@@ -3,7 +3,7 @@ object DesignerForm: TDesignerForm
   Top = 161
   BorderStyle = bsDialog
   Caption = 'Form Designer Options'
-  ClientHeight = 320
+  ClientHeight = 316
   ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,14 +16,14 @@ object DesignerForm: TDesignerForm
   OnCreate = FormCreate
   DesignSize = (
     418
-    320)
+    316)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn
-    Left = 163
+    Left = 153
     Top = 288
     Width = 80
-    Height = 25
+    Height = 23
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
@@ -50,19 +50,19 @@ object DesignerForm: TDesignerForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 243
+    Left = 238
     Top = 288
     Width = 80
-    Height = 25
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 1
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 334
+    Left = 333
     Top = 288
     Width = 75
-    Height = 25
+    Height = 23
     Anchors = [akRight, akBottom]
     TabOrder = 2
     Kind = bkHelp
@@ -71,10 +71,9 @@ object DesignerForm: TDesignerForm
     Left = 8
     Top = 8
     Width = 401
-    Height = 276
+    Height = 275
     ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'Designer Options'
@@ -83,44 +82,44 @@ object DesignerForm: TDesignerForm
         Top = 4
         Width = 385
         Height = 117
-        Caption = 'Form Options'
+        Caption = 'Form Grid'
         TabOrder = 0
         object Bevel2: TBevel
-          Left = 137
-          Top = 63
+          Left = 139
+          Top = 85
           Width = 68
           Height = 18
         end
         object Bevel1: TBevel
-          Left = 137
-          Top = 39
+          Left = 139
+          Top = 61
           Width = 68
           Height = 18
         end
         object Label6: TLabel
-          Left = 11
-          Top = 42
+          Left = 10
+          Top = 64
           Width = 120
           Height = 13
-          Caption = 'X coordinate grid interval:'
+          Caption = 'X-coordinate grid interval:'
         end
         object Label7: TLabel
-          Left = 10
-          Top = 66
+          Left = 9
+          Top = 88
           Width = 120
           Height = 13
-          Caption = 'Y coordinate grid interval:'
+          Caption = 'Y-coordinate grid interval:'
         end
         object lbGridXStep: TLabel
-          Left = 140
-          Top = 42
+          Left = 142
+          Top = 64
           Width = 6
           Height = 13
           Caption = '8'
         end
         object lbGridYStep: TLabel
-          Left = 140
-          Top = 66
+          Left = 142
+          Top = 88
           Width = 6
           Height = 13
           Caption = '8'
@@ -130,14 +129,14 @@ object DesignerForm: TDesignerForm
           Top = 18
           Width = 97
           Height = 17
-          Caption = 'Visible'
+          Caption = 'Show Form Grid'
           Checked = True
           State = cbChecked
           TabOrder = 0
         end
         object cbSnapToGrid: TCheckBox
           Left = 10
-          Top = 88
+          Top = 38
           Width = 97
           Height = 17
           Caption = 'Snap to grid'
@@ -146,27 +145,25 @@ object DesignerForm: TDesignerForm
           TabOrder = 1
         end
         object lbGridXStepUpDown: TUpDown
-          Left = 204
-          Top = 39
+          Left = 206
+          Top = 61
           Width = 16
           Height = 18
           Min = 2
           Max = 30
           Position = 8
           TabOrder = 2
-          Wrap = False
           OnClick = lbGridXStepUpDownClick
         end
         object lbGridYStepUpDown: TUpDown
-          Left = 204
-          Top = 63
+          Left = 206
+          Top = 85
           Width = 16
           Height = 18
           Min = 2
           Max = 30
           Position = 8
           TabOrder = 3
-          Wrap = False
           OnClick = lbGridYStepUpDownClick
         end
       end
@@ -175,7 +172,7 @@ object DesignerForm: TDesignerForm
         Top = 133
         Width = 385
         Height = 109
-        Caption = 'Hints'
+        Caption = 'Guide Hints'
         TabOrder = 1
         object cbControlHints: TCheckBox
           Left = 10
@@ -232,9 +229,9 @@ object DesignerForm: TDesignerForm
         object Label1: TLabel
           Left = 10
           Top = 41
-          Width = 118
+          Width = 121
           Height = 13
-          Caption = 'String Internationalization'
+          Caption = 'String Internationalization:'
         end
         object cbGenerateXRC: TCheckBox
           Left = 10
@@ -247,7 +244,7 @@ object DesignerForm: TDesignerForm
           TabOrder = 0
         end
         object cbStringFormat: TComboBox
-          Left = 137
+          Left = 140
           Top = 38
           Width = 73
           Height = 21

@@ -62,7 +62,6 @@ type
   end;
 
   TfrmCodeEdit = class(TForm)
-    Bevel1: TBevel;
     lblMenu: TLabel;
     lblSec: TLabel;
     edMenuText: TEdit;
@@ -230,10 +229,8 @@ end;
 
 procedure TfrmCodeEdit.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   if Edit then
     Caption := Lang[ID_CIE_EDCAPTION]
   else

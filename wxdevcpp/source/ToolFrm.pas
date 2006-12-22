@@ -481,10 +481,8 @@ end;
 
 procedure TToolForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption:=               Lang[ID_TF];
   grpCurrent.Caption:=    '  '+Lang[ID_TF_LABEL] +'  ';
 

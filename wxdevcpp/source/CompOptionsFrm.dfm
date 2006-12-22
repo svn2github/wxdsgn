@@ -4,7 +4,7 @@ object CompForm: TCompForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Compiler options'
-  ClientHeight = 449
+  ClientHeight = 441
   ClientWidth = 449
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object CompForm: TCompForm
   OnCreate = FormCreate
   DesignSize = (
     449
-    449)
+    441)
   PixelsPerInch = 96
   TextHeight = 13
   object btnAddCompilerSet: TSpeedButton
@@ -120,15 +120,15 @@ object CompForm: TCompForm
   object Label1: TLabel
     Left = 12
     Top = 15
-    Width = 65
+    Width = 62
     Height = 13
-    Caption = 'Compiler Set :'
+    Caption = 'Compiler Set:'
   end
   object btnOk: TBitBtn
-    Left = 193
-    Top = 416
+    Left = 190
+    Top = 413
     Width = 80
-    Height = 25
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = '&OK'
     Default = True
@@ -155,10 +155,10 @@ object CompForm: TCompForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 273
-    Top = 416
-    Width = 84
-    Height = 25
+    Left = 274
+    Top = 413
+    Width = 80
+    Height = 23
     Anchors = [akLeft, akBottom]
     Cancel = True
     Caption = '&Cancel'
@@ -186,9 +186,9 @@ object CompForm: TCompForm
   end
   object btnDefault: TBitBtn
     Left = 9
-    Top = 416
-    Width = 81
-    Height = 25
+    Top = 413
+    Width = 75
+    Height = 23
     Caption = '&Default'
     TabOrder = 2
     OnClick = btnDefaultClick
@@ -208,10 +208,10 @@ object CompForm: TCompForm
     NumGlyphs = 2
   end
   object btnHelp: TBitBtn
-    Left = 362
-    Top = 416
+    Left = 364
+    Top = 413
     Width = 75
-    Height = 25
+    Height = 23
     Anchors = [akLeft, akBottom]
     TabOrder = 3
     OnClick = btnHelpClick
@@ -222,8 +222,7 @@ object CompForm: TCompForm
     Top = 39
     Width = 430
     Height = 370
-    ActivePage = tabCompiler
-    TabIndex = 0
+    ActivePage = tabDirectories
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
@@ -247,8 +246,8 @@ object CompForm: TCompForm
           Width = 22
           Height = 24
           Hint = 
-            'Refresh Include/ Lib paths and Other settings for the Selected C' +
-            'ompiler'
+            'Refresh the include and library paths and other settings for the' +
+            ' selected compiler set'
           Glyph.Data = {
             36030000424D3603000000000000360000002800000010000000100000000100
             18000000000000030000120B0000120B00000000000000000000FF00FFFF00FF
@@ -315,7 +314,7 @@ object CompForm: TCompForm
           247)
         object lblDelay: TLabel
           Left = 10
-          Top = 219
+          Top = 218
           Width = 70
           Height = 13
           Caption = 'Compile Delay:'
@@ -327,8 +326,8 @@ object CompForm: TCompForm
           Height = 28
           AutoSize = False
           Caption = 
-            'Enables a delay in milliseconds if make complains about makefile' +
-            #39's time stamp (in compile log)'
+            'Enable a delay in milliseconds if make complains about makefile'#39 +
+            's time stamp (in compile log)'
           Transparent = True
           Layout = tlCenter
           WordWrap = True
@@ -492,7 +491,7 @@ object CompForm: TCompForm
           OnClick = UpDownClick
         end
         object btnDown: TSpeedButton
-          Left = 396
+          Left = 395
           Top = 155
           Width = 23
           Height = 22
@@ -652,7 +651,7 @@ object CompForm: TCompForm
       object lblProgramsText: TLabel
         Left = 8
         Top = 8
-        Width = 366
+        Width = 384
         Height = 26
         Caption = 
           'You may want to change the programs filenames that are used in w' +
@@ -661,58 +660,65 @@ object CompForm: TCompForm
         WordWrap = True
       end
       object lblgcc: TLabel
-        Left = 48
-        Top = 58
+        Left = 51
+        Top = 59
         Width = 52
         Height = 13
+        Alignment = taRightJustify
         Caption = 'C compiler:'
         Transparent = True
       end
       object lblgpp: TLabel
-        Left = 35
-        Top = 89
+        Left = 38
+        Top = 90
         Width = 65
         Height = 13
+        Alignment = taRightJustify
         Caption = 'C++ Compiler:'
         Transparent = True
       end
       object lblmake: TLabel
-        Left = 70
-        Top = 120
+        Left = 73
+        Top = 121
         Width = 30
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Make:'
         Transparent = True
       end
       object lblgdb: TLabel
-        Left = 50
-        Top = 214
+        Left = 53
+        Top = 215
         Width = 50
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Debugger:'
         Transparent = True
       end
       object lblwindres: TLabel
-        Left = 8
-        Top = 152
+        Left = 11
+        Top = 153
         Width = 92
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Resource Compiler:'
         Transparent = True
       end
       object lbldllwrap: TLabel
-        Left = 68
-        Top = 183
+        Left = 71
+        Top = 184
         Width = 32
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Linker:'
         Transparent = True
       end
       object lblgprof: TLabel
-        Left = 37
-        Top = 246
+        Left = 40
+        Top = 247
         Width = 63
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Code Profiler:'
         Transparent = True
       end
@@ -1013,7 +1019,7 @@ object CompForm: TCompForm
     end
   end
   object cmbCompilerSetComp: TComboBox
-    Left = 80
+    Left = 85
     Top = 11
     Width = 281
     Height = 21

@@ -84,8 +84,9 @@ uses
 
 procedure TNewProjectForm.FormCreate(Sender: TObject);
 begin
-  fTemplates := TList.Create;
   LoadText;
+  TemplateLabel.Font.Color := clNavy;
+  fTemplates := TList.Create;
   ReadTemplateIndex;
   edProjectName.Text := format(Lang[ID_NEWPROJECT], [dmMain.GetNumber]);
 end;
@@ -179,10 +180,8 @@ end;
 
 procedure TNewProjectForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_NP];
   lblDesc.Caption := Lang[ID_NP_DESC];
   lblPrjName.Caption := Lang[ID_NP_PRJNAME];

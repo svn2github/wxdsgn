@@ -3,7 +3,7 @@ object NewClassForm: TNewClassForm
   Top = 140
   BorderStyle = bsDialog
   Caption = 'New class'
-  ClientHeight = 470
+  ClientHeight = 460
   ClientWidth = 372
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -158,10 +158,10 @@ object NewClassForm: TNewClassForm
     TabOrder = 6
   end
   object btnCreate: TButton
-    Left = 215
-    Top = 436
+    Left = 211
+    Top = 431
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Create'
     Default = True
     ModalResult = 1
@@ -169,10 +169,10 @@ object NewClassForm: TNewClassForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 290
-    Top = 436
+    Left = 291
+    Top = 431
     Width = 75
-    Height = 25
+    Height = 23
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2

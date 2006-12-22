@@ -718,6 +718,7 @@ const
   ID_UCF_SITES                     = 826;
 
   //AddToDo form
+  ID_ATD                           = 829;
   ID_ADDTODO_MENUITEM              = 830; // menu
   ID_ADDTODO_DESCRIPTION           = 831;
   ID_ADDTODO_PRIORITY              = 832;

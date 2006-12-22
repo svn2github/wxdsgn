@@ -4,7 +4,7 @@ object ViewControlIDsForm: TViewControlIDsForm
   HelpContext = 1638
   BorderStyle = bsDialog
   Caption = 'Control IDs'
-  ClientHeight = 262
+  ClientHeight = 260
   ClientWidth = 439
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -22,14 +22,14 @@ object ViewControlIDsForm: TViewControlIDsForm
     Left = 357
     Top = 229
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Close'
     TabOrder = 0
     OnClick = btCloseClick
   end
   object cbHideZeroValueID: TCheckBox
     Left = 8
-    Top = 232
+    Top = 230
     Width = 145
     Height = 17
     Caption = 'Hide IDs with a value of 0'

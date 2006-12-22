@@ -4,7 +4,7 @@ object TipOfTheDayForm: TTipOfTheDayForm
   BorderStyle = bsDialog
   Caption = 'Tip Of The Day'
   ClientHeight = 236
-  ClientWidth = 385
+  ClientWidth = 382
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -27,6 +27,7 @@ object TipOfTheDayForm: TTipOfTheDayForm
     BevelOuter = bvNone
     BorderStyle = bsSingle
     Color = clWindow
+    ParentBackground = False
     TabOrder = 4
     object Image: TImage
       Left = 8
@@ -161,8 +162,8 @@ object TipOfTheDayForm: TTipOfTheDayForm
   object btnPrev: TButton
     Left = 304
     Top = 32
-    Width = 77
-    Height = 25
+    Width = 75
+    Height = 23
     Caption = 'Previous tip'
     TabOrder = 1
     OnClick = btnPrevClick
@@ -170,17 +171,17 @@ object TipOfTheDayForm: TTipOfTheDayForm
   object btnNext: TButton
     Left = 304
     Top = 4
-    Width = 77
-    Height = 25
+    Width = 75
+    Height = 23
     Caption = 'Next tip'
     TabOrder = 0
     OnClick = btnNextClick
   end
   object btnClose: TButton
     Left = 304
-    Top = 188
-    Width = 77
-    Height = 25
+    Top = 190
+    Width = 75
+    Height = 23
     Cancel = True
     Caption = 'Close'
     TabOrder = 2

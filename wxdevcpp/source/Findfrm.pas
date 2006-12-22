@@ -199,10 +199,8 @@ procedure TfrmFind.LoadText;
 var
   x: Integer;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_FIND];
 
   //controls

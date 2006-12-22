@@ -240,7 +240,7 @@ type
 implementation
 uses
   main, MultiLangSupport, devcfg, ProjectOptionsFrm, datamod,
-  RemoveUnitFrm, ResourceSelector,WxUtils;
+  RemoveUnitFrm, WxUtils;
 
 { TProjUnit }
 

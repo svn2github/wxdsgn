@@ -65,10 +65,8 @@ uses
 
 procedure TPrintForm.LoadText;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   Caption := Lang[ID_PRT];
   grpParams.Caption := '  ' + Lang[ID_PRT_GRP_PARAMS] + '  ';
   grpPages.Caption := '  ' + Lang[ID_PRT_GRP_PAGES] + '  ';

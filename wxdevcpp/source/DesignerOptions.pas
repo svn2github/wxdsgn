@@ -62,10 +62,8 @@ uses main, ELDsgnr, Designerfrm;
 
 procedure TDesignerForm.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := True
-  else
-    XPMenu.Active := False;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   cbGridVisible.Checked := MainForm.ELDesigner1.Grid.Visible;
   lbGridXStep.Caption := IntToStr(MainForm.ELDesigner1.Grid.XStep);
   lbGridXStepUpDown.Position := MainForm.ELDesigner1.Grid.XStep;

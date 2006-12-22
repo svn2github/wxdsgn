@@ -4,7 +4,7 @@ object frmProjectOptions: TfrmProjectOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Options'
-  ClientHeight = 375
+  ClientHeight = 373
   ClientWidth = 552
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -122,9 +122,9 @@ object frmProjectOptions: TfrmProjectOptions
   object Label2: TLabel
     Left = 10
     Top = 11
-    Width = 71
+    Width = 68
     Height = 13
-    Caption = 'Project Profile :'
+    Caption = 'Project Profile:'
   end
   object btnCopyProfileSet: TSpeedButton
     Left = 520
@@ -164,10 +164,10 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnCopyProfileSetClick
   end
   object btnOk: TBitBtn
-    Left = 262
+    Left = 286
     Top = 344
-    Width = 93
-    Height = 24
+    Width = 80
+    Height = 23
     Caption = '&OK'
     Default = True
     ModalResult = 1
@@ -193,20 +193,20 @@ object frmProjectOptions: TfrmProjectOptions
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 355
+    Left = 371
     Top = 344
-    Width = 93
-    Height = 24
+    Width = 80
+    Height = 23
     Caption = '&Cancel'
     TabOrder = 1
     OnClick = btnCancelClick
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 467
+    Left = 466
     Top = 344
     Width = 77
-    Height = 24
+    Height = 23
     TabOrder = 2
     OnClick = btnHelpClick
     Kind = bkHelp
@@ -585,12 +585,6 @@ object frmProjectOptions: TfrmProjectOptions
         Caption = 
           'NOTE: These settings will override the global Compiler Options a' +
           'ffecting this project only.'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clMaroon
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
         Transparent = True
         Layout = tlCenter
         WordWrap = True
@@ -625,7 +619,7 @@ object frmProjectOptions: TfrmProjectOptions
         Width = 450
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -1466,7 +1460,7 @@ object frmProjectOptions: TfrmProjectOptions
           Width = 160
           Height = 21
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 4
         end
       end
