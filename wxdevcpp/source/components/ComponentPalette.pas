@@ -48,13 +48,14 @@ type
 
     //Special variables
     SearchNode: TTreeNode;
+    SearchImage: Integer;
   public
     constructor Create(Panel: TComponent); override;
   published
     property SelectedComponent: string read GetSelectedComponent;
     
     procedure UnselectComponents;
-  end;                  
+  end;
 
 implementation
 uses
@@ -168,7 +169,7 @@ begin
   ComponentBitmap := TBitmap.Create;
   ComponentsList := TStringList.Create;
   try
-    //Begin by adding the almighty cursor!
+    //Begin by adding the almighty cursor
     with ComponentList.Items.AddChild(nil, 'Pointer') do
     begin
       //Create the icon
@@ -180,6 +181,10 @@ begin
       SelectedIndex := BitmapIndex;
       ImageIndex := BitmapIndex;
     end;
+
+    //Then deal with the search icon
+    ComponentBitmap.Handle := LoadBitmap(hInstance, PChar('SEARCH'));
+    SearchImage := ComponentImages.AddMasked(ComponentBitmap, clFuchsia);
 
     //Then load the folder icon
     ComponentBitmap.Handle := LoadBitmap(hInstance, PChar('FOLDER'));
@@ -363,8 +368,8 @@ begin
   begin
     Expanded := True;
     SearchNode := ComponentList.Items.AddChild(nil, 'Search Results');
-    SearchNode.ImageIndex := -1;
-    SearchNode.SelectedIndex := -1;
+    SearchNode.ImageIndex := SearchImage;
+    SearchNode.SelectedIndex := SearchImage;
   end;
 
   //Check the root onwards. Start from the sizers
