@@ -55,27 +55,15 @@ type
     cboGutterSize: TComboBox;
     tabGeneral: TTabSheet;
     tabSyntax: TTabSheet;
-    cpForeground: TColorPickerButton;
-    cpBackground: TColorPickerButton;
-    lblForeground: TLabel;
-    lblBackground: TLabel;
     CppEdit: TSynEdit;
     ElementList: TListBox;
-    grpStyle: TGroupBox;
-    cbBold: TCheckBox;
-    cbItalic: TCheckBox;
-    cbUnderlined: TCheckBox;
     cpp: TSynCppSyn;
-    cbSyntaxHighlight: TCheckBox;
-    edSyntaxExt: TEdit;
     grpEditorFont: TGroupBox;
     lblEditorSize: TLabel;
     lblEditorFont: TLabel;
     cboEditorFont: TComboBox;
     cboEditorSize: TComboBox;
     pnlEditorPreview: TPanel;
-    lblTabSize: TLabel;
-    seTabSize: TSpinEdit;
     grpMargin: TGroupBox;
     lblMarginWidth: TLabel;
     lblMarginColor: TLabel;
@@ -105,7 +93,6 @@ type
     CodeIns: TSynEdit;
     tabClassBrowsing: TTabSheet;
     chkEnableClassBrowser: TCheckBox;
-    btnSaveSyntax: TSpeedButton;
     devPages1: TPageControl;
     tabCBBrowser: TTabSheet;
     tabCBCompletion: TTabSheet;
@@ -118,7 +105,6 @@ type
     lblCompletionDelay: TLabel;
     cpCompletionBackground: TColorPickerButton;
     lblCompletionColor: TLabel;
-    tbCompletionDelay: TTrackBar;
     chkEnableCompletion: TCheckBox;
     chkCBUseColors: TCheckBox;
     chkCCCache: TCheckBox;
@@ -132,8 +118,6 @@ type
     cbMatch: TCheckBox;
     edMarginWidth: TSpinEdit;
     edGutterWidth: TSpinEdit;
-    cbHighCurrLine: TCheckBox;
-    cpHighColor: TColorPickerButton;
     lblEditorOpts: TGroupBox;
     cbAppendNewline: TCheckBox;
     cbSpecialChars: TCheckBox;
@@ -154,9 +138,26 @@ type
     cbDoubleLine: TCheckBox;
     cbEHomeKey: TCheckBox;
     cbPastEOF: TCheckBox;
-    cbDefaultintoprj: TCheckBox;
     btnCCCnew: TButton;
     btnCCCdelete: TButton;
+    lblTabSize: TLabel;
+    seTabSize: TSpinEdit;
+    cbSyntaxHighlight: TCheckBox;
+    cbHighCurrLine: TCheckBox;
+    cpHighColor: TColorPickerButton;
+    grpStyle: TGroupBox;
+    lblForeground: TLabel;
+    cpForeground: TColorPickerButton;
+    lblBackground: TLabel;
+    cpBackground: TColorPickerButton;
+    cbBold: TCheckBox;
+    cbItalic: TCheckBox;
+    cbUnderlined: TCheckBox;
+    edSyntaxExt: TEdit;
+    btnSaveSyntax: TSpeedButton;
+    lblSyntaxExt: TLabel;
+    cbDefaultintoprj: TCheckBox;
+    edCompletionDelay: TSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -195,7 +196,6 @@ type
     procedure cboQuickColorSelect(Sender: TObject);
     procedure CppEditSpecialLineColors(Sender: TObject; Line: Integer;
       var Special: Boolean; var FG, BG: TColor);
-    procedure tbCompletionDelayChange(Sender: TObject);
     procedure chkEnableCompletionClick(Sender: TObject);
     procedure chkEnableClassBrowserClick(Sender: TObject);
     procedure btnSaveSyntaxClick(Sender: TObject);
@@ -206,6 +206,8 @@ type
     procedure CppParser1StartParsing(Sender: TObject);
     procedure CppParser1EndParsing(Sender: TObject);
     procedure CppParser1TotalProgress(Sender: TObject; FileName: String;
+      Total, Current: Integer);
+    procedure CppParser1CacheProgress(Sender: TObject; FileName: String;
       Total, Current: Integer);
     procedure devPages1Change(Sender: TObject);
     procedure chkCBShowInheritedClick(Sender: TObject);
@@ -420,21 +422,27 @@ begin
 end;
 
 procedure TEditorOptForm.FontSizeChange(Sender: TObject);
-begin
-  try
+  procedure UpdateSynEdits(ASynEdit: TSynEdit);
+  begin
     if Sender = cboEditorSize then begin
       pnlEditorPreview.Font.Size := strtoint(cboEditorsize.Text);
-      CppEdit.Font.Size := strtoint(cboEditorSize.Text);
-      CppEdit.Refresh;
+      ASynEdit.Font.Size := strtoint(cboEditorSize.Text);
+      ASynEdit.Refresh;
     end
     else
     begin
       pnlGutterPreview.Font.Size := strtoint(cboGutterSize.Text);
       CppEdit.Gutter.Font.Name := cboGutterFont.Text;
-      CppEdit.Gutter.Font.Size := strtoint(cboGutterSize.Text);
-      CppEdit.Gutter.Width := strtoint(edGutterWidth.Text);
-      CppEdit.Refresh;
+      ASynEdit.Gutter.Font.Size := strtoint(cboGutterSize.Text);
+      ASynEdit.Gutter.Width := strtoint(edGutterWidth.Text);
+      ASynEdit.Refresh;
     end;
+  end;
+begin
+  try
+    UpdateSynEdits(CppEdit);
+    UpdateSynEdits(Self.seDefault);
+    UpdateSynEdits(Self.CodeIns);
   except
     if Sender = cboEditorSize then begin
       cboEditorSize.Text := '10';
@@ -490,60 +498,60 @@ end;
 
 procedure TEditorOptForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  btnOk.Caption := Lang[ID_BTN_OK];
-  btnCancel.Caption := Lang[ID_BTN_CANCEL];
-  btnHelp.Caption := Lang[ID_BTN_HELP];
+  DesktopFont                   := True;
+  XPMenu.Active                 := devData.XPTheme;
+  btnOk.Caption                 := Lang[ID_BTN_OK];
+  btnCancel.Caption             := Lang[ID_BTN_CANCEL];
+  btnHelp.Caption               := Lang[ID_BTN_HELP];
 
-  Caption := Lang[ID_EOPT];
-  tabGeneral.Caption := Lang[ID_EOPT_GENTAB];
-  tabDisplay.Caption := Lang[ID_EOPT_DISPLAYTAB];
-  tabSyntax.Caption := Lang[ID_EOPT_SYNTAXTAB];
-  tabCode.Caption := Lang[ID_EOPT_CODETAB];
-  tabClassBrowsing.Caption := Lang[ID_EOPT_BROWSERTAB];
-  tabCBBrowser.Caption := Lang[ID_EOPT_BROWSERTAB];
-  tabCBCompletion.Caption := Lang[ID_EOPT_COMPLETIONTAB];
+  Caption                       := Lang[ID_EOPT];
+  tabGeneral.Caption            := Lang[ID_EOPT_GENTAB];
+  tabDisplay.Caption            := Lang[ID_EOPT_DISPLAYTAB];
+  tabSyntax.Caption             := Lang[ID_EOPT_SYNTAXTAB];
+  tabCode.Caption               := Lang[ID_EOPT_CODETAB];
+  tabClassBrowsing.Caption      := Lang[ID_EOPT_BROWSERTAB];
+  tabCBBrowser.Caption          := Lang[ID_EOPT_BROWSERTAB];
+  tabCBCompletion.Caption       := Lang[ID_EOPT_COMPLETIONTAB];
 
   // sub tabs
-  tabCPInserts.Caption := Lang[ID_EOPT_CPINSERTS];
-  tabCPDefault.Caption := Lang[ID_EOPT_CPDEFAULT];
+  tabCPInserts.Caption          := Lang[ID_EOPT_CPINSERTS];
+  tabCPDefault.Caption          := Lang[ID_EOPT_CPDEFAULT];
 
   // General Tab
-  lblEditorOpts.Caption := '  ' + Lang[ID_EOPT_EDOPTIONS] + '  ';
-  cbAutoIndent.Caption := Lang[ID_EOPT_AUTOINDENT];
-  cbInsertMode.Caption := Lang[ID_EOPT_INSERTMODE];
-  cbTabtoSpaces.Caption := Lang[ID_EOPT_TAB2SPC];
-  cbSmartTabs.Caption := Lang[ID_EOPT_SMARTTABS];
-  cbTrailingBlanks.Caption := Lang[ID_EOPT_TRAILBLANKS];
-  cbSmartUnIndent.Caption := Lang[ID_EOPT_SMARTUN];
-  cbGroupUndo.Caption := Lang[ID_EOPT_GROUPUNDO];
-  cbDropFiles.Caption := Lang[ID_EOPT_DROPFILES];
-  cbSpecialChars.Caption := Lang[ID_EOPT_SPECIALCHARS];
-  cbAppendNewline.Caption :=     Lang[ID_EOPT_APPENDNEWLINE];
-  cbEHomeKey.Caption := Lang[ID_EOPT_EHOMEKEY];
-  cbPastEOF.Caption := Lang[ID_EOPT_PASTEOF];
-  cbPastEOL.Caption := Lang[ID_EOPT_PASTEOL];
-  cbDoubleLine.Caption := Lang[ID_EOPT_DBLCLKLINE];
-  cbFindText.Caption := Lang[ID_EOPT_FINDTEXT];
-  cbSmartScroll.Caption := Lang[ID_EOPT_SMARTSCROLL];
-  cbHalfPage.Caption := Lang[ID_EOPT_HALFPAGE];
-  cbScrollHint.Caption := Lang[ID_EOPT_SCROLLHINT];
-  cbParserHints.Caption := Lang[ID_EOPT_PARSERHINTS];
+  lblEditorOpts.Caption         := Lang[ID_EOPT_EDOPTIONS];
+  cbAutoIndent.Caption          := Lang[ID_EOPT_AUTOINDENT];
+  cbInsertMode.Caption          := Lang[ID_EOPT_INSERTMODE];
+  cbTabtoSpaces.Caption         := Lang[ID_EOPT_TAB2SPC];
+  cbSmartTabs.Caption           := Lang[ID_EOPT_SMARTTABS];
+  cbTrailingBlanks.Caption      := Lang[ID_EOPT_TRAILBLANKS];
+  cbSmartUnIndent.Caption       := Lang[ID_EOPT_SMARTUN];
+  cbGroupUndo.Caption           := Lang[ID_EOPT_GROUPUNDO];
+  cbDropFiles.Caption           := Lang[ID_EOPT_DROPFILES];
+  cbSpecialChars.Caption        := Lang[ID_EOPT_SPECIALCHARS];
+  cbAppendNewline.Caption       := Lang[ID_EOPT_APPENDNEWLINE];
+  cbEHomeKey.Caption            := Lang[ID_EOPT_EHOMEKEY];
+  cbPastEOF.Caption             := Lang[ID_EOPT_PASTEOF];
+  cbPastEOL.Caption             := Lang[ID_EOPT_PASTEOL];
+  cbDoubleLine.Caption          := Lang[ID_EOPT_DBLCLKLINE];
+  cbFindText.Caption            := Lang[ID_EOPT_FINDTEXT];
+  cbSmartScroll.Caption         := Lang[ID_EOPT_SMARTSCROLL];
+  cbHalfPage.Caption            := Lang[ID_EOPT_HALFPAGE];
+  cbScrollHint.Caption          := Lang[ID_EOPT_SCROLLHINT];
+  cbParserHints.Caption         := Lang[ID_EOPT_PARSERHINTS];
 
-  cbSyntaxHighlight.Caption := Lang[ID_EOPT_USESYNTAX];
-  lblTabSize.Caption := Lang[ID_EOPT_TABSIZE];
+  cbSyntaxHighlight.Caption     := Lang[ID_EOPT_USESYNTAX];
+  lblTabSize.Caption            := Lang[ID_EOPT_TABSIZE];
 
-  grpMargin.Caption := '  ' + Lang[ID_EOPT_MARGIN] + '  ';
-  cbMarginVis.Caption := Lang[ID_EOPT_VISIBLE];
-  lblMarginWidth.Caption := Lang[ID_EOPT_WIDTH];
-  lblMarginColor.Caption := Lang[ID_EOPT_COLOR];
+  grpMargin.Caption             := Lang[ID_EOPT_MARGIN];
+  cbMarginVis.Caption           := Lang[ID_EOPT_VISIBLE];
+  lblMarginWidth.Caption        := Lang[ID_EOPT_WIDTH];
+  lblMarginColor.Caption        := Lang[ID_EOPT_COLOR];
 
-  grpCaret.Caption := '  ' + Lang[ID_EOPT_CARET] + '  ';
-  lblInsertCaret.Caption := Lang[ID_EOPT_INSCARET];
-  lblOverCaret.Caption := Lang[ID_EOPT_OVERCARET];
-  cbMatch.Caption := Lang[ID_EOPT_MATCH];
-  cbHighCurrLine.Caption :=      Lang[ID_EOPT_HIGHLIGHTCURRLINE];
+  grpCaret.Caption              := Lang[ID_EOPT_CARET];
+  lblInsertCaret.Caption        := Lang[ID_EOPT_INSCARET];
+  lblOverCaret.Caption          := Lang[ID_EOPT_OVERCARET];
+  cbMatch.Caption               := Lang[ID_EOPT_MATCH];
+  cbHighCurrLine.Caption        := Lang[ID_EOPT_HIGHLIGHTCURRLINE];
 
   cboInsertCaret.Clear;
   cboInsertCaret.Items.Append(Lang[ID_EOPT_CARET1]);
@@ -558,62 +566,62 @@ begin
   cboOverwriteCaret.Items.Append(Lang[ID_EOPT_CARET4]);
 
   // Display Tab
-  grpEditorFont.Caption := '  ' + Lang[ID_EOPT_EDFONT] + '  ';
-  lblEditorFont.Caption := Lang[ID_EOPT_FONT];
-  lblEditorSize.Caption := Lang[ID_EOPT_SIZE];
-  pnlEditorPreview.Caption := Lang[ID_EOPT_EDITORPRE];
+  grpEditorFont.Caption         := Lang[ID_EOPT_EDFONT];
+  lblEditorFont.Caption         := Lang[ID_EOPT_FONT];
+  lblEditorSize.Caption         := Lang[ID_EOPT_SIZE];
+  pnlEditorPreview.Caption      := Lang[ID_EOPT_EDITORPRE];
 
-  grpGutter.Caption := '  ' + Lang[ID_EOPT_GUTTER] + '  ';
-  cbGutterVis.Caption := Lang[ID_EOPT_VISIBLE];
-  cbGutterAuto.Caption := Lang[ID_EOPT_GUTTERAUTO];
-  cbLineNum.Caption := Lang[ID_EOPT_LINENUM];
-  cbLeadZero.Caption := Lang[ID_EOPT_LEADZERO];
-  cbFirstZero.Caption := Lang[ID_EOPT_FIRSTZERO];
-  cbGutterFnt.Caption := Lang[ID_EOPT_GUTTERFNT];
-  lblGutterWidth.Caption := Lang[ID_EOPT_WIDTH];
-  lblGutterFont.Caption := Lang[ID_EOPT_FONT];
-  lblGutterFontSize.Caption := Lang[ID_EOPT_SIZE];
-  pnlGutterPreview.Caption := Lang[ID_EOPT_GUTTERPRE];
+  grpGutter.Caption             := Lang[ID_EOPT_GUTTER];
+  cbGutterVis.Caption           := Lang[ID_EOPT_VISIBLE];
+  cbGutterAuto.Caption          := Lang[ID_EOPT_GUTTERAUTO];
+  cbLineNum.Caption             := Lang[ID_EOPT_LINENUM];
+  cbLeadZero.Caption            := Lang[ID_EOPT_LEADZERO];
+  cbFirstZero.Caption           := Lang[ID_EOPT_FIRSTZERO];
+  cbGutterFnt.Caption           := Lang[ID_EOPT_GUTTERFNT];
+  lblGutterWidth.Caption        := Lang[ID_EOPT_WIDTH];
+  lblGutterFont.Caption         := Lang[ID_EOPT_FONT];
+  lblGutterFontSize.Caption     := Lang[ID_EOPT_SIZE];
+  pnlGutterPreview.Caption      := Lang[ID_EOPT_GUTTERPRE];
 
   // Syntax tab
-  lblElements.Caption := Lang[ID_EOPT_ELEMENTS];
-  lblForeground.Caption := Lang[ID_EOPT_FORE];
-  lblBackground.Caption := Lang[ID_EOPT_BACK];
-  grpStyle.Caption := '  ' + Lang[ID_EOPT_STYLE] + '  ';
-  cbBold.Caption := Lang[ID_EOPT_BOLD];
-  cbItalic.Caption := Lang[ID_EOPT_ITALIC];
-  cbUnderlined.Caption := Lang[ID_EOPT_UNDERLINE];
-  lblSpeed.Caption := Lang[ID_EOPT_SPEED];
-  btnSaveSyntax.Hint := Lang[ID_EOPT_SAVESYNTAX];
+  lblElements.Caption           := Lang[ID_EOPT_ELEMENTS];
+  lblForeground.Caption         := Lang[ID_EOPT_FORE];
+  lblBackground.Caption         := Lang[ID_EOPT_BACK];
+  grpStyle.Caption              := Lang[ID_EOPT_STYLE];
+  cbBold.Caption                := Lang[ID_EOPT_BOLD];
+  cbItalic.Caption              := Lang[ID_EOPT_ITALIC];
+  cbUnderlined.Caption          := Lang[ID_EOPT_UNDERLINE];
+  lblSpeed.Caption              := Lang[ID_EOPT_SPEED];
+  btnSaveSyntax.Hint            := Lang[ID_EOPT_SAVESYNTAX];
 
   // Code Tab
-  lblCode.Caption := Lang[ID_EOPT_CICODE];
-  lvCodeIns.Columns[0].Caption := Lang[ID_EOPT_CIMENU];
-  lvCodeIns.Columns[1].Caption := Lang[ID_EOPT_CISECTION];
-  lvCodeIns.Columns[2].Caption := Lang[ID_EOPT_CIDESC];
-  cbDefaultintoprj.Caption := Lang[ID_EOPT_DEFCODEPRJ];
+  lblCode.Caption               := Lang[ID_EOPT_CICODE];
+  lvCodeIns.Columns[0].Caption  := Lang[ID_EOPT_CIMENU];
+  lvCodeIns.Columns[1].Caption  := Lang[ID_EOPT_CISECTION];
+  lvCodeIns.Columns[2].Caption  := Lang[ID_EOPT_CIDESC];
+  cbDefaultintoprj.Caption      := Lang[ID_EOPT_DEFCODEPRJ];
 
   // Completion Tab
-  chkEnableCompletion.Caption := Lang[ID_EOPT_COMPLETIONENABLE];
-  lblCompletionDelay.Caption := Lang[ID_EOPT_COMPLETIONDELAY];
-  lblCompletionColor.Caption := Lang[ID_EOPT_COMPLETIONCOLOR];
+  chkEnableCompletion.Caption   := Lang[ID_EOPT_COMPLETIONENABLE];
+  lblCompletionDelay.Caption    := Lang[ID_EOPT_COMPLETIONDELAY];
+  lblCompletionColor.Caption    := Lang[ID_EOPT_COMPLETIONCOLOR];
 
   // Class browsing Tab
-  gbCBEngine.Caption := Lang[ID_EOPT_BROWSERENGINE];
-  gbCBView.Caption := Lang[ID_EOPT_BROWSERVIEW];
+  gbCBEngine.Caption            := Lang[ID_EOPT_BROWSERENGINE];
+  gbCBView.Caption              := Lang[ID_EOPT_BROWSERVIEW];
   chkEnableClassBrowser.Caption := Lang[ID_EOPT_BROWSERENABLE];
   lblClassBrowserSample.Caption := Lang[ID_EOPT_BROWSERSAMPLE];
-  chkCBParseLocalH.Caption := Lang[ID_EOPT_BROWSERLOCAL];
-  chkCBParseGlobalH.Caption := Lang[ID_EOPT_BROWSERGLOBAL];
-  chkCBUseColors.Caption := Lang[ID_POP_USECOLORS];
-  chkCCCache.Caption := Lang[ID_EOPT_CCCACHECHECK];
-  lblCCCache.Caption := Lang[ID_EOPT_CCCACHELABEL];
-  btnCCCnew.Caption := Lang[ID_BTN_ADD];
-  btnCCCdelete.Caption := Lang[ID_BTN_CLEAR];
+  chkCBParseLocalH.Caption      := Lang[ID_EOPT_BROWSERLOCAL];
+  chkCBParseGlobalH.Caption     := Lang[ID_EOPT_BROWSERGLOBAL];
+  chkCBUseColors.Caption        := Lang[ID_POP_USECOLORS];
+  chkCCCache.Caption            := Lang[ID_EOPT_CCCACHECHECK];
+  lblCCCache.Caption            := Lang[ID_EOPT_CCCACHELABEL];
+  btnCCCnew.Caption             := Lang[ID_BTN_ADD];
+  btnCCCdelete.Caption          := Lang[ID_BTN_CLEAR];
 
-  btnAdd.Caption := Lang[ID_BTN_ADD];
-  btnEdit.Caption := Lang[ID_BTN_EDIT];
-  btnRemove.Caption := Lang[ID_BTN_REMOVE];
+  btnAdd.Caption                := Lang[ID_BTN_ADD];
+  btnEdit.Caption               := Lang[ID_BTN_EDIT];
+  btnRemove.Caption             := Lang[ID_BTN_REMOVE];
 end;
 
 procedure TEditorOptForm.LoadSampleText;
@@ -790,9 +798,9 @@ begin
   chkEnableCompletion.OnClick := nil;
   chkEnableCompletion.Checked := devCodeCompletion.Enabled;
   chkEnableCompletion.OnClick := chkEnableCompletionClick;
-  tbCompletionDelay.Position := devCodeCompletion.Delay;
+  edCompletionDelay.Value := devCodeCompletion.Delay;
   cpCompletionBackground.SelectionColor := devCodeCompletion.BackColor;
-  tbCompletionDelay.Enabled := chkEnableCompletion.Checked;
+  edCompletionDelay.Enabled := chkEnableCompletion.Checked;
   cpCompletionBackground.Enabled := chkEnableCompletion.Checked;
   chkCCCache.Checked := devCodeCompletion.UseCacheFiles;
   chkCCCache.Tag := 0; // mark un-modified
@@ -815,7 +823,7 @@ begin
   chkCBShowInherited.Checked := devClassBrowsing.ShowInheritedMembers;
   chkCBUseColors.Enabled := chkEnableClassBrowser.Checked;
   chkEnableCompletion.Enabled := chkEnableClassBrowser.Checked;
-  tbCompletionDelay.Enabled := chkEnableClassBrowser.Checked;
+  edCompletionDelay.Enabled := chkEnableClassBrowser.Checked;
   cpCompletionBackground.Enabled := chkEnableClassBrowser.Checked;
 end;
 
@@ -949,7 +957,7 @@ begin
 
   // CODE_COMPLETION //
   devCodeCompletion.Enabled := chkEnableCompletion.Checked;
-  devCodeCompletion.Delay := tbCompletionDelay.Position;
+  devCodeCompletion.Delay := edCompletionDelay.Value;
   devCodeCompletion.BackColor := cpCompletionBackground.SelectionColor;
   devCodeCompletion.UseCacheFiles := chkCCCache.Checked;
   if chkCCCache.Tag = 1 then
@@ -1468,16 +1476,11 @@ begin
   dmMain.Codeinserts.SaveCode;
 end;
 
-procedure TEditorOptForm.tbCompletionDelayChange(Sender: TObject);
-begin
-  tbCompletionDelay.Hint := IntToStr(tbCompletionDelay.Position) + ' ms';
-end;
-
 procedure TEditorOptForm.chkEnableCompletionClick(Sender: TObject);
 begin
   with chkEnableCompletion do
   begin
-    tbCompletionDelay.Enabled := Checked;
+    edCompletionDelay.Enabled := Checked;
     cpCompletionBackground.Enabled := Checked;
     chkCCCache.Checked := chkCCCache.Checked and Checked;
     chkCCCache.Enabled := Checked;
@@ -1494,7 +1497,7 @@ begin
   chkCBUseColors.Enabled := chkEnableClassBrowser.Checked;
   // completion
   chkEnableCompletion.Enabled := chkEnableClassBrowser.Checked;
-  tbCompletionDelay.Enabled := chkEnableClassBrowser.Checked;
+  edCompletionDelay.Enabled := chkEnableClassBrowser.Checked;
   cpCompletionBackground.Enabled := chkEnableClassBrowser.Checked;
 end;
 
@@ -1686,10 +1689,14 @@ var
   I: Integer;
 begin
   Screen.Cursor := crHourglass;
-  Application.ProcessMessages;
+  CppParser1.OnEndParsing := nil;
+  CppParser1.OnCacheProgress := CppParser1CacheProgress;
   CppParser1.Load(devDirs.Config + DEV_COMPLETION_CACHE);
   for I := 0 to CppParser1.CacheContents.Count - 1 do
     lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
+
+  CppParser1.OnEndParsing := CppParser1EndParsing;
+  pbCCCache.Visible := False;
   Screen.Cursor := crDefault;
 end;
 
@@ -1730,6 +1737,14 @@ procedure TEditorOptForm.CppParser1TotalProgress(Sender: TObject;
   end;
   pbCCCache.Position := pbCCCache.Position + Current;
   Application.ProcessMessages;
+end;
+
+procedure TEditorOptForm.CppParser1CacheProgress(Sender: TObject; FileName: String;
+      Total, Current: Integer);
+begin
+  pbCCCache.Max := Total;
+  pbCCCache.Position := Current;
+  pbCCCache.Update;
 end;
 
 procedure TEditorOptForm.devPages1Change(Sender: TObject);

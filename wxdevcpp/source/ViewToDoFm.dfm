@@ -82,7 +82,7 @@ object ViewToDoForm: TViewToDoForm
       Left = 6
       Top = 25
       Width = 289
-      Height = 13
+      Height = 16
       Anchors = [akLeft, akBottom]
       Caption = 'Don'#39't show items marked as done'
       TabOrder = 0

@@ -27,7 +27,7 @@ object EnviroForm: TEnviroForm
     Top = 8
     Width = 403
     Height = 375
-    ActivePage = tabInterface
+    ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
     TabOrder = 0
@@ -98,9 +98,9 @@ object EnviroForm: TEnviroForm
       object rgbAutoOpen: TRadioGroup
         Left = 8
         Top = 131
-        Width = 189
+        Width = 185
         Height = 75
-        Caption = '   Auto Open  '
+        Caption = 'Auto Open'
         Items.Strings = (
           'All Project Files'
           'Only First Project File'
@@ -119,11 +119,11 @@ object EnviroForm: TEnviroForm
         TabOrder = 6
       end
       object gbDebugger: TGroupBox
-        Left = 206
+        Left = 202
         Top = 131
-        Width = 182
+        Width = 185
         Height = 60
-        Caption = '  Debug Variable Browser  '
+        Caption = 'Debug Variable Browser'
         TabOrder = 7
         object cbWatchHint: TCheckBox
           Left = 10
@@ -159,40 +159,36 @@ object EnviroForm: TEnviroForm
       ParentShowHint = False
       ShowHint = False
       object lblLang: TLabel
-        Left = 224
-        Top = 8
-        Width = 170
+        Left = 8
+        Top = 33
+        Width = 51
         Height = 13
-        AutoSize = False
-        Caption = 'Language'
+        Caption = 'Language:'
       end
       object lblTheme: TLabel
-        Left = 224
-        Top = 64
-        Width = 170
+        Left = 8
+        Top = 84
+        Width = 36
         Height = 13
-        AutoSize = False
-        Caption = 'Theme :'
+        Caption = 'Theme:'
       end
       object lblmsgTabs: TLabel
         Left = 8
-        Top = 64
-        Width = 210
+        Top = 58
+        Width = 118
         Height = 13
-        AutoSize = False
-        Caption = 'Message Window Tabs:'
+        Caption = 'Message Window Tabs::'
       end
       object lblMRU: TLabel
         Left = 8
         Top = 8
-        Width = 210
+        Width = 168
         Height = 13
-        AutoSize = False
-        Caption = 'Max Files in History List:'
+        Caption = 'Files to retain in Recently Used List:'
       end
       object cboLang: TComboBox
-        Left = 231
-        Top = 25
+        Left = 202
+        Top = 30
         Width = 154
         Height = 21
         Style = csDropDownList
@@ -200,8 +196,8 @@ object EnviroForm: TEnviroForm
         TabOrder = 0
       end
       object cboTheme: TComboBox
-        Left = 232
-        Top = 80
+        Left = 202
+        Top = 81
         Width = 153
         Height = 21
         Style = csDropDownList
@@ -209,8 +205,8 @@ object EnviroForm: TEnviroForm
         TabOrder = 1
       end
       object cboTabsTop: TComboBox
-        Left = 12
-        Top = 80
+        Left = 202
+        Top = 55
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -221,8 +217,8 @@ object EnviroForm: TEnviroForm
           'Top')
       end
       object seMRUMax: TSpinEdit
-        Left = 12
-        Top = 24
+        Left = 202
+        Top = 5
         Width = 60
         Height = 22
         MaxLength = 2
@@ -234,7 +230,7 @@ object EnviroForm: TEnviroForm
       object rgbOpenStyle: TRadioGroup
         Left = 8
         Top = 155
-        Width = 186
+        Width = 185
         Height = 75
         Caption = '  Open/Save Dialog Style  '
         Items.Strings = (
@@ -260,9 +256,9 @@ object EnviroForm: TEnviroForm
         TabOrder = 6
       end
       object gbProgress: TGroupBox
-        Left = 203
+        Left = 202
         Top = 154
-        Width = 184
+        Width = 185
         Height = 60
         Caption = 'Compilation Progress Window '
         TabOrder = 7

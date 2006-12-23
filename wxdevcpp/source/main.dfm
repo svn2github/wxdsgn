@@ -23,7 +23,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object MessageControl: TPageControl
     Left = 0
-    Top = 239
+    Top = 240
     Width = 628
     Height = 130
     ActivePage = CompSheet
@@ -165,7 +165,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 377
-          Height = 74
+          Height = 75
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -831,7 +831,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 369
+    Top = 370
     Width = 628
     Height = 19
     Panels = <
@@ -912,7 +912,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 192
-    Height = 137
+    Height = 138
     ActivePage = ProjectSheet
     Align = alLeft
     Images = dmMain.ProjectImage_NewLook
@@ -924,7 +924,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 109
+        Height = 110
         Align = alClient
         ChangeDelay = 1
         DragMode = dmAutomatic
@@ -956,7 +956,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 109
+        Height = 110
         Align = alClient
         Images = dmMain.ClassImages
         ReadOnly = True
@@ -989,7 +989,7 @@ object MainForm: TMainForm
     Left = 192
     Top = 102
     Width = 436
-    Height = 137
+    Height = 138
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 7

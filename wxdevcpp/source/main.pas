@@ -6248,8 +6248,8 @@ begin
     StatusBar.Panels[2].Text := '';
   end;
 
-  StatusBar.Refresh;
-  Application.ProcessMessages;
+  StatusBar.Update;
+  FormProgress.Update;
 end;
 
 procedure TMainForm.CodeCompletion1Resize(Sender: TObject);

@@ -398,12 +398,12 @@ begin
   cbWatchError.Caption := Lang[ID_ENV_WATCHERROR];
   gbDebugger.Caption := Lang[ID_ENV_DEBUGGER];
 
-  rgbOpenStyle.Caption := '  ' + Lang[ID_ENV_OPENSTYLE] + '  ';
+  rgbOpenStyle.Caption := Lang[ID_ENV_OPENSTYLE];
   rgbOpenStyle.Items[0] := Lang[ID_ENV_OPEN2k];
   rgbOpenStyle.Items[1] := Lang[ID_ENV_OPEN9x];
   rgbOpenStyle.Items[2] := Lang[ID_ENV_OPEN31];
 
-  rgbAutoOpen.Caption := '  ' + Lang[ID_ENV_AUTOOPEN] + '  ';
+  rgbAutoOpen.Caption := Lang[ID_ENV_AUTOOPEN];
   rgbAutoOpen.Items[0] := Lang[ID_ENV_AUTOALL];
   rgbAutoOpen.Items[1] := Lang[ID_ENV_AUTOFIRST];
   rgbAutoOpen.Items[2] := Lang[ID_ENV_AUTONONE];

@@ -19,16 +19,78 @@ object TipOfTheDayForm: TTipOfTheDayForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
+  object btnPrev: TButton
+    Left = 304
+    Top = 32
+    Width = 75
+    Height = 23
+    Caption = 'Previous tip'
+    TabOrder = 1
+    OnClick = btnPrevClick
+  end
+  object btnNext: TButton
+    Left = 304
+    Top = 4
+    Width = 75
+    Height = 23
+    Caption = 'Next tip'
+    TabOrder = 0
+    OnClick = btnNextClick
+  end
+  object btnClose: TButton
+    Left = 304
+    Top = 190
+    Width = 75
+    Height = 23
+    Cancel = True
+    Caption = 'Close'
+    TabOrder = 2
+    OnClick = btnCloseClick
+  end
+  object chkNotAgain: TCheckBox
+    Left = 4
+    Top = 216
+    Width = 377
+    Height = 17
+    Caption = 'Don'#39't display tips on startup'
+    TabOrder = 3
+  end
+  object ScrollBox: TScrollBox
     Left = 4
     Top = 4
     Width = 293
     Height = 209
-    BevelOuter = bvNone
-    BorderStyle = bsSingle
     Color = clWindow
-    ParentBackground = False
+    ParentColor = False
     TabOrder = 4
+    object lblTip: TLabel
+      Left = 52
+      Top = 64
+      Width = 230
+      Height = 120
+      Caption = 'lblTip'
+      Constraints.MinWidth = 230
+      WordWrap = True
+    end
+    object lblTitle: TLabel
+      Left = 52
+      Top = 28
+      Width = 117
+      Height = 19
+      Caption = 'Did you know...'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clMaroon
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Bevel1: TBevel
+      Left = 52
+      Top = 52
+      Width = 230
+      Height = 2
+    end
     object Image: TImage
       Left = 8
       Top = 16
@@ -113,40 +175,13 @@ object TipOfTheDayForm: TTipOfTheDayForm
         060606060606060606060606060606060606}
       Transparent = True
     end
-    object lblTitle: TLabel
-      Left = 52
-      Top = 28
-      Width = 117
-      Height = 19
-      Caption = 'Did you know...'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clMaroon
-      Font.Height = -16
-      Font.Name = 'Arial'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object Bevel1: TBevel
-      Left = 52
-      Top = 52
-      Width = 233
-      Height = 2
-    end
-    object lblTip: TLabel
-      Left = 52
-      Top = 64
-      Width = 233
-      Height = 129
-      AutoSize = False
-      Caption = 'lblTip'
-      WordWrap = True
-    end
     object lblUrl: TLabel
-      Left = 4
+      Left = 0
       Top = 192
-      Width = 281
+      Width = 289
       Height = 13
       Cursor = crHandPoint
+      Align = alBottom
       Alignment = taCenter
       AutoSize = False
       Caption = 'lblUrl'
@@ -158,42 +193,6 @@ object TipOfTheDayForm: TTipOfTheDayForm
       ParentFont = False
       OnClick = lblUrlClick
     end
-  end
-  object btnPrev: TButton
-    Left = 304
-    Top = 32
-    Width = 75
-    Height = 23
-    Caption = 'Previous tip'
-    TabOrder = 1
-    OnClick = btnPrevClick
-  end
-  object btnNext: TButton
-    Left = 304
-    Top = 4
-    Width = 75
-    Height = 23
-    Caption = 'Next tip'
-    TabOrder = 0
-    OnClick = btnNextClick
-  end
-  object btnClose: TButton
-    Left = 304
-    Top = 190
-    Width = 75
-    Height = 23
-    Cancel = True
-    Caption = 'Close'
-    TabOrder = 2
-    OnClick = btnCloseClick
-  end
-  object chkNotAgain: TCheckBox
-    Left = 4
-    Top = 216
-    Width = 377
-    Height = 16
-    Caption = 'Don'#39't display tips on startup'
-    TabOrder = 3
   end
   object XPMenu: TXPMenu
     DimLevel = 30

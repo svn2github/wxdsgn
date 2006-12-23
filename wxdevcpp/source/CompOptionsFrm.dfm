@@ -25,7 +25,7 @@ object CompForm: TCompForm
   TextHeight = 13
   object btnAddCompilerSet: TSpeedButton
     Left = 371
-    Top = 10
+    Top = 11
     Width = 22
     Height = 22
     Hint = 'Adds a new compiler set'
@@ -47,8 +47,8 @@ object CompForm: TCompForm
     OnClick = btnAddCompilerSetClick
   end
   object btnDelCompilerSet: TSpeedButton
-    Left = 395
-    Top = 10
+    Left = 394
+    Top = 11
     Width = 22
     Height = 22
     Hint = 'Deletes the selected compiler set'
@@ -86,8 +86,8 @@ object CompForm: TCompForm
     OnClick = btnDelCompilerSetClick
   end
   object btnRenameCompilerSet: TSpeedButton
-    Left = 419
-    Top = 10
+    Left = 417
+    Top = 11
     Width = 22
     Height = 22
     Hint = 'Renames the selected compiler set'
@@ -222,7 +222,7 @@ object CompForm: TCompForm
     Top = 39
     Width = 430
     Height = 370
-    ActivePage = tabDirectories
+    ActivePage = tabCompiler
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
@@ -242,9 +242,9 @@ object CompForm: TCompForm
         end
         object btnRefreshCompilerSettings: TSpeedButton
           Left = 381
-          Top = 16
+          Top = 18
           Width = 22
-          Height = 24
+          Height = 23
           Hint = 
             'Refresh the include and library paths and other settings for the' +
             ' selected compiler set'
@@ -278,9 +278,9 @@ object CompForm: TCompForm
           OnClick = btnRefreshCompilerSettingsClick
         end
         object CompilerTypes: TComboBox
-          Left = 89
+          Left = 93
           Top = 18
-          Width = 288
+          Width = 285
           Height = 21
           AutoComplete = False
           Style = csDropDownList
@@ -321,10 +321,9 @@ object CompForm: TCompForm
         end
         object lblDelayMsg: TLabel
           Left = 162
-          Top = 211
-          Width = 237
-          Height = 28
-          AutoSize = False
+          Top = 212
+          Width = 230
+          Height = 26
           Caption = 
             'Enable a delay in milliseconds if make complains about makefile'#39 +
             's time stamp (in compile log)'
@@ -374,7 +373,7 @@ object CompForm: TCompForm
           WantReturns = False
         end
         object seCompDelay: TSpinEdit
-          Left = 87
+          Left = 95
           Top = 215
           Width = 60
           Height = 22
@@ -1019,9 +1018,9 @@ object CompForm: TCompForm
     end
   end
   object cmbCompilerSetComp: TComboBox
-    Left = 85
+    Left = 90
     Top = 11
-    Width = 281
+    Width = 275
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
