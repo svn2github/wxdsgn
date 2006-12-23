@@ -1220,7 +1220,6 @@ begin
           Attr := cppEdit.Highlighter.WhiteSpaceAttribute;
         if assigned(Attr) then
         begin
-          Senddebug(Attr.Name);
           ElementList.ItemIndex := ElementList.Items.Indexof(Attr.Name);
           ElementListClick(Self);
         end;

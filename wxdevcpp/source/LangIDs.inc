@@ -682,7 +682,6 @@ const
   ID_HE                            = 780;
   ID_HE_COL1                       = 781;
   ID_HE_COL2                       = 782;
-  ID_HE_GRP_OPTIONS                = 783;
   ID_HE_ICON                       = 784;
   ID_HE_GRP_MENU                   = 785;
   ID_HE_SEC1                       = 786;
@@ -810,7 +809,6 @@ const
   ID_NEWVAR_CREATEWRITEFUNC        = 955;
   ID_NEWVAR_FUNCNAME               = 956;
   ID_NEWVAR_COMMENTS               = 957;
-  ID_NEWVAR_COMMENTSDESCR          = 958;
   ID_NEWVAR_COMMENTSSTYLE          = 959;
   ID_NEWVAR_BTN_CREATE             = 960;
   ID_NEWVAR_BTN_CANCEL             = 961;

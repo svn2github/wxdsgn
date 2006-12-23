@@ -49,7 +49,7 @@
 
 ...the class browser custom folders information is kept in a file named "classfolders.dcf" in your project's root directory?<CR><CR>If something goes wrong and things get messed-up, just delete this file and re-open your project!
 
-...there are two display modes for the class browser?<CR>One shows you all the parsed classes/members/functions of the project, and the other shows you the relevant information *only* for the currently editing file.<CR><CR>Just right-click in the class browser and select "View mode"...
+...there are three display modes for the class browser?<CR><CR>The first shows all information for every file available, the other shows you all the parsed classes/members/functions of the project, and the final one shows you the relevant information only for the current file.<CR><CR>Just right-click in the class browser and select "View mode"...
 
 #
 # Project Manager tips
