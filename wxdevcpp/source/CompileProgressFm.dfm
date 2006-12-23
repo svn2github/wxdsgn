@@ -49,22 +49,22 @@ object CompileProgressForm: TCompileProgressForm
         259
         124)
       object Bevel5: TBevel
-        Left = 55
+        Left = 63
         Top = 92
-        Width = 69
+        Width = 64
         Height = 21
       end
       object Bevel1: TBevel
-        Left = 55
+        Left = 63
         Top = 8
-        Width = 193
+        Width = 190
         Height = 21
         Anchors = [akLeft, akTop, akRight]
       end
       object Bevel2: TBevel
-        Left = 55
+        Left = 63
         Top = 36
-        Width = 194
+        Width = 190
         Height = 21
         Anchors = [akLeft, akTop, akRight]
       end
@@ -77,52 +77,34 @@ object CompileProgressForm: TCompileProgressForm
         Transparent = True
       end
       object lblCompiler: TLabel
-        Left = 60
+        Left = 68
         Top = 12
-        Width = 50
+        Width = 182
         Height = 13
         Caption = 'lblCompiler'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
         Transparent = True
       end
       object lblStatus: TLabel
-        Left = 60
+        Left = 68
         Top = 40
-        Width = 40
+        Width = 182
         Height = 13
         Caption = 'lblStatus'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
         Transparent = True
       end
       object Bevel3: TBevel
-        Left = 55
+        Left = 63
         Top = 64
-        Width = 194
+        Width = 190
         Height = 21
         Anchors = [akLeft, akTop, akRight]
       end
       object lblFile: TLabel
-        Left = 60
+        Left = 68
         Top = 68
-        Width = 34
+        Width = 182
         Height = 13
         Caption = 'lblFile'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
         Transparent = True
       end
       object Label5: TLabel
@@ -150,49 +132,37 @@ object CompileProgressForm: TCompileProgressForm
         Transparent = True
       end
       object lblErr: TLabel
-        Left = 60
+        Left = 68
         Top = 96
-        Width = 61
+        Width = 54
         Height = 13
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'lblErr'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
         Transparent = True
       end
       object Label4: TLabel
-        Left = 128
+        Left = 131
         Top = 96
-        Width = 48
+        Width = 55
         Height = 13
         Caption = 'Warnings:'
         Transparent = True
       end
       object Bevel6: TBevel
-        Left = 180
+        Left = 190
         Top = 92
-        Width = 69
+        Width = 63
         Height = 21
       end
       object lblWarn: TLabel
-        Left = 184
+        Left = 195
         Top = 96
-        Width = 60
+        Width = 53
         Height = 13
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'lblWarn'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
         Transparent = True
       end
     end

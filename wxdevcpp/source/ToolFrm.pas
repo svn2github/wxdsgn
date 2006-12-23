@@ -77,9 +77,8 @@ type
     btnUp: TSpeedButton;
     btnDown: TSpeedButton;
     XPMenu: TXPMenu;
-    grpActions: TGroupBox;
-    btnAdd: TSpeedButton;
     btnDelete: TSpeedButton;
+    btnAdd: TSpeedButton;
     btnEdit: TSpeedButton;
     procedure btnEditClick(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
@@ -481,16 +480,15 @@ end;
 
 procedure TToolForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption:=               Lang[ID_TF];
-  grpCurrent.Caption:=    '  '+Lang[ID_TF_LABEL] +'  ';
+  DesktopFont        := True;
+  XPMenu.Active      := devData.XPTheme;
+  Caption            := Lang[ID_TF];
+  grpCurrent.Caption := Lang[ID_TF_LABEL];
 
-  btnAdd.Caption:=        Lang[ID_BTN_ADD];
-  btnDelete.Caption:=     Lang[ID_BTN_DELETE];
-  btnEdit.Caption:=       Lang[ID_BTN_EDIT];
-  btnClose.Caption:=      Lang[ID_BTN_CLOSE];
-  grpActions.Caption:=    '  '+Lang[ID_HE_GRP_ACTIONS]+'  ';
+  btnAdd.Caption     := Lang[ID_BTN_ADD];
+  btnDelete.Caption  := Lang[ID_BTN_DELETE];
+  btnEdit.Caption    := Lang[ID_BTN_EDIT];
+  btnClose.Caption   := Lang[ID_BTN_CLOSE];
 end;
 
 procedure TToolForm.FormCreate(Sender: TObject);

@@ -522,6 +522,7 @@ end;
 
 procedure TWebUpdateForm.FormCreate(Sender: TObject);
 begin
+  DesktopFont := True;
   FormInitialized := False;
 end;
 

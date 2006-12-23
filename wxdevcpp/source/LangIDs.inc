@@ -503,8 +503,6 @@ const
   ID_SC_TIP                        = 552;
   ID_SC_HDRENTRY                   = 553;
   ID_SC_HDRSHORTCUT                = 554;
-  ID_SC_CANCEL                     = 555;
-  ID_SC_OK                         = 556;
 
   // free to 559 for more forms.
 

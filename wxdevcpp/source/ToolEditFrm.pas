@@ -91,10 +91,6 @@ end;
 
 procedure TToolEditForm.HelpClick(Sender: TObject);
 begin
-{  if Application.HelpFile <> '' then
-     Application.HelpJump('ToolEditForm')
-}
-
   Application.MessageBox(
     'You can use macros when calling a tool, how it can acts depending on what your doing'+#10#13+
     'in Dev-C++. For example, if you are willing to add a tool to Dev-C++ that can compress'+#10#13+
@@ -141,9 +137,9 @@ var
 {$ENDIF}
 begin
   if (Trim(edWorkDir.Text)<>'') and DirectoryExists(Trim(edWorkDir.Text)) then
-    new:=edWorkDir.Text
+    new := edWorkDir.Text
   else
-    new:=ExtractFilePath(edProgram.Text);
+    new := ExtractFilePath(edProgram.Text);
   if SelectDirectory('Select Working Dir', '', new) then
    edWorkDir.text:= New;
 end;
@@ -161,20 +157,19 @@ end;
 
 procedure TToolEditForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption:=              Lang[ID_TE];
-  lblTitle.Caption:=     Lang[ID_TE_TITLE];
-  lblProg.Caption:=      Lang[ID_TE_PROG];
-  lblWorkDir.Caption:=   Lang[ID_TE_WORK];
-  lblParam.Caption:=     Lang[ID_TE_PARAM];
-  lblMacros.Caption:=     Lang[ID_TE_AVAIL];
+  DesktopFont        := True;
+  XPMenu.Active      := devData.XPTheme;
+  Caption            := Lang[ID_TE];
+  lblTitle.Caption   := Lang[ID_TE_TITLE] + ':';
+  lblProg.Caption    := Lang[ID_TE_PROG] + ':';
+  lblWorkDir.Caption := Lang[ID_TE_WORK] + ':';
+  lblParam.Caption   := Lang[ID_TE_PARAM] + ':';
+  lblMacros.Caption  := Lang[ID_TE_AVAIL] + ':';
+  btnInsert.Caption  := Lang[ID_TE_INSERT];
 
-  btnInsert.Caption:=    Lang[ID_TE_INSERT];
-
-  btnOk.Caption:=        Lang[ID_BTN_OK];
-  btnCancel.Caption:=    Lang[ID_BTN_CANCEL];
-  btnHelp.Caption:=      Lang[ID_BTN_HELP];
+  btnOk.Caption      := Lang[ID_BTN_OK];
+  btnCancel.Caption  := Lang[ID_BTN_CANCEL];
+  btnHelp.Caption    := Lang[ID_BTN_HELP];
 end;
 
 procedure TToolEditForm.edProgramChange(Sender: TObject);

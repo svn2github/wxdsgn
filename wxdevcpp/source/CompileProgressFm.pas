@@ -73,6 +73,7 @@ implementation
 procedure TCompileProgressForm.FormShow(Sender: TObject);
 begin
   DesktopFont := True;
+  lblFile.Font.Style := [fsBold];
   PageControl1.ActivePageIndex := 0;
   XPMenu.Active := devData.XPTheme;
 end;

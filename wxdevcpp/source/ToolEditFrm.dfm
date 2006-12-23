@@ -32,10 +32,8 @@ object ToolEditForm: TToolEditForm
     Width = 156
     Height = 41
     AutoSize = False
-    Caption = '<NONE>'
-    Color = 14548990
-    ParentColor = False
     ShowAccelChar = False
+    Transparent = True
     WordWrap = True
   end
   object lblTitle: TLabel
@@ -216,7 +214,6 @@ object ToolEditForm: TToolEditForm
     Top = 180
     Width = 168
     Height = 69
-    Color = 14548990
     IntegralHeight = True
     ItemHeight = 13
     Items.Strings = (

@@ -2881,8 +2881,8 @@ actNewWxFrame.Caption := Strings[ID_TB_NEW] + ' wxFrame';
       Tip := Strings[ID_SC_TIP];
       HeaderEntry := Strings[ID_SC_HDRENTRY];
       HeaderShortcut := Strings[ID_SC_HDRSHORTCUT];
-      Cancel := Strings[ID_SC_CANCEL];
-      OK := Strings[ID_SC_OK];
+      Cancel := Strings[ID_BTN_CANCEL];
+      OK := Strings[ID_BTN_OK];
     end;
 
     pnlFull.Caption := Format(Strings[ID_FULLSCREEN_MSG], [DEVCPP,DEVCPP_VERSION]);

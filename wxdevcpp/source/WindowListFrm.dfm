@@ -6,6 +6,8 @@ object WindowListForm: TWindowListForm
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Window List'
   Color = clBtnFace
+  Constraints.MinHeight = 317
+  Constraints.MinWidth = 354
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -100,11 +102,15 @@ object WindowListForm: TWindowListForm
     Align = alClient
     Caption = 'Select the window you want to edit :'
     TabOrder = 1
+    DesignSize = (
+      334
+      239)
     object UnitList: TListBox
       Left = 10
       Top = 18
       Width = 315
       Height = 212
+      Anchors = [akLeft, akTop, akRight, akBottom]
       IntegralHeight = True
       ItemHeight = 13
       TabOrder = 0

@@ -63,12 +63,12 @@ uses
 
 procedure TWindowListForm.FormCreate(Sender: TObject);
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption:=           Lang[ID_WL];
-  GroupBox.Caption:=  Lang[ID_WL_SELECT];
-  OkBtn.Caption := Lang[ID_BTN_OK];
-  CancelBtn.Caption:= Lang[ID_BTN_CANCEL];
+  DesktopFont       := True;
+  XPMenu.Active     := devData.XPTheme;
+  Caption           := Lang[ID_WL];
+  GroupBox.Caption  := Lang[ID_WL_SELECT];
+  OkBtn.Caption     := Lang[ID_BTN_OK];
+  CancelBtn.Caption := Lang[ID_BTN_CANCEL];
 end;
 
 procedure TWindowListForm.UnitListDblClick(Sender: TObject);

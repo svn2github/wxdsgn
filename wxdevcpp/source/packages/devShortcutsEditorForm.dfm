@@ -13,48 +13,15 @@ object frmShortcutsEditor: TfrmShortcutsEditor
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object lblTitle: TLabel
-    Left = 0
-    Top = 0
-    Width = 375
-    Height = 33
-    Align = alTop
-    AutoSize = False
-    Caption = ' Click on an item and press the shortcut you desire!'
-    Color = clGray
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clCream
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Transparent = False
-  end
-  object lblTip: TLabel
-    Left = 4
-    Top = 20
-    Width = 192
-    Height = 13
-    Caption = 'Tip: press "Escape" to clear a shortcut...'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clSilver
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    Transparent = True
-  end
   object lvShortcuts: TListView
     Left = 0
-    Top = 33
+    Top = 45
     Width = 375
-    Height = 287
+    Height = 282
     Align = alClient
-    BevelKind = bkFlat
-    BorderStyle = bsNone
     Columns = <
       item
         Caption = 'Menu entry'
@@ -62,7 +29,7 @@ object frmShortcutsEditor: TfrmShortcutsEditor
       end
       item
         Caption = 'Shortcut assigned'
-        Width = 106
+        Width = 104
       end>
     ColumnClick = False
     ReadOnly = True
@@ -75,29 +42,60 @@ object frmShortcutsEditor: TfrmShortcutsEditor
   end
   object Panel1: TPanel
     Left = 0
-    Top = 320
+    Top = 327
     Width = 375
-    Height = 42
+    Height = 35
     Align = alBottom
+    BevelOuter = bvNone
     TabOrder = 1
     object btnOk: TButton
-      Left = 212
-      Top = 8
+      Left = 213
+      Top = 6
       Width = 75
-      Height = 25
+      Height = 23
       Caption = 'OK'
       Default = True
       ModalResult = 1
       TabOrder = 0
     end
     object btnCancel: TButton
-      Left = 292
-      Top = 8
+      Left = 293
+      Top = 6
       Width = 75
-      Height = 25
+      Height = 23
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
+    end
+  end
+  object pnlTitle: TPanel
+    Left = 0
+    Top = 0
+    Width = 375
+    Height = 45
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clGray
+    ParentBackground = False
+    TabOrder = 2
+    object lblTip: TLabel
+      Left = 0
+      Top = 32
+      Width = 375
+      Height = 13
+      Align = alBottom
+      Caption = 'Tip: press "Escape" to clear a shortcut...'
+      Transparent = True
+    end
+    object lblTitle: TLabel
+      Left = 0
+      Top = 0
+      Width = 375
+      Height = 32
+      Align = alClient
+      Caption = 'Click on an item and press the shortcut you desire!'
+      Transparent = True
+      WordWrap = True
     end
   end
 end

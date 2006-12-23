@@ -33,12 +33,13 @@ uses
 
 type
   TfrmShortcutsEditor = class(TForm)
-    lblTitle: TLabel;
     lvShortcuts: TListView;
     Panel1: TPanel;
     btnOk: TButton;
     btnCancel: TButton;
+    pnlTitle: TPanel;
     lblTip: TLabel;
+    lblTitle: TLabel;
     procedure lvShortcutsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure lvShortcutsCustomDrawItem(Sender: TCustomListView;
@@ -46,6 +47,7 @@ type
     procedure lvShortcutsCustomDrawSubItem(Sender: TCustomListView;
       Item: TListItem; SubItem: Integer; State: TCustomDrawState;
       var DefaultDraw: Boolean);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     function GetItem(Index: integer): TMenuItem;
@@ -68,6 +70,15 @@ implementation
 uses StrUtils;
 
 {$R *.dfm}
+
+procedure TfrmShortcutsEditor.FormCreate(Sender: TObject);
+begin
+  DesktopFont := True;
+  lblTitle.Font.Style := [fsBold];
+  lblTitle.Font.Color := clCream;
+  lblTitle.Font.Size := 10;
+  lblTip.Font.Color := clSilver;
+end;
 
 procedure TfrmShortcutsEditor.AddShortcut(M: TMenuItem; MenuName:string);
 begin
