@@ -49,7 +49,6 @@ type
     Label6: TLabel;
     cmbClass: TComboBox;
     GroupBox1: TGroupBox;
-    Label5: TLabel;
     memDescr: TMemo;
     Label7: TLabel;
     cmbComment: TComboBox;
@@ -365,22 +364,21 @@ end;
 
 procedure TNewVarForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption := Lang[ID_POP_NEWVAR];
-  Label1.Caption := Lang[ID_NEWVAR_VARTYPE];
-  Label2.Caption := Lang[ID_NEWVAR_VARNAME];
-  Label6.Caption := Lang[ID_NEWVAR_IMPLIN];
-  rgScope.Caption := Lang[ID_NEWVAR_SCOPE];
-  chkReadFunc.Caption := Lang[ID_NEWVAR_CREATEREADFUNC];
-  Label3.Caption := Lang[ID_NEWVAR_FUNCNAME];
+  DesktopFont          := True;
+  XPMenu.Active        := devData.XPTheme;
+  Caption              := Lang[ID_POP_NEWVAR];
+  Label1.Caption       := Lang[ID_NEWVAR_VARTYPE];
+  Label2.Caption       := Lang[ID_NEWVAR_VARNAME];
+  Label6.Caption       := Lang[ID_NEWVAR_IMPLIN];
+  rgScope.Caption      := Lang[ID_NEWVAR_SCOPE];
+  chkReadFunc.Caption  := Lang[ID_NEWVAR_CREATEREADFUNC];
+  Label3.Caption       := Lang[ID_NEWVAR_FUNCNAME];
   chkWriteFunc.Caption := Lang[ID_NEWVAR_CREATEWRITEFUNC];
-  Label4.Caption := Lang[ID_NEWVAR_FUNCNAME];
-  GroupBox1.Caption := Lang[ID_NEWVAR_COMMENTS];
-  Label5.Caption := Lang[ID_NEWVAR_COMMENTSDESCR];
-  Label7.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
-  btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
-  btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];
+  Label4.Caption       := Lang[ID_NEWVAR_FUNCNAME];
+  GroupBox1.Caption    := Lang[ID_NEWVAR_COMMENTS];
+  Label7.Caption       := Lang[ID_NEWVAR_COMMENTSSTYLE];
+  btnCreate.Caption    := Lang[ID_NEWVAR_BTN_CREATE];
+  btnCancel.Caption    := Lang[ID_NEWVAR_BTN_CANCEL];
 end;
 
 end.

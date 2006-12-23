@@ -239,9 +239,8 @@ object frmProjectOptions: TfrmProjectOptions
       object lblPrjFname: TLabel
         Left = 88
         Top = 48
-        Width = 435
+        Width = 54
         Height = 13
-        AutoSize = False
         Caption = 'lblPrjFname'
         Transparent = True
       end
@@ -256,18 +255,16 @@ object frmProjectOptions: TfrmProjectOptions
       object lblPrjUnits: TLabel
         Left = 88
         Top = 88
-        Width = 435
+        Width = 46
         Height = 13
-        AutoSize = False
         Caption = 'lblPrjUnits'
         Transparent = True
       end
       object lblPrjOutputFname: TLabel
         Left = 88
         Top = 68
-        Width = 435
+        Width = 86
         Height = 13
-        AutoSize = False
         Caption = 'lblPrjOutputFname'
         Transparent = True
       end
@@ -283,12 +280,12 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 110
         Width = 205
-        Height = 96
-        Caption = 'Icon:'
+        Height = 102
+        Caption = 'Icon'
         TabOrder = 0
         object btnIconBrwse: TBitBtn
           Left = 88
-          Top = 39
+          Top = 43
           Width = 105
           Height = 23
           Hint = 'Select a custom icon'
@@ -362,7 +359,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object btnRemoveIcon: TBitBtn
           Left = 88
-          Top = 65
+          Top = 72
           Width = 105
           Height = 23
           Hint = 'Do not use an icon for this project'
@@ -400,7 +397,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object Panel1: TPanel
           Left = 14
-          Top = 20
+          Top = 24
           Width = 60
           Height = 60
           BevelOuter = bvLowered
@@ -419,15 +416,14 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 220
         Top = 110
         Width = 300
-        Height = 96
-        Caption = 'Type:'
+        Height = 102
+        Caption = 'Project Type'
         TabOrder = 1
         object lstType: TListBox
           Left = 8
           Top = 17
           Width = 280
-          Height = 56
-          IntegralHeight = True
+          Height = 62
           ItemHeight = 13
           Items.Strings = (
             'Windows GUI Application'
@@ -439,7 +435,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkSupportXP: TCheckBox
           Left = 7
-          Top = 75
+          Top = 80
           Width = 280
           Height = 17
           Caption = 'Support Windows XP Themes'
@@ -469,9 +465,8 @@ object frmProjectOptions: TfrmProjectOptions
         object lblPriority: TLabel
           Left = 8
           Top = 20
-          Width = 104
+          Width = 59
           Height = 13
-          AutoSize = False
           Caption = 'Build priority:'
           Transparent = True
         end
@@ -605,10 +600,9 @@ object frmProjectOptions: TfrmProjectOptions
           Height = 210
         end
         inherited vle: TValueListEditor
-          Left = 145
-          Width = 368
+          Left = 144
+          Width = 369
           Height = 210
-          Align = alNone
           RowHeights = (
             18)
         end
@@ -629,33 +623,30 @@ object frmProjectOptions: TfrmProjectOptions
       object lblCompiler: TLabel
         Left = 8
         Top = 8
-        Width = 156
+        Width = 53
         Height = 13
-        AutoSize = False
         Caption = 'C Compiler:'
         Transparent = True
       end
       object lblCppCompiler: TLabel
         Left = 186
         Top = 8
-        Width = 156
+        Width = 65
         Height = 13
-        AutoSize = False
         Caption = 'C++ Compiler:'
         Transparent = True
       end
       object lblLinker: TLabel
         Left = 354
         Top = 8
-        Width = 164
+        Width = 32
         Height = 13
-        AutoSize = False
         Caption = 'Linker:'
         Transparent = True
       end
       object lbldefines: TLabel
         Left = 8
-        Top = 160
+        Top = 161
         Width = 117
         Height = 13
         Caption = 'Preprocessor Definitions:'
@@ -1135,14 +1126,14 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 55
         Width = 198
-        Height = 210
+        Height = 215
         Caption = 'Customizing the Makefile'
         TabOrder = 2
         object lblMakefileCustomize: TLabel
           Left = 8
           Top = 17
           Width = 183
-          Height = 185
+          Height = 190
           AutoSize = False
           Caption = 'lblMakefileCustomize'
           Transparent = True
@@ -1153,7 +1144,7 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 215
         Top = 55
         Width = 305
-        Height = 210
+        Height = 215
         Caption = 'Include the following files into the Makefile'
         TabOrder = 3
         object btnMakDown: TSpeedButton
@@ -1415,7 +1406,7 @@ object frmProjectOptions: TfrmProjectOptions
           Transparent = True
         end
         object spnMajor: TSpinEdit
-          Left = 65
+          Left = 75
           Top = 17
           Width = 57
           Height = 22
@@ -1425,7 +1416,7 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object spnMinor: TSpinEdit
-          Left = 65
+          Left = 75
           Top = 42
           Width = 57
           Height = 22
@@ -1435,7 +1426,7 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object spnRelease: TSpinEdit
-          Left = 65
+          Left = 75
           Top = 67
           Width = 57
           Height = 22
@@ -1445,7 +1436,7 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object spnBuild: TSpinEdit
-          Left = 65
+          Left = 75
           Top = 92
           Width = 57
           Height = 22
@@ -1455,9 +1446,9 @@ object frmProjectOptions: TfrmProjectOptions
           Value = 0
         end
         object cmbLangID: TComboBox
-          Left = 65
+          Left = 75
           Top = 118
-          Width = 160
+          Width = 150
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
@@ -1476,14 +1467,14 @@ object frmProjectOptions: TfrmProjectOptions
           Top = 21
           Width = 250
           Height = 205
-          DefaultColWidth = 90
+          DefaultColWidth = 100
           DisplayOptions = [doAutoColResize, doKeyColFixed]
           FixedCols = 1
           Options = [goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goThumbTracking]
           TabOrder = 0
           ColWidths = (
-            90
-            154)
+            100
+            144)
           RowHeights = (
             17)
         end
@@ -1525,9 +1516,9 @@ object frmProjectOptions: TfrmProjectOptions
     end
   end
   object cmbProfileSetComp: TComboBox
-    Left = 86
+    Left = 91
     Top = 8
-    Width = 360
+    Width = 355
     Height = 21
     Style = csDropDownList
     ItemHeight = 13

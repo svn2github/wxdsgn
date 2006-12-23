@@ -790,17 +790,17 @@ begin
   btnMakAdd.Caption:=                 Lang[ID_BTN_ADD];
   btnMakDelete.Caption:=              Lang[ID_BTN_DELETE];
   btnMakDelInval.Caption:=            Lang[ID_BTN_DELINVAL];
-  lblMakefileCustomize.Caption:=      'The makefile has two main targets, '#13#10+
-                                      '''all'' and ''clean''.'#13#10#13#10+
-                                      '''all'' depends on all-before and all-after.'#13#10+
-                                      'all-before and all-after gets called'#13#10+
-                                      'before and after the compilation'#13#10+
-                                      'process respectively.'#13#10#13#10+
-                                      '''clean'' depends on the target clean-'#13#10+
-                                      'custom, which gets called before the'#13#10+
-                                      'cleaning process.' + #13#10 + #13#10 +
-                                      'Alter the Makefile''s behavior by'#13#10 +
-                                      'defining the targets mentioned.';
+  lblMakefileCustomize.Caption:=      'The makefile has two main targets, ''all''' +
+                                      ' and ''clean''.'#13#10#13#10+
+                                      '''all'' depends on all-before and all-after. ' +
+                                      'all-before and all-after gets called ' +
+                                      'before and after the compilation ' +
+                                      'process respectively.'#13#10#13#10 +
+                                      '''clean'' depends on the target clean-custom' +
+                                      ', which gets called before the ' +
+                                      'cleaning process.'#13#10#13#10 +
+                                      'Alter the Makefile''s behavior by defining ' +
+                                      'the targets mentioned.';
 
   // files tab
   tabFiles.Caption:=                  Lang[ID_POPT_FILESTAB];

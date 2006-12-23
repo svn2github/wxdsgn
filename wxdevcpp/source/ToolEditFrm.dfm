@@ -38,28 +38,28 @@ object ToolEditForm: TToolEditForm
   end
   object lblTitle: TLabel
     Left = 8
-    Top = 12
+    Top = 10
     Width = 20
     Height = 13
     Caption = 'Title'
   end
   object lblProg: TLabel
     Left = 8
-    Top = 40
+    Top = 38
     Width = 39
     Height = 13
     Caption = 'Program'
   end
   object lblWorkDir: TLabel
     Left = 8
-    Top = 69
+    Top = 67
     Width = 85
     Height = 13
     Caption = 'Working Directory'
   end
   object lblParam: TLabel
     Left = 8
-    Top = 98
+    Top = 96
     Width = 53
     Height = 13
     Caption = 'Parameters'
@@ -79,7 +79,7 @@ object ToolEditForm: TToolEditForm
     Shape = bsTopLine
   end
   object btnProg: TSpeedButton
-    Left = 326
+    Left = 327
     Top = 36
     Width = 23
     Height = 22
@@ -113,7 +113,7 @@ object ToolEditForm: TToolEditForm
     OnClick = btnProgClick
   end
   object btnWorkDir: TSpeedButton
-    Left = 326
+    Left = 327
     Top = 65
     Width = 23
     Height = 22
@@ -147,33 +147,33 @@ object ToolEditForm: TToolEditForm
     OnClick = btnWorkDirClick
   end
   object edTitle: TEdit
-    Left = 103
+    Left = 110
     Top = 8
-    Width = 247
+    Width = 240
     Height = 21
     TabOrder = 0
   end
   object edProgram: TEdit
-    Left = 103
+    Left = 110
     Top = 36
-    Width = 215
+    Width = 210
     Height = 21
     TabOrder = 1
     OnChange = edProgramChange
     OnEnter = EditEnter
   end
   object edWorkDir: TEdit
-    Left = 103
+    Left = 110
     Top = 65
-    Width = 215
+    Width = 210
     Height = 21
     TabOrder = 2
     OnEnter = EditEnter
   end
   object edParams: TEdit
-    Left = 103
+    Left = 110
     Top = 94
-    Width = 247
+    Width = 240
     Height = 21
     TabOrder = 3
     OnChange = edParamsChange

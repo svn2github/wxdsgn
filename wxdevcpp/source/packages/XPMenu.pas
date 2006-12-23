@@ -63,7 +63,7 @@ type
 
   TControlSubClass = class(TComponent)   //:   "Fabian Jakubowski" <fj@sambreville.com>
   private
-    Control: TControl;
+    fControl: TControl;
     FBuilding: boolean;
     FMouseInControl: boolean;
     FLButtonBressed: boolean;
@@ -95,6 +95,8 @@ type
     procedure PaintNCWinControl;
     procedure PaintProgressBar;
     procedure PaintHotKey;
+    procedure SetControl(AControl: TControl);
+    property Control: TControl read fControl write SetControl;
   end;
 
   TXPMenu = class(TComponent)
@@ -2917,23 +2919,27 @@ end;
 
 procedure DrawCheckMark(ACanvas: TCanvas; X, Y: integer);
 begin
- Inc(X, 2);
- Dec(Y, 3);
- ACanvas.MoveTo(X , Y - 2);
- ACanvas.LineTo(X + 2, Y );
-  ACanvas.LineTo(X + 7, Y - 5);
+  Inc(X, 2);
+  Dec(Y, 3);
+  ACanvas.MoveTo(X , Y - 2);
+  ACanvas.LineTo(X + 2, Y );
+  ACanvas.LineTo(X + 8, Y - 6);
 
   ACanvas.MoveTo(X , Y - 3);
   ACanvas.LineTo(X + 2, Y - 1);
-  ACanvas.LineTo(X + 7, Y - 6);
+  ACanvas.LineTo(X + 8, Y - 7);
 
   ACanvas.MoveTo(X , Y - 4);
   ACanvas.LineTo(X + 2, Y - 2);
-  ACanvas.LineTo(X + 7, Y - 7);
+  ACanvas.LineTo(X + 8, Y - 8);
 end;
 
-
 { TCustomComboSubClass }
+procedure TControlSubClass.SetControl(AControl: TControl);
+begin
+  fControl := AControl;
+end;
+
 //By Heath Provost (Nov 20, 2001)
 // ComboBox Subclass WndProc.
 // Message processing to allow control to repond to
@@ -2943,13 +2949,11 @@ procedure TControlSubClass.ControlSubClass(var Message: TMessage);
 begin
   //Call original WindowProc FIRST. We are trying to emulate inheritance, so
   //original WindowProc must handle all messages before we do.
-
-
   if ((Message.Msg = WM_PAINT) and ((Control is TGraphicControl))) or
     ((Control.ClassName = 'TDBLookupComboBox') and (Message.Msg = WM_NCPAINT)) then
      Message.Result := 1
   else
-       //: "Marcus Paulo Tavares" <marcuspt@terra.com.br>
+    //"Marcus Paulo Tavares" <marcuspt@terra.com.br>
     orgWindowProc(Message);
 
   if (XPMenu <> nil) and (not XPMenu.FActive)  then
@@ -2974,7 +2978,7 @@ begin
         Control := nil;
         Free;
       end;
-      exit;
+      Exit;
     except
       exit;
     end;
@@ -3177,6 +3181,7 @@ begin
       end;
     WM_NCPAINT:
       begin
+        Message.Result := 0;
         if (Control is TCustomListBox) or (Control is TCustomTreeView) or
          (Control is TCustomListBox) 
         then
@@ -3647,9 +3652,24 @@ begin
     if TCheckBox(Control).State = cbGrayed then
        SelectColor := clSilver ;
     R := Control.ClientRect;
-    InflateRect(R, 0, -3);
-    R.Top := R.Top + ((R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2);
-    R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB);
+
+    //The minimum size of the check box is 17px, so if the rectangle is smaller than that
+    //expand it
+    if R.Bottom - R.Top < 17 then
+    begin
+      //We are going to call inflateRect so we have to measure the difference
+      if (17 - R.Bottom - R.Top) mod 2 = 0 then
+        InflateRect(R, 0, (17 - R.Bottom - R.Top) div 2)
+      else
+      begin
+        InflateRect(R, 0, (17 - R.Bottom - R.Top) div 2);
+        R.Top := R.Top - 1;
+      end;
+    end;
+    //InflateRect(R, 0, 2);
+    //R.Top := R.Top + ((R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2);
+    //R.Top := R.Top - 2;
+    //R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB);
 
     if ((Control.BiDiMode = bdRightToLeft) and
        (TCheckBox(Control).Alignment = taRightJustify)) or
@@ -3662,12 +3682,14 @@ begin
        (TCheckBox(Control).Alignment  = taRightJustify)) or
        ((Control.BiDiMode = bdRightToLeft) and
        (TCheckBox(Control).Alignment  = taLeftJustify)) then
-      R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB) - 1;
+    begin
+      R.Left := R.Left - 2;
+      R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB);
+    end;
 
-
-
-    C.Brush.Color := TCheckBox(Control).Color;
-    C.FillRect(R);
+    //HELP: Extraneous border?
+    //C.Brush.Color := TCheckBox(Control).Color;
+    //C.FillRect(R);
     InflateRect(R, -2, -2);
     C.Brush.Color := SelectColor;
     C.Pen.Color := BorderColor;
@@ -3722,14 +3744,14 @@ begin
       SelectColor := clWindow;
       BorderColor := clBtnShadow;
     end;
-    if  (FIsFocused) then
+    if (FIsFocused) then
       SelectColor := XPMenu.FFSelectColor;
 
     R := Control.ClientRect;
-    InflateRect(R, 0, -4);
+//    InflateRect(R, 0, -1);
 
-    R.Top := R.Top + ((R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2);
-    R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB)-1;
+    //R.Top := R.Top + ((R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2);
+    R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB);
 
 
     if ((Control.BiDiMode = bdRightToLeft) and
@@ -3743,11 +3765,14 @@ begin
        (TCheckBox(Control).Alignment  = taRightJustify)) or
        ((Control.BiDiMode = bdRightToLeft) and
        (TCheckBox(Control).Alignment  = taLeftJustify)) then
-      R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB) - 1;
+    begin
+      R.Left := R.Left - 2;
+      R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB);
+    end;
 
-    C.Brush.Color := TCheckBox(Control).Color;
-    C.FillRect(R);
-
+    //HELP: Extraneous border?
+    {C.Brush.Color := TCheckBox(Control).Color;
+    C.FillRect(R);}
 
     InflateRect(R, -2, -2);
     C.Brush.Color := SelectColor;
@@ -3757,7 +3782,7 @@ begin
     C.Ellipse(R.Left, R.Top, R.Right, R.Bottom);
     if TRadioButton(Control).Checked then
     begin
-      InflateRect(R, -2, -2);
+      InflateRect(R, -3, -3);
 
       if Control.Enabled then
         C.Brush.Color := clHighlight

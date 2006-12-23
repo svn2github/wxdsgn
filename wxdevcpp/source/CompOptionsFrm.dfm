@@ -235,7 +235,7 @@ object CompForm: TCompForm
         TabOrder = 0
         object CompilerTypeLbl: TLabel
           Left = 8
-          Top = 21
+          Top = 22
           Width = 70
           Height = 13
           Caption = 'Compiler Type:'

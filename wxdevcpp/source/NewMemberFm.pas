@@ -45,7 +45,6 @@ type
     Label4: TLabel;
     cmbClass: TComboBox;
     grpComment: TGroupBox;
-    Label5: TLabel;
     Label7: TLabel;
     memDescr: TMemo;
     cmbComment: TComboBox;
@@ -317,7 +316,6 @@ begin
   rgScope.Caption := Lang[ID_NEWVAR_SCOPE];
   grpComment.Caption := Lang[ID_NEWVAR_COMMENTS];
   grpAttr.Caption := Lang[ID_NEWMEMB_ATTRS];
-  Label5.Caption := Lang[ID_NEWVAR_COMMENTSDESCR];
   Label7.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
   chkToDo.Caption := Lang[ID_ADDTODO_MENUITEM];
   btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];

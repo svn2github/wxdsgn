@@ -3,7 +3,7 @@ object NewVarForm: TNewVarForm
   Top = 138
   BorderStyle = bsDialog
   Caption = 'New variable'
-  ClientHeight = 447
+  ClientHeight = 441
   ClientWidth = 349
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -32,7 +32,7 @@ object NewVarForm: TNewVarForm
     Caption = 'Variable name:'
   end
   object Label3: TLabel
-    Left = 52
+    Left = 25
     Top = 154
     Width = 31
     Height = 13
@@ -40,7 +40,7 @@ object NewVarForm: TNewVarForm
     Caption = 'Name:'
   end
   object Label4: TLabel
-    Left = 52
+    Left = 25
     Top = 206
     Width = 31
     Height = 13
@@ -69,9 +69,9 @@ object NewVarForm: TNewVarForm
     TabOrder = 3
   end
   object cmbType: TComboBox
-    Left = 88
+    Left = 101
     Top = 8
-    Width = 253
+    Width = 240
     Height = 21
     AutoDropDown = True
     ItemHeight = 13
@@ -86,9 +86,9 @@ object NewVarForm: TNewVarForm
       'int')
   end
   object txtName: TEdit
-    Left = 88
+    Left = 101
     Top = 32
-    Width = 253
+    Width = 240
     Height = 21
     TabOrder = 1
     Text = 'txtName'
@@ -113,28 +113,28 @@ object NewVarForm: TNewVarForm
     OnClick = chkWriteFuncClick
   end
   object txtReadFunc: TEdit
-    Left = 88
+    Left = 81
     Top = 150
-    Width = 253
+    Width = 260
     Height = 21
     TabOrder = 6
     Text = 'txtReadFunc'
     OnChange = cmbTypeChange
   end
   object txtWriteFunc: TEdit
-    Left = 88
+    Left = 81
     Top = 202
-    Width = 253
+    Width = 260
     Height = 21
     TabOrder = 9
     Text = 'txtWriteFunc'
     OnChange = cmbTypeChange
   end
   object btnCreate: TButton
-    Left = 191
+    Left = 187
     Top = 411
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Create'
     Default = True
     ModalResult = 1
@@ -142,19 +142,19 @@ object NewVarForm: TNewVarForm
     OnClick = btnCreateClick
   end
   object btnCancel: TButton
-    Left = 266
+    Left = 267
     Top = 411
     Width = 75
-    Height = 25
+    Height = 23
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 12
   end
   object cmbClass: TComboBox
-    Left = 88
+    Left = 101
     Top = 55
-    Width = 253
+    Width = 240
     Height = 21
     AutoDropDown = True
     ItemHeight = 13
@@ -175,13 +175,6 @@ object NewVarForm: TNewVarForm
     Height = 174
     Caption = 'Comment'
     TabOrder = 10
-    object Label5: TLabel
-      Left = 8
-      Top = 17
-      Width = 56
-      Height = 13
-      Caption = 'Description:'
-    end
     object Label7: TLabel
       Left = 8
       Top = 148
@@ -190,10 +183,10 @@ object NewVarForm: TNewVarForm
       Caption = 'Style:'
     end
     object memDescr: TMemo
-      Left = 16
-      Top = 33
-      Width = 309
-      Height = 103
+      Left = 8
+      Top = 20
+      Width = 317
+      Height = 120
       Lines.Strings = (
         'memDescr')
       ScrollBars = ssBoth

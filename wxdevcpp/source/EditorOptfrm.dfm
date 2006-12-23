@@ -30,7 +30,7 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 373
-    ActivePage = tabClassBrowsing
+    ActivePage = tabSyntax
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     OnChange = PagesMainChange
@@ -453,7 +453,7 @@ object EditorOptForm: TEditorOptForm
           Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -464,7 +464,7 @@ object EditorOptForm: TEditorOptForm
           Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -517,7 +517,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -527,7 +527,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -616,7 +616,7 @@ object EditorOptForm: TEditorOptForm
       end
       object lblSyntaxExt: TLabel
         Left = 151
-        Top = 29
+        Top = 28
         Width = 111
         Height = 13
         Caption = 'Enabled file extensions:'

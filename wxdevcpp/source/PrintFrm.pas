@@ -65,22 +65,22 @@ uses
 
 procedure TPrintForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption := Lang[ID_PRT];
-  grpParams.Caption := '  ' + Lang[ID_PRT_GRP_PARAMS] + '  ';
-  grpPages.Caption := '  ' + Lang[ID_PRT_GRP_PAGES] + '  ';
-  cbColors.Caption := Lang[ID_PRT_COLORS];
+  DesktopFont         := True;
+  XPMenu.Active       := devData.XPTheme;
+  Caption             := Lang[ID_PRT];
+  grpParams.Caption   := Lang[ID_PRT_GRP_PARAMS];
+  grpPages.Caption    := Lang[ID_PRT_GRP_PAGES];
+  cbColors.Caption    := Lang[ID_PRT_COLORS];
   cbHighlight.Caption := Lang[ID_PRT_HIGHLIGHT];
-  cbWordWrap.Caption := Lang[ID_PRT_WORDWRAP];
-  cbLineNum.Caption := Lang[ID_PRT_LINENUM];
-  rbLN.Caption := Lang[ID_PRT_PRTLINENUM];
-  rbLNMargin.Caption := Lang[ID_PRT_PRTLINENUMMAR];
-  lblCopies.Caption := Lang[ID_PRT_COPIES];
+  cbWordWrap.Caption  := Lang[ID_PRT_WORDWRAP];
+  cbLineNum.Caption   := Lang[ID_PRT_LINENUM];
+  rbLN.Caption        := Lang[ID_PRT_PRTLINENUM];
+  rbLNMargin.Caption  := Lang[ID_PRT_PRTLINENUMMAR];
+  lblCopies.Caption   := Lang[ID_PRT_COPIES];
   cbSelection.Caption := Lang[ID_PRT_SELONLY];
 
-  btnOk.Caption := Lang[ID_BTN_OK];
-  btnCancel.Caption := Lang[ID_BTN_CANCEL];
+  btnOk.Caption       := Lang[ID_BTN_OK];
+  btnCancel.Caption   := Lang[ID_BTN_CANCEL];
 end;
 
 procedure TPrintForm.FormCreate(Sender: TObject);

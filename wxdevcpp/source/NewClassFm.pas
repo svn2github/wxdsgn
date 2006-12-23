@@ -54,7 +54,6 @@ type
     Label6: TLabel;
     txtIncFile: TEdit;
     GroupBox2: TGroupBox;
-    Label7: TLabel;
     Label8: TLabel;
     memDescr: TMemo;
     cmbComment: TComboBox;
@@ -373,7 +372,6 @@ begin
   Label5.Caption := Lang[ID_NEWCLASS_HFILE];
   chkAddToProject.Caption := Lang[ID_NEWCLASS_ADDTOPROJ];
   GroupBox2.Caption := Lang[ID_NEWVAR_COMMENTS];
-  Label7.Caption := Lang[ID_NEWVAR_COMMENTSDESCR];
   Label8.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
   btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
   btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];

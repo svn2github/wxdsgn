@@ -180,19 +180,19 @@ end;
 
 procedure TNewProjectForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption := Lang[ID_NP];
-  lblDesc.Caption := Lang[ID_NP_DESC];
+  DesktopFont        := True;
+  XPMenu.Active      := devData.XPTheme;
+  Caption            := Lang[ID_NP];
+  lblDesc.Caption    := Lang[ID_NP_DESC];
   lblPrjName.Caption := Lang[ID_NP_PRJNAME];
-  rbC.Caption := Lang[ID_NP_DEFAULTC];
-  rbCpp.Caption := Lang[ID_NP_DEFAULTCPP];
-  cbDefault.Caption := Lang[ID_NP_MAKEDEFAULT];
-  Label2.Caption := '  ' + Lang[ID_NP_PRJOPTIONS] + '  ';
+  rbC.Caption        := Lang[ID_NP_DEFAULTC];
+  rbCpp.Caption      := Lang[ID_NP_DEFAULTCPP];
+  cbDefault.Caption  := Lang[ID_NP_MAKEDEFAULT];
+  Label2.Caption     := Lang[ID_NP_PRJOPTIONS];
 
-  btnOk.Caption := Lang[ID_BTN_OK];
-  btnCancel.Caption := Lang[ID_BTN_CANCEL];
-  btnHelp.Caption := Lang[ID_BTN_HELP];
+  btnOk.Caption      := Lang[ID_BTN_OK];
+  btnCancel.Caption  := Lang[ID_BTN_CANCEL];
+  btnHelp.Caption    := Lang[ID_BTN_HELP];
 end;
 
 procedure TNewProjectForm.UpdateView;

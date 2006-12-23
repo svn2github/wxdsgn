@@ -85,13 +85,13 @@ object DesignerForm: TDesignerForm
         Caption = 'Form Grid'
         TabOrder = 0
         object Bevel2: TBevel
-          Left = 139
+          Left = 150
           Top = 85
           Width = 68
           Height = 18
         end
         object Bevel1: TBevel
-          Left = 139
+          Left = 150
           Top = 61
           Width = 68
           Height = 18
@@ -111,14 +111,14 @@ object DesignerForm: TDesignerForm
           Caption = 'Y-coordinate grid interval:'
         end
         object lbGridXStep: TLabel
-          Left = 142
+          Left = 153
           Top = 64
           Width = 6
           Height = 13
           Caption = '8'
         end
         object lbGridYStep: TLabel
-          Left = 142
+          Left = 153
           Top = 88
           Width = 6
           Height = 13
@@ -127,7 +127,7 @@ object DesignerForm: TDesignerForm
         object cbGridVisible: TCheckBox
           Left = 10
           Top = 18
-          Width = 97
+          Width = 150
           Height = 17
           Caption = 'Show Form Grid'
           Checked = True
@@ -137,7 +137,7 @@ object DesignerForm: TDesignerForm
         object cbSnapToGrid: TCheckBox
           Left = 10
           Top = 38
-          Width = 97
+          Width = 150
           Height = 17
           Caption = 'Snap to grid'
           Checked = True
@@ -145,7 +145,7 @@ object DesignerForm: TDesignerForm
           TabOrder = 1
         end
         object lbGridXStepUpDown: TUpDown
-          Left = 206
+          Left = 217
           Top = 61
           Width = 16
           Height = 18
@@ -156,7 +156,7 @@ object DesignerForm: TDesignerForm
           OnClick = lbGridXStepUpDownClick
         end
         object lbGridYStepUpDown: TUpDown
-          Left = 206
+          Left = 217
           Top = 85
           Width = 16
           Height = 18
@@ -177,7 +177,7 @@ object DesignerForm: TDesignerForm
         object cbControlHints: TCheckBox
           Left = 10
           Top = 18
-          Width = 97
+          Width = 150
           Height = 17
           Caption = 'Control'
           Checked = True
@@ -187,7 +187,7 @@ object DesignerForm: TDesignerForm
         object cbSizeHints: TCheckBox
           Left = 10
           Top = 38
-          Width = 97
+          Width = 150
           Height = 17
           Caption = 'Size'
           Checked = True
@@ -197,7 +197,7 @@ object DesignerForm: TDesignerForm
         object cbMoveHints: TCheckBox
           Left = 10
           Top = 58
-          Width = 97
+          Width = 150
           Height = 17
           Caption = 'Move'
           Checked = True
@@ -207,7 +207,7 @@ object DesignerForm: TDesignerForm
         object cbInsertHints: TCheckBox
           Left = 10
           Top = 78
-          Width = 97
+          Width = 150
           Height = 17
           Caption = 'Insert'
           Checked = True
@@ -244,7 +244,7 @@ object DesignerForm: TDesignerForm
           TabOrder = 0
         end
         object cbStringFormat: TComboBox
-          Left = 140
+          Left = 153
           Top = 38
           Width = 73
           Height = 21

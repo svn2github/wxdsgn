@@ -100,9 +100,9 @@ object NewClassForm: TNewClassForm
       Caption = 'Header filename:'
     end
     object cmbClass: TComboBox
-      Left = 124
-      Top = 40
-      Width = 221
+      Left = 137
+      Top = 41
+      Width = 208
       Height = 21
       ItemHeight = 13
       TabOrder = 1
@@ -110,9 +110,9 @@ object NewClassForm: TNewClassForm
       OnChange = cmbClassChange
     end
     object cmbScope: TComboBox
-      Left = 124
+      Left = 137
       Top = 16
-      Width = 221
+      Width = 208
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
@@ -123,27 +123,27 @@ object NewClassForm: TNewClassForm
         'public')
     end
     object txtIncFile: TEdit
-      Left = 124
-      Top = 64
-      Width = 221
+      Left = 137
+      Top = 66
+      Width = 208
       Height = 21
       TabOrder = 2
       Text = 'txtIncFile'
     end
   end
   object txtCppFile: TEdit
-    Left = 132
+    Left = 145
     Top = 184
-    Width = 205
+    Width = 190
     Height = 21
     TabOrder = 4
     Text = 'txtCppFile'
     OnChange = txtCppFileChange
   end
   object txtHFile: TEdit
-    Left = 132
+    Left = 145
     Top = 212
-    Width = 205
+    Width = 190
     Height = 21
     TabOrder = 5
     Text = 'txtHFile'
@@ -151,7 +151,7 @@ object NewClassForm: TNewClassForm
   end
   object chkAddToProject: TCheckBox
     Left = 8
-    Top = 244
+    Top = 240
     Width = 353
     Height = 17
     Caption = 'Add to current project'
@@ -194,13 +194,6 @@ object NewClassForm: TNewClassForm
     Height = 153
     Caption = 'Comment'
     TabOrder = 7
-    object Label7: TLabel
-      Left = 8
-      Top = 20
-      Width = 56
-      Height = 13
-      Caption = 'Description:'
-    end
     object Label8: TLabel
       Left = 8
       Top = 128
@@ -209,10 +202,10 @@ object NewClassForm: TNewClassForm
       Caption = 'Style:'
     end
     object memDescr: TMemo
-      Left = 16
-      Top = 36
-      Width = 333
-      Height = 81
+      Left = 8
+      Top = 20
+      Width = 340
+      Height = 95
       Lines.Strings = (
         'memDescr')
       ScrollBars = ssBoth
@@ -220,7 +213,7 @@ object NewClassForm: TNewClassForm
       OnChange = memDescrChange
     end
     object cmbComment: TComboBox
-      Left = 40
+      Left = 45
       Top = 124
       Width = 217
       Height = 21

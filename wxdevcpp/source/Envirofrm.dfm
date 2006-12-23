@@ -160,21 +160,21 @@ object EnviroForm: TEnviroForm
       ShowHint = False
       object lblLang: TLabel
         Left = 8
-        Top = 33
+        Top = 34
         Width = 51
         Height = 13
         Caption = 'Language:'
       end
       object lblTheme: TLabel
         Left = 8
-        Top = 84
+        Top = 85
         Width = 36
         Height = 13
         Caption = 'Theme:'
       end
       object lblmsgTabs: TLabel
         Left = 8
-        Top = 58
+        Top = 59
         Width = 118
         Height = 13
         Caption = 'Message Window Tabs::'

@@ -58,9 +58,9 @@ object NewMemberForm: TNewMemberForm
     TabOrder = 4
   end
   object cmbType: TComboBox
-    Left = 88
+    Left = 101
     Top = 8
-    Width = 253
+    Width = 240
     Height = 21
     AutoDropDown = True
     ItemHeight = 13
@@ -76,18 +76,18 @@ object NewMemberForm: TNewMemberForm
       'void')
   end
   object txtName: TEdit
-    Left = 88
+    Left = 101
     Top = 32
-    Width = 253
+    Width = 240
     Height = 21
     TabOrder = 1
     Text = 'txtName'
     OnChange = cmbTypeChange
   end
   object txtArguments: TEdit
-    Left = 88
+    Left = 101
     Top = 56
-    Width = 253
+    Width = 240
     Height = 21
     TabOrder = 2
     Text = 'txtArguments'
@@ -114,9 +114,9 @@ object NewMemberForm: TNewMemberForm
     TabOrder = 9
   end
   object cmbClass: TComboBox
-    Left = 88
+    Left = 101
     Top = 79
-    Width = 253
+    Width = 240
     Height = 21
     AutoDropDown = True
     ItemHeight = 13
@@ -137,13 +137,6 @@ object NewMemberForm: TNewMemberForm
     Height = 199
     Caption = 'Comment'
     TabOrder = 6
-    object Label5: TLabel
-      Left = 8
-      Top = 17
-      Width = 56
-      Height = 13
-      Caption = 'Description:'
-    end
     object Label7: TLabel
       Left = 8
       Top = 172
@@ -152,10 +145,10 @@ object NewMemberForm: TNewMemberForm
       Caption = 'Style:'
     end
     object memDescr: TMemo
-      Left = 16
-      Top = 33
-      Width = 309
-      Height = 127
+      Left = 8
+      Top = 20
+      Width = 320
+      Height = 140
       Lines.Strings = (
         'memDescr')
       ScrollBars = ssBoth
