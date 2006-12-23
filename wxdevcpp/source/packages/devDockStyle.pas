@@ -161,7 +161,7 @@ end;
 
 procedure TdevDockTree.DrawDockGrabber(Control: TControl; const aRect: TRect);
 const
-  ExtentStr = 'ABCDEFHXfgkj';
+  ExtentStr = 'ABCDEFHXfgkjy';
 var
   GrabberState: Integer;
   ThemeData: HTheme;
@@ -188,7 +188,7 @@ begin
   //Then the text
   DrawRect := aRect;
   DrawRect.Left := DrawRect.Left + 6;
-  DrawRect.Top := DrawRect.Top + (Canvas.TextHeight(ExtentStr) div 2) - 3;
+  DrawRect.Top := DrawRect.Top + ((GrabberSize - Canvas.TextHeight(ExtentStr)) div 2);
   DrawRect.Right := DrawRect.Right - RightOffset - ButtonWidth - ButtonSplitter - AutoHideButtonWidth;
   Canvas.Brush.Style := bsClear;
   Canvas.Font.Style := [fsBold];

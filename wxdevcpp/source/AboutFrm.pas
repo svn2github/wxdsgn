@@ -54,8 +54,6 @@ type
     Label2: TLabel;
     lblAuthors_DevCpp: TLabel;
     Label4: TLabel;
-    lblContributors: TLabel;
-    Label3: TLabel;
     lblMingW: TLabel;
     Label5: TLabel;
     lblSplash: TLabel;
