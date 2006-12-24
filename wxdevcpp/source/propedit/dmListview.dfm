@@ -25,9 +25,9 @@ object ListviewForm: TListviewForm
     TabOrder = 0
     object btMoveDown: TButton
       Left = 168
-      Top = 112
+      Top = 123
       Width = 75
-      Height = 25
+      Height = 23
       Caption = 'Move Down'
       Enabled = False
       TabOrder = 0
@@ -35,9 +35,9 @@ object ListviewForm: TListviewForm
     end
     object btMoveUp: TButton
       Left = 168
-      Top = 80
+      Top = 87
       Width = 75
-      Height = 25
+      Height = 23
       Caption = 'Move Up'
       Enabled = False
       TabOrder = 1
@@ -45,9 +45,9 @@ object ListviewForm: TListviewForm
     end
     object btDelete: TButton
       Left = 168
-      Top = 48
+      Top = 52
       Width = 75
-      Height = 25
+      Height = 23
       Caption = 'Delete'
       TabOrder = 2
       OnClick = btDeleteClick
@@ -56,7 +56,7 @@ object ListviewForm: TListviewForm
       Left = 168
       Top = 16
       Width = 75
-      Height = 25
+      Height = 23
       Caption = 'Add'
       TabOrder = 3
       OnClick = btAddClick
@@ -80,7 +80,7 @@ object ListviewForm: TListviewForm
     TabOrder = 1
     object Label2: TLabel
       Left = 27
-      Top = 75
+      Top = 74
       Width = 31
       Height = 13
       Caption = 'Width:'
@@ -100,24 +100,24 @@ object ListviewForm: TListviewForm
       Caption = 'Caption:'
     end
     object txtCaption: TEdit
-      Left = 62
+      Left = 75
       Top = 46
-      Width = 126
+      Width = 115
       Height = 21
       TabOrder = 0
     end
     object txtWidth: TEdit
-      Left = 62
+      Left = 75
       Top = 71
-      Width = 67
+      Width = 115
       Height = 21
       TabOrder = 1
       Text = '50'
     end
     object cbAlign: TComboBox
-      Left = 62
+      Left = 75
       Top = 19
-      Width = 126
+      Width = 115
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
@@ -146,18 +146,18 @@ object ListviewForm: TListviewForm
     end
   end
   object btnOK: TBitBtn
-    Left = 321
-    Top = 265
-    Width = 75
-    Height = 25
+    Left = 310
+    Top = 267
+    Width = 80
+    Height = 23
     TabOrder = 3
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 397
-    Top = 265
-    Width = 75
-    Height = 25
+    Left = 394
+    Top = 267
+    Width = 80
+    Height = 23
     TabOrder = 4
     Kind = bkCancel
   end

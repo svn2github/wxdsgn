@@ -20,7 +20,7 @@ type
     FilterStyle: TComboBox;
     ValidatorCommand: TGroupBox;
     ValidatorString: TEdit;
-    XPMenu1: TXPMenu;
+    XPMenu: TXPMenu;
 
     procedure ValidatorTypeChange(Sender: TObject);
     procedure OnChange(Sender: TObject);
@@ -124,9 +124,8 @@ end;
 procedure TwxValidator.FormCreate(Sender: TObject);
 begin
   ValidatorTypeChange(Sender);
-
-  if devData.XPTheme then
-    XPMenu1.Active := true;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
 end;
 
 procedure TwxValidator.GenerateCode;

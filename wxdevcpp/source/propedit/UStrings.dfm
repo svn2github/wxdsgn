@@ -1,6 +1,7 @@
 object StringsForm: TStringsForm
   Left = 268
   Top = 504
+  ActiveControl = Memo
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'String list Editor'
@@ -14,7 +15,7 @@ object StringsForm: TStringsForm
   Font.Style = []
   OldCreateOrder = True
   Position = poDefault
-  OnShow = FormShow
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object grpMemo: TGroupBox
@@ -36,26 +37,26 @@ object StringsForm: TStringsForm
     end
   end
   object btnOK: TBitBtn
-    Left = 216
+    Left = 194
     Top = 264
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 0
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 292
+    Left = 279
     Top = 264
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 1
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 373
+    Left = 374
     Top = 264
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Help'
     TabOrder = 2
     Kind = bkHelp

@@ -69,18 +69,18 @@ object PictureEdit: TPictureEdit
     end
   end
   object btnOK: TBitBtn
-    Left = 138
+    Left = 132
     Top = 235
-    Width = 78
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 2
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 219
+    Left = 217
     Top = 235
-    Width = 78
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 0
     Kind = bkCancel
   end
@@ -95,7 +95,7 @@ object PictureEdit: TPictureEdit
     Left = 8
     Top = 232
   end
-  object XPMenu1: TXPMenu
+  object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
     Font.Charset = DEFAULT_CHARSET
@@ -121,8 +121,9 @@ object PictureEdit: TPictureEdit
     Gradient = False
     FlatMenu = False
     AutoDetect = False
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 35
+    Left = 36
     Top = 232
   end
 end

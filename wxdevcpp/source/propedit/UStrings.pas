@@ -16,7 +16,7 @@ type
     XPMenu: TXPMenu;
 
     procedure MemoChange(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,11 +49,10 @@ begin
         OnContentsChanged(Sender);
 end;
 
-procedure TStringsForm.FormShow(Sender: TObject);
+procedure TStringsForm.FormCreate(Sender: TObject);
 begin
-    Memo.SetFocus;
-    if devData.XPTheme then
-        XPMenu.Active := true;
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme
 end;
 
 end.

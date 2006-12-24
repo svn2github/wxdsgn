@@ -37,7 +37,7 @@ type
     procedure cbStandardColorChange(Sender: TObject);
     procedure cbSystemColorChange(Sender: TObject);
     procedure txtRedChange(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -208,12 +208,10 @@ begin
     pnlPreview.Color:=clr;    
 end;
 
-procedure TColorEdit.FormShow(Sender: TObject);
+procedure TColorEdit.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme
 end;
 
 end.

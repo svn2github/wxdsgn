@@ -52,8 +52,8 @@ uses
 
 procedure TListviewForm.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   cbAlign.ItemIndex := 0;
   lastIdx := -1;
 end;

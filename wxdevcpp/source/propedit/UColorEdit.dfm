@@ -13,7 +13,7 @@ object ColorEdit: TColorEdit
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  OnShow = FormShow
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -63,9 +63,9 @@ object ColorEdit: TColorEdit
     Caption = 'Color Preview'
   end
   object btnOK: TBitBtn
-    Left = 306
+    Left = 301
     Top = 142
-    Width = 78
+    Width = 80
     Height = 23
     Caption = 'OK'
     Default = True
@@ -97,9 +97,9 @@ object ColorEdit: TColorEdit
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 388
+    Left = 386
     Top = 142
-    Width = 78
+    Width = 80
     Height = 23
     TabOrder = 1
     Kind = bkCancel
@@ -273,10 +273,10 @@ object ColorEdit: TColorEdit
     Height = 113
     BevelInner = bvSpace
     BevelOuter = bvLowered
+    ParentBackground = False
     TabOrder = 12
   end
   object colorDlg: TColorDialog
-    Ctl3D = True
     Color = clFuchsia
     CustomColors.Strings = (
       'ColorA=FF00FF'

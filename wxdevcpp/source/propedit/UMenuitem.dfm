@@ -28,67 +28,58 @@ object MenuItemForm: TMenuItemForm
     object Label1: TLabel
       Left = 10
       Top = 22
-      Width = 24
+      Width = 27
       Height = 13
-      Caption = 'Type'
+      Caption = 'Type:'
     end
     object Label2: TLabel
       Left = 10
       Top = 46
-      Width = 36
+      Width = 39
       Height = 13
-      Caption = 'Caption'
+      Caption = 'Caption:'
     end
     object Label3: TLabel
       Left = 10
       Top = 118
-      Width = 43
+      Width = 46
       Height = 13
-      Caption = 'Checked'
+      Caption = 'Checked:'
     end
     object Label5: TLabel
       Left = 10
       Top = 142
-      Width = 39
+      Width = 42
       Height = 13
-      Caption = 'Enabled'
+      Caption = 'Enabled:'
     end
     object Label8: TLabel
       Left = 10
       Top = 166
-      Width = 19
+      Width = 22
       Height = 13
-      Caption = 'Hint'
+      Caption = 'Hint:'
     end
     object Label12: TLabel
       Left = 10
       Top = 70
-      Width = 42
+      Width = 45
       Height = 13
-      Caption = 'ID Name'
+      Caption = 'ID Name:'
     end
     object Label7: TLabel
       Left = 10
       Top = 94
-      Width = 41
+      Width = 44
       Height = 13
-      Caption = 'ID Value'
+      Caption = 'ID Value:'
     end
     object Label10: TLabel
       Left = 10
       Top = 190
-      Width = 37
+      Width = 40
       Height = 13
-      Caption = 'Bitmaps'
-    end
-    object Image1: TImage
-      Left = 189
-      Top = 186
-      Width = 33
-      Height = 25
-      Center = True
-      Transparent = True
-      Visible = False
+      Caption = 'Bitmaps:'
     end
     object cbMenuType: TComboBox
       Left = 67
@@ -174,17 +165,6 @@ object MenuItemForm: TMenuItemForm
       TabOrder = 7
       OnClick = btBrowseClick
     end
-    object Button3: TButton
-      Left = 234
-      Top = 188
-      Width = 45
-      Height = 21
-      Caption = 'Browse'
-      Enabled = False
-      TabOrder = 8
-      Visible = False
-      OnClick = btBrowseClick
-    end
     object txtIDName: TComboBox
       Left = 67
       Top = 66
@@ -201,7 +181,7 @@ object MenuItemForm: TMenuItemForm
       Width = 33
       Height = 23
       BevelOuter = bvLowered
-      TabOrder = 9
+      TabOrder = 8
       object bmpMenuImage: TImage
         Left = 0
         Top = 0
@@ -244,36 +224,36 @@ object MenuItemForm: TMenuItemForm
   end
   object btnOK: TButton
     Left = 425
-    Top = 298
+    Top = 300
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'OK'
     ModalResult = 1
     TabOrder = 2
   end
   object btnCancel: TButton
     Left = 505
-    Top = 298
+    Top = 300
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
   end
   object btnInsert: TButton
     Left = 108
-    Top = 298
+    Top = 300
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Add Item'
     TabOrder = 4
     OnClick = btnInsertClick
   end
   object btnDelete: TButton
     Left = 345
-    Top = 298
+    Top = 300
     Width = 75
-    Height = 25
+    Height = 23
     Caption = 'Delete'
     Enabled = False
     TabOrder = 5
@@ -281,9 +261,9 @@ object MenuItemForm: TMenuItemForm
   end
   object btnSubmenu: TButton
     Left = 8
-    Top = 298
+    Top = 300
     Width = 96
-    Height = 25
+    Height = 23
     Caption = 'Create Submenu'
     TabOrder = 6
     OnClick = btnSubmenuClick
@@ -329,9 +309,9 @@ object MenuItemForm: TMenuItemForm
     end
     object btNewOnMenu: TButton
       Left = 245
-      Top = 14
+      Top = 15
       Width = 62
-      Height = 23
+      Height = 21
       Caption = 'Create'
       Enabled = False
       TabOrder = 2
@@ -350,9 +330,9 @@ object MenuItemForm: TMenuItemForm
   end
   object btApply: TButton
     Left = 186
-    Top = 298
-    Width = 74
-    Height = 25
+    Top = 300
+    Width = 75
+    Height = 23
     Caption = 'Apply'
     Enabled = False
     TabOrder = 8
@@ -360,9 +340,9 @@ object MenuItemForm: TMenuItemForm
   end
   object btEdit: TButton
     Left = 265
-    Top = 298
-    Width = 76
-    Height = 25
+    Top = 300
+    Width = 75
+    Height = 23
     Caption = 'Edit'
     Enabled = False
     TabOrder = 9

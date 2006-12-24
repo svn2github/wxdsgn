@@ -50,8 +50,6 @@ type
     btBrowse: TButton;
     btApply: TButton;
     btEdit: TButton;
-    Image1: TImage;
-    Button3: TButton;
     txtIDName: TComboBox;
     btNewOnMenu: TButton;
     btNewUpdateUI: TButton;
@@ -506,8 +504,8 @@ procedure TMenuItemForm.FormCreate(Sender: TObject);
 var
   strLst: TStringList;
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   tvMenuItem.Items.Clear;
   FSubMenuItemCreationClicked := False;
   txtIDName.Items.Assign(MainForm.strStdwxIDList);

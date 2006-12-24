@@ -17,7 +17,7 @@ type
     Image1: TImage;
     btnClear: TButton;
     btnOK: TBitBtn;
-    XPMenu1: TXPMenu;
+    XPMenu: TXPMenu;
     procedure btnLoadClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -37,8 +37,8 @@ uses wxutils, devCfg;
 
 procedure TPictureEdit.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu1.Active := true;
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme
 end;
 
 procedure TPictureEdit.btnLoadClick(Sender: TObject);

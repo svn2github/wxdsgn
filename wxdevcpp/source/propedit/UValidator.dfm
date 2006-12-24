@@ -16,18 +16,18 @@ object wxValidator: TwxValidator
   PixelsPerInch = 96
   TextHeight = 13
   object btnOK: TBitBtn
-    Left = 247
+    Left = 234
     Top = 165
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 0
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 323
+    Left = 319
     Top = 165
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 1
     Kind = bkCancel
   end
@@ -67,9 +67,9 @@ object wxValidator: TwxValidator
       Caption = '(Optional)'
     end
     object ValidatorType: TComboBox
-      Left = 130
+      Left = 145
       Top = 15
-      Width = 200
+      Width = 185
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
@@ -83,17 +83,17 @@ object wxValidator: TwxValidator
         'wxGenericValidator')
     end
     object ValidatorVariable: TEdit
-      Left = 130
+      Left = 145
       Top = 69
-      Width = 200
+      Width = 185
       Height = 21
       TabOrder = 1
       OnChange = VariableChange
     end
     object FilterStyle: TComboBox
-      Left = 130
+      Left = 145
       Top = 42
-      Width = 200
+      Width = 185
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
@@ -127,7 +127,7 @@ object wxValidator: TwxValidator
       TabOrder = 0
     end
   end
-  object XPMenu1: TXPMenu
+  object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
     Font.Charset = DEFAULT_CHARSET
@@ -153,6 +153,7 @@ object wxValidator: TwxValidator
     Gradient = False
     FlatMenu = False
     AutoDetect = False
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 8
     Top = 163

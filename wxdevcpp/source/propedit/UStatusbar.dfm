@@ -115,21 +115,20 @@ object StatusBarForm: TStatusBarForm
     Width = 479
     Height = 19
     Panels = <>
-    SimplePanel = False
   end
   object btnOK: TBitBtn
-    Left = 322
+    Left = 309
     Top = 172
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 3
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 398
+    Left = 394
     Top = 172
-    Width = 75
-    Height = 25
+    Width = 80
+    Height = 23
     TabOrder = 4
     Kind = bkCancel
   end
@@ -159,6 +158,7 @@ object StatusBarForm: TStatusBarForm
     Gradient = False
     FlatMenu = False
     AutoDetect = False
+    XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 12
     Top = 169

@@ -51,8 +51,8 @@ uses
 
 procedure TStatusBarForm.FormCreate(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true;
+  DesktopFont := True;
+  XPMenu.Active := devData.XPTheme;
   lastIdx := -1;
 end;
 
