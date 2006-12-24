@@ -2325,18 +2325,12 @@ begin
   begin
     if Assigned(fDesigner) then
     begin
-       MainForm.ELDesigner1.Active := False;
+      MainForm.ELDesigner1.Active := False;
       try
-        MainForm.ELDesigner1.DesignControl:=nil;
         MainForm.ELDesigner1.DesignControl := fDesigner;
         MainForm.ELDesigner1.Active := True;
-
       except
-        if isForm then
-        begin
-        end;
       end;
-      //MainForm.ELDesigner1.Active := True;
       MainForm.BuildComponentList(fDesigner);
     end;
   end;

@@ -26,14 +26,22 @@ package DevCpp;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'Dev-C++ components'}
-{$DESIGNONLY}
 {$IMPLICITBUILD ON}
+{$DEFINE COMPILER_7_UP}
 
 requires
   vcl,
   vclx,
   designide,
-  rtl;
+  rtl,
+  JvDockingD7R,
+  Jcl,
+  JvCoreD7R,
+  vcljpg,
+  JclVcl,
+  madExcept_,
+  madDisAsm_,
+  madBasic_;
 
 contains
   devReg in 'devReg.pas',
@@ -45,6 +53,7 @@ contains
   devMonitorThread in 'devMonitorThread.pas',
   devMonitorTypes in 'devMonitorTypes.pas',
   XPMenu in 'XPMenu.pas',
-  RegExpr in 'RegExpr.pas';
+  RegExpr in 'RegExpr.pas',
+  devDockStyle in 'devDockStyle.pas';
 
 end.

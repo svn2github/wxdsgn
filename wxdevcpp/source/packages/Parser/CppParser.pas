@@ -252,7 +252,6 @@ implementation
 {$IFDEF LINUX}
 uses Libc;
 {$ENDIF}
-uses DbugIntf, utils;
 
 //helper functions for cross platform compilation
 {$IFDEF WIN32}
@@ -1969,8 +1968,15 @@ begin
 end;
 
 function TCppParser.IsGlobalFile(Value: string): boolean;
+  function GetShortName(const FileName: string): string;
+  var
+    pFileName: array[0..2048] of char;
+  begin
+    GetShortPathName(pchar(FileName), pFileName, 2048);
+    result:= strpas(pFileName);
+  end;
 var
-  I: integer;
+  I: Integer;
 begin
   Result := False;
   for I := 0 to fIncludePaths.Count - 1 do

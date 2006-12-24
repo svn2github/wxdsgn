@@ -89,8 +89,8 @@ type
 
 implementation
 uses
-  ComCtrls, UxTheme, JvDockVIDStyle, madStackTrace, Dialogs, Forms,
-  Dbugintf, StrUtils, SysUtils, JvDockControlForm, JvDockGlobals;
+  ComCtrls, UxTheme, JvDockVIDStyle, madStackTrace, Dialogs, Forms, StrUtils,
+  SysUtils, JvDockControlForm, JvDockGlobals;
 
 procedure RotateBitmap(var src: TBitmap; degrees : integer);
 var
@@ -154,15 +154,16 @@ begin
   if NativeDocks = fNativeDocks then
     Exit;
   fNativeDocks := NativeDocks;
-  Self.SendStyleEvent;
+  SendStyleEvent;
 end;
 
 constructor TdevDockTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
                                 ADockStyle: TJvDockObservableStyle);
 begin
   inherited;
-  TopOffset := 4;
+  TopOffset := 3;
   ButtonSplitter := 5;
+  ButtonHeight := 13;
   ButtonWidth := ButtonHeight;
   AutoHideButtonWidth := ButtonWidth;
   AutoHideButtonHeight := ButtonHeight;
@@ -232,7 +233,7 @@ begin
   end;
 
   ThemeData := OpenThemeData(DockSite.Handle, 'EXPLORERBAR');
-  AutoHideButtonHeight := ButtonHeight + 3;
+  AutoHideButtonHeight := ButtonHeight + 2;
 
   //Determine the state icon to use
   AZone := TJvDockVSNETZone(Zone);
@@ -301,16 +302,16 @@ function TdevDockTree.GetTopGrabbersHTFlag(const MousePos: TPoint;
   out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone;
 begin
   Result := inherited GetTopGrabbersHTFlag(MousePos, HTFlag, Zone);
-  if (Zone <> nil) and (DockSite.Align <> alClient) and (HTFlag <> HTCLOSE) then
-  begin
+  if (Zone <> nil) and (DockSite.Align <> alClient) and (HTFlag = HTAUTOHIDE) then
     with Zone.ChildControl do
       if PtInRect(Rect(
-        Left + Width - 2 * AutoHideButtonWidth - RightOffset - ButtonSplitter,
+        Left + Width - AutoHideButtonWidth - ButtonWidth - RightOffset - ButtonSplitter,
         Top - GrabberSize + TopOffset - 1,
-        Left + Width - 1 * AutoHideButtonWidth - RightOffset - ButtonSplitter,
-        Top - GrabberSize + TopOffset + AutoHideButtonHeight), MousePos) then
-        HTFlag := HTAUTOHIDE;
-  end;
+        Left + Width - AutoHideButtonWidth - RightOffset - ButtonSplitter,
+        Top - GrabberSize + TopOffset + AutoHideButtonHeight - 2), MousePos) then
+        HTFlag := HTAUTOHIDE
+      else
+        HTFlag := 0;
 end;
 
 constructor TdevDockTabPanel.Create(AOwner: TComponent);
