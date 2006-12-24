@@ -27,7 +27,7 @@ object EnviroForm: TEnviroForm
     Top = 8
     Width = 403
     Height = 375
-    ActivePage = tabGeneral
+    ActivePage = tabInterface
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
     TabOrder = 0
@@ -99,7 +99,7 @@ object EnviroForm: TEnviroForm
         Left = 8
         Top = 131
         Width = 185
-        Height = 75
+        Height = 74
         Caption = 'Auto Open'
         Items.Strings = (
           'All Project Files'
@@ -160,21 +160,21 @@ object EnviroForm: TEnviroForm
       ShowHint = False
       object lblLang: TLabel
         Left = 8
-        Top = 34
+        Top = 62
         Width = 51
         Height = 13
         Caption = 'Language:'
       end
       object lblTheme: TLabel
         Left = 8
-        Top = 85
+        Top = 88
         Width = 36
         Height = 13
         Caption = 'Theme:'
       end
       object lblmsgTabs: TLabel
         Left = 8
-        Top = 59
+        Top = 36
         Width = 118
         Height = 13
         Caption = 'Message Window Tabs::'
@@ -188,8 +188,8 @@ object EnviroForm: TEnviroForm
       end
       object cboLang: TComboBox
         Left = 202
-        Top = 30
-        Width = 154
+        Top = 58
+        Width = 153
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
@@ -197,7 +197,7 @@ object EnviroForm: TEnviroForm
       end
       object cboTheme: TComboBox
         Left = 202
-        Top = 81
+        Top = 84
         Width = 153
         Height = 21
         Style = csDropDownList
@@ -206,7 +206,7 @@ object EnviroForm: TEnviroForm
       end
       object cboTabsTop: TComboBox
         Left = 202
-        Top = 55
+        Top = 32
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -229,10 +229,10 @@ object EnviroForm: TEnviroForm
       end
       object rgbOpenStyle: TRadioGroup
         Left = 8
-        Top = 155
+        Top = 174
         Width = 185
-        Height = 75
-        Caption = '  Open/Save Dialog Style  '
+        Height = 74
+        Caption = 'Open/Save Dialog Style'
         Items.Strings = (
           'Windows 2k (sidebar)'
           'Windows 9x'
@@ -242,22 +242,22 @@ object EnviroForm: TEnviroForm
       object cbNoSplashScreen: TCheckBox
         Left = 8
         Top = 112
-        Width = 289
+        Width = 350
         Height = 17
         Caption = 'No Splash Screen on startup'
         TabOrder = 5
       end
       object cbXPTheme: TCheckBox
         Left = 8
-        Top = 128
-        Width = 297
+        Top = 132
+        Width = 350
         Height = 17
         Caption = 'Use XP Theme'
         TabOrder = 6
       end
       object gbProgress: TGroupBox
         Left = 202
-        Top = 154
+        Top = 173
         Width = 185
         Height = 60
         Caption = 'Compilation Progress Window '
@@ -278,6 +278,14 @@ object EnviroForm: TEnviroForm
           Caption = '&Auto close after compile'
           TabOrder = 1
         end
+      end
+      object cbNativeDocks: TCheckBox
+        Left = 8
+        Top = 152
+        Width = 350
+        Height = 17
+        Caption = 'Use Native Docking Windows'
+        TabOrder = 8
       end
     end
     object tabPaths: TTabSheet

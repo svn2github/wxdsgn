@@ -107,6 +107,7 @@ type
     btnBrwSplash: TSpeedButton;
     btnCVSExecBrws: TSpeedButton;
     cbSingleInstance: TCheckBox;
+    cbNativeDocks: TCheckBox;
     procedure BrowseClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -238,6 +239,7 @@ begin
     //cboTheme.ItemIndex := cboTheme.Items.IndexOf(devData.Theme);
 
     cbXPTheme.Checked := XPTheme;
+    cbNativeDocks.Checked := NativeDocks;
 
     cbShowProgress.Checked := ShowProgress;
     cbAutoCloseProgress.Checked := AutoCloseProgress;
@@ -310,6 +312,9 @@ begin
     if not ThemeChange then
       ThemeChange := XPTheme <> cbXPTheme.Checked;
     XPTheme := cbXPTheme.Checked;
+    if not ThemeChange then
+      ThemeChange := NativeDocks <> cbNativeDocks.Checked;
+    NativeDocks := cbNativeDocks.Checked;
     ShowProgress := cbShowProgress.Checked;
     AutoCloseProgress := cbAutoCloseProgress.Checked;
     WatchHint := cbWatchHint.Checked;

@@ -1869,15 +1869,13 @@ begin
   DockServer.DockStyle.TabServerOption.HotTrack := True;
   with TJvDockVIDConjoinServerOption(DockServer.DockStyle.ConjoinServerOption) do
   begin
-    ActiveFont.Assign(Font);
-    InactiveFont.Assign(Font);
-    InactiveFont.Color := clWhite;
+    ActiveFont.Name := Font.Name;
+    InactiveFont.Name := Font.Name;
   end;
   with TJvDockVIDTabServerOption(DockServer.DockStyle.TabServerOption) do
   begin
-    ActiveFont.Assign(Font);
-    InactiveFont.Assign(Font);
-    InactiveFont.Color := clWhite;
+    ActiveFont.Name := Font.Name;
+    InactiveFont.Name := Font.Name;
   end;
 
 {$IFDEF WX_BUILD}
@@ -2193,6 +2191,7 @@ begin
     XPMenu.Active := devData.XPTheme;
     WebUpdateForm.XPMenu.Active := devData.XPTheme;
     ViewToDoForm.XPMenu.Active := devData.XPTheme;
+    TdevDockStyle(DockServer.DockStyle).NativeDocks := devData.NativeDocks;
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
     with TThemeManager.Create(MainForm) do

@@ -609,6 +609,7 @@ type
     fShowTipsOnStart: boolean;
     fLastTip: integer;
     fXPTheme: boolean; // Use XP theme
+    fNativeDocks: boolean; // Use native docking windows under XP
     fFileDate: integer; // Dev-C++ File Date for checking old configurations
     fShowProgress: boolean; // Show progress window during compile
     fAutoCloseProgress: boolean; // Auto close progress bar window after compile
@@ -708,6 +709,7 @@ type
     property LastTip: integer read fLastTip write fLastTip;
 
     property XPTheme: boolean read fXPTheme write fXPTheme;
+    property NativeDocks: boolean read fNativeDocks write fNativeDocks;
     property FileDate: integer read fFileDate write fFileDate;
 
     // progress window
@@ -1133,6 +1135,7 @@ begin
   fShowTipsOnStart := True;
   fLastTip := 0;
   fXPTheme := false;
+  fNativeDocks := true;
   fFileDate := 0;
   fShowProgress := true;
   fAutoCloseProgress := false;

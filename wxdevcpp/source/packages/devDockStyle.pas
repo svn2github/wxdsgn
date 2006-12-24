@@ -79,8 +79,12 @@ type
   end;
 
   TdevDockStyle = class(TJvDockVSNetStyle)
+  private
+    fNativeDocks: Boolean;
+    procedure SetNativeDocks(NativeDocks: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
+    property NativeDocks: Boolean read fNativeDocks write SetNativeDocks default True;
   end;
 
 implementation
@@ -145,6 +149,14 @@ begin
   ConjoinPanelTreeClass := TdevDockTree;
 end;
 
+procedure TdevDockStyle.SetNativeDocks(NativeDocks: Boolean);
+begin
+  if NativeDocks = fNativeDocks then
+    Exit;
+  fNativeDocks := NativeDocks;
+  Self.SendStyleEvent;
+end;
+
 constructor TdevDockTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
                                 ADockStyle: TJvDockObservableStyle);
 begin
@@ -154,9 +166,6 @@ begin
   ButtonWidth := ButtonHeight;
   AutoHideButtonWidth := ButtonWidth;
   AutoHideButtonHeight := ButtonHeight;
-
-  //The fonts that we use should be those that the main form uses
-  Canvas.Font.Assign(Application.MainForm.Font);
 end;
 
 procedure TdevDockTree.DrawDockGrabber(Control: TControl; const aRect: TRect);
@@ -167,14 +176,14 @@ var
   ThemeData: HTheme;
   DrawRect: TRect;
 begin
-  ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
-  if ThemeData = HTHEME(nil) then
+  if (not IsThemeActive) or (not TdevDockStyle(DockStyle).NativeDocks) then
   begin
     inherited;
     Exit;
   end;
 
   //Decide on the state of the caption
+  ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
   if GetActiveControl = Control then
     GrabberState := CS_ACTIVE
   else
@@ -185,7 +194,10 @@ begin
     DrawThemeParentBackground(ThemeData, Canvas.Handle, @ARect);
   DrawThemeBackground(ThemeData, Canvas.Handle, WP_SMALLCAPTION, GrabberState, ARect, nil);
 
-  //Then the text
+  //The fonts that we use should be those that the main form uses
+  Canvas.Font.Assign(Application.MainForm.Font);
+
+  //Then draw the text
   DrawRect := aRect;
   DrawRect.Left := DrawRect.Left + 6;
   DrawRect.Top := DrawRect.Top + ((GrabberSize - Canvas.TextHeight(ExtentStr)) div 2);
@@ -203,6 +215,7 @@ begin
   //And the close button
   if ShowCloseButtonOnGrabber or not (Control is TJvDockTabHostForm) then
     DrawCloseButton(Canvas, FindControlZone(Control), ARect.Right - RightOffset - ButtonWidth, ARect.Top + TopOffset);
+  CloseThemeData(ThemeData);
 end;
 
 procedure TdevDockTree.DrawAutoHideButton(Zone: TJvDockZone; Left, Top: Integer);
@@ -212,13 +225,13 @@ var
   ARect: TRect;
   AZone: TJvDockVSNETZone;
 begin
-  ThemeData := OpenThemeData(DockSite.Handle, 'EXPLORERBAR');
-  if ThemeData = HTHEME(nil) then
+  if (not IsThemeActive) or (not TdevDockStyle(DockStyle).NativeDocks) then
   begin
     inherited;
     Exit;
   end;
 
+  ThemeData := OpenThemeData(DockSite.Handle, 'EXPLORERBAR');
   AutoHideButtonHeight := ButtonHeight + 3;
 
   //Determine the state icon to use
@@ -239,6 +252,7 @@ begin
   if IsThemeBackgroundPartiallyTransparent(ThemeData, EBP_HEADERPIN, PinState) then
     DrawThemeParentBackground(ThemeData, Canvas.Handle, @ARect);
   DrawThemeBackground(ThemeData, Canvas.Handle, EBP_HEADERPIN, PinState, ARect, nil);
+  CloseThemeData(ThemeData);
 end;
 
 procedure TdevDockTree.DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; Left, Top: Integer);
@@ -249,13 +263,13 @@ var
   AZone: TJvDockVSNETZone;
   ADockClient: TJvDockClient;
 begin
-  ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
-  if ThemeData = HTHEME(nil) then
+  if (not IsThemeActive) or (not TdevDockStyle(DockStyle).NativeDocks) then
   begin
     inherited;
     Exit;
   end;
 
+  ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
   AZone := TJvDockVSNETZone(Zone);
   if AZone <> nil then
   begin
@@ -280,6 +294,7 @@ begin
       DrawThemeParentBackground(ThemeData, Canvas.Handle, @ARect);
     DrawThemeBackground(ThemeData, Canvas.Handle, WP_SMALLCLOSEBUTTON, ButtonState, ARect, nil);
   end;
+  CloseThemeData(ThemeData);
 end;
 
 function TdevDockTree.GetTopGrabbersHTFlag(const MousePos: TPoint;
@@ -326,13 +341,13 @@ begin
     Exit;
 
   //See if we should revert to the default implementation
-  ThemeData := OpenThemeData(Handle, 'TAB');
-  if ThemeData = HTheme(nil) then
+  if not IsThemeActive then
   begin
     inherited;
     Exit;
   end;
 
+  ThemeData := OpenThemeData(Handle, 'TAB');
   if (Page.Images <> nil) and (Page.ShowTabImages) then
     ImageWidth := Page.Images.Width
   else
@@ -483,6 +498,7 @@ begin
 
   //Free our bitmap
   Tab.Destroy;
+  CloseThemeData(ThemeData);
 end;
 
 constructor TdevDockTabPageControl.Create(AOwner: TComponent);
@@ -624,14 +640,14 @@ var
 begin
   //See if we can acquire a handle to our theme, if not, revert to our old
   //implementation
-  ThemeData := OpenThemeData(Handle, 'TAB');
-  if ThemeData = HTheme(nil) then
+  if not IsThemeActive then
   begin
     inherited;
     Exit;
   end;
 
   //Create our temporal bitmap
+  ThemeData := OpenThemeData(Handle, 'TAB');
   Tab := TBitmap.Create;
   CurrentPos := BlockStartOffset;
 
@@ -647,6 +663,7 @@ begin
 
   //Free our bitmap
   Tab.Destroy;
+  CloseThemeData(ThemeData);
 end;
 
 end.
