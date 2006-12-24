@@ -2399,7 +2399,7 @@ object MainForm: TMainForm
       OnUpdate = actCompileUpdate
     end
     object actDebug: TAction
-      Tag = 6
+      Tag = 1
       Category = 'Debug'
       Caption = '&Run'
       ImageIndex = 54

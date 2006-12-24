@@ -1975,7 +1975,7 @@ begin
   FillChar(tsi, SizeOf(TStartupInfo), 0);
   tsi.cb := SizeOf(TStartupInfo);
   tsi.dwFlags := STARTF_USESHOWWINDOW;
-  if CreateProcess(nil, PChar(format('%s -f "%s" all', [devCompiler.makeName, MakeFile]) +
+  if CreateProcess(nil, PChar(format('%s -q -f "%s" all', [devCompiler.makeName, MakeFile]) +
                               ' ' + devCompiler.makeopts), @sa, @sa, true, 0, nil,
                    nil, tsi, tpi) then
   begin

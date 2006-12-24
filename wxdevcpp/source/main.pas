@@ -1871,11 +1871,15 @@ begin
   begin
     ActiveFont.Name := Font.Name;
     InactiveFont.Name := Font.Name;
+    ActiveFont.Size := Font.Size;
+    InactiveFont.Size := Font.Size;
   end;
   with TJvDockVIDTabServerOption(DockServer.DockStyle.TabServerOption) do
   begin
     ActiveFont.Name := Font.Name;
     InactiveFont.Name := Font.Name;
+    ActiveFont.Size := Font.Size;
+    InactiveFont.Size := Font.Size;
   end;
 
 {$IFDEF WX_BUILD}
@@ -5097,8 +5101,7 @@ begin
       Exit;
     fCompiler.SourceFile := e.FileName;
   end
-  else
-  if fCompiler.Target = ctProject then
+  else if fCompiler.Target = ctProject then
   begin
     actSaveAllExecute(Self);
     for i := 0 to pred(PageControl.PageCount) do
@@ -5355,23 +5358,40 @@ begin
 end;
 
 procedure TMainForm.actDebugExecute(Sender: TObject);
+var
+  UpToDate: Boolean;
 begin
   if not fDebugger.Executing then
   begin
-    StatusBar.Panels[3].Text := 'Checking if project needs to be rebuilt...';
-    if not fCompiler.UpToDate then
+    if fCompiler.Target = ctProject then
     begin
-      if MessageBox(Handle, 'The project you are working on is out of date. Do you ' +
-                    'want to rebuild the project before debugging?', 'wxDev-C++',
-                    MB_ICONQUESTION or MB_YESNOCANCEL) = mrYes then
-      begin
-        fCompiler.OnCompilationEnded := doDebugAfterCompile;
-        actCompile.Execute;        
-      end;
-    end
-    else
-      doDebugAfterCompile(Sender);
-    StatusBar.Panels[3].Text := '';
+      //Save all the files then set the UI status
+      actSaveAllExecute(Self);
+      (Sender as TAction).Tag := 0;
+      (Sender as TAction).Enabled := False;
+      StatusBar.Panels[3].Text := 'Checking if project needs to be rebuilt...';
+
+      //Run make to see if the project is up to date, the cache the result and restore our state
+      UpToDate := fCompiler.UpToDate;
+      (Sender as TAction).Tag := 1;
+      StatusBar.Panels[3].Text := '';
+
+      //Ask the user if the project is out of date
+      if not UpToDate then
+        case MessageBox(Handle, 'The project you are working on is out of date. Do you ' +
+                        'want to rebuild the project before debugging?', 'wxDev-C++',
+                        MB_ICONQUESTION or MB_YESNOCANCEL) of
+          mrYes:
+          begin
+            fCompiler.OnCompilationEnded := doDebugAfterCompile;
+            actCompile.Execute;
+            Exit;
+          end;
+          mrCancel:
+            Exit;
+        end;
+    end;
+    doDebugAfterCompile(Sender);
   end
   else if fDebugger.Paused then
   begin
@@ -5436,11 +5456,11 @@ begin
   if Assigned(fProject) then
     (Sender as TCustomAction).Enabled := not (fProject.CurrentProfile.typ = dptStat) and
       (not devExecutor.Running) and ((not fDebugger.Executing) or
-      fDebugger.Paused) and (not fCompiler.Compiling)
+      fDebugger.Paused) and (not fCompiler.Compiling) and ((Sender as TAction).Tag = 1)
   else
     (Sender as TCustomAction).Enabled := (PageControl.PageCount > 0) and
       (not devExecutor.Running) and ((not fDebugger.Executing) or fDebugger.Paused)
-      and (not fCompiler.Compiling);
+      and (not fCompiler.Compiling) and ((Sender as TAction).Tag = 1);
 end;
 
 procedure TMainForm.actCompileUpdate(Sender: TObject);
@@ -7194,7 +7214,7 @@ begin
   if not fDebugger.Executing then
   begin
     e.RunToCursor(line);
-    actDebugExecute(sender);
+    actDebug.Execute;
   end
 
   // Otherwise, make sure that the debugger is stopped so that breakpoints can
