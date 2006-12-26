@@ -8365,7 +8365,7 @@ begin
 
   //NinjaNL: If we have Generate XRC turned on then we need to create a blank XRC
   //         file on project initialisation
-  if (MainForm.ELDesigner1.GenerateXRC) then
+  if (ELDesigner1.GenerateXRC) then
   begin
     strLstXRCCode := CreateBlankXRC;
     try
@@ -8403,7 +8403,7 @@ begin
   else
     OpenFile(currFile);
 
-  if (MainForm.ELDesigner1.GenerateXRC) then
+  if (ELDesigner1.GenerateXRC) then
   begin
     currFile := ChangeFileExt(BaseFilename, XRC_EXT);
     if insertProj = 1 then

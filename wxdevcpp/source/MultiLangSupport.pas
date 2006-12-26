@@ -291,4 +291,9 @@ begin
     end;
 end;
 
+initialization
+
+finalization
+  fLang.Free;
+
 end.

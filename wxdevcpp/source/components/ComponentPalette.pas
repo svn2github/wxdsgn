@@ -51,6 +51,7 @@ type
     SearchImage: Integer;
   public
     constructor Create(Panel: TComponent); override;
+    destructor Destroy; override;
   published
     property SelectedComponent: string read GetSelectedComponent;
     
@@ -134,6 +135,12 @@ begin
 
   //Populate the tree-view
   PopulateComponents;
+end;
+
+destructor TComponentPalette.Destroy;
+begin
+  inherited;
+  ComponentImages.Free;
 end;
 
 function TComponentPalette.GetAlternateName(Name: string): PChar;

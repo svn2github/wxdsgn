@@ -138,6 +138,7 @@ type
     property ThemeTitle[Index: Integer]: string read GetThemeTitle;
   public
     constructor Create; virtual;
+    destructor Destroy; override;
     function ActivateTheme(ATheme: TCustomImageTheme): Boolean; overload;
     function ActivateTheme(AThemeTitle: string): Boolean; overload;
     procedure AddTheme(const ATheme: TCustomImageTheme);
@@ -469,6 +470,14 @@ begin
   inherited;
 
   FThemes := TObjectList.Create;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+destructor TCustomImageThemeFactory.Destroy;
+begin
+  inherited;
+  FThemes.Free;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

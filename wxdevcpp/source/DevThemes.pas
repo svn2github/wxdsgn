@@ -63,7 +63,7 @@ type
   end;
 
 var
-  devTheme: TdevTheme;
+  devTheme: TdevTheme = nil;
 
 implementation
 
@@ -335,5 +335,10 @@ function TdevTheme.GetPreview: string;
 begin
   //
 end;
+
+initialization
+
+finalization
+  devTheme.Free;
 
 end.

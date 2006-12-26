@@ -2559,5 +2559,18 @@ begin
 
 end;
 
+initialization
+
+finalization
+  fdevData.Free;
+  devCompiler.Free;
+  devCompilerSet.Free;
+  devDirs.Free;
+  devEditor.Free;
+  devCodeCompletion.Free;
+  devClassBrowsing.Free;
+  devCVSHandler.Free;
+  devExternalPrograms.Free;
+
 end.
 

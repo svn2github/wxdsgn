@@ -3727,6 +3727,7 @@ procedure TControlSubClass.PaintRadio;
 var
   C: TControlCanvas;
   R: TRect;
+  RectHeight: Integer;
   SelectColor, BorderColor: TColor;
 begin
 
@@ -3737,7 +3738,7 @@ begin
     if FMouseInControl then
     begin
       SelectColor := XPMenu.FFSelectColor;
-      BorderColor := xpMenu.FFSelectBorderColor;;
+      BorderColor := xpMenu.FFSelectBorderColor;
     end
     else
     begin
@@ -3748,12 +3749,16 @@ begin
       SelectColor := XPMenu.FFSelectColor;
 
     R := Control.ClientRect;
-//    InflateRect(R, 0, -1);
-
-    //R.Top := R.Top + ((R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2);
-    R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB);
-
-
+    if (R.Bottom - R.Top) <= 18 then
+      R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB)
+    else
+    begin
+      RectHeight := (R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2;
+      R.Top := R.Top + RectHeight;
+      R.Bottom := R.Bottom - RectHeight;
+      if R.Bottom - R.Top > GetSystemMetrics(SM_CXHTHUMB) then
+        R.Bottom := R.Bottom - 1;
+    end;
     if ((Control.BiDiMode = bdRightToLeft) and
        (TCheckBox(Control).Alignment = taRightJustify)) or
        ((Control.BiDiMode = bdLeftToRight) and
@@ -3770,16 +3775,11 @@ begin
       R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB);
     end;
 
-    //HELP: Extraneous border?
-    {C.Brush.Color := TCheckBox(Control).Color;
-    C.FillRect(R);}
-
     InflateRect(R, -2, -2);
     C.Brush.Color := SelectColor;
     C.Pen.Color := BorderColor;
-
-
     C.Ellipse(R.Left, R.Top, R.Right, R.Bottom);
+    
     if TRadioButton(Control).Checked then
     begin
       InflateRect(R, -3, -3);
