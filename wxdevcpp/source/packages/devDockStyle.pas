@@ -264,7 +264,7 @@ var
   ARect: TRect;
   ButtonState: Integer;
   ThemeData: HTHEME;
-  AZone: TJvDockVSNETZone;
+  AZone: TJvDockVSNETZoneAccess;
   ADockClient: TJvDockClient;
 begin
   if (not IsThemeActive) or (not TdevDockStyle(DockStyle).NativeDocks) then
@@ -274,7 +274,7 @@ begin
   end;
 
   ThemeData := OpenThemeData(DockSite.Handle, 'WINDOW');
-  AZone := TJvDockVSNETZone(Zone);
+  AZone := TJvDockVSNETZoneAccess(Zone);
   if AZone <> nil then
   begin
     ADockClient := FindDockClient(Zone.ChildControl);
