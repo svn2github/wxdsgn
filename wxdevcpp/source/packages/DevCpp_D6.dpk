@@ -27,21 +27,15 @@ package DevCpp;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'Dev-C++ components'}
 {$IMPLICITBUILD ON}
-{$DEFINE COMPILER_7_UP}
 
 requires
   vcl,
   vclx,
   designide,
   rtl,
-  JvDockingD7R,
-  Jcl,
-  JvCoreD7R,
-  vcljpg,
-  JclVcl,
-  madExcept_,
-  madDisAsm_,
-  madBasic_;
+  jcl,
+  JvCoreD6R,
+  JvDockingD6R;
 
 contains
   devReg in 'devReg.pas',

@@ -89,8 +89,11 @@ type
 
 implementation
 uses
-  ComCtrls, UxTheme, JvDockVIDStyle, madStackTrace, Dialogs, Forms, StrUtils,
-  SysUtils, JvDockControlForm, JvDockGlobals;
+  ComCtrls, UxTheme, JvDockVIDStyle, Dialogs, Forms, StrUtils, SysUtils,
+  JvDockControlForm, JvDockGlobals;
+
+type
+  TJvDockVSNETZoneAccess = class(TJvDockVSNETZone);
 
 procedure RotateBitmap(var src: TBitmap; degrees : integer);
 var
@@ -224,7 +227,7 @@ var
   PinState: Integer;
   ThemeData: HTheme;
   ARect: TRect;
-  AZone: TJvDockVSNETZone;
+  AZone: TJvDockVSNETZoneAccess;
 begin
   if (not IsThemeActive) or (not TdevDockStyle(DockStyle).NativeDocks) then
   begin
@@ -236,7 +239,7 @@ begin
   AutoHideButtonHeight := ButtonHeight + 2;
 
   //Determine the state icon to use
-  AZone := TJvDockVSNETZone(Zone);
+  AZone := TJvDockVSNETZoneAccess(Zone);
   case AZone.AutoHideBtnState of
     JvDockVSNetStyle.bsNormal:
       PinState := EBHP_NORMAL;
