@@ -95,6 +95,11 @@ uses
 type
   TJvDockVSNETZoneAccess = class(TJvDockVSNETZone);
 
+function IsThemeActive: Boolean;
+begin
+  Result := Assigned(UxTheme.IsThemeActive) and UxTheme.IsThemeActive; 
+end;
+
 procedure RotateBitmap(var src: TBitmap; degrees : integer);
 var
   Result: TBitmap;
@@ -338,6 +343,7 @@ var
   I, CurrTabWidth, CompleteWidth, ImageWidth: Integer;
 
   ThemeData: HTheme;
+  TabsBorder: COLORREF;
   TabState: Integer;
   Tab: TBitmap;
 begin
@@ -364,8 +370,15 @@ begin
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := clBtnFace;
   Canvas.FillRect(Rect(0, 0, Width, Height));
+
+  //Then draw the bottom border
+  if GetThemeColor(ThemeData, TABP_TABITEM, TIS_NORMAL, TMT_BORDERCOLORHINT, TabsBorder) = S_OK then
+  begin
+    Canvas.Brush.Color := TabsBorder;
+    Canvas.FillRect(Rect(0, Height - 2, Width, Height));
+  end;
   Canvas.Brush.Style := bsClear;
-  
+
   for I := 0 to Page.Count - 1 do
   begin
     if not Page.Pages[I].TabVisible then
@@ -374,7 +387,7 @@ begin
     //Calculate the values for this tab
     CurrTabWidth := TdevDockTabSheet(Page.Pages[I]).ShowTabWidth;
     Tab.Width := CurrTabWidth;
-    Tab.Height := PanelHeight - TabTopOffset;
+    Tab.Height := PanelHeight - TabTopOffset - 2;
 
     //Create the rectangle the tab to be drawn on
     case Page.TabPosition of
@@ -434,6 +447,7 @@ begin
     //Select the state of the image to be drawn
     if Page.ActivePageIndex = I then
     begin
+      Tab.Height := Tab.Height + 1;
       TabState := TIS_SELECTED;
       case Page.TabPosition of
         tpTop:
@@ -496,7 +510,6 @@ begin
     //As well as the tab images
     if ShowTabImages and (Page.Images <> nil) and (CurrTabWidth > ImageWidth + 2 * CaptionLeftOffset) then
       Page.Images.Draw(Canvas, IconPoint.X, IconPoint.Y, Page.Pages[I].ImageIndex, True);
-
     Inc(CompleteWidth, CurrTabWidth);
   end;
 
