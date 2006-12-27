@@ -5349,7 +5349,7 @@ begin
     begin
       s := DebugTree.Items[idx].Text;
       Delete(s, idx2 + 1, length(s) - idx2);
-      DebugTree.Items[idx].Text := s + ' = (unknown)';
+      DebugTree.Items[idx].Text := s + ' (unknown)';
     end;
   end;
 
