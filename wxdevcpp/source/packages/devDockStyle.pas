@@ -371,11 +371,24 @@ begin
   Canvas.Brush.Color := clBtnFace;
   Canvas.FillRect(Rect(0, 0, Width, Height));
 
-  //Then draw the bottom border
-  if GetThemeColor(ThemeData, TABP_TABITEM, TIS_NORMAL, TMT_BORDERCOLORHINT, TabsBorder) = S_OK then
-  begin
-    Canvas.Brush.Color := TabsBorder;
-    Canvas.FillRect(Rect(0, Height - 2, Width, Height));
+  //Then draw the tab/page separator (so tabs don't break into pages suddenly)
+  case Page.TabPosition of
+    tpTop:
+      if GetThemeColor(ThemeData, TABP_TABITEM, TIS_NORMAL, TMT_BORDERCOLORHINT, TabsBorder) = S_OK then
+      begin
+        Canvas.Brush.Style := bsSolid;
+        Canvas.Brush.Color := TabsBorder;
+        Canvas.FillRect(Rect(0, PanelHeight - 2, Width, PanelHeight));
+        Canvas.Brush.Style := bsClear;
+      end;
+    tpBottom:
+      if GetThemeColor(ThemeData, TABP_TABITEM, TIS_NORMAL, TMT_BORDERCOLORHINT, TabsBorder) = S_OK then
+      begin
+        Canvas.Brush.Style := bsSolid;
+        Canvas.Brush.Color := TabsBorder;
+        Canvas.FillRect(Rect(0, 1, Width, 2));
+        Canvas.Brush.Style := bsClear;
+      end;
   end;
   Canvas.Brush.Style := bsClear;
 
@@ -426,28 +439,28 @@ begin
                        CompleteWidth + TabLeftOffset + CurrTabWidth - CaptionRightOffset,
                        PanelHeight);
         IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
-                           TabBottomOffset + CaptionTopOffset + 5);
+                           TabBottomOffset + CaptionTopOffset + 4);
       end;
       
       tpBottom:
       begin
-        TabRect := Rect(CompleteWidth + TabLeftOffset, TabBottomOffset,
+        TabRect := Rect(CompleteWidth + TabLeftOffset, TabBottomOffset + 2,
                       CompleteWidth + TabLeftOffset + CurrTabWidth,
-                      CompleteWidth + TabLeftOffset + Tab.Height);
+                      CompleteWidth + TabTopOffset + PanelHeight);
         LblRect := Rect(CompleteWidth + TabLeftOffset + CaptionLeftOffset +
                        Integer(ShowTabImages) * (ImageWidth + CaptionLeftOffset),
-                       TabBottomOffset + CaptionTopOffset + 1,
+                       TabBottomOffset + CaptionTopOffset + 2,
                        CompleteWidth + TabLeftOffset + CurrTabWidth - CaptionRightOffset,
                        PanelHeight);
         IconPoint := Point(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
-                           TabBottomOffset + CaptionTopOffset + 1);
+                           TabBottomOffset + CaptionTopOffset + 2);
       end;
     end;
 
     //Select the state of the image to be drawn
     if Page.ActivePageIndex = I then
     begin
-      Tab.Height := Tab.Height + 1;
+      Tab.Height := Tab.Height + 2;
       TabState := TIS_SELECTED;
       case Page.TabPosition of
         tpTop:
@@ -455,9 +468,9 @@ begin
           LblRect.Top := LblRect.Top - 1;
           IconPoint.Y := IconPoint.Y - 1;
         end;
-        tpLeft,
         tpBottom:
         begin
+          TabRect.Top := TabRect.Top - 2;
           LblRect.Top := LblRect.Top + 1;
           IconPoint.Y := IconPoint.Y + 1;
         end;
@@ -474,7 +487,6 @@ begin
         tpBottom:
         begin
           Tab.Height := Tab.Height - 2;
-          TabRect.Bottom := TabRect.Bottom - 2;
         end;
       end;
 
