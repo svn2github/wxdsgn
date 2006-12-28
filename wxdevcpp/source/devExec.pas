@@ -104,7 +104,7 @@ begin
 end;
 
 var
-  fDevExecutor: TdevExecutor;
+  fDevExecutor: TdevExecutor = nil;
 
 function devExecutor: TdevExecutor;
 begin
@@ -155,5 +155,10 @@ begin
   if Assigned(fOnTermEvent) then
     fOnTermEvent(Self);
 end;
+
+initialization
+
+finalization
+  fDevExecutor.Free;
 
 end.
