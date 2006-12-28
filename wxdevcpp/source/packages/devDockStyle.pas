@@ -358,11 +358,6 @@ begin
   end;
 
   ThemeData := OpenThemeData(Handle, 'TAB');
-  if (Page.Images <> nil) and (Page.ShowTabImages) then
-    ImageWidth := Page.Images.Width
-  else
-    ImageWidth := 0;
-
   CompleteWidth := 0;
   Tab := TBitmap.Create;
 
@@ -396,6 +391,12 @@ begin
   begin
     if not Page.Pages[I].TabVisible then
       Continue;
+
+    //Decide if we are going to draw an icon for this tab
+    if (Page.Images <> nil) and (Page.ShowTabImages) and (Page.Pages[I].ImageIndex < Page.Images.Count) then
+      ImageWidth := Page.Images.Width
+    else
+      ImageWidth := 0;
 
     //Calculate the values for this tab
     CurrTabWidth := TdevDockTabSheet(Page.Pages[I]).ShowTabWidth;
