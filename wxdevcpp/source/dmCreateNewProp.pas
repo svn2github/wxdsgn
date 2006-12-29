@@ -127,7 +127,7 @@ procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
         end
       else
         begin
-          MessageDlg('Valid name must on start with a number and can only contain alphanumeric character or an underscore. Please fix.',mtError, [mbOK],0);
+          MessageDlg('Valid name must not start with a number and can only contain alphanumeric character or an underscore. Please fix.',mtError, [mbOK],0);
       txtClassName.SetFocus;
       exit;
     end;
