@@ -35,7 +35,8 @@ requires
   rtl,
   jcl,
   JvCoreD6R,
-  JvDockingD6R;
+  JvDockingD6R,
+  ThemeManager6;
 
 contains
   devReg in 'devReg.pas',
