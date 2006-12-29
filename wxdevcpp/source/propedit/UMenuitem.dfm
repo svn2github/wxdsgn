@@ -389,7 +389,7 @@ object MenuItemForm: TMenuItemForm
     UseSystemColors = True
     UseDimColor = False
     OverrideOwnerDraw = False
-    Gradient = False
+    Gradient = True
     FlatMenu = False
     AutoDetect = False
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]

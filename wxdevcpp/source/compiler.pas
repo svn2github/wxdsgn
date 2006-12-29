@@ -538,57 +538,51 @@ begin
       else
         ofile := ChangeFileExt(tfile, OBJ_EXT);
 
-      if DoCheckSyntax then
-      begin
-        writeln(F, GenMakePath2(ofile) + ':' + GenMakePath2(tfile));
+      if (PCHObj <> '') and (((devCompiler.CompilerType in ID_COMPILER_VC) and
+         (I <> fProject.PchSource)) or (not (devCompiler.CompilerType in ID_COMPILER_VC))) then
+        tmp := PCHObj + ' '
+      else
+        tmp := '';
 
-        if fProject.Units[i].CompileCpp then
-          writeln(F, #9'$(CPP) ' + format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) + ' $(CXXFLAGS)')
-        else
-          writeln(F, #9'$(CC) ' + format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) + ' $(CFLAGS)');
+      if PerfectDepCheck and not fSingleFile then
+        writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile) + FindDeps(fProject.Directory + tfile))
+      else
+        writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile));
+
+      if fProject.Units[i].OverrideBuildCmd and (fProject.Units[i].BuildCmd <> '') then  begin
+        tmp := fProject.Units[i].BuildCmd;
+        tmp := StringReplace(tmp, '<CRTAB>', #10#9, [rfReplaceAll]);
+        writeln(F, #9 + tmp);
       end
       else
       begin
-        if (PCHObj <> '') and (((devCompiler.CompilerType in ID_COMPILER_VC) and
-           (I <> fProject.PchSource)) or (not (devCompiler.CompilerType in ID_COMPILER_VC))) then
-          tmp := PCHObj + ' '
-        else
-          tmp := '';
-
-        if PerfectDepCheck and not fSingleFile then
-          writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile) + FindDeps(fProject.Directory + tfile))
-        else
-          writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' + tmp + GenMakePath2(tfile));
-
-        if fProject.Units[i].OverrideBuildCmd and (fProject.Units[i].BuildCmd <> '') then  begin
-          tmp := fProject.Units[i].BuildCmd;
-          tmp := StringReplace(tmp, '<CRTAB>', #10#9, [rfReplaceAll]);
-          writeln(F, #9 + tmp);
-        end
-        else
+        //Decide on whether we pass a PCH creation or usage argument
+        with devCompiler do
         begin
-          //Decide on whether we pass a PCH creation or usage argument
-          with devCompiler do
+          tmp := '';
+          if CompilerType in ID_COMPILER_VC then
           begin
-            tmp := '';
-            if CompilerType in ID_COMPILER_VC then
+            if PCHHead <> '' then
             begin
-              if PCHHead <> '' then
-              begin
-                if I <> fProject.PchSource then
-                  tmp := PchUseFormat
-                else
-                  tmp := PchCreateFormat;
-                tmp := Format(' ' + tmp + ' ' + PchFileFormat, [GenMakePath(PCHHead), PCHFile]);
-              end
-            end;
+              if I <> fProject.PchSource then
+                tmp := PchUseFormat
+              else
+                tmp := PchCreateFormat;
+              tmp := Format(' ' + tmp + ' ' + PchFileFormat, [GenMakePath(PCHHead), PCHFile]);
+            end
           end;
+        end;
 
+        if not DoCheckSyntax then
           if fProject.Units[i].CompileCpp then
             writeln(F, #9 + '$(CPP) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) + tmp + ' $(CXXFLAGS)')
           else
-            writeln(F, #9 + '$(CC) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) + tmp + ' $(CFLAGS)');
-        end;
+            writeln(F, #9 + '$(CC) ' + format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) + tmp + ' $(CFLAGS)')
+        else
+          if fProject.Units[i].CompileCpp then
+            writeln(F, #9 + '$(CPP) ' + format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) + tmp + ' $(CXXFLAGS)')
+          else
+            writeln(F, #9 + '$(CC) ' + format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) + tmp + ' $(CFLAGS)');
       end;
     end
     else if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (I = fProject.PchHead) and (PchHead <> '') then

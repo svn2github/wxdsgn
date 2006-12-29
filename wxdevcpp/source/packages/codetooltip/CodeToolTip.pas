@@ -453,13 +453,13 @@ destructor TBaseCodeToolTip.Destroy;
 begin
   if Activated then ReleaseHandle;
 
-  FKeyDownProc  := nil;
-
+  FKeyDownProc := nil;
   FEditor := nil;
 
   FreeAndNil(FUpButton);
   FreeAndNil(FDownButton);
 
+  FBmp.Free;
   FToolTips.Free;
   FLookupEditor.Free;
 
