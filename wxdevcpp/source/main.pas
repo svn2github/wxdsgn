@@ -625,6 +625,12 @@ type
     lvThreads: TListView;
     prgFormProgress: TProgressBar;
     PageControl: TPageControl;
+    TodoSheet: TTabSheet;
+    lvTodo: TListView;
+    TodoSettings: TPanel;
+    lblTodoFilter: TLabel;
+    chkTodoIncomplete: TCheckBox;
+    cmbTodoFilter: TComboBox;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
@@ -928,9 +934,21 @@ type
     procedure StatusBarDrawPanel(StatusBar: TStatusBar;
       Panel: TStatusPanel; const Rect: TRect);
     procedure actViewToDoListUpdate(Sender: TObject);
+    procedure lvTodoCustomDrawItem(Sender: TCustomListView;
+      Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure lvTodoMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure lvTodoColumnClick(Sender: TObject; Column: TListColumn);
+    procedure lvTodoCompare(Sender: TObject; Item1, Item2: TListItem;
+      Data: Integer; var Compare: Integer);
+    procedure lvTodoDblClick(Sender: TObject);
+    procedure chkTodoIncompleteClick(Sender: TObject);
+    procedure cmbTodoFilterChange(Sender: TObject);
 {$ENDIF}
 
   private
+    fToDoList: TList;
+    fToDoSortColumn: Integer;
     fHelpfiles: ToysStringList;
     ShowPropertyInspItem: TMenuItem;
     fTools: TToolController;
@@ -986,9 +1004,16 @@ type
     procedure SurroundWithClick(Sender: TObject);
     procedure DoCreateWxSpecificItems;
 {$ENDIF}
+
     //Private debugger functions
     procedure PrepareDebugger;
     procedure InitializeDebugger;
+
+    //Private To-do list functions
+    procedure RefreshTodoList;
+    procedure AddTodoFiles(Current, InProject, NotInProject, OpenOnly: boolean);
+    procedure BuildTodoList;
+    function BreakupTodo(Filename: string; sl: TStrings; Line: integer; Token: string; HasUser, HasPriority: boolean): Integer;
 
   public
     procedure DoCreateEverything;
@@ -1080,7 +1105,7 @@ type
   frmProjMgrDock:TForm;
   frmPaletteDock: TForm;
   frmInspectorDock:TForm;
-  frmReportDocks: array[0..4] of TForm;
+  frmReportDocks: array[0..5] of TForm;
   
   strChangedFileList:TStringList;
   strStdwxIDList:TStringList;
@@ -1154,7 +1179,7 @@ uses
   SynEdit, SynEditTypes, JvAppIniStorage, JvAppStorage,
   debugfrm, Types, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
-  ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
+  ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
   WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm
 
@@ -1203,6 +1228,19 @@ const
   INT_IF_ELSE= 9;
   INT_SWITCH= 10;
   INT_CPP_COMMENT= 11;
+
+type
+  PToDoRec = ^TToDoRec;
+  TToDoRec = packed record
+    TokenIndex: integer;
+    Filename: string;
+    Line: integer;
+    ToLine: integer;
+    User: string;
+    Priority: integer;
+    Description: string;
+    IsDone: boolean;
+  end;
 
 {$IFDEF WX_BUILD}
 procedure TMainForm.DoCreateWxSpecificItems;
@@ -1882,18 +1920,14 @@ begin
     InactiveFont.Size := Font.Size;
   end;
 
+  fToDoList := TList.Create;
+  fToDoSortColumn := 0;
+  fFirstShow := True;
+
 {$IFDEF WX_BUILD}
   SetSplashStatus('Loading wxWidgets extensions');
   DoCreateWxSpecificItems;
 {$ENDIF}
-  fFirstShow := TRUE;
-  ViewToDoForm := TViewToDoForm.Create(DockServer.BottomDockPanel);
-  with TJvDockClient.Create(ViewToDoForm) do
-  begin
-    Name := ViewToDoForm.Name + 'Client';
-    DirectDrag := True;
-    DockStyle := DockServer.DockStyle;
-  end;
 
   // register file associations and DDE services
   DDETopic := DevCppDDEServer.Name;
@@ -1955,10 +1989,14 @@ begin
   devShortcuts1.Filename := devDirs.Config + DEV_SHORTCUTS_FILE;
 
   //Some weird problem when upgrading to new version
+{$IFNDEF PRIVATE_BUILD}
   try
+{$ENDIF}
     devShortcuts1.Load;
+{$IFNDEF PRIVATE_BUILD}
   except
   end;
+{$ENDIF}
 
   Application.HelpFile := ValidateFile(DEV_MAINHELP_FILE, devDirs.Help, TRUE);
 
@@ -1993,8 +2031,8 @@ begin
   tbClasses.Left := devData.ToolbarClassesX;
   tbClasses.Top := devData.ToolbarClassesY;
 
-  MainForm.Constraints.MaxHeight := Monitor.Height;
-  MainForm.Constraints.MaxWidth := Monitor.Width;
+  Constraints.MaxHeight := Monitor.Height;
+  Constraints.MaxWidth := Monitor.Width;
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
 
@@ -2049,9 +2087,7 @@ begin
     end;
   end;
 
-  //Dock the To do form
-  ViewToDoForm.ManualDock(DockServer.BottomDockPanel, nil, alRight);
-  ShowDockForm(ViewToDoForm);
+  //Show the compiler output list-view
   ShowDockForm(frmReportDocks[0]);
 
   //Settle the docking sizes
@@ -2191,18 +2227,21 @@ procedure TMainForm.LoadTheme;
 var
   Idx: Integer;
 begin
+{$IFNDEF PRIVATE_BUILD}
   try
+{$ENDIF}
     XPMenu.Active := devData.XPTheme;
     WebUpdateForm.XPMenu.Active := devData.XPTheme;
-    ViewToDoForm.XPMenu.Active := devData.XPTheme;
     TdevDockStyle(DockServer.DockStyle).NativeDocks := devData.NativeDocks;
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
-    with TThemeManager.Create(MainForm) do
+    with TThemeManager.Create(Self) do
       Options := [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw];
 {$ENDIF}
+{$IFNDEF PRIVATE_BUILD}
   except
   end;
+{$ENDIF}
 
   if devImageThemes.IndexOf(devData.Theme) < 0 then
     devData.Theme := devImageThemes.Themes[0].Title; // 0 = New look (see ImageTheme.pas)
@@ -2278,7 +2317,13 @@ begin
       DockServer.DockStyle.TabServerOption.TabPosition := tpBottom;
 
     SetupProjectView;
-    fFirstShow := FALSE;
+
+    //Initialize the To-do list settings
+    fToDoList.Clear;
+    lvTodo.Items.Clear;
+    cmbTodoFilter.ItemIndex := 5;
+    cmbTodoFilter.OnChange(cmbTodoFilter);
+    fFirstShow := False;
   end;
 end;
 
@@ -2367,6 +2412,16 @@ begin
   fDebugger.Free;
   dmMain.Free;
   devImageThemes.Free;
+
+{$IFNDEF PRIVATE_BUILD}
+  while fToDoList.Count > 0 do
+    if Assigned(fToDoList[0]) then begin
+      Dispose(PToDoRec(fToDoList[0]));
+      fToDoList.Delete(0);
+    end;
+{$ENDIF}
+  fToDoList.Free;
+
 {$IFDEF WX_BUILD}
   strChangedFileList.Free; //Used for wx's Own File watch functions
   strStdwxIDList.Free;//Used for
@@ -2921,6 +2976,9 @@ begin
   result := -1;
 end;
 
+//TODO: lowjoel: The following three Save functions probably can be refactored for
+//               speed. Anyone can reorganize it to optimize it for speed and efficiency,
+//               as well as to cut the number of lines needed.
 function TMainForm.SaveFileAs(e: TEditor): Boolean;
 var
   I: Integer;
@@ -3043,20 +3101,18 @@ begin
 
     // select appropriate filter
     if (CompareText(ExtractFileExt(s), '.h') = 0) or
-      (CompareText(ExtractFileExt(s), '.hpp') = 0) or
-      (CompareText(ExtractFileExt(s), '.hh') = 0) then
+       (CompareText(ExtractFileExt(s), '.hpp') = 0) or
+       (CompareText(ExtractFileExt(s), '.hh') = 0) then
+      FilterIndex := HFilter
+    else if Assigned(fProject) then
     begin
-      FilterIndex := HFilter;
-    end else
-    begin
-      if Assigned(fProject) then
-        if fProject.Profiles.useGPP then
-          FilterIndex := CppFilter
-        else
-          FilterIndex := CFilter
+      if fProject.Profiles.useGPP then
+        FilterIndex := CppFilter
       else
-        FilterIndex := CppFilter;
-    end;
+        FilterIndex := CFilter;
+    end
+    else
+      FilterIndex := CppFilter;
 
     FileName := s;
     s := ExtractFilePath(s);
@@ -3064,69 +3120,78 @@ begin
       InitialDir := s
     else
       InitialDir := fProject.Directory;
+
     if Execute then
     begin
       s := FileName;
-      if FileExists(s) and (MessageDlg(Lang[ID_MSG_FILEEXISTS],
-        mtWarning, [mbYes, mbNo], 0) = mrNo) then
-        exit;
+      if FileExists(s) and (MessageDlg(Lang[ID_MSG_FILEEXISTS], mtWarning, [mbYes, mbNo], 0) = mrNo) then
+        Exit;
 
       e.FileName := s;
 
       try
-           if devEditor.AppendNewline then
-             with e.Text do
-               if Lines.Count > 0 then
-                 if Lines[Lines.Count -1] <> '' then
-                   Lines.Add('');
+        if devEditor.AppendNewline then
+          with e.Text do
+            if Lines.Count > 0 then
+              if Lines[Lines.Count -1] <> '' then
+                Lines.Add('');
         e.Text.Lines.SaveToFile(s);
-        e.Modified := FALSE;
-        e.New := FALSE;
+        e.Modified := False;
+        e.New := False;
       except
+{$IFNDEF PRIVATE_BUILD}
         MessageDlg(Lang[ID_ERR_SAVEFILE] + ' "' + s + '"', mtError, [mbOk], 0);
         Result := False;
+{$ELSE}
+        on e: Exception do
+        begin
+          MessageDlg(Format('%s "%s" (%s)', [Lang[ID_ERR_SAVEFILE], s, e.Message]), mtError, [mbOk], Handle);
+          Result := False;
+        end;
+{$ENDIF}
       end;
-//Bug fix for 1337392 : This fix Parse the Cpp file when we save the header file provided
-//the Cpp file is already saved. 
-//Dont change the way steps by which the file is parsed.
 
+      //Bug fix for 1337392 : This fix Parse the Cpp file when we save the header
+      //file provided the Cpp file is already saved. Don't change the way steps
+      //by which the file is parsed.
       if assigned(fProject) then
         fProject.SaveUnitAs(idx, e.FileName)
       else
         e.TabSheet.Caption := ExtractFileName(e.FileName);
+
+      //TODO: lowjoel: optimize this code - it seems as though GetSourcePair is called twice
       if ClassBrowser1.Enabled then
       begin
-        CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
+        CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
         CppParser1.AddFileToScan(e.FileName); //new cc
         CppParser1.ParseList;
         ClassBrowser1.CurrentFile := e.FileName;
         CppParser1.ReParseFile(e.FileName, true); //new cc
-        //if the source is in the caache and the heades file is not in the cache
+
+        //if the source is in the cache and the header file is not in the cache
         //then we need to reparse the Cpp file to make sure the intialially
         //parsed cpp file is reset
-        if  ( (GetFileTyp(e.FileName) = utHead)) then
+        if GetFileTyp(e.FileName) = utHead then
         begin 
-            CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
-            if trim(ccFile) <> '' then
-            begin
-                idx := -1;
-                for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
-                begin
-                    if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
-                    begin
-                        ccFile := CppParser1.ScannedFiles[i];
-                        idx:=i;
-                        break;
-                    end;
-                end;    // for
-                if idx <> -1 then
-                begin
-                    CppParser1.ReParseFile(ccFile, true); //new cc
-                end;
-            end;
+          CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
+          if Trim(ccFile) <> '' then
+          begin
+            idx := -1;
+            for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
+              if AnsiSameText(ExtractFileName(ccFile), ExtractFileName(CppParser1.ScannedFiles[i])) then
+              begin
+                ccFile := CppParser1.ScannedFiles[i];
+                idx := i;
+                Break;
+              end;
+
+            if idx <> -1 then
+              CppParser1.ReParseFile(ccFile, true); //new cc
+          end;
         end;
       end;
-    end else
+    end
+    else
       Result := False;
   end;
 end;
@@ -3151,104 +3216,108 @@ begin
   wa := devFileMonitor1.Active;
   devFileMonitor1.Deactivate;
 
-  {$IFDEF WX_BUILD}
+{$IFDEF WX_BUILD}
   //Just Generate XPM's while saving the file
   if e.isForm then
-        GenerateXPM(e.GetDesigner,e.FileName);
-  {$ENDIF}
+    GenerateXPM(e.GetDesigner, e.FileName);
+{$ENDIF}
 
   if (not e.new) and e.Modified then
   begin // not new but in project (relative path in e.filename)
     if Assigned(fProject) and (e.InProject) then
-     begin
-       try
-      idx := fProject.GetUnitFromEditor(e);
-      if idx = -1 then
-        MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], 0)
-         else
-        fProject.units[idx].Save;
+    begin
+      try
+        idx := fProject.GetUnitFromEditor(e);
+        if idx = -1 then
+          MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle)
+        else
+          fProject.units[idx].Save;
        except
-         MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]),
-           mtError, [mbOk], 0);
+{$IFNDEF PRIVATE_BUILD}
+         MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle);
          Result := False;
          Exit;
+{$ELSE}
+         on Ex: Exception do
+         begin
+           MessageDlg(Format(Lang[ID_ERR_SAVEFILE] + ' (%s)', [e.FileName, Ex.Message]),
+                      mtError, [mbOk], Handle);
+           Result := False;
+           Exit;
+         end;
+{$ENDIF}
        end;
+
        try
-        if idx <> -1 then
-        if ClassBrowser1.Enabled  and bParseFile then
-        begin
-          CppParser1.ReParseFile(fProject.units[idx].FileName, True); //new cc
-          if e.TabSheet = PageControl.ActivePage then
-            ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
-          if  ( (GetFileTyp(e.FileName) = utHead)) then
-          begin
-              CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
-              if (trim(ccFile) <> '') then
-              begin
-                  index := -1;
-                  for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
-                  begin
-                      if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
-                      begin
-                          ccFile := CppParser1.ScannedFiles[i];
-                          index:=i;
-                          break;
-                      end;
-                  end;    // for
-                  if index <> -1 then
-                  begin
-                      CppParser1.ReParseFile(ccFile, true); //new cc
-                  end;
-              end;
-          end;
-        end;
-    except
-         MessageDlg(Format('Error reparsing file %s', [e.FileName]),
-        mtError, [mbOk], 0);
-      Result := False;
+         if (idx <> -1) and ClassBrowser1.Enabled and bParseFile then
+         begin
+           CppParser1.ReParseFile(fProject.units[idx].FileName, True); //new cc
+           if e.TabSheet = PageControl.ActivePage then
+             ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
+           if GetFileTyp(e.FileName) = utHead then
+           begin
+             CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
+             if trim(ccFile) <> '' then
+             begin
+               index := -1;
+               for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
+               begin
+                 if AnsiSameText(ExtractFileName(ccFile), ExtractFileName(CppParser1.ScannedFiles[i])) then
+                 begin
+                   ccFile := CppParser1.ScannedFiles[i];
+                   index := i;
+                   Break;
+                 end;
+               end;    // for
+
+               if index <> -1 then
+                 CppParser1.ReParseFile(ccFile, true); //new cc
+             end;
+           end;
+         end;
+       except
+         MessageDlg(Format('Error reparsing file %s', [e.FileName]), mtError, [mbOk], Handle);
+         Result := False;
        end;
     end
     else // stand alone file (should have fullpath in e.filename)
     try
-        if devEditor.AppendNewline then
-          with e.Text do
-            if Lines.Count > 0 then
-              if Lines[Lines.Count -1] <> '' then
-                Lines.Add('');
+      if devEditor.AppendNewline then
+        with e.Text do
+          if Lines.Count > 0 then
+            if Lines[Lines.Count -1] <> '' then
+              Lines.Add('');
       e.Text.Lines.SaveToFile(e.FileName);
       e.Modified := false;
-      if ClassBrowser1.Enabled   and bParseFile then
+
+      if ClassBrowser1.Enabled and bParseFile then
       begin
         CppParser1.ReParseFile(e.FileName, False); //new cc
         if e.TabSheet = PageControl.ActivePage then
           ClassBrowser1.CurrentFile := e.FileName;
-          if  ( (GetFileTyp(e.FileName) = utHead)) then
+          if GetFileTyp(e.FileName) = utHead then
           begin
-              CppParser1.GetSourcePair(ExtractFileName(e.FileName),ccFile,hfile);
-              if (trim(ccFile) <> '') then
+            CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
+            if trim(ccFile) <> '' then
+            begin
+              index := -1;
+              for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
               begin
-                  index := -1;
-                  for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
-                  begin
-                      if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
-                      begin
-                          ccFile := CppParser1.ScannedFiles[i];
-                          index:=i;
-                          break;
-                      end;
-                  end;    // for
-                  if index <> -1 then
-                  begin
-                      CppParser1.ReParseFile(ccFile, true); //new cc
-                  end;
-              end;
+                if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
+                begin
+                  ccFile := CppParser1.ScannedFiles[i];
+                  index:=i;
+                  break;
+                end;
+              end;    // for
+
+              if index <> -1 then
+                CppParser1.ReParseFile(ccFile, true); //new cc
+            end;
           end;
         end;
-      //        CppParser1.AddFileToScan(e.FileName);
-      //        CppParser1.ParseList;
     except
-      MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError,
-        [mbOk], 0);
+      MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle);
       Result := False;
     end
   end
@@ -3295,8 +3364,7 @@ begin
         end;
 
         // XRC
-        if (MainForm.ELDesigner1.GenerateXRC) then
-        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
+        if ELDesigner1.GenerateXRC and isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
         begin
             eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
             if assigned(eX) then
@@ -3415,7 +3483,7 @@ begin
 {$IFDEF WX_BUILD}
   EditorFilename := e.FileName;
   if FileExists(ChangeFileExt(e.FileName, WXFORM_EXT)) then begin
-    cppEditor := MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT), true);
+    cppEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT), true);
     if assigned(cppEditor) then
     begin
       if Saved then
@@ -3428,7 +3496,7 @@ begin
       CloseEditorInternal(cppEditor);
     end;
 
-    hppEditor:=MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT), true);
+    hppEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT), true);
     if assigned(hppEditor) then
     begin
       if Saved then
@@ -3441,7 +3509,7 @@ begin
       CloseEditorInternal(hppEditor);
     end;
 
-    wxEditor := MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
+    wxEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
     if assigned(wxEditor) then
     begin
       if Saved then
@@ -3454,7 +3522,7 @@ begin
       CloseEditorInternal(wxEditor);
     end;
 
-    wxXRCEditor := MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT), true);
+    wxXRCEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT), true);
     if assigned(wxXRCEditor) then
     begin
       if Saved then
@@ -3746,9 +3814,7 @@ begin
     bProjectLoading := False;
     alMain.State := asNormal;
   end;
-
-  if Assigned(ViewToDoForm) then
-    ViewToDoForm.RefreshList;
+  RefreshTodoList;
 end;
 
 procedure TMainForm.OpenFile(s: string; withoutActivation: Boolean);
@@ -3786,21 +3852,13 @@ begin
       dmMain.RemoveFromHistory(s);
   end
   else
-  begin
     dmMain.RemoveFromHistory(s);
-    // mandrav: why hide the class browser? (even if no project open - just a source file)
-//     if devData.ProjectView then
-//      actProjectManager.Execute;
-  end;
 
   if not withoutActivation then
     e.activate;
   if not assigned(fProject) then
     CppParser1.ReParseFile(e.FileName, e.InProject, True);
-  //  ClassBrowser1.CurrentFile:=e.FileName;
-
-  if Assigned(ViewToDoForm) then
-    ViewToDoForm.RefreshList;
+  RefreshTodoList;
 end;
 
 procedure TMainForm.AddFindOutputItem(line, col, unit_, message: string);
@@ -4083,7 +4141,7 @@ begin
       if assigned(e) then
       begin
 {$IFDEF WX_BUILD}
-        EditorFilename:=e.FileName;
+        EditorFilename := e.FileName;
         if FileExists(ChangeFileExt(EditorFilename,WXFORM_EXT)) then
         begin
           if FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) and (not isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT))) then
@@ -4092,7 +4150,7 @@ begin
             else
               MainForm.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), true);
 
-          if (MainForm.ELDesigner1.GenerateXRC) and FileExists(ChangeFileExt(EditorFilename, XRC_EXT))
+          if (ELDesigner1.GenerateXRC) and FileExists(ChangeFileExt(EditorFilename, XRC_EXT))
           and (not isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT))) then
             if fProject.Units.Indexof(ChangeFileExt(EditorFilename, XRC_EXT)) <> -1 then
               fProject.OpenUnit(fProject.Units.Indexof(ChangeFileExt(EditorFilename, XRC_EXT)))
@@ -4512,8 +4570,7 @@ begin
 
   if wa then
     devFileMonitor1.Activate;
-  if Assigned(ViewToDoForm) then
-    ViewToDoForm.RefreshList;
+  RefreshTodoList;
 end;
 
 procedure TMainForm.actXHTMLExecute(Sender: TObject);
@@ -5486,10 +5543,14 @@ var
   e: TEditor;
 begin
   e := GetEditor;
+{$IFNDEF PRIVATE_BUILD}
   try
+{$ENDIF}
     (Sender as TAction).Enabled := Assigned(e) and (e.Text.Text <> '');
+{$IFNDEF PRIVATE_BUILD}
   except
   end;
+{$ENDIF}  
 end;
 
 procedure TMainForm.actUpdateDebuggerRunning(Sender: TObject);
@@ -5729,7 +5790,8 @@ begin
   end;
     
 {$IFDEF WX_BUILD}
-  if (ssCtrl in Shift) and MainForm.ELDesigner1.Active and not JvInspProperties.Focused and not JvInspEvents.Focused then   // If Designer Form is in focus
+  if (ssCtrl in Shift) and ELDesigner1.Active and not JvInspProperties.Focused and
+     not JvInspEvents.Focused then   // If Designer Form is in focus
   begin
     case key of
       //Move the selected component
@@ -5826,10 +5888,7 @@ begin
   //Then remove the watch
   if Assigned(node) then
   begin
-    try
-      fDebugger.RemoveWatch(IntToStr(Integer(node.Data)));
-    except
-    end;
+    fDebugger.RemoveWatch(IntToStr(Integer(node.Data)));
     DebugTree.Items.Delete(node);
   end;
 end;
@@ -6485,9 +6544,7 @@ begin
       end;
     end;
   end;
-
-  if Assigned(ViewToDoForm) then
-    ViewToDoForm.RefreshList;
+  RefreshTodoList;
 end;
 
 procedure TMainForm.actConfigShortcutsExecute(Sender: TObject);
@@ -6838,9 +6895,9 @@ begin
       // Check for strip executable
       if devCompiler.FindOption('-s', optD, idxD) then begin
         optD.optValue := 0;
-        if not Assigned(MainForm.fProject) then
+        if not Assigned(fProject) then
           devCompiler.Options[idxD] := optD; // set global debugging option only if not working with a project
-        MainForm.SetProjCompOpt(idxD, False);// set the project's correpsonding option too
+        SetProjCompOpt(idxD, False);// set the project's correpsonding option too
       end;
 
       actRebuildExecute(nil);
@@ -7048,22 +7105,27 @@ end;
 
 procedure TMainForm.actViewToDoListUpdate(Sender: TObject);
 begin
-  ToDoList1.Checked := GetFormVisible(ViewToDoForm);
+  ToDoList1.Checked := GetFormVisible(frmReportDocks[5]);
 end;
 
 procedure TMainForm.actViewToDoListExecute(Sender: TObject);
 begin
   with ToDolist1 do
     if Checked then
-      HideDockForm(ViewToDoForm)
+      HideDockForm(frmReportDocks[5])
     else
-      ShowDockForm(ViewToDoForm);
+      ShowDockForm(frmReportDocks[5]);
 end;
 
 procedure TMainForm.actAddToDoExecute(Sender: TObject);
 begin
-  TAddToDoForm.Create(Self).ShowModal;
-  ViewToDoForm.RefreshList;
+  with TAddToDoForm.Create(Self) do
+  try
+    ShowModal;
+    RefreshTodoList;
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainForm.actProjectNewFolderExecute(Sender: TObject);
@@ -8756,42 +8818,28 @@ end;
 
 procedure TMainForm.ELDesigner1ChangeSelection(Sender: TObject);
 begin
+{$IFNDEF PRIVATE_BUILD}
   try
+{$ENDIF}
+    if (ELDesigner1 = nil) or (ELDesigner1.DesignControl = nil) then
+      Exit;
 
-     { Make sure Designer Form has the focus }
-    if ELDesigner1 = nil then
-      exit;
+    //Make sure the Designer Form has the focus
+    ELDesigner1.DesignControl.SetFocus;
 
-    if ELDesigner1.DesignControl = nil then
-      exit;
-
-     ELDesigner1.DesignControl.SetFocus;
-    { clear inspector }
-
-    { delete design control from selection }
-    if (ELDesigner1.SelectedControls.Count > 0) then
+    //Find the index of the current control and show its properties
+    if ELDesigner1.SelectedControls.Count > 0 then
     begin
       cbxControlsx.ItemIndex :=
         cbxControlsx.Items.IndexOfObject(ELDesigner1.SelectedControls[0]);
       BuildProperties(ELDesigner1.SelectedControls[0]);
-    //ELPropertyInspector1.Clear;
-    //ELPropertyInspector1.Add(ELDesigner1.SelectedControls[0]);
-
     end
-    else
-    begin
-      if isCurrentPageDesigner then
-      begin
-        BuildProperties(GetCurrentDesignerForm());
-        //ELPropertyInspector1.Clear;
-        //ELPropertyInspector1.Add(GetCurrentDesignerForm());
-      end;
-    end;
-
-    { sync controllist }
+    else if isCurrentPageDesigner then
+      BuildProperties(GetCurrentDesignerForm);
+{$IFNDEF PRIVATE_BUILD}
   finally
-
   end;
+{$ENDIF}
 end;
 
 procedure TMainForm.ELDesigner1ControlDeleted(Sender: TObject;
@@ -8949,22 +8997,30 @@ begin
 
       if TWinControl(compObj).Parent.GetInterface(IID_IWxControlPanelInterface,wxControlPanelInterface) then
       begin
+{$IFNDEF PRIVATE_BUILD}
         try
+{$ENDIF}
           if assigned(TWinControl(compObj).parent.parent) then
             TWinControl(compObj).parent:=TWinControl(compObj).parent.parent;
+{$IFNDEF PRIVATE_BUILD}
         except
         end;
+{$ENDIF}
       end;
 
+{$IFNDEF PRIVATE_BUILD}
     try
+{$ENDIF}
       if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
       begin
         Inc(intControlCount);
         wxcompInterface.SetIDName('ID_' + UpperCase(compObj.Name));
         wxcompInterface.SetIDValue(intControlCount);
       end;
+{$IFNDEF PRIVATE_BUILD}
     except
     end;
+{$ENDIF}
   end; // End for
 
   ComponentPalette.UnselectComponents;
@@ -9007,25 +9063,13 @@ begin
   SelectedComponent:=nil;
   if boolInspectorDataClear then
   begin
-{$IFNDEF PRIVATE_BUILD}
-    try
-{$ENDIF}
-      JvInspProperties.Clear;
-      if Assigned(JvInspProperties.Root) then
-        JvInspProperties.Root.Clear;
-{$IFNDEF PRIVATE_BUILD}
-    except
-    end;
+    JvInspProperties.Clear;
+    if Assigned(JvInspProperties.Root) then
+      JvInspProperties.Root.Clear;
 
-    try
-{$ENDIF}
-      JvInspEvents.Clear;
-      if Assigned(JvInspEvents.Root) then
-        JvInspEvents.Root.Clear;
-{$IFNDEF PRIVATE_BUILD}
-    except
-    end;
-{$ENDIF}
+    JvInspEvents.Clear;
+    if Assigned(JvInspEvents.Root) then
+      JvInspEvents.Root.Clear;
   end;
 
   boolInspectorDataClear := true;
@@ -9366,7 +9410,6 @@ end;
 
 procedure TMainForm.BuildProperties(Comp: TControl;boolForce:Boolean);
 var
-  I: Integer;
   strValue:String;
   strSelName,strCompName:String;
 begin
@@ -9397,47 +9440,26 @@ begin
 
   if JvInspProperties.Root <> nil then
     if JvInspProperties.Root.Data <> nil then
+{$IFNDEF PRIVATE_BUILD}
       try
+{$ENDIF}
         strValue:=TWinControl(TJvInspectorPropData(JvInspProperties.Root.Data).Instance).Name;
+{$IFNDEF PRIVATE_BUILD}
       except
         Exit;
       end;
+{$ENDIF}
 
+  //Populate the properties list
   JvInspProperties.BeginUpdate;
-  JvInspEvents.BeginUpdate;
-{$IFNDEF PRIVATE_BUILD}
-  try
-{$ENDIF}
-    //Populate the properties list
-    for I := JvInspProperties.Root.Count - 1 downto 0 do    // Iterate
-{$IFNDEF PRIVATE_BUILD}
-      try
-{$ENDIF}
-        JvInspProperties.Root.Delete(I);
-{$IFNDEF PRIVATE_BUILD}
-      except
-      end;
-{$ENDIF}
-    TJvInspectorPropData.New(JvInspProperties.Root, Comp);
-
-    //And the events list
-    for I := JvInspEvents.Root.Count - 1 downto 0 do    // Iterate
-{$IFNDEF PRIVATE_BUILD}
-      try
-{$ENDIF}
-        JvInspEvents.Root.Delete(I);
-{$IFNDEF PRIVATE_BUILD}
-      except
-      end;
-{$ENDIF}
-    JvInspEvents.Root.Clear;
-    TJvInspectorPropData.New(JvInspEvents.Root, Comp);
-{$IFNDEF PRIVATE_BUILD}
-  except
-  end;
-{$ENDIF}
-
+  JvInspProperties.Root.Clear;
+  TJvInspectorPropData.New(JvInspProperties.Root, Comp);
   JvInspProperties.EndUpdate;
+
+  //And the events list
+  JvInspEvents.BeginUpdate;
+  JvInspEvents.Root.Clear;
+  TJvInspectorPropData.New(JvInspEvents.Root, Comp);
   JvInspEvents.EndUpdate;
 end;
 
@@ -9506,7 +9528,9 @@ begin
       else
         strLst := nil;
 
+{$IFNDEF PRIVATE_BUILD}
       try
+{$ENDIF}
         if strLst <> nil then
         begin
           if strLst.Count > 0 then
@@ -9514,9 +9538,11 @@ begin
         end
         else
           Exit;
-      Except
+{$IFNDEF PRIVATE_BUILD}
+      except
         Exit;
       end;
+{$ENDIF}
 
       //Populate the std wx Ids for the ID_Name selection
       if AnsiSameText('Wx_IDName', trim(Item.DisplayName)) then
@@ -9875,7 +9901,7 @@ begin
         propertyName:=Data.Name;
         wxClassName:=Trim(e.getDesigner().Wx_Name);
         propDisplayName:=JvInspEvents.Selected.DisplayName;
-        if MainForm.CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
+        if CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
         begin
            bOpenFile:=true;
           //This is causing AV, so I moved this operation to
@@ -9935,7 +9961,7 @@ begin
     UpdateDefaultFormContent;
   except
     on E: Exception do
-      MessageBox(Self.Handle, PChar(E.Message), PChar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
+      MessageBox(Handle, PChar(E.Message), PChar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
   end;
 
   if bOpenFile then
@@ -10569,7 +10595,7 @@ procedure TMainForm.UpdateDefaultFormContent;
 var
   e: TEditor;
 begin
-  e := GetEditor(MainForm.PageControl.ActivePageIndex);
+  e := GetEditor(PageControl.ActivePageIndex);
 
   if not Assigned(e) then
     Exit;
@@ -10656,15 +10682,18 @@ begin
         exit;
     end;
 
-   //SelectedComponent:=ELDesigner1.DesignControl;
-   BuildProperties(ELDesigner1.DesignControl,true);
-   DisablePropertyBuilding:=true;
+   BuildProperties(ELDesigner1.DesignControl, true);
+   DisablePropertyBuilding := True;
+{$IFNDEF PRIVATE_BUILD}
    try
-    if ELDesigner1.CanCut then
-            ELDesigner1.Cut;
+{$ENDIF}
+     if ELDesigner1.CanCut then
+       ELDesigner1.Cut;
+{$IFNDEF PRIVATE_BUILD}
    except
    end;
-   DisablePropertyBuilding:=false;
+{$ENDIF}
+   DisablePropertyBuilding := False;
 
    ELDesigner1.SelectedControls.Clear;
    ELDesigner1.SelectedControls.Add(ELDesigner1.DesignControl);
@@ -10682,14 +10711,17 @@ begin
         exit;
     end;
 
-   //SelectedComponent:=ELDesigner1.DesignControl;
-   BuildProperties(ELDesigner1.DesignControl,true);
+   BuildProperties(ELDesigner1.DesignControl, true);
    DisablePropertyBuilding:=true;
+{$IFNDEF PRIVATE_BUILD}
    try
-        if ELDesigner1.CanPaste then
-            ELDesigner1.Paste;
+{$ENDIF}
+     if ELDesigner1.CanPaste then
+       ELDesigner1.Paste;
+{$IFNDEF PRIVATE_BUILD}
    except
    end;
+{$ENDIF}
    DisablePropertyBuilding:=false;
 
    ELDesigner1.SelectedControls.Clear;
@@ -10762,12 +10794,10 @@ begin
     Exit;
   try
     if AnsiSameText(NewItem.DisplayName, 'name') and
-      AnsiSameText(NewItem.Data.Name, 'wx_Name') then
-    begin
+       AnsiSameText(NewItem.Data.Name, 'wx_Name') then
       PreviousStringValue := NewItem.Data.AsString;
-    end;
-      if AnsiSameText(NewItem.DisplayName, 'name') then
-            PreviousComponentName:=NewItem.Data.AsString
+    if AnsiSameText(NewItem.DisplayName, 'name') then
+      PreviousComponentName := NewItem.Data.AsString
   except
   end;
 
@@ -11113,15 +11143,14 @@ begin
 end;
 
 procedure TMainForm.DesignerOptionsClick(Sender: TObject);
-var
-    DesignerForm: TDesignerForm;
 begin
-    DesignerForm:=TDesignerForm.Create(self);
-    try
-        DesignerForm.showModal;
-        DesignerForm.destroy;
-    except
-    end;
+  with TDesignerForm.Create(Self) do
+  try
+    DesignerForm.ShowModal;
+    DesignerForm.Destroy;
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainForm.AlignToGridClick(Sender: TObject);
@@ -11173,8 +11202,7 @@ end;
 procedure TMainForm.ChangeCreationOrder1Click(Sender: TObject);
 var
     Control: TWinControl;
-    CreationOrderForm:TCreationOrderForm;
-    e,hppEditor,cppEditor:TEditor;
+    e, hppEditor, cppEditor: TEditor;
 begin
     if PageControl.ActivePageIndex = -1 then
         exit;
@@ -11231,13 +11259,13 @@ begin
         SaveFile(e);
     end;
 
-    CreationOrderForm := TCreationOrderForm.Create(self);
+    with TCreationOrderForm.Create(Self) do
     try
-        CreationOrderForm.SetMainControl(Control);
-        CreationOrderForm.PopulateControlList;
-        CreationOrderForm.ShowModal;
+      SetMainControl(Control);
+      PopulateControlList;
+      ShowModal;
     finally
-        CreationOrderForm.Destroy;
+      Free
     end;
 
     ELDesigner1.Active := false;
@@ -11359,11 +11387,15 @@ begin
   devFileMonitor1.Deactivate;
   for I := 0 to FWatchList.Count - 1 do    // Iterate
   begin
+{$IFNDEF PRIVATE_BUILD}
     try
-        if assigned(FWatchList[i]) then
-            TFileWatch(FWatchList[i]).Terminate;
+{$ENDIF}
+      if Assigned(FWatchList[i]) then
+        TFileWatch(FWatchList[i]).Terminate;
+{$IFNDEF PRIVATE_BUILD}
     except
     end;
+{$ENDIF}
   end;    // for
 
   FWatchList.Clear;
@@ -11426,6 +11458,367 @@ begin
     if ProjectView.Selected.Data <> Pointer(-1) then { if not a directory }
       OpenUnit;
   end;
+end;
+
+function TMainForm.BreakupTodo(Filename: string; sl: TStrings; Line: integer; Token: string; HasUser,
+  HasPriority: boolean): integer;
+var
+  sUser: string;
+  iPriority: integer;
+  sDescription: string;
+  Indent: integer;
+  S: string;
+  X, Y: integer;
+  idx: integer;
+  Done: boolean;
+  MultiLine: boolean;
+  td: PToDoRec;
+  OrigLine: integer;
+  TokenIndex: integer;
+begin
+  sUser := '';
+  iPriority := 0;
+  sDescription := '';
+
+  OrigLine := Line;
+  S := sl[Line];
+
+  MultiLine := AnsiPos('//', S) = 0;
+  idx := AnsiPos(Token, S);
+  TokenIndex := idx;
+  Inc(idx, 4); // skip "TODO"
+
+  if HasUser or HasPriority then
+    Inc(idx, 2); // skip " ("
+
+  Delete(S, 1, idx - 1);
+  if HasUser or HasPriority then begin
+    idx := AnsiPos('#', S);
+    sUser := Copy(S, 1, idx - 1); // got user
+    iPriority := StrToIntDef(S[idx + 1], 1); // got priority
+  end;
+
+  Indent := AnsiPos(':', sl[Line]) + 1;
+  idx := AnsiPos(':', S);
+  Delete(S, 1, idx + 1);
+  Done := False;
+  Y := Line;
+  while (Y < sl.Count) and not Done do begin
+    X := Indent;
+    while (X <= Length(sl[Y])) and not Done do begin
+      if (sl[Y][X] = '*') and (X < Length(sl[Y])) and (sl[Y][X + 1] = '/') then begin
+        Done := True;
+        Break;
+      end;
+      sDescription := sDescription + sl[Y][X];
+      Inc(X);
+    end;
+    if not MultiLine then
+      Break;
+    if not Done then begin
+      sDescription := sDescription + #13#10;
+      Inc(Line);
+    end;
+    Inc(Y);
+  end;
+
+  td := New(PToDoRec);
+  td^.TokenIndex := TokenIndex;
+  td^.Filename := Filename;
+  td^.Line := OrigLine;
+  td^.ToLine := Line;
+  td^.User := sUser;
+  td^.Priority := iPriority;
+  td^.Description := sDescription;
+  td^.IsDone := AnsiCompareText(Token, 'TODO') <> 0;
+  fToDoList.Add(td);
+
+  Result := Line;
+end;
+
+procedure TMainForm.AddTodoFiles(Current, InProject, NotInProject, OpenOnly: boolean);
+  function MatchesMask(SearchStr, MaskStr: string): Boolean;
+    var
+    Matches: boolean;
+    MaskIndex: integer;
+    SearchIndex: integer;
+    NextMatch: Char;
+  begin
+    Matches := True;
+    MaskIndex := 1;
+    SearchIndex := 1;
+
+    if (MaskStr = '') or (SearchStr = '') then
+      Matches := False;
+
+    if AnsiPos('*?', MaskStr) > 0 then // illegal
+      Matches := False;
+    if AnsiPos('**', MaskStr) > 0 then // illegal
+      Matches := False;
+
+    while Matches do begin
+      case MaskStr[MaskIndex] of
+        '*': begin
+          if MaskIndex < Length(MaskStr) then
+            NextMatch := MaskStr[MaskIndex + 1]
+          else
+            NextMatch := #0;
+          while SearchIndex <= Length(SearchStr) do begin
+            if SearchStr[SearchIndex] = NextMatch then begin
+              Inc(SearchIndex);
+              Inc(MaskIndex, 2);
+              Break;
+            end;
+            Inc(SearchIndex);
+          end;
+          if (SearchIndex = Length(SearchStr)) and (MaskIndex < Length(MaskStr)) then
+            Matches := False;
+        end;
+        '?': begin
+          Inc(SearchIndex);
+          Inc(MaskIndex);
+        end;
+      else
+        if MaskStr[MaskIndex] <> SearchStr[SearchIndex] then
+          Matches := False
+        else begin
+          Inc(MaskIndex);
+          Inc(SearchIndex);
+        end;
+      end;
+
+      if MaskIndex > Length(MaskStr) then
+        Break;
+      if SearchIndex > Length(SearchStr) then
+        Break;
+    end;
+    if (MaskIndex = Length(MaskStr)) and (MaskStr[MaskIndex] = '*') then
+      MaskIndex := Length(MaskStr) + 1;
+
+    Result := Matches and (MaskIndex > Length(MaskStr)) and (SearchIndex > Length(SearchStr));
+  end;
+
+  procedure AddToDo(Filename: string);
+  var
+    sl: TStrings;
+    I: integer;
+  begin
+    sl := TStringList.Create;
+    try
+      for I := 0 to PageControl.PageCount - 1 do
+        if TEditor(PageControl.Pages[I].Tag).FileName = Filename then
+          sl.Assign(TEditor(PageControl.Pages[I].Tag).Text.Lines)
+        else if FileExists(Filename) then
+          sl.LoadFromFile(Filename);
+
+      if sl.Count = 0 then
+        if FileExists(Filename) then
+        sl.LoadFromFile(Filename);
+
+      I := 0;
+      while I < sl.Count do begin
+        if MatchesMask(sl[I], '*/? TODO (?*#?#)*:*') then
+          BreakupToDo(Filename, sl, I, 'TODO', True, True) // full info TODO
+        else if MatchesMask(sl[I], '*/? DONE (?*#?#)*:*') then
+          BreakupToDo(Filename, sl, I, 'DONE', True, True) // full info DONE
+        else if MatchesMask(sl[I], '*/? TODO (#?#)*:*') then
+          BreakupToDo(Filename, sl, I, 'TODO', False, True) // only priority info TODO
+        else if MatchesMask(sl[I], '*/? DONE (#?#)*:*') then
+          BreakupToDo(Filename, sl, I, 'DONE', False, True) // only priority info DONE
+        else if MatchesMask(sl[I], '*/?*TODO*:*') then
+          BreakupToDo(Filename, sl, I, 'TODO', False, False) // custom TODO
+        else if MatchesMask(sl[I], '*/?*DONE*:*') then
+          BreakupToDo(Filename, sl, I, 'DONE', False, False); // custom DONE
+        Inc(I);
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+var
+  e: TEditor;
+  idx: integer;
+begin
+  if Current then begin
+    e := GetEditor;
+    if Assigned(e) then
+      AddToDo(e.FileName);
+    Exit;
+  end;
+
+  if InProject and not OpenOnly then begin
+    if Assigned(fProject) then
+      for idx := 0 to pred(fProject.Units.Count) do
+        AddToDo(fProject.Units[idx].filename);
+  end;
+
+  if OpenOnly then begin
+    for idx := 0 to pred(PageControl.PageCount) do begin
+      e := GetEditor(idx);
+      if Assigned(e) then
+        if InProject and e.InProject then
+          AddToDo(e.FileName)
+    end;
+  end;
+
+  if NotInProject then begin
+    for idx := 0 to pred(PageControl.PageCount) do begin
+      e := GetEditor(idx);
+      if Assigned(e) then
+        if not e.InProject then
+          AddToDo(e.FileName);
+    end;
+  end;
+end;
+
+procedure TMainForm.lvTodoCustomDrawItem(Sender: TCustomListView;
+  Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
+begin
+  if Assigned(Item.Data) then
+  begin
+    Item.Checked := PToDoRec(Item.Data)^.IsDone;
+    if Item.Checked then
+    begin
+      Sender.Canvas.Font.Color := clGrayText;
+      Sender.Canvas.Font.Style := Sender.Canvas.Font.Style + [fsStrikeOut]
+    end
+    else
+    begin
+      Sender.Canvas.Font.Color := clWindowText;
+      Sender.Canvas.Font.Style := Sender.Canvas.Font.Style - [fsStrikeOut];
+    end;
+  end;
+  DefaultDraw := True;
+end;
+
+procedure TMainForm.lvTodoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  e: TEditor;
+  Item: TListItem;
+begin
+  if not (htOnStateIcon in lvTodo.GetHitTestInfoAt(X, Y)) then
+    Exit;
+
+  Item := lvTodo.GetItemAt(X, Y);
+  if not Assigned(Item) then
+    Exit;
+  if not Assigned(Item.Data) then
+    Exit;
+
+  e := GetEditorFromFileName(PToDoRec(Item.Data)^.Filename);
+  if Assigned(e) then begin
+    PToDoRec(Item.Data)^.IsDone := Item.Checked;
+    if Item.Checked then begin
+      e.Text.Lines[PToDoRec(Item.Data)^.Line] := StringReplace(e.Text.Lines[PToDoRec(Item.Data)^.Line], 'TODO', 'DONE', []);
+      if chkTodoIncomplete.Checked then
+        BuildTodoList;
+    end
+    else
+      e.Text.Lines[PToDoRec(Item.Data)^.Line] := StringReplace(e.Text.Lines[PToDoRec(Item.Data)^.Line], 'DONE', 'TODO', []);
+    e.Modified := True;
+    lvTodo.Refresh;
+  end;
+end;
+
+procedure TMainForm.lvTodoColumnClick(Sender: TObject;
+  Column: TListColumn);
+begin
+  fTodoSortColumn := Column.Index;
+  TCustomListView(Sender).CustomSort(nil, 0);
+end;
+
+procedure TMainForm.lvTodoCompare(Sender: TObject; Item1, Item2: TListItem;
+  Data: Integer; var Compare: Integer);
+var
+  idx: Integer;
+begin
+  if fTodoSortColumn = 0 then begin
+    if PToDoRec(Item1.Data)^.IsDone and not PToDoRec(Item2.Data)^.IsDone then
+      Compare := 1
+    else if not PToDoRec(Item1.Data)^.IsDone and PToDoRec(Item2.Data)^.IsDone then
+      Compare := -1
+    else
+      Compare := 0;
+  end
+  else begin
+    idx := fTodoSortColumn - 1;
+    Compare := AnsiCompareText(Item1.SubItems[idx], Item2.SubItems[idx]);
+  end;
+end;
+
+procedure TMainForm.lvTodoDblClick(Sender: TObject);
+var
+  e: TEditor;
+begin
+  if not Assigned(lvTodo.Selected) then
+    Exit;
+  if not Assigned(lvTodo.Selected.Data) then
+    Exit;
+
+  e := GetEditorFromFilename(PToDoRec(lvTodo.Selected.Data)^.Filename);
+  if Assigned(e) then
+    e.GotoLineNr(PToDoRec(lvTodo.Selected.Data)^.Line + 1);
+end;
+
+procedure TMainForm.chkTodoIncompleteClick(Sender: TObject);
+begin
+  BuildTodoList;
+end;
+
+procedure TMainForm.BuildTodoList;
+var
+  I: integer;
+  td: PToDoRec;
+  S: string;
+begin
+  lvTodo.Items.BeginUpdate;
+  lvTodo.Items.Clear;
+  for I := 0 to fToDoList.Count - 1 do begin
+    td := PToDoRec(fToDoList[I]);
+    if (chkTodoIncomplete.Checked and not td^.IsDone) or not chkTodoIncomplete.Checked then
+      with lvTodo.Items.Add do begin
+        Caption := '';
+        SubItems.Add(IntToStr(td^.Priority));
+        S := StringReplace(td^.Description, #13#10, ' ', [rfReplaceAll]);
+        S := StringReplace(S, #9, ' ', [rfReplaceAll]);
+        SubItems.Add(S);
+        SubItems.Add(td^.Filename);
+        SubItems.Add(td^.User);
+        Data := td;
+      end;
+  end;
+  lvTodo.CustomSort(nil, 0);
+  lvTodo.Items.EndUpdate;
+end;
+
+procedure TMainForm.cmbTodoFilterChange(Sender: TObject);
+begin
+{
+    0 = All files (in project and not)
+    1 = Open files only (in project and not)
+    2 = All project files
+    3 = Open project files only
+    4 = Non-project open files
+    5 = Current file only
+}
+  fToDoList.Clear;
+  lvTodo.Items.Clear;
+  case cmbTodoFilter.ItemIndex of
+    0: AddTodoFiles(False, True, True, False);
+    1: AddTodoFiles(False, True, True, True);
+    2: AddTodoFiles(False, True, False, False);
+    3: AddTodoFiles(False, True, False, True);
+    4: AddTodoFiles(False, False, True, True);
+  else
+    AddTodoFiles(True, False, True, True); //The default would be for current files only.
+  end;
+  BuildTodoList;
+end;
+
+procedure TMainForm.RefreshTodoList;
+begin
+  cmbTodoFilterChange(cmbTodoFilter);
 end;
 
 {$IfDef WX_BUILD}

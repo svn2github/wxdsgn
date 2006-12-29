@@ -26,7 +26,7 @@ object MainForm: TMainForm
     Top = 240
     Width = 628
     Height = 130
-    ActivePage = CompSheet
+    ActivePage = TodoSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
@@ -41,7 +41,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -160,7 +160,7 @@ object MainForm: TMainForm
         TabOrder = 1
         DesignSize = (
           391
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
@@ -182,7 +182,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 98
+        Height = 97
         ActivePage = tabDebugOutput
         Align = alClient
         TabOrder = 0
@@ -283,7 +283,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 70
+            Height = 69
             Align = alClient
             Images = dmMain.MenuImages_NewLook
             Indent = 19
@@ -394,6 +394,97 @@ object MainForm: TMainForm
         ViewStyle = vsReport
         OnDblClick = FindOutputDblClick
         OnKeyDown = FindOutputKeyDown
+      end
+    end
+    object TodoSheet: TTabSheet
+      Caption = 'To-Do List'
+      ImageIndex = 5
+      object lvTodo: TListView
+        Left = 0
+        Top = 0
+        Width = 620
+        Height = 60
+        Align = alClient
+        Checkboxes = True
+        Columns = <
+          item
+            Width = 24
+          end
+          item
+            Caption = 'Priority'
+          end
+          item
+            Caption = 'Description'
+            Width = 224
+          end
+          item
+            Caption = 'Filename'
+            Width = 150
+          end
+          item
+            Caption = 'User'
+            Width = 90
+          end>
+        ReadOnly = True
+        RowSelect = True
+        SortType = stBoth
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnColumnClick = lvTodoColumnClick
+        OnCompare = lvTodoCompare
+        OnCustomDrawItem = lvTodoCustomDrawItem
+        OnDblClick = lvTodoDblClick
+        OnMouseDown = lvTodoMouseDown
+      end
+      object TodoSettings: TPanel
+        Left = 0
+        Top = 60
+        Width = 620
+        Height = 41
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 1
+        DesignSize = (
+          620
+          41)
+        object lblTodoFilter: TLabel
+          Left = 6
+          Top = 5
+          Width = 25
+          Height = 13
+          Anchors = [akLeft, akBottom]
+          Caption = 'Filter:'
+        end
+        object chkTodoIncomplete: TCheckBox
+          Left = 6
+          Top = 25
+          Width = 289
+          Height = 16
+          Anchors = [akLeft, akBottom]
+          Caption = 'Don'#39't show items marked as done'
+          TabOrder = 0
+          OnClick = chkTodoIncompleteClick
+        end
+        object cmbTodoFilter: TComboBox
+          Left = 37
+          Top = 2
+          Width = 245
+          Height = 21
+          Style = csDropDownList
+          Anchors = [akLeft, akBottom]
+          ItemHeight = 13
+          ItemIndex = 5
+          TabOrder = 1
+          Text = 'Current file only'
+          OnChange = cmbTodoFilterChange
+          Items.Strings = (
+            'All files (in project and not)'
+            'Open files only (in project and not)'
+            'All project files'
+            'Open project files only'
+            'Non-project open files'
+            'Current file only')
+        end
       end
     end
   end

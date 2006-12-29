@@ -86,7 +86,6 @@ uses
   ProfileAnalysisFm in 'ProfileAnalysisFm.pas' {ProfileAnalysisForm},
   FilePropertiesFm in 'FilePropertiesFm.pas' {FilePropertiesForm},
   AddToDoFm in 'AddToDoFm.pas' {AddToDoForm},
-  ViewToDoFm in 'ViewToDoFm.pas' {ViewToDoForm},
   ImportMSVCFm in 'ImportMSVCFm.pas' {ImportMSVCForm},
   CPUFrm in 'CPUFrm.pas' {CPUForm},
   FileAssocs in 'FileAssocs.pas',
@@ -299,6 +298,7 @@ begin
   devTheme := TdevTheme.Create;
   Application.Initialize;
   Application.Title := 'wxDev-C++';
+  Application.HelpFile := '..\Help\devcpp.HLP';
   Application.CreateForm(TMainForm, MainForm);
   if not devData.NoSplashScreen then
   begin
