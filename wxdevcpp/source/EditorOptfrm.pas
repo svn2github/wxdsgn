@@ -158,6 +158,7 @@ type
     lblSyntaxExt: TLabel;
     cbDefaultintoprj: TCheckBox;
     edCompletionDelay: TSpinEdit;
+    cbGutterGradient: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -682,6 +683,7 @@ begin
     cbGutterAuto.Checked := GutterAuto;
     cbGutterVis.Checked := GutterVis;
     edGutterWidth.Value := GutterSize;
+    cbGutterGradient.Checked := GutterGradient;
     cbLineNum.Checked := LineNumbers;
     cbLeadZero.Checked := LeadZero;
     cbFirstZero.Checked := FirstLineZero;
@@ -702,7 +704,7 @@ begin
     cbHalfPage.Checked := HalfPageScroll;
     cbScrollHint.Checked := ScrollHint;
     cbSpecialChars.Checked := SpecialChars;
-     cbAppendNewline.Checked:=       AppendNewline;
+    cbAppendNewline.Checked:= AppendNewline;
 
     cbMarginVis.Checked := MarginVis;
     edMarginWidth.Value := MarginSize;
@@ -881,6 +883,7 @@ begin
 
     Gutterfnt := cbGutterFnt.Checked;
     GutterAuto := cbGutterAuto.Checked;
+    GutterGradient := cbGutterGradient.Checked;
     GutterVis := cbGutterVis.Checked;
     GutterSize := edGutterWidth.Value;
     LineNumbers := cbLineNum.Checked;

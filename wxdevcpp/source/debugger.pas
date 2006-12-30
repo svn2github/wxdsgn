@@ -152,7 +152,7 @@ type
     function GetBreakpointFromIndex(index: integer): TBreakpoint;
 
     procedure OnOutput(Output: string); virtual; abstract;
-    procedure Launch(commandline: string);
+    procedure Launch(commandline: string; startupdir: string = '');
     procedure SendCommand; virtual;
 
     //Instruction callbacks
@@ -397,13 +397,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TDebugger.Launch(commandline: string);
+procedure TDebugger.Launch(commandline: string; startupdir: string);
 var
   ProcessInfo: TProcessInformation;
   StartupInfo: TStartupInfo;
   hOutputReadTmp, hOutputWrite,
   hInputWriteTmp, hInputRead,
   hErrorWrite: THandle;
+  pStartupDir: PChar;
   sa: TSecurityAttributes;
 begin
   fExecuting := True;
@@ -474,9 +475,14 @@ begin
   StartupInfo.hStdError := hErrorWrite;
   StartupInfo.wShowWindow := SW_HIDE;
 
+  if startupdir <> '' then
+    pStartupDir := PChar(startupdir)
+  else
+    pStartupDir := nil;
+
   // Launch the process
   if not CreateProcess(nil, PChar(commandline), nil, nil, True, CREATE_NEW_CONSOLE,
-                       nil, nil, StartupInfo, ProcessInfo) then
+                       nil, pStartupDir, StartupInfo, ProcessInfo) then
   begin
     DisplayError('Could not start debugger process (' + commandline + ')');
     Exit;
@@ -847,6 +853,7 @@ const
   InputPrompt = '^([0-9]+):([0-9]+)>';
 var
   Executable: string;
+  WorkingDir: string;
   Srcpath: string;
   I: Integer;
 begin
@@ -866,7 +873,9 @@ begin
     'Symbols*http://msdl.microsoft.com/download/symbols', filename, arguments]);
 
   //Run the thing!
-  Launch(Executable);
+  if Assigned(MainForm.fProject) then
+    WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
+  Launch(Executable, WorkingDir);
 
   //Tell the wait function that another valid output terminator is the 0:0000 prompt
   Wait.OutputTerminators.Add(InputPrompt);
@@ -1885,6 +1894,7 @@ end;
 procedure TGDBDebugger.Execute(filename, arguments: string);
 var
   Executable: string;
+  WorkingDir: string;
   Includes: string;
   I: Integer;
 begin
@@ -1908,7 +1918,9 @@ begin
     Executable := Executable + ' ' + Includes;
 
   //Launch the process
-  Launch(Executable);
+  if Assigned(MainForm.fProject) then
+    WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
+  Launch(Executable, WorkingDir);
 
   //Tell GDB which file we want to debug
   QueueCommand('file', '"' + filename + '"');

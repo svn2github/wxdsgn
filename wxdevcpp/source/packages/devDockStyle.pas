@@ -69,6 +69,8 @@ type
   TdevDockChannel = class(TJvDockVSChannel)
   protected
     procedure Paint; override;
+    procedure PopupPaneChanged; override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -90,7 +92,7 @@ type
 implementation
 uses
   ComCtrls, UxTheme, JvDockVIDStyle, Dialogs, Forms, StrUtils, SysUtils,
-  JvDockControlForm, JvDockGlobals;
+  JvDockControlForm, JvDockGlobals, DbugIntf;
 
 type
   TJvDockVSNETZoneAccess = class(TJvDockVSNETZone);
@@ -119,8 +121,8 @@ begin
       Result.Height := src.Width;
       for X := 0 to src.Width do
         for Y := 0 to src.Height do
-          BitBlt(Result.Canvas.Handle, Y, X, 1, 1, src.Canvas.Handle,
-                 X, Y, SRCCOPY);
+          BitBlt(Result.Canvas.Handle, Y, Result.Height - X - 1, 1, 1,
+                 src.Canvas.Handle, X, Y, SRCCOPY);
     end;
 
     180:
@@ -139,7 +141,7 @@ begin
       Result.Height := src.Width;
       for X := 0 to src.Width do
         for Y := 0 to src.Height do
-          BitBlt(Result.Canvas.Handle, src.Height - Y - 1, src.Width - X - 1, 1, 1,
+          BitBlt(Result.Canvas.Handle, Result.Width - Y - 1, X, 1, 1,
                  src.Canvas.Handle, X, Y, SRCCOPY);
     end;
   end;
@@ -560,6 +562,7 @@ constructor TdevDockChannel.Create(AOwner: TComponent);
 begin
   inherited;
   ChannelWidth := 23;
+  DoubleBuffered := True;
 end;
 
 procedure TdevDockChannel.Paint;
@@ -574,14 +577,18 @@ var
     ARect: TRect;
     DrawRect: TRect;
     I: Integer;
-    OldGraphicsMode: Integer;
 
     TabState: Integer;
+    ValidIcon: Boolean;
   begin
     for I := 0 to Block.VSPaneCount - 1 do
     begin
       if not Block.VSPane[I].Visible then
         Continue;
+
+      //Get the icon for the tab beforehand
+      Bmp := TBitmap.Create;
+      ValidIcon := Block.ImageList.GetBitmap(I, Bmp);
 
       //Calculate the values for this tab
       GetBlockRect(Block, I, DrawRect);
@@ -599,7 +606,7 @@ var
       end;
       
       //Select the state of the image to be drawn
-      if Block.ActivePane = Block.VSPane[I] then
+      if (Block.ActivePane = Block.VSPane[I]) and Assigned(PopupPane) then
         TabState := TIS_SELECTED
       else
       begin
@@ -611,7 +618,10 @@ var
           alTop: Dec(DrawRect.Bottom, 2);
         end;
 
-        TabState := TIS_NORMAL;
+        if Block.VSPane[I] = HoveredPane then
+          TabState := TIS_HOT
+        else
+          TabState := TIS_NORMAL;
       end;
 
       //Draw the image unto the bitmap
@@ -619,6 +629,25 @@ var
       if IsThemeBackgroundPartiallyTransparent(ThemeData, TABP_TABITEM, TabState) then
         DrawThemeParentBackground(Handle, Tab.Canvas.Handle, @ARect);
       DrawThemeBackground(ThemeData, Tab.Canvas.Handle, TABP_TABITEM, TabState, ARect, nil);
+
+      //And then draw the text on the same bitmap. don't do it if the tabs are aligned top
+      //because then the text would be upside-down.
+      if Align <> alTop then
+      begin
+        if Align = alRight then
+        begin
+          ARect.Right := ARect.Right - Bmp.Width - 3;
+          ARect.Left := 6;
+        end
+        else
+          ARect.Left := Bmp.Width + 6;
+        ARect.Top  := 3;
+        Tab.Canvas.Font.Assign(Application.MainForm.Font);
+        Tab.Canvas.Brush.Style := bsClear;
+        Tab.Canvas.Pen.Color := clWindowText;
+        DrawText(Tab.Canvas.Handle, PChar(Block.VSPane[I].DockForm.Caption), -1, ARect,
+                 DT_END_ELLIPSIS or DT_NOCLIP);
+      end;
 
       //Blit the rotated bitmap unto our canvas
       case Align of
@@ -632,36 +661,23 @@ var
       BitBlt(Canvas.Handle, DrawRect.Left, DrawRect.Top, DrawRect.Right - DrawRect.Left,
              DrawRect.Bottom - DrawRect.Top, Tab.Canvas.Handle, 0, 0, SRCCopy);
 
+      //Then draw the icon associated with the tab
       //See if we are able to get a bitmap for the current tab
-      Bmp := TBitmap.Create;
-      if Block.ImageList.GetBitmap(I, Bmp) then
+      if ValidIcon then
         Block.ImageList.Draw(Canvas, DrawRect.Left + 3, DrawRect.Top + 3, I);
 
-      if Align in [alTop, alBottom] then
+      //Now, draw the text directly on the canvas if we are aligned on top
+      if Align = alTop then
       begin
-        Inc(DrawRect.Left, 6 + Bmp.Width);
-        if Align = alBottom then
-          Inc(DrawRect.Top, 3);
-      end
-      else if Align in [alLeft, alRight] then
-      begin
-        Inc(DrawRect.Top, 6 + Bmp.Height);
-        if Align = alLeft then
-          DrawRect.Left := 15
-        else
-          DrawRect.Left := 20;
-        DrawRect.Right := DrawRect.Left + (DrawRect.Bottom - DrawRect.Top);
+        DrawRect.Left := DrawRect.Left + Bmp.Width + 6;
+        DrawRect.Top  := 3;
+        Canvas.Font.Assign(Application.MainForm.Font);
+        Canvas.Brush.Style := bsClear;
+        Canvas.Pen.Color := clWindowText;
+        DrawText(Canvas.Handle, PChar(Block.VSPane[I].DockForm.Caption), -1, DrawRect,
+                 DT_END_ELLIPSIS or DT_NOCLIP);
       end;
-
-      Canvas.Font.Assign(Application.MainForm.Font);
-      Canvas.Brush.Color := TabColor;
-      Canvas.Pen.Color := clBlack;
-
-      Dec(DrawRect.Right, 3);
-      OldGraphicsMode := SetGraphicsMode(Canvas.Handle, GM_ADVANCED);
-      Canvas.Brush.Style := bsClear;
-      DrawText(Canvas.Handle, PChar(Block.VSPane[I].DockForm.Caption), -1, DrawRect, DT_END_ELLIPSIS or DT_NOCLIP);
-      SetGraphicsMode(Canvas.Handle, OldGraphicsMode);
+      
       Bmp.Free;
     end;
     CurrentPos := CurrentPos + BlockInterval;
@@ -694,6 +710,17 @@ begin
   //Free our bitmap
   Tab.Destroy;
   CloseThemeData(ThemeData);
+end;
+
+procedure TdevDockChannel.PopupPaneChanged;
+begin
+  Invalidate;
+end;
+
+procedure TdevDockChannel.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  Invalidate;
 end;
 
 end.

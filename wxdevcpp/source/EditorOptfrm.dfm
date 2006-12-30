@@ -30,7 +30,7 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 373
-    ActivePage = tabSyntax
+    ActivePage = tabDisplay
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     OnChange = PagesMainChange
@@ -350,15 +350,15 @@ object EditorOptForm: TEditorOptForm
         Left = 4
         Top = 115
         Width = 399
-        Height = 165
+        Height = 180
         Caption = 'Gutter'
         TabOrder = 1
         DesignSize = (
           399
-          165)
+          180)
         object lblGutterFont: TLabel
           Left = 8
-          Top = 71
+          Top = 86
           Width = 24
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
@@ -366,7 +366,7 @@ object EditorOptForm: TEditorOptForm
         end
         object lblGutterWidth: TLabel
           Left = 321
-          Top = 71
+          Top = 86
           Width = 28
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
@@ -375,7 +375,7 @@ object EditorOptForm: TEditorOptForm
         end
         object lblGutterFontSize: TLabel
           Left = 200
-          Top = 71
+          Top = 86
           Width = 23
           Height = 13
           Anchors = [akLeft, akRight, akBottom]
@@ -433,7 +433,7 @@ object EditorOptForm: TEditorOptForm
         end
         object pnlGutterPreview: TPanel
           Left = 12
-          Top = 114
+          Top = 129
           Width = 374
           Height = 40
           Anchors = [akLeft, akRight, akBottom]
@@ -449,36 +449,45 @@ object EditorOptForm: TEditorOptForm
         end
         object cboGutterFont: TComboBox
           Left = 12
-          Top = 87
+          Top = 102
           Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
         end
         object cboGutterSize: TComboBox
           Left = 208
-          Top = 87
+          Top = 102
           Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
         end
         object edGutterWidth: TSpinEdit
           Left = 328
-          Top = 87
+          Top = 102
           Width = 57
           Height = 22
+          Anchors = [akLeft, akRight, akBottom]
           MaxValue = 0
           MinValue = 0
           TabOrder = 9
           Value = 0
           OnChange = FontSizeChange
+        end
+        object cbGutterGradient: TCheckBox
+          Left = 8
+          Top = 64
+          Width = 190
+          Height = 15
+          Caption = 'Draw with Gradient'
+          TabOrder = 10
         end
       end
       object grpEditorFont: TGroupBox
@@ -517,7 +526,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -527,7 +536,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick

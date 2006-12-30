@@ -445,6 +445,7 @@ type
     fCustomGutter: boolean; // Use Selected Gutter font
     fGutterAuto: boolean; // Gutter Auto Sizes
     fShowGutter: boolean; // Show Left gutter in editor
+    fGutterGradient: boolean; // Draw the gutter with a gradient
     fLineNumbers: boolean; // Show Line Numbers
     fLeadZero: boolean; // Show leading zero's in line nums
     fFirstisZero: boolean; // First line is zero
@@ -505,7 +506,7 @@ type
     property HalfPageScroll: boolean read fHalfPage write fHalfPage;
     property ScrollHint: boolean read fShowScrollHint write fShowScrollHint;
     property SpecialChars: boolean read fSpecialChar write fSpecialChar;
-   property AppendNewline: boolean read fAppendNewline write fAppendNewline;
+    property AppendNewline: boolean read fAppendNewline write fAppendNewline;
     property AutoCloseBrace: boolean read fAutoCloseBrace write fAutoCloseBrace;
 
     property TabSize: integer read fTabSize write fTabSize;
@@ -520,6 +521,7 @@ type
     // Gutter options
     property GutterVis: boolean read fShowGutter write fShowGutter;
     property GutterAuto: boolean read fGutterAuto write fGutterAuto;
+    property GutterGradient: boolean read fGutterGradient write fGutterGradient;
     property LineNumbers: boolean read fLineNumbers write fLineNumbers;
     property LeadZero: boolean read fLeadZero write fLeadZero;
     property FirstLineZero: boolean read fFirstisZero write fFirstisZero;
@@ -1151,7 +1153,6 @@ end;
 { TCompilerOpts }
 procedure TdevCompiler.AddDefaultOptions;
 var
-  i : integer;
   sl: TStringList;
 
 begin
@@ -1162,13 +1163,7 @@ begin
   // anything here ;)
   //
   // NOTE: As you see, to indicate sub-groups use the "/" char...
-  for i := 0 to fOptions.Count - 1 do begin
-    if Assigned(PCompilerOption(fOptions.Items[i]).optChoices) then
-      PCompilerOption(fOptions.Items[i]).optChoices.Free;
-    Dispose(fOptions.Items[i]);
-  end;
-  fOptions.Clear;
-
+  
   //Begin by clearing the compiler options list
   ClearOptions;
 
@@ -1401,17 +1396,15 @@ begin
 end;
 
 procedure TdevCompiler.ClearOptions;
+var
+  i: Integer;
 begin
-  if (self <> nil) then
-  begin
-    while fOptions.Count > 0 do begin
-      if Assigned(PCompilerOption(fOptions[0]).optChoices) then
-        PCompilerOption(fOptions[0]).optChoices.Free;
-      if Assigned(fOptions[0]) then
-        Dispose(fOptions[0]);
-      fOptions.Delete(0);
-    end;
+  for i := 0 to fOptions.Count - 1 do begin
+    if Assigned(PCompilerOption(fOptions.Items[i]).optChoices) then
+      PCompilerOption(fOptions.Items[i]).optChoices.Free;
+    Dispose(fOptions.Items[i]);
   end;
+  fOptions.Clear;
 end;
 
 constructor TdevCompiler.Create;
@@ -1748,6 +1741,7 @@ begin
   fGutterFont.Name := 'Terminal';
   fGutterFont.Size := 9;
   fGutterAuto := FALSE;
+  GutterGradient := TRUE;
 
   fInsertCaret := 0;
   fOverwriteCaret := 0;
@@ -1818,6 +1812,7 @@ begin
         ShowLineNumbers := fLineNumbers;
         LeadingZeros := fLeadZero;
         ZeroStart := fFirstisZero;
+        Gradient := fGutterGradient;
         x := fSyntax.IndexofName(cGut);
         if x <> -1 then
         begin
@@ -2415,7 +2410,7 @@ begin
 
   if CompilerType in ID_COMPILER_VC then
   begin
-    fCheckSyntaxFormat      := '/Zs';
+    fCheckSyntaxFormat      := '/Zs %s';
     fOutputFormat           := '/c %s /Fo%s';
     fResourceIncludeFormat  := '/I"%s"';
     fResourceFormat         := '/r /fo%s';
@@ -2432,7 +2427,7 @@ begin
   end
   else if CompilerType = ID_COMPILER_MINGW then
   begin
-    fCheckSyntaxFormat      := '-o nul';
+    fCheckSyntaxFormat      := '%s -o nul';
     fOutputFormat           := '-c %s -o %s';
     fResourceIncludeFormat  := '--include-dir "%s"';
     fResourceFormat         := '--input-format=rc -o %s -O coff';
