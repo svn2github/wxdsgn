@@ -1043,6 +1043,8 @@ type
     function GetCurrentFileName:String;
     function GetCurrentClassName:string;
     procedure GetFunctionList(strClassName:String;fncList:TStringList);
+
+    property Compiler: TCompiler read fCompiler write fCompiler;
 {$ENDIF}
   private
     procedure UMEnsureRestored(var Msg: TMessage); message UM_ENSURERESTORED;
@@ -2319,8 +2321,6 @@ begin
     SetupProjectView;
 
     //Initialize the To-do list settings
-    fToDoList.Clear;
-    lvTodo.Items.Clear;
     cmbTodoFilter.ItemIndex := 5;
     cmbTodoFilter.OnChange(cmbTodoFilter);
     fFirstShow := False;
@@ -2413,13 +2413,11 @@ begin
   dmMain.Free;
   devImageThemes.Free;
 
-{$IFNDEF PRIVATE_BUILD}
   while fToDoList.Count > 0 do
     if Assigned(fToDoList[0]) then begin
       Dispose(PToDoRec(fToDoList[0]));
       fToDoList.Delete(0);
     end;
-{$ENDIF}
   fToDoList.Free;
 
 {$IFDEF WX_BUILD}
@@ -5420,7 +5418,7 @@ var
 begin
   if not fDebugger.Executing then
   begin
-    if fCompiler.Target = ctProject then
+    if Assigned(fProject) then
     begin
       //Save all the files then set the UI status
       actSaveAllExecute(Self);
@@ -5429,6 +5427,7 @@ begin
       StatusBar.Panels[3].Text := 'Checking if project needs to be rebuilt...';
 
       //Run make to see if the project is up to date, the cache the result and restore our state
+      fCompiler.Target := ctProject;
       UpToDate := fCompiler.UpToDate;
       (Sender as TAction).Tag := 1;
       StatusBar.Panels[3].Text := '';
@@ -5546,7 +5545,7 @@ begin
 {$IFNDEF PRIVATE_BUILD}
   try
 {$ENDIF}
-    (Sender as TAction).Enabled := Assigned(e) and (e.Text.Text <> '');
+    (Sender as TAction).Enabled := Assigned(e) and Assigned(e.Text) and (e.Text.Text <> '');
 {$IFNDEF PRIVATE_BUILD}
   except
   end;
@@ -7821,18 +7820,25 @@ procedure TMainForm.SetProjCompOpt(idx: integer; Value: boolean);
 var
   projOpt: TProjProfile;
 begin
-  projOpt:= TProjProfile.Create;
-  //fix this for all compilers
-  if Assigned(fProject) then begin
-    projOpt.CopyProfileFrom(fProject.CurrentProfile);
-    if idx <= Length(projOpt.CompilerOptions) then begin
-      if Value then
-        projOpt.CompilerOptions[idx + 1] := '1'
-      else
-        projOpt.CompilerOptions[idx + 1] := '0';
-      fProject.CurrentProfile.CopyProfileFrom(projOpt);
-    end;
-  end;
+  if not Assigned(fProject) then
+    Exit;
+
+  //Copy the profile and make sure the compiler options string length is long enough
+  //for us to include the change
+  projOpt := TProjProfile.Create;
+  projOpt.CopyProfileFrom(fProject.CurrentProfile);
+  while Length(projOpt.CompilerOptions) <= idx do
+    projOpt.CompilerOptions := projOpt.CompilerOptions + '0';
+
+  //Set the 'bit' of the options
+  if Value then
+    projOpt.CompilerOptions[idx + 1] := '1'
+  else
+    projOpt.CompilerOptions[idx + 1] := '0';
+
+  //Then assign the profile back to the project
+  fProject.CurrentProfile.CopyProfileFrom(projOpt);
+  devCompiler.OptionStr := fProject.CurrentProfile.CompilerOptions;
   projOpt.Destroy;
 end;
 
@@ -11146,8 +11152,7 @@ procedure TMainForm.DesignerOptionsClick(Sender: TObject);
 begin
   with TDesignerForm.Create(Self) do
   try
-    DesignerForm.ShowModal;
-    DesignerForm.Destroy;
+    ShowModal;
   finally
     Free;
   end;
@@ -11802,8 +11807,11 @@ begin
     4 = Non-project open files
     5 = Current file only
 }
-  fToDoList.Clear;
-  lvTodo.Items.Clear;
+  while fToDoList.Count > 0 do
+    if Assigned(fToDoList[0]) then begin
+      Dispose(PToDoRec(fToDoList[0]));
+      fToDoList.Delete(0);
+    end;
   case cmbTodoFilter.ItemIndex of
     0: AddTodoFiles(False, True, True, False);
     1: AddTodoFiles(False, True, True, True);
