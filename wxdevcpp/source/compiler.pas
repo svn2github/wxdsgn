@@ -69,7 +69,7 @@ type
     procedure EndProgressForm;
     procedure ReleaseProgressForm;
     procedure ProcessProgressForm(Line: string);
-    function SwitchToProjectCompilerSet: integer; // returns the original compiler set
+    procedure SwitchToProjectCompilerSet; // stores the original compiler set
     procedure SwitchToOriginalCompilerSet; // switches the original compiler set to index
     procedure SetProject(Project: TProject);
   public
@@ -1923,19 +1923,16 @@ begin
   fOriginalSet := -1;
 end;
 
-function TCompiler.SwitchToProjectCompilerSet: integer;
+procedure TCompiler.SwitchToProjectCompilerSet;
 begin
   if fOriginalSet = -1 then
     fOriginalSet := devCompiler.CompilerSet;
 
-  result := 0;
-
-  if not Assigned(fProject) then
+  if (not Assigned(fProject)) or
+     (devCompiler.CompilerSet = fProject.CurrentProfile.CompilerSet) or
+     (fProject.CurrentProfile.CompilerSet >= devCompilerSet.Sets.Count) then
     Exit;
 
-  if devCompiler.CompilerSet = fProject.CurrentProfile.CompilerSet then
-    Exit;
-  
   devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler;
   devCompiler.CompilerSet := fProject.CurrentProfile.CompilerSet;

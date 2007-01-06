@@ -26,16 +26,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
+{$WARN UNIT_PLATFORM OFF}
 unit dmCreateNewProp;
 
 interface
-{$Warnings Off}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvAppStorage,
   JvAppRegistryStorage, JvComponent, FileCtrl, JvFormPlacement, version,
   XPMenu, devcfg, JvComponentBase, utils;
-{$Warnings On}
 type
   TfrmCreateFormProp = class(TForm)
     Label1: TLabel;
@@ -97,66 +96,59 @@ end;
 procedure TfrmCreateFormProp.btCreateClick(Sender: TObject);
   function isValid: Boolean;
   begin
-    Result := false;
-    if trim(txtSaveTo.Text) = '' then
+    Result := False;
+    if Trim(txtSaveTo.Text) = '' then
     begin
-      MessageDlg('Please select a proper directory', mtError, [mbOK], 0);
+      MessageDlg('Please select a folder to save the form files to.', mtError, [mbOK], Handle);
       btBrowse.SetFocus;
-      exit;
+      Exit;
     end;
 
     if ValidateFileName(txtFileName.Text) > 0 then
     begin
-      if(MessageDlg('Your file name is not valid. Do you want it fixed automatically?',mtError, [mbYes, mbNo],0) = mrYes) then
-        begin
-          txtFileName.Text := CreateValidFileName(txtFileName.Text);
-        end
+      if MessageDlg('File names cannont contain "*:<> and |.'#10#13#10#13 +
+                    'Do you want wxDev-C++ to replace these characters with underscores?',
+                    mtConfirmation, [mbYes, mbNo], Handle) = mrYes then
+        txtFileName.Text := CreateValidFileName(txtFileName.Text)
       else
-        begin
-          MessageDlg('Valid file names cannot contain "*:\/<>|, or spaces. Please fix.',mtError, [mbOK],0);
-      txtFileName.SetFocus;
-      exit;
-    end;
+      begin
+        txtFileName.SetFocus;
+        Exit;
       end;
+    end;
 
     if (ValidateClassName(txtClassName.Text) > 0) then
     begin
-      if(MessageDlg('Your class name is not valid. Do you want it fixed automatically?',mtError, [mbYes, mbNo],0) = mrYes) then
-        begin
-          txtClassName.Text := CreateValidClassName(txtClassName.Text);
-        end
+      if MessageDlg('Your class name is not a valid C++ identifier.'#10#13#10#13 +
+                    'Do you want wxDev-C++ to fix your Class Name automatically?',
+                    mtConfirmation, [mbYes, mbNo], Handle) = mrYes then
+        txtClassName.Text := CreateValidClassName(txtClassName.Text)
       else
-        begin
-          MessageDlg('Valid name must not start with a number and can only contain alphanumeric character or an underscore. Please fix.',mtError, [mbOK],0);
-      txtClassName.SetFocus;
-      exit;
-    end;
+      begin
+        txtClassName.SetFocus;
+        Exit;
       end;
+    end;
 
-    Result := true;
+    Result := True;
   end;
 
-  function DoesExisit: Boolean;
+  function DoesExist: Boolean;
   var
     strFName: string;
-    boolExisit: Boolean;
   begin
-    Result := false;
+    Result := False;
     strFName := IncludeTrailingPathDelimiter(trim(txtSaveTo.Text)) +
       trim(txtFileName.Text);
 
-    boolExisit := ( {$IFDEF WX_BUILD} (FileExists(ChangeFileExt(strFName, WXFORM_EXT))) or{$ENDIF}
-      (FileExists(ChangeFileExt(strFName, CPP_EXT))) or
-      (FileExists(ChangeFileExt(strFName, H_EXT))));
-
-    if boolExisit then
+    if FileExists(ChangeFileExt(strFName, WXFORM_EXT)) or
+       FileExists(ChangeFileExt(strFName, CPP_EXT)) or
+       FileExists(ChangeFileExt(strFName, H_EXT)) then
     begin
-      if MessageDlg('Some source files with same file name already exist.' + #13
-        + #10 + '' + #13 + #10 + 'Do you want to overwrite them?', mtError,
-        [mbYES, mbNO], 0) <> mrYES then
-      begin
-        exit;
-      end;
+      if MessageDlg('Source files with same file names as the one you are about to create ' +
+                    'already exist.'#13#10#13#10'Do you want to overwrite them with the new files?',
+                    mtConfirmation, [mbYes, mbNo], Handle) <> mrYes then
+        Exit;
     end;
 
     Result := True;
@@ -166,7 +158,7 @@ begin
   if not isValid then
     exit;
 
-  if not DoesExisit then
+  if not DoesExist then
     exit;
 
   close;

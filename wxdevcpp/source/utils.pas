@@ -1263,8 +1263,8 @@ CreateValidClassName    Takes a string containing the class name and returns a
 
 ValidateFileName        Takes a string containing the file name and returns an
                         integer containing the number of errors found. It checks
-                        for empty filenames, names which contain "*?\/|:<>, also
-                        spaces since these can choke the make program
+                        for empty filenames, names which contain "*?|:<>, since
+                        these can choke the make program
 
 CreateValidFileName     Takes a string containing the filename and returns a
                         string containing a legal filename. If the string is
@@ -1527,7 +1527,7 @@ begin
     //Look for invalid characters in the file name
     for LoopIndex := 1 to Length(FileName) do
     begin
-        if ((FileName[LoopIndex] in ['"','*','/',':','<','>','?','\','|'])) then
+        if ((FileName[LoopIndex] in ['"','*',':','<','>','?','|'])) then
         begin
             NumberOfErrors := NumberOfErrors+1;
         end;
@@ -1551,7 +1551,7 @@ begin
     //Look for invalid characters in the file name. Replace with '_'
     for LoopIndex := 1 to Length(ValidFileName) do
     begin
-        if ((ValidFileName[LoopIndex] in ['"','*','/',':','<','>','?','\','|'])) then
+        if ((ValidFileName[LoopIndex] in ['"','*',':','<','>','?','|'])) then
         begin
             ValidFileName[LoopIndex] := '_';
         end;

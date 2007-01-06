@@ -320,9 +320,9 @@ object CompForm: TCompForm
           Caption = 'Compile Delay:'
         end
         object lblDelayMsg: TLabel
-          Left = 162
+          Left = 150
           Top = 212
-          Width = 230
+          Width = 250
           Height = 26
           Caption = 
             'Enable a delay in milliseconds if make complains about makefile'#39 +
@@ -375,7 +375,7 @@ object CompForm: TCompForm
         object seCompDelay: TSpinEdit
           Left = 95
           Top = 215
-          Width = 60
+          Width = 50
           Height = 22
           MaxValue = 0
           MinValue = 0

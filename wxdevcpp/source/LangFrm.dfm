@@ -12,6 +12,7 @@ object LangForm: TLangForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
@@ -432,7 +433,7 @@ object LangForm: TLangForm
     UseSystemColors = True
     UseDimColor = False
     OverrideOwnerDraw = False
-    Gradient = False
+    Gradient = True
     FlatMenu = False
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]

@@ -663,7 +663,6 @@ begin
         opt.optValue := 1;
         if not Assigned(MainForm.fProject) then
           devCompiler.Options[idx] := opt; // set global debugging option only if not working with a project
-
         MainForm.SetProjCompOpt(idx, True); // set the project's correpsonding option too
 
         // remove "-s" from the linker''s command line
@@ -678,15 +677,12 @@ begin
           if spos = 0 then
             spos := Pos('-s_@@_', opts.Linker); // end of line (dev 4.9.7.3+)
           if (spos = 0) and (Length(opts.Linker) >= 2) and // end of string
-            (Copy(opts.Linker, Length(opts.Linker)-1, 2) = '-s') then
+             (Copy(opts.Linker, Length(opts.Linker) - 1, 2) = '-s') then
             spos := Length(opts.Linker) - 1;
           
           // if found, delete it
-          if spos>0 then
-          begin
+          if spos > 0 then
             Delete(opts.Linker, spos, 2);
-            MainForm.fProject.CurrentProfile.CopyProfileFrom(opts);
-          end;
         end;
 
         // remove -s from the compiler options
@@ -700,17 +696,16 @@ begin
     end
     else if devCompiler.CompilerType in ID_COMPILER_VC then
     begin
-      for idx := 0 to devCompiler.OptionsCount - 1 do
-        if devCompiler.Options[idx].optName = 'Debugging' then
-          Break;
-
-      opt := devCompiler.Options[idx];
-      opt.optValue := 1;
-      if not Assigned(MainForm.fProject) then
+      if devCompiler.FindOption('/ZI', opt, idx) then
+      begin
+        opt.optValue := 1;
+        if not Assigned(MainForm.fProject) then
         devCompiler.Options[idx] := opt;
-      MainForm.fProject.CurrentProfile.CompilerOptions[idx + 1] := '1';
-      MainForm.fProject.CurrentProfile.Linker := MainForm.fProject.CurrentProfile.Linker + '/Debug';
+        MainForm.SetProjCompOpt(idx, True);
+        MainForm.fProject.CurrentProfile.Linker := MainForm.fProject.CurrentProfile.Linker + '/Debug';
+      end;
     end;
+    MainForm.Compiler.OnCompilationEnded := MainForm.doDebugAfterCompile;
     MainForm.actRebuildExecute(nil);
   end;
 end;

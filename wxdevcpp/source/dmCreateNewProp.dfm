@@ -57,7 +57,7 @@ object frmCreateFormProp: TfrmCreateFormProp
     Shape = bsBottomLine
   end
   object Label7: TLabel
-    Left = 329
+    Left = 319
     Top = 35
     Width = 92
     Height = 13
@@ -86,32 +86,26 @@ object frmCreateFormProp: TfrmCreateFormProp
     Width = 77
     Height = 13
     Caption = 'Selected Profile:'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object txtSaveTo: TEdit
-    Left = 88
+    Left = 103
     Top = 56
-    Width = 275
+    Width = 260
     Height = 21
     ReadOnly = True
     TabOrder = 2
   end
   object txtClassName: TEdit
-    Left = 88
+    Left = 103
     Top = 8
-    Width = 235
+    Width = 210
     Height = 21
     TabOrder = 0
   end
   object txtFileName: TEdit
-    Left = 88
+    Left = 103
     Top = 32
-    Width = 235
+    Width = 210
     Height = 21
     TabOrder = 1
   end
@@ -125,9 +119,9 @@ object frmCreateFormProp: TfrmCreateFormProp
     OnClick = btBrowseClick
   end
   object txtTitle: TEdit
-    Left = 88
+    Left = 103
     Top = 80
-    Width = 333
+    Width = 318
     Height = 21
     TabOrder = 4
   end
@@ -151,16 +145,16 @@ object frmCreateFormProp: TfrmCreateFormProp
     OnClick = btCreateClick
   end
   object txtAuthorName: TEdit
-    Left = 88
+    Left = 103
     Top = 104
-    Width = 333
+    Width = 318
     Height = 21
     TabOrder = 5
   end
   object cbUseCaption: TCheckBox
-    Left = 88
+    Left = 103
     Top = 131
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Use Caption'
     Checked = True
@@ -168,17 +162,17 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 8
   end
   object cbResizeBorder: TCheckBox
-    Left = 184
+    Left = 211
     Top = 131
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Resize Border'
     TabOrder = 9
   end
   object cbSystemMenu: TCheckBox
-    Left = 280
+    Left = 320
     Top = 131
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'System Menu'
     Checked = True
@@ -186,25 +180,25 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 10
   end
   object cbThickBorder: TCheckBox
-    Left = 88
+    Left = 103
     Top = 147
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Thick Border'
     TabOrder = 11
   end
   object cbStayOnTop: TCheckBox
-    Left = 184
+    Left = 211
     Top = 147
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Stay On Top'
     TabOrder = 12
   end
   object cbNoParent: TCheckBox
-    Left = 280
+    Left = 320
     Top = 147
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'No Parent'
     Checked = True
@@ -212,9 +206,9 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 13
   end
   object cbMinButton: TCheckBox
-    Left = 88
+    Left = 103
     Top = 163
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Min Button'
     Checked = True
@@ -222,17 +216,17 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 14
   end
   object cbMaxButton: TCheckBox
-    Left = 184
+    Left = 211
     Top = 163
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Max Button'
     TabOrder = 15
   end
   object cbCloseButton: TCheckBox
-    Left = 280
+    Left = 320
     Top = 163
-    Width = 89
+    Width = 100
     Height = 17
     Caption = 'Close Button'
     Checked = True
@@ -240,9 +234,9 @@ object frmCreateFormProp: TfrmCreateFormProp
     TabOrder = 16
   end
   object ProfileNameSelect: TComboBox
-    Left = 88
+    Left = 103
     Top = 201
-    Width = 175
+    Width = 155
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
