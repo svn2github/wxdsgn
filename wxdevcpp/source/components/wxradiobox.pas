@@ -483,7 +483,7 @@ end;
 function TWxRadioBox.GenerateHeaderInclude: string;
 begin
   Result := '';
-  Result := '#include <wx/statbox.h>';
+  Result := '#include <wx/radiobox.h>';
 end;
 
 function TWxRadioBox.GenerateImageInclude: string;
