@@ -124,7 +124,6 @@ begin
     //Tree-view styles
     RowSelect := True;
     ShowLines := False;
-    AutoExpand := True;
     ShowButtons := True;
     HideSelection := False;
     Images := ComponentImages;
@@ -206,7 +205,9 @@ begin
                        'TwxRadioButton;TwxComboBox;TwxListBox;TwxListCtrl;TwxTreeCtrl;' +
                        'TwxGauge;TwxScrollBar;TwxSpinButton;TwxStaticBox;TwxRadioBox;' +
                        'TwxDatePickerCtrl;TwxSlider;TwxStaticLine;TwxStaticBitmap;' +
-                       'TwxStatusBar;TwxCheckListBox;TwxSpinCtrl');
+                       'TwxStatusBar;TwxCheckListBox;TwxSpinCtrl;TwxRichTextCtrl;' +
+                       'TwxCalendarCtrl;TwxOwnerDrawnComboBox;TwxHyperLinkCtrl;' +
+                       'TwxDialUpManager;TwxMediaCtrl');
     //Container controls
     ComponentsList.Add('Containers;TwxPanel;TwxNotebook;TwxNotebookPage;TwxGrid;' +
                        'TwxScrolledWindow;TwxHtmlWindow;TwxSplitterWindow');
@@ -218,15 +219,12 @@ begin
     //Dialogs
     ComponentsList.Add('Dialogs;TwxOpenFileDialog;TwxSaveFileDialog;TwxProgressDialog;' +
                        'TwxColourDialog;TwxDirDialog;TwxFindReplaceDialog;TwxFontDialog;' +
-                       'TwxPageSetupDialog;TwxPrintDialog;TwxMessageDialog');
+                       'TwxPageSetupDialog;TwxPrintDialog;TwxMessageDialog;TwxTextEntryDialog;' +
+                       'TwxPasswordEntryDialog;TwxSingleChoiceDialog;TwxMultiChoiceDialog');
     //Non-visual components
-    ComponentsList.Add('Components;TwxTimer');
+    ComponentsList.Add('Components;TwxTimer;TwxHtmlEasyPrinting');
     //Unofficial components
-    ComponentsList.Add('"Unofficial Controls";TwxTreeListCtrl;TwxRichTextCtrl;' +
-                       'TwxStyledTextCtrl;TwxCalendarCtrl;TwxOwnerDrawnComboBox;' +
-                       'TwxTextEntryDialog;TwxPasswordEntryDialog;TwxSingleChoiceDialog;' +
-                       'TwxMultiChoiceDialog;TwxHyperLinkCtrl;TwxDialUpManager;' +
-                       'TwxHtmlEasyPrinting;TwxMediaCtrl');
+    ComponentsList.Add('"Unofficial Controls";TwxTreeListCtrl;TwxStyledTextCtrl');
 
     RegisterClasses([TWxStdDialogButtonSizer, TWxBoxSizer, TWxStaticBoxSizer, TWxGridSizer,
                      TWxFlexGridSizer, TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,
@@ -303,6 +301,10 @@ begin
     ComponentBitmap.Destroy;
     ComponentsList.Destroy;
   end;
+
+  //Then sort the entries
+  for I := 0 to ComponentList.Items.Count - 1 do
+    ComponentList.Items[I].AlphaSort;
 end;
 
 function TComponentPalette.GetSelectedComponent: string;
