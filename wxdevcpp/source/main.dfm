@@ -21,10 +21,18 @@ object MainForm: TMainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object devFileMonitor: TdevFileMonitor
+    Left = 0
+    Top = 0
+    Width = 30
+    Height = 30
+    Active = True
+    OnNotifyChange = devFileMonitorNotifyChange
+  end
   object MessageControl: TPageControl
     Left = 0
     Top = 240
-    Width = 628
+    Width = 622
     Height = 130
     ActivePage = TodoSheet
     Align = alBottom
@@ -40,8 +48,8 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 616
-        Height = 97
+        Width = 610
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -79,8 +87,8 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 616
-        Height = 97
+        Width = 610
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -99,7 +107,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -153,19 +161,19 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 391
-        Height = 97
+        Width = 385
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          391
-          97)
+          385
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 377
-          Height = 75
+          Width = 359
+          Height = 80
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -181,8 +189,8 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 616
-        Height = 97
+        Width = 610
+        Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
         TabOrder = 0
@@ -192,8 +200,8 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 608
-            Height = 69
+            Width = 602
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -227,8 +235,8 @@ object MainForm: TMainForm
           object lvLocals: TListView
             Left = 0
             Top = 0
-            Width = 608
-            Height = 69
+            Width = 602
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -255,8 +263,8 @@ object MainForm: TMainForm
           object lvThreads: TListView
             Left = 0
             Top = 0
-            Width = 608
-            Height = 69
+            Width = 602
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -282,8 +290,8 @@ object MainForm: TMainForm
           object DebugTree: TTreeView
             Left = 0
             Top = 0
-            Width = 608
-            Height = 69
+            Width = 602
+            Height = 70
             Align = alClient
             Images = dmMain.MenuImages_NewLook
             Indent = 19
@@ -358,8 +366,8 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 616
-        Height = 97
+        Width = 610
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -402,8 +410,8 @@ object MainForm: TMainForm
       object lvTodo: TListView
         Left = 0
         Top = 0
-        Width = 620
-        Height = 60
+        Width = 614
+        Height = 61
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -438,14 +446,14 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 60
-        Width = 620
+        Top = 61
+        Width = 614
         Height = 41
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
         DesignSize = (
-          620
+          614
           41)
         object lblTodoFilter: TLabel
           Left = 6
@@ -491,7 +499,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar
     Left = 0
     Top = 16
-    Width = 628
+    Width = 622
     Height = 86
     Align = alTop
     AutoDock = False
@@ -923,7 +931,7 @@ object MainForm: TMainForm
   object StatusBar: TStatusBar
     Left = 0
     Top = 370
-    Width = 628
+    Width = 622
     Height = 19
     Panels = <
       item
@@ -949,7 +957,7 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 628
+    Width = 622
     Height = 16
     Align = alTop
     BevelOuter = bvNone
@@ -959,7 +967,7 @@ object MainForm: TMainForm
     TabOrder = 3
     Visible = False
     DesignSize = (
-      628
+      622
       16)
     object btnFullScrRevert: TSpeedButton
       Left = 607
@@ -983,14 +991,6 @@ object MainForm: TMainForm
       ParentFont = False
       OnClick = btnFullScrRevertClick
     end
-  end
-  object devFileMonitor1: TdevFileMonitor
-    Left = 112
-    Top = 152
-    Width = 0
-    Height = 0
-    Active = False
-    OnNotifyChange = devFileMonitor1NotifyChange
   end
   object prgFormProgress: TProgressBar
     Left = 488
@@ -1079,7 +1079,7 @@ object MainForm: TMainForm
   object PageControl: TPageControl
     Left = 192
     Top = 102
-    Width = 436
+    Width = 430
     Height = 138
     Align = alClient
     PopupMenu = EditorPopupMenu
@@ -1092,7 +1092,7 @@ object MainForm: TMainForm
   end
   object MainMenu: TMainMenu
     Images = dmMain.MenuImages_Gnome
-    Left = 493
+    Left = 464
     Top = 130
     object FileMenu: TMenuItem
       Action = actFileMenu
@@ -1759,7 +1759,7 @@ object MainForm: TMainForm
   end
   object EditorPopupMenu: TPopupMenu
     Images = dmMain.MenuImages_Gnome
-    Left = 603
+    Left = 574
     Top = 102
     object Close1: TMenuItem
       Action = actClose
@@ -1971,7 +1971,7 @@ object MainForm: TMainForm
   object UnitPopup: TPopupMenu
     Images = dmMain.MenuImages_Gnome
     MenuAnimation = [maBottomToTop]
-    Left = 548
+    Left = 519
     Top = 102
     object RemoveFilefromprojectPopItem: TMenuItem
       Action = actUnitRemove
@@ -2059,7 +2059,7 @@ object MainForm: TMainForm
   object ProjectPopup: TPopupMenu
     Images = dmMain.MenuImages_Gnome
     MenuAnimation = [maBottomToTop]
-    Left = 576
+    Left = 547
     Top = 102
     object NewunitinprojectPopItem: TMenuItem
       Tag = 2
@@ -2113,7 +2113,7 @@ object MainForm: TMainForm
     end
   end
   object HelpPop: TPopupMenu
-    Left = 465
+    Left = 436
     Top = 102
     object HelponDevPopupItem: TMenuItem
       Caption = '&Help on Dev-C++'
@@ -2125,7 +2125,7 @@ object MainForm: TMainForm
   end
   object alMain: TActionList
     Images = dmMain.MenuImages_Gnome
-    Left = 521
+    Left = 492
     Top = 130
     object actViewCPU: TAction
       Category = 'Debug'
@@ -3077,12 +3077,12 @@ object MainForm: TMainForm
     OnActivate = ApplicationEvents1Activate
     OnDeactivate = ApplicationEvents1Deactivate
     OnIdle = ApplicationEvents1Idle
-    Left = 549
+    Left = 520
     Top = 130
   end
   object MessagePopup: TPopupMenu
     Images = dmMain.MenuImages_Gnome
-    Left = 465
+    Left = 436
     Top = 130
     object MsgCopyItem: TMenuItem
       Action = actMsgCopy
@@ -3094,7 +3094,7 @@ object MainForm: TMainForm
   end
   object CppTokenizer1: TCppTokenizer
     LogTokens = False
-    Left = 602
+    Left = 573
     Top = 130
   end
   object CppParser1: TCppParser
@@ -3106,7 +3106,7 @@ object MainForm: TMainForm
     LogStatements = False
     OnStartParsing = CppParser1StartParsing
     OnEndParsing = CppParser1EndParsing
-    Left = 465
+    Left = 436
     Top = 158
   end
   object CodeCompletion1: TCodeCompletion
@@ -3123,7 +3123,7 @@ object MainForm: TMainForm
     OnResize = CodeCompletion1Resize
     OnlyGlobals = False
     CurrentClass = 0
-    Left = 575
+    Left = 546
     Top = 130
   end
   object devShortcuts1: TdevShortcuts
@@ -3136,11 +3136,11 @@ object MainForm: TMainForm
     MultiLangStrings.HeaderShortcut = 'Shortcut assigned'
     MultiLangStrings.OK = 'OK'
     MultiLangStrings.Cancel = 'Cancel'
-    Left = 520
+    Left = 491
     Top = 158
   end
   object BrowserPopup: TPopupMenu
-    Left = 493
+    Left = 464
     Top = 102
     object mnuBrowserGotoDecl: TMenuItem
       Action = actBrowserGotoDecl
@@ -3206,7 +3206,7 @@ object MainForm: TMainForm
   object DebugVarsPopup: TPopupMenu
     Images = dmMain.MenuImages_Gnome
     OnPopup = DebugVarsPopupPopup
-    Left = 521
+    Left = 492
     Top = 102
     object AddwatchPop: TMenuItem
       Action = actAddWatch
@@ -3227,7 +3227,7 @@ object MainForm: TMainForm
   end
   object DevCppDDEServer: TDdeServerConv
     OnExecuteMacro = DevCppDDEServerExecuteMacro
-    Left = 548
+    Left = 519
     Top = 158
   end
   object XPMenu: TXPMenu
@@ -3258,7 +3258,7 @@ object MainForm: TMainForm
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 493
+    Left = 464
     Top = 158
   end
   object DockServer: TJvDockServer
@@ -3271,7 +3271,7 @@ object MainForm: TMainForm
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
     CustomDock = False
-    Left = 576
+    Left = 547
     Top = 158
   end
 end

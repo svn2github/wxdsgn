@@ -36,7 +36,7 @@ uses
 {$IFDEF WX_BUILD}
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
   ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
-  wxSizerpanel, Designerfrm, ELPropInsp, uFileWatch, ComponentPalette,
+  wxSizerpanel, Designerfrm, ELPropInsp, ComponentPalette,
 {$IFNDEF COMPILER_7_UP}
   ThemeMgr,
   ThemeSrv,
@@ -419,7 +419,7 @@ type
     DebugVarsPopup: TPopupMenu;
     AddwatchPop: TMenuItem;
     RemoveWatchPop: TMenuItem;
-    devFileMonitor1: TdevFileMonitor;
+    devFileMonitor: TdevFileMonitor;
     actFileProperties: TAction;
     N35: TMenuItem;
     N1: TMenuItem;
@@ -798,8 +798,9 @@ type
     procedure actDebugUpdate(Sender: TObject);
     procedure actRunUpdate(Sender: TObject);
     procedure actCompileUpdate(Sender: TObject);
-    procedure devFileMonitor1NotifyChange(Sender: TObject;
+    procedure devFileMonitorNotifyChange(Sender: TObject;
       ChangeType: TdevMonitorChangeType; Filename: String);
+    procedure HandleFileMonitorChanges;
     procedure actFilePropertiesExecute(Sender: TObject);
     procedure actViewToDoListExecute(Sender: TObject);
     procedure actAddToDoExecute(Sender: TObject);
@@ -872,7 +873,6 @@ type
     procedure actModifyWatchExecute(Sender: TObject);
     procedure actModifyWatchUpdate(Sender: TObject);
     procedure ClearallWatchPopClick(Sender: TObject);
-    procedure ApplicationEvents1Deactivate(Sender: TObject);
     procedure PageControlChanging(Sender: TObject;
       var AllowChange: Boolean);
     procedure mnuCVSClick(Sender: TObject);
@@ -923,7 +923,6 @@ type
     function IsFromScrollBarShowing:boolean;
     procedure actNewWxFrameExecute(Sender: TObject);
     procedure actNewwxDialogExecute(Sender: TObject);
-    procedure ApplicationEvents1Activate(Sender: TObject);
     procedure ProjectViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tmrInspectorHelperTimer(Sender: TObject);
     procedure actRestartDebugExecute(Sender: TObject);
@@ -944,6 +943,8 @@ type
     procedure lvTodoDblClick(Sender: TObject);
     procedure chkTodoIncompleteClick(Sender: TObject);
     procedure cmbTodoFilterChange(Sender: TObject);
+    procedure ApplicationEvents1Deactivate(Sender: TObject);
+    procedure ApplicationEvents1Activate(Sender: TObject);
 {$ENDIF}
 
   private
@@ -961,7 +962,8 @@ type
     OldTop: integer;
     OldWidth: integer;
     OldHeight: integer;
-    ReloadFilename: string;
+    IsIconized: Boolean;
+    ReloadFilenames: TList;
 
     function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
     procedure AddFindOutputItem(line, col, unit_, message: string);
@@ -1108,11 +1110,7 @@ type
   frmPaletteDock: TForm;
   frmInspectorDock:TForm;
   frmReportDocks: array[0..5] of TForm;
-  
-  strChangedFileList:TStringList;
   strStdwxIDList:TStringList;
-  FWatchList:TList;
-  FileWatching:Boolean;
 {$ENDIF}
   function SaveFileInternal(e: TEditor ; bParseFile:Boolean = true): Boolean;
 
@@ -1127,7 +1125,6 @@ type
   public
     procedure DisableDesignerControls;
     procedure EnableDesignerControls;
-    procedure OnFileChangeNotify(Sender: TObject; ChangeType: TChangeType);
 {$ENDIF}
 
   public
@@ -1187,7 +1184,7 @@ uses
 
 {$IFDEF WX_BUILD}
   //Our dependencies
-  , CompFileIo, CreateOrderFm, ViewIDForm, devDockStyle,
+  , CompFileIo, CreateOrderFm, ViewIDForm, devDockStyle, FilesReloadFrm,
 
   //Components
   WxSplitterWindow, WxNotebook, WxNoteBookPage, WxToolbar, WxToolButton,
@@ -1361,11 +1358,7 @@ begin
   ShowPropertyInspItem.Checked := True;
   ShowProjectInspItem.Checked := True;
 
-  strChangedFileList:=TStringList.Create;
   strStdwxIDList:=GetPredefinedwxIds;
-  FWatchList:=TList.Create;
-  FileWatching:=false;
-
   WxPropertyInspectorPopup := TPopupMenu.Create(Self);
   WxPropertyInspectorMenuEdit := TMenuItem.Create(Self);
   WxPropertyInspectorMenuCopy := TMenuItem.Create(Self);
@@ -1936,6 +1929,7 @@ begin
   CheckAssociations;
   DragAcceptFiles(Self.Handle, TRUE);
   dmMain := TdmMain.Create(Self);
+  ReloadFilenames := TList.Create;
   fHelpfiles := ToysStringList.Create;
   fTools := TToolController.Create;
   Caption := DEVCPP + ' ' + DEVCPP_VERSION;
@@ -2412,6 +2406,7 @@ begin
   fDebugger.Free;
   dmMain.Free;
   devImageThemes.Free;
+  ReloadFilenames.Free;
 
   while fToDoList.Count > 0 do
     if Assigned(fToDoList[0]) then begin
@@ -2421,9 +2416,7 @@ begin
   fToDoList.Free;
 
 {$IFDEF WX_BUILD}
-  strChangedFileList.Free; //Used for wx's Own File watch functions
-  strStdwxIDList.Free;//Used for
-  FWatchList.Free; //Used for wx's Own File watch functions
+  strStdwxIDList.Free;
 {$ENDIF WX_BUILD}
 end;
 
@@ -3194,13 +3187,12 @@ begin
   end;
 end;
 
-function TMainForm.SaveFileInternal(e: TEditor ; bParseFile:Boolean): Boolean;
+function TMainForm.SaveFileInternal(e: TEditor; bParseFile: Boolean): Boolean;
 var
   idx,index,I: Integer;
-  wa: boolean;
   ccFile,hFile:String;
 begin
-  Result := True;
+  Result := False;
   if FileExists(e.FileName) and (FileGetAttr(e.FileName) and faReadOnly <> 0) then begin
     // file is read-only
     if MessageDlg(Format(Lang[ID_MSG_FILEISREADONLY], [e.FileName]),mtConfirmation, [mbYes, mbNo], 0) = mrNo then
@@ -3210,9 +3202,6 @@ begin
       Exit;
     end;
   end;
-
-  wa := devFileMonitor1.Active;
-  devFileMonitor1.Deactivate;
 
 {$IFDEF WX_BUILD}
   //Just Generate XPM's while saving the file
@@ -3230,69 +3219,26 @@ begin
           MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle)
         else
           fProject.units[idx].Save;
-       except
+      except
 {$IFNDEF PRIVATE_BUILD}
          MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle);
-         Result := False;
          Exit;
 {$ELSE}
          on Ex: Exception do
          begin
            MessageDlg(Format(Lang[ID_ERR_SAVEFILE] + ' (%s)', [e.FileName, Ex.Message]),
                       mtError, [mbOk], Handle);
-           Result := False;
            Exit;
          end;
 {$ENDIF}
-       end;
+      end;
 
-       try
-         if (idx <> -1) and ClassBrowser1.Enabled and bParseFile then
-         begin
-           CppParser1.ReParseFile(fProject.units[idx].FileName, True); //new cc
-           if e.TabSheet = PageControl.ActivePage then
-             ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
-           if GetFileTyp(e.FileName) = utHead then
-           begin
-             CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
-             if trim(ccFile) <> '' then
-             begin
-               index := -1;
-               for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
-               begin
-                 if AnsiSameText(ExtractFileName(ccFile), ExtractFileName(CppParser1.ScannedFiles[i])) then
-                 begin
-                   ccFile := CppParser1.ScannedFiles[i];
-                   index := i;
-                   Break;
-                 end;
-               end;    // for
-
-               if index <> -1 then
-                 CppParser1.ReParseFile(ccFile, true); //new cc
-             end;
-           end;
-         end;
-       except
-         MessageDlg(Format('Error reparsing file %s', [e.FileName]), mtError, [mbOk], Handle);
-         Result := False;
-       end;
-    end
-    else // stand alone file (should have fullpath in e.filename)
-    try
-      if devEditor.AppendNewline then
-        with e.Text do
-          if Lines.Count > 0 then
-            if Lines[Lines.Count -1] <> '' then
-              Lines.Add('');
-      e.Text.Lines.SaveToFile(e.FileName);
-      e.Modified := false;
-
-      if ClassBrowser1.Enabled and bParseFile then
-      begin
-        CppParser1.ReParseFile(e.FileName, False); //new cc
-        if e.TabSheet = PageControl.ActivePage then
-          ClassBrowser1.CurrentFile := e.FileName;
+      try
+        if (idx <> -1) and ClassBrowser1.Enabled and bParseFile then
+        begin
+          CppParser1.ReParseFile(fProject.units[idx].FileName, True);
+          if e.TabSheet = PageControl.ActivePage then
+            ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
           if GetFileTyp(e.FileName) = utHead then
           begin
             CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
@@ -3301,11 +3247,11 @@ begin
               index := -1;
               for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
               begin
-                if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
+                if AnsiSameText(ExtractFileName(ccFile), ExtractFileName(CppParser1.ScannedFiles[i])) then
                 begin
                   ccFile := CppParser1.ScannedFiles[i];
-                  index:=i;
-                  break;
+                  index := i;
+                  Break;
                 end;
               end;    // for
 
@@ -3314,15 +3260,67 @@ begin
             end;
           end;
         end;
+        Result := True;
+      except
+        MessageDlg(Format('Error reparsing file %s', [e.FileName]), mtError, [mbOk], Handle);
+      end;
+    end
+    else // stand alone file (should have fullpath in e.filename)
+    try
+      //Disable the file watch for this entry
+      idx := devFileMonitor.Files.IndexOf(e.FileName);
+      if idx <> -1 then
+      begin
+        devFileMonitor.Files.Delete(idx);
+        devFileMonitor.Refresh(False);
+      end;
+
+      if devEditor.AppendNewline then
+        with e.Text do
+          if Lines.Count > 0 then
+            if Lines[Lines.Count -1] <> '' then
+              Lines.Add('');
+      e.Text.Lines.SaveToFile(e.FileName);
+      e.Modified := false;
+
+      //Re-enable the file watch
+      devFileMonitor.Files.Add(e.FileName);
+      devFileMonitor.Refresh(False);
+
+      if ClassBrowser1.Enabled and bParseFile then
+      begin
+        CppParser1.ReParseFile(e.FileName, False); //new cc
+        if e.TabSheet = PageControl.ActivePage then
+          ClassBrowser1.CurrentFile := e.FileName;
+
+        if GetFileTyp(e.FileName) = utHead then
+        begin
+          CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
+          if trim(ccFile) <> '' then
+          begin
+            index := -1;
+            for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
+            begin
+              if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
+              begin
+                ccFile := CppParser1.ScannedFiles[i];
+                index:=i;
+                break;
+              end;
+            end;    // for
+
+            if index <> -1 then
+              CppParser1.ReParseFile(ccFile, true); //new cc
+          end;
+        end;
+      end;
+      Result := True;
     except
       MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle);
-      Result := False;
     end
   end
   else if e.New then
     Result := SaveFileAs(e);
-  if wa then
-    devFileMonitor1.Activate;
 end;
 
 function TMainForm.SaveFile(e: TEditor): Boolean;
@@ -4442,31 +4440,12 @@ end;
 
 procedure TMainForm.actSaveAllExecute(Sender: TObject);
 var
-  idx: integer;
-  wa: boolean;
+  fileLstToParse: TStringList;
+  idx: Integer;
   e: TEditor;
-  fileLstToParse:TStringList;
-  uType:TUnitType;
 begin
-  wa := devFileMonitor1.Active;
-  devFileMonitor1.Deactivate;
-  fileLstToParse:=TStringList.Create;
-  //When we save all, the files are not parsed and the class functions are not update.
-  //We collect the list of files that will be saved and then we reparse them later.
-  if ClassBrowser1.Enabled then
-  begin
-    for idx := 0 to pred(PageControl.PageCount) do
-    begin
-      e := GetEditor(idx);
-      uType := GetFileTyp(e.FileName);
-      if (e.Modified) and ( (uType = utsrc) or (uType = utHead) )then
-      begin
-          fileLstToParse.Add(e.FileName);
-      end;
-    end;
-  end;
-  
-  if assigned(fProject) then begin
+  fileLstToParse := TStringList.Create;
+  if Assigned(fProject) then begin
     fProject.Save;
     UpdateAppTitle;
     if CppParser1.Statements.Count = 0 then // only scan entire project if it has not already been scanned...
@@ -4475,21 +4454,18 @@ begin
 
   for idx := 0 to pred(PageControl.PageCount) do begin
     e := GetEditor(idx);
-    if (e.Modified) and ((not e.InProject) or (e.IsRes) {$IFDEF WX_BUILD} or (e.isForm){$ENDIF} ) then
-      if not SaveFile(GetEditor(idx)) then
-        Break;
-  end;
-  if ClassBrowser1.Enabled then
-  begin
-    for idx := 0 to fileLstToParse.Count-1 do
+    if e.Modified then
     begin
-      CppParser1.ReParseFile(fileLstToParse[idx],true);
+      SaveFile(GetEditor(idx));
+      if ClassBrowser1.Enabled and (GetFileTyp(e.FileName) in [utSrc, utHead]) then
+        fileLstToParse.Add(e.FileName);
     end;
   end;
-  fileLstToParse.Destroy;
 
-  if wa then
-    devFileMonitor1.Activate;
+  if ClassBrowser1.Enabled then
+    for idx := 0 to fileLstToParse.Count-1 do
+      CppParser1.ReParseFile(fileLstToParse[idx], True);
+  fileLstToParse.Destroy;
 end;
 
 procedure TMainForm.actCloseExecute(Sender: TObject);
@@ -4515,20 +4491,18 @@ end;
 procedure TMainForm.actCloseProjectExecute(Sender: TObject);
 var
   s: string;
-  wa: boolean;
-{ I: integer;}
 begin
   actStopExecute.Execute;
-  wa := devFileMonitor1.Active;
-  devFileMonitor1.Deactivate;
 
   // save project layout anyway ;)
   fProject.CmdLineArgs := fCompiler.RunParams;
   fProject.SaveLayout;
 
+{$IFNDEF PRIVATE_BUILD}
   //Added for wx problems : Just close all the file
   //tabs before closing the project
   actCloseAll.Execute;
+{$ENDIF}
 
   // ** should we save watches?
   if fProject.Modified then
@@ -4565,9 +4539,6 @@ begin
   UpdateAppTitle;
   ClassBrowser1.ProjectDir := '';
   CppParser1.Reset;
-
-  if wa then
-    devFileMonitor1.Activate;
   RefreshTodoList;
 end;
 
@@ -4914,12 +4885,11 @@ begin
     (NewName <> OldName) then
   try
     chdir(ExtractFilePath(OldName));
+
     // change in project first so on failure
     // file isn't already renamed
     fProject.SaveUnitAs(idx, ExpandFileto(NewName, GetCurrentDir));
-    devFileMonitor1.Deactivate;// deactivate for renaming or a message will raise
     Renamefile(OldName, NewName);
-    devFileMonitor1.Activate;
   except
     MessageDlg(format(Lang[ID_ERR_RENAMEFILE], [OldName]), mtError, [mbok], 0);
   end;
@@ -5945,7 +5915,7 @@ begin
 {$ENDIF}
     //Added for wx: Try catch for Some weird On Close Error
     e := GetEditor;
-    actUndo.Enabled := assigned(e) and e.Text.CanUndo;
+    actUndo.Enabled := assigned(e) and assigned(e.Text) and e.Text.CanUndo;
 {$IFNDEF PRIVATE_BUILD}
   except
   end;
@@ -5961,7 +5931,7 @@ begin
   try
 {$ENDIF}
     e := GetEditor;
-    actRedo.enabled := assigned(e) and e.Text.CanRedo;
+    actRedo.enabled := assigned(e) and assigned(e.Text) and e.Text.CanRedo;
 {$IFNDEF PRIVATE_BUILD}
   except
   end;
@@ -5980,9 +5950,9 @@ begin
     if assigned(e) then
     begin
       if e.isForm then
-          actCut.Enabled := e.isForm
+        actCut.Enabled := e.isForm
       else
-        actCut.Enabled := assigned(e) and e.Text.SelAvail;
+        actCut.Enabled := assigned(e.Text) and e.Text.SelAvail;
     end;
 {$IFNDEF PRIVATE_BUILD}
   except
@@ -6003,9 +5973,9 @@ begin
     if assigned(e) then
     begin
       if e.isForm then
-          actCopy.Enabled := e.isForm
+        actCopy.Enabled := e.isForm
       else
-          actCopy.Enabled := assigned(e) and e.Text.SelAvail;
+        actCopy.Enabled := e.Text.SelAvail;
     end;
 {$IFNDEF PRIVATE_BUILD}
   except
@@ -6026,9 +5996,9 @@ begin
     if assigned(e) then
     begin
       if e.isForm then
-          actPaste.Enabled := e.isForm
+        actPaste.Enabled := e.isForm
       else
-        actPaste.Enabled := assigned(e) and e.Text.CanPaste;
+        actPaste.Enabled := assigned(e.Text) and e.Text.CanPaste;
     end;
 {$IFNDEF PRIVATE_BUILD}
   except
@@ -6045,7 +6015,7 @@ begin
   try
 {$ENDIF}
     e := GetEditor;
-    actSave.Enabled := assigned(e) and (e.Modified or e.Text.Modified or (e.FileName = ''));
+    actSave.Enabled := assigned(e) and assigned(e.Text) and (e.Modified or e.Text.Modified or (e.FileName = ''));
 {$IFNDEF PRIVATE_BUILD}
   except
      //e:=nil;
@@ -6079,7 +6049,7 @@ begin
 {$ENDIF}
     e := GetEditor;
     // ** need to also check if a search has already happened
-    actFindNext.Enabled := assigned(e) and (e.Text.Text <> '');
+    actFindNext.Enabled := assigned(e) and assigned(e.Text) and (e.Text.Text <> '');
 {$IFNDEF PRIVATE_BUILD}
   except
   end;
@@ -7057,37 +7027,77 @@ begin
     fDebugger.SetThread(StrToInt(lvThreads.Selected.SubItems[0]));
 end;
 
-procedure TMainForm.devFileMonitor1NotifyChange(Sender: TObject;
+procedure TMainForm.devFileMonitorNotifyChange(Sender: TObject;
   ChangeType: TdevMonitorChangeType; Filename: String);
 var
-  e: TEditor;
-  p : TBufferCoord;
+  Entry: PReloadFile;
 begin
-  if ReloadFileName = FileName then
-    exit;
-  ReloadFilename := FileName;
-  case ChangeType of
-    mctChanged:
-      if MessageDlg(Filename + ' has changed. Reload from disk?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  Entry := New(PReloadFile);
+  ReloadFilenames.Add(Entry);
+  Entry^.FileName := FileName;
+  Entry^.ChangeType := ChangeType;
+
+  if not IsIconized then
+    HandleFileMonitorChanges;
+end;
+
+procedure TMainForm.HandleFileMonitorChanges;
+var
+  I: Integer;
+
+  procedure ReloadEditor(FileName: string);
+  var
+    e: TEditor;
+    p: TBufferCoord;
+  begin
+    e := GetEditorFromFileName(Filename);
+    if Assigned(e) then
+    begin
+      if e.isForm then
+        e.ReloadForm
+      else
       begin
-        e := GetEditorFromFileName(Filename);
-        if Assigned(e) then
-        begin
-          if e.isForm then
-            e.ReloadForm
-          else
-          begin
-            p := e.Text.CaretXY;
-            e.Text.Lines.LoadFromFile(Filename);
-            if (p.Line <= e.Text.Lines.Count) then
-              e.Text.CaretXY := p;
-          end;
-        end;
+        p := e.Text.CaretXY;
+        e.Text.Lines.LoadFromFile(Filename);
+        if (p.Line <= e.Text.Lines.Count) then
+          e.Text.CaretXY := p;
       end;
-    mctDeleted:
-      MessageDlg(Filename + ' has been renamed or deleted', mtInformation, [mbOk], 0);
+    end;
   end;
-  ReloadFilename := '';
+begin
+  if ReloadFilenames.Count = 1 then
+  begin
+    with PReloadFile(ReloadFilenames[0])^ do
+      case ChangeType of
+        mctChanged:
+          if MessageDlg(Filename + ' has been modified outside of wxDev-C++.'#13#10#13#10 +
+                        'Do you want to reload the file from disk? This will discard all your unsaved changes.',
+                        mtConfirmation, [mbYes, mbNo], Handle) = mrYes then
+            ReloadEditor(Filename);
+        mctDeleted:
+          MessageDlg(Filename + ' has been renamed or deleted.', mtInformation, [mbOk], Handle);
+      end;
+    ReloadFilenames.Clear;
+  end
+  else if ReloadFilenames.Count <> 0 then
+  begin
+    if Assigned(FilesReloadForm) then
+      FilesReloadForm.Files := ReloadFilenames
+    else
+    begin
+      FilesReloadForm := TFilesReloadFrm.Create(Self);
+      FilesReloadForm.Files := ReloadFilenames;
+      if FilesReloadForm.ShowModal = mrOK then
+        for I := 0 to FilesReloadForm.lbModified.Count - 1 do
+          if FilesReloadForm.lbModified.Checked[I] then
+            ReloadEditor(FilesReloadForm.lbModified.Items[I]);
+
+      //Then free the dialog and clean up
+      ReloadFilenames.Clear;
+      FilesReloadForm.Free;
+      FilesReloadForm := nil;
+    end;
+  end;
 end;
 
 procedure TMainForm.actFilePropertiesExecute(Sender: TObject);
@@ -7590,15 +7600,11 @@ end;
 
 procedure TMainForm.actCVSUpdateExecute(Sender: TObject);
 var
-  wa: boolean;
   I: integer;
   e: TEditor;
   pt: TBufferCoord;
 begin
   actSaveAll.Execute;
-  wa := devFileMonitor1.Active;
-  devFileMonitor1.Deactivate;
-
   DoCVSAction(Sender, caUpdate);
 
   // Refresh CVS Changes
@@ -7610,9 +7616,6 @@ begin
       e.Text.CaretXY := pt;
     end;
   end;
-
-  if wa then
-    devFileMonitor1.Activate;
 end;
 
 procedure TMainForm.actCVSCommitExecute(Sender: TObject);
@@ -8218,7 +8221,6 @@ begin
   DebugTree.Items.Clear;
 end;
 
-
 procedure TMainForm.HideCodeToolTip;
 var
   CurrentEditor: TEditor;
@@ -8228,34 +8230,17 @@ begin
     CurrentEditor.CodeToolTip.ReleaseHandle;
 end;
 
-
 procedure TMainForm.ApplicationEvents1Deactivate(Sender: TObject);
-{$IFDEF WX_BUILD}
-  //This is a custom File Watcher used specifically for
-  //wx-devcpp because the current implementation
-  //is somewhat erratic in my machine
-var
-  fwatchThread:TFileWatch;
-  i:Integer;
-{$ENDIF}
 begin
-  // Hide the tooltip since we no longer have focus
+  //Hide the tooltip since we no longer have focus
   HideCodeToolTip;
+  IsIconized := True;
+end;
 
-{$IFDEF WX_BUILD}
-  devFileMonitor1.Deactivate;
-  FWatchList.Clear;
-  FileWatching:=true;
-  for I := 0 to devFileMonitor1.Files.Count - 1 do    // Iterate
-  begin
-    fwatchThread:=TFileWatch.Create ;
-    fwatchThread.OnNotify:=OnFileChangeNotify;
-    fwatchThread.FileName:=devFileMonitor1.Files[i];
-    fwatchThread.FreeOnTerminate:=true;
-    fwatchThread.Active:=true;
-    FWatchList.Add(fwatchThread)
-  end;    // for
-{$ENDIF}
+procedure TMainForm.ApplicationEvents1Activate(Sender: TObject);
+begin
+  IsIconized := False;
+  HandleFileMonitorChanges;
 end;
 
 procedure TMainForm.PageControlChanging(Sender: TObject;
@@ -11371,49 +11356,6 @@ end;
 procedure TMainForm.actNewwxDialogExecute(Sender: TObject);
 begin
     CreateNewDialogOrFrameCode(dtWxDialog, nil, 2);
-end;
-
-procedure TMainForm.OnFileChangeNotify(Sender: TObject; ChangeType: TChangeType);
-begin
-  if FileWatching = false then
-    exit;
-    if strChangedFileList.IndexOf(TFileWatch(Sender).FileName)  = -1 then
-        strChangedFileList.Add(TFileWatch(Sender).FileName);
-end;
-
-procedure TMainForm.ApplicationEvents1Activate(Sender: TObject);
-{$IFDEF WX_BUILD}
-var
-   I:Integer;
-{$ENDIF}
-begin
-{$IFDEF WX_BUILD}
-  FileWatching := false;
-  devFileMonitor1.Deactivate;
-  for I := 0 to FWatchList.Count - 1 do    // Iterate
-  begin
-{$IFNDEF PRIVATE_BUILD}
-    try
-{$ENDIF}
-      if Assigned(FWatchList[i]) then
-        TFileWatch(FWatchList[i]).Terminate;
-{$IFNDEF PRIVATE_BUILD}
-    except
-    end;
-{$ENDIF}
-  end;    // for
-
-  FWatchList.Clear;
-  for I := 0 to strChangedFileList.Count - 1 do    // Iterate
-  begin
-    if FileExists(strChangedFileList[i]) then
-        devFileMonitor1NotifyChange(self,mctChanged,strChangedFileList[i])
-    else
-        devFileMonitor1NotifyChange(self,mctDeleted,strChangedFileList[i]);
-  end;
-  strChangedFileList.Clear;
-
-{$ENDIF}
 end;
 
 procedure TMainForm.actWxPropertyInspectorCutExecute(Sender: TObject);
