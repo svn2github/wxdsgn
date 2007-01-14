@@ -213,13 +213,12 @@ Ver=1
 321=Col
 322=Variable Name
 323=Value
-324=Information:
-325=Compile Log:
+324=Information
+325=Compile Log
 326=Total Errors:
 327=Size of Output:
 
 # debug
-
 330=Watched Variables
 331=Backtrace
 332=Output

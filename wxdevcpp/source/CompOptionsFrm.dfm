@@ -314,22 +314,10 @@ object CompForm: TCompForm
           247)
         object lblDelay: TLabel
           Left = 10
-          Top = 218
+          Top = 219
           Width = 70
           Height = 13
           Caption = 'Compile Delay:'
-        end
-        object lblDelayMsg: TLabel
-          Left = 150
-          Top = 212
-          Width = 250
-          Height = 26
-          Caption = 
-            'Enable a delay in milliseconds if make complains about makefile'#39 +
-            's time stamp (in compile log)'
-          Transparent = True
-          Layout = tlCenter
-          WordWrap = True
         end
         object cbCompAdd: TLabel
           Left = 10
@@ -340,14 +328,14 @@ object CompForm: TCompForm
         end
         object cbLinkerAdd: TLabel
           Left = 10
-          Top = 81
+          Top = 83
           Width = 231
           Height = 13
           Caption = 'Add these commands to the linker command line:'
         end
         object cbMakeAdd: TLabel
           Left = 10
-          Top = 146
+          Top = 150
           Width = 232
           Height = 13
           Caption = 'Add these commands to the make command line:'
@@ -364,7 +352,7 @@ object CompForm: TCompForm
         end
         object Linker: TMemo
           Left = 10
-          Top = 97
+          Top = 99
           Width = 391
           Height = 45
           Anchors = [akLeft, akTop, akRight]
@@ -374,8 +362,8 @@ object CompForm: TCompForm
         end
         object seCompDelay: TSpinEdit
           Left = 95
-          Top = 215
-          Width = 50
+          Top = 216
+          Width = 70
           Height = 22
           MaxValue = 0
           MinValue = 0
@@ -384,7 +372,7 @@ object CompForm: TCompForm
         end
         object Make: TMemo
           Left = 10
-          Top = 161
+          Top = 165
           Width = 391
           Height = 45
           Anchors = [akLeft, akTop, akRight]

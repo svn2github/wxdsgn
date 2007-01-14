@@ -86,7 +86,6 @@ type
     Linker: TMemo;
     lblDelay: TLabel;
     seCompDelay: TSpinEdit;
-    lblDelayMsg: TLabel;
     cbCompAdd: TLabel;
     cbLinkerAdd: TLabel;
     CompilerTypes: TComboBox;
@@ -462,7 +461,7 @@ begin
   //controls (compiler tab)
   cbCompAdd.Caption := Lang[ID_COPT_ADDCOMP];
   lblDelay.Caption := Lang[ID_COPT_DELAY];
-  lblDelayMsg.Caption := Lang[ID_COPT_DELAYMSG];
+  lblDelay.Hint := Lang[ID_COPT_DELAYMSG];
   cbLinkerAdd.Caption := Lang[ID_COPT_LINKADD];
   cbFastDep.Caption := Lang[ID_COPT_FASTDEP];
 
