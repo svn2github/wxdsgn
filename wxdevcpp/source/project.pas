@@ -261,54 +261,75 @@ begin
 end;
 
 function TProjUnit.Save: boolean;
+  procedure DisableFileWatch;
+  var
+    idx: Integer;
+  begin
+    idx := MainForm.devFileMonitor.Files.IndexOf(fEditor.FileName);
+    if idx <> -1 then
+    begin
+      MainForm.devFileMonitor.Files.Delete(idx);
+      MainForm.devFileMonitor.Refresh(False);
+    end;
+  end;
+
+  procedure EnableFileWatch;
+  begin
+    MainForm.devFileMonitor.Files.Add(fEditor.FileName);
+    MainForm.devFileMonitor.Refresh(False);
+  end;
 begin
-  if (fFileName = '') or (fNew) then
+  if (fFileName = '') or fNew then
     result := SaveAs
   else
   try
-    //Update the XPMs if we dont have them in the disk
-    if assigned(fEditor)then
-    begin
-      if (fEditor.isForm) then
-        fEditor.GetDesigner.CreateNewXPMs(fEditor.FileName);
-    end;
-    // if no editor created open one save file and close
-    // creates a blank file.
-    if (not assigned(fEditor) and not FileExists(fFileName)) then
+    //Update the XPMs if we dont have them on the disk
+    if Assigned(fEditor) and fEditor.isForm then
+      fEditor.GetDesigner.CreateNewXPMs(fEditor.FileName);
+
+    //If no editor is created open one; save file and close creates a blank file.
+    if (not Assigned(fEditor)) and (not FileExists(fFileName)) then
     begin
       fEditor := TEditor.Create;
-      fEditor.Init(TRUE, ExtractFileName(fFileName), fFileName, FALSE);
-       if devEditor.AppendNewline then
-         with fEditor.Text do
-           if Lines.Count > 0 then
-             if Lines[Lines.Count -1] <> '' then
-               Lines.Add('');
+      fEditor.Init(True, ExtractFileName(fFileName), fFileName, False);
+      if devEditor.AppendNewline then
+        with fEditor.Text do
+          if Lines.Count > 0 then
+            if Lines[Lines.Count -1] <> '' then
+              Lines.Add('');
+
+      DisableFileWatch;
       fEditor.Text.Lines.SavetoFile(fFileName);
+      EnableFileWatch;
+
       fEditor.New := False;
       fEditor.Modified := False;
       fEditor.Close;
-      fEditor:=nil; // because closing the editor will destroy it
-      //FreeAndNil(fEditor);
+      fEditor := nil; //Closing the editor will destroy it
     end
-    else
-    if assigned(fEditor) and fEditor.Modified then
+    else if assigned(fEditor) and fEditor.Modified then
     begin
-       if devEditor.AppendNewline then
-         with fEditor.Text do
-           if Lines.Count > 0 then
-             if Lines[Lines.Count -1] <> '' then
-               Lines.Add('');
-      fEditor.Text.Lines.SaveToFile(fEditor.FileName);
+      if devEditor.AppendNewline then
+        with fEditor.Text do
+          if Lines.Count > 0 then
+            if Lines[Lines.Count -1] <> '' then
+              Lines.Add('');
+
+      DisableFileWatch;
+      fEditor.Text.Lines.SavetoFile(fFileName);
+      EnableFileWatch;
+
+      fEditor.New := False;
+      fEditor.Modified := False;
       if FileExists(fEditor.FileName) then
         FileSetDate(fEditor.FileName, DateTimeToFileDate(Now)); // fix the "Clock skew detected" warning ;)
-      fEditor.New := False;
-      fEditor.Modified := FALSE;
     end;
+
     if assigned(fNode) then
-      fNode.Text := ExtractfileName(fFileName);
-    result := TRUE;
+      fNode.Text := ExtractFileName(fFileName);
+    result := True;
   except
-    result := FALSE;
+    result := False;
   end;
 end;
 

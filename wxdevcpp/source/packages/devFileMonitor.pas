@@ -35,15 +35,12 @@ type
   TdevFileMonitor = class(TWinControl)
   private
     { Private declarations }
-    fMonitor: TdevMonitorThread;
     fFiles: TStrings;
+    fMonitor: TdevMonitorThread;
     fNotifyChange: TdevMonitorChange;
-    //procedure MonitorTerminated(Sender: TObject);
     function GetActive: boolean;
     procedure SetActive(const Value: boolean);
     procedure SetFiles(const Value: TStrings);
-  protected
-    { Protected declarations }
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -52,17 +49,16 @@ type
     procedure Deactivate;
     procedure Refresh(ActivateIfNot: boolean);
     procedure SubClassWndProc(var Message: TMessage);
-//    procedure Notify(ChangeType: TdevMonitorChangeType; Filename: string);
   published
     { Published declarations }
-    property Active: boolean read GetActive write SetActive;
+    property Active: Boolean read GetActive write SetActive;
     property Files: TStrings read fFiles write SetFiles;
     property OnNotifyChange: TdevMonitorChange read fNotifyChange write fNotifyChange;
   end;
 
 implementation
-
-{ TdevFileMonitor }
+uses
+  madstacktrace, dbugintf;
 
 procedure TdevFileMonitor.SubClassWndProc(var Message: TMessage);
 begin
@@ -70,22 +66,12 @@ begin
   begin
     if Assigned(fNotifyChange) then
     begin
-      fNotifyChange(Self, TDevMonitorChangeType(Message.WParam),
-        PChar(Message.LParam));
+      fNotifyChange(Self, TDevMonitorChangeType(Message.WParam), PChar(Message.LParam));
       StrDispose(PChar(Message.LParam));
     end;
   end
   else
     WndProc(Message);
-end;
-
-procedure TdevFileMonitor.Activate;
-begin
-  if not Active then begin
-    fMonitor := TdevMonitorThread.Create(Self, fFiles);
-//    fMonitor.OnTerminate := MonitorTerminated;
-    fMonitor.Resume;
-  end;
 end;
 
 constructor TdevFileMonitor.Create(AOwner: TComponent);
@@ -96,16 +82,6 @@ begin
   WindowProc := SubClassWndProc;
 end;
 
-procedure TdevFileMonitor.Deactivate;
-begin
-  if Assigned(fMonitor) then begin
-    fMonitor.TellToQuit;
-    fMonitor.WaitFor;
-    fMonitor.Free;
-    fMonitor:=nil;
-  end;
-end;
-
 destructor TdevFileMonitor.Destroy;
 begin
   Deactivate;
@@ -113,31 +89,34 @@ begin
   inherited;
 end;
 
+procedure TdevFileMonitor.Activate;
+begin
+  if not Active then begin
+    fMonitor := TdevMonitorThread.Create(Self, fFiles);
+    fMonitor.Resume;
+  end;
+end;
+
+procedure TdevFileMonitor.Deactivate;
+begin
+  if Active then begin
+    fMonitor.TellToQuit;
+    fMonitor.WaitFor;
+    fMonitor.Free;
+    fMonitor := nil;
+  end;
+end;
+
 function TdevFileMonitor.GetActive: boolean;
 begin
   Result := Assigned(fMonitor);
 end;
 
-{procedure TdevFileMonitor.MonitorTerminated(Sender: TObject);
-begin
-  fMonitor := nil;
-end;
-}
-
-{
-procedure TdevFileMonitor.Notify(ChangeType: TdevMonitorChangeType;
-  Filename: string);
-begin
-  if Assigned(fNotifyChange) then
-    fNotifyChange(Self, ChangeType, Filename);
-end;
-}
-
 procedure TdevFileMonitor.Refresh(ActivateIfNot: boolean);
 begin
-  if not Active then
+  if (not Active) and ActivateIfNot then
     Activate
-  else
+  else if Active then
     fMonitor.ReloadList(fFiles);
 end;
 

@@ -168,7 +168,6 @@ var
   VarScope: TStatementClassScope;
   St: PStatement;
   ClsName: string;
-  wa: boolean;
   S: string;
 begin
   if cmbClass.ItemIndex = -1 then begin
@@ -222,16 +221,12 @@ begin
     if e.Modified then
       case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]), mtConfirmation, [mbYes, mbCancel], 0) of
         mrYes: if FileExists(fName) then begin
-            wa := MainForm.devFileMonitor1.Active;
-            MainForm.devFileMonitor1.Deactivate;
             if devEditor.AppendNewline then
               with e.Text do
                 if Lines.Count > 0 then
                   if Lines[Lines.Count -1] <> '' then
                     Lines.Add('');
-            e.Text.Lines.SaveToFile(fName);
-            if wa then
-              MainForm.devFileMonitor1.Activate;
+            MainForm.SaveFileInternal(e);
           end
           else
             Exit;
