@@ -353,7 +353,7 @@ begin
     Exit;
 
   //See if we should revert to the default implementation
-  if not IsThemeActive then
+  if not IsThemeActive  or (not TdevDockStyle(Self.Page.DockStyle).NativeDocks) then
   begin
     inherited;
     Exit;
@@ -686,7 +686,7 @@ var
 begin
   //See if we can acquire a handle to our theme, if not, revert to our old
   //implementation
-  if not IsThemeActive then
+  if not IsThemeActive or (not TdevDockStyle(DockStyle).NativeDocks) then
   begin
     inherited;
     Exit;
