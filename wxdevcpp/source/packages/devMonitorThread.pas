@@ -62,7 +62,7 @@ type
 implementation
 
 uses
-  devFileMonitor, dbugintf;
+  devFileMonitor;
 
 var
   ChangeType: TdevMonitorChangeType;

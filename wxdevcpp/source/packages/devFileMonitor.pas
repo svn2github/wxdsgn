@@ -57,8 +57,6 @@ type
   end;
 
 implementation
-uses
-  madstacktrace, dbugintf;
 
 procedure TdevFileMonitor.SubClassWndProc(var Message: TMessage);
 begin

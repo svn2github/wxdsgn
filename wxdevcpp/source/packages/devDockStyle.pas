@@ -92,7 +92,7 @@ type
 implementation
 uses
   ComCtrls, UxTheme, JvDockVIDStyle, Dialogs, Forms, StrUtils, SysUtils,
-  JvDockControlForm, JvDockGlobals, DbugIntf;
+  JvDockControlForm, JvDockGlobals;
 
 type
   TJvDockVSNETZoneAccess = class(TJvDockVSNETZone);
