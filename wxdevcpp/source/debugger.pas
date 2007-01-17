@@ -952,6 +952,7 @@ var
     if RegExp.Substitute('$3') = 'c0000005' then
       OnAccessViolation
     else if RegExp.Substitute('$3') = '40010005' then
+    else if RegExp.Substitute('$3') = 'c00000fd' then
     else if RegExp.Substitute('$3') = '80000003' then
       if IgnoreBreakpoint then
         IgnoreBreakpoint := False
@@ -1918,6 +1919,7 @@ begin
   Launch(Executable, WorkingDir);
 
   //Tell GDB which file we want to debug
+  QueueCommand('set', 'height 0');
   QueueCommand('file', '"' + filename + '"');
   QueueCommand('set args', arguments);
 end;
@@ -1939,7 +1941,7 @@ begin
     Executable := devCompiler.gdbName
   else
     Executable := DBG_PROGRAM(devCompiler.CompilerType);
-  Executable := Executable + ' --annotate=2 --silent';
+  Executable := Executable + ' --annotate=3 --silent';
 
   //Add in the include paths
   for I := 0 to IncludeDirs.Count - 1 do
@@ -1951,6 +1953,7 @@ begin
   Launch(Executable);
 
   //Tell GDB which file we want to debug
+  QueueCommand('set', 'height 0');
   QueueCommand('attach', inttostr(pid));
 end;
 
@@ -1963,27 +1966,29 @@ end;
 procedure TGDBDebugger.OnOutput(Output: string);
 var
   RegExp: TRegExpr;
-  CurLine: String;
+  CurLine: string;
   NewLines: TStringList;
+  LastWasCtrl: Boolean;
 
   procedure FlushOutputBuffer;
   begin
-    if NewLines.Count <> 0 then
-    begin
-      MainForm.DebugOutput.Lines.BeginUpdate;
-      MainForm.DebugOutput.Lines.AddStrings(NewLines);
-      MainForm.DebugOutput.Lines.EndUpdate;
-      SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-                  MainForm.DebugOutput.Lines.Count);
-      NewLines.Clear;
-    end;
+    if NewLines.Count = 0 then
+      Exit;
+
+    MainForm.DebugOutput.Lines.BeginUpdate;
+    MainForm.DebugOutput.Lines.AddStrings(NewLines);
+    MainForm.DebugOutput.Lines.EndUpdate;
+    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
+                MainForm.DebugOutput.Lines.Count);
+    NewLines.Clear;
   end;
   
-  procedure StripCtrlChars(var line: string);
+  function StripCtrlChars(var line: string): Boolean;
   var
     Idx: Integer;
   begin
     Idx := Pos(#26, line);
+    Result := Idx <> 0;
     while Idx <> 0 do
     begin
       Delete(line, Idx, 1);
@@ -2051,17 +2056,25 @@ var
   end;
 begin
   //Update the memo
+  LastWasCtrl := False;
   RegExp := TRegExpr.Create;
   NewLines := TStringList.Create;
 
-  while Pos(#13, Output) > 0 do
+  while Pos(#10, Output) > 0 do
   begin
     //Extract the current line
-    CurLine := Copy(Output, 0, Pos(#13, Output) - 1);
+    CurLine := Copy(Output, 0, Pos(#10, Output) - 1);
 
     //Process the output
-    StripCtrlChars(CurLine);
-    NewLines.Add(CurLine);
+    if not StripCtrlChars(CurLine) then
+    begin
+      if not LastWasCtrl then
+        NewLines.Add(CurLine);
+      LastWasCtrl := False;
+    end
+    else
+      LastWasCtrl := True;
+    SendDebug(CutLine);
     ParseOutput(CurLine);
 
     //Remove those that we've already processed
