@@ -280,6 +280,7 @@ type
     OverrideHandler: TCallback;
     RegistersFilled: Integer;
     Registers: TRegisters;
+    LastWasCtrl: Boolean;
     Started: Boolean;
 
   protected
@@ -1879,6 +1880,7 @@ constructor TGDBDebugger.Create;
 begin
   inherited;
   OverrideHandler := nil;
+  LastWasCtrl := True;
   Started := False;
 end;
 
@@ -1968,7 +1970,6 @@ var
   RegExp: TRegExpr;
   CurLine: string;
   NewLines: TStringList;
-  LastWasCtrl: Boolean;
 
   procedure FlushOutputBuffer;
   begin
@@ -2056,25 +2057,23 @@ var
   end;
 begin
   //Update the memo
-  LastWasCtrl := False;
   RegExp := TRegExpr.Create;
   NewLines := TStringList.Create;
 
   while Pos(#10, Output) > 0 do
   begin
     //Extract the current line
-    CurLine := Copy(Output, 0, Pos(#10, Output) - 1);
+    CurLine := Copy(Output, 0, Pos(#13, Output) - 1);
 
     //Process the output
     if not StripCtrlChars(CurLine) then
     begin
-      if not LastWasCtrl then
+      if (not LastWasCtrl) or (Length(CurLine) <> 0) then
         NewLines.Add(CurLine);
       LastWasCtrl := False;
     end
     else
       LastWasCtrl := True;
-    SendDebug(CutLine);
     ParseOutput(CurLine);
 
     //Remove those that we've already processed
