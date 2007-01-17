@@ -189,7 +189,7 @@ type
     //Breakpoint handling
     procedure AddBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
     procedure RemoveBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
-    procedure RemoveAllBreakpoints; virtual;
+    procedure RemoveAllBreakpoints;
     procedure RefreshBreakpoints;
     procedure RefreshBreakpoint(var breakpoint: TBreakpoint); virtual; abstract;
     function BreakpointExists(filename: string; line: integer): boolean;
