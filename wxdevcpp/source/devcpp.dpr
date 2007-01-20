@@ -27,11 +27,14 @@ uses
   FastMM4,
   FastCode,
   LanguagesDEPFix,
+{$IFNDEF OLD_MADSHI}  
   madListHardware,
   madListProcesses,
   madListModules,
+{$ENDIF}
   madExcept,
   madLinkDisAsm,
+  madScreenShot,
   inifiles,
   Windows,
   Forms,
@@ -176,7 +179,25 @@ uses
   Wxsplitterwindow in 'components\wxsplitterwindow.pas',
   WxRadioBox in 'components\wxRadioBox.pas',
   WxDatePickerCtrl in 'components\wxDatePickerCtrl.pas',
-  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas' {$ENDIF};
+  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas',
+  wxStdDialogButtonSizer in 'components\wxStdDialogButtonSizer.pas',
+  WxOwnerDrawnComboBox in 'components\WxOwnerDrawnComboBox.pas',
+  WxSTC in 'components\WxSTC.pas',
+  WxRichTextCtrl in 'components\WxRichTextCtrl.pas',
+  WxTreeListCtrl in 'components\WxTreeListCtrl.pas',
+  wxCalendarBase in 'components\wxCalendarBase.pas',
+  WxCalendarCtrl in 'components\WxCalendarCtrl.pas',
+  WxTextEntryDialog in 'components\WxTextEntryDialog.pas',
+  WxPasswordEntryDialog in 'components\WxPasswordEntryDialog.pas',
+  WxSingleChoiceDialog in 'components\WxSingleChoiceDialog.pas',
+  WxMultiChoiceDialog in 'components\WxMultiChoiceDialog.pas',
+  WxHyperLinkCtrl in 'components\WxHyperLinkCtrl.pas',
+  WxDialUpManager in 'components\WxDialUpManager.pas',
+  WxHtmlEasyPrinting in 'components\WxHtmlEasyPrinting.pas',
+  WxMediaCtrl in 'components\WxMediaCtrl.pas'
+
+  
+  {$ENDIF};
 
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
