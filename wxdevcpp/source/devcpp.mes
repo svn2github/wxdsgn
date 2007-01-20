@@ -29,7 +29,7 @@ BugReportFile=bugreport.txt
 AppendBugReports=1
 BugReportFileSize=50000
 VersionVariable=
-MesVersion=2
+MesVersion=3
 ScreenShotDepth=307200
 NoOwnMadExceptSettings=0
 CheckFileCrc=1
@@ -117,7 +117,7 @@ ShowCpuRegisters=1
 ShowStackDump=1
 EnabledPlugins=modules|processes|hardware
 [UnitInitOrder]
-UnitInitOrder=ShareMem, HPMM, MultiMM, nxllFastCpuDetect, nxllFastFillChar, nxllFastMove, nxllMemoryManagerImpl, nxllMemoryManager, nxReplacementMemoryManager
+UnitInitOrder=FastMM4, ShareMem, HPMM, MultiMM, nxllFastCpuDetect, nxllFastFillChar, nxllFastMove, nxllMemoryManagerImpl, nxllMemoryManager, nxReplacementMemoryManager, dbisamm
 PatchUnitInitOrder=1
 [Filters]
 Filter1ExceptionClasses=EELDesigner, EConvertError, EJvInspectorItem, EComponentError
