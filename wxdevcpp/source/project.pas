@@ -692,11 +692,11 @@ begin
       dptStat: ResFile.Add('FILETYPE VFT_STATIC_LIB');
       dptDyn:  ResFile.Add('FILETYPE VFT_DLL');
     end;
-    ResFile.Add('{');
+    ResFile.Add('BEGIN');
     ResFile.Add('    BLOCK "StringFileInfo"');
-    ResFile.Add('    {');
+    ResFile.Add('    BEGIN');
     ResFile.Add('        BLOCK "' + Format('%4.4x%4.4x',[VersionInfo.LanguageID, VersionInfo.CharsetID]) + '"');
-    ResFile.Add('        {');
+    ResFile.Add('        BEGIN');
     ResFile.Add('            VALUE "CompanyName", "' + VersionInfo.CompanyName +'"');
     ResFile.Add('            VALUE "FileVersion", "' + VersionInfo.FileVersion +'"');
     ResFile.Add('            VALUE "FileDescription", "' +VersionInfo.FileDescription + '"');
@@ -706,13 +706,13 @@ begin
     ResFile.Add('            VALUE "OriginalFilename", "' + VersionInfo.OriginalFilename + '"');
     ResFile.Add('            VALUE "ProductName", "' + VersionInfo.ProductName +'"');
     ResFile.Add('            VALUE "ProductVersion", "' +VersionInfo.ProductVersion + '"');
-    ResFile.Add('        }');
-    ResFile.Add('    }');
+    ResFile.Add('        END');
+    ResFile.Add('    END');
     ResFile.Add('    BLOCK "VarFileInfo"');
-    ResFile.Add('    {');
+    ResFile.Add('    BEGIN');
     ResFile.Add('        VALUE "Translation", ' + Format('0x%4.4x, %4.4d',[VersionInfo.LanguageID, VersionInfo.CharsetID]));
-    ResFile.Add('    }');
-    ResFile.Add('}');
+    ResFile.Add('    END');
+    ResFile.Add('END');
   end;
 
   //Get the real path (after substituting in the make variables)

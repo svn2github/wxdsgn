@@ -882,6 +882,7 @@ begin
     devCompilerSet.Sets.Add(VC2005_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2003_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC6_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(DMARS_DEFCOMPILERSET);
 
     devCompilerSet.WriteSets;
         
@@ -912,6 +913,14 @@ begin
     devCompilerSet.LoadSetProgs(3);
     devCompilerSet.LoadSetDirs(3);
     devCompilerSet.SaveSet(3);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_DMARS;
+    devdirs.fCompilerType:=ID_COMPILER_DMARS;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(4);
+    devCompilerSet.LoadSetDirs(4);
+    devCompilerSet.SaveSet(4);
+        
     //Reset the compiler type back to GCC
     devdirs.fCompilerType:=1;
     devdirs.SettoDefaults;
@@ -1308,6 +1317,438 @@ begin
       AddOption('Enable automatic precompiled headers', false, true, true, false, 0, '/YX', 'Miscellaneous', [], nil);
     AddOption('Enable 64-bit porting warnings', false, true, true, false, 0, '/Wp64', 'Miscellaneous', [], nil);
     AddOption('Disable incremental linking', false, false, false, true, 0, '/INCREMENTAL:NO', 'Miscellaneous', [], nil);
+  end
+  else
+  if devCompilerSet.CompilerType = ID_COMPILER_DMARS then
+  begin
+   //Start of DMars
+    sl := TStringList.Create;
+    sl.Add(''); // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
+    sl.Add('1=1');
+    sl.Add('2=2');
+    sl.Add('4=4');
+    sl.Add('8=8');
+    AddOption('alignment of struct members', False, True, True, false, 0, '-a', 'C++ Options', [], sl);
+    AddOption('ANSI X3.159-1989 conformance', false, true, true, false, 0, '-A89', 'C++ Options', [], nil);
+    AddOption('ISO/IEC 9899:1990 conformance', false, true, true, false, 0, '-A90', 'C++ Options', [], nil);
+    AddOption('ISO/IEC 9899-1:1994 conformance', false, true, true, false, 0, '-A94', 'C++ Options', [], nil);
+    AddOption('ISO/IEC 9899:1999 conformance', false, true, true, false, 0, '-A99', 'C++ Options', [], nil);
+    AddOption('strict ANSI C/C++', false, true, true, false, 0, '-A', 'C++ Options', [], nil);
+    AddOption('enable new[] and delete[]', false, true, true, false, 0, '-Aa', 'C++ Options', [], nil);
+    AddOption('enable bool', false, true, true, false, 0, '-Ab', 'C++ Options', [], nil);
+    AddOption('enable exception handling', false, true, true, false, 0, '-Ae', 'C++ Options', [], nil);
+    AddOption('enable RTTI', false, true, true, false, 0, '-Ar', 'C++ Options', [], nil);
+    sl := TStringList.Create;
+    sl.Add(''); // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
+    sl.Add('English=e');
+    sl.Add('French=f');
+    sl.Add('German=g');
+    sl.Add('Japanese=j');
+    AddOption('message language', False, True, True, True, 0, '-B', 'C++ Options', [], sl);
+    AddOption('skip the link, do compile only', false, true, true, false, 0, '-c', 'C++ Options', [], nil);
+    AddOption('source files are C++', false, true, true, false, 0, '-cpp', 'C++ Options', [], nil);
+    AddOption('generate .cod (assembly) file', false, true, true, false, 0, '-cod', 'C++ Options', [], nil);
+    AddOption('no inline function expansion', false, true, true, false, 0, '-C', 'C++ Options', [], nil);
+    AddOption('generate .dep (make dependency) file', false, true, true, false, 0, '-d', 'C++ Options', [], nil);
+    AddOption('#define DEBUG 1', false, true, true, false, 0, '-D', 'C++ Options', [], nil);
+    AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    AddOption('show results of preprocessor', false, true, true, false, 0, '-e', 'C++ Options', [], nil);
+    AddOption('do not elide comments', false, true, true, false, 0, '-EC', 'C++ Options', [], nil);
+    AddOption('#line directives not output', false, true, true, false, 0, '-EL', 'C++ Options', [], nil);
+
+    AddOption('IEEE 754 inline 8087 code', false, true, true, false, 0, '-f', 'C++ Options', [], nil);
+    AddOption('work around FDIV problem', false, true, true, false, 0, '-fd', 'C++ Options', [], nil);
+
+    AddOption('fast inline 8087 code', false, true, true, false, 0, '-ff ', 'C++ Options', [], nil);
+    AddOption('generate debug info', false, true, true, false, 0, '-g', 'C++ Options', [], nil);
+
+    //-gf disable debug info optimization
+    AddOption('disable debug info optimization', false, true, true, false, 0, '-gf', 'C++ Options', [], nil);
+    //-gg make static functions global
+    AddOption('make static functions global', false, true, true, false, 0, '-gg', 'C++ Options', [], nil);
+    //-gh symbol info for globals
+    AddOption('symbol info for globals', false, true, true, false, 0, '-gh', 'C++ Options', [], nil);
+    //-gl debug line numbers only
+    AddOption('debug line numbers only', false, true, true, false, 0, '-gl', 'C++ Options', [], nil);
+    //-gp generate pointer validations
+    AddOption('generate pointer validations', false, true, true, false, 0, '-gp', 'C++ Options', [], nil);
+    //-gs debug symbol info only
+    AddOption('debug symbol info only', false, true, true, false, 0, '-gs', 'C++ Options', [], nil);
+    //-gt generate trace prolog/epilog
+    AddOption('generate trace prolog/epilog', false, true, true, false, 0, '-gt', 'C++ Options', [], nil);
+    //-GTnnnn set data threshold to nnnn
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    //-H  use precompiled headers (ph)
+    AddOption('use precompiled headers (ph)', false, true, true, false, 0, '-H', 'C++ Options', [], nil);
+    //-HDdirectory  use ph from directory
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    //-HF[filename]  generate ph to filename
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    //-HHfilename  read ph from filename
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    //-HIfilename   #include "filename"
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    //-HO include files only once
+    AddOption('include files only once', false, true, true, false, 0, '-HO', 'C++ Options', [], nil);
+    //-HS only search -I directories
+    AddOption('only search -I directories', false, true, true, false, 0, '-HS', 'C++ Options', [], nil);
+    //-HX automatic precompiled headers
+    AddOption('automatic precompiled headers', false, true, true, false, 0, '-HX', 'C++ Options', [], nil);
+    //-j[0|1|2]  Asian language characters
+    //0: Japanese 1: Taiwanese and Chinese 2: Korean
+    sl := TStringList.Create;
+    sl.Add(''); // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
+    sl.Add('Japanese=0');
+    sl.Add('Taiwanese & Chinese=1');
+    sl.Add('Korean=2');
+    AddOption('Asian language characters', False, True, True, True, 0, '-j', 'C++ Options', [], sl);
+    //-Jm relaxed type checking
+    AddOption('relaxed type checking', false, true, true, false, 0, '-Jm', 'C++ Options', [], nil);
+    //-Ju char==unsigned char
+    AddOption('char==unsigned char', false, true, true, false, 0, '-Ju', 'C++ Options', [], nil);
+    // - Jb no empty base class optimization
+    AddOption('no empty base class optimization', false, true, true, false, 0, '-Jb', 'C++ Options', [], nil);
+    // - J  chars are unsigned
+    AddOption('chars are unsigned', false, true, true, false, 0, '-J', 'C++ Options', [], nil);
+    // - m[tsmclvfnrpxz][do][w][u] set memory model
+    {s : small code and data              m: large code, small data
+    c : small code, large data            l: large code and data
+    v: VCM                                r: Rational 16 bit DOS Extender
+    p: Pharlap 32 bit DOS Extender        x: DOSX 32 bit DOS Extender
+    z: ZPM 16 bit DOS Extender            f: OS/2 2.0 32 bit
+    t: .COM file                  n: Windows 32s/95/98/NT/2000/ME/XP
+    d: DOS 16 bit                 o: OS/2 16 bit
+    w: SS != DS                           u: reload DS
+    }
+    sl := TStringList.Create;
+    sl.Add(''); // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
+    sl.Add('small code and data=s');
+    sl.Add('large code, small data=m');
+    sl.Add('small code, large data=c');
+    sl.Add('large code and data=l');
+    sl.Add('VCM=v');
+    sl.Add('Rational 16 bit DOS Extender=r');
+    sl.Add('Pharlap 32 bit DOS Extender=p');
+    sl.Add('DOSX 32 bit DOS Extender=x');
+    sl.Add('ZPM 16 bit DOS Extender=z');
+    sl.Add('OS/2 2.0 32 bit=f');
+    sl.Add('.COM file=t');
+    sl.Add('Windows 32s/95/98/NT/2000/ME/XP=n');
+    //?sl.Add('DOS 16 bit=d');
+    //?sl.Add('OS/2 16 bit=o');
+    //?sl.Add('SS Not Equal DS=w');
+    //?sl.Add('reload DS=u');
+    AddOption('alignment of struct members', False, True, True, false, 0, '-m', 'C++ Options', [], sl);
+    //-Nc function level linking
+    AddOption('function level linking', false, true, true, false, 0, '-Nc', 'C++ Options', [], nil);
+    //-NL no default library
+    AddOption('no default library', false, true, true, false, 0, '-NL', 'C++ Options', [], nil);
+    //-Ns place expr strings in code seg
+    AddOption('place expr strings in code seg', false, true, true, false, 0, '-Ns', 'C++ Options', [], nil);
+    //-NS new code seg for each function
+    AddOption('new code seg for each function', false, true, true, false, 0, '-NS', 'C++ Options', [], nil);
+    //-NTname  set code segment name
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+    //-NV vtables in far data
+    AddOption('vtables in far data', false, true, true, false, 0, '-NV', 'C++ Options', [], nil);
+    //-o[-+flag]  run optimizer with flag
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-ooutput  output filename
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-p  turn off autoprototyping
+    AddOption('turn off autoprototyping', false, true, true, false, 0, '-p', 'C++ Options', [], nil);
+
+    //-P  default to pascal linkage
+    AddOption('default to pascal linkage', false, true, true, false, 0, '-P', 'C++ Options', [], nil);
+
+    //-Pz default to stdcall linkage
+    AddOption('default to stdcall linkage', false, true, true, false, 0, '-Pz', 'C++ Options', [], nil);
+
+    //-r  strict prototyping
+    AddOption('strict prototyping', false, true, true, false, 0, '-r', 'C++ Options', [], nil);
+
+    //-R  put switch tables in code seg
+    AddOption('put switch tables in code seg', false, true, true, false, 0, '-R', 'C++ Options', [], nil);
+
+    //-s  stack overflow checking
+    AddOption('stack overflow checking', false, true, true, false, 0, '-s', 'C++ Options', [], nil);
+
+    //-S  always generate stack frame
+    AddOption('always generate stack frame', false, true, true, false, 0, '-S', 'C++ Options', [], nil);
+
+    //-u  suppress predefined macros
+    AddOption('suppress predefined macros', false, true, true, false, 0, '-u', 'C++ Options', [], nil);
+
+    //-v[0|1|2] verbose compile
+    sl := TStringList.Create;
+    sl.Add(''); // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
+    sl.Add('0=0');
+    sl.Add('1=1');
+    sl.Add('2=2');
+    AddOption('verbose compile', False, True, True, false, 0, '-v', 'C++ Options', [], sl);
+
+    //-w  suppress all warnings
+    AddOption('suppress all warnings', false, true, true, false, 0, '-w', 'C++ Options', [], nil);
+
+    //-wc warn on C style casts
+    AddOption('warn on C style casts', false, true, true, false, 0, '-wc', 'C++ Options', [], nil);
+
+    //-wn suppress warning number n
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-wx treat warnings as errors
+    AddOption('treat warnings as errors', false, true, true, false, 0, '-wx', 'C++ Options', [], nil);
+
+    //-W{0123ADabdefmrstuvwx-+}  Windows prolog/epilog
+    //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-WA  Windows EXE
+    //? AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-WD  Windows DLL
+    //? AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-x  turn off error maximum
+    AddOption('turn off error maximum', false, true, true, false, 0, '-x', 'C++ Options', [], nil);
+
+    //-XD instantiate templates
+    AddOption('instantiate templates', false, true, true, false, 0, '-XD', 'C++ Options', [], nil);
+
+    //-XItemp<type>  instantiate template class temp<type>
+    //? AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
+
+    //-XIfunc(type)  instantiate template function func(type)
+
+    //-[0|2|3|4|5|6]  8088/286/386/486/Pentium/P6 code
+    sl := TStringList.Create;
+    sl.Add(''); // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
+    sl.Add('8088=0');
+    sl.Add('286=2');
+    sl.Add('386=3');
+    sl.Add('486=4');
+    sl.Add('Pentium=5');
+    sl.Add('P6=6');
+    AddOption('Architecture', False, True, True, false, 0, '-', 'C++ Options', [], sl);
+
+    //Linker Options
+// /ALIGNMENT	Segment alignment size
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /BASE		Set the base address of the executable image
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /BINARY		Generates a .sys file
+AddOption('Generate a .sys file', False, false, false, true, 0, '/BINARY', 'Linker Options', [], nil);
+
+// /BYORDINAL	Export by ordinal
+AddOption('Export by ordinal', False, false, false, true, 0, '/BYORDINAL', 'Linker Options', [], nil);
+
+// /CHECKSUM	Parsed and ignored
+AddOption('Parsed and ignored', False, false, false, true, 0, '/CHECKSUM', 'Linker Options', [], nil);
+
+// /CODEVIEW	Outputs CodeView debugger information
+AddOption('Generate Debugger information', False, false, false, true, 0, '/CODEVIEW', 'Linker Options', [], nil);
+
+// /COMDEFSEARCH	Specifies whether an undefined COMDEF causes a library search
+AddOption('Specifies whether an undefined COMDEF causes a library search', False, false, false, true, 0, 'COMDEFSEARCH', 'Linker Options', [], nil);
+
+// /CPARMAXALLOC	Sets .exe maximum bytes to occupy in DOS RAM
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /CVVERSION	Preserves OPTLINK's CodeView compatibility.
+// multiple AddOption('OPTLINK's CodeView Version', False, false, false, true, 0, '', 'Linker Options', [], nil);
+ 
+// /DEBUG		Controls all debug information for files that follow
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEBUGFILES	Controls debug information for specific files only
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEBUGLINES	Controls debug line number information for files that follow
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEBUGLOCALS	Controls debug local symbols information for files that follow
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEBUGMODULES	Controls debug information for specific modules only
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEBUGPUBLICS	Controls debug public symbols information for files that follow
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEBUGTYPES	Controls debug type information for files that follow
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DEFAULTLIBRARYSEARCH Searches default libraries named in .obj files
+//AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /DELEXECUTABLE	Deletes .exe upon encountering any linking errors
+// AddOption('Delete .exe upon linking errors', False, false, false, true, 0, '/DELEXECUTABLE', 'Linker Options', [], nil);
+
+// /DETAILEDMAP	Produces detailed map reports.
+AddOption('Produce detailed map reports', False, false, false, true, 0, '/DETAILEDMAP', 'Linker Options', [], nil);
+
+// /DOSSEG		Controls segment sequence
+AddOption('Controls segment sequence', False, false, false, true, 0, '/DOSSEG', 'Linker Options', [], nil);
+
+// /ECHOINDIRECT	Controls echoing of indirect response file input
+AddOption('Controls echoing of indirect response file input', False, false, false, true, 0, '/ECHOINDIRECT', 'Linker Options', [], nil);
+
+// /EMSMAXSIZE	Sets maximum EMS size
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /EMSPAGEFRAMEIO	Gives permission to use EMS page frame for I/O
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /EMSUSE40	Allow LIM 4.0 adherence
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /ERRORFLAG	Controls error flag in segmented executable header
+AddOption('Controls error flag in segmented executable header', False, false, false, true, 0, '/ERRORFLAG', 'Linker Options', [], nil);
+
+// /EXEPACK	Performs run-length encoding (packs executable)
+AddOption('Performs run-length encoding (packs executable)', False, false, false, true, 0, '/EXEPACK', 'Linker Options', [], nil);
+
+// /EXETYPE	Specifies the target operating system
+// multiple AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /FARCALLTRANSLATION Converts intra-segment far calls to near
+AddOption('Converts intra-segment far calls to near', False, false, false, true, 0, '/FARCALLTRANSLATION', 'Linker Options', [], nil);
+
+// /FIXDS		Identical to the .def directive FIXDS
+AddOption('Identical to the .def directive FIXDS', False, false, false, true, 0, '/FIXDS', 'Linker Options', [], nil);
+
+// /FIXED		Fixes the executable image in memory
+AddOption('Fixes the executable image in memory', False, false, false, true, 0, '/FIXED', 'Linker Options', [], nil);
+
+// /GROUPASSOCIATION Controls GROUP information found in .obj
+AddOption('Controls GROUP information found in .obj', False, false, false, true, 0, '/GROUPASSOCIATION', 'Linker Options', [], nil);
+
+// /GROUPSTACK	Controls stack definition in .exe file header
+AddOption('Controls stack definition in .exe file header', False, false, false, true, 0, '/GROUPSTACK', 'Linker Options', [], nil);
+
+// /HEAP		Sets the size of the local heap
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /IGNORECASE	Preserves and ignores case of all symbols
+AddOption('Preserves and ignores case of all symbols', False, false, false, true, 0, '/IGNORECASE', 'Linker Options', [], nil);
+
+// /IMPDEF		Generate .din file from EXPORTS section of .def file
+AddOption('Generate .din file from EXPORTS section of .def file', False, false, false, true, 0, '/IMPDEF', 'Linker Options', [], nil);
+
+// /IMPLIB		Create .lib import library for .dll
+AddOption('Create .lib import library for .dll', False, false, false, true, 0, '/IMPLIB', 'Linker Options', [], nil);
+
+// /INFORMATION	Display status information throughout the link process
+AddOption('Display status information throughout the link process', False, false, false, true, 0, '/INFORMATION', 'Linker Options', [], nil);
+
+// /LINENUMBERS	Outputs line number information in .map file
+AddOption('Outputs line number information in .map file', False, false, false, true, 0, '/LINENUMBERS', 'Linker Options', [], nil);
+
+// /LOWERCASE	Converts all symbols to lowercase
+AddOption('Converts all symbols to lowercase', False, false, false, true, 0, '/LOWERCASE', 'Linker Options', [], nil);
+
+// /MACHINE	Specifies the type of the target machine
+AddOption('Specifies the type of the target machine', False, false, false, true, 0, '/MACHINE', 'Linker Options', [], nil);
+
+// /MAP		Controls information content in .map file
+AddOption('Controls information content in .map file', False, false, false, true, 0, '/MAP', 'Linker Options', [], nil);
+
+// /NOLOGO		Suppresses OPTLINK's sign-on copyright message
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /NONAMES	Eliminates name text for ordinal exports
+AddOption('Eliminates name text for ordinal exports', False, false, false, true, 0, '/NONAMES', 'Linker Options', [], nil);
+
+// /NULLDOSSEG	Outputs null bytes in the _TEXT segment
+AddOption('Outputs null bytes in the _TEXT segment', False, false, false, true, 0, '/NULLDOSSEG', 'Linker Options', [], nil);
+
+// /ONERROR	Same as /DELEXECUTABLE
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /PACKCODE	Combines segments of class CODE
+AddOption('Combines segments of class CODE', False, false, false, true, 0, '/PACKCODE', 'Linker Options', [], nil);
+
+// /PACKDATA	Combines data segments where possible
+AddOption('Combines data segments where possible', False, false, false, true, 0, '/PACKDATA', 'Linker Options', [], nil);
+
+// /PACKFUNCTIONS	Performs "smart-linking" on code and data
+AddOption('Performs "smart-linking" on code and data', False, false, false, true, 0, '/PACKFUNCTIONS', 'Linker Options', [], nil);
+
+// /PACKIFNOSEGMENTS Forces /PACKCODE on when no SEGMENTS directive
+AddOption('Forces /PACKCODE on when no SEGMENTS directive', False, false, false, true, 0, '/PACKIFNOSEGMENTS', 'Linker Options', [], nil);
+
+// /PACKSIZE	Packs size for /PACKCODE and /PACKDATA
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /PAGESIZE	Set /IMPLIB page size
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /PAUSE		Provides time to swap disks while creating output
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /PMTYPE		Specifies type of segmented output
+AddOption('Specifies type of segmented output', False, false, false, true, 0, '/PMTYPE', 'Linker Options', [], nil);
+
+// /PROMPT		Specifies whether OPTLINK will prompt for more options
+// AddOption('Specifies whether OPTLINK will prompt for more options', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /RC		Like .def directive RC, automatic resource binding
+AddOption('Like .def directive RC, automatic resource binding', False, false, false, true, 0, '/RC', 'Linker Options', [], nil);
+
+// /RELOCATIONCHECK Ensures no relocation overlaps have occurred
+AddOption('Ensures no relocation overlaps have occurred', False, false, false, true, 0, '/RELOCATIONCHECK', 'Linker Options', [], nil);
+
+// /REORDERSEGMENTS Performs segment reordering
+AddOption('Performs segment reordering', False, false, false, true, 0, '/REORDERSEGMENTS', 'Linker Options', [], nil);
+
+// /SCANLIB	Scans the LIB environment variable
+AddOption('Scans the LIB environment variable', False, false, false, true, 0, '/SCANLIB', 'Linker Options', [], nil);
+
+// /SCANLINK	Scans the LINK environment variable
+AddOption('Scans the LINK environment variable', False, false, false, true, 0, '/SCANLINK', 'Linker Options', [], nil);
+
+// /SILENT		Does not display linking status information
+AddOption('Does not display linking status information', False, false, false, true, 0, '/SILENT', 'Linker Options', [], nil);
+
+// /STACK		Defines stack segment and/ or its size.
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /STUB		Adds a stub file to the executable
+AddOption('Adds a stub file to the executable', False, false, false, true, 0, '/STUB', 'Linker Options', [], nil);
+
+// /SUBSYSTEM	Sets Win32 subsystem
+// multiple AddOption('Sets Win32 subsystem', False, false, false, true, 0, '/SUBSYSTEM', 'Linker Options', [], nil);
+
+// /TINY		Generates a .com file
+AddOption('Generates a .com file', False, false, false, true, 0, '/TINY', 'Linker Options', [], nil);
+
+// /UPPERCASE	Converts all symbols to upper case
+AddOption('Converts all symbols to upper case', False, false, false, true, 0, '/UPPERCASE', 'Linker Options', [], nil);
+
+// /VERSION	Adds a version number to the executable
+AddOption('Adds a version number to the executable', False, false, false, true, 0, '/VERSION', 'Linker Options', [], nil);
+
+// /WARNDUPS	Warns of duplicate public symbols in .lib
+AddOption('Warns of duplicate public symbols in .lib', False, false, false, true, 0, '/WARNDUPS', 'Linker Options', [], nil);
+
+// /WINPACK	Build compressed output utilizing decompressing loader
+AddOption('Build compressed output utilizing decompressing loader', False, false, false, true, 0, '/WINPACK', 'Linker Options', [], nil);
+
+// /XMSMAXSIZE	Sets maximum XMS size
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /XNOIGNORECASE	Treats EXPORT and IMPORT symbols as case significant
+AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /XREF		Controls information content in .map file
+// AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
+
+// /XUPPERCASE	Forces EXPORT and IMPORT symbols to upper case
+AddOption('Forces EXPORT and IMPORT symbols to upper case', False, false, false, true, 0, '/XUPPERCASE', 'Linker Options', [], nil);
+   //End of DMars
   end
   else
   begin
@@ -2279,8 +2720,16 @@ begin
 
     fOptions     := LoadSetting(key, 'Options');
     fCmdOptions  := LoadSetting(key, 'cmdline');
+    if (fCmdOptions = '' ) then
+      fCmdOptions:= COMPILER_CMD_LINE(CompilerType);
+
     fLinkOptions := LoadSetting(key, 'LinkLine');
+    if (fLinkOptions = '' ) then
+      fLinkOptions:= LINKER_CMD_LINE(CompilerType);
+
     fMakeOptions := LoadSetting(key, 'MakeLine');
+    if (fMakeOptions = '' ) then
+      fMakeOptions:= MAKE_CMD_LINE(CompilerType);
 
     if LoadSetting(key, 'CheckSyntax') <> '' then
       fCheckSyntaxFormat     := LoadSetting(key, 'CheckSyntax');
@@ -2424,6 +2873,25 @@ begin
     fPchFileFormat          := '/Fp%s';
     fSingleCompile          := '%s /nologo "%s" %s %s /link %s';
     fPreprocDefines         := '/D%s';
+  end
+  else if CompilerType = ID_COMPILER_DMARS then
+  begin
+    fCheckSyntaxFormat      := '/Zs %s';
+    fOutputFormat           := '-c %s -o%s';
+    fResourceIncludeFormat  := '-I"%s"';
+    fResourceFormat         := '-32 -o%s';
+    //Linker CmdLine Paramater
+    //link <link flags> <objects>,<exename>,<mapfile>,lib1 lib2 \my\lib\path\  lib3 lib4 lib5,<def file>,<res file>
+    fLinkerFormat           := ',"%s"';
+    fLinkerPaths            := ' "%s" ';
+    fIncludeFormat          := '-I"%s"';
+    fDllFormat              := '/dll /implib:%s /out:%s';
+    fLibFormat              := '/lib /NOLOGO /out:"%s"';
+    fPchCreateFormat        := '/Yc%s';
+    fPchUseFormat           := '/Yu%s';
+    fPchFileFormat          := '/Fp%s';
+    fSingleCompile          := '%s /nologo "%s" %s %s /link %s';
+    fPreprocDefines         := '-D%s';
   end
   else if CompilerType = ID_COMPILER_MINGW then
   begin

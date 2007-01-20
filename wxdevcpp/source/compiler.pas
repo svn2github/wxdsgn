@@ -104,6 +104,8 @@ type
     fCompileParams: string;
     fCppCompileParams: string;
     fLibrariesParams: string;
+    fResObjects: string;
+    fLibrariesLibs: string;
     fIncludesParams: string;
     fCppIncludesParams: string;
     fRcIncludesParams: string;
@@ -127,6 +129,8 @@ type
     procedure WriteMakeClean(var F: TextFile); virtual;
     procedure WriteMakeObjFilesRules(var F: TextFile); virtual;
     function PreProcDefines: string;
+    function ExtractLibParams(strFullLibStr:String) :string;
+    function ExtractLibFiles(strFullLibStr:String) :string;
   published
     constructor Create;
   end;
@@ -197,7 +201,7 @@ end;
 
 function TCompiler.NewMakeFile(var F: TextFile): boolean;
 const
-  cAppendStr = '%s %s';
+  cAppendStr = '%s %s';  
 
 var
   ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, tfile: string;
@@ -225,9 +229,14 @@ begin
 
     if GetFileTyp(tfile) <> utHead then
     begin
-      Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(tfile, OBJ_EXT))]);
+        Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(tfile, OBJ_EXT))]);
       if fProject.Units[i].Link then
-        LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
+      begin
+        if (devCompiler.CompilerType = ID_COMPILER_DMARS) then
+          LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath3(ChangeFileExt(tfile, OBJ_EXT))])
+        else
+          LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
+      end;
     end
     else if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (I = fProject.PchHead) then
       Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName), PCH_EXT))]);
@@ -243,9 +252,12 @@ begin
     end
     else
       ObjResFile := ExtractRelativePath(fProject.FileName, ChangeFileExt(fProject.CurrentProfile.PrivateResource, RES_EXT));
+    if devCompiler.CompilerType <> ID_COMPILER_DMARS then
+      //Make the resource file into a usable path
+      LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ObjResFile)])
+    else
+        LinkObjects := LinkObjects + '_@@_' + GenMakePath(ObjResFile);
 
-    //Make the resource file into a usable path
-    LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ObjResFile)]);
     Objects := Format(cAppendStr, [Objects, GenMakePath2(ObjResFile)]);
   end;
 
@@ -311,8 +323,20 @@ begin
   else
     writeln(F, 'WINDRES   = ' + RES_PROGRAM(devCompiler.CompilerType));
   writeln(F, 'OBJ       =' + Objects);
-  writeln(F, 'LINKOBJ   =' + LinkObjects);
-  writeln(F, 'LIBS      =' + StringReplace(fLibrariesParams, '\', '/', [rfReplaceAll]));
+
+  if(devCompiler.CompilerType = ID_COMPILER_DMARS) then
+  begin
+    writeln(F, 'LINKOBJ   = ' + ExtractLibParams(LinkObjects));
+    fResObjects := StringReplace(ExtractLibFiles(LinkObjects), '/', '\', [rfReplaceAll]);
+  end
+  else
+    writeln(F, 'LINKOBJ   =' + LinkObjects);
+
+  if(devCompiler.CompilerType = ID_COMPILER_DMARS) then
+    writeln(F, 'LIBS      =' + ExtractLibFiles(fLibrariesParams))
+  else
+    writeln(F, 'LIBS      =' + StringReplace(fLibrariesParams, '\', '/', [rfReplaceAll]));
+
   writeln(F, 'INCS      =' + StringReplace(fIncludesParams, '\', '/', [rfReplaceAll]));
   writeln(F, 'CXXINCS   =' + StringReplace(fCppIncludesParams, '\', '/', [rfReplaceAll]));
   writeln(F, 'RCINCS    =' + StringReplace(fRcIncludesParams, '\', '/', [rfReplaceAll]));
@@ -339,7 +363,11 @@ begin
     else if fProject.Profiles.useGPP then
       writeln(F, 'LINK      = ' + Comp_ProgCpp)
     else
-      writeln(F, 'LINK      = ' + Comp_Prog);
+      writeln(F, 'LINK      = ' + Comp_Prog)
+  else if devCompiler.CompilerType = ID_COMPILER_DMARS then
+  begin //fixme: Check what is the options for static Lib file generation
+      writeln(F, 'LINK      = ' + devCompiler.dllwrapName + ' /NOLOGO /SILENT /NOI /DELEXECUTABLE ' + ExtractLibParams(fLibrariesParams))
+  end;
 
   Writeln(F, '');
   if DoCheckSyntax then
@@ -484,7 +512,7 @@ begin
         PCHFile := GenMakePath(ExtractFileName(PCHHead) + PCH_EXT);
       end;
     end
-    else
+    else if devCompiler.CompilerType in ID_COMPILER_VC then
     begin
       if (fProject.PchHead <> -1) and (fProject.PchSource <> -1) then
       begin
@@ -671,7 +699,12 @@ begin
 
   if not DoCheckSyntax then
   begin
-    writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)]) + ' $(LIBS)');
+
+    if devCompiler.compilerType <> ID_COMPILER_DMARS then
+      writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)])+ ' $(LIBS) ')
+    else
+      writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)]) + ', ,$(LIBS),,' + fResObjects);
+
     if devCompiler.compilerType = ID_COMPILER_VC2005 then
     begin
       writeln(F, #9 + '$(GPROF) /nologo /manifest "' + ExtractRelativePath(Makefile,fProject.Executable) + '.manifest" /outputresource:"' + ExtractRelativePath(Makefile,fProject.Executable) + '"');
@@ -817,50 +850,127 @@ end;
 procedure TCompiler.GetLibrariesParams;
 var
   i, val: integer;
-  cAppendStr : string;
+  cAppendStr,compilerSetOptionStr : string;
+  strLst,strProfileLinkerLst:TStringList;
+  libStr,temps:String;
 begin
   fLibrariesParams := '';
-  cAppendStr := '%s ' + devCompiler.LinkerPaths;
-  fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
-
-  if devCompilerSet.LinkOpts <> '' then
-    fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
-  if (fTarget = ctProject) and assigned(fProject) then
+  if fProject.CurrentProfile.compilerType <> ID_COMPILER_DMARS then
   begin
-    for i := 0 to pred(fProject.CurrentProfile.Libs.Count) do
-      fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.CurrentProfile.Libs[i]]);
-    fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.CurrentProfile.Linker, '_@@_', ' ', [rfReplaceAll]);
-  end;
+    cAppendStr := '%s ' + devCompiler.LinkerPaths;
+      fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
 
-  //TODO: lowjoel:What does this do?
-  if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
-    fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
-
-  fLibrariesParams := fLibrariesParams + ' ';
-  for I := 0 to devCompiler.OptionsCount - 1 do
-    // consider project specific options for the compiler
-    if (
-      Assigned(fProject) and
-      (I < Length(fProject.CurrentProfile.CompilerOptions)) and
-      not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)
-      ) or
-      // else global compiler options
-    (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
-      if devCompiler.Options[I].optIsLinker then
-        if Assigned(devCompiler.Options[I].optChoices) then begin
-          if Assigned(fProject) then
-            val :=devCompiler.ConvertCharToValue(fProject.CurrentProfile.CompilerOptions[I +1])
-          else
-            val := devCompiler.Options[I].optValue;
-          if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
-              fLibrariesParams := fLibrariesParams
-                + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
-        end
-        else if (Assigned(fProject) and (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
-            fLibrariesParams := fLibrariesParams
-              + devCompiler.Options[I].optSetting + ' ';
+    if devCompilerSet.LinkOpts <> '' then
+      fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
+    if (fTarget = ctProject) and assigned(fProject) then
+    begin
+      for i := 0 to pred(fProject.CurrentProfile.Libs.Count) do
+        fLibrariesParams := format(cAppendStr, [fLibrariesParams, fProject.CurrentProfile.Libs[i]]);
+      fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.CurrentProfile.Linker, '_@@_', ' ', [rfReplaceAll]);
     end;
 
+    //TODO: lowjoel:What does this do?
+      if (pos(' -pg', fCompileParams) <> 0) and (pos('-lgmon', fLibrariesParams) = 0) then
+        fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
+
+    fLibrariesParams := fLibrariesParams + ' ';
+    for I := 0 to devCompiler.OptionsCount - 1 do
+      // consider project specific options for the compiler
+      if (
+        Assigned(fProject) and
+        (I < Length(fProject.CurrentProfile.CompilerOptions)) and
+        not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)
+        ) or
+        // else global compiler options
+      (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
+        if devCompiler.Options[I].optIsLinker then
+          if Assigned(devCompiler.Options[I].optChoices) then begin
+            if Assigned(fProject) then
+              val :=devCompiler.ConvertCharToValue(fProject.CurrentProfile.CompilerOptions[I +1])
+            else
+              val := devCompiler.Options[I].optValue;
+            if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
+                fLibrariesParams := fLibrariesParams
+                  + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
+          end
+          else if (Assigned(fProject) and (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
+              fLibrariesParams := fLibrariesParams
+                + devCompiler.Options[I].optSetting + ' ';
+      end;
+  end
+  else //if ID_COMPILER_DMARS
+  begin
+    fLibrariesParams := ' ';
+    strLst:=TStringList.Create;
+    strProfileLinkerLst:=TStringList.Create;
+    cAppendStr := '%s ' + devCompiler.LinkerPaths;
+
+    StrtoList(devDirs.lib,strLst,';');
+
+    if devCompilerSet.LinkOpts <> '' then
+      compilerSetOptionStr := devCompilerSet.LinkOpts;
+
+    for I := 0 to devCompiler.OptionsCount - 1 do
+      // consider project specific options for the compiler
+      if (
+        Assigned(fProject) and
+        (I < Length(fProject.CurrentProfile.CompilerOptions)) and
+        not (fProject.CurrentProfile.typ in devCompiler.Options[I].optExcludeFromTypes)
+        ) or
+        // else global compiler options
+      (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then begin
+        if devCompiler.Options[I].optIsLinker then
+          if Assigned(devCompiler.Options[I].optChoices) then begin
+            if Assigned(fProject) then
+              val :=devCompiler.ConvertCharToValue(fProject.CurrentProfile.CompilerOptions[I +1])
+            else
+              val := devCompiler.Options[I].optValue;
+            if (val > 0) and (val < devCompiler.Options[I].optChoices.Count) then
+                compilerSetOptionStr := compilerSetOptionStr
+                  + devCompiler.Options[I].optSetting + devCompiler.Options[I].optChoices.Values[devCompiler.Options[I].optChoices.Names[val]] + ' ';
+          end
+          else if (Assigned(fProject) and (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or (not Assigned(fProject)) then
+              compilerSetOptionStr := compilerSetOptionStr
+                + devCompiler.Options[I].optSetting + ' ';
+      end;
+
+    if (fTarget = ctProject) and assigned(fProject) then
+    begin
+      for i := 0 to pred(fProject.CurrentProfile.Libs.Count) do
+      begin
+        strLst.Add(fProject.CurrentProfile.Libs[i]);
+      end;
+      strProfileLinkerLst:=TStringList.Create;
+      temps:=StringReplace(fProject.CurrentProfile.Linker, '_@@_', '~', [rfReplaceAll]);
+      StrtoList(temps,strProfileLinkerLst,'~');
+
+      for i := 0 to strProfileLinkerLst.Count -1 do
+      begin
+        if trim(strProfileLinkerLst[i]) = '' then
+          continue;
+        temps := copy(trim(strProfileLinkerLst[i]),0,1);
+        if (temps = '-')  or (temps = '/') then
+          compilerSetOptionStr := compilerSetOptionStr + ' ' + strProfileLinkerLst[i]
+        else
+          fLibrariesParams := fLibrariesParams + ' ' + strProfileLinkerLst[i];
+      end;
+      //fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.CurrentProfile.Linker, '_@@_', ' ', [rfReplaceAll]);
+
+    end;
+
+    libStr :='';
+    if trim(fLibrariesParams) <> '' then
+    begin
+      for i:=0 to strLst.count -1 do
+      begin
+        if AnsiContainsText(strLst[i],'\lib\dmars') or AnsiContainsText(strLst[i],'\lib\dmars\') then
+          libStr := libStr + ' ' + fLibrariesParams
+        else
+          libStr := libStr + ' ' + '"'+ strLst[i] + '"' + ' ' + fLibrariesParams;
+      end;
+    end;
+    fLibrariesParams := compilerSetOptionStr + '_@@_' + libStr;
+  end;
 end;
 
 procedure TCompiler.GetIncludesParams;
@@ -895,6 +1005,29 @@ begin
         fRcIncludesParams := format(cAppendStr, [fRcIncludesParams, GetShortName(fProject.CurrentProfile.ResourceIncludes[i])]);
   end;
 end;
+
+function TCompiler.ExtractLibParams(strFullLibStr:String) :string;
+var
+  nPos:Integer;
+begin
+  nPos := pos('_@@_',strFullLibStr);
+  if nPos = 0 then
+    Result:=strFullLibStr
+  else
+    Result:= copy(strFullLibStr,0,nPos-1);
+end;
+
+function TCompiler.ExtractLibFiles(strFullLibStr:String) :string;
+var
+  nPos:Integer;
+begin
+  nPos := pos('_@@_',strFullLibStr);
+  if nPos = 0 then
+    Result:=''
+  else
+    Result:= copy(strFullLibStr,nPos+4,length(strFullLibStr));
+end;
+
 
 function TCompiler.PreProcDefines: string;
 var
@@ -1207,7 +1340,7 @@ begin
   RegEx := TRegExpr.Create;
   
   try
-    if devCompiler.compilerType in ID_COMPILER_VC then
+    if (devCompiler.compilerType in ID_COMPILER_VC) then
     begin
       //Check for command line errors
       RegEx.Expression := 'Command line error (.*) : (.*)';
@@ -1239,7 +1372,7 @@ begin
       if RegEx.Exec(Line) then
         Inc(fWarnCount);
     end
-    else if devCompiler.CompilerType = ID_COMPILER_MINGW then
+    else if (devCompiler.CompilerType = ID_COMPILER_MINGW) or (devCompiler.compilerType = ID_COMPILER_DMARS) then
     begin
       LowerLine := LowerCase(Line);
 

@@ -1,6 +1,6 @@
 object CompForm: TCompForm
-  Left = 479
-  Top = 163
+  Left = 480
+  Top = 164
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Compiler options'
@@ -223,6 +223,7 @@ object CompForm: TCompForm
     Width = 430
     Height = 370
     ActivePage = tabCompiler
+    TabIndex = 0
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
@@ -291,7 +292,8 @@ object CompForm: TCompForm
             'MingW'
             'Visual C++ 2005'
             'Visual C++ .NET 2003'
-            'Visual C++ 6.0')
+            'Visual C++ 6.0'
+            'Digital Mars C++')
         end
         object cbFastDep: TCheckBox
           Left = 8

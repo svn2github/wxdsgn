@@ -89,7 +89,7 @@ resourcestring
   DMARS_BIN_DIR = 'Bin;Bin'+pd+'dmars;';
   DMARS_LIB_DIR = 'Lib'+pd+'dmars;';
   DMARS_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'dmars;';
-  DMARS_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
+  DMARS_RC_INCLUDE_DIR  = 'include'+ pd + 'common;'+';include'+pd+'dmars'+pd+'include;'+';include'+pd+'dmars'+pd+'include'+pd+'win32;';
 
   //Borland
   BORLAND_BIN_DIR = 'Bin;Bin'+pd+'borland;';
@@ -155,7 +155,7 @@ resourcestring
                         ';include'+pd+'borland;'+'include'+pd+'common;';
 
   DMARS_CPP_INCLUDE_DIR  =
-                        ';include'+pd+'dmars;' + 'include'+pd+'common;';
+                        ';include'+pd+'dmars'+pd+'include;'+';include'+pd+'dmars'+pd+'include'+pd+'win32;' + ';include'+pd+'common;'+';include'+pd+'dmars'+pd+'stlport'+pd+'stlport;';
 
   WATCOM_CPP_INCLUDE_DIR  =
                         ';include'+pd+'watcom;'+'include'+pd+'common;';
@@ -187,7 +187,9 @@ resourcestring
   GCC_RES_PROGRAM = 'windres.exe';
   GCC_DLL_PROGRAM = 'dllwrap.exe';
   GCC_PROF_PROGRAM = 'gprof.exe';
-
+  GCC_COMPILER_CMD_LINE = '';
+  GCC_LINKER_CMD_LINE = '';
+  GCC_MAKE_CMD_LINE = '';
 
   VC_MAKE_PROGRAM = 'mingw32-make.exe';
   VC_CP_PROGRAM = 'cl.exe';
@@ -196,16 +198,21 @@ resourcestring
   VC_RES_PROGRAM = 'rc.exe';
   VC_DLL_PROGRAM = 'link.exe';
   VC_PROF_PROGRAM = 'mt.exe';
-
+  VC_COMPILER_CMD_LINE = '';
+  VC_LINKER_CMD_LINE = '';
+  VC_MAKE_CMD_LINE = '';
 
   DMARS_MAKE_PROGRAM = 'mingw32-make.exe';
-  DMARS_CP_PROGRAM = 'cl.exe';
-  DMARS_CPP_PROGRAM = 'cl.exe';
+  DMARS_CP_PROGRAM = 'dmc.exe';
+  DMARS_CPP_PROGRAM = 'dmc.exe';
   DMARS_DBG_PROGRAM = 'cdb.exe';
   DMARS_RES_PROGRAM = 'rcc.exe';
   DMARS_DLL_PROGRAM = 'link.exe';
   DMARS_PROF_PROGRAM = '';
-
+  DMARS_COMPILER_CMD_LINE = '-D_STLP_NO_NEW_IOSTREAMS';
+  DMARS_LINKER_CMD_LINE = '';
+  DMARS_MAKE_CMD_LINE = '';
+  
   BORLAND_MAKE_PROGRAM = 'mingw32-make.exe';
   BORLAND_CP_PROGRAM = 'borgcc.exe';
   BORLAND_CPP_PROGRAM = 'borg++.exe';
@@ -213,7 +220,10 @@ resourcestring
   BORLAND_RES_PROGRAM = 'borwindres.exe';
   BORLAND_DLL_PROGRAM = 'link.exe';
   BORLAND_PROF_PROGRAM = 'borgprof.exe';
-
+  BORLAND_COMPILER_CMD_LINE = '';
+  BORLAND_LINKER_CMD_LINE = '';
+  BORLAND_MAKE_CMD_LINE = '';
+  
   WATCOM_MAKE_PROGRAM = 'mingw32-make.exe';
   WATCOM_CP_PROGRAM = 'owatgcc.exe';
   WATCOM_CPP_PROGRAM = 'owatg++.exe';
@@ -221,7 +231,10 @@ resourcestring
   WATCOM_RES_PROGRAM = 'owatwindres.exe';
   WATCOM_DLL_PROGRAM = 'link.exe';
   WATCOM_PROF_PROGRAM = 'owatgprof.exe';
-
+  WATCOM_COMPILER_CMD_LINE = '';
+  WATCOM_LINKER_CMD_LINE = '';
+  WATCOM_MAKE_CMD_LINE = '';
+  
   // option sections
   OPT_DIRS = 'Directories';
   OPT_EDITOR = 'Editor';
@@ -307,8 +320,10 @@ const
   function RES_PROGRAM(CompilerID:Integer):String;
   function DLL_PROGRAM(CompilerID:Integer):String;
   function PROF_PROGRAM(CompilerID:Integer):String;
-  function DEFCOMPILERSET(CompilerID:Integer):String;
-
+  function DEFCOMPILERSET(CompilerID:Integer):String;  
+  function COMPILER_CMD_LINE(CompilerID:Integer):String;
+  function LINKER_CMD_LINE(CompilerID:Integer):String;
+  function MAKE_CMD_LINE(CompilerID:Integer):String;
    // default directories
   function BIN_DIR(CompilerID:Integer):String;
   function LIB_DIR(CompilerID:Integer):String;
@@ -497,6 +512,83 @@ begin
   end;
 end;
 
+function COMPILER_CMD_LINE(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+          Result := GCC_COMPILER_CMD_LINE;
+
+      ID_COMPILER_VC2005:
+          Result := VC_COMPILER_CMD_LINE;
+
+      ID_COMPILER_VC2003:
+          Result := VC_COMPILER_CMD_LINE;
+
+      ID_COMPILER_VC6:
+          Result := VC_COMPILER_CMD_LINE;
+
+      ID_COMPILER_BORLAND:
+          Result := BORLAND_COMPILER_CMD_LINE;
+
+      ID_COMPILER_WATCOM:
+          Result := WATCOM_COMPILER_CMD_LINE;
+
+      ID_COMPILER_DMARS:
+        Result := DMARS_COMPILER_CMD_LINE;
+  end;
+end;
+
+function LINKER_CMD_LINE(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+        Result := GCC_LINKER_CMD_LINE;
+
+      ID_COMPILER_VC2005:
+        Result := VC_LINKER_CMD_LINE;
+
+      ID_COMPILER_VC2003:
+        Result := VC_LINKER_CMD_LINE;
+
+      ID_COMPILER_VC6:
+        Result := VC_LINKER_CMD_LINE;
+
+      ID_COMPILER_BORLAND:
+        Result := BORLAND_LINKER_CMD_LINE;
+
+      ID_COMPILER_WATCOM:
+        Result := WATCOM_LINKER_CMD_LINE;
+
+      ID_COMPILER_DMARS:
+        Result := DMARS_LINKER_CMD_LINE;
+  end;
+end;
+
+function MAKE_CMD_LINE(CompilerID:Integer):String;
+begin
+  case CompilerID of
+      ID_COMPILER_MINGW :
+        Result := GCC_MAKE_CMD_LINE;
+
+      ID_COMPILER_VC2005:
+        Result := VC_MAKE_CMD_LINE;
+
+      ID_COMPILER_VC2003:
+        Result := VC_MAKE_CMD_LINE;
+
+      ID_COMPILER_VC6:
+        Result := VC_MAKE_CMD_LINE;
+
+      ID_COMPILER_BORLAND:
+        Result := BORLAND_MAKE_CMD_LINE;
+
+      ID_COMPILER_WATCOM:
+        Result := WATCOM_MAKE_CMD_LINE;
+
+      ID_COMPILER_DMARS:
+        Result := DMARS_MAKE_CMD_LINE;
+  end;
+end;
 
 function PROF_PROGRAM(CompilerID:Integer):String;
 begin

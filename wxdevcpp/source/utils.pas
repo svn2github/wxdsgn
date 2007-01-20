@@ -143,8 +143,9 @@ function GetLastPos(const SubStr: string; const S: string): integer;
 
 function GenMakePath(FileName: String): String; overload;
 function GenMakePath2(FileName: String): String;
+function GenMakePath3(FileName: String): String;
 function GenMakePath(FileName: String; EscapeSpaces,
-                     EncloseInQuotes: Boolean): String; overload;
+                     EncloseInQuotes: Boolean;ConverSlashes:Boolean = true): String; overload;
 
 function GetRealPath(BrokenFileName: String; Directory: String = ''): String;
 
@@ -415,6 +416,11 @@ begin
     GetEnvironmentVariable(pchar('PATH'), @OldPath, PATH_LEN);
     NewPath:= Add + string(OldPath);
   end;
+
+  //Having + in the path wouldnt allow DMARS's linker to compile
+  //todo: Warn users if they have any + sign in the path variable
+  NewPath := StringReplace(NewPath,'+','@@',[rfReplaceAll]);
+
   SetEnvironmentVariable(pchar('PATH'), pchar(NewPath));
 end;
 
@@ -898,21 +904,27 @@ end;
 { GenMakePath: convert a filename to a format that can be used by make }
 function GenMakePath(FileName: String): String;
 begin
-  Result := GenMakePath(FileName, False, True);
+  Result := GenMakePath(FileName, False, True,True);
 end;
 
 function GenMakePath2(FileName: String): String;
 begin
-  Result := GenMakePath(FileName, True, False);
+  Result := GenMakePath(FileName, True, False,True);
+end;
+//This function is for the Dmars like compilers which
+//doesnt allow unix slash for dir seperation
+function GenMakePath3(FileName: String): String;
+begin
+  Result := GenMakePath(FileName, false, true,false);
 end;
 
 function GenMakePath(FileName: String; EscapeSpaces,
-                     EncloseInQuotes: Boolean): String;
+                     EncloseInQuotes: Boolean;ConverSlashes:Boolean): String;
 begin
   Result := FileName;
-
-  { Convert backslashes to slashes }
-  Result := StringReplace(Result, '\', '/', [rfReplaceAll]);
+  { Convert backslashes to slashes}
+  if (ConverSlashes) then
+    Result := StringReplace(Result, '\', '/', [rfReplaceAll]);
 
   if EscapeSpaces then
     Result := StringReplace(Result, ' ', '\ ', [rfReplaceAll]);

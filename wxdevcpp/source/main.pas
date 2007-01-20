@@ -1184,7 +1184,10 @@ uses
 
 {$IFDEF WX_BUILD}
   //Our dependencies
-  , CompFileIo, CreateOrderFm, ViewIDForm, devDockStyle, FilesReloadFrm,
+  , CompFileIo, CreateOrderFm, ViewIDForm, FilesReloadFrm,
+{$IFNDEF ORI_JVCL}
+  devDockStyle,
+{$ENDIF}
 
   //Components
   WxSplitterWindow, WxNotebook, WxNoteBookPage, WxToolbar, WxToolButton,
@@ -1898,7 +1901,12 @@ begin
   //Initialize the docking style engine
   DesktopFont := True;
   NewDocks := TList.Create;
+
+{$IFNDEF ORI_JVCL}
   DockServer.DockStyle := TdevDockStyle.Create(Self);
+{$ELSE}
+  DockServer.DockStyle := TJvDockVSNetStyle.Create(Self);
+{$ENDIF}
   DockServer.DockStyle.TabServerOption.HotTrack := True;
   with TJvDockVIDConjoinServerOption(DockServer.DockStyle.ConjoinServerOption) do
   begin
@@ -2228,7 +2236,10 @@ begin
 {$ENDIF}
     XPMenu.Active := devData.XPTheme;
     WebUpdateForm.XPMenu.Active := devData.XPTheme;
+{$IFNDEF ORI_JVCL}
     TdevDockStyle(DockServer.DockStyle).NativeDocks := devData.NativeDocks;
+{$ENDIF}
+
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
     with TThemeManager.Create(Self) do
@@ -5282,7 +5293,20 @@ begin
 {$WARNINGS ON}
       Initialize;
     end;
+  end
+  else if devCompiler.CompilerType = ID_COMPILER_DMARS then
+  begin
+    if not (fDebugger is TCDBDebugger) then
+    begin
+      if Assigned(fDebugger) then
+        fDebugger.Free;
+{$WARNINGS OFF 'Instance of TCDBDebugger containing abstract method...'}
+      fDebugger := TCDBDebugger.Create;
+{$WARNINGS ON}
+      Initialize;
+    end;
   end;
+
 end;
 
 procedure TMainForm.PrepareDebugger;
