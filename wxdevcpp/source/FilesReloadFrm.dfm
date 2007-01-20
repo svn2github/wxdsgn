@@ -1,6 +1,6 @@
 object FilesReloadFrm: TFilesReloadFrm
-  Left = 191
-  Top = 122
+  Left = 192
+  Top = 123
   BorderStyle = bsDialog
   Caption = 'Select Files to Reload'
   ClientHeight = 277
@@ -47,6 +47,7 @@ object FilesReloadFrm: TFilesReloadFrm
     Width = 330
     Height = 200
     ActivePage = tabModified
+    TabIndex = 0
     TabOrder = 2
     object tabModified: TTabSheet
       Caption = 'Modified Files'
@@ -78,7 +79,6 @@ object FilesReloadFrm: TFilesReloadFrm
         Height = 23
         Align = alTop
         BevelOuter = bvNone
-        ParentBackground = True
         TabOrder = 1
         DesignSize = (
           322
