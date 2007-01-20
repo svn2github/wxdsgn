@@ -12,5 +12,5 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-contrib\dmc_lib=<app>\lib\dmc\
+contrib\dmc_lib=<app>\lib\dmars\
 [Icons]
