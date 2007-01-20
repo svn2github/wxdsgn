@@ -215,7 +215,7 @@ IF NOT "%BUILDDMC%"=="Y" GOTO TEST_BCC
 
 :DMC_PATH
 echo Preparing DMC paths
-set DMCpath=c:\dm\bin;%oldpath%
+set DMCpath=c:\Progra~1\Dev-Cpp\bin\dmars;%oldpath%
 
 :TEST_BCC
 IF NOT "%BUILDBCC%"=="Y" GOTO end
