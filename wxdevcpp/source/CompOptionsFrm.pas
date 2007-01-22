@@ -334,17 +334,36 @@ end;
 procedure TCompForm.ButtonClick(Sender: TObject);
 var
   idx: integer;
+
+  function VerifyPath: Boolean;
+  begin
+    if CompilerTypes.ItemIndex = ID_COMPILER_DMARS then
+    begin
+      Result := Pos('+', edEntry.Text) = 0;
+      if not Result then
+        MessageDlg('The Digital Mars Compiler does not support having ''+'' in its path.'#13#10#13#10 +
+                   'Please place your binaries in a directory that does not contain plus-signs in its path.', mtError, [mbOK], Handle);
+    end
+    else
+      Result := True;
+  end;
 begin
   case (Sender as TComponent).Tag of
-    1: lstDirs.Items[lstDirs.ItemIndex] := ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text));
-    2: lstDirs.Items.Add(ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text)));
+    1: if VerifyPath then
+    begin
+      lstDirs.Items[lstDirs.ItemIndex] := ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text));
+      edEntry.Clear;
+    end;
+    2: if VerifyPath then
+    begin
+      lstDirs.Items.Add(ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text)));
+      edEntry.Clear;
+    end;
     3: lstDirs.DeleteSelected;
-    4:
-    for idx:= pred(lstDirs.Items.Count) downto 0 do
-        if not DirectoryExists(lstDirs.Items[idx]) then
-          lstDirs.Items.Delete(idx);
+    4: for idx:= pred(lstDirs.Items.Count) downto 0 do
+      if not DirectoryExists(lstDirs.Items[idx]) then
+        lstDirs.Items.Delete(idx);
   end; { case }
-  edEntry.Clear;
 
   case DirTabs.TabIndex of
     0: fBins := ListtoStr(lstDirs.Items);

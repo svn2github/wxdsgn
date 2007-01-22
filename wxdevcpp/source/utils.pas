@@ -417,10 +417,6 @@ begin
     NewPath:= Add + string(OldPath);
   end;
 
-  //Having + in the path wouldnt allow DMARS's linker to compile
-  //todo: Warn users if they have any + sign in the path variable
-  NewPath := StringReplace(NewPath,'+','@@',[rfReplaceAll]);
-
   SetEnvironmentVariable(pchar('PATH'), pchar(NewPath));
 end;
 
