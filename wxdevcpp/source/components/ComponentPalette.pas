@@ -36,10 +36,12 @@ type
     function GetSelectedComponent: string;
 
     //Control custom draw etc
-    procedure OnComponentListDraw(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure OnStartSearching(Sender: TObject);
     procedure OnSearching(Sender: TObject);
     procedure OnSearched(Sender: TObject);
+
+    procedure tvCollapsed(Sender: TObject; Node: TTreeNode);
+    procedure tvExpanded(Sender: TObject; Node: TTreeNode);
   protected
     //Contorl handles
     SearchBox: TEdit;
@@ -49,6 +51,7 @@ type
     //Special variables
     SearchNode: TTreeNode;
     SearchImage: Integer;
+    FolderImage: Integer;
   public
     constructor Create(Panel: TComponent); override;
     destructor Destroy; override;
@@ -124,12 +127,13 @@ begin
     //Tree-view styles
     RowSelect := True;
     ShowLines := False;
-    ShowButtons := True;
+    ShowButtons := False;
     HideSelection := False;
     Images := ComponentImages;
 
     //Events
-    OnCustomDrawItem := OnComponentListDraw;
+    OnCollapsed := tvCollapsed;
+    OnExpanded := tvExpanded;
   end;
 
   //Populate the tree-view
@@ -165,7 +169,7 @@ end;
 procedure TComponentPalette.PopulateComponents;
 var
   ComponentsList, CurrentGroup: TStringList;
-  BitmapIndex, FolderIndex: Integer;
+  BitmapIndex: Integer;
   CurrentComponent: String;
   ComponentBitmap: TBitmap;
   ParentNode: TTreeNode;
@@ -194,7 +198,9 @@ begin
 
     //Then load the folder icon
     ComponentBitmap.Handle := LoadBitmap(hInstance, PChar('FOLDER'));
-    FolderIndex := ComponentImages.AddMasked(ComponentBitmap, clDefault);
+    FolderImage := ComponentImages.AddMasked(ComponentBitmap, clDefault);
+    ComponentBitmap.Handle := LoadBitmap(hInstance, PChar('SELFOLDER'));
+    ComponentImages.AddMasked(ComponentBitmap, clDefault);
 
     //Sizers
     ComponentsList.Add('Sizers;TwxBoxSizer;TwxStaticBoxSizer;TwxGridSizer;TwxFlexGridSizer;' +
@@ -258,8 +264,8 @@ begin
 
         //Add the parent node                      
         ParentNode := ComponentList.Items.AddChild(nil, CurrentGroup[0]);
-        ParentNode.SelectedIndex := FolderIndex;
-        ParentNode.ImageIndex := FolderIndex;
+        ParentNode.SelectedIndex := FolderImage;
+        ParentNode.ImageIndex := FolderImage;
 
         //And then add the child nodes
         for J := 1 to CurrentGroup.Count - 1 do
@@ -320,10 +326,6 @@ end;
 procedure TComponentPalette.UnselectComponents;
 begin
   ComponentList.Selected := ComponentList.Items.GetFirstNode;
-end;
-
-procedure TComponentPalette.OnComponentListDraw(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-begin
 end;
 
 procedure TComponentPalette.OnStartSearching(Sender: TObject);
@@ -412,6 +414,24 @@ begin
       SearchNode.Delete;
       SearchNode := nil;
     end;
+  end;
+end;
+
+procedure TComponentPalette.tvCollapsed(Sender: TObject; Node: TTreeNode);
+begin
+  if Node.ImageIndex = FolderImage + 1 then
+  begin
+    Node.ImageIndex := FolderImage;
+    Node.SelectedIndex := FolderImage;
+  end;
+end;
+
+procedure TComponentPalette.tvExpanded(Sender: TObject; Node: TTreeNode);
+begin
+  if Node.ImageIndex = FolderImage then
+  begin
+    Node.ImageIndex := FolderImage + 1;
+    Node.SelectedIndex := FolderImage + 1;
   end;
 end;
 
