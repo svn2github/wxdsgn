@@ -924,7 +924,6 @@ type
     procedure actNewWxFrameExecute(Sender: TObject);
     procedure actNewwxDialogExecute(Sender: TObject);
     procedure ProjectViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure tmrInspectorHelperTimer(Sender: TObject);
     procedure actRestartDebugExecute(Sender: TObject);
     procedure actUpdateDebuggerPaused(Sender: TObject);
     procedure actPauseDebugUpdate(Sender: TObject);
@@ -955,9 +954,7 @@ type
     fTools: TToolController;
     fProjectCount: integer;
     fCompiler: TCompiler;
-    bProjectLoading: boolean;
-    fstrCppFileToOpen:string;
-    tmrInspectorHelper:TTimer;
+    bProjectLoading: Boolean;
     OldLeft: integer;
     OldTop: integer;
     OldWidth: integer;
@@ -1148,8 +1145,8 @@ type
     function isFunctionAvailable(intClassID:Integer;strFunctionName:String):boolean;
     function isCurrentFormFilesNeedToBeSaved:Boolean;
     function saveCurrentFormFiles:Boolean;
-    function CreateFunctionInEditor(var strFncName:string;strReturnType,strParameter :String;var ErrorString:String):boolean;overload;
-    function CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string;var ErrorString:String):Boolean;overload;
+    function CreateFunctionInEditor(var strFunctionName: string; strReturnType, strParameter: string; var ErrorString: string; strClassName: string = ''): Boolean; overload;
+    function CreateFunctionInEditor(strClassName: string; SelComponent: TComponent; var strFunctionName: string; strEventFullName: string; var ErrorString: string): Boolean; overload;
     function LocateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string):Boolean;
     procedure OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
     procedure OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
@@ -1161,7 +1158,7 @@ type
     function ReplaceClassNameInEditor(strLst:TStringList;edt:TEditor;FromClassName, ToClassName:string):boolean;
     function GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string): Boolean;
 
-    function LocateFunction(strFunctionName:String):boolean;
+    function LocateFunction(strFunctionName:String):Boolean;
 {$ENDIF}
     property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
   end;
@@ -1252,11 +1249,8 @@ var
   lbDockClient1: TJvDockClient;
   lbDockClient2: TJvDockClient;
   lbDockClient3: TJvDockClient;
+  NewDockTabs: TJvDockTabHostForm;
 begin
-  tmrInspectorHelper:=TTimer.Create(self);
-  tmrInspectorHelper.Enabled:=false;
-  tmrInspectorHelper.Interval:=500;
-  
   //Project inspector
   frmProjMgrDock := TForm.Create(self);
   frmProjMgrDock.ParentFont := True;
@@ -1343,12 +1337,10 @@ begin
     end;
   end;
 
-  frmPaletteDock.ManualDock(DockServer.RightDockPanel);
-  frmProjMgrDock.ManualDock(DockServer.LeftDockPanel);
-  frmInspectorDock.ManualDock(DockServer.LeftDockPanel, frmProjMgrDock, alBottom);
+  NewDockTabs := ManualTabDock(DockServer.LeftDockPanel, frmInspectorDock, frmPaletteDock);
+  frmProjMgrDock.ManualDock(DockServer.LeftDockPanel, nil, alTop);
   ShowDockForm(frmProjMgrDock);
   ShowDockForm(frmInspectorDock);
-  HideDockForm(frmPaletteDock);
 
   //Add the property inspector view menu item
   ShowPropertyInspItem := TMenuItem.Create(MainMenu);
@@ -1930,6 +1922,11 @@ begin
 {$IFDEF WX_BUILD}
   SetSplashStatus('Loading wxWidgets extensions');
   DoCreateWxSpecificItems;
+
+  //Variable for clearing up inspector data. Added because there is a AV when
+  //adding a function from the event list
+  boolInspectorDataClear:=True;
+  DisablePropertyBuilding:=False;
 {$ENDIF}
 
   // register file associations and DDE services
@@ -2004,6 +2001,12 @@ begin
 
   Application.HelpFile := ValidateFile(DEV_MAINHELP_FILE, devDirs.Help, TRUE);
 
+  SetSplashStatus('Loading code completion cache');
+  if Assigned(SplashForm) then
+    CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
+  InitClassBrowser(true {not CacheCreated});
+  CppParser1.OnCacheProgress := nil;
+  
   SetSplashStatus('Initializing workspace');
   ToolMainItem.checked := devData.ToolbarMain;
   ToolEditItem.Checked := devData.ToolbarEdit;
@@ -2039,14 +2042,6 @@ begin
   Constraints.MaxWidth := Monitor.Width;
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
-
-{$IFDEF WX_BUILD}
-  //variable for clearing up inspector data.
-  //Added because there is a AV when adding a function
-  //from the event list
-  boolInspectorDataClear:=True;
-  DisablePropertyBuilding:=false;
-{$ENDIF}
 
   for I := 0 to MessageControl.PageCount - 1 do
   begin
@@ -2109,12 +2104,6 @@ begin
 
   //Make sure the status bar is BELOW the bottom dock panel
   Statusbar.Top := Self.ClientHeight;
-
-  SetSplashStatus('Loading code completion cache');
-  if Assigned(SplashForm) then
-    CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
-  InitClassBrowser(true {not CacheCreated});
-  CppParser1.OnCacheProgress := nil;
 end;
 
 procedure TMainForm.AddBreakPointToList(line_number: integer; e: TEditor);
@@ -2401,9 +2390,6 @@ begin
   devData.ToolbarSearchY := tbSearch.Top;
   devData.ToolbarClassesX := tbClasses.Left;
   devData.ToolbarClassesY := tbClasses.Top;
-
-  //Delete Event Insp Timer
-  tmrInspectorHelper.destroy;
   SaveOptions;
 end;
 
@@ -7985,6 +7971,7 @@ begin
     Result:=true;
 
 end;
+
 procedure TMainForm.mnuOpenWithClick(Sender: TObject);
 var
   idx, idx2, idx3: integer;
@@ -8428,11 +8415,6 @@ begin
     INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
     INI.free;
   end;
-
-  //Create the output folder if the folder does not exist
-  BaseFilename := IncludeTrailingBackslash(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text) + H_EXT;
-  if not DirectoryExists(GetRealPath(ExtractFileDir(BaseFilename))) then
-    ForceDirectories(GetRealPath(ExtractFileDir(BaseFilename)));
 
   //OK, load the template and parse and save it
   ParseAndSaveTemplate(StrHppFile, ChangeFileExt(BaseFilename, H_EXT), frm);
@@ -9068,9 +9050,7 @@ begin
   pgCtrlObjectInspector.Enabled := False;
   JvInspProperties.Enabled := False;
   JvInspEvents.Enabled := False;
-
   ComponentPalette.Enabled := False;
-  HideDockForm(frmPaletteDock);
 
   ELDesigner1.Active:=False;
   ELDesigner1.DesignControl:=nil;
@@ -9112,10 +9092,8 @@ begin
 
   pgCtrlObjectInspector.Enabled := true;
   JvInspProperties.Enabled := true;
-  JvInspEvents.Enabled := true;
-  
+  JvInspEvents.Enabled := True;
   ComponentPalette.Enabled := True;
-  ShowDockForm(frmPaletteDock);
 end;
 
 procedure TMainForm.ELDesigner1ControlDoubleClick(Sender: TObject);
@@ -9148,7 +9126,6 @@ begin
     JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
     JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
     JvInspEventsDataValueChanged(nil,JvInspEvents.Root.Items[nSlectedItem].Data);
-    exit;
   end
   else
   begin
@@ -9157,7 +9134,6 @@ begin
     JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
     JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
     JvInspEventsDataValueChanged(nil,JvInspEvents.Root.Items[nSlectedItem].Data);
-    exit;
   end;
 end;
 
@@ -9833,13 +9809,10 @@ end;
 procedure TMainForm.JvInspEventsDataValueChanged(Sender: TObject;
   Data: TJvCustomInspectorData);
 var
-  str,ErrorString: string;
-  e: TEditor;
-  boolIsFilesDirty: Boolean;
+  propertyName, wxClassName, propDisplayName, strNewValue, str, ErrorString: string;
   componentInstance:TComponent;
-  propertyName,wxClassName,propDisplayName:string;
-  strNewValue:String;
-  bOpenFile:Boolean;
+  boolIsFilesDirty: Boolean;
+  e: TEditor;
 
   procedure SetPropertyValue(Comp: TComponent; strPropName, strPropValue: String);
   var
@@ -9852,8 +9825,6 @@ var
       SetStrProp(Comp, PropInfo, strPropValue);
   end;
 begin
-  bOpenFile := False;
-  fstrCppFileToOpen := '';
   try
     //Do some sanity checks
     if (JvInspEvents.Selected = nil) or (not JvInspEvents.Selected.Visible) then
@@ -9916,18 +9887,14 @@ begin
         propertyName:=Data.Name;
         wxClassName:=Trim(e.getDesigner().Wx_Name);
         propDisplayName:=JvInspEvents.Selected.DisplayName;
-        if CreateFunctionInEditor(Data,wxClassName,SelectedComponent, str,propDisplayName,ErrorString) then
+        if CreateFunctionInEditor(wxClassName, SelectedComponent, str, propDisplayName, ErrorString) then
         begin
-           bOpenFile:=true;
-          //This is causing AV, so I moved this operation to
-          //CreateFunctionInEditor
-          //Data.AsString := str;
-          SetPropertyValue(componentInstance,propertyName,str);
-          JvInspEvents.OnDataValueChanged:=nil;
+          SetPropertyValue(componentInstance, propertyName, str);
+          JvInspEvents.OnDataValueChanged := nil;
           Data.AsString := str;
-          //JvInspEvents.Root.DoneEdit(true);
-          JvInspEvents.OnDataValueChanged:=JvInspEventsDataValueChanged;
-          fstrCppFileToOpen:=e.GetDesignerCPPEditor.FileName;
+          JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
+          DisableDesignerControls;
+          OpenFile(e.GetDesignerCPPEditor.FileName);
         end
         else
         begin
@@ -9964,9 +9931,9 @@ begin
       if SelectedComponent <> nil then
       begin
         str := trim(Data.AsString);
-        LocateFunctionInEditor(Data,Trim(e.getDesigner().Wx_Name),SelectedComponent, str, JvInspEvents.Selected.DisplayName);
-        fstrCppFileToOpen:=e.GetDesignerCPPEditor.FileName;
-        bOpenFile:=true;
+        DisableDesignerControls;
+        LocateFunctionInEditor(Data, Trim(e.GetDesigner.Wx_Name), SelectedComponent,
+                               str, JvInspEvents.Selected.DisplayName);
       end;
     end
     else if strNewValue = '<Remove Function>' then
@@ -9977,12 +9944,6 @@ begin
   except
     on E: Exception do
       MessageBox(Handle, PChar(E.Message), PChar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
-  end;
-
-  if bOpenFile then
-  begin
-    tmrInspectorHelper.OnTimer:=tmrInspectorHelperTimer;
-    tmrInspectorHelper.Enabled:=true;
   end;
 end;
 
@@ -10131,6 +10092,7 @@ begin
   if isFunctionAvailableInEditor(St._ID, strOldFunctionName, intLineNum, strFname) then
   begin
     boolInspectorDataClear := False;
+    DisableDesignerControls;
     OpenFile(strFname);
     e := GetEditorFromFileName(strFname);
     if assigned(e) then
@@ -10245,37 +10207,30 @@ begin
 
 end;
 
-function TMainForm.CreateFunctionInEditor(var strFncName:string;strReturnType,strParameter :String;var ErrorString:String):boolean;
+function TMainForm.CreateFunctionInEditor(var strFunctionName: string; strReturnType, strParameter: string;
+                                          var ErrorString: string; strClassName: string): Boolean;
 var
   intFunctionCounter:Integer;
   strOldFunctionName:string;
-  I: integer;
-  Line: integer;
-  AddScopeStr: boolean;
-  S: string;
-  VarName: string;
+  I, Line: Integer;
+  AddScopeStr: Boolean;
   VarType: string;
   VarArguments: string;
   St: PStatement;
-  ClsName : string;
   boolFound: Boolean;
   e: TEditor;
   CppEditor, Hppeditor: TSynEdit;
-  strClassName:String;
 begin
+  St := nil;
+  Result := false;
+  boolFound := False;
+  e := GetEditor(PageControl.ActivePageIndex);
+  if not Assigned(e) or not e.isForm then
+    Exit;
 
-    Result:=false;
-    boolFound := false;
-    St := nil;
-    
-    e:=self.GetEditor(self.PageControl.ActivePageIndex);
-    if not Assigned(e) then
-        Exit;
-
-    if not e.isForm then
-        Exit;
-
-  strClassName:=trim(e.GetDesigner.Wx_Name);
+  //Give us a class name if none is specified
+  if strClassName = '' then
+    strClassName := Trim(e.GetDesigner.Wx_Name);
 
   for I := 0 to ClassBrowser1.Parser.Statements.Count - 1 do // Iterate
   begin
@@ -10290,20 +10245,17 @@ begin
     end;
   end; // for
 
-  if boolFound = False then
-  begin
+  if not boolFound then
     Exit;
-  end;
 
-  intFunctionCounter:=0;
-  strOldFunctionName:=strFncName;
-  repeat
-    if intFunctionCounter = 0 then
-        strFncName:=strOldFunctionName
-    else
-        strFncName:=strOldFunctionName+IntToStr(intFunctionCounter);
+  //Come up with an unused function name
+  intFunctionCounter := 0;
+  strOldFunctionName := strFunctionName;
+  while isFunctionAvailable(St._ID, strFunctionName) do
+  begin
+    strFunctionName := strOldFunctionName + IntToStr(intFunctionCounter);
     Inc(intFunctionCounter);
-  until isFunctionAvailable(St._ID,strFncName) = false;
+  end;
 
   //Temp Settings Start
   VarType := strReturnType;
@@ -10314,179 +10266,28 @@ begin
 
   if trim(VarArguments) = '' then
     VarArguments := 'void';
-
-  VarName := strFncName;
   //Temp Settings End
 
   Line := ClassBrowser1.Parser.SuggestMemberInsertionLine(St._ID, scsPublic, AddScopeStr);
   if Line = -1 then
-  begin
     Exit;
-  end;
 
-  S := #9;
-  S := S + VarType + ' ' + VarName + '(' + VarArguments + ')';
-  S := S + ';';
-
-  Hppeditor := e.GetDesignerHPPText;
-
+  HppEditor := e.GetDesignerHPPText;
   CppEditor := e.GetDesignerCPPText;
 
-  if Assigned(Hppeditor) then
+  if Assigned(HppEditor) then
   begin
-      if AnsiStartsText('////GUI Control Declaration End',trim(Hppeditor.Lines[Line])) then
-        Line:=Line+1;
+    if AnsiStartsText('////GUI Control Declaration End', Trim(Hppeditor.Lines[Line])) then
+      Line := Line + 1;
 
-    Hppeditor.Lines.Insert(Line, S);
+    Hppeditor.Lines.Insert(Line, Format(#9#9'%s %s(%s);', [VarType, strFunctionName, VarArguments]));
     if AddScopeStr then
       Hppeditor.Lines.Insert(Line, #9'public:');
     e.GetDesignerHPPEditor.InsertString('', true);
   end;
 
-  // set the parent class's name
-  ClsName := strClassName;
-
-  if Assigned(cppeditor) then
+  if Assigned(CppEditor) then
   begin
-    // insert the implementation
-    if Trim(CppEditor.Lines[CppEditor.Lines.Count - 1]) <> '' then
-      CppEditor.Lines.Append('');
-
-    // insert the comment
-    CppEditor.Lines.Append('/*');
-    Cppeditor.Lines.Append(' * ' + strFncName);
-    Cppeditor.Lines.Append(' */');
-
-    Cppeditor.Lines.Append(VarType + ' ' + ClsName + '::' + VarName + '(' +
-      VarArguments + ')');
-    Cppeditor.Lines.Append('{');
-    Cppeditor.Lines.Append(#9'// insert your code here');
-    if not AnsiSameText(trim(VarArguments),'void') then
-    //Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
-    Line := CppEditor.Lines.Count;
-
-    Cppeditor.Lines.Append('}');
-    Cppeditor.Lines.Append('');
-    Result := True;
-    CppEditor.CaretY := Line;
-    e.GetDesignerCPPEditor.InsertString('', true);
-    e.UpdateDesignerData;
-  end;
-
-end;
-
-function TMainForm.CreateFunctionInEditor(eventProperty:TJvCustomInspectorData;strClassName: string; SelComponent:TComponent; var strFunctionName: string; strEventFullName: string;var ErrorString:String): Boolean;
-var
-  intFunctionCounter:Integer;
-  strOldFunctionName:string;
-  I: integer;
-  Line: integer;
-  AddScopeStr: boolean;
-  S: string;
-  VarName: string;
-  VarType: string;
-  VarArguments: string;
-  St: PStatement;
-  ClsName, strEName: string;
-  boolFound: Boolean;
-  intfObj: IWxComponentInterface;
-  e: TEditor;
-  CppEditor, Hppeditor: TSynEdit;
-begin
-  St := nil;
-  Result := False;
-  boolFound := False;
-  e := GetEditor(Self.PageControl.ActivePageIndex);
-
-  if not Assigned(e) then
-    Exit;
-
-  if not e.isForm then
-    Exit;
-
-  for I := 0 to ClassBrowser1.Parser.Statements.Count - 1 do // Iterate
-  begin
-    if PStatement(ClassBrowser1.Parser.Statements[i])._Kind = skClass then
-    begin
-      St := PStatement(ClassBrowser1.Parser.Statements[i]);
-      if AnsiSameText(St._Command, strClassName) then
-      begin
-        boolFound := True;
-        Break;
-      end;
-    end;
-  end; // for
-
-  if boolFound = False then
-  begin
-    ErrorString :='Class Name not found in the Class Browser.' + #13+#10+' Try to reset the class parser option and try again';
-    Exit;
-  end;
-
-  intFunctionCounter:=0;
-  strOldFunctionName:=strFunctionName;
-  repeat
-    if intFunctionCounter = 0 then
-        strFunctionName:=strOldFunctionName
-    else
-        strFunctionName:=strOldFunctionName+IntToStr(intFunctionCounter);
-    Inc(intFunctionCounter);
-  until isFunctionAvailable(St._ID,strFunctionName) = false;
-
-  //Temp Settings Start
-  VarType := 'void';
-  VarArguments := VarType;
-
-  if SelComponent.GetInterface(IID_IWxComponentInterface, intfObj) then
-  begin
-    strEName := Trim(GetEventNameFromDisplayName(strEventFullName,
-      intfObj.GetEventList));
-    VarType := intfObj.GetTypeFromEventName(strEName);
-    VarArguments := intfObj.GetParameterFromEventName(strEName);
-   end;
-
-  if trim(VarType) = '' then
-    VarType := 'void';
-
-  if trim(VarArguments) = '' then
-    VarArguments := 'void';
-
-  VarName := strFunctionName;
-  //Temp Settings End
-
-  Line := ClassBrowser1.Parser.SuggestMemberInsertionLine(St._ID, scsPublic,
-    AddScopeStr);
-  if Line = -1 then
-  begin
-    Exit;
-  end;
-
-  S := #9#9;
-  S := S + VarType + ' ' + VarName + '(' + VarArguments + ')';
-  S := S + ';';
-  boolInspectorDataClear:=False;
-  Hppeditor := e.GetDesignerHPPText;
-
-  boolInspectorDataClear:=False;
-  CppEditor := e.GetDesignerCPPText;
-
-  if Assigned(Hppeditor) then
-  begin
-      if AnsiStartsText('////GUI Control Declaration End',trim(Hppeditor.Lines[Line])) then
-        Line:=Line+1;
-
-    Hppeditor.Lines.Insert(Line, S);
-    if AddScopeStr then
-      Hppeditor.Lines.Insert(Line, #9'public:');
-    e.GetDesignerHPPEditor.InsertString('', true);
-  end;
-
-  // set the parent class's name
-  ClsName := strClassName;
-
-  if Assigned(cppeditor) then
-  begin
-    boolInspectorDataClear:=False;
     // insert the implementation
     if Trim(CppEditor.Lines[CppEditor.Lines.Count - 1]) <> '' then
       CppEditor.Lines.Append('');
@@ -10496,27 +10297,45 @@ begin
     Cppeditor.Lines.Append(' * ' + strFunctionName);
     Cppeditor.Lines.Append(' */');
 
-    Cppeditor.Lines.Append(VarType + ' ' + ClsName + '::' + VarName + '(' +
-      VarArguments + ')');
+    // and the function body
+    Cppeditor.Lines.Append(Format('%s %s::%s(%s)', [VarType, strClassName, strFunctionName, VarArguments]));
     Cppeditor.Lines.Append('{');
     Cppeditor.Lines.Append(#9'// insert your code here');
-    if not AnsiSameText(trim(VarArguments),'void') then
-    //Cppeditor.Lines.Append(#9'event.Skip();  // IMPORTANT: Remove this line when you add your own code!');
-    Line := CppEditor.Lines.Count;
-
     Cppeditor.Lines.Append('}');
     Cppeditor.Lines.Append('');
+    
     Result := True;
-    CppEditor.CaretY := Line;
+    CppEditor.CaretY := CppEditor.Lines.Count;
     e.GetDesignerCPPEditor.InsertString('', true);
-
-    boolInspectorDataClear:=False;
-    //OpenFile(e.GetDesignerCPPFileName);
-    boolInspectorDataClear:=False;
     e.UpdateDesignerData;
-    boolInspectorDataClear:=False;
+  end;
+end;
+
+function TMainForm.CreateFunctionInEditor(strClassName: string; SelComponent: TComponent;
+                                          var strFunctionName: string; strEventFullName: string;
+                                          var ErrorString: String): Boolean;
+var
+  VarType, VarArguments, strEName: string;
+  intfObj: IWxComponentInterface;
+begin
+  //Assemble the function prototype
+  VarType := 'void';
+  VarArguments := '';
+
+  //Parse the event string to get the parts of the declaration
+  if SelComponent.GetInterface(IID_IWxComponentInterface, intfObj) then
+  begin
+    strEName := Trim(GetEventNameFromDisplayName(strEventFullName, intfObj.GetEventList));
+    VarType := intfObj.GetTypeFromEventName(strEName);
+    VarArguments := intfObj.GetParameterFromEventName(strEName);
   end;
 
+  //If we have no return type assume it to be void
+  if trim(VarType) = '' then
+    VarType := 'void';
+
+  //Then call the actual function
+  Result := CreateFunctionInEditor(strFunctionName, VarType, VarArguments, ErrorString, strClassName);
 end;
 
 function TMainForm.GetFunctionsFromSource(classname: string; var strLstFuncs:
@@ -11796,15 +11615,6 @@ begin
 end;
 
 {$IfDef WX_BUILD}
-procedure TMainForm.tmrInspectorHelperTimer(Sender: TObject);
-begin
-  if fstrCppFileToOpen = '' then
-    exit;
-  tmrInspectorHelper.Enabled:=false;
-  OpenFile(fstrCppFileToOpen);
-  fstrCppFileToOpen:='';
-end;
-
 procedure TMainForm.StatusBarDrawPanel(StatusBar: TStatusBar;
   Panel: TStatusPanel; const Rect: TRect);
 begin

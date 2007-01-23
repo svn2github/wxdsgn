@@ -355,7 +355,7 @@ begin
     strStyle := ', ' + strStyle;
 
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s =new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',
+    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
@@ -522,11 +522,11 @@ var
 begin
   //Make this component look like its parent component by calling its parent's
   //Paint method.
-  self.Caption := '';
-  if self.ControlCount < 1 then
+  Caption := '';
+  if ControlCount < 1 then
   begin
     inherited;
-    exit;
+    Exit;
   end;
 
   if (ControlCount > 0) and (Wx_SashPosition = 0) then
@@ -541,7 +541,7 @@ begin
   begin
     //Calculate the total size for all children
     if IsControlWxNonVisible(Controls[i]) then
-      continue;
+      Continue;
 
     totalmaxWidth := totalmaxWidth + self.Controls[i].Width + 2 * self.FSpaceValue;
     totalmaxHt    := totalmaxHt + self.Controls[i].Height + 2 * self.FSpaceValue;
@@ -597,23 +597,19 @@ begin
 
     if self.Orientation = wxVertical then
     begin
-      if maxWidth * self.ControlCount + self.ControlCount * 2 * self.FSpaceValue = 0 then
-        self.Width := 4 * self.FSpaceValue
+      if maxHt * self.ControlCount + self.ControlCount * 2 * self.FSpaceValue = 0 then
+        self.Height := 4 * self.FSpaceValue
       else
-        self.Width := totalmaxWidth;
-      self.Height := maxHt + 2 * self.FSpaceValue;
+        self.Height := totalmaxHt;
+      self.Width := maxWidth + 2 * self.FSpaceValue;
     end
     else
     begin
       if maxWidth = 0 then
         self.Width := 4 * self.FSpaceValue
       else
-        self.Width := maxWidth + 2 * self.FSpaceValue;
-
-      if maxHt * self.ControlCount + self.ControlCount * 2 * self.FSpaceValue = 0 then
-        self.Height := 4 * self.FSpaceValue
-      else
-        self.Height := totalmaxHt;
+        self.Width := totalmaxWidth + 2 * self.FSpaceValue;
+      self.Height := maxHt + 2 * self.FSpaceValue;
     end;
   end;
 
@@ -628,7 +624,7 @@ begin
       coordTop := maxHt + 2 * FSpaceValue - self.Controls[i].Height;
       self.Controls[i].Top := coordTop div 2;
       self.Controls[i].left := startX;
-      startX   := startX + self.Controls[i].Width + FSpaceValue + self.FSpaceValue;
+      startX   := startX + self.Controls[i].Width + FSpaceValue + FSpaceValue;
     end
   else
     for i := 0 to self.ControlCount - 1 do

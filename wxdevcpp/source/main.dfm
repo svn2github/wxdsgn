@@ -32,7 +32,7 @@ object MainForm: TMainForm
   object MessageControl: TPageControl
     Left = 0
     Top = 240
-    Width = 622
+    Width = 628
     Height = 130
     ActivePage = TodoSheet
     Align = alBottom
@@ -167,12 +167,12 @@ object MainForm: TMainForm
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          385
+          391
           98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 359
+          Width = 371
           Height = 80
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
@@ -189,7 +189,7 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 610
+        Width = 616
         Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
@@ -290,7 +290,7 @@ object MainForm: TMainForm
           object DebugTree: TTreeView
             Left = 0
             Top = 0
-            Width = 602
+            Width = 608
             Height = 70
             Align = alClient
             Images = dmMain.MenuImages_NewLook
@@ -410,7 +410,7 @@ object MainForm: TMainForm
       object lvTodo: TListView
         Left = 0
         Top = 0
-        Width = 614
+        Width = 620
         Height = 61
         Align = alClient
         Checkboxes = True
@@ -447,13 +447,13 @@ object MainForm: TMainForm
       object TodoSettings: TPanel
         Left = 0
         Top = 61
-        Width = 614
+        Width = 620
         Height = 41
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
         DesignSize = (
-          614
+          620
           41)
         object lblTodoFilter: TLabel
           Left = 6
@@ -499,7 +499,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar
     Left = 0
     Top = 16
-    Width = 622
+    Width = 628
     Height = 86
     Align = alTop
     AutoDock = False
@@ -931,7 +931,7 @@ object MainForm: TMainForm
   object StatusBar: TStatusBar
     Left = 0
     Top = 370
-    Width = 622
+    Width = 628
     Height = 19
     Panels = <
       item
@@ -957,7 +957,7 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 622
+    Width = 628
     Height = 16
     Align = alTop
     BevelOuter = bvNone
@@ -967,7 +967,7 @@ object MainForm: TMainForm
     TabOrder = 3
     Visible = False
     DesignSize = (
-      622
+      628
       16)
     object btnFullScrRevert: TSpeedButton
       Left = 607
@@ -1079,7 +1079,7 @@ object MainForm: TMainForm
   object PageControl: TPageControl
     Left = 192
     Top = 102
-    Width = 430
+    Width = 436
     Height = 138
     Align = alClient
     PopupMenu = EditorPopupMenu
