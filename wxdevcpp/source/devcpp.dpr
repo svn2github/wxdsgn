@@ -31,10 +31,11 @@ uses
   madListHardware,
   madListProcesses,
   madListModules,
+{$ELSE}
+  madScreenShot,
 {$ENDIF}
   madExcept,
   madLinkDisAsm,
-  madScreenShot,
   inifiles,
   Windows,
   Forms,

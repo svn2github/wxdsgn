@@ -956,32 +956,11 @@ end;
 function GetWxFontDeclaration(fnt: TFont): string;
 var
   strStyle, strWeight, strUnderline: string;
-  fntDefault:      TFont;
-  defaultFontName: string;
 begin
-  fntDefault      := TFont.Create;
-  defaultFontName := fntDefault.Name;
-
-  Result := '';
-  try
-    if fnt.Name = fntDefault.Name then
-      if fnt.Size = fntDefault.Size then
-      begin
-        if fnt.Style = fntDefault.Style then
-        begin
-          Result := '';
-          exit;
-        end
-        else
-        begin
-          //Result := 'S_C';
-          //exit;          
-        end;
-      end;
-  finally
-    fntDefault.Destroy;
-  end;
-  //if Result <> 'S_C' then
+  if (fnt.Name = Screen.IconFont.Name) and (fnt.Size = Screen.IconFont.Size) and
+     (fnt.Style = Screen.IconFont.Style) then
+     Result := ''
+  else
   begin
     if fsItalic in fnt.Style then
       strStyle := 'wxITALIC'
@@ -994,16 +973,14 @@ begin
       strWeight := 'wxNORMAL';
 
     if fsUnderline in fnt.Style then
-      strUnderline := 'TRUE'
+      strUnderline := 'true'
     else
-      strUnderline := 'FALSE';
+      strUnderline := 'false';
 
-    if fnt.Name <> defaultFontName then
-      Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
-        strWeight + ', ' + strUnderline + ', ' + GetCppString(fnt.Name) + ')'
+    if fnt.Name <> Screen.IconFont.Name then
+      Result := Format('wxFont(%d, wxSWISS, %s, %s, %s, %s)', [fnt.Size, strStyle, strWeight, strUnderline, GetCppString(fnt.Name)])
     else
-      Result := Result + 'wxFont(' + IntToStr(fnt.size) + ', wxSWISS, ' + strStyle + ',' +
-        strWeight + ', ' + strUnderline + ')';
+      Result := Format('wxFont(%d, wxSWISS, %s, %s, %s)', [fnt.Size, strStyle, strWeight, strUnderline]);
   end;
 end;
 
