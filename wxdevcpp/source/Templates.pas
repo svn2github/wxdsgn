@@ -130,7 +130,8 @@ var
     
     //Do some sanity checking - if the profile states that we should be using a MingW compiler,
     //then make sure the CompilerSet actually points to one that is of CompilerType.
-    devCompilerSet.LoadSet(NewProfile.CompilerSet);
+    if devCompilerSet.Sets.Count > NewProfile.CompilerSet then
+      devCompilerSet.LoadSet(NewProfile.CompilerSet);
     if devCompilerSet.CompilerType <> NewProfile.compilerType then
       for i := 0 to devCompilerSet.Sets.Count - 1 do
       begin
@@ -268,7 +269,6 @@ begin
         NewProfile.ObjFiles.DelimitedText         := ReadString(CurrentProfileName,'ObjFiles','');
         NewProfile.Includes.DelimitedText         := ReadString(CurrentProfileName,'Includes','');
         NewProfile.Libs.DelimitedText             := ReadString(CurrentProfileName,'Libs','');
-        NewProfile.PrivateResource                := ReadString(CurrentProfileName,'PrivateResource','');
         NewProfile.ResourceIncludes.DelimitedText := ReadString(CurrentProfileName,'ResourceIncludes','');
         NewProfile.MakeIncludes.DelimitedText     := ReadString(CurrentProfileName,'MakeIncludes','');
         NewProfile.Icon                           := ReadString(CurrentProfileName,'Icon','');

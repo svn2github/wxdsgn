@@ -174,25 +174,38 @@ end;
 // create makefile for fproject if assigned
 procedure TCompiler.BuildMakeFile;
 begin
-  if not assigned(fProject) then
+  //Make sure we have an active project
+  if not Assigned(fProject) then
   begin
     fMakeFile := '';
-    exit;
+    Exit;
   end
-  else begin
-    if fProject.CurrentProfile.UseCustomMakefile then begin
-      fMakefile := fProject.CurrentProfile.CustomMakefile;
-      Exit;
-    end;
+
+  //Exit if we have a custom makefile
+  else if fProject.CurrentProfile.UseCustomMakefile then
+  begin
+    fMakefile := fProject.CurrentProfile.CustomMakefile;
+    Exit;
   end;
+
+  //Create the object and executable output directory if it doesn't exist
+  if (fProject.CurrentProfile.ObjectOutput <> '') and (not DirectoryExists(fProject.CurrentProfile.ObjectOutput)) then
+    ForceDirectories(GetRealPath(SubstituteMakeParams(fProject.CurrentProfile.ObjectOutput), fProject.Directory));
+  if (fProject.CurrentProfile.ExeOutput <> '') and (not DirectoryExists(fProject.CurrentProfile.ExeOutput)) then
+    ForceDirectories(GetRealPath(SubstituteMakeParams(fProject.CurrentProfile.ExeOutput), fProject.Directory));
+
+  //Then show the compilation progres form
   if Assigned(CompileProgressForm) then
     CompileProgressForm.btnClose.Enabled := False;
+
+  //Generate a makefile for the current project type
   case Project.CurrentProfile.typ of
     dptStat: CreateStaticMakeFile;
     dptDyn: CreateDynamicMakeFile;
   else
     CreateMakeFile;    
   end;
+
   if FileExists(fMakeFile) then
     FileSetDate(fMakefile, DateTimeToFileDate(Now)); // fix the "Clock skew detected" warning ;)
   if Assigned(CompileProgressForm) then
@@ -208,10 +221,6 @@ var
   i: integer;
 begin
   Objects := '';
-
-  // create the object output directory if we have to
-  if (fProject.CurrentProfile.ObjectOutput <> '') and (not DirectoryExists(fProject.CurrentProfile.ObjectOutput)) then
-    ForceDirectories(GetRealPath(SubstituteMakeParams(fProject.CurrentProfile.ObjectOutput), fProject.Directory));
 
   for i := 0 to Pred(fProject.Units.Count) do
   begin
@@ -902,7 +911,6 @@ begin
   begin
     fLibrariesParams := ' ';
     strLst:=TStringList.Create;
-    strProfileLinkerLst:=TStringList.Create;
     cAppendStr := '%s ' + devCompiler.LinkerPaths;
 
     StrtoList(devDirs.lib,strLst,';');
@@ -1113,7 +1121,8 @@ begin
       else
         cmdline := format(cSingleFileMakeLine, [MAKE_PROGRAM(devCompiler.CompilerType), fMakeFile, ofile]) + ' ' + devCompiler.makeopts;
     end
-    else begin
+    else
+    begin
       if (devCompiler.makeName <> '') then
         cmdline := format(cMakeLine, [devCompiler.makeName, fMakeFile]) + ' ' + devCompiler.makeopts
       else
@@ -1125,7 +1134,8 @@ begin
     Sleep(devCompiler.Delay);
     LaunchThread(cmdline, ExtractFilePath(Project.FileName));
   end
-  else if (GetFileTyp(fSourceFile) = utRes) then begin
+  else if (GetFileTyp(fSourceFile) = utRes) then
+  begin
     if (devCompiler.windresName <> '') then
       s := devCompiler.windresName
     else
@@ -1135,9 +1145,10 @@ begin
     DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
     DoLogEntry(cmdline);
   end
-  else begin
+  else
+  begin
     if (GetFileTyp(fSourceFile) = utSrc) and
-      (GetExTyp(fSourceFile) = utCppSrc) then
+       (GetExTyp(fSourceFile) = utCppSrc) then
     begin
       if (devCompiler.gppName <> '') then
         s := devCompiler.gppName
@@ -1177,6 +1188,7 @@ begin
       DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
       DoLogEntry(cmdline);
     end;
+
     LaunchThread(cmdline, ExtractFilePath(fSourceFile));
   end;
 end;
@@ -1251,7 +1263,7 @@ begin
       s := devCompiler.makeName
     else
       s := MAKE_PROGRAM(devCompiler.CompilerType);
-    
+
     cmdLine := Format(cCleanLine, [s, fMakeFile]) + ' ' + devCompiler.makeopts;
     LaunchThread(cmdLine, fProject.Directory);
   end

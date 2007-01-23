@@ -538,6 +538,9 @@ begin
     fIniFile.Write('name', nName);
     fNode := MakeProjectNode;
   end;
+
+  BuildPrivateResource(true);
+
 end;
 
 destructor TProject.Destroy;
@@ -580,7 +583,6 @@ var
   ResFile, Original: TStringList;
   Res, Def, Icon, RCDir: String;
   comp, i: Integer;
-  outDir:String;
 begin
   comp := 0;
   for i := 0 to Units.Count - 1 do
@@ -593,28 +595,6 @@ begin
     RCDir := IncludeTrailingPathDelimiter(GetRealPath(CurrentProfile.ObjectOutput, Directory))
   else
     RCDir := Directory;
-  //If the Output and Exe dir doesnt exists then Create them
-  if (DirectoryExists(RCDir) = false) then
-  begin
-    if (ForceDirectories(RCDir) = false) then
-    begin
-      ShowMessage('Unable to create Object Files Output directory for Saving Resource file.');
-      exit;
-    end;
-  end;
-
-  if (CurrentProfile.ExeOutput <> '') then
-  begin
-    outDir:=IncludeTrailingPathDelimiter(GetRealPath(CurrentProfile.ExeOutput, Directory));
-    if (DirectoryExists(outDir) = false) then
-    begin
-      if (ForceDirectories(outDir) = false) then
-      begin
-        ShowMessage('Unable to create Exe File Output directory for Saving Resource file.');
-        exit;
-      end;
-    end;
-  end;
 
   // if project has no other resources included
   // and does not have an icon
@@ -623,7 +603,7 @@ begin
   // then do not create a private resource file
   if (comp = 0) and (not CurrentProfile.SupportXPThemes) and (not CurrentProfile.IncludeVersionInfo) and (CurrentProfile.Icon = '') then begin
     CurrentProfile.PrivateResource := '';
-    exit;
+    Exit;
   end;
 
   // change private resource from <project_filename>.res
@@ -738,6 +718,7 @@ begin
         if ResFile.Count > 0 then
           if ResFile[ResFile.Count - 1] <> '' then
             ResFile.Add('');
+
       if not DirectoryExists(SubstituteMakeParams(RCDir)) then
         ForceDirectories(SubstituteMakeParams(RCDir));
       ResFile.SaveToFile(Res);
@@ -1006,7 +987,6 @@ begin
         fProfiles[0].Libs.DelimitedText := StringReplace(Read('Libs', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
         fProfiles[0].Includes.DelimitedText := StringReplace(Read('Includes', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 
-        fProfiles[0].PrivateResource := StringReplace(Read('PrivateResource', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
         fProfiles[0].ResourceIncludes.DelimitedText :=StringReplace(Read('ResourceIncludes', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
         fProfiles[0].MakeIncludes.DelimitedText :=StringReplace(Read('MakeIncludes', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
 {$ELSE}
@@ -1017,7 +997,6 @@ begin
         fProfiles[0].Libs.DelimitedText := Read('Libs', '');
         fProfiles[0].Includes.DelimitedText := Read('Includes', '');
 
-        fProfiles[0].PrivateResource := Read('PrivateResource', '');
         fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
         fProfiles[0].MakeIncludes.DelimitedText := Read('MakeIncludes', '');
 {$ENDIF}
@@ -1065,7 +1044,6 @@ begin
       else
         fProfiles[0].typ := dptGUI;
 
-      fProfiles[0].PrivateResource := Read('PrivateResource', '');
       fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
       fProfiles[0].ObjFiles.Add(read('ObjFiles', ''));
       fProfiles[0].Includes.Add(Read('IncludeDirs', ''));
@@ -1130,7 +1108,6 @@ begin
       WriteProfile(i,'ObjFiles', fProfiles[i].ObjFiles.DelimitedText);
       WriteProfile(i,'Includes', fProfiles[i].Includes.DelimitedText);
       WriteProfile(i,'Libs', fProfiles[i].Libs.DelimitedText);
-      WriteProfile(i,'PrivateResource', fProfiles[i].PrivateResource);
       WriteProfile(i,'ResourceIncludes', fProfiles[i].ResourceIncludes.DelimitedText);
       WriteProfile(i,'MakeIncludes', fProfiles[i].MakeIncludes.DelimitedText);
 
@@ -1407,8 +1384,9 @@ begin
     LoadLayout;
   end;
   RebuildNodes;
-  devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
-  devCompilerSet.AssignToCompiler();
+  if CurrentProfile.CompilerSet < devCompilerSet.Sets.Count then
+    devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
+  devCompilerSet.AssignToCompiler;
 end;
 
 procedure TProject.LoadProfiles;
@@ -1451,7 +1429,6 @@ begin
     NewProfile.ObjFiles.DelimitedText:=finifile.ReadProfile(i,'ObjFiles','');
     NewProfile.Includes.DelimitedText:=finifile.ReadProfile(i,'Includes','');
     NewProfile.Libs.DelimitedText:=finifile.ReadProfile(i,'Libs','');
-    NewProfile.PrivateResource:= finifile.ReadProfile(i,'PrivateResource','');
     NewProfile.ResourceIncludes.DelimitedText:=finifile.ReadProfile(i,'ResourceIncludes','');
     NewProfile.MakeIncludes.DelimitedText:=finifile.ReadProfile(i,'MakeIncludes','');
     NewProfile.Icon:= finifile.ReadProfile(i,'Icon','');
@@ -1786,7 +1763,7 @@ begin
   result := fUnits.Indexof(t);
 end;
 
-function TProject.GetExecutableNameExt(projProfile:TProjProfile): string;
+function TProject.GetExecutableNameExt(projProfile: TProjProfile): string;
 var
   Base: string;
 begin
@@ -1799,27 +1776,18 @@ begin
   // if he supplied one, then we assume he knows what he's doing...
   if ExtractFileExt(Base) = '' then begin
     if projProfile.typ = dptStat then
-      result := ChangeFileExt(Base, LIB_EXT)
+      Result := ChangeFileExt(Base, LIB_EXT)
     else if projProfile.typ = dptDyn then
-      result := ChangeFileExt(Base, DLL_EXT)
+      Result := ChangeFileExt(Base, DLL_EXT)
     else
-      result := ChangeFileExt(Base, EXE_EXT);
+      Result := ChangeFileExt(Base, EXE_EXT);
   end
   else
-    result := Base;
+    Result := Base;
 
-  if Length(projProfile.ExeOutput) > 0 then begin
-    if not DirectoryExists(GetRealPath(SubstituteMakeParams(projProfile.ExeOutput), GetDirectory)) then
-        try
-          SysUtils.ForceDirectories(GetRealPath(SubstituteMakeParams(projProfile.ExeOutput),GetDirectory));
-        except
-          MessageDlg('Could not create executable output directory: "'
-            + projProfile.ExeOutput + '". Please check your settings', mtWarning, [mbOK], 0);
-          exit;
-        end;
-    Result := GetRealPath(IncludeTrailingPathDelimiter(projProfile.ExeOutput) +
-      ExtractFileName(Result));
-  end;
+  // Add the output directory path if the user decided to specify a custom output directory 
+  if Length(projProfile.ExeOutput) > 0 then
+    Result := GetRealPath(IncludeTrailingPathDelimiter(projProfile.ExeOutput) + ExtractFileName(Result));
 
   //Replace the MAKE command parameters
   Result := SubstituteMakeParams(Result);
