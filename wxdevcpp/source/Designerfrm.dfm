@@ -13,10 +13,8 @@ object frmNewForm: TfrmNewForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyDown = FormKeyDown
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13

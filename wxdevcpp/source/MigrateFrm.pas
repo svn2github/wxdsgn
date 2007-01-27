@@ -116,8 +116,16 @@ begin
   //Interate over the file's lines
   while i < Strings.Count do
   begin
+    //OnKeyDown
+    if Pos('OnKeyDown', Trim(Strings[i])) = 1 then
+    begin
+      Strings.Delete(i);
+      Dec(I);
+      Inc(Changes);
+    end
+    
     //SpaceValue
-    if Pos('SpaceValue', Trim(Strings[i])) = 1 then
+    else if Pos('SpaceValue', Trim(Strings[i])) = 1 then
     begin
       Position := Pos('SpaceValue', Strings[i]);
       Strings[i] := Copy(Strings[i], 1, Position - 1) + 'Wx_Border' + Copy(Strings[i], Position + 10, Length(Strings[i]));
