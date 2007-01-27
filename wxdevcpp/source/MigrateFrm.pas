@@ -164,6 +164,14 @@ begin
       Inc(Changes);
     end
 
+    //Rows of wxGrid/wxFlexGridSizer
+    else if Pos('Rows =', Trim(Strings[i])) = 1 then
+    begin
+      Strings.Delete(i);
+      Dec(I);
+      Inc(Changes);
+    end
+
     //wxTE_PROCESS_ENTER
     else if (Pos('wxPROCESS_ENTER', Trim(Strings[i])) > Pos('Wx_ComboboxStyle', Trim(Strings[i]))) and (Pos('Wx_ComboboxStyle', Trim(Strings[i])) <> 0) then
     begin
