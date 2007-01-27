@@ -957,8 +957,8 @@ function GetWxFontDeclaration(fnt: TFont): string;
 var
   strStyle, strWeight, strUnderline: string;
 begin
-  if (fnt.Name = Screen.IconFont.Name) and (fnt.Size = Screen.IconFont.Size) and
-     (fnt.Style = Screen.IconFont.Style) then
+  if (fnt.Name = Screen.HintFont.Name) and (fnt.Size = Screen.HintFont.Size) and
+     (fnt.Style = Screen.HintFont.Style) then
      Result := ''
   else
   begin

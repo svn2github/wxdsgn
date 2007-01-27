@@ -356,7 +356,8 @@ begin
   cmenu.Wx_HelpText := txtHint.Text;
 
   cmenu.Wx_IDName  := txtIDName.Text;
-  cmenu.Wx_IDValue := StrToInt(txtIDValue.Text);
+  if txtIDValue.Enabled then
+    cmenu.Wx_IDValue := StrToInt(txtIDValue.Text);
 
   if cbEnabled.ItemIndex = 1 then
     cmenu.Wx_Enabled := True
