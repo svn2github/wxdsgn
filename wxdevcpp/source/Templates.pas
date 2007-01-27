@@ -257,6 +257,9 @@ begin
       ProfileCount := ReadInteger(cProject, 'ProfilesCount', 0);
       for i := 0 to ProfileCount - 1 do
       begin
+        ProjectIcon                               := ReadString(cProject, 'ProjectIcon', '');
+        fOptions.useGPP                           := ReadBool(cProject, 'IsCpp', false);
+        
         //Read the current profile's values
         CurrentProfileName                        := 'Profile' + IntToStr(i);
         NewProfile                                := TProjProfile.Create;
