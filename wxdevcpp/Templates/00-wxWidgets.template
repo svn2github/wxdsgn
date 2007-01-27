@@ -1,7 +1,7 @@
 [Template]
 ver=3
 Name=wxWidgets Frame
-IconIndex=0
+IconIndex=5
 Description=A wxWidgets Frame application
 Catagory=Basic
 ProfilesCount = 2

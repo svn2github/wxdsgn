@@ -220,7 +220,7 @@ begin
   end;
 
   ProjView.Items.Clear;
-  for idx := pred(ImageList.Count) downto 5 do
+  for idx := pred(ImageList.Count) downto 6 do
     ImageList.Delete(idx);
 
   for idx := 0 to pred(fTemplates.Count) do

@@ -1,7 +1,7 @@
 [Template]
 ver=3
 Name=wxWidgets Dialog
-IconIndex=0
+IconIndex=5
 Description=A wxWidgets Dialog application
 Catagory=Basic
 ProfilesCount = 2

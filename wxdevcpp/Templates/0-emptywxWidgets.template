@@ -1,7 +1,7 @@
 [Template]
 ver=3
 Name=Empty wxWidgets Project
-IconIndex=0
+IconIndex=5
 Description=An empty wxWidgets project
 Catagory=Basic
 ProfilesCount = 2
