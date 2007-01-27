@@ -30,7 +30,7 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 373
-    ActivePage = tabDisplay
+    ActivePage = tabSyntax
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     OnChange = PagesMainChange
@@ -571,7 +571,7 @@ object EditorOptForm: TEditorOptForm
       end
     end
     object tabSyntax: TTabSheet
-      Caption = 'Syntax'
+      Caption = 'Syntax Highlighting'
       object lblElements: TLabel
         Left = 5
         Top = 26
@@ -1088,9 +1088,7 @@ object EditorOptForm: TEditorOptForm
             DefaultText = 'Default'
             PopupSpacing = 8
             ShowSystemColors = True
-            OnChange = StyleChange
             OnDefaultSelect = DefaultSelect
-            OnHint = PickerHint
           end
           object lblCompletionColor: TLabel
             Left = 24

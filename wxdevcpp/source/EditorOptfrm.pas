@@ -234,7 +234,6 @@ type
     procedure LoadCodeIns;
     procedure LoadSampleText;
     procedure GetOptions;
-    procedure CheckAssoc;
     procedure SaveCodeIns;
     procedure UpdateCIButtons;
     procedure SetGutter;
@@ -289,7 +288,6 @@ begin
   LoadSampleText;
   PagesMainChange(Self);
   cbLineNumClick(Self);
-  FillSyntaxSets;
 end;
 
 procedure TEditorOptForm.FormShow(Sender: TObject);
@@ -713,6 +711,9 @@ begin
     seTabSize.Value := TabSize;
     cbSyntaxHighlight.Checked := UseSyntax;
     edSyntaxExt.Text := SyntaxExt;
+    FillSyntaxSets;
+    cboQuickColor.ItemIndex := cboQuickColor.Items.IndexOf(ActiveSyntax);
+    
     cboInsertCaret.ItemIndex := InsertCaret;
     cboOverwriteCaret.ItemIndex := OverwriteCaret;
     cbDropFiles.Checked := InsDropFiles;
@@ -731,8 +732,6 @@ begin
     StrtoPoint(fABPColor, Syntax.Values[cABP]);
     StrtoPoint(fSelColor, Syntax.Values[cSel]);
   end;
-
-  CheckAssoc;
 
   for idx := 0 to pred(cpp.AttrCount) do
   begin
@@ -829,12 +828,6 @@ begin
   cpCompletionBackground.Enabled := chkEnableClassBrowser.Checked;
 end;
 
-//check file associations
-
-procedure TEditorOptForm.CheckAssoc;
-begin
-end;
-
 procedure TEditorOptForm.btnOkClick(Sender: TObject);
 var
   s, aName: string;
@@ -903,6 +896,7 @@ begin
       else
         Syntax.Values[aName] := AttrtoStr(cpp.Attribute[idx]);
     end;
+    ActiveSyntax := cboQuickColor.Text;
     // additional attributes
 
     //gutter
@@ -1326,6 +1320,7 @@ begin
   cppEdit.InvalidateLine(cBreakLine);
   cppEdit.InvalidateLine(cABreakLine);
   cppEdit.InvalidateLine(cErrorLine);
+  cppEdit.Highlighter := cpp;
 
   //update gutter
   setgutter;
@@ -1586,7 +1581,7 @@ var
 begin
   if FindFirst(devDirs.Config + '*' + SYNTAX_EXT, faAnyFile, SR) = 0 then
     repeat
-      cboQuickColor.Items.Add(StringReplace(SR.Name, SYNTAX_EXT, '', [rfIgnoreCase]));
+      cboQuickColor.Items.Add(ChangeFileExt(ExtractFileName(SR.Name), ''));
     until FindNext(SR) <> 0;
 end;
 
