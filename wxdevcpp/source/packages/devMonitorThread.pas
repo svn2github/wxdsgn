@@ -156,9 +156,9 @@ begin
 
   for I := 0 to fDirs.Count - 1 do
   begin
+    if (fDirs[I] = '') then continue; 
     hMonitors[nMonitors] := FindFirstChangeNotification(
-      PChar(fDirs[I]),
-      False,
+      PChar(fDirs[I]), False,
       FILE_NOTIFY_CHANGE_LAST_WRITE or FILE_NOTIFY_CHANGE_FILE_NAME
       );
     nMonitors := nMonitors + 1;
@@ -169,7 +169,7 @@ procedure TdevMonitorThread.DestroyMonitors;
 var
   I: integer;
 begin
-  for I := 0 to fDirs.Count - 1 do
+  for I := 2 to fDirs.Count + 1 do
     FindCloseChangeNotification(hMonitors[I]);
 
 {$IFDEF RELEASE}
@@ -209,7 +209,7 @@ begin
       BuildDirs;
       CreateMonitors;
       SetEvent(fReloaded);
-      Continue;
+      continue;
     end
     else
       for I := 0 to fFiles.Count - 1 do
@@ -236,7 +236,7 @@ begin
 
     //Refresh all the monitors
     for I := 2 to fDirs.Count + 1 do
-      Assert(FindNextChangeNotification(hMonitors[I]));
+      FindNextChangeNotification(hMonitors[I]);
   end;
   
   DestroyMonitors;
