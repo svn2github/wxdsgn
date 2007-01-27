@@ -464,6 +464,7 @@ type
     fTabtoSpaces: boolean; // convert tabs to spaces
     fAutoCloseBrace: boolean; // insert closing braces
     fMarginColor: TColor; // Color of right margin
+    fActiveSyn: string; // Active syntax highlighting set
     fSyntax: TStrings; // Holds attributes settings
     fDefaultIntoPrj: boolean; // Insert Default Source Code into "empty" project
     fParserHints: boolean; // Show parser's hint for the word under the cursor
@@ -523,6 +524,7 @@ type
     // syntax
     property UseSyntax: boolean read fUseSyn write fUseSyn;
     property SyntaxExt: string read fSynExt write fSynExt;
+    property ActiveSyntax: string read fActiveSyn write fActiveSyn;
     property Syntax: TStrings read fSyntax write fSyntax;
 
     // other

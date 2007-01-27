@@ -1307,9 +1307,8 @@ end;
 
 procedure TCompiler.OnAbortCompile(Sender: TObject);
 begin
-  if Assigned(fDevRun) then  begin
-    fAbortThread := True;
-  end
+  if Assigned(fDevRun) then
+    fAbortThread := True
   else
     ReleaseProgressForm;
 end;
