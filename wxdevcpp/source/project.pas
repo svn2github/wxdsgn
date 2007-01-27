@@ -497,6 +497,7 @@ begin
   fFolderNodes.OwnsObjects := false;
   fProfiles:=TProjectProfileList.Create;
   fUnits := TUnitList.Create;
+  fModified := True;
 
   //Initialize our version information record
   VersionInfo.Major := 0;
@@ -1332,6 +1333,7 @@ begin
       end;
   end;
 {$WARN SYMBOL_PLATFORM ON}
+
   //First Load the Profile before doing anything
   LoadProfiles;
   Update;
@@ -1389,6 +1391,9 @@ begin
   if CurrentProfile.CompilerSet < devCompilerSet.Sets.Count then
     devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler;
+
+  //Since we just loaded everything we are 'clean'
+  SetModified(False);
 end;
 
 procedure TProject.LoadProfiles;
