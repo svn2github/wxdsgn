@@ -35,8 +35,8 @@ uses
 
 {$IFDEF WX_BUILD}
   , JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
-  ELDsgnr, JvInspector, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
-  wxSizerpanel, Designerfrm, ELPropInsp, ComponentPalette,
+  JvInspector, ELDsgnr, xprocs, dmCreateNewProp, wxUtils, DbugIntf,
+  wxSizerpanel, Designerfrm, ComponentPalette,
 {$IFNDEF COMPILER_7_UP}
   ThemeMgr,
   ThemeSrv,
@@ -8352,6 +8352,7 @@ var
   BaseFilename: string;
   currFile: string;
   OwnsDlg: boolean;
+  editor: TEditor;
 
   strFName, strCName, strFTitle: string;
   dlgSStyle: TWxDlgStyleSet;
@@ -8410,11 +8411,15 @@ begin
       frm.Destroy;
       exit;
     end;
+    
     //Wow, the user clicked OK: save the user name
     INI := TiniFile.Create(devDirs.Config + 'devcpp.ini');
     INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
     INI.free;
   end;
+
+  //And get the base filename
+  BaseFilename := IncludeTrailingBackslash(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);
 
   //OK, load the template and parse and save it
   ParseAndSaveTemplate(StrHppFile, ChangeFileExt(BaseFilename, H_EXT), frm);
@@ -8424,7 +8429,7 @@ begin
 
   //NinjaNL: If we have Generate XRC turned on then we need to create a blank XRC
   //         file on project initialisation
-  if (ELDesigner1.GenerateXRC) then
+  if ELDesigner1.GenerateXRC then
   begin
     strLstXRCCode := CreateBlankXRC;
     try
@@ -8484,11 +8489,15 @@ begin
     fProject.AddUnit(currFile, fProject.Node, false); // add under folder
     if ClassBrowser1.Enabled then
       CppParser1.AddFileToScan(currFile, true);
-    with fProject.OpenUnit(fProject.Units.Indexof(currFile)) do
-      Activate;
+    editor := fProject.OpenUnit(fProject.Units.Indexof(currFile));
+    editor.Activate;
   end
   else
+  begin
     OpenFile(currFile);
+    editor := GetEditorFromFileName(currFile);
+  end;
+  editor.UpdateDesignerData;
 
   if not ClassBrowser1.Enabled then
     MessageDlg('The Class Browser is not enabled.'+ #13#10#13#10 +
@@ -10664,7 +10673,7 @@ begin
         end;
     end;    // for
 
-    //Finally a solution to change the 
+    //TODO: Guru: Is there a better way of implementing the class search and replace? 
     for I := 0 to edt.Text.Lines.Count - 1 do    // Iterate
     begin
         try

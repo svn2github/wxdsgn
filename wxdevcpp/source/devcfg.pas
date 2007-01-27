@@ -177,8 +177,6 @@ type
   TdevCompiler = class(TCFGOptions)
   private
     fUseParams: boolean;   // Use fparams when running prog
-    fIntermediate: string; // directory for object files
-    fOutputDir: string;    // directory to place compiled files
     fRunParams: string;    // params to send on execution
 
     // program filenames
@@ -212,9 +210,6 @@ type
     //Makefile
     fFastDep: Boolean;
 
-    //Debugger
-    fModified: boolean;// has options been changed since last compile
-
     fcmdOpts: string;  // command-line adds for compiler
     flinkopts: string; // command-line adds for linker
     fMakeOpts: string;
@@ -235,8 +230,7 @@ type
     procedure AddDefaultOptions;
 
   public
-  destructor Destroy; override;
-    
+    destructor Destroy; override;
     function OptionsCount: integer;
     function FindOption(Setting: string; var opt: TCompilerOption; var Index: integer): boolean; // returns the option with setting=<Setting>
     function ConvertCharToValue(c: char): integer;
@@ -248,7 +242,6 @@ type
     procedure DeleteOption(Index: integer);
 
     property Name;
-    property Modified: boolean read fModified write fModified;
     property Options[Index: integer]: TCompilerOption read GetOptions write SetOptions;
     property OptionStr: string read GetOptionStr write SetOptionStr;
     
@@ -275,8 +268,6 @@ type
     property PreprocDefines: string read fPreprocDefines write fPreprocDefines;
 
     property RunParams: string read fRunParams write fRunParams;
-    property OutputDir: string read fOutputDir write fOutputDir; // ** unused
-    property Intermediate: string read fIntermediate write fIntermediate; // ** unused
     property UseExecParams: boolean read fUseParams write fUseParams;
     property SaveLog: boolean read fSaveLog write fSaveLog;
     property Delay: integer read fDelay write fDelay;
@@ -1911,8 +1902,6 @@ begin
   begin
     key := 'Compiler';
     fUseParams := LoadBoolSetting(key, 'UseParams');
-    fIntermediate := LoadSetting(key, 'InterDir');
-    fOutputDir := LoadSetting(key, 'OutputDir');
     fRunParams := LoadSetting(key, 'RunParams');
     fcmdOpts := LoadSetting(key, 'cmdline');
     flinkopts := LoadSetting(key, 'LinkLine');
@@ -1951,8 +1940,6 @@ begin
   begin
     key := 'Compiler';     
     SaveboolSetting(key, 'UseParams', fUseParams);
-    SaveSetting(key, 'InterDir', fIntermediate);
-    SaveSetting(key, 'OutputDir', fOutputDir);
     SaveSetting(key, 'RunParams', fRunParams);
     SaveSetting(key, 'Delay', inttostr(fDelay));
     SaveBoolSetting(key, 'Log', fSaveLog);
@@ -2036,10 +2023,7 @@ procedure TdevCompiler.SettoDefaults;
 begin
   fRunParams := '';
   fUseParams := FALSE;
-  fModified := TRUE;
   fSaveLog := FALSE;
-  //fCompAdd:= FALSE;
-  //fLinkAdd:= FALSE;
   fcmdOpts := '';
   flinkOpts := '';
   fDelay := 0;

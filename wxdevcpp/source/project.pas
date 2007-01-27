@@ -539,8 +539,8 @@ begin
     fNode := MakeProjectNode;
   end;
 
-  BuildPrivateResource(true);
-
+  if Assigned(CurrentProfile) then
+    BuildPrivateResource(true);
 end;
 
 destructor TProject.Destroy;
@@ -601,7 +601,9 @@ begin
   // and does not include the XP style manifest
   // and does not include version info
   // then do not create a private resource file
-  if (comp = 0) and (not CurrentProfile.SupportXPThemes) and (not CurrentProfile.IncludeVersionInfo) and (CurrentProfile.Icon = '') then begin
+  if (comp = 0) and (not CurrentProfile.SupportXPThemes) and
+     (not CurrentProfile.IncludeVersionInfo) and (CurrentProfile.Icon = '') then
+  begin
     CurrentProfile.PrivateResource := '';
     Exit;
   end;
