@@ -1,7 +1,7 @@
 object SplashForm: TSplashForm
   Left = 309
   Top = 270
-  Cursor = crHandPoint
+  Cursor = crHourGlass
   BorderIcons = []
   BorderStyle = bsNone
   ClientHeight = 293
@@ -30,6 +30,7 @@ object SplashForm: TSplashForm
       Top = 1
       Width = 470
       Height = 272
+      Cursor = crHourGlass
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -12180,6 +12181,7 @@ object SplashForm: TSplashForm
       Top = 273
       Width = 470
       Height = 19
+      Cursor = crHourGlass
       Panels = <>
       SimplePanel = True
     end
@@ -12188,6 +12190,7 @@ object SplashForm: TSplashForm
       Top = 257
       Width = 150
       Height = 15
+      Cursor = crHourGlass
       TabOrder = 1
     end
   end
