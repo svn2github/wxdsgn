@@ -215,7 +215,10 @@ begin
   DrawRect.Right := DrawRect.Right - RightOffset - ButtonWidth - ButtonSplitter - AutoHideButtonWidth;
   Canvas.Brush.Style := bsClear;
   Canvas.Font.Style := [fsBold];
-  Canvas.Font.Color := clHighlightText;
+  if GetActiveControl = Control then
+    Canvas.Font.Color := clInactiveCaptionText
+  else
+    Canvas.Font.Color := clCaptionText;
   DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS);
 
   //Draw the pin
