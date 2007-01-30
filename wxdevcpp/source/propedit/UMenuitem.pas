@@ -239,13 +239,10 @@ begin
   if tvMenuItem.Selected = nil then
     Exit;
   if TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_MenuItemStyle = wxMnuItm_History then
-     begin
-     MessageBeep(MB_ICONEXCLAMATION);
-      ShowMessage('Tony says "You can''t add children to the recent file history"');
-      Exit;
-     end
-     else
-     begin
+  begin
+    MessageDlg('Children cannot be added to the Recent File History', mtError, [mbOK], Handle);
+    Exit;
+  end;
 
   FSubMenuItemCreationClicked := True;
   MenuItem := TWxCustomMenuItem.Create(nil);
@@ -265,7 +262,6 @@ begin
   txtIDValue.Text := IntToStr(FMaxID);
   txtCaption.Text := 'SubMenuItem' + IntToStr(FCounter);
   txtCaption.SetFocus;
-  end;
 end;
 
 procedure TMenuItemForm.txtCaptionKeyDown(Sender: TObject; var Key: word;
@@ -935,10 +931,8 @@ begin
     end;
 
     {Dropping onto self?}
-    if ((TargetNode = Selected)) then
+    if (TargetNode = Selected) then
     begin
-      MessageBeep(MB_ICONEXCLAMATION);
-      ShowMessage('Destination node is the same as the source node');
       EndDrag(False);
       Exit;
     end;
@@ -946,8 +940,7 @@ begin
     {Dropping a parent onto a child node? No No!}
     if (TargetNode.HasAsParent(SourceNode)) then
     begin
-      MessageBeep(MB_ICONEXCLAMATION);
-      ShowMessage('You can''t move a parent to a child');
+      MessageDlg('A parent node cannot be added as a child of itself', mtError, [mbOK], Handle);
       EndDrag(False);
       Exit;
     end;
@@ -957,8 +950,7 @@ begin
       (not SourceNode.HasChildren) and (SourceNode.Level <> 0) and
       not FShiftDown then
     begin
-      MessageBeep(MB_ICONEXCLAMATION);
-      ShowMessage('Mal says "You can''t move an empty child to root"');
+      MessageDlg('Children without submenus cannot be moved to root.', mtError, [mbOK], Handle);
       EndDrag(False);
       Exit;
     end;

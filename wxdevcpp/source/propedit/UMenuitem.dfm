@@ -330,7 +330,7 @@ object MenuItemForm: TMenuItemForm
   end
   object btApply: TButton
     Left = 186
-    Top = 300
+    Top = 299
     Width = 75
     Height = 23
     Caption = 'Apply'
