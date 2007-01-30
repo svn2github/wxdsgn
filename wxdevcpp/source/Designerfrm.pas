@@ -1644,8 +1644,9 @@ end;
 
 procedure TfrmNewForm.FormDestroy(Sender: TObject);
 begin
-  wx_PropertyList.Destroy;
+  Wx_PropertyList.Destroy;
   FWx_EventList.Destroy;
+  FWx_Icon.Destroy;
 end;
 
 function TfrmNewForm.GetGenericColor(strVariableName:String): string;
