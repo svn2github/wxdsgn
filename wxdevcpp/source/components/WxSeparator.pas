@@ -38,7 +38,7 @@ type
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
     FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignment;
+    FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
 
     { Private methods of TWxButton }
@@ -130,7 +130,7 @@ type
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
     property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
 
     property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
@@ -158,8 +158,8 @@ begin
   FWx_Border             := 5;
   FWx_Class              := 'wxToolBarTool';
   FWx_Enabled            := True;
-  FWx_Alignment          := wxALIGN_CENTER;
   FWx_BorderAlignment    := [wxAll];
+  FWx_Alignment          := [wxALIGN_CENTER];
   FWx_IDValue            := -1;
   FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;

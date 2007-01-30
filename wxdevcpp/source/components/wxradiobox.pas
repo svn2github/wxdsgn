@@ -53,7 +53,7 @@ type
     FWx_LHSValue : String;
     FWx_RHSValue : String;
 
-    FWx_Alignment: TWxSizerAlignment;
+    FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
 
     { Private methods of TWxRadioBox }
@@ -149,7 +149,7 @@ type
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
     property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
     
     property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
@@ -184,8 +184,8 @@ begin
   FWx_Class              := 'wxRadioBox';
   FWx_Enabled            := True;
   FWx_Hidden             := False;
-  FWx_Alignment          := wxALIGN_CENTER;
   FWx_BorderAlignment    := [wxAll];
+  FWx_Alignment          := [wxALIGN_CENTER];
   FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
@@ -251,57 +251,14 @@ begin
   AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_Enabled:Enabled');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Hidden:Hidden');
-  FWx_PropertyList.add('Wx_Default:Default');
-  FWx_PropertyList.add('Wx_HelpText:Help Text');
-  FWx_PropertyList.add('Wx_IDName:ID Name');
-  FWx_PropertyList.add('Wx_IDValue:ID Value');
-  FWx_PropertyList.add('Wx_ToolTip:Tooltip');
-  FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.Add('Wx_Validator:Validator code');
-  FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
-  FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
+  PopulateGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
-  FWx_PropertyList.add('Wx_Alignment:Alignment');
-  FWx_PropertyList.add('Wx_Border: Border');
-  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
-  FWx_PropertyList.add('wxALL:wxALL');
-  FWx_PropertyList.add('wxTOP:wxTOP');
-  FWx_PropertyList.add('wxLEFT:wxLEFT');
-  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
-  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
-
-  FWx_PropertyList.add('Wx_GeneralStyle:General Styles');
-  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
-  FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
-  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-  FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-  FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-  FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-  FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-  FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-  FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-
-  FWx_PropertyList.add('Font:Font');
   FWx_PropertyList.add('Items:Items');
-  FWx_PropertyList.add('Caption:Caption ');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Left:Left');
-  FWx_PropertyList.add('Top:Top');
-  FWx_PropertyList.add('Width:Width');
-  FWx_PropertyList.add('Height:Height');
+  FWx_PropertyList.add('Caption:Caption');
   FWx_PropertyList.add('MajorDimension:Major Dimension');
   FWx_PropertyList.add('Wx_Selection:Selected Button');
 
-  FWx_PropertyList.add('Wx_RadioboxOrientation : Orientation');
+  FWx_PropertyList.add('Wx_RadioboxOrientation:Orientation');
   FWx_PropertyList.add('Wx_RadioBoxStyle:Radiobox Style');
   FWx_PropertyList.add('wxRA_SPECIFY_COLS:wxRA_SPECIFY_COLS');
   FWx_PropertyList.add('wxRA_SPECIFY_ROWS:wxRA_SPECIFY_ROWS');

@@ -19,7 +19,7 @@ interface
 
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  StdCtrls, WxUtils, ExtCtrls, WxSizerPanel, WxToolBar, JvEdit, UValidator;
+  StdCtrls, WxUtils, ExtCtrls, WxToolbar, WxSizerPanel, JvEdit, UValidator;
 
 type
   TWxEdit = class(TJvEdit, IWxComponentInterface, IWxToolBarInsertableInterface,
@@ -74,7 +74,7 @@ type
     FInvisibleFGColorString: string;
     FWx_MaxLength: integer;
     FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignment;
+    FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
     FWx_LHSValue : String;
     FWx_RHSValue : String;
@@ -198,7 +198,7 @@ type
     property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
 
-    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
     property Wx_StretchFactor: integer Read FWx_StretchFactor Write FWx_StretchFactor default 0;
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
@@ -234,13 +234,13 @@ begin
   FWx_Border               := 5;
   FWx_Class                := 'wxTextCtrl';
   FWx_Enabled              := True;
-  FWx_Alignment            := wxALIGN_CENTER;
   fWX_BorderAlignment      := [wxAll];
+  FWx_Alignment            := [wxALIGN_CENTER];
   FWx_IDValue              := -1;
   FWx_StretchFactor        := 0;
   FWx_ProxyBGColorString   := TWxColorString.Create;
   FWx_ProxyFGColorString   := TWxColorString.Create;
-  FWx_ProxyValidatorString := TwxValidatorString.Create;
+  FWx_ProxyValidatorString := TwxValidatorString.Create(self);
   defaultBGColor           := self.color;
   defaultFGColor           := self.font.color;
   BorderStyle              := bsSingle;
@@ -337,44 +337,7 @@ begin
   AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_Enabled:Enabled');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Hidden:Hidden');
-  FWx_PropertyList.add('Wx_Default:Default');
-  FWx_PropertyList.add('Wx_HelpText:Help Text');
-  FWx_PropertyList.add('Wx_IDName:ID Name');
-  FWx_PropertyList.add('Wx_IDValue:ID Value');
-  FWx_PropertyList.add('Wx_ToolTip:Tooltip');
-  FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.add('Wx_ProxyValidatorString: Validator');
-  FWx_PropertyList.add('Wx_ProxyBGColorString:Background Color');
-  FWx_PropertyList.add('Wx_ProxyFGColorString:Foreground Color');
-
-  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
-  FWx_PropertyList.add('Wx_Alignment:Alignment');
-  FWx_PropertyList.add('Wx_Border: Border');
-  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
-  FWx_PropertyList.add('wxALL:wxALL');
-  FWx_PropertyList.add('wxTOP:wxTOP');
-  FWx_PropertyList.add('wxLEFT:wxLEFT');
-  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
-  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
-
-  FWx_PropertyList.add('Wx_GeneralStyle:General Styles');
-  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
-  FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
-  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-  FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-  FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-  FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-  FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-  FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-  FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
+  PopulateGenericProperties(FWx_PropertyList);
 
   FWx_PropertyList.Add('Wx_EditStyle:Edit Style');
   FWx_PropertyList.Add('wxTE_PROCESS_ENTER:wxTE_PROCESS_ENTER');
@@ -395,12 +358,6 @@ begin
   FWx_PropertyList.Add('wxTE_BESTWRAP:wxTE_BESTWRAP');
   FWx_PropertyList.Add('wxTE_CAPITALIZE:wxTE_CAPITALIZE');
 
-  FWx_PropertyList.add('Font:Font');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Left:Left');
-  FWx_PropertyList.add('Top:Top');
-  FWx_PropertyList.add('Width:Width');
-  FWx_PropertyList.add('Height:Height');
   FWx_PropertyList.add('Text:Text');
   FWx_PropertyList.add('Wx_MaxLength :MaxLength ');
 

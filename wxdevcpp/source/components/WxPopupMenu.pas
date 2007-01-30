@@ -117,9 +117,9 @@ begin
   AutoInitialize;
   { Code to perform other tasks when the component is created }
   FWx_PropertyList.add('wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Caption :Caption');
-  FWx_PropertyList.add('Name : Name');
-  FWx_PropertyList.add('Wx_MenuItems: Menu Items');
+  FWx_PropertyList.add('Wx_Caption:Caption');
+  FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Wx_MenuItems:Menu Items');
   FWx_PropertyList.add('Wx_Comments:Comments');
 end;
 

@@ -48,7 +48,7 @@ type
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
-    FWx_Alignment: TWxSizerAlignment;
+    FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
 
     { Private methods of TWxFlexGridSizer }
@@ -138,7 +138,7 @@ type
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
     property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
   end;
 
@@ -163,8 +163,8 @@ begin
   Wx_Border           := 5;
   FWx_Class           := 'wxFlexGridSizer';
   FWx_EventList       := TStringList.Create;
-  FWx_Alignment       := wxALIGN_CENTER;
   FWx_BorderAlignment := [wxAll];
+  FWx_Alignment       := [wxALIGN_CENTER];
   FWx_IDValue         := -1;
   FWx_StretchFactor   := 0;
 end; { of AutoInitialize }
@@ -204,7 +204,15 @@ begin
 
   FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
   FWx_PropertyList.add('Wx_Alignment:Alignment');
-  FWx_PropertyList.add('Wx_Border: Border');
+  FWx_PropertyList.Add('wxALIGN_LEFT:wxALIGN_LEFT');
+  FWx_PropertyList.Add('wxALIGN_RIGHT:wxALIGN_RIGHT');
+  FWx_PropertyList.Add('wxALIGN_TOP:wxALIGN_TOP');
+  FWx_PropertyList.Add('wxALIGN_BOTTOM:wxALIGN_BOTTOM');
+  FWx_PropertyList.Add('wxALIGN_CENTER:wxALIGN_CENTER');
+  FWx_PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
+  FWx_PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
+  FWx_PropertyList.Add('wxEXPAND:wxEXPAND');
+  FWx_PropertyList.add('Wx_Border:Border');
   FWx_PropertyList.add('Wx_BorderAlignment:Borders');
   FWx_PropertyList.add('wxALL:wxALL');
   FWx_PropertyList.add('wxTOP:wxTOP');

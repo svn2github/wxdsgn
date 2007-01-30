@@ -45,7 +45,7 @@ type
     FWx_HelpText: string;
     FWx_Border: integer;
     FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignment;
+    FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
 
     { Private methods of TWxStatusBar }
@@ -57,7 +57,7 @@ type
 
     { Protected methods of TWxStatusBar }
     procedure Click; override;
-    procedure Loaded; override;
+    procedure Loaded; override;             
     function GenerateControlIDs: string;
     function GenerateEnumControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
@@ -134,7 +134,7 @@ type
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignment Read FWx_Alignment Write FWx_Alignment default wxALIGN_CENTER;
+    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
     property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
 
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
@@ -154,16 +154,16 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxStatusBar.AutoInitialize;
 begin
-  FWx_PropertyList := TStringList.Create;
-  FOrientation  := wxHorizontal;
-  FWx_Class     := 'wxStatusBar';
-  FWx_EventList := TStringList.Create;
-  FWx_Alignment  := wxALIGN_CENTER;
+  FWx_PropertyList    := TStringList.Create;
+  FOrientation        := wxHorizontal;
+  FWx_Class           := 'wxStatusBar';
+  FWx_EventList       := TStringList.Create;
   FWx_BorderAlignment := [wxAll];
-  FWx_IDValue   := -1;
-  FWx_StretchFactor := 0;
-  FWx_Enabled   := True;
-  FWx_Comments  := TStringList.Create;
+  FWx_Alignment       := [wxALIGN_CENTER];
+  FWx_IDValue         := -1;
+  FWx_StretchFactor   := 0;
+  FWx_Enabled         := True;
+  FWx_Comments        := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -202,54 +202,10 @@ begin
   AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_SpinButtonStyle:Spin Control Style');
-  FWx_PropertyList.add('Panels :Fields');
-  FWx_PropertyList.add('wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Hidden :Hidden');
-  FWx_PropertyList.add('Wx_Border : Border ');
-  FWx_PropertyList.add('Wx_Default :WxDefault ');
-  FWx_PropertyList.add('Wx_HelpText :HelpText ');
-  FWx_PropertyList.add('Wx_IDName : IDName ');
-  FWx_PropertyList.add('Wx_IDValue : IDValue ');
-  FWx_PropertyList.add('Wx_ToolTip :ToolTip ');
-  FWx_PropertyList.add('Text:Text');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Enabled:Enabled');
-  FWx_PropertyList.add('Left:Left');
-  FWx_PropertyList.add('Top:Top');
-  FWx_PropertyList.add('Width:Width');
-  FWx_PropertyList.add('Height:Height');
-  FWx_PropertyList.add('Wx_GeneralStyle : General Styles');
-  FWx_PropertyList.add('Wx_StatusbarStyleSet : Statusbar Styles');
-
-  FWx_PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-  FWx_PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
-  FWx_PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-  FWx_PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-  FWx_PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-  FWx_PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-  FWx_PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-  FWx_PropertyList.Add('wxNO_3D:wxNO_3D');
-  FWx_PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-  FWx_PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-  FWx_PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-  FWx_PropertyList.Add('wxVSCROLL:wxVSCROLL');
-  FWx_PropertyList.Add('wxHSCROLL:wxHSCROLL');
-  FWx_PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-
-  //FWx_PropertyList.add('Font : Font');
-  FWx_PropertyList.add('Wx_Alignment : Alignment');
-  FWx_PropertyList.add('Wx_BorderAlignment : Borders');
-  FWx_PropertyList.add('wxTOP : wxTOP');
-  FWx_PropertyList.add('wxLEFT : wxLEFT');
-  FWx_PropertyList.add('wxRIGHT : wxRIGHT');
-  FWx_PropertyList.add('wxBOTTOM : wxBOTTOM');
-  FWx_PropertyList.add('wxALL : wxALL');
-  FWx_PropertyList.add('Wx_StretchFactor   : StretchFactor');
-
+  PopulateGenericProperties(FWx_PropertyList);
+  FWx_PropertyList.add('Panels:Fields');
+  FWx_PropertyList.add('Wx_StatusbarStyleSet:Statusbar Styles');
   FWx_PropertyList.add('wxST_SIZEGRIP:wxST_SIZEGRIP');
-  FWx_PropertyList.add('Wx_Comments:Comments');
 
 end;
 

@@ -41,7 +41,7 @@ type
     function GetCodeForOneMenuItem(parentName: string; item: TWxCustomMenuItem): string;
     function GenerateHeaderInclude: string;
     function GenerateImageInclude: string;
-    function GenerateImageList(var strLst:TStringList;var imgLst:TImageList;var strNameLst:TStringList): boolean;
+    function GenerateImageList(var strLst:TStringList; var imgLst:TList; var strNameLst:TStringList): boolean;
     function GetEventList: TStringList;
     function GetIDName: string;
     function GetIDValue: longint;
@@ -682,51 +682,44 @@ end;
 
 function TWxMenuBar.GenerateImageInclude: string;
 var
-    strLst,strNameList: TStringList;
-    imgLst:TImageList;
-    i:Integer;
+  strLst,strNameList: TStringList;
+  imgLst:TList;
+  i:Integer;
 begin
   Result:='';
   strLst:= TStringList.Create;
   strNameList:= TStringList.Create;
-  imgLst:=TImageList.Create(nil);
+  imgLst:=TList.Create;
   GenerateImageList(strLst,imgLst,strNameList);
 
-  for i:= 0 to strLst.Count -1 do
-  begin
+  for i:= 0 to strLst.Count - 1 do
     strLst[i] :=  '#include "'+ strLst[i] + '"';
-  end;
 
-  Result:=strLst.Text;
+  Result := strLst.Text;
   strLst.destroy;
   strNameList.destroy;
   imgLst.destroy;
 end;
 
-function TWxMenuBar.GenerateImageList(var strLst:TStringList;var imgLst:TImageList;var strNameLst:TStringList): boolean;
+function TWxMenuBar.GenerateImageList(var strLst:TStringList;var imgLst:TList;var strNameLst:TStringList): boolean;
 var
   I:      integer;
   strF:   string;
 
-  procedure GenerateImageListFromSubMenu(var idstrList: TStringList;imgLstX:TImageList;strNameLstX:TStringList;
+  procedure GenerateImageListFromSubMenu(var idstrList: TStringList;imgLstX:TList;strNameLstX:TStringList;
     submnu: TWxCustomMenuItem);
   var
-    J: integer;
-    strData: string;
+    J: Integer;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
       if submnu.Items[J].WX_BITMAP.Bitmap.Handle <> 0 then
-        strData := 'Images/' + GetDesignerFormName(self)+'_'+submnu.Items[J].Wx_IDName + '_XPM.xpm'
-      else
-        strData := '';
-      if strData <> '' then
       begin
-        imgLstX.Add(submnu.Items[J].WX_BITMAP.Bitmap,nil);
-        idstrList.add(strData);
+        imgLstX.Add(submnu.Items[J].WX_BITMAP.Bitmap);
+        idstrList.add('Images/' + GetDesignerFormName(self)+'_'+submnu.Items[J].Wx_IDName + '_XPM.xpm');
         strNameLstX.Add(submnu.Items[J].Wx_IDName);
       end;
-
+      
       if submnu.items[J].Count > 0 then
         GenerateImageListFromSubMenu(idstrList, imgLstX,strNameLstX,submnu.items[J]);
     end;    // for
@@ -744,7 +737,7 @@ begin
       strF := '';
     if trim(strF) <> '' then
     begin
-      imgLst.Add(Wx_MenuItems.Items[i].wx_Bitmap.Bitmap,nil);
+      imgLst.Add(Wx_MenuItems.Items[i].wx_Bitmap.Bitmap);
       strNameLst.Add(Wx_MenuItems.Items[i].Wx_IDName);
       strLst.add(strF);
     end;
@@ -933,31 +926,31 @@ end;
 
 function TWxMenuBar.GenerateXPM(strFileName:String):boolean;
 var
-    strLst,strNameList: TStringList;
-    imgLst:TImageList;
-    strXPMFileName,strFormName:String;
-    bmpX:TBitmap;
-    i:Integer;
+  strLst,strNameList: TStringList;
+  imgLst:TList;
+  strXPMFileName,strFormName:String;
+  bmpX:TBitmap;
+  i:Integer;
 begin
-  Result:=false;
-  strLst:= TStringList.Create;
-  strNameList:= TStringList.Create;
-  imgLst:=TImageList.Create(nil);
+  Result      := False;
+  strLst      := TStringList.Create;
+  strNameList := TStringList.Create;
+  imgLst      := TList.Create;
 
   GenerateImageList(strLst,imgLst,strNameList);
   strFormName:=GetDesignerFormName(self);
 
-  for i:= 0 to strLst.Count -1 do
+  for i := 0 to strLst.Count - 1 do
   begin
-      strXPMFileName:=UnixPathToDosPath(IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+strLst[i]);
-      if FileExists(strXPMFileName) then
-        continue;
-      bmpX := TBitmap.Create;
-      imgLst.GetBitmap(i,bmpX);
-      if bmpX.handle  <> 0 then
-        GenerateXPMDirectly(bmpX,strNameList[i],strFormName,strFileName);
-      bmpX.Destroy;
+    strXPMFileName:=UnixPathToDosPath(IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+strLst[i]);
+    if FileExists(strXPMFileName) then
+      Continue;
+    bmpX := imgLst[i];
+    if bmpX.handle  <> 0 then
+      GenerateXPMDirectly(bmpX,strNameList[i],strFormName,strFileName);
   end;
+
+  imgLst.destroy;
   strLst.destroy;
   strNameList.destroy;
 end;
