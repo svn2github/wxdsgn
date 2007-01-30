@@ -119,6 +119,8 @@ begin
   end;
   LTemplates := TStringList.Create;
   try
+    Screen.Cursor := crHourGlass;
+    Application.ProcessMessages;
     FilesFromWildCard(devDirs.Templates, '*' + TEMPLATE_EXT,
       LTemplates, FALSE, FALSE, TRUE);
     if LTemplates.Count > 0 then
@@ -129,6 +131,7 @@ begin
     end;
   finally
     LTemplates.Free;
+    Screen.Cursor := crDefault;
   end;
 end;
 

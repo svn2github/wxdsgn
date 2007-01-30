@@ -958,7 +958,12 @@ begin
   devCodeCompletion.BackColor := cpCompletionBackground.SelectionColor;
   devCodeCompletion.UseCacheFiles := chkCCCache.Checked;
   if chkCCCache.Tag = 1 then
+  begin
+    Screen.Cursor := crHourGlass;
+    Application.ProcessMessages;
     CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
+    Screen.Cursor := crDefault;
+  end;
 
   // CLASS_BROWSING //
   devClassBrowsing.Enabled := chkEnableClassBrowser.Checked;
