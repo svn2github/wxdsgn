@@ -4,7 +4,7 @@ object ModifyVarForm: TModifyVarForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Modify Watched Variable'
-  ClientHeight = 135
+  ClientHeight = 176
   ClientWidth = 297
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,14 +15,17 @@ object ModifyVarForm: TModifyVarForm
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
+  DesignSize = (
+    297
+    176)
   PixelsPerInch = 96
   TextHeight = 13
-  object VarNameLabel: TLabel
+  object NameLabel: TLabel
     Left = 8
     Top = 8
-    Width = 86
+    Width = 75
     Height = 13
-    Caption = 'Variable to modify:'
+    Caption = 'Watch variable:'
   end
   object ValueLabel: TLabel
     Left = 8
@@ -33,17 +36,19 @@ object ModifyVarForm: TModifyVarForm
   end
   object OkBtn: TBitBtn
     Left = 125
-    Top = 104
+    Top = 144
     Width = 80
     Height = 23
+    Anchors = [akLeft, akRight, akBottom]
     TabOrder = 0
     Kind = bkOK
   end
   object CancelBtn: TBitBtn
     Left = 210
-    Top = 104
+    Top = 144
     Width = 80
     Height = 23
+    Anchors = [akLeft, akRight, akBottom]
     TabOrder = 1
     Kind = bkCancel
   end
@@ -53,6 +58,7 @@ object ModifyVarForm: TModifyVarForm
     Width = 281
     Height = 21
     TabOrder = 2
+    OnKeyPress = NameEditKeyPress
   end
   object ValueEdit: TEdit
     Left = 8
@@ -60,6 +66,24 @@ object ModifyVarForm: TModifyVarForm
     Width = 281
     Height = 21
     TabOrder = 3
+  end
+  object chkStopOnRead: TCheckBox
+    Left = 8
+    Top = 122
+    Width = 100
+    Height = 17
+    Caption = 'Break on Read'
+    TabOrder = 4
+  end
+  object chkStopOnWrite: TCheckBox
+    Left = 8
+    Top = 104
+    Width = 97
+    Height = 17
+    Caption = 'Break on Write'
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -89,6 +113,6 @@ object ModifyVarForm: TModifyVarForm
     AutoDetect = False
     Active = False
     Left = 7
-    Top = 103
+    Top = 140
   end
 end

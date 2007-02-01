@@ -89,9 +89,12 @@ type
   end;
 
   PWatch = ^TWatch;
+  TWatchBreakOn = (wbRead, wbWrite, wbBoth);
   TWatch = packed record
     Name: string;
     Address: string;
+    BreakOn: TWatchBreakOn;
+    ID: Integer;
   end;
 
   PDebuggerThread = ^TDebuggerThread;
@@ -191,6 +194,7 @@ type
     procedure RemoveBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
     procedure RemoveAllBreakpoints;
     procedure RefreshBreakpoints;
+    procedure RefreshWatches; virtual; abstract;
     procedure RefreshBreakpoint(var breakpoint: TBreakpoint); virtual; abstract;
     function BreakpointExists(filename: string; line: integer): boolean;
 
@@ -209,7 +213,7 @@ type
 
     //Variable watches
     procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly]); virtual; abstract;
-    procedure AddWatch(varname: string); virtual; abstract;
+    procedure AddWatch(varname: string; when: TWatchBreakOn); virtual; abstract;
     procedure RemoveWatch(varname: string); virtual; abstract;
     procedure ModifyVariable(varname, newvalue: string); virtual; abstract;
 
@@ -224,6 +228,8 @@ type
     destructor Destroy; override;
 
   protected
+    MoreLocals: Integer;
+    LocalsList: TList;
     procedure OnOutput(Output: string); override;
 
     //Instruction callbacks
@@ -238,6 +244,7 @@ type
     procedure OnRegisters(Output: TStringList);
     procedure OnThreads(Output: TStringList);
     procedure OnLocals(Output: TStringList);
+    procedure OnDetailedLocals(Output: TStringList);
 
   public
     //Run the debugger
@@ -252,11 +259,12 @@ type
     procedure AddBreakpoint(breakpoint: TBreakpoint); override;
     procedure RemoveBreakpoint(breakpoint: TBreakpoint); override;
     procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
+    procedure RefreshWatches; override;
 
     //Variable watches
     procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches,
                              cdThreads, cdDisassembly, cdRegisters]); override;
-    procedure AddWatch(varname: string); override;
+    procedure AddWatch(varname: string; when: TWatchBreakOn); override;
     procedure RemoveWatch(varname: string); override;
 
     //Debugger control
@@ -300,6 +308,7 @@ type
     procedure OnRegisters(Output: TStringList);
     procedure OnThreads(Output: TStringList);
     procedure OnLocals(Output: TStringList);
+    procedure OnWatchesSet(Output: TStringList);
 
   public
     //Debugger control
@@ -315,11 +324,12 @@ type
     procedure AddBreakpoint(breakpoint: TBreakpoint); override;
     procedure RemoveBreakpoint(breakpoint: TBreakpoint); override;
     procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
+    procedure RefreshWatches; override;
 
     //Variable watches
     procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches,
                              cdThreads, cdDisassembly, cdRegisters]); override;
-    procedure AddWatch(varname: string); override;
+    procedure AddWatch(varname: string; when: TWatchBreakOn); override;
     procedure RemoveWatch(varname: string); override;
     procedure ModifyVariable(varname, newvalue: string); override;
 
@@ -737,6 +747,7 @@ procedure TDebugger.RefreshBreakpoints;
 var
   I: Integer;
 begin
+  //Refresh the execution breakpoints
   for I := 0 to Breakpoints.Count - 1 do
     RefreshBreakpoint(PBreakPoint(Breakpoints.Items[I])^);
 end;
@@ -896,6 +907,7 @@ var
   I: Integer;
 begin
   //Heck about the breakpoint thats coming.
+  MoreLocals := 0;
   IgnoreBreakpoint := True;
   self.FileName := filename;
 
@@ -933,6 +945,7 @@ const
 var
   NewLines: TStringList;
   RegExp: TRegExpr;
+  CurrBp: TBreakpoint;
   CurLine: String;
 
   procedure FlushOutputBuffer;
@@ -991,17 +1004,23 @@ var
 
       //Make sure we don't save the current line!
       Exit;
-    end
-    else if RegExp.Exec(line, 'DBGHELP: (.*) - no symbols loaded') then
+    end;
+
+    if RegExp.Exec(line, 'DBGHELP: (.*) - no symbols loaded') then
     begin
       if LowerCase(RegExp.Substitute('$1')) = LowerCase(ChangeFileExt(ExtractFileName(Filename), '')) then
         OnNoDebuggingSymbolsFound;
-    end                       
+    end
     else if RegExp.Exec(line, '\((.*)\): (.*) - code ([0-9a-fA-F]{1,8}) \((.*)\)') then
       ParseError(line)
     else if RegExp.Exec(line, 'Breakpoint ([0-9]+) hit') then
-      with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
-        MainForm.GotoBreakpoint(Filename, Line);
+    begin
+      CurrBp := GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1')));
+      if CurrBp <> nil then
+        MainForm.GotoBreakpoint(CurrBp.Filename, CurrBp.Line)
+      else
+        JumpToCurrentLine := True;
+    end;
 
     CurOutput.Add(Line);
   end;
@@ -1113,6 +1132,9 @@ end;
 
 procedure TCDBDebugger.OnBreakpointSet(Output: TStringList);
 begin
+  if CurrentCommand.Data = nil then
+    Exit;
+  
   with TBreakpoint(CurrentCommand.Data) do
   begin
     Valid := False;
@@ -1141,7 +1163,7 @@ begin
   if cdLocals in refresh then
   begin
     Command := TCommand.Create;
-    Command.Command := 'dv -i -t -v';
+    Command.Command := 'dv -i -v';
     Command.OnResult := OnLocals;
     QueueCommand(Command);
   end;
@@ -1180,10 +1202,8 @@ begin
         end
         else if Pos('[', Name) > 0 then
           Command.Command := 'dt -a -r -b -n ' + Copy(name, 1, Pos('[', name) - 1)
-        else if AnsiStartsStr('*', name) then
-          Command.Command := 'dt -r -b -n ' + Copy(name, Pos('*', name) + 1, Length(name))
         else
-          Command.Command := 'dv ' + name;
+          Command.Command := 'dt -r -b -n ' + Copy(name, Pos('*', name) + 1, Length(name));
 
         //Fill in the other data
         Command.Data := Node;
@@ -1211,7 +1231,6 @@ var
   Expanded: Boolean;
   RegExp: TRegExpr;
   Node: TTreeNode;
-  J: Integer;
 
   procedure ParseStructure(Output: TStringList; ParentNode: TTreeNode); forward;
   procedure ParseStructArray(Output: TStringList; ParentNode: TTreeNode);
@@ -1330,7 +1349,6 @@ var
           //Decrement I, since we will increment one at the end of the loop
           Dec(I);
         end
-        //Otherwise just add the value
         else
         begin
           if RegExp.Substitute('$5') = '' then
@@ -1343,6 +1361,20 @@ var
             SelectedIndex := 21;
             ImageIndex := 21;
           end;
+        end;
+      end
+      //Otherwise just add the value if it is a scalar
+      else if (I < Output.Count - 1) and (Length(Output[I + 1]) <> 0) and (Output[I + 1][1] <> '+') then
+      begin
+        with DebugTree.Items.AddChild(ParentNode, Trim(Output[I + 1])) do
+        begin
+          SelectedIndex := 21;
+          ImageIndex := 21;
+        end;
+        with ParentNode do
+        begin
+          SelectedIndex := 32;
+          ImageIndex := 32;
         end;
       end;
 
@@ -1369,7 +1401,7 @@ var
           Inc(I);
           Inc(Increment);
         end;
-        
+
         //Are we an array (with a basic data type) or with a UDT?
         if RegExp.Exec(Output[I], StructExpr) then
         begin
@@ -1411,6 +1443,20 @@ var
               ImageIndex := 21;
             end;
 
+            if (I < Output.Count - 2) and Exec(Output[I + 1], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+            begin
+              with ParentNode.Item[ParentNode.Count - 1] do
+              begin
+                SelectedIndex := 32;
+                ImageIndex := 32;
+              end;
+              
+              with DebugTree.Items.AddChild(ParentNode.Item[ParentNode.Count - 1], Substitute('$1 = $2')) do
+              begin
+                SelectedIndex := 21;
+                ImageIndex := 21;
+              end;
+            end;
             Free;
           end;
       end;
@@ -1426,13 +1472,13 @@ begin
   
   //Set the type of the structure/class/whatever
   with PWatch(Node.Data)^ do
-    if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)\[\]') then
+    if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)') then
     begin
       Expanded := Node.Expanded;
       if Pos('[', name) <> 0 then
-        Node.Text := RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) + ' = $4 (0x$3)')
+        Node.Text := RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) + ' = $4$5 (0x$3)')
       else
-        Node.Text := RegExp.Substitute(name + ' = $4 (0x$3)');
+        Node.Text := RegExp.Substitute(name + ' = $4$5 (0x$3)');
       Node.SelectedIndex := 32;
       Node.ImageIndex := 32;
       ParseArray(Output, Node);
@@ -1453,21 +1499,7 @@ begin
 
       if Expanded then
         Node.Expand(True);
-    end
-    else
-      for J := 0 to Output.Count - 1 do
-        if RegExp.Exec(Output[J], '( +)' + RegexEscape(name) + ' = (.*) \[(.*)\]') then
-        begin
-          PWatch(Node.Data)^.Name := PWatch(Node.Data)^.Name + '[';
-          NeedsRefresh := True;
-        end
-        else if RegExp.Exec(Output[J], '( +)' + RegexEscape(name) + ' = (struct|class|union) (.*)') then
-        begin
-          PWatch(Node.Data)^.Name := PWatch(Node.Data)^.Name + '.';
-          NeedsRefresh := True;
-        end
-        else if RegExp.Exec(Output[J], '( +)' + RegexEscape(name) + ' = (.*)') then
-          Node.Text := Trim(Output[J]);
+    end;
 
   //Do we have to refresh the entire thing?
   if NeedsRefresh then
@@ -1475,8 +1507,10 @@ begin
   RegExp.Free;
 end;
 
-procedure TCDBDebugger.AddWatch(varname: string);
+procedure TCDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
 var
+  Command: TCommand;
+  bpType: string;
   Watch: PWatch;
 begin
   with DebugTree.Items.Add(nil, varname + ' = (unknown)') do
@@ -1485,8 +1519,44 @@ begin
     SelectedIndex := 21;
     New(Watch);
     Watch^.Name := AnsiReplaceStr(varname, '->', '.');
+
+    //Give the watch a unique ID
+    Inc(fNextBreakpoint);
+    Watch^.ID := fNextBreakpoint;
+
+    //Then store the associated data
     Data := Watch;
   end;
+
+  //Determine the type
+  case when of
+    wbWrite:
+      bpType := 'w';
+    wbBoth:
+      bpType := 'r';
+  end;
+
+  Command := TCommand.Create;
+  Command.Data := nil;
+  Command.Command := Format('ba%d %s4 %s', [fNextBreakpoint, bpType, varname]);
+  Command.OnResult := OnBreakpointSet;
+  QueueCommand(Command);
+end;
+
+procedure TCDBDebugger.RefreshWatches;
+var
+  I: Integer;
+  Command: TCommand;
+begin
+  for I := 0 to DebugTree.Items.Count - 1 do
+    with PWatch(DebugTree.Items[I].Data)^ do
+    begin
+      Command := TCommand.Create;
+      Command.Data := nil;
+      Command.Command := Format('ba%d r4 %s', [ID, Name]);
+      Command.OnResult := OnBreakpointSet;
+      QueueCommand(Command);
+    end;
 end;
 
 procedure TCDBDebugger.RemoveWatch(varname: string);
@@ -1501,6 +1571,7 @@ begin
   //Then clean it up
   if Assigned(node) then
   begin
+    QueueCommand('bc', IntToStr(PWatch(Node.Data)^.ID));
     Dispose(node.Data);
     DebugTree.Items.Delete(node);
   end;
@@ -1615,12 +1686,14 @@ var
   Local: PVariable;
   Locals: TList;
   RegExp: TRegExpr;
+  Command: TCommand;
 begin
   Locals := TList.Create;
+  LocalsList := TList.Create;
   RegExp := TRegExpr.Create;
   
   for I := 0 to Output.Count - 1 do
-    if RegExp.Exec(Output[I], '(.*)( +)(.*)( +)([0-9a-fA-F]{1,8}) (.*) = (.*)') then
+    if RegExp.Exec(Output[I], '(.*)( +)(.*)( +)([0-9a-fA-F]{1,8}) +(.*) = (.*)') then
     begin
       New(Local);
       Locals.Add(Local);
@@ -1634,12 +1707,283 @@ begin
       end;
     end;
 
-  //Pass the locals list to the callback function that wants it
-  if Assigned(TDebugger(Self).OnLocals) then
-    TDebugger(Self).OnLocals(Locals);
+  //Now that the locals list has a complete list of values, we want to get the
+  //full variable stuff if it is a structure.
+  if(MoreLocals <> 0) then
+    ShowMessage(Currentcommand.Command);
+  MoreLocals := Locals.Count;
+  for I := 0 to Locals.Count - 1 do
+  begin
+    Command := TCommand.Create;
+    with PVariable(Locals[I])^ do
+    begin
+      if (Pos('class', Value) > 0) or (Pos('struct', Value) > 0) or (Pos('union', Value) > 0) then
+        Command.Command := 'dt -r -b -n ' + Name
+      else if Pos('[', Value) > 0 then
+        Command.Command := 'dt -a -r -b -n ' + Name
+      else if Pos('0x', Value) = 1 then
+        Command.Command := 'dt -a -r -b -n ' + Name
+      else
+      begin
+        Dec(MoreLocals);
+        LocalsList.Add(Locals[I]);
+        Command.Free;
+        Continue;
+      end;
+
+      Command.Data := Locals[I];
+      Command.OnResult := OnDetailedLocals;
+      QueueCommand(Command);
+    end;
+  end;
+
+  if MoreLocals = 0 then
+  begin
+    if Assigned(TDebugger(Self).OnLocals) then
+      TDebugger(Self).OnLocals(LocalsList);
+    FreeAndNil(LocalsList);
+  end;
 
   //Clean up
   Locals.Free;
+  RegExp.Free;
+end;
+
+//This is a complete rip of the watch (dt) parsing code. But I have no choice...
+procedure TCDBDebugger.OnDetailedLocals(Output: TStringList);
+const
+  NotFound = 'Cannot find specified field members.';
+  StructExpr = '( +)[\+|=]0x([0-9a-fA-F]{1,8}) ([^ ]*)?( +): (.*)';
+  ArrayExpr = '\[([0-9a-fA-F]*)\] @ ([0-9a-fA-F]*)';
+  StructArrayExpr = '( *)\[([0-9a-fA-F]*)\] (.*)';
+var
+  RegExp: TRegExpr;
+  Local: PVariable;
+  BasicVar: PVariable;
+
+  function SynthesizeIndent(Indent: Integer): string;
+  var
+    I: Integer;
+  begin
+    Result := '';
+    for I := 0 to Indent - 1 do
+      Result := Result + ' ';
+  end;
+  
+  procedure ParseStructure(Output: TStringList; Indent: Integer); forward;
+  procedure ParseStructArray(Output: TStringList; Indent: Integer);
+  var
+    I: Integer;
+    SubStructure: TStringList;
+  begin
+    I := 0;
+    Indent := 0;
+    while I < Output.Count do
+    begin
+      if RegExp.Exec(Output[I], StructArrayExpr) then
+      begin
+        Inc(I);
+        if I >= Output.Count then
+           Continue;
+
+        if RegExp.Exec(Output[I], StructExpr) then
+        begin
+          if Indent = 0 then
+            Indent := Length(RegExp.Substitute('$1'));
+
+          SubStructure := TStringList.Create;
+          while I < Output.Count do
+          begin
+            if RegExp.Exec(Output[I], StructExpr) then
+            begin
+              if Length(RegExp.Substitute('$1')) < Indent then
+                Break
+              else
+                SubStructure.Add(Output[I]);
+            end
+            else if RegExp.Exec(Output[I], StructArrayExpr) then
+              if Length(RegExp.Substitute('$1')) <= Indent then
+                Break
+              else
+                SubStructure.Add(Output[I]);
+                
+            Inc(I);
+          end;
+
+          //Determine if it is a structure or an array
+          ParseStructure(SubStructure, Indent + 4);
+          SubStructure.Free;
+          Dec(I);
+        end;
+      end;
+    end;
+  end;
+
+  procedure ParseStructure(Output: TStringList; Indent: Integer);
+  var
+    SubStructure: TStringList;
+    I: Integer;
+  begin
+    I := 0;
+    Indent := 0;
+    while I < Output.Count do
+    begin
+      if RegExp.Exec(Output[I], StructExpr) or RegExp.Exec(Output[I], StructArrayExpr) then
+      begin
+        if Indent = 0 then
+          Indent := Length(RegExp.Substitute('$1'));
+
+        //Check if this is a sub-structure
+        if Indent <> Length(RegExp.Substitute('$1')) then
+        begin
+          //Populate the substructure string list
+          SubStructure := TStringList.Create;
+
+          while I < Output.Count do
+          begin
+            if RegExp.Exec(Output[I], StructArrayExpr) or RegExp.Exec(Output[I], StructExpr) then
+              if Length(RegExp.Substitute('$1')) <= Indent then
+                Break
+              else
+                SubStructure.Add(Output[I]);
+            Inc(I);
+          end;
+
+          //Determine if it is a structure or an array
+          if SubStructure.Count <> 0 then
+            if Trim(SubStructure[0])[1] = '[' then
+              ParseStructArray(SubStructure, Indent + 4)
+            else
+              ParseStructure(SubStructure, Indent + 4);
+          SubStructure.Free;
+
+          //Decrement I, since we will increment one at the end of the loop
+          Dec(I);
+        end
+        //Otherwise just add the value
+        else
+        begin
+          New(Local);
+          Local^.Name := SynthesizeIndent(Indent) + RegExp.Substitute('$3');
+          Local^.Value := RegExp.Substitute('$5');
+          LocalsList.Add(Local);
+        end;
+      end;
+
+      //Increment I
+      Inc(I);
+    end;
+  end;
+
+  procedure ParseArray(Output: TStringList; Indent: Integer);
+  var
+    SubStructure: TStringList;
+    Increment: Integer;
+    I: Integer;
+  begin
+    I := 0;
+    while I < Output.Count do
+    begin
+      if RegExp.Exec(Output[I], ArrayExpr) then
+      begin
+        Inc(I, 2);
+        Increment := 2;
+        while Trim(Output[I]) = '' do
+        begin
+          Inc(I);
+          Inc(Increment);
+        end;
+        
+        //Are we an array (with a basic data type) or with a UDT?
+        if RegExp.Exec(Output[I], StructExpr) then
+        begin
+          with TRegExpr.Create do
+          begin
+            Exec(Output[I - Increment], ArrayExpr);
+            New(Local);
+            Local^.Name := SynthesizeIndent(Indent) + Substitute('$1');
+            LocalsList.Add(Local);
+            Free;
+          end;
+
+          //Populate the substructure string list
+          SubStructure := TStringList.Create;
+          while (I < Output.Count) and (Output[I] <> '') do
+          begin
+            SubStructure.Add(Output[I]);
+            Inc(I);
+          end;
+
+          //Process it
+          ParseStructure(SubStructure, Indent + 4);
+          SubStructure.Free;
+
+          //Decrement I, since we will increment one at the end of the loop
+          Dec(I);
+        end
+        else
+          with TRegExpr.Create do
+          begin
+            Exec(Output[I - Increment], ArrayExpr);
+            New(Local);
+            Local^.Name := SynthesizeIndent(Indent) + Substitute('[$1]');
+            Local^.Value := Output[I];
+            LocalsList.Add(Local);
+
+            if (I < Output.Count - 2) and Exec(Output[I + 1], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+            begin
+              New(Local);
+              Local^.Name := SynthesizeIndent(Indent + 4) + Substitute('$1');
+              Local^.Value := Substitute('$2');
+              LocalsList.Add(Local);
+            end;
+            Free;
+          end;
+      end;
+
+      //Increment I
+      Inc(I);
+    end;
+  end;
+begin
+  Assert(MoreLocals <> 0);
+  Dec(MoreLocals);
+  RegExp := TRegExpr.Create;
+  BasicVar := PVariable(CurrentCommand.Data);
+  
+  //Set the type of the structure/class/whatever
+  if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)') then
+  begin
+    New(Local);
+    Local^.Name := BasicVar^.Name;
+    Local^.Value := RegExp.Substitute('$4$5');
+    Local^.Location := RegExp.Substitute('0x$3');
+    LocalsList.Add(Local);
+
+    ParseArray(Output, 4);
+  end
+  else if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)') then
+  begin
+    New(Local);
+    Local^.Name := BasicVar^.Name;
+    Local^.Location := RegExp.Substitute('$3');
+    Local^.Value := RegExp.Substitute('$4');
+    LocalsList.Add(Local);
+
+    ParseStructure(Output, 4);
+  end
+  else
+  begin
+    ShowMessage(output.text);
+  end;
+
+  //If we have no more locals to send, send the entire list across
+  if MoreLocals = 0 then
+  begin
+    if Assigned(TDebugger(Self).OnLocals) then
+      TDebugger(Self).OnLocals(LocalsList);
+    FreeAndNil(LocalsList);
+  end;
   RegExp.Free;
 end;
 
@@ -2026,7 +2370,8 @@ var
       if CurrentCommand <> nil then
       begin
         if (CurrentCommand.Command = 'run'#10) or (CurrentCommand.Command = 'next'#10) or
-           (CurrentCommand.Command = 'step'#10) or (CurrentCommand.Command = '') then
+           (CurrentCommand.Command = 'step'#10) or (CurrentCommand.Command = 'continue'#10) or
+           (CurrentCommand.Command =''#10) then
         begin
           RefreshContext;
           Application.BringToFront;
@@ -2050,6 +2395,8 @@ var
     else if RegExp.Exec(line, 'Breakpoint ([0-9]+),') then
       with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
         MainForm.GotoBreakpoint(Filename, Line)
+    else if RegExp.Exec(line, 'Hardware access \(.*\) watchpoint ') then
+      JumpToCurrentLine := True
     else if Pos('exited ', line) = 1 then
       CloseDebugger(nil);
 
@@ -2066,14 +2413,20 @@ begin
     CurLine := Copy(Output, 0, Pos(#13, Output) - 1);
 
     //Process the output
+{$IFNDEF RELEASE}
+    StripCtrlChars(CurLine);
+{$ELSE}
     if not StripCtrlChars(CurLine) then
     begin
+{$ENDIF}
       if (not LastWasCtrl) or (Length(CurLine) <> 0) then
         NewLines.Add(CurLine);
       LastWasCtrl := False;
+{$IFDEF RELEASE}
     end
     else
       LastWasCtrl := True;
+{$ENDIF}
     ParseOutput(CurLine);
 
     //Remove those that we've already processed
@@ -2223,8 +2576,6 @@ begin
       with PWatch(Node.Data)^ do
       begin
         Command := TCommand.Create;
-
-        //Decide what command we should send - dv for locals, dt for structures
         if Pos('.', Name) > 0 then
           Command.Command := 'display ' + Copy(name, 1, Pos('.', name) - 1)
         else
@@ -2364,9 +2715,10 @@ begin
   end
 end;
 
-procedure TGDBDebugger.AddWatch(varname: string);
+procedure TGDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
 var
   Watch: PWatch;
+  Command: TCommand;
 begin
   with DebugTree.Items.Add(nil, varname + ' = (unknown)') do
   begin
@@ -2376,6 +2728,40 @@ begin
     Watch^.Name := varname;
     Data := Watch;
   end;
+
+  Command := TCommand.Create;
+  Command.Data := Pointer(Watch);
+  case when of
+    wbRead:
+      Command.Command := 'rwatch ' + varname;
+    wbWrite:
+      Command.Command := 'watch ' + varname;
+    wbBoth:
+      Command.Command := 'awatch ' + varname;
+  end;
+  Command.OnResult := OnWatchesSet;
+  QueueCommand(Command);
+end;
+
+procedure TGDBDebugger.RefreshWatches;
+var
+  I: Integer;
+  Command: TCommand;
+begin
+  for I := 0 to DebugTree.Items.Count - 1 do
+    with PWatch(DebugTree.Items[I].Data)^ do
+    begin
+      Command := TCommand.Create;
+      Command.Data := DebugTree.Items[I].Data;
+      Command.Command := 'awatch ' + Name;
+      Command.OnResult := OnWatchesSet;
+      QueueCommand(Command);
+    end;
+end;
+
+procedure TGDBDebugger.OnWatchesSet(Output: TStringList);
+begin
+  //TODO: lowjoel: Watch-setting error?
 end;
 
 procedure TGDBDebugger.RemoveWatch(varname: string);

@@ -35,12 +35,15 @@ type
   TModifyVarForm = class(TForm)
     OkBtn: TBitBtn;
     CancelBtn: TBitBtn;
-    VarNameLabel: TLabel;
+    NameLabel: TLabel;
     NameEdit: TEdit;
     ValueEdit: TEdit;
     ValueLabel: TLabel;
     XPMenu: TXPMenu;
+    chkStopOnRead: TCheckBox;
+    chkStopOnWrite: TCheckBox;
     procedure FormCreate(Sender: TObject);
+    procedure NameEditKeyPress(Sender: TObject; var Key: Char);
   private
     procedure LoadText;
     { Private declarations }
@@ -64,7 +67,7 @@ begin
   XPMenu.Active := devData.XPTheme;
 
   Caption := Lang.Strings[ID_NV_MODIFYVALUE];
-  VarNameLabel.Caption := Lang.Strings[ID_NV_VARNAME];
+  NameLabel.Caption := Lang.Strings[ID_NV_VARNAME];
   ValueLabel.Caption := Lang.Strings[ID_NV_VARVALUE];
   OkBtn.Caption := Lang.Strings[ID_BTN_OK];
   CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
@@ -73,6 +76,15 @@ end;
 procedure TModifyVarForm.FormCreate(Sender: TObject);
 begin
   LoadText;
+end;
+
+procedure TModifyVarForm.NameEditKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    ModalResult := mrOK;
+    Close;
+  end;
 end;
 
 end.
