@@ -93,14 +93,12 @@ begin
 
   MainForm.ELDesigner1.Grid.YStep := lbGridYStepUpDown.Position;
   MainForm.ELDesigner1.SnapToGrid := cbSnapToGrid.Checked;
-
+  FileName := ChangeFileExt(MainForm.GetCurrentFileName, XRC_EXT);
+  
   if (MainForm.fProject <> nil) then
   begin
     if (MainForm.ELDesigner1.GenerateXRC = False) and (cbGenerateXRC.Checked) then
     begin
-      FileName := ChangeFileExt(MainForm.GetCurrentFileName, XRC_EXT);
-      MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
-
       if not MainForm.fProject.FileAlreadyExists(FileName) then
       begin
         if not MainForm.isFileOpenedinEditor(FileName) then
@@ -115,12 +113,9 @@ begin
       end
     end
     else
-    begin
-      MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
       MainForm.fProject.CloseUnit(MainForm.fProject.GetUnitFromString(ExtractFileName(FileName)));
-    end;
   end
-  else if not MainForm.isFileOpenedinEditor(FileName) then
+  else if not MainForm.isFileOpenedinEditor(FileName) and cbGenerateXRC.Checked then
   begin
     strLstXRCCode := CreateBlankXRC;
     SaveStringToFile(strLstXRCCode.Text, FileName);
@@ -137,6 +132,10 @@ begin
   if cbInsertHints.Checked then
     MainForm.ELDesigner1.ShowingHints :=
       [htInsert] + MainForm.ELDesigner1.ShowingHints;
+  MainForm.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
+  if MainForm.ELDesigner1.GenerateXRC then
+    if MainForm.GetEditor <> nil then
+      MainForm.GetEditor.UpdateDesignerData;
 
   ini := TiniFile.Create(devDirs.Config + 'devcpp.ini');
   try
@@ -150,7 +149,7 @@ begin
     ini.WriteBool('wxWidgets', 'cbMoveHints', cbMoveHints.Checked);
     ini.WriteBool('wxWidgets', 'cbInsertHints', cbInsertHints.Checked);
     ini.WriteString('wxWidgets', 'cbStringFormat', cbStringFormat.Text);
-  except
+  finally
     ini.Destroy;
   end;
 

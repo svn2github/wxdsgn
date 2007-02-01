@@ -116,8 +116,15 @@ begin
   //Interate over the file's lines
   while i < Strings.Count do
   begin
+    //OnResize = NewFormResize
+    if Pos('OnResize = NewFormResize', Trim(Strings[i])) = 1 then
+    begin
+      Strings[i] := 'OnResize = FormResize';
+      Inc(Changes);
+    end
+
     //Wx_Alignment
-    if Pos('Wx_Alignment = ', Trim(Strings[i])) = 1 then
+    else if Pos('Wx_Alignment = ', Trim(Strings[i])) = 1 then
     begin
       Position := Pos('Wx_Alignment = ', Strings[i]);
       Strings[i] := Copy(Strings[i], 1, Position + 14) + '[' + Copy(Strings[i], Position + 15, Length(Strings[i])) + ']';
