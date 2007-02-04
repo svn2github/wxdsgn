@@ -228,7 +228,6 @@ type
     destructor Destroy; override;
 
   protected
-    MoreLocals: Integer;
     LocalsList: TList;
     procedure OnOutput(Output: string); override;
 
@@ -907,7 +906,6 @@ var
   I: Integer;
 begin
   //Heck about the breakpoint thats coming.
-  MoreLocals := 0;
   IgnoreBreakpoint := True;
   self.FileName := filename;
 
@@ -1709,35 +1707,25 @@ begin
 
   //Now that the locals list has a complete list of values, we want to get the
   //full variable stuff if it is a structure.
-  if(MoreLocals <> 0) then
-    ShowMessage(Currentcommand.Command);
-  MoreLocals := Locals.Count;
+  Command := TCommand.Create;
+  Command.Command := '';
   for I := 0 to Locals.Count - 1 do
-  begin
-    Command := TCommand.Create;
     with PVariable(Locals[I])^ do
-    begin
       if (Pos('class', Value) > 0) or (Pos('struct', Value) > 0) or (Pos('union', Value) > 0) then
-        Command.Command := 'dt -r -b -n ' + Name
+        Command.Command := Format('%sdt -r -b -n %s;', [Command.Command, Name])
       else if Pos('[', Value) > 0 then
-        Command.Command := 'dt -a -r -b -n ' + Name
+        Command.Command := Format('%sdt -a -r -b -n %s;', [Command.Command, Name])
       else if Pos('0x', Value) = 1 then
-        Command.Command := 'dt -a -r -b -n ' + Name
+        Command.Command := Format('%sdt -a -r -b -n %s;', [Command.Command, Name])
       else
-      begin
-        Dec(MoreLocals);
         LocalsList.Add(Locals[I]);
-        Command.Free;
-        Continue;
-      end;
 
-      Command.Data := Locals[I];
-      Command.OnResult := OnDetailedLocals;
-      QueueCommand(Command);
-    end;
-  end;
-
-  if MoreLocals = 0 then
+  if Command.Command <> '' then
+  begin
+    Command.OnResult := OnDetailedLocals;
+    QueueCommand(Command);
+  end
+  else
   begin
     if Assigned(TDebugger(Self).OnLocals) then
       TDebugger(Self).OnLocals(LocalsList);
@@ -1753,13 +1741,17 @@ end;
 procedure TCDBDebugger.OnDetailedLocals(Output: TStringList);
 const
   NotFound = 'Cannot find specified field members.';
+  PtrVarPrompt = '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)';
+  VarPrompt = '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)';
   StructExpr = '( +)[\+|=]0x([0-9a-fA-F]{1,8}) ([^ ]*)?( +): (.*)';
   ArrayExpr = '\[([0-9a-fA-F]*)\] @ ([0-9a-fA-F]*)';
   StructArrayExpr = '( *)\[([0-9a-fA-F]*)\] (.*)';
 var
+  Variables: TStringList;
+  SubStructure: TStringList;
   RegExp: TRegExpr;
   Local: PVariable;
-  BasicVar: PVariable;
+  I, J: Integer;
 
   function SynthesizeIndent(Indent: Integer): string;
   var
@@ -1770,7 +1762,7 @@ var
       Result := Result + ' ';
   end;
   
-  procedure ParseStructure(Output: TStringList; Indent: Integer); forward;
+  procedure ParseStructure(Output: TStringList; exIndent: Integer); forward;
   procedure ParseStructArray(Output: TStringList; Indent: Integer);
   var
     I: Integer;
@@ -1819,10 +1811,10 @@ var
     end;
   end;
 
-  procedure ParseStructure(Output: TStringList; Indent: Integer);
+  procedure ParseStructure(Output: TStringList; exIndent: Integer);
   var
     SubStructure: TStringList;
-    I: Integer;
+    Indent, I: Integer;
   begin
     I := 0;
     Indent := 0;
@@ -1864,7 +1856,7 @@ var
         else
         begin
           New(Local);
-          Local^.Name := SynthesizeIndent(Indent) + RegExp.Substitute('$3');
+          Local^.Name := SynthesizeIndent(Indent + exIndent) + RegExp.Substitute('$3');
           Local^.Value := RegExp.Substitute('$5');
           LocalsList.Add(Local);
         end;
@@ -1929,13 +1921,32 @@ var
             Local^.Name := SynthesizeIndent(Indent) + Substitute('[$1]');
             Local^.Value := Output[I];
             LocalsList.Add(Local);
+            Inc(I);
 
-            if (I < Output.Count - 2) and Exec(Output[I + 1], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+            if (I < Output.Count - 1) and Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
             begin
               New(Local);
               Local^.Name := SynthesizeIndent(Indent + 4) + Substitute('$1');
               Local^.Value := Substitute('$2');
               LocalsList.Add(Local);
+              Inc(I);
+            end
+            else if RegExp.Exec(Output[I], StructExpr) then
+            begin
+              //Populate the substructure string list
+              SubStructure := TStringList.Create;
+              while (I < Output.Count) and (Output[I] <> '') do
+              begin
+                SubStructure.Add(Output[I]);
+                Inc(I);
+              end;
+
+              //Process it
+              ParseStructure(SubStructure, Indent + 4);
+              SubStructure.Free;
+
+              //Decrement I, since we will increment one at the end of the loop
+              Dec(I);
             end;
             Free;
           end;
@@ -1946,44 +1957,83 @@ var
     end;
   end;
 begin
-  Assert(MoreLocals <> 0);
-  Dec(MoreLocals);
+  SubStructure := TStringList.Create;
+  Variables := TStringList.Create;
   RegExp := TRegExpr.Create;
-  BasicVar := PVariable(CurrentCommand.Data);
-  
+
+  //Compute the list of commands
+  I := 1;
+  while I <= Length(CurrentCommand.Command) do
+  begin
+    if Copy(CurrentCommand.Command, I, 3) = '-n ' then
+    begin
+      Inc(I, 3);
+      J := I;
+      while I <= Length(CurrentCommand.Command) do
+      begin
+        if CurrentCommand.Command[I] = ';' then
+        begin
+          Variables.Add(Copy(CurrentCommand.Command, J, I - J));
+          Break;
+        end;
+        Inc(I);
+      end;
+    end;
+    Inc(I);
+  end;
+
   //Set the type of the structure/class/whatever
-  if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)') then
+  J := 0;
+  I := 0;
+  while I < Output.Count do
+  if RegExp.Exec(Output[I], PtrVarPrompt) then
   begin
     New(Local);
-    Local^.Name := BasicVar^.Name;
+    Local^.Name := Variables[J];
     Local^.Value := RegExp.Substitute('$4$5');
     Local^.Location := RegExp.Substitute('0x$3');
     LocalsList.Add(Local);
+    Inc(I);
 
-    ParseArray(Output, 4);
+    while (I < Output.Count) and not RegExp.Exec(Output[I], VarPrompt) do
+    begin
+      SubStructure.Add(Output[I]);
+      Inc(I);
+    end;
+
+    ParseArray(SubStructure, 4);
+    SubStructure.Clear;
+    Inc(J);
   end
-  else if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)') then
+  else if RegExp.Exec(Output[I], VarPrompt) then
   begin
     New(Local);
-    Local^.Name := BasicVar^.Name;
-    Local^.Location := RegExp.Substitute('$3');
+    Local^.Name := Variables[J];
+    Local^.Location := RegExp.Substitute('0x$3');
     Local^.Value := RegExp.Substitute('$4');
     LocalsList.Add(Local);
+    Inc(I);
 
-    ParseStructure(Output, 4);
+    while (I < Output.Count) and not RegExp.Exec(Output[I], VarPrompt) do
+    begin
+      SubStructure.Add(Output[I]);
+      Inc(I);
+    end;
+
+    ParseStructure(SubStructure, 4);
+    SubStructure.Clear;
+    Inc(J);
   end
   else
-  begin
-    ShowMessage(output.text);
-  end;
+    Inc(I);
 
-  //If we have no more locals to send, send the entire list across
-  if MoreLocals = 0 then
-  begin
-    if Assigned(TDebugger(Self).OnLocals) then
-      TDebugger(Self).OnLocals(LocalsList);
-    FreeAndNil(LocalsList);
-  end;
+  //Send the list of locals
+  if Assigned(TDebugger(Self).OnLocals) then
+    TDebugger(Self).OnLocals(LocalsList);
+  FreeAndNil(LocalsList);
+
+  SubStructure.Free;
+  Variables.Free;
   RegExp.Free;
 end;
 
