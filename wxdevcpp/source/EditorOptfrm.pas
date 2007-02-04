@@ -1704,7 +1704,6 @@ end;
 
 procedure TEditorOptForm.chkCCCacheClick(Sender: TObject);
 begin
-  chkCCCache.Tag := 1; // mark modified
   lbCCC.Enabled := chkCCCache.Checked;
   btnCCCnew.Enabled := chkCCCache.Checked;
   btnCCCdelete.Enabled := chkCCCache.Checked;
