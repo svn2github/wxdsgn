@@ -1440,8 +1440,9 @@ var
               SelectedIndex := 21;
               ImageIndex := 21;
             end;
+            Inc(I);
 
-            if (I < Output.Count - 2) and Exec(Output[I + 1], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+            if (I < Output.Count - 1) and Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
             begin
               with ParentNode.Item[ParentNode.Count - 1] do
               begin
@@ -1454,6 +1455,31 @@ var
                 SelectedIndex := 21;
                 ImageIndex := 21;
               end;
+              Inc(I);
+            end
+            else if RegExp.Exec(Output[I], StructExpr) then
+            begin
+              //Populate the substructure string list
+              SubStructure := TStringList.Create;
+              while (I < Output.Count) and (Output[I] <> '') do
+              begin
+                SubStructure.Add(Output[I]);
+                Inc(I);
+              end;
+
+              //Change the icon of the parent node
+              with ParentNode.Item[ParentNode.Count - 1] do
+              begin
+                SelectedIndex := 32;
+                ImageIndex := 32;
+              end;
+
+              //Process it
+              ParseStructure(SubStructure, ParentNode.Item[ParentNode.Count - 1]);
+              SubStructure.Free;
+
+              //Decrement I, since we will increment one at the end of the loop
+              Dec(I);
             end;
             Free;
           end;
