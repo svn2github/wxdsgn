@@ -44,11 +44,14 @@ type
     chkStopOnWrite: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure NameEditKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
   private
-    procedure LoadText;
     { Private declarations }
+    fActiveWindow: TWinControl;
+    procedure LoadText;
   public
     { Public declarations }
+    property ActiveWindow: TWinControl write fActiveWindow;
   end;
 
 var
@@ -75,6 +78,7 @@ end;
 
 procedure TModifyVarForm.FormCreate(Sender: TObject);
 begin
+  ActiveWindow := NameEdit;
   LoadText;
 end;
 
@@ -85,6 +89,12 @@ begin
     ModalResult := mrOK;
     Close;
   end;
+end;
+
+procedure TModifyVarForm.FormShow(Sender: TObject);
+begin
+  SetFocus;
+  fActiveWindow.SetFocus;
 end;
 
 end.

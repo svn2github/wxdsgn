@@ -8225,7 +8225,9 @@ begin
   ModifyVarForm := TModifyVarForm.Create(self);
   try
     ModifyVarForm.NameEdit.Text := s;
+    ModifyVarForm.NameEdit.Enabled := False;
     ModifyVarForm.ValueEdit.Text := Val;
+    ModifyVarForm.ActiveWindow := ModifyVarForm.ValueEdit;
     if ModifyVarForm.ShowModal = mrOK then
     begin
       fDebugger.ModifyVariable(ModifyVarForm.NameEdit.Text, ModifyVarForm.ValueEdit.Text);
