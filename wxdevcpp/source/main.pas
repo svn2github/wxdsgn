@@ -9828,6 +9828,8 @@ var
   componentInstance:TComponent;
   boolIsFilesDirty: Boolean;
   e: TEditor;
+  strDisplayName:String;
+  compSelectedOne:TComponent;
 
   procedure SetPropertyValue(Comp: TComponent; strPropName, strPropValue: String);
   var
@@ -9946,9 +9948,11 @@ begin
       if SelectedComponent <> nil then
       begin
         str := trim(Data.AsString);
+        strDisplayName:=JvInspEvents.Selected.DisplayName;
+        compSelectedOne:=SelectedComponent;
         DisableDesignerControls;
-        LocateFunctionInEditor(Data, Trim(e.GetDesigner.Wx_Name), SelectedComponent,
-                               str, JvInspEvents.Selected.DisplayName);
+        LocateFunctionInEditor(Data, Trim(e.GetDesigner.Wx_Name), compSelectedOne,
+                               str, strDisplayName);
       end;
     end
     else if strNewValue = '<Remove Function>' then
