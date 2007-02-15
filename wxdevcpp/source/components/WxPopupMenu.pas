@@ -367,7 +367,7 @@ var
         strV := parentItemName + '->Append(' + format(
           '%s, %s, %s', [submnu.items[J].Wx_IDNAME,
           GetCppString(submnu.items[J].Wx_Caption),
-          submnu.items[J].Wx_IDName + '_obj']) + ');';
+          submnu.items[J].Wx_IDName + '_Obj']) + ');';
         strLst.add(strV);
       end
       else begin
