@@ -150,6 +150,36 @@ begin
   src := Result;
 end;
 
+function LogFontToTFont(lf: LogFontW; baseFnt: TFont = nil): TFont;
+begin
+  //Create the result TFont, and use the given font as the base for missing data
+  Result := TFont.Create;
+  if BaseFnt <> nil then
+    Result.Assign(BaseFnt);
+
+  with Result do
+  begin
+    Name := Lf.lfFaceName;
+    case lf.lfPitchAndFamily and 3 of
+      DEFAULT_PITCH:
+        Pitch := fpDefault;
+      FIXED_PITCH:
+        Pitch := fpFixed;
+      VARIABLE_PITCH:
+        Pitch := fpVariable;
+    end;
+
+    if lf.lfWeight >= 700 then
+      Style := Style + [fsBold];
+    if lf.lfItalic <> 0 then
+      Style := Style + [fsItalic];
+    if lf.lfUnderline <> 0 then
+      Style := Style + [fsUnderline];
+    if lf.lfStrikeOut <> 0 then
+      Style := Style + [fsStrikeOut];
+  end;
+end;
+
 constructor TdevDockStyle.Create(AOwner: TComponent);
 begin
   inherited;
@@ -186,6 +216,7 @@ var
   GrabberState: Integer;
   ThemeData: HTheme;
   DrawRect: TRect;
+  lf: LogFontW;
 begin
   if (not IsThemeActive) or (not TdevDockStyle(DockStyle).NativeDocks) then
   begin
@@ -214,11 +245,17 @@ begin
   DrawRect.Top := DrawRect.Top + ((GrabberSize - Canvas.TextHeight(ExtentStr)) div 2);
   DrawRect.Right := DrawRect.Right - RightOffset - ButtonWidth - ButtonSplitter - AutoHideButtonWidth;
   Canvas.Brush.Style := bsClear;
-  Canvas.Font.Style := [fsBold];
+  Canvas.Font.Style := Screen.IconFont.Style;
+
+  //Populate the font style from the UxTheme data
+  if GetThemeSysFont(ThemeData, TMT_SMALLCAPTIONFONT, Lf) = S_OK then
+    Canvas.Font := LogFontToTFont(lf, Canvas.Font);
+
+  //Finally set the colour of the text and draw it on screen
   if GetActiveControl = Control then
-    Canvas.Font.Color := clInactiveCaptionText
+    Canvas.Font.Color := clCaptionText
   else
-    Canvas.Font.Color := clCaptionText;
+    Canvas.Font.Color := clInactiveCaptionText;
   DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS);
 
   //Draw the pin

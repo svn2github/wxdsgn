@@ -1024,6 +1024,8 @@ var
   end;
 begin
   //Update the memo
+  Screen.Cursor := crHourglass;
+  Application.ProcessMessages;
   RegExp := TRegExpr.Create;
   NewLines := TStringList.Create;
 
@@ -1058,6 +1060,7 @@ begin
   //Clean up
   RegExp.Free;
   NewLines.Free;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TCDBDebugger.AddIncludeDir(s: string);
@@ -1861,7 +1864,10 @@ var
           begin
             if RegExp.Exec(Output[I], StructArrayExpr) or RegExp.Exec(Output[I], StructExpr) then
               if Length(RegExp.Substitute('$1')) <= Indent then
-                Break
+              begin
+                Inc(I);
+                Break;
+              end
               else
                 SubStructure.Add(Output[I]);
             Inc(I);
@@ -1983,6 +1989,7 @@ var
     end;
   end;
 begin
+  MainForm.DebugOutput.Lines.SaveToFile('D:\Test.txt');
   SubStructure := TStringList.Create;
   Variables := TStringList.Create;
   RegExp := TRegExpr.Create;
@@ -2480,6 +2487,8 @@ var
   end;
 begin
   //Update the memo
+  Screen.Cursor := crHourglass;
+  Application.ProcessMessages;
   RegExp := TRegExpr.Create;
   NewLines := TStringList.Create;
 
@@ -2521,6 +2530,7 @@ begin
   //Clean up
   NewLines.Free;
   RegExp.Free;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TGDBDebugger.OnSignal(Output: TStringList);
