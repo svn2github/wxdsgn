@@ -19,7 +19,7 @@ interface
 
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  StdCtrls, WxUtils, ExtCtrls, WxToolbar, WxSizerPanel, JvEdit, UValidator;
+  StdCtrls, WxUtils, ExtCtrls, WxSizerPanel, WxToolBar, JvEdit, UValidator;
 
 type
   TWxEdit = class(TJvEdit, IWxComponentInterface, IWxToolBarInsertableInterface,
@@ -245,7 +245,7 @@ begin
   defaultFGColor           := self.font.color;
   BorderStyle              := bsSingle;
   FWx_Comments             := TStringList.Create;
-  AutoSize               := False;
+  AutoSize                 := False;
 
 end; { of AutoInitialize }
 
@@ -407,6 +407,30 @@ begin
 
   Result := '';
 
+   if (XRCGEN) then
+ begin//generate xrc loading code  needs to be edited
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
+
+  if trim(EVT_TEXT_MAXLEN) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_MAXLEN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_MAXLEN]) + '';
+
+  if trim(EVT_TEXT_URL) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_URL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_URL]) + '';
+ end
+ else
+ begin//generate the cpp code
   if trim(EVT_TEXT_ENTER) <> '' then
     Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
@@ -426,26 +450,45 @@ begin
   if trim(EVT_TEXT_URL) <> '' then
     Result := Result + #13 + Format('EVT_TEXT_URL(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_URL]) + '';
+ end;
 
 end;
 
 function TWxEdit.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
 
   try
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%d</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('<IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('<size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('<pos>%d,%d</pos>', [self.Left, self.Top]));
+    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('<style>%s</style>',
+    Result.Add(IndentString + Format('  <style>%s</style>',
       [GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle)]));
-    Result.Add(IndentString + Format('<value>%s</value>', [XML_Label(self.Caption)]));
+    Result.Add(IndentString + Format('  <value>%s</value>', [XML_Label(self.Caption)]));
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -468,7 +511,7 @@ begin
 
   parentName := GetWxWidgetParent(self);
 
-  AutoSize               := False;
+  AutoSize := False;
   
   strStyle := GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle);
 
@@ -488,11 +531,20 @@ begin
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
 
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin//generate the cpp code
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Text), self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;//end of if xrc
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -526,7 +578,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -534,7 +586,7 @@ begin
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) then
+  if (self.Parent is TWxToolBar) and not (XRCGEN) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

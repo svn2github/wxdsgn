@@ -291,15 +291,16 @@ begin
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
-  
+
   FWx_PropertyList.add('Wx_PickCalStyle:Picker Style');
   FWx_PropertyList.add('wxDP_SPIN:wxDP_SPIN');
   FWx_PropertyList.add('wxDP_DROPDOWN:wxDP_DROPDOWN');
   FWx_PropertyList.add('wxDP_DEFAULT:wxDP_DEFAULT');
   FWx_PropertyList.add('wxDP_ALLOWNONE:wxDP_ALLOWNONE');
   FWx_PropertyList.add('wxDP_SHOWCENTURY:wxDP_SHOWCENTURY');
-  
+
   FWx_PropertyList.add('Wx_Date:Date');
+
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
@@ -344,6 +345,18 @@ function TWxDatePickerCtrl.GenerateEventTableEntries(CurrClassName: string): str
 begin
   Result := '';
 
+   if (XRCGEN) then
+ begin//generate xrc loading code  needs to be edited
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin//generate the cpp code
   if trim(EVT_DATE_CHANGED) <> '' then
     Result := Format('EVT_DATE_CHANGED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_DATE_CHANGED]) + '';
@@ -352,14 +365,31 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-
+ end;
 end;
 
 function TWxDatePickerCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
   try
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -370,6 +400,9 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetPickCalSpecificStyle(Wx_GeneralStyle, Wx_PickCalStyle)]));
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
+
   except
     Result.Free;
     raise;
@@ -411,11 +444,20 @@ begin
 
   Result := Format('wxDateTime %s_Date(%d,%s,%d,%d,%d,%d,%d);', [self.Name,ADay,GetWxMonthFromIndex(AMonth),AYear,AHour, AMinute, ASecond, AMilliSecond]);
 
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin//generate the cpp code
   Result :=  Result + #13 + Format(
     '%s = new %s(%s, %s, %s_Date, wxPoint(%d,%d), wxSize(%d,%d) %s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
      self.Name, self.Left, self.Top, self.Width, self.Height,strStyle]);
+ end;//end of if xrc
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -446,7 +488,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
+  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
 
@@ -454,7 +496,7 @@ begin
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) then
+  if (self.Parent is TWxToolBar) and not (XRCGEN) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

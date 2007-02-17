@@ -117,9 +117,9 @@ begin
   AutoInitialize;
   { Code to perform other tasks when the component is created }
   FWx_PropertyList.add('wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Caption:Caption');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_MenuItems:Menu Items');
+  FWx_PropertyList.add('Wx_Caption :Caption');
+  FWx_PropertyList.add('Name : Name');
+  FWx_PropertyList.add('Wx_MenuItems: Menu Items');
   FWx_PropertyList.add('Wx_Comments:Comments');
 end;
 
@@ -313,16 +313,16 @@ begin
       if item.WX_BITMAP.Bitmap.Handle <> 0 then
       begin
         Result := ' wxMenuItem * ' + item.Wx_IDName +
-          '_mnuItem_obj = new wxMenuItem (' + Format('%s, %s, %s, %s, %s',
+          '_mnuItem_Obj = new wxMenuItem (' + Format('%s, %s, %s, %s, %s',
           [parentName, item.Wx_IDName, GetCppString(item.Wx_Caption), GetCppString(
           item.Wx_HelpText), GetMenuKindAsText(item.Wx_MenuItemStyle)]) + ');';
         Result := Result + #13 + #10 + 'wxBitmap ' + item.Wx_IDName +
-          '_mnuItem_obj_BMP(' +
+          '_mnuItem_Obj_BMP(' +
           item.Wx_IDName + '_XPM);';
-        Result := Result + #13 + #10 + item.Wx_IDName + '_mnuItem_obj->SetBitmap(' +
-          item.Wx_IDName + '_mnuItem_obj_BMP);';
+        Result := Result + #13 + #10 + item.Wx_IDName + '_mnuItem_Obj->SetBitmap(' +
+          item.Wx_IDName + '_mnuItem_Obj_BMP);';
         Result := Result + #13 + #10 + parentName + '->Append(' +
-          item.Wx_IDName + '_mnuItem_obj);';
+          item.Wx_IDName + '_mnuItem_Obj);';
       end
       else
         Result := parentName + '->Append(' +

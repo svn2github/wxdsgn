@@ -285,17 +285,20 @@ begin
   FWx_PropertyList.add('Wx_ProxyFGColorString:Normal Color');
   FWx_PropertyList.add('Wx_ProxyHoverColorString:Hover Color');
   FWx_PropertyList.add('Wx_ProxyVisitedColorString:Visited Color');
-  
+
   FWx_PropertyList.add('wx_HyperLinkStyle:HyperLink Style');
-  FWx_PropertyList.add('wxHL_ALIGN_LEFT:wxHL_ALIGN_LEFT');
-  FWx_PropertyList.add('wxHL_ALIGN_RIGHT:wxHL_ALIGN_RIGHT');
-  FWx_PropertyList.add('wxHL_ALIGN_CENTRE:wxHL_ALIGN_CENTRE');
-  FWx_PropertyList.Add('wxHL_CONTEXTMENU:wxHL_CONTEXTMENU');
+//  FWx_PropertyList.add('wxHL_ALIGN_LEFT:wxHL_ALIGN_LEFT');
+//  FWx_PropertyList.add('wxHL_ALIGN_RIGHT:wxHL_ALIGN_RIGHT');
+//  FWx_PropertyList.add('wxHL_ALIGN_CENTRE:wxHL_ALIGN_CENTRE');
+  FWx_PropertyList.add('wxHL_CONTEXTMENU:wxHL_CONTEXTMENU');
+
   FWx_PropertyList.add('Caption:Label');
+
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
   FWx_EventList.add('EVT_HYPERLINK:OnHyperLink');
+
 
 end;
 
@@ -331,18 +334,44 @@ end;
 function TWxHyperLinkCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+
+   if (XRCGEN) then
+ begin//generate xrc loading code  needs to be edited
+  if trim(EVT_HYPERLINK) <> '' then
+    Result := Format('EVT_HYPERLINK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_HYPERLINK]) + '';
+ end
+ else
+ begin//generate the cpp code
   if trim(EVT_HYPERLINK) <> '' then
     Result := Format('EVT_HYPERLINK(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_HYPERLINK]) + '';
-
+ end;
 end;
 
 function TWxHyperLinkCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
@@ -354,6 +383,8 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetHyperLnkSpecificStyle(Wx_GeneralStyle, Wx_HyperLinkStyle)]));
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -381,13 +412,22 @@ begin
     strStyle := '0';
   strStyle := ', ' + strStyle + ', ' + GetCppString(Name);
 
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin//generate the cpp code
   //Last comma is removed because it depends on the user selection of the properties.
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, %s, wxPoint(%d,%d), %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Caption), GetCppString(wx_URL),self.Left, self.Top, strSize, strStyle]);
-  if trim(self.Wx_ToolTip) <> '' then
+ end;//end of if xrc
+    if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
 
@@ -427,7 +467,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
+  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',

@@ -31,6 +31,8 @@ type
     FColumns: integer;
     { Storage for property RowSpacing }
     FRowSpacing: integer;
+    { Storage for property Rows }
+    FRows: integer;
     { Storage for property FWx_Border }
     FWx_Border: integer;
     { Storage for property Wx_Class }
@@ -126,6 +128,7 @@ type
     property ColumnSpacing: integer Read FColumnSpacing Write FColumnSpacing default 0;
     property Columns: integer Read FColumns Write FColumns default 2;
     property RowSpacing: integer Read FRowSpacing Write FRowSpacing default 0;
+    property Rows: integer Read FRows Write FRows default 2;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
@@ -160,6 +163,7 @@ begin
   FColumnSpacing      := 0;
   FColumns            := 2;
   FRowSpacing         := 0;
+  FRows               := 2;
   Wx_Border           := 5;
   FWx_Class           := 'wxFlexGridSizer';
   FWx_EventList       := TStringList.Create;
@@ -179,8 +183,8 @@ end; { of AutoDestroy }
 { Write method for property Wx_EventList }
 procedure TWxFlexGridSizer.SetWx_EventList(Value: TStringList);
 begin
-  //Use Assign method because TStringList is an object type and FWx_EventList
-  //has been created.
+     { Use Assign method because TStringList is an object type
+       and FWx_EventList has been created. }
   FWx_EventList.Assign(Value);
 end;
 
@@ -212,7 +216,7 @@ begin
   FWx_PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
   FWx_PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
   FWx_PropertyList.Add('wxEXPAND:wxEXPAND');
-  FWx_PropertyList.add('Wx_Border:Border');
+  FWx_PropertyList.add('Wx_Border: Border');
   FWx_PropertyList.add('Wx_BorderAlignment:Borders');
   FWx_PropertyList.add('wxALL:wxALL');
   FWx_PropertyList.add('wxTOP:wxTOP');
@@ -221,9 +225,10 @@ begin
   FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
 
   FWx_PropertyList.add('Name:Name');
+  FWx_PropertyList.add('Rows:Rows');
   FWx_PropertyList.add('Columns:Columns');
-  FWx_PropertyList.add('RowSpacing:Row Spacing');
-  FWx_PropertyList.add('ColumnSpacing:Column Spacing');
+  FWx_PropertyList.add('RowSpacing:RowSpacing');
+  FWx_PropertyList.add('ColumnSpacing:ColumnSpacing');
 
 end;
 
@@ -253,6 +258,8 @@ begin
   Result := '';
 end;
 
+
+
 function TWxFlexGridSizer.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
@@ -268,13 +275,19 @@ begin
   Result := TStringList.Create;
 
   try
+{$IFNDEF XRC_ONLY_BUILD}
+ if not (self.Parent is TForm) then //NUKLEAR ZELPH
+ begin
+{$ENDIF}
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '  <rows>0</rows>');
+    Result.Add(IndentString + Format('  <rows>%d</rows>', [self.rows]));
     Result.Add(IndentString + Format('  <cols>%d</cols>', [self.columns]));
     Result.Add(IndentString + Format('  <vgap>%d</vgap>', [self.rowSpacing]));
     Result.Add(IndentString + Format('  <hgap>%d</hgap>', [self.columnSpacing]));
-
+{$IFNDEF XRC_ONLY_BUILD}
+ end;//NUKLEAR ZELPH
+{$ENDIF}
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         // Only add the XRC control if it is a child of the top-most parent (the form)
@@ -289,9 +302,14 @@ begin
             tempstring.Free
           end
         end; // for
-
+{$IFNDEF XRC_ONLY_BUILD}
+ if not (self.Parent is TForm) then //NUKLEAR ZELPH
+ begin
+{$ENDIF}
     Result.Add(IndentString + '</object>');
-
+{$IFNDEF XRC_ONLY_BUILD}
+ end;//NUKLEAR ZELPH
+{$ENDIF}
   except
     Result.Free;
     raise;
@@ -304,8 +322,13 @@ var
   strAlignment: string;
   parentName:  string;
 begin
+{$IFNDEF XRC_ONLY_BUILD}
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
+begin
+{$ENDIF}
+Result := '';
   Result := Format('%s = new wxFlexGridSizer(%d, %d, %d, %d);',
-    [self.Name, 0, self.columns, self.rowSpacing, self.columnSpacing]);
+    [self.Name, self.rows, self.columns, self.rowSpacing, self.columnSpacing]);
   if ((self.Parent is TForm) or (IsControlWxContainer(self.Parent))) then
   begin
     if (self.Parent is TForm) then
@@ -328,10 +351,17 @@ begin
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
+{$IFNDEF XRC_ONLY_BUILD}
+ end;//NUKLEAR ZELPH
+{$ENDIF}
 end;
 
 function TWxFlexGridSizer.GenerateGUIControlDeclaration: string;
 begin
+Result := '';
+{$IFNDEF XRC_ONLY_BUILD}
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
+{$ENDIF}
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 

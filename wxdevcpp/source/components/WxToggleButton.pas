@@ -203,6 +203,7 @@ begin
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
+
   FWx_PropertyList.add('Caption:Label');
 
   FWx_EventList.add('EVT_TOGGLEBUTTON:OnClick');
@@ -236,6 +237,19 @@ end;
 function TWxToggleButton.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  if trim(EVT_TOGGLEBUTTON) <> '' then
+    Result := Format('EVT_TOGGLEBUTTON(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TOGGLEBUTTON]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+end
+else
+begin
   if trim(EVT_TOGGLEBUTTON) <> '' then
     Result := Format('EVT_TOGGLEBUTTON(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TOGGLEBUTTON]) + '';
@@ -243,15 +257,33 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
 
 end;
 
 function TWxToggleButton.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
@@ -263,6 +295,8 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetButtonSpecificStyle(self.Wx_GeneralStyle, Wx_ButtonStyle)]));
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -296,11 +330,20 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+if (XRCGEN) then
+begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Text), self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -334,7 +377,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -343,7 +386,7 @@ begin
       self.Wx_Border]);
 
   end;
-  if (self.Parent is TWxToolBar) then
+  if (self.Parent is TWxToolBar) and not (XRCGEN) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

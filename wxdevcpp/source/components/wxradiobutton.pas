@@ -271,20 +271,51 @@ end;
 function TWxRadioButton.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+
+    if (XRCGEN) then
+ begin
+  if trim(EVT_RADIOBUTTON) <> '' then
+    Result := Format('EVT_RADIOBUTTON(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RADIOBUTTON]) + '';
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+end
+else
+begin
   if trim(EVT_RADIOBUTTON) <> '' then
     Result := Format('EVT_RADIOBUTTON(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_RADIOBUTTON]) + '';
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
+ 
 end;
 
 function TWxRadioButton.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
+    if not (self.Parent is TWxSizerPanel) then
+     begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
@@ -302,6 +333,8 @@ begin
       Result.Add(IndentString + '  <value>0</value>');
 
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -339,10 +372,19 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+	if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(Wx_IDName, self.Wx_IDValue),
     GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -376,14 +418,14 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
+  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) then
+  if (self.Parent is TWxToolBar) and not (XRCGEN) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

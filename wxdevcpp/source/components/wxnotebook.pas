@@ -232,6 +232,22 @@ function TWxNoteBook.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
+if (XRCGEN) then
+ begin//generate xrc loading code  needs to be edited
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_NOTEBOOK_PAGE_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_NOTEBOOK_PAGE_CHANGED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_NOTEBOOK_PAGE_CHANGED]) + '';
+
+  if trim(EVT_NOTEBOOK_PAGE_CHANGING) <> '' then
+    Result := Result + #13 + Format('EVT_NOTEBOOK_PAGE_CHANGING(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_NOTEBOOK_PAGE_CHANGING]) + '';
+ end
+ else
+ begin  
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
@@ -243,20 +259,37 @@ begin
   if trim(EVT_NOTEBOOK_PAGE_CHANGING) <> '' then
     Result := Result + #13 + Format('EVT_NOTEBOOK_PAGE_CHANGING(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_NOTEBOOK_PAGE_CHANGING]) + '';
+ end;	  
 
 end;
 
 function TWxNotebook.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
+  flag :string;
   i: integer;
   wxcompInterface: IWxComponentInterface;
   tempstring: TStringList;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
 
+    if not (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -283,6 +316,8 @@ begin
         end; // for
 
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
 
@@ -312,11 +347,20 @@ begin
   if (trim(strStyle) <> '') then
     strStyle := ', ' + strStyle;
 
+if (XRCGEN) then
+ begin
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]); 
+ end
+ else 
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d),wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;	
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -346,7 +390,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

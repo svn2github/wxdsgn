@@ -150,7 +150,7 @@ begin
   FWx_PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
   FWx_PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
   FWx_PropertyList.Add('wxEXPAND:wxEXPAND');
-  FWx_PropertyList.add('Wx_Border:Border');
+  FWx_PropertyList.add('Wx_Border: Border');
   FWx_PropertyList.add('Wx_BorderAlignment:Borders');
   FWx_PropertyList.add('wxALL:wxALL');
   FWx_PropertyList.add('wxTOP:wxTOP');

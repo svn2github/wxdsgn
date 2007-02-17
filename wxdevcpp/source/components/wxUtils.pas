@@ -50,7 +50,10 @@ const
 
 var
    StringFormat : string;
-
+   XRCGEN:Boolean;//NUKLEAR ZELPH
+{$IFDEF XRC_ONLY_BUILD}
+   XRConly:Boolean;//NUKLEAR ZELPH
+{$ENDIF}
 type
   TWxPoint = class(TComponent)
   private
@@ -570,7 +573,6 @@ function UnixPathToDosPath(const Path: string): string;
 function ConvertLibsToCurrentVersion(strValue:String):string;
 function Convert25LibsToCurrentVersion(strValue:String):string;
 function Convert26LibsToCurrentVersion(strValue:String):string;
-
 function GetGridSelectionToString(grdsel: TWxGridSelection): string;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
@@ -584,6 +586,8 @@ function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): string;
 function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): string;
 function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
 function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): string;
+
+
 function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): string;
 function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): string;
 function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): string;
@@ -643,10 +647,12 @@ function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;
   splitterWinStyle: TWxSplitterWinStyleSet): string;
 function GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxRichTextStyleSet): string;
+
 function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
   lstvwstyle: TWxLVStyleSet; view: TWxLvView): string;
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxEdtGeneralStyleSet): string;
+
 function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxBtnStyleSet): string;
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -690,7 +696,9 @@ function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;strParentName:str
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
 function GetCommentString(str: string): string;
+
 function GetWxFontDeclaration(fnt: TFont): string;
+
 function GetDesignerFormName(cntrl: TControl): string;
 function GetWxWidgetParent(cntrl: TControl): string;
 function GetWxWindowControls(wnCtrl: TWinControl): integer;
@@ -703,6 +711,7 @@ function GetMenuKindAsText(menuStyle: TWxMenuItemStyleItem): string;
 function GetToolButtonKindAsText(toolStyle: TWxToolbottonItemStyleItem): string;
 
 function GetTotalHtOfAllToolBarAndStatusBar(ParentControl: TWinControl): Integer;
+
 function GetPredefinedwxIds: TStringList;
 function IsIDPredefined(str: string; strlst: TStringList): boolean;
 
@@ -2729,8 +2738,6 @@ begin
       else
         Result := Result + ' | ' + strA;
 
-  if trim(Result) <> '' then
-    Result := ', ' + Result;
 end;
 
 //Start here
@@ -3164,8 +3171,7 @@ begin
   PropertyList.Add('Height:Height');
   PropertyList.Add('Left:Left');
   PropertyList.Add('Top:Top');
-end;
-
+ end;
 function SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): string;
 var
   Styles: TStringList;

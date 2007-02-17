@@ -18,7 +18,7 @@ unit wxCalendarCtrl;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, wxCalendarBase, WxSizerPanel;
+  Forms, Graphics, ExtCtrls, WxUtils, wxCalendarBase,WxSizerPanel;
 
 type
   TWxCalendarCtrl = class(TrmCustomCalendar, IWxComponentInterface,IWxControlPanelInterface)
@@ -221,8 +221,9 @@ begin
   { Code to perform other tasks when the container is created    }
   PopulateGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.Add('WxSelectedDate:Selected Date');
-  FWx_PropertyList.Add('WxCalCtrlstyle:Calendar Style');
+  FWx_PropertyList.Add('WxSelectedDate: Selected Date');
+
+  FWx_PropertyList.Add('WxCalCtrlstyle: Calendar Style');
   FWx_PropertyList.Add('wxCAL_SUNDAY_FIRST:wxCAL_SUNDAY_FIRST');
   FWx_PropertyList.Add('wxCAL_MONDAY_FIRST:wxCAL_MONDAY_FIRST');
   FWx_PropertyList.Add('wxCAL_SHOW_HOLIDAYS:wxCAL_SHOW_HOLIDAYS');
@@ -278,6 +279,35 @@ function TWxCalendarCtrl.GenerateEventTableEntries(CurrClassName: string): strin
 begin
 
   Result := '';
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_CALENDAR_SEL_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_CALENDAR_SEL_CHANGED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_CALENDAR_SEL_CHANGED]) + '';
+
+  if trim(EVT_CALENDAR_DAY) <> '' then
+    Result := Result + #13 + Format('EVT_CALENDAR_DAY(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_CALENDAR_DAY]) + '';
+
+  if trim(EVT_CALENDAR_MONTH) <> '' then
+    Result := Result + #13 + Format('EVT_CALENDAR_MONTH(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_CALENDAR_MONTH]) + '';
+
+  if trim(EVT_CALENDAR_YEAR) <> '' then
+    Result := Result + #13 + Format('EVT_CALENDAR_YEAR(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_CALENDAR_YEAR]) + '';
+
+  if trim(EVT_CALENDAR_WEEKDAY_CLICKED) <> '' then
+    Result := Result + #13 + Format('EVT_CALENDAR_WEEKDAY_CLICKED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_CALENDAR_WEEKDAY_CLICKED]) + '';
+
+ end
+ else
+ begin//generate the cpp code
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
@@ -301,15 +331,33 @@ begin
   if trim(EVT_CALENDAR_WEEKDAY_CLICKED) <> '' then
     Result := Result + #13 + Format('EVT_CALENDAR_WEEKDAY_CLICKED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_CALENDAR_WEEKDAY_CLICKED]) + '';
+ end;
 end;
 
 function TWxCalendarCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
 
+    if not (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
@@ -322,6 +370,8 @@ begin
       [GetStdStyleString(self.Wx_GeneralStyle)]));
 
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -349,13 +399,20 @@ begin
   if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
 
-
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin//generate the cpp code
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s,wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),strDateString,
     self.Left, self.Top, self.Width, self.Height, strStyle]);
-
+ end;//end of if xrc
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -385,7 +442,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
+  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',

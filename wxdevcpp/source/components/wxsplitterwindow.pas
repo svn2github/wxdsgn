@@ -215,6 +215,7 @@ begin
   FWx_PropertyList.add('wxSP_NO_XP_THEME:wxSP_NO_XP_THEME');
   FWx_PropertyList.add('wxSP_PERMIT_UNSPLIT:wxSP_PERMIT_UNSPLIT');
   FWx_PropertyList.add('wxSP_LIVE_UPDATE:wxSP_LIVE_UPDATE');
+
   FWx_PropertyList.add('Orientation:Orientation');
   FWx_PropertyList.add('Wx_SashPosition:Sash Position');
 
@@ -259,6 +260,27 @@ end;
 function TWxSplitterWindow.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+ if (XRCGEN) then
+ begin//generate xrc loading code
+  if trim(EVT_SPLITTER_SASH_POS_CHANGING) <> '' then
+    Result := Format('EVT_SPLITTER_SASH_POS_CHANGING(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGING]) + '';
+  if trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' then
+    Result := Format('EVT_SPLITTER_SASH_POS_CHANGED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
+  if trim(EVT_SPLITTER_DCLICK) <> '' then
+    Result := Format('EVT_SPLITTER_DCLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_DCLICK]) + '';
+  if trim(EVT_SPLITTER_UNSPLIT) <> '' then
+    Result := Format('EVT_SPLITTER_UNSPLIT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
+	  
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + ''; 
+ end
+ else
+ begin
   if trim(EVT_SPLITTER_SASH_POS_CHANGING) <> '' then
     Result := Format('EVT_SPLITTER_SASH_POS_CHANGING(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGING]) + '';
@@ -271,30 +293,72 @@ begin
   if trim(EVT_SPLITTER_UNSPLIT) <> '' then
     Result := Format('EVT_SPLITTER_UNSPLIT(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
-
+	  
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 end;
+end;
 
 function TWxSplitterWindow.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+  flag :string;
+  i: integer;
+  wxcompInterface: IWxComponentInterface;
+  tempstring: TStringList;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
+    if not (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
+    if self.Orientation = wxVertical then
+      Result.Add(IndentString + '  <orientation>horizontal</orientation>')
+    else
+      Result.Add(IndentString + '  <orientation>vertical</orientation>');
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    Result.Add(IndentString + '  <minsize>AddMe</minsize>');
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-    Result.Add(IndentString + Format('  <sash>%d</sash>', [self.Wx_SashPosition]));
-
+    Result.Add(IndentString + Format('  <sashpos>%d</sashpos>', [self.Wx_SashPosition]));
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle, Wx_SplitterStyle)]));
+      
+    for i := 0 to self.ControlCount - 1 do // Iterate
+      if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        // Only add the XRC control if it is a child of the top-most parent (the form)
+        //  If it is a child of a sizer, panel, or other object, then it's XRC code
+        //  is created in GenerateXRCControlCreation of that control.
+        if ( self.Controls[i].GetParentComponent.Name = self.Name) then
+        begin
+          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+          try
+            Result.AddStrings(tempstring)
+          finally
+            tempstring.Free
+          end
+        end; // for
+      
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -317,11 +381,20 @@ begin
   if (trim(strStyle) <> '') then
     strStyle := ', ' + strStyle;
 
+if (XRCGEN) then
+ begin//generate xrc loading code
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s =new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
+end;
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
@@ -336,7 +409,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -489,7 +562,7 @@ begin
   if ControlCount < 1 then
   begin
     inherited;
-    Exit;
+    exit;
   end;
 
   if (ControlCount > 0) and (Wx_SashPosition = 0) then
@@ -504,7 +577,7 @@ begin
   begin
     //Calculate the total size for all children
     if IsControlWxNonVisible(Controls[i]) then
-      Continue;
+      continue;
 
     totalmaxWidth := totalmaxWidth + self.Controls[i].Width + 2 * self.FSpaceValue;
     totalmaxHt    := totalmaxHt + self.Controls[i].Height + 2 * self.FSpaceValue;
@@ -664,7 +737,8 @@ begin
     strOrientation := 'SplitHorizontally'
   else
     strOrientation := 'SplitVertically';
-
+if not (XRCGEN) then //NUKLEAR ZELPH
+ begin 
   if self.ControlCount = 1 then
   begin
     if Result = '' then
@@ -687,6 +761,7 @@ begin
         self.Wx_SashPosition]);
     exit;
   end;
+ end;//NUKLEAR ZELPH
 end;
 
 end.

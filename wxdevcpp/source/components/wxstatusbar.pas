@@ -57,7 +57,7 @@ type
 
     { Protected methods of TWxStatusBar }
     procedure Click; override;
-    procedure Loaded; override;             
+    procedure Loaded; override;
     function GenerateControlIDs: string;
     function GenerateEnumControlIDs: string;
     function GenerateEventTableEntries(CurrClassName: string): string;
@@ -154,16 +154,16 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxStatusBar.AutoInitialize;
 begin
-  FWx_PropertyList    := TStringList.Create;
-  FOrientation        := wxHorizontal;
-  FWx_Class           := 'wxStatusBar';
-  FWx_EventList       := TStringList.Create;
+  FWx_PropertyList := TStringList.Create;
+  FOrientation  := wxHorizontal;
+  FWx_Class     := 'wxStatusBar';
+  FWx_EventList := TStringList.Create;
   FWx_BorderAlignment := [wxAll];
-  FWx_Alignment       := [wxALIGN_CENTER];
-  FWx_IDValue         := -1;
-  FWx_StretchFactor   := 0;
-  FWx_Enabled         := True;
-  FWx_Comments        := TStringList.Create;
+  FWx_Alignment  := [wxALIGN_CENTER];
+  FWx_IDValue   := -1;
+  FWx_StretchFactor := 0;
+  FWx_Enabled   := True;
+  FWx_Comments  := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -203,8 +203,9 @@ begin
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
-  FWx_PropertyList.add('Panels:Fields');
-  FWx_PropertyList.add('Wx_StatusbarStyleSet:Statusbar Styles');
+  FWx_PropertyList.add('Panels :Fields');
+  FWx_PropertyList.add('Wx_StatusbarStyleSet : Statusbar Styles');
+
   FWx_PropertyList.add('wxST_SIZEGRIP:wxST_SIZEGRIP');
 
 end;
@@ -303,7 +304,7 @@ function TWxStatusBar.GenerateGUIControlCreation: string;
 var
   I: integer;
   strColorStr: string;
-  strStyle, parentName, strAlignment: string;
+  strStyle, parentName: string;
   min1used: boolean;
 begin
   Result := '';
@@ -320,9 +321,18 @@ begin
   if (trim(strStyle) <> '') then
     strStyle := ', ' + strStyle;
 
+if (XRCGEN) then
+begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s%s);', [self.Name, self.wx_Class, parentName,
     GetWxIDString(self.Wx_IDName, self.Wx_IDValue), strStyle]);
+end;
 
   if self.Panels.Count > 0 then
   begin
@@ -387,13 +397,7 @@ begin
   //if strColorStr <> '' then
   //Result:=Result+#13+Format('%s->SetFont(%s);',[self.Name,strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+  Result := Result + #13 + Format('SetStatusBar(%s);', [self.Name]);
 
 end;
 

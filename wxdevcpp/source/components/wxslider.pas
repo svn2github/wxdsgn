@@ -350,6 +350,58 @@ function TWxSlider.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
+if (XRCGEN) then
+ begin//generate xrc loading code
+  if trim(EVT_SLIDER) <> '' then
+    Result := Format('EVT_SLIDER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_SLIDER]) + '';
+
+  if trim(EVT_COMMAND_SCROLL) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_TOP) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_TOP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_TOP]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_BOTTOM) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_BOTTOM(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_BOTTOM]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_LINEUP) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_LINEUP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_LINEUP]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_LINEDOWN) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_LINEDOWN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_LINEDOWN]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_PAGEUP) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_PAGEUP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_PAGEUP]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_PAGEDOWN) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_PAGEDOWN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_PAGEDOWN]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_THUMBTRACK) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_THUMBTRACK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_THUMBTRACK]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_THUMBRELEASE) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_THUMBRELEASE(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_THUMBRELEASE]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_ENDSCROLL) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_ENDSCROLL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_ENDSCROLL]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   if trim(EVT_SLIDER) <> '' then
     Result := Format('EVT_SLIDER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_SLIDER]) + '';
@@ -397,15 +449,33 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
 
 end;
 
 function TWxSlider.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+flag :string;
 begin
 
   Result := TStringList.Create;
+  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
+    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
+  else
+    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
+      flag := SizerAlignmentToStr(Wx_Alignment)
+    else
+      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
+        flag := BorderAlignmentToStr(Wx_BorderAlignment);
+
 
   try
+    if not (self.Parent is TWxSizerPanel) then
+    begin
+      Result.Add(IndentString + '<object class="sizeritem">');
+      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
+      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
+    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -421,6 +491,8 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetSliderSpecificStyle(self.Wx_GeneralStyle, Wx_SliderStyle)]));
     Result.Add(IndentString + '</object>');
+    if not (self.Parent is TWxSizerPanel) then
+      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -470,12 +542,21 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %d, %d, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.position, self.Min, self.Max, self.Left, self.Top, self.Width,
     self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -491,10 +572,12 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
+ if not (XRCGEN) then
+ begin
   Result := Result + #13 + Format('%s->SetRange(%d,%d);',
     [self.Name, self.Min, self.Max]);
   Result := Result + #13 + Format('%s->SetValue(%d);', [self.Name, self.Position]);
-
+ end;
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
@@ -510,7 +593,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
+  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
@@ -518,7 +601,7 @@ begin
       self.Wx_Border]);
   end;
 
-  if (self.Parent is TWxToolBar) then
+  if (self.Parent is TWxToolBar) and not (XRCGEN) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 
