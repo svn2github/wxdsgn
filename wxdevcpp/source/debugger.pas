@@ -1989,7 +1989,6 @@ var
     end;
   end;
 begin
-  MainForm.DebugOutput.Lines.SaveToFile('D:\Test.txt');
   SubStructure := TStringList.Create;
   Variables := TStringList.Create;
   RegExp := TRegExpr.Create;
