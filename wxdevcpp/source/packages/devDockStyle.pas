@@ -97,6 +97,9 @@ uses
 type
   TJvDockVSNETZoneAccess = class(TJvDockVSNETZone);
 
+function GetThemeSysFont(hTheme: HTHEME; iFontID: Integer; var plf: LOGFONTW): HRESULT; stdcall;
+  external 'UxTheme.dll';
+
 function IsThemeActive: Boolean;
 begin
   Result := Assigned(UxTheme.IsThemeActive) and UxTheme.IsThemeActive; 
