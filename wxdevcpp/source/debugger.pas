@@ -417,8 +417,6 @@ var
   pStartupDir: PChar;
   sa: TSecurityAttributes;
 begin
-  fExecuting := True;
-  
   // Set up the security attributes struct.
   sa.nLength := sizeof(TSecurityAttributes);
   sa.lpSecurityDescriptor := nil;
@@ -497,6 +495,9 @@ begin
     DisplayError('Could not start debugger process (' + commandline + ')');
     Exit;
   end;
+
+  // Okay the process is running: set our flag
+  fExecuting := True;
 
   // Get the PID of the new process
   hPid := ProcessInfo.hProcess;
@@ -1009,6 +1010,8 @@ var
       if LowerCase(RegExp.Substitute('$1')) = LowerCase(ChangeFileExt(ExtractFileName(Filename), '')) then
         OnNoDebuggingSymbolsFound;
     end
+    else if RegExp.Exec(line, 'ModLoad: +([0-9a-fA-F]{1,8}) +([0-9a-fA-F]{1,8}) +(.*)') then
+      MainForm.StatusBar.Panels[3].Text := 'Loaded ' + RegExp.Substitute('$3')
     else if RegExp.Exec(line, '\((.*)\): (.*) - code ([0-9a-fA-F]{1,8}) \((.*)\)') then
       ParseError(line)
     else if RegExp.Exec(line, 'Breakpoint ([0-9]+) hit') then
@@ -2324,7 +2327,6 @@ var
 begin
   //Reset our variables
   self.FileName := filename;
-  fExecuting := True;
   fNextBreakpoint := 0;
   IgnoreBreakpoint := False;
 
@@ -2360,7 +2362,6 @@ var
 begin
   //Reset our variables
   self.FileName := filename;
-  fExecuting := True;
   fNextBreakpoint := 0;
   IgnoreBreakpoint := False;
 
