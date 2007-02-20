@@ -130,14 +130,14 @@ begin
 
   //Make sure the user does not select same-key combinations
 {$IFDEF WIN32}
-  if ((Key = VK_CONTROL) and (Shift = [ssCtrl])) or
-     ((Key = VK_SHIFT) and (Shift = [ssShift])) or
-     ((Key in [VK_MENU, VK_LMENU, VK_RMENU]) and (Shift = [ssAlt]))then
+  if ((Key = VK_CONTROL) and (ssCtrl in Shift)) or
+     ((Key = VK_SHIFT) and (ssShift in Shift)) or
+     ((Key in [VK_MENU, VK_LMENU, VK_RMENU]) and (ssAlt in Shift)) then
 {$ENDIF}
 {$IFDEF LINUX}
-  if ((Key = XK_CONTROL) and (Shift = [ssCtrl])) or
-     ((Key = XK_SHIFT) and (Shift = [ssShift])) or
-     ((Key in [XK_MENU, XK_LMENU, XK_RMENU]) and (Shift = [ssAlt]))then
+  if ((Key = XK_CONTROL) and (ssCtrl in Shift)) or
+     ((Key = XK_SHIFT) and (ssShift in Shift)) or
+     ((Key in [XK_MENU, XK_LMENU, XK_RMENU]) and (ssAlt in Shift)) then
 {$ENDIF}
     Exit;
 
