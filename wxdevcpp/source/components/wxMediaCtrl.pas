@@ -204,7 +204,7 @@ begin
   FWx_BorderAlignment    := [wxAll];
   FWx_Alignment          := [wxALIGN_CENTER];
   FWx_StretchFactor      := 0;
-  FWx_Control:=wxMEDIACTRLPLAYERCONTROLS_NONE;
+  FWx_Control            := wxMEDIACTRLPLAYERCONTROLS_NONE;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor         := self.color;
@@ -374,28 +374,11 @@ begin
 end;
 
 function TWxMediaCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-flag :string;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -404,8 +387,6 @@ begin
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -469,7 +450,7 @@ begin
       Result := Result + #13 + Format('%s->ShowPlayerControls(%s);', [self.Name, strControlString]);
 
 
-  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
+  if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',

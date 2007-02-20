@@ -315,29 +315,6 @@ begin
 
   Result := '';
 
- if (XRCGEN) then
- begin//generate xrc loading code
-  if trim(EVT_TOOL) <> '' then
-    Result := Format('EVT_TOOL(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName, EVT_TOOL]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-
-  if trim(EVT_MENU) <> '' then
-    Result := Result + #13 + Format('EVT_MENU(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_MENU]) + '';
-
-  if trim(EVT_TOOL_RCLICKED) <> '' then
-    Result := Result + #13 + Format('EVT_TOOL_RCLICKED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TOOL_RCLICKED]) + '';
-
-  if trim(EVT_TOOL_ENTER) <> '' then
-    Result := Result + #13 + Format('EVT_TOOL_ENTER(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TOOL_ENTER]) + '';
-end
-else
-begin
   if trim(EVT_TOOL) <> '' then
     Result := Format('EVT_TOOL(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_TOOL]) + '';
 
@@ -356,8 +333,6 @@ begin
   if trim(EVT_TOOL_ENTER) <> '' then
     Result := Result + #13 + Format('EVT_TOOL_ENTER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TOOL_ENTER]) + '';
-end;
-
 end;
 
 function TWxToolbar.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -422,20 +397,11 @@ begin
   if (trim(strStyle) <> '') then
     strStyle := ', ' + strStyle;
 
-if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = wxXmlResource::Get()->LoadToolBar(%s,%s("%s"));',
-    [self.Name, parentName, StringFormat, self.Name]);
- end
- else
- begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',

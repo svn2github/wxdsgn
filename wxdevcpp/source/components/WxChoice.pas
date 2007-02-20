@@ -197,21 +197,21 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxChoice.AutoInitialize;
 begin
-  FWx_EventList  := TStringList.Create;
-  FWx_PropertyList := TStringList.Create;
-  FWx_Border     := 5;
-  FWx_Class      := 'wxChoice';
-  FWx_DefaultItem := -1;
-  FWx_Enabled    := True;
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment  := [wxALIGN_CENTER];
-  FWx_IDValue    := -1;
-  FWx_StretchFactor := 0;
+  FWx_EventList          := TStringList.Create;
+  FWx_PropertyList       := TStringList.Create;
+  FWx_Border             := 5;
+  FWx_Class              := 'wxChoice';
+  FWx_DefaultItem        := -1;
+  FWx_Enabled            := True;
+  FWx_BorderAlignment    := [wxAll];
+  FWx_Alignment          := [wxALIGN_CENTER];
+  FWx_IDValue            := -1;
+  FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-  FWx_Comments   := TStringList.Create;
+  defaultBGColor         := self.color;
+  defaultFGColor         := self.font.color;
+  FWx_Comments           := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -281,7 +281,6 @@ begin
 
   FWx_PropertyList.add('Items:Items');
   FWx_PropertyList.add('ItemIndex:Index');
-
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
@@ -325,19 +324,6 @@ function TWxChoice.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
-   if (XRCGEN) then
- begin//generate xrc loading code  needs to be edited
-  if trim(EVT_CHOICE) <> '' then
-    Result := Result + #13 + Format('EVT_CHOICE(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_CHOICE]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-
- end
- else
- begin//generate the cpp code
   if trim(EVT_CHOICE) <> '' then
     Result := Format('EVT_CHOICE(%s,%s::%s)', [WX_IDName, CurrClassName,
       EVT_CHOICE]) + '';
@@ -345,33 +331,17 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
- end;
+
 end;
 
 function TWxChoice.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
-  flag :string;
   i: integer;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -379,17 +349,15 @@ begin
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('  <selection>%d</selection>', [self.ItemIndex]));
+    // Result.Add(IndentString + Format('  <selection>%d</selection>', [self.
 
-    Result.Add(IndentString + '  <content>');
+    Result.Add(IndentString + '<content>');
     for i := 0 to self.Items.Count - 1 do
       Result.Add(IndentString + '    <item checked = "0">' + Items[i] + '</item>');
 
     Result.Add(IndentString + '  </content>');
 
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -431,21 +399,12 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
-   if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
- end
- else
- begin//generate the cpp code
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, 'arrayStringFor_' +
     self.Name, strStyle]);
- end;//end of if xrc
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -475,17 +434,17 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-  if not (XRCGEN) then
-    Result := Result + #13 + Format('%s->SetSelection(%d);', [self.Name, self.ItemIndex]);
 
-  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
+  Result := Result + #13 + Format('%s->SetSelection(%d);', [self.Name, self.ItemIndex]);
+
+  if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) and not (XRCGEN) then
+  if (self.Parent is TWxToolBar) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

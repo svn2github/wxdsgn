@@ -265,21 +265,20 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxGrid.AutoInitialize;
 begin
-  FWx_EventList    := TStringList.Create;
-  FWx_PropertyList := TStringList.Create;
-
-  FWx_Border     := 5;
-  FWx_Class      := 'wxGrid';
-  FWx_Enabled    := True;
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment  := [wxALIGN_CENTER];
-  FWx_IDValue    := -1;
-  FWx_StretchFactor := 0;
+  FWx_EventList          := TStringList.Create;
+  FWx_PropertyList       := TStringList.Create;
+  FWx_Border             := 5;
+  FWx_Class              := 'wxGrid';
+  FWx_Enabled            := True;
+  FWx_BorderAlignment    := [wxAll];
+  FWx_Alignment          := [wxALIGN_CENTER];
+  FWx_IDValue            := -1;
+  FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-  FWx_Comments   := TStringList.Create;
+  defaultBGColor         := self.color;
+  defaultFGColor         := self.font.color;
+  FWx_Comments           := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -513,8 +512,6 @@ begin
 
   Result := '';
 
-    {if (XRCGEN) then //does not appear to need an xrc event loader}
-
   if trim(EVT_GRID_CELL_LEFT_CLICK) <> '' then
     Result := Format('EVT_GRID_CELL_LEFT_CLICK(%s::%s)',
       [CurrClassName, EVT_GRID_CELL_LEFT_CLICK]) + '';
@@ -577,28 +574,11 @@ begin
 end;
 
 function TWxGrid.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-flag :string;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -609,9 +589,6 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle)]));
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
-
   except
     Result.Free;
     raise;
@@ -638,20 +615,11 @@ begin
   if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
 
-    if (XRCGEN) then
- begin
-   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]); 
-  end
- else
- begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -703,7 +671,7 @@ begin
   Result := Result + #13 + Format('%s->CreateGrid(%d,%d,%s);',
     [self.Name, wx_RowCount, wx_ColCount, strSelectionStr]);
 
-if not (XRCGEN) then //NUKLEAR ZELPH
+
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

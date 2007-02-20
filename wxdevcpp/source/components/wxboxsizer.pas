@@ -248,7 +248,7 @@ begin
   FWx_PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
   FWx_PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
   FWx_PropertyList.Add('wxEXPAND:wxEXPAND');
-  FWx_PropertyList.add('Wx_Border: Border');
+  FWx_PropertyList.add('Wx_Border:Border');
   FWx_PropertyList.add('Wx_BorderAlignment:Borders');
   FWx_PropertyList.add('wxALL:wxALL');
   FWx_PropertyList.add('wxTOP:wxTOP');
@@ -304,10 +304,6 @@ begin
   Result := TStringList.Create;
 
   try
-{$IFNDEF XRC_ONLY_BUILD}
- if not (self.Parent is TForm) then //NUKLEAR ZELPH
- begin
-{$ENDIF}
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
 
@@ -317,9 +313,7 @@ begin
       strOrientation := 'wxHORIZONTAL';
 
     Result.Add(IndentString + Format('  <orient>%s</orient>', [strOrientation]));
-{$IFNDEF XRC_ONLY_BUILD}
-    end;//NUKLEAR ZELPH
-{$ENDIF}
+
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         // Only add the XRC control if it is a child of the top-most parent (the form)
@@ -334,14 +328,9 @@ begin
             tempstring.Free
           end
         end; // for
-{$IFNDEF XRC_ONLY_BUILD}
- if not (self.Parent is TForm) then //NUKLEAR ZELPH
- begin
-{$ENDIF}
+
     Result.Add(IndentString + '</object>');
-{$IFNDEF XRC_ONLY_BUILD}
- end;//NUKLEAR ZELPH
-{$ENDIF}
+
   except
     Result.Free;
     raise;
@@ -354,11 +343,6 @@ var
   strOrientation, strAlignment: string;
   parentName:  string;
 begin
-Result := '';
-{$IFNDEF XRC_ONLY_BUILD}
-if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
-begin
-{$ENDIF}
   if Orientation = wxVertical then
     strOrientation := 'wxVERTICAL'
   else
@@ -390,17 +374,11 @@ begin
       self.Wx_Border]);
 
   end;
-{$IFNDEF XRC_ONLY_BUILD}
- end;//NUKLEAR ZELPH
-{$ENDIF}
+
 end;
 
 function TWxBoxSizer.GenerateGUIControlDeclaration: string;
 begin
-Result := '';
-{$IFNDEF XRC_ONLY_BUILD}
-if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
-{$ENDIF}
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 

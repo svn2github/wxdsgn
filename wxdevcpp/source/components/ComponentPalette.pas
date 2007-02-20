@@ -64,12 +64,12 @@ type
 implementation
 uses
   ImgList, wxStdDialogButtonSizer, WxBoxSizer, WxStaticBoxSizer, WxGridSizer,
-  WxButton, WxBitmapButton, WxCheckBox, WxChoice, WxComboBox, WxEdit, WxGauge,
-  WxListBox, WxListCtrl, WxMemo, WxRadioButton, WxScrollBar, WxGrid, WxSlider,
-  WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine, WxStaticText,
-  WxControlPanel, WxTreeCtrl, WxFlexGridSizer, WxPanel, WxNotebook, WxStatusBar,
-  WxToolbar, WxNoteBookPage, WxCheckListBox, WxSpinCtrl, WxScrolledWindow,
-  WxHtmlWindow, WxToolButton, WxSeparator, WxPopupMenu, WxMenuBar,
+  WxButton, WxBitmapButton, WxCheckBox, WxChoice, WxComboBox, WxBitmapComboBox,
+  WxEdit, WxGauge, WxListBox, WxListCtrl, WxMemo, WxRadioButton, WxScrollBar,
+  WxGrid, WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
+  WxStaticText, WxControlPanel, WxTreeCtrl, WxFlexGridSizer, WxPanel, WxNotebook,
+  WxStatusBar, WxToolbar, WxNoteBookPage, WxCheckListBox, WxSpinCtrl,
+  WxScrolledWindow, WxHtmlWindow, WxToolButton, WxSeparator, WxPopupMenu, WxMenuBar,
   WxOpenFileDialog, WxSaveFileDialog, WxFontDialog, WxMessageDialog,
   WxProgressDialog, WxPrintDialog, WxFindReplaceDialog, WxDirDialog, WxColourDialog,
   WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow,
@@ -152,6 +152,8 @@ begin
   if (Name = 'TWXBOXSIZER') or (Name = 'TWXFLEXGRIDSIZER') or (Name = 'TWXGRIDSIZER') or
      (Name = 'TWXSTATICBOXSIZER') or (Name = 'TWXSTDDIALOGBUTTONSIZER') then
     Result := 'TWXSIZER'
+  else if Name = 'TWXBITMAPCOMBOBOX' then
+    Result := 'TWXCOMBOBOX'
   else if Name = 'TWXTREELISTCTRL' then
     Result := 'TWXTREECTRL'
   else if Name = 'TWXPASSWORDENTRYDIALOG' then
@@ -213,7 +215,7 @@ begin
                        'TwxDatePickerCtrl;TwxSlider;TwxStaticLine;TwxStaticBitmap;' +
                        'TwxStatusBar;TwxCheckListBox;TwxSpinCtrl;TwxRichTextCtrl;' +
                        'TwxCalendarCtrl;TwxOwnerDrawnComboBox;TwxHyperLinkCtrl;' +
-                       'TwxDialUpManager;TwxMediaCtrl');
+                       'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox');
     //Container controls
     ComponentsList.Add('Containers;TwxPanel;TwxNotebook;TwxNotebookPage;TwxGrid;' +
                        'TwxScrolledWindow;TwxHtmlWindow;TwxSplitterWindow');
@@ -247,7 +249,7 @@ begin
                      TwxTreeListCtrl, TWxRichTextCtrl, TWxStyledTextCtrl, TWxCalendarCtrl,
                      TWxOwnerDrawnComboBox, TWxTextEntryDialog, TWxPasswordEntryDialog,
                      TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl,
-                     TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl]);
+                     TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox]);
 
     //Now that the components have been put into it's respective string lists,
     //iterate over all the items, parsing them and putting them into the tree-view

@@ -130,7 +130,6 @@ begin
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
-
   FWx_PropertyList.add('Caption:Label');
 
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -147,20 +146,20 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxNoteBookPage.AutoInitialize;
 begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_EventList  := TStringList.Create;
-  FWx_Border     := 5;
-  FWx_Class      := 'wxPanel';
-  FWx_Enabled    := True;
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment  := [wxALIGN_CENTER];
-  FWx_IDValue    := -1;
-  FWx_StretchFactor := 0;
+  FWx_PropertyList       := TStringList.Create;
+  FWx_EventList          := TStringList.Create;
+  FWx_Border             := 5;
+  FWx_Class              := 'wxPanel';
+  FWx_Enabled            := True;
+  FWx_BorderAlignment    := [wxAll];
+  FWx_Alignment          := [wxALIGN_CENTER];
+  FWx_IDValue            := -1;
+  FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-  FWx_Comments   := TStringList.Create;
+  defaultBGColor         := self.color;
+  defaultFGColor         := self.font.color;
+  FWx_Comments           := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -252,20 +251,12 @@ begin
 
   parentName := GetWxWidgetParent(self);
 
-    if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]); 
- end
- else
- begin//generate the cpp code
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
-end;
+
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -294,7 +285,7 @@ end;
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -303,7 +294,7 @@ if not (XRCGEN) then //NUKLEAR ZELPH
       self.Wx_Border]);
 
   end;
-if not (XRCGEN) then //NUKLEAR ZELPH
+
   Result := Result + #13 + Format('%s->AddPage(%s, %s);',
     [parentName, self.Name, GetCppString(self.Caption)]);
 

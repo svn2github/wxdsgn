@@ -370,43 +370,6 @@ function TWxRichTextCtrl.GenerateEventTableEntries(CurrClassName: string): strin
 begin
   Result := '';
 
-   if (XRCGEN) then
- begin//generate xrc loading code  needs to be edited
-  if trim(EVT_RICHTEXT_ITEM_SELECTED) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_SELECTED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_ITEM_SELECTED]) + '';
-
-  if trim(EVT_RICHTEXT_ITEM_DESELECTED) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_DESELECTED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_ITEM_DESELECTED]) + '';
-
-  if trim(EVT_RICHTEXT_LEFT_CLICK) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_LEFT_CLICK(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_LEFT_CLICK]) + '';
-
-  if trim(EVT_RICHTEXT_RIGHT_CLICK) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_RIGHT_CLICK(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_RIGHT_CLICK]) + '';
-
-  if trim(EVT_RICHTEXT_MIDDLE_CLICK) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_MIDDLE_CLICK(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_MIDDLE_CLICK]) + '';
-
-  if trim(EVT_RICHTEXT_LEFT_DCLICK) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_LEFT_DCLICK(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_LEFT_DCLICK]) + '';
-
-  if trim(EVT_RICHTEXT_RETURN) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_RETURN(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_RETURN]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-
- end
- else
- begin//generate the cpp code
   if trim(EVT_RICHTEXT_ITEM_SELECTED) <> '' then
     Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_SELECTED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_RICHTEXT_ITEM_SELECTED]) + '';
@@ -438,33 +401,35 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
- end;
+
+(*
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
+
+
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT]) + '';
+
+  if trim(EVT_TEXT_MAXLEN) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_MAXLEN(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_MAXLEN]) + '';
+
+  if trim(EVT_TEXT_URL) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_URL(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_URL]) + '';
+*)
 
 end;
 
 function TWxRichTextCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-flag :string;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -478,9 +443,6 @@ begin
     Result.Add(IndentString + Format('  <value>%s</value>', [XML_Label(self.Caption)]));
 
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
-
   except
     Result.Free;
     raise;
@@ -510,20 +472,13 @@ begin
   else
     strStyle := ', 0 ';
 
-   if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
- end
- else
- begin//generate the cpp code
+
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(''), self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;//end of if xrc
+
   SetWxFileName(self.FWx_LoadFromFile.FstrFileNameValue);
   if FWx_FiletoLoad <> '' then
   begin
@@ -537,9 +492,8 @@ begin
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
 
-  if self.Wx_MaxLength <> 0 then
-    Result := Result + #13 + Format('%s->SetMaxLength(%d);',
-      [self.Name, self.Wx_MaxLength]);
+  Result := Result + #13 + Format('%s->SetMaxLength(%d);',
+    [self.Name, self.Wx_MaxLength]);
 
   if self.Wx_Hidden then
     Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
@@ -551,8 +505,6 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
-   if not (XRCGEN) then
- begin
   if FWx_FiletoLoad = '' then
     begin
     for i := 0 to self.Lines.Count - 1 do
@@ -567,7 +519,6 @@ begin
         Result := Result + #13 + self.Name + '->SetFocus();';
         Result := Result + #13 + self.Name + '->SetInsertionPointEnd();';
     end;
- end;
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
@@ -584,7 +535,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
+  if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
@@ -648,8 +599,6 @@ function TWxRichTextCtrl.GenerateHeaderInclude: string;
 begin
   Result := '';
   Result := '#include <wx/richtext/richtextctrl.h>';
-  if (XRCGEN) then
-    Result := Result + #13 + '#include <wx/xrc/xh_richtext.h>';
 end;
 
 function TWxRichTextCtrl.GenerateImageInclude: string;

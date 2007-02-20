@@ -155,15 +155,13 @@ implementation
 constructor TWxCustomMenuItem.Create(owner: TComponent);
 begin
   FEnabled    := True;
-  //FBreak := mbNone;
   FPopUp      := False;
-  // FCaption := '';
   FAdded      := False;
   FWX_BITMAP  := TPicture.Create;
   FItems      := TList.Create;
   FWx_Enabled := True;
   FWx_FileHistory := false;
-  inherited Create; //(owner);
+  inherited Create;
 end;
 
 destructor TWxCustomMenuItem.Destroy;

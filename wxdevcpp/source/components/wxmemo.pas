@@ -367,30 +367,6 @@ function TWxMemo.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
-   if (XRCGEN) then
- begin//generate xrc loading code  needs to be edited
-  if trim(EVT_TEXT_ENTER) <> '' then
-    Result := Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-
-  if trim(EVT_TEXT) <> '' then
-    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
-
-  if trim(EVT_TEXT_MAXLEN) <> '' then
-    Result := Result + #13 + Format('EVT_TEXT_MAXLEN(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT_MAXLEN]) + '';
-
-  if trim(EVT_TEXT_URL) <> '' then
-    Result := Result + #13 + Format('EVT_TEXT_URL(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT_URL]) + '';
- end
- else
- begin//generate the cpp code
   if trim(EVT_TEXT_ENTER) <> '' then
     Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
@@ -410,32 +386,15 @@ begin
   if trim(EVT_TEXT_URL) <> '' then
     Result := Result + #13 + Format('EVT_TEXT_URL(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_URL]) + '';
- end;
+
 end;
 
 function TWxMemo.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-flag :string;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -449,9 +408,6 @@ begin
     Result.Add(IndentString + Format('  <value>%s</value>', [XML_Label(self.Caption)]));
 
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
-
   except
     Result.Free;
     raise;
@@ -472,7 +428,7 @@ begin
   //    else
   //       parentName:=self.Parent.name;
 
-  AutoSize := False;
+  AutoSize               := False;
   
   parentName := GetWxWidgetParent(self);
 
@@ -495,20 +451,12 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
-   if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
- end
- else
- begin//generate the cpp code
+
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    GetCppString(self.Text), self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;//end of if xrc
+    GetCppString(''), self.Left, self.Top, self.Width, self.Height, strStyle]);
 
   SetWxFileName(self.FWx_LoadFromFile.FstrFileNameValue);
   if FWx_FiletoLoad <> '' then
@@ -516,15 +464,15 @@ begin
     Result := Result + #13 + Format('%s->LoadFile("%s");',
       [self.Name, FWx_FiletoLoad]);
     self.Lines.LoadFromFile(FWx_FiletoLoad);
+
   end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
 
-  if self.Wx_MaxLength <> 0 then
-    Result := Result + #13 + Format('%s->SetMaxLength(%d);',
-      [self.Name, self.Wx_MaxLength]);
+  Result := Result + #13 + Format('%s->SetMaxLength(%d);',
+    [self.Name, self.Wx_MaxLength]);
 
   if self.Wx_Hidden then
     Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
@@ -536,13 +484,12 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
-   if not (XRCGEN) then
- begin
   if FWx_FiletoLoad = '' then
     begin
     for i := 0 to self.Lines.Count - 1 do
       if i = self.Lines.Count - 1 then
-        Result := Result + #13 + Format('%s->AppendText(%s);',
+        Result :=
+          Result + #13 + Format('%s->AppendText(%s);',
           [self.Name, GetCppString(self.Lines[i])])
       else
         Result := Result + #13 + Format('%s->AppendText(%s);',
@@ -551,7 +498,6 @@ begin
         Result := Result + #13 + self.Name + '->SetFocus();';
         Result := Result + #13 + self.Name + '->SetInsertionPointEnd();';
     end;
- end;
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
@@ -567,7 +513,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

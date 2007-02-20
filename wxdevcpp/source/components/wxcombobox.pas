@@ -211,21 +211,21 @@ end;
 { Method to set variable and property values and create objects }
 procedure TWxComboBox.AutoInitialize;
 begin
-  FWx_EventList  := TStringList.Create;
-  FWx_PropertyList := TStringList.Create;
-  FWx_Border     := 5;
-  FWx_Class      := 'wxComboBox';
-  FWx_DefaultItem := -1;
-  FWx_Enabled    := True;
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment  := [wxALIGN_CENTER];
-  FWx_IDValue    := -1;
-  FWx_StretchFactor := 0;
+  FWx_EventList          := TStringList.Create;
+  FWx_PropertyList       := TStringList.Create;
+  FWx_Border             := 5;
+  FWx_Class              := 'wxComboBox';
+  FWx_DefaultItem        := -1;
+  FWx_Enabled            := True;
+  FWx_BorderAlignment    := [wxAll];
+  FWx_Alignment          := [wxALIGN_CENTER];
+  FWx_IDValue            := -1;
+  FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-  FWx_Comments   := TStringList.Create;
+  defaultBGColor         := self.color;
+  defaultFGColor         := self.font.color;
+  FWx_Comments           := TStringList.Create;
 
 end; { of AutoInitialize }
 
@@ -321,7 +321,6 @@ begin
 
   FWx_PropertyList.add('Items:Items');
   FWx_PropertyList.add('Text:Text');
-
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
@@ -367,26 +366,6 @@ function TWxComboBox.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
-if (XRCGEN) then
- begin
-  if trim(EVT_COMBOBOX) <> '' then
-    Result := Format('EVT_COMBOBOX(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_COMBOBOX]) + '';
-
-  if trim(EVT_TEXT) <> '' then
-    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-  
-  if trim(EVT_TEXT_ENTER) <> '' then
-    Result := Result + #13 + Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
- end
- else
- begin
   if trim(EVT_COMBOBOX) <> '' then
     Result := Format('EVT_COMBOBOX(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMBOBOX]) + '';
@@ -398,37 +377,20 @@ if (XRCGEN) then
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-  
+
   if trim(EVT_TEXT_ENTER) <> '' then
     Result := Result + #13 + Format('EVT_TEXT_ENTER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
- end;
 
 end;
 
 function TWxComboBox.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
-  flag :string;
   i: integer;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
   try
-    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -439,15 +401,12 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle, Wx_EditStyle)]));
 
-    Result.Add(IndentString + '  <content>');
+    Result.Add('  <content>');
     for i := 0 to self.Items.Count - 1 do
       Result.Add(IndentString + '    <item checked="0">' + self.Items[i] + '</item>');
 
-    Result.Add(IndentString + '  </content>');
+    Result.Add('  </content>');
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
-
   except
     Result.Free;
     raise;
@@ -492,21 +451,12 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
-if (XRCGEN) then
- begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]); 
- end
- else
- begin
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height,
     'arrayStringFor_' + self.Name, strStyle]);
- end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -536,7 +486,7 @@ if (XRCGEN) then
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
   if (self.Parent is TWxSizerPanel) then
   begin
       strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -544,7 +494,7 @@ if not (XRCGEN) then //NUKLEAR ZELPH
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) and not (XRCGEN) then
+  if (self.Parent is TWxToolBar) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

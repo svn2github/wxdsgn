@@ -240,19 +240,6 @@ end;
 function TWxBitmapButton.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
-
-  if (XRCGEN) then
- begin
-  if trim(EVT_BUTTON) <> '' then
-    Result := Format('EVT_BUTTON(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_BUTTON]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
- end
- else
- begin
   if trim(EVT_BUTTON) <> '' then
     Result := Format('EVT_BUTTON(%s,%s::%s)', [WX_IDName, CurrClassName,
       EVT_BUTTON]) + '';
@@ -260,33 +247,15 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
- end;
 
 end;
 
 function TWxBitmapButton.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-flag :string;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxSizerPanel) then
-     begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -297,8 +266,6 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetButtonSpecificStyle(self.Wx_GeneralStyle, Wx_ButtonStyle)]));
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -340,20 +307,11 @@ begin
     if Wx_Bitmap.Bitmap.Handle <> 0 then
       Result := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
 
-if (XRCGEN) then
- begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);  
- end
- else
- begin
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Name + '_BITMAP', self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -383,7 +341,7 @@ if (XRCGEN) then
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
   if (self.Parent is TWxSizerPanel) then
   begin
 

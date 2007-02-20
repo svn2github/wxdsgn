@@ -5,12 +5,13 @@ unit WxMenuBar;
 interface
 
 uses
-  Windows, Forms, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
-  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils, dialogs;
+  Windows, Controls,Forms, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
+  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils, dialogs,
+  Graphics;
 
 type
   TWxMenuBar = class(TWxNonVisibleBaseComponent, IWxComponentInterface,
-    IWxDialogNonInsertableInterface)
+    IWxDialogNonInsertableInterface,IWxMenuBarInterface)
   private
     { Private declarations }
     FWx_Class: string;
@@ -19,6 +20,7 @@ type
     FWx_PropertyList: TStringList;
     FWx_MenuItems: TWxCustomMenuItem;
     FWx_HasHistory: boolean;
+    fBitmapCount:Integer;
     procedure AutoInitialize;
     procedure AutoDestroy;
   protected
@@ -39,6 +41,7 @@ type
     function GetCodeForOneMenuItem(parentName: string; item: TWxCustomMenuItem): string;
     function GenerateHeaderInclude: string;
     function GenerateImageInclude: string;
+    function GenerateImageList(var strLst:TStringList; var imgLst:TList; var strNameLst:TStringList): boolean;
     function GetEventList: TStringList;
     function GetIDName: string;
     function GetIDValue: longint;
@@ -68,6 +71,11 @@ type
     procedure SetBorderWidth(width: integer);
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
+
+    function GetBitmapCount:Integer;
+    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+    function GetPropertyName(Idx:Integer):String;
+    function GenerateXPM(strFileName:String):boolean;
 
   published
     { Published declarations }
@@ -524,14 +532,10 @@ begin
   parentName := GetWxWidgetParent(self);
   if trim(strStyle) <> '' then
     strStyle := ',' + strStyle;
-  if (XRCGEN) then
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = wxXmlResource::Get()->LoadMenuBar(%s, %s("%s"));',[self.Name,parentName,StringFormat,self.Name])
-  else
+  
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s);', [self.Name, self.Wx_Class, strStyle]);
-  
-  if not (XRCGEN) then
+
   Result := Result + #13 + GetMenuItemCode + #13 + 'SetMenuBar(' + self.Name + ');';
 end;
 
@@ -599,8 +603,7 @@ var
   begin
     Result := '';
     parentItemName := submnu.wx_IDName + '_Mnu_Obj';
- if not (XRCGEN) then
- begin
+
     for J := 0 to submnu.Count - 1 do    // Iterate
       if submnu.items[J].Count > 0 then
       begin
@@ -623,14 +626,11 @@ var
           strLst.add(strV);
         end;
       end;    // for
- end;
   end;
 
 begin
   Result := '';
   strLst := TStringList.Create;
- if not (XRCGEN) then
- begin
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
     if Wx_MenuItems.items[i].Count > 0 then
     begin
@@ -658,12 +658,7 @@ begin
         strLst.add(strF);
       end;
     end;    // for
- end
- else
- begin
- strLst.add(GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = wxXmlResource::Get()->LoadMenuBar(%s, %s("%s"));',[self.Name,self.parent,StringFormat,self.Name]));
- end;
+
   //Send the result back
   Result := trim(strLst.Text);
   strLst.Destroy;
@@ -685,52 +680,71 @@ begin
     Result := Result + #13 + '#include <wx/config.h> // Needed For wxFileHistory' + #13 + '#include <wx/docview.h> // Needed For wxFileHistory';
 end;
 
-
 function TWxMenuBar.GenerateImageInclude: string;
+var
+  strLst,strNameList: TStringList;
+  imgLst:TList;
+  i:Integer;
+begin
+  Result:='';
+  strLst:= TStringList.Create;
+  strNameList:= TStringList.Create;
+  imgLst:=TList.Create;
+  GenerateImageList(strLst,imgLst,strNameList);
+
+  for i:= 0 to strLst.Count - 1 do
+    strLst[i] :=  '#include "'+ strLst[i] + '"';
+
+  Result := strLst.Text;
+  strLst.destroy;
+  strNameList.destroy;
+  imgLst.destroy;
+end;
+
+function TWxMenuBar.GenerateImageList(var strLst:TStringList;var imgLst:TList;var strNameLst:TStringList): boolean;
 var
   I:      integer;
   strF:   string;
-  strLst: TStringList;
 
-  procedure GetImageIncludeFromSubMenu(idstrList: TStringList;
+  procedure GenerateImageListFromSubMenu(var idstrList: TStringList;imgLstX:TList;strNameLstX:TStringList;
     submnu: TWxCustomMenuItem);
   var
-    J: integer;
-    strData: string;
+    J: Integer;
   begin
     for J := 0 to submnu.Count - 1 do    // Iterate
     begin
       if submnu.Items[J].WX_BITMAP.Bitmap.Handle <> 0 then
-        strData := '#include "Images/' + GetDesignerFormName(self)+'_'+submnu.Items[J].Wx_IDName + '_XPM.xpm"'
-      else
-        strData := '';
-      if strData <> '' then
-        idstrList.add(strData);
-
+      begin
+        imgLstX.Add(submnu.Items[J].WX_BITMAP.Bitmap);
+        idstrList.add('Images/' + GetDesignerFormName(self)+'_'+submnu.Items[J].Wx_IDName + '_XPM.xpm');
+        strNameLstX.Add(submnu.Items[J].Wx_IDName);
+      end;
+      
       if submnu.items[J].Count > 0 then
-        GetImageIncludeFromSubMenu(idstrList, submnu.items[J]);
+        GenerateImageListFromSubMenu(idstrList, imgLstX,strNameLstX,submnu.items[J]);
     end;    // for
   end;
 
 begin
 
-  Result := '';
-  strLst := TStringList.Create;
+  Result := true;
 
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
   begin
     if Wx_MenuItems.Items[i].wx_Bitmap.Bitmap.Handle <> 0 then
-      strF := '#include "Images/' + GetDesignerFormName(self)+'_'+Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm"'
+      strF := 'Images/' + GetDesignerFormName(self)+'_'+Wx_MenuItems.Items[i].Wx_IDName + '_XPM.xpm'
     else
       strF := '';
     if trim(strF) <> '' then
+    begin
+      imgLst.Add(Wx_MenuItems.Items[i].wx_Bitmap.Bitmap);
+      strNameLst.Add(Wx_MenuItems.Items[i].Wx_IDName);
       strLst.add(strF);
+    end;
 
     if Wx_MenuItems.items[i].Count > 0 then
-      GetImageIncludeFromSubMenu(strLst, Wx_MenuItems.items[i])
+      GenerateImageListFromSubMenu(strLst, imgLst,strNameLst,Wx_MenuItems.items[i])
   end;    // for
-  Result := strLst.Text;
-  strLst.Destroy;
 
 end;
 
@@ -891,6 +905,54 @@ end;
 
 procedure TWxMenuBar.SetProxyBGColorString(Value: string);
 begin
+end;
+
+function TWxMenuBar.GetBitmapCount:Integer;
+begin
+  Result:=fBitmapCount;
+end;
+
+function TWxMenuBar.GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
+begin
+  //bmp:= nil;
+  PropertyName:=Name;
+  Result:=true;
+end;
+
+function TWxMenuBar.GetPropertyName(Idx:Integer):String;
+begin
+  Result:=Name;
+end;
+
+function TWxMenuBar.GenerateXPM(strFileName:String):boolean;
+var
+  strLst,strNameList: TStringList;
+  imgLst:TList;
+  strXPMFileName,strFormName:String;
+  bmpX:TBitmap;
+  i:Integer;
+begin
+  Result      := False;
+  strLst      := TStringList.Create;
+  strNameList := TStringList.Create;
+  imgLst      := TList.Create;
+
+  GenerateImageList(strLst,imgLst,strNameList);
+  strFormName:=GetDesignerFormName(self);
+
+  for i := 0 to strLst.Count - 1 do
+  begin
+    strXPMFileName:=UnixPathToDosPath(IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+strLst[i]);
+    if FileExists(strXPMFileName) then
+      Continue;
+    bmpX := imgLst[i];
+    if bmpX.handle  <> 0 then
+      GenerateXPMDirectly(bmpX,strNameList[i],strFormName,strFileName);
+  end;
+
+  imgLst.destroy;
+  strLst.destroy;
+  strNameList.destroy;
 end;
 
 end.

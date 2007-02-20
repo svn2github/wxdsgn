@@ -276,7 +276,6 @@ begin
   FWx_PropertyList.add('MinValue:Minimum Value');
   FWx_PropertyList.add('MaxValue:Maximum Value');
   FWx_PropertyList.add('Value:Value');
-
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
@@ -284,7 +283,6 @@ begin
   FWx_EventList.add('EVT_TEXT:OnTextUpdated');
   FWx_EventList.add('EVT_TEXT_ENTER:OnTextEnter');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-
   FWx_EventList.add('EVT_SPIN_DOWN:OnSpinDown');
   FWx_EventList.add('EVT_SPIN_UP:OnSpinUp');
 
@@ -330,36 +328,6 @@ end;
 function TWxSpinCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
-
-   if (XRCGEN) then
- begin//generate xrc loading code  needs to be edited
-  if trim(EVT_SPINCTRL) <> '' then
-    Result := Format('EVT_SPINCTRL(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPINCTRL]) + '';
-
-  if trim(EVT_TEXT) <> '' then
-    Result := Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
-
-  if trim(EVT_TEXT_ENTER) <> '' then
-    Result := Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
-
-  if trim(EVT_SPIN_UP) <> '' then
-    Result := Format('EVT_SPIN_UP(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPIN_UP]) + '';
-
-  if trim(EVT_SPIN_DOWN) <> '' then
-    Result := Format('EVT_SPIN_DOWN(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPIN_DOWN]) + '';
-
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-
- end
- else
- begin//generate the cpp code
   if trim(EVT_SPINCTRL) <> '' then
     Result := Format('EVT_SPINCTRL(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_SPINCTRL]) + '';
@@ -383,32 +351,14 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
- end;
 end;
 
 function TWxSpinCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-flag :string;
 begin
 
   Result := TStringList.Create;
-  if ((trim(SizerAlignmentToStr(Wx_Alignment))<>'') and (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'')) then
-    flag := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)
-  else
-    if (trim(SizerAlignmentToStr(Wx_Alignment))<>'') then
-      flag := SizerAlignmentToStr(Wx_Alignment)
-    else
-      if (trim(BorderAlignmentToStr(Wx_BorderAlignment))<>'') then
-        flag := BorderAlignmentToStr(Wx_BorderAlignment);
-
 
   try
-    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
-    begin
-      Result.Add(IndentString + '<object class="sizeritem">');
-      Result.Add(IndentString + Format('  <flag>%s</flag>',[flag]));
-      Result.Add(IndentString + Format('  <border>%s</border>',[self.Wx_Border]));
-    end;
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
@@ -420,8 +370,6 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, Wx_EditStyle)]));
     Result.Add(IndentString + '</object>');
-    if not (self.Parent is TWxToolBar) and (self.Parent is TWxSizerPanel) then
-      Result.Add(IndentString + '</object>');
 
   except
     Result.Free;
@@ -445,14 +393,6 @@ begin
   else
     strStyle := ',' + strStyle;
 
-   if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
- end
- else
- begin//generate the cpp code
   //Last comma is removed because it depends on the user selection of the properties.
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s, %d, %d, %d);',
@@ -460,7 +400,7 @@ begin
     self.Wx_IDValue),
     GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height,
     strStyle, self.MinValue, Self.MaxValue, Value]);
- end;//end of if xrc
+
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -490,14 +430,14 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) and not (XRCGEN) then
+  if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) and not (XRCGEN) then
+  if (self.Parent is TWxToolBar) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 
