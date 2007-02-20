@@ -4497,6 +4497,7 @@ end;
 procedure TMainForm.actCloseProjectExecute(Sender: TObject);
 var
   s: string;
+  i: Integer;
 begin
   actStopExecute.Execute;
 
@@ -4505,8 +4506,8 @@ begin
   fProject.SaveLayout;
 
 {$IFNDEF PRIVATE_BUILD}
-  //Added for wx problems : Just close all the file
-  //tabs before closing the project
+  //TODO: Guru: Do we still need this? I've been running wxDev-C++ without this
+  //            code and it never crashes
   actCloseAll.Execute;
 {$ENDIF}
 
@@ -4528,6 +4529,18 @@ begin
 
   fCompiler.Project := nil;
   dmMain.AddtoHistory(fProject.FileName);
+
+  i := 0;
+  while i < debugger.Breakpoints.Count do
+  begin
+    if fProject.Units.Indexof(PBreakpoint(Debugger.Breakpoints[i])^.FileName) <> -1 then
+    begin
+      Dispose(Debugger.Breakpoints.Items[i]);
+      Debugger.Breakpoints.Delete(i);
+    end
+    else
+      Inc(i);
+  end;
 
   try
     FreeandNil(fProject);

@@ -1135,6 +1135,8 @@ begin
 end;
 
 procedure TCDBDebugger.OnBreakpointSet(Output: TStringList);
+var
+  e: TEditor;
 begin
   if CurrentCommand.Data = nil then
     Exit;
@@ -1142,7 +1144,9 @@ begin
   with TBreakpoint(CurrentCommand.Data) do
   begin
     Valid := False;
-    Editor.InvalidateGutter;
+    e := MainForm.GetEditorFromFileName(FileName, True);
+    if e <> nil then
+      e.InvalidateGutter;
   end;
 end;
 
