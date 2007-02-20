@@ -565,6 +565,9 @@ type
     fLangChange: boolean; // flag for language change
     fthemeChange: boolean; // did the theme changed
     fNoSplashScreen: boolean; // disable splash screen
+    fAutoCompile: integer; // automatically compile when out-of-date
+
+    // toolbar layout
     fToolbarMain: boolean;
     fToolbarMainX: integer;
     fToolbarMainY: integer;
@@ -592,6 +595,7 @@ type
     fToolbarClasses: boolean;
     fToolbarClassesX: integer;
     fToolbarClassesY: integer;
+
     // file associations (see FileAssocs.pas)
     fAssociateCpp: boolean;
     fAssociateC: boolean;
@@ -600,6 +604,7 @@ type
     fAssociateDev: boolean;
     fAssociateRc: boolean;
     fAssociateTemplate: boolean;
+
     // tip of the day
     fShowTipsOnStart: boolean;
     fLastTip: integer;
@@ -638,6 +643,7 @@ type
     property MRUMax: integer read fMRUMax write fMRUMax;
     property DblFiles: boolean read fDblFiles write fDblFiles;
     property NoSplashScreen: boolean read fNoSplashScreen write fNoSplashScreen;
+    property AutoCompile: integer read fAutoCompile write fAutoCompile;
 
     //Execution
     property MinOnRun: boolean read fMinOnRun write fMinOnRun;
@@ -697,10 +703,10 @@ type
     property AssociateH: boolean read fAssociateH write fAssociateH;
     property AssociateDev: boolean read fAssociateDev write fAssociateDev;
     property AssociateRc: boolean read fAssociateRc write fAssociateRc;
-   property AssociateTemplate: boolean read fAssociateTemplate write fAssociateTemplate;
+    property AssociateTemplate: boolean read fAssociateTemplate write fAssociateTemplate;
 
     // tip of the day
-   property ShowTipsOnStart: boolean read fShowTipsOnStart write fShowTipsOnStart;
+    property ShowTipsOnStart: boolean read fShowTipsOnStart write fShowTipsOnStart;
     property LastTip: integer read fLastTip write fLastTip;
 
     property XPTheme: boolean read fXPTheme write fXPTheme;
@@ -715,8 +721,8 @@ type
     property PrintColors: boolean read fPrintColors write fPrintColors;
     property PrintHighlight: boolean read fPrintHighlight write fPrintHighlight;
     property PrintWordWrap: boolean read fPrintWordWrap write fPrintWordWrap;
-   property PrintLineNumbers : boolean read fPrintLineNumbers write fPrintLineNumbers;
-   property PrintLineNumbersMargins : boolean read fPrintLineNumbersMargins write fPrintLineNumbersMargins;
+    property PrintLineNumbers : boolean read fPrintLineNumbers write fPrintLineNumbers;
+    property PrintLineNumbersMargins : boolean read fPrintLineNumbersMargins write fPrintLineNumbersMargins;
 
     // Variable debug browser
     property WatchHint: boolean read fWatchHint write fWatchHint;
@@ -1099,6 +1105,8 @@ begin
   fDefCpp := TRUE;
   fOpenStyle := 0;
   fdblFiles := FALSE;
+  fAutoCompile := -1;
+
   fToolbarMain := TRUE;
   fToolbarMainX := 11;
   fToolbarMainY := 2;

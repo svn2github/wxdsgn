@@ -1176,7 +1176,7 @@ uses
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
-  WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm
+  WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm, devMsgBox
 
 {$IFDEF WX_BUILD}
   //Our dependencies
@@ -5408,6 +5408,7 @@ end;
 procedure TMainForm.actDebugExecute(Sender: TObject);
 var
   UpToDate: Boolean;
+  MessageResult: Integer;
 begin
   if not fDebugger.Executing then
   begin
@@ -5427,9 +5428,21 @@ begin
 
       //Ask the user if the project is out of date
       if not UpToDate then
-        case MessageBox(Handle, 'The project you are working on is out of date. Do you ' +
-                        'want to rebuild the project before debugging?', 'wxDev-C++',
-                        MB_ICONQUESTION or MB_YESNOCANCEL) of
+      begin
+        if devData.AutoCompile = -1 then
+        begin
+          MessageResult := devMessageBox(Self, 'The project you are working on is out of date. Do you ' +
+                                         'want to rebuild the project before debugging?', 'wxDev-C++',
+                                         'Don''t show this again', MB_ICONQUESTION or MB_YESNOCANCEL);
+
+          if MessageResult > 0 then
+            devData.AutoCompile := abs(MessageResult);
+          MessageResult := abs(MessageResult);
+        end
+        else
+          MessageResult := devData.AutoCompile;
+
+        case MessageResult of
           mrYes:
           begin
             fCompiler.OnCompilationEnded := doDebugAfterCompile;
@@ -5439,6 +5452,7 @@ begin
           mrCancel:
             Exit;
         end;
+      end;
     end;
     doDebugAfterCompile(Sender);
   end
