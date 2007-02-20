@@ -1,5 +1,5 @@
 {
-    $Id: main.pas 741 2006-12-18 04:48:06Z lowjoel $
+    $Id$
 
     This file is part of wxDev-C++
     Copyright (c) 2006 wxDev-C++ Developers
