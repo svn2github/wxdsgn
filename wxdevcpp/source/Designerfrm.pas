@@ -300,13 +300,7 @@ begin
     //Form data should come first, if not the child will be resized to
     if not isSizerAvailable then
       AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
-    if (XRCGEN) then //NUKLEAR ZELPH
-   begin
-    AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd,
-    'wxXmlResource::Get()->InitAllHandlers();' + #13 +'wxXmlResource::Get()->Load(' + StringFormat + '("' + strClassName + '.xml"));');{+
-    #13 +'wxXmlResource::Get()->AddHandler(new wxRichTextCtrlXmlHandler);');}
-   end;
- end;
+  end;
 
   // RHS Variable
   if GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) then
@@ -443,7 +437,7 @@ begin
   synEdit.Lines.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
   synEdit.Lines.Add('<resource version="2.3.0.1">');
   synEdit.Lines.Add('<!-- Created by wxDev-C++ ' + DEVCPP_VERSION + ' -->');
-{$IFDEF XRC_ONLY_BUILD}
+
   synEdit.Lines.Add(Format('<object class="%s" name="%s">',
     [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
   synEdit.Lines.Add(Format('<title>%s</title>', [frmNewForm.Caption]));
@@ -461,7 +455,7 @@ begin
   else
     synEdit.Lines.Add(Format('<style>%s</style>',
       [GetStdStyleString(frmNewForm.Wx_GeneralStyle)]));
-{$ENDIF}
+
   for i := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then
@@ -477,9 +471,8 @@ begin
           tempstring.Free;
         end
       end; // for
-{$IFDEF XRC_ONLY_BUILD}
+
   synEdit.Lines.Add('</object>');
-{$ENDIF}
   synEdit.Lines.Add('</resource>');
 
 end;
@@ -609,12 +602,6 @@ begin
             intBlockStart, intBlockEnd, strHdrValue);
         end;
       end;
-    if (XRCGEN) then //NUKLEAR ZELPH
- begin
-  AddClassNameIncludeHeader(synEdit, strClassName,intBlockStart, intBlockEnd,
-    '#include <wx/xrc/xmlres.h>' + #13 + '#include <wx/xrc/xh_all.h>');{+
-    #13 + '#include <wx/xrc/xh_richtext.h>'}
- end;
     strLst.Destroy;
   end;
 
@@ -1410,10 +1397,7 @@ var
 
 begin
   strLst := TStringList.Create;
-if (XRCGEN) then //NUKLEAR ZELPH
-  begin
-    strLst.add(Format('%swxXmlResource::Get()->InitAllHandlers();%swxXmlResource::Get()->Load("%s.xml");',[#13,#13,self.Wx_Name]));
-  end;
+
   if self.Wx_DesignerType = dtWxFrame then
     for I := self.ComponentCount - 1 downto 0 do    // Iterate
     begin
@@ -1441,8 +1425,6 @@ if (XRCGEN) then //NUKLEAR ZELPH
                   TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width;
             end;
         end;    // for
-       if not (XRCGEN) then //NUKLEAR ZELPH
-	    begin 
         if not ((MaxToolWidth = 16) and (MaxToolHt = 15)) then
           strLst.add(Format('%s->SetToolBitmapSize(wxSize(%d,%d));',
             [self.Components[i].Name, MaxToolWidth, MaxToolHt]));
@@ -1453,9 +1435,10 @@ if (XRCGEN) then //NUKLEAR ZELPH
         strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
         strLst.add(Format('SetToolBar(%s);', [self.Components[i].Name]));
       end;
-     end;
 
-   end;
+      if IsControlWxStatusBar(TControl(Components[i])) then
+        strLst.add(Format('SetStatusBar(%s);', [self.Components[i].Name]));
+    end;
 
   isSizerAvailable := False;
   for I := 0 to self.ComponentCount - 1 do // Iterate
@@ -1491,7 +1474,7 @@ if (XRCGEN) then //NUKLEAR ZELPH
   else
     strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top,
       self.Width, self.Height]));
-
+      
   if self.Wx_Center then
     strLst.add('Center();');
 
