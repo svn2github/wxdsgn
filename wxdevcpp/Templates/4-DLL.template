@@ -1,5 +1,5 @@
 [Template]
-ver=1
+ver=3
 Name=DLL
 IconIndex=3
 Description=A Dynamic Link Library (DLL)
@@ -21,6 +21,63 @@ Cpp=Dll_hpp.txt
 UnitCount=2
 Type=3
 Name=My DLL
+PchHead=-1
+PchSource=-1
+Ver=3
+ProfilesCount=2
+ProfileIndex=0
+Folders=
+
+[Profile0]
+ProfileName=MingW 3.4.2
+Type=3
+ObjFiles=
+Includes=
+Libs=
 Compiler=-DBUILDING_DLL=1
 CppCompiler=-DBUILDING_DLL=1
-Linker=--no-export-all-symbols --add-stdcall-alias
+Linker=--no-export-all-symbols_@@_--add-stdcall-alias
+PreprocDefines=
+CompilerSettings=0000000001001000000000
+Icon=
+ExeOutput=Output\MingW
+ObjectOutput=Output\MingW
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=0
+compilerType=0
+
+[Profile1]
+ProfileName=Visual C++ 2005
+Type=3
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=
+ResourceIncludes=
+MakeIncludes=
+Compiler=/DBUILDING_DLL=1
+CppCompiler=/DBUILDING_DLL=1
+Linker=
+PreprocDefines=
+CompilerSettings=000000000000010000000000000000000000
+Icon=
+ExeOutput=Output\Visual C++ 2005
+ObjectOutput=Objects\Visual C++ 2005
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=1
+compilerType=1
+

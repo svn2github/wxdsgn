@@ -1,5 +1,5 @@
 [Template]
-ver=1
+ver=3
 Name=Static Library
 IconIndex=2
 Description=A static library (.a)
@@ -7,5 +7,62 @@ Catagory=Basic
 
 [Project]
 UnitCount=0
-Type=2
 Name=Static Lib
+ProfilesCount=2
+ProfileIndex=0
+
+[Profile0]
+ProfileName=Mingw 3.4.2
+Type=0
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=
+ResourceIncludes=
+MakeIncludes=
+Compiler=
+CppCompiler=
+Linker=
+PreprocDefines=
+CompilerSettings=0000000000000000000000
+Icon=
+ExeOutput=Output\MingW
+ObjectOutput=Objects\MingW
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=0
+compilerType=0
+
+[Profile1]
+ProfileName=MS VC++ 2005
+Type=0
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=
+ResourceIncludes=
+MakeIncludes=
+Compiler=
+CppCompiler=
+Linker=
+PreprocDefines=
+CompilerSettings=000000000000010000000000000000000000
+Icon=
+ExeOutput=Output\MSVC++2005
+ObjectOutput=Objects\MSVC++2005
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=1
+compilerType=1
