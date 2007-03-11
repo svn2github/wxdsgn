@@ -1,0 +1,19 @@
+//---------------------------------------------------------------------------
+//
+// Name:        
+// Author:      
+// Created:     
+// Description: 
+//
+//---------------------------------------------------------------------------
+#include "StaticLib.h"
+#include <stdio.h>
+
+double FuncA(double a, double b) {
+   return a + b;
+}
+
+double FuncB(double a, double b) {
+   return a - b;
+}
+
