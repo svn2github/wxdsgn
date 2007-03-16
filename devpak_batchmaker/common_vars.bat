@@ -8,7 +8,7 @@ echo off
 cls
 
 rem Default wxWidgets root directory
-set WXVER=2.8.0
+set WXVER=2.8.2
 
 echo What version of wxWidgets are you building (Default = %WXVER%)?
 set /P WXVER=
@@ -157,7 +157,7 @@ echo Preparing Visual C++ Paths
 REM -------------------------------------------------------------------
 REM Set common variables
 REM -------------------------------------------------------------------
-Set MSSdk=D:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2
+Set MSSdk=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2
 Set Bkoffice=%MSSdk%\
 Set Basemake=%MSSdk%\Include\BKOffice.Mak
 Set INETSDK=%MSSdk%

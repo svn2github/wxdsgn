@@ -10,7 +10,11 @@ Steps to create a DevPak.
 
 3. Download the following 3rd party components:- treelistctrl, treemultictrl, wxChart, wxPlotctrl, wxScintilla, wxSheet, wxThings.
 
-To download the components, point your browser to https://sourceforge.net/project/showfiles.php?group_id=51305&package_id=45182, and select from the list presented.
+To download the components, point your browser to 
+
+https://sourceforge.net/project/showfiles.php?group_id=51305&package_id=45182
+
+, and select from the list presented.
 
 4. Create a folder on your drive somewhere called wxCode (you can call it whatever you wish, just remember to enter the correct folder information when asked).
 
