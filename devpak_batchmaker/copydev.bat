@@ -42,7 +42,7 @@ gsar -sSourceFile2 -rcaret.rc -o %DEVPAKDIR%\samples\samples\caret\caret.dev
 
 copy Project2.dev %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -sProjectName -rchartart -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
-gsar -s=-mwindows -r=-lwxmsw27_chartart_@@_-mwindows -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_chartart_@@_-mwindows -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -sSourceFile1 -rwxchart.cpp -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -sSourceFile2:x0d:x0aCompileCpp=1 -rSourceFile2 -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
@@ -114,21 +114,21 @@ gsar -sSourceFile1 -rdebugrpt.cpp -o %DEVPAKDIR%\samples\samples\debugrpt\debugr
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 gsar -sProjectName -rproplist -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
-gsar -s=-mwindows -r=-lwxmsw27_deprecated_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_deprecated_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 gsar -sSourceFile1 -rproplist.cpp -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 gsar -sSourceFile2 -rproplist.rc -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sProjectName -rresource -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
-gsar -s=-mwindows -r=-lwxmsw27_deprecated_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_deprecated_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sSourceFile1 -rresource.cpp -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sSourceFile2 -rresource.rc -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sProjectName -rtreelay -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
-gsar -s=-mwindows -r=-lwxmsw27_deprecated_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_deprecated_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sSourceFile1 -rtreelay.cpp -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sSourceFile2 -rtreelay.rc -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
@@ -220,7 +220,7 @@ gsar -sSourceFile2 -rexec.rc -o %DEVPAKDIR%\samples\samples\exec\exec.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 gsar -sProjectName -rfl_demo1 -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
-gsar -s=-mwindows -r=-lwxmsw27_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 gsar -sWall_@@_ -rWall_@@_-DBMP_DIR=\\\"./bitmaps/\\\"_@@_ -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 gsar -sSourceFile1 -rfl_demo1.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
@@ -228,7 +228,7 @@ gsar -sSourceFile2 -rfl_demo1.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
 gsar -sProjectName -rfl_demo2 -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
-gsar -s=-mwindows -r=-lwxmsw27_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
 gsar -sWall_@@_ -rWall_@@_-DBMP_DIR=\\\"./bitmaps/\\\"_@@_ -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
 gsar -sSourceFile1 -rfl_demo2.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
@@ -239,35 +239,35 @@ gsar -s*/ -r -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.rc
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 gsar -sProjectName -rfl_sample1 -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
-gsar -s=-mwindows -r=-lwxmsw27_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\samples\samples\\html\helpview\helpview.dev
 gsar -sSourceFile1 -rfl_sample1.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 gsar -sSourceFile2 -rfl_sample1.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sProjectName -rfl_sample2 -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
-gsar -s=-mwindows -r=-lwxmsw27_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sSourceFile1 -rfl_sample2.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sSourceFile2 -rfl_sample2.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sProjectName -rfl_sample3 -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
-gsar -s=-mwindows -r=-lwxmsw27_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_fl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sSourceFile1 -rfl_sample3.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sSourceFile2 -rfl_sample3.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sProjectName -rextended -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
-gsar -s=-mwindows -r=-lwxmsw27_foldbar_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_foldbar_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sSourceFile1 -rextended.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sSourceFile2 -rextended.rc -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 
 copy Project5.dev %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sProjectName -rfoldpanelbartest -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
-gsar -s=-mwindows -r=-lwxmsw27_foldbar_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_foldbar_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sSourceFile1 -rfoldpanelbartest.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sSourceFile2 -rfoldtestpanel.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
@@ -302,37 +302,37 @@ gsar -sSourceFile2 -rfractal.rc -o %DEVPAKDIR%\samples\samples\fractal\fractal.d
 
 copy Project1.dev %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 gsar -sProjectName -rdynsash -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
-gsar -s=-mwindows -r=-lwxmsw27_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 gsar -sSourceFile1 -rdynsash.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 
 copy Project1.dev %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 gsar -sProjectName -rdynsash_switch -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
-gsar -s=-mwindows -r=-lwxmsw27_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 gsar -sSourceFile1 -rdynsash_switch.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 
 copy Project1.dev %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 gsar -sProjectName -reditlbox -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
-gsar -s=-mwindows -r=-lwxmsw27_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 gsar -sSourceFile1 -rtest.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 
 copy Project1.dev %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 gsar -sProjectName -rled -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
-gsar -s=-mwindows -r=-lwxmsw27_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 gsar -sSourceFile1 -rled.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 
 copy Project1.dev %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 gsar -sProjectName -rmulticell -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
-gsar -s=-mwindows -r=-lwxmsw27_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 gsar -sSourceFile1 -rmtest.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 
 copy Project1.dev %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -sProjectName -rsplittree -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
-gsar -s=-mwindows -r=-lwxmsw27_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -sSourceFile1 -rtree.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -sSourceFile1 -rtree.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
@@ -512,7 +512,7 @@ gsar -sSourceFile2 -rminimal.rc -o %DEVPAKDIR%\samples\samples\minimal\minimal.d
 
 copy Project3.dev %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 gsar -sProjectName -rmmedia -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
-gsar -s=-mwindows -r=-lwxmsw27_mmedia_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_mmedia_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 gsar -sSourceFile1 -rmmboard.cpp -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 gsar -sSourceFile2 -rmmbman.cpp -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
@@ -546,7 +546,7 @@ gsar -sSourceFile1 -rnotebook.cpp -o %DEVPAKDIR%\samples\samples\notebook\notebo
 
 copy Project5.dev %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 gsar -sProjectName -rogledit -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
-gsar -s=-mwindows -r=-lwxmsw27_ogl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_ogl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 gsar -sSourceFile1 -rogledit.cpp -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 gsar -sSourceFile2 -rdoc.cpp -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
@@ -556,7 +556,7 @@ gsar -sSourceFile5 -rogledit.rc -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogled
 
 copy Project11.dev %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sProjectName -rstudio -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
-gsar -s=-mwindows -r=-lwxmsw27_ogl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_ogl_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sSourceFile10 -rview.cpp -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sSourceFile11 -rstudio.rc -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
@@ -606,14 +606,14 @@ gsar -sSourceFile2 -rownerdrw.rc -o %DEVPAKDIR%\samples\samples\ownerdrw\ownerdr
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\plot\plot.dev
 gsar -sProjectName -rplot -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
-gsar -s=-mwindows -r=-lwxmsw27_plot_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_plot_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 gsar -sSourceFile1 -rplot.cpp -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 gsar -sSourceFile2 -rplot.rc -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 
 copy Project2.dev %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sProjectName -rplotctrl -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
-gsar -s=-mwindows -r=-lwxmsw27_plotctrl_@@_-lwxmsw27_things_@@_-mwindows -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_plotctrl_@@_-lwxmsw%WXLIBVER%_things_@@_-mwindows -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sSourceFile1 -rwxplotctrl.cpp -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sSourceFile2 -rwxplotctrl.rc -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
@@ -687,7 +687,7 @@ gsar -sSourceFile2 -rsashtest.rc -o %DEVPAKDIR%\samples\samples\sashtest\sashtes
 
 copy Project4.dev %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 gsar -sProjectName -rscintilla -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
-gsar -s=-mwindows -r=-lwxmsw27_scintilla_@@_-mwindows -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_scintilla_@@_-mwindows -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 gsar -sSourceFile1 -redit.cpp -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 gsar -sSourceFile2 -rprefs.cpp -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
@@ -714,7 +714,7 @@ gsar -sSourceFile2 -rshaped.rc -o %DEVPAKDIR%\samples\samples\shaped\shaped.dev
 
 copy Project2.dev %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 gsar -sProjectName -rsheetdemo -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
-gsar -s=-mwindows -r=-lwxmsw27_sheet_@@_-mwindows -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_sheet_@@_-mwindows -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 gsar -sSourceFile1 -rsheetdemo.cpp -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 gsar -sSourceFile2 -rsheetdemo.rc -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
@@ -756,7 +756,7 @@ gsar -sSourceFile2 -rstatbar.rc -o %DEVPAKDIR%\samples\samples\statbar\statbar.d
 
 copy Project4.dev %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sProjectName -rstc -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
-gsar -s=-mwindows -r=-lwxmsw27_stc_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_stc_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sSourceFile1 -redit.cpp -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sSourceFile2 -rprefs.cpp -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
@@ -765,7 +765,7 @@ gsar -sSourceFile4 -rstctest.rc -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 
 copy Project2.dev %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -ssvg -rchartart -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
-gsar -s=-mwindows -r=-lwxmsw27_svg_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_svg_@@_-mwindows -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -sSourceFile1 -rsvgtest.cpp -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -sSourceFile2 -rsvgtest.rc -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
@@ -783,7 +783,7 @@ gsar -sSourceFile2 -rtext.rc -o %DEVPAKDIR%\samples\samples\text\text.dev
 
 copy Project3.dev %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 gsar -sProjectName -rfilebrws -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
-gsar -s=-mwindows -r=-lwxmsw27_things_@@_-mwindows -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_things_@@_-mwindows -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 gsar -sSourceFile1 -rwxfilebrowser.cpp -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 gsar -sSourceFile2 -rwxfilebrowser.rc -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
@@ -791,7 +791,7 @@ gsar -sSourceFile3 -r..\..\generic\filedlgg.cpp -o %DEVPAKDIR%\extras\samples\th
 
 copy Project2.dev %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sProjectName -rthings -o %DEVPAKDIR%\extras\samples\things\things\things.dev
-gsar -s=-mwindows -r=-lwxmsw27_things_@@_-mwindows -o %DEVPAKDIR%\extras\samples\things\things\things.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_things_@@_-mwindows -o %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sSourceFile1 -rthingsdemo.cpp -o %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sSourceFile2 -rthingsdemo.rc -o %DEVPAKDIR%\extras\samples\things\things\things.dev
@@ -815,7 +815,7 @@ gsar -sSourceFile1 -rtreetest.cpp -o %DEVPAKDIR%\samples\samples\treectrl\treect
 
 copy Project2.dev %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 gsar -sProjectName -rtreelisttest -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
-gsar -s=-mwindows -r=-lwxmsw27_treelistctrl_@@_-mwindows -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_treelistctrl_@@_-mwindows -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 gsar -sSourceFile1 -rtreelisttest.cpp -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 gsar -sSourceFile2 -rtreelisttest.rc -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
@@ -823,7 +823,7 @@ gsar -s#if:x20defined(__WINDOWS__) -r#if:x20defined(__WINDOWS__):x20&&:x20!defin
 
 copy Project2.dev %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sProjectName -rtreemultictrl -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
-gsar -s=-mwindows -r=-lwxmsw27_treemultictrl_@@_-mwindows -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
+gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_treemultictrl_@@_-mwindows -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sSourceFile1 -rmultictrltest.cpp -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sSourceFile2 -rmultictrltest.rc -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev

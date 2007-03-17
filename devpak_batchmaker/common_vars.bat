@@ -14,6 +14,14 @@ echo What version of wxWidgets are you building (Default = %WXVER%)?
 set /P WXVER=
 set DEVPAKDIR=%STARTDIR%\devpaks_%WXVER%
 
+rem Get the library version (e.g. 2.8.2 becomes 28)
+rem wxlibversion.exe is a simple C++ program 
+rem that takes the first 2 numbers of the library name
+rem and removes the dots.
+wxlibversion.exe %WXVER% >> temp123.bat
+call temp123.bat
+del temp123.bat
+
 set WXWIN=c:\wxWidgets-%WXVER%
 
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
