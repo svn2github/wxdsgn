@@ -76,6 +76,7 @@ gsar -scommon\3rdparty\wxchart.rc:x0d:x0aFolder= -rcommon\3rdparty\wxchart.rc:x0
 gsar -s#pragma:x20interface  -r//#pragma:x20interface  -o %DEVPAKDIR%\extras\samples\chartart\wxchart.cpp
 gsar -s#pragma:x20implementation -r//#pragma:x20implementation -o %DEVPAKDIR%\extras\samples\chartart\wxchart.cpp
 gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
+gsar -sResourceIncludes= -rResourceIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\checklst\checklst.dev
 gsar -sProjectName -rchecklst -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
