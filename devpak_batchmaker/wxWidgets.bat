@@ -35,11 +35,13 @@ cd build\msw
 
 IF NOT "%BUILDGCC%"=="Y" GOTO VC_BASE_BUILD
 
+echo Building gcc...
 CALL %STARTDIR%\wxWidgets_base.bat gcc
+
 IF NOT "%BUILDRESULT%"=="P" GOTO GCC_BASE_BUILD_ERR
 
-
 :VC_BASE_BUILD
+echo Building vc...
 IF NOT "%BUILDVC%"=="Y" GOTO DMC_BASE_BUILD
 
 CALL %STARTDIR%\wxWidgets_base.bat vc
@@ -47,6 +49,7 @@ IF NOT "%BUILDRESULT%"=="P" GOTO VC_BASE_BUILD_ERR
 
 
 :DMC_BASE_BUILD
+echo Building DMC...
 IF NOT "%BUILDDMC%"=="Y" GOTO BCC_BASE_BUILD
 
 CALL %STARTDIR%\wxWidgets_base.bat dmc
@@ -56,6 +59,7 @@ IF NOT "%BUILDRESULT%"=="P" GOTO DMC_BASE_BUILD_ERR
 :BCC_BASE_BUILD
 IF NOT "%BUILDBCC%"=="Y" GOTO BASE_DEVPAK
 
+echo Building bcc...
 CALL %STARTDIR%\wxWidgets_base.bat bcc
 IF NOT "%BUILDRESULT%"=="P" GOTO BCC_BASE_BUILD_ERR
 
