@@ -71,18 +71,18 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_chartart.lib_@@_wxmsw%WXLIBVER%.l
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -sSourceFile1 -rwxchart.cpp -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -sSourceFile2:x0d:x0aCompileCpp=1 -rSourceFile2 -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
-gsar -sSourceFile2 -r..\..\..\include\common\3rdparty\wxchart.rc -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
+gsar -sSourceFile2 -r..\..\..\include\3rdparty\wxchart.rc -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -scommon\3rdparty\wxchart.rc:x0d:x0aFolder= -rcommon\3rdparty\wxchart.rc:x0d:x0aFolder=Resources -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 gsar -s#pragma:x20interface  -r//#pragma:x20interface  -o %DEVPAKDIR%\extras\samples\chartart\wxchart.cpp
 gsar -s#pragma:x20implementation -r//#pragma:x20implementation -o %DEVPAKDIR%\extras\samples\chartart\wxchart.cpp
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\chartart\chartart.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\checklst\checklst.dev
 gsar -sProjectName -rchecklst -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
 gsar -sSourceFile1 -rchecklst.cpp -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
 gsar -sSourceFile2 -rchecklst.rc -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\samples\samples\checklst\checklst.dev
 
 copy Project1.new %DEVPAKDIR%\samples\samples\combo\combo.dev
 gsar -sProjectName -rcombo -o %DEVPAKDIR%\samples\samples\combo\combo.dev
@@ -146,7 +146,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_deprecated.lib_@@_wxmsw%WXLIBVER%
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 gsar -sSourceFile1 -rproplist.cpp -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 gsar -sSourceFile2 -rproplist.rc -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\deprecated\proplist\proplist.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sProjectName -rresource -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
@@ -155,7 +155,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_deprecated.lib_@@_wxmsw%WXLIBVER%
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sSourceFile1 -rresource.cpp -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 gsar -sSourceFile2 -rresource.rc -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\deprecated\resource\resource.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sProjectName -rtreelay -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
@@ -164,7 +164,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_deprecated.lib_@@_wxmsw%WXLIBVER%
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sSourceFile1 -rtreelay.cpp -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 gsar -sSourceFile2 -rtreelay.rc -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\deprecated\treelay\treelay.dev
 
 copy Project6.new %DEVPAKDIR%\samples\samples\dialogs\dialogs.dev
 gsar -sProjectName -rdialogs -o %DEVPAKDIR%\samples\samples\dialogs\dialogs.dev
@@ -259,7 +259,7 @@ gsar -sWall_@@_ -rWall_@@_-DBMP_DIR=\\\"./bitmaps/\\\"_@@_ -o %DEVPAKDIR%\contri
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 gsar -sSourceFile1 -rfl_demo1.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 gsar -sSourceFile2 -rfl_demo1.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_demo1.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
 gsar -sProjectName -rfl_demo2 -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
@@ -272,7 +272,7 @@ gsar -sSourceFile2 -rfl_demo2.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.dev
 gsar -sICON:x20:x22mondrian -rICON:x20:x22sample -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.rc
 gsar -s/* -r -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.rc
 gsar -s*/ -r -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.rc
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.rc
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_demo2.rc
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 gsar -sProjectName -rfl_sample1 -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
@@ -281,7 +281,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_fl.lib_@@_wxmsw%WXLIBVER%.lib -o 
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\samples\samples\\html\helpview\helpview.dev
 gsar -sSourceFile1 -rfl_sample1.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 gsar -sSourceFile2 -rfl_sample1.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_sample1.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sProjectName -rfl_sample2 -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
@@ -290,7 +290,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_fl.lib_@@_wxmsw%WXLIBVER%.lib -o 
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sSourceFile1 -rfl_sample2.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 gsar -sSourceFile2 -rfl_sample2.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_sample2.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sProjectName -rfl_sample3 -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
@@ -299,7 +299,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_fl.lib_@@_wxmsw%WXLIBVER%.lib -o 
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sSourceFile1 -rfl_sample3.cpp -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 gsar -sSourceFile2 -rfl_sample3.rc -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\fl\fl_sample3.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sProjectName -rextended -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
@@ -308,7 +308,7 @@ gsar -s=wxmsw%WXLIBVER% -r=wxmsw%WXLIBVER%_foldbar.lib_@@_wxmsw%WXLIBVER%.lib -o
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sSourceFile1 -rextended.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 gsar -sSourceFile2 -rextended.rc -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\foldbar\extended\extended.dev
 
 copy Project5.new %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sProjectName -rfoldpanelbartest -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
@@ -320,7 +320,7 @@ gsar -sSourceFile2 -rfoldtestpanel.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\fo
 gsar -sSourceFile3 -rlayouttest.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sSourceFile4 -rtest.cpp -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 gsar -sSourceFile5 -rfoldpanelbartest.rc -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\foldbar\foldpanelbar\foldpanelbartest.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\font\font.dev
 gsar -sProjectName -rfont -o %DEVPAKDIR%\samples\samples\font\font.dev
@@ -353,7 +353,7 @@ gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contri
 gsar -s=wxmsw%WXLIBVER% -r=wxmsw%WXLIBVER%_gizmos.lib_@@_wxmsw%WXLIBVER%.lib -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 gsar -sSourceFile1 -rdynsash.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash\dynsash.dev
 
 copy Project1.new %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 gsar -sProjectName -rdynsash_switch -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
@@ -361,7 +361,7 @@ gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contri
 gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_gizmos.lib_@@_wxmsw%WXLIBVER%.lib -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 gsar -sSourceFile1 -rdynsash_switch.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\dynsash_switch\dynsash_switch.dev
 
 copy Project1.new %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 gsar -sProjectName -reditlbox -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
@@ -369,7 +369,7 @@ gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contri
 gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_gizmos.lib_@@_wxmsw%WXLIBVER%.lib -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 gsar -sSourceFile1 -rtest.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\editlbox\editlbox.dev
 
 copy Project1.new %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 gsar -sProjectName -rled -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
@@ -377,7 +377,7 @@ gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contri
 gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_gizmos.lib_@@_wxmsw%WXLIBVER%.lib -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 gsar -sSourceFile1 -rled.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\led\led.dev
 
 copy Project1.new %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 gsar -sProjectName -rmulticell -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
@@ -385,7 +385,7 @@ gsar -s=-mwindows -r=-lwxmsw%WXLIBVER%_gizmos_@@_-mwindows -o %DEVPAKDIR%\contri
 gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_gizmos.lib_@@_wxmsw%WXLIBVER%.lib -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 gsar -sSourceFile1 -rmtest.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\multicell\multicell.dev
 
 copy Project1.new %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -sProjectName -rsplittree -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
@@ -396,7 +396,7 @@ gsar -sSourceFile1 -rtree.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\sp
 gsar -sSourceFile1 -rtree.cpp -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -swxICON_SMALL_CLOSED_FOLDER -r../../art/folder.xpm -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 gsar -swxICON_SMALL_FILE -r../../art/fileopen.xpm -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\gizmos\splittree\splittree.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\grid\grid.dev
 gsar -sProjectName -rgrid -o %DEVPAKDIR%\samples\samples\grid\grid.dev
@@ -577,7 +577,7 @@ gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\mmedia\mmedi
 gsar -sSourceFile1 -rmmboard.cpp -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 gsar -sSourceFile2 -rmmbman.cpp -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 gsar -sSourceFile3 -rmmboard.rc -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\mmedia\mmedia.dev
 
 copy Project1.new %DEVPAKDIR%\samples\samples\mobile\styles\styles.dev
 gsar -sProjectName -rstyles -o %DEVPAKDIR%\samples\samples\mobile\styles\styles.dev
@@ -615,7 +615,7 @@ gsar -sSourceFile2 -rdoc.cpp -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.
 gsar -sSourceFile3 -rpalette.cpp -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 gsar -sSourceFile4 -rview.cpp -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 gsar -sSourceFile5 -rogledit.rc -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\ogl\ogledit\ogledit.dev
 
 copy Project11.new %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sProjectName -rstudio -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
@@ -633,7 +633,7 @@ gsar -sSourceFile6 -rproject.cpp -o %DEVPAKDIR%\contrib\samples\ogl\studio\studi
 gsar -sSourceFile7 -rshapes.cpp -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sSourceFile8 -rstudio.cpp -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 gsar -sSourceFile9 -rsymbols.cpp -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\ogl\studio\studio.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\oleauto\oleauto.dev
 gsar -sProjectName -roleauto -o %DEVPAKDIR%\samples\samples\oleauto\oleauto.dev
@@ -676,7 +676,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_plot.lib_@@_wxmsw%WXLIBVER%.lib -
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 gsar -sSourceFile1 -rplot.cpp -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 gsar -sSourceFile2 -rplot.rc -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\plot\plot.dev
 
 copy Project2.new %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sProjectName -rplotctrl -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
@@ -685,7 +685,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_plotctrl.lib_@@_wxmsw%WXLIBVER%_t
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sSourceFile1 -rwxplotctrl.cpp -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 gsar -sSourceFile2 -rwxplotctrl.rc -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\plotctrl\plotctrl.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\png\png.dev
 gsar -sProjectName -rpng -o %DEVPAKDIR%\samples\samples\png\png.dev
@@ -763,7 +763,7 @@ gsar -sSourceFile1 -redit.cpp -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.
 gsar -sSourceFile2 -rprefs.cpp -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 gsar -sSourceFile3 -rtest.cpp -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 gsar -sSourceFile4 -rtest.rc -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\scintilla\scintilla.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\scroll\scroll.dev
 gsar -sProjectName -rscroll -o %DEVPAKDIR%\samples\samples\scroll\scroll.dev
@@ -790,7 +790,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_sheet.lib_@@_wxmsw%WXLIBVER%.lib 
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 gsar -sSourceFile1 -rsheetdemo.cpp -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 gsar -sSourceFile2 -rsheetdemo.rc -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\sheet\sheetdemo.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\sockets\client.dev
 gsar -sProjectName -rclient -o %DEVPAKDIR%\samples\samples\sockets\client.dev
@@ -836,7 +836,7 @@ gsar -sSourceFile1 -redit.cpp -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sSourceFile2 -rprefs.cpp -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sSourceFile3 -rstctest.cpp -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 gsar -sSourceFile4 -rstctest.rc -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\stc\stc.dev
 
 copy Project2.new %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -ssvg -rchartart -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
@@ -845,7 +845,7 @@ gsar -s=wxmsw%WXLIBVER%.lib -r=wxmsw%WXLIBVER%_svg.lib_@@_wxmsw%WXLIBVER%.lib -o
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -sSourceFile1 -rsvgtest.cpp -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
 gsar -sSourceFile2 -rsvgtest.rc -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\contrib\samples\svg\svg.dev
 
 copy Project1.new %DEVPAKDIR%\samples\samples\taskbar\taskbar.dev
 gsar -sProjectName -rtaskbar -o %DEVPAKDIR%\samples\samples\taskbar\taskbar.dev
@@ -866,7 +866,7 @@ gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\things\filebr
 gsar -sSourceFile1 -rwxfilebrowser.cpp -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 gsar -sSourceFile2 -rwxfilebrowser.rc -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 gsar -sSourceFile3 -r..\..\generic\filedlgg.cpp -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\things\filebrws\filebrws.dev
 
 copy Project2.new %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sProjectName -rthings -o %DEVPAKDIR%\extras\samples\things\things\things.dev
@@ -875,7 +875,7 @@ gsar -s=wxmsw%WXLIBVER%_things.lib -r=wxmsw%WXLIBVER%_things.lib_@@_wxmsw%WXLIBV
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sSourceFile1 -rthingsdemo.cpp -o %DEVPAKDIR%\extras\samples\things\things\things.dev
 gsar -sSourceFile2 -rthingsdemo.rc -o %DEVPAKDIR%\extras\samples\things\things\things.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\things\things\things.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\things\things\things.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\thread\thread.dev
 gsar -sProjectName -rthread -o %DEVPAKDIR%\samples\samples\thread\thread.dev
@@ -902,7 +902,7 @@ gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\treelisttest\
 gsar -sSourceFile1 -rtreelisttest.cpp -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 gsar -sSourceFile2 -rtreelisttest.rc -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 gsar -s#if:x20defined(__WINDOWS__) -r#if:x20defined(__WINDOWS__):x20&&:x20!defined(__GNUWIN32__) -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.cpp 
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\treelisttest\treelisttest.dev
 
 copy Project2.new %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sProjectName -rtreemultictrl -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
@@ -911,7 +911,7 @@ gsar -s=wxmsw%WXLIBVER%_treemultictrl.lib -r=wxmsw%WXLIBVER%_treemultictrl.lib_@
 gsar -sExeOutput=output -rExeOutput= -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sSourceFile1 -rmultictrltest.cpp -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 gsar -sSourceFile2 -rmultictrltest.rc -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
-gsar -sIncludes=. -rIncludes=..\..\..\include\common\3rdparty -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
+gsar -sIncludes=. -rIncludes=..\..\..\include\3rdparty -o %DEVPAKDIR%\extras\samples\treemultictrl\treemultictrl.dev
 
 copy Project2.new %DEVPAKDIR%\samples\samples\typetest\typetest.dev
 gsar -sProjectName -rtypetest -o %DEVPAKDIR%\samples\samples\typetest\typetest.dev
