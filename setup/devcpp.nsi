@@ -4,15 +4,15 @@
 ; http://nsis.sourceforge.net/
 
 !define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.10.1beta"
-!define PROGRAM_NAME "wx-devcpp"
-!define DEFAULT_START_MENU_DIRECTORY "wx-devcpp"
+!define WXDEVCPP_VERSION "6.10.2"
+!define PROGRAM_NAME "wxdevcpp"
+!define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
 !define HAVE_MINGW
 !define HAVE_MSVC
 !define NEW_INTERFACE
 
-!define wxWidgets_version "2.8.0"
+!define wxWidgets_version "2.8.2"
 !define wxWidgets_name "wxWidgets_${wxWidgets_version}"
 
 !ifdef HAVE_MINGW
@@ -62,9 +62,9 @@ Var WXBOOK_INSTALLED
 
 Name "${DISPLAY_NAME}"
 !ifdef HAVE_MINGW 
-OutFile "${PROGRAM_NAME}-${WXDEVCPP_VERSION}_setup.exe"
+OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_setup.exe"
 !else
-OutFile "${PROGRAM_NAME}-${WXDEVCPP_VERSION}_nomingw_setup.exe"
+OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_nomingw_setup.exe"
 !endif
 Caption "${DISPLAY_NAME}"
 
