@@ -127,15 +127,17 @@ begin
       LookIn.ItemIndex := 1;
   end;
 
-  if Assigned(SearchCenter.Project) then
-  begin
-    LookIn.AddItem(Lang[ID_FIND_PRJFILES], TObject(liProject));
-    if fFindAll then
-      LookIn.ItemIndex := LookIn.Items.Count - 1;
-  end;
-
+  //Insert the Open Files category
   if SearchCenter.PageControl.PageCount > 0 then
     LookIn.AddItem(Lang[ID_FIND_OPENFILES], TObject(liOpen));
+
+  //And the Current Project category
+  if Assigned(SearchCenter.Project) then
+    LookIn.AddItem(Lang[ID_FIND_PRJFILES], TObject(liProject));
+
+  //Set the correct find type for our search
+  if fFindAll then
+    LookIn.ItemIndex := LookIn.Items.Count - 1;
 
   //Enable or disable the extended search options
   LookIn.OnChange(LookIn);
