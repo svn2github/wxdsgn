@@ -34,9 +34,10 @@ type
 
   TDevRun = class(TThread)
   private
+    hProcess   : THandle;
     TheMsg     : String;
     CurrentLine: String;
-    fExitCode  : Integer;
+    fExitCode  : Cardinal;
     FLineOutput: TLineOutputEvent;
     fCheckAbort: TCheckAbortFunc;
   protected
@@ -49,9 +50,10 @@ type
     Command: string;
     Directory: string;
     Output: string;
+    procedure Terminate;
     property OnLineOutput: TLineOutputEvent read FLineOutput write FLineOutput;
     property OnCheckAbort: TCheckAbortFunc read FCheckAbort write FCheckAbort;
-    property ExitCode: Integer read fExitCode;
+    property ExitCode: Cardinal read fExitCode;
   end;
 
 implementation
@@ -65,6 +67,12 @@ procedure TDevRun.ShowError(Msg: String);
 begin
   TheMsg := Msg;
   Synchronize(ShowMsg);
+end;
+
+procedure TDevRun.Terminate;
+begin
+  TerminateProcess(hProcess, 1);
+  inherited;
 end;
 
 procedure TDevRun.CallLineOutputEvent;
@@ -81,15 +89,95 @@ end;
 
 procedure TDevRun.Execute;
 var
-  retValue:String;
+  tsi: TStartupInfo;
+  tpi: TProcessInformation;
+  nRead: DWORD;
+  aBuf: array[0..101] of char;
+  sa: TSecurityAttributes;
+  hOutputReadTmp, hOutputRead, hOutputWrite, hInputWriteTmp, hInputRead,
+    hInputWrite, hErrorWrite: THandle;
+  FOutput: string;
+  CurrentLine: String;
+  bAbort: boolean;
 begin
-  Output := RunAndGetOutput(Command, Directory, Self.ShowError,
-    LineOutput, FCheckAbort, True);
-  retValue:=trim(Copy(Output, GetLastPos(' ', Output), Length(Output)));
-  if IsNumeric(retValue) then
-    fExitCode := StrToInt(retValue)
-  else
-    fExitCode := -1;
+  fExitCode := 0;
+  hProcess := 0;
+  FOutput := '';
+  CurrentLine := '';
+  sa.nLength := SizeOf(TSecurityAttributes);
+  sa.lpSecurityDescriptor := nil;
+  sa.bInheritHandle := True;
+
+  CreatePipe(hOutputReadTmp, hOutputWrite, @sa, 0);
+  DuplicateHandle(GetCurrentProcess(), hOutputWrite, GetCurrentProcess(),
+    @hErrorWrite, 0, true, DUPLICATE_SAME_ACCESS);
+  CreatePipe(hInputRead, hInputWriteTmp, @sa, 0);
+
+  // Create new output read handle and the input write handle. Set
+  // the inheritance properties to FALSE. Otherwise, the child inherits
+  // the these handles; resulting in non-closeable handles to the pipes
+  // being created.
+  DuplicateHandle(GetCurrentProcess(), hOutputReadTmp, GetCurrentProcess(),
+    @hOutputRead, 0, false, DUPLICATE_SAME_ACCESS);
+  DuplicateHandle(GetCurrentProcess(), hInputWriteTmp, GetCurrentProcess(),
+    @hInputWrite, 0, false, DUPLICATE_SAME_ACCESS);
+  CloseHandle(hOutputReadTmp);
+  CloseHandle(hInputWriteTmp);
+
+  FillChar(tsi, SizeOf(TStartupInfo), 0);
+  tsi.cb := SizeOf(TStartupInfo);
+  tsi.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+  tsi.hStdInput := hInputRead;
+  tsi.hStdOutput := hOutputWrite;
+  tsi.hStdError := hErrorWrite;
+
+  if not CreateProcess(nil, PChar(Command), @sa, @sa, true, 0, nil, PChar(Directory),
+                        tsi, tpi) then begin
+    Output := 'Unable to run "' + Command + '": ' + SysErrorMessage(GetLastError);
+    Exit;
+  end;
+
+  hProcess := tpi.hProcess;
+  CloseHandle(hOutputWrite);
+  CloseHandle(hInputRead);
+  CloseHandle(hErrorWrite);
+
+  bAbort := False;
+  repeat
+    if Assigned(FCheckAbort) then
+      FCheckAbort(bAbort);
+    if bAbort then
+    begin
+      TerminateProcess(hProcess, 1);
+      Break;
+    end;
+
+    if (not ReadFile(hOutputRead, aBuf, 16, nRead, nil)) or (nRead = 0) then
+    begin
+      if GetLastError = ERROR_BROKEN_PIPE then
+        Break
+      else
+        ShowError('Pipe read error, could not execute file');
+    end;
+    aBuf[nRead] := #0;
+    Output := Output + aBuf;
+
+    CurrentLine := CurrentLine + aBuf;
+    if CurrentLine[Length(CurrentLine)] = #10 then
+    begin
+      Delete(CurrentLine, Length(CurrentLine), 1);
+      LineOutput(CurrentLine);
+      CurrentLine := '';
+    end;
+  until False;
+
+  if not GetExitCodeProcess(tpi.hProcess, fExitCode) then
+    fExitCode := $FFFFFFFF;
+
+  CloseHandle(hOutputRead);
+  CloseHandle(hInputWrite);
+  CloseHandle(tpi.hProcess);
+  CloseHandle(tpi.hThread);
 end;
 
 end.

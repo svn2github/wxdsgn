@@ -60,6 +60,8 @@ type
     fWarnCount: integer;
     fSingleFile: boolean;
     fOriginalSet : integer;
+    fStartCompile: Cardinal;
+
     procedure DoLogEntry(const msg: string);
     procedure DoOutput(const s, s2, s3: string);
     procedure DoResOutput(const s, s2, s3: string);
@@ -121,7 +123,6 @@ type
     procedure GetLibrariesParams; virtual;
     procedure GetIncludesParams; virtual;
     procedure LaunchThread(s, dir: string); virtual;
-    procedure ThreadCheckAbort(var AbortThread: boolean); virtual;
     procedure OnCompilationTerminated(Sender: TObject); virtual;
     procedure OnLineOutput(Sender: TObject; const Line: String); virtual;
     procedure ParseResults; virtual;
@@ -139,7 +140,7 @@ implementation
 
 uses
   MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils, RegExpr,
-  DbugIntf, SynEdit, SynEditHighlighter, SynEditTypes, datamod;
+  DbugIntf, SynEdit, SynEditHighlighter, SynEditTypes, datamod, main;
 
 constructor TCompiler.Create;
 begin
@@ -1281,58 +1282,81 @@ begin
   else
   begin
     Application.ProcessMessages;
+    fStartCompile := GetTickCount div 1000;
     fAbortThread := False;
     fDevRun := TDevRun.Create(true);
     fDevRun.Command := s;
     fDevRun.Directory := dir;
     fDevRun.OnTerminate := OnCompilationTerminated;
     fDevRun.OnLineOutput := OnLineOutput;
-    fDevRun.OnCheckAbort := ThreadCheckAbort;
     fDevRun.FreeOnTerminate := True;
     fDevRun.Resume;
   end;
-end;
-
-procedure TCompiler.ThreadCheckAbort(var AbortThread: boolean);
-begin
-  AbortThread := fAbortThread;
 end;
 
 procedure TCompiler.AbortThread;
 begin
   if not Assigned(fDevRun) then
     Exit;
+  fDevRun.Terminate;
   fAbortThread := True;
 end;
 
 procedure TCompiler.OnAbortCompile(Sender: TObject);
 begin
   if Assigned(fDevRun) then
-    fAbortThread := True
+  begin
+    fDevRun.Terminate;
+    fAbortThread := True;
+  end
   else
     ReleaseProgressForm;
 end;
 
 procedure TCompiler.OnCompilationTerminated(Sender: TObject);
+var
+  FWinfo: TFlashWInfo;
+  MainForm: TMainForm;
 begin
   ParseResults;
   EndProgressForm;
   DoLogEntry(Lang[ID_EXECUTIONTERM]);
+  MainForm := TMainForm(Application.MainForm);
 
   if fAbortThread then
     DoLogEntry(Lang[ID_COMPILEABORT])
   else if (fErrCount = 0) and (fDevRun.ExitCode = 0) then
   begin
     DoLogEntry(Lang[ID_COMPILESUCCESS]);
+    DoLogEntry('Compilation took ' + TCompileProgressForm.FormatTime((GetTickCount div 1000) - fStartCompile) + ' to complete');
     Application.ProcessMessages;
+    MainForm.StatusBar.Panels[3].Text := Lang[ID_COMPILESUCCESS] + '; Compilation took ' +
+                                         TCompileProgressForm.FormatTime((GetTickCount div 1000) - fStartCompile);
     if Assigned(OnCompilationEnded) then
       OnCompilationEnded(Self);
+  end
+  else
+  begin
+    DoLogEntry('Compilation Failed. Make returned ' + IntToStr(fDevRun.ExitCode));
+    MainForm.StatusBar.Panels[3].Text := Format('Compilation failed with %d errors and %d warnings',
+                                                [fErrCount, fWarnCount]);
   end;
 
   //Clean up
   fDevRun := nil;
   OnCompilationEnded := nil;
   Application.ProcessMessages;
+
+  //Flash the taskbar icon if the form is minimized
+  if IsIconic(Application.Handle) then
+  begin
+    FWinfo.cbSize := SizeOf(FWinfo);
+    FWinfo.hwnd := Application.Handle;
+    FWinfo.dwflags := FLASHW_ALL;
+    FWinfo.ucount := 10;
+    FWinfo.dwtimeout := 0;
+    FlashWindowEx(FWinfo);
+  end;
 end;
 
 procedure TCompiler.OnLineOutput(Sender: TObject; const Line: String);

@@ -4,8 +4,8 @@ object CompileProgressForm: TCompileProgressForm
   BorderIcons = []
   BorderStyle = bsToolWindow
   Caption = 'Compile Progress'
-  ClientHeight = 213
-  ClientWidth = 276
+  ClientHeight = 240
+  ClientWidth = 350
   Color = clBtnFace
   Constraints.MinHeight = 229
   Constraints.MinWidth = 284
@@ -20,13 +20,13 @@ object CompileProgressForm: TCompileProgressForm
   OnClose = FormClose
   OnShow = FormShow
   DesignSize = (
-    276
-    213)
+    350
+    240)
   PixelsPerInch = 96
   TextHeight = 13
   object btnClose: TButton
-    Left = 100
-    Top = 183
+    Left = 137
+    Top = 210
     Width = 75
     Height = 23
     Anchors = [akBottom]
@@ -38,33 +38,33 @@ object CompileProgressForm: TCompileProgressForm
   object PageControl1: TPageControl
     Left = 4
     Top = 4
-    Width = 267
-    Height = 152
+    Width = 341
+    Height = 179
     ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Progress'
       DesignSize = (
-        259
-        124)
+        333
+        151)
       object Bevel5: TBevel
-        Left = 63
+        Left = 87
         Top = 92
-        Width = 64
+        Width = 86
         Height = 21
       end
       object Bevel1: TBevel
-        Left = 63
+        Left = 87
         Top = 8
-        Width = 190
+        Width = 241
         Height = 21
         Anchors = [akLeft, akTop, akRight]
       end
       object Bevel2: TBevel
-        Left = 63
+        Left = 87
         Top = 36
-        Width = 190
+        Width = 241
         Height = 21
         Anchors = [akLeft, akTop, akRight]
       end
@@ -77,32 +77,32 @@ object CompileProgressForm: TCompileProgressForm
         Transparent = True
       end
       object lblCompiler: TLabel
-        Left = 68
+        Left = 92
         Top = 12
-        Width = 182
+        Width = 50
         Height = 13
         Caption = 'lblCompiler'
         Transparent = True
       end
       object lblStatus: TLabel
-        Left = 68
+        Left = 92
         Top = 40
-        Width = 182
+        Width = 40
         Height = 13
         Caption = 'lblStatus'
         Transparent = True
       end
       object Bevel3: TBevel
-        Left = 63
+        Left = 87
         Top = 64
-        Width = 190
+        Width = 241
         Height = 21
         Anchors = [akLeft, akTop, akRight]
       end
       object lblFile: TLabel
-        Left = 68
+        Left = 92
         Top = 68
-        Width = 182
+        Width = 26
         Height = 13
         Caption = 'lblFile'
         Transparent = True
@@ -132,9 +132,9 @@ object CompileProgressForm: TCompileProgressForm
         Transparent = True
       end
       object lblErr: TLabel
-        Left = 68
+        Left = 92
         Top = 96
-        Width = 54
+        Width = 76
         Height = 13
         Alignment = taRightJustify
         AutoSize = False
@@ -142,28 +142,49 @@ object CompileProgressForm: TCompileProgressForm
         Transparent = True
       end
       object Label4: TLabel
-        Left = 131
+        Left = 187
         Top = 96
-        Width = 55
+        Width = 48
         Height = 13
         Caption = 'Warnings:'
         Transparent = True
       end
       object Bevel6: TBevel
-        Left = 190
+        Left = 242
         Top = 92
-        Width = 63
+        Width = 86
         Height = 21
       end
       object lblWarn: TLabel
-        Left = 195
+        Left = 247
         Top = 96
-        Width = 53
+        Width = 76
         Height = 13
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'lblWarn'
         Transparent = True
+      end
+      object Label6: TLabel
+        Left = 8
+        Top = 124
+        Width = 67
+        Height = 13
+        Caption = 'Time Elapsed:'
+      end
+      object Bevel4: TBevel
+        Left = 87
+        Top = 120
+        Width = 241
+        Height = 21
+        Anchors = [akLeft, akTop, akRight, akBottom]
+      end
+      object lblElapsed: TLabel
+        Left = 92
+        Top = 124
+        Width = 48
+        Height = 13
+        Caption = 'lblElapsed'
       end
     end
     object TabSheet2: TTabSheet
@@ -172,8 +193,8 @@ object CompileProgressForm: TCompileProgressForm
       object Memo1: TMemo
         Left = 0
         Top = 0
-        Width = 259
-        Height = 124
+        Width = 333
+        Height = 151
         Align = alClient
         Color = clBtnFace
         Font.Charset = GREEK_CHARSET
@@ -194,8 +215,8 @@ object CompileProgressForm: TCompileProgressForm
   end
   object pb: TProgressBar
     Left = 4
-    Top = 161
-    Width = 265
+    Top = 188
+    Width = 339
     Height = 17
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 2
@@ -229,6 +250,11 @@ object CompileProgressForm: TCompileProgressForm
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 4
-    Top = 185
+    Top = 208
+  end
+  object timeTimer: TTimer
+    OnTimer = timeTimerTimer
+    Left = 32
+    Top = 208
   end
 end
