@@ -142,7 +142,9 @@ begin
   if IsPackages then
     JumpRec := Pointer(PDWord(LongJumpRec.Address)^);
 
-  VirtualProtect(JumpRec, SizeOf(JumpRec^), PAGE_EXECUTE_WRITECOPY, @OldProtect);
+  if not VirtualProtect(JumpRec, SizeOf(JumpRec^), PAGE_EXECUTE_WRITECOPY, @OldProtect) then
+    // If we cannot change the access right the following line will crash. Exit here anyway.
+    Exit;
   JumpRec.OpCode := $E9; // 32bit jump near
   JumpRec.Address := integer(@Languages) - integer(JumpRec) - 5;
   VirtualProtect(JumpRec, SizeOf(JumpRec^), OldProtect, @OldProtect);
