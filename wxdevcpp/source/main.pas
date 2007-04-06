@@ -7185,23 +7185,17 @@ end;
 
 procedure TMainForm.actProjectRemoveFolderExecute(Sender: TObject);
 var
-  idx: integer;
   node: TTreeNode;
 begin
-  if not assigned(fProject) then exit;
+  if not Assigned(fProject) then
+    Exit;
+  
   if Assigned(ProjectView.Selected) and (ProjectView.Selected.Data = Pointer(-1)) then
     if MessageDlg(Lang[ID_MSG_REMOVEBROWSERFOLDER], mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
       ProjectView.Items.BeginUpdate;
-      while ProjectView.Selected.Count > 0 do begin
-        node := ProjectView.Selected.Item[0];
-        if not assigned(node) then
-          Continue;
-        if (node.Data = Pointer(-1)) or (node.Level < 1) then
-         Continue;
-        idx:= integer(node.Data);
-        if not fProject.Remove(idx, true) then
-          exit;
-      end;
+      node := ProjectView.Selected;
+      if assigned(node) and (node.Data = Pointer(-1)) and (node.Level >= 1) then
+        fProject.RemoveFolder(fProject.GetFolderPath(node));
       ProjectView.TopItem.AlphaSort(False);
       ProjectView.Selected.Delete;
       ProjectView.Items.EndUpdate;

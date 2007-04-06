@@ -194,6 +194,7 @@ type
     function GetFolderPath(Node: TTreeNode): string;
     procedure UpdateFolders;
     procedure AddFolder(s: string);
+    procedure RemoveFolder(s: string);
     function OpenUnit(index: integer): TEditor;
     procedure CloseUnit(index: integer);
     procedure SaveUnitAs(i: integer; sFileName: string);
@@ -2266,6 +2267,19 @@ begin
     FolderNodeFromName(s).MakeVisible;
     SetModified(TRUE);
   end;
+end;
+
+procedure TProject.RemoveFolder(s: string);
+var
+  idx, I: Integer;
+begin
+  idx := fFolders.IndexOf(s);
+  if idx = -1 then
+    Exit;
+
+  for I := Units.Count - 1 downto 0 do
+    if Copy(Units[I].Folder, 0, Length(s)) = s then
+      Units.Remove(I);
 end;
 
 procedure TProject.SetHostApplication(s: string);
