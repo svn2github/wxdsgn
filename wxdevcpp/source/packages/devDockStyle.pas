@@ -96,9 +96,11 @@ uses
 
 type
   TJvDockVSNETZoneAccess = class(TJvDockVSNETZone);
+  pGetThemeSysFont = function(hTheme: HTHEME; iFontID: Integer; var plf: LOGFONTW): HRESULT; stdcall;
 
-function GetThemeSysFont(hTheme: HTHEME; iFontID: Integer; var plf: LOGFONTW): HRESULT; stdcall;
-  external 'UxTheme.dll';
+var
+  GetThemeSysFont: pGetThemeSysFont;
+  UxThemeLib: HMODULE;
 
 function IsThemeActive: Boolean;
 begin
@@ -251,7 +253,7 @@ begin
   Canvas.Font.Style := Screen.IconFont.Style;
 
   //Populate the font style from the UxTheme data
-  if GetThemeSysFont(ThemeData, TMT_SMALLCAPTIONFONT, Lf) = S_OK then
+  if (@GetThemeSysFont <> nil) and (GetThemeSysFont(ThemeData, TMT_SMALLCAPTIONFONT, Lf) = S_OK) then
     Canvas.Font := LogFontToTFont(lf, Canvas.Font);
 
   //Finally set the colour of the text and draw it on screen
@@ -765,5 +767,10 @@ begin
   inherited;
   Invalidate;
 end;
+
+initialization
+  UxThemeLib := LoadLibrary('uxtheme.dll');
+  if UxThemeLib <> 0 then
+    @GetThemeSysFont := GetProcAddress(UxThemeLib, 'GetThemeSysFont');
 
 end.
