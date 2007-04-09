@@ -582,17 +582,19 @@ end;
 
 procedure TWebUpdateForm.DownloadFiles(Sender: TObject);
 var
-  I, Count: integer;
+  I{$IFDEF DEBUG}, Count{$ENDIF}: integer;
 begin
   if Assigned(wThread) then
     Exit;
 
+{$IFDEF DEBUG}
   Count := 0;
   for I := 0 to fUpdateList.Count - 1 do
     if PUpdateRec(fUpdateList[I])^.Selected then
       Inc(Count);
-
   Assert(Count <> 0, 'The form should disable the download button when no downloads are selected.');
+{$ENDIF DEBUG}
+
   DisableForm;
 
   fErrorsList.Clear;
