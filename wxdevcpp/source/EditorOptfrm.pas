@@ -206,9 +206,13 @@ type
     procedure chkCCCacheClick(Sender: TObject);
     procedure CppParser1StartParsing(Sender: TObject);
     procedure CppParser1EndParsing(Sender: TObject);
+    procedure CppParser1StartSave(Sender: TObject);
+    procedure CppParser1EndSave(Sender: TObject);
     procedure CppParser1TotalProgress(Sender: TObject; FileName: String;
       Total, Current: Integer);
     procedure CppParser1CacheProgress(Sender: TObject; FileName: String;
+      Total, Current: Integer);
+    procedure CppParser1SaveProgress(Sender: TObject; FileName: String;
       Total, Current: Integer);
     procedure devPages1Change(Sender: TObject);
     procedure chkCBShowInheritedClick(Sender: TObject);
@@ -961,6 +965,9 @@ begin
   begin
     Screen.Cursor := crHourGlass;
     Application.ProcessMessages;
+    CppParser1.OnStartParsing := CppParser1StartParsing;
+    CppParser1.OnEndParsing := CppParser1EndParsing;
+    CppParser1.OnTotalProgress := CppParser1TotalProgress;
     CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
     Screen.Cursor := crDefault;
   end;
@@ -1691,14 +1698,15 @@ var
   I: Integer;
 begin
   Screen.Cursor := crHourglass;
-  CppParser1.OnEndParsing := nil;
+  CppParser1.OnStartParsing := CppParser1StartParsing;
+  CppParser1.OnEndParsing := nil; //We will call it ourselves
   CppParser1.OnCacheProgress := CppParser1CacheProgress;
   CppParser1.Load(devDirs.Config + DEV_COMPLETION_CACHE);
+  
   for I := 0 to CppParser1.CacheContents.Count - 1 do
     lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
 
-  CppParser1.OnEndParsing := CppParser1EndParsing;
-  pbCCCache.Visible := False;
+  CppParser1EndParsing(Self);
   Screen.Cursor := crDefault;
 end;
 
@@ -1721,22 +1729,49 @@ end;
 
 procedure TEditorOptForm.CppParser1StartParsing(Sender: TObject);
 begin
+  chkCCCache.Enabled := False;
+  btnCCCnew.Enabled := False;
+  btnCCCdelete.Enabled := False;
+  btnOk.Enabled := False;
+  btnCancel.Enabled := False;
   pbCCCache.Visible := True;
 end;
 
 procedure TEditorOptForm.CppParser1EndParsing(Sender: TObject);
 begin
+  chkCCCache.Enabled := True;
+  btnCCCnew.Enabled := True;
+  btnCCCdelete.Enabled := True;
+  btnOk.Enabled := True;
+  btnCancel.Enabled := True;
   pbCCCache.Visible := False;
 end;
 
 procedure TEditorOptForm.CppParser1TotalProgress(Sender: TObject;
   FileName: String; Total, Current: Integer);
-  begin
+begin
   if not HasProgressStarted then begin
     pbCCCache.Max := Total;
     HasProgressStarted := true;
   end;
+
   pbCCCache.Position := pbCCCache.Position + Current;
+  Application.ProcessMessages;
+end;
+
+procedure TEditorOptForm.CppParser1StartSave(Sender: TObject);
+begin
+  SendMessage(Handle, WM_SETREDRAW, 0, 0);
+end;
+
+procedure TEditorOptForm.CppParser1EndSave(Sender: TObject);
+begin
+  SendMessage(Handle, WM_SETREDRAW, 1, 0);
+end;
+
+procedure TEditorOptForm.CppParser1SaveProgress(Sender: TObject;
+  FileName: String; Total, Current: Integer);
+begin
   Application.ProcessMessages;
 end;
 
