@@ -77,6 +77,17 @@ type
     optChoices : TStringList; // replaces "Yes/No" standard choices (max 26 different choices)
   end;
 
+  TdevWxOptions = record
+    majorVersion: ShortInt;
+    minorVersion: ShortInt;
+    releaseVersion: ShortInt;
+
+    unicodeSupport: Boolean;
+    monolithicLibrary: Boolean;
+    debugLibrary: Boolean;
+    staticLibrary: Boolean;
+  end;
+
   // compiler-set configuration
   TdevCompilerSet = class(TCFGOptions)
   private
@@ -96,23 +107,26 @@ type
     fRCDir: string;
     fOptions: string;
     fCompilerType: integer;
+
+    fLinkerPaths: string;
+    fDllFormat: string;
+    fLibFormat: string;
+    fPreprocDefines: string;
+    fCmdOptions: string;
+    fLinkOptions: string;
+    fMakeOptions: string;
+    fwxOptions: TdevWxOptions;
+
     fCheckSyntaxFormat: string;
     fOutputFormat: string;
     fResourceIncludeFormat: string;
     fResourceFormat: string;
     fLinkerFormat: string;
-    fLinkerPaths: string;
     fIncludeFormat: string;
-    fDllFormat: string;
-    fLibFormat: string;
     fPchCreateFormat: string;
     fPchUseFormat: string;
     fPchFileFormat: string;
     fSingleCompile: string;
-    fPreprocDefines: string;
-    fCmdOptions : string;
-    fLinkOptions : string;
-    fMakeOptions: string;
 
     //Private ctor and dtor, since we are singletons
     constructor Create;
@@ -121,7 +135,7 @@ type
     procedure UpdateSets;
 
   public
-  destructor Destroy; override;
+    destructor Destroy; override;
     procedure SettoDefaults; override;
     procedure SaveSettings; override;
     procedure LoadSettings; override;
@@ -137,6 +151,7 @@ type
 
     property Name;
     property Sets: TStrings read fSets write fSets;
+
   published
     property CompilerType: integer read fCompilerType write fCompilerType;
     property CheckSyntaxFormat: string read fCheckSyntaxFormat write fCheckSyntaxFormat;
@@ -171,6 +186,7 @@ type
     property CmdOpts: string read fCmdOptions write fCmdOptions; //Manual commands
     property LinkOpts: string read fLinkOptions write fLinkOptions; //Manual commands
     property MakeOpts: string read fMakeOptions write fMakeOptions;
+    property wxOptions: TdevWxOptions read fwxOptions write fwxOptions;
   end;
 
   // compiler options
@@ -189,20 +205,21 @@ type
     fdllwrapName: string;
     fCompilerSet: integer;
     fCompilerType: integer;
+    fLinkerFormat: string;
+    fLinkerPaths: string;
+    fIncludeFormat: string;
+    fSingleCompile: string;
+    fPreprocDefines: string;
+
     fCheckSyntaxFormat: string;
     fOutputFormat: string;
     fResourceIncludeFormat: string;
     fResourceFormat: string;
-    fLinkerFormat: string;
-    fLinkerPaths: string;
-    fIncludeFormat: string;
     fDllFormat: string;
     fLibFormat: string;
     fPchCreateFormat: string;
     fPchUseFormat: string;
     fPchFileFormat: string;
-    fSingleCompile: string;
-    fPreprocDefines: string;
 
     //Compiler options
     fOptions: TList;
@@ -213,6 +230,7 @@ type
     fcmdOpts: string;  // command-line adds for compiler
     flinkopts: string; // command-line adds for linker
     fMakeOpts: string;
+    fwxOpts: TdevWxOptions;
     fSaveLog: boolean; // Save Compiler Output
     fDelay: integer;   // delay in milliseconds -- for compiling
 
@@ -249,6 +267,7 @@ type
     property CmdOpts: string read fcmdOpts write fcmdOpts;
     property LinkOpts: string read flinkOpts write flinkOpts;
     property MakeOpts: string read fMakeOpts write fMakeOpts;
+    property WxOpts: TdevWxOptions read fWxOpts write fWxOpts;
     property FastDep: Boolean read fFastDep write fFastDep;
 
     property CompilerType: integer read fCompilerType write fCompilerType;
@@ -760,7 +779,7 @@ uses
   main,
 {$IFDEF WIN32}
   MultiLangSupport, SysUtils, Forms, Controls, version, utils, SynEditMiscClasses,
-  datamod, FileAssocs;
+  datamod, FileAssocs, Math;
 {$ENDIF}
 {$IFDEF LINUX}
   MultiLangSupport, SysUtils, QForms, QControls, version, utils, QSynEditMiscClasses,
@@ -2452,6 +2471,7 @@ begin
   devCompiler.fcmdOpts              := fCmdOptions;
   devCompiler.flinkopts             := fLinkOptions;
   devCompiler.fMakeOpts             := fMakeOptions;
+  devCompiler.fwxOpts               := fwxOptions;
   devCompiler.compilerType          := compilerType;
   devCompiler.CheckSyntaxFormat     := CheckSyntaxFormat;
   devCompiler.OutputFormat          := OutputFormat;
@@ -2753,6 +2773,22 @@ begin
       fPchUseFormat          := LoadSetting(key, 'PchUseFormat');
     if LoadSetting(key, 'PchFileFormat') <> '' then
       fPchFileFormat         := LoadSetting(key, 'PchFileFormat');
+
+    if LoadSetting(key, 'wxOpts.Major') <> '' then
+      fwxOptions.majorVersion := StrToInt(LoadSetting(key, 'wxOpts.Major'));
+    if LoadSetting(key, 'wxOpts.Minor') <> '' then
+      fwxOptions.minorVersion := StrToInt(LoadSetting(key, 'wxOpts.Minor'));
+    if LoadSetting(key, 'wxOpts.Release') <> '' then
+      fwxOptions.releaseVersion := StrToInt(LoadSetting(key, 'wxOpts.Release'));
+
+    if LoadSetting(key, 'wxOpts.Unicode') <> '' then
+      fwxOptions.unicodeSupport := StrToBool(LoadSetting(key, 'wxOpts.Unicode'));
+    if LoadSetting(key, 'wxOpts.Monolithic') <> '' then
+      fwxOptions.monolithicLibrary := StrToBool(LoadSetting(key, 'wxOpts.Monolithic'));
+    if LoadSetting(key, 'wxOpts.Debug') <> '' then
+      fwxOptions.debugLibrary := StrToBool(LoadSetting(key, 'wxOpts.Debug'));
+    if LoadSetting(key, 'wxOpts.Static') <> '' then
+      fwxOptions.staticLibrary := StrToBool(LoadSetting(key, 'wxOpts.Static'));
   end;
 end;
 
@@ -2821,6 +2857,14 @@ begin
     SaveSetting(key, 'PchFileFormat', PchFileFormat);
     SaveSetting(key, 'SingleCompile', fSingleCompile);
     SaveSetting(key, 'PreprocDefines', fPreprocDefines);
+
+    SaveSetting(key, 'wxOpts.Major', IntToStr(wxOptions.majorVersion));
+    SaveSetting(key, 'wxOpts.Minor', IntToStr(wxOptions.minorVersion));
+    SaveSetting(key, 'wxOpts.Release', IntToStr(wxOptions.ReleaseVersion));
+    SaveSetting(key, 'wxOpts.Unicode', BoolToStr(wxOptions.unicodeSupport));
+    SaveSetting(key, 'wxOpts.Monolithic', BoolToStr(wxOptions.monolithicLibrary));
+    SaveSetting(key, 'wxOpts.Debug', BoolToStr(wxOptions.debugLibrary));
+    SaveSetting(key, 'wxOpts.Static', BoolToStr(wxOptions.staticLibrary));
   end;
 end;
 
@@ -2911,6 +2955,19 @@ begin
   fCppDir  := devDirs.Cpp;
   fLibDir  := devDirs.Lib;
   fRCDir   := devDirs.RC;
+
+  // wxWidgets options
+  with wxOptions do
+  begin
+    majorVersion := 2;
+    minorVersion := 8;
+    releaseVersion := 2;
+
+    unicodeSupport := False;
+    monolithicLibrary := True;
+    debugLibrary := False;
+    staticLibrary := True;
+  end;
 end;
 
 procedure TdevCompilerSet.UpdateSets;

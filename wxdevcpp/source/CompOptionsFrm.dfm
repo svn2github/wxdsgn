@@ -222,8 +222,7 @@ object CompForm: TCompForm
     Top = 39
     Width = 430
     Height = 370
-    ActivePage = tabCompiler
-    TabIndex = 0
+    ActivePage = tabwxWidgets
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
@@ -1004,6 +1003,113 @@ object CompForm: TCompForm
         Width = 270
         Height = 21
         TabOrder = 6
+      end
+    end
+    object tabwxWidgets: TTabSheet
+      Caption = 'wxWidgets'
+      ImageIndex = 4
+      object grpwxVersion: TGroupBox
+        Left = 8
+        Top = 5
+        Width = 403
+        Height = 100
+        Caption = 'Version'
+        TabOrder = 0
+        object lblwxMinor: TLabel
+          Left = 8
+          Top = 46
+          Width = 29
+          Height = 13
+          Caption = 'Minor:'
+        end
+        object lblwxMajor: TLabel
+          Left = 8
+          Top = 19
+          Width = 29
+          Height = 13
+          Caption = 'Major:'
+        end
+        object lblwxRelease: TLabel
+          Left = 8
+          Top = 73
+          Width = 42
+          Height = 13
+          Caption = 'Release:'
+        end
+        object spwxMajor: TSpinEdit
+          Left = 60
+          Top = 16
+          Width = 45
+          Height = 22
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 0
+          Value = 2
+        end
+        object spwxMinor: TSpinEdit
+          Left = 60
+          Top = 43
+          Width = 45
+          Height = 22
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 1
+          Value = 8
+        end
+        object spwxRelease: TSpinEdit
+          Left = 60
+          Top = 70
+          Width = 45
+          Height = 22
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 2
+          Value = 1
+        end
+      end
+      object grpwxType: TGroupBox
+        Left = 8
+        Top = 112
+        Width = 403
+        Height = 80
+        Caption = 'Features'
+        TabOrder = 1
+        object chkwxUnicode: TCheckBox
+          Left = 8
+          Top = 16
+          Width = 130
+          Height = 17
+          Caption = 'Unicode Support'
+          TabOrder = 0
+        end
+        object chkwxMonolithic: TCheckBox
+          Left = 8
+          Top = 36
+          Width = 130
+          Height = 17
+          Caption = 'Monolithic Library'
+          TabOrder = 1
+        end
+        object chkwxDebug: TCheckBox
+          Left = 8
+          Top = 56
+          Width = 97
+          Height = 17
+          Caption = 'Debug Build'
+          TabOrder = 2
+        end
+      end
+      object rdwxLibraryType: TRadioGroup
+        Left = 8
+        Top = 200
+        Width = 403
+        Height = 55
+        Caption = 'Library Type'
+        ItemIndex = 0
+        Items.Strings = (
+          'Static Import Library'
+          'Dynamic Library (DLL)')
+        TabOrder = 2
       end
     end
   end

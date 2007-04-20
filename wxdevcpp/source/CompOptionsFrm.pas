@@ -100,6 +100,19 @@ type
     btnRenameCompilerSet: TSpeedButton;
     Label1: TLabel;
     btnRefreshCompilerSettings: TSpeedButton;
+    tabwxWidgets: TTabSheet;
+    grpwxVersion: TGroupBox;
+    lblwxMinor: TLabel;
+    lblwxMajor: TLabel;
+    lblwxRelease: TLabel;
+    spwxMajor: TSpinEdit;
+    spwxMinor: TSpinEdit;
+    spwxRelease: TSpinEdit;
+    grpwxType: TGroupBox;
+    chkwxUnicode: TCheckBox;
+    chkwxMonolithic: TCheckBox;
+    rdwxLibraryType: TRadioGroup;
+    chkwxDebug: TCheckBox;
     
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
@@ -164,31 +177,6 @@ const
     'CompOpt_CodeGen',
     'CompOpt_Linker');
 
-procedure TCompForm.SaveSettings;
-begin
-  devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
-  devCompilerSet.gccName := GccEdit.Text;
-  devCompilerSet.gppName := GppEdit.Text;
-  devCompilerSet.makeName := MakeEdit.Text;
-  devCompilerSet.gdbName := GdbEdit.Text;
-  devCompilerSet.windresName := WindresEdit.Text;
-  devCompilerSet.dllwrapName := DllwrapEdit.Text;
-  devCompilerSet.gprofName := GprofEdit.Text;
-
-  devCompilerSet.BinDir := fBins;
-  devCompilerSet.CDir := fC;
-  devCompilerSet.CppDir := fCpp;
-  devCompilerSet.LibDir := fLibs;
-  devCompilerSet.RCDir  := fRC;
-
-  devCompilerSet.CmdOpts  := Commands.Lines.Text;
-  devCompilerSet.LinkOpts := Linker.Lines.Text;
-  devCompilerSet.MakeOpts := Make.Lines.Text;
-  devCompilerSet.OptionsStr := devCompiler.OptionStr;
-  devCompilerSet.SaveSet(currentSet);
-  devCompilerSet.SaveSettings;
-end;
-
 procedure TCompForm.btnCancelClick(Sender: TObject);
 begin
   devCompiler.CompilerSet:=previousSet;  // Return to initial compiler set
@@ -199,9 +187,10 @@ procedure TCompForm.btnOkClick(Sender: TObject);
 begin
   if (fBins = '') then
   begin
-    MessageDlg('You have not indicated the location of your binaries (compiler).'#13' Please do so now.', mtWarning, [mbOK], 0);
+    MessageDlg('You have not indicated the location of your binaries (compiler).'#13#10+
+               'Please do so now.', mtError, [mbOK], Handle);
     ModalResult := mrNone;
-    exit;
+    Exit;
   end;
 
   self.SaveSettings;
@@ -231,7 +220,8 @@ begin
   // current project. That should only be possible from Project->Project Settings.
   // So at the very end, let's just go back to the original compiler index
   // (which is what the project was set to)
-  devCompiler.CompilerSet := previousSet;
+  if Assigned(MainForm.fProject) then
+    devCompiler.CompilerSet := previousSet;
 end;
 
 procedure TCompForm.FormActivate(Sender: TObject);
@@ -522,11 +512,64 @@ begin
     DllwrapEdit.Text        := dllwrapName;
     GprofEdit.Text          := gprofName;
 
+    with wxOptions do
+    begin
+      spwxMajor.Value := majorVersion;
+      spwxMinor.Value := minorVersion;
+      spwxRelease.Value := releaseVersion;
+
+      chkwxUnicode.Checked := unicodeSupport;
+      chkwxMonolithic.Checked := monolithicLibrary;
+      chkwxDebug.Checked := debugLibrary;
+      if staticLibrary then
+        rdwxLibraryType.ItemIndex := 0
+      else
+        rdwxLibraryType.ItemIndex := 1;
+    end;
+
     devCompiler.AddDefaultOptions;
     devCompiler.OptionStr   := OptionsStr;
     CompOptionsFrame1.FillOptions(nil);
     CompilerTypesClick(nil);
   end;
+end;
+
+procedure TCompForm.SaveSettings;
+begin
+  devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
+  devCompilerSet.gccName := GccEdit.Text;
+  devCompilerSet.gppName := GppEdit.Text;
+  devCompilerSet.makeName := MakeEdit.Text;
+  devCompilerSet.gdbName := GdbEdit.Text;
+  devCompilerSet.windresName := WindresEdit.Text;
+  devCompilerSet.dllwrapName := DllwrapEdit.Text;
+  devCompilerSet.gprofName := GprofEdit.Text;
+
+  devCompilerSet.BinDir := fBins;
+  devCompilerSet.CDir := fC;
+  devCompilerSet.CppDir := fCpp;
+  devCompilerSet.LibDir := fLibs;
+  devCompilerSet.RCDir  := fRC;
+
+  devCompilerSet.CmdOpts  := Commands.Lines.Text;
+  devCompilerSet.LinkOpts := Linker.Lines.Text;
+  devCompilerSet.MakeOpts := Make.Lines.Text;
+  devCompilerSet.OptionsStr := devCompiler.OptionStr;
+
+  with devCompilerSet.wxOptions do
+  begin
+    majorVersion := spwxMajor.Value;
+    minorVersion := spwxMinor.Value;
+    releaseVersion := spwxRelease.Value;
+
+    unicodeSupport := chkwxUnicode.Checked;
+    monolithicLibrary := chkwxMonolithic.Checked;
+    debugLibrary := chkwxDebug.Checked;
+    staticLibrary := rdwxLibraryType.ItemIndex = 0;
+  end;
+
+  devCompilerSet.SaveSet(currentSet);
+  devCompilerSet.SaveSettings;
 end;
 
 procedure TCompForm.btnBrws1Click(Sender: TObject);
