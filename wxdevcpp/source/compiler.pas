@@ -865,7 +865,7 @@ var
   libStr,temps:String;
 begin
   fLibrariesParams := '';
-  if fProject.CurrentProfile.compilerType <> ID_COMPILER_DMARS then
+  if devCompiler.compilerType <> ID_COMPILER_DMARS then
   begin
     cAppendStr := '%s ' + devCompiler.LinkerPaths;
       fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
