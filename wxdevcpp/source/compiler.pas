@@ -391,7 +391,7 @@ begin
 
   Writeln(F, '');
   if DoCheckSyntax then
-    Writeln(F,'.PHONY: all all-before all-after clean clean-custom $(OBJ) $(BIN)')
+    Writeln(F, '.PHONY: all all-before all-after clean clean-custom $(OBJ) $(BIN)')
   else
     Writeln(F, '.PHONY: all all-before all-after clean clean-custom');
   Writeln(F, 'all: all-before $(BIN) all-after');
@@ -2213,6 +2213,7 @@ begin
       lblStatus.Caption := sMsg;
       lblStatus.Font.Style := [fsBold];
       lblFile.Caption := '';
+      timeTimer.Enabled := False;
     end;
     Application.ProcessMessages;
     if devData.AutoCloseProgress or (fErrCount > 0) or (fWarnCount > 0) then

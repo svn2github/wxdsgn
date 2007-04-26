@@ -201,7 +201,8 @@ type
     fProfiles: TProjectProfileList;
     fIcon: string;
     fProject: TProject;
-    fCurrentProfileIndex:Integer;
+    fOriginalProfileIndex: Integer;
+    fCurrentProfileIndex: Integer;
     procedure UpdateUIWithCurrentProfile;
     procedure UpdateCurrentProfileDataFromUI;
     procedure UpdateProfileList(ProfileIndex:integer);
@@ -432,7 +433,7 @@ begin
   cmbProfileSetCompChange(nil);
 End;
 
-procedure TfrmProjectOptions.UpdateProfileList(ProfileIndex:integer);
+procedure TfrmProjectOptions.UpdateProfileList(ProfileIndex: Integer);
 var
   i:Integer;
 begin
@@ -446,7 +447,10 @@ begin
   end;
 
   if (ProfileIndex <> -1) then
+  begin
+    fOriginalProfileIndex := ProfileIndex;
     cmbProfileSetComp.ItemIndex := ProfileIndex;
+  end;
 end;
 
 procedure TfrmProjectOptions.UpdateCurrentProfileDataFromUI;
@@ -585,9 +589,19 @@ Begin
   chkSupportXP.Checked:=CurrentProfile.SupportXPThemes;
 
   // Files tab
-  cmbCompiler.Items.Assign(devCompilerSet.Sets);
-  cmbCompiler.ItemIndex:=CurrentProfile.CompilerSet;
-  cmbCompiler.OnChange(cmbCompiler);
+  if CurrentProfile.CompilerSet < devCompilerSet.Sets.Count then
+  begin
+    cmbCompiler.Items.Assign(devCompilerSet.Sets);
+    cmbCompiler.ItemIndex:=CurrentProfile.CompilerSet;
+    cmbCompiler.OnChange(cmbCompiler);
+  end
+  else
+  begin
+    Application.MessageBox('The compiler specified in the project file does not exist on the local computer.'#10#13#10#13 +
+                           'Please select a compiler, the default one selected may not be what you want.', 'wxDev-C++',
+                           MB_OK or MB_ICONEXCLAMATION);
+    PageControl.ActivePage := tabCompiler;
+  end;
 
   // Output tab
   edExeOutput.Text := CurrentProfile.ExeOutput;
@@ -1191,15 +1205,22 @@ procedure TfrmProjectOptions.cmbCompilerChange(Sender: TObject);
 var currOpts: string;
 begin
   currOpts := CurrentProfile.CompilerOptions;
-  devCompiler.CompilerSet := cmbCompiler.ItemIndex;
-  devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
-  devCompilerSet.AssignToCompiler;
+  if (devCompilerSet.Sets.Count > cmbCompiler.ItemIndex) and (cmbCompiler.ItemIndex <> -1) then
+  begin
+    devCompiler.CompilerSet := cmbCompiler.ItemIndex;
+    devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
+    devCompilerSet.AssignToCompiler;
+  end;
+
   devCompiler.OptionStr := currOpts;
   CompOptionsFrame1.FillOptions(fProject);
 end;
 
 procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
 begin
+  cmbProfileSetComp.ItemIndex := fOriginalProfileIndex;
+  cmbProfileSetComp.OnChange(Sender);
+  
   devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
   devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler;
@@ -1374,11 +1395,11 @@ end;
 procedure TfrmProjectOptions.cmbProfileSetCompChange(Sender: TObject);
 begin
   if cmbProfileSetComp.ItemIndex = -1 then
-    exit;
+    Exit;
   //Save the values
-  if (Sender <> nil ) then
+  if Sender <> nil then
     UpdateCurrentProfileDataFromUI;
-  CurrentProfileIndex:=cmbProfileSetComp.ItemIndex;
+  CurrentProfileIndex := cmbProfileSetComp.ItemIndex;
   UpdateUIWithCurrentProfile;
 end;
 
