@@ -1,30 +1,30 @@
 {
 wxDialog Designer
-Copyright (c) 2003 Guru Kathiresan grk4352@njit.edu
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
+{                                                                    }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{                                                                    }
+{License :                                                           }
+{=========                                                           }
+{The wx-devC++ Components, Form Designer, Utils classes              }
+{are exclusive properties of Guru Kathiresan.                        }
+{The code is available in dual Licenses:                             }
+{                               1)GPL Compatible  License            }
+{                               2)Commercial License                 }
+{                                                                    }
+{1)GPL License :                                                     }
+{ Code can be used in any project as long as the project's sourcecode}
+{ is published under GPL license.                                    }
+{                                                                    }
+{2)Commercial License:                                               }
+{Use of code in this file or the one that bear this license text     }
+{can be used in Non-GPL projects as long as you get the permission   }
+{from the Author - Guru Kathiresan.                                  }
+{Use of the Code in any non-gpl projects without the permission of   }
+{the author is illegal.                                              }
+{Contact gururamnath@yahoo.com for details                           }
+{ ****************************************************************** }
+
 
 {$WARN UNIT_PLATFORM OFF}
 unit dmCreateNewProp;
