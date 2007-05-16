@@ -440,7 +440,8 @@ begin
       Continue;
 
     //Decide if we are going to draw an icon for this tab
-    if (Page.Images <> nil) and (Page.ShowTabImages) and (Page.Pages[I].ImageIndex < Page.Images.Count) then
+    if (Page.Images <> nil) and (Page.ShowTabImages) and (Page.Pages[I].ImageIndex < Page.Images.Count) and
+       (Page.Pages[I].ImageIndex <> -1) then
       ImageWidth := Page.Images.Width
     else
       ImageWidth := 0;
