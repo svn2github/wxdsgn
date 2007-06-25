@@ -4,9 +4,9 @@
 // 
 // Tony Reina
 // 23 June 2007
+// Version $Id$
 // Freeware/Public domain
 
-#include <cstdlib>
 #include <vector>
 #include <iostream>
 
@@ -53,9 +53,11 @@ int main(int argc, char *argv[])
     }
     else {
      
+        // Get the first argument in the command line
         string input(argv[1]);
         vector<string> tokenized;
    
+        // Break the string up using . as the delimiter
         Tokenize(input, tokenized, ".");
     
         cout << "SET " ENV_VAR_NAME "=";
