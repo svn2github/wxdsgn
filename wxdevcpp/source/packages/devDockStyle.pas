@@ -31,7 +31,7 @@ type
   protected
     AutoHideButtonWidth: Integer;
     AutoHideButtonHeight: Integer;
-    procedure DrawDockGrabber(Control: TControl; const aRect: TRect); override;
+    procedure DrawDockGrabber(Control: TWinControl; const aRect: TRect); override;
     procedure DrawAutoHideButton(Zone: TJvDockZone; Left, Top: Integer); override;
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; Left, Top: Integer); override;
     function GetTopGrabbersHTFlag(const MousePos: TPoint; out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
@@ -214,7 +214,7 @@ begin
   AutoHideButtonHeight := ButtonHeight;
 end;
 
-procedure TdevDockTree.DrawDockGrabber(Control: TControl; const aRect: TRect);
+procedure TdevDockTree.DrawDockGrabber(Control: TWinControl; const aRect: TRect);
 const
   ExtentStr = 'ABCDEFHXfgkjy';
 var
