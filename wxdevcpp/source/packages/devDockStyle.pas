@@ -254,7 +254,7 @@ begin
 
   //Populate the font style from the UxTheme data
   if (@GetThemeSysFont <> nil) and (GetThemeSysFont(ThemeData, TMT_SMALLCAPTIONFONT, Lf) = S_OK) then
-    Canvas.Font := LogFontToTFont(lf, Canvas.Font);
+    Canvas.Font.Assign(LogFontToTFont(lf, Canvas.Font));
 
   //Finally set the colour of the text and draw it on screen
   if GetActiveControl = Control then
