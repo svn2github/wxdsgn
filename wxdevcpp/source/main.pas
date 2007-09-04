@@ -980,8 +980,10 @@ type
     procedure CompSuccessProc(const messages: integer);
     procedure MainSearchProc(const SR: TdevSearchResult);
     procedure LoadText(force: boolean);
+  public
     function SaveFile(e: TEditor): Boolean;
     function SaveFileAs(e: TEditor): Boolean;
+  private
     procedure OpenUnit;
     function PrepareForCompile(rebuild: Boolean): Boolean;
     procedure LoadTheme;
@@ -1109,7 +1111,6 @@ type
   frmReportDocks: array[0..5] of TForm;
   strStdwxIDList:TStringList;
 {$ENDIF}
-  function SaveFileInternal(e: TEditor ; bParseFile:Boolean = true): Boolean;
 
 {$IFDEF WX_BUILD}
   private
@@ -2971,7 +2972,9 @@ end;
 
 //TODO: lowjoel: The following three Save functions probably can be refactored for
 //               speed. Anyone can reorganize it to optimize it for speed and efficiency,
-//               as well as to cut the number of lines needed.
+//               as well as to cut the number of lines needed.\
+//Combine the Save functions together. The saveAS function should be able to use
+//the Save function, and the Save functionm can do
 function TMainForm.SaveFileAs(e: TEditor): Boolean;
 var
   I: Integer;
@@ -3189,235 +3192,163 @@ begin
   end;
 end;
 
-function TMainForm.SaveFileInternal(e: TEditor; bParseFile: Boolean): Boolean;
-var
-  idx,index,I: Integer;
-  ccFile,hFile:String;
-begin
-  Result := False;
-  if FileExists(e.FileName) and (FileGetAttr(e.FileName) and faReadOnly <> 0) then begin
-    // file is read-only
-    if MessageDlg(Format(Lang[ID_MSG_FILEISREADONLY], [e.FileName]),mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-      Exit;
-    if FileSetAttr(e.FileName, FileGetAttr(e.FileName) - faReadOnly) <> 0 then begin
-      MessageDlg(Format(Lang[ID_MSG_FILEREADONLYERROR], [e.FileName]), mtError, [mbOk], 0);
-      Exit;
-    end;
-  end;
-
-{$IFDEF WX_BUILD}
-  //Just Generate XPM's while saving the file
-  if e.isForm then
-    GenerateXPM(e.GetDesigner, e.FileName);
-{$ENDIF}
-
-  if (not e.new) and e.Modified then
-  begin // not new but in project (relative path in e.filename)
-    if Assigned(fProject) and (e.InProject) then
-    begin
-      try
-        idx := fProject.GetUnitFromEditor(e);
-        if idx = -1 then
-          MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle)
-        else
-          fProject.units[idx].Save;
-      except
-{$IFNDEF PRIVATE_BUILD}
-         MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle);
-         Exit;
-{$ELSE}
-         on Ex: Exception do
-         begin
-           MessageDlg(Format(Lang[ID_ERR_SAVEFILE] + ' (%s)', [e.FileName, Ex.Message]),
-                      mtError, [mbOk], Handle);
-           Exit;
-         end;
-{$ENDIF}
-      end;
-
-      try
-        if (idx <> -1) and ClassBrowser1.Enabled and bParseFile then
-        begin
-          CppParser1.ReParseFile(fProject.units[idx].FileName, True);
-          if e.TabSheet = PageControl.ActivePage then
-            ClassBrowser1.CurrentFile := fProject.units[idx].FileName;
-          if GetFileTyp(e.FileName) = utHead then
-          begin
-            CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
-            if trim(ccFile) <> '' then
-            begin
-              index := -1;
-              for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
-              begin
-                if AnsiSameText(ExtractFileName(ccFile), ExtractFileName(CppParser1.ScannedFiles[i])) then
-                begin
-                  ccFile := CppParser1.ScannedFiles[i];
-                  index := i;
-                  Break;
-                end;
-              end;    // for
-
-              if index <> -1 then
-                CppParser1.ReParseFile(ccFile, true); //new cc
-            end;
-          end;
-        end;
-        Result := True;
-      except
-        MessageDlg(Format('Error reparsing file %s', [e.FileName]), mtError, [mbOk], Handle);
-      end;
-    end
-    else // stand alone file (should have fullpath in e.filename)
-    try
-      //Disable the file watch for this entry
-      idx := devFileMonitor.Files.IndexOf(e.FileName);
-      if idx <> -1 then
-      begin
-        devFileMonitor.Files.Delete(idx);
-        devFileMonitor.Refresh(False);
-      end;
-
-      if devEditor.AppendNewline then
-        with e.Text do
-          if Lines.Count > 0 then
-            if Lines[Lines.Count -1] <> '' then
-              Lines.Add('');
-      e.Text.Lines.SaveToFile(e.FileName);
-      e.Modified := false;
-
-      //Re-enable the file watch
-      devFileMonitor.Files.Add(e.FileName);
-      devFileMonitor.Refresh(False);
-
-      if ClassBrowser1.Enabled and bParseFile then
-      begin
-        CppParser1.ReParseFile(e.FileName, False); //new cc
-        if e.TabSheet = PageControl.ActivePage then
-          ClassBrowser1.CurrentFile := e.FileName;
-
-        if GetFileTyp(e.FileName) = utHead then
-        begin
-          CppParser1.GetSourcePair(ExtractFileName(e.FileName), ccFile, hfile);
-          if trim(ccFile) <> '' then
-          begin
-            index := -1;
-            for I := CppParser1.ScannedFiles.Count - 1 downto 0 do    // Iterate
-            begin
-              if AnsiSameText(ExtractFileName(ccFile),ExtractFileName(CppParser1.ScannedFiles[i])) then
-              begin
-                ccFile := CppParser1.ScannedFiles[i];
-                index:=i;
-                break;
-              end;
-            end;    // for
-
-            if index <> -1 then
-              CppParser1.ReParseFile(ccFile, true); //new cc
-          end;
-        end;
-      end;
-      Result := True;
-    except
-      MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle);
-    end
-  end
-  else if e.New then
-    Result := SaveFileAs(e);
-end;
-
 function TMainForm.SaveFile(e: TEditor): Boolean;
 {$IFDEF WX_BUILD}
 var
-    EditorFilename, hFile,cppFile:String;
-    eX:TEditor;
-    bHModified,bCppModified:Boolean;
+  EditorFilename: string;
+  CurrEditor: TEditor;
 {$ENDIF}
-begin
-    Result:=false;
-    bHModified:=false;
-    bCppModified:=false;
 
-    if not assigned(e) then
-        exit;
+  //SaveFileInternal will take the editor E and do all the checks before actually
+  //saving the file to disk. This is an anonymous function because we shouldn't
+  //be calling this anywhere else! (Call SaveFile instead)
+  function SaveFileInternal(e: TEditor; parseFile: Boolean = True): Boolean;
+  var
+    EditorUnitIndex: Integer;
+  begin
+    Result := False;
 
-//Bug fix for 1123460 : Save the files first and the do a re-parse.
-//If you dont save all the files first then cpp functions and header functions of save class 
-//will be added in the class browser and duplicates will be there.
-//Some times the functions will be not associated with the class and 
-//there by will not be shown in the function assignment drop down box of the events.
+    //First conduct a read-only check.
+    //TODO: lowjoel: If the file is read-only we should disable the editing of
+    //               the SynEdit?
+    if FileExists(e.FileName) and (FileGetAttr(e.FileName) and faReadOnly <> 0) then
+    begin
+      //File is read-only
+      if MessageDlg(Format(Lang[ID_MSG_FILEISREADONLY], [e.FileName]), mtConfirmation,
+                    [mbYes, mbNo], Handle) = mrNo then
+        Exit;
+
+      //Attempt to remove the read-only attribute
+      if FileSetAttr(e.FileName, FileGetAttr(e.FileName) - faReadOnly) <> 0 then
+      begin
+        MessageDlg(Format(Lang[ID_MSG_FILEREADONLYERROR], [e.FileName]), mtError,
+                   [mbOk], Handle);
+        Exit;
+      end;
+    end;
 
 {$IFDEF WX_BUILD}
-    EditorFilename:=e.FileName;
-    if FileExists(ChangeFileExt(EditorFilename,WXFORM_EXT)) then
+    //Just Generate XPM's while saving the file
+    //TODO: lowjoel: What's the difference between GenerateXPM and CreateNewXPMs?
+    if e.isForm then
+      GenerateXPM(e.GetDesigner, e.FileName);
+{$ENDIF}
+
+    Assert(not e.New, 'The code can call this function only on the premise that ' +
+                      'the editor being saved has a filename.');
+    if (not e.New) and e.Modified then
     begin
-        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+      //OK. The file needs to be saved. But we treat project files differently
+      //from standalone files.
+      if Assigned(fProject) and (e.InProject) then
+      begin
+        EditorUnitIndex := fProject.GetUnitFromEditor(e);
+        if EditorUnitIndex = -1 then
+          MessageDlg(Format(Lang[ID_ERR_SAVEFILE], [e.FileName]), mtError, [mbOk], Handle)
+        else
+          Result := fProject.units[EditorUnitIndex].Save;
+
+        if (EditorUnitIndex <> -1) and ClassBrowser1.Enabled then
+          CppParser1.ReParseFile(fProject.units[EditorUnitIndex].FileName, True);
+      end
+      else // stand alone file (should have fullpath in e.filename)
+      begin
+        //Disable the file watch for this entry
+        EditorUnitIndex := devFileMonitor.Files.IndexOf(e.FileName);
+        if EditorUnitIndex <> -1 then
         begin
-            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT));
-            if assigned(eX) then
-            begin
-                if eX.Modified then
-                    Result := SaveFileInternal(eX,false);
-                eX.GetDesigner.CreateNewXPMs(eX.FileName);
-            end;
+          devFileMonitor.Files.Delete(EditorUnitIndex);
+          devFileMonitor.Refresh(False);
         end;
 
-        // XRC
-        if ELDesigner1.GenerateXRC and isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
-        begin
-            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
-            if assigned(eX) then
-            begin
-                if eX.Modified then
-                    Result := SaveFileInternal(eX,false);
-            end;
-        end;
+        //Add the newline at the end of file if we were told to do so
+        if devEditor.AppendNewline then
+          with e.Text do
+            if Lines.Count > 0 then
+              if Lines[Lines.Count -1] <> '' then
+                Lines.Add('');
 
-        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
-        begin
-            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT));
-            if assigned(eX) then
-            begin
-                if eX.Modified then
-                begin
-                    bHModified:=true;
-                    Result := SaveFileInternal(eX,false);
-                    hFile := eX.FileName;
-                end;
-            end;
-        end;
+        //And commit the file to disk
+        e.Text.Lines.SaveToFile(e.FileName);
+        e.Modified := false;
 
-        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
-        begin
-            eX:=self.GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
-            if assigned(eX) then
-            begin
-                if eX.Modified then
-                begin
-                    bCppModified:=true;
-                    Result := SaveFileInternal(eX,false);
-                    cppFile := eX.FileName;
-                end;
-            end;
-        end;
+        //Re-enable the file watch
+        devFileMonitor.Files.Add(e.FileName);
+        devFileMonitor.Refresh(False);
 
-        if (bHModified =true ) then
-        begin
-            if ClassBrowser1.Enabled then
-                CppParser1.ReParseFile(hFile,true);
-        end;
+        if ClassBrowser1.Enabled then
+          CppParser1.ReParseFile(e.FileName, False);
+      end
+    end;
+  end;
+begin
+  Result := True;
+  if not assigned(E) then
+    Exit;
 
-        if (bCppModified =true ) then
+{$IFDEF WX_BUILD}
+  //For a wxDev-C++ build, there are a few related editors that must be saved at
+  //the same time.
+  EditorFilename := e.FileName;
+
+  //See if the current file is a Form-related document
+  //TODO: lowjoel: the following code assumes that the editor for the sibling file
+  //               is open. Why do we need such a lousy restriction?
+  if FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+  begin
+    //The current file is a form and has related files. If we save the form, all
+    //the related files needs to be saved at the same time.
+    if isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+    begin
+      CurrEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, WXFORM_EXT));
+      if Assigned(CurrEditor) then
+      begin
+        //The current editor must be a form
+        Assert(CurrEditor.isForm);
+
+        //Save the editor object proper
+        if CurrEditor.Modified then
         begin
-            if ClassBrowser1.Enabled then
-                CppParser1.ReParseFile(cppFile,true);
+          Result := SaveFileInternal(CurrEditor, false);
+          CurrEditor.GetDesigner.CreateNewXPMs(CurrEditor.FileName);
         end;
+      end;
+
+      //If the user wants XRC files to be generated, save the XRC file as well
+      //BUT: if the user does NOT want XRC files, we should not confuse the user
+      //     and delete the file
+      if ELDesigner1.GenerateXRC then
+      begin
+        if isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
+        begin
+          CurrEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, XRC_EXT));
+          if Assigned(CurrEditor) and CurrEditor.Modified then
+            Result := Result and SaveFileInternal(CurrEditor, false);
+        end;
+      end
+      else ;
+      //Delete the now-outdated XRC file
+      //TODO: lowjoel: safer way?
+
+      if isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
+      begin
+        CurrEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, H_EXT));
+        if Assigned(CurrEditor) and CurrEditor.Modified then
+            Result := Result and SaveFileInternal(CurrEditor, false);
+      end;
+
+      if isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
+      begin
+        CurrEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, CPP_EXT));
+        if Assigned(CurrEditor) and CurrEditor.Modified then
+            Result := Result and SaveFileInternal(CurrEditor, false);
+      end;
     end
     else
-   {$ENDIF}
-        Result := SaveFileInternal(e);
-
+{$ENDIF}
+      Result := SaveFileInternal(e);
+  end;
 end;
-
 
 function TMainForm.AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
 var

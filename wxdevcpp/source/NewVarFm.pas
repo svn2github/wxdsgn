@@ -226,7 +226,7 @@ begin
                 if Lines.Count > 0 then
                   if Lines[Lines.Count -1] <> '' then
                     Lines.Add('');
-            MainForm.SaveFileInternal(e);
+            MainForm.SaveFile(e);
           end
           else
             Exit;
