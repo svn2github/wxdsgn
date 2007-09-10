@@ -864,18 +864,19 @@ var
 {$ENDIF}
  TempDir:String;
 begin
-  //TODO: Check if we need to use Current Profile here
-  if fProject.CurrentProfile.ExeOutput<>'' then
-    Dir:=ExpandFileto(fProject.CurrentProfile.ExeOutput, fProject.Directory)
+  if fProject.CurrentProfile.ExeOutput <> '' then
+    Dir := ExpandFileto(fProject.CurrentProfile.ExeOutput, fProject.Directory)
   else
-    Dir:=fProject.Directory;
-  if SelectDirectory('Select Directory', '', Dir) = false then
-    exit;
-  TempDir:=ExtractRelativePath(fProject.Directory, Dir);
+    Dir := fProject.Directory;
+  if not SelectDirectory('Select Directory', '', Dir) then
+    Exit;
+
+  //TODO: lowjoel: What do we actually want to achieve here?
+  TempDir := ExtractRelativePath(fProject.Directory, Dir);
   if DirectoryExists(TempDir) then
-    TempDir:=GetShortName(TempDir)
+    TempDir := GetShortName(TempDir)
   else
-    TempDir:=TempDir;
+    TempDir := TempDir;
   edExeOutput.Text := TempDir;
 end;
 
@@ -1220,10 +1221,6 @@ procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
 begin
   cmbProfileSetComp.ItemIndex := fOriginalProfileIndex;
   cmbProfileSetComp.OnChange(Sender);
-  
-  devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
-  devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
-  devCompilerSet.AssignToCompiler;
 end;
 
 procedure TfrmProjectOptions.lstTypeClick(Sender: TObject);
@@ -1409,14 +1406,13 @@ var
   NewProfile:TProjProfile;
 begin
   S := 'New Profile';
-  if not InputQuery('New Profile', 'Enter a new Profile', S) or (S='') then
+  if not InputQuery('New Profile', 'Enter a new Profile', S) or (S = '') then
     Exit;
 
-  //TODO: Guru: Fix the Output Directory to have only valid characters
-  NewProfile:=TProjProfile.Create;
-  NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=S;
-  NewProfile.ExeOutput:=S;
+  NewProfile              := TProjProfile.Create;
+  NewProfile.ProfileName  := S;
+  NewProfile.ObjectOutput := CreateValidFileName(S);
+  NewProfile.ExeOutput    := CreateValidFileName(S);
   fProfiles.Add(NewProfile);
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
 end;
@@ -1456,20 +1452,20 @@ var
   NewProfile:TProjProfile;
 begin
   S := 'New Profile';
-  if not InputQuery('Copy Profile', 'Enter a new Profile', S) or (S='') then
+  if not InputQuery('Copy Profile', 'Enter a new Profile', S) or (S = '') then
     Exit;
   
   //TODO: Guru: Fix the Output Directory to have only valid characters
   NewProfile:=TProjProfile.Create;
   NewProfile.CopyProfileFrom(CurrentProfile);
-  NewProfile.ProfileName:=S;
-  NewProfile.ObjectOutput:=S;
-  NewProfile.ExeOutput:=S;
+  NewProfile.ProfileName  := S;
+  NewProfile.ObjectOutput := CreateValidFileName(S);
+  NewProfile.ExeOutput    := CreateValidFileName(S);
   fProfiles.Add(NewProfile);
+  
   UpdateProfileList(cmbProfileSetComp.ItemIndex);
-  cmbProfileSetComp.ItemIndex:=cmbProfileSetComp.Items.count-1;
-  cmbProfileSetCompChange(cmbProfileSetComp);
-
+  cmbProfileSetComp.ItemIndex := cmbProfileSetComp.Items.Count - 1;
+  cmbProfileSetComp.OnChange(cmbProfileSetComp);
 end;
 
 end.

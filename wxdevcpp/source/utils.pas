@@ -161,7 +161,7 @@ function IsNumeric(s : string) : boolean;
 
 implementation
 
-uses 
+uses
 {$IFDEF WIN32}
   ShlObj, ActiveX, devcfg, version, Graphics, StrUtils, MultiLangSupport, main, editor;
 {$ENDIF}
@@ -169,18 +169,90 @@ uses
   devcfg, version, QGraphics, StrUtils, MultiLangSupport, main, editor;
 {$ENDIF}
 
+const
+  ReservedKeywordList: array[0..61] of string = (
+    'asm',
+    'do',
+    'if',
+    'return',
+    'typedef',
+    'auto',
+    'double',
+    'inline',
+    'short',
+    'typeid',
+    'bool',
+    'dynamic_cast',
+    'int',
+    'signed',
+    'union',
+    'break',
+    'else',
+    'long',
+    'sizeof',
+    'unsigned',
+    'case',
+    'enum',
+    'mutable',
+    'static',
+    'using',
+    'catch',
+    'explicit',
+    'namespace',
+    'static_cast',
+    'virtual',
+    'char',
+    'export',
+    'new',
+    'struct',
+    'void',
+    'class',
+    'extern',
+    'operator',
+    'switch',
+    'volatile',
+    'const',
+    'false',
+    'private',
+    'template',
+    'wchar_t',
+    'const_cast',
+    'float',
+    'protected',
+    'this',
+    'while',
+    'continue',
+    'for',
+    'public',
+    'throw',
+    'default',
+    'friend',
+    'register',
+    'true',
+    'delete',
+    'goto',
+    'reinterpret_cast',
+    'try');
+
 function GetClosestMatchingCompilerSet(CompilerType:Integer):Integer;
 var
-  i:Integer;
+  originalSet: Integer;
 begin
-  //TODO: Guru: How do we navigate the CompilerSet to check for the Compiler Type?
-  Result:=0;
-
-  for i:=0 to devCompilerSet.Sets.Count-1 do
+  originalSet := devCompiler.CompilerSet;
+  for Result := 0 to devCompilerSet.Sets.Count - 1 do
   begin
-      //devCompilerSet.SetName()
+    devCompilerSet.LoadSet(Result);
+    if devCompilerSet.CompilerType = CompilerType then
+    begin
+      devCompilerSet.LoadSet(originalSet);
+      Exit;
+    end;
   end;
+
+  devCompilerSet.LoadSet(originalSet);
+  Result := 0;
 end;
+
 function ExtractComponentPropertyName(const S: string): string;
 var
   SepaPos: integer;
@@ -1297,278 +1369,76 @@ This copyright to Sof.T 2006 and provided under the GPL license version 2 or
 later at your preference.}
 function ValidateClassName(ClassName: String) :Integer;
 var
-    NumberOfErrors, LoopIndex : integer;
-    ReservedKeywordList : TStrings;
+    I : integer;
 begin
-
-    NumberOfErrors := 0;
-
-    //Check we have a name to work with
+    Result := 0;
     if Length(ClassName) < 1 then
-    begin
-        NumberOfErrors := NumberOfErrors+1;
-    end
-    //Check the first character is not a number
-    else if (ClassName[1] in ['0'..'9']) then
-    begin
-        NumberOfErrors := NumberOfErrors + 1;
-    end;
+        Inc(Result)
 
+    //Check the first character is not a number
+    else if not (Char(ClassName[1]) in ['a'..'z', 'A'..'Z', '_']) then
+        Inc(Result);
+    
     //Look for invalid characters in the class name
-    for LoopIndex := 1 to Length(ClassName) do
-    begin
-        //if not((ClassName[LoopIndex] in ['a'..'z']) or (ClassName[LoopIndex] in ['A'..'Z']) or (ClassName[LoopIndex] in ['0'..'9']) or (ClassName[LoopIndex] = '_')) then
-        if not((ClassName[LoopIndex] in ['a'..'z','A'..'Z','0'..'9','_'])) then
-        begin
-            NumberOfErrors := NumberOfErrors + 1;
-        end;
-    end;
+    for I := 2 to Length(ClassName) do
+        if not (ClassName[I] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) then
+            Inc(Result);
 
     //Check we haven't ended up with a reserved keyword
-    ReservedKeywordList := TStringList.Create;
-    try
-        //Build the list of reserved keywords
-        ReservedKeywordList.Add('asm');
-        ReservedKeywordList.Add('do');
-        ReservedKeywordList.Add('if');
-        ReservedKeywordList.Add('return');
-        ReservedKeywordList.Add('typedef');
-        ReservedKeywordList.Add('auto');
-        ReservedKeywordList.Add('double');
-        ReservedKeywordList.Add('inline');
-        ReservedKeywordList.Add('short');
-        ReservedKeywordList.Add('typeid');
-        ReservedKeywordList.Add('bool');
-        ReservedKeywordList.Add('dynamic_cast');
-        ReservedKeywordList.Add('int');
-        ReservedKeywordList.Add('signed');
-        ReservedKeywordList.Add('union');
-        ReservedKeywordList.Add('break');
-        ReservedKeywordList.Add('else');
-        ReservedKeywordList.Add('long');
-        ReservedKeywordList.Add('sizeof');
-        ReservedKeywordList.Add('unsigned');
-        ReservedKeywordList.Add('case');
-        ReservedKeywordList.Add('enum');
-        ReservedKeywordList.Add('mutable');
-        ReservedKeywordList.Add('static');
-        ReservedKeywordList.Add('using');
-        ReservedKeywordList.Add('catch');
-        ReservedKeywordList.Add('explicit');
-        ReservedKeywordList.Add('namespace');
-        ReservedKeywordList.Add('static_cast');
-        ReservedKeywordList.Add('virtual');
-        ReservedKeywordList.Add('char');
-        ReservedKeywordList.Add('export');
-        ReservedKeywordList.Add('new');
-        ReservedKeywordList.Add('struct');
-        ReservedKeywordList.Add('void');
-        ReservedKeywordList.Add('class');
-        ReservedKeywordList.Add('extern');
-        ReservedKeywordList.Add('operator');
-        ReservedKeywordList.Add('switch');
-        ReservedKeywordList.Add('volatile');
-        ReservedKeywordList.Add('const');
-        ReservedKeywordList.Add('false');
-        ReservedKeywordList.Add('private');
-        ReservedKeywordList.Add('template');
-        ReservedKeywordList.Add('wchar_t');
-        ReservedKeywordList.Add('const_cast');
-        ReservedKeywordList.Add('float');
-        ReservedKeywordList.Add('protected');
-        ReservedKeywordList.Add('this');
-        ReservedKeywordList.Add('while');
-        ReservedKeywordList.Add('continue');
-        ReservedKeywordList.Add('for');
-        ReservedKeywordList.Add('public');
-        ReservedKeywordList.Add('throw');
-        ReservedKeywordList.Add('default');
-        ReservedKeywordList.Add('friend');
-        ReservedKeywordList.Add('register');
-        ReservedKeywordList.Add('true');
-        ReservedKeywordList.Add('delete');
-        ReservedKeywordList.Add('goto');
-        ReservedKeywordList.Add('reinterpret_cast');
-        ReservedKeywordList.Add('try');
-
-        //Now check our ClassName against list of reserved keywords
-        for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
-        begin
-            if(CompareStr(ReservedKeywordList[LoopIndex],ClassName) = 0) then
-            begin
-                NumberOfErrors := NumberOfErrors + 1;
-            end;
-        end;
-
-    finally
-        ReservedKeywordList.Free;	{ destroy the list object }
-    end;
-
-   Result := NumberOfErrors;
-
+    for I := 0 to Length(ReservedKeywordList) - 1 do
+        if ReservedKeywordList[I] = ClassName then
+            Inc(Result);
 end;
 
 function CreateValidClassName(ClassName: String) :String;
 var
-    ValidClassName : String;
-    LoopIndex : integer;
-    ReservedKeywordList : TStrings;
+    I: integer;
 begin
-
-    ValidClassName := ClassName;
-
+    Result := ClassName;
     //Check we have a name to work with, if not then assign a safe one
-    if Length(ValidClassName) < 1 then
-        ValidClassName := 'DefaultClassName';
+    if Length(Result) < 1 then
+        Result := 'DefaultClassName';
 
     //Look for invalid characters in the class name. Replace with '_'
-    for LoopIndex := 1 to Length(ValidClassName) do
-    begin
-        if not((ValidClassName[LoopIndex] in ['a'..'z','A'..'Z','0'..'9','_'])) then
-        begin
-            ValidClassName[LoopIndex] := '_';
-        end;
-    end;
+    for I := 2 to Length(Result) do
+        if not (Result[I] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) then
+            Result[I] := '_';
 
     //Check the first character is not a number if so add '_' in front
-    if (ValidClassName[1] in ['0'..'9']) then
-    begin
-        Insert('_',ValidClassName,0);
-    end;
+    if Result[1] in ['0'..'9'] then
+        Insert('_', Result, 0);
 
-    //Check we haven't ended up with a reserved keyword
-    ReservedKeywordList := TStringList.Create;
-    try
-        //Build the list of reserved keywords
-        ReservedKeywordList.Add('asm');
-        ReservedKeywordList.Add('do');
-        ReservedKeywordList.Add('if');
-        ReservedKeywordList.Add('return');
-        ReservedKeywordList.Add('typedef');
-        ReservedKeywordList.Add('auto');
-        ReservedKeywordList.Add('double');
-        ReservedKeywordList.Add('inline');
-        ReservedKeywordList.Add('short');
-        ReservedKeywordList.Add('typeid');
-        ReservedKeywordList.Add('bool');
-        ReservedKeywordList.Add('dynamic_cast');
-        ReservedKeywordList.Add('int');
-        ReservedKeywordList.Add('signed');
-        ReservedKeywordList.Add('union');
-        ReservedKeywordList.Add('break');
-        ReservedKeywordList.Add('else');
-        ReservedKeywordList.Add('long');
-        ReservedKeywordList.Add('sizeof');
-        ReservedKeywordList.Add('unsigned');
-        ReservedKeywordList.Add('case');
-        ReservedKeywordList.Add('enum');
-        ReservedKeywordList.Add('mutable');
-        ReservedKeywordList.Add('static');
-        ReservedKeywordList.Add('using');
-        ReservedKeywordList.Add('catch');
-        ReservedKeywordList.Add('explicit');
-        ReservedKeywordList.Add('namespace');
-        ReservedKeywordList.Add('static_cast');
-        ReservedKeywordList.Add('virtual');
-        ReservedKeywordList.Add('char');
-        ReservedKeywordList.Add('export');
-        ReservedKeywordList.Add('new');
-        ReservedKeywordList.Add('struct');
-        ReservedKeywordList.Add('void');
-        ReservedKeywordList.Add('class');
-        ReservedKeywordList.Add('extern');
-        ReservedKeywordList.Add('operator');
-        ReservedKeywordList.Add('switch');
-        ReservedKeywordList.Add('volatile');
-        ReservedKeywordList.Add('const');
-        ReservedKeywordList.Add('false');
-        ReservedKeywordList.Add('private');
-        ReservedKeywordList.Add('template');
-        ReservedKeywordList.Add('wchar_t');
-        ReservedKeywordList.Add('const_cast');
-        ReservedKeywordList.Add('float');
-        ReservedKeywordList.Add('protected');
-        ReservedKeywordList.Add('this');
-        ReservedKeywordList.Add('while');
-        ReservedKeywordList.Add('continue');
-        ReservedKeywordList.Add('for');
-        ReservedKeywordList.Add('public');
-        ReservedKeywordList.Add('throw');
-        ReservedKeywordList.Add('default');
-        ReservedKeywordList.Add('friend');
-        ReservedKeywordList.Add('register');
-        ReservedKeywordList.Add('true');
-        ReservedKeywordList.Add('delete');
-        ReservedKeywordList.Add('goto');
-        ReservedKeywordList.Add('reinterpret_cast');
-        ReservedKeywordList.Add('try');
-
-        //Now check our ValidClassName against list of reserved keywords
-        //If we find a match flag error and add '_' to the start of the name
-        for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
-        begin
-            if(CompareStr(ReservedKeywordList[LoopIndex],ValidClassName) = 0) then
-            begin
-                Insert('_',ValidClassName,0);
-            end;
-        end;
-
-    finally
-        ReservedKeywordList.Free;	{ destroy the list object }
-    end;
-
-   Result := ValidClassName;
-
+    //Now check our ValidClassName against list of reserved keywords. If we find a match flag
+    //error and add '_' to the start of the name
+    for I := 0 to Length(ReservedKeywordList) - 1 do
+        if ReservedKeywordList[I] = Result then
+            Insert('_', Result, 0);
 end;
 
 
 function ValidateFileName(FileName: String): Integer;
 var
-    NumberOfErrors, LoopIndex : integer;
+    I: integer;
 begin
-
-    NumberOfErrors := 0;
-
+    Result := 0;
     if Length(FileName) < 1 then
-        NumberOfErrors := NumberOfErrors+1;
+        Inc(Result);
 
     //Look for invalid characters in the file name
-    for LoopIndex := 1 to Length(FileName) do
-    begin
-        if ((FileName[LoopIndex] in ['"','*',':','<','>','?','|'])) then
-        begin
-            NumberOfErrors := NumberOfErrors+1;
-        end;
-    end;
-
-    Result := NumberOfErrors;
-
+    for I := 1 to Length(FileName) do
+        if FileName[I] in ['"','*',':','<','>','?','|'] then
+            Inc(Result);
 end;
 
 function CreateValidFileName(FileName: String): String;
 var
-    ValidFileName : String;
-    LoopIndex : integer;
+    I: integer;
 begin
-
-    ValidFileName := FileName;
-
-    if Length(ValidFileName) < 1 then
-        ValidFileName := 'DefaultFileName';
-
-    //Look for invalid characters in the file name. Replace with '_'
-    for LoopIndex := 1 to Length(ValidFileName) do
-    begin
-        if ((ValidFileName[LoopIndex] in ['"','*',':','<','>','?','|'])) then
-        begin
-            ValidFileName[LoopIndex] := '_';
-        end;
-    end;
-
-    Result := ValidFileName;
-
+    Result := FileName;
+    for I := 1 to Length(Result) do
+        if Result[I] in ['"','*',':','<','>','?','|'] then
+            Result[I] := '_';
 end;
 
 {$ENDIF}
 end.
-

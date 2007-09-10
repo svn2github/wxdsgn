@@ -1399,61 +1399,93 @@ end;
 
 procedure TProject.LoadProfiles;
 var
-    i,profilecount:Integer;
-    NewProfile:TProjProfile;
+  i, profileCount, resetCompilers, AutoSelectMissingCompiler: Integer;
+  NewProfile: TProjProfile;
+  CompilerType: string;
 begin
-  finifile.Section := 'Project';
-  profilecount:=finifile.Read('ProfilesCount',0);
-  fProfiles.useGPP:=finifile.Read('useGPP',true);
-  CurrentProfileIndex:=finifile.Read('ProfileIndex',0);
-  fPrevVersion:=finifile.Read('Ver',-1);
-
-  if (CurrentProfileIndex > profilecount - 1) or (CurrentProfileIndex < 0 )then
+  ResetCompilers            := 0;
+  finifile.Section          := 'Project';
+  profilecount              := finifile.Read('ProfilesCount',0);
+  fProfiles.useGPP          := finifile.Read('useGPP',true);
+  CurrentProfileIndex       := finifile.Read('ProfileIndex',0);
+  fPrevVersion              := finifile.Read('Ver',-1);
+  AutoSelectMissingCompiler := 0;
+  if (CurrentProfileIndex > profileCount - 1) or (CurrentProfileIndex < 0 )then
     CurrentProfileIndex := 0;
 
-  if profilecount <= 0 then
+  if profileCount <= 0 then
   begin
-    CurrentProfileIndex:=0;
-    Profiles.Ver:=fPrevVersion;
-    NewProfile:=TProjProfile.Create;
-    NewProfile.ProfileName := 'Default Profile';
-    NewProfile.ExeOutput := NewProfile.ProfileName;
+    CurrentProfileIndex     := 0;
+    Profiles.Ver            := fPrevVersion;
+    NewProfile              := TProjProfile.Create;
+    NewProfile.ProfileName  := 'Default Profile';
+    NewProfile.ExeOutput    := NewProfile.ProfileName;
     NewProfile.ObjectOutput := NewProfile.ProfileName;
     fProfiles.Add(NewProfile);
     Exit;
   end;
 
-  for i := 0 to pred(profilecount) do
+  for i := 0 to pred(profileCount) do
   begin
-    NewProfile:=TProjProfile.Create;
-    NewProfile.ProfileName:= finifile.ReadProfile(i,'ProfileName','');
-    NewProfile.typ:= finifile.ReadProfile(i,'Type',0);
+    NewProfile                    := TProjProfile.Create;
+    NewProfile.ProfileName        := finifile.ReadProfile(i, 'ProfileName', '');
+    NewProfile.typ                := finifile.ReadProfile(i, 'Type', 0);
+    NewProfile.CompilerType       := finifile.ReadProfile(i, 'CompilerType', ID_COMPILER_MINGW);
+    NewProfile.CompilerSet        := finifile.ReadProfile(i, 'CompilerSet', 0);
+    NewProfile.Compiler           := finifile.ReadProfile(i, 'Compiler', '');
+    NewProfile.CppCompiler        := finifile.ReadProfile(i, 'CppCompiler', '');
+    NewProfile.Linker             := finifile.ReadProfile(i, 'Linker', '');
+    NewProfile.CompilerOptions    := finifile.ReadProfile(i, COMPILER_INI_LABEL, '');
+    NewProfile.PreprocDefines     := finifile.ReadProfile(i, 'PreprocDefines', '');
 
-    //TODO: Guru: Check if the Compiler is an acceptable one
-    NewProfile.compilerType:= finifile.ReadProfile(i,'CompilerType',ID_COMPILER_MINGW);
-    NewProfile.Compiler:= finifile.ReadProfile(i,'Compiler','');
-    NewProfile.CppCompiler:= finifile.ReadProfile(i,'CppCompiler','');
-    NewProfile.Linker:= finifile.ReadProfile(i,'Linker','');
-    NewProfile.ObjFiles.DelimitedText:=finifile.ReadProfile(i,'ObjFiles','');
-    NewProfile.Includes.DelimitedText:=finifile.ReadProfile(i,'Includes','');
-    NewProfile.Libs.DelimitedText:=finifile.ReadProfile(i,'Libs','');
-    NewProfile.ResourceIncludes.DelimitedText:=finifile.ReadProfile(i,'ResourceIncludes','');
-    NewProfile.MakeIncludes.DelimitedText:=finifile.ReadProfile(i,'MakeIncludes','');
-    NewProfile.Icon:= finifile.ReadProfile(i,'Icon','');
-    NewProfile.ExeOutput := finifile.ReadProfile(i,'ExeOutput','');
-    NewProfile.ObjectOutput := finifile.ReadProfile(i,'ObjectOutput','');
-    NewProfile.OverrideOutput := finifile.ReadProfile(i,'OverrideOutput',false);
-    NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverrideOutputName','');
-    NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
-    NewProfile.IncludeVersionInfo := finifile.ReadProfile(i,'IncludeVersionInfo',false);
-    NewProfile.SupportXPThemes:= finifile.ReadProfile(i,'SupportXPThemes',false);
-    NewProfile.compilerType:= finifile.ReadProfile(i,'CompilerType',0);
-    NewProfile.CompilerSet := finifile.ReadProfile(i,'CompilerSet',0);
-    if NewProfile.CompilerSet > devCompilerSet.Sets.Count - 1 then
-      //TODO: Guru: Log to String and Show at the end;
-      NewProfile.compilerType:=GetClosestMatchingCompilerSet(NewProfile.compilerType);
-    NewProfile.CompilerOptions := finifile.ReadProfile(i, COMPILER_INI_LABEL, '');
-    NewProfile.PreprocDefines:= finifile.ReadProfile(i, 'PreprocDefines', '');
+    NewProfile.ObjFiles.DelimitedText         := finifile.ReadProfile(i, 'ObjFiles', '');
+    NewProfile.Includes.DelimitedText         := finifile.ReadProfile(i, 'Includes', '');
+    NewProfile.Libs.DelimitedText             := finifile.ReadProfile(i, 'Libs', '');
+    NewProfile.ResourceIncludes.DelimitedText := finifile.ReadProfile(i, 'ResourceIncludes', '');
+    NewProfile.MakeIncludes.DelimitedText     := finifile.ReadProfile(i, 'MakeIncludes', '');
+
+    NewProfile.Icon               := finifile.ReadProfile(i, 'Icon', '');
+    NewProfile.ExeOutput          := finifile.ReadProfile(i, 'ExeOutput', '');
+    NewProfile.ObjectOutput       := finifile.ReadProfile(i, 'ObjectOutput', '');
+    NewProfile.OverrideOutput     := finifile.ReadProfile(i, 'OverrideOutput', false);
+    NewProfile.OverridenOutput    := finifile.ReadProfile(i, 'OverrideOutputName', '');
+    NewProfile.HostApplication    := finifile.ReadProfile(i, 'HostApplication', '');
+    NewProfile.IncludeVersionInfo := finifile.ReadProfile(i, 'IncludeVersionInfo', false);
+    NewProfile.SupportXPThemes    := finifile.ReadProfile(i, 'SupportXPThemes', false);
+
+    if (NewProfile.CompilerSet > devCompilerSet.Sets.Count - 1) or (NewProfile.CompilerSet = -1) then
+    begin
+      case NewProfile.compilerType of
+        ID_COMPILER_MINGW:   CompilerType := 'MingW';
+        ID_COMPILER_VC2005:  CompilerType := 'Visual C++ 2005';
+        ID_COMPILER_VC2003:  CompilerType := 'Visual C++ 2002/2003';
+        ID_COMPILER_VC6:     CompilerType := 'Visual C++ 6';
+        ID_COMPILER_DMARS:   CompilerType := 'MingW';
+        ID_COMPILER_BORLAND: CompilerType := 'MingW';
+        ID_COMPILER_WATCOM:  CompilerType := 'MingW';
+      end;
+
+      case AutoSelectMissingCompiler of
+        mrYesToAll:
+          NewProfile.CompilerSet := GetClosestMatchingCompilerSet(NewProfile.compilerType);
+        mrNoToAll:;
+        else
+        begin
+          AutoSelectMissingCompiler := MessageDlg('The compiler specified in the profile ' + NewProfile.ProfileName +
+                                                  ' does not exist on the local computer.'#10#13#10#13 +
+                                                  'Do you want wxDev-C++ to attempt to find a suitable compiler to ' +
+                                                  'use for this profile?', mtConfirmation, [mbYes, mbNo, mbNoToAll, mbYesToAll],
+                                                  Application.Handle);
+          case AutoSelectMissingCompiler of
+            mrYes, mrYesToAll:
+              NewProfile.CompilerSet := GetClosestMatchingCompilerSet(NewProfile.compilerType);
+          end;
+        end;
+      end;
+
+      Inc(ResetCompilers);
+    end;
+
     fProfiles.Add(NewProfile);
   end;
 end;
@@ -2041,10 +2073,10 @@ begin
     dlg.Free;
   end;
   
-  //TODO: Guru: Temp Code
-  devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
+  //Update the compiler set to be up-to-date with the latest settings (be it cancelled or otherwise)
+  devCompiler.CompilerSet := CurrentProfile.CompilerSet;
   devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
-  devCompilerSet.AssignToCompiler();
+  devCompilerSet.AssignToCompiler;
   devCompiler.OptionStr:=CurrentProfile.CompilerOptions;
 
 end;
@@ -2086,6 +2118,7 @@ begin
       DestIcon := ExpandFileTo(ExtractFileName(ChangeFileExt(FileName, '.ico')), Directory);
       CopyFile(PChar(OriginalIcon), PChar(DestIcon), False);
       //TODO: Guru: Not sure what will come here
+      //TODO: lowjoel: Are we sure we want to place project icons as part of the profile? Shouldn't all profiles use the same icon?
       CurrentProfile.Icon := ExtractFileName(DestIcon);
     end;
 

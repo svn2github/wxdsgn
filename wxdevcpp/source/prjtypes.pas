@@ -238,13 +238,9 @@ procedure TProjectProfileList.Clear;
 var
   i:Integer;
 begin
-  for i:= Count -1 downto 0 do
-  begin
-    ///TODO: Guru: check for a memory leak
-    //if self[i] <> nil then
-    //  self[i].Destroy;
-    Remove(i);
-  end;
+  for i := Count - 1 downto 0 do
+    Self[i].Destroy;
+  fList.Clear;
 end;
 
 function TProjectProfileList.GetCount: integer;
