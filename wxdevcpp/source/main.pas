@@ -1182,9 +1182,6 @@ uses
 {$IFDEF WX_BUILD}
   //Our dependencies
   , CompFileIo, CreateOrderFm, ViewIDForm, FilesReloadFrm,
-{$IFNDEF ORI_JVCL}
-  devDockStyle,
-{$ENDIF}
 
   //Components
   WxSplitterWindow, WxNotebook, WxNoteBookPage, WxToolbar, WxToolButton,
@@ -1894,11 +1891,8 @@ begin
   DesktopFont := True;
   NewDocks := TList.Create;
 
-{$IFNDEF ORI_JVCL}
-  DockServer.DockStyle := TdevDockStyle.Create(Self);
-{$ELSE}
   DockServer.DockStyle := TJvDockVSNetStyle.Create(Self);
-{$ENDIF}
+
   DockServer.DockStyle.TabServerOption.HotTrack := True;
   with TJvDockVIDConjoinServerOption(DockServer.DockStyle.ConjoinServerOption) do
   begin
@@ -2225,9 +2219,6 @@ begin
 {$ENDIF}
     XPMenu.Active := devData.XPTheme;
     WebUpdateForm.XPMenu.Active := devData.XPTheme;
-{$IFNDEF ORI_JVCL}
-    TdevDockStyle(DockServer.DockStyle).NativeDocks := devData.NativeDocks;
-{$ENDIF}
 
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support

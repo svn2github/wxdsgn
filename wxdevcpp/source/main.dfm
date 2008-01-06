@@ -31,7 +31,7 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 240
+    Top = 239
     Width = 628
     Height = 130
     ActivePage = TodoSheet
@@ -40,6 +40,7 @@ object MainForm: TMainForm
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
+    TabIndex = 5
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -172,7 +173,7 @@ object MainForm: TMainForm
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 371
+          Width = 377
           Height = 80
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
@@ -193,6 +194,7 @@ object MainForm: TMainForm
         Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
+        TabIndex = 4
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -930,7 +932,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 370
+    Top = 369
     Width = 628
     Height = 19
     Panels = <
@@ -951,6 +953,7 @@ object MainForm: TMainForm
         Width = 135
       end>
     ParentFont = True
+    SimplePanel = False
     UseSystemFont = False
     OnDrawPanel = StatusBarDrawPanel
   end
@@ -997,16 +1000,19 @@ object MainForm: TMainForm
     Top = 214
     Width = 134
     Height = 17
+    Min = 0
+    Max = 100
     TabOrder = 5
   end
   object LeftPageControl: TPageControl
     Left = 0
     Top = 102
     Width = 192
-    Height = 138
+    Height = 137
     ActivePage = ProjectSheet
     Align = alLeft
     Images = dmMain.ProjectImage_NewLook
+    TabIndex = 0
     TabOrder = 6
     object ProjectSheet: TTabSheet
       Caption = 'Project'
@@ -1015,7 +1021,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 110
+        Height = 109
         Align = alClient
         ChangeDelay = 1
         DragMode = dmAutomatic
@@ -1047,7 +1053,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 110
+        Height = 109
         Align = alClient
         Images = dmMain.ClassImages
         ReadOnly = True
@@ -1080,7 +1086,7 @@ object MainForm: TMainForm
     Left = 192
     Top = 102
     Width = 436
-    Height = 138
+    Height = 137
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 7
