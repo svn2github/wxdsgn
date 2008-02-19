@@ -1,0 +1,16 @@
+[Setup]
+Version=2
+AppName=Dev-C++ Help file
+AppVerName=Dev-C++ Help file (1.63)
+AppVersion=1.63
+MenuName=
+Description=Main Dev-C++ Help file
+Url=
+Readme=
+License=
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+DevCpp.hlp=<app>\Help\
+devcpp.CNT=<app>\Help\
