@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: datamod.pas 744 2006-12-19 11:15:08Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
@@ -24,7 +24,7 @@ unit datamod;
 interface
 
 uses
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
   SynHighlighterXML,
 {$ENDIF}
 {$IFDEF WIN32}
@@ -71,6 +71,10 @@ type
     ClassImages: TImageList;
     Assembly: TSynAsmSyn;
     CppMultiSyn: TSynMultiSyn;
+    MenuImages_Classic: TImageList;
+    ProjectImage_Classic: TImageList;
+    HelpImages_Classic: TImageList;
+    SpecialImages_Classic: TImageList;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -245,6 +249,11 @@ var
   ext: string;
   idx: integer;
   tmp: TStrings;
+{$IFDEF PLUGIN_BUILD}
+  plugin_xml_ext: String;
+  i: Integer;
+  resultAssigned: Boolean;
+{$ENDIF}  
 begin
   UpdateHighlighter;
   result := nil;
@@ -259,11 +268,22 @@ begin
         result := Res
       else if (AnsiCompareText(ext, '.s') = 0) or (AnsiCompareText(ext, '.asm') = 0) then
         result := Assembly
-{$IFDEF WX_BUILD}
-      else if (AnsiCompareText(ext, XRC_EXT) = 0) then
-        result := Xml
-{$ENDIF}
+{$IFDEF PLUGIN_BUILD}
       else
+      begin
+        resultAssigned := false;
+        for i := 0 to MainForm.pluginsCount - 1 do
+        begin
+            plugin_xml_ext := MainForm.plugins[i].GetXMLExtension();   // EAB TODO: Not elegant. Fix it.
+            if (AnsiCompareText(ext, plugin_xml_ext) = 0) then
+            begin
+                result := Xml;
+                resultAssigned := true;
+            end;
+        end;
+      end;
+      if not resultAssigned then
+{$ENDIF}
       begin
         tmp := TStringList.Create;
         try

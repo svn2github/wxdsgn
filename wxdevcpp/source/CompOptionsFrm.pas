@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: CompOptionsFrm.pas 932 2007-04-20 10:27:52Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
@@ -25,6 +25,9 @@ unit CompOptionsFrm;
 interface
 
 uses
+{$IFDEF PLUGIN_BUILD}
+  iplugin_bpl,   
+{$ENDIF}  
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls, Inifiles, ExtCtrls, ComCtrls, devTabs, Spin, XPMenu,
@@ -100,19 +103,6 @@ type
     btnRenameCompilerSet: TSpeedButton;
     Label1: TLabel;
     btnRefreshCompilerSettings: TSpeedButton;
-    tabwxWidgets: TTabSheet;
-    grpwxVersion: TGroupBox;
-    lblwxMinor: TLabel;
-    lblwxMajor: TLabel;
-    lblwxRelease: TLabel;
-    spwxMajor: TSpinEdit;
-    spwxMinor: TSpinEdit;
-    spwxRelease: TSpinEdit;
-    grpwxType: TGroupBox;
-    chkwxUnicode: TCheckBox;
-    chkwxMonolithic: TCheckBox;
-    rdwxLibraryType: TRadioGroup;
-    chkwxDebug: TCheckBox;
     
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
@@ -141,6 +131,7 @@ type
     procedure LoadOptions;
     procedure SaveSettings;
     procedure btnRefreshCompilerSettingsClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     fBins: string;
@@ -489,6 +480,10 @@ begin
 end;
 
 procedure TCompForm.LoadOptions;
+{$IFDEF PLUGIN_BUILD}
+var
+    i: Integer;
+{$ENDIF PLUGIN_BUILD}
 begin
   with devCompilerSet do
   begin
@@ -512,7 +507,7 @@ begin
     DllwrapEdit.Text        := dllwrapName;
     GprofEdit.Text          := gprofName;
 
-    with wxOptions do
+    {with wxOptions do   // EAB TODO: move this to the wx plugin
     begin
       spwxMajor.Value := majorVersion;
       spwxMinor.Value := minorVersion;
@@ -525,7 +520,11 @@ begin
         rdwxLibraryType.ItemIndex := 0
       else
         rdwxLibraryType.ItemIndex := 1;
-    end;
+    end; }
+    {$IFDEF PLUGIN_BUILD}
+    for i := 0 to MainForm.pluginsCount - 1 do
+        MainForm.plugins[i].LoadCompilerOptions;
+    {$ENDIF PLUGIN_BUILD}
 
     devCompiler.AddDefaultOptions;
     devCompiler.OptionStr   := OptionsStr;
@@ -535,6 +534,10 @@ begin
 end;
 
 procedure TCompForm.SaveSettings;
+{$IFDEF PLUGIN_BUILD}
+var
+    i: Integer;
+{$ENDIF PLUGIN_BUILD}
 begin
   devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
   devCompilerSet.gccName := GccEdit.Text;
@@ -556,7 +559,7 @@ begin
   devCompilerSet.MakeOpts := Make.Lines.Text;
   devCompilerSet.OptionsStr := devCompiler.OptionStr;
 
-  with devCompilerSet.wxOptions do
+  {with devCompilerSet.wxOptions do
   begin
     majorVersion := spwxMajor.Value;
     minorVersion := spwxMinor.Value;
@@ -566,7 +569,11 @@ begin
     monolithicLibrary := chkwxMonolithic.Checked;
     debugLibrary := chkwxDebug.Checked;
     staticLibrary := rdwxLibraryType.ItemIndex = 0;
-  end;
+  end; }
+  {$IFDEF PLUGIN_BUILD}
+  for i := 0 to MainForm.pluginsCount - 1 do
+    MainForm.plugins[i].SaveCompilerOptions;
+  {$ENDIF PLUGIN_BUILD}
 
   devCompilerSet.SaveSet(currentSet);
   devCompilerSet.SaveSettings;
@@ -693,6 +700,7 @@ begin
         DllwrapEdit.Enabled := true;
         btnbrowse7.Enabled := true;
       end;
+    ID_COMPILER_VC2008,  
     ID_COMPILER_VC2005:
       begin
         lblgprof.Caption := 'Manifest Tool:';
@@ -714,6 +722,24 @@ begin
                 'installed the selected compiler after installing wxDev-C++, select Yes.', mtConfirmation,
                 [mbYes, mbNo], Self.Handle) = mrYes then
     CompilerTypesClick(CompilerTypes);
+end;
+
+procedure TCompForm.FormClose(Sender: TObject; var Action: TCloseAction);
+{$IFDEF PLUGIN_BUILD}
+var
+  i: Integer;
+  tabs: TTabSheet;
+{$ENDIF PLUGIN_BUILD}
+begin
+{$IFDEF PLUGIN_BUILD}
+    for i := 0 to MainForm.packagesCount - 1 do
+    begin
+      tabs := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).Retrieve_CompilerOptionsPane;
+      if tabs <> nil then
+        tabs.PageControl := nil;
+    end;
+    MainPages.ActivePageIndex := 0;
+{$ENDIF PLUGIN_BUILD}
 end;
 
 end.

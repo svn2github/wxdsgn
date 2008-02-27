@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: devcfg.pas 932 2007-04-20 10:27:52Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
@@ -57,9 +57,10 @@ const
   ID_COMPILER_VC2003 = 2;
   ID_COMPILER_VC6 = 3;
   ID_COMPILER_DMARS = 4;
-  ID_COMPILER_BORLAND = 5;
-  ID_COMPILER_WATCOM = 6;
-  ID_COMPILER_VC = [ID_COMPILER_VC6, ID_COMPILER_VC2003, ID_COMPILER_VC2005];
+  ID_COMPILER_VC2008 = 5;
+  ID_COMPILER_BORLAND = 6;
+  ID_COMPILER_WATCOM = 7;
+  ID_COMPILER_VC = [ID_COMPILER_VC6, ID_COMPILER_VC2003, ID_COMPILER_VC2005, ID_COMPILER_VC2008];
   
 type
   // the comments are an example of the record
@@ -75,17 +76,6 @@ type
     optSection: string; // "Linker options"
     optExcludeFromTypes: TProjTypeSet; // [dptGUI] (don't show option if project is of type dptGUI)
     optChoices : TStringList; // replaces "Yes/No" standard choices (max 26 different choices)
-  end;
-
-  TdevWxOptions = record
-    majorVersion: ShortInt;
-    minorVersion: ShortInt;
-    releaseVersion: ShortInt;
-
-    unicodeSupport: Boolean;
-    monolithicLibrary: Boolean;
-    debugLibrary: Boolean;
-    staticLibrary: Boolean;
   end;
 
   // compiler-set configuration
@@ -115,7 +105,6 @@ type
     fCmdOptions: string;
     fLinkOptions: string;
     fMakeOptions: string;
-    fwxOptions: TdevWxOptions;
 
     fCheckSyntaxFormat: string;
     fOutputFormat: string;
@@ -135,7 +124,10 @@ type
     procedure UpdateSets;
 
   public
-    destructor Destroy; override;
+{$IFDEF PLUGIN_BUILD}
+    optComKey: String;
+{$ENDIF PLUGIN_BUILD}
+  	destructor Destroy; override;
     procedure SettoDefaults; override;
     procedure SaveSettings; override;
     procedure LoadSettings; override;
@@ -151,7 +143,7 @@ type
 
     property Name;
     property Sets: TStrings read fSets write fSets;
-
+    
   published
     property CompilerType: integer read fCompilerType write fCompilerType;
     property CheckSyntaxFormat: string read fCheckSyntaxFormat write fCheckSyntaxFormat;
@@ -186,7 +178,6 @@ type
     property CmdOpts: string read fCmdOptions write fCmdOptions; //Manual commands
     property LinkOpts: string read fLinkOptions write fLinkOptions; //Manual commands
     property MakeOpts: string read fMakeOptions write fMakeOptions;
-    property wxOptions: TdevWxOptions read fwxOptions write fwxOptions;
   end;
 
   // compiler options
@@ -210,7 +201,7 @@ type
     fIncludeFormat: string;
     fSingleCompile: string;
     fPreprocDefines: string;
-
+    
     fCheckSyntaxFormat: string;
     fOutputFormat: string;
     fResourceIncludeFormat: string;
@@ -230,7 +221,7 @@ type
     fcmdOpts: string;  // command-line adds for compiler
     flinkopts: string; // command-line adds for linker
     fMakeOpts: string;
-    fwxOpts: TdevWxOptions;
+	//fwxOpts: TdevWxOptions;    
     fSaveLog: boolean; // Save Compiler Output
     fDelay: integer;   // delay in milliseconds -- for compiling
 
@@ -267,7 +258,7 @@ type
     property CmdOpts: string read fcmdOpts write fcmdOpts;
     property LinkOpts: string read flinkOpts write flinkOpts;
     property MakeOpts: string read fMakeOpts write fMakeOpts;
-    property WxOpts: TdevWxOptions read fWxOpts write fWxOpts;
+	//property WxOpts: TdevWxOptions read fWxOpts write fWxOpts;
     property FastDep: Boolean read fFastDep write fFastDep;
 
     property CompilerType: integer read fCompilerType write fCompilerType;
@@ -395,6 +386,47 @@ type
     property Dummy: boolean read fDummy write fDummy;
     property Programs: TStrings read fPrograms write fPrograms;
   end;
+ {$IFDEF PLUGIN_BUILD}
+ TdevPluginToolbarsX = class(TCFGOptions)
+ private
+   fDummy: boolean;
+   fPluginToolbarsX: TStrings;
+   function GetToolbarsXName(Index: integer): string;
+ public
+   constructor Create;
+   destructor Destroy; override;
+   procedure SaveSettings; override;
+   procedure LoadSettings; override;
+   procedure SetToDefaults; override;
+   property Name;
+   property ToolbarsXName[Index: integer]: string read GetToolbarsXName;
+   function AssignedToolbarsX(plugin_name: string): integer;
+   function AddToolbarsX(plugin_name: String; x: Integer): integer;
+ published
+   property Dummy: boolean read fDummy write fDummy;
+   property PluginToolbarsX: TStrings read fPluginToolbarsX write fPluginToolbarsX;
+ end;
+
+  TdevPluginToolbarsY = class(TCFGOptions)
+ private
+   fDummy: boolean;
+   fPluginToolbarsY: TStrings;
+   function GetToolbarsYName(Index: integer): string;
+ public
+   constructor Create;
+   destructor Destroy; override;
+   procedure SaveSettings; override;
+   procedure LoadSettings; override;
+   procedure SetToDefaults; override;
+   property Name;
+   property ToolbarsYName[Index: integer]: string read GetToolbarsYName;
+   function AssignedToolbarsY(plugin_name: string): integer;
+   function AddToolbarsY(plugin_name: String; y: Integer): integer;
+ published
+   property Dummy: boolean read fDummy write fDummy;
+   property PluginToolbarsY: TStrings read fPluginToolbarsY write fPluginToolbarsY;
+ end;
+{$ENDIF PLUGIN_BUILD}
 
   // global directories
   TdevDirs = class(TCFGOptions)
@@ -766,6 +798,10 @@ var
   devClassBrowsing: TdevClassBrowsing = nil;
   devCVSHandler: TdevCVSHandler = nil;
   devExternalPrograms: TdevExternalPrograms = nil;
+  {$IFDEF PLUGIN_BUILD}
+  devPluginToolbarsX: TdevPluginToolbarsX = nil;
+  devPluginToolbarsY: TdevPluginToolbarsY = nil;
+  {$ENDIF PLUGIN_BUILD}  
 
   // Permanent alternate config file (need to be global vars)
   ConfigMode: (CFG_NORMAL, CFG_PARAM, CFG_USER) = CFG_NORMAL;
@@ -777,6 +813,9 @@ implementation
 
 uses
   main,
+{$IFDEF PLUGIN_BUILD}
+  iplugin,
+{$ENDIF PLUGIN_BUILD}
 {$IFDEF WIN32}
   MultiLangSupport, SysUtils, Forms, Controls, version, utils, SynEditMiscClasses,
   datamod, FileAssocs, Math;
@@ -868,7 +907,10 @@ begin
 end;
 
 procedure InitializeOptions;
+var
+  i: Integer;
 begin
+
   if not assigned(devDirs) then
     devDirs := TdevDirs.Create;
 
@@ -893,19 +935,27 @@ begin
   if not assigned(devExternalPrograms) then
     devExternalPrograms := TdevExternalPrograms.Create;
 
+  {$IFDEF PLUGIN_BUILD}
+  if not assigned(devPluginToolbarsX) then
+    devPluginToolbarsX:= TdevPluginToolbarsX.Create;
+  if not assigned(devPluginToolbarsY) then
+    devPluginToolbarsY:= TdevPluginToolbarsY.Create;
+  {$ENDIF PLUGIN_BUILD}
+
   // load the preferred compiler set
-  if devCompilerSet.Sets.Count=0 then begin
+  if devCompilerSet.Sets.Count=0 then begin      // EAB Comment: Why load all the compiler sets if not all are available?
     // init first-run
     devCompilerSet.Sets.Add(GCC_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2005_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2003_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC6_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(DMARS_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(VC2008_DEFCOMPILERSET);
 
     devCompilerSet.WriteSets;
-        
+
     devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
-    devdirs.fCompilerType:=0;
+    devdirs.fCompilerType:=0;  // EAB Comment: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(0);
     devCompilerSet.LoadSetDirs(0);
@@ -938,6 +988,13 @@ begin
     devCompilerSet.LoadSetProgs(4);
     devCompilerSet.LoadSetDirs(4);
     devCompilerSet.SaveSet(4);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC2008;   // EAB TODO: Check this logic. Maybe, move above and change numbering
+    devdirs.fCompilerType:=ID_COMPILER_VC2008;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(5);
+    devCompilerSet.LoadSetDirs(5);
+    devCompilerSet.SaveSet(5);
         
     //Reset the compiler type back to GCC
     devdirs.fCompilerType:=1;
@@ -962,6 +1019,10 @@ begin
   devClassBrowsing.SaveSettings;
   devCVSHandler.SaveSettings;
   devExternalPrograms.SaveSettings;
+  {$IFDEF PLUGIN_BUILD}
+  devPluginToolbarsX.SaveSettings;
+  devPluginToolbarsY.SaveSettings;
+  {$ENDIF PLUGIN_BUILD}  
 end;
 
 procedure ResettoDefaults;
@@ -974,6 +1035,10 @@ begin
   devCodeCompletion.SettoDefaults;
   devClassBrowsing.SettoDefaults;
   devExternalPrograms.SetToDefaults;
+  {$IFDEF PLUGIN_BUILD}
+  devPluginToolbarsX.SetToDefaults;
+  devPluginToolbarsY.SetToDefaults;
+  {$ENDIF PLUGIN_BUILD}  
 end;
 
 procedure FinalizeOptions;
@@ -1001,6 +1066,14 @@ begin
 
   devExternalPrograms.SaveSettings;
   devExternalPrograms.Free;
+
+  {$IFDEF PLUGIN_BUILD}
+  devPluginToolbarsX.SaveSettings;
+  devPluginToolbarsX.Free;
+
+  devPluginToolbarsY.SaveSettings;
+  devPluginToolbarsY.Free;
+  {$ENDIF PLUGIN_BUILD}  
 end;
 
 procedure CheckForAltConfigFile(filename: string);
@@ -1243,7 +1316,7 @@ begin
     sl.Add('Compile native code  =');
     sl.Add('Compile for CLR=/clr');
     sl.Add('No assembly=/clr:noAssembly');
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) or (devCompilerSet.CompilerType = ID_COMPILER_VC2008) then
     begin
       sl.Add('IL-only output file=/clr:pure');
       sl.Add('Verifiable IL-only output=/clr:safe');
@@ -1252,7 +1325,7 @@ begin
     end;
     AddOption('Common Language Runtime', false, true, true, false, 0, '', 'Code Generation', [], sl);
 
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) or (devCompilerSet.CompilerType = ID_COMPILER_VC2008) then
     begin
       sl := TStringList.Create;
       sl.Add('Precise  =precise');
@@ -1310,7 +1383,7 @@ begin
       AddOption('Enable Extensions', false, true, true, false, 1, '/Ze', 'Language Options', [], nil);
     AddOption('Omit library name in object file', false, true, true, false, 0,  '/Zl', 'Language Options', [], nil);
     AddOption('Generate function prototypes', false, true, true, false, 0, '/Zg', 'Language Options', [], nil);
-    if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) then
+    if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) or (devCompilerSet.CompilerType = ID_COMPILER_VC2008) then
       AddOption('Enable OpenMP 2.0 Language Extensions', false, false, true, false, 0, '/openmp', 'Language Options', [], nil);
 
     if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
@@ -2093,7 +2166,7 @@ begin
   fCDir   := ValidatePaths(C_INCLUDE_DIR(fCompilerType), tempstr);
   fCppDir := ValidatePaths(CPP_INCLUDE_DIR(fCompilerType), tempstr);
   fLibDir := ValidatePaths(LIB_DIR(fCompilerType), tempstr);
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
   fRCDir  := ValidatePaths(RC_INCLUDE_DIR(fCompilerType), tempstr);
 {$ELSE}
   fRCDir  := '';
@@ -2459,7 +2532,10 @@ begin
 end;
 
 procedure TdevCompilerSet.AssignToCompiler;
+var
+  tempstr: String;
 begin
+  tempstr := '';
   devCompiler.Name                  := Name;
   devCompiler.gccName               := gccName;
   devCompiler.gppName               := gppName;
@@ -2471,7 +2547,6 @@ begin
   devCompiler.fcmdOpts              := fCmdOptions;
   devCompiler.flinkopts             := fLinkOptions;
   devCompiler.fMakeOpts             := fMakeOptions;
-  devCompiler.fwxOpts               := fwxOptions;
   devCompiler.compilerType          := compilerType;
   devCompiler.CheckSyntaxFormat     := CheckSyntaxFormat;
   devCompiler.OutputFormat          := OutputFormat;
@@ -2491,9 +2566,10 @@ begin
   // we have to set the devDirs too
   devDirs.Bins := BinDir;
   devDirs.C := CDir;
-  devDirs.Cpp := CppDir;
+  devDirs.Cpp := CppDir; 
   devDirs.Lib := LibDir;
   devDirs.RC := RCDir;
+  devDirs.compilerType := compilerType;
 
   if devCompiler.CompilerType = ID_COMPILER_MINGW then
   begin
@@ -2536,11 +2612,15 @@ end;
 procedure TdevCompilerSet.LoadSetDirs(Index: integer);
 var
   key: string;
-  goodBinDir, goodCDir, goodCppDir, goodLibDir {$IFDEF WX_BUILD}, goodRCDir{$ENDIF}: String;
+  goodBinDir, goodCDir, goodCppDir, goodLibDir {$IFDEF PLUGIN_BUILD}, goodRCDir{$ENDIF}: String;
   msg: String;
   tempStr: String;
   maindir: String;
   makeSig, mingwmakeSig: String;
+{$IFDEF PLUGIN_BUILD}
+  i: Integer;
+  dummy: String;
+{$ENDIF}
 begin
   if Index < 0 then
     Exit;
@@ -2554,6 +2634,13 @@ begin
     fCDir := LoadSetting(key, 'C');
      if fCDir='' then fCDir:=devDirs.C;
     fCppDir := LoadSetting(key, 'Cpp');
+{$IFDEF PLUGIN_BUILD}
+    if  MainForm <> nil then
+    begin
+        for i := 0 to MainForm.pluginsCount - 1 do
+            fCppDir := fCppDir + ';' + ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);    // EAB TODO: make it multiplugin functional.
+    end;
+{$ENDIF}
      if fCppDir='' then fCppDir:=devDirs.Cpp;
     fLibDir := LoadSetting(key, 'Lib');
      if fLibDir='' then fLibDir:=devDirs.Lib;
@@ -2590,7 +2677,7 @@ begin
        msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
        msg := msg + #13#10 + #13#10;
      end;
-     {$IFDEF WX_BUILD}
+     {$IFDEF PLUGIN_BUILD}
      goodRCDir := ValidatePaths(fRCDir, tempStr);
      if tempStr <> '' then
      begin
@@ -2609,7 +2696,7 @@ begin
          + 'Unless you know exactly what you''re doing, it is recommended '
          + 'that you click Yes';
 
-       if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+       if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then    // EAB TODO:* These messages could appear sencuentially multiple times depending on the amount of templates being read for a project. We need to fix this. 
        begin
          fBinDir := goodBinDir;
          fCDir := goodCDir;
@@ -2774,21 +2861,9 @@ begin
     if LoadSetting(key, 'PchFileFormat') <> '' then
       fPchFileFormat         := LoadSetting(key, 'PchFileFormat');
 
-    if LoadSetting(key, 'wxOpts.Major') <> '' then
-      fwxOptions.majorVersion := StrToInt(LoadSetting(key, 'wxOpts.Major'));
-    if LoadSetting(key, 'wxOpts.Minor') <> '' then
-      fwxOptions.minorVersion := StrToInt(LoadSetting(key, 'wxOpts.Minor'));
-    if LoadSetting(key, 'wxOpts.Release') <> '' then
-      fwxOptions.releaseVersion := StrToInt(LoadSetting(key, 'wxOpts.Release'));
-
-    if LoadSetting(key, 'wxOpts.Unicode') <> '' then
-      fwxOptions.unicodeSupport := StrToBool(LoadSetting(key, 'wxOpts.Unicode'));
-    if LoadSetting(key, 'wxOpts.Monolithic') <> '' then
-      fwxOptions.monolithicLibrary := StrToBool(LoadSetting(key, 'wxOpts.Monolithic'));
-    if LoadSetting(key, 'wxOpts.Debug') <> '' then
-      fwxOptions.debugLibrary := StrToBool(LoadSetting(key, 'wxOpts.Debug'));
-    if LoadSetting(key, 'wxOpts.Static') <> '' then
-      fwxOptions.staticLibrary := StrToBool(LoadSetting(key, 'wxOpts.Static'));
+{$IFDEF PLUGIN_BUILD}          // Loading Compiler settings:
+    optComKey := key;
+{$ENDIF PLUGIN_BUILD}
   end;
 end;
 
@@ -2824,6 +2899,10 @@ end;
 procedure TdevCompilerSet.SaveSetProgs(Index: integer);
 var
   key: string;
+{$IFDEF PLUGIN_BUILD}
+  i,j: Integer;
+  pluginSettings: TSettings;
+{$ENDIF PLUGIN_BUILD}
 begin
   if Index<0 then Exit;
   with devData do
@@ -2858,13 +2937,17 @@ begin
     SaveSetting(key, 'SingleCompile', fSingleCompile);
     SaveSetting(key, 'PreprocDefines', fPreprocDefines);
 
-    SaveSetting(key, 'wxOpts.Major', IntToStr(wxOptions.majorVersion));
-    SaveSetting(key, 'wxOpts.Minor', IntToStr(wxOptions.minorVersion));
-    SaveSetting(key, 'wxOpts.Release', IntToStr(wxOptions.ReleaseVersion));
-    SaveSetting(key, 'wxOpts.Unicode', BoolToStr(wxOptions.unicodeSupport));
-    SaveSetting(key, 'wxOpts.Monolithic', BoolToStr(wxOptions.monolithicLibrary));
-    SaveSetting(key, 'wxOpts.Debug', BoolToStr(wxOptions.debugLibrary));
-    SaveSetting(key, 'wxOpts.Static', BoolToStr(wxOptions.staticLibrary));
+{$IFDEF PLUGIN_BUILD}
+    if MainForm <> nil then
+    begin
+      for i := 0 to MainForm.pluginsCount - 1 do
+      begin
+          pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+          for j := 0 to Length(pluginSettings) do
+              SaveSetting(key, pluginSettings[j].name, pluginSettings[j].value);
+      end;
+    end;
+{$ENDIF PLUGIN_BUILD}
   end;
 end;
 
@@ -2882,7 +2965,14 @@ begin
 end;
 
 procedure TdevCompilerSet.SettoDefaults;
+var
+  tempstr: String;
+{$IFDEF PLUGIN_BUILD}
+  i: Integer;
+{$ENDIF PLUGIN_BUILD}
 begin
+
+  tempstr := '';
   // Programs
   fgccName     := CP_PROGRAM(CompilerType);
   fgppName     := CPP_PROGRAM(CompilerType);
@@ -2952,22 +3042,10 @@ begin
   // dirs
   fBinDir  := devDirs.Bins;
   fCDir    := devDirs.C;
-  fCppDir  := devDirs.Cpp;
+  fCppDir  := devDirs.Cpp; // + ';' + ValidatePaths(CPP_INCLUDE_DIR(fCompilerType), tempstr);   // EAB TODO: Check if this is a good solution for plugins and COMMON_CPP_INCLUDE_DIR
   fLibDir  := devDirs.Lib;
   fRCDir   := devDirs.RC;
 
-  // wxWidgets options
-  with wxOptions do
-  begin
-    majorVersion := 2;
-    minorVersion := 8;
-    releaseVersion := 2;
-
-    unicodeSupport := False;
-    monolithicLibrary := True;
-    debugLibrary := False;
-    staticLibrary := True;
-  end;
 end;
 
 procedure TdevCompilerSet.UpdateSets;
@@ -3072,6 +3150,142 @@ begin
   inherited;
 
 end;
+
+{$IFDEF PLUGIN_BUILD}
+{ TdevPluginToolbarsX }
+
+function TdevPluginToolbarsX.AddToolbarsX(plugin_name: string; x: Integer): integer;
+var
+  idx: integer;
+begin
+  if plugin_name='' then begin
+    Result:=-1;
+    Exit;
+  end;
+
+  idx:=AssignedToolbarsX(plugin_name);
+  if idx=-1 then
+    Result:=fPluginToolbarsX.Add(plugin_name+'='+IntToStr(x))
+  else begin
+    fPluginToolbarsX.Values[fPluginToolbarsX.Names[idx]]:=IntToStr(x);
+    Result:=idx;
+  end;
+end;
+
+function TdevPluginToolbarsX.AssignedToolbarsX(plugin_name: string): integer;
+var
+  I: integer;
+begin
+  Result:=-1;
+  for I:=0 to fPluginToolbarsX.Count-1 do
+    if UpperCase(fPluginToolbarsX.Names[I])=UpperCase(plugin_name) then begin
+      Result:=I;
+      Break;
+    end;
+end;
+
+constructor TdevPluginToolbarsX.Create;
+begin
+ inherited Create;
+ Name:= 'ToolbarsX';
+ fPluginToolbarsX:=TStringList.Create;
+ SettoDefaults;
+ LoadSettings;
+end;
+
+destructor TdevPluginToolbarsX.Destroy;
+begin
+  fPluginToolbarsX.Free;
+end;
+
+function TdevPluginToolbarsX.GetToolbarsXName(Index: integer): string;
+begin
+  Result:=fPluginToolbarsX.Values[fPluginToolbarsX.Names[Index]];
+end;
+
+procedure TdevPluginToolbarsX.LoadSettings;
+begin
+  devData.LoadObject(Self);
+end;
+
+procedure TdevPluginToolbarsX.SaveSettings;
+begin
+  devData.SaveObject(Self);
+end;
+
+procedure TdevPluginToolbarsX.SetToDefaults;
+begin
+  inherited;
+
+end;
+
+{ TdevPluginToolbarsY }
+
+function TdevPluginToolbarsY.AddToolbarsY(plugin_name: string; y: Integer): integer;
+var
+  idx: integer;
+begin
+  if plugin_name='' then begin
+    Result:=-1;
+    Exit;
+  end;
+
+  idx:=AssignedToolbarsY(plugin_name);
+  if idx=-1 then
+    Result:=fPluginToolbarsY.Add(plugin_name+'='+IntToStr(y))
+  else begin
+    fPluginToolbarsY.Values[fPluginToolbarsY.Names[idx]]:=IntToStr(y);
+    Result:=idx;
+  end;
+end;
+
+function TdevPluginToolbarsY.AssignedToolbarsY(plugin_name: string): integer;
+var
+  I: integer;
+begin
+  Result:=-1;
+  for I:=0 to fPluginToolbarsY.Count-1 do
+    if UpperCase(fPluginToolbarsY.Names[I])=UpperCase(plugin_name) then begin
+      Result:=I;
+      Break;
+    end;
+end;
+
+constructor TdevPluginToolbarsY.Create;
+begin
+ inherited Create;
+ Name:= 'ToolbarsY';
+ fPluginToolbarsY:=TStringList.Create;
+ SettoDefaults;
+ LoadSettings;
+end;
+
+destructor TdevPluginToolbarsY.Destroy;
+begin
+  fPluginToolbarsY.Free;
+end;
+
+function TdevPluginToolbarsY.GetToolbarsYName(Index: integer): string;
+begin
+  Result:=fPluginToolbarsY.Values[fPluginToolbarsY.Names[Index]];
+end;
+
+procedure TdevPluginToolbarsY.LoadSettings;
+begin
+  devData.LoadObject(Self);
+end;
+
+procedure TdevPluginToolbarsY.SaveSettings;
+begin
+  devData.SaveObject(Self);
+end;
+
+procedure TdevPluginToolbarsY.SetToDefaults;
+begin
+  inherited;
+
+end;
+{$ENDIF PLUGIN_BUILD}
 
 initialization
 

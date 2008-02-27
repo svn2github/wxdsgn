@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: FilePropertiesFm.pas 760 2006-12-22 03:07:17Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software

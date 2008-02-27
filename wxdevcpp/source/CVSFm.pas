@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: CVSFm.pas 712 2006-12-04 08:12:41Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software

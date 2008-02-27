@@ -213,6 +213,21 @@ begin
       result := True;
       fFile := DEV_INTERNAL_THEME;
     end
+	else if theme = DEV_CLASSIC_THEME then
+      begin
+       fMenus.Clear;
+       fHelp.Clear;
+       fProjects.Clear;
+       fSpecials.Clear;
+       fBrowser.Clear;
+       fMenus.AddImages(dmMain.MenuImages_Classic);
+       fHelp.AddImages(dmMain.HelpImages_Classic);
+       fProjects.AddImages(dmMain.ProjectImage_Classic);
+       fSpecials.AddImages(dmMain.SpecialImages_Classic);
+       fBrowser.AddImages(dmMain.ClassImages);
+       result:= True;
+       fFile:= DEV_INTERNAL_THEME;
+      end      
   end
   else
   begin // load theme from file
@@ -305,6 +320,7 @@ begin
   fThemes.Append(DEV_NEWLOOK_THEME + '=' + DEV_NEWLOOK_THEME);
   fThemes.Append(DEV_GNOME_THEME + '=' + DEV_GNOME_THEME);
   fThemes.Append(DEV_BLUE_THEME + '=' + DEV_BLUE_THEME);
+  fThemes.Append(DEV_CLASSIC_THEME + '=' + DEV_CLASSIC_THEME);
 
   if devDirs.Themes = '' then Exit;
 
@@ -315,7 +331,7 @@ begin
   begin
     tmp := TStringList.Create;
     try
-      for idx:= 3 to pred(fThemes.Count) do  // start from 3 because we have three standard themes
+      for idx:= 4 to pred(fThemes.Count) do  // start from 3 because we have three standard themes
       begin
         tmp.Clear;
         tmp.LoadFromfile(fThemes[idx]);

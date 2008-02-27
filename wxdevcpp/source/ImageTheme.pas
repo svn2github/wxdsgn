@@ -121,6 +121,11 @@ type
   public
     constructor Create; override;
   end;
+  
+  TClassicImageTheme = class(TDevImageTheme)
+  public
+    constructor Create; override;
+  end;  
 
   TCustomImageThemeFactory = class(TPersistent)
   private
@@ -433,6 +438,21 @@ begin
   FTitle := 'Gnome';
 end;
 
+//----------------- TClassicImageTheme ---------------------------------------------------------------------------------
+
+constructor TClassicImageTheme.Create;
+begin
+  inherited;
+
+  MenuImages := DataModule.MenuImages_Classic;
+  HelpImages := DataModule.HelpImages_Classic;
+  ProjectImages := DataModule.ProjectImage_Classic;
+  SpecialImages := DataModule.SpecialImages_Classic;
+  BrowserImages := DataModule.ClassImages;
+
+  FTitle := 'Classic';
+end;
+
 //----------------- TNewLookImageTheme ---------------------------------------------------------------------------------
 
 constructor TNewLookImageTheme.Create;
@@ -629,7 +649,8 @@ begin
   RegisterTheme(TNewLookImageTheme);
   RegisterTheme(TGnomeImageTheme);
   RegisterTheme(TBlueImageTheme);
-
+  RegisterTheme(TClassicImageTheme);
+  
   FCurrentTheme := Themes[0];
 end;
 

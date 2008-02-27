@@ -42,6 +42,7 @@ type
     Params: string;
     IcoNumGnome: integer;
     IcoNumBlue: integer;
+    IcoNumClassic: integer;
     IcoNumNewLook: integer;
     HasIcon: boolean;
   end;
@@ -202,6 +203,7 @@ begin
        Item^.Params:= ReadString(section, 'Params', '');
        Item^.IcoNumGnome:=-1;
        Item^.IcoNumBlue:=-1;
+       Item^.IcoNumClassic:=-1;
        Item^.IcoNumNewLook:=-1;
        Item^.HasIcon:=False;
       AddItem(Item);
@@ -332,6 +334,7 @@ begin
              fToolList.Items[idx].IcoNumNewLook:=dmMain.MenuImages_NewLook.AddIcon(Icon);
              fToolList.Items[idx].IcoNumBlue:=dmMain.MenuImages_Blue.AddIcon(Icon);
              fToolList.Items[idx].IcoNumGnome:=dmMain.MenuImages_Gnome.AddIcon(Icon);
+             fToolList.Items[idx].IcoNumClassic:=dmMain.MenuImages_Classic.AddIcon(Icon);
              fToolList.Items[idx].HasIcon:=True;
             end;
           end;
@@ -343,10 +346,12 @@ begin
        Item.ImageIndex:=fToolList.Items[idx].IcoNumGnome
      else if devData.Theme=DEV_BLUE_THEME then
        Item.ImageIndex:=fToolList.Items[idx].IcoNumBlue
+     else if devData.Theme=DEV_CLASSIC_THEME then
+       Item.ImageIndex:=fToolList.Items[idx].IcoNumClassic
       else
        Item.ImageIndex:=fToolList.Items[idx].IcoNumNewLook;
       fMenu.Add(Item);
-    end;
+    end;    
   fMenu.Visible:= fMenu.Count> 0;
 end;
 

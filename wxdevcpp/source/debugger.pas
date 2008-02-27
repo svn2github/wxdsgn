@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: debugger.pas 897 2007-02-20 11:57:13Z lowjoel $
     
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software

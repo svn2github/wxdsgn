@@ -287,7 +287,7 @@ begin
      if CD.IgnoreProperties.Indexof(PropName)>= 0 then continue;
     case PropType(Obj, PropName) of
       tkString,
-        tkLString,
+      tkLString,
       tkWString: fINI.WriteString(Section, PropName, '"'+GetStrProp(Obj, PropName)+'"');
       // 11 Jul 2002: mandrav: added double quotes around strings.
       // fixes a bug with stringlists comma-text saved as string...

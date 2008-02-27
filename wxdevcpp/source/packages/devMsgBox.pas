@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: devMsgBox.pas 894 2007-02-20 11:10:37Z lowjoel $
 
     This file is part of wxDev-C++
     Copyright (c) 2006 wxDev-C++ Developers

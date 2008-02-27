@@ -26,6 +26,9 @@ uses
 {$IFDEF WIN32}
   IniFiles, SysUtils, Dialogs, ComCtrls, Editor, Contnrs,
   Classes, Controls, version, prjtypes, Templates, Forms,
+{$IFDEF PLUGIN_BUILD}
+  iplugin_bpl,   
+{$ENDIF}  
   Windows;
 {$ENDIF}
 {$IFDEF LINUX}
@@ -241,7 +244,7 @@ type
 implementation
 uses
   main, MultiLangSupport, devcfg, ProjectOptionsFrm, datamod,
-  RemoveUnitFrm, WxUtils;
+  RemoveUnitFrm;
 
 { TProjUnit }
 
@@ -262,6 +265,11 @@ begin
 end;
 
 function TProjUnit.Save: boolean;
+{$IFDEF PLUGIN_BUILD}
+var
+  i: Integer;
+  boolForm: Boolean;
+{$ENDIF}  
   procedure DisableFileWatch;
   var
     idx: Integer;
@@ -284,9 +292,18 @@ begin
     result := SaveAs
   else
   try
-    //Update the XPMs if we dont have them on the disk
-    if Assigned(fEditor) and fEditor.isForm then
-      fEditor.GetDesigner.CreateNewXPMs(fEditor.FileName);
+{$IFDEF PLUGIN_BUILD}
+    if Assigned(fEditor) then
+    begin
+      boolForm := false;
+      for i := 0 to MainForm.pluginsCount - 1 do
+        boolForm := boolForm or MainForm.plugins[i].IsForm(fEditor.FileName);
+      if boolForm then
+       //Update the XPMs if we dont have them on the disk
+        for i := 0 to MainForm.pluginsCount - 1 do
+          MainForm.plugins[i].CreateNewXPMs(fEditor.FileName);   // EAB TODO: Think better for multiple plugins here
+    end;
+{$ENDIF}
 
     //If no editor is created open one; save file and close creates a blank file.
     if (not Assigned(fEditor)) and (not FileExists(fFileName)) then
@@ -338,10 +355,12 @@ function TProjUnit.SaveAs: boolean;
 var
   flt: string;
   CFilter, CppFilter, HFilter: Integer;
-  {$IFDEF WX_BUILD}
-  boolwxForm:Boolean;
-  WxFilter: Integer;
-  {$ENDIF}
+{$IFDEF PLUGIN_BUILD}
+  boolForm: Boolean;
+  pluginFilter: Integer;
+  filters: TStringList;
+  i, j: Integer;  
+{$ENDIF}
 begin
   with dmMain.SaveDialog do
   begin
@@ -349,17 +368,27 @@ begin
       FileName := fEditor.TabSheet.Caption
     else
       FileName := ExtractFileName(fFileName);
-    {$IFDEF WX_BUILD}
-     boolwxForm:=iswxForm(FileName);
-    {$ENDIF}
+{$IFDEF PLUGIN_BUILD}
+    boolForm := false;
+    for i := 0 to MainForm.pluginsCount - 1 do
+        boolForm := boolForm or MainForm.plugins[i].IsForm(FileName);
+{$ENDIF}
 
     if fParent.Profiles.useGPP then
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
-      {$IFDEF WX_BUILD}
-      BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS, FLT_WXFORMS, FLT_XRC]);
-      WxFilter:=5;
-      {$ENDIF}
+{$IFDEF PLUGIN_BUILD}        // <-- EAB TODO: Check for a potential problem with multiple plugins
+    pluginFilter := 3;    
+    for i := 0 to MainForm.packagesCount - 1 do
+    begin
+        filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
+        for j := 0 to filters.Count - 1 do
+        begin
+            BuildFilter(flt, [filters.Strings[j]]);
+            pluginFilter := pluginFilter + 1;
+        end;
+    end;
+{$ENDIF}
       DefaultExt := CPP_EXT;
       CFilter := 3;
       CppFilter := 2;
@@ -369,44 +398,35 @@ begin
     else
     begin
       BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS]);
-      {$IFDEF WX_BUILD}
-      BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS, FLT_WXFORMS, FLT_XRC]);
-      WxFilter:=5;
-      {$ENDIF}
+{$IFDEF PLUGIN_BUILD}
+    pluginFilter := 3;
+    for i := 0 to MainForm.packagesCount - 1 do
+    begin
+        filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
+        for j := 0 to filters.Count - 1 do
+        begin
+            BuildFilter(flt, [filters.Strings[j]]);
+            pluginFilter := pluginFilter + 1;
+        end;
+    end;
+{$ENDIF}
       DefaultExt := C_EXT;
       CFilter := 2;
       CppFilter := 3;
       HFilter := 4;
     end;
-    {$IFDEF WX_BUILD}
-    if isRCExt(FileName) then
+{$IFDEF PLUGIN_BUILD}
+    for i := 0 to MainForm.pluginsCount - 1 do     // <-- EAB TODO: Check for a potential problem with multiple plugins
     begin
-        BuildFilter(flt, [FLT_RES]);
-        DefaultExt := RC_EXT;
+        BuildFilter(flt, [MainForm.plugins[i].GetFilter(FileName)]);
+        DefaultExt := MainForm.plugins[i].Get_EXT(FileName);
         CFilter := 2;
         CppFilter := 2;
         HFilter := 2;
+        if MainForm.plugins[i].IsForm(FileName) then
+            pluginFilter:= 2;
     end;
-
-    if isXRCExt(FileName) then
-    begin
-        BuildFilter(flt, [FLT_XRC]);
-        DefaultExt := XRC_EXT;
-        CFilter := 2;
-        CppFilter := 2;
-        HFilter := 2;
-    end;
-
-    if isWxForm(FileName) then
-    begin
-        BuildFilter(flt, [FLT_WXFORMS]);
-        DefaultExt := WXFORM_EXT;
-        CFilter := 2;
-        CppFilter := 2;
-        HFilter := 2;
-        WxFilter:= 2;
-    end;
-    {$ENDIF} 
+{$ENDIF}
       
     Filter := flt;
     if (CompareText(ExtractFileExt(FileName), '.h') = 0) or
@@ -421,10 +441,10 @@ begin
       else
         FilterIndex := CFilter;
     end;
-    {$IFDEF WX_BUILD}
-    if boolwxForm then
-        FilterIndex := WxFilter;
-    {$ENDIF}
+{$IFDEF PLUGIN_BUILD}
+    if boolForm then
+        FilterIndex := pluginFilter;
+{$ENDIF}
 
     InitialDir := ExtractFilePath(fFileName);
     Title := Lang[ID_NV_SAVEFILE];
@@ -813,6 +833,10 @@ var
   s: string;
   newunit: TProjUnit;
   ParentNode, CurNode: TTreeNode;
+{$IFDEF PLUGIN_BUILD}
+ i: Integer;
+ b: Boolean;
+{$ENDIF}
 begin
   NewUnit := TProjUnit.Create(Self);
   ParentNode := Node;
@@ -839,8 +863,12 @@ begin
     result := fUnits.Add(NewUnit);
     CurNode.Data := pointer(result);
     Dirty := TRUE;
-{$IFDEF WX_BUILD}
-    if iswxForm(FileName) then begin
+{$IFDEF PLUGIN_BUILD}
+    b := false;
+    for i := 0 to MainForm.pluginsCount - 1 do
+        b := b or MainForm.plugins[i].isForm(FileName);
+    if b then
+    begin
         Compile := false;
         Link := false;
     end
@@ -929,6 +957,10 @@ begin
 end;
 
 procedure TProject.Update;
+{$IFDEF PLUGIN_BUILD}
+var
+    i: Integer;
+{$ENDIF}
 begin
   with finifile do
   begin
@@ -980,11 +1012,13 @@ begin
         fProfiles[0].typ := Read('type', 0);
         fProfiles.UseGpp := Read('IsCpp', true);
 
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
         // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
         fProfiles[0].Compiler := StringReplace(Read(C_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
         fProfiles[0].CppCompiler := StringReplace(Read(CPP_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-        fProfiles[0].Linker := ConvertLibsToCurrentVersion(StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]));
+        for i := 0 to MainForm.pluginsCount - 1 do
+            fProfiles[0].Linker := MainForm.plugins[i].ConvertLibsToCurrentVersion(StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]));   // EAB TODO: This is wrong. Think for a solution for multiple plugins
+            //fProfiles[0].Linker := ConvertLibsToCurrentVersion(StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]));
         fProfiles[0].PreprocDefines := Read(PREPROC_INI_LABEL, '');
 
         fProfiles[0].ObjFiles.DelimitedText := StringReplace(Read('ObjFiles', ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
@@ -996,7 +1030,9 @@ begin
 {$ELSE}
         fProfiles[0].Compiler := Read('Compiler', '');
         fProfiles[0].CppCompiler := Read('CppCompiler', '');
-        fProfiles[0].Linker := ConvertLibsToCurrentVersion((Read('Linker', ''));
+        for i := 0 to MainForm.pluginsCount - 1 do
+            fProfiles[0].Linker := MainForm.plugins[i].ConvertLibsToCurrentVersion((Read('Linker', ''));   // EAB TODO: This is even worst. Outside of the conditional, yet calls a function that was originally in wxUtils.pas. Should be fixed.
+            // fProfiles[0].Linker := ConvertLibsToCurrentVersion((Read('Linker', ''));
         fProfiles[0].ObjFiles.DelimitedText := Read('ObjFiles', '');
         fProfiles[0].Libs.DelimitedText := Read('Libs', '');
         fProfiles[0].Includes.DelimitedText := Read('Includes', '');
@@ -1171,6 +1207,10 @@ begin
       DeleteKey('OverrideOutputName');
       DeleteKey('HostApplication');
 
+      DeleteKey('VC2008_Compiler');
+      DeleteKey('VC2008_CppCompiler');
+      DeleteKey('VC2008_Linker');
+      DeleteKey('VC2008_PreprocDefines');
       DeleteKey('VC2005_Compiler');
       DeleteKey('VC2005_CppCompiler');
       DeleteKey('VC2005_Linker');
@@ -1195,6 +1235,7 @@ begin
       DeleteKey('WATCOM_CppCompiler');
       DeleteKey('WATCOM_Linker');
       DeleteKey('WATCOM_PreprocDefines');
+      DeleteKey('VC2008_CompilerSettings');
       DeleteKey('VC2005_CompilerSettings');
       DeleteKey('VC2003_CompilerSettings');
       DeleteKey('VC6_CompilerSettings');
@@ -1399,27 +1440,27 @@ end;
 
 procedure TProject.LoadProfiles;
 var
-  i, profileCount, resetCompilers, AutoSelectMissingCompiler: Integer;
-  NewProfile: TProjProfile;
-  CompilerType: string;
+    i, profileCount, resetCompilers, AutoSelectMissingCompiler: Integer;
+    NewProfile:TProjProfile;
+    CompilerType: string;
 begin
   ResetCompilers            := 0;
-  finifile.Section          := 'Project';
-  profilecount              := finifile.Read('ProfilesCount',0);
-  fProfiles.useGPP          := finifile.Read('useGPP',true);
-  CurrentProfileIndex       := finifile.Read('ProfileIndex',0);
-  fPrevVersion              := finifile.Read('Ver',-1);
+  finifile.Section := 'Project';
+  profilecount:=finifile.Read('ProfilesCount',0);
+  fProfiles.useGPP:=finifile.Read('useGPP',true);
+  CurrentProfileIndex:=finifile.Read('ProfileIndex',0);
+  fPrevVersion:=finifile.Read('Ver',-1);
   AutoSelectMissingCompiler := 0;
   if (CurrentProfileIndex > profileCount - 1) or (CurrentProfileIndex < 0 )then
     CurrentProfileIndex := 0;
 
   if profileCount <= 0 then
   begin
-    CurrentProfileIndex     := 0;
-    Profiles.Ver            := fPrevVersion;
-    NewProfile              := TProjProfile.Create;
-    NewProfile.ProfileName  := 'Default Profile';
-    NewProfile.ExeOutput    := NewProfile.ProfileName;
+    CurrentProfileIndex:=0;
+    Profiles.Ver:=fPrevVersion;
+    NewProfile:=TProjProfile.Create;
+    NewProfile.ProfileName := 'Default Profile';
+    NewProfile.ExeOutput := NewProfile.ProfileName;
     NewProfile.ObjectOutput := NewProfile.ProfileName;
     fProfiles.Add(NewProfile);
     Exit;
@@ -1427,65 +1468,61 @@ begin
 
   for i := 0 to pred(profileCount) do
   begin
-    NewProfile                    := TProjProfile.Create;
-    NewProfile.ProfileName        := finifile.ReadProfile(i, 'ProfileName', '');
-    NewProfile.typ                := finifile.ReadProfile(i, 'Type', 0);
-    NewProfile.CompilerType       := finifile.ReadProfile(i, 'CompilerType', ID_COMPILER_MINGW);
-    NewProfile.CompilerSet        := finifile.ReadProfile(i, 'CompilerSet', 0);
-    NewProfile.Compiler           := finifile.ReadProfile(i, 'Compiler', '');
-    NewProfile.CppCompiler        := finifile.ReadProfile(i, 'CppCompiler', '');
-    NewProfile.Linker             := finifile.ReadProfile(i, 'Linker', '');
-    NewProfile.CompilerOptions    := finifile.ReadProfile(i, COMPILER_INI_LABEL, '');
-    NewProfile.PreprocDefines     := finifile.ReadProfile(i, 'PreprocDefines', '');
-
-    NewProfile.ObjFiles.DelimitedText         := finifile.ReadProfile(i, 'ObjFiles', '');
-    NewProfile.Includes.DelimitedText         := finifile.ReadProfile(i, 'Includes', '');
-    NewProfile.Libs.DelimitedText             := finifile.ReadProfile(i, 'Libs', '');
-    NewProfile.ResourceIncludes.DelimitedText := finifile.ReadProfile(i, 'ResourceIncludes', '');
-    NewProfile.MakeIncludes.DelimitedText     := finifile.ReadProfile(i, 'MakeIncludes', '');
-
-    NewProfile.Icon               := finifile.ReadProfile(i, 'Icon', '');
-    NewProfile.ExeOutput          := finifile.ReadProfile(i, 'ExeOutput', '');
-    NewProfile.ObjectOutput       := finifile.ReadProfile(i, 'ObjectOutput', '');
-    NewProfile.OverrideOutput     := finifile.ReadProfile(i, 'OverrideOutput', false);
-    NewProfile.OverridenOutput    := finifile.ReadProfile(i, 'OverrideOutputName', '');
-    NewProfile.HostApplication    := finifile.ReadProfile(i, 'HostApplication', '');
-    NewProfile.IncludeVersionInfo := finifile.ReadProfile(i, 'IncludeVersionInfo', false);
-    NewProfile.SupportXPThemes    := finifile.ReadProfile(i, 'SupportXPThemes', false);
-
+    NewProfile:=TProjProfile.Create;
+    NewProfile.ProfileName:= finifile.ReadProfile(i,'ProfileName','');
+    NewProfile.typ:= finifile.ReadProfile(i,'Type',0);
+    NewProfile.CompilerType := finifile.ReadProfile(i, 'CompilerType', ID_COMPILER_MINGW);
+    NewProfile.CompilerSet := finifile.ReadProfile(i, 'CompilerSet', 0);
+    NewProfile.Compiler:= finifile.ReadProfile(i,'Compiler','');
+    NewProfile.CppCompiler:= finifile.ReadProfile(i,'CppCompiler','');
+    NewProfile.Linker:= finifile.ReadProfile(i,'Linker','');
+    NewProfile.CompilerOptions := finifile.ReadProfile(i, COMPILER_INI_LABEL, '');
+    NewProfile.PreprocDefines := finifile.ReadProfile(i, 'PreprocDefines', '');
+    NewProfile.ObjFiles.DelimitedText:=finifile.ReadProfile(i,'ObjFiles','');
+    NewProfile.Includes.DelimitedText:=finifile.ReadProfile(i,'Includes','');
+    NewProfile.Libs.DelimitedText:=finifile.ReadProfile(i,'Libs','');
+    NewProfile.ResourceIncludes.DelimitedText:=finifile.ReadProfile(i,'ResourceIncludes','');
+    NewProfile.MakeIncludes.DelimitedText:=finifile.ReadProfile(i,'MakeIncludes','');
+    NewProfile.Icon:= finifile.ReadProfile(i,'Icon','');
+    NewProfile.ExeOutput := finifile.ReadProfile(i,'ExeOutput','');
+    NewProfile.ObjectOutput := finifile.ReadProfile(i,'ObjectOutput','');
+    NewProfile.OverrideOutput := finifile.ReadProfile(i,'OverrideOutput',false);
+    NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverrideOutputName','');
+    NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
+    NewProfile.IncludeVersionInfo := finifile.ReadProfile(i,'IncludeVersionInfo',false);
+    NewProfile.SupportXPThemes:= finifile.ReadProfile(i,'SupportXPThemes',false);
     if (NewProfile.CompilerSet > devCompilerSet.Sets.Count - 1) or (NewProfile.CompilerSet = -1) then
     begin
-      case NewProfile.compilerType of
-        ID_COMPILER_MINGW:   CompilerType := 'MingW';
-        ID_COMPILER_VC2005:  CompilerType := 'Visual C++ 2005';
-        ID_COMPILER_VC2003:  CompilerType := 'Visual C++ 2002/2003';
-        ID_COMPILER_VC6:     CompilerType := 'Visual C++ 6';
-        ID_COMPILER_DMARS:   CompilerType := 'MingW';
-        ID_COMPILER_BORLAND: CompilerType := 'MingW';
-        ID_COMPILER_WATCOM:  CompilerType := 'MingW';
-      end;
+       case NewProfile.compilerType of
+         ID_COMPILER_MINGW:   CompilerType := 'MingW';
+         ID_COMPILER_VC2005:  CompilerType := 'Visual C++ 2005';
+         ID_COMPILER_VC2003:  CompilerType := 'Visual C++ 2002/2003';
+         ID_COMPILER_VC6:     CompilerType := 'Visual C++ 6';
+         ID_COMPILER_DMARS:   CompilerType := 'MingW';
+         ID_COMPILER_BORLAND: CompilerType := 'MingW';
+         ID_COMPILER_WATCOM:  CompilerType := 'MingW';
+       end;
+ 
+       case AutoSelectMissingCompiler of
+         mrYesToAll:
+           NewProfile.CompilerSet := GetClosestMatchingCompilerSet(NewProfile.compilerType);
+         mrNoToAll:;
+         else
+         begin
+           AutoSelectMissingCompiler := MessageDlg('The compiler specified in the profile ' + NewProfile.ProfileName +
+                                                   ' does not exist on the local computer.'#10#13#10#13 +
+                                                   'Do you want wxDev-C++ to attempt to find a suitable compiler to ' +
+                                                   'use for this profile?', mtConfirmation, [mbYes, mbNo, mbNoToAll, mbYesToAll],
+                                                   Application.Handle);
+           case AutoSelectMissingCompiler of
+             mrYes, mrYesToAll:
+               NewProfile.CompilerSet := GetClosestMatchingCompilerSet(NewProfile.compilerType);
+           end;
+         end;
+       end;
 
-      case AutoSelectMissingCompiler of
-        mrYesToAll:
-          NewProfile.CompilerSet := GetClosestMatchingCompilerSet(NewProfile.compilerType);
-        mrNoToAll:;
-        else
-        begin
-          AutoSelectMissingCompiler := MessageDlg('The compiler specified in the profile ' + NewProfile.ProfileName +
-                                                  ' does not exist on the local computer.'#10#13#10#13 +
-                                                  'Do you want wxDev-C++ to attempt to find a suitable compiler to ' +
-                                                  'use for this profile?', mtConfirmation, [mbYes, mbNo, mbNoToAll, mbYesToAll],
-                                                  Application.Handle);
-          case AutoSelectMissingCompiler of
-            mrYes, mrYesToAll:
-              NewProfile.CompilerSet := GetClosestMatchingCompilerSet(NewProfile.compilerType);
-          end;
-        end;
-      end;
-
-      Inc(ResetCompilers);
+       Inc(ResetCompilers);
     end;
-
     fProfiles.Add(NewProfile);
   end;
 end;
@@ -1714,6 +1751,10 @@ begin
 end;
 
 function TProject.OpenUnit(index: integer): TEditor;
+{$IFDEF PLUGIN_BUILD}
+var
+ i: Integer;
+{$ENDIF}
 begin
   result := nil;
   if (index < 0) or (index > pred(fUnits.Count)) then exit;
@@ -2073,8 +2114,8 @@ begin
     dlg.Free;
   end;
   
-  //Update the compiler set to be up-to-date with the latest settings (be it cancelled or otherwise)
-  devCompiler.CompilerSet := CurrentProfile.CompilerSet;
+   //Update the compiler set to be up-to-date with the latest settings (be it cancelled or otherwise)
+  devCompiler.CompilerSet:=CurrentProfile.CompilerSet;
   devCompilerSet.LoadSet(CurrentProfile.CompilerSet);
   devCompilerSet.AssignToCompiler;
   devCompiler.OptionStr:=CurrentProfile.CompilerOptions;
@@ -2087,6 +2128,10 @@ var
   idx: integer;
   s, s2: string;
  OriginalIcon, DestIcon: String;
+{$IFDEF PLUGIN_BUILD}
+  i: Integer;
+  b: Boolean;
+{$ENDIF} 
 begin
   result := TRUE;
   Options:=TProjectProfileList.Create;
@@ -2156,12 +2201,15 @@ begin
             begin
               Editor.Text.Lines.LoadFromFile(s2);
               Editor.Modified := TRUE;
-              {$IFDEF WX_BUILD}
-              if Editor.isForm() then
+{$IFDEF PLUGIN_BUILD}
+              b := false;
+              for i := 0 to MainForm.pluginsCount - 1 do
+                b := b or MainForm.plugins[i].IsForm(Editor.FileName);
+              if b then
               begin
-                Editor.ReloadFormFromFile(s2);
+                MainForm.plugins[i].ReloadFromFile(Editor.FileName, s2);
               end;
-              {$ENDIF}
+{$ENDIF}
             end
             else 
               if s <> '' then

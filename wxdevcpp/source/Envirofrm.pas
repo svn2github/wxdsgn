@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: Envirofrm.pas 768 2006-12-24 05:44:42Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software

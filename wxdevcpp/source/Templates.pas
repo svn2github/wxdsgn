@@ -90,6 +90,7 @@ type
 implementation
 
 uses
+  main, 
 {$IFDEF WIN32}
   Windows, Forms, SysUtils, version, utils, Dialogs, MultiLangSupport;
 {$ENDIF}
@@ -147,6 +148,7 @@ var
     devCompilerSet.LoadSet(CurrentSet);
   end;
 begin
+
   if Assigned(fTemplate) then
     fTemplate.Free;
   if FileExists(FileName) then
@@ -222,7 +224,7 @@ begin
       fOptions[0].Includes.DelimitedText := ReadString(cProject, 'Includes', '');
       fOptions[0].Libs.DelimitedText     := ReadString(cProject, 'Libs', '');
 
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
       // Tony Reina 11 June 2005
       // This is needed to grab the MakeIncludes from the template file of a new project
       fOptions[0].MakeIncludes.DelimitedText := ReadString(cProject, 'MakeIncludes', '');

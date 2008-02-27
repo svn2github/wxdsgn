@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 356
-  Top = 123
+  Left = 286
+  Top = 265
   Width = 636
   Height = 442
   Color = clBtnFace
@@ -34,13 +34,13 @@ object MainForm: TMainForm
     Top = 239
     Width = 628
     Height = 130
-    ActivePage = TodoSheet
+    ActivePage = CompSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 5
+    TabIndex = 0
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -49,7 +49,7 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 610
+        Width = 616
         Height = 98
         Align = alClient
         BevelOuter = bvRaised
@@ -88,8 +88,8 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 610
-        Height = 98
+        Width = 616
+        Height = 97
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -108,7 +108,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 98
+        Height = 97
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -162,19 +162,19 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 385
-        Height = 98
+        Width = 391
+        Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           391
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 377
-          Height = 80
+          Width = 383
+          Height = 81
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -191,7 +191,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 616
-        Height = 98
+        Height = 97
         ActivePage = tabDebugOutput
         Align = alClient
         TabIndex = 4
@@ -202,8 +202,8 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 602
-            Height = 70
+            Width = 608
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -237,8 +237,8 @@ object MainForm: TMainForm
           object lvLocals: TListView
             Left = 0
             Top = 0
-            Width = 602
-            Height = 70
+            Width = 608
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -265,8 +265,8 @@ object MainForm: TMainForm
           object lvThreads: TListView
             Left = 0
             Top = 0
-            Width = 602
-            Height = 70
+            Width = 608
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -293,7 +293,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 608
-            Height = 70
+            Height = 69
             Align = alClient
             Images = dmMain.MenuImages_NewLook
             Indent = 19
@@ -368,8 +368,8 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 610
-        Height = 98
+        Width = 616
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -413,7 +413,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 620
-        Height = 61
+        Height = 60
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -448,7 +448,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 61
+        Top = 60
         Width = 620
         Height = 41
         Align = alBottom
@@ -498,7 +498,7 @@ object MainForm: TMainForm
       end
     end
   end
-  object ControlBar1: TControlBar
+  object ControlBar1: TControlBar_WIN32_EVENTS
     Left = 0
     Top = 16
     Width = 628
@@ -510,6 +510,7 @@ object MainForm: TMainForm
     RowSize = 28
     TabOrder = 1
     OnContextPopup = ControlBar1ContextPopup
+    OnWM_COMMAND = ControlBar1WM_COMMAND
     object tbMain: TToolBar
       Left = 11
       Top = 2
@@ -1108,15 +1109,6 @@ object MainForm: TMainForm
           Tag = 2
           Action = actNewSource
         end
-        object NewWxDialogItem: TMenuItem
-          Action = actNewwxDialog
-        end
-        object NewWxFrameItem: TMenuItem
-          Action = actNewWxFrame
-        end
-        object N73: TMenuItem
-          Caption = '-'
-        end
         object NewprojectItem: TMenuItem
           Action = actNewProject
         end
@@ -1414,13 +1406,6 @@ object MainForm: TMainForm
           OnClick = ToolbarClick
         end
       end
-      object N63: TMenuItem
-        Caption = '-'
-      end
-      object ShowProjectInspItem: TMenuItem
-        Caption = 'Show &Project Inspector'
-        OnClick = ShowProjectInspItemClick
-      end
       object N57: TMenuItem
         Caption = '-'
       end
@@ -1433,6 +1418,13 @@ object MainForm: TMainForm
         Caption = 'Go to Class &Browser'
         ShortCut = 16498
         OnClick = GoToClassBrowserItemClick
+      end
+      object N63: TMenuItem
+        Caption = '-'
+      end
+      object ShowProjectInspItem: TMenuItem
+        Caption = 'Show &Project Inspector'
+        OnClick = ShowProjectInspItemClick
       end
     end
     object ProjectMenu: TMenuItem
@@ -3008,60 +3000,6 @@ object MainForm: TMainForm
       ImageIndex = 37
       OnExecute = actModifyWatchExecute
       OnUpdate = actModifyWatchUpdate
-    end
-    object actNewwxDialog: TAction
-      Category = 'File'
-      Caption = 'New wxDialog'
-      ImageIndex = 1
-      OnExecute = actNewwxDialogExecute
-    end
-    object actDesignerCopy: TAction
-      Category = 'Designer'
-      Caption = 'Copy'
-      ShortCut = 49219
-      OnExecute = actDesignerCopyExecute
-    end
-    object actDesignerCut: TAction
-      Category = 'Designer'
-      Caption = 'Cut'
-      ShortCut = 49240
-      OnExecute = actDesignerCutExecute
-    end
-    object actDesignerPaste: TAction
-      Category = 'Designer'
-      Caption = 'Paste'
-      ShortCut = 49238
-      OnExecute = actDesignerPasteExecute
-    end
-    object actDesignerDelete: TAction
-      Category = 'Designer'
-      Caption = 'Delete'
-      ShortCut = 16430
-      OnExecute = actDesignerDeleteExecute
-    end
-    object actNewWxFrame: TAction
-      Category = 'File'
-      Caption = 'New wxFrame'
-      ImageIndex = 1
-      OnExecute = actNewWxFrameExecute
-    end
-    object actWxPropertyInspectorCut: TAction
-      Category = 'Designer'
-      Caption = 'Cut'
-      ShortCut = 16472
-      OnExecute = actWxPropertyInspectorCutExecute
-    end
-    object actWxPropertyInspectorCopy: TAction
-      Category = 'Designer'
-      Caption = 'Copy'
-      ShortCut = 16451
-      OnExecute = actWxPropertyInspectorCopyExecute
-    end
-    object actWxPropertyInspectorPaste: TAction
-      Category = 'Designer'
-      Caption = 'Paste'
-      ShortCut = 16470
-      OnExecute = actWxPropertyInspectorPasteExecute
     end
     object actRestartDebug: TAction
       Category = 'Debug'

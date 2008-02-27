@@ -722,7 +722,6 @@ var
  WidthParam: Integer;
  I: Integer;
  CurParam: Integer;
- CurDepth: Integer;
  StrToken,S: string;
 {$IFDEF WIN32}
  CurChar: Char;
@@ -782,9 +781,8 @@ begin
   if BracePos > 0 then
   begin
     CurParam := 0;
-    CurDepth := 0;
     WidthParam := 4; // left start position in pixels
-
+      
     // clear the backbuffer
     with FBmp.Canvas do
     begin    
@@ -821,11 +819,7 @@ begin
       // if the current char is one of our delimiters
       // we must increase the CurParam variable which indicates
       // at which comma index our cursor is.
-      if (AnsiPos(CurChar, '<(') > 0) then
-        Inc(CurDepth)
-      else if (AnsiPos(CurChar, '>)') > 0) then
-        Dec(CurDepth)
-      else if (AnsiPos(CurChar, FDelimiters) > 0) and (CurDepth = 1) then
+      if AnsiPos(CurChar, FDelimiters) > 0 then
         Inc(CurParam);
 
       if (CurParam = FCurParamIndex) and (AnsiPos(CurChar, FDelimiters)=0) and (I > BracePos) and (CurChar <> ')') and (CurChar <> ' ') then

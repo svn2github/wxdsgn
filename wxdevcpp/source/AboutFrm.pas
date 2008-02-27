@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: AboutFrm.pas 763 2006-12-23 02:12:11Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software

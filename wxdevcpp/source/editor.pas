@@ -1,5 +1,5 @@
-{
-    $Id$
+{        
+    $Id: editor.pas 802 2007-01-14 07:34:06Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
@@ -30,12 +30,7 @@ uses
   SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter,
 
   {** Modified by Peter **}
-  DevCodeToolTip, SynAutoIndent,utils
-
-  {$IFDEF WX_BUILD}
-    ,Designerfrm, CompFileIo, wxutils,DbugIntf
-  {$ENDIF}
-    ;
+  DevCodeToolTip, SynAutoIndent,utils, iplugin;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, Graphics, QControls, QForms, QDialogs, CodeCompletion, CppParser,
@@ -70,11 +65,6 @@ type
     fRes: boolean;
     fModified: boolean;
     fText: TSynEdit;
-{$IFDEF WX_BUILD}
-    fDesigner: TfrmNewForm;
-    fScrollDesign: TScrollBox;
-    fEditorType: TEditorType;
-{$ENDIF}
        
     fTabSheet: TTabSheet;
     fErrorLine: integer;
@@ -141,7 +131,7 @@ type
   public
     procedure Init(In_Project: boolean; Caption_, File_name: string; DoOpen: boolean; const IsRes: boolean = FALSE);
     destructor Destroy; override;
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
     procedure Close; // New fnc for wx
 {$ENDIF}
     // RNC set the breakpoints for this file when it is opened
@@ -164,7 +154,7 @@ type
     procedure SearchKeyNavigation(MoveForward:Boolean = true);
     procedure Exportto(const isHTML: boolean);
     procedure InsertString(const Value: string; const move: boolean);
-    {$IFDEF WX_BUILD}
+    {$IFDEF PLUGIN_BUILD}
     procedure SetString(const Value: string); // new fnc for wx
     {$ENDIF}
     function GetWordAtCursor: string;
@@ -194,40 +184,13 @@ type
     property TabSheet: TTabSheet read fTabSheet write fTabSheet;
 
     property CodeToolTip: TDevCodeToolTip read FCodeToolTip; // added on 23rd may 2004 by peter_
-{$IFDEF WX_BUILD}
-  private
-    fDesignerClassName, fDesignerTitle: string;
-    fDesignerStyle: TWxDlgStyleSet;
-    fDesignerDefaultData: Boolean;
-  public
-    procedure ActivateDesigner;
-    procedure UpdateDesignerData;
-    procedure UpdateXRC;
-    function GetDesigner: TfrmNewForm;
-    procedure InitDesignerData(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet);
-    function GetDesignerHPPFileName: string;
-    function GetDesignerCPPFileName: string;
-
-    function GetDesignerHPPText: TSynEdit;
-    function GetDesignerCPPText: TSynEdit;
-
-    function IsDesignerCPPOpened: Boolean;
-    function IsDesignerHPPOpened: Boolean;
-
-    function GetDesignerHPPEditor: TEditor;
-    function GetDesignerCPPEditor: TEditor;
-    procedure ReloadForm;
-    procedure ReloadFormFromFile(strFilename:String);
-    function isForm: Boolean;    
-{$ENDIF}
-
-    
+   
   end;
 
 implementation
 
 uses
-  MigrateFrm, Main, project, MultiLangSupport, devcfg, Search_Center, datamod,
+  Main, project, MultiLangSupport, devcfg, Search_Center, datamod,
   GotoLineFrm, Macros, debugger
 {$IFDEF LINUX}
   ,Xlib, utils
@@ -265,6 +228,11 @@ var
   s: string;
   pt: TPoint;
   allowChange: Boolean;
+{$IFDEF PLUGIN_BUILD}
+  i: Integer;
+  pluginCatched: Boolean;
+  pluginTextHighlighterType: String;
+{$ENDIF}
 begin
   fModified := false;
   fErrorLine := -1;
@@ -279,13 +247,6 @@ begin
   else
     fFileName := File_name;
 
-{$IFDEF WX_BUILD}
-  if iswxForm(fFileName) then
-    fEditorType := etForm
-  else
-    fEditorType := etSource;
-{$ENDIF}
-
   fTabSheet := TTabSheet.Create(MainForm.PageControl);
   fTabSheet.Caption := Caption_;
   fTabSheet.PageControl := MainForm.PageControl;
@@ -295,37 +256,18 @@ begin
 
   fText := TSynEdit.Create(fTabSheet);
   fText.Parent := fTabSheet;
-
-{$IFDEF WX_BUILD}
-  if fEditorType = etForm then
+{$IFDEF PLUGIN_BUILD}
+  pluginCatched := false;
+  for i := 0 to MainForm.pluginsCount - 1 do
   begin
-    //Dont allow anyone to edit the text content
-    fText.ReadOnly:=true;
-    fScrollDesign := TScrollBox.Create(fTabSheet);
-    fScrollDesign.Parent := fTabSheet;
-    fScrollDesign.Align := alClient;
-    fScrollDesign.Visible := True;
-    fScrollDesign.Color := clWhite;
-
-    fDesigner := TfrmNewForm.Create(fScrollDesign);
-    fDesigner.synEdit := fText;
-    fDesigner.Visible := False;
-    SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or
-      (GetWindowLong(fDesigner.Handle, GWL_STYLE)));
-    Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
-    ShowWindow(fDesigner.Handle, Sw_ShowNormal);
-
-    fScrollDesign.ScrollInView(fDesigner);
-    fScrollDesign.HorzScrollBar.Visible:=true;
-    fScrollDesign.VertScrollBar.Visible:=true;
-    fScrollDesign.AutoScroll:=true;
-    fScrollDesign.VertScrollBar.Position := fScrollDesign.VertScrollBar.Range
-  end
-  else
-  begin
-    fDesigner := nil;
-    fText.Align := alClient;
+    if MainForm.plugins[i].isForm(ExtractFileName(File_name)) then
+    begin
+      MainForm.plugins[i].InitEditor(ExtractFileName(File_name));
+      pluginCatched := true;
+    end;
   end;
+  if not pluginCatched then
+    fText.Align := alClient;
 {$ELSE}
   fText.Align := alClient;
 {$ENDIF}
@@ -347,45 +289,12 @@ begin
         fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
       end;
 
-{$IFDEF WX_BUILD}
-      if fEditorType = etForm then
-        ReloadForm;
-{$ENDIF}
     except
       raise;
     end
   else
     fNew := True;
 
-{$IFDEF WX_BUILD}
-  if fEditorType = etForm then
-  begin
-    fText.Visible := false;
-
-    fDesigner.Visible := True;
-    fDesigner.Left := 8;
-    fDesigner.Top := 8;
-
-    if fDesignerDefaultData then
-    begin
-      if Trim(fDesignerClassName) <> '' then
-        fDesigner.Wx_Name := Trim(fDesignerClassName);
-
-      if Trim(fDesigner.Wx_Name) <> '' then
-        fDesigner.Wx_IDName := UpperCase('ID_' + fDesigner.Wx_Name);
-
-      if fDesigner.Wx_IDValue = 0 then
-        fDesigner.Wx_IDValue := 1000;
-
-      if fDesignerStyle <> [] then
-        fDesigner.Wx_DialogStyle := fDesignerStyle;
-
-      if Trim(fDesignerTitle) <> '' then
-        fDesigner.Caption := Self.fDesignerTitle;
-    end;
-  end
-  else
-{$ENDIF}
     fText.Visible := True;
 
   fDebugHintTimer := TTimer.Create(Application);
@@ -426,11 +335,27 @@ begin
   else
     fText.Highlighter := dmMain.cpp;
 
-{$IFDEF WX_BUILD}
-  if self.isForm then
+{$IFDEF PLUGIN_BUILD}
+  for i := 0 to MainForm.pluginsCount - 1 do
   begin
-    fText.Highlighter := dmMain.Res;
-    fDesigner.PopupMenu:=MainForm.DesignerPopup;
+    if MainForm.plugins[i].isForm(ExtractFileName(File_name)) then
+    begin
+      if not MainForm.plugins[i].EditorDisplaysText(ExtractFileName(File_name)) then
+      begin
+        fText.ReadOnly := true;
+        fText.Visible := false;
+      end;
+
+      pluginTextHighlighterType := MainForm.plugins[i].GetTextHighlighterType(ExtractFileName(File_name));
+      if pluginTextHighlighterType = 'NEW' then
+        fText.Highlighter := dmMain.GetHighlighter(fFileName)
+      else if pluginTextHighlighterType = 'RES' then
+        fText.Highlighter := dmMain.Res
+      else if pluginTextHighlighterType = 'XML' then
+        fText.Highlighter := dmMain.XML
+      else
+        fText.Highlighter := dmMain.cpp;
+    end;
   end;
 {$ENDIF}
 
@@ -440,7 +365,7 @@ begin
   fText.SelectedColor.Foreground := pt.Y;
 
   // select the new editor
-  MainForm.PageControl.OnChanging(MainForm.PageControl, allowChange);
+  MainForm.PageControl.OnChanging(MainForm.PageControl, allowChange);	
   fTabSheet.PageControl.ActivePage := fTabSheet;
   fTabSheet.TabVisible := TRUE;
 
@@ -495,11 +420,6 @@ var
   idx: integer;
   lastActPage: Integer;
 begin
-{$IFDEF WX_BUILD}
-  if isForm then
-    MainForm.SelectedComponent := nil;
-{$ENDIF}
-
   idx := MainForm.devFileMonitor.Files.IndexOf(fFileName);
   if idx <> -1 then begin
     // do not monitor this file for outside changes anymore
@@ -521,14 +441,6 @@ begin
 
   DestroyCompletion;
   FreeAndNil(fText);
-
-{$IFDEF WX_BUILD}
-  if Assigned(fDesigner) then
-  begin
-    FreeAndNil(fDesigner);
-    FreeAndNil(fScrollDesign);
-  end;
-{$ENDIF}
 
   //this activates the previous tab if the last one was
   //closed, instead of moving to the first one
@@ -556,6 +468,10 @@ end;
 procedure TEditor.Activate;
 var
   Allow: Boolean;
+{$IFDEF PLUGIN_BUILD}
+  i: Integer;
+  pluginCatched: Boolean;
+{$ENDIF}  
 begin
   if assigned(fTabSheet) then
   begin
@@ -566,10 +482,18 @@ begin
     fTabSheet.PageControl.Show;
     fTabSheet.PageControl.ActivePage := fTabSheet;
     if fText.Visible then
-      fText.SetFocus;
-
+      fText.SetFocus;  
+             
     //Call the post-change event handler
-    if MainForm.ClassBrowser1.Enabled {$IFDEF WX_BUILD} or isForm {$ENDIF} then
+{$IFDEF PLUGIN_BUILD}
+  pluginCatched := false;
+  for i := 0 to MainForm.pluginsCount - 1 do
+  begin
+    if MainForm.plugins[i].isForm(ExtractFileName(fFileName)) then
+      pluginCatched := true;
+  end;
+{$ENDIF}
+    if MainForm.ClassBrowser1.Enabled {$IFDEF PLUGIN_BUILD} or pluginCatched {$ENDIF} then
       MainForm.PageControl.OnChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent
   end;
 end;
@@ -653,6 +577,10 @@ begin
 end;
         
 procedure TEditor.Close;
+{$IFDEF PLUGIN_BUILD}
+  var
+    i: Integer;
+{$ENDIF}
 begin
   fText.OnStatusChange := nil;
   fText.OnSpecialLineColors := nil;
@@ -664,10 +592,12 @@ begin
   fText.OnPaintTransient := nil;
   fText.OnKeyPress := nil;
 
-{$IFDEF WX_BUILD}
-  //Disable all the form designer features since we no longer exist
-  if isForm then
-    MainForm.DisableDesignerControls;
+{$IFDEF PLUGIN_BUILD}
+  for i := 0 to MainForm.pluginsCount - 1 do
+  begin
+    if MainForm.plugins[i].IsForm(FileName) then
+      MainForm.plugins[i].TerminateEditor(FileName);
+  end;
 {$ENDIF}
   try
     Free;
@@ -1259,32 +1189,47 @@ end;
 
 procedure TEditor.InsertDefaultText;
 var
-  tmp: TStrings;
+ tmp: TStrings;
+{$IFDEF PLUGIN_BUILD}
+ i: Integer;
+ isForm: Boolean;
+ hasDesigner: Boolean;
+ tempText: String;
+{$ENDIF}
 begin
-{$IFDEF WX_BUILD}
-  if fEditorType = etSource then
+{$IFDEF PLUGIN_BUILD}
+  isForm := false;
+  for i := 0 to MainForm.pluginsCount -1 do
+    isForm := isForm or MainForm.plugins[i].IsForm(FileName);
+  if not isForm then
   begin
 {$ENDIF}
-    if FileExists(devDirs.Config + DEV_DEFAULTCODE_FILE) then
-    begin
-      tmp := TStringList.Create;
-      try
-        tmp.LoadFromFile(devDirs.Config + DEV_DEFAULTCODE_FILE);
-        InsertString(ParseMacros(tmp.Text), FALSE);
-      finally
-        tmp.Free;
-      end;
-    end;
-  {$IFDEF WX_BUILD}
+  if FileExists(devDirs.Config + DEV_DEFAULTCODE_FILE) then
+   begin
+     tmp:= TStringList.Create;
+     try
+      tmp.LoadFromFile(devDirs.Config + DEV_DEFAULTCODE_FILE);
+      InsertString(ParseMacros(tmp.Text), FALSE);
+     finally
+      tmp.Free;
+     end;
+   end;
+  {$IFDEF PLUGIN_BUILD}       
   end
   else
   begin
-    if fDesigner <> nil then
+    hasDesigner := false;
+    for i := 0 to MainForm.pluginsCount -1 do
+      hasDesigner := hasDesigner or MainForm.plugins[i].HasDesigner(FileName);
+    if hasDesigner then
     begin
       //I dont know how to make the editor to modified stated;
       //so I'm using the InsertString function
       InsertString(' ', FALSE);
-      SetString(CompFileIo.ComponentToString(fDesigner));
+      tempText := '';
+      for i := 0 to MainForm.pluginsCount -1 do
+          tempText := tempText + MainForm.plugins[i].GetDefaultText(FileName);
+      SetString(tempText);
     end;
   end;
   {$ENDIF}
@@ -2310,310 +2255,6 @@ begin
 fText.InvalidateGutter;
 end;
 
-{$IFDEF WX_BUILD}
-function TEditor.isForm: Boolean;
-begin
-  if fEditorType = etForm then
-    Result := True
-  else
-    Result := false;
-end;
-
-procedure TEditor.ActivateDesigner;
-begin
-  if isForm then
-  begin
-    if Assigned(fDesigner) then
-    begin
-      MainForm.ELDesigner1.Active := False;
-      try
-        MainForm.ELDesigner1.DesignControl := fDesigner;
-        MainForm.ELDesigner1.Active := True;
-      except
-      end;
-      MainForm.BuildComponentList(fDesigner);
-    end;
-  end;
-end;
-
-procedure TEditor.UpdateDesignerData;
-var
-  e: TEditor;
-  STartTimeX: longword;
-
-  function GetElapsedTimeStr(StartTime : LongWord):String;
-  begin
-    Result := Format('%.3f seconds', [(GetTickCount - StartTime) / 1000]);
-  end;
-begin
-  if isForm then
-  begin
-    StartTimeX := GetTickCount;
-    Modified:=true;
-    InsertDefaultText;
-
-    if FileExists(ChangeFileExt(FileName, CPP_EXT)) then
-    begin
-      MainForm.OpenFile(ChangeFileExt(FileName, CPP_EXT), true);
-
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, CPP_EXT));
-      if Assigned(e) then
-      begin
-        e.Text.BeginUpdate;
-        try
-          GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
-        except
-        end;
-        e.Text.EndUpdate;
-        e.Modified:=true;
-        e.InsertString('', false);
-        MainForm.StatusBar.Panels[3].Text := ('C++ Source Generation: ' + GetElapsedTimeStr(StartTimeX));
-
-      end;
-
-    end;
-
-    if FileExists(ChangeFileExt(FileName, H_EXT)) then
-    begin
-      StartTimeX := GetTickCount;
-      MainForm.OpenFile(ChangeFileExt(FileName, H_EXT), true);
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
-      if Assigned(e) then
-      begin
-        e.Text.BeginUpdate;
-        try
-          GenerateHpp(fDesigner, fDesigner.Wx_Name, e.Text);
-        except
-        end;
-        e.Text.EndUpdate;
-        e.Modified:=true;
-        e.InsertString('', false);
-        MainForm.StatusBar.Panels[3].Text := MainForm.StatusBar.Panels[3].Text + (' / Header Declaration Generation = ' + GetElapsedTimeStr(StartTimeX));
-      end;
-    end;
-  end;
-  if MainForm.ELDesigner1.GenerateXRC then
-     UpdateXRC;
-end;
-
-function TEditor.GetDesigner: TfrmNewForm;
-begin
-  if isForm then
-    Result := fDesigner
-  else
-    Result := nil;
-end;
-
-procedure TEditor.InitDesignerData(strFName, strCName, strFTitle: string;
-  dlgSStyle: TWxDlgStyleSet);
-begin
-  fDesignerClassName := strCName;
-  fDesignerTitle := strFTitle;
-  fDesignerStyle := dlgSStyle;
-  fDesignerDefaultData := True;
-end;
-
-function TEditor.GetDesignerHPPFileName: string;
-begin
-  if not isForm then
-    Exit;
-
-  if FileExists(ChangeFileExt(FileName, H_EXT)) then
-    Result := ChangeFileExt(FileName, H_EXT);
-end;
-
-function TEditor.GetDesignerCPPFileName: string;
-begin
-  if not isForm then
-    Exit;
-
-  if FileExists(ChangeFileExt(FileName, CPP_EXT)) then
-    Result := ChangeFileExt(FileName, CPP_EXT);
-end;
-
-function TEditor.GetDesignerHPPText: TSynEdit;
-var
-  e: TEditor;
-begin
-  Result := nil;
-  if FileExists(ChangeFileExt(FileName, H_EXT)) then
-  begin
-    e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
-
-    if not Assigned(e) then
-    begin
-      MainForm.OpenFile(ChangeFileExt(FileName, H_EXT), true);
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
-    end;
-
-    if Assigned(e) then
-    begin
-      Result := e.Text;
-    end;
-  end;
-end;
-
-function TEditor.GetDesignerCPPText: TSynEdit;
-var
-  e: TEditor;
-begin
-  Result := nil;
-  if FileExists(ChangeFileExt(FileName, CPP_EXT)) then
-  begin
-    e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, CPP_EXT));
-
-    if not Assigned(e) then
-    begin
-      MainForm.OpenFile(ChangeFileExt(FileName, CPP_EXT), true);
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, CPP_EXT));
-    end;
-
-    if Assigned(e) then
-    begin
-      Result := e.Text;
-    end;
-  end;
-end;
-
-function TEditor.IsDesignerHPPOpened: Boolean;
-begin
-    Result := MainForm.isFileOpenedinEditor(ChangeFileExt(FileName, H_EXT));
-end;
-
-function TEditor.IsDesignerCPPOpened: Boolean;
-begin
-    Result := MainForm.isFileOpenedinEditor(ChangeFileExt(FileName, CPP_EXT));
-end;
-
-function TEditor.GetDesignerHPPEditor: TEditor;
-var
-  e: TEditor;
-begin
-  Result := nil;
-  if FileExists(ChangeFileExt(FileName, H_EXT)) then
-  begin
-    e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
-
-    if not Assigned(e) then
-    begin
-      MainForm.OpenFile(ChangeFileExt(FileName, H_EXT), true);
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, H_EXT));
-    end;
-    if Assigned(e) then
-    begin
-      Result := e;
-    end;
-  end;
-end;
-
-function TEditor.GetDesignerCPPEditor: TEditor;
-var
-  e: TEditor;
-begin
-  Result := nil;
-  if FileExists(ChangeFileExt(FileName, CPP_EXT)) then
-  begin
-    e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, CPP_EXT));
-
-    if not Assigned(e) then
-    begin
-      MainForm.OpenFile(ChangeFileExt(FileName, CPP_EXT), true);
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, CPP_EXT));
-    end;
-
-    if Assigned(e) then
-    begin
-      Result := e;
-    end;
-  end;
-end;
-
-procedure TEditor.ReloadForm;
-begin
-    ReloadFormFromFile(self.FileName);
-end;
-
-procedure TEditor.ReloadFormFromFile(strFilename:String);
-var
-  I:Integer;
-begin
-  if not self.isForm then
-    exit;
-
-  try
-    //Delete all the Components
-    for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
-    begin
-      self.fDesigner.Components[i].Destroy;
-    end;    // for
-
-    ReadComponentFromFile(self.fDesigner, strFilename);
-  except
-    on e: Exception do
-      with TMigrateFrm.Create(Application.MainForm) do
-      begin
-        Source.Text := strFileName;
-        if ShowModal = mrOK then
-          ReloadFormFromFile(strFileName);
-        
-        Destroy;
-      end;
-  end;
-end;
-
-procedure TEditor.UpdateXRC;
-var
-  e: TEditor;
-
-begin
-  if isForm then
-  begin
-
-    if (MainForm.ELDesigner1.GenerateXRC) then
-    if FileExists(ChangeFileExt(FileName, XRC_EXT)) then
-    begin
-      MainForm.OpenFile(ChangeFileExt(FileName, XRC_EXT), true);
-
-      e := MainForm.GetEditorFromFileName(ChangeFileExt(FileName, XRC_EXT));
-
-      if Assigned(e) then
-      begin
-        e.Text.BeginUpdate;
-        try
-          GenerateXRC(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
-        except
-        end;
-        e.Text.EndUpdate;
-        e.Modified:=true;
-        e.InsertString('', false);
-      end;
-
-    {  if Assigned(e) then
-      begin
-        try
-           e.Text.ClearAll;
-
-           e.Text.Lines.Append('<?xml version="1.0" encoding="ISO-8859-1"?>');
-           e.Text.Lines.Append('<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.3.0.1">');
-
-
-          GenerateCpp(fDesigner, fDesigner.Wx_Name, e.Text,e.FileName);
-          e.Modified:=true;
-
-           e.Text.Lines.Append('</object>');
-           e.Text.Lines.Append('</object>');
-           e.Text.Lines.Append('</resource>');
-
-        except
-        end;
-      end;
-      }
-    end;
-
-  end;
-end;
-
-{$ENDIF}
 
 end.
 

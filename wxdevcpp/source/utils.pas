@@ -23,6 +23,9 @@ interface
 uses
 {$IFDEF WIN32}
  Windows, Classes, Sysutils, Forms, ShellAPI, Dialogs, SynEditHighlighter,
+{$IFDEF PLUGIN_BUILD}
+  iplugin_bpl,   //  <-- EAB
+{$ENDIF}
  Menus, Registry, Messages {for WM_USER};
 {$ENDIF}
 {$IFDEF LINUX}
@@ -58,9 +61,6 @@ type
     utresHead, // resouce header (.rh)
     utresComp, // resource compiled (.res)
     utresSrc, // resource source (.rc)
-    {$IFDEF WX_BUILD}
-    utwxform, // wxForm (.wxForm)
-    {$ENDIF}    
     utxPrj,
     utxOther); // any others
 
@@ -70,14 +70,9 @@ type
  TLineOutputFunc = procedure(Line: String) of Object;
   TCheckAbortFunc = procedure(var AbortThread: boolean) of object;
   
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
 function GetClosestMatchingCompilerSet(CompilerType:Integer):Integer;
-function ExtractComponentPropertyName(const S: string): string;
-function ExtractComponentPropertyCaption(const S: string): string;
-function iswxForm(FileName: string): Boolean;
 function isRCExt(FileName: string): boolean;
-function isXRCExt(FileName: string): boolean;
-function SaveStringToFile(strContent, strFileName: string): Boolean;
 
 function DuplicateAppInstWdw: HWND;
 function SwitchToPrevInst(Wnd: HWND): Boolean;
@@ -161,7 +156,7 @@ function IsNumeric(s : string) : boolean;
 
 implementation
 
-uses
+uses 
 {$IFDEF WIN32}
   ShlObj, ActiveX, devcfg, version, Graphics, StrUtils, MultiLangSupport, main, editor;
 {$ENDIF}
@@ -253,37 +248,6 @@ begin
   Result := 0;
 end;
 
-function ExtractComponentPropertyName(const S: string): string;
-var
-  SepaPos: integer;
-begin
-  Result := '';
-  SepaPos := Pos(':', S);
-  if SepaPos > 1 then
-    Result := Copy(S, 1, SepaPos - 1);
-end;
-
-function ExtractComponentPropertyCaption(const S: string): string;
-var
-  SepaPos: integer;
-begin
-  Result := '';
-  if S = '' then
-    Exit;
-  SepaPos := Pos(':', S);
-  if SepaPos > 1 then
-    Result := Copy(S, SepaPos + 1, Length(S));
-end;
-
-{$IFDEF WX_BUILD}
-function iswxForm(FileName: string): boolean;
-begin
-  if LowerCase(ExtractFileExt(FileName)) = LowerCase(WXFORM_EXT) then
-    Result := true
-  else
-    result := False;
-end;
-
 function isRCExt(FileName: string): boolean;
 begin
   if LowerCase(ExtractFileExt(FileName)) = LowerCase(RC_EXT) then
@@ -291,30 +255,6 @@ begin
   else
     result := False;
 end;
-
-function isXRCExt(FileName: string): boolean;
-begin
-  if LowerCase(ExtractFileExt(FileName)) = LowerCase(XRC_EXT) then
-    Result := true
-  else
-    result := False;
-end;
-
-function SaveStringToFile(strContent, strFileName: string): Boolean;
-var
-  strStringList: TStringList;
-begin
-  Result := true;
-  strStringList := TStringList.Create;
-  strStringList.Text := strContent;
-  try
-    strStringList.SaveToFile(strFileName);
-  except
-    Result := False;
-  end;
-  strStringList.Destroy;
-end;
-{$ENDIF}
 
 procedure FilesFromWildcard(Directory, Mask: String;
   var Files : TStringList; Subdirs, ShowDirs, Multitasking: Boolean);
@@ -662,15 +602,62 @@ begin
 end;
 
 function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean; overload;
+{$IFDEF PLUGIN_BUILD}
+var
+    b: Boolean;
+    filters: TStringList;
+    i, j: Integer;
+{$ENDIF}
 begin
   value:= FLT_BASE +FLT_ALLFILES;
   case FLTStyle of
-   ftOpen: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES{$IFDEF WX_BUILD},FLT_WXFORMS,FLT_XRC{$ENDIF}]);
-   ftHelp: result:= BuildFilter(value, [FLT_HELPS]);
-   ftPrj: result:= BuildFilter(value, [FLT_PROJECTS]);
-   ftSrc: result:= BuildFilter(value, [FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS{$IFDEF WX_BUILD},FLT_XRC{$ENDIF}]);
-   ftAll: result:= BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_RES, FLT_CS,
-     FLT_CPPS {$IFDEF WX_BUILD},FLT_WXFORMS,FLT_XRC{$ENDIF}]);   
+   ftOpen:
+   begin
+        b := BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES]);
+        {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.packagesCount - 1 do
+        begin
+            filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
+            for j := 0 to filters.Count - 1 do
+                b := b or BuildFilter(value, [filters.Strings[j]]);
+        end;
+        {$ENDIF}
+        result:= b;
+   end;
+   ftHelp:
+   begin
+        result:= BuildFilter(value, [FLT_HELPS]);
+   end;
+   ftPrj:
+   begin
+        result:= BuildFilter(value, [FLT_PROJECTS]);
+   end;
+   ftSrc:
+   begin
+        b := BuildFilter(value, [FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS]);
+        {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.packagesCount - 1 do
+        begin
+            filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetSrcFilters;
+            for j := 0 to filters.Count - 1 do
+                b := b or BuildFilter(value, [filters.Strings[j]]);
+        end;
+        {$ENDIF}
+        result:= b;
+   end;
+   ftAll:
+   begin
+        b := BuildFilter(value, [FLT_PROJECTS, FLT_HEADS, FLT_RES, FLT_CS, FLT_CPPS]);
+        {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.packagesCount - 1 do
+        begin
+            filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
+            for j := 0 to filters.Count - 1 do
+                b := b or BuildFilter(value, [filters.Strings[j]]);
+        end;
+        {$ENDIF}
+        result:= b;   
+   end;
   else
    result:= TRUE;
   end;
@@ -1236,7 +1223,7 @@ begin
     end;
 end;
 
-{$IfDef WX_BUILD}
+{$IfDef PLUGIN_BUILD}
 function ParseCommandLineArguments(cmdLine: string) : TStringList;
 var
   i: integer;
@@ -1324,7 +1311,7 @@ begin
   Result:=true;
 end;
 
-{$IfDef WX_BUILD}
+{$IfDef PLUGIN_BUILD}
 {This unit contains 4 functions designed to validate and correct C++ class names
 and windows file names. The functions are as follows
 
@@ -1415,7 +1402,6 @@ begin
             Insert('_', Result, 0);
 end;
 
-
 function ValidateFileName(FileName: String): Integer;
 var
     I: integer;
@@ -1442,3 +1428,4 @@ end;
 
 {$ENDIF}
 end.
+

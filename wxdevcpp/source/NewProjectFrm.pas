@@ -126,7 +126,7 @@ begin
     if LTemplates.Count > 0 then
     begin
       for i := 0 to pred(LTemplates.Count) do
-        AddTemplate(LTemplates[i]);
+        AddTemplate(LTemplates[i]);              // EAB TODO:* All templates are loaded here.. can we load each one only when actually get's used?
       UpdateView;
     end;
   finally

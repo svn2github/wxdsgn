@@ -113,6 +113,8 @@ object LangForm: TLangForm
         Top = 62
         Width = 235
         Height = 16
+        Min = 0
+        Max = 100
         TabOrder = 0
         Visible = False
       end

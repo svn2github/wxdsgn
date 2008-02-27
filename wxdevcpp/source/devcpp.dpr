@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: devcpp.dpr 853 2007-01-23 13:20:54Z lowjoel $
 
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
@@ -27,11 +27,9 @@ uses
   FastMM4,
   FastCode,
   LanguagesDEPFix,
-{$IFNDEF OLD_MADSHI}  
   madListHardware,
   madListProcesses,
   madListModules,
-{$ENDIF}
   madExcept,
   madLinkDisAsm,
   inifiles,
@@ -106,97 +104,11 @@ uses
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   FilesReloadFrm in 'FilesReloadFrm.pas' {FilesReloadFrm},
   PackmanExitCodesU in '..\..\packman\PackmanExitCodesU.pas',
-  ImageTheme in 'ImageTheme.pas' {$IFDEF WX_BUILD},
-  Wxcontrolpanel in 'components\Wxcontrolpanel.pas',
-  dmCreateNewProp in 'dmCreateNewProp.pas' {frmCreateFormProp},
-  DesignerOptions in 'DesignerOptions.pas' {DesignerForm},
-  Designerfrm in 'Designerfrm.pas' {frmNewForm},
-  MigrateFrm in 'MigrateFrm.pas' {MigrateFrm},
-  ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
-  CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
-  ComponentPalette in 'components\ComponentPalette.pas',
-  dmListview in 'propedit\dmListview.pas' {ListviewForm},
-  UStrings in 'propedit\UStrings.pas' {StringsForm},
-  UStatusbar in 'propedit\UStatusbar.pas' {StatusBarForm},
-  UPicEdit in 'propedit\UPicEdit.pas' {PictureEdit},
-  UColorEdit in 'propedit\UColorEdit.pas' {ColorEdit},
-  UMenuitem in 'propedit\UMenuitem.pas' {MenuItemForm},
-  UValidator in 'propedit\UValidator.pas' {wxValidator},
-  WxUtils in 'components\wxUtils.pas',
-  WxBitmapButton in 'components\WxBitmapButton.pas',
-  WXCheckBox in 'components\wxcheckbox.pas',
-  WxComboBox in 'components\wxcombobox.pas',
-  WxEdit in 'components\wxEdit.pas',
-  WxGauge in 'components\wxgauge.pas',
-  WxGrid in 'components\wxgrid.pas',
-  WxListBox in 'components\wxlistbox.pas',
-  Wxlistctrl in 'components\wxlistctrl.pas',
-  WxMemo in 'components\wxmemo.pas',
-  WxRadioButton in 'components\wxradiobutton.pas',
-  WxScrollBar in 'components\wxscrollbar.pas',
-  WxSlider in 'components\wxslider.pas',
-  WxSpinButton in 'components\wxspinbutton.pas',
-  WxStaticBitmap in 'components\wxstaticbitmap.pas',
-  WxStaticBox in 'components\wxstaticbox.pas',
-  WxStaticLine in 'components\wxstaticline.pas',
-  WxStaticText in 'components\wxstatictext.pas',
-  WxTreeCtrl in 'components\wxtreectrl.pas',
-  WxGridSizer in 'components\wxgridsizer.pas',
-  WxBoxSizer in 'components\wxboxsizer.pas',
-  WxFlexGridSizer in 'components\wxflexgridsizer.pas',
-  WxStaticBoxSizer in 'components\wxstaticboxsizer.pas',
-  WxSizerPanel in 'components\WXSizerPanel.pas',
-  WxButton in 'components\WxButton.pas',
-  WxToggleButton in 'components\WxToggleButton.pas',
-  WxNotebook in 'components\wxnotebook.pas',
-  WxStatusBar in 'components\wxstatusbar.pas',
-  WxToolBar in 'components\wxtoolbar.pas',
-  WxPanel in 'components\wxpanel.pas',
-  WxNoteBookPage in 'components\wxNoteBookPage.pas',
-  WxCheckListBox in 'components\wxchecklistbox.pas',
-  Wxspinctrl in 'components\wxspinctrl.pas',
-  WxChoice in 'components\wxchoice.pas',
-  WxHtmlWindow in 'components\wxHtmlWindow.pas',
-  WxScrolledWindow in 'components\WxScrolledWindow.pas',
-  WxSeparator in 'components\WxSeparator.pas',
-  WxToolButton in 'components\WxToolButton.pas',
-  WxNonVisibleBaseComponent in 'components\WxNonVisibleBaseComponent.pas',
-  WxMenuBar in 'components\WxMenuBar.pas',
-  WxPopupMenu in 'components\WxPopupMenu.pas',
-  WxCustomMenuItem in 'components\WxCustomMenuItem.pas',
-  WxOpenFileDialog in 'components\WxOpenFileDialog.pas',
-  WxSaveFileDialog in 'components\WxSaveFileDialog.pas',
-  WxFontDialog in 'components\wxFontDialog.pas',
-  WxColourDialog in 'components\wxColourDialog.pas',
-  WxDirDialog in 'components\wxDirDialog.pas',
-  WxFindReplaceDialog in 'components\wxFindReplaceDialog.pas',
-  WxPrintDialog in 'components\wxPrintDialog.pas',
-  WxProgressDialog in 'components\wxProgressDialog.pas',
-  WxTimer in 'components\wxTimer.pas',
-  WxPageSetupDialog in 'components\wxPageSetupDialog.pas',
-  WxMessageDialog in 'components\wxMessageDialog.pas',
-  Wxsplitterwindow in 'components\wxsplitterwindow.pas',
-  WxRadioBox in 'components\wxRadioBox.pas',
-  WxDatePickerCtrl in 'components\wxDatePickerCtrl.pas',
-  CustomWXDRadioGroup in 'components\CustomWXDRadioGroup.pas',
-  wxStdDialogButtonSizer in 'components\wxStdDialogButtonSizer.pas',
-  WxOwnerDrawnComboBox in 'components\WxOwnerDrawnComboBox.pas',
-  WxSTC in 'components\WxSTC.pas',
-  WxRichTextCtrl in 'components\WxRichTextCtrl.pas',
-  WxTreeListCtrl in 'components\WxTreeListCtrl.pas',
-  wxCalendarBase in 'components\wxCalendarBase.pas',
-  WxCalendarCtrl in 'components\WxCalendarCtrl.pas',
-  WxTextEntryDialog in 'components\WxTextEntryDialog.pas',
-  WxPasswordEntryDialog in 'components\WxPasswordEntryDialog.pas',
-  WxSingleChoiceDialog in 'components\WxSingleChoiceDialog.pas',
-  WxMultiChoiceDialog in 'components\WxMultiChoiceDialog.pas',
-  WxHyperLinkCtrl in 'components\WxHyperLinkCtrl.pas',
-  WxDialUpManager in 'components\WxDialUpManager.pas',
-  WxHtmlEasyPrinting in 'components\WxHtmlEasyPrinting.pas',
-  WxMediaCtrl in 'components\WxMediaCtrl.pas'
-
-  
-  {$ENDIF};
+  ImageTheme in 'ImageTheme.pas',
+  iplugin_dll in 'plugins\interfaces\iplugin_dll.pas',
+  iplugger in 'plugins\interfaces\iplugger.pas',
+  iplugin in 'plugins\interfaces\iplugin.pas',
+  iplugin_bpl in 'plugins\interfaces\iplugin_bpl.pas';
 
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
@@ -204,7 +116,7 @@ uses
 {$R 'LangFrm.res' 'LangFrm.rc'}
 {$R *.res}
 
-{$IFDEF WX_BUILD}
+{$IFDEF PLUGIN_BUILD}
 {$R STDREG.res}
 {$ENDIF}
 
