@@ -32,12 +32,10 @@ type
   // Replace with <Object> is IPluginDesigner?? Does the is operator support this?
   function IsCurrentPageDesigner: Boolean;
 
-  function GetChild: HWND;
+  function GetChild: HWND;     // EAB TODO: Remove this one ... ?
 
-  // This function should be not broadcasted to all plugins; only on a plugin-profile
+  // This function should be not broadcasted to all plugins; only to plugin-profile components
   function HasDesigner(editorName: String): Boolean;
-
-
 
   function SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
   procedure InitEditor(strFileName: String);
@@ -50,8 +48,8 @@ type
   function GetDefaultText(FileName: String): String;
   function GetFilter(editorName: String): String;
   function Get_EXT(editorName: String): String;
-  procedure GenerateXPM(s:String; b: Boolean);
-  procedure CreateNewXPMs(strFileName:String);
+  procedure GenerateXPM(s:String; b: Boolean);     // EAB TODO: I guess this is not common to all plugins.. ?
+  procedure CreateNewXPMs(strFileName:String);     // EAB TODO: I guess this is not common to all plugins.. ?
   procedure NewProject(s: String);
   function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
   function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
@@ -60,11 +58,12 @@ type
   procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
   procedure TerminateEditor(FileName: String);
   function Retrieve_Form_Items: TList;
-  function Retrieve_Tabbed_LeftDock_Panels: TList;
   function Retrieve_LeftDock_Panels: TList;
+  function Retrieve_RightDock_Panels: TList;
+  function Retrieve_BottomDock_Panels: TList;
   function Retrieve_Toolbars: TToolBar;
-  function ConvertLibsToCurrentVersion(strValue: String): String;
-  function GetXMLExtension: String;
+  function ConvertLibsToCurrentVersion(strValue: String): String;  // EAB TODO: I guess this is not common to all plugins.. ?
+  function GetXMLExtension: String;   // EAB TODO: I guess this is not common to all plugins.. ?
   function EditorDisplaysText(FileName: String): Boolean;
   function GetTextHighlighterType(FileName: String): String;
   function GET_COMMON_CPP_INCLUDE_DIR: String;  // EAB TODO: Generalize this.

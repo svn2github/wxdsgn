@@ -1010,10 +1010,10 @@ object MainForm: TMainForm
     Top = 102
     Width = 192
     Height = 137
-    ActivePage = ProjectSheet
+    ActivePage = ClassSheet
     Align = alLeft
     Images = dmMain.ProjectImage_NewLook
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 6
     object ProjectSheet: TTabSheet
       Caption = 'Project'

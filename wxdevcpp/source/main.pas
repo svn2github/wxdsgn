@@ -966,7 +966,9 @@ type
     fIsIconized: Boolean;
     ReloadFilenames: TList;
 
-    NewDockTabs: TJvDockTabHostForm;
+    LeftDockTabs: TJvDockTabHostForm;
+    RightDockTabs: TJvDockTabHostForm;
+    BottomDockTabs: TJvDockTabHostForm;
 
     function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
     procedure AddFindOutputItem(line, col, unit_, message: string);
@@ -1391,10 +1393,11 @@ begin
 
   if NewDocks.Count >= 2 then
   begin
-    NewDockTabs := ManualTabDock(DockServer.BottomDockPanel, NewDocks[0], NewDocks[1]);
+    BottomDockTabs := ManualTabDock(DockServer.BottomDockPanel, NewDocks[0], NewDocks[1]);
     for I := 2 to NewDocks.Count - 1 do
-      ManualTabDockAddPage(NewDockTabs, NewDocks[I]);
+      ManualTabDockAddPage(BottomDockTabs, NewDocks[I]);
   end;
+
   //"Surround With" menu
   trycatchPopItem.Tag            := INT_TRY_CATCH;
   trycatchPopItem.OnClick        := SurroundWithClick;
@@ -1552,9 +1555,9 @@ begin
 
   if NewDocks.Count >= 2 then
   begin
-    NewDockTabs := ManualTabDock(DockServer.BottomDockPanel, NewDocks[0], NewDocks[1]);
+    BottomDockTabs := ManualTabDock(DockServer.BottomDockPanel, NewDocks[0], NewDocks[1]);
     for I := 2 to NewDocks.Count - 1 do
-      ManualTabDockAddPage(NewDockTabs, NewDocks[I]);
+      ManualTabDockAddPage(BottomDockTabs, NewDocks[I]);
   end
   else
   begin
@@ -1874,22 +1877,42 @@ begin
   devData.ToolbarClassesY := tbClasses.Top;
 
   {$IFDEF PLUGIN_BUILD}
+  DockServer.LeftDockPanel.Visible := false;    // More "gratious" closing of panels, due to ManualTabDock plugin removal requirement
+  DockServer.RightDockPanel.Visible := false;
+  DockServer.BottomDockPanel.Visible := false;
   for i := 0 to pluginsCount - 1 do
   begin
 
-      // EAB TODO: This block is a hack that forces the panel to its original position, so ThemeManager doesn't freak out when closing
-      items := plugins[i].Retrieve_Tabbed_LeftDock_Panels;
+      // EAB Comment: This block forces the panel to its original position, so ThemeManager doesn't freak out when closing
+      //This is required because of the ManualTabDock system used.
+      items := plugins[i].Retrieve_LeftDock_Panels;
       if items <> nil then
       begin
-          {for j := 0 to items.Count -1 do   // This is more general, but not working
+          for j := 0 to items.Count -1 do
           begin
-            panel := items[j];
-            ManualTabDockAddPage(LeftDockTabs, panel);
-            ShowDockForm(panel);
-          end;   }
-          panel1 := items[0];
-          panel2 := items[1];
-          ManualTabDock(DockServer.LeftDockPanel, panel1, panel2);
+            panel1 := items[j];
+            ManualTabDockAddPage(LeftDockTabs, panel1);
+          end;
+      end;
+
+      items := plugins[i].Retrieve_RightDock_Panels;
+      if items <> nil then
+      begin
+          for j := 0 to items.Count -1 do
+          begin
+            panel1 := items[j];
+            ManualTabDockAddPage(RightDockTabs, panel1);
+          end;
+      end;
+
+      items := plugins[i].Retrieve_BottomDock_Panels;
+      if items <> nil then
+      begin
+          for j := 0 to items.Count -1 do
+          begin
+            panel1 := items[j];
+            ManualTabDockAddPage(BottomDockTabs, panel1);
+          end;
       end;
 
     toolbar := plugins[i].Retrieve_Toolbars;
@@ -8793,67 +8816,144 @@ begin
           end;
       end;
 
-      // EAB TODO: This section should be more general, not "attached" to a 2 panels logic, as it is now:
-     items := plugins[i].Retrieve_Tabbed_LeftDock_Panels;
-      if items <> nil then
-      begin
-          {for j := 0 to items.Count -1 do   // This is more general, but not working
-          begin
-            panel := items[j];
-            ManualTabDockAddPage(LeftDockTabs, panel);
-            ShowDockForm(panel);
-          end;   }
-          panel1 := items[0];
-          panel2 := items[1];
-
-          Self.InsertControl(items[0]);
-          Self.InsertControl(items[1]);
-
-          // EAB TODO: The implementation of ManualTabDock in JvDockControlForm.pas is highly coupled
-          //to the caller code.. (for example, the second form is shown inside this proc, while the first form is "manually" shown outside).
-          //This method should be rewritten.
-
-          lbDockClient2 := TJvDockClient.Create(panel1);
-          with lbDockClient2 do
-          begin
-            Name := 'lbDockClient2';
-            DirectDrag := True;
-            DockStyle := DockServer.DockStyle;
-          end;
-          lbDockClient3 := TJvDockClient.Create(panel2);
-          with lbDockClient3 do
-          begin
-            Name := 'lbDockClient3';
-            DirectDrag := True;
-            DockStyle := DockServer.DockStyle;
-          end;
-            NewDockTabs := ManualTabDock(DockServer.LeftDockPanel, panel1, panel2);
-      end;
-
-       // EAB TODO: Is the next proc correct? needed?
       items := plugins[i].Retrieve_LeftDock_Panels;
       if items <> nil then
       begin
-          for j := 0 to items.Count -1 do
+          if items.Count > 1 then
+          begin
+              panel1 := items[0];
+              panel2 := items[1];
+
+              // EAB Comment: The implementation of ManualTabDock in JvDockControlForm.pas is highly coupled
+              //to the caller code.. (for example, the second form is shown inside this proc, while the first form is "manually" shown outside).
+              //This method should be rewritten.
+
+              lbDockClient2 := TJvDockClient.Create(panel1);
+              with lbDockClient2 do
+              begin
+                Name := 'lbLeftDockClient_' + IntToStr(i) + '_0';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+              end;
+              lbDockClient3 := TJvDockClient.Create(panel2);
+              with lbDockClient3 do
+              begin
+                Name := 'lbLeftDockClient_' + IntToStr(i) + '_1';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+              end;
+                LeftDockTabs := ManualTabDock(DockServer.LeftDockPanel, panel1, panel2);
+          end
+          else
+          begin
+            panel1 := items[0];
+            lbDockClient2 := TJvDockClient.Create(panel1);
+            with lbDockClient2 do
+            begin
+                Name := 'lbLeftDockClient_' + IntToStr(i) + '_0';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+            end;
+            panel1.ManualDock(DockServer.LeftDockPanel, nil, alTop);
+          end;
+          for j := 2 to items.Count -1 do
           begin
             panel1 := items[j];
-            panel1.ManualDock(DockServer.LeftDockPanel, nil, alTop);
-
+            ManualTabDockAddPage(LeftDockTabs, panel1);
             ShowDockForm(panel1);
           end;
+
       end;
 
-      { EAB TODO: Create simmilar procs to the last 2 ones for RightDockPanel, TopDockPanel, and BottomDockPanel }
-
-      {items := plugins[i].Retrieve_Tabbed_LeftDock_Panels;
+      items := plugins[i].Retrieve_RightDock_Panels;
       if items <> nil then
       begin
-          for j := 0 to items.Count -1 do
+          if items.Count > 1 then
           begin
-            panel := items[j];
-            ManualTabDockAddPage(LeftDockTabs, panel);
+              panel1 := items[0];
+              panel2 := items[1];
+
+              lbDockClient2 := TJvDockClient.Create(panel1);
+              with lbDockClient2 do
+              begin
+                Name := 'lbRightDockClient_' + IntToStr(i) + '_0';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+              end;
+              lbDockClient3 := TJvDockClient.Create(panel2);
+              with lbDockClient3 do
+              begin
+                Name := 'lbRightDockClient_' + IntToStr(i) + '_1';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+              end;
+                RightDockTabs := ManualTabDock(DockServer.RightDockPanel, panel1, panel2);
+          end
+          else
+          begin
+            panel1 := items[0];
+            lbDockClient2 := TJvDockClient.Create(panel1);
+            with lbDockClient2 do
+            begin
+                Name := 'lbRightDockClient_' + IntToStr(i) + '_0';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+            end;
+            panel1.ManualDock(DockServer.RightDockPanel, nil, alTop);
           end;
-      end;  }
+          for j := 2 to items.Count -1 do
+          begin
+            panel1 := items[j];
+            ManualTabDockAddPage(RightDockTabs, panel1);
+            ShowDockForm(panel1);
+          end;
+
+      end;
+
+      items := plugins[i].Retrieve_BottomDock_Panels;
+      if items <> nil then
+      begin
+          if items.Count > 1 then
+          begin
+              panel1 := items[0];
+              panel2 := items[1];
+
+              lbDockClient2 := TJvDockClient.Create(panel1);
+              with lbDockClient2 do
+              begin
+                Name := 'lbBottomDockClient_' + IntToStr(i) + '_0';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+              end;
+              lbDockClient3 := TJvDockClient.Create(panel2);
+              with lbDockClient3 do
+              begin
+                Name := 'lbBottomDockClient_' + IntToStr(i) + '_1';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+              end;
+                BottomDockTabs := ManualTabDock(DockServer.BottomDockPanel, panel1, panel2);
+          end
+          else
+          begin
+            panel1 := items[0];
+            lbDockClient2 := TJvDockClient.Create(panel1);
+            with lbDockClient2 do
+            begin
+                Name := 'lbBottomDockClient_' + IntToStr(i) + '_0';
+                DirectDrag := True;
+                DockStyle := DockServer.DockStyle;
+            end;
+            panel1.ManualDock(DockServer.BottomDockPanel, nil, alTop);
+          end;
+          for j := 2 to items.Count -1 do
+          begin
+            panel1 := items[j];
+            ManualTabDockAddPage(BottomDockTabs, panel1);
+            ShowDockForm(panel1);
+          end;
+
+      end;
 
       toolbar := plugins[i].Retrieve_Toolbars;
       if plugins[i].IsDelphiPlugin then
@@ -8864,6 +8964,7 @@ begin
       else
           toolbar.Visible := true
   end;
+
   for i := 0 to packagesCount - 1 do
   begin
       items := (plugins[delphi_plugins[i]] AS IPlug_In_BPL).Retrieve_File_New_Menus;
@@ -9060,16 +9161,6 @@ begin
           end;
       end;
 
-      items := (plugins[delphi_plugins[i]] AS IPlug_In_BPL).Retrieve_Message_Tabs;
-      if items <> nil then
-      begin
-          for j := 0 to items.Count -1 do
-          begin
-            tabs := items[j];
-            tabs.PageControl := MessageControl;
-          end;
-      end;
-
   end;    
 end;
 
@@ -9095,8 +9186,8 @@ begin
     CurrEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, extension));
     if assigned(CurrEditor) then
     begin
-    	
-    	// EAB TODO: check if this code from Joel is necesary on the plugin
+
+    	// EAB Comment: Is this check necesary? disabled for now.
     	//The current editor must be a form
         //Assert(CurrEditor.isForm);
     	

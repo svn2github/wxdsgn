@@ -269,7 +269,6 @@ public
 
     procedure OnToolbarEvent(WM_COMMAND: Word);  
     function Retrieve_Form_Items: TList;
-    function Retrieve_Tabbed_LeftDock_Panels: TList;
     function Retrieve_File_New_Menus: TList;
     function Retrieve_File_Import_Menus: TList;
     function Retrieve_File_Export_Menus: TList;
@@ -288,6 +287,8 @@ public
     function GetChild: HWND;
     function GetXMLExtension: String;
     function Retrieve_LeftDock_Panels: TList;
+    function Retrieve_RightDock_Panels: TList;
+    function Retrieve_BottomDock_Panels: TList;
     function ConvertLibsToCurrentVersion(strValue: String): String;
     procedure CreateNewXPMs(strFileName:String);
     function EditorDisplaysText(FileName: String): Boolean;
@@ -4322,7 +4323,7 @@ begin
     Result := items;
 end;
 
-function TWXDsgn.Retrieve_Tabbed_LeftDock_Panels: TList;
+function TWXDsgn.Retrieve_LeftDock_Panels: TList;
 var
     items: TList;
 begin
@@ -4332,7 +4333,12 @@ begin
     Result := items;
 end;
 
-function TWXDsgn.Retrieve_LeftDock_Panels: TList;
+function TWXDsgn.Retrieve_RightDock_Panels: TList;
+begin
+    Result := nil;
+end;
+
+function TWXDsgn.Retrieve_BottomDock_Panels: TList;
 begin
     Result := nil;
 end;

@@ -55,8 +55,9 @@ type
     C_ReloadFromFile: procedure(FileName: PChar; fileToReloadFrom: PChar); stdcall;
     C_TerminateEditor: procedure(FileName: PChar); stdcall;
     C_Retrieve_Form_Items: function: PHWND; stdcall;
-    C_Retrieve_Tabbed_LeftDock_Panels: function: PHWND; stdcall;
     C_Retrieve_LeftDock_Panels: function: PHWND; stdcall;
+    C_Retrieve_RightDock_Panels: function: PHWND; stdcall;
+    C_Retrieve_BottomDock_Panels: function: PHWND; stdcall;
     C_Retrieve_Toolbars: function(_hwnd: HWND): HWND; stdcall;
     C_ConvertLibsToCurrentVersion: function(strValue: PChar): PChar; stdcall;
     C_GetXMLExtension: function: PChar; stdcall;
@@ -106,8 +107,9 @@ type
     procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
     procedure TerminateEditor(FileName: String);
     function Retrieve_Form_Items: TList;
-    function Retrieve_Tabbed_LeftDock_Panels: TList;
     function Retrieve_LeftDock_Panels: TList;
+    function Retrieve_RightDock_Panels: TList;
+    function Retrieve_BottomDock_Panels: TList;
     function Retrieve_Toolbars: TToolBar;
     function GetPluginName: String;
     function ConvertLibsToCurrentVersion(strValue: String): String;
@@ -163,8 +165,9 @@ begin
     @C_ReloadFromFile := GetProcAddress(module, 'ReloadFromFile');
     @C_TerminateEditor := GetProcAddress(module, 'TerminateEditor');
     @C_Retrieve_Form_Items := GetProcAddress(module, 'Retrieve_Form_Items');
-    @C_Retrieve_Tabbed_LeftDock_Panels := GetProcAddress(module, 'Retrieve_Tabbed_LeftDock_Panels');
     @C_Retrieve_LeftDock_Panels := GetProcAddress(module, 'Retrieve_LeftDock_Panels');
+    @C_Retrieve_RightDock_Panels := GetProcAddress(module, 'Retrieve_RightDock_Panels');
+    @C_Retrieve_BottomDock_Panels := GetProcAddress(module, 'Retrieve_BottomDock_Panels');
     @C_Retrieve_Toolbars := GetProcAddress(module, 'Retrieve_Toolbars');
     @C_ConvertLibsToCurrentVersion := GetProcAddress(module, 'ConvertLibsToCurrentVersion');
     @C_GetXMLExtension := GetProcAddress(module, 'GetXMLExtension');
@@ -367,31 +370,7 @@ var
     control: TWinControl;
 begin
     temp := nil;
-    temp := C_Retrieve_Tabbed_LeftDock_Panels;
-    if temp <> nil then
-    begin
-      res := TList.Create;
-      while temp <> nil do
-      begin
-        control := FindControl(temp^);
-        if control <> nil then
-          res.Add(control);
-        Inc(temp);
-      end;
-      Result := res;
-    end
-    else
-      Result := nil;
-end;
-
-function TPlug_In_DLL.Retrieve_Tabbed_LeftDock_Panels: TList;
-var
-    temp: PHWND;
-    res: TList;
-    control: TWinControl;
-begin
-    temp := nil;
-    temp := C_Retrieve_Tabbed_LeftDock_Panels;
+    temp := C_Retrieve_Form_Items;
     if temp <> nil then
     begin
       res := TList.Create;
@@ -415,7 +394,55 @@ var
     control: TWinControl;
 begin
     temp := nil;
-    temp := C_Retrieve_Tabbed_LeftDock_Panels;
+    temp := C_Retrieve_LeftDock_Panels;
+    if temp <> nil then
+    begin
+      res := TList.Create;
+      while temp <> nil do
+      begin
+        control := FindControl(temp^);
+        if control <> nil then
+          res.Add(control);
+        Inc(temp);
+      end;
+      Result := res;
+    end
+    else
+      Result := nil;
+end;
+
+function TPlug_In_DLL.Retrieve_RightDock_Panels: TList;
+var
+    temp: PHWND;
+    res: TList;
+    control: TWinControl;
+begin
+    temp := nil;
+    temp := C_Retrieve_RightDock_Panels;
+    if temp <> nil then
+    begin
+      res := TList.Create;
+      while temp <> nil do
+      begin
+        control := FindControl(temp^);
+        if control <> nil then
+          res.Add(control);
+        Inc(temp);
+      end;
+      Result := res;
+    end
+    else
+      Result := nil;
+end;
+
+function TPlug_In_DLL.Retrieve_BottomDock_Panels: TList;
+var
+    temp: PHWND;
+    res: TList;
+    control: TWinControl;
+begin
+    temp := nil;
+    temp := C_Retrieve_BottomDock_Panels;
     if temp <> nil then
     begin
       res := TList.Create;

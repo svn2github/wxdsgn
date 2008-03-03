@@ -21,8 +21,6 @@ type
     function Retrieve_Debug_Menus: TList;
     function Retrieve_Tools_Menus: TList;
     function Retrieve_Help_Menus: TList;
-    function Retrieve_Message_Tabs: TList;    
-	function Retrieve_Tabbed_LeftDock_Panels: TList;
     function GetFilters: TStringList;
     function GetSrcFilters: TStringList;
     procedure GenerateSource(sourceFileName: String; text: TSynEdit);
