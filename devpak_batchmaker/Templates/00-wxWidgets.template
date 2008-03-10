@@ -5,6 +5,7 @@ IconIndex=5
 Description=A wxWidgets Frame application
 Catagory=Basic
 ProfilesCount = 3
+plugin=wxdsgn
 
 [Project]
 Name=wxProject

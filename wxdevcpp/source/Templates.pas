@@ -56,6 +56,7 @@ type
     fIconIndex: integer;
     fTemplate: TmeminiFile;
     fVersion: integer;
+    fPlugin: string;
 
     function GetUnitCount: integer;
     function GetOldData: TTemplateRec;
@@ -172,6 +173,7 @@ begin
     fDesc      := ReadString(cTemplate, 'Description', 'NoDesc');
     fCatagory  := ReadString(cTemplate, 'Catagory', '');
     fIconIndex := ReadInteger(cTemplate, 'IconIndex', 0);
+    fPlugin    := ReadString(cTemplate, 'Plugin', '');
 
     // project info
     fPrjName     := ReadString(cProject, 'Name', '');

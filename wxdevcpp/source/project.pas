@@ -1751,10 +1751,6 @@ begin
 end;
 
 function TProject.OpenUnit(index: integer): TEditor;
-{$IFDEF PLUGIN_BUILD}
-var
- i: Integer;
-{$ENDIF}
 begin
   result := nil;
   if (index < 0) or (index > pred(fUnits.Count)) then exit;

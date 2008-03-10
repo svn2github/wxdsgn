@@ -33,6 +33,7 @@ type
     C_SetDisablePropertyBuilding: procedure(b: Boolean); stdcall;
     C_IsCurrentPageDesigner: function: Boolean; stdcall;
     C_HasDesigner: function: Boolean; stdcall;
+    C_ManagesUnit: function: Boolean; stdcall;
 
     C_SaveFileAndCloseEditor: function(s: PChar; b: Boolean): Boolean; stdcall;
     C_InitEditor: procedure(strFileName: PChar); stdcall;
@@ -54,7 +55,6 @@ type
     C_ReloadForm: function(FileName: PChar): Boolean; stdcall;
     C_ReloadFromFile: procedure(FileName: PChar; fileToReloadFrom: PChar); stdcall;
     C_TerminateEditor: procedure(FileName: PChar); stdcall;
-    C_Retrieve_Form_Items: function: PHWND; stdcall;
     C_Retrieve_LeftDock_Panels: function: PHWND; stdcall;
     C_Retrieve_RightDock_Panels: function: PHWND; stdcall;
     C_Retrieve_BottomDock_Panels: function: PHWND; stdcall;
@@ -84,6 +84,7 @@ type
     procedure SetDisablePropertyBuilding(b: Boolean);	
     function IsCurrentPageDesigner: Boolean;
     function IsDelphiPlugin: Boolean;
+    function ManagesUnit: Boolean;
     function GetChild: HWND;
     function HasDesigner(editorName: String): Boolean;
 	
@@ -106,7 +107,6 @@ type
     function  ReloadForm(FileName: String): Boolean;
     procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
     procedure TerminateEditor(FileName: String);
-    function Retrieve_Form_Items: TList;
     function Retrieve_LeftDock_Panels: TList;
     function Retrieve_RightDock_Panels: TList;
     function Retrieve_BottomDock_Panels: TList;
@@ -125,6 +125,7 @@ type
     procedure SaveCompilerOptions;
     function GetCompilerOptions: TSettings;
     procedure SetCompilerOptionstoDefaults;
+
   end;
 
 implementation
@@ -143,7 +144,8 @@ begin
     @C_SetBoolInspectorDataClear := GetProcAddress(module, 'SetBoolInspectorDataClear');
     @C_SetDisablePropertyBuilding := GetProcAddress(module, 'SetDisablePropertyBuilding');
     @C_IsCurrentPageDesigner := GetProcAddress(module, 'IsCurrentPageDesigner');
-    @C_HasDesigner := GetProcAddress(module, 'IsDesignerNil');
+    @C_HasDesigner := GetProcAddress(module, 'HasDesigner');
+    @C_ManagesUnit := GetProcAddress(module, 'ManagesUnit');
 
     @C_SaveFileAndCloseEditor := GetProcAddress(module, 'SaveFileAndCloseEditor');
     @C_InitEditor := GetProcAddress(module, 'InitEditor');
@@ -164,7 +166,6 @@ begin
     @C_Reload := GetProcAddress(module, 'ReloadForm');
     @C_ReloadFromFile := GetProcAddress(module, 'ReloadFromFile');
     @C_TerminateEditor := GetProcAddress(module, 'TerminateEditor');
-    @C_Retrieve_Form_Items := GetProcAddress(module, 'Retrieve_Form_Items');
     @C_Retrieve_LeftDock_Panels := GetProcAddress(module, 'Retrieve_LeftDock_Panels');
     @C_Retrieve_RightDock_Panels := GetProcAddress(module, 'Retrieve_RightDock_Panels');
     @C_Retrieve_BottomDock_Panels := GetProcAddress(module, 'Retrieve_BottomDock_Panels');
@@ -250,6 +251,11 @@ end;
 function TPlug_In_DLL.HasDesigner(editorName: String): Boolean;
 begin
     Result := False;
+end;
+
+function TPlug_In_DLL.ManagesUnit: Boolean;
+begin
+    Result := C_ManagesUnit;
 end;
 
 function TPlug_In_DLL.SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
@@ -361,30 +367,6 @@ end;
 procedure TPlug_In_DLL.TerminateEditor(FileName: String);
 begin
     C_TerminateEditor(PChar(FileName));
-end;
-
-function TPlug_In_DLL.Retrieve_Form_Items: TList;
-var
-    temp: PHWND;
-    res: TList;
-    control: TWinControl;
-begin
-    temp := nil;
-    temp := C_Retrieve_Form_Items;
-    if temp <> nil then
-    begin
-      res := TList.Create;
-      while temp <> nil do
-      begin
-        control := FindControl(temp^);
-        if control <> nil then
-          res.Add(control);
-        Inc(temp);
-      end;
-      Result := res;
-    end
-    else
-      Result := nil;
 end;
 
 function TPlug_In_DLL.Retrieve_LeftDock_Panels: TList;

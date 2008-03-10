@@ -5,6 +5,7 @@ IconIndex=5
 Description=A wxWidgets Dialog application
 Catagory=Basic
 ProfilesCount = 3
+plugin=wxdsgn
 
 [Project]
 Name=wxProject

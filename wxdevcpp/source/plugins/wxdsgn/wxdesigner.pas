@@ -11,7 +11,7 @@ uses
   wxSizerpanel, Designerfrm, ELPropInsp, {$IFNDEF COMPILER_7_UP}ThemeMgr,{$ENDIF}     
   CompFileIO, SynEdit, StrUtils,
   DesignerOptions, JvExStdCtrls, JvEdit, iplugin, iplugin_bpl, iplugger,
-  hashes,    // <-- EAB Help for indexing the editor designers based on their associated file names from TEditor.
+  hashes,
   SynEditHighlighter, SynHighlighterMulti,
   JvComponentBase, JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle,
   wxUtils, xprocs,
@@ -266,9 +266,9 @@ public
     function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
     function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
     function HasDesigner(editorName: String): Boolean;
+    function ManagesUnit: Boolean;
 
-    procedure OnToolbarEvent(WM_COMMAND: Word);  
-    function Retrieve_Form_Items: TList;
+    procedure OnToolbarEvent(WM_COMMAND: Word);
     function Retrieve_File_New_Menus: TList;
     function Retrieve_File_Import_Menus: TList;
     function Retrieve_File_Export_Menus: TList;
@@ -4315,14 +4315,6 @@ begin
 
 end;
 
-function TWXDsgn.Retrieve_Form_Items: TList;
-var
-    items: TList;
-begin
-    items := nil;
-    Result := items;
-end;
-
 function TWXDsgn.Retrieve_LeftDock_Panels: TList;
 var
     items: TList;
@@ -4468,6 +4460,11 @@ end;
 function TWXDsgn.HasDesigner(editorName: String): Boolean;
 begin
     Result := not (editors[ExtractFileName(editorName)] AS TWXEditor).IsDesignerNil;
+end;
+
+function TWXDsgn.ManagesUnit: Boolean;
+begin
+    Result := true;
 end;
 
 function TWXDsgn.EditorDisplaysText(FileName: String): Boolean;

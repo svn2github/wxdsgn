@@ -28,42 +28,18 @@ type
   //Properties
   function GetPluginName: String;
   function IsDelphiPlugin: Boolean;
+  function ManagesUnit: Boolean;       // May be better to sepparate this into another type of plugin
 
-  // Replace with <Object> is IPluginDesigner?? Does the is operator support this?
-  function IsCurrentPageDesigner: Boolean;
-
-  function GetChild: HWND;     // EAB TODO: Remove this one ... ?
-
-  // This function should be not broadcasted to all plugins; only to plugin-profile components
-  function HasDesigner(editorName: String): Boolean;
-
-  function SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
-  procedure InitEditor(strFileName: String);
+  function GetChild: HWND;  // Used on C dll plugins, for control bar toolbars
   procedure OpenFile(s: String);
-  procedure OpenUnit(s: String);
-  function IsForm(s: String): Boolean;
   function SaveFile(s: String; var pluginFileExist: Boolean): Boolean;
-
-  function IsSource(FileName: String): Boolean;
   function GetDefaultText(FileName: String): String;
-  function GetFilter(editorName: String): String;
-  function Get_EXT(editorName: String): String;
-  procedure GenerateXPM(s:String; b: Boolean);     // EAB TODO: I guess this is not common to all plugins.. ?
-  procedure CreateNewXPMs(strFileName:String);     // EAB TODO: I guess this is not common to all plugins.. ?
-  procedure NewProject(s: String);
   function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
-  function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
-  procedure Reload(FileName: String);
-  function  ReloadForm(FileName: String): Boolean;
-  procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
-  procedure TerminateEditor(FileName: String);
-  function Retrieve_Form_Items: TList;
+
   function Retrieve_LeftDock_Panels: TList;
   function Retrieve_RightDock_Panels: TList;
   function Retrieve_BottomDock_Panels: TList;
   function Retrieve_Toolbars: TToolBar;
-  function ConvertLibsToCurrentVersion(strValue: String): String;  // EAB TODO: I guess this is not common to all plugins.. ?
-  function GetXMLExtension: String;   // EAB TODO: I guess this is not common to all plugins.. ?
   function EditorDisplaysText(FileName: String): Boolean;
   function GetTextHighlighterType(FileName: String): String;
   function GET_COMMON_CPP_INCLUDE_DIR: String;  // EAB TODO: Generalize this.
@@ -79,6 +55,27 @@ type
   procedure CutExecute;
   procedure CopyExecute;
   procedure PasteExecute;
+
+  // Unit aware plugins:
+  function IsCurrentPageDesigner: Boolean;
+  function HasDesigner(editorName: String): Boolean;
+  function SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
+  procedure InitEditor(strFileName: String);
+  procedure OpenUnit(s: String);
+  function IsForm(s: String): Boolean;
+  function IsSource(FileName: String): Boolean;
+  function GetFilter(editorName: String): String;
+  function Get_EXT(editorName: String): String;
+  procedure GenerateXPM(s:String; b: Boolean);
+  procedure CreateNewXPMs(strFileName:String);
+  procedure NewProject(s: String);
+  function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
+  procedure Reload(FileName: String);
+  function  ReloadForm(FileName: String): Boolean;
+  procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
+  procedure TerminateEditor(FileName: String);
+  function ConvertLibsToCurrentVersion(strValue: String): String;  
+  function GetXMLExtension: String;
 end;
 
 implementation

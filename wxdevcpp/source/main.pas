@@ -91,7 +91,7 @@ uses
   CVSFm, ImageTheme, JvComponentBase, JvDockControlForm, JvDockSupportControl,
 {$IFDEF PLUGIN_BUILD}
   SynEdit, iplugin, iplugin_bpl, iplugin_dll, iplugger, // < -- EAB
-  controlbar_win32_events, // <-- EAB for TControlBar Win32 WM_COMMAND events
+  controlbar_win32_events, hashes,
   xprocs, SynHighlighterRC,
 
 {$IFNDEF COMPILER_7_UP}
@@ -101,7 +101,6 @@ uses
 {$IFNDEF OLD_MADSHI}
   ExceptionFilterUnit,
 {$ENDIF}
-  //JvExStdCtrls, JvEdit,  EAB TODO: check
   SynEditHighlighter, SynHighlighterMulti,
   JvDockTree, JvDockVIDStyle, JvDockVSNetStyle  
 {$ENDIF}
@@ -1072,6 +1071,7 @@ type
   
 {$IFDEF PLUGIN_BUILD}
     plugins: Array of IPlug_In;
+    unit_plugins: TIntegerHash;
     plugin_modules: Array of Integer;
     delphi_plugins: Array of Integer;
     c_plugins: Array of Integer;
@@ -2868,34 +2868,16 @@ begin
 end;
 
 procedure TMainForm.CloseEditorInternal(eX: TEditor);
-{$IFDEF PLUGIN_BUILD}
-  {var                // EAB TODO: Remove this junk
-    i: Integer;   }
-{$ENDIF}
   begin
     if not eX.InProject then
     begin
       dmMain.AddtoHistory(eX.FileName);
-{$IFDEF PLUGIN_BUILD}
-        {for i := 0 to pluginsCount - 1 do
-        begin
-            if plugins[i].IsForm(eX.FileName) then
-                plugins[i].TerminateEditor(eX.FileName);
-        end;      }
-{$ENDIF}      
       eX.Close;
     end
     else
     begin
       if eX.IsRes or (not Assigned(fProject)) then
       begin
-{$IFDEF PLUGIN_BUILD}
-            {for i := 0 to pluginsCount - 1 do
-            begin
-                if plugins[i].IsForm(eX.FileName) then
-                    plugins[i].TerminateEditor(eX.FileName);
-            end;  }
-{$ENDIF}    
         eX.Close
       end
       else if assigned(fProject) then
@@ -2912,7 +2894,7 @@ var
  b: Boolean;
 {$ENDIF}
 begin
-  Saved := false;     // EAB TODO: This variable was not initialized. I'm not sure what is the proper default value; it changes the results...
+  Saved := false;
   Result := False;
   e := GetEditor(index);
   if not assigned(e) then exit;
@@ -3524,7 +3506,6 @@ begin
 {$ENDIF}
       FileIsOpen(fProject.Units[i].FileName, TRUE);
 {$IFDEF PLUGIN_BUILD}
-
       if isFileOpenedinEditor(fProject.Units[i].FileName) then
         e :=GetEditorFromFileName(fProject.Units[i].FileName)
       else
@@ -8677,7 +8658,7 @@ var
   lbDockClient3: TJvDockClient;
   pluginSettings: TSettings;
 begin
-
+  unit_plugins := TIntegerHash.Create;
   packagesCount := 0;
   librariesCount := 0;
   pluginsCount := 0;
@@ -8720,6 +8701,9 @@ begin
                 plugins[pluginsCount] := plugin;
                 Inc(pluginsCount);
                 Inc(packagesCount);
+
+                if(plugin.ManagesUnit) then
+                    unit_plugins[pluginName] := pluginsCount;
 
                 // Check for saved toolbar coordinates:
                 idx := devPluginToolbarsX.AssignedToolbarsX(pluginName);
@@ -8767,6 +8751,8 @@ begin
             plugins[pluginsCount] := c_interface;
             Inc(pluginsCount);
             Inc(librariesCount);
+            if(c_interface.ManagesUnit) then
+                unit_plugins[pluginName] := pluginsCount;
 
             // Check for saved toolbar coordinates:
             idx := devPluginToolbarsX.AssignedToolbarsX(pluginName);
@@ -8807,14 +8793,6 @@ begin
   // Inserting plugin controls to the IDE
   for i := 0 to pluginsCount - 1 do
   begin
-      items := plugins[i].Retrieve_Form_Items;
-      if items <> nil then
-      begin
-          for j := 0 to items.Count -1 do
-          begin
-            Self.InsertControl(items[j]);
-          end;
-      end;
 
       items := plugins[i].Retrieve_LeftDock_Panels;
       if items <> nil then
