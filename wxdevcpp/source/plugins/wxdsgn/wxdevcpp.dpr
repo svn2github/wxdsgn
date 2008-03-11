@@ -22,9 +22,6 @@ program devcpp;
 {$R '..\..\icons.res' '..\..\icons.rc'}
 {$R '..\..\LangFrm.res' '..\..\LangFrm.rc'}
 {$R '..\..\DefaultFiles.res' '..\..\DefaultFiles.rc'}
-{$IFDEF PLUGIN_BUILD}
-{$R '..\..\STDREG.res'}
-{$ENDIF}
 
 {$WARN SYMBOL_PLATFORM OFF}
 
@@ -110,7 +107,6 @@ uses
   wxversion in 'wxversion.pas',
   dmCodeGen in 'dmCodeGen.pas',
   CompFileIo in 'CompFileIo.pas',
-  Hashes in 'Hashes.pas',
   CreateOrderFm in 'CreateOrderFm.pas' {CreationOrderForm},
   ViewIDForm in 'ViewIDForm.pas' {ViewControlIDsForm},
   wxeditor in 'wxeditor.pas',
@@ -123,7 +119,8 @@ uses
   cfgTypes in '..\..\cfgTypes.pas',
   PackmanExitCodesU in '..\..\..\..\packman\PackmanExitCodesU.pas',
   xProcs in '..\..\xprocs.pas',
-  ExceptionFilterUnit in '..\..\ExceptionFilterUnit.pas';
+  ExceptionFilterUnit in '..\..\ExceptionFilterUnit.pas',
+  Hashes in '..\..\packages\Hashes.pas';
 
 {$R *.res}
 
