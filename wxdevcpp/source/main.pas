@@ -8702,9 +8702,6 @@ begin
                 Inc(pluginsCount);
                 Inc(packagesCount);
 
-                if(plugin.ManagesUnit) then
-                    unit_plugins[pluginName] := pluginsCount;
-
                 // Check for saved toolbar coordinates:
                 idx := devPluginToolbarsX.AssignedToolbarsX(pluginName);
                 if idx <> -1 then
@@ -8722,6 +8719,8 @@ begin
                 end;
 
                 plugin.Initialize(pluginName, pluginModule, Self.Handle, ControlBar1, Self, devDirs.Config, temp_left, temp_top);
+                if(plugin.ManagesUnit) then
+                    unit_plugins[pluginName] := pluginsCount;                
                 {$IFNDEF PLUGIN_TESTING}
             end;
           end;
@@ -8751,8 +8750,6 @@ begin
             plugins[pluginsCount] := c_interface;
             Inc(pluginsCount);
             Inc(librariesCount);
-            if(c_interface.ManagesUnit) then
-                unit_plugins[pluginName] := pluginsCount;
 
             // Check for saved toolbar coordinates:
             idx := devPluginToolbarsX.AssignedToolbarsX(pluginName);
@@ -8771,6 +8768,8 @@ begin
             end;
 
             c_interface.Initialize(pluginName, pluginModule, Self.Handle, ControlBar1, Self, devDirs.Config, temp_left, temp_top);
+            if(c_interface.ManagesUnit) then
+                unit_plugins[pluginName] := pluginsCount;
           end;
       end;
   end;     
