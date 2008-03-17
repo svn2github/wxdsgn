@@ -88,8 +88,8 @@ Item1=components\;$(COMPUSEDBY_WX_BUILD)\jvcl\run
 Item2=C:\wxdevcpp\wxdevcpp\source\plugins\wxdsgn\components\
 [HistoryLists\hlConditionals]
 Count=8
-Item0=madExcept;PLUGIN_TESTING;PLUGIN_BUILD
-Item1=PLUGIN_TESTING;PLUGIN_BUILD
+Item0=PLUGIN_TESTING;PLUGIN_BUILD
+Item1=madExcept;PLUGIN_TESTING;PLUGIN_BUILD
 Item2=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD;madExcept
 Item3=madExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
 Item4=DmadExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD

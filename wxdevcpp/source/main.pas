@@ -8695,6 +8695,7 @@ begin
                 plugin := TComponentClass(AClass).Create(Application) AS IPlug_In_BPL;   // Used for static plugin linkage for easier debugging
                 SetLength(delphi_plugins, 1);
                 delphi_plugins[packagesCount] := 0;
+                pluginModule := 0;
                 {$ENDIF}
                 plugin.AssignPlugger(IPlug(Self));
                 SetLength(plugins, pluginsCount + 1);
