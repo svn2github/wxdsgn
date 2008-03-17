@@ -24,6 +24,7 @@ type
 	//Startup and shutdown
   procedure Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
   procedure Destroy;
+  procedure TestReport;
 
   //Properties
   function GetPluginName: String;

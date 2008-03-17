@@ -8769,8 +8769,9 @@ begin
             end;
 
             c_interface.Initialize(pluginName, pluginModule, Self.Handle, ControlBar1, Self, devDirs.Config, temp_left, temp_top);
-            if(c_interface.ManagesUnit) then
-                unit_plugins[pluginName] := pluginsCount;
+            //if(c_interface.ManagesUnit) then
+                //unit_plugins[pluginName] := pluginsCount;
+            c_interface.TestReport;      // Temporal testing line;  should be removed, or moved to some options dialog for testing plugins. 
           end;
       end;
   end;     

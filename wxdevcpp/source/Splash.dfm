@@ -12,7 +12,6 @@ object SplashForm: TSplashForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  FormStyle = fsStayOnTop
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -12191,6 +12190,8 @@ object SplashForm: TSplashForm
       Width = 150
       Height = 15
       Cursor = crHourGlass
+      Min = 0
+      Max = 100
       TabOrder = 1
     end
   end

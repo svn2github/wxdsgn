@@ -24,56 +24,58 @@ type
     tool: TToolBar;
     button: TToolButton;
     plugin_name: String;
-    C_CutExecute: procedure; stdcall;
-    C_CopyExecute: procedure; stdcall;
-    C_PasteExecute: procedure; stdcall;
-    C_Destroy: procedure; stdcall;
-    C_OnToolbarEvent: procedure(WM_COMMAND: Word); stdcall;
-    C_SetBoolInspectorDataClear: procedure(b: Boolean); stdcall;
-    C_SetDisablePropertyBuilding: procedure(b: Boolean); stdcall;
-    C_IsCurrentPageDesigner: function: Boolean; stdcall;
-    C_HasDesigner: function: Boolean; stdcall;
-    C_ManagesUnit: function: Boolean; stdcall;
+    C_TestReport: procedure(h: HWND); cdecl;
+    C_CutExecute: procedure; cdecl;
+    C_CopyExecute: procedure; cdecl;
+    C_PasteExecute: procedure; cdecl;
+    C_Destroy: procedure; cdecl;
+    C_OnToolbarEvent: procedure(WM_COMMAND: Word); cdecl;
+    C_SetBoolInspectorDataClear: procedure(b: Boolean); cdecl;
+    C_SetDisablePropertyBuilding: procedure(b: Boolean); cdecl;
+    C_IsCurrentPageDesigner: function: Boolean; cdecl;
+    C_HasDesigner: function: Boolean; cdecl;
+    C_ManagesUnit: function: Boolean; cdecl;
 
-    C_SaveFileAndCloseEditor: function(s: PChar; b: Boolean): Boolean; stdcall;
-    C_InitEditor: procedure(strFileName: PChar); stdcall;
-    C_OpenFile: procedure(s: PChar); stdcall;
-    C_OpenUnit: procedure(s: PChar); stdcall;
-    C_IsForm: function(s: PChar): Boolean; stdcall;
-    C_SaveFile: function(s: PChar; var b: Boolean): Boolean; stdcall;
-    C_IsSource: function(FileName: PChar): Boolean; stdcall;
-    C_GetDefaultText: function(FileName: PChar): PChar; stdcall;
-    C_GetFilter: function(editorName: PChar): PChar; stdcall;
-    C_Get_EXT: function(editorName: PChar): PChar; stdcall;
-    C_GenerateXPM: procedure(s:PChar; b: Boolean); stdcall;
-    C_CreateNewXPMs: procedure(s:PChar); stdcall;
-    C_NewProject: procedure(s: PChar); stdcall;
-    C_MainPageChanged: function(askIfShouldGetFocus: Boolean; FileName: PChar): Boolean; stdcall;	
-    C_IsCurrentEditorInPlugin: function(FileName: PChar; curFilename: PChar): Boolean; stdcall;
+    C_SaveFileAndCloseEditor: function(s: PChar; b: Boolean): Boolean; cdecl;
+    C_InitEditor: procedure(strFileName: PChar); cdecl;
+    C_OpenFile: procedure(s: PChar); cdecl;
+    C_OpenUnit: procedure(s: PChar); cdecl;
+    C_IsForm: function(s: PChar): Boolean; cdecl;
+    C_SaveFile: function(s: PChar; var b: Boolean): Boolean; cdecl;
+    C_IsSource: function(FileName: PChar): Boolean; cdecl;
+    C_GetDefaultText: function(FileName: PChar): PChar; cdecl;
+    C_GetFilter: function(editorName: PChar): PChar; cdecl;
+    C_Get_EXT: function(editorName: PChar): PChar; cdecl;
+    C_GenerateXPM: procedure(s:PChar; b: Boolean); cdecl;
+    C_CreateNewXPMs: procedure(s:PChar); cdecl;
+    C_NewProject: procedure(s: PChar); cdecl;
+    C_MainPageChanged: function(askIfShouldGetFocus: Boolean; FileName: PChar): Boolean; cdecl;
+    C_IsCurrentEditorInPlugin: function(FileName: PChar; curFilename: PChar): Boolean; cdecl;
 
-    C_Reload: procedure(FileName: PChar); stdcall;
-    C_ReloadForm: function(FileName: PChar): Boolean; stdcall;
-    C_ReloadFromFile: procedure(FileName: PChar; fileToReloadFrom: PChar); stdcall;
-    C_TerminateEditor: procedure(FileName: PChar); stdcall;
-    C_Retrieve_LeftDock_Panels: function: PHWND; stdcall;
-    C_Retrieve_RightDock_Panels: function: PHWND; stdcall;
-    C_Retrieve_BottomDock_Panels: function: PHWND; stdcall;
-    C_Retrieve_Toolbars: function(_hwnd: HWND): HWND; stdcall;
-    C_ConvertLibsToCurrentVersion: function(strValue: PChar): PChar; stdcall;
-    C_GetXMLExtension: function: PChar; stdcall;
-	C_EditorDisplaysText: function(FileName: PChar): Boolean; stdcall;
-	C_GetTextHighlighterType: function(FileName: PChar): PChar; stdcall;
-	C_GET_COMMON_CPP_INCLUDE_DIR: function: PChar; stdcall;  // EAB TODO: Generalize this.
-    C_GetCompilerMacros: function: PChar; stdcall;
-    C_GetCompilerPreprocDefines: function: PChar; stdcall;
+    C_Reload: procedure(FileName: PChar); cdecl;
+    C_ReloadForm: function(FileName: PChar): Boolean; cdecl;
+    C_ReloadFromFile: procedure(FileName: PChar; fileToReloadFrom: PChar); cdecl;
+    C_TerminateEditor: procedure(FileName: PChar); cdecl;
+    C_Retrieve_LeftDock_Panels: function: PHWND; cdecl;
+    C_Retrieve_RightDock_Panels: function: PHWND; cdecl;
+    C_Retrieve_BottomDock_Panels: function: PHWND; cdecl;
+    C_Retrieve_Toolbars: function(_hwnd: HWND): HWND; cdecl;
+    C_ConvertLibsToCurrentVersion: function(strValue: PChar): PChar; cdecl;
+    C_GetXMLExtension: function: PChar; cdecl;
+    C_EditorDisplaysText: function(FileName: PChar): Boolean; cdecl;
+    C_GetTextHighlighterType: function(FileName: PChar): PChar; cdecl;
+    C_GET_COMMON_CPP_INCLUDE_DIR: function: PChar; cdecl;  // EAB TODO: Generalize this.
+    C_GetCompilerMacros: function: PChar; cdecl;
+    C_GetCompilerPreprocDefines: function: PChar; cdecl;
 
-    C_LoadCompilerSettings: procedure(name: PChar; value: PChar); stdcall;
-    C_LoadCompilerOptions: procedure; stdcall;
-    C_SaveCompilerOptions: procedure; stdcall;
-    C_GetCompilerOptions: function: PChar; stdcall;
-    C_SetCompilerOptionstoDefaults: procedure; stdcall;
+    C_LoadCompilerSettings: procedure(name: PChar; value: PChar); cdecl;
+    C_LoadCompilerOptions: procedure; cdecl;
+    C_SaveCompilerOptions: procedure; cdecl;
+    C_GetCompilerOptions: function: PChar; cdecl;
+    C_SetCompilerOptionstoDefaults: procedure; cdecl;
 
   public
+    procedure TestReport;  
     procedure Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
     procedure CutExecute;
     procedure CopyExecute;
@@ -81,13 +83,13 @@ type
     procedure Destroy;
     procedure OnToolbarEvent(WM_COMMAND: Word);
     procedure SetBoolInspectorDataClear(b: Boolean);
-    procedure SetDisablePropertyBuilding(b: Boolean);	
+    procedure SetDisablePropertyBuilding(b: Boolean);
     function IsCurrentPageDesigner: Boolean;
     function IsDelphiPlugin: Boolean;
     function ManagesUnit: Boolean;
     function GetChild: HWND;
     function HasDesigner(editorName: String): Boolean;
-	
+
     function SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
     procedure InitEditor(strFileName: String);
     procedure OpenFile(s: String);
@@ -136,53 +138,105 @@ begin
     owner := _owner;
     controlBar := _controlBar;
     plugin_name := name;
-    @C_CutExecute := GetProcAddress(module, 'CutExecute');
-    @C_CopyExecute := GetProcAddress(module, 'CopyExecute');
-    @C_PasteExecute := GetProcAddress(module, 'PasteExecute');
-    @C_Destroy := GetProcAddress(module, 'Terminate');
-    @C_OnToolbarEvent := GetProcAddress(module, 'OnToolbarEvent');
-    @C_SetBoolInspectorDataClear := GetProcAddress(module, 'SetBoolInspectorDataClear');
-    @C_SetDisablePropertyBuilding := GetProcAddress(module, 'SetDisablePropertyBuilding');
-    @C_IsCurrentPageDesigner := GetProcAddress(module, 'IsCurrentPageDesigner');
-    @C_HasDesigner := GetProcAddress(module, 'HasDesigner');
-    @C_ManagesUnit := GetProcAddress(module, 'ManagesUnit');
 
-    @C_SaveFileAndCloseEditor := GetProcAddress(module, 'SaveFileAndCloseEditor');
-    @C_InitEditor := GetProcAddress(module, 'InitEditor');
-    @C_OpenFile := GetProcAddress(module, 'OpenFile');
-    @C_OpenUnit := GetProcAddress(module, 'OpenUnit');
-    @C_IsForm := GetProcAddress(module, 'IsForm');
-    @C_SaveFile := GetProcAddress(module, 'SaveFile');
-    @C_IsSource := GetProcAddress(module, 'IsSource');
-    @C_GetDefaultText := GetProcAddress(module, 'GetDefaultText');
-    @C_GetFilter := GetProcAddress(module, 'GetFilter');
-    @C_Get_EXT := GetProcAddress(module, 'Get_EXT');
-    @C_GenerateXPM := GetProcAddress(module, 'GenerateXPM');
-    @C_CreateNewXPMs := GetProcAddress(module, 'CreateNewXPMs');
-    @C_NewProject := GetProcAddress(module, 'NewProject');
-    @C_MainPageChanged := GetProcAddress(module, 'MainPageChanged');
-    @C_IsCurrentEditorInPlugin := GetProcAddress(module, 'IsCurrentEditorInPlugin');
-    @C_Reload := GetProcAddress(module, 'Reload');
-    @C_Reload := GetProcAddress(module, 'ReloadForm');
-    @C_ReloadFromFile := GetProcAddress(module, 'ReloadFromFile');
-    @C_TerminateEditor := GetProcAddress(module, 'TerminateEditor');
-    @C_Retrieve_LeftDock_Panels := GetProcAddress(module, 'Retrieve_LeftDock_Panels');
-    @C_Retrieve_RightDock_Panels := GetProcAddress(module, 'Retrieve_RightDock_Panels');
-    @C_Retrieve_BottomDock_Panels := GetProcAddress(module, 'Retrieve_BottomDock_Panels');
-    @C_Retrieve_Toolbars := GetProcAddress(module, 'Retrieve_Toolbars');
-    @C_ConvertLibsToCurrentVersion := GetProcAddress(module, 'ConvertLibsToCurrentVersion');
-    @C_GetXMLExtension := GetProcAddress(module, 'GetXMLExtension');
-	@C_EditorDisplaysText := GetProcAddress(module, 'EditorDisplaysText');
-	@C_GetTextHighlighterType := GetProcAddress(module, 'GetTextHighlighterType');
-	@C_GET_COMMON_CPP_INCLUDE_DIR := GetProcAddress(module, 'GET_COMMON_CPP_INCLUDE_DIR');
-    @C_GetCompilerMacros := GetProcAddress(module, 'GetCompilerMacros');
-    @C_GetCompilerPreprocDefines := GetProcAddress(module, 'GetCompilerPreprocDefines');
+    @self.C_TestReport := nil;
+    @self.C_CutExecute := nil;
+    @self.C_CopyExecute := nil;
+    @self.C_PasteExecute := nil;
+    @self.C_Destroy := nil;
+    @self.C_OnToolbarEvent := nil;
+    @self.C_SetBoolInspectorDataClear := nil;
+    @self.C_SetDisablePropertyBuilding := nil;
+    @self.C_IsCurrentPageDesigner := nil;
+    @self.C_HasDesigner := nil;
+    @self.C_ManagesUnit := nil;
 
-    @C_LoadCompilerSettings := GetProcAddress(module, 'LoadCompilerSettings');
-    @C_LoadCompilerOptions := GetProcAddress(module, 'LoadCompilerOptions');
-    @C_SaveCompilerOptions := GetProcAddress(module, 'SaveCompilerOptions');
-    @C_GetCompilerOptions := GetProcAddress(module, 'GetCompilerOptions');
-    @C_SetCompilerOptionstoDefaults := GetProcAddress(module, 'SetCompilerOptionstoDefaults');
+    @self.C_SaveFileAndCloseEditor := nil;
+    @self.C_InitEditor := nil;
+    @self.C_OpenFile := nil;
+    @self.C_OpenUnit := nil;
+    @self.C_IsForm := nil;
+    @self.C_SaveFile := nil;
+    @self.C_IsSource := nil;
+    @self.C_GetDefaultText := nil;
+    @self.C_GetFilter := nil;
+    @self.C_Get_EXT := nil;
+    @self.C_GenerateXPM := nil;
+    @self.C_CreateNewXPMs := nil;
+    @self.C_NewProject := nil;
+    @self.C_MainPageChanged := nil;
+    @self.C_IsCurrentEditorInPlugin := nil;
+    @self.C_Reload := nil;
+    @self.C_ReloadForm := nil;
+    @self.C_ReloadFromFile := nil;
+    @self.C_TerminateEditor := nil;
+    @self.C_Retrieve_LeftDock_Panels := nil;
+    @self.C_Retrieve_RightDock_Panels := nil;
+    @self.C_Retrieve_BottomDock_Panels := nil;
+    @self.C_Retrieve_Toolbars := nil;
+    @self.C_ConvertLibsToCurrentVersion := nil;
+    @self.C_GetXMLExtension := nil;
+    @self.C_EditorDisplaysText := nil;
+    @self.C_GetTextHighlighterType := nil;
+    @self.C_GET_COMMON_CPP_INCLUDE_DIR := nil;
+    @self.C_GetCompilerMacros := nil;
+    @self.C_GetCompilerPreprocDefines := nil;
+
+    @self.C_LoadCompilerSettings := nil;
+    @self.C_LoadCompilerOptions := nil;
+    @self.C_SaveCompilerOptions := nil;
+    @self.C_GetCompilerOptions := nil;
+    @self.C_SetCompilerOptionstoDefaults := nil;
+
+
+    @self.C_TestReport := GetProcAddress(module, 'TestReport');
+    @self.C_CutExecute := GetProcAddress(module, 'CutExecute');
+    @self.C_CopyExecute := GetProcAddress(module, 'CopyExecute');
+    @self.C_PasteExecute := GetProcAddress(module, 'PasteExecute');
+    @self.C_Destroy := GetProcAddress(module, 'Terminate');
+    @self.C_OnToolbarEvent := GetProcAddress(module, 'OnToolbarEvent');
+    @self.C_SetBoolInspectorDataClear := GetProcAddress(module, 'SetBoolInspectorDataClear');
+    @self.C_SetDisablePropertyBuilding := GetProcAddress(module, 'SetDisablePropertyBuilding');
+    @self.C_IsCurrentPageDesigner := GetProcAddress(module, 'IsCurrentPageDesigner');
+    @self.C_HasDesigner := GetProcAddress(module, 'HasDesigner');
+    @self.C_ManagesUnit := GetProcAddress(module, 'ManagesUnit');
+
+    @self.C_SaveFileAndCloseEditor := GetProcAddress(module, 'SaveFileAndCloseEditor');
+    @self.C_InitEditor := GetProcAddress(module, 'InitEditor');
+    @self.C_OpenFile := GetProcAddress(module, 'OpenFile');
+    @self.C_OpenUnit := GetProcAddress(module, 'OpenUnit');
+    @self.C_IsForm := GetProcAddress(module, 'IsForm');
+    @self.C_SaveFile := GetProcAddress(module, 'SaveFile');
+    @self.C_IsSource := GetProcAddress(module, 'IsSource');
+    @self.C_GetDefaultText := GetProcAddress(module, 'GetDefaultText');
+    @self.C_GetFilter := GetProcAddress(module, 'GetFilter');
+    @self.C_Get_EXT := GetProcAddress(module, 'Get_EXT');
+    @self.C_GenerateXPM := GetProcAddress(module, 'GenerateXPM');
+    @self.C_CreateNewXPMs := GetProcAddress(module, 'CreateNewXPMs');
+    @self.C_NewProject := GetProcAddress(module, 'NewProject');
+    @self.C_MainPageChanged := GetProcAddress(module, 'MainPageChanged');
+    @self.C_IsCurrentEditorInPlugin := GetProcAddress(module, 'IsCurrentEditorInPlugin');
+    @self.C_Reload := GetProcAddress(module, 'Reload');
+    @self.C_ReloadForm := GetProcAddress(module, 'ReloadForm');
+    @self.C_ReloadFromFile := GetProcAddress(module, 'ReloadFromFile');
+    @self.C_TerminateEditor := GetProcAddress(module, 'TerminateEditor');
+    @self.C_Retrieve_LeftDock_Panels := GetProcAddress(module, 'Retrieve_LeftDock_Panels');
+    @self.C_Retrieve_RightDock_Panels := GetProcAddress(module, 'Retrieve_RightDock_Panels');
+    @self.C_Retrieve_BottomDock_Panels := GetProcAddress(module, 'Retrieve_BottomDock_Panels');
+    @self.C_Retrieve_Toolbars := GetProcAddress(module, 'Retrieve_Toolbars');
+    @self.C_ConvertLibsToCurrentVersion := GetProcAddress(module, 'ConvertLibsToCurrentVersion');
+    @self.C_GetXMLExtension := GetProcAddress(module, 'GetXMLExtension');
+    @self.C_EditorDisplaysText := GetProcAddress(module, 'EditorDisplaysText');
+    @self.C_GetTextHighlighterType := GetProcAddress(module, 'GetTextHighlighterType');
+    @self.C_GET_COMMON_CPP_INCLUDE_DIR := GetProcAddress(module, 'GET_COMMON_CPP_INCLUDE_DIR');
+    @self.C_GetCompilerMacros := GetProcAddress(module, 'GetCompilerMacros');
+    @self.C_GetCompilerPreprocDefines := GetProcAddress(module, 'GetCompilerPreprocDefines');
+
+    @self.C_LoadCompilerSettings := GetProcAddress(module, 'LoadCompilerSettings');
+    @self.C_LoadCompilerOptions := GetProcAddress(module, 'LoadCompilerOptions');
+    @self.C_SaveCompilerOptions := GetProcAddress(module, 'SaveCompilerOptions');
+    @self.C_GetCompilerOptions := GetProcAddress(module, 'GetCompilerOptions');
+    @self.C_SetCompilerOptionstoDefaults := GetProcAddress(module, 'SetCompilerOptionstoDefaults');
 
     tool := TToolBar.Create(nil);
     tool.Left:= toolbar_x;
@@ -199,48 +253,65 @@ begin
     tool.EdgeInner := esNone;
     tool.EdgeOuter := esNone;
     tool.Flat := true;
-    child := C_Retrieve_Toolbars(tool.Handle);
-    tool.Width := 70;    
+    if (@self.C_Retrieve_Toolbars <> nil) then
+        child := self.C_Retrieve_Toolbars(tool.Handle);
+    tool.Width := 70;
+end;
+
+procedure TPlug_In_DLL.TestReport;
+begin
+    if (@self.C_TestReport <> nil) then
+        self.C_TestReport(parent);
 end;
 
 procedure TPlug_In_DLL.CutExecute;
 begin
-    C_CutExecute;
+    if (@self.C_CutExecute <> nil) then
+        self.C_CutExecute;
 end;
 
 procedure TPlug_In_DLL.CopyExecute;
 begin
-    C_CopyExecute;
+    if (@self.C_CopyExecute <> nil) then
+        self.C_CopyExecute;
 end;
 
 procedure TPlug_In_DLL.PasteExecute;
 begin
-    C_PasteExecute;
+    if (@self.C_PasteExecute <> nil) then
+        self.C_PasteExecute;
 end;
 
 procedure TPlug_In_DLL.Destroy;
 begin
-    C_Destroy;
+    if (@self.C_Destroy <> nil) then
+        self.C_Destroy;
 end;
 
 procedure TPlug_In_DLL.OnToolbarEvent(WM_COMMAND: Word);
 begin
-    C_OnToolbarEvent(WM_COMMAND);
+    if (@self.C_OnToolbarEvent <> nil) then
+        self.C_OnToolbarEvent(WM_COMMAND);
 end;
 
 procedure TPlug_In_DLL.SetBoolInspectorDataClear(b: Boolean);
 begin
-    C_SetBoolInspectorDataClear(b);
+    if (@self.C_SetBoolInspectorDataClear <> nil) then
+        self.C_SetBoolInspectorDataClear(b);
 end;
 
 procedure TPlug_In_DLL.SetDisablePropertyBuilding(b: Boolean);
 begin
-    C_SetDisablePropertyBuilding(b);
+    if (@self.C_SetDisablePropertyBuilding <> nil) then
+        self.C_SetDisablePropertyBuilding(b);
 end;
 
 function TPlug_In_DLL.IsCurrentPageDesigner: Boolean;
 begin
-    Result := C_IsCurrentPageDesigner;
+    if (@self.C_IsCurrentPageDesigner <> nil) then
+        Result := self.C_IsCurrentPageDesigner
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.IsDelphiPlugin: Boolean;
@@ -255,22 +326,30 @@ end;
 
 function TPlug_In_DLL.ManagesUnit: Boolean;
 begin
-    Result := C_ManagesUnit;
+    if (@self.C_ManagesUnit <> nil) then
+        Result := self.C_ManagesUnit
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
 begin
-    Result := C_SaveFileAndCloseEditor(PChar(s), b);
+    if (@self.C_SaveFileAndCloseEditor <> nil) then
+        Result := self.C_SaveFileAndCloseEditor(PChar(s), b)
+    else
+        Result := False;
 end;
 
 procedure TPlug_In_DLL.InitEditor(strFileName: String);
 begin
-    C_InitEditor(PChar(strFileName));
+    if (@self.C_InitEditor <> nil) then
+        self.C_InitEditor(PChar(strFileName));
 end;
 
 procedure TPlug_In_DLL.OpenFile(s: String);
 begin
-    C_OpenFile(PChar(s));
+    if (@self.C_OpenFile <> nil) then
+        self.C_OpenFile(PChar(s));
 end;
 
 procedure TPlug_In_DLL.OpenUnit(s: String);
@@ -280,17 +359,26 @@ end;
 
 function TPlug_In_DLL.IsForm(s: String): Boolean;
 begin
-    Result := C_IsForm(PChar(s));
+    if (@self.C_IsForm <> nil) then
+        Result := self.C_IsForm(PChar(s))
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.SaveFile(s: String; var b: Boolean): Boolean;
 begin
-    Result := C_SaveFile(PChar(s), b); // EAB TODO: Check for the proper parameter for returning values in "b"
+    if (@self.C_SaveFile <> nil) then
+        Result := self.C_SaveFile(PChar(s), b) // EAB TODO: Check for the proper parameter for returning values in "b"
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.IsSource(FileName: String): Boolean;
 begin
-    Result := C_IsSource(PChar(FileName));
+    if (@self.C_IsSource <> nil) then
+        Result := self.C_IsSource(PChar(FileName))
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.GetDefaultText(FileName: String): String;
@@ -299,7 +387,8 @@ var
     res: String;
 begin
     temp := PChar(FileName);
-    temp := C_GetDefaultText(temp);
+    if (@self.C_GetDefaultText <> nil) then
+        temp := self.C_GetDefaultText(temp);
     res := temp;
     Result := res;
 end;
@@ -309,7 +398,9 @@ var
     temp: PAnsiChar;
     res: String;
 begin
-    temp := C_GetFilter(PAnsiChar(editorName));
+    temp := '';
+    if (@self.C_GetFilter <> nil) then
+        temp := self.C_GetFilter(PAnsiChar(editorName));
     res := temp;
     Result := res;
 end;
@@ -319,54 +410,71 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_Get_EXT(PChar(editorName));
+    temp := '';
+    if (@self.C_Get_EXT <> nil) then
+        temp := self.C_Get_EXT(PChar(editorName));
     res := temp;
     Result := res;
 end;
 
 procedure TPlug_In_DLL.GenerateXPM(s:String; b: Boolean);
 begin
-    C_GenerateXPM(PChar(s), b);
+    if (@self.C_GenerateXPM <> nil) then
+        self.C_GenerateXPM(PChar(s), b);
 end;
 
 procedure TPlug_In_DLL.CreateNewXPMs(s:String);
 begin
-    C_CreateNewXPMs(PChar(s));
+    if (@self.C_CreateNewXPMs <> nil) then
+        self.C_CreateNewXPMs(PChar(s));
 end;
 
 procedure TPlug_In_DLL.NewProject(s: String);
 begin
-    C_NewProject(PChar(s));
+    if (@self.C_NewProject <> nil) then
+        self.C_NewProject(PChar(s));
 end;
 
 function TPlug_In_DLL.MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
 begin
-    Result := C_MainPageChanged(askIfShouldGetFocus, PChar(FileName));
+    if (@self.C_MainPageChanged <> nil) then
+        Result := self.C_MainPageChanged(askIfShouldGetFocus, PChar(FileName))
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
 begin
-    Result := C_IsCurrentEditorInPlugin(PChar(FileName), PChar(curFilename));
+    if (@self.C_IsCurrentEditorInPlugin <> nil) then
+        Result := self.C_IsCurrentEditorInPlugin(PChar(FileName), PChar(curFilename))
+    else
+        Result := False;
 end;
 
 procedure TPlug_In_DLL.Reload(FileName: String);
 begin
-    C_Reload(PChar(FileName));
+    if (@self.C_Reload <> nil) then
+        self.C_Reload(PChar(FileName));
 end;
 
 function TPlug_In_DLL.ReloadForm(FileName: String): Boolean;
 begin
-    Result := C_ReloadForm(PChar(FileName));
+    if (@self.C_ReloadForm <> nil) then
+        Result := self.C_ReloadForm(PChar(FileName))
+    else
+        Result := False;
 end;
 
 procedure TPlug_In_DLL.ReloadFromFile(FileName: String; fileToReloadFrom: String);
 begin
-    C_ReloadFromFile(PChar(FileName), PChar(fileToReloadFrom));
+    if (@self.C_ReloadFromFile <> nil) then
+        self.C_ReloadFromFile(PChar(FileName), PChar(fileToReloadFrom));
 end;
 
 procedure TPlug_In_DLL.TerminateEditor(FileName: String);
 begin
-    C_TerminateEditor(PChar(FileName));
+    if (@self.C_TerminateEditor <> nil) then
+        self.C_TerminateEditor(PChar(FileName));
 end;
 
 function TPlug_In_DLL.Retrieve_LeftDock_Panels: TList;
@@ -376,7 +484,8 @@ var
     control: TWinControl;
 begin
     temp := nil;
-    temp := C_Retrieve_LeftDock_Panels;
+    if (@self.C_Retrieve_LeftDock_Panels <> nil) then
+        temp := self.C_Retrieve_LeftDock_Panels;
     if temp <> nil then
     begin
       res := TList.Create;
@@ -400,7 +509,8 @@ var
     control: TWinControl;
 begin
     temp := nil;
-    temp := C_Retrieve_RightDock_Panels;
+    if (@self.C_Retrieve_RightDock_Panels <> nil) then
+        temp := self.C_Retrieve_RightDock_Panels;
     if temp <> nil then
     begin
       res := TList.Create;
@@ -424,7 +534,8 @@ var
     control: TWinControl;
 begin
     temp := nil;
-    temp := C_Retrieve_BottomDock_Panels;
+    if (@self.C_Retrieve_BottomDock_Panels <> nil) then
+        temp := self.C_Retrieve_BottomDock_Panels;
     if temp <> nil then
     begin
       res := TList.Create;
@@ -461,7 +572,9 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_ConvertLibsToCurrentVersion(PChar(strValue));
+    temp := '';
+    if (@self.C_ConvertLibsToCurrentVersion <> nil) then
+        temp := self.C_ConvertLibsToCurrentVersion(PChar(strValue));
     res := temp;
     Result := res;
 end;
@@ -471,14 +584,19 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_GetXMLExtension;
+    temp := '';
+    if (@self.C_GetXMLExtension <> nil) then
+        temp := self.C_GetXMLExtension;
     res := temp;
     Result := res;
 end;
 
 function TPlug_In_DLL.EditorDisplaysText(FileName: String): Boolean;
 begin
-    Result := C_EditorDisplaysText(PChar(FileName));
+    if (@self.C_EditorDisplaysText <> nil) then
+        Result := self.C_EditorDisplaysText(PChar(FileName))
+    else
+        Result := False;
 end;
 
 function TPlug_In_DLL.GetTextHighlighterType(FileName: String): String;
@@ -486,7 +604,9 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_GetTextHighlighterType(PChar(FileName));
+    temp := '';
+    if (@self.C_GetTextHighlighterType <> nil) then
+        temp := self.C_GetTextHighlighterType(PChar(FileName));
     res := temp;
     Result := res;
 end;
@@ -496,7 +616,9 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_GET_COMMON_CPP_INCLUDE_DIR;
+    temp := '';
+    if (@self.C_GET_COMMON_CPP_INCLUDE_DIR <> nil) then
+        temp := self.C_GET_COMMON_CPP_INCLUDE_DIR;
     res := temp;
     Result := res;
 end;
@@ -506,7 +628,9 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_GetCompilerMacros;
+    temp := '';
+    if (@self.C_GetCompilerMacros <> nil) then
+        temp := self.C_GetCompilerMacros;
     res := temp;
     Result := res;
 end;
@@ -516,24 +640,29 @@ var
     temp: PChar;
     res: String;
 begin
-    temp := C_GetCompilerPreprocDefines;
+    temp := '';
+    if (@self.C_GetCompilerPreprocDefines <> nil) then
+        temp := self.C_GetCompilerPreprocDefines;
     res := temp;
     Result := res;
 end;
 
 procedure TPlug_In_DLL.LoadCompilerSettings(name: String; value: String);
 begin
-    C_LoadCompilerSettings(PChar(name), PChar(value));
+    if (@self.C_LoadCompilerSettings <> nil) then
+        self.C_LoadCompilerSettings(PChar(name), PChar(value));
 end;
 
 procedure TPlug_In_DLL.LoadCompilerOptions;
 begin
-    C_LoadCompilerOptions;
+    if (@self.C_LoadCompilerOptions <> nil) then
+        self.C_LoadCompilerOptions;
 end;
 
 procedure TPlug_In_DLL.SaveCompilerOptions;
 begin
-    C_SaveCompilerOptions;
+    if (@self.C_SaveCompilerOptions <> nil) then
+        self.C_SaveCompilerOptions;
 end;
 
 function TPlug_In_DLL.GetCompilerOptions: TSettings;
@@ -547,7 +676,8 @@ end;
 
 procedure TPlug_In_DLL.SetCompilerOptionstoDefaults;
 begin
-    C_SetCompilerOptionstoDefaults;
+    if (@self.C_SetCompilerOptionstoDefaults <> nil) then
+        self.C_SetCompilerOptionstoDefaults;
 end;
 
 end.

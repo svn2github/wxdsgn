@@ -302,6 +302,7 @@ public
     procedure SaveCompilerOptions;
     function GetCompilerOptions: TSettings;
     procedure SetCompilerOptionstoDefaults;
+    procedure TestReport;
   end;
 
 var
@@ -4620,6 +4621,11 @@ begin
     debugLibrary := False;
     staticLibrary := True;
   end;
+end;
+
+procedure TWXDsgn.TestReport;
+begin
+  ShowMessage('wxdsgn plugin has been loaded.');
 end;
 
 initialization
