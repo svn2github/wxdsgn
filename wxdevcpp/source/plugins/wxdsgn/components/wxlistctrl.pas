@@ -578,14 +578,14 @@ var
 begin
   Result := '';
 
-  parentName := GetWxWidgetParent(self);
+    parentName := GetWxWidgetParent(self);
 
   strStyle := GetListViewSpecificStyle(Wx_GeneralStyle, Wx_ListviewStyle, FWx_ListviewView);
 
   if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then
   begin
     if trim(strStyle) <> '' then
-      strStyle := ', ' + strStyle + ', ' + Wx_ProxyValidatorString.strValidatorValue
+      strStyle := strStyle + ', ' + Wx_ProxyValidatorString.strValidatorValue
     else
       strStyle := ', 0, ' + Wx_ProxyValidatorString.strValidatorValue;
 
@@ -593,7 +593,7 @@ begin
 
   end
   else if trim(strStyle) <> '' then
-    strStyle := ', ' + strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
+    strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 

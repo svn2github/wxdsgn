@@ -404,6 +404,8 @@ object WebUpdateForm: TWebUpdateForm
     Top = 154
     Width = 417
     Height = 16
+    Min = 0
+    Max = 100
     TabOrder = 6
   end
   object cmbMirrors: TComboBox
