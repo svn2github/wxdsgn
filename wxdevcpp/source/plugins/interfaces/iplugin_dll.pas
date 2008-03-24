@@ -46,7 +46,6 @@ type
     C_GetDefaultText: function(FileName: PChar): PChar; cdecl;
     C_GetFilter: function(editorName: PChar): PChar; cdecl;
     C_Get_EXT: function(editorName: PChar): PChar; cdecl;
-    C_GenerateXPM: procedure(s:PChar; b: Boolean); cdecl;
     C_CreateNewXPMs: procedure(s:PChar); cdecl;
     C_NewProject: procedure(s: PChar); cdecl;
     C_MainPageChanged: function(askIfShouldGetFocus: Boolean; FileName: PChar): Boolean; cdecl;
@@ -100,7 +99,6 @@ type
     function GetDefaultText(FileName: String): String;
     function GetFilter(editorName: String): String;
     function Get_EXT(editorName: String): String;
-    procedure GenerateXPM(s:String; b: Boolean);
     procedure CreateNewXPMs(s:String);
     procedure NewProject(s: String);
     function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
@@ -161,7 +159,6 @@ begin
     @self.C_GetDefaultText := nil;
     @self.C_GetFilter := nil;
     @self.C_Get_EXT := nil;
-    @self.C_GenerateXPM := nil;
     @self.C_CreateNewXPMs := nil;
     @self.C_NewProject := nil;
     @self.C_MainPageChanged := nil;
@@ -211,7 +208,6 @@ begin
     @self.C_GetDefaultText := GetProcAddress(module, 'GetDefaultText');
     @self.C_GetFilter := GetProcAddress(module, 'GetFilter');
     @self.C_Get_EXT := GetProcAddress(module, 'Get_EXT');
-    @self.C_GenerateXPM := GetProcAddress(module, 'GenerateXPM');
     @self.C_CreateNewXPMs := GetProcAddress(module, 'CreateNewXPMs');
     @self.C_NewProject := GetProcAddress(module, 'NewProject');
     @self.C_MainPageChanged := GetProcAddress(module, 'MainPageChanged');
@@ -415,12 +411,6 @@ begin
         temp := self.C_Get_EXT(PChar(editorName));
     res := temp;
     Result := res;
-end;
-
-procedure TPlug_In_DLL.GenerateXPM(s:String; b: Boolean);
-begin
-    if (@self.C_GenerateXPM <> nil) then
-        self.C_GenerateXPM(PChar(s), b);
 end;
 
 procedure TPlug_In_DLL.CreateNewXPMs(s:String);

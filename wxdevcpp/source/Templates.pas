@@ -86,6 +86,7 @@ type
     property OldData: TTemplateRec read GetOldData write SetOldData;
     property Version: integer read GetVersion write fVersion;
     property IconIndex: integer read fIconIndex write fIconIndex;
+    property AssignedPlugin: string read fPlugin write fPlugin;
   end;
 
 implementation

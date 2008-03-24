@@ -156,6 +156,7 @@ type
     fDefaultProfileIndex:Integer;
     fCurrentProfileIndex:Integer;
     fPrevVersion:Integer;
+    fPlugin: string;
     
     function GetDirectory: string;
     function GetExecutableName: string;
@@ -172,6 +173,7 @@ type
     property Name: string read fName write fName;
     property FileName: string read fFileName write SetFileName;
     property Node: TTreeNode read fNode write SetNode;
+    property AssociatedPlugin: string read fPlugin write fPlugin;
 
     property Directory: string read GetDirectory;
     property Executable: string read GetExecutableName;
@@ -540,6 +542,7 @@ begin
   VersionInfo.AutoIncBuildNrOnRebuild := False;
 
   //Then load the project
+  fPlugin := '';
   fFileName := nFileName;
   finiFile := TdevINI.Create;
   try
@@ -2124,10 +2127,6 @@ var
   idx: integer;
   s, s2: string;
  OriginalIcon, DestIcon: String;
-{$IFDEF PLUGIN_BUILD}
-  i: Integer;
-  b: Boolean;
-{$ENDIF} 
 begin
   result := TRUE;
   Options:=TProjectProfileList.Create;
@@ -2149,6 +2148,7 @@ begin
     end;
     fName := aTemplate.ProjectName;
     finifile.FileName := aFileName;
+    fPlugin := aTemplate.AssignedPlugin;
 
     Options.CopyDataFrom(aTemplate.OptionsRec);
     fProfiles.CopyDataFrom(Options);
@@ -2198,12 +2198,12 @@ begin
               Editor.Text.Lines.LoadFromFile(s2);
               Editor.Modified := TRUE;
 {$IFDEF PLUGIN_BUILD}
-              b := false;
-              for i := 0 to MainForm.pluginsCount - 1 do
-                b := b or MainForm.plugins[i].IsForm(Editor.FileName);
-              if b then
+              if fPlugin <> '' then
               begin
-                MainForm.plugins[i].ReloadFromFile(Editor.FileName, s2);
+                  if MainForm.plugins[MainForm.unit_plugins[Editor.AssignedPlugin]].ManagesUnit then
+                  begin
+                    MainForm.plugins[MainForm.unit_plugins[Editor.AssignedPlugin]].ReloadFromFile(Editor.FileName, s2);   // EAB TODO: A general semantic meaning for "ReloadFromFile" is not clear
+                  end;
               end;
 {$ENDIF}
             end

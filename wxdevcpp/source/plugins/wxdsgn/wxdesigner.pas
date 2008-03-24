@@ -17,7 +17,8 @@ uses
   wxUtils, xprocs,
   ComponentPalette;
 
-{$I ..\..\LangIDs.inc}    
+{$I ..\..\LangIDs.inc}
+
 type
   TdevWxOptions = record     
     majorVersion: ShortInt;
@@ -1190,6 +1191,10 @@ begin
         if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
         begin
             Result := main.SaveFileIfModified(EditorFilename, WXFORM_EXT, isEXAssigned);
+
+            //Just Generate XPM's while saving the file  EAB TODO: this was moved from Mainform's SaveFileInternal. Test it.
+            GenerateXPM(EditorFilename, false);
+
             if isEXAssigned then
                 (editors[ExtractFileName(ChangeFileExt(EditorFilename, WXFORM_EXT))] AS TWXEditor).GetDesigner.CreateNewXPMs(EditorFilename);
         end;
@@ -1527,19 +1532,19 @@ begin
     frm.Destroy;
 
   currFile := ChangeFileExt(BaseFilename, H_EXT);
-  main.PrepareFileForEditor(currFile, insertProj, false, true, false);
+  main.PrepareFileForEditor(currFile, insertProj, false, true, false, 'wxdsgn');
 
   currFile := ChangeFileExt(BaseFilename, CPP_EXT);
-  main.PrepareFileForEditor(currFile, insertProj, false, true, false);
+  main.PrepareFileForEditor(currFile, insertProj, false, true, false, 'wxdsgn');
 
   if (ELDesigner1.GenerateXRC) then
   begin
     currFile := ChangeFileExt(BaseFilename, XRC_EXT);
-	main.PrepareFileForEditor(currFile, insertProj, false, true, false);
+	main.PrepareFileForEditor(currFile, insertProj, false, true, false, 'wxdsgn');
   end;
 
   currFile := ChangeFileExt(BaseFilename, WXFORM_EXT);
-  main.PrepareFileForEditor(currFile, insertProj, false, true, true);
+  main.PrepareFileForEditor(currFile, insertProj, false, true, true, 'wxdsgn');
   
   // EAB TODO: chech if this is correct ***
   {tabSheet := main.GetEditorTabSheet(currFile);
@@ -1640,14 +1645,15 @@ begin
   ParseAndSaveTemplate(strAppRcFile, ChangeFileExt(BaseFilename, RC_EXT), frm);
   
   //Add the application entry source fle
+  // EAB TODO: Something is wrong here... these files should be created only on CreateNewDialogOrFrameCode method.
   currFile := ChangeFileExt(BaseFilename, CPP_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, true, false);
+  main.PrepareFileForEditor(currFile, 0, true, true, false, 'wxdsgn');
 
   currFile := ChangeFileExt(BaseFilename, H_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, false, false);
+  main.PrepareFileForEditor(currFile, 0, true, false, false, 'wxdsgn');
   
   currFile := ChangeFileExt(BaseFilename, RC_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, false, false);
+  main.PrepareFileForEditor(currFile, 0, true, false, false, 'wxdsgn');
 
   //Finally create the form creation code
   CreateNewDialogOrFrameCode(dsgnType, frm, 1);
@@ -2915,10 +2921,6 @@ var
 begin
     editorName := main.GetActiveEditorName;
     Result := trim((editors[ExtractFileName(editorName)] AS TWXEditor).GetDesigner().Wx_Name);
-  {if main.IsEditorAssigned then      
-        Result :=trim(e.GetDesigner().Wx_Name)
-    else
-        Result :='';}
 end;
 
 procedure TWXDsgn.JvInspPropertiesDataValueChanged(Sender: TObject;
@@ -4185,11 +4187,6 @@ begin
  
    end;
 end;
-
-{procedure TWXDsgn.SetPnlBrowsersVisible(b: Boolean);
-begin
-   PnlBrowsers.Visible := b;
-end;}
 
 procedure TWXDsgn.GenerateXPM(s:String; b: Boolean);
 begin

@@ -1081,6 +1081,7 @@ type
     current_max_toolbar_left: Integer;
     current_max_toolbar_top: Integer;
     ToolsMenuOffset: Integer;
+    activePluginProject: String;
     procedure InitPlugins;
     function ListDirectory(const Path: String; Attr: Integer): TStringList;
     function IsEditorAssigned(editorName: String = ''):Boolean;
@@ -1089,14 +1090,14 @@ type
     procedure ReParseFile(FileName: String);
     function GetDMNum:Integer;
     function GetProjectFileName: String;
-    procedure CloseEditorInternal(eX: TEditor);  // <-- EAB Function extracted from CloseEditor
-    function  SaveFileIfModified(EditorFilename: String; extension: String; var isEXAssigned: Boolean): Boolean;   // <-- EAB
+    procedure CloseEditorInternal(eX: TEditor); 
+    function  SaveFileIfModified(EditorFilename: String; extension: String; var isEXAssigned: Boolean): Boolean;
     procedure SaveFileAndCloseEditor(EditorFilename: String; extension: String; Saved:Boolean);
     procedure SaveFileFromEditor(FileName: String);
     procedure ActivateEditor(EditorFilename: String);
     function RetrieveUserName(var buffer: array of char; size: dword): Boolean;
     procedure CreateEditor(strFileN: String; extension: String; InProject: Boolean);
-    procedure PrepareFileForEditor(currFile: String; insertProj: Integer; creatingProject: Boolean; assertMessage: Boolean; alsoReasignEditor: Boolean);  // <-- EAB
+    procedure PrepareFileForEditor(currFile: String; insertProj: Integer; creatingProject: Boolean; assertMessage: Boolean; alsoReasignEditor: Boolean; assocPlugin: String);
     procedure UnSetActiveControl;
     function GetActiveEditorName: String;
     procedure UpdateEditor(filename: String; messageToDysplay: String);
@@ -1307,6 +1308,8 @@ begin
   fFirstShow := True;
 
 {$IFDEF PLUGIN_BUILD}
+
+  activePluginProject := '';
   //Project inspector
   frmProjMgrDock := TForm.Create(self);
   frmProjMgrDock.ParentFont := True;
@@ -2730,9 +2733,6 @@ end;
 function TMainForm.SaveFileInternal(e: TEditor; bParseFile: Boolean = True): Boolean;
 var
     EditorUnitIndex: Integer;
-{$IFDEF PLUGIN_BUILD}
-  	j: Integer;
-{$ENDIF}
 begin
   Result := False;
 
@@ -2755,18 +2755,12 @@ begin
       end;
     end;
 
-{$IFDEF PLUGIN_BUILD}
-  //Just Generate XPM's while saving the file
-  for j := 0 to pluginsCount - 1 do
-  begin
-    if plugins[j].IsForm(e.FileName) then
-        plugins[j].GenerateXPM(e.FileName, false);
-  end;
-{$ENDIF}
+    // EAB Comment: Why should we assert this?
+    //Assert(not e.New, 'The code can call this function only on the premise that ' + 'the editor being saved has a filename.');
 
-    Assert(not e.New, 'The code can call this function only on the premise that ' +
-                      'the editor being saved has a filename.');
-    if (not e.New) and e.Modified then
+    // EAB Comment: Why the file cannot be new? If the user chooses to save it it should be saved.
+    //if (not e.New) and e.Modified then
+    if e.Modified then
     begin
       //OK. The file needs to be saved. But we treat project files differently
       //from standalone files.
@@ -2808,6 +2802,7 @@ begin
 
         if ClassBrowser1.Enabled then
           CppParser1.ReParseFile(e.FileName, False);
+        Result := true;
       end
     end;
 end;
@@ -2889,10 +2884,6 @@ function TMainForm.CloseEditor(index: integer; Rem: boolean): Boolean;
 var
  e: TEditor;
  Saved:Boolean;
-{$IFDEF PLUGIN_BUILD}
- i: Integer;
- b: Boolean;
-{$ENDIF}
 begin
   Saved := false;
   Result := False;
@@ -2902,14 +2893,14 @@ begin
   Result := True;
 
 {$IFDEF PLUGIN_BUILD}
-  b := false;
-  for i := 0 to pluginsCount - 1 do
+  if activePluginProject <> '' then
   begin
-    b := b or plugins[i].SaveFileAndCloseEditor(e.FileName, Saved);
-  end;
-  if not b then
+      if not plugins[unit_plugins[e.AssignedPlugin]].SaveFileAndCloseEditor(e.FileName, Saved) then
+          CloseEditorInternal(e);
+  end
+  else
 {$ENDIF}
-    CloseEditorInternal(e);
+        CloseEditorInternal(e);
 
   PageControl.OnChange(PageControl);
   if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
@@ -3659,9 +3650,11 @@ begin
       end;
       fCompiler.Project := fProject;
 
+      activePluginProject := fProject.AssociatedPlugin;
+
 {$IFDEF PLUGIN_BUILD}
-       for i := 0 to pluginsCount - 1 do
-    	  plugins[i].NewProject(GetTemplate.Name);
+      if activePluginProject <> '' then
+        plugins[unit_plugins[activePluginProject]].NewProject(GetTemplate.Name);
 {$ENDIF}
 
       devCompiler.CompilerSet:=fProject.CurrentProfile.CompilerSet;
@@ -8721,7 +8714,7 @@ begin
 
                 plugin.Initialize(pluginName, pluginModule, Self.Handle, ControlBar1, Self, devDirs.Config, temp_left, temp_top);
                 if(plugin.ManagesUnit) then
-                    unit_plugins[pluginName] := pluginsCount;                
+                    unit_plugins[pluginName] := pluginsCount - 1;
                 {$IFNDEF PLUGIN_TESTING}
             end;
           end;
@@ -8769,9 +8762,9 @@ begin
             end;
 
             c_interface.Initialize(pluginName, pluginModule, Self.Handle, ControlBar1, Self, devDirs.Config, temp_left, temp_top);
-            //if(c_interface.ManagesUnit) then
-                //unit_plugins[pluginName] := pluginsCount;
-            c_interface.TestReport;      // Temporal testing line;  should be removed, or moved to some options dialog for testing plugins. 
+            if(c_interface.ManagesUnit) then
+                unit_plugins[pluginName] := pluginsCount - 1;
+            //c_interface.TestReport;      // Temporal testing line;  should be removed, or moved to some options dialog for testing plugins.
           end;
       end;
   end;     
@@ -9215,7 +9208,7 @@ begin
     GetEditorFromFileName(EditorFilename).Activate;
 end;
 
-procedure TMainForm.PrepareFileForEditor(currFile: String; insertProj: Integer; creatingProject: Boolean; assertMessage: Boolean; alsoReasignEditor: Boolean);
+procedure TMainForm.PrepareFileForEditor(currFile: String; insertProj: Integer; creatingProject: Boolean; assertMessage: Boolean; alsoReasignEditor: Boolean; assocPlugin: String);
 var
   editor: TEditor;
 begin
@@ -9228,7 +9221,7 @@ begin
       CppParser1.AddFileToScan(currFile, true);
 	if alsoReasignEditor then
 	begin
-		editor := fProject.OpenUnit(fProject.Units.Indexof(currFile));
+        editor := fProject.OpenUnit(fProject.Units.Indexof(currFile));
 		editor.Activate;
 	end
 	else
@@ -9237,9 +9230,12 @@ begin
   else if not creatingProject then
   begin
     OpenFile(currFile);
-	if alsoReasignEditor then
-		editor := GetEditorFromFileName(currFile);
+	//if alsoReasignEditor then   //EAB TODO: Huh? this condition does not change anything
+        //editor := GetEditorFromFileName(currFile);
   end;
+  editor := GetEditorFromFileName(currFile);
+  if(editor <> nil) then
+    editor.AssignedPlugin := assocPlugin;
 end;
 
 procedure TMainForm.ChangeProjectProfile(Index: Integer);

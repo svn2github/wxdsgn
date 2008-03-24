@@ -25,7 +25,7 @@ type
   procedure ActivateEditor(EditorFilename: String);
   function RetrieveUserName(var buffer: array of char; size: dword): Boolean;
   procedure CreateEditor(strFileN: String; extension: String; InProject: Boolean);
-  procedure PrepareFileForEditor(currFile: String; insertProj: Integer; creatingProject: Boolean; assertMessage: Boolean; alsoReasignEditor: Boolean);
+  procedure PrepareFileForEditor(currFile: String; insertProj: Integer; creatingProject: Boolean; assertMessage: Boolean; alsoReasignEditor: Boolean; assocPlugin: String);
   procedure UnSetActiveControl;
   function GetActiveEditorName: String;
   procedure UpdateEditor(filename: String; messageToDysplay: String);

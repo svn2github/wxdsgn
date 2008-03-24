@@ -67,7 +67,6 @@ type
   function IsSource(FileName: String): Boolean;
   function GetFilter(editorName: String): String;
   function Get_EXT(editorName: String): String;
-  procedure GenerateXPM(s:String; b: Boolean);
   procedure CreateNewXPMs(strFileName:String);
   procedure NewProject(s: String);
   function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;

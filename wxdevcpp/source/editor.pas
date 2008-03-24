@@ -65,6 +65,7 @@ type
     fRes: boolean;
     fModified: boolean;
     fText: TSynEdit;
+    fPlugin: string;
        
     fTabSheet: TTabSheet;
     fErrorLine: integer;
@@ -182,6 +183,7 @@ type
     property IsRes: boolean read fRes write fRes;
     property Text: TSynEdit read fText write fText;
     property TabSheet: TTabSheet read fTabSheet write fTabSheet;
+    property AssignedPlugin: string read fPlugin write fPlugin;
 
     property CodeToolTip: TDevCodeToolTip read FCodeToolTip; // added on 23rd may 2004 by peter_
    
@@ -258,6 +260,7 @@ begin
   fText.Parent := fTabSheet;
 {$IFDEF PLUGIN_BUILD}
   pluginCatched := false;
+  fPlugin := '';
   for i := 0 to MainForm.pluginsCount - 1 do
   begin
     if MainForm.plugins[i].isForm(ExtractFileName(File_name)) then
