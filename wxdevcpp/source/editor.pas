@@ -580,10 +580,6 @@ begin
 end;
         
 procedure TEditor.Close;
-{$IFDEF PLUGIN_BUILD}
-  var
-    i: Integer;
-{$ENDIF}
 begin
   fText.OnStatusChange := nil;
   fText.OnSpecialLineColors := nil;
@@ -596,11 +592,8 @@ begin
   fText.OnKeyPress := nil;
 
 {$IFDEF PLUGIN_BUILD}
-  for i := 0 to MainForm.pluginsCount - 1 do
-  begin
-    if MainForm.plugins[i].IsForm(FileName) then
-      MainForm.plugins[i].TerminateEditor(FileName);
-  end;
+   if AssignedPlugin <> '' then
+      MainForm.plugins[MainForm.unit_plugins[AssignedPlugin]].TerminateEditor(FileName);
 {$ENDIF}
   try
     Free;

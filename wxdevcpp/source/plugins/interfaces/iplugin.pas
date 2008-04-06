@@ -33,7 +33,7 @@ type
 
   function GetChild: HWND;  // Used on C dll plugins, for control bar toolbars
   procedure OpenFile(s: String);
-  function SaveFile(s: String; var pluginFileExist: Boolean): Boolean;
+  function SaveFile(s: String): Boolean;
   function GetDefaultText(FileName: String): String;
   function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
 
@@ -60,7 +60,7 @@ type
   // Unit aware plugins:
   function IsCurrentPageDesigner: Boolean;
   function HasDesigner(editorName: String): Boolean;
-  function SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
+  function SaveFileAndCloseEditor(s: String): Boolean;
   procedure InitEditor(strFileName: String);
   procedure OpenUnit(s: String);
   function IsForm(s: String): Boolean;

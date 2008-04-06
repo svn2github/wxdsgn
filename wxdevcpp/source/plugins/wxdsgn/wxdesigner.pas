@@ -228,7 +228,7 @@ public
     function LocateFunction(strFunctionName:String):boolean;
 
     // iplugin methods
-    function SaveFileAndCloseEditor(EditorFilename: String; Saved:Boolean):Boolean;
+    function SaveFileAndCloseEditor(EditorFilename: String):Boolean;
     procedure CutExecute;
     procedure CopyExecute;
     procedure PasteExecute;
@@ -251,7 +251,7 @@ public
     procedure SetBoolInspectorDataClear(b: Boolean);
     procedure SetDisablePropertyBuilding(b: Boolean);
     procedure AssignDesignerControl(editorName: String);
-    function SaveFile(EditorFilename: String; var pluginFileExist: Boolean): Boolean;
+    function SaveFile(EditorFilename: String): Boolean;
     procedure ActivateDesigner(s: String);
     function GetLoginName: string;
 
@@ -1171,12 +1171,9 @@ begin
 end;
 
 
-function TWXDsgn.SaveFile(EditorFilename: String; var pluginFileExist: Boolean): Boolean;
-var
-  isEXAssigned: Boolean;
+function TWXDsgn.SaveFile(EditorFilename: String): Boolean;
 begin
     Result := false;
-    isEXAssigned := false;
   //For a wxDev-C++ build, there are a few related editors that must be saved at
   //the same time.
   
@@ -1187,15 +1184,13 @@ begin
 	//The current file is a form and has related files. If we save the form, all
     //the related files needs to be saved at the same time.	
     begin
-        pluginFileExist := True;
         if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
         begin
-            Result := main.SaveFileIfModified(EditorFilename, WXFORM_EXT, isEXAssigned);
+            Result := main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, WXFORM_EXT));
 
-            //Just Generate XPM's while saving the file  EAB TODO: this was moved from Mainform's SaveFileInternal. Test it.
+            //Just Generate XPM's while saving the file  EAB TODO: this was moved from Mainform's SaveFileInternal. Not sure about the difference between GenerateXPM and CreateNewXPMs.
             GenerateXPM(EditorFilename, false);
-
-            if isEXAssigned then
+            if editors.Exists(EditorFilename) then
                 (editors[ExtractFileName(ChangeFileExt(EditorFilename, WXFORM_EXT))] AS TWXEditor).GetDesigner.CreateNewXPMs(EditorFilename);
         end;
 
@@ -1206,7 +1201,7 @@ begin
         begin
 			if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
 			begin
-				Result := Result and main.SaveFileIfModified(EditorFilename, XRC_EXT, isEXAssigned);
+				Result := Result and main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
 			end;
         end
 		else ;
@@ -1215,30 +1210,37 @@ begin
 
         if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
         begin
-            Result := Result and main.SaveFileIfModified(EditorFilename, H_EXT, isEXAssigned);
+            Result := Result and main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, H_EXT));
         end;
 
         if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
         begin
-            Result := Result and main.SaveFileIfModified(EditorFilename, CPP_EXT, isEXAssigned);
+            Result := Result and main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
         end;
 
     end
 end;
 
-function TWXDsgn.SaveFileAndCloseEditor(EditorFilename: String; Saved:Boolean):Boolean;
+function TWXDsgn.SaveFileAndCloseEditor(EditorFilename: String):Boolean;
 var
   flag:Boolean;
 
 begin
   flag := False;
-  if FileExists(ChangeFileExt(EditorFilename,WXFORM_EXT)) then 
+  if FileExists(ChangeFileExt(EditorFilename,WXFORM_EXT)) then
   begin
     flag := True;
-    main.SaveFileAndCloseEditor(EditorFilename, CPP_EXT, Saved);
-    main.SaveFileAndCloseEditor(EditorFilename, H_EXT, Saved);
-    main.SaveFileAndCloseEditor(EditorFilename, WXFORM_EXT, Saved);
-    main.SaveFileAndCloseEditor(EditorFilename, XRC_EXT, Saved);
+    main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
+
+    main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, H_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(EditorFilename, H_EXT));
+
+    main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, WXFORM_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(EditorFilename, WXFORM_EXT));
+
+    main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
   end;
 
   Result := flag;
@@ -1645,15 +1647,14 @@ begin
   ParseAndSaveTemplate(strAppRcFile, ChangeFileExt(BaseFilename, RC_EXT), frm);
   
   //Add the application entry source fle
-  // EAB TODO: Something is wrong here... these files should be created only on CreateNewDialogOrFrameCode method.
   currFile := ChangeFileExt(BaseFilename, CPP_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, true, false, 'wxdsgn');
+  main.PrepareFileForEditor(currFile, 0, true, true, false, '');
 
   currFile := ChangeFileExt(BaseFilename, H_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, false, false, 'wxdsgn');
-  
+  main.PrepareFileForEditor(currFile, 0, true, false, false, '');
+
   currFile := ChangeFileExt(BaseFilename, RC_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, false, false, 'wxdsgn');
+  main.PrepareFileForEditor(currFile, 0, true, false, false, '');
 
   //Finally create the form creation code
   CreateNewDialogOrFrameCode(dsgnType, frm, 1);
@@ -3195,11 +3196,11 @@ begin
       begin
         if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
           //This wont open a new editor window
-          main.SaveFileFromEditor(ChangeFileExt(editorName, H_EXT));
+          main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), true);
 
         if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
           //This wont open a new editor window
-          main.SaveFileFromEditor(ChangeFileExt(editorName, CPP_EXT));
+          main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), true);
       end;
 
       //TODO: Guru: add code to make sure the files are saved properly
@@ -3263,12 +3264,10 @@ begin
       end;
 
       if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
-        if main.IsEditorModified(ChangeFileExt(editorName, H_EXT)) then
-          main.SaveFileFromEditor(ChangeFileExt(editorName, H_EXT));
+          main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), true);
 
       if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
-        if main.IsEditorModified(ChangeFileExt(editorName, CPP_EXT)) then
-          main.SaveFileFromEditor(ChangeFileExt(editorName, CPP_EXT));
+          main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), true);
       
       if SelectedComponent <> nil then
       begin
@@ -3488,19 +3487,16 @@ begin
         Exit;
     
     Result:=true;
-    if main.IsEditorModified(editorName) then
-        main.SaveFileFromEditor(editorName);
+    main.SaveFileFromPlugin(editorName, true);
 
     if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
     begin
-        if main.IsEditorModified(ChangeFileExt(editorName, H_EXT)) then
-            main.SaveFileFromEditor(ChangeFileExt(editorName, H_EXT));
+        main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), true);
     end;
 
     if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
     begin
-        if main.IsEditorModified(ChangeFileExt(editorName, CPP_EXT)) then
-            main.SaveFileFromEditor(ChangeFileExt(editorName, CPP_EXT));
+        main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), true);
     end;
 end;
 
@@ -3954,8 +3950,7 @@ begin
     begin
         if main.IsEditorAssigned(hppEditor) then
         begin 
-            if main.IsEditorModified(hppEditor) then
-                main.SaveFileFromEditor(hppEditor);
+            main.SaveFileFromPlugin(hppEditor, true);
         end;
     end;
 
@@ -3964,15 +3959,11 @@ begin
     begin
         if main.IsEditorAssigned(cppEditor) then
         begin
-            if  main.IsEditorModified(cppEditor) then
-                main.SaveFileFromEditor(cppEditor);
+            main.SaveFileFromPlugin(cppEditor, true);
         end;
     end;
 
-    if main.IsEditorModified(editorName) then
-    begin
-        main.SaveFileFromEditor(editorName);
-    end;
+    main.SaveFileFromPlugin(editorName, true);
 
     with TCreationOrderForm.Create(Self) do
     try
@@ -3992,7 +3983,7 @@ begin
     //Save form file
     main.SetEditorModified(editorName, true);
 
-    main.SaveFileFromEditor(editorName);
+    main.SaveFileFromPlugin(editorName, true);
     (editors[ExtractFileName(editorName)] AS TWXEditor).ReloadForm;
     UpdateDesignerData(editorName);
 
@@ -4000,8 +3991,7 @@ begin
     begin
         if main.IsEditorAssigned(hppEditor) then
         begin
-            if main.IsEditorModified(hppEditor) then
-                main.SaveFileFromEditor(hppEditor);
+            main.SaveFileFromPlugin(hppEditor, true);
         end;
     end;
 
@@ -4009,15 +3999,11 @@ begin
     begin
         if main.IsEditorAssigned(cppEditor) then
         begin
-            if  main.IsEditorModified(cppEditor) then
-                main.SaveFileFromEditor(cppEditor);
+            main.SaveFileFromPlugin(cppEditor, true);
         end;
     end;
 
-    if main.IsEditorModified(editorName) then
-    begin
-        main.SaveFileFromEditor(editorName);
-    end;
+    main.SaveFileFromPlugin(editorName, true);
 
     ELDesigner1.DesignControl := (editors[ExtractFileName(editorName)] AS TWXEditor).GetDesigner;
     BuildComponentList((editors[ExtractFileName(editorName)] AS TWXEditor).GetDesigner);
@@ -4190,7 +4176,8 @@ end;
 
 procedure TWXDsgn.GenerateXPM(s:String; b: Boolean);
 begin
-    Designerfrm.GenerateXPM((editors[ExtractFileName(s)] AS TWXEditor).GetDesigner, s, b);
+    if editors.Exists(s) then
+        Designerfrm.GenerateXPM((editors[ExtractFileName(s)] AS TWXEditor).GetDesigner, s, b);
 end;
 
 procedure TWXDsgn.SetBoolInspectorDataClear(b: Boolean);
@@ -4244,9 +4231,24 @@ end;
 
 procedure TWXDsgn.TerminateEditor(FileName: String);
 begin
-    (editors[ExtractFileName(FileName)] AS TWXEditor).Terminate;
+
+  // EAB Comment: This seems unnecesary
+  {if FileExists(ChangeFileExt(FileName,WXFORM_EXT)) then
+  begin
+    main.SaveFileFromPlugin(ChangeFileExt(FileName, CPP_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(FileName, CPP_EXT));
+
+    main.SaveFileFromPlugin(ChangeFileExt(FileName, H_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(FileName, H_EXT));
+
+    main.SaveFileFromPlugin(ChangeFileExt(FileName, XRC_EXT));
+    main.CloseEditorFromPlugin(ChangeFileExt(FileName, XRC_EXT));
+  end;  }
     if(editors.Exists(ExtractFileName(FileName))) then
+    begin
+     (editors[ExtractFileName(FileName)] AS TWXEditor).Terminate;
       editors.Delete(ExtractFileName(FileName));
+    end;
 end;
 
 procedure TWXDsgn.Destroy;

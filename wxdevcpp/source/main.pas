@@ -1035,7 +1035,7 @@ type
     procedure AddDebugVar(s: string; when: TWatchBreakOn);
     procedure GotoTopOfStackTrace;
     procedure SetProjCompOpt(idx: integer; Value: boolean);// set project's compiler option indexed 'idx' to value 'Value'
-    function CloseEditor(index: integer; Rem: boolean): Boolean;
+    function CloseEditor(index: integer; Rem: boolean; all: Boolean = FALSE): Boolean;
 
     //Debugger stuff
     procedure AddBreakPointToList(line_number: integer; e: TEditor);
@@ -1090,10 +1090,9 @@ type
     procedure ReParseFile(FileName: String);
     function GetDMNum:Integer;
     function GetProjectFileName: String;
-    procedure CloseEditorInternal(eX: TEditor); 
-    function  SaveFileIfModified(EditorFilename: String; extension: String; var isEXAssigned: Boolean): Boolean;
-    procedure SaveFileAndCloseEditor(EditorFilename: String; extension: String; Saved:Boolean);
-    procedure SaveFileFromEditor(FileName: String);
+    procedure CloseEditorInternal(eX: TEditor);
+    function SaveFileFromPlugin(FileName: String; forcing: Boolean = FALSE): Boolean;
+    procedure CloseEditorFromPlugin(FileName: String);
     procedure ActivateEditor(EditorFilename: String);
     function RetrieveUserName(var buffer: array of char; size: dword): Boolean;
     procedure CreateEditor(strFileN: String; extension: String; InProject: Boolean);
@@ -2728,8 +2727,6 @@ end;
   //SaveFileInternal will take the editor E and do all the checks before actually
   //saving the file to disk. This is an anonymous function because we shouldn't
   //be calling this anywhere else! (Call SaveFile instead)
-  // EAB note: I moved the function back out so it can be called from the
-  //"SaveFileIfModified" method, back from the designer plugin.
 function TMainForm.SaveFileInternal(e: TEditor; bParseFile: Boolean = True): Boolean;
 var
     EditorUnitIndex: Integer;
@@ -2809,24 +2806,16 @@ end;
 
 
 function TMainForm.SaveFile(e: TEditor): Boolean;
-{$IFDEF PLUGIN_BUILD}
-var
-  i: Integer;
-  pluginFileExist: Boolean;
-{$ENDIF}
 begin
     Result := True;
-    pluginFileExist := false;
 
     if not assigned(e) then
         exit;
 
   {$IFDEF PLUGIN_BUILD}
-  for i := 0 to pluginsCount - 1 do
-  begin
-      Result := plugins[i].SaveFile(e.FileName, pluginFileExist) or result;
-  end;
-  if(pluginFileExist = false) then
+  if(e.AssignedPlugin <> '') then
+      plugins[unit_plugins[e.AssignedPlugin]].SaveFile(e.FileName)
+  else
    {$ENDIF}
         Result := SaveFileInternal(e);
 
@@ -2880,7 +2869,7 @@ procedure TMainForm.CloseEditorInternal(eX: TEditor);
     end;
 end;
 
-function TMainForm.CloseEditor(index: integer; Rem: boolean): Boolean;
+function TMainForm.CloseEditor(index: integer; Rem: boolean; all: boolean = FALSE): Boolean;
 var
  e: TEditor;
  Saved:Boolean;
@@ -2893,14 +2882,14 @@ begin
   Result := True;
 
 {$IFDEF PLUGIN_BUILD}
-  if activePluginProject <> '' then
+  if (e.AssignedPlugin <> '') and (all = FALSE) then
   begin
-      if not plugins[unit_plugins[e.AssignedPlugin]].SaveFileAndCloseEditor(e.FileName, Saved) then
+      if not plugins[unit_plugins[e.AssignedPlugin]].SaveFileAndCloseEditor(e.FileName) then
           CloseEditorInternal(e);
   end
   else
 {$ENDIF}
-        CloseEditorInternal(e);
+  CloseEditorInternal(e);
 
   PageControl.OnChange(PageControl);
   if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
@@ -3473,9 +3462,6 @@ var
   pt: TPoint;
   e: TEditor;
   AlreadyActivated:boolean;
-{$IFDEF PLUGIN_BUILD}
-  j: Integer;
-{$ENDIF}  
 begin
   AlreadyActivated := false;
   if assigned(ProjectView.Selected) then
@@ -3504,9 +3490,9 @@ begin
         e := fProject.OpenUnit(i);
       if assigned(e) then
       begin
-{$IFDEF PLUGIN_BUILD}  // EAB TODO: Add exclusive flag for plugin functionality for multuiple plugins
-       for j := 0 to pluginsCount - 1 do
-	        plugins[j].OpenUnit(e.FileName);
+{$IFDEF PLUGIN_BUILD}
+         if(e.AssignedPlugin <> '') then
+           plugins[unit_plugins[e.AssignedPlugin]].OpenUnit(e.FileName);
 {$ENDIF}
         if AlreadyActivated = false then
           e.Activate;
@@ -3829,7 +3815,7 @@ var
   idx: integer;
 begin
   for idx := pred(PageControl.PageCount) downto 0 do
-    if not CloseEditor(0, True) then
+    if not CloseEditor(0, TRUE, TRUE) then
       Break;
 
   // if no project is open, clear the parsed info...
@@ -7888,9 +7874,7 @@ begin
   for i := 0 to PageControl.PageCount - 1 do
   begin
     e := GetEditor(i);
-    if not Assigned(e) then
-      Continue
-    else
+    if Assigned(e) then
     begin
       if SameFileName(e.FileName, strFile) then
       begin
@@ -9149,49 +9133,49 @@ begin
     end
 end;
 
-function TMainForm.SaveFileIfModified(EditorFilename: String; extension: String; var isEXAssigned: Boolean): Boolean;
-var
-    CurrEditor:TEditor;
-begin
-    Result := False;
-	
-    CurrEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, extension));
-    if assigned(CurrEditor) then
-    begin
-
-    	// EAB Comment: Is this check necesary? disabled for now.
-    	//The current editor must be a form
-        //Assert(CurrEditor.isForm);
-    	
-        if CurrEditor.Modified then
-        begin
-            Result := SaveFileInternal(CurrEditor, false);
-        end;
-        isEXAssigned := True;        	
-    end;
-end;
-
 procedure TMainForm.ReParseFile(FileName: String);
 begin
     if ClassBrowser1.Enabled then
         CppParser1.ReParseFile(FileName,true);
 end;
 
-procedure TMainForm.SaveFileAndCloseEditor(EditorFilename: String; extension: String; Saved:Boolean);
+function TMainForm.SaveFileFromPlugin(FileName: String; forcing: Boolean = FALSE): Boolean;
+ var
+   e: TEditor;
+ begin
+   Result := False;
+   if FileExists(FileName) then
+   begin
+     e := GetEditorFromFileName(FileName);
+
+     if not Assigned(e) and forcing = TRUE then
+     begin
+       OpenFile(FileName, true);
+       e := GetEditorFromFileName(FileName);
+     end;
+
+     if Assigned(e) then
+        Result := SaveFileInternal(e, false);
+   end;
+end;
+
+procedure TMainForm.CloseEditorFromPlugin(FileName: String);
 var
   tempEditor:TEditor;
 begin
-    tempEditor := MainForm.GetEditorFromFileName(ChangeFileExt(EditorFilename, extension), True);
-    if assigned(tempEditor) then begin
-        if Saved then begin
-            tempEditor.Modified := true;
-            SaveFile(tempEditor);
-        end
-        Else
-            tempEditor.Modified := false;
+    tempEditor := GetEditorFromFileName(FileName, True);
+    if assigned(tempEditor) then
         CloseEditorInternal(tempEditor);
-    end;
 end;
+
+{procedure CloseEditor(EditorFilename: String; extension: String);
+var
+  tempEditor:TEditor;
+begin
+    tempEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, extension), True);
+    if assigned(tempEditor) then
+        CloseEditorInternal(tempEditor);
+end; }
 
 function TMainForm.OpenUnitInProject(s: String): Boolean;
 begin
@@ -9288,25 +9272,6 @@ end;
 function TMainForm.GetProjectFileName:String;
 begin
     Result := fProject.FileName;
-end;
-
-procedure TMainForm.SaveFileFromEditor(FileName: String);
- var
-   e: TEditor;
- begin
-   if FileExists(FileName) then
-   begin
-     e := GetEditorFromFileName(FileName);
-
-     if not Assigned(e) then
-     begin
-       OpenFile(FileName, true);
-       e := GetEditorFromFileName(FileName);
-     end;
-
-     if Assigned(e) then
-        SaveFile(e);
-   end;
 end;
 
 function TMainForm.RetrieveUserName(var buffer: array of char; size: dword): Boolean;

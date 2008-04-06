@@ -1019,8 +1019,8 @@ begin
         // Replace any %DEVCPP_DIR% in files with actual devcpp directory path
         fProfiles[0].Compiler := StringReplace(Read(C_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
         fProfiles[0].CppCompiler := StringReplace(Read(CPP_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]);
-        for i := 0 to MainForm.pluginsCount - 1 do
-            fProfiles[0].Linker := MainForm.plugins[i].ConvertLibsToCurrentVersion(StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]));   // EAB TODO: This is wrong. Think for a solution for multiple plugins
+        if self.AssociatedPlugin <> '' then
+            fProfiles[0].Linker := MainForm.plugins[MainForm.unit_plugins[AssociatedPlugin]].ConvertLibsToCurrentVersion(StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]));   
             //fProfiles[0].Linker := ConvertLibsToCurrentVersion(StringReplace(Read(LINKER_INI_LABEL, ''), '%DEVCPP_DIR%', devDirs.Exec, [rfReplaceAll]));
         fProfiles[0].PreprocDefines := Read(PREPROC_INI_LABEL, '');
 

@@ -36,12 +36,12 @@ type
     C_HasDesigner: function: Boolean; cdecl;
     C_ManagesUnit: function: Boolean; cdecl;
 
-    C_SaveFileAndCloseEditor: function(s: PChar; b: Boolean): Boolean; cdecl;
+    C_SaveFileAndCloseEditor: function(s: PChar): Boolean; cdecl;
     C_InitEditor: procedure(strFileName: PChar); cdecl;
     C_OpenFile: procedure(s: PChar); cdecl;
     C_OpenUnit: procedure(s: PChar); cdecl;
     C_IsForm: function(s: PChar): Boolean; cdecl;
-    C_SaveFile: function(s: PChar; var b: Boolean): Boolean; cdecl;
+    C_SaveFile: function(s: PChar): Boolean; cdecl;
     C_IsSource: function(FileName: PChar): Boolean; cdecl;
     C_GetDefaultText: function(FileName: PChar): PChar; cdecl;
     C_GetFilter: function(editorName: PChar): PChar; cdecl;
@@ -89,12 +89,12 @@ type
     function GetChild: HWND;
     function HasDesigner(editorName: String): Boolean;
 
-    function SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
+    function SaveFileAndCloseEditor(s: String): Boolean;
     procedure InitEditor(strFileName: String);
     procedure OpenFile(s: String);
     procedure OpenUnit(s: String);
     function IsForm(s: String): Boolean;
-    function SaveFile(s: String; var b: Boolean): Boolean;
+    function SaveFile(s: String): Boolean;
     function IsSource(FileName: String): Boolean;
     function GetDefaultText(FileName: String): String;
     function GetFilter(editorName: String): String;
@@ -328,10 +328,10 @@ begin
         Result := False;
 end;
 
-function TPlug_In_DLL.SaveFileAndCloseEditor(s: String; b: Boolean): Boolean;
+function TPlug_In_DLL.SaveFileAndCloseEditor(s: String): Boolean;
 begin
     if (@self.C_SaveFileAndCloseEditor <> nil) then
-        Result := self.C_SaveFileAndCloseEditor(PChar(s), b)
+        Result := self.C_SaveFileAndCloseEditor(PChar(s))
     else
         Result := False;
 end;
@@ -361,10 +361,10 @@ begin
         Result := False;
 end;
 
-function TPlug_In_DLL.SaveFile(s: String; var b: Boolean): Boolean;
+function TPlug_In_DLL.SaveFile(s: String): Boolean;
 begin
     if (@self.C_SaveFile <> nil) then
-        Result := self.C_SaveFile(PChar(s), b) // EAB TODO: Check for the proper parameter for returning values in "b"
+        Result := self.C_SaveFile(PChar(s)) 
     else
         Result := False;
 end;

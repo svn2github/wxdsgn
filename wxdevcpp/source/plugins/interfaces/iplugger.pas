@@ -10,18 +10,17 @@ type
   IPlug = interface(IInterface) ['{DF833707-BDDA-438F-8B50-B2F406943F41}']
   function IsEditorAssigned(editorName: String = ''):Boolean;
   function IsProjectAssigned:Boolean;
-	function IsProjectNotNil: Boolean;
+  function IsProjectNotNil: Boolean;
   function GetDMNum:Integer;
   function GetProjectFileName:String;
   procedure ParseCustomCmdLine(strLst:TStringList); //Added By Guru
-	procedure ReParseFile(FileName: String);
+  procedure ReParseFile(FileName: String);
   function IsClassBrowserEnabled:Boolean;
   procedure OpenFile(s: String; withoutActivation: Boolean = false); // Modified for plugins
-	function OpenUnitInProject(s: String): Boolean;
-	function FileAlreadyExistsInProject(s: String): Boolean;
-  procedure SaveFileFromEditor(FileName: String);
-  function SaveFileIfModified(EditorFilename: String; extension: String; var isEXAssigned: Boolean): Boolean;
-  procedure SaveFileAndCloseEditor(EditorFilename: String; extension: String; Saved:Boolean);
+  function OpenUnitInProject(s: String): Boolean;
+  function FileAlreadyExistsInProject(s: String): Boolean;
+  function SaveFileFromPlugin(FileName: String; forcing: Boolean = FALSE): Boolean;
+  procedure CloseEditorFromPlugin(FileName: String);
   procedure ActivateEditor(EditorFilename: String);
   function RetrieveUserName(var buffer: array of char; size: dword): Boolean;
   procedure CreateEditor(strFileN: String; extension: String; InProject: Boolean);
@@ -33,7 +32,7 @@ type
   function GetEditorText(FileName: String): TSynEdit;
   function IsFileOpenedInEditor(strFile: string): Boolean;
   function IsEditorModified(FileName: String): Boolean;
-	function isFunctionAvailableInEditor(intClassID: Integer; strFunctionName: String; var intLineNum: Integer; var strFname: String): boolean;
+  function isFunctionAvailableInEditor(intClassID: Integer; strFunctionName: String; var intLineNum: Integer; var strFname: String): boolean;
   function isFunctionAvailable(intClassID:Integer;strFunctionName:String):boolean;
   function FindStatementID(strClassName: string; var boolFound: Boolean): Integer;
   procedure TouchEditor(editorName: String);
@@ -52,16 +51,16 @@ type
   function IsUsingXPTheme: Boolean;
   function GetConfig: String;
   function GetExec: String;
-	procedure ChangeProjectProfile(Index: Integer);
-	function GetUntitledFileName: String;
-	function GetDevDirsConfig: String;
-	function GetDevDirsDefault: String;
-	function GetDevDirsTemplates: String;
-	function GetDevDirsExec: String;
-	function GetCompilerProfileNames(var defaultProfileIndex: Integer): TStrings;
-	function GetRealPathFix(BrokenFileName: String; Directory: String = ''): String;
-	procedure SetPageControlActivePageEditor(editorName: String);
-	procedure ToggleDockForm(form: TForm; b: Boolean);
+  procedure ChangeProjectProfile(Index: Integer);
+  function GetUntitledFileName: String;
+  function GetDevDirsConfig: String;
+  function GetDevDirsDefault: String;
+  function GetDevDirsTemplates: String;
+  function GetDevDirsExec: String;
+  function GetCompilerProfileNames(var defaultProfileIndex: Integer): TStrings;
+  function GetRealPathFix(BrokenFileName: String; Directory: String = ''): String;
+  procedure SetPageControlActivePageEditor(editorName: String);
+  procedure ToggleDockForm(form: TForm; b: Boolean);
 	
   end;
 
