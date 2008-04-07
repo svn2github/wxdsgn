@@ -489,14 +489,14 @@ begin
              
     //Call the post-change event handler
 {$IFDEF PLUGIN_BUILD}
-  pluginCatched := false;
-  for i := 0 to MainForm.pluginsCount - 1 do
-  begin
-    if MainForm.plugins[i].isForm(ExtractFileName(fFileName)) then
-      pluginCatched := true;
-  end;
+ // pluginCatched := false;
+ // for i := 0 to MainForm.pluginsCount - 1 do
+ // begin
+ //   if MainForm.plugins[i].isForm(ExtractFileName(fFileName)) then
+ //     pluginCatched := true;
+ // end;
 {$ENDIF}
-    if MainForm.ClassBrowser1.Enabled {$IFDEF PLUGIN_BUILD} or pluginCatched {$ENDIF} then
+    if MainForm.ClassBrowser1.Enabled {$IFDEF PLUGIN_BUILD} or (AssignedPlugin <> '') {$ENDIF} then
       MainForm.PageControl.OnChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent
   end;
 end;

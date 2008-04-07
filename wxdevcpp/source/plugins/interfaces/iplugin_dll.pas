@@ -32,7 +32,6 @@ type
     C_OnToolbarEvent: procedure(WM_COMMAND: Word); cdecl;
     C_SetBoolInspectorDataClear: procedure(b: Boolean); cdecl;
     C_SetDisablePropertyBuilding: procedure(b: Boolean); cdecl;
-    C_IsCurrentPageDesigner: function: Boolean; cdecl;
     C_HasDesigner: function: Boolean; cdecl;
     C_ManagesUnit: function: Boolean; cdecl;
 
@@ -48,8 +47,8 @@ type
     C_Get_EXT: function(editorName: PChar): PChar; cdecl;
     C_CreateNewXPMs: procedure(s:PChar); cdecl;
     C_NewProject: procedure(s: PChar); cdecl;
-    C_MainPageChanged: function(askIfShouldGetFocus: Boolean; FileName: PChar): Boolean; cdecl;
-    C_IsCurrentEditorInPlugin: function(FileName: PChar; curFilename: PChar): Boolean; cdecl;
+    C_MainPageChanged: function(activeEditorName: PChar): Boolean; cdecl;
+    C_ShouldNotCloseEditor: function(FileName: PChar; curFilename: PChar): Boolean; cdecl;
 
     C_Reload: procedure(FileName: PChar); cdecl;
     C_ReloadForm: function(FileName: PChar): Boolean; cdecl;
@@ -83,7 +82,6 @@ type
     procedure OnToolbarEvent(WM_COMMAND: Word);
     procedure SetBoolInspectorDataClear(b: Boolean);
     procedure SetDisablePropertyBuilding(b: Boolean);
-    function IsCurrentPageDesigner: Boolean;
     function IsDelphiPlugin: Boolean;
     function ManagesUnit: Boolean;
     function GetChild: HWND;
@@ -101,8 +99,8 @@ type
     function Get_EXT(editorName: String): String;
     procedure CreateNewXPMs(s:String);
     procedure NewProject(s: String);
-    function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
-    function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
+    function MainPageChanged(activeEditorName: String): Boolean;
+    function ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean;
     procedure Reload(FileName: String);
     function  ReloadForm(FileName: String): Boolean;
     procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
@@ -145,7 +143,6 @@ begin
     @self.C_OnToolbarEvent := nil;
     @self.C_SetBoolInspectorDataClear := nil;
     @self.C_SetDisablePropertyBuilding := nil;
-    @self.C_IsCurrentPageDesigner := nil;
     @self.C_HasDesigner := nil;
     @self.C_ManagesUnit := nil;
 
@@ -162,7 +159,7 @@ begin
     @self.C_CreateNewXPMs := nil;
     @self.C_NewProject := nil;
     @self.C_MainPageChanged := nil;
-    @self.C_IsCurrentEditorInPlugin := nil;
+    @self.C_ShouldNotCloseEditor := nil;
     @self.C_Reload := nil;
     @self.C_ReloadForm := nil;
     @self.C_ReloadFromFile := nil;
@@ -194,7 +191,6 @@ begin
     @self.C_OnToolbarEvent := GetProcAddress(module, 'OnToolbarEvent');
     @self.C_SetBoolInspectorDataClear := GetProcAddress(module, 'SetBoolInspectorDataClear');
     @self.C_SetDisablePropertyBuilding := GetProcAddress(module, 'SetDisablePropertyBuilding');
-    @self.C_IsCurrentPageDesigner := GetProcAddress(module, 'IsCurrentPageDesigner');
     @self.C_HasDesigner := GetProcAddress(module, 'HasDesigner');
     @self.C_ManagesUnit := GetProcAddress(module, 'ManagesUnit');
 
@@ -211,7 +207,7 @@ begin
     @self.C_CreateNewXPMs := GetProcAddress(module, 'CreateNewXPMs');
     @self.C_NewProject := GetProcAddress(module, 'NewProject');
     @self.C_MainPageChanged := GetProcAddress(module, 'MainPageChanged');
-    @self.C_IsCurrentEditorInPlugin := GetProcAddress(module, 'IsCurrentEditorInPlugin');
+    @self.C_ShouldNotCloseEditor := GetProcAddress(module, 'ShouldNotCloseEditor');
     @self.C_Reload := GetProcAddress(module, 'Reload');
     @self.C_ReloadForm := GetProcAddress(module, 'ReloadForm');
     @self.C_ReloadFromFile := GetProcAddress(module, 'ReloadFromFile');
@@ -300,14 +296,6 @@ procedure TPlug_In_DLL.SetDisablePropertyBuilding(b: Boolean);
 begin
     if (@self.C_SetDisablePropertyBuilding <> nil) then
         self.C_SetDisablePropertyBuilding(b);
-end;
-
-function TPlug_In_DLL.IsCurrentPageDesigner: Boolean;
-begin
-    if (@self.C_IsCurrentPageDesigner <> nil) then
-        Result := self.C_IsCurrentPageDesigner
-    else
-        Result := False;
 end;
 
 function TPlug_In_DLL.IsDelphiPlugin: Boolean;
@@ -425,18 +413,18 @@ begin
         self.C_NewProject(PChar(s));
 end;
 
-function TPlug_In_DLL.MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
+function TPlug_In_DLL.MainPageChanged(activeEditorName: String): Boolean;
 begin
     if (@self.C_MainPageChanged <> nil) then
-        Result := self.C_MainPageChanged(askIfShouldGetFocus, PChar(FileName))
+        Result := self.C_MainPageChanged(PChar(activeEditorName))
     else
         Result := False;
 end;
 
-function TPlug_In_DLL.IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
+function TPlug_In_DLL.ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean;
 begin
-    if (@self.C_IsCurrentEditorInPlugin <> nil) then
-        Result := self.C_IsCurrentEditorInPlugin(PChar(FileName), PChar(curFilename))
+    if (@self.C_ShouldNotCloseEditor <> nil) then
+        Result := self.C_ShouldNotCloseEditor(PChar(FileName), PChar(curFilename))
     else
         Result := False;
 end;

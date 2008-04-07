@@ -1,6 +1,5 @@
 unit wxdesigner;
- {EAB TODO: Add an "active state" API for plugins, so you can write default and excluyent plugins for certain actions, like when installed multiple designers so
- they don't mess with each other. ie: when opening "Units" 2 different designers don't try to open the unit.}
+
 interface
 
 uses
@@ -264,8 +263,8 @@ public
     procedure OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
     function IsSource(FileName: String): Boolean;
     function GetDefaultText(FileName: String): String;
-    function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
-    function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
+    function MainPageChanged(FileName: String): Boolean;
+    function ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean;
     function HasDesigner(editorName: String): Boolean;
     function ManagesUnit: Boolean;
 
@@ -1548,15 +1547,6 @@ begin
   currFile := ChangeFileExt(BaseFilename, WXFORM_EXT);
   main.PrepareFileForEditor(currFile, insertProj, false, true, true, 'wxdsgn');
   
-  // EAB TODO: chech if this is correct ***
-  {tabSheet := main.GetEditorTabSheet(currFile);
-  text := main.GetEditorText(currFile);
-  editor := TWXEditor.Create;
-  editors[currFile] := editor;
-  editor.Init(tabSheet, text, DesignerPopup, True, currFile); }
-  // text.Highlighter := dmMain.Res;  <-- EAB TODO: enable this here or in wxeditor's Init  
-  // End check  ***	
-
   UpdateDesignerData(currFile);
 
   if not main.IsClassBrowserEnabled then
@@ -3110,7 +3100,7 @@ begin
   if not Assigned(wx) then
     Result := false
   else
-    Result := True;
+    Result := true;
 end;
 
 function TWXDsgn.IsDelphiPlugin: Boolean;
@@ -3331,7 +3321,8 @@ begin
     strClassesLst := TStringList.Create;
     try
       strClassesLst.Sorted := True;
-      main.GetFunctionsFromSource(GetCurrentDesignerForm().Wx_Name, strClassesLst);
+      if IsCurrentPageDesigner then
+          main.GetFunctionsFromSource(GetCurrentDesignerForm().Wx_Name, strClassesLst);
       Value.AddStrings(strClassesLst);
     finally
       strClassesLst.Destroy;
@@ -3344,7 +3335,8 @@ begin
     strClassesLst := TStringList.Create;
     try
       strClassesLst.Sorted := True;
-      main.GetFunctionsFromSource(GetCurrentDesignerForm().Wx_Name, strClassesLst);
+      if IsCurrentPageDesigner then
+          main.GetFunctionsFromSource(GetCurrentDesignerForm().Wx_Name, strClassesLst);
       Value.AddStrings(strClassesLst);
     finally
       strClassesLst.Destroy;
@@ -4285,13 +4277,11 @@ begin
     Result := (editors[s] AS TWXEditor).GetDefaultText;;
 end;
 
-function TWXDsgn.MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
+function TWXDsgn.MainPageChanged(FileName: String): Boolean;
 begin
     Result := false;
-    if askIfShouldGetFocus then
-	  begin
-      if IsForm(FileName) then
-      begin
+    if IsForm(FileName) then
+    begin
         //Show a busy cursor
         Screen.Cursor := crHourglass;
         Application.ProcessMessages;
@@ -4301,13 +4291,12 @@ begin
         ActivateDesigner(ExtractFileName(FileName));
         Screen.Cursor := crDefault;
         Result := true;
-      end;
-	  end
-	  else
+    end
+    else
     begin
         if ELDesigner1.Active then
             DisableDesignerControls;
-	  end;
+    end;
 end;
 
 procedure TWXDsgn.OnToolbarEvent(WM_COMMAND: Word);
@@ -4428,10 +4417,12 @@ begin
     Result := 0;
 end;
 
-function TWXDsgn.IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
+function TWXDsgn.ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean;
 begin
 	Result := false;
     if (AnsiLowerCase(ChangeFileExt(FileName, WXFORM_EXT)) = curFilename) or
+       (AnsiLowerCase(ChangeFileExt(FileName, H_EXT)) = curFilename) or
+       (AnsiLowerCase(ChangeFileExt(FileName, CPP_EXT)) = curFilename) or
        (AnsiLowerCase(ChangeFileExt(FileName, XRC_EXT)) = curFilename) then
 	   Result := true;
 end;

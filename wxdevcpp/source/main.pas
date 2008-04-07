@@ -1385,9 +1385,9 @@ begin
   If tbClasses.Left > current_max_toolbar_left then current_max_toolbar_left := tbClasses.Left;
   If tbClasses.Top > current_max_toolbar_top then current_max_toolbar_top := tbClasses.Top;
 
-  XPMenu.Active := true;     // EAB TODO: Prevent XPMenu to screw plugin Controls *Hackish*
+  XPMenu.Active := true;     // EAB Comment: Prevent XPMenu to screw plugin Controls *Hackish*
   InitPlugins;
-  XPMenu.Active := devData.XPTheme;     // EAB TODO: Reload XPMenu stuff
+  XPMenu.Active := devData.XPTheme;     // EAB Comment: Reload XPMenu stuff
   {$ENDIF}
 
   frmProjMgrDock.ManualDock(DockServer.LeftDockPanel, nil, alTop);
@@ -5919,7 +5919,7 @@ var
   intActivePage:Integer;
 {$IFDEF PLUGIN_BUILD}
   pluginCatched: Boolean;
-{$ENDIF}  
+{$ENDIF}
 begin
   intActivePage := PageControl.ActivePageIndex;
 
@@ -5929,29 +5929,30 @@ begin
     if Assigned(e) then
     begin
 {$IFDEF PLUGIN_BUILD}
-      pluginCatched := false;
-      for i := 0 to pluginsCount - 1 do
-          pluginCatched := pluginCatched or plugins[i].MainPageChanged(true, e.FileName);
-      if not pluginCatched then
+        pluginCatched := false;
+        for i := 0 to pluginsCount - 1 do
+            pluginCatched := pluginCatched or plugins[i].MainPageChanged(e.FileName);
+        if not pluginCatched then
+        begin
 {$ENDIF}
-      begin
+            e.Text.SetFocus;
+            if ClassBrowser1.Enabled then
+              ClassBrowser1.CurrentFile := e.FileName;
+            for i := 1 to 9 do
+            begin
+              if e.Text.GetBookMark(i, x, y) then begin
+                TogglebookmarksPopItem.Items[i - 1].Checked := true;
+                TogglebookmarksItem.Items[i - 1].Checked := true;
+              end
+              else
+              begin
+                TogglebookmarksPopItem.Items[i - 1].Checked := false;
+                TogglebookmarksItem.Items[i - 1].Checked := false;
+              end;
+            end;
 {$IFDEF PLUGIN_BUILD}
-      for i := 0 to pluginsCount - 1 do
-          plugins[i].MainPageChanged(false, e.FileName);
+        end;
 {$ENDIF}
-        e.Text.SetFocus;
-        if ClassBrowser1.Enabled then
-          ClassBrowser1.CurrentFile := e.FileName;
-        for i := 1 to 9 do
-          if e.Text.GetBookMark(i, x, y) then begin
-            TogglebookmarksPopItem.Items[i - 1].Checked := true;
-            TogglebookmarksItem.Items[i - 1].Checked := true;
-          end
-          else begin
-            TogglebookmarksPopItem.Items[i - 1].Checked := false;
-            TogglebookmarksItem.Items[i - 1].Checked := false;
-          end;
-      end;
     end;
   end;
   RefreshTodoList;
@@ -6366,7 +6367,7 @@ var
   e: TEditor;
   curFilename: string;
 {$IFDEF PLUGIN_BUILD}
-  i: integer;
+  tempEditor: TEditor;
   pluginCatched : Boolean;
 {$ENDIF}  
 begin
@@ -6377,13 +6378,11 @@ begin
   begin
 {$IFDEF PLUGIN_BUILD}
     pluginCatched := false;
-    for i := 0 to pluginsCount - 1 do
-        pluginCatched := pluginCatched or plugins[i].IsCurrentEditorInPlugin(GetEditor(idx).FileName, curFilename);
+    tempEditor := GetEditor(idx);
+    if tempEditor.AssignedPlugin <> '' then
+        pluginCatched := plugins[unit_plugins[tempEditor.AssignedPlugin]].ShouldNotCloseEditor(tempEditor.FileName, curFilename);
 {$ENDIF}
-    if (idx = current) or       
-       (AnsiLowerCase(ChangeFileExt(GetEditor(idx).FileName, H_EXT)) = curFilename) or
-       (AnsiLowerCase(ChangeFileExt(GetEditor(idx).FileName, CPP_EXT)) = curFilename) or
-       pluginCatched then       
+    if (idx = current) or pluginCatched then
       idx := idx + 1
     else if not CloseEditor(idx, True) then
       Break;
@@ -6396,7 +6395,7 @@ begin
     // everything is fine. (I smell another SynEdit bug?)
     e.TabSheet.SetFocus;
 {$IFDEF PLUGIN_BUILD}  
-    e.Activate;   // EAB TODO: this may have to be generalized for more plugins.
+    e.Activate;   
 {$ELSE}
     e.Text.SetFocus;
 {$ENDIF}
@@ -7796,19 +7795,8 @@ var
   //    _Temporary: boolean;
   //    _Loaded: boolean;
   //    _InProject: Boolean;
-{$IFDEF PLUGIN_BUILD}
-    pluginDesigner: Boolean;
-{$ENDIF}
 begin
   Result := False;
-  {$IFDEF PLUGIN_BUILD}
-    pluginDesigner := false;
-    for i := 0 to pluginsCount - 1 do
-      pluginDesigner := pluginDesigner or plugins[i].IsCurrentPageDesigner;
-    if not pluginDesigner then
-      Exit;
-  {$ENDIF}
-
   classname:=trim(classname);
 
   //CppParser1.GetClassesList(TStrings());

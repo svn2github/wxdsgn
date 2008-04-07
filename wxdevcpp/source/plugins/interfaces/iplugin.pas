@@ -35,7 +35,7 @@ type
   procedure OpenFile(s: String);
   function SaveFile(s: String): Boolean;
   function GetDefaultText(FileName: String): String;
-  function MainPageChanged(askIfShouldGetFocus: Boolean; FileName: String): Boolean;
+  function MainPageChanged(activeEditorName: String): Boolean;
 
   function Retrieve_LeftDock_Panels: TList;
   function Retrieve_RightDock_Panels: TList;
@@ -58,7 +58,6 @@ type
   procedure PasteExecute;
 
   // Unit aware plugins:
-  function IsCurrentPageDesigner: Boolean;
   function HasDesigner(editorName: String): Boolean;
   function SaveFileAndCloseEditor(s: String): Boolean;
   procedure InitEditor(strFileName: String);
@@ -69,7 +68,7 @@ type
   function Get_EXT(editorName: String): String;
   procedure CreateNewXPMs(strFileName:String);
   procedure NewProject(s: String);
-  function IsCurrentEditorInPlugin(FileName: String; curFilename: String): Boolean;
+  function ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean; 
   procedure Reload(FileName: String);
   function  ReloadForm(FileName: String): Boolean;
   procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
