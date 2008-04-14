@@ -1,0 +1,127 @@
+[FileVersion]
+Version=6.0
+[Compiler]
+A=8
+B=0
+C=1
+D=1
+E=0
+F=0
+G=1
+H=1
+I=1
+J=0
+K=0
+L=1
+M=0
+N=1
+O=1
+P=1
+Q=0
+R=0
+S=0
+T=0
+U=0
+V=1
+W=0
+X=1
+Y=1
+Z=1
+ShowHints=1
+ShowWarnings=1
+UnitAliases=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[Linker]
+MapFile=0
+OutputObjs=0
+ConsoleApp=1
+DebugInfo=0
+RemoteSymbols=0
+MinStackSize=16384
+MaxStackSize=1048576
+ImageBase=4194304
+ExeDescription=
+[Directories]
+OutputDir=bin
+UnitOutputDir=units
+PackageDLLOutputDir=
+PackageDCPOutputDir=
+SearchPath=../../../packman
+Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;Jcl;JclVcl;JvCoreD6R;JvSystemD6R;JvStdCtrlsD6R;JvAppFrmD6R;JvBandsD6R;JvCmpD6R;JvCryptD6R;JvCtrlsD6R;JvCustomD6R;JvDlgsD6R;JvDockingD6R;JvDotNetCtrlsD6R;JvGlobusD6R;JvHMID6R;JvInterpreterD6R;JvJansD6R;JvManagedThreadsD6R;JvMMD6R;JvNetD6R;JvPageCompsD6R;JvPluginD6R;JvPrintPreviewD6R;JvRuntimeDesignD6R;JvTimeFrameworkD6R;JvUIBD6R;JvValidatorsD6R;JvWizardD6R;JvXPCtrlsD6R;ThemeManager6;ExtLib_D6;SynEdit_D6_PE;SynEdit_R6_PE;ClassBrowsing;madBasic_;madDisAsm_;madExcept_
+Conditionals=
+DebugSourceDirs=
+UsePackages=0
+[Parameters]
+RunParams=
+HostApplication=
+Launcher=
+UseLauncher=0
+DebugCWD=
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=5130
+CodePage=1252
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+[HistoryLists\hlConditionals]
+Count=2
+Item0=PLUGIN_BUILD
+Item1=UseRuntimePackages
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=20
+Item0=../../../packman
+Item1=../../packman
+Item2=propedit;components;..\interfaces;..\..\packages;..\..\units;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
+Item3=propedit;components;..\interfaces;..\..\packages;..\..\units;$(CompUsedBy_WXBUILD)\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
+Item4=propedit;components;..\interfaces;..\..\packages;..\..\units;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
+Item5=propedit;components;..\interfaces;..\..\packages;..\..\units;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6;..\..
+Item6=propedit;components;..\interfaces;..\..\packages;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
+Item7=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;$(PROGRAMFILES)\madCollection\madExcept\Delphi 6;..\interfaces
+Item8=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;$(PROGRAMFILES)\madCollection\madExcept\Delphi 6;..\interfaces
+Item9=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
+Item10=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
+Item11=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
+Item12=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6
+Item13=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6
+Item14=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages
+Item15=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\packages
+Item16=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib
+Item17=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme
+Item18=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source
+Item19=propedit;components
+[HistoryLists\hlUnitOutputDirectory]
+Count=2
+Item0=units
+Item1=wxdsgn\units
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=bin
+[HistoryLists\hlBPLOutput]
+Count=2
+Item0=wxdsgn
+Item1=bin
+[HistoryLists\hlDCPOutput]
+Count=2
+Item0=wxdsgn\bin
+Item1=bin

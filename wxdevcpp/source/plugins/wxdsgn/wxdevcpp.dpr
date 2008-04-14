@@ -97,8 +97,6 @@ uses
   ParamsFrm in '..\..\ParamsFrm.pas' {ParamsForm},
   CompilerOptionsFrame in '..\..\CompilerOptionsFrame.pas' {CompOptionsFrame: TFrame},
   CompileProgressFm in '..\..\CompileProgressFm.pas' {CompileProgressForm},
-  WebThread in '..\..\webupdate\WebThread.pas',
-  WebUpdate in '..\..\webupdate\WebUpdate.pas' {WebUpdateForm},
   ProcessListFrm in '..\..\ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in '..\..\ModifyVarFrm.pas' {ModifyVarForm},
   ImageTheme in '..\..\ImageTheme.pas',
@@ -224,7 +222,7 @@ begin
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
-  Application.CreateForm(TWebUpdateForm, WebUpdateForm);
+  //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   
   {*** modified by peter ***}
   // apply the window placement. this method forced

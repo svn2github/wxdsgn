@@ -160,6 +160,7 @@ resourcestring
 
   // programs
   PACKMAN_PROGRAM = 'packman.exe';
+  UPDATE_PROGRAM = 'updater.exe';
 
   GCC_MAKE_PROGRAM = 'mingw32-make.exe';
   GCC_CP_PROGRAM = 'gcc.exe';

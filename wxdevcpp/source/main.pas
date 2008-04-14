@@ -1155,7 +1155,7 @@ uses
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
-  WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm, devMsgBox
+  WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm, devMsgBox
 
 {$IFDEF PLUGIN_BUILD}
   //Our dependencies
@@ -1173,7 +1173,7 @@ uses
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
-  WindowListFrm, ParamsFrm, WebUpdate, ProcessListFrm, ModifyVarFrm;
+  WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm;
 {$ENDIF}
 
 {$R *.dfm}
@@ -1709,7 +1709,7 @@ begin
   try
 {$ENDIF}
     XPMenu.Active := devData.XPTheme;
-    WebUpdateForm.XPMenu.Active := devData.XPTheme;
+    //WebUpdateForm.XPMenu.Active := devData.XPTheme;
 
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
@@ -1771,7 +1771,6 @@ begin
   //               trace into the code to see if this function is called more than once?
   if fFirstShow then
   begin
-    //Initialize the To-do list settings   ** EAB TODO: Next 2 lines moved here from under lines. Check if everithing OK with this change.
     cmbTodoFilter.ItemIndex := 5;
     cmbTodoFilter.OnChange(cmbTodoFilter);
 
@@ -1799,7 +1798,6 @@ begin
       DockServer.DockStyle.TabServerOption.TabPosition := tpBottom;
 
     SetupProjectView;
-    // **EAB TODO: lines above moved from here
     fFirstShow := False;
   end;
 end;
@@ -4323,8 +4321,11 @@ begin
 end;
 
 procedure TMainForm.actUpdateCheckExecute(Sender: TObject);
+var s: string;
 begin
-  WebUpdateForm.Show;
+  //WebUpdateForm.Show;
+  s := IncludeTrailingBackslash(devDirs.Exec) + UPDATE_PROGRAM;
+  ExecuteFile(s, '', IncludeTrailingBackslash(devDirs.Exec), SW_SHOW)
 end;
 
 procedure TMainForm.actAboutExecute(Sender: TObject);

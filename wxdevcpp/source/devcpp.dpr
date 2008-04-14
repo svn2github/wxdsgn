@@ -98,8 +98,6 @@ uses
   ParamsFrm in 'ParamsFrm.pas' {ParamsForm},
   CompilerOptionsFrame in 'CompilerOptionsFrame.pas' {CompOptionsFrame: TFrame},
   CompileProgressFm in 'CompileProgressFm.pas' {CompileProgressForm},
-  WebThread in 'webupdate\WebThread.pas',
-  WebUpdate in 'webupdate\WebUpdate.pas' {WebUpdateForm},
   ProcessListFrm in 'ProcessListFrm.pas' {ProcessListForm},
   ModifyVarFrm in 'ModifyVarFrm.pas' {ModifyVarForm},
   FilesReloadFrm in 'FilesReloadFrm.pas' {FilesReloadFrm},
@@ -244,7 +242,7 @@ begin
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
-  Application.CreateForm(TWebUpdateForm, WebUpdateForm);
+  //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   MainForm.DoCreateEverything;
 
   // apply the window placement. this method forces the form to show.

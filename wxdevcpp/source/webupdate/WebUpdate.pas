@@ -25,7 +25,7 @@ uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, WebThread, CheckLst, ExtCtrls, IniFiles,
-  ShellApi, TypInfo, Buttons, XPMenu;
+  ShellApi, TypInfo, Buttons, SHFolder, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -111,11 +111,16 @@ type
 var
   WebUpdateForm: TWebUpdateForm;
 
+  // Permanent alternate config file (need to be global vars)
+  //ConfigMode: (CFG_NORMAL, CFG_PARAM, CFG_USER) = CFG_NORMAL;
+  devDirsConfig, devDirsExec: String;
+  tempc: array [0..MAX_PATH] of char;
+
 implementation
 
 uses 
 {$IFDEF WIN32}
-  utils, version, devcfg, PackmanExitCodesU, main;
+  {utils, version, devcfg, }PackmanExitCodesU{, main};
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, utils, version, devcfg, PackmanExitCodesU, main;  
@@ -124,11 +129,23 @@ uses
 {$R *.dfm}
 
 const
+{$IFDEF WIN32}
+  pd                   = '\';
+{$ENDIF}
+{$IFDEF LINUX}
+  pd                   = '/';
+{$ENDIF}
+
   MAGIC_HEADER = '{WebUpdate_config_file}';
   CONF_FILE = 'webupdate.conf';
   DEFAULT_MIRROR_1 = 'wxDev-C++ DevPak server=http://wxdsgn.sourceforge.net/webupdate/';
   DEFAULT_MIRROR_2 = 'Dev-C++ primary devpak server=http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
   DEFAULT_MIRROR_3 = 'devpaks.org Community Devpaks=http://devpaks.org/';
+
+  PACKAGES_DIR         = 'Packages' + pd;
+  PACKMAN_PROGRAM = 'packman.exe';
+  WEBUPDATE_SECTION = 'WEBUPDATE';
+  DEV_WEBMIRRORS_FILE = 'mirrors.cfg';
 
 var
   BASE_URL: string;
@@ -294,8 +311,8 @@ procedure TWebUpdateForm.WriteInstalled(index : integer; InPackMan: Boolean);
 var i : integer;
 begin
   if Not InPackMan then
-    if FileExists(devDirs.Config + 'devcpp.cfg') then
-      with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+    if FileExists(devDirsConfig + 'devcpp.cfg') then
+      with TIniFile.Create(devDirsConfig + 'devcpp.cfg') do
         try
           WriteString(WEBUPDATE_SECTION, PUpdateRec(wThread.Files[index])^.Name, PUpdateRec(wThread.Files[index])^.Version);
         finally
@@ -309,6 +326,53 @@ begin
       lv.Items.Delete(i);
       break;
     end;
+end;
+
+procedure FilesFromWildcard(Directory, Mask: String;
+  var Files : TStringList; Subdirs, ShowDirs, Multitasking: Boolean);
+var
+  SearchRec: TSearchRec;
+  Attr, Error: Integer;
+begin
+  Directory := IncludeTrailingPathDelimiter(Directory);
+
+  { First, find the required file... }
+  Attr := faAnyFile;
+  if ShowDirs = False then
+    Attr := Attr - faDirectory;
+  Error := FindFirst(Directory + Mask, Attr, SearchRec);
+  if (Error = 0) then
+  begin
+    while (Error = 0) do
+    begin
+      { Found one! }
+      Files.Add(Directory + SearchRec.Name);
+      Error := FindNext(SearchRec);
+      if Multitasking then
+        Application.ProcessMessages;
+    end;
+    FindClose(SearchRec);
+  end;
+
+  { Then walk through all subdirectories. }
+  if Subdirs then
+  begin
+    Error := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
+    if (Error = 0) then
+    begin
+      while (Error = 0) do
+      begin
+        { Found one! }
+        if (SearchRec.Name[1] <> '.') and (SearchRec.Attr and
+          faDirectory <> 0) then
+          { We do this recursively! }
+          FilesFromWildcard(Directory + SearchRec.Name, Mask, Files,
+            Subdirs, ShowDirs, Multitasking);
+        Error := FindNext(SearchRec);
+      end;
+      FindClose(SearchRec);
+    end;
+  end;
 end;
 
 function TWebUpdateForm.CheckFile(Filename: string): boolean;
@@ -356,7 +420,7 @@ var
     if List = nil then Exit;
 
     tempFiles := TStringList.Create;
-    FilesFromWildcard(devDirs.Exec + 'Packages',
+    FilesFromWildcard(devDirsExec + 'Packages',
       '*.entry', tempFiles, False, False, False);
 
     for i := 0 to tempFiles.Count -1 do
@@ -405,12 +469,12 @@ begin
 
   ClearList;
 
-  if (not FileExists(Filename)) { or (not FileExists(devDirs.Config + 'devcpp.cfg')) } then
+  if (not FileExists(Filename)) { or (not FileExists(devDirsConfig + 'devcpp.cfg')) } then
     Exit;
 
   Ini := TIniFile.Create(Filename);
 
-  LocalIni := TIniFile.Create(devDirs.Config + 'devcpp.cfg');
+  LocalIni := TIniFile.Create(devDirsConfig + 'devcpp.cfg');
 
   PackmanPacks := TStringList.Create;
   ReadPackmanPackages(PackmanPacks);
@@ -521,9 +585,45 @@ begin
 end;
 
 procedure TWebUpdateForm.FormCreate(Sender: TObject);
+var
+    UserHome, strLocalAppData, strAppData: String;
 begin
   DesktopFont := True;
   FormInitialized := False;
+
+// ************  EAB Copied from the project .pas file
+     //default dir should be %APPDATA%\Dev-Cpp
+     strLocalAppData := '';
+     if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
+       strLocalAppData := IncludeTrailingBackslash(String(tempc));
+
+     strAppData := '';
+     if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
+       strAppData := IncludeTrailingBackslash(String(tempc));
+
+     if (strLocalAppData <> '') and
+     FileExists(strLocalAppData + 'Dev-Cpp') then begin
+       UserHome := strLocalAppData;
+       //ConfigMode := CFG_USER;
+     end
+     else if (strAppData <> '')
+     and FileExists(strAppData + 'Dev-Cpp') then begin
+       UserHome := strAppData;
+       //ConfigMode := CFG_USER;
+     end
+     else if (strAppData <> '')
+     and DirectoryExists(strAppData + 'Dev-Cpp') then begin
+       UserHome := strAppData + 'Dev-Cpp\';
+       //ConfigMode := CFG_USER;
+     end;
+
+     {if ConfigMode = CFG_PARAM then
+        devDirsConfig := IncludeTrailingBackslash(ParamStr(2))
+     else if ConfigMode = CFG_USER then     }
+        devDirsConfig := UserHome;
+
+     devDirsExec := ExtractFilePath(Application.ExeName);
+
 end;
 
 procedure TWebUpdateForm.lvClick(Sender: TObject);
@@ -683,7 +783,7 @@ var
   ini: TIniFile;
   I: integer;
 begin
-  ini := TIniFile.Create(devDirs.Config + DEV_WEBMIRRORS_FILE);
+  ini := TIniFile.Create(devDirsConfig + DEV_WEBMIRRORS_FILE);
   try
     ini.ReadSectionValues('WebUpdate mirrors', fMirrorList);
   finally
@@ -745,8 +845,10 @@ begin
     idx2 := Pos('}', Result) - 1;
     if (idx1 > 0) and (idx2 > idx1) then begin
       PropName := Copy(Result, idx1, idx2 - idx1 + 1);
-      if IsPublishedProp(TdevDirs(devDirs), PropName) then
-        PropValue := GetStrProp(TdevDirs(devDirs), PropName)
+      //if IsPublishedProp(TdevDirs(devDirs), PropName) then       // EAB Comment: Are there Other cases besides "config"?
+      //  PropValue := GetStrProp(TdevDirs(devDirs), PropName)
+      if StrLower(PChar(PropName)) = 'config' then
+        PropValue := devDirsConfig
       else if PropName = 'OriginalPath' then
         PropValue := ExtractFilePath(Application.ExeName)
       else
@@ -899,6 +1001,42 @@ begin
     CanClose := False;
 end;
 
+// added by mandrav 13 Sep 2002
+// returns the file version of the .exe specified by filename
+// in the form x.x.x.x
+
+function GetVersionString(FileName: string): string;
+var
+  Buf: Pointer;
+  i: cardinal;
+  P: pointer;
+  pSize: cardinal;
+  ffi: TVSFixedFileInfo;
+begin
+  Result := '';
+  i := GetFileVersionInfoSize(PChar(FileName), i);
+  if i = 0 then
+    Exit;
+
+  Buf := AllocMem(i);
+  try
+    if not GetFileVersionInfo(PChar(FileName), 0, i, Buf) then
+      Exit;
+
+    pSize := SizeOf(P);
+    VerQueryValue(Buf, '\', p, pSize);
+
+    ffi := TVSFixedFileInfo(p^);
+    Result := Format('%d.%d.%d.%d', [
+      HiWord(ffi.dwFileVersionMS),
+        LoWord(ffi.dwFileVersionMS),
+        HiWord(ffi.dwFileVersionLS),
+        LoWord(ffi.dwFileVersionLS)]);
+  finally
+    FreeMem(Buf);
+  end;
+end;
+
 procedure TWebUpdateForm.CheckInstalledExes;
 var
   devcppversion,
@@ -911,10 +1049,10 @@ begin
 //namely devcpp.exe and packman.exe
 //and writes those version to devcpp.cfg if are newer that in devcpp.cfg
 
-  if Not FileExists(devDirs.Config + 'devcpp.cfg') then
+  if Not FileExists(devDirsConfig + 'devcpp.cfg') then
     Exit;
 
-  with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+  with TIniFile.Create(devDirsConfig + 'devcpp.cfg') do
     try
       devcppversion2 := ReadString(WEBUPDATE_SECTION, 'wxDev-C++ Update', '');
       packmanversion2 := ReadString(WEBUPDATE_SECTION, 'PackMan', '');
@@ -924,7 +1062,7 @@ begin
 
   devcppversion := GetVersionString(ParamStr(0));
   if (devcppversion <> '') and (devcppversion <> devcppversion2) then
-    with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+    with TIniFile.Create(devDirsConfig + 'devcpp.cfg') do
       try
 {$IFDEF PRIVATE_BUILD}
         WriteString(WEBUPDATE_SECTION, 'wxDev-C++ Alpha Release', devcppversion);
@@ -935,9 +1073,9 @@ begin
         Free;
       end;
 
-  packmanversion := GetVersionString(IncludeTrailingPathDelimiter(devDirs.Exec) + PACKMAN_PROGRAM);
+  packmanversion := GetVersionString(IncludeTrailingPathDelimiter(devDirsExec) + PACKMAN_PROGRAM);
   if (packmanversion <> '') and (packmanversion <> packmanversion2) then
-    with TIniFile.Create(devDirs.Config + 'devcpp.cfg') do
+    with TIniFile.Create(devDirsConfig + 'devcpp.cfg') do
       try
         WriteString(WEBUPDATE_SECTION, 'PackMan', packmanversion);
       finally

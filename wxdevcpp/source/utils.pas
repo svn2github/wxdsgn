@@ -24,7 +24,7 @@ uses
 {$IFDEF WIN32}
  Windows, Classes, Sysutils, Forms, ShellAPI, Dialogs, SynEditHighlighter,
 {$IFDEF PLUGIN_BUILD}
-  iplugin_bpl,   //  <-- EAB
+  iplugin_bpl,   
 {$ENDIF}
  Menus, Registry, Messages {for WM_USER};
 {$ENDIF}
