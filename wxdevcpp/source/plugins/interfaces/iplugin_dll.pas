@@ -130,10 +130,10 @@ implementation
 
 procedure TPlug_In_DLL.Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
 begin
-    parent := _parent;
-    owner := _owner;
-    controlBar := _controlBar;
-    plugin_name := name;
+  self.parent := _parent;
+  self.owner := _owner;
+  self.controlBar := _controlBar;
+  self.plugin_name := name;
 
     @self.C_TestReport := nil;
     @self.C_CutExecute := nil;
@@ -230,24 +230,29 @@ begin
     @self.C_GetCompilerOptions := GetProcAddress(module, 'GetCompilerOptions');
     @self.C_SetCompilerOptionstoDefaults := GetProcAddress(module, 'SetCompilerOptionstoDefaults');
 
-    tool := TToolBar.Create(nil);
-    tool.Left:= toolbar_x;
-    tool.Top:= toolbar_y;
-    tool.AutoSize := true;
-    tool.Visible := false;
-    tool.Parent := owner;
-    with TToolButton.Create(tool) do
+  self.tool := TToolBar.Create(nil);
+  self.tool.Left := toolbar_x;
+  self.tool.Top := toolbar_y;
+  self.tool.AutoSize := true;
+  self.tool.Visible := false;
+  self.tool.Parent := _controlBar;
+  with TToolButton.Create(self.tool) do
     begin
-        Parent := tool;
+    Parent := self.tool;
         Width := 23;
         Height := 22;
     end;
-    tool.EdgeInner := esNone;
-    tool.EdgeOuter := esNone;
-    tool.Flat := true;
+  self.tool.EdgeInner := esNone;
+  self.tool.EdgeOuter := esNone;
+  self.tool.Flat := true;
+  self.tool.Width := 70; //default value just to put a toolbar on the coolbar
+
     if (@self.C_Retrieve_Toolbars <> nil) then
+    begin
         child := self.C_Retrieve_Toolbars(tool.Handle);
-    tool.Width := 70;
+    self.tool.Visible := true; {mal testing}
+end;
+
 end;
 
 procedure TPlug_In_DLL.TestReport;
@@ -338,7 +343,8 @@ end;
 
 procedure TPlug_In_DLL.OpenUnit(s: String);
 begin
-    OpenUnit(PChar(s));
+  if (@self.C_OpenUnit <> nil) then
+    self.C_OpenUnit(PChar(s));
 end;
 
 function TPlug_In_DLL.IsForm(s: String): Boolean;
@@ -542,7 +548,7 @@ end;
 
 function TPlug_In_DLL.GetChild: HWND;
 begin
-    Result := child;
+  Result := self.child;
 end;
 
 function TPlug_In_DLL.ConvertLibsToCurrentVersion(strValue: String): String;
