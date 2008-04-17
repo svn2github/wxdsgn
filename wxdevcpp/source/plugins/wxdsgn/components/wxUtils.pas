@@ -342,8 +342,10 @@ type
     wxCAL_SEQUENTIAL_MONTH_SELECTION);
   TWxcalctrlStyleSet  = set of TWxcalctrlStyleItem;
 
-  TWxnbxStyleItem = (wxNB_LEFT, wxNB_RIGHT, wxNB_BOTTOM, wxNB_FIXEDWIDTH,
-    wxNB_MULTILINE, wxNB_NOPAGETHEME);
+//Book controls
+//Notebook
+  TWxnbxStyleItem = (wxNB_DEFAULT, wxNB_TOP, wxNB_LEFT, wxNB_RIGHT, wxNB_BOTTOM, wxNB_FIXEDWIDTH,
+    wxNB_MULTILINE, wxNB_NOPAGETHEME, wxNB_FLAT);
   TWxnbxStyleSet  = set of TWxnbxStyleItem;
 
   TWxrbxStyleItem = (wxRA_SPECIFY_ROWS, wxRA_SPECIFY_COLS);
@@ -1711,6 +1713,12 @@ begin
 
   try
 
+    if wxNB_DEFAULT in stdStyle then
+      strLst.add('wxNB_DEFAULT');
+
+    if wxNB_TOP in stdStyle then
+      strLst.add('wxNB_TOP');
+
     if wxNB_LEFT in stdStyle then
       strLst.add('wxNB_LEFT');
 
@@ -1729,6 +1737,25 @@ begin
     if wxNB_NOPAGETHEME in stdStyle then
       strLst.add('wxNB_NOPAGETHEME');
 
+    if wxNB_FLAT in stdStyle then
+      strLst.add('wxNB_FLAT');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i]// for
+    ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
+end;
     if strLst.Count = 0 then
       Result := ''
     else

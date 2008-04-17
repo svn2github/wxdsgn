@@ -54,6 +54,7 @@ type
     FWx_HelpText: string;
     FWx_Border: integer;
     FWx_NoteBookStyle: TWxnbxStyleSet;
+    FWx_TabWidth: integer;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignmentSet;
@@ -119,6 +120,9 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
 
+    function GetTabWidth: integer;
+    procedure SetTabWidth(width: integer);
+
   published
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property EVT_NOTEBOOK_PAGE_CHANGED: string
@@ -140,6 +144,7 @@ type
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
     property Wx_NoteBookStyle: TWxnbxStyleSet Read FWx_NoteBookStyle Write SetNotebookStyle;
+    property Wx_TabWidth: integer Read GetTabWidth Write SetTabWidth default 25;
     property Wx_GeneralStyle: TWxStdStyleSet Read FWx_GeneralStyle Write FWx_GeneralStyle;
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
@@ -181,6 +186,9 @@ begin
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor         := self.color;
   defaultFGColor         := self.font.color;
+  FWx_NoteBookStyle      := [wxNB_TOP];
+  FWx_TabWidth           := 25;
+  self.Multiline         := False;
 
 end; { of AutoInitialize }
 
@@ -200,12 +208,17 @@ begin
   PopulateGenericProperties(FWx_PropertyList);
 
   FWx_PropertyList.add('Wx_NoteBookStyle:Notebook Styles');
+  FWx_PropertyList.Add('wxNB_TOP:wxNB_TOP');
   FWx_PropertyList.Add('wxNB_LEFT:wxNB_LEFT');
   FWx_PropertyList.Add('wxNB_RIGHT:wxNB_RIGHT');
   FWx_PropertyList.Add('wxNB_BOTTOM:wxNB_BOTTOM');
   FWx_PropertyList.Add('wxNB_FIXEDWIDTH:wxNB_FIXEDWIDTH');
   FWx_PropertyList.Add('wxNB_MULTILINE:wxNB_MULTILINE');
   FWx_PropertyList.Add('wxNB_NOPAGETHEME:wxNB_NOPAGETHEME');
+  FWx_PropertyList.Add('wxNB_DEFAULT:wxNB_DEFAULT');
+  FWx_PropertyList.Add('wxNB_FLAT:wxNB_FLAT');
+
+  FWx_PropertyList.Add('Wx_TabWidth:TabWidth');
 
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
   FWx_EventList.add('EVT_NOTEBOOK_PAGE_CHANGED:OnPageChanged');
@@ -459,6 +472,16 @@ begin
   FWx_Border := width;
 end;
 
+function TWxNoteBook.GetTabWidth: integer;
+begin
+  Result := FWx_TabWidth;
+end;
+
+procedure TWxNoteBook.SetTabWidth(width: integer);
+begin
+  FWx_TabWidth := width;
+end;
+
 function TWxNoteBook.GetWxClassName: string;
 begin
   if trim(wx_Class) = '' then
@@ -474,7 +497,32 @@ end;
 procedure TWxNotebook.SetNotebookStyle(style: TWxnbxStyleSet);
 begin
   FWx_NotebookStyle := style;
+
+  //Multiline MUST be set when using left or right placed tabs
+  If (wxNB_RIGHT in FWx_NotebookStyle) or (wxNB_LEFT in FWx_NotebookStyle) then
+    self.Multiline := True
+  else
   self.MultiLine := wxNB_MULTILINE in FWx_NotebookStyle;
+
+  If (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
+    self.TabWidth := self.Wx_TabWidth
+  else
+    self.TabWidth := 0;
+
+  //mn we need to set the tab position here, we go backwards from bottom, right, left to top
+  //mn wxNB_DEFAULT and wxNB_TOP are assumed to be the same
+  If (wxNB_BOTTOM in FWx_NotebookStyle) then
+    Self.TabPosition :=  tpBottom;
+
+  If (wxNB_RIGHT in FWx_NotebookStyle) then
+    Self.TabPosition := tpRight;
+
+  If (wxNB_LEFT in FWx_NotebookStyle) then
+    Self.TabPosition := tpLeft;
+
+  If (wxNB_TOP in FWx_NotebookStyle) or (wxNB_DEFAULT in FWx_NotebookStyle) then
+    Self.TabPosition := tpTop;
+
 end;
 
 procedure TWxNoteBook.SetIDName(IDName: string);
