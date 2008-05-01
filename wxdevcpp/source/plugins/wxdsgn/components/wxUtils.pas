@@ -41,33 +41,33 @@ uses
   JvInspector, wxversion, DateUtils, xprocs, ShellAPI;
 
 const
-  IID_IWxComponentInterface: TGUID            = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
-  IID_IWxDesignerFormInterface: TGUID         = '{3e8e18a0-6515-11db-bd13-0800200c9a66}';
-  IID_IWxDialogNonInsertableInterface: TGUID  = '{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}';
-  IID_IWxToolBarInsertableInterface: TGUID    = '{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}';
+  IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
+  IID_IWxDesignerFormInterface: TGUID = '{3e8e18a0-6515-11db-bd13-0800200c9a66}';
+  IID_IWxDialogNonInsertableInterface: TGUID = '{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}';
+  IID_IWxToolBarInsertableInterface: TGUID = '{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}';
   IID_IWxToolBarNonInsertableInterface: TGUID = '{6A81CF27-1269-4BD6-9C5D-16F88293B66B}';
-  IID_IWxWindowInterface: TGUID               = '{3164E818-E7FA-423B-B342-C89D8AF23617}';
-  IID_IWxContainerAndSizerInterface: TGUID    = '{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}';
-  IDD_IWxContainerInterface: TGUID            = '{1149F8B7-04D7-466F-96FA-74C7383F2EFD}';
-  IID_IWxToolBarInterface: TGUID              = '{518BF32C-F961-4148-B506-F60A9D21AD15}';
-  IDD_IWxStatusBarInterface: TGUID            = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
-  IDD_IWxMenuBarInterface: TGUID              = '{b74eeaf0-7f08-11db-9fe1-0800200c9a66}';
-  IDD_IWxCollectionInterface: TGUID           = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
-  IID_IWxVariableAssignmentInterface: TGUID   = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
-  IID_IWxValidatorInterface: TGUID            = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
-  IID_IWxSplitterInterface: TGUID             = '{900F32A7-3864-4827-9039-85C053504BDB}';
-  IID_IWxControlPanelInterface: TGUID         = '{077d51a0-6628-11db-bd13-0800200c9a66}';
-  IID_IWxThirdPartyComponentInterface: TGUID  = '{ead81650-6903-11db-bd13-0800200c9a66}';
-  IID_IWxImageContainerInterface: TGUID       = '{10619130-6bd4-11db-bd13-0800200c9a66}';
+  IID_IWxWindowInterface: TGUID = '{3164E818-E7FA-423B-B342-C89D8AF23617}';
+  IID_IWxContainerAndSizerInterface: TGUID = '{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}';
+  IDD_IWxContainerInterface: TGUID = '{1149F8B7-04D7-466F-96FA-74C7383F2EFD}';
+  IID_IWxToolBarInterface: TGUID = '{518BF32C-F961-4148-B506-F60A9D21AD15}';
+  IDD_IWxStatusBarInterface: TGUID = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
+  IDD_IWxMenuBarInterface: TGUID = '{b74eeaf0-7f08-11db-9fe1-0800200c9a66}';
+  IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
+  IID_IWxVariableAssignmentInterface: TGUID = '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
+  IID_IWxValidatorInterface: TGUID = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
+  IID_IWxSplitterInterface: TGUID = '{900F32A7-3864-4827-9039-85C053504BDB}';
+  IID_IWxControlPanelInterface: TGUID = '{077d51a0-6628-11db-bd13-0800200c9a66}';
+  IID_IWxThirdPartyComponentInterface: TGUID = '{ead81650-6903-11db-bd13-0800200c9a66}';
+  IID_IWxImageContainerInterface: TGUID = '{10619130-6bd4-11db-bd13-0800200c9a66}';
 
 var
-   StringFormat : string;
+  StringFormat: string;
 
-//type  
- 
-  //TEditorType = (etNone, etSource, etForm);
-  {TExUnitType = (  // <-- EAB TODO: Research how to delete this
-    //utwxform); // wxForm (.wxForm)}
+  //type
+
+    //TEditorType = (etNone, etSource, etForm);
+    {TExUnitType = (  // <-- EAB TODO: Research how to delete this
+      //utwxform); // wxForm (.wxForm)}
 
 function ExtractComponentPropertyName(const S: string): string;
 function ExtractComponentPropertyCaption(const S: string): string;
@@ -82,15 +82,15 @@ type
     FX: integer;
     FY: integer;
   published
-    property X: integer Read FX Write FX default 0;
-    property Y: integer Read FY Write FY default 0;
+    property X: integer read FX write FX default 0;
+    property Y: integer read FY write FY default 0;
   end;
 
-// Added by Tony Reina 20 June 2006
-// We need a TButton class that will allow for the caption to be aligned
-// I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
+  // Added by Tony Reina 20 June 2006
+  // We need a TButton class that will allow for the caption to be aligned
+  // I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
 type
-  THorizAlign    = (halLeft, halRight, halCentre);
+  THorizAlign = (halLeft, halRight, halCentre);
   TVerticalAlign = (valTop, valBottom, valCentre);
 
   TMultiLineBtn = class(TButton)
@@ -107,10 +107,10 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property HorizAlign: THorizAlign
-      Read fHorizAlign Write setHorizAlign default halCentre;
-    property VerticalAlign: TVerticalAlign Read fVerticalAlign
-      Write setVerticalAlign default valCentre;
-    property MultiLine: boolean Read fMultiLine Write SetMultiLine default True;
+      read fHorizAlign write setHorizAlign default halCentre;
+    property VerticalAlign: TVerticalAlign read fVerticalAlign
+      write setVerticalAlign default valCentre;
+    property MultiLine: boolean read fMultiLine write SetMultiLine default True;
   end;
   // END: TMultiLineBtn
 
@@ -118,7 +118,7 @@ type
   TWxSizerAlignment = (wxALIGN_TOP, wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_BOTTOM,
     wxALIGN_CENTER, wxALIGN_CENTER_VERTICAL, wxALIGN_CENTER_HORIZONTAL, wxEXPAND);
   TWxSizerAlignmentSet = set of TWxSizerAlignment;
-  TWxBorderAlignment = set of(wxTOP, wxLEFT, wxRIGHT, wxBOTTOM, wxALL);
+  TWxBorderAlignment = set of (wxTOP, wxLEFT, wxRIGHT, wxBOTTOM, wxALL);
   TWxControlOrientation = (wxControlVertical, wxControlHorizontal, wxControlNone);
   TWxGridSelection = (wxGridSelectCells, wxGridSelectColumns, wxGridSelectRows);
   TWxDesignerType = (dtWxDialog, dtWxFrame, dtWxWizard);
@@ -160,8 +160,8 @@ type
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+    function GetGenericColor(strVariableName: string): string;
+    procedure SetGenericColor(strVariableName, strValue: string);
   end;
 
   IWxDesignerFormInterface = interface
@@ -169,7 +169,6 @@ type
     function GetFormName: string;
     procedure SetFormName(StrValue: string);
   end;
-
 
   IWxDialogNonInsertableInterface = interface
     ['{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}']
@@ -210,7 +209,7 @@ type
 
   IWxMenuBarInterface = interface
     ['{b74eeaf0-7f08-11db-9fe1-0800200c9a66}']
-    function GenerateXPM(strFileName:String):boolean;
+    function GenerateXPM(strFileName: string): boolean;
   end;
 
   IWxCollectionInterface = interface
@@ -218,38 +217,38 @@ type
     function GetMaxID: integer;
   end;
 
-  IWxVariableAssignmentInterface = Interface
+  IWxVariableAssignmentInterface = interface
     ['{624949E8-E46C-4EF9-B4DA-BC8532617513}']
-    function GetLHSVariableAssignment:String;
-    function GetRHSVariableAssignment:String;
+    function GetLHSVariableAssignment: string;
+    function GetRHSVariableAssignment: string;
   end;
 
-  IWxValidatorInterface = Interface
+  IWxValidatorInterface = interface
     ['{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}']
-    function GetValidator:String;
-    procedure SetValidator(value:String);
+    function GetValidator: string;
+    procedure SetValidator(value: string);
   end;
 
-  IWxSplitterInterface = Interface
+  IWxSplitterInterface = interface
     ['{900F32A7-3864-4827-9039-85C053504BDB}']
   end;
 
-  IWxControlPanelInterface = Interface
+  IWxControlPanelInterface = interface
     ['{077d51a0-6628-11db-bd13-0800200c9a66}']
   end;
 
-  IWxThirdPartyComponentInterface = Interface
+  IWxThirdPartyComponentInterface = interface
     ['{ead81650-6903-11db-bd13-0800200c9a66}']
-    function GetHeaderLocation:string;
-    function GetLibName(CompilerTye:Integer):string;
-    function IsLibAddedAtEnd(CompilerTye:Integer):boolean;
+    function GetHeaderLocation: string;
+    function GetLibName(CompilerTye: Integer): string;
+    function IsLibAddedAtEnd(CompilerTye: Integer): boolean;
   end;
 
-  IWxImageContainerInterface = Interface
+  IWxImageContainerInterface = interface
     ['{10619130-6bd4-11db-bd13-0800200c9a66}']
-    function GetBitmapCount:Integer;
-    function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
-    function GetPropertyName(Idx:Integer):String;
+    function GetBitmapCount: Integer;
+    function GetBitmap(Idx: Integer; var bmp: TBitmap; var PropertyName: string): boolean;
+    function GetPropertyName(Idx: Integer): string;
   end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
@@ -258,15 +257,15 @@ type
     wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
     wxHSCROLL, wxCLIP_CHILDREN, wxNO_BORDER,
     wxALWAYS_SHOW_SB, wxFULL_REPAINT_ON_RESIZE);
-  TWxStdStyleSet  = set of TWxStdStyleItem;
+  TWxStdStyleSet = set of TWxStdStyleItem;
 
   TWxBtnStyleItem = (wxBU_AUTODRAW, wxBU_LEFT, wxBU_TOP, wxBU_RIGHT, wxBU_BOTTOM,
     wxBU_EXACTFIT);
-  TWxBtnStyleSet  = set of TWxBtnStyleItem;
+  TWxBtnStyleSet = set of TWxBtnStyleItem;
 
   TWxLbStyleItem = (wxST_ALIGN_LEFT, wxST_ALIGN_RIGHT, wxST_ALIGN_CENTRE,
     wxST_NO_AUTORESIZE);
-  TWxLbStyleSet  = set of TWxLbStyleItem;
+  TWxLbStyleSet = set of TWxLbStyleItem;
 
   TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
     wxTE_READONLY, wxTE_RICH, wxTE_RICH2,
@@ -274,10 +273,10 @@ type
     wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP,
     wxTE_CHARWRAP, wxTE_BESTWRAP, wxTE_CAPITALIZE,
     wxTE_MULTILINE, wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
-  TWxEdtGeneralStyleSet  = set of TWxEdtGeneralStyleItem;
+  TWxEdtGeneralStyleSet = set of TWxEdtGeneralStyleItem;
 
-  TWxRichTextStyleItem = (wxRE_READONLY,wxRE_MULTILINE);
-  TWxRichTextStyleSet  = set of TWxRichTextStyleItem;
+  TWxRichTextStyleItem = (wxRE_READONLY, wxRE_MULTILINE);
+  TWxRichTextStyleSet = set of TWxRichTextStyleItem;
 
   //  TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
   // TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
@@ -290,40 +289,44 @@ type
     wxMINIMIZE, wxMAXIMIZE, wxFRAME_TOOL_WINDOW,
     wxFRAME_NO_TASKBAR, wxFRAME_FLOAT_ON_PARENT,
     wxFRAME_EX_CONTEXTHELP, wxFRAME_SHAPED);
-  TWxDlgStyleSet  = set of TWxDlgStyleItem;
+  TWxDlgStyleSet = set of TWxDlgStyleItem;
+
+  //class  	wxAnimationCtrl
+  TWxAnimationCtrlStyleItem = (wxAC_DEFAULT_STYLE, wxAC_NO_AUTORESIZE);
+  TWxAnimationCtrlStyleSet = set of TWxAnimationCtrlStyleItem;
 
   //newly Added
   TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
-  TWxCmbStyleSet  = set of TWxCmbStyleItem;
+  TWxCmbStyleSet = set of TWxCmbStyleItem;
 
   TWxOwnCmbStyleItem = (wxODCB_DCLICK_CYCLES, wxODCB_STD_CONTROL_PAINT);
-  TWxOwnCmbStyleSet  = set of TWxOwnCmbStyleItem;
+  TWxOwnCmbStyleSet = set of TWxOwnCmbStyleItem;
 
-  TWxPickCalStyleItem = (wxDP_SPIN , wxDP_DROPDOWN , wxDP_DEFAULT , wxDP_ALLOWNONE , wxDP_SHOWCENTURY);
-  TWxPickCalStyleSet  = set of TWxPickCalStyleItem;
+  TWxPickCalStyleItem = (wxDP_SPIN, wxDP_DROPDOWN, wxDP_DEFAULT, wxDP_ALLOWNONE, wxDP_SHOWCENTURY);
+  TWxPickCalStyleSet = set of TWxPickCalStyleItem;
 
   TWxLBxStyleSubItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED);
-  TWxLBxStyleSubSet  = set of TWxLBxStyleSubItem;
+  TWxLBxStyleSubSet = set of TWxLBxStyleSubItem;
 
   TWxLBxStyleItem = (wxLB_HSCROLL, wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
-  TWxLBxStyleSet  = set of TWxLBxStyleItem;
+  TWxLBxStyleSet = set of TWxLBxStyleItem;
 
   TWxCBxStyleItem = (wxCHK_2STATE, wxCHK_3STATE, wxCHK_ALLOW_3RD_STATE_FOR_USER,
     wxALIGN_RIGHT_CB);
-  TWxCBxStyleSet  = set of TWxCBxStyleItem;
+  TWxCBxStyleSet = set of TWxCBxStyleItem;
 
   TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
-  TWxRBStyleSet  = set of TWxRBStyleItem;
+  TWxRBStyleSet = set of TWxRBStyleItem;
 
   TWxGagOrientation = (wxGA_HORIZONTAL, wxGA_VERTICAL);
 
   TWxgagStyleItem = (wxGA_SMOOTH, wxGA_MARQUEE);
-  TWxgagStyleSet  = set of TWxgagStyleItem;
+  TWxgagStyleSet = set of TWxgagStyleItem;
 
   TWxsbtnOrientation = (wxSP_HORIZONTAL, wxSP_VERTICAL);
 
   TWxsbtnStyleItem = (wxSP_ARROW_KEYS, wxSP_WRAP);
-  TWxsbtnStyleSet  = set of TWxsbtnStyleItem;
+  TWxsbtnStyleSet = set of TWxsbtnStyleItem;
 
   TWx_SBOrientation = (wxSB_HORIZONTAL, wxSB_VERTICAL);
 
@@ -331,59 +334,83 @@ type
   TWx_SliderRange = (wxSL_SELRANGE, wxSL_INVERSE);
 
   TWxsldrStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT, wxSL_RIGHT, wxSL_TOP, wxSL_BOTTOM);
-  TWxsldrStyleSet  = set of TWxsldrStyleItem;
+  TWxsldrStyleSet = set of TWxsldrStyleItem;
 
   TWxHyperLnkStyleItem = (wxHL_ALIGN_LEFT, wxHL_ALIGN_RIGHT, wxHL_ALIGN_CENTRE, wxHL_CONTEXTMENU, wxHL_DEFAULT_STYLE);
-  TWxHyperLnkStyleSet  = set of TWxHyperLnkStyleItem;
+  TWxHyperLnkStyleSet = set of TWxHyperLnkStyleItem;
 
   TWxcalctrlStyleItem = (wxCAL_SUNDAY_FIRST, wxCAL_MONDAY_FIRST, wxCAL_SHOW_HOLIDAYS,
     wxCAL_NO_YEAR_CHANGE, wxCAL_NO_MONTH_CHANGE,
     wxCAL_SHOW_SURROUNDING_WEEKS,
     wxCAL_SEQUENTIAL_MONTH_SELECTION);
-  TWxcalctrlStyleSet  = set of TWxcalctrlStyleItem;
+  TWxcalctrlStyleSet = set of TWxcalctrlStyleItem;
 
-//Book controls
-//Notebook
-  TWxnbxStyleItem = (wxNB_DEFAULT, wxNB_TOP, wxNB_LEFT, wxNB_RIGHT, wxNB_BOTTOM, wxNB_FIXEDWIDTH,
-    wxNB_MULTILINE, wxNB_NOPAGETHEME, wxNB_FLAT);
-  TWxnbxStyleSet  = set of TWxnbxStyleItem;
+  //Book controls
+  //Notebook
+  TWxnbxAlignStyleItem = (wxNB_DEFAULT, wxNB_TOP, wxNB_LEFT, wxNB_RIGHT, wxNB_BOTTOM);
+  TWxnbxStyleItem = (wxNB_FIXEDWIDTH, wxNB_MULTILINE, wxNB_NOPAGETHEME, wxNB_FLAT);
+  TWxnbxStyleSet = set of TWxnbxStyleItem;
 
+  //Choicebook
+  TWxchbxAlignStyleItem = (wxCHB_DEFAULT, wxCHB_TOP, wxCHB_LEFT, wxCHB_RIGHT, wxCHB_BOTTOM);
+  { prepare for future styles }
+{    TWxchbxStyleItem = ();
+    TWxchbxStyleSet  = set of TWxchbxStyleItem;
+}
+  //ListBook
+  TWxlbbxAlignStyleItem = (wxLB_DEFAULT, wxLB_TOP, wxLB_LEFT, wxLB_RIGHT, wxLB_BOTTOM);
+  { prepare for future styles   }
+{    TWxlbbxStyleItem = ();
+    TWxlbbxStyleSet  = set of TWxlbbxStyleItem;
+}
+  //treebook
+  TWxtrbxAlignStyleItem = (wxBK_DEFAULT, wxBK_TOP, wxBK_LEFT, wxBK_RIGHT, wxBK_BOTTOM);
+  { prepare for future styles  }
+{   TWxtrbxStyleItem = ();
+    TWxtrbxStyleSet  = set of TWxtrbxStyleItem;
+}
+  //Toolbook
+  TWxtlbxAlignStyleItem = (wxTLB_DEFAULT);
+  { prepare for future styles  }
+{  TWxtlbxAlignStyleItem = ();
+  TWxtlbxStyleSet = set of TWxtlbxStyleItem;
+}
   TWxrbxStyleItem = (wxRA_SPECIFY_ROWS, wxRA_SPECIFY_COLS);
-  TWxrbxStyleSet  = set of TWxrbxStyleItem;
+  TWxrbxStyleSet = set of TWxrbxStyleItem;
 
   TWxsbrStyleItem = (wxST_SIZEGRIP);
-  TWxsbrStyleSet  = set of TWxsbrStyleItem;
+  TWxsbrStyleSet = set of TWxsbrStyleItem;
 
   TWxtbrStyleItem = (wxTB_FLAT, wxTB_DOCKABLE, wxTB_HORIZONTAL,
     wxTB_VERTICAL, wxTB_TEXT,
     wxTB_NOICONS, wxTB_NODIVIDER, wxTB_NOALIGN, wxTB_HORZ_LAYOUT,
     wxTB_HORZ_TEXT);
-  TWxtbrStyleSet  = set of TWxtbrStyleItem;
+  TWxtbrStyleSet = set of TWxtbrStyleItem;
 
   TWxLvView = (wxLC_ICON, wxLC_SMALL_ICON, wxLC_LIST, wxLC_REPORT, wxLC_VIRTUAL{$IFDEF PRIVATE_BUILD}, wxLC_TILE{$ENDIF});
   TWxLVStyleItem = (wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
     wxLC_EDIT_LABELS, wxLC_GROUPS, wxLC_NO_HEADER, wxLC_NO_SORT_HEADER,
     wxLC_SINGLE_SEL, wxLC_SORT_ASCENDING, wxLC_SORT_DESCENDING,
     wxLC_HRULES, wxLC_VRULES);
-  TWxLVStyleSet  = set of TWxLVStyleItem;
+  TWxLVStyleSet = set of TWxLVStyleItem;
 
   TWxTVStyleItem = (wxTR_EDIT_LABELS, wxTR_NO_BUTTONS, wxTR_HAS_BUTTONS,
     wxTR_TWIST_BUTTONS, wxTR_NO_LINES, wxTR_FULL_ROW_HIGHLIGHT,
-    wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES,wxTR_COLUMN_LINES,
-    wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE,wxTR_SHOW_ROOT_LABEL_ONLY,
+    wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES, wxTR_COLUMN_LINES,
+    wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE, wxTR_SHOW_ROOT_LABEL_ONLY,
     wxTR_MULTIPLE, wxTR_EXTENDED,
     wxTR_DEFAULT_STYLE);
-  TWxTVStyleSet  = set of TWxTVStyleItem;
+  TWxTVStyleSet = set of TWxTVStyleItem;
 
   TWxScrWinStyleItem = (wxRETAINED);
-  TWxScrWinStyleSet  = set of TWxScrWinStyleItem;
+  TWxScrWinStyleSet = set of TWxScrWinStyleItem;
 
   TWxHtmlWinStyleItem = (wxHW_SCROLLBAR_NEVER, wxHW_SCROLLBAR_AUTO, wxHW_NO_SELECTION);
-  TWxHtmlWinStyleSet  = set of TWxHtmlWinStyleItem;
+  TWxHtmlWinStyleSet = set of TWxHtmlWinStyleItem;
 
   TWxSplitterWinStyleItem = (wxSP_3D, wxSP_3DSASH, wxSP_3DBORDER,
     wxSP_BORDER, wxSP_NOBORDER, wxSP_NO_XP_THEME, wxSP_PERMIT_UNSPLIT, wxSP_LIVE_UPDATE);
-  TWxSplitterWinStyleSet  = set of TWxSplitterWinStyleItem;
+  TWxSplitterWinStyleSet = set of TWxSplitterWinStyleItem;
 
   TWxMenuItemStyleItem = (wxMnuItm_Normal, wxMnuItm_Separator,
     wxMnuItm_Radio, wxMnuItm_Check, wxMnuItm_History);
@@ -391,11 +418,11 @@ type
   TWxToolbottonItemStyleItem = (wxITEM_NORMAL, wxITEM_RADIO, wxITEM_CHECK);
 
   TWxFindReplaceFlagItem = (wxFR_DOWN, wxFR_WHOLEWORD, wxFR_MATCHCASE);
-  TWxFindReplaceFlagSet  = set of TWxFindReplaceFlagItem;
+  TWxFindReplaceFlagSet = set of TWxFindReplaceFlagItem;
 
   TwxFindReplaceDialogStyleItem = (wxFR_REPLACEDIALOG, wxFR_NOUPDOWN,
     wxFR_NOMATCHCASE, wxFR_NOWHOLEWORD);
-  TwxFindReplaceDialogStyleSet  = set of TwxFindReplaceDialogStyleItem;
+  TwxFindReplaceDialogStyleSet = set of TwxFindReplaceDialogStyleItem;
 
   TWx_LIOrientation = (wxLI_HORIZONTAL, wxLI_VERTICAL);
 
@@ -405,20 +432,20 @@ type
 
   TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
     wxCHANGE_DIR, wxFILE_MUST_EXIST);
-  TWxFileDialogStyleSet  = set of TWxFileDialogStyleItem;
+  TWxFileDialogStyleSet = set of TWxFileDialogStyleItem;
 
   TWxDirDialogStyleItem = (wxDD_NEW_DIR_BUTTON);
-  TWxDirDialogStyleSet  = set of TWxDirDialogStyleItem;
+  TWxDirDialogStyleSet = set of TWxDirDialogStyleItem;
 
   TWxProgressDialogStyleItem =
     (wxPD_APP_MODAL, wxPD_AUTO_HIDE, wxPD_CAN_ABORT, wxPD_ELAPSED_TIME,
     wxPD_ESTIMATED_TIME, wxPD_REMAINING_TIME, wxPD_SMOOTH, wxPD_CAN_SKIP);
-  TWxProgressDialogStyleSet  = set of TWxProgressDialogStyleItem;
+  TWxProgressDialogStyleSet = set of TWxProgressDialogStyleItem;
 
   TWxMessageDialogStyleItem = (wxOK, wxCANCEL, wxYES_NO, wxYES_DEFAULT,
     wxNO_DEFAULT, wxICON_EXCLAMATION, wxICON_HAND, wxICON_ERROR, wxICON_QUESTION,
-    wxICON_INFORMATION,wxCENTRE);
-  TWxMessageDialogStyleSet  = set of TWxMessageDialogStyleItem;
+    wxICON_INFORMATION, wxCENTRE);
+  TWxMessageDialogStyleSet = set of TWxMessageDialogStyleItem;
 
   TWxPaperSizeItem = (wxPAPER_NONE, wxPAPER_LETTER, wxPAPER_LEGAL,
     wxPAPER_A4, wxPAPER_CSHEET, wxPAPER_DSHEET, wxPAPER_ESHEET,
@@ -433,18 +460,17 @@ type
     wxPAPER_ENV_MONARCH, wxPAPER_ENV_PERSONAL,
     wxPAPER_FANFOLD_US, wxPAPER_FANFOLD_STD_GERMAN, wxPAPER_FANFOLD_LGL_GERMAN);
 
-
   //Sizer orientation
   TWxSizerOrientation = (wxVertical, wxHorizontal);
 
-  TWxMediaCtrlControl = (wxMEDIACTRLPLAYERCONTROLS_NONE , wxMEDIACTRLPLAYERCONTROLS_STEP , wxMEDIACTRLPLAYERCONTROLS_VOLUME );
+  TWxMediaCtrlControl = (wxMEDIACTRLPLAYERCONTROLS_NONE, wxMEDIACTRLPLAYERCONTROLS_STEP, wxMEDIACTRLPLAYERCONTROLS_VOLUME);
   TWxMediaCtrlControls = set of TWxMediaCtrlControl;
 
   TWxColorString = class
   public
     FstrColorValue: string;
   published
-    property strColorValue: string Read FstrColorValue Write FstrColorValue;
+    property strColorValue: string read FstrColorValue write FstrColorValue;
   end;
 
   TWxValidatorString = class(TComponent)
@@ -452,11 +478,11 @@ type
     FstrValidatorValue: string;
     FValidatorType: Integer;
     FFilterType: Integer;
-    FValidatorVarName:String;
+    FValidatorVarName: string;
     constructor Create(Owner: TComponent); override;
 
   published
-    property strValidatorValue: string Read FstrValidatorValue Write FstrValidatorValue;
+    property strValidatorValue: string read FstrValidatorValue write FstrValidatorValue;
   end;
 
   // Added 11 May 2005 - Tony
@@ -464,7 +490,7 @@ type
   public
     FstrFileNameValue: string;
   published
-    property strFileNameValue: string Read FstrFileNameValue Write FstrFileNameValue;
+    property strFileNameValue: string read FstrFileNameValue write FstrFileNameValue;
   end;
 
   TWxJvInspectorTStringsItem = class(TJvCustomInspectorItem)
@@ -589,14 +615,14 @@ type
 
   public
     constructor Create(const AParent: TJvCustomInspectorItem;
-    const AData: TJvCustomInspectorData); override;
+      const AData: TJvCustomInspectorData); override;
     class procedure RegisterAsDefaultItem;
   end;
 
 function UnixPathToDosPath(const Path: string): string;
-function LocalConvertLibsToCurrentVersion(strValue:String):string;
-function Convert25LibsToCurrentVersion(strValue:String):string;
-function Convert26LibsToCurrentVersion(strValue:String):string;
+function LocalConvertLibsToCurrentVersion(strValue: string): string;
+function Convert25LibsToCurrentVersion(strValue: string): string;
+function Convert26LibsToCurrentVersion(strValue: string): string;
 
 function GetGridSelectionToString(grdsel: TWxGridSelection): string;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
@@ -613,7 +639,11 @@ function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
 function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): string;
 function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): string;
 function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): string;
+//function GetChoicebookStyleString(stdStyle: TWxchbxStyleSet): string;
+//function GetListbookStyleString(stdStyle: TWxlbbxStyleSet): string;
 function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): string;
+//function GetToolbookStyleString(stdStyle: TWxtlbxStyleSet): string;
+//function GetTreebookStyleString(stdStyle: TWxtrbxStyleSet): string;
 function GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): string;
 function GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): string;
 function GetToolBarStyleString(stdStyle: TWxtbrStyleSet): string;
@@ -623,10 +653,10 @@ function GetSplitterWindowStyleString(stdStyle: TWxSplitterWinStyleSet): string;
 function GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): string;
 function GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): string;
 function GetProgressDialogStyleString(stdStyle: TWxProgressDialogStyleSet): string;
-function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle:TWxEdtGeneralStyleSet): string;
-function GetMediaCtrlStyle(mediaStyle:TWxMediaCtrlControl): string;
-function GetMediaCtrlStyleString(mediaStyle:TWxMediaCtrlControls): string;
-function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;NoEndComma:Boolean): string;
+function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle: TWxEdtGeneralStyleSet): string;
+function GetMediaCtrlStyle(mediaStyle: TWxMediaCtrlControl): string;
+function GetMediaCtrlStyleString(mediaStyle: TWxMediaCtrlControls): string;
+function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet; NoEndComma: Boolean): string;
 function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): string;
 function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet): string;
 
@@ -643,19 +673,35 @@ function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
 function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
   scbrstyle: TWxsbrStyleSet): string;
 function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;
-  edtstyle: TWxHyperLnkStyleSet): string;  
+  edtstyle: TWxHyperLnkStyleSet): string;
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   sbtnstyle: TWxsbtnStyleSet;
   edtstyle: TWxEdtGeneralStyleSet): string;
 function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
   sldrstyle: TWxsldrStyleSet): string;
-function GetDateVariableExpansion(value:TDateTime):string;
+function GetDateVariableExpansion(value: TDateTime): string;
 function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
   calctrlstyle: TWxcalctrlStyleSet): string;
 function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
   calctrlstyle: TWxPickCalStyleSet): string;
-function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
-  nbxstyle: TWxnbxStyleSet): string;
+
+function GetChoicebookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxchbxAlignStyleItem; cbbxstyle: TWxchbxStyleSet}): string;
+function GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): string;
+
+{function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet; lbbxstyle: TWxlbbxStyleSet): string; }
+function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): string;
+function GetListAlignment(Value: TWxlbbxAlignStyleItem): string;
+
+function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet; {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxnbxStyleSet): string;
+function GetTabAlignmentString(Value: TWxnbxAlignStyleItem): string;
+
+function GetToolbookSpecificStyle(stdstyle: TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): string;
+
+{function GetTreebookSpecificStyle(stdstyle: TWxStdStyleSet;
+  trbxstyle: TWxtrbxStyleSet): string;    }
+function GetTreebookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): string;
+function GetTreeAlignment(Value: TWxtrbxAlignStyleItem): string;
+
 function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;
   rbxstyle: TWxrbxStyleSet): string;
 function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -674,6 +720,8 @@ function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
   lstvwstyle: TWxLVStyleSet; view: TWxLvView): string;
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxEdtGeneralStyleSet): string;
+function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+  dlgstyle: TWxAnimationCtrlStyleSet): string;
 function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxBtnStyleSet): string;
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -713,7 +761,7 @@ function AlignmentToStr(taPos: TAlignment): string;
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: boolean = True);
 function GetXPMFromTPicture(XPMName: string; delphiBitmap: TBitmap): string;
 function GetXPMFromTPictureXXX(XPMName: string; delphiBitmap: TBitmap): string;
-function GenerateXPMDirectly(bmp: TBitmap; strCompName: string;strParentName:string;strFileName: string): boolean;
+function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strParentName: string; strFileName: string): boolean;
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
 function GetCommentString(str: string): string;
@@ -735,24 +783,24 @@ function IsIDPredefined(str: string; strlst: TStringList): boolean;
 
 function XML_Label(str: string): string;
 function CreateBlankXRC: TStringList;
-function GetWxMonthFromIndex(MonthIndex:Integer):String;
-function GetDateToString(dt:TDateTime):string;
+function GetWxMonthFromIndex(MonthIndex: Integer): string;
+function GetDateToString(dt: TDateTime): string;
 
-function GetLongName(const ShortPathName: string): String;  // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-function ValidateClassName(ClassName: String) :Integer;  // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-function CreateValidClassName(ClassName: String) :String; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-function ValidateFileName(FileName: String): Integer;  // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-function CreateValidFileName(FileName: String): String; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
+function GetLongName(const ShortPathName: string): string; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
+function ValidateClassName(ClassName: string): Integer; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
+function CreateValidClassName(ClassName: string): string; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
+function ValidateFileName(FileName: string): Integer; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
+function CreateValidFileName(FileName: string): string; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
 
 implementation
 
 uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxToolButton,
   UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
-  WxNonVisibleBaseComponent, wxdesigner
+  WxNonVisibleBaseComponent, wxdesigner, wxnotebook
 {$IFDEF WIN32}
   , ShlObj, ActiveX
 {$ENDIF}
- ;
+  ;
 
 function ExtractComponentPropertyName(const S: string): string;
 var
@@ -835,50 +883,51 @@ begin
   Result := TranslateChar(Path, '/', '\');
 end;
 
-function LocalConvertLibsToCurrentVersion(strValue:String):string;
+function LocalConvertLibsToCurrentVersion(strValue: string): string;
 begin
-  Result:=Convert25LibsToCurrentVersion(strValue);
-  Result:=Convert26LibsToCurrentVersion(Result);
+  Result := Convert25LibsToCurrentVersion(strValue);
+  Result := Convert26LibsToCurrentVersion(Result);
   //Auto -mwindows flag addition
-  if AnsiContainsText(Result,'-lwxmsw') and (AnsiContainsText(Result,'-mwindows') = false) then
+  if AnsiContainsText(Result, '-lwxmsw') and (AnsiContainsText(Result, '-mwindows') = false) then
   begin
-    Result:='-mwindows_@@_'+Result;
+    Result := '-mwindows_@@_' + Result;
   end;
 end;
-function Convert25LibsToCurrentVersion(strValue:String):string;
+
+function Convert25LibsToCurrentVersion(strValue: string): string;
 begin
-  Result:=StringReplace(strValue,'wxmsw25','wxmsw27',[rfReplaceAll]);
+  Result := StringReplace(strValue, 'wxmsw25', 'wxmsw27', [rfReplaceAll]);
 end;
 
-function Convert26LibsToCurrentVersion(strValue:String):string;
+function Convert26LibsToCurrentVersion(strValue: string): string;
 begin
-  Result:=StringReplace(strValue,'wxmsw26','wxmsw27',[rfReplaceAll]);
+  Result := StringReplace(strValue, 'wxmsw26', 'wxmsw27', [rfReplaceAll]);
 end;
 
-function GetDateToString(dt:TDateTime):String;
+function GetDateToString(dt: TDateTime): string;
 var
-    AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond:word;
+  AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: word;
 begin
-  DecodeDateTime(dt,AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond);
-  Result:= Format('%d/%d/%d',[AMonth,ADay,AYear]);
+  DecodeDateTime(dt, AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond);
+  Result := Format('%d/%d/%d', [AMonth, ADay, AYear]);
 end;
 
-function GetWxMonthFromIndex(MonthIndex:Integer):String;
+function GetWxMonthFromIndex(MonthIndex: Integer): string;
 begin
-    case MonthIndex of
-        1: Result:= 'wxDateTime::Jan';
-        2: Result:= 'wxDateTime::Feb';
-        3: Result:= 'wxDateTime::Mar';
-        4: Result:= 'wxDateTime::Apr';
-        5: Result:= 'wxDateTime::May';
-        6: Result:= 'wxDateTime::Jun';
-        7: Result:= 'wxDateTime::Jul';
-        8: Result:= 'wxDateTime::Aug';
-        9: Result:= 'wxDateTime::Sep';
-        10: Result:= 'wxDateTime::Oct';
-        11: Result:= 'wxDateTime::Nov';
-        12: Result:= 'wxDateTime::Dec';
-    end;
+  case MonthIndex of
+    1: Result := 'wxDateTime::Jan';
+    2: Result := 'wxDateTime::Feb';
+    3: Result := 'wxDateTime::Mar';
+    4: Result := 'wxDateTime::Apr';
+    5: Result := 'wxDateTime::May';
+    6: Result := 'wxDateTime::Jun';
+    7: Result := 'wxDateTime::Jul';
+    8: Result := 'wxDateTime::Aug';
+    9: Result := 'wxDateTime::Sep';
+    10: Result := 'wxDateTime::Oct';
+    11: Result := 'wxDateTime::Nov';
+    12: Result := 'wxDateTime::Dec';
+  end;
 end;
 
 function XML_Label(str: string): string;
@@ -899,13 +948,13 @@ var
   I: integer;
 begin
   Result := 0;
-  for I := 0 to ParentControl.ControlCount - 1 do    // Iterate
+  for I := 0 to ParentControl.ControlCount - 1 do // Iterate
   begin
     if not (IsControlWxToolBar(ParentControl.Controls[i]) or
       IsControlWxStatusBar(ParentControl.Controls[i])) then
       continue;
     Result := Result + ParentControl.Controls[i].Height;
-  end;    // for
+  end; // for
 end;
 
 function IsIDPredefined(str: string; strlst: TStringList): boolean;
@@ -1035,8 +1084,8 @@ var
   strStyle, strWeight, strUnderline: string;
 begin
   if (fnt.Name = Screen.HintFont.Name) and (fnt.Size = Screen.HintFont.Size) and
-     (fnt.Style = Screen.HintFont.Style) then
-     Result := ''
+    (fnt.Style = Screen.HintFont.Style) then
+    Result := ''
   else
   begin
     if fsItalic in fnt.Style then
@@ -1063,29 +1112,29 @@ end;
 
 function GetDesignerFormName(cntrl: TControl): string;
 var
-  ParentCtrl,PrevParentCtrl:TControl;
+  ParentCtrl, PrevParentCtrl: TControl;
 
 begin
-  ParentCtrl:= cntrl.Parent;
+  ParentCtrl := cntrl.Parent;
   if ParentCtrl = nil then
   begin
     if cntrl is TfrmNewForm then
     begin
-      Result:=TfrmNewForm(cntrl).Wx_Name;
+      Result := TfrmNewForm(cntrl).Wx_Name;
       exit;
     end;
   end;
-  
-  while (ParentCtrl <> nil ) do
+
+  while (ParentCtrl <> nil) do
   begin
     PrevParentCtrl := ParentCtrl;
-    ParentCtrl:=ParentCtrl.Parent;
+    ParentCtrl := ParentCtrl.Parent;
     if ParentCtrl = nil then
     begin
       if PrevParentCtrl is TfrmNewForm then
-        Result:= TfrmNewForm(PrevParentCtrl).Wx_Name
+        Result := TfrmNewForm(PrevParentCtrl).Wx_Name
       else
-        Result:='';
+        Result := '';
       exit;
     end;
   end;
@@ -1109,16 +1158,18 @@ begin
     exit;
   end;
 
-  if not (cntrl.Parent is TwxSizerPanel) then
-  begin
-    Result := cntrl.Parent.Name;
-    exit;
-  end;
+  {mn
+    if not (cntrl.Parent is TwxSizerPanel) then
+    begin
+      Result := cntrl.Parent.Name;
+      exit;
+    end;
+  mn}
 
   if (cntrl.Parent is TWxSizerPanel) then
   begin
     TestCtrl := cntrl.Parent;
-    Result   := TestCtrl.Name;
+    Result := TestCtrl.Name;
     while ((TestCtrl is TWxSizerPanel)) do
     begin
       if (TestCtrl is TWxSizerPanel) then
@@ -1134,7 +1185,27 @@ begin
       else
         Result := TestCtrl.Name;
     end;
+    Exit;
   end;
+
+  if (cntrl.Parent is TWxNotebook) then
+  begin
+    Result := cntrl.Parent.Name;
+    exit;
+
+  end;
+
+  if (cntrl.Parent is TPageControl) then //we assume compound tool/choice/list/tool/tree-books
+  begin
+    Result := GetWxWidgetParent(cntrl.Parent); //this should return the grandparent
+    exit;
+  end
+  else
+  begin
+    Result := cntrl.Parent.Name;
+    exit;
+  end;
+
 end;
 
 function GetWxWindowControls(wnCtrl: TWinControl): integer;
@@ -1143,9 +1214,9 @@ var
   wndInterface: IWxWindowInterface;
 begin
   Result := 0;
-  for I := 0 to wnCtrl.ComponentCount - 1 do    // Iterate
+  for I := 0 to wnCtrl.ComponentCount - 1 do // Iterate
     if wnCtrl.Components[i].GetInterface(IID_IWxWindowInterface, wndInterface) then
-      Inc(Result);    // for
+      Inc(Result); // for
 end;
 
 function GetMaxIDofWxForm(ParentControl: TWinControl): integer;
@@ -1158,9 +1229,9 @@ begin
     if ParentControl.Components[i].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then
       if wxcompInterface.GetIDValue > Result then
-        Result := wxcompInterface.GetIDValue//maxval := wxcompInterface.GetIDValue;
-    //sendDeBug(IntToStr(maxval));
-  ; // for
+        Result := wxcompInterface.GetIDValue //maxval := wxcompInterface.GetIDValue;
+        //sendDeBug(IntToStr(maxval));
+        ; // for
 
   if Result = 0 then
     Result := 1000;
@@ -1223,9 +1294,9 @@ var
   I: integer;
 begin
   Result := 0;
-  for I := 0 to ParentControl.ComponentCount - 1 do    // Iterate
+  for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
     if strContainsU(ParentControl.Components[i].ClassName, ControlToCheck) then
-      Inc(Result);    // for
+      Inc(Result); // for
 end;
 
 function GetAvailableControlCount(ParentControl: TWinControl;
@@ -1234,15 +1305,15 @@ var
   I: integer;
 begin
   Result := 0;
-  for I := 0 to ParentControl.ComponentCount - 1 do    // Iterate
+  for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
     if strContainsU(ParentControl.Components[i].ClassName, ControlToCheck.ClassName) then
-      Inc(Result);    // for
+      Inc(Result); // for
 end;
 
 function GetEventNameFromDisplayName(strDisplayName: string;
   strlst: TStringList): string;
 var
-  I:      integer;
+  I: integer;
   strEventName, strEventCaption: string;
   intPos: integer;
 begin
@@ -1265,9 +1336,10 @@ begin
 end;
 
 //Here is the start
+
 function GetCheckboxStyleString(stdStyle: TWxcbxStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
@@ -1293,8 +1365,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1303,7 +1375,7 @@ end;
 
 function GetTreeviewStyleString(stdStyle: TWxtvStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
@@ -1358,8 +1430,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1368,7 +1440,7 @@ end;
 
 function GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1388,8 +1460,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1398,7 +1470,7 @@ end;
 
 function GetListboxStyleString(stdStyle: TWxlbxStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
@@ -1432,8 +1504,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
   finally
     strLst.Destroy;
   end;
@@ -1441,7 +1513,7 @@ end;
 
 function GetGaugeStyleString(stdStyle: TWxgagStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1453,7 +1525,7 @@ begin
 
     if wxGA_MARQUEE in stdStyle then
       strLst.add('wxGA_MARQUEE');
-    
+
     if strLst.Count = 0 then
       Result := ''
     else
@@ -1461,8 +1533,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1473,7 +1545,7 @@ end;
 
 function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1490,8 +1562,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1502,7 +1574,7 @@ end;
 
 function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1515,12 +1587,12 @@ begin
     if wxSP_WRAP in stdStyle then
       strLst.add('wxSP_WRAP');
 
- { if wxSP_HORIZONTAL in stdStyle then
-    strLst.add('wxSP_HORIZONTAL');
+    { if wxSP_HORIZONTAL in stdStyle then
+       strLst.add('wxSP_HORIZONTAL');
 
-  if wxSP_VERTICAL in stdStyle then
-    strLst.add('wxSP_VERTICAL');
-  }
+     if wxSP_VERTICAL in stdStyle then
+       strLst.add('wxSP_VERTICAL');
+     }
     if strLst.Count = 0 then
       Result := ''
     else
@@ -1528,8 +1600,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1539,10 +1611,10 @@ end;
 
 function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
-  strLst:= TStringList.Create;
+  strLst := TStringList.Create;
   try
     if wxHL_ALIGN_LEFT in stdStyle then
       strLst.add('wxHL_ALIGN_LEFT');
@@ -1566,18 +1638,17 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
   end;
 end;
 
-
 function GetSliderStyleString(stdStyle: TWxsldrStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1609,8 +1680,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1619,14 +1690,14 @@ end;
 
 function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
   strLst := TStringList.Create;
 
   try
-    if wxDP_SPIN  in stdStyle then
+    if wxDP_SPIN in stdStyle then
       strLst.add('wxDP_SPIN');
 
     if wxDP_DROPDOWN in stdStyle then
@@ -1635,7 +1706,7 @@ begin
     if wxDP_DEFAULT in stdStyle then
       strLst.add('wxDP_DEFAULT');
 
-    if wxDP_ALLOWNONE  in stdStyle then
+    if wxDP_ALLOWNONE in stdStyle then
       strLst.add('wxDP_ALLOWNONE');
 
     if wxDP_SHOWCENTURY in stdStyle then
@@ -1648,8 +1719,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1658,7 +1729,7 @@ end;
 
 function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1693,8 +1764,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1702,10 +1773,10 @@ begin
 
 end;
 
-
-function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): string;
+{
+function GetChoicebookStyleString(stdStyle: TWxchbxStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1713,20 +1784,79 @@ begin
 
   try
 
-    if wxNB_DEFAULT in stdStyle then
-      strLst.add('wxNB_DEFAULT');
 
-    if wxNB_TOP in stdStyle then
-      strLst.add('wxNB_TOP');
+  //check for choicebook styles here
 
-    if wxNB_LEFT in stdStyle then
-      strLst.add('wxNB_LEFT');
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i] // for
+          ;
+    //sendDebug(Result);
 
-    if wxNB_RIGHT in stdStyle then
-      strLst.add('wxNB_RIGHT');
+  finally
+    strLst.Destroy;
+  end;
 
-    if wxNB_BOTTOM in stdStyle then
-      strLst.add('wxNB_BOTTOM');
+end;
+}
+{
+function GetListbookStyleString(stdStyle: TWxlbbxStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+
+    if wxLB_DEFAULT in stdStyle then
+      strLst.add('wxLB_DEFAULT');
+
+    if wxLB_TOP in stdStyle then
+      strLst.add('wxLB_TOP');
+
+    if wxLB_LEFT in stdStyle then
+      strLst.add('wxLB_LEFT');
+
+    if wxLB_RIGHT in stdStyle then
+      strLst.add('wxLB_RIGHT');
+
+    if wxLB_BOTTOM in stdStyle then
+      strLst.add('wxLB_BOTTOM');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i] // for
+          ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
+end;
+}
+
+function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
 
     if wxNB_FIXEDWIDTH in stdStyle then
       strLst.add('wxNB_FIXEDWIDTH');
@@ -1747,8 +1877,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1756,6 +1886,21 @@ begin
   end;
 
 end;
+
+{
+function GetToolbookStyleString(stdStyle: TWxtlbxStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+
+    if wxTLB_DEFAULT in stdStyle then
+      strLst.add('wxLB_DEFAULT');
+
     if strLst.Count = 0 then
       Result := ''
     else
@@ -1763,8 +1908,8 @@ end;
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1772,10 +1917,54 @@ end;
   end;
 
 end;
+}
+{
+function GetTreebookStyleString(stdStyle: TWxtrbxStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+
+    if wxBK_DEFAULT in stdStyle then
+      strLst.add('wxBK_DEFAULT');
+
+    if wxBK_TOP in stdStyle then
+      strLst.add('wxBK_TOP');
+
+    if wxBK_LEFT in stdStyle then
+      strLst.add('wxBK_LEFT');
+
+    if wxBK_RIGHT in stdStyle then
+      strLst.add('wxBK_RIGHT');
+
+    if wxBK_BOTTOM in stdStyle then
+      strLst.add('wxBK_BOTTOM');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i] // for
+          ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
+end;
+}
 
 function GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1795,8 +1984,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1805,7 +1994,7 @@ end;
 
 function GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1822,18 +2011,17 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
   end;
 end;
 
-
 function GetToolBarStyleString(stdStyle: TWxtbrStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
@@ -1876,8 +2064,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -1886,7 +2074,7 @@ end;
 
 function GetScrolledWindowStyleString(stdStyle: TWxScrWinStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
@@ -1902,8 +2090,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1912,10 +2100,9 @@ begin
 
 end;
 
-
 function GetHtmlWindowStyleString(stdStyle: TWxHtmlWinStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1939,8 +2126,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1951,7 +2138,7 @@ end;
 
 function GetSplitterWindowStyleString(stdStyle: TWxSplitterWinStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -1989,8 +2176,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -1999,10 +2186,9 @@ begin
 
 end;
 
-
 function GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2026,7 +2212,8 @@ begin
 
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := ' | ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2043,7 +2230,7 @@ end;
 
 function GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2053,10 +2240,10 @@ begin
     if wxDD_NEW_DIR_BUTTON in stdStyle then
       strLst.add('wxDD_NEW_DIR_BUTTON');
 
-
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := ', ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2071,10 +2258,9 @@ begin
 
 end;
 
-
 function GetProgressDialogStyleString(stdStyle: TWxProgressDialogStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2107,7 +2293,8 @@ begin
 
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := ', ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2122,22 +2309,22 @@ begin
 
 end;
 
-function GetMediaCtrlStyle(mediaStyle:TWxMediaCtrlControl): string;
+function GetMediaCtrlStyle(mediaStyle: TWxMediaCtrlControl): string;
 begin
-    if wxMEDIACTRLPLAYERCONTROLS_NONE = mediaStyle then
-      Result:='wxMEDIACTRLPLAYERCONTROLS_NONE';
+  if wxMEDIACTRLPLAYERCONTROLS_NONE = mediaStyle then
+    Result := 'wxMEDIACTRLPLAYERCONTROLS_NONE';
 
-    if wxMEDIACTRLPLAYERCONTROLS_STEP = mediaStyle then
-      Result:='wxMEDIACTRLPLAYERCONTROLS_STEP';
+  if wxMEDIACTRLPLAYERCONTROLS_STEP = mediaStyle then
+    Result := 'wxMEDIACTRLPLAYERCONTROLS_STEP';
 
-    if wxMEDIACTRLPLAYERCONTROLS_VOLUME = mediaStyle then
-      Result:='wxMEDIACTRLPLAYERCONTROLS_VOLUME';
+  if wxMEDIACTRLPLAYERCONTROLS_VOLUME = mediaStyle then
+    Result := 'wxMEDIACTRLPLAYERCONTROLS_VOLUME';
 
 end;
 
-function GetMediaCtrlStyleString(mediaStyle:TWxMediaCtrlControls): string;
+function GetMediaCtrlStyleString(mediaStyle: TWxMediaCtrlControls): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2155,7 +2342,8 @@ begin
 
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := ' ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2171,9 +2359,9 @@ begin
 
 end;
 
-function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;NoEndComma:Boolean): string;
+function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet; NoEndComma: Boolean): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2215,7 +2403,8 @@ begin
 
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := ' ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2229,7 +2418,7 @@ begin
     strLst.Destroy;
   end;
 
-  if (Result <> '') AND (NoEndComma = false) then
+  if (Result <> '') and (NoEndComma = false) then
   begin
     Result := ',' + Result;
   end;
@@ -2237,7 +2426,7 @@ end;
 
 function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2256,7 +2445,8 @@ begin
 
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := '';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2272,10 +2462,9 @@ begin
 
 end;
 
-
 function GetFindReplaceDialogStyleString(stdstyle: TWxFindReplaceDialogStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2296,7 +2485,8 @@ begin
 
     if strLst.Count = 0 then
       Result := ''
-    else begin
+    else
+    begin
       Result := ', ';
       for I := 0 to strLst.Count - 1 do // Iterate
         if i <> strLst.Count - 1 then
@@ -2311,12 +2501,11 @@ begin
 
 end;
 
-
-
 //Here is the end;
+
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2342,8 +2531,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -2352,7 +2541,7 @@ end;
 
 function GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2372,18 +2561,17 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
   end;
 end;
 
-
 function GetDlgStyleString(stdStyle: TWxDlgStyleSet; wxclassname: string): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2453,8 +2641,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -2463,9 +2651,40 @@ begin
 
 end;
 
+function GetAnimationCtrlStyleString(stdStyle: TWxAnimationCtrlStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+    if wxAC_DEFAULT_STYLE in stdStyle then
+      strLst.add('wxAC_DEFAULT_STYLE');
+
+    if wxAC_NO_AUTORESIZE in stdStyle then
+      strLst.add('wxAC_NO_AUTORESIZE');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i] // for
+          ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+end;
+
 function GetButtonStyleString(stdStyle: TWxBtnStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2497,8 +2716,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
 
   finally
@@ -2508,7 +2727,7 @@ end;
 
 function GetLbStyleString(stdStyle: TWxLbStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2535,8 +2754,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -2546,7 +2765,7 @@ end;
 
 function GetRichTextStyleString(edtdStyle: TWxRichTextStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2567,8 +2786,8 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
@@ -2578,7 +2797,7 @@ end;
 
 function GetEdtStyleString(edtdStyle: TWxEdtGeneralStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -2647,20 +2866,20 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
   end;
 end;
 
-function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle:TWxEdtGeneralStyleSet): string;
+function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet; edtStyle: TWxEdtGeneralStyleSet): string;
 var
-  strA,strB:String;
+  strA, strB: string;
 begin
-  strA   := trim(GetMessageDialogStyleString(stdStyle,true));
-  strB   := trim(GetEdtStyleString(edtStyle));
+  strA := trim(GetMessageDialogStyleString(stdStyle, true));
+  strB := trim(GetEdtStyleString(edtStyle));
 
   if strA <> '' then
     if trim(Result) = '' then
@@ -2674,12 +2893,11 @@ begin
     else
       Result := Result + ' | ' + strB;
 
-    if Result <> '' then
-    begin
-      Result := ',' + Result;
-    end;
+  if Result <> '' then
+  begin
+    Result := ',' + Result;
+  end;
 end;
-
 
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxEdtGeneralStyleSet): string;
@@ -2687,7 +2905,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetEdtStyleString(dlgstyle));
+  strA := trim(GetEdtStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2701,7 +2919,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetRichTextStyleString(dlgstyle));
+  strA := trim(GetRichTextStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2716,8 +2934,8 @@ var
   strB: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetComboxBoxStyleString(cmbstyle));
-  strB   := trim(GetEdtStyleString(edtstyle));
+  strA := trim(GetComboxBoxStyleString(cmbstyle));
+  strB := trim(GetEdtStyleString(edtstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2731,16 +2949,16 @@ begin
 end;
 
 function GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-  cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;owncmbstyle: TWxOwnCmbStyleSet): string;
+  cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet; owncmbstyle: TWxOwnCmbStyleSet): string;
 var
   strA: string;
   strB: string;
   strC: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetComboxBoxStyleString(cmbstyle));
-  strB   := trim(GetEdtStyleString(edtstyle));
-  strC   := trim(GetOwnComboxBoxStyleString(Owncmbstyle));
+  strA := trim(GetComboxBoxStyleString(cmbstyle));
+  strB := trim(GetEdtStyleString(edtstyle));
+  strC := trim(GetOwnComboxBoxStyleString(Owncmbstyle));
 
   if strA <> '' then
     if trim(Result) = '' then
@@ -2761,10 +2979,9 @@ begin
       Result := Result + ' | ' + strC;
 end;
 
-
 function GetListViewStyleString(lstvwstyle: TWxLVStyleSet; view: TWxLvView): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
   strLst := TStringList.Create;
@@ -2775,10 +2992,10 @@ begin
     wxLC_REPORT:
       strLst.add('wxLC_REPORT');
     wxLC_VIRTUAL:
-    begin
-      strLst.add('wxLC_VIRTUAL');
-      strLst.add('wxLC_REPORT');
-    end;
+      begin
+        strLst.add('wxLC_VIRTUAL');
+        strLst.add('wxLC_REPORT');
+      end;
     wxLC_ICON:
       strLst.add('wxLC_ICON');
     wxLC_SMALL_ICON:
@@ -2788,7 +3005,7 @@ begin
       strLst.add('wxLC_TILE');
 {$ENDIF}
   end;
-  
+
   try
     if wxLC_ALIGN_TOP in lstvwstyle then
       strLst.add('wxLC_ALIGN_TOP');
@@ -2842,28 +3059,28 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetListViewStyleString(lstvwstyle, view));
+  strA := trim(GetListViewStyleString(lstvwstyle, view));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
+    else if strA = '' then
+      Result := Result
     else
-      if strA = '' then
-        Result := Result
-      else
-        Result := Result + ' | ' + strA;
+      Result := Result + ' | ' + strA;
 
   if trim(Result) <> '' then
     Result := ', ' + Result;
 end;
 
 //Start here
+
 function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;
   cbxstyle: TWxcbxStyleSet): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetCheckBoxStyleString(cbxstyle));
+  strA := trim(GetCheckBoxStyleString(cbxstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2878,7 +3095,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetTreeViewStyleString(tvstyle));
+  strA := trim(GetTreeViewStyleString(tvstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2893,7 +3110,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetRadioButtonStyleString(rbstyle));
+  strA := trim(GetRadioButtonStyleString(rbstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2908,7 +3125,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetListBoxStyleString(lbxstyle));
+  strA := trim(GetListBoxStyleString(lbxstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2923,7 +3140,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetGaugeStyleString(gagstyle));
+  strA := trim(GetGaugeStyleString(gagstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2938,7 +3155,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetScrollbarStyleString(scbrstyle));
+  strA := trim(GetScrollbarStyleString(scbrstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2947,12 +3164,12 @@ begin
 
 end;
 
-function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;edtstyle: TWxHyperLnkStyleSet): string;
+function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet; edtstyle: TWxHyperLnkStyleSet): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetHyperLnkStyleString(edtstyle));
+  strA := trim(GetHyperLnkStyleString(edtstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2960,7 +3177,6 @@ begin
       Result := Result + ' | ' + strA;
 
 end;
-
 
 function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   sbtnstyle: TWxsbtnStyleSet; edtstyle: TWxEdtGeneralStyleSet): string;
@@ -2969,8 +3185,8 @@ var
   strB: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetSpinButtonStyleString(sbtnstyle));
-  strB   := trim(GetEdtStyleString(edtstyle));
+  strA := trim(GetSpinButtonStyleString(sbtnstyle));
+  strB := trim(GetEdtStyleString(edtstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2989,7 +3205,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetSliderStyleString(sldrstyle));
+  strA := trim(GetSliderStyleString(sldrstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -2997,8 +3213,6 @@ begin
       Result := Result + ' | ' + strA;
 
 end;
-
-
 
 //function GetStaticBitmapSpecificStyle(stdstyle: TWxStdStyleSet;sbtmpstyle:TWxsbtmpStyleSet):String;
  //var
@@ -3017,12 +3231,13 @@ end;
  //  if trim(Result) <> '' then
  //    Result := ', ' + Result;
  //end;
-function GetDateVariableExpansion(value:TDateTime):string;
+
+function GetDateVariableExpansion(value: TDateTime): string;
 var
   Year, Month, Day: Word;
 begin
-  DecodeDate(value,Year, Month, Day);
-  Result:= Format('wxDateTime(%d,(wxDateTime::Month)%d,%d)',[Day,Month,Year]);
+  DecodeDate(value, Year, Month, Day);
+  Result := Format('wxDateTime(%d,(wxDateTime::Month)%d,%d)', [Day, Month, Year]);
 end;
 
 function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -3031,7 +3246,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetCalendarCtrlStyleString(calctrlstyle));
+  strA := trim(GetCalendarCtrlStyleString(calctrlstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3046,7 +3261,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetPickCalStyleString(calctrlstyle));
+  strA := trim(GetPickCalStyleString(calctrlstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3055,36 +3270,279 @@ begin
 
 end;
 
- //function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
- //var
- //  strA: string;
- //begin
- //  Result := GetStdStyleString(stdstyle);
- //  strA := trim(GetChoiceStyleString(chstyle));
- //  if strA <> '' then
- //  begin
- //    if trim(Result) = '' then
- //      Result := strA
- //    else
- //      Result := Result + ' | ' + strA
- //  end;
+//function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
+//var
+//  strA: string;
+//begin
+//  Result := GetStdStyleString(stdstyle);
+//  strA := trim(GetChoiceStyleString(chstyle));
+//  if strA <> '' then
+//  begin
+//    if trim(Result) = '' then
+//      Result := strA
+//    else
+//      Result := Result + ' | ' + strA
+//  end;
 
- //  if trim(Result) <> '' then
- //    Result := ', ' + Result;
- //end;
+//  if trim(Result) <> '' then
+//    Result := ', ' + Result;
+//end;
 
-function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
-  nbxstyle: TWxnbxStyleSet): string;
+function GetChoicebookSpecificStyle(stdstyle: TWxStdStyleSet{;
+  bookalign: TWxchbxAlignStyleItem;
+  cbbxstyle: TWxchbxStyleSet}): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetNotebookStyleString(nbxstyle));
+
+//  Result := Result + ' | ' +  GetChoiceAlignmentString(bookalign);
+{
+  strA := trim(GetChoicebookStyleString(cbbxstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
     else
       Result := Result + ' | ' + strA;
+}
+end;
+
+function GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): string;
+begin
+  Result := '';
+  if Value = wxCHB_BOTTOM then
+  begin
+    Result := 'wxCHB_BOTTOM';
+    exit;
+  end;
+  if Value = wxCHB_RIGHT then
+  begin
+    Result := 'wxCHB_RIGHT';
+    exit;
+  end;
+  if Value = wxCHB_LEFT then
+  begin
+    Result := 'wxCHB_LEFT';
+    exit;
+  end;
+  if Value = wxCHB_TOP then
+  begin
+    Result := 'wxCHB_TOP';
+    exit;
+  end;
+  if Value = wxCHB_DEFAULT then
+  begin
+    Result := 'wxCHB_DEFAULT';
+    exit;
+  end;
+
+end;
+
+{function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet; lbbxstyle: TWxlbbxStyleSet): string;
+}
+function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+
+//  Result := Result + ' | ' +  GetListAlignment(bookalign);
+
+{
+  strA := trim(GetListbookStyleString(lbbxstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+}
+end;
+
+function GetListAlignment(Value: TWxlbbxAlignStyleItem): string;
+begin
+  Result := '';
+  if Value = wxLB_BOTTOM then
+  begin
+    Result := 'wxLB_BOTTOM';
+    exit;
+  end;
+  if Value = wxLB_RIGHT then
+  begin
+    Result := 'wxLB_RIGHT';
+    exit;
+  end;
+  if Value = wxLB_LEFT then
+  begin
+    Result := 'wxLB_LEFT';
+    exit;
+  end;
+  if Value = wxLB_TOP then
+  begin
+    Result := 'wxLB_TOP';
+    exit;
+  end;
+  if Value = wxLB_DEFAULT then
+  begin
+    Result := 'wxLB_DEFAULT';
+    exit;
+  end;
+
+end;
+
+function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;{ bookalign: TWxnbxAlignStyleItem; }
+  nbxstyle: TWxnbxStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+
+{  if Result <> '' then
+    Result := GetTabAlignment(bookalign) + ' | ' +  Result
+  else
+     Result := GetTabAlignment(bookalign);      }
+
+  strA := trim(GetNotebookStyleString(nbxstyle));
+
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+end;
+
+function GetTabAlignmentString(Value: TWxnbxAlignStyleItem): string;
+begin
+{
+  //Multiline MUST be set when using left or right placed tabs
+  If (wxNB_RIGHT in FWx_NotebookStyle) or (wxNB_LEFT in FWx_NotebookStyle) then
+    self.MultiLine := True
+  else
+  self.MultiLine := wxNB_MULTILINE in FWx_NotebookStyle;
+
+  If (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
+    self.TabWidth := self.Wx_TabWidth
+  else
+    self.TabWidth := 0;
+
+  //mn we need to set the tab position here, we go backwards from bottom, right, left to top
+  //mn wxNB_DEFAULT and wxNB_TOP are assumed to be the same
+  If (wxNB_BOTTOM in FWx_NotebookStyle) then
+    Self.TabPosition :=  tpBottom;
+
+  If (wxNB_RIGHT in FWx_NotebookStyle) then
+    Self.TabPosition := tpRight;
+
+  If (wxNB_LEFT in FWx_NotebookStyle) then
+    Self.TabPosition := tpLeft;
+
+  If (wxNB_TOP in FWx_NotebookStyle) or (wxNB_DEFAULT in FWx_NotebookStyle) then
+    Self.TabPosition := tpTop;
+
+}
+  Result := '';
+  if Value = wxNB_BOTTOM then
+  begin
+    Result := 'wxNB_BOTTOM';
+//    Self.TabPosition :=  tpBottom;
+    exit;
+  end;
+  if Value = wxNB_RIGHT then
+  begin
+    Result := 'wxNB_RIGHT';
+//    self.Multiline := True;
+//    Self.TabPosition :=  tpRight;
+    exit;
+  end;
+  if Value = wxNB_LEFT then
+  begin
+    Result := 'wxNB_LEFT';
+//    self.Multiline := True;
+//    Self.TabPosition := tpLeft;
+    exit;
+  end;
+  if Value = wxNB_TOP then
+  begin
+    Result := 'wxNB_TOP';
+//    Self.TabPosition := tpTop;
+    exit;
+  end;
+  if Value = wxNB_DEFAULT then
+  begin
+    Result := 'wxNB_DEFAULT';
+//    Self.TabPosition := tpTop;
+    exit;
+  end;
+
+end;
+
+
+function GetToolbookSpecificStyle(stdstyle: TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+
+//  Result := GetToolAlignment(bookalign) + ' | ' +  Result;
+
+
+{
+  strA := trim(GetToolbookStyleString(tlbxstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+}
+
+end;
+
+function GetTreebookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+
+//  Result := GetTreeAlignment(bookalign) + ' | ' +  Result;
+
+{
+  strA := trim(GetTreebookStyleString(trbxstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+}
+end;
+
+function GetTreeAlignment(Value: TWxtrbxAlignStyleItem): string;
+begin
+  Result := '';
+  if Value = wxBK_BOTTOM then
+  begin
+    Result := 'wxBK_BOTTOM';
+    exit;
+  end;
+  if Value = wxBK_RIGHT then
+  begin
+    Result := 'wxBK_RIGHT';
+    exit;
+  end;
+  if Value = wxBK_LEFT then
+  begin
+    Result := 'wxBK_LEFT';
+    exit;
+  end;
+  if Value = wxBK_TOP then
+  begin
+    Result := 'wxBK_TOP';
+    exit;
+  end;
+  if Value = wxBK_DEFAULT then
+begin
+    Result := 'wxBK_DEFAULT';
+    exit;
+  end;
 
 end;
 
@@ -3094,7 +3552,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetRadioBoxStyleString(rbxstyle));
+  strA := trim(GetRadioBoxStyleString(rbxstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3109,7 +3567,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetStatusBarStyleString(sbrstyle));
+  strA := trim(GetStatusBarStyleString(sbrstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3142,7 +3600,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetScrolledWindowStyleString(scrWinStyle));
+  strA := trim(GetScrolledWindowStyleString(scrWinStyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3157,7 +3615,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetHtmlWindowStyleString(htmlWinStyle));
+  strA := trim(GetHtmlWindowStyleString(htmlWinStyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3172,7 +3630,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetSplitterWindowStyleString(SplitterWinStyle));
+  strA := trim(GetSplitterWindowStyleString(SplitterWinStyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3187,7 +3645,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetToolBarStyleString(tbrstyle));
+  strA := trim(GetToolBarStyleString(tbrstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3197,6 +3655,7 @@ begin
 end;
 
 //End here
+
 function RGBFormatStrToColor(strColorValue: string): TColor;
 var
   strLst: TStringList;
@@ -3222,7 +3681,7 @@ var
   strChoice, strCmd: string;
 begin
   strChoice := copy(strColorValue, 5, length(strColorValue));
-  strCmd    := copy(strColorValue, 0, 4);
+  strCmd := copy(strColorValue, 0, 4);
   if AnsiSameText(strCmd, 'CUS:') then
   begin
     Result := RGBFormatStrToColor(strChoice);
@@ -3264,7 +3723,7 @@ begin
   PropertyList.Add('wxLEFT:wxLEFT');
   PropertyList.Add('wxRIGHT:wxRIGHT');
   PropertyList.Add('wxBOTTOM:wxBOTTOM');
-  
+
   PropertyList.Add('Wx_GeneralStyle:General Styles');
   PropertyList.Add('wxNO_3D:wxNO_3D');
   PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
@@ -3353,7 +3812,7 @@ end;
 
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 var
-  I:      integer;
+  I: integer;
   strLst: TStringList;
 begin
 
@@ -3413,21 +3872,21 @@ begin
         if i <> strLst.Count - 1 then
           Result := Result + strLst[i] + ' | '
         else
-          Result := Result + strLst[i]// for
-    ;
+          Result := Result + strLst[i] // for
+          ;
     //sendDebug(Result);
   finally
     strLst.Destroy;
   end;
 end;
 
-function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
-  dlgstyle: TWxBtnStyleSet): string;
+function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+  dlgstyle: TWxAnimationCtrlStyleSet): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetButtonStyleString(dlgstyle));
+  strA := trim(GetAnimationCtrlStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3436,6 +3895,20 @@ begin
 
 end;
 
+function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
+  dlgstyle: TWxBtnStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetButtonStyleString(dlgstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+end;
 
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxLbStyleSet): string;
@@ -3443,7 +3916,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetLbStyleString(dlgstyle));
+  strA := trim(GetLbStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3477,7 +3950,7 @@ var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA   := trim(GetDlgStyleString(dlgstyle, wxclassname));
+  strA := trim(GetDlgStyleString(dlgstyle, wxclassname));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -3559,9 +4032,9 @@ var
   I: integer;
 begin
   Result := 0;
-  for I := 0 to frmMainObj.ComponentCount - 1 do    // Iterate
+  for I := 0 to frmMainObj.ComponentCount - 1 do // Iterate
     if frmMainObj.Components[i] is TWxNonVisibleBaseComponent then
-      Inc(Result);    // for
+      Inc(Result); // for
 end;
 
 function AlignmentToStr(taPos: TAlignment): string;
@@ -3576,11 +4049,11 @@ end;
 
 procedure ChangeControlZOrder(Sender: TObject; MoveUp: boolean = True);
 var
-  I, Curr:      integer;
-  Control:      TControl;
-  List:         TList;
+  I, Curr: integer;
+  Control: TControl;
+  List: TList;
   NotebookPage: TTabSheet;
-  Notebook:     TPageControl;
+  Notebook: TPageControl;
 begin
   if GetTypeData(Sender.ClassInfo)^.ClassType.ClassName = 'TWxNoteBookPage' then
   begin
@@ -3622,7 +4095,8 @@ begin
           // move other controls to front, too
           TTabSheet(List[I]).BringToFront;
       end
-      else begin
+      else
+      begin
         for I := 0 to Curr - 1 do
           // load other controls in group
           List.Add(Notebook.Pages[I]);
@@ -3667,7 +4141,8 @@ begin
           // move other controls to front, too
           TControl(List[I]).BringToFront;
       end
-      else begin
+      else
+      begin
         for I := 0 to Curr - 2 do
           // load other controls in group
           List.Add(Control.Parent.Controls[I]);
@@ -3684,21 +4159,21 @@ end;
 
 function GetXPMFromTPicture(XPMName: string; delphiBitmap: TBitmap): string;
 var
-  I:      integer;
+  I: integer;
   iWidth: integer;
   iHeight: integer;
   xpos, ypos, palindex, cindex, cpp: integer;
-  cp:     PChar;
-  pixc:   integer;
+  cp: PChar;
+  pixc: integer;
   outline: array[0..800] of char;
   usechrs: array[0..64] of char;
-  rval:   real;
+  rval: real;
   ccol, tcol: TColor;
-  lcol:   ^TColor;
-  image:  ^integer;
-  cpos:   ^integer;
-  pal:    TList;
-  found:  boolean;
+  lcol: ^TColor;
+  image: ^integer;
+  cpos: ^integer;
+  pal: TList;
+  found: boolean;
   strlst: TStringList;
   strLine: string;
 label
@@ -3707,7 +4182,7 @@ label
   function pow(base: integer; index: integer): integer;
   var
     retval: integer;
-    ittr:   integer;
+    ittr: integer;
   begin
     retval := 1;
     for ittr := 1 to index do
@@ -3726,9 +4201,9 @@ begin
     //   Form2.Gauge1.Progress:=0;
     //   Form2.Show;
     StrPCopy(usechrs, ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
-    pal     := TList.Create;                    { Create TList to form our palette }
+    pal := TList.Create; { Create TList to form our palette }
     //  delphiBitmap.Transparent := True;
-    iWidth  := delphiBitmap.Width;
+    iWidth := delphiBitmap.Width;
     iHeight := delphiBitmap.Height;
     //  if iWidth > 180 then
     //    iWidth := 180;
@@ -3736,60 +4211,60 @@ begin
     //    iHeight := 180;
     GetMem(image, SizeOf(integer) * iWidth * iHeight); { Allocate space for image }
     { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
-    cpos := @image^;     { This will be a pointer to current position in image }
+    cpos := @image^; { This will be a pointer to current position in image }
     for ypos := 0 to iHeight - 1 do
       for xpos := 0 to iWidth - 1 do
       begin
-        ccol  := delphiBitmap.Canvas.Pixels[xpos, ypos];
+        ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
         found := False;
         for palindex := 0 to pal.Count - 1 do
         begin { Search palette for color }
           tcol := TColor(pal.Items[palindex]^);
           if tcol = ccol then
-          begin                             { Found it! }
-            found  := True;
-            cindex := palindex;        { Remember it's position in palette }
+          begin { Found it! }
+            found := True;
+            cindex := palindex; { Remember it's position in palette }
             break;
           end;
         end;
         if not found then
-        begin             { Add new color to our palette }
+        begin { Add new color to our palette }
           New(lcol);
           lcol^ := ccol;
           pal.Add(lcol);
           cindex := pal.Count - 1;
         end;
-        cpos^ := cindex;                { Store palette index for this pixel }
-        Inc(cpos);                                 { Move on to next pixel }
-      end//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-    //      Application.ProcessMessages;
-    //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
-    ;
+        cpos^ := cindex; { Store palette index for this pixel }
+        Inc(cpos); { Move on to next pixel }
+      end //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+        //      Application.ProcessMessages;
+        //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+        ;
 
     //AssignFile(F,SaveDialog1.Filename);
     //Rewrite(F);
     rval := ln(pal.Count) / ln(64);
-    cpp  := trunc(rval);
+    cpp := trunc(rval);
     if (cpp <> rval) then
       Inc(cpp);
     //Writeln(F,'/* XPM */');
     Result := Result + '/* XPM */' + #13;
     StrFmt(outline, 'static char *%s', [XPMName]);
     strLine := outline;
-    cp      := StrScan(outline, '.');
+    cp := StrScan(outline, '.');
     if cp <> nil then
       cp[0] := #0;
     StrCat(outline, '_XPM[]={');
     strLine := outline;
     //Writeln(F,outline);
-    Result  := Result + outline + #13;
+    Result := Result + outline + #13;
     Result := Result + '/* ' + XPMName + ' */' + #13;
 
     StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
     strLine := outline;
     //Writeln(F,outline);
     strLine := outline;
-    Result  := Result + outline + #13;
+    Result := Result + outline + #13;
     for palindex := 0 to pal.Count - 1 do
     begin
       ccol := TColor(pal.Items[palindex]^);
@@ -3797,11 +4272,11 @@ begin
       StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol mod 256, 2),
         IntToHex((ccol div 256) mod 256, 2), IntToHex(ccol div (256 * 256), 2)]);
       strLine := outline;
-      cindex  := palindex;
+      cindex := palindex;
       for pixc := 1 to cpp do
       begin
         outline[pixc] := usechrs[cindex div pow(64, cpp - pixc)];
-        cindex  := cindex mod pow(64, cpp - pixc);
+        cindex := cindex mod pow(64, cpp - pixc);
         strLine := outline;
       end;
       strLine := outline;
@@ -3844,15 +4319,15 @@ begin
     //CloseFile(F);
 
     Finish1:
-      FreeMem(image, SizeOf(integer) * iWidth * iHeight);
+    FreeMem(image, SizeOf(integer) * iWidth * iHeight);
     for palindex := 0 to pal.Count - 1 do
       Dispose(pal.Items[palindex]);
     pal.Free;
     //   Form2.Hide;
     //   Form1.Enabled:=True;
-    strlst      := TStringList.Create;
+    strlst := TStringList.Create;
     strlst.Text := Result;
-    for I := 0 to strlst.Count - 1 do    // Iterate
+    for I := 0 to strlst.Count - 1 do // Iterate
     begin
       strLine := trim(strlst[i]);
       //sendDebug(IntToStr(i)+' Old # = '+IntToStr(Length(strlst[i])));
@@ -3913,7 +4388,7 @@ begin
 
       //sendDebug(IntToStr(i)+' New # = '+IntToStr(Length(strlst[i])));
 
-    end;    // for
+    end; // for
 
     Result := strlst.Text;
 
@@ -3923,21 +4398,21 @@ end;
 
 function GetXPMFromTPictureXXX(XPMName: string; delphiBitmap: TBitmap): string;
 var
-  I:      integer;
+  I: integer;
   iWidth: integer;
   iHeight: integer;
   xpos, ypos, palindex, cindex, cpp: integer;
-  cp:     PChar;
-  pixc:   integer;
+  cp: PChar;
+  pixc: integer;
   outline: array[0..800] of char;
   usechrs: array[0..64] of char;
-  rval:   real;
+  rval: real;
   ccol, tcol: TColor;
-  lcol:   ^TColor;
-  image:  ^integer;
-  cpos:   ^integer;
-  pal:    TList;
-  found:  boolean;
+  lcol: ^TColor;
+  image: ^integer;
+  cpos: ^integer;
+  pal: TList;
+  found: boolean;
   strlst: TStringList;
   strLine: string;
 label
@@ -3946,7 +4421,7 @@ label
   function pow(base: integer; index: integer): integer;
   var
     retval: integer;
-    ittr:   integer;
+    ittr: integer;
   begin
     retval := 1;
     for ittr := 1 to index do
@@ -3964,69 +4439,69 @@ begin
     //   Form2.Gauge1.Progress:=0;
     //   Form2.Show;
     StrPCopy(usechrs, ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
-    pal     := TList.Create;                    { Create TList to form our palette }
-  //  delphiBitmap.Transparent := True;
-    iWidth  := delphiBitmap.Width;
+    pal := TList.Create; { Create TList to form our palette }
+    //  delphiBitmap.Transparent := True;
+    iWidth := delphiBitmap.Width;
     iHeight := delphiBitmap.Height;
- //   if iWidth > 180 then
- //     iWidth := 180;
- //   if iHeight > 180 then
- //     iHeight := 180;
+    //   if iWidth > 180 then
+    //     iWidth := 180;
+    //   if iHeight > 180 then
+    //     iHeight := 180;
     GetMem(image, SizeOf(integer) * iWidth * iHeight); { Allocate space for image }
     { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
-    cpos := @image^;     { This will be a pointer to current position in image }
+    cpos := @image^; { This will be a pointer to current position in image }
     for ypos := 0 to iHeight - 1 do
       for xpos := 0 to iWidth - 1 do
       begin
-        ccol  := delphiBitmap.Canvas.Pixels[xpos, ypos];
+        ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
         found := False;
         for palindex := 0 to pal.Count - 1 do
         begin { Search palette for color }
           tcol := TColor(pal.Items[palindex]^);
           if tcol = ccol then
-          begin                             { Found it! }
-            found  := True;
-            cindex := palindex;        { Remember it's position in palette }
+          begin { Found it! }
+            found := True;
+            cindex := palindex; { Remember it's position in palette }
             break;
           end;
         end;
         if not found then
-        begin             { Add new color to our palette }
+        begin { Add new color to our palette }
           New(lcol);
           lcol^ := ccol;
           pal.Add(lcol);
           cindex := pal.Count - 1;
         end;
-        cpos^ := cindex;                { Store palette index for this pixel }
-        Inc(cpos);                                 { Move on to next pixel }
-      end//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-    //      Application.ProcessMessages;
-    //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
-    ;
+        cpos^ := cindex; { Store palette index for this pixel }
+        Inc(cpos); { Move on to next pixel }
+      end //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+        //      Application.ProcessMessages;
+        //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+        ;
 
     //AssignFile(F,SaveDialog1.Filename);
     //Rewrite(F);
     rval := ln(pal.Count) / ln(64);
-    cpp  := trunc(rval);
+    cpp := trunc(rval);
     if (cpp <> rval) then
       Inc(cpp);
     //Writeln(F,'/* XPM */');
     Result := Result + '/* XPM */' + #13;
     StrFmt(outline, 'static char *%s', [XPMName]);
     strLine := outline;
-    cp      := StrScan(outline, '.');
+    cp := StrScan(outline, '.');
     if cp <> nil then
       cp[0] := #0;
     StrCat(outline, '_XPM[]={');
     strLine := outline;
     //Writeln(F,outline);
-    Result  := Result + outline + #13;
+    Result := Result + outline + #13;
     Result := Result + '/* ' + XPMName + ' */' + #13;
     StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
     strLine := outline;
     //Writeln(F,outline);
     strLine := outline;
-    Result  := Result + outline + #13;
+    Result := Result + outline + #13;
     for palindex := 0 to pal.Count - 1 do
     begin
       ccol := TColor(pal.Items[palindex]^);
@@ -4038,11 +4513,11 @@ begin
           IntToHex((ccol div 256) mod 256, 2), IntToHex(ccol div (256 * 256), 2)]);
 
       strLine := outline;
-      cindex  := palindex;
+      cindex := palindex;
       for pixc := 1 to cpp do
       begin
         outline[pixc] := usechrs[cindex div pow(64, cpp - pixc)];
-        cindex  := cindex mod pow(64, cpp - pixc);
+        cindex := cindex mod pow(64, cpp - pixc);
         strLine := outline;
       end;
       strLine := outline;
@@ -4083,15 +4558,15 @@ begin
     //CloseFile(F);
 
     Finish1:
-      FreeMem(image, SizeOf(integer) * iWidth * iHeight);
+    FreeMem(image, SizeOf(integer) * iWidth * iHeight);
     for palindex := 0 to pal.Count - 1 do
       Dispose(pal.Items[palindex]);
     pal.Free;
     //   Form2.Hide;
     //   Form1.Enabled:=True;
-    strlst      := TStringList.Create;
+    strlst := TStringList.Create;
     strlst.Text := Result;
-    for I := 0 to strlst.Count - 1 do    // Iterate
+    for I := 0 to strlst.Count - 1 do // Iterate
     begin
       strLine := trim(strlst[i]);
       //sendDebug(IntToStr(i)+' Old # = '+IntToStr(Length(strlst[i])));
@@ -4152,7 +4627,7 @@ begin
 
       //sendDebug(IntToStr(i)+' New # = '+IntToStr(Length(strlst[i])));
 
-    end;    // for
+    end; // for
 
     Result := strlst.Text;
 
@@ -4162,20 +4637,20 @@ end;
 
 function GetRawXPMFromTPicture(XPMName: string; delphiBitmap: TBitmap): string;
 var
-  iWidth:  integer;
+  iWidth: integer;
   iHeight: integer;
   xpos, ypos, palindex, cindex, cpp: integer;
-  cp:      PChar;
-  pixc:    integer;
+  cp: PChar;
+  pixc: integer;
   outline: array[0..800] of char;
   usechrs: array[0..64] of char;
-  rval:    real;
+  rval: real;
   ccol, tcol: TColor;
-  lcol:    ^TColor;
-  image:   ^integer;
-  cpos:    ^integer;
-  pal:     TList;
-  found:   boolean;
+  lcol: ^TColor;
+  image: ^integer;
+  cpos: ^integer;
+  pal: TList;
+  found: boolean;
   strLine: string;
 label
   Finish1;
@@ -4183,7 +4658,7 @@ label
   function pow(base: integer; index: integer): integer;
   var
     retval: integer;
-    ittr:   integer;
+    ittr: integer;
   begin
     retval := 1;
     for ittr := 1 to index do
@@ -4201,68 +4676,68 @@ begin
     //   Form2.Gauge1.Progress:=0;
     //   Form2.Show;
     StrPCopy(usechrs, ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
-    pal     := TList.Create;                    { Create TList to form our palette }
-    iWidth  := delphiBitmap.Width;
+    pal := TList.Create; { Create TList to form our palette }
+    iWidth := delphiBitmap.Width;
     iHeight := delphiBitmap.Height;
-  //  if iWidth > 180 then
-  //    iWidth := 180;
-  //  if iHeight > 180 then
-  //    iHeight := 180;
+    //  if iWidth > 180 then
+    //    iWidth := 180;
+    //  if iHeight > 180 then
+    //    iHeight := 180;
     GetMem(image, SizeOf(integer) * iWidth * iHeight); { Allocate space for image }
     { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
-    cpos := @image^;     { This will be a pointer to current position in image }
+    cpos := @image^; { This will be a pointer to current position in image }
     for ypos := 0 to iHeight - 1 do
       for xpos := 0 to iWidth - 1 do
       begin
-        ccol  := delphiBitmap.Canvas.Pixels[xpos, ypos];
+        ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
         found := False;
         for palindex := 0 to pal.Count - 1 do
         begin { Search palette for color }
           tcol := TColor(pal.Items[palindex]^);
           if tcol = ccol then
-          begin                             { Found it! }
-            found  := True;
-            cindex := palindex;        { Remember it's position in palette }
+          begin { Found it! }
+            found := True;
+            cindex := palindex; { Remember it's position in palette }
             break;
           end;
         end;
         if not found then
-        begin             { Add new color to our palette }
+        begin { Add new color to our palette }
           New(lcol);
           lcol^ := ccol;
           pal.Add(lcol);
           cindex := pal.Count - 1;
         end;
-        cpos^ := cindex;                { Store palette index for this pixel }
-        Inc(cpos);                                 { Move on to next pixel }
-      end//      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-    //      Application.ProcessMessages;
-    //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
-    ;
+        cpos^ := cindex; { Store palette index for this pixel }
+        Inc(cpos); { Move on to next pixel }
+      end //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+        //      Application.ProcessMessages;
+        //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
+        ;
 
     //AssignFile(F,SaveDialog1.Filename);
     //Rewrite(F);
     rval := ln(pal.Count) / ln(64);
-    cpp  := trunc(rval);
+    cpp := trunc(rval);
     if (cpp <> rval) then
       Inc(cpp);
     //Writeln(F,'/* XPM */');
     Result := Result + '/* XPM */' + #13;
     StrFmt(outline, 'static char *%s', [XPMName]);
     strLine := outline;
-    cp      := StrScan(outline, '.');
+    cp := StrScan(outline, '.');
     if cp <> nil then
       cp[0] := #0;
     StrCat(outline, '_XPM[]={');
     strLine := outline;
     //Writeln(F,outline);
-    Result  := Result + outline + #13;
+    Result := Result + outline + #13;
     Result := Result + '/* ' + XPMName + ' */' + #13;
     StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
     strLine := outline;
     //Writeln(F,outline);
     strLine := outline;
-    Result  := Result + outline + #13;
+    Result := Result + outline + #13;
     for palindex := 0 to pal.Count - 1 do
     begin
       ccol := TColor(pal.Items[palindex]^);
@@ -4270,15 +4745,15 @@ begin
       StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol mod 256, 2),
         IntToHex((ccol div 256) mod 256, 2), IntToHex(ccol div (256 * 256), 2)]);
       strLine := outline;
-      cindex  := palindex;
+      cindex := palindex;
       for pixc := 1 to cpp do
       begin
         outline[pixc] := usechrs[cindex div pow(64, cpp - pixc)];
-        cindex  := cindex mod pow(64, cpp - pixc);
+        cindex := cindex mod pow(64, cpp - pixc);
         strLine := outline;
       end;
       strLine := outline;
-      Result  := Result + outline + #13;
+      Result := Result + outline + #13;
     end;
     cpos := @image^;
     for ypos := 0 to iHeight - 1 do
@@ -4309,17 +4784,17 @@ begin
     //CloseFile(F);
 
     Finish1:
-      FreeMem(image, SizeOf(integer) * iWidth * iHeight);
+    FreeMem(image, SizeOf(integer) * iWidth * iHeight);
     for palindex := 0 to pal.Count - 1 do
       Dispose(pal.Items[palindex]);
     pal.Free;
   end;
 end;
 
-function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strParentName:string;strFileName: string): boolean;
+function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strParentName: string; strFileName: string): boolean;
 var
-  xpmFileDir,xpmNewFileDir:    string;
-  fileStrlst:    TStringList;
+  xpmFileDir, xpmNewFileDir: string;
+  fileStrlst: TStringList;
   strXPMContent: string;
 
 begin
@@ -4328,14 +4803,14 @@ begin
     Exit;
 
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
-  xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
+  xpmNewFileDir := IncludeTrailingPathDelimiter(xpmFileDir) + 'Images';
   if DirectoryExists(xpmNewFileDir) = false then
   begin
-   if ForceDirectories(xpmNewFileDir) = true then
-     xpmFileDir:=xpmNewFileDir;
+    if ForceDirectories(xpmNewFileDir) = true then
+      xpmFileDir := xpmNewFileDir;
   end
   else
-    xpmFileDir:=xpmNewFileDir;
+    xpmFileDir := xpmNewFileDir;
 
   xpmFileDir := IncludetrailingPathDelimiter(xpmFileDir);
 
@@ -4343,11 +4818,11 @@ begin
   begin
     fileStrlst := TStringList.Create;
     try
-      strXPMContent := GetXPMFromTPicture(strParentName+'_'+strCompName, bmp);
+      strXPMContent := GetXPMFromTPicture(strParentName + '_' + strCompName, bmp);
       if trim(strXPMContent) <> '' then
       begin
         fileStrlst.Add(strXPMContent);
-        fileStrlst.SaveToFile(xpmFileDir + strParentName+'_'+strCompName + '_XPM.xpm');
+        fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' + strCompName + '_XPM.xpm');
       end;
     except
     end;
@@ -4431,11 +4906,11 @@ var
 label
   Finish1;
 begin
-  Result  := True;
+  Result := True;
   iHeight := 0;
-  iWidth  := 0;
-  colors  := 0;
-  cpp     := 0;
+  iWidth := 0;
+  colors := 0;
+  cpp := 0;
   palitem := nil;
 
   begin
@@ -4455,7 +4930,7 @@ begin
         if fieldstr[0] <> #0 then
         begin
           Inc(infield);
-          fieldval    := StrToInt(StrPas(fieldstr));
+          fieldval := StrToInt(StrPas(fieldstr));
           fieldstr[0] := #0;
           if infield = 1 then
             iWidth := fieldval;
@@ -4467,9 +4942,10 @@ begin
             cpp := fieldval;
         end;
       end
-      else begin
+      else
+      begin
         fieldstr[StrLen(fieldstr) + 1] := #0;
-        fieldstr[StrLen(fieldstr)]     := cp1[0];
+        fieldstr[StrLen(fieldstr)] := cp1[0];
       end;
       Inc(cp1);
     end;
@@ -4496,14 +4972,15 @@ begin
         ColorDialog1.Execute;
         palitem^.color := ColorDialog1.Color;
       end
-      else begin
-        cp1    := StrScan(cp1, '#') + 1;
-        cp2    := StrScan(cp1, '"');
+      else
+      begin
+        cp1 := StrScan(cp1, '#') + 1;
+        cp2 := StrScan(cp1, '"');
         cp2[0] := #0;
-        hexc   := StrLen(cp1) div 3;
-        rgb1   := HexVal(cp1[0]) * 16 + HexVal(cp1[1]);
-        rgb2   := HexVal(cp1[hexc]) * 16 + HexVal(cp1[hexc + 1]);
-        rgb3   := HexVal(cp1[2 * hexc]) * 16 + HexVal(cp1[2 * hexc + 1]);
+        hexc := StrLen(cp1) div 3;
+        rgb1 := HexVal(cp1[0]) * 16 + HexVal(cp1[1]);
+        rgb2 := HexVal(cp1[hexc]) * 16 + HexVal(cp1[hexc + 1]);
+        rgb3 := HexVal(cp1[2 * hexc]) * 16 + HexVal(cp1[2 * hexc + 1]);
         palitem^.color := longint(rgb1) + 256 * longint(rgb2) + 256 *
           256 * longint(rgb3);
       end;
@@ -4534,7 +5011,7 @@ begin
     end;
 
     Finish1:
-      StrDispose(cp1);
+    StrDispose(cp1);
 
     for col := 0 to colors - 1 do
     begin
@@ -4561,7 +5038,7 @@ function GetwxColorFromString(strValue: string): string;
 var
   strColorValue, strChoice: string;
 begin
-  Result    := '';
+  Result := '';
   strColorValue := trim(strValue);
   strColorValue := copy(strColorValue, 5, length(strColorValue));
   strChoice := copy(trim(strValue), 0, 4);
@@ -4577,7 +5054,6 @@ begin
     Result := '';
     exit;
   end;
-
 
   if AnsiSameText(strColorValue, 'wxBLACK') then
   begin
@@ -4784,7 +5260,6 @@ begin
     Result := 'wxPAPER_NONE';
     Exit;
   end;
-
 
   if sizeitem = wxPAPER_LETTER then
   begin
@@ -4998,6 +5473,7 @@ begin
 
 end;
 //-------------------------------------------------------------------------------
+
 function IsDefaultColorStr(strvalue: string): boolean;
 begin
   strvalue := trim(strvalue);
@@ -5213,6 +5689,7 @@ begin
 end;
 
 //=== {TJvInspectorValidatorItem } ===========================================
+
 constructor TJvInspectorValidatorItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
 begin
@@ -5220,22 +5697,24 @@ begin
 end;
 
 procedure TJvInspectorValidatorItem.SetFlags(const Value:
-TInspectorItemFlags); var
- NewValue: TInspectorItemFlags;
+  TInspectorItemFlags);
+var
+  NewValue: TInspectorItemFlags;
 begin
- NewValue := Value + [iifEditButton];
- inherited SetFlags(NewValue);
+  NewValue := Value + [iifEditButton];
+  inherited SetFlags(NewValue);
 end;
 
 procedure TJvInspectorValidatorItem.ContentsChanged(Sender: TObject);
 var
   Obj: TStrings;
 begin
-  Obj      := TStrings(Data.AsOrdinal);
+  Obj := TStrings(Data.AsOrdinal);
   Obj.Text := TMemo(Sender).Lines.Text;
 end;
 
-function TJvInspectorValidatorItem.GetDisplayValue: string; begin
+function TJvInspectorValidatorItem.GetDisplayValue: string;
+begin
   Result := 'Edit Validator';
 end;
 
@@ -5244,34 +5723,33 @@ begin
 
 end;
 
-
 class procedure TJvInspectorValidatorItem.RegisterAsDefaultItem;
 begin
   with TJvCustomInspectorData.ItemRegister do
     if IndexOf(Self) = -1 then
       Add(TJvInspectorTypeInfoRegItem.Create(Self,
-TypeInfo(TWxValidatorString))); end;
+        TypeInfo(TWxValidatorString)));
+end;
 
 procedure TJvInspectorValidatorItem.Edit;
 var
   ValidatorForm: TwxValidator;
-  wxValidatorstring : TWxValidatorString;
-    compIntf: IWxValidatorInterface;
+  wxValidatorstring: TWxValidatorString;
+  compIntf: IWxValidatorInterface;
 begin
 
-wxValidatorString := TWxValidatorString(Data.AsOrdinal);
+  wxValidatorString := TWxValidatorString(Data.AsOrdinal);
 
   ValidatorForm := TwxValidator.Create(GetParentForm(Inspector));
   try
 
-
- ValidatorForm.SetValidatorString(wxValidatorString.strValidatorValue);
+    ValidatorForm.SetValidatorString(wxValidatorString.strValidatorValue);
 
     if ValidatorForm.ShowModal <> mrOk then
       exit;
 
     wxValidatorString.FstrValidatorValue :=
- ValidatorForm.GetValidatorString;
+      ValidatorForm.GetValidatorString;
 
     if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
       IID_IWxValidatorInterface, compIntf) then
@@ -5302,7 +5780,7 @@ procedure TWxJvInspectorTStringsItem.ContentsChanged(Sender: TObject);
 var
   Obj: TStrings;
 begin
-  Obj      := TStrings(Data.AsOrdinal);
+  Obj := TStrings(Data.AsOrdinal);
   Obj.Text := TMemo(Sender).Lines.Text;
 end;
 
@@ -5387,13 +5865,13 @@ begin
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStrings)));
 end;
 
-
 {-------------------------------------------------------}
+
 procedure TJvInspectorColorEditItem.Edit;
 var
   ColorEditForm: TColorEdit;
   strColorValue: string;
-  compIntf:      IWxComponentInterface;
+  compIntf: IWxComponentInterface;
 begin
   ColorEditForm := TColorEdit.Create(GetParentForm(Inspector));
   try
@@ -5405,8 +5883,8 @@ begin
         strColorValue := compIntf.GetBGColor
       else if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
         strColorValue := compIntf.GetFGColor
-        else
-          strColorValue := compIntf.GetGenericColor(Data.Name);
+      else
+        strColorValue := compIntf.GetGenericColor(Data.Name);
     end;
 
     ColorEditForm.SetColorString(strColorValue);
@@ -5421,11 +5899,10 @@ begin
     begin
       if AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') then
         compIntf.SetBGColor(strColorValue)
+      else if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
+        compIntf.SetFGColor(strColorValue)
       else
-        if AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') then
-          compIntf.SetFGColor(strColorValue)
-        else
-          compIntf.SetGenericColor(Data.Name,strColorValue);
+        compIntf.SetGenericColor(Data.Name, strColorValue);
     end;
 
     if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
@@ -5470,7 +5947,6 @@ begin
 end;
 //-------------------------------------------------------------------------------
 
-
 //-------------------------------------------------------------------------------
 
 procedure TJvInspectorListItemsItem.Edit;
@@ -5504,12 +5980,11 @@ begin
 end;
 //-------------------------------------------------------------------------------
 
-
 procedure TJvInspectorStatusBarItem.Edit;
 var
   sbForm: TStatusBarForm;
-  i:      integer;
-  stPnl:  TStatusPanel;
+  i: integer;
+  stPnl: TStatusPanel;
 begin
 
   sbForm := TStatusBarForm.Create(GetParentForm(Inspector));
@@ -5518,7 +5993,7 @@ begin
     for i := 0 to
       TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Count - 1 do
     begin
-      stPnl      := sbForm.StatusBarObj.Panels.Add;
+      stPnl := sbForm.StatusBarObj.Panels.Add;
       stPnl.Text := TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Text;
       stPnl.Width := TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Width;
     end;
@@ -5526,11 +6001,12 @@ begin
 
     if sbForm.ShowModal <> mrOk then
       Exit
-    else begin
+    else
+    begin
       TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).panels.Clear;
       for i := 0 to sbForm.StatusBarObj.Panels.Count - 1 do
       begin
-        stPnl      :=
+        stPnl :=
           TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Add;
         stPnl.Text := sbForm.StatusBarObj.Panels[i].Text;
         stPnl.Width := sbForm.StatusBarObj.Panels[i].Width;
@@ -5598,7 +6074,8 @@ begin
 
     if ListviewForm.ShowModal <> mrOk then
       Exit
-    else begin
+    else
+    begin
       TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Clear;
       for i := 0 to ListviewForm.LstViewObj.Columns.Count - 1 do
       begin
@@ -5679,10 +6156,10 @@ end;
 procedure TJvInspectorBitmapItem.Edit;
 var
   PictureEdit: TPictureEdit;
-  picObj:      Tpicture;
+  picObj: Tpicture;
   strClassName: string;
 begin
-  PictureEdit  := TPictureEdit.Create(GetParentForm(Inspector));
+  PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
   strClassName := UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName);
 
   if strClassName = UpperCase('TWxBitmapButton') then
@@ -5771,10 +6248,11 @@ begin
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TPicture)));
 end;
 //------------------------------------------------------------------------------
+
 procedure TJvInspectorMyFontItem.Edit;
 var
-  FontDlg:  TFontDialog;
-  fnt:      TFont;
+  FontDlg: TFontDialog;
+  fnt: TFont;
   compIntf: IWxComponentInterface;
   prevColor: TColor;
   ColorInt: integer;
@@ -5835,20 +6313,21 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+
 procedure TJvInspectorMenuItem.Edit;
 var
-  mnuDlg:    TMenuItemForm;
+  mnuDlg: TMenuItemForm;
   pMenuItem: TWxPopupMenu;
-  mbItem:    TWxMenuBar;
+  mbItem: TWxMenuBar;
   maxControlValue: integer;
-  MenuName:String;
+  MenuName: string;
 begin
   try
-  if (TJvInspectorPropData(Self.GetData()).Instance is TControl) then
-      MenuName:=TControl(TJvInspectorPropData(Self.GetData()).Instance).Name;
+    if (TJvInspectorPropData(Self.GetData()).Instance is TControl) then
+      MenuName := TControl(TJvInspectorPropData(Self.GetData()).Instance).Name;
   except
   end;
-  mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector),MenuName);
+  mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector), MenuName);
   try
     if (TJvInspectorPropData(Self.GetData()).Instance is TWxPopupMenu) then
     begin
@@ -5922,7 +6401,7 @@ end;
 
 procedure TJvInspectorFileNameEditItem.Edit;
 var
-  FileOpenForm:     TOpenDialog;
+  FileOpenForm: TOpenDialog;
   WxFileNameString: TWxFileNameString;
 begin
 
@@ -5933,7 +6412,7 @@ begin
 
   if (FileOpenForm.Execute) then // If a file is selected
     WxFileNameString.FstrFileNameValue := FileOpenForm.FileName
-  else  // If Cancel is pushed, then remove file to load
+  else // If Cancel is pushed, then remove file to load
     WxFileNameString.FstrFileNameValue := '';
 
   // if strEqual(UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName), UpperCase('TWxMemo')) then
@@ -5973,16 +6452,16 @@ begin
   inherited SetFlags(NewValue);
 end;
 
-
- // Added by Tony Reina 20 June 2006
- // We need a TButton class that will allow for the caption to be aligned
+// Added by Tony Reina 20 June 2006
+// We need a TButton class that will allow for the caption to be aligned
 // I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
 //  BEGIN: TMultiLineBtn
+
 constructor TMultiLineBtn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fMultiLine     := True;
-  fHorizAlign    := halCentre;
+  fMultiLine := True;
+  fHorizAlign := halCentre;
   fVerticalAlign := valCentre;
 end;
 
@@ -6017,14 +6496,14 @@ procedure TMultiLineBtn.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   case VerticalAlign of
-    valTop: Params.Style    := Params.Style or BS_TOP;
+    valTop: Params.Style := Params.Style or BS_TOP;
     valBottom: Params.Style := Params.Style or BS_BOTTOM;
     valCentre: Params.Style := Params.Style or BS_VCENTER;
   end;
 
   case HorizAlign of
-    halLeft: Params.Style   := Params.Style or BS_LEFT;
-    halRight: Params.Style  := Params.Style or BS_RIGHT;
+    halLeft: Params.Style := Params.Style or BS_LEFT;
+    halRight: Params.Style := Params.Style or BS_RIGHT;
     halCentre: Params.Style := Params.Style or BS_CENTER;
   end;
 
@@ -6057,10 +6536,10 @@ begin
   end;
 end;
 
-function GetLongName(const ShortPathName: String): String;
+function GetLongName(const ShortPathName: string): string;
 var
   hKernel32Dll: THandle;
-  fncGetLongPathName: function (lpszShortPath: LPCTSTR; lpszLongPath: LPTSTR;
+  fncGetLongPathName: function(lpszShortPath: LPCTSTR; lpszLongPath: LPTSTR;
     cchBuffer: DWORD): DWORD stdcall;
   bSuccess: Boolean;
   szBuffer: array[0..MAX_PATH] of Char;
@@ -6107,7 +6586,7 @@ end;
 
 function strContains(const S1, S2: string): Boolean;
 begin
-    Result := Pos(S1, S2) > 0;
+  Result := Pos(S1, S2) > 0;
 end;
 
 {This unit contains 4 functions designed to validate and correct C++ class names
@@ -6152,278 +6631,279 @@ Example usage of these functions.
 
 This copyright to Sof.T 2006 and provided under the GPL license version 2 or
 later at your preference.}
-function ValidateClassName(ClassName: String) :Integer;
+
+function ValidateClassName(ClassName: string): Integer;
 var
-    NumberOfErrors, LoopIndex : integer;
-    ReservedKeywordList : TStrings;
+  NumberOfErrors, LoopIndex: integer;
+  ReservedKeywordList: TStrings;
 begin
 
-    NumberOfErrors := 0;
+  NumberOfErrors := 0;
 
-    //Check we have a name to work with
-    if Length(ClassName) < 1 then
-    begin
-        NumberOfErrors := NumberOfErrors+1;
-    end
+  //Check we have a name to work with
+  if Length(ClassName) < 1 then
+  begin
+    NumberOfErrors := NumberOfErrors + 1;
+  end
     //Check the first character is not a number
-    else if (ClassName[1] in ['0'..'9']) then
+  else if (ClassName[1] in ['0'..'9']) then
+  begin
+    NumberOfErrors := NumberOfErrors + 1;
+  end;
+
+  //Look for invalid characters in the class name
+  for LoopIndex := 1 to Length(ClassName) do
+  begin
+    //if not((ClassName[LoopIndex] in ['a'..'z']) or (ClassName[LoopIndex] in ['A'..'Z']) or (ClassName[LoopIndex] in ['0'..'9']) or (ClassName[LoopIndex] = '_')) then
+    if not ((ClassName[LoopIndex] in ['a'..'z', 'A'..'Z', '0'..'9', '_'])) then
     begin
+      NumberOfErrors := NumberOfErrors + 1;
+    end;
+  end;
+
+  //Check we haven't ended up with a reserved keyword
+  ReservedKeywordList := TStringList.Create;
+  try
+    //Build the list of reserved keywords
+    ReservedKeywordList.Add('asm');
+    ReservedKeywordList.Add('do');
+    ReservedKeywordList.Add('if');
+    ReservedKeywordList.Add('return');
+    ReservedKeywordList.Add('typedef');
+    ReservedKeywordList.Add('auto');
+    ReservedKeywordList.Add('double');
+    ReservedKeywordList.Add('inline');
+    ReservedKeywordList.Add('short');
+    ReservedKeywordList.Add('typeid');
+    ReservedKeywordList.Add('bool');
+    ReservedKeywordList.Add('dynamic_cast');
+    ReservedKeywordList.Add('int');
+    ReservedKeywordList.Add('signed');
+    ReservedKeywordList.Add('union');
+    ReservedKeywordList.Add('break');
+    ReservedKeywordList.Add('else');
+    ReservedKeywordList.Add('long');
+    ReservedKeywordList.Add('sizeof');
+    ReservedKeywordList.Add('unsigned');
+    ReservedKeywordList.Add('case');
+    ReservedKeywordList.Add('enum');
+    ReservedKeywordList.Add('mutable');
+    ReservedKeywordList.Add('static');
+    ReservedKeywordList.Add('using');
+    ReservedKeywordList.Add('catch');
+    ReservedKeywordList.Add('explicit');
+    ReservedKeywordList.Add('namespace');
+    ReservedKeywordList.Add('static_cast');
+    ReservedKeywordList.Add('virtual');
+    ReservedKeywordList.Add('char');
+    ReservedKeywordList.Add('export');
+    ReservedKeywordList.Add('new');
+    ReservedKeywordList.Add('struct');
+    ReservedKeywordList.Add('void');
+    ReservedKeywordList.Add('class');
+    ReservedKeywordList.Add('extern');
+    ReservedKeywordList.Add('operator');
+    ReservedKeywordList.Add('switch');
+    ReservedKeywordList.Add('volatile');
+    ReservedKeywordList.Add('const');
+    ReservedKeywordList.Add('false');
+    ReservedKeywordList.Add('private');
+    ReservedKeywordList.Add('template');
+    ReservedKeywordList.Add('wchar_t');
+    ReservedKeywordList.Add('const_cast');
+    ReservedKeywordList.Add('float');
+    ReservedKeywordList.Add('protected');
+    ReservedKeywordList.Add('this');
+    ReservedKeywordList.Add('while');
+    ReservedKeywordList.Add('continue');
+    ReservedKeywordList.Add('for');
+    ReservedKeywordList.Add('public');
+    ReservedKeywordList.Add('throw');
+    ReservedKeywordList.Add('default');
+    ReservedKeywordList.Add('friend');
+    ReservedKeywordList.Add('register');
+    ReservedKeywordList.Add('true');
+    ReservedKeywordList.Add('delete');
+    ReservedKeywordList.Add('goto');
+    ReservedKeywordList.Add('reinterpret_cast');
+    ReservedKeywordList.Add('try');
+
+    //Now check our ClassName against list of reserved keywords
+    for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
+    begin
+      if (CompareStr(ReservedKeywordList[LoopIndex], ClassName) = 0) then
+      begin
         NumberOfErrors := NumberOfErrors + 1;
+      end;
     end;
 
-    //Look for invalid characters in the class name
-    for LoopIndex := 1 to Length(ClassName) do
-    begin
-        //if not((ClassName[LoopIndex] in ['a'..'z']) or (ClassName[LoopIndex] in ['A'..'Z']) or (ClassName[LoopIndex] in ['0'..'9']) or (ClassName[LoopIndex] = '_')) then
-        if not((ClassName[LoopIndex] in ['a'..'z','A'..'Z','0'..'9','_'])) then
-        begin
-            NumberOfErrors := NumberOfErrors + 1;
-        end;
-    end;
+  finally
+    ReservedKeywordList.Free; { destroy the list object }
+  end;
 
-    //Check we haven't ended up with a reserved keyword
-    ReservedKeywordList := TStringList.Create;
-    try
-        //Build the list of reserved keywords
-        ReservedKeywordList.Add('asm');
-        ReservedKeywordList.Add('do');
-        ReservedKeywordList.Add('if');
-        ReservedKeywordList.Add('return');
-        ReservedKeywordList.Add('typedef');
-        ReservedKeywordList.Add('auto');
-        ReservedKeywordList.Add('double');
-        ReservedKeywordList.Add('inline');
-        ReservedKeywordList.Add('short');
-        ReservedKeywordList.Add('typeid');
-        ReservedKeywordList.Add('bool');
-        ReservedKeywordList.Add('dynamic_cast');
-        ReservedKeywordList.Add('int');
-        ReservedKeywordList.Add('signed');
-        ReservedKeywordList.Add('union');
-        ReservedKeywordList.Add('break');
-        ReservedKeywordList.Add('else');
-        ReservedKeywordList.Add('long');
-        ReservedKeywordList.Add('sizeof');
-        ReservedKeywordList.Add('unsigned');
-        ReservedKeywordList.Add('case');
-        ReservedKeywordList.Add('enum');
-        ReservedKeywordList.Add('mutable');
-        ReservedKeywordList.Add('static');
-        ReservedKeywordList.Add('using');
-        ReservedKeywordList.Add('catch');
-        ReservedKeywordList.Add('explicit');
-        ReservedKeywordList.Add('namespace');
-        ReservedKeywordList.Add('static_cast');
-        ReservedKeywordList.Add('virtual');
-        ReservedKeywordList.Add('char');
-        ReservedKeywordList.Add('export');
-        ReservedKeywordList.Add('new');
-        ReservedKeywordList.Add('struct');
-        ReservedKeywordList.Add('void');
-        ReservedKeywordList.Add('class');
-        ReservedKeywordList.Add('extern');
-        ReservedKeywordList.Add('operator');
-        ReservedKeywordList.Add('switch');
-        ReservedKeywordList.Add('volatile');
-        ReservedKeywordList.Add('const');
-        ReservedKeywordList.Add('false');
-        ReservedKeywordList.Add('private');
-        ReservedKeywordList.Add('template');
-        ReservedKeywordList.Add('wchar_t');
-        ReservedKeywordList.Add('const_cast');
-        ReservedKeywordList.Add('float');
-        ReservedKeywordList.Add('protected');
-        ReservedKeywordList.Add('this');
-        ReservedKeywordList.Add('while');
-        ReservedKeywordList.Add('continue');
-        ReservedKeywordList.Add('for');
-        ReservedKeywordList.Add('public');
-        ReservedKeywordList.Add('throw');
-        ReservedKeywordList.Add('default');
-        ReservedKeywordList.Add('friend');
-        ReservedKeywordList.Add('register');
-        ReservedKeywordList.Add('true');
-        ReservedKeywordList.Add('delete');
-        ReservedKeywordList.Add('goto');
-        ReservedKeywordList.Add('reinterpret_cast');
-        ReservedKeywordList.Add('try');
-
-        //Now check our ClassName against list of reserved keywords
-        for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
-        begin
-            if(CompareStr(ReservedKeywordList[LoopIndex],ClassName) = 0) then
-            begin
-                NumberOfErrors := NumberOfErrors + 1;
-            end;
-        end;
-
-    finally
-        ReservedKeywordList.Free;	{ destroy the list object }
-    end;
-
-   Result := NumberOfErrors;
+  Result := NumberOfErrors;
 
 end;
 
-function CreateValidClassName(ClassName: String) :String;
+function CreateValidClassName(ClassName: string): string;
 var
-    ValidClassName : String;
-    LoopIndex : integer;
-    ReservedKeywordList : TStrings;
+  ValidClassName: string;
+  LoopIndex: integer;
+  ReservedKeywordList: TStrings;
 begin
 
-    ValidClassName := ClassName;
+  ValidClassName := ClassName;
 
-    //Check we have a name to work with, if not then assign a safe one
-    if Length(ValidClassName) < 1 then
-        ValidClassName := 'DefaultClassName';
+  //Check we have a name to work with, if not then assign a safe one
+  if Length(ValidClassName) < 1 then
+    ValidClassName := 'DefaultClassName';
 
-    //Look for invalid characters in the class name. Replace with '_'
-    for LoopIndex := 1 to Length(ValidClassName) do
+  //Look for invalid characters in the class name. Replace with '_'
+  for LoopIndex := 1 to Length(ValidClassName) do
+  begin
+    if not ((ValidClassName[LoopIndex] in ['a'..'z', 'A'..'Z', '0'..'9', '_'])) then
     begin
-        if not((ValidClassName[LoopIndex] in ['a'..'z','A'..'Z','0'..'9','_'])) then
-        begin
-            ValidClassName[LoopIndex] := '_';
-        end;
+      ValidClassName[LoopIndex] := '_';
     end;
+  end;
 
-    //Check the first character is not a number if so add '_' in front
-    if (ValidClassName[1] in ['0'..'9']) then
+  //Check the first character is not a number if so add '_' in front
+  if (ValidClassName[1] in ['0'..'9']) then
+  begin
+    Insert('_', ValidClassName, 0);
+  end;
+
+  //Check we haven't ended up with a reserved keyword
+  ReservedKeywordList := TStringList.Create;
+  try
+    //Build the list of reserved keywords
+    ReservedKeywordList.Add('asm');
+    ReservedKeywordList.Add('do');
+    ReservedKeywordList.Add('if');
+    ReservedKeywordList.Add('return');
+    ReservedKeywordList.Add('typedef');
+    ReservedKeywordList.Add('auto');
+    ReservedKeywordList.Add('double');
+    ReservedKeywordList.Add('inline');
+    ReservedKeywordList.Add('short');
+    ReservedKeywordList.Add('typeid');
+    ReservedKeywordList.Add('bool');
+    ReservedKeywordList.Add('dynamic_cast');
+    ReservedKeywordList.Add('int');
+    ReservedKeywordList.Add('signed');
+    ReservedKeywordList.Add('union');
+    ReservedKeywordList.Add('break');
+    ReservedKeywordList.Add('else');
+    ReservedKeywordList.Add('long');
+    ReservedKeywordList.Add('sizeof');
+    ReservedKeywordList.Add('unsigned');
+    ReservedKeywordList.Add('case');
+    ReservedKeywordList.Add('enum');
+    ReservedKeywordList.Add('mutable');
+    ReservedKeywordList.Add('static');
+    ReservedKeywordList.Add('using');
+    ReservedKeywordList.Add('catch');
+    ReservedKeywordList.Add('explicit');
+    ReservedKeywordList.Add('namespace');
+    ReservedKeywordList.Add('static_cast');
+    ReservedKeywordList.Add('virtual');
+    ReservedKeywordList.Add('char');
+    ReservedKeywordList.Add('export');
+    ReservedKeywordList.Add('new');
+    ReservedKeywordList.Add('struct');
+    ReservedKeywordList.Add('void');
+    ReservedKeywordList.Add('class');
+    ReservedKeywordList.Add('extern');
+    ReservedKeywordList.Add('operator');
+    ReservedKeywordList.Add('switch');
+    ReservedKeywordList.Add('volatile');
+    ReservedKeywordList.Add('const');
+    ReservedKeywordList.Add('false');
+    ReservedKeywordList.Add('private');
+    ReservedKeywordList.Add('template');
+    ReservedKeywordList.Add('wchar_t');
+    ReservedKeywordList.Add('const_cast');
+    ReservedKeywordList.Add('float');
+    ReservedKeywordList.Add('protected');
+    ReservedKeywordList.Add('this');
+    ReservedKeywordList.Add('while');
+    ReservedKeywordList.Add('continue');
+    ReservedKeywordList.Add('for');
+    ReservedKeywordList.Add('public');
+    ReservedKeywordList.Add('throw');
+    ReservedKeywordList.Add('default');
+    ReservedKeywordList.Add('friend');
+    ReservedKeywordList.Add('register');
+    ReservedKeywordList.Add('true');
+    ReservedKeywordList.Add('delete');
+    ReservedKeywordList.Add('goto');
+    ReservedKeywordList.Add('reinterpret_cast');
+    ReservedKeywordList.Add('try');
+
+    //Now check our ValidClassName against list of reserved keywords
+    //If we find a match flag error and add '_' to the start of the name
+    for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
     begin
-        Insert('_',ValidClassName,0);
+      if (CompareStr(ReservedKeywordList[LoopIndex], ValidClassName) = 0) then
+      begin
+        Insert('_', ValidClassName, 0);
+      end;
     end;
 
-    //Check we haven't ended up with a reserved keyword
-    ReservedKeywordList := TStringList.Create;
-    try
-        //Build the list of reserved keywords
-        ReservedKeywordList.Add('asm');
-        ReservedKeywordList.Add('do');
-        ReservedKeywordList.Add('if');
-        ReservedKeywordList.Add('return');
-        ReservedKeywordList.Add('typedef');
-        ReservedKeywordList.Add('auto');
-        ReservedKeywordList.Add('double');
-        ReservedKeywordList.Add('inline');
-        ReservedKeywordList.Add('short');
-        ReservedKeywordList.Add('typeid');
-        ReservedKeywordList.Add('bool');
-        ReservedKeywordList.Add('dynamic_cast');
-        ReservedKeywordList.Add('int');
-        ReservedKeywordList.Add('signed');
-        ReservedKeywordList.Add('union');
-        ReservedKeywordList.Add('break');
-        ReservedKeywordList.Add('else');
-        ReservedKeywordList.Add('long');
-        ReservedKeywordList.Add('sizeof');
-        ReservedKeywordList.Add('unsigned');
-        ReservedKeywordList.Add('case');
-        ReservedKeywordList.Add('enum');
-        ReservedKeywordList.Add('mutable');
-        ReservedKeywordList.Add('static');
-        ReservedKeywordList.Add('using');
-        ReservedKeywordList.Add('catch');
-        ReservedKeywordList.Add('explicit');
-        ReservedKeywordList.Add('namespace');
-        ReservedKeywordList.Add('static_cast');
-        ReservedKeywordList.Add('virtual');
-        ReservedKeywordList.Add('char');
-        ReservedKeywordList.Add('export');
-        ReservedKeywordList.Add('new');
-        ReservedKeywordList.Add('struct');
-        ReservedKeywordList.Add('void');
-        ReservedKeywordList.Add('class');
-        ReservedKeywordList.Add('extern');
-        ReservedKeywordList.Add('operator');
-        ReservedKeywordList.Add('switch');
-        ReservedKeywordList.Add('volatile');
-        ReservedKeywordList.Add('const');
-        ReservedKeywordList.Add('false');
-        ReservedKeywordList.Add('private');
-        ReservedKeywordList.Add('template');
-        ReservedKeywordList.Add('wchar_t');
-        ReservedKeywordList.Add('const_cast');
-        ReservedKeywordList.Add('float');
-        ReservedKeywordList.Add('protected');
-        ReservedKeywordList.Add('this');
-        ReservedKeywordList.Add('while');
-        ReservedKeywordList.Add('continue');
-        ReservedKeywordList.Add('for');
-        ReservedKeywordList.Add('public');
-        ReservedKeywordList.Add('throw');
-        ReservedKeywordList.Add('default');
-        ReservedKeywordList.Add('friend');
-        ReservedKeywordList.Add('register');
-        ReservedKeywordList.Add('true');
-        ReservedKeywordList.Add('delete');
-        ReservedKeywordList.Add('goto');
-        ReservedKeywordList.Add('reinterpret_cast');
-        ReservedKeywordList.Add('try');
+  finally
+    ReservedKeywordList.Free; { destroy the list object }
+  end;
 
-        //Now check our ValidClassName against list of reserved keywords
-        //If we find a match flag error and add '_' to the start of the name
-        for LoopIndex := 0 to ReservedKeywordList.Count - 1 do
-        begin
-            if(CompareStr(ReservedKeywordList[LoopIndex],ValidClassName) = 0) then
-            begin
-                Insert('_',ValidClassName,0);
-            end;
-        end;
-
-    finally
-        ReservedKeywordList.Free;	{ destroy the list object }
-    end;
-
-   Result := ValidClassName;
+  Result := ValidClassName;
 
 end;
 
-
-function ValidateFileName(FileName: String): Integer;
+function ValidateFileName(FileName: string): Integer;
 var
-    NumberOfErrors, LoopIndex : integer;
+  NumberOfErrors, LoopIndex: integer;
 begin
 
-    NumberOfErrors := 0;
+  NumberOfErrors := 0;
 
-    if Length(FileName) < 1 then
-        NumberOfErrors := NumberOfErrors+1;
+  if Length(FileName) < 1 then
+    NumberOfErrors := NumberOfErrors + 1;
 
-    //Look for invalid characters in the file name
-    for LoopIndex := 1 to Length(FileName) do
+  //Look for invalid characters in the file name
+  for LoopIndex := 1 to Length(FileName) do
+  begin
+    if ((FileName[LoopIndex] in ['"', '*', ':', '<', '>', '?', '|'])) then
     begin
-        if ((FileName[LoopIndex] in ['"','*',':','<','>','?','|'])) then
-        begin
-            NumberOfErrors := NumberOfErrors+1;
-        end;
+      NumberOfErrors := NumberOfErrors + 1;
     end;
+  end;
 
-    Result := NumberOfErrors;
+  Result := NumberOfErrors;
 
 end;
 
-function CreateValidFileName(FileName: String): String;
+function CreateValidFileName(FileName: string): string;
 var
-    ValidFileName : String;
-    LoopIndex : integer;
+  ValidFileName: string;
+  LoopIndex: integer;
 begin
 
-    ValidFileName := FileName;
+  ValidFileName := FileName;
 
-    if Length(ValidFileName) < 1 then
-        ValidFileName := 'DefaultFileName';
+  if Length(ValidFileName) < 1 then
+    ValidFileName := 'DefaultFileName';
 
-    //Look for invalid characters in the file name. Replace with '_'
-    for LoopIndex := 1 to Length(ValidFileName) do
+  //Look for invalid characters in the file name. Replace with '_'
+  for LoopIndex := 1 to Length(ValidFileName) do
+  begin
+    if ((ValidFileName[LoopIndex] in ['"', '*', ':', '<', '>', '?', '|'])) then
     begin
-        if ((ValidFileName[LoopIndex] in ['"','*',':','<','>','?','|'])) then
-        begin
-            ValidFileName[LoopIndex] := '_';
-        end;
+      ValidFileName[LoopIndex] := '_';
     end;
+  end;
 
-    Result := ValidFileName;
+  Result := ValidFileName;
 
 end;
 
 end.
+

@@ -67,7 +67,8 @@ uses
   WxButton, WxBitmapButton, WxCheckBox, WxChoice, WxComboBox, WxBitmapComboBox,
   WxEdit, WxGauge, WxListBox, WxListCtrl, WxMemo, WxRadioButton, WxScrollBar,
   WxGrid, WxSlider, WxSpinButton, WxStaticBitmap, WxStaticBox, WxStaticLine,
-  WxStaticText, WxControlPanel, WxTreeCtrl, WxFlexGridSizer, WxPanel, WxNotebook,
+  WxStaticText, WxControlPanel, WxTreeCtrl, WxFlexGridSizer, WxPanel,
+  wxChoicebook, wxListbook, wxnotebook, wxtreebook, wxtoolbook,
   WxStatusBar, WxToolbar, WxNoteBookPage, WxCheckListBox, WxSpinCtrl,
   WxScrolledWindow, WxHtmlWindow, WxToolButton, WxSeparator, WxPopupMenu, WxMenuBar,
   WxOpenFileDialog, WxSaveFileDialog, WxFontDialog, WxMessageDialog,
@@ -218,8 +219,8 @@ begin
                        'TwxCalendarCtrl;TwxOwnerDrawnComboBox;TwxHyperLinkCtrl;' +
                        'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox');
     //Container controls
-    ComponentsList.Add('Containers;TwxPanel;TwxNotebook;TwxNotebookPage;TwxGrid;' +
-                       'TwxScrolledWindow;TwxHtmlWindow;TwxSplitterWindow');
+    ComponentsList.Add('Containers;TwxPanel;TwxChoicebook;TwxListbook;TwxNotebook;TwxTreebook;' +
+                        'TwxToolbook;TwxNotebookPage;TwxGrid;TwxScrolledWindow;TwxHtmlWindow;TwxSplitterWindow');
     //Toolbar controls
     ComponentsList.Add('Toolbars;TwxToolBar;TwxToolButton;TwxSeparator;' +
                        'TwxEdit;TwxCheckBox;TwxRadioButton;TwxComboBox;TwxSpinCtrl');
@@ -241,7 +242,8 @@ begin
                      TWxGauge, TWxGrid, TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar,
                      TWxSpinButton, TWxTreeCtrl, TWxRadioBox, TWxStaticBitmap,
                      TWxstaticbox, TWxslider, TWxStaticLine, TWxDatePickerCtrl,
-                     TWxPanel, TWxNoteBook, TWxStatusBar, TWxToolBar, TWxNoteBookPage,
+                     TWxPanel, TWxChoicebook, TwxListbook, TWxNotebook, TWxTreebook, TWxToolbook,
+                     TWxStatusBar, TWxToolBar, TWxNoteBookPage,
                      TWxchecklistbox, TWxSplitterWindow, TWxSpinCtrl, TWxScrolledWindow,
                      TWxHtmlWindow, TWxToolButton, TWxSeparator, TWxPopupMenu, TWxMenuBar,
                      TWxOpenFileDialog, TWxSaveFileDialog, TWxFontDialog, TwxMessageDialog,
