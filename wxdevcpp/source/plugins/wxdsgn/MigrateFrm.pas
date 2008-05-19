@@ -279,6 +279,42 @@ begin
       Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_RIGHT', ', wxST_ALIGN_RIGHT');
       Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_RIGHT', 'wxST_ALIGN_RIGHT');
       Inc(Changes);
+    end
+    //wxNB_TOP
+    else if (Pos('wxNB_TOP', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+    begin
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_TOP,', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_TOP', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_TOP', '');
+      Strings.Add('Wx_BookAlignment = wxNB_TOP');
+      Inc(Changes);
+    end
+    //wxNB_BOTTOM
+    else if (Pos('wxNB_BOTTOM', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+    begin
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_BOTTOM,', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_BOTTOM', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_BOTTOM', '');
+      Strings.Add('Wx_BookAlignment = wxNB_BOTTOM');
+      Inc(Changes);
+    end
+    //wxNB_LEFT
+    else if (Pos('wxNB_LEFT', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+    begin
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_LEFT,', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_LEFT', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_LEFT', '');
+      Strings.Add('Wx_BookAlignment = wxNB_LEFT');
+      Inc(Changes);
+    end
+    //wxNB_RIGHT
+    else if (Pos('wxNB_RIGHT', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+    begin
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_RIGHT,', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_RIGHT', '');
+      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_RIGHT', '');
+      Strings.Add('Wx_BookAlignment = wxNB_RIGHT');
+      Inc(Changes);
     end;
 
     //Update the UI

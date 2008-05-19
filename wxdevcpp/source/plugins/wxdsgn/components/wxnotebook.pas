@@ -55,6 +55,7 @@ type
     FWx_Border: integer;
     FWx_NoteBookStyle: TWxnbxStyleSet;
     FWx_TabWidth: integer;
+    FWx_TabHeight: integer;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignmentSet;
@@ -122,6 +123,8 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
 
+    function GetTabHeight: integer;
+    procedure SetTabHeight(height: integer);
     function GetTabWidth: integer;
     procedure SetTabWidth(width: integer);
     function GetBookAlignment(Value: TWxnbxAlignStyleItem): string;
@@ -147,7 +150,8 @@ type
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
     property Wx_Enabled: boolean read FWx_Enabled write FWx_Enabled default True;
     property Wx_NoteBookStyle: TWxnbxStyleSet read FWx_NoteBookStyle write SetNotebookStyle;
-    property Wx_TabWidth: integer read GetTabWidth write SetTabWidth default 25;
+    property Wx_TabHeight: integer read GetTabHeight write SetTabHeight default 25;
+    property Wx_TabWidth: integer read GetTabWidth write SetTabWidth default 75;
     property Wx_GeneralStyle: TWxStdStyleSet read FWx_GeneralStyle write FWx_GeneralStyle;
 
     property Wx_Border: integer read GetBorderWidth write SetBorderWidth default 5;
@@ -191,7 +195,8 @@ begin
   defaultBGColor := self.color;
   defaultFGColor := self.font.color;
   FWx_NoteBookStyle := [];
-  FWx_TabWidth := 25;
+  FWx_TabWidth := 75;
+  FWx_TabHeight := 25;
   FWx_BookAlignment := wxNB_DEFAULT;
 
 end; { of AutoInitialize }
@@ -217,6 +222,7 @@ begin
   FWx_PropertyList.Add('wxNB_FLAT:wxNB_FLAT');
 
   FWx_PropertyList.Add('Wx_TabWidth:TabWidth');
+  FWx_PropertyList.Add('Wx_TabHeight:TabHeight');
   FWx_PropertyList.Add('Wx_BookAlignment:Book Styles');
 
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -378,7 +384,7 @@ begin
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
   if (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
-    Result := Result + #13 + Format('%s->SetTabSize(%d);', [self.Name, GetTabWidth]);
+    Result := Result + #13 + Format('%s->SetTabSize(wxSize(%d,%d));', [self.Name, GetTabWidth, GetTabHeight]);
 
   if (self.Parent is TWxSizerPanel) then
   begin
@@ -486,6 +492,16 @@ begin
   Result := wx_Class;
 end;
 
+function TWxNoteBook.GetTabHeight: integer;
+begin
+  Result := FWx_TabHeight;
+end;
+
+procedure TWxNoteBook.SetTabHeight(height: integer);
+begin
+  FWx_TabHeight := height;
+end;
+
 function TWxNoteBook.GetTabWidth: integer;
 begin
   Result := FWx_TabWidth;
@@ -510,15 +526,16 @@ begin
   else
     self.MultiLine := wxNB_MULTILINE in FWx_NotebookStyle;
 
-  {  if (Self.Wx_BookAlignment = wxNB_LEFT) or (self.Wx_BookAlignment = wxNB_RIGHT) then
-    Self.MultiLine := True
-  else
-    self.MultiLine := wxNB_MULTILINE in FWx_NotebookStyle;
-}
   if (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
-    self.TabWidth := self.Wx_TabWidth
+  begin
+    self.TabWidth := self.Wx_TabWidth;
+    Self.TabHeight := Self.Wx_TabHeight;
+  end
   else
+  begin
     self.TabWidth := 0;
+    Self.TabHeight := 0;
+  end;
 
 end;
 

@@ -493,6 +493,14 @@ type
     property strFileNameValue: string read FstrFileNameValue write FstrFileNameValue;
   end;
 
+  // Added 1 May 2008 - Mal
+  TWxAnimationFileNameString = class
+  public
+    FstrFileNameValue: string;
+  published
+    property strFileNameValue: string read FstrFileNameValue write FstrFileNameValue;
+  end;
+
   TWxJvInspectorTStringsItem = class(TJvCustomInspectorItem)
   protected
     procedure ContentsChanged(Sender: TObject);
@@ -520,6 +528,16 @@ type
 
   // Added 11 May 2005 by Tony
   TJvInspectorFileNameEditItem = class(TJvCustomInspectorItem)
+  protected
+    procedure Edit; override;
+    function GetDisplayValue: string; override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    class procedure RegisterAsDefaultItem;
+  end;
+
+  // Added 1 May 2008 by Mal needed for Animation Control
+  TJvInspectorAnimationFileNameEditItem = class(TJvCustomInspectorItem)
   protected
     procedure Edit; override;
     function GetDisplayValue: string; override;
@@ -720,8 +738,8 @@ function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
   lstvwstyle: TWxLVStyleSet; view: TWxLvView): string;
 function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxEdtGeneralStyleSet): string;
-function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-  dlgstyle: TWxAnimationCtrlStyleSet): string;
+function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet{;
+  dlgstyle: TWxAnimationCtrlStyleSet}): string;
 function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxBtnStyleSet): string;
 function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -3880,18 +3898,18 @@ begin
   end;
 end;
 
-function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-  dlgstyle: TWxAnimationCtrlStyleSet): string;
+function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet{;
+  dlgstyle: TWxAnimationCtrlStyleSet}): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA := trim(GetAnimationCtrlStyleString(dlgstyle));
+{  strA := trim(GetAnimationCtrlStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
     else
-      Result := Result + ' | ' + strA;
+      Result := Result + ' | ' + strA;  }//mn all we want at the moment is the standard style string
 
 end;
 
@@ -5945,6 +5963,14 @@ begin
     if IndexOf(Self) = -1 then
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxFileNameString)));
 end;
+
+
+class procedure TJvInspectorAnimationFileNameEditItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxAnimationFileNameString)));
+end;
 //-------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------
@@ -6451,6 +6477,61 @@ begin
   NewValue := Value + [iifEditButton];
   inherited SetFlags(NewValue);
 end;
+
+///////////////////////////////////
+//mal
+///////////////////////////////////
+procedure TJvInspectorAnimationFileNameEditItem.Edit;
+var
+  FileOpenForm: TOpenDialog;
+  WxAnimationFileNameString: TWxAnimationFileNameString;
+begin
+
+  WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
+
+  FileOpenForm := TOpenDialog.Create(GetParentForm(Inspector));
+  FileOpenForm.Filter := 'Animated GIF files (*.gif)|*.GIF|Animated Cursor files (*.ani)|*.ANI';
+
+  if (FileOpenForm.Execute) then // If a file is selected
+    WxAnimationFileNameString.FstrFileNameValue := FileOpenForm.FileName
+  else // If Cancel is pushed, then remove file to load
+    WxAnimationFileNameString.FstrFileNameValue := '';
+
+  // Tony 1 May 2008
+  // Unfortunately, I need to do the OnDataValueChanged twice to get the
+  // wxform to update. Problem is that I need to invoke SetWxFileName procedure
+  // in the calling function (at this point WxAnimationCtrl). The 2 lines above should
+  // do this (TWxMemo(...)), but I compiler complains that it can't find TWxMemo
+  if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+  begin
+    TJvInspector(GetInspector).OnDataValueChanged(nil, Data);
+    TJvInspector(GetInspector).OnDataValueChanged(nil, Data);
+  end;
+
+end;
+
+function TJvInspectorAnimationFileNameEditItem.GetDisplayValue: string;
+var
+  WxAnimationFileNameString: TWxAnimationFileNameString;
+begin
+
+  WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
+
+  Result := 'File to load';
+
+  if trim(WxAnimationFileNameString.FstrFileNameValue) <> '' then
+    Result := WxAnimationFileNameString.FstrFileNameValue;
+end;
+
+procedure TJvInspectorAnimationFileNameEditItem.SetFlags(const Value: TInspectorItemFlags);
+var
+  NewValue: TInspectorItemFlags;
+begin
+  NewValue := Value + [iifEditButton];
+  inherited SetFlags(NewValue);
+end;
+
+///////////////////////////////////
 
 // Added by Tony Reina 20 June 2006
 // We need a TButton class that will allow for the caption to be aligned

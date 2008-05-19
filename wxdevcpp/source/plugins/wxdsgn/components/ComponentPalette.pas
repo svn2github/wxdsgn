@@ -77,7 +77,7 @@ uses
   WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
   WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog,
-  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl;
+  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl;
 
 const
   SearchPrompt = '(search component)';
@@ -210,7 +210,7 @@ begin
     ComponentsList.Add('Sizers;TwxBoxSizer;TwxStaticBoxSizer;TwxGridSizer;TwxFlexGridSizer;' +
                        'TwxStdDialogButtonSizer');
     //Controls
-    ComponentsList.Add('"Common Controls";TwxStaticText;TwxButton;TwxBitmapButton;' +
+    ComponentsList.Add('"Common Controls";TwxAnimationCtrl;TwxStaticText;TwxButton;TwxBitmapButton;' +
                        'TwxToggleButton;TwxEdit;TwxMemo;TwxCheckBox;TwxChoice;' +
                        'TwxRadioButton;TwxComboBox;TwxListBox;TwxListCtrl;TwxTreeCtrl;' +
                        'TwxGauge;TwxScrollBar;TwxSpinButton;TwxStaticBox;TwxRadioBox;' +
@@ -243,7 +243,7 @@ begin
                      TWxSpinButton, TWxTreeCtrl, TWxRadioBox, TWxStaticBitmap,
                      TWxstaticbox, TWxslider, TWxStaticLine, TWxDatePickerCtrl,
                      TWxPanel, TWxChoicebook, TwxListbook, TWxNotebook, TWxTreebook, TWxToolbook,
-                     TWxStatusBar, TWxToolBar, TWxNoteBookPage,
+                     TWxStatusBar, TWxToolBar, TWxNoteBookPage, TWxAnimationCtrl,
                      TWxchecklistbox, TWxSplitterWindow, TWxSpinCtrl, TWxScrolledWindow,
                      TWxHtmlWindow, TWxToolButton, TWxSeparator, TWxPopupMenu, TWxMenuBar,
                      TWxOpenFileDialog, TWxSaveFileDialog, TWxFontDialog, TwxMessageDialog,
