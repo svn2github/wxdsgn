@@ -266,6 +266,7 @@ begin
     if MainForm.plugins[i].isForm(ExtractFileName(File_name)) then
     begin
       MainForm.plugins[i].InitEditor(ExtractFileName(File_name));
+      AssignedPlugin := MainForm.plugins[i].GetPluginName;      // EAB END ***
       pluginCatched := true;
     end;
   end;

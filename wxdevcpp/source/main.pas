@@ -3750,7 +3750,7 @@ begin
           begin
 {$IFDEF PLUGIN_BUILD}
             for j := 0 to pluginsCount - 1 do
-			    plugins[j].OpenFile(Files[idx]);
+                plugins[j].OpenFile(Files[idx]);
 {$ENDIF}
             OpenFile(Files[idx]); // open all files
           end
@@ -9197,7 +9197,7 @@ begin
 	if alsoReasignEditor then
 	begin
         editor := fProject.OpenUnit(fProject.Units.Indexof(currFile));
-		editor.Activate;
+                editor.Activate;
 	end
 	else
 		fProject.OpenUnit(fProject.Units.Indexof(currFile));
