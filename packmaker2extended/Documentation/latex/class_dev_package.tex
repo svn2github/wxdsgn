@@ -1,0 +1,660 @@
+\section{Dev\-Package Class Reference}
+\label{class_dev_package}\index{DevPackage@{DevPackage}}
+The {\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} class holds information about package itself which is used by the installer.  
+
+
+{\tt \#include $<$Package\-Classes.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Dev\-Package} ()
+\item 
+{\bf Dev\-Package} (wx\-File\-Config $\ast$Package\-File)
+\item 
+{\bf $\sim$Dev\-Package} ()
+\item 
+void {\bf Load\-From\-Package\-File} (wx\-File\-Config $\ast$Package\-File=NULL, const wx\-String \&File\-Name=wx\-Empty\-String)
+\item 
+const wx\-String {\bf Write\-Package\-File\-To\-String} ()
+\item 
+void {\bf Clear} ()
+\item 
+bool {\bf Build\-Package} (const wx\-String \&File\-Name, {\bf Build\-Form} $\ast$build\-Form=NULL, bool Silent=true)
+\end{CompactItemize}
+\begin{Indent}{\bf Standard Accessor Functions}\par
+{\em Setter and Getter functions for the various standard private members. }\begin{CompactItemize}
+\item 
+const wx\-String {\bf Get\-Package\-Name} ()
+\item 
+void {\bf Set\-Package\-Name} (const wx\-String \&Package\-Name)
+\item 
+const wx\-String {\bf Get\-Package\-Version\-Name} ()
+\item 
+void {\bf Set\-Package\-Version\-Name} (const wx\-String \&Package\-Version\-Name)
+\item 
+const wx\-String {\bf Get\-Package\-Version} ()
+\item 
+void {\bf Set\-Package\-Version} (const wx\-String \&Package\-Version)
+\item 
+const wx\-String {\bf Get\-Menu\-Name} ()
+\item 
+void {\bf Set\-Menu\-Name} (const wx\-String \&Menu\-Name)
+\item 
+const wx\-String {\bf Get\-Package\-Description} ()
+\item 
+void {\bf Set\-Package\-Desciption} (const wx\-String \&Package\-Description)
+\item 
+const wx\-String {\bf Get\-URL} ()
+\item 
+void {\bf Set\-URL} (const wx\-String \&URL)
+\item 
+const wx\-String {\bf Get\-Read\-Me} ()
+\item 
+void {\bf Set\-Read\-Me} (const wx\-String \&Read\-Me)
+\item 
+const wx\-String {\bf Get\-License\-Text} ()
+\item 
+void {\bf Set\-License\-Text} (const wx\-String \&License\-Text)
+\item 
+const wx\-String {\bf Get\-Picture} ()
+\item 
+void {\bf Set\-Picture} (const wx\-String \&Picture)
+\item 
+const wx\-String {\bf Get\-Dependencies} ()
+\item 
+void {\bf Set\-Dependencies} (const wx\-String \&Dependencies)
+\item 
+bool {\bf Get\-Reboot} ()
+\item 
+void {\bf Set\-Reboot} (const bool Reboot)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Extended Accessor Functions}\par
+{\em Setter and Getter functions for the various extended private members. }\begin{CompactItemize}
+\item 
+bool {\bf Get\-Support\-Extended\-Format} ()
+\item 
+void {\bf Set\-Support\-Extended\-Format} (const bool Support\-Extended\-Format)
+\item 
+const wx\-String {\bf Get\-Packager\-Name} ()
+\item 
+void {\bf Set\-Packager\-Name} (const wx\-String \&Packager\-Name)
+\item 
+const wx\-String {\bf Get\-Packager\-Email} ()
+\item 
+void {\bf Set\-Packager\-Email} (const wx\-String \&Packager\-Email)
+\end{CompactItemize}
+\end{Indent}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+void {\bf Init} ()
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{Indent}{\bf Standard Private Members}\par
+{\em Private memebrs for the standard package format. }\begin{CompactItemize}
+\item 
+wx\-String {\bf \_\-Package\-Name}
+\item 
+wx\-String {\bf \_\-Package\-Version\-Name}
+\item 
+wx\-String {\bf \_\-Package\-Version}
+\item 
+wx\-String {\bf \_\-Menu\-Name}
+\item 
+wx\-String {\bf \_\-Package\-Description}
+\item 
+wx\-String {\bf \_\-URL}
+\item 
+wx\-String {\bf \_\-Readme}
+\item 
+wx\-String {\bf \_\-License\-Text}
+\item 
+wx\-String {\bf \_\-Picture}
+\item 
+wx\-String {\bf \_\-Dependencies}
+\item 
+bool {\bf \_\-Reboot}
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Extended Private Memebers}\par
+{\em Private Memebers for the extended package format. }\begin{CompactItemize}
+\item 
+bool {\bf \_\-Support\-Extended\-Format}
+\item 
+wx\-String {\bf \_\-Packager\-Name}
+\item 
+wx\-String {\bf \_\-Packager\-Email}
+\item 
+File\-Info\-List {\bf \_\-File\-List}
+\item 
+Icon\-Info\-List {\bf \_\-Icon\-List}
+\end{CompactItemize}
+\end{Indent}
+
+
+\subsection{Detailed Description}
+The {\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} class holds information about package itself which is used by the installer. 
+
+The installer will look for the information contained in a Dev\-Pak to see where the contained files should be installed to. It also contains information such as readme and license files. 
+
+
+
+Definition at line 104 of file Package\-Classes.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{DevPackage@{Dev\-Package}!DevPackage@{DevPackage}}
+\index{DevPackage@{DevPackage}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Dev\-Package::Dev\-Package ()}\label{class_dev_package_9a3a9e60eb3eebae2db59060bfb71348}
+
+
+
+
+Definition at line 39 of file Package\-Classes.cpp.
+
+References Init().\index{DevPackage@{Dev\-Package}!DevPackage@{DevPackage}}
+\index{DevPackage@{DevPackage}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Dev\-Package::Dev\-Package (wx\-File\-Config $\ast$ {\em Package\-File})}\label{class_dev_package_40d29cdd7e1ec43bde701b6c0a6f5291}
+
+
+
+
+Definition at line 44 of file Package\-Classes.cpp.
+
+References Init(), and Load\-From\-Package\-File().\index{DevPackage@{Dev\-Package}!~DevPackage@{$\sim$DevPackage}}
+\index{~DevPackage@{$\sim$DevPackage}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Dev\-Package::$\sim$Dev\-Package ()}\label{class_dev_package_bc5ab86f718a3e55ef27a97713469468}
+
+
+
+
+Definition at line 50 of file Package\-Classes.cpp.
+
+\subsection{Member Function Documentation}
+\index{DevPackage@{Dev\-Package}!BuildPackage@{BuildPackage}}
+\index{BuildPackage@{BuildPackage}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool Dev\-Package::Build\-Package (const wx\-String \& {\em File\-Name}, {\bf Build\-Form} $\ast$ {\em build\-Form} = {\tt NULL}, bool {\em Silent} = {\tt true})}\label{class_dev_package_1fe849358b234bf36802aa17c9b5a165}
+
+
+Writes a .Dev\-Pak file. First it creates a Tar file then it packages this into a bz2 compressed file. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em File\-Name}]The full file name of the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file used to create absolute locations \item[{\em build\-Form}]A pointer to the form used to display the progress gauge. \item[{\em Silent}]A boolean value which deteremines if the guage and messageboxes are used. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]A boolean value of true if no errors were encountered or false otherwise. NOTE: even on a false value the Dev\-Pak may have been built correctly. \end{Desc}
+\begin{Desc}
+\item[See also:]{\bf Write\-Package\-File\-To\-String()}{\rm (p.\,\pageref{class_dev_package_582087a094b37723a308a80610a94c5a})} \end{Desc}
+
+
+Definition at line 240 of file Package\-Classes.cpp.
+
+References \_\-File\-List, Write\-Package\-File\-To\-String(), Build\-Form::Wx\-Gauge1, and Build\-Form::Wx\-Static\-Box1.\index{DevPackage@{Dev\-Package}!Clear@{Clear}}
+\index{Clear@{Clear}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Clear ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_9c7c89cacc4fa0db700e3a550d4b809d}
+
+
+Clears the contents of the {\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} class and sets basic defaults. \begin{Desc}
+\item[See also:]{\bf Init()}{\rm (p.\,\pageref{class_dev_package_2dc9c10c045fa1b172d1c5bad4cd4298})} \end{Desc}
+
+
+Definition at line 129 of file Package\-Classes.h.
+
+References Init().
+
+Referenced by Load\-From\-Package\-File().\index{DevPackage@{Dev\-Package}!GetDependencies@{GetDependencies}}
+\index{GetDependencies@{GetDependencies}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Dependencies ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_a10ecf4fbb2c116b241cb3ca375b071e}
+
+
+Getter for the \_\-Dependencies member. Returns the value of the member \_\-Dependencies. 
+
+Definition at line 182 of file Package\-Classes.h.
+
+References \_\-Dependencies.\index{DevPackage@{Dev\-Package}!GetLicenseText@{GetLicenseText}}
+\index{GetLicenseText@{GetLicenseText}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-License\-Text ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_3370535c8237ef56575c211c0da79253}
+
+
+Getter for the \_\-License\-Text member. Returns the value of the member \_\-License\-Text. 
+
+Definition at line 174 of file Package\-Classes.h.
+
+References \_\-License\-Text.\index{DevPackage@{Dev\-Package}!GetMenuName@{GetMenuName}}
+\index{GetMenuName@{GetMenuName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Menu\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_4a1104ccb80f91e9d8cc505fecc3d040}
+
+
+Getter for the \_\-Menu\-Name member. Returns the value of the member \_\-Menu\-Name. 
+
+Definition at line 158 of file Package\-Classes.h.
+
+References \_\-Menu\-Name.\index{DevPackage@{Dev\-Package}!GetPackageDescription@{GetPackageDescription}}
+\index{GetPackageDescription@{GetPackageDescription}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Package\-Description ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_65c6e0b5444d69590ade6f43c25d7cfa}
+
+
+Getter for the \_\-Package\-Description member. Returns the value of the member \_\-Package\-Desciption. 
+
+Definition at line 162 of file Package\-Classes.h.
+
+References \_\-Package\-Description.\index{DevPackage@{Dev\-Package}!GetPackageName@{GetPackageName}}
+\index{GetPackageName@{GetPackageName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Package\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_988efaf610d6c822e95f66ed1a5de498}
+
+
+Getter for the \_\-Package\-Name member. Returns the value of the member \_\-Package\-Name. 
+
+Definition at line 146 of file Package\-Classes.h.
+
+References \_\-Package\-Name.\index{DevPackage@{Dev\-Package}!GetPackagerEmail@{GetPackagerEmail}}
+\index{GetPackagerEmail@{GetPackagerEmail}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Packager\-Email ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_51e5647e5b18ba83e5f9dd9ee20a1139}
+
+
+Getter for the \_\-Packager\-Email member. Returns the value of the member \_\-Packager\-Email. 
+
+Definition at line 203 of file Package\-Classes.h.
+
+References \_\-Packager\-Email.\index{DevPackage@{Dev\-Package}!GetPackagerName@{GetPackagerName}}
+\index{GetPackagerName@{GetPackagerName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Packager\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_794e0558a3484e7cc9b557d62a5c3d25}
+
+
+Getter for the \_\-Packager\-Name member. Returns the value of the member \_\-Packager\-Name. 
+
+Definition at line 199 of file Package\-Classes.h.
+
+References \_\-Packager\-Name.\index{DevPackage@{Dev\-Package}!GetPackageVersion@{GetPackageVersion}}
+\index{GetPackageVersion@{GetPackageVersion}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Package\-Version ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_6765fd306aa9f435ad2f29c29c6f5b52}
+
+
+Getter for the \_\-Package\-Version member. Returns the value of the member \_\-Package\-Version. 
+
+Definition at line 154 of file Package\-Classes.h.
+
+References \_\-Package\-Version.\index{DevPackage@{Dev\-Package}!GetPackageVersionName@{GetPackageVersionName}}
+\index{GetPackageVersionName@{GetPackageVersionName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Package\-Version\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_649f85fd98aba05904208c1dddf43049}
+
+
+Getter for the \_\-Package\-Version\-Name member. Returns the value of the member \_\-Package\-Version\-Name. 
+
+Definition at line 150 of file Package\-Classes.h.
+
+References \_\-Package\-Version\-Name.\index{DevPackage@{Dev\-Package}!GetPicture@{GetPicture}}
+\index{GetPicture@{GetPicture}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Picture ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_df3c0c08f87d9b452edc4679b2bd0c3a}
+
+
+Getter for the \_\-Picture member. Returns the value of the member \_\-Picture. 
+
+Definition at line 178 of file Package\-Classes.h.
+
+References \_\-Picture.\index{DevPackage@{Dev\-Package}!GetReadMe@{GetReadMe}}
+\index{GetReadMe@{GetReadMe}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-Read\-Me ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_2d337b84165d59171164577681d1e865}
+
+
+Getter for the \_\-Readme member. Returns the value of the member \_\-Readme. 
+
+Definition at line 170 of file Package\-Classes.h.
+
+References \_\-Readme.\index{DevPackage@{Dev\-Package}!GetReboot@{GetReboot}}
+\index{GetReboot@{GetReboot}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool Dev\-Package::Get\-Reboot ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_776aa06294ed2d2a758c3f25d63de31a}
+
+
+Getter for the \_\-Reboot member. Returns the value of the member \_\-Reboot. 
+
+Definition at line 186 of file Package\-Classes.h.
+
+References \_\-Reboot.\index{DevPackage@{Dev\-Package}!GetSupportExtendedFormat@{GetSupportExtendedFormat}}
+\index{GetSupportExtendedFormat@{GetSupportExtendedFormat}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool Dev\-Package::Get\-Support\-Extended\-Format ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_94fceb52ff6ab92f8af7b85f2c079a80}
+
+
+Getter for the \_\-Support\-Extended\-Format member. Returns the value of the member \_\-Support\-Extended\-Format. 
+
+Definition at line 195 of file Package\-Classes.h.
+
+References \_\-Support\-Extended\-Format.\index{DevPackage@{Dev\-Package}!GetURL@{GetURL}}
+\index{GetURL@{GetURL}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Get\-URL ()\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_057041ecac0d717d222033649e803e10}
+
+
+Getter for the \_\-URL member. Returns the value of the member \_\-URL. 
+
+Definition at line 166 of file Package\-Classes.h.
+
+References \_\-URL.\index{DevPackage@{Dev\-Package}!Init@{Init}}
+\index{Init@{Init}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Init ()\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_2dc9c10c045fa1b172d1c5bad4cd4298}
+
+
+Clears the contents of the {\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} class and sets basic defaults. Called by the constructors and Clear function. \begin{Desc}
+\item[See also:]{\bf Clear()}{\rm (p.\,\pageref{class_dev_package_9c7c89cacc4fa0db700e3a550d4b809d})} 
+
+{\bf Dev\-Package()}{\rm (p.\,\pageref{class_dev_package_9a3a9e60eb3eebae2db59060bfb71348})} 
+
+{\bf Dev\-Package(wx\-File\-Config $\ast$ Package\-File)}{\rm (p.\,\pageref{class_dev_package_40d29cdd7e1ec43bde701b6c0a6f5291})} \end{Desc}
+
+
+Definition at line 54 of file Package\-Classes.cpp.
+
+References \_\-Dependencies, \_\-File\-List, \_\-Icon\-List, \_\-License\-Text, \_\-Menu\-Name, \_\-Package\-Description, \_\-Package\-Name, \_\-Packager\-Email, \_\-Packager\-Name, \_\-Package\-Version, \_\-Package\-Version\-Name, \_\-Picture, \_\-Readme, \_\-Reboot, \_\-Support\-Extended\-Format, and \_\-URL.
+
+Referenced by Clear(), and Dev\-Package().\index{DevPackage@{Dev\-Package}!LoadFromPackageFile@{LoadFromPackageFile}}
+\index{LoadFromPackageFile@{LoadFromPackageFile}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Load\-From\-Package\-File (wx\-File\-Config $\ast$ {\em Package\-File} = {\tt NULL}, const wx\-String \& {\em File\-Name} = {\tt wxEmptyString})}\label{class_dev_package_5d4c41739aab3852483a0be0f01c9a93}
+
+
+Creates a {\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} from a .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em Package\-File}]a wx\-File\-Config class which is the file to load from. \item[{\em File\-Name}]The full file name on the system used to create absolute loacations. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]{\bf Write\-Package\-File\-To\-String()}{\rm (p.\,\pageref{class_dev_package_582087a094b37723a308a80610a94c5a})} \end{Desc}
+
+
+Definition at line 74 of file Package\-Classes.cpp.
+
+References \_\-Dependencies, \_\-File\-List, \_\-License\-Text, \_\-Menu\-Name, \_\-Package\-Description, \_\-Package\-Name, \_\-Packager\-Email, \_\-Packager\-Name, \_\-Package\-Version, \_\-Package\-Version\-Name, \_\-Picture, \_\-Readme, \_\-Reboot, \_\-Support\-Extended\-Format, \_\-URL, Clear(), EXTENDED\_\-SETUP\_\-SECTION, FILES\_\-SECTION, and SETUP\_\-SECTION.
+
+Referenced by Dev\-Package().\index{DevPackage@{Dev\-Package}!SetDependencies@{SetDependencies}}
+\index{SetDependencies@{SetDependencies}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Dependencies (const wx\-String \& {\em Dependencies})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_91c618d016b6f988c2e10adef07e6f3f}
+
+
+Setter for the \_\-Dependencies member. Sets the value of the member \_\-Dependencies. 
+
+Definition at line 184 of file Package\-Classes.h.
+
+References \_\-Dependencies.\index{DevPackage@{Dev\-Package}!SetLicenseText@{SetLicenseText}}
+\index{SetLicenseText@{SetLicenseText}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-License\-Text (const wx\-String \& {\em License\-Text})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_105c50e218faabd3f174995c6855fc40}
+
+
+Setter for the \_\-License\-Text member. Sets the value of the member \_\-License\-Text. 
+
+Definition at line 176 of file Package\-Classes.h.
+
+References \_\-License\-Text.\index{DevPackage@{Dev\-Package}!SetMenuName@{SetMenuName}}
+\index{SetMenuName@{SetMenuName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Menu\-Name (const wx\-String \& {\em Menu\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_73cf6e5aa71b80bb3ead0778710e808d}
+
+
+Setter for the \_\-Menu\-Name member. Sets the value of the member \_\-Menu\-Name. 
+
+Definition at line 160 of file Package\-Classes.h.
+
+References \_\-Menu\-Name.\index{DevPackage@{Dev\-Package}!SetPackageDesciption@{SetPackageDesciption}}
+\index{SetPackageDesciption@{SetPackageDesciption}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Package\-Desciption (const wx\-String \& {\em Package\-Description})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_801ebcd4968486a25d099d8901b0515b}
+
+
+Setter for the \_\-Package\-Description member. Sets the value of the member \_\-Package\-Desciption. 
+
+Definition at line 164 of file Package\-Classes.h.
+
+References \_\-Package\-Description.\index{DevPackage@{Dev\-Package}!SetPackageName@{SetPackageName}}
+\index{SetPackageName@{SetPackageName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Package\-Name (const wx\-String \& {\em Package\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_63ca69013f86a19406f5070f0b479a7e}
+
+
+Setter for the \_\-Package\-Name member. Sets the value of the member \_\-Package\-Name. 
+
+Definition at line 148 of file Package\-Classes.h.
+
+References \_\-Package\-Name.\index{DevPackage@{Dev\-Package}!SetPackagerEmail@{SetPackagerEmail}}
+\index{SetPackagerEmail@{SetPackagerEmail}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Packager\-Email (const wx\-String \& {\em Packager\-Email})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_0c40c3a30df9a355896f5a2e83514c57}
+
+
+Setter for the \_\-Packager\-Email member. Sets the value of the member \_\-Packager\-Email. 
+
+Definition at line 205 of file Package\-Classes.h.
+
+References \_\-Packager\-Email.\index{DevPackage@{Dev\-Package}!SetPackagerName@{SetPackagerName}}
+\index{SetPackagerName@{SetPackagerName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Packager\-Name (const wx\-String \& {\em Packager\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_86f9f9b66df09f0401b2e17cf2a3d0b4}
+
+
+Setter for the \_\-Packager\-Name member. Sets the value of the member \_\-Packager\-Name. 
+
+Definition at line 201 of file Package\-Classes.h.
+
+References \_\-Packager\-Name.\index{DevPackage@{Dev\-Package}!SetPackageVersion@{SetPackageVersion}}
+\index{SetPackageVersion@{SetPackageVersion}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Package\-Version (const wx\-String \& {\em Package\-Version})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_6028e964f2527482fa7c62f89be8219e}
+
+
+Setter for the \_\-Package\-Version member. Sets the value of the member \_\-Package\-Version. 
+
+Definition at line 156 of file Package\-Classes.h.
+
+References \_\-Package\-Version.\index{DevPackage@{Dev\-Package}!SetPackageVersionName@{SetPackageVersionName}}
+\index{SetPackageVersionName@{SetPackageVersionName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Package\-Version\-Name (const wx\-String \& {\em Package\-Version\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_f12d4115ad6a61e0b4baa219954f1472}
+
+
+Setter for the \_\-Package\-Version\-Name member. Sets the value of the member \_\-Package\-Version\-Name. 
+
+Definition at line 152 of file Package\-Classes.h.
+
+References \_\-Package\-Version\-Name.\index{DevPackage@{Dev\-Package}!SetPicture@{SetPicture}}
+\index{SetPicture@{SetPicture}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Picture (const wx\-String \& {\em Picture})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_2a506236d50258a60bd476c5199ad2bd}
+
+
+Setter for the \_\-Picture member. Sets the value of the member \_\-Picture. 
+
+Definition at line 180 of file Package\-Classes.h.
+
+References \_\-Picture.\index{DevPackage@{Dev\-Package}!SetReadMe@{SetReadMe}}
+\index{SetReadMe@{SetReadMe}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Read\-Me (const wx\-String \& {\em Read\-Me})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_f4c6ea10677bceb7abba16210c798ff0}
+
+
+Setter for the \_\-Readme member. Sets the value of the member \_\-Readme. 
+
+Definition at line 172 of file Package\-Classes.h.
+
+References \_\-Readme.\index{DevPackage@{Dev\-Package}!SetReboot@{SetReboot}}
+\index{SetReboot@{SetReboot}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Reboot (const bool {\em Reboot})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_75b7e898fa8776f193b463619da5bf51}
+
+
+Setter for the \_\-Reboot member. Sets the value of the member \_\-Reboot. 
+
+Definition at line 188 of file Package\-Classes.h.
+
+References \_\-Reboot.\index{DevPackage@{Dev\-Package}!SetSupportExtendedFormat@{SetSupportExtendedFormat}}
+\index{SetSupportExtendedFormat@{SetSupportExtendedFormat}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-Support\-Extended\-Format (const bool {\em Support\-Extended\-Format})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_a3b6ed7b622288bfafef36cc032531c1}
+
+
+Setter for the \_\-Support\-Extended\-Format member. Sets the value of the member \_\-Support\-Extended\-Format. 
+
+Definition at line 197 of file Package\-Classes.h.
+
+References \_\-Support\-Extended\-Format.\index{DevPackage@{Dev\-Package}!SetURL@{SetURL}}
+\index{SetURL@{SetURL}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Dev\-Package::Set\-URL (const wx\-String \& {\em URL})\hspace{0.3cm}{\tt  [inline]}}\label{class_dev_package_8ca37ebb1ba94623417258018932dcac}
+
+
+Setter for the \_\-URL member. Sets the value of the member \_\-URL. 
+
+Definition at line 168 of file Package\-Classes.h.
+
+References \_\-URL.\index{DevPackage@{Dev\-Package}!WritePackageFileToString@{WritePackageFileToString}}
+\index{WritePackageFileToString@{WritePackageFileToString}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String Dev\-Package::Write\-Package\-File\-To\-String ()}\label{class_dev_package_582087a094b37723a308a80610a94c5a}
+
+
+Writes a .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file to a string this is needed since wx\-File\-Config does not add a space at the start of the file. \begin{Desc}
+\item[See also:]{\bf Load\-From\-Package\-File()}{\rm (p.\,\pageref{class_dev_package_5d4c41739aab3852483a0be0f01c9a93})} \end{Desc}
+\begin{Desc}
+\item[Returns:]A wx\-String containing the contents of the file \end{Desc}
+
+
+Definition at line 174 of file Package\-Classes.cpp.
+
+References \_\-Dependencies, \_\-File\-List, \_\-License\-Text, \_\-Menu\-Name, \_\-Package\-Description, \_\-Package\-Name, \_\-Packager\-Email, \_\-Packager\-Name, \_\-Package\-Version, \_\-Package\-Version\-Name, \_\-Picture, \_\-Readme, \_\-Reboot, \_\-Support\-Extended\-Format, \_\-URL, DEVPAK\_\-SUBVERSION, DEVPAK\_\-VERSION, and PATH\_\-FORMAT.
+
+Referenced by Build\-Package().
+
+\subsection{Member Data Documentation}
+\index{DevPackage@{Dev\-Package}!_Dependencies@{\_\-Dependencies}}
+\index{_Dependencies@{\_\-Dependencies}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Dependencies}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_b5b730c5deea1d68b1b44b01d30c0a44}
+
+
+Holds the list of package names this package depends on. This corresponds to Dependencies section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 241 of file Package\-Classes.h.
+
+Referenced by Get\-Dependencies(), Init(), Load\-From\-Package\-File(), Set\-Dependencies(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_FileList@{\_\-FileList}}
+\index{_FileList@{\_\-FileList}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}File\-Info\-List {\bf Dev\-Package::\_\-File\-List}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_721705b557cdb9131874599120c31d0d}
+
+
+Holds the list of file contained in the package. This corresponds to files in the Files section of the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 257 of file Package\-Classes.h.
+
+Referenced by Build\-Package(), Init(), Load\-From\-Package\-File(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_IconList@{\_\-IconList}}
+\index{_IconList@{\_\-IconList}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Icon\-Info\-List {\bf Dev\-Package::\_\-Icon\-List}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_49fe80b01f3b352ef6828dd894fe70fd}
+
+
+Holds the list of menu entries and icons to add to the start menu. This corresponds to the Icons section of the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 259 of file Package\-Classes.h.
+
+Referenced by Init().\index{DevPackage@{Dev\-Package}!_LicenseText@{\_\-LicenseText}}
+\index{_LicenseText@{\_\-LicenseText}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-License\-Text}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_3b8bf818e5ce6e1b44d35e10ca1a231b}
+
+
+Holds the license information for the package contents. This corresponds to License section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 237 of file Package\-Classes.h.
+
+Referenced by Get\-License\-Text(), Init(), Load\-From\-Package\-File(), Set\-License\-Text(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_MenuName@{\_\-MenuName}}
+\index{_MenuName@{\_\-MenuName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Menu\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_e5a24bfc54c884c235d12710e0d35211}
+
+
+Holds the menu name the package will occupy in the start menu. This corresponds to Menu\-Name section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 229 of file Package\-Classes.h.
+
+Referenced by Get\-Menu\-Name(), Init(), Load\-From\-Package\-File(), Set\-Menu\-Name(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_PackageDescription@{\_\-PackageDescription}}
+\index{_PackageDescription@{\_\-PackageDescription}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Package\-Description}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_2211a443e8dac5a20714ac0d98b4d47f}
+
+
+Holds the package description. This corresponds to Description section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 231 of file Package\-Classes.h.
+
+Referenced by Get\-Package\-Description(), Init(), Load\-From\-Package\-File(), Set\-Package\-Desciption(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_PackageName@{\_\-PackageName}}
+\index{_PackageName@{\_\-PackageName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Package\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_2820af4244f97e3d59025c8131d646de}
+
+
+Holds the package name. This corresponds to App\-Name section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 223 of file Package\-Classes.h.
+
+Referenced by Get\-Package\-Name(), Init(), Load\-From\-Package\-File(), Set\-Package\-Name(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_PackagerEmail@{\_\-PackagerEmail}}
+\index{_PackagerEmail@{\_\-PackagerEmail}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Packager\-Email}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_c7255d04de32d2030a21235dcb08212a}
+
+
+Holds the packager's email addess. This corresponds to Packager\-Email section in the extended section of the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 255 of file Package\-Classes.h.
+
+Referenced by Get\-Packager\-Email(), Init(), Load\-From\-Package\-File(), Set\-Packager\-Email(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_PackagerName@{\_\-PackagerName}}
+\index{_PackagerName@{\_\-PackagerName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Packager\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_9d4a094d32f373e109585f945e964670}
+
+
+Holds the packager's name. This corresponds to Packager section in the extended section of the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 253 of file Package\-Classes.h.
+
+Referenced by Get\-Packager\-Name(), Init(), Load\-From\-Package\-File(), Set\-Packager\-Name(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_PackageVersion@{\_\-PackageVersion}}
+\index{_PackageVersion@{\_\-PackageVersion}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Package\-Version}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_d7e4a610f436a65be31692b3cafe96a3}
+
+
+Holds the package version number. This corresponds to App\-Version section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 227 of file Package\-Classes.h.
+
+Referenced by Get\-Package\-Version(), Init(), Load\-From\-Package\-File(), Set\-Package\-Version(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_PackageVersionName@{\_\-PackageVersionName}}
+\index{_PackageVersionName@{\_\-PackageVersionName}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Package\-Version\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_7265fc229dee35ae7fbec0613ee8fa61}
+
+
+Holds the package name and version. This corresponds to App\-Ver\-Name section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 225 of file Package\-Classes.h.
+
+Referenced by Get\-Package\-Version\-Name(), Init(), Load\-From\-Package\-File(), Set\-Package\-Version\-Name(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_Picture@{\_\-Picture}}
+\index{_Picture@{\_\-Picture}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Picture}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_e8d0b5bbe6b5273708e0e5b7117f8a5f}
+
+
+Holds a file name of a picture to be displayed. This corresponds to Picture section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 239 of file Package\-Classes.h.
+
+Referenced by Get\-Picture(), Init(), Load\-From\-Package\-File(), Set\-Picture(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_Readme@{\_\-Readme}}
+\index{_Readme@{\_\-Readme}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-Readme}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_e14144292857e6dc2420da2e0b297e67}
+
+
+Holds the Readme file name. This corresponds to Readme section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 235 of file Package\-Classes.h.
+
+Referenced by Get\-Read\-Me(), Init(), Load\-From\-Package\-File(), Set\-Read\-Me(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_Reboot@{\_\-Reboot}}
+\index{_Reboot@{\_\-Reboot}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Dev\-Package::\_\-Reboot}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_739c412a153576999379b7fd4ba063de}
+
+
+Holds the reboot value specifying whether a reboot is needed after installation. This corresponds to Reboot section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 243 of file Package\-Classes.h.
+
+Referenced by Get\-Reboot(), Init(), Load\-From\-Package\-File(), Set\-Reboot(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_SupportExtendedFormat@{\_\-SupportExtendedFormat}}
+\index{_SupportExtendedFormat@{\_\-SupportExtendedFormat}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Dev\-Package::\_\-Support\-Extended\-Format}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_ca21679a1530c71a1b5fd3623b1fa2c4}
+
+
+Holds a value to see if this package supports extended information. 
+
+Definition at line 251 of file Package\-Classes.h.
+
+Referenced by Get\-Support\-Extended\-Format(), Init(), Load\-From\-Package\-File(), Set\-Support\-Extended\-Format(), and Write\-Package\-File\-To\-String().\index{DevPackage@{Dev\-Package}!_URL@{\_\-URL}}
+\index{_URL@{\_\-URL}!DevPackage@{Dev\-Package}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Dev\-Package::\_\-URL}\hspace{0.3cm}{\tt  [private]}}\label{class_dev_package_d514eae3e66fb4f616ebf0cf195093e0}
+
+
+Holds the URL to a website related to the package. This corresponds to Url section in the .{\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} file. 
+
+Definition at line 233 of file Package\-Classes.h.
+
+Referenced by Get\-URL(), Init(), Load\-From\-Package\-File(), Set\-URL(), and Write\-Package\-File\-To\-String().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Package\-Classes.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Package\-Classes.cpp}\end{CompactItemize}

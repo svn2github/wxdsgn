@@ -1,0 +1,55 @@
+# Project: PackMaker2
+# Compiler: Default GCC compiler
+# Compiler Type: MingW 3
+# Makefile created by wxDev-C++ 6.11 on 10/03/08 14:28
+
+CPP       = g++.exe
+CC        = gcc.exe
+WINDRES   = windres.exe
+OBJ       = Objects/MingW/PackMaker2App.o Objects/MingW/PackMaker2Frm.o Objects/MingW/BuildForm.o Objects/MingW/FileForm.o Objects/MingW/MenuForm.o Objects/MingW/ActionDlg.o Objects/MingW/PackageClasses.o Objects/MingW/PackMaker2_private.res
+LINKOBJ   = Objects/MingW/PackMaker2App.o Objects/MingW/PackMaker2Frm.o Objects/MingW/BuildForm.o Objects/MingW/FileForm.o Objects/MingW/MenuForm.o Objects/MingW/ActionDlg.o Objects/MingW/PackageClasses.o Objects/MingW/PackMaker2_private.res
+LIBS      = -L"C:/Program Files/Dev-Cpp/Lib" -lwxmsw28_bzipstream -mwindows -lwxmsw28 -lwxmsw28_gl -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32   -s 
+INCS      = -I"C:/Program Files/Dev-Cpp/Include"
+CXXINCS   = -I"C:/Program Files/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2/backward" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2/mingw32" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2" -I"C:/Program Files/Dev-Cpp/include" -I"C:/Program Files/Dev-Cpp/" -I"C:/Program Files/Dev-Cpp/include/common/wx/msw" -I"C:/Program Files/Dev-Cpp/include/common/wx/generic" -I"C:/Program Files/Dev-Cpp/include/common/wx/fl" -I"C:/Program Files/Dev-Cpp/include/common/wx/gizmos" -I"C:/Program Files/Dev-Cpp/include/common/wx/html" -I"C:/Program Files/Dev-Cpp/include/common/wx/mmedia" -I"C:/Program Files/Dev-Cpp/include/common/wx/net" -I"C:/Program Files/Dev-Cpp/include/common/wx/ogl" -I"C:/Program Files/Dev-Cpp/include/common/wx/plot" -I"C:/Program Files/Dev-Cpp/include/common/wx/protocol" -I"C:/Program Files/Dev-Cpp/include/common/wx/stc" -I"C:/Program Files/Dev-Cpp/include/common/wx/svg" -I"C:/Program Files/Dev-Cpp/include/common/wx/xml" -I"C:/Program Files/Dev-Cpp/include/common/wx/xrc" -I"C:/Program Files/Dev-Cpp/include/common/wx" -I"C:/Program Files/Dev-Cpp/include/common"
+RCINCS    = --include-dir "C:/PROGRA~1/Dev-Cpp/include/common"
+BIN       = Output/MingW/PackMaker2.exe
+DEFINES   = -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__
+WXLIBNAME = wxmsw28
+CXXFLAGS  = $(CXXINCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O3
+CFLAGS    = $(INCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O3
+GPROF     = gprof.exe
+RM        = rm -f
+LINK      = g++.exe
+
+.PHONY: all all-before all-after clean clean-custom
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	$(RM) $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(LINK) $(LINKOBJ) -o "Output\MingW\PackMaker2.exe" $(LIBS) 
+
+Objects/MingW/PackMaker2App.o: $(GLOBALDEPS) PackMaker2App.cpp PackMaker2App.h PackMaker2Frm.h BuildForm.h ActionDlg.h
+	$(CPP) -c PackMaker2App.cpp -o Objects/MingW/PackMaker2App.o $(CXXFLAGS)
+
+Objects/MingW/PackMaker2Frm.o: $(GLOBALDEPS) PackMaker2Frm.cpp PackMaker2Frm.h BuildForm.h Images/PackMaker2Frm_ID_MNU_NEW_1082_XPM.xpm Images/PackMaker2Frm_ID_MNU_OPEN____1084_XPM.xpm Images/PackMaker2Frm_ID_MNU_SAVE_1086_XPM.xpm Images/PackMaker2Frm_ID_MNU_SAVEAS____1087_XPM.xpm Images/PackMaker2Frm_ID_MNU_BUILD_1089_XPM.xpm Images/PackMaker2Frm_ID_MNU_EXIT_1091_XPM.xpm Images/PackMaker2Frm_ID_MNU_ABOUT_1092_XPM.xpm Images/PackMaker2Frm_WxToolButton6_XPM.xpm Images/PackMaker2Frm_WxToolButton5_XPM.xpm Images/PackMaker2Frm_WxToolButton4_XPM.xpm Images/PackMaker2Frm_WxToolButton3_XPM.xpm Images/PackMaker2Frm_WxToolButton2_XPM.xpm Images/PackMaker2Frm_WxToolButton1_XPM.xpm Images/PackMaker2Frm_btnRemove_XPM.xpm Images/PackMaker2Frm_btnAddFile_XPM.xpm Images/PackMaker2Frm_btnAddDir_XPM.xpm Images/PackMaker2Frm_btnRemoveIcon_XPM.xpm Images/PackMaker2Frm_btnEditItem_XPM.xpm Images/PackMaker2Frm_btnAddItem_XPM.xpm Images/PackMaker2Frm_btnPicture_XPM.xpm Images/PackMaker2Frm_btnLicense_XPM.xpm Images/PackMaker2Frm_btnReadMe_XPM.xpm MenuForm.h FileForm.h
+	$(CPP) -c PackMaker2Frm.cpp -o Objects/MingW/PackMaker2Frm.o $(CXXFLAGS)
+
+Objects/MingW/BuildForm.o: $(GLOBALDEPS) BuildForm.cpp BuildForm.h
+	$(CPP) -c BuildForm.cpp -o Objects/MingW/BuildForm.o $(CXXFLAGS)
+
+Objects/MingW/FileForm.o: $(GLOBALDEPS) FileForm.cpp FileForm.h Images/FileForm_btnLoad_XPM.xpm
+	$(CPP) -c FileForm.cpp -o Objects/MingW/FileForm.o $(CXXFLAGS)
+
+Objects/MingW/MenuForm.o: $(GLOBALDEPS) MenuForm.cpp MenuForm.h
+	$(CPP) -c MenuForm.cpp -o Objects/MingW/MenuForm.o $(CXXFLAGS)
+
+Objects/MingW/ActionDlg.o: $(GLOBALDEPS) ActionDlg.cpp ActionDlg.h
+	$(CPP) -c ActionDlg.cpp -o Objects/MingW/ActionDlg.o $(CXXFLAGS)
+
+Objects/MingW/PackageClasses.o: $(GLOBALDEPS) PackageClasses.cpp PackageClasses.h BuildForm.h
+	$(CPP) -c PackageClasses.cpp -o Objects/MingW/PackageClasses.o $(CXXFLAGS)
+
+Objects/MingW/PackMaker2_private.res: Objects/MingW/PackMaker2_private.rc PackMaker2App.rc 
+	$(WINDRES) --input-format=rc -o Objects/MingW/PackMaker2_private.res $(RCINCS) Objects/MingW/PACKMA~1.RC -O coff

@@ -1,0 +1,127 @@
+\section{C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/Package\-Classes.h File Reference}
+\label{_package_classes_8h}\index{C:/Dev-Cpp/WxProjects/PackMaker2Extended/PackageClasses.h@{C:/Dev-Cpp/WxProjects/PackMaker2Extended/PackageClasses.h}}
+{\tt \#include $<$wx/fileconf.h$>$}\par
+{\tt \#include $<$wx/string.h$>$}\par
+{\tt \#include $<$wx/dynarray.h$>$}\par
+{\tt \#include \char`\"{}Build\-Form.h\char`\"{}}\par
+\subsection*{Classes}
+\begin{CompactItemize}
+\item 
+class {\bf File\-Info}
+\begin{CompactList}\small\item\em The {\bf File\-Info}{\rm (p.\,\pageref{class_file_info})} class holds information about each file or directory contained. \item\end{CompactList}\item 
+class {\bf Icon\-Info}
+\begin{CompactList}\small\item\em The {\bf Icon\-Info}{\rm (p.\,\pageref{class_icon_info})} class holds information about entries to be added to the specified system menu. \item\end{CompactList}\item 
+class {\bf Dev\-Package}
+\begin{CompactList}\small\item\em The {\bf Dev\-Package}{\rm (p.\,\pageref{class_dev_package})} class holds information about package itself which is used by the installer. \item\end{CompactList}\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf SETUP\_\-SECTION}~wx\-T(\char`\"{}/Setup\char`\"{})
+\item 
+\#define {\bf FILES\_\-SECTION}~wx\-T(\char`\"{}/Files\char`\"{})
+\item 
+\#define {\bf ICONS\_\-SECTION}~wx\-T(\char`\"{}/Icons\char`\"{})
+\item 
+\#define {\bf EXTENDED\_\-SETUP\_\-SECTION}~wx\-T(\char`\"{}/Extended\-Setup\char`\"{})
+\item 
+\#define {\bf RECURSE}~wx\-T(\char`\"{};recursive\char`\"{})
+\item 
+\#define {\bf DEVPAK\_\-VERSION}~wx\-T(\char`\"{}2\char`\"{})
+\item 
+\#define {\bf DEVPAK\_\-SUBVERSION}~wx\-T(\char`\"{}1\char`\"{})
+\item 
+\#define {\bf PATH\_\-FORMAT}~wx\-T(\char`\"{}Undefined\char`\"{})
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+{\bf WX\_\-DECLARE\_\-OBJARRAY} ({\bf File\-Info}, File\-Info\-List)
+\item 
+{\bf WX\_\-DECLARE\_\-OBJARRAY} ({\bf Icon\-Info}, Icon\-Info\-List)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{PackageClasses.h@{Package\-Classes.h}!DEVPAK_SUBVERSION@{DEVPAK\_\-SUBVERSION}}
+\index{DEVPAK_SUBVERSION@{DEVPAK\_\-SUBVERSION}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEVPAK\_\-SUBVERSION~wx\-T(\char`\"{}1\char`\"{})}\label{_package_classes_8h_ef2a3a0d40714516c61e04581e8bc927}
+
+
+
+
+Definition at line 17 of file Package\-Classes.h.
+
+Referenced by Dev\-Package::Write\-Package\-File\-To\-String().\index{PackageClasses.h@{Package\-Classes.h}!DEVPAK_VERSION@{DEVPAK\_\-VERSION}}
+\index{DEVPAK_VERSION@{DEVPAK\_\-VERSION}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEVPAK\_\-VERSION~wx\-T(\char`\"{}2\char`\"{})}\label{_package_classes_8h_92a6548b6213c7257d57c1f8dbb8d0cd}
+
+
+
+
+Definition at line 16 of file Package\-Classes.h.
+
+Referenced by Pack\-Maker2Frm::Write\-Dev\-Pack\-File(), Pack\-Maker2Frm::Write\-Dev\-Pack\-File\-To\-String(), and Dev\-Package::Write\-Package\-File\-To\-String().\index{PackageClasses.h@{Package\-Classes.h}!EXTENDED_SETUP_SECTION@{EXTENDED\_\-SETUP\_\-SECTION}}
+\index{EXTENDED_SETUP_SECTION@{EXTENDED\_\-SETUP\_\-SECTION}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define EXTENDED\_\-SETUP\_\-SECTION~wx\-T(\char`\"{}/Extended\-Setup\char`\"{})}\label{_package_classes_8h_2aa827fcdad592a14081c1d43e9e03f4}
+
+
+
+
+Definition at line 14 of file Package\-Classes.h.
+
+Referenced by Dev\-Package::Load\-From\-Package\-File().\index{PackageClasses.h@{Package\-Classes.h}!FILES_SECTION@{FILES\_\-SECTION}}
+\index{FILES_SECTION@{FILES\_\-SECTION}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FILES\_\-SECTION~wx\-T(\char`\"{}/Files\char`\"{})}\label{_package_classes_8h_2e3ed298edb5819c219be62d17ee7b60}
+
+
+
+
+Definition at line 12 of file Package\-Classes.h.
+
+Referenced by Pack\-Maker2Frm::btn\-Remove\-Click(), Dev\-Package::Load\-From\-Package\-File(), Pack\-Maker2Frm::Read\-Dev\-Pack\-File(), and Pack\-Maker2Frm::Write\-Dev\-Pack\-File().\index{PackageClasses.h@{Package\-Classes.h}!ICONS_SECTION@{ICONS\_\-SECTION}}
+\index{ICONS_SECTION@{ICONS\_\-SECTION}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ICONS\_\-SECTION~wx\-T(\char`\"{}/Icons\char`\"{})}\label{_package_classes_8h_d9f40406598a4be2625abd890274b3dc}
+
+
+
+
+Definition at line 13 of file Package\-Classes.h.
+
+Referenced by Pack\-Maker2Frm::btn\-Remove\-Icon\-Click(), Pack\-Maker2Frm::Read\-Dev\-Pack\-File(), and Pack\-Maker2Frm::Write\-Dev\-Pack\-File().\index{PackageClasses.h@{Package\-Classes.h}!PATH_FORMAT@{PATH\_\-FORMAT}}
+\index{PATH_FORMAT@{PATH\_\-FORMAT}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PATH\_\-FORMAT~wx\-T(\char`\"{}Undefined\char`\"{})}\label{_package_classes_8h_c8feab8724de9686c9dc8de9a991cd15}
+
+
+
+
+Definition at line 29 of file Package\-Classes.h.
+
+Referenced by Dev\-Package::Write\-Package\-File\-To\-String().\index{PackageClasses.h@{Package\-Classes.h}!RECURSE@{RECURSE}}
+\index{RECURSE@{RECURSE}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define RECURSE~wx\-T(\char`\"{};recursive\char`\"{})}\label{_package_classes_8h_c0c299988aa45f396d7e7296bfa59851}
+
+
+
+
+Definition at line 15 of file Package\-Classes.h.\index{PackageClasses.h@{Package\-Classes.h}!SETUP_SECTION@{SETUP\_\-SECTION}}
+\index{SETUP_SECTION@{SETUP\_\-SECTION}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SETUP\_\-SECTION~wx\-T(\char`\"{}/Setup\char`\"{})}\label{_package_classes_8h_2fbb5362780131f31dbb086eb5e3cded}
+
+
+
+
+Definition at line 11 of file Package\-Classes.h.
+
+Referenced by Dev\-Package::Load\-From\-Package\-File(), Pack\-Maker2Frm::Read\-Dev\-Pack\-File(), and Pack\-Maker2Frm::Write\-Dev\-Pack\-File().
+
+\subsection{Function Documentation}
+\index{PackageClasses.h@{Package\-Classes.h}!WX_DECLARE_OBJARRAY@{WX\_\-DECLARE\_\-OBJARRAY}}
+\index{WX_DECLARE_OBJARRAY@{WX\_\-DECLARE\_\-OBJARRAY}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}WX\_\-DECLARE\_\-OBJARRAY ({\bf Icon\-Info}, Icon\-Info\-List)}\label{_package_classes_8h_537cb0246577e86fa9ab756e7f897dab}
+
+
+\index{PackageClasses.h@{Package\-Classes.h}!WX_DECLARE_OBJARRAY@{WX\_\-DECLARE\_\-OBJARRAY}}
+\index{WX_DECLARE_OBJARRAY@{WX\_\-DECLARE\_\-OBJARRAY}!PackageClasses.h@{Package\-Classes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}WX\_\-DECLARE\_\-OBJARRAY ({\bf File\-Info}, File\-Info\-List)}\label{_package_classes_8h_5b58328d2963610235c370061116e546}
+
+

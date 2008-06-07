@@ -1,0 +1,195 @@
+object frmNewForm_3: TfrmNewForm
+  Left = 8
+  Top = 8
+  AutoScroll = False
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Create start menu item'
+  ClientHeight = 149
+  ClientWidth = 234
+  Color = clBtnFace
+  OldCreateOrder = True
+  PopupMenu = MainForm.DesignerPopup
+  Visible = True
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  EVT_CLOSE = 'OnClose'
+  Wx_ICON.Data = {07544269746D617000000000}
+  Wx_Name = 'MenuForm'
+  Wx_IDName = 'ID_DIALOG1'
+  Wx_IDValue = 1000
+  Wx_Class = 'wxDialog'
+  Wx_Center = True
+  Wx_Hidden = False
+  Wx_SizeToContents = True
+  Wx_GeneralStyle = []
+  Wx_DialogStyle = [wxCAPTION, wxSYSTEM_MENU, wxDIALOG_NO_PARENT, wxMINIMIZE_BOX, wxCLOSE_BOX]
+  Wx_Border = 0
+  Wx_BorderAlignment = []
+  PixelsPerInch = 96
+  TextHeight = 13
+  object WxStaticText1: TWxStaticText
+    Left = 6
+    Top = 7
+    Width = 95
+    Height = 17
+    Caption = 'Menu Item Name : '
+    TabOrder = 0
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxStaticText'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_WXSTATICTEXT1'
+    Wx_IDValue = 1001
+    Wx_LabelStyle = []
+  end
+  object edName: TWxEdit
+    Left = 6
+    Top = 26
+    Width = 221
+    Height = 15
+    BevelInner = bvNone
+    BevelOuter = bvNone
+    Modified = False
+    AutoSize = False
+    TabOrder = 1
+    Text = 'MyApp'
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxTextCtrl'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_EditStyle = []
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_EDNAME'
+    Wx_IDValue = 1002
+    Wx_MaxLength = 0
+  end
+  object label2: TWxStaticText
+    Left = 6
+    Top = 46
+    Width = 43
+    Height = 17
+    Caption = 'Target :'
+    TabOrder = 2
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxStaticText'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_LABEL2'
+    Wx_IDValue = 1003
+    Wx_LabelStyle = []
+  end
+  object edTarget: TWxEdit
+    Left = 6
+    Top = 65
+    Width = 221
+    Height = 15
+    BevelInner = bvNone
+    BevelOuter = bvNone
+    Modified = False
+    AutoSize = False
+    TabOrder = 3
+    Text = '<app>\MyApp.exe'
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxTextCtrl'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_EditStyle = []
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_EDTARGET'
+    Wx_IDValue = 1004
+    Wx_MaxLength = 0
+  end
+  object WxStaticText2: TWxStaticText
+    Left = 6
+    Top = 84
+    Width = 32
+    Height = 17
+    Caption = 'Icon :'
+    TabOrder = 4
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxStaticText'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_WXSTATICTEXT2'
+    Wx_IDValue = 1005
+    Wx_LabelStyle = []
+  end
+  object edIcon: TWxEdit
+    Left = 6
+    Top = 103
+    Width = 221
+    Height = 16
+    BevelInner = bvNone
+    BevelOuter = bvNone
+    Modified = False
+    AutoSize = False
+    TabOrder = 5
+    Text = '<app>\MyApp.ico'
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxTextCtrl'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_EditStyle = []
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_EDICON'
+    Wx_IDValue = 1006
+    Wx_MaxLength = 0
+  end
+  object btnOK: TWxButton
+    Left = 95
+    Top = 124
+    Width = 61
+    Height = 20
+    Caption = 'OK'
+    TabOrder = 6
+    Wx_BKColor = clBlack
+    Wx_ButtonStyle = []
+    Wx_Class = 'wxButton'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_Default = False
+    Wx_EventList.Strings = (
+      'EVT_BUTTON:OnClick'
+      'EVT_UPDATE_UI:OnUpdateUI')
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'wxID_OK'
+    Wx_IDValue = 1007
+    Wx_Height = 20
+    Wx_Width = 61
+  end
+  object btnCancel: TWxButton
+    Left = 166
+    Top = 124
+    Width = 61
+    Height = 20
+    Caption = 'Cancel'
+    TabOrder = 7
+    Wx_BKColor = clBlack
+    Wx_ButtonStyle = []
+    Wx_Class = 'wxButton'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_Default = False
+    Wx_EventList.Strings = (
+      'EVT_BUTTON:OnClick'
+      'EVT_UPDATE_UI:OnUpdateUI')
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'wxID_CANCEL'
+    Wx_IDValue = 1009
+    Wx_Height = 20
+    Wx_Width = 61
+  end
+end

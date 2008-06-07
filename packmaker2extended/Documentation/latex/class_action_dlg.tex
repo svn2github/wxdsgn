@@ -1,0 +1,233 @@
+\section{Action\-Dlg Class Reference}
+\label{class_action_dlg}\index{ActionDlg@{ActionDlg}}
+{\tt \#include $<$Action\-Dlg.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Action\-Dlg} (wx\-Window $\ast$parent, wx\-Window\-ID id=1, const wx\-String \&title=wx\-T(\char`\"{}Choose an Action\char`\"{}), const wx\-Point \&pos=wx\-Default\-Position, const wx\-Size \&size=wx\-Default\-Size, long style=Action\-Dlg\_\-STYLE)
+\item 
+virtual {\bf $\sim$Action\-Dlg} ()
+\item 
+void {\bf btn\-OKClick} (wx\-Command\-Event \&event)
+\item 
+void {\bf chk\-Wizard\-Click} (wx\-Command\-Event \&event)
+\end{CompactItemize}
+\subsection*{Private Types}
+\begin{CompactItemize}
+\item 
+enum \{ \par
+{\bf ID\_\-WXSAVEASDEFAULT} =  1018, 
+{\bf ID\_\-CHKWIZARD} =  1017, 
+{\bf ID\_\-WXSTATICBOX2} =  1016, 
+{\bf ID\_\-BTNOK} =  1014, 
+\par
+{\bf ID\_\-WXRADIOBUTTON2} =  1013, 
+{\bf ID\_\-WXRADIOBUTTON1} =  1012, 
+{\bf ID\_\-WXSTATICBOX1} =  1011, 
+{\bf ID\_\-DUMMY\_\-VALUE\_\-}
+ \}
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf DECLARE\_\-EVENT\_\-TABLE} ()
+\item 
+void {\bf On\-Close} (wx\-Close\-Event \&event)
+\item 
+void {\bf Create\-GUIControls} ()
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+wx\-Check\-Box $\ast$ {\bf wx\-Save\-As\-Default}
+\item 
+wx\-Check\-Box $\ast$ {\bf chk\-Wizard}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box2}
+\item 
+wx\-Button $\ast$ {\bf btn\-Cancel}
+\item 
+wx\-Button $\ast$ {\bf btn\-OK}
+\item 
+wx\-Radio\-Button $\ast$ {\bf Wx\-Radio\-Button2}
+\item 
+wx\-Radio\-Button $\ast$ {\bf Wx\-Radio\-Button1}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box1}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+
+
+Definition at line 42 of file Action\-Dlg.h.
+
+\subsection{Member Enumeration Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b7}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ID_WXSAVEASDEFAULT@{ID\_\-WXSAVEASDEFAULT}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_WXSAVEASDEFAULT@{ID\_\-WXSAVEASDEFAULT}}\item[{\em 
+ID\_\-WXSAVEASDEFAULT\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b70b057df08519fd9e12a9e98c833b9f82}
+}]\index{ID_CHKWIZARD@{ID\_\-CHKWIZARD}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_CHKWIZARD@{ID\_\-CHKWIZARD}}\item[{\em 
+ID\_\-CHKWIZARD\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b7c286c865b678178c83de50e70ee5312c}
+}]\index{ID_WXSTATICBOX2@{ID\_\-WXSTATICBOX2}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_WXSTATICBOX2@{ID\_\-WXSTATICBOX2}}\item[{\em 
+ID\_\-WXSTATICBOX2\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b7b4255720fff26ef38dc9fa09aae458d5}
+}]\index{ID_BTNOK@{ID\_\-BTNOK}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_BTNOK@{ID\_\-BTNOK}}\item[{\em 
+ID\_\-BTNOK\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b7e5f0e7829c98e99c5009cd70e551ac9c}
+}]\index{ID_WXRADIOBUTTON2@{ID\_\-WXRADIOBUTTON2}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_WXRADIOBUTTON2@{ID\_\-WXRADIOBUTTON2}}\item[{\em 
+ID\_\-WXRADIOBUTTON2\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b7a5d9f08461873f2a6e8a8ef1dca5126b}
+}]\index{ID_WXRADIOBUTTON1@{ID\_\-WXRADIOBUTTON1}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_WXRADIOBUTTON1@{ID\_\-WXRADIOBUTTON1}}\item[{\em 
+ID\_\-WXRADIOBUTTON1\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b756b575ac516c9197f9bda824821ef936}
+}]\index{ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}}\item[{\em 
+ID\_\-WXSTATICBOX1\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b7b3ee77f8f594eeb7b4972bc5a08d161e}
+}]\index{ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}!ActionDlg@{ActionDlg}}\index{ActionDlg@{ActionDlg}!ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}}\item[{\em 
+ID\_\-DUMMY\_\-VALUE\_\-\label{class_action_dlg_696de2e3be443a31c9b8ad99514d95b732042008c241cc848b95c72a2c9a1d26}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 73 of file Action\-Dlg.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{ActionDlg@{Action\-Dlg}!ActionDlg@{ActionDlg}}
+\index{ActionDlg@{ActionDlg}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Action\-Dlg::Action\-Dlg (wx\-Window $\ast$ {\em parent}, wx\-Window\-ID {\em id} = {\tt 1}, const wx\-String \& {\em title} = {\tt wxT(\char`\"{}Choose~an~Action\char`\"{})}, const wx\-Point \& {\em pos} = {\tt wxDefaultPosition}, const wx\-Size \& {\em size} = {\tt wxDefaultSize}, long {\em style} = {\tt ActionDlg\_\-STYLE})}\label{class_action_dlg_5a20e3a1bfa63b2c85d719fbfa5ba828}
+
+
+
+
+Definition at line 32 of file Action\-Dlg.cpp.\index{ActionDlg@{Action\-Dlg}!~ActionDlg@{$\sim$ActionDlg}}
+\index{~ActionDlg@{$\sim$ActionDlg}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Action\-Dlg::$\sim$Action\-Dlg ()\hspace{0.3cm}{\tt  [virtual]}}\label{class_action_dlg_027cc32eecf77b94a7fa641cd9660b0f}
+
+
+
+
+Definition at line 38 of file Action\-Dlg.cpp.
+
+\subsection{Member Function Documentation}
+\index{ActionDlg@{Action\-Dlg}!btnOKClick@{btnOKClick}}
+\index{btnOKClick@{btnOKClick}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Action\-Dlg::btn\-OKClick (wx\-Command\-Event \& {\em event})}\label{class_action_dlg_fd0a42d6c02517174036717008234714}
+
+
+
+
+Definition at line 91 of file Action\-Dlg.cpp.
+
+References CREATE\_\-PACKAGE, OPEN\_\-PACKAGE, and Wx\-Radio\-Button1.\index{ActionDlg@{Action\-Dlg}!chkWizardClick@{chkWizardClick}}
+\index{chkWizardClick@{chkWizardClick}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Action\-Dlg::chk\-Wizard\-Click (wx\-Command\-Event \& {\em event})}\label{class_action_dlg_1d14d00b9259e0a46b8413a9ce48a817}
+
+
+
+
+Definition at line 103 of file Action\-Dlg.cpp.\index{ActionDlg@{Action\-Dlg}!CreateGUIControls@{CreateGUIControls}}
+\index{CreateGUIControls@{CreateGUIControls}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Action\-Dlg::Create\-GUIControls ()\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_4022fb1184a21bfd1b11dd67f509d838}
+
+
+
+
+Definition at line 42 of file Action\-Dlg.cpp.
+
+References btn\-Cancel, btn\-OK, chk\-Wizard, ID\_\-BTNOK, ID\_\-CHKWIZARD, ID\_\-WXRADIOBUTTON1, ID\_\-WXRADIOBUTTON2, ID\_\-WXSAVEASDEFAULT, ID\_\-WXSTATICBOX1, ID\_\-WXSTATICBOX2, Wx\-Radio\-Button1, Wx\-Radio\-Button2, wx\-Save\-As\-Default, Wx\-Static\-Box1, and Wx\-Static\-Box2.\index{ActionDlg@{Action\-Dlg}!DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}}
+\index{DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Action\-Dlg::DECLARE\_\-EVENT\_\-TABLE ()\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_96dbd0bf13bd38c1e47ab12fa5eee182}
+
+
+\index{ActionDlg@{Action\-Dlg}!OnClose@{OnClose}}
+\index{OnClose@{OnClose}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Action\-Dlg::On\-Close (wx\-Close\-Event \& {\em event})\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_9e561449ce5e14d19be68c4af10bbbb8}
+
+
+
+
+Definition at line 83 of file Action\-Dlg.cpp.
+
+\subsection{Member Data Documentation}
+\index{ActionDlg@{Action\-Dlg}!btnCancel@{btnCancel}}
+\index{btnCancel@{btnCancel}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf Action\-Dlg::btn\-Cancel}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_ed42c3cba69a5a8a1e37e4bd6ccec3b1}
+
+
+
+
+Definition at line 61 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!btnOK@{btnOK}}
+\index{btnOK@{btnOK}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf Action\-Dlg::btn\-OK}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_c2366baa48bda285b7ea1f8e3b67ac9b}
+
+
+
+
+Definition at line 62 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!chkWizard@{chkWizard}}
+\index{chkWizard@{chkWizard}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Check\-Box$\ast$ {\bf Action\-Dlg::chk\-Wizard}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_fe28c5a911bfd8781f314db32fe3b080}
+
+
+
+
+Definition at line 59 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!WxRadioButton1@{WxRadioButton1}}
+\index{WxRadioButton1@{WxRadioButton1}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Radio\-Button$\ast$ {\bf Action\-Dlg::Wx\-Radio\-Button1}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_4dd755b97c6e5312937b75820338db5b}
+
+
+
+
+Definition at line 64 of file Action\-Dlg.h.
+
+Referenced by btn\-OKClick(), and Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!WxRadioButton2@{WxRadioButton2}}
+\index{WxRadioButton2@{WxRadioButton2}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Radio\-Button$\ast$ {\bf Action\-Dlg::Wx\-Radio\-Button2}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_e66c581180f23527f41506734ebb1073}
+
+
+
+
+Definition at line 63 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!wxSaveAsDefault@{wxSaveAsDefault}}
+\index{wxSaveAsDefault@{wxSaveAsDefault}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Check\-Box$\ast$ {\bf Action\-Dlg::wx\-Save\-As\-Default}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_35ee6fac0fa7fdc657243b7f727a868f}
+
+
+
+
+Definition at line 58 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!WxStaticBox1@{WxStaticBox1}}
+\index{WxStaticBox1@{WxStaticBox1}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Action\-Dlg::Wx\-Static\-Box1}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_e756b29ebb8c272abe954a05f2a082bc}
+
+
+
+
+Definition at line 65 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().\index{ActionDlg@{Action\-Dlg}!WxStaticBox2@{WxStaticBox2}}
+\index{WxStaticBox2@{WxStaticBox2}!ActionDlg@{Action\-Dlg}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Action\-Dlg::Wx\-Static\-Box2}\hspace{0.3cm}{\tt  [private]}}\label{class_action_dlg_21498af3c36fe37e889c79d33929511d}
+
+
+
+
+Definition at line 60 of file Action\-Dlg.h.
+
+Referenced by Create\-GUIControls().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Action\-Dlg.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Action\-Dlg.cpp}\end{CompactItemize}

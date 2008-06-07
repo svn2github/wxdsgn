@@ -1,0 +1,279 @@
+\section{File\-Form Class Reference}
+\label{class_file_form}\index{FileForm@{FileForm}}
+{\tt \#include $<$File\-Form.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf File\-Form} (wx\-Window $\ast$parent, wx\-Window\-ID id=1, const wx\-String \&title=wx\-T(\char`\"{}Add file or directory\char`\"{}), const wx\-Point \&pos=wx\-Default\-Position, const wx\-Size \&size=wx\-Default\-Size, long style=File\-Form\_\-STYLE)
+\item 
+virtual {\bf $\sim$File\-Form} ()
+\item 
+void {\bf btn\-Load\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Set\-Mode} (bool d)
+\item 
+const wx\-String {\bf Get\-Source} ()
+\item 
+const wx\-String {\bf Get\-Destination} ()
+\end{CompactItemize}
+\subsection*{Private Types}
+\begin{CompactItemize}
+\item 
+enum \{ \par
+{\bf ID\_\-EDDEST} =  1005, 
+{\bf ID\_\-LBLDEST} =  1004, 
+{\bf ID\_\-BTNLOAD} =  1003, 
+{\bf ID\_\-EDSOURCE} =  1002, 
+\par
+{\bf ID\_\-LBLSOURCE} =  1001, 
+{\bf ID\_\-DUMMY\_\-VALUE\_\-}
+ \}
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf DECLARE\_\-EVENT\_\-TABLE} ()
+\item 
+void {\bf On\-Close} (wx\-Close\-Event \&event)
+\item 
+void {\bf Create\-GUIControls} ()
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+wx\-File\-Dialog $\ast$ {\bf Open\-Dialog}
+\item 
+wx\-Button $\ast$ {\bf Btn\-Cancel}
+\item 
+wx\-Button $\ast$ {\bf btn\-OK}
+\item 
+wx\-Combo\-Box $\ast$ {\bf ed\-Dest}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Dest}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Load}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Source}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Source}
+\item 
+wx\-String {\bf File\-Name}
+\item 
+bool {\bf Dir}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+
+
+Definition at line 41 of file File\-Form.h.
+
+\subsection{Member Enumeration Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_b9c4f07e59d9066826681d0af87d3d07}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ID_EDDEST@{ID\_\-EDDEST}!FileForm@{FileForm}}\index{FileForm@{FileForm}!ID_EDDEST@{ID\_\-EDDEST}}\item[{\em 
+ID\_\-EDDEST\label{class_file_form_b9c4f07e59d9066826681d0af87d3d070a449365727f065c3d822f7459286742}
+}]\index{ID_LBLDEST@{ID\_\-LBLDEST}!FileForm@{FileForm}}\index{FileForm@{FileForm}!ID_LBLDEST@{ID\_\-LBLDEST}}\item[{\em 
+ID\_\-LBLDEST\label{class_file_form_b9c4f07e59d9066826681d0af87d3d0757dbcb1178ba5fedf1c7d6363bfcc72a}
+}]\index{ID_BTNLOAD@{ID\_\-BTNLOAD}!FileForm@{FileForm}}\index{FileForm@{FileForm}!ID_BTNLOAD@{ID\_\-BTNLOAD}}\item[{\em 
+ID\_\-BTNLOAD\label{class_file_form_b9c4f07e59d9066826681d0af87d3d077d364f2ddfcdb7a6850cf2aa35a68649}
+}]\index{ID_EDSOURCE@{ID\_\-EDSOURCE}!FileForm@{FileForm}}\index{FileForm@{FileForm}!ID_EDSOURCE@{ID\_\-EDSOURCE}}\item[{\em 
+ID\_\-EDSOURCE\label{class_file_form_b9c4f07e59d9066826681d0af87d3d07ca9b5d6af70c3e0fe4e044fdaac4176b}
+}]\index{ID_LBLSOURCE@{ID\_\-LBLSOURCE}!FileForm@{FileForm}}\index{FileForm@{FileForm}!ID_LBLSOURCE@{ID\_\-LBLSOURCE}}\item[{\em 
+ID\_\-LBLSOURCE\label{class_file_form_b9c4f07e59d9066826681d0af87d3d070a7ed56c0cb696c3888239fc80583221}
+}]\index{ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}!FileForm@{FileForm}}\index{FileForm@{FileForm}!ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}}\item[{\em 
+ID\_\-DUMMY\_\-VALUE\_\-\label{class_file_form_b9c4f07e59d9066826681d0af87d3d07059f9261e8b1d5a186205c2da3ddb753}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 72 of file File\-Form.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{FileForm@{File\-Form}!FileForm@{FileForm}}
+\index{FileForm@{FileForm}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}File\-Form::File\-Form (wx\-Window $\ast$ {\em parent}, wx\-Window\-ID {\em id} = {\tt 1}, const wx\-String \& {\em title} = {\tt wxT(\char`\"{}Add~file~or~directory\char`\"{})}, const wx\-Point \& {\em pos} = {\tt wxDefaultPosition}, const wx\-Size \& {\em size} = {\tt wxDefaultSize}, long {\em style} = {\tt FileForm\_\-STYLE})}\label{class_file_form_be963541ca6aa2e407efe6c59e8ac2ac}
+
+
+
+
+Definition at line 36 of file File\-Form.cpp.\index{FileForm@{File\-Form}!~FileForm@{$\sim$FileForm}}
+\index{~FileForm@{$\sim$FileForm}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}File\-Form::$\sim$File\-Form ()\hspace{0.3cm}{\tt  [virtual]}}\label{class_file_form_044a3f6185357a729a4be2fbb88a5be5}
+
+
+
+
+Definition at line 42 of file File\-Form.cpp.
+
+\subsection{Member Function Documentation}
+\index{FileForm@{File\-Form}!btnLoadClick@{btnLoadClick}}
+\index{btnLoadClick@{btnLoadClick}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Form::btn\-Load\-Click (wx\-Command\-Event \& {\em event})}\label{class_file_form_8ef48c68abc1c424ead3b1d62d8817c7}
+
+
+
+
+Definition at line 108 of file File\-Form.cpp.
+
+References Dir, ed\-Source, and File\-Name.\index{FileForm@{File\-Form}!CreateGUIControls@{CreateGUIControls}}
+\index{CreateGUIControls@{CreateGUIControls}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Form::Create\-GUIControls ()\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_3bd48ee62906efbdc9406c910fbd6ddd}
+
+
+
+
+Definition at line 46 of file File\-Form.cpp.
+
+References Btn\-Cancel, btn\-Load, btn\-OK, ed\-Dest, ed\-Source, ID\_\-BTNLOAD, ID\_\-EDDEST, ID\_\-EDSOURCE, ID\_\-LBLDEST, ID\_\-LBLSOURCE, lbl\-Dest, lbl\-Source, and Open\-Dialog.\index{FileForm@{File\-Form}!DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}}
+\index{DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}File\-Form::DECLARE\_\-EVENT\_\-TABLE ()\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_1b58a4a14ee0f9db96c04b7516e53295}
+
+
+\index{FileForm@{File\-Form}!GetDestination@{GetDestination}}
+\index{GetDestination@{GetDestination}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String File\-Form::Get\-Destination ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_form_ddfa3eb84291784ed8e50557d0ff22b7}
+
+
+
+
+Definition at line 91 of file File\-Form.h.
+
+References ed\-Dest.
+
+Referenced by Pack\-Maker2Frm::btn\-Add\-Dir\-Click(), and Pack\-Maker2Frm::btn\-Add\-File\-Click().\index{FileForm@{File\-Form}!GetSource@{GetSource}}
+\index{GetSource@{GetSource}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String File\-Form::Get\-Source ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_form_1a642f639c668a45618332e32cc4bb63}
+
+
+
+
+Definition at line 90 of file File\-Form.h.
+
+References ed\-Source.
+
+Referenced by Pack\-Maker2Frm::btn\-Add\-Dir\-Click(), and Pack\-Maker2Frm::btn\-Add\-File\-Click().\index{FileForm@{File\-Form}!OnClose@{OnClose}}
+\index{OnClose@{OnClose}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Form::On\-Close (wx\-Close\-Event \& {\em event})\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_25f3eaa8be4ec6f01112aac7e1e9ef45}
+
+
+
+
+Definition at line 91 of file File\-Form.cpp.\index{FileForm@{File\-Form}!SetMode@{SetMode}}
+\index{SetMode@{SetMode}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Form::Set\-Mode (bool {\em d})}\label{class_file_form_e38d3978a0cee7208f5cbc0de12d92ff}
+
+
+
+
+Definition at line 96 of file File\-Form.cpp.
+
+References Dir.
+
+Referenced by Pack\-Maker2Frm::btn\-Add\-Dir\-Click(), and Pack\-Maker2Frm::btn\-Add\-File\-Click().
+
+\subsection{Member Data Documentation}
+\index{FileForm@{File\-Form}!BtnCancel@{BtnCancel}}
+\index{BtnCancel@{BtnCancel}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf File\-Form::Btn\-Cancel}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_f23289647edc50f214439ad3aee18790}
+
+
+
+
+Definition at line 57 of file File\-Form.h.
+
+Referenced by Create\-GUIControls().\index{FileForm@{File\-Form}!btnLoad@{btnLoad}}
+\index{btnLoad@{btnLoad}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf File\-Form::btn\-Load}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_f0866483ee106236f158a197de684aa8}
+
+
+
+
+Definition at line 61 of file File\-Form.h.
+
+Referenced by Create\-GUIControls().\index{FileForm@{File\-Form}!btnOK@{btnOK}}
+\index{btnOK@{btnOK}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf File\-Form::btn\-OK}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_4bfcfbdeb0ebcf39f881d8944f3341b4}
+
+
+
+
+Definition at line 58 of file File\-Form.h.
+
+Referenced by Create\-GUIControls().\index{FileForm@{File\-Form}!Dir@{Dir}}
+\index{Dir@{Dir}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf File\-Form::Dir}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_a6750126e221ecaa6f1b9fc74b459cdb}
+
+
+
+
+Definition at line 87 of file File\-Form.h.
+
+Referenced by btn\-Load\-Click(), and Set\-Mode().\index{FileForm@{File\-Form}!edDest@{edDest}}
+\index{edDest@{edDest}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Combo\-Box$\ast$ {\bf File\-Form::ed\-Dest}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_03a585fd88216540c1c8aa4e760ddf5e}
+
+
+
+
+Definition at line 59 of file File\-Form.h.
+
+Referenced by Create\-GUIControls(), and Get\-Destination().\index{FileForm@{File\-Form}!edSource@{edSource}}
+\index{edSource@{edSource}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf File\-Form::ed\-Source}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_1847b0f9cf06a89ffe4bca44fc438b84}
+
+
+
+
+Definition at line 62 of file File\-Form.h.
+
+Referenced by btn\-Load\-Click(), Create\-GUIControls(), and Get\-Source().\index{FileForm@{File\-Form}!FileName@{FileName}}
+\index{FileName@{FileName}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf File\-Form::File\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_543f5751cf42a89a3d5bf7d1f5eb7764}
+
+
+
+
+Definition at line 65 of file File\-Form.h.
+
+Referenced by btn\-Load\-Click().\index{FileForm@{File\-Form}!lblDest@{lblDest}}
+\index{lblDest@{lblDest}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf File\-Form::lbl\-Dest}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_96e4786abc58d3016944326b9da10874}
+
+
+
+
+Definition at line 60 of file File\-Form.h.
+
+Referenced by Create\-GUIControls().\index{FileForm@{File\-Form}!lblSource@{lblSource}}
+\index{lblSource@{lblSource}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf File\-Form::lbl\-Source}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_ac49b50f320285340085a01addec65e5}
+
+
+
+
+Definition at line 63 of file File\-Form.h.
+
+Referenced by Create\-GUIControls().\index{FileForm@{File\-Form}!OpenDialog@{OpenDialog}}
+\index{OpenDialog@{OpenDialog}!FileForm@{File\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-File\-Dialog$\ast$ {\bf File\-Form::Open\-Dialog}\hspace{0.3cm}{\tt  [private]}}\label{class_file_form_2b706a5f658b34ea5d2ace97d0e5d884}
+
+
+
+
+Definition at line 56 of file File\-Form.h.
+
+Referenced by Create\-GUIControls().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf File\-Form.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf File\-Form.cpp}\end{CompactItemize}

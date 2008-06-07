@@ -1,0 +1,130 @@
+\section{Build\-Form Class Reference}
+\label{class_build_form}\index{BuildForm@{BuildForm}}
+{\tt \#include $<$Build\-Form.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Build\-Form} (wx\-Window $\ast$parent, wx\-Window\-ID id=1, const wx\-String \&title=wx\-T(\char`\"{}Building Package...\char`\"{}), const wx\-Point \&pos=wx\-Default\-Position, const wx\-Size \&size=wx\-Default\-Size, long style=Build\-Form\_\-STYLE)
+\item 
+virtual {\bf $\sim$Build\-Form} ()
+\end{CompactItemize}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+wx\-Gauge $\ast$ {\bf Wx\-Gauge1}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box1}
+\end{CompactItemize}
+\subsection*{Private Types}
+\begin{CompactItemize}
+\item 
+enum \{ {\bf ID\_\-WXGAUGE1} =  1002, 
+{\bf ID\_\-WXSTATICBOX1} =  1001, 
+{\bf ID\_\-DUMMY\_\-VALUE\_\-}
+ \}
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf DECLARE\_\-EVENT\_\-TABLE} ()
+\item 
+void {\bf On\-Close} (wx\-Close\-Event \&event)
+\item 
+void {\bf Create\-GUIControls} ()
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+
+
+Definition at line 37 of file Build\-Form.h.
+
+\subsection{Member Enumeration Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum\hspace{0.3cm}{\tt  [private]}}\label{class_build_form_da2b589b527d0be91b7f344f5209d5b2}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ID_WXGAUGE1@{ID\_\-WXGAUGE1}!BuildForm@{BuildForm}}\index{BuildForm@{BuildForm}!ID_WXGAUGE1@{ID\_\-WXGAUGE1}}\item[{\em 
+ID\_\-WXGAUGE1\label{class_build_form_da2b589b527d0be91b7f344f5209d5b29e0598a1d7d7cf170bcc58c0d57f5017}
+}]\index{ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}!BuildForm@{BuildForm}}\index{BuildForm@{BuildForm}!ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}}\item[{\em 
+ID\_\-WXSTATICBOX1\label{class_build_form_da2b589b527d0be91b7f344f5209d5b2741e8747b9a3a0c310fab06081937ecd}
+}]\index{ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}!BuildForm@{BuildForm}}\index{BuildForm@{BuildForm}!ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}}\item[{\em 
+ID\_\-DUMMY\_\-VALUE\_\-\label{class_build_form_da2b589b527d0be91b7f344f5209d5b2220eacc89552581687d63d839f3c4427}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 61 of file Build\-Form.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{BuildForm@{Build\-Form}!BuildForm@{BuildForm}}
+\index{BuildForm@{BuildForm}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Build\-Form::Build\-Form (wx\-Window $\ast$ {\em parent}, wx\-Window\-ID {\em id} = {\tt 1}, const wx\-String \& {\em title} = {\tt wxT(\char`\"{}Building~Package...\char`\"{})}, const wx\-Point \& {\em pos} = {\tt wxDefaultPosition}, const wx\-Size \& {\em size} = {\tt wxDefaultSize}, long {\em style} = {\tt BuildForm\_\-STYLE})}\label{class_build_form_f70dc2200969dadfee3d7752e8e5e748}
+
+
+
+
+Definition at line 31 of file Build\-Form.cpp.\index{BuildForm@{Build\-Form}!~BuildForm@{$\sim$BuildForm}}
+\index{~BuildForm@{$\sim$BuildForm}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Build\-Form::$\sim$Build\-Form ()\hspace{0.3cm}{\tt  [virtual]}}\label{class_build_form_eb36e2e548aa91eb73c329e7eb8f9785}
+
+
+
+
+Definition at line 37 of file Build\-Form.cpp.
+
+\subsection{Member Function Documentation}
+\index{BuildForm@{Build\-Form}!CreateGUIControls@{CreateGUIControls}}
+\index{CreateGUIControls@{CreateGUIControls}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Build\-Form::Create\-GUIControls ()\hspace{0.3cm}{\tt  [private]}}\label{class_build_form_c4bd76a8d1a8fb59dda7ca8618197d59}
+
+
+
+
+Definition at line 41 of file Build\-Form.cpp.
+
+References ID\_\-WXGAUGE1, ID\_\-WXSTATICBOX1, Wx\-Gauge1, and Wx\-Static\-Box1.\index{BuildForm@{Build\-Form}!DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}}
+\index{DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Build\-Form::DECLARE\_\-EVENT\_\-TABLE ()\hspace{0.3cm}{\tt  [private]}}\label{class_build_form_d019d8d68dd8a6dc8225459fbcc691cc}
+
+
+\index{BuildForm@{Build\-Form}!OnClose@{OnClose}}
+\index{OnClose@{OnClose}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Build\-Form::On\-Close (wx\-Close\-Event \& {\em event})\hspace{0.3cm}{\tt  [private]}}\label{class_build_form_5d166064d4e75d422d772dce3b1aefe4}
+
+
+
+
+Definition at line 65 of file Build\-Form.cpp.
+
+\subsection{Member Data Documentation}
+\index{BuildForm@{Build\-Form}!WxGauge1@{WxGauge1}}
+\index{WxGauge1@{WxGauge1}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Gauge$\ast$ {\bf Build\-Form::Wx\-Gauge1}}\label{class_build_form_9c9de38ce27af15330f87971c4f65d35}
+
+
+
+
+Definition at line 52 of file Build\-Form.h.
+
+Referenced by Pack\-Maker2Frm::Build\-Package(), Dev\-Package::Build\-Package(), and Create\-GUIControls().\index{BuildForm@{Build\-Form}!WxStaticBox1@{WxStaticBox1}}
+\index{WxStaticBox1@{WxStaticBox1}!BuildForm@{Build\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Build\-Form::Wx\-Static\-Box1}}\label{class_build_form_8955d26ec5a1ec6e31df40178703d020}
+
+
+
+
+Definition at line 53 of file Build\-Form.h.
+
+Referenced by Pack\-Maker2Frm::Build\-Package(), Dev\-Package::Build\-Package(), and Create\-GUIControls().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Build\-Form.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Build\-Form.cpp}\end{CompactItemize}

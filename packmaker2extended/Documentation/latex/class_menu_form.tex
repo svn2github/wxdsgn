@@ -1,0 +1,210 @@
+\section{Menu\-Form Class Reference}
+\label{class_menu_form}\index{MenuForm@{MenuForm}}
+{\tt \#include $<$Menu\-Form.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Menu\-Form} (wx\-Window $\ast$parent, wx\-Window\-ID id=1, const wx\-String \&title=wx\-T(\char`\"{}Create start menu item\char`\"{}), const wx\-Point \&pos=wx\-Default\-Position, const wx\-Size \&size=wx\-Default\-Size, long style=Menu\-Form\_\-STYLE)
+\item 
+virtual {\bf $\sim$Menu\-Form} ()
+\end{CompactItemize}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+wx\-Button $\ast$ {\bf btn\-Cancel}
+\item 
+wx\-Button $\ast$ {\bf btn\-OK}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Icon}
+\item 
+wx\-Static\-Text $\ast$ {\bf Wx\-Static\-Text2}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Target}
+\item 
+wx\-Static\-Text $\ast$ {\bf label2}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Name}
+\item 
+wx\-Static\-Text $\ast$ {\bf Wx\-Static\-Text1}
+\end{CompactItemize}
+\subsection*{Private Types}
+\begin{CompactItemize}
+\item 
+enum \{ \par
+{\bf ID\_\-EDICON} =  1006, 
+{\bf ID\_\-WXSTATICTEXT2} =  1005, 
+{\bf ID\_\-EDTARGET} =  1004, 
+{\bf ID\_\-LABEL2} =  1003, 
+\par
+{\bf ID\_\-EDNAME} =  1002, 
+{\bf ID\_\-WXSTATICTEXT1} =  1001, 
+{\bf ID\_\-DUMMY\_\-VALUE\_\-}
+ \}
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf DECLARE\_\-EVENT\_\-TABLE} ()
+\item 
+void {\bf On\-Close} (wx\-Close\-Event \&event)
+\item 
+void {\bf Create\-GUIControls} ()
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+
+
+Definition at line 38 of file Menu\-Form.h.
+
+\subsection{Member Enumeration Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum\hspace{0.3cm}{\tt  [private]}}\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97f}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ID_EDICON@{ID\_\-EDICON}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_EDICON@{ID\_\-EDICON}}\item[{\em 
+ID\_\-EDICON\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97f19cf84f647f80f4cbb42a44083907b67}
+}]\index{ID_WXSTATICTEXT2@{ID\_\-WXSTATICTEXT2}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_WXSTATICTEXT2@{ID\_\-WXSTATICTEXT2}}\item[{\em 
+ID\_\-WXSTATICTEXT2\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97f35f6b93bf35614556ea0b31cf2a4dd53}
+}]\index{ID_EDTARGET@{ID\_\-EDTARGET}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_EDTARGET@{ID\_\-EDTARGET}}\item[{\em 
+ID\_\-EDTARGET\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97fd841e089edc2ebac369292eda45b86d2}
+}]\index{ID_LABEL2@{ID\_\-LABEL2}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_LABEL2@{ID\_\-LABEL2}}\item[{\em 
+ID\_\-LABEL2\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97fb3e384cac29901eeffb2357572e5f575}
+}]\index{ID_EDNAME@{ID\_\-EDNAME}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_EDNAME@{ID\_\-EDNAME}}\item[{\em 
+ID\_\-EDNAME\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97f6cfcc951f8eabe9d8932e34bcb76dc14}
+}]\index{ID_WXSTATICTEXT1@{ID\_\-WXSTATICTEXT1}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_WXSTATICTEXT1@{ID\_\-WXSTATICTEXT1}}\item[{\em 
+ID\_\-WXSTATICTEXT1\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97f1b04348323afa5c4a34db318f1316bb3}
+}]\index{ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}!MenuForm@{MenuForm}}\index{MenuForm@{MenuForm}!ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}}\item[{\em 
+ID\_\-DUMMY\_\-VALUE\_\-\label{class_menu_form_7ba2c580be83fbfc0f895ba41f1ee97f9390ad86ebe1c799edd0e7f951cfb2a7}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 68 of file Menu\-Form.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{MenuForm@{Menu\-Form}!MenuForm@{MenuForm}}
+\index{MenuForm@{MenuForm}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Menu\-Form::Menu\-Form (wx\-Window $\ast$ {\em parent}, wx\-Window\-ID {\em id} = {\tt 1}, const wx\-String \& {\em title} = {\tt wxT(\char`\"{}Create~start~menu~item\char`\"{})}, const wx\-Point \& {\em pos} = {\tt wxDefaultPosition}, const wx\-Size \& {\em size} = {\tt wxDefaultSize}, long {\em style} = {\tt MenuForm\_\-STYLE})}\label{class_menu_form_139dcf17c43a76eb7bb91cddd7ce1651}
+
+
+
+
+Definition at line 31 of file Menu\-Form.cpp.\index{MenuForm@{Menu\-Form}!~MenuForm@{$\sim$MenuForm}}
+\index{~MenuForm@{$\sim$MenuForm}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Menu\-Form::$\sim$Menu\-Form ()\hspace{0.3cm}{\tt  [virtual]}}\label{class_menu_form_b20e7f52b30cb65140d1b7a6a80a89e6}
+
+
+
+
+Definition at line 37 of file Menu\-Form.cpp.
+
+\subsection{Member Function Documentation}
+\index{MenuForm@{Menu\-Form}!CreateGUIControls@{CreateGUIControls}}
+\index{CreateGUIControls@{CreateGUIControls}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Menu\-Form::Create\-GUIControls ()\hspace{0.3cm}{\tt  [private]}}\label{class_menu_form_eb8d36320a6c66f3b4ce972858588688}
+
+
+
+
+Definition at line 41 of file Menu\-Form.cpp.
+
+References btn\-Cancel, btn\-OK, ed\-Icon, ed\-Name, ed\-Target, ID\_\-EDICON, ID\_\-EDNAME, ID\_\-EDTARGET, ID\_\-LABEL2, ID\_\-WXSTATICTEXT1, ID\_\-WXSTATICTEXT2, label2, Wx\-Static\-Text1, and Wx\-Static\-Text2.\index{MenuForm@{Menu\-Form}!DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}}
+\index{DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Menu\-Form::DECLARE\_\-EVENT\_\-TABLE ()\hspace{0.3cm}{\tt  [private]}}\label{class_menu_form_50cc24c984979862849da7d5a86f79ac}
+
+
+\index{MenuForm@{Menu\-Form}!OnClose@{OnClose}}
+\index{OnClose@{OnClose}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Menu\-Form::On\-Close (wx\-Close\-Event \& {\em event})\hspace{0.3cm}{\tt  [private]}}\label{class_menu_form_3f2671cebafd9b86d42f2fa3464efd8a}
+
+
+
+
+Definition at line 81 of file Menu\-Form.cpp.
+
+\subsection{Member Data Documentation}
+\index{MenuForm@{Menu\-Form}!btnCancel@{btnCancel}}
+\index{btnCancel@{btnCancel}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf Menu\-Form::btn\-Cancel}}\label{class_menu_form_6e2d848d8409de85a8a7fca37ae12b5b}
+
+
+
+
+Definition at line 53 of file Menu\-Form.h.
+
+Referenced by Create\-GUIControls().\index{MenuForm@{Menu\-Form}!btnOK@{btnOK}}
+\index{btnOK@{btnOK}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf Menu\-Form::btn\-OK}}\label{class_menu_form_cce1b6790bf5ef5677a53f70ac4906c2}
+
+
+
+
+Definition at line 54 of file Menu\-Form.h.
+
+Referenced by Create\-GUIControls().\index{MenuForm@{Menu\-Form}!edIcon@{edIcon}}
+\index{edIcon@{edIcon}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Menu\-Form::ed\-Icon}}\label{class_menu_form_fac02644964027bcaf0c48d6ade69cdb}
+
+
+
+
+Definition at line 55 of file Menu\-Form.h.
+
+Referenced by Pack\-Maker2Frm::btn\-Add\-Item\-Click(), Pack\-Maker2Frm::btn\-Edit\-Item\-Click(), and Create\-GUIControls().\index{MenuForm@{Menu\-Form}!edName@{edName}}
+\index{edName@{edName}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Menu\-Form::ed\-Name}}\label{class_menu_form_3a0247bb478b03bc572934a607b9b185}
+
+
+
+
+Definition at line 59 of file Menu\-Form.h.
+
+Referenced by Pack\-Maker2Frm::btn\-Add\-Item\-Click(), Pack\-Maker2Frm::btn\-Edit\-Item\-Click(), and Create\-GUIControls().\index{MenuForm@{Menu\-Form}!edTarget@{edTarget}}
+\index{edTarget@{edTarget}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Menu\-Form::ed\-Target}}\label{class_menu_form_78bfe1520bf5d3ad0ed11cfc317beaf3}
+
+
+
+
+Definition at line 57 of file Menu\-Form.h.
+
+Referenced by Pack\-Maker2Frm::btn\-Add\-Item\-Click(), Pack\-Maker2Frm::btn\-Edit\-Item\-Click(), and Create\-GUIControls().\index{MenuForm@{Menu\-Form}!label2@{label2}}
+\index{label2@{label2}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Menu\-Form::label2}}\label{class_menu_form_70fbfaff92ed403ae808715fc96d5a95}
+
+
+
+
+Definition at line 58 of file Menu\-Form.h.
+
+Referenced by Create\-GUIControls().\index{MenuForm@{Menu\-Form}!WxStaticText1@{WxStaticText1}}
+\index{WxStaticText1@{WxStaticText1}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Menu\-Form::Wx\-Static\-Text1}}\label{class_menu_form_f68426089654dbf544d40ea9fa708a28}
+
+
+
+
+Definition at line 60 of file Menu\-Form.h.
+
+Referenced by Create\-GUIControls().\index{MenuForm@{Menu\-Form}!WxStaticText2@{WxStaticText2}}
+\index{WxStaticText2@{WxStaticText2}!MenuForm@{Menu\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Menu\-Form::Wx\-Static\-Text2}}\label{class_menu_form_c9b738197de0673505e57c0c230c781e}
+
+
+
+
+Definition at line 56 of file Menu\-Form.h.
+
+Referenced by Create\-GUIControls().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Menu\-Form.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Menu\-Form.cpp}\end{CompactItemize}

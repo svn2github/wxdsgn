@@ -1,0 +1,145 @@
+object frmNewForm_1: TfrmNewForm
+  Left = 8
+  Top = 8
+  AutoScroll = False
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Choose an Action'
+  ClientHeight = 119
+  ClientWidth = 246
+  Color = clAppWorkSpace
+  OldCreateOrder = True
+  PopupMenu = MainForm.DesignerPopup
+  Visible = True
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  EVT_CLOSE = 'OnClose'
+  Wx_ICON.Data = {07544269746D617000000000}
+  Wx_Name = 'ActionForm'
+  Wx_IDName = 'ID_DIALOG1'
+  Wx_IDValue = 1000
+  Wx_Class = 'wxFrame'
+  Wx_Center = True
+  Wx_Hidden = False
+  Wx_SizeToContents = True
+  Wx_GeneralStyle = []
+  Wx_DialogStyle = [wxCAPTION, wxSYSTEM_MENU, wxDIALOG_NO_PARENT, wxMINIMIZE_BOX, wxCLOSE_BOX]
+  Wx_DesignerType = dtWxFrame
+  Wx_Border = 0
+  Wx_BorderAlignment = []
+  PixelsPerInch = 96
+  TextHeight = 16
+  object WxPanel1: TWxPanel
+    Left = 0
+    Top = 0
+    Width = 246
+    Height = 119
+    Align = alClient
+    TabOrder = 0
+    Wx_BKColor = clBlack
+    Wx_Class = 'wxPanel'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_Default = False
+    Wx_EventList.Strings = (
+      'EVT_UPDATE_UI:OnUpdateUI')
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_WXPANEL1'
+    Wx_IDValue = 1001
+    object WxStaticBox1: TWxStaticBox
+      Left = 6
+      Top = 7
+      Width = 232
+      Height = 72
+      Caption = ' What would you like to do ? '
+      TabOrder = 0
+      Wx_BGColor = clBlack
+      Wx_Class = 'wxStaticBox'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_FGColor = clBlack
+      Wx_GeneralStyle = []
+      Wx_IDName = 'ID_WXSTATICBOX1'
+      Wx_IDValue = 1002
+    end
+    object WxRadioButton1: TWxRadioButton
+      Left = 16
+      Top = 29
+      Width = 182
+      Height = 17
+      Caption = '&Create a new package'
+      TabOrder = 1
+      Wx_BGColor = clBlack
+      Wx_Class = 'wxRadioButton'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_FGColor = clBlack
+      Wx_GeneralStyle = []
+      Wx_IDName = 'ID_WXRADIOBUTTON1'
+      Wx_IDValue = 1003
+      Wx_RadioButtonStyle = []
+    end
+    object WxRadioButton2: TWxRadioButton
+      Left = 16
+      Top = 53
+      Width = 158
+      Height = 17
+      Caption = '&Open an existing package'
+      TabOrder = 2
+      Wx_BGColor = clBlack
+      Wx_Class = 'wxRadioButton'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_FGColor = clBlack
+      Wx_GeneralStyle = []
+      Wx_IDName = 'ID_WXRADIOBUTTON2'
+      Wx_IDValue = 1004
+      Wx_RadioButtonStyle = []
+    end
+    object btnOK: TWxButton
+      Left = 33
+      Top = 86
+      Width = 75
+      Height = 25
+      Caption = 'OK'
+      TabOrder = 3
+      Wx_BKColor = clBlack
+      Wx_ButtonStyle = []
+      Wx_Class = 'wxButton'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_Default = False
+      Wx_EventList.Strings = (
+        'EVT_BUTTON:OnClick'
+        'EVT_UPDATE_UI:OnUpdateUI')
+      Wx_FGColor = clBlack
+      Wx_GeneralStyle = []
+      Wx_Hidden = False
+      Wx_IDName = 'ID_BTNOK'
+      Wx_IDValue = 1005
+      Wx_Height = 25
+      Wx_Width = 75
+    end
+    object btnCancel: TWxButton
+      Left = 133
+      Top = 86
+      Width = 75
+      Height = 25
+      Caption = 'Cancel'
+      TabOrder = 4
+      Wx_BKColor = clBlack
+      Wx_ButtonStyle = []
+      Wx_Class = 'wxButton'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_Default = False
+      Wx_EventList.Strings = (
+        'EVT_BUTTON:OnClick'
+        'EVT_UPDATE_UI:OnUpdateUI')
+      Wx_FGColor = clBlack
+      Wx_GeneralStyle = []
+      Wx_Hidden = False
+      Wx_IDName = 'ID_BTNCANCEL'
+      Wx_IDValue = 1006
+      Wx_Height = 25
+      Wx_Width = 75
+    end
+  end
+end

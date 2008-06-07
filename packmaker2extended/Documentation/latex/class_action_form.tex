@@ -1,0 +1,188 @@
+\section{Action\-Form Class Reference}
+\label{class_action_form}\index{ActionForm@{ActionForm}}
+{\tt \#include $<$Action\-Form.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Action\-Form} (wx\-Window $\ast$parent, wx\-Window\-ID id=1, const wx\-String \&title=wx\-T(\char`\"{}Choose an Action\char`\"{}), const wx\-Point \&pos=wx\-Default\-Position, const wx\-Size \&size=wx\-Default\-Size, long style=Action\-Form\_\-STYLE)
+\item 
+virtual {\bf $\sim$Action\-Form} ()
+\end{CompactItemize}
+\subsection*{Private Types}
+\begin{CompactItemize}
+\item 
+enum \{ \par
+{\bf ID\_\-BTNCANCEL} =  1006, 
+{\bf ID\_\-BTNOK} =  1005, 
+{\bf ID\_\-WXRADIOBUTTON2} =  1004, 
+{\bf ID\_\-WXRADIOBUTTON1} =  1003, 
+\par
+{\bf ID\_\-WXSTATICBOX1} =  1002, 
+{\bf ID\_\-WXPANEL1} =  1001, 
+{\bf ID\_\-DUMMY\_\-VALUE\_\-}
+ \}
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf DECLARE\_\-EVENT\_\-TABLE} ()
+\item 
+void {\bf On\-Close} (wx\-Close\-Event \&event)
+\item 
+void {\bf Create\-GUIControls} ()
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+wx\-Button $\ast$ {\bf btn\-Cancel}
+\item 
+wx\-Button $\ast$ {\bf btn\-OK}
+\item 
+wx\-Radio\-Button $\ast$ {\bf Wx\-Radio\-Button2}
+\item 
+wx\-Radio\-Button $\ast$ {\bf Wx\-Radio\-Button1}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box1}
+\item 
+wx\-Panel $\ast$ {\bf Wx\-Panel1}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+
+
+Definition at line 39 of file Action\-Form.h.
+
+\subsection{Member Enumeration Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b01}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ID_BTNCANCEL@{ID\_\-BTNCANCEL}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_BTNCANCEL@{ID\_\-BTNCANCEL}}\item[{\em 
+ID\_\-BTNCANCEL\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b010f1148b47d552d1ab9274a1f1a17818a}
+}]\index{ID_BTNOK@{ID\_\-BTNOK}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_BTNOK@{ID\_\-BTNOK}}\item[{\em 
+ID\_\-BTNOK\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b01e0816f4e86a051160debc19043c0c979}
+}]\index{ID_WXRADIOBUTTON2@{ID\_\-WXRADIOBUTTON2}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_WXRADIOBUTTON2@{ID\_\-WXRADIOBUTTON2}}\item[{\em 
+ID\_\-WXRADIOBUTTON2\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b0135afefe638db9e0654803781535e7123}
+}]\index{ID_WXRADIOBUTTON1@{ID\_\-WXRADIOBUTTON1}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_WXRADIOBUTTON1@{ID\_\-WXRADIOBUTTON1}}\item[{\em 
+ID\_\-WXRADIOBUTTON1\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b01e8ca338500e56c9594f93bdae975752e}
+}]\index{ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}}\item[{\em 
+ID\_\-WXSTATICBOX1\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b014f171c92aa85b8d56c4c88de9b2465ec}
+}]\index{ID_WXPANEL1@{ID\_\-WXPANEL1}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_WXPANEL1@{ID\_\-WXPANEL1}}\item[{\em 
+ID\_\-WXPANEL1\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b01dd7dc3e760a90347f12414a785995151}
+}]\index{ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}!ActionForm@{ActionForm}}\index{ActionForm@{ActionForm}!ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}}\item[{\em 
+ID\_\-DUMMY\_\-VALUE\_\-\label{class_action_form_8c4a8f00b8ab214a478f16b162b98b0128927b0bc249e5b53d9ef7e7143f437b}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 66 of file Action\-Form.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{ActionForm@{Action\-Form}!ActionForm@{ActionForm}}
+\index{ActionForm@{ActionForm}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Action\-Form::Action\-Form (wx\-Window $\ast$ {\em parent}, wx\-Window\-ID {\em id} = {\tt 1}, const wx\-String \& {\em title} = {\tt wxT(\char`\"{}Choose~an~Action\char`\"{})}, const wx\-Point \& {\em pos} = {\tt wxDefaultPosition}, const wx\-Size \& {\em size} = {\tt wxDefaultSize}, long {\em style} = {\tt ActionForm\_\-STYLE})}\label{class_action_form_c3a5730029e263af8bd472cc77e6b3aa}
+
+
+
+
+Definition at line 32 of file Action\-Form.cpp.\index{ActionForm@{Action\-Form}!~ActionForm@{$\sim$ActionForm}}
+\index{~ActionForm@{$\sim$ActionForm}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Action\-Form::$\sim$Action\-Form ()\hspace{0.3cm}{\tt  [virtual]}}\label{class_action_form_361ba7569944d37d967b7fa81496eb0b}
+
+
+
+
+Definition at line 38 of file Action\-Form.cpp.
+
+\subsection{Member Function Documentation}
+\index{ActionForm@{Action\-Form}!CreateGUIControls@{CreateGUIControls}}
+\index{CreateGUIControls@{CreateGUIControls}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Action\-Form::Create\-GUIControls ()\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_48032264de03553c999a0f590daad851}
+
+
+
+
+Definition at line 42 of file Action\-Form.cpp.
+
+References btn\-Cancel, btn\-OK, ID\_\-BTNCANCEL, ID\_\-BTNOK, ID\_\-WXPANEL1, ID\_\-WXRADIOBUTTON1, ID\_\-WXRADIOBUTTON2, ID\_\-WXSTATICBOX1, Wx\-Panel1, Wx\-Radio\-Button1, Wx\-Radio\-Button2, and Wx\-Static\-Box1.\index{ActionForm@{Action\-Form}!DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}}
+\index{DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Action\-Form::DECLARE\_\-EVENT\_\-TABLE ()\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_4a50ffe8d867419599210d83571be527}
+
+
+\index{ActionForm@{Action\-Form}!OnClose@{OnClose}}
+\index{OnClose@{OnClose}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Action\-Form::On\-Close (wx\-Close\-Event \& {\em event})\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_a315784381caac46ad81800c4703ac02}
+
+
+
+
+Definition at line 76 of file Action\-Form.cpp.
+
+\subsection{Member Data Documentation}
+\index{ActionForm@{Action\-Form}!btnCancel@{btnCancel}}
+\index{btnCancel@{btnCancel}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf Action\-Form::btn\-Cancel}\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_c8154edb5a26ea580e0d475f2ae06822}
+
+
+
+
+Definition at line 53 of file Action\-Form.h.
+
+Referenced by Create\-GUIControls().\index{ActionForm@{Action\-Form}!btnOK@{btnOK}}
+\index{btnOK@{btnOK}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Button$\ast$ {\bf Action\-Form::btn\-OK}\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_0c838f56a06178140d2ab77de72048e3}
+
+
+
+
+Definition at line 54 of file Action\-Form.h.
+
+Referenced by Create\-GUIControls().\index{ActionForm@{Action\-Form}!WxPanel1@{WxPanel1}}
+\index{WxPanel1@{WxPanel1}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Panel$\ast$ {\bf Action\-Form::Wx\-Panel1}\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_e915ae33ce971424d9a90bed50473ffc}
+
+
+
+
+Definition at line 58 of file Action\-Form.h.
+
+Referenced by Create\-GUIControls().\index{ActionForm@{Action\-Form}!WxRadioButton1@{WxRadioButton1}}
+\index{WxRadioButton1@{WxRadioButton1}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Radio\-Button$\ast$ {\bf Action\-Form::Wx\-Radio\-Button1}\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_47e98c52492c6d66557fd04eeb9c8a7d}
+
+
+
+
+Definition at line 56 of file Action\-Form.h.
+
+Referenced by Create\-GUIControls().\index{ActionForm@{Action\-Form}!WxRadioButton2@{WxRadioButton2}}
+\index{WxRadioButton2@{WxRadioButton2}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Radio\-Button$\ast$ {\bf Action\-Form::Wx\-Radio\-Button2}\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_06d767e2b98d8146c7df574803d50313}
+
+
+
+
+Definition at line 55 of file Action\-Form.h.
+
+Referenced by Create\-GUIControls().\index{ActionForm@{Action\-Form}!WxStaticBox1@{WxStaticBox1}}
+\index{WxStaticBox1@{WxStaticBox1}!ActionForm@{Action\-Form}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Action\-Form::Wx\-Static\-Box1}\hspace{0.3cm}{\tt  [private]}}\label{class_action_form_5f9cddcd24f9822e918d982035d20652}
+
+
+
+
+Definition at line 57 of file Action\-Form.h.
+
+Referenced by Create\-GUIControls().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Action\-Form.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Action\-Form.cpp}\end{CompactItemize}

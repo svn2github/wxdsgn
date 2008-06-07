@@ -1,0 +1,1246 @@
+\section{Pack\-Maker2Frm Class Reference}
+\label{class_pack_maker2_frm}\index{PackMaker2Frm@{PackMaker2Frm}}
+{\tt \#include $<$Pack\-Maker2Frm.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Pack\-Maker2Frm} (wx\-Window $\ast$parent, wx\-Window\-ID id=1, const wx\-String \&title=wx\-T(\char`\"{}Pack\-Maker2\char`\"{}), const wx\-Point \&pos=wx\-Default\-Position, const wx\-Size \&size=wx\-Default\-Size, long style=Pack\-Maker2Frm\_\-STYLE)
+\item 
+virtual {\bf $\sim$Pack\-Maker2Frm} ()
+\item 
+void {\bf ed\-Name\-Updated} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Edit4Updated} (wx\-Command\-Event \&event)
+\item 
+void {\bf Mnuexit1091Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Tool\-Button6Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Mnuabout1092Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Tool\-Button1Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Tool\-Button3Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Tool\-Button4Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Mnusave1086Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Mnusaveas1087Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Read\-Me\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-License\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Picture\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Add\-Item\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Edit\-Item\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Remove\-Icon\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Remove\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Add\-Dir\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf btn\-Add\-File\-Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Tool\-Button5Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Mnubuild1089Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Wx\-Tool\-Button2Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Mnuopen1084Click} (wx\-Command\-Event \&event)
+\item 
+void {\bf Write\-Dev\-Pack\-File} ()
+\item 
+void {\bf Read\-Dev\-Pack\-File} ()
+\item 
+void {\bf Clear} ()
+\item 
+void {\bf Build\-Package} ()
+\item 
+void {\bf Save\-Item\-Click} ()
+\item 
+void {\bf Save\-As\-Item\-Click} ()
+\item 
+void {\bf About\-Click} ()
+\item 
+void {\bf Build\-Item\-Click} ()
+\item 
+wx\-String {\bf Write\-Dev\-Pack\-File\-To\-String} ()
+\item 
+void {\bf Set\-File\-Name} (wx\-String file\-Name)
+\item 
+wx\-String {\bf Get\-File\-Name} ()
+\item 
+void {\bf Set\-Output\-File\-Name} (wx\-String output\-File\-Name)
+\item 
+wx\-String {\bf Get\-Output\-File\-Name} ()
+\item 
+bool {\bf Create\-New\-File} ()
+\item 
+void {\bf Open\-Item\-Click} ()
+\item 
+void {\bf ed\-Read\-Me\-Updated} (wx\-Command\-Event \&event)
+\item 
+void {\bf ed\-Read\-Me\-Updated1} (wx\-Command\-Event \&event)
+\end{CompactItemize}
+\subsection*{Private Types}
+\begin{CompactItemize}
+\item 
+enum \{ \par
+{\bf ID\_\-WXSTATUSBAR1} =  1119, 
+{\bf ID\_\-MNU\_\-FILE\_\-1080} =  1080, 
+{\bf ID\_\-MNU\_\-NEW\_\-1082} =  1082, 
+{\bf ID\_\-MNU\_\-OPEN\_\-\_\-\_\-\_\-1084} =  1084, 
+\par
+{\bf ID\_\-MNU\_\-SAVE\_\-1086} =  1086, 
+{\bf ID\_\-MNU\_\-SAVEAS\_\-\_\-\_\-\_\-1087} =  1087, 
+{\bf ID\_\-MNU\_\-BUILD\_\-1089} =  1089, 
+{\bf ID\_\-MNU\_\-EXIT\_\-1091} =  1091, 
+\par
+{\bf ID\_\-MNU\_\-HELP\_\-1081} =  1081, 
+{\bf ID\_\-MNU\_\-ABOUT\_\-1092} =  1092, 
+{\bf ID\_\-WXTOOLBUTTON6} =  1075, 
+{\bf ID\_\-WXSEPARATOR3} =  1074, 
+\par
+{\bf ID\_\-WXTOOLBUTTON5} =  1073, 
+{\bf ID\_\-WXSEPARATOR2} =  1072, 
+{\bf ID\_\-WXTOOLBUTTON4} =  1071, 
+{\bf ID\_\-WXTOOLBUTTON3} =  1070, 
+\par
+{\bf ID\_\-WXSEPARATOR1} =  1069, 
+{\bf ID\_\-WXTOOLBUTTON2} =  1068, 
+{\bf ID\_\-WXTOOLBUTTON1} =  1067, 
+{\bf ID\_\-WXTOOLBAR1} =  1063, 
+\par
+{\bf ID\_\-FILEVIEW} =  1118, 
+{\bf ID\_\-BTNREMOVE} =  1117, 
+{\bf ID\_\-BTNADDFILE} =  1116, 
+{\bf ID\_\-BTNADDDIR} =  1115, 
+\par
+{\bf ID\_\-ICONVIEW} =  1114, 
+{\bf ID\_\-BTNREMOVEICON} =  1113, 
+{\bf ID\_\-BTNEDITITEM} =  1112, 
+{\bf ID\_\-BTNADDITEM} =  1111, 
+\par
+{\bf ID\_\-BTNPICTURE} =  1110, 
+{\bf ID\_\-BTNLICENSE} =  1109, 
+{\bf ID\_\-BTNREADME} =  1108, 
+{\bf ID\_\-CHBREBOOT} =  1107, 
+\par
+{\bf ID\_\-EDDEPEND} =  1106, 
+{\bf ID\_\-EDSTARTMENU} =  1105, 
+{\bf ID\_\-EDPICTURE} =  1104, 
+{\bf ID\_\-EDLICENSE} =  1103, 
+\par
+{\bf ID\_\-EDREADME} =  1102, 
+{\bf ID\_\-EDURL} =  1101, 
+{\bf ID\_\-EDDESCRIPTION} =  1100, 
+{\bf ID\_\-LBLDEPENDS} =  1099, 
+\par
+{\bf ID\_\-LBLSTARTMENU} =  1098, 
+{\bf ID\_\-LBLPICTURE} =  1097, 
+{\bf ID\_\-LBLLICENSE} =  1096, 
+{\bf ID\_\-LBLREADME} =  1095, 
+\par
+{\bf ID\_\-LBLURL} =  1094, 
+{\bf ID\_\-LBLDESCRIPTION} =  1093, 
+{\bf ID\_\-EDVERSION} =  1085, 
+{\bf ID\_\-EDNAMEVERSION} =  1084, 
+\par
+{\bf ID\_\-EDNAME} =  1083, 
+{\bf ID\_\-LBLVERSION} =  1082, 
+{\bf ID\_\-WXSTATICTEXT2} =  1081, 
+{\bf ID\_\-LBLNAME} =  1080, 
+\par
+{\bf ID\_\-WXSTATICBOX4} =  1079, 
+{\bf ID\_\-WXSTATICBOX3} =  1078, 
+{\bf ID\_\-WXSTATICBOX2} =  1077, 
+{\bf ID\_\-WXSTATICBOX1} =  1076, 
+\par
+{\bf ID\_\-WXPANEL1} =  1062, 
+{\bf ID\_\-DUMMY\_\-VALUE\_\-}
+ \}
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf DECLARE\_\-EVENT\_\-TABLE} ()
+\item 
+void {\bf On\-Close} (wx\-Close\-Event \&event)
+\item 
+void {\bf Create\-GUIControls} ()
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+wx\-Status\-Bar $\ast$ {\bf Wx\-Status\-Bar1}
+\item 
+wx\-Menu\-Bar $\ast$ {\bf Wx\-Menu\-Bar1}
+\item 
+wx\-File\-Dialog $\ast$ {\bf Save\-Dialog}
+\item 
+wx\-File\-Dialog $\ast$ {\bf Open\-Dialog}
+\item 
+wx\-Tool\-Bar $\ast$ {\bf Wx\-Tool\-Bar1}
+\item 
+wx\-List\-Ctrl $\ast$ {\bf File\-View}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Remove}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Add\-File}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Add\-Dir}
+\item 
+wx\-List\-Ctrl $\ast$ {\bf Icon\-View}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Remove\-Icon}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Edit\-Item}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Add\-Item}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Picture}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-License}
+\item 
+wx\-Bitmap\-Button $\ast$ {\bf btn\-Read\-Me}
+\item 
+wx\-Check\-Box $\ast$ {\bf chb\-Reboot}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Depend}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Start\-Menu}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Picture}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-License}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Read\-Me}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-URL}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Description}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Depends}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Start\-Menu}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Picture}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-License}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Read\-Me}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-URL}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Description}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Version}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Name\-Version}
+\item 
+wx\-Text\-Ctrl $\ast$ {\bf ed\-Name}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Version}
+\item 
+wx\-Static\-Text $\ast$ {\bf Wx\-Static\-Text2}
+\item 
+wx\-Static\-Text $\ast$ {\bf lbl\-Name}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box4}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box3}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box2}
+\item 
+wx\-Static\-Box $\ast$ {\bf Wx\-Static\-Box1}
+\item 
+wx\-Panel $\ast$ {\bf Wx\-Panel1}
+\item 
+{\bf Build\-Form} $\ast$ {\bf build\-Form}
+\item 
+wx\-String {\bf File\-Name}
+\item 
+wx\-String {\bf Output\-File\-Name}
+\item 
+wx\-File\-Config $\ast$ {\bf Ini\-File}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+
+
+Definition at line 55 of file Pack\-Maker2Frm.h.
+
+\subsection{Member Enumeration Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ID_WXSTATUSBAR1@{ID\_\-WXSTATUSBAR1}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSTATUSBAR1@{ID\_\-WXSTATUSBAR1}}\item[{\em 
+ID\_\-WXSTATUSBAR1\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2b9f0cd0e988e551f2107fa4095c389a2}
+}]\index{ID_MNU_FILE_1080@{ID\_\-MNU\_\-FILE\_\-1080}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_FILE_1080@{ID\_\-MNU\_\-FILE\_\-1080}}\item[{\em 
+ID\_\-MNU\_\-FILE\_\-1080\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2c4a8c32c8a3284660e3a625bbf174c8a}
+}]\index{ID_MNU_NEW_1082@{ID\_\-MNU\_\-NEW\_\-1082}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_NEW_1082@{ID\_\-MNU\_\-NEW\_\-1082}}\item[{\em 
+ID\_\-MNU\_\-NEW\_\-1082\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c28ce6e8d78acb8505be728de6aafe37ea}
+}]\index{ID_MNU_OPEN____1084@{ID\_\-MNU\_\-OPEN\_\-\_\-\_\-\_\-1084}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_OPEN____1084@{ID\_\-MNU\_\-OPEN\_\-\_\-\_\-\_\-1084}}\item[{\em 
+ID\_\-MNU\_\-OPEN\_\-\_\-\_\-\_\-1084\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c284fdd38e27bc1be24e0f21e367a51faf}
+}]\index{ID_MNU_SAVE_1086@{ID\_\-MNU\_\-SAVE\_\-1086}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_SAVE_1086@{ID\_\-MNU\_\-SAVE\_\-1086}}\item[{\em 
+ID\_\-MNU\_\-SAVE\_\-1086\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2a9b8e4871783f1544ed142d774438b9e}
+}]\index{ID_MNU_SAVEAS____1087@{ID\_\-MNU\_\-SAVEAS\_\-\_\-\_\-\_\-1087}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_SAVEAS____1087@{ID\_\-MNU\_\-SAVEAS\_\-\_\-\_\-\_\-1087}}\item[{\em 
+ID\_\-MNU\_\-SAVEAS\_\-\_\-\_\-\_\-1087\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c221d28c63fb50a5e6168eb95110d3d9e3}
+}]\index{ID_MNU_BUILD_1089@{ID\_\-MNU\_\-BUILD\_\-1089}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_BUILD_1089@{ID\_\-MNU\_\-BUILD\_\-1089}}\item[{\em 
+ID\_\-MNU\_\-BUILD\_\-1089\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2e3936e4fef68290ce443ca8aa47df9cf}
+}]\index{ID_MNU_EXIT_1091@{ID\_\-MNU\_\-EXIT\_\-1091}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_EXIT_1091@{ID\_\-MNU\_\-EXIT\_\-1091}}\item[{\em 
+ID\_\-MNU\_\-EXIT\_\-1091\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c245dd2e1614883e10ab576ef7fdd1b25c}
+}]\index{ID_MNU_HELP_1081@{ID\_\-MNU\_\-HELP\_\-1081}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_HELP_1081@{ID\_\-MNU\_\-HELP\_\-1081}}\item[{\em 
+ID\_\-MNU\_\-HELP\_\-1081\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c238b89d7af4e032213501fa411a070b34}
+}]\index{ID_MNU_ABOUT_1092@{ID\_\-MNU\_\-ABOUT\_\-1092}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_MNU_ABOUT_1092@{ID\_\-MNU\_\-ABOUT\_\-1092}}\item[{\em 
+ID\_\-MNU\_\-ABOUT\_\-1092\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c21e642eb8e67fc54f78e5fecb2c5345f0}
+}]\index{ID_WXTOOLBUTTON6@{ID\_\-WXTOOLBUTTON6}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBUTTON6@{ID\_\-WXTOOLBUTTON6}}\item[{\em 
+ID\_\-WXTOOLBUTTON6\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2bdd7065d0c4aa7573020d256fb33db9f}
+}]\index{ID_WXSEPARATOR3@{ID\_\-WXSEPARATOR3}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSEPARATOR3@{ID\_\-WXSEPARATOR3}}\item[{\em 
+ID\_\-WXSEPARATOR3\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c203c40853f34cad4cb713a3b1045db395}
+}]\index{ID_WXTOOLBUTTON5@{ID\_\-WXTOOLBUTTON5}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBUTTON5@{ID\_\-WXTOOLBUTTON5}}\item[{\em 
+ID\_\-WXTOOLBUTTON5\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2bf302c8c45d634727fc6c096bd3038ee}
+}]\index{ID_WXSEPARATOR2@{ID\_\-WXSEPARATOR2}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSEPARATOR2@{ID\_\-WXSEPARATOR2}}\item[{\em 
+ID\_\-WXSEPARATOR2\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c23de38fd57dea90d7e735b5b7857d8f80}
+}]\index{ID_WXTOOLBUTTON4@{ID\_\-WXTOOLBUTTON4}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBUTTON4@{ID\_\-WXTOOLBUTTON4}}\item[{\em 
+ID\_\-WXTOOLBUTTON4\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2783dc30a6075d978ebcd3e9373d20751}
+}]\index{ID_WXTOOLBUTTON3@{ID\_\-WXTOOLBUTTON3}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBUTTON3@{ID\_\-WXTOOLBUTTON3}}\item[{\em 
+ID\_\-WXTOOLBUTTON3\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c27f17553e75e31d98a86ddac05d7fef4e}
+}]\index{ID_WXSEPARATOR1@{ID\_\-WXSEPARATOR1}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSEPARATOR1@{ID\_\-WXSEPARATOR1}}\item[{\em 
+ID\_\-WXSEPARATOR1\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c29d863baedb72a86dc38113e452b0f01d}
+}]\index{ID_WXTOOLBUTTON2@{ID\_\-WXTOOLBUTTON2}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBUTTON2@{ID\_\-WXTOOLBUTTON2}}\item[{\em 
+ID\_\-WXTOOLBUTTON2\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2b406ef7bf234900bdea711960f886298}
+}]\index{ID_WXTOOLBUTTON1@{ID\_\-WXTOOLBUTTON1}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBUTTON1@{ID\_\-WXTOOLBUTTON1}}\item[{\em 
+ID\_\-WXTOOLBUTTON1\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c283c77882b41ced9d34486a3a36b66818}
+}]\index{ID_WXTOOLBAR1@{ID\_\-WXTOOLBAR1}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXTOOLBAR1@{ID\_\-WXTOOLBAR1}}\item[{\em 
+ID\_\-WXTOOLBAR1\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2c9efa85edfcf6bd6586118d309f0accd}
+}]\index{ID_FILEVIEW@{ID\_\-FILEVIEW}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_FILEVIEW@{ID\_\-FILEVIEW}}\item[{\em 
+ID\_\-FILEVIEW\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c20abbe64ce2a37933b2ac7369013ec032}
+}]\index{ID_BTNREMOVE@{ID\_\-BTNREMOVE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNREMOVE@{ID\_\-BTNREMOVE}}\item[{\em 
+ID\_\-BTNREMOVE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c25173638773b765dbf9d99958dff1958b}
+}]\index{ID_BTNADDFILE@{ID\_\-BTNADDFILE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNADDFILE@{ID\_\-BTNADDFILE}}\item[{\em 
+ID\_\-BTNADDFILE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c26582d15c32b543a1e010b0de6ffb39d1}
+}]\index{ID_BTNADDDIR@{ID\_\-BTNADDDIR}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNADDDIR@{ID\_\-BTNADDDIR}}\item[{\em 
+ID\_\-BTNADDDIR\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2ca68af0c85ba82d647e74fbbd9b0d0c6}
+}]\index{ID_ICONVIEW@{ID\_\-ICONVIEW}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_ICONVIEW@{ID\_\-ICONVIEW}}\item[{\em 
+ID\_\-ICONVIEW\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c27ed708878b1c0ce20f6405592840fe9d}
+}]\index{ID_BTNREMOVEICON@{ID\_\-BTNREMOVEICON}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNREMOVEICON@{ID\_\-BTNREMOVEICON}}\item[{\em 
+ID\_\-BTNREMOVEICON\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c25be8d52df9b8f092ca10ab45791c60fa}
+}]\index{ID_BTNEDITITEM@{ID\_\-BTNEDITITEM}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNEDITITEM@{ID\_\-BTNEDITITEM}}\item[{\em 
+ID\_\-BTNEDITITEM\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c223302385b5557093a483dcf08238b8bc}
+}]\index{ID_BTNADDITEM@{ID\_\-BTNADDITEM}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNADDITEM@{ID\_\-BTNADDITEM}}\item[{\em 
+ID\_\-BTNADDITEM\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c22cde7c7ae8113c7d28f83760fda942a1}
+}]\index{ID_BTNPICTURE@{ID\_\-BTNPICTURE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNPICTURE@{ID\_\-BTNPICTURE}}\item[{\em 
+ID\_\-BTNPICTURE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2a0f1e6c91f962635e7a0f523f30e5078}
+}]\index{ID_BTNLICENSE@{ID\_\-BTNLICENSE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNLICENSE@{ID\_\-BTNLICENSE}}\item[{\em 
+ID\_\-BTNLICENSE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2fbd6a85ecbf7308ee7364be806d5e5e6}
+}]\index{ID_BTNREADME@{ID\_\-BTNREADME}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_BTNREADME@{ID\_\-BTNREADME}}\item[{\em 
+ID\_\-BTNREADME\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c24ed73f09825caef00d98559fb9ddaaa7}
+}]\index{ID_CHBREBOOT@{ID\_\-CHBREBOOT}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_CHBREBOOT@{ID\_\-CHBREBOOT}}\item[{\em 
+ID\_\-CHBREBOOT\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c20e85305e9785b6a821ca983a291032eb}
+}]\index{ID_EDDEPEND@{ID\_\-EDDEPEND}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDDEPEND@{ID\_\-EDDEPEND}}\item[{\em 
+ID\_\-EDDEPEND\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2d5c1953ed33fee12f31e424e21364840}
+}]\index{ID_EDSTARTMENU@{ID\_\-EDSTARTMENU}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDSTARTMENU@{ID\_\-EDSTARTMENU}}\item[{\em 
+ID\_\-EDSTARTMENU\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2deaf1a6ef77a5ca4e3aad7cd0cf30c07}
+}]\index{ID_EDPICTURE@{ID\_\-EDPICTURE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDPICTURE@{ID\_\-EDPICTURE}}\item[{\em 
+ID\_\-EDPICTURE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c21ef6dca24c97fe7811fa45074b109573}
+}]\index{ID_EDLICENSE@{ID\_\-EDLICENSE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDLICENSE@{ID\_\-EDLICENSE}}\item[{\em 
+ID\_\-EDLICENSE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c21f7e91b1385c1df465b537df9174ea9d}
+}]\index{ID_EDREADME@{ID\_\-EDREADME}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDREADME@{ID\_\-EDREADME}}\item[{\em 
+ID\_\-EDREADME\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2ac92f9c0e9836f3045321e5f2323359a}
+}]\index{ID_EDURL@{ID\_\-EDURL}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDURL@{ID\_\-EDURL}}\item[{\em 
+ID\_\-EDURL\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2ed1efd2d40888112292d7acbd5bfda5a}
+}]\index{ID_EDDESCRIPTION@{ID\_\-EDDESCRIPTION}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDDESCRIPTION@{ID\_\-EDDESCRIPTION}}\item[{\em 
+ID\_\-EDDESCRIPTION\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2d672c4c6805eaaf3d3f21bb9efa2a9b1}
+}]\index{ID_LBLDEPENDS@{ID\_\-LBLDEPENDS}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLDEPENDS@{ID\_\-LBLDEPENDS}}\item[{\em 
+ID\_\-LBLDEPENDS\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2eb25601e844fb54b0c9e02810ee0435d}
+}]\index{ID_LBLSTARTMENU@{ID\_\-LBLSTARTMENU}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLSTARTMENU@{ID\_\-LBLSTARTMENU}}\item[{\em 
+ID\_\-LBLSTARTMENU\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2ac4ab8cee13d505826543256b21ac0b0}
+}]\index{ID_LBLPICTURE@{ID\_\-LBLPICTURE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLPICTURE@{ID\_\-LBLPICTURE}}\item[{\em 
+ID\_\-LBLPICTURE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c269d6416df39881942ff6dc3f5d4ca5e0}
+}]\index{ID_LBLLICENSE@{ID\_\-LBLLICENSE}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLLICENSE@{ID\_\-LBLLICENSE}}\item[{\em 
+ID\_\-LBLLICENSE\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c273ce1231780ee7d9150945b62601ecd7}
+}]\index{ID_LBLREADME@{ID\_\-LBLREADME}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLREADME@{ID\_\-LBLREADME}}\item[{\em 
+ID\_\-LBLREADME\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c25d9aae98ecf55720ab2ce17ec00ccb14}
+}]\index{ID_LBLURL@{ID\_\-LBLURL}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLURL@{ID\_\-LBLURL}}\item[{\em 
+ID\_\-LBLURL\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2d5da20de83e53770e382e7bc3b7dad65}
+}]\index{ID_LBLDESCRIPTION@{ID\_\-LBLDESCRIPTION}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLDESCRIPTION@{ID\_\-LBLDESCRIPTION}}\item[{\em 
+ID\_\-LBLDESCRIPTION\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2e1b903b80b88b954da87507c88378587}
+}]\index{ID_EDVERSION@{ID\_\-EDVERSION}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDVERSION@{ID\_\-EDVERSION}}\item[{\em 
+ID\_\-EDVERSION\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c20cf1757b3bff2cda78a53bdd8f081eda}
+}]\index{ID_EDNAMEVERSION@{ID\_\-EDNAMEVERSION}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDNAMEVERSION@{ID\_\-EDNAMEVERSION}}\item[{\em 
+ID\_\-EDNAMEVERSION\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2c3e52a7bd69700e32f5ad80f3670d0fd}
+}]\index{ID_EDNAME@{ID\_\-EDNAME}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_EDNAME@{ID\_\-EDNAME}}\item[{\em 
+ID\_\-EDNAME\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c26de684221f0322508e99b9ccc15db291}
+}]\index{ID_LBLVERSION@{ID\_\-LBLVERSION}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLVERSION@{ID\_\-LBLVERSION}}\item[{\em 
+ID\_\-LBLVERSION\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2a13b28e53a84d082d946a45b8b86f920}
+}]\index{ID_WXSTATICTEXT2@{ID\_\-WXSTATICTEXT2}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSTATICTEXT2@{ID\_\-WXSTATICTEXT2}}\item[{\em 
+ID\_\-WXSTATICTEXT2\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c221de3abe79ba59192f7d7694e05c7861}
+}]\index{ID_LBLNAME@{ID\_\-LBLNAME}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_LBLNAME@{ID\_\-LBLNAME}}\item[{\em 
+ID\_\-LBLNAME\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2668fad481f891b37922d0949302d571d}
+}]\index{ID_WXSTATICBOX4@{ID\_\-WXSTATICBOX4}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSTATICBOX4@{ID\_\-WXSTATICBOX4}}\item[{\em 
+ID\_\-WXSTATICBOX4\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c215cd8a295f1a9909d632bf9b790469d3}
+}]\index{ID_WXSTATICBOX3@{ID\_\-WXSTATICBOX3}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSTATICBOX3@{ID\_\-WXSTATICBOX3}}\item[{\em 
+ID\_\-WXSTATICBOX3\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2ed75a63e2c8fab60841b55a761d387d1}
+}]\index{ID_WXSTATICBOX2@{ID\_\-WXSTATICBOX2}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSTATICBOX2@{ID\_\-WXSTATICBOX2}}\item[{\em 
+ID\_\-WXSTATICBOX2\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2e84719a32300d7c5a0d50ebac4843406}
+}]\index{ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXSTATICBOX1@{ID\_\-WXSTATICBOX1}}\item[{\em 
+ID\_\-WXSTATICBOX1\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2647ea39ec797710ccb2b047bac4fcd2d}
+}]\index{ID_WXPANEL1@{ID\_\-WXPANEL1}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_WXPANEL1@{ID\_\-WXPANEL1}}\item[{\em 
+ID\_\-WXPANEL1\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c206238e4f4384613df4886cfec540ffc4}
+}]\index{ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}!PackMaker2Frm@{PackMaker2Frm}}\index{PackMaker2Frm@{PackMaker2Frm}!ID_DUMMY_VALUE_@{ID\_\-DUMMY\_\-VALUE\_\-}}\item[{\em 
+ID\_\-DUMMY\_\-VALUE\_\-\label{class_pack_maker2_frm_dc3ba64c8267702ed74ff80ca096a0c2dbb06601e779e855e23fcd8a798df4bc}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 142 of file Pack\-Maker2Frm.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{PackMaker2Frm@{Pack\-Maker2Frm}!PackMaker2Frm@{PackMaker2Frm}}
+\index{PackMaker2Frm@{PackMaker2Frm}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Pack\-Maker2Frm::Pack\-Maker2Frm (wx\-Window $\ast$ {\em parent}, wx\-Window\-ID {\em id} = {\tt 1}, const wx\-String \& {\em title} = {\tt wxT(\char`\"{}PackMaker2\char`\"{})}, const wx\-Point \& {\em pos} = {\tt wxDefaultPosition}, const wx\-Size \& {\em size} = {\tt wxDefaultSize}, long {\em style} = {\tt PackMaker2Frm\_\-STYLE})}\label{class_pack_maker2_frm_ba840392c1143f1a0b7da327d5c06ded}
+
+
+
+
+Definition at line 91 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!~PackMaker2Frm@{$\sim$PackMaker2Frm}}
+\index{~PackMaker2Frm@{$\sim$PackMaker2Frm}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Pack\-Maker2Frm::$\sim$Pack\-Maker2Frm ()\hspace{0.3cm}{\tt  [virtual]}}\label{class_pack_maker2_frm_6bea3a704a6be122adcaa20e6dea721e}
+
+
+
+
+Definition at line 99 of file Pack\-Maker2Frm.cpp.
+
+\subsection{Member Function Documentation}
+\index{PackMaker2Frm@{Pack\-Maker2Frm}!AboutClick@{AboutClick}}
+\index{AboutClick@{AboutClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::About\-Click ()}\label{class_pack_maker2_frm_67cc1f708f862076b20c7c119424cef2}
+
+
+
+
+Definition at line 461 of file Pack\-Maker2Frm.cpp.
+
+Referenced by Mnuabout1092Click(), and Wx\-Tool\-Button6Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnAddDirClick@{btnAddDirClick}}
+\index{btnAddDirClick@{btnAddDirClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Add\-Dir\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_cee1a7ee2eb495e739e88501ea74540b}
+
+
+
+
+Definition at line 1062 of file Pack\-Maker2Frm.cpp.
+
+References File\-View, File\-Form::Get\-Destination(), File\-Form::Get\-Source(), and File\-Form::Set\-Mode().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnAddFileClick@{btnAddFileClick}}
+\index{btnAddFileClick@{btnAddFileClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Add\-File\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_f0acb0c18ffad275c5ebd15681a55998}
+
+
+
+
+Definition at line 1083 of file Pack\-Maker2Frm.cpp.
+
+References File\-View, File\-Form::Get\-Destination(), File\-Form::Get\-Source(), and File\-Form::Set\-Mode().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnAddItemClick@{btnAddItemClick}}
+\index{btnAddItemClick@{btnAddItemClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Add\-Item\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_5fa329f5e6517ee023ac2f28d3193e35}
+
+
+
+
+Definition at line 978 of file Pack\-Maker2Frm.cpp.
+
+References Menu\-Form::ed\-Icon, Menu\-Form::ed\-Name, Menu\-Form::ed\-Target, and Icon\-View.\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnEditItemClick@{btnEditItemClick}}
+\index{btnEditItemClick@{btnEditItemClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Edit\-Item\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_29c98849df5c544d3a5616084a91c439}
+
+
+
+
+Definition at line 995 of file Pack\-Maker2Frm.cpp.
+
+References Menu\-Form::ed\-Icon, Menu\-Form::ed\-Name, Menu\-Form::ed\-Target, and Icon\-View.\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnLicenseClick@{btnLicenseClick}}
+\index{btnLicenseClick@{btnLicenseClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-License\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_8825ca805d98e2825110751050d368f3}
+
+
+
+
+Definition at line 521 of file Pack\-Maker2Frm.cpp.
+
+References ed\-License, File\-Name, and Open\-Dialog.\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnPictureClick@{btnPictureClick}}
+\index{btnPictureClick@{btnPictureClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Picture\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_2fa10556d450da7ab5f94e5d9959d26b}
+
+
+
+
+Definition at line 537 of file Pack\-Maker2Frm.cpp.
+
+References ed\-Picture, File\-Name, and Open\-Dialog.\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnReadMeClick@{btnReadMeClick}}
+\index{btnReadMeClick@{btnReadMeClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Read\-Me\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_8d5aac046129dbfa0acc18b611f5ccb9}
+
+
+
+
+Definition at line 505 of file Pack\-Maker2Frm.cpp.
+
+References ed\-Read\-Me, File\-Name, and Open\-Dialog.\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnRemoveClick@{btnRemoveClick}}
+\index{btnRemoveClick@{btnRemoveClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Remove\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_3c2d7958fd88ac54ffeb15b9cfe234c8}
+
+
+
+
+Definition at line 1045 of file Pack\-Maker2Frm.cpp.
+
+References FILES\_\-SECTION, File\-View, and Ini\-File.\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnRemoveIconClick@{btnRemoveIconClick}}
+\index{btnRemoveIconClick@{btnRemoveIconClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::btn\-Remove\-Icon\-Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_f8c7c816678a619049d985d59bbcf435}
+
+
+
+
+Definition at line 1028 of file Pack\-Maker2Frm.cpp.
+
+References ICONS\_\-SECTION, Icon\-View, and Ini\-File.\index{PackMaker2Frm@{Pack\-Maker2Frm}!BuildItemClick@{BuildItemClick}}
+\index{BuildItemClick@{BuildItemClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Build\-Item\-Click ()}\label{class_pack_maker2_frm_b9cd93f3e61b155a81cc7722dbede09a}
+
+
+
+
+Definition at line 756 of file Pack\-Maker2Frm.cpp.
+
+References Build\-Package(), and Save\-Item\-Click().
+
+Referenced by Mnubuild1089Click(), and Wx\-Tool\-Button5Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!BuildPackage@{BuildPackage}}
+\index{BuildPackage@{BuildPackage}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Build\-Package ()}\label{class_pack_maker2_frm_4d0ab7a3e5ca98ded16f194be39b2588}
+
+
+
+
+Definition at line 550 of file Pack\-Maker2Frm.cpp.
+
+References build\-Form, File\-Name, File\-View, Write\-Dev\-Pack\-File\-To\-String(), Build\-Form::Wx\-Gauge1, and Build\-Form::Wx\-Static\-Box1.
+
+Referenced by Build\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!Clear@{Clear}}
+\index{Clear@{Clear}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Clear ()}\label{class_pack_maker2_frm_958569136933ac2390bb13816fa308a9}
+
+
+
+
+Definition at line 376 of file Pack\-Maker2Frm.cpp.
+
+References chb\-Reboot, ed\-Depend, ed\-Description, ed\-License, ed\-Name, ed\-Name\-Version, ed\-Picture, ed\-Read\-Me, ed\-Start\-Menu, ed\-URL, ed\-Version, File\-Name, File\-View, Icon\-View, and Ini\-File.
+
+Referenced by Set\-File\-Name(), and Wx\-Tool\-Button1Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!CreateGUIControls@{CreateGUIControls}}
+\index{CreateGUIControls@{CreateGUIControls}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Create\-GUIControls ()\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_4151afa409623c09e51e061b2d3ed0d8}
+
+
+
+
+Definition at line 103 of file Pack\-Maker2Frm.cpp.
+
+References btn\-Add\-Dir, btn\-Add\-File, btn\-Add\-Item, btn\-Edit\-Item, btn\-License, btn\-Picture, btn\-Read\-Me, btn\-Remove, btn\-Remove\-Icon, chb\-Reboot, ed\-Depend, ed\-Description, ed\-License, ed\-Name, ed\-Name\-Version, ed\-Picture, ed\-Read\-Me, ed\-Start\-Menu, ed\-URL, ed\-Version, File\-View, Icon\-View, ID\_\-BTNADDDIR, ID\_\-BTNADDFILE, ID\_\-BTNADDITEM, ID\_\-BTNEDITITEM, ID\_\-BTNLICENSE, ID\_\-BTNPICTURE, ID\_\-BTNREADME, ID\_\-BTNREMOVE, ID\_\-BTNREMOVEICON, ID\_\-CHBREBOOT, ID\_\-EDDEPEND, ID\_\-EDDESCRIPTION, ID\_\-EDLICENSE, ID\_\-EDNAME, ID\_\-EDNAMEVERSION, ID\_\-EDPICTURE, ID\_\-EDREADME, ID\_\-EDSTARTMENU, ID\_\-EDURL, ID\_\-EDVERSION, ID\_\-FILEVIEW, ID\_\-ICONVIEW, ID\_\-LBLDEPENDS, ID\_\-LBLDESCRIPTION, ID\_\-LBLLICENSE, ID\_\-LBLNAME, ID\_\-LBLPICTURE, ID\_\-LBLREADME, ID\_\-LBLSTARTMENU, ID\_\-LBLURL, ID\_\-LBLVERSION, ID\_\-MNU\_\-ABOUT\_\-1092, ID\_\-MNU\_\-BUILD\_\-1089, ID\_\-MNU\_\-EXIT\_\-1091, ID\_\-MNU\_\-NEW\_\-1082, ID\_\-MNU\_\-OPEN\_\-\_\-\_\-\_\-1084, ID\_\-MNU\_\-SAVE\_\-1086, ID\_\-MNU\_\-SAVEAS\_\-\_\-\_\-\_\-1087, ID\_\-WXPANEL1, ID\_\-WXSTATICBOX1, ID\_\-WXSTATICBOX2, ID\_\-WXSTATICBOX3, ID\_\-WXSTATICBOX4, ID\_\-WXSTATICTEXT2, ID\_\-WXSTATUSBAR1, ID\_\-WXTOOLBAR1, ID\_\-WXTOOLBUTTON1, ID\_\-WXTOOLBUTTON2, ID\_\-WXTOOLBUTTON3, ID\_\-WXTOOLBUTTON4, ID\_\-WXTOOLBUTTON5, ID\_\-WXTOOLBUTTON6, lbl\-Depends, lbl\-Description, lbl\-License, lbl\-Name, lbl\-Picture, lbl\-Read\-Me, lbl\-Start\-Menu, lbl\-URL, lbl\-Version, Open\-Dialog, Save\-Dialog, Wx\-Menu\-Bar1, Wx\-Panel1, Wx\-Static\-Box1, Wx\-Static\-Box2, Wx\-Static\-Box3, Wx\-Static\-Box4, Wx\-Static\-Text2, Wx\-Status\-Bar1, and Wx\-Tool\-Bar1.\index{PackMaker2Frm@{Pack\-Maker2Frm}!CreateNewFile@{CreateNewFile}}
+\index{CreateNewFile@{CreateNewFile}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool Pack\-Maker2Frm::Create\-New\-File ()}\label{class_pack_maker2_frm_85bd181d068ffc42ee0cc08b84fb971d}
+
+
+
+
+Definition at line 411 of file Pack\-Maker2Frm.cpp.
+
+References Save\-Dialog.
+
+Referenced by Wx\-Tool\-Button1Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}}
+\index{DECLARE_EVENT_TABLE@{DECLARE\_\-EVENT\_\-TABLE}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Pack\-Maker2Frm::DECLARE\_\-EVENT\_\-TABLE ()\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_945cd0d35a08a0e6a4e3dad47e09491f}
+
+
+\index{PackMaker2Frm@{Pack\-Maker2Frm}!edNameUpdated@{edNameUpdated}}
+\index{edNameUpdated@{edNameUpdated}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::ed\-Name\-Updated (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_684ed24193e2c81011a9b03fa6288bd9}
+
+
+
+
+Definition at line 338 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!edReadMeUpdated@{edReadMeUpdated}}
+\index{edReadMeUpdated@{edReadMeUpdated}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::ed\-Read\-Me\-Updated (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_a40f55406e17140b5eb5b29568dbf499}
+
+
+
+
+Definition at line 1162 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!edReadMeUpdated1@{edReadMeUpdated1}}
+\index{edReadMeUpdated1@{edReadMeUpdated1}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::ed\-Read\-Me\-Updated1 (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_da45bcd05a0e43d550e313fa8902d552}
+
+
+
+
+Definition at line 1170 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!GetFileName@{GetFileName}}
+\index{GetFileName@{GetFileName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String Pack\-Maker2Frm::Get\-File\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_pack_maker2_frm_8d1da75e918fd843a22efc15d36d2aba}
+
+
+
+
+Definition at line 230 of file Pack\-Maker2Frm.h.
+
+References File\-Name.\index{PackMaker2Frm@{Pack\-Maker2Frm}!GetOutputFileName@{GetOutputFileName}}
+\index{GetOutputFileName@{GetOutputFileName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String Pack\-Maker2Frm::Get\-Output\-File\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_pack_maker2_frm_0e6bdb640a8bc31c8f4d26b4cbdddeb6}
+
+
+
+
+Definition at line 232 of file Pack\-Maker2Frm.h.
+
+References Output\-File\-Name.\index{PackMaker2Frm@{Pack\-Maker2Frm}!Mnuabout1092Click@{Mnuabout1092Click}}
+\index{Mnuabout1092Click@{Mnuabout1092Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Mnuabout1092Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_5e149c20e32446dc5e97747f5fa4371d}
+
+
+
+
+Definition at line 371 of file Pack\-Maker2Frm.cpp.
+
+References About\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!Mnubuild1089Click@{Mnubuild1089Click}}
+\index{Mnubuild1089Click@{Mnubuild1089Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Mnubuild1089Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_a2b0e30a3ef0d0391800411f0e082b6d}
+
+
+
+
+Definition at line 1113 of file Pack\-Maker2Frm.cpp.
+
+References Build\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!Mnuexit1091Click@{Mnuexit1091Click}}
+\index{Mnuexit1091Click@{Mnuexit1091Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Mnuexit1091Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_c5d526920abbd8206ce4ffae86eacbef}
+
+
+
+
+Definition at line 354 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!Mnuopen1084Click@{Mnuopen1084Click}}
+\index{Mnuopen1084Click@{Mnuopen1084Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Mnuopen1084Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_8939d5bbefd3c814a81abb56d1c57b78}
+
+
+
+
+Definition at line 1153 of file Pack\-Maker2Frm.cpp.
+
+References Open\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!Mnusave1086Click@{Mnusave1086Click}}
+\index{Mnusave1086Click@{Mnusave1086Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Mnusave1086Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_79769da5a9afccc0b33c6fdf04e8b865}
+
+
+
+
+Definition at line 487 of file Pack\-Maker2Frm.cpp.
+
+References Save\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!Mnusaveas1087Click@{Mnusaveas1087Click}}
+\index{Mnusaveas1087Click@{Mnusaveas1087Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Mnusaveas1087Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_88e5465e6083edc4e63eff1e1515e92d}
+
+
+
+
+Definition at line 496 of file Pack\-Maker2Frm.cpp.
+
+References Save\-As\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!OnClose@{OnClose}}
+\index{OnClose@{OnClose}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::On\-Close (wx\-Close\-Event \& {\em event})\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_9944b85461d5ab8c7a1349fc1d11f733}
+
+
+
+
+Definition at line 330 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!OpenItemClick@{OpenItemClick}}
+\index{OpenItemClick@{OpenItemClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Open\-Item\-Click ()}\label{class_pack_maker2_frm_e99ff0193c90d26d116b4515d4a0f036}
+
+
+
+
+Definition at line 1119 of file Pack\-Maker2Frm.cpp.
+
+References Open\-Dialog, and Set\-File\-Name().
+
+Referenced by Mnuopen1084Click(), and Wx\-Tool\-Button2Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!ReadDevPackFile@{ReadDevPackFile}}
+\index{ReadDevPackFile@{ReadDevPackFile}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Read\-Dev\-Pack\-File ()}\label{class_pack_maker2_frm_1537071e05e58251f5f1798aa29308d0}
+
+
+
+
+Definition at line 777 of file Pack\-Maker2Frm.cpp.
+
+References chb\-Reboot, ed\-Depend, ed\-Description, ed\-License, ed\-Name, ed\-Name\-Version, ed\-Picture, ed\-Read\-Me, ed\-Start\-Menu, ed\-URL, ed\-Version, FILES\_\-SECTION, File\-View, ICONS\_\-SECTION, Icon\-View, Ini\-File, and SETUP\_\-SECTION.
+
+Referenced by Set\-File\-Name().\index{PackMaker2Frm@{Pack\-Maker2Frm}!SaveAsItemClick@{SaveAsItemClick}}
+\index{SaveAsItemClick@{SaveAsItemClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Save\-As\-Item\-Click ()}\label{class_pack_maker2_frm_46b378d93e23bb67d6375e7c4ede183d}
+
+
+
+
+Definition at line 447 of file Pack\-Maker2Frm.cpp.
+
+References File\-Name, Ini\-File, Save\-Dialog, and Save\-Item\-Click().
+
+Referenced by Mnusaveas1087Click(), Save\-Item\-Click(), and Wx\-Tool\-Button4Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!SaveItemClick@{SaveItemClick}}
+\index{SaveItemClick@{SaveItemClick}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Save\-Item\-Click ()}\label{class_pack_maker2_frm_48be5e5bb1151e9d6f3c245c08d4de45}
+
+
+
+
+Definition at line 439 of file Pack\-Maker2Frm.cpp.
+
+References File\-Name, Save\-As\-Item\-Click(), and Write\-Dev\-Pack\-File().
+
+Referenced by Build\-Item\-Click(), Mnusave1086Click(), Save\-As\-Item\-Click(), and Wx\-Tool\-Button3Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!SetFileName@{SetFileName}}
+\index{SetFileName@{SetFileName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Set\-File\-Name (wx\-String {\em file\-Name})}\label{class_pack_maker2_frm_f2d52a54c5f6666fc7e9c98fc82b78ab}
+
+
+
+
+Definition at line 1128 of file Pack\-Maker2Frm.cpp.
+
+References Clear(), Ini\-File, and Read\-Dev\-Pack\-File().
+
+Referenced by Open\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!SetOutputFileName@{SetOutputFileName}}
+\index{SetOutputFileName@{SetOutputFileName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Set\-Output\-File\-Name (wx\-String {\em output\-File\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_pack_maker2_frm_bd5da18ab1d75038c870258891240510}
+
+
+
+
+Definition at line 231 of file Pack\-Maker2Frm.h.
+
+References Output\-File\-Name.\index{PackMaker2Frm@{Pack\-Maker2Frm}!WriteDevPackFile@{WriteDevPackFile}}
+\index{WriteDevPackFile@{WriteDevPackFile}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Write\-Dev\-Pack\-File ()}\label{class_pack_maker2_frm_b81ab3db082c1408e674ccd0fe6eb1be}
+
+
+
+
+Definition at line 858 of file Pack\-Maker2Frm.cpp.
+
+References chb\-Reboot, DEVPAK\_\-VERSION, ed\-Depend, ed\-Description, ed\-License, ed\-Name, ed\-Name\-Version, ed\-Picture, ed\-Read\-Me, ed\-Start\-Menu, ed\-URL, ed\-Version, FILES\_\-SECTION, File\-View, ICONS\_\-SECTION, Icon\-View, Ini\-File, and SETUP\_\-SECTION.
+
+Referenced by Save\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WriteDevPackFileToString@{WriteDevPackFileToString}}
+\index{WriteDevPackFileToString@{WriteDevPackFileToString}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String Pack\-Maker2Frm::Write\-Dev\-Pack\-File\-To\-String ()}\label{class_pack_maker2_frm_269be442e476aa5e48c8515bb99285ea}
+
+
+
+
+Definition at line 915 of file Pack\-Maker2Frm.cpp.
+
+References chb\-Reboot, DEVPAK\_\-VERSION, ed\-Depend, ed\-Description, ed\-License, ed\-Name, ed\-Name\-Version, ed\-Picture, ed\-Read\-Me, ed\-Start\-Menu, ed\-URL, ed\-Version, and File\-View.
+
+Referenced by Build\-Package().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxEdit4Updated@{WxEdit4Updated}}
+\index{WxEdit4Updated@{WxEdit4Updated}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Edit4Updated (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_cdb569f73267a3f227946260309df3e7}
+
+
+
+
+Definition at line 346 of file Pack\-Maker2Frm.cpp.\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolButton1Click@{WxToolButton1Click}}
+\index{WxToolButton1Click@{WxToolButton1Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Tool\-Button1Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_bdb19775715ec6361fcaeab592156e38}
+
+
+
+
+Definition at line 404 of file Pack\-Maker2Frm.cpp.
+
+References Clear(), and Create\-New\-File().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolButton2Click@{WxToolButton2Click}}
+\index{WxToolButton2Click@{WxToolButton2Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Tool\-Button2Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_9efab1030f019516427d7727c587a6bc}
+
+
+
+
+Definition at line 1144 of file Pack\-Maker2Frm.cpp.
+
+References Open\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolButton3Click@{WxToolButton3Click}}
+\index{WxToolButton3Click@{WxToolButton3Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Tool\-Button3Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_6322f3694e34e3b41cd3733faa61cd38}
+
+
+
+
+Definition at line 469 of file Pack\-Maker2Frm.cpp.
+
+References Save\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolButton4Click@{WxToolButton4Click}}
+\index{WxToolButton4Click@{WxToolButton4Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Tool\-Button4Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_076b8087b94eb9014185dc74c283455d}
+
+
+
+
+Definition at line 478 of file Pack\-Maker2Frm.cpp.
+
+References Save\-As\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolButton5Click@{WxToolButton5Click}}
+\index{WxToolButton5Click@{WxToolButton5Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Tool\-Button5Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_53fe55ccad7c0a538964346a43fe3de1}
+
+
+
+
+Definition at line 1104 of file Pack\-Maker2Frm.cpp.
+
+References Build\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolButton6Click@{WxToolButton6Click}}
+\index{WxToolButton6Click@{WxToolButton6Click}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pack\-Maker2Frm::Wx\-Tool\-Button6Click (wx\-Command\-Event \& {\em event})}\label{class_pack_maker2_frm_a60b3bc1fc37409ee920cd439f88f664}
+
+
+
+
+Definition at line 363 of file Pack\-Maker2Frm.cpp.
+
+References About\-Click().
+
+\subsection{Member Data Documentation}
+\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnAddDir@{btnAddDir}}
+\index{btnAddDir@{btnAddDir}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Add\-Dir}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_38d9b0ca0188d7a4aea53b2f99360aaa}
+
+
+
+
+Definition at line 100 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnAddFile@{btnAddFile}}
+\index{btnAddFile@{btnAddFile}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Add\-File}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_2e9eee89538eca8c7933d759c88fb020}
+
+
+
+
+Definition at line 99 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnAddItem@{btnAddItem}}
+\index{btnAddItem@{btnAddItem}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Add\-Item}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_ac14f6db35841bb293a967f72324ffdf}
+
+
+
+
+Definition at line 104 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnEditItem@{btnEditItem}}
+\index{btnEditItem@{btnEditItem}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Edit\-Item}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_c4c1a845195ceb07c4385023556d3d00}
+
+
+
+
+Definition at line 103 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnLicense@{btnLicense}}
+\index{btnLicense@{btnLicense}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-License}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_2d54c02a83ff79af7a90ce30321f9cce}
+
+
+
+
+Definition at line 106 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnPicture@{btnPicture}}
+\index{btnPicture@{btnPicture}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Picture}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_a9958343b0c692285295db8a2d65d373}
+
+
+
+
+Definition at line 105 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnReadMe@{btnReadMe}}
+\index{btnReadMe@{btnReadMe}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Read\-Me}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_d53594aab83ed314d9eb535206f6ad22}
+
+
+
+
+Definition at line 107 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnRemove@{btnRemove}}
+\index{btnRemove@{btnRemove}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Remove}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_4b63c8c32fe8d40a412559218800f067}
+
+
+
+
+Definition at line 98 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!btnRemoveIcon@{btnRemoveIcon}}
+\index{btnRemoveIcon@{btnRemoveIcon}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Bitmap\-Button$\ast$ {\bf Pack\-Maker2Frm::btn\-Remove\-Icon}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_82280fe469ea7a0100edcb62b0eb3061}
+
+
+
+
+Definition at line 102 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!buildForm@{buildForm}}
+\index{buildForm@{buildForm}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf Build\-Form}$\ast$ {\bf Pack\-Maker2Frm::build\-Form}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_c3de0fa10b686acca08c66a758ff98ea}
+
+
+
+
+Definition at line 135 of file Pack\-Maker2Frm.h.
+
+Referenced by Build\-Package().\index{PackMaker2Frm@{Pack\-Maker2Frm}!chbReboot@{chbReboot}}
+\index{chbReboot@{chbReboot}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Check\-Box$\ast$ {\bf Pack\-Maker2Frm::chb\-Reboot}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_2ba842a0b8812611952e879163b6f779}
+
+
+
+
+Definition at line 108 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edDepend@{edDepend}}
+\index{edDepend@{edDepend}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Depend}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_24044118f2a47ace5b31a445f4d17955}
+
+
+
+
+Definition at line 109 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edDescription@{edDescription}}
+\index{edDescription@{edDescription}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Description}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_f991dd8d5bfc15fb787b76ead162c2f6}
+
+
+
+
+Definition at line 115 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edLicense@{edLicense}}
+\index{edLicense@{edLicense}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-License}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_c36972903ad86dd4a7938ac1fbd4cd92}
+
+
+
+
+Definition at line 112 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-License\-Click(), Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edName@{edName}}
+\index{edName@{edName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_59c8f7433df9c8efffb2221c879bfefc}
+
+
+
+
+Definition at line 125 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edNameVersion@{edNameVersion}}
+\index{edNameVersion@{edNameVersion}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Name\-Version}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_9f14b68f526bdc333159e98b79268410}
+
+
+
+
+Definition at line 124 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edPicture@{edPicture}}
+\index{edPicture@{edPicture}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Picture}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_26f20ffc5fcae11fd3ba6041fc22bc6b}
+
+
+
+
+Definition at line 111 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-Picture\-Click(), Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edReadMe@{edReadMe}}
+\index{edReadMe@{edReadMe}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Read\-Me}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_0819826fdd35737b8d604d99e84dd8fe}
+
+
+
+
+Definition at line 113 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-Read\-Me\-Click(), Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edStartMenu@{edStartMenu}}
+\index{edStartMenu@{edStartMenu}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Start\-Menu}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_ad5f887af84ed829bda9390472aa896a}
+
+
+
+
+Definition at line 110 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edURL@{edURL}}
+\index{edURL@{edURL}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-URL}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_a7a84720d27ac2beaca4b9421648e0d2}
+
+
+
+
+Definition at line 114 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!edVersion@{edVersion}}
+\index{edVersion@{edVersion}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Text\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::ed\-Version}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_35b57e6f73d3214633a42cbe06584956}
+
+
+
+
+Definition at line 123 of file Pack\-Maker2Frm.h.
+
+Referenced by Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!FileName@{FileName}}
+\index{FileName@{FileName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Pack\-Maker2Frm::File\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_dcc98ef36ca26fc22e62968e2a345bc2}
+
+
+
+
+Definition at line 211 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-License\-Click(), btn\-Picture\-Click(), btn\-Read\-Me\-Click(), Build\-Package(), Clear(), Get\-File\-Name(), Save\-As\-Item\-Click(), and Save\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!FileView@{FileView}}
+\index{FileView@{FileView}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-List\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::File\-View}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_d92cee45844fa0d5e168d25a5f69aaef}
+
+
+
+
+Definition at line 97 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-Add\-Dir\-Click(), btn\-Add\-File\-Click(), btn\-Remove\-Click(), Build\-Package(), Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), Write\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File\-To\-String().\index{PackMaker2Frm@{Pack\-Maker2Frm}!IconView@{IconView}}
+\index{IconView@{IconView}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-List\-Ctrl$\ast$ {\bf Pack\-Maker2Frm::Icon\-View}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_c6b32a9dcebd8f6256f1f531ffcc11a6}
+
+
+
+
+Definition at line 101 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-Add\-Item\-Click(), btn\-Edit\-Item\-Click(), btn\-Remove\-Icon\-Click(), Clear(), Create\-GUIControls(), Read\-Dev\-Pack\-File(), and Write\-Dev\-Pack\-File().\index{PackMaker2Frm@{Pack\-Maker2Frm}!IniFile@{IniFile}}
+\index{IniFile@{IniFile}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-File\-Config$\ast$ {\bf Pack\-Maker2Frm::Ini\-File}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_9c950237ff5a01d812114c14e330f3c3}
+
+
+
+
+Definition at line 213 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-Remove\-Click(), btn\-Remove\-Icon\-Click(), Clear(), Read\-Dev\-Pack\-File(), Save\-As\-Item\-Click(), Set\-File\-Name(), and Write\-Dev\-Pack\-File().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblDepends@{lblDepends}}
+\index{lblDepends@{lblDepends}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Depends}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_eda848ace5f1b2be7fc656cd549e632a}
+
+
+
+
+Definition at line 116 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblDescription@{lblDescription}}
+\index{lblDescription@{lblDescription}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Description}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_0c2c3886f765e7b53e74c0c4d119c42b}
+
+
+
+
+Definition at line 122 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblLicense@{lblLicense}}
+\index{lblLicense@{lblLicense}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-License}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_18833f5596b52a118a78982edab0af23}
+
+
+
+
+Definition at line 119 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblName@{lblName}}
+\index{lblName@{lblName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_efffa35e8df17123ee9164dac6a60b37}
+
+
+
+
+Definition at line 128 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblPicture@{lblPicture}}
+\index{lblPicture@{lblPicture}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Picture}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_4640f997d5dfc78b6069ba38011265f1}
+
+
+
+
+Definition at line 118 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblReadMe@{lblReadMe}}
+\index{lblReadMe@{lblReadMe}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Read\-Me}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_93d0ba52916260d1590b2b8bbcb3b21a}
+
+
+
+
+Definition at line 120 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblStartMenu@{lblStartMenu}}
+\index{lblStartMenu@{lblStartMenu}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Start\-Menu}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_dadc8844f3883c7e04ba3017a51f6bc7}
+
+
+
+
+Definition at line 117 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblURL@{lblURL}}
+\index{lblURL@{lblURL}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-URL}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_250548fa51e339929577ad355225c2ce}
+
+
+
+
+Definition at line 121 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!lblVersion@{lblVersion}}
+\index{lblVersion@{lblVersion}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::lbl\-Version}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_411a93dddbd1daa27403182ac4a1dd19}
+
+
+
+
+Definition at line 126 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!OpenDialog@{OpenDialog}}
+\index{OpenDialog@{OpenDialog}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-File\-Dialog$\ast$ {\bf Pack\-Maker2Frm::Open\-Dialog}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_88c2edb5eb50fb3e6daf3c64f0544e06}
+
+
+
+
+Definition at line 95 of file Pack\-Maker2Frm.h.
+
+Referenced by btn\-License\-Click(), btn\-Picture\-Click(), btn\-Read\-Me\-Click(), Create\-GUIControls(), and Open\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!OutputFileName@{OutputFileName}}
+\index{OutputFileName@{OutputFileName}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf Pack\-Maker2Frm::Output\-File\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_f7e4c7c6f7a1c747cee152300eed3ccd}
+
+
+
+
+Definition at line 212 of file Pack\-Maker2Frm.h.
+
+Referenced by Get\-Output\-File\-Name(), and Set\-Output\-File\-Name().\index{PackMaker2Frm@{Pack\-Maker2Frm}!SaveDialog@{SaveDialog}}
+\index{SaveDialog@{SaveDialog}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-File\-Dialog$\ast$ {\bf Pack\-Maker2Frm::Save\-Dialog}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_167e3bd2b60744a2dcc2cfcc3b309bd3}
+
+
+
+
+Definition at line 94 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls(), Create\-New\-File(), and Save\-As\-Item\-Click().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxMenuBar1@{WxMenuBar1}}
+\index{WxMenuBar1@{WxMenuBar1}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Menu\-Bar$\ast$ {\bf Pack\-Maker2Frm::Wx\-Menu\-Bar1}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_6f63693553006476535513e038447a7f}
+
+
+
+
+Definition at line 93 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxPanel1@{WxPanel1}}
+\index{WxPanel1@{WxPanel1}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Panel$\ast$ {\bf Pack\-Maker2Frm::Wx\-Panel1}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_d96a735c5711ca782a56db8bc8b3d8e2}
+
+
+
+
+Definition at line 133 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxStaticBox1@{WxStaticBox1}}
+\index{WxStaticBox1@{WxStaticBox1}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Pack\-Maker2Frm::Wx\-Static\-Box1}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_6bc14556088100a5f9ba2d914779b011}
+
+
+
+
+Definition at line 132 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxStaticBox2@{WxStaticBox2}}
+\index{WxStaticBox2@{WxStaticBox2}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Pack\-Maker2Frm::Wx\-Static\-Box2}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_419dc98d8cf62f89470d1f9bdaeb481f}
+
+
+
+
+Definition at line 131 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxStaticBox3@{WxStaticBox3}}
+\index{WxStaticBox3@{WxStaticBox3}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Pack\-Maker2Frm::Wx\-Static\-Box3}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_6f3040fd690650804094e2a44dee9ea3}
+
+
+
+
+Definition at line 130 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxStaticBox4@{WxStaticBox4}}
+\index{WxStaticBox4@{WxStaticBox4}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Box$\ast$ {\bf Pack\-Maker2Frm::Wx\-Static\-Box4}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_4828adfc416922895fd9670e182b8166}
+
+
+
+
+Definition at line 129 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxStaticText2@{WxStaticText2}}
+\index{WxStaticText2@{WxStaticText2}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Static\-Text$\ast$ {\bf Pack\-Maker2Frm::Wx\-Static\-Text2}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_39fd10af4b7df29a571f5e76db87564f}
+
+
+
+
+Definition at line 127 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxStatusBar1@{WxStatusBar1}}
+\index{WxStatusBar1@{WxStatusBar1}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Status\-Bar$\ast$ {\bf Pack\-Maker2Frm::Wx\-Status\-Bar1}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_578239089b66977dc9868c8f121063f5}
+
+
+
+
+Definition at line 92 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().\index{PackMaker2Frm@{Pack\-Maker2Frm}!WxToolBar1@{WxToolBar1}}
+\index{WxToolBar1@{WxToolBar1}!PackMaker2Frm@{Pack\-Maker2Frm}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-Tool\-Bar$\ast$ {\bf Pack\-Maker2Frm::Wx\-Tool\-Bar1}\hspace{0.3cm}{\tt  [private]}}\label{class_pack_maker2_frm_4a0a59dc1a352808eb1ed436518d500c}
+
+
+
+
+Definition at line 96 of file Pack\-Maker2Frm.h.
+
+Referenced by Create\-GUIControls().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Pack\-Maker2Frm.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Pack\-Maker2Frm.cpp}\end{CompactItemize}

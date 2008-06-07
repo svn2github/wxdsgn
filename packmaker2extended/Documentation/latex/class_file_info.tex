@@ -1,0 +1,224 @@
+\section{File\-Info Class Reference}
+\label{class_file_info}\index{FileInfo@{FileInfo}}
+The {\bf File\-Info}{\rm (p.\,\pageref{class_file_info})} class holds information about each file or directory contained.  
+
+
+{\tt \#include $<$Package\-Classes.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf File\-Info} ()
+\item 
+{\bf $\sim$File\-Info} ()
+\item 
+const wx\-String {\bf Get\-Source\-Name} ()
+\item 
+void {\bf Set\-Source\-Name} (const wx\-String \&Source\-Name)
+\item 
+const wx\-String {\bf Get\-Destination\-Directory} ()
+\item 
+void {\bf Set\-Destination\-Directory} (const wx\-String \&Destination\-Directory)
+\item 
+const wx\-String {\bf Get\-Destination\-Name} ()
+\item 
+void {\bf Set\-Destination\-Name} (const wx\-String \&Destination\-Name)
+\item 
+const wx\-String {\bf Get\-Optional\-Flags} ()
+\item 
+void {\bf Set\-Optional\-Flags} (const wx\-String \&Optional\-Flags)
+\item 
+bool {\bf Get\-Is\-Directory} ()
+\item 
+void {\bf Set\-Is\-Directory} (bool Is\-Directory)
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+wx\-String {\bf \_\-Source\-Name}
+\item 
+wx\-String {\bf \_\-Destination\-Directory}
+\item 
+wx\-String {\bf \_\-Destination\-Name}
+\item 
+wx\-String {\bf \_\-Optional\-Flags}
+\item 
+bool {\bf \_\-Is\-Directory}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+The {\bf File\-Info}{\rm (p.\,\pageref{class_file_info})} class holds information about each file or directory contained. 
+
+The {\bf File\-Info}{\rm (p.\,\pageref{class_file_info})} class is used in a list to contain information about all the files and directories contained in the package.
+
+It contains the following information Source\-Name - This corresponds to the Name of the file or directory in the package if Source\-Name is a directory then all the files in it will be copied. Destination\-Directory - This corresponds to where the file or directory should be installed on the users computer. If it is a directory it MUST end with a backslash or else it will be interpreted as a filename. The Source\-Name and Dirctory 
+
+
+
+Definition at line 46 of file Package\-Classes.h.
+
+\subsection{Constructor \& Destructor Documentation}
+\index{FileInfo@{File\-Info}!FileInfo@{FileInfo}}
+\index{FileInfo@{FileInfo}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}File\-Info::File\-Info ()}\label{class_file_info_8541904af8536fa35f7addd9e855c4a1}
+
+
+
+
+Definition at line 14 of file Package\-Classes.cpp.
+
+References \_\-Destination\-Directory, \_\-Destination\-Name, \_\-Optional\-Flags, and \_\-Source\-Name.\index{FileInfo@{File\-Info}!~FileInfo@{$\sim$FileInfo}}
+\index{~FileInfo@{$\sim$FileInfo}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}File\-Info::$\sim$File\-Info ()}\label{class_file_info_b771dfaca29680c93810af82a7a99958}
+
+
+
+
+Definition at line 23 of file Package\-Classes.cpp.
+
+\subsection{Member Function Documentation}
+\index{FileInfo@{File\-Info}!GetDestinationDirectory@{GetDestinationDirectory}}
+\index{GetDestinationDirectory@{GetDestinationDirectory}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String File\-Info::Get\-Destination\-Directory ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_e05d19113b920d8364e7e1c52f4b1394}
+
+
+
+
+Definition at line 54 of file Package\-Classes.h.
+
+References \_\-Destination\-Directory.\index{FileInfo@{File\-Info}!GetDestinationName@{GetDestinationName}}
+\index{GetDestinationName@{GetDestinationName}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String File\-Info::Get\-Destination\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_9c9a1e27068b32604853affee58787dc}
+
+
+
+
+Definition at line 56 of file Package\-Classes.h.
+
+References \_\-Destination\-Name.\index{FileInfo@{File\-Info}!GetIsDirectory@{GetIsDirectory}}
+\index{GetIsDirectory@{GetIsDirectory}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool File\-Info::Get\-Is\-Directory ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_702d186cf8b65523cb281003eb2ad079}
+
+
+
+
+Definition at line 60 of file Package\-Classes.h.
+
+References \_\-Is\-Directory.\index{FileInfo@{File\-Info}!GetOptionalFlags@{GetOptionalFlags}}
+\index{GetOptionalFlags@{GetOptionalFlags}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String File\-Info::Get\-Optional\-Flags ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_df5cdadebdb6f25ad187d784c034ed31}
+
+
+
+
+Definition at line 58 of file Package\-Classes.h.
+
+References \_\-Optional\-Flags.\index{FileInfo@{File\-Info}!GetSourceName@{GetSourceName}}
+\index{GetSourceName@{GetSourceName}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const wx\-String File\-Info::Get\-Source\-Name ()\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_df135a1625d10bdf99853083e5b0e891}
+
+
+
+
+Definition at line 52 of file Package\-Classes.h.
+
+References \_\-Source\-Name.\index{FileInfo@{File\-Info}!SetDestinationDirectory@{SetDestinationDirectory}}
+\index{SetDestinationDirectory@{SetDestinationDirectory}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Info::Set\-Destination\-Directory (const wx\-String \& {\em Destination\-Directory})\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_4fc948cec75c002585d35aadca6fc7c5}
+
+
+
+
+Definition at line 55 of file Package\-Classes.h.
+
+References \_\-Destination\-Directory.\index{FileInfo@{File\-Info}!SetDestinationName@{SetDestinationName}}
+\index{SetDestinationName@{SetDestinationName}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Info::Set\-Destination\-Name (const wx\-String \& {\em Destination\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_22ca91c1b66c0f7926d73da77c10c6ac}
+
+
+
+
+Definition at line 57 of file Package\-Classes.h.
+
+References \_\-Destination\-Name.\index{FileInfo@{File\-Info}!SetIsDirectory@{SetIsDirectory}}
+\index{SetIsDirectory@{SetIsDirectory}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Info::Set\-Is\-Directory (bool {\em Is\-Directory})\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_aea47d0efe9169cb221a5ff4386e405e}
+
+
+
+
+Definition at line 61 of file Package\-Classes.h.
+
+References \_\-Is\-Directory.\index{FileInfo@{File\-Info}!SetOptionalFlags@{SetOptionalFlags}}
+\index{SetOptionalFlags@{SetOptionalFlags}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Info::Set\-Optional\-Flags (const wx\-String \& {\em Optional\-Flags})\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_92539a24a29a2b15ef4e368531f146ac}
+
+
+
+
+Definition at line 59 of file Package\-Classes.h.
+
+References \_\-Optional\-Flags.\index{FileInfo@{File\-Info}!SetSourceName@{SetSourceName}}
+\index{SetSourceName@{SetSourceName}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void File\-Info::Set\-Source\-Name (const wx\-String \& {\em Source\-Name})\hspace{0.3cm}{\tt  [inline]}}\label{class_file_info_e52633affc20f7a2734034336b6353ea}
+
+
+
+
+Definition at line 53 of file Package\-Classes.h.
+
+References \_\-Source\-Name.
+
+\subsection{Member Data Documentation}
+\index{FileInfo@{File\-Info}!_DestinationDirectory@{\_\-DestinationDirectory}}
+\index{_DestinationDirectory@{\_\-DestinationDirectory}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf File\-Info::\_\-Destination\-Directory}\hspace{0.3cm}{\tt  [private]}}\label{class_file_info_8a07b8c3b4a35410f7fd39addd182996}
+
+
+
+
+Definition at line 64 of file Package\-Classes.h.
+
+Referenced by File\-Info(), Get\-Destination\-Directory(), and Set\-Destination\-Directory().\index{FileInfo@{File\-Info}!_DestinationName@{\_\-DestinationName}}
+\index{_DestinationName@{\_\-DestinationName}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf File\-Info::\_\-Destination\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_file_info_15c0569c3c1b4cc88db48973864013d1}
+
+
+
+
+Definition at line 65 of file Package\-Classes.h.
+
+Referenced by File\-Info(), Get\-Destination\-Name(), and Set\-Destination\-Name().\index{FileInfo@{File\-Info}!_IsDirectory@{\_\-IsDirectory}}
+\index{_IsDirectory@{\_\-IsDirectory}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf File\-Info::\_\-Is\-Directory}\hspace{0.3cm}{\tt  [private]}}\label{class_file_info_394cd4e7bb002b0643457fa12e44b532}
+
+
+
+
+Definition at line 67 of file Package\-Classes.h.
+
+Referenced by Get\-Is\-Directory(), and Set\-Is\-Directory().\index{FileInfo@{File\-Info}!_OptionalFlags@{\_\-OptionalFlags}}
+\index{_OptionalFlags@{\_\-OptionalFlags}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf File\-Info::\_\-Optional\-Flags}\hspace{0.3cm}{\tt  [private]}}\label{class_file_info_b40b78476a8d1220f8c8eeb89ae10628}
+
+
+
+
+Definition at line 66 of file Package\-Classes.h.
+
+Referenced by File\-Info(), Get\-Optional\-Flags(), and Set\-Optional\-Flags().\index{FileInfo@{File\-Info}!_SourceName@{\_\-SourceName}}
+\index{_SourceName@{\_\-SourceName}!FileInfo@{File\-Info}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}wx\-String {\bf File\-Info::\_\-Source\-Name}\hspace{0.3cm}{\tt  [private]}}\label{class_file_info_58d547490b9e1220e8a3aaa7e94e0140}
+
+
+
+
+Definition at line 61 of file Package\-Classes.h.
+
+Referenced by File\-Info(), Get\-Source\-Name(), and Set\-Source\-Name().
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Package\-Classes.h}\item 
+C:/Dev-Cpp/Wx\-Projects/Pack\-Maker2Extended/{\bf Package\-Classes.cpp}\end{CompactItemize}
