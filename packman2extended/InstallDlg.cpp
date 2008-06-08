@@ -197,7 +197,11 @@ void InstallDlg::CreateGUIControls()
 
 
     sArchiveName = wxFileSelector("Choose a file to open","","","","DEVPAK files (*.devpak)|*.devpak|All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-
+    if (sArchiveName.IsEmpty()) {
+        EndModal(wxID_CANCEL); 
+        Close();  
+    }
+    else {
     InstallDevPak::GetPackageInfo(&info, sArchiveName);
 
     // Update the text on the Welcome page
@@ -224,6 +228,8 @@ void InstallDlg::CreateGUIControls()
     szTemp = stFinished->GetLabel();
     szTemp.Replace("%s", info.AppName);
     stFinished->SetLabel(szTemp);
+
+}
 
 }
 

@@ -332,6 +332,8 @@ bool InstallDevPak::ReadEntryFile(wxString EntryFileName, DevPakInfo *info)
 
     info->InstalledFiles.Clear();
 
+    wxString txtLine;
+    
     if (fIni.GetLine(fIni.GetCurrentLine()) == "[Files]") {
 
         fIni.GetNextLine();
@@ -339,7 +341,10 @@ bool InstallDevPak::ReadEntryFile(wxString EntryFileName, DevPakInfo *info)
         while (!fIni.Eof())
         {
 
-            info->InstalledFiles.Add(fIni.GetLine(fIni.GetCurrentLine()));
+            txtLine = fIni.GetLine(fIni.GetCurrentLine());
+            txtLine.Trim(true).Trim(false);  // Trim whitepace at ends
+            if (!txtLine.IsEmpty())  // Make sure we don't get empty lines
+                info->InstalledFiles.Add(fIni.GetLine(fIni.GetCurrentLine()));
             fIni.GetNextLine();
         }
     }
@@ -758,7 +763,6 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
                 if ( iMode & 0700 ) fileMode = fileMode |  wxS_IXUSR ;
 #endif
 
-
                 wxString sFilenme = sFile.AfterLast(wxFILE_SEP_PATH); // Get file name
 
                 anOutFile.Create(sDir + sFilenme, TRUE /*overwrite any existing file*/, fileMode);
@@ -789,10 +793,29 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
 // Delete/uninstall a devpak
 bool InstallDevPak::RemoveDevPak(DevPakInfo info)
 {
+wxString txtFileName;
+
+::wxSetWorkingDirectory(InstallDevPak::GetAppDir());
 
     wxMessageBox("Removing devpak: " + info.EntryFileName);
-    for (size_t ii=0; info.InstalledFiles.GetCount(); ii++)
+    for (size_t ii=0; ii < (info.InstalledFiles.GetCount() - 1); ii++) {
+        
+        txtFileName = info.InstalledFiles.Item(ii);
+        txtFileName.Trim(true).Trim(false);
+        if (!txtFileName.IsEmpty()) {
+        if (::wxFileExists(txtFileName)) {
         ::wxRemoveFile(info.InstalledFiles.Item(ii));
+}
+        else
+        wxMessageBox("Not exist:" + info.InstalledFiles.Item(ii));
+    }
+}
+
+if (::wxFileExists(info.EntryFileName))
+::wxRemoveFile(info.EntryFileName);
+else
+wxMessageBox(info.EntryFileName + " does not exist");
+wxMessageBox("Deleted");
 
     return true;
 
