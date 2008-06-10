@@ -3,8 +3,8 @@
 ; NSIS Install Script for wx-devcpp
 ; http://nsis.sourceforge.net/
 
-!define DEVCPP_VERSION "4.9.9.2"
-!define WXDEVCPP_VERSION "6.10.2"
+!define DEVCPP_VERSION "5(beta)"
+!define WXDEVCPP_VERSION "7.0(alpha)"
 !define PROGRAM_NAME "wxdevcpp"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
@@ -12,7 +12,7 @@
 !define HAVE_MSVC
 !define NEW_INTERFACE
 
-!define wxWidgets_version "2.8.2"
+!define wxWidgets_version "2.8.7"
 !define wxWidgets_name "wxWidgets_${wxWidgets_version}"
 
 !ifdef HAVE_MINGW
@@ -70,7 +70,7 @@ Caption "${DISPLAY_NAME}"
 
 # [Licence Attributes]
 LicenseText "${PROGRAM_NAME} is distributed under the GNU General Public License :"
-LicenseData "copying.txt"
+LicenseData "c:\Program Files\Dev-Cpp\copying.txt"
 
 # [Directory Selection]
 InstallDir "$PROGRAMFILES\Dev-Cpp"
@@ -851,7 +851,7 @@ FunctionEnd
 
 ; Functions
 
-Function .onInit
+Function .onGUIInit
 
   MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation$\r$\n(i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
  
@@ -880,7 +880,8 @@ FunctionEnd
 
 ;called when the install was successful
 Function .onInstSuccess
-  MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} now?" IDNO DontRun
+  MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} now?" IDNO DontRun /SD IDNO
+
   Exec '"$INSTDIR\devcpp.exe"'
   DontRun:
 FunctionEnd
