@@ -76,11 +76,11 @@ void InstallDlg::CreateGUIControls()
     WxBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     WxBoxSizer1->Add(WxBoxSizer3, 1, wxALIGN_CENTER | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxEXPAND | wxALL, 5);
 
-    nbInstallerPages = new wxNotebook(this, ID_NBINSTALLERPAGES, wxPoint(5,5),wxSize(298,199), wxNB_TOP);
+    nbInstallerPages = new wxNotebook(this, ID_NBINSTALLERPAGES, wxPoint(5,5),wxSize(380,300), wxNB_TOP);
     nbInstallerPages->Enable(false);
     WxBoxSizer3->Add(nbInstallerPages,1,wxALIGN_CENTER | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxEXPAND | wxALL,5);
 
-    nbWelcome = new wxPanel(nbInstallerPages, ID_NBWELCOME, wxPoint(4,24), wxSize(290,171));
+    nbWelcome = new wxPanel(nbInstallerPages, ID_NBWELCOME, wxPoint(4,24), wxSize(372,272));
     nbInstallerPages->AddPage(nbWelcome, wxT("Welcome"));
 
     WxBoxSizer9 = new wxBoxSizer(wxVERTICAL);
@@ -115,7 +115,7 @@ void InstallDlg::CreateGUIControls()
     htUrl->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, true, wxT("MS Sans Serif")));
     WxBoxSizer9->Add(htUrl,0,wxALIGN_CENTER | wxALL,5);
 
-    nbReadme = new wxPanel(nbInstallerPages, ID_NBREADME, wxPoint(4,24), wxSize(290,171));
+    nbReadme = new wxPanel(nbInstallerPages, ID_NBREADME, wxPoint(4,24), wxSize(372,272));
     nbInstallerPages->AddPage(nbReadme, wxT("Readme"));
 
     WxBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
@@ -129,7 +129,7 @@ void InstallDlg::CreateGUIControls()
     txtReadme->SetInsertionPointEnd();
     WxBoxSizer6->Add(txtReadme,1,wxALIGN_CENTER | wxEXPAND | wxALL,5);
 
-    nbLicense = new wxPanel(nbInstallerPages, ID_NBLICENSE, wxPoint(4,24), wxSize(290,171));
+    nbLicense = new wxPanel(nbInstallerPages, ID_NBLICENSE, wxPoint(4,24), wxSize(372,272));
     nbInstallerPages->AddPage(nbLicense, wxT("License"));
 
     WxBoxSizer7 = new wxBoxSizer(wxVERTICAL);
@@ -138,37 +138,6 @@ void InstallDlg::CreateGUIControls()
 
     WxStaticText2 = new wxStaticText(nbLicense, ID_WXSTATICTEXT2, wxT("Please read the following license:"), wxPoint(98,5), wxDefaultSize, 0, wxT("WxStaticText2"));
     WxBoxSizer7->Add(WxStaticText2,0,wxALIGN_CENTER | wxALL,5);
-
-    nbInstalled = new wxPanel(nbInstallerPages, ID_NBINSTALLED, wxPoint(4,24), wxSize(290,171));
-    nbInstallerPages->AddPage(nbInstalled, wxT("Installing"));
-
-    WxBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-    nbInstalled->SetSizer(WxBoxSizer8);
-    nbInstalled->SetAutoLayout(true);
-
-    wxArrayString arrayStringFor_lbInstalledFiles;
-    lbInstalledFiles = new wxListBox(nbInstalled, ID_LBINSTALLEDFILES, wxPoint(5,5), wxSize(121,97), arrayStringFor_lbInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
-    WxBoxSizer8->Add(lbInstalledFiles,1,wxALIGN_CENTER | wxEXPAND | wxALL,5);
-
-    nbFinished = new wxPanel(nbInstallerPages, ID_NBFINISHED, wxPoint(4,24), wxSize(290,171));
-    nbInstallerPages->AddPage(nbFinished, wxT("Finished"));
-
-    WxBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    WxBoxSizer1->Add(WxBoxSizer4, 0, wxALIGN_CENTER | wxALL, 5);
-
-    btPrevious = new wxButton(this, ID_BTPREVIOUS, wxT("< Previous"), wxPoint(5,5), wxSize(75,25), 0, wxDefaultValidator, wxT("btPrevious"));
-    btPrevious->Enable(false);
-    WxBoxSizer4->Add(btPrevious,0,wxALIGN_CENTER | wxALL,5);
-
-    btNext = new wxButton(this, ID_BTNEXT, wxT("Next >"), wxPoint(90,5), wxSize(75,25), 0, wxDefaultValidator, wxT("btNext"));
-    WxBoxSizer4->Add(btNext,0,wxALIGN_CENTER | wxALL,5);
-
-    btCancel = new wxButton(this, ID_BTCANCEL, wxT("Cancel"), wxPoint(175,5), wxSize(75,25), 0, wxDefaultValidator, wxT("btCancel"));
-    WxBoxSizer4->Add(btCancel,0,wxALIGN_CENTER | wxALL,5);
-
-    stFinished = new wxStaticText(nbFinished, ID_STFINISHED, wxT("%s has been successfully installed on your system."), wxPoint(20,50), wxDefaultSize, 0, wxT("stFinished"));
-
-    WxStaticText8 = new wxStaticText(nbFinished, ID_WXSTATICTEXT8, wxT("Please press Finish to close this window."), wxPoint(41,95), wxDefaultSize, 0, wxT("WxStaticText8"));
 
     txtLicense = new wxTextCtrl(nbLicense, ID_TXTLICENSE, wxT(""), wxPoint(87,32), wxSize(185,89), wxVSCROLL | wxHSCROLL | wxTE_READONLY | wxTE_AUTO_URL | wxTE_WORDWRAP | wxTE_MULTILINE, wxDefaultValidator, wxT("txtLicense"));
     txtLicense->SetMaxLength(0);
@@ -183,6 +152,37 @@ void InstallDlg::CreateGUIControls()
     WxStaticText3 = new wxStaticText(nbLicense, ID_WXSTATICTEXT3, wxT("By installing this devpak, you implicitly agree to the terms of this license."), wxPoint(5,158), wxDefaultSize, 0, wxT("WxStaticText3"));
     WxBoxSizer7->Add(WxStaticText3,0,wxALIGN_CENTER | wxALL,5);
 
+    nbInstalled = new wxPanel(nbInstallerPages, ID_NBINSTALLED, wxPoint(4,24), wxSize(372,272));
+    nbInstallerPages->AddPage(nbInstalled, wxT("Installing"));
+
+    WxBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
+    nbInstalled->SetSizer(WxBoxSizer8);
+    nbInstalled->SetAutoLayout(true);
+
+    wxArrayString arrayStringFor_lbInstalledFiles;
+    lbInstalledFiles = new wxListBox(nbInstalled, ID_LBINSTALLEDFILES, wxPoint(5,5), wxSize(121,97), arrayStringFor_lbInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
+    WxBoxSizer8->Add(lbInstalledFiles,1,wxALIGN_CENTER | wxEXPAND | wxALL,5);
+
+    nbFinished = new wxPanel(nbInstallerPages, ID_NBFINISHED, wxPoint(4,24), wxSize(372,272));
+    nbInstallerPages->AddPage(nbFinished, wxT("Finished"));
+
+    stFinished = new wxStaticText(nbFinished, ID_STFINISHED, wxT("%s has been successfully installed on your system."), wxPoint(20,50), wxDefaultSize, 0, wxT("stFinished"));
+
+    WxStaticText8 = new wxStaticText(nbFinished, ID_WXSTATICTEXT8, wxT("Please press Finish to close this window."), wxPoint(41,95), wxDefaultSize, 0, wxT("WxStaticText8"));
+
+    WxBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    WxBoxSizer1->Add(WxBoxSizer4, 0, wxALIGN_CENTER | wxALL, 5);
+
+    btPrevious = new wxButton(this, ID_BTPREVIOUS, wxT("< Previous"), wxPoint(5,5), wxSize(75,25), 0, wxDefaultValidator, wxT("btPrevious"));
+    btPrevious->Enable(false);
+    WxBoxSizer4->Add(btPrevious,0,wxALIGN_CENTER | wxALL,5);
+
+    btNext = new wxButton(this, ID_BTNEXT, wxT("Next >"), wxPoint(90,5), wxSize(75,25), 0, wxDefaultValidator, wxT("btNext"));
+    WxBoxSizer4->Add(btNext,0,wxALIGN_CENTER | wxALL,5);
+
+    btCancel = new wxButton(this, ID_BTCANCEL, wxT("Cancel"), wxPoint(175,5), wxSize(75,25), 0, wxDefaultValidator, wxT("btCancel"));
+    WxBoxSizer4->Add(btCancel,0,wxALIGN_CENTER | wxALL,5);
+
     SetTitle(wxT("Installing DevPak"));
     SetIcon(wxNullIcon);
 
@@ -193,43 +193,44 @@ void InstallDlg::CreateGUIControls()
 
     ////GUI Items Creation End
 
+    bFilesInstalled = false;
     this->SetSize(wxDefaultCoord, wxDefaultCoord, 500, 500);
 
 
     sArchiveName = wxFileSelector("Choose a file to open","","","","DEVPAK files (*.devpak)|*.devpak|All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (sArchiveName.IsEmpty()) {
-        EndModal(wxID_CANCEL); 
-        Close();  
+        EndModal(wxID_CANCEL);
+        Close();
     }
     else {
-    InstallDevPak::GetPackageInfo(&info, sArchiveName);
+       InstallDevPak::GetPackageInfo(&info, sArchiveName);
 
-    // Update the text on the Welcome page
-    wxString szTemp = stInstallProcedure->GetLabel();
-    szTemp.Replace("%s", info.AppName);
-    stInstallProcedure->SetLabel(szTemp);
+        // Update the text on the Welcome page
+        wxString szTemp = stInstallProcedure->GetLabel();
+        szTemp.Replace("%s", info.AppName);
+        stInstallProcedure->SetLabel(szTemp);
 
-    szTemp = stWelcome->GetLabel();
-    szTemp.Replace("%s", info.AppName);
-    szTemp.Replace("%f", info.AppVersion);
-    stWelcome->SetLabel(szTemp);
+        szTemp = stWelcome->GetLabel();
+        szTemp.Replace("%s", info.AppName);
+        szTemp.Replace("%f", info.AppVersion);
+        stWelcome->SetLabel(szTemp);
 
-    txtDescription->SetValue(info.Description);
+        txtDescription->SetValue(info.Description);
 
-    htUrl->SetURL(info.Url);
+        htUrl->SetURL(info.Url);
 
-    // Update the Readme file text
-    InstallDevPak::ExtractSingleFile(sArchiveName, info.Readme, txtReadme);
+        // Update the Readme file text
+        InstallDevPak::ExtractSingleFile(sArchiveName, info.Readme, txtReadme);
 
-    // Update the License file text
-    InstallDevPak::ExtractSingleFile(sArchiveName, info.License, txtLicense);
+        // Update the License file text
+        InstallDevPak::ExtractSingleFile(sArchiveName, info.License, txtLicense);
 
-    // Update the text on the Finished page
-    szTemp = stFinished->GetLabel();
-    szTemp.Replace("%s", info.AppName);
-    stFinished->SetLabel(szTemp);
-
-}
+        // Update the text on the Finished page
+        szTemp = stFinished->GetLabel();
+        szTemp.Replace("%s", info.AppName);
+        stFinished->SetLabel(szTemp);
+        
+    }
 
 }
 
@@ -258,8 +259,6 @@ void InstallDlg::btCancelClick(wxCommandEvent& event)
 void InstallDlg::btNextClick(wxCommandEvent& event)
 {
 
-    static bool bFilesInstalled = false;
-
     btPrevious->Enable(true);
     if (((int)nbInstallerPages->GetSelection()) < (((int)nbInstallerPages->GetPageCount()) - 1)) {
         nbInstallerPages->AdvanceSelection(true);
@@ -278,6 +277,7 @@ void InstallDlg::btNextClick(wxCommandEvent& event)
 
             lbInstalledFiles->Append("Extracting files from DevPak...");
             InstallDevPak::ExtractArchive(this->sArchiveName, info, lbInstalledFiles); // Un-bzip, un-tar devpak archive and install
+           
             lbInstalledFiles->Append("Finished DevPak extraction. Files are installed.");
             bFilesInstalled = true;
 
@@ -289,7 +289,6 @@ void InstallDlg::btNextClick(wxCommandEvent& event)
             nbInstallerPages->AdvanceSelection(true);
             btCancel->SetLabel(wxT("Finish"));
             btNext->Enable(false);
-
         }
 
 

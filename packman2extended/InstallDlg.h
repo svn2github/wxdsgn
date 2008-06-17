@@ -59,19 +59,19 @@ private:
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
-    wxStaticText *WxStaticText3;
-    wxStaticText *WxStaticText6;
-    wxTextCtrl *txtLicense;
-    wxStaticText *WxStaticText8;
-    wxStaticText *stFinished;
     wxButton *btCancel;
     wxButton *btNext;
     wxButton *btPrevious;
     wxBoxSizer *WxBoxSizer4;
+    wxStaticText *WxStaticText8;
+    wxStaticText *stFinished;
     wxPanel *nbFinished;
     wxListBox *lbInstalledFiles;
     wxBoxSizer *WxBoxSizer8;
     wxPanel *nbInstalled;
+    wxStaticText *WxStaticText3;
+    wxStaticText *WxStaticText6;
+    wxTextCtrl *txtLicense;
     wxStaticText *WxStaticText2;
     wxBoxSizer *WxBoxSizer7;
     wxPanel *nbLicense;
@@ -105,17 +105,17 @@ private:
     enum
     {
         ////GUI Enum Control ID Start
-        ID_WXSTATICTEXT3 = 1107,
-        ID_WXSTATICTEXT6 = 1106,
-        ID_TXTLICENSE = 1104,
-        ID_WXSTATICTEXT8 = 1100,
-        ID_STFINISHED = 1099,
         ID_BTCANCEL = 1020,
         ID_BTNEXT = 1019,
         ID_BTPREVIOUS = 1018,
+        ID_WXSTATICTEXT8 = 1100,
+        ID_STFINISHED = 1099,
         ID_NBFINISHED = 1038,
         ID_LBINSTALLEDFILES = 1095,
         ID_NBINSTALLED = 1037,
+        ID_WXSTATICTEXT3 = 1107,
+        ID_WXSTATICTEXT6 = 1106,
+        ID_TXTLICENSE = 1104,
         ID_WXSTATICTEXT2 = 1043,
         ID_NBLICENSE = 1036,
         ID_TXTREADME = 1098,
@@ -140,6 +140,7 @@ public:
     void CreateGUIControls();
     wxString sArchiveName;
     DevPakInfo info;
+    bool bFilesInstalled;
 };
 
 #endif

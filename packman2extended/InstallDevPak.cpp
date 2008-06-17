@@ -43,7 +43,9 @@ bool InstallDevPak::GetPackageInfo(DevPakInfo *info, wxString szFileName)
 
         if (!InstallDevPak::ProcessDirs(archiveDir, info))
             return false;
-
+            
+        info->EntryFileName = InstallDevPak::GetEntryFileName(filename.GetFullName());
+                
     }
     return true;
 
@@ -181,10 +183,9 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
         return false;
     }
 
-    wxTextFile fIni, fEntry;
+    wxTextFile fIni;
     wxString szLine, szTarget, szDestination;
-    wxString EntryFileName;
-
+    
     fIni.Open(INIFileName); // Open the INI file
 
     if (fIni.GetFirstLine() != "[Setup]") {
@@ -196,39 +197,22 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
         return false;
     }
 
-    // Create the entry file (or replace it if it exists)
-    EntryFileName = InstallDevPak::GetEntryFileName(INIFileName);
-
-    if ( wxFileName::FileExists( EntryFileName ) )
-    {
-        fEntry.Open(EntryFileName);
-        fEntry.Clear(); // Delete all lines in the .entry file
-    }
-    else
-        fEntry.Create(EntryFileName);
-
-    fEntry.AddLine("[Setup]");
-
     wxString junk;  // Placeholder for matching strings
     while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Files]")) // Loop through file until you encounter EOF or [Files]
     {
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppName=", &junk)) {
-            fEntry.AddLine(fIni.GetLine(fIni.GetCurrentLine()));
-            info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+             info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppVersion=", &junk)) {
-            fEntry.AddLine(fIni.GetLine(fIni.GetCurrentLine()));
             info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Description=", &junk)) {
-            fEntry.AddLine(fIni.GetLine(fIni.GetCurrentLine()));
-            info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+             info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Url=", &junk)) {
-            fEntry.AddLine(fIni.GetLine(fIni.GetCurrentLine()));
             info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
         }
 
@@ -269,15 +253,33 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
 
     fIni.Close();  // Close the INI file
 
-    fEntry.AddLine("");
-    fEntry.AddLine("[Files]");
-    fEntry.Write();  // Commit the .entry file changes
-    fEntry.Close();  // Close the .entry file
-
     return true;
 
 }
 
+// Create the entry file and setup section
+bool InstallDevPak::SaveEntryFileSetup(DevPakInfo *info)
+{
+   wxTextFile fEntry(info->EntryFileName);
+ 
+ wxMessageBox(info->EntryFileName);
+   
+   fEntry.Open();
+   fEntry.Clear();
+   fEntry.AddLine(wxT("[Setup]"));
+   fEntry.AddLine(wxT("AppName=" + info->AppName));
+   fEntry.AddLine(wxT("AppVersion=" + info->AppVersion));
+   fEntry.AddLine(wxT("Description=" + info->Description));
+   fEntry.AddLine(wxT("Url=" + info->Url));
+   
+   fEntry.AddLine("");
+   fEntry.AddLine(wxT("[Files]"));
+   fEntry.Write();
+   fEntry.Close();
+   
+   return true;
+     
+}
 
 bool InstallDevPak::ReadEntryFile(wxString EntryFileName, DevPakInfo *info)
 {
@@ -333,7 +335,7 @@ bool InstallDevPak::ReadEntryFile(wxString EntryFileName, DevPakInfo *info)
     info->InstalledFiles.Clear();
 
     wxString txtLine;
-    
+
     if (fIni.GetLine(fIni.GetCurrentLine()) == "[Files]") {
 
         fIni.GetNextLine();
@@ -356,7 +358,7 @@ bool InstallDevPak::ReadEntryFile(wxString EntryFileName, DevPakInfo *info)
 // Determine the name of the .entry file
 wxString InstallDevPak::GetEntryFileName(wxString INIFileName)
 {
-    wxFileName EntryFileName(InstallDevPak::GetAppDir() + "//Packages//" + INIFileName);
+    wxFileName EntryFileName(InstallDevPak::GetAppDir() + wxFILE_SEP_PATH + wxT("Packages") + wxFILE_SEP_PATH + INIFileName.AfterLast(wxFILE_SEP_PATH));
     EntryFileName.SetExt("entry");
 
     return EntryFileName.GetFullPath();
@@ -418,24 +420,29 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
 
     wxSortedArrayString aDirs ;
     bool bPromptOnDirExists=false, bExtractDirectory = false;
-    wxString sDir = wxGetCwd();
-    wxString EntryFileName = InstallDevPak::GetEntryFileName(sArchive);
+    wxString sDir = wxGetCwd(),
+             sAppDir = InstallDevPak::GetAppDir() + wxFILE_SEP_PATH;
 
     wxTextFile fEntry;
 
     wxFileSystem fs;
     std::auto_ptr<wxTarEntry> entry(new wxTarEntry);
 
-    // All of the installed files are logged into the .entry file
-    if ( !wxFileName::FileExists( EntryFileName ) )
-    {
-        wxMessageBox(wxT("ERROR: Entry file " + EntryFileName + " does not exists."));
-        return false;
-    }
-    else {
-        fEntry.Open(EntryFileName);  // Open the entry file
-    }
 
+    // All of the installed files are logged into the .entry file
+    if ( wxFileName::FileExists( info.EntryFileName ) )
+    {
+        DevPakInfo info_existing;
+        wxMessageBox(wxT("ERROR: Entry file " + info.EntryFileName + " exists.\nI'm going to remove the current version."));
+        InstallDevPak::ReadEntryFile(info.EntryFileName, &info_existing);  // Read the existing entry file
+        InstallDevPak::RemoveDevPak(info_existing);  // Remove the existing devpak
+    }
+    else
+     
+    InstallDevPak::SaveEntryFileSetup(&info);  // Save the new devpaks entry file setup info
+      
+    fEntry.Open(info.EntryFileName);  // Open the entry file
+    
     wxFileInputStream in(sArchive);
     if (!in)
     {
@@ -522,7 +529,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
                 anOutFile.Create(sDir + sFilenme, TRUE /*overwrite any existing file*/, fileMode);
 
                 wxString relativeDir;
-                sDir.StartsWith(InstallDevPak::GetAppDir() + "\\", &relativeDir);
+                sDir.StartsWith(sAppDir, &relativeDir);
                 fEntry.AddLine(relativeDir + sFilenme); //Add the file to the entry file
 
                 lbInstalledFiles->Append(relativeDir + sFilenme);
@@ -556,139 +563,8 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
 // Extract the files/directories from the devpak archive
 bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info)
 {
-
-    wxSortedArrayString aDirs ;
-    bool bPromptOnDirExists=false, bExtractDirectory = false;
-    wxString sDir = wxGetCwd();
-    wxString EntryFileName = InstallDevPak::GetEntryFileName(sArchive);
-
-    wxTextFile fEntry;
-
-    wxFileSystem fs;
-    std::auto_ptr<wxTarEntry> entry(new wxTarEntry);
-
-    // All of the installed files are logged into the .entry file
-    if ( !wxFileName::FileExists( EntryFileName ) )
-    {
-        wxMessageBox(wxT("ERROR: Entry file " + EntryFileName + " does not exists."));
-        return false;
-    }
-    else {
-        fEntry.Open(EntryFileName);  // Open the entry file
-    }
-
-    wxFileInputStream in(sArchive);
-    if (!in)
-    {
-        wxMessageBox(wxT("Can''t find input archive file: ") + sArchive);
-        return false;
-    }
-
-    wxBZipInputStream bzip2In(in);   // Un-bzip the stream
-    wxTarInputStream TarInStream(bzip2In);  // Un-tar the bzip2In stream
-
-    while ( (entry.reset(TarInStream.GetNextEntry()), entry.get() != NULL) )
-    {
-        // Get the filename/directory for this entry in the devpak archive
-        wxString sFile = entry->GetName();
-
-// If it ends with a \ in the devpak, then it's a directory to unpack
-        wxString s2File = sFile;
-        if (s2File.Last() == '\\')
-            s2File.RemoveLast();
-
-        // Search our list of targets for this filename
-        int sourceIndex = info.TargetDirs.Index(s2File);
-
-        if ((sourceIndex != wxNOT_FOUND) || bExtractDirectory) {
-            if (sourceIndex != wxNOT_FOUND) {
-                bExtractDirectory = false;
-
-                // sourceIndex holds the destination directory
-                sDir = info.DestinationDirs.Item(sourceIndex + 1);
-            }
-
-            if (!wxFileName::IsCaseSensitive() ) sFile.MakeLower();
-
-            wxString sFilenme = sFile.AfterLast(wxFILE_SEP_PATH); // Get file name
-
-            if (entry->IsDir()) // Is the entry a directory?
-            {
-                // Just set boolean flag so that we can extract all of the
-                // files from this directory within the devpak archive in the
-                // subsequent loops
-                bExtractDirectory = true;
-            }
-            else    // Entry is a file
-            {
-
-                if (aDirs.Index(sDir) == wxNOT_FOUND )  // Has the directory been previously created?
-                {
-                    // a new dir
-                    aDirs.Add( sDir );
-                    bool bDirExists = wxDirExists(sDir);
-
-                    // Do we want to overwrite files if they exist?
-                    if ( (bPromptOnDirExists) && (bDirExists) )
-                    {
-
-                        if ( wxMessageBox(wxT("Files already exist in this directory:\n" + sDir + "\nDo you want to overwrite them?"), wxT("Please confirm"),
-                                          wxICON_QUESTION | wxYES_NO) == wxNO )
-                        {
-                            // answer was no
-                            wxMessageBox(wxT("Extraction of ") + sArchive + wxT( " to " ) + sDir + wxT(" cancelled (files already exist)"));
-                            return false;
-                        }
-                        bDirExists = false;
-                    }
-
-                    // Create the new directory and
-                    //prevent logging of creating existing dirs
-                    wxLogNull logNo;
-                    int perm = entry->GetMode();
-                    wxFileName::Mkdir(sDir, perm, wxPATH_MKDIR_FULL);
-
-                }
-
-                // Ok, now create the output file
-                wxFile anOutFile ;
-                int fileMode = wxS_DEFAULT ;
-#ifndef __WXMSW__
-                int iMode = entry->GetMode();
-                if ( iMode & 0700 ) fileMode = fileMode |  wxS_IXUSR ;
-#endif
-
-
-                wxString sFilenme = sFile.AfterLast(wxFILE_SEP_PATH); // Get file name
-                anOutFile.Create(sDir + sFilenme, TRUE /*overwrite any existing file*/, fileMode);
-
-                wxString relativeDir;
-                sDir.StartsWith(InstallDevPak::GetAppDir() + "\\", &relativeDir);
-                fEntry.AddLine(relativeDir + sFilenme); //Add the file to the entry file
-
-                wxFileOutputStream outfile ( anOutFile );
-                if (!outfile.IsOk())
-                {
-                    wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
-                    return false;
-                }
-
-                // Now write the unzipped, untarred archive file to the outfile
-                outfile.Write (TarInStream);
-                if (outfile.GetLastError() == wxSTREAM_WRITE_ERROR)
-                {
-                    wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
-                    return false;
-                }
-            }
-        }
-    } //end of while
-
-    fEntry.Write(); //Commit the entry file
-    fEntry.Close();
-
-    return true;
-
+return true;
+   
 }
 
 // Extract a single from the devpak archive and pass the file's text to txtControl
@@ -728,7 +604,6 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
             wxString sFilenme = sFile.AfterLast(wxFILE_SEP_PATH); // Get file name
 
             if (!entry->IsDir()) // Is the entry a directory?
-
             {
 
                 // a new dir
@@ -793,29 +668,39 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
 // Delete/uninstall a devpak
 bool InstallDevPak::RemoveDevPak(DevPakInfo info)
 {
-wxString txtFileName;
+    wxString txtFileName;
 
-::wxSetWorkingDirectory(InstallDevPak::GetAppDir());
+ if (info.InstalledFiles.GetCount() > 0) {
 
-    wxMessageBox("Removing devpak: " + info.EntryFileName);
+    // Set the working directory to the IDE installation directory
+    // Most files are installed relative to that directory
+    // If not, then they should be specified with the absolute directory
+    //   path instead.
+    ::wxSetWorkingDirectory(InstallDevPak::GetAppDir());  
+    
     for (size_t ii=0; ii < (info.InstalledFiles.GetCount() - 1); ii++) {
-        
+
         txtFileName = info.InstalledFiles.Item(ii);
+         
         txtFileName.Trim(true).Trim(false);
         if (!txtFileName.IsEmpty()) {
-        if (::wxFileExists(txtFileName)) {
-        ::wxRemoveFile(info.InstalledFiles.Item(ii));
-}
-        else
-        wxMessageBox("Not exist:" + info.InstalledFiles.Item(ii));
+            if (::wxFileExists(txtFileName)) {
+                ::wxRemoveFile(info.InstalledFiles.Item(ii));
+            }
+            else
+                wxMessageBox(wxT("File '") + info.InstalledFiles.Item(ii) + wxT("' does not exist."));
+        }
     }
 }
-
-if (::wxFileExists(info.EntryFileName))
-::wxRemoveFile(info.EntryFileName);
 else
-wxMessageBox(info.EntryFileName + " does not exist");
-wxMessageBox("Deleted");
+   wxMessageBox("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file");
+
+    if (::wxFileExists(info.EntryFileName))
+        ::wxRemoveFile(info.EntryFileName);
+    else
+        wxMessageBox(info.EntryFileName + wxT(" does not exist"));
+
+//wxMessageBox(info.EntryFileName + " is removed.");
 
     return true;
 

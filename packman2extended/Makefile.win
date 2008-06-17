@@ -1,7 +1,7 @@
 # Project: PackMan2Extended
 # Compiler: Default GCC compiler
 # Compiler Type: MingW 3
-# Makefile created by wxDev-C++ 7.0 on 08/06/08 08:46
+# Makefile created by wxDev-C++ 7.0 on 17/06/08 12:57
 
 CPP       = g++.exe
 CC        = gcc.exe

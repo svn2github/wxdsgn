@@ -59,36 +59,36 @@ public:
     void lstPackagesSelected(wxListEvent& event);
     void ActionShowDetails(wxCommandEvent& event);
     void ActionShowToolbar(wxCommandEvent& event);
-		void MnuReloadDatabaseClick(wxCommandEvent& event);
+    void MnuReloadDatabaseClick(wxCommandEvent& event);
 
 private:
     //Do not add custom control declarations between
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
-		wxMenuBar *WxMenuBar1;
-		wxStatusBar *WxStatusBar1;
-		wxToolBar *WxToolBar1;
-		wxListCtrl *lstPackages;
-		wxPanel *WxPanel2;
-		wxListBox *WxPackageInstalledFiles;
-		wxListBox *lstFiles;
-		wxTextCtrl *edtUrl;
-		wxHyperlinkCtrl *WxPackageUrlLink;
-		wxTextCtrl *mmoPackageDescription;
-		wxStaticText *WxStaticText3;
-		wxTextCtrl *edtPackageVersion;
-		wxStaticText *WxStaticText2;
-		wxTextCtrl *edtPackageName;
-		wxStaticText *WxStaticText1;
-		wxPanel *WxNoteBookPage2;
-		wxAuiNotebook *nbkPackageDetails;
-		wxPanel *WxPanel1;
+    wxMenuBar *WxMenuBar1;
+    wxStatusBar *WxStatusBar1;
+    wxToolBar *WxToolBar1;
+    wxListCtrl *lstPackages;
+    wxPanel *WxPanel2;
+    wxListBox *WxPackageInstalledFiles;
+    wxListBox *lstFiles;
+    wxTextCtrl *edtUrl;
+    wxHyperlinkCtrl *WxPackageUrlLink;
+    wxTextCtrl *mmoPackageDescription;
+    wxStaticText *WxStaticText3;
+    wxTextCtrl *edtPackageVersion;
+    wxStaticText *WxStaticText2;
+    wxTextCtrl *edtPackageName;
+    wxStaticText *WxStaticText1;
+    wxPanel *WxNoteBookPage2;
+    wxAuiNotebook *nbkPackageDetails;
+    wxPanel *WxPanel1;
     ////GUI Control Declaration End
     wxAuiManager DockManager;
     int selectedPackage;
     std::vector<DevPakInfo> entryInfo;  // STL vector to store the devpak info
-    
+
 
 private:
     //Note: if you receive any error with these enum IDs, then you need to
@@ -98,43 +98,43 @@ private:
     enum
     {
         ////GUI Enum Control ID Start
-			ID_MNU_FILE_1001 = 1001,
-			ID_MNU_INSTALLPACKAGE_1002 = 1002,
-			ID_MNU_VERIFYFILES_1003 = 1003,
-			ID_MNU_DELETEPACKAGE_1004 = 1004,
-			ID_MNU_RELOADDATABASE_1028 = 1028,
-			ID_MNU_EXIT_1010 = 1010,
-			ID_MNU_DETAILS_CTRL_D_1031 = 1031,
-			ID_MNU_SUBMENUITEM17_1033 = 1033,
-			ID_MNU_HELP_1005 = 1005,
-			ID_MNU_HELP_1030 = 1030,
-			ID_MNU_ABOUT_1006 = 1006,
-			
-			ID_WXSTATUSBAR1 = 1036,
-			ID_BTNEXIT = 1044,
-			ID_WXSEPARATOR2 = 1043,
-			ID_BTNABOUT = 1042,
-			ID_BTNHELP = 1041,
-			ID_WXSEPARATOR1 = 1040,
-			ID_BTNREMOVE = 1039,
-			ID_BTNVERIFY = 1038,
-			ID_BTNINSTALL = 1037,
-			ID_WXTOOLBAR1 = 1035,
-			ID_LSTPACKAGES = 1062,
-			ID_WXPANEL2 = 1061,
-			ID_WXPACKAGEINSTALLEDFILES = 1064,
-			ID_LSTFILES = 1057,
-			ID_EDTURL = 1056,
-			ID_WXPACKAGEURLLINK = 1055,
-			ID_MMOPACKAGEDESCRIPTION = 1054,
-			ID_WXSTATICTEXT3 = 1053,
-			ID_EDTPACKAGEVERSION = 1052,
-			ID_WXSTATICTEXT2 = 1051,
-			ID_EDTPACKAGENAME = 1050,
-			ID_WXSTATICTEXT1 = 1049,
-			ID_WXNOTEBOOKPAGE2 = 1048,
-			ID_NBKPACKAGEDETAILS = 1034,
-			ID_WXPANEL1 = 1024,
+        ID_MNU_FILE_1001 = 1001,
+        ID_MNU_INSTALLPACKAGE_1002 = 1002,
+        ID_MNU_VERIFYFILES_1003 = 1003,
+        ID_MNU_DELETEPACKAGE_1004 = 1004,
+        ID_MNU_RELOADDATABASE_1028 = 1028,
+        ID_MNU_EXIT_1010 = 1010,
+        ID_MNU_DETAILS_CTRL_D_1031 = 1031,
+        ID_MNU_SUBMENUITEM17_1033 = 1033,
+        ID_MNU_HELP_1005 = 1005,
+        ID_MNU_HELP_1030 = 1030,
+        ID_MNU_ABOUT_1006 = 1006,
+
+        ID_WXSTATUSBAR1 = 1036,
+        ID_BTNEXIT = 1044,
+        ID_WXSEPARATOR2 = 1043,
+        ID_BTNABOUT = 1042,
+        ID_BTNHELP = 1041,
+        ID_WXSEPARATOR1 = 1040,
+        ID_BTNREMOVE = 1039,
+        ID_BTNVERIFY = 1038,
+        ID_BTNINSTALL = 1037,
+        ID_WXTOOLBAR1 = 1035,
+        ID_LSTPACKAGES = 1062,
+        ID_WXPANEL2 = 1061,
+        ID_WXPACKAGEINSTALLEDFILES = 1064,
+        ID_LSTFILES = 1057,
+        ID_EDTURL = 1056,
+        ID_WXPACKAGEURLLINK = 1055,
+        ID_MMOPACKAGEDESCRIPTION = 1054,
+        ID_WXSTATICTEXT3 = 1053,
+        ID_EDTPACKAGEVERSION = 1052,
+        ID_WXSTATICTEXT2 = 1051,
+        ID_EDTPACKAGENAME = 1050,
+        ID_WXSTATICTEXT1 = 1049,
+        ID_WXNOTEBOOKPAGE2 = 1048,
+        ID_NBKPACKAGEDETAILS = 1034,
+        ID_WXPANEL1 = 1024,
         ////GUI Enum Control ID End
         ID_DUMMY_VALUE_ //don't remove this value unless you have other enum values
     };

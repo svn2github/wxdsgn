@@ -56,6 +56,7 @@ bool GetINIFileList(wxString INIFileName, DevPakInfo *info); // Grab list of arc
 wxString GetEntryFileName(wxString INIFileName);
 wxString GetAppDir(); // Grab the <app> directory from the Windows registry
 bool ReadEntryFile(wxString EntryFileName, DevPakInfo *info);
+bool SaveEntryFileSetup(DevPakInfo *info);
 bool ProcessDirs(wxString archiveDir, DevPakInfo *info); //Replace macros in directory names
 bool ExtractArchive(const wxString sArchive, DevPakInfo info, wxListBox *lbInstalledFiles); // Un-bzip, un-tar devpak archive and install
 bool ExtractArchive(const wxString sArchive, DevPakInfo info); // Un-bzip, un-tar devpak archive and install
