@@ -9197,7 +9197,7 @@ begin
 	if alsoReasignEditor then
 	begin
         editor := fProject.OpenUnit(fProject.Units.Indexof(currFile));
-                editor.Activate;
+        editor.Activate;
 	end
 	else
 		fProject.OpenUnit(fProject.Units.Indexof(currFile));
@@ -9205,8 +9205,6 @@ begin
   else if not creatingProject then
   begin
     OpenFile(currFile);
-	//if alsoReasignEditor then   //EAB TODO: Huh? this condition does not change anything
-        //editor := GetEditorFromFileName(currFile);
   end;
   editor := GetEditorFromFileName(currFile);
   if(editor <> nil) then

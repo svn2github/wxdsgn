@@ -1768,7 +1768,6 @@ begin
            if New then
       	     if devEditor.DefaulttoPrj then
                fEditor.InsertDefaultText;
-         //editor.AssignedPlugin := AssociatedPlugin;
          LoadUnitLayout(fEditor, index);
          result:= fEditor;
       except
