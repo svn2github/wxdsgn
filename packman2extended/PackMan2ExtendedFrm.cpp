@@ -271,12 +271,14 @@ void PackMan2ExtendedFrm::UpdatePackageList()
     lstPackages->ClearAll();
     entryInfo.clear();  // Clear vector of devpakinfo
 
-    wxString fEntryName = wxFindFirstFile(InstallDevPak::GetEntryFileName("*.entry"));
+    info.SetEntryFileName("*.entry");  // Set the entry to wildcard name
+    wxString fEntryName = wxFindFirstFile(info.GetEntryFileName());
 
     int ii = 0;
     while ( !fEntryName.empty() )
     {
-        InstallDevPak::ReadEntryFile(fEntryName, &info);
+        info.SetEntryFileName(fEntryName);
+        InstallDevPak::ReadEntryFile(&info);
         entryInfo.push_back(info);  // Store the devpak entry info in a STL vector
 
         lstPackages->InsertItem(ii, info.AppName,0);
@@ -324,8 +326,9 @@ void PackMan2ExtendedFrm::ActionShowAbout(wxCommandEvent& event)
 void PackMan2ExtendedFrm::ActionRemovePackage(wxCommandEvent& event)
 {
     // Remove the devpak and update the package list
-    InstallDevPak::RemoveDevPak(entryInfo.at(selectedPackage));
+    InstallDevPak::RemoveDevPak(&(entryInfo.at(selectedPackage)));
     UpdatePackageList();
+    
 }
 void PackMan2ExtendedFrm::ActionInstallPackage(wxCommandEvent& event)
 {

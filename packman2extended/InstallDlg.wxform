@@ -1,6 +1,6 @@
 object frmNewForm_1: TfrmNewForm
-  Left = 6
-  Top = 1
+  Left = 8
+  Top = 8
   AutoScroll = False
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Installing DevPak'
@@ -13,6 +13,7 @@ object frmNewForm_1: TfrmNewForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  EVT_INIT_DIALOG = 'InstallDlgInitDialog'
   EVT_CLOSE = 'OnClose'
   Wx_ICON.Data = {07544269746D617000000000}
   Wx_Name = 'InstallDlg'
