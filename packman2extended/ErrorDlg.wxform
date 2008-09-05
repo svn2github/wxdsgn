@@ -1,0 +1,49 @@
+object frmNewForm_4: TfrmNewForm
+  Left = 8
+  Top = 8
+  AutoScroll = False
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Error Messages'
+  ClientHeight = 149
+  ClientWidth = 347
+  Color = clBtnFace
+  OldCreateOrder = True
+  PopupMenu = DesignerPopup.Owner
+  Visible = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  EVT_CLOSE = 'OnClose'
+  Wx_ICON.Data = {07544269746D617000000000}
+  Wx_Name = 'ErrorDlg'
+  Wx_IDName = 'ID_DIALOG1'
+  Wx_IDValue = 666
+  Wx_Class = 'wxDialog'
+  Wx_Center = True
+  Wx_Hidden = True
+  Wx_SizeToContents = True
+  Wx_GeneralStyle = []
+  Wx_DialogStyle = [wxCAPTION, wxDIALOG_NO_PARENT, wxMINIMIZE_BOX, wxCLOSE_BOX]
+  Wx_Border = 0
+  Wx_BorderAlignment = []
+  PixelsPerInch = 96
+  TextHeight = 13
+  object ErrorMessageBox: TWxListBox
+    Left = 19
+    Top = 8
+    Width = 305
+    Height = 128
+    ItemHeight = 13
+    TabOrder = 0
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxListBox'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = False
+    Wx_IDName = 'ID_ERRORMESSAGEBOX'
+    Wx_IDValue = 1002
+    Wx_ListboxStyle = []
+    Wx_ListboxSubStyle = wxLB_SINGLE
+  end
+end

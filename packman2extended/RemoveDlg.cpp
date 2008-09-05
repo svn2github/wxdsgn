@@ -23,13 +23,13 @@
 //Code added in other places will be removed by wxDev-C++
 ////Event Table Start
 BEGIN_EVENT_TABLE(RemoveDlg,wxDialog)
-	////Manual Code Start
-	////Manual Code End
-	
-	EVT_CLOSE(RemoveDlg::OnClose)
-	EVT_INIT_DIALOG(RemoveDlg::RemoveDlgInitDialog)
-	EVT_TIMER(ID_WXTIMER1,RemoveDlg::WxTimer1Timer)
-	EVT_BUTTON(ID_WXCANCEL,RemoveDlg::WxCancelClick)
+    ////Manual Code Start
+    ////Manual Code End
+
+    EVT_CLOSE(RemoveDlg::OnClose)
+    EVT_INIT_DIALOG(RemoveDlg::RemoveDlgInitDialog)
+    EVT_TIMER(ID_WXTIMER1,RemoveDlg::WxTimer1Timer)
+    EVT_BUTTON(ID_WXCANCEL,RemoveDlg::WxCancelClick)
 END_EVENT_TABLE()
 ////Event Table End
 
@@ -41,6 +41,7 @@ RemoveDlg::RemoveDlg(wxWindow *parent, wxWindowID id, const wxString &title, con
 
 RemoveDlg::~RemoveDlg()
 {
+
 }
 
 void RemoveDlg::CreateGUIControls()
@@ -51,49 +52,51 @@ void RemoveDlg::CreateGUIControls()
     //Add the custom code before or after the blocks
     ////GUI Items Creation Start
 
-	SetTitle(wxT("RemoveDlg"));
-	SetIcon(wxNullIcon);
-	SetSize(8,8,358,280);
-	Center();
-	
+    SetTitle(wxT("RemoveDlg"));
+    SetIcon(wxNullIcon);
+    SetSize(8,8,358,280);
+    Center();
 
-	WxTimer1 = new wxTimer();
-	WxTimer1->SetOwner(this, ID_WXTIMER1);
-	WxTimer1->Start(100);
 
-	WxCancel = new wxButton(this, ID_WXCANCEL, wxT("Abort"), wxPoint(132,211), wxSize(75,25), 0, wxDefaultValidator, wxT("WxCancel"));
+    WxTimer1 = new wxTimer();
+    WxTimer1->SetOwner(this, ID_WXTIMER1);
+    WxTimer1->Start(100);
 
-	WxStaticText4 = new wxStaticText(this, ID_WXSTATICTEXT4, wxT("Files remaining"), wxPoint(59,169), wxDefaultSize, 0, wxT("WxStaticText4"));
-	WxStaticText4->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxCancel = new wxButton(this, ID_WXCANCEL, wxT("Abort"), wxPoint(132,211), wxSize(75,25), 0, wxDefaultValidator, wxT("WxCancel"));
 
-	WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Files deleted"), wxPoint(73,142), wxDefaultSize, 0, wxT("WxStaticText3"));
-	WxStaticText3->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxStaticText4 = new wxStaticText(this, ID_WXSTATICTEXT4, wxT("Files remaining"), wxPoint(59,169), wxDefaultSize, 0, wxT("WxStaticText4"));
+    WxStaticText4->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
 
-	WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Total files"), wxPoint(89,114), wxDefaultSize, 0, wxT("WxStaticText2"));
-	WxStaticText2->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Files deleted"), wxPoint(73,142), wxDefaultSize, 0, wxT("WxStaticText3"));
+    WxStaticText3->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
 
-	txtFilesRemaining = new wxStaticText(this, ID_TXTFILESREMAINING, wxT("txtFilesRemaining"), wxPoint(164,169), wxDefaultSize, 0, wxT("txtFilesRemaining"));
+    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Total files"), wxPoint(89,114), wxDefaultSize, 0, wxT("WxStaticText2"));
+    WxStaticText2->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
 
-	txtFilesDeleted = new wxStaticText(this, ID_TXTFILESDELETED, wxT("txtFilesDeleted"), wxPoint(164,142), wxDefaultSize, 0, wxT("txtFilesDeleted"));
+    txtFilesRemaining = new wxStaticText(this, ID_TXTFILESREMAINING, wxT("txtFilesRemaining"), wxPoint(164,169), wxDefaultSize, 0, wxT("txtFilesRemaining"));
 
-	txtTotalFiles = new wxStaticText(this, ID_TXTTOTALFILES, wxT("txtTotalFiles"), wxPoint(164,114), wxDefaultSize, 0, wxT("txtTotalFiles"));
+    txtFilesDeleted = new wxStaticText(this, ID_TXTFILESDELETED, wxT("txtFilesDeleted"), wxPoint(164,142), wxDefaultSize, 0, wxT("txtFilesDeleted"));
 
-	WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(42,79), wxSize(253,22), wxGA_HORIZONTAL, wxDefaultValidator, wxT("WxGauge1"));
-	WxGauge1->SetRange(100);
-	WxGauge1->SetValue(0);
+    txtTotalFiles = new wxStaticText(this, ID_TXTTOTALFILES, wxT("txtTotalFiles"), wxPoint(164,114), wxDefaultSize, 0, wxT("txtTotalFiles"));
 
-	ProgressBox = new wxStaticBox(this, ID_PROGRESSBOX, wxT("Progress (0%)"), wxPoint(30,52), wxSize(283,148));
+    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(42,79), wxSize(253,22), wxGA_HORIZONTAL, wxDefaultValidator, wxT("WxGauge1"));
+    WxGauge1->SetRange(100);
+    WxGauge1->SetValue(0);
 
-	WxStaticText1 = new wxStaticText(this, ID_WXSTATICTEXT1, wxT("Deleting file:"), wxPoint(16,21), wxDefaultSize, 0, wxT("WxStaticText1"));
-	WxStaticText1->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    ProgressBox = new wxStaticBox(this, ID_PROGRESSBOX, wxT("Progress (0%)"), wxPoint(30,52), wxSize(283,148));
 
-	txtDeleteFile = new wxStaticText(this, ID_TXTDELETEFILE, wxT("%s"), wxPoint(90,21), wxDefaultSize, 0, wxT("txtDeleteFile"));
+    WxStaticText1 = new wxStaticText(this, ID_WXSTATICTEXT1, wxT("Deleting file:"), wxPoint(16,21), wxDefaultSize, 0, wxT("WxStaticText1"));
+    WxStaticText1->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+
+    txtDeleteFile = new wxStaticText(this, ID_TXTDELETEFILE, wxT("%s"), wxPoint(90,21), wxDefaultSize, 0, wxT("txtDeleteFile"));
     ////GUI Items Creation End
 
 }
 
 void RemoveDlg::OnClose(wxCloseEvent& /*event*/)
 {
+    //  errordlg->Close();
+    //  delete errordlg;
     Destroy();
 }
 
@@ -102,6 +105,18 @@ void RemoveDlg::OnClose(wxCloseEvent& /*event*/)
  */
 void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
 {
+    // The timer starts automatically.
+    // With each tick, we evaluate the pakStatus
+    // If IN_PROCESS, then we call RemoveFiles which
+    //   removes the next file in the list
+    // Once all files have been removed from the devpak,
+    //  pakStatus becomes COMPLETED and we stop the timer
+    //  and close the dialog
+    // If abort button is pushed, pakStatus gets set to
+    //   ABORTED and we close the dialog without further
+    //   processing. NOTE: There's currently no way to
+    //   un-delete any files that have been already deleted
+    //   in the case of an abort.
     if (info->pakStatus == IN_PROCESS) {
         txtFilesRemaining->SetLabel(wxString::Format("%d", info->InstalledFiles.GetCount()-info->currentFileNumber));
         txtFilesDeleted->SetLabel(wxString::Format("%d", info->currentFileNumber));
@@ -109,8 +124,17 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
         ProgressBox->SetLabel(wxString::Format("Progress (%d %%)", (int)(info->currentFileNumber * 100.0 / info->InstalledFiles.GetCount())));
         RemoveFiles();
     }
-    else
+
+    if (info->pakStatus == COMPLETED) {
+
+        // Remove the .entry file associated with this devpak.
+        if (::wxFileExists(info->GetEntryFileName()))
+            ::wxRemoveFile(info->GetEntryFileName());
+        // else
+        //     wxMessageBox(info->GetEntryFileName() + wxT(" does not exist"));
+
         Close();
+    }
 
     if (info->pakStatus == ABORTED) {
         WxTimer1->Stop();
@@ -125,12 +149,17 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
 void RemoveDlg::RemoveDlgInitDialog(wxInitDialogEvent& event)
 {
 
+    // ErrorDlg *errordlg = new ErrorDlg(NULL);
+    // errordlg->Show(true);
+    // errordlg->ClearErrorList();
+    // errordlg->AddError(wxT("Hello tony"));
+
     info->pakStatus = IN_PROCESS;
-    info->currentFileNumber = 0;
+    info->currentFileNumber = 0;  // Index of the file to delete next
     SetTitle(wxT("Remove DevPak: " + info->AppName));
     WxGauge1->SetRange(info->InstalledFiles.GetCount());
 
-txtTotalFiles->SetLabel(wxString::Format("%d", info->InstalledFiles.GetCount()));
+    txtTotalFiles->SetLabel(wxString::Format("%d", info->InstalledFiles.GetCount()));
 
     // Set the working directory to the IDE installation directory
     // Most files are installed relative to that directory
@@ -159,27 +188,28 @@ bool RemoveDlg::RemoveFiles()
 
         txtFileName.Trim(true).Trim(false);
         txtDeleteFile->SetLabel(txtFileName);
-        
+
         if (!txtFileName.IsEmpty()) {
             if (::wxFileExists(txtFileName)) {
-                //        ::wxRemoveFile(info->InstalledFiles.Item(info->currentFileNumber));
+                // Delete the file
+                ::wxRemoveFile(info->InstalledFiles.Item(info->currentFileNumber));
                 ::wxSafeYield();
             }
-            else
-                wxMessageBox(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
+            // else
+            //wxMessageBox(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
+            //    errordlg->AddError(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
         }
     }
-    else
-        wxMessageBox(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
+    else {
+        info->currentFileNumber = info->InstalledFiles.GetCount() + 1;
+        //wxMessageBox(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
+        // errordlg->AddError(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
 
-//     if (::wxFileExists(info->GetEntryFileName()))
-//         ::wxRemoveFile(info->GetEntryFileName());
-//     else
-//         wxMessageBox(info->GetEntryFileName() + wxT(" does not exist"));
-//
+    }
 
-    info->currentFileNumber++;
+    info->currentFileNumber++;  // Set next index to delete
 
+    // If next index is more than number of files to delete, then we are done.
     if (info->currentFileNumber >= info->InstalledFiles.GetCount())
         info->pakStatus = COMPLETED;
 

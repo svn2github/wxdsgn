@@ -43,9 +43,9 @@ bool InstallDevPak::GetPackageInfo(DevPakInfo *info, wxString szFileName)
 
         if (!InstallDevPak::ProcessDirs(archiveDir, info))
             return false;
-            
+
         info->SetEntryFileName(filename.GetFullName());
-                     
+
     }
     return true;
 
@@ -177,119 +177,123 @@ bool InstallDevPak::ExtractPackageINI(const wxString sArchive)
 bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
 {
 
+    wxTextFile fIni;
+    wxString szLine, szTarget, szDestination;
+
     if ( !wxFileName::FileExists( INIFileName ) )
     {
         wxMessageBox(wxT("Can't find DevPackage file: " + INIFileName));
         return false;
     }
+    else {
+        fIni.Open(INIFileName); // Open the INI file
 
-    wxTextFile fIni;
-    wxString szLine, szTarget, szDestination;
-    
-    fIni.Open(INIFileName); // Open the INI file
+        if (fIni.GetFirstLine() != "[Setup]") {
+            while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Setup]")); // Loop through file until you encounter EOF or [Setup]
+        }
 
-    if (fIni.GetFirstLine() != "[Setup]") {
-        while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Setup]")); // Loop through file until you encounter EOF or [Setup]
+        if (fIni.GetLine(fIni.GetCurrentLine()) != "[Setup]") {
+            wxMessageBox("Error: [Setup] section not found in " + INIFileName);
+            return false;
+        }
+
+        wxString junk;  // Placeholder for matching strings
+        while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Files]")) // Loop through file until you encounter EOF or [Files]
+        {
+            if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppName=", &junk)) {
+                info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            }
+
+            if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppVersion=", &junk)) {
+                info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            }
+
+            if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Description=", &junk)) {
+                info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            }
+
+            if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Url=", &junk)) {
+                info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            }
+
+            if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Readme=", &junk)) {
+                info->Readme = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            }
+
+            if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("License=", &junk)) {
+                info->License = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            }
+
+        }
+
+        if (fIni.GetLine(fIni.GetCurrentLine()) != "[Files]") {
+            wxMessageBox("Error: [Files] section not found in " + INIFileName);
+            return false;
+        }
+
+        if (!fIni.Eof())
+            szLine = fIni.GetNextLine();
+        // Now go through the file section called [Files] until we either Eof or reach another section
+        while ( (!fIni.Eof()) && ( !szLine.Trim(false).Trim(true).Matches("[*]") ) ) {
+
+            szTarget = szLine.BeforeFirst('=');
+            szDestination = szLine.AfterFirst('=');
+
+            // Grab the target and destination directories
+            // target = directory name within devpak archive
+            // destination = directory name to extract to during install
+            if ((!szTarget.IsEmpty()) && (!szDestination.IsEmpty())) {
+                info->TargetDirs.Add(szTarget);         // Add the source directory to the list
+                info->DestinationDirs.Add(szDestination);    // Add the destination directory to the list
+            }
+
+            szLine = fIni.GetNextLine();
+
+        }
+
+        fIni.Close();  // Close the INI file
+
+        return true;
     }
-
-    if (fIni.GetLine(fIni.GetCurrentLine()) != "[Setup]") {
-        wxMessageBox("Error: [Setup] section not found in " + INIFileName);
-        return false;
-    }
-
-    wxString junk;  // Placeholder for matching strings
-    while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Files]")) // Loop through file until you encounter EOF or [Files]
-    {
-        if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppName=", &junk)) {
-             info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
-        }
-
-        if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppVersion=", &junk)) {
-            info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
-        }
-
-        if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Description=", &junk)) {
-             info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
-        }
-
-        if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Url=", &junk)) {
-            info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
-        }
-
-        if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Readme=", &junk)) {
-            info->Readme = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
-        }
-
-        if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("License=", &junk)) {
-            info->License = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
-        }
-
-    }
-
-    if (fIni.GetLine(fIni.GetCurrentLine()) != "[Files]") {
-        wxMessageBox("Error: [Files] section not found in " + INIFileName);
-        return false;
-    }
-
-    if (!fIni.Eof())
-        szLine = fIni.GetNextLine();
-    // Now go through the file section called [Files] until we either Eof or reach another section
-    while ( (!fIni.Eof()) && ( !szLine.Trim(false).Trim(true).Matches("[*]") ) ) {
-
-        szTarget = szLine.BeforeFirst('=');
-        szDestination = szLine.AfterFirst('=');
-
-        // Grab the target and destination directories
-        // target = directory name within devpak archive
-        // destination = directory name to extract to during install
-        if ((!szTarget.IsEmpty()) && (!szDestination.IsEmpty())) {
-            info->TargetDirs.Add(szTarget);         // Add the source directory to the list
-            info->DestinationDirs.Add(szDestination);    // Add the destination directory to the list
-        }
-
-        szLine = fIni.GetNextLine();
-
-    }
-
-    fIni.Close();  // Close the INI file
-
-    return true;
 
 }
 
 // Create the entry file and setup section
 bool InstallDevPak::SaveEntryFileSetup(DevPakInfo *info)
 {
-   wxTextFile fEntry(info->GetEntryFileName());
-   
-   fEntry.Open();
-   fEntry.Clear();
-   fEntry.AddLine(wxT("[Setup]"));
-   fEntry.AddLine(wxT("AppName=" + info->AppName));
-   fEntry.AddLine(wxT("AppVersion=" + info->AppVersion));
-   fEntry.AddLine(wxT("Description=" + info->Description));
-   fEntry.AddLine(wxT("Url=" + info->Url));
-   
-   fEntry.AddLine("");
-   fEntry.AddLine(wxT("[Files]"));
-   fEntry.Write();
-   fEntry.Close();
-   
-   return true;
-     
+
+    wxTextFile fEntry;
+
+    if ( !wxFileName::FileExists( info->GetEntryFileName() ) )
+        fEntry.Create(info->GetEntryFileName());
+    else
+        fEntry.Open(info->GetEntryFileName());
+
+    fEntry.Clear();
+    fEntry.AddLine(wxT("[Setup]"));
+    fEntry.AddLine(wxT("AppName=" + info->AppName));
+    fEntry.AddLine(wxT("AppVersion=" + info->AppVersion));
+    fEntry.AddLine(wxT("Description=" + info->Description));
+    fEntry.AddLine(wxT("Url=" + info->Url));
+
+    fEntry.AddLine("");
+    fEntry.AddLine(wxT("[Files]"));
+    fEntry.Write();
+    fEntry.Close();
+
+    return true;
+
 }
 
 bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
 {
     wxTextFile fIni;
-
     if ( wxFileName::FileExists( info->GetEntryFileName() ) )
         fIni.Open(info->GetEntryFileName());
     else {
-        wxMessageBox(wxT("Error: Entry file ") + info->GetEntryFileName() + wxT(" does not exist. [289]"));
+        wxMessageBox(wxT("[1] Error: Entry file ") + info->GetEntryFileName() + wxT(" does not exist. [289]"));
         return false;
     }
-
     if (fIni.GetFirstLine() != "[Setup]") {
         while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Setup]")); // Loop through file until you encounter EOF or [Setup]
     }
@@ -407,7 +411,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
     wxSortedArrayString aDirs ;
     bool bPromptOnDirExists=false, bExtractDirectory = false;
     wxString sDir = wxGetCwd(),
-             sAppDir = InstallDevPak::GetAppDir() + wxFILE_SEP_PATH;
+                    sAppDir = InstallDevPak::GetAppDir() + wxFILE_SEP_PATH;
 
     wxTextFile fEntry;
 
@@ -423,11 +427,10 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
         if (!InstallDevPak::RemoveDevPak(&info)) return false;  // Remove the existing devpak
     }
     else
-     
-    InstallDevPak::SaveEntryFileSetup(&info);  // Save the new devpaks entry file setup info
-      
+        if (!InstallDevPak::SaveEntryFileSetup(&info)) return false;  // Save the new devpaks entry file setup info
+
     fEntry.Open(info.GetEntryFileName());  // Open the entry file
-    
+
     wxFileInputStream in(sArchive);
     if (!in)
     {
@@ -548,8 +551,8 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
 // Extract the files/directories from the devpak archive
 bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info)
 {
-return true;
-   
+    return true;
+
 }
 
 // Extract a single from the devpak archive and pass the file's text to txtControl
@@ -651,13 +654,13 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
 }
 
 // Delete/uninstall a devpak
+// This makes a call to the RemoveDlg dialog
 bool InstallDevPak::RemoveDevPak(DevPakInfo *info)
 {
-    
     // Remove the devpak and update the package list
     RemoveDlg *dlg = new RemoveDlg(::wxGetActiveWindow());
     dlg->info = info;
-    
+
     if ( dlg->ShowModal() == wxID_OK );
     return true;
 

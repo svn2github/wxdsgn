@@ -298,7 +298,7 @@ void PackMan2ExtendedFrm::UpdatePackageList()
     edtPackageName->SetValue("");
 
     WxPackageInstalledFiles->Clear();
-    
+
 }
 
 /*
@@ -328,7 +328,7 @@ void PackMan2ExtendedFrm::ActionRemovePackage(wxCommandEvent& event)
     // Remove the devpak and update the package list
     InstallDevPak::RemoveDevPak(&(entryInfo.at(selectedPackage)));
     UpdatePackageList();
-    
+
 }
 void PackMan2ExtendedFrm::ActionInstallPackage(wxCommandEvent& event)
 {
