@@ -260,6 +260,7 @@ void PackMan2ExtendedFrm::CreateGUIControls()
 
 void PackMan2ExtendedFrm::OnClose(wxCloseEvent& event)
 {
+
     Destroy();
 }
 

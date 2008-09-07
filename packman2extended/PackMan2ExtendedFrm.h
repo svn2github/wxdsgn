@@ -89,7 +89,6 @@ private:
     int selectedPackage;
     std::vector<DevPakInfo> entryInfo;  // STL vector to store the devpak info
 
-
 private:
     //Note: if you receive any error with these enum IDs, then you need to
     //change your old form code that are based on the #define control IDs.

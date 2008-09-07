@@ -39,7 +39,7 @@ public:
     wxArrayString TargetDirs,
     DestinationDirs,
     InstalledFiles;
-    int currentFileNumber;
+    size_t currentFileNumber;
     StatusType pakStatus;
 
 public:

@@ -71,7 +71,6 @@ private:
 protected:
     ErrorDlg *errordlg;  // Error message window
 
-
 private:
     //Note: if you receive any error with these enum IDs, then you need to
     //change your old form code that are based on the #define control IDs.

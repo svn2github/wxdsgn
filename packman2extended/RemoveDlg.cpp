@@ -95,8 +95,6 @@ void RemoveDlg::CreateGUIControls()
 
 void RemoveDlg::OnClose(wxCloseEvent& /*event*/)
 {
-    //  errordlg->Close();
-    //  delete errordlg;
     Destroy();
 }
 
@@ -130,8 +128,11 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
         // Remove the .entry file associated with this devpak.
         if (::wxFileExists(info->GetEntryFileName()))
             ::wxRemoveFile(info->GetEntryFileName());
-        // else
-        //     wxMessageBox(info->GetEntryFileName() + wxT(" does not exist"));
+        else
+        {
+            errordlg->AddError(info->GetEntryFileName() + wxT(" does not exist"));
+            errordlg->Show(true);
+        }
 
         Close();
     }
@@ -149,11 +150,6 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
 void RemoveDlg::RemoveDlgInitDialog(wxInitDialogEvent& event)
 {
 
-    // ErrorDlg *errordlg = new ErrorDlg(NULL);
-    // errordlg->Show(true);
-    // errordlg->ClearErrorList();
-    // errordlg->AddError(wxT("Hello tony"));
-
     info->pakStatus = IN_PROCESS;
     info->currentFileNumber = 0;  // Index of the file to delete next
     SetTitle(wxT("Remove DevPak: " + info->AppName));
@@ -166,6 +162,12 @@ void RemoveDlg::RemoveDlgInitDialog(wxInitDialogEvent& event)
     // If not, then they should be specified with the absolute directory
     //   path instead.
     ::wxSetWorkingDirectory(InstallDevPak::GetAppDir());
+
+    // I don't think we need to explicitly close or delete the error window
+    //   so long as it has a parent
+    ErrorDlg *errordlg = new ErrorDlg(this);
+    errordlg->Show(false);
+    errordlg->ClearErrorList();
 
 }
 
@@ -195,16 +197,16 @@ bool RemoveDlg::RemoveFiles()
                 ::wxRemoveFile(info->InstalledFiles.Item(info->currentFileNumber));
                 ::wxSafeYield();
             }
-            // else
-            //wxMessageBox(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
-            //    errordlg->AddError(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
+            else {
+                errordlg->AddError(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
+                errordlg->Show(true);
+            }
         }
     }
     else {
         info->currentFileNumber = info->InstalledFiles.GetCount() + 1;
-        //wxMessageBox(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
-        // errordlg->AddError(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
-
+        errordlg->AddError(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
+        errordlg->Show(true);
     }
 
     info->currentFileNumber++;  // Set next index to delete
