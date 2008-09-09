@@ -549,6 +549,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
 }
 
 // Extract the files/directories from the devpak archive
+// ? Use this for silent install?
 bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info)
 {
     return true;
@@ -666,3 +667,40 @@ bool InstallDevPak::RemoveDevPak(DevPakInfo *info)
 
 }
 
+bool InstallDevPak::VerifyDevPak(DevPakInfo *info)
+{
+
+    bool allFound = true;
+
+    ErrorDlg *errordlg = new ErrorDlg(NULL);
+
+    errordlg->ClearErrorList();
+    errordlg->SetTitle("Verify DevPak files");
+
+    // Set the working directory to the IDE installation directory
+    // Most files are installed relative to that directory
+    // If not, then they should be specified with the absolute directory
+    //   path instead.
+    ::wxSetWorkingDirectory(InstallDevPak::GetAppDir());
+
+    if (info->InstalledFiles.GetCount() > 0) {
+        for (size_t ii = 0; ii < info->InstalledFiles.GetCount(); ii++) {
+            if (!(::wxFileExists(info->InstalledFiles.Item(ii)))) {
+                errordlg->AddError(wxT(info->InstalledFiles.Item(ii) + " not found."));
+                allFound = false;
+            }
+        }
+
+    }
+
+    if (allFound)
+        errordlg->AddError("All files in devpak were found.");
+
+    errordlg->ShowOK(true);
+
+    if ( errordlg->ShowModal() == wxID_OK );
+
+    errordlg->Destroy();
+
+    return true;
+}

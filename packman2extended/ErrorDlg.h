@@ -25,6 +25,7 @@
 //Header Include Start and Header Include End.
 //wxDev-C++ designer will remove them. Add custom headers after the block.
 ////Header Include Start
+#include <wx/button.h>
 #include <wx/listbox.h>
 ////Header Include End
 
@@ -47,6 +48,7 @@ private:
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
+    wxButton *WxOK;
     wxListBox *ErrorMessageBox;
     ////GUI Control Declaration End
 
@@ -70,6 +72,7 @@ private:
 public:
     bool ClearErrorList();
     bool AddError(wxString message);
+    void ErrorDlg::ShowOK(bool value);
 };
 
 #endif

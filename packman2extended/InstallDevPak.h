@@ -28,6 +28,7 @@
 
 #include "DevPakInfo.h"
 #include "RemoveDlg.h"
+#include "ErrorDlg.h"
 
 namespace InstallDevPak
 {
@@ -45,6 +46,7 @@ bool ExtractArchive(const wxString sArchive, DevPakInfo info); // Un-bzip, un-ta
 bool ExtractSingleFile(const wxString sArchive, wxString sFilename, wxTextCtrl *txtControl);
 bool ExtractSingleFile(const wxString sArchive, wxString sFilename);
 bool RemoveDevPak(DevPakInfo *info);
+bool VerifyDevPak(DevPakInfo *info);
 };
 
 #endif

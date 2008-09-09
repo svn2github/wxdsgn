@@ -341,6 +341,8 @@ void PackMan2ExtendedFrm::ActionInstallPackage(wxCommandEvent& event)
 }
 void PackMan2ExtendedFrm::ActionVerifyPackage(wxCommandEvent& event)
 {
+    if (!InstallDevPak::VerifyDevPak(&(entryInfo.at(selectedPackage))));
+
 }
 void PackMan2ExtendedFrm::ActionExit(wxCommandEvent& event)
 {
@@ -363,7 +365,7 @@ void PackMan2ExtendedFrm::lstPackagesSelected(wxListEvent& event)
 
     WxPackageInstalledFiles->Clear();
     if (info.InstalledFiles.GetCount() > 0) {
-        for (size_t ii = 0; ii < (info.InstalledFiles.GetCount()-1); ii++) {
+        for (size_t ii = 0; ii < info.InstalledFiles.GetCount(); ii++) {
             WxPackageInstalledFiles->Append(wxT(info.InstalledFiles.Item(ii)));
         }
     }

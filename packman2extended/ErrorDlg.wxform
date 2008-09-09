@@ -4,7 +4,7 @@ object frmNewForm_4: TfrmNewForm
   AutoScroll = False
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Error Messages'
-  ClientHeight = 149
+  ClientHeight = 176
   ClientWidth = 347
   Color = clBtnFace
   OldCreateOrder = True
@@ -45,5 +45,28 @@ object frmNewForm_4: TfrmNewForm
     Wx_IDValue = 1002
     Wx_ListboxStyle = []
     Wx_ListboxSubStyle = wxLB_SINGLE
+  end
+  object WxOK: TWxButton
+    Left = 138
+    Top = 145
+    Width = 75
+    Height = 25
+    Caption = 'Ok'
+    TabOrder = 1
+    Wx_BKColor = clBlack
+    Wx_ButtonStyle = []
+    Wx_Class = 'wxButton'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_Default = False
+    Wx_EventList.Strings = (
+      'EVT_BUTTON:OnClick'
+      'EVT_UPDATE_UI:OnUpdateUI')
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_Hidden = True
+    Wx_IDName = 'wxID_OK'
+    Wx_IDValue = 1003
+    Wx_Height = 25
+    Wx_Width = 75
   end
 end

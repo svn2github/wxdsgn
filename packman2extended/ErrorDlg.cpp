@@ -48,9 +48,12 @@ void ErrorDlg::CreateGUIControls()
 
     SetTitle(wxT("Error Messages"));
     SetIcon(wxNullIcon);
-    SetSize(8,8,355,183);
+    SetSize(8,8,355,210);
     Center();
 
+
+    WxOK = new wxButton(this, wxID_OK, wxT("Ok"), wxPoint(138,145), wxSize(75,25), 0, wxDefaultValidator, wxT("WxOK"));
+    WxOK->Show(false);
 
     wxArrayString arrayStringFor_ErrorMessageBox;
     ErrorMessageBox = new wxListBox(this, ID_ERRORMESSAGEBOX, wxPoint(19,8), wxSize(305,128), arrayStringFor_ErrorMessageBox, wxLB_SINGLE);
@@ -72,4 +75,9 @@ bool ErrorDlg::AddError(wxString message)
 {
     ErrorMessageBox->Append(message);
     return true;
+}
+
+void ErrorDlg::ShowOK(bool value)
+{
+    WxOK->Show(value);
 }
