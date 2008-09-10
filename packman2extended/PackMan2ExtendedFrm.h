@@ -4,7 +4,7 @@
 // Author:      Tony Reina / Edward Toovey (Sof.T)
 // Created:     3/18/2008 1:46:40 PM
 // Description: PackMan2ExtendedFrm class declaration
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #ifndef __PACKMAN2EXTENDEDFRM_h__
@@ -60,6 +60,7 @@ public:
     void ActionShowDetails(wxCommandEvent& event);
     void ActionShowToolbar(wxCommandEvent& event);
     void MnuReloadDatabaseClick(wxCommandEvent& event);
+    void btnVerifyUpdateUI(wxUpdateUIEvent& event);
 
 private:
     //Do not add custom control declarations between

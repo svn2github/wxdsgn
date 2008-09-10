@@ -28,31 +28,13 @@ object frmNewForm_4: TfrmNewForm
   Wx_BorderAlignment = []
   PixelsPerInch = 96
   TextHeight = 13
-  object ErrorMessageBox: TWxListBox
-    Left = 19
-    Top = 8
-    Width = 305
-    Height = 128
-    ItemHeight = 13
-    TabOrder = 0
-    Wx_BGColor = clBlack
-    Wx_Class = 'wxListBox'
-    Wx_ControlOrientation = wxControlVertical
-    Wx_FGColor = clBlack
-    Wx_GeneralStyle = []
-    Wx_Hidden = False
-    Wx_IDName = 'ID_ERRORMESSAGEBOX'
-    Wx_IDValue = 1002
-    Wx_ListboxStyle = []
-    Wx_ListboxSubStyle = wxLB_SINGLE
-  end
   object WxOK: TWxButton
     Left = 138
     Top = 145
     Width = 75
     Height = 25
     Caption = 'Ok'
-    TabOrder = 1
+    TabOrder = 0
     Wx_BKColor = clBlack
     Wx_ButtonStyle = []
     Wx_Class = 'wxButton'
@@ -68,5 +50,25 @@ object frmNewForm_4: TfrmNewForm
     Wx_IDValue = 1003
     Wx_Height = 25
     Wx_Width = 75
+  end
+  object ErrorMessageBox: TWxMemo
+    Left = 13
+    Top = 12
+    Width = 318
+    Height = 127
+    BevelInner = bvNone
+    BevelOuter = bvNone
+    TabOrder = 1
+    Wx_BGColor = clBlack
+    Wx_Class = 'wxTextCtrl'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_EditStyle = [wxTE_READONLY, wxTE_MULTILINE]
+    Wx_FGColor = clBlack
+    Wx_GeneralStyle = []
+    Wx_IDName = 'ID_ERRORMESSAGEBOX'
+    Wx_IDValue = 1004
+    Wx_MaxLength = 0
+    Wx_Comments.Strings = (
+      'All errors and messages are passed to this log.')
   end
 end

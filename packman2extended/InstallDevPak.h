@@ -25,6 +25,7 @@
 #include <wx/log.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
+#include <wx/log.h>
 
 #include "DevPakInfo.h"
 #include "RemoveDlg.h"
@@ -47,6 +48,7 @@ bool ExtractSingleFile(const wxString sArchive, wxString sFilename, wxTextCtrl *
 bool ExtractSingleFile(const wxString sArchive, wxString sFilename);
 bool RemoveDevPak(DevPakInfo *info);
 bool VerifyDevPak(DevPakInfo *info);
+void ShowLog(wxString logMessage);
 };
 
 #endif

@@ -6,8 +6,8 @@
 // Description: DevPak Installation Code.
 //     These functions are used to un-bzip, un-tar a Dev-Cpp devpak
 //      and install it.
+// $Id$
 //---------------------------------------------------------------------------
-
 
 #include "InstallDevPak.h"
 
@@ -33,7 +33,7 @@ bool InstallDevPak::GetPackageInfo(DevPakInfo *info, wxString szFileName)
         wxString szINIFileName;
 
         if (!InstallDevPak::ExtractPackageINI(filename.GetFullPath())) {
-            wxMessageBox("No *.DevPackage file found. DevPak format incorrect or corrupted.");
+            InstallDevPak::ShowLog("No *.DevPackage file found. DevPak format incorrect or corrupted.");
             return false;
         }
 
@@ -74,7 +74,7 @@ bool InstallDevPak::DoSilentInstall(wxFileName filename)
         wxString szINIFileName;
 
         if (!InstallDevPak::ExtractPackageINI(filename.GetFullPath())) {
-            wxMessageBox("No *.DevPackage file found. DevPak format incorrect or corrupted.");
+            InstallDevPak::ShowLog("No *.DevPackage file found. DevPak format incorrect or corrupted.");
             return false;
         }
 
@@ -121,7 +121,7 @@ bool InstallDevPak::ExtractPackageINI(const wxString sArchive)
     wxFileInputStream in(sArchive);
     if (!in)
     {
-        wxMessageBox(wxT("Can''t find input archive file: ") + sArchive);
+        InstallDevPak::ShowLog(wxT("Can''t find input archive file: ") + sArchive);
         return false;
     }
 
@@ -154,14 +154,14 @@ bool InstallDevPak::ExtractPackageINI(const wxString sArchive)
             wxFileOutputStream outfile ( anOutFile );
             if (!outfile.IsOk())
             {
-                wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
+                InstallDevPak::ShowLog(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
                 return false;
             }
 
             outfile.Write (TarInStream);
             if (outfile.GetLastError() == wxSTREAM_WRITE_ERROR)
             {
-                wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
+                InstallDevPak::ShowLog(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
                 return false;
             }
 
@@ -182,7 +182,7 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
 
     if ( !wxFileName::FileExists( INIFileName ) )
     {
-        wxMessageBox(wxT("Can't find DevPackage file: " + INIFileName));
+        InstallDevPak::ShowLog(wxT("Can't find DevPackage file: " + INIFileName));
         return false;
     }
     else {
@@ -193,7 +193,7 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()) != "[Setup]") {
-            wxMessageBox("Error: [Setup] section not found in " + INIFileName);
+            InstallDevPak::ShowLog("Error: [Setup] section not found in " + INIFileName);
             return false;
         }
 
@@ -227,7 +227,7 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()) != "[Files]") {
-            wxMessageBox("Error: [Files] section not found in " + INIFileName);
+            InstallDevPak::ShowLog("Error: [Files] section not found in " + INIFileName);
             return false;
         }
 
@@ -291,7 +291,7 @@ bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
     if ( wxFileName::FileExists( info->GetEntryFileName() ) )
         fIni.Open(info->GetEntryFileName());
     else {
-        wxMessageBox(wxT("[1] Error: Entry file ") + info->GetEntryFileName() + wxT(" does not exist. [289]"));
+        InstallDevPak::ShowLog(wxT("[1] Error: Entry file ") + info->GetEntryFileName() + wxT(" does not exist. [289]"));
         return false;
     }
     if (fIni.GetFirstLine() != "[Setup]") {
@@ -299,7 +299,7 @@ bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
     }
 
     if (fIni.GetLine(fIni.GetCurrentLine()) != "[Setup]") {
-        wxMessageBox("Error: [Setup] section not found in " + info->GetEntryFileName());
+        InstallDevPak::ShowLog("Error: [Setup] section not found in " + info->GetEntryFileName());
         return false;
     }
 
@@ -422,7 +422,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
     // All of the installed files are logged into the .entry file
     if ( wxFileName::FileExists( info.GetEntryFileName() ) )
     {
-        wxMessageBox(wxT("ERROR: Entry file " + info.GetEntryFileName() + " exists.\nI'm going to remove the current version."));
+        InstallDevPak::ShowLog(wxT("ERROR: Entry file " + info.GetEntryFileName() + " exists.\nI'm going to remove the current version."));
         if (!InstallDevPak::ReadEntryFile(&info)) return false;  // Read the existing entry file
         if (!InstallDevPak::RemoveDevPak(&info)) return false;  // Remove the existing devpak
     }
@@ -434,7 +434,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
     wxFileInputStream in(sArchive);
     if (!in)
     {
-        wxMessageBox(wxT("Can''t find input archive file: ") + sArchive);
+        InstallDevPak::ShowLog(wxT("Can''t find input archive file: ") + sArchive);
         return false;
     }
 
@@ -490,7 +490,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
                                           wxICON_QUESTION | wxYES_NO) == wxNO )
                         {
                             // answer was no
-                            wxMessageBox(wxT("Extraction of ") + sArchive + wxT( " to " ) + sDir + wxT(" cancelled (files already exist)"));
+                            InstallDevPak::ShowLog(wxT("Extraction of ") + sArchive + wxT( " to " ) + sDir + wxT(" cancelled (files already exist)"));
                             return false;
                         }
                         bDirExists = false;
@@ -526,7 +526,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
                 wxFileOutputStream outfile ( anOutFile );
                 if (!outfile.IsOk())
                 {
-                    wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
+                    InstallDevPak::ShowLog(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
                     return false;
                 }
 
@@ -534,7 +534,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
                 outfile.Write (TarInStream);
                 if (outfile.GetLastError() == wxSTREAM_WRITE_ERROR)
                 {
-                    wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
+                    InstallDevPak::ShowLog(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
                     return false;
                 }
             }
@@ -569,7 +569,7 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
     wxFileInputStream in(sArchive);
     if (!in)
     {
-        wxMessageBox(wxT("Can''t find input archive file: ") + sArchive);
+        InstallDevPak::ShowLog(wxT("Can''t find input archive file: ") + sArchive);
         return false;
     }
 
@@ -634,7 +634,7 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
                 wxFileOutputStream outfile ( anOutFile );
                 if (!outfile.IsOk())
                 {
-                    wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
+                    InstallDevPak::ShowLog(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
                     return false;
                 }
 
@@ -642,7 +642,7 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
                 outfile.Write (TarInStream);
                 if (outfile.GetLastError() == wxSTREAM_WRITE_ERROR)
                 {
-                    wxMessageBox(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
+                    InstallDevPak::ShowLog(wxT("Extracting ") + sFile + wxT(" failed : Disk full? Permissions?"));
                     return false;
                 }
                 txtControl->LoadFile(sDir + sFilenme);
@@ -667,6 +667,9 @@ bool InstallDevPak::RemoveDevPak(DevPakInfo *info)
 
 }
 
+// Determines if the files listed in the DevPak entry info are actually
+//    present in the correct directories. If not, gives a list of files not
+//    found.
 bool InstallDevPak::VerifyDevPak(DevPakInfo *info)
 {
 
@@ -703,4 +706,11 @@ bool InstallDevPak::VerifyDevPak(DevPakInfo *info)
     errordlg->Destroy();
 
     return true;
+}
+
+void InstallDevPak::ShowLog(wxString logMessage) {
+
+    // Logs an error message and keeps it going.
+    ::wxLogWarning(logMessage);
+
 }

@@ -4,7 +4,7 @@
 // Author:      Tony Reina / Edward Toovey (Sof.T)
 // Created:     3/18/2008 1:46:40 PM
 // Description: PackMan2ExtendedFrm class implementation
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #include "PackMan2ExtendedFrm.h"
@@ -61,6 +61,7 @@ BEGIN_EVENT_TABLE(PackMan2ExtendedFrm,wxFrame)
     EVT_MENU(ID_BTNREMOVE,PackMan2ExtendedFrm::ActionRemovePackage)
     EVT_UPDATE_UI(ID_BTNREMOVE,PackMan2ExtendedFrm::ActionRemoveUpdate)
     EVT_MENU(ID_BTNVERIFY,PackMan2ExtendedFrm::ActionVerifyPackage)
+    EVT_UPDATE_UI(ID_BTNVERIFY,PackMan2ExtendedFrm::btnVerifyUpdateUI)
     EVT_MENU(ID_BTNINSTALL,PackMan2ExtendedFrm::ActionInstallPackage)
 
     EVT_MENU(ID_WXTOOLBAR1,PackMan2ExtendedFrm::WxToolBar1Menu)
@@ -260,26 +261,32 @@ void PackMan2ExtendedFrm::CreateGUIControls()
 
 void PackMan2ExtendedFrm::OnClose(wxCloseEvent& event)
 {
-
     Destroy();
 }
 
+// Initializes a vector called entryInfo
+//    which will store the devpak info (e.g.
+//    filenames, app name, version, etc.) for
+//    all installed packages
 void PackMan2ExtendedFrm::UpdatePackageList()
 {
 
     DevPakInfo info;
 
     lstPackages->ClearAll();
+
+    // entryInfo is a vector containing the devpak info for all currently installed packages
     entryInfo.clear();  // Clear vector of devpakinfo
 
     info.SetEntryFileName("*.entry");  // Set the entry to wildcard name
     wxString fEntryName = wxFindFirstFile(info.GetEntryFileName());
 
     int ii = 0;
+    // Go through each .entry file in the Packages directory to get the devpak info
     while ( !fEntryName.empty() )
     {
         info.SetEntryFileName(fEntryName);
-        InstallDevPak::ReadEntryFile(&info);
+        InstallDevPak::ReadEntryFile(&info);  // Read the devpak info from the entry file
         entryInfo.push_back(info);  // Store the devpak entry info in a STL vector
 
         lstPackages->InsertItem(ii, info.AppName,0);
@@ -319,11 +326,15 @@ void PackMan2ExtendedFrm::ActionShowHelp(wxCommandEvent& event)
                  + wxT("To uninstall an installed library, select it and click on the\n")
                  + wxT("Remove button."),wxT("Help"),wxICON_INFORMATION);
 }
+
+// Show the About dialog box
 void PackMan2ExtendedFrm::ActionShowAbout(wxCommandEvent& event)
 {
     AboutDlg About(this);
     About.ShowModal();
 }
+
+// Remove/uninstall a devpak
 void PackMan2ExtendedFrm::ActionRemovePackage(wxCommandEvent& event)
 {
     // Remove the devpak and update the package list
@@ -339,6 +350,11 @@ void PackMan2ExtendedFrm::ActionInstallPackage(wxCommandEvent& event)
     UpdatePackageList();
 
 }
+
+// Verify DevPak
+// Determines if the files listed in the DevPak entry info are actually
+//    present in the correct directories. If not, gives a list of files not
+//    found.
 void PackMan2ExtendedFrm::ActionVerifyPackage(wxCommandEvent& event)
 {
     if (!InstallDevPak::VerifyDevPak(&(entryInfo.at(selectedPackage))));
@@ -351,18 +367,22 @@ void PackMan2ExtendedFrm::ActionExit(wxCommandEvent& event)
 
 /*
  * lstPackagesSelected
+ * Updates GUI with the DevPak information for the selected package
  */
 void PackMan2ExtendedFrm::lstPackagesSelected(wxListEvent& event)
 {
     selectedPackage = event.GetIndex();
-    DevPakInfo info = entryInfo.at(event.GetIndex());
+    // Grab the devpak info from the entryInfo vector at the selected package's index
+    DevPakInfo info = entryInfo.at(selectedPackage);
 
+    // Fill devpak info in GUI
     edtUrl->SetValue(info.Url);
     WxPackageUrlLink->SetURL(info.Url);
     mmoPackageDescription->SetValue(info.Description);
     edtPackageVersion->SetValue(info.AppVersion);
     edtPackageName->SetValue(info.AppName);
 
+    // Fill file list with names of installed files from package
     WxPackageInstalledFiles->Clear();
     if (info.InstalledFiles.GetCount() > 0) {
         for (size_t ii = 0; ii < info.InstalledFiles.GetCount(); ii++) {
@@ -430,4 +450,15 @@ void PackMan2ExtendedFrm::ActionShowToolbar(wxCommandEvent& event)
 void PackMan2ExtendedFrm::MnuReloadDatabaseClick(wxCommandEvent& event)
 {
     UpdatePackageList();
+}
+
+/*
+ * btnVerifyUpdateUI
+ */
+void PackMan2ExtendedFrm::btnVerifyUpdateUI(wxUpdateUIEvent& event)
+{
+    if (lstPackages->GetSelectedItemCount() > 0)
+        event.Enable(true);
+    else
+        event.Enable(false);
 }

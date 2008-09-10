@@ -4,7 +4,7 @@
 // Author:      Tony Reina and Edward Toovey (Sof.T)
 // Created:     6/17/2008 10:31:37 PM
 // Description: RemoveDlg class declaration
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #ifndef __REMOVEDLG_h__

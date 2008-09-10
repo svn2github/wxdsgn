@@ -1,4 +1,4 @@
-object frmNewForm_1: TfrmNewForm
+object frmNewForm_2: TfrmNewForm
   Left = 8
   Top = 8
   AutoScroll = False
@@ -5059,7 +5059,8 @@ object frmNewForm_1: TfrmNewForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     Lines.Strings = (
-      'Based on Package Manager\n'
+      'Based on Package '
+      'Manager\n'
       'by Hongli Lai\n\n'
       ''
       'Rewritten in C++ and\n'
@@ -5068,11 +5069,12 @@ object frmNewForm_1: TfrmNewForm
       'Tony Reina\n'
       '& Sof.T')
     ParentFont = False
+    ScrollBars = ssVertical
     TabOrder = 1
     Wx_BGColor = clBlack
     Wx_Class = 'wxTextCtrl'
     Wx_ControlOrientation = wxControlVertical
-    Wx_EditStyle = [wxTE_MULTILINE, wxTE_CENTRE]
+    Wx_EditStyle = [wxTE_READONLY, wxTE_MULTILINE, wxTE_CENTRE]
     Wx_FGColor = clBlack
     Wx_GeneralStyle = []
     Wx_IDName = 'ID_WXMEMO1'

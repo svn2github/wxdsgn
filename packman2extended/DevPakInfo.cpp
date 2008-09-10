@@ -4,7 +4,7 @@
 // Author:      Tony Reina and Edward Toovey (Sof.T)
 // Created:     9/2/2008 07:54:34 PM
 // Description: DevPak info class
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #include "InstallDevPak.h"

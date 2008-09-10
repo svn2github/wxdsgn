@@ -4,7 +4,7 @@
 // Author:      Tony Reina and Edward Toovey (Sof.T)
 // Created:     5/13/2008 11:23:50 PM
 // Description: InstallDlg class declaration
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #ifndef __INSTALLDLG_h__

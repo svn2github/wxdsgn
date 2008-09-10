@@ -4,7 +4,7 @@
 // Author:      Sof.T
 // Created:     18/05/2008 17:09:46
 // Description: AboutDlg class declaration
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #ifndef __ABOUTDLG_h__

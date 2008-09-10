@@ -4,7 +4,7 @@
 // Author:      Sof.T
 // Created:     18/05/2008 17:09:47
 // Description: AboutDlg class implementation
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #include "AboutDlg.h"
@@ -56,9 +56,10 @@ void AboutDlg::CreateGUIControls()
 
     WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("OK"), wxPoint(54,341), wxSize(75,25), 0, wxDefaultValidator, wxT("WxButton1"));
 
-    WxMemo1 = new wxTextCtrl(this, ID_WXMEMO1, wxT(""), wxPoint(-1,198), wxSize(201,137), wxTE_CENTRE | wxTE_MULTILINE, wxDefaultValidator, wxT("WxMemo1"));
+    WxMemo1 = new wxTextCtrl(this, ID_WXMEMO1, wxT(""), wxPoint(-1,198), wxSize(201,137), wxTE_READONLY | wxTE_CENTRE | wxTE_MULTILINE, wxDefaultValidator, wxT("WxMemo1"));
     WxMemo1->SetMaxLength(0);
-    WxMemo1->AppendText(wxT("Based on Package Manager\n"));
+    WxMemo1->AppendText(wxT("Based on Package "));
+    WxMemo1->AppendText(wxT("Manager\n"));
     WxMemo1->AppendText(wxT("by Hongli Lai\n\n"));
     WxMemo1->AppendText(wxT(""));
     WxMemo1->AppendText(wxT("Rewritten in C++ and\n"));

@@ -4,7 +4,7 @@
 // Author:      Tony Reina and Edward Toovey (Sof.T)
 // Created:     6/17/2008 10:31:38 PM
 // Description: RemoveDlg class implementation
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #include "DevPakInfo.h"

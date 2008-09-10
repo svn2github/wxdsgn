@@ -4,7 +4,7 @@
 // Author:      Tony Reina and Edward Toovey (Sof.T)
 // Created:     9/4/2008 12:52:29 PM
 // Description: ErrorDlg class implementation
-//
+// $Id$
 //---------------------------------------------------------------------------
 
 #include "ErrorDlg.h"
@@ -52,11 +52,15 @@ void ErrorDlg::CreateGUIControls()
     Center();
 
 
+    /* All errors and messages are passed to this log.
+    */
+    ErrorMessageBox = new wxTextCtrl(this, ID_ERRORMESSAGEBOX, wxT(""), wxPoint(13,12), wxSize(318,127), wxTE_READONLY | wxTE_MULTILINE, wxDefaultValidator, wxT("ErrorMessageBox"));
+    ErrorMessageBox->SetMaxLength(0);
+    ErrorMessageBox->SetFocus();
+    ErrorMessageBox->SetInsertionPointEnd();
+
     WxOK = new wxButton(this, wxID_OK, wxT("Ok"), wxPoint(138,145), wxSize(75,25), 0, wxDefaultValidator, wxT("WxOK"));
     WxOK->Show(false);
-
-    wxArrayString arrayStringFor_ErrorMessageBox;
-    ErrorMessageBox = new wxListBox(this, ID_ERRORMESSAGEBOX, wxPoint(19,8), wxSize(305,128), arrayStringFor_ErrorMessageBox, wxLB_SINGLE);
     ////GUI Items Creation End
 }
 
@@ -73,7 +77,7 @@ bool ErrorDlg::ClearErrorList()
 
 bool ErrorDlg::AddError(wxString message)
 {
-    ErrorMessageBox->Append(message);
+    ErrorMessageBox->AppendText(message);
     return true;
 }
 

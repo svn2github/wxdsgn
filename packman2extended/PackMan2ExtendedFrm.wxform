@@ -893,6 +893,7 @@ object frmNewForm: TfrmNewForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
       Layout = blGlyphTop
       EVT_MENU = 'ActionVerifyPackage'
+      EVT_UPDATE_UI = 'btnVerifyUpdateUI'
       Wx_BKColor = clBlack
       Wx_ButtonStyle = []
       Wx_Class = 'wxToolBarTool'
