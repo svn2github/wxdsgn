@@ -127,8 +127,10 @@ begin
     //Wx_Alignment
     else if Pos('Wx_Alignment = ', Trim(Strings[i])) = 1 then
     begin
-      Position := Pos('Wx_Alignment = ', Strings[i]);
-      Strings[i] := Copy(Strings[i], 1, Position + 14) + '[' + Copy(Strings[i], Position + 15, Length(Strings[i])) + ']';
+    // GAR 6 May 2008: I don't think the two lines below actually did anything
+      //Position := Pos('Wx_Alignment = ', Strings[i]);
+      //Strings[i] := Copy(Strings[i], 1, Position + 14) + '[' + Copy(Strings[i], Position + 15, Length(Strings[i])) + ']';
+      Strings[i] := Trim(Strings[i]);
       Inc(Changes);
     end
 
