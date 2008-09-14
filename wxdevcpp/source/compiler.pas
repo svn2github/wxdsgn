@@ -222,7 +222,6 @@ var
   i: integer;
 begin
   Objects := '';
-  //devDirs.SettoDefaults;  // EAB TODO: check if this works.
 
   for i := 0 to Pred(fProject.Units.Count) do
   begin

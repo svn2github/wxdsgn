@@ -47,7 +47,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=wxdevcpp\bin
 SearchPath=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\synedit\Packages;$(DEVCPPLIBS)\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6
 Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;Jcl;ExtLib_D6;SynEdit_D6_PE;SynEdit_R6_PE;ClassBrowsing;ThemeManager6;DevCpp;JvDockingD6R;JvCoreD6R;madBasic_;madDisAsm_;madExcept_;JclVcl;JvSystemD6R;JvStdCtrlsD6R;JvAppFrmD6R;JvBandsD6R;JvCmpD6R;JvCryptD6R;JvCtrlsD6R;JvCustomD6R;JvDlgsD6R;JvDotNetCtrlsD6R;JvGlobusD6R;JvHMID6R;JvInterpreterD6R;JvJansD6R;JvManagedThreadsD6R;JvMMD6R;JvNetD6R;JvPageCompsD6R;JvPluginD6R;JvPrintPreviewD6R;JvRuntimeDesignD6R;JvTimeFrameworkD6R;JvUIBD6R;JvValidatorsD6R;JvWizardD6R;JvXPCtrlsD6R
-Conditionals=PLUGIN_TESTING;PLUGIN_BUILD
+Conditionals=PLUGIN_TESTING;PLUGIN_BUILD;RequireIDEPresenceForLeakReporting
 DebugSourceDirs=components\
 UsePackages=0
 [Parameters]
@@ -87,15 +87,16 @@ Item0=components\
 Item1=components\;$(COMPUSEDBY_WX_BUILD)\jvcl\run
 Item2=C:\wxdevcpp\wxdevcpp\source\plugins\wxdsgn\components\
 [HistoryLists\hlConditionals]
-Count=8
-Item0=PLUGIN_TESTING;PLUGIN_BUILD
-Item1=madExcept;PLUGIN_TESTING;PLUGIN_BUILD
-Item2=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD;madExcept
-Item3=madExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
-Item4=DmadExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
-Item5=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
-Item6=PLUGIN_TESTING;WX_BUILD
-Item7=madExcept;PLUGIN_TESTING
+Count=9
+Item0=PLUGIN_TESTING;PLUGIN_BUILD;RequireIDEPresenceForLeakReporting
+Item1=PLUGIN_TESTING;PLUGIN_BUILD
+Item2=madExcept;PLUGIN_TESTING;PLUGIN_BUILD
+Item3=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD;madExcept
+Item4=madExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
+Item5=DmadExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
+Item6=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
+Item7=PLUGIN_TESTING;WX_BUILD
+Item8=madExcept;PLUGIN_TESTING
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

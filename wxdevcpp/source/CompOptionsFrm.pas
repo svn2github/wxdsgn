@@ -507,20 +507,6 @@ begin
     DllwrapEdit.Text        := dllwrapName;
     GprofEdit.Text          := gprofName;
 
-    {with wxOptions do   // EAB TODO: move this to the wx plugin
-    begin
-      spwxMajor.Value := majorVersion;
-      spwxMinor.Value := minorVersion;
-      spwxRelease.Value := releaseVersion;
-
-      chkwxUnicode.Checked := unicodeSupport;
-      chkwxMonolithic.Checked := monolithicLibrary;
-      chkwxDebug.Checked := debugLibrary;
-      if staticLibrary then
-        rdwxLibraryType.ItemIndex := 0
-      else
-        rdwxLibraryType.ItemIndex := 1;
-    end; }
     {$IFDEF PLUGIN_BUILD}
     for i := 0 to MainForm.pluginsCount - 1 do
         MainForm.plugins[i].LoadCompilerOptions;
@@ -559,17 +545,6 @@ begin
   devCompilerSet.MakeOpts := Make.Lines.Text;
   devCompilerSet.OptionsStr := devCompiler.OptionStr;
 
-  {with devCompilerSet.wxOptions do
-  begin
-    majorVersion := spwxMajor.Value;
-    minorVersion := spwxMinor.Value;
-    releaseVersion := spwxRelease.Value;
-
-    unicodeSupport := chkwxUnicode.Checked;
-    monolithicLibrary := chkwxMonolithic.Checked;
-    debugLibrary := chkwxDebug.Checked;
-    staticLibrary := rdwxLibraryType.ItemIndex = 0;
-  end; }
   {$IFDEF PLUGIN_BUILD}
   for i := 0 to MainForm.pluginsCount - 1 do
     MainForm.plugins[i].SaveCompilerOptions;

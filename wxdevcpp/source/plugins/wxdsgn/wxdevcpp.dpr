@@ -222,7 +222,6 @@ begin
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
-  //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   
   {*** modified by peter ***}
   // apply the window placement. this method forced

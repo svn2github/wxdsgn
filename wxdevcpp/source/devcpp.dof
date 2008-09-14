@@ -47,7 +47,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=packages;packages\parser;plugins\interfaces;packages\codetooltip;..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(PROGRAMFILES)\GExperts for Delphi 6
 Packages=vcl;rtl
-Conditionals=madExcept;PLUGIN_BUILD;UseRuntimePackages
+Conditionals=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
 DebugSourceDirs=
 UsePackages=1
 [Parameters]
@@ -83,10 +83,11 @@ ProductVersion=7
 Comments=This program is licensed under the GNU General Public License
 LastCompiled=2005-02-26 22:06:56
 [HistoryLists\hlConditionals]
-Count=3
-Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages
-Item1=PLUGIN_BUILD
-Item2=UseRuntimePackages
+Count=4
+Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
+Item1=madExcept;PLUGIN_BUILD;UseRuntimePackages
+Item2=PLUGIN_BUILD
+Item3=UseRuntimePackages
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
