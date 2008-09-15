@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Extras MS VC 2005
-AppVerName=wxWidgets version _WXVER_ 3rd Party Components
+AppName=wxWidgets Extras MS VC 2005
+AppVerName=wxWidgets version _WXVER_ 3rd Party Components MS VC 2005
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets 3rd Party Components monolithic, ansi MS VC 2005 build

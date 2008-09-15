@@ -1,6 +1,6 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Extras common
+AppName=wxWidgets Extras common
 AppVerName=wxWidgets version _WXVER_ 3rd Party Components
 AppVersion=_WXVER_
 MenuName=

@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ common
-AppVerName=wxWidgets _WXVER_
+AppName=wxWidgets common
+AppVerName=wxWidgets _WXVER_ common
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets common include files and templates

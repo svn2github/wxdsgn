@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Mingw gcc
-AppVerName=wxWidgets _WXVER_
+AppName=wxWidgets Mingw gcc
+AppVerName=wxWidgets _WXVER_ Mingw gcc
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets monolithic, ansi Mingw gcc build

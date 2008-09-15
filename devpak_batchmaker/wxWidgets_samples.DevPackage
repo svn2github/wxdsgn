@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Samples
-AppVerName=wxWidgets Samples
+AppName=wxWidgets Samples
+AppVerName=wxWidgets Samples _WXVER_
 AppVersion=_WXVER_
 MenuName=
 Description=A selection of samples from wxWidgets which compile correctly in wxDevCpp

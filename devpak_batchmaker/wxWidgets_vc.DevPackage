@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ MS VC 2005
-AppVerName=wxWidgets _WXVER_
+AppName=wxWidgets MS VC 2005
+AppVerName=wxWidgets _WXVER_ MS VC 2005
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets monolithic, ansi MS VC 2005 build

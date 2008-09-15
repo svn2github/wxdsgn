@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Contribs MinGW gcc
-AppVerName=wxWidgets Contribs version _WXVER_ 
+AppName=wxWidgets Contribs MinGW gcc
+AppVerName=wxWidgets version _WXVER_ Contribs MinGW gcc
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets Contribs monolithic, ansi MinGW gcc build

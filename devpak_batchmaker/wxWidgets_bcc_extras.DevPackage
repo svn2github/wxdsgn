@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Extras Borland
-AppVerName=wxWidgets version _WXVER_ 3rd Party Components
+AppName=wxWidgets Extras Borland
+AppVerName=wxWidgets version _WXVER_ 3rd Party Components Borland
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets 3rd Party Components monolithic, ansi Borland build

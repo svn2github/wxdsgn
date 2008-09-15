@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Extras MinGW gcc
-AppVerName=wxWidgets version _WXVER_ 3rd Party Components
+AppName=wxWidgets Extras MinGW gcc
+AppVerName=wxWidgets version _WXVER_ 3rd Party Components Mingw gcc
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets 3rd Party Components monolithic, ansi MinGW gcc build

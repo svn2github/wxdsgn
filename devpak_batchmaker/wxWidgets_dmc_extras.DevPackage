@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Extras Digital Mars (dmc)
-AppVerName=wxWidgets version _WXVER_ 3rd Party Components
+AppName=wxWidgets Extras Digital Mars (dmc)
+AppVerName=wxWidgets version _WXVER_ 3rd Party Components Digital Mars (dmc)
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets 3rd Party Components monolithic, ansi Digital Mars build

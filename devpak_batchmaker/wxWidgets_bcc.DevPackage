@@ -1,7 +1,7 @@
 [Setup]
 Version=2
-AppName=wxWidgets _WXVER_ Borland
-AppVerName=wxWidgets _WXVER_
+AppName=wxWidgets Borland
+AppVerName=wxWidgets version _WXVER_ Borland compiler
 AppVersion=_WXVER_
 MenuName=
 Description=wxWidgets monolithic, ansi Borland build
