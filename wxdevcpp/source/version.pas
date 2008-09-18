@@ -970,7 +970,7 @@ Begin
       if (strWinSDKDir ='') then
       begin
           if versionString = '9.0' then
-            strWinSDKDir:= StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/'
+            strWinSDKDir:= GetProgramFilesDir + '\Microsoft SDKs\'
           else
             strWinSDKDir:='WinSDK_INVALID_FOLDER'
       end;
@@ -996,7 +996,7 @@ Begin
             if Trim(strInclude) = '' then
               strInclude := '$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
             if versionString = '9.0' then
-              strInclude := strInclude + ';' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Include;';
+              strInclude := strInclude + ';' + GetProgramFilesDir + '\Microsoft SDKs\Windows\v6.0A\Include;';
             strInclude := strInclude + ';$(WinSDKDir)include;';
             Result :=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
@@ -1013,7 +1013,7 @@ Begin
             if Trim(strLib) = '' then
               strLib := '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
             if versionString = '9.0' then
-              strLib := strLib + ';' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Lib;';
+              strLib := strLib + ';' + GetProgramFilesDir + '\Microsoft SDKs\Windows\v6.0A\Lib;';
             strLib:= strLib +';$(WinSDKDir)lib;';
             Result := GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
