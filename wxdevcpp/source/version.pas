@@ -989,31 +989,33 @@ Begin
         strBin:='';
         strLib:='';
       end;
-      case  PathType of
+      case PathType of
         0:
           begin
 
             if Trim(strInclude) = '' then
-              strInclude:='$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
+              strInclude := '$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
             if versionString = '9.0' then
-              strInclude:= strInclude + ';' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Include;';
+              strInclude := strInclude + ';' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Include;';
             strInclude := strInclude + ';$(WinSDKDir)include;';
-            Result:=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
+            Result :=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
         1:
           begin
 
             if Trim(strBin) = '' then
-              strBin:='$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
-            strBin:= strBin +';$(WinSDKDir)bin;';
-            Result:=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
+              strBin := '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
+            strBin := strBin +';$(WinSDKDir)bin;';
+            Result :=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
         2:
           begin
             if Trim(strLib) = '' then
-              strLib:= '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
+              strLib := '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
+            if versionString = '9.0' then
+              strLib := strLib + ';' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Lib;';
             strLib:= strLib +';$(WinSDKDir)lib;';
-            Result:=GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
+            Result := GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
       end;
   finally
