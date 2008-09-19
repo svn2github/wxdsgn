@@ -1005,6 +1005,8 @@ Begin
 
             if Trim(strBin) = '' then
               strBin := '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
+            if versionString = '9.0' then
+              strBin := strBin + ';' + GetProgramFilesDir + '\Microsoft SDKs\Windows\v6.0A\Bin;';
             strBin := strBin +';$(WinSDKDir)bin;';
             Result :=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
