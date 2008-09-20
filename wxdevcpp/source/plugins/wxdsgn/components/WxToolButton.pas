@@ -1,6 +1,6 @@
 // $Id: WxToolButton.pas 936 2007-05-15 03:47:39Z gururamnath $
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -302,13 +302,24 @@ begin
 
   if not IsControlWxToolBar(self.parent) then
     exit;
+if (XRCGEN) then
+ begin
+  if trim(EVT_MENU) <> '' then
+    Result := Format('EVT_MENU(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName, EVT_MENU]) + '';
 
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   if trim(EVT_MENU) <> '' then
     Result := Format('EVT_MENU(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_MENU]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
 end;
 
 function TWxToolButton.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -322,11 +333,11 @@ begin
     Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
 
     if assigned(Wx_Bitmap) then
-      Result.Add(IndentString + Format('<bitmap>%s</bitmap>', [self.Name + '_BITMAP']));
-
+      Result.Add(IndentString + Format('<bitmap>Images/_%s</bitmap>', [self.Name + '_XPM.xpm']));
+{//xrc loads the bitmaps for you, filename needed
     if assigned(Wx_DISABLE_BITMAP) then
       Result.Add(IndentString + Format('<bitmap2>%s</bitmap2>', [self.Name + '_DISABLE_BITMAP']));
-
+}
     Result.Add(IndentString + Format('<tooltip>%s</tooltip>', [self.Wx_Tooltip]));
     Result.Add(IndentString + Format('<longhelp>%s</longhelp>', [self.Wx_HelpText]));
 
@@ -350,7 +361,6 @@ begin
   if not IsControlWxToolBar(self.parent) then
     exit;
 
-
   strFirstBitmap  := 'wxBitmap ' + self.Name + '_BITMAP' + ' (wxNullBitmap);';
   strSecondBitmap := 'wxBitmap ' + self.Name + '_DISABLE_BITMAP' + ' (wxNullBitmap);';
 
@@ -363,13 +373,22 @@ begin
   if assigned(Wx_DISABLE_BITMAP) then
     if Wx_DISABLE_BITMAP.Bitmap.Handle <> 0 then
       strSecondBitmap := 'wxBitmap ' + self.Name + '_DISABLE_BITMAP' +' (' + GetDesignerFormName(self)+'_'+self.Name + '_DISABLE_BITMAP_XPM' + ');';
-
+ if not(XRCGEN) then
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) + strFirstBitmap + #13 + strSecondBitmap;
   Result := Result + #13 + Format('%s->AddTool(%s, %s, %s, %s, %s, %s, %s);',
     [parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), GetCppString(
     self.Wx_Caption), self.Name + '_BITMAP', self.Name + '_DISABLE_BITMAP',
     GetToolButtonKindAsText(ToolKind), GetCppString(self.Wx_ToolTip),
     GetCppString(self.Wx_HelpText)]);
+ end
+ else
+ begin
+  if assigned(Wx_Bitmap) then 
+    Result := Result + #13 + Format('%s->&s_BITMAP',[self.Name,self.Name]);
+  if assigned(Wx_DISABLE_BITMAP) then 
+    Result := Result + #13 + Format('%s->%s_DISABLE_BITMAP',[self.Name,self.Name]);
+ end;
 
 end;
 

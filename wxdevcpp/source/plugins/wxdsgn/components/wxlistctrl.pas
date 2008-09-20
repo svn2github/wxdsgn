@@ -3,7 +3,7 @@
  { $Id: wxlistctrl.pas 936 2007-05-15 03:47:39Z gururamnath $   }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -454,6 +454,102 @@ begin
 
   Result := '';
 
+if (XRCGEN) then
+ begin
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_LIST_ITEM_SELECTED) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_ITEM_SELECTED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_ITEM_SELECTED]) + '';
+
+
+  if trim(EVT_LIST_ITEM_DESELECTED) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_ITEM_DESELECTED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_ITEM_DESELECTED]) + '';
+
+  if trim(EVT_LIST_BEGIN_DRAG) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_BEGIN_DRAG(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_BEGIN_DRAG]) + '';
+
+  if trim(EVT_LIST_BEGIN_RDRAG) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_BEGIN_RDRAG(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_BEGIN_RDRAG]) + '';
+
+  if trim(EVT_LIST_BEGIN_LABEL_EDIT) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_BEGIN_LABEL_EDIT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_BEGIN_LABEL_EDIT]) + '';
+
+  if trim(EVT_LIST_END_LABEL_EDIT) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_END_LABEL_EDIT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_END_LABEL_EDIT]) + '';
+
+  if trim(EVT_LIST_DELETE_ITEM) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_DELETE_ITEM(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_DELETE_ITEM]) + '';
+
+  if trim(EVT_LIST_DELETE_ALL_ITEMS) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_DELETE_ALL_ITEMS(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_DELETE_ALL_ITEMS]) + '';
+
+  if trim(EVT_LIST_ITEM_ACTIVATED) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_ITEM_ACTIVATED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_ITEM_ACTIVATED]) + '';
+
+
+  if trim(EVT_LIST_ITEM_FOCUSED) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_ITEM_FOCUSED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_ITEM_FOCUSED]) + '';
+
+  if trim(EVT_LIST_ITEM_MIDDLE_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_ITEM_MIDDLE_CLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_ITEM_MIDDLE_CLICK]) + '';
+
+
+  if trim(EVT_LIST_ITEM_RIGHT_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_ITEM_RIGHT_CLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_ITEM_RIGHT_CLICK]) + '';
+
+  if trim(EVT_LIST_KEY_DOWN) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_KEY_DOWN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_KEY_DOWN]) + '';
+
+
+  if trim(EVT_LIST_INSERT_ITEM) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_INSERT_ITEM(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_INSERT_ITEM]) + '';
+
+  if trim(EVT_LIST_COL_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_COL_CLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_COL_CLICK]) + '';
+
+  if trim(EVT_LIST_COL_RIGHT_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_COL_RIGHT_CLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_COL_RIGHT_CLICK]) + '';
+
+  if trim(EVT_LIST_COL_BEGIN_DRAG) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_COL_BEGIN_DRAG(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_COL_BEGIN_DRAG]) + '';
+
+  if trim(EVT_LIST_COL_DRAGGING) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_COL_DRAGGING(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_COL_DRAGGING]) + '';
+
+  if trim(EVT_LIST_COL_END_DRAG) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_COL_END_DRAG(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_COL_END_DRAG]) + '';
+
+  if trim(EVT_LIST_CACHE_HINT) <> '' then
+    Result := Result + #13 + Format('EVT_LIST_CACHE_HINT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_LIST_CACHE_HINT]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
@@ -545,6 +641,7 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
 
 end;
 
@@ -559,9 +656,7 @@ begin
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-
-    Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetListViewSpecificStyle(Wx_GeneralStyle, Wx_ListviewStyle, FWx_ListviewView)]));
+    Result.Add(IndentString + Format('  <style>%s</style>', [GetListViewSpecificStyle(Wx_GeneralStyle, Wx_ListviewStyle, FWx_ListviewView)]));
     Result.Add(IndentString + '</object>');
   except
     Result.Free;
@@ -596,12 +691,20 @@ begin
     strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
-
+if (XRCGEN) then
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]); 
+ end
+ else
+ begin
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -635,7 +738,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

@@ -557,10 +557,19 @@ begin
   if trim(strStyle) <> '' then
     strStyle := ',' + strStyle;
   
+  if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = wxXmlResource::Get()->LoadMenuBar(%s,%s("%s"));',
+    [self.Name, parentName, StringFormat, self.Name]);
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s);', [self.Name, self.Wx_Class, strStyle]);
 
   Result := Result + #13 + GetMenuItemCode + #13 + 'SetMenuBar(' + self.Name + ');';
+  end;//Nuklear Zelph
 end;
 
 function TWxMenuBar.GetCodeForOneMenuItem(parentName: string;

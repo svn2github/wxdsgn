@@ -3,7 +3,7 @@
 { $Id: wxscrollbar.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -360,6 +360,59 @@ end;
 function TWxScrollBar.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+
+  if (XRCGEN) then
+ begin
+  if trim(EVT_SCROLLBAR) <> '' then
+    Result := Format('EVT_SCROLLBAR(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_SCROLLBAR]) + '';
+
+  if trim(EVT_COMMAND_SCROLL) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_TOP) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_TOP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_TOP]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_BOTTOM) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_BOTTOM(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_BOTTOM]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_LINEUP) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_LINEUP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_LINEUP]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_LINEDOWN) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_LINEDOWN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_LINEDOWN]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_PAGEUP) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_PAGEUP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_PAGEUP]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_PAGEDOWN) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_PAGEDOWN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_PAGEDOWN]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_THUMBTRACK) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_THUMBTRACK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_THUMBTRACK]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_THUMBRELEASE) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_THUMBRELEASE(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_THUMBRELEASE]) + '';
+
+  if trim(EVT_COMMAND_SCROLL_ENDSCROLL) <> '' then
+    Result := Result + #13 + Format('EVT_COMMAND_SCROLL_ENDSCROLL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMMAND_SCROLL_ENDSCROLL]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   if trim(EVT_SCROLLBAR) <> '' then
     Result := Format('EVT_SCROLLBAR(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_SCROLLBAR]) + '';
@@ -407,6 +460,7 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
 
 end;
 
@@ -477,11 +531,20 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+if (XRCGEN) then
+ begin
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -511,7 +574,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

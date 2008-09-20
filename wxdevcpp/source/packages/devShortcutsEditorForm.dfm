@@ -1,10 +1,10 @@
 object frmShortcutsEditor: TfrmShortcutsEditor
-  Left = 192
-  Top = 107
+  Left = 419
+  Top = 270
   BorderStyle = bsDialog
   Caption = 'Configure Shortcuts'
-  ClientHeight = 362
-  ClientWidth = 375
+  ClientHeight = 377
+  ClientWidth = 395
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,9 +18,9 @@ object frmShortcutsEditor: TfrmShortcutsEditor
   TextHeight = 13
   object lvShortcuts: TListView
     Left = 0
-    Top = 45
-    Width = 375
-    Height = 282
+    Top = 57
+    Width = 395
+    Height = 285
     Align = alClient
     Columns = <
       item
@@ -42,8 +42,8 @@ object frmShortcutsEditor: TfrmShortcutsEditor
   end
   object Panel1: TPanel
     Left = 0
-    Top = 327
-    Width = 375
+    Top = 342
+    Width = 395
     Height = 35
     Align = alBottom
     BevelOuter = bvNone
@@ -71,17 +71,16 @@ object frmShortcutsEditor: TfrmShortcutsEditor
   object pnlTitle: TPanel
     Left = 0
     Top = 0
-    Width = 375
-    Height = 45
+    Width = 395
+    Height = 57
     Align = alTop
     BevelOuter = bvNone
     Color = clGray
-    ParentBackground = False
     TabOrder = 2
     object lblTip: TLabel
       Left = 0
-      Top = 32
-      Width = 375
+      Top = 44
+      Width = 395
       Height = 13
       Align = alBottom
       Caption = 'Tip: press "Escape" to clear a shortcut...'
@@ -90,8 +89,8 @@ object frmShortcutsEditor: TfrmShortcutsEditor
     object lblTitle: TLabel
       Left = 0
       Top = 0
-      Width = 375
-      Height = 32
+      Width = 395
+      Height = 44
       Align = alClient
       Caption = 'Click on an item and press the shortcut you desire!'
       Transparent = True

@@ -2,7 +2,7 @@
  {                                                                    }
  { $Id: wxtreelistctrl.pas 936 2007-05-15 03:47:39Z gururamnath $   }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -409,10 +409,6 @@ begin
 
   Result := '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-
   if trim(EVT_LIST_ITEM_SELECTED) <> '' then
     Result := Result + #13 + Format('EVT_LIST_ITEM_SELECTED(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_LIST_ITEM_SELECTED]) + '';
@@ -508,6 +504,8 @@ begin
 
   Result := TStringList.Create;
   try
+	Result.Add(IndentString + Format('<object class="unknown" name="%s"/>', [self.Name]));  
+  {
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
@@ -517,7 +515,7 @@ begin
 
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetTreeViewSpecificStyle(Wx_GeneralStyle, Wx_TreeListviewStyle)]));
-    Result.Add(IndentString + '</object>');
+    Result.Add(IndentString + '</object>');}
   except
     Result.Free;
     raise;
@@ -538,11 +536,19 @@ begin
   strStyle := GetTreeViewSpecificStyle(Wx_GeneralStyle, Wx_TreeListviewStyle);
   if Trim(strStyle) <> '' then
     strStyle := ',' + strStyle;
+
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
+
+    if (XRCGEN) then
+ begin//generate xrc loading code
+//xrc unknown used so we are inserting our control into the unknown container. (a panel)
+Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("%s"), (wxWindow*)%s, (wxWindow*)%s);', 
+[StringFormat, self.Name, self.Name, parentName]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -579,7 +585,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

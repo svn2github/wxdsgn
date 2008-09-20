@@ -2,7 +2,7 @@
  {                                                                    }
 { $Id: wxpanel.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -256,10 +256,20 @@ end;
 function TWxPanel.GenerateEventTableEntries(CurrClassName: string): string;
 begin
 
+ if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := '';
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   Result := '';
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end; 
 
 end;
 
@@ -313,6 +323,9 @@ function TWxPanel.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
   strStyle, parentName, strAlignment: string;
+  xrctlpanel, kill: boolean; //is this panel a child of another panel
+  i: integer;
+  wxcompInterface: IWxComponentInterface;
 begin
   Result := '';
 
@@ -327,11 +340,33 @@ begin
   if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
 
+  xrctlpanel := false;
+//how do i find the panels? need the component interface of the tform.
+ if (XRCGEN) then
+ begin//generate xrc loading code
+
+   if  xrctlpanel then
+   begin//this is not the top panel
+   Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+   end
+   else
+   begin
+   Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = wxXmlResource::Get()->LoadPanel(%s,%s("%s"));',
+    [self.Name, parentName, StringFormat, self.Name])
+   end//this is the top level panel
+   
+ end
+ else
+ begin//generate the cpp code
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -362,7 +397,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (self.Parent is TWxSizerPanel) then
+    if ((not (XRCGEN)) and (self.Parent is TWxSizerPanel)) or ((self.Parent is TWxSizerPanel) and (self.Parent.Parent is TForm) and (XRCGEN)) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',

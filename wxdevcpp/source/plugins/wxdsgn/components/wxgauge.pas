@@ -2,7 +2,7 @@
  {                                                                    }
  { $Id: wxgauge.pas 936 2007-05-15 03:47:39Z gururamnath $          }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -292,9 +292,19 @@ function TWxGauge.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
+if (XRCGEN) then
+ begin
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+end;
+
 end;
 
 function TWxGauge.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -347,11 +357,20 @@ begin
   else
     strStyle := ', ' + GetGaugeOrientation(Wx_GaugeOrientation) + ', wxDefaultValidator, ' + GetCppString(Name);
 
+if (XRCGEN) then
+ begin
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]); 
+  end
+  else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.Wx_Class, ParentName,
     GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Max, self.Left,
     self.Top, self.Width, self.Height, strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -367,9 +386,11 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
+  if not (XRCGEN) then
+  begin
   Result := Result + #13 + Format('%s->SetRange(%d);', [self.Name, self.Max]);
   Result := Result + #13 + Format('%s->SetValue(%d);', [self.Name, self.Position]);
-
+  end;
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
@@ -384,7 +405,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

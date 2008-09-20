@@ -3,7 +3,7 @@
 { $Id: wxstaticbitmap.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -354,7 +354,8 @@ begin
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-
+     if not self.Picture.Bitmap.handle = 0 then
+	Result.Add(IndentString + '<bitmap>Images/' + self.Name + '_XPM.xpm</bitmap>' );
     Result.Add(IndentString + '</object>');
 
   except
@@ -390,6 +391,14 @@ begin
     Result := GetCommentString(self.FWx_Comments.Text) +
       'wxBitmap ' + strBitmapArrayName + '(' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
   end;
+  if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
+ end
+ else
+ begin
   if Result <> '' then
     Result := Result + #13 + Format(
       '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
@@ -402,6 +411,7 @@ begin
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
       strBitmapArrayName, self.Left, self.Top, self.Width, self.Height, strStyle]);
+ end;
 
 
   if trim(self.Wx_ToolTip) <> '' then
@@ -432,7 +442,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

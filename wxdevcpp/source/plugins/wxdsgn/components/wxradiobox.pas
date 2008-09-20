@@ -331,6 +331,19 @@ end;
 function TWxRadioBox.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+  
+   if (XRCGEN) then
+ begin
+    if trim(EVT_RADIOBOX) <> '' then
+    Result := Format('EVT_RADIOBOX(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+      EVT_RADIOBOX]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+   end
+ else
+ begin
   if trim(EVT_RADIOBOX) <> '' then
     Result := Format('EVT_RADIOBOX(%s,%s::%s)', [WX_IDName, CurrClassName,
       EVT_RADIOBOX]) + '';
@@ -338,7 +351,7 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-
+end
 end;
 
 function TWxRadioBox.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -409,13 +422,22 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+  if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s, %d%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height,
     'arrayStringFor_' + self.Name, self.MajorDimension, strStyle]);
-
+end;
+  
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -448,7 +470,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

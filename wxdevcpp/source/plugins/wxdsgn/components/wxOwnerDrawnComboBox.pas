@@ -3,7 +3,7 @@
 { $Id: wxOwnerDrawnComboBox.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -382,6 +382,26 @@ function TWxOwnerDrawnComboBox.GenerateEventTableEntries(CurrClassName: string):
 begin
   Result := '';
 
+   if (XRCGEN) then
+ begin//generate xrc loading code  needs to be edited
+  if trim(EVT_COMBOBOX) <> '' then
+    Result := Result + #13 + Format('EVT_COMBOBOX(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMBOBOX]) + '';
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
+ end
+ else
+ begin//generate the cpp code
   if trim(EVT_COMBOBOX) <> '' then
     Result := Format('EVT_COMBOBOX(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_COMBOBOX]) + '';
@@ -397,7 +417,7 @@ begin
   if trim(EVT_TEXT_ENTER) <> '' then
     Result := Result + #13 + Format('EVT_TEXT_ENTER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
-
+ end;
 end;
 
 function TWxOwnerDrawnComboBox.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -467,13 +487,21 @@ begin
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin//generate the cpp code
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height,
     'arrayStringFor_' + self.Name, strStyle]);
-
+ end;//end of if xrc
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -502,7 +530,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
       strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -510,7 +538,7 @@ begin
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
-  if (self.Parent is TWxToolBar) then
+  if (self.Parent is TWxToolBar) and not (XRCGEN) then
     Result := Result + #13 + Format('%s->AddControl(%s);',
       [self.Parent.Name, self.Name]);
 

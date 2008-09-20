@@ -343,6 +343,14 @@ begin
         'wxBitmap ' + strBitmapArrayName + '(' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
     end;
   }
+  if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   if Result <> '' then
     Result := Result + #13 + Format(
       '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
@@ -355,7 +363,8 @@ begin
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
         self.Wx_IDValue),
       strBitmapArrayName, self.Left, self.Top, self.Width, self.Height, strStyle]);
-
+end;
+  
   SetWxFileName(self.FWx_LoadFromFile.FstrFileNameValue);
   if FWx_FiletoLoad <> '' then
   begin
@@ -399,7 +408,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

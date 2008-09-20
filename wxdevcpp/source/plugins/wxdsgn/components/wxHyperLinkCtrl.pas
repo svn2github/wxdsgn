@@ -3,7 +3,7 @@
 { $Id: wxHyperLinkCtrl.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -344,10 +344,19 @@ end;
 function TWxHyperLinkCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
+
+   if (XRCGEN) then
+ begin//generate xrc loading code  needs to be edited
+  if trim(EVT_HYPERLINK) <> '' then
+    Result := Format('EVT_HYPERLINK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_HYPERLINK]) + '';
+ end
+ else
+ begin//generate the cpp code
   if trim(EVT_HYPERLINK) <> '' then
     Result := Format('EVT_HYPERLINK(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_HYPERLINK]) + '';
-
+ end;
 end;
 
 function TWxHyperLinkCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -363,7 +372,6 @@ begin
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetHyperLnkSpecificStyle(Wx_GeneralStyle, Wx_HyperLinkStyle)]));
     Result.Add(IndentString + '</object>');
@@ -394,12 +402,22 @@ begin
     strStyle := '0';
   strStyle := ', ' + strStyle + ', ' + GetCppString(Name);
 
+   if (XRCGEN) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin//generate the cpp code
   //Last comma is removed because it depends on the user selection of the properties.
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, %s, wxPoint(%d,%d), %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     GetCppString(self.Caption), GetCppString(wx_URL),self.Left, self.Top, strSize, strStyle]);
+ end;//end of if xrc
+ 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -439,7 +457,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

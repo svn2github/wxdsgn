@@ -1,6 +1,6 @@
 // $Id: WxSeparator.pas 936 2007-05-15 03:47:39Z gururamnath $
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -259,6 +259,18 @@ begin
   if not IsControlWxToolBar(self.parent) then
     exit;
 
+ if (XRCGEN) then
+ begin//generate xrc loading code
+  if trim(EVT_BUTTON) <> '' then
+    Result := Format('EVT_BUTTON(XRCID(%s("%s")),%s::%s)', 
+    [StringFormat, self.Name, CurrClassName, EVT_BUTTON]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+ end
+ else
+ begin
   if trim(EVT_BUTTON) <> '' then
     Result := Format('EVT_BUTTON(%s,%s::%s)', [WX_IDName, CurrClassName,
       EVT_BUTTON]) + '';
@@ -266,7 +278,7 @@ begin
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-
+ end;
 end;
 
 function TWxSeparator.GenerateXRCControlCreation(IndentString: string): TStringList;
@@ -274,8 +286,8 @@ begin
 
   Result := TStringList.Create;
   try
-    Result.Add(IndentString + '<object class="separator">');
-    Result.Add(IndentString + '</object>');
+    Result.Add(IndentString + '<object class="separator"/>');
+    //Result.Add(IndentString + '</object>');
   except
     Result.Free;
     raise;
@@ -288,11 +300,14 @@ var
   parentName: string;
 begin
   Result := '';
+ if not (XRCGEN) then
+ begin
   if not IsControlWxToolBar(self.parent) then
     exit;
   parentName := GetWxWidgetParent(self);
   Result     := GetCommentString(self.FWx_Comments.Text) + parentName +
     '->AddSeparator();';
+ end;
 end;
 
 function TWxSeparator.GenerateGUIControlDeclaration: string;

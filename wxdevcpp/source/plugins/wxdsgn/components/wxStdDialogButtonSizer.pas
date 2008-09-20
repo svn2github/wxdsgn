@@ -176,9 +176,38 @@ begin
 end;
 
 function TWxStdDialogButtonSizer.GenerateXRCControlCreation(IndentString: string): TStringList;
+ var
+  i: integer;
+  wxcompInterface: IWxComponentInterface;
+  tempstring: TStringList;
 begin
   Result := TStringList.Create;
-  //TODO: Tony: Implement this for XRC
+   if not (self.Parent is TForm) then //NUKLEAR ZELPH
+ begin
+  Result.Add(IndentString + Format('<object class="%s" name="%s">',
+      [self.Wx_Class, self.Name]));
+ end;//NUKLEAR ZELPH
+   
+   for i := 0 to self.ControlCount - 1 do // Iterate
+      if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        // Only add the XRC control if it is a child of the top-most parent (the form)
+        //  If it is a child of a sizer, panel, or other object, then it's XRC code
+        //  is created in GenerateXRCControlCreation of that control.
+        if (self.Controls[i].GetParentComponent.Name = self.Name) then
+        begin
+          {tempstring := '    ' + IndentString + '<sizeritem>' + #13;}
+          tempstring := {tempstring + }wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+	  {tempstring := tempstring + #13 + '    ' + IndentString + '</sizeritem>';}
+          try
+            Result.AddStrings(tempstring);
+          finally
+            tempstring.Free
+          end
+        end; // for
+	  
+ if not (self.Parent is TForm) then //NUKLEAR ZELPH
+    Result.Add(IndentString + '</object>');
+ 
 end;
 
 function TWxStdDialogButtonSizer.GenerateGUIControlCreation: string;

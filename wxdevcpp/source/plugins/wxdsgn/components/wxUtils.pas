@@ -1,7 +1,7 @@
 { ****************************************************************** }
 { $Id: wxUtils.pas 936 2007-05-15 03:47:39Z gururamnath $            }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -62,8 +62,9 @@ const
 
 var
   StringFormat: string;
+   XRCGEN:Boolean;//NUKLEAR ZELPH
 
-  //type
+ 
 
     //TEditorType = (etNone, etSource, etForm);
     {TExUnitType = (  // <-- EAB TODO: Research how to delete this
@@ -3086,8 +3087,8 @@ begin
     else
       Result := Result + ' | ' + strA;
 
-  if trim(Result) <> '' then
-    Result := ', ' + Result;
+  //if trim(Result) <> '' then
+    //Result := ', ' + Result;
 end;
 
 //Start here

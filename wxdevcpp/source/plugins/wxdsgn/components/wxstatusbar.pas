@@ -333,6 +333,15 @@ begin
   if (trim(strStyle) <> '') then
     strStyle := ', ' + strStyle;
 
+  
+  if (XRCGEN) and not  (self.Parent is TForm) then
+ begin//generate xrc loading code
+  Result := GetCommentString(self.FWx_Comments.Text) +
+    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+ end
+ else
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s%s);', [self.Name, self.wx_Class, parentName,
     GetWxIDString(self.Wx_IDName, self.Wx_IDValue), strStyle]);
@@ -370,6 +379,7 @@ begin
       [self.Name, self.Panels.Count, self.Name]);
 
   end;
+end; //not xrcgen
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -399,7 +409,7 @@ begin
   //strColorStr:=GetWxFontDeclaration(self.Font);
   //if strColorStr <> '' then
   //Result:=Result+#13+Format('%s->SetFont(%s);',[self.Name,strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

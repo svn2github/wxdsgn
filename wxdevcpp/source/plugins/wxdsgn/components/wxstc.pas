@@ -454,6 +454,134 @@ function TWxStyledTextCtrl.GenerateEventTableEntries(CurrClassName: string): str
 begin
   Result := '';
 
+    {if (XRCGEN) then
+ begin
+   if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
+
+  if trim(EVT_TEXT_MAXLEN) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_MAXLEN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_MAXLEN]) + '';
+
+  if trim(EVT_TEXT_URL) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_URL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_URL]) + '';
+
+  if trim(EVT_STC_CALLTIP_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_STC_CALLTIP_CLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_CALLTIP_CLICK]) + '';
+
+  if trim(EVT_STC_CHANGE) <> '' then
+    Result := Result + #13 + Format('EVT_STC_CHANGE(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_CHANGE]) + '';
+
+  if trim(EVT_STC_CHARADDED) <> '' then
+    Result := Result + #13 + Format('EVT_STC_CHARADDED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_CHARADDED]) + '';
+
+  if trim(EVT_STC_DO_DROP) <> '' then
+    Result := Result + #13 + Format('EVT_STC_DO_DROP(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_DO_DROP]) + '';
+
+  if trim(EVT_STC_DOUBLECLICK) <> '' then
+    Result := Result + #13 + Format('EVT_STC_DOUBLECLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_DOUBLECLICK]) + '';
+
+  if trim(EVT_STC_DRAG_OVER) <> '' then
+    Result := Result + #13 + Format('EVT_STC_DRAG_OVER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_DRAG_OVER]) + '';
+
+  if trim(EVT_STC_DWELLEND) <> '' then
+    Result := Result + #13 + Format('EVT_STC_DWELLEND(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_DWELLEND]) + '';
+
+  if trim(EVT_STC_DWELLSTART) <> '' then
+    Result := Result + #13 + Format('EVT_STC_DWELLSTART(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_DWELLSTART]) + '';
+
+  if trim(EVT_STC_HOTSPOT_CLICK) <> '' then
+    Result := Result + #13 + Format('EVT_STC_HOTSPOT_CLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_HOTSPOT_CLICK]) + '';
+
+  if trim(EVT_STC_HOTSPOT_DCLICK) <> '' then
+    Result := Result + #13 + Format('EVT_STC_HOTSPOT_DCLICK(XRCID(%s("%s")), %s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_HOTSPOT_DCLICK]) + '';
+
+  if trim(EVT_STC_KEY) <> '' then
+    Result := Result + #13 + Format('EVT_STC_KEY(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_KEY]) + '';
+
+  if trim(EVT_STC_MACRORECORD) <> '' then
+    Result := Result + #13 + Format('EVT_STC_MACRORECORD(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_MACRORECORD]) + '';
+
+  if trim(EVT_STC_MARGINCLICK) <> '' then
+    Result := Result + #13 + Format('EVT_STC_MARGINCLICK(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_MARGINCLICK]) + '';
+
+  if trim(EVT_STC_MODIFIED) <> '' then
+    Result := Result + #13 + Format('EVT_STC_MODIFIED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_MODIFIED]) + '';
+
+  if trim(EVT_STC_NEEDSHOWN) <> '' then
+    Result := Result + #13 + Format('EVT_STC_NEEDSHOWN(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_NEEDSHOWN]) + '';
+
+  if trim(EVT_STC_PAINTED) <> '' then
+    Result := Result + #13 + Format('EVT_STC_PAINTED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_PAINTED]) + '';
+
+  if trim(EVT_STC_ROMODIFYATTEMPT) <> '' then
+    Result := Result + #13 + Format('EVT_STC_ROMODIFYATTEMPT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_ROMODIFYATTEMPT]) + '';
+
+  if trim(EVT_STC_SAVEPOINTLEFT) <> '' then
+    Result := Result + #13 + Format('EVT_STC_SAVEPOINTLEFT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_SAVEPOINTLEFT]) + '';
+
+  if trim(EVT_STC_SAVEPOINTREACHED) <> '' then
+    Result := Result + #13 + Format('EVT_STC_SAVEPOINTREACHED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_SAVEPOINTREACHED]) + '';
+
+  if trim(EVT_STC_START_DRAG) <> '' then
+    Result := Result + #13 + Format('EVT_STC_START_DRAG(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_START_DRAG]) + '';
+
+  if trim(EVT_STC_STYLENEEDED) <> '' then
+    Result := Result + #13 + Format('EVT_STC_STYLENEEDED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_STYLENEEDED]) + '';
+
+  if trim(EVT_STC_UPDATEUI) <> '' then
+    Result := Result + #13 + Format('EVT_STC_UPDATEUI(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_UPDATEUI]) + '';
+
+  if trim(EVT_STC_URIDROPPED) <> '' then
+    Result := Result + #13 + Format('EVT_STC_URIDROPPED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_URIDROPPED]) + '';
+
+  if trim(EVT_STC_USERLISTSELECTION) <> '' then
+    Result := Result + #13 + Format('EVT_STC_USERLISTSELECTION(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_USERLISTSELECTION]) + '';
+
+  if trim(EVT_STC_ZOOM) <> '' then
+    Result := Result + #13 + Format('EVT_STC_ZOOM(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_ZOOM]) + '';
+
+  if trim(EVT_STC_AUTOCOMP_SELECTION) <> '' then
+    Result := Result + #13 + Format('EVT_STC_AUTOCOMP_SELECTION(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_STC_AUTOCOMP_SELECTION]) + '';
+   end
+ else
+ begin}
   if trim(EVT_TEXT_ENTER) <> '' then
     Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
@@ -577,7 +705,7 @@ begin
   if trim(EVT_STC_AUTOCOMP_SELECTION) <> '' then
     Result := Result + #13 + Format('EVT_STC_AUTOCOMP_SELECTION(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_STC_AUTOCOMP_SELECTION]) + '';
-
+{end}
 
 end;
 
@@ -586,17 +714,19 @@ begin
 
   Result := TStringList.Create;
 
-  try
+  try //xrc unknown used so this is a little different than normal
+	 Result.Add(IndentString + Format('<object class="unknown" name="%s"/>', [self.Name])); 
+  {
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-
     Result.Add(IndentString + Format('  <value>%s</value>', [XML_Label(self.Caption)]));
-
+    Result.Add(IndentString + Format('  <style>%s</style>', [strStyle]));
     Result.Add(IndentString + '</object>');
+  }
   except
     Result.Free;
     raise;
@@ -627,13 +757,20 @@ begin
   else
     strStyle := ', 0,  ' + GetCppString(Name);
 
-
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue)
     , self.Left, self.Top, self.Width, self.Height, strStyle]);
 
+  
+if (XRCGEN) then
+ begin//generate xrc loading code
+//xrc unknown used so we are inserting our control into the unknown container. (a panel)
+Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("%s"), (wxWindow*)%s, (wxWindow*)%s);', 
+[StringFormat, self.Name, self.Name, parentName]);
+end;
+  
   SetWxFileName(self.FWx_LoadFromFile.FstrFileNameValue);
   if FWx_FiletoLoad <> '' then
   begin
@@ -685,7 +822,7 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-
+if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);

@@ -3,7 +3,7 @@
 { $Id: wxgridsizer.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -42,6 +42,8 @@ type
     FColumnSpacing: integer;
     { Storage for property Columns }
     FColumns: integer;
+    { Storage for property Rows }
+    FRows: integer;
     { Storage for property RowSpacing }
     FRowSpacing: integer;
     { Storage for property Wx_Border }
@@ -140,6 +142,7 @@ type
     property ColumnSpacing: integer Read FColumnSpacing Write FColumnSpacing default 0;
     property Columns: integer Read FColumns Write FColumns default 2;
     property RowSpacing: integer Read FRowSpacing Write FRowSpacing default 0;
+    property Rows: integer Read FRows write FRows default 2;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
@@ -175,6 +178,7 @@ begin
   FWx_PropertyList    := TStringList.Create;
   FColumnSpacing      := 0;
   FColumns            := 2;
+  FRows                  := 2;
   FRowSpacing         := 0;
   Wx_Border           := 5;
   FWx_Class           := 'wxGridSizer';
@@ -242,8 +246,9 @@ begin
 
   FWx_PropertyList.add('Name:Name');
   FWx_PropertyList.add('Columns:Columns');
-  FWx_PropertyList.add('RowSpacing:Row Spacing');
+  FWx_PropertyList.add('Rows:Rows');
   FWx_PropertyList.add('ColumnSpacing:Column Spacing');
+  FWx_PropertyList.add('RowSpacing:Row Spacing');
 
 end;
 
@@ -288,13 +293,16 @@ begin
   Result := TStringList.Create;
 
   try
+ if not (self.Parent is TForm) then //NUKLEAR ZELPH
+ begin
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '  <rows>0</rows>');
+    Result.Add(IndentString + Format('  <rows>&d</rows>', [self.rows]));
     Result.Add(IndentString + Format('  <cols>%d</cols>', [self.columns]));
     Result.Add(IndentString + Format('  <vgap>%d</vgap>', [self.rowSpacing]));
     Result.Add(IndentString + Format('  <hgap>%d</hgap>', [self.columnSpacing]));
-
+ end;//NUKLEAR ZELPH
+ 
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         // Only add the XRC control if it is a child of the top-most parent (the form)
@@ -302,17 +310,39 @@ begin
         //  is created in GenerateXRCControlCreation of that control.
         if (self.Controls[i].GetParentComponent.Name = self.Name) then
         begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+	   tempstring  := TStringList.Create;
+	   if (self.Parent is TForm) then
+           begin
+	    tempstring.Add('    ' + IndentString + '<!--sizeritem-->' );
+	    tempstring.Add('      ' + IndentString + '<!--option>' + IntToStr(wxcompInterface.GetStretchFactor) + '</option-->');
+	    tempstring.Add('      ' + IndentString + '<!--border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border-->');
+	    tempstring.Add('      ' + IndentString + '<!--flag>' + BorderAlignmentToStr(wxcompInterface.GetBorderAlignment) + '</flag-->');
+	  end
+	  else
+	  begin
+	    tempstring.Add('    ' + IndentString + '<sizeritem>' );
+	    tempstring.Add('      ' + IndentString + '<option>' + IntToStr(wxcompInterface.GetStretchFactor) + '</option>');
+	    tempstring.Add('      ' + IndentString + '<border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+	    tempstring.Add('      ' + IndentString + '<flag>' + BorderAlignmentToStr(wxcompInterface.GetBorderAlignment) + '</flag>');
+	  end;
+	  tempstring.AddStrings(wxcompInterface.GenerateXRCControlCreation('        ' + IndentString));  
+	  if (self.Parent is TForm) then
+	    tempstring.Add('    ' + IndentString + '<!--/sizeritem-->')
+	  else
+	    tempstring.Add('    ' + IndentString + '</sizeritem>');
+	
           try
             Result.AddStrings(tempstring);
           finally
             tempstring.Free
           end
         end; // for
-
-
+	  
+ if (self.Parent is TForm) then //NUKLEAR ZELPH
+    Result.Add(IndentString + '<!--/object-->')
+ else
     Result.Add(IndentString + '</object>');
-
+ 
   except
     Result.Free;
     raise;
@@ -325,7 +355,8 @@ var
   strAlignment: string;
   parentName:  string;
 begin
-
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
+begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new wxGridSizer(%d, %d, %d, %d);',
     [self.Name, 0, self.columns, self.rowSpacing, self.columnSpacing]);
@@ -351,10 +382,12 @@ begin
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
+ end;//NUKLEAR ZELPH
 end;
 
 function TWxGridSizer.GenerateGUIControlDeclaration: string;
 begin
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 

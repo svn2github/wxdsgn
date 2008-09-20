@@ -3,7 +3,7 @@
 { $Id: wxstaticboxsizer.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -356,6 +356,21 @@ begin
   Result := TStringList.Create;
 
   try
+ if (self.Parent is TForm) then //NUKLEAR ZELPH
+ begin
+     Result.Add(IndentString + Format('<!--object class="%s" name="%s"-->',
+      [self.Wx_Class, self.Name]));
+
+    if Orientation = wxVertical then
+      strOrientation := 'wxVERTICAL'
+    else
+      strOrientation := 'wxHORIZONTAL';
+
+    Result.Add(IndentString + Format('  <!--orient>%s</orient-->', [strOrientation]));
+    Result.Add(IndentString + Format('  <!--label>%s</label-->', [self.Wx_Caption]));
+ end
+ else
+ begin
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
 
@@ -366,7 +381,8 @@ begin
 
     Result.Add(IndentString + Format('  <orient>%s</orient>', [strOrientation]));
     Result.Add(IndentString + Format('  <label>%s</label>', [self.Wx_Caption]));
-
+end;//NUKLEAR ZELPH
+    
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         // Only add the XRC control if it is a child of the top-most parent (the form)
@@ -374,14 +390,37 @@ begin
         //  is created in GenerateXRCControlCreation of that control.
         if (self.Controls[i].GetParentComponent.Name = self.Name) then
         begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+	   tempstring  := TStringList.Create;
+	   if (self.Parent is TForm) then
+           begin
+	    tempstring.Add('    ' + IndentString + '<!--sizeritem-->' );
+	    tempstring.Add('      ' + IndentString + '<!--option>' + IntToStr(wxcompInterface.GetStretchFactor) + '</option-->');
+	    tempstring.Add('      ' + IndentString + '<!--border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border-->');
+	    tempstring.Add('      ' + IndentString + '<!--flag>' + BorderAlignmentToStr(wxcompInterface.GetBorderAlignment) + '</flag-->');
+	  end
+	  else
+	  begin
+	    tempstring.Add('    ' + IndentString + '<sizeritem>' );
+	    tempstring.Add('      ' + IndentString + '<option>' + IntToStr(wxcompInterface.GetStretchFactor) + '</option>');
+	    tempstring.Add('      ' + IndentString + '<border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+	    tempstring.Add('      ' + IndentString + '<flag>' + BorderAlignmentToStr(wxcompInterface.GetBorderAlignment) + '</flag>');
+	  end;
+	  tempstring.AddStrings(wxcompInterface.GenerateXRCControlCreation('        ' + IndentString));  
+	  if (self.Parent is TForm) then
+	    tempstring.Add('    ' + IndentString + '<!--/sizeritem-->')
+	  else
+	    tempstring.Add('    ' + IndentString + '</sizeritem>');
+	
           try
             Result.AddStrings(tempstring)
           finally
             tempstring.Free
           end
         end; // for
-
+	  
+if (self.Parent is TForm) then //NUKLEAR ZELPH
+    Result.Add(IndentString + '<!--/object-->')
+ else
     Result.Add(IndentString + '</object>');
 
   except
@@ -395,6 +434,9 @@ function TWxStaticBoxSizer.GenerateGUIControlCreation: string;
 var
   strOrientation, strAlignment, staticBoxName: string;
   parentName:  string;
+begin
+Result := '';
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
 begin
   if Orientation = wxVertical then
     strOrientation := 'wxVERTICAL'
@@ -435,10 +477,13 @@ begin
       [parent.Name, self.Name, self.Wx_StretchFactor, strAlignment, self.Wx_Border]);
 
   end;
+ end;//NUKLEAR ZELPH
 end;
 
 function TWxStaticBoxSizer.GenerateGUIControlDeclaration: string;
 begin
+Result := '';
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 

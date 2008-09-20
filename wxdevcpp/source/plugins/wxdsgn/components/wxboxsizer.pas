@@ -2,7 +2,7 @@
 { $Id: wxboxsizer.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -209,7 +209,7 @@ const
   EnterKey = char(VK_RETURN);
 begin
      { Key contains the character produced by the keypress.
-       It can be tested or assigned a new value before the
+       It can be tested or assigned a new value before theGetInterface
        call to the inherited KeyPress method.  Setting Key
        to #0 before call to the inherited KeyPress method
        terminates any further processing of the character. }
@@ -308,7 +308,6 @@ end;
 
 function TWxBoxSizer.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
-  strOrientation: string;
   i: integer;
   wxcompInterface: IWxComponentInterface;
   tempstring: TStringList;
@@ -317,15 +316,26 @@ begin
   Result := TStringList.Create;
 
   try
+ if (self.Parent is TForm) then //NUKLEAR ZELPH
+ begin
+    Result.Add(IndentString + Format('<!--object class="%s" name="%s"-->',
+      [self.Wx_Class, self.Name]));
+
+    if Orientation = wxVertical then
+    Result.Add(IndentString + '  <!--orient>vertical</orient-->')
+    else
+    Result.Add(IndentString + '  <!--orient>horizontal</orient-->');
+end
+else
+begin
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
 
     if Orientation = wxVertical then
-      strOrientation := 'wxVERTICAL'
+    Result.Add(IndentString + '  <orient>vertical</orient>')
     else
-      strOrientation := 'wxHORIZONTAL';
-
-    Result.Add(IndentString + Format('  <orient>%s</orient>', [strOrientation]));
+    Result.Add(IndentString + '  <orient>horizontal</orient>');
+end;//NUKLEAR ZELPH
 
     for i := 0 to self.ControlCount - 1 do // Iterate
       if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
@@ -334,7 +344,27 @@ begin
         //  is created in GenerateXRCControlCreation of that control.
         if (self.Controls[i].GetParentComponent.Name = self.Name) then
         begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+	   tempstring  := TStringList.Create;
+	   if (self.Parent is TForm) then
+           begin
+	    tempstring.Add('    ' + IndentString + '<!--sizeritem-->' );
+	    tempstring.Add('      ' + IndentString + '<!--option>' + IntToStr(wxcompInterface.GetStretchFactor) + '</option-->');
+	    tempstring.Add('      ' + IndentString + '<!--border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border-->');
+	    tempstring.Add('      ' + IndentString + '<!--flag>' + BorderAlignmentToStr(wxcompInterface.GetBorderAlignment) + '</flag-->');
+	  end
+	  else
+	  begin
+	    tempstring.Add('    ' + IndentString + '<sizeritem>' );
+	    tempstring.Add('      ' + IndentString + '<option>' + IntToStr(wxcompInterface.GetStretchFactor) + '</option>');
+	    tempstring.Add('      ' + IndentString + '<border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+	    tempstring.Add('      ' + IndentString + '<flag>' + BorderAlignmentToStr(wxcompInterface.GetBorderAlignment) + '</flag>');
+	  end;
+	  tempstring.AddStrings(wxcompInterface.GenerateXRCControlCreation('        ' + IndentString));  
+	  if (self.Parent is TForm) then
+	    tempstring.Add('    ' + IndentString + '<!--/sizeritem-->')
+	  else
+	    tempstring.Add('    ' + IndentString + '</sizeritem>');
+	
           try
             Result.AddStrings(tempstring);
           finally
@@ -342,8 +372,11 @@ begin
           end
         end; // for
 
+ if (self.Parent is TForm) then //NUKLEAR ZELPH
+    Result.Add(IndentString + '<!--/object-->')
+ else
     Result.Add(IndentString + '</object>');
-
+ 
   except
     Result.Free;
     raise;
@@ -355,6 +388,9 @@ function TWxBoxSizer.GenerateGUIControlCreation: string;
 var
   strOrientation, strAlignment: string;
   parentName:  string;
+begin
+Result := '';
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
 begin
   if Orientation = wxVertical then
     strOrientation := 'wxVERTICAL'
@@ -387,11 +423,13 @@ begin
       self.Wx_Border]);
 
   end;
-
+ end;//NUKLEAR ZELPH
 end;
 
 function TWxBoxSizer.GenerateGUIControlDeclaration: string;
 begin
+Result := '';
+if not (XRCGEN) or ((XRCGEN) and (self.Parent is TForm)) then //NUKLEAR ZELPH
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 

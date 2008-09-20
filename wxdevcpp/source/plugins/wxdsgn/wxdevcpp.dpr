@@ -22,7 +22,7 @@ program devcpp;
 {$R '..\..\icons.res' '..\..\icons.rc'}
 {$R '..\..\LangFrm.res' '..\..\LangFrm.rc'}
 {$R '..\..\DefaultFiles.res' '..\..\DefaultFiles.rc'}
-{$IFDEF PLUGIN_BUILD}	 
+{$IFDEF PLUGIN_BUILD}
 {$R '..\..\STDREG.res'}
 {$ENDIF}
 
@@ -121,7 +121,8 @@ uses
   PackmanExitCodesU in '..\..\..\..\packman\PackmanExitCodesU.pas',
   xProcs in '..\..\xprocs.pas',
   ExceptionFilterUnit in '..\..\ExceptionFilterUnit.pas',
-  Hashes in '..\..\packages\Hashes.pas';
+  Hashes in '..\..\packages\Hashes.pas',
+  devShortcutsEditorForm in '..\..\packages\devShortcutsEditorForm.pas' {frmShortcutsEditor};
 
 {$R *.res}
 
@@ -203,6 +204,7 @@ begin
   Application.Initialize;
   Application.Title := 'wxDev-C++';
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TfrmShortcutsEditor, frmShortcutsEditor);
   MainForm.Hide; // hide it
   
   

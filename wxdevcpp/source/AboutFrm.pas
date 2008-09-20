@@ -66,6 +66,8 @@ type
     wxdevcopyright: TLabel;
     BookLabel: TLabel;
     Book: TLabel;
+    Label1: TLabel;
+    Label3: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);

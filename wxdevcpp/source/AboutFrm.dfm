@@ -2231,6 +2231,7 @@ object AboutForm: TAboutForm
     Width = 376
     Height = 285
     ActivePage = Version
+    TabIndex = 0
     TabOrder = 2
     object Version: TTabSheet
       Caption = 'Version Information'
@@ -2319,6 +2320,32 @@ object AboutForm: TAboutForm
         Width = 284
         Height = 13
         Caption = 'Form Designer Copyright (c) wxDev-C++ Development Team'
+      end
+      object Label1: TLabel
+        Left = 8
+        Top = 128
+        Width = 116
+        Height = 16
+        Caption = 'Version Number:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label3: TLabel
+        Left = 160
+        Top = 128
+        Width = 54
+        Height = 16
+        Caption = '7.0 RC2'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
       end
     end
     object License: TTabSheet
@@ -2710,21 +2737,23 @@ object AboutForm: TAboutForm
       object Label2: TLabel
         Left = 150
         Top = 4
-        Width = 215
-        Height = 26
-        Caption = 'Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low'
+        Width = 185
+        Height = 39
+        Caption = 
+          'Guru Kathiresan, Tony Reina, Malcolm Nealon, Joel Low, Esteban A' +
+          'guilar, Edward Toovey, Nuklear Zelph'
         WordWrap = True
       end
       object lblAuthors_DevCpp: TLabel
         Left = 4
-        Top = 35
+        Top = 59
         Width = 111
         Height = 13
         Caption = 'Dev-C++ Development:'
       end
       object Label4: TLabel
         Left = 150
-        Top = 35
+        Top = 59
         Width = 214
         Height = 39
         Caption = 
@@ -2734,15 +2763,15 @@ object AboutForm: TAboutForm
       end
       object lblMingW: TLabel
         Left = 4
-        Top = 78
+        Top = 102
         Width = 117
         Height = 13
         Caption = 'MingW Compiler System:'
       end
       object Label5: TLabel
         Left = 150
-        Top = 78
-        Width = 215
+        Top = 102
+        Width = 188
         Height = 26
         Caption = 
           'Mumit Khan, J.J. Var Der Heidjen, Colin Hendrix and GNU develope' +
@@ -2751,57 +2780,57 @@ object AboutForm: TAboutForm
       end
       object lblSplash: TLabel
         Left = 4
-        Top = 108
+        Top = 132
         Width = 72
         Height = 13
         Caption = 'Splash Screen:'
       end
       object Label6: TLabel
         Left = 150
-        Top = 108
-        Width = 215
+        Top = 132
+        Width = 80
         Height = 13
         Caption = 'Matthijs Crielaard'
       end
       object lblNewLook: TLabel
         Left = 4
-        Top = 125
+        Top = 149
         Width = 88
         Height = 13
         Caption = 'New Look Theme:'
       end
       object Label7: TLabel
         Left = 150
-        Top = 125
-        Width = 215
+        Top = 149
+        Width = 75
         Height = 13
         Caption = 'Gerard Caulfield'
       end
       object Label8: TLabel
         Left = 4
-        Top = 142
+        Top = 166
         Width = 60
         Height = 13
         Caption = 'Blue Theme:'
       end
       object Label9: TLabel
         Left = 150
-        Top = 142
-        Width = 215
+        Top = 166
+        Width = 69
         Height = 13
         Caption = 'Thomas Thron'
       end
       object lblGnome: TLabel
         Left = 4
-        Top = 159
+        Top = 183
         Width = 73
         Height = 13
         Caption = 'Gnome Theme:'
       end
       object Gnome: TLabel
         Left = 150
-        Top = 159
-        Width = 215
+        Top = 183
+        Width = 84
         Height = 13
         Caption = 'Gnome Designers'
       end
