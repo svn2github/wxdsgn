@@ -3,7 +3,7 @@
 $Id: Designerfrm.pas 938 2007-05-15 03:57:34Z gururamnath $
 }
 {                                                                    }
-{   Copyright © 2003-2007 by Guru Kathiresan                         }
+{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -297,7 +297,12 @@ begin
     //Form data should come first, if not the child will be resized to
     if not isSizerAvailable then
       AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
-  end;
+    if (XRCGEN) then //NUKLEAR ZELPH
+   begin
+    AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd,
+    'wxInitAllImageHandlers();' + #13 + 'wxXmlResource::Get()->InitAllHandlers();' + #13 +'wxXmlResource::Get()->Load(' + StringFormat + '("' + strClassName + '.xml"));' + #13+'wxXmlResource::Get()->AddHandler(new wxRichTextCtrlXmlHandler);');
+   end;
+ end;
 
   // RHS Variable
   if GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) then
@@ -435,22 +440,22 @@ begin
   synEdit.Lines.Add('<resource version="2.3.0.1">');
   synEdit.Lines.Add('<!-- Created by wxDev-C++ ' + WXDEVCPP_VERSION + ' -->');
 
-  synEdit.Lines.Add(Format('<object class="%s" name="%s">',
+  synEdit.Lines.Add(Format('<!--object class="%s" name="%s"-->',
     [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
-  synEdit.Lines.Add(Format('<title>%s</title>', [frmNewForm.Caption]));
-  synEdit.Lines.Add(Format('<IDident>%s</IDident>', [frmNewForm.Wx_IDName]));
-  synEdit.Lines.Add(Format('<ID>%d</ID>', [frmNewForm.Wx_IDValue]));
-  synEdit.Lines.Add(Format('<pos>%d,%d</pos>', [frmNewForm.Left, frmNewForm.Top]));
-  synEdit.Lines.Add(Format('<size>%d,%d</size>',
+  synEdit.Lines.Add(Format('<!--title>%s</title-->', [frmNewForm.Caption]));
+  synEdit.Lines.Add(Format('<!--IDident>%s</IDident-->', [frmNewForm.Wx_IDName]));
+  synEdit.Lines.Add(Format('<!--ID>%d</ID-->', [frmNewForm.Wx_IDValue]));
+  synEdit.Lines.Add(Format('<!--pos>%d,%d</pos-->', [frmNewForm.Left, frmNewForm.Top]));
+  synEdit.Lines.Add(Format('<!--size>%d,%d</size-->',
     [frmNewForm.Width, frmNewForm.Height]));
 
   if GetStdStyleString(frmNewForm.Wx_GeneralStyle) = '' then
     if strEqual(frmNewForm.Wx_class, 'WxFrame') then
-      synEdit.Lines.Add('<style>wxDEFAULT_FRAME_STYLE</style>')
+      synEdit.Lines.Add('<!--style>wxDEFAULT_FRAME_STYLE</style-->')
     else
-      synEdit.Lines.Add('<style>wxDEFAULT_DIALOG_STYLE</style>')
+      synEdit.Lines.Add('<!--style>wxDEFAULT_DIALOG_STYLE</style-->')
   else
-    synEdit.Lines.Add(Format('<style>%s</style>',
+    synEdit.Lines.Add(Format('<!--style>%s</style-->',
       [GetStdStyleString(frmNewForm.Wx_GeneralStyle)]));
 
   for i := 0 to frmNewForm.ComponentCount - 1 do // Iterate
@@ -469,7 +474,8 @@ begin
         end
       end; // for
 
-  synEdit.Lines.Add('</object>');
+  synEdit.Lines.Add('<!--/object-->');
+
   synEdit.Lines.Add('</resource>');
 
 end;
@@ -599,6 +605,11 @@ begin
             intBlockStart, intBlockEnd, strHdrValue);
         end;
       end;
+    if (XRCGEN) then //NUKLEAR ZELPH
+ begin
+  AddClassNameIncludeHeader(synEdit, strClassName,intBlockStart, intBlockEnd,
+    '#include <wx/xrc/xmlres.h>' + #13 + '#include <wx/xrc/xh_all.h>');
+ end;
     strLst.Destroy;
   end;
 
@@ -1422,6 +1433,9 @@ begin
                   TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width;
             end;
         end;    // for
+
+       if not (XRCGEN) then //NUKLEAR ZELPH
+	    begin 
         if not ((MaxToolWidth = 16) and (MaxToolHt = 15)) then
           strLst.add(Format('%s->SetToolBitmapSize(wxSize(%d,%d));',
             [self.Components[i].Name, MaxToolWidth, MaxToolHt]));
@@ -1431,7 +1445,8 @@ begin
             [self.Components[i].Name, MaxSepValue]));
         strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
         strLst.add(Format('SetToolBar(%s);', [self.Components[i].Name]));
-      end;
+      end; //not xrcgen
+     end;
 
       if IsControlWxStatusBar(TControl(Components[i])) then
         strLst.add(Format('SetStatusBar(%s);', [self.Components[i].Name]));
