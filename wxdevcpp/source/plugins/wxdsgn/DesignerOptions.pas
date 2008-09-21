@@ -155,6 +155,7 @@ begin
     wx_designer.ELDesigner1.ShowingHints :=
       [htInsert] + wx_designer.ELDesigner1.ShowingHints;
   wx_designer.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
+  XRCGEN := wx_designer.ELDesigner1.GenerateXRC; //Nuklear Zelph
   if wx_designer.ELDesigner1.GenerateXRC then
   begin
     editorName := wx_designer.main.GetActiveEditorName;
