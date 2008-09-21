@@ -775,7 +775,7 @@ begin
     ELDesigner1.Grid.YStep := ini.ReadInteger('wxWidgets', 'lbGridYStepUpDown', ELDesigner1.Grid.YStep);
     ELDesigner1.SnapToGrid := ini.ReadBool('wxWidgets', 'cbSnapToGrid', ELDesigner1.SnapToGrid);
     ELDesigner1.GenerateXRC := ini.ReadBool('wxWidgets', 'cbGenerateXRC', ELDesigner1.GenerateXRC);
-
+    XRCGEN := ELDesigner1.GenerateXRC; //Nuklear Zelph 
     // String format tells us what function to wrap strings with in the generated C++ code
     // Possible values are wxT(), _T(), and _()
     StringFormat := ini.ReadString('wxWidgets', 'cbStringFormat', StringFormat);
