@@ -1438,7 +1438,7 @@ begin
   ReloadFilenames := TList.Create;
   fHelpfiles := ToysStringList.Create;
   fTools := TToolController.Create;
-  Caption := DEVCPP + ' ' + DEVCPP_VERSION;
+  Caption := DEVCPP; // + ' ' + DEVCPP_VERSION; EAB: Why put the version there? No one does that
 
   // set visiblity to previous sessions state
   if devData.ClassView then

@@ -996,7 +996,7 @@ Begin
             if Trim(strInclude) = '' then
               strInclude := '$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
             if versionString = '9.0' then
-              strInclude := strInclude + ';' + GetProgramFilesDir + '\Microsoft SDKs\Windows\v6.0A\Include;';
+              strInclude := strInclude + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) + '\Microsoft SDKs\Windows\v6.0A\Include;';
             strInclude := strInclude + ';$(WinSDKDir)include;';
             Result :=GetRefinedPathList(strInclude,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
@@ -1004,9 +1004,9 @@ Begin
           begin
 
             if Trim(strBin) = '' then
-              strBin := '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;C:\Program Files\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
+              strBin := '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;' + GetProgramFilesDir + '\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
             if versionString = '9.0' then
-              strBin := strBin + ';' + GetProgramFilesDir + '\Microsoft SDKs\Windows\v6.0A\Bin;';
+              strBin := strBin + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) + '\Microsoft SDKs\Windows\v6.0A\Bin;';
             strBin := strBin +';$(WinSDKDir)bin;';
             Result :=GetRefinedPathList(strBin,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;
@@ -1015,7 +1015,7 @@ Begin
             if Trim(strLib) = '' then
               strLib := '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
             if versionString = '9.0' then
-              strLib := strLib + ';' + GetProgramFilesDir + '\Microsoft SDKs\Windows\v6.0A\Lib;';
+              strLib := strLib + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) + '\Microsoft SDKs\Windows\v6.0A\Lib;';
             strLib:= strLib +';$(WinSDKDir)lib;';
             Result := GetRefinedPathList(strLib,strVSInstallDir,strVCPPInstallDir,strFSDKInstallDir,strWinSDKDir);
           end;

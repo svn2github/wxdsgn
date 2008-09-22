@@ -30,8 +30,9 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 373
-    ActivePage = tabSyntax
+    ActivePage = tabClassBrowsing
     Anchors = [akLeft, akTop, akRight, akBottom]
+    TabIndex = 4
     TabOrder = 0
     OnChange = PagesMainChange
     object tabGeneral: TTabSheet
@@ -453,7 +454,7 @@ object EditorOptForm: TEditorOptForm
           Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -464,7 +465,7 @@ object EditorOptForm: TEditorOptForm
           Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -526,7 +527,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -536,7 +537,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -811,6 +812,7 @@ object EditorOptForm: TEditorOptForm
         Width = 396
         Height = 335
         ActivePage = tabCPInserts
+        TabIndex = 0
         TabOrder = 0
         object tabCPInserts: TTabSheet
           Caption = 'Inserts'
@@ -981,6 +983,7 @@ object EditorOptForm: TEditorOptForm
         Width = 397
         Height = 310
         ActivePage = tabCBBrowser
+        TabIndex = 0
         TabOrder = 1
         OnChange = devPages1Change
         object tabCBBrowser: TTabSheet
@@ -1137,6 +1140,8 @@ object EditorOptForm: TEditorOptForm
             Top = 175
             Width = 89
             Height = 16
+            Min = 0
+            Max = 100
             TabOrder = 3
             Visible = False
           end

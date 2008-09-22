@@ -24,6 +24,7 @@ unit AboutFrm;
 interface
 
 uses
+    Version,
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, XPMenu, ComCtrls;
@@ -67,7 +68,8 @@ type
     BookLabel: TLabel;
     Book: TLabel;
     Label1: TLabel;
-    Label3: TLabel;
+    lblVersion: TLabel;
+    BuildNumber: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);
@@ -86,6 +88,32 @@ uses
 
 {$R *.dfm}
 
+function GetAppVersion:string;
+   var
+    Size, Size2: DWord;
+    Pt, Pt2: Pointer;
+   begin
+     Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
+     if Size > 0 then
+     begin
+       GetMem (Pt, Size);
+       try
+          GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
+          VerQueryValue (Pt, '\', Pt2, Size2);
+          with TVSFixedFileInfo (Pt2^) do
+          begin
+            Result:= ' build '+
+                     IntToStr (HiWord (dwFileVersionMS)) + '.' +
+                     IntToStr (LoWord (dwFileVersionMS)) + '.' +
+                     IntToStr (HiWord (dwFileVersionLS)) + '.' +
+                     IntToStr (LoWord (dwFileVersionLS));
+         end;
+       finally
+         FreeMem (Pt);
+     end;
+   end;
+end;
+
 procedure TAboutForm.LoadText;
 begin
   DesktopFont := True;
@@ -96,6 +124,7 @@ begin
   btnOk.Caption := Lang[ID_BTN_OK];
   btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
   Authors.Caption := Lang[ID_BTN_AUTHOR];
+  BuildNumber.Caption := GetAppVersion;
 end;
 
 procedure TAboutForm.LabelClick(Sender: TObject);
