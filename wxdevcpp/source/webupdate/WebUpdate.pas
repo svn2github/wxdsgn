@@ -140,7 +140,7 @@ const
   CONF_FILE = 'webupdate.conf';
   DEFAULT_MIRROR_1 = 'wxDev-C++ DevPak server=http://wxdsgn.sourceforge.net/webupdate/';
   DEFAULT_MIRROR_2 = 'Dev-C++ primary devpak server=http://heanet.dl.sourceforge.net/sourceforge/dev-cpp/';
-  DEFAULT_MIRROR_3 = 'devpaks.org Community Devpaks=http://devpaks.org/';
+  DEFAULT_MIRROR_3 = 'devpaks.org Community Devpaks=http://devpaks.sourceforge.net/';
 
   PACKAGES_DIR         = 'Packages' + pd;
   PACKMAN_PROGRAM = 'packman.exe';
