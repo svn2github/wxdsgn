@@ -1,23 +1,27 @@
 ;--------------------------------
 ; $Id$
+; Author: Tony Reina
+; LGPL license
 ; NSIS Install Script for wx-devcpp
 ; http://nsis.sourceforge.net/
 
-!define DEVCPP_VERSION "5(beta)"
-!define WXDEVCPP_VERSION "7.0(alpha)"
+!define WXDEVCPP_VERSION "7.0(rc2)"
 !define PROGRAM_NAME "wxdevcpp"
+!define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
-!define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION} (${DEVCPP_VERSION})"
+!define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION}"
+!define MSVC_VERSION "2005"
 !define HAVE_MINGW
 !define HAVE_MSVC
 !define NEW_INTERFACE
 
-!define wxWidgets_version "2.8.7"
-!define wxWidgets_name "wxWidgets_${wxWidgets_version}"
+!define wxWidgets_version "2.8.8"
+!define wxWidgets_name "wxWidgets"
+
 
 !ifdef HAVE_MINGW
 
-  !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
+  !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.devpak" ; name of the wxWidgets Mingw gcc devpak
   
   !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.devpak"  ; name of the contrib devpak
  
@@ -27,11 +31,11 @@
 
 !ifdef HAVE_MSVC
 
-  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
+  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc${MSVC_VERSION}.devpak" ; name of the wxWidgets MS VC devpak
  
-  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.devpak"  ; name of the contrib devpak
+  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc${MSVC_VERSION}_contrib.devpak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.devpak"  ; name of the extras devpak
+  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc${MSVC_VERSION}_extras.devpak"  ; name of the extras devpak
  
 !endif
 
@@ -45,6 +49,17 @@ Var USE_MSVC
 Var RUN_WXDEVCPP
 Var RUN_WXBOOK
 Var WXBOOK_INSTALLED
+
+!macro InstallDevPak DEVPAK_NAME
+; Installs a wxDev-C++ devpak using the devpak manager
+
+  SetOutPath $INSTDIR\Packages
+  File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${DEVPAK_NAME}"'
+  Delete  "$INSTDIR\Packages\${DEVPAK_NAME}"
+  
+!macroend
+
 
 !ifdef NEW_INTERFACE
 ;--------------------------------
@@ -70,7 +85,7 @@ Caption "${DISPLAY_NAME}"
 
 # [Licence Attributes]
 LicenseText "${PROGRAM_NAME} is distributed under the GNU General Public License :"
-LicenseData "c:\Program Files\Dev-Cpp\copying.txt"
+LicenseData "license.txt"
 
 # [Directory Selection]
 InstallDir "$PROGRAMFILES\Dev-Cpp"
@@ -128,9 +143,10 @@ UninstPage instfiles
   ; Display custom page which allows user to select which compiler(s) to install for
   Page custom CustomInstallOptions
   
+  !define MUI_CUSTOMFUNCTION_GUIININT myGUIInit
   !define MUI_COMPONENTSPAGE_SMALLDESC
 
-  !insertmacro MUI_PAGE_LICENSE "copying.txt"
+  !insertmacro MUI_PAGE_LICENSE "license.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   
   !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave  ; Check if default directory name is valid
@@ -144,7 +160,7 @@ UninstPage instfiles
   ; Display custom page which allows user to select which programs to run
   Page custom InstallCompleteOptions
 
- ; !define MUI_FINISHPAGE_RUN "$INSTDIR\devcpp.exe" 
+ ; !define MUI_FINISHPAGE_RUN "$INSTDIR\${EXECUTABLE_NAME}"
   
   ;!define MUI_FINISHPAGE_NOREBOOTSUPPORT
   ;!insertmacro MUI_PAGE_FINISH
@@ -199,17 +215,16 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   SectionIn 1 2 3 RO
   SetOutPath $INSTDIR
  
-  File "devcpp.exe"
-  File "copying.txt"
-  ;File "wxdevcpp ${WXDEVCPP_VERSION} changes.html"
+ ; We just need the license and the Package Manager files.
+ ; All other files are contained within devpaks and will be installed by the pakman
+  File "license.txt"
   File "packman.exe"
-  SetOutPath $INSTDIR\Lang
-  File "Lang\English.*"
-  SetOutPath $INSTDIR\Templates
-  File "Templates\*"
-  SetOutPath $INSTDIR\bin
-  File "bin\rm.exe"
 
+  SetOutPath $INSTDIR\Lang
+  ; Basic English language file
+  File "Lang\English.lng"
+  File "Lang\English.tips"
+  
   ; Find all installed devpaks and uninstall them
   FindFirst $0 $1 $INSTDIR\Packages\*.entry
 loop_devpaks:
@@ -220,23 +235,33 @@ loop_devpaks:
   Goto loop_devpaks
 done_devpaks:
 
-  SetOutPath $INSTDIR
+; Ok, now we should have successfully uninstalled all previously-installed devpaks.
 
-  ; All compilers will use the Mingw make system so they all need binutils
-  File /r "bin"
-  File /r "libexec"
-  SetOutPath $INSTDIR\Packages
-  File "Packages\binutils.entry"
-  File "Packages\make.entry"
+; Install the main IDE devpaks
+; We're installing most of the files by using the Package Manager
+; This will help us keep tabs on things and make upgrades easier.
+; In fact, the InstallDevPak directory can be setup to download a devpak
+; if a local version is not available.
+  
+  ; Install wxDev-C++ executable
+ !insertmacro InstallDevPak "wxdevcpp_rc1.devpak"
  
-  SetOutPath $INSTDIR\Packages
+; Install make - All compilers use the Mingw32 GNU make system
+ !insertmacro InstallDevPak "make.devpak"
+
+ ; Install binutils
+ !insertmacro InstallDevPak "binutils.devpak"
+
+; Install mingw-runtime
+  !insertmacro InstallDevPak "mingw-runtime.devpak"
+
+; Install win32-api
+  !insertmacro InstallDevPak "win32api.devpak"
 
   ; Install Dev-C++ examples
-  File "Packages\devcpp_examples.DevPak"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\devcpp_examples.DevPak"'
-  Delete  "$INSTDIR\Packages\devcpp_examples.DevPak"
+  !insertmacro InstallDevPak "devcpp_examples.devpak"
 
-
+  
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
 
@@ -257,11 +282,7 @@ SectionEnd
 Section "wxWidgets ${wxWidgets_version} common files" SectionwxWidgetsCommon
   SectionIn 1 2 RO
 
-  SetOutPath $INSTDIR\Packages
-
-  File "Packages\${wxWidgetsCommon_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsCommon_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsCommon_devpak}"
+  !insertmacro InstallDevPak ${wxWidgetsCommon_devpak}
 
 SectionEnd
 
@@ -273,63 +294,41 @@ Section "Libraries" SectionwxWidgetsMingw
 
   SectionIn 1 2
   
-  SetOutPath $INSTDIR\Packages
-  File "Packages\${wxWidgets_mingw_devpak}"   ; Copy the devpak over
-
-  ; Install wxWidgets Mingw gcc library through the devpak
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_mingw_devpak}"'
-  Delete "$INSTDIR\Packages\${wxWidgets_mingw_devpak}"   ; Delete the original devpak (its files should be installed now)
-
+  !insertmacro InstallDevPak ${wxWidgets_mingw_devpak}
+  
 SectionEnd
 !endif
 
 Section /o "Contribs" SectionwxWidgetsContribGcc
   SectionIn 1
   
-  SetOutPath $INSTDIR\Packages
+  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.devpak
   
-  File "Packages\${wxWidgets_name}_contrib_common.DevPak"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"'
-  Delete  "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"
-
-  File "Packages\${wxWidgetsContribGcc_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContribGcc_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsContribGcc_devpak}"
-
+  !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
+ 
 SectionEnd
 
 Section /o "Extras" SectionwxWidgetsExtrasGcc
 
   SectionIn 1
 
-  SetOutPath $INSTDIR\Packages
-
-File "Packages\${wxWidgets_name}_extras_common.DevPak"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"'
-  Delete  "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"
-
-  File "Packages\${wxWidgetsExtrasGcc_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsExtrasGcc_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsExtrasGcc_devpak}"
-
+  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.devpak
+  
+  !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
+  
 SectionEnd
 
 SectionGroupEnd
 
 !ifdef HAVE_MSVC
 
-SectionGroup /e "MS VC++ 2005 wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMSVC
+SectionGroup /e "MS VC++ ${MSVC_VERSION} wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMSVC
 
 Section /o "Libraries" SectionwxWidgetsMSVC
 
   SectionIn 1
 
-  SetOutPath $INSTDIR\Packages
-  File "Packages\${wxWidgets_msvc_devpak}"   ; Copy the devpak over
-
-  ; Install wxWidgets MS VC 2005 library through the devpak
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_msvc_devpak}"'
-  Delete "$INSTDIR\Packages\${wxWidgets_msvc_devpak}"   ; Delete the original devpak (its files should be installed now)
+  !insertmacro InstallDevPak ${wxWidgets_msvc_devpak}
   
 SectionEnd
 
@@ -337,32 +336,20 @@ Section /o "Contribs" SectionwxWidgetsContribMSVC
 
   SectionIn 1
 
-  SetOutPath $INSTDIR\Packages
-
-  File "Packages\${wxWidgets_name}_contrib_common.DevPak"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"'
-  Delete  "$INSTDIR\Packages\${wxWidgets_name}_contrib_common.DevPak"
-
-  File "Packages\${wxWidgetsContribMSVC_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsContribMSVC_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsContribMSVC_devpak}"
-
+  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.devpak
+  
+  !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
+  
 SectionEnd
 
 Section /o "Extras" SectionwxWidgetsExtrasMSVC
 
   SectionIn 1
 
-  SetOutPath $INSTDIR\Packages
-
-  File "Packages\${wxWidgets_name}_extras_common.DevPak"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"'
-  Delete  "$INSTDIR\Packages\${wxWidgets_name}_extras_common.DevPak"
-
-  File "Packages\${wxWidgetsExtrasMSVC_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsExtrasMSVC_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsExtrasMSVC_devpak}"
-
+  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.devpak
+  
+  !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
+  
 SectionEnd
 SectionGroupEnd
 
@@ -372,29 +359,23 @@ Section "Samples" SectionwxWidgetsSamples
 
   SectionIn 1
 
-  SetOutPath $INSTDIR\Packages
-
-  File "Packages\${wxWidgetsSamples_devpak}"   ; Copy the devpak over
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"'
-  Delete  "$INSTDIR\Packages\${wxWidgetsSamples_devpak}"
-
+  !insertmacro InstallDevPak ${wxWidgetsSamples_devpak}
+  
 SectionEnd
 
 
 !ifdef HAVE_MINGW
 Section "Mingw compiler system (headers and libraries)" SectionMingw
   SectionIn 1 2
-  SetOutPath $INSTDIR
   
-  File /r "include"
-  File /r "lib"
-  File /r "mingw32"
-  SetOutPath $INSTDIR\Packages
-  File "Packages\gcc-core.entry"
-  File "Packages\gcc-g++.entry"
-  File "Packages\gdb.entry"
-  File "Packages\mingw-runtime.entry"
-  File "Packages\w32api.entry"
+  ; Install gcc-core
+  !insertmacro InstallDevPak "gcc-core.devpak"
+  
+; Install gcc-g++
+  !insertmacro InstallDevPak "gcc-g++.devpak"
+  
+; Install gdb
+  !insertmacro InstallDevPak "gdb.devpak"
   
   ; Add links to START MENU
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -418,7 +399,7 @@ exists:
 
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
   
@@ -434,21 +415,9 @@ SectionGroup /e "Help files" SectionGroupHelp
 Section /o "${PROGRAM_NAME} help" SectionHelp
 
   SectionIn 1 2
-  SetOutPath $INSTDIR\Help
-  File "Help\DevCpp.hlp"
-  File "Help\DevCpp.cnt"
-  SetOutPath $INSTDIR\Packages
-  File "Packages\DevCppHelp.entry"
-
-  ; Added for wx-devcpp  -- START
-  SetOutPath $INSTDIR\Help
-  File "Help\wx.gid"
-  File "Help\devhelp.ini"
-  File "Help\wx-devcpp Tutorial Help.chm"
-  File "Help\wx.hlp"
-  File "Help\wx.chm"
-  ; Added for wx-devcpp  -- END
-
+  
+; Install wxDevCpp Help Files
+  !insertmacro InstallDevPak "DevCppHelp.devpak"
   SetOutPath $INSTDIR
 
 SectionEnd
@@ -457,11 +426,11 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
 
   SectionIn 1
 
-  SetOutPath $INSTDIR\Help
-  File "Help\Programming with wxDev-C++.pdf"
-  
+  ; Install SofT's wxDev-C++ programming book
+  !insertmacro InstallDevPak "Programming with wxDev-C++.devpak"
+
   StrCpy $WXBOOK_INSTALLED "Yes"
-  
+
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
   
@@ -480,8 +449,8 @@ SectionEnd
 
 Section "Language files" SectionLangs
   SectionIn 1
-  SetOutPath $INSTDIR\Lang
-  File "Lang\*"
+  
+  !insertmacro InstallDevPak "Language.devpak"
   
   SetOutPath $INSTDIR
   
@@ -496,7 +465,7 @@ Section "Associate .dev files to ${PROGRAM_NAME}"
   StrCpy $0 ".dev"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".dev" "" "${PROGRAM_NAME}.dev"
   WriteRegStr HKCR "${PROGRAM_NAME}.dev" "" "${PROGRAM_NAME} Project File"
   WriteRegStr HKCR "${PROGRAM_NAME}.dev\DefaultIcon" "" '$0,3'
@@ -513,7 +482,7 @@ Section "Associate .c files to ${PROGRAM_NAME}"
   StrCpy $0 ".c"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".c" "" "${PROGRAM_NAME}.c"
   WriteRegStr HKCR "${PROGRAM_NAME}.c" "" "C Source File"
   WriteRegStr HKCR "${PROGRAM_NAME}.c\DefaultIcon" "" '$0,4'
@@ -530,7 +499,7 @@ Section "Associate .cpp files to ${PROGRAM_NAME}"
   StrCpy $0 ".cpp"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".cpp" "" "${PROGRAM_NAME}.cpp"
   WriteRegStr HKCR "${PROGRAM_NAME}.cpp" "" "C++ Source File"
   WriteRegStr HKCR "${PROGRAM_NAME}.cpp\DefaultIcon" "" '$0,5'
@@ -547,7 +516,7 @@ Section "Associate .h files to ${PROGRAM_NAME}"
   StrCpy $0 ".h"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".h" "" "${PROGRAM_NAME}.h"
   WriteRegStr HKCR "${PROGRAM_NAME}.h" "" "C Header File"
   WriteRegStr HKCR "${PROGRAM_NAME}.h\DefaultIcon" "" '$0,6'
@@ -564,7 +533,7 @@ Section "Associate .hpp files to ${PROGRAM_NAME}"
   StrCpy $0 ".hpp"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".hpp" "" "${PROGRAM_NAME}.hpp"
   WriteRegStr HKCR "${PROGRAM_NAME}.hpp" "" "C++ Header File"
   WriteRegStr HKCR "${PROGRAM_NAME}.hpp\DefaultIcon" "" '$0,7'
@@ -581,7 +550,7 @@ Section "Associate .rc files to ${PROGRAM_NAME}"
   StrCpy $0 ".rc"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".rc" "" "${PROGRAM_NAME}.rc"
   WriteRegStr HKCR "${PROGRAM_NAME}.rc" "" "Resource Source File"
   WriteRegStr HKCR "${PROGRAM_NAME}.rc\DefaultIcon" "" '$0,8'
@@ -598,7 +567,7 @@ Section "Associate .devpak files to ${PROGRAM_NAME}"
   StrCpy $0 ".devpak"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   StrCpy $1 $INSTDIR\PackMan.exe
   WriteRegStr HKCR ".devpak" "" "${PROGRAM_NAME}.devpak"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak" "" "${PROGRAM_NAME} Package File"
@@ -616,7 +585,7 @@ Section "Associate .devpackage files to ${PROGRAM_NAME}"
   StrCpy $0 ".devpackage"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   StrCpy $1 $INSTDIR\PackMan.exe
   WriteRegStr HKCR ".devpackage" "" "${PROGRAM_NAME}.devpackage"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpackage" "" "${PROGRAM_NAME} Package File"
@@ -634,7 +603,7 @@ Section "Associate .template files to ${PROGRAM_NAME}"
   StrCpy $0 ".template"
   Call BackupAssoc
 
-  StrCpy $0 $INSTDIR\DevCpp.exe
+  StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".template" "" "${PROGRAM_NAME}.template"
   WriteRegStr HKCR "${PROGRAM_NAME}.template" "" "${PROGRAM_NAME} Template File"
   WriteRegStr HKCR "${PROGRAM_NAME}.template\DefaultIcon" "" '$0,1'
@@ -650,19 +619,7 @@ SubSectionEnd
 Section "Create Quick Launch shortcut" SectionQuickLaunch
   SectionIn 1 2
   SetShellVarContext current
-  CreateShortCut "$QUICKLAUNCH\${PROGRAM_NAME}.lnk" "$INSTDIR\devcpp.exe"
-  
-  SetOutPath $INSTDIR
-  
-SectionEnd
-
-Section "Debug files" SectionDebug
-  SectionIn 1
-  SetOutPath $INSTDIR
-  ;File "devcpp.map"
-  File "Packman.map"
-  SetOutPath $INSTDIR\Packages
-  File "Packages\Dev-C++_Map.entry"
+  CreateShortCut "$QUICKLAUNCH\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
   
   SetOutPath $INSTDIR
   
@@ -671,17 +628,19 @@ SectionEnd
 Section "Remove all previous configuration files" SectionConfig
    SectionIn 1 2
 
-  Delete "$APPDATA\Dev-Cpp\devcpp.ini"
-  Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
-  Delete "$APPDATA\Dev-Cpp\cache.ccc"
-  Delete "$APPDATA\Dev-Cpp\defaultcode.cfg"
-  Delete "$APPDATA\Dev-Cpp\devshortcuts.cfg"
-  Delete "$APPDATA\Dev-Cpp\classfolders.dcf"
-  Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
-  Delete "$APPDATA\Dev-Cpp\tools.ini"
-  Delete "$APPDATA\Dev-Cpp\devcpp.ci"
+  Delete "$APPDATA\Dev-Cpp\*.*"
+
+  ;Delete "$APPDATA\Dev-Cpp\devcpp.ini"
+  ;Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
+  ;Delete "$APPDATA\Dev-Cpp\cache.ccc"
+  ;Delete "$APPDATA\Dev-Cpp\defaultcode.cfg"
+  ;Delete "$APPDATA\Dev-Cpp\devshortcuts.cfg"
+  ;Delete "$APPDATA\Dev-Cpp\classfolders.dcf"
+  ;Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
+  ;Delete "$APPDATA\Dev-Cpp\tools.ini"
+  ;Delete "$APPDATA\Dev-Cpp\devcpp.ci"
   
-  call GetLocalAppData
+  Call GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
   Delete "$LOCAL_APPDATA\devcpp.cfg"
   Delete "$LOCAL_APPDATA\cache.ccc"
@@ -691,6 +650,9 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$LOCAL_APPDATA\mirrors.cfg"
   Delete "$LOCAL_APPDATA\tools.ini"
   Delete "$LOCAL_APPDATA\devcpp.ci"
+  Delete "$LOCAL_APPDATA\wxdevcpp.ini"
+  Delete "$LOCAL_APPDATA\wxdevcpp.cfg"
+  Delete "$LOCAL_APPDATA\wxdevcpp.ci"
 
   Delete "$APPDATA\devcpp.ini"
   Delete "$APPDATA\devcpp.cfg"
@@ -701,6 +663,9 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$APPDATA\mirrors.cfg"
   Delete "$APPDATA\tools.ini"
   Delete "$APPDATA\devcpp.ci"
+  Delete "$APPDATA\wxdevcpp.ini"
+  Delete "$APPDATA\wxdevcpp.cfg"
+  Delete "$APPDATA\wxdevcpp.ci"
   
   Delete "$INSTDIR\devcpp.ini"
   Delete "$INSTDIR\devcpp.cfg"
@@ -711,6 +676,9 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$INSTDIR\mirrors.cfg"
   Delete "$INSTDIR\tools.ini"
   Delete "$INSTDIR\devcpp.ci"
+  Delete "$INSTDIR\wxdevcpp.ini"
+  Delete "$INSTDIR\wxdevcpp.cfg"
+  Delete "$INSTDIR\wxdevcpp.ci"
   
   SetOutPath $INSTDIR
   
@@ -740,7 +708,7 @@ Function InstallCompleteOptions
   Exec '"$R0\acrord32.exe" "$INSTDIR\Help\Programming with wxDev-C++.pdf"'
  
   StrCmp $RUN_WXDEVCPP "1" 0 +2
-  Exec '"$INSTDIR\devcpp.exe"'
+  Exec '"$INSTDIR\${EXECUTABLE_NAME}"'
 
 FunctionEnd
 
@@ -850,8 +818,7 @@ FunctionEnd
 ;--------------------------------
 
 ; Functions
-
-Function .onGUIInit
+Function myGUIInit
 
   MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation$\r$\n(i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
  
@@ -882,7 +849,7 @@ FunctionEnd
 Function .onInstSuccess
   MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} now?" IDNO DontRun /SD IDNO
 
-  Exec '"$INSTDIR\devcpp.exe"'
+  Exec '"$INSTDIR\${EXECUTABLE_NAME}"'
   DontRun:
 FunctionEnd
 
