@@ -101,11 +101,11 @@ md %DEVPAKDIR%\docs
 copy /Y %WXWIN%\docs\licence.txt %DEVPAKDIR%\docs\
 copy /Y %WXWIN%\docs\readme.txt %DEVPAKDIR%\docs\
 
-copy wxWidgets_common.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_common.DevPackage
+copy wxWidgets_common.DevPackage %DEVPAKDIR%\wxWidgets_common.DevPackage
 
 cd /d %devpakdir%
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_common.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_common.DevPackage
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_common.DevPackage
 
 md common
 md common\include
@@ -262,12 +262,12 @@ FOR /R %WXWIN%\contrib\samples %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, d
 
 
 cd /d %STARTDIR%
-copy wxWidgets_contrib_common.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_contrib_common.DevPackage
+copy wxWidgets_contrib_common.DevPackage %DEVPAKDIR%\wxWidgets_contrib_common.DevPackage
 
 cd /d %DEVPAKDIR%
 
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_contrib_common.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_contrib_common.DevPackage
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_contrib_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_contrib_common.DevPackage
 
 IF NOT EXIST %DEVPAKDIR%\contrib md %DEVPAKDIR%\contrib
 IF NOT EXIST %DEVPAKDIR%\contrib\include md %DEVPAKDIR%\contrib\include
@@ -468,11 +468,11 @@ call %STARTDIR%\set_extras bcc
 
 :EXT_COMMON
 cd /d %STARTDIR%
-copy wxWidgets_extras_common.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_extras_common.DevPackage
+copy wxWidgets_extras_common.DevPackage %DEVPAKDIR%\wxWidgets_extras_common.DevPackage
 
 cd /d %DEVPAKDIR%
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_extras_common.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_extras_common.DevPackage
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_extras_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_extras_common.DevPackage
 
 xcopy %WXWIN%\3rdParty\include extras\include\ /e /Y /Q
 xcopy %WXWIN%\3rdParty\samples extras\samples\ /e /Y /Q
@@ -488,13 +488,13 @@ rem Write the Sample files to subdirectory setup devpak
 
 cd /d %STARTDIR%
 
-copy wxWidgets_samples.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_samples.DevPackage
+copy wxWidgets_samples.DevPackage %DEVPAKDIR%\wxWidgets_samples.DevPackage
 
 cd /d %DEVPAKDIR%
 
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_samples.DevPackage
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_samples.DevPackage
 
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_samples.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_samples.DevPackage
 
 md samples
 md samples\samples
