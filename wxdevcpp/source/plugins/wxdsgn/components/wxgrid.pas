@@ -3,7 +3,7 @@
 { $Id: wxgrid.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -600,8 +600,11 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetEditSpecificStyle(self.Wx_GeneralStyle, self.Wx_EditStyle)]));
@@ -641,11 +644,11 @@ begin
  else
  begin
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
+    Format('%s = new %s(%s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;
+    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',

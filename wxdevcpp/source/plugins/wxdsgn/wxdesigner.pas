@@ -782,6 +782,8 @@ begin
     // if there's no preference saved in the ini file, then default to wxT()
     if trim(StringFormat) = '' then
       StringFormat := 'wxT';
+    UseDefaultPos := ini.ReadBool('wxWidgets', 'cbUseDefaultPos', False); // ?? UseDefaultPos);
+    UseDefaultSize := ini.ReadBool('wxWidgets', 'cbUseDefaultSize', False); //?? UseDefaultSize);
 
     if ini.ReadBool('wxWidgets', 'cbControlHints', true) then
       ELDesigner1.ShowingHints := ELDesigner1.ShowingHints + [htControl]

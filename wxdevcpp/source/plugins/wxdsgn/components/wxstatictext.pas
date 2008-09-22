@@ -3,7 +3,7 @@
 { $Id: wxstatictext.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -319,8 +319,11 @@ begin
     Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetLabelSpecificStyle(Wx_GeneralStyle, Wx_LabelStyle)]));
@@ -344,7 +347,7 @@ begin
 
   //Determine whether we should just use wxDefaultSize
   if wxST_NO_AUTORESIZE in Wx_LabelStyle then
-    strSize := Format('wxSize(%d, %d)', [self.width, self.height])
+    strSize := Format('wxSize(%d, %d)', [GetWxSize(self.Width, self.Height)])
   else
     strSize := 'wxDefaultSize';
 
@@ -367,10 +370,10 @@ begin
 
   //Last comma is removed because it depends on the user selection of the properties.
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), %s%s);',
+    Format('%s = new %s(%s, %s, %s, %s, %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    GetCppString(self.Caption), self.Left, self.Top, strSize, strStyle]);
+    GetCppString(self.Caption), GetWxPosition(self.Left, self.Top), strSize, strStyle]);
  end;
 
   if trim(self.Wx_ToolTip) <> '' then

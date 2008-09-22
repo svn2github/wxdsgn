@@ -3,7 +3,7 @@
 { $Id: wxgridsizer.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }

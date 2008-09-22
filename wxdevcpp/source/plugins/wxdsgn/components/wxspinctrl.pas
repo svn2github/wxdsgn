@@ -2,7 +2,7 @@
  {                                                                    }
  { $Id: wxspinctrl.pas 936 2007-05-15 03:47:39Z gururamnath $   }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -407,8 +407,11 @@ begin
     Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, Wx_EditStyle)]));
@@ -446,10 +449,10 @@ begin
  begin//generate the cpp code
   //Last comma is removed because it depends on the user selection of the properties.
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s, %d, %d, %d);',
+    Format('%s = new %s(%s, %s, %s, %s, %s%s, %d, %d, %d);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height,
+    GetCppString(self.Caption), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height),
     strStyle, self.MinValue, Self.MaxValue, Value]);
  end;//end of if xrc
   if trim(self.Wx_ToolTip) <> '' then

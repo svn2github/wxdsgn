@@ -2,7 +2,7 @@
  {                                                                    }
 { $Id: wxslider.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -486,8 +486,12 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
     Result.Add(IndentString + Format('  <value>%d</value>', [self.Position]));
     Result.Add(IndentString + Format('  <min>%d</min>', [self.Min]));
     Result.Add(IndentString + Format('  <max>%d</max>', [self.Max]));
@@ -555,10 +559,10 @@ if (XRCGEN) then
  else
  begin
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %d, %d, %d, wxPoint(%d,%d), wxSize(%d,%d)%s);',
+    Format('%s = new %s(%s, %s, %d, %d, %d, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.position, self.Min, self.Max, self.Left, self.Top, self.Width,
+    self.position, self.Min, self.Max, GetWxPosition(self.Left, self.Top), self.Width,
     self.Height, strStyle]);
  end;
 

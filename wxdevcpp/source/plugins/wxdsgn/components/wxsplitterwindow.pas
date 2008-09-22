@@ -334,10 +334,14 @@ function TWxSplitterWindow.GenerateXRCControlCreation(IndentString: string): TSt
     Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
     Result.Add(IndentString + Format('  <sashpos>%d</sashpos>', [self.Wx_SashPosition]));
-      if Orientation = wxVertical then
+    if Orientation = wxVertical then
       strOrientation := 'vertical'
     else
       strOrientation := 'horizontal';
@@ -392,10 +396,10 @@ begin
  else
  begin
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
+    Format('%s = new %s(%s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.Left, self.Top, self.Width, self.Height, strStyle]);
+    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
 end;
   
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));

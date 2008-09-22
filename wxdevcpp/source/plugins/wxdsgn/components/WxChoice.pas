@@ -3,7 +3,7 @@
  { $Id: WxChoice.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -381,8 +381,11 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     // Result.Add(IndentString + Format('  <selection>%d</selection>', [self.
 
@@ -443,10 +446,10 @@ begin
  else
  begin//generate the cpp code
   Result := Result + #13 + Format(
-    '%s = new %s(%s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s%s);',
+    '%s = new %s(%s, %s, %s, %s, %s%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.Left, self.Top, self.Width, self.Height, 'arrayStringFor_' +
+    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), 'arrayStringFor_' +
     self.Name, strStyle]);
  end;//end of if xrc
 

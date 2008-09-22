@@ -3,7 +3,7 @@
 $Id: Designerfrm.pas 938 2007-05-15 03:57:34Z gururamnath $
 }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }

@@ -3,7 +3,7 @@
  { $Id: wxDatePickerCtrl.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -399,7 +399,10 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+
+    if not(UseDefaultSize)then
     Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
     Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
@@ -455,10 +458,10 @@ begin
  else
  begin//generate the cpp code
   Result :=  Result + #13 + Format(
-    '%s = new %s(%s, %s, %s_Date, wxPoint(%d,%d), wxSize(%d,%d) %s);',
+    '%s = new %s(%s, %s, %s_Date, %s, %s %s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-     self.Name, self.Left, self.Top, self.Width, self.Height,strStyle]);
+     self.Name, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height),strStyle]);
  end;//end of if xrc
 
   if trim(self.Wx_ToolTip) <> '' then

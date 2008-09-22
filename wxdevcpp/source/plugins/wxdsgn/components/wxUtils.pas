@@ -1,7 +1,7 @@
 { ****************************************************************** }
 { $Id: wxUtils.pas 936 2007-05-15 03:47:39Z gururamnath $            }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -62,9 +62,11 @@ const
 
 var
   StringFormat: string;
+  UseDefaultPos: Boolean;
+  UseDefaultSize: Boolean;
    XRCGEN:Boolean;//NUKLEAR ZELPH
 
- 
+  //type
 
     //TEditorType = (etNone, etSource, etForm);
     {TExUnitType = (  // <-- EAB TODO: Research how to delete this
@@ -783,6 +785,8 @@ function GetXPMFromTPictureXXX(XPMName: string; delphiBitmap: TBitmap): string;
 function GenerateXPMDirectly(bmp: TBitmap; strCompName: string; strParentName: string; strFileName: string): boolean;
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
+function GetWxPosition(Left: Integer; Top: Integer): string;
+function GetWxSize(Width: Integer; Height: Integer): string;
 function GetCommentString(str: string): string;
 function GetWxFontDeclaration(fnt: TFont): string;
 function GetDesignerFormName(cntrl: TControl): string;
@@ -4891,6 +4895,22 @@ begin
     strSearchReplace(str, '\\?', '\?', [srAll]);
     Result := StringFormat + '("' + str + '")';
   end
+end;
+
+function GetWxPosition(Left: Integer; Top: Integer): string;
+begin
+  if (UseDefaultPos = True) then
+    Result := 'wxDefaultPosition'
+  else
+    Result := Format('wxPoint(%d, %d)',[Left, Top]);
+end;
+
+function GetWxSize(Width: Integer; Height: Integer): string;
+begin
+  if (UseDefaultSize = True) then
+    Result := 'wxDefaultSize'
+  else
+    Result := Format('wxSize(%d, %d)',[Width, Height]);
 end;
 
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;

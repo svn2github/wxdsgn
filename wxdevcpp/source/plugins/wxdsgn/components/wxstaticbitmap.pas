@@ -3,7 +3,7 @@
 { $Id: wxstaticbitmap.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
  {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -352,9 +352,13 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-     if not self.Picture.Bitmap.handle = 0 then
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not self.Picture.Bitmap.handle = 0 then
 	Result.Add(IndentString + '<bitmap>Images/' + self.Name + '_XPM.xpm</bitmap>' );
     Result.Add(IndentString + '</object>');
 
@@ -401,16 +405,16 @@ begin
  begin
   if Result <> '' then
     Result := Result + #13 + Format(
-      '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d)%s);',
+      '%s = new %s(%s, %s, %s, %s, %s%s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
-      strBitmapArrayName, self.Left, self.Top, self.Width, self.Height, strStyle])
+      strBitmapArrayName, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle])
   else
     Result := GetCommentString(self.FWx_Comments.Text) +
-      Format('%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d) %s);',
+      Format('%s = new %s(%s, %s, %s, %s, %s %s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
-      strBitmapArrayName, self.Left, self.Top, self.Width, self.Height, strStyle]);
+      strBitmapArrayName, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
  end;
 
 

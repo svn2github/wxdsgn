@@ -261,6 +261,30 @@ object DesignerForm: TDesignerForm
             '_'
             '_T')
         end
+        object gpSizerOptons: TGroupBox
+          Left = 8
+          Top = 64
+          Width = 185
+          Height = 73
+          Caption = 'Sizer Options'
+          TabOrder = 2
+          object cbUseDefaultPos: TCheckBox
+            Left = 10
+            Top = 16
+            Width = 191
+            Height = 17
+            Caption = 'Use wxDefaultPosition'
+            TabOrder = 0
+          end
+          object cbUseDefaultSize: TCheckBox
+            Left = 10
+            Top = 39
+            Width = 167
+            Height = 17
+            Caption = 'Use wxDefaultSize'
+            TabOrder = 1
+          end
+        end
       end
     end
   end

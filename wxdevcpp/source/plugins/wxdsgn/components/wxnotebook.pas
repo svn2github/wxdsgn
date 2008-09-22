@@ -3,7 +3,7 @@
 { $Id: wxnotebook.pas 936 2007-05-15 03:47:39Z gururamnath $         }
 {                                                                    }
 {                                                                    }
-{   Copyright ï¿½ 2003-2007 by Guru Kathiresan                         }
+{   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
 {License :                                                           }
 {=========                                                           }
@@ -287,7 +287,8 @@ if (XRCGEN) then
   if trim(EVT_NOTEBOOK_PAGE_CHANGING) <> '' then
     Result := Result + #13 + Format('EVT_NOTEBOOK_PAGE_CHANGING(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_NOTEBOOK_PAGE_CHANGING]) + '';
- end;	  
+ end;
+ 
 
 end;
 
@@ -307,8 +308,11 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     stylstr := GetNotebookSpecificStyle(self.Wx_GeneralStyle, {self.Wx_BookAlignment,} Self.Wx_NoteBookStyle);
     if stylstr <> '' then
@@ -375,11 +379,11 @@ if (XRCGEN) then
  else 
  begin
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, wxPoint(%d,%d),wxSize(%d,%d)%s);',
+    Format('%s = new %s(%s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.Left, self.Top, self.Width, self.Height, strStyle]);
- end;	
+    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+ end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -410,7 +414,7 @@ if (XRCGEN) then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
   if (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
-    Result := Result + #13 + Format('%s->SetTabSize(wxSize(%d,%d));', [self.Name, GetTabWidth, GetTabHeight]);
+    Result := Result + #13 + Format('%s->SetTabSize(%s);', [self.Name, GetTabWidth, GetTabHeight]);
 
   if (self.Parent is TWxSizerPanel) then
   begin

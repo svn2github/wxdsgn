@@ -190,6 +190,22 @@ begin
       Inc(Changes);
     end
 
+    //Wx_Height
+    else if Pos('Wx_Height =', Trim(Strings[i])) = 1 then
+    begin
+      Strings.Delete(i);
+      Dec(I);
+      Inc(Changes);
+    end
+
+    //Wx_Width
+    else if Pos('Wx_Width =', Trim(Strings[i])) = 1 then
+    begin
+      Strings.Delete(i);
+      Dec(I);
+      Inc(Changes);
+    end
+
     //Rows of wxGrid/wxFlexGridSizer
     else if Pos('Rows =', Trim(Strings[i])) = 1 then
     begin

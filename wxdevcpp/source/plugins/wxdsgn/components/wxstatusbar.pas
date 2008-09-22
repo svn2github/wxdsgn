@@ -279,9 +279,12 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    // Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    // Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
-
+{   
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+}
     Result.Add(IndentString + Format('  <fields>%d</fields>', [self.Panels.Count]));
 
     temp := IndentString + '  <widths>';

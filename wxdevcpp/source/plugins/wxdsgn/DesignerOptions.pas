@@ -61,6 +61,9 @@ type
     cbGenerateXRC: TCheckBox;
     Label1: TLabel;
     cbStringFormat: TComboBox;
+    gpSizerOptons: TGroupBox;
+    cbUseDefaultPos: TCheckBox;
+    cbUseDefaultSize: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
@@ -96,7 +99,8 @@ begin
   cbSnapToGrid.Checked  := wx_designer.ELDesigner1.SnapToGrid;
   cbGenerateXRC.Checked := wx_designer.ELDesigner1.GenerateXRC;
   cbStringFormat.Text := StringFormat;
-
+  cbUseDefaultPos.Checked := UseDefaultPos;
+  cbUseDefaultSize.Checked := UseDefaultSize;
   cbControlHints.Checked := htControl in wx_designer.ELDesigner1.ShowingHints;
   cbSizeHints.Checked    := htSize in wx_designer.ELDesigner1.ShowingHints;
   cbMoveHints.Checked    := htMove in wx_designer.ELDesigner1.ShowingHints;
@@ -117,6 +121,8 @@ begin
   wx_designer.ELDesigner1.Grid.YStep := lbGridYStepUpDown.Position;
   wx_designer.ELDesigner1.SnapToGrid := cbSnapToGrid.Checked;
   FileName := ChangeFileExt(wx_designer.GetCurrentFileName, XRC_EXT);
+  UseDefaultPos := cbUseDefaultPos.Checked;
+  UseDefaultSize := cbUseDefaultSize.Checked;
   
   if (wx_designer.main.IsProjectNotNil) then
   begin
@@ -175,6 +181,8 @@ begin
     ini.WriteBool('wxWidgets', 'cbMoveHints', cbMoveHints.Checked);
     ini.WriteBool('wxWidgets', 'cbInsertHints', cbInsertHints.Checked);
     ini.WriteString('wxWidgets', 'cbStringFormat', cbStringFormat.Text);
+    ini.WriteBool('wxWidgets', 'cbUseDefaultPos', cbUseDefaultPos.Checked);
+    ini.WriteBool('wxWidgets', 'cbUseDefaultSize', cbUseDefaultSize.Checked);
   finally
     ini.Destroy;
   end;

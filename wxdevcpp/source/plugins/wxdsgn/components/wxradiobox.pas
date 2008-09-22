@@ -366,8 +366,11 @@ begin
       [self.Wx_Class, self.Name]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+    if not(UseDefaultSize)then
+      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+    if not(UseDefaultPos) then
+      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetRadioboxOrientation(Wx_RadioBoxStyle)]));
@@ -431,10 +434,10 @@ begin
  else
  begin
   Result := Result + #13 + Format(
-    '%s = new %s(%s, %s, %s, wxPoint(%d,%d), wxSize(%d,%d), %s, %d%s);',
+    '%s = new %s(%s, %s, %s, %s, %s, %s, %d%s);',
     [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    GetCppString(self.Caption), self.Left, self.Top, self.Width, self.Height,
+    GetCppString(self.Caption), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height),
     'arrayStringFor_' + self.Name, self.MajorDimension, strStyle]);
 end;
   
