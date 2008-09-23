@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>FAQ13</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="faq13"></A><SUP></SUP>. How to use assembly with Dev-C++ ?</P>
+
+<P>The assembler uses AT&amp;T (not Intel). Here's an example of such a syntax :</P>
+
+<P>// 2 global variables</P>
+
+<P>int AdrIO ;</P>
+
+<P>static char ValIO ;</P>
+
+<P>void MyFunction(..........) </P>
+
+<P>{</P>
+
+<P>__asm("mov %dx,_AdrIO") ; // loading 16 bits register</P>
+
+<P>__asm("mov %al,_ValIO") ; // loading 8 bits register</P>
+
+<P>/*</P>
+
+<P>Don't forget the underscore _ before each global variable names !</P>
+
+<P>*/</P>
+
+<P>__asm("mov %dx,%ax") ; // AX --&gt; DX</P>
+
+<P>}</P>
+
+</BODY>
+</HTML>

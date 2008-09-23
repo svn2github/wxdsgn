@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Linking libraries with your project</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="libraries">
+	<PARAM NAME="Keyword" VALUE="library">
+	<PARAM NAME="Keyword" VALUE="link">
+	<PARAM NAME="Keyword" VALUE="linking">
+</OBJECT>
+
+<P><A NAME="id_linklib"></A><B>Linking libraries with your project</B></P>
+
+<H2>A little history : </H2>
+
+<P>Library filenames under the GNU system are in the form <I>libNAME.a</I> (with NAME the name of the library, like wsock32).</P>
+
+<P>Thus if for example you want to use the wsock32 (winsock) library, the filename will be <I>libwsock32.a</I></P>
+
+<P>The GCC parameter for linking a library is <B><I>–NAME</I></B>, so for linking with the wsock32 library we would give GCC the –lwsock32 parameter.</P>
+
+<P><B>Linking your library</B>:</P>
+
+<P>Click on <I>Project </I>menu then on <I>Options</I>. Now click on the <I>Parameters</I> sheet<I>.</I></P>
+
+<P><IMG SRC="../images/projopt_lib.gif" ALT="" BORDER=0></P>
+
+<P>In the <I>Linker</I> edit box, you can specify as many libraries as you need. You can also pass the complete filename of the library. </P>
+
+<P>Example : <I>-</I>lwx –lm –lwsock32 c:\libs\mylib.a c:\objs\myobj.o</P>
+
+<P>You may also use the <I>Add Library or Object</I> button  <IMG SRC="../images/icon_addlib.gif" ALT="" BORDER=0>  to select your library from a list.</P>
+
+</BODY>
+</HTML>

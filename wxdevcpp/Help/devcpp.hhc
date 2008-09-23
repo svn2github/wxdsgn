@@ -1,0 +1,320 @@
+<HTML>
+<!--Sitemap 1.0-->
+<OBJECT type="text/site properties">
+</OBJECT>
+<UL>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="Dev-C++ 6">
+		</OBJECT>
+	<UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Introduction">
+			<param name="Local" value="html/devc9lwu.htm">
+			</OBJECT>
+			<A HREF="html/devc9lwu.htm">Introduction</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="GNU General Public License">
+			<param name="Local" value="html/devc3t2k.htm">
+			</OBJECT>
+			<A HREF="html/devc3t2k.htm">GNU General Public License</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="System Requirements">
+			<param name="Local" value="html/devc78j7.htm">
+			</OBJECT>
+			<A HREF="html/devc78j7.htm">System Requirements</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Credits">
+			<param name="Local" value="html/devc4sxf.htm">
+			</OBJECT>
+			<A HREF="html/devc4sxf.htm">Credits</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Getting Started">
+			<param name="Local" value="html/devc04o4.htm">
+			</OBJECT>
+			<A HREF="html/devc04o4.htm">Getting Started</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="wxDev-C++ IDE">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Properties Panel">
+				</OBJECT>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Projects Panel">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Debug Tab">
+					<param name="Local" value="html/devc7xrb.htm">
+					</OBJECT>
+					<A HREF="html/devc7xrb.htm">Debug Tab</A><BR>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Basic Steps">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Creating a Project">
+				<param name="Local" value="html/devc6h84.htm">
+				</OBJECT>
+				<A HREF="html/devc6h84.htm">Creating a Project</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Adding/Removing files">
+				<param name="Local" value="html/devc1ino.htm">
+				</OBJECT>
+				<A HREF="html/devc1ino.htm">Adding/Removing files</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Managing Project Options">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Project options overview">
+					<param name="Local" value="html/devc8iwk.htm">
+					</OBJECT>
+					<A HREF="html/devc8iwk.htm">Project options overview</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Linking libraries with your project">
+					<param name="Local" value="html/devc6i76.htm">
+					</OBJECT>
+					<A HREF="html/devc6i76.htm">Linking libraries with your project</A><BR>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Compiling and Running">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Compiling and linking process">
+				<param name="Local" value="html/devc6f6z.htm">
+				</OBJECT>
+				<A HREF="html/devc6f6z.htm">Compiling and linking process</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Executing your program">
+				<param name="Local" value="html/devc82qt.htm">
+				</OBJECT>
+				<A HREF="html/devc82qt.htm">Executing your program</A><BR>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Debugging within Dev-C++">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Introduction to debugging">
+				<param name="Local" value="html/devc1uw7.htm">
+				</OBJECT>
+				<A HREF="html/devc1uw7.htm">Introduction to debugging</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Debugging your program">
+				<param name="Local" value="html/devc6vub.htm">
+				</OBJECT>
+				<A HREF="html/devc6vub.htm">Debugging your program</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Integrated debugging commands">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Breakpoints">
+					<param name="Local" value="html/devc6sqc.htm">
+					</OBJECT>
+					<A HREF="html/devc6sqc.htm">Breakpoints</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Stepping in your program">
+					<param name="Local" value="html/devc1dt3.htm">
+					</OBJECT>
+					<A HREF="html/devc1dt3.htm">Stepping in your program</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Displaying variables value and classes/structures members">
+					<param name="Local" value="html/devc7xrb.htm">
+					</OBJECT>
+					<A HREF="html/devc7xrb.htm">Displaying variables value and classes/structures members</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Backtracing">
+					<param name="Local" value="html/devc7h2d.htm">
+					</OBJECT>
+					<A HREF="html/devc7h2d.htm">Backtracing</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Using CPU window">
+					<param name="Local" value="html/devc6g8n.htm">
+					</OBJECT>
+					<A HREF="html/devc6g8n.htm">Using CPU window</A><BR>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Dev-C++ Templates and Packages">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Integrated Templates">
+				<param name="Local" value="html/devc51b9.htm">
+				</OBJECT>
+				<A HREF="html/devc51b9.htm">Integrated Templates</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Getting and installing Packages">
+				<param name="Local" value="html/devc1fdx.htm">
+				</OBJECT>
+				<A HREF="html/devc1fdx.htm">Getting and installing Packages</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Creating your Packages">
+				<param name="Local" value="html/devc6zhv.htm">
+				</OBJECT>
+				<A HREF="html/devc6zhv.htm">Creating your Packages</A><BR>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Options">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Compiler Options">
+				<param name="Local" value="html/devc7d9v.htm">
+				</OBJECT>
+				<A HREF="html/devc7d9v.htm">Compiler Options</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Environment Options">
+				<param name="Local" value="html/devc3jsk.htm">
+				</OBJECT>
+				<A HREF="html/devc3jsk.htm">Environment Options</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Editor Options">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Editor settings (General Tab)">
+					<param name="Local" value="html/devc96wj.htm">
+					</OBJECT>
+					<A HREF="html/devc96wj.htm">Editor settings (General Tab)</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Class Browser Tab (+Code Completion)">
+					<param name="Local" value="html/devc5zjm.htm">
+					</OBJECT>
+					<A HREF="html/devc5zjm.htm">Class Browser Tab (+Code Completion)</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Shortcuts">
+					<param name="Local" value="html/devc9vub.htm">
+					</OBJECT>
+					<A HREF="html/devc9vub.htm">Shortcuts</A><BR>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Getting help">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="FAQ (Frequently Asked Questions)">
+				<param name="Local" value="html/devc3p69.htm">
+				</OBJECT>
+				<A HREF="html/devc3p69.htm">FAQ (Frequently Asked Questions)</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Mailing List / Forum">
+				<param name="Local" value="html/devc50dw.htm">
+				</OBJECT>
+				<A HREF="html/devc50dw.htm">Mailing List / Forum</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Contacting Authors">
+				<param name="Local" value="html/devc9zw3.htm">
+				</OBJECT>
+				<A HREF="html/devc9zw3.htm">Contacting Authors</A><BR>
+		</UL>
+	</UL>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="An Introduction to C Programming">
+		</OBJECT>
+	<UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Start Here">
+			<param name="Local" value="html/devc6lx2.htm">
+			</OBJECT>
+			<A HREF="html/devc6lx2.htm">Start Here</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Topics">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Overview of C">
+				<param name="Local" value="html/devc6lx4.htm">
+				</OBJECT>
+				<A HREF="html/devc6lx4.htm">Overview of C</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Running C Programs">
+				<param name="Local" value="html/devc6lx5.htm">
+				</OBJECT>
+				<A HREF="html/devc6lx5.htm">Running C Programs</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Structure of C Programs">
+				<param name="Local" value="html/devc6lyo.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyo.htm">Structure of C Programs</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Your First Program">
+				<param name="Local" value="html/devc6lyp.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyp.htm">Your First Program</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Data Types - Part I">
+				<param name="Local" value="html/devc6lyq.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyq.htm">Data Types - Part I</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Input and Output">
+				<param name="Local" value="html/devc6lyr.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyr.htm">Input and Output</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Control Loops">
+				<param name="Local" value="html/devc6lys.htm">
+				</OBJECT>
+				<A HREF="html/devc6lys.htm">Control Loops</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Conditional Execution">
+				<param name="Local" value="html/devc6lyt.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyt.htm">Conditional Execution</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Structure and Nesting">
+				<param name="Local" value="html/devc6lyu.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyu.htm">Structure and Nesting</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Functions and Prototypes">
+				<param name="Local" value="html/devc6lyv.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyv.htm">Functions and Prototypes</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Data Types - Part II">
+				<param name="Local" value="html/devc6lyw.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyw.htm">Data Types - Part II</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Arrays">
+				<param name="Local" value="html/devc6lyx.htm">
+				</OBJECT>
+				<A HREF="html/devc6lyx.htm">Arrays</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Pointers">
+				<param name="Local" value="html/devc6m0g.htm">
+				</OBJECT>
+				<A HREF="html/devc6m0g.htm">Pointers</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Strings">
+				<param name="Local" value="html/devc6m0h.htm">
+				</OBJECT>
+				<A HREF="html/devc6m0h.htm">Strings</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Structures">
+				<param name="Local" value="html/devc6m0i.htm">
+				</OBJECT>
+				<A HREF="html/devc6m0i.htm">Structures</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="File Handling">
+				<param name="Local" value="html/devc6m0j.htm">
+				</OBJECT>
+				<A HREF="html/devc6m0j.htm">File Handling</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Recommended Books">
+				<param name="Local" value="html/devc6m0k.htm">
+				</OBJECT>
+				<A HREF="html/devc6m0k.htm">Recommended Books</A><BR>
+		</UL>
+	</UL>
+</UL>
+</HTML>

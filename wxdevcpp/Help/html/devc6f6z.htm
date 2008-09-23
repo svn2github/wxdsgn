@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Compiling and linking process</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="compile">
+	<PARAM NAME="Keyword" VALUE="linking">
+	<PARAM NAME="Keyword" VALUE="compiling">
+	<PARAM NAME="Keyword" VALUE="link">
+</OBJECT>
+
+<P><A NAME="id_compilelink"></A><B>Compiling and linking process</B></P>
+
+<H2>How does the compile and link process works ?</H2>
+
+<P>The process can be globally divided into several programs :</P>
+
+<P>- Preprocessor: process the source file before actually compiling it. It will for example check and replace macros and include files in your source.</P>
+
+<P>- Compiler : transform your source file into assembly code (processor language – human readable)</P>
+
+<P>- Assembler :takes the assembly code and generate machine-readable code (binary object code)</P>
+
+<P>- Linker : assembles and resolves object codes together to create a single executable.</P>
+
+<H2>How to do this in Dev-C++ ?</H2>
+
+<P>Just go to the <I>Execute </I>menu and click <I>Compile</I>  <IMG SRC="../images/icon_compile.gif" ALT="" BORDER=0> (shortcut : Ctrl+F9), and Dev-C++ will take care of calling the compiler and linker.</P>
+
+<P>Look at the bottom panel of Dev-C++, you should get something like this :</P>
+
+<P><IMG SRC="../images/comp_log.gif" ALT="" BORDER=0></P>
+
+<P>This log window shows you what Dev-C++ is doing (the program it executes, the files it is creating, ...).</P>
+
+<P>In case your program compiled, you will see the message ‘Compilation successful’ in this window.</P>
+
+<P>If compiling or linking fails, you will see a list of the errors on the bottom panel :</P>
+
+<P><IMG SRC="../images/comp_errors.gif" ALT="" BORDER=0></P>
+
+<P>You can directly jump to the line in your code where the error appear by double-clicking on its item.</P>
+
+<P>To note: a ‘parse error’ is a syntax error (like a missing semicolon at the end of an instruction, etc...).</P>
+
+</BODY>
+</HTML>

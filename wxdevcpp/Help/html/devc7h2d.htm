@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Backtracing</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="debug">
+	<PARAM NAME="Keyword" VALUE="backtrace">
+	<PARAM NAME="Keyword" VALUE="function">
+	<PARAM NAME="Keyword" VALUE="call">
+</OBJECT>
+
+<P><A NAME="id_backtrace"></A><B>Backtracing</B></P>
+
+<P>Backtracing is the debugging concept that tells you which functions were called before reaching a breakpoint or an interruption (like an access violation). </P>
+
+<P>Let’s do a simple test, with the following code:</P>
+
+<P>#include &lt;stdio.h&gt;</P>
+
+<P><CODE><B>void</B>test2()</CODE></P>
+
+<PRE><CODE>{</CODE></PRE>
+
+<P><CODE>printf(“hello\n”);  /* Put a breakpoint on this line */</CODE></P>
+
+<PRE><CODE>}
+
+<B>void</B>test()
+{
+  test2();
+}
+</CODE></PRE>
+
+<P><CODE><B>int</B>main(<B>int </B>argc, <B>char</B> **argv)</CODE></P>
+
+<PRE><CODE>{
+  test();</CODE></PRE>
+
+<P><CODE><B>return</B> 0;</CODE></P>
+
+<PRE><CODE>}</CODE></PRE>
+
+<P>Put a breakpoint in function test2() on the printf() statement, and load the debugger. The breakpoint should be reached quite instantly, now go to the <I>Debug</I> sheet and click on the <I>Backtrace</I> button. The following list should appear:</P>
+
+<P><IMG SRC="../images/debug_backtrace.gif" ALT="" BORDER=0></P>
+
+<P>This correctly shows the list of functions that have been called (since the start of the program) before reaching the breakpoint. Clicking on a function in this list will bring you to it’s implementation in your source code.</P>
+
+</BODY>
+</HTML>

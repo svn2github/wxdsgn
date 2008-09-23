@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Your First Program</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="topic61"></A><SUP></SUP>Your First Program</P>
+
+<P>Objectives:</P>
+
+<P>Having read this section you should have an understanding of: </P>
+
+<P>1.a preprocessor directive that must be present in all your C programs. </P>
+
+<P>2.a simple C function used to write information to your screen. </P>
+
+<P>3.how to add comments to your programs </P>
+
+<P>Now that you've seen the compiler in action it's time for you to write your very own first C program. You can probably guess what it's going to be - the program that everyone writes just to</P>
+
+<P>check they understand the very, very, very basics of what is going on in a new language.</P>
+
+<P>Yes - it's the ubiquitous "Hello World" program. All your first program is going to do is print the message "Hello World" on the screen. </P>
+
+<P>The program is a short one, to say the least. Here it is:</P>
+
+<P>#include &lt;stdio.h&gt;</P>
+
+<P>int main()</P>
+
+<P>{</P>
+
+<P>printf("Hello World\n");</P>
+
+<P>return 0;</P>
+
+<P>}</P>
+
+<P>The first line is the standard start for all C programs - main(). After this comes the program's only instruction enclosed in curly brackets {}. The curly brackets mark the start and end of the</P>
+
+<P>list of instructions that make up the program - in this case just one instruction.</P>
+
+<P>Notice the semicolon marking the end of the instruction. You might as well get into the habit of ending every C instruction with a semicolon - it will save you a lot of trouble! Also notice that</P>
+
+<P>the semicolon marks the end of an instruction - it isn't a separator as is the custom in other languages.</P>
+
+<P>If you're puzzled about why the curly brackets are on separate lines I'd better tell you that it's just a layout convention to help you spot matching brackets. C is very unfussy about the way</P>
+
+<P>you lay it out. For example, you could enter the Hello World program as:</P>
+
+<P>main(){printf("Hello World\n");}</P>
+
+<P>but this is unusual. </P>
+
+<P>The printf function does what its name suggest it does: it prints, on the screen, whatever you tell it to. The "\n" is a special symbols that forces a new line on the screen.</P>
+
+<P>OK, that's enough explanation of our first program! Type it in and save it as Hello.c.Then use the compiler to compile it, then the linker to link it and finally run it. The output is as follows:</P>
+
+<P>Hello World </P>
+
+<P>Add Comments to a Program:</P>
+
+<P>A comment is a note to yourself (or others) that you put into your souce code. All comments are ignored by the compiler. They exist solely for your benefit. Comments are used primarily to</P>
+
+<P>document the meaning and purpose of your source code, so that you can remember later how it functions and how to use it. You can also use a comment to temporarily remove a line of</P>
+
+<P>code. Simply surround the line(s) with the comment symbols.</P>
+
+<P>In C, the start of a comment is signaled by the /* character pair. A comment is ended by */. For example, this is a syntactically correct C comment:</P>
+
+<P>/* This is a comment. */</P>
+
+<P>Comments can extend over several lines and can go anywhere except in the middle of any C keyword, function name or variable name. In C you can't have one comment within another</P>
+
+<P>comment. That is comments may not be nested. Lets now look at our first program one last time but this time with comments:</P>
+
+<P>main() /* main function heading */</P>
+
+<P>{</P>
+
+<P>printf("\n Hello, World! \n");  /* Display message on */</P>
+
+<P>}                                   /* the screen */ </P>
+
+<P>This program is not large enough to warrant comment statements but the principle is still the same.</P>
+
+</BODY>
+</HTML>

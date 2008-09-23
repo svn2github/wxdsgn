@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Example Programs Database</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="topic76"></A><SUP></SUP>Objectives</P>
+
+<P>This section is only for reference! It contains the following information: </P>
+
+<P>1.Names of all C's Standard Libraries </P>
+
+<P>2.The functions they contain </P>
+
+<P>Input and Output: &lt;stdio.h&gt;</P>
+
+<P>FILE *fopen(const char *filename, const char *mode) </P>
+
+<P>FILE *freopen(const char *filename, const char *mode, FILE *stream) </P>
+
+<P>int fflush(FILE *stream) </P>
+
+<P>int fclose(FILE *stream) </P>
+
+<P>int remove(const char *filename) </P>
+
+<P>int rename(const char *oldname, const char *newname) </P>
+
+<P>FILE *tmpfile(void) </P>
+
+<P>char *tmpnam(char s[L_tmpnam]) </P>
+
+<P>int setvbuf(FILE *stream, char *buf, int mode, size_t size) </P>
+
+<P>void setbuf(FILE *stream, char *buf) </P>
+
+<P>int fprint(FILE *stream, const char *format, ...) </P>
+
+<P>int sprintf(char *s, const char *format, ...) </P>
+
+<P>vprintf(const char *format, va_list arg) </P>
+
+<P>vfprintf(FILE *stream, const char *format, va_list arg) </P>
+
+<P>vsprintf(char *s, const char *format, va_list arg) </P>
+
+<P>int fscanf(FILE *stream, const char *format, ...) </P>
+
+<P>int scanf(const char *format, ...) </P>
+
+<P>int sscanf(char *s, const char *format, ...) </P>
+
+<P>int fgetc(FILE *stream) </P>
+
+<P>char *fgets(char *s, int n, FILE *stream) </P>
+
+<P>int fputc(int c, FILE *stream) </P>
+
+<P>int fputs(const char *s, FILE *stream) </P>
+
+<P>int getc(FILE *stream) </P>
+
+<P>int getchar(void) </P>
+
+<P>char *gets(char *s) </P>
+
+<P>int putc(int c, FILE *stream) </P>
+
+<P>int putchar(int c) </P>
+
+<P>int ungetc(int c, FILE *stream) </P>
+
+<P>size_t fread(void *ptr, size_t size, size_t nobj, FILE *stream) </P>
+
+<P>size_t fwrite(const void *ptr, size_t size, size_t nobj, FILE *stream) </P>
+
+<P>int fseek(FILE *stream, long offset, int orogin) </P>
+
+<P>long ftell(FILE *stream) </P>
+
+<P>void rewind(FILE *stream) </P>
+
+<P>int fgetpos(FILE *stream, fpos_t *ptr) </P>
+
+<P>int fsetpos(FILE *stream, const fpos_t *ptr) </P>
+
+<P>void clearerr(FILE *stream) </P>
+
+<P>int feof(FILE *stream) </P>
+
+<P>int ferror(FILE *stream) </P>
+
+<P>void perror(const char *s) </P>
+
+<P>Character Class Tests: &lt;ctype.h&gt;</P>
+
+<P>isalnum(c) </P>
+
+<P>isalpha(c) </P>
+
+<P>iscntrl(c) </P>
+
+<P>isdigit(c) </P>
+
+<P>isgraph(c) </P>
+
+<P>islower(c) </P>
+
+<P>isprint(c) </P>
+
+<P>ispunct(c) </P>
+
+<P>isspace(c) </P>
+
+<P>isupper(c) </P>
+
+<P>isxdigit(c) </P>
+
+<P>String Functions: &lt;string.h&gt;</P>
+
+<P>char *strcpy(s , ct) </P>
+
+<P>char *strncpy(s , ct , n) </P>
+
+<P>char *strcat(s , ct) </P>
+
+<P>char *strncat(s , ct , n) </P>
+
+<P>int strcmp(cs , ct) </P>
+
+<P>int strncmp(cs , ct ,n) </P>
+
+<P>char *strchr(cs , c) </P>
+
+<P>char *strrchr(cs , c) </P>
+
+<P>size_t strspn(cs , ct) </P>
+
+<P>size_t strcspn(cs , ct) </P>
+
+<P>char *strstr(cs , ct) </P>
+
+<P>size_t strlen(cs) </P>
+
+<P>char *strerror(n) </P>
+
+<P>char *strtok(s , ct) </P>
+
+<P>Mathematical Functions: &lt;math.h&gt;</P>
+
+<P>sin(x) </P>
+
+<P>cos(x) </P>
+
+<P>tan(x) </P>
+
+<P>asin(x) </P>
+
+<P>acos(x) </P>
+
+<P>atan(x) </P>
+
+<P>atan2(x) </P>
+
+<P>sinh(x) </P>
+
+<P>cosh(x) </P>
+
+<P>tanh(x) </P>
+
+<P>exp(x) </P>
+
+<P>log(x) </P>
+
+<P>log10(x) </P>
+
+<P>pow(x,y) </P>
+
+<P>sqrt(x) </P>
+
+<P>ceil(x) </P>
+
+<P>floor(x) </P>
+
+<P>fabs(x) </P>
+
+<P>ldexp(x) </P>
+
+<P>frexp(x,double *ip) </P>
+
+<P>modf(x,double *ip) </P>
+
+<P>fmod(x,y) </P>
+
+<P>Utility Functions: &lt;stdlib.h&gt;</P>
+
+<P>double atof(const char *s) </P>
+
+<P>int atoi(const char *s </P>
+
+<P>long atol(const char *s) </P>
+
+<P>double strrod(const char *s, char **endp) </P>
+
+<P>long strtol(const char *s, char **endp, int base) </P>
+
+<P>unsigned long strtoul(const char *s, char **endp, int base) </P>
+
+<P>int rand(void) </P>
+
+<P>void srand(unsigned int seed) </P>
+
+<P>void *calloc(size_t nobj, size_t size) </P>
+
+<P>void *malloc(size_t size) </P>
+
+<P>void *realloc(void *p, size_t size) </P>
+
+<P>void free(void *p) </P>
+
+<P>void abort(void) </P>
+
+<P>void exit(int status) </P>
+
+<P>int atexit(void (*fcn)(void)) </P>
+
+<P>int system(const char *s) </P>
+
+<P>char *getenv(const char *name) </P>
+
+<P>void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*cmp)(const void *keyval, const void *datum)) </P>
+
+<P>void qsort(void *base, size_t n, size_t size, int (*cmp)(const void *, const void *)) </P>
+
+<P>int abs(int n) </P>
+
+<P>long labs(long n) </P>
+
+<P>div_t div(int num, int denom) </P>
+
+<P>ldiv_t ldiv(long num , long denom) </P>
+
+<P>Diagnostics: &lt;assert.h&gt;</P>
+
+<P>void assert(int expression) </P>
+
+<P>Non-local Jumps: &lt;setjmp.h&gt;</P>
+
+<P>int setjmp(jmp_buf env) </P>
+
+<P>void longjmp(jmp_buf env, int val) </P>
+
+<P>Signals: &lt;signal.h&gt;</P>
+
+<P>void (*signal(int sig, void (*handler)(int)))(int) </P>
+
+<P>Data and Time Functions: &lt;time.h&gt;</P>
+
+<P>clock_t clock(void) </P>
+
+<P>time_t time(time_t , *tp </P>
+
+<P>double difftime(time_t time2 , time_t time1) </P>
+
+<P>time_t mktime(struct tm *tp) </P>
+
+<P>char *asctime(const time_t *tp) </P>
+
+<P>char *ctime(const time_t *tp) </P>
+
+<P>struct tm *gmtime(const time_t *tp) </P>
+
+<P>struct tm *localtime(const time_t *tp) </P>
+
+<P>size_t strftime(char *s, size_t smax, const char *fmt, const struct tm *tp)</P>
+
+</BODY>
+</HTML>

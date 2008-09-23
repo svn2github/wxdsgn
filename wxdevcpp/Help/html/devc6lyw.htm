@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Data Types - Part II</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="topic68"></A><SUP></SUP>Data Types Part II </P>
+
+<P>Objectives:</P>
+
+<P>So far we have looked at local variable now we switch our attension to other types of variables supported by the C programming language: </P>
+
+<P>1.Global Variables </P>
+
+<P>2.Constant Data Types </P>
+
+<P>Global variables:</P>
+
+<P>Variables can be declared as either local variables which can be used inside the function it has been declared in (more on this in further sections) and global variables which are known</P>
+
+<P>throughout the entire program. Global variables are created by declaring them outside any function. For example:</P>
+
+<P>int max;</P>
+
+<P>main()</P>
+
+<P>{</P>
+
+<P>.....</P>
+
+<P>}</P>
+
+<P>f1()</P>
+
+<P>{</P>
+
+<P>.....</P>
+
+<P>}</P>
+
+<P>The int max can be used in both main and function f1 and any changes made to it will remain consistent for both functions.The understanding of this will become clearer when you have</P>
+
+<P>studied the section on functions but I felt I couldn't complete a section on data types without mentioning global and local variables. </P>
+
+<P>Constant Data Types:</P>
+
+<P>Constants refer to fixed values that may not be altered by the program. All the data types we have previously covered can be defined as constant data types if we so wish to do so. The</P>
+
+<P>constant data types must be defined before the main function. The format is as follows: </P>
+
+<P>#define CONSTANTNAME value </P>
+
+<P>for example: </P>
+
+<P>#define SALESTAX 0.05 </P>
+
+<P>The constant name is normally written in capitals and does not have a semi-colon at the end. The use of constants is mainly for making your programs easier to be understood and modified</P>
+
+<P>by others and yourself in the future. An example program now follows: </P>
+
+<P>#define SALESTAX 0.05</P>
+
+<P>#include &lt;stdio.h&gt;</P>
+
+<P>main()</P>
+
+<P>{</P>
+
+<P>float amount, taxes, total;</P>
+
+<P>printf("Enter the amount purchased : ");</P>
+
+<P>scanf("%f",&amp;amount);</P>
+
+<P>taxes = SALESTAX*amount;</P>
+
+<P>printf("The sales tax is £%4.2f",taxes);</P>
+
+<P>printf("\n The total bill is £%5.2f",total);</P>
+
+<P>}</P>
+
+<P>The float constant SALESTAX is defined with value 0.05. Three float variables are declared amount, taxes and total. Display message to the screen is archieved using printf and user</P>
+
+<P>input handled by scanf. Calculation is then performed and results sent to the screen. If the value of SALESTAX alters in the future it is very easy to change the value where it is defined rather</P>
+
+<P>than go through the whole program changing the indivual values separately, which would be very time consuming in a large program with several references. The program is also improved</P>
+
+<P>when using constants rather than values as it improves the clarity.</P>
+
+</BODY>
+</HTML>

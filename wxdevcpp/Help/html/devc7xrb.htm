@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Displaying variables value and classes/structures members</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="display">
+	<PARAM NAME="Keyword" VALUE="debug">
+	<PARAM NAME="Keyword" VALUE="value">
+	<PARAM NAME="Keyword" VALUE="variable">
+	<PARAM NAME="Keyword" VALUE="class">
+	<PARAM NAME="Keyword" VALUE="structure">
+	<PARAM NAME="Keyword" VALUE="member">
+	<PARAM NAME="Keyword" VALUE="show">
+</OBJECT>
+
+<P><A NAME="id_displaydebug"></A><B>Displaying variables value and classes/structures members</B></P>
+
+<P>One of the other interest of debugging is the possibility to display the value of your variables at a given time.</P>
+
+<P>Dev-C++ is able to show you in a convenient way the contents of your classes, strings, structures/unions, arrays and other variables, in the Debug Variable Browser, shown below :</P>
+
+<P><IMG SRC="../images/debug_browser.gif" ALT="" BORDER=0></P>
+
+<P>You can display your variables (after you reached a breakpoint) in two different ways :</P>
+
+<P>- Click on the <I>Add Watch </I><IMG SRC="../images/icon_addwatch.gif" ALT="" BORDER=0> ( shortcut : F4) button, type the name of your variable in the dialog, and press OK. If you select a word in the current source file and press F4, it will add a watch of the selected text without asking for a variable name.</P>
+
+<P>- Point your mouse over a variable in your source code (if <I>Watch variable under mouse</I> is enabled in <U>Environment Options</U>ID_ENVIRONMENT) and it will be added to the watch list.</P>
+
+<H2>Important Notes: </H2>
+
+<P>- When using pointers to structures or classes, if you want to display all the members of variable <I>my_pointer </I>then you need to watch <I>*my_pointer</I> (‘*’ is the value-operator). Watching only <I>my_pointer</I> would just display the address contained in <I>my_pointer</I>.</P>
+
+<P>- Sometimes the debugger may not know the type of a pointer, and cannot display all of the members of the pointed structure or class. You can bypass this problem by casting your watched variable. For example, if the debugger cannot show the contents of <I>my_pointer</I> of type MyPointer, you could try adding the watch variable: <I>*(MyPointer *)my_pointer</I></P>
+
+</BODY>
+</HTML>

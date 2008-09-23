@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Structure of C Programs</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="topic60"></A><SUP></SUP>Structure of C Programs </P>
+
+<P>Objectives:</P>
+
+<P>Having completed this section you should know about: </P>
+
+<P>1.C's character set </P>
+
+<P>2.C's keywords </P>
+
+<P>3.the general structure of a C program </P>
+
+<P>4.that all C statement must end in a ; </P>
+
+<P>5.that C is a free format language </P>
+
+<P>6.all C programs us header files that contain standard library functions. </P>
+
+<P>C's Character Set:</P>
+
+<P>C does not use, nor requires the use of, every character found on a modern computer keyboard. The only characters required by the C Programming Language are as follows:</P>
+
+<P>A - Z </P>
+
+<P>a -z </P>
+
+<P>0 - 9 </P>
+
+<P>space . , : ; ' $ " </P>
+
+<P># % &amp; ! _ {} [] () &lt; &gt; | </P>
+
+<P>+ - / * = </P>
+
+<P>The use of most of this set of characters will be dicussed throughout the course. </P>
+
+<P>The form of a C Program:</P>
+
+<P>All C programs will consist of at least one function, but it is usual (when your experience grows) to write a C program that comprises several functions. The only function that has to be</P>
+
+<P>present is the function called main. For more advanced programs the main function will act as a controling function calling other functions in their turn to do the dirty work! The main</P>
+
+<P>function is the first function that is called when your program executes. </P>
+
+<P>C makes use of only 32 keywords which combine with the formal syntax to the form the C programming language. Note that all keywords are written in lower case - C, like UNIX, uses</P>
+
+<P>upper and lowercase text to mean different things. If you are not sure what to use then always use lowercase text in writing your C programs. A keyword may not be used for any other</P>
+
+<P>purposes. For example, you cannot have a variable called auto. </P>
+
+<P>The layout of C Programs:</P>
+
+<P>The general form of a C program is as follows (don't worry about what everything means at the moment - things will be explained later): </P>
+
+<P>preprocessor directives</P>
+
+<P>global declarations</P>
+
+<P>main()</P>
+
+<P>{</P>
+
+<P>local variables to function main ;</P>
+
+<P>statements associated with function main ;</P>
+
+<P>}</P>
+
+<P>f1()</P>
+
+<P>{</P>
+
+<P>local variables to function 1 ;</P>
+
+<P>statements associated with function 1 ;</P>
+
+<P>}</P>
+
+<P>f2()</P>
+
+<P>{</P>
+
+<P>local variables to function f2 ;</P>
+
+<P>statements associated with function 2 ;</P>
+
+<P>}</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>etc</P>
+
+<P>Note the use of the bracket set () and {}. () are used in conjunction with function names whereas {} are used as to delimit the C statements that are associated with that function. Also note</P>
+
+<P>the semicolon - yes it is there, but you might have missed it! a semicolon (;) is used to terminate C statements. C is a free format language and long statements can be continued, without</P>
+
+<P>truncation, onto the next line. The semicolon informs the C compiler that the end of the statement has been reached. Free format also means that you can add as many spaces as you like to</P>
+
+<P>improve the look of your programs. </P>
+
+<P>A very common mistake made by everyone, who is new to the C programming language, is to miss off the semicolon. The C compiler will concatinate the various lines of the program</P>
+
+<P>together and then tries to understand them - which it will not be able to do. The error message produced by the compiler will relate to a line of you program which could be some distance</P>
+
+<P>from the initial mistake. </P>
+
+<P>Preprocessor Directives:</P>
+
+<P>C is a small language but provides the programmer with all the tools to be able to write powerful programs. Some people don't like C because it is too primitive! Look again at the set of</P>
+
+<P>keywords that comprises the C language and see if you can find a command that allows you to print to the computer's screen the result of, say, a simple calculation. Don't look too hard</P>
+
+<P>because it dosen't exist. </P>
+
+<P>It would be very tedious, for all of us, if everytime we wanted to communicate with the computer we all had to write our own output functions. Fortunately, we do not have to. C uses</P>
+
+<P>libraries of standard functions which are included when we build our programs. For the novice C programmer one of the many questions always asked is does a function already exist for</P>
+
+<P>what I want to do? Only experience will help here but we do include a function listing as part of this course. </P>
+
+<P>All programs you will write will need to communicate to the outside world - I don't think I can think of a program that doesn't need to tell someone an answer. So all our C programs will</P>
+
+<P>need at least one of C's standard libraries which deals with standard inputting and outputting of data. This library is called stdio.h and it is declared in our programs before the main</P>
+
+<P>function. The .h extension indicates that this is a header file. </P>
+
+<P>I have already mentioned that C is a free format language and that you can layout your programs how you want to using as much white space as you like. The only exception are statements</P>
+
+<P>associated with the preprocessor. </P>
+
+<P>All preprocessor directives begin with a # and the must start in the first column. The commonest directive to all C programs is: </P>
+
+<P>#include &lt;stdio.h&gt; </P>
+
+<P>Note the use of the angle brackets (&lt; and &gt;) around the header's name. These indicate that the header file is to be looked for on the system disk which stores the rest of the C program</P>
+
+<P>application. Some text books will show the above statement as follows: </P>
+
+<P>#include "stdio.h" </P>
+
+<P>The double quotes indicate that the current working directory should be searched for the required header file. This will be true when you write your own header files but the standard header</P>
+
+<P>files should always have the angle brackets around them. </P>
+
+<P>NOTE: just to keep you on your toes - preprocessor statements, such as include, DO NOT use semi-colons as delimiters! But don't forget the # must be in the first column. </P>
+
+<P>Thats enough background to C programs - lets get on with our first program which will start to bring together some of the ideas outlined above.</P>
+
+</BODY>
+</HTML>

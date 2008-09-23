@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Structure and Nesting</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="topic66"></A><SUP></SUP>Structure and Nesting</P>
+
+<P>Objectives:</P>
+
+<P>This section brings together the various looping mechanisms available to the C programmer with the program control constructs we met in the last section. </P>
+
+<P>We also demonstrates a neat trick with random numbers. </P>
+
+<P>It is one of the great discoveries of programming that you can write any program using just simple while loops and if statements. You don't need any other control statements at all. Of</P>
+
+<P>course it might be nice to include some other types of control statement to make life easy - for example, you don't need the for loop, but it is good to have! So as long as you understand the</P>
+
+<P>if and the while loop in one form or another you can write any program you want to. </P>
+
+<P>If you think that a loop and an if statement are not much to build programs then you are missing an important point. It's not just the statements you have, but the way you can put them</P>
+
+<P>together. You can include an if statement within a loop, loops within loops are also OK, as are loops in ifs, and ifs in ifs and so on. This putting one control statement inside another is</P>
+
+<P>called nesting and it is really what allows you to make a program as complicated as you like. </P>
+
+<P>Think of a number:</P>
+
+<P>Now let's have a go at writing the following program: 'It thinks of a number in the range 0 to 99 and then asks the user to guess it'. This sounds complicated, especially the 'thinks of a</P>
+
+<P>number' part, but all you need to know is that the statement: </P>
+
+<P>r = rand() </P>
+
+<P>will store a random number in the integer variable r. The standard library function rand() randomly picks a number within the range 0 to 32767, but this might vary from machine to</P>
+
+<P>machine. Look upon rand() as being a large dice. </P>
+
+<P>Our problem is to select a number between 0 and 99 and not between 0 and 32767. How can we get our random number to within our range? The rand() function will produce numbers</P>
+
+<P>such as: </P>
+
+<P>2567</P>
+
+<P>134</P>
+
+<P>20678</P>
+
+<P>15789</P>
+
+<P>32001</P>
+
+<P>15987</P>
+
+<P>etc...</P>
+
+<P>If you look at the last two digits of all of these numbers they would form our random set! To select just these numbers we can use an arithmetic calculation of the following form: </P>
+
+<P>r = rand() % 100 </P>
+
+<P>That is, to get the number into the right range you simply take the remainder on dividing by 100, ie a value in the range 0 to 99. You should remember this neat programming trick, you'll be</P>
+
+<P>surprised how often it is required. </P>
+
+<P>Our solution to the problem is as follows: </P>
+
+<P>#include &lt;stdio.h&gt;</P>
+
+<P>main()</P>
+
+<P>{</P>
+
+<P>int target;</P>
+
+<P>int guess;</P>
+
+<P>int again;</P>
+
+<P>printf("\n Do you want to guess a number 1 =Yes, 0=No ");</P>
+
+<P>scanf("%d",&amp;again);</P>
+
+<P>while (again)</P>
+
+<P>{</P>
+
+<P>target = rand() % 100;</P>
+
+<P>guess  = target + l;</P>
+
+<P>while(target!=guess)</P>
+
+<P>{</P>
+
+<P>printf('\n What is your guess ? ");</P>
+
+<P>scanf("%d",&amp;guess);</P>
+
+<P>if (target&gt;guess) printf("Too low");</P>
+
+<P>else printf("Too high");</P>
+
+<P>}</P>
+
+<P>printf("\n Well done you got it! \n");</P>
+
+<P>printf("\nDo you want to guess a number 1=Yes, 0=No");</P>
+
+<P>scanf("%d".&amp;again);</P>
+
+<P>}</P>
+
+<P>}</P>
+
+<P>This looks like a very long and complicated program, but it isn't. Essentially it used two loops and an if/else which in English could be summarised as:</P>
+
+<P>while(again) {</P>
+
+<P>think of a number</P>
+
+<P>while (user hasn't guessed it)</P>
+
+<P>{</P>
+
+<P>get users guess.</P>
+
+<P>if (target &lt; guess) tell the user the guess is low </P>
+
+<P>else                tell the user the guess is high</P>
+
+<P>}</P>
+
+<P>}</P>
+
+<P>The integer variable again is used to indicate that the user wants to carry on playing. If it is 0 then the loop stops so 0 = No, and 1, or any other non-zero value, = Yes. </P>
+
+<P>If you try this program out you will discover that it has a slight flaw - not so much a bug, more a feature. If the user guesses the correct value the program still tells the user that the guess is</P>
+
+<P>too high and then congratulates them that they have the correct value. Such problems with how loops end are common and you have to pay attention to details such as this. There are a</P>
+
+<P>number of possible solutions, but the most straight forward is to change the inner loop so that the first guess is asked for before the loop begins. This shifts the test for the loop to stop to</P>
+
+<P>before the test for a high or low guess: </P>
+
+<P>#include &lt;stdio.h&gt;</P>
+
+<P>main()</P>
+
+<P>{</P>
+
+<P>int target;</P>
+
+<P>int guess;</P>
+
+<P>int again;</P>
+
+<P>printf("\n Do you want to guess a number 1 =Yes, 0=No ");</P>
+
+<P>scanf("%d",&amp;again);</P>
+
+<P>while (again)</P>
+
+<P>{</P>
+
+<P>target = rand() % 100;</P>
+
+<P>printf('\n What is your guess ? ");</P>
+
+<P>scanf("%d",&amp;guess);</P>
+
+<P>while(target!=guess)</P>
+
+<P>{</P>
+
+<P>if (target&gt;guess) printf("Too low");</P>
+
+<P>else printf("Too high");</P>
+
+<P>printf('\n What is your guess ? ");</P>
+
+<P>scanf("%d",&amp;guess);</P>
+
+<P>}</P>
+
+<P>printf("\n Well done you got it! \n");</P>
+
+<P>printf("\n Do you want to guess a number 1=Yes, 0=No");</P>
+
+<P>scanf("%d".&amp;again);</P>
+
+<P>}</P>
+
+<P>}</P>
+
+<P>If you want to be sure that you understand what is going on here, ask yourself why the line: </P>
+
+<P>guess = target + 1; </P>
+
+<P>was necessary in the first version of the program and not in the second?</P>
+
+</BODY>
+</HTML>
