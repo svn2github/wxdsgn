@@ -58,7 +58,7 @@ resourcestring
   DEV_TOOLS_FILE = 'tools.ini';
   DEV_HELP_INI = 'devhelp.ini';
   DEV_CODEINS_FILE = 'devcpp.ci';
-  DEV_MAINHELP_FILE = 'devcpp.hlp';
+  DEV_MAINHELP_FILE = 'devcpp.chm';
   DEV_GNOME_THEME = 'Gnome';
   DEV_NEWLOOK_THEME = 'New Look';
   DEV_BLUE_THEME = 'Blue';
