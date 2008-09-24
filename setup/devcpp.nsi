@@ -110,6 +110,8 @@ ComponentText "Choose components"
 # [Background Gradient]
 BGGradient off
 
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "wxdevcpp.bmp" ; use our IDE's icon
 !define MUI_ABORTWARNING
 
 ;--------------------------------
@@ -225,43 +227,6 @@ done_devpaks:
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
 
-  ; Write the installation path into the registry
-  WriteRegStr HKLM SOFTWARE\${PROGRAM_NAME} "Install_Dir" "$INSTDIR"
-  
-  ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "DisplayName" "${DISPLAY_NAME}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoRepair" 1
-  WriteUninstaller "$INSTDIR\uninstall.exe"
-
-; Add links to START MENU
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-  ;try to read from registry if last installation installed for All Users/Current User
-  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts"
-  StrCmp $0 "" cont exists
-  cont:
-
-  SetShellVarContext all
-  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
-  SetShellVarContext current
-
-AllUsers:
-  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts" "$0"
-
-exists:
-
-  CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-  SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
-
-!insertmacro MUI_STARTMENU_WRITE_END
-
   SetOutPath $INSTDIR
 
 SectionEnd
@@ -376,7 +341,7 @@ SectionGroup /e "Help files" SectionGroupHelp
 
 Section /o "${PROGRAM_NAME} help" SectionHelp
 
-  SectionIn 1 2 RO
+  SectionIn 1 2 3 RO
   
 ; Install wxDevCpp Help Files
   !insertmacro InstallDevPak "DevCppHelp.devpak"
@@ -723,6 +688,50 @@ SectionEnd
 ;--------------------------------
 
 ; Functions
+Function .onInstSuccess
+; If the installation was successful, then let's write to the registry
+
+; Write the installation path into the registry
+  WriteRegStr HKLM SOFTWARE\${PROGRAM_NAME} "Install_Dir" "$INSTDIR"
+
+  ; Write the uninstall keys for Windows
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "DisplayName" "${DISPLAY_NAME}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoRepair" 1
+  WriteUninstaller "$INSTDIR\uninstall.exe"
+
+; Add links to START MENU
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+  ;try to read from registry if last installation installed for All Users/Current User
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+      "Shortcuts"
+  StrCmp $0 "" cont exists
+  cont:
+
+  SetShellVarContext all
+  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
+  SetShellVarContext current
+
+AllUsers:
+  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+      "Shortcuts" "$0"
+
+exists:
+
+  CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+  SetOutPath $INSTDIR
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
+
+!insertmacro MUI_STARTMENU_WRITE_END
+
+
+FunctionEnd
+
+
 !ifdef HAVE_MSVC
 Function .onSelChange
 
