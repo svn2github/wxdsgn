@@ -10,10 +10,10 @@
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION}"
-!define MSVC_VERSION "2005"
+!define MSVC_VERSION "8.0" ; 2005 = version 8.0, 2008 = version 9.0
+!define MSVC_YEAR "2005"
 !define HAVE_MINGW
 !define HAVE_MSVC
-!define NEW_INTERFACE
 
 !define wxWidgets_version "2.8.8"
 !define wxWidgets_name "wxWidgets"
@@ -31,16 +31,15 @@
 
 !ifdef HAVE_MSVC
 
-  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc${MSVC_VERSION}.devpak" ; name of the wxWidgets MS VC devpak
+  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc${MSVC_YEAR}.devpak" ; name of the wxWidgets MS VC devpak
  
-  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc${MSVC_VERSION}_contrib.devpak"  ; name of the contrib devpak
+  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_contrib.devpak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc${MSVC_VERSION}_extras.devpak"  ; name of the extras devpak
+  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_extras.devpak"  ; name of the extras devpak
  
 !endif
 
 !define wxWidgetsCommon_devpak "${wxWidgets_name}_common.devpak"  ; name of the common includes devpak
-
 !define wxWidgetsSamples_devpak "${wxWidgets_name}_samples.devpak"  ; name of the samples devpak
 
 Var LOCAL_APPDATA
@@ -57,19 +56,15 @@ Var WXBOOK_INSTALLED
   File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${DEVPAK_NAME}"'
   Delete  "$INSTDIR\Packages\${DEVPAK_NAME}"
+  SetOutPath $INSTDIR
   
 !macroend
 
-
-!ifdef NEW_INTERFACE
 ;--------------------------------
 ;Include Modern UI
 
-  !include "MUI.nsh"
+  !include "MUI2.nsh"
   !include "Sections.nsh"
-
-!endif
-
   !include "logiclib.nsh" ; needed by ${switch}
 ;--------------------------------
 
@@ -115,51 +110,23 @@ ComponentText "Choose components"
 # [Background Gradient]
 BGGradient off
 
-!ifdef NEW_INTERFACE
-  !define MUI_ABORTWARNING
-!endif
+!define MUI_ABORTWARNING
 
 ;--------------------------------
 
-# [Pages]
-
-!ifndef NEW_INTERFACE
-  
-Page license
-Page components
-PageEx directory
-  DirVerify leave
-  PageCallbacks "" "" dirLeave
-PageExEnd
-Page instfiles
-
-UninstPage uninstConfirm
-UninstPage instfiles
-
-!else ;NEW_INTERFACE
-
   Var STARTMENU_FOLDER
 
-  ; Display custom page which allows user to select which compiler(s) to install for
-  Page custom CustomInstallOptions
-  
-  !define MUI_CUSTOMFUNCTION_GUIININT myGUIInit
   !define MUI_COMPONENTSPAGE_SMALLDESC
 
   !insertmacro MUI_PAGE_LICENSE "license.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   
-  !define      MUI_PAGE_CUSTOMFUNCTION_LEAVE dirLeave  ; Check if default directory name is valid
-
   !define MUI_STARTMENUPAGE_DEFAULTFOLDER ${DEFAULT_START_MENU_DIRECTORY}
   !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   
-  ; Display custom page which allows user to select which programs to run
-  Page custom InstallCompleteOptions
-
  ; !define MUI_FINISHPAGE_RUN "$INSTDIR\${EXECUTABLE_NAME}"
   
   ;!define MUI_FINISHPAGE_NOREBOOTSUPPORT
@@ -174,7 +141,7 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "English"
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Catalan"
- ; !insertmacro MUI_LANGUAGE "Chinese"
+  ;!insertmacro MUI_LANGUAGE "Chinese"
   ;!insertmacro MUI_LANGUAGE "Chinese_TC"
   !insertmacro MUI_LANGUAGE "Croatian"
   !insertmacro MUI_LANGUAGE "Czech"
@@ -201,13 +168,6 @@ UninstPage instfiles
   !insertmacro MUI_LANGUAGE "Swedish"
   !insertmacro MUI_LANGUAGE "Turkish"
   !insertmacro MUI_LANGUAGE "Ukrainian"
-
-!endif ;NEW_INTERFACE
-;--------------------------------
-
-ReserveFile "CustomInstallPage.ini"
-ReserveFile "InstallCompletePage.ini"
-!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 # [Files]
 
@@ -275,20 +235,48 @@ done_devpaks:
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoRepair" 1
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
+; Add links to START MENU
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+  ;try to read from registry if last installation installed for All Users/Current User
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+      "Shortcuts"
+  StrCmp $0 "" cont exists
+  cont:
+
+  SetShellVarContext all
+  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
+  SetShellVarContext current
+
+AllUsers:
+  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
+      "Shortcuts" "$0"
+
+exists:
+
+  CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+  SetOutPath $INSTDIR
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
+
+!insertmacro MUI_STARTMENU_WRITE_END
+
   SetOutPath $INSTDIR
 
 SectionEnd
 
+SectionGroup /e "wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMain
+
 Section "wxWidgets ${wxWidgets_version} common files" SectionwxWidgetsCommon
-  SectionIn 1 2 RO
+  SectionIn 1 2
 
   !insertmacro InstallDevPak ${wxWidgetsCommon_devpak}
 
 SectionEnd
 
-SectionGroup /e "Mingw gcc wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsGCC
-
 !ifdef HAVE_MINGW
+SectionGroup /e "Mingw gcc wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsGCC
 
 Section "Libraries" SectionwxWidgetsMingw
 
@@ -297,7 +285,7 @@ Section "Libraries" SectionwxWidgetsMingw
   !insertmacro InstallDevPak ${wxWidgets_mingw_devpak}
   
 SectionEnd
-!endif
+
 
 Section /o "Contribs" SectionwxWidgetsContribGcc
   SectionIn 1
@@ -319,10 +307,11 @@ Section /o "Extras" SectionwxWidgetsExtrasGcc
 SectionEnd
 
 SectionGroupEnd
+!endif
 
 !ifdef HAVE_MSVC
 
-SectionGroup /e "MS VC++ ${MSVC_VERSION} wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMSVC
+SectionGroup /e "MS VC++ ${MSVC_YEAR} wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMSVC
 
 Section /o "Libraries" SectionwxWidgetsMSVC
 
@@ -363,6 +352,7 @@ Section "Samples" SectionwxWidgetsSamples
   
 SectionEnd
 
+SectionGroupEnd  ; SectionGroupwxWidgetsMain
 
 !ifdef HAVE_MINGW
 Section "Mingw compiler system (headers and libraries)" SectionMingw
@@ -377,34 +367,6 @@ Section "Mingw compiler system (headers and libraries)" SectionMingw
 ; Install gdb
   !insertmacro InstallDevPak "gdb.devpak"
   
-  ; Add links to START MENU
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-  
-   ;try to read from registry if last installation installed for All Users/Current User
-  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts"
-  StrCmp $0 "" cont exists
-  cont:
-
-  SetShellVarContext all
-  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
-  SetShellVarContext current
-
-AllUsers:
-  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
-      "Shortcuts" "$0"
-
-exists:
-
-  CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-  SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
-  
-!insertmacro MUI_STARTMENU_WRITE_END
-
   SetOutPath $INSTDIR
   
 SectionEnd
@@ -414,7 +376,7 @@ SectionGroup /e "Help files" SectionGroupHelp
 
 Section /o "${PROGRAM_NAME} help" SectionHelp
 
-  SectionIn 1 2
+  SectionIn 1 2 RO
   
 ; Install wxDevCpp Help Files
   !insertmacro InstallDevPak "DevCppHelp.devpak"
@@ -684,70 +646,15 @@ Section "Remove all previous configuration files" SectionConfig
   
 SectionEnd
 
-; Custom Install Options Page allows the user to select programs to run after installation
-Function InstallCompleteOptions
-
-  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "InstallCompletePage.ini"
-
-  !insertmacro MUI_HEADER_TEXT "Installation complete for ${PROGRAM_NAME}" "Do you want to run the programs now?"
-  
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "InstallCompletePage.ini" "Field 2" "Flags" ""
-
-  StrCmp $WXBOOK_INSTALLED "No" 0 +3   ; If wx pdf book isn't installed, then don't give that option
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "InstallCompletePage.ini" "Field 2" "State" "0"
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "InstallCompletePage.ini" "Field 2" "Flags" "DISABLED"
-  
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "InstallCompletePage.ini"
-
-  ;Read a value from an CustomInstallPage INI file
-  !insertmacro MUI_INSTALLOPTIONS_READ $RUN_WXDEVCPP "InstallCompletePage.ini" "Field 1" "State"
-  !insertmacro MUI_INSTALLOPTIONS_READ $RUN_WXBOOK "InstallCompletePage.ini" "Field 2" "State"
-
-  StrCmp $RUN_WXBOOK "1" 0 +3
-  ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AcroRd32.exe" "Path" ; Find Adobe Acrobat install path
-  Exec '"$R0\acrord32.exe" "$INSTDIR\Help\Programming with wxDev-C++.pdf"'
- 
-  StrCmp $RUN_WXDEVCPP "1" 0 +2
-  Exec '"$INSTDIR\${EXECUTABLE_NAME}"'
-
-FunctionEnd
-
-; Custom Install Options Page allows the user to select which compiler(s) to use
-Function CustomInstallOptions
-
-  !insertmacro MUI_HEADER_TEXT "$(TEXT_IO_TITLE)" "$(TEXT_IO_SUBTITLE)"
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "CustomInstallPage.ini"
-  
-  ;Read a value from an CustomInstallPage INI file
-  !insertmacro MUI_INSTALLOPTIONS_READ $USE_MINGW "CustomInstallPage.ini" "Field 2" "State"
-  !insertmacro MUI_INSTALLOPTIONS_READ $USE_MSVC "CustomInstallPage.ini" "Field 3" "State"
-
-  StrCpy $WXBOOK_INSTALLED "No" ; Initialize variable
-
-  ; Select the compiler sections according to which compiler types the user has chosen
-  SectionSetFlags ${SectionwxWidgetsMingw} $USE_MINGW
-  SectionSetFlags ${SectionwxWidgetsContribGcc} $USE_MINGW
-  SectionSetFlags ${SectionwxWidgetsExtrasGcc} $USE_MINGW
-  
-  SectionSetFlags ${SectionwxWidgetsMSVC} $USE_MSVC
-  SectionSetFlags ${SectionwxWidgetsContribMSVC} $USE_MSVC
-  SectionSetFlags ${SectionwxWidgetsExtrasMSVC} $USE_MSVC
-  
-  StrCmp $USE_MSVC "1" 0 +2
-    Call CheckMSVC   ; Check to see if user really has MSVC installed
-
-FunctionEnd
-
 ;--------------------------------
 
 # [Sections' descriptions (on mouse over)]
-!ifdef NEW_INTERFACE
-
-  LangString TEXT_IO_TITLE ${LANG_ENGLISH} "InstallOptions page"
   LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "Compiler Selection for ${PROGRAM_NAME}"
 
   LangString DESC_SectionMain ${LANG_ENGLISH} "The ${PROGRAM_NAME} IDE (Integrated Development Environment), package manager and templates"
   
+   LangString DESC_SectionGroupwxWidgetsMain ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version}"
+
   LangString DESC_SectionwxWidgetsCommon ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} common include files. All compilers use these files."
 
 !ifdef HAVE_MINGW
@@ -813,47 +720,16 @@ FunctionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionConfig} $(DESC_SectionConfig)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-!endif ;NEW_INTERFACE
-
 ;--------------------------------
 
 ; Functions
-Function myGUIInit
-
-  MessageBox MB_OK "Welcome to ${PROGRAM_NAME} install program.$\r$\nPlease do not install this version of ${PROGRAM_NAME} over an existing installation$\r$\n(i.e. uninstall DevCpp and/or wx-devcpp beforehand)."
- 
-  !insertmacro MUI_LANGDLL_DISPLAY
-
-  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "CustomInstallPage.ini"
-
-  SetCurInstType 0  ; Indexed from 0
-
-FunctionEnd
-
+!ifdef HAVE_MSVC
 Function .onSelChange
 
    Call CheckMSVC ; Check to see if we've selected to install wxWidgets devpak with MS VC++
 
 FunctionEnd
-
-!ifndef NEW_INTERFACE
-
-;called when the user hits the 'cancel' button
-Function .onUserAbort
-  MessageBox MB_YESNO "Abort install?" IDYES NoCancelAbort
-  Abort
-  NoCancelAbort:
-FunctionEnd
-
-;called when the install was successful
-Function .onInstSuccess
-  MessageBox MB_YESNO "Do you want to run ${PROGRAM_NAME} now?" IDNO DontRun /SD IDNO
-
-  Exec '"$INSTDIR\${EXECUTABLE_NAME}"'
-  DontRun:
-FunctionEnd
-
-!endif ;!NEW_INTERFACE
+!endif
 
 ;called when the uninstall was successful
 Function un.onUninstSuccess
@@ -911,46 +787,7 @@ Function un.RefreshShellIcons
   (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'
 FunctionEnd
 
-;http://nsis.sourceforge.net/archive/nsisweb.php?page=628&instances=0,11,122
-Function StrCSpnReverse
- Exch $R0 ; string to check
- Exch
- Exch $R1 ; string of chars
- Push $R2 ; current char
- Push $R3 ; current char
- Push $R4 ; char loop
- Push $R5 ; char loop
-
-  StrCpy $R4 -1
-
-  NextCharCheck:
-  StrCpy $R2 $R0 1 $R4
-  IntOp $R4 $R4 - 1
-   StrCmp $R2 "" StrOK
-
-   StrCpy $R5 -1
-
-   NextChar:
-   StrCpy $R3 $R1 1 $R5
-   IntOp $R5 $R5 - 1
-    StrCmp $R3 "" +2
-    StrCmp $R3 $R2 NextCharCheck NextChar
-     StrCpy $R0 $R2
-     Goto Done
-
- StrOK:
- StrCpy $R0 ""
-
- Done:
-
- Pop $R5
- Pop $R4
- Pop $R3
- Pop $R2
- Pop $R1
- Exch $R0
-FunctionEnd
-
+!ifdef HAVE_MSVC
 #Check to see if user wants the MS VC++ devpak. If so, message box to remind him to download the SDK and compiler
 Function CheckMSVC
 
@@ -962,27 +799,28 @@ Function CheckMSVC
 
 detectvc:    ; Try to detect the MS VC compiler
  
-  ; VS C++ 8.0 Free Version
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0\Setup\VS" "MSMDir"
+  ; VS C++ Free Version
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\${MSVC_VERSION}\Setup\VS" "MSMDir"
   IfErrors 0 detectsdk   ; If it's detected, then we probably don't need to remind user to install it.
 
-  ; VS C++ 8.0 Enterprise Version
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0\Setup\VS" "ProductDir"
+  ; VS C++ Enterprise Version
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\${MSVC_VERSION}\Setup\VS" "ProductDir"
   IfErrors 0 detectsdk   ; If it's detected, then we probably don't need to remind user to install it.
 
   Goto show
   
 detectsdk:    ; Try to detect the MS SDK
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\SxS\FrameworkSDK" "8.0"
-  IfErrors 0 dontshow  ; If it's detected, then we probably don't need to remind user to install it.
+  ;ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\SxS\FrameworkSDK" "8.0"
+  ;IfErrors 0 dontshow  ; If it's detected, then we probably don't need to remind user to install it.
 
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\SxS\FrameworkSDK" "7.1"
-  IfErrors 0 dontshow   ; If it's detected, then we probably don't need to remind user to install it.
+  ;ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\SxS\FrameworkSDK" "7.1"
+  ;IfErrors 0 dontshow   ; If it's detected, then we probably don't need to remind user to install it.
+  Goto dontshow
   
 show:
   ;Remind user to download and install MS VC++ and the MS SDK
-  MessageBox MB_OK|MB_ICONINFORMATION "You've selected to install the wxWidgets MS VC++ 2005 devpak.$\r$\n\
-             If you have the MS VC++ 2005 compiler and MS SDK installed, then please continue.$\r$\n\
+  MessageBox MB_OK|MB_ICONINFORMATION "You've selected to install the wxWidgets MS VC++ ${MSVC_YEAR} devpak.$\r$\n\
+             If you have the MS VC++ ${MSVC_YEAR} compiler and MS SDK installed, then please continue.$\r$\n\
              If not, then please download and install before you install ${PROGRAM_NAME}.$\r$\n\
              You can find them at the official Microsoft website.$\r$\n\
              http://msdn.microsoft.com/vstudio/express/visualc/"
@@ -990,31 +828,7 @@ show:
 dontshow:
 
 FunctionEnd
-
-
-#Verify the installation directory
-Function dirLeave
-  Push "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:-_\ ()"
-  Push $INSTDIR
-  Call StrCSpnReverse
-  Pop $R0
-  StrCmp $R0 "" +3
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Installation directory cannot contain: '$R0'. Only letters, numbers and ':-_\ ()' are allowed."
-  Abort
-
-  GetInstDirError $0
-  ${Switch} $0
-    ${Case} 1
-      MessageBox MB_OK "invalid installation directory!"
-      Abort
-      ${Break}
-    ${Case} 2
-      MessageBox MB_OK "not enough free space!"
-      Abort
-      ${Break}
-  ${EndSwitch}
-
-FunctionEnd
+!endif
 
 #Fill the global variable with Local\Application Data directory CSIDL_LOCAL_APPDATA
 !define CSIDL_LOCAL_APPDATA 0x001C
@@ -1035,117 +849,6 @@ Function un.GetLocalAppData
   
   StrCpy $LOCAL_APPDATA $0
 FunctionEnd
-
-; Added for wx-devcpp  -- START
-
-; Replace text within a file
-; From http://nsis.sourceforge.net/archive/nsisweb.php?page=511&instances=0,11,311
-; USE:
-; Push hello #text to be replaced
-; Push blah #replace with
-; Push all #replace all occurrences
-; Push all #replace all occurrences
-; Push C:\temp1.bat #file to replace in
-; Call AdvReplaceInFile
-
-;Original Written by Afrow UK
-; Rewrite to Replace on line within text by rainmanx
-; This version works on R4 and R3 of Nullsoft Installer
-; It replaces what ever is in the line throught the entire text matching it.
-Function AdvReplaceInFile
-Exch $0 ;file to replace in
-Exch
-Exch $1 ;number to replace after
-Exch
-Exch 2
-Exch $2 ;replace and onwards
-Exch 2
-Exch 3
-Exch $3 ;replace with
-Exch 3
-Exch 4
-Exch $4 ;to replace
-Exch 4
-Push $5 ;minus count
-Push $6 ;universal
-Push $7 ;end string
-Push $8 ;left string
-Push $9 ;right string
-Push $R0 ;file1
-Push $R1 ;file2
-Push $R2 ;read
-Push $R3 ;universal
-Push $R4 ;count (onwards)
-Push $R5 ;count (after)
-Push $R6 ;temp file name
-;-------------------------------
-GetTempFileName $R6
-FileOpen $R1 $0 r ;file to search in
-FileOpen $R0 $R6 w ;temp file
-StrLen $R3 $4
-StrCpy $R4 -1
-StrCpy $R5 -1
-loop_read:
-ClearErrors
-FileRead $R1 $R2 ;read line
-IfErrors exit
-StrCpy $5 0
-StrCpy $7 $R2
-loop_filter:
-IntOp $5 $5 - 1
-StrCpy $6 $7 $R3 $5 ;search
-StrCmp $6 "" file_write2
-StrCmp $6 $4 0 loop_filter
-StrCpy $8 $7 $5 ;left part
-IntOp $6 $5 + $R3
-StrCpy $9 $7 "" $6 ;right part
-StrLen $6 $7
-StrCpy $7 $8$3$9 ;re-join
-StrCmp -$6 $5 0 loop_filter
-IntOp $R4 $R4 + 1
-StrCmp $2 all file_write1
-StrCmp $R4 $2 0 file_write2
-IntOp $R4 $R4 - 1
-IntOp $R5 $R5 + 1
-StrCmp $1 all file_write1
-StrCmp $R5 $1 0 file_write1
-IntOp $R5 $R5 - 1
-Goto file_write2
-file_write1:
-FileWrite $R0 $7 ;write modified line
-Goto loop_read
-file_write2:
-FileWrite $R0 $7 ;write modified line
-Goto loop_read
-exit:
-FileClose $R0
-FileClose $R1
-SetDetailsPrint none
-Delete $0
-Rename $R6 $0
-Delete $R6
-SetDetailsPrint both
-;-------------------------------
-Pop $R6
-Pop $R5
-Pop $R4
-Pop $R3
-Pop $R2
-Pop $R1
-Pop $R0
-Pop $9
-Pop $8
-Pop $7
-Pop $6
-Pop $5
-Pop $4
-Pop $3
-Pop $2
-Pop $1
-Pop $0
-FunctionEnd
-
-; Added for wx-devcpp  -- END
 
 ;--------------------------------
 
