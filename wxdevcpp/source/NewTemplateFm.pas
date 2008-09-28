@@ -67,6 +67,8 @@ type
     cbInclude: TCheckBox;
     cbLibrary: TCheckBox;
     cbRessource: TCheckBox;
+    CompilerSet: TComboBox;
+    Label1: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnLibClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
@@ -76,6 +78,10 @@ type
     procedure lstIconsClick(Sender: TObject);
     procedure btnCreateClick(Sender: TObject);
     procedure cmbNameChange(Sender: TObject);
+    procedure CompilerSetChange(Sender: TObject);
+    procedure memCompilerChange(Sender: TObject);
+    procedure memCppCompilerChange(Sender: TObject);
+    procedure memLinkerChange(Sender: TObject);
   private
     { Private declarations }
     Icons: array[0..1] of TIcon;
@@ -238,6 +244,7 @@ procedure TNewTemplateForm.FillUnits;
 var
   I: integer;
 begin
+
   lstFiles.Clear;
   for I := 0 to TempProject.Units.Count - 1 do
     lstFiles.Items.Add(ExtractFileName(TempProject.Units.Items[I].FileName));
@@ -245,18 +252,22 @@ begin
     lstFiles.Checked[I] := True;
   if lstFiles.Items.Count > 0 then
     lstFiles.ItemIndex := 0;
+
 end;
 
 procedure TNewTemplateForm.FillExtras;
+var
+    i : integer;
 begin
-  memCompiler.Clear;
-  memLinker.Clear;
-  if TempProject.CurrentProfile.Compiler <> '' then
-    memCompiler.Lines.Add(StringReplace(TempProject.CurrentProfile.Compiler, '_@@_', #13#10, [rfReplaceAll]));
-  if TempProject.CurrentProfile.CppCompiler <> '' then
-    memCppCompiler.Lines.Add(StringReplace(TempProject.CurrentProfile.CppCompiler, '_@@_', #13#10, [rfReplaceAll]));
-  if TempProject.CurrentProfile.Linker <> '' then
-    memLinker.Lines.Add(StringReplace(TempProject.CurrentProfile.Linker, '_@@_', #13#10, [rfReplaceAll]));
+
+ // Add compiler profiles
+  CompilerSet.Clear;
+  for i:= 0 to TempProject.Profiles.Count -1 do
+        CompilerSet.Items.Add(TempProject.Profiles.Items[i].ProfileName);
+
+  CompilerSet.ItemIndex := TempProject.CurrentProfileIndex;
+  CompilerSetChange(nil);
+
 end;
 
 procedure TNewTemplateForm.FillIconsList;
@@ -306,6 +317,7 @@ begin
     end;
   end;
   tmpIni := TIniFile.Create(filename);
+  
   with tmpIni do try
     WriteInteger('Template', 'ver', 3);
     WriteString('Template', 'Name', cmbName.Text);
@@ -316,25 +328,37 @@ begin
     WriteString('Template', 'Description', txtDescr.Text);
     WriteString('Template', 'Catagory', cmbCateg.Text); // 'catagory' is not a typo...
 
-    C := 0;
-    for I := 0 to lstFiles.Items.Count - 1 do
-      if lstFiles.Checked[I] then begin
-        WriteString('Unit' + IntToStr(C), 'CppName', lstFiles.Items[I]);
-        S := StringReplace(cmbName.Text + '_' + lstFiles.Items[I] + '.txt', ' ', '_', [rfReplaceAll]);
-        WriteString('Unit' + IntToStr(C), 'Cpp', S);
-        CopyFile(PChar(TempProject.Units[I].FileName), PChar(devDirs.Templates + S), False);
-        Inc(C);
-      end;
-    WriteBool('Project', 'IsCpp', TempProject.Profiles.useGPP);
+    if txtProjName.Text = '' then
+      WriteString('Project', 'Name', cmbName.Text)
+    else
+      WriteString('Project', 'Name', txtProjName.Text);
+
+       WriteBool('Project', 'IsCpp', TempProject.Profiles.useGPP);
+
+    WriteInteger('Project', 'ProfilesCount', TempProject.Profiles.Count);
+    WriteInteger('Project', 'ProfileIndex', 1);
+
+
+    if IconFiles[1] <> '' then begin
+      CopyFile(PChar(IconFiles[1]), PChar(devDirs.Templates + cmbName.Text + '.project.ico'), False);
+      WriteString('Project', 'ProjectIcon', cmbName.Text + '.project.ico');
+    end;
+
     for i:= 0 to TempProject.Profiles.Count -1 do
     Begin
       ProfileName:='Profile'+IntToStr(i);
       WriteString(ProfileName, 'ProfileName', TempProject.Profiles[i].ProfileName);
     WriteInteger(ProfileName, 'UnitCount', C);
     WriteInteger(ProfileName, 'Type', Integer(TempProject.Profiles[i].typ));
-    WriteString(ProfileName, 'Compiler', StringReplace(memCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
-    WriteString(ProfileName, 'CppCompiler', StringReplace(memCppCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
-    WriteString(ProfileName, 'Linker', StringReplace(memLinker.Text, #13#10, '_@@_', [rfReplaceAll]));
+
+   // WriteString(ProfileName, 'Compiler', StringReplace(memCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
+   // WriteString(ProfileName, 'CppCompiler', StringReplace(memCppCompiler.Text, #13#10, '_@@_', [rfReplaceAll]));
+   // WriteString(ProfileName, 'Linker', StringReplace(memLinker.Text, #13#10, '_@@_', [rfReplaceAll]));
+    WriteString(ProfileName, 'Compiler', StringReplace(TempProject.Profiles[i].Compiler, #13#10, '_@@_', [rfReplaceAll]));
+    WriteString(ProfileName, 'CppCompiler', StringReplace(TempProject.Profiles[i].CppCompiler, #13#10, '_@@_', [rfReplaceAll]));
+    WriteString(ProfileName, 'Linker', StringReplace(TempProject.Profiles[i].Linker, #13#10, '_@@_', [rfReplaceAll]));
+
+
     WriteString(ProfileName, COMPILER_INI_LABEL, TempProject.Profiles[i].CompilerOptions);
     WriteInteger(ProfileName, 'CompilerSet', TempProject.Profiles[i].CompilerSet);
     WriteBool(ProfileName, 'IncludeVersionInfo', TempProject.Profiles[i].IncludeVersionInfo);
@@ -347,15 +371,18 @@ begin
     if cbRessource.Checked then
       WriteString(ProfileName, 'ResourceIncludes', TempProject.Profiles[i].ResourceIncludes.DelimitedText);
     end;
-    
-    if txtProjName.Text = '' then
-      WriteString('Project', 'Name', cmbName.Text)
-    else
-      WriteString('Project', 'Name', txtProjName.Text);
-    if IconFiles[1] <> '' then begin
-      CopyFile(PChar(IconFiles[1]), PChar(devDirs.Templates + cmbName.Text + '.project.ico'), False);
-      WriteString('Project', 'ProjectIcon', cmbName.Text + '.project.ico');
-    end;
+
+     C := 0;
+    for I := 0 to lstFiles.Items.Count - 1 do
+      if lstFiles.Checked[I] then begin
+        WriteString('Unit' + IntToStr(C), 'CppName', lstFiles.Items[I]);
+        S := StringReplace(cmbName.Text + '_' + lstFiles.Items[I] + '.txt', ' ', '_', [rfReplaceAll]);
+        WriteString('Unit' + IntToStr(C), 'Cpp', S);
+        CopyFile(PChar(TempProject.Units[I].FileName), PChar(devDirs.Templates + S), False);
+        Inc(C);
+      end;
+
+      WriteInteger('Project', 'UnitCount', C);
 
     MessageDlg('The new template has been created!'#10#10 +
       'You can find it as "' + cmbName.Text + '" under the "' + cmbCateg.Text + '" tab in the "New project" dialog.',
@@ -394,6 +421,38 @@ begin
     cbLibrary.Caption := Strings[ID_NEWTPL_LIBDIR];
     cbRessource.Caption := Strings[ID_NEWTPL_RESDIR];
   end;
+end;
+
+procedure TNewTemplateForm.CompilerSetChange(Sender: TObject);
+begin
+
+// Change the compiler and linker boxes to selected compiler set
+  memCompiler.Clear;
+  memCppCompiler.Clear;
+  memLinker.Clear;
+
+  if TempProject.Profiles.Items[CompilerSet.ItemIndex].Compiler <> '' then
+    memCompiler.Lines.Add(StringReplace(TempProject.Profiles.Items[CompilerSet.ItemIndex].Compiler, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.Profiles.Items[CompilerSet.ItemIndex].CppCompiler <> '' then
+    memCppCompiler.Lines.Add(StringReplace(TempProject.Profiles.Items[CompilerSet.ItemIndex].CppCompiler, '_@@_', #13#10, [rfReplaceAll]));
+  if TempProject.Profiles.Items[CompilerSet.ItemIndex].Linker <> '' then
+    memLinker.Lines.Add(StringReplace(TempProject.Profiles.Items[CompilerSet.ItemIndex].Linker, '_@@_', #13#10, [rfReplaceAll]));
+
+end;
+
+procedure TNewTemplateForm.memCompilerChange(Sender: TObject);
+begin
+   TempProject.Profiles[CompilerSet.ItemIndex].Compiler := memCompiler.Text;
+end;
+
+procedure TNewTemplateForm.memCppCompilerChange(Sender: TObject);
+begin
+   TempProject.Profiles[CompilerSet.ItemIndex].CppCompiler := memCppCompiler.Text;
+end;
+
+procedure TNewTemplateForm.memLinkerChange(Sender: TObject);
+begin
+  TempProject.Profiles[CompilerSet.ItemIndex].Linker := memLinker.Text;
 end;
 
 end.

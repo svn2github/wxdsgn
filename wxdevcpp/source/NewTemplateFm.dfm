@@ -1,10 +1,10 @@
 object NewTemplateForm: TNewTemplateForm
-  Left = 398
+  Left = 372
   Top = 182
   BorderStyle = bsDialog
   Caption = 'New Template'
   ClientHeight = 321
-  ClientWidth = 380
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,9 +19,10 @@ object NewTemplateForm: TNewTemplateForm
   object devPages1: TPageControl
     Left = 8
     Top = 8
-    Width = 364
+    Width = 401
     Height = 281
-    ActivePage = pgTemplate
+    ActivePage = pgExtras
+    TabIndex = 2
     TabOrder = 0
     object pgTemplate: TTabSheet
       Caption = 'Template info'
@@ -254,47 +255,57 @@ object NewTemplateForm: TNewTemplateForm
         Caption = 'Compiler extra options:'
       end
       object lblLinker: TLabel
-        Left = 244
+        Left = 262
         Top = 8
         Width = 95
         Height = 13
         Caption = 'Linker extra options:'
       end
       object lblCppCompiler: TLabel
-        Left = 128
+        Left = 135
         Top = 8
         Width = 101
         Height = 13
         Caption = 'C++ compiler options:'
       end
+      object Label1: TLabel
+        Left = 232
+        Top = 200
+        Width = 62
+        Height = 13
+        Caption = 'Compiler Set:'
+      end
       object memCompiler: TMemo
         Left = 12
         Top = 24
-        Width = 101
+        Width = 111
         Height = 149
         ScrollBars = ssVertical
         TabOrder = 0
+        OnChange = memCompilerChange
       end
       object memLinker: TMemo
-        Left = 244
+        Left = 262
         Top = 25
-        Width = 101
+        Width = 112
         Height = 148
         ScrollBars = ssVertical
         TabOrder = 2
+        OnChange = memLinkerChange
       end
       object memCppCompiler: TMemo
-        Left = 128
+        Left = 134
         Top = 24
-        Width = 101
+        Width = 117
         Height = 149
         ScrollBars = ssVertical
         TabOrder = 1
+        OnChange = memCppCompilerChange
       end
       object cbInclude: TCheckBox
         Left = 16
         Top = 192
-        Width = 329
+        Width = 177
         Height = 17
         Caption = 'Use project'#39's Include directories'
         TabOrder = 3
@@ -302,7 +313,7 @@ object NewTemplateForm: TNewTemplateForm
       object cbLibrary: TCheckBox
         Left = 16
         Top = 208
-        Width = 329
+        Width = 169
         Height = 17
         Caption = 'Use project'#39's Library directories'
         TabOrder = 4
@@ -310,10 +321,20 @@ object NewTemplateForm: TNewTemplateForm
       object cbRessource: TCheckBox
         Left = 16
         Top = 224
-        Width = 329
+        Width = 185
         Height = 17
         Caption = 'Use project'#39's Ressource directories'
         TabOrder = 5
+      end
+      object CompilerSet: TComboBox
+        Left = 232
+        Top = 216
+        Width = 145
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 6
+        Text = 'CompilerSet'
+        OnChange = CompilerSetChange
       end
     end
   end
