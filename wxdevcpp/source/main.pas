@@ -1823,7 +1823,6 @@ var
     i, j: Integer;
     panel1: TForm;
     panel2: TForm;
-//    DockClient1, DockCLient2: TJvDockClient;
 {$ENDIF PLUGIN_BUILD}
 begin
   if assigned(fProject) then
@@ -1895,10 +1894,8 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
+            UnAutoHideDockForm(panel1);
             ManualTabDockAddPage(LeftDockTabs, panel1);
-            //DockClient1 := FindDockClient(panel1);
-            //LeftDockTabs.a
-            //DockClient1.FormUnDock(LeftDockTabs, panel1);
           end;
       end;
 
@@ -1909,9 +1906,8 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
+            UnAutoHideDockForm(panel1);
             ManualTabDockAddPage(RightDockTabs, panel1);
-            //DockClient1 := FindDockClient(panel1);
-            //DockClient1.FormUnDock(RightDockTabs, panel1);
           end;
       end;
 
@@ -1922,9 +1918,8 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
+            UnAutoHideDockForm(panel1);
             ManualTabDockAddPage(BottomDockTabs, panel1);
-            //DockClient1 := FindDockClient(panel1);
-            //DockClient1.FormUnDock(RightDockTabs, panel1);
           end;
       end;
 
