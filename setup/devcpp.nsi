@@ -10,12 +10,12 @@
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION}"
-!define MSVC_VERSION "8.0" ; 2005 = version 8.0, 2008 = version 9.0
-!define MSVC_YEAR "2005"
+!define MSVC_VERSION "9.0" ; 2005 = version 8.0, 2008 = version 9.0
+!define MSVC_YEAR "2008"
 !define HAVE_MINGW
 !define HAVE_MSVC
 
-!define wxWidgets_version "2.8.8"
+!define wxWidgets_version "2.8.9"
 !define wxWidgets_name "wxWidgets"
 
 
@@ -43,11 +43,11 @@
 !define wxWidgetsSamples_devpak "${wxWidgets_name}_samples.devpak"  ; name of the samples devpak
 
 Var LOCAL_APPDATA
-Var USE_MINGW
-Var USE_MSVC
-Var RUN_WXDEVCPP
-Var RUN_WXBOOK
-Var WXBOOK_INSTALLED
+;Var USE_MINGW
+;Var USE_MSVC
+;Var RUN_WXDEVCPP
+;Var RUN_WXBOOK
+;Var WXBOOK_INSTALLED
 
 !macro InstallDevPak DEVPAK_NAME
 ; Installs a wxDev-C++ devpak using the devpak manager
@@ -356,7 +356,7 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   ; Install SofT's wxDev-C++ programming book
   !insertmacro InstallDevPak "Programming with wxDev-C++.devpak"
 
-  StrCpy $WXBOOK_INSTALLED "Yes"
+  ;StrCpy $WXBOOK_INSTALLED "Yes"
 
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
