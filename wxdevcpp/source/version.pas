@@ -377,9 +377,10 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_CP_PROGRAM;
 
-      ID_COMPILER_VC2008:
-          Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_CP_PROGRAM + '"';
+      //ID_COMPILER_VC2008:
+      //    Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_CP_PROGRAM + '"';
 
+      ID_COMPILER_VC2008,
       ID_COMPILER_VC2005,
       ID_COMPILER_VC2003,
       ID_COMPILER_VC6:
@@ -403,9 +404,10 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_CPP_PROGRAM;
 
-      ID_COMPILER_VC2008:
-          Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_CPP_PROGRAM + '"';
+      //ID_COMPILER_VC2008:
+      //    Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_CPP_PROGRAM + '"';
 
+      ID_COMPILER_VC2008,
       ID_COMPILER_VC2005,
       ID_COMPILER_VC2003,
       ID_COMPILER_VC6:
@@ -452,9 +454,10 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_RES_PROGRAM;
 
-      ID_COMPILER_VC2008:
-          Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Bin/' + VC_RES_PROGRAM + '"';
+      //ID_COMPILER_VC2008:
+      //    Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft SDKs/Windows/v6.0A/Bin/' + VC_RES_PROGRAM + '"';
 
+      ID_COMPILER_VC2008,
       ID_COMPILER_VC2005,
       ID_COMPILER_VC2003,
       ID_COMPILER_VC6:
@@ -477,9 +480,10 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_DLL_PROGRAM;
 
-      ID_COMPILER_VC2008:
-        Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_DLL_PROGRAM + '"';
+      //ID_COMPILER_VC2008:
+      //  Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_DLL_PROGRAM + '"';
 
+      ID_COMPILER_VC2008,
       ID_COMPILER_VC2005,
       ID_COMPILER_VC2003,
       ID_COMPILER_VC6:

@@ -1823,7 +1823,7 @@ var
     i, j: Integer;
     panel1: TForm;
     panel2: TForm;
-    DockClient1, DockCLient2: TJvDockClient;
+//    DockClient1, DockCLient2: TJvDockClient;
 {$ENDIF PLUGIN_BUILD}
 begin
   if assigned(fProject) then
@@ -1901,7 +1901,6 @@ begin
             //DockClient1.FormUnDock(LeftDockTabs, panel1);
           end;
       end;
-      DockClient1.
 
       items := plugins[i].Retrieve_RightDock_Panels;
       if items <> nil then
