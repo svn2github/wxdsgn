@@ -974,6 +974,8 @@ object EditorOptForm: TEditorOptForm
         Width = 395
         Height = 17
         Caption = 'Enable class browser'
+        Checked = True
+        State = cbChecked
         TabOrder = 0
         OnClick = chkEnableClassBrowserClick
       end

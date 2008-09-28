@@ -1823,6 +1823,7 @@ var
     i, j: Integer;
     panel1: TForm;
     panel2: TForm;
+    DockClient1, DockCLient2: TJvDockClient;
 {$ENDIF PLUGIN_BUILD}
 begin
   if assigned(fProject) then
@@ -1877,9 +1878,11 @@ begin
   devData.ToolbarClassesY := tbClasses.Top;
 
   {$IFDEF PLUGIN_BUILD}
+
   DockServer.LeftDockPanel.Visible := false;    // More "gratious" closing of panels, due to ManualTabDock plugin removal requirement
   DockServer.RightDockPanel.Visible := false;
   DockServer.BottomDockPanel.Visible := false;
+
   for i := 0 to pluginsCount - 1 do
   begin
 
@@ -1891,9 +1894,14 @@ begin
           for j := 0 to items.Count -1 do
           begin
             panel1 := items[j];
+            panel1.Visible := false;
             ManualTabDockAddPage(LeftDockTabs, panel1);
+            //DockClient1 := FindDockClient(panel1);
+            //LeftDockTabs.a
+            //DockClient1.FormUnDock(LeftDockTabs, panel1);
           end;
       end;
+      DockClient1.
 
       items := plugins[i].Retrieve_RightDock_Panels;
       if items <> nil then
@@ -1901,7 +1909,10 @@ begin
           for j := 0 to items.Count -1 do
           begin
             panel1 := items[j];
+            panel1.Visible := false;
             ManualTabDockAddPage(RightDockTabs, panel1);
+            //DockClient1 := FindDockClient(panel1);
+            //DockClient1.FormUnDock(RightDockTabs, panel1);
           end;
       end;
 
@@ -1911,7 +1922,10 @@ begin
           for j := 0 to items.Count -1 do
           begin
             panel1 := items[j];
+            panel1.Visible := false;
             ManualTabDockAddPage(BottomDockTabs, panel1);
+            //DockClient1 := FindDockClient(panel1);
+            //DockClient1.FormUnDock(RightDockTabs, panel1);
           end;
       end;
 
@@ -1921,7 +1935,6 @@ begin
         devPluginToolbarsX.AddToolbarsX(plugins[i].GetPluginName, toolbar.Left);
         devPluginToolbarsY.AddToolbarsY(plugins[i].GetPluginName, toolbar.Top);
     end;
-
     plugins[i].Destroy;
     plugins[i] := nil;
   end;

@@ -594,7 +594,7 @@ BEGIN
 	version_DEV_MAKE_FILE,	"Makefile.win"
 	version_DEV_HELP_INI,	"devhelp.ini"
 	version_DEV_CODEINS_FILE,	"devcpp.ci"
-	version_DEV_MAINHELP_FILE,	"devcpp.hlp"
+	version_DEV_MAINHELP_FILE,	"devcpp.chm"
 	version_DEV_GNOME_THEME,	"Gnome"
 	version_DEV_NEWLOOK_THEME,	"New Look"
 	version_DEV_BLUE_THEME,	"Blue"

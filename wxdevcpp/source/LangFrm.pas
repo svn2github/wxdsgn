@@ -210,7 +210,7 @@ begin
       SecondPanel.Visible := false;
       devCodeCompletion.Enabled := false;
       devCodeCompletion.UseCacheFiles := false;
-      devClassBrowsing.Enabled := false;
+      devClassBrowsing.Enabled := true; // EAB: There's no reason for classbrowsing disabled by default as far as we know.
       devClassBrowsing.ParseLocalHeaders := false;
       devClassBrowsing.ParseGlobalHeaders := false;
       SaveOptions;
