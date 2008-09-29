@@ -5,6 +5,8 @@ object frmShortcutsEditor: TfrmShortcutsEditor
   Height = 413
   Caption = 'Configure Shortcuts'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

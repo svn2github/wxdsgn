@@ -1493,11 +1493,14 @@ begin
     NewProfile.OverridenOutput := finifile.ReadProfile(i,'OverrideOutputName','');
     NewProfile.HostApplication := finifile.ReadProfile(i,'HostApplication','');
     NewProfile.IncludeVersionInfo := finifile.ReadProfile(i,'IncludeVersionInfo',false);
-    NewProfile.SupportXPThemes:= finifile.ReadProfile(i,'SupportXPThemes',false);
+    NewProfile.SupportXPThemes := finifile.ReadProfile(i,'SupportXPThemes',false);
+    NewProfile.UseCustomMakefile := finifile.ReadProfile(i,'UseCustomMakefile',false);   // EAB: we weren't loading this setting.
+    NewProfile.CustomMakefile := finifile.ReadProfile(i,'CustomMakefile','');   // EAB: we weren't loading this setting.
     if (NewProfile.CompilerSet > devCompilerSet.Sets.Count - 1) or (NewProfile.CompilerSet = -1) then
     begin
        case NewProfile.compilerType of
          ID_COMPILER_MINGW:   CompilerType := 'MingW';
+         ID_COMPILER_VC2008:  CompilerType := 'Visual C++ 2008';
          ID_COMPILER_VC2005:  CompilerType := 'Visual C++ 2005';
          ID_COMPILER_VC2003:  CompilerType := 'Visual C++ 2002/2003';
          ID_COMPILER_VC6:     CompilerType := 'Visual C++ 6';

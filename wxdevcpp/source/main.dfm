@@ -3,6 +3,7 @@ object MainForm: TMainForm
   Top = 266
   Width = 636
   Height = 442
+  Anchors = [akLeft, akTop, akBottom]
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1409,7 +1410,7 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 616
+        Width = 610
         Height = 97
         Align = alClient
         BevelKind = bkSoft
@@ -1483,7 +1484,7 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 391
+        Width = 385
         Height = 97
         Align = alClient
         Caption = 'Compile log :'
@@ -1494,7 +1495,7 @@ object MainForm: TMainForm
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 359
+          Width = 317
           Height = 81
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
@@ -1523,7 +1524,7 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 608
+            Width = 602
             Height = 69
             Align = alClient
             Columns = <
@@ -1558,7 +1559,7 @@ object MainForm: TMainForm
           object lvLocals: TListView
             Left = 0
             Top = 0
-            Width = 608
+            Width = 602
             Height = 69
             Align = alClient
             Columns = <
@@ -1586,7 +1587,7 @@ object MainForm: TMainForm
           object lvThreads: TListView
             Left = 0
             Top = 0
-            Width = 608
+            Width = 602
             Height = 69
             Align = alClient
             Columns = <
@@ -1689,7 +1690,7 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 616
+        Width = 610
         Height = 97
         Align = alClient
         BevelOuter = bvRaised

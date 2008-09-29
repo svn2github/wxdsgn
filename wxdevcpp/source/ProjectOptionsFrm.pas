@@ -1220,7 +1220,7 @@ end;
 procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
 begin
   cmbProfileSetComp.ItemIndex := fOriginalProfileIndex;
-  cmbProfileSetComp.OnChange(Sender);
+  cmbProfileSetComp.OnChange(Sender);   // EAB Comment: Why call this here? AFAIK, nothing bad happens, but seems counter intuitive
 end;
 
 procedure TfrmProjectOptions.lstTypeClick(Sender: TObject);
@@ -1297,8 +1297,8 @@ end;
 
 procedure TfrmProjectOptions.btnCustomMakeBrowseClick(Sender: TObject);
 begin
-  if dlgCustomMake.Execute then
-      edCustomMakefile.Text := ExtractRelativePath(fProject.FileName, dlgCustomMake.FileName);
+  if dlgCustomMake.Execute then                            // EAB: this created problems with paths:
+      edCustomMakefile.Text := dlgCustomMake.FileName;  // ExtractRelativePath(fProject.FileName, dlgCustomMake.FileName);
   edCustomMakefile.SetFocus;
 end;
 
