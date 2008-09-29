@@ -3,7 +3,7 @@ unit iplugger;
 interface
 
 uses
-  Classes, Types, ComCtrls, Forms, SynEdit;
+  Classes, Types, ComCtrls, Forms, SynEdit, Windows;
 const
 	IID_IPlugger: TGUID = '{DF833707-BDDA-438F-8B50-B2F406943F41}';
 type
@@ -61,6 +61,7 @@ type
   function GetRealPathFix(BrokenFileName: String; Directory: String = ''): String;
   procedure SetPageControlActivePageEditor(editorName: String);
   procedure ToggleDockForm(form: TForm; b: Boolean);
+  function GetHandle : HWND;
 	
   end;
 

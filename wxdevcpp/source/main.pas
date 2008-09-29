@@ -1135,6 +1135,7 @@ type
     function GetDmMainRes: TSynRCSyn;
     procedure SetPageControlActivePageEditor(editorName: String);
     procedure ToggleDockForm(form: TForm; b: Boolean);
+    function GetHandle : HWND;
 
 {$ENDIF}
     function OpenWithAssignedProgram(strFileName:String):boolean;
@@ -9377,6 +9378,11 @@ begin
     ShowDockForm(form)
   else
     HideDockForm(form);
+end;
+
+function TMainForm.GetHandle : HWND;
+begin
+    result := self.Handle;
 end;
   
 {$ENDIF PLUGIN_BUILD}

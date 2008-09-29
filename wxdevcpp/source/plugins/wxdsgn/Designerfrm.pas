@@ -53,6 +53,9 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
+    procedure FormClick(Sender: TObject);
+    procedure WMNCLButtonDown(var Msg : TWMNCLButtonDown); message WM_NCLBUTTONDOWN;
+    procedure WMNCRButtonDown(var Msg : TWMNCRButtonDown); message WM_NCRBUTTONDOWN;
 
   private
     { Private declarations }
@@ -1772,6 +1775,32 @@ end;
 function TfrmNewForm.GetPropertyName(Idx:Integer):String;
 begin
   Result:=wx_Name;
+end;
+
+procedure TfrmNewForm.FormClick(Sender: TObject);
+begin
+      wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+      wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+end;
+
+procedure TfrmNewForm.WMNCLButtonDown(var Msg :  TWMNCLButtonDown);
+begin
+  if (Msg.HitTest = htCaption) then 
+  begin
+    wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+      wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+  end;
+    inherited;
+end;
+
+procedure TfrmNewForm.WMNCRButtonDown(var Msg :  TWMNCRButtonDown);
+begin
+  if (Msg.HitTest = htCaption) then 
+  begin
+    wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+      wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+  end; 
+    inherited; 
 end;
 
 end.

@@ -13,6 +13,8 @@ object frmNewForm: TfrmNewForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  Visible = True
+  OnClick = FormClick
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize

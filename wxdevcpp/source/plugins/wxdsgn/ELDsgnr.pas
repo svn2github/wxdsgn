@@ -228,6 +228,7 @@ type
     FActivating: Boolean;
     FActive: Boolean;
     FGenerateXRC : Boolean;
+    FFloating : Boolean;
     FClipboardFormat: string;
     FClipboardFormatWord: Word;
     FClipbrdFormatRegistered: Boolean;
@@ -307,6 +308,7 @@ type
       var AAccept: Boolean); dynamic;
     property Active: Boolean read FActive write SetActive;
     property GenerateXRC : Boolean read FGenerateXRC write FGenerateXRC;
+    property Floating : Boolean read FFloating write FFloating;
     property DesignControl: TWinControl read FDesignControl write SetDesignControl;
     property SelectedControls: TELDesignerSelectedControls read FSelectedControls;
     property DesignControlVisible: Boolean read GetDesignControlVisible write SetDesignControlVisible;
@@ -384,6 +386,7 @@ type
     property ShowingHints;
     property SnapToGrid;
     property GenerateXRC;
+    property Floating;
     property OnChangeSelection;
     property OnContextPopup;
     property OnControlDeleted;  // @mh

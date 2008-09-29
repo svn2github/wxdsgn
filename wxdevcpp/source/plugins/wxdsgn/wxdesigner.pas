@@ -185,7 +185,7 @@ type
     procedure CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: integer);
     procedure NewWxProjectCode(dsgnType: TWxDesignerType);
     procedure ParseAndSaveTemplate(template, destination: string; frm: TfrmCreateFormProp); // EAB TODO: check
-    function CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: integer; projShow: boolean; filenamebase: string = ''): TfrmCreateFormProp; // EAB TODO: check
+    function CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: integer; projShow: boolean; filenamebase: string = ''): TfrmCreateFormProp; 
 
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): Boolean;
     procedure GetIntialFormData(frm: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType);
@@ -292,7 +292,7 @@ type
     procedure CreateNewXPMs(strFileName: string);
     function EditorDisplaysText(FileName: string): Boolean;
     function GetTextHighlighterType(FileName: string): string;
-    function GET_COMMON_CPP_INCLUDE_DIR: string; // EAB TODO: Generalize this.
+    function GET_COMMON_CPP_INCLUDE_DIR: string; 
     function GetCompilerMacros: string;
     function GetCompilerPreprocDefines: string;
     function Retrieve_CompilerOptionsPane: TTabSheet;
@@ -757,6 +757,7 @@ begin
     PopupMenu := DesignerPopup;
     SnapToGrid := false;
     GenerateXRC := false;
+    Floating := false;
     OnContextPopup := ELDesigner1ContextPopup;
     OnChangeSelection := ELDesigner1ChangeSelection;
     OnControlDeleted := ELDesigner1ControlDeleted;
@@ -775,6 +776,7 @@ begin
     ELDesigner1.Grid.YStep := ini.ReadInteger('wxWidgets', 'lbGridYStepUpDown', ELDesigner1.Grid.YStep);
     ELDesigner1.SnapToGrid := ini.ReadBool('wxWidgets', 'cbSnapToGrid', ELDesigner1.SnapToGrid);
     ELDesigner1.GenerateXRC := ini.ReadBool('wxWidgets', 'cbGenerateXRC', ELDesigner1.GenerateXRC);
+    ELDesigner1.Floating := ini.ReadBool('wxWidgets', 'cbFloating', ELDesigner1.Floating);
     XRCGEN := ELDesigner1.GenerateXRC; //Nuklear Zelph 
     // String format tells us what function to wrap strings with in the generated C++ code
     // Possible values are wxT(), _T(), and _()
@@ -1681,6 +1683,7 @@ begin
       FNewFormObj.Wx_DialogStyle := dlgSStyle; //[wxCaption,wxResize_Border,wxSystem_Menu,wxThick_Frame,wxMinimize_Box,wxMaximize_Box,wxClose_Box];
       FNewFormObj.Wx_Name := strCName;
       FNewFormObj.Wx_Center := True;
+      //FNewFormObj.
       FNewFormObj.EVT_CLOSE := 'OnClose';
       WriteComponentsToFile([FNewFormObj], ChangeFileExt(strFName, wxform_Ext));
     except
@@ -4271,19 +4274,6 @@ end;
 
 procedure TWXDsgn.TerminateEditor(FileName: string);
 begin
-
-  // EAB Comment: This seems unnecesary
-  {if FileExists(ChangeFileExt(FileName,WXFORM_EXT)) then
-  begin
-    main.SaveFileFromPlugin(ChangeFileExt(FileName, CPP_EXT));
-    main.CloseEditorFromPlugin(ChangeFileExt(FileName, CPP_EXT));
-
-    main.SaveFileFromPlugin(ChangeFileExt(FileName, H_EXT));
-    main.CloseEditorFromPlugin(ChangeFileExt(FileName, H_EXT));
-
-    main.SaveFileFromPlugin(ChangeFileExt(FileName, XRC_EXT));
-    main.CloseEditorFromPlugin(ChangeFileExt(FileName, XRC_EXT));
-  end;  }
   if (editors.Exists(ExtractFileName(FileName))) then
   begin
     (editors[ExtractFileName(FileName)] as TWXEditor).Terminate;

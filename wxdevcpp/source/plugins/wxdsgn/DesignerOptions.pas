@@ -64,6 +64,8 @@ type
     gpSizerOptons: TGroupBox;
     cbUseDefaultPos: TCheckBox;
     cbUseDefaultSize: TCheckBox;
+    GroupBox2: TGroupBox;
+    cbFloating: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure lbGridXStepUpDownClick(Sender: TObject; Button: TUDBtnType);
@@ -84,7 +86,7 @@ implementation
 
 {$R *.dfm}
 
-uses wxdesigner, ELDsgnr, Designerfrm;
+uses wxdesigner, ELDsgnr, Designerfrm, wxeditor;
 
 procedure TDesignerForm.FormCreate(Sender: TObject);
 begin
@@ -98,6 +100,8 @@ begin
   lbGridYStepUpDown.Position := wx_designer.ELDesigner1.Grid.YStep;
   cbSnapToGrid.Checked  := wx_designer.ELDesigner1.SnapToGrid;
   cbGenerateXRC.Checked := wx_designer.ELDesigner1.GenerateXRC;
+  cbFloating.Checked := wx_designer.ELDesigner1.Floating;
+
   cbStringFormat.Text := StringFormat;
   cbUseDefaultPos.Checked := UseDefaultPos;
   cbUseDefaultSize.Checked := UseDefaultSize;
@@ -123,7 +127,7 @@ begin
   FileName := ChangeFileExt(wx_designer.GetCurrentFileName, XRC_EXT);
   UseDefaultPos := cbUseDefaultPos.Checked;
   UseDefaultSize := cbUseDefaultSize.Checked;
-  
+
   if (wx_designer.main.IsProjectNotNil) then
   begin
     if (wx_designer.ELDesigner1.GenerateXRC = False) and (cbGenerateXRC.Checked) then
@@ -160,7 +164,28 @@ begin
   if cbInsertHints.Checked then
     wx_designer.ELDesigner1.ShowingHints :=
       [htInsert] + wx_designer.ELDesigner1.ShowingHints;
+
+  FileName := wx_designer.main.GetActiveEditorName;
+
+  if cbFloating.Checked then
+  begin
+    //(wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Parent := (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).ScrollDesign;
+    SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_POPUP or
+	      (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
+    Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, 0);//wx_designer.main.GetHandle);
+  end;
+  if not cbFloating.Checked then
+  begin
+    SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD or
+	      (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
+    Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).ScrollDesign.Handle);
+    (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Top := 8;
+    (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Left := 8;
+  end;
+
+
   wx_designer.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
+  wx_designer.ELDesigner1.Floating := cbFloating.Checked;
   XRCGEN := wx_designer.ELDesigner1.GenerateXRC; //Nuklear Zelph
   if wx_designer.ELDesigner1.GenerateXRC then
   begin
@@ -183,6 +208,8 @@ begin
     ini.WriteString('wxWidgets', 'cbStringFormat', cbStringFormat.Text);
     ini.WriteBool('wxWidgets', 'cbUseDefaultPos', cbUseDefaultPos.Checked);
     ini.WriteBool('wxWidgets', 'cbUseDefaultSize', cbUseDefaultSize.Checked);
+    ini.WriteBool('wxWidgets', 'cbFloating', cbFloating.Checked);
+
   finally
     ini.Destroy;
   end;

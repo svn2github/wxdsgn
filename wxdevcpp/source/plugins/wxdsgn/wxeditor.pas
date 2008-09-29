@@ -32,8 +32,7 @@ type
     procedure Terminate;
     function GetDefaultText: String;
     function IsDesignerNil: Boolean;
-    //function GetType(fFileName: String);  <-- EAB: not needed .. ?
-
+    property ScrollDesign: TScrollBox read fScrollDesign write fScrollDesign;
     
     end;
 
@@ -42,21 +41,10 @@ implementation
 uses
     wxdesigner;
 
-   {function TWXEditor.GetType(fFileName: String)  <-- EAB Maybe not needed
-   begin }
-      {if iswxForm(fFileName) then
-        fEditorType := etForm
-      else
-        fEditorType := etSource;  }
-   //end;
-
    procedure TWXEditor.Init(fTabSheet: TTabSheet; var fText: TSynEdit; DesignerPopup: TPopUpMenu; DoOpen: boolean; fName: String);
    begin
-	  //if fEditorType = etForm then
-	  //begin
 	    //Dont allow anyone to edit the text content
         FileName := fName;
-	    //fText.ReadOnly := true;
 	    fScrollDesign := TScrollBox.Create(fTabSheet);
 	    fScrollDesign.Parent := fTabSheet;
 	    fScrollDesign.Align := alClient;
@@ -65,22 +53,27 @@ uses
 
 	    fDesigner := TfrmNewForm.Create(fScrollDesign);
 	    //fDesigner.Parent:=fScrollDesign;
+
 	    fDesigner.synEdit := fText;
 	    fDesigner.Visible := False;
 
-	    SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or
-	      (GetWindowLong(fDesigner.Handle, GWL_STYLE)));
-	    Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
-        //wx_designer.ELDesigner1.DesignControl := fDesigner;
-        //fDesigner.Visible := True;  // <-- EAB TODO: Check if this should be done
-	    ShowWindow(fDesigner.Handle, Sw_ShowNormal);
+        if not wx_designer.ELDesigner1.Floating then
+        begin
+	        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or
+	            (GetWindowLong(fDesigner.Handle, GWL_STYLE)));
+	        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
+	        ShowWindow(fDesigner.Handle, Sw_ShowNormal);
+        end;
 
 	    fScrollDesign.ScrollInView(fDesigner);
+        //fScrollDesign.Enabled := true;
+        //fScrollDesign.EnableAutoRange;
+        //fScrollDesign.AutoSize := true;
 
-	    fScrollDesign.HorzScrollBar.Visible:=true;
+	    {fScrollDesign.HorzScrollBar.Visible:=true;
 	    fScrollDesign.VertScrollBar.Visible:=true;
-	    fScrollDesign.AutoScroll:=true;
-	    fScrollDesign.VertScrollBar.Position := fScrollDesign.VertScrollBar.Range;
+	    fScrollDesign.AutoScroll:=true;}
+	    //fScrollDesign.VertScrollBar.Position := fScrollDesign.VertScrollBar.Range;
 
   if (DoOpen) then
   try
@@ -88,9 +81,6 @@ uses
   except
     raise;
   end;
-
-       //fText.Visible := false;
-       
        fDesigner.Visible := True;
 
        fDesigner.Left := 8;
@@ -114,21 +104,12 @@ uses
            fDesigner.Caption := Self.fDesignerTitle;
        end;
 
-         //fText.Highlighter := wx_designer.main.GetDmMainRes;
          fDesigner.PopupMenu := DesignerPopup;
    end;
    
  procedure TWXEditor.Terminate;
  begin
-  //wx_designer.SelectedComponent := nil;
   wx_designer.DisableDesignerControls;
-  //wx_designer.ELDesigner1.DesignControl := nil;
-  {if Assigned(fDesigner) then
-  begin    }
-  //fDesigner.Release;
-  //FreeAndNil(fDesigner);
-  //FreeAndNil(fScrollDesign);
-  //end;
  end;
  
  procedure TWXEditor.Close;
@@ -184,7 +165,7 @@ begin
          self.fDesigner.Components[i].Destroy;
      end;    // for
      ReadComponentFromFile(self.fDesigner, strFilename);
-  except	// EAB TODO: Check for problems with the except block - 2007
+  except
     on e: Exception do
       with TMigrateFrm.Create(Application.MainForm) do
       begin

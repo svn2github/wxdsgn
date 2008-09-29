@@ -1,6 +1,6 @@
 object DesignerForm: TDesignerForm
-  Left = 527
-  Top = 161
+  Left = 675
+  Top = 208
   BorderStyle = bsDialog
   Caption = 'Form Designer Options'
   ClientHeight = 316
@@ -82,7 +82,7 @@ object DesignerForm: TDesignerForm
       object GroupBox1: TGroupBox
         Left = 4
         Top = 4
-        Width = 385
+        Width = 253
         Height = 117
         Caption = 'Form Grid'
         TabOrder = 0
@@ -217,6 +217,22 @@ object DesignerForm: TDesignerForm
           Checked = True
           State = cbChecked
           TabOrder = 3
+        end
+      end
+      object GroupBox2: TGroupBox
+        Left = 264
+        Top = 4
+        Width = 125
+        Height = 117
+        Caption = 'Behaviour'
+        TabOrder = 2
+        object cbFloating: TCheckBox
+          Left = 8
+          Top = 24
+          Width = 65
+          Height = 17
+          Caption = 'Floating'
+          TabOrder = 0
         end
       end
     end
