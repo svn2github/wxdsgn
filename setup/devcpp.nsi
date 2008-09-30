@@ -5,7 +5,7 @@
 ; NSIS Install Script for wx-devcpp
 ; http://nsis.sourceforge.net/
 
-!define WXDEVCPP_VERSION "7.0(rc2)"
+!define WXDEVCPP_VERSION "7.0(rc1)"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
@@ -14,46 +14,72 @@
 !define MSVC_YEAR "2008"
 !define HAVE_MINGW
 !define HAVE_MSVC
-
-!define wxWidgets_version "2.8.9"
+!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+                               ; Instead we'll rely on an internet connection
+                               ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
+!define YES  "Yes"
+!define NO "No"
 
 
 !ifdef HAVE_MINGW
 
-  !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.devpak" ; name of the wxWidgets Mingw gcc devpak
+  !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
   
-  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.devpak"  ; name of the contrib devpak
+  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.DevPak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.devpak"  ; name of the extras devpak
+  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
 !ifdef HAVE_MSVC
 
-  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc${MSVC_YEAR}.devpak" ; name of the wxWidgets MS VC devpak
+  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc${MSVC_YEAR}.DevPak" ; name of the wxWidgets MS VC devpak
  
-  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_contrib.devpak"  ; name of the contrib devpak
+  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_contrib.DevPak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_extras.devpak"  ; name of the extras devpak
+  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
-!define wxWidgetsCommon_devpak "${wxWidgets_name}_common.devpak"  ; name of the common includes devpak
-!define wxWidgetsSamples_devpak "${wxWidgets_name}_samples.devpak"  ; name of the samples devpak
+!define wxWidgetsCommon_devpak "${wxWidgets_name}_common.DevPak"  ; name of the common includes devpak
+!define wxWidgetsSamples_devpak "${wxWidgets_name}_samples.DevPak"  ; name of the samples devpak
 
+; Variable declarations
 Var LOCAL_APPDATA
-;Var USE_MINGW
-;Var USE_MSVC
-;Var RUN_WXDEVCPP
-;Var RUN_WXBOOK
-;Var WXBOOK_INSTALLED
+Var Have_Internet
 
 !macro InstallDevPak DEVPAK_NAME
 ; Installs a wxDev-C++ devpak using the devpak manager
 
   SetOutPath $INSTDIR\Packages
-  File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
+  
+  
+!ifdef DONT_INCLUDE_DEVPAKS ; If we don't include them here, we'll need to download them at install time
+
+StrCmp $Have_Internet ${NO} +1 +3
+MessageBox MB_ICONEXCLAMATION  "Sorry, but this version of the installer requires an internet connection.$\r$\nAborting installation"
+Quit
+
+NSISdl::download /TIMEOUT=30000 "http://wxdsgn.sourceforge.net/webupdate/${DEVPAK_NAME}" "$INSTDIR\Packages\${DEVPAK_NAME}"
+Pop $R0 ;Get the return value
+
+StrCmp $R0 "success" +3
+    MessageBox MB_OK "Download failed: $R0"
+    Abort   ; Abort the installation
+    
+!else   ;We have included devpaks, but user can still check for updates if desired
+
+File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
+
+StrCmp Have_Internet ${YES} +5
+NSISdl::download /TIMEOUT=30000 "http://wxdsgn.sourceforge.net/webupdate/${DEVPAK_NAME}" "$INSTDIR\Packages\${DEVPAK_NAME}"
+Pop $R0 ;Get the return value
+
+StrCmp $R0 "success" +2
+    MessageBox MB_ICONINFORMATION  "Download failed: $R0./nUsing the devpak included with the install package."
+!endif
+    
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${DEVPAK_NAME}"'
   Delete  "$INSTDIR\Packages\${DEVPAK_NAME}"
   SetOutPath $INSTDIR
@@ -177,25 +203,37 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
   SectionIn 1 2 3 RO
   SetOutPath $INSTDIR
  
+ Call IsInternetAvailable  ; Check to see if we have an internet connection
+ 
+ !ifdef DONT_INCLUDE_DEVPAKS ; We need an internet connection if we don't include the devpaks in the installation package
+        StrCmp $Have_Internet ${YES} +3 0
+        MessageBox MB_ICONEXCLAMATION  "Sorry, but this version of the installer requires an internet connection.$\r$\nAborting installation"
+        Quit
+!endif
+
+ ; Internet download of devpaks
+ ; NSIS can download the devpaks from our project's webupdate server
+ ; This way the installer can always be up-to-date.
+ ; Let's first ask the user whether they want to try to download the latest
+ ; devpaks. If not, then we'll just use the devpaks we incorporated into
+ ; the installer.
+  MessageBox MB_YESNO "Do you want to try to download the latest devpaks (requires internet connection)?" IDYES AnswerYes
+     StrCpy $Have_Internet ${NO}    ; no internet connection or no download wanted
+   AnswerYes:
+ 
  ; We just need the license and the Package Manager files.
  ; All other files are contained within devpaks and will be installed by the pakman
-  File "license.txt"
   File "packman.exe"
 
-  SetOutPath $INSTDIR\Lang
-  ; Basic English language file
-  File "Lang\English.lng"
-  File "Lang\English.tips"
-  
   ; Find all installed devpaks and uninstall them
   FindFirst $0 $1 $INSTDIR\Packages\*.entry
 loop_devpaks:
-  StrCmp $1 "" done_devpaks
+  StrCmp $1 "" done_uninstalldevpaks
   DetailPrint 'Uninstalling package $1'
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\$1"'
   FindNext $0 $1
   Goto loop_devpaks
-done_devpaks:
+done_uninstalldevpaks:
 
 ; Ok, now we should have successfully uninstalled all previously-installed devpaks.
 
@@ -204,24 +242,32 @@ done_devpaks:
 ; This will help us keep tabs on things and make upgrades easier.
 ; In fact, the InstallDevPak directory can be setup to download a devpak
 ; if a local version is not available.
-  
+
+File "license.txt"
+
+ SetOutPath $INSTDIR\Lang
+  ; Basic English language file
+  File "Lang\English.lng"
+  File "Lang\English.tips"
+
+
   ; Install wxDev-C++ executable
- !insertmacro InstallDevPak "wxdevcpp_rc1.devpak"
+ !insertmacro InstallDevPak "wxdevcpp_rc1.DevPak"
  
 ; Install make - All compilers use the Mingw32 GNU make system
- !insertmacro InstallDevPak "make.devpak"
+ !insertmacro InstallDevPak "make.DevPak"
 
  ; Install binutils
- !insertmacro InstallDevPak "binutils.devpak"
+ !insertmacro InstallDevPak "binutils.DevPak"
 
 ; Install mingw-runtime
-  !insertmacro InstallDevPak "mingw-runtime.devpak"
+  !insertmacro InstallDevPak "mingw-runtime.DevPak"
 
 ; Install win32-api
-  !insertmacro InstallDevPak "win32api.devpak"
+  !insertmacro InstallDevPak "win32api.DevPak"
 
   ; Install Dev-C++ examples
-  !insertmacro InstallDevPak "devcpp_examples.devpak"
+  !insertmacro InstallDevPak "devcpp_examples.DevPak"
 
   
   ; Delete old devcpp.map to avoid confusion in bug reports
@@ -231,9 +277,9 @@ done_devpaks:
 
 SectionEnd
 
-SectionGroup /e "wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMain
+SectionGroup /e "wxWidgets" SectionGroupwxWidgetsMain
 
-Section "wxWidgets ${wxWidgets_version} common files" SectionwxWidgetsCommon
+Section "wxWidgets common files" SectionwxWidgetsCommon
   SectionIn 1 2
 
   !insertmacro InstallDevPak ${wxWidgetsCommon_devpak}
@@ -241,7 +287,7 @@ Section "wxWidgets ${wxWidgets_version} common files" SectionwxWidgetsCommon
 SectionEnd
 
 !ifdef HAVE_MINGW
-SectionGroup /e "Mingw gcc wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsGCC
+SectionGroup /e "Mingw gcc wxWidgets" SectionGroupwxWidgetsGCC
 
 Section "Libraries" SectionwxWidgetsMingw
 
@@ -255,7 +301,7 @@ SectionEnd
 Section /o "Contribs" SectionwxWidgetsContribGcc
   SectionIn 1
   
-  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.devpak
+  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
   
   !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
  
@@ -265,7 +311,7 @@ Section /o "Extras" SectionwxWidgetsExtrasGcc
 
   SectionIn 1
 
-  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.devpak
+  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
   
   !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
   
@@ -276,7 +322,7 @@ SectionGroupEnd
 
 !ifdef HAVE_MSVC
 
-SectionGroup /e "MS VC++ ${MSVC_YEAR} wxWidgets ${wxWidgets_version}" SectionGroupwxWidgetsMSVC
+SectionGroup /e "MS VC++ ${MSVC_YEAR} wxWidgets" SectionGroupwxWidgetsMSVC
 
 Section /o "Libraries" SectionwxWidgetsMSVC
 
@@ -290,7 +336,7 @@ Section /o "Contribs" SectionwxWidgetsContribMSVC
 
   SectionIn 1
 
-  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.devpak
+  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
   
   !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
   
@@ -300,7 +346,7 @@ Section /o "Extras" SectionwxWidgetsExtrasMSVC
 
   SectionIn 1
 
-  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.devpak
+  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
   
   !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
   
@@ -324,13 +370,13 @@ Section "Mingw compiler system (headers and libraries)" SectionMingw
   SectionIn 1 2
   
   ; Install gcc-core
-  !insertmacro InstallDevPak "gcc-core.devpak"
+  !insertmacro InstallDevPak "gcc-core.DevPak"
   
 ; Install gcc-g++
-  !insertmacro InstallDevPak "gcc-g++.devpak"
+  !insertmacro InstallDevPak "gcc-g++.DevPak"
   
 ; Install gdb
-  !insertmacro InstallDevPak "gdb.devpak"
+  !insertmacro InstallDevPak "gdb.DevPak"
   
   SetOutPath $INSTDIR
   
@@ -344,7 +390,7 @@ Section /o "${PROGRAM_NAME} help" SectionHelp
   SectionIn 1 2 3 RO
   
 ; Install wxDevCpp Help Files
-  !insertmacro InstallDevPak "DevCppHelp.devpak"
+  !insertmacro InstallDevPak "DevCppHelp.DevPak"
   SetOutPath $INSTDIR
 
 SectionEnd
@@ -354,7 +400,7 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   SectionIn 1
 
   ; Install SofT's wxDev-C++ programming book
-  !insertmacro InstallDevPak "Programming with wxDev-C++.devpak"
+  !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
 
   ;StrCpy $WXBOOK_INSTALLED "Yes"
 
@@ -377,7 +423,7 @@ SectionEnd
 Section "Language files" SectionLangs
   SectionIn 1
   
-  !insertmacro InstallDevPak "Language.devpak"
+  !insertmacro InstallDevPak "Language.DevPak"
   
   SetOutPath $INSTDIR
   
@@ -488,15 +534,15 @@ Section "Associate .rc files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .devpak files to ${PROGRAM_NAME}"
+Section "Associate .DevPak files to ${PROGRAM_NAME}"
   SectionIn 1 2
 
-  StrCpy $0 ".devpak"
+  StrCpy $0 ".DevPak"
   Call BackupAssoc
 
   StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   StrCpy $1 $INSTDIR\PackMan.exe
-  WriteRegStr HKCR ".devpak" "" "${PROGRAM_NAME}.devpak"
+  WriteRegStr HKCR ".DevPak" "" "${PROGRAM_NAME}.devpak"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak" "" "${PROGRAM_NAME} Package File"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak\DefaultIcon" "" '$0,9'
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak\Shell\Open\Command" "" '$1 "%1"'
@@ -618,25 +664,25 @@ SectionEnd
 
   LangString DESC_SectionMain ${LANG_ENGLISH} "The ${PROGRAM_NAME} IDE (Integrated Development Environment), package manager and templates"
   
-   LangString DESC_SectionGroupwxWidgetsMain ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version}"
+   LangString DESC_SectionGroupwxWidgetsMain ${LANG_ENGLISH} "wxWidgets"
 
-  LangString DESC_SectionwxWidgetsCommon ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} common include files. All compilers use these files."
+  LangString DESC_SectionwxWidgetsCommon ${LANG_ENGLISH} "wxWidgets common include files. All compilers use these files."
 
 !ifdef HAVE_MINGW
-  LangString DESC_SectionGroupwxWidgetsGCC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} for Mingw gcc"
-  LangString DESC_SectionwxWidgetsMingw ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries compiled with Mingw gcc"
+  LangString DESC_SectionGroupwxWidgetsGCC ${LANG_ENGLISH} "wxWidgets for Mingw gcc"
+  LangString DESC_SectionwxWidgetsMingw ${LANG_ENGLISH} "wxWidgets libraries compiled with Mingw gcc"
   LangString DESC_SectionMingw ${LANG_ENGLISH} "The MinGW gcc compiler and associated tools, headers and libraries"
-  LangString DESC_SectionwxWidgetsContribGcc ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory for Mingw gcc"
-  LangString DESC_SectionwxWidgetsExtrasGcc ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} extras directory"
+  LangString DESC_SectionwxWidgetsContribGcc ${LANG_ENGLISH} "wxWidgets contrib directory for Mingw gcc"
+  LangString DESC_SectionwxWidgetsExtrasGcc ${LANG_ENGLISH} "wxWidgets extras directory"
 !endif
 !ifdef HAVE_MSVC
-  LangString DESC_SectionGroupwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} for MS VC++ 2005"
-  LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} libraries compiled with MS VC 2005"
-  LangString DESC_SectionwxWidgetsContribMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} contrib directory for MS VC++ 2005"
-  LangString DESC_SectionwxWidgetsExtrasMSVC ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} extras directory for MS VC++ 2005"
+  LangString DESC_SectionGroupwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets for MS VC++ ${MSVC_YEAR}"
+  LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets libraries compiled with MS VC ${MSVC_YEAR}"
+  LangString DESC_SectionwxWidgetsContribMSVC ${LANG_ENGLISH} "wxWidgets contrib directory for MS VC++ ${MSVC_YEAR}"
+  LangString DESC_SectionwxWidgetsExtrasMSVC ${LANG_ENGLISH} "wxWidgets extras directory for MS VC++ ${MSVC_YEAR}"
 !endif
 
-  LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets version ${wxWidgets_version} samples directory"
+  LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets samples directory"
   
   LangString DESC_SectionGroupHelp ${LANG_ENGLISH} "Documentation for ${PROGRAM_NAME}"
   LangString DESC_SectionHelp ${LANG_ENGLISH} "Help on using ${PROGRAM_NAME} and programming in C"
@@ -969,5 +1015,35 @@ Done:
   MessageBox MB_OK "${PROGRAM_NAME} has been uninstalled.$\r$\nPlease now delete the $INSTDIR directory if it doesn't contain some of your documents"
 
 SectionEnd
+
+# Determine if we have an internet connection
+# If we do, then we can download the latest devpaks from the website.
+Function IsInternetAvailable
+
+  Push $R0
+
+    ClearErrors
+    Dialer::AttemptConnect
+    IfErrors noie3
+
+    Pop $R0
+    StrCmp $R0 "online" connected
+
+!ifdef DONT_INCLUDE_DEVPAKS
+      MessageBox MB_OK|MB_ICONSTOP "Cannot connect to the internet."
+!endif
+
+    noie3:
+
+    ; IE3 not installed
+    MessageBox MB_OK|MB_ICONINFORMATION "Please connect to the internet now."
+
+    StrCpy $Have_Internet ${NO}
+    
+    connected:
+    StrCpy $Have_Internet ${YES}
+  Pop $R0
+
+FunctionEnd
 
 #eof!
