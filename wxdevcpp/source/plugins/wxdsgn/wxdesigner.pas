@@ -3314,7 +3314,11 @@ begin
         compSelectedOne := SelectedComponent;
         LocateFunctionInEditor(Data, Trim((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Wx_Name), compSelectedOne,
           str, strDisplayName);
-        main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));
+        if ((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
+            DisableDesignerControls;
+        main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));            
+            //self.MainPageChanged(ChangeFileExt(editorName, WXFORM_EXT));            
+            //main.SendToFront;
       end;
     end
     else if strNewValue = '<Remove Function>' then

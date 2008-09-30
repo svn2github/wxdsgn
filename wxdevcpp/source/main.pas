@@ -1135,7 +1135,7 @@ type
     function GetDmMainRes: TSynRCSyn;
     procedure SetPageControlActivePageEditor(editorName: String);
     procedure ToggleDockForm(form: TForm; b: Boolean);
-    function GetHandle : HWND;
+    procedure SendToFront;
 
 {$ENDIF}
     function OpenWithAssignedProgram(strFileName:String):boolean;
@@ -8531,6 +8531,8 @@ var
 begin
     e := GetEditorFromFileName(editorName);
     PageControl.ActivePageIndex := e.TabSheet.TabIndex;
+    self.Show;
+    //BringWindowToTop(self.Handle);
 end;
 
 procedure TMainForm.SetEditorModified(editorName: String; modified: Boolean);
@@ -9380,12 +9382,13 @@ begin
     HideDockForm(form);
 end;
 
-function TMainForm.GetHandle : HWND;
+procedure TMainForm.SendToFront;
 begin
-    result := self.Handle;
+    BringWindowToTop(self.Handle);
 end;
   
 {$ENDIF PLUGIN_BUILD}
 
 end.
+
 

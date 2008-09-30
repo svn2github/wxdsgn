@@ -61,7 +61,8 @@ type
   function GetRealPathFix(BrokenFileName: String; Directory: String = ''): String;
   procedure SetPageControlActivePageEditor(editorName: String);
   procedure ToggleDockForm(form: TForm; b: Boolean);
-  function GetHandle : HWND;
+  //function GetHandle : HWND;
+  procedure SendToFront;
 	
   end;
 

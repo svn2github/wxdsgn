@@ -411,6 +411,9 @@ procedure Register;
 
 implementation
 
+uses
+    wxdesigner;
+
 procedure Register;
 begin
   RegisterComponents(SELComponentPage, [TELDesigner, TELDesignPanel]);
@@ -973,8 +976,7 @@ begin
   FDesigner.DoModified;
 end;
 
-procedure TDEng.Notification(AnObject: TPersistent;
-  Operation: TOperation);
+procedure TDEng.Notification(AnObject: TPersistent; Operation: TOperation);
 begin
   FDesigner.DoNotification(AnObject, Operation);
 end;
@@ -1213,6 +1215,13 @@ begin
         if not LInsertingControl then
         begin
           Sender := GetDesignControl(Sender);
+
+          {if(self.FDesigner.Floating) then
+          begin
+              wx_designer.main.SetPageControlActivePageEditor(wx_designer.GetCurrentFileName);
+              //wx_designer.MainPageChanged(wx_designer.GetCurrentFileName);
+          end;   }
+
           if ssShift in KeysToShiftState(TWMMouse(Message).Keys) then
           begin
             FSelCtrls.BeginUpdate;

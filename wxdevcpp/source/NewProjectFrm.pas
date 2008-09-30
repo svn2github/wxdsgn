@@ -261,7 +261,10 @@ end;
 
 procedure TNewProjectForm.ProjViewDblClick(Sender: TObject);
 begin
-  ModalResult := mrOk;
+  if assigned(ProjView.Selected) then
+  begin
+    ModalResult := mrOk;
+  end;
 end;
 
 procedure TNewProjectForm.btnCancelClick(Sender: TObject);
