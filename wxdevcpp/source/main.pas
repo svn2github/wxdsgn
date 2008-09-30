@@ -8531,8 +8531,6 @@ var
 begin
     e := GetEditorFromFileName(editorName);
     PageControl.ActivePageIndex := e.TabSheet.TabIndex;
-    self.Show;
-    //BringWindowToTop(self.Handle);
 end;
 
 procedure TMainForm.SetEditorModified(editorName: String; modified: Boolean);
@@ -9384,7 +9382,7 @@ end;
 
 procedure TMainForm.SendToFront;
 begin
-    BringWindowToTop(self.Handle);
+    self.Show;
 end;
   
 {$ENDIF PLUGIN_BUILD}

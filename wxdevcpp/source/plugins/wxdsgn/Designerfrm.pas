@@ -1779,26 +1779,29 @@ end;
 
 procedure TfrmNewForm.FormClick(Sender: TObject);
 begin
+    if(wx_designer.ELDesigner1.Floating) then
+    begin
       wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
       wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+    end;
 end;
 
 procedure TfrmNewForm.WMNCLButtonDown(var Msg :  TWMNCLButtonDown);
 begin
-  if (Msg.HitTest = htCaption) then 
+  if (Msg.HitTest = htCaption) and (wx_designer.ELDesigner1.Floating) then
   begin
     wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
-      wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+    wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
   end;
     inherited;
 end;
 
 procedure TfrmNewForm.WMNCRButtonDown(var Msg :  TWMNCRButtonDown);
 begin
-  if (Msg.HitTest = htCaption) then 
+  if (Msg.HitTest = htCaption) and (wx_designer.ELDesigner1.Floating) then
   begin
     wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
-      wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+    wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
   end; 
     inherited; 
 end;

@@ -1216,11 +1216,9 @@ begin
         begin
           Sender := GetDesignControl(Sender);
 
-          {if(self.FDesigner.Floating) then
-          begin
-              wx_designer.main.SetPageControlActivePageEditor(wx_designer.GetCurrentFileName);
-              //wx_designer.MainPageChanged(wx_designer.GetCurrentFileName);
-          end;   }
+          // EAB focus main window
+          if(self.FDesigner.Floating) then
+              wx_designer.main.SendToFront;
 
           if ssShift in KeysToShiftState(TWMMouse(Message).Keys) then
           begin
