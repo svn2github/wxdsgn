@@ -396,6 +396,9 @@ begin
       
     strEventTableStart := Format('BEGIN_EVENT_TABLE(%s,%s)',[frmNewForm.Wx_Name, frmNewForm.Wx_Class]);
     AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,strEventTableStart, False);
+    // EAB focus main window
+    //  if(wx_designer.ELDesigner1.Floating) then
+     //     wx_designer.main.SendToFront;
   end;
 
   //Adding XPM Header files

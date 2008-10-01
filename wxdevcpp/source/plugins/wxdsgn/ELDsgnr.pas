@@ -1216,10 +1216,6 @@ begin
         begin
           Sender := GetDesignControl(Sender);
 
-          // EAB focus main window
-          if(self.FDesigner.Floating) then
-              wx_designer.main.SendToFront;
-
           if ssShift in KeysToShiftState(TWMMouse(Message).Keys) then
           begin
             FSelCtrls.BeginUpdate;

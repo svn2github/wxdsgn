@@ -473,7 +473,7 @@ end;
 
 procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
 begin
-  SaveSettings;
+  //SaveSettings;    EAB
   devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
   currentSet := cmbCompilerSetComp.ItemIndex;
   LoadOptions;

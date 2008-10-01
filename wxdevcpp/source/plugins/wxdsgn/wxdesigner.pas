@@ -2415,6 +2415,7 @@ begin
   JvInspProperties.Enabled := False;
   JvInspEvents.Enabled := False;
   ComponentPalette.Enabled := False;
+  //ComponentPalette.Color := clGray; EAB: we need to change color or give some visual cue here
 
   ELDesigner1.Active := False;
   ELDesigner1.DesignControl := nil;
@@ -2459,6 +2460,7 @@ begin
   JvInspProperties.Enabled := true;
   JvInspEvents.Enabled := True;
   ComponentPalette.Enabled := True;
+  //ComponentPalette.Color := clNone;  EAB
 end;
 
 procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);
@@ -3317,8 +3319,9 @@ begin
         if ((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
             DisableDesignerControls;
         main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));            
-            //self.MainPageChanged(ChangeFileExt(editorName, WXFORM_EXT));            
-            //main.SendToFront;
+        if(strNewValue = '<Goto Function>') and ((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
+            main.SendToFront;
+        //self.MainPageChanged(ChangeFileExt(editorName, WXFORM_EXT));
       end;
     end
     else if strNewValue = '<Remove Function>' then
@@ -4621,26 +4624,35 @@ var
   setting: TSetting;
 begin
   SetLength(settings, 7);
+
   setting.name := 'wxOpts.Major';
   setting.value := IntToStr(wxOptions.majorVersion);
+  settings[0] := setting;
 
   setting.name := 'wxOpts.Minor';
   setting.value := IntToStr(wxOptions.minorVersion);
+  settings[1] := setting;
 
   setting.name := 'wxOpts.Release';
   setting.value := IntToStr(wxOptions.ReleaseVersion);
+  settings[2] := setting;
 
   setting.name := 'wxOpts.Unicode';
   setting.value := BoolToStr(wxOptions.unicodeSupport);
+  settings[3] := setting;
 
   setting.name := 'wxOpts.Monolithic';
   setting.value := BoolToStr(wxOptions.monolithicLibrary);
+  settings[4] := setting;
 
   setting.name := 'wxOpts.Debug';
   setting.value := BoolToStr(wxOptions.debugLibrary);
+  settings[5] := setting;
 
   setting.name := 'wxOpts.Static';
   setting.value := BoolToStr(wxOptions.staticLibrary);
+  settings[6] := setting;
+
   Result := settings;
 end;
 

@@ -2943,7 +2943,7 @@ begin
       for i := 0 to MainForm.pluginsCount - 1 do
       begin
           pluginSettings := MainForm.plugins[i].GetCompilerOptions;
-          for j := 0 to Length(pluginSettings) do
+          for j := 0 to Length(pluginSettings) - 1 do
               SaveSetting(key, pluginSettings[j].name, pluginSettings[j].value);
       end;
     end;

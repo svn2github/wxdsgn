@@ -1175,7 +1175,7 @@ begin
       WriteProfile(i,'IncludeVersionInfo', fProfiles[i].IncludeVersionInfo);
       WriteProfile(i,'SupportXPThemes', fProfiles[i].SupportXPThemes);
       WriteProfile(i,'CompilerSet', fProfiles[i].CompilerSet);
-      WriteProfile(i,'compilerType', fProfiles[i].CompilerType);
+      WriteProfile(i,'CompilerType', fProfiles[i].CompilerType);
     end;
     if fPrevVersion <= 2 then
     begin
@@ -1502,7 +1502,7 @@ begin
          ID_COMPILER_MINGW:   CompilerType := 'MingW';
          ID_COMPILER_VC2008:  CompilerType := 'Visual C++ 2008';
          ID_COMPILER_VC2005:  CompilerType := 'Visual C++ 2005';
-         ID_COMPILER_VC2003:  CompilerType := 'Visual C++ 2002/2003';
+         ID_COMPILER_VC2003:  CompilerType := 'Visual C++ 2003';
          ID_COMPILER_VC6:     CompilerType := 'Visual C++ 6';
          ID_COMPILER_DMARS:   CompilerType := 'MingW';
          ID_COMPILER_BORLAND: CompilerType := 'MingW';
