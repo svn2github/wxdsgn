@@ -273,7 +273,7 @@ File "license.txt"
 
 
   ; Install wxDev-C++ executable
-; !insertmacro InstallDevPak "wxdevcpp_rc1.DevPak"
+ !insertmacro InstallDevPak "wxdevcpp_rc1.DevPak"
  
 ; Install make - All compilers use the Mingw32 GNU make system
  !insertmacro InstallDevPak "make.DevPak"
