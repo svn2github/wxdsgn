@@ -5,6 +5,14 @@
 ; NSIS Install Script for wx-devcpp
 ; http://nsis.sourceforge.net/
 
+;--------------------------------
+;Include Modern UI
+
+  !include "MUI2.nsh"
+  !include "Sections.nsh"
+  !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
+;--------------------------------
+
 !define WXDEVCPP_VERSION "7.0(rc1)"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
@@ -51,48 +59,55 @@ Var Have_Internet
 
 !macro InstallDevPak DEVPAK_NAME
 ; Installs a wxDev-C++ devpak using the devpak manager
+; NOTE: Filenames with spaces in them seem to screw up the download
+;  I think the NSISdl cant handle spaces in the url. So DevPaks with
+;   names like "How to Program in wxDev-C++.DevPak" won't work with
+;   this macro. Perhaps someone can figure out how to fix this.
+;   Maybe replacing spaces with backslashes or %20% ???
 
   SetOutPath $INSTDIR\Packages
   
+  DetailPrint "Installing ${DEVPAK_NAME}"
   
 !ifdef DONT_INCLUDE_DEVPAKS ; If we don't include them here, we'll need to download them at install time
 
-StrCmp $Have_Internet ${NO} +1 +3
+${IF} $Have_Internet == ${NO}
 MessageBox MB_ICONEXCLAMATION  "Sorry, but this version of the installer requires an internet connection.$\r$\nAborting installation"
 Quit
 
+${ELSE}
 NSISdl::download /TIMEOUT=30000 "http://wxdsgn.sourceforge.net/webupdate/${DEVPAK_NAME}" "$INSTDIR\Packages\${DEVPAK_NAME}"
 Pop $R0 ;Get the return value
 
-StrCmp $R0 "success" +3
+${IF} $R0 != "success"
     MessageBox MB_OK "Download failed: $R0"
     Abort   ; Abort the installation
+${ENDIF}
     
+${ENDIF}
+
 !else   ;We have included devpaks, but user can still check for updates if desired
 
 File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
 
-StrCmp Have_Internet ${YES} +5
+${IF} Have_Internet == ${YES}
 NSISdl::download /TIMEOUT=30000 "http://wxdsgn.sourceforge.net/webupdate/${DEVPAK_NAME}" "$INSTDIR\Packages\${DEVPAK_NAME}"
 Pop $R0 ;Get the return value
 
-StrCmp $R0 "success" +2
+${IF} $R0 != "success"
     MessageBox MB_ICONINFORMATION  "Download failed: $R0./nUsing the devpak included with the install package."
+${ENDIF}
+
+${ENDIF}
 !endif
+
     
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${DEVPAK_NAME}"'
   Delete  "$INSTDIR\Packages\${DEVPAK_NAME}"
   SetOutPath $INSTDIR
+  DetailPrint "${DEVPAK_NAME} installed"
   
 !macroend
-
-;--------------------------------
-;Include Modern UI
-
-  !include "MUI2.nsh"
-  !include "Sections.nsh"
-  !include "logiclib.nsh" ; needed by ${switch}
-;--------------------------------
 
 # [Installer Attributes]
 
@@ -125,8 +140,13 @@ SilentInstall normal
 CRCCheck on
 SetCompress auto
 SetDatablockOptimize on
+RequestExecutionLevel admin
 ;SetOverwrite ifnewer
 XPStyle on
+
+!ifdef DONT_INCLUDE_DEVPAKS ; If we don't include devpaks, then don't print the required disk space
+SpaceTexts none
+!endif
 
 InstType "Full" ;1
 InstType "Minimal" ;2
@@ -155,7 +175,7 @@ BGGradient off
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   
- ; !define MUI_FINISHPAGE_RUN "$INSTDIR\${EXECUTABLE_NAME}"
+  !define MUI_FINISHPAGE_RUN "$INSTDIR\${EXECUTABLE_NAME}"
   
   ;!define MUI_FINISHPAGE_NOREBOOTSUPPORT
   ;!insertmacro MUI_PAGE_FINISH
@@ -206,9 +226,10 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
  Call IsInternetAvailable  ; Check to see if we have an internet connection
  
  !ifdef DONT_INCLUDE_DEVPAKS ; We need an internet connection if we don't include the devpaks in the installation package
-        StrCmp $Have_Internet ${YES} +3 0
+        ${IF} $Have_Internet == ${NO}
         MessageBox MB_ICONEXCLAMATION  "Sorry, but this version of the installer requires an internet connection.$\r$\nAborting installation"
         Quit
+        ${ENDIF}
 !endif
 
  ; Internet download of devpaks
@@ -252,7 +273,7 @@ File "license.txt"
 
 
   ; Install wxDev-C++ executable
- !insertmacro InstallDevPak "wxdevcpp_rc1.DevPak"
+; !insertmacro InstallDevPak "wxdevcpp_rc1.DevPak"
  
 ; Install make - All compilers use the Mingw32 GNU make system
  !insertmacro InstallDevPak "make.DevPak"
@@ -385,10 +406,11 @@ SectionEnd
 
 SectionGroup /e "Help files" SectionGroupHelp
 
-Section /o "${PROGRAM_NAME} help" SectionHelp
+Section "${PROGRAM_NAME} help" SectionHelp
 
   SectionIn 1 2 3 RO
   
+  DetailPrint "Installing help"
 ; Install wxDevCpp Help Files
   !insertmacro InstallDevPak "DevCppHelp.DevPak"
   SetOutPath $INSTDIR
@@ -400,10 +422,18 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   SectionIn 1
 
   ; Install SofT's wxDev-C++ programming book
-  !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
+ ; !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
 
+  SetOutPath $INSTDIR\Packages
+
+  File "Packages\Programming with wxDev-C++.DevPak"
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\Programming with wxDev-C++.DevPak"'
+  Delete  "$INSTDIR\Packages\Programming with wxDev-C++.DevPak"
+  SetOutPath $INSTDIR
+  DetailPrint "Programming with wxDev-C++.DevPak installed"
+  
   ;StrCpy $WXBOOK_INSTALLED "Yes"
-
+ 
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
   
@@ -817,10 +847,10 @@ Function un.RestoreAssoc
 
   DeleteRegKey HKCR "$0"
   ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" "$0"
-  StrCmp $1 "" no_backup
+  ${IF} $1 != ""
     WriteRegStr HKCR "$0" "" "$1"
     Call un.RefreshShellIcons
-  no_backup:
+  ${ENDIF}
   
 FunctionEnd
 
@@ -923,16 +953,16 @@ Section "Uninstall"
      "Shortcuts"
      
   ; Determine if the STARUP_MENU DIRECTORY was created during install
-  StrCmp $0 "" bypass_startupmenu remove_startupmenu
-remove_startupmenu:
+  ${IF} $0 != "" 
+
   Delete "$0\${PROGRAM_NAME}.lnk"
   Delete "$0\License.lnk"
   Delete "$0\Uninstall ${PROGRAM_NAME}.lnk"
   RMDir  "$0"
-  
-bypass_startupmenu:
+${ELSE}
   SetShellVarContext current
   Delete "$QUICKLAUNCH\${PROGRAM_NAME}.lnk"
+${ENDIF}
 
   ; Restore file associations
   StrCpy $0 ".dev"
