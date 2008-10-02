@@ -3831,6 +3831,7 @@ begin
     CppParser1.Reset;
     ClassBrowser1.Clear;
   end;
+  UpdateAppTitle;
 end;
 
 procedure TMainForm.actCloseProjectExecute(Sender: TObject);
@@ -5965,6 +5966,7 @@ begin
         end;
 {$ENDIF}
     end;
+    UpdateAppTitle;
   end;
   RefreshTodoList;
 end;
@@ -6946,13 +6948,19 @@ begin
 end;
 
 procedure TMainForm.UpdateAppTitle;
+var
+    editorName: String;
 begin
   if Assigned(fProject) then begin
-    Caption := Format('%s %s  -  [ %s ] - %s', [DEVCPP, DEVCPP_VERSION, fProject.Name, ExtractFilename(fProject.Filename)]);
-    Application.Title := Format('%s - [%s]', [DEVCPP, fProject.Name]);
+    editorName := self.GetActiveEditorName;
+    if (editorName = '') then
+        Caption := Format('%s  - [ %s ]', [DEVCPP, fProject.Name])
+    else
+        Caption := Format('%s  - [ %s ] - %s', [DEVCPP, fProject.Name, editorName]);
+    Application.Title := Format('%s [%s]', [DEVCPP, fProject.Name]);        //ExtractFilename(fProject.Filename)]);
   end
   else begin
-    Caption := Format('%s %s', [DEVCPP, DEVCPP_VERSION]);
+    Caption := Format('%s', [DEVCPP]);
     Application.Title := Format('%s', [DEVCPP]);
   end;
 end;
@@ -8531,6 +8539,7 @@ var
 begin
     e := GetEditorFromFileName(editorName);
     PageControl.ActivePageIndex := e.TabSheet.TabIndex;
+    UpdateAppTitle;  // EAB more acurate title
 end;
 
 procedure TMainForm.SetEditorModified(editorName: String; modified: Boolean);
@@ -9386,6 +9395,7 @@ begin
 end;
   
 {$ENDIF PLUGIN_BUILD}
+
 
 end.
 

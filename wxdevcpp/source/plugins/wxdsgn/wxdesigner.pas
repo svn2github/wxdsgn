@@ -4164,7 +4164,7 @@ begin
       try
         ELDesigner1.DesignControl := (editors[ExtractFileName(s)] as TWXEditor).GetDesigner();
         ELDesigner1.Active := True;
-
+        ELDesigner1.DesignControl.Show;
       except
       end;
       BuildComponentList((editors[s] as TWXEditor).GetDesigner());

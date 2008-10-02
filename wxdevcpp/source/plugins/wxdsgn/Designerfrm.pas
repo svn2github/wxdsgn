@@ -1805,7 +1805,7 @@ begin
   begin
     wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
     wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
-  end; 
+  end;
     inherited; 
 end;
 
