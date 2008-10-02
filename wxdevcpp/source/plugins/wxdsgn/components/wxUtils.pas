@@ -117,7 +117,8 @@ type
   end;
   // END: TMultiLineBtn
 
-  TWxStdDialogButtons = set of (wxID_OK, wxID_YES, wxID_NO, wxID_CANCEL, wxID_HELP);
+  TWxStdDialogButtons = set of (wxID_OK, wxID_YES, wxID_SAVE, wxID_NO, wxID_CANCEL,
+                                wxID_APPLY, wxID_HELP, wxID_CONTEXT_HELP);
   TWxSizerAlignment = (wxALIGN_TOP, wxALIGN_LEFT, wxALIGN_RIGHT, wxALIGN_BOTTOM,
     wxALIGN_CENTER, wxALIGN_CENTER_VERTICAL, wxALIGN_CENTER_HORIZONTAL, wxEXPAND);
   TWxSizerAlignmentSet = set of TWxSizerAlignment;
@@ -3951,15 +3952,27 @@ end;
 function GetStdDialogButtonsSpecificStyle(btnstyle: TWxStdDialogButtons): string;
 begin
   if wxID_OK in btnstyle then
-    Result := Result + ' | wxOK';
+    Result := Result + ' | wxOK'
+  else
+  begin
   if wxID_YES in btnstyle then
-    Result := Result + ' | wxYES';
+    Result := Result + ' | wxYES'
+  else
+  if wxID_SAVE in btnstyle then
+    Result := Result + ' | wxSAVE';
+  end;
   if wxID_NO in btnstyle then
     Result := Result + ' | wxNO';
   if wxID_CANCEL in btnstyle then
     Result := Result + ' | wxCANCEL';
+  if wxID_APPLY in btnstyle then
+    Result := Result + ' | wxAPPLY';
+
   if wxID_HELP in btnstyle then
-    Result := Result + ' | wxHELP';
+    Result := Result + ' | wxHELP'
+  else
+  if wxID_CONTEXT_HELP in btnstyle then
+    Result := Result + ' | wxCONTEXTHELP';
 
   if Result <> '' then
     Result := Copy(Result, 4, Length(Result))
