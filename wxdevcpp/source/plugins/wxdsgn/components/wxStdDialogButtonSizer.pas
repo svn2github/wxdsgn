@@ -239,88 +239,88 @@ begin
   Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
    
-  if wxID_OK in Buttons then
+  if wxID_OK in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_OK">');
     Result.Add(IndentString + '    <label>&amp;Ok</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
           end
 	  
-  else if wxID_YES in Buttons then
+  else if wxID_YES in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_YES">');
     Result.Add(IndentString + '    <label>&amp;Yes</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
   end
 
-  else if wxID_SAVE in Buttons then
+  else if wxID_SAVE in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_SAVE">');
     Result.Add(IndentString + '    <label>&amp;Save</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
   end;
 
-  if wxID_APPLY in Buttons then
+  if wxID_APPLY in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_APPLY">');
     Result.Add(IndentString + '    <label>&amp;Apply</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
   end;
 
-  if wxID_NO in Buttons then
+  if wxID_NO in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_NO">');
     Result.Add(IndentString + '    <label>&amp;No</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
   end;
 
-  if wxID_CANCEL in Buttons then
+  if wxID_CANCEL in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_CANCEL">');
     Result.Add(IndentString + '    <label>&amp;Cancel</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
   end;
 
-  if wxID_HELP in Buttons then
+  if wxID_HELP in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_HELP">');
     Result.Add(IndentString + '    <label>&amp;Help</label>');
     Result.Add(IndentString + '    </object>');
     Result.Add(IndentString + '  </object>');
   end
 
-  else if wxID_CONTEXT_HELP in Buttons then
+  else if wxID_CONTEXT_HELP in Wx_Buttons then
   begin
     Result.Add(IndentString + '  <object class="button">');
     Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + self.Wx_Border + '</border>');
+    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
     Result.Add(IndentString + '    <object class="wxButton" name="wxID_CONTEXT_HELP">');
     Result.Add(IndentString + '    <label>?</label>');
     Result.Add(IndentString + '    </object>');
