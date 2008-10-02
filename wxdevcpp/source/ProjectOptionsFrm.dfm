@@ -1,6 +1,6 @@
 object frmProjectOptions: TfrmProjectOptions
-  Left = 392
-  Top = 280
+  Left = 296
+  Top = 261
   Width = 568
   Height = 410
   BorderIcons = [biSystemMenu]
@@ -19,8 +19,8 @@ object frmProjectOptions: TfrmProjectOptions
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    552
-    374)
+    560
+    376)
   PixelsPerInch = 96
   TextHeight = 13
   object btnAddProfileSet: TSpeedButton
@@ -227,9 +227,9 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 35
     Width = 537
     Height = 306
-    ActivePage = tabVersion
+    ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 7
+    TabIndex = 0
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -1400,7 +1400,7 @@ object frmProjectOptions: TfrmProjectOptions
           Anchors = [akLeft, akBottom]
           Caption = 'Delete Invalid'
           Enabled = False
-          TabOrder = 2
+          TabOrder = 5
           OnClick = MakButtonClick
         end
         object btnMakDelete: TButton
@@ -1412,7 +1412,7 @@ object frmProjectOptions: TfrmProjectOptions
           Anchors = [akLeft, akBottom]
           Caption = '&Delete'
           Enabled = False
-          TabOrder = 3
+          TabOrder = 4
           OnClick = MakButtonClick
         end
         object btnMakAdd: TButton
@@ -1424,7 +1424,7 @@ object frmProjectOptions: TfrmProjectOptions
           Anchors = [akLeft, akBottom]
           Caption = '&Add'
           Enabled = False
-          TabOrder = 4
+          TabOrder = 3
           OnClick = MakButtonClick
         end
         object btnMakReplace: TButton
@@ -1436,7 +1436,7 @@ object frmProjectOptions: TfrmProjectOptions
           Anchors = [akLeft, akBottom]
           Caption = '&Replace'
           Enabled = False
-          TabOrder = 5
+          TabOrder = 2
           OnClick = MakButtonClick
         end
       end

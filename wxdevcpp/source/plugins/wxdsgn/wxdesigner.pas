@@ -4164,7 +4164,6 @@ begin
       try
         ELDesigner1.DesignControl := (editors[ExtractFileName(s)] as TWXEditor).GetDesigner();
         ELDesigner1.Active := True;
-        ELDesigner1.DesignControl.Show;
       except
       end;
       BuildComponentList((editors[s] as TWXEditor).GetDesigner());
@@ -4337,6 +4336,8 @@ begin
     ActivateDesigner(ExtractFileName(FileName));
     Screen.Cursor := crDefault;
     Result := true;
+    if(ELDesigner1.Floating) then
+        (editors[ExtractFileName(FileName)] AS TWxEditor).GetDesigner.Show;  // EAB proper focus when designer floating
   end
   else
   begin

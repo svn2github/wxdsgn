@@ -1786,6 +1786,7 @@ begin
     begin
       wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
       wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+      self.Show;
     end;
 end;
 
@@ -1795,6 +1796,7 @@ begin
   begin
     wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
     wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+    self.Show;
   end;
     inherited;
 end;
@@ -1805,6 +1807,7 @@ begin
   begin
     wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
     wx_designer.MainPageChanged(ChangeFileExt(self.Wx_Name, WXFORM_EXT));
+    self.Show;
   end;
     inherited; 
 end;
