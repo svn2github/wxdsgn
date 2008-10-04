@@ -13,13 +13,14 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0(rc1)"
+!define WXDEVCPP_VERSION "7.0(rc2)"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
 !define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION}"
 !define MSVC_VERSION "9.0" ; 2005 = version 8.0, 2008 = version 9.0
 !define MSVC_YEAR "2008"
+!define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
 !define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
@@ -57,18 +58,90 @@
 Var LOCAL_APPDATA
 Var Have_Internet
 
+; ================================================
+; MACRO - ReplaceSubStr
+; This script is derived of a script Written by dirtydingus :
+; "Another String Replace (and Slash/BackSlash Converter)"
+;
+; for more information please see :
+; http://nsis.sourceforge.net/Another_String_Replace_(and_Slash/BackSlash_Converter)
+
+Var MODIFIED_STR
+
+!macro ReplaceSubStr OLD_STR SUB_STR REPLACEMENT_STR
+
+	Push "${OLD_STR}" ;String to do replacement in (haystack)
+	Push "${SUB_STR}" ;String to replace (needle)
+	Push "${REPLACEMENT_STR}" ; Replacement
+	Call StrRep
+	Pop $R0 ;result
+	StrCpy $MODIFIED_STR $R0
+
+!macroend
+
+Function StrRep
+
+  ;Written by dirtydingus 2003-02-20 04:30:09
+  ; USAGE
+  ;Push String to do replacement in (haystack)
+  ;Push String to replace (needle)
+  ;Push Replacement
+  ;Call StrRep
+  ;Pop $R0 result
+
+  Exch $R4 ; $R4 = Replacement String
+  Exch
+  Exch $R3 ; $R3 = String to replace (needle)
+  Exch 2
+  Exch $R1 ; $R1 = String to do replacement in (haystack)
+  Push $R2 ; Replaced haystack
+  Push $R5 ; Len (needle)
+  Push $R6 ; len (haystack)
+  Push $R7 ; Scratch reg
+  StrCpy $R2 ""
+  StrLen $R5 $R3
+  StrLen $R6 $R1
+loop:
+  StrCpy $R7 $R1 $R5
+  StrCmp $R7 $R3 found
+  StrCpy $R7 $R1 1 ; - optimization can be removed if U know len needle=1
+  StrCpy $R2 "$R2$R7"
+  StrCpy $R1 $R1 $R6 1
+  StrCmp $R1 "" done loop
+found:
+  StrCpy $R2 "$R2$R4"
+  StrCpy $R1 $R1 $R6 $R5
+  StrCmp $R1 "" done loop
+done:
+  StrCpy $R3 $R2
+  Pop $R7
+  Pop $R6
+  Pop $R5
+  Pop $R2
+  Pop $R1
+  Pop $R4
+  Exch $R3
+
+FunctionEnd
+
+; ================================================
+; MACRO - InstallDevPak
 !macro InstallDevPak DEVPAK_NAME
 ; Installs a wxDev-C++ devpak using the devpak manager
 ; NOTE: Filenames with spaces in them seem to screw up the download
 ;  I think the NSISdl cant handle spaces in the url. So DevPaks with
 ;   names like "How to Program in wxDev-C++.DevPak" won't work with
-;   this macro. Perhaps someone can figure out how to fix this.
-;   Maybe replacing spaces with backslashes or %20% ???
+;   this macro without the ReplaceSubStr macro to replace spaces with %20
 
   SetOutPath $INSTDIR\Packages
   
   DetailPrint "Installing ${DEVPAK_NAME}"
   
+  ; NSISdl downloader doesn't like urls with spaces in them. We'll use a string replace function to
+  ;      replace spaces with %20
+  !insertmacro ReplaceSubStr "${DEVPAK_NAME}" " " "%20" ; Replace any spaces with %20 for correct url
+  ; NOTE: DevPak for Url is now stored in variable MODIFIED_STR
+
 !ifdef DONT_INCLUDE_DEVPAKS ; If we don't include them here, we'll need to download them at install time
 
 ${IF} $Have_Internet == ${NO}
@@ -76,14 +149,16 @@ MessageBox MB_ICONEXCLAMATION  "Sorry, but this version of the installer require
 Quit
 
 ${ELSE}
-NSISdl::download /TIMEOUT=30000 "http://wxdsgn.sourceforge.net/webupdate/${DEVPAK_NAME}" "$INSTDIR\Packages\${DEVPAK_NAME}"
+DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
+NSISdl::download /TIMEOUT=30000 "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}"
+
+${ENDIF}
 Pop $R0 ;Get the return value
+
 
 ${IF} $R0 != "success"
     MessageBox MB_OK "Download failed: $R0"
     Abort   ; Abort the installation
-${ENDIF}
-    
 ${ENDIF}
 
 !else   ;We have included devpaks, but user can still check for updates if desired
@@ -91,7 +166,8 @@ ${ENDIF}
 File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
 
 ${IF} Have_Internet == ${YES}
-NSISdl::download /TIMEOUT=30000 "http://wxdsgn.sourceforge.net/webupdate/${DEVPAK_NAME}" "$INSTDIR\Packages\${DEVPAK_NAME}"
+DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
+NSISdl::download /TIMEOUT=30000 "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}"
 Pop $R0 ;Get the return value
 
 ${IF} $R0 != "success"
@@ -217,7 +293,17 @@ BGGradient off
   !insertmacro MUI_LANGUAGE "Turkish"
   !insertmacro MUI_LANGUAGE "Ukrainian"
 
-# [Files]
+;--------------------------------
+;Reserve Files
+
+  ;If you are using solid compression, files that are required before
+  ;the actual installation should be stored first in the data block,
+  ;because this will make your installer start faster.
+
+  !insertmacro MUI_RESERVEFILE_LANGDLL
+
+;--------------------------------
+;Installer Sections
 
 Section "${PROGRAM_NAME} program files (required)" SectionMain
   SectionIn 1 2 3 RO
@@ -273,22 +359,22 @@ File "license.txt"
 
 
   ; Install wxDev-C++ executable
- !insertmacro InstallDevPak "wxdevcpp_rc1.DevPak"
+; !insertmacro InstallDevPak "wxdevcpp_rc2.DevPak"
  
 ; Install make - All compilers use the Mingw32 GNU make system
- !insertmacro InstallDevPak "make.DevPak"
+ ;!insertmacro InstallDevPak "make.DevPak"
 
  ; Install binutils
- !insertmacro InstallDevPak "binutils.DevPak"
+ ;!insertmacro InstallDevPak "binutils.DevPak"
 
 ; Install mingw-runtime
-  !insertmacro InstallDevPak "mingw-runtime.DevPak"
+  ;!insertmacro InstallDevPak "mingw-runtime.DevPak"
 
 ; Install win32-api
-  !insertmacro InstallDevPak "win32api.DevPak"
+  ;!insertmacro InstallDevPak "win32api.DevPak"
 
   ; Install Dev-C++ examples
-  !insertmacro InstallDevPak "devcpp_examples.DevPak"
+  ;!insertmacro InstallDevPak "devcpp_examples.DevPak"
 
   
   ; Delete old devcpp.map to avoid confusion in bug reports
@@ -410,7 +496,6 @@ Section "${PROGRAM_NAME} help" SectionHelp
 
   SectionIn 1 2 3 RO
   
-  DetailPrint "Installing help"
 ; Install wxDevCpp Help Files
   !insertmacro InstallDevPak "DevCppHelp.DevPak"
   SetOutPath $INSTDIR
@@ -422,16 +507,8 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   SectionIn 1
 
   ; Install SofT's wxDev-C++ programming book
- ; !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
+  !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
 
-  SetOutPath $INSTDIR\Packages
-
-  File "Packages\Programming with wxDev-C++.DevPak"
-  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\Programming with wxDev-C++.DevPak"'
-  Delete  "$INSTDIR\Packages\Programming with wxDev-C++.DevPak"
-  SetOutPath $INSTDIR
-  DetailPrint "Programming with wxDev-C++.DevPak installed"
-  
   ;StrCpy $WXBOOK_INSTALLED "Yes"
  
   SetOutPath $INSTDIR
@@ -1076,4 +1153,3 @@ Function IsInternetAvailable
 
 FunctionEnd
 
-#eof!

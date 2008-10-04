@@ -25,7 +25,7 @@ done_devpaks:
   Delete "$INSTDIR\Packman.map"
 
   Delete "$INSTDIR\Icons\*.*"
-  Delete "license.txt"
+  Delete "$INSTDIR\license.txt"
 
   Delete "$INSTDIR\bin\rm.exe"
   
