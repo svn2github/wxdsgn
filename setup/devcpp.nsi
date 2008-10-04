@@ -359,22 +359,22 @@ File "license.txt"
 
 
   ; Install wxDev-C++ executable
-; !insertmacro InstallDevPak "wxdevcpp_rc2.DevPak"
+!insertmacro InstallDevPak "wxdevcpp_rc2.DevPak"
  
 ; Install make - All compilers use the Mingw32 GNU make system
- ;!insertmacro InstallDevPak "make.DevPak"
+ !insertmacro InstallDevPak "make.DevPak"
 
  ; Install binutils
- ;!insertmacro InstallDevPak "binutils.DevPak"
+ !insertmacro InstallDevPak "binutils.DevPak"
 
 ; Install mingw-runtime
-  ;!insertmacro InstallDevPak "mingw-runtime.DevPak"
+  !insertmacro InstallDevPak "mingw-runtime.DevPak"
 
 ; Install win32-api
-  ;!insertmacro InstallDevPak "win32api.DevPak"
+  !insertmacro InstallDevPak "win32api.DevPak"
 
   ; Install Dev-C++ examples
-  ;!insertmacro InstallDevPak "devcpp_examples.DevPak"
+  !insertmacro InstallDevPak "devcpp_examples.DevPak"
 
   
   ; Delete old devcpp.map to avoid confusion in bug reports
