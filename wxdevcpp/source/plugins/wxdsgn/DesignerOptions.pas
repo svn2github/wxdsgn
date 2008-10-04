@@ -169,13 +169,14 @@ begin
 
   if cbFloating.Checked then
   begin
-    //(wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Parent := (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).ScrollDesign;
+    wx_designer.ELDesigner1.Floating := cbFloating.Checked;
     SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_POPUP or
 	      (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
-    Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, 0);//wx_designer.main.GetHandle);
-  end;
-  if not cbFloating.Checked then
+    Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, 0);
+  end
+  else 
   begin
+    wx_designer.ELDesigner1.Floating := cbFloating.Checked;
     SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD or
 	      (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
     Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).ScrollDesign.Handle);
@@ -185,7 +186,6 @@ begin
 
 
   wx_designer.ELDesigner1.GenerateXRC := cbGenerateXRC.Checked;
-  wx_designer.ELDesigner1.Floating := cbFloating.Checked;
   XRCGEN := wx_designer.ELDesigner1.GenerateXRC; //Nuklear Zelph
   if wx_designer.ELDesigner1.GenerateXRC then
   begin

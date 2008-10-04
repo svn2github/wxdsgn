@@ -396,9 +396,6 @@ begin
       
     strEventTableStart := Format('BEGIN_EVENT_TABLE(%s,%s)',[frmNewForm.Wx_Name, frmNewForm.Wx_Class]);
     AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,strEventTableStart, False);
-    // EAB focus main window
-    //  if(wx_designer.ELDesigner1.Floating) then
-     //     wx_designer.main.SendToFront;
   end;
 
   //Adding XPM Header files
@@ -1408,7 +1405,7 @@ var
   I, J, MaxToolWidth, MaxToolHt, MaxSepValue: integer;
   strLst: TStringList;
   isSizerAvailable: boolean;
-
+  WinRect: TRect;
 begin
   strLst := TStringList.Create;
 
@@ -1490,8 +1487,21 @@ begin
         strLst.add('GetSizer()->SetSizeHints(this);');
   end
   else
-    strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top,
-      self.Width, self.Height]));
+  begin
+    if(wx_designer.ELDesigner1.Floating) then
+    begin
+        GetWindowRect(self.Handle, WinRect);
+        strLst.add(Format('SetSize(%d,%d,%d,%d);', [WinRect.Left, WinRect.Top, self.Width, self.Height]))
+        {if (self.Left < 1) and (self.Top < 1) then
+
+        else if self.Left < 1 then
+            strLst.add(Format('SetSize(%d,%d,%d,%d);', [WinRect.Left, self.top, self.Width, self.Height]))
+        else if self.Top < 1 then
+            strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, WinRect.Top, self.Width, self.Height]));  }
+    end
+    else
+        strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top, self.Width, self.Height]));
+  end;
       
   if self.Wx_Center then
     strLst.add('Center();');

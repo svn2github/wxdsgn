@@ -72,7 +72,6 @@ resourcestring
   GCC_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
 
   //Vc++
-  //  EAB TODO: attempt to add VS 2008 support... better check if it works
   VC2008_BIN_DIR = 'Bin'+pd+'VC2008;Bin;';
   VC2008_LIB_DIR = 'Lib'+pd+'VC2008';
   VC2008_C_INCLUDE_DIR = 'Include'+pd+'common;Include'+pd+'VC2008;';

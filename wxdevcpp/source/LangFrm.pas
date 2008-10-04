@@ -248,8 +248,14 @@ begin
       s := TStringList.Create;
       if DirCheckBox.Checked then
         StrToList(DirEdit.Text, s)
-      else
+      else 
+      begin
+       {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            devDirs.Cpp := devDirs.Cpp + ';' + devDirs.CallValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR);    // EAB TODO: make it multiplugin functional.
+        {$ENDIF}
         StrToList(devDirs.Cpp, s);
+      end;
 
       f := TStringList.Create;
        for i := 0 to s.Count - 1 do begin

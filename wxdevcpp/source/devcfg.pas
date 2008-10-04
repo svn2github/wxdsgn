@@ -452,6 +452,7 @@ type
     procedure SettoDefaults; override;
     procedure SaveSettings; override;
     procedure LoadSettings; override;
+    function CallValidatePaths(dirList: String): String;
     property Name;
     property OriginalPath: string read fOldPath write fOldPath;
   published
@@ -2203,6 +2204,13 @@ begin
   fThemes := ExtractRelativePath(fExec, fThemes);
   devData.SaveObject(Self);
   FixPaths;
+end;
+
+function TdevDirs.CallValidatePaths(dirList: String): String;
+var
+    dummy: String;
+begin
+  Result := ValidatePaths(dirList, dummy);
 end;
 
 procedure TdevDirs.FixPaths;
