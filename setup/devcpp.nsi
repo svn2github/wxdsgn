@@ -876,7 +876,7 @@ exists:
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\copying.txt"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
 
 !insertmacro MUI_STARTMENU_WRITE_END
