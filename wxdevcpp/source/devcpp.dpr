@@ -106,7 +106,8 @@ uses
   iplugin_dll in 'plugins\interfaces\iplugin_dll.pas',
   iplugger in 'plugins\interfaces\iplugger.pas',
   iplugin in 'plugins\interfaces\iplugin.pas',
-  iplugin_bpl in 'plugins\interfaces\iplugin_bpl.pas';
+  iplugin_bpl in 'plugins\interfaces\iplugin_bpl.pas',
+  D6OnHelpFix in 'D6OnHelpFix.pas';
 
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
