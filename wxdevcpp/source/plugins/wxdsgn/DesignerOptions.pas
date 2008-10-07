@@ -170,11 +170,11 @@ begin
   if cbFloating.Checked then
   begin
     wx_designer.ELDesigner1.Floating := cbFloating.Checked;
-    SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_POPUP or
+    SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_TILED or
 	      (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
     Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, 0);
   end
-  else 
+  else
   begin
     wx_designer.ELDesigner1.Floating := cbFloating.Checked;
     SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD or

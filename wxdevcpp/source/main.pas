@@ -1136,7 +1136,6 @@ type
     procedure SetPageControlActivePageEditor(editorName: String);
     procedure ToggleDockForm(form: TForm; b: Boolean);
     procedure SendToFront;
-
 {$ENDIF}
     function OpenWithAssignedProgram(strFileName:String):boolean;
     property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
@@ -9393,7 +9392,7 @@ procedure TMainForm.SendToFront;
 begin
     self.Show;
 end;
-  
+
 {$ENDIF PLUGIN_BUILD}
 
 

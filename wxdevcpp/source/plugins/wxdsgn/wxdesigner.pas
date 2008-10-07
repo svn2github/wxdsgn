@@ -2426,7 +2426,6 @@ begin
     JvInspProperties.Clear;
     if Assigned(JvInspProperties.Root) then
       JvInspProperties.Root.Clear;
-    // EAB TODO: The following 3 lines were causing a weird error. IMPORTANT!
     JvInspEvents.Clear;
     if Assigned(JvInspEvents.Root) then
       JvInspEvents.Root.Clear;
@@ -3321,7 +3320,6 @@ begin
         main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));            
         if(strNewValue = '<Goto Function>') and ((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
             main.SendToFront;
-        //self.MainPageChanged(ChangeFileExt(editorName, WXFORM_EXT));
       end;
     end
     else if strNewValue = '<Remove Function>' then

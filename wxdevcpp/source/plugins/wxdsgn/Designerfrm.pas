@@ -1488,19 +1488,7 @@ begin
   end
   else
   begin
-    if(wx_designer.ELDesigner1.Floating) then
-    begin
-        GetWindowRect(self.Handle, WinRect);
-        strLst.add(Format('SetSize(%d,%d,%d,%d);', [WinRect.Left, WinRect.Top, self.Width, self.Height]))
-        {if (self.Left < 1) and (self.Top < 1) then
-
-        else if self.Left < 1 then
-            strLst.add(Format('SetSize(%d,%d,%d,%d);', [WinRect.Left, self.top, self.Width, self.Height]))
-        else if self.Top < 1 then
-            strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, WinRect.Top, self.Width, self.Height]));  }
-    end
-    else
-        strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top, self.Width, self.Height]));
+     strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top, self.Width, self.Height]));
   end;
       
   if self.Wx_Center then
