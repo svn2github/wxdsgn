@@ -13,7 +13,7 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0(rc2)"
+!define WXDEVCPP_VERSION "7.0rc2"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
@@ -23,7 +23,7 @@
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -177,7 +177,11 @@ ${ENDIF}
 ${ENDIF}
 !endif
 
-    
+  ; Replace .DevPak extension with .entry so that we can uninstall a previous devpak
+  !insertmacro ReplaceSubStr "${DEVPAK_NAME}" ".DevPak" ".entry"
+  ; Now uninstall the previous devpak
+  ExecWait '"$INSTDIR\packman.exe" /auto /quiet /uninstall "$INSTDIR\Packages\$MODIFIED_STR"'
+
   ExecWait '"$INSTDIR\packman.exe" /auto /quiet /install "$INSTDIR\Packages\${DEVPAK_NAME}"'
   Delete  "$INSTDIR\Packages\${DEVPAK_NAME}"
   SetOutPath $INSTDIR
@@ -331,9 +335,9 @@ Section "${PROGRAM_NAME} program files (required)" SectionMain
  ; We just need the license and the Package Manager files.
  ; All other files are contained within devpaks and will be installed by the pakman
   File "packman.exe"
-
-  ; Find all installed devpaks and uninstall them
-  FindFirst $0 $1 $INSTDIR\Packages\*.entry
+  
+  ; Find all installed wxWidgets devpaks and uninstall them
+  FindFirst $0 $1 $INSTDIR\Packages\*wxWidgets*.entry
 loop_devpaks:
   StrCmp $1 "" done_uninstalldevpaks
   DetailPrint 'Uninstalling package $1'
@@ -1150,6 +1154,36 @@ Function IsInternetAvailable
     connected:
     StrCpy $Have_Internet ${YES}
   Pop $R0
+
+FunctionEnd
+
+Function .onInit
+
+  ;try to read from registry if there's a current version and run its uninstall
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" \
+      "UninstallString"
+  ${IF} $0 != ""   ; A previous install was found
+
+     MessageBox MB_YESNO "A previous version of ${PROGRAM_NAME} is installed.$\r$\nShould I uninstall it now?" IDNO NoUninstall
+     ; If yes, then run the previous uninstaller
+     ExecWait '$0'
+     NoUninstall:
+
+  ${ENDIF}
+  
+  ; Do the same for Dev-C++
+  ;try to read from registry if there's a current version and run its uninstall
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\devcpp" \
+      "UninstallString"
+  ${IF} $0 != ""   ; A previous install was found
+
+     MessageBox MB_YESNO "A previous version of Dev-C++/wxDev-C++ is installed.$\r$\nShould I uninstall it now?" IDNO NoUninstall
+     ; If yes, then run the previous uninstaller
+     ExecWait '$0'
+     NoUninstall:
+
+  ${ENDIF}
+
 
 FunctionEnd
 
