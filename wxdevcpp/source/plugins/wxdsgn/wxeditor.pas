@@ -59,10 +59,8 @@ uses
 
         if not wx_designer.ELDesigner1.Floating then
         begin
-	        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or
-	            (GetWindowLong(fDesigner.Handle, GWL_STYLE)));
+	        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or GetWindowLong(fDesigner.Handle, GWL_STYLE));
 	        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
-	        ShowWindow(fDesigner.Handle, Sw_ShowNormal);
         end;
 
 	    fScrollDesign.ScrollInView(fDesigner);
