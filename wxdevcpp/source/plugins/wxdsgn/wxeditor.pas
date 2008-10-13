@@ -5,7 +5,7 @@ interface
 uses
     Windows, Controls, Forms, ComCtrls, Graphics, SysUtils, Menus,
     Designerfrm, CompFileIo,
-    wxutils, DbugIntf, SynEdit, wxversion, MigrateFrm;
+    wxutils, DbugIntf, SynEdit, wxversion, MigrateFrm, StdCtrls;
 
 type
 
@@ -19,8 +19,10 @@ type
     fDesignerStyle: TWxDlgStyleSet;
     fDesignerDefaultData: Boolean;
     procedure Close; // New fnc for wx
+    procedure OnbtnFloatingDesigner_Click(Sender: TObject);
   public
     FileName: String;
+    btnFloatingDesigner: TButton;
     function GetDesigner: TfrmNewForm;
     procedure InitDesignerData(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet);
     function GetDesignerHPPFileName: string;
@@ -57,11 +59,27 @@ uses
 	    fDesigner.synEdit := fText;
 	    fDesigner.Visible := False;
 
+          btnFloatingDesigner := TButton.Create(fScrollDesign);
+          with btnFloatingDesigner do
+          begin
+            Left := 2;
+            Top := 2;
+            Width :=  fScrollDesign.Width - 2;
+            Height := fScrollDesign.Height - 2;
+            Anchors := [akLeft, akTop, akRight, akBottom];
+            Caption := 'Click here to bring designer to front...';
+            Parent := fScrollDesign;
+            Visible := false;
+            OnClick := OnbtnFloatingDesigner_Click;
+          end;
+
         if not wx_designer.ELDesigner1.Floating then
         begin
 	        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or GetWindowLong(fDesigner.Handle, GWL_STYLE));
 	        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
-        end;
+        end
+        else
+            btnFloatingDesigner.Visible := true;
 
 	    fScrollDesign.ScrollInView(fDesigner);
         //fScrollDesign.Enabled := true;
@@ -182,6 +200,11 @@ begin
       Result := false
     else
       Result := true;
+end;
+
+procedure TWXEditor.OnbtnFloatingDesigner_Click(Sender: TObject);
+begin
+    fDesigner.Show;
 end;
 
 end.

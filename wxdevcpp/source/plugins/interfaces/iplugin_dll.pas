@@ -71,6 +71,7 @@ type
     C_SaveCompilerOptions: procedure; cdecl;
     C_GetCompilerOptions: function: PChar; cdecl;
     C_SetCompilerOptionstoDefaults: procedure; cdecl;
+    C_AfterStartupCheck: procedure; cdecl;
 
   public
     procedure TestReport;  
@@ -123,6 +124,7 @@ type
     procedure SaveCompilerOptions;
     function GetCompilerOptions: TSettings;
     procedure SetCompilerOptionstoDefaults;
+    procedure AfterStartupCheck;
 
   end;
 
@@ -181,6 +183,7 @@ begin
     @self.C_SaveCompilerOptions := nil;
     @self.C_GetCompilerOptions := nil;
     @self.C_SetCompilerOptionstoDefaults := nil;
+    @self.C_AfterStartupCheck := nil;
 
 
     @self.C_TestReport := GetProcAddress(module, 'TestReport');
@@ -229,6 +232,7 @@ begin
     @self.C_SaveCompilerOptions := GetProcAddress(module, 'SaveCompilerOptions');
     @self.C_GetCompilerOptions := GetProcAddress(module, 'GetCompilerOptions');
     @self.C_SetCompilerOptionstoDefaults := GetProcAddress(module, 'SetCompilerOptionstoDefaults');
+    @self.C_AfterStartupCheck := GetProcAddress(module, 'AfterStartupCheck');
 
   self.tool := TToolBar.Create(nil);
   self.tool.Left := toolbar_x;
@@ -662,6 +666,12 @@ procedure TPlug_In_DLL.SetCompilerOptionstoDefaults;
 begin
     if (@self.C_SetCompilerOptionstoDefaults <> nil) then
         self.C_SetCompilerOptionstoDefaults;
+end;
+
+procedure TPlug_In_DLL.AfterStartupCheck;
+begin
+    if (@self.C_AfterStartupCheck <> nil) then
+        self.C_AfterStartupCheck;
 end;
 
 end.

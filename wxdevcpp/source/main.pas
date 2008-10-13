@@ -92,7 +92,7 @@ uses
 {$IFDEF PLUGIN_BUILD}
   SynEdit, iplugin, iplugin_bpl, iplugin_dll, iplugger, // < -- EAB
   controlbar_win32_events, hashes,
-  xprocs, SynHighlighterRC,
+  xprocs, SynHighlighterRC, hh, hh_funcs,
 
 {$IFNDEF COMPILER_7_UP}
   ThemeMgr,
@@ -677,6 +677,14 @@ type
     lblTodoFilter: TLabel;
     chkTodoIncomplete: TCheckBox;
     cmbTodoFilter: TComboBox;
+    CompilerMessagesPanelItem: TMenuItem;
+    ShowPanelsItem: TMenuItem;
+    ResourcesMessagesPanelItem: TMenuItem;
+    CompileLogMessagesPanelItem: TMenuItem;
+    DebuggingMessagesPanelItem: TMenuItem;
+    FindResultsMessagesPanelItem: TMenuItem;
+    ToDoListMessagesPanelItem: TMenuItem;
+    ShowPluginPanelsItem: TMenuItem;
 
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -948,9 +956,16 @@ type
     procedure cmbTodoFilterChange(Sender: TObject);
     procedure ApplicationEvents1Deactivate(Sender: TObject);
     procedure ApplicationEvents1Activate(Sender: TObject);
+    procedure CompilerMessagesPanelItemClick(Sender: TObject);
+    procedure ResourcesMessagesPanelItemClick(Sender: TObject);
+    procedure CompileLogMessagesPanelItemClick(Sender: TObject);
+    procedure DebuggingMessagesPanelItemClick(Sender: TObject);
+    procedure FindResultsMessagesPanelItemClick(Sender: TObject);
+    procedure ToDoListMessagesPanelItemClick(Sender: TObject);
 
 
-  private	
+  private
+    HelpWindow: HWND;
     fToDoList: TList;
     fToDoSortColumn: Integer;
     fHelpfiles: ToysStringList;
@@ -1180,6 +1195,7 @@ uses
 
 var
   fFirstShow: boolean;
+  //mHHelp: THookHelpSystem;
 
 const
   cCompTab = 0;
@@ -1281,6 +1297,9 @@ var
     end;
   end;
 begin
+  // Fix for help system on Vista:
+  //mHHelp := THookHelpSystem.Create(pathToCHM, '', htHHAPI);
+
   //Initialize the docking style engine
   DesktopFont := True;
   NewDocks := TList.Create;
@@ -1340,8 +1359,6 @@ begin
   //Reparent the project inspector
   LeftPageControl.Align := alClient;
   LeftPageControl.Parent := frmProjMgrDock;
-
-  ShowProjectInspItem.Checked := True;
 
   tbMain.Left := devData.ToolbarMainX;
   tbMain.Top := devData.ToolbarMainY;
@@ -1544,7 +1561,7 @@ begin
       DragMode := dmAutomatic;
       FormStyle := fsStayOnTop;
 
-      BorderIcons := BorderIcons - [biSystemMenu];    // Removing close button
+      //BorderIcons := BorderIcons - [biSystemMenu];    // Removing close button
 
       //Transfer all the controls from the message control to the new dock
       while MessageControl.Pages[I].ControlCount > 0 do
@@ -1686,6 +1703,10 @@ end;
 // it forces the form to show and we only want to display the form when it's
 // ready and fully created
 procedure TMainForm.DoApplyWindowPlacement;
+{$IFDEF PLUGIN_BUILD}
+var
+  i: Integer;
+{$ENDIF PLUGIN_BUILD}
 begin
   if devData.WindowPlacement.rcNormalPosition.Right <> 0 then
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement)
@@ -1695,6 +1716,21 @@ begin
   //Load the window layout from the INI file
   if FileExists(ExtractFilePath(devData.INIFile) + 'layout' + INI_EXT) then
     LoadDockTreeFromFile(ExtractFilePath(devData.INIFile) + 'layout' + INI_EXT);
+
+  // Check the appropiate menu if panel is enabled
+  ShowProjectInspItem.Checked := frmProjMgrDock.Visible;
+
+  CompilerMessagesPanelItem.Checked := frmReportDocks[0].Visible;
+  ResourcesMessagesPanelItem.Checked := frmReportDocks[1].Visible;
+  CompileLogMessagesPanelItem.Checked := frmReportDocks[2].Visible;
+  DebuggingMessagesPanelItem.Checked := frmReportDocks[3].Visible;
+  FindResultsMessagesPanelItem.Checked := frmReportDocks[4].Visible;
+  ToDoListMessagesPanelItem.Checked := frmReportDocks[5].Visible;
+
+{$IFDEF PLUGIN_BUILD}
+   for i := 0 to pluginsCount - 1 do
+	   plugins[i].AfterStartupCheck;
+{$ENDIF}
 
   //Show the main form
   Show;
@@ -1811,6 +1847,18 @@ begin
 
   if TForm(Sender) = frmProjMgrDock then
     ShowProjectInspItem.Checked := False;
+  if TForm(Sender) = frmReportDocks[0] then
+    CompilerMessagesPanelItem.Checked := False;
+  if TForm(Sender) = frmReportDocks[1] then
+    ResourcesMessagesPanelItem.Checked := False;
+  if TForm(Sender) = frmReportDocks[2] then
+    CompileLogMessagesPanelItem.Checked := False;
+  if TForm(Sender) = frmReportDocks[3] then
+    DebuggingMessagesPanelItem.Checked := False;
+  if TForm(Sender) = frmReportDocks[4] then
+    FindResultsMessagesPanelItem.Checked := False;
+  if TForm(Sender) = frmReportDocks[5] then
+    ToDoListMessagesPanelItem.Checked := False;
 end;
 {$ENDIF}
 
@@ -1825,6 +1873,9 @@ var
     panel2: TForm;
 {$ENDIF PLUGIN_BUILD}
 begin
+  if IsWindow(HelpWindow) then
+   SendMessage(HelpWindow, WM_CLOSE, 0, 0 );
+
   if assigned(fProject) then
     actCloseProject.Execute;
   if Assigned(fProject) then
@@ -1895,7 +1946,8 @@ begin
             panel1 := items[j];
             panel1.Visible := false;
             UnAutoHideDockForm(panel1);
-            ManualTabDockAddPage(LeftDockTabs, panel1);
+            if Assigned(LeftDockTabs.PageControl) then
+                ManualTabDockAddPage(LeftDockTabs, panel1);
           end;
       end;
 
@@ -1907,7 +1959,8 @@ begin
             panel1 := items[j];
             panel1.Visible := false;
             UnAutoHideDockForm(panel1);
-            ManualTabDockAddPage(RightDockTabs, panel1);
+            if Assigned(RightDockTabs.PageControl) then
+                ManualTabDockAddPage(RightDockTabs, panel1);
           end;
       end;
 
@@ -1919,7 +1972,8 @@ begin
             panel1 := items[j];
             panel1.Visible := false;
             UnAutoHideDockForm(panel1);
-            ManualTabDockAddPage(BottomDockTabs, panel1);
+            if Assigned(BottomDockTabs.PageControl) then
+                ManualTabDockAddPage(BottomDockTabs, panel1);
           end;
       end;
 
@@ -1929,6 +1983,9 @@ begin
         devPluginToolbarsX.AddToolbarsX(plugins[i].GetPluginName, toolbar.Left);
         devPluginToolbarsY.AddToolbarsY(plugins[i].GetPluginName, toolbar.Top);
     end;
+    //DockServer.Destroy;
+    //DockServer.RightDockPanel.Destroy;
+    //DockServer.BottomDockPanel.Destroy;
     plugins[i].Destroy;
     plugins[i] := nil;
   end;
@@ -1959,6 +2016,8 @@ begin
       fToDoList.Delete(0);
     end;
   fToDoList.Free;
+  devPluginToolbarsX.Free;
+  devPluginToolbarsY.Free;
 
   {$IFDEF PLUGIN_BUILD}
   {$IFNDEF PLUGIN_TESTING}
@@ -1967,7 +2026,12 @@ begin
   for i := 0 to librariesCount - 1 do
     FreeLibrary(plugin_modules[c_plugins[i]]);
   {$ENDIF PLUGIN_TESTING}
+  unit_plugins.Free;
   {$ENDIF PLUGIN_BUILD}
+
+   //Unhook and free  Fix for help system under Vista
+   //mHHelp.Free;
+   //HHCloseAll;     //Close help before shutdown or big trouble
 end;
 
 procedure TMainForm.ParseCmdLine;
@@ -2016,7 +2080,7 @@ begin
 {$IFDEF PLUGIN_BUILD}
         for i := 0 to pluginsCount - 1 do
 		    plugins[i].OpenFile(strLst[idx]);
-{$ENDIF}      
+{$ENDIF}
         OpenFile(GetLongName(strLst[idx]));
       end;
     end;
@@ -2311,6 +2375,16 @@ begin
     GotoprojectmanagerItem.Caption := Strings[ID_ITEM_GOTOPROJECTVIEW];
     GoToClassBrowserItem.Caption := Strings[ID_ITEM_GOTOCLASSBROWSER];
 
+    ShowPanelsItem.Caption := Strings[ID_ITEM_PANELS];
+    ShowPluginPanelsItem.Caption := Strings[ID_ITEM_PLUGINPANELS];
+
+    CompilerMessagesPanelItem.Caption := Strings[ID_SHEET_COMP];
+    ResourcesMessagesPanelItem.Caption := Strings[ID_SHEET_RES];
+    CompileLogMessagesPanelItem.Caption := Strings[ID_SHEET_COMPLOG];
+    FindResultsMessagesPanelItem.Caption := Strings[ID_SHEET_FIND];
+    DebuggingMessagesPanelItem.Caption := Strings[ID_SHEET_DEBUG];
+    ToDoListMessagesPanelItem.Caption := Strings[ID_SHEET_TODO];
+
     // Project menu
     actProjectNew.Caption := Strings[ID_ITEM_NEWFILE];
     actProjectAdd.Caption := Strings[ID_ITEM_ADDFILE];
@@ -2432,6 +2506,7 @@ begin
     LogSheet.Caption := Strings[ID_SHEET_COMPLOG];
     FindSheet.Caption := Strings[ID_SHEET_FIND];
     DebugSheet.Caption := Strings[ID_SHEET_DEBUG];
+    ToDoSheet.Caption := Strings[ID_SHEET_TODO];
     
     // popup menu
     actMsgCopy.Caption := Strings[ID_SHEET_POP_COPY];
@@ -5210,6 +5285,8 @@ begin
 {$ENDIF}
       if ssCtrl in Shift then
         ShowDebug;
+    VK_F1:
+         WordToHelpKeyword;
   end;
     
 {$IFDEF PLUGIN_BUILD}
@@ -6899,31 +6976,46 @@ end;
 
 procedure TMainForm.HelpMenuItemClick(Sender: TObject);
 begin
-  Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
-  Application.HelpCommand(HELP_FINDER, 0);
+  //Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
+  //  Fix for help system on Vista:
+  //mHHelp := THookHelpSystem.Create(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE, '', htHHAPI);
+  //WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), SW_SHOW);
+  //Application.HelpCommand(HELP_FINDER, 0);
   WordToHelpKeyword;
 end;
 
 procedure TMainForm.WordToHelpKeyword;
-var s: pchar;
+var
+    //s: pchar;
     tmp: string;
     e: TEditor;
-    OK: boolean;
+    //OK: boolean;
 begin
-  OK := False;
+ // OK := False;
   e := GetEditor;
   if Assigned(e) then begin
     tmp := e.GetWordAtCursor;
+
+    //WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE + '::/' + tmp + '.htm'), SW_SHOW);  // EAB option 1 for Help on Vista
     if (tmp <> '') then  begin
-      GetMem(s, length(tmp) + 1);
-      StrCopy(s, pchar(tmp));
-      Application.HelpCommand(HELP_KEY, integer(s));
-      FreeMem(s);
-      OK := True;
+      //GetMem(s, length(tmp) + 1);
+      //StrCopy(s, pchar(tmp));
+      HelpWindow := HtmlHelp(self.handle, PChar(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
+      //Application.HelpCommand(HELP_KEY, integer(s));
+      //FreeMem(s);
+      //OK := True;     // EAB: how about using "else" ?
+    end
+    else
+    begin
+        tmp := e.Text.SelText;
+        if (tmp <> '') then
+          HelpWindow := HtmlHelp(self.handle, PChar(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
     end;
-  end;
-  if not OK then
-    Application.HelpCommand(HELP_FINDER, 0);
+  end
+  else 
+      HelpWindow := HtmlHelp(self.handle, PChar(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), HH_DISPLAY_TOPIC, 0);
+    //  WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), SW_SHOW);
+    //Application.HelpCommand(HELP_FINDER, 0);
 end;
 
 procedure TMainForm.CppParser1StartParsing(Sender: TObject);
@@ -7301,6 +7393,61 @@ begin
     ShowDockForm(frmProjMgrDock)
   else
     HideDockForm(frmProjMgrDock);
+end;
+
+procedure TMainForm.CompilerMessagesPanelItemClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    ShowDockForm(frmReportDocks[0])
+  else
+    HideDockForm(frmReportDocks[0]);
+end;
+
+
+procedure TMainForm.ResourcesMessagesPanelItemClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    ShowDockForm(frmReportDocks[1])
+  else
+    HideDockForm(frmReportDocks[1]);
+end;
+
+procedure TMainForm.CompileLogMessagesPanelItemClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    ShowDockForm(frmReportDocks[2])
+  else
+    HideDockForm(frmReportDocks[2]);
+end;
+
+procedure TMainForm.DebuggingMessagesPanelItemClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    ShowDockForm(frmReportDocks[3])
+  else
+    HideDockForm(frmReportDocks[3]);
+end;
+
+procedure TMainForm.FindResultsMessagesPanelItemClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    ShowDockForm(frmReportDocks[4])
+  else
+    HideDockForm(frmReportDocks[4]);
+end;
+
+procedure TMainForm.ToDoListMessagesPanelItemClick(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  if TMenuItem(Sender).Checked then
+    ShowDockForm(frmReportDocks[5])
+  else
+    HideDockForm(frmReportDocks[5]);
 end;
 
 procedure TMainForm.SetProjCompOpt(idx: integer; Value: boolean);
@@ -9013,7 +9160,7 @@ begin
       items := (plugins[delphi_plugins[i]] AS IPlug_In_BPL).Retrieve_View_Menus;
       if items <> nil then
       begin
-          if items.Count > 0 then
+          if (items.Count > 0) and (Self.ShowPluginPanelsItem.Count > 0) then
           begin
              menuItem := TMenuItem.Create(Self);
              menuItem.Caption := '-';
@@ -9022,7 +9169,7 @@ begin
           for j := 0 to items.Count -1 do
           begin
             menuItem := items[j];
-             Self.ViewMenu.Add(menuItem);
+             Self.ShowPluginPanelsItem.Add(menuItem);
           end;
       end;
 
@@ -9394,7 +9541,6 @@ begin
 end;
 
 {$ENDIF PLUGIN_BUILD}
-
 
 end.
 

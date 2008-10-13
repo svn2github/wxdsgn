@@ -35,11 +35,13 @@ type
     actNewwxDialog: TAction;
     NewWxDialogItem: TMenuItem;
     ShowPropertyInspItem: TMenuItem;
+    ShowComponentPaletteItem: TMenuItem;
     actDesignerCopy: TAction;
     actDesignerCut: TAction;
     actDesignerPaste: TAction;
     actDesignerDelete: TAction;
     actShowPropertyInspItem: TAction;
+    actShowComponentPaletteItem: TAction;
     ProgramResetBtn: TToolButton;
     SurroundWithPopItem: TMenuItem;
     actDelete: TAction;
@@ -99,6 +101,7 @@ type
     procedure actNewwxDialogExecute(Sender: TObject);
     procedure UpdateXRC(editorName: string);
     procedure actShowPropertyInspItemExecute(Sender: TObject);
+    procedure actShowComponentPaletteItemExecute(Sender: TObject);
 
   private
     plugin_name: string;
@@ -302,6 +305,7 @@ type
     function GetCompilerOptions: TSettings;
     procedure SetCompilerOptionstoDefaults;
     procedure TestReport;
+    procedure AfterStartupCheck;
   end;
 
 var
@@ -356,7 +360,7 @@ begin
     Name := 'frmInspectorDock';
     Caption := 'Property Inspector';
     BorderStyle := bsSizeToolWin;
-    Color := clBtnFace;
+    Color := cl3dLight;
     Width := 300;
 
     DockSite := True;
@@ -371,12 +375,13 @@ begin
   frmPaletteDock.ParentFont := True;
   frmPaletteDock.Font.Assign(ownerForm.Font);
   ComponentPalette := TComponentPalette.Create(frmPaletteDock);
+  ComponentPalette.Visible := false;
   with frmPaletteDock do
   begin
     Name := 'frmPaletteDock';
     Caption := 'Components';
     BorderStyle := bsSizeToolWin;
-    Color := clBtnFace;
+    Color := cl3dLight;
     Width := 170;
 
     DockSite := True;
@@ -394,6 +399,16 @@ begin
     Caption := 'Show Property Inspector';
     Action := actShowPropertyInspItem;
     OnClick := actShowPropertyInspItemExecute;
+    Checked := true;
+  end;
+
+    //Add the property inspector view menu item
+  ShowComponentPaletteItem := TMenuItem.Create(Self);
+  with ShowComponentPaletteItem do
+  begin
+    Caption := 'Show Component Palette';
+    Action := actShowComponentPaletteItem;
+    OnClick := actShowComponentPaletteItemExecute;
     Checked := true;
   end;
 
@@ -2415,7 +2430,7 @@ begin
   JvInspProperties.Enabled := False;
   JvInspEvents.Enabled := False;
   ComponentPalette.Enabled := False;
-  //ComponentPalette.Color := clGray; EAB: we need to change color or give some visual cue here
+  ComponentPalette.Visible := False; //EAB: we need to change color or give some visual cue here
 
   ELDesigner1.Active := False;
   ELDesigner1.DesignControl := nil;
@@ -2459,7 +2474,7 @@ begin
   JvInspProperties.Enabled := true;
   JvInspEvents.Enabled := True;
   ComponentPalette.Enabled := True;
-  //ComponentPalette.Color := clNone;  EAB
+  ComponentPalette.Visible := True;  // EAB
 end;
 
 procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);
@@ -4291,10 +4306,10 @@ begin
   editors.Free;
   //DesignerPopup.Free;
   //WxPropertyInspectorPopup.Free;
-   //ELDesigner1.Free;
-   //self.Free;
-   //frmPaletteDock.Destroy;
-   //frmInspectorDock.Destroy;
+  //ELDesigner1.Free;
+  //self.Free;
+  //frmPaletteDock.Destroy;
+  //frmInspectorDock.Destroy;
   main := nil;
 end;
 
@@ -4303,7 +4318,12 @@ begin
   if TForm(Sender) = frmInspectorDock then
   begin
     ShowPropertyInspItem.Checked := False
+  end
+  else if TForm(Sender) = frmPaletteDock then
+  begin
+    ShowComponentPaletteItem.Checked := False
   end;
+
 end;
 
 function TWXDsgn.IsSource(FileName: string): Boolean;
@@ -4405,6 +4425,7 @@ var
 begin
   items := TList.Create;
   items.Add(ShowPropertyInspItem);
+  items.Add(ShowComponentPaletteItem);
   Result := items;
 end;
 
@@ -4477,6 +4498,13 @@ begin
   TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
   main.ToggleDockForm(frmInspectorDock, TMenuItem(Sender).Checked)
 end;
+
+procedure TWXDsgn.actShowComponentPaletteItemExecute(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+  main.ToggleDockForm(frmPaletteDock, TMenuItem(Sender).Checked)
+end;
+
 
 function TWXDsgn.GetXMLExtension: string;
 begin
@@ -4674,6 +4702,12 @@ end;
 procedure TWXDsgn.TestReport;
 begin
   ShowMessage('wxdsgn plugin has been loaded.');
+end;
+
+procedure TWXDsgn.AfterStartupCheck;
+begin
+    ShowPropertyInspItem.Checked := frmInspectorDock.Visible;
+    ShowComponentPaletteItem.Checked := frmPaletteDock.Visible;
 end;
 
 initialization

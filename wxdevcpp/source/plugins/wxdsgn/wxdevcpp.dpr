@@ -29,8 +29,8 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  FastMM4,
-  FastCode,
+  {FastMM4,      // Do not deploy with these activated due to licensing incompatibilities
+  FastCode,}
   LanguagesDEPFix,
   Windows,
   Forms,
@@ -122,7 +122,10 @@ uses
   xProcs in '..\..\xprocs.pas',
   ExceptionFilterUnit in '..\..\ExceptionFilterUnit.pas',
   Hashes in '..\..\packages\Hashes.pas',
-  devShortcutsEditorForm in '..\..\packages\devShortcutsEditorForm.pas' {frmShortcutsEditor};
+  devShortcutsEditorForm in '..\..\packages\devShortcutsEditorForm.pas' {frmShortcutsEditor},
+  D6OnHelpFix in '..\..\D6OnHelpFix.pas',
+  hh in '..\..\hh.pas',
+  hh_funcs in '..\..\hh_funcs.pas';
 
 {$R *.res}
 

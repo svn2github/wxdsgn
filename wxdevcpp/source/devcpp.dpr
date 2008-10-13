@@ -107,7 +107,8 @@ uses
   iplugger in 'plugins\interfaces\iplugger.pas',
   iplugin in 'plugins\interfaces\iplugin.pas',
   iplugin_bpl in 'plugins\interfaces\iplugin_bpl.pas',
-  D6OnHelpFix in 'D6OnHelpFix.pas';
+  hh in 'hh.pas',
+  hh_funcs in 'hh_funcs.pas';
 
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}

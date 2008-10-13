@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 781
-  Top = 412
+  Left = 674
+  Top = 370
   Width = 636
   Height = 442
   Anchors = [akLeft, akTop, akBottom]
@@ -1356,13 +1356,13 @@ object MainForm: TMainForm
     Top = 231
     Width = 622
     Height = 130
-    ActivePage = CompSheet
+    ActivePage = TodoSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 0
+    TabIndex = 5
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -1496,7 +1496,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 323
-          Height = 82
+          Height = 85
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -2744,9 +2744,41 @@ object MainForm: TMainForm
       object N63: TMenuItem
         Caption = '-'
       end
-      object ShowProjectInspItem: TMenuItem
-        Caption = 'Show &Project Inspector'
-        OnClick = ShowProjectInspItemClick
+      object ShowPanelsItem: TMenuItem
+        Caption = 'Show Panels'
+        object ShowProjectInspItem: TMenuItem
+          Caption = '&Project Inspector'
+          OnClick = ShowProjectInspItemClick
+        end
+        object CompilerMessagesPanelItem: TMenuItem
+          Caption = 'Compiler'
+          OnClick = CompilerMessagesPanelItemClick
+        end
+        object ResourcesMessagesPanelItem: TMenuItem
+          Caption = 'Resources'
+          OnClick = ResourcesMessagesPanelItemClick
+        end
+        object CompileLogMessagesPanelItem: TMenuItem
+          Caption = 'Compile Log'
+          OnClick = CompileLogMessagesPanelItemClick
+        end
+        object DebuggingMessagesPanelItem: TMenuItem
+          Caption = 'Debugging'
+          OnClick = DebuggingMessagesPanelItemClick
+        end
+        object FindResultsMessagesPanelItem: TMenuItem
+          Caption = 'Find Results'
+          OnClick = FindResultsMessagesPanelItemClick
+        end
+        object ToDoListMessagesPanelItem: TMenuItem
+          Caption = 'To-Do List'
+          OnClick = ToDoListMessagesPanelItemClick
+        end
+      end
+      object ShowPluginPanelsItem: TMenuItem
+        Caption = 'Show Plugin Panels'
+        object TMenuItem
+        end
       end
     end
     object ProjectMenu: TMenuItem

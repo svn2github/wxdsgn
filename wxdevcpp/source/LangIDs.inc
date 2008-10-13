@@ -131,6 +131,8 @@ const
   ID_ITEM_FLOATPROJECT             = 182;
   ID_ITEM_GOTOPROJECTVIEW          = 183;
   ID_ITEM_GOTOCLASSBROWSER         = 184;
+  ID_ITEM_PANELS                   = 3700;
+  ID_ITEM_PLUGINPANELS             = 3701;
   //185 is free
   ID_ITEM_STATUSBAR                = 186;
   //187 to 189 is free
@@ -274,7 +276,7 @@ const
   ID_SHEET_RES                     = 301;
   ID_SHEET_COMPLOG                 = 302;
   ID_SHEET_FIND                    = 303;
-  //304 is free
+  ID_SHEET_TODO                    = 306;
   ID_SHEET_DEBUG                   = 305;
   // free to 310 for new sheets
 

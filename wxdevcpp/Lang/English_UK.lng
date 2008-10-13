@@ -1,5 +1,5 @@
 [lang]
-Lang=English (Original)
+Lang=English (GB)
 Ver=1
 
 #Top level menus
@@ -66,11 +66,11 @@ Ver=1
 178=&Search Again
 179=&Goto line...
 180=&Incremental Search
-181=Go&to Function...
+181=Go&to function...
 
 #View menu
-182=Show &Project Inspector
-183=Go to Project &Inspector
+182=Floating Project Manager
+183=Go to Project &Manager
 184=Go to Class &Browser
 185=&Project/Class Browser
 186=&Statusbar
@@ -105,7 +105,7 @@ Ver=1
 
 #Execute menu
 210=&Compile
-211=&Run without Debugging
+211=&Run
 212=C&ompile && Run
 213=&Rebuild All
 214=C&lean
@@ -133,28 +133,27 @@ Ver=1
 237=&List...
 
 #Help menu
-240=&About wxDev-C++...
+240=&About Dev-C++...
 241=&Check for Updates/Packages...
-242=C&ustomize Help Menu...
-243=&Help on wxDev-C++
+242=C&ustomise Help Menu...
+243=&Help on Dev-C++
 
 #Debug Menu
-245=&Run
+245=&Debug
 246=&Toggle Breakpoint
-247=&Step Over
-248=&Pause Excution
+247=&Next Step
+248=&Continue
 249=&Add Watch
 250=&Watch Variables
-251=St&op Execution
+251=Stop Execution
 252=&Edit watch
 253=&Remove watch
 254=Step &Into
 255=Run to &Cursor
 256=&View CPU Window
 257=A&ttach to process...
-258=&Modify Watched Variable
+258=&Modify value
 259=&Clear all
-#more at 390
 
 #context menus
 # project menu
@@ -184,7 +183,7 @@ Ver=1
 289=Remove folder
 290=Rename folder
 291=You can't create more than %d folders in one project...
-292=Use colors
+292=Use colours
 293=Project files
 294=Show inherited members
 295=Open with...
@@ -216,16 +215,17 @@ Ver=1
 321=Col
 322=Variable Name
 323=Value
-324=Information
-325=Compile Log
+324=Information:
+325=Compile Log:
 326=Total Errors:
 327=Size of Output:
 
 # debug
+
 330=Watched Variables
 331=Backtrace
 332=Output
-333=Send command to debugger:
+333=Send command to GDB :
 334=Send
 
 # Specials toolbar items
@@ -245,7 +245,7 @@ Ver=1
 354=Save Project
 355=Select a Help File
 
-357=New Variable Watch
+357=New Variable  Watch
 358=Enter Variable Name:
 359=Modify Variable Watch
 360=New Variable Name:
@@ -263,24 +263,21 @@ Ver=1
 383=Unindent
 384=Swap header/source
 
-#Debug menu (more)
-390=&Restart
-
 #Editor Options Dialog 400-499
 400=Editor Options
 401=General
 402=Display
-403=Syntax Highlighting
+403=Syntax
 404=Code
 405=Completion
-406=Class Browsing
+406=Class browsing
 
 #sub tabs
 410=Inserts
 411=Default Source
 
 # General Tab
-420=Editor Options
+420=Editor Options:
 421=Auto Indent
 422=Insert Mode
 423=Use Tab Character
@@ -301,8 +298,8 @@ Ver=1
 438=Tab Size:
 439=Right Margin
 440=Visible
-441=Width:
-442=Color
+441=Width
+442=Colour
 443=Caret
 444=Insert Caret
 445=Overwrite Caret
@@ -314,19 +311,13 @@ Ver=1
 451=Show hidden line characters
 452=Show editor hints
 453=Highlight matching braces/parentheses
-454=Ensure that file ends with newline
-455=Highlight current line
-456=Sets to System HighlightText value
-457=Sets to WhiteSpace value
-458=Code folding
-459=Show indent guides
 
 # through 459 for additions
 
 # Display Tab
 460=Editor Font:
-461=Font:
-462=Size:
+461=Font
+462=Size
 463=Editor Font
 464=Gutter
 465=Auto Size
@@ -343,24 +334,24 @@ Ver=1
 474=Bold
 475=Italic
 476=Underlined
-477=Highlighting Styles:
-478=Type:
+477=Colour Speed Settings
+478=Type :
 479=Save custom syntax settings
 419=Enter the new syntax settings name:
 
 # Code Tab
-480=Code:
+480=Code
 481=Menu Text
 482=Section
 483=Description
 484=Insert Default Code into Empty Project Source Initial File
 
 # Completion Tab
-485=Use code-completion cache
+485=Use code completion cache
 486=Files in cache:
-487=Enable code-completion
+487=Enable code completion
 488=Delay (ms):
-489=Dialog Background Color:
+489=Background colour:
 
 # Class browsing Tab
 490=Class Browser settings
@@ -386,17 +377,17 @@ Ver=1
 521=Select the file to remove from the project :
 
 #Goto line form
-525=Go to Line
-526=Go to line number:
+525=Go to line ...
+526=New Line:
 
 #Tool config form
 530=Tools Configuration
-531=Current Tools
+531=Current Tools:
 
 #Edit Tool form
 535=Edit Tool Entry
 536=Title
-537=Program
+537=Programme
 538=Working Directory
 539=Parameters
 540=Insert Macro
@@ -409,14 +400,16 @@ Ver=1
 
 #Configure Shortcuts Form
 550=Configure Shortcuts
-551=Click on an item and press a key to assign the menu item a shortcut.
-552=Tip: Press Escape to remove the shortcut.
+551= Click on an item and press the shortcut you desire!
+552=Tip: press "Escape" to clear a shortcut...
 553=Menu entry
 554=Shortcut assigned
+555=Cancel
+556=OK
 
 #Tool Menu Macros
 560=Returns default directory
-561=Returns wxDev-C++ working directory
+561=Returns dev-c++ working directory
 562=Returns the compiled filename
 563=Returns the path to either the current project or source file
 564=Returns the filename of either the current project or source file
@@ -425,21 +418,32 @@ Ver=1
 567=Returns the path of current source file
 568=Returns a space seperated list of source files from the current project
 569=Returns the word at the cursor in the active editor
-570=Returns wxDev-C++ version
+570=Returns dev-c++ version
 # -- TO 579
 
 #About form
-580=About wxDev-C++
+580=About Dev-C++ :)
+581=inseculous@users.sourceforge.net
 582=GNU General Public License
 583=Contact Information
+584=Bloodshed Software Website:
+585=Mingw Compiler Website:
+586=Dev-C++ discussion forums:
+587=Dev-C++ users mailing list:
+588=Authors e-mail:
+589=http://www.bloodshed.net
+590=http://www.mingw.org
+591=http://www.bloodshed.net/forum
+592=http://www.bloodshed.net/devcpp-ml.html
+593=haiku@bloodshed.net
 594=&Check for updates
 
-#Code Inserts Entry Editor
-600=Code Insert Editor
+#Code Inserts Entry Edit form
+600=Edit code insert entry
 601=Add code insert entry
-602=Menu Caption:
-603=Description:
-604=Menu Section:
+602=Menu Item Caption
+603=Item Description
+604=Menu Section
 
 #Environment options form
 606=Compilation Progress Window 
@@ -453,18 +457,18 @@ Ver=1
 614=Default to C++ on New Project
 615=Show Toolbars in Full Screen
 616=Create Backup Files
-617=Minimize on Run
+617=Minimise on Run
 618=Open/Save Dialog Style
 619=Windows 2k (sidebar)
 620=Windows 9x
 621=Windows 3.1
 622=Language:
 623=Message Window Tabs:
-624=Files to retain in Recently Used List:
-625=User's Default Directory:
-626=Output Directory:
-627=Icon Library Path:
-628=Splash Screen Image:
+624=Max Files in ReOpen Menu
+625=User's Default Directory
+626=Output Directory
+627=Icon Library Path
+628=Splash Screen Image
 629=Select Default User Directory
 630=Select Compiler Output Directory
 631=Select Icon Library Directory
@@ -472,8 +476,8 @@ Ver=1
 633=Only First Project File
 634=None
 635=Show Menu in Full Screen Mode
-636=Double-click to open Project Inspector Files
-637=Language Files Path:
+636=Double Click to Open Project Manager Files
+637=Language Files Path
 638=Theme:
 639=Interface
 
@@ -481,16 +485,16 @@ Ver=1
 640=Find Text
 641=Find
 642=Find in Files
-643=Text to Find:
+643=&Text to Find
 644=Options:
 645=Case &Sensitive
 646=&Whole Words Only
 647=Where
-648=Files in Project
-649=Open Files
+648=&Files in Project
+649=&Open Files
 650=Scope
 651=&Global
-652=Selected Only
+652=&Selected Only
 653=Origin
 654=From Cursor
 655=Entire Scope
@@ -527,15 +531,15 @@ Ver=1
 701=Compiler
 702=Directories
 703=Settings
-704=Linker:
+704=Linker
 705=Programs
 
 710=Binaries
 711=Libraries
 712=C Includes
 713=C++ Includes
-720=C compiler:
-721=C++ compiler:
+720=C compiler
+721=C++ compiler
 722=Compiler:
 725=Support all ANSI standard C programs
 726=Attempt to support some aspects of traditional C preprocessors
@@ -545,31 +549,31 @@ Ver=1
 730=Use heuristics to compile faster
 731=Use Cygwin instead of the Mingw compiler
 732=Add the following commands when calling compiler:
-733=Compile Delay:
-734=Enable a delay in milliseconds if make complains about the makefile's time stamp.
+733=Compile Delay
+734=Enables a delay in milliseconds if make complains about the makefiles time stamp.
 735=Displays one error per line
 
 740=Code Generation
-741=Optimization
+741=Optimisation
 745=Enable exception handling
 746=Use same size for double and float
 747=Put extra commentary information in the generated assembly code
-748=Optimize
-749=Best Optimization
-750=Perform a number of minor optimizations
+748=Optimise
+749=Best Optimisation
+750=Perform a number of minor optimisations
 751=Makefile generation:
 752=Use fast but imperfect dependency generation
 753=Code profiling
 754=Generate profiling info for analysis
-755=Link an Objective-C program
+755=Link an Objective  C program
 756=Generate debugging information
 757=Do not use standard system startup files or libraries
 758=Do not create a console window
 759=Add these commands to the linker command line
-760=Do &not optimize
-761=Optimize more
+760=Do &not optimise
+761=Optimise more
 
-770=You may want to change the programs filenames that are used in wxDev-C++ (for example when using a cross compiler) :
+770=You may want to change the programme filenames that are used in Dev-C++ (for example when using a cross compiler) :
 771=Compiler set to configure:
 772=New compiler set
 773=Enter the new set name:
@@ -577,12 +581,13 @@ Ver=1
 775=Are you sure you want to delete this compiler set?
 776=Rename compiler set
 777=Enter the new name to rename the set:
-778=Further optimizations
+778=Further optimisations
 
 #Help Editor Form
 780=Help Menu Editor
 781=Menu Text
 782=Help File
+783=Help Menu Options
 784=Icon
 785=Menu Section
 786=Section 1
@@ -596,17 +601,17 @@ Ver=1
 800=Print File
 801=Parameters:
 802=Pages:
-803=&Colors
+803=&Colours
 804=&Highlight
 805=&Word wrap
 806=&Line Numbers
 807=Print Line Numbers
 808=Print Line Numbers in Margin
 809=Number of Copies:
-810=Print Selection Only
+810= Print Selection Only
 
 #Update Form
-820=Check for Update of wxDev-C++
+820=Check for Update of Dev-C++
 821=Task:
 822=Results:
 823=Release Version:
@@ -615,14 +620,13 @@ Ver=1
 826=Download site (double-click to download):
 
 #AddToDo form
-829=Add To-Do Item
-830=Add To-Do Item...
+830=Add To-Do item...
 831=Description
 832=Priority
 833=User
 
 #ViewToDo form
-835=To-Do List
+835=To-Do list...
 836=Filename
 837=Done
 838=Don't show items marked as done
@@ -635,29 +639,29 @@ Ver=1
 845=Current file only
 
 #Import MSVC++ form
-850=Import Visual C++ project
-851=Select Visual C++ Project File:
-852=Import options:
-853=Configuration to Import:
-854=wxDev-C++ Project Filename:
-855=The Visual C++ project file has been imported and converted to a wxDev-C++ project successfully.<CR><CR>Do you want to open it now?
-856=Cannot locate target configuration "%s" (this is probably a bug in wxDev-C++)
+850=Import MS Visual C++ project
+851=Select Visual C++ project file
+852=Import options
+853=Configuration to import
+854=Dev-C++ project filename
+855=The MS Visual C++ project file has been imported and converted to a Dev-C++ project succesfully! Do you want to open it now?
+856=Cannot locate target configuration "%s" (this is probably a bug in Dev-C++)...
 
 #Project Options form
 900=Project Options
 901=General
 902=Directories
 903=Name:
-904=Icon
+904=Icon:
 905=Library
 906=Browse
-907=Project Type
-908=Windows (GUI) Application
-909=Console Application
-910=Static Library
-911=Dynamic Library
+907=Type:
+908=Win32 GUI
+909=Win32 Console
+910=Win32 Static Lib
+911=Win32 DLL
 912=Compile as C++
-913=Parameters
+913=Additional Command-line options:
 914=Compiler:
 915=Linker Options/Optional Libs or Object files:
 916=Library Directories
@@ -669,12 +673,11 @@ Ver=1
 922=Build Options
 923=Directories
 989=Makefile
-924=&Executable output directory:
-925=&Object file output directory:
+924=&Executable output directory
+925=&Object file output directory
 926=O&verride output filename
 927=Add Library or Object
 928=%d files [%d sources, %d headers, %d resources]
-929=Preprocessor Definitions:
 
 #New template form
 930=Name:
@@ -705,6 +708,7 @@ Ver=1
 955=Create member function to WRITE to this variable
 956=Name:
 957=Comments
+958=Description:
 959=Style:
 960=Create
 961=Cancel
@@ -765,10 +769,9 @@ Ver=1
 1018=Enter the new folder name:
 1019=The file %s is marked as read-only. Do you want to mark it as read-write? If no, the file will not be saved...
 1020=An error occured. The file %s was not marked as read-write and it was not saved...
-1021=An Access Violation was raised in your program.<CR><CR>Do you want to break into the process?
-1022=The source file is more recent than the executable. Do you want to rebuild the project?
+1021=An Access Violation (Segmentation Fault) has been raised in your program.
+1022=Source file is more recent than executable. Do you want to rebuild it ?
 1023=Please select the application you want to attach to:
-1024=A Breakpoint was raised in your program<CR><CR>Do you want to break into the process?
 
 # errors
 1500=Cannot open file %s
@@ -785,17 +788,17 @@ Ver=1
 1511=Template file %s wasn't found, Skipping.
 1512=No template assigned.
 1513=File %s is not found.
-1514=No host application was provided. You can set it in Execute | Parameters.
-1515=The host application could not be found. Verify that the file exists, or change it to refer to the new application in Execute | Parameters.
+1514=No Host Application was provided. You can set it in the Execute menu, Parameters.
+1515=Host Application not found! You can change it in Execute menu, Parameters.
 
 # misc
 2000=Untitled
-2001=Read Only
+2001=ReadOnly
 2002=Insert
 2003=Overwrite
 2004=Project%d
 2005=Please specify another filename.
-2006=%d lines in file
+2006=%d Lines in file
 2007=Rename file
 2008=Executing %s
 2009=Execution terminated
@@ -809,7 +812,7 @@ Ver=1
 2017=Compilation aborted by user
 
 # buttons
-2500=&OK
+2500=&Ok
 2501=&Cancel
 2502=&Help
 2503=&Default
@@ -834,10 +837,10 @@ Ver=1
 
 # CPU Window
 2600=CPU Window
-2601=Assembly Code
+2601=Assembler code:
 2602=Function:
-2603=Assembly Syntax
-2604=Registers
+2603=Assembler Syntax:
+2604=Registers:
 
 # TipOfTheDay Window
 2700=Tip of the day
@@ -850,22 +853,22 @@ Ver=1
 # Environment Options (more)
 2800=File Associations
 2801=File Types:
-2802=Check the file types which you want wxDev-C++ to be registered as the default application to open them.
+2802=Just check or un-check for which file types Dev-C++ will be registered as the default application to open them...
 2803=CVS Support
-2804=CVS Program File:
-2805=Compression Level:
+2804=CVS Programme File
+2805=Compression Level
 2806=Use SSH instead of RSH
-2807=Templates Directory:
+2807=Templates Directory
 2808=Select Templates Directory
 2809=Use XP Theme
-2810=External programs
-2811=External program
+2810=External programmes
+2811=External programme
 2812=Extension
-2813=External program associations:
+2813=External programme associations:
 2814=Watch variable under mouse
 2815=Report watch errors
-2816=Debug variables browser
-2817=Alternate Configuration File
+2816=  Debug variables browser 
+2817=  Alternate Configuration File  
 2818=Use this alternate configuration file
 2819=You changed the configuration file to be used by the application.<CR>The new configuration file will *not* be used in the current session. Any configuration changes you do in this session, will be saved in the *currently* open configuration file.<CR><CR>It is suggested that you restart the application now, so that it starts using the new configuration file...
 
@@ -875,7 +878,7 @@ Ver=1
 
 # Window list
 2910=Window List
-2911=Open Editor Windows
+2911=Select the window you want to edit:
 
 # CVS Menu
 2990=Current file...
@@ -942,8 +945,8 @@ Ver=1
 
 # Params form
 3100=Parameters
-3101=Parameters to pass to your program
-3102=Host Application
+3101=Parameters to pass to your programme:
+3102=Host Application:
 
 # Project options form (continued)
 3200=Files
@@ -951,9 +954,9 @@ Ver=1
 3202=Project options:
 3203=Generate debugging information
 3204=Generate profiling information
-3205=NOTE: All settings changed here will only affect the current project.
+3205=NOTE: These settings will override the global Compiler Options affecting this project only.
 3206=Support Windows XP Themes
-3207=File Options
+3207=File options:
 3208=Include in compilation
 3209=Compile file as C++
 3210=Version info
@@ -964,33 +967,17 @@ Ver=1
 3215=Release:
 3216=Build:
 3217=Language:
-3218=Additional information
-3219=Override build command:
+3218=Additional information:
+3219=Override build command
 3220=Output file
 3221=Include in linking
 3222=Build priority:
-3223=Build number increment
-3224=Use Custom Makefile
-3225=Information about customizing the Makefile...
-3226=Include the following files into the Makefile
-3227=Auto-Increment on compile
-3228=Auto-Increment on rebuild
-3229=Don't Auto-Increment
-3230=Precompiled Headers
-3231=No precompiled header
-3232=Create precompiled header
-3233=Use precompiled header
+3223=Auto-increment build number on compile
+3224=Use custom Makefile (do not generate a Makefile, use this one)
+3225=Information about customising the Makefile...
+3226=&Include the following files into the Makefile:
 
 # More compiler options
 3400=Strip executable
 3401=Generate instructions for the following machine
 3402=Enable use of processor specific built-in functions
-
-# Compiler output messages
-3600=[General Error] %s
-3601=[Resource Error] %s
-3602=[Linker Error] %s
-3603=[Makefile Generation Warning] %s
-
-3610=There are too many errors; output parsing stopped
-3611=For precompiled headers to be used one header and one source file must be set to 'Create precompiled header' in Project Options; precompiled headers not used

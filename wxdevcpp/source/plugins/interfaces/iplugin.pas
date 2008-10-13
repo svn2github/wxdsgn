@@ -75,6 +75,7 @@ type
   procedure TerminateEditor(FileName: String);
   function ConvertLibsToCurrentVersion(strValue: String): String;  
   function GetXMLExtension: String;
+  procedure AfterStartupCheck;
 end;
 
 implementation
