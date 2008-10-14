@@ -420,13 +420,13 @@ begin
       Format('%s = new %s(%s, %s, %s, %s%s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
-      GetWxPosition(self.Left, self.Top), FWx_Length, -1, strStyle])
+      GetWxPosition(self.Left, self.Top), GetWxSize(FWx_Length, -1), strStyle])
   else
     Result := GetCommentString(self.FWx_Comments.Text) +
       Format('%s = new %s(%s, %s, %s, %s%s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),
-      GetWxPosition(self.Left, self.Top), -1, FWx_Length, strStyle]);
+      GetWxPosition(self.Left, self.Top), GetWxSize(-1, FWx_Length), strStyle]);
 end;
 
   if trim(self.Wx_ToolTip) <> '' then

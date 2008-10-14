@@ -347,7 +347,7 @@ begin
 
   //Determine whether we should just use wxDefaultSize
   if wxST_NO_AUTORESIZE in Wx_LabelStyle then
-    strSize := Format('wxSize(%d, %d)', [GetWxSize(self.Width, self.Height)])
+    strSize := Format('wxSize(%d, %d)', [self.Width, self.Height])
   else
     strSize := 'wxDefaultSize';
 

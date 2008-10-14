@@ -361,7 +361,7 @@ begin
       strBitmapArrayName, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle])
   else
     Result := GetCommentString(self.FWx_Comments.Text) +
-      Format('%s = new %s(%s, %s, %s, %s, %s%s);',
+      Format('%s = new %s(%s, %s, %s, %s, %s %s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
         self.Wx_IDValue),
       strBitmapArrayName, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);

@@ -371,8 +371,7 @@ if (XRCGEN) then
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %d, %s, %s%s);',
     [self.Name, self.Wx_Class, ParentName,
-    GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Max, self.Left,
-    self.Top, GetWxSize(self.Width, self.Height), strStyle]);
+    GetWxIDString(self.Wx_IDName, self.Wx_IDValue), self.Max, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
  end;
 
   if trim(self.Wx_ToolTip) <> '' then

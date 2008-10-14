@@ -562,8 +562,7 @@ if (XRCGEN) then
     Format('%s = new %s(%s, %s, %d, %d, %d, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    self.position, self.Min, self.Max, GetWxPosition(self.Left, self.Top), self.Width,
-    self.Height, strStyle]);
+    self.position, self.Min, self.Max, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
  end;
 
   if trim(self.Wx_ToolTip) <> '' then
