@@ -23,7 +23,7 @@
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -380,7 +380,9 @@ File "license.txt"
   ; Install Dev-C++ examples
   !insertmacro InstallDevPak "devcpp_examples.DevPak"
 
-  
+  ; Install Dev-C++ examples
+  !insertmacro InstallDevPak "Templates.DevPak"
+
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
 
