@@ -3423,7 +3423,7 @@ begin
   if idx >= fHelpFiles.Count then exit;
   aFile := fHelpFiles.Values[idx];
 
-  if AnsiPos(HTTP, aFile) = 1 then
+  {if AnsiPos(HTTP, aFile) = 1 then
     ExecuteFile(aFile, '', devDirs.Help, SW_SHOW)
   else
   begin
@@ -3431,7 +3431,12 @@ begin
     if AnsiPos(':\', aFile) = 0 then
       aFile := ExpandFileto(aFile, devDirs.Exec);
     ExecuteFile(aFile, '', ExtractFilePath(aFile), SW_SHOW);
-  end;
+  end;}
+    Application.HelpFile := aFile;
+    // moving this to WordToHelpKeyword
+    // it's annoying to display the index when the topic has been found and is already displayed...
+//    Application.HelpCommand(HELP_FINDER, 0);
+    WordToHelpKeyword;
 end;
 
 procedure TMainForm.CompOutputProc(const _Line, _Unit, _Message: string);
@@ -5285,8 +5290,8 @@ begin
 {$ENDIF}
       if ssCtrl in Shift then
         ShowDebug;
-    VK_F1:
-         WordToHelpKeyword;
+    {VK_F1:
+         WordToHelpKeyword;}
   end;
     
 {$IFDEF PLUGIN_BUILD}
@@ -6976,7 +6981,7 @@ end;
 
 procedure TMainForm.HelpMenuItemClick(Sender: TObject);
 begin
-  //Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
+  Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
   //  Fix for help system on Vista:
   //mHHelp := THookHelpSystem.Create(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE, '', htHHAPI);
   //WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), SW_SHOW);
@@ -7000,7 +7005,7 @@ begin
     if (tmp <> '') then  begin
       //GetMem(s, length(tmp) + 1);
       //StrCopy(s, pchar(tmp));
-      HelpWindow := HtmlHelp(self.handle, PChar(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
+      HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
       //Application.HelpCommand(HELP_KEY, integer(s));
       //FreeMem(s);
       //OK := True;     // EAB: how about using "else" ?
@@ -7009,11 +7014,11 @@ begin
     begin
         tmp := e.Text.SelText;
         if (tmp <> '') then
-          HelpWindow := HtmlHelp(self.handle, PChar(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
+          HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
     end;
   end
   else 
-      HelpWindow := HtmlHelp(self.handle, PChar(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), HH_DISPLAY_TOPIC, 0);
+      HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC, 0);
     //  WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), SW_SHOW);
     //Application.HelpCommand(HELP_FINDER, 0);
 end;
@@ -7338,19 +7343,19 @@ begin
   if idx >= fHelpFiles.Count then
     exit;
   aFile := fHelpFiles.Values[idx];
-  if AnsiCompareFileName(ExtractFileExt(aFile), '.chm') = 0 then begin
+  {if AnsiCompareFileName(ExtractFileExt(aFile), '.chm') = 0 then begin
     ExecuteFile(aFile, '', devDirs.Help, SW_SHOW);
     exit;
   end;
   if AnsiPos(HTTP, aFile) = 1 then
     ExecuteFile(aFile, '', devDirs.Help, SW_SHOW)
-  else begin
+  else begin}
     Application.HelpFile := aFile;
     // moving this to WordToHelpKeyword
     // it's annoying to display the index when the topic has been found and is already displayed...
 //    Application.HelpCommand(HELP_FINDER, 0);
     WordToHelpKeyword;
-  end;
+ // end;
 end;
 
 procedure TMainForm.AddWatchBtnClick(Sender: TObject);

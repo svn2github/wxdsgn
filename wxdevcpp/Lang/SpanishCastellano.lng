@@ -88,6 +88,8 @@ Ver=13
 188=Siempre &visible
 189=Mostrar sólo cuando se &nececite
 190=&Barras de Herramientas
+3700=Mostrar Paneles
+3701=Mostrar Paneles de Plugins
 
 # Toolbar Captions
 191=Principal
@@ -204,6 +206,7 @@ barra de herramientas o F12 para regresar a modo normal.
 303=Ver Resultados
 304=Cerrar
 305=Depurar
+306=Lista Por-Hacer
 
 # pop menu
 310=&Borrar resultados
