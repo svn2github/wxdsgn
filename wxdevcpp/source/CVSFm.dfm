@@ -243,7 +243,7 @@ object CVSForm: TCVSForm
         Top = 164
         Width = 165
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 6
         Text = 'cmbCOBeforeDate'
       end
@@ -270,7 +270,7 @@ object CVSForm: TCVSForm
         Top = 188
         Width = 165
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 9
         Text = 'cmbCORevision'
       end
@@ -391,7 +391,7 @@ object CVSForm: TCVSForm
           Top = 20
           Width = 165
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 3
           Text = 'cmbBeforeDate'
         end
@@ -400,7 +400,7 @@ object CVSForm: TCVSForm
           Top = 44
           Width = 165
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 4
           Text = 'cmbRevision'
         end
@@ -632,7 +632,7 @@ object CVSForm: TCVSForm
           Width = 201
           Height = 21
           Enabled = False
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 3
           Text = 'cmbLogFbyDate'
         end
@@ -852,7 +852,7 @@ object CVSForm: TCVSForm
         Height = 21
         AutoDropDown = True
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
         Text = 'cmbRepos'
         OnChange = cmbReposChange

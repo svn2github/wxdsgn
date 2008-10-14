@@ -17,6 +17,7 @@ object frmHelpEdit: TfrmHelpEdit
   Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   DesignSize = (
     342
     361)
@@ -228,6 +229,8 @@ object frmHelpEdit: TfrmHelpEdit
       Top = 31
       Width = 90
       Height = 22
+      ItemsEx.CaseSensitive = False
+      ItemsEx.SortType = stNone
       ItemsEx = <
         item
           Caption = 'None'
@@ -261,6 +264,7 @@ object frmHelpEdit: TfrmHelpEdit
           SelectedImageIndex = 6
         end>
       Style = csExDropDownList
+      StyleEx = []
       ItemHeight = 16
       TabOrder = 0
       OnSelect = cboIconSelect

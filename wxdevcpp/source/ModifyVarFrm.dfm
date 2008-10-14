@@ -15,6 +15,7 @@ object ModifyVarForm: TModifyVarForm
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
     297

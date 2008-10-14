@@ -15,6 +15,7 @@ object EnviroForm: TEnviroForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   DesignSize = (
@@ -30,6 +31,7 @@ object EnviroForm: TEnviroForm
     ActivePage = tabInterface
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
+    TabIndex = 1
     TabOrder = 0
     OnChange = PagesMainChange
     object tabGeneral: TTabSheet

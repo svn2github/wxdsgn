@@ -61,6 +61,7 @@ type
     procedure btnCreateClick(Sender: TObject);
     procedure memDescrChange(Sender: TObject);
     procedure chkStaticClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure LoadText;
@@ -351,6 +352,11 @@ begin
   chkVirtual.OnClick := chkStaticClick;
   chkPure.OnClick := chkStaticClick;
   chkInline.OnClick := chkStaticClick;
+end;
+
+procedure TNewMemberForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

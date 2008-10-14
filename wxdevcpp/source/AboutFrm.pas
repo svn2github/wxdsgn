@@ -73,6 +73,7 @@ type
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     procedure LoadText;
   end;
@@ -155,6 +156,11 @@ end;
 procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
 begin
   MainForm.actUpdateCheckExecute(sender);
+end;
+
+procedure TAboutForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

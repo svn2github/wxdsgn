@@ -197,6 +197,7 @@ type
     procedure btnDelProfileSetClick(Sender: TObject);
     procedure btnRenameProfileSetClick(Sender: TObject);
     procedure btnCopyProfileSetClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     fProfiles: TProjectProfileList;
     fIcon: string;
@@ -1466,6 +1467,11 @@ begin
   cmbProfileSetComp.ItemIndex := cmbProfileSetComp.Items.Count - 1;
   cmbProfileSetComp.OnChange(cmbProfileSetComp);
 
+end;
+
+procedure TfrmProjectOptions.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

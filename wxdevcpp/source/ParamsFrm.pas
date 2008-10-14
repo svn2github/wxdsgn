@@ -45,6 +45,7 @@ type
     procedure LoadBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     procedure LoadText;
     { Private declarations }
@@ -93,6 +94,11 @@ procedure TParamsForm.FormShow(Sender: TObject);
 begin
   DesktopFont := True;
   XPMenu.Active := devData.XPTheme;
+end;
+
+procedure TParamsForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

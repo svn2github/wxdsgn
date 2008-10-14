@@ -13,6 +13,7 @@ object NewTemplateForm: TNewTemplateForm
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -68,7 +69,7 @@ object NewTemplateForm: TNewTemplateForm
         Width = 235
         Height = 21
         AutoDropDown = True
-        ItemHeight = 13
+        ItemHeight = 0
         Sorted = True
         TabOrder = 2
         Text = 'cmbCateg'
@@ -220,7 +221,7 @@ object NewTemplateForm: TNewTemplateForm
         Width = 235
         Height = 21
         AutoDropDown = True
-        ItemHeight = 13
+        ItemHeight = 0
         Sorted = True
         TabOrder = 0
         Text = 'cmbName'

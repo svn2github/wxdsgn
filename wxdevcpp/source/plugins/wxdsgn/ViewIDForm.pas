@@ -164,6 +164,7 @@ end;
 procedure TViewControlIDsForm.FormDestroy(Sender: TObject);
 begin
   XPMenu.Active := false;
+  XPMenu.Free;
 end;
 
 end.

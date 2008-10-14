@@ -220,6 +220,7 @@ type
       Line: Integer; Mark: TSynEditMark);
     procedure cbHighCurrLineClick(Sender: TObject);
     procedure seTabSizeChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     ffgColor: TColor;
     fbgColor: TColor;
@@ -1816,6 +1817,11 @@ end;
 procedure TEditorOptForm.seTabSizeChange(Sender: TObject);
 begin
   CppEdit.TabWidth := seTabSize.Value;
+end;
+
+procedure TEditorOptForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

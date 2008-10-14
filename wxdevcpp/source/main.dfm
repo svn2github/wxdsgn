@@ -1353,8 +1353,8 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 231
-    Width = 622
+    Top = 239
+    Width = 628
     Height = 130
     ActivePage = TodoSheet
     Align = alBottom
@@ -1490,13 +1490,13 @@ object MainForm: TMainForm
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          385
+          391
           98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 323
-          Height = 85
+          Width = 347
+          Height = 89
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1512,7 +1512,7 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 610
+        Width = 616
         Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
@@ -1614,7 +1614,7 @@ object MainForm: TMainForm
           object DebugTree: TTreeView
             Left = 0
             Top = 0
-            Width = 602
+            Width = 608
             Height = 70
             Align = alClient
             Images = dmMain.MenuImages_NewLook
@@ -1734,7 +1734,7 @@ object MainForm: TMainForm
       object lvTodo: TListView
         Left = 0
         Top = 0
-        Width = 614
+        Width = 620
         Height = 61
         Align = alClient
         Checkboxes = True
@@ -1771,13 +1771,13 @@ object MainForm: TMainForm
       object TodoSettings: TPanel
         Left = 0
         Top = 61
-        Width = 614
+        Width = 620
         Height = 41
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
         DesignSize = (
-          614
+          620
           41)
         object lblTodoFilter: TLabel
           Left = 6
@@ -1823,7 +1823,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar_WIN32_EVENTS
     Left = 0
     Top = 16
-    Width = 622
+    Width = 628
     Height = 86
     Align = alTop
     AutoDock = False
@@ -2255,8 +2255,8 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 361
-    Width = 622
+    Top = 369
+    Width = 628
     Height = 19
     Panels = <
       item
@@ -2283,7 +2283,7 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 622
+    Width = 628
     Height = 16
     Align = alTop
     BevelOuter = bvNone
@@ -2293,7 +2293,7 @@ object MainForm: TMainForm
     TabOrder = 3
     Visible = False
     DesignSize = (
-      622
+      628
       16)
     object btnFullScrRevert: TSpeedButton
       Left = 607
@@ -2331,7 +2331,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 192
-    Height = 129
+    Height = 137
     ActivePage = ProjectSheet
     Align = alLeft
     Images = dmMain.ProjectImage_NewLook
@@ -2344,7 +2344,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 101
+        Height = 109
         Align = alClient
         ChangeDelay = 1
         DragMode = dmAutomatic
@@ -2376,7 +2376,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 101
+        Height = 109
         Align = alClient
         Images = dmMain.ClassImages
         ReadOnly = True
@@ -2408,8 +2408,8 @@ object MainForm: TMainForm
   object PageControl: TPageControl
     Left = 192
     Top = 102
-    Width = 430
-    Height = 129
+    Width = 436
+    Height = 137
     Align = alClient
     PopupMenu = EditorPopupMenu
     TabOrder = 7

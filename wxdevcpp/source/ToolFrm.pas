@@ -89,6 +89,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     fController: TToolController;
     procedure UpdateList;
@@ -499,6 +500,11 @@ end;
 procedure TToolForm.FormCreate(Sender: TObject);
 begin
   LoadText;
+end;
+
+procedure TToolForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

@@ -67,7 +67,7 @@ object TipOfTheDayForm: TTipOfTheDayForm
       Left = 52
       Top = 64
       Width = 230
-      Height = 120
+      Height = 13
       Caption = 'lblTip'
       Constraints.MinWidth = 230
       WordWrap = True

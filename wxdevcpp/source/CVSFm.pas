@@ -1008,6 +1008,7 @@ procedure TCVSForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fAllFiles);
   FreeAndNil(fFiles);
+  XPMenu.Free;
 end;
 
 procedure TCVSForm.FindModifiedFiles;

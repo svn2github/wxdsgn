@@ -46,6 +46,7 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure txtUserKeyPress(Sender: TObject; var Key: Char);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure LoadText;
@@ -142,6 +143,11 @@ begin
   Label3.Caption := Lang[ID_ADDTODO_USER] + ':';
   btnOk.Caption := Lang[ID_BTN_OK];
   btnCancel.Caption := Lang[ID_BTN_CANCEL];
+end;
+
+procedure TAddToDoForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

@@ -39,6 +39,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure AddItem(const Text, Value: string);
+    procedure FormDestroy(Sender: TObject);
   private
 
   public
@@ -91,6 +92,11 @@ end;
 procedure TDebugForm.btnCloseClick(Sender: TObject);
 begin
   close;
+end;
+
+procedure TDebugForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

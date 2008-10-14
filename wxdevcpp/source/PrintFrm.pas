@@ -49,6 +49,7 @@ type
     XPMenu: TXPMenu;
     procedure FormCreate(Sender: TObject);
     procedure cbLineNumClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   public
     procedure LoadText;
   end;
@@ -101,6 +102,11 @@ procedure TPrintForm.cbLineNumClick(Sender: TObject);
 begin
   rbLN.Enabled := cbLineNum.Checked;
   rbLNMargin.Enabled := cbLineNum.Checked;
+end;
+
+procedure TPrintForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

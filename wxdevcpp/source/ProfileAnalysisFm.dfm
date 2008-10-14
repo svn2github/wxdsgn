@@ -14,6 +14,7 @@ object ProfileAnalysisForm: TProfileAnalysisForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
+  OnDestroy = FormDestroy
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -57,6 +58,7 @@ object ProfileAnalysisForm: TProfileAnalysisForm
       Height = 405
       ActivePage = tabFlat
       Align = alClient
+      TabIndex = 0
       TabOrder = 0
       OnChange = PageControl1Change
       object tabFlat: TTabSheet

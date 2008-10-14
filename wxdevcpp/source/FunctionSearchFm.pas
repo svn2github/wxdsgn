@@ -47,6 +47,7 @@ type
     procedure lvEntriesCompare(Sender: TObject; Item1, Item2: TListItem;
       Data: Integer; var Compare: Integer);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure LoadText;
@@ -186,6 +187,11 @@ end;
 procedure TFunctionSearchForm.FormCreate(Sender: TObject);
 begin
   LoadText;
+end;
+
+procedure TFunctionSearchForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

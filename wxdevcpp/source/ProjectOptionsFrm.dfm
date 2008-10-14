@@ -17,6 +17,7 @@ object frmProjectOptions: TfrmProjectOptions
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
     560
@@ -650,7 +651,7 @@ object frmProjectOptions: TfrmProjectOptions
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -1552,7 +1553,7 @@ object frmProjectOptions: TfrmProjectOptions
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 4
         end
       end

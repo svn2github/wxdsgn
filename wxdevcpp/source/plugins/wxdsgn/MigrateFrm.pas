@@ -371,6 +371,7 @@ end;
 procedure TMigrateFrm.FormDestroy(Sender: TObject);
 begin
   XPMenu.Active := false;
+  XPMenu.Free;
 end;
 
 end.

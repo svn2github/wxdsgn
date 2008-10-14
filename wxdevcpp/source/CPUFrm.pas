@@ -51,6 +51,7 @@ type
     procedure OnActiveLine(Sender: TObject; Line: Integer;
       var Special: Boolean; var FG, BG: TColor);
     procedure CloseBtnClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
 
   private
     ActiveLine: integer;
@@ -202,6 +203,11 @@ begin
       CodeList.EnsureCursorPosVisible;
       break;
     end;
+end;
+
+procedure TCPUForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

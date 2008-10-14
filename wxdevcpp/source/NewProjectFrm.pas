@@ -94,6 +94,7 @@ end;
 procedure TNewProjectForm.FormDestroy(Sender: TObject);
 begin
   fTemplates.Free;
+  XPMenu.Free;
 end;
 
 procedure TNewProjectForm.AddTemplate(FileName: string);

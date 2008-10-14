@@ -45,6 +45,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure NameEditKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     fActiveWindow: TWinControl;
@@ -95,6 +96,11 @@ procedure TModifyVarForm.FormShow(Sender: TObject);
 begin
   SetFocus;
   fActiveWindow.SetFocus;
+end;
+
+procedure TModifyVarForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

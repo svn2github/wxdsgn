@@ -110,6 +110,7 @@ end;
 procedure TImportMSVCForm.FormDestroy(Sender: TObject);
 begin
   fSL.Free;
+  XPMenu.Free;
 end;
 
 procedure TImportMSVCForm.FormShow(Sender: TObject);

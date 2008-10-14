@@ -71,6 +71,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure cbSearchWordClick(Sender: TObject);
     procedure cbAffectF1Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     fINI: TINIFile;
     fEditing: boolean;
@@ -363,6 +364,11 @@ procedure TfrmHelpEdit.cbAffectF1Click(Sender: TObject);
 begin
   if assigned(lvFiles.Selected) then
     TEntry(lvFiles.Selected.Data).AffectF1 := cbAffectF1.Checked;
+end;
+
+procedure TfrmHelpEdit.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

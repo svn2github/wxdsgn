@@ -984,6 +984,8 @@ type
     RightDockTabs: TJvDockTabHostForm;
     BottomDockTabs: TJvDockTabHostForm;
 
+    themeManager: TThemeManager;
+
     function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
     procedure AddFindOutputItem(line, col, unit_, message: string);
     function ParseParams(s: string): string;
@@ -1560,6 +1562,7 @@ begin
       DragKind := dkDock;
       DragMode := dmAutomatic;
       FormStyle := fsStayOnTop;
+      OnClose := OnDockableFormClosed;
 
       //BorderIcons := BorderIcons - [biSystemMenu];    // Removing close button
 
@@ -1749,7 +1752,8 @@ begin
 
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
-    with TThemeManager.Create(Self) do
+    themeManager := TThemeManager.Create(Self);
+    with themeManager do
       Options := [toAllowNonClientArea, toAllowControls, toAllowWebContent, toSubclassAnimate, toSubclassButtons, toSubclassCheckListbox, toSubclassDBLookup, toSubclassFrame, toSubclassGroupBox, toSubclassListView, toSubclassPanel, toSubclassTabSheet, toSubclassSpeedButtons, toSubclassStatusBar, toSubclassTrackBar, toSubclassWinControl, toResetMouseCapture, toSetTransparency, toAlternateTabSheetDraw];
 {$ENDIF}
 {$IFNDEF PRIVATE_BUILD}
@@ -1846,18 +1850,18 @@ begin
     Exit;
 
   if TForm(Sender) = frmProjMgrDock then
-    ShowProjectInspItem.Checked := False;
-  if TForm(Sender) = frmReportDocks[0] then
-    CompilerMessagesPanelItem.Checked := False;
-  if TForm(Sender) = frmReportDocks[1] then
-    ResourcesMessagesPanelItem.Checked := False;
-  if TForm(Sender) = frmReportDocks[2] then
-    CompileLogMessagesPanelItem.Checked := False;
-  if TForm(Sender) = frmReportDocks[3] then
-    DebuggingMessagesPanelItem.Checked := False;
-  if TForm(Sender) = frmReportDocks[4] then
-    FindResultsMessagesPanelItem.Checked := False;
-  if TForm(Sender) = frmReportDocks[5] then
+    ShowProjectInspItem.Checked := False
+  else if TForm(Sender) = frmReportDocks[0] then
+    CompilerMessagesPanelItem.Checked := False
+  else if TForm(Sender) = frmReportDocks[1] then
+    ResourcesMessagesPanelItem.Checked := False
+  else if TForm(Sender) = frmReportDocks[2] then
+    CompileLogMessagesPanelItem.Checked := False
+  else if TForm(Sender) = frmReportDocks[3] then
+    DebuggingMessagesPanelItem.Checked := False
+  else if TForm(Sender) = frmReportDocks[4] then
+    FindResultsMessagesPanelItem.Checked := False
+  else if TForm(Sender) = frmReportDocks[5] then
     ToDoListMessagesPanelItem.Checked := False;
 end;
 {$ENDIF}
@@ -1933,11 +1937,11 @@ begin
   DockServer.RightDockPanel.Visible := false;
   DockServer.BottomDockPanel.Visible := false;
 
+  themeManager.Destroy;
+
   for i := 0 to pluginsCount - 1 do
   begin
 
-      // EAB Comment: This block forces the panel to its original position, so ThemeManager doesn't freak out when closing
-      //This is required because of the ManualTabDock system used.
       items := plugins[i].Retrieve_LeftDock_Panels;
       if items <> nil then
       begin
@@ -1945,9 +1949,10 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            UnAutoHideDockForm(panel1);
+            {UnAutoHideDockForm(panel1);
             if Assigned(LeftDockTabs.PageControl) then
-                ManualTabDockAddPage(LeftDockTabs, panel1);
+                ManualTabDockAddPage(LeftDockTabs, panel1);  }
+            DockServer.LeftDockPanel.RemoveControl(panel1);
           end;
       end;
 
@@ -1958,9 +1963,10 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            UnAutoHideDockForm(panel1);
+            {UnAutoHideDockForm(panel1);
             if Assigned(RightDockTabs.PageControl) then
-                ManualTabDockAddPage(RightDockTabs, panel1);
+                ManualTabDockAddPage(RightDockTabs, panel1);  }
+            DockServer.RightDockPanel.RemoveControl(panel1);
           end;
       end;
 
@@ -1971,9 +1977,10 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            UnAutoHideDockForm(panel1);
+            {UnAutoHideDockForm(panel1);
             if Assigned(BottomDockTabs.PageControl) then
-                ManualTabDockAddPage(BottomDockTabs, panel1);
+                ManualTabDockAddPage(BottomDockTabs, panel1); }
+            DockServer.BottomDockPanel.RemoveControl(panel1);
           end;
       end;
 
@@ -2009,6 +2016,7 @@ begin
   dmMain.Free;
   devImageThemes.Free;
   ReloadFilenames.Free;
+  ClassBrowser1.Free;
 
   while fToDoList.Count > 0 do
     if Assigned(fToDoList[0]) then begin
@@ -2031,7 +2039,8 @@ begin
 
    //Unhook and free  Fix for help system under Vista
    //mHHelp.Free;
-   //HHCloseAll;     //Close help before shutdown or big trouble
+   HHCloseAll;     //Close help before shutdown or big trouble
+   XPMenu.Free;
 end;
 
 procedure TMainForm.ParseCmdLine;

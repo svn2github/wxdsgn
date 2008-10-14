@@ -75,6 +75,7 @@ type
       Shift: TShiftState);
     procedure LookInChange(Sender: TObject);
     procedure OnBuildExpr(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     fSearchOptions: TSynSearchOptions;
     fClose: boolean;
@@ -285,6 +286,11 @@ begin
   else
     cboFindText.SelStart := selStart + Length(Text);
   cboFindText.SelLength := 0;
+end;
+
+procedure TfrmFind.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

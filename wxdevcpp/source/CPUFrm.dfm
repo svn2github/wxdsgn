@@ -18,6 +18,7 @@ object CPUForm: TCPUForm
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   DesignSize = (
     577
     453)

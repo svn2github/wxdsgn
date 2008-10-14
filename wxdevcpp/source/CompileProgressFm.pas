@@ -62,6 +62,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure timeTimerTimer(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     StartTime: Cardinal;
@@ -122,6 +123,11 @@ begin
     Result := Format('%d minute%s %d second%s', [Minutes, GetPlural(Minutes), Seconds, GetPlural(Seconds)])
   else
     Result := Format('%d second%s', [Seconds, GetPlural(Seconds)]);
+end;
+
+procedure TCompileProgressForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

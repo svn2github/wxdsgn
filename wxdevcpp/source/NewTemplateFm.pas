@@ -82,6 +82,7 @@ type
     procedure memCompilerChange(Sender: TObject);
     procedure memCppCompilerChange(Sender: TObject);
     procedure memLinkerChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     Icons: array[0..1] of TIcon;
@@ -453,6 +454,11 @@ end;
 procedure TNewTemplateForm.memLinkerChange(Sender: TObject);
 begin
   TempProject.Profiles[CompilerSet.ItemIndex].Linker := memLinker.Text;
+end;
+
+procedure TNewTemplateForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.

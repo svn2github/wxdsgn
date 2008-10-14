@@ -58,6 +58,7 @@ type
       Y: Integer);
     procedure lvFlatClick(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure LoadText;
@@ -344,6 +345,11 @@ begin
     lvFlat.SetFocus
   else
     lvGraph.SetFocus;
+end;
+
+procedure TProfileAnalysisForm.FormDestroy(Sender: TObject);
+begin
+    XPMenu.Free;
 end;
 
 end.
