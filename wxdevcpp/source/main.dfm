@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 674
-  Top = 370
+  Left = 276
+  Top = 248
   Width = 636
   Height = 442
   Anchors = [akLeft, akTop, akBottom]
@@ -1495,8 +1495,8 @@ object MainForm: TMainForm
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 347
-          Height = 89
+          Width = 359
+          Height = 91
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -2288,8 +2288,8 @@ object MainForm: TMainForm
     Align = alTop
     BevelOuter = bvNone
     Caption = 
-      'Dev-C++ version 5.0 full screen press shift+F12 to toggle Toolba' +
-      'rs or F12 to go to normal mode.'
+      'wx-Dev-C++ version 7.0 full screen press shift+F12 to toggle Too' +
+      'lbars or F12 to go to normal mode.'
     TabOrder = 3
     Visible = False
     DesignSize = (

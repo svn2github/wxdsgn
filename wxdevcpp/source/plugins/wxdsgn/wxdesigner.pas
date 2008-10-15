@@ -4308,8 +4308,13 @@ begin
   //WxPropertyInspectorPopup.Free;
   //ELDesigner1.Free;
   //self.Free;
-  //frmPaletteDock.Destroy;
-  //frmInspectorDock.Destroy;
+  //frmPaletteDock.Free;
+  //frmInspectorDock.Free;  
+  ComponentPalette.Free;
+  JvInspProperties.Free;
+  JvInspEvents.Free;
+  JvInspectorDotNETPainter1.Free;
+  JvInspectorDotNETPainter2.Free;
   main := nil;
 end;
 

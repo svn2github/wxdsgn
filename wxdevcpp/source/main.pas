@@ -1952,7 +1952,7 @@ begin
             {UnAutoHideDockForm(panel1);
             if Assigned(LeftDockTabs.PageControl) then
                 ManualTabDockAddPage(LeftDockTabs, panel1);  }
-            DockServer.LeftDockPanel.RemoveControl(panel1);
+            //DockServer.LeftDockPanel.RemoveControl(panel1);
           end;
       end;
 
@@ -1966,7 +1966,7 @@ begin
             {UnAutoHideDockForm(panel1);
             if Assigned(RightDockTabs.PageControl) then
                 ManualTabDockAddPage(RightDockTabs, panel1);  }
-            DockServer.RightDockPanel.RemoveControl(panel1);
+            //DockServer.RightDockPanel.RemoveControl(panel1);
           end;
       end;
 
@@ -1980,7 +1980,7 @@ begin
             {UnAutoHideDockForm(panel1);
             if Assigned(BottomDockTabs.PageControl) then
                 ManualTabDockAddPage(BottomDockTabs, panel1); }
-            DockServer.BottomDockPanel.RemoveControl(panel1);
+            //DockServer.BottomDockPanel.RemoveControl(panel1);
           end;
       end;
 
