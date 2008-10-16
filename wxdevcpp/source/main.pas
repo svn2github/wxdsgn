@@ -1938,7 +1938,7 @@ begin
   DockServer.BottomDockPanel.Visible := false;
 
   themeManager.Destroy;
-
+//  XPMenuManager.Destroy;
   for i := 0 to pluginsCount - 1 do
   begin
 
@@ -1949,10 +1949,11 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            {UnAutoHideDockForm(panel1);
-            if Assigned(LeftDockTabs.PageControl) then
-                ManualTabDockAddPage(LeftDockTabs, panel1);  }
+            //UnAutoHideDockForm(panel1);
+            //if Assigned(LeftDockTabs.PageControl) then
+            //    ManualTabDockAddPage(LeftDockTabs, panel1);
             //DockServer.LeftDockPanel.RemoveControl(panel1);
+            FindDockClient(panel1).Destroy;
           end;
       end;
 
@@ -1963,10 +1964,11 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            {UnAutoHideDockForm(panel1);
-            if Assigned(RightDockTabs.PageControl) then
-                ManualTabDockAddPage(RightDockTabs, panel1);  }
+            //UnAutoHideDockForm(panel1);
+            //if Assigned(RightDockTabs.PageControl) then
+            //    ManualTabDockAddPage(RightDockTabs, panel1);
             //DockServer.RightDockPanel.RemoveControl(panel1);
+            FindDockClient(panel1).Destroy;
           end;
       end;
 
@@ -1977,10 +1979,11 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            {UnAutoHideDockForm(panel1);
-            if Assigned(BottomDockTabs.PageControl) then
-                ManualTabDockAddPage(BottomDockTabs, panel1); }
+            //UnAutoHideDockForm(panel1);
+           // if Assigned(BottomDockTabs.PageControl) then
+            //    ManualTabDockAddPage(BottomDockTabs, panel1);
             //DockServer.BottomDockPanel.RemoveControl(panel1);
+            FindDockClient(panel1).Destroy;
           end;
       end;
 
@@ -2041,6 +2044,7 @@ begin
    //mHHelp.Free;
    HHCloseAll;     //Close help before shutdown or big trouble
    XPMenu.Free;
+   XPMenuManager.Free;
 end;
 
 procedure TMainForm.ParseCmdLine;

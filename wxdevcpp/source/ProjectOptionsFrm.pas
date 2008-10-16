@@ -547,9 +547,15 @@ begin
           if SameText(Languages.Name[I], cmbLangID.Text) then
           begin
             Project.VersionInfo.LanguageID := Languages.LocaleID[I];
+            Project.VersionInfo.CharsetID := $04E4;
             Break;
           end;
-        end;
+      end;
+      if SameText('Language Neutral', cmbLangID.Text) then  // EAB Attempt to add Language Neutral option. Requires feedback.
+      begin
+          Project.VersionInfo.LanguageID := 0;
+          Project.VersionInfo.CharsetID := 1200;
+      end;
     end;
   end;
 end;
@@ -1182,6 +1188,7 @@ begin
   vleVersion.InsertRow('Legal Trademarks',  Project.VersionInfo.LegalTrademarks,   True);
 
   cmbLangID.Items.Clear;
+  cmbLangID.Items.Add('Language Neutral');
   for I := 0 to Languages.Count - 1 do
     cmbLangID.Items.Add(Languages.Name[I]);
 

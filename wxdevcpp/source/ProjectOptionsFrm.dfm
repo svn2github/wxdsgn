@@ -20,8 +20,8 @@ object frmProjectOptions: TfrmProjectOptions
   OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
-    560
-    376)
+    552
+    374)
   PixelsPerInch = 96
   TextHeight = 13
   object btnAddProfileSet: TSpeedButton
@@ -228,9 +228,9 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 35
     Width = 537
     Height = 306
-    ActivePage = tabGeneral
+    ActivePage = tabVersion
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 7
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -651,7 +651,7 @@ object frmProjectOptions: TfrmProjectOptions
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -1553,7 +1553,7 @@ object frmProjectOptions: TfrmProjectOptions
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 4
         end
       end
