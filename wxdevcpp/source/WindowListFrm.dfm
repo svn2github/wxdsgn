@@ -16,14 +16,13 @@ object WindowListForm: TWindowListForm
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 0
     Top = 0
-    Width = 346
+    Width = 338
     Height = 6
     Align = alTop
     AutoSize = False
@@ -32,28 +31,28 @@ object WindowListForm: TWindowListForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 239
+    Height = 237
     Align = alLeft
     AutoSize = False
   end
   object Label3: TLabel
-    Left = 340
+    Left = 332
     Top = 6
     Width = 6
-    Height = 239
+    Height = 237
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 245
-    Width = 346
+    Top = 243
+    Width = 338
     Height = 38
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
-      346
+      338
       38)
     object OkBtn: TBitBtn
       Left = 176
@@ -98,14 +97,14 @@ object WindowListForm: TWindowListForm
   object GroupBox: TGroupBox
     Left = 6
     Top = 6
-    Width = 334
-    Height = 239
+    Width = 326
+    Height = 237
     Align = alClient
     Caption = 'Select the window you want to edit :'
     TabOrder = 1
     DesignSize = (
-      334
-      239)
+      326
+      237)
     object UnitList: TListBox
       Left = 10
       Top = 18

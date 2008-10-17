@@ -13,7 +13,6 @@ object CVSPasswdForm: TCVSPasswdForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

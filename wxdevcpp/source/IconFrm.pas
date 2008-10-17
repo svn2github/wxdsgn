@@ -123,7 +123,6 @@ end;
 procedure TIconForm.FormDestroy(Sender: TObject);
 begin
   ImageList.Clear;
-  XPMenu.Free;
 end;
 
 function TIconForm.GetSelected: string;

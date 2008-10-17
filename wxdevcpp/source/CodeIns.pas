@@ -74,7 +74,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure edMenuTextChange(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     fEdit: boolean;
     fEntry: PCodeIns;
@@ -256,9 +255,5 @@ begin
   btnOK.Enabled := edMenuText.Text <> '';
 end;
 
-procedure TfrmCodeEdit.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
-end;
 
 end.

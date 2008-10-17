@@ -18,7 +18,6 @@ object CompileProgressForm: TCompileProgressForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
     350

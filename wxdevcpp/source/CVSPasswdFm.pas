@@ -39,7 +39,6 @@ type
     Label2: TLabel;
     XPMenu: TXPMenu;
     procedure FormShow(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
   public
@@ -64,11 +63,6 @@ begin
     XPMenu.Active := false;
   txtPass.Text := '';
   txtPass.SetFocus;
-end;
-
-procedure TCVSPasswdForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

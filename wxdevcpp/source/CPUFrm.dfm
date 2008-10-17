@@ -18,10 +18,9 @@ object CPUForm: TCPUForm
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   DesignSize = (
-    577
-    453)
+    569
+    451)
   PixelsPerInch = 96
   TextHeight = 13
   object gbAsm: TGroupBox

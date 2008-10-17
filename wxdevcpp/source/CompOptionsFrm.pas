@@ -132,7 +132,6 @@ type
     procedure SaveSettings;
     procedure btnRefreshCompilerSettingsClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormDestroy(Sender: TObject);
 
   private
     fBins: string;
@@ -716,11 +715,6 @@ begin
     end;
     MainPages.ActivePageIndex := 0;
 {$ENDIF PLUGIN_BUILD}
-end;
-
-procedure TCompForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

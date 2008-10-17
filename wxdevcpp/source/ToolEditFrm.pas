@@ -67,7 +67,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure edProgramChange(Sender: TObject);
     procedure edParamsChange(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     fMacroTarget: TEdit;
     procedure LoadText;
@@ -181,11 +180,6 @@ end;
 procedure TToolEditForm.edParamsChange(Sender: TObject);
 begin
   ParamText.Text := ParseMacros(edProgram.Text + ' ' + edParams.Text);
-end;
-
-procedure TToolEditForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

@@ -16,7 +16,6 @@ object LangForm: TLangForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
-  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object FinishPanel: TPanel

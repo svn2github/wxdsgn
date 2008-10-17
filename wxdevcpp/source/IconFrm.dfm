@@ -18,8 +18,8 @@ object IconForm: TIconForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    335
-    306)
+    327
+    304)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOk: TBitBtn

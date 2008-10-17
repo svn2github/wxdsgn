@@ -70,7 +70,6 @@ type
     procedure cmbClassChange(Sender: TObject);
     procedure memDescrChange(Sender: TObject);
     procedure txtNameKeyPress(Sender: TObject; var Key: Char);
-    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure LoadText;
@@ -376,11 +375,6 @@ begin
   Label8.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
   btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
   btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];
-end;
-
-procedure TNewClassForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

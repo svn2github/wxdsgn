@@ -13,13 +13,12 @@ object RemoveUnitForm: TRemoveUnitForm
   Font.Style = []
   OldCreateOrder = True
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 0
     Top = 0
-    Width = 346
+    Width = 338
     Height = 6
     Align = alTop
     AutoSize = False
@@ -28,22 +27,22 @@ object RemoveUnitForm: TRemoveUnitForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 235
+    Height = 233
     Align = alLeft
     AutoSize = False
   end
   object Label3: TLabel
-    Left = 340
+    Left = 332
     Top = 6
     Width = 6
-    Height = 235
+    Height = 233
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 241
-    Width = 346
+    Top = 239
+    Width = 338
     Height = 35
     Align = alBottom
     BevelOuter = bvNone
@@ -89,15 +88,15 @@ object RemoveUnitForm: TRemoveUnitForm
   object GroupBox: TGroupBox
     Left = 6
     Top = 6
-    Width = 334
-    Height = 235
+    Width = 326
+    Height = 233
     Align = alClient
     Caption = 'Select the file to remove from the project :'
     TabOrder = 1
     object Label4: TLabel
       Left = 2
       Top = 15
-      Width = 330
+      Width = 322
       Height = 3
       Align = alTop
       AutoSize = False
@@ -106,22 +105,22 @@ object RemoveUnitForm: TRemoveUnitForm
       Left = 2
       Top = 18
       Width = 6
-      Height = 209
+      Height = 207
       Align = alLeft
       AutoSize = False
     end
     object Label6: TLabel
-      Left = 326
+      Left = 318
       Top = 18
       Width = 6
-      Height = 209
+      Height = 207
       Align = alRight
       AutoSize = False
     end
     object Label7: TLabel
       Left = 2
-      Top = 227
-      Width = 330
+      Top = 225
+      Width = 322
       Height = 6
       Align = alBottom
       AutoSize = False
@@ -129,7 +128,7 @@ object RemoveUnitForm: TRemoveUnitForm
     object UnitList: TListBox
       Left = 8
       Top = 18
-      Width = 318
+      Width = 310
       Height = 199
       Align = alClient
       IntegralHeight = True

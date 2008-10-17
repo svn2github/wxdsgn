@@ -14,21 +14,20 @@ object ProfileAnalysisForm: TProfileAnalysisForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
-  OnDestroy = FormDestroy
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 405
-    Width = 641
+    Top = 403
+    Width = 633
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
-      641
+      633
       41)
     object btnClose: TButton
       Left = 283
@@ -45,8 +44,8 @@ object ProfileAnalysisForm: TProfileAnalysisForm
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 641
-    Height = 405
+    Width = 633
+    Height = 403
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Parsing profiling results - Please wait...'
@@ -54,8 +53,8 @@ object ProfileAnalysisForm: TProfileAnalysisForm
     object PageControl1: TPageControl
       Left = 0
       Top = 0
-      Width = 641
-      Height = 405
+      Width = 633
+      Height = 403
       ActivePage = tabFlat
       Align = alClient
       TabIndex = 0
@@ -65,16 +64,16 @@ object ProfileAnalysisForm: TProfileAnalysisForm
         Caption = 'Flat output'
         object Splitter2: TSplitter
           Left = 0
-          Top = 237
-          Width = 633
+          Top = 235
+          Width = 625
           Height = 8
           Cursor = crVSplit
           Align = alBottom
         end
         object memFlat: TMemo
           Left = 0
-          Top = 245
-          Width = 633
+          Top = 243
+          Width = 625
           Height = 132
           Align = alBottom
           Color = clBtnFace
@@ -91,8 +90,8 @@ object ProfileAnalysisForm: TProfileAnalysisForm
         object lvFlat: TListView
           Left = 0
           Top = 0
-          Width = 633
-          Height = 237
+          Width = 625
+          Height = 235
           Align = alClient
           Columns = <
             item

@@ -62,7 +62,6 @@ type
     procedure chkWriteFuncClick(Sender: TObject);
     procedure btnCreateClick(Sender: TObject);
     procedure memDescrChange(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure LoadText;
@@ -375,11 +374,6 @@ begin
   Label7.Caption       := Lang[ID_NEWVAR_COMMENTSSTYLE];
   btnCreate.Caption    := Lang[ID_NEWVAR_BTN_CREATE];
   btnCancel.Caption    := Lang[ID_NEWVAR_BTN_CANCEL];
-end;
-
-procedure TNewVarForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

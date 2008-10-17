@@ -59,7 +59,6 @@ end;
 procedure TFilesReloadFrm.FormDestroy(Sender: TObject);
 begin
   ReloadFilenames.Free;
-  XPMenu.Free;
 end;
 
 procedure TFilesReloadFrm.SetFilenames(Files: TList);

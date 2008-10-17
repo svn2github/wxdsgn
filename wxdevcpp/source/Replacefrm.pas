@@ -54,7 +54,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     
   private
     fSearchOptions: TSynSearchOptions;
@@ -190,11 +189,6 @@ begin
      btnCancel.Left:= btnCancel.Left -((x -btnCancel.Width) +10);
      btnCancel.Width:= x;
   end;
-end;
-
-procedure TfrmReplace.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

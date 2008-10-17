@@ -47,7 +47,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure UnitListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FormDestroy(Sender: TObject);
   end;
 
 implementation
@@ -96,11 +95,6 @@ begin
   if Key = XK_RETURN then
 {$ENDIF}
     UnitListDblClick(Sender);
-end;
-
-procedure TWindowListForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

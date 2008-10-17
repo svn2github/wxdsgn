@@ -11,11 +11,10 @@ object DebugForm: TDebugForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
-    506
-    202)
+    498
+    200)
   PixelsPerInch = 96
   TextHeight = 13
   object lvItems: TListView

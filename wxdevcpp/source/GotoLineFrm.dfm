@@ -17,7 +17,6 @@ object GotoLineForm: TGotoLineForm
   OldCreateOrder = True
   Position = poMainFormCenter
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   PixelsPerInch = 96

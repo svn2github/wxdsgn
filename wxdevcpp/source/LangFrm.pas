@@ -79,7 +79,6 @@ type
     procedure DirCheckBoxClick(Sender: TObject);
     procedure LoadBtnClick(Sender: TObject);
     procedure ThemeBoxChange(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     HasProgressStarted: boolean;
 
@@ -341,11 +340,6 @@ begin
   else
     Image2.Picture.Bitmap.LoadFromResourceName(HInstance, 'THEMENEWLOOK');
   end;
-end;
-
-procedure TLangForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

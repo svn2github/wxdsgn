@@ -122,7 +122,6 @@ type
     procedure btnExtAddClick(Sender: TObject);
     procedure btnExtDelClick(Sender: TObject);
     procedure chkAltConfigClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     procedure LoadText;
   public
@@ -524,11 +523,6 @@ begin
   chkAltConfig.Enabled := ConfigMode <> CFG_PARAM;
   edAltConfig.Enabled := chkAltConfig.Enabled and chkAltConfig.Checked;
   btnAltConfig.Enabled := chkAltConfig.Enabled and chkAltConfig.Checked;
-end;
-
-procedure TEnviroForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

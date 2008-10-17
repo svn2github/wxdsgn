@@ -47,7 +47,6 @@ type
     XPMenu: TXPMenu;
     Label7: TLabel;
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   end;
 
 implementation
@@ -65,11 +64,6 @@ begin
   GroupBox.Caption:=  Lang[ID_RU_TEXT];
   OkBtn.Caption := Lang[ID_BTN_OK];
   CancelBtn.Caption:= Lang[ID_BTN_CANCEL];
-end;
-
-procedure TRemoveUnitForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

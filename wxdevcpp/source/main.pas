@@ -2043,8 +2043,8 @@ begin
    //Unhook and free  Fix for help system under Vista
    //mHHelp.Free;
    HHCloseAll;     //Close help before shutdown or big trouble
-   XPMenu.Free;
-   XPMenuManager.Free;
+   //XPMenu.Free;
+   //XPMenuManager.Free;
 end;
 
 procedure TMainForm.ParseCmdLine;

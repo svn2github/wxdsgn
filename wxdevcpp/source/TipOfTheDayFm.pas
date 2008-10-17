@@ -156,7 +156,6 @@ end;
 procedure TTipOfTheDayForm.FormDestroy(Sender: TObject);
 begin
   sl.Free;
-  XPMenu.Free;
 end;
 
 function TTipOfTheDayForm.CurrentTip: string;

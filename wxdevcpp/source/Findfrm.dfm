@@ -16,7 +16,6 @@ object frmFind: TfrmFind
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   DesignSize = (

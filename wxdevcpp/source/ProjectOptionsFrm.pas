@@ -197,7 +197,6 @@ type
     procedure btnDelProfileSetClick(Sender: TObject);
     procedure btnRenameProfileSetClick(Sender: TObject);
     procedure btnCopyProfileSetClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     fProfiles: TProjectProfileList;
     fIcon: string;
@@ -555,7 +554,7 @@ begin
       begin
           Project.VersionInfo.LanguageID := 0;
           Project.VersionInfo.CharsetID := 1200;
-      end;
+      end; 
     end;
   end;
 end;
@@ -1474,11 +1473,6 @@ begin
   cmbProfileSetComp.ItemIndex := cmbProfileSetComp.Items.Count - 1;
   cmbProfileSetComp.OnChange(cmbProfileSetComp);
 
-end;
-
-procedure TfrmProjectOptions.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.

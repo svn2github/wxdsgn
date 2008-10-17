@@ -14,7 +14,6 @@ object frmCodeEdit: TfrmCodeEdit
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object lblMenu: TLabel

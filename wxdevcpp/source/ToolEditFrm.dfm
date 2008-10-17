@@ -15,7 +15,6 @@ object ToolEditForm: TToolEditForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   DesignSize = (
     357
     296)

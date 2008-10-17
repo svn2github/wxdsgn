@@ -17,10 +17,9 @@ object frmHelpEdit: TfrmHelpEdit
   Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   DesignSize = (
-    342
-    361)
+    334
+    359)
   PixelsPerInch = 96
   TextHeight = 13
   object btnNew: TSpeedButton

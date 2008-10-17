@@ -83,7 +83,6 @@ end;
 procedure TProcessListForm.FormDestroy(Sender: TObject);
 begin
   ProcessList.Free;
-  XPMenu.Free;
 end;
 
 procedure TProcessListForm.LoadText;

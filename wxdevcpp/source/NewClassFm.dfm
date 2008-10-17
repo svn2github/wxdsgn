@@ -14,7 +14,6 @@ object NewClassForm: TNewClassForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
-  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

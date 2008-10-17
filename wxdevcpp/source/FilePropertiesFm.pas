@@ -222,7 +222,6 @@ end;
 procedure TFilePropertiesForm.FormDestroy(Sender: TObject);
 begin
   fEdit.Free;
-  XPMenu.Free;
 end;
 
 procedure TFilePropertiesForm.FormShow(Sender: TObject);

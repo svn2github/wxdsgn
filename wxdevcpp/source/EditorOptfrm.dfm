@@ -17,7 +17,6 @@ object EditorOptForm: TEditorOptForm
   Position = poOwnerFormCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   OnShow = FormShow

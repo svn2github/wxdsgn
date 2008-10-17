@@ -15,7 +15,6 @@ object EnviroForm: TEnviroForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   DesignSize = (

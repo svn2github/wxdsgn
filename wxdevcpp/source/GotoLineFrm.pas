@@ -51,7 +51,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure LineKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FormDestroy(Sender: TObject);
   private
     FEditor: TCustomSynEdit;
     procedure SetEditor(AEditor: TCustomSynEdit);
@@ -122,11 +121,6 @@ begin
     Line.MaxValue := FEditor.Lines.Count;
     Line.Value := FEditor.CaretY;
   end;
-end;
-
-procedure TGotoLineForm.FormDestroy(Sender: TObject);
-begin
-    XPMenu.Free;
 end;
 
 end.
