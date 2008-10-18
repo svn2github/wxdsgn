@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Managing Project Options</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="project"><param name="Keyword" value="Project Options"><param name="Keyword" value="profile"><param name="Keyword" value="Build Options"><param name="Keyword" value="Files"><param name="Keyword" value="Directories"><param name="Keyword" value="Parameters"><param name="Keyword" value="Compiler"><param name="Keyword" value="makefile"><param name="Keyword" value="Version Info">
+</object><a name="id_manageprojectoptions"></a>
+<h1>Project options overview</h1>
+<br>
+You can load the Project Options dialog by clicking on the <em>Project</em>
+menu, then on <em>Options</em> (shortcut :<strong>Alt+P</strong>).<br>
+<h4>General sheet :</h4>
+<p><img src="../images/projopt_general.gif" alt="" border="0"></p>
+&nbsp;&nbsp;&nbsp; The first thing you may notice is that
+wxDev-C++ allows for <span style="text-decoration: underline;">multiple
+compiler profiles</span> for the same project. In the <strong>Project
+Profile</strong>
+section there is a drop-down box with the available compiler profiles
+for the current project. Users can switch the compiler profile between
+different compilers (e.g. MingW gcc and VS 2008) or between different
+settings of the same compiler (e.g. debug versus release profiles). You
+may add, remove, rename, or copy the profiles for the current project
+by clicking on the icons to the right of the drop-down box. <span style="font-style: italic;"><img style="width: 97px; height: 30px;" alt="profile controls" src="../images/profile_addremove.gif">(Note that these
+actions only affect the current project.</span>)<br>
+<br>
+Other items of this window:<br>
+<em><br>
+Name:</em> Modify here the name of your project.<br>
+<br>
+<em>Icon :</em>
+You can assign an icon to your program, either by selecting one in the
+Icon Library, or by giving your own icon using the Browse button.<br>
+<br>
+<em>Type :</em> This is an important settings which
+indicates which project type you are making. Select :<br>
+<br>
+<ul>
+<li><strong>Win32 GUI </strong>: if your
+application is a graphical user interface</li>
+<li><strong>Win32 Console</strong> : if your
+application needs a console window (MS-DOS or command shell window)</li>
+<li><strong>Win32 Static Lib</strong> : if you are
+creating a static library</li>
+<li><strong>Win32 DLL</strong> : if you are
+creating a dynamic link library (DLL)</li>
+</ul>
+<h4>Files sheet :</h4>
+<p><img src="../images/projopt_files.gif" alt="" border="0"></p>
+<br>
+Regardless
+of the compiler used, wxDev-C++ uses the MingW make build system to
+compile and link projects. Makefiles are automatically generated based
+on the source files contained in the project. This window enables you
+to modify the compilation commands and options for each source file to
+customize the makefile that is generated.<br>
+<br>
+<em>Build priority :</em> Increment this value in order to
+have the source file compiled in priority of the others<br>
+<br>
+<em>Include in compilation :</em> If not set, your file
+will not be compiled.<br>
+<br>
+<em>Include in linking :</em> Add the object file generated
+from the source file to the linking stage<br>
+<br>
+<span style="font-style: italic;">Compile file as C++ :</span>
+Check this flag if it is a C++ source file<br>
+<br>
+<em>Override build command :</em> For experimented users
+only. You can change there the command used by Dev-C++ to compile your
+file<br>
+<br>
+<h4>Compiler sheet :</h4>
+<p><img src="../images/projopt_comp.gif" alt="" border="0"></p>
+<br>
+See the Compiler Options section for more details.<br>
+<br>
+<h4>Parameters sheet :</h4>
+<p><img src="../images/projopt_lib.gif" alt="" border="0"></p>
+<br>
+You can provide here command line arguments to the C/C++ compilers and
+linker.<br>
+<br>
+Use the linker parameters box to specify libraries to link with your
+project. <br>
+For more information, please read the linker library section.<br>
+<br>
+<h4>Directories sheet :</h4>
+<p><img src="../images/projopt_dirs.gif" alt="" border="0"></p>
+<br>
+You can provide here a list of Includes, Resources and Libraries
+directories to be searched when compiling/linking. These directories
+are only used for the current project and profile.<br>
+<br>
+<h4>Build Options sheet :</h4>
+<p><img src="../images/projopt_build.gif" alt="" border="0"></p>
+<br>
+<em>Executable output directory :</em> Specify here the
+directory where your executable will be created (default is project&#8217;s
+directory).<br>
+<br>
+<em>Object file output directory :</em> Specify here the
+directory where your object files will be created (default is source
+file&#8217;s directory).<br>
+<br>
+<em>Override output filename :</em> You may change the
+output filename of your program here.<br>
+<br>
+<h4>Makefile sheet :</h4>
+<p><img src="../images/projopt_make.gif" alt="" border="0"></p>
+<br>
+wxDev-C++
+automatically creates a MingW Makefile for taking care of the building
+process. If you are experienced with makefiles and want to add other
+lines, you can do it here. Or, you can create your own custom makefile
+and have the IDE use the custom makefile rather than the auto-generated
+one.<br>
+<br>
+<h4>Version Info sheet :</h4>
+<p><img src="../images/projopt_info.gif" alt="" border="0"></p>
+<br>
+<br>
+You
+can specify version information for your program here. This info shows
+up when you right click on the executable's icon and select
+"Properties".
+</body></html>

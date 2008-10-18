@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Debugging your Program</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="debug"><param name="Keyword" value="Compiler Options"><param name="Keyword" value="debugger"><param name="Keyword" value="linker"><param name="Keyword" value="Debugger Output"><param name="Keyword" value="backtracing"><param name="Keyword" value="breakpoint"><param name="Keyword" value="watchpoint"><param name="Keyword" value="stepping"><param name="Keyword" value="CPU window"><param name="Keyword" value="gdb"></object><a name="id_debuggingprogram"></a>
+<h1>Debugging your program</h1>
+<br>
+Launching your program into the debugger is easy. <br>
+Just go to the <em>Debug</em> menu and click on <span style="font-style: italic;">Debug</span> (<img src="../images/icon_debug.gif" alt="" border="0">
+shortcut : <strong>F8</strong>).<br>
+<br>
+If
+you do not have debugging information set in your project, wxDev-C++
+will
+ask you if you want to rebuild your program with this information
+enabled. You can manually select that option in <em>Compiler
+Option</em> in the
+<span style="font-style: italic;">Linker</span>
+section. <br>
+<br>
+<img src="../images/generate_debugging.png" style="width: 555px; height: 403px;" alt="Generate debugging"><br>
+<br>
+Note
+that the executable size has grown because the compiler has added
+additional information that the debugger accesses during runtime. After
+your project has been rebuilt with the debugger information included,
+you can click
+<em>Debug</em> again.<br>
+<br>
+The debugger has now loaded your program and runs it. <br>
+<br>
+<img style="width: 747px; height: 394px;" alt="Debugger output log" src="../images/debug_log.gif"><br>
+<br>
+&nbsp;&nbsp;&nbsp; What happened? &nbsp;Well, as the <strong>Debugger
+Output</strong>
+window shows above, wxDev-C++ started gdb and ran your executable
+called "sampleDebug.exe". &nbsp;The program had no errors and no
+breakpoints and so it exited normally. Since the program exited
+normally, this
+output is probably only interesting if you are familiar with gdb. <br>
+<br>
+&nbsp;&nbsp;&nbsp; You
+can also send commands directly to the debugger by using the "<em>Send
+command to GDB</em>" edit box just
+above the output. If you do not know gdb, you can
+type <strong>help</strong>&nbsp;to
+display a list of commands. Remember that wxDev-C++ is really just
+running a shell that passes these commands to the debugger and reads
+the output returned. You could re-create the same commands by using gdb
+from within a DOS shell.<br>
+<br>
+&nbsp;&nbsp;&nbsp; In the next sections, we'll cover
+several useful (and more interesting) aspects of the debugger :<br>
+<ul>
+<li>Breakpoints</li>
+<li>Stepping through&nbsp;&nbsp;your code</li>
+<li>Watch variables</li>
+<li>Backtracing</li>
+<li>Using the CPU Window</li>
+</ul>
+</body></html>

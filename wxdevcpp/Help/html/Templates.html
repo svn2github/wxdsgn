@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Integrated Templates</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="template"><param name="Keyword" value="project"><param name="Keyword" value=".dev"><param name="Keyword" value="profile"><param name="Keyword" value="Template Info"><param name="Keyword" value="Files"><param name="Keyword" value="Extras"><param name="Keyword" value="Unit"></object><a name="id_templates"></a>
+<h1>Integrated Templates</h1>
+<br>
+&nbsp;&nbsp;&nbsp; wxDev-C++ uses a template system to
+allow the user to more easily create specific projects. By this point
+you've encountered templates without knowing it. When you select <em>File</em>,&nbsp;<span style="font-style: italic;"></span><em>New,</em>
+<em>Project</em> on the IDE menu, the project type options
+listed in the dialog box (<span style="font-style: italic;">e.g.</span>
+Console application, wxWidgets frame, etc.) are preset templates.<br>
+<br>
+<img style="width: 520px; height: 309px;" alt="new project dialog" src="../images/newproj.gif"><br>
+<br>
+Templates usually include two components:<br>
+<ol>
+<li>A&nbsp;set of source files&nbsp; - These source
+files contains the minimal amount of code needed to build the
+application</li>
+<li>Project file - A preset project file (extension <span style="font-style: italic;">.dev</span>) containing
+all of the compiler and linker options necessary to build the
+application.</li>
+</ol>
+Templates are usually stored within the Templates subdirectory under
+the wxDev-C++ installation directory. Let's look at a simple example of
+a template from that directory.<br>
+<br>
+<table style="text-align: left; width: 481px; height: 1540px;" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr align="center">
+<td style="background-color: silver;"><code>Templates\2-ConsoleApp.dev</code></td>
+</tr>
+<tr>
+<td><code>[Template]<br>
+ver=3<br>
+Name=Console Application<br>
+IconIndex=1<br>
+Description=A console application (MSDOS window)<br>
+Catagory=Basic
+</code><code>[Project]<br>
+UnitCount=1<br>
+Name=Console App<br>
+ProfilesCount=2<br>
+ProfileIndex=0
+</code><code><br>
+<br>
+[Unit0]<br>
+CName=main.c<br>
+CppName=main.cpp<br>
+C=consoleapp_c.txt<br>
+Cpp=consoleapp_cpp.txt<br>
+<br>
+[Profile0]<br>
+ProfileName=Mingw 3.4.2<br>
+Type=1<br>
+ObjFiles=<br>
+Includes=<br>
+Libs=<br>
+PrivateResource=<br>
+ResourceIncludes=<br>
+MakeIncludes=<br>
+Compiler=<br>
+CppCompiler=<br>
+Linker=<br>
+PreprocDefines=<br>
+CompilerSettings=0000000000000000000000<br>
+Icon=<br>
+ExeOutput=Output\MingW<br>
+ObjectOutput=Objects\MingW<br>
+OverrideOutput=0<br>
+OverrideOutputName=<br>
+HostApplication=<br>
+CommandLine=<br>
+UseCustomMakefile=0<br>
+CustomMakefile=<br>
+IncludeVersionInfo=0<br>
+SupportXPThemes=0<br>
+CompilerSet=0<br>
+compilerType=0<br>
+<br>
+[Profile1]<br>
+ProfileName=MS VC++ 2005<br>
+Type=1<br>
+ObjFiles=<br>
+Includes=<br>
+Libs=<br>
+PrivateResource=<br>
+ResourceIncludes=<br>
+MakeIncludes=<br>
+Compiler=<br>
+CppCompiler=<br>
+Linker=<br>
+PreprocDefines=<br>
+CompilerSettings=000000000000010000000000000000000000<br>
+Icon=<br>
+ExeOutput=Output\MSVC++2005<br>
+ObjectOutput=Objects\MSVC++2005<br>
+OverrideOutput=0<br>
+OverrideOutputName=<br>
+HostApplication=<br>
+CommandLine=<br>
+UseCustomMakefile=0<br>
+CustomMakefile=<br>
+IncludeVersionInfo=0<br>
+SupportXPThemes=0<br>
+CompilerSet=1<br>
+compilerType=1</code><br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+&nbsp;&nbsp;&nbsp; The template above sets up a generic
+console project (i.e. a DOS shell application). &nbsp;In the
+<code>[Project]</code> section, one source code unit and
+two compiler profiles are
+defined. &nbsp;The source code unit is further specified as
+consisting of a C++ skeleton code which is derived from the file <code>consoleapp_cpp.txt</code>
+and renamed as file <code>main.cpp</code>. The two
+profiles are further specified as a MingW gcc&nbsp;and a MS VC++
+2005 compiler profile.<br>
+<br>
+&nbsp;&nbsp;&nbsp; Using a text editor, you can easily
+create your
+own templates for use with wxDev-C++. However, wxDev-C++ can also
+automatically create templates for you based on your existing projects.
+For example, let's say that you frequently like to use the Boost,
+wxWidgets, and SQLite libraries in your projects. &nbsp;You'd like
+to
+create a Boost/wx/Lite (let's call it "BWL") template that sets up all
+of the includes, switches, and base code
+so that whenever you create a new project, you can have the template
+handle the basic setup and jump right into the main programming. Here's
+how to create your BWL template:<br>
+<br>
+<ol>
+<li>Create the most basic
+project you can that correctly compiles, links, and executes using the
+Boost, wxWidgets, and SQLite libraries.</li>
+<li>On the <em>File</em> menu select <em>New</em>
+and then <em>Template</em>. A new template window
+appears.&nbsp;<img style="width: 434px; height: 355px;" alt="New template" src="../images/newtemplate.gif"></li>
+<li>In the <strong>Template Info</strong> tab, you
+can specify the name, description, type, and icons associated with this
+template.</li>
+<li>In the <strong>Files</strong>
+tab, you can select which files of the current project you want to
+include in the template. Whenever you create new projects with this
+template, those files (and their contents) will be generated in the new
+project.</li>
+<li>In the <strong>Extras</strong> tab, you can
+specify extra compiler and linker switches/parameters that you wish to
+include in the template for new projects.</li>
+</ol>
+&nbsp;&nbsp;&nbsp; Once you've filled out all of the
+necessary information for your new template, hit the <strong>Create</strong>
+button and save the template with a unique name (e.g. <em>BWL-template.dev</em>).<br>
+<br>
+&nbsp;&nbsp;&nbsp; To test your new template, close the
+current project and try to create a new project (<em>File</em>,
+<em>New</em>, <em>Project</em>). Your BWL
+template should appear as an option in the list and can be used like
+any other.
+</body></html>

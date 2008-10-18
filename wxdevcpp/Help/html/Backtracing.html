@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Backtracing</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="backtracing"><param name="Keyword" value="debugger"><param name="Keyword" value="breakpoint">
+</object>
+<a name="id_backtracing"></a>
+<h1>Backtracing</h1>
+&nbsp;&nbsp;&nbsp; Backtracing is the debugging concept
+that tells you which functions were called before reaching a breakpoint
+or an interruption (like an access violation or other runtime error).<br>
+<br>
+&nbsp;&nbsp;&nbsp; Let&#8217;s do a simple test. Move the <a href="breakpoints.html">breakpoint</a>
+in your <code>sampleDebug</code> project to the <code>printf</code>
+line within the <code>test2</code> (line 12). Then, re-run
+the debugger (shortcut: <strong>F8</strong>). If you look
+at the <em>Debug</em>
+window in the <em>Backtrace</em> tab, you should see
+something like this:<br>
+<br>
+<img style="width: 831px; height: 253px;" alt="backtrace" src="../images/debug_backtrace.gif"><br>
+<br>
+&nbsp;&nbsp;&nbsp; This correctly shows the list of
+functions that have been called (since
+the start of the program) before reaching the breakpoint. Clicking on a
+function in this list will bring you to its implementation in your
+source code. So, for example, if you click on <code>test</code>,
+the IDE will take you to line 19 in the source code. Note also that the
+variable arguments that were passed into the function are displayed
+along with their current values.<br>
+<br>
+&nbsp;&nbsp;&nbsp; Now uncomment lines 24-27 in the
+function <code>test</code>.
+When you try to debug this time, the program will eventually cause an
+access violation and end. &nbsp;The IDE should display which line
+triggered the error and the backtrace should display the current
+variables and their values.
+</body></html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Introduction to debugging</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="debug"><param name="Keyword" value="debugger">
+<param name="Keyword" value="gdb"><param name="Keyword" value="bugs">
+<param name="Keyword" value="breakpoint">
+<param name="Keyword" value="stepping">
+</object><a name="id_introdebugging"></a>
+<h1><b>Introduction to debugging</b></h1>
+<p>&nbsp;&nbsp;&nbsp; All developers make mistakes,
+but some mistakes
+are harder to detect than others. Compile-time mistakes are usually the
+easiest to spot because wxDev-C++ will provide a list of those errors
+(including line numbers and suggested corrections) in the <span style="font-style: italic;">Compiler Output</span>
+window. Runtime errors (or "bugs") are more insidious because the
+developer has no way of knowing what line of code caused the dreaded
+infinite loop or "<code>Access Violation</code>" or "<code>Segmentation
+Fault</code>" or "<code>Blue Screen of Death</code>".
+Thus debuggers were&nbsp;created to help developers
+investigate their program while it is running.</p>
+<p>&nbsp;&nbsp;&nbsp; A debugger is a program that
+runs your program
+inside of it. It keeps track of your program's
+functions, variables and instructions. It is capable of pausing your
+program at a given moment (aka breakpointing), allowing you to view
+(and even modify) the values of your variables at that moment, and then
+continuing the execution of the program either one instruction at a
+time (stepping) or to the end of execution. You can set
+breakpoints anywhere in your code : once your program reaches
+that&nbsp; code at runtime, the debugger will pause your program
+and
+let you examine its variables at that time.</p>
+<p>&nbsp;&nbsp;&nbsp; This tutorial explains the use
+of the <a href="http://www.gnu.org/software/gdb/">MingW
+GNU debugger</a> (gdb). It can <span style="text-decoration: underline;">only</span> be
+used with the <a href="http://www.mingw.org/">MingW gcc
+compiler</a>. Note that gdb is intended to be a command-line
+interface. It runs as
+its own shell allowing the user to run gcc-compiled programs from
+within that shell. All we do in wxDev-C++ is send messages to the gdb
+shell and parse the output as it occurs.&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp; With gdb (as with all
+debuggers), we can:</p>
+<ul>
+<li>specify places within the program to halt execution (aka
+breakpoints)</li>
+<li>step through the program one line of source code at a time</li>
+<li>view the values of variables in realtime as the program
+executes</li>
+<li>evaluate the memory stack when a program throws an error</li>
+</ul>
+<table style="text-align: left; width: 708px; height: 152px;" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td>
+<h5>Note that a web search will reveal many gdb tutorials
+out there
+that are far better than this one in terms of scope (for example, <a href="http://dirac.org/linux/gdb/">http://dirac.org/linux/gdb/</a>).
+Please consider review them if you really want to learn the in's and
+out's of using gdb.</h5>
+</td>
+</tr>
+<tr>
+<td>
+<h5>There are, in fact, other graphical programs, which
+also use gdb in a similar manner. For instance, the Data Display
+Debugger (<a href="http://www.gnu.org/software/ddd">ddd</a>)
+is a popular GUI interface for gdb debugging. You may, in fact, prefer
+to
+use these 3rd party programs instead of the built in wxDev-C++
+interface.</h5>
+</td>
+</tr>
+</tbody>
+</table>
+&nbsp;&nbsp;&nbsp;&nbsp;
+</body></html>

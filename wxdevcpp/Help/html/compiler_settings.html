@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compiler Options - Settings</title></head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e"><param name="Keyword" value="compile"><param name="Keyword" value="Compiler Options"><param name="Keyword" value="compiler set"><param name="Keyword" value="gcc"><param name="Keyword" value="MS VC"></object><a name="id_compilersettings"></a>
+<h1>Compiler Options</h1>
+
+<h2>Settings tab</h2>
+&nbsp;&nbsp;&nbsp;
+The compiler settings will, of course, depend on which compiler you are
+using (in most cases Mingw gcc or MS VC). I'm only going to explain the
+MingW gcc settings in this help file. &nbsp;However, Microsoft
+provides
+a very informative <a href="http://msdn.microsoft.com/en-us/vstudio/default.aspx">online
+library</a> if you need help with MS VC compiler settings.<br>
+<br>
+<img style="width: 464px; height: 474px;" alt="compiler options settings" src="../images/compoptions_settings.gif"><br>
+NOTE: A more in depth explanation of these compiler options can be
+found in the <a href="http://gcc.gnu.org/onlinedocs/gcc/">gcc
+manual</a>. <br>
+<h3>C Compiler</h3>
+<h4>Support all ANSI standard C programs</h4>
+<param name="Keyword" value="Support all ANSI standard C programs">
+<span style="font-style: italic;">Option -ansi:</span>
+Will attempt to be as ANSI conformant as possible.<br>
+<h4>Attempt to support some aspects of traditional C
+pre-processors</h4>
+<param name="Keyword" value="Attempt to support some aspects of traditional C
+pre-processors">
+<span style="font-style: italic;">Option -traditional-cpp</span>
+: Will attempt to make the pre-processor behave as traditional ones do.<br>
+<h4>Inhibit all warning messages</h4>
+<param name="Keyword" value="Inhibit all warning messages">
+<span style="font-style: italic;">Option -w</span>:
+No warnings will be displayed.<br>
+<h4>Displays one error per line</h4>
+<span style="font-style: italic;">Option -fmessage-length=0</span>
+: Displays one error per line!<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h3>C++ compiler</h3>
+<h4>
+Turn off all access checking</h4>
+<span style="font-style: italic;">
+Option -fno-access-control</span><br>
+<h4>Accept $ in identifiers</h4>
+<span style="font-style: italic;">
+Option -fdollar-in-identifiers</span>: Will allow $ to be used in
+variable and
+function names. Cannot be used with GCC 3.2.<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h3>Code generation</h3>
+<h4>
+Enable exception handling</h4>
+<span style="font-style: italic;">
+Option -fexceptions</span><br>
+<h4>Use same size for double and float</h4>
+<span style="font-style: italic;">
+Option -fshort-double</span><br>
+<h4>Put extra commentary information in the generated assembler</h4>
+<span style="font-style: italic;">
+Option
+-fverbose-asm:</span> The intermediary assembler files generated
+will have
+extra comments. Only useful if they're being saved (using the -S
+command-line option).<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h3>Code profiling</h3>
+<h4>
+Generate profiling info for analysis</h4>
+<param name="Keyword" value="code profiler"><param name="Keyword" value="profiling">
+
+<span style="font-style: italic;">
+Option
+-pg:</span> Writes extra information into the generated program
+files to use
+with the profiler. The profiler lets you see where maximum amount of
+the program's execution time is being spent, so that when you're
+optimizing the program, you optimize only the parts that make the
+difference. This option should be disabled when building retail/final
+versions. It should be used only in debug builds.<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h3>Linker</h3>
+<h4>
+Link an <a href="http://en.wikipedia.org/wiki/Objective-C">Objective
+C program</a></h4>
+<span style="font-style: italic;">
+Option -lobjc</span><br>
+<h4>Generate debugging information</h4>
+<span style="font-style: italic;">
+Option -g3:</span> Writes debug information into the generate
+binaries. This
+lets you debug it with the <a href="intro_debugging.html">integrated
+debugger</a>.<br>
+<param name="Keyword" value="Generate debugging information"><param name="Keyword" value="debugger"><param name="Keyword" value="gdb">
+
+
+<br>
+<h4>Do not use standard system startup files or libraries</h4>
+<span style="font-style: italic;">
+Option -nostdlib</span>: &nbsp;Do not use the standard system
+startup files or libraries when linking. No startup files and only the
+libraries you specify will be passed to the linker. The compiler may
+generate calls to memcmp, memset, memcpy and memmove. These entries are
+usually resolved by entries in libc. These entry points should be
+supplied through some other mechanism when this option is specified. <br>
+<h4>Do not create a console window</h4>
+<span style="font-style: italic;">
+Option -mwindows:</span> Instructs gcc to build a Windows GUI
+application without a console window.<br>
+<h4>Strip executable</h4>
+<span style="font-style: italic;">Option -s:</span>
+Remove all symbol table and relocation information from the executable.
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h3><a href="http://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Optimize-Options">Optimization</a></h3>
+&nbsp;&nbsp;&nbsp; Optimization can make your code execute
+faster, but requires more time to compile.<br>
+<h4>Perform a number of minor optimizations</h4>
+<span style="font-style: italic;">
+Option -fexpensive-optimizations</span>: Perform a number of
+minor optimizations that are relatively expensive. Enabled at levels
+-O2, -O3, -Os. <br>
+<h4>Further Optimizations</h4>
+Here, you can select the optimization level.<br>
+<h5>Optimize</h5>
+<span style="font-style: italic;">
+Option -O1</span>: With -O1 (or
+just -O), the compiler tries to reduce code size and execution time,
+without performing any optimizations that take a great deal of
+compilation time. <br>
+<h5>Optimize more</h5>
+<span style="font-style: italic;">
+Option -O2</span>: &nbsp;GCC
+performs nearly all supported optimizations that do not involve a
+space-speed tradeoff. The compiler does not perform loop unrolling or
+function inlining when you specify -O2. As compared to -O, this option
+increases both compilation time and the performance of the generated
+code. <br>
+<br>
+<h5>Best optimization</h5>
+<span style="font-style: italic;">
+Option -O3</span>: Optimize yet
+more. -O3 turns on all optimizations specified by -O2 and also turns on
+the -finline-functions, -funswitch-loops, -fpredictive-commoning,
+-fgcse-after-reload and -ftree-vectorize options.
+</body></html>

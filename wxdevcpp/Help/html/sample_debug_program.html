@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Buggin' by Example</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="debug"><param name="Keyword" value="debugger"></object><a name="id_sampledebugprogram"></a>
+<h1>Example Program to Debug</h1>
+&nbsp;&nbsp;&nbsp;
+We're going to explain the debug process by working through an example.
+&nbsp;Although we are limiting our discussion to the gdb debugger,
+the
+same example could be used for other debuggers.<br>
+<br>
+&nbsp;&nbsp;&nbsp; To create our example debug project, go
+to the <em>File</em> menu and select <em>New</em>
+and then <em>Project</em>. The new project dialog will be
+displayed. <br>
+<br>
+<img style="width: 520px; height: 309px;" alt="New project window" src="../images/newproj.gif"><br>
+<br>
+Select the <strong>Console Application</strong>
+from the window. &nbsp;We'll name our project "sampleDebug". You'll
+notice that a new project will be created with a skeleton C++ code
+called <strong>main.cpp</strong>. &nbsp;Replace the
+C++ code in <strong>main.cpp</strong> with the following
+code:<br>
+<br>
+<br>
+<table style="text-align: left; width: 541px; height: 760px;" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr align="center">
+<td style="background-color: silver;"><code><span style="font-weight: bold;">main.cpp</span>
+</code></td>
+</tr>
+<tr>
+<td><code>#include &lt;cstdlib&gt;<br>
+#include &lt;iostream&gt;<br>
+<br>
+using namespace std;<br>
+<br>
+float fGlobal = 1234.56;<br>
+<br>
+void test2(int* iTest2a, int iTest2b)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; char chTest2 = 'r';<br>
+&nbsp;&nbsp;&nbsp; *iTest2a = iTest2b;<br>
+&nbsp;&nbsp;&nbsp; printf("Finished test2\n");<br>
+}<br>
+<br>
+void test()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; int iTesta, *iTestb; /* Put a breakpoint
+here */<br>
+<br>
+&nbsp;&nbsp;&nbsp; test2(&amp;iTesta, 5);<br>
+&nbsp;&nbsp;&nbsp; printf("iTesta = %d\n", iTesta);<br>
+<br>
+&nbsp;&nbsp;&nbsp; /* The next lines will cause a runtime
+error <br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp;since iTestb never gets initialized */<br>
+&nbsp;&nbsp;&nbsp; /*<br>
+&nbsp;&nbsp;&nbsp; test2(iTestb, 3);<br>
+&nbsp;&nbsp;&nbsp; printf("iTestb = %d\n", iTestb);<br>
+&nbsp;&nbsp;&nbsp; */<br>
+}<br>
+<br>
+int main(int argc, char *argv[])<br>
+{<br>
+&nbsp;&nbsp;&nbsp; float fMain = 3.1415;<br>
+&nbsp;&nbsp;&nbsp; test();<br>
+&nbsp;&nbsp;&nbsp; printf("Press any key to continue...");<br>
+&nbsp;&nbsp;&nbsp; getchar (); /* Pause the program from
+exiting */<br>
+&nbsp;&nbsp;&nbsp; return EXIT_SUCCESS;<br>
+<br>
+}
+
+</code></td>
+</tr>
+</tbody>
+</table>
+<br>
+&nbsp;&nbsp;&nbsp; Remember to save the project after
+you've replaced the contents of <strong>main.cpp</strong>.<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+This sample project will demonstrate the concepts of functions, local
+and global variables, breakpoints, and backtraces. &nbsp;Note that
+lines 24-27 are currently commented.<br>
+<br>
+<table style="text-align: left; width: 540px; height: 101px;" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td>&nbsp;<code> &nbsp; &nbsp;/*<br>
+&nbsp;&nbsp;&nbsp; test2(iTestb, 3);<br>
+&nbsp;&nbsp;&nbsp; printf("iTestb = %d\n", iTestb);<br>
+&nbsp;&nbsp;&nbsp; */</code></td>
+</tr>
+</tbody>
+</table>
+<br>
+These
+lines will not cause an error during compile-time (i.e. the Mingw gcc
+compiler will create an executable with no reported compile errors),
+but it will cause a core dump at runtime due to the use of the
+uninitialized variable <code>iTestb</code>.<br>
+<br>
+In the next few sections, we'll put our sampleDebug project to good use
+explaining how to use the debugger...<br>
+<br>
+<br>
+<code></code>
+</body></html>

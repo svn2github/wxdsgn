@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Stepping Through Your Program</title></head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="debug"><param name="Keyword" value="debugger"><param name="Keyword" value="stepping"><param name="Keyword" value="Next Step"><param name="Keyword" value="breakpoint">
+<param name="Keyword" value="Continue">
+<param name="Keyword" value="Step Into"></object><a name="id_stepdebug"></a>
+<h1>Stepping Through Your Program</h1>
+<p><br>
+Once a breakpoint has been reached, you can step into the code of your
+application in different ways :</p>
+<ul>
+<li><b>Next Step</b> <img src="../images/icon_nextstep.gif" alt="" border="0">
+(shortcut : <strong>F7</strong>)
+: &nbsp; The debugger will execute the next instruction (i.e. line
+of code) and pause</li>
+</ul>
+<ul>
+<li><b>Step Into <img style="width: 17px; height: 16px;" alt="step into" src="../images/debug_stepinto.gif"></b> (shortcut : <strong>Shift+F7</strong>)
+: &nbsp;The debugger&nbsp;will execute the next instruction
+(i.e. line of code) and pause.
+If that instruction is a function call it will jump into the function
+and future steps will go line by line through that function until it
+returns to the line that called it.</li>
+</ul>
+<ul>
+<li><b>Continue </b><img src="../images/icon_continue.gif" alt="" border="0">
+(shortcut&nbsp;: <strong>Ctrl+F7</strong>)
+: &nbsp;The debugger will continue the execution of your program
+until another breakpoint is reached<b>.</b></li>
+</ul>
+If your program is still paused at the breakpoint, try hitting <strong>F7</strong>
+to continue to the next step. You'll note that the cursor in the source
+code moves down to the next line of code and highlights it in blue. The
+breakpoint returns to its red highlight.<br>
+<br>
+<img style="width: 601px; height: 331px;" alt="Step in debugger" src="../images/debug_step.gif"><br>
+<br>
+If
+you keep hitting F7, the debugger will continue executing the program
+one line at a time until it reaches the end. Note that this is very
+useful in sections of your code where you think there may be logic
+errors or infinite loops. You can essentially slow the program
+execution down and view each instruction as it happens.
+</body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Watchpoints - Minding your Variables</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="debug"><param name="Keyword" value="watchpoint"><param name="Keyword" value="debugger"><param name="Keyword" value="Local Variables"><param name="Keyword" value="Add watch"><param name="Keyword" value="Debug watch"><param name="Keyword" value="Modify variable"><param name="Keyword" value="Break on read"><param name="Keyword" value="Break on write"></object><a name="id_watchpoint"></a>
+<h1>Watching variables</h1>
+<p>&nbsp;&nbsp;&nbsp; One of the most interesting
+aspects of debugging
+is the possibility to display the value of your variables at a given
+time. This way you can be sure your variable (e.g. a counter index) has
+the value you would expect.</p>
+<p>&nbsp;&nbsp;&nbsp; wxDev-C++ is able to
+conveniently show you&nbsp;the contents of your
+classes, strings, structures/unions, arrays and other variables in the
+<em>Debug</em> <em>Local Variables</em> window:</p>
+<p><img src="../images/debug_browser.gif" alt="" border="0"></p>
+<p>Note that in the above window, <code>iTesta</code>
+has already had its value set to "5", but <code>iTestb</code>
+has not been set (the value will be&nbsp;random and depends on what
+data is at that pointer at that given time).&nbsp;</p>
+<p>Now keep this <em>Local Variables</em>
+window open and re-start the debugging. &nbsp;You should be able to
+"step through" the code after the breakpoint (discussed in the <a href="stepping_debug.html">last section</a>) and watch
+the <code>iTesta</code> variable change from a random
+value to "5".</p>
+<h4>Adding Watchpoints</h4>
+<p>Watchpoints
+are like breakpoints that are triggered not by a particular line of
+code, but by the change in value of a particular variable in code.
+&nbsp;For example, let's say that you've got a large program and
+think
+that your variable <code>iCount</code> is being changed
+unexpectedly.
+&nbsp;You can set a regular breakpoint (at any line number), run
+the
+debugger to the breakpoint, and then add a watch to <code>iCount</code>.
+&nbsp;The debugger will then always break whenever the value of <code>iCount</code>
+changes.</p>
+<p>To set a watchpoint, add a normal breakpoint to your code and
+run the debugger. On the <em>Debug</em> window, click on
+the <strong>Watch</strong> tab. Then, click anywhere
+within the <strong>Watch</strong> tab space. An <i>Add
+Watch&nbsp;</i>
+(shortcut : <strong>F4</strong>) menu should appear.</p>
+<p><img src="../images/icon_addwatch.gif" alt="" border="0"></p>
+<p>Once you select <em>Add Watch</em>, a dialog box
+should appear:</p>
+<p><img style="width: 312px; height: 210px;" alt="Watch variable" src="../images/debug_watchvariable.gif"></p>
+<p>&nbsp;&nbsp;&nbsp; Type the name of your variable
+in the dialog,
+and press OK. If you select a word in the current source file and press
+<strong>F4</strong>, it will add a watch of the selected
+text without asking for a
+variable name. A breakpoint can be generated when the value of the
+variable is written, read, or both.</p>
+<p>&nbsp;&nbsp;&nbsp;
+Once a watchpoint variable is set, it will continue to be monitored in
+future debugging runs. You can also modify the value of your watched
+variable at any time during debugging by right clicking on the variable
+name in the <em>Debug Watch</em> window and selecting <em>Modify</em>
+value.
+Note that you are changing this value outside of your source code. The
+next time you run the debug, the value you entered is lost and the
+program executes normally.</p>
+<h2>Important Notes: </h2>
+<ul>
+<li>When using pointers to structures or classes, if you want
+to display all the members of variable <i>my_pointer </i>then
+you need to watch <i>*my_pointer</i> (&#8216;*&#8217; is the
+value-operator). Watching only <i>my_pointer</i> would
+just display the address contained in <i>my_pointer</i>.</li>
+<li>Sometimes the debugger may not know the type of a pointer,
+and
+cannot display all of the members of the pointed structure or class.
+You can bypass this problem by casting your watched variable. For
+example, if the debugger cannot show the contents of <i>my_pointer</i>
+of type MyPointer, you could try adding the watch variable: <i>*(MyPointer
+*)my_pointer</i></li>
+</ul>
+</body></html>

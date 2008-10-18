@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Creating a Project</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e"><param name="Keyword" value="project"><param name="Keyword" value=".dev"><param name="Keyword" value="Console application"><param name="Keyword" value="Static library"><param name="Keyword" value="DLL">
+</object><a name="id_creatingprojects"></a>
+<h1>Creating a Project</h1>
+<h3>What is a wxDev-C++ Project ?</h3>
+&nbsp;&nbsp;&nbsp; Projects are the way you&nbsp;manage
+different source files and
+compiler/linker options inside wxDev-C++. It's an ini file (usually
+ending in the <span style="font-style: italic;">.dev</span>
+extension), which specifies what source files should be included in
+your program and what compiler/linker parameters/switches you want to
+use to build them.<br>
+<br>
+<h3>When to use wxDev-C++ Projects ?</h3>
+(Answer: [Almost] Always)
+<ul>
+<li><span style="font-style: italic;">You have
+more than one source file</span> - Using Projects ensures
+that&nbsp;all of your source files are linked to the executable
+after they are compiled.</li>
+<li><span style="font-style: italic;">You need to
+create a DLL
+or static library, or want to use resource files in your
+program</span>&nbsp;- Projects allow you to specify the
+compiler and linker options necessary
+</li>
+</ul>
+<h3>How can I create a wxDev-C++ Project ?</h3>
+Go to the <em>File</em> menu and click on <em>New</em>,
+then <em>Project</em>. A dialog opens,
+containing different Project types.<br>
+<p><img src="../images/newproj.gif" alt="" border="0"></p>
+<br>
+Here are the&nbsp;basic Dev-C++ project types :<br>
+<ul>
+<li><span style="font-weight: bold;">Console
+application</span> : creates a console (command-line shell)
+program</li>
+<li><span style="font-weight: bold;">Static library</span>
+: creates an empty project with the options needed for building a
+static library</li>
+<li><span style="font-weight: bold;">DLL</span>
+: creates a Win32 Dynamic Link Library</li>
+</ul>
+In addition, wxDev-C++ contains three wxWidgets (GUI) project types:<br>
+<ul>
+<li><span style="font-weight: bold;">Empty
+wxWidgets project</span>
+- A project that initially contains no source files but has the correct
+compiler and linker settings to build&nbsp;wxWidgets source code.</li>
+<li><span style="font-weight: bold;">wxWidgets
+Dialog </span>- A project that contains&nbsp;skeleton source
+files for a wxDialog</li>
+<li><span style="font-weight: bold;">wxWidgets
+Frame</span> - A project that contains skeleton source files for
+a wxFrame</li>
+</ul>
+<br>
+Now that you selected your project type, fill the name of your project
+in the corresponding edit box, select the programming language you will
+be using (C
+or C++), and click on OK.&nbsp;
+</body></html>

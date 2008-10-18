@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Getting and Installing Packages</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="wxDev-C++"><param name="Keyword" value="Dev-C++"><param name="Keyword" value="DevPak"><param name="Keyword" value="package"><param name="Keyword" value=".devpak"><param name="Keyword" value=".devpackage"><param name="Keyword" value="WebUpdate"><param name="Keyword" value="Package Manager"><param name="Keyword" value="PackMan"><param name="Keyword" value="PackMaker"><param name="Keyword" value="Verify a Package"><param name="Keyword" value="Remove a Package"><param name="Keyword" value="General"><param name="Keyword" value="Files"><param name="Keyword" value="IDE"><param name="Keyword" value="RAD">
+<param name="Keyword" value="Package Maker"><param name="Keyword" value="Check for Updates"></object><a name="id_packages"></a>
+<h1>Getting and Installing Packages</h1>
+<br>
+&nbsp;&nbsp;&nbsp;
+wxDev-C++ makes use of Dev-C++'s <a href="http://devpaks.org/">DevPak</a>
+system for updating and
+improving the program. &nbsp;For example, if you need to use SQLite
+or
+OpenSSL in your programs, there are probably DevPaks out there that
+will allow you to automatically add the header files, libraries, and
+templates needed to easily add these functions to your programs.
+DevPaks are also used to automatically update the <a href="http://en.wikipedia.org/wiki/Integrated_development_environment">IDE</a> or the <a href="http://en.wikipedia.org/wiki/Rapid_application_development">RAD</a>.<br>
+<h3>What's in a DevPak?</h3>
+&nbsp;&nbsp;&nbsp;
+A DevPak is really just a compressed package containing files that will
+be copied to your computer. &nbsp;The DevPak creator first creates
+a
+file (extension <em>.devpackage</em>) that contains what
+files to
+include in the DevPak and where to copy them on the target computer.
+&nbsp;Those files are then added to a single file using the <a href="http://en.wikipedia.org/wiki/Tar_%28file_format%29">tar</a>
+archiving tool (extension <em>.tar</em>) and that single
+archive file is compressed using the <a href="http://www.bzip.org/">bzip2</a> tool (extension <em>.tar.bz2</em>).
+The single, compressed archive file is given the extension <em>.devpak</em>,
+but it is actually just a tar'd, bzip2'd archive similar to other
+packages you may have downloaded. Although you can create DevPaks
+manually, the developers of Dev-C++ made the process even easier by
+providing a <a href="http://en.wikipedia.org/wiki/Graphical_user_interface">GUI</a> for making DevPaks called PackMaker.&nbsp;You tell
+PackMaker what files to include in your DevPak and in what directories
+to install those files, and PackMaker handles the archiving for you.<br>
+<br>
+<h3>Where do I get DevPaks?</h3>
+<br>
+The
+easiest way to get DevPaks is to use wxDev-C++'s web update feature.
+WebUpdate searches a list of DevPak servers and tells you if the ones
+online are newer than the ones you already have installed. To activate
+WebUpdate, go to the <em>Tools</em> menu and select <span style="font-style: italic;">Check for Updates/Packages</span>.
+<br>
+<br>
+<img style="width: 594px; height: 484px;" alt="WebUpdate" src="../images/webupdate.gif"><br>
+<br>
+&nbsp;&nbsp;&nbsp; You can select the online DevPak server
+in the dropdown box and then click the <strong>Check for Updates</strong>
+button to download a list of available DevPaks on that server. Note
+that we suggest using DevPaks from the wxDev-C++ server because we know
+they'll work with the wxDev-C++ IDE. &nbsp;Other DevPaks may
+require
+some manual intervention to get the correct paths for the compiler and
+linker.<br>
+<br>
+&nbsp;&nbsp;&nbsp; Once you find a DevPak you want to
+download, click on the empty checkbox to the right of its name and then
+click the <strong>Download Selected</strong> button at the
+bottom, right of the window. The DevPak will be download from the
+webserver and will begin the install process:<br>
+<br>
+<img style="width: 499px; height: 403px;" alt="devpak installation" src="../images/devpak_install.gif"><br>
+<br>
+&nbsp;&nbsp;&nbsp; In the above case, I've selected the
+wxBzipStream DevPak to install. &nbsp;There's usually a <strong>Welcome</strong>
+screen that explains what the package will install and screens for the <strong>ReadMe</strong>
+and <strong>License</strong> files that typically come
+with packages. &nbsp;Continue the DevPak installation by clicking
+on the <strong>Next</strong>
+button until you are told that the DevPak has installed successfully.
+Once finished, our wxBzipStream library should be installed on our
+computer and ready for use in our programming.<br>
+<br>
+Managing DevPaks<br>
+<br>
+<ul>
+<li>How do I know that my new DevPak really installed
+correctly? </li>
+<li>What happens if I want to uninstall it? </li>
+</ul>
+<br>
+&nbsp;&nbsp;&nbsp;
+To manage your DevPaks, the Dev-C++ developers created a DevPak manager
+called PackMan. To activate PackMan click on the <em>Tools</em>
+menu and select <span style="font-style: italic;">Package
+Manager</span>. <br>
+<br>
+<img style="width: 765px; height: 532px;" alt="PackMan" src="../images/packman.gif"><br>
+<br>
+&nbsp;&nbsp;&nbsp;
+As you can see, the wxBzipStream package is shown along with the other
+packages installed on my system. In the notebook page to the left of
+the screen, you'll see that the <strong>General</strong>
+tab lists the name, version, and description of the DevPak. If you
+click on the <strong>Files</strong> tab, you'll see a list
+of the files that are associated with this DevPak and where they have
+been installed on your computer.<br>
+<br>
+<img style="width: 45px; height: 43px;" alt="Verify devpak" src="../images/verify_devpak.gif">To verify that the DevPak
+successfully installed all of its files to your computer, select the
+DevPak's icon and click on the <strong>Verify</strong>
+tool in the toolbar. A message box should appear telling you if any
+files that should be in the DevPak don't appear on your computer in
+their correct location.<br>
+<br>
+<img style="width: 45px; height: 43px;" alt="Remove devpak" src="../images/remove_devpak.gif">To uninstall the DevPak,
+select the DevPak's icon and click on the <strong>Remove</strong>
+tool in the toolbar. PackMan will delete all of the files from your
+computer that were a part of this DevPak.
+
+
+
+
+</body></html>

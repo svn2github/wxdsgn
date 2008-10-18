@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Linking libraries with your project</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="linker"><param name="Keyword" value="Dev-C++"><param name="Keyword" value="gcc"><param name="Keyword" value="MS VC"><param name="Keyword" value="wxWidgets"><param name="Keyword" value="Project Parameters">
+<param name="Keyword" value="Adding a library to a project">
+</object><a name="id_linkinglibs"></a>
+<h1><b>Linking libraries with your project</b></h1>
+<h3>A little history : </h3>
+<h5>MingW/GNU</h5>
+Library filenames under the GNU system are in the form <i>libNAME.a</i>
+(where NAME is the name of the library, like wsock32).
+<br>
+<br>
+For example, if you want to use the wsock32 (winsock) library, the
+filename will be <i>libwsock32.a</i>
+<br>
+The gcc parameter for linking a library is <b><i>&#8211;NAME</i></b>,
+so for linking with the wsock32 library we would give GCC the &#8211;lwsock32
+parameter.<br>
+<br>
+<h5>MS VC++</h5>
+MS libraries are in the form <span style="font-style: italic;">NAME.lib</span>
+(where NAME is the name of the library, like wxmsw28). MS VC uses the
+entire name so, for example, linking the wxWidgets 2.8.9 library would
+be wxmsw28.lib. <br>
+<h3><b>Linking your library</b>:</h3>
+<p>Click on <i>Project </i>menu then on <i>Options</i>.
+Now click on the <i>Parameters</i> sheet<i>.</i></p>
+<p><img src="../images/projopt_lib.gif" alt="" border="0"></p>
+<p>In the <i>Linker</i> edit box, you can specify as
+many libraries as you need. You can also pass the complete filename of
+the library. </p>
+<p>Example :&nbsp;&#8211;lm &#8211;lwsock32 c:\libs\mylib.a
+c:\objs\myobj.o</p>
+<p>You may also use the <i>Add Library or Object</i>
+button <img src="../images/icon_addlib.gif" alt="" border="0"> to select your library from a list.</p>
+</body></html>

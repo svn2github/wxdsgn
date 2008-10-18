@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compiling and linking process</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="compile"><param name="Keyword" value="linker"><param name="Keyword" value="linker"><param name="Keyword" value="preprocessor"><param name="Keyword" value="Execute"><param name="Keyword" value="Compile Log"><param name="Keyword" value="makefile"><param name="Keyword" value="assembler"><param name="Keyword" value="Rebuild All"><param name="Keyword" value="Clean">
+</object><a name="id_compilelink"></a>
+<h1><b>Compiling and linking process</b></h1>
+<h3>How does the compile and link process works ?</h3>
+<p>The build process can be generally divided into four steps :</p>
+<ol>
+<li><span style="font-style: italic;">Preprocessor</span>
+: expands macros and include files in your source.</li>
+<li><span style="font-style: italic;">Compiler</span>
+: transform your source file into assembly code (a processor language
+that's human readable)</li>
+<li><span style="font-style: italic;">Assembler</span>
+: takes the assembly code and generate machine-readable code (binary
+object code)</li>
+<li><span style="font-style: italic;">Linker</span>
+: assembles and resolves object codes together to create a single
+executable.</li>
+</ol>
+<h3>How to do this in wxDev-C++ ?</h3>
+<p>Just go to the <i>Execute </i>menu and click <i>Compile</i>
+<img src="../images/icon_compile.gif" alt="" border="0">(shortcut
+: <strong>Ctrl+F9</strong>), and wxDev-C++ will
+take care of the 4 build steps.</p>
+<p>Look at the bottom panel of wxDev-C++, you should get
+something like this :</p>
+<p><img src="../images/comp_log.gif" alt="" border="0"></p>
+<p>This log window shows you what wxDev-C++ is doing (the program
+it executes, the files it is creating, ...).</p>
+<p>If your program compiled, you will see the message &#8216;<code>Compilation
+successful</code>&#8217; in this window.</p>
+<p>If compiling or linking fails, you will see a list of the
+errors on the bottom panel :</p>
+<p><img src="../images/comp_errors.gif" alt="" border="0"></p>
+<p>You can directly jump to the line in your code where the error
+appears by double-clicking on item.</p>
+<p>Note,
+the GNU/MingW Makefile system that we use should detect any files that
+have been changed between builds and only re-compile those files.
+&nbsp;However, there are some times when you may want to just force
+the
+Makefile system to rebuild everything in the project. To do this, just
+go to the <em>Execute</em> menu and <em>Rebuild All</em>
+(shortcut: <strong>Ctrl+F11</strong>). Rebuild all is
+equivalent to calling <em>Clean</em> and then <em>Compile</em>.
+</p>
+</body></html>
