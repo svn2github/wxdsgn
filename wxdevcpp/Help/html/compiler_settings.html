@@ -1,10 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compiler Options - Settings</title></head>
-<body>
-<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e"><param name="Keyword" value="compile"><param name="Keyword" value="Compiler Options"><param name="Keyword" value="compiler set"><param name="Keyword" value="gcc"><param name="Keyword" value="MS VC"></object><a name="id_compilersettings"></a>
-<h1>Compiler Options</h1>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compiler Options - Settings</title>
 
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e"><param name="Keyword" value="compile"><param name="Keyword" value="Compiler Options"><param name="Keyword" value="compiler set"><param name="Keyword" value="gcc"><param name="Keyword" value="MS VC"><param name="Keyword" value="Support all ANSI standard C programs"><param name="Keyword" value="Inhibit all warning messages">
+<param name="Keyword" value="Attempt to support some aspects of traditional C
+pre-processors"><param name="Keyword" value="code profiler"><param name="Keyword" value="profiling">
+<param name="Keyword" value="Generate debugging information"><param name="Keyword" value="debugger"><param name="Keyword" value="gdb">
+</object><a name="id_compilersettings"></a>
+<h1>Compiler Options</h1>
 <h2>Settings tab</h2>
 &nbsp;&nbsp;&nbsp;
 The compiler settings will, of course, depend on which compiler you are
@@ -20,17 +25,13 @@ found in the <a href="http://gcc.gnu.org/onlinedocs/gcc/">gcc
 manual</a>. <br>
 <h3>C Compiler</h3>
 <h4>Support all ANSI standard C programs</h4>
-<param name="Keyword" value="Support all ANSI standard C programs">
 <span style="font-style: italic;">Option -ansi:</span>
 Will attempt to be as ANSI conformant as possible.<br>
 <h4>Attempt to support some aspects of traditional C
 pre-processors</h4>
-<param name="Keyword" value="Attempt to support some aspects of traditional C
-pre-processors">
 <span style="font-style: italic;">Option -traditional-cpp</span>
 : Will attempt to make the pre-processor behave as traditional ones do.<br>
 <h4>Inhibit all warning messages</h4>
-<param name="Keyword" value="Inhibit all warning messages">
 <span style="font-style: italic;">Option -w</span>:
 No warnings will be displayed.<br>
 <h4>Displays one error per line</h4>
@@ -70,10 +71,7 @@ command-line option).<br>
 <h3>Code profiling</h3>
 <h4>
 Generate profiling info for analysis</h4>
-<param name="Keyword" value="code profiler"><param name="Keyword" value="profiling">
-
-<span style="font-style: italic;">
-Option
+<span style="font-style: italic;">Option
 -pg:</span> Writes extra information into the generated program
 files to use
 with the profiler. The profiler lets you see where maximum amount of
@@ -95,9 +93,6 @@ Option -g3:</span> Writes debug information into the generate
 binaries. This
 lets you debug it with the <a href="intro_debugging.html">integrated
 debugger</a>.<br>
-<param name="Keyword" value="Generate debugging information"><param name="Keyword" value="debugger"><param name="Keyword" value="gdb">
-
-
 <br>
 <h4>Do not use standard system startup files or libraries</h4>
 <span style="font-style: italic;">

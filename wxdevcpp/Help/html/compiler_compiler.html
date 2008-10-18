@@ -1,16 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compiler Options - Compiler</title></head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compiler Options - Compiler</title>
+
+</head>
 <body>
 <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-<param name="Keyword" value="compile"><param name="Keyword" value="Compiler Options"><param name="Keyword" value="compiler set"><param name="Keyword" value="gcc"><param name="Keyword" value="MS VC"><param name="Keyword" value="project"></object><a name="id_compilercompiler"></a>
+<param name="Keyword" value="compile"><param name="Keyword" value="Compiler Options"><param name="Keyword" value="compiler set"><param name="Keyword" value="gcc"><param name="Keyword" value="MS VC"><param name="Keyword" value="project"><param name="Keyword" value="Add a compiler set"><param name="Keyword" value="Delete a compiler set"><param name="Keyword" value="Rename a compiler set"><param name="Keyword" value="Adding compiler commands">
+<param name="Keyword" value="Adding a compiler delay"><param name="Keyword" value="compiler delay">
+<param name="Keyword" value="timestamp">
+</object><a name="id_compilercompiler"></a>
 <h1>Compiler Options</h1>
-
 <h2>Compiler tab</h2>
-
-
 <h3>Compiler Set</h3>
-
 &nbsp;&nbsp;&nbsp;
 The first tab in the Compiler Options dialog allows you to specify the
 name of your compiler set and any additional commands you wish to add
@@ -24,37 +25,30 @@ instead of the set name "Default GCC compiler", I can define a compiler
 set named "Best compiler in the World 1", but use the compiler type of
 &nbsp;MingW (i.e. the MingW gcc compiler). The buttons <img style="width: 67px; height: 21px;" alt="compiler set buttons" src="../images/compilerset_buttons.gif">
 allow you to add, delete, and rename a compiler set respectively.<br>
-<param name="Keyword" value="Add a compiler set"><param name="Keyword" value="Delete a compiler set"><param name="Keyword" value="Rename a compiler set">
 <br>
 &nbsp;&nbsp;&nbsp; Remember that this configuration window
 will change the <span style="text-decoration: underline;">global</span>
 settings used by all of your projects with this compiler set.
 &nbsp;If you want to add custom compiler/linker settings for a
 particular project and not affect other projects, then you want to go
-to the <em>Project</em> menu and select <a href="managing_project_options.html"><span style="font-style: italic;">Project Options</span></a>.<br><br><img style="width: 461px; height: 478px;" alt="Compiler" src="../images/compoptions_compiler.gif"><br>
-<h3>Compiler set to configure</h3>
-Here,
+to the <em>Project</em> menu and select <a href="managing_project_options.html"><span style="font-style: italic;">Project Options</span></a>.<br>
+<br>
+<img style="width: 461px; height: 478px;" alt="Compiler" src="../images/compoptions_compiler.gif"><br>
+<h3>Compiler set to configure</h3>&nbsp;&nbsp;&nbsp; Here,
 you actually specify which type of compiler you wish to use with this
 compiler set. The default compiler that comes bundled with wxDev-C++ is
 MingW gcc. &nbsp;We also support MS VC 2003, 2005, and 2008
 compilers.<br>
-<h3>Add the following commands when calling compiler</h3>
-<param name="Keyword" value="Adding compiler commands">
-Here
+<h3>Add the following commands when calling compiler</h3>&nbsp;&nbsp;&nbsp; Here
 you can specify additional command-line options to be passed to the gcc
 compiler when compiling your project or file. Check the <a href="http://gcc.gnu.org/onlinedocs/gcc/index.html#toc_Invoking-GCC">gcc
 manual</a> for a list of command-line arguments.<br>
-<h3>Add these commands to the linker command-line</h3>
-Here you can specify options to be passed onto the linker (ld.exe). <br>
+<h3>Add these commands to the linker command-line</h3>&nbsp;&nbsp;&nbsp; Here you can specify options to be passed onto the linker (ld.exe). <br>
 <h3>Compile delay</h3>
-<param name="Keyword" value="Adding a compiler delay"><param name="Keyword" value="compiler delay">
-
 &nbsp;&nbsp;&nbsp; This option is present to provide a
 delay before compiling. Normally, you will not use this. If <em>make</em>
 complains of the timestamp being invalid, try specifying a delay here.<br>
-<h3>Use fast but imperfect dependency generation</h3>
-<param name="Keyword" value="timestamp">
-By
+<h3>Use fast but imperfect dependency generation</h3>&nbsp;&nbsp;&nbsp; By
 default, Dev-C++ will check all files and headers for dependancy
 information, and update the makefile accordingly. If you find that it's
 taking too much time, you can prevent this by enabling this option.
