@@ -1,0 +1,15 @@
+[Setup]
+Version=2
+AppName=DevCppHelp
+AppVerName=DevCppHelp 7.0
+AppVersion=7.0
+MenuName=
+Description=wxDev-C++ Help File
+Url=
+Readme=
+License=
+Picture=
+Dependencies=
+Reboot=0
+[Files]
+devcpp.chm=<app>\Help\
