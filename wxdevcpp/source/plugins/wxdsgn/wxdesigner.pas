@@ -4589,31 +4589,31 @@ begin
   // Loading Compiler settings:
   if name = 'wxOpts.Major' then
   begin
-    fwxOptions.majorVersion := StrToInt(name);
+    fwxOptions.majorVersion := StrToInt(value);
   end
   else if name = 'wxOpts.Minor' then
   begin
-    fwxOptions.minorVersion := StrToInt(name);
+    fwxOptions.minorVersion := StrToInt(value);
   end
   else if name = 'wxOpts.Release' then
   begin
-    fwxOptions.releaseVersion := StrToInt(name);
+    fwxOptions.releaseVersion := StrToInt(value);
   end
   else if name = 'wxOpts.Unicode' then
   begin
-    fwxOptions.unicodeSupport := StrToBool(name);
+    fwxOptions.unicodeSupport := StrToBool(value);
   end
   else if name = 'wxOpts.Monolithic' then
   begin
-    fwxOptions.monolithicLibrary := StrToBool(name);
+    fwxOptions.monolithicLibrary := StrToBool(value);
   end
   else if name = 'wxOpts.Debug' then
   begin
-    fwxOptions.debugLibrary := StrToBool(name);
+    fwxOptions.debugLibrary := StrToBool(value);
   end
   else if name = 'wxOpts.Static' then
   begin
-    fwxOptions.staticLibrary := StrToBool(name);
+    fwxOptions.staticLibrary := StrToBool(value);
   end;
 end;
 
@@ -4695,7 +4695,7 @@ begin
   begin
     majorVersion := 2;
     minorVersion := 8;
-    releaseVersion := 2;
+    releaseVersion := 9;
 
     unicodeSupport := False;
     monolithicLibrary := True;
