@@ -147,8 +147,9 @@ barra de herramientas. F12 para modo normal.
 #Debug Menu
 245=&Depurar
 246=Alternar Punto de Parada (&breakpoint)
-247=Siguiente &Paso
-248=Siguiente &Instrucción sin entrar
+247=&Siguiente Paso
+248=&Pausar ejecución
+3710=&Continuar ejecución
 249=&Añadir variable vigilada
 250=&Ver Variables
 251=&Detener Ejecución

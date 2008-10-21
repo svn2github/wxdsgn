@@ -149,20 +149,21 @@ barra de herramientas o F12 para regresar a modo normal.
 
 #Debug Menu
 245=&Depurar
-246=Añadir/&Quitar Punto de Ruptura
+246=Alternar Punto de Parada (&breakpoint)
 247=&Siguiente Paso
-248=Saltar Pas&o
-249=&Añadir watch
-250=&Observar Variables
-251=&Parar ejecución
-252=&Editar watch
-253=&Quitar watch
-254=Avanzar &Paso a paso
-255=Ir a &cursor
-256=&Ver ventana del CPU
-257=A&djuntar al proceso...
+248=&Pausar ejecución
+3710=&Continuar ejecución
+249=&Añadir variable vigilada
+250=&Ver Variables
+251=&Detener Ejecución
+252=&Editar vigilancia
+253=&Remover vigilancia
+254=Entrar a &siguiente instrucción
+255=&Ejecutar hasta el cursor
+256=Ver ve&ntana del CPU
+257=Pegar al proseso...
 258=Modificar valor
-259=Borrar todo
+259=Limpiar todo
 
 
 #context menus

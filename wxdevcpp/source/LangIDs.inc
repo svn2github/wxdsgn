@@ -208,6 +208,7 @@ const
   ID_ITEM_TOGGLEBREAK              = 246;
   ID_ITEM_STEPOVER                 = 247;
   ID_ITEM_PAUSE                    = 248;
+  ID_ITEM_CONTINUE                 = 3710;
   ID_ITEM_WATCHADD                 = 249;
   ID_ITEM_WATCHITEMS               = 250;
   ID_ITEM_STOPEXECUTION            = 251;
