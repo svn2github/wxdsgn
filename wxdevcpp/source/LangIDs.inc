@@ -988,6 +988,7 @@ const
   ID_ENV_GBALTCONFIG               = 2817;
   ID_ENV_USEALTCONFIG              = 2818;
   ID_ENV_CONFIGCHANGED             = 2819;
+  ID_ENV_HILITETAB                 = 2820;
 
 { Execute menu }
   ID_ITEM_EXECPARAMS               = 2900;

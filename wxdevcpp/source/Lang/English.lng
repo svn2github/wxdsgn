@@ -865,6 +865,7 @@ Ver=1
 2817=Alternate Configuration File
 2818=Use this alternate configuration file
 2819=You changed the configuration file to be used by the application.<CR>The new configuration file will *not* be used in the current session. Any configuration changes you do in this session, will be saved in the *currently* open configuration file.<CR><CR>It is suggested that you restart the application now, so that it starts using the new configuration file...
+2820=Highlight Active Editor Tab
 
 # Execute menu (more)
 2900=Parameters...

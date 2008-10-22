@@ -342,7 +342,53 @@ begin
   if not (XRCGEN) then //Nuklear Zelph
   begin
   //Create the sizer
-  Result := Format('%s = CreateButtonSizer(%s);', [self.Name, GetStdDialogButtonsSpecificStyle(Wx_Buttons)]);
+  Result := Format('%s = new %s;', [self.Name, self.wx_Class]);
+    if wxID_OK in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnOK = new wxButton( this, wxID_OK );';
+      Result := Result + #13 + Format('%s->AddButton( btnOK );',[self.Name]);
+    end
+    else if wxID_YES in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnYES = new wxButton( this, wxID_YES );';
+      Result := Result + #13 + Format('%s->AddButton( btnYES );',[self.Name]);
+    end
+    else if wxID_SAVE in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnSAVE = new wxButton( this, wxID_SAVE );';
+      Result := Result + #13 + Format('%s->AddButton( btnSAVE );',[self.Name]);
+    end;
+
+    if wxID_APPLY in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnAPPLY = new wxButton( this, wxID_APPLY );';
+      Result := Result + #13 + Format('%s->AddButton( btnAPPLY );',[self.Name]);
+    end;
+
+    if wxID_NO in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnNO = new wxButton( this, wxID_NO );';
+      Result := Result + #13 + Format('%s->AddButton( btnNO );',[self.Name]);
+    end;
+
+    if wxID_CANCEL in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnCANCEL = new wxButton( this, wxID_CANCEL );';
+      Result := Result + #13 + Format('%s->AddButton( btnCANCEL );',[self.Name]);
+    end;
+
+    if wxID_HELP in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnHELP = new wxButton( this, wxID_HELP );';
+      Result := Result + #13 + Format('%s->AddButton( btnHELP );',[self.Name]);
+    end
+
+    else if wxID_CONTEXT_HELP in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'btnCtxHELP = new wxButton( this, wxID_CONTEXT_HELP );';
+      Result := Result + #13 + Format('%s->AddButton( btnCtxHELP );',[self.Name]);
+  end;
+  Result := Result + #13 + Format('%s->Realize();',[self.Name]);
 
   //Add the sizer unto our global sizer
   strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -537,7 +583,45 @@ end;
 
 function TWxStdDialogButtonSizer.GenerateGUIControlDeclaration: string;
 begin
-  Result := Format('wxSizer *%s;', [trim(Self.Name)]);
+  Result := Format('wxStdDialogButtonSizer *%s;', [trim(Self.Name)]);
+      if wxID_OK in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnOK;';
+    end
+    else if wxID_YES in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnYES;';
+    end
+    else if wxID_SAVE in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnSAVE;';
+    end;
+
+    if wxID_APPLY in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnAPPLY;';
+    end;
+
+    if wxID_NO in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnNO;';
+    end;
+
+    if wxID_CANCEL in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnCANCEL;';
+    end;
+
+    if wxID_HELP in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnHELP;';
+    end
+
+    else if wxID_CONTEXT_HELP in FWx_Buttons then
+    begin
+      Result := Result + #13 + 'wxButton *btnCtxHELP;';
+  end;
+
 end;
 
 function TWxStdDialogButtonSizer.GenerateHeaderInclude: string;
