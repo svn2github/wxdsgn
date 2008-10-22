@@ -617,6 +617,7 @@ type
     fLangChange: boolean; // flag for language change
     fthemeChange: boolean; // did the theme changed
     fNoSplashScreen: boolean; // disable splash screen
+    fHiliteActiveTab: boolean; // Hilite the Active Editor Page Tab
     fAutoCompile: integer; // automatically compile when out-of-date
 
     // toolbar layout
@@ -695,6 +696,7 @@ type
     property MRUMax: integer read fMRUMax write fMRUMax;
     property DblFiles: boolean read fDblFiles write fDblFiles;
     property NoSplashScreen: boolean read fNoSplashScreen write fNoSplashScreen;
+    property HiliteActiveTab: boolean read fHiliteActiveTab write fHiliteActiveTab;
     property AutoCompile: integer read fAutoCompile write fAutoCompile;
 
     //Execution
@@ -1241,6 +1243,7 @@ begin
   fLastTip := 0;
   fXPTheme := false;
   fNativeDocks := true;
+  fHiliteActiveTab := True;
   fFileDate := 0;
   fShowProgress := true;
   fAutoCloseProgress := false;

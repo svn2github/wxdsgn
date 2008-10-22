@@ -108,6 +108,7 @@ type
     btnCVSExecBrws: TSpeedButton;
     cbSingleInstance: TCheckBox;
     cbNativeDocks: TCheckBox;
+    cbHiliteActiveTab: TCheckBox;
     procedure BrowseClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -223,6 +224,7 @@ begin
     cbMinOnRun.Checked := MinOnRun;
     cbdblFiles.Checked := DblFiles;
     cbNoSplashScreen.Checked := NoSplashScreen;
+    cbHiliteActiveTab.Checked := HiliteActiveTab;
     seMRUMax.Value := MRUMax;
     cboLang.Clear;
     for idx := 0 to pred(Lang.Langs.Count) do
@@ -309,6 +311,7 @@ begin
     ThemeChange := cboTheme.Text <> devData.Theme;
     Theme := cboTheme.Text;
     NoSplashScreen := cbNoSplashScreen.Checked;
+    HiliteActiveTab := cbHiliteActiveTab.Checked;
     if not ThemeChange then
       ThemeChange := XPTheme <> cbXPTheme.Checked;
     XPTheme := cbXPTheme.Checked;
@@ -393,6 +396,7 @@ begin
   cbMinOnRun.Caption := Lang[ID_ENV_MINONRUN];
   cbdblFiles.Caption := Lang[ID_ENV_DBLFILES];
   cbNoSplashScreen.Caption := Lang[ID_ENV_NOSPLASH];
+  cbHiliteActiveTab.Caption := LANGUAGE_DIR[ID_ENV_HILITETAB];
   cbXPTheme.Caption := Lang[ID_ENV_XPTHEME];
 
   gbProgress.Caption := Lang[ID_ENV_COMPPROGRESSWINDOW];

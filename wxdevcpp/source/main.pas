@@ -962,6 +962,8 @@ type
     procedure DebuggingMessagesPanelItemClick(Sender: TObject);
     procedure FindResultsMessagesPanelItemClick(Sender: TObject);
     procedure ToDoListMessagesPanelItemClick(Sender: TObject);
+    procedure PageControlDrawTab(Control: TCustomTabControl;
+      TabIndex: Integer; const Rect: TRect; Active: Boolean);
 
 
   private
@@ -1408,7 +1410,7 @@ begin
   InitPlugins;
   XPMenu.Active := devData.XPTheme;     // EAB Comment: Reload XPMenu stuff
   {$ENDIF}
-
+  PageControl.OwnerDraw := devData.HiliteActiveTab;
   frmProjMgrDock.ManualDock(DockServer.LeftDockPanel, nil, alTop);
   ShowDockForm(frmProjMgrDock);
 
@@ -5007,6 +5009,7 @@ begin
       if devData.ThemeChange then
         Loadtheme;
       devShortcuts1.Filename := devDirs.Config + DEV_SHORTCUTS_FILE;
+      PageControl.OwnerDraw := DevData.HiliteActiveTab;
     end;
   finally
     Free;
@@ -9559,6 +9562,28 @@ begin
 end;
 
 {$ENDIF PLUGIN_BUILD}
+
+procedure TMainForm.PageControlDrawTab(Control: TCustomTabControl;
+  TabIndex: Integer; const Rect: TRect; Active: Boolean);
+var
+  s:string;
+   r:TRect;
+begin
+  s :=PageControl.Pages[TabIndex].Caption;
+  r := Rect;
+  with Control.Canvas do
+    begin
+      if Active then 
+        begin
+          Brush.Color := clinfoBK;
+          Font.Color := clBlue;
+        end;
+     Windows.FillRect(Handle,r,Brush.Handle);
+     OffsetRect(r, 0, 1);
+     DrawText(Handle, PChar(s), Length(s), r, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
+  end;
+end;
+
 
 end.
 

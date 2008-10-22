@@ -243,7 +243,7 @@ object EnviroForm: TEnviroForm
       object cbNoSplashScreen: TCheckBox
         Left = 8
         Top = 112
-        Width = 350
+        Width = 177
         Height = 17
         Caption = 'No Splash Screen on startup'
         TabOrder = 5
@@ -251,7 +251,7 @@ object EnviroForm: TEnviroForm
       object cbXPTheme: TCheckBox
         Left = 8
         Top = 132
-        Width = 350
+        Width = 177
         Height = 17
         Caption = 'Use XP Theme'
         TabOrder = 6
@@ -283,10 +283,18 @@ object EnviroForm: TEnviroForm
       object cbNativeDocks: TCheckBox
         Left = 8
         Top = 152
-        Width = 350
+        Width = 185
         Height = 17
         Caption = 'Use Native Docking Windows'
         TabOrder = 8
+      end
+      object cbHiliteActiveTab: TCheckBox
+        Left = 200
+        Top = 112
+        Width = 185
+        Height = 17
+        Caption = 'Highlight Active Editor Tab'
+        TabOrder = 9
       end
     end
     object tabPaths: TTabSheet

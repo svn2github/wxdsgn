@@ -878,6 +878,7 @@ Ver=2
 2817=Alternatief configuratiebestand
 2818=Gebruik dit alternatieve configuratiebestand
 2819=Je hebt het configuratie-bestand dat gebruikt wordt door de applicatie verandert.<CR>Het nieuwe configuratie-bestand zal *niet* gebruikt worden in de huidige sessie. Een wijziging in de configuratie die gedurende deze sessie wordt uitgevoerd, wordt bewaard in het *huidige* configuratie-bestand.<CR><CR>Het is aan te raden dat je de applicatie nu herstart, zodat het opstart met het gebruik van het nieuwe configuratie-bestand...
+2820=Markeer Actieve Editor Tab
 
 # Execute menu (more)
 2900=Parameters...

@@ -2417,6 +2417,7 @@ object MainForm: TMainForm
     OnChanging = PageControlChanging
     OnDragDrop = PageControlDragDrop
     OnDragOver = PageControlDragOver
+    OnDrawTab = PageControlDrawTab
     OnMouseDown = PageControlMouseDown
   end
   object MainMenu: TMainMenu
