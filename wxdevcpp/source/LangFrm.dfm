@@ -1,6 +1,6 @@
 object LangForm: TLangForm
-  Left = 485
-  Top = 245
+  Left = 540
+  Top = 292
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'wxDev-C++ First-Run Configuration'

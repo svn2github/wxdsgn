@@ -19,19 +19,13 @@
 
 program devcpp;
 
-{$R '..\..\icons.res' '..\..\icons.rc'}
-{$R '..\..\LangFrm.res' '..\..\LangFrm.rc'}
-{$R '..\..\DefaultFiles.res' '..\..\DefaultFiles.rc'}
-{$IFDEF PLUGIN_BUILD}
-{$R '..\..\STDREG.res'}
-{$ENDIF}
-
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  {FastMM4,      // Do not deploy with these activated due to licensing incompatibilities
+  {FastMM4,   // EAB better comment these 2 when deploying due to licensing issues
   FastCode,}
   LanguagesDEPFix,
+  inifiles,
   Windows,
   Forms,
   sysUtils,
@@ -127,72 +121,109 @@ uses
   hh in '..\..\hh.pas',
   hh_funcs in '..\..\hh_funcs.pas';
 
-{$R *.res}
+{$R '..\..\icons.res' '..\..\icons.rc'}
+{$R '..\..\LangFrm.res' '..\..\LangFrm.rc'}
+{$R '..\..\DefaultFiles.res' '..\..\DefaultFiles.rc'}
 
-type
-  TMainFormHack = class(TMainForm);
-  
+{$R *.res}
+{$IFDEF PLUGIN_BUILD}
+{$R '..\..\STDREG.res'}
+{$ENDIF}
+
+//Single Instance feature
+function CanStart: Boolean;
 var
-    // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
-    UserHome, strLocalAppData, strAppData, strIniFile: String;
-    tempc: array [0..MAX_PATH] of char;
+  Wdw: HWND;
+begin
+  Wdw := DuplicateAppInstWdw;
+  if Wdw = 0 then
+    Result := True
+  else
+    Result := not SwitchToPrevInst(Wdw);
+end;
+
+const
+    WX_VERSION = 7;
+var
+  // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
+  UserHome, strLocalAppData, strAppData, strIniFile: String;
+  tempc: array [0..MAX_PATH] of char;
+  iniFile: TIniFile;
+  versionNum: Integer;
 
 begin
   strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
 
-  if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then begin
-    if not DirectoryExists(ParamStr(2)) then begin
-      MessageDlg('The directory "' + ParamStr(2) + '" doesn''t exist. Dev-C++ will now quit, please create the directory first.', mtError, [mbOK], 0);
-      Application.Terminate;
-      exit;
-    end;
+  if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then
+  begin
+    if not DirectoryExists(ParamStr(2)) then
+      if not ForceDirectories(ParamStr(2)) then
+      begin
+        ShowMessage('The configuration directory does not exist and we were unable to ' +
+                    'create it. Please check that the path is not read-only and that ' +
+                    'you have sufficient privilieges to write to it.'#10#13#10#13 +
+                    'wxDev-C++ will now exit.');
+        Application.Terminate;
+      end;
     devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + strIniFile;
     ConfigMode := CFG_PARAM;
   end
-  else if IsWinNT then begin
-     //default dir should be %APPDATA%\Dev-Cpp
-     strLocalAppData := '';
-     if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
-       strLocalAppData := IncludeTrailingBackslash(String(tempc));
+  else if IsWinNT then
+  begin
+    //default dir should be %APPDATA%\Dev-Cpp
+    strLocalAppData := '';
+    if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
+      strLocalAppData := IncludeTrailingBackslash(String(tempc));
 
-     strAppData := '';
-     if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
-       strAppData := IncludeTrailingBackslash(String(tempc));
+    strAppData := '';
+    if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
+      strAppData := IncludeTrailingBackslash(String(tempc));
 
-     if (strLocalAppData <> '') and
-     FileExists(strLocalAppData + strIniFile) then begin
-       UserHome := strLocalAppData;
-       devData.INIFile := UserHome + strIniFile;
-       ConfigMode := CFG_USER;
-     end
-     else if (strAppData <> '')
-     and FileExists(strAppData + strIniFile) then begin
-       UserHome := strAppData;
-       devData.INIFile := UserHome + strIniFile;
-       ConfigMode := CFG_USER;
-     end
-     else if (strAppData <> '')
-     and (DirectoryExists(strAppData + 'Dev-Cpp') or CreateDir(strAppData + 'Dev-Cpp')) then begin
-       UserHome := strAppData + 'Dev-Cpp\';
-       devData.INIFile := UserHome + strIniFile;
-       ConfigMode := CFG_USER;
-     end
-     else
-       devData.INIFile:= ChangeFileExt(Application.EXEName, INI_EXT);
+    if (strLocalAppData <> '') and FileExists(strLocalAppData + strIniFile) then begin
+      UserHome := strLocalAppData;
+      devData.INIFile := UserHome + strIniFile;
+      ConfigMode := CFG_USER;
+    end
+    else if (strAppData <> '') and FileExists(strAppData + strIniFile) then begin
+      UserHome := strAppData;
+      devData.INIFile := UserHome + strIniFile;
+      ConfigMode := CFG_USER;
+    end
+    else if (strAppData <> '') and (DirectoryExists(strAppData + 'Dev-Cpp') or CreateDir(strAppData + 'Dev-Cpp')) then begin
+      UserHome := strAppData + 'Dev-Cpp\';
+      devData.INIFile := UserHome + strIniFile;
+      ConfigMode := CFG_USER;
+    end
+    else
+      devData.INIFile := ChangeFileExt(Application.EXEName, INI_EXT);
   end
   else
-    devData.INIFile:= ChangeFileExt(Application.EXEName, INI_EXT);
+    devData.INIFile := ChangeFileExt(Application.EXEName, INI_EXT);
 
-  devData.UseRegistry:= FALSE;
-  devData.BoolAsWords:= FALSE;
-  devData.INISection:= OPT_OPTIONS;
+  if FileExists(devData.INIFile+'.ver') = false then
+  begin
+    DeleteFile(devData.INIFile);
+  end;
+  iniFile:=TIniFile.Create(devData.INIFile+'.ver');
+  try
+    versionNum:=iniFile.ReadInteger('Program', 'Version', -1);
+  if versionNum <> WX_VERSION then
+    DeleteFile(devData.INIFile);
+    iniFile.WriteInteger('Program', 'Version', WX_VERSION);
+  finally
+    iniFile.Destroy;
+  end;
+
+  devData.UseRegistry := FALSE;
+  devData.BoolAsWords := FALSE;
+  devData.INISection := OPT_OPTIONS;
 
   // support for user-defined alternate ini file (permanent, but overriden by command-line -c)
   if ConfigMode <> CFG_PARAM then begin
-    StandardConfigFile:=devData.INIFile;
+    StandardConfigFile := devData.INIFile;
     CheckForAltConfigFile(devData.INIFile);
-    if UseAltConfigFile and (AltConfigFile<>'') and FileExists(AltConfigFile) then
-      devData.INIFile:=AltConfigFile;
+    if UseAltConfigFile and (AltConfigFile <> '') and FileExists(AltConfigFile) then
+      devData.INIFile := AltConfigFile;
   end;
 
   InitializeOptions;
@@ -200,41 +231,42 @@ begin
     devDirs.Config := IncludeTrailingBackslash(ParamStr(2))
   else if ConfigMode = CFG_USER then
     devDirs.Config := UserHome;
-  devData.ReadConfigData;
-  devTheme:= TdevTheme.Create;
 
+  devData.ReadConfigData;
   
+  if devData.SingleInstance then
+    if not CanStart then
+      exit;
+  devTheme := TdevTheme.Create;
   Application.Initialize;
   Application.Title := 'wxDev-C++';
+  Application.HelpFile := '..\Help\devcpp.chm';
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TfrmShortcutsEditor, frmShortcutsEditor);
-  MainForm.Hide; // hide it
-  
-  
-  if not devData.NoSplashScreen then 
+  if not devData.NoSplashScreen then
   begin
     SplashForm := TSplashForm.Create(Application);
     SplashForm.Show;
     SplashForm.Update;
   end;
-  
-  {*** modified by peter ***}
-  // make the creation when the splashscreen is displayed
-  // because it takes quite a while ...
-  TMainFormHack(MainForm).DoCreateEverything;
 
-  
+  // do all the initialization when the splash screen is displayed
+  // because it takes quite a while to complete
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
-  
-  {*** modified by peter ***}
-  // apply the window placement. this method forced
-  // the form to show,
-  TMainFormHack(MainForm).DoApplyWindowPlacement;
+  //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
+  MainForm.DoCreateEverything;
 
+  // EAB: try to fix include directories with plugins
+  InitializeOptions;
+
+  // apply the window placement. this method forces the form to show.
+  MainForm.DoApplyWindowPlacement;
   if not devData.NoSplashScreen then
     SplashForm.Free;
+
+  if devData.ShowTipsOnStart and (ParamCount = 0) then  // do not show tips if dev-c++ is launched with a file
+    MainForm.actShowTips.Execute;
 
   Application.Run;
 end.

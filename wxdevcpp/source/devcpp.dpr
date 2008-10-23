@@ -133,7 +133,7 @@ begin
 end;
 
 const
-  WXVERSION = 6;
+  WXVERSION = 7;
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
   UserHome, strLocalAppData, strAppData, strIniFile: String;
@@ -230,7 +230,7 @@ begin
   devTheme := TdevTheme.Create;
   Application.Initialize;
   Application.Title := 'wxDev-C++';
-  Application.HelpFile := '..\Help\devcpp.HLP';
+  Application.HelpFile := '..\Help\devcpp.chm';
   Application.CreateForm(TMainForm, MainForm);
   if not devData.NoSplashScreen then
   begin
@@ -246,6 +246,9 @@ begin
   Application.CreateForm(TfrmReplace, frmReplace);
   //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   MainForm.DoCreateEverything;
+
+  // EAB: try to fix include directories with plugins
+  InitializeOptions;
 
   // apply the window placement. this method forces the form to show.
   MainForm.DoApplyWindowPlacement;
