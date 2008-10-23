@@ -4723,6 +4723,7 @@ initialization
   TJvInspectorListColumnsItem.RegisterAsDefaultItem;
   TJvInspectorColorEditItem.RegisterAsDefaultItem;
   TJvInspectorFileNameEditItem.RegisterAsDefaultItem;
+  TJvInspectorAnimationFileNameEditItem.RegisterAsDefaultItem;
   TJvInspectorStatusBarItem.RegisterAsDefaultItem;
   TJvInspectorValidatorItem.RegisterAsDefaultItem;
   Classes.RegisterClass(TWXDsgn);
