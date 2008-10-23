@@ -19,8 +19,8 @@ object frmProjectOptions: TfrmProjectOptions
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    552
-    374)
+    560
+    376)
   PixelsPerInch = 96
   TextHeight = 13
   object btnAddProfileSet: TSpeedButton

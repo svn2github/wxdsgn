@@ -1237,8 +1237,15 @@ end;
 
 procedure TfrmProjectOptions.btnOkClick(Sender: TObject);
 begin
+  btnOk.Enabled := false;
+  Cursor := crHourGlass;
+
   SaveDirSettings;
   UpdateCurrentProfileDataFromUI;
+
+  Cursor := crDefault;
+  btnOk.Enabled := true;
+
 end;
 
 procedure TfrmProjectOptions.AddLibBtnClick(Sender: TObject);

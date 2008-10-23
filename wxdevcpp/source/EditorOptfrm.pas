@@ -838,6 +838,10 @@ var
   a, idx: integer;
   e: TEditor;
 begin
+
+  btnOk.Enabled := false;
+  Cursor := crHourGlass;
+
   with devEditor do
   begin
     AutoIndent := cbAutoIndent.Checked;
@@ -993,6 +997,10 @@ begin
       e.Text.ActiveLineColor := cpHighColor.SelectionColor
     else
       e.Text.ActiveLineColor := clNone;
+
+  btnOk.Enabled := true;
+  Cursor := crDefault;
+
 end;
 
 procedure TEditorOptForm.btnHelpClick(Sender: TObject);

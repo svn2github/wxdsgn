@@ -282,6 +282,10 @@ var
   idx: integer;
   s: string;
 begin
+
+  btnOk.Enabled := false;
+  Cursor := crHourGlass;
+
   if chkAltConfig.Enabled then begin
     if UseAltConfigFile <> chkAltConfig.Checked then
       MessageDlg(Lang[ID_ENV_CONFIGCHANGED], mtInformation, [mbOk], 0);
@@ -367,6 +371,10 @@ begin
   devCVSHandler.Executable := edCVSExec.Text;
   devCVSHandler.Compression := spnCVSCompression.Value;
   devCVSHandler.UseSSH := chkCVSUseSSH.Checked;
+
+  btnOk.Enabled := true;
+  Cursor := crDefault;
+
 end;
 
 procedure TEnviroForm.LoadText;
