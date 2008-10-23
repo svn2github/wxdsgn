@@ -583,7 +583,7 @@ end;
 
 function TWxStdDialogButtonSizer.GenerateGUIControlDeclaration: string;
 begin
-  Result := Format('wxStdDialogButtonSizer *%s;', [trim(Self.Name)]);
+  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
       if wxID_OK in FWx_Buttons then
     begin
       Result := Result + #13 + 'wxButton *btnOK;';
