@@ -35,6 +35,7 @@ type
     function GetDefaultText: String;
     function IsDesignerNil: Boolean;
     property ScrollDesign: TScrollBox read fScrollDesign write fScrollDesign;
+    procedure RestorePosition;
     
     end;
 
@@ -82,14 +83,6 @@ uses
             btnFloatingDesigner.Visible := true;
 
 	    fScrollDesign.ScrollInView(fDesigner);
-        //fScrollDesign.Enabled := true;
-        //fScrollDesign.EnableAutoRange;
-        //fScrollDesign.AutoSize := true;
-
-	    {fScrollDesign.HorzScrollBar.Visible:=true;
-	    fScrollDesign.VertScrollBar.Visible:=true;
-	    fScrollDesign.AutoScroll:=true;}
-	    //fScrollDesign.VertScrollBar.Position := fScrollDesign.VertScrollBar.Range;
 
   if (DoOpen) then
   try
@@ -122,22 +115,22 @@ uses
 
          fDesigner.PopupMenu := DesignerPopup;
    end;
-   
+
  procedure TWXEditor.Terminate;
  begin
   wx_designer.DisableDesignerControls;
  end;
- 
+
  procedure TWXEditor.Close;
  begin
     wx_designer.DisableDesignerControls;
  end;
- 
+
  function TWXEditor.GetDefaultText: String;
  begin
     Result := CompFileIo.ComponentToString(fDesigner);
  end;
- 
+
  function TWXEditor.GetDesigner: TfrmNewForm;
  begin
      Result := fDesigner
@@ -154,7 +147,7 @@ uses
 
  function TWXEditor.GetDesignerHPPFileName: string;
  begin
- 
+
    if FileExists(ChangeFileExt(FileName, H_EXT)) then
      Result := ChangeFileExt(FileName, H_EXT);
  end;
@@ -205,6 +198,15 @@ end;
 procedure TWXEditor.OnbtnFloatingDesigner_Click(Sender: TObject);
 begin
     fDesigner.Show;
+end;
+
+procedure TWXEditor.RestorePosition;
+begin
+    if not wx_designer.ELDesigner1.Floating then
+    begin
+        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or GetWindowLong(fDesigner.Handle, GWL_STYLE));
+        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
+    end
 end;
 
 end.

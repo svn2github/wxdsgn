@@ -72,6 +72,7 @@ type
     C_GetCompilerOptions: function: PChar; cdecl;
     C_SetCompilerOptionstoDefaults: procedure; cdecl;
     C_AfterStartupCheck: procedure; cdecl;
+    C_FullScreenSwitch: procedure; cdecl;
 
   public
     procedure TestReport;  
@@ -125,6 +126,7 @@ type
     function GetCompilerOptions: TSettings;
     procedure SetCompilerOptionstoDefaults;
     procedure AfterStartupCheck;
+    procedure FullScreenSwitch;
 
   end;
 
@@ -184,6 +186,7 @@ begin
     @self.C_GetCompilerOptions := nil;
     @self.C_SetCompilerOptionstoDefaults := nil;
     @self.C_AfterStartupCheck := nil;
+    @self.C_FullScreenSwitch := nil;
 
 
     @self.C_TestReport := GetProcAddress(module, 'TestReport');
@@ -233,6 +236,7 @@ begin
     @self.C_GetCompilerOptions := GetProcAddress(module, 'GetCompilerOptions');
     @self.C_SetCompilerOptionstoDefaults := GetProcAddress(module, 'SetCompilerOptionstoDefaults');
     @self.C_AfterStartupCheck := GetProcAddress(module, 'AfterStartupCheck');
+    @self.C_FullScreenSwitch := GetProcAddress(module, 'FullScreenSwitch');
 
   self.tool := TToolBar.Create(nil);
   self.tool.Left := toolbar_x;
@@ -672,6 +676,10 @@ procedure TPlug_In_DLL.AfterStartupCheck;
 begin
     if (@self.C_AfterStartupCheck <> nil) then
         self.C_AfterStartupCheck;
+end;
+
+procedure TPlug_In_DLL.FullScreenSwitch;
+begin
 end;
 
 end.

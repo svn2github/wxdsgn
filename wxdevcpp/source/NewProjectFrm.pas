@@ -79,7 +79,7 @@ uses
 {$IFDEF WIN32}
   FileCtrl,
 {$ENDIF}
-  MultiLangSupport, utils, datamod, devcfg, version, project, prjtypes;
+  MultiLangSupport, utils, datamod, devcfg, version, project, prjtypes, hh;
 {$R *.dfm}
 
 procedure TNewProjectForm.FormCreate(Sender: TObject);
@@ -275,7 +275,8 @@ end;
 procedure TNewProjectForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  Application.HelpJump('ID_CREATEPROJECT');
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('creating_project.html')));
+  //Application.HelpJump('ID_CREATEPROJECT');
 end;
 
 end.

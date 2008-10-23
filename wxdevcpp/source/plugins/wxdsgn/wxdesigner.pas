@@ -105,6 +105,7 @@ type
 
   private
     plugin_name: string;
+    editorNames: Array of String;
   public
     ownerForm: TForm;
   public
@@ -306,6 +307,7 @@ type
     procedure SetCompilerOptionstoDefaults;
     procedure TestReport;
     procedure AfterStartupCheck;
+    procedure FullScreenSwitch;
   end;
 
 var
@@ -1677,6 +1679,8 @@ begin
   tabSheet := main.GetEditorTabSheet(editorName);
   text := main.GetEditorText(editorName);
   editor := TWXEditor.Create;
+  SetLength(editorNames, editors.ItemCount + 1);
+  editorNames[editors.ItemCount] := editorName;
   editors[editorName] := editor;
   editor.Init(tabSheet, text, DesignerPopup, True, editorName);
 end;
@@ -4304,6 +4308,7 @@ procedure TWXDsgn.Destroy;
 begin
   //strStdwxIDList.Free;
   editors.Free;
+  //editorNames.Free;
   //DesignerPopup.Free;
   //WxPropertyInspectorPopup.Free;
   //ELDesigner1.Free;
@@ -4713,6 +4718,15 @@ procedure TWXDsgn.AfterStartupCheck;
 begin
     ShowPropertyInspItem.Checked := frmInspectorDock.Visible;
     ShowComponentPaletteItem.Checked := frmPaletteDock.Visible;
+end;
+
+procedure TWXDsgn.FullScreenSwitch;
+var
+    i: Integer;
+begin
+    editors.Restart;
+    for i := 0 to editors.ItemCount - 1 do
+        (editors[editorNames[i]] as TWXEditor).RestorePosition;
 end;
 
 initialization

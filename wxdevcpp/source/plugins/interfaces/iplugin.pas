@@ -76,6 +76,7 @@ type
   function ConvertLibsToCurrentVersion(strValue: String): String;  
   function GetXMLExtension: String;
   procedure AfterStartupCheck;
+  procedure FullScreenSwitch;
 end;
 
 implementation

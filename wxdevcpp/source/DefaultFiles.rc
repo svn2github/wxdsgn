@@ -1,4 +1,4 @@
-English lng ..\..\lang\English.lng
+English lng ..\..\..\lang\English.lng
 
 NOIMG BITMAP ".\images\noimg.bmp"
 MEDIAPLAYERIMG BITMAP ".\images\media-player.bmp"

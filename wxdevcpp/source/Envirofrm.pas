@@ -133,7 +133,7 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme;
+  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme, hh;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme;
@@ -459,8 +459,8 @@ end;
 procedure TEnviroForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  // **temporary removal** Application.HelpJump(HelpKeyword);
-  Application.HelpJump('ID_ENVIRONMENT');
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('environ_general.html')));;
+  //Application.HelpJump('ID_ENVIRONMENT');
 end;
 
 procedure TEnviroForm.PagesMainChange(Sender: TObject);
@@ -478,6 +478,7 @@ begin
   if key = XK_F1 then
 {$ENDIF}
     Application.HelpJump(HelpKeyword);
+    HtmlHelp(self.handle, PChar(HelpKeyword), HH_DISPLAY_TOPIC, 0);;
 end;
 
 procedure TEnviroForm.FormCreate(Sender: TObject);

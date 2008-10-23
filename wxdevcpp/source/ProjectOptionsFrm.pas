@@ -226,7 +226,7 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  FileCtrl, devcfg, IconFrm, utils, MultiLangSupport, version;
+  FileCtrl, devcfg, IconFrm, utils, MultiLangSupport, version, hh;
 {$ENDIF}
 {$IFDEF LINUX}
   devcfg, IconFrm, utils, MultiLangSupport, version;
@@ -986,7 +986,8 @@ end;
 procedure TfrmProjectOptions.btnHelpClick(Sender: TObject);
 begin
   Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
-  Application.HelpJump('ID_MANAGEPROJECT');
+  HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('managing_project_options.html')));
+  //Application.HelpJump('ID_MANAGEPROJECT');
 end;
 
 procedure TfrmProjectOptions.chkOverrideOutputClick(Sender: TObject);

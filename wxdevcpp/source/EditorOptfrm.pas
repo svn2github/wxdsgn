@@ -257,7 +257,7 @@ implementation
 uses 
 {$IFDEF WIN32}
   shlobj, MultiLangSupport, devcfg, version, utils, CodeIns, datamod,
-  IniFiles, editor, main;
+  IniFiles, editor, main, hh;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, MultiLangSupport, devcfg, version, utils, CodeIns, datamod, IniFiles, editor,
@@ -1006,8 +1006,8 @@ end;
 procedure TEditorOptForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  // ** temporary removal ** Application.HelpJump(HelpKeyword);
-  Application.HelpJump('ID_EDITORSETTINGS');
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('editor_options.html')));;
+  //Application.HelpJump('ID_EDITORSETTINGS');
 end;
 
 procedure TEditorOptForm.PagesMainChange(Sender: TObject);

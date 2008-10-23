@@ -153,7 +153,7 @@ implementation
 
 uses 
 {$IFDEF WIN32}
-  Main, FileCtrl, version, devcfg, utils, MultiLangSupport, datamod;
+  Main, FileCtrl, version, devcfg, utils, MultiLangSupport, datamod, hh;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, Main, version, devcfg, utils, MultiLangSupport, datamod;
@@ -256,8 +256,8 @@ end;
 procedure TCompForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  // ** temporary removal ** Application.HelpJump(HelpKeyword);
-  Application.HelpJump('ID_COMPILEROPTIONS');
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('compiler_options.html')));
+  //Application.HelpJump('ID_COMPILEROPTIONS');
 end;
 
 procedure TCompForm.DirTabsChange(Sender: TObject);

@@ -4255,6 +4255,11 @@ begin
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRMODE];
     Controlbar1.Visible := TRUE;
 
+{$IFDEF PLUGIN_BUILD}
+    for i := 0 to pluginsCount - 1 do
+        plugins[i].FullScreenSwitch;
+{$ENDIF}
+
     pnlFull.Visible := FALSE;
   end;
 end;
@@ -7007,24 +7012,15 @@ end;
 
 procedure TMainForm.WordToHelpKeyword;
 var
-    //s: pchar;
     tmp: string;
     e: TEditor;
-    //OK: boolean;
 begin
- // OK := False;
   e := GetEditor;
   if Assigned(e) then begin
     tmp := e.GetWordAtCursor;
 
-    //WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE + '::/' + tmp + '.htm'), SW_SHOW);  // EAB option 1 for Help on Vista
     if (tmp <> '') then  begin
-      //GetMem(s, length(tmp) + 1);
-      //StrCopy(s, pchar(tmp));
       HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
-      //Application.HelpCommand(HELP_KEY, integer(s));
-      //FreeMem(s);
-      //OK := True;     // EAB: how about using "else" ?
     end
     else
     begin
@@ -7035,8 +7031,6 @@ begin
   end
   else 
       HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC, 0);
-    //  WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), SW_SHOW);
-    //Application.HelpCommand(HELP_FINDER, 0);
 end;
 
 procedure TMainForm.CppParser1StartParsing(Sender: TObject);
