@@ -226,6 +226,7 @@ function strTokenCount(S: string; Seperator: Char): Integer;
 function strTokenAt(const S: string; Seperator: Char; At: Integer): string;
 procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 function strTokenFromStrings(Seperator: Char; List: TStrings): string;
+function strRemoveDuplicates(OrigString : string; Seperator: Char): string;
 
 function strUpper(const S: string): string;
 function strOemAnsi(const S: string): string;
@@ -738,6 +739,33 @@ begin
             Result := Result + Seperator + List[i]
         else
             Result := List[i];
+end;
+
+// Removes duplicate values in a token-delimited string
+function strRemoveDuplicates(OrigString : string; Seperator: Char): string;
+var
+  List1, List2 : TStringList;
+  nodupString : string;
+  i : Integer;
+begin
+
+    List1 := TStringList.Create;
+    List2 := TStringList.Create;
+    strTokenToStrings(OrigString, Seperator, List1);
+
+    List2.Add(List1[0]);
+    for i := 1 to List1.Count - 1 do
+    begin
+       // If the string from List1 is not in List2, then add it.
+       if (List2.IndexOf(List1[i]) > -1) and (strTrim(List1[i]) <> '') then
+          List2.Add(List1[i]);
+    end;
+
+    nodupString := strTokenFromStrings(Seperator, List2);
+    List2.Destroy;
+    List1.Destroy;
+    Result := nodupString;
+
 end;
 
 function strUpper(const S: string): string;
