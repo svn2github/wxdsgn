@@ -2029,8 +2029,11 @@ begin
   try
     // create index file
     sl.Add('<HTML>');
-    sl.Add('<HEADE><TITLE>Dev-C++ project: ' + Name + '</TITLE></HEAD>');
-    sl.Add('<BODY BGCOLOR=#FFFFFF>');
+    sl.Add('<HEAD>');
+    sl.Add('<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">');
+    sl.Add('<TITLE>Dev-C++ project: ' + Name + '</TITLE>');
+    sl.Add('</HEAD>');
+   // sl.Add('<BODY BGCOLOR=#FFFFFF>');
     sl.Add('<H2>Project: ' + Name + '</H2>');
     sl.Add('<B>Index of files:</B>');
     sl.Add('<HR WIDTH="80%">');
@@ -2053,7 +2056,10 @@ begin
     end;
     sl.Add('</TABLE>');
     sl.Add('<HR WIDTH="80%">');
-    sl.Add('<P ALIGN="CENTER"><FONT SIZE=1>Exported by <A HREF="http://www.bloodshed.net/dev">' + DEVCPP + '</A> v' + DEVCPP_VERSION + '</FONT></P>');
+    sl.Add('<P ALIGN="CENTER">');
+    sl.Add('<FONT SIZE=1>');
+    sl.Add('Exported by <A HREF="' + DEVCPP_WEBPAGE + '>' + DEVCPP + '</A> v' + DEVCPP_VERSION);
+    sl.Add('</FONT></P>');
     sl.Add('</BODY>');
     sl.Add('</HTML>');
     sl.SaveToFile(fname);

@@ -32,7 +32,7 @@ var
   COMMON_CPP_INCLUDE_DIR: string;
   
 const
-  GCC_VERSION          = '3.4.2';
+  GCC_VERSION          = '3.4.5';
   //path delimiter
 {$IFDEF WIN32}
   pd                   = '\';
@@ -45,6 +45,7 @@ resourcestring
   // misc strings
   DEVCPP = 'wxDev-C++';
   DEVCPP_VERSION    = '7.0';
+  DEVCPP_WEBPAGE    = 'http://wxdsgn.sourceforge.net/';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
   DEV_INTERNAL_OPEN = '$__DEV_INTERNAL_OPEN';
