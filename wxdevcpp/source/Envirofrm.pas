@@ -404,7 +404,7 @@ begin
   cbMinOnRun.Caption := Lang[ID_ENV_MINONRUN];
   cbdblFiles.Caption := Lang[ID_ENV_DBLFILES];
   cbNoSplashScreen.Caption := Lang[ID_ENV_NOSPLASH];
-  cbHiliteActiveTab.Caption := LANGUAGE_DIR[ID_ENV_HILITETAB];
+  cbHiliteActiveTab.Caption := Lang[ID_ENV_HILITETAB];
   cbXPTheme.Caption := Lang[ID_ENV_XPTHEME];
 
   gbProgress.Caption := Lang[ID_ENV_COMPPROGRESSWINDOW];
