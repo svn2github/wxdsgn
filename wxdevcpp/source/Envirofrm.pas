@@ -459,7 +459,7 @@ end;
 procedure TEnviroForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('environ_general.html')));;
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\environ_general.html')));;
   //Application.HelpJump('ID_ENVIRONMENT');
 end;
 

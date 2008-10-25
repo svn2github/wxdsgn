@@ -986,7 +986,7 @@ end;
 procedure TfrmProjectOptions.btnHelpClick(Sender: TObject);
 begin
   Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
-  HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('managing_project_options.html')));
+  HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\managing_project_options.html')));
   //Application.HelpJump('ID_MANAGEPROJECT');
 end;
 

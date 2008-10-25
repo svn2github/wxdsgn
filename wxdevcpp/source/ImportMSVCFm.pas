@@ -216,6 +216,7 @@ var
   S: string;
 begin
   Result := False;
+  
   sCompiler := '-D__GNUWIN32__ ';
   sDirs := '';
   Options := TStringList.Create;
@@ -303,11 +304,13 @@ begin
       end;
       Inc(I);
     end;
-    WriteDev('Project', 'Compiler', sCompiler);
-    WriteDev('Project', 'CppCompiler', sCompiler);
+    WriteDev('Profile1', 'Compiler', sCompiler);
+    WriteDev('Profile1', 'CppCompiler', sCompiler);
     if sDirs <> '' then
       sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
-    WriteDev('Project', 'Includes', sDirs);
+
+    WriteDev('Profile1', 'Includes', sDirs);
+
   finally
     Options.Free;
   end;
@@ -352,19 +355,19 @@ begin
       else if AnsiStartsText('/subsystem:', Options[I]) then begin
         S := Copy(Options[I], 12, MaxInt);
         if S = 'windows' then
-          WriteDev('Project', 'Type', '0') // win32 gui
+          WriteDev('Profile1', 'Type', '0') // win32 gui
         else if S = 'console' then
-          WriteDev('Project', 'Type', '1'); // console app
+          WriteDev('Profile1', 'Type', '1'); // console app
         //        sLibs := sLibs + '-Wl --subsystem ' + S + ' ';
       end
       else if AnsiStartsText('/libpath:', Options[I]) then begin
         S := Copy(Options[I], 10, MaxInt);
         sDirs := sDirs + S + ';';
       end;
-    WriteDev('Project', 'Linker', sLibs);
+    WriteDev('Profile1', 'Linker', sLibs);
     if sDirs <> '' then
       sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
-    WriteDev('Project', 'Libs', sDirs);
+    WriteDev('Profile1', 'Libs', sDirs);
   finally
     Options.Free;
   end;
@@ -490,6 +493,8 @@ procedure TImportMSVCForm.WriteDefaultEntries;
 begin
   WriteDev('Project', 'Ver', '3');
   WriteDev('Project', 'IsCpp', '1'); // all MSVC projects are C++ (correct me if I 'm wrong)
+  WriteDev('Project', 'ProfilesCount', '1');
+  WriteDev('Project', 'ProfileIndex', '0');
 end;
 
 procedure TImportMSVCForm.WriteDev(Section, Key, Value: string);
@@ -624,14 +629,21 @@ function TImportMSVCForm.CheckVersion: boolean;
 var
   I: integer;
 begin
-  Result := False;
-  for I := 0 to fSL.Count - 1 do
-    if AnsiContainsStr(fSL[I], 'Format Version 6.00') then begin
-      Result := True;
-      Break;
-    end;
-  if not Result then
-    MessageDlg('This file''s version is not one that can be imported...', mtWarning, [mbOK], 0);
+
+   Result := True;
+
+  // GAR 24 Oct 2008
+  // I think there's no need to check the version. This either works or
+  //   it doesn't. Besides, the current format is much different.
+  //Result := False;
+
+  //for I := 0 to fSL.Count - 1 do
+  //  if AnsiContainsStr(fSL[I], 'Format Version 6.00') then begin
+  //    Result := True;
+  //    Break;
+  //  end;
+  //if not Result then
+  //  MessageDlg('This file''s version is not one that can be imported...', mtWarning, [mbOK], 0);
 end;
 
 end.

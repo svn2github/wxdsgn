@@ -1006,7 +1006,7 @@ end;
 procedure TEditorOptForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('editor_options.html')));;
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\editor_options.html')));;
   //Application.HelpJump('ID_EDITORSETTINGS');
 end;
 
