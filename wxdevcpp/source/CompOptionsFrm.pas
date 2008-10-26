@@ -184,6 +184,9 @@ begin
     Exit;
   end;
 
+  btnOk.Enabled := false;
+  Cursor := crHourGlass;
+
   self.SaveSettings;
   devCompilerSet.AssignToCompiler;
   with devCompiler do
@@ -213,6 +216,10 @@ begin
   // (which is what the project was set to)
   if Assigned(MainForm.fProject) then
     devCompiler.CompilerSet := previousSet;
+
+  btnOk.Enabled := true;
+  Cursor := crDefault;
+
 end;
 
 procedure TCompForm.FormActivate(Sender: TObject);

@@ -527,7 +527,7 @@ begin
     DeleteFile(fFilename);
   end;
 
-  Enabled := false;
+  btnImport.Enabled := false;
   Cursor := crHourGlass;
 
   SetFilename(fFilename);
@@ -558,7 +558,7 @@ begin
   else
     Close;
 
-  Enabled := true;
+  btnImport.Enabled := true;
   Cursor := crDefault;
 
 end;
