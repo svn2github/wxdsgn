@@ -1098,8 +1098,8 @@ begin
     Result := 'wxGridSelectCells';
   if grdsel = wxGridSelectColumns then
     Result := 'wxGridSelectColumns';
-  if grdsel = wxGridSelectCells then
-    Result := 'wxGridSelectCells';
+  if grdsel = wxGridSelectRows then
+    Result := 'wxGridSelectRows';
 
 end;
 
