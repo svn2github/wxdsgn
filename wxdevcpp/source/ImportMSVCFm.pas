@@ -225,6 +225,7 @@ begin
     Options.DelimitedText := GetLineValue(StartAt, EndAt, '# ADD CPP');
     I := 0;
     while I < Options.Count do begin
+    if (Length(Options[I]) > 0) then begin
       if AnsiCompareText('/D', Options[I]) = 0 then begin
         S := Format('-D%s ', [Options[I + 1]]);
         sCompiler := sCompiler + S;
@@ -304,6 +305,7 @@ begin
       end;
       Inc(I);
     end;
+    end;
     WriteDev('Profile1', 'Compiler', sCompiler);
     WriteDev('Profile1', 'CppCompiler', sCompiler);
     if sDirs <> '' then
@@ -333,6 +335,7 @@ begin
     Options.Delimiter := ' ';
     Options.DelimitedText := GetLineValue(StartAt, EndAt, '# ADD LINK32');
     for I := 0 to Options.Count - 1 do
+      if (Length(Options[I]) > 0) then begin
       if (Options[I][1] <> '/') and AnsiEndsText('.lib', Options[I]) then begin
         S := Copy(Options[I], 1, Length(Options[I]) - 4);
         if ExtractFilePath(S) <> '' then
@@ -364,6 +367,7 @@ begin
         S := Copy(Options[I], 10, MaxInt);
         sDirs := sDirs + S + ';';
       end;
+    end;
     WriteDev('Profile1', 'Linker', sLibs);
     if sDirs <> '' then
       sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
@@ -389,6 +393,7 @@ begin
   try
     flds.Delimiter := '/';
     for I := StartAt to EndAt do
+    if (Length(fSL[I]) > 0) then begin
       if AnsiStartsText('# Begin Group ', fSL[I]) then begin
         folder := StripQuotesIfNecessary(Copy(fSL[I], 15, MaxInt));
         flds.Add(folder);
@@ -429,6 +434,7 @@ begin
         end
         else
           fInvalidFiles := fInvalidFiles + UnitName + #13#10;
+      end;
       end;
   finally
     flds.Free;
@@ -521,6 +527,9 @@ begin
     DeleteFile(fFilename);
   end;
 
+  Enabled := false;
+  Cursor := crHourGlass;
+
   SetFilename(fFilename);
   SetDevName(StringReplace(ExtractFileName(fFilename), DEV_EXT, '', []));
   WriteDefaultEntries;
@@ -548,6 +557,10 @@ begin
     ModalResult := mrOk
   else
     Close;
+
+  Enabled := true;
+  Cursor := crDefault;
+
 end;
 
 procedure TImportMSVCForm.ReadProjectType();
