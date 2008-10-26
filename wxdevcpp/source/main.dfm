@@ -1496,7 +1496,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 359
-          Height = 97
+          Height = 98
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -2778,8 +2778,6 @@ object MainForm: TMainForm
       end
       object ShowPluginPanelsItem: TMenuItem
         Caption = 'Show Plugin Panels'
-        object TMenuItem
-        end
       end
     end
     object ProjectMenu: TMenuItem

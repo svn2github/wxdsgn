@@ -786,6 +786,7 @@ type
 function DevData: TdevData;
 
 procedure InitializeOptions;
+procedure InitializeOptionsAfterPlugins;
 procedure SaveOptions;
 procedure FinalizeOptions;
 procedure ResettoDefaults;
@@ -910,8 +911,6 @@ begin
 end;
 
 procedure InitializeOptions;
-var
-  i: Integer;
 begin
 
   if not assigned(devDirs) then
@@ -946,7 +945,7 @@ begin
   {$ENDIF PLUGIN_BUILD}
 
   // load the preferred compiler set
-  if (devCompilerSet.Sets.Count = 0) and (MainForm  <> nil) then
+  if (devCompilerSet.Sets.Count = 0) then
   begin      // EAB Comment: Why load all the compiler sets if not all are available?
     // init first-run
     devCompilerSet.Sets.Add(GCC_DEFCOMPILERSET);
@@ -955,6 +954,76 @@ begin
     devCompilerSet.Sets.Add(VC6_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(DMARS_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2008_DEFCOMPILERSET);
+
+    //devCompilerSet.WriteSets;
+
+    devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
+    devdirs.fCompilerType:=0;  // EAB Comment: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(0);
+    devCompilerSet.LoadSetDirs(0);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(0);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC2005;
+    devdirs.fCompilerType:=ID_COMPILER_VC2005;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(1);
+    devCompilerSet.LoadSetDirs(1);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(1);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC2003;
+    devdirs.fCompilerType:=ID_COMPILER_VC2003;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(2);
+    devCompilerSet.LoadSetDirs(2);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(2);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC6;
+    devdirs.fCompilerType:=ID_COMPILER_VC6;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(3);
+    devCompilerSet.LoadSetDirs(3);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(3);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_DMARS;
+    devdirs.fCompilerType:=ID_COMPILER_DMARS;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(4);
+    devCompilerSet.LoadSetDirs(4);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(4);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_VC2008;   // EAB TODO: Check this logic. Maybe, move above and change numbering
+    devdirs.fCompilerType:=ID_COMPILER_VC2008;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(5);
+    devCompilerSet.LoadSetDirs(5);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(5);
+
+    //Reset the compiler type back to GCC
+    devdirs.fCompilerType:=1;
+    devdirs.SettoDefaults;
+    //Guru: todo: Add More Compiler default sets here
+
+  end;
+
+  devCompilerSet.LoadSet(devCompiler.CompilerSet);
+  devCompiler.AddDefaultOptions;
+  devCompilerSet.AssignToCompiler;
+  if MainForm <> nil then
+  begin
+      devCompilerSet.SaveSet(devCompiler.CompilerSet);
+      devCompiler.SaveSettings;
+  end;
+end;
+
+procedure InitializeOptionsAfterPlugins;
+begin
 
     devCompilerSet.WriteSets;
 
@@ -1005,67 +1074,12 @@ begin
     devdirs.SettoDefaults;
     //Guru: todo: Add More Compiler default sets here
 
-  end;
-  if MainForm <> nil then
-  begin
-      devCompilerSet.LoadSet(devCompiler.CompilerSet);
-      devCompiler.AddDefaultOptions;
-      devCompilerSet.AssignToCompiler;
-      devCompilerSet.SaveSet(devCompiler.CompilerSet);
-      devCompiler.SaveSettings;
-  end;
+  devCompilerSet.LoadSet(devCompiler.CompilerSet);
+  devCompiler.AddDefaultOptions;
+  devCompilerSet.AssignToCompiler;
+  devCompilerSet.SaveSet(devCompiler.CompilerSet);
+  devCompiler.SaveSettings;
 end;
-
-{procedure InitializeCompilerSets;
-var
-  i: Integer;
-    devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
-    devdirs.fCompilerType:=0;  // EAB Comment: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
-    devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(0);
-    devCompilerSet.LoadSetDirs(0);
-    devCompilerSet.SaveSet(0);
-
-    devCompilerSet.CompilerType :=ID_COMPILER_VC2005;
-    devdirs.fCompilerType:=ID_COMPILER_VC2005;
-    devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(1);
-    devCompilerSet.LoadSetDirs(1);
-    devCompilerSet.SaveSet(1);
-
-    devCompilerSet.CompilerType :=ID_COMPILER_VC2003;
-    devdirs.fCompilerType:=ID_COMPILER_VC2003;
-    devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(2);
-    devCompilerSet.LoadSetDirs(2);
-    devCompilerSet.SaveSet(2);
-
-    devCompilerSet.CompilerType :=ID_COMPILER_VC6;
-    devdirs.fCompilerType:=ID_COMPILER_VC6;
-    devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(3);
-    devCompilerSet.LoadSetDirs(3);
-    devCompilerSet.SaveSet(3);
-
-    devCompilerSet.CompilerType :=ID_COMPILER_DMARS;
-    devdirs.fCompilerType:=ID_COMPILER_DMARS;
-    devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(4);
-    devCompilerSet.LoadSetDirs(4);
-    devCompilerSet.SaveSet(4);
-
-    devCompilerSet.CompilerType :=ID_COMPILER_VC2008;   // EAB TODO: Check this logic. Maybe, move above and change numbering
-    devdirs.fCompilerType:=ID_COMPILER_VC2008;
-    devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(5);
-    devCompilerSet.LoadSetDirs(5);
-    devCompilerSet.SaveSet(5);
-
-    //Reset the compiler type back to GCC
-    devdirs.fCompilerType:=1;
-    devdirs.SettoDefaults;
-    //Guru: todo: Add More Compiler default sets here
-end;    }
 
 procedure SaveOptions;
 begin
@@ -2694,10 +2708,6 @@ var
   tempStr: String;
   maindir: String;
   makeSig, mingwmakeSig: String;
-{$IFDEF PLUGIN_BUILD}
-  i: Integer;
-  dummy: String;
-{$ENDIF}
 begin
   if Index < 0 then
     Exit;
@@ -2711,13 +2721,6 @@ begin
     fCDir := LoadSetting(key, 'C');
      if fCDir='' then fCDir:=devDirs.C;
     fCppDir := LoadSetting(key, 'Cpp');
-{$IFDEF PLUGIN_BUILD}
-    {if  MainForm <> nil then
-    begin
-        for i := 0 to MainForm.pluginsCount - 1 do
-            fCppDir := fCppDir + ';' + ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);    // EAB TODO: make it multiplugin functional.
-    end;}
-{$ENDIF}
      if fCppDir='' then fCppDir:=devDirs.Cpp;
     fLibDir := LoadSetting(key, 'Lib');
      if fLibDir='' then fLibDir:=devDirs.Lib;

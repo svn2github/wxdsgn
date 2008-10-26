@@ -1,8 +1,8 @@
 object frmHelpEdit: TfrmHelpEdit
   Left = 272
   Top = 141
-  Width = 350
-  Height = 395
+  Width = 352
+  Height = 433
   BorderStyle = bsSizeToolWin
   Caption = 'Help Menu Editor'
   Color = clBtnFace
@@ -18,15 +18,16 @@ object frmHelpEdit: TfrmHelpEdit
   OnClose = FormClose
   OnCreate = FormCreate
   DesignSize = (
-    334
-    359)
+    336
+    397)
   PixelsPerInch = 96
   TextHeight = 13
   object btnNew: TSpeedButton
     Left = 8
-    Top = 177
+    Top = 205
     Width = 75
-    Height = 22
+    Height = 24
+    Anchors = [akLeft, akBottom]
     Caption = 'Add'
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
@@ -58,10 +59,11 @@ object frmHelpEdit: TfrmHelpEdit
     OnClick = btnNewClick
   end
   object btnDelete: TSpeedButton
-    Left = 91
-    Top = 177
+    Left = 88
+    Top = 205
     Width = 75
-    Height = 22
+    Height = 24
+    Anchors = [akLeft, akBottom]
     Caption = 'Delete'
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
@@ -93,10 +95,11 @@ object frmHelpEdit: TfrmHelpEdit
     OnClick = btnDeleteClick
   end
   object btnBrowse: TSpeedButton
-    Left = 175
-    Top = 177
+    Left = 172
+    Top = 205
     Width = 75
-    Height = 22
+    Height = 24
+    Anchors = [akLeft, akBottom]
     Caption = 'Browse'
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
@@ -128,10 +131,11 @@ object frmHelpEdit: TfrmHelpEdit
     OnClick = btnBrowseClick
   end
   object btnRename: TSpeedButton
-    Left = 259
-    Top = 177
+    Left = 253
+    Top = 205
     Width = 75
-    Height = 22
+    Height = 24
+    Anchors = [akLeft, akBottom]
     Caption = 'Rename'
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
@@ -164,10 +168,10 @@ object frmHelpEdit: TfrmHelpEdit
   end
   object btnOk: TBitBtn
     Left = 81
-    Top = 341
+    Top = 370
     Width = 80
     Height = 23
-    Anchors = [akLeft, akBottom]
+    Anchors = [akRight]
     Caption = 'OK'
     ModalResult = 1
     TabOrder = 0
@@ -192,26 +196,26 @@ object frmHelpEdit: TfrmHelpEdit
   end
   object btnCancel: TBitBtn
     Left = 166
-    Top = 341
+    Top = 370
     Width = 80
     Height = 23
-    Anchors = [akLeft, akBottom]
+    Anchors = [akRight]
     TabOrder = 1
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 261
-    Top = 341
+    Left = 255
+    Top = 370
     Width = 75
     Height = 23
-    Anchors = [akRight, akBottom]
+    Anchors = [akRight]
     TabOrder = 2
     Kind = bkHelp
   end
   object grpOptions: TGroupBox
     Left = 8
-    Top = 206
-    Width = 327
+    Top = 236
+    Width = 322
     Height = 128
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Help Menu Options'
@@ -316,8 +320,8 @@ object frmHelpEdit: TfrmHelpEdit
   object lvFiles: TListView
     Left = 8
     Top = 8
-    Width = 326
-    Height = 165
+    Width = 322
+    Height = 192
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvLowered
     BevelKind = bkSoft

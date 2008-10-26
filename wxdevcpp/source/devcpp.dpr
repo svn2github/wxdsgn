@@ -248,7 +248,7 @@ begin
   MainForm.DoCreateEverything;
 
   // EAB: try to fix include directories with plugins
-  InitializeOptions;
+  InitializeOptionsAfterPlugins;
 
   // apply the window placement. this method forces the form to show.
   MainForm.DoApplyWindowPlacement;
