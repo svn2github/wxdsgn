@@ -243,7 +243,7 @@ begin
 
   FWx_PropertyList.add('Wx_GaugeStyle:Gauge Styles');
   FWx_PropertyList.Add('wxGA_SMOOTH:wxGA_SMOOTH');
-  FWx_PropertyList.Add('wxGA_MARQUEE:wxGA_MARQUEE');
+ // FWx_PropertyList.Add('wxGA_MARQUEE:wxGA_MARQUEE');
 
   FWx_PropertyList.add('Wx_GaugeOrientation:Orientation');
   FWx_PropertyList.add('Max:Range');
