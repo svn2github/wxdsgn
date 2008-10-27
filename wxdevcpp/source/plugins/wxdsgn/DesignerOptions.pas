@@ -201,7 +201,7 @@ begin
       wx_designer.UpdateDesignerData(editorName);
   end;
 
-  ini := TiniFile.Create(wx_designer.main.GetDevDirsConfig + 'devcpp.ini');
+  ini := TiniFile.Create(wx_designer.main.GetDevDirsConfig + 'devcpp.ini');    // EAB, a different executable name would give problems here.
   try
     ini.WriteBool('wxWidgets', 'cbGridVisible', cbGridVisible.Checked);
     ini.WriteBool('wxWidgets', 'cbGenerateXRC', cbGenerateXRC.Checked);

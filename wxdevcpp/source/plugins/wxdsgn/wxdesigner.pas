@@ -786,7 +786,7 @@ begin
     OnKeyDown := ELDesigner1KeyDown;
   end;
 
-  ini := TiniFile.Create(Config + 'devcpp.ini');
+  ini := TiniFile.Create(Config + 'devcpp.ini');      // EAB, a different executable name would give problems here.
   try
     ELDesigner1.Grid.Visible := ini.ReadBool('wxWidgets', 'cbGridVisible', ELDesigner1.Grid.Visible);
     ELDesigner1.Grid.XStep := ini.ReadInteger('wxWidgets', 'lbGridXStepUpDown', ELDesigner1.Grid.XStep);
@@ -4724,7 +4724,6 @@ procedure TWXDsgn.FullScreenSwitch;
 var
     i: Integer;
 begin
-    editors.Restart;
     for i := 0 to editors.ItemCount - 1 do
         (editors[editorNames[i]] as TWXEditor).RestorePosition;
 end;

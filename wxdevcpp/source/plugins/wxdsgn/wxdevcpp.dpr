@@ -22,8 +22,6 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  {FastMM4,   // EAB better comment these 2 when deploying due to licensing issues
-  FastCode,}
   LanguagesDEPFix,
   inifiles,
   Windows,

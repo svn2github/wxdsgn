@@ -1610,7 +1610,6 @@ begin
 
   //Make sure the status bar is BELOW the bottom dock panel
   Statusbar.Top := Self.ClientHeight;
-
 end;
 
 procedure TMainForm.AddBreakPointToList(line_number: integer; e: TEditor);
@@ -4220,7 +4219,11 @@ begin
     OldWidth := Width;
     OldHeight := Height;
     GetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-    BorderStyle := bsNone;
+    self.Visible := false;
+    //BorderStyle := bsNone;
+
+    SetWindowLong(self.Handle, GWL_STYLE, WS_BORDER and GetWindowLong(Self.Handle, GWL_STYLE));
+
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRBACK];
     ControlBar1.Visible := devData.ShowBars;
     pnlFull.Visible := TRUE;
@@ -4237,7 +4240,8 @@ begin
       (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
       (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
       Monitor.Width + (Width - ClientWidth),
-      Monitor.Height + (Height - ClientHeight));
+      Monitor.Height + (Height - ClientHeight));  
+      self.Visible := true;
   end
   else
   begin
@@ -4245,22 +4249,21 @@ begin
     Top := OldTop;
     Width := OldWidth;
     Height := OldHeight;
+    self.Visible := false;
     // enable the top-level menus in MainMenu
     // before shown on screen to avoid flickering
     for I := 0 to MainMenu.Items.Count - 1 do
       MainMenu.Items[I].Visible := True;
 
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-    BorderStyle := bsSizeable;
+    //BorderStyle := bsSizeable;
+    SetWindowLong(self.Handle, GWL_STYLE,  WS_TILEDWINDOW or (WS_BORDER xor GetWindowLong(Self.Handle, GWL_STYLE)));
+
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRMODE];
     Controlbar1.Visible := TRUE;
 
-{$IFDEF PLUGIN_BUILD}
-    for i := 0 to pluginsCount - 1 do
-        plugins[i].FullScreenSwitch;
-{$ENDIF}
-
     pnlFull.Visible := FALSE;
+    self.Visible := true;
   end;
 end;
 

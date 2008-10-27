@@ -46,6 +46,7 @@ uses
 
    procedure TWXEditor.Init(fTabSheet: TTabSheet; var fText: TSynEdit; DesignerPopup: TPopUpMenu; DoOpen: boolean; fName: String);
    begin
+
 	    //Dont allow anyone to edit the text content
         FileName := fName;
 	    fScrollDesign := TScrollBox.Create(fTabSheet);
@@ -202,11 +203,7 @@ end;
 
 procedure TWXEditor.RestorePosition;
 begin
-    if not wx_designer.ELDesigner1.Floating then
-    begin
-        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or GetWindowLong(fDesigner.Handle, GWL_STYLE));
-        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
-    end
+
 end;
 
 end.
