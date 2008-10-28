@@ -108,11 +108,9 @@ type
     editorNames: Array of String;
   public
     ownerForm: TForm;
-  public
     function GetCurrentFileName: string;
     function GetCurrentClassName: string;
-  public
-
+ public
     // Wx Property Inspector Popup Menu
     WxPropertyInspectorPopup: TPopupMenu;
     WxPropertyInspectorMenuEdit: TMenuItem;
@@ -166,6 +164,7 @@ type
     strStdwxIDList: TStringList;
 
     XPTheme: boolean; // Use XP theme
+    configFolder: String;
 
     tabwxWidgets: TTabSheet; // For compiler options pane
     grpwxVersion: TGroupBox;
@@ -352,6 +351,7 @@ begin
   ownerForm := _owner;
   wx_designer := Self;
   editors := TObjectHash.Create;
+  configFolder := Config;
 
   //Property Inspector
   frmInspectorDock := TForm.Create(ownerForm);
@@ -786,7 +786,7 @@ begin
     OnKeyDown := ELDesigner1KeyDown;
   end;
 
-  ini := TiniFile.Create(Config + 'devcpp.ini');      // EAB, a different executable name would give problems here.
+  ini := TiniFile.Create(Config + ChangeFileExt(ExtractFileName(Application.ExeName),'') + '.ini');      // EAB, a different executable name would give problems here.
   try
     ELDesigner1.Grid.Visible := ini.ReadBool('wxWidgets', 'cbGridVisible', ELDesigner1.Grid.Visible);
     ELDesigner1.Grid.XStep := ini.ReadInteger('wxWidgets', 'lbGridXStepUpDown', ELDesigner1.Grid.XStep);
@@ -1428,7 +1428,7 @@ begin
 
   // Open the ini file and see if we have any default values for author, class, license
   // ReadString will return either the ini key or the default
-  INI := TiniFile.Create(main.GetDevDirsConfig + 'devcpp.ini');
+  INI := TiniFile.Create(ConfigFolder + ChangeFileExt(ExtractFileName(Application.ExeName),'') + '.ini');
   Result.txtAuthorName.Text := INI.ReadString('wxWidgets', 'Author', GetLoginName);
   INI.free;
 
@@ -1522,7 +1522,7 @@ begin
     end;
 
     //Wow, the user clicked OK: save the user name
-    INI := TiniFile.Create(main.GetDevDirsConfig + 'devcpp.ini');
+    INI := TiniFile.Create(ConfigFolder + ChangeFileExt(ExtractFileName(Application.ExeName),'') + '.ini');
     INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
     INI.free;
   end;
@@ -1644,7 +1644,7 @@ begin
   main.ChangeProjectProfile(frm.ProfileNameSelect.ItemIndex);
 
   //Write the current strings back as the default
-  INI := TiniFile.Create(main.GetDevDirsConfig + 'devcpp.ini');
+  INI := TiniFile.Create(ConfigFolder + ChangeFileExt(ExtractFileName(Application.ExeName),'') + '.ini');
   INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
   INI.free;
 
