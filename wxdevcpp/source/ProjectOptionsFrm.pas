@@ -1193,8 +1193,11 @@ begin
     cmbLangID.Items.Add(Languages.Name[I]);
 
   S := Languages.NameFromLocaleID[Project.VersionInfo.LanguageID];
-  if S <> '' then
+  if Project.VersionInfo.LanguageID = 0 then
+    cmbLangID.ItemIndex := cmbLangID.Items.IndexOf('Language Neutral')
+  else if S <> '' then
     cmbLangID.ItemIndex := cmbLangID.Items.IndexOf(S);
+
 end;
 
 procedure TfrmProjectOptions.chkVersionInfoClick(Sender: TObject);
