@@ -76,7 +76,7 @@ uses
   WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow,
   WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
   WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog,
-  WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog,
+  WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
   WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl;
 
 const
@@ -234,7 +234,7 @@ begin
     //Non-visual components
     ComponentsList.Add('Components;TwxTimer;TwxHtmlEasyPrinting');
     //Unofficial components
-    ComponentsList.Add('"Unofficial Controls";TwxTreeListCtrl;TwxStyledTextCtrl');
+    ComponentsList.Add('"Unofficial Controls";TwxTreeListCtrl;TwxStyledTextCtrl;TwxCustomButton');
 
     RegisterClasses([TWxStdDialogButtonSizer, TWxBoxSizer, TWxStaticBoxSizer, TWxGridSizer,
                      TWxFlexGridSizer, TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,
@@ -247,7 +247,7 @@ begin
                      TWxchecklistbox, TWxSplitterWindow, TWxSpinCtrl, TWxScrolledWindow,
                      TWxHtmlWindow, TWxToolButton, TWxSeparator, TWxPopupMenu, TWxMenuBar,
                      TWxOpenFileDialog, TWxSaveFileDialog, TWxFontDialog, TwxMessageDialog,
-                     TWxProgressDialog, TWxPrintDialog, TWxFindReplaceDialog,
+                     TWxProgressDialog, TWxPrintDialog, TWxFindReplaceDialog, TWxCustomButton,
                      TWxDirDialog, TWxColourDialog, TWxPageSetupDialog, TwxTimer,
                      TwxTreeListCtrl, TWxRichTextCtrl, TWxStyledTextCtrl, TWxCalendarCtrl,
                      TWxOwnerDrawnComboBox, TWxTextEntryDialog, TWxPasswordEntryDialog,

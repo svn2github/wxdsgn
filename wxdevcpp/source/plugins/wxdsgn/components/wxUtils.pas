@@ -299,6 +299,16 @@ type
   TWxAnimationCtrlStyleItem = (wxAC_DEFAULT_STYLE, wxAC_NO_AUTORESIZE);
   TWxAnimationCtrlStyleSet = set of TWxAnimationCtrlStyleItem;
 
+  //class  	wxCustomButton
+  TWxCBtnPosStyleSubItem = (wxCUSTBUT_LEFT, wxCUSTBUT_RIGHT, wxCUSTBUT_TOP, wxCUSTBUT_BOTTOM);
+  TWxCBtnPosStyleSubSet = set of TWxCBtnPosStyleSubItem;
+
+  TWxCBtnStyleSubItem = (wxCUSTBUT_NOTOGGLE, wxCUSTBUT_BUTTON, wxCUSTBUT_TOGGLE, wxCUSTBUT_BUT_DCLICK_TOG, wxCUSTBUT_TOG_DCLICK_BUT);
+  TWxCBtnStyleSubSet = set of TWxCBtnStyleSubItem;
+
+  TWxCBtnDwgStyleSubItem = (wxCUSTBUT_FLAT);
+  TWxCBtnDwgStyleSubSet = set of TWxCBtnDwgStyleSubItem;
+
   //newly Added
   TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
   TWxCmbStyleSet = set of TWxCmbStyleItem;
@@ -819,7 +829,7 @@ function CreateValidFileName(FileName: string): string; // EAB TODO: Copied from
 implementation
 
 uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxToolButton,
-  UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
+  UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar, WxCustomButton,
   WxNonVisibleBaseComponent, wxdesigner, wxnotebook
 {$IFDEF WIN32}
   , ShlObj, ActiveX
@@ -6226,6 +6236,10 @@ begin
     PictureEdit.Image1.Picture.Assign(TWxBitmapButton(
       TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
 
+  if strClassName = UpperCase('TWxCustomButton') then
+    PictureEdit.Image1.Picture.Assign(TWxCustomButton(
+      TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+
   if strClassName = UpperCase('TWxToolButton') then
     PictureEdit.Image1.Picture.Assign(
       TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
@@ -6265,6 +6279,13 @@ begin
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+      end;
+
+      if strClassName = UpperCase('TWxCustomButton') then
+      begin
+        TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
+        TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
+        TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
       end;
 
       if strClassName = UpperCase('TWxToolButton') then
