@@ -3337,9 +3337,7 @@ begin
         compSelectedOne := SelectedComponent;
         LocateFunctionInEditor(Data, Trim((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Wx_Name), compSelectedOne,
           str, strDisplayName);
-        if ((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
-            DisableDesignerControls;
-        main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));            
+        main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));
         if(strNewValue = '<Goto Function>') and ((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
             main.SendToFront;
       end;
