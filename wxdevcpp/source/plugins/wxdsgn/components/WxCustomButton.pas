@@ -263,6 +263,11 @@ begin
   FWx_EventList.add('EVT_BUTTON:OnClick');
   FWx_EventList.add('EVT_TOGGLEBUTTON:OnToggleClick ');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+
+  FWx_ButtonStyle :=  wxCUSTBUT_BUTTON;
+  FWx_ButtonPosStyle := wxCUSTBUT_RIGHT;
+  FWx_ButtonDwgStyle := [];
+
 end;
 
 destructor TWxCustomButton.Destroy;

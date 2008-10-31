@@ -3014,7 +3014,7 @@ begin
             GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[ExtractFileName(editorName)] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
           if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxCustomButton') then
-            GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[ExtractFileName(editorName)] as TWXEditor).GetDesigner.Wx_Name, editorName);
+            GenerateXPMDirectly(TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[ExtractFileName(editorName)] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
           if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton') then
             GenerateXPMDirectly(TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[ExtractFileName(editorName)] as TWXEditor).GetDesigner.Wx_Name, editorName);
