@@ -184,8 +184,8 @@ begin
     Exit;
   end;
 
+  Screen.Cursor := crHourGlass;
   btnOk.Enabled := false;
-  Cursor := crHourGlass;
 
   self.SaveSettings;
   devCompilerSet.AssignToCompiler;

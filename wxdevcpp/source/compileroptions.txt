@@ -1,0 +1,229 @@
+MingW gcc compiler
+==================
+1  -ansi
+2  -traditional-cpp
+3  -w
+4  -fno-access-control
+5  -fdollar-in-identifiers
+6  -fsave-memorized
+7  -fexceptions
+8  -fshort-double
+9  -fverbose-asm
+10 -fexpensive-optimizations
+11 -O1
+12 -O2
+13 -O3
+14 -pg
+15 -lobjc
+16 -g3
+17 -nostdlib
+18 -mwindows
+19 -fmessage-length=0
+20 -s
+21 -march=i386, i486, i586, i686, pentium, pentium-mmx, pentiumpro, pentium2, pentium3, pentium4, K6
+    k6-2, k6-3, athlon, athlon-tbird, athlon-4, athlon-xp, athlon-mp');
+    winchip-c6, winchip2, k8, c3, c3-2
+22 -m mmx, sse, sse2, pni, 3dnow
+
+
+MSVC - VC6 VC2003
+=================
+
+1   Favour -- 
+     Neither  =;
+     Speed=/Ot;
+     Space=/Os
+2   Optimize for -- 
+     Neither  =;
+     Speed=/O2;
+     Space=/O1
+3   Enable Global Optimization /Og
+4   Assume aliasing /Oa
+5   Enable intrinsic functions /Oi
+6   Assume cross-function aliasing /Ow
+7   Optimize for Windows Program /GA
+8   Omit frame pointers /Oy
+9   Optimize for /G -- 
+      Blended model=B;
+      Pentium=5;
+      Pentium Pro, Pentium II and Pentium III  =6;
+      Pentium 4 or Athlon=7
+10  Calling Convention --  
+      __cdecl=;
+      __fastcall  =/Gr
+      __stdcall=/Gz
+11  String Pooling -- 
+      Disable=;
+      Enable=/Gf;
+      Enable (Read-Only)  =/GF
+
+12  Common Language Runtime -- 
+      Compile native code  =;
+      Compile for CLR=/clr;
+      No assembly=/clr:noAssembly
+      IL-only output file=/clr:pure;
+      Verifiable IL-only output=/clr:safe;
+      Use old syntax=/clr:oldSyntax;
+      Enable initial AppDomain behaviour  =/clr:initialAppDomain 
+
+13  Extended instruction set -- 
+      None=;
+      SSE=/arch:SSE;
+      SSE2  =/arch:SSE2
+
+14  Exception handling -- 
+      No Exceptions=;
+      C++ Exceptions (no SEH)=/EHs;
+      C++ Exceptions (with SEH)  =/EHa
+   
+15  Enable _penter function call - /Gh
+16  Enable _pexit function call -/GH
+17  Enable C++ RTTI - /GR
+18  Enable Minimal Rebuild - /Gm
+19  Enable Link-Time Code Generation - /GL
+    
+20  Enable Pentium FDIV fix /QIfdiv
+21  Enable Pentium 0x0F fix /QI0f
+22  Use FIST instead of ftol() /QIfist
+    
+23  extern "C" implies nothrow /EHc
+24  Enable function-level linking  /Gy
+25  Use fibre-safe TLS accesses /GT
+
+26  Stack checks--
+     None=
+     Enable stack probes=/Ge
+     Control Stack Checking Calls  =/GS
+
+27  Type conversion Checks /RTCc 
+28  Stack Frame runtime checking - /RTCs
+29  Check for Variable Usage /RTCu
+
+30  Debugging --
+     No Debugging Information= 
+     Generate Debugging Information=/Zi
+     Edit and Continue Debugging Information  =/ZI
+     Old-Style Debugging Information=/Z7
+     Include line numbers only=/Zd
+
+31  Enable Extensions /Ze
+
+32  Omit library name in object file /Zl
+33  Generate function prototypes /Zg 
+   
+34  Enforce Standard C++ scoping /Zc:forScope
+35  Make wchar_t a native type /Zc:wchar_t 
+     
+36  Treat warnings as errors /WX 
+    
+37  Warning Level 
+     Default (Level 1)  =
+     Level 2=/W2
+     Level 3=/W3
+     Level 4=/W4
+     None=/w
+    
+38  Enable automatic precompiled headers /YX 
+    
+39  Enable 64-bit porting warnings /Wp64 
+40  Disable incremental linking /INCREMENTAL:NO 
+  
+  
+MSVC - VC2005/VC2008
+====================
+
+1   Favour -- 
+     Neither  =;
+     Speed=/Ot;
+     Space=/Os
+2   Optimize for -- 
+     Neither  =;
+     Speed=/O2;
+     Space=/O1
+3   Enable Global Optimization /Og
+4   Assume aliasing /Oa
+5   Enable intrinsic functions /Oi
+6   Assume cross-function aliasing /Ow
+7   Optimize for Windows Program /GA
+8   Omit frame pointers /Oy
+
+9   Calling Convention --  
+      __cdecl=;
+      __fastcall  =/Gr
+      __stdcall=/Gz
+
+10  String Pooling -- 
+      Disable=;
+      Enable (Read-Only)  =/GF
+
+11  Common Language Runtime -- 
+      Compile native code  =;
+      Compile for CLR=/clr;
+      No assembly=/clr:noAssembly
+      IL-only output file=/clr:pure;
+      Verifiable IL-only output=/clr:safe;
+      Use old syntax=/clr:oldSyntax;
+      Enable initial AppDomain behaviour  =/clr:initialAppDomain 
+
+12  Floating-Point Model -- 
+      Precise  =precise;
+      Fast=fast;
+      Strict=strict    
+
+13  Extended instruction set -- 
+      None=;
+      SSE=/arch:SSE;
+      SSE2  =/arch:SSE2
+
+14  Exception handling -- 
+      No Exceptions=;
+      C++ Exceptions (no SEH)=/EHs;
+      C++ Exceptions (with SEH)  =/EHa
+   
+15  Enable _penter function call - /Gh
+16  Enable _pexit function call -/GH
+17  Enable C++ RTTI - /GR
+18  Enable Minimal Rebuild - /Gm
+19  Enable Link-Time Code Generation - /GL
+       
+20  extern "C" implies nothrow /EHc
+21  Enable function-level linking  /Gy
+22  Use fibre-safe TLS accesses /GT
+
+23  Stack checks--
+     None=
+     Enable stack probes=/Ge
+     Control Stack Checking Calls  =/GS
+
+24  Type conversion Checks /RTCc 
+25  Stack Frame runtime checking - /RTCs
+26  Check for Variable Usage /RTCu
+
+27  Debugging --
+      No Debugging Information= 
+      Generate Debugging Information=/Zi
+      Edit and Continue Debugging Information  =/ZI
+      Old-Style Debugging Information=/Z7
+      Include line numbers only=/Zd
+
+28  Omit library name in object file /Zl
+29  Generate function prototypes /Zg 
+   
+30  Enable OpenMP 2.0 Language Extensions /openmp
+  
+31  Don't Enforce Standard C++ scoping /Zc:forScope 
+32  Don't Make wchar_t a native type /Zc:wchar_t 
+   
+33  Treat warnings as errors /WX 
+    
+34  Warning Level 
+      Default (Level 1)  =
+      Level 2=/W2
+      Level 3=/W3
+      Level 4=/W4
+      None=/w
+       
+35  Enable 64-bit porting warnings /Wp64 
+36  Disable incremental linking /INCREMENTAL:NO 
+  
+  

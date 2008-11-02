@@ -839,8 +839,8 @@ var
   e: TEditor;
 begin
 
+  Screen.Cursor := crHourGlass;
   btnOk.Enabled := false;
-  Cursor := crHourGlass;
 
   with devEditor do
   begin
@@ -998,8 +998,8 @@ begin
     else
       e.Text.ActiveLineColor := clNone;
 
+  Screen.Cursor := crDefault;
   btnOk.Enabled := true;
-  Cursor := crDefault;
 
 end;
 

@@ -24,8 +24,6 @@ program devcpp;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  {FastMM4,   // EAB better comment these 2 when deploying due to licensing issues
-  FastCode,}
   LanguagesDEPFix,
   madListHardware,
   madListProcesses,
@@ -109,7 +107,7 @@ uses
   iplugin_bpl in 'plugins\interfaces\iplugin_bpl.pas',
   hh in 'hh.pas',
   hh_funcs in 'hh_funcs.pas';
-
+  
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}

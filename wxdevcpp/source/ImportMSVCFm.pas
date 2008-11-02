@@ -22,6 +22,7 @@ unit ImportMSVCFm;
 interface
 
 uses
+xprocs,
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Buttons, StdCtrls, XPMenu;
@@ -131,8 +132,8 @@ begin
   I := StartAt;
   while I <= EndAt do begin
     if AnsiStartsText(StartsWith, fSL[I]) then begin
-      Result := StripQuotesIfNecessary(Trim(Copy(fSL[I], Length(StartsWith) + 1, Length(fSL[I]) - Length(StartsWith))));
-      Break;
+        Result := StripQuotesIfNecessary(Trim(Copy(fSL[I], Length(StartsWith) + 1, Length(fSL[I]) - Length(StartsWith))));
+        Break;
     end;
     Inc(I);
   end;
@@ -210,111 +211,1154 @@ function TImportMSVCForm.ReadCompilerOptions(StartAt,
   EndAt: integer): boolean;
 var
   I: integer;
-  Options: TStringList;
-  sCompiler: string;
-  sDirs: string;
-  S: string;
+  inQuotes : boolean;
+  Options, Options_temp: TStringList;
+  sCompiler, sCompiler2003, sCompiler2008: string;
+  sCompilerSettings, sCompilerSettings2003, sCompilerSettings2008 : string;
+  sDirs, sDirs2003, sDirs2008: string;
+  S, Stemp: string;
 begin
   Result := False;
-  
-  sCompiler := '-D__GNUWIN32__ ';
+
+  sCompiler := '-D__GNUWIN32__' + '_@@_';
   sDirs := '';
+  sCompilerSettings := '0000000000000000000000';
+
+  sCompiler2003 := '';
+  sDirs2003 := '';
+  sCompilerSettings2003 := '0000000000000000000000000000000000000000';
+                            
+  sCompiler2008 := '';
+  sDirs2008 := '';
+  sCompilerSettings2008 := '000000000000000000000000000000000000';
+
   Options := TStringList.Create;
+  Options_temp := TStringList.Create;
   try
-    Options.Delimiter := ' ';
-    Options.DelimitedText := GetLineValue(StartAt, EndAt, '# ADD CPP');
+
+    S := GetLineValue(StartAt, EndAt, '# ADD CPP');
+
+       // Use the spaces to Tokenize the linker options
+    strTokenToStrings(S, ' ', Options_temp);
+
+    // Let's re-parse our space-delimited list.
+    // There may be some double quotes in the options list
+    // Spaces can be contained within double quotes so let's
+    // recombine items that are within double quotes to correct
+    // that tokenizing error.  Also, let's remove any blank
+    // options
+    inQuotes := false;
+    Stemp := '';
+    for I := 0 to (Options_temp.Count - 1) do
+    begin
+       if (inQuotes) then
+        begin
+             if AnsiContainsText(Options_temp[I], '"') then
+             begin
+                inQuotes := false;
+                Stemp := Stemp + ' ' + Options_temp[I];
+                Options.Add(Stemp);
+             end
+             else
+                Stemp := Stemp + ' ' + Options_temp[I];
+
+        end
+        else
+        begin
+            // If there's only one double quote, then we're at the
+            //   start of a string. Continue parsing until the next
+            //   double quote. If there's 2 double quotes, then
+            //   we don't need to keep parsing.
+            if (StrTokenCount(Options_temp[I], '"') = 1) then
+             begin
+                inQuotes := true;
+                Stemp := Options_temp[I];
+             end
+            else if (Length(strTrim(Options_temp[I])) > 0) then
+             begin
+                Options.Add(Options_temp[I]);
+             end
+        end
+
+    end;
+
     I := 0;
+
     while I < Options.Count do begin
-    if (Length(Options[I]) > 0) then begin
-      if AnsiCompareText('/D', Options[I]) = 0 then begin
-        S := Format('-D%s ', [Options[I + 1]]);
-        sCompiler := sCompiler + S;
+
+   // ShowMessage('compiler:  ' +  Options[I]);
+
+       if strEqual('/Za', Options[I]) then
+       begin // disable language extensions
+
+        // MingW gcc
+        //sCompiler := sCompiler + '-ansi ';
+        // CompilerOptions position 1
+        sCompilerSettings[1] := '1';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
         Inc(I);
       end
-      else if AnsiCompareText('/U', Options[I]) = 0 then begin
-        S := Format('-U%s ', [Options[I + 1]]);
-        sCompiler := sCompiler + S;
+      else if strEqual('/GX', Options[I]) then begin // enable exception handling
+
+      // I think /GX and /EHa are the same
+      // http://msdn.microsoft.com/en-us/library/d42ws1f6.aspx
+
+       // MingW gcc
+       // sCompiler := sCompiler + '-fexceptions ';
+       // CompilerOptions position 7
+        sCompilerSettings[7] := '1';
+
+        // MSVC6/2003
+        // CompilerOptions position 14
+        sCompilerSettings2003[14] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 14
+        sCompilerSettings2008[14] := 'a';
+
         Inc(I);
       end
-      else if AnsiCompareText('/I', Options[I]) = 0 then begin
-        S := Options[I + 1];
-        sDirs := sDirs + S + ';';
+      else if strEqual('/Ot', Options[I]) then begin
+
+        // MingW gcc
+       // CompilerOptions position 11 (O1 is probably the closest analog)
+        sCompilerSettings[11] := '1';
+
+        // MSVC6/2003
+        // CompilerOptions position 1
+        sCompilerSettings2003[1] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 1
+        sCompilerSettings2008[1] := '1';
+
         Inc(I);
       end
-      else if (AnsiCompareText('/W1', Options[I]) = 0) or
-        (AnsiCompareText('/W2', Options[I]) = 0) or
-        (AnsiCompareText('/W3', Options[I]) = 0) then begin // warning messages
-        sCompiler := sCompiler + '-W ';
+      else if strEqual('/Os', Options[I]) then begin
+
+        // MingW gcc
+       sCompiler := sCompiler + '-Os' + '_@@_';
+
+
+        // MSVC6/2003
+        // CompilerOptions position 1
+        sCompilerSettings2003[1] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 1
+        sCompilerSettings2008[1] := 'a';
+
         Inc(I);
       end
-      else if AnsiCompareText('/W4', Options[I]) = 0 then begin // all warning messages
-        sCompiler := sCompiler + '-Wall ';
+      else if strEqual('/O2', Options[I]) then begin
+
+        // MingW gcc
+       // CompilerOptions position 12
+        sCompilerSettings[12] := '1';
+
+        // MSVC6/2003
+        // CompilerOptions position 2
+        sCompilerSettings2003[2] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 2
+        sCompilerSettings2008[2] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/WX', Options[I]) = 0 then begin // warnings as errors
-        sCompiler := sCompiler + '-Werror ';
+      else if strEqual('/O1', Options[I]) then begin
+
+        // MingW gcc
+       // CompilerOptions position 11
+        sCompilerSettings[11] := '1';
+
+        // MSVC6/2003
+        // CompilerOptions position 2
+        sCompilerSettings2003[2] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 2
+        sCompilerSettings2008[2] := 'a';
+
         Inc(I);
       end
-      else if AnsiCompareText('/GX', Options[I]) = 0 then begin // enable exception handling
-        sCompiler := sCompiler + '-fexceptions ';
+      else if strEqual('/Og', Options[I]) then begin
+
+        // MingW gcc
+       // CompilerOptions position 13 (-O3 is probably closest analog)
+        sCompilerSettings[13] := '1';
+
+        // MSVC6/2003
+        // CompilerOptions position 3
+        sCompilerSettings2003[3] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 3
+        sCompilerSettings2008[3] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/Ob0', Options[I]) = 0 then begin // disable inline expansion
-        sCompiler := sCompiler + '-fno-inline ';
+      else if strEqual('/Oa', Options[I]) then begin
+
+        // MingW gcc
+       // CompilerOptions position 11  (-O1 is probably closest analog)
+        sCompilerSettings[11] := '1';
+
+        // MSVC6/2003
+        // CompilerOptions position 4
+        sCompilerSettings2003[4] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 4
+        sCompilerSettings2008[4] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/Ob2', Options[I]) = 0 then begin // auto inline function expansion
-        sCompiler := sCompiler + '-finline-functions ';
+      else if strEqual('/Oi', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 5
+        sCompilerSettings2003[5] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 5
+        sCompilerSettings2008[5] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/Oy', Options[I]) = 0 then begin // frame pointer omission
-        sCompiler := sCompiler + '-fomit-frame-pointer ';
+      else if StrEqual('/Ow', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 6
+        sCompilerSettings2003[6] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 6
+        sCompilerSettings2008[6] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/GB', Options[I]) = 0 then begin // blend optimization
-        sCompiler := sCompiler + '-mcpu=pentiumpro -D_M_IX86=500 ';
+      else if strEqual('/GA', Options[I]) then begin
+       // Optimize for Windows applications
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 7
+        sCompilerSettings2003[7] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 7
+        sCompilerSettings2008[7] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/G6', Options[I]) = 0 then begin // pentium pro optimization
-        sCompiler := sCompiler + '-mcpu=pentiumpro -D_M_IX86=600 ';
+      else if strEqual('/Oy', Options[I]) then begin
+
+        // MingW gcc
+        sCompiler := sCompiler + '-fomit-frame-pointer' + '_@@_';
+
+        // MSVC6/2003
+        // CompilerOptions position 8
+        sCompilerSettings2003[8] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 8
+        sCompilerSettings2008[8] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/G5', Options[I]) = 0 then begin // pentium optimization
-        sCompiler := sCompiler + '-mcpu=pentium -D_M_IX86=500 ';
+      else if strEqual('/GB', Options[I]) then begin // blend optimization
+
+        // MingW gcc
+       // sCompiler := sCompiler + '-mcpu=pentiumpro -D_M_IX86=500 ';
+        // CompilerOptions position 21
+        sCompilerSettings[21] := '5';
+
+        // MSVC6/2003
+        // CompilerOptions position 9
+        sCompilerSettings2003[9] := '0';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
         Inc(I);
       end
-      else if AnsiCompareText('/G4', Options[I]) = 0 then begin // 486 optimization
-        sCompiler := sCompiler + '-mcpu=i486 -D_M_IX86=400 ';
+      else if strEqual('/G5', Options[I]) then begin // pentium optimization
+
+        // MingW gcc
+       // sCompiler := sCompiler + '-mcpu=pentium -D_M_IX86=500 ';
+        // CompilerOptions position 21
+        sCompilerSettings[21] := '3';
+
+         // MSVC6/2003
+        // CompilerOptions position 9
+        sCompilerSettings2003[9] := '1';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
         Inc(I);
       end
-      else if AnsiCompareText('/G3', Options[I]) = 0 then begin // 386 optimization
-        sCompiler := sCompiler + '-mcpu=i386 -D_M_IX86=300 ';
+      else if strEqual('/G6', Options[I]) then begin // pentium pro optimization
+
+        // MingW gcc
+        //sCompiler := sCompiler + '-mcpu=pentiumpro -D_M_IX86=600 ';
+        // CompilerOptions position 21
+        sCompilerSettings[21] := '4';
+
+         // MSVC6/2003
+        // CompilerOptions position 9
+        sCompilerSettings2003[9] := 'a';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
         Inc(I);
       end
-      else if AnsiCompareText('/Za', Options[I]) = 0 then begin // disable language extensions
-        sCompiler := sCompiler + '-ansi ';
+       else if strEqual('/Gr', Options[I]) then begin
+         // __fastcall
+         
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 10
+        sCompilerSettings2003[10] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 9
+        sCompilerSettings2008[9] := '1';
+
         Inc(I);
       end
-      else if AnsiCompareText('/Zp1', Options[I]) = 0 then begin // pack structures
-        sCompiler := sCompiler + '-fpack-struct ';
+      else if strEqual('/Gz', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 10
+        sCompilerSettings2003[10] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 9
+        sCompilerSettings2008[9] := 'a';
+
         Inc(I);
       end
-      else if AnsiCompareText('/W0', Options[I]) = 0 then begin // no warning messages
-        sCompiler := sCompiler + '-w ';
+      else if strEqual('/Gf', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 11
+        sCompilerSettings2003[11] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 10
+        sCompilerSettings2008[10] := '1';
+
         Inc(I);
-      end;
-      Inc(I);
+      end
+      else if strEqual('/GF', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 11
+        sCompilerSettings2003[11] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 10
+        sCompilerSettings2008[10] := 'a';
+
+        Inc(I);
+      end
+      else if strEqual('/clr', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 12
+        sCompilerSettings2003[12] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 11
+        sCompilerSettings2008[11] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/clr:noAssembly', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 12
+        sCompilerSettings2003[12] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 11
+        sCompilerSettings2008[11] := 'a';
+
+        Inc(I);
+      end
+      else if strEqual('/clr:pure', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 12
+        sCompilerSettings2003[12] := 'b';
+
+        // MSVC2005/2008
+        // CompilerOptions position 11
+        sCompilerSettings2008[11] := 'b';
+
+        Inc(I);
+      end
+      else if strEqual('/clr:safe', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 12
+        sCompilerSettings2003[12] := 'c';
+
+        // MSVC2005/2008
+        // CompilerOptions position 11
+        sCompilerSettings2008[11] := 'c';
+
+        Inc(I);
+      end
+      else if strEqual('/clr:oldSyntax', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 12
+        sCompilerSettings2003[12] := 'd';
+
+        // MSVC2005/2008
+        // CompilerOptions position 11
+        sCompilerSettings2008[11] := 'd';
+
+        Inc(I);
+      end
+      else if strEqual('/clr:initialAppDomain', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 12
+        sCompilerSettings2003[12] := 'e';
+
+        // MSVC2005/2008
+        // CompilerOptions position 11
+        sCompilerSettings2008[11] := 'e';
+
+        Inc(I);
+      end
+      else if strEqual('/arch:SSE', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 13
+        sCompilerSettings2003[13] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 13
+        sCompilerSettings2008[13] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/arch:SSE2', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 13
+        sCompilerSettings2003[13] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 13
+        sCompilerSettings2008[13] := 'a';
+
+        Inc(I);
+      end
+      else if strEqual('/EHs', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 14
+        sCompilerSettings2003[14] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 14
+        sCompilerSettings2008[14] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/EHa', Options[I]) then begin
+
+       // I think /GX and /EHa are the same
+      // http://msdn.microsoft.com/en-us/library/d42ws1f6.aspx
+
+       // MingW gcc
+       // sCompiler := sCompiler + '-fexceptions ';
+       // CompilerOptions position 7
+        sCompilerSettings[7] := '1';
+
+
+        // MSVC6/2003
+        // CompilerOptions position 14
+        sCompilerSettings2003[14] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 14
+        sCompilerSettings2008[14] := 'a';
+
+        Inc(I);
+      end
+      else if strEqual('/Gh', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 15
+        sCompilerSettings2003[15] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 15
+        sCompilerSettings2008[15] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/GH', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 16
+        sCompilerSettings2003[16] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 16
+        sCompilerSettings2008[16] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/GR', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 17
+        sCompilerSettings2003[17] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 17
+        sCompilerSettings2008[17] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/Gm', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 18
+        sCompilerSettings2003[18] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 18
+        sCompilerSettings2008[18] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/GL', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 19
+        sCompilerSettings2003[19] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 19
+        sCompilerSettings2008[19] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/EHc', Options[I]) then begin 
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 20
+        sCompilerSettings2003[20] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 20
+        sCompilerSettings2008[20] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/Gy', Options[I]) then begin 
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 21
+        sCompilerSettings2003[21] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 21
+        sCompilerSettings2008[21] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/GT', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 22
+        sCompilerSettings2003[22] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 22
+        sCompilerSettings2008[22] := '1';
+
+        Inc(I);
+      end
+       else if strEqual('/Ge', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 23
+        sCompilerSettings2003[23] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 23
+        sCompilerSettings2008[23] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/GS', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 23
+        sCompilerSettings2003[23] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 23
+        sCompilerSettings2008[23] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/RTCc', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 24
+        sCompilerSettings2003[24] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 24
+        sCompilerSettings2008[24] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/RTCs', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 25
+        sCompilerSettings2003[25] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 25
+        sCompilerSettings2008[25] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/RTCu', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 25
+        sCompilerSettings2003[25] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 25
+        sCompilerSettings2008[25] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/Zi', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 27
+        sCompilerSettings2003[27] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 27
+        sCompilerSettings2008[27] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/ZI', Options[I])then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 27
+        sCompilerSettings2003[27] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 27
+        sCompilerSettings2008[27] := 'a';
+
+        Inc(I);
+      end
+      else if strEqual('/Z7', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 27
+        sCompilerSettings2003[27] := 'b';
+
+        // MSVC2005/2008
+        // CompilerOptions position 27
+        sCompilerSettings2008[27] := 'b';
+
+        Inc(I);
+      end
+      else if strEqual('/Zd', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 27
+        sCompilerSettings2003[27] := 'c';
+
+        // MSVC2005/2008
+        // CompilerOptions position 27
+        sCompilerSettings2008[27] := 'c';
+
+        Inc(I);
+      end
+      else if strEqual('/Zl', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 28
+        sCompilerSettings2003[28] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 28
+        sCompilerSettings2008[28] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/Zg', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 29
+        sCompilerSettings2003[29] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 29
+        sCompilerSettings2008[29] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/openmp', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 30
+        sCompilerSettings2003[30] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 30
+        sCompilerSettings2008[30] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/Zc:forScope', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 31
+        sCompilerSettings2003[31] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 31
+        sCompilerSettings2008[31] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/Zc:wchar_t', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 32
+        sCompilerSettings2003[32] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 32
+        sCompilerSettings2008[32] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/WX', Options[I]) then begin // warnings as errors
+
+        // MingW gcc
+        sCompiler := sCompiler + '-Werror' + '_@@_';
+
+        // MSVC6/2003
+        // CompilerOptions position 36
+        sCompilerSettings2003[36] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 33
+        sCompilerSettings2008[33] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/W1', Options[I]) or
+        strEqual('/W2', Options[I]) or
+        strEqual('/W3', Options[I]) then
+        begin // warning messages
+
+        // MingW gcc
+        sCompiler := sCompiler + '-W' + '_@@_';
+
+        // MSVC6/2003
+        // CompilerOptions position 37
+        if strEqual('/W2', Options[I]) then
+           sCompilerSettings2003[37] := '1';
+
+        if strEqual('/W3', Options[I]) then
+           sCompilerSettings2003[37] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 34
+        if strEqual('/W2', Options[I]) then
+           sCompilerSettings2008[34] := '1';
+
+        if strEqual('/W3', Options[I])  then
+           sCompilerSettings2008[34] := 'a';
+
+        Inc(I);
+      end
+      else if strEqual('/W4', Options[I]) then begin // all warning messages
+
+        // MingW gcc
+        sCompiler := sCompiler + '-Wall' + '_@@_';
+
+        // MSVC6/2003
+        // CompilerOptions position 37
+        sCompilerSettings2003[37] := 'b';
+
+        // MSVC2005/2008
+        // CompilerOptions position 34
+        sCompilerSettings2008[34] := 'b';
+
+        Inc(I);
+      end
+      else if strEqual('/Wp64', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 35
+        sCompilerSettings2003[35] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 35
+        sCompilerSettings2008[35] := '1';
+
+        Inc(I);
+      end
+      else if strEqual('/INCREMENTAL:NO', Options[I]) then begin
+
+        // MingW gcc
+       // Do nothing
+
+        // MSVC6/2003
+        // CompilerOptions position 36
+        sCompilerSettings2003[36] := '1';
+
+        // MSVC2005/2008
+        // CompilerOptions position 36
+        sCompilerSettings2008[36] := '1';
+
+        Inc(I);
+      end
+      // /D = Defines a preprocessing symbol for your source file.
+      else if strEqual('/D', Options[I]) then begin
+        // MingW gcc
+        S := Format('-D%s', [AnsiDequotedStr(Options[I + 1], '"')]);
+        sCompiler := sCompiler + S + '_@@_';
+
+        // MSVC6/2003
+        S := Format('/D %s', [Options[I + 1]]);
+        sCompiler2003 := sCompiler2003 + S + '_@@_';
+
+        // MSVC2005/2008
+        S := Format('/D%s', [AnsiDequotedStr(Options[I + 1], '"')]);
+        sCompiler2008 := sCompiler2008 + S + '_@@_';
+
+        Inc(I); Inc(I);
+      end
+      else if strEqual('/U', Options[I]) then begin
+
+        S := Format('-U%s', [Options[I + 1]]);
+        sCompiler := sCompiler + S + '_@@_';
+
+        // MSVC6/2003
+        S := Format('/U %s', [Options[I + 1]]);
+        sCompiler2003 := sCompiler2003 + S + '_@@_';
+
+        // MSVC2005/2008
+        S := Format('/U %s', [Options[I + 1]]);
+        sCompiler2008 := sCompiler2008 + S + '_@@_';
+
+        Inc(I); Inc(I);
+      end
+      else if strEqual('/I', Options[I]) then begin
+
+        // MingW gcc  +   MSVC2005/2008
+        sDirs := sDirs + Options[I+1] + ';';
+        sDirs2003 := sDirs2003 + Options[I+1] + ';';
+        sDirs2008 := sDirs2008 + Options[I+1] + ';';
+
+        Inc(I); Inc(I);
+      end
+      else if strEqual('/Ob0', Options[I]) then begin // disable inline expansion
+
+        // MingW gcc
+        sCompiler := sCompiler + '-fno-inline' + '_@@_';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+      end
+      else if strEqual('/Ob2', Options[I]) then begin // auto inline function expansion
+
+        // MingW gcc
+        sCompiler := sCompiler + '-finline-functions' + '_@@_';
+
+         // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+         // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+      end
+      else if strEqual('/G4', Options[I]) then begin // 486 optimization
+
+        // MingW gcc
+        //sCompiler := sCompiler + '-mcpu=i486 -D_M_IX86=400 ';
+        // CompilerOptions position 21
+        sCompilerSettings[21] := '2';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+      end
+      else if strEqual('/G3', Options[I]) then begin // 386 optimization
+
+        // MingW gcc
+        //sCompiler := sCompiler + '-mcpu=i386 -D_M_IX86=300 ';
+        // CompilerOptions position 21
+        sCompilerSettings[21] := '1';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+      end
+      else if strEqual('/Zp1', Options[I]) then begin // pack structures
+
+        // MingW gcc
+        sCompiler := sCompiler + '-fpack-struct' + '_@@_';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+      end
+      else if strEqual('/W0', Options[I]) then begin // no warning messages
+
+        // MingW gcc
+        sCompiler := sCompiler + '-w' + '_@@_';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+        end
+      else if strEqual('/c', Options[I]) then begin // compile only
+
+        // MingW gcc
+        sCompiler := sCompiler + '-c' + '_@@_';
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+        end
+      else if strEqual('/nologo', Options[I]) then begin
+
+        // MingW gcc
+        // Do nothing
+
+        // MSVC6/2003
+        sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+
+        Inc(I);
+        end
+      else     // No idea what to do with this so let's just send it as is
+         begin
+
+           if (Length(strTrim(Options[I])) > 0) then
+           begin
+                sCompiler := sCompiler + Options[I] + '_@@_';
+                sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
+                sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
+           end ;
+           Inc(I);
+
+         end
     end;
-    end;
+
+    // MingW gcc
     WriteDev('Profile1', 'Compiler', sCompiler);
     WriteDev('Profile1', 'CppCompiler', sCompiler);
+
+    WriteDev('Profile1', 'CompilerSettings', sCompilerSettings);
+
     if sDirs <> '' then
       sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
 
     WriteDev('Profile1', 'Includes', sDirs);
 
+    // MSVC6/MSVC2003
+    WriteDev('Profile2', 'Compiler', sCompiler2003);
+    WriteDev('Profile2', 'CppCompiler', sCompiler2003);
+
+    WriteDev('Profile2', 'CompilerSettings', sCompilerSettings2003);
+
+    if sDirs2003 <> '' then
+      sDirs2003 := Copy(sDirs2003, 1, Length(sDirs2003) - 1);
+
+    WriteDev('Profile2', 'Includes', sDirs2003);
+
+    // MSVC2005/MSVC2008
+    WriteDev('Profile3', 'Compiler', sCompiler2008);
+    WriteDev('Profile3', 'CppCompiler', sCompiler2008);
+
+    WriteDev('Profile3', 'CompilerSettings', sCompilerSettings2008);
+
+    if sDirs2008 <> '' then
+      sDirs2008 := Copy(sDirs2008, 1, Length(sDirs2008) - 1);
+
+    WriteDev('Profile3', 'Includes', sDirs2008);
+
   finally
     Options.Free;
+    Options_temp.Free;
   end;
 end;
 
@@ -322,58 +1366,153 @@ function TImportMSVCForm.ReadLinkerOptions(StartAt,
   EndAt: integer): boolean;
 var
   I: integer;
-  Options: TStringList;
-  sLibs: string;
-  sDirs: string;
-  S: string;
+  inQuotes : boolean;
+  Options, Options_temp: TStringList;
+  sLibs, sLibs2003, sLibs2008 : string;
+  sDirs, sDirs2003, sDirs2008 : string;
+  S, Stemp: string;
 begin
   Result := False;
-  sLibs := '';
-  sDirs := '';
+  sLibs := '';  sLibs2003 := ''; sLibs2008 := '';
+  sDirs := '';  sDirs2003 := ''; sDirs2008 := '';
   Options := TStringList.Create;
+  Options_temp := TStringList.Create;
   try
-    Options.Delimiter := ' ';
-    Options.DelimitedText := GetLineValue(StartAt, EndAt, '# ADD LINK32');
-    for I := 0 to Options.Count - 1 do
-      if (Length(Options[I]) > 0) then begin
-      if (Options[I][1] <> '/') and AnsiEndsText('.lib', Options[I]) then begin
+
+    S := GetLineValue(StartAt, EndAt, '# ADD LINK32');
+
+    // Use the spaces to Tokenize the linker options
+    strTokenToStrings(S, ' ', Options_temp);
+
+    // Let's re-parse our space-delimited list.
+    // There may be some double quotes in the options list
+    // Spaces can be contained within double quotes so let's
+    // recombine items that are within double quotes to correct
+    // that tokenizing error.  Also, let's remove any blank
+    // options
+    inQuotes := false;
+    Stemp := '';
+    for I := 0 to (Options_temp.Count - 1) do
+    begin
+        if (inQuotes) then
+        begin
+             if AnsiContainsText(Options_temp[I], '"') then
+             begin
+                inQuotes := false;
+                Stemp := Stemp + ' ' + Options_temp[I];
+                Options.Add(Stemp);
+             end
+             else
+                Stemp := Stemp + ' ' + Options_temp[I];
+
+        end
+        else
+        begin
+            // If there's only one double quote, then we're at the
+            //   start of a string. Continue parsing until the next
+            //   double quote. If there's 2 double quotes, then
+            //   we don't need to keep parsing.
+            if (StrTokenCount(Options_temp[I], '"') = 1) then
+             begin
+                inQuotes := true;
+                Stemp := Options_temp[I];
+             end
+            else if (Length(strTrim(Options_temp[I])) > 0) then
+             begin
+                Options.Add(Options_temp[I]);
+             end
+        end
+
+    end;
+
+    for I := 0 to (Options.Count - 1) do
+    begin
+     //ShowMessage('Linker: ' + Options[I]);
+
+      if AnsiEndsText('.lib', Options[I]) then
+      begin
+        // MingW gcc
         S := Copy(Options[I], 1, Length(Options[I]) - 4);
         if ExtractFilePath(S) <> '' then
           sDirs := sDirs + ExtractFilePath(S) + ';';
-        S := Format('-l%s ', [ExtractFileName(S)]);
-        sLibs := sLibs + S;
+        S := Format('-l%s', [ExtractFileName(S)]);
+        sLibs := sLibs + S + '_@@_';
+
+        sLibs2003 := sLibs2003 + Options[I] + '_@@_';
+        sLibs2008 := sLibs2008 + Options[I] + '_@@_';
+
       end
       else if AnsiStartsText('/base:', Options[I]) then begin
-        S := Copy(Options[I], 7, MaxInt);
-        sLibs := sLibs + '--image-base ' + S + ' ';
+        S := Copy(Options[I], Length('/base:') + 1, MaxInt);
+        sLibs := sLibs + '--image-base ' + S + '_@@_';
+        sLibs2003 := sLibs2003 + Options[I] + '_@@_';
+        sLibs2008 := sLibs2008 + Options[I] + '_@@_';
       end
       else if AnsiStartsText('/implib:', Options[I]) then begin
-        S := Copy(Options[I], 9, MaxInt);
-        sLibs := sLibs + '--implib ' + S + ' ';
+        S := Copy(Options[I], Length('/implib:') + 1, MaxInt);
+        sLibs := sLibs + '--implib ' + S + '_@@_';
+        sLibs2003 := sLibs2003 + Options[I] + '_@@_';
+        sLibs2008 := sLibs2008 + Options[I] + '_@@_';
       end
       else if AnsiStartsText('/map:', Options[I]) then begin
-        S := Copy(Options[I], 6, MaxInt);
-        sLibs := sLibs + '-Map ' + S + '.map ';
+        S := Copy(Options[I], Length('/map:') + 1, MaxInt);
+        sLibs := sLibs + '-Map ' + S + '.map';
+        sLibs2003 := sLibs2003 + Options[I] + '_@@_';
+        sLibs2008 := sLibs2008 + Options[I] + '_@@_';
       end
       else if AnsiStartsText('/subsystem:', Options[I]) then begin
-        S := Copy(Options[I], 12, MaxInt);
-        if S = 'windows' then
-          WriteDev('Profile1', 'Type', '0') // win32 gui
+        S := Copy(Options[I], Length('/subsystem:') + 1, MaxInt);
+        if S = 'windows' then begin
+          WriteDev('Profile1', 'Type', '0'); // win32 gui
+          WriteDev('Profile2', 'Type', '0'); // win32 gui
+          WriteDev('Profile3', 'Type', '0'); // win32 gui
+          end
         else if S = 'console' then
+        begin
           WriteDev('Profile1', 'Type', '1'); // console app
+          WriteDev('Profile2', 'Type', '1'); // console app
+          WriteDev('Profile3', 'Type', '1'); // console app
+        end
         //        sLibs := sLibs + '-Wl --subsystem ' + S + ' ';
       end
       else if AnsiStartsText('/libpath:', Options[I]) then begin
-        S := Copy(Options[I], 10, MaxInt);
+        S := Copy(Options[I], Length('/libpath:') + 1, MaxInt);
         sDirs := sDirs + S + ';';
+        sDirs2003 := sDirs2003 + S + ';';
+        sDirs2008 := sDirs2008 + S + ';';
+      end
+      else if strEqual('/nologo', Options[I]) then begin
+
+        // MingW gcc
+        // Do nothing
+
+        // MSVC6/2003
+        sLibs2003 := sLibs2003 + Options[I] + '_@@_';
+
+        // MSVC2005/2008
+        sLibs2008 := sLibs2008 + Options[I] + '_@@_';
+
+        end
+      else
+      begin
+        S := strTrim(Options[I]);
+        sLibs := sLibs + S + '_@@_';
+        sLibs2003 := sLibs2003 + Options[I] + '_@@_';
+        sLibs2008 := sLibs2008 + Options[I] + '_@@_';
       end;
     end;
+
     WriteDev('Profile1', 'Linker', sLibs);
+    WriteDev('Profile2', 'Linker', sLibs2003);
+    WriteDev('Profile3', 'Linker', sLibs2008);
     if sDirs <> '' then
       sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
     WriteDev('Profile1', 'Libs', sDirs);
+    WriteDev('Profile2', 'Libs', sDirs2003);
+    WriteDev('Profile3', 'Libs', sDirs2008);
   finally
     Options.Free;
+    Options_temp.Free;
   end;
 end;
 
@@ -499,8 +1638,27 @@ procedure TImportMSVCForm.WriteDefaultEntries;
 begin
   WriteDev('Project', 'Ver', '3');
   WriteDev('Project', 'IsCpp', '1'); // all MSVC projects are C++ (correct me if I 'm wrong)
-  WriteDev('Project', 'ProfilesCount', '1');
+  WriteDev('Project', 'ProfilesCount', '3');
   WriteDev('Project', 'ProfileIndex', '0');
+
+  WriteDev('Profile1', 'ProfileName', 'MingW 3.4.5');
+  WriteDev('Profile1', 'ExeOutput', 'Output\MingW');
+  WriteDev('Profile1', 'ObjectOutput', 'Objects\MingW');
+  WriteDev('Profile1', 'CompilerSet', '0');
+  WriteDev('Profile1', 'CompilerType', '0');
+
+  WriteDev('Profile2', 'ProfileName', 'Visual C++ 2005');
+  WriteDev('Profile2', 'ExeOutput', 'Output\Visual C++ 2005');
+  WriteDev('Profile2', 'ObjectOutput', 'Objects\Visual C++ 2005');
+  WriteDev('Profile2', 'CompilerSet', '1');
+  WriteDev('Profile2', 'CompilerType', '1');
+
+  WriteDev('Profile3', 'ProfileName', 'Visual C++ 2008');
+  WriteDev('Profile3', 'ExeOutput', 'Output\Visual C++ 2008');
+  WriteDev('Profile3', 'ObjectOutput', 'Objects\Visual C++ 2008');
+  WriteDev('Profile3', 'CompilerSet', '5');
+  WriteDev('Profile3', 'CompilerType', '5');
+
 end;
 
 procedure TImportMSVCForm.WriteDev(Section, Key, Value: string);
@@ -527,8 +1685,8 @@ begin
     DeleteFile(fFilename);
   end;
 
+  Screen.Cursor := crHourGlass;
   btnImport.Enabled := false;
-  Cursor := crHourGlass;
 
   SetFilename(fFilename);
   SetDevName(StringReplace(ExtractFileName(fFilename), DEV_EXT, '', []));
@@ -559,7 +1717,7 @@ begin
     Close;
 
   btnImport.Enabled := true;
-  Cursor := crDefault;
+  Screen.Cursor := crDefault;
 
 end;
 

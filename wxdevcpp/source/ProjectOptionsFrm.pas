@@ -1241,13 +1241,13 @@ end;
 
 procedure TfrmProjectOptions.btnOkClick(Sender: TObject);
 begin
+  Screen.Cursor := crHourGlass;
   btnOk.Enabled := false;
-  Cursor := crHourGlass;
 
   SaveDirSettings;
   UpdateCurrentProfileDataFromUI;
 
-  Cursor := crDefault;
+  Screen.Cursor := crDefault;
   btnOk.Enabled := true;
 
 end;

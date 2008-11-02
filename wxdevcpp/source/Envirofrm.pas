@@ -283,8 +283,8 @@ var
   s: string;
 begin
 
+  Screen.Cursor := crHourGlass;
   btnOk.Enabled := false;
-  Cursor := crHourGlass;
 
   if chkAltConfig.Enabled then begin
     if UseAltConfigFile <> chkAltConfig.Checked then

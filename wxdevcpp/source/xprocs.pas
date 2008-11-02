@@ -679,8 +679,8 @@ begin
     I := Pos(Seperator, S);
     if I <> 0 then
     begin
-        Result := System.Copy(S, 1, I - 1);
-        System.Delete(S, 1, I);
+        Result := Copy(S, 1, I - 1);  //System.Copy(S, 1, I - 1);
+        Delete(S, 1, I);  //System.Delete(S, 1, I);
     end
     else
     begin
@@ -690,13 +690,24 @@ begin
 end;
 
 function strTokenCount(S: string; Seperator: Char): Integer;
+var
+    Scopy : string;
+    I, Count : Integer;
 begin
-    Result := 0;
-    while S <> '' do
-    begin { 29.10.96 sb }
-        StrToken(S, Seperator);
-        Inc(Result);
-    end;
+
+   Scopy := S;
+   Count := 0;
+
+   I := Pos(Seperator, Scopy);
+   while I <> 0 do
+   begin
+      Count := Count + 1;
+      Delete(Scopy, 1, I + Length(Seperator) - 1);
+      I := Pos(Seperator, Scopy);
+   end;
+
+   Result := Count;
+
 end;
 
 function strTokenAt(const S: string; Seperator: Char; At: Integer): string;
@@ -718,15 +729,23 @@ end;
 
 procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 var
-    Token: string;
+    Scopy : string;
+    I : Integer;
 begin
    List.Clear;
-    Token := strToken(S, Seperator);
-    while Token <> '' do
-    begin
-        List.Add(Token);
-        Token := strToken(S, Seperator);
-    end;
+
+   Scopy := S;
+
+   I := Pos(Seperator, Scopy);
+   while I <> 0 do
+   begin
+      List.Add(Copy(Scopy, 1, I-1));
+      Delete(Scopy, 1, I + Length(Seperator) - 1);
+      I := Pos(Seperator, Scopy);
+   end;
+
+   List.Add(SCopy);
+
 end;
 
 function strTokenFromStrings(Seperator: Char; List: TStrings): string;
