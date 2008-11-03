@@ -240,7 +240,7 @@ begin
 
     S := GetLineValue(StartAt, EndAt, '# ADD CPP');
 
-       // Use the spaces to Tokenize the linker options
+    // Use the spaces to Tokenize the linker options
     strTokenToStrings(S, ' ', Options_temp);
 
     // Let's re-parse our space-delimited list.
@@ -253,6 +253,7 @@ begin
     Stemp := '';
     for I := 0 to (Options_temp.Count - 1) do
     begin
+
        if (inQuotes) then
         begin
              if AnsiContainsText(Options_temp[I], '"') then
@@ -283,6 +284,11 @@ begin
         end
 
     end;
+
+    // If we ended within a double quotes, then let's add whatever
+    //   was leftover.
+    if (inQuotes) then
+       Options.Add(Stemp);
 
     I := 0;
 
@@ -1165,6 +1171,35 @@ begin
       end
       // /D = Defines a preprocessing symbol for your source file.
       else if strEqual('/D', Options[I]) then begin
+
+        // The format should be /D "option". However, let's just
+        // check to make sure that the .dsp file somehow didn't
+        // use the space.
+        if AnsiStartsStr('/', Options[I + 1]) then
+        begin
+        // Next token is another option.
+        Stemp := Options[I];
+        Delete(Stemp, 1, 2); // Delete the /D
+
+        // MingW gcc
+        S := Format('-D%s', [AnsiDequotedStr(Stemp, '"')]);
+        sCompiler := sCompiler + S + '_@@_';
+
+        // MSVC6/2003
+        S := Format('/D%s', [Stemp]);
+        sCompiler2003 := sCompiler2003 + S + '_@@_';
+
+        // MSVC2005/2008
+        S := Format('/D%s', [AnsiDequotedStr(Stemp, '"')]);
+        sCompiler2008 := sCompiler2008 + S + '_@@_';
+
+        Inc(I);
+
+        end
+        else
+        begin
+        // Next token is the value for this option
+
         // MingW gcc
         S := Format('-D%s', [AnsiDequotedStr(Options[I + 1], '"')]);
         sCompiler := sCompiler + S + '_@@_';
@@ -1178,8 +1213,37 @@ begin
         sCompiler2008 := sCompiler2008 + S + '_@@_';
 
         Inc(I); Inc(I);
+
+        end;
+
       end
       else if strEqual('/U', Options[I]) then begin
+
+       // The format should be /D "option". However, let's just
+        // check to make sure that the .dsp file somehow didn't
+        // use the space.
+        if AnsiStartsStr('/', Options[I + 1]) then
+        begin
+         // Next token is another option.
+        Stemp := Options[I];
+        Delete(Stemp, 1, 2); // Delete the /D
+
+        S := Format('-U%s', [Stemp]);
+        sCompiler := sCompiler + S + '_@@_';
+
+        // MSVC6/2003
+        S := Format('/U %s', [Stemp]);
+        sCompiler2003 := sCompiler2003 + S + '_@@_';
+
+        // MSVC2005/2008
+        S := Format('/U %s', [Stemp]);
+        sCompiler2008 := sCompiler2008 + S + '_@@_';
+
+        Inc(I);
+
+        end
+        else
+        begin
 
         S := Format('-U%s', [Options[I + 1]]);
         sCompiler := sCompiler + S + '_@@_';
@@ -1193,6 +1257,9 @@ begin
         sCompiler2008 := sCompiler2008 + S + '_@@_';
 
         Inc(I); Inc(I);
+
+        end
+
       end
       else if strEqual('/I', Options[I]) then begin
 
@@ -1374,14 +1441,16 @@ var
   sDirs, sDirs2003, sDirs2008 : string;
   S, Stemp: string;
 begin
+
   Result := False;
   sLibs := '';  sLibs2003 := ''; sLibs2008 := '';
   sDirs := '';  sDirs2003 := ''; sDirs2008 := '';
+
   Options := TStringList.Create;
   Options_temp := TStringList.Create;
   try
 
-    S := GetLineValue(StartAt, EndAt, '# ADD LINK32');
+  S := GetLineValue(StartAt, EndAt, '# ADD LINK32');
 
     // Use the spaces to Tokenize the linker options
     strTokenToStrings(S, ' ', Options_temp);
@@ -1427,6 +1496,11 @@ begin
 
     end;
 
+    // If we ended within a double quotes, then let's add whatever
+    //   was leftover.
+    if (inQuotes) then
+       Options.Add(Stemp);
+       
     for I := 0 to (Options.Count - 1) do
     begin
      //ShowMessage('Linker: ' + Options[I]);

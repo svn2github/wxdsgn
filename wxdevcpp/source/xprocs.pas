@@ -729,23 +729,17 @@ end;
 
 procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 var
-    Scopy : string;
-    I : Integer;
+    Token, Scopy: string;
 begin
    List.Clear;
-
    Scopy := S;
 
-   I := Pos(Seperator, Scopy);
-   while I <> 0 do
-   begin
-      List.Add(Copy(Scopy, 1, I-1));
-      Delete(Scopy, 1, I + Length(Seperator) - 1);
-      I := Pos(Seperator, Scopy);
-   end;
-
-   List.Add(SCopy);
-
+    Token := strToken(Scopy, Seperator);
+    while Token <> '' do
+    begin
+        List.Add(Token);
+        Token := strToken(Scopy, Seperator);
+    end;
 end;
 
 function strTokenFromStrings(Seperator: Char; List: TStrings): string;
