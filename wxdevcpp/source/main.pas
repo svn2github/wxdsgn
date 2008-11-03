@@ -114,6 +114,30 @@ uses
   devShortcuts, StrUtils, devFileMonitor, devMonitorTypes,
   CVSFm, ImageTheme, Types;
 {$ENDIF}
+
+const 
+CLSID_TaskbarList: TGUID = '{56FDF344-FD6D-11d0-958A-006097C9A090}'; 
+type 
+ITaskbarList = interface
+['{56FDF342-FD6D-11d0-958A-006097C9A090}'] 
+{ virtual HRESULT STDMETHODCALLTYPE HrInit( void) = 0;} 
+   function HrInit: HResult; stdcall; 
+{ virtual HRESULT STDMETHODCALLTYPE AddTab( 
+            /* [in] */ HWND hwnd) = 0; } 
+   function AddTab(hwnd: Cardinal): HResult; stdcall; 
+{ virtual HRESULT STDMETHODCALLTYPE DeleteTab( 
+            /* [in] */ HWND hwnd) = 0; } 
+   function DeleteTab(hwnd: Cardinal): HResult; stdcall;
+
+{ virtual HRESULT STDMETHODCALLTYPE ActivateTab( 
+            /* [in] */ HWND hwnd) = 0; } 
+   function ActivateTab(hwnd: Cardinal): HResult; stdcall; 
+
+{ virtual HRESULT STDMETHODCALLTYPE SetActiveAlt( 
+            /* [in] */ HWND hwnd) = 0; } 
+   function SetActiveAlt(hwnd: Cardinal): HResult; stdcall; 
+end;
+
 type
   TMainForm = class(TForm{$IFDEF PLUGIN_BUILD}, iplug{$ENDIF})
     MainMenu: TMainMenu;
@@ -964,6 +988,9 @@ type
     procedure ToDoListMessagesPanelItemClick(Sender: TObject);
     procedure PageControlDrawTab(Control: TCustomTabControl;
       TabIndex: Integer; const Rect: TRect; Active: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
 
 
   private
@@ -1076,6 +1103,7 @@ type
     procedure SetSplashStatus(str: string);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure WMSyscommand(var Message: TWmSysCommand); message WM_SYSCOMMAND;
 
   public
     frmReportDocks: array[0..5] of TForm;
@@ -1086,7 +1114,8 @@ type
     fProject: TProject;
     fDebugger: TDebugger;
     CacheCreated: Boolean;
-    frmProjMgrDock:TForm;
+    frmProjMgrDock: TForm;
+    FTaskbarList: ITaskbarList;
   
 {$IFDEF PLUGIN_BUILD}
     plugins: Array of IPlug_In;
@@ -1174,7 +1203,7 @@ uses
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
-  WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm, devMsgBox
+  WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm, devMsgBox, ComObj
 
 {$IFDEF PLUGIN_BUILD}
   //Our dependencies
@@ -1234,7 +1263,10 @@ type
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  //inherited;
+  inherited CreateParams(Params);
+  Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or
+    WS_EX_APPWINDOW;
   StrCopy(Params.WinClassName, cWindowClassName);
 end;
 
@@ -4220,9 +4252,8 @@ begin
     OldHeight := Height;
     GetWindowPlacement(Self.Handle, @devData.WindowPlacement);
     self.Visible := false;
-    //BorderStyle := bsNone;
 
-    SetWindowLong(self.Handle, GWL_STYLE, WS_BORDER and GetWindowLong(Self.Handle, GWL_STYLE));
+    SetWindowLong(Self.Handle, GWL_STYLE, WS_BORDER and GetWindowLong(Self.Handle, GWL_STYLE));
 
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRBACK];
     ControlBar1.Visible := devData.ShowBars;
@@ -4233,32 +4264,30 @@ begin
     for I := 0 to MainMenu.Items.Count - 1 do
       MainMenu.Items[I].Visible := False;
     Menu := MainMenu; // restore menu
-
     // set size to hide form menu
     //works with multi monitors now.
     SetBounds(
       (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
       (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
       Monitor.Width + (Width - ClientWidth),
-      Monitor.Height + (Height - ClientHeight));  
+      Monitor.Height + (Height - ClientHeight));
       self.Visible := true;
+   self.Visible := true;
   end
   else
   begin
+    self.Visible := false;
     Left := OldLeft;
     Top := OldTop;
     Width := OldWidth;
     Height := OldHeight;
-    self.Visible := false;
     // enable the top-level menus in MainMenu
     // before shown on screen to avoid flickering
     for I := 0 to MainMenu.Items.Count - 1 do
       MainMenu.Items[I].Visible := True;
 
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-    //BorderStyle := bsSizeable;
     SetWindowLong(self.Handle, GWL_STYLE,  WS_TILEDWINDOW or (WS_BORDER xor GetWindowLong(Self.Handle, GWL_STYLE)));
-
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRMODE];
     Controlbar1.Visible := TRUE;
 
@@ -4286,6 +4315,7 @@ var
 begin
   with TCompForm.Create(Self) do
   try
+    // EAB to fix: problem here if changed parent window
 {$IFDEF PLUGIN_BUILD}
     for i := 0 to packagesCount - 1 do
     begin
@@ -9581,6 +9611,43 @@ begin
   end;
 end;
 
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+    FTaskbarList := CreateComObject(CLSID_TaskbarList) as ITaskbarList; 
+    FTaskbarList.HrInit;
+    ShowWindow(Application.Handle, SW_HIDE);
+    SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
+    ShowWindow(Application.Handle, SW_SHOW);
+end;
+
+procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
+begin
+  case (Message.CmdType and $FFF0) of
+    SC_MINIMIZE:
+    begin
+      ShowWindow(Handle, SW_MINIMIZE);
+      Message.Result := 0;
+    end;
+    SC_RESTORE:
+    begin
+      ShowWindow(Handle, SW_RESTORE);
+      Message.Result := 0;
+    end;
+  else
+    inherited;  
+  end;
+end;
+
+procedure TMainForm.FormHide(Sender: TObject);
+begin
+    FTaskbarList.DeleteTab(Handle);
+end;
+
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+    FTaskbarList.ActivateTab(Handle);
+end;
 
 end.
 

@@ -81,6 +81,8 @@ type
   public
     { Public declarations }
     function GetFilename: string;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -1815,6 +1817,18 @@ begin
   //  end;
   //if not Result then
   //  MessageDlg('This file''s version is not one that can be imported...', mtWarning, [mbOK], 0);
+end;
+
+procedure TImportMSVCForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

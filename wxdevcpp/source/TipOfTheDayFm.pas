@@ -67,6 +67,8 @@ type
   public
     { Public declarations }
     property Current: integer read TipsCounter write SetTipsCounter;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -238,6 +240,18 @@ begin
   btnNext.Caption := Lang[ID_TIPS_NEXTTIP];
   btnPrev.Caption := Lang[ID_TIPS_PREVIOUSTIP];
   btnClose.Caption := Lang[ID_BTN_CLOSE];
+end;
+
+procedure TTipOfTheDayForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

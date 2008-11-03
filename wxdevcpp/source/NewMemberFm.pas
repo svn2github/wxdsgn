@@ -66,6 +66,8 @@ type
     procedure LoadText;
   public
     { Public declarations }
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -351,6 +353,18 @@ begin
   chkVirtual.OnClick := chkStaticClick;
   chkPure.OnClick := chkStaticClick;
   chkInline.OnClick := chkStaticClick;
+end;
+
+procedure TNewMemberForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

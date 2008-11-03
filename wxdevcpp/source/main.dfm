@@ -1335,9 +1335,12 @@ object MainForm: TMainForm
   Menu = MainMenu
   OldCreateOrder = False
   Position = poDefault
+  OnActivate = FormActivate
   OnClose = FormClose
   OnContextPopup = FormContextPopup
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
@@ -1411,7 +1414,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 610
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1430,7 +1433,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1485,7 +1488,7 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 385
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
@@ -1496,7 +1499,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 359
-          Height = 98
+          Height = 102
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1525,7 +1528,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 602
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1560,7 +1563,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 602
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1588,7 +1591,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 602
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1691,7 +1694,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 610
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft

@@ -75,6 +75,8 @@ type
     procedure btnUpdateCheckClick(Sender: TObject);
   private
     procedure LoadText;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 implementation
@@ -155,6 +157,18 @@ end;
 procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
 begin
   MainForm.actUpdateCheckExecute(sender);
+end;
+
+procedure TAboutForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

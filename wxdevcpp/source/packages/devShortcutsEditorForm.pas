@@ -60,6 +60,8 @@ type
     function Count: integer;
     property Items[Index: integer]: TMenuItem read GetItem;
     property ShortCuts[Index: integer]: TShortCut read GetShortCut;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -185,6 +187,18 @@ begin
     end;
   end;
   DefaultDraw := True;
+end;
+
+procedure TfrmShortcutsEditor.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

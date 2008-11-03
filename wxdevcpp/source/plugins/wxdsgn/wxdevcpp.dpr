@@ -240,6 +240,7 @@ begin
   Application.Title := 'wxDev-C++';
   Application.HelpFile := '..\Help\devcpp.chm';
   Application.CreateForm(TMainForm, MainForm);
+
   if not devData.NoSplashScreen then
   begin
     SplashForm := TSplashForm.Create(Application);

@@ -77,6 +77,8 @@ type
     { Private declarations }
   public
     { Public declarations }
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -252,6 +254,18 @@ procedure TDesignerForm.FormDestroy(Sender: TObject);
 begin
   XPMenu.Active := false;
   XPMenu.Free;
+end;
+
+procedure TDesignerForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.
