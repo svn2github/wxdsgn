@@ -547,6 +547,7 @@ function TWxButton.GetGenericColor(strVariableName:String): string;
 begin
 
 end;
+
 procedure TWxButton.SetGenericColor(strVariableName,strValue: string);
 begin
 

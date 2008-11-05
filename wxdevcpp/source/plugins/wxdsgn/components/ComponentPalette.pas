@@ -75,7 +75,7 @@ uses
   WxProgressDialog, WxPrintDialog, WxFindReplaceDialog, WxDirDialog, WxColourDialog,
   WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow,
   WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
-  WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog,
+  WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog, wxColourPickerCtrl,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
   WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl;
 
@@ -217,7 +217,7 @@ begin
                        'TwxDatePickerCtrl;TwxSlider;TwxStaticLine;TwxStaticBitmap;' +
                        'TwxStatusBar;TwxCheckListBox;TwxSpinCtrl;TwxRichTextCtrl;' +
                        'TwxCalendarCtrl;TwxOwnerDrawnComboBox;TwxHyperLinkCtrl;' +
-                       'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox');
+                       'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox;TwxColourPickerCtrl');
     //Container controls
     ComponentsList.Add('Containers;TwxPanel;TwxChoicebook;TwxListbook;TwxNotebook;TwxTreebook;' +
                         'TwxToolbook;TwxNotebookPage;TwxGrid;TwxScrolledWindow;TwxHtmlWindow;TwxSplitterWindow');
@@ -251,7 +251,7 @@ begin
                      TWxDirDialog, TWxColourDialog, TWxPageSetupDialog, TwxTimer,
                      TwxTreeListCtrl, TWxRichTextCtrl, TWxStyledTextCtrl, TWxCalendarCtrl,
                      TWxOwnerDrawnComboBox, TWxTextEntryDialog, TWxPasswordEntryDialog,
-                     TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl,
+                     TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl, TWxColourPickerCtrl,
                      TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox]);
 
     //Now that the components have been put into it's respective string lists,

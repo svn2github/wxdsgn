@@ -309,6 +309,10 @@ type
   TWxCBtnDwgStyleSubItem = (wxCUSTBUT_FLAT);
   TWxCBtnDwgStyleSubSet = set of TWxCBtnDwgStyleSubItem;
 
+  //class  	wxColourPickerCtrl
+  TWxClrPickCtrlStyleItem = (wxCLRP_DEFAULT_STYLE, wxCLRP_USE_TEXTCTRL, wxCLRP_SHOW_LABEL);
+  TWxClrPickCtrlStyleSet = set of TWxClrPickCtrlStyleItem;
+
   //newly Added
   TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
   TWxCmbStyleSet = set of TWxCmbStyleItem;
