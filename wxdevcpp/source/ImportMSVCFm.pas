@@ -218,21 +218,25 @@ var
   sCompiler, sCompiler2003, sCompiler2008: string;
   sCompilerSettings, sCompilerSettings2003, sCompilerSettings2008 : string;
   sDirs, sDirs2003, sDirs2008: string;
+  sPreProc, sPreProc2003, sPreProc2008: string;
   S, Stemp: string;
 begin
   Result := False;
 
-  sCompiler := '-D__GNUWIN32__' + '_@@_';
+  sCompiler := ''; 
   sDirs := '';
   sCompilerSettings := '0000000000000000000000';
+  sPreProc := '__GNUWIN32__' + '_@@_';
 
   sCompiler2003 := '';
   sDirs2003 := '';
   sCompilerSettings2003 := '0000000000000000000000000000000000000000';
-                            
+  sPreProc2003 := '';
+
   sCompiler2008 := '';
   sDirs2008 := '';
   sCompilerSettings2008 := '000000000000000000000000000000000000';
+  sPreProc2008 := '';
 
   Options := TStringList.Create;
   Options_temp := TStringList.Create;
@@ -843,6 +847,24 @@ begin
 
         Inc(I);
       end
+       else if strEqual('/EHsc', Options[I]) then begin
+
+        // MingW gcc
+       // sCompiler := sCompiler + '-fexceptions ';
+       // CompilerOptions position 7
+        sCompilerSettings[7] := '1';
+
+
+        // MSVC6/2003
+        // CompilerOptions position 14
+        sCompilerSettings2003[14] := 'a';
+
+        // MSVC2005/2008
+        // CompilerOptions position 14
+        sCompilerSettings2008[14] := 'a';
+
+        Inc(I);
+      end
        else if strEqual('/Gy', Options[I]) then begin 
 
         // MingW gcc
@@ -1170,7 +1192,8 @@ begin
         Inc(I);
       end
       // /D = Defines a preprocessing symbol for your source file.
-      else if strEqual('/D', Options[I]) then begin
+      else if strEqual('/D', Options[I]) or
+          strEqual('/d', Options[I]) then begin
 
         // The format should be /D "option". However, let's just
         // check to make sure that the .dsp file somehow didn't
@@ -1181,17 +1204,22 @@ begin
         Stemp := Options[I];
         Delete(Stemp, 1, 2); // Delete the /D
 
+         if (Length(strTrim(Stemp)) > 0) then
+        begin
+
         // MingW gcc
-        S := Format('-D%s', [AnsiDequotedStr(Stemp, '"')]);
-        sCompiler := sCompiler + S + '_@@_';
+        S := Format('%s', [AnsiDequotedStr(Stemp, '"')]);
+        sPreProc := sPreProc + S + '_@@_';
 
         // MSVC6/2003
-        S := Format('/D%s', [Stemp]);
-        sCompiler2003 := sCompiler2003 + S + '_@@_';
+        S := Format('%s', [Stemp]);
+        sPreProc2003 := sPreProc2003 + S + '_@@_';
 
         // MSVC2005/2008
-        S := Format('/D%s', [AnsiDequotedStr(Stemp, '"')]);
-        sCompiler2008 := sCompiler2008 + S + '_@@_';
+        S := Format('%s', [AnsiDequotedStr(Stemp, '"')]);
+        sPreProc2008 := sPreProc2008 + S + '_@@_';
+
+        end;
 
         Inc(I);
 
@@ -1201,16 +1229,16 @@ begin
         // Next token is the value for this option
 
         // MingW gcc
-        S := Format('-D%s', [AnsiDequotedStr(Options[I + 1], '"')]);
-        sCompiler := sCompiler + S + '_@@_';
+        S := Format('%s', [AnsiDequotedStr(Options[I + 1], '"')]);
+        sPreProc := sPreProc + S + '_@@_';
 
         // MSVC6/2003
-        S := Format('/D %s', [Options[I + 1]]);
-        sCompiler2003 := sCompiler2003 + S + '_@@_';
+        S := Format('%s', [Options[I + 1]]);
+        sPreProc2003 := sPreProc2003 + S + '_@@_';
 
         // MSVC2005/2008
-        S := Format('/D%s', [AnsiDequotedStr(Options[I + 1], '"')]);
-        sCompiler2008 := sCompiler2008 + S + '_@@_';
+        S := Format('%s', [AnsiDequotedStr(Options[I + 1], '"')]);
+        sPreProc2008 := sPreProc2008 + S + '_@@_';
 
         Inc(I); Inc(I);
 
@@ -1219,14 +1247,17 @@ begin
       end
       else if strEqual('/U', Options[I]) then begin
 
-       // The format should be /D "option". However, let's just
+       // The format should be /U "option". However, let's just
         // check to make sure that the .dsp file somehow didn't
         // use the space.
         if AnsiStartsStr('/', Options[I + 1]) then
         begin
          // Next token is another option.
         Stemp := Options[I];
-        Delete(Stemp, 1, 2); // Delete the /D
+        Delete(Stemp, 1, 2); // Delete the /U
+
+         if (Length(strTrim(Stemp)) > 0) then
+        begin
 
         S := Format('-U%s', [Stemp]);
         sCompiler := sCompiler + S + '_@@_';
@@ -1238,6 +1269,8 @@ begin
         // MSVC2005/2008
         S := Format('/U %s', [Stemp]);
         sCompiler2008 := sCompiler2008 + S + '_@@_';
+
+        end;
 
         Inc(I);
 
@@ -1261,14 +1294,40 @@ begin
         end
 
       end
-      else if strEqual('/I', Options[I]) then begin
+      else if strEqual('/I', Options[I]) or strEqual('/i', Options[I]) then begin
+
+         // The format should be /I "option". However, let's just
+        // check to make sure that the .dsp file somehow didn't
+        // use the space.
+        if AnsiStartsStr('/', Options[I + 1]) then
+        begin
+         // Next token is another option.
+        Stemp := Options[I];
+        Delete(Stemp, 1, 2); // Delete the /I
+
+        if (Length(strTrim(Stemp)) > 0) then
+        begin
 
         // MingW gcc  +   MSVC2005/2008
+        sDirs := sDirs + Stemp + ';';
+        sDirs2003 := sDirs2003 + Stemp + ';';
+        sDirs2008 := sDirs2008 + Stemp + ';';
+
+        end;
+
+        Inc(I);
+
+        end
+        else
+        begin
+
+         // MingW gcc  +   MSVC2005/2008
         sDirs := sDirs + Options[I+1] + ';';
         sDirs2003 := sDirs2003 + Options[I+1] + ';';
         sDirs2008 := sDirs2008 + Options[I+1] + ';';
 
         Inc(I); Inc(I);
+        end
       end
       else if strEqual('/Ob0', Options[I]) then begin // disable inline expansion
 
@@ -1397,6 +1456,7 @@ begin
     WriteDev('Profile1', 'CppCompiler', sCompiler);
 
     WriteDev('Profile1', 'CompilerSettings', sCompilerSettings);
+    WriteDev('Profile1', 'PreprocDefines', sPreProc);
 
     if sDirs <> '' then
       sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
@@ -1409,6 +1469,8 @@ begin
 
     WriteDev('Profile2', 'CompilerSettings', sCompilerSettings2003);
 
+    WriteDev('Profile2', 'PreprocDefines', sPreProc2003);
+    
     if sDirs2003 <> '' then
       sDirs2003 := Copy(sDirs2003, 1, Length(sDirs2003) - 1);
 
@@ -1419,6 +1481,7 @@ begin
     WriteDev('Profile3', 'CppCompiler', sCompiler2008);
 
     WriteDev('Profile3', 'CompilerSettings', sCompilerSettings2008);
+    WriteDev('Profile3', 'PreprocDefines', sPreProc2008);
 
     if sDirs2008 <> '' then
       sDirs2008 := Copy(sDirs2008, 1, Length(sDirs2008) - 1);
