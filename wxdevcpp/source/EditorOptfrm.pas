@@ -245,8 +245,6 @@ type
     procedure FillSyntaxSets;
     procedure FillCCC;
     function CompactFilename(filename: string): string;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -1826,18 +1824,6 @@ end;
 procedure TEditorOptForm.seTabSizeChange(Sender: TObject);
 begin
   CppEdit.TabWidth := seTabSize.Value;
-end;
-
-procedure TEditorOptForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited;
-  if (Parent <> nil) or (ParentWindow <> 0) then
-    Exit;  // must not mess with wndparent if form is embedded
-
-  if Assigned(Owner) and (Owner is TWincontrol) then
-    Params.WndParent := TWinControl(Owner).handle
-  else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

@@ -89,8 +89,6 @@ type
     property FindAll: boolean read fFindAll write fFindAll;
     property FindWhat: TLookIn read GetFindWhat;
     property Regex: boolean read fRegex write fRegex;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -287,18 +285,6 @@ begin
   else
     cboFindText.SelStart := selStart + Length(Text);
   cboFindText.SelLength := 0;
-end;
-
-procedure TfrmFind.CreateParams(var Params: TCreateParams);
-begin
-  inherited;
-  if (Parent <> nil) or (ParentWindow <> 0) then
-    Exit;  // must not mess with wndparent if form is embedded
-
-  if Assigned(Owner) and (Owner is TWincontrol) then
-    Params.WndParent := TWinControl(Owner).handle
-  else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

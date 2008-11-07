@@ -1014,6 +1014,8 @@ type
     BottomDockTabs: TJvDockTabHostForm;
 
     themeManager: TThemeManager;
+    modalState: Boolean;
+    modalChild: HWND;
 
     function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
     procedure AddFindOutputItem(line, col, unit_, message: string);
@@ -1100,10 +1102,12 @@ type
   private
     procedure UMEnsureRestored(var Msg: TMessage); message UM_ENSURERESTORED;
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
-    procedure SetSplashStatus(str: string);
+    procedure SetSplashStatus(str: string);    
+    function ForceForeground(AppHandle:HWND): boolean;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMSyscommand(var Message: TWmSysCommand); message WM_SYSCOMMAND;
+    procedure WMActivate(var Msg: TWMActivate); message WM_Activate;
 
   public
     frmReportDocks: array[0..5] of TForm;
@@ -1260,6 +1264,67 @@ type
     Description: string;
     IsDone: boolean;
   end;
+
+function TMainForm.ForceForeground(AppHandle:HWND): boolean;
+const
+SPI_GETFOREGROUNDLOCKTIMEOUT = $2000;
+SPI_SETFOREGROUNDLOCKTIMEOUT = $2001;
+var
+ForegroundThreadID: DWORD;
+ThisThreadID      : DWORD;
+timeout           : DWORD;
+OSVersionInfo     : TOSVersionInfo;
+Win32Platform     : Integer;
+begin
+    if IsIconic(AppHandle) then ShowWindow(AppHandle, SW_RESTORE);
+    if (GetForegroundWindow = AppHandle) then Result := true else
+    begin
+      Win32Platform := 0;
+      OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
+      if GetVersionEx(OSVersionInfo) then Win32Platform := OSVersionInfo.dwPlatformId;
+
+      { Windows 98/2000 doesn't want to foreground a window when some other window has keyboard focus}
+
+      if ((Win32Platform = VER_PLATFORM_WIN32_NT) and (OSVersionInfo.dwMajorVersion > 4)) or
+         ((Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and ((OSVersionInfo.dwMajorVersion > 4) or
+         ((OSVersionInfo.dwMajorVersion = 4) and (OSVersionInfo.dwMinorVersion > 0)))) then
+      begin
+        Result := false;
+        ForegroundThreadID := GetWindowThreadProcessID(GetForegroundWindow,nil);
+        ThisThreadID := GetWindowThreadPRocessId(AppHandle,nil);
+        if AttachThreadInput(ThisThreadID, ForegroundThreadID, true) then
+        begin
+          BringWindowToTop(AppHandle);
+          SetForegroundWindow(AppHandle);
+          AttachThreadInput(ThisThreadID, ForegroundThreadID, false);
+          Result := (GetForegroundWindow = AppHandle);
+        end;
+        if not Result then
+        begin
+          SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, @timeout, 0);
+          SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, TObject(0), SPIF_SENDCHANGE);
+          BringWindowToTop(AppHandle);
+          SetForegroundWindow(AppHandle);
+          SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, TObject(timeout), SPIF_SENDCHANGE);
+          Result := (GetForegroundWindow = AppHandle);
+          if not Result then
+            begin
+            ShowWindow(AppHandle,SW_HIDE);
+            ShowWindow(AppHandle,SW_SHOWMINIMIZED);
+            ShowWindow(AppHandle,SW_SHOWNORMAL);
+            BringWindowToTop(AppHandle);
+            SetForegroundWindow(AppHandle);
+            end;
+        end;
+      end else
+      begin
+        BringWindowToTop(AppHandle);
+        SetForegroundWindow(AppHandle);
+      end;
+      Result := (GetForegroundWindow = AppHandle);
+    end;
+end;
+
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
@@ -4272,7 +4337,6 @@ begin
       Monitor.Width + (Width - ClientWidth),
       Monitor.Height + (Height - ClientHeight));
       self.Visible := true;
-   self.Visible := true;
   end
   else
   begin
@@ -4286,12 +4350,15 @@ begin
     for I := 0 to MainMenu.Items.Count - 1 do
       MainMenu.Items[I].Visible := True;
 
-    SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-    SetWindowLong(self.Handle, GWL_STYLE,  WS_TILEDWINDOW or (WS_BORDER xor GetWindowLong(Self.Handle, GWL_STYLE)));
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRMODE];
     Controlbar1.Visible := TRUE;
 
     pnlFull.Visible := FALSE;
+    SetWindowLong(self.Handle, GWL_STYLE,  WS_TILEDWINDOW or ( GetWindowLong(Self.Handle, GWL_STYLE)));
+    SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
+     //Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or
+    //WS_EX_APPWINDOW;
+
     self.Visible := true;
   end;
 end;
@@ -9619,6 +9686,8 @@ begin
     ShowWindow(Application.Handle, SW_HIDE);
     SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
     ShowWindow(Application.Handle, SW_SHOW);
+    modalState := false;
+    modalChild := 0;
 end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
@@ -9635,8 +9704,36 @@ begin
       Message.Result := 0;
     end;
   else
-    inherited;  
+    inherited;
   end;
+end;
+
+procedure TMainForm.WMActivate(var Msg: TWMActivate);
+var
+  res: integer;
+  parnt: HWND;
+begin
+    if Msg.Active = 0 then
+    begin
+        res := (GetWindowLong(Msg.ActiveWindow, GWL_STYLE) and WS_POPUP);
+        parnt := GetParent(Msg.ActiveWindow);
+        if (parnt = Application.Handle) or (parnt = Handle) then
+        begin
+            modalState := true;
+            modalChild := Msg.ActiveWindow;
+        end;
+    end
+    else
+    begin
+        parnt := GetParent(Msg.ActiveWindow);
+        if ((Msg.ActiveWindow = 0) or (parnt = Application.Handle)) and (modalState = true) then
+            ForceForeground(modalChild)
+        else if (modalState = true) then
+        begin
+            modalState := false;
+            modalChild := 0;
+        end;
+    end;
 end;
 
 procedure TMainForm.FormHide(Sender: TObject);
