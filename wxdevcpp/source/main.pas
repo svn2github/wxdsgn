@@ -1207,7 +1207,7 @@ uses
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
   ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
-  WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm, devMsgBox, ComObj
+  WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm, devMsgBox, ComObj, uvista
 
 {$IFDEF PLUGIN_BUILD}
   //Our dependencies
@@ -1330,8 +1330,8 @@ procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
   //inherited;
   inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or
-    WS_EX_APPWINDOW;
+  if IsWindowsVista then
+    Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
   StrCopy(Params.WinClassName, cWindowClassName);
 end;
 
@@ -1398,8 +1398,6 @@ var
     end;
   end;
 begin
-  // Fix for help system on Vista:
-  //mHHelp := THookHelpSystem.Create(pathToCHM, '', htHHAPI);
 
   //Initialize the docking style engine
   DesktopFont := True;
@@ -9692,6 +9690,8 @@ end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
 begin
+ if IsWindowsVista then
+ begin
   case (Message.CmdType and $FFF0) of
     SC_MINIMIZE:
     begin
@@ -9706,6 +9706,8 @@ begin
   else
     inherited;
   end;
+ end
+ else inherited;
 end;
 
 procedure TMainForm.WMActivate(var Msg: TWMActivate);
@@ -9713,6 +9715,8 @@ var
   res: integer;
   parnt: HWND;
 begin
+ if IsWindowsVista then
+ begin
     if Msg.Active = 0 then
     begin
         res := (GetWindowLong(Msg.ActiveWindow, GWL_STYLE) and WS_POPUP);
@@ -9734,6 +9738,7 @@ begin
             modalChild := 0;
         end;
     end;
+ end;
 end;
 
 procedure TMainForm.FormHide(Sender: TObject);
@@ -9745,6 +9750,12 @@ procedure TMainForm.FormActivate(Sender: TObject);
 begin
     FTaskbarList.ActivateTab(Handle);
 end;
+
+{function TMainForm.IsAncestor();
+begin
+    parnt := GetParent(Msg.ActiveWindow);
+
+end;}
 
 end.
 

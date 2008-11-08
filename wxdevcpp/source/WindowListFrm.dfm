@@ -1,8 +1,8 @@
 object WindowListForm: TWindowListForm
   Left = 462
   Top = 283
-  Width = 354
-  Height = 317
+  Width = 365
+  Height = 318
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Window List'
   Color = clBtnFace
@@ -22,7 +22,7 @@ object WindowListForm: TWindowListForm
   object Label1: TLabel
     Left = 0
     Top = 0
-    Width = 338
+    Width = 349
     Height = 6
     Align = alTop
     AutoSize = False
@@ -31,28 +31,28 @@ object WindowListForm: TWindowListForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 237
+    Height = 238
     Align = alLeft
     AutoSize = False
   end
   object Label3: TLabel
-    Left = 332
+    Left = 343
     Top = 6
     Width = 6
-    Height = 237
+    Height = 238
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 243
-    Width = 338
+    Top = 244
+    Width = 349
     Height = 38
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
-      338
+      349
       38)
     object OkBtn: TBitBtn
       Left = 176
@@ -84,7 +84,7 @@ object WindowListForm: TWindowListForm
       NumGlyphs = 2
     end
     object CancelBtn: TBitBtn
-      Left = 261
+      Left = 262
       Top = 7
       Width = 80
       Height = 23
@@ -97,18 +97,18 @@ object WindowListForm: TWindowListForm
   object GroupBox: TGroupBox
     Left = 6
     Top = 6
-    Width = 326
-    Height = 237
+    Width = 337
+    Height = 238
     Align = alClient
     Caption = 'Select the window you want to edit :'
     TabOrder = 1
     DesignSize = (
-      326
-      237)
+      337
+      238)
     object UnitList: TListBox
-      Left = 10
+      Left = 8
       Top = 18
-      Width = 315
+      Width = 319
       Height = 212
       Anchors = [akLeft, akTop, akRight, akBottom]
       IntegralHeight = True

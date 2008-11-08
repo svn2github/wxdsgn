@@ -220,6 +220,8 @@ type
     property Profiles: TProjectProfileList read GetProfiles write SetProfiles;
     property CurrentProfile:TProjProfile read GetCurrentProfile;
     property CurrentProfileIndex : Integer read fCurrentProfileIndex write fCurrentProfileIndex;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 implementation
@@ -1484,6 +1486,18 @@ begin
   cmbProfileSetComp.ItemIndex := cmbProfileSetComp.Items.Count - 1;
   cmbProfileSetComp.OnChange(cmbProfileSetComp);
 
+end;
+
+procedure TfrmProjectOptions.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

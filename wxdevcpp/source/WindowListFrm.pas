@@ -47,6 +47,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure UnitListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 implementation
@@ -95,6 +97,18 @@ begin
   if Key = XK_RETURN then
 {$ENDIF}
     UnitListDblClick(Sender);
+end;
+
+procedure TWindowListForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  if (Parent <> nil) or (ParentWindow <> 0) then
+    Exit;  // must not mess with wndparent if form is embedded
+
+  if Assigned(Owner) and (Owner is TWincontrol) then
+    Params.WndParent := TWinControl(Owner).handle
+  else if Assigned(Screen.Activeform) then
+    Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.
