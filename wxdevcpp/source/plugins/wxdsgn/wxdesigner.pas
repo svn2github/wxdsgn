@@ -199,6 +199,7 @@ type
   public
     CacheCreated: boolean;
     main: IPlug;
+    parentHande: HWND;
     {Guru's Code}
 
     strGlobalCurrentFunction: string;
@@ -352,6 +353,7 @@ begin
   wx_designer := Self;
   editors := TObjectHash.Create;
   configFolder := Config;
+  parentHande := _parent;
 
   //Property Inspector
   frmInspectorDock := TForm.Create(ownerForm);

@@ -90,7 +90,8 @@ var
 
 implementation
 
-uses IniFiles, StrUtils, version, MultiLangSupport, devcfg, utils;
+uses IniFiles, StrUtils, version, MultiLangSupport, devcfg, utils, uvista,
+  main;
 
 {$R *.dfm}
 
@@ -1914,10 +1915,23 @@ begin
 end;
 
 procedure TImportMSVCForm.btnBrowseDevClick(Sender: TObject);
+var
+    s: String;
+    save: Boolean;
 begin
   SaveDialog1.Filter := FLT_PROJECTS;
   SaveDialog1.Title := Lang[ID_MSVC_SELECTDEV];
-  if SaveDialog1.Execute then
+
+  s := SaveDialog1.FileName;
+  if IsWindowsVista then
+  begin
+      save := OpenSaveFileDialog(MainForm, SaveDialog1.DefaultExt, SaveDialog1.Filter, SaveDialog1.InitialDir, SaveDialog1.Title, s, false, false, false, false);
+      SaveDialog1.FileName := s;
+  end
+  else
+      save := SaveDialog1.Execute;
+
+  if save then
     txtDev.Text := SaveDialog1.Filename;
 end;
 

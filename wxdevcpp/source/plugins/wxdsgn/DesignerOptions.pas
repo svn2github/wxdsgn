@@ -265,7 +265,8 @@ begin
   if Assigned(Owner) and (Owner is TWincontrol) then
     Params.WndParent := TWinControl(Owner).handle
   else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
+    Params.WndParent := wx_designer.parentHande;
+    //Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

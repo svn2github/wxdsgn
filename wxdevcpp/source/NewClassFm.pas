@@ -83,7 +83,7 @@ var
 implementation
 
 uses 
-  main, CppParser, MultiLangSupport, version, editor, devcfg;
+  main, CppParser, MultiLangSupport, version, editor, devcfg, uvista;
 
 {$R *.dfm}
 
@@ -161,6 +161,9 @@ begin
 end;
 
 procedure TNewClassForm.btnBrowseCppClick(Sender: TObject);
+var
+    s: String;
+    save: Boolean;
 begin
   if Sender = btnBrowseCpp then begin
     SaveDialog1.FileName := ExtractFileName(txtCppFile.Text);
@@ -174,7 +177,17 @@ begin
     SaveDialog1.Filter := FLT_HEADS;
     SaveDialog1.DefaultExt := 'h';
   end;
-  if SaveDialog1.Execute then begin
+
+    s := SaveDialog1.FileName;
+    if IsWindowsVista then
+    begin
+        save := OpenSaveFileDialog(MainForm, SaveDialog1.DefaultExt, SaveDialog1.Filter, SaveDialog1.InitialDir, SaveDialog1.Title, s, false, false, false, false);
+        SaveDialog1.FileName := s;
+    end
+    else
+        save := SaveDialog1.Execute;
+
+  if save then begin
     if Sender = btnBrowseCpp then
       txtCppFile.Text := SaveDialog1.FileName
     else

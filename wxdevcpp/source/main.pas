@@ -1903,6 +1903,10 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
+
+  if IsWindowsVista then
+    FTaskbarList.AddTab(Handle);
+
   //TODO: lowjoel: Do we need to track whether this is the first show? Can someone
   //               trace into the code to see if this function is called more than once?
   if fFirstShow then
@@ -2704,6 +2708,7 @@ var
   CFilter, CppFilter, HFilter: Integer;
   boolIsRC:Boolean;
   ccFile,hfile:String;
+  save: Boolean;
 {$IFDEF PLUGIN_BUILD}
   j: Integer;
   filters: TStringList;
@@ -2815,6 +2820,7 @@ begin
 
   with dmMain.SaveDialog do
   begin
+    DefaultExt := dext;   // EAB: this was missing I guess, but not sure...
     Title := Lang[ID_NV_SAVEFILE];
     Filter := flt;
 
@@ -2840,7 +2846,15 @@ begin
     else
       InitialDir := fProject.Directory;
 
-    if Execute then
+    s := FileName;
+    if IsWindowsVista then
+    begin
+        save := OpenSaveFileDialog(MainForm, DefaultExt, Filter, InitialDir, Title, s, false, false, false, false);
+        FileName := s;
+    end
+    else
+        save := Execute;
+    if save then
     begin
       s := FileName;
       if FileExists(s) and (MessageDlg(Lang[ID_MSG_FILEEXISTS], mtWarning, [mbYes, mbNo], 0) = mrNo) then
@@ -3773,9 +3787,10 @@ end;
 procedure TMainForm.actNewProjectExecute(Sender: TObject);
 var
   s: string;
+  save: Boolean;
 {$IFDEF PLUGIN_BUILD}
  i: Integer;
-{$ENDIF}  
+{$ENDIF}
 begin
   with TNewProjectForm.Create(Self) do
   try
@@ -3805,7 +3820,14 @@ begin
         Filter := FLT_PROJECTS;
         InitialDir := devDirs.Default;
         FileName := s;
-        if not Execute then
+        if IsWindowsVista then
+        begin
+            save := OpenSaveFileDialog(MainForm, '', Filter, InitialDir, Title, s, false, false, false, false);
+            FileName := s;
+        end
+        else
+            save := Execute;
+        if not save then
         begin
           Dec(dmMain.fProjectCount);
           Exit;
@@ -4316,7 +4338,7 @@ begin
     GetWindowPlacement(Self.Handle, @devData.WindowPlacement);
     self.Visible := false;
 
-    SetWindowLong(Self.Handle, GWL_STYLE, WS_BORDER and GetWindowLong(Self.Handle, GWL_STYLE));
+    SetWindowLong(Self.Handle, GWL_STYLE, (WS_BORDER and GetWindowLong(Self.Handle, GWL_STYLE)) and not WS_CAPTION);
 
     FullScreenModeItem.Caption := Lang[ID_ITEM_FULLSCRBACK];
     ControlBar1.Visible := devData.ShowBars;
@@ -4327,14 +4349,16 @@ begin
     for I := 0 to MainMenu.Items.Count - 1 do
       MainMenu.Items[I].Visible := False;
     Menu := MainMenu; // restore menu
+
     // set size to hide form menu
     //works with multi monitors now.
     SetBounds(
       (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
       (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
       Monitor.Width + (Width - ClientWidth),
-      Monitor.Height + (Height - ClientHeight));
-      self.Visible := true;
+      Monitor.Height + (Height - ClientHeight));    
+
+    self.Visible := true;
   end
   else
   begin
@@ -4354,8 +4378,6 @@ begin
     pnlFull.Visible := FALSE;
     SetWindowLong(self.Handle, GWL_STYLE,  WS_TILEDWINDOW or ( GetWindowLong(Self.Handle, GWL_STYLE)));
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-     //Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or
-    //WS_EX_APPWINDOW;
 
     self.Visible := true;
   end;
@@ -7628,12 +7650,23 @@ begin
 end;
 
 procedure TMainForm.actSaveProjectAsExecute(Sender: TObject);
+var
+    save: Boolean;
+    s: String;
 begin
   if not Assigned(fProject) then
     Exit;
   with dmMain.SaveDialog do begin
     Filter := FLT_PROJECTS;
-    if Execute then begin
+    s := '';
+    if IsWindowsVista then
+    begin
+        save := OpenSaveFileDialog(MainForm, '', Filter, InitialDir, Title, s, false, false, false, false);
+        FileName := s;
+    end
+    else
+        save := Execute;
+    if save then begin
       fProject.FileName := FileName;
       fProject.Save;
       UpdateAppTitle;
@@ -9679,13 +9712,16 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-    FTaskbarList := CreateComObject(CLSID_TaskbarList) as ITaskbarList; 
-    FTaskbarList.HrInit;
-    ShowWindow(Application.Handle, SW_HIDE);
-    SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
-    ShowWindow(Application.Handle, SW_SHOW);
-    modalState := false;
-    modalChild := 0;
+    if IsWindowsVista then
+    begin
+        FTaskbarList := CreateComObject(CLSID_TaskbarList) as ITaskbarList;
+        FTaskbarList.HrInit;
+        ShowWindow(Application.Handle, SW_HIDE);
+        SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
+        ShowWindow(Application.Handle, SW_SHOW);
+        modalState := false;
+        modalChild := 0;
+    end;
 end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
@@ -9743,12 +9779,14 @@ end;
 
 procedure TMainForm.FormHide(Sender: TObject);
 begin
-    FTaskbarList.DeleteTab(Handle);
+    if IsWindowsVista then
+        FTaskbarList.DeleteTab(Handle);
 end;
 
 procedure TMainForm.FormActivate(Sender: TObject);
 begin
-    FTaskbarList.ActivateTab(Handle);
+    if IsWindowsVista then
+        FTaskbarList.ActivateTab(Handle);
 end;
 
 {function TMainForm.IsAncestor();

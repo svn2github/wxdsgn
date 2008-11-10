@@ -109,6 +109,7 @@ type
     cbSingleInstance: TCheckBox;
     cbNativeDocks: TCheckBox;
     cbHiliteActiveTab: TCheckBox;
+    lblOpenSaveOptions: TLabel;
     procedure BrowseClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -133,7 +134,7 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme, hh;
+  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme, hh, uvista;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme;
@@ -485,6 +486,11 @@ procedure TEnviroForm.FormCreate(Sender: TObject);
 begin
   LoadText;
   PagesMain.ActivePageIndex := 0;
+  if IsWindowsVista then
+  begin
+    rgbOpenStyle.Enabled := false;
+    lblOpenSaveOptions.Visible := true;   // EAB TODO: Add multi language support  
+  end;
 end;
 
 procedure TEnviroForm.vleExternalEditButtonClick(Sender: TObject);

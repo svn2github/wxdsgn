@@ -187,6 +187,18 @@ object EnviroForm: TEnviroForm
         Height = 13
         Caption = 'Files to retain in Recently Used List:'
       end
+      object lblOpenSaveOptions: TLabel
+        Left = 6
+        Top = 256
+        Width = 156
+        Height = 39
+        Alignment = taCenter
+        Caption = 
+          'You cannot change Open/Save Dialog options in this version of Wi' +
+          'ndows'
+        Visible = False
+        WordWrap = True
+      end
       object cboLang: TComboBox
         Left = 202
         Top = 58
