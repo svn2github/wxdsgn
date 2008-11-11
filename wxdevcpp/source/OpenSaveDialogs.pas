@@ -55,29 +55,6 @@ implementation
 uses
     uvista;
 
-
-{object OpenDialog: TOpenDialog
-    Filter =
-      'Dev-C++ project files|*.dev|C and C++ files|*.c;*.cpp|C++ files|' +
-      '*.cpp|C files|*.c|Header files|*.h|C++ Header files|*.hpp|Resour' +
-      'ce header|*.rh|Resource files|*.rc|Dev-C++ Project, C/C++ and re' +
-      'source files|*.c;*.cpp;*.dev;*.rc|All files (*.*)|*.*'
-    FilterIndex = 9
-    Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Title = 'Open file'
-    Left = 149
-    Top = 378
-  end
-  object SaveDialog: TSaveDialog
-    DefaultExt = 'cpp'
-    Filter = 'Dev-C++ project file (*.dev)|*.dev'
-    Options = [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
-    Title = 'Create new project'
-    Left = 500
-    Top = 241
-  end
-  }
-
 constructor TOpenDialogEx.Create(AOwner: TWinControl);
 begin
     ParentWND := AOwner;
@@ -88,13 +65,6 @@ begin
     FileName := '';
 
     OpenDialog := TOpenDialog.Create(ParentWND);
-    OpenDialog.Filter := 'Dev-C++ project files|*.dev|C and C++ files|*.c;*.cpp|C++ files|' +
-      '*.cpp|C files|*.c|Header files|*.h|C++ Header files|*.hpp|Resour' +
-      'ce header|*.rh|Resource files|*.rc|Dev-C++ Project, C/C++ and re' +
-      'source files|*.c;*.cpp;*.dev;*.rc|All files (*.*)|*.*';
-    OpenDialog.FilterIndex := 9;
-    OpenDialog.Options := [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing];
-    OpenDialog.Title := 'Open file';
 end;
 
 
@@ -115,6 +85,9 @@ begin
         OpenDialog.InitialDir := InitialDir;
         OpenDialog.Title := Title;
         OpenDialog.FileName := FileName;
+        OpenDialog.FilterIndex := FilterIndex;
+        OpenDialog.Options := Options;
+
         Result := OpenDialog.Execute;
     end;
 
@@ -130,10 +103,7 @@ begin
     FileName := '';
 
     SaveDialog := TSaveDialog.Create(ParentWND);
-    SaveDialog.DefaultExt := 'cpp';
-    SaveDialog.Filter := 'Dev-C++ project file (*.dev)|*.dev';
-    SaveDialog.Options := [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent];
-    SaveDialog.Title := 'Create new project';
+
 end;
 
 function TSaveDialogEx.Execute: Boolean;
@@ -153,6 +123,8 @@ begin
         SaveDialog.InitialDir := InitialDir;
         SaveDialog.Title := Title;
         SaveDialog.FileName := FileName;
+        SaveDialog.FilterIndex := FilterIndex;
+        SaveDialog.Options := Options;
         Result := SaveDialog.Execute;
     end;
 

@@ -28,7 +28,7 @@ uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtDlgs, StdCtrls, ExtCtrls, Buttons, ComCtrls, main, project,
-  devTabs, prjtypes, XPMenu, Spin, Grids, ValEdit, CompilerOptionsFrame;
+  devTabs, prjtypes, XPMenu, Spin, Grids, ValEdit, CompilerOptionsFrame, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -41,7 +41,6 @@ type
     btnOk: TBitBtn;
     btnCancel: TBitBtn;
     btnHelp: TBitBtn;
-    dlgOpen: TOpenDialog;
     dlgPic: TOpenPictureDialog;
     PageControl: TPageControl;
     tabGeneral: TTabSheet;
@@ -72,7 +71,6 @@ type
     edExeOutput: TEdit;
     edObjOutput: TEdit;
     tabMakefile: TTabSheet;
-    dlgMakeInclude: TOpenDialog;
     edOverridenOutput: TEdit;
     chkOverrideOutput: TCheckBox;
     XPMenu: TXPMenu;
@@ -93,7 +91,6 @@ type
     spnBuild: TSpinEdit;
     tabCompiler: TTabSheet;
     chkSupportXP: TCheckBox;
-    OpenLibDialog: TOpenDialog;
     chkOverrideBuildCmd: TCheckBox;
     txtOverrideBuildCmd: TMemo;
     lblFname: TLabel;
@@ -117,7 +114,6 @@ type
     lblLinker: TLabel;
     edLinker: TMemo;
     AddLibBtn: TBitBtn;
-    dlgCustomMake: TOpenDialog;
     btnBrowse: TSpeedButton;
     btnExeOutDir: TSpeedButton;
     btnObjOutDir: TSpeedButton;
@@ -203,6 +199,10 @@ type
     fProject: TProject;
     fOriginalProfileIndex: Integer;
     fCurrentProfileIndex: Integer;
+    dlgCustomMake: TOpenDialogEx;
+	OpenLibDialog: TOpenDialogEx;
+	dlgMakeInclude: TOpenDialogEx;
+	dlgOpen: TOpenDialogEx;
     procedure UpdateUIWithCurrentProfile;
     procedure UpdateCurrentProfileDataFromUI;
     procedure UpdateProfileList(ProfileIndex:integer);
@@ -734,6 +734,25 @@ end;
 
 procedure TfrmProjectOptions.FormCreate(Sender: TObject);
 begin
+  dlgCustomMake := TOpenDialogEx.Create(MainForm);
+  OpenLibDialog := TOpenDialogEx.Create(MainForm);
+  dlgMakeInclude := TOpenDialogEx.Create(MainForm);
+  dlgOpen := TOpenDialogEx.Create(MainForm);
+
+  dlgCustomMake.Filter := 'All Files (*.*)|*.*';
+  dlgCustomMake.FilterIndex := 0;
+
+  OpenLibDialog.Filter := 'Library (*.a;*.lib)|*.a;*.lib|Object (*.o;*.obj)|*.o;*.obj|All f' + 'iles (*.*)|*.*';
+  OpenLibDialog.Options := [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing];
+
+  dlgMakeInclude.Filter := 'Makefile Addons (*.mak)|*.mak|All Files (*.*)|*.*';
+
+  dlgOpen.Filter := 'Object files (*.o;*.obj)|*.o;*.obj|Lib files (*.a;*.lib)|*.a;*.l' +
+      'ib|Resource file (.rc)|*.rc|All files (*.*)|*.*';
+  dlgOpen.Options := [ofHideReadOnly, ofAllowMultiSelect];
+  dlgOpen.Title := 'Open object file';
+
+
   LoadText;
   lblCompileInfo.Font.Color := clMaroon;
   cmbLangID.Sorted := True;

@@ -25,7 +25,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Buttons, XPMenu, Macros;
+  Dialogs, StdCtrls, ExtCtrls, Buttons, XPMenu, Macros, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms,
@@ -38,7 +38,6 @@ type
     edTitle: TEdit;
     lblProg: TLabel;
     edProgram: TEdit;
-    OpenDialog: TOpenDialog;
     lblWorkDir: TLabel;
     edWorkDir: TEdit;
     lblParam: TLabel;
@@ -69,6 +68,7 @@ type
     procedure edParamsChange(Sender: TObject);
   private
     fMacroTarget: TEdit;
+    OpenDialog: TOpenDialogEx;
     procedure LoadText;
   end;
 
@@ -76,7 +76,7 @@ implementation
 
 uses 
 {$IFDEF WIN32}
-  FileCtrl, MultiLangSupport, devcfg, utils;
+  FileCtrl, MultiLangSupport, devcfg, utils, main;
 {$ENDIF}
 {$IFDEF LINUX}
   MultiLangSupport, devcfg, utils;
@@ -151,6 +151,8 @@ end;
 
 procedure TToolEditForm.FormCreate(Sender: TObject);
 begin
+  OpenDialog := TOpenDialogEx.Create(MainForm);
+  OpenDialog.Filter := 'Applications (*.exe)|*.exe|All files (*.*)|*.*';
   fMacroTarget:= edParams;
   LoadText;
 end;

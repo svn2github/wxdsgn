@@ -112,15 +112,6 @@ object ImportMSVCForm: TImportMSVCForm
     ModalResult = 2
     TabOrder = 3
   end
-  object OpenDialog1: TOpenDialog
-    Filter = 'MSVC++ files|*.dsp'
-    Left = 36
-    Top = 182
-  end
-  object SaveDialog1: TSaveDialog
-    Left = 64
-    Top = 182
-  end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10

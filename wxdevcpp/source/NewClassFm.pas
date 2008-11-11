@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, XPMenu;
+  Dialogs, StdCtrls, Buttons, XPMenu, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -49,7 +49,6 @@ type
     btnCreate: TButton;
     btnCancel: TButton;
     cmbScope: TComboBox;
-    SaveDialog1: TSaveDialog;
     chkInherit: TCheckBox;
     Label6: TLabel;
     txtIncFile: TEdit;
@@ -70,8 +69,10 @@ type
     procedure cmbClassChange(Sender: TObject);
     procedure memDescrChange(Sender: TObject);
     procedure txtNameKeyPress(Sender: TObject; var Key: Char);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+    SaveDialog1: TSaveDialogEx;
     procedure LoadText;
   public
     { Public declarations }
@@ -162,6 +163,7 @@ end;
 
 procedure TNewClassForm.btnBrowseCppClick(Sender: TObject);
 begin
+  SaveDialog1.Create(MainForm);
   if Sender = btnBrowseCpp then begin
     SaveDialog1.FileName := ExtractFileName(txtCppFile.Text);
     SaveDialog1.InitialDir := ExtractFilePath(txtCppFile.Text);
@@ -375,6 +377,11 @@ begin
   Label8.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
   btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
   btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];
+end;
+
+procedure TNewClassForm.FormCreate(Sender: TObject);
+begin
+    SaveDialog1 := TSaveDialogEx.Create(MainForm);
 end;
 
 end.

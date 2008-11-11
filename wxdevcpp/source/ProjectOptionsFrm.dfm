@@ -1636,25 +1636,11 @@ object frmProjectOptions: TfrmProjectOptions
     Items.Strings = (
       'MingW 3.4.2')
   end
-  object dlgOpen: TOpenDialog
-    Filter = 
-      'Object files (*.o;*.obj)|*.o;*.obj|Lib files (*.a;*.lib)|*.a;*.l' +
-      'ib|Resource file (.rc)|*.rc|All files (*.*)|*.*'
-    Options = [ofHideReadOnly, ofAllowMultiSelect]
-    Title = 'Open object file'
-    Left = 35
-    Top = 343
-  end
   object dlgPic: TOpenPictureDialog
     DefaultExt = 'ico'
     Filter = 'Icons (*.ico)|*.ico'
     Title = 'Open icon'
     Left = 8
-    Top = 343
-  end
-  object dlgMakeInclude: TOpenDialog
-    Filter = 'Makefile Addons (*.mak)|*.mak|All Files (*.*)|*.*'
-    Left = 63
     Top = 343
   end
   object XPMenu: TXPMenu
@@ -1685,21 +1671,7 @@ object frmProjectOptions: TfrmProjectOptions
     AutoDetect = True
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 147
-    Top = 343
-  end
-  object OpenLibDialog: TOpenDialog
-    Filter = 
-      'Library (*.a;*.lib)|*.a;*.lib|Object (*.o;*.obj)|*.o;*.obj|All f' +
-      'iles (*.*)|*.*'
-    Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
-    Left = 91
-    Top = 343
-  end
-  object dlgCustomMake: TOpenDialog
-    Filter = 'All Files (*.*)|*.*'
-    FilterIndex = 0
-    Left = 119
+    Left = 43
     Top = 343
   end
 end

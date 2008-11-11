@@ -24,7 +24,7 @@ interface
 uses
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
+  Dialogs, StdCtrls, Buttons, XPMenu, devcfg, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -38,7 +38,6 @@ type
     grpHost: TGroupBox;
     HostEdit: TEdit;
     LoadBtn: TSpeedButton;
-    OpenDialog: TOpenDialog;
     OkBtn: TBitBtn;
     CancelBtn: TBitBtn;
     XPMenu: TXPMenu;
@@ -46,6 +45,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
+    OpenDialog: TOpenDialogEx;
     procedure LoadText;
     { Private declarations }
   public
@@ -59,7 +59,7 @@ var
 implementation
 
 uses
-  MultiLangSupport;
+  MultiLangSupport, main;
 
 {$R *.dfm}
 
@@ -86,6 +86,9 @@ end;
 
 procedure TParamsForm.FormCreate(Sender: TObject);
 begin
+  OpenDialog := TOpenDialogEx.Create(MainForm);
+  OpenDialog.DefaultExt := '.exe';
+  OpenDialog.Filter := 'Applications (*.exe)|*.exe';
   LoadText;
 end;
 

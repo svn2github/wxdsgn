@@ -153,7 +153,19 @@ begin
   CppMultiSyn.Schemes[1].EndExpr := '(;*)$';
 
   SaveDialog := TSaveDialogEx.Create(MainForm);
+  SaveDialog.DefaultExt := 'cpp';
+  SaveDialog.Filter := 'Dev-C++ project file (*.dev)|*.dev';
+  SaveDialog.Options := [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent];
+  SaveDialog.Title := 'Create new project';
+
   OpenDialog := TOpenDialogEx.Create(MainForm);
+  OpenDialog.Filter := 'Dev-C++ project files|*.dev|C and C++ files|*.c;*.cpp|C++ files|' +
+      '*.cpp|C files|*.c|Header files|*.h|C++ Header files|*.hpp|Resour' +
+      'ce header|*.rh|Resource files|*.rc|Dev-C++ Project, C/C++ and re' +
+      'source files|*.c;*.cpp;*.dev;*.rc|All files (*.*)|*.*';
+  OpenDialog.FilterIndex := 9;
+  OpenDialog.Options := [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing];
+  OpenDialog.Title := 'Open file';
 end;
 
 procedure TdmMain.DataModuleDestroy(Sender: TObject);

@@ -14,6 +14,7 @@ object NewClassForm: TNewClassForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -235,10 +236,6 @@ object NewClassForm: TNewClassForm
     Height = 21
     TabOrder = 1
     Text = 'txtArgs'
-  end
-  object SaveDialog1: TSaveDialog
-    Left = 300
-    Top = 184
   end
   object XPMenu: TXPMenu
     DimLevel = 30

@@ -274,11 +274,6 @@ object ToolEditForm: TToolEditForm
     ReadOnly = True
     TabOrder = 10
   end
-  object OpenDialog: TOpenDialog
-    Filter = 'Applications (*.exe)|*.exe|All files (*.*)|*.*'
-    Left = 36
-    Top = 267
-  end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10

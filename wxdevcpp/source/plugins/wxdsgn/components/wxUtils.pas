@@ -834,7 +834,7 @@ implementation
 
 uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxToolButton,
   UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar, WxCustomButton,
-  WxNonVisibleBaseComponent, wxdesigner, wxnotebook
+  WxNonVisibleBaseComponent, wxdesigner, wxnotebook, OpenSaveDialogs
 {$IFDEF WIN32}
   , ShlObj, ActiveX
 {$ENDIF}
@@ -6486,13 +6486,13 @@ end;
 
 procedure TJvInspectorFileNameEditItem.Edit;
 var
-  FileOpenForm: TOpenDialog;
+  FileOpenForm: TOpenDialogEx;
   WxFileNameString: TWxFileNameString;
 begin
 
   WxFileNameString := TWxFileNameString(Data.AsOrdinal);
 
-  FileOpenForm := TOpenDialog.Create(GetParentForm(Inspector));
+  FileOpenForm := TOpenDialogEx.Create(wx_designer.ownerForm);
   FileOpenForm.Filter := 'All files (*.*)|*.*';
 
   if (FileOpenForm.Execute) then // If a file is selected

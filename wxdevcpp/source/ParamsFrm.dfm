@@ -98,12 +98,6 @@ object ParamsForm: TParamsForm
     TabOrder = 3
     Kind = bkCancel
   end
-  object OpenDialog: TOpenDialog
-    DefaultExt = '.exe'
-    Filter = 'Applications (*.exe)|*.exe'
-    Left = 8
-    Top = 136
-  end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
@@ -132,7 +126,7 @@ object ParamsForm: TParamsForm
     AutoDetect = False
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 43
+    Left = 11
     Top = 135
   end
 end

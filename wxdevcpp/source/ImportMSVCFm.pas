@@ -25,7 +25,7 @@ uses
 xprocs,
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Buttons, StdCtrls, XPMenu;
+  Dialogs, Buttons, StdCtrls, XPMenu, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -44,8 +44,6 @@ type
     txtDev: TEdit;
     btnImport: TButton;
     btnCancel: TButton;
-    OpenDialog1: TOpenDialog;
-    SaveDialog1: TSaveDialog;
     XPMenu: TXPMenu;
     btnBrowseDev: TButton;
     procedure FormCreate(Sender: TObject);
@@ -61,6 +59,8 @@ type
     fSL: TStringList;
     fFilename: string;
     fInvalidFiles: string;
+    SaveDialog1: TSaveDialogEx;
+    OpenDialog1: TOpenDialogEx;
     procedure LoadText;
     procedure WriteDev(Section, Key, Value: string);
     procedure ImportFile(Filename: string);
@@ -90,7 +90,7 @@ var
 
 implementation
 
-uses IniFiles, StrUtils, version, MultiLangSupport, devcfg, utils;
+uses IniFiles, StrUtils, version, MultiLangSupport, devcfg, utils, main;
 
 {$R *.dfm}
 
@@ -106,6 +106,9 @@ end;
 
 procedure TImportMSVCForm.FormCreate(Sender: TObject);
 begin
+  SaveDialog1 := TSaveDialogEx.Create(MainForm);
+  OpenDialog1 := TOpenDialogEx.Create(MainForm);
+  OpenDialog1.Filter := 'MSVC++ files|*.dsp';
   fSL := TStringList.Create;
   LoadText;
 end;
