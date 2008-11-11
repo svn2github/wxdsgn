@@ -12,6 +12,7 @@ type
     OptionsEx: TOpenOptionsEx;
 
 private
+    OpenDialog: TOpenDialog;
     ParentWND: TWinControl;
 
 public
@@ -33,6 +34,7 @@ type
     Options: TOpenOptions;
     OptionsEx: TOpenOptionsEx;
 private
+    SaveDialog: TSaveDialog;
     ParentWND: TWinControl;
 public
 
@@ -79,12 +81,25 @@ uses
 constructor TOpenDialogEx.Create(AOwner: TWinControl);
 begin
     ParentWND := AOwner;
+    DefaultExt := '';
+    Filter := '';
+    InitialDir := '';
+    Title := '';
+    FileName := '';
+
+    OpenDialog := TOpenDialog.Create(ParentWND);
+    OpenDialog.Filter := 'Dev-C++ project files|*.dev|C and C++ files|*.c;*.cpp|C++ files|' +
+      '*.cpp|C files|*.c|Header files|*.h|C++ Header files|*.hpp|Resour' +
+      'ce header|*.rh|Resource files|*.rc|Dev-C++ Project, C/C++ and re' +
+      'source files|*.c;*.cpp;*.dev;*.rc|All files (*.*)|*.*';
+    OpenDialog.FilterIndex := 9;
+    OpenDialog.Options := [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing];
+    OpenDialog.Title := 'Open file';
 end;
 
 
 function TOpenDialogEx.Execute: Boolean;
 var
-    OpenDialog: TOpenDialog;
     fileN: String;
 begin
 
@@ -108,11 +123,21 @@ end;
 constructor TSaveDialogEx.Create(AOwner: TWinControl);
 begin
     ParentWND := AOwner;
+    DefaultExt := '';
+    Filter := '';
+    InitialDir := '';
+    Title := '';
+    FileName := '';
+
+    SaveDialog := TSaveDialog.Create(ParentWND);
+    SaveDialog.DefaultExt := 'cpp';
+    SaveDialog.Filter := 'Dev-C++ project file (*.dev)|*.dev';
+    SaveDialog.Options := [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent];
+    SaveDialog.Title := 'Create new project';
 end;
 
 function TSaveDialogEx.Execute: Boolean;
 var
-    SaveDialog: TSaveDialog;
     fileN: String;
 begin
 
