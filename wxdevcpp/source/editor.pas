@@ -193,7 +193,7 @@ implementation
 
 uses
   Main, project, MultiLangSupport, devcfg, Search_Center, datamod,
-  GotoLineFrm, Macros, debugger, uvista
+  GotoLineFrm, Macros, debugger
 {$IFDEF LINUX}
   ,Xlib, utils
 {$ENDIF};
@@ -889,9 +889,6 @@ begin
 end;
 
 procedure TEditor.ExportTo(const isHTML: boolean);
-var
-    s: String;
-    save: Boolean;
 begin
   if IsHTML then
   begin
@@ -900,17 +897,7 @@ begin
       Filter := dmMain.SynExporterHTML.DefaultFilter;
       DefaultExt := HTML_EXT;
       Title := Lang[ID_NV_EXPORT];
-
-        s := '';
-        if IsWindowsVista then
-        begin
-            save := OpenSaveFileDialog(MainForm, DefaultExt, Filter, InitialDir, Title, s, false, false, false, false);
-            FileName := s;
-        end
-        else
-            save := Execute;
-
-      if save then
+      if Execute then
       begin
         dmMain.ExportToHtml(fText.Lines, dmMain.SaveDialog.FileName);
         fText.BlockEnd := fText.BlockBegin;
@@ -923,16 +910,7 @@ begin
       Filter := dmMain.SynExporterRTF.DefaultFilter;
       Title := Lang[ID_NV_EXPORT];
       DefaultExt := RTF_EXT;
-
-        if IsWindowsVista then
-        begin
-            save := OpenSaveFileDialog(MainForm, DefaultExt, Filter, InitialDir, Title, s, false, false, false, false);
-            FileName := s;
-        end
-        else
-            save := Execute;
-
-      if save then
+      if Execute then
       begin
         dmMain.ExportToRtf(fText.Lines, dmMain.SaveDialog.FileName);
         fText.BlockEnd := fText.BlockBegin;

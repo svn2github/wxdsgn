@@ -117,7 +117,8 @@ uses
   devShortcutsEditorForm in '..\..\packages\devShortcutsEditorForm.pas' {frmShortcutsEditor},
   D6OnHelpFix in '..\..\D6OnHelpFix.pas',
   hh in '..\..\hh.pas',
-  hh_funcs in '..\..\hh_funcs.pas';
+  hh_funcs in '..\..\hh_funcs.pas',
+  OpenSaveDialogs in '..\..\OpenSaveDialogs.pas';
 
 {$R '..\..\icons.res' '..\..\icons.rc'}
 {$R '..\..\LangFrm.res' '..\..\LangFrm.rc'}
@@ -240,7 +241,6 @@ begin
   Application.Title := 'wxDev-C++';
   Application.HelpFile := '..\Help\devcpp.chm';
   Application.CreateForm(TMainForm, MainForm);
-
   if not devData.NoSplashScreen then
   begin
     SplashForm := TSplashForm.Create(Application);

@@ -246,7 +246,7 @@ type
 implementation
 uses
   main, MultiLangSupport, devcfg, ProjectOptionsFrm, datamod,
-  RemoveUnitFrm, uvista;
+  RemoveUnitFrm;
 
 { TProjUnit }
 
@@ -361,10 +361,8 @@ var
   boolForm: Boolean;
   pluginFilter: Integer;
   filters: TStringList;
-  i, j: Integer;
+  i, j: Integer;  
 {$ENDIF}
-  s: String;
-  save: Boolean;
 begin
   with dmMain.SaveDialog do
   begin
@@ -452,17 +450,7 @@ begin
 
     InitialDir := ExtractFilePath(fFileName);
     Title := Lang[ID_NV_SAVEFILE];
-
-    s := FileName;
-    if IsWindowsVista then
-    begin
-        save := OpenSaveFileDialog(MainForm, DefaultExt, Filter, InitialDir, Title, s, false, false, false, false);
-        FileName := s;
-    end
-    else
-        save := Execute;
-
-    if save then
+    if Execute then
     try
       if FileExists(FileName) and
         (MessageDlg(Lang[ID_MSG_FILEEXISTS],
@@ -2025,23 +2013,12 @@ var
   link: string;
   BaseDir: string;
   hFile: integer;
-  s: String;
-  save: Boolean;
 begin
   with dmMain.SaveDialog do begin
     Filter := dmMain.SynExporterHTML.DefaultFilter;
     DefaultExt := HTML_EXT;
     Title := Lang[ID_NV_EXPORT];
-
-    s := '';
-    if IsWindowsVista then
-    begin
-        save := OpenSaveFileDialog(MainForm, DefaultExt, Filter, InitialDir, Title, s, false, false, false, false);
-        FileName := s;
-    end
-    else
-        save := Execute;
-    if not save then
+    if not Execute then
       Abort;
     fname := Filename;
   end;

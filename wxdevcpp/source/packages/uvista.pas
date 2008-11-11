@@ -13,7 +13,7 @@ unit uVista;
 
 interface
 
-uses Forms, Windows, Graphics, CommDlg, controls, dialogs;
+uses Forms, Windows, Graphics, CommDlg, controls, dialogs, Classes;
 
 type
  pboolean = ^boolean;
@@ -44,7 +44,8 @@ function OpenSaveFileDialog(Parent: TWinControl;
                             Filter,
                             InitialDir,
                             Title: string;
-                            var FileName: string;
+                            var FileName: String;
+                            var Files: TStrings;
                             MustExist,
                             OverwritePrompt,
                             NoChangeDir,
@@ -357,12 +358,13 @@ end;
 
 
 
-function OpenSaveFileDialog(Parent: TWinControl;
+function OpenSaveFileDialog(Parent: TWinControl;   // EAB Improved to work better with TOpenDialog and TSaveDialog
                             const DefExt,
                             Filter,
                             InitialDir,
                             Title: string;
-                            var FileName: string;
+                            var FileName: String;
+                            var Files: TStrings;
                             MustExist,
                             OverwritePrompt,
                             NoChangeDir,
@@ -394,12 +396,15 @@ begin
   if OverwritePrompt then ofn.Flags := ofn.Flags or OFN_OVERWRITEPROMPT;
   if NoChangeDir then ofn.Flags := ofn.Flags or OFN_NOCHANGEDIR;
 
+  //ofn.Flags := ofn.Flags or OFN_ALLOWMULTISELECT;
+
   if DoOpen then
   begin
     if GetOpenFileName(ofn) then
     begin
       Result := True;
       FileName := StrPas(szFile);
+      //if
     end;
   end
   else

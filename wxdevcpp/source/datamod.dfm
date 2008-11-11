@@ -85,26 +85,6 @@ object dmMain: TdmMain
     Left = 383
     Top = 75
   end
-  object OpenDialog: TOpenDialog
-    Filter = 
-      'Dev-C++ project files|*.dev|C and C++ files|*.c;*.cpp|C++ files|' +
-      '*.cpp|C files|*.c|Header files|*.h|C++ Header files|*.hpp|Resour' +
-      'ce header|*.rh|Resource files|*.rc|Dev-C++ Project, C/C++ and re' +
-      'source files|*.c;*.cpp;*.dev;*.rc|All files (*.*)|*.*'
-    FilterIndex = 9
-    Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Title = 'Open file'
-    Left = 149
-    Top = 378
-  end
-  object SaveDialog: TSaveDialog
-    DefaultExt = 'cpp'
-    Filter = 'Dev-C++ project file (*.dev)|*.dev'
-    Options = [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
-    Title = 'Create new project'
-    Left = 500
-    Top = 241
-  end
   object ProjectImage_Gnome: TImageList
     Left = 266
     Top = 184

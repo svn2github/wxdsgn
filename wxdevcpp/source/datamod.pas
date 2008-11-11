@@ -32,7 +32,7 @@ uses
   SynEditExport, SynExportHTML, SynExportRTF,
   SynEditHighlighter, SynHighlighterCpp, SynEditPrint,
   oysUtils, CodeIns, SynHighlighterRC, SynCompletionProposal,
-  SynEditMiscClasses, SynEditSearch, SynHighlighterAsm, SynHighlighterMulti;
+  SynEditMiscClasses, SynEditSearch, SynHighlighterAsm, SynHighlighterMulti, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QMenus, QDialogs, QImgList, QControls,
@@ -51,8 +51,6 @@ type
     SynExporterHTML: TSynExporterHTML;
     PrinterSetupDialog: TPrinterSetupDialog;
     SynEditPrint: TSynEditPrint;
-    OpenDialog: TOpenDialog;
-    SaveDialog: TSaveDialog;
     ProjectImage_Gnome: TImageList;
     MenuImages_Gnome: TImageList;
     HelpImages_Gnome: TImageList;
@@ -108,6 +106,8 @@ type
     function GetMRU(index: integer): string;
   public
     fProjectCount: integer;
+    SaveDialog: TSaveDialogEx;
+    OpenDialog: TOpenDialogEx;
     procedure AddtoHistory(s: string);
     procedure RemoveFromHistory(s: string);
     procedure ClearHistory;
@@ -151,6 +151,9 @@ begin
   CppMultiSyn.Schemes[0].EndExpr   := '\}';
   CppMultiSyn.Schemes[1].StartExpr := '(asm|_asm|__asm)(['#32#9']+)';
   CppMultiSyn.Schemes[1].EndExpr := '(;*)$';
+
+  SaveDialog := TSaveDialogEx.Create(MainForm);
+  OpenDialog := TOpenDialogEx.Create(MainForm);
 end;
 
 procedure TdmMain.DataModuleDestroy(Sender: TObject);

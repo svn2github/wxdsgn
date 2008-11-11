@@ -2708,7 +2708,6 @@ var
   CFilter, CppFilter, HFilter: Integer;
   boolIsRC:Boolean;
   ccFile,hfile:String;
-  save: Boolean;
 {$IFDEF PLUGIN_BUILD}
   j: Integer;
   filters: TStringList;
@@ -2846,15 +2845,7 @@ begin
     else
       InitialDir := fProject.Directory;
 
-    s := FileName;
-    if IsWindowsVista then
-    begin
-        save := OpenSaveFileDialog(MainForm, DefaultExt, Filter, InitialDir, Title, s, false, false, false, false);
-        FileName := s;
-    end
-    else
-        save := Execute;
-    if save then
+    if Execute then
     begin
       s := FileName;
       if FileExists(s) and (MessageDlg(Lang[ID_MSG_FILEEXISTS], mtWarning, [mbYes, mbNo], 0) = mrNo) then
@@ -3786,8 +3777,7 @@ end;
 
 procedure TMainForm.actNewProjectExecute(Sender: TObject);
 var
-  s: string;
-  save: Boolean;
+ s: String;
 {$IFDEF PLUGIN_BUILD}
  i: Integer;
 {$ENDIF}
@@ -3820,14 +3810,8 @@ begin
         Filter := FLT_PROJECTS;
         InitialDir := devDirs.Default;
         FileName := s;
-        if IsWindowsVista then
-        begin
-            save := OpenSaveFileDialog(MainForm, '', Filter, InitialDir, Title, s, false, false, false, false);
-            FileName := s;
-        end
-        else
-            save := Execute;
-        if not save then
+
+        if not Execute then
         begin
           Dec(dmMain.fProjectCount);
           Exit;
@@ -7650,23 +7634,12 @@ begin
 end;
 
 procedure TMainForm.actSaveProjectAsExecute(Sender: TObject);
-var
-    save: Boolean;
-    s: String;
 begin
   if not Assigned(fProject) then
     Exit;
   with dmMain.SaveDialog do begin
     Filter := FLT_PROJECTS;
-    s := '';
-    if IsWindowsVista then
-    begin
-        save := OpenSaveFileDialog(MainForm, '', Filter, InitialDir, Title, s, false, false, false, false);
-        FileName := s;
-    end
-    else
-        save := Execute;
-    if save then begin
+    if Execute then begin
       fProject.FileName := FileName;
       fProject.Save;
       UpdateAppTitle;
