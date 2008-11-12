@@ -185,6 +185,7 @@ contains
   wxversion in 'wxversion.pas',
   WxUtils in 'components\wxUtils.pas',
   xProcs in '..\..\xprocs.pas',
-  Hashes in '..\..\packages\Hashes.pas';
+  Hashes in '..\..\packages\Hashes.pas',
+  OpenSaveDialogs in '..\..\OpenSaveDialogs.pas';
 
 end.
