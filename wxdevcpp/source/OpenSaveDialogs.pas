@@ -89,6 +89,8 @@ begin
         OpenDialog.Options := Options;
 
         Result := OpenDialog.Execute;
+        FileName := OpenDialog.FileName;
+        Files := OpenDialog.Files;
     end;
 
 end;
@@ -125,7 +127,10 @@ begin
         SaveDialog.FileName := FileName;
         SaveDialog.FilterIndex := FilterIndex;
         SaveDialog.Options := Options;
+
         Result := SaveDialog.Execute;
+        FileName := SaveDialog.FileName;
+        Files := SaveDialog.Files;
     end;
 
 end;

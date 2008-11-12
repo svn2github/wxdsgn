@@ -392,11 +392,12 @@ begin
       lpstrDefExt := PChar(DefExt);
   end;
 
+  //  EAB TODO: Add support for all flags: [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
   if MustExist then ofn.Flags := ofn.Flags or OFN_FILEMUSTEXIST;
   if OverwritePrompt then ofn.Flags := ofn.Flags or OFN_OVERWRITEPROMPT;
   if NoChangeDir then ofn.Flags := ofn.Flags or OFN_NOCHANGEDIR;
-
-  //ofn.Flags := ofn.Flags or OFN_ALLOWMULTISELECT;
+  ofn.Flags := ofn.Flags or OFN_ALLOWMULTISELECT;
+  ofn.Flags := ofn.Flags or OFN_EXPLORER;
 
   if DoOpen then
   begin

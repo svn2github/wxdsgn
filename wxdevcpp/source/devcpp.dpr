@@ -245,6 +245,8 @@ begin
   //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   MainForm.DoCreateEverything;
 
+  frmFind.ParentWindow := MainForm.Handle;
+  frmReplace.ParentWindow := MainForm.Handle;
   // EAB: try to fix include directories with plugins
   InitializeOptionsAfterPlugins;
 

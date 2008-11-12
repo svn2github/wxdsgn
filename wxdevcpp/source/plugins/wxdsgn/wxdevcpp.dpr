@@ -256,7 +256,6 @@ begin
   //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   MainForm.DoCreateEverything;
 
-  //frmIncremental.ParentWindow := MainForm.Handle;
   frmFind.ParentWindow := MainForm.Handle;
   frmReplace.ParentWindow := MainForm.Handle;
   // EAB: try to fix include directories with plugins
