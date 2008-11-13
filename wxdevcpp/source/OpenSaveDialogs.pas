@@ -27,6 +27,7 @@ public
     HistoryList: TStrings;
     function Execute: Boolean;
     constructor Create(AOwner: TWinControl);
+    destructor Destroy; override;
 end;
 
 type
@@ -48,6 +49,7 @@ public
     HistoryList: TStrings;
     function Execute: Boolean;
     constructor Create(AOwner: TWinControl);
+    destructor Destroy; override;
 end;
 
 implementation
@@ -63,6 +65,7 @@ begin
     InitialDir := '';
     Title := '';
     FileName := '';
+    Files := TStringList.Create;
 
     OpenDialog := TOpenDialog.Create(ParentWND);
 end;
@@ -95,6 +98,12 @@ begin
 
 end;
 
+destructor TOpenDialogEx.Destroy;
+begin
+    Files.Free;
+    OpenDialog.Free;
+end;
+
 constructor TSaveDialogEx.Create(AOwner: TWinControl);
 begin
     ParentWND := AOwner;
@@ -103,6 +112,7 @@ begin
     InitialDir := '';
     Title := '';
     FileName := '';
+    Files := TStringList.Create;
 
     SaveDialog := TSaveDialog.Create(ParentWND);
 
@@ -135,5 +145,10 @@ begin
 
 end;
 
+destructor TSaveDialogEx.Destroy;
+begin
+    Files.Free;
+    SaveDialog.Free;
+end;
 
 end.

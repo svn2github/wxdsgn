@@ -162,8 +162,9 @@ var
   VerInfo: TOSVersioninfo;
 begin
   VerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
-  GetVersionEx(VerInfo);        
+  GetVersionEx(VerInfo);
   Result := VerInfo.dwMajorVersion >= 6;
+  //Result := false;
 end;  
 
 const
@@ -373,8 +374,13 @@ function OpenSaveFileDialog(Parent: TWinControl;   // EAB Improved to work bette
 var
   ofn: TOpenFileName;
   szFile: array[0..MAX_PATH] of Char;
+  temp, dir: String;
+  idx: Integer;
 begin
   Result := False;
+  temp := '';
+  idx := 0;
+  Files.Clear;
   FillChar(ofn, SizeOf(TOpenFileName), 0);
   with ofn do
   begin
@@ -405,7 +411,29 @@ begin
     begin
       Result := True;
       FileName := StrPas(szFile);
-      //if
+
+      // EAB Multi-file support
+      while idx < MAX_PATH do
+      begin
+          while szFile[idx] <> #0 do
+          begin
+            temp := temp + szFile[idx];
+            Inc(idx);
+          end;
+          if (Files.Count = 0) and (dir = '') then
+            dir := temp
+          else
+            Files.Add(dir + '\' + temp);
+          temp := '';
+          Inc(idx);
+          if szFile[idx] = #0 then
+          begin
+            if (Files.Count = 0) and (dir <> '') then
+                Files.Add(dir);
+            Exit;
+          end;
+       end;
+
     end;
   end
   else
