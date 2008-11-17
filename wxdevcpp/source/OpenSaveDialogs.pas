@@ -79,7 +79,30 @@ begin
     if IsWindowsVista then
     begin
         fileN := FileName;
-        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files, false, false, false, true);
+        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files,
+            (ofReadOnly in Options),
+            (ofOverwritePrompt in Options),
+            (ofHideReadOnly in Options),
+            (ofNoChangeDir in Options),
+            (ofShowHelp in Options),
+            (ofNoValidate in Options),
+            (ofAllowMultiSelect in Options),
+            (ofExtensionDifferent in Options),
+            (ofPathMustExist in Options),
+            (ofFileMustExist in Options),
+            (ofCreatePrompt in Options),
+            (ofShareAware in Options),
+            (ofNoReadOnlyReturn in Options),
+            (ofNoTestFileCreate in Options),
+            (ofNoNetworkButton in Options),
+            (ofNoLongNames in Options),
+            (ofOldStyleDialog in Options),
+            (ofNoDereferenceLinks in Options),
+            (ofEnableIncludeNotify in Options),
+            (ofEnableSizing in Options),
+            (ofDontAddToRecent in Options),
+            true);
+        FileName := fileN;
     end
     else
     begin
@@ -126,7 +149,30 @@ begin
     if IsWindowsVista then
     begin
         fileN := FileName;
-        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files, false, false, false, false);
+        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files,
+            (ofReadOnly in Options),
+            (ofOverwritePrompt in Options),
+            (ofHideReadOnly in Options),
+            (ofNoChangeDir in Options),
+            (ofShowHelp in Options),
+            (ofNoValidate in Options),
+            (ofAllowMultiSelect in Options),
+            (ofExtensionDifferent in Options),
+            (ofPathMustExist in Options),
+            (ofFileMustExist in Options),
+            (ofCreatePrompt in Options),
+            (ofShareAware in Options),
+            (ofNoReadOnlyReturn in Options),
+            (ofNoTestFileCreate in Options),
+            (ofNoNetworkButton in Options),
+            (ofNoLongNames in Options),
+            (ofOldStyleDialog in Options),
+            (ofNoDereferenceLinks in Options),
+            (ofEnableIncludeNotify in Options),
+            (ofEnableSizing in Options),
+            (ofDontAddToRecent in Options),
+            false);
+        FileName := fileN;
     end
     else
     begin

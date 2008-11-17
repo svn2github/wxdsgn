@@ -46,9 +46,27 @@ function OpenSaveFileDialog(Parent: TWinControl;
                             Title: string;
                             var FileName: String;
                             var Files: TStrings;
-                            MustExist,
+                            ReadOnly,
                             OverwritePrompt,
+                            HideReadOnly,
                             NoChangeDir,
+                            ShowHelp,
+                            NoValidate,
+                            AllowMultiSelect,
+                            ExtensionDifferent,
+                            PathMustExist,
+                            FileMustExist,
+                            CreatePrompt,
+                            ShareAware,
+                            NoReadOnlyReturn,
+                            NoTestFileCreate,
+                            NoNetworkButton,
+                            NoLongNames,
+                            OldStyleDialog,
+                            NoDereferenceLinks,
+                            EnableIncludeNotify,
+                            EnableSizing,
+                            DontAddToRecent,
                             DoOpen: Boolean): Boolean;
 
 
@@ -366,9 +384,27 @@ function OpenSaveFileDialog(Parent: TWinControl;   // EAB Improved to work bette
                             Title: string;
                             var FileName: String;
                             var Files: TStrings;
-                            MustExist,
+                            ReadOnly,
                             OverwritePrompt,
+                            HideReadOnly,
                             NoChangeDir,
+                            ShowHelp,
+                            NoValidate,
+                            AllowMultiSelect,
+                            ExtensionDifferent,
+                            PathMustExist,
+                            FileMustExist,
+                            CreatePrompt,
+                            ShareAware,
+                            NoReadOnlyReturn,
+                            NoTestFileCreate,
+                            NoNetworkButton,
+                            NoLongNames,
+                            OldStyleDialog,
+                            NoDereferenceLinks,
+                            EnableIncludeNotify,
+                            EnableSizing,
+                            DontAddToRecent,
                             DoOpen: Boolean): Boolean;
 // uses commdlg
 var
@@ -398,15 +434,33 @@ begin
       lpstrDefExt := PChar(DefExt);
   end;
 
-  //  EAB TODO: Add support for all flags: [ofHideReadOnly, ofNoChangeDir, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
-  if MustExist then ofn.Flags := ofn.Flags or OFN_FILEMUSTEXIST;
+  if ReadOnly then ofn.Flags := ofn.Flags or OFN_READONLY;
   if OverwritePrompt then ofn.Flags := ofn.Flags or OFN_OVERWRITEPROMPT;
+  if HideReadOnly then ofn.Flags := ofn.Flags or OFN_HIDEREADONLY;
   if NoChangeDir then ofn.Flags := ofn.Flags or OFN_NOCHANGEDIR;
-  ofn.Flags := ofn.Flags or OFN_ALLOWMULTISELECT;
-  ofn.Flags := ofn.Flags or OFN_EXPLORER;
+  if ShowHelp then ofn.Flags := ofn.Flags or OFN_SHOWHELP;
+  if NoValidate then ofn.Flags := ofn.Flags or OFN_NOVALIDATE;
+  if AllowMultiSelect then ofn.Flags := ofn.Flags or OFN_ALLOWMULTISELECT;
+  if ExtensionDifferent then ofn.Flags := ofn.Flags or OFN_EXTENSIONDIFFERENT;
+  if PathMustExist then ofn.Flags := ofn.Flags or OFN_PATHMUSTEXIST;
+  if FileMustExist then ofn.Flags := ofn.Flags or OFN_FILEMUSTEXIST;
+  if CreatePrompt then ofn.Flags := ofn.Flags or OFN_CREATEPROMPT;
+  if ShareAware then ofn.Flags := ofn.Flags or OFN_SHAREAWARE;
+  if NoReadOnlyReturn then ofn.Flags := ofn.Flags or OFN_NOREADONLYRETURN;
+  if NoTestFileCreate then ofn.Flags := ofn.Flags or OFN_NOTESTFILECREATE;
+  if NoNetworkButton then ofn.Flags := ofn.Flags or OFN_NONETWORKBUTTON;
+  if NoLongNames then ofn.Flags := ofn.Flags or OFN_NOLONGNAMES;
+  //if OldStyleDialog then ofn.Flags := ofn.Flags or OFN_OLDSTYLEDIALOG;
+  if NoDereferenceLinks then ofn.Flags := ofn.Flags or OFN_NODEREFERENCELINKS;
+  if EnableIncludeNotify then ofn.Flags := ofn.Flags or OFN_ENABLEINCLUDENOTIFY;
+  if EnableSizing then ofn.Flags := ofn.Flags or OFN_ENABLESIZING;
+  if DontAddToRecent then ofn.Flags := ofn.Flags or OFN_DONTADDTORECENT;
+  //if ShowHidden then ofn.Flags := ofn.Flags or OFN_ShowHidden;
 
   if DoOpen then
   begin
+    ofn.Flags := ofn.Flags or OFN_ALLOWMULTISELECT;
+    ofn.Flags := ofn.Flags or OFN_EXPLORER;
     if GetOpenFileName(ofn) then
     begin
       Result := True;
