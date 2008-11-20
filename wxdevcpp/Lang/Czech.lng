@@ -220,7 +220,7 @@ Ver=1
 303=Vısledky hledání
 304=Schovat
 305=Debugger
-
+306=Seznam TODO
 
 
 310=&Vymazat
@@ -245,7 +245,6 @@ Ver=1
 325=Záznam kompilace:
 326=Celkem chyb:
 327=Velikost vıstupu:
-
 
 
 330=Sledované promìnné
@@ -350,10 +349,10 @@ Ver=1
 451=Zobrazit skryté znaky
 452=Zobrazovat tipy
 453=Vysvítit související závorky
-454=Ukonèovat soubor novım øádkem
-455=Vysvi aktuální øádek
-456=Nastavit na systémovou hodnotu HighlightText
-457=Nastavit stejnì jako pro prázdné znaky
+454=Zajistit prázdnı øádek na konci souboru
+455=Zvıraznìní aktuálního øádku
+456=Vıchozí systémová barva
+457=Nastaví vıchozí systémovou barvu pro mezeru
 
 
 460=Font v editoru:
@@ -479,7 +478,7 @@ Ver=1
 580=O Dev-C++ :)
 581=inseculous@users.sourceforge.net
 582=GNU General Public License
-583=Informace o kontaktech
+583=Kontaktní informace
 584=Bloodshed Software:
 585=Kompilátor Mingw:
 586=Diskuzní fórum o Dev-C++:
@@ -593,7 +592,7 @@ Ver=1
 
 
 700=Vlastnosti kompilátoru
-701=Compilátor
+701=Kompilátor
 702=Adresáøe
 703=Typ kódu/Optimalizace
 704=Linker
@@ -911,7 +910,7 @@ Ver=1
 
 
 
-2500=&Ok
+2500=&OK
 2501=&Storno
 2502=&Nápovìda
 2503=&Implicitní
@@ -926,7 +925,7 @@ Ver=1
 2512=Na&jít
 2513=Nah&radit
 2514=&Smazat neplatné
-2515=Nahradi &vše
+2515=Nahradit &vše
 2516=Procházet
 2517=Odstranit
 2518=Pøejmenovat
@@ -970,11 +969,11 @@ Ver=1
 2813=Asociace externího programu:
 
 
-2814=Sledovat promìnnou pod myší
-2815=Oznamovat chyby sledování
-2816=Ladìní promìnnıch
+2814=Zobrazit pøi ukázání myší
+2815=Oznamovat chyby
+2816=Hodnoty promìnnıch
 
-
+2820=Zvıraznit aktivní záloku editoru
 
 2900=Parametry...
 2901=Zkompilovat aktuální soubor
@@ -990,64 +989,64 @@ Ver=1
 
 
 
-3001=Repository
+3001=Repozitáø
 3002=Globální nastavení
-3003=Checkout Options
-3004=Commit Options
-3005=Update Options
-3006=Diff Options
-3007=Log Options
+3003=Nastavení ovìøení
+3004=Nastavení zapisování
+3005=Nastavení aktualizace
+3006=Nastavení rozdílù
+3007=Nastavení záznamu
 3008=Vıstup CVS
 
 
 
-3009=Import
-3010=Checkout
-3011=Commit
-3012=Update
-3013=Diff
-3014=Log
-3015=Import directory
-3016=Action
-3017=Vendor
-3018=Release
-3019=Log message
-3020=Module name
+3009=Importovat
+3010=Stáhnout
+3011=Zapsat
+3012=Aktualizovat
+3013=Rozdíl
+3014=Záznam
+3015=Adresáø pro import
+3016=Akce
+3017=Autor
+3018=Vydání
+3019=Zpráva ze záznamu
+3020=Název modulu
 3021=Extension
-3022=Checkout as
-3023=Checkout directory
-3024=Recurse into sub-directories
+3022=Stáhnout jako
+3023=Stáhnout adresáø
+3024=Pokraèovat do pod-adresáøù
 3025=Reset any sticky options
-3026=Create missing directories
-3027=Remove empty directories
-3028=Drop changes made locally
-3029=Before date
-3030=Revision/branch/tag
-3031=If not found, get the most recent
-3032=Other revisions
-3033=Perform a unified diff
-3034=Compare local file with the same remote revision/tag
-3035=Compare local file with another remote revision
-3036=Compare two remote revisions
-3037=Is date
-3038=Log the default branch
-3039=List only the RCS filenames
-3040=Don't print tag names
-3041=Filter
-3042=By revision/tag
-3043=By date
-3044=By user
-3045=Repository
-3046=Details
-3047=Access method
-3048=User
+3026=Vytvoøit chybìjící adresáøe
+3027=Odstranit prázdné adresáøe
+3028=Zahodit zmìny provedené lokálnì
+3029=Datum
+3030=Revize/vìtev/oznaèení
+3031=Neexistuje-li, získat nejnovìjší
+3032=Ostatní revize
+3033=Porovnat sjednocenì
+3034=Porovnat místní soubor se vzdálenou revizí
+3035=Porovnat místní soubor s jinou vzdálenou revizí
+3036=Porovnat dvì vzdálené revize
+3037=Datum
+3038=Zaznamenávat hlavní vìtev
+3039=Vypsat pouze RCS názvy souborù
+3040=Nevypisovat názvy oznaèení
+3041=Filtr
+3042=Podle revizí/znaèek
+3043=Podle data
+3044=Podle uivatele
+3045=Repozitáø
+3046=Detaily
+3047=Pøístupová metoda
+3048=Uivatel
 3049=Server
-3050=Remote directory
-3051=Add
-3052=Remove
-3053=Add Options
-3054=Remove Options
-3055=Remove the file from disk also...
+3050=Vzdálenı adresáø
+3051=Pøidat
+3052=Odebrat
+3053=Nastavení vkládání
+3054=Nastavení odebírání
+3055=Odstranit soubor také z disku...
 
 
 
@@ -1090,3 +1089,7 @@ Ver=1
 3400=Odstranit nadbyteèné informace z programu
 3401=Generovat instrukce pro procesor øady:
 3402=Povolit pouití vnitøních funkcí
+
+3710=&Pokraèovat v provádìní 
+3700=Zobrazit Panely 
+3701=Zobrazit Panely Pluginu
