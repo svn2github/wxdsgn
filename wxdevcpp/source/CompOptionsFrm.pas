@@ -118,7 +118,8 @@ type
     procedure btnBrowseClick(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
     procedure UpDownClick(Sender: TObject);
-    procedure PageControlChange(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure edEntryKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
@@ -162,11 +163,12 @@ uses
 {$R *.dfm}
 
 const
-  Help_Topics: array[0..3] of string = (
-    'CompOpt_Directories',
-    'CompOpt_Compiler',
-    'CompOpt_CodeGen',
-    'CompOpt_Linker');
+  Help_Topics: array[0..4] of string = (
+    'html\compiler_compiler.html',
+    'html\compiler_settings.html',    
+    'html\compiler_dirs.html',
+    'html\compiler_programs.html',
+    'html\compiler_wxwidgets.html');
 
 procedure TCompForm.btnCancelClick(Sender: TObject);
 begin
@@ -263,7 +265,7 @@ end;
 procedure TCompForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\compiler_options.html')));
+  HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\compiler_options.html')));
   //Application.HelpJump('ID_COMPILEROPTIONS');
 end;
 
@@ -412,9 +414,20 @@ begin
   btnDelInval.Enabled:= lstDirs.Items.Count> 0;
 end;
 
-procedure TCompForm.PageControlChange(Sender: TObject);
+procedure TCompForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  HelpKeyword := Help_Topics[MainPages.ActivePageIndex];
+{$IFDEF WIN32}
+  if key = vk_F1 then
+{$ENDIF}
+{$IFDEF LINUX}
+  if key = XK_F1 then
+{$ENDIF}
+  begin
+    HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
+    HelpKeyword := Help_Topics[MainPages.ActivePageIndex];
+    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(HelpKeyword)));
+  end;
 end;
 
 procedure TCompForm.edEntryKeyUp(Sender: TObject; var Key: Word;

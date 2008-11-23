@@ -323,7 +323,8 @@ begin
 {$IFDEF LINUX}
   if key = XK_F1 then
 {$ENDIF}
-    Application.HelpJump(HelpKeyword);
+    HtmlHelp(MainForm.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(HelpKeyword)));
+    //Application.HelpJump(HelpKeyword);
 end;
 
 { ---------- Font Methods ---------- }

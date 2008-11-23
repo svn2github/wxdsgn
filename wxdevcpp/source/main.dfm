@@ -1335,12 +1335,10 @@ object MainForm: TMainForm
   Menu = MainMenu
   OldCreateOrder = False
   Position = poDefault
-  OnActivate = FormActivate
   OnClose = FormClose
   OnContextPopup = FormContextPopup
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
@@ -1499,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 450
-          Height = 73
+          Height = 74
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True

@@ -105,9 +105,9 @@ type
 
   private
     plugin_name: string;
-    editorNames: Array of String;
   public
     ownerForm: TForm;
+    editorNames: Array of String;
     function GetCurrentFileName: string;
     function GetCurrentClassName: string;
  public

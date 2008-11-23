@@ -19,6 +19,7 @@ object CompForm: TCompForm
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   DesignSize = (
     449
     441)

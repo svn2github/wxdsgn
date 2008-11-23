@@ -114,7 +114,6 @@ type
     procedure btnOkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
-    procedure PagesMainChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
@@ -134,7 +133,8 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme, hh, uvista;
+  Filectrl, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme, hh, uvista,
+  main;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, devcfg, MultiLangSupport, version, datamod, utils, FileAssocs, ImageTheme;
@@ -144,12 +144,12 @@ uses
 
 const
   Help_Topics: array[0..5] of string =
-  ('EnviroOpt_General',
-    'EnviroOpt_Interface',
-    'EnviroOpt_FilesDirs',
-    'EnviroOpt_ExternalProgs',
-    'EnviroOpt_FilesAssocs',
-    'EnviroOpt_CVSSupport');
+  ('html\environ_general.html',
+    'html\environ_interface.html',
+    'html\environ_filesdirs.html',
+    'html\environ_general.html',
+    'html\environ_fileassoc.html',
+    'html\environ_cvs.html');
 
 procedure TEnviroForm.BrowseClick(Sender: TObject);
 var
@@ -460,13 +460,7 @@ end;
 procedure TEnviroForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\environ_general.html')));;
-  //Application.HelpJump('ID_ENVIRONMENT');
-end;
-
-procedure TEnviroForm.PagesMainChange(Sender: TObject);
-begin
-  HelpKeyword := Help_Topics[PagesMain.ActivePageIndex];
+  HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\environ_general.html')));
 end;
 
 procedure TEnviroForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -478,8 +472,11 @@ begin
 {$IFDEF LINUX}
   if key = XK_F1 then
 {$ENDIF}
-    Application.HelpJump(HelpKeyword);
-    HtmlHelp(self.handle, PChar(HelpKeyword), HH_DISPLAY_TOPIC, 0);;
+  begin
+    HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
+    HelpKeyword := Help_Topics[PagesMain.ActivePageIndex];
+    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(HelpKeyword)));
+  end;
 end;
 
 procedure TEnviroForm.FormCreate(Sender: TObject);

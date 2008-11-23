@@ -93,8 +93,11 @@ uses
   end;
        fDesigner.Visible := True;
 
-       fDesigner.Left := 8;
-       fDesigner.Top := 8;
+       if not wx_designer.ELDesigner1.Floating then
+       begin
+           fDesigner.Left := 8;
+           fDesigner.Top := 8;
+       end;
 
        if fDesignerDefaultData then
        begin

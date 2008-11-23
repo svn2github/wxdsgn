@@ -119,6 +119,7 @@ var
   FileName: string;
   strLstXRCCode: TStringList;
   editorName: String;
+  i: Integer;
 
 begin
   wx_designer.ELDesigner1.Grid.Visible := cbGridVisible.Checked;
@@ -167,29 +168,32 @@ begin
     wx_designer.ELDesigner1.ShowingHints :=
       [htInsert] + wx_designer.ELDesigner1.ShowingHints;
 
-  FileName := wx_designer.main.GetActiveEditorName;
-
   if cbFloating.Checked then
   begin
     wx_designer.ELDesigner1.Floating := cbFloating.Checked;
-    if wx_designer.editors.ItemCount > 0 then
+    for i := 0 to wx_designer.editors.ItemCount - 1 do
     begin
-        SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD xor (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
-        Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, 0);
-        (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).btnFloatingDesigner.Visible := true;
+        SetWindowLong((wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD xor (GetWindowLong((wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
+        Windows.SetParent((wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Handle, 0);
+        (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).btnFloatingDesigner.Visible := true;
+        if i > 0 then
+        begin
+            (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Top := (wx_designer.editors[wx_designer.editorNames[i - 1]] as TWXEditor).GetDesigner.Top + 25;
+            (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Left := (wx_designer.editors[wx_designer.editorNames[i - 1]] as TWXEditor).GetDesigner.Left + 15;
+        end;
     end;
   end
   else
   begin
     wx_designer.ELDesigner1.Floating := cbFloating.Checked;
-    if wx_designer.editors.ItemCount > 0 then
+    for i := 0 to wx_designer.editors.ItemCount - 1 do
     begin
-        (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).btnFloatingDesigner.Visible := false;
-        SetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD or
-              (GetWindowLong((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
-        Windows.SetParent((wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Handle, (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).ScrollDesign.Handle);
-        (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Top := 8;
-        (wx_designer.editors[ExtractFileName(FileName)] as TWXEditor).GetDesigner.Left := 8;
+        (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).btnFloatingDesigner.Visible := false;
+        SetWindowLong((wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Handle, GWL_STYLE, WS_CHILD or
+              (GetWindowLong((wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Handle, GWL_STYLE)));
+        Windows.SetParent((wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Handle, (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).ScrollDesign.Handle);
+        (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Top := 8;
+        (wx_designer.editors[wx_designer.editorNames[i]] as TWXEditor).GetDesigner.Left := 8;
     end;
   end;
 

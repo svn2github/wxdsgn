@@ -90,9 +90,9 @@ uses
   devShortcuts, StrUtils, devFileMonitor, devMonitorTypes, DdeMan, XPMenu,
   CVSFm, ImageTheme, JvComponentBase, JvDockControlForm, JvDockSupportControl,
 {$IFDEF PLUGIN_BUILD}
-  SynEdit, iplugin, iplugin_bpl, iplugin_dll, iplugger, // < -- EAB
+  SynEdit, iplugin, iplugin_bpl, iplugin_dll, iplugger,
   controlbar_win32_events, hashes,
-  xprocs, SynHighlighterRC, hh, hh_funcs,
+  xprocs, SynHighlighterRC, hh, hh_funcs, VistaAltFixUnit,
 
 {$IFNDEF COMPILER_7_UP}
   ThemeMgr,
@@ -114,29 +114,6 @@ uses
   devShortcuts, StrUtils, devFileMonitor, devMonitorTypes,
   CVSFm, ImageTheme, Types;
 {$ENDIF}
-
-const 
-CLSID_TaskbarList: TGUID = '{56FDF344-FD6D-11d0-958A-006097C9A090}'; 
-type 
-ITaskbarList = interface
-['{56FDF342-FD6D-11d0-958A-006097C9A090}'] 
-{ virtual HRESULT STDMETHODCALLTYPE HrInit( void) = 0;} 
-   function HrInit: HResult; stdcall; 
-{ virtual HRESULT STDMETHODCALLTYPE AddTab( 
-            /* [in] */ HWND hwnd) = 0; } 
-   function AddTab(hwnd: Cardinal): HResult; stdcall; 
-{ virtual HRESULT STDMETHODCALLTYPE DeleteTab( 
-            /* [in] */ HWND hwnd) = 0; } 
-   function DeleteTab(hwnd: Cardinal): HResult; stdcall;
-
-{ virtual HRESULT STDMETHODCALLTYPE ActivateTab( 
-            /* [in] */ HWND hwnd) = 0; } 
-   function ActivateTab(hwnd: Cardinal): HResult; stdcall; 
-
-{ virtual HRESULT STDMETHODCALLTYPE SetActiveAlt( 
-            /* [in] */ HWND hwnd) = 0; } 
-   function SetActiveAlt(hwnd: Cardinal): HResult; stdcall; 
-end;
 
 type
   TMainForm = class(TForm{$IFDEF PLUGIN_BUILD}, iplug{$ENDIF})
@@ -989,9 +966,6 @@ type
     procedure PageControlDrawTab(Control: TCustomTabControl;
       TabIndex: Integer; const Rect: TRect; Active: Boolean);
     procedure FormCreate(Sender: TObject);
-    procedure FormHide(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
-
 
   private
     HelpWindow: HWND;
@@ -1014,8 +988,6 @@ type
     BottomDockTabs: TJvDockTabHostForm;
 
     themeManager: TThemeManager;
-    modalState: Boolean;
-    modalChild: HWND;
 
     function AskBeforeClose(e: TEditor; Rem: boolean;var Saved:Boolean): boolean;
     procedure AddFindOutputItem(line, col, unit_, message: string);
@@ -1118,7 +1090,6 @@ type
     fDebugger: TDebugger;
     CacheCreated: Boolean;
     frmProjMgrDock: TForm;
-    FTaskbarList: ITaskbarList;
   
 {$IFDEF PLUGIN_BUILD}
     plugins: Array of IPlug_In;
@@ -1267,8 +1238,8 @@ type
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
-  //inherited;
-  inherited CreateParams(Params);
+  inherited;
+  //inherited CreateParams(Params);
   if IsWindowsVista then
     Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
   StrCopy(Params.WinClassName, cWindowClassName);
@@ -1783,7 +1754,6 @@ begin
   try
 {$ENDIF}
     XPMenu.Active := devData.XPTheme;
-    //WebUpdateForm.XPMenu.Active := devData.XPTheme;
 
 {$IFNDEF COMPILER_7_UP}
     //Initialize theme support
@@ -1842,9 +1812,6 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-
-  if IsWindowsVista then
-    FTaskbarList.AddTab(Handle);
 
   //TODO: lowjoel: Do we need to track whether this is the first show? Can someone
   //               trace into the code to see if this function is called more than once?
@@ -9626,13 +9593,10 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
     if IsWindowsVista then
     begin
-        FTaskbarList := CreateComObject(CLSID_TaskbarList) as ITaskbarList;
-        FTaskbarList.HrInit;
         ShowWindow(Application.Handle, SW_HIDE);
         SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
         ShowWindow(Application.Handle, SW_SHOW);
-        modalState := false;
-        modalChild := 0;
+        TVistaAltFix.Create(Self);
     end;
 end;
 
@@ -9658,6 +9622,7 @@ begin
  else inherited;
 end;
 
+
 procedure TMainForm.WMActivate(var Msg: TWMActivate);
 begin
  if IsWindowsVista then
@@ -9669,18 +9634,6 @@ begin
     end else
         inherited;
  end;
-end;
-
-procedure TMainForm.FormHide(Sender: TObject);
-begin
-    if IsWindowsVista then
-        FTaskbarList.DeleteTab(Handle);
-end;
-
-procedure TMainForm.FormActivate(Sender: TObject);
-begin
-    if IsWindowsVista then
-        FTaskbarList.ActivateTab(Handle);
 end;
 
 end.
