@@ -242,11 +242,8 @@ begin
   Application.CreateForm(TfrmIncremental, frmIncremental);
   Application.CreateForm(TfrmFind, frmFind);
   Application.CreateForm(TfrmReplace, frmReplace);
-  //Application.CreateForm(TWebUpdateForm, WebUpdateForm);
   MainForm.DoCreateEverything;
 
-  frmFind.ParentWindow := MainForm.Handle;
-  frmReplace.ParentWindow := MainForm.Handle;
   // EAB: try to fix include directories with plugins
   InitializeOptionsAfterPlugins;
 
