@@ -474,8 +474,7 @@ begin
 {$ENDIF}
   begin
     HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-    HelpKeyword := Help_Topics[PagesMain.ActivePageIndex];
-    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(HelpKeyword)));
+    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(Help_Topics[PagesMain.ActivePageIndex])));
   end;
 end;
 

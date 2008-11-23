@@ -179,7 +179,6 @@ type
     procedure btnEditClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
-    procedure PagesMainChange(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure lvCodeinsColumnClick(Sender: TObject; Column: TListColumn);
@@ -267,12 +266,12 @@ uses
 {$R *.dfm}
 const
   Help_Topic: array[0..5] of string =
-  ('EditorOpt_General',
-    'EditorOpt_Display',
-    'EditorOpt_Syntax',
-    'EditorOpt_Code',
-    'EditorOpt_Complete',
-    'EditorOpt_Browser');
+  ('html\editor_general.html',
+    'html\editor_display.html',
+    'html\editor_syntax.html',
+    'html\editor_code.html',
+    'html\editor_codecompletion.html',
+    'html\editor_classbrowsing.html');
 
   cBreakLine = 9;
   cABreakLine = 11;
@@ -290,7 +289,6 @@ begin
   LoadCodeIns;
   LoadFontNames;
   LoadSampleText;
-  PagesMainChange(Self);
   cbLineNumClick(Self);
 end;
 
@@ -323,8 +321,10 @@ begin
 {$IFDEF LINUX}
   if key = XK_F1 then
 {$ENDIF}
-    HtmlHelp(MainForm.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(HelpKeyword)));
-    //Application.HelpJump(HelpKeyword);
+  begin
+    HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
+    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(Help_Topic[PagesMain.ActivePageIndex])));
+  end;
 end;
 
 { ---------- Font Methods ---------- }
@@ -1009,11 +1009,6 @@ begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
   HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\editor_options.html')));;
   //Application.HelpJump('ID_EDITORSETTINGS');
-end;
-
-procedure TEditorOptForm.PagesMainChange(Sender: TObject);
-begin
-  HelpKeyword := Help_Topic[PagesMain.ActivePageIndex];
 end;
 
 procedure TEditorOptForm.btnCancelClick(Sender: TObject);

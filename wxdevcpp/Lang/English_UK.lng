@@ -78,8 +78,6 @@ Ver=1
 188=&Always Visible
 189=&Only when Needed
 190=&Toolbars
-3700=Show Panels
-3701=Show Plugin Panels
 
 # Toolbar Captions
 191=Main
@@ -143,7 +141,6 @@ Ver=1
 246=&Toggle Breakpoint
 247=&Next Step
 248=&Pause Execution
-3710=Conti&nue Execution
 249=&Add Watch
 250=&Watch Variables
 251=Stop Execution
@@ -555,7 +552,7 @@ Ver=1
 735=Displays one error per line
 
 740=Code Generation
-741=Optimisation
+741=Optimization
 745=Enable exception handling
 746=Use same size for double and float
 747=Put extra commentary information in the generated assembly code
@@ -983,3 +980,7 @@ Ver=1
 3400=Strip executable
 3401=Generate instructions for the following machine
 3402=Enable use of processor specific built-in functions
+
+3700=Show Panels
+3701=Show Plugin Panels
+3710=Conti&nue Execution

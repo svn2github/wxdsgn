@@ -1202,7 +1202,6 @@ uses
 
 var
   fFirstShow: boolean;
-  //mHHelp: THookHelpSystem;
 
 const
   cCompTab = 0;
@@ -1944,7 +1943,6 @@ begin
   DockServer.BottomDockPanel.Visible := false;
 
   themeManager.Destroy;
-//  XPMenuManager.Destroy;
   for i := 0 to pluginsCount - 1 do
   begin
 
@@ -1955,10 +1953,6 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            //UnAutoHideDockForm(panel1);
-            //if Assigned(LeftDockTabs.PageControl) then
-            //    ManualTabDockAddPage(LeftDockTabs, panel1);
-            //DockServer.LeftDockPanel.RemoveControl(panel1);
             FindDockClient(panel1).Destroy;
           end;
       end;
@@ -1970,10 +1964,6 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            //UnAutoHideDockForm(panel1);
-            //if Assigned(RightDockTabs.PageControl) then
-            //    ManualTabDockAddPage(RightDockTabs, panel1);
-            //DockServer.RightDockPanel.RemoveControl(panel1);
             FindDockClient(panel1).Destroy;
           end;
       end;
@@ -1985,10 +1975,6 @@ begin
           begin
             panel1 := items[j];
             panel1.Visible := false;
-            //UnAutoHideDockForm(panel1);
-           // if Assigned(BottomDockTabs.PageControl) then
-            //    ManualTabDockAddPage(BottomDockTabs, panel1);
-            //DockServer.BottomDockPanel.RemoveControl(panel1);
             FindDockClient(panel1).Destroy;
           end;
       end;
@@ -1999,9 +1985,6 @@ begin
         devPluginToolbarsX.AddToolbarsX(plugins[i].GetPluginName, toolbar.Left);
         devPluginToolbarsY.AddToolbarsY(plugins[i].GetPluginName, toolbar.Top);
     end;
-    //DockServer.Destroy;
-    //DockServer.RightDockPanel.Destroy;
-    //DockServer.BottomDockPanel.Destroy;
     plugins[i].Destroy;
     plugins[i] := nil;
   end;
@@ -2046,11 +2029,7 @@ begin
   unit_plugins.Free;
   {$ENDIF PLUGIN_BUILD}
 
-   //Unhook and free  Fix for help system under Vista
-   //mHHelp.Free;
    HHCloseAll;     //Close help before shutdown or big trouble
-   //XPMenu.Free;
-   //XPMenuManager.Free;
 end;
 
 procedure TMainForm.ParseCmdLine;
@@ -2859,7 +2838,12 @@ begin
 
     // EAB Comment: Why the file cannot be new? If the user chooses to save it it should be saved.
     //if (not e.New) and e.Modified then
-    if e.Modified then
+    if e.New and e.Modified then
+    begin
+      SaveFileAs(GetEditor);
+      Result := true;
+    end
+    else if e.Modified then
     begin
       //OK. The file needs to be saved. But we treat project files differently
       //from standalone files.
@@ -4657,8 +4641,9 @@ begin
 
   if fCompiler.Target = ctFile then
   begin
-    if not SaveFile(e) then
-      Exit;
+    SaveFile(e);
+    if e.New then
+        Exit;
     fCompiler.SourceFile := e.FileName;
   end
   else if fCompiler.Target = ctProject then
@@ -7013,10 +6998,6 @@ end;
 procedure TMainForm.HelpMenuItemClick(Sender: TObject);
 begin
   Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE;
-  //  Fix for help system on Vista:
-  //mHHelp := THookHelpSystem.Create(IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE, '', htHHAPI);
-  //WinExec(PChar('hh ' + IncludeTrailingBackslash(devDirs.Help) + DEV_MAINHELP_FILE), SW_SHOW);
-  //Application.HelpCommand(HELP_FINDER, 0);
   WordToHelpKeyword;
 end;
 

@@ -266,7 +266,6 @@ procedure TCompForm.btnHelpClick(Sender: TObject);
 begin
   HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
   HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar('html\compiler_options.html')));
-  //Application.HelpJump('ID_COMPILEROPTIONS');
 end;
 
 procedure TCompForm.DirTabsChange(Sender: TObject);
@@ -425,8 +424,8 @@ begin
 {$ENDIF}
   begin
     HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-    HelpKeyword := Help_Topics[MainPages.ActivePageIndex];
-    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(HelpKeyword)));
+    //HelpKeyword := Help_Topics[MainPages.ActivePageIndex];
+    HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC, DWORD(PChar(Help_Topics[MainPages.ActivePageIndex])));
   end;
 end;
 
