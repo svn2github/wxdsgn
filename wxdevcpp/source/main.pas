@@ -3237,8 +3237,8 @@ begin
 
       dmMain.RemoveFromHistory(s);
       // if project manager isn't open then open it
-      if not ShowProjectInspItem.Checked then
-        ShowProjectInspItem.OnClick(nil);
+      if (not ShowProjectInspItem.Checked) and (not fFirstShow )then
+        ShowProjectInspItem.OnClick(Self);
 
       CheckForDLLProfiling;
       UpdateAppTitle;
