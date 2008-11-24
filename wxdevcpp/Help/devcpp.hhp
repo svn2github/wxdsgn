@@ -61,6 +61,8 @@ html\editor_general.html
 html\editor_options.html
 html\editor_syntax.html
 html\compiler_options.html
+html\designer_code.html
+html\designer_options.html
 
 [INFOTYPES]
 

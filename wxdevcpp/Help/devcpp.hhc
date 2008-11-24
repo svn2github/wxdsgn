@@ -236,6 +236,19 @@
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Form Designer">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Designer options">
+				<param name="Local" value="html\designer_options.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Code generation options">
+				<param name="Local" value="html\designer_code.html">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Getting help">
 			</OBJECT>
 		<UL>

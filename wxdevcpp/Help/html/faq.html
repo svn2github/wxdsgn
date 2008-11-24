@@ -2,10 +2,19 @@
 <html><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>FAQ (Frequently Asked Questions)</title>
 
-</head><body>
+</head>
+<body>
 <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e"> <param name="Keyword" value="FAQ"> <param name="Keyword" value="Size of the executable"><param name="Keyword" value="Long compile time"><param name="Keyword" value="Large binaries"><param name="Keyword" value="wxDev-C++ book">
 </object>
 <p><a name="id_faq"></a></p>
+<div style="text-align: center;"><a href="designer_code.html">&lt;
+&nbsp;Previous &nbsp; &lt;</a> &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+<a href="index.htm">=
+Home =</a> &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+&nbsp;&nbsp;
+<a href="forums.html">&gt;
+Next &gt;</a></div>
 <h1>Frequently Asked Questions (FAQ)</h1>
 <h2>wxDev-C++ FAQ</h2>
 Please note that we have a robust <a href="http://wxforum.shadonet.com/viewforum.php?f=28">wxforum</a>
@@ -25,18 +34,17 @@ wxDev-C++ is an extension of Dev-C++ with a Form Designer for the
 amazing cross-platform framework <a href="http://www.wxwidgets.org">wxWidgets</a>.
 It contains all the features of Dev-C++ alongside a recent wxWidgets
 distribution along with a form desinger for rapid application
-development (RAD).<br><br>
+development (RAD).<br>
+<br>
 <ul>
 <li>Where can I get help for wxDev-C++?</li>
 </ul>
-
 You can either see the available <a href="http://wxdsgn.sourceforge.net/?q=node/6">tutorials</a>
 or post your question in the <a href="http://wxforum.shadonet.com/viewforum.php?f=28">wxForum</a>.<br>
 <br>
 <ul>
 <li>Which language is wxDev-C++ written in?</li>
 </ul>
-
 wxDev-C++ and Dev-C++ were written with Borland Delphi 6.0 Personal
 Edition, a free (albeit closed-source) compiler for Windows (yes, the
 irony). Lots of open-sourced, third party components like the JVCL and
@@ -45,14 +53,13 @@ extlib are used.<br>
 <ul>
 <li>Where do I obtain the wxDev-C++ source code?</li>
 </ul>
-
 Have a look at our <a href="http://wxdsgn.svn.sourceforge.net/wxdsgn/">Subversion
-repository</a>. You can download the source by clicking on the "Download GNU tarball" link.<br>
+repository</a>. You can download the source by clicking on the
+"Download GNU tarball" link.<br>
 <br>
 <ul>
 <li>Will there be a release for Linux?</li>
 </ul>
-
 You will have to ask this question to the core Dev-C++ developers.
 Since wxDev-C++ is based on Dev-C++, a Linux distribution will be a
 possible only if we have a Linux version of Dev-C++. Some effort (by
@@ -65,7 +72,6 @@ if you want to find out how to do this. <br>
 <li>Why does wxDev-C++ take a long time to compile, and the
 binaries produced so large?</li>
 </ul>
-
 &nbsp;&nbsp;&nbsp; Because MingW gcc tries to
 emit code that will work on many platforms, it tends to be <a href="http://wxforum.shadonet.com/viewtopic.php?t=2772&amp;highlight=slow">slow
 at
@@ -96,11 +102,11 @@ components).<br>
 <h2>Dev-C++ FAQ</h2>
 <span style="font-style: italic;">NOTE: This part of the
 FAQ is a holdover from Dev-C++ 4.9.9.2 and may no longer be up-to-date
-or relevant.</span><br><br>
+or relevant.</span><br>
+<br>
 <ul>
 <li>Why can't I use conio.h functions like clrsrc()?</li>
 </ul>
-
 Because conio.h is not part of the C standard. It is a Borland
 extension, and works only with Borland compilers (and perhaps some
 other commercial compilers). Dev-C++ uses GCC, the GNU Compiler
@@ -141,14 +147,12 @@ int main(int argc, char *argv[])<br>
 undefined reference
 to `WinMain@16'</strong></li>
 </ul>
-
 You probably haven't declared any main() or WinMain() function in your
 program.<br>
 <br>
 <ul>
 <li>How can i provide a .def file for my DLL ?</li>
 </ul>
-
 Go to the <em>Project </em>menu and select<em>
 Project Options</em>, <em>Parameters</em> sheet, <strong>Linker</strong>
 box . Add to the textbox, --def
@@ -157,14 +161,12 @@ yourfile.def<br>
 <ul>
 <li>I am having strange problems under Windows XP</li>
 </ul>
-
 Try to run Windows Update and make sure that you have the Program
 Compatibility updates.<br>
 <br>
 <ul>
 <li>How do I enable Debugging mode ?</li>
 </ul>
-
 Go to the <em>Project </em>menu and select<em></em>&nbsp;<em>Project
 Options</em> and click on the <em>Compiler</em>
 sheet. In the <strong>Linker</strong>
@@ -176,7 +178,6 @@ All' and you should be able to debug now.<br>
 'WININET.DLL' or
 'MSCVRT.DLL' or &#8216;SHFOLDER.DLL&#8217; not found</li>
 </ul>
-
 You are missing a Windows DLL (and probably have a broken version of
 Windows). Please go to the Microsoft Update site and see if you can fix
 your installation of Windows.<br>
@@ -184,7 +185,6 @@ your installation of Windows.<br>
 <ul>
 <li>How to use assembly with Dev-C++ ?</li>
 </ul>
-
 The "GNU as" assembler uses AT&amp;T syntax (not Intel).<br>
 Here's an example of such a syntax :<br>
 <table style="text-align: left; width: 387px; height: 352px;" border="1" cellpadding="2" cellspacing="2">
@@ -217,7 +217,6 @@ DX<br>
 <ul>
 <li>I am using Windows 98 and I cannot compile</li>
 </ul>
-
 Some users have report that you need to apply several patches to your
 system. Here is the list of them, they can be found on Microsoft
 Windows 98 download site.<br>

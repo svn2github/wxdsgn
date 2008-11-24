@@ -5,8 +5,15 @@
 </head>
 <body>
 <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-<param name="Keyword" value="wxDev-C++"><param name="Keyword" value="Dev-C++"><param name="Keyword" value="DevPak"><param name="Keyword" value="package"><param name="Keyword" value=".devpak"><param name="Keyword" value=".devpackage"><param name="Keyword" value="WebUpdate"><param name="Keyword" value="Package Manager"><param name="Keyword" value="PackMan"><param name="Keyword" value="PackMaker"><param name="Keyword" value="Verify a Package"><param name="Keyword" value="Remove a Package"><param name="Keyword" value="General"><param name="Keyword" value="Files"><param name="Keyword" value="IDE"><param name="Keyword" value="RAD">
-<param name="Keyword" value="Package Maker"><param name="Keyword" value="Check for Updates"></object><a name="id_packages"></a>
+<param name="Keyword" value="wxDev-C++"><param name="Keyword" value="Dev-C++"><param name="Keyword" value="DevPak"><param name="Keyword" value="package"><param name="Keyword" value=".devpak"><param name="Keyword" value=".devpackage"><param name="Keyword" value="WebUpdate"><param name="Keyword" value="Package Manager"><param name="Keyword" value="PackMan"><param name="Keyword" value="PackMaker"><param name="Keyword" value="Verify a Package"><param name="Keyword" value="Remove a Package"><param name="Keyword" value="General"><param name="Keyword" value="Files"><param name="Keyword" value="IDE"><param name="Keyword" value="RAD"><param name="Keyword" value="Package Maker"><param name="Keyword" value="Check for Updates"></object><a name="id_packages"></a>
+<div style="text-align: center;"><a href="Templates.html">&lt;
+&nbsp;Previous &nbsp; &lt;</a> &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+<a href="index.htm">=
+Home =</a> &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+&nbsp;&nbsp;
+<a href="compiler_options.html">&gt;
+Next &gt;</a></div>
 <h1>Getting and Installing Packages</h1>
 <br>
 &nbsp;&nbsp;&nbsp;
@@ -17,7 +24,8 @@ or
 OpenSSL in your programs, there are probably DevPaks out there that
 will allow you to automatically add the header files, libraries, and
 templates needed to easily add these functions to your programs.
-DevPaks are also used to automatically update the <a href="http://en.wikipedia.org/wiki/Integrated_development_environment">IDE</a> or the <a href="http://en.wikipedia.org/wiki/Rapid_application_development">RAD</a>.<br>
+DevPaks are also used to automatically update the <a href="http://en.wikipedia.org/wiki/Integrated_development_environment">IDE</a>
+or the <a href="http://en.wikipedia.org/wiki/Rapid_application_development">RAD</a>.<br>
 <h3>What's in a DevPak?</h3>
 &nbsp;&nbsp;&nbsp;
 A DevPak is really just a compressed package containing files that will
@@ -28,12 +36,14 @@ files to
 include in the DevPak and where to copy them on the target computer.
 &nbsp;Those files are then added to a single file using the <a href="http://en.wikipedia.org/wiki/Tar_%28file_format%29">tar</a>
 archiving tool (extension <em>.tar</em>) and that single
-archive file is compressed using the <a href="http://www.bzip.org/">bzip2</a> tool (extension <em>.tar.bz2</em>).
+archive file is compressed using the <a href="http://www.bzip.org/">bzip2</a>
+tool (extension <em>.tar.bz2</em>).
 The single, compressed archive file is given the extension <em>.devpak</em>,
 but it is actually just a tar'd, bzip2'd archive similar to other
 packages you may have downloaded. Although you can create DevPaks
 manually, the developers of Dev-C++ made the process even easier by
-providing a <a href="http://en.wikipedia.org/wiki/Graphical_user_interface">GUI</a> for making DevPaks called PackMaker.&nbsp;You tell
+providing a <a href="http://en.wikipedia.org/wiki/Graphical_user_interface">GUI</a>
+for making DevPaks called PackMaker.&nbsp;You tell
 PackMaker what files to include in your DevPak and in what directories
 to install those files, and PackMaker handles the archiving for you.<br>
 <br>
@@ -111,8 +121,4 @@ their correct location.<br>
 select the DevPak's icon and click on the <strong>Remove</strong>
 tool in the toolbar. PackMan will delete all of the files from your
 computer that were a part of this DevPak.
-
-
-
-
 </body></html>
