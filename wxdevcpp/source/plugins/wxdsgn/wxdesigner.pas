@@ -1151,7 +1151,7 @@ begin
     main.OpenFile(GetLongName(ChangeFileExt(s, CPP_EXT)), True);
     if ELDesigner1.GenerateXRC then
       main.OpenFile(ChangeFileExt(s, XRC_EXT), True);
-  end;
+  end
 end;
 
 procedure TWXDsgn.LoadText;

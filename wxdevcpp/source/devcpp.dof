@@ -62,7 +62,7 @@ AutoIncBuild=1
 MajorVer=7
 MinorVer=0
 Release=0
-Build=49
+Build=50
 Debug=0
 PreRelease=1
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=wxDev-C++ Developers
 FileDescription=wxDev-C++ IDE
-FileVersion=7.0.0.49
+FileVersion=7.0.0.50
 InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software and the wxDev-C++ Developers
 LegalTrademarks=
@@ -82,49 +82,3 @@ ProductName=wxDev-C++ 7.0 RC3
 ProductVersion=7
 Comments=This program is licensed under the GNU General Public License
 LastCompiled=2005-02-26 22:06:56
-[HistoryLists\hlConditionals]
-Count=4
-Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
-Item1=madExcept;PLUGIN_BUILD;UseRuntimePackages
-Item2=PLUGIN_BUILD
-Item3=UseRuntimePackages
-[HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
-[HistoryLists\hlSearchPath]
-Count=20
-Item0=packages;packages\parser;plugins\interfaces;packages\codetooltip;..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(PROGRAMFILES)\GExperts for Delphi 6
-Item1=packages;packages\parser;plugins\interfaces;packages\codetooltip;..\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(PROGRAMFILES)\GExperts for Delphi 6
-Item2=propedit;components;..\interfaces;..\..\packages;..\..\units;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
-Item3=propedit;components;..\interfaces;..\..\packages;..\..\units;$(CompUsedBy_WXBUILD)\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
-Item4=propedit;components;..\interfaces;..\..\packages;..\..\units;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
-Item5=propedit;components;..\interfaces;..\..\packages;..\..\units;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6;..\..
-Item6=propedit;components;..\interfaces;..\..\packages;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6
-Item7=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;$(PROGRAMFILES)\madCollection\madExcept\Delphi 6;..\interfaces
-Item8=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;$(PROGRAMFILES)\madCollection\madExcept\Delphi 6;..\interfaces
-Item9=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
-Item10=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
-Item11=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
-Item12=propedit;components;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item13=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item14=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\packages
-Item15=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\packages
-Item16=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib
-Item17=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme
-Item18=propedit;components;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source
-Item19=propedit;components
-[HistoryLists\hlUnitOutputDirectory]
-Count=2
-Item0=units
-Item1=wxdsgn\units
-[HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=..\
-[HistoryLists\hlBPLOutput]
-Count=2
-Item0=wxdsgn
-Item1=bin
-[HistoryLists\hlDCPOutput]
-Count=2
-Item0=wxdsgn\bin
-Item1=bin

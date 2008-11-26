@@ -268,6 +268,7 @@ begin
       MainForm.plugins[i].InitEditor(ExtractFileName(File_name));
       AssignedPlugin := MainForm.plugins[i].GetPluginName;
       pluginCatched := true;
+      break;
     end;
   end;
   if not pluginCatched then

@@ -2057,7 +2057,7 @@ var
   intParamCount:Integer;
 {$IFDEF PLUGIN_BUILD}
   i: Integer;
-{$ENDIF}  
+{$ENDIF}
 begin
   idx := 0;
   intParamCount := 0;
@@ -2074,10 +2074,12 @@ begin
         OpenProject(GetLongName(strLst[idx]));
         break; // only open 1 project
       end
-      else begin
+      else
+      begin
+        chdir(ExtractFileDir(strLst[idx]));
 {$IFDEF PLUGIN_BUILD}
         for i := 0 to pluginsCount - 1 do
-		    plugins[i].OpenFile(strLst[idx]);
+            plugins[i].OpenFile(GetLongName(strLst[idx]));
 {$ENDIF}
         OpenFile(GetLongName(strLst[idx]));
       end;
@@ -3225,7 +3227,6 @@ begin
     else
       exit;
   end;
-
   bProjectLoading := True;
   alMain.State := asSuspended;
   try
@@ -3838,6 +3839,8 @@ begin
             break;
           end;
         if prj = -1 then // not found
+        begin
+          chdir(ExtractFileDir(Files[0]));
           for idx := 0 to pred(Files.Count) do
           begin
 {$IFDEF PLUGIN_BUILD}
@@ -3845,7 +3848,8 @@ begin
                 plugins[j].OpenFile(Files[idx]);
 {$ENDIF}
             OpenFile(Files[idx]); // open all files
-          end
+          end;
+        end
         else
           OpenProject(Files[prj]); // else open found project
       end;

@@ -553,7 +553,6 @@ begin
     exit;
   end;
   finiFile.Section := 'Project';
-
   if nName = DEV_INTERNAL_OPEN then
     Open
   else
