@@ -1,5 +1,7 @@
 {
-    This file is part of Dev-C++
+     $Id$
+
+   This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
     Dev-C++ is free software; you can redistribute it and/or modify
