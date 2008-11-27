@@ -1180,9 +1180,12 @@ begin
           cmdline := format(cCmdLine,
             [s, fSourceFile, fCppCompileParams, fCppIncludesParams, fLibrariesParams])
         else
+        begin
           cmdline := format(cCmdLine,
             [s, fSourceFile, ChangeFileExt(fSourceFile, EXE_EXT),
             fCppCompileParams, fCppIncludesParams, fLibrariesParams]);
+            cmdline := StringReplace(cmdline, '\', '/', [rfReplaceAll]); // EAB fixes compilation
+        end;
       end;
       DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
       DoLogEntry(cmdline);
