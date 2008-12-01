@@ -3067,6 +3067,7 @@ begin
   else
   begin
 {$IFDEF PLUGIN_BUILD}
+    chdir(ExtractFileDir(s));
     for i := 0 to pluginsCount - 1 do
     	plugins[i].OpenFile(s);
 {$ENDIF}
@@ -9589,6 +9590,8 @@ begin
         ShowWindow(Application.Handle, SW_SHOW);
         TVistaAltFix.Create(Self);
     end;
+  // accepting drag and drop files
+  DragAcceptFiles( Handle, True );
 end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
@@ -9612,7 +9615,6 @@ begin
  end
  else inherited;
 end;
-
 
 procedure TMainForm.WMActivate(var Msg: TWMActivate);
 begin
