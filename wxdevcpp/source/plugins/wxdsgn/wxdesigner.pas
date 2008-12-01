@@ -1164,8 +1164,8 @@ begin
   actWxPropertyInspectorCut.Caption := GetLangString(ID_ITEM_CUT);
   actWxPropertyInspectorCopy.Caption := GetLangString(ID_ITEM_COPY);
   actWxPropertyInspectorPaste.Caption := GetLangString(ID_ITEM_PASTE);
-  actNewwxDialog.Caption := GetLangString(ID_WX_NEWDIALOG);
-  actNewWxFrame.Caption := GetLangString(ID_WX_NEWFRAME);
+  //actNewwxDialog.Caption := GetLangString(ID_WX_NEWDIALOG);
+  //actNewWxFrame.Caption := GetLangString(ID_WX_NEWFRAME);
 end;
 
 function TWXDsgn.IsForm(s: string): Boolean;
