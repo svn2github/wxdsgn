@@ -128,9 +128,11 @@ begin
     else if Pos('Wx_Alignment = ', Trim(Strings[i])) = 1 then
     begin
       Position := Pos('Wx_Alignment = ', Strings[i]);
+      if Pos('[', Trim(Strings[i])) = 0 then
+      begin
       Strings[i] := Copy(Strings[i], 1, Position + 14) + '[' + Copy(Strings[i], Position + 15, Length(Strings[i])) + ']';
-      Strings[i] := Trim(Strings[i]);
       Inc(Changes);
+      end;
     end
 
     //OnCloseQuery
