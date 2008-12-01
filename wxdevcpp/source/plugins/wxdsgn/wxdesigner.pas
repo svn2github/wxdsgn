@@ -194,7 +194,7 @@ type
     procedure GetIntialFormData(frm: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType);
     function CreateSourceCodes(strCppFile, strHppFile: string; FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string; dsgnType: TWxDesignerType): Boolean;
     function CreateAppSourceCodes(strCppFile, strHppFile, strAppCppFile, strAppHppFile: string; FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string; dsgnType: TWxDesignerType): Boolean;
-    procedure LoadText;
+    procedure LoadText(force:Boolean);
 
   public
     CacheCreated: boolean;
@@ -256,6 +256,7 @@ type
     function SaveFile(EditorFilename: string): Boolean;
     procedure ActivateDesigner(s: string);
     function GetLoginName: string;
+    function GetLangString(LangID: Integer): string;
 
     procedure UpdateDesignerData(FileName: string);
     procedure Reload(FileName: string);
@@ -362,7 +363,7 @@ begin
   with frmInspectorDock do
   begin
     Name := 'frmInspectorDock';
-    Caption := 'Property Inspector';
+    Caption := GetLangString(ID_WX_PROPINSPECTOR);
     BorderStyle := bsSizeToolWin;
     Color := cl3dLight;
     Width := 300;
@@ -383,7 +384,7 @@ begin
   with frmPaletteDock do
   begin
     Name := 'frmPaletteDock';
-    Caption := 'Components';
+    Caption := main.GetLangString(133); //GetLangString(ID_WX_COMPONENTS); //'Components';
     BorderStyle := bsSizeToolWin;
     Color := cl3dLight;
     Width := 170;
@@ -400,7 +401,7 @@ begin
   ShowPropertyInspItem := TMenuItem.Create(Self);
   with ShowPropertyInspItem do
   begin
-    Caption := 'Show Property Inspector';
+    Caption := GetLangString(ID_WX_SHOWPROPINSPECTOR); //'Show Property Inspector';
     Action := actShowPropertyInspItem;
     OnClick := actShowPropertyInspItemExecute;
     Checked := true;
@@ -410,7 +411,7 @@ begin
   ShowComponentPaletteItem := TMenuItem.Create(Self);
   with ShowComponentPaletteItem do
   begin
-    Caption := 'Show Component Palette';
+    Caption := GetLangString(ID_WX_SHOWCOMPPALETTE); //'Show Component Palette';
     Action := actShowComponentPaletteItem;
     OnClick := actShowComponentPaletteItemExecute;
     Checked := true;
@@ -422,7 +423,7 @@ begin
   NewWxDialogItem := TMenuItem.Create(Self);
   with NewWxDialogItem do
   begin
-    Caption := 'New wxDialog';
+    Caption := GetLangString(ID_WX_NEWDIALOG); //'New wxDialog';
     ImageIndex := 1;
     Action := actNewwxDialog;
     OnClick := actNewWxDialogExecute;
@@ -431,7 +432,7 @@ begin
   NewWxFrameItem := TMenuItem.Create(Self);
   with NewWxFrameItem do
   begin
-    Caption := 'New wxFrame';
+    Caption := GetLangString(ID_WX_NEWFRAME); //'New wxFrame';
     ImageIndex := 1;
     Action := actNewWxFrame;
     OnClick := actNewWxFrameExecute;
@@ -441,7 +442,7 @@ begin
   with actDesignerCopy do
   begin
     Category := 'Designer';
-    Caption := 'Copy';
+    Caption := GetLangString(ID_ITEM_COPY); //'Copy';
     ShortCut := 49219;
     OnExecute := actDesignerCopyExecute;
   end;
@@ -449,7 +450,7 @@ begin
   with actDesignerCut do
   begin
     Category := 'Designer';
-    Caption := 'Cut';
+    Caption := GetLangString(ID_ITEM_CUT); //'Cut';
     ShortCut := 49240;
     OnExecute := actDesignerCutExecute;
   end;
@@ -457,7 +458,7 @@ begin
   with actDesignerPaste do
   begin
     Category := 'Designer';
-    Caption := 'Paste';
+    Caption := GetLangString(ID_ITEM_PASTE); //'Paste';
     ShortCut := 49238;
     OnExecute := actDesignerPasteExecute;
   end;
@@ -465,7 +466,7 @@ begin
   with actDesignerDelete do
   begin
     Category := 'Designer';
-    Caption := 'Delete';
+    Caption := GetLangString(ID_ITEM_DELETE); //'Delete';
     ShortCut := 16430;
     OnExecute := actDesignerDeleteExecute;
   end;
@@ -473,7 +474,7 @@ begin
   with actNewWxFrame do
   begin
     Category := 'File';
-    Caption := 'New wxFrame';
+    Caption := GetLangString(ID_WX_NEWFRAME); //'New wxFrame';
     ImageIndex := 1;
     OnExecute := actNewWxFrameExecute;
   end;
@@ -481,7 +482,7 @@ begin
   with actWxPropertyInspectorCut do
   begin
     Category := 'Designer';
-    Caption := 'Cut';
+    Caption := GetLangString(ID_ITEM_CUT); //'Cut';
     ShortCut := 16472;
     OnExecute := actWxPropertyInspectorCutExecute;
   end;
@@ -489,7 +490,7 @@ begin
   with actWxPropertyInspectorCopy do
   begin
     Category := 'Designer';
-    Caption := 'Copy';
+    Caption := GetLangString(ID_ITEM_COPY); //'Copy';
     ShortCut := 16451;
     OnExecute := actWxPropertyInspectorCopyExecute;
   end;
@@ -497,7 +498,7 @@ begin
   with actWxPropertyInspectorPaste do
   begin
     Category := 'Designer';
-    Caption := 'Paste';
+    Caption := GetLangString(ID_ITEM_PASTE); //'Paste';
     ShortCut := 16470;
     OnExecute := actWxPropertyInspectorPasteExecute;
   end;
@@ -547,7 +548,7 @@ begin
   with WxPropertyInspectorMenuEdit do
   begin
     Name := 'WxPropertyInspectorMenuEdit';
-    Caption := 'Wx Property Edit';
+    Caption := GetLangString(ID_WX_PROPERTYEDIT); //'Wx Property Edit';
   end;
   with WxPropertyInspectorMenuCopy do
   begin
@@ -577,7 +578,7 @@ begin
   with DesignerMenuEdit do
   begin
     Name := 'DesignerMenuEdit';
-    Caption := 'Edit';
+    Caption := GetLangString(ID_MNU_EDIT); //'Edit';
   end;
   with DesignerMenuCopy do
   begin
@@ -607,24 +608,24 @@ begin
   with DesignerMenuCopyWidgetName do
   begin
     Name := 'DesignerMenuCopyWidgetName';
-    Caption := 'Copy Widget Name';
+    Caption := GetLangString(ID_WX_COPYNAME); //'Copy Widget Name';
     Visible := False;
   end;
   with DesignerMenuChangeCreationOrder do
   begin
     Name := 'DesignerMenuChangeCreationOrder';
-    Caption := 'Change Creation Order';
+    Caption := GetLangString(ID_WX_CHANGEORDER); //'Change Creation Order';
     OnClick := ChangeCreationOrder1Click;
   end;
   with DesignerMenuSelectParent do
   begin
     Name := 'DesignerMenuSelectParent';
-    Caption := 'Select Parent';
+    Caption := GetLangString(ID_WX_SELECTPARENT); //'Select Parent';
   end;
   with DesignerMenuLocked do
   begin
     Name := 'DesignerMenuLocked';
-    Caption := 'Lock Control';
+    Caption := GetLangString(ID_WX_LOCKCONTROL); //'Lock Control';
     OnClick := LockControlClick;
   end;
   with DesignerMenuSep2 do
@@ -635,73 +636,73 @@ begin
   with DesignerMenuViewIDs do
   begin
     Name := 'DesignerMenuViewIDs';
-    Caption := 'View Control IDs';
+    Caption := GetLangString(ID_WX_VIEWCONTROLID); //'View Control IDs';
     OnClick := ViewControlIDsClick;
   end;
   with DesignerMenuAlign do
   begin
     Name := 'DesignerMenuAlign';
-    Caption := 'Align';
+    Caption := GetLangString(ID_WX_ALIGN); //'Align';
   end;
 
   with DesignerMenuAlignToGrid do
   begin
     Name := 'DesignerMenuAlignToGrid';
-    Caption := 'To Grid';
+    Caption := GetLangString(ID_WX_TOGRID); //'To Grid';
     OnClick := AlignToGridClick;
   end;
 
   with DesignerMenuAlignVertical do
   begin
     Name := 'DesignerMenuAlignVertical';
-    Caption := 'Vertical';
+    Caption := GetLangString(ID_WX_VERTICAL); //'Vertical';
   end;
 
   with DesignerMenuAlignHorizontal do
   begin
     Name := 'DesignerMenuAlignHorizontal';
-    Caption := 'Horizontal';
+    Caption := GetLangString(ID_WX_HORIZONTAL); //'Horizontal';
   end;
 
   with DesignerMenuAlignToLeft do
   begin
     Name := 'DesignerMenuAlignToLeft';
-    Caption := 'To Left';
+    Caption := GetLangString(ID_WX_TOLEFT); //'To Left';
     OnClick := AlignToLeftClick;
   end;
 
   with DesignerMenuAlignToRight do
   begin
     Name := 'DesignerMenuAlignToRight';
-    Caption := 'To Right';
+    Caption := GetLangString(ID_WX_TORIGHT); //'To Right';
     OnClick := AlignToRightClick;
   end;
 
   with DesignerMenuAlignToMiddleVertical do
   begin
     Name := 'DesignerMenuAlignToMiddleVertical';
-    Caption := 'To Center';
+    Caption := GetLangString(ID_WX_TOCENTER); //'To Center';
     OnClick := AlignToMiddleVerticalClick;
   end;
 
   with DesignerMenuAlignToMiddleHorizontal do
   begin
     Name := 'DesignerMenuAlignToMiddleHorizontal';
-    Caption := 'To Center';
+    Caption := GetLangString(ID_WX_TOCENTER); //'To Center';
     OnClick := AlignToMiddleHorizontalClick;
   end;
 
   with DesignerMenuAlignToTop do
   begin
     Name := 'DesignerMenuAlignToTop';
-    Caption := 'To Top';
+    Caption := GetLangString(ID_WX_TOTOP); //'To Top';
     OnClick := AlignToTopClick;
   end;
 
   with DesignerMenuAlignToBottom do
   begin
     Name := 'DesignerMenuAlignToBottom';
-    Caption := 'To Bottom';
+    Caption := GetLangString(ID_WX_TOBOTTOM); //'To Bottom';
     OnClick := AlignToBottomClick;
   end;
 
@@ -713,13 +714,13 @@ begin
   with DesignerMenuDesignerOptions do
   begin
     Name := 'DesignerMenuDesignerOptions';
-    Caption := 'Designer Options';
+    Caption := GetLangString(ID_WX_DESIGNEROPTS); //'Designer Options';
     OnClick := DesignerOptionsClick;
   end;
   with ToolsMenuDesignerOptions do
   begin
     Name := 'ToolsMenuDesignerOptions';
-    Caption := 'Designer Options';
+    Caption := GetLangString(ID_WX_DESIGNEROPTS); //'Designer Options';
     OnClick := DesignerOptionsClick;
   end;
 
@@ -885,7 +886,7 @@ begin
     Name := 'TabProperty';
     Parent := pgCtrlObjectInspector;
     PageControl := pgCtrlObjectInspector;
-    Caption := 'Properties';
+    Caption := GetLangString(ID_WX_PROPERTIES);
   end;
   with JvInspProperties do
   begin
@@ -918,7 +919,7 @@ begin
     Name := 'TabEvent';
     Parent := pgCtrlObjectInspector;
     PageControl := pgCtrlObjectInspector;
-    Caption := 'Events';
+     Caption := GetLangString(ID_WX_EVENTS);
   end;
   with JvInspEvents do
   begin
@@ -961,7 +962,7 @@ begin
     Top := 46;
     Width := 29;
     Height := 13;
-    Caption := 'Minor:';
+    Caption := GetLangString(ID_POPT_VMINOR); //'Minor:';
   end;
 
   lblwxMajor := TLabel.Create(ownerForm);
@@ -971,7 +972,7 @@ begin
     Top := 19;
     Width := 29;
     Height := 13;
-    Caption := 'Major:';
+    Caption := GetLangString(ID_POPT_VMAJOR); //'Major:';
   end;
 
   lblwxRelease := TLabel.Create(ownerForm);
@@ -981,7 +982,7 @@ begin
     Top := 73;
     Width := 42;
     Height := 13;
-    Caption := 'Release:';
+    Caption := GetLangString(ID_POPT_VRELEASE); //'Release:';
   end;
 
   spwxMajor := TSpinEdit.Create(ownerForm);
@@ -1030,7 +1031,7 @@ begin
     Top := 5;
     Width := 403;
     Height := 100;
-    Caption := 'Version';
+    Caption := GetLangString(ID_POPT_VERTAB); //'Version';
     TabOrder := 0;
   end;
   grpwxVersion.InsertControl(spwxRelease);
@@ -1154,17 +1155,17 @@ begin
   end
 end;
 
-procedure TWXDsgn.LoadText;
+procedure TWXDsgn.LoadText(force:Boolean);
 begin
-  actDesignerCopy.Caption := main.GetLangString(ID_ITEM_COPY);
-  actDesignerCut.Caption := main.GetLangString(ID_ITEM_CUT);
-  actDesignerPaste.Caption := main.GetLangString(ID_ITEM_PASTE);
-  actDesignerDelete.Caption := main.GetLangString(ID_ITEM_DELETE);
-  actWxPropertyInspectorCut.Caption := main.GetLangString(ID_ITEM_CUT);
-  actWxPropertyInspectorCopy.Caption := main.GetLangString(ID_ITEM_COPY);
-  actWxPropertyInspectorPaste.Caption := main.GetLangString(ID_ITEM_PASTE);
-  actNewwxDialog.Caption := main.GetLangString(ID_TB_NEW) + ' wxDialog';
-  actNewWxFrame.Caption := main.GetLangString(ID_TB_NEW) + ' wxFrame';
+  actDesignerCopy.Caption := GetLangString(ID_ITEM_COPY);
+  actDesignerCut.Caption := GetLangString(ID_ITEM_CUT);
+  actDesignerPaste.Caption := GetLangString(ID_ITEM_PASTE);
+  actDesignerDelete.Caption := GetLangString(ID_ITEM_DELETE);
+  actWxPropertyInspectorCut.Caption := GetLangString(ID_ITEM_CUT);
+  actWxPropertyInspectorCopy.Caption := GetLangString(ID_ITEM_COPY);
+  actWxPropertyInspectorPaste.Caption := GetLangString(ID_ITEM_PASTE);
+  actNewwxDialog.Caption := GetLangString(ID_WX_NEWDIALOG);
+  actNewWxFrame.Caption := GetLangString(ID_WX_NEWFRAME);
 end;
 
 function TWXDsgn.IsForm(s: string): Boolean;
@@ -1393,6 +1394,13 @@ begin
     Result := ''
 end;
 
+function TWXDsgn.GetLangString(LangID: Integer): string;
+begin
+
+Result := main.GetLangString(LangID);
+
+end;
+
 // Create a dialog that will be destroyed by the client code
 
 function TWXDsgn.CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: integer; projShow: boolean; filenamebase: string = ''): TfrmCreateFormProp;
@@ -1412,9 +1420,9 @@ begin
   Result.txtTitle.Text := SuggestedFilename;
 
   if dsgnType = dtWxFrame then
-    Result.Caption := 'New wxWidgets Frame'
+    Result.Caption := GetLangString(ID_WX_NEWFRAME) //'New wxWidgets Frame'
   else
-    Result.Caption := 'New wxWidgets Dialog';
+    Result.Caption := GetLangString(ID_WX_NEWDIALOG); //'New wxWidgets Dialog';
 
   //Suggest a filename to the user
   if dsgnType = dtWxFrame then

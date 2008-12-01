@@ -53,6 +53,8 @@ type
   procedure LoadCompilerOptions;
   procedure SaveCompilerOptions;
 
+  procedure LoadText(force:Boolean);
+
   procedure CutExecute;
   procedure CopyExecute;
   procedure PasteExecute;

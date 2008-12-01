@@ -1115,4 +1115,56 @@ const
   ID_COMPMSG_MAKEFILEWARNING       = 3603;
 
   ID_COMPMSG_TOOMANYMSGS           = 3610;
-  ID_COMPMSG_PCHINCOMPLETE         = 3611;  
+  ID_COMPMSG_PCHINCOMPLETE         = 3611;
+
+  // wx designer properties
+  ID_WX_ENABLED                    = 7000;
+  ID_WX_BASECLASS                  = 7001;
+  ID_WX_HIDDEN                     = 7002;
+  ID_WX_DEFAULT                    = 7003;
+  ID_WX_HELPTEXT                   = 7004;
+  ID_WX_IDNAME                     = 7005;
+  ID_WX_IDVALUE                    = 7006;
+  ID_WX_TOOLTIP                    = 7007;
+  ID_WX_COMMENTS                   = 7008;
+  ID_WX_VALIDATORCODE              = 7009;
+  ID_WX_BACKGROUNDCOLOR            = 7010;
+  ID_WX_FOREGROUNDCOLOR            = 7011;
+  ID_WX_STRETCHFACTOR              = 7012;
+  ID_WX_ALIGNMENT                  = 7013;
+  ID_WX_BORDER                     = 7014;
+  ID_WX_BORDERS                    = 7015;
+  ID_WX_GENERALSTYLES              = 7016;
+  ID_WX_FONT                       = 7017;
+  ID_WX_NAME                       = 7018;
+  ID_WX_WIDTH                      = 7019;
+  ID_WX_HEIGHT                     = 7020;
+  ID_WX_LEFT                       = 7021;
+  ID_WX_TOP                        = 7022;
+  ID_WX_PROPERTIES                 = 7023;
+  ID_WX_EVENTS                     = 7024;
+  ID_WX_PROPINSPECTOR              = 7025;
+  ID_WX_COMPONENTS                 = 7026;
+  ID_WX_SHOWPROPINSPECTOR          = 7027;
+  ID_WX_SHOWCOMPPALETTE            = 7028;
+  ID_WX_NEWDIALOG                  = 7029;
+  ID_WX_NEWFRAME                   = 7030;
+  ID_WX_PROPERTYEDIT               = 7031;
+  ID_WX_COPYNAME                   = 7032;
+  ID_WX_CHANGEORDER                = 7033;
+  ID_WX_SELECTPARENT               = 7034;
+  ID_WX_LOCKCONTROL                = 7035;
+  ID_WX_VIEWCONTROLID              = 7036;
+  ID_WX_ALIGN                      = 7037;
+  ID_WX_TOGRID                     = 7038;
+  ID_WX_VERTICAL                   = 7039;
+  ID_WX_HORIZONTAL                 = 7040;
+  ID_WX_TOLEFT                     = 7041;
+  ID_WX_TORIGHT                    = 7042;
+  ID_WX_TOCENTER                   = 7043;
+  ID_WX_TOTOP                      = 7044;
+  ID_WX_TOBOTTOM                   = 7045;
+  ID_WX_DESIGNEROPTS               = 7046;
+  
+
+

@@ -132,7 +132,7 @@ uses
 
  function TWXEditor.GetDefaultText: String;
  begin
-    Result := CompFileIo.ComponentToString(fDesigner);
+   Result := CompFileIo.ComponentToString(fDesigner)
  end;
 
  function TWXEditor.GetDesigner: TfrmNewForm;

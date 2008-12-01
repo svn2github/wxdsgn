@@ -74,6 +74,8 @@ type
     C_AfterStartupCheck: procedure; cdecl;
     C_FullScreenSwitch: procedure; cdecl;
 
+    C_LoadText: procedure(force: Boolean); cdecl;
+
   public
     procedure TestReport;  
     procedure Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
@@ -127,6 +129,8 @@ type
     procedure SetCompilerOptionstoDefaults;
     procedure AfterStartupCheck;
     procedure FullScreenSwitch;
+
+    procedure LoadText(force:Boolean);
 
   end;
 
@@ -237,6 +241,9 @@ begin
     @self.C_SetCompilerOptionstoDefaults := GetProcAddress(module, 'SetCompilerOptionstoDefaults');
     @self.C_AfterStartupCheck := GetProcAddress(module, 'AfterStartupCheck');
     @self.C_FullScreenSwitch := GetProcAddress(module, 'FullScreenSwitch');
+
+    @self.C_LoadText := GetProcAddress(module, 'LoadText');
+
 
   self.tool := TToolBar.Create(nil);
   self.tool.Left := toolbar_x;
@@ -655,6 +662,12 @@ procedure TPlug_In_DLL.SaveCompilerOptions;
 begin
     if (@self.C_SaveCompilerOptions <> nil) then
         self.C_SaveCompilerOptions;
+end;
+
+procedure TPlug_In_DLL.LoadText(force:Boolean);
+begin
+    if (@self.C_LoadText <> nil) then
+        self.C_LoadText(force);
 end;
 
 function TPlug_In_DLL.GetCompilerOptions: TSettings;

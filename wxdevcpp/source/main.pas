@@ -2274,6 +2274,8 @@ begin
 end;
 
 procedure TMainForm.LoadText(force: boolean);
+var
+  i : Integer;
 begin
   with Lang do
   begin
@@ -2559,6 +2561,10 @@ begin
   end;
   BuildBookMarkMenus;
   SetHints;
+
+  for i := 0 to pluginsCount - 1 do
+        plugins[i].LoadText(true);
+
 end;
 
 function TMainForm.FileIsOpen(const s: string; inPrj: boolean = FALSE): integer;

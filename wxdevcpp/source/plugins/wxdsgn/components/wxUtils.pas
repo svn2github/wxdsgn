@@ -3730,21 +3730,25 @@ end;
 
 procedure PopulateGenericProperties(var PropertyList: TStringList);
 begin
-  PropertyList.Add('Wx_Enabled:Enabled');
-  PropertyList.Add('Wx_Class:Base Class');
-  PropertyList.Add('Wx_Hidden:Hidden');
-  PropertyList.Add('Wx_Default:Default');
-  PropertyList.Add('Wx_HelpText:Help Text');
-  PropertyList.Add('Wx_IDName:ID Name');
-  PropertyList.Add('Wx_IDValue:ID Value');
-  PropertyList.Add('Wx_ToolTip:Tooltip');
-  PropertyList.Add('Wx_Comments:Comments');
-  PropertyList.Add('Wx_ProxyValidatorString:Validator Code');
-  PropertyList.Add('Wx_ProxyBGColorString:Background Color');
-  PropertyList.Add('Wx_ProxyFGColorString:Foreground Color');
+  PropertyList.Add('Wx_Enabled:' + wx_designer.GetLangString(ID_WX_ENABLED));
+  PropertyList.Add('Wx_Class:' + wx_designer.GetLangString(ID_WX_BASECLASS));
+  PropertyList.Add('Wx_Hidden:' + wx_designer.GetLangString(ID_WX_HIDDEN));
+  PropertyList.Add('Wx_Default:' + wx_designer.GetLangString(ID_WX_DEFAULT));
+  PropertyList.Add('Wx_HelpText:' + wx_designer.GetLangString(ID_WX_HELPTEXT));
+  PropertyList.Add('Wx_IDName:' + wx_designer.GetLangString(ID_WX_IDNAME));
+  PropertyList.Add('Wx_IDValue:' + wx_designer.GetLangString(ID_WX_IDVALUE));
+  PropertyList.Add('Wx_ToolTip:' + wx_designer.GetLangString(ID_WX_TOOLTIP));
+  PropertyList.Add('Wx_Comments:' + wx_designer.GetLangString(ID_WX_COMMENTS));
+  PropertyList.Add('Wx_ProxyValidatorString:'
+          + wx_designer.GetLangString(ID_WX_VALIDATORCODE));
+  PropertyList.Add('Wx_ProxyBGColorString:'
+          + wx_designer.GetLangString(ID_WX_BACKGROUNDCOLOR));
+  PropertyList.Add('Wx_ProxyFGColorString:'
+          + wx_designer.GetLangString(ID_WX_FOREGROUNDCOLOR));
 
-  PropertyList.Add('Wx_StretchFactor:Stretch Factor');
-  PropertyList.Add('Wx_Alignment:Alignment');
+  PropertyList.Add('Wx_StretchFactor:'
+          + wx_designer.GetLangString(ID_WX_STRETCHFACTOR));
+  PropertyList.Add('Wx_Alignment:' + wx_designer.GetLangString(ID_WX_ALIGNMENT));
   PropertyList.Add('wxALIGN_LEFT:wxALIGN_LEFT');
   PropertyList.Add('wxALIGN_RIGHT:wxALIGN_RIGHT');
   PropertyList.Add('wxALIGN_TOP:wxALIGN_TOP');
@@ -3754,15 +3758,17 @@ begin
   PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
   PropertyList.Add('wxEXPAND:wxEXPAND');
 
-  PropertyList.Add('Wx_Border:Border');
-  PropertyList.Add('Wx_BorderAlignment:Borders');
+  PropertyList.Add('Wx_Border:' + wx_designer.GetLangString(ID_WX_BORDER));
+  PropertyList.Add('Wx_BorderAlignment:'
+          + wx_designer.GetLangString(ID_WX_BORDERS));
   PropertyList.Add('wxALL:wxALL');
   PropertyList.Add('wxTOP:wxTOP');
   PropertyList.Add('wxLEFT:wxLEFT');
   PropertyList.Add('wxRIGHT:wxRIGHT');
   PropertyList.Add('wxBOTTOM:wxBOTTOM');
 
-  PropertyList.Add('Wx_GeneralStyle:General Styles');
+  PropertyList.Add('Wx_GeneralStyle:'
+          + wx_designer.GetLangString(ID_WX_GENERALSTYLES));
   PropertyList.Add('wxNO_3D:wxNO_3D');
   PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
   PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
@@ -3778,12 +3784,12 @@ begin
   PropertyList.Add('wxVSCROLL:wxVSCROLL');
   PropertyList.Add('wxHSCROLL:wxHSCROLL');
 
-  PropertyList.Add('Font:Font');
-  PropertyList.Add('Name:Name');
-  PropertyList.Add('Width:Width');
-  PropertyList.Add('Height:Height');
-  PropertyList.Add('Left:Left');
-  PropertyList.Add('Top:Top');
+  PropertyList.Add('Font:' + wx_designer.GetLangString(ID_WX_FONT));
+  PropertyList.Add('Name:' + wx_designer.GetLangString(ID_WX_NAME));
+  PropertyList.Add('Width:' + wx_designer.GetLangString(ID_WX_WIDTH));
+  PropertyList.Add('Height:' + wx_designer.GetLangString(ID_WX_HEIGHT));
+  PropertyList.Add('Left:' + wx_designer.GetLangString(ID_WX_LEFT));
+  PropertyList.Add('Top:' + wx_designer.GetLangString(ID_WX_TOP));
 end;
 
 function SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): string;
