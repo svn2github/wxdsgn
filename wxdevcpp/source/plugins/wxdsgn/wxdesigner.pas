@@ -1157,15 +1157,47 @@ end;
 
 procedure TWXDsgn.LoadText(force:Boolean);
 begin
+  frmInspectorDock.Caption := GetLangString(ID_WX_PROPINSPECTOR);
+  frmPaletteDock.Caption := GetLangString(ID_WX_COMPONENTS);
+  ShowPropertyInspItem.Caption := GetLangString(ID_WX_SHOWPROPINSPECTOR);
+  ShowComponentPaletteItem.Caption := GetLangString(ID_WX_SHOWCOMPPALETTE);
+  NewWxDialogItem.Caption := GetLangString(ID_WX_NEWDIALOG);
+  NewWxFrameItem.Caption := GetLangString(ID_WX_NEWFRAME);
+
   actDesignerCopy.Caption := GetLangString(ID_ITEM_COPY);
   actDesignerCut.Caption := GetLangString(ID_ITEM_CUT);
   actDesignerPaste.Caption := GetLangString(ID_ITEM_PASTE);
   actDesignerDelete.Caption := GetLangString(ID_ITEM_DELETE);
+  actNewWxFrame.Caption := GetLangString(ID_WX_NEWFRAME);
+
   actWxPropertyInspectorCut.Caption := GetLangString(ID_ITEM_CUT);
   actWxPropertyInspectorCopy.Caption := GetLangString(ID_ITEM_COPY);
   actWxPropertyInspectorPaste.Caption := GetLangString(ID_ITEM_PASTE);
-  //actNewwxDialog.Caption := GetLangString(ID_WX_NEWDIALOG);
-  //actNewWxFrame.Caption := GetLangString(ID_WX_NEWFRAME);
+  WxPropertyInspectorMenuEdit.Caption := GetLangString(ID_WX_PROPERTYEDIT);
+  DesignerMenuEdit.Caption := GetLangString(ID_MNU_EDIT);
+  DesignerMenuCopyWidgetName.Caption := GetLangString(ID_WX_COPYNAME);
+  DesignerMenuChangeCreationOrder.Caption := GetLangString(ID_WX_CHANGEORDER);
+  DesignerMenuSelectParent.Caption := GetLangString(ID_WX_SELECTPARENT);
+  DesignerMenuLocked.Caption := GetLangString(ID_WX_LOCKCONTROL);
+  DesignerMenuViewIDs.Caption := GetLangString(ID_WX_VIEWCONTROLID);
+  DesignerMenuAlign.Caption := GetLangString(ID_WX_ALIGN);
+  DesignerMenuAlignToGrid.Caption := GetLangString(ID_WX_TOGRID);
+  DesignerMenuAlignVertical.Caption := GetLangString(ID_WX_VERTICAL);
+  DesignerMenuAlignHorizontal.Caption := GetLangString(ID_WX_HORIZONTAL);
+  DesignerMenuAlignToLeft.Caption := GetLangString(ID_WX_TOLEFT);
+  DesignerMenuAlignToRight.Caption := GetLangString(ID_WX_TORIGHT);
+  DesignerMenuAlignToMiddleVertical.Caption := GetLangString(ID_WX_TOCENTER);
+  DesignerMenuAlignToMiddleHorizontal.Caption := GetLangString(ID_WX_TOCENTER);
+  DesignerMenuAlignToTop.Caption := GetLangString(ID_WX_TOTOP);
+  DesignerMenuAlignToBottom.Caption := GetLangString(ID_WX_TOBOTTOM);
+  DesignerMenuDesignerOptions.Caption := GetLangString(ID_WX_DESIGNEROPTS);
+  ToolsMenuDesignerOptions.Caption := GetLangString(ID_WX_DESIGNEROPTS);
+  TabProperty.Caption := GetLangString(ID_WX_PROPERTIES);
+  TabEvent.Caption := GetLangString(ID_WX_EVENTS);
+  lblwxMinor.Caption := GetLangString(ID_POPT_VMINOR);
+  lblwxMajor.Caption := GetLangString(ID_POPT_VMAJOR);
+  lblwxRelease.Caption := GetLangString(ID_POPT_VRELEASE);
+  grpwxVersion.Caption := GetLangString(ID_POPT_VERTAB);
 end;
 
 function TWXDsgn.IsForm(s: string): Boolean;
