@@ -1376,8 +1376,13 @@ end;
 procedure TWXDsgn.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   i: Integer;
+  designerFlag: Boolean;
 begin
-  if (ssCtrl in Shift) and ELDesigner1.Active and not JvInspProperties.Focused and
+  designerFlag := true;
+  if ELDesigner1.Floating then
+    designerFlag := self.IsForm(main.GetActiveEditorName);
+
+  if (ssCtrl in Shift) and ELDesigner1.Active and designerFlag and not JvInspProperties.Focused and
     not JvInspEvents.Focused then // If Designer Form is in focus
   begin
     case key of
