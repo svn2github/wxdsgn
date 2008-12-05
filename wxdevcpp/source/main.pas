@@ -1545,8 +1545,8 @@ begin
   ToolClassesItem.Checked := devData.ToolbarClasses;
   ToolbarClick(nil);
 
-  Constraints.MaxHeight := Monitor.Height;
-  Constraints.MaxWidth := Monitor.Width;
+  //Constraints.MaxHeight := Monitor.Height;
+  //Constraints.MaxWidth := Monitor.Width;
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
 
