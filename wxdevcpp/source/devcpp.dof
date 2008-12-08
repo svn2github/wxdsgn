@@ -78,7 +78,22 @@ InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software and the wxDev-C++ Developers
 LegalTrademarks=
 OriginalFilename=devcpp.exe
-ProductName=wxDev-C++ 7.0 RC3
+ProductName=wxDev-C++ 7.0 RC4
 ProductVersion=7
 Comments=This program is licensed under the GNU General Public License
 LastCompiled=2005-02-26 22:06:56
+[HistoryLists\hlConditionals]
+Count=1
+Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=packages;packages\parser;plugins\interfaces;packages\codetooltip;..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(PROGRAMFILES)\GExperts for Delphi 6
+[HistoryLists\hlUnitOutputDirectory]
+Count=1
+Item0=units
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=..\

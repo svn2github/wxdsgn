@@ -2967,6 +2967,7 @@ function TMainForm.CloseEditor(index: integer; Rem: boolean; all: boolean = FALS
 var
  e: TEditor;
  Saved:Boolean;
+ intActivePage, i: Integer;
 begin
   Saved := false;
   Result := False;
@@ -2988,6 +2989,12 @@ begin
   PageControl.OnChange(PageControl);
   if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
     ClassBrowser1.Clear;
+
+  // EAB: fix tab names
+  intActivePage := PageControl.ActivePageIndex;
+
+  for i := intActivePage to PageControl.PageCount - 1 do
+    PageControl.SelectNextPage(true);
 end;
 
 procedure TMainForm.ToggleBookmarkClick(Sender: TObject);
