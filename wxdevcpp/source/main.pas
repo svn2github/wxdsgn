@@ -7035,7 +7035,9 @@ begin
     begin
         tmp := e.Text.SelText;
         if (tmp <> '') then
-          HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(tmp)));
+          HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_INDEX, DWORD(PChar(tmp)))
+        else
+            HelpWindow := HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC, 0);
     end;
   end
   else 
@@ -8957,10 +8959,6 @@ begin
           begin
               panel1 := items[0];
               panel2 := items[1];
-
-              // EAB Comment: The implementation of ManualTabDock in JvDockControlForm.pas is highly coupled
-              //to the caller code.. (for example, the second form is shown inside this proc, while the first form is "manually" shown outside).
-              //This method should be rewritten.
 
               lbDockClient2 := TJvDockClient.Create(panel1);
               with lbDockClient2 do

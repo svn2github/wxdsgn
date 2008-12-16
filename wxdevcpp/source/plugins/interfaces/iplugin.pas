@@ -79,6 +79,7 @@ type
   function GetXMLExtension: String;
   procedure AfterStartupCheck;
   procedure FullScreenSwitch;
+  function GetContextForHelp: String;
 end;
 
 implementation

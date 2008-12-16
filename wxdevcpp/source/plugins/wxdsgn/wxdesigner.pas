@@ -309,6 +309,7 @@ type
     procedure TestReport;
     procedure AfterStartupCheck;
     procedure FullScreenSwitch;
+    function GetContextForHelp: String;
   end;
 
 var
@@ -387,7 +388,7 @@ begin
     Caption := main.GetLangString(133); //GetLangString(ID_WX_COMPONENTS); //'Components';
     BorderStyle := bsSizeToolWin;
     Color := cl3dLight;
-    Width := 170;
+    Width := 170;    
 
     DockSite := True;
     DragKind := dkDock;
@@ -4354,15 +4355,7 @@ end;
 
 procedure TWXDsgn.Destroy;
 begin
-  //strStdwxIDList.Free;
   editors.Free;
-  //editorNames.Free;
-  //DesignerPopup.Free;
-  //WxPropertyInspectorPopup.Free;
-  //ELDesigner1.Free;
-  //self.Free;
-  //frmPaletteDock.Free;
-  //frmInspectorDock.Free;  
   ComponentPalette.Free;
   JvInspProperties.Free;
   JvInspEvents.Free;
@@ -4774,6 +4767,11 @@ var
 begin
     for i := 0 to editors.ItemCount - 1 do
         (editors[editorNames[i]] as TWXEditor).RestorePosition;
+end;
+
+function TWXDsgn.GetContextForHelp: String;
+begin
+    Result := '';
 end;
 
 initialization

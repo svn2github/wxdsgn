@@ -75,6 +75,7 @@ type
     C_FullScreenSwitch: procedure; cdecl;
 
     C_LoadText: procedure(force: Boolean); cdecl;
+    C_GetContextForHelp: function: String; cdecl;
 
   public
     procedure TestReport;  
@@ -131,6 +132,7 @@ type
     procedure FullScreenSwitch;
 
     procedure LoadText(force:Boolean);
+    function GetContextForHelp: String;
 
   end;
 
@@ -191,6 +193,7 @@ begin
     @self.C_SetCompilerOptionstoDefaults := nil;
     @self.C_AfterStartupCheck := nil;
     @self.C_FullScreenSwitch := nil;
+    @self.C_GetContextForHelp := nil;
 
 
     @self.C_TestReport := GetProcAddress(module, 'TestReport');
@@ -243,6 +246,7 @@ begin
     @self.C_FullScreenSwitch := GetProcAddress(module, 'FullScreenSwitch');
 
     @self.C_LoadText := GetProcAddress(module, 'LoadText');
+    @self.C_GetContextForHelp := GetProcAddress(module, 'GetContextForHelp');
 
 
   self.tool := TToolBar.Create(nil);
@@ -693,6 +697,11 @@ end;
 
 procedure TPlug_In_DLL.FullScreenSwitch;
 begin
+end;
+
+function TPlug_In_DLL.GetContextForHelp: String;
+begin
+    Result := '';
 end;
 
 end.
