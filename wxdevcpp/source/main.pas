@@ -1090,6 +1090,7 @@ type
     fDebugger: TDebugger;
     CacheCreated: Boolean;
     frmProjMgrDock: TForm;
+    defaultHelpF1: Boolean;
   
 {$IFDEF PLUGIN_BUILD}
     plugins: Array of IPlug_In;
@@ -2185,7 +2186,10 @@ begin
           else
             OnClick := HelpItemClick;
           if ini.ReadBool(fHelpFiles.Names[idx], 'AffectF1', false) then
+          begin
+            defaultHelpF1 := false;
             ShortCut := TextToShortcut('F1');
+          end;
           Tag := idx;
           ImageIndex := ini.ReadInteger(fHelpFiles.Names[idx], 'Icon', 0);
         end;
@@ -5322,8 +5326,9 @@ begin
 {$ENDIF}
       if ssCtrl in Shift then
         ShowDebug;
-    {VK_F1:
-         WordToHelpKeyword;}
+    VK_F1:
+         if defaultHelpF1 then
+             WordToHelpKeyword;
   end;
     
 {$IFDEF PLUGIN_BUILD}
@@ -9593,8 +9598,9 @@ begin
         ShowWindow(Application.Handle, SW_SHOW);
         TVistaAltFix.Create(Self);
     end;
-  // accepting drag and drop files
-  DragAcceptFiles( Handle, True );
+    // accepting drag and drop files
+    DragAcceptFiles( Handle, True );
+    defaultHelpF1 := true;
 end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
