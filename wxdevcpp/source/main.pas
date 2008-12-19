@@ -2130,7 +2130,8 @@ var
   Item,
     Item2: TMenuItem;
 begin
-  aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
+  //aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
+  aFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
   if aFile = '' then exit;
 
   // delete between "Dev-C++ Help" and first separator
@@ -2991,10 +2992,7 @@ begin
     ClassBrowser1.Clear;
 
   // EAB: fix tab names
-  intActivePage := PageControl.ActivePageIndex;
-
-  for i := intActivePage to PageControl.PageCount - 1 do
-    PageControl.SelectNextPage(true);
+  PageControl.Refresh;
 end;
 
 procedure TMainForm.ToggleBookmarkClick(Sender: TObject);

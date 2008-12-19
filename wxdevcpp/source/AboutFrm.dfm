@@ -2214,7 +2214,7 @@ object AboutForm: TAboutForm
     Top = 72
     Width = 54
     Height = 16
-    Caption = '7.0 RC3'
+    Caption = '7.0 RC4'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

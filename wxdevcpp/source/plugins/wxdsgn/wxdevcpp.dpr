@@ -255,7 +255,7 @@ begin
   Application.CreateForm(TfrmReplace, frmReplace);
   MainForm.DoCreateEverything;
 
-  // EAB: try to fix include directories with plugins
+  // EAB: try to fix include directories with plugins    
   InitializeOptionsAfterPlugins;
 
   // apply the window placement. this method forces the form to show.

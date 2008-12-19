@@ -1028,8 +1028,8 @@ begin
     devCompilerSet.WriteSets;
 
     devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
-    devdirs.fCompilerType:=0;  // EAB Comment: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
-    devdirs.SettoDefaults;
+    devdirs.fCompilerType:=0;  // EAB: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
+    devdirs.SettoDefaults;  // EAB: this shouldn't be called this way because it messes up with the user AppData Folder settings.
     devCompilerSet.LoadSetProgs(0);
     devCompilerSet.LoadSetDirs(0);
     devCompilerSet.SaveSet(0);
@@ -2229,6 +2229,7 @@ begin
   fCompilerType := 0;
   SettoDefaults;
   LoadSettings;
+  fConfig := '';
 end;
 
 procedure TdevDirs.SettoDefaults;
@@ -2257,7 +2258,8 @@ begin
 {$ENDIF}
 
   fExec := ExtractFilePath(Application.ExeName);
-  fConfig:= fExec;
+  if(fConfig = '') then    // EAB: workaround because of weird calls from InitializeOptionsAfterPlugins that can't be removed for now, or compiler folders get screwed.
+    fConfig := fExec;
   fHelp := fExec + HELP_DIR;
   fIcons := fExec + ICON_DIR;
   fLang := fExec + LANGUAGE_DIR;

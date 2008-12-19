@@ -117,7 +117,8 @@ var
   Item: TListItem;
   Entry: TEntry;
 begin
-  hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
+  //hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
+  hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
   if hFile = '' then exit;
   fini := TINIFile.Create(hFile);
   with fini do
@@ -160,16 +161,19 @@ var
   idx: integer;
   Entry: TEntry;
 begin
-  if not DirectoryExists(devDirs.Help) then
-    CreateDir(devDirs.Help);
-  hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
+  //if not DirectoryExists(devDirs.Help) then
+  //  CreateDir(devDirs.Help);
+  //hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
+  hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
   if not assigned(fINI) then
     if hFile <> '' then
       fINI := TINIFile.Create(hFile)
     else
-      fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI)
+      fINI := TINIFile.Create(devDirs.Config + DEV_HELP_INI)
+      //fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI)
   else
-    fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI);
+    fINI := TINIFile.Create(devDirs.Config + DEV_HELP_INI);
+    //fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI);
 
   if (not assigned(fIni)) then begin
     MessageDlg('Coulnd''t create configuration file', mtError, [mbOk], 0);
@@ -189,8 +193,8 @@ begin
     for idx := 0 to lvFiles.Items.Count - 1 do
     begin
       section := lvfiles.Items[idx].Caption;
-      WriteString(section, 'Path',
-        ExtractRelativePath(devDirs.Help, lvFiles.Items[idx].SubItems[0]));
+      //WriteString(section, 'Path', ExtractRelativePath(devDirs.Help, lvFiles.Items[idx].SubItems[0]));
+      WriteString(section, 'Path', ExtractRelativePath(devDirs.Config, lvFiles.Items[idx].SubItems[0]));
       Entry := TEntry(lvFiles.Items[idx].Data);
       WriteInteger(section, 'Menu', Entry.Menu);
       WriteInteger(section, 'Icon', Entry.Icon);
