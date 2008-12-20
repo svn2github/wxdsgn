@@ -2131,7 +2131,6 @@ var
   Item,
     Item2: TMenuItem;
 begin
-  //aFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
   aFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
   if aFile = '' then exit;
 
@@ -6623,7 +6622,8 @@ begin
 end;
 
 procedure TMainForm.HandleFileMonitorChanges;
-
+var
+ I: Integer;
   procedure ReloadEditor(FileName: string);
   var
     e: TEditor;
@@ -6651,7 +6651,7 @@ procedure TMainForm.HandleFileMonitorChanges;
     end;
   end;
 begin
-  {if ReloadFilenames.Count = 1 then
+  if ReloadFilenames.Count = 1 then
   begin
     with PReloadFile(ReloadFilenames[0])^ do
       case ChangeType of
@@ -6683,7 +6683,7 @@ begin
       FilesReloadForm.Free;
       FilesReloadForm := nil;
     end;
-  end;     }
+  end;
 end;
 
 procedure TMainForm.actFilePropertiesExecute(Sender: TObject);

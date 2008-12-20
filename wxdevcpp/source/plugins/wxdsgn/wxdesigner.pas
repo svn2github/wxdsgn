@@ -105,6 +105,7 @@ type
 
   private
     plugin_name: string;
+    palettePanel: TPanel;
   public
     ownerForm: TForm;
     editorNames: Array of String;
@@ -366,7 +367,7 @@ begin
     Name := 'frmInspectorDock';
     Caption := GetLangString(ID_WX_PROPINSPECTOR);
     BorderStyle := bsSizeToolWin;
-    Color := cl3dLight;
+    Color := clBtnFace;
     Width := 300;
 
     DockSite := True;
@@ -380,14 +381,22 @@ begin
   frmPaletteDock := TForm.Create(ownerForm);
   frmPaletteDock.ParentFont := True;
   frmPaletteDock.Font.Assign(ownerForm.Font);
-  ComponentPalette := TComponentPalette.Create(frmPaletteDock);
+  palettePanel := TPanel.Create(frmPaletteDock);
+  palettePanel.Parent := frmPaletteDock;
+  palettePanel.BevelInner := bvLowered;
+  palettePanel.BorderWidth := 1;
+  palettePanel.BevelWidth := 1;
+  palettePanel.Align := alClient;
+  palettePanel.Anchors := [akLeft,akTop,akRight,akBottom];
+
+  ComponentPalette := TComponentPalette.Create(palettePanel);
   ComponentPalette.Visible := false;
   with frmPaletteDock do
   begin
     Name := 'frmPaletteDock';
-    Caption := main.GetLangString(133); //GetLangString(ID_WX_COMPONENTS); //'Components';
+    Caption := main.GetLangString(133);
     BorderStyle := bsSizeToolWin;
-    Color := cl3dLight;
+    Color := clBtnFace;
     Width := 170;    
 
     DockSite := True;
@@ -2482,7 +2491,8 @@ begin
   JvInspProperties.Enabled := False;
   JvInspEvents.Enabled := False;
   ComponentPalette.Enabled := False;
-  ComponentPalette.Visible := False; //EAB: we need to change color or give some visual cue here
+  ComponentPalette.Visible := False;
+  palettePanel.BevelInner := bvLowered;
 
   ELDesigner1.Active := False;
   ELDesigner1.DesignControl := nil;
@@ -2525,8 +2535,9 @@ begin
   pgCtrlObjectInspector.Enabled := true;
   JvInspProperties.Enabled := true;
   JvInspEvents.Enabled := True;
+  palettePanel.BevelInner := bvNone;
   ComponentPalette.Enabled := True;
-  ComponentPalette.Visible := True;  // EAB
+  ComponentPalette.Visible := True;
 end;
 
 procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);

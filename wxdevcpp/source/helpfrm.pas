@@ -117,7 +117,6 @@ var
   Item: TListItem;
   Entry: TEntry;
 begin
-  //hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
   hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
   if hFile = '' then exit;
   fini := TINIFile.Create(hFile);
@@ -170,10 +169,8 @@ begin
       fINI := TINIFile.Create(hFile)
     else
       fINI := TINIFile.Create(devDirs.Config + DEV_HELP_INI)
-      //fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI)
   else
     fINI := TINIFile.Create(devDirs.Config + DEV_HELP_INI);
-    //fINI := TINIFile.Create(devDirs.Help + DEV_HELP_INI);
 
   if (not assigned(fIni)) then begin
     MessageDlg('Coulnd''t create configuration file', mtError, [mbOk], 0);
