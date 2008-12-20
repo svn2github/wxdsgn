@@ -969,7 +969,7 @@ Ver=1
 7015=Borders
 7016=General Styles
 7017=Font
-7018=»ме
+7018=Name
 7019=Width
 7020=Height
 7021=Left
@@ -998,4 +998,13 @@ Ver=1
 7044=To Top
 7045=To Bottom
 7046=Designer Options
+7047=Sizers
+7048=Common Controls
+7049=Containers
+7050=Toolbars
+7051=Menubars
+7052=Dialogs
+7053=Unofficial Controls
+
+
 
