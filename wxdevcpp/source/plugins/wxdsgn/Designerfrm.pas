@@ -1490,7 +1490,7 @@ begin
   begin
      strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top, self.Width, self.Height]));
   end;
-      
+
   if self.Wx_Center then
     strLst.add('Center();');
 

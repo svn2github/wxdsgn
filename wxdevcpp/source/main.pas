@@ -8715,6 +8715,7 @@ begin
     e := GetEditorFromFileName(editorName);
     PageControl.ActivePageIndex := e.TabSheet.TabIndex;
     UpdateAppTitle;  // EAB more acurate title
+    PageControlChange(self);    // EAB try to fix C&P issues
 end;
 
 procedure TMainForm.SetEditorModified(editorName: String; modified: Boolean);

@@ -3258,7 +3258,7 @@ begin
 end;
 
 procedure TWXDsgn.JvInspEventsDataValueChanged(Sender: TObject;
-  Data: TJvCustomInspectorData);
+  Data: TJvCustomInspectorData);       // EAB *** Look here for after doubleclick designer components event
 var
   propertyName, wxClassName, propDisplayName, strNewValue, str, ErrorString: string;
   componentInstance: TComponent;
