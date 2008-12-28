@@ -1165,6 +1165,15 @@ const
   ID_WX_TOTOP                      = 7044;
   ID_WX_TOBOTTOM                   = 7045;
   ID_WX_DESIGNEROPTS               = 7046;
+  ID_WX_SIZERS                     = 7047;
+  ID_WX_COMMONCTRLS                = 7048;
+  ID_WX_CONTAINERS                 = 7049;
+  ID_WX_TOOLBARS                   = 7050;
+  ID_WX_MENUBARS                   = 7051;
+  ID_WX_DIALOGS                    = 7052;
+  ID_WX_UNOFFICIALCTRLS            = 7053;
+  
+  
   
 
 

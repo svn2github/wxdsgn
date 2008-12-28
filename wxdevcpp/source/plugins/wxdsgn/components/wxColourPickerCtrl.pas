@@ -35,8 +35,7 @@ uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, Dialogs,
 
 type
 
-  TWxColourPickerCtrl = class(TjanButtonEdit {TButtonEdit} {TColourPickerControl}, IWxComponentInterface, IWxContainerInterface,
-      IWxValidatorInterface)
+  TWxColourPickerCtrl = class(TjanButtonEdit {TButtonEdit} {TColourPickerControl}, IWxComponentInterface, IWxValidatorInterface)
   private
     FEVT_COLOURPICKER_CHANGED: string;
     FEVT_UPDATE_UI: string;

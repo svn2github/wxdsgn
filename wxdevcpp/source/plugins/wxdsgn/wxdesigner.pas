@@ -13,7 +13,7 @@ uses
   hashes,
   SynEditHighlighter, SynHighlighterMulti,
   JvComponentBase, JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle,
-  wxUtils, xprocs,
+  wxUtils, xprocs, wxAuiPaneInfo, wxPanel, 
   ComponentPalette;
 
 {$I ..\..\LangIDs.inc}
@@ -798,7 +798,7 @@ begin
     OnDblClick := ELDesigner1ControlDoubleClick;
     OnKeyDown := ELDesigner1KeyDown;
   end;
-
+ 
   ini := TiniFile.Create(Config + ChangeFileExt(ExtractFileName(Application.ExeName),'') + '.ini');      // EAB, a different executable name would give problems here.
   try
     ELDesigner1.Grid.Visible := ini.ReadBool('wxWidgets', 'cbGridVisible', ELDesigner1.Grid.Visible);
@@ -2402,7 +2402,7 @@ begin
         end;
       end;
 
-      if (SelectedComponent is TWxNonVisibleBaseComponent) then
+      if (SelectedComponent is TWxNonVisibleBaseComponent) and not(SelectedComponent.ClassName = 'TWxAuiPaneInfo')then
         TWxNonVisibleBaseComponent(SelectedComponent).Parent := ELDesigner1.DesignControl;
 
       if TfrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
@@ -2414,12 +2414,13 @@ begin
           TWxStatusBar(SelectedComponent).Parent := ELDesigner1.DesignControl;
       end;
 
-      //Like wxWidgets' default behaviour, fill the whole screen if only one control
+      {      //Like wxWidgets' default behaviour, fill the whole screen if only one control
       //is on the screen
       if GetWxWindowControls(ELDesigner1.DesignControl) = 1 then
         if IsControlWxWindow(Tcontrol(SelectedComponent)) then
           if TWincontrol(SelectedComponent).Parent is TForm then
             TWincontrol(SelectedComponent).Align := alClient;
+      }
     end;
   end;
 
@@ -2673,6 +2674,13 @@ begin
       Exit;
     end;
 
+    if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') and
+      (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) then
+    begin
+      ShowErrorAndReset('Each frame can only have one Aui Manager.');
+      Exit;
+    end;
+
     if StrContainsU(ComponentPalette.SelectedComponent, 'TWxStdDialogButtonSizer') then
     begin
       ShowErrorAndReset('wxStdDialogButtonSizers can only be inserted onto a wxDialog.');
@@ -2724,12 +2732,19 @@ begin
         Exit;
       end;
 
+      if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') and
+        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) then
+      begin
+        ShowErrorAndReset('Each dialog can only have one Aui Manager.');
+        Exit;
+      end;
+
       for I := 0 to ELDesigner1.DesignControl.ComponentCount - 1 do
         if ELDesigner1.DesignControl.Components[i] is TWxSizerPanel then
           AParent := ELDesigner1.DesignControl.Components[i] as TWinControl;
     end;
   end;
-
+  
   if TWinControl(AControlClass.NewInstance) is TWxSizerPanel and not StrContainsU(AParent.ClassName, 'TWxPanel') then
   begin
     if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
@@ -2789,6 +2804,22 @@ begin
       Exit;
     end;
   end;
+
+  //MN Only allow wxAuiPaneInfo components to be dropped onto a wxPanel or wxToolbar
+ if TWinControl(AControlClass.NewInstance) is TWxAuiPaneInfo then
+ begin
+   if ELDesigner1.SelectedControls.count = 0 then
+   begin
+     ShowErrorAndReset('This control needs to be dropped on a wxPanel or wxToolbar.');
+     Exit;
+   end;
+
+   if not ((ELDesigner1.SelectedControls[0] is TWxPanel) or (ELDesigner1.SelectedControls[0] is TWxToolBar)) then
+   begin
+     ShowErrorAndReset('This control needs to be dropped on a wxPanel or wxToolbar.');
+     Exit;
+   end;
+ end;
 
   /// Fix for Bug Report #1060562
   if TWinControl(AControlClass.NewInstance) is TWxToolButton then

@@ -64,17 +64,17 @@ type
 
     {Event Lisiting}
     FEVT_UPDATE_UI: string;
-    { Private methods of TWxPanel }
+    { Private methods of TWxScrolledWindow }
     procedure AutoInitialize;
     procedure AutoDestroy;
   protected
     { Protected declarations }
   public
     { Public declarations }
-    { Public fields and properties of TWxPanel }
+    { Public fields and properties of TWxScrolledWindow }
     defaultBGColor: TColor;
     defaultFGColor: TColor;
-    { Public methods of TWxPanel }
+    { Public methods of TWxScrolledWindow }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GenerateControlIDs: string;
@@ -116,7 +116,7 @@ type
     procedure SetStretchFactor(intValue: integer);
 
   published
-    { Published properties of TWxPanel }
+    { Published properties of TWxScrolledWindow }
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
     property Wx_Class: string Read FWx_Class Write FWx_Class;

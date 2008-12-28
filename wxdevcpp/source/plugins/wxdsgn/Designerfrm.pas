@@ -37,7 +37,7 @@ uses
   WxEdit, WxStaticText, WxButton, wxUtils, WXRadioButton, WXCheckBox,
   Wxcombobox, WxToolButton, WxSeparator, wxChoice,
   WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
-  WxSizerPanel, WxSplitterWindow,
+  WxSizerPanel, WxSplitterWindow, wxAuiManager,
   ComCtrls, SynEdit, Menus, xprocs;
 
 type
@@ -68,6 +68,7 @@ type
     FWxFrm_GeneralStyle: TWxStdStyleSet;
     FWxFrm_DialogStyle: TWxDlgStyleSet;
     FWxFrm_SizeToContents: Boolean;
+    FisAuimanagerAvailable: boolean;
     fsynEdit: TSynEdit;
 
     FEVT_CHAR, FEVT_KEY_UP, FEVT_KEY_DOWN, FEVT_ERASE_BACKGROUND,
@@ -134,6 +135,7 @@ type
     procedure SetFormName(StrValue: string);
 
     procedure CreateNewXPMs(strFileName:String);
+    function HasAuiManager: Boolean;
 
   published
     property EVT_INIT_DIALOG: string Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
@@ -209,6 +211,9 @@ type
 
     property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
     property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+
+    property isAuimanagerAvailable: boolean read FisAuimanagerAvailable write FisAuimanagerAvailable;
+
   end;
 
 var
@@ -235,6 +240,9 @@ var
   intManualBlockStart, intManualBlockEnd: integer;
   wxcompInterface: IWxComponentInterface;
   varIntf:IWxVariableAssignmentInterface;
+  wxAuimanagerInterface: IWxAuiManagerInterface;
+  wxAuiPaneInfoInterface: IWxAuiPaneInfoInterface;
+  wxAuiPaneInterface: IWxAuiPaneInterface;
   strEntry, strEventTableStart, strEventTableEnd: string;
   isSizerAvailable: boolean;
   strHdrValue: string;
@@ -257,6 +265,16 @@ begin
         break;
       end;
     end;
+
+    frmNewForm.isAuimanagerAvailable := False;
+    //MN detect whether there is a wxAuiManager component
+    for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+    begin
+      //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
+      if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+          frmNewForm.isAuimanagerAvailable := True;
+          break;
+    end; // for
 
     if isSizerAvailable then
     begin
@@ -287,15 +305,56 @@ begin
       end// for
     end
     else
+    begin
+      //MN do the wxAuiPane stuff first, then it is last in the list
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
+
+        if frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface) then
+        begin
+
+          if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+          begin
+            strTemp := wxcompInterface.GenerateGUIControlCreation;
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+          end;
+          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
+        end;
+      end; // for
+
+      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+      begin
+
+        if not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
+          and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface) then
+        begin
+
+          if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+          begin
+            strTemp := wxcompInterface.GenerateGUIControlCreation;
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+          end;
+          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
+        end;
+      end; // for
+
+      //MN detect whether there is a wxAuiManager component and do the code for that last
+      //it is then first in the generated code
+      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+      begin
+        //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
+        if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+        begin
         if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         begin
           strTemp := wxcompInterface.GenerateGUIControlCreation;
           AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
         end;
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-      end;// for
+        end;
+      end; // for
+
+    end;
 
     //Form data should come first, if not the child will be resized to
     if not isSizerAvailable then
@@ -1456,13 +1515,20 @@ begin
     end;
 
   isSizerAvailable := False;
-  for I := 0 to self.ComponentCount - 1 do // Iterate
+  isAuimanagerAvailable := False;
+  for I := 0 to self.ComponentCount - 1 do
+  begin // Iterate
     if self.Components[i] is TWxSizerPanel then
     begin
       isSizerAvailable := True;
-      break;
+      //      break;
     end;
-
+    if self.Components[i] is TWxAuiManager then
+    begin
+      isAuimanagerAvailable := True;
+      //      break;
+    end;
+    end;
   strLst.add(Format('SetTitle(%s);', [GetCppString(self.Caption)]));
   
   if assigned(Wx_ICON) then
@@ -1477,7 +1543,7 @@ begin
   if trim(self.Wx_ToolTips) <> '' then
     strLst.add(Format('SetToolTip(%s);', [GetCppString(self.Wx_ToolTips)]));
 
-  if isSizerAvailable then
+  if isSizerAvailable and not isAuiManagerAvailable then
   begin
     if strLst.Count <> 0 then
       strLst.add('');
@@ -1494,6 +1560,25 @@ begin
   if self.Wx_Center then
     strLst.add('Center();');
 
+  if isAuiManagerAvailable then
+  begin
+    if self.Wx_DesignerType = dtWxFrame then
+      for I := self.ComponentCount - 1 downto 0 do // Iterate
+        if IsControlWxToolBar(TControl(Components[i])) then
+        begin
+          strLst.add('SetToolBar(NULL);');
+          break;
+        end;
+
+    for I := self.ComponentCount - 1 downto 0 do // Iterate
+    begin
+      if self.Components[i] is TWxAuiManager then
+      begin
+        strLst.add(Format('%s->Update();', [self.Components[i].Name]));
+      end;
+    end;
+  end;
+
   Result := strLst.Text;
   strLst.Destroy;
 
@@ -1503,7 +1588,6 @@ function TfrmNewForm.GenerateGUIControlDeclaration: string;
 begin
   //Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
 end;
-
 
 function TfrmNewForm.GenerateHeaderInclude: string;
 begin
@@ -1809,5 +1893,11 @@ begin
   end;
     inherited; 
 end;
+
+function TfrmNewForm.HasAuiManager: Boolean;
+begin
+  Result := Self.isAuimanagerAvailable;
+end;
+
 
 end.

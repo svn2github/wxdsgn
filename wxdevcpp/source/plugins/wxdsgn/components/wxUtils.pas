@@ -59,6 +59,9 @@ const
   IID_IWxControlPanelInterface: TGUID = '{077d51a0-6628-11db-bd13-0800200c9a66}';
   IID_IWxThirdPartyComponentInterface: TGUID = '{ead81650-6903-11db-bd13-0800200c9a66}';
   IID_IWxImageContainerInterface: TGUID = '{10619130-6bd4-11db-bd13-0800200c9a66}';
+  IID_IWxAuiManagerInterface: TGUID = '{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}';
+  IID_IWxAuiPaneInfoInterface: TGUID = '{7D45A54D-4C39-447E-A484-352EEC1956C5}';
+  IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
 
 var
   StringFormat: string;
@@ -253,6 +256,18 @@ type
     function GetBitmapCount: Integer;
     function GetBitmap(Idx: Integer; var bmp: TBitmap; var PropertyName: string): boolean;
     function GetPropertyName(Idx: Integer): string;
+  end;
+
+   IWxAuiManagerInterface = interface
+    ['{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}']
+  end;
+
+   IWxAuiPaneInfoInterface = interface
+    ['{7D45A54D-4C39-447E-A484-352EEC1956C5}']
+  end;
+
+   IWxAuiPaneInterface = interface
+    ['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
   end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
@@ -483,6 +498,29 @@ type
 
   TWxMediaCtrlControl = (wxMEDIACTRLPLAYERCONTROLS_NONE, wxMEDIACTRLPLAYERCONTROLS_STEP, wxMEDIACTRLPLAYERCONTROLS_VOLUME);
   TWxMediaCtrlControls = set of TWxMediaCtrlControl;
+
+  //wxAUI styles etc.
+  TwxAuiManagerFlag = (wxAUI_MGR_ALLOW_FLOATING, wxAUI_MGR_ALLOW_ACTIVE_PANE, wxAUI_MGR_TRANSPARENT_DRAG,
+                        wxAUI_MGR_TRANSPARENT_HINT, wxAUI_MGR_VENETIAN_BLINDS_HINT, wxAUI_MGR_RECTANGLE_HINT,
+                        wxAUI_MGR_HINT_FADE, wxAUI_MGR_NO_VENETIAN_BLINDS_FADE);
+  TwxAuiManagerFlagSet = set of TwxAuiManagerFlag;
+
+  TwxAuiPaneDockDirectionItem = (wxAUI_DOCK_NONE, wxAUI_DOCK_TOP, wxAUI_DOCK_RIGHT, wxAUI_DOCK_BOTTOM, wxAUI_DOCK_LEFT, wxAUI_DOCK_CENTER);
+//mn later perhaps  TwxAuiPaneDockDirectionSet = set of TwxAuiPaneDockDirectionItem;
+
+  TwxAuiPaneDockableDirectionItem = (Dockable, TopDockable, RightDockable, BottomDockable, LeftDockable);
+  TwxAuiPaneDockableDirectionSet = set of TwxAuiPaneDockableDirectionItem;
+
+  TwxAuiPaneStyleItem = (CaptionVisible, DestroyOnClose, DockFixed, Floatable, Gripper, GripperTop, Movable, PaneBorder, Resizable, ToolbarPane);
+  TwxAuiPaneStyleSet = set of TwxAuiPaneStyleItem;
+
+  TwxAuiPaneButtonItem = (CloseButton,  MaximizeButton, MinimizeButton, PinButton);
+  TwxAuiPaneButtonSet = set of TwxAuiPaneButtonItem;
+
+
+
+
+
 
   TWxColorString = class
   public
@@ -788,6 +826,7 @@ function IsControlWxToolBar(ctrl: TControl): boolean;
 function IsControlWxStatusBar(ctrl: TControl): boolean;
 function IsControlWxNonVisible(ctrl: TControl): boolean;
 function GetNonVisualComponentCount(frmMainObj: TForm): integer;
+function IsControlWxAuiManager(ctrl: TControl): boolean;
 
 function GetWxIDString(strID: string; intID: longint): string;
 function IsValidClass(comp: TComponent): boolean;
@@ -1018,14 +1057,18 @@ begin
   Result.add('wxID_HELP');
   Result.add('wxID_PRINT');
   Result.add('wxID_PRINT_SETUP');
+  Result.add('wxID_PAGE_SETUP');
   Result.add('wxID_PREVIEW');
   Result.add('wxID_ABOUT');
   Result.add('wxID_HELP_CONTENTS');
+  Result.add('wxID_HELP_INDEX');
+  Result.add('wxID_HELP_SEARCH');
   Result.add('wxID_HELP_COMMANDS');
   Result.add('wxID_HELP_PROCEDURES');
   Result.add('wxID_HELP_CONTEXT');
   Result.add('wxID_CLOSE_ALL');
   Result.add('wxID_PREFERENCES');
+  Result.add('wxID_EDIT');
   Result.add('wxID_CUT');
   Result.add('wxID_COPY');
   Result.add('wxID_PASTE');
@@ -1045,6 +1088,7 @@ begin
   Result.add('wxID_VIEW_SORTNAME');
   Result.add('wxID_VIEW_SORTSIZE');
   Result.add('wxID_VIEW_SORTTYPE');
+  Result.add('wxID_FILE');
   Result.add('wxID_FILE1');
   Result.add('wxID_FILE2');
   Result.add('wxID_FILE3');
@@ -4069,6 +4113,16 @@ begin
   Result := ctrl is TWxNonVisibleBaseComponent;
 end;
 
+function IsControlWxAuiManager(ctrl: TControl): boolean;
+var
+  cntIntf: IWxAuiManagerInterface;
+begin
+  Result := False;
+  if not assigned(ctrl) then
+    Exit;
+  Result := ctrl.GetInterface(IID_IWxAuiManagerInterface, cntIntf);
+end;
+
 function GetWxIDString(strID: string; intID: longint): string;
 begin
   if intID > 0 then
@@ -6031,7 +6085,7 @@ end;
 
 procedure TJvInspectorListItemsItem.Edit;
 begin
-
+  ShowMessage('TJvInspectorListItemsItem.Edit');
 end;
 
 function TJvInspectorListItemsItem.GetDisplayValue: string;

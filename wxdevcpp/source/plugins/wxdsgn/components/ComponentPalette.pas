@@ -77,7 +77,8 @@ uses
   WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
   WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog, wxColourPickerCtrl,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
-  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl;
+  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl,
+  WxAuiManager, WxAuiPaneInfo;
 
 const
   SearchPrompt = '(search component)';
@@ -235,6 +236,8 @@ begin
     ComponentsList.Add('Components;TwxTimer;TwxHtmlEasyPrinting');
     //Unofficial components
     ComponentsList.Add('"Unofficial Controls";TwxTreeListCtrl;TwxStyledTextCtrl;TwxCustomButton');
+    //wxAui components
+    ComponentsList.Add('wxAui Components;TwxAuiManager;TWxAuiPaneInfo');
 
     RegisterClasses([TWxStdDialogButtonSizer, TWxBoxSizer, TWxStaticBoxSizer, TWxGridSizer,
                      TWxFlexGridSizer, TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,
@@ -252,7 +255,8 @@ begin
                      TwxTreeListCtrl, TWxRichTextCtrl, TWxStyledTextCtrl, TWxCalendarCtrl,
                      TWxOwnerDrawnComboBox, TWxTextEntryDialog, TWxPasswordEntryDialog,
                      TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl, TWxColourPickerCtrl,
-                     TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox]);
+                     TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox,
+                     TwxAuiManager, TWxAuiPaneInfo]);
 
     //Now that the components have been put into it's respective string lists,
     //iterate over all the items, parsing them and putting them into the tree-view

@@ -351,6 +351,28 @@ begin
 end;
 
 function TWxGridSizer.GenerateGUIControlCreation: string;
+
+  function HasAuiManagedForm: Boolean;
+  var
+    I: Integer;
+    isAuimanagerAvailable: Boolean;
+  wxAuimanagerInterface: IWxAuiManagerInterface;
+  begin
+    isAuimanagerAvailable := False;
+    if self.Parent.Parent is TForm then
+    begin
+      //MN detect whether there is a wxAuiManager component
+      for I := self.Parent.Parent.ComponentCount - 1 downto 0 do // Iterate
+      begin
+          if self.Parent.Parent.Components[i].ClassName = 'TWxAuiManager' then
+        //if self.Parent.Parent.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+          isAuimanagerAvailable := True;
+        break;
+      end; // for
+    end;
+    Result :=  isAuimanagerAvailable;
+  end;
+
 var
   strAlignment: string;
   parentName:  string;
@@ -365,7 +387,7 @@ begin
     if (self.Parent is TForm) then
       parentName := 'this'
     else if (self.Parent.ClassName = 'TWxPanel') then
-      if self.Parent.Parent is TForm then
+        if self.Parent.Parent is TForm and not HasAuiManagedForm then
 	parentName := 'this'
       else if (self.Parent.Parent.ClassName <> 'TWxNotebook') then
 	parentName := self.Parent.Name
