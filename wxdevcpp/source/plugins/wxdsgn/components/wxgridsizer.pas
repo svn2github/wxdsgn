@@ -31,7 +31,7 @@ unit WxGridSizer;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel;
+  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, wxAuiManager;
 
 type
   TWxGridSizer = class(TWxSizerPanel, IWxComponentInterface,
