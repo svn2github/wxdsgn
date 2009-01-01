@@ -518,7 +518,7 @@ begin
   fFolders.Sorted := True;
   fFolderNodes := TObjectList.Create;
   fFolderNodes.OwnsObjects := false;
-  fProfiles:=TProjectProfileList.Create;
+  fProfiles := TProjectProfileList.Create;
   fUnits := TUnitList.Create;
   fModified := True;
 

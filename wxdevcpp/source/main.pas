@@ -873,6 +873,7 @@ type
     procedure ViewCPUItemClick(Sender: TObject);
     procedure edCommandKeyPress(Sender: TObject; var Key: Char);
     procedure actExecParamsExecute(Sender: TObject);
+    procedure actExecParamsUpdate(Sender: TObject);  // EAB: attempt to enable menu item using current horrible model
     procedure DevCppDDEServerExecuteMacro(Sender: TObject; Msg: TStrings);
     procedure actShowTipsExecute(Sender: TObject);
     procedure actBrowserUseColorsExecute(Sender: TObject);
@@ -3253,7 +3254,7 @@ begin
 
       dmMain.RemoveFromHistory(s);
       // if project manager isn't open then open it
-      if (not ShowProjectInspItem.Checked) and (not fFirstShow )then
+      if (not ShowProjectInspItem.Checked) and (not fFirstShow)then
         ShowProjectInspItem.OnClick(Self);
 
       CheckForDLLProfiling;
@@ -4884,7 +4885,7 @@ begin
       fDebugger.AddIncludeDir(fProject.CurrentProfile.Includes[idx]);
 
     if fProject.CurrentProfile.typ <> dptDyn then
-      fDebugger.Execute(StringReplace(fProject.Executable, '\', '\\', [rfReplaceAll]), fCompiler.RunParams)
+      fDebugger.Execute(StringReplace(fProject.Executable, '\', '\\', [rfReplaceAll]), fCompiler.RunParams)    // EAB TODO:  command line args are passed when debugging?
     else
     begin
       if fProject.CurrentProfile.HostApplication = '' then begin
@@ -6959,6 +6960,11 @@ begin
   finally
     ParamsForm.Free;
   end;
+end;
+
+procedure TMainForm.actExecParamsUpdate(Sender: TObject);
+begin
+  (Sender as TCustomAction).Enabled := assigned(fProject) and not devExecutor.Running and not fDebugger.Executing and not fCompiler.Compiling;
 end;
 
 procedure TMainForm.DevCppDDEServerExecuteMacro(Sender: TObject;

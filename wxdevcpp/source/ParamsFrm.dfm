@@ -1,6 +1,6 @@
 object ParamsForm: TParamsForm
-  Left = 389
-  Top = 262
+  Left = 547
+  Top = 307
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Parameters'

@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 388
-  Top = 291
+  Left = 546
+  Top = 341
   Width = 719
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1497,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 474
-          Height = 75
+          Height = 76
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -4253,7 +4253,7 @@ object MainForm: TMainForm
       Category = 'Execute'
       Caption = 'Parameters...'
       OnExecute = actExecParamsExecute
-      OnUpdate = actDebugUpdate
+      OnUpdate = actExecParamsUpdate
     end
     object actShowTips: TAction
       Category = 'Help'
