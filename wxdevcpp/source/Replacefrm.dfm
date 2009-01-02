@@ -5,7 +5,7 @@ object frmReplace: TfrmReplace
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Replace Text'
-  ClientHeight = 405
+  ClientHeight = 422
   ClientWidth = 303
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,7 +53,7 @@ object frmReplace: TfrmReplace
     Left = 8
     Top = 143
     Width = 289
-    Height = 98
+    Height = 122
     Caption = ' Options '
     TabOrder = 2
     object cbMatchCase: TCheckBox
@@ -74,7 +74,7 @@ object frmReplace: TfrmReplace
     end
     object cbPrompt: TCheckBox
       Left = 8
-      Top = 54
+      Top = 56
       Width = 270
       Height = 17
       Caption = '&Prompt on Replace'
@@ -82,16 +82,24 @@ object frmReplace: TfrmReplace
     end
     object cbRegex: TCheckBox
       Left = 8
-      Top = 74
+      Top = 76
       Width = 270
       Height = 17
       Caption = 'Use Regular Expressions'
       TabOrder = 3
     end
+    object cbUseSelection: TCheckBox
+      Left = 8
+      Top = 96
+      Width = 273
+      Height = 17
+      Caption = 'Use Selection When Replace All'
+      TabOrder = 4
+    end
   end
   object btnReplace: TButton
     Left = 143
-    Top = 376
+    Top = 392
     Width = 75
     Height = 24
     Caption = 'Replace'
@@ -102,7 +110,7 @@ object frmReplace: TfrmReplace
   end
   object btnCancel: TButton
     Left = 7
-    Top = 376
+    Top = 392
     Width = 75
     Height = 24
     Cancel = True
@@ -121,7 +129,7 @@ object frmReplace: TfrmReplace
   end
   object btnReplaceAll: TButton
     Left = 223
-    Top = 376
+    Top = 392
     Width = 75
     Height = 24
     Caption = 'Replace &All'
@@ -145,7 +153,7 @@ object frmReplace: TfrmReplace
   end
   object grpOrigin: TRadioGroup
     Left = 8
-    Top = 248
+    Top = 268
     Width = 290
     Height = 57
     Caption = 'Origin'
@@ -157,7 +165,7 @@ object frmReplace: TfrmReplace
   end
   object grpDirection: TRadioGroup
     Left = 8
-    Top = 312
+    Top = 328
     Width = 289
     Height = 57
     Caption = 'Direction'
@@ -196,6 +204,6 @@ object frmReplace: TfrmReplace
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 93
-    Top = 375
+    Top = 391
   end
 end

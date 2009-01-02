@@ -50,6 +50,7 @@ type
     cbRegex: TCheckBox;
     grpOrigin: TRadioGroup;
     grpDirection: TRadioGroup;
+    cbUseSelection: TCheckBox;
     procedure btnReplaceClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -62,6 +63,7 @@ type
     procedure LoadText;
 
   public
+    UseSelection: Boolean;
     property SearchOptions: TSynSearchOptions read fSearchOptions write fSearchOptions;
     property Regex: boolean read fRegex write fRegex;
   end;
@@ -116,6 +118,9 @@ begin
 
     if grpOrigin.ItemIndex = 1 then
       include(fSearchOptions, ssoEntireScope);
+
+    UseSelection := cbUseSelection.Checked;
+
      fClose:= True;
   end;
 end;

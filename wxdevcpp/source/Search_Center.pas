@@ -51,6 +51,7 @@ type
     fSynEdit: TSynEdit;
     fCurFile: string;
     fPC: TPageControl;
+    fUseSelection: Boolean;
     fSearchEngine: TSynEditSearchCustom;
     function RunSingleFile: boolean;
     function RunAllFiles: boolean;
@@ -70,6 +71,7 @@ type
     property Project: TProject read fProject write fProject;
     property Options: TSynSearchOptions read fOptions write fOptions;
     property PageControl: TPageControl read fPC write fPC;
+    property UseSelection: Boolean read fUseSelection write fUseSelection;
   end;
 
 var
@@ -124,6 +126,7 @@ begin
       fFindText:= frmReplace.cboFindText.Text;
       fReplaceText:= frmReplace.cboReplaceText.Text;
       fOptions:= frmReplace.SearchOptions;
+      UseSelection := frmReplace.UseSelection;
     end;
   end
   else
@@ -150,15 +153,34 @@ begin
 end;
 
 function TdevSearchCenter.RunSingleFile: boolean;
+var
+  startTmp, endTmp: Integer;    // EAB Workaround for Replace All
 begin
   if not assigned(fEditor) then
   begin
     Result:= False;
     Exit;
   end
-  else if fEditor.Text.SearchReplace(fFindText, fReplaceText, fOptions) = 0 then
+  else
+  begin
+    if (ssoReplaceAll in fOptions) and not UseSelection then
+    begin
+        startTmp := fEditor.Text.SelStart;
+        endTmp := fEditor.Text.SelEnd;
+        fEditor.Text.SelStart := 0;
+        fEditor.Text.SelEnd := fEditor.Text.GetTextLen;
+    end;
+
+    if fEditor.Text.SearchReplace(fFindText, fReplaceText, fOptions) = 0 then
     MessageDlg(Format(Lang[ID_MSG_TEXTNOTFOUND], [SearchCenter.FindText]),
        mtInformation, [mbOk], 0);
+
+    if (ssoReplaceAll in fOptions) and not UseSelection then
+    begin
+        fEditor.Text.SelStart := startTmp;
+        fEditor.Text.SelEnd := startTmp;
+    end;
+  end;
   Result:= True;
 end;
 
