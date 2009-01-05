@@ -13,7 +13,8 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0rc2"
+!define WXDEVCPP_VERSION "7.0rc4"
+!define IDE_DEVPAK_NAME  "wxdevcpp_rc4.DevPak"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
@@ -363,7 +364,7 @@ File "license.txt"
 
 
   ; Install wxDev-C++ executable
-!insertmacro InstallDevPak "wxdevcpp_rc2.DevPak"
+!insertmacro InstallDevPak "${IDE_DEVPAK_NAME}"
  
 ; Install make - All compilers use the Mingw32 GNU make system
  !insertmacro InstallDevPak "make.DevPak"
@@ -714,6 +715,10 @@ SectionEnd
 Section "Remove all previous configuration files" SectionConfig
    SectionIn 1 2
 
+SetShellVarContext current
+  Delete "$APPDATA\Dev-Cpp\*.*"
+
+SetShellVarContext all
   Delete "$APPDATA\Dev-Cpp\*.*"
 
   ;Delete "$APPDATA\Dev-Cpp\devcpp.ini"
@@ -739,6 +744,23 @@ Section "Remove all previous configuration files" SectionConfig
   Delete "$LOCAL_APPDATA\wxdevcpp.ini"
   Delete "$LOCAL_APPDATA\wxdevcpp.cfg"
   Delete "$LOCAL_APPDATA\wxdevcpp.ci"
+
+SetShellVarContext current
+
+  Delete "$APPDATA\devcpp.ini"
+  Delete "$APPDATA\devcpp.cfg"
+  Delete "$APPDATA\cache.ccc"
+  Delete "$APPDATA\defaultcode.cfg"
+  Delete "$APPDATA\devshortcuts.cfg"
+  Delete "$APPDATA\classfolders.dcf"
+  Delete "$APPDATA\mirrors.cfg"
+  Delete "$APPDATA\tools.ini"
+  Delete "$APPDATA\devcpp.ci"
+  Delete "$APPDATA\wxdevcpp.ini"
+  Delete "$APPDATA\wxdevcpp.cfg"
+  Delete "$APPDATA\wxdevcpp.ci"
+  
+SetShellVarContext all
 
   Delete "$APPDATA\devcpp.ini"
   Delete "$APPDATA\devcpp.cfg"
@@ -1083,15 +1105,11 @@ ${ENDIF}
 
   MessageBox MB_YESNO "Do you want to remove all the remaining configuration files?" IDNO Done
 
-  Delete "$APPDATA\Dev-Cpp\devcpp.ini"
-  Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
-  Delete "$APPDATA\Dev-Cpp\cache.ccc"
-  Delete "$APPDATA\Dev-Cpp\defaultcode.cfg"
-  Delete "$APPDATA\Dev-Cpp\devshortcuts.cfg"
-  Delete "$APPDATA\Dev-Cpp\classfolders.dcf"
-  Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
-  Delete "$APPDATA\Dev-Cpp\tools.ini"
-  Delete "$APPDATA\Dev-Cpp\devcpp.ci"
+SetShellVarContext all
+  Delete "$APPDATA\Dev-Cpp\*.*"
+  
+  SetShellVarContext current
+  Delete "$APPDATA\Dev-Cpp\*.*"
   
   call un.GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
@@ -1104,6 +1122,7 @@ ${ENDIF}
   Delete "$LOCAL_APPDATA\tools.ini"
   Delete "$LOCAL_APPDATA\devcpp.ci"
 
+SetShellVarContext all
   Delete "$APPDATA\devcpp.ini"
   Delete "$APPDATA\devcpp.cfg"
   Delete "$APPDATA\cache.ccc"
@@ -1113,6 +1132,23 @@ ${ENDIF}
   Delete "$APPDATA\mirrors.cfg"
   Delete "$APPDATA\tools.ini"
   Delete "$APPDATA\devcpp.ci"
+  Delete "$APPDATA\wxdevcpp.ci"
+  Delete "$APPDATA\wxdevcpp.ini"
+  Delete "$APPDATA\wxdevcpp.cfg"
+  
+  SetShellVarContext current
+  Delete "$APPDATA\devcpp.ini"
+  Delete "$APPDATA\devcpp.cfg"
+  Delete "$APPDATA\cache.ccc"
+  Delete "$APPDATA\defaultcode.cfg"
+  Delete "$APPDATA\devshortcuts.cfg"
+  Delete "$APPDATA\classfolders.dcf"
+  Delete "$APPDATA\mirrors.cfg"
+  Delete "$APPDATA\tools.ini"
+  Delete "$APPDATA\devcpp.ci"
+  Delete "$APPDATA\wxdevcpp.ci"
+  Delete "$APPDATA\wxdevcpp.ini"
+  Delete "$APPDATA\wxdevcpp.cfg"
   
   Delete "$INSTDIR\devcpp.ini"
   Delete "$INSTDIR\devcpp.cfg"
