@@ -3,8 +3,9 @@
 
 [lang]
 Lang=Polish (Polski)
-Ver=1
+Ver=2
 
+#Górne menu
 100=&Plik
 101=&Edycja
 102=&Szukaj
@@ -16,6 +17,7 @@ Ver=1
 108=Pomo&c
 109=O&dpluskwiacz
 
+#Menu Plik
 120=&Nowy
 121=&Projekt...
 122=Plik Ÿ&ród³owy
@@ -31,6 +33,7 @@ Ver=1
 136=Za&mknij
 137=Zamknij projekt
 138=W³aœciwoœci
+139=Zapisz projekt jako...
 
 140=&Eksportuj
 141=do &HTML
@@ -43,6 +46,7 @@ Ver=1
 151=Ustawienia wydruku
 152=Za&koñcz
 
+#Menu Edycja
 160=&Cofnij
 161=&Powtórz
 162=&Wytnij
@@ -56,7 +60,9 @@ Ver=1
 170=Zak³adka
 171=&Data/Czas
 172=Komentarz &nag³ówkowy
+#z powodu wyczerpania numerów, Menu Edycja jest kontynuowane od 380...
 
+#Menu Szukaj
 175=ZnajdŸ...
 176=ZnajdŸ &w plikach...
 177=Zamieñ...
@@ -64,8 +70,9 @@ Ver=1
 179=&PrzejdŸ do wiersza...
 180=S&zukanie przyrostowe
 181=Prze&jdŸ do funkcji...
-182=Ruchomy mened¿er projektu
 
+#Menu Widok
+182=Ruchomy mened¿er projektu
 183=PrzejdŸ do &mened¿era projektu
 184=PrzejdŸ do przegl¹darki &klas
 185=&Przegl¹darka projektu/klas
@@ -75,6 +82,7 @@ Ver=1
 189=&Tylko kiedy potrzebne
 190=Paski &narzêdzi
 
+#Napisy paska narzêdzi
 191=G³ówny
 192=Kompilowanie i uruchamianie
 193=Projekt
@@ -83,6 +91,10 @@ Ver=1
 196=Edycja
 197=Przeszukiwanie
 
+#Menu Widok(c.d.)
+198=P³ywaj¹ce okno raportu
+
+#Menu Projekt
 200=&Nowy plik
 201=&Dodaj do projektu
 202=&Usuñ z projektu
@@ -92,6 +104,7 @@ Ver=1
 206=Doda&j plik zasobów...
 207=U&suñ plik zasobów...
 
+#Menu Uruchom
 210=&Kompiluj
 211=&Uruchom
 212=Kompiluj &i uruchom
@@ -103,12 +116,14 @@ Ver=1
 218=&Analiza profilu
 219=Przerwij kompilowanie
 
+#Menu Narzêdzia
 220=Opcje &kompilatora
 221=Opcje œ&rodowiska
 222=Opcje &edytora
 223=Konfiguruj &narzêdzia
 224=Konfiguruj &skróty
 
+#Menu Okno
 230=&Tryb pe³noekranowy
 231=&Powrót do normalnego
 232=&Nastêpny
@@ -118,11 +133,13 @@ Ver=1
 236=Zamknij wszystko z wyj¹tkiem tego
 237=&Lista...
 
+#Menu Pomoc
 240=&O Dev-C++...
 241=&SprawdŸ, czy s¹ nowe uaktualnienia/pakiety...
 242=&Dostosuj menu Pomoc...
 243=&Indeks pomocy Dev-C++
 
+#Menu Odpluskwiacz
 245=&Odpluskwiaj
 246=&Prze³¹cz punkt przerwania
 247=P&rzeskocz
@@ -135,19 +152,27 @@ Ver=1
 254=&Wskocz do
 255=Uruchom do &kursora
 256=Obe&jrzyj okno CPU
+257=Do³¹cz do procesu...
+258=&Modyfikuj wartoœæ
+259=&Wyczyœæ wszystko
 
+#menu kontekstowe
+
+#menu projekt
 260=Nowy plik
 261=Dodaj plik...
 262=Usuñ plik...
 263=Opcje...
 264=Edytuj plik zasobów
 
+#menu plik
 270=Usuñ plik
 271=Zmieñ nazwê pliku
 272=Zamknij
 273=Otwórz
 274=Otwórz nag³ówek
 
+#menu przegl¹darki klas
 280=PrzejdŸ do deklaracji
 281=PrzejdŸ do implementacji
 282=Nowa klasa
@@ -162,20 +187,27 @@ Ver=1
 291=Nie mo¿esz stworzyæ wiêcej ni¿ %d folderów w jednym projekcie...
 292=Stosuj kolory
 293=Pliki projektu
-294=Poka¿ sk³adowe odziedziczone 
+294=Poka¿ sk³adowe odziedziczone
+295=Otwórz z...
 
+#Kontrola komunikatów
+#arkusze
 300=Kompilator
 301=Zasoby
 302=Log kompilacji
 303=Wyniki poszukiwañ
 304=Zamknij
 305=Odpluskwiacz
+306=Lista "Do zrobienia"
 
+#menu wyskakuj¹ce
 310=Czyœæ
 311=Kopiuj
 312=Ukryj
 313=Otwórz
 
+#nag³ówki kolumn
+#320,322,323 nie ma w pliku inc
 315=Wiersz
 316=Plik
 317=Komunikat
@@ -190,19 +222,23 @@ Ver=1
 326=Liczba b³êdów:
 327=Rozmiar wyjœcia:
 
+#odpluskwianie
 330=Obserwowane zmienne
 331=Œledzenie wsteczne
 332=Wyjœcie
 333=Wyœlij polecenie do GDB
 334=Wyœlij
 
+#specjalne sk³adniki paska narzêdzi
 340=Nowy
 341=Wstaw
 342=Prze³¹cz
 343=PrzejdŸ Do
 344=Okno projektu
 345=Okno odpluskwiacza
+346=Okno raportu
 
+#niewidoczne (okno otwórz/zamknij)
 350=Otwórz plik
 351=Otwórz plik
 352=Eksportuj do
@@ -214,16 +250,21 @@ Ver=1
 358=WprowadŸ nazwê zmiennej:
 359=Modyfikuj zmienn¹:
 360=Nowa nazwa zmiennej:
+361=Modyfikuj wartoœæ
+362=Zmienna do modyfikacji:
+363=Nowa wartoœæ:
 
 370=Projekt
 371=Klasy
 
+#Menu Edycja (wiêcej opcji)
 380=Zamieñ na komentarz
 381=Usuñ komentarz
 382=Dodaj wciêcie
 383=Usuñ wciêcie
 384=Zamiana nag³ówek/Ÿród³o
 
+#Okno opcji edytora 400-499
 400=Opcje edytora
 401=Ogólne
 402=Widok
@@ -232,9 +273,11 @@ Ver=1
 405=Uzupe³nianie kodu
 406=Przegl¹darka klas
 
+#podrzêdne zak³adki
 410=Wstawki
 411=Domyœlny kod
 
+#Zak³adka Ogólne
 420=Opcje edytora
 421=Automatyczne wciêcia
 422=Tryb wstawiania
@@ -270,6 +313,14 @@ Ver=1
 452=Wyœwietlaj podpowiedzi edytora
 453=Podœwietlaj dopasowane klamry/nawiasy
 
+#454=Zapewnij pust¹ liniê na koñcu pliku
+#455=Podœwietl obecn¹ liniê
+#456=Ustawia wartoœæ Podœwietlony Tekst Systemu
+#457=Ustawia wartoœæ bia³ej spacji
+
+#do 459 dla dodatkowych
+
+#Zak³adka Widok
 460=Czcionka edytora:
 461=Czcionka
 462=Rozmiar
@@ -282,6 +333,7 @@ Ver=1
 469=Zastosuj niestandardow¹ czcionkê
 470=Czcionka na lewym marginesie
 
+#Zak³adka kolorowanie sk³adni
 471=Kolor tekstu:
 472=Kolor t³a:
 473=Styl:
@@ -293,18 +345,21 @@ Ver=1
 479=Zapisz w³asne ustawienia sk³adni
 419=WprowadŸ nazwê dla nowych ustawieñ sk³adni:
 
+#Zak³adka kod
 480=Kod
 481=Wpis w menu
 482=Sekcja
 483=Opis
 484=Wstaw powy¿szy kod do pliku inicjuj¹cego pusty projekt
 
+#Zak³adka Uzupe³nianie kodu
 485=U¿ywaj pamiêci podrêcznej uzupe³niania kodu
 486=Pliki w pamiêci podrêcznej:
 487=W³¹cz uzupe³nianie kodu
 488=OpóŸnienie (ms):
 489=Kolor t³a:
 
+#zak³adka Przegl¹darka klas
 490=Ustawienia przegl¹darki klas
 491=Skanuj pliki lokalne przekazane w dyrektywach #include
 492=Próbka:
@@ -313,6 +368,7 @@ Ver=1
 495=W³¹cz przegl¹darkê klas
 496=Skanuj pliki globalne przekazane w dyrektywach #include
 
+#Forma Nowy projekt
 500=Nowy projekt
 501=Opis:
 503=Nazwa:
@@ -322,15 +378,19 @@ Ver=1
 507=Ró¿noœci
 508=Opcje projektu:
 
+#Forma usuwania plików
 520=Usuñ z projektu
 521=Wybierz plik do usuniêcia z projektu
 
+#Forma idŸ do linii
 525=PrzejdŸ do wiersza...
 526=Podaj numer wiersza
 
+#Forma konfiguracji narzêdzi
 530=Konfiguracja narzêdzi
 531=Bie¿¹ce narzêdzia:
 
+#Forma edycji narzêdzi
 535=Edytuj wpis narzêdzia
 536=Tytu³
 537=Program
@@ -339,10 +399,12 @@ Ver=1
 540=Wstaw makro
 541=Dostêpne makra
 
+#Forma biblioteki ikon
 545=Biblioteka ikon
 546=U¿yj wybranej ikony
 547=Przegl¹daj
 
+#Forma konfiguracji skrótów
 550=Konfiguruj skróty klawiaturowe
 551= Wybierz pozycjê a nastêpnie wciœnij po¿¹dany skrót!
 552=Wskazówka naciœnij "Escape" aby wyczyœciæ skrót...
@@ -351,6 +413,7 @@ Ver=1
 555=Anuluj
 556=OK
 
+#Makra Menu narzêdzi
 560=Zwraca katalog domyœlny
 561=Zwraca katalog roboczy dev-c++
 562=Zwraca nazwê skompilowanego pliku
@@ -362,7 +425,9 @@ Ver=1
 568=Zwraca listê oddzielonych spacjami plików bie¿¹cego projektu
 569=Zwraca s³owo na pozycji kursora w aktywnym oknie edytora
 570=Zwraca wersjê dev-c++
+#do 579
 
+#Forma o programie
 580=O Dev-C++ :)
 581=inseculous@users.sourceforge.net
 582=GNU General Public Licence
@@ -379,12 +444,14 @@ Ver=1
 593=haiku@bloodshed.net
 594=SprawdŸ uaktualnienia
 
+#Forma edycji wpisów wstawki kodu
 600=Edytuj wpis wstawki kodu
 601=Dodaj wpis wstawki kodu
 602=Tytu³ elementu menu
 603=Opis elementu
 604=Sekcja menu
 
+#Forma opcji œrodowiskowych
 606=Okno Postêpu Kompilacji
 607=&Pokazuj podczas kompilacji
 608=&Zamknij po kompilacji
@@ -420,6 +487,7 @@ Ver=1
 638=Temat:
 639=Interfejs
 
+#Forma szukaj
 640=ZnajdŸ tekst
 641=ZnajdŸ
 642=ZnajdŸ w plikach
@@ -440,6 +508,7 @@ Ver=1
 657=Naprzód
 658=Wstecz
 
+#Forma zast¹p
 670=Zamieñ tekst
 671=Tekst:
 672=Zamieñ na:
@@ -457,11 +526,13 @@ Ver=1
 684=Od kursora
 685=Pe³ny zasiêg
 
+#Forma idŸ do funkcji
 695=Szukaj:
 696=Typ
 697=Funkcja
 698=Wiersz
 
+#Opcje kompilatora
 700=Opcje kompilatora
 701=Kompilator
 702=Katalogi
@@ -486,6 +557,8 @@ Ver=1
 732=Dodaj te polecenia do wiersza poleceñ kompilatora:
 733=OpóŸnienie
 734=W³¹cz opóŸnienie (w ms), je¿eli make skar¿y siê na znacznik czasu pliku Makefile
+735=Wyœwietla jeden b³¹d na liniê
+
 740=Wytwarzanie kodu
 741=Optymalizacja
 745=W³¹cz obs³ugê wyj¹tków
@@ -516,6 +589,7 @@ Ver=1
 777=Podaj now¹ nazwê dla zestawu kompilatorów:
 778=Dalsze optymalizacje
 
+#Forma pomocy edytora
 780=Edytor menu Pomoc
 781=Tytu³ menu
 782=Plik pomocy
@@ -529,6 +603,7 @@ Ver=1
 790=Szukaj w plikach pomocy s³owa z pozycji kursora
 791=Przydziel skrót F1
 
+#Forma drukowania pliku
 800=Drukuj plik
 801=Parametry:
 802=Strony:
@@ -541,6 +616,7 @@ Ver=1
 809=Liczba kopii:
 810= Drukuj tylko zaznaczony tekst
 
+#Forma aktualizacji
 820=SprawdŸ uaktualnienia Dev-C++
 821=Zadanie:
 822=Wynik:
@@ -549,11 +625,13 @@ Ver=1
 825=Opis wydania:
 826=Strona pobierania (podwójnie kliknij aby pobraæ):
 
+#Forma Dodaj "Do zrobienia"
 830=Dodaj element DoZrobienia...
 831=Opis
 832=Priorytet
 833=U¿ytkownik
 
+#Forma Przegl¹daj "Do zrobienia"
 835=Lista elementów DoZrobienia...
 836=Nazwa pliku
 837=Zrobione
@@ -566,13 +644,16 @@ Ver=1
 844=Otwarte pliki nie-projektów
 845=Tylko bie¿¹cy plik
 
+#Forma importu MSVC++
 850=Importuj projekt MS Visual C++
 851=Wybierz plik projektu MS Visual C++
 852=Opcje importu
 853=Konfiguracja importu
 854=Nazwa pliku z projektem Dev-C++
 855=Import i konwersja pliku projektu MS Visual C++ zakoñczy³y siê sukcesem! Czy chcesz go teraz otworzyæ?
+856=Nie mo¿na zlokalizowaæ konfiguracji "%s" (to jest prawdopodobnie b³¹d w Dev-C++)...
 
+#Forma Opcji projektu
 900=Opcje projektu
 901=Ogólne
 902=Pliki/katalogi
@@ -604,6 +685,7 @@ Ver=1
 927=Dodaj plik
 928=%d plików [%d Ÿród³owych, %d nag³ówkowych, %d zasobów]
 
+#Forma nowego szablonu
 930=Nazwa
 931=Opis:
 932=Kategoria:
@@ -619,7 +701,11 @@ Ver=1
 942=Ikonka projektu
 943=Utwórz
 944=Nowy szablon z projektu
+945=U¿yj katalogów Include projektu
+946=U¿yj katalogów Library projektu
+947=U¿yj katalogów Resource projektu
 
+#Forma nowej zmiennej klasy
 950=Zwracany typ:
 951=Nazwa zmiennej:
 952=Implementacja w:
@@ -647,6 +733,7 @@ Ver=1
 974=Dodaj do bie¿¹cego projektu
 975=Atrybuty
 
+#Forma w³aœciwoœci pliku
 980=Nazwa pliku
 981=W projekcie
 982=Liczba wierszy w pliku
@@ -660,10 +747,13 @@ Ver=1
 991=Data/znacznik czasu
 992=Kompilator
 
+#Forma analizy profilu
 995=Analiza profilu
 996=P³askie wyjœcie
 997=Graf wywo³añ
 
+#Globalne ³añcuchy
+#komunikaty
 1000=Nie znaleziono napisu ''%s''
 1001=Nie mo¿na by³o otworzyæ pliku %s
 1002=Zamieniæ to wyst¹pienie ''%s''?
@@ -687,7 +777,9 @@ Ver=1
 1020=Wyst¹pi³ b³¹d. Plik %s nie by³ plikiem do odczytu i zapisu przez co nie zosta³ zapisany...
 1021=W twoim programie zg³oszono naruszenie praw dostêpu (b³¹d segmentacji).
 1022=Plik Ÿród³owy jest nowszy ni¿ plik wykonywalny. Czy chcesz go przebudowaæ?
+1023=Proszê wybraæ aplikacjê, do której chcesz do³¹czyæ:
 
+#b³êdy
 1500=Nie mo¿na otworzyæ pliku %s
 1501=Nie mo¿na zapisaæ pliku %s
 1502=Nie mo¿na zmieniæ nazwy pliku %s
@@ -705,6 +797,8 @@ Ver=1
 1514=Nie zdefiniowano Host Application. Mo¿esz j¹ zdefiniowaæ w menu Uruchom, Parametry.
 1515=Nie znaleziono Host Appplication! Mo¿esz to zmieniæ w menu Uruchom, Parametry.
 
+
+#ró¿ne
 2000=BezNazwy
 2001=TylkoDoOdczytu
 2002=Wstaw
@@ -724,6 +818,7 @@ Ver=1
 2016=Kompilacja zakoñczona sukcesem
 2017=Kompilacja przerwana przez u¿ytkownika
 
+#przyciski
 2500=Ok
 2501=Anuluj
 2502=Pomoc
@@ -745,13 +840,16 @@ Ver=1
 2518=Zmieñ nazwê
 2519=Importuj
 2520=Okno p³ywaj¹ce
+2521=Wyczyœæ
 
+#Okno CPU
 2600=Okno CPU
 2601=Kod asemblera:
 2602=Funkcja:
 2603=Sk³adnia asemblera:
 2604=Rejestry:
 
+#Okno Porady dnia
 2700=Wskazówka dnia
 2701=Czy wiesz, ¿e...
 2702=...nie ma ¿adnych wskazówek do wyœwietlenia?
@@ -759,6 +857,7 @@ Ver=1
 2704=Nastêpna
 2705=Poprzednia
 
+#Opcje œrodowiskowe (wiêcej)
 2800=Skojarzenia plików
 2801=Typy plików:
 2802=Po prostu zaznacz lub odznacz typy plików, które domyœlnie bêd¹ otwierane przy pomocy Dev-C++...
@@ -769,17 +868,32 @@ Ver=1
 2807=Katalog szablonów
 2808=Wybierz katalog szablonów
 2809=U¿yj tematu XP
+2810=Zewnêtrzne programy
+2811=Zewnêtrzny program
+2812=Rozszerzenie
+2813=Zewnêtrzne powi¹zania plików:
+2814=Obserwuj zmienn¹ pod kursorem myszki
+2815=Raportuj b³êdy obserwacji
+2816=Przegl¹darka zmiennych odpluskwiania
+2817=Alternatywny plik konfiguracyjny
+2818=U¿yj alternatywnego pliku konfiguracyjnego
+2819=Zmieni³eœ plik konfiguracji u¿ywany przez aplikacjê.<CR>Nowy plik konfiguracji *nie bêdzie* u¿yty podczas obecnej sesji. Ka¿da zmiana w konfiguracji bêdzie zapisana w *obecnie* otwartym pliku konfiguracji.<CR><CR>Sugeruje siê restart aplikacji teraz, aby wystartowa³a u¿ywaj¹c nowego pliku konfiguracji...
+2820=Podœwietl aktywn¹ zak³adkê edytora
 
+#Menu Uruchom (wiêcej)
 2900=Parametry...
 2901=Kompiluj bie¿¹cy plik
 
+#Lista okien
 2910=Lista okien
 2911=Wybierz okno, które chcesz edytowaæ :
 
+#Menu CVS
 2990=Bie¿¹cy plik...
 2991=Ca³y projekt...
 2992=Proszê skonfiguruj wsparcie CVS w "Narzêdzia / Opcje Œrodowiska"...
 
+#Forma CVS
 3000=Opcje komendy Import
 3001=Repozytorium
 3002=Opcje globalne
@@ -837,10 +951,12 @@ Ver=1
 3054=Usuñ opcje
 3055=Usuñ plik równie¿ z dysku...
 
+#Forma Parametry
 3100=Parametry
 3101=Parametry do przekazania do twojej aplikacji:
 3102=Aplikacja host:
 
+#Forma opcji projektu (c.d.)
 3200=Pliki
 3201=Pliki projektu:
 3202=Opcje projektu:
@@ -863,124 +979,77 @@ Ver=1
 3219=Na³ó¿ polecenie budowy
 3220=Plik wyjœciowy
 3221=Do³¹cz podczas konsolidacji
-3222=Priorytet budowy206=Wspieraj tematy Windows XP
-3207=Opcje modu³u:
-3208=Do³¹cz do kompilacji
-3209=Kompiluj modu³ jako C++
-3210=Informacje o wersji
-3211=Do³¹cz informacje o wersji do projektu
-3212=Numer wersji
-3213=G³ówny:
-3214=Mniejszy:
-3215=Wydania:
-3216=Prototypu:
-3217=Jêzyk:
-3218=Dodatkowe informacje:
-3048=U¿ytkownik
-3049=Serwer
-3050=Zdalny katalog
-3051=Dodaj
-3052=Usuñ
-3053=Dodaj opcje
-3054=Usuñ opcje
-3055=Usuñ plik równie¿ z dysku...
-
-3100=Parametry
-3101=Parametry do przekazania do twojej aplikacji:
-3102=Aplikacja host:
-139=Zapisz projekt jako...
-198=P³ywaj¹ce okno raportu
-257=Do³¹cz do procesu...
-258=&Modyfikuj wartoœæ
-259=&Wyczyœæ wszystko
-295=Otwórz z...
-346=Okno raportu
-361=Modyfikuj wartoœæ
-362=Zmienna do modyfikacji:
-363=Nowa wartoœæ:
-735=Wyœwietla jeden b³¹d na liniê
-856=Nie mo¿na zlokalizowaæ konfiguracji "%s" (to jest prawdopodobnie b³¹d w Dev-C++)...
-945=U¿yj katalogów Include projektu
-946=U¿yj katalogów Library projektu
-947=U¿yj katalogów Resource projektu
-1023=Proszê wybraæ aplikacjê, do której chcesz do³¹czyæ:
-2521=Wyczyœæ
-2810=Zewnêtrzne programy
-2811=Zewnêtrzny program
-2812=Rozszerzenie
-2814=Obserwuj zmienn¹ pod kursorem myszki
-2815=Raportuj b³êdy obserwacji
-2816=Przegl¹darka zmiennych odpluskwiania
-2817=Alternatywny plik konfiguracyjny
-2818=U¿yj alternatywnego pliku konfiguracyjnego
-3223=Automatycznie zwiêkszaj numer budowy przy kompilacji
+3222=Priorytet budowy
+3223=Automatycznie zwiêkszaj numer budowy
 3224=U¿yj Makefile u¿ytkownika (nie generuj Makefile, u¿yj tego)
 3225=Informacja o modyfikacji Makefile...
 3226=&Dodaj poni¿sze pliki do Makefile:
+
+#Wiêcej opcji kompilatora
 3400=Obierz plik wykonywalny
 3401=Wygeneruj instrukcje dla poni¿szej maszyny
 3402=Umo¿liw u¿ycie specyficznych wbudowanych funkcji procesora
-2813=Zewnêtrzne powi¹zania plików:
-2819=Zmieni³eœ plik konfiguracji u¿ywany przez aplikacjê.<CR>Nowy plik konfiguracji *nie bêdzie* u¿yty podczas obecnej sesji. Ka¿da zmiana w konfiguracji bêdzie zapisana w *obecnie* otwartym pliku konfiguracji.<CR><CR>Sugeruje siê restart aplikacji teraz, aby wystartowa³a u¿ywaj¹c nowego pliku konfiguracji...
-455=Podœwietl obecn¹ liniê
-457=Ustawia wartoœæ bia³ej spacji
-456=Ustawia wartoœæ Podœwietlony Tekst Systemu
-454=Zapewñ pust¹ liniê na koñcu pliku
 
-# wx designer properties
-7000=Enabled
-7001=Base Class
-7002=Hidden
-7003=Default
-7004=Help Text
-7005=ID Name
-7006=ID Value
-7007=Tooltip
-7008=Comments
-7009=Validator Code
-7010=Background Color
-7011=Foreground Color
-7012=Stretch Factor
-7013=Alignment
-7014=Border
-7015=Borders
-7016=General Styles
-7017=Font
-7018=Name
-7019=Width
-7020=Height
-7021=Left
-7022=Top
-7023=Properties
-7024=Events
-7025=Property Inspector
-7026=Components
-7027=Show Property Inspector
-7028=Show Component Palette
-7029=New wxDialog
-7030=New wxFrame
-7031=Wx Property Edit
-7032=Copy Widget Name
-7033=Change Creation Order
-7034=Select Parent
-7035=Lock Control
-7036=View Control IDs
-7037=Align
-7038=To Grid
-7039=Vertical
-7040=Horizontal
-7041=To Left
-7042=To Right
-7043=To Center
-7044=To Top
-7045=To Bottom
-7046=Designer Options
-7047=Sizers
-7048=Common Controls
-7049=Containers
-7050=Toolbars
-7051=Menubars
-7052=Dialogs
-7053=Unofficial Controls
+#Menu Widok
+3700=Poka¿ panele
+3701=Poka¿ panele wtyczek
+
+3710=Kontynuuj wykonanie
+
+# w³aœciwoœci projektanta form
+7000=Aktywny
+7001=Klasa bazowa
+7002=Ukryty
+7003=Domyœlny
+7004=Tekst pomocy
+7005=ID nazwa
+7006=ID wartoœæ
+7007=Tekst podpowiedzi
+7008=Komentarz
+7009=Walidator
+7010=Kolor t³a
+7011=Kolor czcionki
+7012=Wsp. rozci¹gania
+7013=Wyrównanie
+7014=KrawêdŸ
+7015=Krawêdzie
+7016=Style ogólne
+7017=Czcionka
+7018=Nazwa
+7019=Szerokoœæ
+7020=Wysokoœæ
+7021=Od lewej
+7022=Od góry
+7023=W³aœciwoœci
+7024=Zdarzenia
+7025=Menad¿er w³aœciwoœci
+7026=Komponenty
+7027=Poka¿ menad¿era w³aœciwoœci
+7028=Poka¿ paletê komponentów
+7029=Nowe okno (wxDialog)
+7030=Nowa ramka (wxFrame)
+7031=Edytuj w³aœciwoœci kontrolki
+7032=Kopiuj nazwê kontrolki
+7033=Zmieñ kolejnoœæ tworzenia
+7034=Wybierz rodzica
+7035=Zablokuj kontrolkê
+7036=Przegl¹daj ID kontrolek
+7037=Wyrównaj
+7038=Do siatki
+7039=Pionowo
+7040=Poziomo
+7041=Do lewej
+7042=Do prawej
+7043=Do œrodka
+7044=Do góry
+7045=Do do³u
+7046=Opcje projektanta form
+7047=Sizery
+7048=Popularne kontrolki
+7049=Kontenery
+7050=Paski narzêdzi
+7051=Menu
+7052=Okna
+7053=Nieoficjalne kontrolki
 
 
