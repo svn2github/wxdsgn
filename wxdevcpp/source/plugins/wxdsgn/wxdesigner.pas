@@ -13,7 +13,7 @@ uses
   hashes,
   SynEditHighlighter, SynHighlighterMulti,
   JvComponentBase, JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle,
-  wxUtils, xprocs, wxAuiPaneInfo, wxPanel, 
+  wxUtils, xprocs,
   ComponentPalette;
 
 {$I ..\..\LangIDs.inc}
@@ -324,8 +324,9 @@ uses
   CreateOrderFm, ViewIDForm,
   WxSplitterWindow, wxchoicebook, wxlistbook, WxNotebook, wxtoolbook, wxtreebook,
   WxNoteBookPage, WxToolbar, WxToolButton, WxChoice, WxCustomButton,
-  WxSeparator, WxStatusBar, WxNonVisibleBaseComponent, WxMenuBar, WxPopupMenu,
-  WxStaticBitmap, WxBitmapButton, WxStdDialogButtonSizer, wxversion, wxeditor
+  WxSeparator, WxStatusBar, WxNonVisibleBaseComponent, WxMenuBar, WxPopupMenu, WxPanel,
+  WxStaticBitmap, WxBitmapButton, WxStdDialogButtonSizer, wxversion, wxeditor,
+  wxAuiToolBar, wxAuiNotebook, wxAuiBar, WxAuiNoteBookPage
   ;
 
 const
@@ -2402,6 +2403,15 @@ begin
         end;
       end;
 
+      if (SelectedComponent is TWxAuiNoteBookPage) then
+      begin
+        TWinControl(SelectedComponent).Parent := TWinControl(PreviousComponent);
+        if (PreviousComponent is TWxAuiNotebook) then
+        begin
+          TWxAuiNoteBookPage(SelectedComponent).PageControl := TPageControl(PreviousComponent);
+        end;
+      end;
+
       if (SelectedComponent is TWxNonVisibleBaseComponent) and not(SelectedComponent.ClassName = 'TWxAuiPaneInfo')then
         TWxNonVisibleBaseComponent(SelectedComponent).Parent := ELDesigner1.DesignControl;
 
@@ -2674,13 +2684,6 @@ begin
       Exit;
     end;
 
-    if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') and
-      (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) then
-    begin
-      ShowErrorAndReset('Each frame can only have one Aui Manager.');
-      Exit;
-    end;
-
     if StrContainsU(ComponentPalette.SelectedComponent, 'TWxStdDialogButtonSizer') then
     begin
       ShowErrorAndReset('wxStdDialogButtonSizers can only be inserted onto a wxDialog.');
@@ -2712,6 +2715,13 @@ begin
         ShowErrorAndReset('You cannot insert this control in a toolbar');
         Exit;
       end;
+
+      if StrContainsU(AParent.ClassName, 'TWxAuiToolBar') then
+      begin
+        PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
+        Exit;
+      end;
+
     end;
 
   end
@@ -2732,17 +2742,63 @@ begin
         Exit;
       end;
 
-      if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') and
-        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) then
-      begin
-        ShowErrorAndReset('Each dialog can only have one Aui Manager.');
-        Exit;
-      end;
-
       for I := 0 to ELDesigner1.DesignControl.ComponentCount - 1 do
         if ELDesigner1.DesignControl.Components[i] is TWxSizerPanel then
           AParent := ELDesigner1.DesignControl.Components[i] as TWinControl;
     end;
+
+  end;
+
+  //Malcolm
+  // This is the testing for the new wxAui interface stuff
+  //Only wxAuiEnabled components should be allowed to be dropped onto a form when a wxAuiManager is present
+  if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxAuiNonInsertableInterface, dlgInterface) and
+    (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0)
+    and (ELDesigner1.SelectedControls[0] is TfrmNewForm) then
+  begin
+    ShowErrorAndReset('This control cannot be placed on a form where a wxAuiManager is present.'#13#10#13#10 +
+      'Please use the wxAui version which contains wxAuiPaneInfo data.');
+    Exit;
+  end;
+
+  //Only wxAuiEnabled components should be allowed to be dropped onto a form when a wxAuiManager is present
+  if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxAuiPaneInfoInterface, dlgInterface) and
+    (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') = 0) then
+  begin
+    ShowErrorAndReset('This control can only be placed onto a form where a wxAuiManager is present.'#13#10#13#10 +
+      'Please place a wxAuiManager component on the form first.');
+    Exit;
+  end;
+
+  // each frame/dialog can only have one wxAuiManager component
+      if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') and
+        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) then
+      begin
+    ShowErrorAndReset('Each frame or dialog can only have one Aui Manager.');
+        Exit;
+      end;
+
+  // the user should add the wxAuiManager first before any other wxAuiComponent
+  if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiBar') and
+    (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') = 0) then
+  begin
+    ShowErrorAndReset('This control can only be placed onto a form where a wxAuiManager is present.'#13#10#13#10 +
+      'Please place a wxAuiManager component on the form first.');
+    Exit;
+  end;
+
+  if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiBar') and
+    (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiBar') > 3) then
+  begin
+    ShowErrorAndReset('Each frame or dialog can only contain four AuiToolBar designer items.');
+    Exit;
+    end;
+
+  if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiToolBar') and
+    ((AParent.Parent = nil) or not (StrContainsU(AParent.ClassName, 'TWxAuiBar'))) then
+  begin
+    ShowErrorAndReset('This component must be dropped onto a wxAuibar design aid.');
+    Exit;
   end;
   
   if TWinControl(AControlClass.NewInstance) is TWxSizerPanel and not StrContainsU(AParent.ClassName, 'TWxPanel') then
@@ -2805,28 +2861,34 @@ begin
     end;
   end;
 
-  //MN Only allow wxAuiPaneInfo components to be dropped onto a wxPanel or wxToolbar
- if TWinControl(AControlClass.NewInstance) is TWxAuiPaneInfo then
+  if TWinControl(AControlClass.NewInstance) is TWxAuiNoteBookPage then
  begin
    if ELDesigner1.SelectedControls.count = 0 then
    begin
-     ShowErrorAndReset('This control needs to be dropped on a wxPanel or wxToolbar.');
+      ShowErrorAndReset('Please select a wxAuiNoteBook Container and drop the page.');
      Exit;
    end;
 
-   if not ((ELDesigner1.SelectedControls[0] is TWxPanel) or (ELDesigner1.SelectedControls[0] is TWxToolBar)) then
+    PreviousComponent := ELDesigner1.SelectedControls[0];
+    if (ELDesigner1.SelectedControls[0] is TWxAuiNoteBookPage) then
    begin
-     ShowErrorAndReset('This control needs to be dropped on a wxPanel or wxToolbar.');
+      PreviousComponent := ELDesigner1.SelectedControls[0].Parent;
+      if (PreviousComponent is TWxAuiNotebook) then
+        Exit
+      else
+      begin
+        ShowMessage('Please select a wxAuiNoteBook Container and drop the page.');
      Exit;
    end;
  end;
+  end;
 
   /// Fix for Bug Report #1060562
   if TWinControl(AControlClass.NewInstance) is TWxToolButton then
   begin
     if ELDesigner1.SelectedControls.count = 0 then
     begin
-      ShowErrorAndReset('Please select the Toolbar before dropping this control.');
+      ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
       Exit;
     end;
 
@@ -2837,9 +2899,15 @@ begin
       Exit;
     end;
 
-    if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+    if (ELDesigner1.SelectedControls[0] is TWxAuiToolBar) then
     begin
-      ShowErrorAndReset('Please select the Toolbar before dropping this control.');
+      PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
+      Exit;
+    end;
+
+    if (not (ELDesigner1.SelectedControls[0] is TWxToolBar)) and (not (ELDesigner1.SelectedControls[0] is TWxAuiToolBar)) then
+    begin
+      ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
       Exit;
     end;
   end;
@@ -2848,7 +2916,7 @@ begin
   begin
     if ELDesigner1.SelectedControls.count = 0 then
     begin
-      ShowErrorAndReset('Please select the Toolbar before dropping this control.');
+      ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
       Exit;
     end;
 
@@ -2859,12 +2927,29 @@ begin
       Exit;
     end;
 
-    if not (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+    if (ELDesigner1.SelectedControls[0] is TWxAuiToolBar) then
     begin
-      ShowErrorAndReset('Please select the Toolbar before dropping this control.');
+      PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
+      Exit;
+    end;
+
+    if (not (ELDesigner1.SelectedControls[0] is TWxToolBar)) and (not (ELDesigner1.SelectedControls[0] is TWxAuiToolBar)) then
+    begin
+      ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
       Exit;
     end;
   end;
+
+  {
+    if TControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarInsertableInterface, tlbrInterface) then
+    begin
+      if (ELDesigner1.SelectedControls[0] is TWxAuiToolBar) then
+      begin
+        PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
+      Exit;
+    end;
+  end;
+  }
 end;
 
 procedure TWXDsgn.ELDesigner1KeyDown(Sender: TObject; var Key: Word;
@@ -4827,6 +4912,8 @@ initialization
   TJvInspectorAnimationFileNameEditItem.RegisterAsDefaultItem;
   TJvInspectorStatusBarItem.RegisterAsDefaultItem;
   TJvInspectorValidatorItem.RegisterAsDefaultItem;
+  TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
+  TJvInspectorListItemsItem.RegisterAsDefaultItem;
   Classes.RegisterClass(TWXDsgn);
 finalization
   Classes.UnRegisterClass(TWXDsgn);

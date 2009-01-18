@@ -242,9 +242,10 @@ var
   varIntf:IWxVariableAssignmentInterface;
   wxAuimanagerInterface: IWxAuiManagerInterface;
   wxAuiPaneInfoInterface: IWxAuiPaneInfoInterface;
-  wxAuiPaneInterface: IWxAuiPaneInterface;
+//  wxAuiPaneInterface: IWxAuiPaneInterface;
   strEntry, strEventTableStart, strEventTableEnd: string;
   isSizerAvailable: boolean;
+  //  isAuimanagerAvailable: boolean;
   strHdrValue: string;
   strStartStr, strEndStr: string;
   strLst, strlstManualCode: TStringList;
@@ -306,27 +307,11 @@ begin
     end
     else
     begin
-      //MN do the wxAuiPane stuff first, then it is last in the list
-      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
-      begin
-
-        if frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface) then
-        begin
-
-          if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
-          begin
-            strTemp := wxcompInterface.GenerateGUIControlCreation;
-            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
-          end;
-          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-        end;
-      end; // for
-
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
 
         if not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
-          and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface) then
+          {and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface)}then
         begin
 
           if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
@@ -1464,6 +1449,7 @@ var
   I, J, MaxToolWidth, MaxToolHt, MaxSepValue: integer;
   strLst: TStringList;
   isSizerAvailable: boolean;
+  //  isAuimanagerAvailable: boolean;
   WinRect: TRect;
 begin
   strLst := TStringList.Create;
@@ -1505,8 +1491,16 @@ begin
         if (MaxSepValue <> 5) then
           strLst.add(Format('%s->SetToolSeparation(%d);',
             [self.Components[i].Name, MaxSepValue]));
+
+          if not IsControlWxAuiToolBar(TControl(Components[i])) then
+          begin
         strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
         strLst.add(Format('SetToolBar(%s);', [self.Components[i].Name]));
+          end;
+          if IsControlWxAuiToolBar(TControl(Components[i])) then
+          begin
+            strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
+          end;
       end; //not xrcgen
      end;
 
@@ -1564,7 +1558,7 @@ begin
   begin
     if self.Wx_DesignerType = dtWxFrame then
       for I := self.ComponentCount - 1 downto 0 do // Iterate
-        if IsControlWxToolBar(TControl(Components[i])) then
+        if IsControlWxToolBar(TControl(Components[i])) and not IsControlWxAuiToolBar(TControl(Components[i])) then
         begin
           strLst.add('SetToolBar(NULL);');
           break;
@@ -1899,5 +1893,6 @@ begin
   Result := Self.isAuimanagerAvailable;
 end;
 
-
 end.
+
+

@@ -467,7 +467,7 @@ begin
 
   staticBoxName := self.Name + '_StaticBoxObj';
 
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
 
   Result     := GetCommentString(self.FWx_Comments.Text) +
     Format('wxStaticBox* %s = new wxStaticBox(%s, wxID_ANY, %s);',

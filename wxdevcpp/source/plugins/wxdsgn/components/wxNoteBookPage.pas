@@ -272,7 +272,7 @@ begin
   if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
 
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, false);
 
     if (XRCGEN) then
  begin//generate xrc loading code

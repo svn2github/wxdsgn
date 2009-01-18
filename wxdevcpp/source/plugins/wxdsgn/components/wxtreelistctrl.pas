@@ -30,7 +30,7 @@ unit WxTreeListctrl;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ComCtrls, WxUtils, ExtCtrls, WxSizerPanel;
+  Forms, Graphics, ComCtrls, WxUtils, ExtCtrls, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel;
 
 type
   TWxTreeListCtrl = class(TListView, IWxComponentInterface)
@@ -120,6 +120,28 @@ type
     FWx_BorderAlignment: TWxBorderAlignment;
     FWx_Include: string;
     FWx_TreeListviewStyle : TWxTVStyleSet;
+
+//Aui Properties
+    FWx_AuiManaged: Boolean;
+    FWx_PaneCaption: string;
+    FWx_PaneName: string;
+    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+    FWx_BestSize_Height: Integer;
+    FWx_BestSize_Width: Integer;
+    FWx_MinSize_Height: Integer;
+    FWx_MinSize_Width: Integer;
+    FWx_MaxSize_Height: Integer;
+    FWx_MaxSize_Width: Integer;
+    FWx_Floating_Height: Integer;
+    FWx_Floating_Width: Integer;
+    FWx_Floating_X_Pos: Integer;
+    FWx_Floating_Y_Pos: Integer;
+    FWx_Layer: Integer;
+    FWx_Row: Integer;
+    FWx_Position: Integer;
 
     { Private methods of TWxTreeListCtrl }
     { Method to set variable and property values and create objects }
@@ -251,6 +273,29 @@ type
     property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
 
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+
+//Aui Properties
+    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
+    property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
+    property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
+    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
+    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
+    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
+    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
+    property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
+    property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
+    property Wx_MinSize_Height: integer read FWx_MinSize_Height write FWx_MinSize_Height default -1;
+    property Wx_MinSize_Width: integer read FWx_MinSize_Width write FWx_MinSize_Width default -1;
+    property Wx_MaxSize_Height: integer read FWx_MaxSize_Height write FWx_MaxSize_Height default -1;
+    property Wx_MaxSize_Width: integer read FWx_MaxSize_Width write FWx_MaxSize_Width default -1;
+    property Wx_Floating_Height: integer read FWx_Floating_Height write FWx_Floating_Height default -1;
+    property Wx_Floating_Width: integer read FWx_Floating_Width write FWx_Floating_Width default -1;
+    property Wx_Floating_X_Pos: integer read FWx_Floating_X_Pos write FWx_Floating_X_Pos default -1;
+    property Wx_Floating_Y_Pos: integer read FWx_Floating_Y_Pos write FWx_Floating_Y_Pos default -1;
+    property Wx_Layer: integer read FWx_Layer write FWx_Layer default 0;
+    property Wx_Row: integer read FWx_Row write FWx_Row default 0;
+    property Wx_Position: integer read FWx_Position write FWx_Position default 0;
+
   end;
 
 procedure Register;
@@ -330,6 +375,7 @@ begin
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
+  PopulateAuiGenericProperties(FWx_PropertyList);
 
   FWx_PropertyList.add('Wx_TreeListViewStyle:TreeList Styles');
   FWx_PropertyList.Add('wxTR_EDIT_LABELS:wxTR_EDIT_LABELS');
@@ -534,7 +580,7 @@ var
 begin
   Result := '';
 
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetTreeViewSpecificStyle(Wx_GeneralStyle, Wx_TreeListviewStyle);
   if Trim(strStyle) <> '' then
@@ -589,12 +635,64 @@ Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 if not (XRCGEN) then //NUKLEAR ZELPH
+  begin
+    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
+    begin
+      if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
+      begin
+        Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+        Self.Wx_Layer := 10;
+      end;
+
+      if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
+      begin
+        if (self.Parent.ClassName = 'TWxPanel') then
+          if not (self.Parent.Parent is TForm) then
+            Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+      end;
+
+      if (self.Parent is TWxAuiToolBar) then
+        Result := Result + #13 + Format('%s->AddControl(%s);',
+          [self.Parent.Name, self.Name])
+      else
+        Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+          [GetAuiManagerName(self), self.Name,
+          GetAuiPaneName(Self.Wx_PaneName),
+            GetAuiPaneCaption(Self.Wx_PaneCaption),
+            GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+            GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+            GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+            GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+            GetAuiRow(Self.Wx_Row),
+            GetAuiPosition(Self.Wx_Position),
+            GetAuiLayer(Self.Wx_Layer),
+            GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+            GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+            GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+
+    end
+    else
+    begin
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
+  end;
+
+      if (self.Parent is TWxAuiNotebookPage) then
+      begin
+        //        strParentLabel := TWxAuiNoteBookPage(Self.Parent).Caption;
+        Result := Result + #13 + Format('%s->AddPage(%s, %s);',
+          //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
+          [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
+      end;
+
+      if (self.Parent is TWxAuiToolBar) then
+        Result := Result + #13 + Format('%s->AddControl(%s);',
+          [self.Parent.Name, self.Name]);
+    end;
   end;
 
 end;

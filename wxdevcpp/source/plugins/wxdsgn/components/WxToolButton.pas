@@ -356,7 +356,7 @@ var
   strFirstBitmap, strSecondBitmap: string;
 begin
   Result     := '';
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
 
   if not IsControlWxToolBar(self.parent) then
     exit;
@@ -376,10 +376,17 @@ begin
  if not(XRCGEN) then
  begin
   Result := GetCommentString(self.FWx_Comments.Text) + strFirstBitmap + #13 + strSecondBitmap;
+    if (self.Parent is TWxToolBar) then
   Result := Result + #13 + Format('%s->AddTool(%s, %s, %s, %s, %s, %s, %s);',
     [parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), GetCppString(
     self.Wx_Caption), self.Name + '_BITMAP', self.Name + '_DISABLE_BITMAP',
     GetToolButtonKindAsText(ToolKind), GetCppString(self.Wx_ToolTip),
+        GetCppString(self.Wx_HelpText)])
+  else            //    (self.Parent is TWxAuiToolBar)
+    Result := Result + #13 + Format('%s->AddTool(%s, %s, %s, %s, %s, %s, %s, NULL);',
+      [parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), GetCppString(
+        self.Wx_Caption), self.Name + '_BITMAP', self.Name + '_DISABLE_BITMAP',
+      GetToolButtonKindAsText(ToolKind), GetCppString(self.Wx_ToolTip),
     GetCppString(self.Wx_HelpText)]);
  end
  else
@@ -586,5 +593,5 @@ begin
   Result:=Name;
 end;
 
-
 end.
+

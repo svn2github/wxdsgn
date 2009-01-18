@@ -329,7 +329,7 @@ begin
     else
        parentName:=self.Parent.name; }
 
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
 
   strStyle := GetScrollbarSpecificStyle(self.Wx_GeneralStyle, Wx_StatusbarStyleSet);
 

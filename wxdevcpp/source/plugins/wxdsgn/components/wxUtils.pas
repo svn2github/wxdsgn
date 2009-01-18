@@ -61,7 +61,9 @@ const
   IID_IWxImageContainerInterface: TGUID = '{10619130-6bd4-11db-bd13-0800200c9a66}';
   IID_IWxAuiManagerInterface: TGUID = '{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}';
   IID_IWxAuiPaneInfoInterface: TGUID = '{7D45A54D-4C39-447E-A484-352EEC1956C5}';
-  IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
+//  IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
+  IID_IWxAuiToolBarInterface: TGUID = '{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}';
+  IID_IWxAuiNonInsertableInterface: TGUID = '{D8527AE6-9AC3-401E-B86E-6CE96853E47D}';
 
 var
   StringFormat: string;
@@ -266,8 +268,17 @@ type
     ['{7D45A54D-4C39-447E-A484-352EEC1956C5}']
   end;
 
-   IWxAuiPaneInterface = interface
-    ['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
+
+//  IWxAuiPaneInterface = interface
+//    ['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
+//  end;
+
+  IWxAuiToolBarInterface = interface
+    ['{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}']
+  end;
+
+  IWxAuiNonInsertableInterface = interface
+    ['{D8527AE6-9AC3-401E-B86E-6CE96853E47D}']
   end;
 
   TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
@@ -508,19 +519,25 @@ type
   TwxAuiPaneDockDirectionItem = (wxAUI_DOCK_NONE, wxAUI_DOCK_TOP, wxAUI_DOCK_RIGHT, wxAUI_DOCK_BOTTOM, wxAUI_DOCK_LEFT, wxAUI_DOCK_CENTER);
 //mn later perhaps  TwxAuiPaneDockDirectionSet = set of TwxAuiPaneDockDirectionItem;
 
-  TwxAuiPaneDockableDirectionItem = (Dockable, TopDockable, RightDockable, BottomDockable, LeftDockable);
+  TwxAuiPaneDockableDirectionItem = (TopDockable, RightDockable, BottomDockable, LeftDockable);
   TwxAuiPaneDockableDirectionSet = set of TwxAuiPaneDockableDirectionItem;
 
-  TwxAuiPaneStyleItem = (CaptionVisible, DestroyOnClose, DockFixed, Floatable, Gripper, GripperTop, Movable, PaneBorder, Resizable, ToolbarPane);
+  TwxAuiPaneStyleItem = (CaptionVisible, DestroyOnClose, DockFixed, Floatable, Gripper, GripperTop, Movable, PaneBorder, Resizable, ToolbarPane, CenterPane);
   TwxAuiPaneStyleSet = set of TwxAuiPaneStyleItem;
 
   TwxAuiPaneButtonItem = (CloseButton,  MaximizeButton, MinimizeButton, PinButton);
   TwxAuiPaneButtonSet = set of TwxAuiPaneButtonItem;
 
+  TWxAuiTbrStyleItem = (wxAUI_TB_TEXT, wxAUI_TB_NO_TOOLTIPS, wxAUI_TB_NO_AUTORESIZE, wxAUI_TB_GRIPPER,
+    wxAUI_TB_OVERFLOW, wxAUI_TB_VERTICAL, wxAUI_TB_HORZ_TEXT, wxAUI_TB_DEFAULT_STYLE);
+  TWxAuiTbrStyleSet = set of TWxAuiTbrStyleItem;
 
-
-
-
+  //Notebook
+  TWxAuinbxAlignStyleItem = (wxAUI_NB_TOP, {wxAUI_NB_LEFT, wxAUI_NB_RIGHT, } wxAUI_NB_BOTTOM);
+  TWxAuinbxStyleItem = (wxAUI_NB_TAB_SPLIT, wxAUI_NB_TAB_MOVE, wxAUI_NB_TAB_EXTERNAL_MOVE, wxAUI_NB_TAB_FIXED_WIDTH,
+    wxAUI_NB_SCROLL_BUTTONS, wxAUI_NB_WINDOWLIST_BUTTON, wxAUI_NB_CLOSE_BUTTON,
+    wxAUI_NB_CLOSE_ON_ACTIVE_TAB, wxAUI_NB_CLOSE_ON_ALL_TABS);
+  TWxAuinbxStyleSet = set of TWxnbxStyleItem;
 
   TWxColorString = class
   public
@@ -782,6 +799,8 @@ function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;
   sbrstyle: TWxsbrStyleSet): string;
 function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
   tbrstyle: TWxtbrStyleSet): string;
+function GetAuiToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
+  tbrstyle: TWxAuiTbrStyleSet): string;
 function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;
   scrWinStyle: TWxScrWinStyleSet): string;
 function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;
@@ -810,6 +829,7 @@ function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet;
   dlgstyle: TWxDlgStyleSet; wxclassname: string): string;
 
 procedure PopulateGenericProperties(var PropertyList: TStringList);
+procedure PopulateAuiGenericProperties(var PropertyList: TStringList);
 function SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): string; overload;
 function BorderAlignmentToStr(BorderAlignment: TWxBorderAlignment): string;
 function RGBFormatStrToColor(strColorValue: string): TColor;
@@ -827,6 +847,7 @@ function IsControlWxStatusBar(ctrl: TControl): boolean;
 function IsControlWxNonVisible(ctrl: TControl): boolean;
 function GetNonVisualComponentCount(frmMainObj: TForm): integer;
 function IsControlWxAuiManager(ctrl: TControl): boolean;
+function IsControlWxAuiToolBar(ctrl: TControl): boolean;
 
 function GetWxIDString(strID: string; intID: longint): string;
 function IsValidClass(comp: TComponent): boolean;
@@ -844,7 +865,7 @@ function GetWxSize(Width: Integer; Height: Integer): string;
 function GetCommentString(str: string): string;
 function GetWxFontDeclaration(fnt: TFont): string;
 function GetDesignerFormName(cntrl: TControl): string;
-function GetWxWidgetParent(cntrl: TControl): string;
+function GetWxWidgetParent(cntrl: TControl; AuiManaged: Boolean): string;
 function GetWxWindowControls(wnCtrl: TWinControl): integer;
 function GetAvailableControlCount(ParentControl: TWinControl;
   ControlToCheck: TComponent): integer; overload;
@@ -869,11 +890,29 @@ function CreateValidClassName(ClassName: string): string; // EAB TODO: Copied fr
 function ValidateFileName(FileName: string): Integer; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
 function CreateValidFileName(FileName: string): string; // EAB TODO: Copied from utils. Check if we can place it in a single common place.
 
+function GetAuiManagerName(Control: TControl): string;
+function FormHasAuiManager(Control: TControl): Boolean;
+function GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem): string;
+function GetAuiDockableDirections(Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet): string;
+function GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): string;
+function GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): string;
+function GetAuiRow(row: Integer): string;
+function GetAuiPosition(position: Integer): string;
+function GetAuiLayer(layer: Integer): string;
+function GetAuiPaneBestSize(width: Integer; height: Integer): string;
+function GetAuiPaneMinSize(width: Integer; height: Integer): string;
+function GetAuiPaneMaxSize(width: Integer; height: Integer): string;
+function GetAuiPaneFloatingSize(width: Integer; height: Integer): string;
+function GetAuiPaneFloatingPos(x: Integer; y: Integer): string;
+function GetAuiPaneCaption(caption: string): string;
+function GetAuiPaneName(name: string): string;
+function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+
 implementation
 
 uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton, WxSizerPanel, WxToolButton,
   UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar, WxCustomButton,
-  WxNonVisibleBaseComponent, wxdesigner, wxnotebook, OpenSaveDialogs
+  WxNonVisibleBaseComponent, wxdesigner, wxnotebook, wxAUInotebook, OpenSaveDialogs, wxAuiManager, wxAuiNoteBookPage
 {$IFDEF WIN32}
   , ShlObj, ActiveX
 {$ENDIF}
@@ -1223,7 +1262,7 @@ begin
 
 end;
 
-function GetWxWidgetParent(cntrl: TControl): string;
+function GetWxWidgetParent(cntrl: TControl; AuiManaged: Boolean): string;
 var
   TestCtrl: TControl;
 begin
@@ -1248,6 +1287,13 @@ begin
     end;
   mn}
 
+  if (AuiManaged and not (cntrl.Parent is TWxSizerPanel)) // protect ourselves from idiots
+  or (cntrl.Parent is TWxAuiNoteBookPage) then
+  begin
+    Result := 'this';
+    Exit;
+  end;
+
   if (cntrl.Parent is TWxSizerPanel) then
   begin
     TestCtrl := cntrl.Parent;
@@ -1270,7 +1316,7 @@ begin
     Exit;
   end;
 
-  if (cntrl.Parent is TWxNotebook) then
+  if (cntrl.Parent is TWxNotebook) or (cntrl.Parent is TWxAuiNotebook) then
   begin
     Result := cntrl.Parent.Name;
     exit;
@@ -1279,7 +1325,7 @@ begin
 
   if (cntrl.Parent is TPageControl) then //we assume compound tool/choice/list/tool/tree-books
   begin
-    Result := GetWxWidgetParent(cntrl.Parent); //this should return the grandparent
+    Result := GetWxWidgetParent(cntrl.Parent, False); //this should return the grandparent
     exit;
   end
   else
@@ -3373,8 +3419,8 @@ end;
 function GetChoicebookSpecificStyle(stdstyle: TWxStdStyleSet{;
   bookalign: TWxchbxAlignStyleItem;
   cbbxstyle: TWxchbxStyleSet}): string;
-var
-  strA: string;
+//var
+//  strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
 
@@ -3423,8 +3469,8 @@ end;
 {function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet; lbbxstyle: TWxlbbxStyleSet): string;
 }
 function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): string;
-var
-  strA: string;
+//var
+//  strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
 
@@ -3560,8 +3606,8 @@ end;
 
 
 function GetToolbookSpecificStyle(stdstyle: TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): string;
-var
-  strA: string;
+//var
+//  strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
 
@@ -3580,8 +3626,8 @@ begin
 end;
 
 function GetTreebookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): string;
-var
-  strA: string;
+//var
+//  strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
 
@@ -3734,6 +3780,22 @@ begin
     else
       Result := Result + ' | ' + strA;
 
+end;
+
+function GetAuiToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
+  tbrstyle: TWxAuiTbrStyleSet): string;
+//var
+//  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  {mn
+    strA := trim(GetToolBarStyleString(tbrstyle));
+    if strA <> '' then
+      if trim(Result) = '' then
+        Result := strA
+      else
+        Result := Result + ' | ' + strA;
+  }
 end;
 
 //End here
@@ -3970,8 +4032,8 @@ end;
 
 function GetAnimationCtrlSpecificStyle(stdstyle: TWxStdStyleSet{;
   dlgstyle: TWxAnimationCtrlStyleSet}): string;
-var
-  strA: string;
+//var
+//  strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
 {  strA := trim(GetAnimationCtrlStyleString(dlgstyle));
@@ -4021,8 +4083,7 @@ begin
   begin
   if wxID_YES in btnstyle then
     Result := Result + ' | wxYES'
-  else
-  if wxID_SAVE in btnstyle then
+    else if wxID_SAVE in btnstyle then
     Result := Result + ' | wxSAVE';
   end;
   if wxID_NO in btnstyle then
@@ -4034,8 +4095,7 @@ begin
 
   if wxID_HELP in btnstyle then
     Result := Result + ' | wxHELP'
-  else
-  if wxID_CONTEXT_HELP in btnstyle then
+  else if wxID_CONTEXT_HELP in btnstyle then
     Result := Result + ' | wxCONTEXTHELP';
 
   if Result <> '' then
@@ -4123,6 +4183,16 @@ begin
   Result := ctrl.GetInterface(IID_IWxAuiManagerInterface, cntIntf);
 end;
 
+function IsControlWxAuiToolBar(ctrl: TControl): boolean;
+var
+  cntIntf: IWxAuiToolBarInterface;
+begin
+  Result := False;
+  if not assigned(ctrl) then
+    Exit;
+  Result := ctrl.GetInterface(IID_IWxAuiToolBarInterface, cntIntf);
+end;
+
 function GetWxIDString(strID: string; intID: longint): string;
 begin
   if intID > 0 then
@@ -4165,7 +4235,7 @@ var
   NotebookPage: TTabSheet;
   Notebook: TPageControl;
 begin
-  if GetTypeData(Sender.ClassInfo)^.ClassType.ClassName = 'TWxNoteBookPage' then
+  if (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName = 'TWxNoteBookPage') or (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName = 'TWxAuiNoteBookPage') then
   begin
     NotebookPage := Sender as TTabSheet;
     Notebook := NotebookPage.PageControl;
@@ -7103,6 +7173,307 @@ begin
 
   Result := ValidFileName;
 
+end;
+
+procedure PopulateAuiGenericProperties(var PropertyList: TStringList);
+begin
+  //Aui Properties
+  PropertyList.add('Wx_AuiManaged: wxAui Managed');
+
+  PropertyList.add('Wx_PaneName:wxAui Pane Name');
+  PropertyList.add('Wx_PaneCaption:wxAui Pane Caption');
+
+  PropertyList.add('Wx_Aui_Dock_Direction:wxAui Dock Direction');
+  PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
+  PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
+  PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
+  PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
+  PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
+  PropertyList.add('wxAUI_DOCK_CENTER:wxAUI_DOCK_CENTER');
+
+  PropertyList.add('Wx_Aui_Dockable_Direction:wxAui Dockable Direction');
+  PropertyList.add('TopDockable:TopDockable');
+  PropertyList.add('RightDockable:RightDockable');
+  PropertyList.add('BottomDockable:BottomDockable');
+  PropertyList.add('LeftDockable:LeftDockable');
+
+  PropertyList.add('Wx_Aui_Pane_Style:wxAui Pane Style');
+  PropertyList.add('CaptionVisible:CaptionVisible');
+  PropertyList.add('DestroyOnClose:DestroyOnClose');
+  PropertyList.add('DockFixed:DockFixed');
+  PropertyList.add('Floatable:Floatable');
+  PropertyList.add('Gripper:Gripper');
+  PropertyList.add('GripperTop:GripperTop');
+  PropertyList.add('Movable:Movable');
+  PropertyList.add('PaneBorder:PaneBorder');
+  PropertyList.add('Resizable:Resizable');
+  PropertyList.add('CenterPane:CenterPane');
+  PropertyList.add('ToolbarPane:ToolbarPane');
+
+  PropertyList.add('Wx_Aui_Pane_Buttons:wxAui Pane Buttons');
+  PropertyList.add('CloseButton:CloseButton');
+  PropertyList.add('MaximizeButton:MaximizeButton');
+  PropertyList.add('MinimizeButton:MinimizeButton');
+  PropertyList.add('PinButton:PinButton');
+
+  PropertyList.add('Wx_BestSize_Height:wxAui Best Height');
+  PropertyList.add('Wx_BestSize_Width:wxAui Best Width');
+  PropertyList.add('Wx_MinSize_Height:wxAui Min Height');
+  PropertyList.add('Wx_MinSize_Width:wxAui Min Width');
+  PropertyList.add('Wx_MaxSize_Height:wxAui Max Height');
+  PropertyList.add('Wx_MaxSize_Width:wxAui Max Width');
+  PropertyList.add('Wx_Floating_Height:wxAui Floating Height');
+  PropertyList.add('Wx_Floating_Width:wxAui Floating Width');
+  PropertyList.add('Wx_Floating_X_Pos:wxAui Floating X Pos');
+  PropertyList.add('Wx_Floating_Y_Pos:wxAui Floating Y Pos');
+
+  PropertyList.add('Wx_Layer:wxAui Layer');
+  PropertyList.add('Wx_Row:wxAui Row');
+  PropertyList.add('Wx_Position:wxAui Position');
+end;
+
+function GetAuiManagerName(Control: TControl): string;
+var
+  frmMainObj: TCustomForm;
+  I: integer;
+begin
+  Result := '';
+
+  frmMainObj := GetParentForm(Control);
+  for I := 0 to frmMainObj.ComponentCount - 1 do // Iterate
+    if frmMainObj.Components[i] is TWxAuiManager then
+    begin
+      Result := frmMainObj.Components[i].Name;
+      exit;
+    end;
+
+  //    Result := 'WxAuiManager1';
+end;
+
+function FormHasAuiManager(Control: TControl): Boolean;
+var
+  frmMainObj: TCustomForm;
+  I: integer;
+begin
+  Result := False;
+
+  frmMainObj := GetParentForm(Control);
+  for I := 0 to frmMainObj.ComponentCount - 1 do // Iterate
+    if frmMainObj.Components[i] is TWxAuiManager then
+    begin
+      Result := True;
+      exit;
+    end;
+end;
+
+function GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem): string;
+begin
+  Result := '';
+  if Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE then
+  begin
+    Result := '';
+    exit;
+  end;
+  if Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP then
+  begin
+    Result := '.Top()';
+    exit;
+  end;
+  if Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT then
+  begin
+    Result := '.Right()';
+    exit;
+  end;
+  if Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM then
+  begin
+    Result := '.Bottom()';
+    exit;
+  end;
+  if Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT then
+  begin
+    Result := '.Left()';
+    exit;
+  end;
+  if Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER then
+  begin
+    Result := '.Center()';
+    exit;
+  end;
+end;
+
+function GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): string;
+begin
+  Result := '';
+  if CaptionVisible in Wx_Aui_Pane_Style then
+    Result := Result + '.CaptionVisible(true)'
+  else
+    Result := Result + '.CaptionVisible(false)';
+
+  if DestroyOnClose in Wx_Aui_Pane_Style then
+    Result := Result + '.DestroyOnClose(true)'
+  else
+    Result := Result + '.DestroyOnClose(false)';
+
+  if DockFixed in Wx_Aui_Pane_Style then
+    Result := Result + '.DockFixed()';
+
+  if Floatable in Wx_Aui_Pane_Style then
+    Result := Result + '.Floatable(true)'
+  else
+    Result := Result + '.Floatable(false)';
+
+  if Gripper in Wx_Aui_Pane_Style then
+    Result := Result + '.Gripper(true)'
+  else
+    Result := Result + '.Gripper(false)';
+
+  if GripperTop in Wx_Aui_Pane_Style then
+    Result := Result + '.GripperTop()';
+
+  if Movable in Wx_Aui_Pane_Style then
+    Result := Result + '.Movable()';
+
+  if PaneBorder in Wx_Aui_Pane_Style then
+    Result := Result + '.PaneBorder()';
+
+  if ToolbarPane in Wx_Aui_Pane_Style then
+  begin
+    Result := Result + '.ToolbarPane()';
+  end
+  else
+  begin
+    if Resizable in Wx_Aui_Pane_Style then
+      Result := Result + '.Resizable(true)'
+    else
+      Result := Result + '.Resizable(false)';
+  end;
+
+  if CenterPane in Wx_Aui_Pane_Style then
+    Result := Result + '.CenterPane()';
+
+end;
+
+function GetAuiDockableDirections(Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet): string;
+begin
+  Result := '';
+  if (LeftDockable in Wx_Aui_Dockable_Direction) and (RightDockable in Wx_Aui_Dockable_Direction)
+    and (TopDockable in Wx_Aui_Dockable_Direction) and (BottomDockable in Wx_Aui_Dockable_Direction) then
+  begin
+    Result := Result + '.Dockable(true)';
+    Exit;
+  end;
+
+  if not (LeftDockable in Wx_Aui_Dockable_Direction) and not (RightDockable in Wx_Aui_Dockable_Direction)
+    and not (TopDockable in Wx_Aui_Dockable_Direction) and not (BottomDockable in Wx_Aui_Dockable_Direction) then
+  begin
+    Result := Result + '.Dockable(false)';
+    Exit;
+  end;
+
+  if LeftDockable in Wx_Aui_Dockable_Direction then
+    Result := Result + '.LeftDockable(true)'
+  else
+    Result := Result + '.LeftDockable(false)';
+
+  if RightDockable in Wx_Aui_Dockable_Direction then
+    Result := Result + '.RightDockable(true)'
+  else
+    Result := Result + '.RightDockable(false)';
+
+  if TopDockable in Wx_Aui_Dockable_Direction then
+    Result := Result + '.TopDockable(true)'
+  else
+    Result := Result + '.TopDockable(false)';
+
+  if BottomDockable in Wx_Aui_Dockable_Direction then
+    Result := Result + '.BottomDockable(true)'
+  else
+    Result := Result + '.BottomDockable(false)';
+end;
+
+function GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): string;
+begin
+  Result := '';
+
+  if CloseButton in Wx_Aui_Pane_Buttons then
+    Result := Result + '.CloseButton()';
+
+  if MaximizeButton in Wx_Aui_Pane_Buttons then
+    Result := Result + '.MaximizeButton()';
+
+  if MinimizeButton in Wx_Aui_Pane_Buttons then
+    Result := Result + '.MinimizeButton()';
+
+  if PinButton in Wx_Aui_Pane_Buttons then
+    Result := Result + '.PinButton()';
+end;
+
+function GetAuiRow(row: Integer): string;
+begin
+  Result := Format('.Row(%d)', [row]);
+end;
+
+function GetAuiPosition(position: Integer): string;
+begin
+  Result := Format('.Position(%d)', [position]);
+end;
+
+function GetAuiLayer(layer: Integer): string;
+begin
+  Result := Format('.Layer(%d)', [layer]);
+end;
+
+function GetAuiPaneBestSize(width: Integer; height: Integer): string;
+begin
+  Result := '';
+  if (height > 0) and (width > 0) then
+    Result := Format('.BestSize(wxSize(%d, %d))', [width, height]);
+end;
+
+function GetAuiPaneMinSize(width: Integer; height: Integer): string;
+begin
+  Result := '';
+  if (height > 0) and (width > 0) then
+    Result := Format('.MinSize(wxSize(%d, %d))', [width, height]);
+end;
+
+function GetAuiPaneMaxSize(width: Integer; height: Integer): string;
+begin
+  Result := '';
+  if (width > 0) and (height > 0) then
+    Result := Format('.MaxSize(wxSize(%d, %d))', [width, height]);
+end;
+
+function GetAuiPaneFloatingSize(width: Integer; height: Integer): string;
+begin
+  Result := '';
+  if (width > 0) and (height > 0) then
+    Result := Format('.FloatingSize(wxSize(%d, %d))', [width, height]);
+end;
+
+function GetAuiPaneFloatingPos(x: Integer; y: Integer): string;
+begin
+  Result := '';
+  if (x > 0) and (y > 0) then
+    Result := Format('.FloatingPosition(wxPoint(%d, %d))', [x, y]);
+end;
+
+function GetAuiPaneCaption(caption: string): string;
+begin
+  if trim(caption) = '' then
+    Result := ''
+  else
+    Result := Format('.Caption(wxT("%s"))', [caption]);
+end;
+
+function GetAuiPaneName(name: string): string;
+begin
+  Result := Format('.Name(wxT("%s"))', [name]);
+end;
+
+function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+begin
+  Result := ToolbarPane in Wx_Aui_Pane_Style;
 end;
 
 end.

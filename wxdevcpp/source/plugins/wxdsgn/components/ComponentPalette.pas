@@ -77,8 +77,8 @@ uses
   WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
   WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog, wxColourPickerCtrl,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
-  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl,
-  WxAuiManager, WxAuiPaneInfo;
+  WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl, wxAuiNotebook,
+  WxAuiManager, wxAuiBar, wxAuiToolBar, wxAuiNoteBookPage;
 
 const
   SearchPrompt = '(search component)';
@@ -167,6 +167,10 @@ begin
     Result := 'TWXCOMBOBOX'
   else if Name = 'TWXSTYLEDTEXTCTRL' then
     Result := 'TWXRICHTEXTCTRL'
+  else if Name = 'TWXAUINOTEBOOK' then
+    Result := 'TWXNOTEBOOK'
+  else if Name = 'TWXAUINOTEBOOKPAGE' then
+    Result := 'TWXNOTEBOOKPAGE'
   else
     Result := '';
 end;
@@ -221,7 +225,8 @@ begin
                        'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox;TwxColourPickerCtrl');
     //Container controls
     ComponentsList.Add('Containers;TwxPanel;TwxChoicebook;TwxListbook;TwxNotebook;TwxTreebook;' +
-                        'TwxToolbook;TwxNotebookPage;TwxGrid;TwxScrolledWindow;TwxHtmlWindow;TwxSplitterWindow');
+                        'TwxToolbook;TwxNotebookPage;TwxGrid;TwxScrolledWindow;TwxHtmlWindow;'+
+                        'TwxSplitterWindow;TwxAuiNotebook;TwxAuiNotebookPage');
     //Toolbar controls
     ComponentsList.Add('Toolbars;TwxToolBar;TwxToolButton;TwxSeparator;' +
                        'TwxEdit;TwxCheckBox;TwxRadioButton;TwxComboBox;TwxSpinCtrl');
@@ -237,7 +242,7 @@ begin
     //Unofficial components
     ComponentsList.Add('"Unofficial Controls";TwxTreeListCtrl;TwxStyledTextCtrl;TwxCustomButton');
     //wxAui components
-    ComponentsList.Add('wxAui Components;TwxAuiManager;TWxAuiPaneInfo');
+    ComponentsList.Add('wxAui Components;TwxAuiManager;TwxAuiBar;TwxAuiToolBar;');
 
     RegisterClasses([TWxStdDialogButtonSizer, TWxBoxSizer, TWxStaticBoxSizer, TWxGridSizer,
                      TWxFlexGridSizer, TWxStaticText, TWxEdit, TWxButton, TWxBitmapButton,
@@ -256,7 +261,8 @@ begin
                      TWxOwnerDrawnComboBox, TWxTextEntryDialog, TWxPasswordEntryDialog,
                      TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl, TWxColourPickerCtrl,
                      TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox,
-                     TwxAuiManager, TWxAuiPaneInfo]);
+                     TwxAuiManager, TwxAuiBar, TwxAuiToolBar, TwxAuiNotebook,
+                     TwxAuiNotebookPage]);
 
     //Now that the components have been put into it's respective string lists,
     //iterate over all the items, parsing them and putting them into the tree-view

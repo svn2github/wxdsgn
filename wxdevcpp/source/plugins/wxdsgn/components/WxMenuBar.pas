@@ -553,7 +553,7 @@ var
   strStyle, parentName : string;
 begin
   Result     := '';
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
   if trim(strStyle) <> '' then
     strStyle := ',' + strStyle;
   

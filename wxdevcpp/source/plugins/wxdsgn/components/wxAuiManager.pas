@@ -154,7 +154,7 @@ begin
   FWx_PropertyList.add('Name:Name');
   FWx_PropertyList.add('Wx_Class:Base Class');
   FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.add('Wx_AuiManagerStyle:AuiManager Styles');
+  FWx_PropertyList.add('Wx_AuiManagerStyle:wxAuiManager Styles');
   FWx_PropertyList.add('wxAUI_MGR_ALLOW_FLOATING:wxAUI_MGR_ALLOW_FLOATING');
   FWx_PropertyList.add('wxAUI_MGR_ALLOW_ACTIVE_PANE:wxAUI_MGR_ALLOW_ACTIVE_PANE');
   FWx_PropertyList.add('wxAUI_MGR_TRANSPARENT_DRAG:wxAUI_MGR_TRANSPARENT_DRAG');

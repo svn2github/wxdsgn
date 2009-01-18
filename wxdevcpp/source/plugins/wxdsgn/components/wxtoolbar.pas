@@ -31,7 +31,7 @@ unit WxToolBar;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ComCtrls, WxUtils, WxSizerPanel;
+  Forms, Graphics, ComCtrls, WxUtils, WxSizerPanel, WxAuiNoteBookPage, WxAuiToolBar;
 
 type
   TWxToolBar = class(TToolBar, IWxComponentInterface, IWxDialogNonInsertableInterface,
@@ -65,6 +65,28 @@ type
     FEVT_TOOL_RCLICKED: string;
     FEVT_TOOL_ENTER: string;
     FEVT_UPDATE_UI: string;
+
+    //Aui Properties
+    FWx_AuiManaged: Boolean;
+    FWx_PaneCaption: string;
+    FWx_PaneName: string;
+    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+    FWx_BestSize_Height: Integer;
+    FWx_BestSize_Width: Integer;
+    FWx_MinSize_Height: Integer;
+    FWx_MinSize_Width: Integer;
+    FWx_MaxSize_Height: Integer;
+    FWx_MaxSize_Width: Integer;
+    FWx_Floating_Height: Integer;
+    FWx_Floating_Width: Integer;
+    FWx_Floating_X_Pos: Integer;
+    FWx_Floating_Y_Pos: Integer;
+    FWx_Layer: Integer;
+    FWx_Row: Integer;
+    FWx_Position: Integer;
 
     { Private methods of TWxToolBar }
     procedure AutoInitialize;
@@ -179,6 +201,29 @@ type
     property EVT_TOOL_RCLICKED: string Read FEVT_TOOL_RCLICKED Write FEVT_TOOL_RCLICKED;
     property EVT_TOOL_ENTER: string Read FEVT_TOOL_ENTER Write FEVT_TOOL_ENTER;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+
+    //Aui Properties
+    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
+    property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
+    property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
+    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
+    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
+    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
+    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
+    property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
+    property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
+    property Wx_MinSize_Height: integer read FWx_MinSize_Height write FWx_MinSize_Height default -1;
+    property Wx_MinSize_Width: integer read FWx_MinSize_Width write FWx_MinSize_Width default -1;
+    property Wx_MaxSize_Height: integer read FWx_MaxSize_Height write FWx_MaxSize_Height default -1;
+    property Wx_MaxSize_Width: integer read FWx_MaxSize_Width write FWx_MaxSize_Width default -1;
+    property Wx_Floating_Height: integer read FWx_Floating_Height write FWx_Floating_Height default -1;
+    property Wx_Floating_Width: integer read FWx_Floating_Width write FWx_Floating_Width default -1;
+    property Wx_Floating_X_Pos: integer read FWx_Floating_X_Pos write FWx_Floating_X_Pos default -1;
+    property Wx_Floating_Y_Pos: integer read FWx_Floating_Y_Pos write FWx_Floating_Y_Pos default -1;
+    property Wx_Layer: integer read FWx_Layer write FWx_Layer default 0;
+    property Wx_Row: integer read FWx_Row write FWx_Row default 0;
+    property Wx_Position: integer read FWx_Position write FWx_Position default 0;
+
   end;
 
 procedure Register;
@@ -263,6 +308,7 @@ begin
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
+  PopulateAuiGenericProperties(FWx_PropertyList);
 
   FWx_PropertyList.add('Wx_ToolbarStyleSet:Toolbar Styles');
   FWx_PropertyList.add('wxTB_FLAT:wxTB_FLAT');
@@ -425,15 +471,14 @@ function TWxToolBar.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
   strStyle, parentName, strAlignment: string;
+  strParentLabel: string;
 begin
   Result := '';
 
-  //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
-  //       parentName:=GetWxWidgetParent(self)
-  //    else
-  //       parentName:=self.Parent.name;
+  Self.Wx_Aui_Pane_Style :=  Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+  Self.Wx_Layer := 10;
 
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetToolBarSpecificStyle(self.Wx_GeneralStyle, self.Wx_ToolbarStyleSet);
   if (trim(strStyle) <> '') then
@@ -483,6 +528,44 @@ if (XRCGEN) then
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 if not (XRCGEN) then //NUKLEAR ZELPH
+  begin
+    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
+    begin
+      if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
+      begin
+        Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+        Self.Wx_Layer := 10;
+     end;
+
+      if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
+      begin
+        if (self.Parent.ClassName = 'TWxPanel') then
+          if not (self.Parent.Parent is TForm) then
+            Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+      end;
+
+      if (self.Parent is TWxAuiToolBar) then
+        Result := Result + #13 + Format('%s->AddControl(%s);',
+          [self.Parent.Name, self.Name])
+      else
+        Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+          [GetAuiManagerName(self), self.Name,
+          GetAuiPaneName(Self.Wx_PaneName),
+            GetAuiPaneCaption(Self.Wx_PaneCaption),
+            GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+            GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+            GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+            GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+            GetAuiRow(Self.Wx_Row),
+            GetAuiPosition(Self.Wx_Position),
+            GetAuiLayer(Self.Wx_Layer),
+            GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+            GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+            GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+
+    end
+    else
+    begin
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
@@ -490,6 +573,20 @@ if not (XRCGEN) then //NUKLEAR ZELPH
     Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
+  end;
+
+      if (self.Parent is TWxAuiNotebookPage) then
+      begin
+        //        strParentLabel := TWxAuiNoteBookPage(Self.Parent).Caption;
+        Result := Result + #13 + Format('%s->AddPage(%s, %s);',
+          //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
+          [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
+      end;
+
+      if (self.Parent is TWxAuiToolBar) or (self.Parent is TWxToolBar) then
+        Result := Result + #13 + Format('%s->AddControl(%s);',
+          [self.Parent.Name, self.Name]);
+    end;
   end;
 
 end;
@@ -692,6 +789,5 @@ begin
     FWx_ToolbarStyleSet:=Value;
 end;
 
-
-
 end.
+

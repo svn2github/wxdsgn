@@ -180,7 +180,7 @@ var
 	parentName:string;
 begin
   Result := '';
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s =  new %s( this,%s, %s, %s %s);',
     [self.Name, self.wx_Class, GetCppString(self.Wx_Message), GetCppString(self.Wx_Caption),

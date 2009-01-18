@@ -304,7 +304,7 @@ begin
  begin
   if not IsControlWxToolBar(self.parent) then
     exit;
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
   Result     := GetCommentString(self.FWx_Comments.Text) + parentName +
     '->AddSeparator();';
  end;

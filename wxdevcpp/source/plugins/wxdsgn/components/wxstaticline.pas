@@ -392,12 +392,7 @@ var
 begin
   Result := '';
 
-  //    if (self.Parent is TForm) or (self.Parent is TWxSizerPanel) then
-  //       parentName:=GetWxWidgetParent(self)
-  //    else
-  //       parentName:=self.Parent.name;
-
-  parentName := GetWxWidgetParent(self);
+  parentName := GetWxWidgetParent(self, False);
 
   strStyle := GetStdStyleString(self.Wx_GeneralStyle);
 
