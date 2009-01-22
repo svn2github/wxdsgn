@@ -379,9 +379,6 @@ var
 begin
   Result := '';
 
-  if Wx_AuiManaged or (self.Parent is TWxAuiNoteBookPage) then
-    parentName := 'this'
-  else
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetStdStyleString(self.Wx_GeneralStyle);
