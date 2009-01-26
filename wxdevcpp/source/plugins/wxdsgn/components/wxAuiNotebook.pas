@@ -54,7 +54,6 @@ type
     FWx_Hidden: boolean;
     FWx_HelpText: string;
     FWx_Border: integer;
-    FWx_NoteBookStyle: TWxnbxStyleSet;
     FWx_TabWidth: integer;
     FWx_TabHeight: integer;
     FWx_GeneralStyle: TWxStdStyleSet;
@@ -66,6 +65,7 @@ type
     FWx_ProxyFGColorString: TWxColorString;
 
     FWx_BookAlignment: TWxAuinbxAlignStyleItem;
+    FWx_AuiNoteBookStyle: TWxAuinbxStyleSet;
     
     FEVT_UPDATE_UI: string;
     FEVT_AUINOTEBOOK_PAGE_CLOSE: string;
@@ -150,7 +150,7 @@ type
     procedure SetGenericColor(strVariableName, strValue: string);
 
     function GenerateLastCreationCode: string;
-    procedure SetNotebookStyle(style: TWxnbxStyleSet);
+    procedure SetAuiNotebookStyle(style: TWxAuinbxStyleSet);
 
     function GetBorderAlignment: TWxBorderAlignment;
     procedure SetBorderAlignment(border: TWxBorderAlignment);
@@ -197,7 +197,7 @@ type
     property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
     property Wx_Enabled: boolean read FWx_Enabled write FWx_Enabled default True;
-    property Wx_NoteBookStyle: TWxnbxStyleSet read FWx_NoteBookStyle write SetNotebookStyle;
+    property Wx_AuiNoteBookStyle: TWxAuinbxStyleSet read FWx_AuiNoteBookStyle write SetAuiNotebookStyle;
     property Wx_TabHeight: integer read GetTabHeight write SetTabHeight default 25;
     property Wx_TabWidth: integer read GetTabWidth write SetTabWidth default 75;
     property Wx_GeneralStyle: TWxStdStyleSet read FWx_GeneralStyle write FWx_GeneralStyle;
@@ -265,32 +265,11 @@ begin
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor := self.color;
   defaultFGColor := self.font.color;
-  FWx_NoteBookStyle := [];
+  FWx_AuiNoteBookStyle := [wxAUI_NB_TAB_SPLIT, wxAUI_NB_TAB_MOVE, wxAUI_NB_SCROLL_BUTTONS, wxAUI_NB_CLOSE_ON_ACTIVE_TAB];
   FWx_TabWidth := 75;
   FWx_TabHeight := 25;
   FWx_BookAlignment := wxAUI_NB_TOP;
 
-  //Aui Properties
-    FWx_AuiManaged := False;
-    FWx_PaneCaption := '';
-    FWx_PaneName := '';
-    FWx_Aui_Dock_Direction := wxAUI_DOCK_LEFT;
-    FWx_Aui_Dockable_Direction := [];
-    FWx_Aui_Pane_Style := [];
-    FWx_Aui_Pane_Buttons := [];
-    FWx_BestSize_Height := -1;
-    FWx_BestSize_Width := -1;
-    FWx_MinSize_Height := -1;
-    FWx_MinSize_Width := -1;
-    FWx_MaxSize_Height := -1;
-    FWx_MaxSize_Width := -1;
-    FWx_Floating_Height := -1;
-    FWx_Floating_Width := -1;
-    FWx_Floating_X_Pos := -1;
-    FWx_Floating_Y_Pos := -1;
-    FWx_Layer := 0 ;
-    FWx_Row := 0;
-    FWx_Position := 0;
 
 end; { of AutoInitialize }
 
@@ -309,11 +288,16 @@ begin
   PopulateGenericProperties(FWx_PropertyList);
   PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_NoteBookStyle:Notebook Styles');
-  FWx_PropertyList.Add('wxNB_FIXEDWIDTH:wxNB_FIXEDWIDTH');
-  FWx_PropertyList.Add('wxNB_MULTILINE:wxNB_MULTILINE');
-  FWx_PropertyList.Add('wxNB_NOPAGETHEME:wxNB_NOPAGETHEME');
-  FWx_PropertyList.Add('wxNB_FLAT:wxNB_FLAT');
+  FWx_PropertyList.add('Wx_AuiNoteBookStyle:Aui Notebook Styles');
+  FWx_PropertyList.Add('wxAUI_NB_TAB_SPLIT:wxAUI_NB_TAB_SPLIT');
+  FWx_PropertyList.Add('wxAUI_NB_TAB_MOVE:wxAUI_NB_TAB_MOVE');
+  FWx_PropertyList.Add('wxAUI_NB_TAB_EXTERNAL_MOVE:wxAUI_NB_TAB_EXTERNAL_MOVE');
+  FWx_PropertyList.Add('wxAUI_NB_TAB_FIXED_WIDTH:wxAUI_NB_TAB_FIXED_WIDTH');
+  FWx_PropertyList.Add('wxAUI_NB_SCROLL_BUTTONS:wxAUI_NB_SCROLL_BUTTONS');
+  FWx_PropertyList.Add('wxAUI_NB_WINDOWLIST_BUTTON:wxAUI_NB_WINDOWLIST_BUTTON');
+  FWx_PropertyList.Add('wxAUI_NB_CLOSE_BUTTON:wxAUI_NB_CLOSE_BUTTON');
+  FWx_PropertyList.Add('wxAUI_NB_CLOSE_ON_ACTIVE_TAB:wxAUI_NB_CLOSE_ON_ACTIVE_TAB');
+  FWx_PropertyList.Add('wxAUI_NB_CLOSE_ON_ALL_TABS:wxAUI_NB_CLOSE_ON_ALL_TABS');
 
   FWx_PropertyList.Add('Wx_TabWidth:TabWidth');
   FWx_PropertyList.Add('Wx_TabHeight:TabHeight');
@@ -336,6 +320,9 @@ begin
   FWx_EventList.add('EVT_AUINOTEBOOK_TAB_RIGHT_DOWN:OnNotebookTabRDown');
   FWx_EventList.add('EVT_AUINOTEBOOK_TAB_RIGHT_UP:OnNotebookTabRUp');
   FWx_EventList.add('EVT_AUINOTEBOOK_BG_DCLICK:OnNotebook');
+
+  FWx_MinSize_Height := Self.Height;
+  FWx_MinSize_Width := Self.Width;
 end;
 
 destructor TWxAuiNotebook.Destroy;
@@ -526,7 +513,7 @@ begin
     if not (UseDefaultPos) then
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    stylstr := GetNotebookSpecificStyle(self.Wx_GeneralStyle, {self.Wx_BookAlignment,} Self.Wx_NoteBookStyle);
+    stylstr := GetAuiNotebookSpecificStyle(self.Wx_GeneralStyle, {self.Wx_BookAlignment,} Self.Wx_AuiNoteBookStyle);
     if stylstr <> '' then
       Result.Add(IndentString + Format('  <style>%s | %s</style>',
         [GetBookAlignment(self.Wx_BookAlignment), stylstr]))
@@ -569,10 +556,15 @@ var
 begin
   Result := '';
 
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
   strAlign := ', ' + GetBookAlignment(Self.Wx_BookAlignment);
 
-  strStyle := GetNotebookSpecificStyle(self.Wx_GeneralStyle, {Self.Wx_BookAlignment,} Self.Wx_NoteBookStyle);
+  strStyle := GetAuiNotebookSpecificStyle(self.Wx_GeneralStyle, {Self.Wx_BookAlignment,} Self.Wx_AuiNoteBookStyle);
 
   if (trim(strStyle) <> '') then
     strStyle := strAlign + ' | ' + strStyle
@@ -622,7 +614,7 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
-  if (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
+  if (wxAUI_NB_TAB_FIXED_WIDTH in FWx_AuiNotebookStyle) then
     Result := Result + #13 + Format('%s->SetTabSize(%s);', [self.Name, GetTabWidth, GetTabHeight]);
 
   if not (XRCGEN) then //NUKLEAR ZELPH
@@ -872,9 +864,9 @@ begin
   wx_ControlOrientation := ControlOrientation;
 end;
 
-procedure TWxAuiNotebook.SetNotebookStyle(style: TWxnbxStyleSet);
+procedure TWxAuiNotebook.SetAuiNotebookStyle(style: TWxAuinbxStyleSet);
 begin
-  Self.FWx_NoteBookStyle := style;
+  Self.FWx_AuiNoteBookStyle := style;
 
 {  if (Self.TabPosition = tpLeft) or (Self.TabPosition = tpRight) then
     Self.MultiLine := True

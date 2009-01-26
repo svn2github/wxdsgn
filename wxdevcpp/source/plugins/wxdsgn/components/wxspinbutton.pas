@@ -422,6 +422,11 @@ begin
         Wx_SpinButtonStyle:=Wx_SpinButtonStyle - [wxSP_HORIZONTAL] + [wxSP_VERTICAL  ];
     }
 
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, []);

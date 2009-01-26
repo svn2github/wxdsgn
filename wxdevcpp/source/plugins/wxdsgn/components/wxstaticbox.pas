@@ -360,6 +360,11 @@ var
 begin
   Result := '';
 
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetStdStyleString(self.Wx_GeneralStyle);

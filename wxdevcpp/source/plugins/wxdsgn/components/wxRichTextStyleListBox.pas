@@ -1,4 +1,7 @@
-// $Id: WxToggleButton.pas 936 2007-05-15 03:47:39Z gururamnath $ 
+ { ****************************************************************** }
+ {                                                                    }
+{ $Id$                                                               }
+ {                                                                    }
 {                                                                    }
 {   Copyright © 2003-2007 by Guru Kathiresan                         }
 {                                                                    }
@@ -23,56 +26,56 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxToggleButton;
+unit wxRichTextStyleListBox;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, 
-  Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, wxAuiToolBar, WxAuiNotebookPage, WxToolBar, UValidator;
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+  Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxAuiToolBar, WxSizerPanel, WxAuiNotebookPage, UValidator;
 
 type
-  TDrawButtonEvent = procedure(Control: TWinControl; Rect: TRect;
-    State: TOwnerDrawState) of object;
-
-  TWxToggleButton = class(TMultiLineBtn, IWxComponentInterface,
-    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface,
-    IWxValidatorInterface)
+  TwxRichTextStyleListBox = class(TListBox, IWxComponentInterface, IWxValidatorInterface)
   private
-    FCanvas: TCanvas;
-    FOnDrawButton: TDrawButtonEvent;
-    { Private fields of TWxToggleButton }
-
-    FEVT_TOGGLEBUTTON: string;
+    { Private fields of TwxRichTextStyleListBox }
+    FEVT_LEFT_DOWN: string;
+    FEVT_LEFT_DCLICK: string;
+    FEVT_IDLE: string;
     FEVT_UPDATE_UI: string;
-    FWx_BKColor: TColor;
+    FWx_BGColor: TColor;
     FWx_Border: integer;
-    FWx_ButtonStyle: TWxBtnStyleSet;
     FWx_Class: string;
     FWx_ControlOrientation: TWxControlOrientation;
-    FWx_Default: boolean;
-    FWx_Value: boolean;
     FWx_Enabled: boolean;
-    FWx_EventList: TStringList;
     FWx_FGColor: TColor;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_HelpText: string;
     FWx_Hidden: boolean;
     FWx_IDName: string;
     FWx_IDValue: longint;
+//    FWx_ListboxStyle: TWxLBxStyleSet;
+//    FWx_ListboxSubStyle: TWxLBxStyleSubItem;
     FWx_ProxyBGColorString: TWxColorString;
     FWx_ProxyFGColorString: TWxColorString;
     FWx_StretchFactor: integer;
     FWx_ToolTip: string;
-    FWx_PropertyList: TStringList;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
     FWx_Validator: string;
     FWx_ProxyValidatorString : TWxValidatorString;
-    FWx_Comments: TStrings;
+    FWx_EventList: TStringList;
+    FWx_PropertyList: TStringList;
     FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
 
-  //Aui Properties
+    FWx_Comments: TStrings;
+    
+    FInvisibleBGColorString: string;
+    FInvisibleFGColorString: string;
+
+    
+    FWx_RichTextCtrl : String;
+    FWx_StyleSheet : String;
+
+
+//Aui Properties
     FWx_AuiManaged: Boolean;
     FWx_PaneCaption: string;
     FWx_PaneName: string;
@@ -94,19 +97,25 @@ type
     FWx_Row: Integer;
     FWx_Position: Integer;
 
-
+    { Private methods of TwxRichTextStyleListBox }
     procedure AutoInitialize;
     procedure AutoDestroy;
 
   protected
-    { Protected fields of TWxToggleButton }
+    { Protected fields of TwxRichTextStyleListBox }
 
-    { Protected methods of TWxToggleButton }
+    { Protected methods of TwxRichTextStyleListBox }
+    procedure Click; override;
+    procedure KeyPress(var Key: char); override;
+    procedure Loaded; override;
 
   public
-    { Public fields and properties of TWxToggleButton }
+    { Public fields and properties of TwxRichTextStyleListBox }
+    { Public fields and properties of TWxGrid }
     defaultBGColor: TColor;
     defaultFGColor: TColor;
+
+    { Public methods of TwxRichTextStyleListBox }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GenerateControlIDs: string;
@@ -133,16 +142,18 @@ type
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
+    function GetValidator:String;
+    procedure SetValidator(value:String);
+    function GetValidatorString:TWxValidatorString;
+    procedure SetValidatorString(Value:TWxValidatorString);
+
     function GetGenericColor(strVariableName:String): string;
     procedure SetGenericColor(strVariableName,strValue: string);
 
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
-
-    function GetValidator:String;
-    procedure SetValidator(value:String);
-    function GetValidatorString:TWxValidatorString;
-    procedure SetValidatorString(Value:TWxValidatorString);
+{    function GetListBoxSelectorStyle(Wx_ListboxSubStyle: TWxLBxStyleSubItem)
+      : string;   }
 
     function GetBorderAlignment: TWxBorderAlignment;
     procedure SetBorderAlignment(border: TWxBorderAlignment);
@@ -151,29 +162,29 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
 
-  public
-    property Canvas: TCanvas Read FCanvas;
-    procedure Click; override;
-
   published
-    { Published properties of TWxToggleButton }
+    { Published properties of TwxRichTextStyleListBox }
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property EVT_TOGGLEBUTTON: string Read FEVT_TOGGLEBUTTON Write FEVT_TOGGLEBUTTON;
+
+    property EVT_LEFT_DOWN: string Read FEVT_LEFT_DOWN  Write FEVT_LEFT_DOWN;
+    property EVT_LEFT_DCLICK: string Read FEVT_LEFT_DCLICK  Write FEVT_LEFT_DCLICK;
+    property EVT_IDLE: string Read FEVT_IDLE  Write FEVT_IDLE;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-    property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
-    property Wx_ButtonStyle: TWxBtnStyleSet Read FWx_ButtonStyle Write FWx_ButtonStyle;
+    property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_Default: boolean Read FWx_Default Write FWx_Default;
-    property Wx_Value: boolean Read FWx_Value Write FWx_Value;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
     property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
     property Wx_GeneralStyle: TWxStdStyleSet
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
@@ -181,24 +192,27 @@ type
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
+{    property Wx_ListboxStyle: TWxLBxStyleSet
+      Read FWx_ListboxStyle Write FWx_ListboxStyle;
+    property Wx_ListboxSubStyle: TWxLBxStyleSubItem
+      Read FWx_ListboxSubStyle Write FWx_ListboxSubStyle;             }
+    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
     property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
-    
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property OnDrawButton: TDrawButtonEvent Read FOnDrawButton Write FOnDrawButton;
-    property Color;
-
-    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
     property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
     property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
 
+    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
+    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+    property Wx_RichTextCtrl: string Read FWx_RichTextCtrl Write FWx_RichTextCtrl;
+    property Wx_StyleSheet: string Read FWx_StyleSheet Write FWx_StyleSheet;
 
 //Aui Properties
     property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
@@ -230,83 +244,140 @@ implementation
 
 procedure Register;
 begin
-     { Register TWxToggleButton with wxWidgets as its
+     { Register TwxRichTextStyleListBox with wxWidgets as its
        default page on the Delphi component palette }
-  RegisterComponents('wxWidgets', [TWxToggleButton]);
+  RegisterComponents('wxWidgets', [TwxRichTextStyleListBox]);
 end;
 
 { Method to set variable and property values and create objects }
-procedure TWxToggleButton.AutoInitialize;
+procedure TwxRichTextStyleListBox.AutoInitialize;
 begin
-  FWx_PropertyList       := TStringList.Create;
-  FWx_Border             := 5;
-  FWx_Class              := 'wxToggleButton';
-  FWx_Enabled            := True;
-  FWx_EventList          := TStringList.Create;
-  FWx_BorderAlignment    := [wxAll];
-  FWx_Alignment          := [wxALIGN_CENTER];
-  FWx_IDValue            := -1;
-  FWx_StretchFactor      := 0;
-  FWx_ProxyBGColorString := TWxColorString.Create;
-  FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor         := self.color;
-  defaultFGColor         := self.font.color;
+  FWx_EventList       := TStringList.Create;
+  FWx_PropertyList    := TStringList.Create;
+  FWx_Border          := 5;
+  FWx_Class           := 'wxRichTextStyleListBox';
+  FWx_Enabled         := True;
+  FWx_BorderAlignment := [wxAll];
+  FWx_Alignment       := [wxALIGN_CENTER];
+  FWx_IDValue         := -1;
+  FWx_StretchFactor   := 0;
+  FWx_Comments        := TStringList.Create;
   FWx_ProxyValidatorString := TwxValidatorString.Create(self);
-  FWx_Comments := TStringList.Create;
+
 
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxToggleButton.AutoDestroy;
+procedure TwxRichTextStyleListBox.AutoDestroy;
 begin
-  FWx_PropertyList.Destroy;
   FWx_EventList.Destroy;
+  FWx_PropertyList.Destroy;
   FWx_Comments.Destroy;
-  FWx_ProxyBGColorString.Destroy;
-  FWx_ProxyFGColorString.Destroy;
   FWx_ProxyValidatorString.Destroy;
 end; { of AutoDestroy }
 
-{ Override OnClick handler from TButton,IWxComponentInterface }
-procedure TWxToggleButton.Click;
+{ Override OnClick handler from TListBox,IWxComponentInterface }
+procedure TwxRichTextStyleListBox.Click;
 begin
+     { Code to execute before activating click
+       behavior of component's parent class }
+
+  { Activate click behavior of parent }
   inherited Click;
+
+     { Code to execute after click behavior
+       of parent }
+
 end;
 
-constructor TWxToggleButton.Create(AOwner: TComponent);
+{ Override OnKeyPress handler from TListBox,IWxComponentInterface }
+procedure TwxRichTextStyleListBox.KeyPress(var Key: char);
+const
+  TabKey   = char(VK_TAB);
+  EnterKey = char(VK_RETURN);
 begin
-  inherited Create(AOwner);
-  FCanvas := TCanvas.Create;
+     { Key contains the character produced by the keypress.
+       It can be tested or assigned a new value before the
+       call to the inherited KeyPress method.  Setting Key
+       to #0 before call to the inherited KeyPress method
+       terminates any further processing of the character. }
 
+  { Activate KeyPress behavior of parent }
+  inherited KeyPress(Key);
+
+  { Code to execute after KeyPress behavior of parent }
+
+end;
+
+constructor TwxRichTextStyleListBox.Create(AOwner: TComponent);
+begin
+  { Call the Create method of the parent class }
+  inherited Create(AOwner);
+
+  { AutoInitialize sets the initial values of variables and      }
+  { properties; also, it creates objects for properties of       }
+  { standard Delphi object types (e.g., TFont, TTimer,           }
+  { TPicture) and for any variables marked as objects.           }
+  { AutoInitialize method is generated by Component Create.      }
   AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
   PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Caption:Label');
+  FWx_PropertyList.add('Checked:Checked');
+  FWx_PropertyList.add('Items:Strings');
 
-  FWx_EventList.add('EVT_TOGGLEBUTTON:OnClick');
+{  FWx_PropertyList.add('Wx_ListboxSubStyle:Selection Mode');
+  FWx_PropertyList.add('wxLB_SINGLE:wxLB_SINGLE');
+  FWx_PropertyList.add('wxLB_MULTIPLE:wxLB_MULTIPLE');
+  FWx_PropertyList.add('wxLB_EXTENDED:wxLB_EXTENDED');
+  FWx_PropertyList.add('Wx_ListboxStyle:Listbox Style');
+  FWx_PropertyList.add('wxLB_HSCROLL:wxLB_HSCROLL');
+  FWx_PropertyList.add('wxLB_ALWAYS_SB:wxLB_ALWAYS_SB');
+  FWx_PropertyList.add('wxLB_NEEDED_SB:wxLB_NEEDED_SB');
+  FWx_PropertyList.add('wxLB_SORT:wxLB_SORT');
+}
+  FWx_PropertyList.add('Wx_RichTextCtrl:RichTextCtrl');
+  FWx_PropertyList.add('Wx_StyleSheet:WStyleSheet');
+
+
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+  FWx_EventList.add('EVT_LEFT_DOWN:OnLeftDown');
+  FWx_EventList.add('EVT_LEFT_DCLICK:OnLeftDClick');
+  FWx_EventList.add('EVT_IDLE:OnIdle');
 
 end;
 
-destructor TWxToggleButton.Destroy;
+destructor TwxRichTextStyleListBox.Destroy;
 begin
+  { AutoDestroy, which is generated by Component Create, frees any   }
+  { objects created by AutoInitialize.                               }
   AutoDestroy;
+
+  { Here, free any other dynamic objects that the component methods  }
+  { created but have not yet freed.  Also perform any other clean-up }
+  { operations needed before the component is destroyed.             }
+
+  { Last, free the component by calling the Destroy method of the    }
+  { parent class.                                                    }
   inherited Destroy;
-  FCanvas.Free;
 end;
 
 
-function TWxToggleButton.GenerateEnumControlIDs: string;
+function TwxRichTextStyleListBox.GenerateEnumControlIDs: string;
 begin
   Result := '';
+  {$IFDEF MALCOLM}
+  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+    Result := Format('%s, ', [Wx_IDName]);
+  {$ELSE}
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
     Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
+  {$ENDIF}
 end;
 
-function TWxToggleButton.GenerateControlIDs: string;
+function TwxRichTextStyleListBox.GenerateControlIDs: string;
 begin
   Result := '';
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
@@ -314,25 +385,44 @@ begin
 end;
 
 
-function TWxToggleButton.GenerateEventTableEntries(CurrClassName: string): string;
+function TwxRichTextStyleListBox.GenerateEventTableEntries(CurrClassName: string): string;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
+
   Result := '';
 
-   if (XRCGEN) then
- begin//generate xrc loading code
-  if trim(EVT_TOGGLEBUTTON) <> '' then
-    Result := Format('EVT_TOGGLEBUTTON(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_TOGGLEBUTTON]) + '';
+if (XRCGEN) then
+ begin
+  if trim(EVT_LEFT_DOWN) <> '' then
+    Result := Format('EVT_LEFT_DOWN(XRCID(%s("%s")),%s::%s)',
+    [StringFormat, self.Name, CurrClassName, EVT_LEFT_DOWN]) + '';
+
+  if trim(EVT_LEFT_DCLICK) <> '' then
+    Result := Format('EVT_LEFT_DCLICK(XRCID(%s("%s")),%s::%s)',
+    [StringFormat, self.Name, CurrClassName, EVT_LEFT_DCLICK]) + '';
+
+  if trim(EVT_IDLE) <> '' then
+    Result := Result + #13 + Format('EVT_IDLE(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_IDLE]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
       [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-end
-else
-begin
-  if trim(EVT_TOGGLEBUTTON) <> '' then
-    Result := Format('EVT_TOGGLEBUTTON(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TOGGLEBUTTON]) + '';
+ end
+ else
+ begin
+  if trim(EVT_LEFT_DOWN) <> '' then
+    Result := Format('EVT_LEFT_DOWN(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_LEFT_DOWN]) + '';
+
+  if trim(EVT_LEFT_DCLICK) <> '' then
+    Result := Format('EVT_LEFT_DCLICK(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_LEFT_DCLICK]) + '';
+
+  if trim(EVT_IDLE) <> '' then
+    Result := Result + #13 + Format('EVT_IDLE(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_IDLE]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
@@ -341,77 +431,82 @@ begin
 
 end;
 
-function TWxToggleButton.GenerateXRCControlCreation(IndentString: string): TStringList;
+function TwxRichTextStyleListBox.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+  stylestring: string;
+  i: integer;
 begin
 
   Result := TStringList.Create;
-
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
-    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+  Result.Add(IndentString + Format('<object class="%s" name="%s">',
+    [self.Wx_Class, self.Name]));
+  Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+  Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
 
     if not(UseDefaultSize)then
       Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
     if not(UseDefaultPos) then
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+  stylestring :=  GetStdStyleString(self.Wx_GeneralStyle);//GetListBoxSelectorStyle(Wx_ListboxSubStyle);
+  Result.Add(IndentString + Format('  <style>%s</style>', [stylestring]));
 
-    Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetButtonSpecificStyle(self.Wx_GeneralStyle, Wx_ButtonStyle)]));
-    Result.Add(IndentString + '</object>');
+{  stylestring := GetListBoxSpecificStyle(self.Wx_GeneralStyle, Wx_ListboxStyle);
+  if Trim(stylestring) <> '' then 
+    stylestring := GetListBoxSelectorStyle(Wx_ListboxSubStyle) + ' | ' +
+                   GetListBoxSpecificStyle(self.Wx_GeneralStyle, Wx_ListboxStyle)
+  else
+    stylestring := GetListBoxSelectorStyle(Wx_ListboxSubStyle);
+  Result.Add(IndentString + Format('  <style>%s</style>', [stylestring]));
 
-  except
-    Result.Free;
-    raise;
-  end;
+  Result.Add(IndentString + '  <content>');
+  for i := 0 to self.Items.Count - 1 do
+    Result.Add(IndentString + '    <item>' + Items[i] + '</item>');
+}
+  Result.Add(IndentString + '  </content>');
+
+  Result.Add(IndentString + '</object>');
 
 end;
 
-function TWxToggleButton.GenerateGUIControlCreation: string;
+function TwxRichTextStyleListBox.GenerateGUIControlCreation: string;
 var
+  i: integer;
+  strStyle, parentName, strAlignment: string;
   strColorStr: string;
-  strStyle:    string;
-  parentName, strAlignment: string;
 begin
-  Result     := '';
-  strStyle   := GetButtonSpecificStyle(self.Wx_GeneralStyle, Wx_ButtonStyle);
+  Result := '';
     if FWx_PaneCaption = '' then
     FWx_PaneCaption := Self.Name;
   if FWx_PaneName = '' then
     FWx_PaneName := Self.Name + '_Pane';
 
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
+  strStyle := GetStdStyleString(self.Wx_GeneralStyle);//GetListBoxSelectorStyle(Wx_ListboxSubStyle);
+
+  if trim(strStyle) <> '' then
+    strStyle := ', ' + strStyle;
+{  if GetListBoxSpecificStyle(self.Wx_GeneralStyle, Wx_ListboxStyle) <> '' then
+    strStyle := strStyle + ' | ' + GetListBoxSpecificStyle(self.Wx_GeneralStyle, Wx_ListboxStyle);
 
   if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then
-  begin
     if trim(strStyle) <> '' then
-      strStyle := ', ' + strStyle + ', ' + Wx_ProxyValidatorString.strValidatorValue
+      strStyle := strStyle + ', ' + Wx_ProxyValidatorString.strValidatorValue
     else
       strStyle := ', 0, ' + Wx_ProxyValidatorString.strValidatorValue;
-
-    strStyle := strStyle + ', ' + GetCppString(Name);
-
-  end
-  else if trim(strStyle) <> '' then
-    strStyle := ', ' + strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
-  else
-    strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
-
-if (XRCGEN) then
-begin//generate xrc loading code
+}
+  if (XRCGEN) then
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
     [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
  end
  else
  begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s, %s%s);',
-    [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
-    self.Wx_IDValue),
-    GetCppString(self.Text), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+  Result := Format('wxArrayString arrayStringFor_%s;', [self.Name]);
+  Result := GetCommentString(self.FWx_Comments.Text) + Result + #13 + 
+  Format('%s = new %s(%s, %s, %s, %s%s);',
+    [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName, self.Wx_IDValue), 
+    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
  end;
 
   if trim(self.Wx_ToolTip) <> '' then
@@ -427,26 +522,31 @@ begin//generate xrc loading code
   if trim(self.Wx_HelpText) <> '' then
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
-
-  if self.Wx_Value then
-    Result := Result + #13 + Format('%s->SetValue(true);',[self.Name]);
-
+  for i := 0 to self.Items.Count - 1 do
+    Result := Result + #13 + Format('%s->Append(%s);',
+      [self.Name, GetCppString(self.Items[i])]);
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
+    Result := Result + #13 + Format('%s->SetForegroundColour(%s);', [self.Name, strColorStr]);
 
   strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
   if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
+    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);', [self.Name, strColorStr]);
 
 
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
+  if Self.Wx_RichTextCtrl <> '' then
+    Result := Result + #13 + Format('%s->SetRichTextCtrl(%s);', [self.Name, Self.Wx_RichTextCtrl]);
+
+  if Self.Wx_StyleSheet <> '' then
+    Result := Result + #13 + Format('%s->SetStyleSheet(%s);', [self.Name, Self.Wx_StyleSheet]);
+
+
+  if not (XRCGEN) then //NUKLEAR ZELPH
   begin
     if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
     begin
@@ -485,12 +585,12 @@ if not (XRCGEN) then //NUKLEAR ZELPH
     end
     else
     begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
+      if (self.Parent is TWxSizerPanel) then
+      begin
+        strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+        Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+          [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+          self.Wx_Border]);
       end;
 
       if (self.Parent is TWxAuiNotebookPage) then
@@ -499,58 +599,97 @@ if not (XRCGEN) then //NUKLEAR ZELPH
         Result := Result + #13 + Format('%s->AddPage(%s, %s);',
           //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
           [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
-  end;
+      end;
 
-      if (self.Parent is TWxAuiToolBar) or (self.Parent is TWxToolBar) then
-    Result := Result + #13 + Format('%s->AddControl(%s);',
-      [self.Parent.Name, self.Name]);
+      if (self.Parent is TWxAuiToolBar) then
+        Result := Result + #13 + Format('%s->AddControl(%s);',
+          [self.Parent.Name, self.Name]);
     end;
   end;
 
-
-  HorizAlign := halCentre;
-
-  VerticalAlign := valCentre;
-
 end;
 
-function TWxToggleButton.GenerateGUIControlDeclaration: string;
+function TwxRichTextStyleListBox.GenerateGUIControlDeclaration: string;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
+  Result := '';
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 
-function TWxToggleButton.GenerateHeaderInclude: string;
+function TwxRichTextStyleListBox.GenerateHeaderInclude: string;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
-  Result := '#include <wx/tglbtn.h>';
+  Result := '';
+  Result := '#include <wx/richtext/richtextstyles.h>';
+
 end;
 
-function TWxToggleButton.GenerateImageInclude: string;
+function TwxRichTextStyleListBox.GenerateImageInclude: string;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
 
 end;
 
-function TWxToggleButton.GetEventList: TStringList;
+function TwxRichTextStyleListBox.GetEventList: TStringList;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
-  Result := Wx_EventList;
+  Result := FWx_EventList;
 end;
 
-function TWxToggleButton.GetIDName: string;
+function TwxRichTextStyleListBox.GetIDName: string;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
   Result := wx_IDName;
 end;
 
-function TWxToggleButton.GetIDValue: longint;
+function TwxRichTextStyleListBox.GetIDValue: longint;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
   Result := wx_IDValue;
 end;
 
-function TWxToggleButton.GetParameterFromEventName(EventName: string): string;
+function TwxRichTextStyleListBox.GetParameterFromEventName(EventName: string): string;
+  { Internal declarations for method }
+
+  { var }
+  { . . . }
 begin
-  if EventName = 'EVT_TOGGLEBUTTON' then
+   if EventName = 'EVT_LEFT_DOWN' then
   begin
-    Result := 'wxCommandEvent& event';
+    Result := 'wxMouseEvent& event';
     exit;
   end;
+
+   if EventName = 'EVT_LEFT_DCLICK' then
+  begin
+    Result := 'wxMouseEvent& event';
+    exit;
+  end;
+
+   if EventName = 'EVT_IDLE' then
+  begin
+    Result := 'wxIdleEvent& event';
+    exit;
+  end;
+
   if EventName = 'EVT_UPDATE_UI' then
   begin
     Result := 'wxUpdateUIEvent& event';
@@ -558,89 +697,97 @@ begin
   end;
 end;
 
-function TWxToggleButton.GetPropertyList: TStringList;
+function TwxRichTextStyleListBox.GetPropertyList: TStringList;
 begin
   Result := FWx_PropertyList;
 end;
 
-function TWxToggleButton.GetStretchFactor: integer;
+function TwxRichTextStyleListBox.GetStretchFactor: integer;
 begin
-  Result := FWx_StretchFactor;
+   Result := FWx_StretchFactor;
 end;
 
-function TWxToggleButton.GetBorderAlignment: TWxBorderAlignment;
+function TwxRichTextStyleListBox.GetTypeFromEventName(EventName: string): string;
+begin
+   Result := 'void';
+end;
+
+function TwxRichTextStyleListBox.GetBorderAlignment: TWxBorderAlignment;
 begin
   Result := FWx_BorderAlignment;
 end;
 
-procedure TWxToggleButton.SetBorderAlignment(border: TWxBorderAlignment);
+procedure TwxRichTextStyleListBox.SetBorderAlignment(border: TWxBorderAlignment);
 begin
   FWx_BorderAlignment := border;
 end;
 
-function TWxToggleButton.GetBorderWidth: integer;
+function TwxRichTextStyleListBox.GetBorderWidth: integer;
 begin
   Result := FWx_Border;
 end;
 
-procedure TWxToggleButton.SetBorderWidth(width: integer);
+procedure TwxRichTextStyleListBox.SetBorderWidth(width: integer);
 begin
   FWx_Border := width;
 end;
 
-function TWxToggleButton.GetTypeFromEventName(EventName: string): string;
-begin
-
-end;
-
-function TWxToggleButton.GetWxClassName: string;
+function TwxRichTextStyleListBox.GetWxClassName: string;
 begin
   if trim(wx_Class) = '' then
-    wx_Class := 'wxToggleButton';
+    wx_Class := 'wxRichTextStyleListBox';
   Result := wx_Class;
 end;
 
-procedure TWxToggleButton.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
+procedure TwxRichTextStyleListBox.Loaded;
+begin
+  inherited Loaded;
+
+     { Perform any component setup that depends on the property
+       values having been set }
+
+end;
+
+procedure TwxRichTextStyleListBox.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
 begin
   wx_ControlOrientation := ControlOrientation;
 end;
 
-procedure TWxToggleButton.SetIDName(IDName: string);
+procedure TwxRichTextStyleListBox.SetIDName(IDName: string);
 begin
   wx_IDName := IDName;
 end;
 
-procedure TWxToggleButton.SetIDValue(IDValue: longint);
+procedure TwxRichTextStyleListBox.SetIDValue(IDValue: longint);
 begin
   Wx_IDValue := IDVAlue;
 end;
 
-procedure TWxToggleButton.SetStretchFactor(intValue: integer);
+procedure TwxRichTextStyleListBox.SetStretchFactor(intValue: integer);
 begin
   FWx_StretchFactor := intValue;
 end;
 
-procedure TWxToggleButton.SetWxClassName(wxClassName: string);
+procedure TwxRichTextStyleListBox.SetWxClassName(wxClassName: string);
 begin
-  wx_Class := wxClassName;
+  Wx_Class := wxClassName;
 end;
 
-function TWxToggleButton.GetGenericColor(strVariableName:String): string;
-begin
-
-end;
-procedure TWxToggleButton.SetGenericColor(strVariableName,strValue: string);
+function TwxRichTextStyleListBox.GetGenericColor(strVariableName:String): string;
 begin
 
 end;
+procedure TwxRichTextStyleListBox.SetGenericColor(strVariableName,strValue: string);
+begin
 
-function TWxToggleButton.GetFGColor: string;
+end;
+
+function TwxRichTextStyleListBox.GetFGColor: string;
 begin
   Result := FInvisibleFGColorString;
 end;
 
-procedure TWxToggleButton.SetFGColor(strValue: string);
+procedure TwxRichTextStyleListBox.SetFGColor(strValue: string);
 begin
   FInvisibleFGColorString := strValue;
   if IsDefaultColorStr(strValue) then
@@ -649,12 +796,12 @@ begin
     self.Font.Color := GetColorFromString(strValue);
 end;
 
-function TWxToggleButton.GetBGColor: string;
+function TwxRichTextStyleListBox.GetBGColor: string;
 begin
   Result := FInvisibleBGColorString;
 end;
 
-procedure TWxToggleButton.SetBGColor(strValue: string);
+procedure TwxRichTextStyleListBox.SetBGColor(strValue: string);
 begin
   FInvisibleBGColorString := strValue;
   if IsDefaultColorStr(strValue) then
@@ -663,36 +810,59 @@ begin
     self.Color := GetColorFromString(strValue);
 end;
 
-procedure TWxToggleButton.SetProxyFGColorString(Value: string);
+procedure TwxRichTextStyleListBox.SetProxyFGColorString(Value: string);
 begin
   FInvisibleFGColorString := Value;
   self.Color := GetColorFromString(Value);
 end;
 
-procedure TWxToggleButton.SetProxyBGColorString(Value: string);
+procedure TwxRichTextStyleListBox.SetProxyBGColorString(Value: string);
 begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
 end;
 
-function TWxToggleButton.GetValidatorString:TWxValidatorString;
+{
+function TwxRichTextStyleListBox.GetListBoxSelectorStyle(Wx_ListboxSubStyle: TWxLBxStyleSubItem)
+: string;
+begin
+  Result := '';
+  if Wx_ListboxSubStyle = wxLB_SINGLE then
+  begin
+    Result := 'wxLB_SINGLE';
+    exit;
+  end;
+  if Wx_ListboxSubStyle = wxLB_MULTIPLE then
+  begin
+    Result := 'wxLB_MULTIPLE';
+    exit;
+  end;
+  if Wx_ListboxSubStyle = wxLB_EXTENDED then
+  begin
+    Result := 'wxLB_EXTENDED';
+    exit;
+  end;
+end;
+}
+
+function TwxRichTextStyleListBox.GetValidatorString:TWxValidatorString;
 begin
   Result := FWx_ProxyValidatorString;
   Result.FstrValidatorValue := Wx_Validator;
 end;
 
-procedure TWxToggleButton.SetValidatorString(Value:TWxValidatorString);
+procedure TwxRichTextStyleListBox.SetValidatorString(Value:TWxValidatorString);
 begin
   FWx_ProxyValidatorString.FstrValidatorValue := Value.FstrValidatorValue;
   Wx_Validator := Value.FstrValidatorValue;
 end;
 
-function TWxToggleButton.GetValidator:String;
+function TwxRichTextStyleListBox.GetValidator:String;
 begin
   Result := Wx_Validator;
 end;
 
-procedure TWxToggleButton.SetValidator(value:String);
+procedure TwxRichTextStyleListBox.SetValidator(value:String);
 begin
   Wx_Validator := value;
 end;

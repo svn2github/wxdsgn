@@ -78,7 +78,8 @@ uses
   WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog, wxColourPickerCtrl,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
   WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl, wxAuiNotebook,
-  WxAuiManager, wxAuiBar, wxAuiToolBar, wxAuiNoteBookPage;
+  WxAuiManager, wxAuiBar, wxAuiToolBar, wxAuiNoteBookPage,
+  wxRichTextStyleComboCtrl, wxRichTextStyleListCtrl, wxRichTextStyleListBox;
 
 const
   SearchPrompt = '(search component)';
@@ -155,7 +156,7 @@ begin
   if (Name = 'TWXBOXSIZER') or (Name = 'TWXFLEXGRIDSIZER') or (Name = 'TWXGRIDSIZER') or
      (Name = 'TWXSTATICBOXSIZER') or (Name = 'TWXSTDDIALOGBUTTONSIZER') then
     Result := 'TWXSIZER'
-  else if Name = 'TWXBITMAPCOMBOBOX' then
+  else if (Name = 'TWXBITMAPCOMBOBOX') or (Name = 'TWXRICHTEXTSTYLECOMBOCTRL')  then
     Result := 'TWXCOMBOBOX'
   else if Name = 'TWXTREELISTCTRL' then
     Result := 'TWXTREECTRL'
@@ -171,6 +172,10 @@ begin
     Result := 'TWXNOTEBOOK'
   else if Name = 'TWXAUINOTEBOOKPAGE' then
     Result := 'TWXNOTEBOOKPAGE'
+  else if Name = 'TWXRICHTEXTSTYLELISTCTRL' then
+    Result := 'TWXLISTCTRL'
+  else if Name = 'TWXRICHTEXTSTYLELISTBOX' then
+    Result := 'TWXLISTBOX'
   else
     Result := '';
 end;
@@ -222,6 +227,7 @@ begin
                        'TwxDatePickerCtrl;TwxSlider;TwxStaticLine;TwxStaticBitmap;' +
                        'TwxStatusBar;TwxCheckListBox;TwxSpinCtrl;TwxRichTextCtrl;' +
                        'TwxCalendarCtrl;TwxOwnerDrawnComboBox;TwxHyperLinkCtrl;' +
+                       'TwxRichTextStyleComboCtrl;TwxRichTextStyleListCtrl;TwxRichTextStyleListBox;' +
                        'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox;TwxColourPickerCtrl');
     //Container controls
     ComponentsList.Add('Containers;TwxPanel;TwxChoicebook;TwxListbook;TwxNotebook;TwxTreebook;' +
@@ -262,7 +268,7 @@ begin
                      TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl, TWxColourPickerCtrl,
                      TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox,
                      TwxAuiManager, TwxAuiBar, TwxAuiToolBar, TwxAuiNotebook,
-                     TwxAuiNotebookPage]);
+                     TwxAuiNotebookPage, TwxRichTextStyleComboCtrl, TwxRichTextStyleListBox, TwxRichTextStyleListCtrl]);
 
     //Now that the components have been put into it's respective string lists,
     //iterate over all the items, parsing them and putting them into the tree-view

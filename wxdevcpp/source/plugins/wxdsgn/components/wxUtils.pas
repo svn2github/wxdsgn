@@ -61,7 +61,7 @@ const
   IID_IWxImageContainerInterface: TGUID = '{10619130-6bd4-11db-bd13-0800200c9a66}';
   IID_IWxAuiManagerInterface: TGUID = '{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}';
   IID_IWxAuiPaneInfoInterface: TGUID = '{7D45A54D-4C39-447E-A484-352EEC1956C5}';
-//  IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
+  IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
   IID_IWxAuiToolBarInterface: TGUID = '{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}';
   IID_IWxAuiNonInsertableInterface: TGUID = '{D8527AE6-9AC3-401E-B86E-6CE96853E47D}';
 
@@ -210,6 +210,7 @@ type
 
   IWxToolBarInterface = interface
     ['{518BF32C-F961-4148-B506-F60A9D21AD15}']
+    function GetRealizeString: string;
   end;
 
   IWxStatusBarInterface = interface
@@ -269,9 +270,9 @@ type
   end;
 
 
-//  IWxAuiPaneInterface = interface
-//    ['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
-//  end;
+  IWxAuiPaneInterface = interface
+    ['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
+  end;
 
   IWxAuiToolBarInterface = interface
     ['{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}']
@@ -307,6 +308,10 @@ type
 
   TWxRichTextStyleItem = (wxRE_READONLY, wxRE_MULTILINE);
   TWxRichTextStyleSet = set of TWxRichTextStyleItem;
+
+  TwxRichTextSLCStyleItem = (wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR);
+  TwxRichTextSLCStyleSet = set of TwxRichTextSLCStyleItem;
+
 
   //  TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
   // TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
@@ -537,7 +542,7 @@ type
   TWxAuinbxStyleItem = (wxAUI_NB_TAB_SPLIT, wxAUI_NB_TAB_MOVE, wxAUI_NB_TAB_EXTERNAL_MOVE, wxAUI_NB_TAB_FIXED_WIDTH,
     wxAUI_NB_SCROLL_BUTTONS, wxAUI_NB_WINDOWLIST_BUTTON, wxAUI_NB_CLOSE_BUTTON,
     wxAUI_NB_CLOSE_ON_ACTIVE_TAB, wxAUI_NB_CLOSE_ON_ALL_TABS);
-  TWxAuinbxStyleSet = set of TWxnbxStyleItem;
+  TWxAuinbxStyleSet = set of TWxAuinbxStyleItem;
 
   TWxColorString = class
   public
@@ -733,6 +738,7 @@ function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): string;
 //function GetChoicebookStyleString(stdStyle: TWxchbxStyleSet): string;
 //function GetListbookStyleString(stdStyle: TWxlbbxStyleSet): string;
 function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): string;
+function GetAuiNotebookStyleString(stdStyle: TWxAuinbxStyleSet): string;
 //function GetToolbookStyleString(stdStyle: TWxtlbxStyleSet): string;
 //function GetTreebookStyleString(stdStyle: TWxtrbxStyleSet): string;
 function GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): string;
@@ -776,6 +782,10 @@ function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
 function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
   calctrlstyle: TWxPickCalStyleSet): string;
 
+function GetRTSListCtrlStyleString(stdStyle: TwxRichTextSLCStyleSet): string;
+function GetRTSListCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+  lbxstyle: TwxRichTextSLCStyleSet): string;
+
 function GetChoicebookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxchbxAlignStyleItem; cbbxstyle: TWxchbxStyleSet}): string;
 function GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): string;
 
@@ -784,6 +794,7 @@ function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet{; bookalign: TWxlbbxA
 function GetListAlignment(Value: TWxlbbxAlignStyleItem): string;
 
 function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet; {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxnbxStyleSet): string;
+function GetAuiNotebookSpecificStyle(stdstyle: TWxStdStyleSet; {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxAuinbxStyleSet): string;
 function GetTabAlignmentString(Value: TWxnbxAlignStyleItem): string;
 
 function GetToolbookSpecificStyle(stdstyle: TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): string;
@@ -1288,9 +1299,15 @@ begin
   mn}
 
   if (AuiManaged and not (cntrl.Parent is TWxSizerPanel)) // protect ourselves from idiots
-  or (cntrl.Parent is TWxAuiNoteBookPage) then
+  {or (cntrl.Parent is TWxAuiNoteBookPage)} then
   begin
     Result := 'this';
+    Exit;
+  end;
+
+  if (cntrl.Parent is TWxAuiNoteBookPage) then
+  begin
+    Result := cntrl.Parent.Parent.Name;
     Exit;
   end;
 
@@ -1595,6 +1612,32 @@ begin
     strLst.Destroy;
   end;
 end;
+
+function GetRTSListCtrlStyleString(stdStyle: TwxRichTextSLCStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+  strLst := TStringList.Create;
+
+  try
+    if wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR in stdStyle then
+      strLst.add('wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i] // for
+          ;
+  finally
+    strLst.Destroy;
+  end;
+end;
+
 
 function GetListboxStyleString(stdStyle: TWxlbxStyleSet): string;
 var
@@ -1997,6 +2040,60 @@ begin
 
     if wxNB_FLAT in stdStyle then
       strLst.add('wxNB_FLAT');
+
+    if strLst.Count = 0 then
+      Result := ''
+    else
+      for I := 0 to strLst.Count - 1 do // Iterate
+        if i <> strLst.Count - 1 then
+          Result := Result + strLst[i] + ' | '
+        else
+          Result := Result + strLst[i] // for
+          ;
+    //sendDebug(Result);
+
+  finally
+    strLst.Destroy;
+  end;
+
+end;
+
+function GetAuiNotebookStyleString(stdStyle: TWxAuinbxStyleSet): string;
+var
+  I: integer;
+  strLst: TStringList;
+begin
+
+  strLst := TStringList.Create;
+
+  try
+
+    if wxAUI_NB_TAB_SPLIT in stdStyle then
+      strLst.add('wxAUI_NB_TAB_SPLIT');
+
+    if wxAUI_NB_TAB_MOVE in stdStyle then
+      strLst.add('wxAUI_NB_TAB_MOVE');
+
+    if wxAUI_NB_TAB_EXTERNAL_MOVE in stdStyle then
+      strLst.add('wxAUI_NB_TAB_EXTERNAL_MOVE');
+
+    if wxAUI_NB_TAB_FIXED_WIDTH in stdStyle then
+      strLst.add('wxAUI_NB_TAB_FIXED_WIDTH');
+
+    if wxAUI_NB_SCROLL_BUTTONS in stdStyle then
+      strLst.add('wxAUI_NB_SCROLL_BUTTONS');
+
+    if wxAUI_NB_WINDOWLIST_BUTTON in stdStyle then
+      strLst.add('wxAUI_NB_WINDOWLIST_BUTTON');
+
+    if wxAUI_NB_CLOSE_BUTTON in stdStyle then
+      strLst.add('wxAUI_NB_CLOSE_BUTTON');
+
+    if wxAUI_NB_CLOSE_ON_ACTIVE_TAB in stdStyle then
+      strLst.add('wxAUI_NB_CLOSE_ON_ACTIVE_TAB');
+
+    if wxAUI_NB_CLOSE_ON_ALL_TABS in stdStyle then
+      strLst.add('wxAUI_NB_CLOSE_ON_ALL_TABS');
 
     if strLst.Count = 0 then
       Result := ''
@@ -3247,6 +3344,21 @@ begin
 
 end;
 
+function GetRTSListCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+  lbxstyle: TwxRichTextSLCStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+  strA := trim(GetRTSListCtrlStyleString(lbxstyle));
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+end;
+
 function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;
   lbxstyle: TWxlbxStyleSet): string;
 var
@@ -3530,6 +3642,28 @@ begin
      Result := GetTabAlignment(bookalign);      }
 
   strA := trim(GetNotebookStyleString(nbxstyle));
+
+  if strA <> '' then
+    if trim(Result) = '' then
+      Result := strA
+    else
+      Result := Result + ' | ' + strA;
+
+end;
+
+function GetAuiNotebookSpecificStyle(stdstyle: TWxStdStyleSet; { bookalign: TWxnbxAlignStyleItem; }
+  nbxstyle: TWxAuinbxStyleSet): string;
+var
+  strA: string;
+begin
+  Result := GetStdStyleString(stdstyle);
+
+  {  if Result <> '' then
+      Result := GetTabAlignment(bookalign) + ' | ' +  Result
+    else
+       Result := GetTabAlignment(bookalign);      }
+
+  strA := trim(GetAuiNotebookStyleString(nbxstyle));
 
   if strA <> '' then
     if trim(Result) = '' then

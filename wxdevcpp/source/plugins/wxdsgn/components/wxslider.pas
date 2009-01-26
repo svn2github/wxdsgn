@@ -567,6 +567,11 @@ begin
         Wx_SliderStyle:=Wx_SliderStyle + [wxSL_VERTICAL] - [wxSL_HORIZONTAL];
   }
 
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := ', ' + GetSliderOrientation(Wx_SliderOrientation);

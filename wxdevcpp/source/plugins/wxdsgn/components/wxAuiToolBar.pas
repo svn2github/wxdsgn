@@ -150,6 +150,8 @@ type
     function GenerateLastCreationCode: string;
     procedure SetToolbarStyle(Value: TWxAuiTbrStyleSet);
 
+    function GetRealizeString: string;
+
   published
     { Published properties of TWxAuiToolBar }
     property OnClick;
@@ -205,12 +207,12 @@ type
     property EVT_UPDATE_UI: string read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
 
     //Aui Properties
-    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
+    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default True;
     property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
     property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
     property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
     property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
-    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
+    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style default [ToolbarPane];
     property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
     property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
     property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
@@ -254,28 +256,6 @@ begin
   FWx_Enabled := True;
   FWx_Comments := TStringList.Create;
   self.ShowCaptions := false;
-
-  //Aui Properties
-  FWx_AuiManaged := False;
-  FWx_PaneCaption := '';
-  FWx_PaneName := '';
-  FWx_Aui_Dock_Direction := wxAUI_DOCK_TOP;
-  FWx_Aui_Dockable_Direction := [];
-  FWx_Aui_Pane_Style := [ToolbarPane];
-  FWx_Aui_Pane_Buttons := [];
-  FWx_BestSize_Height := -1;
-  FWx_BestSize_Width := -1;
-  FWx_MinSize_Height := -1;
-  FWx_MinSize_Width := -1;
-  FWx_MaxSize_Height := -1;
-  FWx_MaxSize_Width := -1;
-  FWx_Floating_Height := -1;
-  FWx_Floating_Width := -1;
-  FWx_Floating_X_Pos := -1;
-  FWx_Floating_Y_Pos := -1;
-  FWx_Layer := 0;
-  FWx_Row := 0;
-  FWx_Position := 0;
 
 end; { of AutoInitialize }
 
@@ -512,13 +492,18 @@ var
   strStyle, parentName, strAlignment: string;
 begin
   Result := '';
-
+  Self.Wx_AuiManaged := True; //wxAuiToolbar is ALWAYS managed
   Self.Wx_Aui_Pane_Style :=  Self.Wx_Aui_Pane_Style +[ToolbarPane];                                     //always make sure we are a toolbar
   Self.Wx_Layer := 10;
 
-  if (self.Parent is TWxAuiBar) then
-    parentName := 'this'
-  else
+  if Self.Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE then
+    Self.Wx_Aui_Dock_Direction := wxAUI_DOCK_TOP;
+
+  if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
     parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetAuiToolBarSpecificStyle(self.Wx_GeneralStyle, self.Wx_ToolbarStyleSet);
@@ -571,6 +556,7 @@ begin
   if not (XRCGEN) then //NUKLEAR ZELPH
     if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
     begin
+{      Result := Result + #13 + Format('%s->Realize();', [self.Name]);
         Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
           [GetAuiManagerName(self), self.Name,
           GetAuiPaneName(Self.Wx_PaneName),
@@ -585,7 +571,7 @@ begin
             GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
             GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
             GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
-
+}
     end
     else
     begin
@@ -803,6 +789,42 @@ begin
         self.ShowCaptions:=false;
       FWx_ToolbarStyleSet:=Value;
   }
+end;
+
+
+function TWxAuiToolBar.GetRealizeString: string;
+begin
+  Result := '';
+  Self.Wx_AuiManaged := True; //wxAuiToolbar is ALWAYS managed
+  Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+  Self.Wx_Layer := 10;
+
+  if Self.Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE then
+    Self.Wx_Aui_Dock_Direction := wxAUI_DOCK_TOP;
+
+  if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
+    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
+    begin
+   Result := Result + Format('%s->Realize();', [self.Name]);
+     Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+        [GetAuiManagerName(self), self.Name,
+        GetAuiPaneName(Self.Wx_PaneName),
+          GetAuiPaneCaption(Self.Wx_PaneCaption),
+          GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+          GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+          GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+          GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+          GetAuiRow(Self.Wx_Row),
+          GetAuiPosition(Self.Wx_Position),
+          GetAuiLayer(Self.Wx_Layer),
+          GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+          GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+          GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+    end
 end;
 
 end.

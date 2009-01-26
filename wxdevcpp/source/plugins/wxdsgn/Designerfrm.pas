@@ -241,7 +241,7 @@ var
   wxcompInterface: IWxComponentInterface;
   varIntf:IWxVariableAssignmentInterface;
   wxAuimanagerInterface: IWxAuiManagerInterface;
-  wxAuiPaneInfoInterface: IWxAuiPaneInfoInterface;
+  //  wxAuiPaneInfoInterface: IWxAuiPaneInfoInterface;
 //  wxAuiPaneInterface: IWxAuiPaneInterface;
   strEntry, strEventTableStart, strEventTableEnd: string;
   isSizerAvailable: boolean;
@@ -273,14 +273,23 @@ begin
     begin
       //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
       if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+      begin
           frmNewForm.isAuimanagerAvailable := True;
           break;
+      end;
     end; // for
+
+      //  ALWAYS do this first, it should then be last in the list
+      strTemp := frmNewForm.GenerateGUIControlCreation;
+      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
+
 
     if isSizerAvailable then
     begin
-      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
-      
+{
+      strTemp := frmNewForm.GenerateGUIControlCreation;
+          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
+}
       //Add the Code Generation Items that need to be added after the creation with new
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
@@ -300,10 +309,36 @@ begin
       begin
         if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
           continue;
+        if not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
+          {and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface)}then
+        begin
+
         if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
-          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+          begin
+            strTemp := wxcompInterface.GenerateGUIControlCreation;
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
+          end;
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-      end// for
+        end;
+      end; // for
+
+      //MN detect whether there is a wxAuiManager component and do the code for that last
+      //it is then first in the generated code
+      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+      begin
+        if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
+          continue;
+        //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
+        if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+        begin
+          if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+          begin
+            strTemp := wxcompInterface.GenerateGUIControlCreation;
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
+          end;
+          AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
+        end;
+      end; // for
     end
     else
     begin
@@ -317,7 +352,7 @@ begin
           if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
           begin
             strTemp := wxcompInterface.GenerateGUIControlCreation;
-            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
           end;
           AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
         end;
@@ -333,7 +368,7 @@ begin
         if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
         begin
           strTemp := wxcompInterface.GenerateGUIControlCreation;
-          AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd, wxcompInterface.GenerateGUIControlCreation);
+            AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
         end;
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
         end;
@@ -343,7 +378,8 @@ begin
 
     //Form data should come first, if not the child will be resized to
     if not isSizerAvailable then
-      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
+//Already done above
+//      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
     if (XRCGEN) then //NUKLEAR ZELPH
    begin
     AddClassNameGUIItemsCreation(synEdit, strClassName,intBlockStart, intBlockEnd,
@@ -1451,6 +1487,8 @@ var
   isSizerAvailable: boolean;
   //  isAuimanagerAvailable: boolean;
   WinRect: TRect;
+  wxtoolbarintf: IWxToolBarInterface;
+  strTemp: string;
 begin
   strLst := TStringList.Create;
 
@@ -1492,7 +1530,13 @@ begin
           strLst.add(Format('%s->SetToolSeparation(%d);',
             [self.Components[i].Name, MaxSepValue]));
 
-          if not IsControlWxAuiToolBar(TControl(Components[i])) then
+          if Self.Components[i].GetInterface(IID_IWxToolBarInterface, wxtoolbarintf) then
+          begin
+            strTemp := wxtoolbarintf.GetRealizeString;
+            strLst.add(strTemp);
+          end;
+
+          {          if not IsControlWxAuiToolBar(TControl(Components[i])) then
           begin
         strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
         strLst.add(Format('SetToolBar(%s);', [self.Components[i].Name]));
@@ -1501,6 +1545,7 @@ begin
           begin
             strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
           end;
+ }
       end; //not xrcgen
      end;
 

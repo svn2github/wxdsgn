@@ -1,6 +1,6 @@
  { ****************************************************************** }
  {                                                                    }
-{ $Id: wxradiobutton.pas 936 2007-05-15 03:47:39Z gururamnath $                                                               }
+{ $Id$                                                               }
  {                                                                    }
 {                                                                    }
 {   Copyright © 2003-2007 by Guru Kathiresan                         }
@@ -26,51 +26,77 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-
-unit WxRadioButton;
+unit wxRichTextStyleComboCtrl;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, WxComboBox,
   Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, wxAuiToolBar, WxAuiNotebookPage, WxToolBar, UValidator;
 
 type
-  TWxRadioButton = class(TRadioButton, IWxComponentInterface,
-    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface,
-    IWxVariableAssignmentInterface, IWxValidatorInterface)
+  TwxRichTextStyleComboCtrl = class(TWxComboBox, IWxComponentInterface, IWxToolBarInsertableInterface,
+    IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface, IWxValidatorInterface)
   private
-    { Private fields of TWxRadioButton }
-    FEVT_CHECKBOX: string;
+    { Private fields of TwxRichTextStyleComboCtrl }
+    { Storage for property EVT_COMBOBOX }
+    FEVT_COMBOBOX: string;
+    { Storage for property EVT_TEXT }
     FEVT_TEXT: string;
-    FEVT_RADIOBUTTON: string;
+    { Storage for property EVT_UPDATE_UI }
     FEVT_UPDATE_UI: string;
+    FEVT_TEXT_ENTER: string;
+    { Storage for property Wx_BGColor }
     FWx_BGColor: TColor;
+    { Storage for property Wx_Border }
     FWx_Border: integer;
+    { Storage for property Wx_Class }
     FWx_Class: string;
+    { Storage for property Wx_ComboboxStyle }
+    FWx_ComboboxStyle: TWxCmbStyleSet;
+    { Storage for property Wx_EditStyle }
+    FWx_EditStyle: TWxEdtGeneralStyleSet;
+    { Storage for property Wx_ControlOrientation }
     FWx_ControlOrientation: TWxControlOrientation;
+    { Storage for property Wx_DefaultItem }
+    FWx_DefaultItem: integer;
+    { Storage for property Wx_Enabled }
     FWx_Enabled: boolean;
+    { Storage for property Wx_FGColor }
     FWx_FGColor: TColor;
+    { Storage for property Wx_GeneralStyle }
     FWx_GeneralStyle: TWxStdStyleSet;
+    { Storage for property Wx_HelpText }
     FWx_HelpText: string;
+    { Storage for property Wx_Hidden }
     FWx_Hidden: boolean;
+    { Storage for property Wx_IDName }
     FWx_IDName: string;
+    { Storage for property Wx_IDValue }
     FWx_IDValue: longint;
+    { Storage for property Wx_ProxyBGColorString }
     FWx_ProxyBGColorString: TWxColorString;
+    { Storage for property Wx_ProxyFGColorString }
     FWx_ProxyFGColorString: TWxColorString;
-    FWx_RadioButtonStyle: TWxRBStyleSet;
+    { Storage for property Wx_StretchFactor }
     FWx_StretchFactor: integer;
+    { Storage for property Wx_ToolTip }
     FWx_ToolTip: string;
+    FWx_Validator: string;
+    FWx_ProxyValidatorString : TWxValidatorString;
     FWx_EventList: TStringList;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
     FInvisibleFGColorString: string;
-    FWx_Validator: string;
-    FWx_ProxyValidatorString : TWxValidatorString;
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
     FWx_LHSValue : String;
     FWx_RHSValue : String;
+
+    FWx_RichTextCtrl : String;
+    FWx_StyleSheet : String;
+
+    FEVT_IDLE: string;
 
 //Aui Properties
     FWx_AuiManaged: Boolean;
@@ -94,23 +120,26 @@ type
     FWx_Row: Integer;
     FWx_Position: Integer;
 
-    { Private methods of TWxRadioButton }
+    { Private methods of TwxRichTextStyleComboCtrl }
+    { Method to set variable and property values and create objects }
     procedure AutoInitialize;
+    { Method to free any objects created by AutoInitialize }
     procedure AutoDestroy;
 
   protected
-    { Protected fields of TWxRadioButton }
+    { Protected fields of TwxRichTextStyleComboCtrl }
 
-    { Protected methods of TWxRadioButton }
+    { Protected methods of TwxRichTextStyleComboCtrl }
+    procedure Change; override;
     procedure Click; override;
     procedure KeyPress(var Key: char); override;
     procedure Loaded; override;
 
   public
-    { Public fields and properties of TWxRadioButton }
+    { Public fields and properties of TwxRichTextStyleComboCtrl }
     defaultBGColor: TColor;
     defaultFGColor: TColor;
-    { Public methods of TWxRadioButton }
+    { Public methods of TwxRichTextStyleComboCtrl }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GenerateControlIDs: string;
@@ -134,19 +163,21 @@ type
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
+
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
+
+    function GetGenericColor(strVariableName:String): string;
+    procedure SetGenericColor(strVariableName,strValue: string);
 
     function GetValidator:String;
     procedure SetValidator(value:String);
     function GetValidatorString:TWxValidatorString;
     procedure SetValidatorString(Value:TWxValidatorString);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
-
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
+    procedure DummyToolBarInsertableInterfaceProcedure;
     function GetLHSVariableAssignment:String;
     function GetRHSVariableAssignment:String;
 
@@ -158,7 +189,8 @@ type
     procedure SetStretchFactor(intValue: integer);
     
   published
-    { Published properties of TWxRadioButton }
+    { Published properties of TwxRichTextStyleComboCtrl }
+    property OnChange;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -170,28 +202,32 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property EVT_CHECKBOX: string Read FEVT_CHECKBOX Write FEVT_RADIOBUTTON;
+    property EVT_COMBOBOX: string Read FEVT_COMBOBOX Write FEVT_COMBOBOX;
     property EVT_TEXT: string Read FEVT_TEXT Write FEVT_TEXT;
-    property EVT_RADIOBUTTON: string Read FEVT_RADIOBUTTON Write FEVT_RADIOBUTTON;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+    property EVT_TEXT_ENTER: string Read FEVT_TEXT_ENTER Write FEVT_TEXT_ENTER;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
+    property Wx_ComboboxStyle: TWxCmbStyleSet
+      Read FWx_ComboboxStyle Write FWx_ComboboxStyle;
+    property Wx_EditStyle: TWxEdtGeneralStyleSet
+      Read FWx_EditStyle Write FWx_EditStyle;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
+    property Wx_DefaultItem: integer Read FWx_DefaultItem
+      Write FWx_DefaultItem default -1;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
     property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
     property Wx_GeneralStyle: TWxStdStyleSet
       Read FWx_GeneralStyle Write FWx_GeneralStyle;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden default False;
+    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
     property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_RadioButtonStyle: TWxRBStyleSet
-      Read FWx_RadioButtonStyle Write FWx_RadioButtonStyle;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
     property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
     property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
-
+    
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
     property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
@@ -205,6 +241,9 @@ type
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
     property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
     property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+    property Wx_RichTextCtrl: string Read FWx_RichTextCtrl Write FWx_RichTextCtrl;
+    property Wx_StyleSheet: string Read FWx_StyleSheet Write FWx_StyleSheet;
+    property EVT_IDLE: string Read FEVT_IDLE Write FEVT_IDLE;
 
 //Aui Properties
     property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
@@ -236,80 +275,141 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('wxWidgets', [TWxRadioButton]);
+     { Register TwxRichTextStyleComboCtrl with wxWidgets as its
+       default page on the Delphi component palette }
+  RegisterComponents('wxWidgets', [TwxRichTextStyleComboCtrl]);
 end;
 
 { Method to set variable and property values and create objects }
-procedure TWxRadioButton.AutoInitialize;
+procedure TwxRichTextStyleComboCtrl.AutoInitialize;
 begin
   FWx_EventList          := TStringList.Create;
   FWx_PropertyList       := TStringList.Create;
-  FWx_Comments           := TStringList.Create;
   FWx_Border             := 5;
-  FWx_Class              := 'wxRadioButton';
+  FWx_Class              := 'wxRichTextStyleComboCtrl';
+  FWx_DefaultItem        := -1;
   FWx_Enabled            := True;
-  FWx_Hidden             := False;
   FWx_BorderAlignment    := [wxAll];
   FWx_Alignment          := [wxALIGN_CENTER];
   FWx_IDValue            := -1;
   FWx_StretchFactor      := 0;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor         := clBtnFace;
+  defaultBGColor         := self.color;
   defaultFGColor         := self.font.color;
+  FWx_Comments           := TStringList.Create;
   FWx_ProxyValidatorString := TwxValidatorString.Create(self);
+
 
 end; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxRadioButton.AutoDestroy;
+procedure TwxRichTextStyleComboCtrl.AutoDestroy;
 begin
   FWx_EventList.Destroy;
   FWx_PropertyList.Destroy;
+  FWx_Comments.Destroy;
   FWx_ProxyBGColorString.Destroy;
   FWx_ProxyFGColorString.Destroy;
-  FWx_Comments.Destroy;
   FWx_ProxyValidatorString.Destroy;
 
 end; { of AutoDestroy }
 
-procedure TWxRadioButton.Click;
+{ Override OnChange handler from TComboBox,IWxComponentInterface }
+procedure TwxRichTextStyleComboCtrl.Change;
 begin
-  inherited Click;
+  inherited Change;
 end;
 
-procedure TWxRadioButton.KeyPress(var Key: char);
+{ Override OnClick handler from TComboBox,IWxComponentInterface }
+procedure TwxRichTextStyleComboCtrl.Click;
+begin
+     { Code to execute before activating click
+       behavior of component's parent class }
+
+  { Activate click behavior of parent }
+  inherited Click;
+
+     { Code to execute after click behavior
+       of parent }
+
+end;
+
+{ Override OnKeyPress handler from TComboBox,IWxComponentInterface }
+procedure TwxRichTextStyleComboCtrl.KeyPress(var Key: char);
 const
   TabKey   = char(VK_TAB);
   EnterKey = char(VK_RETURN);
 begin
+     { Key contains the character produced by the keypress.
+       It can be tested or assigned a new value before the
+       call to the inherited KeyPress method.  Setting Key
+       to #0 before call to the inherited KeyPress method
+       terminates any further processing of the character. }
+
+  { Activate KeyPress behavior of parent }
   inherited KeyPress(Key);
+
+  { Code to execute after KeyPress behavior of parent }
+
 end;
 
-constructor TWxRadioButton.Create(AOwner: TComponent);
+constructor TwxRichTextStyleComboCtrl.Create(AOwner: TComponent);
 begin
+  { Call the Create method of the parent class }
   inherited Create(AOwner);
+
+  { AutoInitialize sets the initial values of variables and      }
+  { properties; also, it creates objects for properties of       }
+  { standard Delphi object types (e.g., TFont, TTimer,           }
+  { TPicture) and for any variables marked as objects.           }
+  { AutoInitialize method is generated by Component Create.      }
   AutoInitialize;
 
+  { Code to perform other tasks when the component is created }
   PopulateGenericProperties(FWx_PropertyList);
   PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_RadioButtonStyle:Radio Button Style');
-  FWx_PropertyList.add('wxRB_GROUP:wxRB_GROUP');
-  FWx_PropertyList.add('wxRB_SINGLE:wxRB_SINGLE');
+  FWx_PropertyList.add('Wx_ComboboxStyle:Combobox Style');
+  FWx_PropertyList.add('wxCB_SIMPLE:wxCB_SIMPLE');
+  FWx_PropertyList.add('wxCB_DROPDOWN:wxCB_DROPDOWN');
+  FWx_PropertyList.add('wxCB_READONLY:wxCB_READONLY');
+  FWx_PropertyList.add('wxCB_SORT:wxCB_SORT');
 
-  FWx_PropertyList.add('Caption:Caption');
-  FWx_PropertyList.add('Checked:Checked');
+  FWx_PropertyList.Add('Wx_EditStyle:Edit Style');
+  FWx_PropertyList.Add('wxTE_PROCESS_ENTER:wxTE_PROCESS_ENTER');
+  FWx_PropertyList.Add('wxTE_PROCESS_TAB:wxTE_PROCESS_TAB');
+  FWx_PropertyList.Add('wxTE_PASSWORD:wxTE_PASSWORD');
+  FWx_PropertyList.Add('wxTE_READONLY:wxTE_READONLY');
+  FWx_PropertyList.Add('wxTE_MULTILINE:wxTE_MULTILINE');
+  FWx_PropertyList.Add('wxTE_RICH:wxTE_RICH');
+  FWx_PropertyList.Add('wxTE_RICH2:wxTE_RICH2');
+  FWx_PropertyList.Add('wxTE_AUTO_URL:wxTE_AUTO_URL');
+  FWx_PropertyList.Add('wxTE_NOHIDESEL:wxTE_NOHIDESEL');
+  FWx_PropertyList.Add('wxTE_LEFT:wxTE_LEFT');
+  FWx_PropertyList.Add('wxTE_CENTRE:wxTE_CENTRE');
+  FWx_PropertyList.Add('wxTE_RIGHT:wxTE_RIGHT');
+  FWx_PropertyList.Add('wxTE_LINEWRAP:wxTE_LINEWRAP');
+  FWx_PropertyList.Add('wxTE_DONTWRAP:wxTE_DONTWRAP');
+  FWx_PropertyList.Add('wxTE_CHARWRAP:wxTE_CHARWRAP');
+  FWx_PropertyList.Add('wxTE_BESTWRAP:wxTE_BESTWRAP');
+  FWx_PropertyList.Add('wxTE_CAPITALIZE:wxTE_CAPITALIZE');
 
+  FWx_PropertyList.add('Items:Items');
+  FWx_PropertyList.add('Text:Text');
   FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
   FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
+  FWx_PropertyList.add('Wx_RichTextCtrl:RichTextCtrl');
+  FWx_PropertyList.add('Wx_StyleSheet:WStyleSheet');
 
-  FWx_EventList.add('EVT_RADIOBUTTON:OnClick');
+  FWx_EventList.add('EVT_COMBOBOX:OnSelected');
+  FWx_EventList.add('EVT_TEXT:OnUpdated');
+  FWx_EventList.add('EVT_TEXT_ENTER:OnTextEnter');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-
+  FWx_EventList.add('EVT_IDLE:OnIdle');
 end;
 
-destructor TWxRadioButton.Destroy;
+destructor TwxRichTextStyleComboCtrl.Destroy;
 begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
@@ -325,54 +425,88 @@ begin
 end;
 
 
-function TWxRadioButton.GenerateEnumControlIDs: string;
+function TwxRichTextStyleComboCtrl.GenerateEnumControlIDs: string;
 begin
   Result := '';
+  {$IFDEF MALCOLM}
+  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+    Result := Format('%s, ', [Wx_IDName]);
+  {$ELSE}
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
     Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
+  {$ENDIF}
 end;
 
-function TWxRadioButton.GenerateControlIDs: string;
+function TwxRichTextStyleComboCtrl.GenerateControlIDs: string;
 begin
   Result := '';
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
     Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
 end;
 
-function TWxRadioButton.GenerateEventTableEntries(CurrClassName: string): string;
+
+
+function TwxRichTextStyleComboCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
-    if (XRCGEN) then
+if (XRCGEN) then
  begin
-  if trim(EVT_RADIOBUTTON) <> '' then
-    Result := Format('EVT_RADIOBUTTON(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RADIOBUTTON]) + '';
+  if trim(EVT_COMBOBOX) <> '' then
+    Result := Format('EVT_COMBOBOX(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_COMBOBOX]) + '';
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
+
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
       [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-end
-else
-begin
-  if trim(EVT_RADIOBUTTON) <> '' then
-    Result := Format('EVT_RADIOBUTTON(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_RADIOBUTTON]) + '';
+
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
+
+  if trim(EVT_IDLE) <> '' then
+    Result := Result + #13 + Format('EVT_IDLE(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_IDLE]) + '';
+
+ end
+ else
+ begin
+  if trim(EVT_COMBOBOX) <> '' then
+    Result := Format('EVT_COMBOBOX(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_COMBOBOX]) + '';
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT]) + '';
+
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-end;
+
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_ENTER(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
+
+  if trim(EVT_IDLE) <> '' then
+    Result := Result + #13 + Format('EVT_IDLE(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_IDLE]) + '';
+ end;
 
 end;
 
-function TWxRadioButton.GenerateXRCControlCreation(IndentString: string): TStringList;
+function TwxRichTextStyleComboCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
+var
+  i: integer;
 begin
 
   Result := TStringList.Create;
-
   try
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
 
@@ -382,15 +516,14 @@ begin
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetRadioButtonSpecificStyle(self.Wx_GeneralStyle, Wx_RadioButtonStyle)]));
+      [GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle, Wx_EditStyle)]));
 
-    if self.Checked then
-      Result.Add(IndentString + '  <value>1</value>')
-    else
-      Result.Add(IndentString + '  <value>0</value>');
+    Result.Add('  <content>');
+    for i := 0 to self.Items.Count - 1 do
+      Result.Add(IndentString + '    <item checked="0">' + self.Items[i] + '</item>');
 
+    Result.Add('  </content>');
     Result.Add(IndentString + '</object>');
-
   except
     Result.Free;
     raise;
@@ -398,9 +531,10 @@ begin
 
 end;
 
-function TWxRadioButton.GenerateGUIControlCreation: string;
+function TwxRichTextStyleComboCtrl.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
+  i: integer;
   strStyle, parentName, strAlignment: string;
 begin
   Result := '';
@@ -411,12 +545,14 @@ begin
     FWx_PaneName := Self.Name + '_Pane';
 
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
+  strStyle   := GetcomboBoxSpecificStyle(Wx_GeneralStyle, Wx_ComboboxStyle, Wx_EditStyle);
 
-  strStyle := GetRadioButtonSpecificStyle(self.Wx_GeneralStyle, Wx_RadioButtonStyle);
-
-  if (trim(strStyle) <> '') then
+  if trim(strStyle) <> '' then
     strStyle := ', ' + strStyle;
 
+  Result := GetCommentString(self.FWx_Comments.Text);
+
+{  //Last comma is removed because it depends on the user selection of the properties.
   if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then
   begin
     if trim(strStyle) <> '' then
@@ -431,19 +567,20 @@ begin
     strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name)
   else
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
-
-	if (XRCGEN) then
- begin//generate xrc loading code
+}
+if (XRCGEN) then
+ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+    Format('%s = XRCCTRL(*%s, %s, %s);',
+    [self.Name, parentName, self.Name, self.wx_Class]);
  end
  else
  begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s, %s%s);',
-    [self.Name, self.wx_Class, parentName, GetWxIDString(Wx_IDName, self.Wx_IDValue),
-    GetCppString(self.Caption), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+  Result := Result + #13 + Format(
+    '%s = new %s(%s, %s, %s, %s%s);',
+    [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
+    self.Wx_IDValue), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height),
+    strStyle]);
  end;
 
   if trim(self.Wx_ToolTip) <> '' then
@@ -460,9 +597,6 @@ begin
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
 
-  if self.Checked then
-    Result := Result + #13 + Format('%s->SetValue(true);', [self.Name]);
-
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
@@ -473,11 +607,17 @@ begin
     Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
       [self.Name, strColorStr]);
 
-
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
+  if Self.Wx_RichTextCtrl <> '' then
+    Result := Result + #13 + Format('%s->SetRichTextCtrl(%s);', [self.Name, Self.Wx_RichTextCtrl]);
+
+  if Self.Wx_StyleSheet <> '' then
+    Result := Result + #13 + Format('%s->SetStyleSheet(%s);', [self.Name, Self.Wx_StyleSheet]);
+
+  if not (XRCGEN) then //NUKLEAR ZELPH
   begin
     if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
     begin
@@ -516,13 +656,13 @@ if not (XRCGEN) then //NUKLEAR ZELPH
     end
     else
     begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+      if (self.Parent is TWxSizerPanel) then
+      begin
+        strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+        Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+          [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+          self.Wx_Border]);
+      end;
 
       if (self.Parent is TWxAuiNotebookPage) then
       begin
@@ -533,102 +673,103 @@ if not (XRCGEN) then //NUKLEAR ZELPH
       end;
 
       if (self.Parent is TWxAuiToolBar) or (self.Parent is TWxToolBar) then
-    Result := Result + #13 + Format('%s->AddControl(%s);',
-      [self.Parent.Name, self.Name]);
+        Result := Result + #13 + Format('%s->AddControl(%s);',
+          [self.Parent.Name, self.Name]);
     end;
   end;
 
 end;
 
-function TWxRadioButton.GenerateGUIControlDeclaration: string;
+function TwxRichTextStyleComboCtrl.GenerateGUIControlDeclaration: string;
 begin
   Result := '';
   Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
 end;
 
-function TWxRadioButton.GenerateHeaderInclude: string;
+function TwxRichTextStyleComboCtrl.GenerateHeaderInclude: string;
 begin
-  Result := '#include <wx/radiobut.h>';
+  Result := '';
+  Result := '#include <wx/richtext/richtextstyles.h>';
 end;
 
-function TWxRadioButton.GenerateImageInclude: string;
+function TwxRichTextStyleComboCtrl.GenerateImageInclude: string;
 begin
 
 end;
 
-function TWxRadioButton.GetEventList: TStringList;
+function TwxRichTextStyleComboCtrl.GetEventList: TStringList;
 begin
   Result := FWx_EventList;
 end;
 
-function TWxRadioButton.GetIDName: string;
+function TwxRichTextStyleComboCtrl.GetIDName: string;
 begin
+  Result := '';
   Result := wx_IDName;
 end;
 
-function TWxRadioButton.GetIDValue: longint;
+function TwxRichTextStyleComboCtrl.GetIDValue: longint;
 begin
   Result := wx_IDValue;
 end;
 
-function TWxRadioButton.GetParameterFromEventName(EventName: string): string;
+function TwxRichTextStyleComboCtrl.GetParameterFromEventName(EventName: string): string;
 begin
-  if EventName = 'EVT_RADIOBUTTON' then
-  begin
-    Result := 'wxCommandEvent& event';
-    exit;
-  end;
-
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
+  if EventName = 'EVT_COMBOBOX' then
+    Result := 'wxCommandEvent& event '
+  else if EventName = 'EVT_TEXT' then
+    Result := 'wxCommandEvent& event '
+  else if EventName = 'EVT_TEXT_ENTER' then
+    Result := 'wxCommandEvent& event'
+  else if EventName = 'EVT_UPDATE_UI' then
+    Result := 'wxUpdateUIEvent& event'
+  else if EventName = 'EVT_IDLE' then
+    Result := 'wxIdleEvent& event';
 end;
 
-function TWxRadioButton.GetPropertyList: TStringList;
+function TwxRichTextStyleComboCtrl.GetPropertyList: TStringList;
 begin
   Result := FWx_PropertyList;
 end;
 
-function TWxRadioButton.GetStretchFactor: integer;
+function TwxRichTextStyleComboCtrl.GetStretchFactor: integer;
 begin
   Result := FWx_StretchFactor;
 end;
 
-function TWxRadioButton.GetTypeFromEventName(EventName: string): string;
+function TwxRichTextStyleComboCtrl.GetTypeFromEventName(EventName: string): string;
 begin
 
 end;
 
-function TWxRadioButton.GetBorderAlignment: TWxBorderAlignment;
+function TwxRichTextStyleComboCtrl.GetBorderAlignment: TWxBorderAlignment;
 begin
   Result := FWx_BorderAlignment;
 end;
 
-procedure TWxRadioButton.SetBorderAlignment(border: TWxBorderAlignment);
+procedure TwxRichTextStyleComboCtrl.SetBorderAlignment(border: TWxBorderAlignment);
 begin
   FWx_BorderAlignment := border;
 end;
 
-function TWxRadioButton.GetBorderWidth: integer;
+function TwxRichTextStyleComboCtrl.GetBorderWidth: integer;
 begin
   Result := FWx_Border;
 end;
 
-procedure TWxRadioButton.SetBorderWidth(width: integer);
+procedure TwxRichTextStyleComboCtrl.SetBorderWidth(width: integer);
 begin
   FWx_Border := width;
 end;
 
-function TWxRadioButton.GetWxClassName: string;
+function TwxRichTextStyleComboCtrl.GetWxClassName: string;
 begin
   if trim(wx_Class) = '' then
-    wx_Class := 'wxRadioButton';
-  Result := Wx_Class;
+    wx_Class := 'wxRichTextStyleComboCtrl';
+  Result := wx_Class;
 end;
 
-procedure TWxRadioButton.Loaded;
+procedure TwxRichTextStyleComboCtrl.Loaded;
 begin
   inherited Loaded;
 
@@ -637,47 +778,47 @@ begin
 
 end;
 
-procedure TWxRadioButton.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
+procedure TwxRichTextStyleComboCtrl.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
 begin
   wx_ControlOrientation := ControlOrientation;
 end;
 
-procedure TWxRadioButton.SetIDName(IDName: string);
+procedure TwxRichTextStyleComboCtrl.SetIDName(IDName: string);
 begin
   wx_IDName := IDName;
 end;
 
-procedure TWxRadioButton.SetIDValue(IDValue: longint);
+procedure TwxRichTextStyleComboCtrl.SetIDValue(IDValue: longint);
 begin
-  Wx_IDValue := IDValue;
+  Wx_IDValue := IDVAlue;
 end;
 
-procedure TWxRadioButton.SetStretchFactor(intValue: integer);
+procedure TwxRichTextStyleComboCtrl.SetStretchFactor(intValue: integer);
 begin
   FWx_StretchFactor := intValue;
 end;
 
-procedure TWxRadioButton.SetWxClassName(wxClassName: string);
+procedure TwxRichTextStyleComboCtrl.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
 
-function TWxRadioButton.GetGenericColor(strVariableName:String): string;
+function TwxRichTextStyleComboCtrl.GetGenericColor(strVariableName:String): string;
 begin
 
 end;
-procedure TWxRadioButton.SetGenericColor(strVariableName,strValue: string);
+procedure TwxRichTextStyleComboCtrl.SetGenericColor(strVariableName,strValue: string);
 begin
 
 end;
 
-function TWxRadioButton.GetFGColor: string;
+
+function TwxRichTextStyleComboCtrl.GetFGColor: string;
 begin
   Result := FInvisibleFGColorString;
 end;
 
-procedure TWxRadioButton.SetFGColor(strValue: string);
+procedure TwxRichTextStyleComboCtrl.SetFGColor(strValue: string);
 begin
   FInvisibleFGColorString := strValue;
   if IsDefaultColorStr(strValue) then
@@ -686,12 +827,12 @@ begin
     self.Font.Color := GetColorFromString(strValue);
 end;
 
-function TWxRadioButton.GetBGColor: string;
+function TwxRichTextStyleComboCtrl.GetBGColor: string;
 begin
   Result := FInvisibleBGColorString;
 end;
 
-procedure TWxRadioButton.SetBGColor(strValue: string);
+procedure TwxRichTextStyleComboCtrl.SetBGColor(strValue: string);
 begin
   FInvisibleBGColorString := strValue;
   if IsDefaultColorStr(strValue) then
@@ -700,46 +841,75 @@ begin
     self.Color := GetColorFromString(strValue);
 end;
 
-procedure TWxRadioButton.SetProxyFGColorString(Value: string);
+procedure TwxRichTextStyleComboCtrl.SetProxyFGColorString(Value: string);
 begin
   FInvisibleFGColorString := Value;
   self.Color := GetColorFromString(Value);
 end;
 
-procedure TWxRadioButton.SetProxyBGColorString(Value: string);
+procedure TwxRichTextStyleComboCtrl.SetProxyBGColorString(Value: string);
 begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
 end;
 
-function TWxRadioButton.GetLHSVariableAssignment:String;
+procedure TwxRichTextStyleComboCtrl.DummyToolBarInsertableInterfaceProcedure;
 begin
-    Result:= '';
+
 end;
 
-function TWxRadioButton.GetRHSVariableAssignment:String;
+function TwxRichTextStyleComboCtrl.GetLHSVariableAssignment:String;
+var
+    nPos:Integer;
 begin
     Result:='';
+    if trim(Wx_LHSValue) = '' then
+        exit;
+    nPos := pos('|',Wx_LHSValue);
+    if UpperCase(copy(Wx_LHSValue,0,2)) = 'I:' then
+        Result:= Format('%s = %s->GetSelection();',[copy(Wx_LHSValue,3,length(Wx_LHSValue)),self.Name])
+    else if (UpperCase(copy(Wx_LHSValue,0,3)) = 'IF:') and (nPos <> -1) then
+    begin
+        Result:= Format('%s = %s(%s->GetSelection());',[copy(Wx_LHSValue,4,nPos-4),copy(Wx_LHSValue,nPos+1,length(Wx_LHSValue)),self.Name])
+    end
+    else if (UpperCase(copy(Wx_LHSValue,0,2)) = 'F:') and (nPos <> -1) then
+    begin
+        Result:= Format('%s = %s(%s->GetValue());',[copy(Wx_LHSValue,3,nPos-3),copy(Wx_LHSValue,nPos+1,length(Wx_LHSValue)),self.Name])
+    end
+    else
+        Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
 end;
 
-function TWxRadioButton.GetValidatorString:TWxValidatorString;
+function TwxRichTextStyleComboCtrl.GetRHSVariableAssignment:String;
+begin
+    Result:='';
+    if trim(Wx_RHSValue) = '' then
+        exit;
+    if UpperCase(copy(Wx_RHSValue,0,2)) = 'I:' then
+        Result:= Format('%s->SetSelection(%s);',[self.Name,copy(Wx_RHSValue,3,length(Wx_RHSValue))])
+    else
+        Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
+
+end;
+
+function TwxRichTextStyleComboCtrl.GetValidatorString:TWxValidatorString;
 begin
   Result := FWx_ProxyValidatorString;
   Result.FstrValidatorValue := Wx_Validator;
 end;
 
-procedure TWxRadioButton.SetValidatorString(Value:TWxValidatorString);
+procedure TwxRichTextStyleComboCtrl.SetValidatorString(Value:TWxValidatorString);
 begin
   FWx_ProxyValidatorString.FstrValidatorValue := Value.FstrValidatorValue;
   Wx_Validator := Value.FstrValidatorValue;
 end;
 
-function TWxRadioButton.GetValidator:String;
+function TwxRichTextStyleComboCtrl.GetValidator:String;
 begin
   Result := Wx_Validator;
 end;
 
-procedure TWxRadioButton.SetValidator(value:String);
+procedure TwxRichTextStyleComboCtrl.SetValidator(value:String);
 begin
   Wx_Validator := value;
 end;

@@ -383,6 +383,11 @@ begin
   Result     := '';
 
   strStyle   := GetButtonSpecificStyle(self.Wx_GeneralStyle, Wx_ButtonStyle);
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then

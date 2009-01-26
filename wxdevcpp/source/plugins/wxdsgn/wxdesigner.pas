@@ -2899,12 +2899,13 @@ begin
       Exit;
     end;
 
+{mn
     if (ELDesigner1.SelectedControls[0] is TWxAuiToolBar) then
     begin
       PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
       Exit;
     end;
-
+}
     if (not (ELDesigner1.SelectedControls[0] is TWxToolBar)) and (not (ELDesigner1.SelectedControls[0] is TWxAuiToolBar)) then
     begin
       ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');

@@ -148,6 +148,7 @@ type
     procedure DummySizerNonInsertableInterfaceProcedure;
     function GenerateLastCreationCode: string;
     procedure SetToolbarStyle(Value:TWxtbrStyleSet);
+    function GetRealizeString: string;
 
   published
     { Published properties of TWxToolBar }
@@ -478,6 +479,11 @@ begin
   Self.Wx_Aui_Pane_Style :=  Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
   Self.Wx_Layer := 10;
 
+  if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   strStyle := GetToolBarSpecificStyle(self.Wx_GeneralStyle, self.Wx_ToolbarStyleSet);
@@ -544,7 +550,7 @@ if not (XRCGEN) then //NUKLEAR ZELPH
             Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
       end;
 
-      if (self.Parent is TWxAuiToolBar) then
+      {      if (self.Parent is TWxAuiToolBar) then
         Result := Result + #13 + Format('%s->AddControl(%s);',
           [self.Parent.Name, self.Name])
       else
@@ -562,7 +568,7 @@ if not (XRCGEN) then //NUKLEAR ZELPH
             GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
             GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
             GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
-
+       }
     end
     else
     begin
@@ -787,6 +793,41 @@ begin
     else
       self.ShowCaptions:=false;       
     FWx_ToolbarStyleSet:=Value;
+end;
+
+function TWxToolBar.GetRealizeString: string;
+begin
+  Result := '';
+
+  Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+  Self.Wx_Layer := 10;
+
+  if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
+  Result := Format('%s->Realize();', [self.Name]);
+  if not ((Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel)) then
+    Result := Result + #13 + Format('SetToolBar(%s);', [self.Name]);
+
+  if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
+  begin
+    Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+      [GetAuiManagerName(self), self.Name,
+      GetAuiPaneName(Self.Wx_PaneName),
+        GetAuiPaneCaption(Self.Wx_PaneCaption),
+        GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+        GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+        GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+        GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+        GetAuiRow(Self.Wx_Row),
+        GetAuiPosition(Self.Wx_Position),
+        GetAuiLayer(Self.Wx_Layer),
+        GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+        GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+        GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+  end
 end;
 
 end.

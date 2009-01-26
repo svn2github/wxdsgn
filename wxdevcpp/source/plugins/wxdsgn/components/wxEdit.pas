@@ -546,6 +546,11 @@ var
 begin
   Result := '';
 
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   AutoSize               := False;
@@ -573,6 +578,11 @@ begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
     [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
  end
  else

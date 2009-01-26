@@ -522,11 +522,11 @@ begin
 
   AutoSize               := False;
   
-{  if (Wx_AuiManaged and not (self.Parent is TWxSizerPanel))// protect ourselves from idiots
-   or (self.Parent is TWxAuiNoteBookPage) then
-    parentName := 'this'
-  else
-}
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   Wx_EditStyle := Wx_EditStyle + [wxTE_MULTILINE];

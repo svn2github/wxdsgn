@@ -427,6 +427,11 @@ begin
   else
     strStyle := ', ' + strStyle + ', wxDefaultValidator, ' + GetCppString(Name);
 
+    if FWx_PaneCaption = '' then
+    FWx_PaneCaption := Self.Name;
+  if FWx_PaneName = '' then
+    FWx_PaneName := Self.Name + '_Pane';
+
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   Result := GetCommentString(self.FWx_Comments.Text) +
