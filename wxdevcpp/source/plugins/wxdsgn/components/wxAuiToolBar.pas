@@ -328,7 +328,7 @@ begin
   FWx_PropertyList.add('wxAUI_TB_HORZ_TEXT:wxAUI_TB_HORZ_TEXT');
   FWx_PropertyList.add('wxAUI_TB_DEFAULT_STYLE:wxAUI_TB_DEFAULT_STYLE');
 
-  FWx_EventList.add('EVT_AUITOOLBAR_TOOL_DROPDOWN:OnTool`DropDown');
+  FWx_EventList.add('EVT_AUITOOLBAR_TOOL_DROPDOWN:OnToolDropDown');
   FWx_EventList.add('EVT_AUITOOLBAR_OVERFLOW_CLICK:OnOverflowClick');
   FWx_EventList.add('EVT_AUITOOLBAR_RIGHT_CLICK:OnRightClick');
   FWx_EventList.add('EVT_AUITOOLBAR_MIDDLE_CLICK:OnMiddleClick');
