@@ -2156,8 +2156,11 @@ begin
     end;
     fName := aTemplate.ProjectName;
     finifile.FileName := aFileName;
-    if MainForm.unit_plugins.Exists(aTemplate.AssignedPlugin) then
-        fPlugin := aTemplate.AssignedPlugin;
+    if aTemplate.AssignedPlugin <> '' then
+    begin
+        if MainForm.unit_plugins.Exists(aTemplate.AssignedPlugin) then
+            fPlugin := aTemplate.AssignedPlugin;
+    end;
 
     Options.CopyDataFrom(aTemplate.OptionsRec);
     fProfiles.CopyDataFrom(Options);
