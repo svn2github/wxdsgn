@@ -344,6 +344,18 @@ type
   TWxClrPickCtrlStyleItem = (wxCLRP_DEFAULT_STYLE, wxCLRP_USE_TEXTCTRL, wxCLRP_SHOW_LABEL);
   TWxClrPickCtrlStyleSet = set of TWxClrPickCtrlStyleItem;
 
+  //class  	wxDirPickerCtrl
+  TWxDirPickCtrlStyleItem = (wxDIRP_DEFAULT_STYLE, wxDIRP_USE_TEXTCTRL, wxDIRP_DIR_MUST_EXIST, wxDIRP_CHANGE_DIR);
+  TWxDirPickCtrlStyleSet = set of TWxDirPickCtrlStyleItem;
+
+  //class  	wxFilePickerCtrl
+  TWxFilePickCtrlStyleItem = (wxFLP_DEFAULT_STYLE, wxFLP_USE_TEXTCTRL, wxFLP_OPEN, wxFLP_SAVE, wxFLP_OVERWRITE_PROMPT, wxFLP_FILE_MUST_EXIST, wxFLP_CHANGE_DIR);
+  TWxFilePickCtrlStyleSet = set of TWxFilePickCtrlStyleItem;
+
+  //class  	wxFontPickerCtrl
+  TWxFontPickCtrlStyleItem = (wxFNTP_DEFAULT_STYLE, wxFNTP_USE_TEXTCTRL, wxFNTP_FONTDESC_AS_LABEL, wxFNTP_USEFONT_FOR_LABEL);
+  TWxFontPickCtrlStyleSet = set of TWxFontPickCtrlStyleItem;
+
   //newly Added
   TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
   TWxCmbStyleSet = set of TWxCmbStyleItem;

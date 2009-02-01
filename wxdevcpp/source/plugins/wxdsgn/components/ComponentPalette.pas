@@ -74,12 +74,13 @@ uses
   WxOpenFileDialog, WxSaveFileDialog, WxFontDialog, WxMessageDialog,
   WxProgressDialog, WxPrintDialog, WxFindReplaceDialog, WxDirDialog, WxColourDialog,
   WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow,
-  WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
-  WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog, wxColourPickerCtrl,
+  WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
+  WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
   WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl, wxAuiNotebook,
   WxAuiManager, wxAuiBar, wxAuiToolBar, wxAuiNoteBookPage,
-  wxRichTextStyleComboCtrl, wxRichTextStyleListCtrl, wxRichTextStyleListBox;
+  wxRichTextStyleComboCtrl, wxRichTextStyleListCtrl, wxRichTextStyleListBox,
+  wxColourPickerCtrl, WxDatePickerCtrl, wxDirPickerCtrl, wxFilePickerCtrl, wxFontPickerCtrl;
 
 const
   SearchPrompt = '(search component)';
@@ -224,11 +225,12 @@ begin
                        'TwxToggleButton;TwxEdit;TwxMemo;TwxCheckBox;TwxChoice;' +
                        'TwxRadioButton;TwxComboBox;TwxListBox;TwxListCtrl;TwxTreeCtrl;' +
                        'TwxGauge;TwxScrollBar;TwxSpinButton;TwxStaticBox;TwxRadioBox;' +
-                       'TwxDatePickerCtrl;TwxSlider;TwxStaticLine;TwxStaticBitmap;' +
+                       'TwxSlider;TwxStaticLine;TwxStaticBitmap;' +
                        'TwxStatusBar;TwxCheckListBox;TwxSpinCtrl;TwxRichTextCtrl;' +
                        'TwxCalendarCtrl;TwxOwnerDrawnComboBox;TwxHyperLinkCtrl;' +
                        'TwxRichTextStyleComboCtrl;TwxRichTextStyleListCtrl;TwxRichTextStyleListBox;' +
-                       'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox;TwxColourPickerCtrl');
+                       'TwxDialUpManager;TwxMediaCtrl;TwxBitmapComboBox;' +
+                       'TwxColourPickerCtrl;TwxDatePickerCtrl;TwxDirPickerCtrl;TwxFilePickerCtrl;TwxFontPickerCtrl');
     //Container controls
     ComponentsList.Add('Containers;TwxPanel;TwxChoicebook;TwxListbook;TwxNotebook;TwxTreebook;' +
                         'TwxToolbook;TwxNotebookPage;TwxGrid;TwxScrolledWindow;TwxHtmlWindow;'+
@@ -255,7 +257,7 @@ begin
                      TWxToggleButton, TWxCheckBox, TWxRadioButton, TWxChoice, TWxComboBox,
                      TWxGauge, TWxGrid, TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar,
                      TWxSpinButton, TWxTreeCtrl, TWxRadioBox, TWxStaticBitmap,
-                     TWxstaticbox, TWxslider, TWxStaticLine, TWxDatePickerCtrl,
+                     TWxstaticbox, TWxslider, TWxStaticLine,
                      TWxPanel, TWxChoicebook, TwxListbook, TWxNotebook, TWxTreebook, TWxToolbook,
                      TWxStatusBar, TWxToolBar, TWxNoteBookPage, TWxAnimationCtrl,
                      TWxchecklistbox, TWxSplitterWindow, TWxSpinCtrl, TWxScrolledWindow,
@@ -265,10 +267,11 @@ begin
                      TWxDirDialog, TWxColourDialog, TWxPageSetupDialog, TwxTimer,
                      TwxTreeListCtrl, TWxRichTextCtrl, TWxStyledTextCtrl, TWxCalendarCtrl,
                      TWxOwnerDrawnComboBox, TWxTextEntryDialog, TWxPasswordEntryDialog,
-                     TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl, TWxColourPickerCtrl,
+                     TWxSingleChoiceDialog, TWxMultiChoiceDialog, TwxHyperLinkCtrl,
                      TwxDialUpManager, TwxHtmlEasyPrinting, TWxMediaCtrl, TwxBitmapComboBox,
                      TwxAuiManager, TwxAuiBar, TwxAuiToolBar, TwxAuiNotebook,
-                     TwxAuiNotebookPage, TwxRichTextStyleComboCtrl, TwxRichTextStyleListBox, TwxRichTextStyleListCtrl]);
+                     TwxAuiNotebookPage, TwxRichTextStyleComboCtrl, TwxRichTextStyleListBox, TwxRichTextStyleListCtrl,
+                     TWxColourPickerCtrl, TWxDatePickerCtrl, TwxDirPickerCtrl, TwxFilePickerCtrl, TwxFontPickerCtrl]);
 
     //Now that the components have been put into it's respective string lists,
     //iterate over all the items, parsing them and putting them into the tree-view

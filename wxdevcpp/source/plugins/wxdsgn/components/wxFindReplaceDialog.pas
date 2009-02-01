@@ -217,23 +217,23 @@ begin
   if (XRCGEN) then
  begin
   if trim(EVT_FIND) <> '' then
-    Result := Format('EVT_FIND(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
       EVT_FIND]) + '';
 
   if trim(EVT_FIND_NEXT) <> '' then
-    Result := Format('EVT_FIND_NEXT(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_NEXT(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
       EVT_FIND_NEXT]) + '';
 
   if trim(EVT_FIND_REPLACE) <> '' then
-    Result := Format('EVT_FIND_REPLACE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_REPLACE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
       EVT_FIND_REPLACE]) + '';
 
   if trim(EVT_FIND_REPLACE_ALL) <> '' then
-    Result := Format('EVT_FIND_REPLACE_ALL(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_REPLACE_ALL(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
       EVT_FIND_REPLACE_ALL]) + '';
 
   if trim(EVT_FIND_CLOSE) <> '' then
-    Result := Format('EVT_FIND_CLOSE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_CLOSE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
       EVT_FIND_CLOSE]) + '';
 
   if trim(EVT_UPDATE_UI) <> '' then
@@ -244,23 +244,23 @@ begin
  else
  begin
   if trim(EVT_FIND) <> '' then
-    Result := Format('EVT_FIND(wxID_ANY,%s::%s)', [CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND(wxID_ANY,%s::%s)', [CurrClassName,
       EVT_FIND]) + '';
 
   if trim(EVT_FIND_NEXT) <> '' then
-    Result := Format('EVT_FIND_NEXT(wxID_ANY,%s::%s)', [CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_NEXT(wxID_ANY,%s::%s)', [CurrClassName,
       EVT_FIND_NEXT]) + '';
 
   if trim(EVT_FIND_REPLACE) <> '' then
-    Result := Format('EVT_FIND_REPLACE(wxID_ANY,%s::%s)', [CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_REPLACE(wxID_ANY,%s::%s)', [CurrClassName,
       EVT_FIND_REPLACE]) + '';
 
   if trim(EVT_FIND_REPLACE_ALL) <> '' then
-    Result := Format('EVT_FIND_REPLACE_ALL(wxID_ANY,%s::%s)', [CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_REPLACE_ALL(wxID_ANY,%s::%s)', [CurrClassName,
       EVT_FIND_REPLACE_ALL]) + '';
 
   if trim(EVT_FIND_CLOSE) <> '' then
-    Result := Format('EVT_FIND_CLOSE(wxID_ANY,%s::%s)', [CurrClassName,
+    Result :=  Result + #13 + Format('EVT_FIND_CLOSE(wxID_ANY,%s::%s)', [CurrClassName,
       EVT_FIND_CLOSE]) + '';
 
 {

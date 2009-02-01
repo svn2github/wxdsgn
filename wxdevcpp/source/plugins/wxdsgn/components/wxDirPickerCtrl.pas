@@ -1,7 +1,7 @@
 { ****************************************************************** }
 {                                                                    }
 { $Id$                                                            }
-{                                                                    }
+{                                                                    }                                                                                            
 {                                                                    }
 {   Copyright © 2008 by Malcolm Nealon                   }
 {                                                                    }
@@ -26,22 +26,22 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxColourPickerCtrl;
+unit wxDirPickerCtrl;
 
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, Dialogs,
-  Forms, Graphics, ComCtrls, ExtCtrls, StdCtrls, WxUtils, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel, Buttons, janButtonEdit {SsButtonEd} {ColourPickerControl};
+  Forms, Graphics, ComCtrls, ExtCtrls, StdCtrls, WxUtils, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel, Buttons, janButtonEdit;
 
 type
 
-  TWxColourPickerCtrl = class(TjanButtonEdit {TButtonEdit} {TColourPickerControl}, IWxComponentInterface, IWxValidatorInterface)
+  TWxDirPickerCtrl = class(TjanButtonEdit, IWxComponentInterface, IWxValidatorInterface)
   private
-    FEVT_COLOURPICKER_CHANGED: string;
+    FEVT_DIRPICKER_CHANGED: string;
     FEVT_UPDATE_UI: string;
     FWx_BKColor: TColor;
     FWx_Border: integer;
-    FWx_ClrPickStyles: TWxClrPickCtrlStyleSet;
+    FWx_DirPickStyles: TWxDirPickCtrlStyleSet;
     FWx_Class: string;
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_Default: boolean;
@@ -64,11 +64,14 @@ type
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
-    FWx_ProxyValidatorString : TWxValidatorString;
-    FInvisibleColorString: string;
-    FWx_Color: TWxColorString;
+    FWx_ProxyValidatorString: TWxValidatorString;
 
-//Aui Properties
+    FInvisibleColorString: string;
+
+    FWx_Path: string;
+    FWx_Message: string;
+
+    //Aui Properties
     FWx_AuiManaged: Boolean;
     FWx_PaneCaption: string;
     FWx_PaneName: string;
@@ -90,17 +93,17 @@ type
     FWx_Row: Integer;
     FWx_Position: Integer;
 
-    { Private methods of TWxColourPickerCtrl }
+    { Private methods of TWxDirPickerCtrl }
     procedure AutoInitialize;
     procedure AutoDestroy;
 
-    function GetPropertyName(Idx:Integer):String;
+    function GetPropertyName(Idx: Integer): string;
   protected
 
   public
     defaultBGColor: TColor;
     defaultFGColor: TColor;
-    { Public methods of TWxColourPickerCtrl }
+    { Public methods of TWxDirPickerCtrl }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GenerateControlIDs: string;
@@ -130,25 +133,24 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
 
-    function GetValidator:String;
-    procedure SetValidator(value:String);
-    function GetValidatorString:TWxValidatorString;
-    procedure SetValidatorString(Value:TWxValidatorString);
+    function GetValidator: string;
+    procedure SetValidator(value: string);
+    function GetValidatorString: TWxValidatorString;
+    procedure SetValidatorString(Value: TWxValidatorString);
 
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
     procedure SetBGColor(strValue: string);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+    function GetGenericColor(strVariableName: string): string;
+    procedure SetGenericColor(strVariableName, strValue: string);
 
     procedure SetProxyFGColorString(Value: string);
     procedure SetProxyBGColorString(Value: string);
 
-function GetColourPickerCtrlStyleString(stdStyle: TWxClrPickCtrlStyleSet): string;
-function GetColourPickerCtrlSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxClrPickCtrlStyleSet): string;
-//function GetWXColorFromString(strColorValue: string): string;
+    function GetDirPickerCtrlStyleString(stdStyle: TWxDirPickCtrlStyleSet): string;
+    function GetDirPickerCtrlSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxDirPickCtrlStyleSet): string;
 
   published
     property Color;
@@ -158,42 +160,42 @@ function GetColourPickerCtrlSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TW
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property EVT_COLOURPICKER_CHANGED: string read FEVT_COLOURPICKER_CHANGED write FEVT_COLOURPICKER_CHANGED;
+    property EVT_DIRPICKER_CHANGED: string read FEVT_DIRPICKER_CHANGED write FEVT_DIRPICKER_CHANGED;
     property EVT_UPDATE_UI: string read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
-    property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
-    property Wx_ClrPickStyles: TWxClrPickCtrlStyleSet Read FWx_ClrPickStyles Write FWx_ClrPickStyles;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
+    property Wx_BKColor: TColor read FWx_BKColor write FWx_BKColor;
+    property Wx_DirPickStyles: TWxDirPickCtrlStyleSet read FWx_DirPickStyles write FWx_DirPickStyles;
+    property Wx_Class: string read FWx_Class write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
-      Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_Default: boolean Read FWx_Default Write FWx_Default;
-    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
-    property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
+      read FWx_ControlOrientation write FWx_ControlOrientation;
+    property Wx_Default: boolean read FWx_Default write FWx_Default;
+    property Wx_Enabled: boolean read FWx_Enabled write FWx_Enabled default True;
+    property Wx_EventList: TStringList read FWx_EventList write FWx_EventList;
+    property Wx_FGColor: TColor read FWx_FGColor write FWx_FGColor;
     property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWx_GeneralStyle Write FWx_GeneralStyle;
-    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
-    property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+      read FWx_GeneralStyle write FWx_GeneralStyle;
+    property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
+    property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden;
+    property Wx_IDName: string read FWx_IDName write FWx_IDName;
+    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_Validator: string read FWx_Validator write FWx_Validator;
+    property Wx_ProxyValidatorString: TWxValidatorString read GetValidatorString write SetValidatorString;
+    property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
+    property Wx_Comments: TStrings read FWx_Comments write FWx_Comments;
 
-    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
-    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
-    
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string  Read FInvisibleFGColorString Write FInvisibleFGColorString;
-    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-    property InvisibleColorString: string Read FInvisibleColorString Write FInvisibleColorString;
-    property Wx_Color: TWxColorString Read FWx_Color Write FWx_Color;
+    property Wx_Border: integer read GetBorderWidth write SetBorderWidth default 5;
+    property Wx_BorderAlignment: TWxBorderAlignment read GetBorderAlignment write SetBorderAlignment default [wxALL];
+    property Wx_Alignment: TWxSizerAlignmentSet read FWx_Alignment write FWx_Alignment default [wxALIGN_CENTER];
+    property Wx_StretchFactor: integer read GetStretchFactor write SetStretchFactor default 0;
 
+    property InvisibleBGColorString: string read FInvisibleBGColorString write FInvisibleBGColorString;
+    property InvisibleFGColorString: string read FInvisibleFGColorString write FInvisibleFGColorString;
+    property Wx_ProxyBGColorString: TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
+    property Wx_ProxyFGColorString: TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
+    property InvisibleColorString: string read FInvisibleColorString write FInvisibleColorString;
+    property Wx_Path: string read FWx_Path write FWx_Path;
+    property Wx_Message: string read FWx_Message write FWx_Message;
 
-//Aui Properties
+    //Aui Properties
     property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
     property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
     property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
@@ -215,7 +217,6 @@ function GetColourPickerCtrlSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TW
     property Wx_Row: integer read FWx_Row write FWx_Row default 0;
     property Wx_Position: integer read FWx_Position write FWx_Position default 0;
 
-
   end;
 
 procedure Register;
@@ -224,48 +225,45 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('wxWidgets', [TWxColourPickerCtrl]);
+  RegisterComponents('wxWidgets', [TWxDirPickerCtrl]);
 end;
 
-procedure TWxColourPickerCtrl.AutoInitialize;
+procedure TWxDirPickerCtrl.AutoInitialize;
 begin
   FWx_PropertyList := TStringList.Create;
-  FWx_Border             := 5;
-  FWx_Class := 'wxColourPickerCtrl';
-  FWx_Enabled            := True;
+  FWx_Border := 5;
+  FWx_Class := 'wxDirPickerCtrl';
+  FWx_Enabled := True;
   FWx_EventList := TStringList.Create;
-  FWx_BorderAlignment    := [wxAll];
-  FWx_Alignment          := [wxALIGN_CENTER];
+  FWx_BorderAlignment := [wxAll];
+  FWx_Alignment := [wxALIGN_CENTER];
   FWx_IDValue := -1;
   FWx_StretchFactor := 0;
-  FWx_Comments           := TStringList.Create;
+  FWx_Comments := TStringList.Create;
   FWx_ProxyBGColorString := TWxColorString.Create;
   FWx_ProxyFGColorString := TWxColorString.Create;
   FWx_ProxyValidatorString := TwxValidatorString.Create(self);
-  FWx_Color := TWxColorString.Create;
   defaultBGColor := self.color;
   defaultFGColor := self.font.color;
-  FWx_ClrPickStyles := [wxCLRP_DEFAULT_STYLE];
-  Self.ButtonColor := GetColorFromString(FInvisibleColorString);
-      Self.ShowEdit := False;
-      self.Width := 22;
-
+  FWx_DirPickStyles := [wxDIRP_DEFAULT_STYLE];
+      Self.ShowEdit := True;
+    FWx_Path := '';
+    FWx_Message := 'Select a folder';
+  Self.Width := 185;
 
 end; { of AutoInitialize }
 
-procedure TWxColourPickerCtrl.AutoDestroy;
+procedure TWxDirPickerCtrl.AutoDestroy;
 begin
   FWx_PropertyList.Destroy;
   FWx_EventList.Destroy;
   FWx_ProxyBGColorString.Destroy;
   FWx_ProxyFGColorString.Destroy;
-  FWx_Color.Destroy;
   FWx_Comments.Destroy;
   FWx_ProxyValidatorString.Destroy;
 end; { of AutoDestroy }
 
-
-constructor TWxColourPickerCtrl.Create(AOwner: TComponent);
+constructor TWxDirPickerCtrl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   AutoInitialize;
@@ -273,65 +271,72 @@ begin
   PopulateGenericProperties(FWx_PropertyList);
   PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_Color:Button Colour');
-  FWx_PropertyList.add('Wx_ClrPickStyles:ColourPickerStyles');
-  FWx_PropertyList.add('wxCLRP_DEFAULT_STYLE:wxCLRP_DEFAULT_STYLE');
-  FWx_PropertyList.add('wxCLRP_USE_TEXTCTRL:wxCLRP_USE_TEXTCTRL');
-  FWx_PropertyList.add('wxCLRP_SHOW_LABEL:wxCLRP_SHOW_LABEL');
+  FWx_PropertyList.add('Wx_Path:Path');
+  FWx_PropertyList.add('Wx_Message:Message');
+  FWx_PropertyList.add('Wx_DirPickStyles:DirPickerStyles');
+  FWx_PropertyList.add('wxDIRP_DEFAULT_STYLE:wxDIRP_DEFAULT_STYLE');
+  FWx_PropertyList.add('wxDIRP_USE_TEXTCTRL:wxDIRP_USE_TEXTCTRL');
+  FWx_PropertyList.add('wxDIRP_DIR_MUST_EXIST:wxDIRP_DIR_MUST_EXIST');
+  FWx_PropertyList.add('wxDIRP_CHANGE_DIR:wxDIRP_CHANGE_DIR');
 
-  FWx_EventList.add('EVT_COLOURPICKER_CHANGED:OnColourChanged');
+  FWx_EventList.add('EVT_DIRPICKER_CHANGED:OnDirChanged');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
-  end;
+end;
 
-destructor TWxColourPickerCtrl.Destroy;
+destructor TWxDirPickerCtrl.Destroy;
 begin
   AutoDestroy;
   inherited Destroy;
 end;
 
-function TWxColourPickerCtrl.GenerateEnumControlIDs: string;
+function TWxDirPickerCtrl.GenerateEnumControlIDs: string;
 begin
   Result := '';
+{$IFDEF MALCOLM}
+  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+    Result := Format('%s, ', [Wx_IDName]);
+{$ELSE}
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
     Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
+{$ENDIF}
 end;
 
-function TWxColourPickerCtrl.GenerateControlIDs: string;
+function TWxDirPickerCtrl.GenerateControlIDs: string;
 begin
   Result := '';
   if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
     Result := Format('#define %s %d', [Wx_IDName, Wx_IDValue]);
 end;
 
-function TWxColourPickerCtrl.GenerateEventTableEntries(CurrClassName: string): string;
+function TWxDirPickerCtrl.GenerateEventTableEntries(CurrClassName: string): string;
 begin
   Result := '';
 
   if (XRCGEN) then
- begin
-  if trim(EVT_COLOURPICKER_CHANGED) <> '' then
-    Result := Format('EVT_COLOURPICKER_CHANGED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_COLOURPICKER_CHANGED]) + '';
+  begin
+    if trim(EVT_DIRPICKER_CHANGED) <> '' then
+      Result := Format('EVT_DIRPICKER_CHANGED(XRCID(%s("%s")),%s::%s)',
+        [StringFormat, self.Name, CurrClassName, EVT_DIRPICKER_CHANGED]) + '';
 
     if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-   end
- else
- begin
-  if trim(EVT_COLOURPICKER_CHANGED) <> '' then
-    Result := Format('EVT_COLOURPICKER_CHANGED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_COLOURPICKER_CHANGED]) + '';
+      Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+        [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+  end
+  else
+  begin
+    if trim(EVT_DIRPICKER_CHANGED) <> '' then
+      Result := Format('EVT_DIRPICKER_CHANGED(%s,%s::%s)',
+        [WX_IDName, CurrClassName, EVT_DIRPICKER_CHANGED]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
- end;
+    if trim(EVT_UPDATE_UI) <> '' then
+      Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+        [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+  end;
 
 end;
 
-function TWxColourPickerCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
+function TWxDirPickerCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
 var
   i: integer;
   wxcompInterface: IWxComponentInterface;
@@ -348,13 +353,13 @@ begin
     Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
     Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
 
-    if not(UseDefaultSize)then
+    if not (UseDefaultSize) then
       Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    if not(UseDefaultPos) then
+    if not (UseDefaultPos) then
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-      Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetColourPickerCtrlSpecificStyle(self.Wx_GeneralStyle, Wx_ClrPickStyles)]));
+    Result.Add(IndentString + Format('  <style>%s</style>',
+      [GetDirPickerCtrlSpecificStyle(self.Wx_GeneralStyle, Wx_DirPickStyles)]));
     Result.Add(IndentString + '</object>');
 
   except
@@ -366,24 +371,20 @@ begin
 
 end;
 
-function TWxColourPickerCtrl.GenerateGUIControlCreation: string;
+function TWxDirPickerCtrl.GenerateGUIControlCreation: string;
 var
-  strChoice, strColorStr: string;
+  strColorStr: string;
   strStyle, parentName, strAlignment, strAlign: string;
 begin
   Result := '';
 
-  strStyle   := GetColourPickerCtrlSpecificStyle(self.Wx_GeneralStyle, Wx_ClrPickStyles);
-    if FWx_PaneCaption = '' then
+  strStyle := GetDirPickerCtrlSpecificStyle(self.Wx_GeneralStyle, Wx_DirPickStyles);
+  if FWx_PaneCaption = '' then
     FWx_PaneCaption := Self.Name;
   if FWx_PaneName = '' then
     FWx_PaneName := Self.Name + '_Pane';
 
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
-  strColorStr := GetwxColorFromString(FInvisibleColorString);
-
-  if (strColorStr =  '') then
-        strColorStr := '*wxBLACK';
 
   if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then
   begin
@@ -401,19 +402,20 @@ begin
     strStyle := ', 0, wxDefaultValidator, ' + GetCppString(Name);
 
   if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
- end
- else
- begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s, %s%s);',
-    [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
-      self.Wx_IDValue), strColorStr, GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle, GetCppString(self.Text)]);
- end;
- 
+  begin //generate xrc loading code
+    Result := GetCommentString(self.FWx_Comments.Text) +
+      Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+      [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
+  end
+  else
+  begin
+    Result := GetCommentString(self.FWx_Comments.Text) +
+      Format('%s = new %s(%s, %s, %s, %s, %s, %s%s);',
+      [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
+        self.Wx_IDValue), GetCppString(self.Wx_Path), GetCppString(self.Wx_Message), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height),
+         strStyle]);
+  end;
+
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
       [self.Name, GetCppString(self.Wx_ToolTip)]);
@@ -441,7 +443,8 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
+  if not (XRCGEN) then //NUKLEAR ZELPH
   begin
     if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
     begin
@@ -480,13 +483,13 @@ if not (XRCGEN) then //NUKLEAR ZELPH
     end
     else
     begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+      if (self.Parent is TWxSizerPanel) then
+      begin
+        strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+        Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+          [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+          self.Wx_Border]);
+      end;
 
       if (self.Parent is TWxAuiNotebookPage) then
       begin
@@ -504,44 +507,44 @@ if not (XRCGEN) then //NUKLEAR ZELPH
 
 end;
 
-function TWxColourPickerCtrl.GenerateGUIControlDeclaration: string;
+function TWxDirPickerCtrl.GenerateGUIControlDeclaration: string;
 begin
   Result := '';
   Result := Format('%s *%s;', [Self.wx_Class, Self.Name]);
 end;
 
-function TWxColourPickerCtrl.GenerateHeaderInclude: string;
+function TWxDirPickerCtrl.GenerateHeaderInclude: string;
 begin
   Result := '';
-  Result := '#include <wx/clrpicker.h>';
+  Result := '#include <wx/filepicker.h>';
 end;
 
-function TWxColourPickerCtrl.GenerateImageInclude: string;
+function TWxDirPickerCtrl.GenerateImageInclude: string;
 begin
 
 end;
 
-function TWxColourPickerCtrl.GetEventList: TStringList;
+function TWxDirPickerCtrl.GetEventList: TStringList;
 begin
   Result := FWx_EventList;
 end;
 
-function TWxColourPickerCtrl.GetIDName: string;
+function TWxDirPickerCtrl.GetIDName: string;
 begin
   Result := '';
   Result := wx_IDName;
 end;
 
-function TWxColourPickerCtrl.GetIDValue: longint;
+function TWxDirPickerCtrl.GetIDValue: longint;
 begin
   Result := wx_IDValue;
 end;
 
-function TWxColourPickerCtrl.GetParameterFromEventName(EventName: string): string;
+function TWxDirPickerCtrl.GetParameterFromEventName(EventName: string): string;
 begin
-  if EventName = 'EVT_COLOURPICKER_CHANGED' then
+  if EventName = 'EVT_DIRPICKER_CHANGED' then
   begin
-    Result := 'wxColourPickerEvent& event';
+    Result := 'wxDirPickerEvent& event';
     exit;
   end;
   if EventName = 'EVT_UPDATE_UI' then
@@ -551,92 +554,91 @@ begin
   end;
 end;
 
-function TWxColourPickerCtrl.GetPropertyList: TStringList;
+function TWxDirPickerCtrl.GetPropertyList: TStringList;
 begin
   Result := FWx_PropertyList;
 end;
 
-function TWxColourPickerCtrl.GetStretchFactor: integer;
+function TWxDirPickerCtrl.GetStretchFactor: integer;
 begin
   Result := FWx_StretchFactor;
 end;
 
-function TWxColourPickerCtrl.GetTypeFromEventName(EventName: string): string;
+function TWxDirPickerCtrl.GetTypeFromEventName(EventName: string): string;
 begin
 
 end;
 
-function TWxColourPickerCtrl.GetBorderAlignment: TWxBorderAlignment;
+function TWxDirPickerCtrl.GetBorderAlignment: TWxBorderAlignment;
 begin
   Result := FWx_BorderAlignment;
 end;
 
-procedure TWxColourPickerCtrl.SetBorderAlignment(border: TWxBorderAlignment);
+procedure TWxDirPickerCtrl.SetBorderAlignment(border: TWxBorderAlignment);
 begin
   FWx_BorderAlignment := border;
 end;
 
-function TWxColourPickerCtrl.GetBorderWidth: integer;
+function TWxDirPickerCtrl.GetBorderWidth: integer;
 begin
   Result := FWx_Border;
 end;
 
-procedure TWxColourPickerCtrl.SetBorderWidth(width: integer);
+procedure TWxDirPickerCtrl.SetBorderWidth(width: integer);
 begin
   FWx_Border := width;
 end;
 
-function TWxColourPickerCtrl.GetWxClassName: string;
+function TWxDirPickerCtrl.GetWxClassName: string;
 begin
   if trim(wx_Class) = '' then
-    wx_Class := 'wxColourPickerCtrl';
+    wx_Class := 'WxDirPickerCtrl';
   Result := wx_Class;
 end;
 
-procedure TWxColourPickerCtrl.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+procedure TWxDirPickerCtrl.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
 begin
   wx_ControlOrientation := ControlOrientation;
 end;
 
-procedure TWxColourPickerCtrl.SetIDName(IDName: string);
+procedure TWxDirPickerCtrl.SetIDName(IDName: string);
 begin
   wx_IDName := IDName;
 end;
 
-procedure TWxColourPickerCtrl.SetIDValue(IDValue: longint);
+procedure TWxDirPickerCtrl.SetIDValue(IDValue: longint);
 begin
   Wx_IDValue := IDValue;
 end;
 
-procedure TWxColourPickerCtrl.SetStretchFactor(intValue: integer);
+procedure TWxDirPickerCtrl.SetStretchFactor(intValue: integer);
 begin
   FWx_StretchFactor := intValue;
 end;
 
-procedure TWxColourPickerCtrl.SetWxClassName(wxClassName: string);
+procedure TWxDirPickerCtrl.SetWxClassName(wxClassName: string);
 begin
   wx_Class := wxClassName;
 end;
 
-function TWxColourPickerCtrl.GetGenericColor(strVariableName: string): string;
+function TWxDirPickerCtrl.GetGenericColor(strVariableName: string): string;
 begin
 
   Result := FInvisibleColorString;
 
 end;
 
-procedure TWxColourPickerCtrl.SetGenericColor(strVariableName, strValue: string);
+procedure TWxDirPickerCtrl.SetGenericColor(strVariableName, strValue: string);
 begin
   FInvisibleColorString := strValue;
-  Self.ButtonColor := GetColorFromString(FInvisibleColorString);
 end;
 
-function TWxColourPickerCtrl.GetFGColor: string;
+function TWxDirPickerCtrl.GetFGColor: string;
 begin
   Result := FInvisibleFGColorString;
 end;
 
-procedure TWxColourPickerCtrl.SetFGColor(strValue: string);
+procedure TWxDirPickerCtrl.SetFGColor(strValue: string);
 begin
   FInvisibleFGColorString := strValue;
   if IsDefaultColorStr(strValue) then
@@ -645,12 +647,12 @@ begin
     self.Font.Color := GetColorFromString(strValue);
 end;
 
-function TWxColourPickerCtrl.GetBGColor: string;
+function TWxDirPickerCtrl.GetBGColor: string;
 begin
   Result := FInvisibleBGColorString;
 end;
 
-procedure TWxColourPickerCtrl.SetBGColor(strValue: string);
+procedure TWxDirPickerCtrl.SetBGColor(strValue: string);
 begin
   FInvisibleBGColorString := strValue;
   if IsDefaultColorStr(strValue) then
@@ -659,47 +661,46 @@ begin
     self.Color := GetColorFromString(strValue);
 end;
 
-procedure TWxColourPickerCtrl.SetProxyFGColorString(Value: string);
+procedure TWxDirPickerCtrl.SetProxyFGColorString(Value: string);
 begin
   FInvisibleFGColorString := Value;
   self.Color := GetColorFromString(Value);
 end;
 
-procedure TWxColourPickerCtrl.SetProxyBGColorString(Value: string);
+procedure TWxDirPickerCtrl.SetProxyBGColorString(Value: string);
 begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
 end;
 
-function TWxColourPickerCtrl.GetValidatorString:TWxValidatorString;
+function TWxDirPickerCtrl.GetValidatorString: TWxValidatorString;
 begin
   Result := FWx_ProxyValidatorString;
   Result.FstrValidatorValue := Wx_Validator;
 end;
 
-procedure TWxColourPickerCtrl.SetValidatorString(Value:TWxValidatorString);
+procedure TWxDirPickerCtrl.SetValidatorString(Value: TWxValidatorString);
 begin
   FWx_ProxyValidatorString.FstrValidatorValue := Value.FstrValidatorValue;
   Wx_Validator := Value.FstrValidatorValue;
 end;
 
-function TWxColourPickerCtrl.GetValidator:String;
+function TWxDirPickerCtrl.GetValidator: string;
 begin
   Result := Wx_Validator;
 end;
 
-procedure TWxColourPickerCtrl.SetValidator(value:String);
+procedure TWxDirPickerCtrl.SetValidator(value: string);
 begin
   Wx_Validator := value;
 end;
 
-function TWxColourPickerCtrl.GetPropertyName(Idx:Integer):String;
+function TWxDirPickerCtrl.GetPropertyName(Idx: Integer): string;
 begin
-  Result:=Name;
+  Result := Name;
 end;
 
-
-function TWxColourPickerCtrl.GetColourPickerCtrlStyleString(stdStyle: TWxClrPickCtrlStyleSet): string;
+function TWxDirPickerCtrl.GetDirPickerCtrlStyleString(stdStyle: TWxDirPickCtrlStyleSet): string;
 var
   I: integer;
   strLst: TStringList;
@@ -709,12 +710,12 @@ begin
 
   try
 
-    if wxCLRP_DEFAULT_STYLE in stdStyle then
-      strLst.add('wxCLRP_DEFAULT_STYLE');
+    if wxDIRP_DEFAULT_STYLE in stdStyle then
+      strLst.add('wxDIRP_DEFAULT_STYLE');
 
-    if wxCLRP_USE_TEXTCTRL in stdStyle then
+    if wxDIRP_USE_TEXTCTRL in stdStyle then
     begin
-      strLst.add('wxCLRP_USE_TEXTCTRL');
+      strLst.add('wxDIRP_USE_TEXTCTRL');
       Self.ShowEdit := True;
     end
     else
@@ -722,15 +723,11 @@ begin
       Self.ShowEdit := False;
     end;
 
-    if wxCLRP_SHOW_LABEL in stdStyle then
-    begin
-      strLst.add('wxCLRP_SHOW_LABEL');
-//      Self.ButtonCaption := FInvisibleColorString;
-      //mn need to do the caption stuff here
-      Self.ButtonCaption := '#XXXXXX';
-    end
-    else
-      Self.ButtonCaption := '';
+    if wxDIRP_DIR_MUST_EXIST in stdStyle then
+      strLst.add('wxDIRP_DIR_MUST_EXIST');
+
+    if wxDIRP_CHANGE_DIR in stdStyle then
+      strLst.add('wxDIRP_CHANGE_DIR');
 
     if strLst.Count = 0 then
       Result := ''
@@ -748,12 +745,12 @@ begin
   end;
 end;
 
-function TWxColourPickerCtrl.GetColourPickerCtrlSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxClrPickCtrlStyleSet): string;
+function TWxDirPickerCtrl.GetDirPickerCtrlSpecificStyle(stdstyle: TWxStdStyleSet; dlgstyle: TWxDirPickCtrlStyleSet): string;
 var
   strA: string;
 begin
   Result := GetStdStyleString(stdstyle);
-  strA := trim(GetColourPickerCtrlStyleString(dlgstyle));
+  strA := trim(GetDirPickerCtrlStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
       Result := strA
@@ -761,7 +758,6 @@ begin
       Result := Result + ' | ' + strA;
 
 end;
-
 
 end.
 
