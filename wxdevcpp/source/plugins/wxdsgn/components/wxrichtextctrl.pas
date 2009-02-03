@@ -39,13 +39,28 @@ type
          IWxValidatorInterface)
   private
     { Private fields of TWxRichTextCtrl }
-    FEVT_RICHTEXT_ITEM_SELECTED: string;
-    FEVT_RICHTEXT_ITEM_DESELECTED: string;
     FEVT_RICHTEXT_LEFT_CLICK: string;
     FEVT_RICHTEXT_RIGHT_CLICK: string;
     FEVT_RICHTEXT_MIDDLE_CLICK: string;
     FEVT_RICHTEXT_LEFT_DCLICK: string;
     FEVT_RICHTEXT_RETURN: string;
+    FEVT_RICHTEXT_CHARACTER: string;
+    FEVT_RICHTEXT_DELETE: string;
+
+    FEVT_RICHTEXT_STYLESHEET_CHANGING: string;
+    FEVT_RICHTEXT_STYLESHEET_CHANGED: string;
+    FEVT_RICHTEXT_STYLESHEET_REPLACING: string;
+    FEVT_RICHTEXT_STYLESHEET_REPLACED: string;
+
+    FEVT_RICHTEXT_CONTENT_INSERTED: string;
+    FEVT_RICHTEXT_CONTENT_DELETED: string;
+    FEVT_RICHTEXT_STYLE_CHANGED: string;
+    FEVT_RICHTEXT_SELECTION_CHANGED: string;
+    FEVT_RICHTEXT_BUFFER_RESET: string;
+
+    FEVT_TEXT: string;
+    FEVT_TEXT_ENTER: string;
+    FEVT_TEXT_URL: string;
     FEVT_UPDATE_UI: string;
 
     { Storage for property Wx_BGColor }
@@ -200,25 +215,29 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    (*
-    property EVT_TEXT: string Read FEVT_TEXT Write FEVT_TEXT;
-    property EVT_TEXT_ENTER: string Read FEVT_TEXT_ENTER Write FEVT_TEXT_ENTER;
-    property EVT_TEXT_MAXLEN: string Read FEVT_TEXT_MAXLEN Write FEVT_TEXT_MAXLEN;
-    property EVT_TEXT_URL: string Read FEVT_TEXT_URL Write FEVT_TEXT_URL;
-    *)
-    property EVT_RICHTEXT_ITEM_SELECTED: string Read FEVT_RICHTEXT_ITEM_SELECTED Write FEVT_RICHTEXT_ITEM_SELECTED;
-    { Storage for property EVT_TEXT_ENTER }
-    property EVT_RICHTEXT_ITEM_DESELECTED: string Read FEVT_RICHTEXT_ITEM_DESELECTED Write FEVT_RICHTEXT_ITEM_DESELECTED;
-    { Storage for property EVT_TEXT_MAXLEN }
     property EVT_RICHTEXT_LEFT_CLICK: string Read FEVT_RICHTEXT_LEFT_CLICK Write FEVT_RICHTEXT_LEFT_CLICK;
-    { Storage for property EVT_TEXT_URL }
     property EVT_RICHTEXT_MIDDLE_CLICK: string Read FEVT_RICHTEXT_MIDDLE_CLICK Write FEVT_RICHTEXT_MIDDLE_CLICK;
-    { Storage for property EVT_TEXT_URL }
     property EVT_RICHTEXT_RIGHT_CLICK: string Read FEVT_RICHTEXT_RIGHT_CLICK Write FEVT_RICHTEXT_RIGHT_CLICK;
-    { Storage for property EVT_TEXT_URL }
     property EVT_RICHTEXT_LEFT_DCLICK: string Read FEVT_RICHTEXT_LEFT_DCLICK Write FEVT_RICHTEXT_LEFT_DCLICK;
     property EVT_RICHTEXT_RETURN: string Read FEVT_RICHTEXT_RETURN Write FEVT_RICHTEXT_RETURN;
+    property EVT_RICHTEXT_CHARACTER: string Read FEVT_RICHTEXT_CHARACTER Write FEVT_RICHTEXT_CHARACTER;
+    property EVT_RICHTEXT_DELETE: string Read FEVT_RICHTEXT_DELETE Write FEVT_RICHTEXT_DELETE;
 
+    property EVT_RICHTEXT_STYLESHEET_CHANGING: string Read FEVT_RICHTEXT_STYLESHEET_CHANGING Write FEVT_RICHTEXT_STYLESHEET_CHANGING;
+    property EVT_RICHTEXT_STYLESHEET_CHANGED: string Read FEVT_RICHTEXT_STYLESHEET_CHANGED Write FEVT_RICHTEXT_STYLESHEET_CHANGED;
+    property EVT_RICHTEXT_STYLESHEET_REPLACING: string Read FEVT_RICHTEXT_STYLESHEET_REPLACING Write FEVT_RICHTEXT_STYLESHEET_REPLACING;
+    property EVT_RICHTEXT_STYLESHEET_REPLACED: string Read FEVT_RICHTEXT_STYLESHEET_REPLACED Write FEVT_RICHTEXT_STYLESHEET_REPLACED;
+
+    property EVT_RICHTEXT_CONTENT_INSERTED: string Read FEVT_RICHTEXT_CONTENT_INSERTED Write FEVT_RICHTEXT_CONTENT_INSERTED;
+    property EVT_RICHTEXT_CONTENT_DELETED: string Read FEVT_RICHTEXT_CONTENT_DELETED Write FEVT_RICHTEXT_CONTENT_DELETED;
+    property EVT_RICHTEXT_STYLE_CHANGED: string Read FEVT_RICHTEXT_STYLE_CHANGED Write FEVT_RICHTEXT_STYLE_CHANGED;
+    property EVT_RICHTEXT_SELECTION_CHANGED: string Read FEVT_RICHTEXT_SELECTION_CHANGED Write FEVT_RICHTEXT_SELECTION_CHANGED;
+    property EVT_RICHTEXT_BUFFER_RESET: string Read FEVT_RICHTEXT_BUFFER_RESET Write FEVT_RICHTEXT_BUFFER_RESET;
+
+
+    property EVT_TEXT: string read FEVT_TEXT write FEVT_TEXT;
+    property EVT_TEXT_ENTER: string read FEVT_TEXT_ENTER write FEVT_TEXT_ENTER;
+    property EVT_TEXT_URL: string read FEVT_TEXT_URL write FEVT_TEXT_URL;
     property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
@@ -390,21 +409,34 @@ begin
   FWx_PropertyList.add('Text:Text');
   FWx_PropertyList.Add('Wx_LoadFromFile:Load From File');
 
-  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
-  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
+  FWx_PropertyList.add('Wx_LHSValue:LHS Variable');
+  FWx_PropertyList.add('Wx_RHSValue:RHS Variable');
 
-  FWx_EventList.add('EVT_TEXT_ENTER:OnEnter');
   FWx_EventList.add('EVT_TEXT:OnUpdated');
-  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-  FWx_EventList.add('EVT_TEXT_MAXLEN:OnMaxLen');
+  FWx_EventList.add('EVT_TEXT_ENTER:OnEnter');
   FWx_EventList.add('EVT_TEXT_URL:OnClickUrl');
-  FWx_EventList.add('EVT_RICHTEXT_ITEM_SELECTED:OnItemSelected ');
-  FWx_EventList.add('EVT_RICHTEXT_ITEM_DESELECTED:OnItemDeSelected ');
-  FWx_EventList.add('EVT_RICHTEXT_LEFT_CLICK:OnClick ');
-  FWx_EventList.add('EVT_RICHTEXT_MIDDLE_CLICK:OnMiddleClick ');
-  FWx_EventList.add('EVT_RICHTEXT_RIGHT_CLICK:OnRightClick ');
-  FWx_EventList.add('EVT_RICHTEXT_LEFT_DCLICK:OnDoubleClick ');
-  FWx_EventList.add('EVT_RICHTEXT_RETURN:OnReturn ');
+  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+
+
+  FWx_EventList.add('EVT_RICHTEXT_LEFT_CLICK:OnClick');
+  FWx_EventList.add('EVT_RICHTEXT_MIDDLE_CLICK:OnMiddleClick');
+  FWx_EventList.add('EVT_RICHTEXT_RIGHT_CLICK:OnRightClick');
+  FWx_EventList.add('EVT_RICHTEXT_LEFT_DCLICK:OnDoubleClick');
+  FWx_EventList.add('EVT_RICHTEXT_RETURN:OnReturn');
+  FWx_EventList.add('EVT_RICHTEXT_CHARACTER:OnCharacter');
+  FWx_EventList.add('EVT_RICHTEXT_DELETE:OnDelete');
+
+  FWx_EventList.add('EVT_RICHTEXT_STYLESHEET_CHANGING:OnStylesheetChanging');
+  FWx_EventList.add('EVT_RICHTEXT_STYLESHEET_CHANGED:OnStylesheetChanged');
+  FWx_EventList.add('EVT_RICHTEXT_STYLESHEET_REPLACING:OnStylesheetReplacinging');
+  FWx_EventList.add('EVT_RICHTEXT_STYLESHEET_REPLACED:OnStylesheetReplaced');
+
+  FWx_EventList.add('EVT_RICHTEXT_CONTENT_INSERTED:OnContentInserted');
+  FWx_EventList.add('EVT_RICHTEXT_CONTENT_DELETED:OnContentDeleted');
+  FWx_EventList.add('EVT_RICHTEXT_STYLE_CHANGED:OnStyleChanged');
+  FWx_EventList.add('EVT_RICHTEXT_SELECTION_CHANGED:OnSelectionChanged');
+  FWx_EventList.add('EVT_RICHTEXT_BUFFER_RESET:OnBufferReset');
+
 
 
 end;
@@ -446,13 +478,6 @@ begin
 
    if (XRCGEN) then
  begin//generate xrc loading code  needs to be edited
-  if trim(EVT_RICHTEXT_ITEM_SELECTED) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_SELECTED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_ITEM_SELECTED]) + '';
-
-  if trim(EVT_RICHTEXT_ITEM_DESELECTED) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_DESELECTED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_ITEM_DESELECTED]) + '';
 
   if trim(EVT_RICHTEXT_LEFT_CLICK) <> '' then
     Result := Result + #13 + Format('EVT_RICHTEXT_LEFT_CLICK(XRCID(%s("%s")),%s::%s)',
@@ -474,6 +499,63 @@ begin
     Result := Result + #13 + Format('EVT_RICHTEXT_RETURN(XRCID(%s("%s")),%s::%s)',
       [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_RETURN]) + '';
 
+  if trim(EVT_RICHTEXT_CHARACTER) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_CHARACTER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_CHARACTER]) + '';
+
+  if trim(EVT_RICHTEXT_DELETE) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_DELETE(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_DELETE]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_CHANGING) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_CHANGING(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_STYLESHEET_CHANGING]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_CHANGED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_STYLESHEET_CHANGED]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_REPLACING) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_REPLACING(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_STYLESHEET_REPLACING]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_REPLACED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_REPLACED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_STYLESHEET_REPLACED]) + '';
+
+  if trim(EVT_RICHTEXT_CONTENT_INSERTED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_CONTENT_INSERTED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_CONTENT_INSERTED]) + '';
+
+  if trim(EVT_RICHTEXT_CONTENT_DELETED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_CONTENT_DELETED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_CONTENT_DELETED]) + '';
+
+  if trim(EVT_RICHTEXT_STYLE_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLE_CHANGED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_STYLE_CHANGED]) + '';
+
+  if trim(EVT_RICHTEXT_SELECTION_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_SELECTION_CHANGED(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_SELECTION_CHANGED]) + '';
+
+  if trim(EVT_RICHTEXT_BUFFER_RESET) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_BUFFER_RESET(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_RICHTEXT_BUFFER_RESET]) + '';
+
+
+  if trim(EVT_TEXT) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT]) + '';
+
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Format('EVT_TEXT_ENTER(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_ENTER]) + '';
+
+  if trim(EVT_TEXT_URL) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_URL(XRCID(%s("%s")),%s::%s)',
+      [StringFormat, self.Name, CurrClassName, EVT_TEXT_URL]) + '';
+
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
       [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
@@ -481,14 +563,6 @@ begin
  end
  else
  begin//generate the cpp code
-  if trim(EVT_RICHTEXT_ITEM_SELECTED) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_SELECTED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_RICHTEXT_ITEM_SELECTED]) + '';
-
-  if trim(EVT_RICHTEXT_ITEM_DESELECTED) <> '' then
-    Result := Result + #13 + Format('EVT_RICHTEXT_ITEM_DESELECTED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_RICHTEXT_ITEM_DESELECTED]) + '';
-
   if trim(EVT_RICHTEXT_LEFT_CLICK) <> '' then
     Result := Result + #13 + Format('EVT_RICHTEXT_LEFT_CLICK(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_RICHTEXT_LEFT_CLICK]) + '';
@@ -509,29 +583,72 @@ begin
     Result := Result + #13 + Format('EVT_RICHTEXT_RETURN(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_RICHTEXT_RETURN]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
- end;
+  if trim(EVT_RICHTEXT_CHARACTER) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_CHARACTER(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_CHARACTER]) + '';
 
-(*
-  if trim(EVT_TEXT_ENTER) <> '' then
-    Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
+  if trim(EVT_RICHTEXT_DELETE) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_DELETE(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_DELETE]) + '';
 
+  if trim(EVT_RICHTEXT_STYLESHEET_CHANGING) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_CHANGING(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_STYLESHEET_CHANGING]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_CHANGED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_STYLESHEET_CHANGED]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_REPLACING) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_REPLACING(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_STYLESHEET_REPLACING]) + '';
+
+  if trim(EVT_RICHTEXT_STYLESHEET_REPLACED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLESHEET_REPLACED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_STYLESHEET_REPLACED]) + '';
+
+  if trim(EVT_RICHTEXT_CONTENT_INSERTED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_CONTENT_INSERTED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_CONTENT_INSERTED]) + '';
+
+  if trim(EVT_RICHTEXT_CONTENT_DELETED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_CONTENT_DELETED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_CONTENT_DELETED]) + '';
+
+  if trim(EVT_RICHTEXT_STYLE_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_STYLE_CHANGED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_STYLE_CHANGED]) + '';
+
+  if trim(EVT_RICHTEXT_SELECTION_CHANGED) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_SELECTION_CHANGED(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_SELECTION_CHANGED]) + '';
+
+  if trim(EVT_RICHTEXT_BUFFER_RESET) <> '' then
+    Result := Result + #13 + Format('EVT_RICHTEXT_BUFFER_RESET(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_RICHTEXT_BUFFER_RESET]) + '';
 
 
   if trim(EVT_TEXT) <> '' then
     Result := Result + #13 + Format('EVT_TEXT(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT]) + '';
 
-  if trim(EVT_TEXT_MAXLEN) <> '' then
-    Result := Result + #13 + Format('EVT_TEXT_MAXLEN(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TEXT_MAXLEN]) + '';
+  if trim(EVT_TEXT_ENTER) <> '' then
+    Result := Format('EVT_TEXT_ENTER(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_ENTER]) + '';
 
   if trim(EVT_TEXT_URL) <> '' then
     Result := Result + #13 + Format('EVT_TEXT_URL(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_TEXT_URL]) + '';
+
+  if trim(EVT_UPDATE_UI) <> '' then
+    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+ end;
+
+
+(*  if trim(EVT_TEXT_MAXLEN) <> '' then
+    Result := Result + #13 + Format('EVT_TEXT_MAXLEN(%s,%s::%s)',
+      [WX_IDName, CurrClassName, EVT_TEXT_MAXLEN]) + '';
 *)
 
 end;
@@ -669,7 +786,8 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
+
+  if not (XRCGEN) then //NUKLEAR ZELPH
   begin
     if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
     begin
@@ -708,13 +826,13 @@ if not (XRCGEN) then //NUKLEAR ZELPH
     end
     else
     begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+      if (self.Parent is TWxSizerPanel) then
+      begin
+        strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+        Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+          [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+          self.Wx_Border]);
+      end;
 
       if (self.Parent is TWxAuiNotebookPage) then
       begin
@@ -813,19 +931,39 @@ end;
 
 function TWxRichTextCtrl.GetParameterFromEventName(EventName: string): string;
 begin
-  if (EventName = 'EVT_RICHTEXT_ITEM_SELECTED')  or
-     (EventName = 'EVT_RICHTEXT_ITEM_DESELECTED') or
-     (EventName = 'EVT_RICHTEXT_LEFT_CLICK') or
+  if (EventName = 'EVT_RICHTEXT_LEFT_CLICK') or
      (EventName = 'EVT_RICHTEXT_RIGHT_CLICK') or
      (EventName = 'EVT_RICHTEXT_MIDDLE_CLICK') or
      (EventName = 'EVT_RICHTEXT_LEFT_DCLICK') or
-     (EventName = 'EVT_RICHTEXT_RETURN') then
+     (EventName = 'EVT_RICHTEXT_RETURN') or
+     (EventName = 'EVT_RICHTEXT_CHARACTER') or
+     (EventName = 'EVT_RICHTEXT_DELETE') or
+     (EventName = 'EVT_RICHTEXT_STYLESHEET_CHANGING') or
+     (EventName = 'EVT_RICHTEXT_STYLESHEET_REPLACING') or
+     (EventName = 'EVT_RICHTEXT_STYLESHEET_REPLACED') or
+     (EventName = 'EVT_RICHTEXT_CONTENT_INSERTED') or
+     (EventName = 'EVT_RICHTEXT_CONTENT_DELETED') or
+     (EventName = 'EVT_RICHTEXT_STYLE_CHANGED') or
+     (EventName = 'EVT_RICHTEXT_SELECTION_CHANGED') or
+     (EventName = 'EVT_RICHTEXT_BUFFER_RESET') then
   begin
     Result := 'wxRichTextEvent& event';
     exit;
   end;
 
-  if EventName = 'EVT_UPDATE_UI' then
+
+  if (EventName = 'EVT_TEXT') or
+     (EventName = 'EVT_TEXT_ENTER') then
+  begin
+    Result := 'wxCommandEvent& event';
+    exit;
+  end;
+  if (EventName = 'EVT_TEXT_URL') then
+  begin
+    Result := 'wxTextUrlEvent& event';
+    exit;
+  end;
+  if EventName = 'EVT_UPDATE_UI' then                                            
   begin
     Result := 'wxUpdateUIEvent& event';
     exit;

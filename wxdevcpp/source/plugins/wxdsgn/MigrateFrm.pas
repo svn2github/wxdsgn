@@ -276,6 +276,22 @@ begin
       Inc(Changes);
     end
 {$ENDIF}
+    //EVT_RICHTEXT_ITEM_SELECTED =
+    else if Pos('EVT_RICHTEXT_ITEM_SELECTED =', Trim(Strings[i])) = 1 then
+    begin
+      Strings.Delete(i);
+      Dec(I);
+      Inc(Changes);
+    end
+
+    //EVT_RICHTEXT_ITEM_DESELECTED
+    else if Pos('EVT_RICHTEXT_ITEM_DESELECTED =', Trim(Strings[i])) = 1 then
+    begin
+      Strings.Delete(i);
+      Dec(I);
+      Inc(Changes);
+    end
+
 
     //wxALIGN_LEFT for wxStaticText
     else if (Pos('wxALIGN_LEFT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
