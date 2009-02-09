@@ -1396,13 +1396,6 @@ begin
   if ELDesigner1.Floating then
     designerFlag := self.IsForm(main.GetActiveEditorName);
 
-  {if cleanUpJvInspEvents then
-  begin
-      cleanUpJvInspEvents := false;
-      if ELDesigner1.Active then
-          DisableDesignerControls;
-  end;   }
-
   if (ssCtrl in Shift) and ELDesigner1.Active and designerFlag and not JvInspProperties.Focused and
     not JvInspEvents.Focused and not cleanUpJvInspEvents then // If Designer Form is in focus
   begin
@@ -2554,7 +2547,7 @@ begin
 
     if cleanUpJvInspEvents then
     begin
-        //JvInspEvents.Visible := true;
+        JvInspEvents.Root.Visible := true;
         cleanUpJvInspEvents := false;
     end;
 
@@ -3494,36 +3487,6 @@ begin
           JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
           JvInspEventsDataValueChanged(nil, Data);
           // END Goto Function trigger
-
-          {if not main.IsClassBrowserEnabled then
-          begin
-            MessageDlg('The Class Browser has been disabled; All event handling ' +
-              'automation code will not work.'#10#10'See Help for instructions on ' +
-              'enabling the Class Browser.', mtError, [mbOK], 0);
-            Exit;
-          end;
-
-          if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
-            main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), true);
-
-          if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
-            main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), true);
-
-          if SelectedComponent <> nil then
-          begin
-            str := trim(Data.AsString);
-            strDisplayName := JvInspEvents.Selected.DisplayName;
-            compSelectedOne := SelectedComponent;
-            LocateFunctionInEditor(Data, Trim((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Wx_Name), compSelectedOne,
-              str, strDisplayName);
-
-            switchEditor := true;
-
-            if((editors[ExtractFileName(editorName)] as TWXEditor).getDesigner().Floating) then
-                main.SendToFront;
-          end;       }
-
-
         end
         else
         begin
@@ -3579,39 +3542,8 @@ begin
      begin
         cleanUpJvInspEvents := true;
         main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));
-        //JvInspEvents.Visible := false
-
-   { JvInspEvents.OnMouseUp :=
-  Screen.Cursor := crHourglass;
-  //Application.ProcessMessages;
-
-  cbxControlsx.Enabled := False;
-  pgCtrlObjectInspector.Enabled := False;
-  JvInspProperties.Enabled := False;
-  JvInspEvents.Enabled := False;
-  ComponentPalette.Enabled := False;
-  ComponentPalette.Visible := False;
-  palettePanel.BevelInner := bvLowered;
-
-  ELDesigner1.Active := False;
-  ELDesigner1.DesignControl := nil;
-
-  SelectedComponent := nil;
-  {if boolInspectorDataClear then
-  begin
-    JvInspProperties.Clear;
-    if Assigned(JvInspProperties.Root) then
-      JvInspProperties.Root.Clear;
-    cleanUpJvInspEvents := true;
-    JvInspEvents.Clear;
-    if Assigned(JvInspEvents.Root) then
-      JvInspEvents.Root.Clear;
-  end;
-
-  boolInspectorDataClear := true;
-  cbxControlsx.Items.Clear;
-  Screen.Cursor := crDefault; }
-
+        //frmInspectorDock.Enabled := false;
+        JvInspEvents.Root.Visible := false;
       end;
 
   except
@@ -4618,19 +4550,7 @@ begin
     //Show a busy cursor
     Screen.Cursor := crHourglass;
 
-    {if cleanUpJvInspEvents then
-    begin
-        JvInspEvents.OnDataValueChanged := nil;
-    end;  }
-    {if cleanUpJvInspEvents then
-    begin
-        cleanUpJvInspEvents := false;
-        JvInspEvents.Clear;
-        if Assigned(JvInspEvents.Root) then
-          JvInspEvents.Root.Clear;
-    end
-    else }
-        Application.ProcessMessages;
+    Application.ProcessMessages;
 
     if not ELDesigner1.Active or cleanUpJvInspEvents then
       EnableDesignerControls;
