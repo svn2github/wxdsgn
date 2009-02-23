@@ -517,7 +517,11 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
 
   ;StrCpy $WXBOOK_INSTALLED "Yes"
- 
+  
+  ; Install the custom help file menu for the IDE
+  SetOutPath $APPDATA
+  File "devhelp.ini"
+  
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
   
@@ -748,6 +752,7 @@ SetShellVarContext all
 SetShellVarContext current
 
   Delete "$APPDATA\devcpp.ini"
+  Delete "$APPDATA\devhelp.ini"
   Delete "$APPDATA\devcpp.cfg"
   Delete "$APPDATA\cache.ccc"
   Delete "$APPDATA\defaultcode.cfg"
@@ -763,6 +768,7 @@ SetShellVarContext current
 SetShellVarContext all
 
   Delete "$APPDATA\devcpp.ini"
+  Delete "$APPDATA\devhelp.ini"
   Delete "$APPDATA\devcpp.cfg"
   Delete "$APPDATA\cache.ccc"
   Delete "$APPDATA\defaultcode.cfg"
@@ -776,6 +782,7 @@ SetShellVarContext all
   Delete "$APPDATA\wxdevcpp.ci"
   
   Delete "$INSTDIR\devcpp.ini"
+  Delete "$INSTDIR\devhelp.ini"
   Delete "$INSTDIR\devcpp.cfg"
   Delete "$INSTDIR\cache.ccc"
   Delete "$INSTDIR\defaultcode.cfg"
@@ -1113,6 +1120,7 @@ SetShellVarContext all
   
   call un.GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
+  Delete "$LOCAL_APPDATA\devhelp.ini"
   Delete "$LOCAL_APPDATA\devcpp.cfg"
   Delete "$LOCAL_APPDATA\cache.ccc"
   Delete "$LOCAL_APPDATA\defaultcode.cfg"
@@ -1124,6 +1132,7 @@ SetShellVarContext all
 
 SetShellVarContext all
   Delete "$APPDATA\devcpp.ini"
+  Delete "$APPDATA\devhelp.ini"
   Delete "$APPDATA\devcpp.cfg"
   Delete "$APPDATA\cache.ccc"
   Delete "$APPDATA\defaultcode.cfg"
@@ -1138,6 +1147,7 @@ SetShellVarContext all
   
   SetShellVarContext current
   Delete "$APPDATA\devcpp.ini"
+  Delete "$APPDATA\devhelp.ini"
   Delete "$APPDATA\devcpp.cfg"
   Delete "$APPDATA\cache.ccc"
   Delete "$APPDATA\defaultcode.cfg"
@@ -1151,6 +1161,7 @@ SetShellVarContext all
   Delete "$APPDATA\wxdevcpp.cfg"
   
   Delete "$INSTDIR\devcpp.ini"
+  Delete "$INSTDIR\devhelp.ini"
   Delete "$INSTDIR\devcpp.cfg"
   Delete "$INSTDIR\cache.ccc"
   Delete "$INSTDIR\defaultcode.cfg"
