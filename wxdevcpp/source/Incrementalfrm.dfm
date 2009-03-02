@@ -22,7 +22,7 @@ object frmIncremental: TfrmIncremental
     Top = 0
     Width = 201
     Height = 24
-    Color = clBtnFace
+    Color = clHighlight
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

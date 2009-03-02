@@ -30,9 +30,9 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 373
-    ActivePage = tabClassBrowsing
+    ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 4
+    TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -453,7 +453,7 @@ object EditorOptForm: TEditorOptForm
           Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -464,7 +464,7 @@ object EditorOptForm: TEditorOptForm
           Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -526,7 +526,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -536,7 +536,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick

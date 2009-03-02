@@ -5204,6 +5204,7 @@ end;
 procedure TMainForm.actIncrementalExecute(Sender: TObject);
 var
   pt: TPoint;
+  temp, temp2: String;
 begin
   SearchCenter.Editor := GetEditor;
   SearchCenter.AssignSearchEngine;
@@ -5213,7 +5214,13 @@ begin
   frmIncremental.Left := pt.x;
   frmIncremental.Top := pt.y;
   frmIncremental.Editor := GetEditor.Text;
+  temp := Self.Caption;
+  temp2 := StatusBar.Panels[3].Text;
+  Self.Caption := 'Press Esc to leave the Incremental Search Mode.';
+  StatusBar.Panels[3].Text :=  'Press Esc to leave the Incremental Search Mode.';
   frmIncremental.ShowModal;
+  Self.Caption := temp;
+  StatusBar.Panels[3].Text := temp2;
 end;
 
 procedure TMainForm.CompilerOutputDblClick(Sender: TObject);
@@ -5314,10 +5321,22 @@ procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
 {$IFDEF PLUGIN_BUILD}
 var
     i: Integer;
+    e: TEditor;
 {$ENDIF}
 begin
-  //TODO: lowjoel: What on earth is this meant to do?!
   case key of
+    89:            // EAB Workaround for SynEdit REDO problem
+      if ssCtrl in Shift then
+      begin
+          Key := 0;
+          e := GetEditor;
+          if assigned(e) then
+          begin
+            //if e.Text.CanRedo then
+            if RedoItem.Enabled then
+                e.Text.Redo
+          end;
+      end;
 {$IFDEF WIN32}
     VK_F6:
 {$ENDIF}
@@ -6062,9 +6081,12 @@ begin
         pluginCatched := false;
         for i := 0 to pluginsCount - 1 do
             pluginCatched := pluginCatched or plugins[i].MainPageChanged(e.FileName);
-        if not pluginCatched then
+        if pluginCatched then
+           e.SaveLastCaret
+        else
         begin
 {$ENDIF}
+            e.RestoreLastCaret;
             e.Text.SetFocus;
             if ClassBrowser1.Enabled then
               ClassBrowser1.CurrentFile := e.FileName;
@@ -7917,6 +7939,7 @@ procedure TMainForm.PageControlChanging(Sender: TObject;
   var AllowChange: Boolean);
 begin
   HideCodeToolTip;
+  //GetEditor(PageControl.ActivePageIndex).Text.Enabled := false;
 end;
 
 procedure TMainForm.mnuCVSClick(Sender: TObject);
@@ -8564,6 +8587,7 @@ begin
        e := MainForm.GetEditorFromFileName(filename);
        if Assigned(e) then
        begin
+         //e.Text.BeginUndoBlock;     EAB temp idea
          e.Text.BeginUpdate;
          try
             {$IFDEF PLUGIN_BUILD}
@@ -8573,6 +8597,8 @@ begin
          except
          end;
          e.Text.EndUpdate;
+         {e.Text.EndUndoBlock;
+         e.Text.UpdateCaret;}
          e.Modified:=true;		 
          e.InsertString('', false);
          MainForm.StatusBar.Panels[3].Text := messageToDysplay;
@@ -8717,7 +8743,6 @@ end;
 procedure TMainForm.SetPageControlActivePageEditor(editorName: String);
 var
    e: TEditor;
-   i: Integer;
 begin
     e := GetEditorFromFileName(editorName);
     PageControl.ActivePageIndex := e.TabSheet.TabIndex;

@@ -103,13 +103,14 @@ begin
   SearchString := Edit.Text;
   Edit.Text := '';
   OrgPt := Editor.CaretXY;
+  EditChange(Sender);
 end;
 
 procedure TfrmIncremental.EditKeyPress(Sender: TObject; var Key: Char);
 begin
   case Key of
     #27: Close;
-    #13: Close;
+    #13: SearchAgainExecute(self);
   else
     begin
     end;

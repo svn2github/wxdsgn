@@ -106,8 +106,9 @@ uses
   iplugin in 'plugins\interfaces\iplugin.pas',
   iplugin_bpl in 'plugins\interfaces\iplugin_bpl.pas',
   hh in 'hh.pas',
-  hh_funcs in 'hh_funcs.pas';
-  
+  hh_funcs in 'hh_funcs.pas',
+  SynAutoIndent in 'packages\SynAutoIndent.pas';
+
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
 {$R 'DefaultFiles.res' 'DefaultFiles.rc'}

@@ -30,7 +30,7 @@ uses
   SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter,
 
   {** Modified by Peter **}
-  DevCodeToolTip, SynAutoIndent,utils, iplugin;
+  DevCodeToolTip, SynAutoIndent, utils, iplugin;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, Graphics, QControls, QForms, QDialogs, CodeCompletion, CppParser,
@@ -49,7 +49,7 @@ type
     procedure AfterPaint(ACanvas: TCanvas; const AClip: TRect;
       FirstLine, LastLine: integer); override;
     procedure LinesInserted(FirstLine, Count: integer); override;
-    procedure LinesDeleted(FirstLine, Count: integer; AddToUndoList: Boolean); override;
+    procedure LinesDeleted(FirstLine, Count: integer); override;
   public
     constructor Create(ed: TEditor);
   end;
@@ -86,6 +86,8 @@ type
     fLastParamFunc: TList;
     FCodeToolTip: TDevCodeToolTip;
     FAutoIndent: TSynAutoIndent;
+    lastCaretX : Integer;
+    lastCaretY : Integer;
     procedure CompletionTimer(Sender: TObject);
     procedure ToolTipTimer(Sender: TObject);
     procedure CodeRushLikeEditorKeyPress(Sender: TObject; var Key: Char);
@@ -184,6 +186,8 @@ type
     property Text: TSynEdit read fText write fText;
     property TabSheet: TTabSheet read fTabSheet write fTabSheet;
     property AssignedPlugin: string read fPlugin write fPlugin;
+    procedure SaveLastCaret;
+    procedure RestoreLastCaret;
 
     property CodeToolTip: TDevCodeToolTip read FCodeToolTip; // added on 23rd may 2004 by peter_
    
@@ -217,7 +221,7 @@ begin
   // if this method is not defined -> Abstract error
 end;
 
-procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer; AddToUndoList: Boolean);
+procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer);
 begin
   // if this method is not defined -> Abstract error
 end;
@@ -1843,7 +1847,6 @@ begin
     finally
       Strings.Free;
     end;
-
     FText.EndUndoBlock;
     FText.UpdateCaret;
     FText.Modified := True;
@@ -2044,7 +2047,10 @@ const
     Editor.Canvas.Font.Assign(fText.Font);
     Editor.Canvas.Font.Style := Attri.Style;
     if TransientType = ttAfter then
+    begin
       fText.Canvas.Font.Style := Editor.Canvas.Font.Style + [fsBold];
+      Foreground := clRed;    // EAB: I think matching brackets highlighting was not visible enough. 
+    end;
 
     Editor.Canvas.Brush.Color := Background;
     Editor.Canvas.Font.Color := Foreground;
@@ -2248,6 +2254,22 @@ begin
 fText.InvalidateGutter;
 end;
 
+procedure TEditor.SaveLastCaret;
+begin
+    //lastCaretX := fText.CaretX;
+    //lastCaretY := fText.CaretY;
+end;
+
+procedure TEditor.RestoreLastCaret;
+begin
+    if lastCaretX <> -1 then
+    begin
+        {fText.CaretX := lastCaretX;
+        fText.CaretY := lastCaretY;
+        lastCaretX := -1;
+        lastCaretY := -1;}
+    end;
+end;
 
 end.
 

@@ -2548,6 +2548,7 @@ begin
     if cleanUpJvInspEvents then
     begin
         JvInspEvents.Root.Visible := true;
+        JvInspProperties.Root.Visible := true;
         cleanUpJvInspEvents := false;
     end;
 
@@ -3542,7 +3543,7 @@ begin
      begin
         cleanUpJvInspEvents := true;
         main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));
-        //frmInspectorDock.Enabled := false;
+        JvInspProperties.Root.Visible := false;
         JvInspEvents.Root.Visible := false;
       end;
 
@@ -4124,7 +4125,7 @@ end;
 
 procedure TWXDsgn.DesignerOptionsClick(Sender: TObject);
 begin
-  with TDesignerForm.Create(Self) do
+  with TDesignerForm.Create(self) do
     try
       ShowModal;
     finally
