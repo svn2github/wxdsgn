@@ -267,9 +267,11 @@ begin
   fPlugin := '';
   for i := 0 to MainForm.pluginsCount - 1 do
   begin
-    if MainForm.plugins[i].isForm(ExtractFileName(File_name)) then
+    if MainForm.plugins[i].isForm(File_name) then    // EAB final
+    //if MainForm.plugins[i].isForm(File_name) then
     begin
-      MainForm.plugins[i].InitEditor(ExtractFileName(File_name));
+      //MainForm.plugins[i].InitEditor(ExtractFileName(File_name));
+      MainForm.plugins[i].InitEditor(File_name);
       AssignedPlugin := MainForm.plugins[i].GetPluginName;
       pluginCatched := true;
       break;
@@ -347,15 +349,15 @@ begin
 {$IFDEF PLUGIN_BUILD}
   for i := 0 to MainForm.pluginsCount - 1 do
   begin
-    if MainForm.plugins[i].isForm(ExtractFileName(File_name)) then
+    if MainForm.plugins[i].isForm(File_name) then
     begin
-      if not MainForm.plugins[i].EditorDisplaysText(ExtractFileName(File_name)) then
+      if not MainForm.plugins[i].EditorDisplaysText(File_name) then
       begin
         fText.ReadOnly := true;
         fText.Visible := false;
       end;
 
-      pluginTextHighlighterType := MainForm.plugins[i].GetTextHighlighterType(ExtractFileName(File_name));
+      pluginTextHighlighterType := MainForm.plugins[i].GetTextHighlighterType(File_name);
       if pluginTextHighlighterType = 'NEW' then
         fText.Highlighter := dmMain.GetHighlighter(fFileName)
       else if pluginTextHighlighterType = 'RES' then

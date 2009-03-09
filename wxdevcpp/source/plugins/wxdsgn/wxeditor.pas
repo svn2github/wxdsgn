@@ -60,6 +60,7 @@ uses
 
 	    fDesigner.synEdit := fText;
 	    fDesigner.Visible := False;
+        fDesigner.fileName := FileName;
 
           btnFloatingDesigner := TButton.Create(fScrollDesign);
           with btnFloatingDesigner do
