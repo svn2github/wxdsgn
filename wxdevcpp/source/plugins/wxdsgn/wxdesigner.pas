@@ -189,7 +189,7 @@ type
     property wxOptions: TdevWxOptions read fwxOptions write fwxOptions;
     procedure CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: integer);
     procedure NewWxProjectCode(dsgnType: TWxDesignerType);
-    procedure ParseAndSaveTemplate(template, destination: string; frm: TfrmCreateFormProp); // EAB TODO: check
+    procedure ParseAndSaveTemplate(template, destination: string; frm: TfrmCreateFormProp); 
     function CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: integer; projShow: boolean; filenamebase: string = ''): TfrmCreateFormProp; 
 
     function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): Boolean;
@@ -1759,11 +1759,10 @@ begin
         FNewFormObj.Wx_DesignerType := dtWxDialog;
 
       FNewFormObj.Caption := strFTitle;
-      FNewFormObj.Wx_DialogStyle := dlgSStyle; //[wxCaption,wxResize_Border,wxSystem_Menu,wxThick_Frame,wxMinimize_Box,wxMaximize_Box,wxClose_Box];
+      FNewFormObj.Wx_DialogStyle := dlgSStyle; 
       FNewFormObj.Wx_Name := strCName;
       FNewFormObj.Wx_Center := True;
       FNewFormObj.fileName := strFName;
-      //FNewFormObj.
       FNewFormObj.EVT_CLOSE := 'OnClose';
       WriteComponentsToFile([FNewFormObj], ChangeFileExt(strFName, wxform_Ext));
     except
@@ -1856,8 +1855,7 @@ begin
 
   //Get the remaining properties
   ClassName := Trim(frm.txtClassName.Text);
-  Filename := ExtractFilename(IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text));  // EAB TODO: check this out
-  //Filename := IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);  // EAB TODO: check this out
+  Filename := ExtractFilename(IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text));
   DateStr := DateTimeToStr(now);
   Author := Trim(frm.txtAuthorName.Text);
   Title := Trim(frm.txtTitle.Text);

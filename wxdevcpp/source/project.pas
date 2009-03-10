@@ -1585,7 +1585,8 @@ var
   idx: Integer;
   aset: boolean;
   sl: TStringList;
-  S: string;
+  S, S2: string;
+  e: TEditor;
 begin
   s := ChangeFileExt(Filename, '.layout');
   if FileIsReadOnly(s) then
@@ -1602,14 +1603,16 @@ begin
       sl.Clear;
       for idx := 0 to MainForm.PageControl.PageCount - 1 do begin
         S := MainForm.PageControl.Pages[idx].Caption;
+        e := MainForm.GetEditor(idx);
+        S2 := e.FileName;
         if (Length(S) > 4) and
           (Copy(S, 1, 4) = '[*] ') then
           // the file is modified and the tabsheet's caption starts with '[*] ' - delete it
           S := Copy(S, 5, Length(S) - 4);
-        if sl.IndexOf(IntToStr(fUnits.Indexof(S))) = -1 then
-          sl.Add(IntToStr(fUnits.Indexof(S)));
+        if sl.IndexOf(IntToStr(fUnits.Indexof(S2))) = -1 then
+          sl.Add(IntToStr(fUnits.Indexof(S2)));
         if MainForm.PageControl.ActivePageIndex = idx then
-          layIni.WriteInteger('Editors', 'Focused', fUnits.Indexof(S));
+          layIni.WriteInteger('Editors', 'Focused', fUnits.Indexof(S2));
       end;
       layIni.WriteString('Editors', 'Order', sl.CommaText);
     finally
