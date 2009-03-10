@@ -65,7 +65,7 @@ type
 implementation
 
 uses 
-  main, devcfg, utils, dbugintf, debugger, RegExpr;
+  main, devcfg, utils, debugger, RegExpr; // dbugintf,  EAB removed Gexperts debug stuff.
 
 constructor TDebugReader.Create(start: Boolean);
 begin

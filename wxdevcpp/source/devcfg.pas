@@ -40,7 +40,7 @@ interface
 
 uses
 {$IFDEF WIN32}
-Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes, DbugIntf;
+Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes;  //, DbugIntf; EAB removed Gexperts debug stuff. 
 {$ENDIF}
 {$IFDEF LINUX}
   QDialogs, Classes, QGraphics, QSynEdit, CFGData, CFGTypes, IniFiles, prjtypes;

@@ -140,7 +140,7 @@ implementation
 
 uses
   MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm, StrUtils, RegExpr,
-  DbugIntf, SynEdit, SynEditHighlighter, SynEditTypes, datamod, main;
+  SynEdit, SynEditHighlighter, SynEditTypes, datamod, main;     // DbugIntf, EAB removed Gexperts debug stuff.
 
 constructor TCompiler.Create;
 begin

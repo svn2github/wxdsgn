@@ -22,7 +22,7 @@ unit EditorOptfrm;
 interface
 
 uses
-  dbugintf,
+  //dbugintf,  EAB removed Gexperts debug stuff.
 {$IFDEF WIN32}
   Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms,
   Dialogs, ComCtrls, devTabs, StdCtrls, ExtCtrls, Spin, ColorPickerButton,

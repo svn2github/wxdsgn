@@ -221,8 +221,8 @@ type
 
   
 implementation
-uses
-  dbugintf;
+//uses
+//  dbugintf;  EAB removed Gexperts debug stuff.
 // contains the up/down buttons
 // i tried to draw them using DrawFrameControl first,
 // but it looked very bad, so I use a bitmap instead.

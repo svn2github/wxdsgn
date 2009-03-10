@@ -353,7 +353,7 @@ var
 implementation
 
 uses 
-  main, devcfg, MultiLangSupport, cpufrm, prjtypes, StrUtils, dbugintf, RegExpr,
+  main, devcfg, MultiLangSupport, cpufrm, prjtypes, StrUtils, RegExpr, //dbugintf,  EAB removed Gexperts debug stuff.
   madExcept, Forms, utils;
 
 function RegexEscape(str: string): string;
