@@ -1818,6 +1818,7 @@ var
   DateStr: string;
   Author: string;
   Title: string;
+  tempFileName: string;
 begin
   //Determine the window style
   if frm.cbUseCaption.checked then
@@ -1855,7 +1856,10 @@ begin
 
   //Get the remaining properties
   ClassName := Trim(frm.txtClassName.Text);
-  Filename := ExtractFilename(IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text));
+
+  tempFileName := IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);
+  Filename := ExtractRelativePath(destination, tempFileName);
+
   DateStr := DateTimeToStr(now);
   Author := Trim(frm.txtAuthorName.Text);
   Title := Trim(frm.txtTitle.Text);

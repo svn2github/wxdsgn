@@ -267,10 +267,8 @@ begin
   fPlugin := '';
   for i := 0 to MainForm.pluginsCount - 1 do
   begin
-    if MainForm.plugins[i].isForm(File_name) then    // EAB final
-    //if MainForm.plugins[i].isForm(File_name) then
+    if MainForm.plugins[i].isForm(File_name) then 
     begin
-      //MainForm.plugins[i].InitEditor(ExtractFileName(File_name));
       MainForm.plugins[i].InitEditor(File_name);
       AssignedPlugin := MainForm.plugins[i].GetPluginName;
       pluginCatched := true;

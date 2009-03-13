@@ -2592,7 +2592,6 @@ begin
 end;
 
 
-// EAB TODO: **** cleanup this method  ***
 //TODO: lowjoel: The following three Save functions probably can be refactored for
 //               speed. Anyone can reorganize it to optimize it for speed and efficiency,
 //               as well as to cut the number of lines needed.\
@@ -8096,7 +8095,7 @@ begin
   end;
 end;
 
-// EAB TODO: The following function may need to be revised in order to ensure plugin-neutral behaviour 
+// EAB TODO: The following function may need to be revised in order to ensure plugin-neutral behavior 
 procedure TMainForm.GetClassNameLocationsInEditorFiles(var HppStrLst,CppStrLst:TStringList;FileName, FromClassName, ToClassName:string);
 var
   St: PStatement;

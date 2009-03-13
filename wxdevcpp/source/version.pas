@@ -876,7 +876,6 @@ begin
     reg2.Destroy;
 end;
 
- // EAB TODO: Support for VS2008 not checked; some reg entries may be incompatable
 function GetVC200XPath(versionString:String;PathType:integer):String;
 var
     strVSInstallDir,
