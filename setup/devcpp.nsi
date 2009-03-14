@@ -13,8 +13,8 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0rc4"
-!define IDE_DEVPAK_NAME  "wxdevcpp_rc4.DevPak"
+!define WXDEVCPP_VERSION "7.0rc5"
+!define IDE_DEVPAK_NAME  "wxdevcpp_rc5.DevPak"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
@@ -24,7 +24,7 @@
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -362,7 +362,6 @@ File "license.txt"
   File "Lang\English.lng"
   File "Lang\English.tips"
 
-
   ; Install wxDev-C++ executable
 !insertmacro InstallDevPak "${IDE_DEVPAK_NAME}"
  
@@ -518,13 +517,13 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
 
   ;StrCpy $WXBOOK_INSTALLED "Yes"
   
-  ; Install the custom help file menu for the IDE
-  SetOutPath $APPDATA
-  File "devhelp.ini"
-  
   SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Sof.T's ${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
   
+  ; Install the custom help file menu for the IDE
+  SetOutPath $APPDATA\Dev-Cpp
+  File /oname=devhelp.ini "additional\Help\devhelp.ini"
+
 SectionEnd
 
 SectionGroupEnd
@@ -720,10 +719,10 @@ Section "Remove all previous configuration files" SectionConfig
    SectionIn 1 2
 
 SetShellVarContext current
-  Delete "$APPDATA\Dev-Cpp\*.*"
+  ;Delete "$APPDATA\Dev-Cpp\*.*"
 
 SetShellVarContext all
-  Delete "$APPDATA\Dev-Cpp\*.*"
+  ;Delete "$APPDATA\Dev-Cpp\*.*"
 
   ;Delete "$APPDATA\Dev-Cpp\devcpp.ini"
   ;Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
@@ -1113,10 +1112,10 @@ ${ENDIF}
   MessageBox MB_YESNO "Do you want to remove all the remaining configuration files?" IDNO Done
 
 SetShellVarContext all
-  Delete "$APPDATA\Dev-Cpp\*.*"
+  ;Delete "$APPDATA\Dev-Cpp\*.*"
   
   SetShellVarContext current
-  Delete "$APPDATA\Dev-Cpp\*.*"
+ ; Delete "$APPDATA\Dev-Cpp\*.*"
   
   call un.GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
