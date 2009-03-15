@@ -3830,28 +3830,7 @@ begin
   built := false;
   prj := -1;
   flt := '';
-  BuildFilter(flt, ftOpen); // EAB: I don't get why this call "could" fail... if so it is not a runtime problem, but a code bug.
-                            // The code below was just repeating what BuildFilter was supposed to do.
-  {if not BuildFilter(flt, ftOpen) then
-  {if not BuildFilter(flt, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES]) then
-    begin
-        for j := 0 to packagesCount - 1 do
-        begin
-            filters := (plugins[delphi_plugins[j]] AS IPlug_In_BPL).GetFilters;
-            built := false;
-            for I := 0 to filters.Count - 1 do
-            begin
-    	        built := built and BuildFilter(flt, [filters.Strings[I]]);
-            end;
-        end;
-        if not built then
-        begin
-            flt := FLT_ALLFILES;
-            if assigned(fProject) then
-                if (fProject.Name = '') or (fProject.FileName ='') then
-                    flt := FLT_PROJECTS;
-        end;
-    end;   }
+  BuildFilter(flt, ftOpen);
   
   with dmMain.OpenDialog do
   begin
@@ -3959,7 +3938,7 @@ begin
 
   // save project layout anyway ;)
   fProject.CmdLineArgs := fCompiler.RunParams;
-  fProject.SaveLayout;
+  //fProject.SaveLayout;
 
 {$IFNDEF PRIVATE_BUILD}
   //TODO: Guru: Do we still need this? I've been running wxDev-C++ without this
@@ -4512,15 +4491,6 @@ var
 {$ENDIF} 
 begin
   if not assigned(fProject) then exit;
-  {filtersBuilt := BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_RES, FLT_HEADS]);
-  for i := 0 to packagesCount - 1 do
-  begin
-      filters := (plugins[delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
-      for j := 0 to filters.Count - 1 do
-          filtersBuilt := filtersBuilt and BuildFilter(flt, [filters.Strings[j]]);
-  end;
-  if not filtersBuilt then
-    flt := FLT_ALLFILES; //BuildFilter(flt, ftAll);   }
 
   flt := '';
   BuildFilter(flt, ftOpen);
@@ -9390,15 +9360,6 @@ begin
     if assigned(tempEditor) then
         CloseEditorInternal(tempEditor);
 end;
-
-{procedure CloseEditor(EditorFilename: String; extension: String);
-var
-  tempEditor:TEditor;
-begin
-    tempEditor := GetEditorFromFileName(ChangeFileExt(EditorFilename, extension), True);
-    if assigned(tempEditor) then
-        CloseEditorInternal(tempEditor);
-end; }
 
 function TMainForm.OpenUnitInProject(s: String): Boolean;
 begin

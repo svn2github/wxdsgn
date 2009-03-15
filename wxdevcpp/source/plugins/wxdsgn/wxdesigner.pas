@@ -1562,8 +1562,8 @@ begin
 
   //Ask the user what he wants to do if the project parameter is set to 'prompt' (2)
   if main.IsProjectAssigned and (insertProj = 2) then
-    if MessageBox(ownerForm.Handle, PChar(main.GetLangString(ID_MSG_NEWRES)), 'wxDev-C++', MB_ICONQUESTION or MB_YESNO) = 6 then
-      insertProj := 1
+    if MessageBox(ownerForm.Handle, PChar(main.GetLangString(ID_MSG_NEWFILE)), 'wxDev-C++', MB_ICONQUESTION or MB_YESNO) = 6 then
+      insertProj := 1                                   
     else
       insertProj := 0
   else if (not main.IsProjectAssigned) then

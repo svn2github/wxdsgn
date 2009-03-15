@@ -1589,7 +1589,9 @@ var
   e: TEditor;
 begin
   s := ChangeFileExt(Filename, '.layout');
-  if FileIsReadOnly(s) then
+//  SetCurrentDir(ExtractFilePath(Filename));   // EAB: FileIsReadOnly depends on current dir.
+
+  if FileExists(s) and (FileGetAttr(s) and faReadOnly <> 0) then
     exit;
   layIni := TIniFile.Create(s);
   try
@@ -1655,6 +1657,7 @@ begin
   fIniFile.Section := 'Project';
 end;
 
+// EAB: It looks like this function is doing redundant work after SaveLayout call.. however I won't touch it to prevent unexpected problems.
 procedure TProject.SaveUnitLayout(e: TEditor; Index: integer);
 var
   layIni: TIniFile;
