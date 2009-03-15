@@ -113,6 +113,7 @@ function ValidateFile(const FileName: string; const WorkPath: string;
 
 function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean; overload;
 function BuildFilter(var value: string; const _filters: array of string): boolean; overload;
+function AddFilter(var value: string; const _Filter: string): boolean;
 
 function CodeInstoStr(s: string): string;
 function StrtoCodeIns(s: string): string;
@@ -604,12 +605,12 @@ end;
 function BuildFilter(var value: string; const FLTStyle: TFILTERSET): boolean; overload;
 {$IFDEF PLUGIN_BUILD}
 var
-    b: Boolean;
+    b, c: Boolean;
     filters: TStringList;
     i, j: Integer;
 {$ENDIF}
 begin
-  value:= FLT_BASE +FLT_ALLFILES;
+  value:= FLT_BASE + FLT_ALLFILES;
   case FLTStyle of
    ftOpen:
    begin
@@ -619,7 +620,10 @@ begin
         begin
             filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
             for j := 0 to filters.Count - 1 do
-                b := b or BuildFilter(value, [filters.Strings[j]]);
+            begin
+                c := AddFilter(value, filters.Strings[j]);
+                b := b or c;
+            end;
         end;
         {$ENDIF}
         result:= b;
@@ -640,7 +644,10 @@ begin
         begin
             filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetSrcFilters;
             for j := 0 to filters.Count - 1 do
-                b := b or BuildFilter(value, [filters.Strings[j]]);
+            begin
+                c := AddFilter(value, filters.Strings[j]);
+                b := b or c;
+            end;
         end;
         {$ENDIF}
         result:= b;
@@ -653,7 +660,10 @@ begin
         begin
             filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
             for j := 0 to filters.Count - 1 do
-                b := b or BuildFilter(value, [filters.Strings[j]]);
+            begin
+                c := AddFilter(value, filters.Strings[j]);
+                b := b or c;
+            end;
         end;
         {$ENDIF}
         result:= b;   

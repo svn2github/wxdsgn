@@ -114,6 +114,7 @@ type
     function Retrieve_RightDock_Panels: TList;
     function Retrieve_BottomDock_Panels: TList;
     function Retrieve_Toolbars: TToolBar;
+    procedure SetEditorName(currentName:String; newName: string);
     function GetPluginName: String;
     function ConvertLibsToCurrentVersion(strValue: String): String;
     function GetXMLExtension: String;
@@ -558,6 +559,11 @@ end;
 function TPlug_In_DLL.Retrieve_Toolbars: TToolBar;
 begin
     Result := tool;
+end;
+
+procedure TPlug_In_DLL.SetEditorName(currentName:String; newName: string);
+begin
+    plugin_name := name;
 end;
 
 function TPlug_In_DLL.GetPluginName: String;

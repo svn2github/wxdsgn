@@ -2647,12 +2647,12 @@ begin
     begin
       BuildFilter(flt, [FLT_RES]);
 {$IFDEF PLUGIN_BUILD}
-      for j := 0 to packagesCount - 1 do
+      {for j := 0 to packagesCount - 1 do
       begin
         filters := (plugins[delphi_plugins[j]] AS IPlug_In_BPL).GetFilters;
         for I := 0 to filters.Count - 1 do
-            BuildFilter(flt, [filters.Strings[I]]);
-      end;
+            AddFilter(flt, [filters.Strings[I]]);
+      end;}
 {$ENDIF}
       dext := RC_EXT;
       CFilter := 2;
@@ -2670,6 +2670,11 @@ begin
     end;	
 	
 {$IFDEF PLUGIN_BUILD}
+  if e.FileName = '' then
+    editorName := e.TabSheet.Caption
+  else
+    editorName := e.FileName;
+
     for j := 0 to pluginsCount - 1 do
     begin
         if plugins[j].IsForm(editorName) then
@@ -2748,6 +2753,11 @@ begin
       if FileExists(s) and (MessageDlg(Lang[ID_MSG_FILEEXISTS], mtWarning, [mbYes, mbNo], 0) = mrNo) then
         Exit;
 
+{$IFDEF PLUGIN_BUILD}
+      activePluginProject := fProject.AssociatedPlugin;
+      if activePluginProject <> '' then
+        plugins[unit_plugins[activePluginProject]].SetEditorName(e.FileName, s);
+{$ENDIF}
       e.FileName := s;
 
       try
@@ -3744,9 +3754,9 @@ begin
       end;
       fCompiler.Project := fProject;
 
-      activePluginProject := fProject.AssociatedPlugin;
 
 {$IFDEF PLUGIN_BUILD}
+      activePluginProject := fProject.AssociatedPlugin;
       if activePluginProject <> '' then
         plugins[unit_plugins[activePluginProject]].NewProject(GetTemplate.Name);
 {$ENDIF}
@@ -3815,12 +3825,16 @@ var
   j, I: Integer;
 {$ENDIF}  
 begin
+
+
   built := false;
   prj := -1;
-  if not BuildFilter(flt, ftOpen) then
-  if not BuildFilter(flt, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES]) then
+  flt := '';
+  BuildFilter(flt, ftOpen); // EAB: I don't get why this call "could" fail... if so it is not a runtime problem, but a code bug.
+                            // The code below was just repeating what BuildFilter was supposed to do.
+  {if not BuildFilter(flt, ftOpen) then
+  {if not BuildFilter(flt, [FLT_PROJECTS, FLT_HEADS, FLT_CS, FLT_CPPS, FLT_RES]) then
     begin
-{$IFDEF PLUGIN_BUILD}
         for j := 0 to packagesCount - 1 do
         begin
             filters := (plugins[delphi_plugins[j]] AS IPlug_In_BPL).GetFilters;
@@ -3830,15 +3844,14 @@ begin
     	        built := built and BuildFilter(flt, [filters.Strings[I]]);
             end;
         end;
-        if not built then   // EAB TODO: Check if this is good enough for other plugins
+        if not built then
         begin
             flt := FLT_ALLFILES;
             if assigned(fProject) then
                 if (fProject.Name = '') or (fProject.FileName ='') then
                     flt := FLT_PROJECTS;
         end;
-{$ENDIF}
-    end;
+    end;   }
   
   with dmMain.OpenDialog do
   begin
@@ -4499,18 +4512,18 @@ var
 {$ENDIF} 
 begin
   if not assigned(fProject) then exit;
-
-  filtersBuilt := BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_RES, FLT_HEADS]);
-{$IFDEF PLUGIN_BUILD}
+  {filtersBuilt := BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_RES, FLT_HEADS]);
   for i := 0 to packagesCount - 1 do
   begin
       filters := (plugins[delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
       for j := 0 to filters.Count - 1 do
           filtersBuilt := filtersBuilt and BuildFilter(flt, [filters.Strings[j]]);
   end;
-{$ENDIF}
   if not filtersBuilt then
-    BuildFilter(flt, ftAll);
+    flt := FLT_ALLFILES; //BuildFilter(flt, ftAll);   }
+
+  flt := '';
+  BuildFilter(flt, ftOpen);
 
   with dmMain.OpenDialog do
   begin

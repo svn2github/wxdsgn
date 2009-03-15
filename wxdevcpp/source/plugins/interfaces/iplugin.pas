@@ -27,6 +27,7 @@ type
   procedure TestReport;
 
   //Properties
+  procedure SetEditorName(currentName:String; newName: string);
   function GetPluginName: String;
   function IsDelphiPlugin: Boolean;
   function ManagesUnit: Boolean;       // May be better to sepparate this into another type of plugin

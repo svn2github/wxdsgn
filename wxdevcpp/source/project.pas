@@ -380,37 +380,37 @@ begin
     begin
       BuildFilter(flt, [FLT_CPPS, FLT_CS, FLT_HEADS]);
 {$IFDEF PLUGIN_BUILD}        // <-- EAB TODO: Check for a potential problem with multiple plugins
-    pluginFilter := 3;    
-    for i := 0 to MainForm.packagesCount - 1 do
-    begin
-        filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
-        for j := 0 to filters.Count - 1 do
+        pluginFilter := 3;
+        for i := 0 to MainForm.packagesCount - 1 do
         begin
-            BuildFilter(flt, [filters.Strings[j]]);
-            pluginFilter := pluginFilter + 1;
+            filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
+            for j := 0 to filters.Count - 1 do
+            begin
+                AddFilter(flt, filters.Strings[j]);
+                pluginFilter := pluginFilter + 1;
+            end;
         end;
-    end;
-{$ENDIF}
-      DefaultExt := CPP_EXT;
-      CFilter := 3;
-      CppFilter := 2;
-      HFilter := 4;
+    {$ENDIF}
+          DefaultExt := CPP_EXT;
+          CFilter := 3;
+          CppFilter := 2;
+          HFilter := 4;
 
     end
     else
     begin
       BuildFilter(flt, [FLT_CS, FLT_CPPS, FLT_HEADS]);
 {$IFDEF PLUGIN_BUILD}
-    pluginFilter := 3;
-    for i := 0 to MainForm.packagesCount - 1 do
-    begin
-        filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
-        for j := 0 to filters.Count - 1 do
+        pluginFilter := 3;
+        for i := 0 to MainForm.packagesCount - 1 do
         begin
-            BuildFilter(flt, [filters.Strings[j]]);
-            pluginFilter := pluginFilter + 1;
+            filters := (MainForm.plugins[MainForm.delphi_plugins[i]] AS IPlug_In_BPL).GetFilters;
+            for j := 0 to filters.Count - 1 do
+            begin
+                AddFilter(flt, filters.Strings[j]);
+                pluginFilter := pluginFilter + 1;
+            end;
         end;
-    end;
 {$ENDIF}
       DefaultExt := C_EXT;
       CFilter := 2;
@@ -420,7 +420,7 @@ begin
 {$IFDEF PLUGIN_BUILD}
     for i := 0 to MainForm.pluginsCount - 1 do     // <-- EAB TODO: Check for a potential problem with multiple plugins
     begin
-        BuildFilter(flt, [MainForm.plugins[i].GetFilter(FileName)]);
+        AddFilter(flt, MainForm.plugins[i].GetFilter(FileName));
         DefaultExt := MainForm.plugins[i].Get_EXT(FileName);
         CFilter := 2;
         CppFilter := 2;

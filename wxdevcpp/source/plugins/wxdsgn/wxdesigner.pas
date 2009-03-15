@@ -289,6 +289,7 @@ type
     function Retrieve_Help_Menus: TList;
     function Retrieve_Toolbars: TToolBar;
     function Retrieve_Message_Tabs: TList;
+    procedure SetEditorName(currentName:String; newName: string);
     function GetPluginName: string;
     function GetChild: HWND;
     function GetXMLExtension: string;
@@ -1255,7 +1256,7 @@ begin
     begin
       Result := main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, WXFORM_EXT));
 
-      //Just Generate XPM's while saving the file  
+      //Just Generate XPM's while saving the file
       GenerateXPM(EditorFilename, false);
       if editors.Exists(EditorFilename) then
         (editors[ChangeFileExt(EditorFilename, WXFORM_EXT)] as TWXEditor).GetDesigner.CreateNewXPMs(EditorFilename);
@@ -1743,6 +1744,7 @@ begin
   editorNames[editors.ItemCount] := editorName;
   editors[editorName] := editor;
   editor.Init(tabSheet, text, DesignerPopup, True, editorName);
+  editor.editorNumber := editors.ItemCount - 1;
 end;
 
 function TWXDsgn.CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): Boolean;
@@ -4675,6 +4677,19 @@ end;
 function TWXDsgn.Retrieve_Message_Tabs: TList;
 begin
   Result := nil;
+end;
+
+procedure TWXDsgn.SetEditorName(currentName:String; newName: string);
+var
+  tempEditor: TWXEditor;
+begin
+  if editors.Exists(currentName) then
+  begin
+    tempEditor := editors[currentName] as TWXEditor;
+    editorNames[tempEditor.editorNumber] := newName;
+    tempEditor.FileName := newName;
+    editors.Rename(currentName, newName);
+  end;
 end;
 
 function TWXDsgn.GetPluginName: string;

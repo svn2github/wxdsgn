@@ -22,6 +22,7 @@ type
     procedure OnbtnFloatingDesigner_Click(Sender: TObject);
   public
     FileName: String;
+    editorNumber: Integer;
     btnFloatingDesigner: TButton;
     function GetDesigner: TfrmNewForm;
     procedure InitDesignerData(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet);
