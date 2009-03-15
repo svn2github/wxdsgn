@@ -24,7 +24,7 @@
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -515,15 +515,13 @@ Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
   ; Install SofT's wxDev-C++ programming book
   !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
 
-  ;StrCpy $WXBOOK_INSTALLED "Yes"
-  
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
   
   ; Install the custom help file menu for the IDE
   SetOutPath $APPDATA\Dev-Cpp
-  File /oname=devhelp.ini "additional\Help\devhelp.ini"
-
+  File "additional\Help\devhelp.ini"
+  
 SectionEnd
 
 SectionGroupEnd
@@ -715,25 +713,42 @@ Section "Create Quick Launch shortcut" SectionQuickLaunch
   
 SectionEnd
 
+
 Section "Remove all previous configuration files" SectionConfig
    SectionIn 1 2
 
 SetShellVarContext current
   ;Delete "$APPDATA\Dev-Cpp\*.*"
+  Delete "$APPDATA\Dev-Cpp\devcpp.ini"
+  Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
+  Delete "$APPDATA\Dev-Cpp\cache.ccc"
+  Delete "$APPDATA\Dev-Cpp\defaultcode.cfg"
+  Delete "$APPDATA\Dev-Cpp\devshortcuts.cfg"
+  Delete "$APPDATA\Dev-Cpp\classfolders.dcf"
+  Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
+  Delete "$APPDATA\Dev-Cpp\tools.ini"
+  Delete "$APPDATA\Dev-Cpp\devcpp.ci"
+  Delete "$APPDATA\Dev-Cpp\wxdevcpp.ini"
+  Delete "$APPDATA\Dev-Cpp\wxdevcpp.cfg"
+  Delete "$APPDATA\Dev-Cpp\wxdevcpp.ci"
+
 
 SetShellVarContext all
   ;Delete "$APPDATA\Dev-Cpp\*.*"
 
-  ;Delete "$APPDATA\Dev-Cpp\devcpp.ini"
-  ;Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
-  ;Delete "$APPDATA\Dev-Cpp\cache.ccc"
-  ;Delete "$APPDATA\Dev-Cpp\defaultcode.cfg"
-  ;Delete "$APPDATA\Dev-Cpp\devshortcuts.cfg"
-  ;Delete "$APPDATA\Dev-Cpp\classfolders.dcf"
-  ;Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
-  ;Delete "$APPDATA\Dev-Cpp\tools.ini"
-  ;Delete "$APPDATA\Dev-Cpp\devcpp.ci"
-  
+  Delete "$APPDATA\Dev-Cpp\devcpp.ini"
+  Delete "$APPDATA\Dev-Cpp\devcpp.cfg"
+  Delete "$APPDATA\Dev-Cpp\cache.ccc"
+  Delete "$APPDATA\Dev-Cpp\defaultcode.cfg"
+  Delete "$APPDATA\Dev-Cpp\devshortcuts.cfg"
+  Delete "$APPDATA\Dev-Cpp\classfolders.dcf"
+  Delete "$APPDATA\Dev-Cpp\mirrors.cfg"
+  Delete "$APPDATA\Dev-Cpp\tools.ini"
+  Delete "$APPDATA\Dev-Cpp\devcpp.ci"
+  Delete "$APPDATA\Dev-Cpp\wxdevcpp.ini"
+  Delete "$APPDATA\Dev-Cpp\wxdevcpp.cfg"
+  Delete "$APPDATA\Dev-Cpp\wxdevcpp.ci"
+
   Call GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
   Delete "$LOCAL_APPDATA\devcpp.cfg"
@@ -763,7 +778,7 @@ SetShellVarContext current
   Delete "$APPDATA\wxdevcpp.ini"
   Delete "$APPDATA\wxdevcpp.cfg"
   Delete "$APPDATA\wxdevcpp.ci"
-  
+
 SetShellVarContext all
 
   Delete "$APPDATA\devcpp.ini"
@@ -779,7 +794,7 @@ SetShellVarContext all
   Delete "$APPDATA\wxdevcpp.ini"
   Delete "$APPDATA\wxdevcpp.cfg"
   Delete "$APPDATA\wxdevcpp.ci"
-  
+
   Delete "$INSTDIR\devcpp.ini"
   Delete "$INSTDIR\devhelp.ini"
   Delete "$INSTDIR\devcpp.cfg"
@@ -793,9 +808,9 @@ SetShellVarContext all
   Delete "$INSTDIR\wxdevcpp.ini"
   Delete "$INSTDIR\wxdevcpp.cfg"
   Delete "$INSTDIR\wxdevcpp.ci"
-  
+
   SetOutPath $INSTDIR
-  
+
 SectionEnd
 
 ;--------------------------------
@@ -913,8 +928,9 @@ exists:
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
 
-!insertmacro MUI_STARTMENU_WRITE_END
 
+  
+!insertmacro MUI_STARTMENU_WRITE_END
 
 FunctionEnd
 
@@ -1070,10 +1086,10 @@ Section "Uninstall"
   Delete "$0\License.lnk"
   Delete "$0\Uninstall ${PROGRAM_NAME}.lnk"
   RMDir  "$0"
-${ELSE}
+ ${ENDIF}
+
   SetShellVarContext current
   Delete "$QUICKLAUNCH\${PROGRAM_NAME}.lnk"
-${ENDIF}
 
   ; Restore file associations
   StrCpy $0 ".dev"
@@ -1112,10 +1128,10 @@ ${ENDIF}
   MessageBox MB_YESNO "Do you want to remove all the remaining configuration files?" IDNO Done
 
 SetShellVarContext all
-  ;Delete "$APPDATA\Dev-Cpp\*.*"
+  Delete "$APPDATA\Dev-Cpp\*.*"
   
   SetShellVarContext current
- ; Delete "$APPDATA\Dev-Cpp\*.*"
+  Delete "$APPDATA\Dev-Cpp\*.*"
   
   call un.GetLocalAppData
   Delete "$LOCAL_APPDATA\devcpp.ini"
@@ -1196,7 +1212,6 @@ Function IsInternetAvailable
 
     ; IE3 not installed
     MessageBox MB_OK|MB_ICONINFORMATION "Please connect to the internet now."
-
     StrCpy $Have_Internet ${NO}
     
     connected:
