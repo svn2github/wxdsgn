@@ -5303,22 +5303,9 @@ procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
 {$IFDEF PLUGIN_BUILD}
 var
     i: Integer;
-    e: TEditor;
 {$ENDIF}
 begin
   case key of
-    89:            // EAB Workaround for SynEdit REDO problem
-      if ssCtrl in Shift then
-      begin
-          Key := 0;
-          e := GetEditor;
-          if assigned(e) then
-          begin
-            //if e.Text.CanRedo then
-            if RedoItem.Enabled then
-                e.Text.Redo
-          end;
-      end;
 {$IFDEF WIN32}
     VK_F6:
 {$ENDIF}
@@ -6063,12 +6050,9 @@ begin
         pluginCatched := false;
         for i := 0 to pluginsCount - 1 do
             pluginCatched := pluginCatched or plugins[i].MainPageChanged(e.FileName);
-        if pluginCatched then
-           e.SaveLastCaret
-        else
+        if not pluginCatched then
         begin
 {$ENDIF}
-            e.RestoreLastCaret;
             e.Text.SetFocus;
             if ClassBrowser1.Enabled then
               ClassBrowser1.CurrentFile := e.FileName;
@@ -7921,7 +7905,6 @@ procedure TMainForm.PageControlChanging(Sender: TObject;
   var AllowChange: Boolean);
 begin
   HideCodeToolTip;
-  //GetEditor(PageControl.ActivePageIndex).Text.Enabled := false;
 end;
 
 procedure TMainForm.mnuCVSClick(Sender: TObject);
@@ -8569,7 +8552,6 @@ begin
        e := MainForm.GetEditorFromFileName(filename);
        if Assigned(e) then
        begin
-         //e.Text.BeginUndoBlock;     EAB temp idea
          e.Text.BeginUpdate;
          try
             {$IFDEF PLUGIN_BUILD}
@@ -8579,9 +8561,7 @@ begin
          except
          end;
          e.Text.EndUpdate;
-         {e.Text.EndUndoBlock;
-         e.Text.UpdateCaret;}
-         e.Modified:=true;		 
+         e.Modified:=true;
          e.InsertString('', false);
          MainForm.StatusBar.Panels[3].Text := messageToDysplay;
        end;

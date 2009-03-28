@@ -86,8 +86,6 @@ type
     fLastParamFunc: TList;
     FCodeToolTip: TDevCodeToolTip;
     FAutoIndent: TSynAutoIndent;
-    lastCaretX : Integer;
-    lastCaretY : Integer;
     procedure CompletionTimer(Sender: TObject);
     procedure ToolTipTimer(Sender: TObject);
     procedure CodeRushLikeEditorKeyPress(Sender: TObject; var Key: Char);
@@ -186,8 +184,6 @@ type
     property Text: TSynEdit read fText write fText;
     property TabSheet: TTabSheet read fTabSheet write fTabSheet;
     property AssignedPlugin: string read fPlugin write fPlugin;
-    procedure SaveLastCaret;
-    procedure RestoreLastCaret;
 
     property CodeToolTip: TDevCodeToolTip read FCodeToolTip; // added on 23rd may 2004 by peter_
    
@@ -2252,23 +2248,6 @@ end;
 procedure TEditor.InvalidateGutter;
 begin
 fText.InvalidateGutter;
-end;
-
-procedure TEditor.SaveLastCaret;
-begin
-    //lastCaretX := fText.CaretX;
-    //lastCaretY := fText.CaretY;
-end;
-
-procedure TEditor.RestoreLastCaret;
-begin
-    if lastCaretX <> -1 then
-    begin
-        {fText.CaretX := lastCaretX;
-        fText.CaretY := lastCaretY;
-        lastCaretX := -1;
-        lastCaretY := -1;}
-    end;
 end;
 
 end.
