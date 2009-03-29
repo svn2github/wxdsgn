@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 454
-  Top = 265
-  Width = 719
+  Left = 508
+  Top = 283
+  Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
   Color = clBtnFace
@@ -1355,15 +1355,15 @@ object MainForm: TMainForm
   object MessageControl: TPageControl
     Left = 0
     Top = 261
-    Width = 703
+    Width = 636
     Height = 130
-    ActivePage = CompSheet
+    ActivePage = LogSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -1372,7 +1372,7 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 691
+        Width = 624
         Height = 98
         Align = alClient
         BevelOuter = bvRaised
@@ -1411,7 +1411,7 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 691
+        Width = 624
         Height = 97
         Align = alClient
         BevelKind = bkSoft
@@ -1485,19 +1485,19 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 466
+        Width = 399
         Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          466
+          399
           97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
-          Width = 474
-          Height = 76
+          Width = 386
+          Height = 77
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1513,11 +1513,11 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 691
+        Width = 624
         Height = 97
-        ActivePage = tabDebugOutput
+        ActivePage = tabWatches
         Align = alClient
-        TabIndex = 4
+        TabIndex = 3
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -1525,7 +1525,7 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 683
+            Width = 616
             Height = 69
             Align = alClient
             Columns = <
@@ -1560,7 +1560,7 @@ object MainForm: TMainForm
           object lvLocals: TListView
             Left = 0
             Top = 0
-            Width = 683
+            Width = 616
             Height = 69
             Align = alClient
             Columns = <
@@ -1588,7 +1588,7 @@ object MainForm: TMainForm
           object lvThreads: TListView
             Left = 0
             Top = 0
-            Width = 683
+            Width = 616
             Height = 69
             Align = alClient
             Columns = <
@@ -1615,7 +1615,7 @@ object MainForm: TMainForm
           object DebugTree: TTreeView
             Left = 0
             Top = 0
-            Width = 683
+            Width = 616
             Height = 69
             Align = alClient
             Images = dmMain.MenuImages_NewLook
@@ -1634,7 +1634,7 @@ object MainForm: TMainForm
           object DebugOutput: TMemo
             Left = 0
             Top = 22
-            Width = 683
+            Width = 616
             Height = 47
             Align = alClient
             Font.Charset = DEFAULT_CHARSET
@@ -1651,7 +1651,7 @@ object MainForm: TMainForm
           object DebuggerCmdPanel: TPanel
             Left = 0
             Top = 0
-            Width = 683
+            Width = 616
             Height = 22
             Align = alTop
             BevelOuter = bvNone
@@ -1691,7 +1691,7 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 691
+        Width = 624
         Height = 97
         Align = alClient
         BevelOuter = bvRaised
@@ -1735,7 +1735,7 @@ object MainForm: TMainForm
       object lvTodo: TListView
         Left = 0
         Top = 0
-        Width = 695
+        Width = 628
         Height = 60
         Align = alClient
         Checkboxes = True
@@ -1772,13 +1772,13 @@ object MainForm: TMainForm
       object TodoSettings: TPanel
         Left = 0
         Top = 60
-        Width = 695
+        Width = 628
         Height = 41
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
         DesignSize = (
-          695
+          628
           41)
         object lblTodoFilter: TLabel
           Left = 6
@@ -1824,7 +1824,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar_WIN32_EVENTS
     Left = 0
     Top = 16
-    Width = 703
+    Width = 636
     Height = 86
     Align = alTop
     AutoDock = False
@@ -2257,7 +2257,7 @@ object MainForm: TMainForm
   object StatusBar: TStatusBar
     Left = 0
     Top = 391
-    Width = 703
+    Width = 636
     Height = 19
     Panels = <
       item
@@ -2284,7 +2284,7 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 703
+    Width = 636
     Height = 16
     Align = alTop
     BevelOuter = bvNone
@@ -2294,10 +2294,10 @@ object MainForm: TMainForm
     TabOrder = 3
     Visible = False
     DesignSize = (
-      703
+      636
       16)
     object btnFullScrRevert: TSpeedButton
-      Left = 688
+      Left = 621
       Top = 0
       Width = 14
       Height = 14
@@ -2409,7 +2409,7 @@ object MainForm: TMainForm
   object PageControl: TPageControl
     Left = 192
     Top = 102
-    Width = 511
+    Width = 444
     Height = 159
     Align = alClient
     PopupMenu = EditorPopupMenu
@@ -2596,6 +2596,10 @@ object MainForm: TMainForm
       object GotoBookmarksItem: TMenuItem
         Caption = '&Goto Bookmarks'
         ImageIndex = 20
+      end
+      object DeleteLine1: TMenuItem
+        Action = actDeleteLine
+        ShortCut = 16473
       end
       object N5: TMenuItem
         Caption = '-'
@@ -3521,6 +3525,12 @@ object MainForm: TMainForm
       ImageIndex = 3
       OnExecute = actNewTemplateExecute
       OnUpdate = actNewTemplateUpdate
+    end
+    object actDeleteLine: TAction
+      Category = 'Edit'
+      Caption = 'Delete Line'
+      OnExecute = actDeleteLineExecute
+      OnUpdate = actUpdateEmptyEditor
     end
     object actOpen: TAction
       Tag = 1

@@ -2,9 +2,9 @@ object dmMain: TdmMain
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Left = 400
-  Top = 286
-  Height = 506
+  Left = 850
+  Top = 364
+  Height = 492
   Width = 590
   object Cpp: TSynCppSyn
     DefaultFilter = 'C++ files (*.cpp,*.h,*.hpp)|*.cpp;*.h;*.hpp'

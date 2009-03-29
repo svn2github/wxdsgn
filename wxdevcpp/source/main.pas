@@ -686,6 +686,8 @@ type
     FindResultsMessagesPanelItem: TMenuItem;
     ToDoListMessagesPanelItem: TMenuItem;
     ShowPluginPanelsItem: TMenuItem;
+    DeleteLine1: TMenuItem;
+    actDeleteLine: TAction;
 
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -726,6 +728,7 @@ type
     procedure actPrintSUExecute(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure actUndoExecute(Sender: TObject);
+    procedure actDeleteLineExecute(Sender: TObject);
     procedure actRedoExecute(Sender: TObject);
     procedure actCutExecute(Sender: TObject);
     procedure actCopyExecute(Sender: TObject);
@@ -4197,6 +4200,17 @@ begin
     e.Text.ClearSelection;
 end;
 
+procedure TMainForm.actDeleteLineExecute(Sender: TObject);
+var
+  e: TEditor;
+begin
+    e := GetEditor;
+    if assigned(e) then
+    begin
+        e.Text.ExecuteCommand(507, Char('0'), Pointer(0));   // 507: delete line
+    end;
+end;
+
 procedure TMainForm.actStatusbarExecute(Sender: TObject);
 begin
   devData.Statusbar := actStatusbar.Checked;
@@ -5306,6 +5320,20 @@ var
 {$ENDIF}
 begin
   case key of
+  // EAB Bypass SynEdit Delete Line event
+  89:
+ if ssCtrl in Shift then
+ begin
+     Key := 0;
+    { e := GetEditor;
+     if assigned(e) then
+     begin
+       if e.Text.CanRedo then
+       if RedoItem.Enabled then
+           e.Text.Redo
+     end; }
+ end;
+
 {$IFDEF WIN32}
     VK_F6:
 {$ENDIF}
