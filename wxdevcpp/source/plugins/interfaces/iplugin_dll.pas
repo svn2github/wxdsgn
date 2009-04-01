@@ -102,6 +102,7 @@ type
     function GetDefaultText(FileName: String): String;
     function GetFilter(editorName: String): String;
     function Get_EXT(editorName: String): String;
+    function Get_EXT_Index(editorName: String): Integer;
     procedure CreateNewXPMs(s:String);
     procedure NewProject(s: String);
     function MainPageChanged(activeEditorName: String): Boolean;
@@ -425,6 +426,11 @@ begin
         temp := self.C_Get_EXT(PChar(editorName));
     res := temp;
     Result := res;
+end;
+
+function TPlug_In_DLL.Get_EXT_Index(editorName: String): Integer;
+begin
+    Result := 0;
 end;
 
 procedure TPlug_In_DLL.CreateNewXPMs(s:String);

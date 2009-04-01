@@ -560,7 +560,7 @@ begin
     Format('%s = new %s(%s, %s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
-    GetCppString(self.Text), GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+    'wxEmptyString', GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
  end;//end of if xrc
 
   SetWxFileName(self.FWx_LoadFromFile.FstrFileNameValue);

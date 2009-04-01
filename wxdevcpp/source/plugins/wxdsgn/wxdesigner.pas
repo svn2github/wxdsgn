@@ -247,6 +247,7 @@ type
     function GetSrcFilters: TStringList;
     function GetFilter(editorName: string): string;
     function Get_EXT(editorName: string): string;
+    function Get_EXT_Index(editorName: String): Integer;
     procedure NewProject(s: string);
     procedure GenerateXPM(s: string; b: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1237,6 +1238,14 @@ begin
     Result := XRC_EXT
   else
     Result := WXFORM_EXT;
+end;
+
+function TWXDsgn.Get_EXT_Index(editorName: String): Integer;
+begin
+  if isXRCExt(editorName) then
+    Result := 8     // EAB: this should be done dinamically; giving plugins the last current index at creation time.
+  else
+    Result := 7;
 end;
 
 function TWXDsgn.SaveFile(EditorFilename: string): Boolean;

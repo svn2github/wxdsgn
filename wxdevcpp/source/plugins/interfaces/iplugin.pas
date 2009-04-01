@@ -69,6 +69,7 @@ type
   function IsSource(FileName: String): Boolean;
   function GetFilter(editorName: String): String;
   function Get_EXT(editorName: String): String;
+  function Get_EXT_Index(editorName: String): Integer;
   procedure CreateNewXPMs(strFileName:String);
   procedure NewProject(s: String);
   function ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean; 

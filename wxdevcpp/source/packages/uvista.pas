@@ -46,6 +46,7 @@ function OpenSaveFileDialog(Parent: TWinControl;
                             Title: string;
                             var FileName: String;
                             var Files: TStrings;
+                            FilterIndex: Integer;                            
                             ReadOnly,
                             OverwritePrompt,
                             HideReadOnly,
@@ -384,6 +385,7 @@ function OpenSaveFileDialog(Parent: TWinControl;   // EAB Improved to work bette
                             Title: string;
                             var FileName: String;
                             var Files: TStrings;
+                            FilterIndex: Integer;
                             ReadOnly,
                             OverwritePrompt,
                             HideReadOnly,
@@ -432,6 +434,7 @@ begin
     lpstrFilter := PChar(ReplaceStr(Filter, '|', #0)+#0#0);
     if DefExt <> '' then
       lpstrDefExt := PChar(DefExt);
+    nFilterIndex := FilterIndex;
   end;
 
   if ReadOnly then ofn.Flags := ofn.Flags or OFN_READONLY;

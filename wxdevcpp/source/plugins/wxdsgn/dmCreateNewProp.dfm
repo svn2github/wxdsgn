@@ -93,7 +93,6 @@ object frmCreateFormProp: TfrmCreateFormProp
     Top = 56
     Width = 260
     Height = 21
-    ReadOnly = True
     TabOrder = 2
   end
   object txtClassName: TEdit

@@ -79,7 +79,7 @@ begin
     if IsWindowsVista then
     begin
         fileN := FileName;
-        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files,
+        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files, FilterIndex,
             (ofReadOnly in Options),
             (ofOverwritePrompt in Options),
             (ofHideReadOnly in Options),
@@ -149,7 +149,7 @@ begin
     if IsWindowsVista then
     begin
         fileN := FileName;
-        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files,
+        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files, FilterIndex,
             (ofReadOnly in Options),
             (ofOverwritePrompt in Options),
             (ofHideReadOnly in Options),

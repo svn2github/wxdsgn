@@ -2609,7 +2609,6 @@ var
   boolIsRC:Boolean;
   ccFile,hfile:String;
 {$IFDEF PLUGIN_BUILD}
-  j: Integer;
   filters: TStringList;
   editorName: String;
 {$ENDIF}  
@@ -2649,14 +2648,6 @@ begin
     if e.IsRes then
     begin
       BuildFilter(flt, [FLT_RES]);
-{$IFDEF PLUGIN_BUILD}
-      {for j := 0 to packagesCount - 1 do
-      begin
-        filters := (plugins[delphi_plugins[j]] AS IPlug_In_BPL).GetFilters;
-        for I := 0 to filters.Count - 1 do
-            AddFilter(flt, [filters.Strings[I]]);
-      end;}
-{$ENDIF}
       dext := RC_EXT;
       CFilter := 2;
       CppFilter := 2;
@@ -2678,12 +2669,12 @@ begin
   else
     editorName := e.FileName;
 
-    for j := 0 to pluginsCount - 1 do
+    if e.AssignedPlugin <> '' then
     begin
-        if plugins[j].IsForm(editorName) then
+        if plugins[unit_plugins[e.AssignedPlugin]].IsForm(editorName) then
         begin
-            BuildFilter(flt, [plugins[j].GetFilter(editorName)]);
-            dext := plugins[j].Get_EXT(editorName);
+            BuildFilter(flt, [plugins[unit_plugins[e.AssignedPlugin]].GetFilter(editorName)]);
+            dext := plugins[unit_plugins[e.AssignedPlugin]].Get_EXT(editorName);
             CFilter := 2;
             CppFilter := 2;
             HFilter := 2;
@@ -2700,11 +2691,17 @@ begin
     else
       dext := CPP_EXT;
 {$IFDEF PLUGIN_BUILD}
-    for j := 0 to pluginsCount - 1 do
+
+  if e.FileName = '' then
+    editorName := e.TabSheet.Caption
+  else
+    editorName := e.FileName;
+
+    if e.AssignedPlugin <> '' then
     begin
-        if plugins[j].IsForm(editorName) then
+        if plugins[unit_plugins[e.AssignedPlugin]].IsForm(editorName) then
         begin
-            dext := plugins[j].Get_EXT(editorName);
+            dext := plugins[unit_plugins[e.AssignedPlugin]].Get_EXT(editorName);
         end;
     end;
 {$ENDIF}
@@ -2724,11 +2721,11 @@ begin
 
   with dmMain.SaveDialog do
   begin
-    DefaultExt := dext;   // EAB: this was missing I guess, but not sure...
     Title := Lang[ID_NV_SAVEFILE];
     Filter := flt;
+    DefaultExt := dext;   // EAB: this was missing I guess, but not sure...
 
-    // select appropriate filter
+    // select appropriate filter       
     if (CompareText(ExtractFileExt(s), '.h') = 0) or
        (CompareText(ExtractFileExt(s), '.hpp') = 0) or
        (CompareText(ExtractFileExt(s), '.hh') = 0) then
@@ -2742,6 +2739,14 @@ begin
     end
     else
       FilterIndex := CppFilter;
+
+    if e.AssignedPlugin <> '' then
+    begin
+        if plugins[unit_plugins[e.AssignedPlugin]].IsForm(editorName) then
+        begin
+            FilterIndex := plugins[unit_plugins[e.AssignedPlugin]].Get_EXT_Index(editorName);
+        end;
+    end;
 
     FileName := s;
     s := ExtractFilePath(s);
@@ -2757,9 +2762,16 @@ begin
         Exit;
 
 {$IFDEF PLUGIN_BUILD}
+
+    {if Assigned(fProject) then
+    begin
       activePluginProject := fProject.AssociatedPlugin;
       if activePluginProject <> '' then
         plugins[unit_plugins[activePluginProject]].SetEditorName(e.FileName, s);
+    end
+    else }if e.AssignedPlugin <> '' then
+        plugins[unit_plugins[e.AssignedPlugin]].SetEditorName(e.FileName, s);
+
 {$ENDIF}
       e.FileName := s;
 
@@ -7093,8 +7105,8 @@ procedure TMainForm.UpdateAppTitle;
 var
     editorName: String;
 begin
+  editorName := self.GetActiveEditorName;
   if Assigned(fProject) then begin
-    editorName := self.GetActiveEditorName;
     if (editorName = '') then
         Caption := Format('%s  - [ %s ]', [DEVCPP, fProject.Name])
     else
@@ -7102,7 +7114,10 @@ begin
     Application.Title := Format('%s [%s]', [DEVCPP, fProject.Name]);        //ExtractFilename(fProject.Filename)]);
   end
   else begin
-    Caption := Format('%s', [DEVCPP]);
+    if (editorName = '') then
+        Caption := Format('%s', [DEVCPP])
+    else
+        Caption := Format('%s  - [ %s ]', [DEVCPP, editorName]);
     Application.Title := Format('%s', [DEVCPP]);
   end;
 end;
