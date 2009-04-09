@@ -224,7 +224,7 @@ object DesignerForm: TDesignerForm
         Top = 4
         Width = 125
         Height = 117
-        Caption = 'Behaviour'
+        Caption = 'Behavior'
         TabOrder = 2
         object cbFloating: TCheckBox
           Left = 8
