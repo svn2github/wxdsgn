@@ -1,0 +1,80 @@
+[Template]
+ver=3
+Name=OpenGL
+Icon=OpenGL.ico
+Description=A basic OpenGL program
+Catagory=MultiMedia
+ProfilesCount = 2
+
+[Unit0]
+CName=main.c
+CppName=main.cpp
+C=OpenGL.txt
+Cpp=OpenGL.txt
+
+[Project]
+UnitCount=1
+Type=0
+Name=OpenGL Demo
+PchHead=-1
+PchSource=-1
+Ver=3
+ProfilesCount=2
+ProfileIndex=0
+Folders=
+
+[Profile0]
+ProfileName=Mingw 3.4.5
+Type=0
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=
+ResourceIncludes=
+MakeIncludes=
+Compiler=
+CppCompiler=
+Linker=-lopengl32_@@_-lglu32 _@@_-lgdi32_@@_-mwindows_@@_
+PreprocDefines=
+CompilerSettings=0000000000000000000000
+Icon=
+ExeOutput=Output\MingW
+ObjectOutput=Objects\MingW
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=0
+compilerType=0
+
+[Profile1]
+ProfileName=MS VC++ 2005
+Type=0
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=
+ResourceIncludes=
+MakeIncludes=
+Compiler=
+CppCompiler=
+Linker=opengl32.lib_@@_glu32.lib _@@_gdi32.lib_@@_kernel32.lib_@@_user32.lib_@@_
+PreprocDefines=
+CompilerSettings=000000000000000000000000000000000000
+Icon=
+ExeOutput=Output\MSVC++2005
+ObjectOutput=Objects\MSVC++2005
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=1
+compilerType=1

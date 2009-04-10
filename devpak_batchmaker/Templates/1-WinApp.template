@@ -1,0 +1,52 @@
+[Template]
+ver=3
+Name=Windows Application
+IconIndex=0
+Description=A standard Windows application
+Catagory=Basic
+ProfilesCount = 1
+
+[Unit0]
+CName=main.c
+CppName=main.cpp
+C=WinApp_c.txt
+Cpp=WinApp_c.txt
+
+[Project]
+UnitCount=1
+Type=0
+Name=Windows App
+PchHead=-1
+PchSource=-1
+Ver=3
+ProfilesCount = 1
+ProfileIndex=0
+Folders=
+
+[Profile0]
+ProfileName=Mingw 3.4.5
+Type=0
+ObjFiles=
+Includes=
+Libs=
+PrivateResource=
+ResourceIncludes=
+MakeIncludes=
+Compiler=
+CppCompiler=
+Linker=-mwindows_@@_
+PreprocDefines=
+CompilerSettings=0000000000000000000000
+Icon=
+ExeOutput=Output\MingW
+ObjectOutput=Objects\MingW
+OverrideOutput=0
+OverrideOutputName=
+HostApplication=
+CommandLine=
+UseCustomMakefile=0
+CustomMakefile=
+IncludeVersionInfo=0
+SupportXPThemes=0
+CompilerSet=0
+compilerType=0

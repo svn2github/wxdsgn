@@ -1,0 +1,24 @@
+//---------------------------------------------------------------------------
+//
+// Name:        
+// Author:      
+// Created:     
+// Description: 
+//
+//---------------------------------------------------------------------------
+
+#ifndef STATICLIBFUNCS_H
+#define STATICLIBFUNCS_H
+
+namespace StaticLibFuncs
+{ 
+    class MyStaticFuncs
+    {
+        public:
+            static double FuncA(double a, double b);
+            static double FuncB(double a, double b);
+        
+    };
+}
+
+#endif

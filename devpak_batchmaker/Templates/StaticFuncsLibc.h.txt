@@ -1,0 +1,15 @@
+//---------------------------------------------------------------------------
+//
+// Name:        
+// Author:      
+// Created:     
+// Description: 
+//
+//---------------------------------------------------------------------------
+#ifndef STATICLIBFUNCS_H
+#define STATICLIBFUNCS_H
+
+double FuncA(double a, double b);
+double FuncB(double a, double b);
+
+#endif
