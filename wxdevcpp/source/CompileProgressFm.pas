@@ -59,9 +59,11 @@ type
     Bevel4: TBevel;
     lblElapsed: TLabel;
     timeTimer: TTimer;
+    chkSelfClose: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure timeTimerTimer(Sender: TObject);
+    procedure chkSelfCloseClick(Sender: TObject);
   private
     { Private declarations }
     StartTime: Cardinal;
@@ -84,6 +86,7 @@ begin
   lblFile.Font.Style := [fsBold];
   PageControl1.ActivePageIndex := 0;
   XPMenu.Active := devData.XPTheme;
+  chkSelfClose.Checked  := devData.AutoCloseProgress;
   timeTimer.OnTimer(timeTimer);
 end;
 
@@ -122,6 +125,11 @@ begin
     Result := Format('%d minute%s %d second%s', [Minutes, GetPlural(Minutes), Seconds, GetPlural(Seconds)])
   else
     Result := Format('%d second%s', [Seconds, GetPlural(Seconds)]);
+end;
+
+procedure TCompileProgressForm.chkSelfCloseClick(Sender: TObject);
+begin
+    devData.AutoCloseProgress := chkSelfClose.Checked;
 end;
 
 end.

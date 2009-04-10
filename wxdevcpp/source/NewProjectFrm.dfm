@@ -1,12 +1,12 @@
 object NewProjectForm: TNewProjectForm
   Left = 349
   Top = 264
+  Width = 575
+  Height = 310
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
   Caption = 'New Project'
-  ClientHeight = 276
-  ClientWidth = 508
   Color = clBtnFace
+  Constraints.MinWidth = 400
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -17,22 +17,22 @@ object NewProjectForm: TNewProjectForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    508
-    276)
+    559
+    274)
   PixelsPerInch = 96
   TextHeight = 13
   object lblPrjName: TLabel
     Left = 80
-    Top = 59
-    Width = 34
+    Top = 57
+    Width = 85
     Height = 13
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Name: '
   end
   object pnlDesc: TPanel
     Left = 8
-    Top = 122
-    Width = 495
+    Top = 120
+    Width = 545
     Height = 45
     Anchors = [akLeft, akRight, akBottom]
     Color = clWindow
@@ -53,8 +53,8 @@ object NewProjectForm: TNewProjectForm
     end
   end
   object btnOk: TBitBtn
-    Left = 249
-    Top = 248
+    Left = 300
+    Top = 246
     Width = 80
     Height = 23
     Anchors = [akRight, akBottom]
@@ -83,8 +83,8 @@ object NewProjectForm: TNewProjectForm
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 334
-    Top = 248
+    Left = 385
+    Top = 246
     Width = 80
     Height = 23
     Anchors = [akRight, akBottom]
@@ -96,8 +96,8 @@ object NewProjectForm: TNewProjectForm
   object TabsMain: TdevTabs
     Left = 7
     Top = 8
-    Width = 495
-    Height = 114
+    Width = 546
+    Height = 112
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvLowered
     Tabs.Strings = (
@@ -107,9 +107,12 @@ object NewProjectForm: TNewProjectForm
     object ProjView: TListView
       Left = 0
       Top = 23
-      Width = 495
-      Height = 91
+      Width = 546
+      Height = 89
       Align = alClient
+      BevelEdges = [beRight]
+      BevelInner = bvNone
+      BevelKind = bkFlat
       BorderStyle = bsNone
       Color = clWhite
       Columns = <>
@@ -124,8 +127,8 @@ object NewProjectForm: TNewProjectForm
     end
   end
   object btnHelp: TBitBtn
-    Left = 429
-    Top = 248
+    Left = 480
+    Top = 246
     Width = 75
     Height = 23
     Anchors = [akRight, akBottom]
@@ -135,14 +138,15 @@ object NewProjectForm: TNewProjectForm
   end
   object Label2: TGroupBox
     Left = 8
-    Top = 173
-    Width = 495
-    Height = 71
+    Top = 172
+    Width = 547
+    Height = 69
+    Anchors = [akLeft, akRight, akBottom]
     Caption = 'Project Options'
     TabOrder = 5
     DesignSize = (
-      495
-      71)
+      547
+      69)
     object Label1: TLabel
       Left = 7
       Top = 15
@@ -151,14 +155,15 @@ object NewProjectForm: TNewProjectForm
       Caption = 'Name:'
     end
     object GroupBox1: TGroupBox
-      Left = 268
-      Top = 14
+      Left = 320
+      Top = 10
       Width = 219
-      Height = 48
+      Height = 50
+      Anchors = [akTop, akRight, akBottom]
       TabOrder = 0
       object rbC: TRadioButton
         Left = 7
-        Top = 5
+        Top = 9
         Width = 100
         Height = 17
         Caption = '&C project'
@@ -166,7 +171,7 @@ object NewProjectForm: TNewProjectForm
       end
       object cbDefault: TCheckBox
         Left = 7
-        Top = 25
+        Top = 29
         Width = 201
         Height = 17
         Caption = '&Make default language'
@@ -174,7 +179,7 @@ object NewProjectForm: TNewProjectForm
       end
       object rbCpp: TRadioButton
         Left = 110
-        Top = 5
+        Top = 9
         Width = 100
         Height = 17
         Caption = 'C&++ project'
@@ -184,11 +189,11 @@ object NewProjectForm: TNewProjectForm
       end
     end
     object edProjectName: TEdit
-      Left = 7
-      Top = 30
-      Width = 250
+      Left = 11
+      Top = 29
+      Width = 302
       Height = 21
-      Anchors = []
+      Anchors = [akLeft, akRight]
       AutoSize = False
       TabOrder = 1
     end

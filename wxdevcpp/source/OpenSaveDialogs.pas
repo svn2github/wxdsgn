@@ -3,7 +3,7 @@ unit OpenSaveDialogs;
 interface
 
 uses
-    Controls, SysUtils, Classes, Dialogs;
+    Windows, Controls, SysUtils, Classes, Dialogs, Forms, ShellAPI, ShlObj;
 
 type
     TOpenDialogEx = class(TObject)
@@ -52,10 +52,17 @@ public
     destructor Destroy; override;
 end;
 
+function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): integer stdcall;
+
+function BrowseDialog(const Title: string; const Flag: integer; const initialFolder: String = '' ): string;
+
 implementation
 
 uses
     uvista;
+
+var
+  lg_StartFolder: String;
 
 constructor TOpenDialogEx.Create(AOwner: TWinControl);
 begin
@@ -195,6 +202,58 @@ destructor TSaveDialogEx.Destroy;
 begin
     Files.Free;
     SaveDialog.Free;
+end;
+
+
+function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): integer stdcall;
+var
+  wa, rect : TRect;
+  dialogPT : TPoint;
+begin
+  //center in work area
+  if uMsg = BFFM_INITIALIZED then
+  begin
+    SendMessage(Wnd,BFFM_SETSELECTION, 1, Integer(@lg_StartFolder[1]));
+    wa := Screen.WorkAreaRect;
+    GetWindowRect(Wnd, Rect);
+    dialogPT.X := ((wa.Right-wa.Left) div 2) - 
+                  ((rect.Right-rect.Left) div 2);
+    dialogPT.Y := ((wa.Bottom-wa.Top) div 2) - 
+                  ((rect.Bottom-rect.Top) div 2);
+    MoveWindow(Wnd,
+               dialogPT.X,
+               dialogPT.Y,
+               Rect.Right - Rect.Left,
+               Rect.Bottom - Rect.Top,
+               True);
+  end;
+
+  Result := 0;
+end; (*BrowseDialogCallBack*)
+
+function BrowseDialog(const Title: string; const Flag: integer; const initialFolder: String = '' ): string;
+var
+  lpItemID : PItemIDList;
+  BrowseInfo : TBrowseInfo;
+  DisplayName : array[0..MAX_PATH] of char;
+  TempPath : array[0..MAX_PATH] of char;
+begin
+  Result:='';
+  FillChar(BrowseInfo, sizeof(TBrowseInfo), #0);
+  with BrowseInfo do begin
+    hwndOwner := Application.Handle;
+    lg_StartFolder := initialFolder;
+    pszDisplayName := @DisplayName;
+    lpszTitle := PChar(Title);
+    ulFlags := Flag;
+    lpfn := BrowseDialogCallBack;
+  end;
+  lpItemID := SHBrowseForFolder(BrowseInfo);
+  if lpItemId <> nil then begin
+    SHGetPathFromIDList(lpItemID, TempPath);
+    Result := TempPath;
+    GlobalFreePtr(lpItemID);
+  end;
 end;
 
 end.

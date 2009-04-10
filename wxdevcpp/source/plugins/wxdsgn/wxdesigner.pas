@@ -1520,10 +1520,12 @@ begin
   //Decide where the file will be stored
   if insertProj = 1 then
     Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(ExtractFileDir(main.GetProjectFileName))
-  else if main.GetDevDirsDefault <> '' then
+  else
+    Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(LocalAppDataPath)
+  {else if main.GetDevDirsDefault <> '' then
     Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(main.GetDevDirsDefault)
   else if Trim(Result.txtSaveTo.Text) = '' then
-    Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));
+    Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));}
 end;
 
 procedure TWXDsgn.CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: integer);

@@ -1,6 +1,6 @@
 object CompileProgressForm: TCompileProgressForm
-  Left = 318
-  Top = 275
+  Left = 508
+  Top = 273
   BorderIcons = []
   BorderStyle = bsToolWindow
   Caption = 'Compile Progress'
@@ -224,6 +224,15 @@ object CompileProgressForm: TCompileProgressForm
     Max = 100
     TabOrder = 2
   end
+  object chkSelfClose: TCheckBox
+    Left = 8
+    Top = 216
+    Width = 121
+    Height = 17
+    Caption = 'Close when done'
+    TabOrder = 3
+    OnClick = chkSelfCloseClick
+  end
   object XPMenu: TXPMenu
     DimLevel = 30
     GrayLevel = 10
@@ -252,12 +261,12 @@ object CompileProgressForm: TCompileProgressForm
     AutoDetect = False
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
-    Left = 4
+    Left = 260
     Top = 208
   end
   object timeTimer: TTimer
     OnTimer = timeTimerTimer
-    Left = 32
+    Left = 224
     Top = 208
   end
 end

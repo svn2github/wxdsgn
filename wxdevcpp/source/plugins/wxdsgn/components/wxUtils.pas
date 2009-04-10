@@ -38,7 +38,7 @@ uses
   WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
   UPicEdit, UStrings, DbugIntf, TypInfo, Menus, UStatusbar, UValidator,
-  JvInspector, wxversion, DateUtils, xprocs, ShellAPI;
+  JvInspector, wxversion, DateUtils, xprocs, ShellAPI, SHFolder;
 
 const
   IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
@@ -83,6 +83,8 @@ function iswxForm(FileName: string): Boolean;
 //function isRCExt(FileName: string): boolean;
 function isXRCExt(FileName: string): boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
+
+function LocalAppDataPath : string;
 
 type
   TWxPoint = class(TComponent)
@@ -7620,6 +7622,16 @@ end;
 function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
 begin
   Result := ToolbarPane in Wx_Aui_Pane_Style;
+end;
+
+function LocalAppDataPath : string;
+const
+    CSIDL_PERSONAL = $0005; { My Documents.  This is equivalent to CSIDL_MYDOCUMENTS in XP and above }
+var
+   path: array [0..MaxChar] of char;
+begin
+   SHGetFolderPath(0,CSIDL_PERSONAL,0,CSIDL_PERSONAL,@path[0]) ;
+   Result:= path;
 end;
 
 end.

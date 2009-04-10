@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvAppStorage,
   JvAppRegistryStorage, JvComponent, FileCtrl, JvFormPlacement,
-  XPMenu, JvComponentBase, wxversion, wxUtils;
+  XPMenu, JvComponentBase, wxversion, wxUtils, OpenSaveDialogs, ShellAPI, ShlObj;
 type
   TfrmCreateFormProp = class(TForm)
     Label1: TLabel;
@@ -95,7 +95,9 @@ var
 dir : string;
 begin
   dir := txtSaveTo.text;
-  if SelectDirectory('Select a directory', '', dir) then
+
+  dir := BrowseDialog('Select a folder', (BIF_EDITBOX or $40), dir); // $40 = BIF_NEWDIALOGSTYLE
+  if dir <> '' then
     txtSaveTo.text := dir;
 end;
 
