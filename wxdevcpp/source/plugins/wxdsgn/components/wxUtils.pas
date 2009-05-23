@@ -69,6 +69,8 @@ var
   StringFormat: string;
   UseDefaultPos: Boolean;
   UseDefaultSize: Boolean;
+  UseIndividEnums: Boolean;
+
    XRCGEN:Boolean;//NUKLEAR ZELPH
 
   //type
@@ -887,6 +889,7 @@ function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
 function GetWxPosition(Left: Integer; Top: Integer): string;
 function GetWxSize(Width: Integer; Height: Integer): string;
+function GetWxEnum(Wx_IDValue: longint; Wx_IDName: String): string;
 function GetCommentString(str: string): string;
 function GetWxFontDeclaration(fnt: TFont): string;
 function GetDesignerFormName(cntrl: TControl): string;
@@ -5216,6 +5219,21 @@ begin
     Result := 'wxDefaultSize'
   else
     Result := Format('wxSize(%d, %d)',[Width, Height]);
+end;
+
+function GetWxEnum(Wx_IDValue: longint; Wx_IDName: String): string;
+begin
+  Result := '';
+  if (UseIndividEnums = True) then
+  begin
+    if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+    Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
+  end
+  else
+  begin
+    if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
+    Result := Format('%s, ', [Wx_IDName]);
+  end;
 end;
 
 function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;

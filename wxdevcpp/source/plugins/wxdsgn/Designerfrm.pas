@@ -635,6 +635,14 @@ begin
               strClassName, intBlockStart, intBlockEnd, strIDValue);
           end;
       end;
+    if not (UseIndividEnums) then
+    begin
+        strIDValue := 'ID_DUMMY_START = 1000,';
+        strLst.Add(strIDValue);
+        AddClassNameEnumControlIndentifiers(synEdit,
+              strClassName, intBlockStart, intBlockEnd, strIDValue);
+
+    end;
     strLst.Destroy;
   end;
 

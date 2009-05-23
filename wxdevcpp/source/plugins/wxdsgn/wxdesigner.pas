@@ -822,6 +822,7 @@ begin
       StringFormat := 'wxT';
     UseDefaultPos := ini.ReadBool('wxWidgets', 'cbUseDefaultPos', False); // ?? UseDefaultPos);
     UseDefaultSize := ini.ReadBool('wxWidgets', 'cbUseDefaultSize', False); //?? UseDefaultSize);
+    UseIndividEnums := ini.ReadBool('wxWidgets', 'cbIndividualEnums', True); //?? UseIndividEnums);
 
     if ini.ReadBool('wxWidgets', 'cbControlHints', true) then
       ELDesigner1.ShowingHints := ELDesigner1.ShowingHints + [htControl]

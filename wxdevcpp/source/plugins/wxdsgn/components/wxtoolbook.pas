@@ -280,9 +280,7 @@ end;
 
 function TWxToolbook.GenerateEnumControlIDs: string;
 begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
+  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
 end;
 
 function TWxToolbook.GenerateControlIDs: string;

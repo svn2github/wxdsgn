@@ -246,6 +246,7 @@ var
         strData := submnu.Items[J].Wx_IDName;
 
         //Do we want to specify an ID?
+        if (UseIndividEnums) then
         if submnu.Items[J].wx_IDValue <> -1 then
           strData := strData + ' = ' + IntToStr(submnu.Items[J].wx_IDValue);
 
@@ -270,6 +271,7 @@ begin
       strF := Wx_MenuItems.Items[i].Wx_IDName;
 
       //Do we want to specify an ID?
+      if (UseIndividEnums) then
       if Wx_MenuItems.Items[i].wx_IDValue <> -1 then
         strF := strF + ' = ' + IntToStr(Wx_MenuItems.Items[i].wx_IDValue);
 

@@ -73,9 +73,9 @@ object DesignerForm: TDesignerForm
     Top = 8
     Width = 401
     Height = 275
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'Designer Options'
@@ -287,7 +287,7 @@ object DesignerForm: TDesignerForm
           object cbUseDefaultPos: TCheckBox
             Left = 10
             Top = 16
-            Width = 191
+            Width = 167
             Height = 17
             Caption = 'Use wxDefaultPosition'
             TabOrder = 0
@@ -300,6 +300,14 @@ object DesignerForm: TDesignerForm
             Caption = 'Use wxDefaultSize'
             TabOrder = 1
           end
+        end
+        object cbIndividualEnums: TCheckBox
+          Left = 8
+          Top = 144
+          Width = 193
+          Height = 17
+          Caption = 'Use Individual Enum Values'
+          TabOrder = 3
         end
       end
     end

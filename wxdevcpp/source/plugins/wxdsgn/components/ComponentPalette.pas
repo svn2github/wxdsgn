@@ -74,13 +74,13 @@ uses
   WxOpenFileDialog, WxSaveFileDialog, WxFontDialog, WxMessageDialog,
   WxProgressDialog, WxPrintDialog, WxFindReplaceDialog, WxDirDialog, WxColourDialog,
   WxPageSetupDialog, WxTimer, WxNonVisibleBaseComponent, WxSplitterWindow,
-  WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
+  WxDatePickerCtrl, WxToggleButton, WxRadioBox, WxOwnerDrawnComboBox, WxSTC,
   WxRichTextCtrl, WxTreeListCtrl, WxCalendarCtrl, WxTextEntryDialog,
   WxPasswordEntryDialog, WxSingleChoiceDialog, WxMultiChoiceDialog, WxCustomButton,
   WxHyperLinkCtrl, WxDialUpManager, WxHtmlEasyPrinting, WxMediaCtrl, wxAnimationCtrl, wxAuiNotebook,
   WxAuiManager, wxAuiBar, wxAuiToolBar, wxAuiNoteBookPage,
   wxRichTextStyleComboCtrl, wxRichTextStyleListCtrl, wxRichTextStyleListBox,
-  wxColourPickerCtrl, WxDatePickerCtrl, wxDirPickerCtrl, wxFilePickerCtrl, wxFontPickerCtrl;
+  wxColourPickerCtrl, wxDirPickerCtrl, wxFilePickerCtrl, wxFontPickerCtrl;
 
 const
   SearchPrompt = '(search component)';
@@ -257,7 +257,7 @@ begin
                      TWxToggleButton, TWxCheckBox, TWxRadioButton, TWxChoice, TWxComboBox,
                      TWxGauge, TWxGrid, TWxListBox, TWXListCtrl, TWxMemo, TWxScrollBar,
                      TWxSpinButton, TWxTreeCtrl, TWxRadioBox, TWxStaticBitmap,
-                     TWxstaticbox, TWxslider, TWxStaticLine,
+                     TWxstaticbox, TWxslider, TWxStaticLine, TWxDatePickerCtrl,
                      TWxPanel, TWxChoicebook, TwxListbook, TWxNotebook, TWxTreebook, TWxToolbook,
                      TWxStatusBar, TWxToolBar, TWxNoteBookPage, TWxAnimationCtrl,
                      TWxchecklistbox, TWxSplitterWindow, TWxSpinCtrl, TWxScrolledWindow,

@@ -286,14 +286,7 @@ end;
 
 function TWxFontPickerCtrl.GenerateEnumControlIDs: string;
 begin
-  Result := '';
-{$IFDEF MALCOLM}
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('%s, ', [Wx_IDName]);
-{$ELSE}
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
-{$ENDIF}
+  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
 end;
 
 function TWxFontPickerCtrl.GenerateControlIDs: string;
