@@ -1599,6 +1599,9 @@ begin
     INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
     INI.free;
   end;
+    if not DirectoryExists(Trim(frm.txtSaveTo.Text)) then
+    if not CreateDir(Trim(frm.txtSaveTo.Text)) then
+    raise Exception.Create('Cannot create ' + ' ' + Trim(frm.txtSaveTo.Text));
 
   //And get the base filename
   BaseFilename := IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);
