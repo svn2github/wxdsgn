@@ -119,7 +119,8 @@ uses
   hh in '..\..\hh.pas',
   hh_funcs in '..\..\hh_funcs.pas',
   OpenSaveDialogs in '..\..\OpenSaveDialogs.pas',
-  SynAutoIndent in '..\..\packages\SynAutoIndent.pas';
+  SynAutoIndent in '..\..\packages\SynAutoIndent.pas',
+  MigrateFrm in 'MigrateFrm.pas' {MigrateFrm};
 
 {$R '..\..\icons.res' '..\..\icons.rc'}
 {$R '..\..\LangFrm.res' '..\..\LangFrm.rc'}

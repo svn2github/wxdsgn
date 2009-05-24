@@ -1172,6 +1172,15 @@ const
   ID_WX_MENUBARS                   = 7051;
   ID_WX_DIALOGS                    = 7052;
   ID_WX_UNOFFICIALCTRLS            = 7053;
+
+  ID_WX_FLOATING                   = 7054;
+  ID_WX_BEHAVIOR                   = 7055;
+  ID_WX_CLOSE_DONE                 = 7056;
+  ID_WX_DELETE_LINE                = 7057;
+  ID_WX_NO_OPEN_SAVE_DIALOG_OPT    = 7058;
+  ID_WX_USE_INDIV_ENUM             = 7059;
+
+  ID_ERR_UPDATE_WXFORM             = 8000;
   
   
   

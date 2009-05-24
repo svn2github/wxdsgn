@@ -37,11 +37,13 @@
 
 # Tips from Ricardo Ortega rortega@andinanet.net
 
+..En proyectos wxWidgets puede editar ventanas grandes seleccionando el comportamiento "Flotante"<CR><CR>En "Herramientas / Opciones de Diseño..."
+
 ...Dev-CPP le permite crear programas C y C++ para Windows?<CR><CR>Seleccione Nuevo Proyecto y elija el lenguaje apropiado ...
 
 ...Dev-CPP dispone de ayuda y programas de ejemplo pero puede descargar de internet más ayudas y ejemplos?<CR><CR>Use "Herramientas / Actualizar" y "Herramientas / Package Manager"
 
-...use vUpdate para mantener su entorno Dev-Cpp actualizado y ampliado?<CR><CR>Seleccione "Herramientas / Actualizaciones..."
+...use WebUpdater para mantener su entorno Dev-Cpp actualizado y ampliado<CR><CR>Seleccione "Herramientas / Actualizaciones..."
 
 ...Puede agregar más información al menú Ayuda?<CR><CR>Busque y descargue archivos .HLP, .CHM, .HTM o .PDF desde internet y use Ayuda Modificar ..."
 

@@ -4,7 +4,7 @@ interface
 
 uses
     Windows, Controls, Forms, ComCtrls, Graphics, SysUtils, Menus,
-    Designerfrm, CompFileIo,
+    Designerfrm, CompFileIo, Dialogs,
     wxutils, DbugIntf, SynEdit, wxversion, MigrateFrm, StdCtrls;
 
 type
@@ -186,10 +186,25 @@ begin
       begin
         Source.Text := strFileName;
         if ShowModal = mrOK then
-          ReloadFormFromFile(strFileName);
-        
-        Destroy;
+        begin
+          //ReloadFormFromFile(strFileName);
+          try
+             //Delete all the Components and
+             for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
+             begin
+                 self.fDesigner.Components[i].Destroy;
+             end;    // for
+             ReadComponentFromFile(self.fDesigner, strFilename);
+          except
+            on e: Exception do
+            begin
+                MessageDlg(Format('%s: "%s"', [wx_designer.GetLangString(ID_ERR_UPDATE_WXFORM), e.Message]), mtError, [mbOk], Handle);
+            end;
+          end;
       end;
+
+      Destroy;
+    end;
   end;	 
 end;
 
