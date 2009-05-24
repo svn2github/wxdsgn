@@ -195,6 +195,7 @@ begin
     devData.ThemeChange := true;
     devData.Theme := ThemeBox.Items[ThemeBox.ItemIndex];
     devData.XPTheme := XPCheckBox.Checked;
+    devClassBrowsing.Enabled := true; // EAB: There's no reason for classbrowsing disabled by default as far as we know.
   end
   else if OkBtn.Tag = 1 then begin
     if YesClassBrowser.Checked then begin
@@ -210,7 +211,6 @@ begin
       SecondPanel.Visible := false;
       devCodeCompletion.Enabled := false;
       devCodeCompletion.UseCacheFiles := false;
-      devClassBrowsing.Enabled := true; // EAB: There's no reason for classbrowsing disabled by default as far as we know.
       devClassBrowsing.ParseLocalHeaders := false;
       devClassBrowsing.ParseGlobalHeaders := false;
       SaveOptions;
@@ -285,7 +285,6 @@ begin
       f.Free;
     end
     else begin
-      devClassBrowsing.Enabled := true;
       devClassBrowsing.ParseLocalHeaders := true;
       devClassBrowsing.ParseGlobalHeaders := false;
     end;

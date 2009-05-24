@@ -57,9 +57,9 @@ Launcher=
 UseLauncher=0
 DebugCWD=
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=1
+MajorVer=2
 MinorVer=0
 Release=0
 Build=0
@@ -68,18 +68,18 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=5130
+Locale=1033
 CodePage=1252
 [Version Info Keys]
-CompanyName=
+CompanyName=The wx-devcpp team
 FileDescription=
-FileVersion=1.0.0.0
+FileVersion=2.0.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
+ProductName=WebUpdate for wx-devcpp
+ProductVersion=2.0.0.0
 Comments=
 [HistoryLists\hlConditionals]
 Count=2
