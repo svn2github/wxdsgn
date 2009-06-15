@@ -1,15 +1,15 @@
 [Setup]
 Version=2
-AppName=wxWidgets Extras MS VC 2005
-AppVerName=wxWidgets version _WXVER_ 3rd Party Components MS VC 2005
+AppName=wxWidgets Extras MS VC _VC_VER_
+AppVerName=wxWidgets version _WXVER_ 3rd Party Components MS VC _VC_VER_
 AppVersion=_WXVER_
 MenuName=
-Description=wxWidgets 3rd Party Components monolithic, ansi MS VC 2005 build
-Url=http://WxCode.Sourceforge.net
+Description=wxWidgets 3rd Party Components monolithic, ansi MS VC _VC_VER_ build
+Url=http://wxCode.sourceforge.net
 Readme=docs\readme.txt
 License=docs\licence.txt
 Picture=
 Dependencies=
 Reboot=0
 [Files]
-extras\vc_lib=<app>\lib\vc2005\
+extras\\vc_lib=<app>\lib\vc_VC_VER_\

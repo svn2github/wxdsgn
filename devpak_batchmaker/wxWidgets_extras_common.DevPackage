@@ -12,6 +12,6 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-extras\wxchart.rc=<app>\include\3rdparty\
-extras\include=<app>\include\3rdparty\
-extras\samples=<app>\examples\wxWidgets\
+extras\\samples\\chartart\\wxchart.rc=<app>\include\3rdparty\
+extras\\include=<app>\include\3rdparty\
+extras\\samples=<app>\examples\wxWidgets\

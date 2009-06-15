@@ -12,5 +12,5 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-contrib\gcc_lib=<app>\lib\
+contrib\\gcc_lib=<app>\lib\
 [Icons]

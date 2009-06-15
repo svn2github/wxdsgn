@@ -12,7 +12,7 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-samples\samples=<app>\examples\wxWidgets\
-samples\samples\sample.ico=<app>\include\common\
-samples\art=<app>\examples\wxWidgets\art\
-samples\samples\sample.xpm=<app>\include\common\
+samples\\samples=<app>\examples\wxWidgets\
+samples\\samples\\sample.ico=<app>\include\common\
+samples\\art=<app>\examples\wxWidgets\art\
+samples\\samples\\sample.xpm=<app>\include\common\

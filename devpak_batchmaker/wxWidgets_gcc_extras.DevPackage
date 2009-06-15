@@ -12,4 +12,4 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-extras\gcc_lib=<app>\lib\
+extras\\gcc_lib=<app>\lib\

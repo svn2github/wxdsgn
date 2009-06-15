@@ -8,13 +8,13 @@ echo off
 cls
 
 rem Default wxWidgets root directory
-set WXVER=2.8.2
+set WXVER=2.8.10
 
 echo What version of wxWidgets are you building (Default = %WXVER%)?
 set /P WXVER=
 set DEVPAKDIR=%STARTDIR%\devpaks_%WXVER%
 
-rem Get the library version (e.g. 2.8.2 becomes 28)
+rem Get the library version (e.g. 2.8.5 becomes 28)
 rem wxlibversion.exe is a simple C++ program 
 rem that takes the first 2 numbers of the library name
 rem and removes the dots.
@@ -27,7 +27,7 @@ set WXWIN=c:\wxWidgets-%WXVER%
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
 set /P WXWIN=
 
-set WXCODE=c:\wxCode
+set WXCODE=c:\Users\Public\devpak_batchmaker\wxCode
 echo In what directory are the wxCode components located (Default = %WXCODE%)?
 set /P WXCODE=
 
@@ -159,64 +159,35 @@ set gccpath=c:\Progra~1\Dev-Cpp\bin;%oldpath%
 IF NOT "%BUILDVC%"=="Y" GOTO TEST_DMC
 
 :VC_PATH
-echo Preparing Visual C++ Paths
+echo It is preferable to run this script from the VS Command Prompt
+echo to build the VC devpaks
+echo Otherwise, the paths might not be correct.
+echo Trying to prepare Visual C++ Paths (by running vcvarsall.bat)
 
+rem Look up the Visual Studio directory in the Windows registry
+rem Version 9.0 = VS 2008; Version 8.0 = VS 2005
+FOR /F "tokens=2* delims=	 " %%A IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\SxS\VC7" /v 9.0') DO SET VCVARS_DIR=%%B
+set VC_VER=2008
+IF EXIST "%VCVARS_DIR%vcvarsall.bat" goto found_VCVARS
 
-REM -------------------------------------------------------------------
-REM Set common variables
-REM -------------------------------------------------------------------
-Set MSSdk=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2
-Set Bkoffice=%MSSdk%\
-Set Basemake=%MSSdk%\Include\BKOffice.Mak
-Set INETSDK=%MSSdk%
-Set MSSdk=%MSSdk%
-Set Mstools=%MSSdk%
+rem Look up the Visual Studio directory in the Windows registry
+rem Version 9.0 = VS 2008; Version 8.0 = VS 2005
+FOR /F "tokens=2* delims=	 " %%A IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\SxS\VC7" /v 8.0') DO SET VCVARS_DIR=%%B
+set VC_VER=2005
+IF EXIST "%VCVARS_DIR%vcvarsall.bat" goto found_VCVARS
 
+echo In what directory is vcvarsall.bat located (Default = %VCVARS_DIR%)?
+set /P VCVARS_DIR=
+IF EXIST "%VCVARS_DIR%vcvarsall.bat" goto found_VCVARS
 
-REM -------------------------------------------------------------------
-REM Set Windows 2000 specific variables
-:Set2000_2000
-REM -------------------------------------------------------------------
-Echo Targeting Windows 2000 and IE 5.0 %DEBUGMSG%
-Echo.
-Set Lib=%MSSdk%\Lib;%Lib%
-Set Include=%MSSdk%\Include;%Include%
+echo "vcvarsall.bat cannot be found in directory %VCVARS_DIR%"
+pause
+EXIT /B
 
-Set Path=%MSSdk%\Bin;%MSSdk%\Bin\WinNT;
-Set APPVER=5.0
-Set TARGETOS=WINNT
-Title Microsoft Platform SDK Windows 2000 IE 5.0 %DEBUGMSG% Build Environment
-
-
-
-@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
-@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8\VC
-@SET FrameworkDir=C:\WINNT\Microsoft.NET\Framework
-@SET FrameworkVersion=v2.0.50727
-@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
-@if "%VSINSTALLDIR%"=="" goto error_no_VSINSTALLDIR
-@if "%VCINSTALLDIR%"=="" goto error_no_VCINSTALLDIR
-
-
-@rem Root of Visual Studio IDE installed files.
-@rem
-@set DevEnvDir=%VSINSTALLDIR%\Common7\IDE
-echo 1
-@set VCPATH=%DevEnvDir%;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\SDK\v2.0\bin;C:\WINNT\Microsoft.NET\Framework\v2.0.50727;%VCINSTALLDIR%\VCPackages;%PATH%
-echo 2
-@set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;%INCLUDE%
-echo 3
-rem mn dont forget @set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
-echo 4
-@set LIBPATH=C:\WINNT\Microsoft.NET\Framework\v2.0.50727
-
-echo 4
-@goto TEST_DMC
-echo 5
-
-:error_no_VCINSTALLDIR
-@echo ERROR: VCINSTALLDIR variable is not set. 
-@goto end
+:found_VCVARS
+rem Run the Visual Studio setup script
+call "%VCVARS_DIR%vcvarsall.bat"
+set vcpath=%path%
 
 :TEST_DMC
 IF NOT "%BUILDDMC%"=="Y" GOTO TEST_BCC

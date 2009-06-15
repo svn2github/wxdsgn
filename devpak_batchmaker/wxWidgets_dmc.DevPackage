@@ -12,4 +12,4 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-dmc\dmc_lib=<app>\lib\dmars\
+dmc\\dmc_lib=<app>\lib\dmars\

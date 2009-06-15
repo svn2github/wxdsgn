@@ -1,11 +1,12 @@
 cd /d %STARTDIR%
 
-copy wxWidgets_%1_extras.DevPackage %DEVPAKDIR%\wxWidgets_%WXVER%_%1_extras.DevPackage
+copy wxWidgets_%1_extras.DevPackage %DEVPAKDIR%\wxWidgets_%1_extras.DevPackage
 
 cd /d %DEVPAKDIR%
 
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%WXVER%_%1_extras.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%WXVER%_%1_extras.DevPackage
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_%1_extras.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_%1_extras.DevPackage
+IF "%1"=="vc"  %STARTDIR%\gsar -s_VC_VER_ -r"%VC_VER%" -o wxWidgets_%1_extras.DevPackage
 
 md extras
 md extras\%1_lib

@@ -12,5 +12,5 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-contrib\bcc_lib=<app>\lib\bcc\
+contrib\\bcc_lib=<app>\lib\bcc\
 Icons]

@@ -12,4 +12,4 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-extras\bcc_lib=<app>\lib\bcc\
+extras\\bcc_lib=<app>\lib\bcc\

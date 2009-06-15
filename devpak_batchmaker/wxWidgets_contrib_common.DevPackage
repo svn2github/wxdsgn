@@ -12,6 +12,6 @@ Picture=
 Dependencies=
 Reboot=0
 [Files]
-contrib\include=<app>\include\common\
-contrib\samples=<app>\examples\wxWidgets\
+contrib\\include=<app>\include\common\
+contrib\\samples=<app>\examples\wxWidgets\
 [Icons]
