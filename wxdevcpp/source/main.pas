@@ -1163,6 +1163,7 @@ type
     procedure SetPageControlActivePageEditor(editorName: String);
     procedure ToggleDockForm(form: TForm; b: Boolean);
     procedure SendToFront;
+    procedure forceEditorFocus;
 {$ENDIF}
     function OpenWithAssignedProgram(strFileName:String):boolean;
     property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
@@ -2341,6 +2342,7 @@ begin
     InsertItem.Caption := Strings[ID_SUB_INSERT];
     ToggleBookmarksItem.Caption := Strings[ID_SUB_TOGGLEMARKS];
     GotoBookMarksItem.Caption := Strings[ID_SUB_GOTOMARKS];
+    DeleteLine1.Caption := Strings[ID_WX_DELETE_LINE];
     DateTimeMenuItem.Caption := Strings[ID_ITEM_DATETIME];
     CommentHeaderMenuItem.Caption := Strings[ID_ITEM_COMMENTHEADER];
     actComment.Caption := Strings[ID_ITEM_COMMENTSELECTION];
@@ -9591,6 +9593,21 @@ end;
 procedure TMainForm.SendToFront;
 begin
     self.Show;
+end;
+
+procedure TMainForm.forceEditorFocus;
+var
+    e: TEditor;
+begin
+  e := GetEditor;
+  if Assigned(e) then begin
+    // don't know why, but at this point the editor does not show its caret.
+    // if we shift the focus to another control and back to the editor,
+    // everything is fine. (I smell another SynEdit bug?)
+    e.TabSheet.SetFocus;
+    e.Activate;   
+    e.Text.SetFocus;
+  end;
 end;
 
 {$ENDIF PLUGIN_BUILD}

@@ -79,6 +79,9 @@ type
     procedure JvInspPropertiesDataValueChanged(Sender: TObject; Data: TJvCustomInspectorData);
     procedure JvInspEventsAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
     procedure JvInspEventsDataValueChanged(Sender: TObject; Data: TJvCustomInspectorData);
+    procedure JvInspEventsMouseMove(Sender: TObject; Shift: TShiftState; X: Integer; Y:Integer);
+    procedure JvInspEventsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X: Integer; Y:Integer);
+    procedure JvInspEventsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure JvInspEventsItemValueChanged(Sender: TObject; Item: TJvCustomInspectorItem);
     procedure cbxControlsxChange(Sender: TObject);
     procedure JvInspPropertiesBeforeSelection(Sender: TObject; NewItem: TJvCustomInspectorItem; var Allow: Boolean);
@@ -186,6 +189,7 @@ type
 
   private
     fwxOptions: TdevWxOptions;
+    pendingEditorSwitch: Boolean; // EAB: Let's see if we can make JvInspector to behave when switching to editor from Events field
     property wxOptions: TdevWxOptions read fwxOptions write fwxOptions;
     procedure CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: integer);
     procedure NewWxProjectCode(dsgnType: TWxDesignerType);
@@ -361,6 +365,7 @@ begin
   editors := TObjectHash.Create;
   configFolder := Config;
   parentHande := _parent;
+  pendingEditorSwitch := false;
 
   cleanUpJvInspEvents := false;
 
@@ -963,6 +968,9 @@ begin
     OnDataValueChanged := JvInspEventsDataValueChanged;
     OnItemValueChanged := JvInspEventsItemValueChanged;
     OnItemSelected := OnPropertyItemSelected;
+    OnMouseMove := JvInspEventsMouseMove;
+    OnMouseUp := JvInspEventsMouseUp;
+    OnEditorKeyDown := JvInspEventsKeyDown;
   end;
 
   //Setting data for the newly created GUI
@@ -2581,7 +2589,7 @@ begin
   ComponentPalette.Visible := True;
 end;
 
-procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);
+procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);    // EAB: Look here for designer doubleclick events
 var
   i, nSlectedItem: Integer;
 begin
@@ -2619,6 +2627,12 @@ begin
     JvInspEvents.Root.Items[nSlectedItem].DoneEdit(true);
     JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
     JvInspEventsDataValueChanged(nil, JvInspEvents.Root.Items[nSlectedItem].Data);
+  end;
+  if pendingEditorSwitch then
+  begin
+    JvInspEvents.OnMouseMove := nil;
+    JvInspEvents.OnMouseUp := nil;
+    pendingEditorSwitch := false;
   end;
 end;
 
@@ -3385,7 +3399,7 @@ begin
   Result := True;
 end;
 
-function TWXDsgn.LocateFunction(strFunctionName: string): boolean; // EAB TODO: What tha???
+function TWXDsgn.LocateFunction(strFunctionName: string): boolean;
 begin
   Result := False;
 end;
@@ -3405,7 +3419,7 @@ begin
 end;
 
 procedure TWXDsgn.JvInspEventsDataValueChanged(Sender: TObject;
-  Data: TJvCustomInspectorData);       // EAB *** Look here for after doubleclick designer components event
+  Data: TJvCustomInspectorData);       // EAB *** Look here for after doubleclick designer components event and event inspector
 var
   propertyName, wxClassName, propDisplayName, strNewValue, str, ErrorString: string;
   componentInstance: TComponent;
@@ -3508,6 +3522,7 @@ begin
           JvInspEvents.Root.DoneEdit(true);
           JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
           JvInspEventsDataValueChanged(nil, Data);
+
           // END Goto Function trigger
         end
         else
@@ -3566,11 +3581,54 @@ begin
         main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));
         JvInspProperties.Root.Visible := false;
         JvInspEvents.Root.Visible := false;
+
+        pendingEditorSwitch := true;
+        JvInspEvents.OnMouseMove := JvInspEventsMouseMove;
+        JvInspEvents.OnMouseUp := JvInspEventsMouseUp;
+        JvInspEvents.OnEditorKeyDown := JvInspEventsKeyDown;
+
       end;
 
   except
     on E: Exception do
       MessageBox(ownerForm.Handle, PChar(E.Message), PChar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
+  end;
+end;
+
+procedure TWXDsgn.JvInspEventsMouseMove(Sender: TObject; Shift: TShiftState; X: Integer; Y:Integer);
+begin
+  if pendingEditorSwitch then
+  begin
+    JvInspEvents.OnMouseMove := nil;
+    JvInspEvents.OnMouseUp := nil;
+    JvInspEvents.OnEditorKeyDown := nil;
+    pendingEditorSwitch := false;
+    main.forceEditorFocus;
+  end;
+end;
+
+procedure TWXDsgn.JvInspEventsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X: Integer; Y:Integer);
+begin
+  if pendingEditorSwitch then
+  begin
+    JvInspEvents.OnMouseMove := nil;
+    JvInspEvents.OnMouseUp := nil;
+    JvInspEvents.OnEditorKeyDown := nil;
+    pendingEditorSwitch := false;
+    main.forceEditorFocus;
+  end;
+end;
+
+procedure TWXDsgn.JvInspEventsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if pendingEditorSwitch then
+  begin
+    JvInspEvents.OnMouseMove := nil;
+    JvInspEvents.OnMouseUp := nil;
+    JvInspEvents.OnEditorKeyDown := nil;
+    pendingEditorSwitch := false;
+    main.forceEditorFocus;
+    Key := 0;
   end;
 end;
 
@@ -4564,7 +4622,7 @@ begin
   Result := false;
   if IsForm(FileName) then
   begin
-
+    pendingEditorSwitch := false;
     //Show a busy cursor
     Screen.Cursor := crHourglass;
 

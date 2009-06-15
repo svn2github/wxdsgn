@@ -62,6 +62,7 @@ type
   procedure SetPageControlActivePageEditor(editorName: String);
   procedure ToggleDockForm(form: TForm; b: Boolean);
   procedure SendToFront;
+  procedure forceEditorFocus;
 	
   end;
 

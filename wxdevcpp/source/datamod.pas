@@ -135,7 +135,7 @@ var
 implementation
 
 uses
-  devcfg, IniFiles, utils, version, main, MultiLangSupport, windows;
+  devcfg, IniFiles, utils, version, main, MultiLangSupport, windows, ShellAPI, ShlOBJ;
 
 {$R *.dfm}
 
@@ -349,8 +349,11 @@ begin
   if (s = '') then exit;
   idx := fMRU.IndexofValue(s);
   if idx = -1 then
+  begin
     // insert always first
     fMRU.Insert(0, Format('%d=%s', [fMRU.Count, s]));
+    SHAddToRecentDocs(SHARD_PATH, PChar(s));      // EAB: Win7 MRU jumplist support.
+  end;
   RebuildMRU;
 end;
 

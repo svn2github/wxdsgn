@@ -420,6 +420,8 @@ begin
   rgbOpenStyle.Items[0] := Lang[ID_ENV_OPEN2k];
   rgbOpenStyle.Items[1] := Lang[ID_ENV_OPEN9x];
   rgbOpenStyle.Items[2] := Lang[ID_ENV_OPEN31];
+  lblOpenSaveOptions.Caption := Lang[ID_WX_NO_OPEN_SAVE_DIALOG_OPT];
+
 
   rgbAutoOpen.Caption := Lang[ID_ENV_AUTOOPEN];
   rgbAutoOpen.Items[0] := Lang[ID_ENV_AUTOALL];
