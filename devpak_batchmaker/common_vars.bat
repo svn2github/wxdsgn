@@ -18,6 +18,8 @@ rem Get the library version (e.g. 2.8.5 becomes 28)
 rem wxlibversion.exe is a simple C++ program 
 rem that takes the first 2 numbers of the library name
 rem and removes the dots.
+rem e.g wxlibversion.exe 2.8.10
+rem   Output  SET WXLIBVERSION=28
 wxlibversion.exe %WXVER% >> temp123.bat
 call temp123.bat
 del temp123.bat

@@ -188,8 +188,8 @@ copy /Y %WXWIN%\include\wx\xrc\*.*
 cd /d %STARTDIR%
 md %DEVPAKDIR%\common\Templates
 md %DEVPAKDIR%\common\Templates\wxWidgets
-copy ..\Templates\*wx*.* %DEVPAKDIR%\common\Templates\
-copy ..\Templates\wxWidgets\wx*.* %DEVPAKDIR%\common\Templates\wxWidgets\
+copy Templates\*wx*.* %DEVPAKDIR%\common\Templates\
+copy Templates\wxWidgets\wx*.* %DEVPAKDIR%\common\Templates\wxWidgets\
 
 
 @echo --------------------------------------------------------------------
