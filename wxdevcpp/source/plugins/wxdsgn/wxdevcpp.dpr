@@ -127,9 +127,7 @@ uses
 {$R '..\..\DefaultFiles.res' '..\..\DefaultFiles.rc'}
 
 {$R *.res}
-{$IFDEF PLUGIN_BUILD}
 {$R '..\..\STDREG.res'}
-{$ENDIF}
 
 //Single Instance feature
 function CanStart: Boolean;

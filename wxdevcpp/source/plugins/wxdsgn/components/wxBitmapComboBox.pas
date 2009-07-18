@@ -121,6 +121,11 @@ type
     { Method to free any objects created by AutoInitialize }
     procedure AutoDestroy;
 
+    { Read method for property Wx_EditStyle }
+    function GetWx_EditStyle: TWxEdtGeneralStyleSet;
+    { Write method for property Wx_EditStyle }
+    procedure SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+
   protected
     { Protected fields of TWxBitmapComboBox }
 
@@ -204,8 +209,9 @@ type
     property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ComboboxStyle: TWxCmbStyleSet Read FWx_ComboboxStyle Write FWx_ComboboxStyle;
-        property Wx_EditStyle: TWxEdtGeneralStyleSet
-      Read FWx_EditStyle Write FWx_EditStyle;
+    property Wx_EditStyle: TWxEdtGeneralStyleSet
+        Read GetWx_EditStyle Write SetWx_EditStyle;
+      //Read FWx_EditStyle Write FWx_EditStyle;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_DefaultItem: integer Read FWx_DefaultItem
@@ -882,6 +888,18 @@ end;
 procedure TWxBitmapComboBox.SetValidator(value:String);
 begin
   Wx_Validator := value;
+end;
+
+{ Read method for property Wx_EditStyle }
+function TWxBitmapComboBox.GetWx_EditStyle: TWxEdtGeneralStyleSet;
+begin
+  Result := FWx_EditStyle;
+end;
+
+{ Write method for property Wx_EditStyle }
+procedure TWxBitmapComboBox.SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+begin
+  FWx_EditStyle := GetRefinedWxEdtGeneralStyleValue(Value);
 end;
 
 end.

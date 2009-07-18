@@ -360,7 +360,7 @@ end;
 { Write method for property Wx_EditStyle }
 procedure TWxGrid.SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
 begin
-
+    FWx_EditStyle := GetRefinedWxEdtGeneralStyleValue(Value);
 end;
 
 function TWxGrid.GetVirtualColCount: integer;

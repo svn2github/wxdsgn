@@ -75,10 +75,6 @@ var
 
   //type
 
-    //TEditorType = (etNone, etSource, etForm);
-    {TExUnitType = (  // <-- EAB TODO: Research how to delete this
-      //utwxform); // wxForm (.wxForm)}
-
 function ExtractComponentPropertyName(const S: string): string;
 function ExtractComponentPropertyCaption(const S: string): string;
 function iswxForm(FileName: string): Boolean;
@@ -303,11 +299,11 @@ type
   TWxLbStyleSet = set of TWxLbStyleItem;
 
   TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
-    wxTE_READONLY, wxTE_RICH, wxTE_RICH2,
-    wxTE_AUTO_URL, wxTE_NOHIDESEL,
-    wxTE_DONTWRAP, wxTE_LINEWRAP, wxTE_WORDWRAP,
-    wxTE_CHARWRAP, wxTE_BESTWRAP, wxTE_CAPITALIZE,
-    wxTE_MULTILINE, wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
+    wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL,
+    wxTE_NOHIDESEL, wxTE_DONTWRAP, wxTE_LINEWRAP,
+    wxTE_WORDWRAP, wxTE_CHARWRAP, wxTE_BESTWRAP,
+    wxTE_CAPITALIZE, wxTE_MULTILINE, wxTE_LEFT,
+    wxTE_CENTRE, wxTE_RIGHT);
   TWxEdtGeneralStyleSet = set of TWxEdtGeneralStyleItem;
 
   TWxRichTextStyleItem = (wxRE_READONLY, wxRE_MULTILINE);
@@ -935,6 +931,7 @@ function GetAuiPaneFloatingPos(x: Integer; y: Integer): string;
 function GetAuiPaneCaption(caption: string): string;
 function GetAuiPaneName(name: string): string;
 function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+function GetRefinedWxEdtGeneralStyleValue(sValue:TWxEdtGeneralStyleSet):TWxEdtGeneralStyleSet;
 
 implementation
 
@@ -4026,7 +4023,8 @@ begin
 
   PropertyList.Add('Wx_GeneralStyle:'
           + wx_designer.GetLangString(ID_WX_GENERALSTYLES));
-  PropertyList.Add('wxNO_3D:wxNO_3D');
+  //PropertyList.Add('wxNO_3D:wxNO_3D'); // EAB: this ain't consistant with the set declaration above of TWxStdStyleItem or wxWidgets documentation.
+  PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
   PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
   PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
   PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
@@ -7650,6 +7648,72 @@ var
 begin
    SHGetFolderPath(0,CSIDL_PERSONAL,0,CSIDL_PERSONAL,@path[0]) ;
    Result:= path;
+end;
+
+function GetRefinedWxEdtGeneralStyleValue(sValue:TWxEdtGeneralStyleSet):TWxEdtGeneralStyleSet;
+begin
+  Result := [];
+
+  try
+
+    if wxTE_PROCESS_ENTER in sValue then
+      Result := Result + [wxTE_PROCESS_ENTER];
+
+    if wxTE_PROCESS_TAB in sValue then
+      Result := Result + [wxTE_PROCESS_TAB];
+
+    if wxTE_PASSWORD in sValue then
+      Result := Result + [wxTE_PASSWORD];
+
+    if wxTE_READONLY in sValue then
+      Result := Result + [wxTE_READONLY];
+
+    if wxTE_RICH in sValue then
+      Result := Result + [wxTE_RICH];
+
+    if wxTE_RICH2 in sValue then
+      Result := Result + [wxTE_RICH2];
+
+    if wxTE_AUTO_URL in sValue then
+      Result := Result + [wxTE_AUTO_URL];
+
+    if wxTE_NOHIDESEL in sValue then
+      Result := Result + [wxTE_NOHIDESEL];
+
+    if wxTE_LEFT in sValue then
+      Result := Result + [wxTE_LEFT];
+
+    if wxTE_CENTRE in sValue then
+      Result := Result + [wxTE_CENTRE];
+
+    if wxTE_RIGHT in sValue then
+      Result := Result + [wxTE_RIGHT];
+
+    if wxTE_DONTWRAP in sValue then
+      Result := Result + [wxTE_DONTWRAP];
+
+    if wxTE_BESTWRAP in sValue then
+      Result := Result + [wxTE_BESTWRAP];
+
+    if wxTE_CHARWRAP in sValue then
+      Result := Result + [wxTE_CHARWRAP];
+
+    if wxTE_LINEWRAP in sValue then
+      Result := Result + [wxTE_LINEWRAP];
+
+    if wxTE_WORDWRAP in sValue then
+      Result := Result + [wxTE_WORDWRAP];
+
+    if wxTE_CAPITALIZE in sValue then
+      Result := Result + [wxTE_CAPITALIZE];
+
+    if wxTE_MULTILINE in sValue then
+      Result := Result + [wxTE_MULTILINE];
+
+    finally
+        sValue := [];
+    end;
+
 end;
 
 end.

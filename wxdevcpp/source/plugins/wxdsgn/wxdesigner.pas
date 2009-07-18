@@ -138,9 +138,9 @@ type
     DesignerMenuSelectParent: TMenuItem;
     DesignerMenuAlign: TMenuItem;
     DesignerMenuAlignToGrid, DesignerMenuAlignVertical, DesignerMenuAlignHorizontal,
-      DesignerMenuAlignToLeft, DesignerMenuAlignToRight,
-      DesignerMenuAlignToTop, DesignerMenuAlignToBottom,
-      DesignerMenuAlignToMiddle: TMenuItem;
+    DesignerMenuAlignToLeft, DesignerMenuAlignToRight,
+    DesignerMenuAlignToTop, DesignerMenuAlignToBottom,
+    DesignerMenuAlignToMiddle: TMenuItem;
     DesignerMenuAlignToMiddleVertical, DesignerMenuAlignToMiddleHorizontal: TMenuItem;
     DesignerMenuLocked: TMenuItem;
     DesignerMenuSep3: TMenuItem;

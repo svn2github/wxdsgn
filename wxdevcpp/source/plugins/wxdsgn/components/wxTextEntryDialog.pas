@@ -46,6 +46,11 @@ type
     procedure AutoInitialize;
     procedure AutoDestroy;
 
+    { Read method for property Wx_EditStyle }
+    function GetWx_EditStyle: TWxEdtGeneralStyleSet;
+    { Write method for property Wx_EditStyle }
+    procedure SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+
   protected
 
   public
@@ -96,7 +101,9 @@ type
 	property Wx_Value: string Read FWx_Value Write FWx_Value;
 	
     property Wx_DialogStyle: TWxMessageDialogStyleSet Read FWx_DialogStyle Write FWx_DialogStyle;
-    property Wx_EditStyle: TWxEdtGeneralStyleSet Read FWx_EditStyle write FWx_EditStyle;
+    property Wx_EditStyle: TWxEdtGeneralStyleSet
+        Read GetWx_EditStyle Write SetWx_EditStyle;
+        //Read FWx_EditStyle write FWx_EditStyle;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
   end;
@@ -340,6 +347,18 @@ end;
 
 procedure TWxTextEntryDialog.SetProxyBGColorString(Value: string);
 begin
+end;
+
+{ Read method for property Wx_EditStyle }
+function TWxTextEntryDialog.GetWx_EditStyle: TWxEdtGeneralStyleSet;
+begin
+  Result := FWx_EditStyle;
+end;
+
+{ Write method for property Wx_EditStyle }
+procedure TWxTextEntryDialog.SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+begin
+  FWx_EditStyle := GetRefinedWxEdtGeneralStyleValue(Value);
 end;
 
 end.

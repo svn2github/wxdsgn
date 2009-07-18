@@ -122,6 +122,12 @@ type
     procedure AutoInitialize;
     { Method to free any objects created by AutoInitialize }
     procedure AutoDestroy;
+
+    { Read method for property Wx_EditStyle }
+    function GetWx_EditStyle: TWxEdtGeneralStyleSet;
+    { Write method for property Wx_EditStyle }
+    procedure SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+
     { Write method for property Wx_ToolTip }
     procedure SetWx_ToolTip(Value: string);
 
@@ -208,7 +214,9 @@ type
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_ControlOrientation: TWxControlOrientation
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_EditStyle: TWxEdtGeneralStyleSet Read FWx_EditStyle Write FWx_EditStyle;
+    property Wx_EditStyle: TWxEdtGeneralStyleSet
+        Read GetWx_EditStyle Write SetWx_EditStyle;
+        //Read FWx_EditStyle Write FWx_EditStyle;
     property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
     property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
     property Wx_GeneralStyle: TWxStdStyleSet
@@ -977,5 +985,16 @@ begin
   Wx_Validator := value;
 end;
 
+{ Read method for property Wx_EditStyle }
+function TWxMemo.GetWx_EditStyle: TWxEdtGeneralStyleSet;
+begin
+  Result := FWx_EditStyle;
+end;
+
+{ Write method for property Wx_EditStyle }
+procedure TWxMemo.SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+begin
+  FWx_EditStyle := GetRefinedWxEdtGeneralStyleValue(Value);
+end;
 
 end.

@@ -31,7 +31,7 @@ ShowHints=1
 ShowWarnings=1
 UnitAliases=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [Linker]
-MapFile=3
+MapFile=0
 OutputObjs=0
 ConsoleApp=1
 DebugInfo=0
@@ -45,7 +45,7 @@ OutputDir=wxdevcpp
 UnitOutputDir=wxdevcpp\units
 PackageDLLOutputDir=
 PackageDCPOutputDir=wxdevcpp\bin
-SearchPath=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\synedit\Packages;$(DEVCPPLIBS)\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6
+SearchPath=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\synedit\Packages;$(DEVCPPLIBS)\jvcl\run
 Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;Jcl;ExtLib_D6;SynEdit_D6_PE;SynEdit_R6_PE;ClassBrowsing;ThemeManager6;DevCpp;JvDockingD6R;JvCoreD6R;madBasic_;madDisAsm_;madExcept_;JclVcl;JvSystemD6R;JvStdCtrlsD6R;JvAppFrmD6R;JvBandsD6R;JvCmpD6R;JvCryptD6R;JvCtrlsD6R;JvCustomD6R;JvDlgsD6R;JvDotNetCtrlsD6R;JvGlobusD6R;JvHMID6R;JvInterpreterD6R;JvJansD6R;JvManagedThreadsD6R;JvMMD6R;JvNetD6R;JvPageCompsD6R;JvPluginD6R;JvPrintPreviewD6R;JvRuntimeDesignD6R;JvTimeFrameworkD6R;JvUIBD6R;JvValidatorsD6R;JvWizardD6R;JvXPCtrlsD6R
 Conditionals=PLUGIN_TESTING;PLUGIN_BUILD;RequireIDEPresenceForLeakReporting
 DebugSourceDirs=components\
@@ -62,7 +62,7 @@ AutoIncBuild=1
 MajorVer=7
 MinorVer=0
 Release=0
-Build=42
+Build=71
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=7.0.0.42
+FileVersion=7.0.0.71
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -83,54 +83,24 @@ ProductVersion=7
 Comments=Monolithic version for testing purposes
 PrivateBuild=
 [HistoryLists\hlDebugSourcePath]
-Count=3
+Count=1
 Item0=components\
-Item1=components\;$(COMPUSEDBY_WX_BUILD)\jvcl\run
-Item2=C:\wxdevcpp\wxdevcpp\source\plugins\wxdsgn\components\
 [HistoryLists\hlConditionals]
-Count=10
+Count=1
 Item0=PLUGIN_TESTING;PLUGIN_BUILD;RequireIDEPresenceForLeakReporting
-Item1=PLUGIN_TESTING;PLUGIN_BUILD;RequireIDEPresenceForLeakReporting;UseRuntimePackages
-Item2=PLUGIN_TESTING;PLUGIN_BUILD
-Item3=madExcept;PLUGIN_TESTING;PLUGIN_BUILD
-Item4=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD;madExcept
-Item5=madExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
-Item6=DmadExcept;PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
-Item7=PLUGIN_TESTING;WX_BUILD;PLUGIN_BUILD
-Item8=PLUGIN_TESTING;WX_BUILD
-Item9=madExcept;PLUGIN_TESTING
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=18
-Item0=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\synedit\Packages;$(DEVCPPLIBS)\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6
-Item1=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(COMPUSEDBY_WX_BUILD)\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6
-Item2=propedit;components;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(COMPUSEDBY_WX_BUILD)\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6
-Item3=propedit;components;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item4=propedit;components;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item5=propedit;components;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\.\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item6=propedit;components;..\..;..\interfaces;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\.\..\packman;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item7=propedit;components;..\interfaces;..\..;..\..\units;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;$(COMPUSEDBY_WX_BUILD)\extlib;$(COMPUSEDBY_WX_BUILD)\fastmm;$(COMPUSEDBY_WX_BUILD)\fastcode;$(COMPUSEDBY_WX_BUILD)\GraphicEx;$(COMPUSEDBY_WX_BUILD)\synedit\Source;$(COMPUSEDBY_WX_BUILD)\theme;$(COMPUSEDBY_WX_BUILD)\jvcl\run;$(COMPUSEDBY_WX_BUILD)\jvcl\lib\d6;$(COMPUSEDBY_WX_BUILD)\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\..\..\.\..\packman
-Item8=propedit;components;..\interfaces;..\..;..\..\units;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\..\..\packman
-Item9=propedit;components;..\interfaces;..\..;..\..\units;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item10=propedit;components;..\interfaces;..\..\units;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6;..\..
-Item11=propedit;components;..\interfaces;..\..\units;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item12=propedit;components;..\interfaces;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6
-Item13=propedit;components;..\..;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6;$(PROGRAMFILES)\madCollection\madExcept\Delphi 6;..\interfaces
-Item14=propedit;components;..\..;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\lib\d6;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Packages;$(PROGRAMFILES)\GExperts for Delphi 6;$(PROGRAMFILES)\madCollection\madExcept\Delphi 6;..\interfaces
-Item15=..\..;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
-Item16=..\..;..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
-Item17=..\..\packages;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\..\CompUsedBy_WX_BUILD\extlib;..\..\..\..\..\CompUsedBy_WX_BUILD\fastmm;..\..\..\..\..\CompUsedBy_WX_BUILD\fastcode;..\..\..\..\..\CompUsedBy_WX_BUILD\GraphicEx;..\..\..\..\..\CompUsedBy_WX_BUILD\synedit\Source;..\..\..\..\..\CompUsedBy_WX_BUILD\theme;..\..\..\..\..\CompUsedBy_WX_BUILD\jvcl\run;$(PROGRAMFILES)\GExperts for Delphi 6;..\interfaces
+Count=2
+Item0=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\synedit\Packages;$(DEVCPPLIBS)\jvcl\run
+Item1=propedit;components;components\BaseComponents;..\..;..\interfaces;..\..\packages;..\..\units;..\..\packages\parser;..\..\packages\codetooltip;..\..\..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\fastmm;$(DEVCPPLIBS)\fastcode;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\synedit\Packages;$(DEVCPPLIBS)\jvcl\run
 [HistoryLists\hlUnitOutputDirectory]
-Count=3
+Count=1
 Item0=wxdevcpp\units
-Item1=wxdevcpp\wxunits
-Item2=wxunits
 [HistoryLists\hlOutputDirectorry]
 Count=1
 Item0=wxdevcpp
 [HistoryLists\hlDCPOutput]
-Count=2
+Count=1
 Item0=wxdevcpp\bin
-Item1=wxdevcpp
