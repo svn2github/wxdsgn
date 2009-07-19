@@ -1312,7 +1312,7 @@ begin
   fLastTip := 0;
   fXPTheme := false;
   fNativeDocks := true;
-  fHiliteActiveTab := True;
+  fHiliteActiveTab := false;
   fFileDate := 0;
   fShowProgress := true;
   fAutoCloseProgress := false;

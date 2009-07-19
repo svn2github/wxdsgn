@@ -1412,7 +1412,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 624
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,13 +1486,13 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 399
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           399
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
@@ -1514,7 +1514,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 624
-        Height = 97
+        Height = 98
         ActivePage = tabWatches
         Align = alClient
         TabIndex = 3
@@ -1526,7 +1526,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 616
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1561,7 +1561,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 616
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1589,7 +1589,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 616
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1616,7 +1616,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 616
-            Height = 69
+            Height = 70
             Align = alClient
             Images = dmMain.MenuImages_NewLook
             Indent = 19
@@ -1692,7 +1692,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 624
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1736,7 +1736,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 628
-        Height = 60
+        Height = 61
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -1771,7 +1771,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 60
+        Top = 61
         Width = 628
         Height = 41
         Align = alBottom

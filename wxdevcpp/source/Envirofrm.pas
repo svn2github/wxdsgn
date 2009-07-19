@@ -236,7 +236,7 @@ begin
     {*** Modified by Peter ***}
     cboTheme.Items.Clear;
     devImageThemes.GetThemeTitles(cboTheme.Items);
-     cboTheme.ItemIndex := devImageThemes.IndexOf(devImageThemes.CurrentTheme.Title);
+    cboTheme.ItemIndex := devImageThemes.IndexOf(devImageThemes.CurrentTheme.Title);
     //cboTheme.Text := devImageThemes.CurrentTheme.Title;
     //cboTheme.Items.AddStrings(devTheme.ThemeList);
     //cboTheme.ItemIndex := cboTheme.Items.IndexOf(devData.Theme);
@@ -339,27 +339,30 @@ begin
     Lang.CheckLanguageFiles;
   end;
 
-  with dmMain.OpenDialog do
-    case devData.OpenStyle of
-      0: // win2k
-        begin
-          OptionsEx := [];
-          Options := Options - [ofOldStyleDialog, ofNoLongNames];
+  if not IsWindowsVista then
+  begin
+      with dmMain.OpenDialog do
+        case devData.OpenStyle of
+          0: // win2k
+            begin
+              OptionsEx := [];
+              Options := Options - [ofOldStyleDialog, ofNoLongNames];
+            end;
+          1: // win9x
+            begin
+              OptionsEx := [ofExNoPlacesBar];
+              Options := Options - [ofOldStyleDialog, ofNoLongNames];
+            end;
+          2: // win31
+            begin
+              OptionsEx := [ofExNoPlacesBar]; // basically ignored anyway
+              Options := Options + [ofOldStyleDialog, ofNoLongNames];
+            end;
         end;
-      1: // win9x
-        begin
-          OptionsEx := [ofExNoPlacesBar];
-          Options := Options - [ofOldStyleDialog, ofNoLongNames];
-        end;
-      2: // win31
-        begin
-          OptionsEx := [ofExNoPlacesBar]; // basically ignored anyway
-          Options := Options + [ofOldStyleDialog, ofNoLongNames];
-        end;
-    end;
 
-  dmMain.SaveDialog.OptionsEx := dmMain.OpenDialog.OptionsEx;
-  dmMain.SaveDialog.Options := dmMain.OpenDialog.Options;
+        dmMain.SaveDialog.OptionsEx := dmMain.OpenDialog.OptionsEx;
+        dmMain.SaveDialog.Options := dmMain.OpenDialog.Options;
+  end;
 
   devExternalPrograms.Programs.Assign(vleExternal.Strings);
 

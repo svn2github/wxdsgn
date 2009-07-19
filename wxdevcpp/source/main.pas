@@ -1827,7 +1827,7 @@ begin
 
     LoadTheme;
     BuildHelpMenu;
-    FormProgress.Parent := StatusBar;
+    FormProgress.Parent := StatusBar;    // EAB: Check this out ***
     SetWindowLong(FormProgress.Handle, GWL_EXSTYLE,
       GetWindowLong(FormProgress.Handle, GWL_EXSTYLE) - WS_EX_STATICEDGE);
     dmMain.MRUMenu := ReOpenItem;
