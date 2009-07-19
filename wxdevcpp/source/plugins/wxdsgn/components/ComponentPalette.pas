@@ -42,6 +42,7 @@ type
 
     procedure tvCollapsed(Sender: TObject; Node: TTreeNode);
     procedure tvExpanded(Sender: TObject; Node: TTreeNode);
+    procedure SelectionChanged(Sender: TObject);
   protected
     //Contorl handles
     SearchBox: TEdit;
@@ -143,6 +144,7 @@ begin
 
   //Populate the tree-view
   PopulateComponents;
+  ComponentList.OnClick := SelectionChanged;
 end;
 
 destructor TComponentPalette.Destroy;
@@ -457,6 +459,23 @@ begin
     Node.ImageIndex := FolderImage + 1;
     Node.SelectedIndex := FolderImage + 1;
   end;
+end;
+
+procedure TComponentPalette.SelectionChanged(Sender: TObject);
+var
+    AControlClass: TControlClass;
+begin
+  inherited;
+
+  if Trim(SelectedComponent) = '' then
+    Exit;
+
+  //Make sure that the type of control is valid
+  AControlClass := TControlClass(GetClass(SelectedComponent));
+  if AControlClass = nil then
+    Exit;
+
+  Screen.Cursor := crDrag;
 end;
 
 end.

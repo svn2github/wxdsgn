@@ -907,6 +907,7 @@ begin
     Parent := pgCtrlObjectInspector;
     PageControl := pgCtrlObjectInspector;
     Caption := GetLangString(ID_WX_PROPERTIES);
+    ImageIndex := -1;
   end;
   with JvInspProperties do
   begin
@@ -939,7 +940,8 @@ begin
     Name := 'TabEvent';
     Parent := pgCtrlObjectInspector;
     PageControl := pgCtrlObjectInspector;
-     Caption := GetLangString(ID_WX_EVENTS);
+    Caption := GetLangString(ID_WX_EVENTS);
+    ImageIndex := -1;
   end;
   with JvInspEvents do
   begin
@@ -2700,6 +2702,9 @@ var
   end;
 
 begin
+  if(Screen.Cursor = crDrag) then
+    Screen.Cursor := crDefault;
+    
   //Make sure we have a component we want to insert
   if Trim(ComponentPalette.SelectedComponent) = '' then
     Exit;
@@ -4633,6 +4638,10 @@ begin
     Result := true;
     if(ELDesigner1.Floating) then
         (editors[FileName] AS TWxEditor).GetDesigner.Show;  // EAB proper focus when designer floating
+
+    if (Trim(ComponentPalette.SelectedComponent) <> '') and (TControlClass(GetClass(ComponentPalette.SelectedComponent)) <> nil) then
+      Screen.Cursor := crDrag;
+
   end
   else
   begin
