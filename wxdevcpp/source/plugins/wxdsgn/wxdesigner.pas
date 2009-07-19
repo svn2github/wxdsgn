@@ -386,7 +386,6 @@ begin
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
     OnClose := OnDockableFormClosed;
-    //**
   end;
 
   frmPaletteDock := TForm.Create(ownerForm);
@@ -415,7 +414,6 @@ begin
     DragMode := dmAutomatic;
     FormStyle := fsStayOnTop;
     OnClose := OnDockableFormClosed;
-    //****
   end;
 
   //Add the property inspector view menu item

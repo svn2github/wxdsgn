@@ -1538,7 +1538,7 @@ begin
     CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
   InitClassBrowser(true {not CacheCreated});
   CppParser1.OnCacheProgress := nil;
-  
+
   SetSplashStatus('Initializing workspace');
   ToolMainItem.checked := devData.ToolbarMain;
   ToolEditItem.Checked := devData.ToolbarEdit;
@@ -9411,7 +9411,10 @@ begin
 		assert(assigned(fProject), 'Global project should be defined!');
     fProject.AddUnit(currFile, fProject.Node, false); // add under folder
     if ClassBrowser1.Enabled then
+    begin
       CppParser1.AddFileToScan(currFile, true);
+      CppParser1.ReParseFile(currFile, true, True);   // EAB: Check this out ***
+    end;
 	if alsoReasignEditor then
 	begin
         editor := fProject.OpenUnit(fProject.Units.Indexof(currFile));
