@@ -93,6 +93,11 @@ type
     FWxDesignerType: TWxDesignerType;
     wx_PropertyList: TStringList;
     FWx_EventList: TStringList;
+
+    { Read method for property Wx_EditStyle }
+    function GetWx_DialogStyle: TWxDlgStyleSet;
+    { Write method for property Wx_EditStyle }
+    procedure SetWx_DialogStyle(Value: TWxDlgStyleSet);
     
   public
     fileName: String;
@@ -203,7 +208,9 @@ type
     property Wx_SizeToContents: boolean Read FWxFrm_SizeToContents Write FWxFrm_SizeToContents;
 
     property Wx_GeneralStyle: TWxStdStyleSet Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
-    property Wx_DialogStyle: TWxDlgStyleSet Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
+    property Wx_DialogStyle: TWxDlgStyleSet
+        Read GetWx_DialogStyle Write SetWx_DialogStyle;
+    //Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
     property Wx_DesignerType: TWxDesignerType Read FWxDesignerType Write SetDesignerType default dtWxDialog;
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
@@ -1945,6 +1952,90 @@ end;
 function TfrmNewForm.HasAuiManager: Boolean;
 begin
   Result := Self.isAuimanagerAvailable;
+end;
+
+{ Read method for property Wx_DialogStyle }
+function TfrmNewForm.GetWx_DialogStyle: TWxDlgStyleSet;
+begin
+  Result := FWxFrm_DialogStyle;
+end;
+
+function GetRefinedWxDialogStyleValue(sValue:TWxDlgStyleSet):TWxDlgStyleSet;
+begin
+  Result := [];
+
+  try
+
+    if wxCAPTION in sValue then
+      Result := Result + [wxCAPTION];
+
+    if wxRESIZE_BORDER in sValue then
+      Result := Result + [wxRESIZE_BORDER];
+
+    if wxSYSTEM_MENU in sValue then
+      Result := Result + [wxSYSTEM_MENU];
+
+    if wxTHICK_FRAME in sValue then
+      Result := Result + [wxTHICK_FRAME];
+
+    if wxSTAY_ON_TOP in sValue then
+      Result := Result + [wxSTAY_ON_TOP];
+
+    if wxDIALOG_NO_PARENT in sValue then
+      Result := Result + [wxDIALOG_NO_PARENT];
+
+    if wxDIALOG_EX_CONTEXTHELP in sValue then
+      Result := Result + [wxDIALOG_EX_CONTEXTHELP];
+
+    if wxMINIMIZE_BOX in sValue then
+      Result := Result + [wxMINIMIZE_BOX];
+
+    if wxMAXIMIZE_BOX in sValue then
+      Result := Result + [wxMAXIMIZE_BOX];
+
+    if wxCLOSE_BOX in sValue then
+      Result := Result + [wxCLOSE_BOX];
+
+    if wxNO_3D in sValue then
+      Result := Result + [wxNO_3D];
+
+    if wxDEFAULT_DIALOG_STYLE in sValue then
+      Result := Result + [wxDEFAULT_DIALOG_STYLE];
+
+    if wxDEFAULT_FRAME_STYLE in sValue then
+      Result := Result + [wxDEFAULT_FRAME_STYLE];
+
+    if wxMINIMIZE in sValue then
+      Result := Result + [wxMINIMIZE];
+
+    if wxMAXIMIZE in sValue then
+      Result := Result + [wxMAXIMIZE];
+
+    if wxFRAME_TOOL_WINDOW in sValue then
+      Result := Result + [wxFRAME_TOOL_WINDOW];
+
+    if wxFRAME_NO_TASKBAR in sValue then
+      Result := Result + [wxFRAME_NO_TASKBAR];
+
+    if wxFRAME_FLOAT_ON_PARENT in sValue then
+      Result := Result + [wxFRAME_FLOAT_ON_PARENT];
+
+    if wxFRAME_EX_CONTEXTHELP in sValue then
+      Result := Result + [wxFRAME_EX_CONTEXTHELP];
+
+    if wxFRAME_SHAPED in sValue then
+      Result := Result + [wxFRAME_SHAPED];
+
+    finally
+        sValue := [];
+    end;
+
+end;
+
+{ Write method for property Wx_DialogStyle }
+procedure TfrmNewForm.SetWx_DialogStyle(Value: TWxDlgStyleSet);
+begin
+  FWxFrm_DialogStyle := GetRefinedWxDialogStyleValue(Value);
 end;
 
 end.
