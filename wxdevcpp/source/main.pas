@@ -670,7 +670,7 @@ type
     DebugPauseBtn: TToolButton;
     tabThreads: TTabSheet;
     lvThreads: TListView;
-    prgFormProgress: TProgressBar;
+    //prgFormProgress: TProgressBar;
     PageControl: TPageControl;
     TodoSheet: TTabSheet;
     lvTodo: TListView;
@@ -946,8 +946,8 @@ type
     procedure actPauseDebugUpdate(Sender: TObject);
     procedure actPauseDebugExecute(Sender: TObject);
     procedure lvThreadsDblClick(Sender: TObject);
-    procedure StatusBarDrawPanel(StatusBar: TStatusBar;
-      Panel: TStatusPanel; const Rect: TRect);
+    {procedure StatusBarDrawPanel(StatusBar: TStatusBar;
+      Panel: TStatusPanel; const Rect: TRect);}
     procedure actViewToDoListUpdate(Sender: TObject);
     procedure lvTodoCustomDrawItem(Sender: TCustomListView;
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -1166,7 +1166,7 @@ type
     procedure forceEditorFocus;
 {$ENDIF}
     function OpenWithAssignedProgram(strFileName:String):boolean;
-    property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
+    //property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
   end;
 var
   MainForm: TMainForm;
@@ -1827,9 +1827,9 @@ begin
 
     LoadTheme;
     BuildHelpMenu;
-    FormProgress.Parent := StatusBar;    // EAB: Check this out ***
+    {FormProgress.Parent := StatusBar;    // EAB: Check this out ***
     SetWindowLong(FormProgress.Handle, GWL_EXSTYLE,
-      GetWindowLong(FormProgress.Handle, GWL_EXSTYLE) - WS_EX_STATICEDGE);
+      GetWindowLong(FormProgress.Handle, GWL_EXSTYLE) - WS_EX_STATICEDGE);}
     dmMain.MRUMenu := ReOpenItem;
     dmMain.MRUOffset := 2;
     dmMain.MRUMax := devData.MRUMax;
@@ -5903,18 +5903,18 @@ begin
   if FileName <> '' then
   begin
     StatusBar.Panels[3].Text := 'Parsing ' + Filename;
-    FormProgress.Max := Total;
-    FormProgress.Position := Current;
+    //FormProgress.Max := Total;
+    //FormProgress.Position := Current;
   end
   else
   begin
-    FormProgress.Position := 0;
+    //FormProgress.Position := 0;
     StatusBar.Panels[3].Text := 'Done parsing.';
     StatusBar.Panels[2].Text := '';
   end;
 
   StatusBar.Update;
-  FormProgress.Update;
+  //FormProgress.Update;
 end;
 
 procedure TMainForm.CodeCompletion1Resize(Sender: TObject);
@@ -8569,7 +8569,7 @@ begin
 end;
 
 {$IfDef PLUGIN_BUILD}
-procedure TMainForm.StatusBarDrawPanel(StatusBar: TStatusBar;
+{procedure TMainForm.StatusBarDrawPanel(StatusBar: TStatusBar;
   Panel: TStatusPanel; const Rect: TRect);
 begin
   if Panel.Index = 4 then
@@ -8580,7 +8580,7 @@ begin
       Width := Rect.Right - Rect.Left - 15;
       Height := Rect.Bottom - Rect.Top;
     end;
-end;
+end;  }
 {$ENDIF}
 
 {EAB: Methods for wxEditor}

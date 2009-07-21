@@ -2279,7 +2279,6 @@ object MainForm: TMainForm
     ParentFont = True
     SimplePanel = False
     UseSystemFont = False
-    OnDrawPanel = StatusBarDrawPanel
   end
   object pnlFull: TPanel
     Left = 0
@@ -2318,15 +2317,6 @@ object MainForm: TMainForm
       ParentFont = False
       OnClick = btnFullScrRevertClick
     end
-  end
-  object prgFormProgress: TProgressBar
-    Left = 488
-    Top = 214
-    Width = 134
-    Height = 17
-    Min = 0
-    Max = 100
-    TabOrder = 5
   end
   object LeftPageControl: TPageControl
     Left = 0
