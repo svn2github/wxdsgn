@@ -24,7 +24,7 @@
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -44,11 +44,11 @@
 
 !ifdef HAVE_MSVC
 
-  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc${MSVC_YEAR}.DevPak" ; name of the wxWidgets MS VC devpak
+  !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
  
-  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_contrib.DevPak"  ; name of the contrib devpak
+  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.DevPak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc${MSVC_YEAR}_extras.DevPak"  ; name of the extras devpak
+  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
