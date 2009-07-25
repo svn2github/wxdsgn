@@ -9,6 +9,7 @@ Ver=7.0
 SpanishCastellano.tips
 #Herramientas -> Opciones de entorno -> Interfaz -> Idioma
 
+#Updated by Nestor Acevedo 25 July 2009
 
 #Top level menus
 100=&Archivo
@@ -1001,44 +1002,44 @@ preferencia sobre las opciones globales del compilador
 
 # wx designer properties
 7000=Habilitado
-7001=Base Class
+7001=Clase Base
 7002=Oculto
 7003=Predeterminado
-7004=Texto de ayuda
+7004=Ayuda Contextual
 7005=ID Nombre
 7006=ID Valor
-7007=Tip
+7007=Sugerencia
 7008=Comentarios
 7009=Código validador
-7010=Color de fondo
-7011=Foreground Color
-7012=Stretch Factor
+7010=Color de Fondo
+7011=Color de Plano
+7012=Escala
 7013=Alineación
 7014=Borde
 7015=Bordes
-7016=Estilo General
+7016=Estilos Generales
 7017=Fuente
 7018=Nombre
 7019=Ancho
 7020=Alto
 7021=Izquierda
-7022=Top
+7022=Superior
 7023=Propiedades
 7024=Eventos
 7025=Inspector de Propiedades
 7026=Componentes
-7027=Mostrar el Inspector de Propiedades
-7028=Mostrar el menu de componentes
+7027=Mostrar Inspector de Propiedades
+7028=Mostrar Paleta de Componentes
 7029=Nuevo wxDialog
 7030=Nuevo wxFrame
 7031=Editor de propiedades
 7032=Copiar el nombre del widget
 7033=Cambiar orden de creación
-7034=Select Parent
+7034=Seeccionar Padre
 7035=Bloquear control
 7036=Ver ID de los controles
 7037=Alineción
-7038=A la cuadricula
+7038=Fijar a Grilla
 7039=Vertical
 7040=Horizontal
 7041=A la izquierda
