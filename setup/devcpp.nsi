@@ -13,8 +13,8 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0rc5"
-!define IDE_DEVPAK_NAME  "wxdevcpp_rc5.DevPak"
+!define WXDEVCPP_VERSION "7.0rc6"
+!define IDE_DEVPAK_NAME  "wxdevcpp_rc6.DevPak"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
@@ -382,6 +382,9 @@ File "license.txt"
 
   ; Install Dev-C++ examples
   !insertmacro InstallDevPak "Templates.DevPak"
+
+  ; On Windows Vista, delete a previous virtual path
+  Delete "$LOCAL_APPDATA\VirtualStore\Program Files\Dev-Cpp\*.*"
 
   ; Delete old devcpp.map to avoid confusion in bug reports
   Delete "$INSTDIR\devcpp.map"
@@ -1068,6 +1071,7 @@ FunctionEnd
 
 UninstallText "This program will uninstall ${PROGRAM_NAME}. Continue ?"
 ShowUninstDetails show
+RequestExecutionLevel admin
 
 Section "Uninstall"
 
