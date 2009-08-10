@@ -239,17 +239,17 @@ begin
 
     if GetFileTyp(tfile) <> utHead then
     begin
-        Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(tfile, OBJ_EXT))]);
+        Objects := Format(cAppendStr, [Objects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT), true, false, true)]);
       if fProject.Units[i].Link then
       begin
         if (devCompiler.CompilerType = ID_COMPILER_DMARS) then
           LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath3(ChangeFileExt(tfile, OBJ_EXT))])
         else
-          LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT))]);
+          LinkObjects := Format(cAppendStr, [LinkObjects, '"' + GenMakePath(ChangeFileExt(tfile, OBJ_EXT), false, false, true) + '"']);
       end;
     end
     else if (devCompiler.CompilerType = ID_COMPILER_MINGW) and (I = fProject.PchHead) then
-      Objects := Format(cAppendStr, [Objects, GenMakePath2(ChangeFileExt(ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName), PCH_EXT))]);
+      Objects := Format(cAppendStr, [Objects, GenMakePath(ChangeFileExt(ExtractRelativePath(fProject.FileName, fProject.Units[i].FileName), PCH_EXT), true, false, true)]);
   end;
 
   if Length(fProject.CurrentProfile.PrivateResource) = 0 then
@@ -320,13 +320,19 @@ begin
   end;
   writeln(F, Format('# Makefile created by %s %s on %s',
                     [DEVCPP, DEVCPP_VERSION, FormatDateTime('dd/mm/yy hh:nn', Now)]));
-  
+
   if DoCheckSyntax then
   begin
     writeln(F, '# This Makefile is written for syntax check!');
     writeln(F, '# Regenerate it if you want to use this Makefile to build.');
   end;
   writeln(F);
+
+{$IFDEF PLUGIN_BUILD}
+    for i := 0 to MainForm.pluginsCount - 1 do
+        writeln(F, MainForm.plugins[i].GetCompilerMacros);
+{$ENDIF}
+
   writeln(F, 'CPP       = ' + Comp_ProgCpp);
   writeln(F, 'CC        = ' + Comp_Prog);
   if (devCompiler.windresName <> '') then
@@ -351,17 +357,12 @@ begin
   writeln(F, 'INCS      =' + StringReplace(fIncludesParams, '\', '/', [rfReplaceAll]));
   writeln(F, 'CXXINCS   =' + StringReplace(fCppIncludesParams, '\', '/', [rfReplaceAll]));
   writeln(F, 'RCINCS    =' + StringReplace(fRcIncludesParams, '\', '/', [rfReplaceAll]));
-  writeln(F, 'BIN       = ' + GenMakePath2(ExtractRelativePath(Makefile, fProject.Executable)));
+  writeln(F, 'BIN       = ' + GenMakePath(ExtractRelativePath(Makefile, fProject.Executable), false, false, true));
   writeln(F, 'DEFINES   = ' + PreprocDefines);
   writeln(F, 'CXXFLAGS  = $(CXXINCS) $(DEFINES) ' + fCppCompileParams);
   writeln(F, 'CFLAGS    = $(INCS) $(DEFINES) ' + fCompileParams);
   writeln(F, 'GPROF     = ' + devCompilerSet.gprofName);
   writeln(F, 'RM        = ' + RmExe);
-
-{$IFDEF PLUGIN_BUILD}
-    for i := 0 to MainForm.pluginsCount - 1 do
-        writeln(F, MainForm.plugins[i].GetCompilerMacros);
-{$ENDIF}
 
   if devCompiler.CompilerType in ID_COMPILER_VC then
     if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
@@ -702,7 +703,7 @@ end;
 procedure TCompiler.WriteMakeClean(var F: TextFile);
 begin
   Writeln(F, 'clean: clean-custom');
-  Writeln(F, #9 + '$(RM) $(OBJ) $(BIN)');
+  Writeln(F, #9 + '$(RM) $(LINKOBJ) "$(BIN)"');
 end;
 
 procedure TCompiler.CreateMakefile;
@@ -717,9 +718,9 @@ begin
   begin
 
     if devCompiler.compilerType <> ID_COMPILER_DMARS then
-      writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)])+ ' $(LIBS) ')
+      writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, ['$(BIN)'])+ ' $(LIBS) ')
     else
-      writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, [ExtractRelativePath(Makefile,fProject.Executable)]) + ', ,$(LIBS),,' + fResObjects);
+      writeln(F, #9 + '$(LINK) $(LINKOBJ) ' + format(devCompiler.LinkerFormat, ['$(BIN)']) + ', ,$(LIBS),,' + fResObjects);
 
     if (devCompiler.compilerType = ID_COMPILER_VC2005) or ( devCompiler.CompilerType = ID_COMPILER_VC2008) then
     begin
