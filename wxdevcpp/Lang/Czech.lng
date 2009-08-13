@@ -1,15 +1,15 @@
-ï»¿[lang]
-Lang=Czech (ÄŒeÅ¡tina)
+[lang]
+Lang=Czech (Èeština)
 Ver=1
 
-#Autor: Jan RingoÅ¡, Tringi
+#Autor: Jan Ringoš, Tringi
 #E-mail: Tringi@mx-3.cz
 
 #Web: http://tringi.mx-3.cz
-#TÃ½m: http://www.mx-3.cz
+#Tım: http://www.mx-3.cz
 
-#Za pÅ™Ã­padnÃ© chyby se omlouvÃ¡m, ale nikdo nenÃ­ dokonalÃ½.
-#NejnovÄ›jÅ¡Ã­ soubory vÅ¾dy naleznete na strÃ¡nce http://tringi.mx-3.cz
+#Za pøípadné chyby se omlouvám, ale nikdo není dokonalı.
+#Nejnovìjší soubory vdy naleznete na stránce http://tringi.mx-3.cz
 
 #wx designer string translation by Minexew
 
@@ -19,38 +19,38 @@ Ver=1
 103=&Zobrazit
 104=&Projekt
 105=S&pustit
-106=&NÃ¡stroje
+106=&Nástroje
 107=&Okna
-108=NÃ¡po&vÄ›da
+108=Nápo&vìda
 109=&Debug
 
 
 
-120=&NovÃ½
+120=&Novı
 121=&Projekt...
-122=&ZdrojovÃ½ kÃ³d
-123=&Definice zdrojÅ¯
-124=&Å ablona...
+122=&Zdrojovı kód
+123=&Definice zdrojù
+124=&Šablona...
 
 
 
-130=&OtevÅ™Ã­t projekt nebo soubor
-131=&PoslednÃ­
-132=&VyprÃ¡zdnit historii
-133=&UloÅ¾it
-134=UloÅ¾it &jako...
-135=U&loÅ¾it vÅ¡e
-136=&ZavÅ™Ã­t
-137=ZavÅ™Ã­t projekt
+130=&Otevøít projekt nebo soubor
+131=&Poslední
+132=&Vyprázdnit historii
+133=&Uloit
+134=Uloit &jako...
+135=U&loit vše
+136=&Zavøít
+137=Zavøít projekt
 138=Vlas&tnosti
-139=UloÅ¾it projekt jako...
+139=Uloit projekt jako...
 
 
 
 140=E&xport
 141=do &HTML
 142=do &RTF
-143=&CelÃ½ projekt do HTML
+143=&Celı projekt do HTML
 
 
 
@@ -59,24 +59,24 @@ Ver=1
 
 
 150=Tisk
-151=NastavenÃ­ tisku
+151=Nastavení tisku
 152=&Konec
 
 
 
-160=&ZpÄ›t
+160=&Zpìt
 161=&Znova
 162=V&yjmout
-163=&KopÃ­rovat
-164=&VloÅ¾it
-165=Vy&brat vÅ¡e
+163=&Kopírovat
+164=&Vloit
+165=Vy&brat vše
 166=&Smazat
-167=V&loÅ¾it
-168=Z&aloÅ¾it
-169=&PÅ™ejÃ­t na
-170=ZÃ¡loÅ¾ka
-171=&Datum/ÄŒas
-172=&KomentÃ¡Å™ hlaviÄky
+167=V&loit
+168=Z&aloit
+169=&Pøejít na
+170=Záloka
+171=&Datum/Èas
+172=&Komentáø hlavièky
 
 
 
@@ -84,42 +84,42 @@ Ver=1
 176=Hle&dat v souborech...
 177=Nahradit...
 178=&Hledat znova
-179=&PÅ™ejÃ­t na Å™Ã¡dek...
-180=&RychlÃ© hledÃ¡nÃ­
-181=PÅ™ejÃ­t na &funkci...
+179=&Pøejít na øádek...
+180=&Rychlé hledání
+181=Pøejít na &funkci...
 
 
 
-182=PlovoucÃ­ sprÃ¡vce projektu
-183=PÅ™ejÃ­t na sprÃ¡vce pro&jektu
-184=PÅ™ejÃ­t na sprÃ¡vce &tÅ™Ã­d
-185=SprÃ¡vce &projektu/tÅ™Ã­d
-186=&StavovÃ½ Å™Ã¡dek
-187=&VÃ½stup kompilÃ¡toru
-188=&VÅ¾dy viditelnÃ½
-189=&Pouze je-li tÅ™eba
-190=&LiÅ¡ty tlaÄÃ­tek
+182=Plovoucí správce projektu
+183=Pøejít na správce pro&jektu
+184=Pøejít na správce &tøíd
+185=Správce &projektu/tøíd
+186=&Stavovı øádek
+187=&Vıstup kompilátoru
+188=&Vdy viditelnı
+189=&Pouze je-li tøeba
+190=&Lišty tlaèítek
 
 
 
-191=HlavnÃ­ liÅ¡ta
-192=Kompilace a spouÅ¡tÄ›nÃ­
+191=Hlavní lišta
+192=Kompilace a spouštìní
 193=Projekt
 194=Dev-C++
-195=SpeciÃ¡lnÃ­
+195=Speciální
 196=Editace
-197=HledÃ¡nÃ­
-198=PlovoucÃ­ informaÄnÃ­ okno
+197=Hledání
+198=Plovoucí informaèní okno
 
 
 
-200=&NovÃ½ soubor
-201=&PÅ™idat k projektu
+200=&Novı soubor
+201=&Pøidat k projektu
 202=&Odstranit z projektu
 203=&Editovat zdroje projektu
 204=&Vlastnosti projektu
 205=Upravit &Makefile
-206=PÅ™i&dat soubor se zdroji
+206=Pøi&dat soubor se zdroji
 207=Od&stranit soubor se zdroji
 
 
@@ -127,60 +127,60 @@ Ver=1
 210=&Zkompilovat
 211=&Spustit
 212=Z&kompilovat a spustit
-213=&PÅ™ekompilovat vÅ¡e
-214=Vy&Äistit
-215=&VÃ½pis kompilÃ¡toru
+213=&Pøekompilovat vše
+214=Vy&èistit
+215=&Vıpis kompilátoru
 216=Kontrola synta&xe
 217=&Reset programu
-218=ProfilovÃ¡ &analÃ½za
+218=Profilová &analıza
 219=Storno
 
 
 
-220=&NastavenÃ­ kompilÃ¡toru
-221=NastavenÃ­ &prostÅ™edÃ­
-222=NastavenÃ­ &editoru
-223=&Upravit nÃ¡stroje
-224=NastavenÃ­ klÃ¡vesovÃ½ch &zkratek
+220=&Nastavení kompilátoru
+221=Nastavení &prostøedí
+222=Nastavení &editoru
+223=&Upravit nástroje
+224=Nastavení klávesovıch &zkratek
 
 
 
-230=&CeloobrazovkovÃ½ reÅ¾im
-231=&ZpÄ›t do okna
-232=&NÃ¡sledujÃ­cÃ­
-233=&PÅ™edchozÃ­
-234=&ZavÅ™Ã­t vÅ¡e
-235=%s verze %s celoobrazovkovÃ½ reÅ¾im. Stiskem Shift-F12 pÅ™epnete zobrazenÃ­ nÃ¡strojÅ¯, klÃ¡vesou F12 se vrÃ¡tÃ­te do bÄ›Å¾nÃ©ho reÅ¾imu.
-236=ZavÅ™Ã­t vÅ¡e mimo tohoto
+230=&Celoobrazovkovı reim
+231=&Zpìt do okna
+232=&Následující
+233=&Pøedchozí
+234=&Zavøít vše
+235=%s verze %s celoobrazovkovı reim. Stiskem Shift-F12 pøepnete zobrazení nástrojù, klávesou F12 se vrátíte do bìného reimu.
+236=Zavøít vše mimo tohoto
 237=&Seznam...
 
 
 
 240=&O Dev-C++...
 241=&Zjistit updaty...
-242=&Upravit menu NÃ¡povÄ›da...
-243=&NÃ¡povÄ›da k Dev-C++
+242=&Upravit menu Nápovìda...
+243=&Nápovìda k Dev-C++
 
 
 
 245=&Ladit
-246=&VloÅ¾it breakpoint
-247=&DalÅ¡Ã­ krok
-248=&PÅ™eskoÄit
-249=&NovÃ© sledovÃ¡nÃ­
-250=&Sledovat promÄ›nnÃ©
-251=U&konÄit provÃ¡dÄ›nÃ­
+246=&Vloit breakpoint
+247=&Další krok
+248=&Pøeskoèit
+249=&Nové sledování
+250=&Sledovat promìnné
+251=U&konèit provádìní
 252=&Modifikovat
-253=&Odstranit sledovÃ¡nÃ­
-254=Krok dovn&itÅ™
-255=PokraÄovat po &kurzor
+253=&Odstranit sledování
+254=Krok dovn&itø
+255=Pokraèovat po &kurzor
 256=&Zobrazit okno CPU
-257=PÅ™iÅ™&adit k procesu...
+257=Pøiø&adit k procesu...
 258=&Modifikovat
 
 
-260=NovÃ½ soubor
-261=VloÅ¾it soubor...
+260=Novı soubor
+261=Vloit soubor...
 262=Odstranit soubor...
 263=Vlastnosti...
 264=Upravit zdroje
@@ -188,541 +188,541 @@ Ver=1
 
 
 270=Odstranit soubor
-271=PÅ™ejmenovat soubor
-272=ZavÅ™Ã­t
-273=OtevÅ™Ã­t
-274=OtevÅ™Ã­t hlaviÄku
+271=Pøejmenovat soubor
+272=Zavøít
+273=Otevøít
+274=Otevøít hlavièku
 
 
 
-280=PÅ™ejÃ­t na &deklaraci
-281=PÅ™ejÃ­t na &implementaci
-282=&NovÃ¡ tÅ™Ã­da
-283=NovÃ¡ ÄlenskÃ¡ &funkce
-284=NovÃ¡ &promÄ›nnÃ¡
+280=Pøejít na &deklaraci
+281=Pøejít na &implementaci
+282=&Nová tøída
+283=Nová èlenská &funkce
+284=Nová &promìnná
 285=&Zobrazit
-286=&VÅ¡echny soubory
-287=&AktuÃ¡lnÃ­ soubor
-288=PÅ™idat sloÅ¾ku
-289=Odstranit sloÅ¾ku
-290=PÅ™ejmenovat sloÅ¾ku
-291=NenÃ­ moÅ¾nÃ© vytvoÅ™it vÃ­ce neÅ¾ %d sloÅ¾ek v jednom projektu.
-292=DetailnÃ­ nÃ¡zvy
+286=&Všechny soubory
+287=&Aktuální soubor
+288=Pøidat sloku
+289=Odstranit sloku
+290=Pøejmenovat sloku
+291=Není moné vytvoøit více ne %d sloek v jednom projektu.
+292=Detailní názvy
 293=Soubory projektu
-294=ZdÄ›dÄ›nÃ© Äleny
-295=OtevÅ™Ã­t v...
+294=Zdìdìné èleny
+295=Otevøít v...
 
-259=Odstranit &vÅ¡echny
+259=Odstranit &všechny
 
 
-300=KompilÃ¡tor
+300=Kompilátor
 301=Zdroje
 302=Kompilace
-303=VÃ½sledky hledÃ¡nÃ­
+303=Vısledky hledání
 304=Schovat
 305=Debugger
 306=Seznam TODO
 
 
 310=&Vymazat
-311=&KopÃ­rovat
+311=&Kopírovat
 312=&Schovat
-313=&OtevÅ™Ã­t
+313=&Otevøít
 
 
 
-315=Å˜Ã¡dek
+315=Øádek
 316=Soubor
-317=ZprÃ¡va
+317=Zpráva
 318=Argumenty
 
 
 
-320=Hledat Å™Ã¡dek
+320=Hledat øádek
 321=Sloupec
-322=NÃ¡zev promÄ›nnÃ©
+322=Název promìnné
 323=Hodnota
 324=Informace:
-325=ZÃ¡znam kompilace:
+325=Záznam kompilace:
 326=Celkem chyb:
-327=Velikost vÃ½stupu:
+327=Velikost vıstupu:
 
 
-330=SledovanÃ© promÄ›nnÃ©
-331=TrasovÃ¡nÃ­
-332=VÃ½stup
-333=Odeslat pÅ™Ã­kaz debuggeru:
+330=Sledované promìnné
+331=Trasování
+332=Vıstup
+333=Odeslat pøíkaz debuggeru:
 334=Odeslat
 
 
 
-340=NovÃ½
-341=VloÅ¾it
-342=ZaloÅ¾it
-343=PÅ™ejÃ­t
+340=Novı
+341=Vloit
+342=Zaloit
+343=Pøejít
 344=Okno projektu
-345=Okno ladÄ›nÃ­
-346=InformaÄnÃ­ okno
+345=Okno ladìní
+346=Informaèní okno
 
 
 
-350=OtevÅ™Ã­t soubor
-351=OtevÅ™Ã­t soubor
+350=Otevøít soubor
+351=Otevøít soubor
 352=Exportovat do
-353=UloÅ¾it soubor
-354=UloÅ¾it projekt
-355=Zvolte soubor s nÃ¡povÄ›dou
+353=Uloit soubor
+354=Uloit projekt
+355=Zvolte soubor s nápovìdou
 
 
 
-357=NovÃ¡ sledovanÃ¡ promÄ›nnÃ¡:
-358=Zadejte nÃ¡zev sledovanÃ© promÄ›nnÃ©:
-359=Modifikovat sledovanou promÄ›nnou
-360=NÃ¡zev novÃ© sledovanÃ© promÄ›nnÃ©:
-361=ZmÄ›nit hodnotu
-362=Modifikovat promÄ›nnou:
-363=NovÃ¡ hodnota:
+357=Nová sledovaná promìnná:
+358=Zadejte název sledované promìnné:
+359=Modifikovat sledovanou promìnnou
+360=Název nové sledované promìnné:
+361=Zmìnit hodnotu
+362=Modifikovat promìnnou:
+363=Nová hodnota:
 
 
 370=Soubory
-371=TÅ™Ã­dy
+371=Tøídy
 
 
 
 380=Zakomentovat
 381=Odkomentovat
 382=Odsadit
-383=PÅ™edsadit
-384=PÅ™epnout zdroj/hlaviÄky
+383=Pøedsadit
+384=Pøepnout zdroj/hlavièky
 
 
 
 400=Vlastnosti editoru
-401=ZÃ¡kladnÃ­
-402=ZobrazenÃ­
+401=Základní
+402=Zobrazení
 403=Syntaxe
-404=KÃ³d
-405=DokonÄovÃ¡nÃ­
-406=Struktura kÃ³du
+404=Kód
+405=Dokonèování
+406=Struktura kódu
 
 
 
-410=VloÅ¾it
-411=ImplicitnÃ­ zdroj
+410=Vloit
+411=Implicitní zdroj
 
 
 
-419=Zadejte nÃ¡zev pro toto schÃ©ma:
+419=Zadejte název pro toto schéma:
 
 
 
 420=Vlastnosti editoru:
-421=AutoÅ™Ã¡dkovÃ¡nÃ­
-422=ReÅ¾im vklÃ¡dÃ¡nÃ­
-423=PouÅ¾Ã­vat znak TAB
-424=InteligentnÃ­ tabulÃ¡tor
-425=Å˜Ã¡dkovacÃ­ backspace
-426=NechÃ¡vat mezery na Å™Ã¡dcÃ­ch
-427=ZpÄ›t po skupinÃ¡ch
-428=RozÅ¡Ã­Å™enÃ¡ klÃ¡vesa HOME
+421=Autoøádkování
+422=Reim vkládání
+423=Pouívat znak TAB
+424=Inteligentní tabulátor
+425=Øádkovací backspace
+426=Nechávat mezery na øádcích
+427=Zpìt po skupinách
+428=Rozšíøená klávesa HOME
 429=Kurzor za EOF
 430=Kurzor za EOL
-431=Dvojklikem vybrat celÃ½ Å™Ã¡dek
+431=Dvojklikem vybrat celı øádek
 432=Hledat text u kurzoru
-433=PosuvnÃ­ky jen jsou-li tÅ™eba
-434=PÅ¯lstrÃ¡nkovÃ½ posun
-435=Pozice na posuvnÃ­ku
-436=ZvÃ½raznit syntaxi
-437=VklÃ¡dat upuÅ¡tÄ›nÃ© soubory
+433=Posuvníky jen jsou-li tøeba
+434=Pùlstránkovı posun
+435=Pozice na posuvníku
+436=Zvıraznit syntaxi
+437=Vkládat upuštìné soubory
 438=Velikost tab:
-439=OkrajovÃ¡ linka
-440=ViditelnÃ¡
+439=Okrajová linka
+440=Viditelná
 441=Pozice
 442=Barva
-443=VklÃ¡dÃ¡nÃ­ textu
-444=Kurzor pro vklÃ¡dÃ¡nÃ­
-445=Kurzor pro pÅ™epis
-446=SvislÃ¡ ÄÃ¡ra
-447=HorizontÃ¡lnÃ­ ÄÃ¡ra
-448=ÄŒtvereÄek
-449=PlnÃ½ obdÃ©lnÃ­k
-450=VklÃ¡dat upuÅ¡tÄ›nÃ© soubory
-451=Zobrazit skrytÃ© znaky
+443=Vkládání textu
+444=Kurzor pro vkládání
+445=Kurzor pro pøepis
+446=Svislá èára
+447=Horizontální èára
+448=Ètvereèek
+449=Plnı obdélník
+450=Vkládat upuštìné soubory
+451=Zobrazit skryté znaky
 452=Zobrazovat tipy
-453=VysvÃ­tit souvisejÃ­cÃ­ zÃ¡vorky
-454=Zajistit prÃ¡zdnÃ½ Å™Ã¡dek na konci souboru
-455=ZvÃ½raznÄ›nÃ­ aktuÃ¡lnÃ­ho Å™Ã¡dku
-456=VÃ½chozÃ­ systÃ©movÃ¡ barva
-457=NastavÃ­ vÃ½chozÃ­ systÃ©movou barvu pro mezeru
+453=Vysvítit související závorky
+454=Zajistit prázdnı øádek na konci souboru
+455=Zvıraznìní aktuálního øádku
+456=Vıchozí systémová barva
+457=Nastaví vıchozí systémovou barvu pro mezeru
 
 
 460=Font v editoru:
 461=Font
 462=Velikost
 463=Ukazka fontu
-464=Font pro index Å™Ã¡dkÅ¯
-465=AutomatickÃ¡ velikost
-466=ÄŒÃ­slovat Å™Ã¡dky
-467=Zobrazit ÃºvodnÃ­ nuly
-468=ZaÄÃ­t nulou
-469=PouÅ¾Ã­t vlastnÃ­ font
-470=UkÃ¡zka fontu
+464=Font pro index øádkù
+465=Automatická velikost
+466=Èíslovat øádky
+467=Zobrazit úvodní nuly
+468=Zaèít nulou
+469=Pouít vlastní font
+470=Ukázka fontu
 
 
 
-471=PopÅ™edÃ­
-472=PozadÃ­
+471=Popøedí
+472=Pozadí
 473=Styly
-474=TuÄnÃ©
-475=KurzÃ­va
-476=PodtrÅ¾enÃ©
-477=PÅ™ednastavenÃ© barvy
+474=Tuèné
+475=Kurzíva
+476=Podtrené
+477=Pøednastavené barvy
 478=Typ:
-479=UloÅ¾it vlastnÃ­ barevnÃ© schÃ©ma
+479=Uloit vlastní barevné schéma
 
 
 
-480=KÃ³d
+480=Kód
 481=Menu
 482=Sekce
 483=Popis
-484=VloÅ¾it do souboru kaÅ¾dÃ©ho novÃ©ho projektu
-485=PouÅ¾Ã­t cache pro dokonÄovÃ¡nÃ­
+484=Vloit do souboru kadého nového projektu
+485=Pouít cache pro dokonèování
 
 
 
-486=AutomatickÃ© dokonÄovÃ¡nÃ­
-487=Povolit automatickÃ© dokonÄovÃ¡nÃ­
-488=ZpoÅ¾dÄ›nÃ­ (ms):
-489=Barva pozadÃ­:
+486=Automatické dokonèování
+487=Povolit automatické dokonèování
+488=Zpodìní (ms):
+489=Barva pozadí:
 
 
 
-490=NastavenÃ­ zobrazenÃ­ struktury kÃ³du
-491=ProchÃ¡zet i lokÃ¡lnÃ­ soubory vloÅ¾enÃ© pomocÃ­ #include
-492=PÅ™Ã­klad
-493=ZÃ¡kladnÃ­
-494=ZobrazenÃ­
-495=Povolit zobrazenÃ­ struktury kÃ³du
-496=ProchÃ¡zet i globÃ¡lnÃ­ soubory vloÅ¾enÃ© pomocÃ­ #include
-497=Zobrazit pouze tÅ™Ã­dy aktivnÃ­ho souboru
+490=Nastavení zobrazení struktury kódu
+491=Procházet i lokální soubory vloené pomocí #include
+492=Pøíklad
+493=Základní
+494=Zobrazení
+495=Povolit zobrazení struktury kódu
+496=Procházet i globální soubory vloené pomocí #include
+497=Zobrazit pouze tøídy aktivního souboru
 
 
 
-500=NovÃ½ projekt
+500=Novı projekt
 501=Popis:
 502=Soubor:
-503=JmÃ©no:
+503=Jméno:
 504=&C Projekt
 505=C&++ Projekt
-506=&Nastavit jako implicitnÃ­
-507=RÅ¯znÃ©
+506=&Nastavit jako implicitní
+507=Rùzné
 508=Vlastnosti projektu:
 
 
 
 520=Odstranit z projektu
-521=Zvolte soubor, kterÃ½ mÃ¡ bÃ½t odstranÄ›n z projektu:
+521=Zvolte soubor, kterı má bıt odstranìn z projektu:
 
 
 
-525=PÅ™ejÃ­t na Å™Ã¡dek ...
-526=NovÃ½ Å™Ã¡dek:
+525=Pøejít na øádek ...
+526=Novı øádek:
 
 
 
-530=NastavenÃ­ nÃ¡strojÅ¯
-531=AktuÃ¡lnÃ­ nÃ¡stroje:
+530=Nastavení nástrojù
+531=Aktuální nástroje:
 
 
 
-535=Ãšprava nÃ¡stroje
-536=NÃ¡zev
+535=Úprava nástroje
+536=Název
 537=Program
-538=PracovnÃ­ sloÅ¾ka
+538=Pracovní sloka
 539=Parametry
-540=VloÅ¾it makro
-541=DostupnÃ¡ makra
+540=Vloit makro
+541=Dostupná makra
 
 
 
 545=Knihovna ikonek
-546=PouÅ¾Ã­t vybranou ikonu
-547=ProchÃ¡zet
+546=Pouít vybranou ikonu
+547=Procházet
 
 
 
-550=NastavenÃ­ klÃ¡vesovÃ½ch zkratek
-551=KliknÄ›te na poloÅ¾ku a stisknÄ›te poÅ¾adovanou zkratku:
-552=Tip: StisknutÃ­m ESC zruÅ¡Ã­te nastavenÃ­ kl. zkratky
-553=PoloÅ¾ka menu
-554=PÅ™iÅ™azenÃ¡ zkratka
-555=ZruÅ¡it
+550=Nastavení klávesovıch zkratek
+551=Kliknìte na poloku a stisknìte poadovanou zkratku:
+552=Tip: Stisknutím ESC zrušíte nastavení kl. zkratky
+553=Poloka menu
+554=Pøiøazená zkratka
+555=Zrušit
 556=OK
 
 
 
-560=VrÃ¡tÃ­ implicitnÃ­ adresÃ¡Å™
-561=VrÃ¡tÃ­ pracovnÃ­ adresÃ¡Å™ dev-c++
-562=VrÃ¡tÃ­ nÃ¡zev zkompilovanÃ©ho souboru
-563=VrÃ¡tÃ­ cestu k aktuÃ¡lnÃ­mu projektu nebo zdrojovÃ©mu kÃ³du
-564=VrÃ¡tÃ­ nÃ¡zev souboru aktuÃ¡lnÃ­ho projektu nebo zdorjovÃ©ho kÃ³du
-565=VrÃ¡tÃ­ nÃ¡zev projektu
-566=VrÃ¡tÃ­ nÃ¡zev aktuÃ¡lnÃ­ho zdrojovÃ©ho souboru
-567=VrÃ¡tÃ­ cestu k aktuÃ¡lnÃ­mu zdrojovÃ©mu souboru
-568=VrÃ¡tÃ­ mezerami oddÄ›lenÃ½ seznam vÅ¡ech souborÅ¯ v aktuÃ¡lnÃ­m projektu
-569=VrÃ¡tÃ­ slovo na pozici kurzoru aktivnÃ­ho souboru
-570=VrÃ¡tÃ­ verzi dev-c++
+560=Vrátí implicitní adresáø
+561=Vrátí pracovní adresáø dev-c++
+562=Vrátí název zkompilovaného souboru
+563=Vrátí cestu k aktuálnímu projektu nebo zdrojovému kódu
+564=Vrátí název souboru aktuálního projektu nebo zdorjového kódu
+565=Vrátí název projektu
+566=Vrátí název aktuálního zdrojového souboru
+567=Vrátí cestu k aktuálnímu zdrojovému souboru
+568=Vrátí mezerami oddìlenı seznam všech souborù v aktuálním projektu
+569=Vrátí slovo na pozici kurzoru aktivního souboru
+570=Vrátí verzi dev-c++
 
 
 
 580=O Dev-C++ :)
 581=inseculous@users.sourceforge.net
 582=GNU General Public License
-583=KontaktnÃ­ informace
+583=Kontaktní informace
 584=Bloodshed Software:
-585=KompilÃ¡tor Mingw:
-586=DiskuznÃ­ fÃ³rum o Dev-C++:
+585=Kompilátor Mingw:
+586=Diskuzní fórum o Dev-C++:
 587=Maillist Dev-C++:
-588=E-maily autorÅ¯:
+588=E-maily autorù:
 589=http://www.bloodshed.net
 590=http://www.mingw.org
 591=http://www.bloodshed.net/forum
 592=http://www.bloodshed.net/devcpp-ml.html
 593=haiku@bloodshed.net
-594=&Zjistit novÃ© verze
+594=&Zjistit nové verze
 
 
 
-600=Ãšprava poloÅ¾ky
-601=NovÃ¡ poloÅ¾ka
-602=NÃ¡zev poloÅ¾ky
+600=Úprava poloky
+601=Nová poloka
+602=Název poloky
 603=Popisek
-604=Sekce nabÃ­dky
+604=Sekce nabídky
 
 
-606=Okno prÅ¯bÄ›hu kompilace
-607=Zobrazit bÄ›hem kompilace
-608=Automaticky zavÅ™Ã­t
-
-
-
-609=Nezobrazovat splash pÅ™i startu programu
+606=Okno prùbìhu kompilace
+607=Zobrazit bìhem kompilace
+608=Automaticky zavøít
 
 
 
-610=Vlastnosti prostÅ™edÃ­
-611=ZÃ¡kladnÃ­
+609=Nezobrazovat splash pøi startu programu
+
+
+
+610=Vlastnosti prostøedí
+611=Základní
 612=Cesty
-613=Automaticky otevÅ™Ã­t
-614=ImplicitnÄ› C++ pro novÃ½ projekt
-615=Zobrazit liÅ¡ty tlaÄÃ­tek v celoobrazovkovÃ©m reÅ¾imu
-616=VytvÃ¡Å™et zÃ¡loÅ¾nÃ­ soubory
-617=Minimalizovat po spuÅ¡tÄ›nÃ­
-618=Styl dialogÅ¯
+613=Automaticky otevøít
+614=Implicitnì C++ pro novı projekt
+615=Zobrazit lišty tlaèítek v celoobrazovkovém reimu
+616=Vytváøet záloní soubory
+617=Minimalizovat po spuštìní
+618=Styl dialogù
 619=Windows 2k
 620=Windows 9x
 621=Windows 3.1
 622=Jazyk:
-623=ZÃ¡loÅ¾ky informaÄnÃ­ho okna:
-624=MaximÃ¡lnÃ­ poÄet souborÅ¯ v historii
-625=ImplicitnÃ­ adresÃ¡Å™
-626=AdresÃ¡Å™ pro vÃ½stupnÃ­ soubory
-627=Cesta k ikonÃ¡m
-628=ÃšvodnÃ­ obrÃ¡zek
-629=Vyberte implicitnÃ­ sloÅ¾ku
-630=Vyberte sloÅ¾ku kam bude smÄ›rovÃ¡n vÃ½stup
-631=Vyberte sloÅ¾ku, kde jsou uloÅ¾eny ikony
-632=VÅ¡echny soubory projektu
-633=Pouze prvnÃ­ soubor
+623=Záloky informaèního okna:
+624=Maximální poèet souborù v historii
+625=Implicitní adresáø
+626=Adresáø pro vıstupní soubory
+627=Cesta k ikonám
+628=Úvodní obrázek
+629=Vyberte implicitní sloku
+630=Vyberte sloku kam bude smìrován vıstup
+631=Vyberte sloku, kde jsou uloeny ikony
+632=Všechny soubory projektu
+633=Pouze první soubor
 634=Nic
-635=Zobrazit menu v celoobrazovkovÃ©m reÅ¾imu
-636=Dvojklik pro otevÅ™enÃ­ souboru
-637=Cesta k souborÅ¯m s jazykem
+635=Zobrazit menu v celoobrazovkovém reimu
+636=Dvojklik pro otevøení souboru
+637=Cesta k souborùm s jazykem
 638=Styl:
-639=RozhranÃ­
+639=Rozhraní
 
 
 
-640=NajÃ­t text
+640=Najít text
 641=Hledat
 642=Hledat v souborech
-643=&Text k vyhledÃ¡nÃ­
-644=MoÅ¾nosti:
-645=&RozliÅ¡ovat velikost
-646=&Pouze celÃ¡ slova
-647=SmÄ›r
+643=&Text k vyhledání
+644=Monosti:
+645=&Rozlišovat velikost
+646=&Pouze celá slova
+647=Smìr
 648=&Soubory v projektu
-649=&OtevÅ™enÃ© soubory
+649=&Otevøené soubory
 650=Rozsah
-651=&GlobÃ¡lnÃ­
-652=&Pouze vybranÃ©
-653=PÅ¯vod
+651=&Globální
+652=&Pouze vybrané
+653=Pùvod
 654=Od kurzoru
-655=CelÃ½ rozsah
-656=SmÄ›r
-657=VpÅ™ed
+655=Celı rozsah
+656=Smìr
+657=Vpøed
 658=Vzad
 
 
 
 670=Nahradit text
-671=Text k vyhledÃ¡nÃ­:
+671=Text k vyhledání:
 672=Nahradit textem:
-673=MoÅ¾nosti:
-674=&RozliÅ¡ovat velikost
-675=&Pouze celÃ¡ slova
-676=&DotÃ¡zat se
-677=SmÄ›r:
-678=&VpÅ™ed
+673=Monosti:
+674=&Rozlišovat velikost
+675=&Pouze celá slova
+676=&Dotázat se
+677=Smìr:
+678=&Vpøed
 679=&Vzad
 680=Rozsah
-681=&GlobÃ¡lnÃ­
-682=&Pouze vybranÃ©
-683=PÅ¯vod:
+681=&Globální
+682=&Pouze vybrané
+683=Pùvod:
 684=&Od kurzoru
-685=&CelÃ½ rozsah
+685=&Celı rozsah
 
 
 
 695=Hledat:
 696=Typ
 697=Funkce
-698=Å˜Ã¡dek
+698=Øádek
 
 
 
-700=Vlastnosti kompilÃ¡toru
-701=KompilÃ¡tor
-702=AdresÃ¡Å™e
-703=Typ kÃ³du/Optimalizace
+700=Vlastnosti kompilátoru
+701=Kompilátor
+702=Adresáøe
+703=Typ kódu/Optimalizace
 704=Linker
 705=Programy
 
 
 
-710=BinÃ¡rnÃ­ soubory
+710=Binární soubory
 711=Knihovny
 712=C Include soubory
 713=C++ Include soubory
-720=C kompilÃ¡tor:
-721=C++ kompilÃ¡tor:
-722=CompilÃ¡tor:
-725=Podporovat vlastnosti standarnÃ­ho ANSI C 
-726=Podporovat nÄ›kterÃ© vlastnosti tradiÄnÃ­ho C preprocesoru
-727=PotlaÄit vÅ¡echny varovnÃ© upozornÄ›nÃ­
-728=Vypnout vÅ¡echny kontroly pÅ™Ã­stupu
-729=Akceptovat $ v identifikÃ¡torech
-730=PouÅ¾Ã­t heuristiku pro rychlejÅ¡Ã­ kompilaci
-731=PouÅ¾Ã­t Cygwin mÃ­sto Mingw compilÃ¡toru
-732=PÅ™ipojit nÃ¡sledujÃ­cÃ­ parametry pÅ™i volÃ¡nÃ­ kompilÃ¡toru:
-733=ZpoÅ¾dÄ›nÃ­
-734=Povolit zpoÅ¾dÄ›nÃ­ (ms) pro odstranÄ›nÃ­ problÃ©mÅ¯ pÅ™i tvorbÄ› makefile.
-735=Zobrazit kaÅ¾dou chybu na samostatnÃ©m Å™Ã¡dku
+720=C kompilátor:
+721=C++ kompilátor:
+722=Compilátor:
+725=Podporovat vlastnosti standarního ANSI C 
+726=Podporovat nìkteré vlastnosti tradièního C preprocesoru
+727=Potlaèit všechny varovné upozornìní
+728=Vypnout všechny kontroly pøístupu
+729=Akceptovat $ v identifikátorech
+730=Pouít heuristiku pro rychlejší kompilaci
+731=Pouít Cygwin místo Mingw compilátoru
+732=Pøipojit následující parametry pøi volání kompilátoru:
+733=Zpodìní
+734=Povolit zpodìní (ms) pro odstranìní problémù pøi tvorbì makefile.
+735=Zobrazit kadou chybu na samostatném øádku
 
-740=Typ kÃ³du:
+740=Typ kódu:
 741=Optimalizace:
-745=Povolit handlovÃ¡nÃ­ vÃ½jimek
-746=Float stejnÃ© dÃ©lky jako typ double
-747=Komentovat generovanÃ½ kÃ³d assembleru
-748=ZÃ¡kladnÃ­ optimalizace
-749=MaximÃ¡lnÃ­ optimalizace
-750=ProvÃ¡dÄ›t mnoÅ¾stvÃ­ nÃ¡roÄnÃ½ch optimalizacÃ­
+745=Povolit handlování vıjimek
+746=Float stejné délky jako typ double
+747=Komentovat generovanı kód assembleru
+748=Základní optimalizace
+749=Maximální optimalizace
+750=Provádìt mnoství nároènıch optimalizací
 
 
 
-751=GenerÃ¡tor makefile souborÅ¯:
-752=Vynechat detailnÃ­ kontrolu zÃ¡vislostÃ­
-753=ProfilovÃ¡nÃ­ kÃ³du:
-754=Generovat profilovÃ© informace k analÃ½ze
+751=Generátor makefile souborù:
+752=Vynechat detailní kontrolu závislostí
+753=Profilování kódu:
+754=Generovat profilové informace k analıze
 
 
 
 755=Linkovat program v Object C
 756=Generovat informace pro debugger
-757=NepouÅ¾Ã­vat standardnÃ­ knihovny
-758=NevytvÃ¡Å™et konzoli
-759=PÅ™idat tyto parametry pÅ™i volÃ¡nÃ­ linkeru
+757=Nepouívat standardní knihovny
+758=Nevytváøet konzoli
+759=Pøidat tyto parametry pøi volání linkeru
 
 
 
 760=Neoptimalizovat
-761=StÅ™ednÃ­ optimalizace (doporuÄeno)
+761=Støední optimalizace (doporuèeno)
 
 
 
-770=Zde mÅ¯Å¾ete zmÄ›nit jednotlivÃ© programy kterÃ© jsou pouÅ¾Ã­vÃ¡ny Dev-C++.
+770=Zde mùete zmìnit jednotlivé programy které jsou pouívány Dev-C++.
 
 
 
-771=PÅ™ednastavenÃ© styly pro kompilÃ¡tor:
-772=NovÃ½ styl
-773=Zadejte nÃ¡zev pro novÃ½ styl:
-774=NemÅ¯Å¾ete odstranit ÃºplnÄ› vÅ¡echny pÅ™ednastavenÃ© styly!
+771=Pøednastavené styly pro kompilátor:
+772=Novı styl
+773=Zadejte název pro novı styl:
+774=Nemùete odstranit úplnì všechny pøednastavené styly!
 775=Opravdu chcete tento styl odstranit?
-776=PÅ™ejmenovat styl
-777=Zadejte novÃ½ nÃ¡zev pro styl:
-778=NÃ¡slednÃ¡
+776=Pøejmenovat styl
+777=Zadejte novı název pro styl:
+778=Následná
 
 
 
-780=Editor menu nÃ¡povÄ›dy
-781=NÃ¡zev poloÅ¾ky
-782=Soubor s nÃ¡povÄ›dou
+780=Editor menu nápovìdy
+781=Název poloky
+782=Soubor s nápovìdou
 783=Vlastnosti
 784=Ikona
 785=Sekce
 786=Sekce 1
 787=Sekce 2
-788=Menu pÅ™i nÃ¡povÄ›dÄ›
+788=Menu pøi nápovìdì
 789=Hledat soubor
 
 
 
-790=Prohledat soubor nÃ¡povÄ›dy pro slovo na pozici kurzoru
-791=PÅ™iÅ™adit zkratku F1
+790=Prohledat soubor nápovìdy pro slovo na pozici kurzoru
+791=Pøiøadit zkratku F1
 
 
 
 800=Tisk souboru
 801=Parametry:
-802=StrÃ¡nky:
+802=Stránky:
 803=&Barvy
-804=&zvÃ½raznÄ›nÃ­
-805=&ZalamovÃ¡nÃ­ slov
-806=&ÄŒÃ­sla Å™Ã¡dkÅ¯
-807=Tisknout ÄÃ­sla Å™Ã¡dkÅ¯
-808=Tisknout ÄÃ­sla Å™Ã¡dkÅ¯ v okraji
-809=PoÄet kopiÃ­:
+804=&zvıraznìní
+805=&Zalamování slov
+806=&Èísla øádkù
+807=Tisknout èísla øádkù
+808=Tisknout èísla øádkù v okraji
+809=Poèet kopií:
 810= Tisknout pouze vybranou oblast
 
 
 
-820=Hledat novÃ© verze Dev-C++
-821=Ãšloha:
-822=VÃ½sledky:
-823=Verze vydÃ¡nÃ­:
-824=VyÅ¾adovanÃ¡ verze:
-825=Popis balÃ­Äku:
-826=Server (dvojklikem stÃ¡hnete):
+820=Hledat nové verze Dev-C++
+821=Úloha:
+822=Vısledky:
+823=Verze vydání:
+824=Vyadovaná verze:
+825=Popis balíèku:
+826=Server (dvojklikem stáhnete):
 
 
 
-830=VloÅ¾it novÃ© TODO...
+830=Vloit nové TODO...
 831=Popisek
 832=Priorita
-833=UÅ¾ivatel
+833=Uivatel
 835=Seznam TODO...
 836=Soubor
 837=Hotovo
-838=Nezobrazovat poloÅ¾ky oznaÄeny jako HotovÃ©
+838=Nezobrazovat poloky oznaèeny jako Hotové
 839=Filtr:
-840=VÅ¡echny soubory
-841=Pouze otevÅ™enÃ© soubory
-842=VÅ¡echny soubory projektu
-843=Pouze otevÅ™enÃ© soubory projektu
-844=OtevÅ™enÃ© soubory nepatÅ™Ã­cÃ­ k projektu
-845=Pouze aktuÃ¡lnÃ­ soubor
+840=Všechny soubory
+841=Pouze otevøené soubory
+842=Všechny soubory projektu
+843=Pouze otevøené soubory projektu
+844=Otevøené soubory nepatøící k projektu
+845=Pouze aktuální soubor
 
 
 
@@ -731,212 +731,212 @@ Ver=1
 852=Volby importu
 853=Konfigurace k importu
 854=Soubor projektu Dev-C++
-855=Soubor projektu MS Visual C++ byl ÃºspÄ›Å¡nÄ› importovÃ¡n a pÅ™eveden na formÃ¡t Dev-C++. Chcete jej nynÃ­ otevÅ™Ã­t?
-856=NepodaÅ™ilo se najÃ­t cÃ­lovou konfiguraci "%s". Toto mÅ¯Å¾e bÃ½t chyba v Dev-C++...
+855=Soubor projektu MS Visual C++ byl úspìšnì importován a pøeveden na formát Dev-C++. Chcete jej nyní otevøít?
+856=Nepodaøilo se najít cílovou konfiguraci "%s". Toto mùe bıt chyba v Dev-C++...
 
 
 900=Vlastnosti projektu
-901=ZÃ¡kladnÃ­
-902=AdresÃ¡Å™e
-903=NÃ¡zev:
+901=Základní
+902=Adresáøe
+903=Název:
 904=Ikona:
 905=Knihovna
-906=ProchÃ¡zet
+906=Procházet
 907=Typ:
 908=Win32 - GUI Aplikace
-909=Win32 - KonzolovÃ¡ aplikace
-910=StatickÃ¡ knihovna (.A)
-911=Dynamicky LinkovanÃ¡ Knihovna (DLL)
+909=Win32 - Konzolová aplikace
+910=Statická knihovna (.A)
+911=Dynamicky Linkovaná Knihovna (DLL)
 912=Kompilovat jako C++
-913=Parametry pÅ™Ã­kazovÃ©ho Å™Ã¡dku:
-914=KompilÃ¡tor:
-915=Linker/PÅ™Ã­padnÃ© dalÅ¡Ã­ knihovny:
+913=Parametry pøíkazového øádku:
+914=Kompilátor:
+915=Linker/Pøípadné další knihovny:
 916=Knihovny
-917=ZdrojovÃ© soubory
-918=VloÅ¾enÃ© soubory Include
+917=Zdrojové soubory
+918=Vloené soubory Include
 919=Zvolit ikonu
-920=PÅ™ipojit objektovÃ½ soubor
+920=Pøipojit objektovı soubor
 921=Zdroje
-922=CÃ­le
-923=AdresÃ¡Å™e
-924=&AdresÃ¡Å™ pro vÃ½slednÃ½ spustitelnÃ½ soubor
-925=A&dresÃ¡Å™ pro objektovÃ© soubory
-926=NÃ¡zev &vÃ½stupnÃ­ho souboru
-927=PÅ™ipojit knihovnu
-928=%d souborÅ¯ [KÃ³d: %d, HlaviÄky: %d, Zdroje: %d]
+922=Cíle
+923=Adresáøe
+924=&Adresáø pro vıslednı spustitelnı soubor
+925=A&dresáø pro objektové soubory
+926=Název &vıstupního souboru
+927=Pøipojit knihovnu
+928=%d souborù [Kód: %d, Hlavièky: %d, Zdroje: %d]
 
 
 
-930=NÃ¡zev:
+930=Název:
 931=Popis:
 932=Kategorie:
-933=NÃ¡zev novÃ©ho projektu:
-934=Soubory v Å¡ablonÄ›:
-935=DalÅ¡Ã­ parametry kompilÃ¡toru:
-936=DalÅ¡Ã­ parametry pro linker:
+933=Název nového projektu:
+934=Soubory v šablonì:
+935=Další parametry kompilátoru:
+936=Další parametry pro linker:
 937=Ikony:
 938=Informace
 939=Soubory
-940=DalÅ¡Ã­
-941=Ikona Å¡ablony
-942=NovÃ¡ ikona projektu
-943=VytvoÅ™it
-944=NovÃ¡ Å¡ablona dle projektu
-945=PouÅ¾Ã­t adresÃ¡Å™e pÅ™ipojenÃ½ch souborÅ¯ (include) k projektu
-946=PouÅ¾Ã­t adresÃ¡Å™e knihoven projektu
-947=PouÅ¾Ã­t adresÃ¡Å™e zdrojovÃ½ch souborÅ¯ projektu
+940=Další
+941=Ikona šablony
+942=Nová ikona projektu
+943=Vytvoøit
+944=Nová šablona dle projektu
+945=Pouít adresáøe pøipojenıch souborù (include) k projektu
+946=Pouít adresáøe knihoven projektu
+947=Pouít adresáøe zdrojovıch souborù projektu
 
 
 
 950=Typ:
-951=NÃ¡zev:
+951=Název:
 952=Implementuje:
-953=PÅ™Ã­stup
-954=VytvoÅ™it funkci pro ÄtenÃ­ tÃ©to promÄ›nnÃ©
-955=VytvoÅ™it funkci pro zÃ¡pis do tÃ©to promÄ›nnÃ©
-956=NÃ¡zev:
-957=KomentÃ¡Å™
+953=Pøístup
+954=Vytvoøit funkci pro ètení této promìnné
+955=Vytvoøit funkci pro zápis do této promìnné
+956=Název:
+957=Komentáø
 958=Popis:
 959=Styl:
-960=VytvoÅ™it
-961=ZruÅ¡it
-962=NeznÃ¡mÃ¡ tÅ™Ã­da...
-963=Nelze zjistit nÃ¡zev souboru pro implementaci...
-964=Nelze zjistit ÄÃ­slo Å™Ã¡dku pro vloÅ¾enÃ­...
-965=JmÃ©no Älena:
+960=Vytvoøit
+961=Zrušit
+962=Neznámá tøída...
+963=Nelze zjistit název souboru pro implementaci...
+964=Nelze zjistit èíslo øádku pro vloení...
+965=Jméno èlena:
 966=Argumenty:
-967=NÃ¡zev tÅ™Ã­dy:
-968=Odvodit z jinÃ© tÅ™Ã­dy
-969=DÄ›diÄnost
-970=Odvodit ze tÅ™Ã­dy:
-971=HlaviÄkovÃ½ soubor:
+967=Název tøídy:
+968=Odvodit z jiné tøídy
+969=Dìdiènost
+970=Odvodit ze tøídy:
+971=Hlavièkovı soubor:
 972=Soubor implementace:
-973=HlaviÄkovÃ½ soubor:
-974=PÅ™idat k aktuÃ¡lnÃ­mu projektu
+973=Hlavièkovı soubor:
+974=Pøidat k aktuálnímu projektu
 975=Atributy
 
 
 
-980=NÃ¡zev souboru:
+980=Název souboru:
 981=Projekt:
-982=Celkem Å™Ã¡dkÅ¯:
-983=Å˜Ã¡dkÅ¯ kÃ³du:
-984=Å˜Ã¡dkÅ¯ komentÃ¡Å™Å¯:
-985=HlaviÄkovÃ½ch souborÅ¯:
-986=PrÃ¡zdnÃ½ch Å™Ã¡dkÅ¯:
+982=Celkem øádkù:
+983=Øádkù kódu:
+984=Øádkù komentáøù:
+985=Hlavièkovıch souborù:
+986=Prázdnıch øádkù:
 987=Velikost souboru:
-988=AbsolutnÃ­
+988=Absolutní
 989=Makefile
 
 
 
-990=RelativnÃ­
-991=Datum a Äas souburu:
+990=Relativní
+991=Datum a èas souburu:
 992=Kompilace
 
 
 
-995=ProfilovÃ¡ analÃ½za
-996=PloÅ¡nÃ½ vÃ½stup
-997=PÅ™ehled volÃ¡nÃ­
+995=Profilová analıza
+996=Plošnı vıstup
+997=Pøehled volání
 
 
 
-1000=HledanÃ½ text ''%s'' nebyl nalezen
-1001=Soubor %s nemÅ¯Å¾e bÃ½t otevÅ™en
+1000=Hledanı text ''%s'' nebyl nalezen
+1001=Soubor %s nemùe bıt otevøen
 1002=Nahradit ''%s'?
-1003=Soubor: %s jiÅ¾ existuje v %s
-1004=Opravdu chcete zavÅ™Ã­t %s
-1005=UloÅ¾it zmÄ›ny v %s?
-1006=UloÅ¾it %s a vytvoÅ™it novÃ½ projekt?
-1007=PÅ™ejmenovat na:
-1008=Kompilace prÃ¡vÄ› probÃ­hÃ¡
-1009=UloÅ¾it zmÄ›ny v %s?
-1010=Soubor jiÅ¾ existuje, pÅ™epsat?
-1011=PÅ™idat novÃ½ soubor do projektu?
-1012=PÅ™idat novÃ½ zdroj k projektu?
-1013=Tato funkce nenÃ­ k dispozici, protoÅ¾e vÃ¡Å¡ projekt neobsahuje informace debuggeru. Chcete povolit ladÄ›nÃ­ a pÅ™ekompilovat znova vÃ¡Å¡ projekt?
-1014=Tato funkce nenÃ­ k dispozici, protoÅ¾e kompilÃ¡tor nemÃ¡ nastavenu profilaci a/nebo ladÄ›nÃ­. Chcete tyto povolit a pÅ™ekompilovat znova vÃ¡Å¡ projekt?
-1015=Aby byly profilovÃ© informace vygenerovÃ¡ny, je tÅ™eba spustit vÃ¡Å¡ projekt minimÃ¡lnÄ› jednou...
-1016=Zadejte nÃ¡zev pro novou sloÅ¾ku:
-1017=Opravdu chcete odstranit tuto sloÅ¾ku?
-1018=Zadejte nÃ¡zev pro novou sloÅ¾ku:
-1019=Soubor %s je pouze pro ÄtenÃ­. Chcete jeho atributy upravit aby do nÄ›j bylo moÅ¾nÃ© i zapisovat? Pokud ne, soubor nebude uloÅ¾en.
-1020=DoÅ¡lo k chybÄ›. Soubor nebylo moÅ¾nÃ© uloÅ¾it protoÅ¾e je pouze pro ÄtenÃ­.
-1021=VÃ¡Å¡ program vyvolal chybu segmentace (zÃ¡pis nebo ÄtenÃ­ z nepovolenÃ© ÄÃ¡sti pamÄ›ti).
-1022=ZdrojovÃ½ kÃ³d byl aktualizovÃ¡n, chcete projekt pÅ™ekompilovat?
-1023=NynÃ­ zvolte poÅ¾adovanou aplikaci:
+1003=Soubor: %s ji existuje v %s
+1004=Opravdu chcete zavøít %s
+1005=Uloit zmìny v %s?
+1006=Uloit %s a vytvoøit novı projekt?
+1007=Pøejmenovat na:
+1008=Kompilace právì probíhá
+1009=Uloit zmìny v %s?
+1010=Soubor ji existuje, pøepsat?
+1011=Pøidat novı soubor do projektu?
+1012=Pøidat novı zdroj k projektu?
+1013=Tato funkce není k dispozici, protoe váš projekt neobsahuje informace debuggeru. Chcete povolit ladìní a pøekompilovat znova váš projekt?
+1014=Tato funkce není k dispozici, protoe kompilátor nemá nastavenu profilaci a/nebo ladìní. Chcete tyto povolit a pøekompilovat znova váš projekt?
+1015=Aby byly profilové informace vygenerovány, je tøeba spustit váš projekt minimálnì jednou...
+1016=Zadejte název pro novou sloku:
+1017=Opravdu chcete odstranit tuto sloku?
+1018=Zadejte název pro novou sloku:
+1019=Soubor %s je pouze pro ètení. Chcete jeho atributy upravit aby do nìj bylo moné i zapisovat? Pokud ne, soubor nebude uloen.
+1020=Došlo k chybì. Soubor nebylo moné uloit protoe je pouze pro ètení.
+1021=Váš program vyvolal chybu segmentace (zápis nebo ètení z nepovolené èásti pamìti).
+1022=Zdrojovı kód byl aktualizován, chcete projekt pøekompilovat?
+1023=Nyní zvolte poadovanou aplikaci:
 
 
-1500=Nelze otevÅ™Ã­t soubor %s
-1501=Nelze uloÅ¾it soubor %s
-1502=Nelze pÅ™ejmenovat soubor %s
-1503=Pole pro hledanÃ½ text nemÅ¯Å¾e bÃ½t prÃ¡zdnÃ©
-1504=Project nenÃ­ pÅ™Ã­mo spustitelnÃ½
-1505=Project nenÃ­ zkompilovÃ¡n
-1506=Soubor nenÃ­ zkompilovÃ¡n
-1507=Nelze nalÃ©zt makefile
-1508=ÄŒistÃ¡ rekompilace selhala
-1509=Å ablona nemÅ¯Å¾e bÃ½t umÃ­stÄ›na v projektu.
+1500=Nelze otevøít soubor %s
+1501=Nelze uloit soubor %s
+1502=Nelze pøejmenovat soubor %s
+1503=Pole pro hledanı text nemùe bıt prázdné
+1504=Project není pøímo spustitelnı
+1505=Project není zkompilován
+1506=Soubor není zkompilován
+1507=Nelze nalézt makefile
+1508=Èistá rekompilace selhala
+1509=Šablona nemùe bıt umístìna v projektu.
 1510=Zdroj %s nebyl nalezen: %s - %s
-1511=Soubor Å¡ablony %s nebyl nalezen a bude ignorovÃ¡n.
-1512=NepÅ™iÅ™adili jste Å¾Ã¡dnou Å¡ablonu.
+1511=Soubor šablony %s nebyl nalezen a bude ignorován.
+1512=Nepøiøadili jste ádnou šablonu.
 1513=Soubor %s nebyl nalezen.
-1514=NenÃ­ pÅ™idruÅ¾ena Å¾Ã¡dnÃ¡ hostitelskÃ¡ aplikace. Je moÅ¾nÃ© ji nastavit v menu Spustit, Parametry.
-1515=HostitelskÃ¡ aplikace nenalezena. Je moÅ¾nÃ© ji nastavit v menu Spustit, Parametry.
+1514=Není pøidruena ádná hostitelská aplikace. Je moné ji nastavit v menu Spustit, Parametry.
+1515=Hostitelská aplikace nenalezena. Je moné ji nastavit v menu Spustit, Parametry.
 
 
 
-2000=Beze jmÃ©na 
-2001=Pouze ke ÄtenÃ­
-2002=VklÃ¡dÃ¡nÃ­
-2003=PÅ™episovÃ¡nÃ­
+2000=Beze jména 
+2001=Pouze ke ètení
+2002=Vkládání
+2003=Pøepisování
 2004=Projekt%d
-2005=ProsÃ­m zvolte jinÃ½ nÃ¡zev pro soubor.
-2006=%d Å™Ã¡dkÅ¯ v souboru
-2007=PÅ™ejmenovat soubor
-2008=SpouÅ¡tÃ­ se %s
-2009=ProvÃ¡dÄ›nÃ­ ukonÄeno
-2010=bytÅ¯
-2011=ModifikovÃ¡no
+2005=Prosím zvolte jinı název pro soubor.
+2006=%d øádkù v souboru
+2007=Pøejmenovat soubor
+2008=Spouští se %s
+2009=Provádìní ukonèeno
+2010=bytù
+2011=Modifikováno
 2012=Chyba
 2013=Informace
-2014=VarovÃ¡nÃ­
-2015=OtÃ¡zka
-2016=Kompilace dokonÄena ÃºspÄ›Å¡nÄ›
-2017=Kompilace pÅ™eruÅ¡ena uÅ¾ivatelem.
-2817=AlternativnÃ­ soubor s nastavenÃ­m
-2818=PouÅ¾Ã­t toto alternativnÃ­ nastavenÃ­
-2819=KofiguraÄnÃ­ soubor byl zmÄ›nÄ›n.<CR>NovÃ½ soubor vÅ¡ak bude pouÅ¾it aÅ¾ v nÃ¡sledujÃ­cÃ­m spuÅ¡tÄ›nÃ­ programu. VeÅ¡kerÃ© zmÄ›ny provedenÃ© v tÃ©to instanci programu budou zapsÃ¡ny do aktuÃ¡lnÃ­ho souboru s konfiguracÃ­.<CR><CR>DoporuÄujeme restartovat program nynÃ­...
+2014=Varování
+2015=Otázka
+2016=Kompilace dokonèena úspìšnì
+2017=Kompilace pøerušena uivatelem.
+2817=Alternativní soubor s nastavením
+2818=Pouít toto alternativní nastavení
+2819=Kofiguraèní soubor byl zmìnìn.<CR>Novı soubor však bude pouit a v následujícím spuštìní programu. Veškeré zmìny provedené v této instanci programu budou zapsány do aktuálního souboru s konfigurací.<CR><CR>Doporuèujeme restartovat program nyní...
 
 
 
 2500=&OK
 2501=&Storno
-2502=&NÃ¡povÄ›da
-2503=&ImplicitnÃ­
+2502=&Nápovìda
+2503=&Implicitní
 2504=&Ano
 2505=&Ne
-2506=&PÅ™idat
+2506=&Pøidat
 2507=&Editovat
 2508=&Odstranit
 2509=S&mazat
-2510=&ZavÅ™Ã­t
-2511=&AutoÅ™i
-2512=Na&jÃ­t
+2510=&Zavøít
+2511=&Autoøi
+2512=Na&jít
 2513=Nah&radit
-2514=&Smazat neplatnÃ©
-2515=Nahradit &vÅ¡e
-2516=ProchÃ¡zet
+2514=&Smazat neplatné
+2515=Nahradit &vše
+2516=Procházet
 2517=Odstranit
-2518=PÅ™ejmenovat
+2518=Pøejmenovat
 2519=Import
 2520=Odpoutat okno
-2521=Smazat vÅ¡e
+2521=Smazat vše
 
 
 2600=Okno CPU
-2601=KÃ³d v assembleru:
+2601=Kód v assembleru:
 2602=Funkce:
 2603=Syntaxe assembleru:
 2604=Registry:
@@ -944,210 +944,210 @@ Ver=1
 
 
 2700=Tip dne
-2701=VÃ­te, Å¾e...
-2702=... nejsou k dispozici Å¾Ã¡dnÃ© tipy pro zobrazenÃ­?
-2703=Nezobrazovat tipy pÅ™i spuÅ¡tÄ›nÃ­.
-2704=NÃ¡sledujÃ­cÃ­
-2705=PÅ™edchozÃ­
+2701=Víte, e...
+2702=... nejsou k dispozici ádné tipy pro zobrazení?
+2703=Nezobrazovat tipy pøi spuštìní.
+2704=Následující
+2705=Pøedchozí
 
 
 
-2800=PÅ™Ã­pony
-2801=Typy souborÅ¯:
-2802=ZvolenÃ© soubory budou automaticky otevÅ™eny prostÅ™edÃ­m Dev-C++.
+2800=Pøípony
+2801=Typy souborù:
+2802=Zvolené soubory budou automaticky otevøeny prostøedím Dev-C++.
 2803=CVS podpora
 2804=CVS, soubor programu:
-2805=ÃšroveÅˆ komprese
-2806=PouÅ¾Ã­t SSH mÃ­sto RSH
-2807=Cesta k Å¡ablonÃ¡m
-2808=Zvolte adresÃ¡Å™ se Å¡ablonami
-2809=PouÅ¾Ã­t XP styl
+2805=Úroveò komprese
+2806=Pouít SSH místo RSH
+2807=Cesta k šablonám
+2808=Zvolte adresáø se šablonami
+2809=Pouít XP styl
 
 
 2810=Asociace
-2811=ExternÃ­ program
-2812=PÅ™Ã­pona
-2813=Asociace externÃ­ho programu:
+2811=Externí program
+2812=Pøípona
+2813=Asociace externího programu:
 
 
-2814=Zobrazit pÅ™i ukÃ¡zÃ¡nÃ­ myÅ¡Ã­
+2814=Zobrazit pøi ukázání myší
 2815=Oznamovat chyby
-2816=Hodnoty promÄ›nnÃ½ch
+2816=Hodnoty promìnnıch
 
-2820=ZvÃ½raznit aktivnÃ­ zÃ¡loÅ¾ku editoru
+2820=Zvıraznit aktivní záloku editoru
 
 2900=Parametry...
-2901=Zkompilovat aktuÃ¡lnÃ­ soubor
+2901=Zkompilovat aktuální soubor
 
 
 
 2910=Seznam oken
-2911=Zvolte soubor, do kterÃ©ho se chcete pÅ™epnout:
-2990=AktuÃ¡lnÃ­ soubor...
-2991=CelÃ½ projektu...
-2992=ProsÃ­m nastavte podporu CVS v nabÃ­dce NÃ¡stroje / NastavenÃ­ prostÅ™edÃ­
+2911=Zvolte soubor, do kterého se chcete pøepnout:
+2990=Aktuální soubor...
+2991=Celı projektu...
+2992=Prosím nastavte podporu CVS v nabídce Nástroje / Nastavení prostøedí
 3000=Vlastnosti importu
 
 
 
-3001=RepozitÃ¡Å™
-3002=GlobÃ¡lnÃ­ nastavenÃ­
-3003=NastavenÃ­ ovÄ›Å™enÃ­
-3004=NastavenÃ­ zapisovÃ¡nÃ­
-3005=NastavenÃ­ aktualizace
-3006=NastavenÃ­ rozdÃ­lÅ¯
-3007=NastavenÃ­ zÃ¡znamu
-3008=VÃ½stup CVS
+3001=Repozitáø
+3002=Globální nastavení
+3003=Nastavení ovìøení
+3004=Nastavení zapisování
+3005=Nastavení aktualizace
+3006=Nastavení rozdílù
+3007=Nastavení záznamu
+3008=Vıstup CVS
 
 
 
 3009=Importovat
-3010=StÃ¡hnout
+3010=Stáhnout
 3011=Zapsat
 3012=Aktualizovat
-3013=RozdÃ­l
-3014=ZÃ¡znam
-3015=AdresÃ¡Å™ pro import
+3013=Rozdíl
+3014=Záznam
+3015=Adresáø pro import
 3016=Akce
 3017=Autor
-3018=VydÃ¡nÃ­
-3019=ZprÃ¡va ze zÃ¡znamu
-3020=NÃ¡zev modulu
+3018=Vydání
+3019=Zpráva ze záznamu
+3020=Název modulu
 3021=Extension
-3022=StÃ¡hnout jako
-3023=StÃ¡hnout adresÃ¡Å™
-3024=PokraÄovat do pod-adresÃ¡Å™Å¯
+3022=Stáhnout jako
+3023=Stáhnout adresáø
+3024=Pokraèovat do pod-adresáøù
 3025=Reset any sticky options
-3026=VytvoÅ™it chybÄ›jÃ­cÃ­ adresÃ¡Å™e
-3027=Odstranit prÃ¡zdnÃ© adresÃ¡Å™e
-3028=Zahodit zmÄ›ny provedenÃ© lokÃ¡lnÄ›
+3026=Vytvoøit chybìjící adresáøe
+3027=Odstranit prázdné adresáøe
+3028=Zahodit zmìny provedené lokálnì
 3029=Datum
-3030=Revize/vÄ›tev/oznaÄenÃ­
-3031=Neexistuje-li, zÃ­skat nejnovÄ›jÅ¡Ã­
-3032=OstatnÃ­ revize
-3033=Porovnat sjednocenÄ›
-3034=Porovnat mÃ­stnÃ­ soubor se vzdÃ¡lenou revizÃ­
-3035=Porovnat mÃ­stnÃ­ soubor s jinou vzdÃ¡lenou revizÃ­
-3036=Porovnat dvÄ› vzdÃ¡lenÃ© revize
+3030=Revize/vìtev/oznaèení
+3031=Neexistuje-li, získat nejnovìjší
+3032=Ostatní revize
+3033=Porovnat sjednocenì
+3034=Porovnat místní soubor se vzdálenou revizí
+3035=Porovnat místní soubor s jinou vzdálenou revizí
+3036=Porovnat dvì vzdálené revize
 3037=Datum
-3038=ZaznamenÃ¡vat hlavnÃ­ vÄ›tev
-3039=Vypsat pouze RCS nÃ¡zvy souborÅ¯
-3040=Nevypisovat nÃ¡zvy oznaÄenÃ­
+3038=Zaznamenávat hlavní vìtev
+3039=Vypsat pouze RCS názvy souborù
+3040=Nevypisovat názvy oznaèení
 3041=Filtr
-3042=Podle revizÃ­/znaÄek
+3042=Podle revizí/znaèek
 3043=Podle data
-3044=Podle uÅ¾ivatele
-3045=RepozitÃ¡Å™
+3044=Podle uivatele
+3045=Repozitáø
 3046=Detaily
-3047=PÅ™Ã­stupovÃ¡ metoda
-3048=UÅ¾ivatel
+3047=Pøístupová metoda
+3048=Uivatel
 3049=Server
-3050=VzdÃ¡lenÃ½ adresÃ¡Å™
-3051=PÅ™idat
+3050=Vzdálenı adresáø
+3051=Pøidat
 3052=Odebrat
-3053=NastavenÃ­ vklÃ¡dÃ¡nÃ­
-3054=NastavenÃ­ odebÃ­rÃ¡nÃ­
-3055=Odstranit soubor takÃ© z disku...
+3053=Nastavení vkládání
+3054=Nastavení odebírání
+3055=Odstranit soubor také z disku...
 
 
 
 3100=Parametry
-3101=Parametry k pÅ™edÃ¡nÃ­ programu:
-3102=HostitelskÃ¡ aplikace:
+3101=Parametry k pøedání programu:
+3102=Hostitelská aplikace:
 
 
 
 3200=Soubory
 3201=Soubory projektu:
 3202=Vlastnosti projektu:
-3203=Generovat informace k ladÄ›nÃ­
-3204=Generovat profilovÃ© informace
-3205=PoznÃ¡mka: Tato nastavenÃ­ majÃ­ vÄ›tÅ¡Ã­ vÃ¡hu neÅ¾ globÃ¡lnÃ­ nastavenÃ­ kompilÃ¡toru a platÃ­ pouze pro tento projekt.
-3206=PÅ™ipojit manifest Common Controls 6
+3203=Generovat informace k ladìní
+3204=Generovat profilové informace
+3205=Poznámka: Tato nastavení mají vìtší váhu ne globální nastavení kompilátoru a platí pouze pro tento projekt.
+3206=Pøipojit manifest Common Controls 6
 3207=Vlastnosti souboru:
-3208=PouÅ¾Ã­t pÅ™i kompilaci
+3208=Pouít pøi kompilaci
 3209=Kompilovat soubor jako C++
 3210=Verze
-3211=PÅ™ipojit informace o verzi k projektu
+3211=Pøipojit informace o verzi k projektu
 3212=Detaily
 3213=Major:
 3214=Minor:
 3215=Release:
 3216=Build:
 3217=Jazyk:
-3218=DalÅ¡Ã­ informace:
+3218=Další informace:
 
 
-3219=ZmÄ›nit kompilaÄnÃ­ pÅ™Ã­kaz
-3220=VÃ½stupnÃ­ soubor
-3221=PouÅ¾Ã­t pÅ™i linkovÃ¡nÃ­
+3219=Zmìnit kompilaèní pøíkaz
+3220=Vıstupní soubor
+3221=Pouít pøi linkování
 3222=Priorita:
-3223=Automaticky zvÃ½Å¡it ÄÃ­slo sestavenÃ­ (build) po kompilaci
-3224=PouÅ¾Ã­t vlastnÃ­ Makefile
-3225=Detaily k ÃºpravÃ¡m souborÅ¯ Makefile...
-3226=&PÅ™ipojit k Makefile nÃ¡sledujÃ­cÃ­ soubory:
+3223=Automaticky zvıšit èíslo sestavení (build) po kompilaci
+3224=Pouít vlastní Makefile
+3225=Detaily k úpravám souborù Makefile...
+3226=&Pøipojit k Makefile následující soubory:
 
-3400=Odstranit nadbyteÄnÃ© informace z programu
-3401=Generovat instrukce pro procesor Å™ady:
-3402=Povolit pouÅ¾itÃ­ vnitÅ™nÃ­ch funkcÃ­
+3400=Odstranit nadbyteèné informace z programu
+3401=Generovat instrukce pro procesor øady:
+3402=Povolit pouití vnitøních funkcí
 
-3710=&PokraÄovat v provÃ¡dÄ›nÃ­ 
+3710=&Pokraèovat v provádìní 
 3700=Zobrazit Panely 
 3701=Zobrazit Panely Pluginu
 
 # wx designer properties
-7000=AktivnÃ­
-7001=ZÃ¡kladnÃ­ TÅ™Ã­da
-7002=SkrytÃ½
-7003=VÃ½chozÃ­
-7004=Text nÃ¡povÄ›dy
-7005=NÃ¡zev ID
+7000=Aktivní
+7001=Základní Tøída
+7002=Skrytı
+7003=Vıchozí
+7004=Text nápovìdy
+7005=Název ID
 7006=Hodnota ID
 7007=Tooltip
-7008=KomentÃ¡Å™
-7009=OvÄ›Å™ovacÃ­ kÃ³d
-7010=Barva pozadÃ­
-7011=Barva popÅ™edÃ­
+7008=Komentáø
+7009=Ovìøovací kód
+7010=Barva pozadí
+7011=Barva popøedí
 7012=Faktor velikosti
-7013=ZarovnÃ¡nÃ­
-7014=RÃ¡m
-7015=RÃ¡my
-7016=ObecnÃ© styly
+7013=Zarovnání
+7014=Rám
+7015=Rámy
+7016=Obecné styly
 7017=Font
-7018=NÃ¡zev
-7019=Å Ã­Å™ka
-7020=VÃ­Å¡ka
-7021=UmÃ­stÄ›nÃ­ zleva
-7022=UmÃ­stÄ›nÃ­ zvrchu
+7018=Název
+7019=Šíøka
+7020=Víška
+7021=Umístìní zleva
+7022=Umístìní zvrchu
 7023=Vlastnosti
-7024=UdÃ¡losti
-7025=Inspektor vlastnostÃ­
+7024=Události
+7025=Inspektor vlastností
 7026=Komponenty
-7027=Zobrazit Inspektor vlastnostÃ­
+7027=Zobrazit Inspektor vlastností
 7028=Zobrazit paletu komponent
-7029=NovÃ½ wxDialog
-7030=NovÃ½ wxFrame
+7029=Novı wxDialog
+7030=Novı wxFrame
 7031=Upravit Wx-vlastnost
-7032=ZkopÃ­rovat nÃ¡zev objektu
-7033=ZmÄ›nit poÅ™adÃ­ vytvÃ¡Å™enÃ­
-7034=RodiÄovskÃ½ objekt
+7032=Zkopírovat název objektu
+7033=Zmìnit poøadí vytváøení
+7034=Rodièovskı objekt
 7035=Uzamknout
-7036=Zobrazit ID prvkÅ¯
-7037=ZarovnÃ¡nÃ­
-7038=K mÅ™Ã­Å¾ce
-7039=VertikÃ¡lnÃ­
-7040=HorizontÃ¡lnÃ­
+7036=Zobrazit ID prvkù
+7037=Zarovnání
+7038=K møíce
+7039=Vertikální
+7040=Horizontální
 7041=Nalevo
 7042=Napravo
-7043=Ke stÅ™edu
+7043=Ke støedu
 7044=Nahoru
-7045=DolÅ¯
-7046=NastavenÃ­ Designeru
+7045=Dolù
+7046=Nastavení Designeru
 7047=Sizery
-7048=BÄ›Å¾nÃ© prvky
+7048=Bìné prvky
 7049=Kontejnery
-7050=NÃ¡stojovÃ© liÅ¡ty
-7051=LiÅ¡ty menu
+7050=Nástojové lišty
+7051=Lišty menu
 7052=Dialogy
-7053=NeoficiÃ¡lnÃ­ widgety
+7053=Neoficiální widgety
 
