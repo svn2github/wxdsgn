@@ -38,7 +38,6 @@ object frmNewForm_1: TfrmNewForm
     TabOrder = 0
     Orientation = wxVertical
     Wx_Class = 'wxBoxSizer'
-    Wx_ControlOrientation = wxControlVertical
     Wx_IDName = 'ID_WXBOXSIZER1'
     Wx_IDValue = 1001
     Wx_Alignment = [wxALIGN_CENTER_VERTICAL, wxALIGN_CENTER_HORIZONTAL, wxEXPAND]
@@ -50,7 +49,6 @@ object frmNewForm_1: TfrmNewForm
       Height = 70
       TabOrder = 0
       Wx_Class = 'wxBoxSizer'
-      Wx_ControlOrientation = wxControlVertical
       Wx_IDName = 'ID_WXBOXSIZER2'
       Wx_IDValue = 1002
       object WxStaticBitmap1: TWxStaticBitmap
@@ -352,7 +350,6 @@ object frmNewForm_1: TfrmNewForm
           E600E6E6E600E6E6E600E6E6E600E6E6E600E6E6E600E6E6E600E6E6E600E6E6
           E600}
         Wx_Class = 'wxStaticBitmap'
-        Wx_ControlOrientation = wxControlVertical
         Wx_Enabled = False
         Wx_GeneralStyle = []
         Wx_IDName = 'ID_WXSTATICBITMAP1'
@@ -366,7 +363,6 @@ object frmNewForm_1: TfrmNewForm
         TabOrder = 1
         Orientation = wxVertical
         Wx_Class = 'wxBoxSizer'
-        Wx_ControlOrientation = wxControlVertical
         Wx_IDName = 'ID_WXBOXSIZER5'
         Wx_IDValue = 1006
         object WxStaticText1: TWxStaticText
@@ -384,7 +380,6 @@ object frmNewForm_1: TfrmNewForm
           TabOrder = 0
           Wx_BGColor = clBlack
           Wx_Class = 'wxStaticText'
-          Wx_ControlOrientation = wxControlVertical
           Wx_FGColor = clBlack
           Wx_GeneralStyle = []
           Wx_Hidden = False
@@ -401,7 +396,6 @@ object frmNewForm_1: TfrmNewForm
           TabOrder = 1
           Wx_BGColor = clBlack
           Wx_Class = 'wxStaticText'
-          Wx_ControlOrientation = wxControlVertical
           Wx_FGColor = clBlack
           Wx_GeneralStyle = []
           Wx_Hidden = False
@@ -418,7 +412,6 @@ object frmNewForm_1: TfrmNewForm
       Height = 310
       TabOrder = 1
       Wx_Class = 'wxBoxSizer'
-      Wx_ControlOrientation = wxControlVertical
       Wx_IDName = 'ID_WXBOXSIZER3'
       Wx_IDValue = 1003
       Wx_Alignment = [wxALIGN_CENTER, wxALIGN_CENTER_VERTICAL, wxALIGN_CENTER_HORIZONTAL, wxEXPAND]
@@ -438,7 +431,6 @@ object frmNewForm_1: TfrmNewForm
         TabIndex = 0
         TabOrder = 0
         Wx_Class = 'wxNotebook'
-        Wx_ControlOrientation = wxControlVertical
         Wx_EventList.Strings = (
           'EVT_UPDATE_UI:OnUpdateUI'
           'EVT_NOTEBOOK_PAGE_CHANGED:OnPageChanged'
@@ -462,7 +454,6 @@ object frmNewForm_1: TfrmNewForm
           ParentFont = False
           Wx_BKColor = clBlack
           Wx_Class = 'wxPanel'
-          Wx_ControlOrientation = wxControlVertical
           Wx_Default = False
           Wx_EventList.Strings = (
             'EVT_UPDATE_UI:OnUpdateUI')
@@ -484,7 +475,6 @@ object frmNewForm_1: TfrmNewForm
             TabOrder = 0
             Orientation = wxVertical
             Wx_Class = 'wxBoxSizer'
-            Wx_ControlOrientation = wxControlVertical
             Wx_IDName = 'ID_WXBOXSIZER9'
             Wx_IDValue = 1085
             Wx_Alignment = [wxALIGN_CENTER, wxEXPAND]
@@ -498,7 +488,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 0
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -516,7 +505,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 1
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -536,7 +524,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 2
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -552,7 +539,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 3
               Wx_Caption = 'Package Description'
               Wx_Class = 'wxStaticBoxSizer'
-              Wx_ControlOrientation = wxControlVertical
               Wx_IDName = 'ID_WXSTATICBOXSIZER1'
               Wx_IDValue = 1089
               Wx_Alignment = [wxALIGN_CENTER, wxEXPAND]
@@ -569,7 +555,6 @@ object frmNewForm_1: TfrmNewForm
                 TabOrder = 1
                 Wx_BGColor = clBlack
                 Wx_Class = 'wxTextCtrl'
-                Wx_ControlOrientation = wxControlVertical
                 Wx_EditStyle = [wxTE_MULTILINE]
                 Wx_FGColor = clBlack
                 Wx_GeneralStyle = []
@@ -591,7 +576,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 4
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -615,7 +599,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 5
               Wx_BGColor = clBlack
               Wx_Class = 'wxHyperlinkCtrl'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = [wxNO_BORDER]
               Wx_Hidden = False
@@ -631,7 +614,6 @@ object frmNewForm_1: TfrmNewForm
           Caption = 'Readme'
           Wx_BKColor = clBlack
           Wx_Class = 'wxPanel'
-          Wx_ControlOrientation = wxControlVertical
           Wx_Default = False
           Wx_EventList.Strings = (
             'EVT_UPDATE_UI:OnUpdateUI')
@@ -650,7 +632,6 @@ object frmNewForm_1: TfrmNewForm
             Align = alClient
             TabOrder = 0
             Wx_Class = 'wxBoxSizer'
-            Wx_ControlOrientation = wxControlVertical
             Wx_IDName = 'ID_WXBOXSIZER6'
             Wx_IDValue = 1040
             Wx_Alignment = [wxALIGN_CENTER, wxEXPAND]
@@ -668,7 +649,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 0
               Wx_BGColor = clBlack
               Wx_Class = 'wxTextCtrl'
-              Wx_ControlOrientation = wxControlVertical
               Wx_EditStyle = [wxTE_READONLY, wxTE_AUTO_URL, wxTE_WORDWRAP, wxTE_MULTILINE]
               Wx_FGColor = clBlack
               Wx_GeneralStyle = [wxVSCROLL, wxHSCROLL]
@@ -684,7 +664,6 @@ object frmNewForm_1: TfrmNewForm
           Caption = 'License'
           Wx_BKColor = clBlack
           Wx_Class = 'wxPanel'
-          Wx_ControlOrientation = wxControlVertical
           Wx_Default = False
           Wx_EventList.Strings = (
             'EVT_UPDATE_UI:OnUpdateUI')
@@ -704,7 +683,6 @@ object frmNewForm_1: TfrmNewForm
             TabOrder = 0
             Orientation = wxVertical
             Wx_Class = 'wxBoxSizer'
-            Wx_ControlOrientation = wxControlVertical
             Wx_IDName = 'ID_WXBOXSIZER7'
             Wx_IDValue = 1042
             Wx_Alignment = [wxALIGN_CENTER, wxEXPAND]
@@ -718,7 +696,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 0
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -739,7 +716,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 1
               Wx_BGColor = clBlack
               Wx_Class = 'wxTextCtrl'
-              Wx_ControlOrientation = wxControlVertical
               Wx_EditStyle = [wxTE_READONLY, wxTE_AUTO_URL, wxTE_WORDWRAP, wxTE_MULTILINE]
               Wx_FGColor = clBlack
               Wx_GeneralStyle = [wxVSCROLL, wxHSCROLL]
@@ -758,7 +734,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 2
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -777,7 +752,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 3
               Wx_BGColor = clBlack
               Wx_Class = 'wxStaticText'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = []
               Wx_Hidden = False
@@ -791,7 +765,6 @@ object frmNewForm_1: TfrmNewForm
           Caption = 'Installing'
           Wx_BKColor = clBlack
           Wx_Class = 'wxPanel'
-          Wx_ControlOrientation = wxControlVertical
           Wx_Default = False
           Wx_EventList.Strings = (
             'EVT_UPDATE_UI:OnUpdateUI')
@@ -810,7 +783,6 @@ object frmNewForm_1: TfrmNewForm
             Align = alClient
             TabOrder = 0
             Wx_Class = 'wxBoxSizer'
-            Wx_ControlOrientation = wxControlVertical
             Wx_IDName = 'ID_WXBOXSIZER8'
             Wx_IDValue = 1094
             Wx_Alignment = [wxALIGN_CENTER, wxEXPAND]
@@ -824,7 +796,6 @@ object frmNewForm_1: TfrmNewForm
               TabOrder = 0
               Wx_BGColor = clBlack
               Wx_Class = 'wxListBox'
-              Wx_ControlOrientation = wxControlVertical
               Wx_FGColor = clBlack
               Wx_GeneralStyle = [wxVSCROLL, wxHSCROLL]
               Wx_Hidden = False
@@ -841,7 +812,6 @@ object frmNewForm_1: TfrmNewForm
           Caption = 'Finished'
           Wx_BKColor = clBlack
           Wx_Class = 'wxPanel'
-          Wx_ControlOrientation = wxControlVertical
           Wx_Default = False
           Wx_EventList.Strings = (
             'EVT_UPDATE_UI:OnUpdateUI')
@@ -861,7 +831,6 @@ object frmNewForm_1: TfrmNewForm
             TabOrder = 0
             Wx_BGColor = clBlack
             Wx_Class = 'wxStaticText'
-            Wx_ControlOrientation = wxControlVertical
             Wx_FGColor = clBlack
             Wx_GeneralStyle = []
             Wx_Hidden = False
@@ -878,7 +847,6 @@ object frmNewForm_1: TfrmNewForm
             TabOrder = 1
             Wx_BGColor = clBlack
             Wx_Class = 'wxStaticText'
-            Wx_ControlOrientation = wxControlVertical
             Wx_FGColor = clBlack
             Wx_GeneralStyle = []
             Wx_Hidden = False
@@ -896,7 +864,6 @@ object frmNewForm_1: TfrmNewForm
       Height = 35
       TabOrder = 2
       Wx_Class = 'wxBoxSizer'
-      Wx_ControlOrientation = wxControlVertical
       Wx_IDName = 'ID_WXBOXSIZER4'
       Wx_IDValue = 1004
       object btPrevious: TWxButton
@@ -910,7 +877,6 @@ object frmNewForm_1: TfrmNewForm
         Wx_BKColor = clBlack
         Wx_ButtonStyle = []
         Wx_Class = 'wxButton'
-        Wx_ControlOrientation = wxControlVertical
         Wx_Default = False
         Wx_Enabled = False
         Wx_EventList.Strings = (
@@ -921,8 +887,6 @@ object frmNewForm_1: TfrmNewForm
         Wx_Hidden = False
         Wx_IDName = 'ID_BTPREVIOUS'
         Wx_IDValue = 1018
-        Wx_Height = 25
-        Wx_Width = 75
       end
       object btNext: TWxButton
         Left = 90
@@ -935,7 +899,6 @@ object frmNewForm_1: TfrmNewForm
         Wx_BKColor = clBlack
         Wx_ButtonStyle = []
         Wx_Class = 'wxButton'
-        Wx_ControlOrientation = wxControlVertical
         Wx_Default = False
         Wx_EventList.Strings = (
           'EVT_BUTTON:OnClick'
@@ -945,8 +908,6 @@ object frmNewForm_1: TfrmNewForm
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNEXT'
         Wx_IDValue = 1019
-        Wx_Height = 25
-        Wx_Width = 75
       end
       object btCancel: TWxButton
         Left = 175
@@ -959,7 +920,6 @@ object frmNewForm_1: TfrmNewForm
         Wx_BKColor = clBlack
         Wx_ButtonStyle = []
         Wx_Class = 'wxButton'
-        Wx_ControlOrientation = wxControlVertical
         Wx_Default = False
         Wx_EventList.Strings = (
           'EVT_BUTTON:OnClick'
@@ -969,8 +929,6 @@ object frmNewForm_1: TfrmNewForm
         Wx_Hidden = False
         Wx_IDName = 'ID_BTCANCEL'
         Wx_IDValue = 1020
-        Wx_Height = 25
-        Wx_Width = 75
       end
     end
   end

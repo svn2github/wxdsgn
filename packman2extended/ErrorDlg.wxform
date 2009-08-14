@@ -38,7 +38,6 @@ object frmNewForm_4: TfrmNewForm
     Wx_BKColor = clBlack
     Wx_ButtonStyle = []
     Wx_Class = 'wxButton'
-    Wx_ControlOrientation = wxControlVertical
     Wx_Default = False
     Wx_EventList.Strings = (
       'EVT_BUTTON:OnClick'
@@ -48,8 +47,6 @@ object frmNewForm_4: TfrmNewForm
     Wx_Hidden = True
     Wx_IDName = 'wxID_OK'
     Wx_IDValue = 1003
-    Wx_Height = 25
-    Wx_Width = 75
   end
   object ErrorMessageBox: TWxMemo
     Left = 13
@@ -61,7 +58,6 @@ object frmNewForm_4: TfrmNewForm
     TabOrder = 1
     Wx_BGColor = clBlack
     Wx_Class = 'wxTextCtrl'
-    Wx_ControlOrientation = wxControlVertical
     Wx_EditStyle = [wxTE_READONLY, wxTE_MULTILINE]
     Wx_FGColor = clBlack
     Wx_GeneralStyle = []
