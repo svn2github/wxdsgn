@@ -16,7 +16,6 @@
 //Header Include Start and Header Include End
 //wxDev-C++ designer will remove them
 ////Header Include Start
-#include "Images/Self_PackMan2ExtendedFrm_XPM.xpm"
 #include "Images/PackMan2ExtendedFrm_ID_MNU_INSTALLPACKAGE_1002_XPM.xpm"
 #include "Images/PackMan2ExtendedFrm_ID_MNU_VERIFYFILES_1003_XPM.xpm"
 #include "Images/PackMan2ExtendedFrm_ID_MNU_RELOADDATABASE_1028_XPM.xpm"
@@ -39,34 +38,33 @@
 //Code added in other places will be removed by wxDev-C++
 ////Event Table Start
 BEGIN_EVENT_TABLE(PackMan2ExtendedFrm,wxFrame)
-	////Manual Code Start
-	////Manual Code End
-	
-	EVT_CLOSE(PackMan2ExtendedFrm::OnClose)
-	EVT_MENU(ID_MNU_INSTALLPACKAGE_1002, PackMan2ExtendedFrm::ActionInstallPackage)
-	EVT_MENU(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyPackage)
-	EVT_MENU(ID_MNU_DELETEPACKAGE_1004, PackMan2ExtendedFrm::ActionRemovePackage)
-	EVT_UPDATE_UI(ID_MNU_DELETEPACKAGE_1004, PackMan2ExtendedFrm::ActionRemoveUpdate)
-	EVT_MENU(ID_MNU_RELOADDATABASE_1028, PackMan2ExtendedFrm::MnuReloadDatabaseClick)
-	EVT_MENU(ID_MNU_EXIT_1010, PackMan2ExtendedFrm::ActionExit)
-	EVT_MENU(ID_MNU_DETAILS_CTRL_D_1031, PackMan2ExtendedFrm::ActionShowDetails)
-	EVT_UPDATE_UI(ID_MNU_DETAILS_CTRL_D_1031, PackMan2ExtendedFrm::ActionShowDetailsUpdate)
-	EVT_MENU(ID_MNU_SUBMENUITEM17_1033, PackMan2ExtendedFrm::ActionShowToolbar)
-	EVT_UPDATE_UI(ID_MNU_SUBMENUITEM17_1033, PackMan2ExtendedFrm::ActionShowToolbarUpdate)
-	EVT_MENU(ID_MNU_HELP_1030, PackMan2ExtendedFrm::ActionShowHelp)
-	EVT_MENU(ID_MNU_ABOUT_1006, PackMan2ExtendedFrm::ActionShowAbout)
-	EVT_MENU(ID_BTNEXIT,PackMan2ExtendedFrm::ActionExit)
-	EVT_MENU(ID_BTNABOUT,PackMan2ExtendedFrm::ActionShowAbout)
-	EVT_MENU(ID_BTNHELP,PackMan2ExtendedFrm::ActionShowHelp)
-	EVT_MENU(ID_BTNREMOVE,PackMan2ExtendedFrm::ActionRemovePackage)
-	EVT_UPDATE_UI(ID_BTNREMOVE,PackMan2ExtendedFrm::ActionRemoveUpdate)
-	EVT_MENU(ID_BTNVERIFY,PackMan2ExtendedFrm::ActionVerifyPackage)
-	EVT_UPDATE_UI(ID_BTNVERIFY,PackMan2ExtendedFrm::btnVerifyUpdateUI)
-	EVT_MENU(ID_BTNINSTALL,PackMan2ExtendedFrm::ActionInstallPackage)
-	
-	EVT_MENU(ID_WXTOOLBAR1,PackMan2ExtendedFrm::WxToolBar1Menu)
-	
-	EVT_LIST_ITEM_SELECTED(ID_LSTPACKAGES,PackMan2ExtendedFrm::lstPackagesSelected)
+    ////Manual Code Start
+    ////Manual Code End
+
+    EVT_CLOSE(PackMan2ExtendedFrm::OnClose)
+    EVT_MENU(ID_MNU_INSTALLPACKAGE_1002, PackMan2ExtendedFrm::ActionInstallPackage)
+    EVT_MENU(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyPackage)
+    EVT_UPDATE_UI(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyUpdateUI)
+    EVT_MENU(ID_MNU_DELETEPACKAGE_1004, PackMan2ExtendedFrm::ActionRemovePackage)
+    EVT_UPDATE_UI(ID_MNU_DELETEPACKAGE_1004, PackMan2ExtendedFrm::ActionRemoveUpdate)
+    EVT_MENU(ID_MNU_RELOADDATABASE_1028, PackMan2ExtendedFrm::MnuReloadDatabaseClick)
+    EVT_MENU(ID_MNU_EXIT_1010, PackMan2ExtendedFrm::ActionExit)
+    EVT_MENU(ID_MNU_DETAILS_CTRL_D_1031, PackMan2ExtendedFrm::ActionShowDetails)
+    EVT_UPDATE_UI(ID_MNU_DETAILS_CTRL_D_1031, PackMan2ExtendedFrm::ActionShowDetailsUpdate)
+    EVT_MENU(ID_MNU_SUBMENUITEM17_1033, PackMan2ExtendedFrm::ActionShowToolbar)
+    EVT_UPDATE_UI(ID_MNU_SUBMENUITEM17_1033, PackMan2ExtendedFrm::ActionShowToolbarUpdate)
+    EVT_MENU(ID_MNU_HELP_1030, PackMan2ExtendedFrm::ActionShowHelp)
+    EVT_MENU(ID_MNU_ABOUT_1006, PackMan2ExtendedFrm::ActionShowAbout)
+
+    EVT_LIST_ITEM_SELECTED(ID_LSTPACKAGES,PackMan2ExtendedFrm::lstPackagesSelected)
+    EVT_MENU(ID_BTNEXIT,PackMan2ExtendedFrm::ActionExit)
+    EVT_MENU(ID_BTNABOUT,PackMan2ExtendedFrm::ActionShowAbout)
+    EVT_MENU(ID_BTNHELP,PackMan2ExtendedFrm::ActionShowHelp)
+    EVT_MENU(ID_BTNREMOVE,PackMan2ExtendedFrm::ActionRemovePackage)
+    EVT_UPDATE_UI(ID_BTNREMOVE,PackMan2ExtendedFrm::ActionRemoveUpdate)
+    EVT_MENU(ID_BTNVERIFY,PackMan2ExtendedFrm::ActionVerifyPackage)
+    EVT_UPDATE_UI(ID_BTNVERIFY,PackMan2ExtendedFrm::btnVerifyUpdateUI)
+    EVT_MENU(ID_BTNINSTALL,PackMan2ExtendedFrm::ActionInstallPackage)
 END_EVENT_TABLE()
 ////Event Table End
 
@@ -91,129 +89,127 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     //Add the custom code before or after the blocks
     ////GUI Items Creation Start
 
-	WxPanel1 = new wxPanel(this, ID_WXPANEL1, wxPoint(0, 59), wxSize(705, 418));
 
-	nbkPackageDetails = new wxAuiNotebook(WxPanel1, ID_NBKPACKAGEDETAILS, wxPoint(8, 13), wxSize(220, 379), wxNB_DEFAULT);
+    WxAuiManager1 = new wxAuiManager(this, wxAUI_MGR_ALLOW_FLOATING  | wxAUI_MGR_TRANSPARENT_HINT  | wxAUI_MGR_HINT_FADE  | wxAUI_MGR_NO_VENETIAN_BLINDS_FADE );
 
-	WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(212, 349));
-	nbkPackageDetails->AddPage(WxNoteBookPage2, wxT("General"));
+    WxToolBar1 = new wxAuiToolBar(this, ID_WXTOOLBAR1, wxPoint(11, 2), wxSize(258, 48));
 
-	WxStaticText1 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT1, wxT("Package Name:"), wxPoint(9, 10), wxDefaultSize, 0, wxT("WxStaticText1"));
+    wxBitmap btnInstall_BITMAP (PackMan2ExtendedFrm_btnInstall_XPM);
+    wxBitmap btnInstall_DISABLE_BITMAP (wxNullBitmap);
+    WxToolBar1->AddTool(ID_BTNINSTALL, wxT(""), btnInstall_BITMAP, btnInstall_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Install a package"), wxT(""), NULL);
 
-	edtPackageName = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGENAME, wxT(""), wxPoint(9, 35), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtPackageName"));
+    wxBitmap btnVerify_BITMAP (PackMan2ExtendedFrm_btnVerify_XPM);
+    wxBitmap btnVerify_DISABLE_BITMAP (wxNullBitmap);
+    WxToolBar1->AddTool(ID_BTNVERIFY, wxT(""), btnVerify_BITMAP, btnVerify_DISABLE_BITMAP, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
 
-	WxStaticText2 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT2, wxT("Package Version:"), wxPoint(9, 65), wxDefaultSize, 0, wxT("WxStaticText2"));
+    wxBitmap btnRemove_BITMAP (PackMan2ExtendedFrm_btnRemove_XPM);
+    wxBitmap btnRemove_DISABLE_BITMAP (wxNullBitmap);
+    WxToolBar1->AddTool(ID_BTNREMOVE, wxT(""), btnRemove_BITMAP, btnRemove_DISABLE_BITMAP, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
 
-	edtPackageVersion = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGEVERSION, wxT(""), wxPoint(9, 85), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtPackageVersion"));
+    wxBitmap btnHelp_BITMAP (PackMan2ExtendedFrm_btnHelp_XPM);
+    wxBitmap btnHelp_DISABLE_BITMAP (wxNullBitmap);
+    WxToolBar1->AddTool(ID_BTNHELP, wxT(""), btnHelp_BITMAP, btnHelp_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Displays a help dialog"), wxT(""), NULL);
 
-	WxStaticText3 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT3, wxT("Package Description:"), wxPoint(10, 125), wxDefaultSize, 0, wxT("WxStaticText3"));
+    wxBitmap btnAbout_BITMAP (PackMan2ExtendedFrm_btnAbout_XPM);
+    wxBitmap btnAbout_DISABLE_BITMAP (wxNullBitmap);
+    WxToolBar1->AddTool(ID_BTNABOUT, wxT(""), btnAbout_BITMAP, btnAbout_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Displays the about dialog"), wxT(""), NULL);
 
-	mmoPackageDescription = new wxTextCtrl(WxNoteBookPage2, ID_MMOPACKAGEDESCRIPTION, wxEmptyString, wxPoint(9, 148), wxSize(192, 115), wxTE_MULTILINE, wxDefaultValidator, wxT("mmoPackageDescription"));
-	mmoPackageDescription->SetMaxLength(0);
-	mmoPackageDescription->SetFocus();
-	mmoPackageDescription->SetInsertionPointEnd();
+    wxBitmap btnExit_BITMAP (PackMan2ExtendedFrm_btnExit_XPM);
+    wxBitmap btnExit_DISABLE_BITMAP (wxNullBitmap);
+    WxToolBar1->AddTool(ID_BTNEXIT, wxT(""), btnExit_BITMAP, btnExit_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Quit the application"), wxT(""), NULL);
 
-	WxPackageUrlLink = new wxHyperlinkCtrl(WxNoteBookPage2, ID_WXPACKAGEURLLINK, wxT("WebSite"), wxT("http://wxdsgn.sf.net"), wxPoint(9, 273), wxSize(103, 20), wxNO_BORDER | wxHL_CONTEXTMENU, wxT("WxPackageUrlLink"));
-	WxPackageUrlLink->SetNormalColour(*wxBLUE);
-	WxPackageUrlLink->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxNORMAL, true, wxT("MS Sans Serif")));
+    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(4, 58), wxSize(220, 379), wxNB_DEFAULT);
+    WxAuiManager1->AddPane(nbkPackageDetails, wxAuiPaneInfo().Name(wxT("nbkPackageDetails_Pane")).Caption(wxT("Package Details")).Left().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(true).Movable().PaneBorder().Resizable(true).Row(0).Position(0).Layer(0));
 
-	edtUrl = new wxTextCtrl(WxNoteBookPage2, ID_EDTURL, wxT(""), wxPoint(9, 300), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtUrl"));
+    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(212, 349));
+    nbkPackageDetails->AddPage(WxNoteBookPage2, wxT("General"));
 
-	lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(212, 349));
-	nbkPackageDetails->AddPage(lstFiles, wxT("Files"));
+    WxStaticText1 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT1, wxT("Package Name:"), wxPoint(9, 10), wxDefaultSize, 0, wxT("WxStaticText1"));
 
-	wxArrayString arrayStringFor_WxPackageInstalledFiles;
-	WxPackageInstalledFiles = new wxListBox(lstFiles, ID_WXPACKAGEINSTALLEDFILES, wxPoint(1, 2), wxSize(204, 340), arrayStringFor_WxPackageInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
+    edtPackageName = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGENAME, wxT(""), wxPoint(9, 35), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtPackageName"));
 
-	WxPanel2 = new wxPanel(WxPanel1, ID_WXPANEL2, wxPoint(284, 35), wxSize(407, 322));
+    WxStaticText2 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT2, wxT("Package Version:"), wxPoint(9, 65), wxDefaultSize, 0, wxT("WxStaticText2"));
 
-	lstPackages = new wxListCtrl(WxPanel2, ID_LSTPACKAGES, wxPoint(13, 10), wxSize(390, 274), wxLC_ICON, wxDefaultValidator, wxT("lstPackages"));
+    edtPackageVersion = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGEVERSION, wxT(""), wxPoint(9, 85), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtPackageVersion"));
 
-	WxToolBar1 = new wxToolBar(this, ID_WXTOOLBAR1, wxPoint(0, 0), wxSize(705, 59));
+    WxStaticText3 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT3, wxT("Package Description:"), wxPoint(10, 125), wxDefaultSize, 0, wxT("WxStaticText3"));
 
-	wxBitmap btnInstall_BITMAP (PackMan2ExtendedFrm_btnInstall_XPM);
-	wxBitmap btnInstall_DISABLE_BITMAP (wxNullBitmap);
-	WxToolBar1->AddTool(ID_BTNINSTALL, wxT(""), btnInstall_BITMAP, btnInstall_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Install a package"), wxT(""));
+    mmoPackageDescription = new wxTextCtrl(WxNoteBookPage2, ID_MMOPACKAGEDESCRIPTION, wxEmptyString, wxPoint(9, 148), wxSize(192, 115), wxTE_MULTILINE, wxDefaultValidator, wxT("mmoPackageDescription"));
+    mmoPackageDescription->SetMaxLength(0);
+    mmoPackageDescription->SetFocus();
+    mmoPackageDescription->SetInsertionPointEnd();
 
-	wxBitmap btnVerify_BITMAP (PackMan2ExtendedFrm_btnVerify_XPM);
-	wxBitmap btnVerify_DISABLE_BITMAP (wxNullBitmap);
-	WxToolBar1->AddTool(ID_BTNVERIFY, wxT(""), btnVerify_BITMAP, btnVerify_DISABLE_BITMAP, wxITEM_NORMAL, wxT(""), wxT(""));
+    WxPackageUrlLink = new wxHyperlinkCtrl(WxNoteBookPage2, ID_WXPACKAGEURLLINK, wxT("WebSite"), wxT("http://wxdsgn.sf.net"), wxPoint(9, 273), wxSize(103, 20), wxNO_BORDER | wxHL_CONTEXTMENU, wxT("WxPackageUrlLink"));
+    WxPackageUrlLink->SetNormalColour(*wxBLUE);
+    WxPackageUrlLink->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxNORMAL, true, wxT("MS Sans Serif")));
 
-	wxBitmap btnRemove_BITMAP (PackMan2ExtendedFrm_btnRemove_XPM);
-	wxBitmap btnRemove_DISABLE_BITMAP (wxNullBitmap);
-	WxToolBar1->AddTool(ID_BTNREMOVE, wxT(""), btnRemove_BITMAP, btnRemove_DISABLE_BITMAP, wxITEM_NORMAL, wxT(""), wxT(""));
+    edtUrl = new wxTextCtrl(WxNoteBookPage2, ID_EDTURL, wxT(""), wxPoint(9, 300), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtUrl"));
 
-	WxToolBar1->AddSeparator();
+    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(212, 349));
+    nbkPackageDetails->AddPage(lstFiles, wxT("Files"));
 
-	wxBitmap btnHelp_BITMAP (PackMan2ExtendedFrm_btnHelp_XPM);
-	wxBitmap btnHelp_DISABLE_BITMAP (wxNullBitmap);
-	WxToolBar1->AddTool(ID_BTNHELP, wxT(""), btnHelp_BITMAP, btnHelp_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Displays a help dialog"), wxT(""));
+    wxArrayString arrayStringFor_WxPackageInstalledFiles;
+    WxPackageInstalledFiles = new wxListBox(lstFiles, ID_WXPACKAGEINSTALLEDFILES, wxPoint(1, 2), wxSize(204, 340), arrayStringFor_WxPackageInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
 
-	wxBitmap btnAbout_BITMAP (PackMan2ExtendedFrm_btnAbout_XPM);
-	wxBitmap btnAbout_DISABLE_BITMAP (wxNullBitmap);
-	WxToolBar1->AddTool(ID_BTNABOUT, wxT(""), btnAbout_BITMAP, btnAbout_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Displays the about dialog"), wxT(""));
+    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(231, 58), wxSize(390, 378), wxLC_ICON | wxLC_AUTOARRANGE | wxLC_SORT_DESCENDING, wxDefaultValidator, wxT("lstPackages"));
+    WxAuiManager1->AddPane(lstPackages, wxAuiPaneInfo().Name(wxT("lstPackages_Pane")).Caption(wxT("Package List")).Center().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(true).Movable().PaneBorder().Resizable(true).Row(0).Position(0).Layer(0));
 
-	WxToolBar1->AddSeparator();
+    WxStatusBar1 = new wxStatusBar(this, ID_WXSTATUSBAR1);
 
-	wxBitmap btnExit_BITMAP (PackMan2ExtendedFrm_btnExit_XPM);
-	wxBitmap btnExit_DISABLE_BITMAP (wxNullBitmap);
-	WxToolBar1->AddTool(ID_BTNEXIT, wxT(""), btnExit_BITMAP, btnExit_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Quit the application"), wxT(""));
+    WxMenuBar1 = new wxMenuBar();
+    wxMenu *ID_MNU_FILE_1001_Mnu_Obj = new wxMenu(0);
+    wxMenuItem * ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_INSTALLPACKAGE_1002, wxT("&Install Package...\tCtrl+O"), wxT("Select and install a new library package"), wxITEM_NORMAL);
+    wxBitmap ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_INSTALLPACKAGE_1002_XPM);
+    ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj->SetBitmap(ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj_BMP);
+    ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj);
+    ID_MNU_FILE_1001_Mnu_Obj->AppendSeparator();
+    wxMenuItem * ID_MNU_VERIFYFILES_1003_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_VERIFYFILES_1003, wxT("&Verify files\tAlt+V"), wxT("Verify the files contained"), wxITEM_NORMAL);
+    wxBitmap ID_MNU_VERIFYFILES_1003_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_VERIFYFILES_1003_XPM);
+    ID_MNU_VERIFYFILES_1003_mnuItem_obj->SetBitmap(ID_MNU_VERIFYFILES_1003_mnuItem_obj_BMP);
+    ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_VERIFYFILES_1003_mnuItem_obj);
+    ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_DELETEPACKAGE_1004, wxT("&Remove Package\tCtrl+A"), wxT("Uninstall an installed library"), wxITEM_NORMAL);
+    ID_MNU_FILE_1001_Mnu_Obj->AppendSeparator();
+    wxMenuItem * ID_MNU_RELOADDATABASE_1028_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_RELOADDATABASE_1028, wxT("Re&load Database\tF5"), wxT("Reload the package database"), wxITEM_NORMAL);
+    wxBitmap ID_MNU_RELOADDATABASE_1028_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_RELOADDATABASE_1028_XPM);
+    ID_MNU_RELOADDATABASE_1028_mnuItem_obj->SetBitmap(ID_MNU_RELOADDATABASE_1028_mnuItem_obj_BMP);
+    ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_RELOADDATABASE_1028_mnuItem_obj);
+    ID_MNU_FILE_1001_Mnu_Obj->AppendSeparator();
+    wxMenuItem * ID_MNU_EXIT_1010_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_EXIT_1010, wxT("E&xit\\Ctrl+Q"), wxT("Quit the application"), wxITEM_NORMAL);
+    wxBitmap ID_MNU_EXIT_1010_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_EXIT_1010_XPM);
+    ID_MNU_EXIT_1010_mnuItem_obj->SetBitmap(ID_MNU_EXIT_1010_mnuItem_obj_BMP);
+    ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_EXIT_1010_mnuItem_obj);
+    WxMenuBar1->Append(ID_MNU_FILE_1001_Mnu_Obj, wxT("&Package"));
 
-	WxStatusBar1 = new wxStatusBar(this, ID_WXSTATUSBAR1);
+    wxMenu *wxID_STATIC_Mnu_Obj = new wxMenu(0);
+    wxID_STATIC_Mnu_Obj->Append(ID_MNU_DETAILS_CTRL_D_1031, wxT("&Details\\Ctrl+D"), wxT("Show/hide the package details side bar"), wxITEM_CHECK);
+    wxID_STATIC_Mnu_Obj->Check(ID_MNU_DETAILS_CTRL_D_1031,true);
+    wxID_STATIC_Mnu_Obj->AppendSeparator();
+    wxID_STATIC_Mnu_Obj->Append(ID_MNU_SUBMENUITEM17_1033, wxT("&Toolbar"), wxT("Show/hide the toolbar"), wxITEM_CHECK);
+    wxID_STATIC_Mnu_Obj->Check(ID_MNU_SUBMENUITEM17_1033,true);
+    WxMenuBar1->Append(wxID_STATIC_Mnu_Obj, wxT("&View"));
 
-	WxMenuBar1 = new wxMenuBar();
-	wxMenu *ID_MNU_FILE_1001_Mnu_Obj = new wxMenu(0);
-	wxMenuItem * ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_INSTALLPACKAGE_1002, wxT("&Install Package...\tCtrl+O"), wxT("Select and install a new library package"), wxITEM_NORMAL);
-	wxBitmap ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_INSTALLPACKAGE_1002_XPM);
-	ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj->SetBitmap(ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj_BMP);
-	ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_INSTALLPACKAGE_1002_mnuItem_obj);
-	ID_MNU_FILE_1001_Mnu_Obj->AppendSeparator();
-	wxMenuItem * ID_MNU_VERIFYFILES_1003_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_VERIFYFILES_1003, wxT("&Verify files\tAlt+V"), wxT("Verify the files contained"), wxITEM_NORMAL);
-	wxBitmap ID_MNU_VERIFYFILES_1003_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_VERIFYFILES_1003_XPM);
-	ID_MNU_VERIFYFILES_1003_mnuItem_obj->SetBitmap(ID_MNU_VERIFYFILES_1003_mnuItem_obj_BMP);
-	ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_VERIFYFILES_1003_mnuItem_obj);
-	ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_DELETEPACKAGE_1004, wxT("&Remove Package\tCtrl+A"), wxT("Uninstall an installed library"), wxITEM_NORMAL);
-	ID_MNU_FILE_1001_Mnu_Obj->AppendSeparator();
-	wxMenuItem * ID_MNU_RELOADDATABASE_1028_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_RELOADDATABASE_1028, wxT("Re&load Database\tF5"), wxT("Reload the package database"), wxITEM_NORMAL);
-	wxBitmap ID_MNU_RELOADDATABASE_1028_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_RELOADDATABASE_1028_XPM);
-	ID_MNU_RELOADDATABASE_1028_mnuItem_obj->SetBitmap(ID_MNU_RELOADDATABASE_1028_mnuItem_obj_BMP);
-	ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_RELOADDATABASE_1028_mnuItem_obj);
-	ID_MNU_FILE_1001_Mnu_Obj->AppendSeparator();
-	wxMenuItem * ID_MNU_EXIT_1010_mnuItem_obj = new wxMenuItem (ID_MNU_FILE_1001_Mnu_Obj, ID_MNU_EXIT_1010, wxT("E&xit\\Ctrl+Q"), wxT("Quit the application"), wxITEM_NORMAL);
-	wxBitmap ID_MNU_EXIT_1010_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_EXIT_1010_XPM);
-	ID_MNU_EXIT_1010_mnuItem_obj->SetBitmap(ID_MNU_EXIT_1010_mnuItem_obj_BMP);
-	ID_MNU_FILE_1001_Mnu_Obj->Append(ID_MNU_EXIT_1010_mnuItem_obj);
-	WxMenuBar1->Append(ID_MNU_FILE_1001_Mnu_Obj, wxT("&Package"));
-	
-	wxMenu *wxID_STATIC_Mnu_Obj = new wxMenu(0);
-	wxID_STATIC_Mnu_Obj->Append(ID_MNU_DETAILS_CTRL_D_1031, wxT("&Details\\Ctrl+D"), wxT("Show/hide the package details side bar"), wxITEM_CHECK);
-	wxID_STATIC_Mnu_Obj->Check(ID_MNU_DETAILS_CTRL_D_1031,true);
-	wxID_STATIC_Mnu_Obj->AppendSeparator();
-	wxID_STATIC_Mnu_Obj->Append(ID_MNU_SUBMENUITEM17_1033, wxT("&Toolbar"), wxT("Show/hide the toolbar"), wxITEM_CHECK);
-	wxID_STATIC_Mnu_Obj->Check(ID_MNU_SUBMENUITEM17_1033,true);
-	WxMenuBar1->Append(wxID_STATIC_Mnu_Obj, wxT("&View"));
-	
-	wxMenu *ID_MNU_HELP_1005_Mnu_Obj = new wxMenu(0);
-	wxMenuItem * ID_MNU_HELP_1030_mnuItem_obj = new wxMenuItem (ID_MNU_HELP_1005_Mnu_Obj, ID_MNU_HELP_1030, wxT("&Help\tF1"), wxT("Display help dialog"), wxITEM_NORMAL);
-	wxBitmap ID_MNU_HELP_1030_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_HELP_1030_XPM);
-	ID_MNU_HELP_1030_mnuItem_obj->SetBitmap(ID_MNU_HELP_1030_mnuItem_obj_BMP);
-	ID_MNU_HELP_1005_Mnu_Obj->Append(ID_MNU_HELP_1030_mnuItem_obj);
-	wxMenuItem * ID_MNU_ABOUT_1006_mnuItem_obj = new wxMenuItem (ID_MNU_HELP_1005_Mnu_Obj, ID_MNU_ABOUT_1006, wxT("&About..."), wxT("Display about dialog"), wxITEM_NORMAL);
-	wxBitmap ID_MNU_ABOUT_1006_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_ABOUT_1006_XPM);
-	ID_MNU_ABOUT_1006_mnuItem_obj->SetBitmap(ID_MNU_ABOUT_1006_mnuItem_obj_BMP);
-	ID_MNU_HELP_1005_Mnu_Obj->Append(ID_MNU_ABOUT_1006_mnuItem_obj);
-	WxMenuBar1->Append(ID_MNU_HELP_1005_Mnu_Obj, wxT("Help"));
-	SetMenuBar(WxMenuBar1);
+    wxMenu *ID_MNU_HELP_1005_Mnu_Obj = new wxMenu(0);
+    wxMenuItem * ID_MNU_HELP_1030_mnuItem_obj = new wxMenuItem (ID_MNU_HELP_1005_Mnu_Obj, ID_MNU_HELP_1030, wxT("&Help\tF1"), wxT("Display help dialog"), wxITEM_NORMAL);
+    wxBitmap ID_MNU_HELP_1030_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_HELP_1030_XPM);
+    ID_MNU_HELP_1030_mnuItem_obj->SetBitmap(ID_MNU_HELP_1030_mnuItem_obj_BMP);
+    ID_MNU_HELP_1005_Mnu_Obj->Append(ID_MNU_HELP_1030_mnuItem_obj);
+    wxMenuItem * ID_MNU_ABOUT_1006_mnuItem_obj = new wxMenuItem (ID_MNU_HELP_1005_Mnu_Obj, ID_MNU_ABOUT_1006, wxT("&About..."), wxT("Display about dialog"), wxITEM_NORMAL);
+    wxBitmap ID_MNU_ABOUT_1006_mnuItem_obj_BMP(PackMan2ExtendedFrm_ID_MNU_ABOUT_1006_XPM);
+    ID_MNU_ABOUT_1006_mnuItem_obj->SetBitmap(ID_MNU_ABOUT_1006_mnuItem_obj_BMP);
+    ID_MNU_HELP_1005_Mnu_Obj->Append(ID_MNU_ABOUT_1006_mnuItem_obj);
+    WxMenuBar1->Append(ID_MNU_HELP_1005_Mnu_Obj, wxT("Help"));
+    SetMenuBar(WxMenuBar1);
 
-	SetStatusBar(WxStatusBar1);
-	WxToolBar1->SetToolBitmapSize(wxSize(32,32));
-	WxToolBar1->Realize();
-	SetToolBar(WxToolBar1);
-	SetTitle(wxT("PackMan2Extended"));
-	SetIcon(Self_PackMan2ExtendedFrm_XPM);
-	SetSize(8,8,721,532);
-	Center();
-	
+    SetStatusBar(WxStatusBar1);
+    WxToolBar1->SetToolBitmapSize(wxSize(32,32));
+    WxToolBar1->Realize();
+    WxAuiManager1->AddPane(WxToolBar1, wxAuiPaneInfo().Name(wxT("WxAuiToolBar1_Pane")).Caption(wxT("WxAuiToolBar1")).Top().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(false).Gripper(false).ToolbarPane().Row(0).Position(0).Layer(10));
+    SetTitle(wxT("PackMan2Extended"));
+    SetIcon(wxNullIcon);
+    SetSize(8,8,646,499);
+    Center();
+    WxAuiManager1->Update();
+
     ////GUI Items Creation End
 
     //Create package imagelist
@@ -221,40 +217,7 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     PackageImageList->Add(wxBitmap(PackageLrg_xpm));
     lstPackages->AssignImageList(PackageImageList,wxIMAGE_LIST_NORMAL);
 
-    SetToolBar(NULL);
-    //Add toolbar
-    DockManager.AddPane(WxToolBar1, wxAuiPaneInfo().
-                        Name(wxT("tlbMain")).Caption(wxT("Main")).
-                        ToolbarPane().Top().Row(0).
-                        LeftDockable(false).RightDockable(false));
-    //Reparent controls before we kill the backing panel
-    nbkPackageDetails->Reparent(this);
-    /*wxPanel *panel = new wxPanel( this, wxID_ANY );*/
-    WxPanel2->Reparent(this);
-    wxBoxSizer *boxSizer = new wxBoxSizer(wxVERTICAL);
-    boxSizer->Add(lstPackages,1,wxEXPAND|wxALL);
-    WxPanel2->SetSizer(boxSizer);
-    //Remove the backing panel needed to stop controls auto resizing
-    WxPanel1->Destroy();
-    //Remove close buttons from notebook tabs
-    long m_notebook_style = wxAUI_NB_TOP | wxNO_BORDER;
-
-    nbkPackageDetails->SetWindowStyleFlag(m_notebook_style);
-    //Add the package details on the left
-    DockManager.AddPane(nbkPackageDetails, wxAuiPaneInfo().Movable(false).
-                        Name(wxT("nbkPackageDetails")).Caption(wxT("Package Details")).
-                        Left().CloseButton(true));
-    //Add the list control on the right
-    DockManager.AddPane(WxPanel2, wxAuiPaneInfo().Caption(wxT("Installed Packages")).
-                        Movable(false).Name(wxT("lstPackages")).Centre().CloseButton(false));
-    // "commit" all changes made to wxAuiManager
-    DockManager.Update();
     UpdatePackageList();
-    //Set up the art provider
-    DockManager.GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE,wxAUI_GRADIENT_NONE);
-    DockManager.GetArtProvider()->SetColour(wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR,*wxBLACK);
-    DockManager.GetArtProvider()->SetColour(wxAUI_DOCKART_ACTIVE_CAPTION_TEXT_COLOUR,*wxWHITE);
-
     selectedPackage = -1;
 
 }
@@ -456,6 +419,17 @@ void PackMan2ExtendedFrm::MnuReloadDatabaseClick(wxCommandEvent& event)
  * btnVerifyUpdateUI
  */
 void PackMan2ExtendedFrm::btnVerifyUpdateUI(wxUpdateUIEvent& event)
+{
+    if (lstPackages->GetSelectedItemCount() > 0)
+        event.Enable(true);
+    else
+        event.Enable(false);
+}
+
+/*
+ * ActionVerifyUpdateUI
+ */
+void PackMan2ExtendedFrm::ActionVerifyUpdateUI(wxUpdateUIEvent& event)
 {
     if (lstPackages->GetSelectedItemCount() > 0)
         event.Enable(true);

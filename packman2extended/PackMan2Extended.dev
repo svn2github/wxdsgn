@@ -297,3 +297,12 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit25]
+FileName=PackMan2Frm.wxform
+Folder=PackMan2Extended
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+

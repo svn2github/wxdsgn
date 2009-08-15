@@ -360,7 +360,7 @@ bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
 wxString InstallDevPak::GetAppDir()
 {
     // Grab install directory from Windows Registry
-    wxRegKey *pRegKey = new wxRegKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\wx-devcpp");
+    wxRegKey *pRegKey = new wxRegKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\wxdevcpp");
     wxString strInstallDir = "none";
 
     if (!pRegKey->Exists())
@@ -426,8 +426,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
         if (!InstallDevPak::ReadEntryFile(&info)) return false;  // Read the existing entry file
         if (!InstallDevPak::RemoveDevPak(&info)) return false;  // Remove the existing devpak
     }
-    else
-        if (!InstallDevPak::SaveEntryFileSetup(&info)) return false;  // Save the new devpaks entry file setup info
+    else if (!InstallDevPak::SaveEntryFileSetup(&info)) return false; // Save the new devpaks entry file setup info
 
     fEntry.Open(info.GetEntryFileName());  // Open the entry file
 

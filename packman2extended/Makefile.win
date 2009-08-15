@@ -1,7 +1,7 @@
 # Project: PackMan2Extended
 # Compiler: Default GCC compiler
 # Compiler Type: MingW 3
-# Makefile created by wxDev-C++ 7.0 on 13/08/09 20:11
+# Makefile created by wxDev-C++ 7.0 on 14/08/09 20:14
 
 WXLIBNAME = wxmsw28
 CPP       = g++.exe
@@ -33,7 +33,7 @@ $(BIN): $(OBJ)
 Objects/MingW/PackMan2ExtendedApp.o: $(GLOBALDEPS) PackMan2ExtendedApp.cpp PackMan2ExtendedApp.h PackMan2ExtendedFrm.h InstallDevPak.h DevPakInfo.h RemoveDlg.h ErrorDlg.h ErrorDlg.h
 	$(CPP) -c PackMan2ExtendedApp.cpp -o Objects/MingW/PackMan2ExtendedApp.o $(CXXFLAGS)
 
-Objects/MingW/PackMan2ExtendedFrm.o: $(GLOBALDEPS) PackMan2ExtendedFrm.cpp PackMan2ExtendedFrm.h InstallDevPak.h DevPakInfo.h RemoveDlg.h ErrorDlg.h ErrorDlg.h InstallDlg.h InstallDevPak.h AboutDlg.h Images/PackageLrg.xpm Images/Self_PackMan2ExtendedFrm_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_INSTALLPACKAGE_1002_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_VERIFYFILES_1003_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_RELOADDATABASE_1028_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_EXIT_1010_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_HELP_1030_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_ABOUT_1006_XPM.xpm Images/PackMan2ExtendedFrm_btnExit_XPM.xpm Images/PackMan2ExtendedFrm_btnAbout_XPM.xpm Images/PackMan2ExtendedFrm_btnHelp_XPM.xpm Images/PackMan2ExtendedFrm_btnRemove_XPM.xpm Images/PackMan2ExtendedFrm_btnVerify_XPM.xpm Images/PackMan2ExtendedFrm_btnInstall_XPM.xpm
+Objects/MingW/PackMan2ExtendedFrm.o: $(GLOBALDEPS) PackMan2ExtendedFrm.cpp PackMan2ExtendedFrm.h InstallDevPak.h DevPakInfo.h RemoveDlg.h ErrorDlg.h ErrorDlg.h InstallDlg.h InstallDevPak.h AboutDlg.h Images/PackageLrg.xpm Images/PackMan2ExtendedFrm_ID_MNU_INSTALLPACKAGE_1002_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_VERIFYFILES_1003_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_RELOADDATABASE_1028_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_EXIT_1010_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_HELP_1030_XPM.xpm Images/PackMan2ExtendedFrm_ID_MNU_ABOUT_1006_XPM.xpm Images/PackMan2ExtendedFrm_btnExit_XPM.xpm Images/PackMan2ExtendedFrm_btnAbout_XPM.xpm Images/PackMan2ExtendedFrm_btnHelp_XPM.xpm Images/PackMan2ExtendedFrm_btnRemove_XPM.xpm Images/PackMan2ExtendedFrm_btnVerify_XPM.xpm Images/PackMan2ExtendedFrm_btnInstall_XPM.xpm
 	$(CPP) -c PackMan2ExtendedFrm.cpp -o Objects/MingW/PackMan2ExtendedFrm.o $(CXXFLAGS)
 
 Objects/MingW/InstallDevPak.o: $(GLOBALDEPS) InstallDevPak.cpp InstallDevPak.h DevPakInfo.h RemoveDlg.h ErrorDlg.h ErrorDlg.h

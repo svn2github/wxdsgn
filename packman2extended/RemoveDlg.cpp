@@ -52,43 +52,43 @@ void RemoveDlg::CreateGUIControls()
     //Add the custom code before or after the blocks
     ////GUI Items Creation Start
 
-    SetTitle(wxT("RemoveDlg"));
-    SetIcon(wxNullIcon);
-    SetSize(8,8,358,280);
-    Center();
-
-
     WxTimer1 = new wxTimer();
     WxTimer1->SetOwner(this, ID_WXTIMER1);
     WxTimer1->Start(100);
 
-    WxCancel = new wxButton(this, ID_WXCANCEL, wxT("Abort"), wxPoint(132,211), wxSize(75,25), 0, wxDefaultValidator, wxT("WxCancel"));
+    WxCancel = new wxButton(this, ID_WXCANCEL, wxT("Abort"), wxPoint(152, 243), wxSize(87, 29), 0, wxDefaultValidator, wxT("WxCancel"));
 
-    WxStaticText4 = new wxStaticText(this, ID_WXSTATICTEXT4, wxT("Files remaining"), wxPoint(59,169), wxDefaultSize, 0, wxT("WxStaticText4"));
-    WxStaticText4->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxStaticText4 = new wxStaticText(this, ID_WXSTATICTEXT4, wxT("Files remaining"), wxPoint(68, 195), wxDefaultSize, 0, wxT("WxStaticText4"));
+    WxStaticText4->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
-    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Files deleted"), wxPoint(73,142), wxDefaultSize, 0, wxT("WxStaticText3"));
-    WxStaticText3->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Files deleted"), wxPoint(84, 164), wxDefaultSize, 0, wxT("WxStaticText3"));
+    WxStaticText3->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
-    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Total files"), wxPoint(89,114), wxDefaultSize, 0, wxT("WxStaticText2"));
-    WxStaticText2->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Total files"), wxPoint(103, 132), wxDefaultSize, 0, wxT("WxStaticText2"));
+    WxStaticText2->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
-    txtFilesRemaining = new wxStaticText(this, ID_TXTFILESREMAINING, wxT("txtFilesRemaining"), wxPoint(164,169), wxDefaultSize, 0, wxT("txtFilesRemaining"));
+    txtFilesRemaining = new wxStaticText(this, ID_TXTFILESREMAINING, wxT("txtFilesRemaining"), wxPoint(189, 195), wxDefaultSize, 0, wxT("txtFilesRemaining"));
 
-    txtFilesDeleted = new wxStaticText(this, ID_TXTFILESDELETED, wxT("txtFilesDeleted"), wxPoint(164,142), wxDefaultSize, 0, wxT("txtFilesDeleted"));
+    txtFilesDeleted = new wxStaticText(this, ID_TXTFILESDELETED, wxT("txtFilesDeleted"), wxPoint(189, 164), wxDefaultSize, 0, wxT("txtFilesDeleted"));
 
-    txtTotalFiles = new wxStaticText(this, ID_TXTTOTALFILES, wxT("txtTotalFiles"), wxPoint(164,114), wxDefaultSize, 0, wxT("txtTotalFiles"));
+    txtTotalFiles = new wxStaticText(this, ID_TXTTOTALFILES, wxT("txtTotalFiles"), wxPoint(189, 132), wxDefaultSize, 0, wxT("txtTotalFiles"));
 
-    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(42,79), wxSize(253,22), wxGA_HORIZONTAL, wxDefaultValidator, wxT("WxGauge1"));
+    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(48, 91), wxSize(292, 26), wxGA_HORIZONTAL, wxDefaultValidator, wxT("WxGauge1"));
     WxGauge1->SetRange(100);
     WxGauge1->SetValue(0);
 
-    ProgressBox = new wxStaticBox(this, ID_PROGRESSBOX, wxT("Progress (0%)"), wxPoint(30,52), wxSize(283,148));
+    ProgressBox = new wxStaticBox(this, ID_PROGRESSBOX, wxT("Progress (0%)"), wxPoint(35, 60), wxSize(326, 171));
 
-    WxStaticText1 = new wxStaticText(this, ID_WXSTATICTEXT1, wxT("Deleting file:"), wxPoint(16,21), wxDefaultSize, 0, wxT("WxStaticText1"));
-    WxStaticText1->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxStaticText1 = new wxStaticText(this, ID_WXSTATICTEXT1, wxT("Deleting file:"), wxPoint(18, 24), wxDefaultSize, 0, wxT("WxStaticText1"));
+    WxStaticText1->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
-    txtDeleteFile = new wxStaticText(this, ID_TXTDELETEFILE, wxT("%s"), wxPoint(90,21), wxDefaultSize, 0, wxT("txtDeleteFile"));
+    txtDeleteFile = new wxStaticText(this, ID_TXTDELETEFILE, wxT("%s"), wxPoint(104, 24), wxDefaultSize, 0, wxT("txtDeleteFile"));
+
+    SetTitle(wxT("RemoveDlg"));
+    SetIcon(wxNullIcon);
+    SetSize(8,8,420,320);
+    Center();
+
     ////GUI Items Creation End
 
 }

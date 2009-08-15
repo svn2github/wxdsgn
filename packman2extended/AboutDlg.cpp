@@ -48,15 +48,9 @@ void AboutDlg::CreateGUIControls()
     //Add the custom code before or after the blocks
     ////GUI Items Creation Start
 
-    SetTitle(wxT("About Package Manager"));
-    SetIcon(wxNullIcon);
-    SetSize(8,8,206,404);
-    Center();
+    WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("OK"), wxPoint(62, 393), wxSize(87, 29), 0, wxDefaultValidator, wxT("WxButton1"));
 
-
-    WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("OK"), wxPoint(54,341), wxSize(75,25), 0, wxDefaultValidator, wxT("WxButton1"));
-
-    WxMemo1 = new wxTextCtrl(this, ID_WXMEMO1, wxT(""), wxPoint(-1,198), wxSize(201,137), wxTE_READONLY | wxTE_CENTRE | wxTE_MULTILINE, wxDefaultValidator, wxT("WxMemo1"));
+    WxMemo1 = new wxTextCtrl(this, ID_WXMEMO1, wxEmptyString, wxPoint(-1, 228), wxSize(277, 159), wxTE_READONLY | wxTE_CENTRE | wxTE_MULTILINE, wxDefaultValidator, wxT("WxMemo1"));
     WxMemo1->SetMaxLength(0);
     WxMemo1->AppendText(wxT("Based on Package "));
     WxMemo1->AppendText(wxT("Manager\n"));
@@ -65,15 +59,20 @@ void AboutDlg::CreateGUIControls()
     WxMemo1->AppendText(wxT("Rewritten in C++ and\n"));
     WxMemo1->AppendText(wxT("wxWidgets by\n\n"));
     WxMemo1->AppendText(wxT(""));
-    WxMemo1->AppendText(wxT("Tony Reina\n"));
-    WxMemo1->AppendText(wxT("& Sof.T"));
+    WxMemo1->AppendText(wxT("Tony Reina & Sof.T"));
     WxMemo1->SetFocus();
     WxMemo1->SetInsertionPointEnd();
-    WxMemo1->SetFont(wxFont(10, wxSWISS, wxNORMAL, wxBOLD, false));
+    WxMemo1->SetFont(wxFont(12, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
     wxBitmap WxStaticBitmap1_BITMAP(AboutDlg_WxStaticBitmap1_XPM);
-    WxStaticBitmap1 = new wxStaticBitmap(this, ID_WXSTATICBITMAP1, WxStaticBitmap1_BITMAP, wxPoint(-1,-1), wxSize(200,200));
+    WxStaticBitmap1 = new wxStaticBitmap(this, ID_WXSTATICBITMAP1, WxStaticBitmap1_BITMAP, wxPoint(-1, -1), wxSize(275, 231));
     WxStaticBitmap1->Enable(false);
+
+    SetTitle(wxT("About Package Manager"));
+    SetIcon(wxNullIcon);
+    SetSize(9,0,312,471);
+    Center();
+
     ////GUI Items Creation End
 }
 
