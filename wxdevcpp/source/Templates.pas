@@ -347,10 +347,12 @@ var
 begin
   section:= 'Unit' +inttostr(index);
   if fTemplate.SectionExists(section) then
+  begin
     fTemplate.EraseSection(section);
-  Count:= fTemplate.ReadInteger(cProject, 'UnitCount', 0);
-  dec(count);
-  fTemplate.WriteInteger(cProject, 'UnitCount', Count);
+    Count:= fTemplate.ReadInteger(cProject, 'UnitCount', 0);
+    dec(Count);
+    fTemplate.WriteInteger(cProject, 'UnitCount', Count);
+  end
 end;
 
 function TTemplate.GetOldData: TTemplateRec;

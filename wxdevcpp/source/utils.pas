@@ -1201,7 +1201,7 @@ begin
   try
     R.RootKey:=HKEY_CLASSES_ROOT;
     Base:=R.ReadString(Extension, '', NOVALUE);
-    if S=NOVALUE then
+    if Base=NOVALUE then
       Exit;
     S:=R.ReadString(Base+'\shell\open\command', '', NOVALUE);
     if S=NOVALUE then
