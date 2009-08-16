@@ -201,27 +201,27 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
         while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Files]")) // Loop through file until you encounter EOF or [Files]
         {
             if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppName=", &junk)) {
-                info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+                info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
             }
 
             if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppVersion=", &junk)) {
-                info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+                info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
             }
 
             if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Description=", &junk)) {
-                info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+                info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
             }
 
             if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Url=", &junk)) {
-                info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+                info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
             }
 
             if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Readme=", &junk)) {
-                info->Readme = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+                info->Readme = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
             }
 
             if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("License=", &junk)) {
-                info->License = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+                info->License = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
             }
 
         }
@@ -307,27 +307,27 @@ bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
     while ((!fIni.Eof()) && (fIni.GetNextLine() != "[Files]")) // Loop through file until you encounter EOF or [Files]
     {
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppName=", &junk)) {
-            info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            info->AppName = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("AppVersion=", &junk)) {
-            info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            info->AppVersion = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Description=", &junk)) {
-            info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            info->Description = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Url=", &junk)) {
-            info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            info->Url = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("Readme=", &junk)) {
-            info->Readme = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            info->Readme = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
         }
 
         if (fIni.GetLine(fIni.GetCurrentLine()).StartsWith("License=", &junk)) {
-            info->License = fIni.GetLine(fIni.GetCurrentLine()).AfterLast('=');
+            info->License = fIni.GetLine(fIni.GetCurrentLine()).AfterFirst('=');
         }
 
     }

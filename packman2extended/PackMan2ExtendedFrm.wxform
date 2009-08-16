@@ -61,7 +61,7 @@ object frmNewForm: TfrmNewForm
       Wx_ToolbarStyleSet = []
       Wx_GeneralStyle = []
       Wx_IDName = 'ID_WXTOOLBAR1'
-      Wx_IDValue = 1003
+      Wx_IDValue = 2001
       Wx_Hidden = False
       Wx_Border = 0
       Wx_PaneCaption = 'WxAuiToolBar1'
@@ -231,7 +231,7 @@ object frmNewForm: TfrmNewForm
         Wx_GeneralStyle = []
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNINSTALL'
-        Wx_IDValue = 27880556
+        Wx_IDValue = 5011
         Wx_ToolTip = 'Install a package'
         Wx_BITMAP.Data = {
           07544269746D617036100000424D361000000000000036000000280000002000
@@ -519,7 +519,7 @@ object frmNewForm: TfrmNewForm
         Wx_GeneralStyle = []
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNVERIFY'
-        Wx_IDValue = 27880560
+        Wx_IDValue = 5009
         Wx_BITMAP.Data = {
           07544269746D617036100000424D361000000000000036000000280000002000
           0000200000000100200000000000001000000000000000000000000000000000
@@ -806,7 +806,7 @@ object frmNewForm: TfrmNewForm
         Wx_GeneralStyle = []
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNREMOVE'
-        Wx_IDValue = 27880561
+        Wx_IDValue = 5007
         Wx_BITMAP.Data = {
           07544269746D617036100000424D361000000000000036000000280000002000
           0000200000000100200000000000001000000000000000000000000000000000
@@ -1092,7 +1092,7 @@ object frmNewForm: TfrmNewForm
         Wx_GeneralStyle = []
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNHELP'
-        Wx_IDValue = 27880558
+        Wx_IDValue = 5005
         Wx_ToolTip = 'Displays a help dialog'
         Wx_BITMAP.Data = {
           07544269746D617036100000424D361000000000000036000000280000002000
@@ -1379,7 +1379,7 @@ object frmNewForm: TfrmNewForm
         Wx_GeneralStyle = []
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNABOUT'
-        Wx_IDValue = 27880559
+        Wx_IDValue = 5003
         Wx_ToolTip = 'Displays the about dialog'
         Wx_BITMAP.Data = {
           07544269746D617036100000424D361000000000000036000000280000002000
@@ -1666,7 +1666,7 @@ object frmNewForm: TfrmNewForm
         Wx_GeneralStyle = []
         Wx_Hidden = False
         Wx_IDName = 'ID_BTNEXIT'
-        Wx_IDValue = 27880557
+        Wx_IDValue = 5000
         Wx_ToolTip = 'Quit the application'
         Wx_BITMAP.Data = {
           07544269746D617036100000424D361000000000000036000000280000002000
@@ -1806,8 +1806,8 @@ object frmNewForm: TfrmNewForm
   end
   object nbkPackageDetails: TWxNotebook
     Left = 4
-    Top = 58
-    Width = 220
+    Top = 57
+    Width = 240
     Height = 379
     ActivePage = WxNoteBookPage2
     TabIndex = 0
@@ -1819,7 +1819,7 @@ object frmNewForm: TfrmNewForm
       'EVT_NOTEBOOK_PAGE_CHANGED:OnPageChanged'
       'EVT_NOTEBOOK_PAGE_CHANGING:OnPageChanging')
     Wx_IDName = 'ID_NBKPACKAGEDETAILS'
-    Wx_IDValue = 27880563
+    Wx_IDValue = 3000
     Wx_Hidden = False
     Wx_NoteBookStyle = []
     Wx_GeneralStyle = []
@@ -1829,8 +1829,8 @@ object frmNewForm: TfrmNewForm
     Wx_PaneName = 'nbkPackageDetails_Pane'
     Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT
     Wx_Aui_Dockable_Direction = []
-    Wx_Aui_Pane_Style = [Floatable, Gripper, Movable, PaneBorder, Resizable]
-    Wx_Aui_Pane_Buttons = []
+    Wx_Aui_Pane_Style = [CaptionVisible]
+    Wx_Aui_Pane_Buttons = [CloseButton]
     Wx_BestSize_Height = 0
     Wx_BestSize_Width = 0
     Wx_MinSize_Height = 0
@@ -1888,9 +1888,9 @@ object frmNewForm: TfrmNewForm
         Wx_Floating_Y_Pos = 0
       end
       object edtPackageName: TWxEdit
-        Left = 9
-        Top = 35
-        Width = 192
+        Left = 8
+        Top = 30
+        Width = 200
         Height = 22
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -1900,7 +1900,7 @@ object frmNewForm: TfrmNewForm
         Wx_BGColor = clBlack
         Wx_Class = 'wxTextCtrl'
         Wx_ControlOrientation = wxControlVertical
-        Wx_EditStyle = []
+        Wx_EditStyle = [wxTE_READONLY]
         Wx_FGColor = clBlack
         Wx_GeneralStyle = []
         Wx_Hidden = False
@@ -1958,9 +1958,9 @@ object frmNewForm: TfrmNewForm
         Wx_Floating_Y_Pos = 0
       end
       object edtPackageVersion: TWxEdit
-        Left = 9
-        Top = 85
-        Width = 192
+        Left = 8
+        Top = 83
+        Width = 200
         Height = 22
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -1970,7 +1970,7 @@ object frmNewForm: TfrmNewForm
         Wx_BGColor = clBlack
         Wx_Class = 'wxTextCtrl'
         Wx_ControlOrientation = wxControlVertical
-        Wx_EditStyle = []
+        Wx_EditStyle = [wxTE_READONLY]
         Wx_FGColor = clBlack
         Wx_GeneralStyle = []
         Wx_Hidden = False
@@ -1995,7 +1995,7 @@ object frmNewForm: TfrmNewForm
         Wx_Floating_Y_Pos = 0
       end
       object WxStaticText3: TWxStaticText
-        Left = 10
+        Left = 9
         Top = 125
         Width = 114
         Height = 19
@@ -2028,17 +2028,17 @@ object frmNewForm: TfrmNewForm
         Wx_Floating_Y_Pos = 0
       end
       object mmoPackageDescription: TWxMemo
-        Left = 9
-        Top = 148
-        Width = 192
-        Height = 115
+        Left = 8
+        Top = 146
+        Width = 200
+        Height = 123
         BevelInner = bvNone
         BevelOuter = bvNone
         TabOrder = 5
         Wx_BGColor = clBlack
         Wx_Class = 'wxTextCtrl'
         Wx_ControlOrientation = wxControlVertical
-        Wx_EditStyle = [wxTE_MULTILINE]
+        Wx_EditStyle = [wxTE_READONLY, wxTE_MULTILINE]
         Wx_FGColor = clBlack
         Wx_GeneralStyle = []
         Wx_IDName = 'ID_MMOPACKAGEDESCRIPTION'
@@ -2061,33 +2061,31 @@ object frmNewForm: TfrmNewForm
         Wx_Floating_X_Pos = 0
         Wx_Floating_Y_Pos = 0
       end
-      object WxPackageUrlLink: TWxHyperLinkCtrl
-        Left = 9
-        Top = 273
-        Width = 103
-        Height = 20
+      object edtUrl: TWxEdit
+        Left = 8
+        Top = 298
+        Width = 200
+        Height = 19
+        BevelInner = bvNone
+        BevelOuter = bvNone
+        Modified = False
         AutoSize = False
-        Caption = 'WebSite'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlue
-        Font.Height = -12
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsUnderline]
-        ParentFont = False
+        Color = clSilver
         TabOrder = 6
+        EVT_TEXT_URL = 'edtUrlClickUrl'
         Wx_BGColor = clBlack
-        Wx_Class = 'wxHyperlinkCtrl'
+        Wx_Class = 'wxTextCtrl'
         Wx_ControlOrientation = wxControlVertical
+        Wx_EditStyle = [wxTE_READONLY, wxTE_RICH, wxTE_AUTO_URL]
         Wx_FGColor = clBlack
-        Wx_GeneralStyle = [wxNO_BORDER]
+        Wx_GeneralStyle = []
         Wx_Hidden = False
-        Wx_URL = 'http://wxdsgn.sf.net'
-        Wx_IDName = 'ID_WXPACKAGEURLLINK'
-        Wx_IDValue = 1055
-        Wx_HyperLinkStyle = [wxHL_CONTEXTMENU]
-        InvisibleFGColorString = 'STD:wxBLUE'
-        Wx_PaneCaption = 'WxPackageUrlLink'
-        Wx_PaneName = 'WxPackageUrlLink_Pane'
+        Wx_IDName = 'ID_EDTURL'
+        Wx_IDValue = 6000
+        Wx_MaxLength = 0
+        InvisibleBGColorString = 'STD:wxLIGHT_GREY'
+        Wx_PaneCaption = 'WxEdit1'
+        Wx_PaneName = 'WxEdit1_Pane'
         Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE
         Wx_Aui_Dockable_Direction = []
         Wx_Aui_Pane_Style = []
@@ -2103,28 +2101,24 @@ object frmNewForm: TfrmNewForm
         Wx_Floating_X_Pos = 0
         Wx_Floating_Y_Pos = 0
       end
-      object edtUrl: TWxEdit
+      object WebsiteLabel: TWxStaticText
         Left = 9
-        Top = 300
-        Width = 192
-        Height = 22
-        BevelInner = bvNone
-        BevelOuter = bvNone
-        Modified = False
-        AutoSize = False
+        Top = 280
+        Width = 46
+        Height = 19
+        Caption = 'Website'
         TabOrder = 7
         Wx_BGColor = clBlack
-        Wx_Class = 'wxTextCtrl'
+        Wx_Class = 'wxStaticText'
         Wx_ControlOrientation = wxControlVertical
-        Wx_EditStyle = []
         Wx_FGColor = clBlack
         Wx_GeneralStyle = []
         Wx_Hidden = False
-        Wx_IDName = 'ID_EDTURL'
-        Wx_IDValue = 1056
-        Wx_MaxLength = 0
-        Wx_PaneCaption = 'edtUrl'
-        Wx_PaneName = 'edtUrl_Pane'
+        Wx_IDName = 'ID_WEBSITELABEL'
+        Wx_IDValue = 7000
+        Wx_LabelStyle = []
+        Wx_PaneCaption = 'WxStaticText4'
+        Wx_PaneName = 'WxStaticText4_Pane'
         Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE
         Wx_Aui_Dockable_Direction = []
         Wx_Aui_Pane_Style = []
@@ -2193,9 +2187,9 @@ object frmNewForm: TfrmNewForm
     end
   end
   object lstPackages: TWxListCtrl
-    Left = 231
-    Top = 58
-    Width = 390
+    Left = 253
+    Top = 55
+    Width = 319
     Height = 378
     Columns = <>
     TabOrder = 3
@@ -2206,15 +2200,15 @@ object frmNewForm: TfrmNewForm
     Wx_FGColor = clBlack
     Wx_GeneralStyle = []
     Wx_IDName = 'ID_LSTPACKAGES'
-    Wx_IDValue = 103121965
-    Wx_ListviewStyle = [wxLC_AUTOARRANGE, wxLC_SORT_DESCENDING]
+    Wx_IDValue = 3003
+    Wx_ListviewStyle = [wxLC_AUTOARRANGE]
     Wx_ListviewView = wxLC_ICON
     Wx_AuiManaged = True
     Wx_PaneCaption = 'Package List'
     Wx_PaneName = 'lstPackages_Pane'
     Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER
     Wx_Aui_Dockable_Direction = []
-    Wx_Aui_Pane_Style = [Floatable, Gripper, Movable, PaneBorder, Resizable]
+    Wx_Aui_Pane_Style = [Floatable, Resizable]
     Wx_Aui_Pane_Buttons = []
     Wx_BestSize_Height = 0
     Wx_BestSize_Width = 0
@@ -2244,7 +2238,7 @@ object frmNewForm: TfrmNewForm
     Wx_Enabled = True
     Wx_Border = 0
   end
-  object WxAuiManager1: TWxAuiManager
+  object DockManager: TWxAuiManager
     Left = 362
     Top = 10
     Width = 28

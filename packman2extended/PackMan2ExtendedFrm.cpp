@@ -42,6 +42,8 @@ BEGIN_EVENT_TABLE(PackMan2ExtendedFrm,wxFrame)
     ////Manual Code End
 
     EVT_CLOSE(PackMan2ExtendedFrm::OnClose)
+
+    EVT_TEXT_URL(ID_EDTURL,PackMan2ExtendedFrm::edtUrlClickUrl)
     EVT_MENU(ID_MNU_INSTALLPACKAGE_1002, PackMan2ExtendedFrm::ActionInstallPackage)
     EVT_MENU(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyPackage)
     EVT_UPDATE_UI(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyUpdateUI)
@@ -76,13 +78,11 @@ PackMan2ExtendedFrm::PackMan2ExtendedFrm(wxWindow *parent, wxWindowID id, const 
 
 PackMan2ExtendedFrm::~PackMan2ExtendedFrm()
 {
-    DockManager.UnInit();
+
 }
 
 void PackMan2ExtendedFrm::CreateGUIControls()
 {
-    // tell wxAuiManager to manage this frame
-    DockManager.SetManagedWindow(this);
     //Do not add custom code between
     //GUI Items Creation Start and GUI Items Creation End
     //wxDev-C++ designer will remove them.
@@ -90,7 +90,7 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     ////GUI Items Creation Start
 
 
-    WxAuiManager1 = new wxAuiManager(this, wxAUI_MGR_ALLOW_FLOATING  | wxAUI_MGR_TRANSPARENT_HINT  | wxAUI_MGR_HINT_FADE  | wxAUI_MGR_NO_VENETIAN_BLINDS_FADE );
+    DockManager = new wxAuiManager(this, wxAUI_MGR_ALLOW_FLOATING  | wxAUI_MGR_TRANSPARENT_HINT  | wxAUI_MGR_HINT_FADE  | wxAUI_MGR_NO_VENETIAN_BLINDS_FADE );
 
     WxToolBar1 = new wxAuiToolBar(this, ID_WXTOOLBAR1, wxPoint(11, 2), wxSize(258, 48));
 
@@ -118,41 +118,35 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     wxBitmap btnExit_DISABLE_BITMAP (wxNullBitmap);
     WxToolBar1->AddTool(ID_BTNEXIT, wxT(""), btnExit_BITMAP, btnExit_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Quit the application"), wxT(""), NULL);
 
-    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(4, 58), wxSize(220, 379), wxNB_DEFAULT);
-    WxAuiManager1->AddPane(nbkPackageDetails, wxAuiPaneInfo().Name(wxT("nbkPackageDetails_Pane")).Caption(wxT("Package Details")).Left().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(true).Movable().PaneBorder().Resizable(true).Row(0).Position(0).Layer(0));
+    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(4, 57), wxSize(240, 379), wxNB_DEFAULT);
+    DockManager->AddPane(nbkPackageDetails, wxAuiPaneInfo().Name(wxT("nbkPackageDetails_Pane")).Caption(wxT("Package Details")).Left().Dockable(false).CaptionVisible(true).DestroyOnClose(false).Floatable(false).Gripper(false).Resizable(false).CloseButton().Row(0).Position(0).Layer(0));
 
-    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(212, 349));
+    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(232, 349));
     nbkPackageDetails->AddPage(WxNoteBookPage2, wxT("General"));
 
     WxStaticText1 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT1, wxT("Package Name:"), wxPoint(9, 10), wxDefaultSize, 0, wxT("WxStaticText1"));
 
-    edtPackageName = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGENAME, wxT(""), wxPoint(9, 35), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtPackageName"));
+    edtPackageName = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGENAME, wxT(""), wxPoint(8, 30), wxSize(200, 22), wxTE_READONLY, wxDefaultValidator, wxT("edtPackageName"));
 
     WxStaticText2 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT2, wxT("Package Version:"), wxPoint(9, 65), wxDefaultSize, 0, wxT("WxStaticText2"));
 
-    edtPackageVersion = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGEVERSION, wxT(""), wxPoint(9, 85), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtPackageVersion"));
+    edtPackageVersion = new wxTextCtrl(WxNoteBookPage2, ID_EDTPACKAGEVERSION, wxT(""), wxPoint(8, 83), wxSize(200, 22), wxTE_READONLY, wxDefaultValidator, wxT("edtPackageVersion"));
 
-    WxStaticText3 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT3, wxT("Package Description:"), wxPoint(10, 125), wxDefaultSize, 0, wxT("WxStaticText3"));
+    WxStaticText3 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT3, wxT("Package Description:"), wxPoint(9, 125), wxDefaultSize, 0, wxT("WxStaticText3"));
 
-    mmoPackageDescription = new wxTextCtrl(WxNoteBookPage2, ID_MMOPACKAGEDESCRIPTION, wxEmptyString, wxPoint(9, 148), wxSize(192, 115), wxTE_MULTILINE, wxDefaultValidator, wxT("mmoPackageDescription"));
+    mmoPackageDescription = new wxTextCtrl(WxNoteBookPage2, ID_MMOPACKAGEDESCRIPTION, wxEmptyString, wxPoint(8, 146), wxSize(200, 123), wxTE_READONLY | wxTE_MULTILINE, wxDefaultValidator, wxT("mmoPackageDescription"));
     mmoPackageDescription->SetMaxLength(0);
     mmoPackageDescription->SetFocus();
     mmoPackageDescription->SetInsertionPointEnd();
 
-    WxPackageUrlLink = new wxHyperlinkCtrl(WxNoteBookPage2, ID_WXPACKAGEURLLINK, wxT("WebSite"), wxT("http://wxdsgn.sf.net"), wxPoint(9, 273), wxSize(103, 20), wxNO_BORDER | wxHL_CONTEXTMENU, wxT("WxPackageUrlLink"));
-    WxPackageUrlLink->SetNormalColour(*wxBLUE);
-    WxPackageUrlLink->SetFont(wxFont(9, wxSWISS, wxNORMAL, wxNORMAL, true, wxT("MS Sans Serif")));
-
-    edtUrl = new wxTextCtrl(WxNoteBookPage2, ID_EDTURL, wxT(""), wxPoint(9, 300), wxSize(192, 22), 0, wxDefaultValidator, wxT("edtUrl"));
-
-    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(212, 349));
+    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(232, 349));
     nbkPackageDetails->AddPage(lstFiles, wxT("Files"));
 
     wxArrayString arrayStringFor_WxPackageInstalledFiles;
     WxPackageInstalledFiles = new wxListBox(lstFiles, ID_WXPACKAGEINSTALLEDFILES, wxPoint(1, 2), wxSize(204, 340), arrayStringFor_WxPackageInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
 
-    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(231, 58), wxSize(390, 378), wxLC_ICON | wxLC_AUTOARRANGE | wxLC_SORT_DESCENDING, wxDefaultValidator, wxT("lstPackages"));
-    WxAuiManager1->AddPane(lstPackages, wxAuiPaneInfo().Name(wxT("lstPackages_Pane")).Caption(wxT("Package List")).Center().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(true).Movable().PaneBorder().Resizable(true).Row(0).Position(0).Layer(0));
+    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(253, 55), wxSize(319, 378), wxLC_ICON | wxLC_AUTOARRANGE, wxDefaultValidator, wxT("lstPackages"));
+    DockManager->AddPane(lstPackages, wxAuiPaneInfo().Name(wxT("lstPackages_Pane")).Caption(wxT("Package List")).Center().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(false).Resizable(true).Row(0).Position(0).Layer(0));
 
     WxStatusBar1 = new wxStatusBar(this, ID_WXSTATUSBAR1);
 
@@ -200,15 +194,20 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     WxMenuBar1->Append(ID_MNU_HELP_1005_Mnu_Obj, wxT("Help"));
     SetMenuBar(WxMenuBar1);
 
+    edtUrl = new wxTextCtrl(WxNoteBookPage2, ID_EDTURL, wxT(""), wxPoint(8, 298), wxSize(200, 19), wxTE_READONLY | wxTE_RICH | wxTE_AUTO_URL, wxDefaultValidator, wxT("edtUrl"));
+    edtUrl->SetBackgroundColour(*wxLIGHT_GREY);
+
+    WebsiteLabel = new wxStaticText(WxNoteBookPage2, ID_WEBSITELABEL, wxT("Website"), wxPoint(9, 280), wxDefaultSize, 0, wxT("WebsiteLabel"));
+
     SetStatusBar(WxStatusBar1);
     WxToolBar1->SetToolBitmapSize(wxSize(32,32));
     WxToolBar1->Realize();
-    WxAuiManager1->AddPane(WxToolBar1, wxAuiPaneInfo().Name(wxT("WxAuiToolBar1_Pane")).Caption(wxT("WxAuiToolBar1")).Top().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(false).Gripper(false).ToolbarPane().Row(0).Position(0).Layer(10));
+    DockManager->AddPane(WxToolBar1, wxAuiPaneInfo().Name(wxT("WxAuiToolBar1_Pane")).Caption(wxT("WxAuiToolBar1")).Top().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(false).Gripper(false).ToolbarPane().Row(0).Position(0).Layer(10));
     SetTitle(wxT("PackMan2Extended"));
     SetIcon(wxNullIcon);
     SetSize(8,8,646,499);
     Center();
-    WxAuiManager1->Update();
+    DockManager->Update();
 
     ////GUI Items Creation End
 
@@ -263,7 +262,6 @@ void PackMan2ExtendedFrm::UpdatePackageList()
     selectedPackage = -1;
 
     edtUrl->SetValue("");
-    WxPackageUrlLink->SetURL("");
     mmoPackageDescription->SetValue("");
     edtPackageVersion->SetValue("");
     edtPackageName->SetValue("");
@@ -340,7 +338,6 @@ void PackMan2ExtendedFrm::lstPackagesSelected(wxListEvent& event)
 
     // Fill devpak info in GUI
     edtUrl->SetValue(info.Url);
-    WxPackageUrlLink->SetURL(info.Url);
     mmoPackageDescription->SetValue(info.Description);
     edtPackageVersion->SetValue(info.AppVersion);
     edtPackageName->SetValue(info.AppName);
@@ -365,7 +362,7 @@ void PackMan2ExtendedFrm::ActionRemoveUpdate(wxUpdateUIEvent &event)
 
 void PackMan2ExtendedFrm::ActionShowDetailsUpdate(wxUpdateUIEvent &event)
 {
-    if (DockManager.GetPane(nbkPackageDetails).IsShown())
+    if (DockManager->GetPane(nbkPackageDetails).IsShown())
         event.Check(true);
     else
         event.Check(false);
@@ -373,7 +370,7 @@ void PackMan2ExtendedFrm::ActionShowDetailsUpdate(wxUpdateUIEvent &event)
 
 void PackMan2ExtendedFrm::ActionShowToolbarUpdate(wxUpdateUIEvent &event)
 {
-    if (DockManager.GetPane(WxToolBar1).IsShown())
+    if (DockManager->GetPane(WxToolBar1).IsShown())
         event.Check(true);
     else
         event.Check(false);
@@ -386,13 +383,13 @@ void PackMan2ExtendedFrm::ActionShowDetails(wxCommandEvent& event)
 {
     if (event.IsChecked())
     {
-        DockManager.GetPane(nbkPackageDetails).Show(true);
+        DockManager->GetPane(nbkPackageDetails).Show(true);
     }
     else
     {
-        DockManager.GetPane(nbkPackageDetails).Show(false);
+        DockManager->GetPane(nbkPackageDetails).Show(false);
     }
-    DockManager.Update();
+    DockManager->Update();
 }
 
 /*
@@ -401,10 +398,11 @@ void PackMan2ExtendedFrm::ActionShowDetails(wxCommandEvent& event)
 void PackMan2ExtendedFrm::ActionShowToolbar(wxCommandEvent& event)
 {
     if (event.IsChecked())
-        DockManager.GetPane(WxToolBar1).Show(true);
+        DockManager->GetPane(WxToolBar1).Show(true);
     else
-        DockManager.GetPane(WxToolBar1).Show(false);
-    DockManager.Update();
+        DockManager->GetPane(WxToolBar1).Show(false);
+
+    DockManager->Update();
 }
 
 /*
@@ -435,4 +433,15 @@ void PackMan2ExtendedFrm::ActionVerifyUpdateUI(wxUpdateUIEvent& event)
         event.Enable(true);
     else
         event.Enable(false);
+}
+
+/*
+ * edtUrlClickUrl
+ */
+void PackMan2ExtendedFrm::edtUrlClickUrl(wxTextUrlEvent& event)
+{
+    wxString url = edtUrl->GetValue();
+    // if (::wxLaunchDefaultBrowser(url));
+    wxMessageBox(url);
+
 }

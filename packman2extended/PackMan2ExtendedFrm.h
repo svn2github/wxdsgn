@@ -29,7 +29,6 @@
 #include <wx/statusbr.h>
 #include <wx/listctrl.h>
 #include <wx/listbox.h>
-#include <wx/hyperlink.h>
 #include <wx/textctrl.h>
 #include <wx/stattext.h>
 #include <wx/panel.h>
@@ -63,19 +62,20 @@ public:
     void btnVerifyUpdateUI(wxUpdateUIEvent& event);
     void ActionVerifyUpdateUI(wxUpdateUIEvent& event);
 
+    void edtUrlClickUrl(wxTextUrlEvent& event);
 private:
     //Do not add custom control declarations between
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
+    wxStaticText *WebsiteLabel;
+    wxTextCtrl *edtUrl;
     wxMenuBar *WxMenuBar1;
+    wxAuiManager *DockManager;
     wxStatusBar *WxStatusBar1;
-    wxAuiManager *WxAuiManager1;
     wxListCtrl *lstPackages;
     wxListBox *WxPackageInstalledFiles;
     wxListBox *lstFiles;
-    wxTextCtrl *edtUrl;
-    wxHyperlinkCtrl *WxPackageUrlLink;
     wxTextCtrl *mmoPackageDescription;
     wxStaticText *WxStaticText3;
     wxTextCtrl *edtPackageVersion;
@@ -86,7 +86,7 @@ private:
     wxAuiNotebook *nbkPackageDetails;
     wxAuiToolBar *WxToolBar1;
     ////GUI Control Declaration End
-    wxAuiManager DockManager;
+
     int selectedPackage;
     std::vector<DevPakInfo> entryInfo;  // STL vector to store the devpak info
 
@@ -98,6 +98,8 @@ private:
     enum
     {
         ////GUI Enum Control ID Start
+        ID_WEBSITELABEL = 7000,
+        ID_EDTURL = 6000,
         ID_MNU_FILE_1001 = 1001,
         ID_MNU_INSTALLPACKAGE_1002 = 1002,
         ID_MNU_VERIFYFILES_1003 = 1003,
@@ -111,11 +113,9 @@ private:
         ID_MNU_ABOUT_1006 = 1006,
 
         ID_WXSTATUSBAR1 = 1036,
-        ID_LSTPACKAGES = 103121965,
+        ID_LSTPACKAGES = 3003,
         ID_WXPACKAGEINSTALLEDFILES = 1064,
         ID_LSTFILES = 1057,
-        ID_EDTURL = 1056,
-        ID_WXPACKAGEURLLINK = 1055,
         ID_MMOPACKAGEDESCRIPTION = 1054,
         ID_WXSTATICTEXT3 = 1053,
         ID_EDTPACKAGEVERSION = 1052,
@@ -123,14 +123,14 @@ private:
         ID_EDTPACKAGENAME = 1050,
         ID_WXSTATICTEXT1 = 1049,
         ID_WXNOTEBOOKPAGE2 = 1048,
-        ID_NBKPACKAGEDETAILS = 27880563,
-        ID_BTNEXIT = 27880557,
-        ID_BTNABOUT = 27880559,
-        ID_BTNHELP = 27880558,
-        ID_BTNREMOVE = 27880561,
-        ID_BTNVERIFY = 27880560,
-        ID_BTNINSTALL = 27880556,
-        ID_WXTOOLBAR1 = 1003,
+        ID_NBKPACKAGEDETAILS = 3000,
+        ID_BTNEXIT = 5000,
+        ID_BTNABOUT = 5003,
+        ID_BTNHELP = 5005,
+        ID_BTNREMOVE = 5007,
+        ID_BTNVERIFY = 5009,
+        ID_BTNINSTALL = 5011,
+        ID_WXTOOLBAR1 = 2001,
         ////GUI Enum Control ID End
         ID_DUMMY_VALUE_ //don't remove this value unless you have other enum values
     };
