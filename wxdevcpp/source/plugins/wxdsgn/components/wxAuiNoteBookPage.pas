@@ -49,7 +49,7 @@ private
     FWx_HelpText: string;
     FWx_Hidden: boolean;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_ProxyBGColorString: TWxColorString;
     FWx_ProxyFGColorString: TWxColorString;
     FWx_StretchFactor: integer;
@@ -81,14 +81,14 @@ private
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -124,7 +124,7 @@ private
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
     property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
     property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
 
     property Wx_ProxyBGColorString: TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
@@ -367,7 +367,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxAuiNoteBookPage.GetIDValue: longint;
+function TWxAuiNoteBookPage.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -434,7 +434,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxAuiNoteBookPage.SetIDValue(IDValue: longint);
+procedure TWxAuiNoteBookPage.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

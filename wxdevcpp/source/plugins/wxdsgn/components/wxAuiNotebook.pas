@@ -44,7 +44,7 @@ type
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_EventList: TStringList;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
@@ -130,14 +130,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -192,7 +192,7 @@ type
       read FWx_ControlOrientation write FWx_ControlOrientation;
     property Wx_EventList: TStringList read FWx_EventList write FWx_EventList;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
     property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden;
     property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
@@ -705,7 +705,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxAuiNotebook.GetIDValue: longint;
+function TWxAuiNotebook.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -889,7 +889,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxAuiNotebook.SetIDValue(IDValue: longint);
+procedure TWxAuiNotebook.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

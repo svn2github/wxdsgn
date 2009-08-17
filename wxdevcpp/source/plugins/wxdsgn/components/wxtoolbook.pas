@@ -43,7 +43,7 @@ type
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_EventList: TStringList;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
@@ -116,14 +116,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -164,7 +164,7 @@ type
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
@@ -523,7 +523,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxToolbook.GetIDValue: longint;
+function TWxToolbook.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -607,7 +607,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxToolbook.SetIDValue(IDValue: longint);
+procedure TWxToolbook.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

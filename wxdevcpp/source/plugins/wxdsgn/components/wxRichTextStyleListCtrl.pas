@@ -50,7 +50,7 @@ type
     FWx_HelpText: string;
     FWx_Hidden: boolean;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_ListboxStyle: TwxRichTextSLCStyleSet;
     FWx_ListboxSubStyle: TWxLBxStyleSubItem;
     FWx_ProxyBGColorString: TWxColorString;
@@ -126,14 +126,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -187,7 +187,7 @@ type
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
     property Wx_ListboxStyle: TwxRichTextSLCStyleSet
       Read FWx_ListboxStyle Write FWx_ListboxStyle;
     property Wx_ListboxSubStyle: TWxLBxStyleSubItem
@@ -631,7 +631,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TwxRichTextStyleListCtrl.GetIDValue: longint;
+function TwxRichTextStyleListCtrl.GetIDValue: integer;
   { Internal declarations for method }
 
   { var }
@@ -726,7 +726,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TwxRichTextStyleListCtrl.SetIDValue(IDValue: longint);
+procedure TwxRichTextStyleListCtrl.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

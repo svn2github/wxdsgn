@@ -52,7 +52,7 @@ type
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
 
     { Storage for property Wx_ProxyBGColorString }
     FWx_ProxyBGColorString: TWxColorString;
@@ -126,14 +126,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     procedure SetWxFileName(wxFileName: string);
 
@@ -175,7 +175,7 @@ type
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
     property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden default False;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue;
+    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue;
     property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
 
     property Wx_Border: integer read GetBorderWidth write SetBorderWidth default 5;
@@ -549,7 +549,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TwxAnimationCtrl.GetIDValue: longint;
+function TwxAnimationCtrl.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -621,7 +621,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TwxAnimationCtrl.SetIDValue(IDValue: longint);
+procedure TwxAnimationCtrl.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

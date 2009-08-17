@@ -52,7 +52,7 @@ type
     FWx_HelpText: string;
     FWx_Hidden: boolean;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_Validator: string;
     FWx_ProxyBGColorString: TWxColorString;
     FWx_ProxyFGColorString: TWxColorString;
@@ -113,14 +113,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
 
     function GetBorderAlignment: TWxBorderAlignment;
@@ -174,7 +174,7 @@ type
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
     property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
     property Wx_Validator: string read FWx_Validator write FWx_Validator;
     property Wx_ProxyValidatorString: TWxValidatorString read GetValidatorString write SetValidatorString;
     property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
@@ -526,7 +526,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxFontPickerCtrl.GetIDValue: longint;
+function TWxFontPickerCtrl.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -597,7 +597,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxFontPickerCtrl.SetIDValue(IDValue: longint);
+procedure TWxFontPickerCtrl.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDValue;
 end;

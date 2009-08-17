@@ -70,14 +70,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -266,7 +266,7 @@ begin
 
 end;
 
-function TWxPageSetupDialog.GetIDValue: longint;
+function TWxPageSetupDialog.GetIDValue: integer;
 begin
   Result := 0;
 end;
@@ -327,7 +327,7 @@ begin
 
 end;
 
-procedure TWxPageSetupDialog.SetIDValue(IDValue: longint);
+procedure TWxPageSetupDialog.SetIDValue(IDValue: integer);
 begin
 
 end;

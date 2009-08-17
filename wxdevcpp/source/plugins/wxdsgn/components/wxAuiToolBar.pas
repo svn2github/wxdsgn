@@ -46,7 +46,7 @@ type
     FWx_ToolbarStyleSet: TWxAuiTbrStyleSet;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
@@ -119,14 +119,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
 
     function GetBorderAlignment: TWxBorderAlignment;
     procedure SetBorderAlignment(border: TWxBorderAlignment);
@@ -178,7 +178,7 @@ type
     property Wx_GeneralStyle: TWxStdStyleSet
       read FWx_GeneralStyle write FWx_GeneralStyle;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
     property Wx_StretchFactor: integer read FWx_StretchFactor
       write FWx_StretchFactor default 0;
     property Wx_Comments: TStrings read FWx_Comments write FWx_Comments;
@@ -613,7 +613,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxAuiToolBar.GetIDValue: longint;
+function TWxAuiToolBar.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -685,7 +685,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxAuiToolBar.SetIDValue(IDValue: longint);
+procedure TWxAuiToolBar.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDValue;
 end;

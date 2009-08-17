@@ -100,7 +100,7 @@ type
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     { Storage for property Wx_ListviewStyle }
     FWx_ListviewStyle: TWxLVStyleSet;
     { Storage for property Wx_ListviewView }
@@ -180,14 +180,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -269,7 +269,7 @@ type
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden default False;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
     property Wx_ListviewStyle: TWxLVStyleSet Read FWx_ListviewStyle Write SetWx_ListviewStyle;
     property Wx_ListviewView: TWxLvView Read FWx_ListviewView Write SetWx_ListviewView;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
@@ -882,7 +882,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxListCtrl.GetIDValue: longint;
+function TWxListCtrl.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -1058,7 +1058,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxListCtrl.SetIDValue(IDValue: longint);
+procedure TWxListCtrl.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

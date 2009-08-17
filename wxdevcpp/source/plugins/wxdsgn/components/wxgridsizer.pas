@@ -57,7 +57,7 @@ type
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     { Storage for property Wx_StretchFactor }
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
@@ -96,14 +96,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -148,7 +148,7 @@ type
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write SetWx_EventList;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
@@ -433,7 +433,7 @@ begin
   //Result:=wx_IDName;
 end;
 
-function TWxGridSizer.GetIDValue: longint;
+function TWxGridSizer.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -505,7 +505,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxGridSizer.SetIDValue(IDValue: longint);
+procedure TWxGridSizer.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

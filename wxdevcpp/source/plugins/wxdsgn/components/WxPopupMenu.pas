@@ -64,7 +64,7 @@ type
     function GenerateImageList(var strLst:TStringList;var imgLst:TImageList;var strNameLst:TStringList): boolean;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
@@ -72,7 +72,7 @@ type
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
     function GetMaxID: integer;
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -522,7 +522,7 @@ begin
   Result := '';
 end;
 
-function TWxPopupMenu.GetIDValue: longint;
+function TWxPopupMenu.GetIDValue: integer;
 begin
   Result := GetMaxID;
 end;
@@ -622,7 +622,7 @@ begin
 
 end;
 
-procedure TWxPopupMenu.SetIDValue(IDValue: longint);
+procedure TWxPopupMenu.SetIDValue(IDValue: integer);
 begin
 
 end;

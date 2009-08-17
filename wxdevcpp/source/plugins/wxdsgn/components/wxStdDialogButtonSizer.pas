@@ -21,7 +21,7 @@ type
     FWx_Class: string;
     FWx_EventList: TStringList;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
     FWx_Buttons: TWxStdDialogButtons;
@@ -71,14 +71,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -111,7 +111,7 @@ type
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_EventList: TStringList Read FWx_EventList Write SetWx_EventList;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_Buttons: TWxStdDialogButtons Read FWx_Buttons Write SetWx_Buttons;
@@ -643,7 +643,7 @@ begin
   Result := '';
 end;
 
-function TWxStdDialogButtonSizer.GetIDValue: longint;
+function TWxStdDialogButtonSizer.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -713,7 +713,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxStdDialogButtonSizer.SetIDValue(IDValue: longint);
+procedure TWxStdDialogButtonSizer.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

@@ -60,7 +60,7 @@ type
   private
     { Private declarations }
     FWxFrm_IDName: string;
-    FWxFrm_IDValue: longint;
+    FWxFrm_IDValue: integer;
     FWxFrm_Class: string;
     FWxFrm_Center: boolean;
     FWxFrm_ToolTips: string;
@@ -110,11 +110,11 @@ type
     function GenerateHeaderInclude: string;
     function GenerateImageInclude: string;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetPropertyList: TStringList;
     function GetWxClassName: string;
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     procedure FormMove(var Msg: TWMMove); message WM_MOVE;
     function GetDialogStyleString: string;
@@ -200,7 +200,7 @@ type
     property Wx_ICON: TPicture Read FWx_ICON Write FWx_ICON;
     property Wx_Name: string Read FWx_Name Write FWx_Name;
     property Wx_IDName: string Read FWxFrm_IDName Write FWxFrm_IDName;
-    property Wx_IDValue: longint Read FWxFrm_IDValue Write FWxFrm_IDValue;
+    property Wx_IDValue: integer Read FWxFrm_IDValue Write FWxFrm_IDValue;
     property Wx_Class: string Read FWxFrm_Class Write FWxFrm_Class;
     property Wx_Center: boolean Read FWxFrm_Center Write FWxFrm_Center;
     property Wx_Hidden: boolean Read FWxFrm_Hidden Write FWxFrm_Hidden;
@@ -1663,7 +1663,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TfrmNewForm.GetIDValue: longint;
+function TfrmNewForm.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -1695,7 +1695,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TfrmNewForm.SetIDValue(IDValue: longint);
+procedure TfrmNewForm.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDValue;
 end;

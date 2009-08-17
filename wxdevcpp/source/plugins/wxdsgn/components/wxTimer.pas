@@ -38,7 +38,7 @@ type
     FWx_PropertyList: TStringList;
     FWx_EventList: TStringList;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_Interval: integer;
     FWx_AutoStart: boolean;
     FWx_Comments: TStrings;
@@ -63,14 +63,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -94,7 +94,7 @@ type
     { Published declarations }
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue;
     property Wx_Interval: integer Read FWx_Interval Write FWx_Interval;
     property Wx_AutoStart: boolean Read FWx_AutoStart Write FWx_AutoStart;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
@@ -253,7 +253,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxTimer.GetIDValue: longint;
+function TWxTimer.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -318,7 +318,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxTimer.SetIDValue(IDValue: longint);
+procedure TWxTimer.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

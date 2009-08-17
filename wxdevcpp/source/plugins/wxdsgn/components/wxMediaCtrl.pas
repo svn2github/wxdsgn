@@ -63,7 +63,7 @@ type
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     { Storage for property Wx_StretchFactor }
     FWx_StretchFactor: integer;
     
@@ -143,14 +143,14 @@ type
     function GenerateImageInclude: string;
     function GetEventList: TStringList;
     function GetIDName: string;
-    function GetIDValue: longint;
+    function GetIDValue: integer;
     function GetParameterFromEventName(EventName: string): string;
     function GetPropertyList: TStringList;
     function GetTypeFromEventName(EventName: string): string;
     function GetWxClassName: string;
     procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
     procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: longint);
+    procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
 
     function GetFGColor: string;
@@ -195,7 +195,7 @@ type
     property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden default False;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
 
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
@@ -601,7 +601,7 @@ begin
   Result := wx_IDName;
 end;
 
-function TWxMediaCtrl.GetIDValue: longint;
+function TWxMediaCtrl.GetIDValue: integer;
 begin
   Result := wx_IDValue;
 end;
@@ -694,7 +694,7 @@ begin
   wx_IDName := IDName;
 end;
 
-procedure TWxMediaCtrl.SetIDValue(IDValue: longint);
+procedure TWxMediaCtrl.SetIDValue(IDValue: integer);
 begin
   Wx_IDValue := IDVAlue;
 end;

@@ -151,8 +151,8 @@ type
 
     function GetIDName: string;
     procedure SetIDName(IDName: string);
-    function GetIDValue: longint;
-    procedure SetIDValue(IDValue: longint);
+    function GetIDValue: integer;
+    procedure SetIDValue(IDValue: integer);
 
     function GetWxClassName: string;
     procedure SetWxClassName(wxClassName: string);
@@ -885,7 +885,7 @@ function OpenXPMImage(InpImage: TBitmap; strFname: string): boolean;
 function GetCppString(str: string): string;
 function GetWxPosition(Left: Integer; Top: Integer): string;
 function GetWxSize(Width: Integer; Height: Integer): string;
-function GetWxEnum(Wx_IDValue: longint; Wx_IDName: String): string;
+function GetWxEnum(Wx_IDValue: integer; Wx_IDName: String): string;
 function GetCommentString(str: string): string;
 function GetWxFontDeclaration(fnt: TFont): string;
 function GetDesignerFormName(cntrl: TControl): string;
@@ -1378,19 +1378,17 @@ begin
       Inc(Result); // for
 end;
 
-function GetMaxIDofWxForm(ParentControl: TWinControl): longint;
+function GetMaxIDofWxForm(ParentControl: TWinControl): integer;
 var
   wxcompInterface: IWxComponentInterface;
-  i: integer;
+  I: integer;
 begin
   Result := 0;
   for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
-    if ParentControl.Components[i].GetInterface(IID_IWxComponentInterface,
+    if ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then
       if wxcompInterface.GetIDValue > Result then
-        Result := wxcompInterface.GetIDValue //maxval := wxcompInterface.GetIDValue;
-        //sendDeBug(IntToStr(maxval));
-        ; // for
+        Result := wxcompInterface.GetIDValue;
 
   if Result = 0 then
     Result := 1000;
@@ -5219,7 +5217,7 @@ begin
     Result := Format('wxSize(%d, %d)',[Width, Height]);
 end;
 
-function GetWxEnum(Wx_IDValue: longint; Wx_IDName: String): string;
+function GetWxEnum(Wx_IDValue: integer; Wx_IDName: String): string;
 begin
   Result := '';
   if (UseIndividEnums = True) then

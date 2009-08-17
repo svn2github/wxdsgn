@@ -86,7 +86,7 @@ type
     FWx_Hidden: boolean;
     FWx_Name: string;
     FWx_IDName: string;
-    FWx_IDValue: longint;
+    FWx_IDValue: integer;
     FWx_ToolTip: string;
     FMenuItemStyle: TWxMenuItemStyleItem;
     FWx_Caption: string;
@@ -151,7 +151,7 @@ type
     property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
     property Wx_Name: string Read FWx_Name Write FWx_Name;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue;
+    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
     property Wx_MenuItemStyle: TWxMenuItemStyleItem
       Read FMenuItemStyle Write FMenuItemStyle;
