@@ -56,7 +56,7 @@ type
     { Storage for property Wx_IDName }
     FWx_IDName: string;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: integer;
+    FWx_IDValue: longint;
     { Storage for property Wx_StretchFactor }
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
@@ -146,7 +146,7 @@ type
       Read FWx_ControlOrientation Write FWx_ControlOrientation;
     property Wx_EventList: TStringList Read FWx_EventList Write SetWx_EventList;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
+    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue default -1;
 
     property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
     property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;

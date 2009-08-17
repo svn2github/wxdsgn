@@ -211,7 +211,7 @@ type
     strGlobalCurrentFunction: string;
     DisablePropertyBuilding: Boolean;
     boolInspectorDataClear: Boolean;
-    intControlCount: Integer;
+    intControlCount: longint;
     SelectedComponent: TComponent;
     PreviousComponent: TComponent;
     PreviousStringValue: string;

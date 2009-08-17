@@ -1378,7 +1378,7 @@ begin
       Inc(Result); // for
 end;
 
-function GetMaxIDofWxForm(ParentControl: TWinControl): integer;
+function GetMaxIDofWxForm(ParentControl: TWinControl): longint;
 var
   wxcompInterface: IWxComponentInterface;
   i: integer;

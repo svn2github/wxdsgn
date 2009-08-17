@@ -46,7 +46,7 @@ type
     FWx_ToolbarStyleSet: TWxAuiTbrStyleSet;
     FWx_GeneralStyle: TWxStdStyleSet;
     FWx_IDName: string;
-    FWx_IDValue: integer;
+    FWx_IDValue: longint;
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
@@ -178,7 +178,7 @@ type
     property Wx_GeneralStyle: TWxStdStyleSet
       read FWx_GeneralStyle write FWx_GeneralStyle;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
     property Wx_StretchFactor: integer read FWx_StretchFactor
       write FWx_StretchFactor default 0;
     property Wx_Comments: TStrings read FWx_Comments write FWx_Comments;

@@ -38,7 +38,7 @@ type
     FWx_PropertyList: TStringList;
     FWx_EventList: TStringList;
     FWx_IDName: string;
-    FWx_IDValue: integer;
+    FWx_IDValue: longint;
     FWx_Interval: integer;
     FWx_AutoStart: boolean;
     FWx_Comments: TStrings;
@@ -94,7 +94,7 @@ type
     { Published declarations }
     property Wx_Class: string Read FWx_Class Write FWx_Class;
     property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue;
+    property Wx_IDValue: longint Read FWx_IDValue Write FWx_IDValue;
     property Wx_Interval: integer Read FWx_Interval Write FWx_Interval;
     property Wx_AutoStart: boolean Read FWx_AutoStart Write FWx_AutoStart;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;

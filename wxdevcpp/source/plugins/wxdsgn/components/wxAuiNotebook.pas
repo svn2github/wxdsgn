@@ -44,7 +44,7 @@ type
     FWx_ControlOrientation: TWxControlOrientation;
     FWx_EventList: TStringList;
     FWx_IDName: string;
-    FWx_IDValue: integer;
+    FWx_IDValue: longint;
     FWx_StretchFactor: integer;
     FWx_PropertyList: TStringList;
     FInvisibleBGColorString: string;
@@ -192,7 +192,7 @@ type
       read FWx_ControlOrientation write FWx_ControlOrientation;
     property Wx_EventList: TStringList read FWx_EventList write FWx_EventList;
     property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
+    property Wx_IDValue: longint read FWx_IDValue write FWx_IDValue default -1;
     property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden;
     property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
     property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
