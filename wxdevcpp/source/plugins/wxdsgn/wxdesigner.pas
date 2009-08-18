@@ -2847,22 +2847,24 @@ begin
     ShowErrorAndReset('This component must be dropped onto a wxAuibar design aid.');
     Exit;
   end;
-  
-  if TWinControl(AControlClass.NewInstance) is TWxSizerPanel and not StrContainsU(AParent.ClassName, 'TWxPanel') then
-  begin
-    if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
-    begin
-      if isSizerAvailable(ELDesigner1.DesignControl) = false then
-      begin
-        if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
-        begin
-          ShowErrorAndReset('You cannot add a sizer if you have other controls.'#13#10#13#10 +
-            'Please remove all the controls before adding a sizer.');
-          Exit;
-        end;
-      end;
-    end;
-  end;
+
+  // GAR 18 August 2009 - I don't think this is valid any more.
+  //  You should be able to add sizers into components as of wxWidgets 2.6
+ // if TWinControl(AControlClass.NewInstance) is TWxSizerPanel and not StrContainsU(AParent.ClassName, 'TWxPanel') then
+ // begin
+ //   if (ELDesigner1.DesignControl.ComponentCount - GetNonVisualComponentCount(TForm(ELDesigner1.DesignControl))) > 0 then
+ //   begin
+ //     if isSizerAvailable(ELDesigner1.DesignControl) = false then
+ //     begin
+ //       if GetNonAllowAbleControlCountForFrame(ELDesigner1.DesignControl) > 0 then
+ //       begin
+ //         ShowErrorAndReset('You cannot add a sizer if you have other controls.'#13#10#13#10 +
+ //           'Please remove all the controls before adding a sizer.');
+ //         Exit;
+ //       end;
+ //     end;
+ //   end;
+ // end;
 
   PreviousComponent := nil;
   if TWinControl(AControlClass.NewInstance) is TWxNoteBookPage then

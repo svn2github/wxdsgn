@@ -6316,8 +6316,50 @@ end;
 //-------------------------------------------------------------------------------
 
 procedure TJvInspectorListItemsItem.Edit;
+var
+  ListviewForm: TListviewForm;
+  i: integer;
+  lstColumn: TListColumn;
 begin
-  ShowMessage('TJvInspectorListItemsItem.Edit');
+
+  ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
+  try
+    ListviewForm.LstViewObj.Columns.Clear;
+    for i := 0 to
+      TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Count - 1 do
+    begin
+      lstColumn := ListviewForm.LstViewObj.Columns.Add;
+      lstColumn.Caption :=
+        TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Caption;
+      lstColumn.Width :=
+        TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Width;
+      lstColumn.Alignment :=
+        TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Alignment;
+    end;
+    ListviewForm.fillListInfo;
+
+    if ListviewForm.ShowModal <> mrOk then
+      Exit
+    else
+    begin
+      TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Clear;
+      for i := 0 to ListviewForm.LstViewObj.Columns.Count - 1 do
+      begin
+        lstColumn :=
+          TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Add;
+        lstColumn.Caption := ListviewForm.LstViewObj.Columns[i].Caption;
+        lstColumn.Width := ListviewForm.LstViewObj.Columns[i].Width;
+        lstColumn.Alignment := ListviewForm.LstViewObj.Columns[i].Alignment;
+      end;
+    end;
+
+    if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
+      TJvInspector(GetInspector).OnDataValueChanged(nil, Data);
+
+  finally
+    ListviewForm.Destroy;
+  end;
+
 end;
 
 function TJvInspectorListItemsItem.GetDisplayValue: string;
