@@ -49,7 +49,6 @@ contains
   devMonitorTypes in 'devMonitorTypes.pas',
   XPMenu in 'XPMenu.pas',
   RegExpr in 'RegExpr.pas',
-  devDockStyle in 'devDockStyle.pas',
   devMsgBox in 'devMsgBox.pas',
   ControlBar_WIN32_EVENTS in 'ControlBar_WIN32_EVENTS.pas';
 
