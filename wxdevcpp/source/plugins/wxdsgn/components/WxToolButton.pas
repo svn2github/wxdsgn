@@ -391,7 +391,7 @@ begin
  else
  begin
   if assigned(Wx_Bitmap) then 
-    Result := Result + #13 + Format('%s->&s_BITMAP',[self.Name,self.Name]);
+    Result := Result + #13 + Format('%s->%s_BITMAP',[self.Name,self.Name]);
   if assigned(Wx_DISABLE_BITMAP) then 
     Result := Result + #13 + Format('%s->%s_DISABLE_BITMAP',[self.Name,self.Name]);
  end;
