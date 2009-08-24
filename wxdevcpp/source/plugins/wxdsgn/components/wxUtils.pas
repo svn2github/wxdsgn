@@ -1390,6 +1390,20 @@ begin
       if wxcompInterface.GetIDValue > Result then
         Result := wxcompInterface.GetIDValue;
 
+  // Fix for erroneously large ID values
+  if (Result > 32768) then
+  begin
+
+   Result := 1000;
+   for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
+    if ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
+      wxcompInterface) then
+      begin
+          wxcompInterface.SetIDValue(Result);
+          Result := Result + 1
+      end;
+   end;
+
   if Result = 0 then
     Result := 1000;
 

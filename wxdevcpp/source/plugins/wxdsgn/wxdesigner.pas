@@ -3087,7 +3087,6 @@ var
   intControlMaxValue: Integer;
   wxcompInterface: IWxComponentInterface;
 begin
-
   intControlMaxValue := -1;
   cbxControlsx.Clear;
   cbxControlsx.Items.BeginUpdate;
@@ -3107,6 +3106,20 @@ begin
       end;
     end;
   end; // for
+
+  // Correct ID numbers > 32768
+  if (intControlMaxValue > 32768) then
+  begin
+    intControlMaxValue := 1000;
+     for I := 0 to Designer.ComponentCount - 1 do // Iterate
+    if Designer.Components[i].GetInterface(IID_IWxComponentInterface,
+      wxcompInterface) then
+    begin
+        wxcompInterface.SetIDValue(intControlMaxValue);
+        intControlMaxValue := intControlMaxValue + 1;
+    end
+
+  end;
 
   cbxControlsx.Items.EndUpdate;
 
