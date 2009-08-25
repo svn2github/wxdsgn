@@ -1394,7 +1394,7 @@ begin
   if (Result > 32768) then
   begin
 
-   Result := 1000;
+   Result := 1001;
    for I := 0 to ParentControl.ComponentCount - 1 do // Iterate
     if ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then

@@ -3110,7 +3110,7 @@ begin
   // Correct ID numbers > 32768
   if (intControlMaxValue > 32768) then
   begin
-    intControlMaxValue := 1000;
+    intControlMaxValue := 1001;
      for I := 0 to Designer.ComponentCount - 1 do // Iterate
     if Designer.Components[i].GetInterface(IID_IWxComponentInterface,
       wxcompInterface) then
