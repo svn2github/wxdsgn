@@ -296,7 +296,7 @@ begin
           SkipDoubleQuotes; // don't do it inside string!
       '''': SkipSingleQuote;
       '/': if (pCurrent + 1)^ = '/' then
-          SkipToEOL
+          SkipToEOL;
         else if (pCurrent + 1)^ = '*' then
           SkipCStyleComment;
     end;
@@ -313,7 +313,7 @@ begin
       '"': SkipDoubleQuotes;
       '''': SkipSingleQuote;
       '/': if (pCurrent + 1)^ = '/' then
-          SkipToEOL
+          SkipToEOL;
         else if (pCurrent + 1)^ = '*' then
           SkipCStyleComment;
     end;
@@ -608,14 +608,14 @@ begin
         '*': begin // C style
             repeat
               Inc(I);
-            until (I >= len - 1) or ((Result[I] = '*') and (Result[I + 1] = '/'));
+            until (I >= len - 1) or ((Result[I] = '*') and (Result[I+1] = '/'));
             if Result[I] = '*' then
               Inc(I, 2);
           end;
         '/': begin // C++ style
             repeat
               Inc(I);
-            until (I >= len - 1) or ((Result[I] = '/') and (Result[I + 1] = '/'));
+            until (I >= len - 1) or (Result[I] = #13) or (Result[I] = #10) or ((Result[I] = '/') and (Result[I + 1] = '/'));
             if Result[I] = '/' then
               Inc(I, 2);
           end;
@@ -631,11 +631,12 @@ end;
 
 procedure TCppTokenizer.PostProcessToken(var Str: string);
 begin
+Str := Simplify(Str);
   Str := StringReplace(Str, '\'#13, '', [rfReplaceAll]);
   Str := StringReplace(Str, '\'#10, '', [rfReplaceAll]);
   Str := StringReplace(Str, #13, '', [rfReplaceAll]);
   Str := StringReplace(Str, #10, '', [rfReplaceAll]);
-  Str := Simplify(Str);
+
 end;
 
 procedure TCppTokenizer.Tokenize(StartAt: PChar);
