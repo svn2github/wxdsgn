@@ -13,18 +13,19 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0rc6"
-!define IDE_DEVPAK_NAME  "wxdevcpp_rc6.DevPak"
+!define WXDEVCPP_VERSION "7.0"
+!define IDE_DEVPAK_NAME  "wxdevcpp.DevPak"
+!define PROGRAM_TITLE "wxDev-C++"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "wxdevcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
-!define DISPLAY_NAME "${PROGRAM_NAME} ${WXDEVCPP_VERSION}"
+!define DISPLAY_NAME "${PROGRAM_TITLE} ${WXDEVCPP_VERSION}"
 !define MSVC_VERSION "9.0" ; 2005 = version 8.0, 2008 = version 9.0
 !define MSVC_YEAR "2008"
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -166,7 +167,7 @@ ${ENDIF}
 
 File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
 
-${IF} Have_Internet == ${YES}
+${IF} $Have_Internet == ${YES}
 DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
 NSISdl::download /TIMEOUT=30000 "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}"
 Pop $R0 ;Get the return value
@@ -194,19 +195,23 @@ ${ENDIF}
 
 Name "${DISPLAY_NAME}"
 !ifdef HAVE_MINGW 
+!ifdef DONT_INCLUDE_DEVPAKS ; If we don't include them here, we'll need to download them at install time
 OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_setup.exe"
+!else
+OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_full_setup.exe"
+!endif
 !else
 OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_nomingw_setup.exe"
 !endif
 Caption "${DISPLAY_NAME}"
 
 # [Licence Attributes]
-LicenseText "${PROGRAM_NAME} is distributed under the GNU General Public License :"
+LicenseText "${PROGRAM_TITLE} is distributed under the GNU General Public License :"
 LicenseData "license.txt"
 
 # [Directory Selection]
 InstallDir "$PROGRAMFILES\Dev-Cpp"
-DirText "Select the directory to install ${PROGRAM_NAME} to :"
+DirText "Select the directory to install ${PROGRAM_TITLE} to :"
 
 # [Additional Installer Settings ]
 SetCompress force
@@ -230,7 +235,8 @@ SpaceTexts none
 !endif
 
 InstType "Full" ;1
-InstType "Minimal" ;2
+InstType "Minimal IDE with visual designer" ;2
+InstType "IDE without visual designer" ;3
 
 ComponentText "Choose components"
 
@@ -310,7 +316,7 @@ BGGradient off
 ;--------------------------------
 ;Installer Sections
 
-Section "${PROGRAM_NAME} program files (required)" SectionMain
+Section "${PROGRAM_TITLE} program files (required)" SectionMain
   SectionIn 1 2 3 RO
   SetOutPath $INSTDIR
  
@@ -394,6 +400,14 @@ File "license.txt"
 SectionEnd
 
 SectionGroup /e "wxWidgets" SectionGroupwxWidgetsMain
+
+Section "RAD Visual Designer" SectionwxDesigner
+  SectionIn 1 2
+
+; Install the wxdsgn visual designer plugin
+  !insertmacro InstallDevPak "wxdsgn.DevPak"
+
+SectionEnd
 
 Section "wxWidgets common files" SectionwxWidgetsCommon
   SectionIn 1 2
@@ -483,7 +497,7 @@ SectionGroupEnd  ; SectionGroupwxWidgetsMain
 
 !ifdef HAVE_MINGW
 Section "Mingw compiler system (headers and libraries)" SectionMingw
-  SectionIn 1 2
+  SectionIn 1 2 3
   
   ; Install gcc-core
   !insertmacro InstallDevPak "gcc-core.DevPak"
@@ -501,7 +515,7 @@ SectionEnd
 
 SectionGroup /e "Help files" SectionGroupHelp
 
-Section "${PROGRAM_NAME} help" SectionHelp
+Section "${PROGRAM_TITLE} help" SectionHelp
 
   SectionIn 1 2 3 RO
   
@@ -511,15 +525,15 @@ Section "${PROGRAM_NAME} help" SectionHelp
 
 SectionEnd
 
-Section /o "Sof.T's ${PROGRAM_NAME} Book" SectionWxBook
+Section /o "Sof.T's ${PROGRAM_TITLE} Book" SectionWxBook
 
-  SectionIn 1
+  SectionIn 1 2
 
   ; Install SofT's wxDev-C++ programming book
   !insertmacro InstallDevPak "Programming with wxDev-C++.DevPak"
 
   SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_TITLE} Book.lnk" "$INSTDIR\Help\Programming with wxDev-C++.pdf"
   
   ; Install the custom help file menu for the IDE
   SetOutPath $APPDATA\Dev-Cpp
@@ -530,7 +544,7 @@ SectionEnd
 SectionGroupEnd
 
 Section "Icon files" SectionIcons
-  SectionIn 1 2
+  SectionIn 1 2 3
   SetOutPath $INSTDIR\Icons
   File "Icons\*.ico"
 
@@ -548,17 +562,17 @@ Section "Language files" SectionLangs
 SectionEnd
 
 # [File association]
-SubSection "Associate C and C++ files to ${PROGRAM_NAME}" SectionAssocs
+SubSection "Associate C and C++ files to ${PROGRAM_TITLE}" SectionAssocs
 
-Section "Associate .dev files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .dev files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".dev"
   Call BackupAssoc
 
   StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".dev" "" "${PROGRAM_NAME}.dev"
-  WriteRegStr HKCR "${PROGRAM_NAME}.dev" "" "${PROGRAM_NAME} Project File"
+  WriteRegStr HKCR "${PROGRAM_NAME}.dev" "" "${PROGRAM_TITLE} Project File"
   WriteRegStr HKCR "${PROGRAM_NAME}.dev\DefaultIcon" "" '$0,3'
   WriteRegStr HKCR "${PROGRAM_NAME}.dev\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
@@ -567,8 +581,8 @@ Section "Associate .dev files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .c files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .c files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".c"
   Call BackupAssoc
@@ -584,8 +598,8 @@ Section "Associate .c files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .cpp files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .cpp files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".cpp"
   Call BackupAssoc
@@ -601,8 +615,8 @@ Section "Associate .cpp files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .h files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .h files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".h"
   Call BackupAssoc
@@ -618,8 +632,8 @@ Section "Associate .h files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .hpp files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .hpp files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".hpp"
   Call BackupAssoc
@@ -635,8 +649,8 @@ Section "Associate .hpp files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .rc files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .rc files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".rc"
   Call BackupAssoc
@@ -652,8 +666,8 @@ Section "Associate .rc files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .DevPak files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .DevPak files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".DevPak"
   Call BackupAssoc
@@ -661,7 +675,7 @@ Section "Associate .DevPak files to ${PROGRAM_NAME}"
   StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   StrCpy $1 $INSTDIR\PackMan.exe
   WriteRegStr HKCR ".DevPak" "" "${PROGRAM_NAME}.devpak"
-  WriteRegStr HKCR "${PROGRAM_NAME}.devpak" "" "${PROGRAM_NAME} Package File"
+  WriteRegStr HKCR "${PROGRAM_NAME}.devpak" "" "${PROGRAM_TITLE} Package File"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak\DefaultIcon" "" '$0,9'
   WriteRegStr HKCR "${PROGRAM_NAME}.devpak\Shell\Open\Command" "" '$1 "%1"'
   Call RefreshShellIcons
@@ -670,8 +684,8 @@ Section "Associate .DevPak files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .devpackage files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .devpackage files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".devpackage"
   Call BackupAssoc
@@ -679,7 +693,7 @@ Section "Associate .devpackage files to ${PROGRAM_NAME}"
   StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   StrCpy $1 $INSTDIR\PackMan.exe
   WriteRegStr HKCR ".devpackage" "" "${PROGRAM_NAME}.devpackage"
-  WriteRegStr HKCR "${PROGRAM_NAME}.devpackage" "" "${PROGRAM_NAME} Package File"
+  WriteRegStr HKCR "${PROGRAM_NAME}.devpackage" "" "${PROGRAM_TITLE} Package File"
   WriteRegStr HKCR "${PROGRAM_NAME}.devpackage\DefaultIcon" "" '$0,10'
   WriteRegStr HKCR "${PROGRAM_NAME}.devpackage\Shell\Open\Command" "" '$1 "%1"'
   Call RefreshShellIcons
@@ -688,15 +702,15 @@ Section "Associate .devpackage files to ${PROGRAM_NAME}"
   
 SectionEnd
 
-Section "Associate .template files to ${PROGRAM_NAME}"
-  SectionIn 1 2
+Section "Associate .template files to ${PROGRAM_TITLE}"
+  SectionIn 1 2 3
 
   StrCpy $0 ".template"
   Call BackupAssoc
 
   StrCpy $0 $INSTDIR\${EXECUTABLE_NAME}
   WriteRegStr HKCR ".template" "" "${PROGRAM_NAME}.template"
-  WriteRegStr HKCR "${PROGRAM_NAME}.template" "" "${PROGRAM_NAME} Template File"
+  WriteRegStr HKCR "${PROGRAM_NAME}.template" "" "${PROGRAM_TITLE} Template File"
   WriteRegStr HKCR "${PROGRAM_NAME}.template\DefaultIcon" "" '$0,1'
   WriteRegStr HKCR "${PROGRAM_NAME}.template\Shell\Open\Command" "" '$0 "%1"'
   Call RefreshShellIcons
@@ -708,7 +722,7 @@ SectionEnd
 SubSectionEnd
 
 Section "Create Quick Launch shortcut" SectionQuickLaunch
-  SectionIn 1 2
+  SectionIn 1 2 3
   SetShellVarContext current
   CreateShortCut "$QUICKLAUNCH\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
   
@@ -718,7 +732,7 @@ SectionEnd
 
 
 Section "Remove all previous configuration files" SectionConfig
-   SectionIn 1 2
+   SectionIn 1 2 3
 
 SetShellVarContext current
   ;Delete "$APPDATA\Dev-Cpp\*.*"
@@ -819,13 +833,15 @@ SectionEnd
 ;--------------------------------
 
 # [Sections' descriptions (on mouse over)]
-  LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "Compiler Selection for ${PROGRAM_NAME}"
+  LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "Compiler Selection for ${PROGRAM_TITLE}"
 
-  LangString DESC_SectionMain ${LANG_ENGLISH} "The ${PROGRAM_NAME} IDE (Integrated Development Environment), package manager and templates"
+  LangString DESC_SectionMain ${LANG_ENGLISH} "The ${PROGRAM_TITLE} IDE (Integrated Development Environment), package manager and templates"
   
    LangString DESC_SectionGroupwxWidgetsMain ${LANG_ENGLISH} "wxWidgets"
 
   LangString DESC_SectionwxWidgetsCommon ${LANG_ENGLISH} "wxWidgets common include files. All compilers use these files."
+
+  LangString DESC_SectionwxDesigner ${LANG_ENGLISH} "RAD Visual Designer for wxWidgets GUIs"
 
 !ifdef HAVE_MINGW
   LangString DESC_SectionGroupwxWidgetsGCC ${LANG_ENGLISH} "wxWidgets for Mingw gcc"
@@ -843,21 +859,22 @@ SectionEnd
 
   LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets samples directory"
   
-  LangString DESC_SectionGroupHelp ${LANG_ENGLISH} "Documentation for ${PROGRAM_NAME}"
-  LangString DESC_SectionHelp ${LANG_ENGLISH} "Help on using ${PROGRAM_NAME} and programming in C"
-  LangString DESC_SectionWxBook ${LANG_ENGLISH} "Sof.T's book on using ${PROGRAM_NAME} and programming in C/C++"
+  LangString DESC_SectionGroupHelp ${LANG_ENGLISH} "Documentation for ${PROGRAM_TITLE}"
+  LangString DESC_SectionHelp ${LANG_ENGLISH} "Help on using ${PROGRAM_TITLE} and programming in C"
+  LangString DESC_SectionWxBook ${LANG_ENGLISH} "Sof.T's book on using ${PROGRAM_TITLE} and programming in C/C++"
   LangString DESC_SectionIcons ${LANG_ENGLISH} "Various icons that you can use in your programs"
 
-  LangString DESC_SectionLangs ${LANG_ENGLISH} "The ${PROGRAM_NAME} interface translated to different languages (other than English which is built-in)"
-  LangString DESC_SectionAssocs ${LANG_ENGLISH} "Use ${PROGRAM_NAME} as the default application for opening these types of files"
-  LangString DESC_SectionShortcuts ${LANG_ENGLISH} "Create a '${PROGRAM_NAME}' program group with shortcuts, in the start menu"
-  LangString DESC_SectionQuickLaunch ${LANG_ENGLISH} "Create a shortcut to ${PROGRAM_NAME} in the QuickLaunch toolbar"
-  LangString DESC_SectionDebug ${LANG_ENGLISH} "Debug file to help debugging ${PROGRAM_NAME}"
+  LangString DESC_SectionLangs ${LANG_ENGLISH} "The ${PROGRAM_TITLE} interface translated to different languages (other than English which is built-in)"
+  LangString DESC_SectionAssocs ${LANG_ENGLISH} "Use ${PROGRAM_TITLE} as the default application for opening these types of files"
+  LangString DESC_SectionShortcuts ${LANG_ENGLISH} "Create a '${PROGRAM_TITLE}' program group with shortcuts, in the start menu"
+  LangString DESC_SectionQuickLaunch ${LANG_ENGLISH} "Create a shortcut to ${PROGRAM_TITLE} in the QuickLaunch toolbar"
+  LangString DESC_SectionDebug ${LANG_ENGLISH} "Debug file to help debugging ${PROGRAM_TITLE}"
   LangString DESC_SectionConfig ${LANG_ENGLISH} "Remove all previous configuration files"
 
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionMain} $(DESC_SectionMain)
     
+!insertmacro MUI_DESCRIPTION_TEXT ${SectionwxDesigner} $(DESC_SectionwxDesigner)
      !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsCommon} $(DESC_SectionwxWidgetsCommon)
 
 !ifdef HAVE_MINGW
@@ -915,7 +932,7 @@ Function .onInstSuccess
   cont:
 
   SetShellVarContext all
-  MessageBox MB_YESNO "Do you want to install ${PROGRAM_NAME} for all users on this computer ?" IDYES AllUsers
+  MessageBox MB_YESNO "Do you want to install ${PROGRAM_TITLE} for all users on this computer ?" IDYES AllUsers
   SetShellVarContext current
 
 AllUsers:
@@ -1036,7 +1053,7 @@ show:
   ;Remind user to download and install MS VC++ and the MS SDK
   MessageBox MB_OK|MB_ICONINFORMATION "You've selected to install the wxWidgets MS VC++ ${MSVC_YEAR} devpak.$\r$\n\
              If you have the MS VC++ ${MSVC_YEAR} compiler and MS SDK installed, then please continue.$\r$\n\
-             If not, then please download and install before you install ${PROGRAM_NAME}.$\r$\n\
+             If not, then please download and install before you install ${PROGRAM_TITLE}.$\r$\n\
              You can find them at the official Microsoft website.$\r$\n\
              http://msdn.microsoft.com/vstudio/express/visualc/"
 
@@ -1069,7 +1086,7 @@ FunctionEnd
 
 # [UnInstallation]
 
-UninstallText "This program will uninstall ${PROGRAM_NAME}. Continue ?"
+UninstallText "This program will uninstall ${PROGRAM_TITLE}. Continue ?"
 ShowUninstDetails show
 RequestExecutionLevel admin
 
@@ -1191,7 +1208,7 @@ SetShellVarContext all
   Delete "$INSTDIR\devcpp.ci"
 
 Done:
-  MessageBox MB_OK "${PROGRAM_NAME} has been uninstalled.$\r$\nPlease now delete the $INSTDIR directory if it doesn't contain some of your documents"
+  MessageBox MB_OK "${PROGRAM_TITLE} has been uninstalled.$\r$\nPlease now delete the $INSTDIR directory if it doesn't contain some of your documents"
 
 SectionEnd
 
