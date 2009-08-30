@@ -25,7 +25,7 @@
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -724,7 +724,7 @@ SubSectionEnd
 Section "Create Quick Launch shortcut" SectionQuickLaunch
   SectionIn 1 2 3
   SetShellVarContext current
-  CreateShortCut "$QUICKLAUNCH\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
+  CreateShortCut "$QUICKLAUNCH\${PROGRAM_TITLE}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
   
   SetOutPath $INSTDIR
   
