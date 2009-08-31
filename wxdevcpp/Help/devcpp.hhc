@@ -234,6 +234,10 @@
 				<param name="Name" value="Visual Designer">
 				<param name="Local" value="html\shortcuts_designer.html">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="ToDo List">
+				<param name="Local" value="html\todo.html">
+				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Form Designer">
