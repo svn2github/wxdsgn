@@ -29,14 +29,14 @@ ProfileIndex=0
 Folders=
 
 [Profile0]
-ProfileName=MingW 3.4.5
+ProfileName=MingW gcc 3.4.5
 Type=3
 ObjFiles=
 Includes=
 Libs=
 Compiler=-DBUILDING_DLL=1
 CppCompiler=-DBUILDING_DLL=1
-Linker=--no-export-all-symbols_@@_--add-stdcall-alias
+Linker=--no-export-all-symbols_@@_-Wl,--add-stdcall-alias
 PreprocDefines=
 CompilerSettings=0000000001001000000000
 Icon=

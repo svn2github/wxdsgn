@@ -18,7 +18,7 @@ ProfilesCount=2
 ProfileIndex=0
 
 [Profile0]
-ProfileName=Mingw 3.4.5
+ProfileName=Mingw gcc 3.4.5
 Type=1
 ObjFiles=
 Includes=

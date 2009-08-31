@@ -24,7 +24,7 @@ C=StaticFuncsLibc.h.txt
 Cpp=StaticFuncsLibcpp.h.txt
 
 [Profile0]
-ProfileName=Mingw 3.4.5
+ProfileName=Mingw gcc 3.4.5
 Type=2
 ObjFiles=
 Includes=
