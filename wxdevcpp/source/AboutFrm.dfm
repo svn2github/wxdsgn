@@ -2199,9 +2199,9 @@ object AboutForm: TAboutForm
   object BuildNumber: TLabel
     Left = 184
     Top = 74
-    Width = 47
+    Width = 19
     Height = 13
-    Caption = '7.0 RC6'
+    Caption = '7.0'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -2212,9 +2212,9 @@ object AboutForm: TAboutForm
   object lblVersion: TLabel
     Left = 128
     Top = 72
-    Width = 54
+    Width = 21
     Height = 16
-    Caption = '7.0 RC6'
+    Caption = '7.0'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

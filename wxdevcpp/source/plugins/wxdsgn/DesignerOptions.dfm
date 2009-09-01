@@ -73,9 +73,9 @@ object DesignerForm: TDesignerForm
     Top = 8
     Width = 401
     Height = 275
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'Designer Options'

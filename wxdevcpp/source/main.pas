@@ -1944,9 +1944,12 @@ begin
 
   {$IFDEF PLUGIN_BUILD}
 
-  DockServer.LeftDockPanel.Visible := false;    // More "gratious" closing of panels, due to ManualTabDock plugin removal requirement
-  DockServer.RightDockPanel.Visible := false;
-  DockServer.BottomDockPanel.Visible := false;
+  if FileExists(devDirs.Config + ChangeFileExt(ExtractFileName(Application.EXEName), '.cfg')) then   // EAB hack first run closing problems
+  begin
+      DockServer.LeftDockPanel.Visible := false;    // More "gratious" closing of panels, due to ManualTabDock plugin removal requirement
+      DockServer.RightDockPanel.Visible := false;
+      DockServer.BottomDockPanel.Visible := false;
+  end;
 
   themeManager.Destroy;
   for i := 0 to pluginsCount - 1 do
@@ -9684,6 +9687,12 @@ begin
     end else
         inherited;
  end;
+ {if(DockServer.LeftDockPanel <> nil) then
+ begin
+     DockServer.LeftDockPanel.Refresh;
+     DockServer.RightDockPanel.Refresh;
+     DockServer.BottomDockPanel.Refresh;
+ end;}
 end;
 
 end.
