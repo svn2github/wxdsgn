@@ -13,4 +13,4 @@ Dependencies=
 Reboot=0
 [Files]
 common\\include=<app>\include\common\
-common\\Templates=<app>\Templates\
+
