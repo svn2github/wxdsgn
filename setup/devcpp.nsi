@@ -1248,7 +1248,7 @@ Function .onInit
       "UninstallString"
   ${IF} $0 != ""   ; A previous install was found
 
-     MessageBox MB_YESNO "A previous version of ${PROGRAM_NAME} is installed.$\r$\nShould I uninstall it now?" IDNO NoUninstall1
+     MessageBox MB_YESNO "A previous version of ${PROGRAM_TITLE} is installed.$\r$\nShould I uninstall it now?" IDNO NoUninstall1
      ; If yes, then run the previous uninstaller
      ExecWait '$0'
      NoUninstall1:
