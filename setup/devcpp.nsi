@@ -17,8 +17,8 @@
 !define IDE_DEVPAK_NAME  "wxdevcpp.DevPak"
 !define PROGRAM_TITLE "wxDev-C++"
 !define PROGRAM_NAME "wxdevcpp"
-!define EXECUTABLE_NAME "wxdevcpp.exe"
-!define DEFAULT_START_MENU_DIRECTORY "wxdevcpp"
+!define EXECUTABLE_NAME "devcpp.exe"
+!define DEFAULT_START_MENU_DIRECTORY "wxDev-C++"
 !define DISPLAY_NAME "${PROGRAM_TITLE} ${WXDEVCPP_VERSION}"
 !define MSVC_VERSION "9.0" ; 2005 = version 8.0, 2008 = version 9.0
 !define MSVC_YEAR "2008"
@@ -944,9 +944,9 @@ exists:
 
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   SetOutPath $INSTDIR
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_NAME}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_TITLE}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_NAME}.lnk" "$INSTDIR\uninstall.exe"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_TITLE}.lnk" "$INSTDIR\uninstall.exe"
 
 
   
@@ -1103,14 +1103,14 @@ Section "Uninstall"
   ; Determine if the STARUP_MENU DIRECTORY was created during install
   ${IF} $0 != "" 
 
-  Delete "$0\${PROGRAM_NAME}.lnk"
+  Delete "$0\${PROGRAM_TITLE}.lnk"
   Delete "$0\License.lnk"
-  Delete "$0\Uninstall ${PROGRAM_NAME}.lnk"
+  Delete "$0\Uninstall ${PROGRAM_TITLE}.lnk"
   RMDir  "$0"
  ${ENDIF}
 
   SetShellVarContext current
-  Delete "$QUICKLAUNCH\${PROGRAM_NAME}.lnk"
+  Delete "$QUICKLAUNCH\${PROGRAM_TITLE}.lnk"
 
   ; Restore file associations
   StrCpy $0 ".dev"
