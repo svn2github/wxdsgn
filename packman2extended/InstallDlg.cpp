@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        InstallDlg.cpp
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     5/13/2008 11:23:50 PM
-// Description: InstallDlg class implementation
-// $Id$
-//---------------------------------------------------------------------------
+///-------------------------------------------------------------------
+///
+/// @file        InstallDlg.cpp
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     5/13/2008 11:23:50 PM
+/// @section DESCRIPTION
+///          InstallDlg class implementation
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///------------------------------------------------------------------
 
 #include "InstallDlg.h"
 #include "InstallDevPak.h"

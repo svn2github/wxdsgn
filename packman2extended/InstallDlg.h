@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        InstallDlg.h
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     5/13/2008 11:23:50 PM
-// Description: InstallDlg class declaration
-// $Id$
-//---------------------------------------------------------------------------
+///-------------------------------------------------------------------
+///
+/// @file        InstallDlg.h
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     5/13/2008 11:23:50 PM
+/// @section DESCRIPTION
+///          InstallDlg class declaration
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///--------------------------------------------------------------------
 
 #ifndef __INSTALLDLG_h__
 #define __INSTALLDLG_h__

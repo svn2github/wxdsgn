@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        PackMan2ExtendedFrm.cpp
-// Author:      Tony Reina / Edward Toovey (Sof.T)
-// Created:     3/18/2008 1:46:40 PM
-// Description: PackMan2ExtendedFrm class implementation
-// $Id$
-//---------------------------------------------------------------------------
+///---------------------------------------------------------------------
+///
+/// @file        PackMan2ExtendedFrm.cpp
+/// @author      Tony Reina / Edward Toovey (Sof.T)
+/// Created:     3/18/2008 1:46:40 PM
+/// @section DESCRIPTION
+///          PackMan2ExtendedFrm class implementation
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///----------------------------------------------------------------
 
 #include "PackMan2ExtendedFrm.h"
 #include "InstallDlg.h"
@@ -42,8 +44,6 @@ BEGIN_EVENT_TABLE(PackMan2ExtendedFrm,wxFrame)
     ////Manual Code End
 
     EVT_CLOSE(PackMan2ExtendedFrm::OnClose)
-
-    EVT_TEXT_URL(ID_EDTURL,PackMan2ExtendedFrm::edtUrlClickUrl)
     EVT_MENU(ID_MNU_INSTALLPACKAGE_1002, PackMan2ExtendedFrm::ActionInstallPackage)
     EVT_MENU(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyPackage)
     EVT_UPDATE_UI(ID_MNU_VERIFYFILES_1003, PackMan2ExtendedFrm::ActionVerifyUpdateUI)
@@ -59,6 +59,8 @@ BEGIN_EVENT_TABLE(PackMan2ExtendedFrm,wxFrame)
     EVT_MENU(ID_MNU_ABOUT_1006, PackMan2ExtendedFrm::ActionShowAbout)
 
     EVT_LIST_ITEM_SELECTED(ID_LSTPACKAGES,PackMan2ExtendedFrm::lstPackagesSelected)
+
+    EVT_TEXT_URL(ID_EDTURL,PackMan2ExtendedFrm::edtUrlClickUrl)
     EVT_MENU(ID_BTNEXIT,PackMan2ExtendedFrm::ActionExit)
     EVT_MENU(ID_BTNABOUT,PackMan2ExtendedFrm::ActionShowAbout)
     EVT_MENU(ID_BTNHELP,PackMan2ExtendedFrm::ActionShowHelp)
@@ -118,10 +120,10 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     wxBitmap btnExit_DISABLE_BITMAP (wxNullBitmap);
     WxToolBar1->AddTool(ID_BTNEXIT, wxT(""), btnExit_BITMAP, btnExit_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Quit the application"), wxT(""), NULL);
 
-    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(4, 57), wxSize(240, 379), wxNB_DEFAULT);
+    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(4, 56), wxSize(240, 372), wxNB_DEFAULT);
     DockManager->AddPane(nbkPackageDetails, wxAuiPaneInfo().Name(wxT("nbkPackageDetails_Pane")).Caption(wxT("Package Details")).Left().Dockable(false).CaptionVisible(true).DestroyOnClose(false).Floatable(false).Gripper(false).Resizable(false).CloseButton().Row(0).Position(0).Layer(0));
 
-    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(232, 349));
+    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(232, 342));
     nbkPackageDetails->AddPage(WxNoteBookPage2, wxT("General"));
 
     WxStaticText1 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT1, wxT("Package Name:"), wxPoint(9, 10), wxDefaultSize, 0, wxT("WxStaticText1"));
@@ -139,13 +141,18 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     mmoPackageDescription->SetFocus();
     mmoPackageDescription->SetInsertionPointEnd();
 
-    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(232, 349));
+    edtUrl = new wxTextCtrl(WxNoteBookPage2, ID_EDTURL, wxT(""), wxPoint(8, 298), wxSize(200, 19), wxTE_READONLY | wxTE_RICH | wxTE_AUTO_URL, wxDefaultValidator, wxT("edtUrl"));
+    edtUrl->SetBackgroundColour(*wxLIGHT_GREY);
+
+    WebsiteLabel = new wxStaticText(WxNoteBookPage2, ID_WEBSITELABEL, wxT("Website"), wxPoint(9, 280), wxDefaultSize, 0, wxT("WebsiteLabel"));
+
+    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(232, 342));
     nbkPackageDetails->AddPage(lstFiles, wxT("Files"));
 
     wxArrayString arrayStringFor_WxPackageInstalledFiles;
     WxPackageInstalledFiles = new wxListBox(lstFiles, ID_WXPACKAGEINSTALLEDFILES, wxPoint(1, 2), wxSize(204, 340), arrayStringFor_WxPackageInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
 
-    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(253, 55), wxSize(319, 378), wxLC_ICON | wxLC_AUTOARRANGE, wxDefaultValidator, wxT("lstPackages"));
+    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(250, 53), wxSize(319, 378), wxLC_ICON | wxLC_AUTOARRANGE, wxDefaultValidator, wxT("lstPackages"));
     DockManager->AddPane(lstPackages, wxAuiPaneInfo().Name(wxT("lstPackages_Pane")).Caption(wxT("Package List")).Center().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(false).Resizable(true).Row(0).Position(0).Layer(0));
 
     WxStatusBar1 = new wxStatusBar(this, ID_WXSTATUSBAR1);
@@ -194,18 +201,13 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     WxMenuBar1->Append(ID_MNU_HELP_1005_Mnu_Obj, wxT("Help"));
     SetMenuBar(WxMenuBar1);
 
-    edtUrl = new wxTextCtrl(WxNoteBookPage2, ID_EDTURL, wxT(""), wxPoint(8, 298), wxSize(200, 19), wxTE_READONLY | wxTE_RICH | wxTE_AUTO_URL, wxDefaultValidator, wxT("edtUrl"));
-    edtUrl->SetBackgroundColour(*wxLIGHT_GREY);
-
-    WebsiteLabel = new wxStaticText(WxNoteBookPage2, ID_WEBSITELABEL, wxT("Website"), wxPoint(9, 280), wxDefaultSize, 0, wxT("WebsiteLabel"));
-
     SetStatusBar(WxStatusBar1);
     WxToolBar1->SetToolBitmapSize(wxSize(32,32));
     WxToolBar1->Realize();
     DockManager->AddPane(WxToolBar1, wxAuiPaneInfo().Name(wxT("WxAuiToolBar1_Pane")).Caption(wxT("WxAuiToolBar1")).Top().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(false).Gripper(false).ToolbarPane().Row(0).Position(0).Layer(10));
     SetTitle(wxT("PackMan2Extended"));
     SetIcon(wxNullIcon);
-    SetSize(8,8,646,499);
+    SetSize(8,8,646,510);
     Center();
     DockManager->Update();
 
@@ -270,14 +272,6 @@ void PackMan2ExtendedFrm::UpdatePackageList()
 
 }
 
-/*
- * WxToolBar1Menu
- */
-void PackMan2ExtendedFrm::WxToolBar1Menu(wxCommandEvent& event)
-{
-    // insert your code here
-}
-
 void PackMan2ExtendedFrm::ActionShowHelp(wxCommandEvent& event)
 {
     wxMessageBox(wxString(wxT("Package Manager is a tool to install and manage addon\n"))
@@ -338,6 +332,7 @@ void PackMan2ExtendedFrm::lstPackagesSelected(wxListEvent& event)
 
     // Fill devpak info in GUI
     edtUrl->SetValue(info.Url);
+    edtUrl->SetToolTip(info.Url);
     mmoPackageDescription->SetValue(info.Description);
     edtPackageVersion->SetValue(info.AppVersion);
     edtPackageName->SetValue(info.AppName);
@@ -437,11 +432,18 @@ void PackMan2ExtendedFrm::ActionVerifyUpdateUI(wxUpdateUIEvent& event)
 
 /*
  * edtUrlClickUrl
+ *
+ * Code snippet courtesy of Mihai Paraschivescu
  */
 void PackMan2ExtendedFrm::edtUrlClickUrl(wxTextUrlEvent& event)
 {
-    wxString url = edtUrl->GetValue();
-    // if (::wxLaunchDefaultBrowser(url));
-    wxMessageBox(url);
+    if ( event.GetMouseEvent().LeftUp() ) // we open the browser only when the Left mouse button is pressed and then released
+    {
+        wxString url = edtUrl->GetValue();
+        url = url.Mid( event.GetURLStart(), event.GetURLEnd() - event.GetURLStart() ); // we are extracting the clicked url
+        ::wxLaunchDefaultBrowser( url );
+    }
+
+    event.Skip();
 
 }

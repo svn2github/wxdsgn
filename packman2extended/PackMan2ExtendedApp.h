@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        PackMan2ExtendedApp.h
-// Author:      Tony Reina / Edward Toovey (Sof.T)
-// Created:     3/18/2008 1:46:39 PM
-// Description:
-// $Id$
-//---------------------------------------------------------------------------
+///-------------------------------------------------------------------
+///
+/// @file        PackMan2ExtendedApp.h
+/// @author      Tony Reina / Edward Toovey (Sof.T)
+/// Created:     3/18/2008 1:46:39 PM
+/// @section     DESCRIPTION
+///              The main GUI implementation
+/// @section LICENSE  wxWidgets license
+//// @version $Id$
+///-------------------------------------------------------------------
 
 #ifndef __PACKMAN2EXTENDEDFRMApp_h__
 #define __PACKMAN2EXTENDEDFRMApp_h__

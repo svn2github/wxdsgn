@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        PackMan2ExtendedApp.cpp
-// Author:      Tony Reina / Edward Toovey (Sof.T)
-// Created:     3/18/2008 1:46:39 PM
-// Description:
-// $Id$
-//---------------------------------------------------------------------------
+///--------------------------------------------------------------------
+///
+/// @file        PackMan2ExtendedApp.cpp
+/// @author      Tony Reina / Edward Toovey (Sof.T)
+/// Created:     3/18/2008 1:46:39 PM
+/// @section DESCRIPTION
+///          The main PackMan application GUI routines
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///--------------------------------------------------------------------
 
 #include "PackMan2ExtendedApp.h"
 #include "PackMan2ExtendedFrm.h"

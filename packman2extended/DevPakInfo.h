@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        DevPakInfo.h
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     9/2/2008 07:54:34 PM
-// Description: DevPak info class
-// $Id$
-//---------------------------------------------------------------------------
+///---------------------------------------------------------------------------
+///
+/// @file     DevPakInfo.h
+/// @author   Tony Reina and Edward Toovey (Sof.T)
+/// Created:  9/2/2008 07:54:34 PM
+/// @section  DESCRIPTION
+///           DevPak info class
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///---------------------------------------------------------------------------
 
 #ifndef __DEVPAKINFO_h__
 #define __DEVPAKINFO_h__
@@ -17,8 +19,14 @@
 #include <wx/wxprec.h>
 #endif
 
+/** DevPakInfo contains the devpak information class.
+ */
+
 enum StatusType { COMPLETED, IN_PROCESS, ABORTED, ERROR_STATE};
 
+/**
+ * DevPak information class structure
+*/
 class DevPakInfo {
 private:
     wxString EntryFileName;

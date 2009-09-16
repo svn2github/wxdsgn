@@ -1,11 +1,12 @@
-//---------------------------------------------------------------------------
-//
-// Name:        RemoveDlg.cpp
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     6/17/2008 10:31:38 PM
-// Description: RemoveDlg class implementation
-// $Id$
-//---------------------------------------------------------------------------
+///---------------------------------------------------------------------------
+///
+/// @file        RemoveDlg.cpp
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     6/17/2008 10:31:38 PM
+/// @section DESCRIPTION
+///          RemoveDlg class implementation
+/// @version $Id$
+///---------------------------------------------------------------
 
 #include "DevPakInfo.h"
 #include "InstallDevPak.h"

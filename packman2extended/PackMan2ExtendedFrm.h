@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        PackMan2ExtendedFrm.h
-// Author:      Tony Reina / Edward Toovey (Sof.T)
-// Created:     3/18/2008 1:46:40 PM
-// Description: PackMan2ExtendedFrm class declaration
-// $Id$
-//---------------------------------------------------------------------------
+///--------------------------------------------------------------------
+///
+/// @file        PackMan2ExtendedFrm.h
+/// @author      Tony Reina / Edward Toovey (Sof.T)
+/// Created:     3/18/2008 1:46:40 PM
+/// @section DESCRIPTION
+///          PackMan2ExtendedFrm class declaration
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///-------------------------------------------------------------
 
 #ifndef __PACKMAN2EXTENDEDFRM_h__
 #define __PACKMAN2EXTENDEDFRM_h__
@@ -68,14 +70,14 @@ private:
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
-    wxStaticText *WebsiteLabel;
-    wxTextCtrl *edtUrl;
     wxMenuBar *WxMenuBar1;
     wxAuiManager *DockManager;
     wxStatusBar *WxStatusBar1;
     wxListCtrl *lstPackages;
     wxListBox *WxPackageInstalledFiles;
     wxListBox *lstFiles;
+    wxStaticText *WebsiteLabel;
+    wxTextCtrl *edtUrl;
     wxTextCtrl *mmoPackageDescription;
     wxStaticText *WxStaticText3;
     wxTextCtrl *edtPackageVersion;
@@ -98,8 +100,6 @@ private:
     enum
     {
         ////GUI Enum Control ID Start
-        ID_WEBSITELABEL = 7000,
-        ID_EDTURL = 6000,
         ID_MNU_FILE_1001 = 1001,
         ID_MNU_INSTALLPACKAGE_1002 = 1002,
         ID_MNU_VERIFYFILES_1003 = 1003,
@@ -116,6 +116,8 @@ private:
         ID_LSTPACKAGES = 3003,
         ID_WXPACKAGEINSTALLEDFILES = 1064,
         ID_LSTFILES = 1057,
+        ID_WEBSITELABEL = 7000,
+        ID_EDTURL = 6000,
         ID_MMOPACKAGEDESCRIPTION = 1054,
         ID_WXSTATICTEXT3 = 1053,
         ID_EDTPACKAGEVERSION = 1052,

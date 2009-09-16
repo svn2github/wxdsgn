@@ -1,16 +1,24 @@
-//---------------------------------------------------------------------------
-//
-// Name:        InstallDevPak.cpp
-// Author:      Tony Reina / Edward Toovey (Sof.T)
-// Created:     05/06/2008 11:23:34 PM
-// Description: DevPak Installation Code.
-//     These functions are used to un-bzip, un-tar a Dev-Cpp devpak
-//      and install it.
-// $Id$
-//---------------------------------------------------------------------------
+///---------------------------------------------------------------------
+///
+/// @file        InstallDevPak.cpp
+/// @author      Tony Reina / Edward Toovey (Sof.T)
+/// Created:     05/06/2008 11:23:34 PM
+/// @section DESCRIPTION
+///          DevPak Installation Code.
+///          These functions are used to un-bzip, un-tar a
+///          Dev-Cpp devpak and install it.
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///---------------------------------------------------------------------
 
 #include "InstallDevPak.h"
 
+/**
+* Gets the package information from the .entry file
+*
+* @param info Pointer to a DevPak info class
+* @param szFileName Name of the .entry file for the devpak.
+*/
 bool InstallDevPak::GetPackageInfo(DevPakInfo *info, wxString szFileName)
 {
     // Procedure
@@ -96,7 +104,10 @@ bool InstallDevPak::DoSilentInstall(wxFileName filename)
     return true;
 }
 
-// Extract the devpak INI file descriptor
+/** Extract the devpak INI file descriptor.
+* @return Success flag (true = success; false = error)
+* @param sArchive DevPak filename
+*/
 bool InstallDevPak::ExtractPackageINI(const wxString sArchive)
 {
     // This code takes a tar'd, bzip2'd archive named sArchive
@@ -173,7 +184,12 @@ bool InstallDevPak::ExtractPackageINI(const wxString sArchive)
     return bFoundINI;
 }
 
-// Parse the devpak ini file descriptor for the file and directories to extract/install
+/** Parse the devpak ini file descriptor for
+ *  the file and directories to extract/install.
+* @return Success flag (true = success; false = error)
+* @param INIFileName Filename for the ini devpak description file.
+* @param info Pointer to a devpak info class
+*/
 bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
 {
 

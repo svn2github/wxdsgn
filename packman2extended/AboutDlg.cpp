@@ -1,11 +1,12 @@
-//---------------------------------------------------------------------------
-//
-// Name:        AboutDlg.cpp
-// Author:      Sof.T
-// Created:     18/05/2008 17:09:47
-// Description: AboutDlg class implementation
-// $Id$
-//---------------------------------------------------------------------------
+///---------------------------------------------------------------------------
+///
+/// @file        AboutDlg.cpp
+/// @author      Sof.T
+/// Created:     18/05/2008 17:09:47
+/// @section DESCRIPTION AboutDlg class implementation
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///---------------------------------------------------------------------------
 
 #include "AboutDlg.h"
 
@@ -48,29 +49,26 @@ void AboutDlg::CreateGUIControls()
     //Add the custom code before or after the blocks
     ////GUI Items Creation Start
 
-    WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("OK"), wxPoint(62, 393), wxSize(87, 29), 0, wxDefaultValidator, wxT("WxButton1"));
-
-    WxMemo1 = new wxTextCtrl(this, ID_WXMEMO1, wxEmptyString, wxPoint(-1, 228), wxSize(277, 159), wxTE_READONLY | wxTE_CENTRE | wxTE_MULTILINE, wxDefaultValidator, wxT("WxMemo1"));
-    WxMemo1->SetMaxLength(0);
-    WxMemo1->AppendText(wxT("Based on Package "));
-    WxMemo1->AppendText(wxT("Manager\n"));
-    WxMemo1->AppendText(wxT("by Hongli Lai\n\n"));
-    WxMemo1->AppendText(wxT(""));
-    WxMemo1->AppendText(wxT("Rewritten in C++ and\n"));
-    WxMemo1->AppendText(wxT("wxWidgets by\n\n"));
-    WxMemo1->AppendText(wxT(""));
-    WxMemo1->AppendText(wxT("Tony Reina & Sof.T"));
-    WxMemo1->SetFocus();
-    WxMemo1->SetInsertionPointEnd();
-    WxMemo1->SetFont(wxFont(12, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
+    WxPanel1 = new wxPanel(this, ID_WXPANEL1, wxPoint(-1, -2), wxSize(274, 397));
 
     wxBitmap WxStaticBitmap1_BITMAP(AboutDlg_WxStaticBitmap1_XPM);
-    WxStaticBitmap1 = new wxStaticBitmap(this, ID_WXSTATICBITMAP1, WxStaticBitmap1_BITMAP, wxPoint(-1, -1), wxSize(275, 231));
+    WxStaticBitmap1 = new wxStaticBitmap(WxPanel1, ID_WXSTATICBITMAP1, WxStaticBitmap1_BITMAP, wxPoint(-2, 0), wxSize(275, 231));
     WxStaticBitmap1->Enable(false);
+
+    WxButton1 = new wxButton(WxPanel1, ID_WXBUTTON1, wxT("OK"), wxPoint(95, 364), wxSize(75, 25), 0, wxDefaultValidator, wxT("WxButton1"));
+
+    WxStaticText1 = new wxStaticText(WxPanel1, ID_WXSTATICTEXT1, wxT("Based on Package Manager by Hongli Lai"), wxPoint(9, 240), wxSize(252, 61), wxALIGN_CENTRE | wxST_NO_AUTORESIZE, wxT("WxStaticText1"));
+    WxStaticText1->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
+
+    WxStaticText2 = new wxStaticText(WxPanel1, ID_WXSTATICTEXT2, wxT("Re-written in C++/wxWidgets"), wxPoint(10, 294), wxDefaultSize, 0, wxT("WxStaticText2"));
+    WxStaticText2->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
+
+    WxStaticText3 = new wxStaticText(WxPanel1, ID_WXSTATICTEXT3, wxT("by Tony Reina and Sof.T"), wxPoint(35, 320), wxDefaultSize, 0, wxT("WxStaticText3"));
+    WxStaticText3->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
 
     SetTitle(wxT("About Package Manager"));
     SetIcon(wxNullIcon);
-    SetSize(9,0,312,471);
+    SetSize(8,8,287,431);
     Center();
 
     ////GUI Items Creation End

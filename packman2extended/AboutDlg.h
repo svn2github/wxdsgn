@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        AboutDlg.h
-// Author:      Sof.T
-// Created:     18/05/2008 17:09:46
-// Description: AboutDlg class declaration
-// $Id$
-//---------------------------------------------------------------------------
+///--------------------------------------------------------------------
+///
+/// @file        AboutDlg.h
+/// @author      Sof.T
+/// Created:     18/05/2008 17:09:46
+/// @section DESCRIPTION
+///              AboutDlg class declaration
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///--------------------------------------------------------------------
 
 #ifndef __ABOUTDLG_h__
 #define __ABOUTDLG_h__
@@ -25,9 +27,10 @@
 //Header Include Start and Header Include End.
 //wxDev-C++ designer will remove them. Add custom headers after the block.
 ////Header Include Start
+#include <wx/stattext.h>
 #include <wx/button.h>
-#include <wx/textctrl.h>
 #include <wx/statbmp.h>
+#include <wx/panel.h>
 ////Header Include End
 
 ////Dialog Style Start
@@ -50,9 +53,12 @@ private:
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
+    wxStaticText *WxStaticText3;
+    wxStaticText *WxStaticText2;
+    wxStaticText *WxStaticText1;
     wxButton *WxButton1;
-    wxTextCtrl *WxMemo1;
     wxStaticBitmap *WxStaticBitmap1;
+    wxPanel *WxPanel1;
     ////GUI Control Declaration End
 
 private:
@@ -63,9 +69,12 @@ private:
     enum
     {
         ////GUI Enum Control ID Start
-        ID_WXBUTTON1 = 1003,
-        ID_WXMEMO1 = 1002,
-        ID_WXSTATICBITMAP1 = 1001,
+        ID_WXSTATICTEXT3 = 1010,
+        ID_WXSTATICTEXT2 = 1009,
+        ID_WXSTATICTEXT1 = 1008,
+        ID_WXBUTTON1 = 1007,
+        ID_WXSTATICBITMAP1 = 1006,
+        ID_WXPANEL1 = 1005,
         ////GUI Enum Control ID End
         ID_DUMMY_VALUE_ //don't remove this value unless you have other enum values
     };

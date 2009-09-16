@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        DevPakInfo.cpp
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     9/2/2008 07:54:34 PM
-// Description: DevPak info class
-// $Id$
-//---------------------------------------------------------------------------
+///---------------------------------------------------------------------------
+///
+/// @file        DevPakInfo.cpp
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     9/2/2008 07:54:34 PM
+/// @section DESCRIPTION
+///      DevPak info class
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///---------------------------------------------------------------------------
 
 #include "InstallDevPak.h"
 #include "DevPakInfo.h"

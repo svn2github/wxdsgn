@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        ErrorDlg.cpp
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     9/4/2008 12:52:29 PM
-// Description: ErrorDlg class implementation
-// $Id$
-//---------------------------------------------------------------------------
+///----------------------------------------------------------------------
+///
+/// @file        ErrorDlg.cpp
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     9/4/2008 12:52:29 PM
+/// @section DESCRIPTION
+///         ErrorDlg class implementation
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///--------------------------------------------------------------------
 
 #include "ErrorDlg.h"
 
@@ -46,21 +48,21 @@ void ErrorDlg::CreateGUIControls()
     //Add the custom code before or after the blocks
     ////GUI Items Creation Start
 
-    SetTitle(wxT("Error Messages"));
-    SetIcon(wxNullIcon);
-    SetSize(8,8,355,210);
-    Center();
-
-
     /* All errors and messages are passed to this log.
     */
-    ErrorMessageBox = new wxTextCtrl(this, ID_ERRORMESSAGEBOX, wxT(""), wxPoint(13,12), wxSize(318,127), wxTE_READONLY | wxTE_MULTILINE, wxDefaultValidator, wxT("ErrorMessageBox"));
+    ErrorMessageBox = new wxTextCtrl(this, ID_ERRORMESSAGEBOX, wxEmptyString, wxPoint(15, 14), wxSize(367, 146), wxTE_READONLY | wxTE_MULTILINE, wxDefaultValidator, wxT("ErrorMessageBox"));
     ErrorMessageBox->SetMaxLength(0);
     ErrorMessageBox->SetFocus();
     ErrorMessageBox->SetInsertionPointEnd();
 
-    WxOK = new wxButton(this, wxID_OK, wxT("Ok"), wxPoint(138,145), wxSize(75,25), 0, wxDefaultValidator, wxT("WxOK"));
+    WxOK = new wxButton(this, wxID_OK, wxT("Ok"), wxPoint(159, 167), wxSize(87, 29), 0, wxDefaultValidator, wxT("WxOK"));
     WxOK->Show(false);
+
+    SetTitle(wxT("Error Messages"));
+    SetIcon(wxNullIcon);
+    SetSize(8,8,416,239);
+    Center();
+
     ////GUI Items Creation End
 }
 

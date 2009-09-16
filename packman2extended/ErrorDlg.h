@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        ErrorDlg.h
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     9/4/2008 12:52:29 PM
-// Description: ErrorDlg class declaration
-// $Id$
-//---------------------------------------------------------------------------
+///----------------------------------------------------------------------
+///
+/// @name        ErrorDlg.h
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     9/4/2008 12:52:29 PM
+/// @section DESCRIPTION
+///      ErrorDlg class declaration
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///---------------------------------------------------------------------
 
 #ifndef __ERRORDLG_h__
 #define __ERRORDLG_h__

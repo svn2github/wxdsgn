@@ -1,11 +1,15 @@
-//---------------------------------------------------------------------------
-//
-// Name:        InstallDevPak.h
-// Author:      Tony Reina / Edward Toovey (Sof.T)
-// Created:     05/06/2008 11:23:34 PM
-// Description: DevPak Installation Code Headers.
-//     These headers for the InstallDevPak namespace functions.
-//---------------------------------------------------------------------------
+///----------------------------------------------------------------------
+///
+/// @file        InstallDevPak.h
+/// @author      Tony Reina / Edward Toovey (Sof.T)
+/// Created:     05/06/2008 11:23:34 PM
+/// @section DESCRIPTION
+///          DevPak Installation Code Headers.
+///          These headers for the InstallDevPak namespace
+///          functions.
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///--------------------------------------------------------------------
 
 #ifndef __INSTALLDEVPAK_h__
 #define __INSTALLDEVPAK_h__

@@ -1,11 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Name:        RemoveDlg.h
-// Author:      Tony Reina and Edward Toovey (Sof.T)
-// Created:     6/17/2008 10:31:37 PM
-// Description: RemoveDlg class declaration
-// $Id$
-//---------------------------------------------------------------------------
+///--------------------------------------------------------------------
+///
+/// @file        RemoveDlg.h
+/// @author      Tony Reina and Edward Toovey (Sof.T)
+/// Created:     6/17/2008 10:31:37 PM
+/// @section DESCRIPTION
+///          RemoveDlg class declaration
+/// @section LICENSE  wxWidgets license
+/// @version $Id$
+///----------------------------------------------------------------
 
 #ifndef __REMOVEDLG_h__
 #define __REMOVEDLG_h__
