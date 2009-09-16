@@ -1,4 +1,4 @@
-///--------------------------------------------------------------------
+///-------------------------------------------------------------------
 ///
 /// @file        PackMan2ExtendedApp.cpp
 /// @author      Tony Reina / Edward Toovey (Sof.T)
@@ -7,7 +7,7 @@
 ///          The main PackMan application GUI routines
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
-///--------------------------------------------------------------------
+///-------------------------------------------------------------------
 
 #include "PackMan2ExtendedApp.h"
 #include "PackMan2ExtendedFrm.h"

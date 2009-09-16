@@ -1,4 +1,4 @@
-///---------------------------------------------------------------------
+///----------------------------------------------------------------
 ///
 /// @file        PackMan2ExtendedFrm.cpp
 /// @author      Tony Reina / Edward Toovey (Sof.T)
@@ -7,7 +7,7 @@
 ///          PackMan2ExtendedFrm class implementation
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
-///----------------------------------------------------------------
+///---------------------------------------------------------------
 
 #include "PackMan2ExtendedFrm.h"
 #include "InstallDlg.h"
@@ -33,9 +33,9 @@
 #include "Images/PackMan2ExtendedFrm_btnInstall_XPM.xpm"
 ////Header Include End
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------
 // PackMan2ExtendedFrm
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------
 //Add Custom Events only in the appropriate block.
 //Code added in other places will be removed by wxDev-C++
 ////Event Table Start

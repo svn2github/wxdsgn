@@ -1,4 +1,4 @@
-///-------------------------------------------------------------------
+///------------------------------------------------------------------
 ///
 /// @file        InstallDlg.cpp
 /// @author      Tony Reina and Edward Toovey (Sof.T)
@@ -18,9 +18,9 @@
 #include "Images/InstallDlg_WxStaticBitmap1_XPM.xpm"
 ////Header Include End
 
-//----------------------------------------------------------------------------
+//-------------------------------------------------------------------
 // InstallDlg
-//----------------------------------------------------------------------------
+//-------------------------------------------------------------------
 //Add Custom Events only in the appropriate block.
 //Code added in other places will be removed by wxDev-C++
 ////Event Table Start
