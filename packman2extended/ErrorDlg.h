@@ -1,6 +1,6 @@
 ///----------------------------------------------------------------------
 ///
-/// @name        ErrorDlg.h
+/// @file        ErrorDlg.h
 /// @author      Tony Reina and Edward Toovey (Sof.T)
 /// Created:     9/4/2008 12:52:29 PM
 /// @section DESCRIPTION
