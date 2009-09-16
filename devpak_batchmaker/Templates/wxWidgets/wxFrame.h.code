@@ -1,14 +1,15 @@
-//---------------------------------------------------------------------------
-//
-// Name:        %FILE_NAME%.h
-// Author:      %AUTHOR_NAME%
-// Created:     %DATE_STRING%
-// Description: %CLASS_NAME% class declaration
-//
-//---------------------------------------------------------------------------
+///-----------------------------------------------------------------
+///
+/// @file      %FILE_NAME%.h
+/// @author    %AUTHOR_NAME%
+/// Created:   %DATE_STRING%
+/// @section   DESCRIPTION
+///            %CLASS_NAME% class declaration
+///
+///------------------------------------------------------------------
 
-#ifndef __%CAP_CLASS_NAME%_h__
-#define __%CAP_CLASS_NAME%_h__
+#ifndef __%CAP_CLASS_NAME%_H__
+#define __%CAP_CLASS_NAME%_H__
 
 #ifdef __BORLANDC__
 	#pragma hdrstop

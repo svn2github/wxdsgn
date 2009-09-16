@@ -1,11 +1,12 @@
-//---------------------------------------------------------------------------
-//
-// Name:        %FILE_NAME%.cpp
-// Author:      %AUTHOR_NAME%
-// Created:     %DATE_STRING%
-// Description: %CLASS_NAME% class implementation
-//
-//---------------------------------------------------------------------------
+///-----------------------------------------------------------------
+///
+/// @file      %FILE_NAME%.cpp
+/// @author    %AUTHOR_NAME%
+/// Created:   %DATE_STRING%
+/// @section   DESCRIPTION
+///            %CLASS_NAME% class implementation
+///
+///------------------------------------------------------------------
 
 #include "%FILE_NAME%.h"
 
