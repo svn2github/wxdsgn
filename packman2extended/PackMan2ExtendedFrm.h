@@ -27,10 +27,10 @@
 //Header Include Start and Header Include End.
 //wxDev-C++ designer will remove them. Add custom headers after the block.
 ////Header Include Start
+#include <wx/listbox.h>
 #include <wx/menu.h>
 #include <wx/statusbr.h>
 #include <wx/listctrl.h>
-#include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include <wx/stattext.h>
 #include <wx/panel.h>
@@ -70,11 +70,11 @@ private:
     //GUI Control Declaration Start and GUI Control Declaration End.
     //wxDev-C++ will remove them. Add custom code after the block.
     ////GUI Control Declaration Start
-    wxMenuBar *WxMenuBar1;
+    wxListBox *WxPackageInstalledFiles;
     wxAuiManager *DockManager;
+    wxMenuBar *WxMenuBar1;
     wxStatusBar *WxStatusBar1;
     wxListCtrl *lstPackages;
-    wxListBox *WxPackageInstalledFiles;
     wxListBox *lstFiles;
     wxStaticText *WebsiteLabel;
     wxTextCtrl *edtUrl;
@@ -100,6 +100,7 @@ private:
     enum
     {
         ////GUI Enum Control ID Start
+        ID_WXPACKAGEINSTALLEDFILES = 7005,
         ID_MNU_FILE_1001 = 1001,
         ID_MNU_INSTALLPACKAGE_1002 = 1002,
         ID_MNU_VERIFYFILES_1003 = 1003,
@@ -114,7 +115,6 @@ private:
 
         ID_WXSTATUSBAR1 = 1036,
         ID_LSTPACKAGES = 3003,
-        ID_WXPACKAGEINSTALLEDFILES = 1064,
         ID_LSTFILES = 1057,
         ID_WEBSITELABEL = 7000,
         ID_EDTURL = 6000,

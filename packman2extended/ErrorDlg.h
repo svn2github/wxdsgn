@@ -7,6 +7,7 @@
 ///      ErrorDlg class declaration
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///---------------------------------------------------------------------
 
 #ifndef __ERRORDLG_h__

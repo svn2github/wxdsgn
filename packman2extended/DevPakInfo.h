@@ -7,6 +7,7 @@
 ///           DevPak info class
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///---------------------------------------------------------------------------
 
 #ifndef __DEVPAKINFO_h__
@@ -32,7 +33,7 @@ private:
     wxString EntryFileName;
 
 public:
-
+    DevPakInfo(); // constructor
     wxString AppName,
     AppVerName,
     AppVersion,

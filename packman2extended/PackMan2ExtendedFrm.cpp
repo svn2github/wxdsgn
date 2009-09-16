@@ -120,10 +120,10 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     wxBitmap btnExit_DISABLE_BITMAP (wxNullBitmap);
     WxToolBar1->AddTool(ID_BTNEXIT, wxT(""), btnExit_BITMAP, btnExit_DISABLE_BITMAP, wxITEM_NORMAL, wxT("Quit the application"), wxT(""), NULL);
 
-    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(4, 56), wxSize(240, 372), wxNB_DEFAULT);
+    nbkPackageDetails = new wxAuiNotebook(this, ID_NBKPACKAGEDETAILS, wxPoint(3, 53), wxSize(240, 377), wxNB_DEFAULT);
     DockManager->AddPane(nbkPackageDetails, wxAuiPaneInfo().Name(wxT("nbkPackageDetails_Pane")).Caption(wxT("Package Details")).Left().Dockable(false).CaptionVisible(true).DestroyOnClose(false).Floatable(false).Gripper(false).Resizable(false).CloseButton().Row(0).Position(0).Layer(0));
 
-    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(232, 342));
+    WxNoteBookPage2 = new wxPanel(nbkPackageDetails, ID_WXNOTEBOOKPAGE2, wxPoint(4, 26), wxSize(232, 347));
     nbkPackageDetails->AddPage(WxNoteBookPage2, wxT("General"));
 
     WxStaticText1 = new wxStaticText(WxNoteBookPage2, ID_WXSTATICTEXT1, wxT("Package Name:"), wxPoint(9, 10), wxDefaultSize, 0, wxT("WxStaticText1"));
@@ -146,13 +146,10 @@ void PackMan2ExtendedFrm::CreateGUIControls()
 
     WebsiteLabel = new wxStaticText(WxNoteBookPage2, ID_WEBSITELABEL, wxT("Website"), wxPoint(9, 280), wxDefaultSize, 0, wxT("WebsiteLabel"));
 
-    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(232, 342));
+    lstFiles = new wxListBox(nbkPackageDetails, ID_LSTFILES, wxPoint(4, 26), wxSize(232, 347));
     nbkPackageDetails->AddPage(lstFiles, wxT("Files"));
 
-    wxArrayString arrayStringFor_WxPackageInstalledFiles;
-    WxPackageInstalledFiles = new wxListBox(lstFiles, ID_WXPACKAGEINSTALLEDFILES, wxPoint(1, 2), wxSize(204, 340), arrayStringFor_WxPackageInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
-
-    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(250, 53), wxSize(319, 378), wxLC_ICON | wxLC_AUTOARRANGE, wxDefaultValidator, wxT("lstPackages"));
+    lstPackages = new wxListCtrl(this, ID_LSTPACKAGES, wxPoint(253, 55), wxSize(319, 377), wxLC_ICON | wxLC_AUTOARRANGE, wxDefaultValidator, wxT("lstPackages"));
     DockManager->AddPane(lstPackages, wxAuiPaneInfo().Name(wxT("lstPackages_Pane")).Caption(wxT("Package List")).Center().Dockable(false).CaptionVisible(false).DestroyOnClose(false).Floatable(true).Gripper(false).Resizable(true).Row(0).Position(0).Layer(0));
 
     WxStatusBar1 = new wxStatusBar(this, ID_WXSTATUSBAR1);
@@ -200,6 +197,9 @@ void PackMan2ExtendedFrm::CreateGUIControls()
     ID_MNU_HELP_1005_Mnu_Obj->Append(ID_MNU_ABOUT_1006_mnuItem_obj);
     WxMenuBar1->Append(ID_MNU_HELP_1005_Mnu_Obj, wxT("Help"));
     SetMenuBar(WxMenuBar1);
+
+    wxArrayString arrayStringFor_WxPackageInstalledFiles;
+    WxPackageInstalledFiles = new wxListBox(lstFiles, ID_WXPACKAGEINSTALLEDFILES, wxPoint(-1, 2), wxSize(230, 340), arrayStringFor_WxPackageInstalledFiles, wxLB_SINGLE | wxVSCROLL | wxHSCROLL);
 
     SetStatusBar(WxStatusBar1);
     WxToolBar1->SetToolBitmapSize(wxSize(32,32));

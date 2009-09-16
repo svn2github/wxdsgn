@@ -9,6 +9,7 @@
 ///          Dev-Cpp devpak and install it.
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///------------------------------------------------------------------
 
 #include "InstallDevPak.h"
@@ -58,6 +59,8 @@ bool InstallDevPak::GetPackageInfo(DevPakInfo *info, wxString szFileName)
     return true;
 
 }
+
+/* TODO (tbreina#6#): Verify that silent install works. */
 
 // Devpak installation main code starts here
 bool InstallDevPak::DoSilentInstall(wxFileName filename)
@@ -274,6 +277,12 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
 
 }
 
+/* TODO (tbreina#6#): Add SQLite database for keeping track of the
+                      devpak files. Multiple devpaks may depend on
+                      the same file so a DB is the best way for the
+                      Package Manager to keep track of
+                      dependencies.  */
+
 // Create the entry file and setup section
 bool InstallDevPak::SaveEntryFileSetup(DevPakInfo *info)
 {
@@ -433,7 +442,9 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
 
     wxFileSystem fs;
     std::auto_ptr<wxTarEntry> entry(new wxTarEntry);
+    wxArrayString InstalledFiles;
 
+    InstalledFiles.Clear();
 
     // All of the installed files are logged into the .entry file
     if ( wxFileName::FileExists( info.GetEntryFileName() ) )
@@ -442,8 +453,10 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
         if (!InstallDevPak::ReadEntryFile(&info)) return false;  // Read the existing entry file
         if (!InstallDevPak::RemoveDevPak(&info)) return false;  // Remove the existing devpak
     }
-    else if (!InstallDevPak::SaveEntryFileSetup(&info)) return false; // Save the new devpaks entry file setup info
 
+    if (!InstallDevPak::SaveEntryFileSetup(&info)) return false; // Save the new devpaks entry file setup info
+
+    // Now extract the archive
     fEntry.Open(info.GetEntryFileName());  // Open the entry file
 
     wxFileInputStream in(sArchive);
@@ -461,7 +474,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
         // Get the filename/directory for this entry in the devpak archive
         wxString sFile = entry->GetName();
 
-// If it ends with a \ in the devpak, then it's a directory to unpack
+        // If it ends with a \ in the devpak, then it's a directory to unpack
         wxString s2File = sFile;
         if (s2File.Last() == '\\')
             s2File.RemoveLast();
@@ -470,6 +483,7 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
         int sourceIndex = info.TargetDirs.Index(s2File);
 
         if ((sourceIndex != wxNOT_FOUND) || bExtractDirectory) {
+
             if (sourceIndex != wxNOT_FOUND) {
                 bExtractDirectory = false;
 
@@ -529,13 +543,24 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
 
 
                 wxString sFilenme = sFile.AfterLast(wxFILE_SEP_PATH); // Get file name
+
                 anOutFile.Create(sDir + sFilenme, TRUE /*overwrite any existing file*/, fileMode);
 
                 wxString relativeDir;
                 sDir.StartsWith(sAppDir, &relativeDir);
-                fEntry.AddLine(relativeDir + sFilenme); //Add the file to the entry file
 
-                lbInstalledFiles->Append(relativeDir + sFilenme);
+                // Keep track of which files have been installed
+                // If we've already installed a file, then we don't need
+                //  to install it again.
+                // This occurs when we use a readme or license file
+                //  as a regular file to install. The entry is duplicated
+                //  in the devpak.
+                if (InstalledFiles.Index(relativeDir + sFilenme) == wxNOT_FOUND) {
+                    InstalledFiles.Add(relativeDir + sFilenme);
+                    fEntry.AddLine(InstalledFiles.Last()); //Add the file to the entry file
+                    lbInstalledFiles->Append(InstalledFiles.Last());
+                }
+
                 ::wxSafeYield();
 
                 wxFileOutputStream outfile ( anOutFile );
@@ -562,6 +587,10 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
     return true;
 
 }
+
+/* TODO (tbreina#5#): Add pre/post install command processor for
+                      setup/cleanup utilities. Perhaps we could just
+                      allow for batch files to be executed? */
 
 // Extract the files/directories from the devpak archive
 // ? Use this for silent install?

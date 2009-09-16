@@ -7,6 +7,7 @@
 ///              AboutDlg class declaration
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///--------------------------------------------------------------------
 
 #ifndef __ABOUTDLG_h__

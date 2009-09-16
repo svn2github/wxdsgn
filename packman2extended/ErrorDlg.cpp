@@ -7,6 +7,7 @@
 ///         ErrorDlg class implementation
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///----------------------------------------------------------------
 
 #include "ErrorDlg.h"

@@ -6,6 +6,7 @@
 /// @section DESCRIPTION AboutDlg class implementation
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///----------------------------------------------------------------
 
 #include "AboutDlg.h"

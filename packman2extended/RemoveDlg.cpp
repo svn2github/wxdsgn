@@ -185,29 +185,30 @@ bool RemoveDlg::RemoveFiles()
 {
     wxString txtFileName;
 
-    if (info->InstalledFiles.GetCount() > 0) {
-
-        txtFileName = info->InstalledFiles.Item(info->currentFileNumber);
-
-        txtFileName.Trim(true).Trim(false);
-        txtDeleteFile->SetLabel(txtFileName);
-
-        if (!txtFileName.IsEmpty()) {
-            if (::wxFileExists(txtFileName)) {
-                // Delete the file
-                ::wxRemoveFile(info->InstalledFiles.Item(info->currentFileNumber));
-                ::wxSafeYield();
-            }
-            else {
-                errordlg->AddError(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
-                errordlg->Show(true);
-            }
-        }
-    }
-    else {
+// If there are no files in the entry, then just delete the entry file
+    if (info->InstalledFiles.GetCount() <= 0) {
+        info->pakStatus = COMPLETED;
         info->currentFileNumber = info->InstalledFiles.GetCount() + 1;
         errordlg->AddError(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
         errordlg->Show(true);
+        return true;
+    }
+
+    txtFileName = info->InstalledFiles.Item(info->currentFileNumber);
+
+    txtFileName.Trim(true).Trim(false);
+    txtDeleteFile->SetLabel(txtFileName);
+
+    if (!txtFileName.IsEmpty()) {
+        if (::wxFileExists(txtFileName)) {
+            // Delete the file
+            ::wxRemoveFile(info->InstalledFiles.Item(info->currentFileNumber));
+            ::wxSafeYield();
+        }
+        else {
+            errordlg->AddError(wxT("File '") + info->InstalledFiles.Item(info->currentFileNumber) + wxT("' does not exist."));
+            errordlg->Show(true);
+        }
     }
 
     info->currentFileNumber++;  // Set next index to delete

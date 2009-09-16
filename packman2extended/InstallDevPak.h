@@ -9,6 +9,7 @@
 ///          functions.
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///--------------------------------------------------------------------
 
 #ifndef __INSTALLDEVPAK_h__

@@ -7,10 +7,21 @@
 ///      DevPak info class
 /// @section LICENSE  wxWidgets license
 /// @version $Id$
+///
 ///--------------------------------------------------------------
 
 #include "InstallDevPak.h"
 #include "DevPakInfo.h"
+
+DevPakInfo::DevPakInfo()
+{
+    TargetDirs.Clear();
+    DestinationDirs.Clear();
+    InstalledFiles.Clear();
+    currentFileNumber = 0;
+    pakStatus = COMPLETED;
+
+}
 
 // Encapsulation function for the DevPakInfo class to set the entry's filename
 bool DevPakInfo::SetEntryFileName(wxString filename)
