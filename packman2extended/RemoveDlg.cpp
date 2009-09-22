@@ -116,7 +116,7 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
     //   processing. NOTE: There's currently no way to
     //   un-delete any files that have been already deleted
     //   in the case of an abort.
-    if (info->pakStatus == IN_PROCESS) {
+    if (info->pakStatus == DevPakInfo::IN_PROCESS) {
         txtFilesRemaining->SetLabel(wxString::Format("%d", info->InstalledFiles.GetCount()-info->currentFileNumber));
         txtFilesDeleted->SetLabel(wxString::Format("%d", info->currentFileNumber));
         WxGauge1->SetValue(info->currentFileNumber);
@@ -124,7 +124,7 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
         RemoveFiles();
     }
 
-    if (info->pakStatus == COMPLETED) {
+    if (info->pakStatus == DevPakInfo::COMPLETED) {
 
         // Remove the .entry file associated with this devpak.
         if (::wxFileExists(info->GetEntryFileName()))
@@ -138,7 +138,7 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
         Close();
     }
 
-    if (info->pakStatus == ABORTED) {
+    if (info->pakStatus == DevPakInfo::ABORTED) {
         WxTimer1->Stop();
         wxMessageBox(wxT("Aborted"));
         Close();
@@ -151,7 +151,7 @@ void RemoveDlg::WxTimer1Timer(wxTimerEvent& event)
 void RemoveDlg::RemoveDlgInitDialog(wxInitDialogEvent& event)
 {
 
-    info->pakStatus = IN_PROCESS;
+    info->pakStatus = DevPakInfo::IN_PROCESS;
     info->currentFileNumber = 0;  // Index of the file to delete next
     SetTitle(wxT("Remove DevPak: " + info->AppName));
     WxGauge1->SetRange(info->InstalledFiles.GetCount());
@@ -177,7 +177,7 @@ void RemoveDlg::RemoveDlgInitDialog(wxInitDialogEvent& event)
  */
 void RemoveDlg::WxCancelClick(wxCommandEvent& event)
 {
-    info->pakStatus = ABORTED;
+    info->pakStatus = DevPakInfo::ABORTED;
 }
 
 // Delete/uninstall files from the devpak
@@ -187,7 +187,7 @@ bool RemoveDlg::RemoveFiles()
 
 // If there are no files in the entry, then just delete the entry file
     if (info->InstalledFiles.GetCount() <= 0) {
-        info->pakStatus = COMPLETED;
+        info->pakStatus = DevPakInfo::COMPLETED;
         info->currentFileNumber = info->InstalledFiles.GetCount() + 1;
         errordlg->AddError(wxT("Warning! Entry has no files associated.\nMight be corrupted. Deleting entry file"));
         errordlg->Show(true);
@@ -215,7 +215,7 @@ bool RemoveDlg::RemoveFiles()
 
     // If next index is more than number of files to delete, then we are done.
     if (info->currentFileNumber >= info->InstalledFiles.GetCount())
-        info->pakStatus = COMPLETED;
+        info->pakStatus = DevPakInfo::COMPLETED;
 
     return true;
 

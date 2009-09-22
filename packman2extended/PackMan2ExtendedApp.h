@@ -32,6 +32,9 @@ public:
     virtual int OnRun();
     virtual void OnInitCmdLine(wxCmdLineParser& parser);
     virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+
+    bool bQuiet; /** \brief Run program without GUI */
+    wxArrayString pakFilenames; /** \brief DevPak filenames to process */
 };
 
 // PackMan2Extended [/auto] [/quiet] [[file] | [/uninstall file [/version number]]]
@@ -45,7 +48,7 @@ public:
 static const wxCmdLineEntryDesc g_cmdLineDesc [] =
 {
     { wxCMD_LINE_SWITCH, wxT("auto"), wxT("auto"), wxT("Close packman after finishing")},
-    { wxCMD_LINE_SWITCH, wxT("silent"), wxT("silent"), wxT("No user input required") },
+    { wxCMD_LINE_SWITCH, wxT("quiet"), wxT("quiet"), wxT("No user input required") },
     { wxCMD_LINE_SWITCH, wxT("version"), wxT("version"), wxT("Version") },
     { wxCMD_LINE_PARAM,  NULL, NULL, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_NONE }

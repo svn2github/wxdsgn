@@ -62,7 +62,10 @@ bool InstallDevPak::GetPackageInfo(DevPakInfo *info, wxString szFileName)
 
 /* TODO (tbreina#6#): Verify that silent install works. */
 
-// Devpak installation main code starts here
+/** Devpak installation quiet mode
+*  This procedure installs the devpak without any of the GUI
+*  windows. Used for command line option /quiet
+*/
 bool InstallDevPak::DoSilentInstall(wxFileName filename)
 {
     // Procedure
@@ -77,31 +80,33 @@ bool InstallDevPak::DoSilentInstall(wxFileName filename)
     if ( filename.FileExists() )
     {
         // work with the file
+        wxString archiveFile;
         wxString archiveDir = filename.GetPath();
 
-        // Get a temporary directory
+        if (archiveDir.IsEmpty()) { // If empty, then we are in the current working directory
+            archiveDir = ::wxGetCwd();
+            archiveFile = ::wxGetCwd() + wxFILE_SEP_PATH + filename.GetFullPath();
+        } else
+            archiveFile = filename.GetFullPath();
+
+        // Get a temporary directory to unpack things
         ::wxSetWorkingDirectory(wxStandardPaths::Get().GetTempDir());
 
-        wxString szINIFileName;
+        DevPakInfo info;
 
-        if (!InstallDevPak::ExtractPackageINI(filename.GetFullPath())) {
+        if (!InstallDevPak::GetPackageInfo(&info, archiveFile)) {
             InstallDevPak::ShowLog("No *.DevPackage file found. DevPak format incorrect or corrupted.");
             return false;
         }
 
-        DevPakInfo info;
-
-        filename.SetExt("devpackage");  // Grab the devpackage descriptor file
-        if (!InstallDevPak::GetINIFileList(filename.GetFullName(), &info)) // Grabs the files
-            return false;
-
         if (!InstallDevPak::ProcessDirs(archiveDir, &info))
             return false;
 
-        filename.SetExt("DevPak");
-
-        if (!InstallDevPak::ExtractArchive(filename.GetFullPath(), info))
+        wxListBox lbInstalledFiles; // This doesn't get used
+        if (!InstallDevPak::ExtractArchive(archiveFile, info, &lbInstalledFiles)) {
+            InstallDevPak::ShowLog("Extract archive failed on " + archiveFile);
             return false;
+        }
 
     }
     return true;
@@ -283,7 +288,11 @@ bool InstallDevPak::GetINIFileList(wxString INIFileName, DevPakInfo *info)
                       Package Manager to keep track of
                       dependencies.  */
 
-// Create the entry file and setup section
+/** Create the entry file and setup section
+ * File section is populated as the package is extracted
+* @return Success flag (true = success; false = error)
+* @param info Pointer to a devpak info class
+*/
 bool InstallDevPak::SaveEntryFileSetup(DevPakInfo *info)
 {
 
@@ -310,6 +319,11 @@ bool InstallDevPak::SaveEntryFileSetup(DevPakInfo *info)
 
 }
 
+/** Parse the .entry file and place its
+* values into "info" variable
+* @return Success flag (true = success; false = error)
+* @param info Pointer to a devpak info class
+*/
 bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
 {
     wxTextFile fIni;
@@ -380,8 +394,11 @@ bool InstallDevPak::ReadEntryFile(DevPakInfo *info)
 
 }
 
-// Grab the name of the Dev-Cpp install directory from the
-//    Windows registry.
+/** Grab the name of the Dev-Cpp install directory from the
+*    Windows registry.
+* @return Dev-C++ installation directory
+*/
+
 wxString InstallDevPak::GetAppDir()
 {
     // Grab install directory from Windows Registry
@@ -429,7 +446,14 @@ bool InstallDevPak::ProcessDirs(wxString archiveDir, DevPakInfo *info)
 
 }
 
-// Extract the files/directories from the devpak archive
+/** Extract the files/directories from the devpak archive
+* @return Success flag (true = success; false = error)
+* @param sArchive Archive filename
+* @param info Pointer to a devpak info class
+* @param lbInstalledFiles List box containing the names of the
+*                         files that were installed from devpak.
+*                         If it silent mode, then this will be ignored.
+*/
 bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxListBox *lbInstalledFiles)
 {
 
@@ -592,15 +616,14 @@ bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info, wxL
                       setup/cleanup utilities. Perhaps we could just
                       allow for batch files to be executed? */
 
-// Extract the files/directories from the devpak archive
-// ? Use this for silent install?
-bool InstallDevPak::ExtractArchive(const wxString sArchive, DevPakInfo info)
-{
-    return true;
 
-}
-
-// Extract a single from the devpak archive and pass the file's text to txtControl
+/** Extract a single from the devpak archive
+*   and pass the file's text to txtControl
+* @return Success flag (true = success; false = error)
+* @param sArchive Archive filename
+* @param sFilename File to extract from archive
+* @param txtControl Text control to display file contents
+*/
 bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileName, wxTextCtrl *txtControl)
 {
 
@@ -698,8 +721,11 @@ bool InstallDevPak::ExtractSingleFile(const wxString sArchive, wxString sFileNam
 
 }
 
-// Delete/uninstall a devpak
-// This makes a call to the RemoveDlg dialog
+/** Delete/uninstall a devpak
+*  This makes a call to the RemoveDlg dialog
+* @return Success flag (true = success; false = error)
+* @param info Pointer to a devpak info class
+*/
 bool InstallDevPak::RemoveDevPak(DevPakInfo *info)
 {
     // Remove the devpak and update the package list
@@ -711,9 +737,12 @@ bool InstallDevPak::RemoveDevPak(DevPakInfo *info)
 
 }
 
-// Determines if the files listed in the DevPak entry info are actually
-//    present in the correct directories. If not, gives a list of files not
-//    found.
+/** Determines if the files listed in the DevPak entry info are actually
+*   present in the correct directories. If not, gives a list of files not
+*    found.
+* @return Success flag (true = success; false = error)
+* @param info Pointer to a devpak info class
+*/
 bool InstallDevPak::VerifyDevPak(DevPakInfo *info)
 {
 
@@ -752,6 +781,9 @@ bool InstallDevPak::VerifyDevPak(DevPakInfo *info)
     return true;
 }
 
+/** Pass a message to the log
+* @param logMessage String to display in log file
+*/
 void InstallDevPak::ShowLog(wxString logMessage) {
 
     // Logs an error message and keeps it going.

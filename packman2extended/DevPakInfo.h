@@ -20,11 +20,6 @@
 #include <wx/wxprec.h>
 #endif
 
-/** DevPakInfo contains the devpak information class.
- */
-
-enum StatusType { COMPLETED, IN_PROCESS, ABORTED, ERROR_STATE};
-
 /**
  * DevPak information class structure
 */
@@ -33,23 +28,34 @@ private:
     wxString EntryFileName;
 
 public:
+    /** Current state of the devpak installation.
+    *   Values are COMPLETED, IN_PROCESS, ABORTED, ERROR_STATE
+    */
+    enum StatusType { COMPLETED, IN_PROCESS, ABORTED, ERROR_STATE};
+
+public:
     DevPakInfo(); // constructor
-    wxString AppName,
-    AppVerName,
-    AppVersion,
-    MenuName,
-    Description,
-    Url,
-    Readme,
-    License,
-    Picture,
-    Dependencies,
-    Reboot;
+    wxString AppName, /** \brief DevPak name */
+    AppVerName,       /** \brief DevPak name + version */
+    AppVersion,       /** \brief DevPak version */
+    MenuName,         /** \brief name of associated menu */
+    Description,      /** \brief Description of devpak */
+    Url,              /** \brief Internet address associated with devpak */
+    Readme,           /** \brief Readme file for devpak */
+    License,          /** \brief License file for devpak */
+    Picture,          /** \brief Graphic file for devpak */
+    Dependencies;     /** \brief Files required by devpak */
     wxArrayString TargetDirs,
+    /** \brief Absolute file path name within devpak */
     DestinationDirs,
+    /** \brief Relative file path indicating where to install file */
     InstalledFiles;
+    /** \brief List of files that were installed from devpak */
     size_t currentFileNumber;
+    /** \brief Index of current file being installed. */
     StatusType pakStatus;
+    /** \brief Status of devpak installation */
+    bool Reboot;           /** \brief Reboot needed after installation? */
 
 public:
     bool SetEntryFileName(wxString filename);

@@ -36,6 +36,9 @@
 #include "RemoveDlg.h"
 #include "ErrorDlg.h"
 
+/** InstallDevPak contains all of the devpak searching
+* and unpacking routines needed for installing a devpak.
+*/
 namespace InstallDevPak
 {
 bool GetPackageInfo(DevPakInfo *info, wxString szFileName);
@@ -48,7 +51,6 @@ bool ReadEntryFile(DevPakInfo *info);
 bool SaveEntryFileSetup(DevPakInfo *info);
 bool ProcessDirs(wxString archiveDir, DevPakInfo *info); //Replace macros in directory names
 bool ExtractArchive(const wxString sArchive, DevPakInfo info, wxListBox *lbInstalledFiles); // Un-bzip, un-tar devpak archive and install
-bool ExtractArchive(const wxString sArchive, DevPakInfo info); // Un-bzip, un-tar devpak archive and install
 bool ExtractSingleFile(const wxString sArchive, wxString sFilename, wxTextCtrl *txtControl);
 bool ExtractSingleFile(const wxString sArchive, wxString sFilename);
 bool RemoveDevPak(DevPakInfo *info);
