@@ -2710,20 +2710,49 @@ var
   tempStr: String;
   maindir: String;
   makeSig, mingwmakeSig: String;
+  defaultDataForPlugins: Boolean;
+  dummy: String;
+  i: Integer;
 begin
+  defaultDataForPlugins := false;
   if Index < 0 then
     Exit;
 
   with devData do
   begin
+
     key := OPT_COMPILERSETS + '_' + IntToStr(Index);
+
+    // EAB: Temporary hack to fix Cpp includes in wxdsgn plugin if you enable the devpack after using vanilla version:
+    // A proper solution requires more descriptive information of the plugins recent installation status.
+    if  MainForm <> nil then
+    begin
+        if MainForm.pluginsCount > 0 then
+        begin
+            try
+            if (LoadSetting(key, 'wxOpts.Static') = '') then
+                defaultDataForPlugins := true;
+              except
+                defaultDataForPlugins := true;
+            end;
+        end;
+    end;
+
     // dirs
     fBinDir := LoadSetting(key, 'Bins');
      if fBinDir='' then fBinDir:=devDirs.Bins;
     fCDir := LoadSetting(key, 'C');
      if fCDir='' then fCDir:=devDirs.C;
     fCppDir := LoadSetting(key, 'Cpp');
-     if fCppDir='' then fCppDir:=devDirs.Cpp;
+     if fCppDir='' then fCppDir:=devDirs.Cpp
+     else
+        if defaultDataForPlugins then
+        begin
+            for i := 0 to MainForm.pluginsCount - 1 do
+                fCppDir := fCppDir + ';' + ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);
+        end;
+     begin
+     end;
     fLibDir := LoadSetting(key, 'Lib');
      if fLibDir='' then fLibDir:=devDirs.Lib;
     fRcDir := LoadSetting(key, 'RC');

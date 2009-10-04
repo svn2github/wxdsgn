@@ -670,7 +670,6 @@ type
     DebugPauseBtn: TToolButton;
     tabThreads: TTabSheet;
     lvThreads: TListView;
-    //prgFormProgress: TProgressBar;
     PageControl: TPageControl;
     TodoSheet: TTabSheet;
     lvTodo: TListView;
@@ -1166,7 +1165,6 @@ type
     procedure forceEditorFocus;
 {$ENDIF}
     function OpenWithAssignedProgram(strFileName:String):boolean;
-    //property FormProgress: TProgressBar read prgFormProgress write prgFormProgress;
   end;
 var
   MainForm: TMainForm;
@@ -1298,8 +1296,8 @@ var
   NewDock: TForm;
   NewDocks: TList;
 {$IFDEF PLUGIN_BUILD}
-  ini :TiniFile;
   lbDockClient1: TJvDockClient;
+  ini :TiniFile;
 {$ENDIF}  
 
   procedure AddDockTab(Tab: TForm);
@@ -1420,16 +1418,11 @@ begin
   InitPlugins;
   XPMenu.Active := devData.XPTheme;     // EAB Comment: Reload XPMenu stuff
   {$ENDIF}
+
   PageControl.OwnerDraw := devData.HiliteActiveTab;
+
   frmProjMgrDock.ManualDock(DockServer.LeftDockPanel, nil, alTop);
   ShowDockForm(frmProjMgrDock);
-
-  if NewDocks.Count >= 2 then
-  begin
-    BottomDockTabs := ManualTabDock(DockServer.BottomDockPanel, NewDocks[0], NewDocks[1]);
-    for I := 2 to NewDocks.Count - 1 do
-      ManualTabDockAddPage(BottomDockTabs, NewDocks[I]);
-  end;
 
   //"Surround With" menu
   trycatchPopItem.Tag            := INT_TRY_CATCH;
@@ -1551,11 +1544,10 @@ begin
   ToolClassesItem.Checked := devData.ToolbarClasses;
   ToolbarClick(nil);
 
-  //Constraints.MaxHeight := Monitor.Height;
-  //Constraints.MaxWidth := Monitor.Width;
   fCompiler.RunParams := '';
   devCompiler.UseExecParams := True;
-
+  //if pluginsCount = 0 then
+  //    XPMenu.Active := false;
   for I := 0 to MessageControl.PageCount - 1 do
   begin
     NewDock := TForm.Create(self);
@@ -1591,7 +1583,10 @@ begin
   begin
     BottomDockTabs := ManualTabDock(DockServer.BottomDockPanel, NewDocks[0], NewDocks[1]);
     for I := 2 to NewDocks.Count - 1 do
+    begin
       ManualTabDockAddPage(BottomDockTabs, NewDocks[I]);
+      ShowDockForm(frmReportDocks[I]);
+    end;
   end
   else
   begin
@@ -1604,6 +1599,9 @@ begin
 
   //Show the compiler output list-view
   ShowDockForm(frmReportDocks[0]);
+
+  if pluginsCount = 0 then
+      XPMenu.Active := devData.XPTheme;      // EAB Hack to prevent crash in message tabs when not using the designer.
 
   //Settle the docking sizes
   DockServer.LeftDockPanel.Width := 200;
@@ -1944,12 +1942,12 @@ begin
 
   {$IFDEF PLUGIN_BUILD}
 
-  if FileExists(devDirs.Config + ChangeFileExt(ExtractFileName(Application.EXEName), '.cfg')) then   // EAB hack first run closing problems
-  begin
+  //if FileExists(devDirs.Config + ChangeFileExt(ExtractFileName(Application.EXEName), '.cfg')) then   // EAB hack first run closing problems
+  //begin
       DockServer.LeftDockPanel.Visible := false;    // More "gratious" closing of panels, due to ManualTabDock plugin removal requirement
       DockServer.RightDockPanel.Visible := false;
       DockServer.BottomDockPanel.Visible := false;
-  end;
+  //end;
 
   themeManager.Destroy;
   for i := 0 to pluginsCount - 1 do
@@ -9687,12 +9685,6 @@ begin
     end else
         inherited;
  end;
- {if(DockServer.LeftDockPanel <> nil) then
- begin
-     DockServer.LeftDockPanel.Refresh;
-     DockServer.RightDockPanel.Refresh;
-     DockServer.BottomDockPanel.Refresh;
- end;}
 end;
 
 end.
