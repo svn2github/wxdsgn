@@ -69,7 +69,6 @@ type
     Book: TLabel;
     Label1: TLabel;
     BuildNumber: TLabel;
-    lblVersion: TLabel;
     procedure LabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnUpdateCheckClick(Sender: TObject);

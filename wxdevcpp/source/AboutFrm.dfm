@@ -2197,7 +2197,7 @@ object AboutForm: TAboutForm
     ParentFont = False
   end
   object BuildNumber: TLabel
-    Left = 184
+    Left = 136
     Top = 74
     Width = 19
     Height = 13
@@ -2205,19 +2205,6 @@ object AboutForm: TAboutForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object lblVersion: TLabel
-    Left = 128
-    Top = 72
-    Width = 21
-    Height = 16
-    Caption = '7.0'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False

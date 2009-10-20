@@ -1325,6 +1325,7 @@ begin
   fPrintLineNumbersMargins := false;
   fWatchHint := true;
   fWatchError := true;
+  fNoToolTip := true;
 end;
 
 { TCompilerOpts }
