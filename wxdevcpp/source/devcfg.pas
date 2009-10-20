@@ -619,6 +619,7 @@ type
     fNoSplashScreen: boolean; // disable splash screen
     fHiliteActiveTab: boolean; // Hilite the Active Editor Page Tab
     fAutoCompile: integer; // automatically compile when out-of-date
+    fNoToolTip: boolean; // Don't use Tooltips
 
     // toolbar layout
     fToolbarMain: boolean;
@@ -698,6 +699,7 @@ type
     property NoSplashScreen: boolean read fNoSplashScreen write fNoSplashScreen;
     property HiliteActiveTab: boolean read fHiliteActiveTab write fHiliteActiveTab;
     property AutoCompile: integer read fAutoCompile write fAutoCompile;
+    property NoToolTip: boolean read fNoToolTip write fNoToolTip default true;
 
     //Execution
     property MinOnRun: boolean read fMinOnRun write fMinOnRun;

@@ -110,6 +110,7 @@ type
     cbNativeDocks: TCheckBox;
     cbHiliteActiveTab: TCheckBox;
     lblOpenSaveOptions: TLabel;
+    cbNoToolTip: TCheckBox;
     procedure BrowseClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -225,6 +226,7 @@ begin
     cbMinOnRun.Checked := MinOnRun;
     cbdblFiles.Checked := DblFiles;
     cbNoSplashScreen.Checked := NoSplashScreen;
+    cbNoToolTip.Checked := NoToolTip;
     cbHiliteActiveTab.Checked := HiliteActiveTab;
     seMRUMax.Value := MRUMax;
     cboLang.Clear;
@@ -316,6 +318,7 @@ begin
     ThemeChange := cboTheme.Text <> devData.Theme;
     Theme := cboTheme.Text;
     NoSplashScreen := cbNoSplashScreen.Checked;
+    NoToolTip := cbNoToolTip.Checked;
     HiliteActiveTab := cbHiliteActiveTab.Checked;
     if not ThemeChange then
       ThemeChange := XPTheme <> cbXPTheme.Checked;

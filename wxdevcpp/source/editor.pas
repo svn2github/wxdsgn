@@ -774,12 +774,17 @@ begin
     Panels[3].Text := format(Lang[ID_LINECOUNT], [fText.Lines.Count]);
   end;
 
-  if (scCaretX in Changes) or (scCaretY in Changes) then
-    if assigned(FCodeToolTip) and FCodeToolTip.Enabled then
-    begin
-      fToolTipTimer.Enabled := False;
-      fToolTipTimer.Enabled := True;
-    end;
+  if not devData.NoToolTip then
+  begin
+  // GAR Deactivate timer
+    if (scCaretX in Changes) or (scCaretY in Changes) then
+      if assigned(FCodeToolTip) and FCodeToolTip.Enabled then
+      begin
+        fToolTipTimer.Enabled := False;
+        fToolTipTimer.Enabled := True;
+      end;
+  end;
+
 end;
 
 procedure TEditor.ToolTipTimer(Sender: TObject);
@@ -1665,12 +1670,16 @@ begin
     s := Copy(s1, I + 1, p.Char - I - 1);
   end;
 
-  if (s <> '') and (not fDebugHintTimer.Enabled) then begin
-    fDebugHintTimer.Enabled := true;
-    fCurrentHint := s;
-  end
-  else if s = '' then
-    fText.Hint := '';
+  if not devData.NoToolTip then
+  begin
+  // GAR Disabled timer
+    if (s <> '') and (not fDebugHintTimer.Enabled) then begin
+      fDebugHintTimer.Enabled := true;
+      fCurrentHint := s;
+    end
+    else if s = '' then
+     fText.Hint := '';
+  end;
 
   if s<>'' then begin
     if ssCtrl in Shift then

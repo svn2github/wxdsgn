@@ -97,9 +97,9 @@ object EnviroForm: TEnviroForm
       end
       object rgbAutoOpen: TRadioGroup
         Left = 8
-        Top = 131
+        Top = 179
         Width = 185
-        Height = 74
+        Height = 75
         Caption = 'Auto Open'
         Items.Strings = (
           'All Project Files'
@@ -120,9 +120,9 @@ object EnviroForm: TEnviroForm
       end
       object gbDebugger: TGroupBox
         Left = 202
-        Top = 131
+        Top = 179
         Width = 185
-        Height = 60
+        Height = 61
         Caption = 'Debug Variable Browser'
         TabOrder = 7
         object cbWatchHint: TCheckBox
@@ -152,6 +152,16 @@ object EnviroForm: TEnviroForm
         ParentShowHint = False
         ShowHint = True
         TabOrder = 8
+      end
+      object cbNoToolTip: TCheckBox
+        Left = 8
+        Top = 128
+        Width = 97
+        Height = 17
+        Caption = 'No tooltips'
+        Checked = True
+        State = cbChecked
+        TabOrder = 9
       end
     end
     object tabInterface: TTabSheet
