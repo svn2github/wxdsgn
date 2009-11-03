@@ -515,9 +515,9 @@ end;
 
 function GetShortName(const FileName: string): string;
 var
-  pFileName: array[0..2048] of char;
+  pFileName: array[0..12048] of char;
 begin
-  GetShortPathName(pchar(FileName), pFileName, 2048);
+  GetShortPathName(pchar(FileName), pFileName, 12048);
   result:= strpas(pFileName);
 end;
 

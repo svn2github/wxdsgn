@@ -362,6 +362,7 @@ begin
   FWx_PropertyList.Add('wxSL_RIGHT:wxSL_RIGHT');
   FWx_PropertyList.Add('wxSL_TOP:wxSL_TOP');
   FWx_PropertyList.Add('wxSL_BOTTOM:wxSL_BOTTOM');
+  FWx_PropertyList.Add('wxSL_BOTH:wxSL_BOTH');
 
   FWx_PropertyList.add('Min:Min');
   FWx_PropertyList.add('Max:Max');

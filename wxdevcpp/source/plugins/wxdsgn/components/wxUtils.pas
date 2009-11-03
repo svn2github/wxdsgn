@@ -394,7 +394,7 @@ type
   TWx_SliderOrientation = (wxSL_HORIZONTAL, wxSL_VERTICAL);
   TWx_SliderRange = (wxSL_SELRANGE, wxSL_INVERSE);
 
-  TWxsldrStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT, wxSL_RIGHT, wxSL_TOP, wxSL_BOTTOM);
+  TWxsldrStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT, wxSL_RIGHT, wxSL_TOP, wxSL_BOTTOM, wxSL_BOTH);
   TWxsldrStyleSet = set of TWxsldrStyleItem;
 
   TWxHyperLnkStyleItem = (wxHL_ALIGN_LEFT, wxHL_ALIGN_RIGHT, wxHL_ALIGN_CENTRE, wxHL_CONTEXTMENU, wxHL_DEFAULT_STYLE);
@@ -1869,6 +1869,9 @@ begin
 
     if wxSL_BOTTOM in stdStyle then
       strLst.add('wxSL_BOTTOM');
+
+    if wxSL_BOTH in stdStyle then
+      strLst.add('wxSL_BOTH');
 
     if strLst.Count = 0 then
       Result := ''
@@ -5427,42 +5430,82 @@ begin
     exit;
   end;
 
-  if AnsiSameText(strColorValue, 'wxBLACK') then
+  if AnsiSameText(strColorValue, 'BLACK') then
   begin
-    Result := 'wxColour(*wxBLACK)';
+    Result := 'wxColour("BLACK")';
     exit;
   end;
-  if AnsiSameText(strColorValue, 'wxWHITE') then
+  if AnsiSameText(strColorValue, 'BLUE') then
   begin
-    Result := 'wxColour(*wxWHITE)';
+    Result := 'wxColour("BLUE")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'CYAN') then
+  begin
+    Result := 'wxColour("CYAN")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'DARK SLATE GREY') then
+  begin
+    Result := 'wxColour("DARK SLATE GREY")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'LIGHT GREY') then
+  begin
+    Result := 'wxColour("LIGHT GREY")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'GREEN') then
+  begin
+    Result := 'wxColour("GREEN")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'GREY') then
+  begin
+    Result := 'wxColour("GREY")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'LIME GREEN') then
+  begin
+    Result := 'wxColour("LIME GREEN")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'MAROON') then
+  begin
+    Result := 'wxColour("MAROON")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'NAVY') then
+  begin
+    Result := 'wxColour("NAVY")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'PURPLE') then
+  begin
+    Result := 'wxColour("PURPLE")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'RED') then
+  begin
+    Result := 'wxColour("RED")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'SKY BLUE') then
+  begin
+    Result := 'wxColour("SKY BLUE")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'YELLOW') then
+  begin
+    Result := 'wxColour("YELLOW")';
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'WHITE') then
+  begin
+    Result := 'wxColour("WHITE")';
     exit;
   end;
 
-  if AnsiSameText(strColorValue, 'wxRED') then
-  begin
-    Result := '*wxRED';
-    exit;
-  end;
-  if AnsiSameText(strColorValue, 'wxBLUE') then
-  begin
-    Result := '*wxBLUE';
-    exit;
-  end;
-  if AnsiSameText(strColorValue, 'wxGREEN') then
-  begin
-    Result := '*wxGREEN';
-    exit;
-  end;
-  if AnsiSameText(strColorValue, 'wxCYAN') then
-  begin
-    Result := '*wxCYAN';
-    exit;
-  end;
-  if AnsiSameText(strColorValue, 'wxLIGHT_GREY') then
-  begin
-    Result := '*wxLIGHT_GREY';
-    exit;
-  end;
   if AnsiSameText(strColorValue, 'wxSYS_COLOUR_SCROLLBAR') then
   begin
     Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_SCROLLBAR)';
@@ -5471,7 +5514,7 @@ begin
 
   if AnsiSameText(strColorValue, 'wxSYS_COLOUR_BACKGROUND') then
   begin
-    Result := 'wxSystemSettings::GetColour()';
+    Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND)';
     exit;
   end;
 
@@ -5865,40 +5908,79 @@ function GetGeneralColorFromString(strColorValue: string): TColor;
 begin
   strColorValue := trim(strColorValue);
   Result := 0 + clBlack;
-  if AnsiSameText(strColorValue, 'wxBLACK') then
+  if AnsiSameText(strColorValue, 'BLACK') then
   begin
     Result := clBlack;
     exit;
   end;
-  if AnsiSameText(strColorValue, 'wxWHITE') then
-  begin
-    Result := clWhite;
-    exit;
-  end;
-
-  if AnsiSameText(strColorValue, 'wxRED') then
-  begin
-    Result := clred;
-    exit;
-  end;
-  if AnsiSameText(strColorValue, 'wxBLUE') then
+  if AnsiSameText(strColorValue, 'BLUE') then
   begin
     Result := clBlue;
     exit;
   end;
-  if AnsiSameText(strColorValue, 'wxGREEN') then
-  begin
-    Result := clGreen;
-    exit;
-  end;
-  if AnsiSameText(strColorValue, 'wxCYAN') then
+  if AnsiSameText(strColorValue, 'CYAN') then
   begin
     Result := clAqua;
     exit;
   end;
-  if AnsiSameText(strColorValue, 'wxLIGHT_GREY') then
+  if AnsiSameText(strColorValue, 'DARK SLATE GREY') then
+  begin
+    Result := clDkGray;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'GREEN') then
+  begin
+    Result := clGreen;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'GREY') then
+  begin
+    Result := clGray;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'LIGHT GREY') then
   begin
     Result := clLtGray;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'LIME GREEN') then
+  begin
+    Result := clLime;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'MAROON') then
+  begin
+    Result := clMaroon;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'NAVY') then
+  begin
+    Result := clNavy;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'PURPLE') then
+  begin
+    Result := clPurple;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'RED') then
+  begin
+    Result := clRed;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'SKY BLUE') then
+  begin
+    Result := clSkyBlue;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'YELLOW') then
+  begin
+    Result := clYellow;
+    exit;
+  end;
+  if AnsiSameText(strColorValue, 'WHITE') then
+  begin
+    Result := clWhite;
     exit;
   end;
   if AnsiSameText(strColorValue, 'wxSYS_COLOUR_SCROLLBAR') then

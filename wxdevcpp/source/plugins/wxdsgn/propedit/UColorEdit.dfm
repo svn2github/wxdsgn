@@ -253,18 +253,24 @@ object ColorEdit: TColorEdit
     Style = csDropDownList
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 0
     TabOrder = 11
-    Text = 'wxBLACK'
     OnChange = cbStandardColorChange
     Items.Strings = (
-      'wxBLACK'
-      'wxWHITE'
-      'wxRED'
-      'wxBLUE'
-      'wxGREEN'
-      'wxCYAN'
-      'wxLIGHT_GREY')
+      'BLACK'
+      'BLUE'
+      'CYAN'
+      'DARK SLATE GREY'
+      'GREEN'
+      'GREY'
+      'LIGHT GREY'
+      'LIME GREEN'
+      'MAROON'
+      'NAVY'
+      'PURPLE'
+      'RED'
+      'SKY BLUE'
+      'WHITE'
+      'YELLOW')
   end
   object pnlPreview: TPanel
     Left = 368

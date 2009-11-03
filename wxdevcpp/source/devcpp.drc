@@ -635,7 +635,7 @@ BEGIN
 	Templates_cEditor,	"Editor"
 	Templates_cProject,	"Project"
 	version_DEVCPP,	"wxDev-C++"
-	version_DEVCPP_VERSION,	"7.0"
+	version_DEVCPP_VERSION,	"7.2.0.2"
 	JConsts_sJPEGError,	"JPEG error #%d"
 	JConsts_sJPEGImageFile,	"JPEG Image File"
 	JvDockGlobals_RsDockStringSplitter,	" "
