@@ -1244,8 +1244,7 @@ procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   //inherited CreateParams(Params);
-  if IsWindowsVista then
-    Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
+  Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
   StrCopy(Params.WinClassName, cWindowClassName);
 end;
 
@@ -9698,11 +9697,11 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+    ShowWindow(Application.Handle, SW_HIDE);
+    SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
+    ShowWindow(Application.Handle, SW_SHOW);
     if IsWindowsVista then
     begin
-        ShowWindow(Application.Handle, SW_HIDE);
-        SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
-        ShowWindow(Application.Handle, SW_SHOW);
         TVistaAltFix.Create(Self);
     end;
     // accepting drag and drop files
@@ -9712,8 +9711,8 @@ end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
 begin
- if IsWindowsVista then
- begin
+ //if IsWindowsVista then
+ //begin
   case (Message.CmdType and $FFF0) of
     SC_MINIMIZE:
     begin
@@ -9728,21 +9727,21 @@ begin
   else
     inherited;
   end;
- end
- else inherited;
+ //end
+ //else inherited;
 end;
 
 procedure TMainForm.WMActivate(var Msg: TWMActivate);
 begin
- if IsWindowsVista then
- begin
+ //if IsWindowsVista then
+ //begin
     if (Msg.Active = WA_ACTIVE) and not IsWindowEnabled(Handle) then
     begin
         SetActiveWindow(Application.Handle);
         Msg.Result := 0;
     end else
         inherited;
- end;
+ //end;
 end;
 
 end.

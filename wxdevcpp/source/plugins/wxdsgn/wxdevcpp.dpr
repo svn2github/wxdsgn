@@ -142,7 +142,7 @@ begin
 end;
 
 const
-    WX_VERSION = 7.2.0.2;
+    WX_VERSION = 7;//.2.0.2;  I think we can't declare a literal this way.
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
   UserHome, strLocalAppData, strAppData, strIniFile: String;
