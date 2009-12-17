@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Controls,Forms, Messages, SysUtils, Classes, WxNonVisibleBaseComponent,
-  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, dbugintf, StrUtils, dialogs,
+  Wxutils, WxSizerPanel, Menus, WxCustomMenuItem, StrUtils, dialogs,
   Graphics;
 
 type

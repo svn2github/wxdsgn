@@ -88,6 +88,9 @@ begin
   while True do
   begin
     FillChar(Buffer, sizeof(Buffer), 0);
+
+   // FlushFileBuffers(hInputPipe);
+
     if not ReadFile(hInputPipe, Buffer, sizeof(Buffer), LastRead, nil) then
     begin
       SetEvent(fEvent);
@@ -124,7 +127,8 @@ begin
 
   while (not Stop) and (not Reader.Suspended) do begin
     //Wait for an event
-    WaitForSingleObject(Event, INFINITE);
+    WaitForSingleObject(Event, 10000);
+    //WaitForInputIdle(Event, INFINITE);
     if Stop then
       Exit;
 

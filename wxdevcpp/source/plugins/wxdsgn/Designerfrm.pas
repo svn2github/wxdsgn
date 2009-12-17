@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, Buttons, StdCtrls, DbugIntf, wxversion,
+  ExtCtrls, Buttons, StdCtrls, wxversion,
   WxEdit, WxStaticText, WxButton, wxUtils, WXRadioButton, WXCheckBox,
   Wxcombobox, WxToolButton, WxSeparator, wxChoice,
   WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,

@@ -37,7 +37,7 @@ interface
 uses
   WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
-  UPicEdit, UStrings, DbugIntf, TypInfo, Menus, UStatusbar, UValidator,
+  UPicEdit, UStrings, TypInfo, Menus, UStatusbar, UValidator,
   JvInspector, wxversion, DateUtils, xprocs, ShellAPI, SHFolder;
 
 const
@@ -7094,7 +7094,7 @@ begin
 
     Result.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
     Result.Add('<resource version="2.3.0.1">');
-    Result.Add('<!-- Created by wxDev-C++ ' + WXDEVCPP_VERSION + ' -->');
+    Result.Add('<!-- Created by ' + DEVCPP + ' ' + WXDEVCPP_VERSION + ' -->');
 
     // Result.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
 

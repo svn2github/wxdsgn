@@ -5,7 +5,7 @@ interface
 uses
     Windows, Controls, Forms, ComCtrls, Graphics, SysUtils, Menus,
     Designerfrm, CompFileIo, Dialogs,
-    wxutils, DbugIntf, SynEdit, wxversion, MigrateFrm, StdCtrls;
+    wxutils, SynEdit, wxversion, MigrateFrm, StdCtrls;
 
 type
 

@@ -138,6 +138,10 @@ begin
   end;
 
   hProcess := tpi.hProcess;
+
+  // GAR 12/11/2009 wait for thread to initialize
+  WaitForInputIdle(hProcess, 10000);
+
   CloseHandle(hOutputWrite);
   CloseHandle(hInputRead);
   CloseHandle(hErrorWrite);
@@ -155,22 +159,26 @@ begin
     if (not ReadFile(hOutputRead, aBuf, 16, nRead, nil)) or (nRead = 0) then
     begin
       if GetLastError = ERROR_BROKEN_PIPE then
-        Break
+      begin
+        bAbort := true;
+        Break;
+      end
       else
         ShowError('Pipe read error, could not execute file');
     end;
     aBuf[nRead] := #0;
     Output := Output + aBuf;
-
+       
     CurrentLine := CurrentLine + aBuf;
-    if CurrentLine[Length(CurrentLine)] = #10 then
+    if (CurrentLine[Length(CurrentLine)] = #10) then
     begin
       Delete(CurrentLine, Length(CurrentLine), 1);
       LineOutput(CurrentLine);
       CurrentLine := '';
     end;
-  until False;
+  until bAbort;
 
+  // GAR 14 Nov 2009 Testing Linux
   if not GetExitCodeProcess(tpi.hProcess, fExitCode) then
     fExitCode := $FFFFFFFF;
 

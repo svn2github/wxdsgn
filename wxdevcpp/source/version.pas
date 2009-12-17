@@ -111,6 +111,11 @@ resourcestring
   WATCOM_C_INCLUDE_DIR = 'Include'+pd+'watcom;Include'+pd+'common;';
   WATCOM_RC_INCLUDE_DIR  = 'include'+ pd + 'common;';
 
+  //Wine/Linux
+  LINUX_BIN_DIR = '\bin;\usr\bin';
+  LINUX_LIB_DIR = '\usr\lib';
+  LINUX_C_INCLUDE_DIR = '\usr\include';
+  LINUX_RC_INCLUDE_DIR  = '';
 
   GCC_CPP_INCLUDE_DIR  =
                         ';include'
@@ -140,6 +145,8 @@ resourcestring
 
   WATCOM_CPP_INCLUDE_DIR  =
                         ';include'+pd+'watcom;'+'include'+pd+'common;';
+
+  LINUX_CPP_INCLUDE_DIR = '';
 
   LANGUAGE_DIR         = 'Lang' + pd;
   ICON_DIR             = 'Icons' + pd;
@@ -216,7 +223,55 @@ resourcestring
   WATCOM_COMPILER_CMD_LINE = '';
   WATCOM_LINKER_CMD_LINE = '';
   WATCOM_MAKE_CMD_LINE = '';
-  
+
+  LINUX_MAKE_PROGRAM = '/usr/bin/make';
+  LINUX_CP_PROGRAM = 'gcc';
+  LINUX_CPP_PROGRAM = 'gcc';
+  LINUX_DBG_PROGRAM = 'gdb';
+  LINUX_RES_PROGRAM = '';
+  LINUX_DLL_PROGRAM = 'gcc';
+  LINUX_PROF_PROGRAM = 'gprof';
+  LINUX_COMPILER_CMD_LINE = '';
+  LINUX_LINKER_CMD_LINE = '';
+  LINUX_MAKE_CMD_LINE = '';
+
+  // GDB commands and Displays
+  GDB_FILE             = 'file';
+  GDB_EXECFILE         = 'exec-file';
+  GDB_RUN              = 'run';
+  GDB_BREAK            = 'break';
+  GDB_CONTINUE         = 'continue';
+  GDB_NEXT             = 'next';
+  GDB_STEP             = 'step';
+  GDB_DISPLAY          = 'display';
+  GDB_UNDISPLAY        = 'undisplay';
+  GDB_PRINT            = 'print';
+  GDB_SETVAR           = 'set var';
+  GDB_DELETE           = 'delete';
+  GDB_PROMPT           = '(gdb) ';
+  GDB_BACKTRACE        = 'bt';
+  GDB_DISASSEMBLE      = 'disas';
+  GDB_SETFLAVOR        = 'set disassembly-flavor';
+  GDB_INTEL            = 'intel';
+  GDB_ATT              = 'att';
+  GDB_REG              = 'displ/x';
+  GDB_EAX              = '$eax';
+  GDB_EBX              = '$ebx';
+  GDB_ECX              = '$ecx';
+  GDB_EDX              = '$edx';
+  GDB_ESI              = '$esi';
+  GDB_EDI              = '$edi';
+  GDB_EBP              = '$ebp';
+  GDB_ESP              = '$esp';
+  GDB_EIP              = '$eip';
+  GDB_CS               = '$cs';
+  GDB_DS               = '$ds';
+  GDB_SS               = '$ss';
+  GDB_ES               = '$es';
+  GDB_SETARGS          = 'set args';
+  GDB_ATTACH           = 'attach';
+  GDB_SET              = 'set'; 
+
   // option sections
   OPT_DIRS = 'Directories';
   OPT_EDITOR = 'Editor';
@@ -235,6 +290,7 @@ resourcestring
   DMARS_DEFCOMPILERSET = 'Default DigitalMars compiler';
   BORLAND_DEFCOMPILERSET = 'Default Borland compiler';
   WATCOM_DEFCOMPILERSET = 'Default Watcom compiler';
+  LINUX_DEFCOMPILERSET = 'Default Linux gcc compiler';
 
   //Filters
   FLT_BASE = 'All known Files||';
@@ -367,6 +423,9 @@ begin
       ID_COMPILER_WATCOM:
         Result := WATCOM_MAKE_PROGRAM;
 
+      ID_COMPILER_LINUX:
+        Result := LINUX_MAKE_PROGRAM;
+
   end;
 
 end;
@@ -395,6 +454,9 @@ begin
       ID_COMPILER_WATCOM:
         Result := WATCOM_CP_PROGRAM;
 
+      ID_COMPILER_LINUX:
+        Result := LINUX_CP_PROGRAM;
+
   end;
 end;
 
@@ -421,6 +483,10 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_CPP_PROGRAM;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_CPP_PROGRAM;
+
   end;
 end;
 
@@ -450,6 +516,10 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_DBG_PROGRAM;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_DBG_PROGRAM;
+
   end;
 end;
 
@@ -473,6 +543,9 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_RES_PROGRAM;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_RES_PROGRAM;
   end;
 end;
 
@@ -497,6 +570,8 @@ begin
       ID_COMPILER_WATCOM:
         Result := WATCOM_DLL_PROGRAM;
 
+      ID_COMPILER_LINUX:
+        Result := LINUX_DLL_PROGRAM;
   end;
 end;
 
@@ -526,6 +601,9 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_DEFCOMPILERSET;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_DEFCOMPILERSET;
   end;
 end;
 
@@ -535,7 +613,7 @@ begin
       ID_COMPILER_MINGW :
           Result := GCC_COMPILER_CMD_LINE;
 
-      ID_COMPILER_VC2008,    
+      ID_COMPILER_VC2008,
       ID_COMPILER_VC2005,
       ID_COMPILER_VC2003,
       ID_COMPILER_VC6:
@@ -549,6 +627,9 @@ begin
 
       ID_COMPILER_DMARS:
         Result := DMARS_COMPILER_CMD_LINE;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_COMPILER_CMD_LINE;
   end;
 end;
 
@@ -572,6 +653,9 @@ begin
 
       ID_COMPILER_DMARS:
         Result := DMARS_LINKER_CMD_LINE;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_LINKER_CMD_LINE;
   end;
 end;
 
@@ -595,6 +679,9 @@ begin
 
       ID_COMPILER_DMARS:
         Result := DMARS_MAKE_CMD_LINE;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_MAKE_CMD_LINE;
   end;
 end;
 
@@ -619,6 +706,8 @@ begin
       ID_COMPILER_WATCOM:
         Result := WATCOM_PROF_PROGRAM;
 
+      ID_COMPILER_LINUX:
+        Result := LINUX_PROF_PROGRAM;
   end;
 end;
 
@@ -648,6 +737,9 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_BIN_DIR;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_BIN_DIR;
   end;
 end;
 
@@ -678,6 +770,8 @@ begin
       ID_COMPILER_WATCOM:
         Result := WATCOM_LIB_DIR;
 
+      ID_COMPILER_LINUX:
+        Result := LINUX_LIB_DIR;
   end;
 end;
 
@@ -707,6 +801,9 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_C_INCLUDE_DIR;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_C_INCLUDE_DIR;
   end;
 end;
 
@@ -736,6 +833,9 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := COMMON_CPP_INCLUDE_DIR+ WATCOM_CPP_INCLUDE_DIR ;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_CPP_INCLUDE_DIR;
   end;
 end;
 
@@ -765,6 +865,9 @@ begin
 
       ID_COMPILER_WATCOM:
         Result := WATCOM_RC_INCLUDE_DIR;
+
+      ID_COMPILER_LINUX:
+        Result := LINUX_RC_INCLUDE_DIR;
   end;
 end;
 

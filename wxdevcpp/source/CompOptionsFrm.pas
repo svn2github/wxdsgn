@@ -682,6 +682,17 @@ begin
         DllwrapEdit.Enabled := false;
         btnbrowse7.Enabled := false;
       end;
+    ID_COMPILER_LINUX:
+      begin
+        lblgprof.Caption := 'Code Profiler:';
+        lblgprof.Enabled := true;
+        gprofEdit.Enabled := true;
+        btnbrowse8.Enabled := true;
+
+        lbldllwrap.Enabled := false;
+        DllwrapEdit.Enabled := false;
+        btnbrowse7.Enabled := false;
+      end;
     ID_COMPILER_VC6,
     ID_COMPILER_VC2003:
       begin

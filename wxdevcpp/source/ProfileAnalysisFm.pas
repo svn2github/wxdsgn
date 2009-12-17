@@ -123,6 +123,13 @@ begin
   end
   else begin
     Dir := ExtractFilePath(MainForm.GetEditor.FileName);
+     // GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+Params := GPROF_CMD_GENFLAT + ' "' + ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, '')) + '"'
+else
     Params := GPROF_CMD_GENFLAT + ' "' + ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
   end;
 
@@ -193,6 +200,14 @@ begin
   end
   else begin
     Dir := ExtractFilePath(MainForm.GetEditor.FileName);
+
+     // GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+      Params := GPROF_CMD_GENMAP + ' "' + ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, '')) + '"'
+else
     Params := GPROF_CMD_GENMAP + ' "' + ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
   end;
 

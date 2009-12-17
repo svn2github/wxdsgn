@@ -89,7 +89,15 @@ begin
     { Non-project editor macros }
   else if Assigned(e) then
   begin
+  // GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+    Replace(Result, '<EXENAME>', ChangeFileExt(e.FileName, ''))
+else
     Replace(Result, '<EXENAME>', ChangeFileExt(e.FileName, EXE_EXT));
+
     Replace(Result, '<PROJECTNAME>', e.FileName);
     Replace(Result, '<PROJECTFILE>', e.FileName);
     Replace(Result, '<PROJECTPATH>', ExtractFilePath(e.FileName));

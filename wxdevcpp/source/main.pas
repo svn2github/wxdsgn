@@ -102,7 +102,7 @@ uses
   ExceptionFilterUnit,
 {$ENDIF}
   SynEditHighlighter, SynHighlighterMulti,
-  JvDockTree, JvDockVIDStyle, JvDockVSNetStyle  
+  JvDockTree, JvDockVIDStyle, JvDockVSNetStyle, JvComputerInfoEx
 {$ENDIF}
   ;
 {$ENDIF}
@@ -687,6 +687,7 @@ type
     ShowPluginPanelsItem: TMenuItem;
     DeleteLine1: TMenuItem;
     actDeleteLine: TAction;
+    JvComputerInfoEx1: TJvComputerInfoEx;
 
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1243,7 +1244,8 @@ procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   //inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
+  if IsWindowsVista then
+    Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
   StrCopy(Params.WinClassName, cWindowClassName);
 end;
 
@@ -3412,6 +3414,13 @@ begin
    if assigned(e) then
    begin
     // <EXENAME>
+    // GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (JvComputerInfoEx1.OS.ProductName = '') then
+    s := StringReplace(s, cEXEName, ChangeFileExt(e.FileName, ''),[rfReplaceAll])
+else
     s := StringReplace(s, cEXEName, ChangeFileExt(e.FileName, EXE_EXT),[rfReplaceAll]);
 
     // <PROJECTNAME>
@@ -3520,8 +3529,20 @@ begin
       HasSize := FileExists(fProject.Executable);
     end
     else if PageControl.PageCount > 0 then begin
+// GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+begin
+   FindFirst(ChangeFileExt(GetEditor.FileName, ''), faAnyFile, F);
+      HasSize := FileExists(ChangeFileExt(GetEditor.FileName, ''));
+end
+else
+begin
       FindFirst(ChangeFileExt(GetEditor.FileName, EXE_EXT), faAnyFile, F);
       HasSize := FileExists(ChangeFileExt(GetEditor.FileName, EXE_EXT));
+end;
     end;
     if HasSize then begin
       SizeFile.Text := IntToStr(F.Size) + ' ' + Lang.Strings[ID_BYTES];
@@ -4752,7 +4773,23 @@ begin
   end
   else if assigned(e) then
   begin
-    if not FileExists(ChangeFileExt(e.FileName, EXE_EXT)) then
+// GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+
+    if not FileExists(ChangeFileExt(e.FileName, '')) then
+      MessageDlg(Lang[ID_ERR_SRCNOTCOMPILED], mtWarning, [mbOK], Handle)
+    else
+    begin
+      if devData.MinOnRun then
+        Application.Minimize;
+      devExecutor.ExecuteAndWatch(ChangeFileExt(e.FileName, ''), '',
+                                  ExtractFilePath(e.FileName), True, INFINITE, OnCompileTerminated);
+    end
+else
+   if not FileExists(ChangeFileExt(e.FileName, EXE_EXT)) then
       MessageDlg(Lang[ID_ERR_SRCNOTCOMPILED], mtWarning, [mbOK], Handle)
     else
     begin
@@ -4811,7 +4848,8 @@ procedure TMainForm.InitializeDebugger;
     fDebugger.OnLocals := OnLocals;
   end;
 begin
-  if devCompiler.CompilerType = ID_COMPILER_MINGW then
+  if ( (devCompiler.CompilerType = ID_COMPILER_MINGW) or
+        (devCompiler.CompilerType = ID_COMPILER_LINUX) ) then
   begin
     if not (fDebugger is TGDBDebugger) then
     begin
@@ -4918,16 +4956,36 @@ begin
     e := GetEditor;
     if assigned(e) then
     begin
+
+// GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+  if not FileExists(ChangeFileExt(e.FileName, '')) then begin
+        MessageDlg(Lang[ID_ERR_SRCNOTCOMPILED], mtWarning, [mbOK], 0);
+        exit;
+      end
+else
       if not FileExists(ChangeFileExt(e.FileName, EXE_EXT)) then begin
         MessageDlg(Lang[ID_ERR_SRCNOTCOMPILED], mtWarning, [mbOK], 0);
         exit;
       end;
+
       if e.Modified then // if file is modified
         if not SaveFile(e) then // save it first
           Abort; // if it's not saved, abort
       chdir(ExtractFilePath(e.FileName));
 
+      // GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+      fDebugger.Execute(StringReplace(ChangeFileExt(ExtractFileName(e.FileName), ''), '\', '\\', [rfReplaceAll]), fCompiler.RunParams)
+else
       fDebugger.Execute(StringReplace(ChangeFileExt(ExtractFileName(e.FileName), EXE_EXT), '\', '\\', [rfReplaceAll]), fCompiler.RunParams);
+
       fDebugger.RefreshBreakpoints;
       fDebugger.RefreshWatches;
     end;
@@ -6424,7 +6482,8 @@ var
 begin
   //todo: disable profiling for non gcc compilers
   // see if profiling is enabled
-  if (assigned(fProject) and (fProject.CurrentProfile.compilerType <> ID_COMPILER_MINGW)) then
+  if (assigned(fProject) and ( (fProject.CurrentProfile.compilerType <> ID_COMPILER_MINGW) or
+        (fProject.CurrentProfile.compilerType <> ID_COMPILER_LINUX) ) ) then
   begin
     ShowMessage('Profiling is Disabled for Non-MingW compilers.') ;
     exit;
@@ -9639,11 +9698,11 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-    ShowWindow(Application.Handle, SW_HIDE);
-    SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
-    ShowWindow(Application.Handle, SW_SHOW);
     if IsWindowsVista then
     begin
+        ShowWindow(Application.Handle, SW_HIDE);
+        SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW  or WS_EX_TOOLWINDOW);
+        ShowWindow(Application.Handle, SW_SHOW);
         TVistaAltFix.Create(Self);
     end;
     // accepting drag and drop files
@@ -9653,8 +9712,8 @@ end;
 
 procedure TMainForm.WMSyscommand(var Message: TWmSysCommand);
 begin
- //if IsWindowsVista then
- //begin
+ if IsWindowsVista then
+ begin
   case (Message.CmdType and $FFF0) of
     SC_MINIMIZE:
     begin
@@ -9669,21 +9728,21 @@ begin
   else
     inherited;
   end;
- //end
- //else inherited;
+ end
+ else inherited;
 end;
 
 procedure TMainForm.WMActivate(var Msg: TWMActivate);
 begin
- //if IsWindowsVista then
- //begin
+ if IsWindowsVista then
+ begin
     if (Msg.Active = WA_ACTIVE) and not IsWindowEnabled(Handle) then
     begin
         SetActiveWindow(Application.Handle);
         Msg.Result := 0;
     end else
         inherited;
- //end;
+ end;
 end;
 
 end.

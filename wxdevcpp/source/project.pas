@@ -608,6 +608,14 @@ var
   Res, Def, Icon, RCDir: String;
   comp, i: Integer;
 begin
+
+// GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+   Exit;
+
   comp := 0;
   for i := 0 to Units.Count - 1 do
     if GetFileTyp(Units[i].FileName) = utRes then
@@ -1474,7 +1482,7 @@ begin
     NewProfile.ProfileName:= finifile.ReadProfile(i,'ProfileName','');
     NewProfile.typ:= finifile.ReadProfile(i,'Type',0);
     NewProfile.CompilerType := finifile.ReadProfile(i, 'CompilerType', ID_COMPILER_MINGW);
-    NewProfile.CompilerSet := finifile.ReadProfile(i, 'CompilerSet', 0);
+    NewProfile.CompilerSet := finifile.ReadProfile(i, 'CompilerSet', ID_COMPILER_MINGW);
     NewProfile.Compiler:= finifile.ReadProfile(i,'Compiler','');
     NewProfile.CppCompiler:= finifile.ReadProfile(i,'CppCompiler','');
     NewProfile.Linker:= finifile.ReadProfile(i,'Linker','');
@@ -1506,6 +1514,7 @@ begin
          ID_COMPILER_DMARS:   CompilerType := 'MingW';
          ID_COMPILER_BORLAND: CompilerType := 'MingW';
          ID_COMPILER_WATCOM:  CompilerType := 'MingW';
+         ID_COMPILER_LINUX :  CompilerType := 'Linux gcc';
        end;
  
        case AutoSelectMissingCompiler of
@@ -1868,6 +1877,13 @@ begin
     else if projProfile.typ = dptDyn then
       Result := ChangeFileExt(Base, DLL_EXT)
     else
+        // GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+   Result := ChangeFileExt(Base, '')
+else
       Result := ChangeFileExt(Base, EXE_EXT);
   end
   else

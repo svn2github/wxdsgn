@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 508
-  Top = 283
+  Left = 323
+  Top = 223
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1354,8 +1354,8 @@ object MainForm: TMainForm
   end
   object MessageControl: TPageControl
     Left = 0
-    Top = 261
-    Width = 636
+    Top = 263
+    Width = 644
     Height = 130
     ActivePage = LogSheet
     Align = alBottom
@@ -1372,7 +1372,7 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 624
+        Width = 632
         Height = 98
         Align = alClient
         BevelOuter = bvRaised
@@ -1411,7 +1411,7 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 624
+        Width = 632
         Height = 98
         Align = alClient
         BevelKind = bkSoft
@@ -1485,13 +1485,13 @@ object MainForm: TMainForm
       object CompResGroupBox: TGroupBox
         Left = 225
         Top = 0
-        Width = 399
+        Width = 407
         Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
-          399
+          407
           98)
         object LogOutput: TMemo
           Left = 7
@@ -1513,7 +1513,7 @@ object MainForm: TMainForm
       object DebugSubPages: TPageControl
         Left = 0
         Top = 0
-        Width = 624
+        Width = 632
         Height = 98
         ActivePage = tabWatches
         Align = alClient
@@ -1525,7 +1525,7 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 616
+            Width = 624
             Height = 70
             Align = alClient
             Columns = <
@@ -1560,7 +1560,7 @@ object MainForm: TMainForm
           object lvLocals: TListView
             Left = 0
             Top = 0
-            Width = 616
+            Width = 624
             Height = 70
             Align = alClient
             Columns = <
@@ -1588,7 +1588,7 @@ object MainForm: TMainForm
           object lvThreads: TListView
             Left = 0
             Top = 0
-            Width = 616
+            Width = 624
             Height = 70
             Align = alClient
             Columns = <
@@ -1615,7 +1615,7 @@ object MainForm: TMainForm
           object DebugTree: TTreeView
             Left = 0
             Top = 0
-            Width = 616
+            Width = 624
             Height = 70
             Align = alClient
             Images = dmMain.MenuImages_NewLook
@@ -1691,7 +1691,7 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 624
+        Width = 632
         Height = 98
         Align = alClient
         BevelOuter = bvRaised
@@ -1735,7 +1735,7 @@ object MainForm: TMainForm
       object lvTodo: TListView
         Left = 0
         Top = 0
-        Width = 628
+        Width = 636
         Height = 61
         Align = alClient
         Checkboxes = True
@@ -1772,13 +1772,13 @@ object MainForm: TMainForm
       object TodoSettings: TPanel
         Left = 0
         Top = 61
-        Width = 628
+        Width = 636
         Height = 41
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
         DesignSize = (
-          628
+          636
           41)
         object lblTodoFilter: TLabel
           Left = 6
@@ -1824,7 +1824,7 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar_WIN32_EVENTS
     Left = 0
     Top = 16
-    Width = 636
+    Width = 644
     Height = 86
     Align = alTop
     AutoDock = False
@@ -2256,8 +2256,8 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 391
-    Width = 636
+    Top = 393
+    Width = 644
     Height = 19
     Panels = <
       item
@@ -2283,17 +2283,17 @@ object MainForm: TMainForm
   object pnlFull: TPanel
     Left = 0
     Top = 0
-    Width = 636
+    Width = 644
     Height = 16
     Align = alTop
     BevelOuter = bvNone
     Caption = 
-      'wx-Dev-C++ version 7.0 full screen press shift+F12 to toggle Too' +
+      'wx-Dev-C++ version 7.2 full screen press shift+F12 to toggle Too' +
       'lbars or F12 to go to normal mode.'
     TabOrder = 3
     Visible = False
     DesignSize = (
-      636
+      644
       16)
     object btnFullScrRevert: TSpeedButton
       Left = 621
@@ -2322,7 +2322,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 102
     Width = 192
-    Height = 159
+    Height = 161
     ActivePage = ProjectSheet
     Align = alLeft
     Images = dmMain.ProjectImage_NewLook
@@ -2335,7 +2335,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 131
+        Height = 133
         Align = alClient
         ChangeDelay = 1
         DragMode = dmAutomatic
@@ -2367,7 +2367,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 131
+        Height = 133
         Align = alClient
         Images = dmMain.ClassImages
         ReadOnly = True
@@ -2399,11 +2399,11 @@ object MainForm: TMainForm
   object PageControl: TPageControl
     Left = 192
     Top = 102
-    Width = 444
-    Height = 159
+    Width = 452
+    Height = 161
     Align = alClient
     PopupMenu = EditorPopupMenu
-    TabOrder = 7
+    TabOrder = 5
     OnChange = PageControlChange
     OnChanging = PageControlChanging
     OnDragDrop = PageControlDragDrop
@@ -2852,7 +2852,6 @@ object MainForm: TMainForm
       end
       object StopExecution1: TMenuItem
         Action = actStopExecute
-        ShortCut = 49265
       end
       object Restart1: TMenuItem
         Action = actRestartDebug
@@ -4015,7 +4014,7 @@ object MainForm: TMainForm
       Category = 'Debug'
       Caption = 'Stop Execution'
       ImageIndex = 55
-      ShortCut = 32881
+      ShortCut = 32887
       OnExecute = actStopExecuteExecute
       OnUpdate = actUpdateDebuggerRunning
     end
@@ -4366,6 +4365,7 @@ object MainForm: TMainForm
       Category = 'Debug'
       Caption = 'Pause Execution'
       ImageIndex = 58
+      ShortCut = 16503
       OnExecute = actPauseDebugExecute
       OnUpdate = actPauseDebugUpdate
     end
@@ -4570,5 +4570,9 @@ object MainForm: TMainForm
     CustomDock = False
     Left = 547
     Top = 158
+  end
+  object JvComputerInfoEx1: TJvComputerInfoEx
+    Left = 472
+    Top = 208
   end
 end

@@ -30,7 +30,7 @@ unit WxSplitterWindow;
 interface
 
 uses WinTypes, WinProcs, Messages, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, WxAuiNotebookPage, wxAuiToolBar, dbugintf;
+  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, WxAuiNotebookPage, wxAuiToolBar;
 
 type
   TWxSplitterWindow = class(TPanel, IWxComponentInterface, IWxWindowInterface,

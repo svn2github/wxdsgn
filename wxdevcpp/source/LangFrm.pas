@@ -252,7 +252,12 @@ begin
       begin
        {$IFDEF PLUGIN_BUILD}
         for i := 0 to MainForm.pluginsCount - 1 do
+        begin
+          if (devDirs.Cpp = '') then
+            devDirs.Cpp := devDirs.Cpp + ';' + devDirs.CallValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR)    // EAB TODO: make it multiplugin functional.
+          else
             devDirs.Cpp := devDirs.Cpp + ';' + devDirs.CallValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR);    // EAB TODO: make it multiplugin functional.
+        end;
         {$ENDIF}
         StrToList(devDirs.Cpp, s);
       end;

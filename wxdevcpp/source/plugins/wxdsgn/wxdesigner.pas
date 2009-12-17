@@ -6,14 +6,14 @@ uses
   Classes, iniFiles, ActnList, Menus, ExtCtrls, ComCtrls, Controls, Types, Messages,
   StdCtrls, Forms, SysUtils, Windows, Dialogs, Graphics, Spin,
   JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
-  ELDsgnr, JvInspector, dmCreateNewProp, DbugIntf,
+  ELDsgnr, JvInspector, dmCreateNewProp,
   wxSizerpanel, Designerfrm, ELPropInsp, {$IFNDEF COMPILER_7_UP}ThemeMgr, {$ENDIF}
   CompFileIO, SynEdit, StrUtils,
   DesignerOptions, JvExStdCtrls, JvEdit, iplugin, iplugin_bpl, iplugger,
   hashes,
   SynEditHighlighter, SynHighlighterMulti,
   JvComponentBase, JvDockControlForm, JvDockTree, JvDockVIDStyle, JvDockVSNetStyle,
-  wxUtils, xprocs,
+  wxUtils, xprocs, JvComputerInfoEx,
   ComponentPalette;
 
 {$I ..\..\LangIDs.inc}
@@ -208,6 +208,8 @@ type
     parentHande: HWND;
     {Guru's Code}
 
+    ComputerInfo1 : TJvComputerInfoEx;
+
     strGlobalCurrentFunction: string;
     DisablePropertyBuilding: Boolean;
     boolInspectorDataClear: Boolean;
@@ -368,6 +370,8 @@ begin
   pendingEditorSwitch := false;
 
   cleanUpJvInspEvents := false;
+
+  ComputerInfo1 := TJvComputerInfoEx.Create(ownerForm);
 
   //Property Inspector
   frmInspectorDock := TForm.Create(ownerForm);
@@ -1684,13 +1688,28 @@ var
   currFile: string;
   strAppCppFile, strAppHppFile, strAppRcFile: string;
   ini: Tinifile;
+  UseRC: boolean;
 
 begin
+
+// GAR 10 Nov 2009
+// Hack for Wine/Linux
+// ProductName returns empty string for Wine/Linux
+// for Windows, it returns OS name (e.g. Windows Vista).
+if (ComputerInfo1.OS.ProductName = '') then
+UseRC := false
+else
+UseRC := true;
+
   //Get the path of our templates
   TemplatesDir := IncludeTrailingPathDelimiter(main.GetRealPathFix(main.GetDevDirsTemplates, ExtractFileDir(Application.ExeName)));
 
-  //Get the filepaths of the templates
-  strAppRcFile := TemplatesDir + 'wxWidgets\wxprojRes.rc';
+  if (UseRC) then
+  begin
+    //Get the filepaths of the templates
+    strAppRcFile := TemplatesDir + 'wxWidgets\wxprojRes.rc';
+  end;
+
   if dsgnType = dtWxFrame then
   begin
     strAppCppFile := TemplatesDir + 'wxWidgets\wxprojFrameApp.cpp';
@@ -1736,6 +1755,8 @@ begin
   BaseFilename := Trim(ChangeFileExt(main.GetProjectFileName, '')) + APP_SUFFIX;
   ParseAndSaveTemplate(StrAppHppFile, ChangeFileExt(BaseFilename, H_EXT), frm);
   ParseAndSaveTemplate(StrAppCppFile, ChangeFileExt(BaseFilename, CPP_EXT), frm);
+
+if (ComputerInfo1.OS.ProductName <> '') then
   ParseAndSaveTemplate(strAppRcFile, ChangeFileExt(BaseFilename, RC_EXT), frm);
 
   //Add the application entry source fle
@@ -1745,8 +1766,11 @@ begin
   currFile := ChangeFileExt(BaseFilename, H_EXT);
   main.PrepareFileForEditor(currFile, 0, true, false, false, '');
 
-  currFile := ChangeFileExt(BaseFilename, RC_EXT);
-  main.PrepareFileForEditor(currFile, 0, true, false, false, '');
+  if (UseRC) then
+  begin
+    currFile := ChangeFileExt(BaseFilename, RC_EXT);
+    main.PrepareFileForEditor(currFile, 0, true, false, false, '');
+  end;
 
   //Finally create the form creation code
   CreateNewDialogOrFrameCode(dsgnType, frm, 1);
@@ -4609,6 +4633,7 @@ begin
   JvInspEvents.Free;
   JvInspectorDotNETPainter1.Free;
   JvInspectorDotNETPainter2.Free;
+  ComputerInfo1.Free;
   main := nil;
 end;
 

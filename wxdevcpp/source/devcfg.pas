@@ -40,7 +40,7 @@ interface
 
 uses
 {$IFDEF WIN32}
-Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes;  //, DbugIntf; EAB removed Gexperts debug stuff. 
+Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes;  //, DbugIntf; EAB removed Gexperts debug stuff.
 {$ENDIF}
 {$IFDEF LINUX}
   QDialogs, Classes, QGraphics, QSynEdit, CFGData, CFGTypes, IniFiles, prjtypes;
@@ -51,7 +51,7 @@ const
   BoolVal10: array[0..27] of string = ('0', '1', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',   // Had to use letters for multiple choices
     'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
     's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
-    
+
   ID_COMPILER_MINGW = 0;
   ID_COMPILER_VC2005 = 1;
   ID_COMPILER_VC2003 = 2;
@@ -60,8 +60,9 @@ const
   ID_COMPILER_VC2008 = 5;
   ID_COMPILER_BORLAND = 6;
   ID_COMPILER_WATCOM = 7;
+  ID_COMPILER_LINUX = 8;
   ID_COMPILER_VC = [ID_COMPILER_VC6, ID_COMPILER_VC2003, ID_COMPILER_VC2005, ID_COMPILER_VC2008];
-  
+
 type
   // the comments are an example of the record
   PCompilerOption = ^TCompilerOption;
@@ -677,6 +678,7 @@ type
     // Debug variable browser
     fWatchHint: boolean; // watch variable under mouse
     fWatchError: boolean; // report watch errors
+
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -807,7 +809,7 @@ var
   {$IFDEF PLUGIN_BUILD}
   devPluginToolbarsX: TdevPluginToolbarsX = nil;
   devPluginToolbarsY: TdevPluginToolbarsY = nil;
-  {$ENDIF PLUGIN_BUILD}  
+  {$ENDIF PLUGIN_BUILD}
 
   // Permanent alternate config file (need to be global vars)
   ConfigMode: (CFG_NORMAL, CFG_PARAM, CFG_USER) = CFG_NORMAL;
@@ -950,65 +952,103 @@ begin
   if (devCompilerSet.Sets.Count = 0) then
   begin      // EAB Comment: Why load all the compiler sets if not all are available?
     // init first-run
+
+ //   ID_COMPILER_MINGW = 0;
+ // ID_COMPILER_VC2005 = 1;
+//  ID_COMPILER_VC2003 = 2;
+//  ID_COMPILER_VC6 = 3;
+//  ID_COMPILER_DMARS = 4;
+//  ID_COMPILER_VC2008 = 5;
+//  ID_COMPILER_BORLAND = 6;
+//  ID_COMPILER_WATCOM = 7;
+//  ID_COMPILER_LINUX = 8;
+
     devCompilerSet.Sets.Add(GCC_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2005_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2003_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC6_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(DMARS_DEFCOMPILERSET);
     devCompilerSet.Sets.Add(VC2008_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(BORLAND_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(WATCOM_DEFCOMPILERSET);
+    devCompilerSet.Sets.Add(LINUX_DEFCOMPILERSET);
 
     //devCompilerSet.WriteSets;
 
     devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
-    devdirs.fCompilerType:=0;  // EAB Comment: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
+    devdirs.fCompilerType:=ID_COMPILER_MINGW;  // EAB Comment: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(0);
-    devCompilerSet.LoadSetDirs(0);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_MINGW);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_MINGW);
     if MainForm  <> nil then
-        devCompilerSet.SaveSet(0);
+        devCompilerSet.SaveSet(ID_COMPILER_MINGW);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC2005;
     devdirs.fCompilerType:=ID_COMPILER_VC2005;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(1);
-    devCompilerSet.LoadSetDirs(1);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2005);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2005);
     if MainForm  <> nil then
-        devCompilerSet.SaveSet(1);
+        devCompilerSet.SaveSet(ID_COMPILER_VC2005);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC2003;
     devdirs.fCompilerType:=ID_COMPILER_VC2003;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(2);
-    devCompilerSet.LoadSetDirs(2);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2003);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2003);
     if MainForm  <> nil then
-        devCompilerSet.SaveSet(2);
+        devCompilerSet.SaveSet(ID_COMPILER_VC2003);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC6;
     devdirs.fCompilerType:=ID_COMPILER_VC6;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(3);
-    devCompilerSet.LoadSetDirs(3);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC6);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC6);
     if MainForm  <> nil then
-        devCompilerSet.SaveSet(3);
+        devCompilerSet.SaveSet(ID_COMPILER_VC6);
 
     devCompilerSet.CompilerType :=ID_COMPILER_DMARS;
     devdirs.fCompilerType:=ID_COMPILER_DMARS;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(4);
-    devCompilerSet.LoadSetDirs(4);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_DMARS);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_DMARS);
     if MainForm  <> nil then
-        devCompilerSet.SaveSet(4);
+        devCompilerSet.SaveSet(ID_COMPILER_DMARS);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC2008;   // EAB TODO: Check this logic. Maybe, move above and change numbering
     devdirs.fCompilerType:=ID_COMPILER_VC2008;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(5);
-    devCompilerSet.LoadSetDirs(5);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2008);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2008);
     if MainForm  <> nil then
-        devCompilerSet.SaveSet(5);
+        devCompilerSet.SaveSet(ID_COMPILER_VC2008);
 
+    devCompilerSet.CompilerType :=ID_COMPILER_BORLAND;
+    devdirs.fCompilerType:=ID_COMPILER_BORLAND;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_BORLAND);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_BORLAND);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(ID_COMPILER_BORLAND);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_WATCOM;
+    devdirs.fCompilerType:=ID_COMPILER_WATCOM;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_WATCOM);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_WATCOM);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(ID_COMPILER_WATCOM);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_LINUX;
+    devdirs.fCompilerType:=ID_COMPILER_LINUX;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_LINUX);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_LINUX);
+    if MainForm  <> nil then
+        devCompilerSet.SaveSet(ID_COMPILER_LINUX);
+      
     //Reset the compiler type back to GCC
-    devdirs.fCompilerType:=1;
+    devdirs.fCompilerType:=ID_COMPILER_MINGW;
     devdirs.SettoDefaults;
     //Guru: todo: Add More Compiler default sets here
 
@@ -1029,50 +1069,82 @@ begin
 
     devCompilerSet.WriteSets;
 
+//   ID_COMPILER_MINGW = 0;
+ // ID_COMPILER_VC2005 = 1;
+//  ID_COMPILER_VC2003 = 2;
+//  ID_COMPILER_VC6 = 3;
+//  ID_COMPILER_DMARS = 4;
+//  ID_COMPILER_VC2008 = 5;
+//  ID_COMPILER_BORLAND = 6;
+//  ID_COMPILER_WATCOM = 7;
+//  ID_COMPILER_LINUX = 8;
+
+
     devCompilerSet.CompilerType :=ID_COMPILER_MINGW;
-    devdirs.fCompilerType:=0;  // EAB: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
+    devdirs.fCompilerType:=ID_COMPILER_MINGW;  // EAB: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
     devdirs.SettoDefaults;  // EAB: this shouldn't be called this way because it messes up with the user AppData Folder settings.
-    devCompilerSet.LoadSetProgs(0);
-    devCompilerSet.LoadSetDirs(0);
-    devCompilerSet.SaveSet(0);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_MINGW);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_MINGW);
+    devCompilerSet.SaveSet(ID_COMPILER_MINGW);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC2005;
     devdirs.fCompilerType:=ID_COMPILER_VC2005;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(1);
-    devCompilerSet.LoadSetDirs(1);
-    devCompilerSet.SaveSet(1);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2005);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2005);
+    devCompilerSet.SaveSet(ID_COMPILER_VC2005);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC2003;
     devdirs.fCompilerType:=ID_COMPILER_VC2003;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(2);
-    devCompilerSet.LoadSetDirs(2);
-    devCompilerSet.SaveSet(2);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2003);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2003);
+    devCompilerSet.SaveSet(ID_COMPILER_VC2003);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC6;
     devdirs.fCompilerType:=ID_COMPILER_VC6;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(3);
-    devCompilerSet.LoadSetDirs(3);
-    devCompilerSet.SaveSet(3);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC6);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC6);
+    devCompilerSet.SaveSet(ID_COMPILER_VC6);
 
     devCompilerSet.CompilerType :=ID_COMPILER_DMARS;
     devdirs.fCompilerType:=ID_COMPILER_DMARS;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(4);
-    devCompilerSet.LoadSetDirs(4);
-    devCompilerSet.SaveSet(4);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_DMARS);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_DMARS);
+    devCompilerSet.SaveSet(ID_COMPILER_DMARS);
 
     devCompilerSet.CompilerType :=ID_COMPILER_VC2008;   // EAB TODO: Check this logic. Maybe, move above and change numbering
     devdirs.fCompilerType:=ID_COMPILER_VC2008;
     devdirs.SettoDefaults;
-    devCompilerSet.LoadSetProgs(5);
-    devCompilerSet.LoadSetDirs(5);
-    devCompilerSet.SaveSet(5);
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2008);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2008);
+    devCompilerSet.SaveSet(ID_COMPILER_VC2008);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_BORLAND;
+    devdirs.fCompilerType:=ID_COMPILER_BORLAND;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_BORLAND);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_BORLAND);
+    devCompilerSet.SaveSet(ID_COMPILER_BORLAND);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_WATCOM;
+    devdirs.fCompilerType:=ID_COMPILER_WATCOM;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_WATCOM);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_WATCOM);
+    devCompilerSet.SaveSet(ID_COMPILER_WATCOM);
+
+    devCompilerSet.CompilerType :=ID_COMPILER_LINUX;
+    devdirs.fCompilerType:=ID_COMPILER_LINUX;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_LINUX);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_LINUX);
+    devCompilerSet.SaveSet(ID_COMPILER_LINUX);
 
     //Reset the compiler type back to GCC
-    devdirs.fCompilerType:=1;
+    devdirs.fCompilerType:=ID_COMPILER_MINGW;
     devdirs.SettoDefaults;
     //Guru: todo: Add More Compiler default sets here
 
@@ -2253,12 +2325,25 @@ begin
     if  MainForm <> nil then
     begin
         for i := 0 to MainForm.pluginsCount - 1 do
-            fCppDir := fCppDir + ';' + ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);    // EAB TODO: make it multiplugin functional.
+        begin
+            if (fCppDir = '') then
+              fCppDir := fCppDir + ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy)    // EAB TODO: make it multiplugin functional.
+            else
+              fCppDir := fCppDir + ';' + ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);    // EAB TODO: make it multiplugin functional.
+        end
     end;
 
 {$ELSE}
   fRCDir  := '';
 {$ENDIF}
+
+if (fCompilerType = ID_COMPILER_LINUX) then
+begin
+   fCppDir := '';
+   fCDir := '';
+   fRCDir := '';
+   fBinDir := '/usr/local/sbin;/usr/local/bin;/usr/sbin;/usr/bin;/sbin;/bin';
+end;
 
   fExec := ExtractFilePath(Application.ExeName);
   if(fConfig = '') then    // EAB: workaround because of weird calls from InitializeOptionsAfterPlugins that can't be removed for now, or compiler folders get screwed.
@@ -2667,7 +2752,8 @@ begin
   devDirs.RC := RCDir;
   devDirs.compilerType := compilerType;
 
-  if devCompiler.CompilerType = ID_COMPILER_MINGW then
+  if ( (devCompiler.CompilerType = ID_COMPILER_MINGW) or
+        (devCompiler.CompilerType = ID_COMPILER_LINUX) ) then
   begin
     OBJ_EXT := '.o';
     LIB_EXT := '.a';
@@ -2764,34 +2850,35 @@ begin
      //check for valid paths
      msg := '';
      goodBinDir := ValidatePaths(fBinDir, tempStr);
-     if tempStr <> '' then
+     if ((tempStr <> '')) then
      begin
        msg := msg + 'Following Bin directories don''t exist:' + #13#10;
        msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
        msg := msg + #13#10 + #13#10;
      end;
      goodCDir := ValidatePaths(fCDir, tempStr);
-     if tempStr <> '' then
+     if ((tempStr <> '')) then
      begin
        msg := msg + 'Following C Include directories don''t exist:' + #13#10;
        msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
        msg := msg + #13#10 + #13#10;
      end;
      goodCppDir := ValidatePaths(fCppDir, tempStr);
-     if tempStr <> '' then
+     if ((tempStr <> '')) then
      begin
        msg := msg + 'Following C++ Include directories don''t exist:' + #13#10;
        msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
        msg := msg + #13#10 + #13#10;
      end;
      goodLibDir := ValidatePaths(fLibDir, tempStr);
-     if tempStr <> '' then
+     if ((tempStr <> '')) then
      begin
        msg := msg + 'Following Libs directories don''t exist:' + #13#10;
        msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
        msg := msg + #13#10 + #13#10;
      end;
      {$IFDEF PLUGIN_BUILD}
+
      goodRCDir := ValidatePaths(fRCDir, tempStr);
      if tempStr <> '' then
      begin
@@ -2800,6 +2887,12 @@ begin
        msg := msg + #13#10 + #13#10;
      end;
      {$ENDIF}
+
+     // GAR 16 Nov 2009
+     // Wine hack
+     // Remove check for paths
+     msg := '';
+
      if msg <> '' then
      begin
        msg := msg + 'Would you like Dev-C++ to remove them for you '
@@ -2810,7 +2903,7 @@ begin
          + 'Unless you know exactly what you''re doing, it is recommended '
          + 'that you click Yes';
 
-       if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then    // EAB TODO:* These messages could appear sencuentially multiple times depending on the amount of templates being read for a project. We need to fix this. 
+       if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then    // EAB TODO:* These messages could appear sencuentially multiple times depending on the amount of templates being read for a project. We need to fix this.
        begin
          fBinDir := goodBinDir;
          fCDir := goodCDir;
@@ -3074,7 +3167,8 @@ begin
     fSingleCompile          := '%s /nologo "%s" %s %s /link %s';
     fPreprocDefines         := '-D%s';
   end
-  else if CompilerType = ID_COMPILER_MINGW then
+  else if ((CompilerType = ID_COMPILER_MINGW) or
+        (CompilerType = ID_COMPILER_LINUX) ) then
   begin
     fCheckSyntaxFormat      := '%s -o nul';
     fOutputFormat           := '-c %s -o %s';

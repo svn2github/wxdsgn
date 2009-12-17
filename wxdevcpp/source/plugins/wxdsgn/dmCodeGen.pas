@@ -30,7 +30,7 @@ unit dmCodeGen;
 
 interface
 
-uses classes, Sysutils, DbugIntf,xprocs,synEdit;
+uses classes, Sysutils, xprocs,synEdit;
 
 type
     TBlockType = (btManualCode,btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btClassNameEnumControlIdentifiers,btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration,btLHSVariables,btRHSVariables);

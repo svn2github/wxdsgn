@@ -2245,7 +2245,10 @@ begin
 
   //When we don't invalidate the SynEditor here, it occurs sometimes that
   //fragments of the codecompletion listbox are stuff displayed on the SynEdit
-  fText.Invalidate;
+  //fText.Invalidate;
+
+  // GAR 11/30/2009 - Trying to correct bug report submitted by mrHappyPants
+  fText.Refresh
 end;
 
 // Editor needs to be told when class browser has been recreated otherwise AV !

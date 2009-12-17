@@ -31,7 +31,7 @@ unit wxHyperLinkCtrl;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel, WxToolBar, dbugintf;
+  Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel, WxToolBar;
 
 {
 *************IMPORTANT*************

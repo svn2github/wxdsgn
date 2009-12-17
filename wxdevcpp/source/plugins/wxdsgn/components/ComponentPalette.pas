@@ -25,7 +25,7 @@ interface
 
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  ExtCtrls, StdCtrls, ComCtrls, Dialogs, DbugIntf;
+  ExtCtrls, StdCtrls, ComCtrls, Dialogs; 
 
 type
   TComponentPalette = class(TPanel)
@@ -311,7 +311,7 @@ begin
             if ComponentBitmap.Width = 0 then
             begin
               //Still zero!
-              SendDebug(UpperCase(CurrentComponent));
+             // SendDebug(UpperCase(CurrentComponent));
               Continue;
             end;
           end;

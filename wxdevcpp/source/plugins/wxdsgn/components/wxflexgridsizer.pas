@@ -30,7 +30,7 @@ unit WxFlexGridSizer;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, dbugintf, wxAuiManager;
+  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, wxAuiManager;
 
 type
   TWxFlexGridSizer = class(TWxSizerPanel, IWxComponentInterface,

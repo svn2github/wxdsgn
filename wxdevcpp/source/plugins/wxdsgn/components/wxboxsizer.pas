@@ -30,7 +30,7 @@ unit WxBoxSizer;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, dbugIntf, Dialogs, wxAuiManager;
+  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, Dialogs, wxAuiManager;
 
 type
   TWxBoxSizer = class(TWxSizerPanel, IWxComponentInterface,
