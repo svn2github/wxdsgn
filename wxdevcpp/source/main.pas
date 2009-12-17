@@ -6584,27 +6584,55 @@ var
   idx: integer;
   current: integer;
   e: TEditor;
-  curFilename: string;
+  curFilename, tempFileName: string;
 {$IFDEF PLUGIN_BUILD}
-  tempEditor: TEditor;
-  pluginCatched : Boolean;
+  //tempEditor: TEditor;
+  //pluginCatched : Boolean;
 {$ENDIF}  
 begin
   idx := 0;
   current := PageControl.ActivePageIndex;
-  curFilename := AnsiLowerCase(GetEditor(current).FileName);
+
+  // EAB: this could be used if we want to enforce Unit behavior for open tabs, but it is not consistent right now, so I disabled this
+  {curFilename := AnsiLowerCase(GetEditor(current).FileName);
+
+  tempEditor := GetEditor(current);
+  tempFileName := ChangeFileExt(tempEditor.FileName, '');
+  while idx < PageControl.PageCount do
+  begin
+      tempEditor := nil;
+      if idx <> current then
+      begin
+          tempEditor := GetEditor(idx);
+          if (tempFileName = ChangeFileExt(tempEditor.FileName, '')) and (tempEditor.AssignedPlugin <> '') then
+              break
+          else
+              tempEditor := nil;
+      end;
+      idx := idx + 1;
+  end;
+  idx := 0;}
   while idx < PageControl.PageCount do
   begin
 {$IFDEF PLUGIN_BUILD}
+    {curFilename := AnsiLowerCase(GetEditor(idx).FileName);
     pluginCatched := false;
-    tempEditor := GetEditor(idx);
-    if tempEditor.AssignedPlugin <> '' then
+    if tempEditor <> nil then
         pluginCatched := plugins[unit_plugins[tempEditor.AssignedPlugin]].ShouldNotCloseEditor(tempEditor.FileName, curFilename);
+    }
 {$ENDIF}
-    if (idx = current) or pluginCatched then
+    if (idx = current) then //or pluginCatched then
       idx := idx + 1
-    else if not CloseEditor(idx, True) then
-      Break;
+    else
+    begin
+        if not CloseEditor(idx, true, true) then     // EAB: use true in third parameter to prevent closing all unit files
+            Break
+        else
+        begin
+            if idx < current then
+                current := current - 1;
+        end;
+    end;
   end;
 
   e := GetEditor;
