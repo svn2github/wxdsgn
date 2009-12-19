@@ -401,16 +401,9 @@ begin
   CloseHandle(Event);
   RemoveAllBreakpoints; 
 
-  // GAR 12/16/09 - Sleep 10 seconds to wait for gdb to end
-  //  This is a hack to fix slower CPUs.
- // Screen.Cursor := crHourglass;
- // Sleep(2000);
- // Screen.Cursor := crDefault;
-
   CurOutput.Free;
   CommandQueue.Free;
   IncludeDirs.Free;
-
   inherited Destroy;
 end;
 
@@ -430,11 +423,8 @@ begin
   sa.bInheritHandle := true;
 
   // Create the child output pipe.
-  if (not CreatePipe(hOutputRead, hOutputWrite, @sa, 0)) then
+  if (not CreatePipe(hOutputReadTmp, hOutputWrite, @sa, 0)) then
     DisplayError('CreatePipe');
-
-  if (not SetHandleInformation(hOutputRead, HANDLE_FLAG_INHERIT, 0))  then
-    DisplayError('SetHandle hOutputRead');
 
   // Create a duplicate of the output write handle for the std error
   // write handle. This is necessary in case the child application
@@ -445,34 +435,31 @@ begin
     DisplayError('DuplicateHandle');
 
   // Create the child input pipe.
-  if (not CreatePipe(hInputRead, hInputWrite, @sa, 0)) then
+  if (not CreatePipe(hInputRead, hInputWriteTmp, @sa, 0)) then
     DisplayError('CreatePipe');
-
-  if (not SetHandleInformation(hInputWrite, HANDLE_FLAG_INHERIT, 0))    then
-    DisplayError('SetHandle hInputWrite');
 
   // Create new output read handle and the input write handles.
   // The Properties are set to FALSE, otherwise the child inherits the
   // properties and as a result non-closeable handles to the pipes
   // are created.
- // if (not DuplicateHandle(GetCurrentProcess(), hOutputReadTmp,
- //   GetCurrentProcess(), @hOutputRead, // Address of new handle.
- //   0, false, // Make it uninheritable.
- //   DUPLICATE_SAME_ACCESS)) then
- //   DisplayError('DuplicateHandle');
+  if (not DuplicateHandle(GetCurrentProcess(), hOutputReadTmp,
+    GetCurrentProcess(), @hOutputRead, // Address of new handle.
+    0, false, // Make it uninheritable.
+    DUPLICATE_SAME_ACCESS)) then
+    DisplayError('DuplicateHandle');
 
-  //if (not DuplicateHandle(GetCurrentProcess(), hInputWriteTmp,
-  //  GetCurrentProcess(), @hInputWrite, // Address of new handle.
-  //  0, false, // Make it uninheritable.
-  //  DUPLICATE_SAME_ACCESS)) then
-  //  DisplayError('DuplicateHandle');
+  if (not DuplicateHandle(GetCurrentProcess(), hInputWriteTmp,
+    GetCurrentProcess(), @hInputWrite, // Address of new handle.
+    0, false, // Make it uninheritable.
+    DUPLICATE_SAME_ACCESS)) then
+    DisplayError('DupliateHandle');
 
   // Close inheritable copies of the handles you we not want to be
   // inherited.
- // if (not CloseHandle(hOutputReadTmp)) then
- //   DisplayError('CloseHandle');
- // if (not CloseHandle(hInputWriteTmp)) then
- //   DisplayError('CloseHandle');
+  if (not CloseHandle(hOutputReadTmp)) then
+    DisplayError('CloseHandle');
+  if (not CloseHandle(hInputWriteTmp)) then
+    DisplayError('CloseHandle');
 
   // Create a thread that will read the child's output.
   Reader := TDebugReader.Create(true);
@@ -480,6 +467,9 @@ begin
   Reader.Event := Event;
   Reader.OnTerminate := CloseDebugger;
   Reader.FreeOnTerminate := True;
+  Reader.Resume;  //Revised by Jason Jiang solved the error when started to debug,
+                  //nothing output in Debug/Watch window and the menu items "Step into"
+                  //and "step over" were grayed and did not stop at a breakpoint line
 
   // Create a thread that will notice when an output is ready to be sent for processing
   Wait := TDebugWait.Create(true);
@@ -509,13 +499,6 @@ begin
     Exit;
   end;
 
-  // GAR 12/16/09 - Wait for reader to start parsing messages from gdb
-  //  This is a hack to fix slower CPUs.
-  Screen.Cursor := crHourglass;
-  Reader.Resume;
- // while (Reader.Output = '') do;
-  Screen.Cursor := crDefault;
-
   // Okay the process is running: set our flag
   fExecuting := True;
 
@@ -539,8 +522,9 @@ begin
 
   //Run both wait threads
   Wait.Resume;
-  Reader.Resume;
-
+  //Reader.Resume; //This line of code caused an error as reported above and in the forum
+                   //I moved it up just before the pocess of GDB.exe created,then everything
+                   //went OK!
 end;
 
 procedure TDebugger.DisplayError(s: string);
@@ -667,8 +651,6 @@ begin
     end;
   until Copied >= CommandLength;
 
-//  FlushFileBuffers(hInputWrite);
-  
   //Call the callback function if we are provided one
   if Assigned(CurrentCommand.Callback) then
     CurrentCommand.Callback;
@@ -690,8 +672,7 @@ begin
   if MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     CloseDebugger(nil);
-    if ( (devCompiler.CompilerType = ID_COMPILER_MINGW) or
-        (devCompiler.CompilerType = ID_COMPILER_LINUX) ) then
+    if devCompiler.CompilerType = ID_COMPILER_MINGW then
     begin
       if devCompiler.FindOption('-g3', opt, idx) then
       begin
@@ -915,8 +896,6 @@ begin
   //Run the thing!
   if Assigned(MainForm.fProject) then
     WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
-
-   
   Launch(Executable, WorkingDir);
 
   //Tell the wait function that another valid output terminator is the 0:0000 prompt
@@ -957,7 +936,7 @@ begin
     'Symbols*http://msdl.microsoft.com/download/symbols', pid]);
 
   //Run the thing!
-  Launch(Executable, '');
+  Launch(Executable);
 
   //Tell the wait function that another valid output terminator is the 0:0000 prompt
   Wait.OutputTerminators.Add(InputPrompt);
@@ -2388,7 +2367,6 @@ begin
   Launch(Executable, WorkingDir);
 
   //Tell GDB which file we want to debug
-  QueueCommand('interp', 'mi');
   QueueCommand('set', 'height 0');
   QueueCommand('file', '"' + filename + '"');
   QueueCommand('set args', arguments);
@@ -2410,7 +2388,7 @@ begin
     Executable := devCompiler.gdbName
   else
     Executable := DBG_PROGRAM(devCompiler.CompilerType);
-  Executable := Executable + ' --annotate=2 --silent';
+  Executable := Executable + ' --annotate=3 --silent';
 
   //Add in the include paths
   for I := 0 to IncludeDirs.Count - 1 do
@@ -2419,7 +2397,7 @@ begin
     Executable := Executable + ' ' + Includes;
 
   //Launch the process
-  Launch(Executable, '');
+  Launch(Executable);
 
   //Tell GDB which file we want to debug
   QueueCommand('set', 'height 0');

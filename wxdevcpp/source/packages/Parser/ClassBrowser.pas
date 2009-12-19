@@ -136,6 +136,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded;override;   //Added by Jason Jiang to solve the problem when dropped to a
+                                 //design surface caused an error of "Control " has no parent window"
     procedure UpdateView;
     procedure ShowSampleData;
     procedure Clear;
@@ -288,11 +290,16 @@ begin
     sl.Free;
   end;
 end;
+//Added by Jason Jiang
+procedure TClassBrowser.Loaded;
+begin
+  DesktopFont := True;
+end;
 
 constructor TClassBrowser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  DesktopFont := True;
+  //DesktopFont := True;    //This line of code caused a design time error moved to Loaded procedure ---- Jason Jiang
   OnMouseUp := OnNodeChange;
   OnMouseDown := OnNodeChanging;
   DragMode := dmAutomatic;
