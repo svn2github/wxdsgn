@@ -334,21 +334,12 @@ begin
   sa.lpSecurityDescriptor := nil;
   sa.bInheritHandle := True;
 
-  CreatePipe(hOutputReadTmp, hOutputWrite, @sa, 0);
-  DuplicateHandle(GetCurrentProcess(), hOutputWrite, GetCurrentProcess(),
-    @hErrorWrite, 0, true, DUPLICATE_SAME_ACCESS);
-  CreatePipe(hInputRead, hInputWriteTmp, @sa, 0);
+  CreatePipe(hOutputRead, hOutputWrite, @sa, 0);
 
-  // Create new output read handle and the input write handle. Set
-  // the inheritance properties to FALSE. Otherwise, the child inherits
-  // the these handles; resulting in non-closeable handles to the pipes
-  // being created.
-  DuplicateHandle(GetCurrentProcess(), hOutputReadTmp, GetCurrentProcess(),
-    @hOutputRead, 0, false, DUPLICATE_SAME_ACCESS);
-  DuplicateHandle(GetCurrentProcess(), hInputWriteTmp, GetCurrentProcess(),
-    @hInputWrite, 0, false, DUPLICATE_SAME_ACCESS);
-  CloseHandle(hOutputReadTmp);
-  CloseHandle(hInputWriteTmp);
+  if (not SetHandleInformation(hOutputRead, HANDLE_FLAG_INHERIT, 0))  then
+    ShowMessage('SetHandle hOutputRead');
+
+  CreatePipe(hInputRead, hInputWriteTmp, @sa, 0);
 
   FillChar(tsi, SizeOf(TStartupInfo), 0);
   tsi.cb := SizeOf(TStartupInfo);
