@@ -654,7 +654,7 @@ BEGIN
 	version_VC2005_RC_INCLUDE_DIR,	"include\\common;"
 	version_VC2003_BIN_DIR,	"Bin\\VC2003;Bin;"
 	version_VC2003_LIB_DIR,	"Lib\\VC2003"
-	version_DEVCPP_VERSION,	"7.3.0.1"
+	version_DEVCPP_VERSION,	"7.3"
 	version_DEVCPP_WEBPAGE,	"http://wxdsgn.sourceforge.net/"
 	version_DEFAULT_LANG_FILE,	"English.lng"
 	version_HTTP,	"http://"
