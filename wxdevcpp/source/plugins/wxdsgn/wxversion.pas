@@ -11,7 +11,7 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'wxDev-C++';
-  WXDEVCPP_VERSION = '7.2.0.2';
+  WXDEVCPP_VERSION = '7.3.0.1';
 
   // EAB Comment: I think this would be better if stored on a config file and not compiled along with the plugin.
   COMMON_CPP_INCLUDE_DIR      =

@@ -3948,6 +3948,7 @@ end;
 procedure TMainForm.actCloseExecute(Sender: TObject);
 begin
   CloseEditor(PageControl.ActivePageIndex, True);
+  UpdateAppTitle;
 end;
 
 procedure TMainForm.actCloseAllExecute(Sender: TObject);

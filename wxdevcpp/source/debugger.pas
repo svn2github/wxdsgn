@@ -2367,6 +2367,7 @@ begin
 
   //Tell GDB which file we want to debug
   QueueCommand('interp', 'mi');
+  QueueCommand('set', 'new-console on'); // For console applications
   QueueCommand('set', 'height 0');
   QueueCommand('file', '"' + filename + '"');
   QueueCommand('set args', arguments);
@@ -3332,8 +3333,11 @@ end;
 procedure TGDBDebugger.OnDisassemble(Output: TStringList);
 begin
   //Delete the first and last entries (Dump of assembler code for function X and End Dump)
-  Output.Delete(Output.Count - 1);
-  Output.Delete(0);
+  if (Output.Count > 0) then
+  begin
+     Output.Delete(Output.Count - 1);
+     Output.Delete(0);
+  end;
 
   //Pass the disassembly to the callback function that wants it
   if Assigned(TDebugger(Self).OnDisassemble) then

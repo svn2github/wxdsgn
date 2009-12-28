@@ -243,6 +243,7 @@ procedure TFormObj.WndProc(var Message: TMessage);
 begin
   OrgProc(Message);
   if (Message.Msg = WM_UPDATEUISTATE) then
+  if (TFormObj <> nil) then
     NeedRepaint := True;
 end;
 
