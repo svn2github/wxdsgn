@@ -13,13 +13,13 @@
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.0"
+!define WXDEVCPP_VERSION "7.2.0.2"
 !define IDE_DEVPAK_NAME  "wxdevcpp.DevPak"
 !define PROGRAM_TITLE "wxDev-C++"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "devcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxDev-C++"
-!define DISPLAY_NAME "${PROGRAM_TITLE} ${WXDEVCPP_VERSION}"
+
 !define MSVC_VERSION "9.0" ; 2005 = version 8.0, 2008 = version 9.0
 !define MSVC_YEAR "2008"
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
@@ -193,16 +193,19 @@ ${ENDIF}
 
 # [Installer Attributes]
 
-Name "${DISPLAY_NAME}"
-!ifdef HAVE_MINGW 
+!ifdef HAVE_MINGW
 !ifdef DONT_INCLUDE_DEVPAKS ; If we don't include them here, we'll need to download them at install time
-OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_setup.exe"
+OutFile "${PROGRAM_NAME}_webbased_setup.exe"
+!define DISPLAY_NAME "${PROGRAM_TITLE} Web-based Installer"
 !else
 OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_full_setup.exe"
+!define DISPLAY_NAME "${PROGRAM_TITLE} ${WXDEVCPP_VERSION}"
 !endif
 !else
 OutFile "${PROGRAM_NAME}_${WXDEVCPP_VERSION}_nomingw_setup.exe"
 !endif
+
+Name "${DISPLAY_NAME}"
 Caption "${DISPLAY_NAME}"
 
 # [Licence Attributes]
@@ -945,6 +948,7 @@ exists:
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   SetOutPath $INSTDIR
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROGRAM_TITLE}.lnk" "$INSTDIR\${EXECUTABLE_NAME}"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Update ${PROGRAM_TITLE}.lnk" "$INSTDIR\updater.exe"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_TITLE}.lnk" "$INSTDIR\uninstall.exe"
 
