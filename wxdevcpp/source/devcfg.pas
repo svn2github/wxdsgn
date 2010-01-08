@@ -3160,11 +3160,11 @@ begin
     fLinkerPaths            := ' "%s" ';
     fIncludeFormat          := '-I"%s"';
     fDllFormat              := '/dll /implib:%s /out:%s';
-    fLibFormat              := '/lib /NOLOGO /out:"%s"';
+    fLibFormat              := '/lib /out:"%s"';
     fPchCreateFormat        := '/Yc%s';
     fPchUseFormat           := '/Yu%s';
     fPchFileFormat          := '/Fp%s';
-    fSingleCompile          := '%s /nologo "%s" %s %s /link %s';
+    fSingleCompile          := '%s "%s" %s %s /link %s';
     fPreprocDefines         := '-D%s';
   end
   else if ((CompilerType = ID_COMPILER_MINGW) or

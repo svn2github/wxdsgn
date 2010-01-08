@@ -14,17 +14,18 @@ object NewProjectForm: TNewProjectForm
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    559
-    274)
+    567
+    276)
   PixelsPerInch = 96
   TextHeight = 13
   object lblPrjName: TLabel
     Left = 80
     Top = 57
-    Width = 85
+    Width = 34
     Height = 13
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Name: '

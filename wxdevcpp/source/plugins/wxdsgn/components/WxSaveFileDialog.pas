@@ -147,7 +147,7 @@ begin
   { Code to perform other tasks when the component is created }
   FWx_PropertyList.add('Wx_DialogStyle:File Dialog Style');
 
-  FWx_PropertyList.add('wxHIDE_READONLY:wxHIDE_READONLY');
+ // FWx_PropertyList.add('wxHIDE_READONLY:wxHIDE_READONLY');
   FWx_PropertyList.add('wxOVERWRITE_PROMPT:wxOVERWRITE_PROMPT');
   FWx_PropertyList.add('wxCHANGE_DIR:wxCHANGE_DIR');
 

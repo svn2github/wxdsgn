@@ -2452,6 +2452,10 @@ var
     //Empty lines
     else if Trim(line) = '' then
       Exit
+    else if (line = 'value-history-value') or (line = 'value-history-end')
+       or (Pos('value-history-begin', line) = 1) or
+       RegExp.Exec(line, '\$([0-9]+) =') then
+       Exit
     else if Pos('(gdb) ', line) = 1 then
     begin
       //The debugger is waiting for input, we're paused!
