@@ -62,7 +62,7 @@ AutoIncBuild=0
 MajorVer=7
 MinorVer=3
 Release=0
-Build=1
+Build=5
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=wxDev-C++ RAD add-on
-FileVersion=7.3.0.1
+FileVersion=7.3.0.5
 InternalName=
 LegalCopyright=
 LegalTrademarks=

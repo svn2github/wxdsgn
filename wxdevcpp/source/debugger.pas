@@ -2354,6 +2354,8 @@ begin
     Executable := DBG_PROGRAM(devCompiler.CompilerType);
   Executable := Executable + ' --annotate=2 --silent';
 
+  //Executable := Executable + ' --interpreter=mi ';
+
   //Add in the include paths
   for I := 0 to IncludeDirs.Count - 1 do
     Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
@@ -2366,7 +2368,7 @@ begin
   Launch(Executable, WorkingDir);
 
   //Tell GDB which file we want to debug
-  QueueCommand('interp', 'mi');
+  //QueueCommand('interp', 'mi');
   QueueCommand('set', 'new-console on'); // For console applications
   QueueCommand('set', 'height 0');
   QueueCommand('file', '"' + filename + '"');
@@ -2447,7 +2449,8 @@ var
   begin
     //Exclude these miscellaneous messages
     if (line = 'pre-prompt') or (line = 'prompt') or (line = 'post-prompt') or
-       (line = 'frames-invalid') then
+       (line = 'frames-invalid') or (Pos('error', line) = 1)
+       or (line = '{') then
       Exit
     //Empty lines
     else if Trim(line) = '' then

@@ -5420,7 +5420,7 @@ begin
 
   if AnsiSameText(strChoice, 'CUS:') then
   begin
-    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+    Result := 'wxColour(' + strColorValue + ')';
     exit;
   end;
 
@@ -5432,77 +5432,77 @@ begin
 
   if AnsiSameText(strColorValue, 'BLACK') then
   begin
-    Result := 'wxColour(' + GetCppString('BLACK') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'BLUE') then
   begin
-    Result := 'wxColour(' + GetCppString('BLUE') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'CYAN') then
   begin
-    Result := 'wxColour(' + GetCppString('CYAN') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'DARK SLATE GREY') then
   begin
-    Result := 'wxColour(' + GetCppString('DARK SLATE GREY') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'LIGHT GREY') then
   begin
-    Result := 'wxColour(' + GetCppString('LIGHT GREY') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'GREEN') then
   begin
-    Result := 'wxColour(' + GetCppString('GREEN') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'GREY') then
   begin
-    Result := 'wxColour(' + GetCppString('GREY') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'LIME GREEN') then
   begin
-    Result := 'wxColour(' + GetCppString('LIME GREEN') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'MAROON') then
   begin
-    Result := 'wxColour(' + GetCppString('MAROON') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'NAVY') then
   begin
-    Result := 'wxColour(' + GetCppString('NAVY') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'PURPLE') then
   begin
-    Result := 'wxColour(' + GetCppString('PURPLE') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'RED') then
   begin
-    Result := 'wxColour(' + GetCppString('RED') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'SKY BLUE') then
   begin
-    Result := 'wxColour(' + GetCppString('SKY BLUE') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'YELLOW') then
   begin
-    Result := 'wxColour(' + GetCppString('YELLOW') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
   if AnsiSameText(strColorValue, 'WHITE') then
   begin
-    Result := 'wxColour(' + GetCppString('WHITE') + ')';
+    Result := 'wxColour(' + GetCppString(strColorValue) + ')';
     exit;
   end;
 
