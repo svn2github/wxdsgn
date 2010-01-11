@@ -4,8 +4,8 @@ object PictureEdit: TPictureEdit
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Picture Editor'
-  ClientHeight = 266
-  ClientWidth = 305
+  ClientHeight = 323
+  ClientWidth = 313
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
@@ -19,10 +19,17 @@ object PictureEdit: TPictureEdit
   object grpImage: TGroupBox
     Left = 8
     Top = 6
-    Width = 288
-    Height = 222
+    Width = 297
+    Height = 259
     Caption = 'Image'
     TabOrder = 1
+    object Label1: TLabel
+      Left = 8
+      Top = 216
+      Width = 42
+      Height = 13
+      Caption = 'Filename'
+    end
     object btnLoad: TButton
       Left = 208
       Top = 16
@@ -67,22 +74,39 @@ object PictureEdit: TPictureEdit
       TabOrder = 3
       OnClick = btnClearClick
     end
+    object FileName: TEdit
+      Left = 8
+      Top = 232
+      Width = 273
+      Height = 21
+      Hint = 'Filename'
+      ReadOnly = True
+      TabOrder = 4
+    end
   end
   object btnOK: TBitBtn
-    Left = 132
-    Top = 235
+    Left = 60
+    Top = 272
     Width = 80
     Height = 23
     TabOrder = 2
     Kind = bkOK
   end
   object btnCancel: TBitBtn
-    Left = 217
-    Top = 235
+    Left = 177
+    Top = 272
     Width = 80
     Height = 23
     TabOrder = 0
     Kind = bkCancel
+  end
+  object KeepFormat: TCheckBox
+    Left = 80
+    Top = 301
+    Width = 177
+    Height = 17
+    Caption = 'Keep original graphic format'
+    TabOrder = 3
   end
   object OpenDialog1: TOpenPictureDialog
     Filter = 
@@ -93,7 +117,7 @@ object PictureEdit: TPictureEdit
       '*.ico|Enhanced Metafiles (*.emf)|*.emf|Metafiles (*.wmf)|*.wmf|P' +
       'NG Files(*.png)|*.png|XPM Files(*.xpm)|*.xpm'
     Left = 8
-    Top = 232
+    Top = 269
   end
   object XPMenu: TXPMenu
     DimLevel = 30
@@ -124,6 +148,6 @@ object PictureEdit: TPictureEdit
     XPControls = [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox, xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox, xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel, xcTreeView, xcListView, xcProgressBar, xcHotKey]
     Active = False
     Left = 36
-    Top = 232
+    Top = 269
   end
 end

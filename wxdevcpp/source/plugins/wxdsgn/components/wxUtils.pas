@@ -732,6 +732,8 @@ function LocalConvertLibsToCurrentVersion(strValue: string): string;
 function Convert25LibsToCurrentVersion(strValue: string): string;
 function Convert26LibsToCurrentVersion(strValue: string): string;
 
+function GetExtension(FileName: string): string;
+
 function GetGridSelectionToString(grdsel: TWxGridSelection): string;
 function GetStdStyleString(stdStyle: TWxStdStyleSet): string;
 function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): string;
@@ -6667,24 +6669,71 @@ begin
   strClassName := UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName);
 
   if strClassName = UpperCase('TWxBitmapButton') then
+  begin
     PictureEdit.Image1.Picture.Assign(TWxBitmapButton(
       TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+    if (TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) then
+       PictureEdit.KeepFormat.State := cbChecked
+    else
+       PictureEdit.KeepFormat.State := cbUnchecked;
+
+    PictureEdit.FileName.Text := TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+  end;
 
   if strClassName = UpperCase('TWxCustomButton') then
+  begin
     PictureEdit.Image1.Picture.Assign(TWxCustomButton(
       TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+    if (TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) then
+       PictureEdit.KeepFormat.State := cbChecked
+    else
+       PictureEdit.KeepFormat.State := cbUnchecked;
+
+    PictureEdit.FileName.Text := TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+
+  end;
 
   if strClassName = UpperCase('TWxToolButton') then
+  begin
     PictureEdit.Image1.Picture.Assign(
       TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
 
+    if (TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) then
+       PictureEdit.KeepFormat.State := cbChecked
+    else
+       PictureEdit.KeepFormat.State := cbUnchecked;
+
+    PictureEdit.FileName.Text := TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+
+  end;
+
   if strClassName = UpperCase('TWxStaticBitmap') then
+  begin
     PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(
       TJvInspectorPropData(Self.GetData()).Instance).picture);
 
+    if (TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) then
+       PictureEdit.KeepFormat.State := cbChecked
+    else
+       PictureEdit.KeepFormat.State := cbUnchecked;
+
+    PictureEdit.FileName.Text := TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+
+  end;
+
   if strClassName = UpperCase('TFrmNewForm') then
+  begin
     PictureEdit.Image1.Picture.Assign(
       TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON);
+
+    if (TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) then
+       PictureEdit.KeepFormat.State := cbChecked
+    else
+       PictureEdit.KeepFormat.State := cbUnchecked;
+
+    PictureEdit.FileName.Text := TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+
+  end;
 
   try
     if PictureEdit.ShowModal = mrOk then
@@ -6700,12 +6749,28 @@ begin
           TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Width;
         TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Height :=
           TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Height;
+
+        if (PictureEdit.KeepFormat.State = cbChecked) then
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        else
+              TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+
+        TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+
       end;
 
       if strClassName = UpperCase('TFrmNewForm') then
       begin
         TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Assign(picObj);
         TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Bitmap.Transparent := True;
+
+        if (PictureEdit.KeepFormat.State = cbChecked) then
+             TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        else
+            TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+
+        TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+
       end;
 
       if strClassName = UpperCase('TWxBitmapButton') then
@@ -6713,6 +6778,14 @@ begin
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+
+        if (PictureEdit.KeepFormat.State = cbChecked) then
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        else
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+
+        TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+
       end;
 
       if strClassName = UpperCase('TWxCustomButton') then
@@ -6720,6 +6793,14 @@ begin
         TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
         TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
         TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+
+        if (PictureEdit.KeepFormat.State = cbChecked) then
+            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        else
+            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+
+        TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+
       end;
 
       if strClassName = UpperCase('TWxToolButton') then
@@ -6727,6 +6808,15 @@ begin
         TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
         TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
         TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+
+        if (PictureEdit.KeepFormat.State = cbChecked) then
+           TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        else
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+
+
+        TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+
       end;
 
       if assigned(TJvInspector(GetInspector).OnDataValueChanged) then
@@ -7104,6 +7194,23 @@ begin
   except
     Result.Destroy;
   end;
+end;
+
+function GetExtension(FileName: string): string;
+begin
+  if (UpperCase(ExtractFileExt(FileName)) = '.JPG') then
+     Result := 'JPG'
+  else if (UpperCase(ExtractFileExt(FileName)) = '.JPEG') then
+     Result := 'JPG'
+  else if (UpperCase(ExtractFileExt(FileName)) = '.ICO') then
+     Result := 'ICO'
+  else if (UpperCase(ExtractFileExt(FileName)) = '.BMP') then
+     Result := 'BMP'
+  else if (UpperCase(ExtractFileExt(FileName)) = '.GIF') then
+     Result := 'GIF'
+  else
+     Result := 'XPM';
+
 end;
 
 function GetLongName(const ShortPathName: string): string;

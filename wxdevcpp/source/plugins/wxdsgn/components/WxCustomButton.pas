@@ -27,7 +27,7 @@ unit WxCustomButton;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, StrUtils,
   Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxAuiToolBar, WxSizerPanel, Buttons, WxAuiNotebookPage,
   UValidator;
 
@@ -68,6 +68,8 @@ type
     FWx_Validator: string;
     FWx_ProxyValidatorString : TWxValidatorString;
     FWx_Comments: TStrings;
+    FKeepFormat : boolean;
+    FWx_Filename : string;
 
 //Aui Properties
     FWx_AuiManaged: Boolean;
@@ -191,6 +193,9 @@ type
     property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
 
+    property KeepFormat : boolean read FKeepFormat Write FKeepFormat default false;
+    property Wx_Filename : string read FWx_Filename Write FWx_Filename;
+
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
     property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
@@ -259,6 +264,7 @@ begin
   FWx_Bitmap             := TPicture.Create;
   FWx_ProxyValidatorString := TwxValidatorString.Create(self);
   FWx_Comments           := TStringList.Create;
+  FWx_Filename := '';
 
 end; { of AutoInitialize }
 
@@ -437,6 +443,15 @@ begin
 
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
+    if (KeepFormat) then
+    begin
+         Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+         Result := 'wxBitmap ' + self.Name + '_BITMAP' +
+         ' ("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+         GetExtension(Wx_FileName) + ');'
+
+    end
+    else
       Result := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
 
 if (XRCGEN) then
@@ -445,15 +460,12 @@ if (XRCGEN) then
     Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
     [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);  
  end
- else
- begin
-
-  Result := Result + #13 + Format(
+else
+   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue), GetCppString(self.Text),
     self.Name + '_BITMAP', GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
-end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -569,6 +581,7 @@ function TWxCustomButton.GenerateImageInclude: string;
 begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
+    if (not KeepFormat) then
       Result := '#include "Images/'+ GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm"';
 end;
 

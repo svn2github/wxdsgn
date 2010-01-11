@@ -28,7 +28,7 @@ interface
 
 uses
   GraphicEX, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, ExtDlgs,jpeg, XPMenu;
+  Dialogs, ExtCtrls, StdCtrls, Buttons, ExtDlgs,jpeg, XPMenu, StrUtils;
 
 type
   TPictureEdit = class(TForm)
@@ -42,6 +42,9 @@ type
     btnClear: TButton;
     btnOK: TBitBtn;
     XPMenu: TXPMenu;
+    KeepFormat: TCheckBox;
+    FileName: TEdit;
+    Label1: TLabel;
     procedure btnLoadClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -153,7 +156,9 @@ begin
     if OpenDialog1.Execute then
     begin
         bmpObj:=TBitMap.Create;
-        SetBitMapFromFile(bmpObj,OpenDialog1.FileName);
+        FileName.Text := OpenDialog1.FileName;
+        SetBitMapFromFile(bmpObj, OpenDialog1.FileName);
+
         Image1.Picture.Bitmap.Assign(bmpObj);
         bmpObj.destroy;
     end;

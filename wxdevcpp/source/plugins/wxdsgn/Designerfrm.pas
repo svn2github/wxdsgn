@@ -38,7 +38,7 @@ uses
   Wxcombobox, WxToolButton, WxSeparator, wxChoice,
   WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
   WxSizerPanel, WxSplitterWindow, wxAuiManager,
-  ComCtrls, SynEdit, Menus, xprocs;
+  ComCtrls, SynEdit, Menus, xprocs, StrUtils;
 
 type
 
@@ -93,6 +93,9 @@ type
     FWxDesignerType: TWxDesignerType;
     wx_PropertyList: TStringList;
     FWx_EventList: TStringList;
+
+    FKeepFormat : boolean;
+    FWx_Filename: string;
 
     { Read method for property Wx_EditStyle }
     function GetWx_DialogStyle: TWxDlgStyleSet;
@@ -207,6 +210,9 @@ type
     property Wx_ToolTips: string Read FWxFrm_ToolTips Write FWxFrm_ToolTips;
     property Wx_SizeToContents: boolean Read FWxFrm_SizeToContents Write FWxFrm_SizeToContents;
 
+    property KeepFormat : boolean read FKeepFormat Write FKeepFormat default false;
+    property Wx_Filename : string read FWx_Filename Write FWx_Filename;
+
     property Wx_GeneralStyle: TWxStdStyleSet Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
     property Wx_DialogStyle: TWxDlgStyleSet
         Read GetWx_DialogStyle Write SetWx_DialogStyle;
@@ -253,6 +259,7 @@ var
 //  wxAuiPaneInterface: IWxAuiPaneInterface;
   strEntry, strEventTableStart, strEventTableEnd: string;
   isSizerAvailable: boolean;
+  hasImage : boolean;
   //  isAuimanagerAvailable: boolean;
   strHdrValue: string;
   strStartStr, strEndStr: string;
@@ -260,17 +267,28 @@ var
   CntIntf: IWxContainerAndSizerInterface;
   strTemp: string;
 begin
+
   if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
   begin
     //Clear Declaration and Creation Field
     DeleteAllClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd);
-    
+
     isSizerAvailable := False;
     for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
     begin
       if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
       begin
         isSizerAvailable := True;
+        break;
+      end;
+    end;
+
+    hasImage := False;
+    for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+    begin
+      if frmNewForm.Components[i].GetInterface(IWxImageContainerInterface, CntIntf) then
+      begin
+        hasImage := True;
         break;
       end;
     end;
@@ -394,6 +412,10 @@ begin
     'wxInitAllImageHandlers();' + #13 + 'wxXmlResource::Get()->InitAllHandlers();' + #13 +'wxXmlResource::Get()->Load(' + StringFormat + '("' + strClassName + '.xml"));' + #13+'wxXmlResource::Get()->AddHandler(new wxRichTextCtrlXmlHandler);');
    end;
  end;
+
+ if (hasImage) then
+    AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd,
+      'wxInitAllImageHandlers();   //Initialize graphic format handlers' + #13);
 
   // RHS Variable
   if GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) then
@@ -1585,15 +1607,24 @@ begin
     end;
     end;
   strLst.add(Format('SetTitle(%s);', [GetCppString(self.Caption)]));
-  
+
   if assigned(Wx_ICON) then
+  begin
     if Wx_ICON.Bitmap.Handle = 0 then
       strLst.add('SetIcon(wxNullIcon);')
+    else
+    if (KeepFormat) then
+    begin
+    Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+     strLst.add('SetIcon(' + 'wxIcon("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+         GetExtension(Wx_FileName) + '));');
+    end
     else
     begin
       //strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +Self_'+self.Wx_Name + '_XPM' + ');');
       strLst.add('SetIcon(' + 'Self_'+self.Wx_Name + '_XPM' + ');');
-    end;
+    end
+  end;
 
   if trim(self.Wx_ToolTips) <> '' then
     strLst.add(Format('SetToolTip(%s);', [GetCppString(self.Wx_ToolTips)]));
@@ -1654,6 +1685,7 @@ begin
   Result := '';
   if assigned(Wx_ICON) then
     if Wx_ICON.Bitmap.Handle <> 0 then
+    if (not KeepFormat) then
       Result := '#include "Images/Self_'+ self.wx_Name + '_XPM.xpm"';
 end;
 

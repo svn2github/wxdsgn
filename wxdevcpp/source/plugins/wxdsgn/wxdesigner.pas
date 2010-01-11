@@ -3266,19 +3266,24 @@ begin
         if main.IsEditorAssigned then
         begin
           editorName := main.GetActiveEditorName;
-          if UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm') then
+          if ( (UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm'))
+            and (not TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat) ) then
             GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, 'Self', editorName);
 
-          if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxStaticBitmap') then
+          if ( ( UpperCase(SelectedComponent.ClassName) = UpperCase('TWxStaticBitmap') )
+            and (not TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat) ) then
             GenerateXPMDirectly(TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Picture.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-          if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton') then
+          if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton'))
+            and (not TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat) ) then
             GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-          if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxCustomButton') then
+          if ( (UpperCase(SelectedComponent.ClassName) = UpperCase('TWxCustomButton'))
+            and (not TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat) ) then
             GenerateXPMDirectly(TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-          if UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton') then
+          if ( (UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton'))
+           and (not TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat) ) then
             GenerateXPMDirectly(TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
         end;

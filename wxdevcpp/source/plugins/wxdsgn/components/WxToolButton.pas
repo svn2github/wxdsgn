@@ -27,7 +27,7 @@ unit WxToolButton;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, StrUtils,
   Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxSizerPanel, ComCtrls, Buttons;
 
 type
@@ -65,6 +65,8 @@ type
     FWx_Comments: TStrings;
     FWx_Alignment: TWxSizerAlignmentSet;
     FWx_BorderAlignment: TWxBorderAlignment;
+    FKeepFormat : boolean;
+    FWx_Filename: string;
     { Private methods of TWxButton }
 
     procedure AutoInitialize;
@@ -172,6 +174,10 @@ type
     property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
 
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+
+    property KeepFormat : boolean read FKeepFormat Write FKeepFormat default false;
+    property Wx_Filename : string read FWx_Filename Write FWx_Filename;
+
   end;
 
 procedure Register;
@@ -332,11 +338,16 @@ begin
     Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
 
     if assigned(Wx_Bitmap) then
-      Result.Add(IndentString + Format('<bitmap>Images/_%s</bitmap>', [self.Name + '_XPM.xpm']));
-{//xrc loads the bitmaps for you, filename needed
-    if assigned(Wx_DISABLE_BITMAP) then
-      Result.Add(IndentString + Format('<bitmap2>%s</bitmap2>', [self.Name + '_DISABLE_BITMAP']));
-}
+        if (KeepFormat) then
+       begin
+           Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+           Result.Add(IndentString + '<bitmap>' + '"' + Wx_FileName + '"' + '</bitmap>)');
+
+       end
+       else
+	Result.Add(IndentString + '<bitmap>Images/' + self.Name + '_XPM.xpm</bitmap>' );
+
+
     Result.Add(IndentString + Format('<tooltip>%s</tooltip>', [self.Wx_Tooltip]));
     Result.Add(IndentString + Format('<longhelp>%s</longhelp>', [self.Wx_HelpText]));
 
@@ -367,11 +378,20 @@ begin
 
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
+    if (KeepFormat) then
+    begin
+      Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+
+      strFirstBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' ("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+          GetExtension(Wx_FileName) + ');'
+    end
+    else
       strFirstBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
 
-  if assigned(Wx_DISABLE_BITMAP) then
+    if assigned(Wx_DISABLE_BITMAP) then
     if Wx_DISABLE_BITMAP.Bitmap.Handle <> 0 then
       strSecondBitmap := 'wxBitmap ' + self.Name + '_DISABLE_BITMAP' +' (' + GetDesignerFormName(self)+'_'+self.Name + '_DISABLE_BITMAP_XPM' + ');';
+
  if not(XRCGEN) then
  begin
   Result := GetCommentString(self.FWx_Comments.Text) + strFirstBitmap + #13 + strSecondBitmap;
@@ -412,6 +432,7 @@ function TWxToolButton.GenerateImageInclude: string;
 begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
+    if (not KeepFormat) then
       Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"';
 end;
 

@@ -27,7 +27,7 @@ unit WxBitmapButton;
 
 interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls, StrUtils,
   Forms, Graphics, StdCtrls, Wxutils, ExtCtrls, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel, Buttons,
   UValidator;
 
@@ -65,6 +65,8 @@ type
     FWx_Validator: string;
     FWx_ProxyValidatorString : TWxValidatorString;
     FWx_Comments: TStrings;
+    FKeepFormat : boolean;
+    FWx_Filename : string;
 
 //Aui Properties
     FWx_AuiManaged: Boolean;
@@ -183,6 +185,9 @@ type
     property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
     property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
 
+    property Wx_Filename : string Read FWx_Filename Write FWx_Filename;
+    property KeepFormat : boolean read FKeepFormat Write FKeepFormat default false;
+
     property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
     property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
     property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
@@ -248,6 +253,7 @@ begin
   FWx_Bitmap             := TPicture.Create;
   FWx_ProxyValidatorString := TwxValidatorString.Create(self);
   FWx_Comments           := TStringList.Create;
+  FWx_Filename           := '';
 
 end; { of AutoInitialize }
 
@@ -285,6 +291,7 @@ begin
   FWx_PropertyList.add('wxBU_RIGHT:wxBU_RIGHT');
   FWx_PropertyList.add('wxBU_BOTTOM:wxBU_BOTTOM');
   FWx_PropertyList.add('Wx_Bitmap:Bitmap');
+  FWx_PropertyList.add('Wx_Filename:Filename');
 
   FWx_EventList.add('EVT_BUTTON:OnClick');
   FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
@@ -401,26 +408,33 @@ begin
   parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   Result := GetCommentString(self.FWx_Comments.Text) +
-    'wxBitmap ' + self.Name + '_BITMAP' + ' (wxNullBitmap);';
+       'wxBitmap ' + self.Name + '_BITMAP' + ' (wxNullBitmap);';
 
   if assigned(Wx_Bitmap) then
-    if Wx_Bitmap.Bitmap.Handle <> 0 then
-      Result := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
+       if Wx_Bitmap.Bitmap.Handle <> 0 then
+       if (KeepFormat) then
+       begin
+         Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+
+         Result := 'wxBitmap ' + self.Name + '_BITMAP' +
+         ' ("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+         GetExtension(Wx_FileName) + ');'
+       end
+       else
+          Result := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
+
+
 
 if (XRCGEN) then
- begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);  
- end
- else
- begin
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class])
+else
   Result := Result + #13 + Format(
     '%s = new %s(%s, %s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
     self.Wx_IDValue),
     self.Name + '_BITMAP', GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
-end;
 
   if trim(self.Wx_ToolTip) <> '' then
     Result := Result + #13 + Format('%s->SetToolTip(%s);',
@@ -529,6 +543,7 @@ function TWxBitmapButton.GenerateImageInclude: string;
 begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
+      if (not KeepFormat) then
       Result := '#include "Images/'+ GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm"';
 end;
 

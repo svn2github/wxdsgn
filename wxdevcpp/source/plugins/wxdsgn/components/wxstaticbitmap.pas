@@ -31,7 +31,8 @@ unit WxStaticBitmap;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, Wxcontrolpanel, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel;
+  Forms, Graphics, ExtCtrls, WxUtils, Wxcontrolpanel, WxAuiToolBar,
+  WxAuiNotebookPage, WxSizerPanel, StrUtils;
 
 type
   TWxStaticBitmap = class(TWxControlPanel, IWxComponentInterface,IWxImageContainerInterface)
@@ -65,6 +66,7 @@ type
     { Storage for property Wx_ProxyFGColorString }
     FWx_ProxyFGColorString: TWxColorString;
     FWx_Comments: TStrings;
+    FWx_Filename : string;
     { Storage for property Wx_ToolTip }
     FWx_ToolTip: string;
     FImage: TImage;
@@ -95,6 +97,7 @@ type
     FWx_Layer: Integer;
     FWx_Row: Integer;
     FWx_Position: Integer;
+    FKeepFormat : boolean;
 
     { Private methods of TWxStaticBitmap }
     { Method to set variable and property values and create objects }
@@ -204,6 +207,9 @@ type
 
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
+    property KeepFormat : boolean read FKeepFormat Write FKeepFormat default false;
+    property Wx_Filename : string read FWx_Filename Write FWx_Filename;
+
 //Aui Properties
     property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
     property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
@@ -257,6 +263,8 @@ begin
   defaultBGColor         := self.color;
   defaultFGColor         := self.font.color;
   FWx_Comments           := TStringList.Create;
+  FWx_Filename           := '';
+  FWx_Enabled            := true;
 
   FImage.Align  := alClient;
   FImage.Center := True;
@@ -403,7 +411,15 @@ begin
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     if not self.Picture.Bitmap.handle = 0 then
+       if (KeepFormat) then
+       begin
+           Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+           Result.Add(IndentString + '<bitmap>' + '"' + Wx_FileName + '"' + '</bitmap>)');
+
+       end
+       else
 	Result.Add(IndentString + '<bitmap>Images/' + self.Name + '_XPM.xpm</bitmap>' );
+
     Result.Add(IndentString + '</object>');
 
   except
@@ -435,9 +451,22 @@ begin
     strBitmapArrayName := 'wxNullBitmap'
   else begin
     //Result := ''+'wxBitmap'
+    if (KeepFormat) then
+    begin
+    Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
+
+      strBitmapArrayName := 'wxBitmap("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+         GetExtension(Wx_FileName) + ')';
+    end
+    else
+    begin
+
     strBitmapArrayName := self.Name + '_BITMAP';
+
     Result := GetCommentString(self.FWx_Comments.Text) +
       'wxBitmap ' + strBitmapArrayName + '(' + GetDesignerFormName(self)+'_'+self.Name + '_XPM' + ');';
+
+    end
   end;
   if (XRCGEN) then
  begin//generate xrc loading code
@@ -568,8 +597,11 @@ end;
 function TWxStaticBitmap.GenerateImageInclude: string;
 begin
   Result := '';
-  if self.Picture.Bitmap.Handle <> 0 then
-    Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"'
+  if (self.Picture.Bitmap.Handle <> 0) then
+  begin
+    if (not KeepFormat) then
+      Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"'
+  end
 end;
 
 function TWxStaticBitmap.GetEventList: TStringList;
