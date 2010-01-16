@@ -1037,3 +1037,7 @@ Ver=1
 7057=Cancella linea
 7058=You cannot change Open/Save Dialog options in this version of Windows
 7059=Use Individual Enum Values
+
+8000=There could be a problem with the resulted form. Using a text editor you may want to delete the declarations related to the next sentence from the file 
+
+

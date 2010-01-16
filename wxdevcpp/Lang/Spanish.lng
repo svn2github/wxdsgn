@@ -1062,3 +1062,6 @@ preferencia sobre las opciones globales del compilador
 7058=No puede cambiar ociones de diálogos de Abrir/Guardar en esta versión de Windows
 7059=Usar valores Enum individuales
 
+8000=There could be a problem with the resulted form. Using a text editor you may want to delete the declarations related to the next sentence from the file 
+
+
