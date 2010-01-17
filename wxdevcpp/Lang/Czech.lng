@@ -177,6 +177,7 @@ Ver=1
 256=&Zobrazit okno CPU
 257=Pøiø&adit k procesu...
 258=&Modifikovat
+259=Odstranit &vše
 
 
 260=Nový soubor
@@ -212,8 +213,6 @@ Ver=1
 294=Zdìdìné èleny
 295=Otevøít v...
 
-259=Odstranit &všechny
-
 
 300=Kompilátor
 301=Zdroje
@@ -221,7 +220,7 @@ Ver=1
 303=Výsledky hledání
 304=Schovat
 305=Debugger
-306=Seznam TODO
+306=Seznam To-Do
 
 
 310=&Vymazat
@@ -294,6 +293,7 @@ Ver=1
 382=Odsadit
 383=Pøedsadit
 384=Pøepnout zdroj/hlavièky
+390=&Restartovat
 
 
 
@@ -354,6 +354,8 @@ Ver=1
 455=Zvýraznìní aktuálního øádku
 456=Výchozí systémová barva
 457=Nastaví výchozí systémovou barvu pro mezeru
+458=Skrývání kódu
+459=Zvýraznit odsazení
 
 
 460=Font v editoru:
@@ -603,21 +605,21 @@ Ver=1
 
 710=Binární soubory
 711=Knihovny
-712=C Include soubory
-713=C++ Include soubory
+712=C vkládané soubory
+713=C++ vkládané soubory
 720=C kompilátor:
 721=C++ kompilátor:
-722=Compilátor:
-725=Podporovat vlastnosti standarního ANSI C 
+722=Kompilátor:
+725=Podporovat všechny vlastnosti standarního ANSI C 
 726=Podporovat nìkteré vlastnosti tradièního C preprocesoru
-727=Potlaèit všechny varovné upozornìní
+727=Potlaèit všechny varovnání
 728=Vypnout všechny kontroly pøístupu
 729=Akceptovat $ v identifikátorech
 730=Použít heuristiku pro rychlejší kompilaci
 731=Použít Cygwin místo Mingw compilátoru
 732=Pøipojit následující parametry pøi volání kompilátoru:
 733=Zpoždìní
-734=Povolit zpoždìní (ms) pro odstranìní problémù pøi tvorbì makefile.
+734=Povolit zpoždìní pro odstranìní problémù pøi tvorbì makefile (ms)
 735=Zobrazit každou chybu na samostatném øádku
 
 740=Typ kódu:
@@ -651,7 +653,7 @@ Ver=1
 
 
 
-770=Zde mùžete zmìnit jednotlivé programy které jsou používány Dev-C++.
+770=Zde mùžete zmìnit jednotlivé programy které jsou používány wxDev-C++.
 
 
 
@@ -764,6 +766,7 @@ Ver=1
 926=Název &výstupního souboru
 927=Pøipojit knihovnu
 928=%d souborù [Kód: %d, Hlavièky: %d, Zdroje: %d]
+929=Definice preprocesoru:
 
 
 
@@ -866,6 +869,7 @@ Ver=1
 1021=Váš program vyvolal chybu segmentace (zápis nebo ètení z nepovolené èásti pamìti).
 1022=Zdrojový kód byl aktualizován, chcete projekt pøekompilovat?
 1023=Nyní zvolte požadovanou aplikaci:
+1024=Program narazil na breakpoint<CR><CR>Chcete pozastavit provádìní?
 
 
 1500=Nelze otevøít soubor %s
@@ -905,10 +909,6 @@ Ver=1
 2015=Otázka
 2016=Kompilace dokonèena úspìšnì
 2017=Kompilace pøerušena uživatelem.
-2817=Alternativní soubor s nastavením
-2818=Použít toto alternativní nastavení
-2819=Kofiguraèní soubor byl zmìnìn.<CR>Nový soubor však bude použit až v následujícím spuštìní programu. Veškeré zmìny provedené v této instanci programu budou zapsány do aktuálního souboru s konfigurací.<CR><CR>Doporuèujeme restartovat program nyní...
-
 
 
 2500=&OK
@@ -974,6 +974,10 @@ Ver=1
 2815=Oznamovat chyby
 2816=Hodnoty promìnných
 
+2817=Alternativní soubor s nastavením
+2818=Použít toto alternativní nastavení
+2819=Kofiguraèní soubor byl zmìnìn.<CR>Nový soubor však bude použit až v následujícím spuštìní programu. Veškeré zmìny provedené v této instanci programu budou zapsány do aktuálního souboru s konfigurací.<CR><CR>Doporuèujeme restartovat program nyní...
+
 2820=Zvýraznit aktivní záložku editoru
 
 2900=Parametry...
@@ -986,10 +990,9 @@ Ver=1
 2990=Aktuální soubor...
 2991=Celý projektu...
 2992=Prosím nastavte podporu CVS v nabídce Nástroje / Nastavení prostøedí
+
+
 3000=Vlastnosti importu
-
-
-
 3001=Repozitáø
 3002=Globální nastavení
 3003=Nastavení ovìøení
@@ -1086,10 +1089,27 @@ Ver=1
 3224=Použít vlastní Makefile
 3225=Detaily k úpravám souborù Makefile...
 3226=&Pøipojit k Makefile následující soubory:
+3227=Zvýšit po kompilaci
+3228=Zvýšit po rekompilaci
+3229=Nezvyšovat
+3230=Pøedkompilované hlavièky
+3231=Nepoužívat
+3232=Vytvoøit
+3233=Použít
 
 3400=Odstranit nadbyteèné informace z programu
 3401=Generovat instrukce pro procesor øady:
-3402=Povolit použití vnitøních funkcí
+3402=Povolit použití vnitøních funkcí procesoru
+
+
+3600=[Obecná chyba] %s
+3601=[Chyba kompilace zdrojù] %s
+3602=[Chyba linkeru] %s
+3603=[Varování Makefile generátoru] %s
+
+3610=Pøíliš mnoho chyb - zpracování výstupu ukonèeno
+3611=Pro použití pøedkompilovaných hlavièek musí být jeden zdrojový soubor a jedna hlavièka nastaveny na "Vytvoøit" ve Vlastnostech projektu!
+
 
 3710=&Pokraèovat v provádìní 
 3700=Zobrazit Panely 
@@ -1150,14 +1170,14 @@ Ver=1
 7051=Lišty menu
 7052=Dialogy
 7053=Neoficiální widgety
-7054=Floating
-7055=Behavior
-7056=Close when done
-7057=De&lete Line
-7058=You cannot change Open/Save Dialog options in this version of Windows
-7059=Use Individual Enum Values
+7054=Plovoucí
+7055=Chování
+7056=Automaticky zavøít
+7057=Odstranit øádek
+7058=V této verzi Windows nelze mìnit nastavení systémových dialogù
+7059=Vytváøet unikátní výètové hodnoty
 
-8000=There could be a problem with the resulted form. Using a text editor you may want to delete the declarations related to the next sentence from the file 
+8000=Výsledný soubor mùže obsahovat chyby. Textovým editorem mùžete odstranit deklarace týkající se následující vìty ze souboru 
 
 
 
