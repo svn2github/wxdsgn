@@ -60,7 +60,7 @@ DebugCWD=
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=2
-MinorVer=0
+MinorVer=1
 Release=0
 Build=0
 Debug=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=The wx-devcpp team
 FileDescription=
-FileVersion=2.0.0.0
+FileVersion=2.1.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
