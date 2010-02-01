@@ -5008,12 +5008,28 @@ end;
 procedure TMainForm.actDebugExecute(Sender: TObject);
 var
   UpToDate: Boolean;
-  MessageResult: Integer;
+  MessageResult, spos: Integer;
+  linker_original : string;
+  opts : TProjProfile;
 begin
+
   if not fDebugger.Executing then
   begin
     if Assigned(fProject) then
     begin
+
+           // remove "--no-export-all-symbols" from the linker''s command line
+          opts := fProject.CurrentProfile;
+          linker_original := opts.Linker;
+
+          // look for "--no-export-all-symbols"
+          spos := Pos('--no-export-all-symbols', opts.Linker); // following more opts
+          // if found, delete it
+          if spos > 0 then
+            Delete(opts.Linker, spos, length('--no-export-all-symbols'));
+
+     fProject.CurrentProfile := opts;
+
       //Save all the files then set the UI status
       actSaveAllExecute(Self);
       (Sender as TAction).Tag := 0;
@@ -5054,7 +5070,11 @@ begin
         end;
       end;
     end;
+
+    fProject.CurrentProfile.Linker := linker_original;
+
     doDebugAfterCompile(Sender);
+
   end
   else if fDebugger.Paused then
   begin

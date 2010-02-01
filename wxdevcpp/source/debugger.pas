@@ -665,12 +665,14 @@ var
   spos: integer;
   opts: TProjProfile;
 begin
+
   if MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     CloseDebugger(nil);
     if ( (devCompiler.CompilerType = ID_COMPILER_MINGW) or
         (devCompiler.CompilerType = ID_COMPILER_LINUX) ) then
     begin
+
       if devCompiler.FindOption('-g3', opt, idx) then
       begin
         opt.optValue := 1;
@@ -692,11 +694,24 @@ begin
           if (spos = 0) and (Length(opts.Linker) >= 2) and // end of string
              (Copy(opts.Linker, Length(opts.Linker) - 1, 2) = '-s') then
             spos := Length(opts.Linker) - 1;
-          
+
           // if found, delete it
           if spos > 0 then
             Delete(opts.Linker, spos, 2);
+
         end;
+
+             // remove "--no-export-all-symbols" from the linker''s command line
+        if Assigned(MainForm.fProject) then
+        begin
+          opts := MainForm.fProject.CurrentProfile;
+          // look for "--no-export-all-symbols"
+          spos := Pos('--no-export-all-symbols', opts.Linker); // following more opts
+          // if found, delete it
+          if spos > 0 then
+            Delete(opts.Linker, spos, length('--no-export-all-symbols'));
+
+          end;
 
         // remove -s from the compiler options
         if devCompiler.FindOption('-s', opt, idx) then begin
@@ -2371,6 +2386,7 @@ begin
   //QueueCommand('interp', 'mi');
   QueueCommand('set', 'new-console on'); // For console applications
   QueueCommand('set', 'height 0');
+  QueueCommand('set', 'breakpoint pending on'); // Fix for DLL breakpoints
   QueueCommand('file', '"' + filename + '"');
   QueueCommand('set args', arguments);
 end;
@@ -2453,7 +2469,7 @@ var
        or (line = '{') then
       Exit
     //Empty lines
-    else if Trim(line) = '' then
+    else if (Trim(line) = '') or (Trim(line) = 'breakpoints-invalid') then
       Exit
     else if (line = 'value-history-value') or (line = 'value-history-end')
        or (Pos('value-history-begin', line) = 1) or
