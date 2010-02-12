@@ -203,6 +203,7 @@ type
     procedure Pause; virtual;
     procedure Next; virtual; abstract;
     procedure Step; virtual; abstract;
+    procedure Finish; virtual; abstract;
     procedure SetThread(thread: Integer); virtual; abstract;
     procedure SetContext(frame: Integer); virtual; abstract;
     function GetVariableHint(name: string): string; virtual; abstract;
@@ -270,6 +271,7 @@ type
     procedure Go; override;
     procedure Next; override;
     procedure Step; override;
+    procedure Finish; override;
     procedure SetThread(thread: Integer); override;
     procedure SetContext(frame: Integer); override;
     function GetVariableHint(name: string): string; override;
@@ -336,6 +338,7 @@ type
     procedure Go; override;
     procedure Next; override;
     procedure Step; override;
+    procedure Finish; override;
     procedure Pause; override;
     procedure SetThread(thread: Integer); override;
     procedure SetContext(frame: Integer); override;
@@ -400,12 +403,6 @@ begin
   CloseDebugger(nil);
   CloseHandle(Event);
   RemoveAllBreakpoints; 
-
-  // GAR 12/16/09 - Sleep 10 seconds to wait for gdb to end
-  //  This is a hack to fix slower CPUs.
- // Screen.Cursor := crHourglass;
- // Sleep(2000);
- // Screen.Cursor := crDefault;
 
   CurOutput.Free;
   CommandQueue.Free;
@@ -2315,6 +2312,16 @@ begin
   QueueCommand(Command);
 end;
 
+procedure TCDBDebugger.Finish;
+var
+  Command: TCommand;
+begin
+  Command := TCommand.Create;
+  Command.Command := 't';
+  Command.Callback := OnTrace;
+  QueueCommand(Command);
+end;
+
 procedure TCDBDebugger.OnTrace;
 begin
   JumpToCurrentLine := True;
@@ -2436,16 +2443,53 @@ var
   NewLines: TStringList;
 
   procedure FlushOutputBuffer;
+  var
+     i : integer;
+     LastString : string;
+     TempLines : TStringList;
   begin
     if NewLines.Count = 0 then
       Exit;
 
+     // Delete the output lines 'breakpoints-invalid'
+    i := NewLines.IndexOf('breakpoints-invalid');
+    while (i > -1) do
+    begin
+        NewLines.Delete(i);
+        i := NewLines.IndexOf('breakpoints-invalid');
+    end;
+
+    // Delete the output lines 'frames-invalid'
+    i := NewLines.IndexOf('frames-invalid');
+    while (i > -1) do
+    begin
+        NewLines.Delete(i);
+        i := NewLines.IndexOf('frames-invalid');
+    end;
+
+      if NewLines.Count = 0 then
+      Exit;
+
+      // Get rid of duplicate debugger messages.
+      TempLines := TStringList.Create;
+      LastString := NewLines.Strings[0];
+    TempLines.Add(LastString);
+    for i := 1 to (NewLines.Count - 1) do
+    begin
+       if (NewLines.Strings[i] <> LastString) then
+       begin
+        TempLines.Add(NewLines.Strings[i]);
+        LastString := NewLines.Strings[i];
+       end
+    end;
+
     MainForm.DebugOutput.Lines.BeginUpdate;
-    MainForm.DebugOutput.Lines.AddStrings(NewLines);
+    MainForm.DebugOutput.Lines.AddStrings(TempLines);
     MainForm.DebugOutput.Lines.EndUpdate;
     SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
                 MainForm.DebugOutput.Lines.Count);
     NewLines.Clear;
+    TempLines.Free;
   end;
   
   function StripCtrlChars(var line: string): Boolean;
@@ -2496,7 +2540,7 @@ var
       begin
         if (CurrentCommand.Command = 'run'#10) or (CurrentCommand.Command = 'next'#10) or
            (CurrentCommand.Command = 'step'#10) or (CurrentCommand.Command = 'continue'#10) or
-           (CurrentCommand.Command =''#10) then
+           (CurrentCommand.Command = (devData.DebugCommand + #10)) or (CurrentCommand.Command =''#10) then
         begin
           RefreshContext;
           Application.BringToFront;
@@ -3432,6 +3476,16 @@ var
 begin
   Command := TCommand.Create;
   Command.Command := 'step';
+  Command.Callback := OnTrace;
+  QueueCommand(Command);
+end;
+
+procedure TGDBDebugger.Finish;
+var
+  Command: TCommand;
+begin
+  Command := TCommand.Create;
+  Command.Command := devData.DebugCommand;
   Command.Callback := OnTrace;
   QueueCommand(Command);
 end;

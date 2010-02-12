@@ -622,6 +622,8 @@ type
     fAutoCompile: integer; // automatically compile when out-of-date
     fNoToolTip: boolean; // Don't use Tooltips
 
+    fDebugCommand : string;  // Custom command to send to debugger (default is "finish")
+
     // toolbar layout
     fToolbarMain: boolean;
     fToolbarMainX: integer;
@@ -703,6 +705,7 @@ type
     property AutoCompile: integer read fAutoCompile write fAutoCompile;
     property NoToolTip: boolean read fNoToolTip write fNoToolTip default true;
 
+    property DebugCommand : string read fDebugCommand write fDebugCommand;
     //Execution
     property MinOnRun: boolean read fMinOnRun write fMinOnRun;
     property OpenStyle: integer read fOpenStyle write fOpenStyle;
@@ -841,7 +844,7 @@ function ValidatePaths(dirList: String; var badDirs: String): String;
 var
   strs: TStrings;
   i,j: Integer;
-  currdir: String;  
+  currdir: String;
   newdir:string;
 
   function makeFullPath(dir: String): String;
@@ -1046,7 +1049,7 @@ begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_LINUX);
     if MainForm  <> nil then
         devCompilerSet.SaveSet(ID_COMPILER_LINUX);
-      
+
     //Reset the compiler type back to GCC
     devdirs.fCompilerType:=ID_COMPILER_MINGW;
     devdirs.SettoDefaults;
@@ -1168,7 +1171,7 @@ begin
   {$IFDEF PLUGIN_BUILD}
   devPluginToolbarsX.SaveSettings;
   devPluginToolbarsY.SaveSettings;
-  {$ENDIF PLUGIN_BUILD}  
+  {$ENDIF PLUGIN_BUILD}
 end;
 
 procedure ResettoDefaults;
@@ -1184,7 +1187,7 @@ begin
   {$IFDEF PLUGIN_BUILD}
   devPluginToolbarsX.SetToDefaults;
   devPluginToolbarsY.SetToDefaults;
-  {$ENDIF PLUGIN_BUILD}  
+  {$ENDIF PLUGIN_BUILD}
 end;
 
 procedure FinalizeOptions;
@@ -1219,7 +1222,7 @@ begin
 
   devPluginToolbarsY.SaveSettings;
   devPluginToolbarsY.Free;
-  {$ENDIF PLUGIN_BUILD}  
+  {$ENDIF PLUGIN_BUILD}
 end;
 
 procedure CheckForAltConfigFile(filename: string);
@@ -1398,6 +1401,9 @@ begin
   fWatchHint := true;
   fWatchError := true;
   fNoToolTip := true;
+
+  fDebugCommand := 'Finish';
+
 end;
 
 { TCompilerOpts }

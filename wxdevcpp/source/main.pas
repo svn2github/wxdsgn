@@ -688,6 +688,9 @@ type
     DeleteLine1: TMenuItem;
     actDeleteLine: TAction;
     JvComputerInfoEx1: TJvComputerInfoEx;
+    DebugFinish: TToolButton;
+    DbgFinish: TMenuItem;
+    actDebugFinish: TAction;
 
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -970,7 +973,8 @@ type
     procedure PageControlDrawTab(Control: TCustomTabControl;
       TabIndex: Integer; const Rect: TRect; Active: Boolean);
     procedure FormCreate(Sender: TObject);
-
+    procedure DebugFinishClick(Sender: TObject);
+    
   private
     HelpWindow: HWND;
     fToDoList: TList;
@@ -2435,6 +2439,8 @@ begin
     actViewCPU.Caption := Strings[ID_ITEM_CPUWINDOW];
     ClearallWatchPop.Caption := Strings[ID_ITEM_CLEARALL];
 
+    actDebugFinish.Caption := devData.DebugCommand;
+    
     // Tools menu
     actCompOptions.Caption := Strings[ID_ITEM_COMPOPTIONS];
     actEnviroOptions.Caption := Strings[ID_ITEM_ENVIROOPTIONS];
@@ -4286,11 +4292,17 @@ begin
 
     // set size to hide form menu
     //works with multi monitors now.
-    SetBounds(
-      (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
-      (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
-      Monitor.Width + (Width - ClientWidth),
-      Monitor.Height + (Height - ClientHeight));    
+   // SetBounds(
+   //   (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
+   //   (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
+   //   Monitor.Width + (Width - ClientWidth),
+   //   Monitor.Height + (Height - ClientHeight));
+
+      SetBounds(
+      Monitor.WorkAreaRect.Left,
+      Monitor.WorkAreaRect.Top,
+      Monitor.Width,
+      Monitor.Height);
 
     self.Visible := true;
   end
@@ -4310,9 +4322,18 @@ begin
     Controlbar1.Visible := TRUE;
 
     pnlFull.Visible := FALSE;
+
+    // Return bounds to normal screen
+    // Bug # 2945056
+    SetBounds(
+      Monitor.WorkAreaRect.Left,
+      Monitor.WorkAreaRect.Top,
+      Monitor.Width,
+      Monitor.Height);
+      
     SetWindowLong(self.Handle, GWL_STYLE,  WS_TILEDWINDOW or ( GetWindowLong(Self.Handle, GWL_STYLE)));
     SetWindowPlacement(Self.Handle, @devData.WindowPlacement);
-
+      
     self.Visible := true;
   end;
 end;
@@ -5494,6 +5515,12 @@ procedure TMainForm.actStepSingleExecute(Sender: TObject);
 begin
   if fDebugger.Paused and fDebugger.Executing then
     fDebugger.Step;
+end;
+
+procedure TMainForm.DebugFinishClick(Sender: TObject);
+begin
+    if fDebugger.Paused and fDebugger.Executing then
+    fDebugger.Finish;
 end;
 
 procedure TMainForm.actWatchItemExecute(Sender: TObject);

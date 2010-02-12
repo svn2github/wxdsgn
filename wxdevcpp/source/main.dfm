@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 323
-  Top = 223
+  Left = 187
+  Top = 195
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1357,13 +1357,13 @@ object MainForm: TMainForm
     Top = 263
     Width = 644
     Height = 130
-    ActivePage = LogSheet
+    ActivePage = TodoSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 2
+    TabIndex = 5
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -1955,7 +1955,7 @@ object MainForm: TMainForm
       end
     end
     object tbOptions: TToolBar
-      Left = 317
+      Left = 342
       Top = 30
       Width = 46
       Height = 22
@@ -2099,7 +2099,7 @@ object MainForm: TMainForm
       end
     end
     object tbSpecials: TToolBar
-      Left = 376
+      Left = 401
       Top = 30
       Width = 231
       Height = 22
@@ -2200,7 +2200,7 @@ object MainForm: TMainForm
     object tbDebug: TToolBar
       Left = 154
       Top = 30
-      Width = 150
+      Width = 175
       Height = 22
       AutoSize = True
       Caption = 'Debug'
@@ -2237,20 +2237,25 @@ object MainForm: TMainForm
       object ToolButton1: TToolButton
         Left = 92
         Top = 0
-        Width = 8
+        Width = 13
         Caption = 'ToolButton1'
         ImageIndex = 33
         Style = tbsSeparator
       end
       object DebugStepOver: TToolButton
-        Left = 100
+        Left = 105
         Top = 0
         Action = actStepOver
       end
       object DebugStepInto: TToolButton
-        Left = 123
+        Left = 128
         Top = 0
         Action = actStepInto
+      end
+      object DebugFinish: TToolButton
+        Left = 151
+        Top = 0
+        Action = actDebugFinish
       end
     end
   end
@@ -2871,6 +2876,9 @@ object MainForm: TMainForm
       object DbgStepInto: TMenuItem
         Action = actStepInto
         ShortCut = 8310
+      end
+      object DbgFinish: TMenuItem
+        Action = actDebugFinish
       end
       object RuntocursorItem: TMenuItem
         Action = actRunToCursor
@@ -4368,6 +4376,14 @@ object MainForm: TMainForm
       ShortCut = 16503
       OnExecute = actPauseDebugExecute
       OnUpdate = actPauseDebugUpdate
+    end
+    object actDebugFinish: TAction
+      Category = 'Debug'
+      Caption = 'Finish'
+      Hint = 'Finish'
+      ImageIndex = 39
+      OnExecute = DebugFinishClick
+      OnUpdate = actUpdateDebuggerPaused
     end
   end
   object ApplicationEvents1: TApplicationEvents

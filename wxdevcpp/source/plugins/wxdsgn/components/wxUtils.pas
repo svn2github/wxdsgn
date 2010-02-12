@@ -7208,6 +7208,8 @@ begin
      Result := 'BMP'
   else if (UpperCase(ExtractFileExt(FileName)) = '.GIF') then
      Result := 'GIF'
+  else if (UpperCase(ExtractFileExt(FileName)) = '.PNG') then
+     Result := 'PNG'
   else
      Result := 'XPM';
 
