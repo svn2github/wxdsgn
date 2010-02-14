@@ -92,6 +92,7 @@ type
     FWx_Caption: string;
     FWx_Checked: boolean;
     FWX_BITMAP: TPicture;
+    FKeepFormat: boolean;
     FWx_Comments: TStrings;
     FWx_FileHistory: boolean;
     FItems: TList;
@@ -158,6 +159,7 @@ type
     property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
     property Wx_Checked: boolean Read FWx_Checked Write FWx_Checked;
     property WX_BITMAP: TPicture Read FWX_BITMAP Write FWX_BITMAP;
+    property KeepFormat: boolean Read FKeepFormat Write FKeepFormat;
     property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
     property Wx_Items: TList Read FItems Write FItems;

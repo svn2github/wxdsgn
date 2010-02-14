@@ -93,7 +93,7 @@ object frmReplace: TfrmReplace
       Top = 96
       Width = 273
       Height = 17
-      Caption = 'Use Selection When Replace All'
+      Caption = 'Replace only within selection'
       TabOrder = 4
     end
   end

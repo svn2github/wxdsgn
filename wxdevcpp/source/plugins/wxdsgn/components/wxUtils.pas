@@ -259,6 +259,7 @@ type
     function GetBitmapCount: Integer;
     function GetBitmap(Idx: Integer; var bmp: TBitmap; var PropertyName: string): boolean;
     function GetPropertyName(Idx: Integer): string;
+    function PreserveFormat: boolean;
   end;
 
    IWxAuiManagerInterface = interface

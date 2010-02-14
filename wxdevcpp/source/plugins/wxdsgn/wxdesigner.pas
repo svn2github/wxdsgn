@@ -2412,6 +2412,7 @@ begin
     cbxControlsx.ItemIndex :=
       cbxControlsx.Items.AddObject(ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1].Name + ':' +
       strClass, ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1]);
+
   end;
 
   if (AControl is TWinControl) then
@@ -2666,6 +2667,7 @@ var
   dlgInterface: IWxDialogNonInsertableInterface;
   tlbrInterface: IWxToolBarInsertableInterface;
   nontlbrInterface: IWxToolBarNonInsertableInterface;
+  compObj: TComponent;
   I: Integer;
 
   function GetNonAllowAbleControlCountForFrame(winCtrl: TWinControl): Integer;

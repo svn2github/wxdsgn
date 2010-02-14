@@ -129,6 +129,7 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
+    function PreserveFormat:boolean;
     
   published
     { Published properties of TWxButton }
@@ -611,6 +612,11 @@ end;
 function TWxToolButton.GetPropertyName(Idx:Integer):String;
 begin
   Result:=Name;
+end;
+
+function TWxToolButton.PreserveFormat:boolean;
+begin
+  Result := KeepFormat;
 end;
 
 end.

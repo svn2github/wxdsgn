@@ -1207,6 +1207,7 @@ begin
             if FInsertedControlClass <> nil then
             begin
               LInsertingControl := True;
+
               _InitDrawMode(LContainer, InsertControlProc, True, False,
                 False, True);
             end;

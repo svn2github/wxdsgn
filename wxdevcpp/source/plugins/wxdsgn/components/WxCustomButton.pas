@@ -102,6 +102,8 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
+    function PreserveFormat:boolean;
+    
   protected
     { Protected fields of TWxButton }
 
@@ -864,6 +866,9 @@ begin
 
 end;
 
-
+function TWxCustomButton.PreserveFormat:boolean;
+begin
+  Result := KeepFormat;
+end;
 
 end.

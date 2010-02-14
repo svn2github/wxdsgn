@@ -53,6 +53,8 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
+    function PreserveFormat:boolean;
+    
     procedure FormClick(Sender: TObject);
     procedure WMNCLButtonDown(var Msg : TWMNCLButtonDown); message WM_NCLBUTTONDOWN;
     procedure WMNCRButtonDown(var Msg : TWMNCRButtonDown); message WM_NCRBUTTONDOWN;
@@ -745,6 +747,10 @@ var
   strXPMContent,frmName: string;
 
 begin
+
+if (frmNewForm.KeepFormat) then
+   Exit;
+   
   xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
   xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
   if DirectoryExists(xpmNewFileDir) = false then
@@ -1913,16 +1919,18 @@ begin
       continue;
     end;
 
-
     for j := 0 to imgCtrl.GetBitmapCount -1 Do
     begin
-      strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
-      if FileExists(strXPMFileName) then
-        continue;
-      bmp:=nil;
-      imgCtrl.GetBitmap(j,bmp,strPropertyName);
-      if bmp <> nil then
-        GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
+    if not imgCtrl.PreserveFormat then
+      begin
+        strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
+        if FileExists(strXPMFileName) then
+          continue;
+        bmp:=nil;
+        imgCtrl.GetBitmap(j,bmp,strPropertyName);
+        if bmp <> nil then
+          GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
+      end;
     end;
   end;
   strXPMFileName:='Images\Self_'+wx_Name+'.xpm';
@@ -1978,7 +1986,7 @@ begin
     wx_designer.MainPageChanged(ChangeFileExt(self.fileName, WXFORM_EXT));
     self.Show;
   end;
-    inherited; 
+    inherited;
 end;
 
 function TfrmNewForm.HasAuiManager: Boolean;
@@ -2068,6 +2076,11 @@ end;
 procedure TfrmNewForm.SetWx_DialogStyle(Value: TWxDlgStyleSet);
 begin
   FWxFrm_DialogStyle := GetRefinedWxDialogStyleValue(Value);
+end;
+
+function TfrmNewForm.PreserveFormat:boolean;
+begin
+  Result := KeepFormat;
 end;
 
 end.

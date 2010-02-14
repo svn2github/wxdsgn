@@ -112,6 +112,7 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
+    function PreserveFormat:boolean;
 
   protected
     { Protected fields of TWxStaticBitmap }
@@ -780,6 +781,11 @@ end;
 function TWxStaticBitmap.GetPropertyName(Idx:Integer):String;
 begin
   Result:=Name;
+end;
+
+function TWxStaticBitmap.PreserveFormat:boolean;
+begin
+  Result := KeepFormat;
 end;
 
 end.

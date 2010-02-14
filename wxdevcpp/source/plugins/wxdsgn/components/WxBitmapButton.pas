@@ -99,6 +99,8 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
+    function PreserveFormat:boolean;
+    
   protected
     { Protected fields of TWxButton }
 
@@ -738,6 +740,11 @@ end;
 procedure TWxBitmapButton.SetValidator(value:String);
 begin
   Wx_Validator := value;
+end;
+
+function TWxBitmapButton.PreserveFormat:boolean;
+begin
+  Result := KeepFormat;
 end;
 
 end.
