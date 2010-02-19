@@ -4292,17 +4292,17 @@ begin
 
     // set size to hide form menu
     //works with multi monitors now.
-   // SetBounds(
-   //   (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
-   //   (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
-   //   Monitor.Width + (Width - ClientWidth),
-   //   Monitor.Height + (Height - ClientHeight));
+    SetBounds(
+      (Left + Monitor.WorkAreaRect.Left) - ClientOrigin.X,
+      (Top + Monitor.WorkAreaRect.Top) - ClientOrigin.Y,
+      Monitor.Width + (Width - ClientWidth),
+     Monitor.Height + (Height - ClientHeight));
 
-      SetBounds(
-      Monitor.WorkAreaRect.Left,
-      Monitor.WorkAreaRect.Top,
-      Monitor.Width,
-      Monitor.Height);
+    //  SetBounds(
+   //   Monitor.WorkAreaRect.Left,
+   //   Monitor.WorkAreaRect.Top,
+   //   Monitor.Width,
+   //   Monitor.Height);
 
     self.Visible := true;
   end

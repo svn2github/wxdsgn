@@ -991,6 +991,7 @@ begin
     Top := 46;
     Width := 29;
     Height := 13;
+    ParentFont := false;
     Caption := GetLangString(ID_POPT_VMINOR); //'Minor:';
   end;
 
@@ -1001,6 +1002,7 @@ begin
     Top := 19;
     Width := 29;
     Height := 13;
+    ParentFont := false;
     Caption := GetLangString(ID_POPT_VMAJOR); //'Major:';
   end;
 
@@ -1011,6 +1013,7 @@ begin
     Top := 73;
     Width := 42;
     Height := 13;
+    ParentFont := false;
     Caption := GetLangString(ID_POPT_VRELEASE); //'Release:';
   end;
 
@@ -1025,6 +1028,7 @@ begin
     MinValue := 0;
     TabOrder := 0;
     Value := 2;
+    ParentFont := false;
   end;
 
   spwxMinor := TSpinEdit.Create(ownerForm);
@@ -1038,6 +1042,7 @@ begin
     MinValue := 0;
     TabOrder := 1;
     Value := 8;
+    ParentFont := false;
   end;
 
   spwxRelease := TSpinEdit.Create(ownerForm);
@@ -1051,6 +1056,7 @@ begin
     MinValue := 0;
     TabOrder := 2;
     Value := 1;
+    ParentFont := false;
   end;
 
   grpwxVersion := TGroupBox.Create(ownerForm);
@@ -1062,6 +1068,7 @@ begin
     Height := 100;
     Caption := GetLangString(ID_POPT_VERTAB); //'Version';
     TabOrder := 0;
+    ParentFont := false;
   end;
   grpwxVersion.InsertControl(spwxRelease);
   grpwxVersion.InsertControl(spwxMinor);
@@ -1078,6 +1085,7 @@ begin
     Width := 130;
     Height := 17;
     Caption := 'Unicode Support';
+    ParentFont := false;
     TabOrder := 0;
   end;
 
@@ -1089,6 +1097,7 @@ begin
     Width := 130;
     Height := 17;
     Caption := 'Monolithic Library';
+    ParentFont := false;
     TabOrder := 1;
   end;
 
@@ -1100,6 +1109,7 @@ begin
     Width := 97;
     Height := 17;
     Caption := 'Debug Build';
+    ParentFont := false;
     TabOrder := 2;
   end;
 
@@ -1111,6 +1121,7 @@ begin
     Width := 403;
     Height := 80;
     Caption := 'Features';
+    ParentFont := false;
     TabOrder := 1;
   end;
   grpwxType.InsertControl(chkwxDebug);
@@ -1127,6 +1138,7 @@ begin
     Caption := 'Library Type';
     ItemIndex := 0;
     TabOrder := 2;
+    ParentFont := false;
   end;
 
   staticLib := TRadioButton.Create(self);
@@ -1137,6 +1149,7 @@ begin
     Width := 150;
     Height := 20;
     Caption := 'Static Import Library';
+    ParentFont := false;
   end;
   staticLib.Caption := 'Static Import Library';
 
@@ -1148,6 +1161,7 @@ begin
     Width := 150;
     Height := 20;
     Caption := 'Dynamic Library (DLL)';
+    ParentFont := false;
   end;
 
   rdwxLibraryType.InsertControl(staticLib);
@@ -1159,6 +1173,7 @@ begin
     Caption := 'wxWidgets';
     ImageIndex := 4;
     Visible := true;
+    ParentFont := false;
   end;
 
   tabwxWidgets.InsertControl(grpwxVersion);

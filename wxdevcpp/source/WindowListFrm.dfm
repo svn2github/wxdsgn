@@ -1,10 +1,12 @@
 object WindowListForm: TWindowListForm
-  Left = 462
-  Top = 283
-  Width = 365
-  Height = 318
+  Left = 283
+  Top = 180
+  AutoSize = True
   BorderIcons = [biSystemMenu, biMaximize]
+  BorderStyle = bsDialog
   Caption = 'Window List'
+  ClientHeight = 288
+  ClientWidth = 378
   Color = clBtnFace
   Constraints.MinHeight = 317
   Constraints.MinWidth = 354
@@ -22,7 +24,7 @@ object WindowListForm: TWindowListForm
   object Label1: TLabel
     Left = 0
     Top = 0
-    Width = 349
+    Width = 378
     Height = 6
     Align = alTop
     AutoSize = False
@@ -31,31 +33,31 @@ object WindowListForm: TWindowListForm
     Left = 0
     Top = 6
     Width = 6
-    Height = 238
+    Height = 244
     Align = alLeft
     AutoSize = False
   end
   object Label3: TLabel
-    Left = 343
+    Left = 372
     Top = 6
     Width = 6
-    Height = 238
+    Height = 244
     Align = alRight
     AutoSize = False
   end
   object Panel: TPanel
     Left = 0
-    Top = 244
-    Width = 349
+    Top = 250
+    Width = 378
     Height = 38
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
-      349
+      378
       38)
     object OkBtn: TBitBtn
-      Left = 176
+      Left = 100
       Top = 7
       Width = 80
       Height = 23
@@ -84,7 +86,7 @@ object WindowListForm: TWindowListForm
       NumGlyphs = 2
     end
     object CancelBtn: TBitBtn
-      Left = 262
+      Left = 186
       Top = 7
       Width = 80
       Height = 23
@@ -97,18 +99,18 @@ object WindowListForm: TWindowListForm
   object GroupBox: TGroupBox
     Left = 6
     Top = 6
-    Width = 337
-    Height = 238
+    Width = 366
+    Height = 244
     Align = alClient
     Caption = 'Select the window you want to edit :'
     TabOrder = 1
     DesignSize = (
-      337
-      238)
+      366
+      244)
     object UnitList: TListBox
       Left = 8
-      Top = 18
-      Width = 319
+      Top = 26
+      Width = 340
       Height = 212
       Anchors = [akLeft, akTop, akRight, akBottom]
       IntegralHeight = True

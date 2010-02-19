@@ -1,17 +1,13 @@
 object SplashForm: TSplashForm
-  Left = 309
-  Top = 270
+  Left = 206
+  Top = 161
   Cursor = crHourGlass
   BorderIcons = []
   BorderStyle = bsNone
   ClientHeight = 293
   ClientWidth = 472
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
+  ParentFont = True
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -12174,6 +12170,8 @@ object SplashForm: TSplashForm
         A76943A76943A76943A76943A76943A76943A76943A76943A76943A76943A769
         43A76942A76942A76943A76943A76942A76943A76942A76942A76942A7694200
         0000}
+      Proportional = True
+      Stretch = True
     end
     object StatusBar: TStatusBar
       Left = 1
@@ -12182,7 +12180,9 @@ object SplashForm: TSplashForm
       Height = 19
       Cursor = crHourGlass
       Panels = <>
+      ParentFont = True
       SimplePanel = True
+      UseSystemFont = False
     end
     object ProgressBar: TProgressBar
       Left = 319

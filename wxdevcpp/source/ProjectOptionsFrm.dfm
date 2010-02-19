@@ -1,18 +1,15 @@
 object frmProjectOptions: TfrmProjectOptions
-  Left = 296
-  Top = 261
-  Width = 568
-  Height = 410
+  Left = 119
+  Top = 79
   BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'Project Options'
+  ClientHeight = 376
+  ClientWidth = 560
   Color = clBtnFace
   Constraints.MinHeight = 410
   Constraints.MinWidth = 568
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
+  ParentFont = True
   OldCreateOrder = False
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
@@ -24,8 +21,8 @@ object frmProjectOptions: TfrmProjectOptions
   PixelsPerInch = 96
   TextHeight = 13
   object btnAddProfileSet: TSpeedButton
-    Left = 450
-    Top = 8
+    Left = 443
+    Top = 0
     Width = 22
     Height = 22
     Hint = 'Create a new profile'
@@ -50,8 +47,8 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnAddProfileSetClick
   end
   object btnDelProfileSet: TSpeedButton
-    Left = 473
-    Top = 8
+    Left = 466
+    Top = 0
     Width = 22
     Height = 22
     Hint = 'Delete the current profile'
@@ -92,8 +89,8 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnDelProfileSetClick
   end
   object btnRenameProfileSet: TSpeedButton
-    Left = 496
-    Top = 8
+    Left = 489
+    Top = 0
     Width = 22
     Height = 22
     Hint = 'Rename the current profile'
@@ -127,15 +124,15 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnRenameProfileSetClick
   end
   object Label2: TLabel
-    Left = 10
-    Top = 11
+    Left = 3
+    Top = 3
     Width = 68
     Height = 13
     Caption = 'Project Profile:'
   end
   object btnCopyProfileSet: TSpeedButton
-    Left = 520
-    Top = 8
+    Left = 513
+    Top = 0
     Width = 22
     Height = 22
     Hint = 'Duplicate the current profile'
@@ -172,8 +169,8 @@ object frmProjectOptions: TfrmProjectOptions
     OnClick = btnCopyProfileSetClick
   end
   object btnOk: TBitBtn
-    Left = 286
-    Top = 345
+    Left = 279
+    Top = 337
     Width = 80
     Height = 23
     Anchors = [akRight, akBottom]
@@ -202,8 +199,8 @@ object frmProjectOptions: TfrmProjectOptions
     NumGlyphs = 2
   end
   object btnCancel: TBitBtn
-    Left = 371
-    Top = 345
+    Left = 364
+    Top = 337
     Width = 80
     Height = 23
     Anchors = [akRight, akBottom]
@@ -213,8 +210,8 @@ object frmProjectOptions: TfrmProjectOptions
     Kind = bkCancel
   end
   object btnHelp: TBitBtn
-    Left = 466
-    Top = 345
+    Left = 459
+    Top = 337
     Width = 77
     Height = 23
     Anchors = [akRight, akBottom]
@@ -223,18 +220,18 @@ object frmProjectOptions: TfrmProjectOptions
     Kind = bkHelp
   end
   object PageControl: TPageControl
-    Left = 7
-    Top = 35
-    Width = 537
+    Left = 0
+    Top = 27
+    Width = 553
     Height = 306
-    ActivePage = tabVersion
+    ActivePage = tabFiles
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 7
+    TabIndex = 1
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
       DesignSize = (
-        529
+        545
         278)
       object lblPrjName: TLabel
         Left = 8
@@ -431,19 +428,19 @@ object frmProjectOptions: TfrmProjectOptions
       object grpType: TGroupBox
         Left = 220
         Top = 110
-        Width = 300
-        Height = 103
+        Width = 316
+        Height = 115
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = 'Project Type'
         TabOrder = 1
         DesignSize = (
-          300
-          103)
+          316
+          115)
         object lstType: TListBox
           Left = 8
           Top = 17
-          Width = 280
-          Height = 63
+          Width = 296
+          Height = 75
           Anchors = [akLeft, akTop, akRight, akBottom]
           Constraints.MinHeight = 62
           ItemHeight = 13
@@ -457,7 +454,7 @@ object frmProjectOptions: TfrmProjectOptions
         end
         object chkSupportXP: TCheckBox
           Left = 7
-          Top = 81
+          Top = 93
           Width = 280
           Height = 17
           Anchors = [akLeft, akBottom]
@@ -468,7 +465,7 @@ object frmProjectOptions: TfrmProjectOptions
       object edProjectName: TEdit
         Left = 87
         Top = 8
-        Width = 435
+        Width = 451
         Height = 21
         Hint = 
           'Note: The exe filename is taken from the project filename not th' +
@@ -480,18 +477,18 @@ object frmProjectOptions: TfrmProjectOptions
     object tabFiles: TTabSheet
       Caption = 'Files'
       DesignSize = (
-        529
+        545
         278)
       object grpUnitOptions: TGroupBox
         Left = 242
         Top = 4
-        Width = 280
+        Width = 296
         Height = 188
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = 'Unit Options'
         TabOrder = 0
         DesignSize = (
-          280
+          296
           188)
         object lblPriority: TLabel
           Left = 8
@@ -531,7 +528,7 @@ object frmProjectOptions: TfrmProjectOptions
         object txtOverrideBuildCmd: TMemo
           Left = 26
           Top = 112
-          Width = 240
+          Width = 256
           Height = 64
           Anchors = [akLeft, akTop, akRight, akBottom]
           Lines.Strings = (
@@ -553,7 +550,7 @@ object frmProjectOptions: TfrmProjectOptions
         object spnPriority: TSpinEdit
           Left = 115
           Top = 16
-          Width = 155
+          Width = 171
           Height = 22
           Anchors = [akLeft, akTop, akRight]
           MaxValue = 0
@@ -566,7 +563,7 @@ object frmProjectOptions: TfrmProjectOptions
       object grpPch: TRadioGroup
         Left = 242
         Top = 196
-        Width = 280
+        Width = 296
         Height = 70
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Precompiled Headers'
@@ -596,7 +593,7 @@ object frmProjectOptions: TfrmProjectOptions
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
       DesignSize = (
-        529
+        545
         278)
       object lblCompilerSet: TLabel
         Left = 7
@@ -622,7 +619,7 @@ object frmProjectOptions: TfrmProjectOptions
       inline CompOptionsFrame1: TCompOptionsFrame
         Left = 9
         Top = 60
-        Width = 513
+        Width = 529
         Height = 211
         Anchors = [akLeft, akTop, akRight, akBottom]
         TabOrder = 0
@@ -637,20 +634,23 @@ object frmProjectOptions: TfrmProjectOptions
         end
         inherited vle: TValueListEditor
           Left = 144
-          Width = 369
+          Width = 385
           Height = 211
-          RowHeights = (
-            18)
+          DefaultRowHeight = 20
+          GridLineWidth = 2
+          ColWidths = (
+            189
+            190)
         end
       end
       object cmbCompiler: TComboBox
         Left = 74
         Top = 28
-        Width = 450
+        Width = 466
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -658,7 +658,7 @@ object frmProjectOptions: TfrmProjectOptions
     object tabCompOpts: TTabSheet
       Caption = 'Parameters'
       DesignSize = (
-        529
+        545
         278)
       object lblCompiler: TLabel
         Left = 8
@@ -677,7 +677,7 @@ object frmProjectOptions: TfrmProjectOptions
         Transparent = True
       end
       object lblLinker: TLabel
-        Left = 354
+        Left = 370
         Top = 8
         Width = 32
         Height = 13
@@ -708,7 +708,7 @@ object frmProjectOptions: TfrmProjectOptions
       object edCppCompiler: TMemo
         Left = 186
         Top = 24
-        Width = 156
+        Width = 172
         Height = 131
         Anchors = [akLeft, akTop, akRight, akBottom]
         Lines.Strings = (
@@ -717,7 +717,7 @@ object frmProjectOptions: TfrmProjectOptions
         TabOrder = 1
       end
       object edLinker: TMemo
-        Left = 353
+        Left = 369
         Top = 24
         Width = 164
         Height = 211
@@ -728,7 +728,7 @@ object frmProjectOptions: TfrmProjectOptions
         TabOrder = 2
       end
       object AddLibBtn: TBitBtn
-        Left = 354
+        Left = 370
         Top = 243
         Width = 164
         Height = 25
@@ -767,7 +767,7 @@ object frmProjectOptions: TfrmProjectOptions
       object edDefines: TMemo
         Left = 8
         Top = 178
-        Width = 335
+        Width = 351
         Height = 90
         Anchors = [akLeft, akRight, akBottom]
         Lines.Strings = (
@@ -779,10 +779,10 @@ object frmProjectOptions: TfrmProjectOptions
     object tabFilesDir: TTabSheet
       Caption = 'Directories'
       DesignSize = (
-        529
+        545
         278)
       object btnUp: TSpeedButton
-        Left = 500
+        Left = 516
         Top = 96
         Width = 23
         Height = 22
@@ -834,7 +834,7 @@ object frmProjectOptions: TfrmProjectOptions
         OnClick = UpDownClick
       end
       object btnDown: TSpeedButton
-        Left = 500
+        Left = 516
         Top = 124
         Width = 23
         Height = 22
@@ -886,7 +886,7 @@ object frmProjectOptions: TfrmProjectOptions
         OnClick = UpDownClick
       end
       object btnBrowse: TSpeedButton
-        Left = 500
+        Left = 516
         Top = 221
         Width = 23
         Height = 22
@@ -923,7 +923,7 @@ object frmProjectOptions: TfrmProjectOptions
       object SubTabs: TdevTabs
         Left = 0
         Top = 0
-        Width = 530
+        Width = 546
         Height = 24
         Anchors = [akLeft, akTop, akRight]
         Tabs.Strings = (
@@ -937,7 +937,7 @@ object frmProjectOptions: TfrmProjectOptions
       object lstList: TListBox
         Left = 8
         Top = 28
-        Width = 480
+        Width = 496
         Height = 186
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
@@ -983,7 +983,7 @@ object frmProjectOptions: TfrmProjectOptions
       object edEntry: TEdit
         Left = 8
         Top = 221
-        Width = 480
+        Width = 496
         Height = 21
         Anchors = [akLeft, akRight, akBottom]
         TabOrder = 5
@@ -1004,18 +1004,18 @@ object frmProjectOptions: TfrmProjectOptions
     object tabOutputDir: TTabSheet
       Caption = 'Build Options'
       DesignSize = (
-        529
+        545
         278)
       object grpOutDirectories: TGroupBox
         Left = 8
         Top = 8
-        Width = 515
+        Width = 531
         Height = 115
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Directories'
         TabOrder = 0
         DesignSize = (
-          515
+          531
           115)
         object lblExeOutput: TLabel
           Left = 10
@@ -1036,7 +1036,7 @@ object frmProjectOptions: TfrmProjectOptions
           Transparent = True
         end
         object btnExeOutDir: TSpeedButton
-          Left = 480
+          Left = 496
           Top = 33
           Width = 23
           Height = 22
@@ -1071,7 +1071,7 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = BrowseExecutableOutDirClick
         end
         object btnObjOutDir: TSpeedButton
-          Left = 480
+          Left = 496
           Top = 81
           Width = 23
           Height = 22
@@ -1108,7 +1108,7 @@ object frmProjectOptions: TfrmProjectOptions
         object edExeOutput: TEdit
           Left = 10
           Top = 33
-          Width = 460
+          Width = 476
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
@@ -1116,7 +1116,7 @@ object frmProjectOptions: TfrmProjectOptions
         object edObjOutput: TEdit
           Left = 10
           Top = 81
-          Width = 460
+          Width = 476
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 1
@@ -1125,7 +1125,7 @@ object frmProjectOptions: TfrmProjectOptions
       object edOverridenOutput: TEdit
         Left = 24
         Top = 150
-        Width = 497
+        Width = 513
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
@@ -1143,10 +1143,10 @@ object frmProjectOptions: TfrmProjectOptions
     object tabMakefile: TTabSheet
       Caption = 'Makefile'
       DesignSize = (
-        529
+        545
         278)
       object btnCustomMakeBrowse: TSpeedButton
-        Left = 495
+        Left = 511
         Top = 27
         Width = 23
         Height = 22
@@ -1192,7 +1192,7 @@ object frmProjectOptions: TfrmProjectOptions
       object edCustomMakefile: TEdit
         Left = 25
         Top = 28
-        Width = 460
+        Width = 476
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
@@ -1224,16 +1224,16 @@ object frmProjectOptions: TfrmProjectOptions
       object grpIncMake: TGroupBox
         Left = 215
         Top = 55
-        Width = 305
+        Width = 321
         Height = 216
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = 'Include the following files into the Makefile'
         TabOrder = 3
         DesignSize = (
-          305
+          321
           216)
         object btnMakDown: TSpeedButton
-          Left = 275
+          Left = 291
           Top = 83
           Width = 23
           Height = 22
@@ -1285,7 +1285,7 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = btnMakClick
         end
         object btnMakUp: TSpeedButton
-          Left = 275
+          Left = 291
           Top = 60
           Width = 23
           Height = 22
@@ -1337,7 +1337,7 @@ object frmProjectOptions: TfrmProjectOptions
           OnClick = btnMakClick
         end
         object btnMakeBrowse: TSpeedButton
-          Left = 275
+          Left = 291
           Top = 155
           Width = 23
           Height = 22
@@ -1374,7 +1374,7 @@ object frmProjectOptions: TfrmProjectOptions
         object MakeIncludes: TListBox
           Left = 8
           Top = 17
-          Width = 260
+          Width = 276
           Height = 131
           Anchors = [akLeft, akTop, akRight, akBottom]
           ItemHeight = 13
@@ -1385,7 +1385,7 @@ object frmProjectOptions: TfrmProjectOptions
         object edMakeInclude: TEdit
           Left = 8
           Top = 156
-          Width = 260
+          Width = 276
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
           TabOrder = 1
@@ -1395,7 +1395,7 @@ object frmProjectOptions: TfrmProjectOptions
           Tag = 4
           Left = 224
           Top = 185
-          Width = 75
+          Width = 89
           Height = 23
           Anchors = [akLeft, akBottom]
           Caption = 'Delete Invalid'
@@ -1444,7 +1444,7 @@ object frmProjectOptions: TfrmProjectOptions
     object tabVersion: TTabSheet
       Caption = 'Version Info'
       DesignSize = (
-        529
+        545
         278)
       object chkVersionInfo: TCheckBox
         Left = 8
@@ -1559,30 +1559,36 @@ object frmProjectOptions: TfrmProjectOptions
       object grpAdditional: TGroupBox
         Left = 250
         Top = 30
-        Width = 270
+        Width = 295
         Height = 236
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = 'Additional info:'
         TabOrder = 2
         DesignSize = (
-          270
+          295
           236)
         object vleVersion: TValueListEditor
           Left = 9
           Top = 21
-          Width = 250
+          Width = 280
           Height = 206
           Anchors = [akLeft, akTop, akRight, akBottom]
-          DefaultColWidth = 100
+          DefaultColWidth = 120
+          DefaultRowHeight = 20
           DisplayOptions = [doAutoColResize, doKeyColFixed]
           FixedCols = 1
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          GridLineWidth = 2
           Options = [goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goThumbTracking]
+          ParentFont = False
           TabOrder = 0
           ColWidths = (
-            100
-            144)
-          RowHeights = (
-            17)
+            120
+            154)
         end
       end
       object grpAutoInc: TGroupBox
@@ -1622,8 +1628,8 @@ object frmProjectOptions: TfrmProjectOptions
     end
   end
   object cmbProfileSetComp: TComboBox
-    Left = 91
-    Top = 8
+    Left = 84
+    Top = 0
     Width = 355
     Height = 21
     Style = csDropDownList

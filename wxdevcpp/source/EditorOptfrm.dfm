@@ -983,8 +983,8 @@ object EditorOptForm: TEditorOptForm
         Top = 28
         Width = 397
         Height = 310
-        ActivePage = tabCBBrowser
-        TabIndex = 0
+        ActivePage = tabCBCompletion
+        TabIndex = 1
         TabOrder = 1
         OnChange = devPages1Change
         object tabCBBrowser: TTabSheet

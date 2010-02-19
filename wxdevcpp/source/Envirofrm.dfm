@@ -1,6 +1,6 @@
 object EnviroForm: TEnviroForm
-  Left = 464
-  Top = 198
+  Left = 184
+  Top = 129
   BorderStyle = bsDialog
   Caption = 'Environment Options'
   ClientHeight = 415
@@ -27,10 +27,10 @@ object EnviroForm: TEnviroForm
     Top = 8
     Width = 403
     Height = 375
-    ActivePage = tabGeneral
+    ActivePage = tabExternal
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -214,7 +214,7 @@ object EnviroForm: TEnviroForm
         Width = 153
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
       end
       object cboTheme: TComboBox
@@ -223,7 +223,7 @@ object EnviroForm: TEnviroForm
         Width = 153
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
       end
       object cboTabsTop: TComboBox
@@ -674,6 +674,7 @@ object EnviroForm: TEnviroForm
         Width = 363
         Height = 259
         Anchors = [akLeft, akTop, akRight, akBottom]
+        DefaultRowHeight = 20
         KeyOptions = [keyEdit, keyAdd, keyDelete]
         Options = [goVertLine, goHorzLine, goEditing, goAlwaysShowEditor, goThumbTracking]
         TabOrder = 0
