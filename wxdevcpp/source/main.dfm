@@ -2870,6 +2870,10 @@ object MainForm: TMainForm
       object TogglebreakpointItem: TMenuItem
         Action = actBreakPoint
       end
+      object RemoveAllBreakpoints1: TMenuItem
+        Caption = 'Remove All Breakpoints'
+        OnClick = RemoveAllBreakpoints1Click
+      end
       object DbgStepOver: TMenuItem
         Action = actStepOver
       end

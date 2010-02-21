@@ -691,6 +691,7 @@ type
     DebugFinish: TToolButton;
     DbgFinish: TMenuItem;
     actDebugFinish: TAction;
+    RemoveAllBreakpoints1: TMenuItem;
 
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -974,6 +975,7 @@ type
       TabIndex: Integer; const Rect: TRect; Active: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure DebugFinishClick(Sender: TObject);
+    procedure RemoveAllBreakpoints1Click(Sender: TObject);
     
   private
     HelpWindow: HWND;
@@ -9818,6 +9820,22 @@ begin
     end else
         inherited;
  //end;
+end;
+
+procedure TMainForm.RemoveAllBreakpoints1Click(Sender: TObject);
+var
+  e: TEditor;
+  i : integer;
+begin
+  e := GetEditor;
+  if Assigned(e) then
+  begin
+    for i := 1 to e.Text.Lines.Count do
+    begin
+    if (e.HasBreakPoint(i) <> -1) then
+        e.ToggleBreakPoint(i);
+    end;
+  end;
 end;
 
 end.
