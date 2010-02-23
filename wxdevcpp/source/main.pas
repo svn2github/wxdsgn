@@ -692,6 +692,7 @@ type
     DbgFinish: TMenuItem;
     actDebugFinish: TAction;
     RemoveAllBreakpoints1: TMenuItem;
+    actRemoveAllBreakpoints: TAction;
 
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2442,7 +2443,8 @@ begin
     ClearallWatchPop.Caption := Strings[ID_ITEM_CLEARALL];
 
     actDebugFinish.Caption := devData.DebugCommand;
-    
+    actRemoveAllBreakpoints.Caption := 'Remove All Breakpoints';
+
     // Tools menu
     actCompOptions.Caption := Strings[ID_ITEM_COMPOPTIONS];
     actEnviroOptions.Caption := Strings[ID_ITEM_ENVIROOPTIONS];

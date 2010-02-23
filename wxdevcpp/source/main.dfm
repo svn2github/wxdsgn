@@ -2871,8 +2871,7 @@ object MainForm: TMainForm
         Action = actBreakPoint
       end
       object RemoveAllBreakpoints1: TMenuItem
-        Caption = 'Remove All Breakpoints'
-        OnClick = RemoveAllBreakpoints1Click
+        Action = actRemoveAllBreakpoints
       end
       object DbgStepOver: TMenuItem
         Action = actStepOver
@@ -4388,6 +4387,13 @@ object MainForm: TMainForm
       ImageIndex = 39
       OnExecute = DebugFinishClick
       OnUpdate = actUpdateDebuggerPaused
+    end
+    object actRemoveAllBreakpoints: TAction
+      Category = 'Debug'
+      Caption = 'Remove All Breakpoints'
+      ImageIndex = 5
+      OnExecute = RemoveAllBreakpoints1Click
+      OnUpdate = actUpdateEmptyEditor
     end
   end
   object ApplicationEvents1: TApplicationEvents
