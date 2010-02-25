@@ -39,8 +39,12 @@ type
     ProgressBar: TProgressBar;
     procedure FormCreate(Sender: TObject);
 
+
   public
     procedure OnCacheProgress(Sender: TObject; FileName: String; Total, Current: Integer);
+
+    procedure CreateParams(var Params: TCreateParams); override;
+
   end;
 
 var
@@ -52,6 +56,12 @@ uses
   devcfg;
 
 {$R *.dfm}
+
+procedure TSplashForm.CreateParams(var Params: TCreateParams);
+begin
+   inherited CreateParams(Params);
+   Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+end;
 
 procedure TSplashForm.FormCreate(Sender: TObject);
 begin
