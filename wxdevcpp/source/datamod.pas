@@ -147,9 +147,11 @@ begin
   fCodeList := TCodeInsList.Create;
 
   //Set up the syntax highlighter stuff
-  CppMultiSyn.Schemes[0].StartExpr := '(asm|_asm|__asm)(['#32#9']*)\{';
+  // #32 = space          #9=tab
+
+ CppMultiSyn.Schemes[0].StartExpr := '(asm|_asm|__asm)(['#32#9']*)\{';
   CppMultiSyn.Schemes[0].EndExpr   := '\}';
-  CppMultiSyn.Schemes[1].StartExpr := '(asm|_asm|__asm)(['#32#9']+)';
+ CppMultiSyn.Schemes[1].StartExpr := '^\s+(asm|_asm|__asm)(['#32#9']*)';
   CppMultiSyn.Schemes[1].EndExpr := '(;*)$';
 
   SaveDialog := TSaveDialogEx.Create(MainForm);

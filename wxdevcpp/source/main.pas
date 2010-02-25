@@ -4219,6 +4219,8 @@ begin
    end
    else
       SendMessage(GetFocus, WM_PASTE, 0, 0);
+
+   e.Text.Refresh;
 end;
 
 procedure TMainForm.actSelectAllExecute(Sender: TObject);
@@ -9796,13 +9798,19 @@ begin
   case (Message.CmdType and $FFF0) of
     SC_MINIMIZE:
     begin
+    if (HandleAllocated())  then
+    begin
       ShowWindow(Handle, SW_MINIMIZE);
       Message.Result := 0;
     end;
+    end;
     SC_RESTORE:
+    begin
+    if (HandleAllocated())  then
     begin
       ShowWindow(Handle, SW_RESTORE);
       Message.Result := 0;
+    end;
     end;
   else
     inherited;
@@ -9817,8 +9825,11 @@ begin
  //begin
     if (Msg.Active = WA_ACTIVE) and not IsWindowEnabled(Handle) then
     begin
+    if (HandleAllocated())  then
+    begin
         SetActiveWindow(Application.Handle);
         Msg.Result := 0;
+    end;
     end else
         inherited;
  //end;
