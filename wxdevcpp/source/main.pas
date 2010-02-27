@@ -4814,6 +4814,7 @@ if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
         Application.Minimize;
       devExecutor.ExecuteAndWatch(ChangeFileExt(e.FileName, ''), '',
                                   ExtractFilePath(e.FileName), True, INFINITE, OnCompileTerminated);
+      devExecutor.Free;   // Free the executable
     end
 else
    if not FileExists(ChangeFileExt(e.FileName, EXE_EXT)) then
@@ -4824,6 +4825,7 @@ else
         Application.Minimize;
       devExecutor.ExecuteAndWatch(ChangeFileExt(e.FileName, EXE_EXT), '',
                                   ExtractFilePath(e.FileName), True, INFINITE, OnCompileTerminated);
+      devExecutor.Free;  // Free the executable
     end;
   end;
 end;
