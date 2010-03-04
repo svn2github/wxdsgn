@@ -127,6 +127,7 @@ contains
   JvPickDate in 'JvPickDate.pas',
   JvSpeedButton in 'JvSpeedButton.pas',
   JvButton in 'JvButton.pas',
+  JvComputerInfoEx in 'JvComputerInfoEx.pas',
   SynMemo in 'SynMemo.pas',
   SynEdit in 'SynEdit.pas',
   SynCompletionProposal in 'SynCompletionProposal.pas',
