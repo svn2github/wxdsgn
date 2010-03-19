@@ -172,6 +172,7 @@ begin
     bmpObj := TBitmap.Create;
     Image1.Picture.Bitmap.Assign(bmpObj);
     bmpObj.Destroy;
+    FileName.Clear;
 end;
 
 end.

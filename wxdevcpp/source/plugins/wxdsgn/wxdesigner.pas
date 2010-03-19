@@ -3799,6 +3799,7 @@ begin
   end;
   if ELDesigner1.GenerateXRC then
     UpdateXRC(FileName);
+
 end;
 
 function TWXDsgn.LocateFunctionInEditor(eventProperty: TJvCustomInspectorData; strClassName: string; SelComponent: TComponent; var strFunctionName: string; strEventFullName: string): Boolean;

@@ -54,6 +54,8 @@ type
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
     function PreserveFormat:boolean;
+    function GetGraphicFileName:String;
+    function SetGraphicFileName(strFileName : string) : boolean;
     
     procedure FormClick(Sender: TObject);
     procedure WMNCLButtonDown(var Msg : TWMNCLButtonDown); message WM_NCLBUTTONDOWN;
@@ -748,20 +750,10 @@ var
 
 begin
 
-if (frmNewForm.KeepFormat) then
+  if (frmNewForm.KeepFormat) then
    Exit;
    
-  xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
-  xpmNewFileDir:=IncludeTrailingPathDelimiter(xpmFileDir)+'Images';
-  if DirectoryExists(xpmNewFileDir) = false then
-  begin
-   if ForceDirectories(xpmNewFileDir) = true then
-     xpmFileDir:=xpmNewFileDir;
-  end
-  else
-    xpmFileDir:=xpmNewFileDir;
-    
-  xpmFileDir := IncludetrailingPathDelimiter(xpmFileDir);
+  xpmFileDir := CreateGraphicFileDir(strFileName);
 
   if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
   begin
@@ -1692,7 +1684,7 @@ begin
   if assigned(Wx_ICON) then
     if Wx_ICON.Bitmap.Handle <> 0 then
     if (not KeepFormat) then
-      Result := '#include "Images/Self_'+ self.wx_Name + '_XPM.xpm"';
+      Result := '#include "' + GetGraphicFileName + '"'
 end;
 
 
@@ -1756,7 +1748,7 @@ begin
   Wx_Hidden         := False;
   Wx_SizeToContents := True;
   Wx_Icon           := TPicture.Create;
-  
+
   SetDialogProperties;
   FWx_EventList := TStringList.Create;
   FWx_EventList.add('  EVT_CLOSE: OnClose');
@@ -1910,34 +1902,39 @@ var
   bmp:TBitmap;
   strPropertyName, strXPMFileName:String;
 begin
-  for i:= 0 to self.ComponentCount -1 Do
-  begin
-    if self.Components[i].GetInterface(IID_IWxImageContainerInterface,imgCtrl) = false then
-    begin
-      if self.Components[i].GetInterface(IDD_IWxMenuBarInterface,mnuCtrl) = true then
-        mnuCtrl.GenerateXPM(strFileName);
-      continue;
-    end;
 
-    for j := 0 to imgCtrl.GetBitmapCount -1 Do
-    begin
-    if not imgCtrl.PreserveFormat then
-      begin
-        strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
-        if FileExists(strXPMFileName) then
-          continue;
-        bmp:=nil;
-        imgCtrl.GetBitmap(j,bmp,strPropertyName);
-        if bmp <> nil then
-          GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
-      end;
-    end;
-  end;
-  strXPMFileName:='Images\Self_'+wx_Name+'.xpm';
-  if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> nil) then
-  begin
-    GenerateXPMDirectly(Wx_ICON.Bitmap,'Self',wx_Name,strFileName);
-  end;
+// GAR 27 FEB 2010 - I don't think this procedure is needed.
+//    We should have already saved the XPMs when the
+//    the component was created.  ?????
+
+ // for i:= 0 to self.ComponentCount -1 Do
+ // begin
+ //   if self.Components[i].GetInterface(IID_IWxImageContainerInterface,imgCtrl) = false then
+ //   begin
+ //     if self.Components[i].GetInterface(IDD_IWxMenuBarInterface,mnuCtrl) = true then
+ //       mnuCtrl.GenerateXPM(strFileName);
+ //     continue;
+  //  end;
+
+ //   for j := 0 to imgCtrl.GetBitmapCount -1 Do
+ //   begin
+ //   if not imgCtrl.PreserveFormat then
+ //     begin
+ //       strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
+ //       if FileExists(strXPMFileName) then
+ //         continue;
+  //      bmp:=nil;
+  //      imgCtrl.GetBitmap(j,bmp,strPropertyName);
+  //      if bmp <> nil then
+  //        GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
+  //    end;
+  //  end;
+  //end;
+  //strXPMFileName:='Images\Self_'+wx_Name+'.xpm';
+  //if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> nil) then
+  //begin
+   // GenerateXPMDirectly(Wx_ICON.Bitmap,'Self',wx_Name,strFileName);
+  //end;
 end;
 
 function TfrmNewForm.GetBitmapCount:Integer;
@@ -1955,6 +1952,19 @@ end;
 function TfrmNewForm.GetPropertyName(Idx:Integer):String;
 begin
   Result:=wx_Name;
+end;
+
+function TfrmNewForm.GetGraphicFileName:String;
+begin
+  Result:= Wx_FileName;
+end;
+
+function TfrmNewForm.SetGraphicFileName(strFileName:String): boolean;
+begin
+
+  Wx_Filename := CreateGraphicFileName(strFileName);
+  Result:= true;
+  
 end;
 
 procedure TfrmNewForm.FormClick(Sender: TObject);

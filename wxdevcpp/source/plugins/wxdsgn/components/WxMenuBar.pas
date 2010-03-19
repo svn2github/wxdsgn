@@ -99,6 +99,8 @@ type
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
     function GenerateXPM(strFileName:String):boolean;
+    function GetGraphicFileName:String;
+    function SetGraphicFileName(strFileName : string): boolean;
 
   published
     { Published declarations }
@@ -958,6 +960,23 @@ function TWxMenuBar.GetPropertyName(Idx:Integer):String;
 begin
   Result:=Name;
 end;
+
+function TWxMenuBar.GetGraphicFileName:String;
+begin
+  Result:= 'fix';
+end;
+
+function TWxMenuBar.SetGraphicFileName(strFileName:String): boolean;
+begin
+
+ // If no filename passed, then auto-generate XPM filename
+ if (strFileName = '') then
+     strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm';
+
+ //Wx_Filename := CreateGraphicFileName(strFileName);
+  Result:= true;
+end;
+
 
 function TWxMenuBar.GenerateXPM(strFileName:String):boolean;
 var

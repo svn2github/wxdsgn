@@ -1,6 +1,6 @@
 object EditorOptForm: TEditorOptForm
-  Left = 390
-  Top = 192
+  Left = 282
+  Top = 127
   HelpType = htKeyword
   BorderStyle = bsDialog
   Caption = 'Editor Options'
@@ -254,7 +254,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 9
         end
         object cbPastEOL: TCheckBox
-          Left = 199
+          Left = 205
           Top = 50
           Width = 190
           Height = 17
@@ -263,7 +263,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 10
         end
         object cbFindText: TCheckBox
-          Left = 199
+          Left = 205
           Top = 84
           Width = 190
           Height = 17
@@ -272,7 +272,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 11
         end
         object cbHalfPage: TCheckBox
-          Left = 199
+          Left = 205
           Top = 117
           Width = 190
           Height = 17
@@ -281,7 +281,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 12
         end
         object cbScrollHint: TCheckBox
-          Left = 199
+          Left = 205
           Top = 134
           Width = 190
           Height = 17
@@ -290,7 +290,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 13
         end
         object cbParserHints: TCheckBox
-          Left = 199
+          Left = 205
           Top = 151
           Width = 190
           Height = 17
@@ -298,7 +298,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 14
         end
         object cbSmartScroll: TCheckBox
-          Left = 199
+          Left = 205
           Top = 100
           Width = 190
           Height = 17
@@ -307,7 +307,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 15
         end
         object cbDoubleLine: TCheckBox
-          Left = 199
+          Left = 205
           Top = 67
           Width = 190
           Height = 17
@@ -316,7 +316,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 16
         end
         object cbEHomeKey: TCheckBox
-          Left = 199
+          Left = 205
           Top = 17
           Width = 190
           Height = 17
@@ -325,7 +325,7 @@ object EditorOptForm: TEditorOptForm
           TabOrder = 17
         end
         object cbPastEOF: TCheckBox
-          Left = 199
+          Left = 205
           Top = 33
           Width = 190
           Height = 17
@@ -341,6 +341,14 @@ object EditorOptForm: TEditorOptForm
           Caption = 'Highlight current line'
           TabOrder = 19
           OnClick = cbHighCurrLineClick
+        end
+        object cbCodeFolding: TCheckBox
+          Left = 206
+          Top = 168
+          Width = 145
+          Height = 17
+          Caption = 'Code Folding'
+          TabOrder = 20
         end
       end
     end
@@ -453,7 +461,7 @@ object EditorOptForm: TEditorOptForm
           Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -464,7 +472,7 @@ object EditorOptForm: TEditorOptForm
           Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -526,7 +534,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -536,7 +544,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick

@@ -8740,6 +8740,10 @@ begin
        if Assigned(e) then
        begin
          e.Text.BeginUpdate;
+         // Code folding
+         if (e.Text.CodeFolding.Enabled) then
+                e.Text.UncollapseAll;
+
          try
             {$IFDEF PLUGIN_BUILD}
             for i := 0 to packagesCount - 1 do
@@ -8747,6 +8751,11 @@ begin
             {$ENDIF}
          except
          end;
+
+         // Code folding
+         if (e.Text.CodeFolding.Enabled) then
+                e.Text.ReScanForFoldRanges;
+
          e.Text.EndUpdate;
          e.Modified:=true;
          e.InsertString('', false);

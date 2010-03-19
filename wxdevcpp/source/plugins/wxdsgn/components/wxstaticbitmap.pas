@@ -112,7 +112,6 @@ type
     function GetBitmapCount:Integer;
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
-    function PreserveFormat:boolean;
 
   protected
     { Protected fields of TWxStaticBitmap }
@@ -149,6 +148,10 @@ type
     procedure SetIDName(IDName: string);
     procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
+
+    function PreserveFormat:boolean;
+    function GetGraphicFileName:String;
+    function SetGraphicFileName(strFileName : string): boolean;
 
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
@@ -412,14 +415,7 @@ begin
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
     if not self.Picture.Bitmap.handle = 0 then
-       if (KeepFormat) then
-       begin
-           Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
-           Result.Add(IndentString + '<bitmap>' + '"' + Wx_FileName + '"' + '</bitmap>)');
-
-       end
-       else
-	Result.Add(IndentString + '<bitmap>Images/' + self.Name + '_XPM.xpm</bitmap>' );
+       Result.Add(IndentString + '<bitmap>' + '"' + GetGraphicFileName + '"' + '</bitmap>)');
 
     Result.Add(IndentString + '</object>');
 
@@ -601,7 +597,7 @@ begin
   if (self.Picture.Bitmap.Handle <> 0) then
   begin
     if (not KeepFormat) then
-      Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"'
+      Result := '#include "' + GetGraphicFileName + '"'
   end
 end;
 
@@ -704,7 +700,7 @@ end;
 
 procedure TWxStaticBitmap.SetIDValue(IDValue: integer);
 begin
-  Wx_IDValue := IDVAlue;
+  Wx_IDValue := IDValue;
 end;
 
 procedure TWxStaticBitmap.SetStretchFactor(intValue: integer);
@@ -782,6 +778,24 @@ function TWxStaticBitmap.GetPropertyName(Idx:Integer):String;
 begin
   Result:=Name;
 end;
+
+function TWxStaticBitmap.GetGraphicFileName:String;
+begin
+  Result:= Wx_Filename;
+end;
+
+function TWxStaticBitmap.SetGraphicFileName(strFileName:String): boolean;
+begin
+
+ // If no filename passed, then auto-generate XPM filename
+  if (strFileName = '') then
+     strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm' ;
+  
+  Wx_Filename := CreateGraphicFileName(strFileName);
+  Result:= true;
+
+end;
+
 
 function TWxStaticBitmap.PreserveFormat:boolean;
 begin

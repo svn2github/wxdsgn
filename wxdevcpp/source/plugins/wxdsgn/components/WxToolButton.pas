@@ -130,7 +130,10 @@ type
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
     function PreserveFormat:boolean;
-    
+
+    function GetGraphicFileName: string;
+    function SetGraphicFileName(strFileName : string): boolean;
+
   published
     { Published properties of TWxButton }
     property OnClick;
@@ -339,15 +342,7 @@ begin
     Result.Add(IndentString + Format('<ID>%d</ID>', [self.Wx_IDValue]));
 
     if assigned(Wx_Bitmap) then
-        if (KeepFormat) then
-       begin
-           Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
-           Result.Add(IndentString + '<bitmap>' + '"' + Wx_FileName + '"' + '</bitmap>)');
-
-       end
-       else
-	Result.Add(IndentString + '<bitmap>Images/' + self.Name + '_XPM.xpm</bitmap>' );
-
+           Result.Add(IndentString + '<bitmap>' + '"' + GetGraphicFileName + '"' + '</bitmap>)');
 
     Result.Add(IndentString + Format('<tooltip>%s</tooltip>', [self.Wx_Tooltip]));
     Result.Add(IndentString + Format('<longhelp>%s</longhelp>', [self.Wx_HelpText]));
@@ -434,7 +429,7 @@ begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
     if (not KeepFormat) then
-      Result := '#include "Images/' + GetDesignerFormName(self)+'_'+self.Name + '_XPM.xpm"';
+      Result := '#include "' + GetGraphicFileName + '"';
 end;
 
 function TWxToolButton.GetEventList: TStringList;
@@ -612,6 +607,23 @@ end;
 function TWxToolButton.GetPropertyName(Idx:Integer):String;
 begin
   Result:=Name;
+end;
+
+function TWxToolButton.GetGraphicFileName:String;
+begin
+  Result:= Wx_Filename;
+end;
+
+function TWxToolButton.SetGraphicFileName(strFileName:String): boolean;
+begin
+
+ // If no filename passed, then auto-generate XPM filename
+ if (strFileName = '') then
+     strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm';
+  
+  Wx_Filename := CreateGraphicFileName(strFileName);
+  Result:= true;
+  
 end;
 
 function TWxToolButton.PreserveFormat:boolean;

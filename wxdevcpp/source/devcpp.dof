@@ -47,7 +47,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=packages;packages\parser;plugins\interfaces;packages\codetooltip;..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme
 Packages=vcl;rtl
-Conditionals=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
+Conditionals=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting;CODEFOLDING
 DebugSourceDirs=
 UsePackages=1
 [Parameters]
@@ -83,8 +83,9 @@ ProductVersion=7
 Comments=This program is licensed under the GNU General Public License
 LastCompiled=
 [HistoryLists\hlConditionals]
-Count=1
-Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
+Count=2
+Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting;CODEFOLDING
+Item1=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

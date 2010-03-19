@@ -103,7 +103,7 @@ type
     function GetBitmap(Idx:Integer;var bmp:TBitmap; var PropertyName:string):boolean;
     function GetPropertyName(Idx:Integer):String;
     function PreserveFormat:boolean;
-    
+
   protected
     { Protected fields of TWxButton }
 
@@ -163,6 +163,9 @@ type
     function GetCustomButtonDwgStyle(Wx_ButtonDwgStyle: TWxCBtnDwgStyleSubSet): string;
     function GetCustomButtonPosStyle(Wx_ButtonPosStyle: TWxCBtnPosStyleSubItem): string;
     function GetCustomButtonSpecificStyle: string;
+
+    function GetGraphicFileName: string;
+    function SetGraphicFileName(strFileName : string): boolean;
 
   published
     property Color;
@@ -584,7 +587,8 @@ begin
   if assigned(Wx_Bitmap) then
     if Wx_Bitmap.Bitmap.Handle <> 0 then
     if (not KeepFormat) then
-      Result := '#include "Images/'+ GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm"';
+       Result := '#include "' + GetGraphicFileName + '"';
+      
 end;
 
 function TWxCustomButton.GetEventList: TStringList;
@@ -762,6 +766,23 @@ begin
   Result:=Name;
 end;
 
+
+function TWxCustomButton.GetGraphicFileName:String;
+begin
+  Result:= Wx_Filename;
+end;
+
+function TWxCustomButton.SetGraphicFileName(strFileName:String): boolean;
+begin
+
+ // If no filename passed, then auto-generate XPM filename
+ if (strFileName = '') then
+     strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm';
+
+  Wx_Filename := CreateGraphicFileName(strFileName);
+  Result:= true;
+  
+end;
 
 function TWxCustomButton.GetValidatorString:TWxValidatorString;
 begin

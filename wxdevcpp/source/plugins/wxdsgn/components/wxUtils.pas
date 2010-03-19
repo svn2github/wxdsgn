@@ -82,6 +82,9 @@ function iswxForm(FileName: string): Boolean;
 function isXRCExt(FileName: string): boolean;
 function SaveStringToFile(strContent, strFileName: string): Boolean;
 
+function CreateGraphicFileName(strFileName : string): string;
+function CreateGraphicFileDir(strFileName: string): string;
+
 function LocalAppDataPath : string;
 
 type
@@ -260,6 +263,8 @@ type
     function GetBitmap(Idx: Integer; var bmp: TBitmap; var PropertyName: string): boolean;
     function GetPropertyName(Idx: Integer): string;
     function PreserveFormat: boolean;
+    function GetGraphicFileName: string;
+    function SetGraphicFileName(strFileName : string): boolean;
   end;
 
    IWxAuiManagerInterface = interface
@@ -954,6 +959,43 @@ begin
   SepaPos := Pos(':', S);
   if SepaPos > 1 then
     Result := Copy(S, 1, SepaPos - 1);
+end;
+
+function CreateGraphicFileDir(strFileName: string): string;
+var
+   strDir : string;
+begin
+
+  strDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
+
+  strDir:=IncludeTrailingPathDelimiter(strDir)+'Images';
+
+  if DirectoryExists(strDir) = false then
+  begin
+   if ForceDirectories(strDir) = true then
+     strDir:=strDir;
+  end
+  else
+    strDir:=strDir;
+    
+  strDir := IncludetrailingPathDelimiter(strDir);
+
+  strDir := AnsiReplaceText(strDir, '\', '/');
+
+  Result := strDir;
+
+end;
+
+function CreateGraphicFileName(strFileName: string): string;
+begin
+
+  strFileName := CreateGraphicFileDir(strFileName)
+                + ExtractFileName(strFileName);
+
+  strFileName := AnsiReplaceText(strFileName, '\', '/');
+
+  Result := strFileName;
+
 end;
 
 function ExtractComponentPropertyCaption(const S: string): string;
@@ -5149,17 +5191,7 @@ begin
   if bmp = nil then
     Exit;
 
-  xpmFileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
-  xpmNewFileDir := IncludeTrailingPathDelimiter(xpmFileDir) + 'Images';
-  if DirectoryExists(xpmNewFileDir) = false then
-  begin
-    if ForceDirectories(xpmNewFileDir) = true then
-      xpmFileDir := xpmNewFileDir;
-  end
-  else
-    xpmFileDir := xpmNewFileDir;
-
-  xpmFileDir := IncludetrailingPathDelimiter(xpmFileDir);
+  xpmFileDir := CreateGraphicFileDir(strFileName);
 
   if bmp.handle <> 0 then
   begin
@@ -6665,6 +6697,7 @@ var
   PictureEdit: TPictureEdit;
   picObj: Tpicture;
   strClassName: string;
+  strFileName : string;
 begin
   PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
   strClassName := UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName);
@@ -6678,7 +6711,7 @@ begin
     else
        PictureEdit.KeepFormat.State := cbUnchecked;
 
-    PictureEdit.FileName.Text := TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+    PictureEdit.FileName.Text := TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
   end;
 
   if strClassName = UpperCase('TWxCustomButton') then
@@ -6690,7 +6723,7 @@ begin
     else
        PictureEdit.KeepFormat.State := cbUnchecked;
 
-    PictureEdit.FileName.Text := TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+    PictureEdit.FileName.Text := TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
   end;
 
@@ -6704,7 +6737,7 @@ begin
     else
        PictureEdit.KeepFormat.State := cbUnchecked;
 
-    PictureEdit.FileName.Text := TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+    PictureEdit.FileName.Text := TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
   end;
 
@@ -6718,7 +6751,7 @@ begin
     else
        PictureEdit.KeepFormat.State := cbUnchecked;
 
-    PictureEdit.FileName.Text := TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+    PictureEdit.FileName.Text := TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
   end;
 
@@ -6732,7 +6765,7 @@ begin
     else
        PictureEdit.KeepFormat.State := cbUnchecked;
 
-    PictureEdit.FileName.Text := TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_FileName;
+    PictureEdit.FileName.Text := TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
   end;
 
@@ -6752,11 +6785,21 @@ begin
           TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Height;
 
         if (PictureEdit.KeepFormat.State = cbChecked) then
-            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        begin
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true;
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+        end
         else
-              TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+        begin
+             TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+               //strFileName := 'Images/' + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
+             TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+        end;
+        
+       strFileName := TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
-        TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+              ShowMessage(strFileName);
+       // TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
 
       end;
 
