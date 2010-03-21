@@ -291,7 +291,13 @@ begin
               if Lines.Count > 0 then
                 if Lines[Lines.Count -1] <> '' then
                   Lines.Add('');
-        fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
+
+         // Code folding - Save the un-folded text, otherwise
+        //    the folded regions won't be saved.
+        if (fText.CodeFolding.Enabled) then
+           fText.GetUncollapsedStrings.SaveToFile(ChangeFileExt(FileName, s))
+        else
+           fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
       end;
 
     except

@@ -2631,6 +2631,7 @@ begin
   idx := -1;
   if assigned(fProject) then
   begin
+
     if e.FileName = '' then
     begin
       idx := fProject.GetUnitFromString(e.TabSheet.Caption);
@@ -2794,7 +2795,19 @@ begin
             if Lines.Count > 0 then
               if Lines[Lines.Count -1] <> '' then
                 Lines.Add('');
-        e.Text.Lines.SaveToFile(s);
+
+        // Code folding - Save the un-folded text, otherwise
+        //    the folded regions won't be saved.
+        if (e.Text.CodeFolding.Enabled) then
+        begin
+          e.Text.GetUncollapsedStrings.SaveToFile(s);
+        end
+        else
+        begin
+           e.Text.Lines.SaveToFile(s);
+        end;
+
+        //e.Text.Lines.SaveToFile(s);
         e.Modified := False;
         e.New := False;
       except
@@ -2926,7 +2939,13 @@ begin
                 Lines.Add('');
 
         //And commit the file to disk
-        e.Text.Lines.SaveToFile(e.FileName);
+        // Code folding - Save the un-folded text, otherwise
+        //    the folded regions won't be saved.
+        if (e.Text.CodeFolding.Enabled) then
+          e.Text.GetUncollapsedStrings.SaveToFile(e.FileName)
+        else
+          e.Text.Lines.SaveToFile(e.FileName);
+
         e.Modified := false;
 
         //Re-enable the file watch
@@ -2947,7 +2966,7 @@ begin
 
     if not assigned(e) then
         exit;
-
+        
   {$IFDEF PLUGIN_BUILD}
   if(e.AssignedPlugin <> '') then
       plugins[unit_plugins[e.AssignedPlugin]].SaveFile(e.FileName)

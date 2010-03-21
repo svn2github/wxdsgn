@@ -319,7 +319,14 @@ begin
               Lines.Add('');
 
       DisableFileWatch;
-      fEditor.Text.Lines.SavetoFile(fFileName);
+
+      // Code folding - Save the un-folded text, otherwise
+      //    the folded regions won't be saved.
+      if (fEditor.Text.CodeFolding.Enabled) then
+         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName)
+      else
+         fEditor.Text.Lines.SavetoFile(fFileName);
+
       EnableFileWatch;
 
       fEditor.New := False;
@@ -336,7 +343,14 @@ begin
               Lines.Add('');
 
       DisableFileWatch;
-      fEditor.Text.Lines.SavetoFile(fFileName);
+
+      // Code folding - Save the un-folded text, otherwise
+      //    the folded regions won't be saved.
+      if (fEditor.Text.CodeFolding.Enabled) then
+         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName)
+      else
+         fEditor.Text.Lines.SavetoFile(fFileName);
+
       EnableFileWatch;
 
       fEditor.New := False;
@@ -742,6 +756,7 @@ if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
           if ResFile.Count > 0 then
             if ResFile[ResFile.Count -1] <> '' then
               ResFile.Add('');
+
         ResFile.SaveToFile(Res);
       end;
       Original.Free;
