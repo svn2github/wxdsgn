@@ -561,7 +561,7 @@ end;
 function GetBlockStartAndEndPos(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; var StartPos, EndPos: Integer): Boolean;
 var
     strStartBlock, strEndBlock: string;
-    i: Integer;
+    i, sCount: Integer;
     strLine: string;
 begin
     Result := true;
@@ -578,9 +578,13 @@ begin
         exit;
     end;
 
-    for i := 0 to synEdit.Lines.count - 1 do
+    sCount := synEdit.Lines.Count;
+
+    for i := 0 to sCount - 1 do
     begin
+
         strLine := synEdit.Lines[i];
+
         if UpperCase(trim(strLine)) = UpperCase(strStartBlock) then
         begin
             if StartPos <> 0 then
@@ -609,7 +613,7 @@ begin
     begin
         Result := false;
         Exit;
-    end;
+    end
 
 end;
 //function GetBlockCode(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: Integer): string;
@@ -635,13 +639,13 @@ begin
     try
       for i := StartPos+1 to EndPos-1 do
       begin
-         Result.Add(synEdit.Lines[i]);
+           Result.Add(synEdit.Lines[i]);
       end;
     except
       Result.Free;
       raise;
     end;
-    
+
 end;
 
 
@@ -662,7 +666,7 @@ begin
 
     for i := EndLinePos - 1 downto StartLinePos + 1 do
     begin
-        synEdit.Lines.Delete(i);
+           synEdit.Lines.Delete(i);
     end;
 
 end;

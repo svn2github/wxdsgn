@@ -116,6 +116,7 @@ type
     fBuildCmd: string;
     fLink: boolean;
     fPriority: integer;
+    fCollapsedList : string;
     function GetDirty: boolean;
     procedure SetDirty(value: boolean);
   public
@@ -132,6 +133,7 @@ type
     property Folder: string read fFolder write fFolder;
     property Compile: boolean read fCompile write fCompile;
     property CompileCpp: boolean read fCompileCpp write fCompileCpp;
+    property CollapsedList: string read fCollapsedList write fCollapsedList;
     property OverrideBuildCmd: boolean read fOverrideBuildCmd write fOverrideBuildCmd;
     property BuildCmd: string read fBuildCmd write fBuildCmd;
     property Link: boolean read fLink write fLink;
@@ -320,10 +322,13 @@ begin
 
       DisableFileWatch;
 
+
       // Code folding - Save the un-folded text, otherwise
       //    the folded regions won't be saved.
       if (fEditor.Text.CodeFolding.Enabled) then
-         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName)
+      begin
+         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName);
+      end
       else
          fEditor.Text.Lines.SavetoFile(fFileName);
 
@@ -347,7 +352,9 @@ begin
       // Code folding - Save the un-folded text, otherwise
       //    the folded regions won't be saved.
       if (fEditor.Text.CodeFolding.Enabled) then
-         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName)
+      begin
+         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName);
+      end
       else
          fEditor.Text.Lines.SavetoFile(fFileName);
 
@@ -516,6 +523,7 @@ begin
   fBuildCmd := Source.fBuildCmd;
   fLink := Source.fLink;
   fPriority := Source.fPriority;
+  fCollapsedList := Source.fCollapsedList;
 end;
 
 { TProject }
@@ -903,7 +911,7 @@ begin
         Compile := True;
     	CompileCpp:=Self.Profiles.useGPP;
         Link := True;
-    end;    
+    end;
     Priority := 1000;
     OverrideBuildCmd := False;
     BuildCmd := '';
@@ -1321,6 +1329,7 @@ begin
     finifile.WriteUnit(idx, 'Priority', fUnits[idx].Priority);
     finifile.WriteUnit(idx, 'OverrideBuildCmd', fUnits[idx].OverrideBuildCmd);
     finifile.WriteUnit(idx, 'BuildCmd', fUnits[idx].BuildCmd);
+    finifile.WriteUnit(idx, 'CollapsedList', fUnits[idx].CollapsedList);
     inc(idx);
   end;
   finifile.Write('UnitCount', Count);
@@ -1434,7 +1443,8 @@ begin
       Priority := finifile.ReadUnit(i, 'Priority', 1000);
       OverrideBuildCmd := finifile.ReadUnit(i, 'OverrideBuildCmd', False);
       BuildCmd := finifile.ReadUnit(i, 'BuildCmd', '');
-
+      CollapsedList := finifile.ReadUnit(i, 'CollapsedList', '');
+      
       Editor := nil;
       New := FALSE;
       fParent := self;

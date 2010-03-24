@@ -295,7 +295,9 @@ begin
          // Code folding - Save the un-folded text, otherwise
         //    the folded regions won't be saved.
         if (fText.CodeFolding.Enabled) then
-           fText.GetUncollapsedStrings.SaveToFile(ChangeFileExt(FileName, s))
+        begin
+         fText.GetUncollapsedStrings.SaveToFile(ChangeFileExt(FileName, s));
+        end
         else
            fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
       end;
@@ -348,7 +350,7 @@ begin
 
   // Code folding
   fText.InitCodeFolding;
-
+  
 {$IFDEF PLUGIN_BUILD}
   for i := 0 to MainForm.pluginsCount - 1 do
   begin

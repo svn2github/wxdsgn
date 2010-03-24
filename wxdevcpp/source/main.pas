@@ -2942,7 +2942,9 @@ begin
         // Code folding - Save the un-folded text, otherwise
         //    the folded regions won't be saved.
         if (e.Text.CodeFolding.Enabled) then
-          e.Text.GetUncollapsedStrings.SaveToFile(e.FileName)
+        begin
+          e.Text.GetUncollapsedStrings.SaveToFile(e.FileName);
+        end
         else
           e.Text.Lines.SaveToFile(e.FileName);
 
@@ -8750,6 +8752,7 @@ var
    e: TEditor;
 {$IFDEF PLUGIN_BUILD}
   i: Integer;
+  collapsedList : string;
 {$ENDIF}
 begin
     if FileExists(filename) then
@@ -8759,9 +8762,22 @@ begin
        if Assigned(e) then
        begin
          e.Text.BeginUpdate;
+
          // Code folding
          if (e.Text.CodeFolding.Enabled) then
-                e.Text.UncollapseAll;
+         begin
+
+            // Get list of collapsed/uncollapsed sections
+            // collapsed will be a list of strings with
+            //  '1' and '0' indicating whether the fold
+            //  section is collapsed or not.
+            collapsedList := e.Text.GetCollapsedArray;
+            // Unfold all sections
+            e.Text.UncollapseAll;
+
+             // e.Text.ReScanForFoldRanges; // Update fold ranges
+
+         end;
 
          try
             {$IFDEF PLUGIN_BUILD}
@@ -8771,11 +8787,29 @@ begin
          except
          end;
 
+         e.Text.EndUpdate;
+         
          // Code folding
          if (e.Text.CodeFolding.Enabled) then
-                e.Text.ReScanForFoldRanges;
+         begin
 
-         e.Text.EndUpdate;
+         e.Text.ReScanForFoldRanges; // Update fold ranges
+         //e.Text.InitCodeFolding;
+
+           // Now go through a recollapse sections that
+           //   had been previously collapsed.
+           for i := (Length(collapsedList) - 1) downto 0 do
+           begin
+
+              if ((collapsedList[i+1] = '1') and (i < e.Text.GetFoldCount)) then
+                 if  Assigned(e.Text.GetFoldRange(i)) then
+                    e.Text.Collapse(e.Text.GetFoldRange(i));
+
+            end;
+
+         end;
+
+
          e.Modified:=true;
          e.InsertString('', false);
          MainForm.StatusBar.Panels[3].Text := messageToDysplay;
