@@ -1008,7 +1008,7 @@ begin
       // Load the project folders as well as other non-profile specifics
       fFolders.CommaText := Read('Folders', '');
       fCmdLineArgs := Read('CommandLine', '');
-      
+
       //Load the version information stuff before others.
       Section := 'VersionInfo';
       VersionInfo.Major := Read('Major', 0);
@@ -1329,7 +1329,8 @@ begin
     finifile.WriteUnit(idx, 'Priority', fUnits[idx].Priority);
     finifile.WriteUnit(idx, 'OverrideBuildCmd', fUnits[idx].OverrideBuildCmd);
     finifile.WriteUnit(idx, 'BuildCmd', fUnits[idx].BuildCmd);
-    finifile.WriteUnit(idx, 'CollapsedList', fUnits[idx].CollapsedList);
+    finifile.WriteUnit(idx, 'CollapsedList', fUnits[idx].Editor.Text.GetCollapsedArray);
+
     inc(idx);
   end;
   finifile.Write('UnitCount', Count);
@@ -1733,7 +1734,9 @@ begin
   UpdateFile; // so data is current before going to disk
   SaveLayout; // save current opened files, and which is "active".
   if fModified then
-    finiFile.UpdateFile;
+   finiFile.UpdateFile
+  else
+
   SetModified(FALSE);
 end;
 
@@ -1796,6 +1799,9 @@ begin
 end;
 
 function TProject.OpenUnit(index: integer): TEditor;
+var
+  i : Integer;
+  collapsedList : string;
 begin
   result := nil;
   if (index < 0) or (index > pred(fUnits.Count)) then exit;
@@ -1811,6 +1817,29 @@ begin
       	     if devEditor.DefaulttoPrj then
                fEditor.InsertDefaultText;
          LoadUnitLayout(fEditor, index);
+
+         // Code folding
+        if (fEditor.Text.CodeFolding.Enabled) then
+         begin
+
+           // Load the folded region array list
+           collapsedList := fUnits[index].CollapsedList;
+
+           fEditor.Text.ReScanForFoldRanges; // Update fold ranges
+
+           // Now go through a recollapse sections that
+           //   had been previously collapsed.
+           for i := (Length(collapsedList) - 1) downto 0 do
+           begin
+
+              if ((collapsedList[i+1] = '1') and (i < fEditor.Text.GetFoldCount)) then
+                 if  Assigned(fEditor.Text.GetFoldRange(i)) then
+                    fEditor.Text.Collapse(fEditor.Text.GetFoldRange(i));
+
+            end;
+
+         end;
+
          result:= fEditor;
       except
         on E: Exception do
@@ -1835,12 +1864,23 @@ begin
 end;
 
 procedure TProject.CloseUnit(index: integer);
+var
+    tempINIFile : Tdevini;
 begin
   if (index < 0) or (index > pred(fUnits.Count)) then exit;
   with fUnits[index] do
   begin
     if assigned(fEditor) then
     begin
+
+      if ((fEditor.Text.CodeFolding.Enabled) and (not fEditor.Modified)) then
+      begin
+
+      // Update the .dev file with the last collapsed sections
+        fInifile.UpdateFile;
+
+      end;
+
       SaveUnitLayout(fEditor, index);
       fEditor.Close;
       fEditor:=nil; //because closing the editor will destroy it

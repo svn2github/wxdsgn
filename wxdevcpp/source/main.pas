@@ -8775,8 +8775,6 @@ begin
             // Unfold all sections
             e.Text.UncollapseAll;
 
-             // e.Text.ReScanForFoldRanges; // Update fold ranges
-
          end;
 
          try
@@ -8793,8 +8791,7 @@ begin
          if (e.Text.CodeFolding.Enabled) then
          begin
 
-         e.Text.ReScanForFoldRanges; // Update fold ranges
-         //e.Text.InitCodeFolding;
+           e.Text.ReScanForFoldRanges; // Update fold ranges
 
            // Now go through a recollapse sections that
            //   had been previously collapsed.
@@ -8808,7 +8805,6 @@ begin
             end;
 
          end;
-
 
          e.Modified:=true;
          e.InsertString('', false);
