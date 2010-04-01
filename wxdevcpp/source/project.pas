@@ -327,6 +327,8 @@ begin
       //    the folded regions won't be saved.
       if (fEditor.Text.CodeFolding.Enabled) then
       begin
+         fEditor.Text.ReScanForFoldRanges;
+          //fEditor.Text.Update;
          fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName);
       end
       else
@@ -353,6 +355,7 @@ begin
       //    the folded regions won't be saved.
       if (fEditor.Text.CodeFolding.Enabled) then
       begin
+         //fEditor.Text.ReScanForFoldRanges;
          fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName);
       end
       else
@@ -1825,7 +1828,7 @@ begin
            // Load the folded region array list
            collapsedList := fUnits[index].CollapsedList;
 
-           fEditor.Text.ReScanForFoldRanges; // Update fold ranges
+           //fEditor.Text.ReScanForFoldRanges; // Update fold ranges
 
            // Now go through a recollapse sections that
            //   had been previously collapsed.

@@ -61,8 +61,8 @@ IncludeVerInfo=1
 AutoIncBuild=1
 MajorVer=7
 MinorVer=3
-Release=0
-Build=25
+Release=2
+Build=2
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=wxDev-C++ RAD add-on
-FileVersion=7.3.0.25
+FileVersion=7.3.2.2
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -90,8 +90,8 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=24
-Item0=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents;$(PROGRAMFILES)\GExperts for Delphi 6;C:\wxdevcpp\CompUsedBy_WX_BUILD\jvcl\archive
-Item1=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents;$(PROGRAMFILES)\GExperts for Delphi 6
+Item0=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents;$(PROGRAMFILES)\GExperts for Delphi 6
+Item1=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents;$(PROGRAMFILES)\GExperts for Delphi 6;C:\wxdevcpp\CompUsedBy_WX_BUILD\jvcl\archive
 Item2=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents
 Item3=$(DELPHI)\Lib\Debug;E:\wxDevCpp\COMPUS~1\jcl\lib\d6\debug;propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents
 Item4=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;$(PROGRAMFILES)\GExperts for Delphi 6;components\BaseComponents

@@ -2800,6 +2800,7 @@ begin
         //    the folded regions won't be saved.
         if (e.Text.CodeFolding.Enabled) then
         begin
+          //e.Text.ReScanForFoldRanges;
           e.Text.GetUncollapsedStrings.SaveToFile(s);
         end
         else
@@ -2943,6 +2944,7 @@ begin
         //    the folded regions won't be saved.
         if (e.Text.CodeFolding.Enabled) then
         begin
+          //e.Text.ReScanForFoldRanges;
           e.Text.GetUncollapsedStrings.SaveToFile(e.FileName);
         end
         else
@@ -4144,6 +4146,8 @@ begin
   if assigned(e) then
   begin
     e.Text.Undo;
+    if (e.Text.CodeFolding.Enabled) then
+         e.Text.ReScanForFoldRanges;
   end;
 end;
 
@@ -4153,7 +4157,12 @@ var
 begin
   e := GetEditor;
   if assigned(e) then
+  begin
     e.Text.Redo;
+    if (e.Text.CodeFolding.Enabled) then
+         e.Text.ReScanForFoldRanges;
+  end;
+
 end;
 
 procedure TMainForm.actCutExecute(Sender: TObject);
@@ -4179,7 +4188,11 @@ begin
     end;
     if not b then
 {$ENDIF}
-      e.Text.CutToClipboard
+    begin
+      e.Text.CutToClipboard;
+      if (e.Text.CodeFolding.Enabled) then
+         e.Text.ReScanForFoldRanges;
+    end;
   end;
 end;
 
@@ -4206,7 +4219,8 @@ begin
     end;
     if not b then
 {$ENDIF}
-      e.Text.CopyToClipboard;
+        e.Text.CopyToClipboard;
+
   end;
 end;
 
@@ -4241,6 +4255,9 @@ begin
    else
       SendMessage(GetFocus, WM_PASTE, 0, 0);
 
+   if (e.Text.CodeFolding.Enabled) then
+         e.Text.ReScanForFoldRanges;
+
    e.Text.Refresh;
 end;
 
@@ -4265,7 +4282,13 @@ var
 begin
   e := GetEditor;
   if assigned(e) and e.Text.SelAvail then
+  begin
     e.Text.ClearSelection;
+
+    if (e.Text.CodeFolding.Enabled) then
+          e.Text.ReScanForFoldRanges;
+
+  end;
 end;
 
 procedure TMainForm.actDeleteLineExecute(Sender: TObject);
@@ -4275,7 +4298,10 @@ begin
     e := GetEditor;
     if assigned(e) then
     begin
-        e.Text.ExecuteCommand(507, Char('0'), Pointer(0));   // 507: delete line
+        e.Text.ExecuteCommand(507, Char('0'), Pointer(0)); // 507: delete line
+
+        if (e.Text.CodeFolding.Enabled) then
+          e.Text.ReScanForFoldRanges;
     end;
 end;
 

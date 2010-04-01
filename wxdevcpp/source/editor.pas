@@ -296,6 +296,7 @@ begin
         //    the folded regions won't be saved.
         if (fText.CodeFolding.Enabled) then
         begin
+         //fText.ReScanForFoldRanges;
          fText.GetUncollapsedStrings.SaveToFile(ChangeFileExt(FileName, s));
         end
         else
