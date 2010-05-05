@@ -1,6 +1,6 @@
 object frmProjectOptions: TfrmProjectOptions
-  Left = 368
-  Top = 13
+  Left = 119
+  Top = 79
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Options'
@@ -650,7 +650,7 @@ object frmProjectOptions: TfrmProjectOptions
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnChange = cmbCompilerChange
       end
@@ -1552,7 +1552,7 @@ object frmProjectOptions: TfrmProjectOptions
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 4
         end
       end

@@ -27,7 +27,7 @@ uses
 {$IFDEF WIN32}
   Windows, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, CodeCompletion, CppParser,
   Menus, ImgList, ComCtrls, StdCtrls, ExtCtrls, SynEdit, SynEditKeyCmds, version, Grids,
-  SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter, SynEditCodeFolding,
+  SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter,
 
   {** Modified by Peter **}
   DevCodeToolTip, SynAutoIndent, utils, iplugin;
@@ -49,7 +49,7 @@ type
     procedure AfterPaint(ACanvas: TCanvas; const AClip: TRect;
       FirstLine, LastLine: integer); override;
     procedure LinesInserted(FirstLine, Count: integer); override;
-    procedure LinesDeleted(FirstLine, Count: integer; addToUndoList : boolean); override;
+    procedure LinesDeleted(FirstLine, Count: integer); override;
   public
     constructor Create(ed: TEditor);
   end;
@@ -217,7 +217,7 @@ begin
   // if this method is not defined -> Abstract error
 end;
 
-procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer; addToUndoList : boolean);
+procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer);
 begin
   // if this method is not defined -> Abstract error
 end;
@@ -291,16 +291,7 @@ begin
               if Lines.Count > 0 then
                 if Lines[Lines.Count -1] <> '' then
                   Lines.Add('');
-
-         // Code folding - Save the un-folded text, otherwise
-        //    the folded regions won't be saved.
-        if (fText.CodeFolding.Enabled) then
-        begin
-         //fText.ReScanForFoldRanges;
-         fText.GetUncollapsedStrings.SaveToFile(ChangeFileExt(FileName, s));
-        end
-        else
-           fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
+        fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
       end;
 
     except
@@ -349,9 +340,6 @@ begin
   else
     fText.Highlighter := dmMain.cpp;
 
-  // Code folding
-  fText.InitCodeFolding;
-  
 {$IFDEF PLUGIN_BUILD}
   for i := 0 to MainForm.pluginsCount - 1 do
   begin
@@ -499,8 +487,8 @@ begin
     fTabSheet.PageControl.Show;
     fTabSheet.PageControl.ActivePage := fTabSheet;
     if fText.Visible then
-      fText.SetFocus;
-
+      fText.SetFocus;  
+             
     //Call the post-change event handler
     if MainForm.ClassBrowser1.Enabled {$IFDEF PLUGIN_BUILD} or (AssignedPlugin <> '') {$ENDIF} then
       MainForm.PageControl.OnChange(MainForm.PageControl); // this makes sure that the classbrowser is consistent

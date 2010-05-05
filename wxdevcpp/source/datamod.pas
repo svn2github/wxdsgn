@@ -29,8 +29,8 @@ uses
 {$ENDIF}
 {$IFDEF WIN32}
   SysUtils, Classes, Menus, Dialogs, ImgList, Controls,
-  SynEditExport, SynExportHTML, SynExportRTF, SynEditCodeFolding,
-  SynEditHighlighter, SynHighlighterCpp, SynEditPrint, 
+  SynEditExport, SynExportHTML, SynExportRTF,
+  SynEditHighlighter, SynHighlighterCpp, SynEditPrint,
   oysUtils, CodeIns, SynHighlighterRC, SynCompletionProposal,
   SynEditMiscClasses, SynEditSearch, SynHighlighterAsm, SynHighlighterMulti, OpenSaveDialogs;
 {$ENDIF}
@@ -145,14 +145,6 @@ procedure TdmMain.DataModuleCreate(Sender: TObject);
 begin
   fMRU := ToysStringList.Create;
   fCodeList := TCodeInsList.Create;
-
-  // Code Folding
-  // This might not be needed (GAR 18 MAR 2010)
-  with cpp.FoldRegions do
-  begin
-     Add(rtChar, False, False, False, '{', '}', nil);
-     Add(rtKeyword, True, True, False, '/*', '*/', nil);
-  end;
 
   //Set up the syntax highlighter stuff
   // #32 = space          #9=tab

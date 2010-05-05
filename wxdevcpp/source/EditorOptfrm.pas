@@ -159,7 +159,6 @@ type
     cbDefaultintoprj: TCheckBox;
     edCompletionDelay: TSpinEdit;
     cbGutterGradient: TCheckBox;
-    cbCodeFolding: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -220,7 +219,7 @@ type
       Line: Integer; Mark: TSynEditMark);
     procedure cbHighCurrLineClick(Sender: TObject);
     procedure seTabSizeChange(Sender: TObject);
-    private
+  private
     ffgColor: TColor;
     fbgColor: TColor;
     fUpdate: boolean;
@@ -728,8 +727,6 @@ begin
     cbMatch.Checked := Match;
     cbDefaultintoprj.Checked := DefaulttoPrj;
 
-    cbCodeFolding.Checked := CodeFolding;
-
     cbHighCurrLine.Checked := HighCurrLine;
     cpHighColor.SelectionColor := HighColor;
     cpHighColor.Enabled := cbHighCurrLine.Checked;
@@ -897,8 +894,6 @@ begin
     InsDropFiles := cbDropFiles.Checked;
     ParserHints := cbParserHints.Checked;
 
-    CodeFolding := cbCodeFolding.Checked;
-    
     // load in attributes
     for idx := 0 to pred(cpp.AttrCount) do
     begin

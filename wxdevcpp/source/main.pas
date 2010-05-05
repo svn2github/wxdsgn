@@ -2631,7 +2631,6 @@ begin
   idx := -1;
   if assigned(fProject) then
   begin
-
     if e.FileName = '' then
     begin
       idx := fProject.GetUnitFromString(e.TabSheet.Caption);
@@ -2795,20 +2794,7 @@ begin
             if Lines.Count > 0 then
               if Lines[Lines.Count -1] <> '' then
                 Lines.Add('');
-
-        // Code folding - Save the un-folded text, otherwise
-        //    the folded regions won't be saved.
-        if (e.Text.CodeFolding.Enabled) then
-        begin
-          //e.Text.ReScanForFoldRanges;
-          e.Text.GetUncollapsedStrings.SaveToFile(s);
-        end
-        else
-        begin
-           e.Text.Lines.SaveToFile(s);
-        end;
-
-        //e.Text.Lines.SaveToFile(s);
+        e.Text.Lines.SaveToFile(s);
         e.Modified := False;
         e.New := False;
       except
@@ -2940,16 +2926,7 @@ begin
                 Lines.Add('');
 
         //And commit the file to disk
-        // Code folding - Save the un-folded text, otherwise
-        //    the folded regions won't be saved.
-        if (e.Text.CodeFolding.Enabled) then
-        begin
-          //e.Text.ReScanForFoldRanges;
-          e.Text.GetUncollapsedStrings.SaveToFile(e.FileName);
-        end
-        else
-          e.Text.Lines.SaveToFile(e.FileName);
-
+        e.Text.Lines.SaveToFile(e.FileName);
         e.Modified := false;
 
         //Re-enable the file watch
@@ -2970,7 +2947,7 @@ begin
 
     if not assigned(e) then
         exit;
-        
+
   {$IFDEF PLUGIN_BUILD}
   if(e.AssignedPlugin <> '') then
       plugins[unit_plugins[e.AssignedPlugin]].SaveFile(e.FileName)
@@ -4146,8 +4123,6 @@ begin
   if assigned(e) then
   begin
     e.Text.Undo;
-    if (e.Text.CodeFolding.Enabled) then
-         e.Text.ReScanForFoldRanges;
   end;
 end;
 
@@ -4157,12 +4132,7 @@ var
 begin
   e := GetEditor;
   if assigned(e) then
-  begin
     e.Text.Redo;
-    if (e.Text.CodeFolding.Enabled) then
-         e.Text.ReScanForFoldRanges;
-  end;
-
 end;
 
 procedure TMainForm.actCutExecute(Sender: TObject);
@@ -4188,11 +4158,7 @@ begin
     end;
     if not b then
 {$ENDIF}
-    begin
-      e.Text.CutToClipboard;
-      if (e.Text.CodeFolding.Enabled) then
-         e.Text.ReScanForFoldRanges;
-    end;
+      e.Text.CutToClipboard
   end;
 end;
 
@@ -4219,8 +4185,7 @@ begin
     end;
     if not b then
 {$ENDIF}
-        e.Text.CopyToClipboard;
-
+      e.Text.CopyToClipboard;
   end;
 end;
 
@@ -4255,9 +4220,6 @@ begin
    else
       SendMessage(GetFocus, WM_PASTE, 0, 0);
 
-   if (e.Text.CodeFolding.Enabled) then
-         e.Text.ReScanForFoldRanges;
-
    e.Text.Refresh;
 end;
 
@@ -4282,13 +4244,7 @@ var
 begin
   e := GetEditor;
   if assigned(e) and e.Text.SelAvail then
-  begin
     e.Text.ClearSelection;
-
-    if (e.Text.CodeFolding.Enabled) then
-          e.Text.ReScanForFoldRanges;
-
-  end;
 end;
 
 procedure TMainForm.actDeleteLineExecute(Sender: TObject);
@@ -4298,10 +4254,7 @@ begin
     e := GetEditor;
     if assigned(e) then
     begin
-        e.Text.ExecuteCommand(507, Char('0'), Pointer(0)); // 507: delete line
-
-        if (e.Text.CodeFolding.Enabled) then
-          e.Text.ReScanForFoldRanges;
+        e.Text.ExecuteCommand(507, Char('0'), Pointer(0));   // 507: delete line
     end;
 end;
 
@@ -8778,7 +8731,6 @@ var
    e: TEditor;
 {$IFDEF PLUGIN_BUILD}
   i: Integer;
-  collapsedList : string;
 {$ENDIF}
 begin
     if FileExists(filename) then
@@ -8788,21 +8740,6 @@ begin
        if Assigned(e) then
        begin
          e.Text.BeginUpdate;
-
-         // Code folding
-         if (e.Text.CodeFolding.Enabled) then
-         begin
-
-            // Get list of collapsed/uncollapsed sections
-            // collapsed will be a list of strings with
-            //  '1' and '0' indicating whether the fold
-            //  section is collapsed or not.
-            collapsedList := e.Text.GetCollapsedArray;
-            // Unfold all sections
-            e.Text.UncollapseAll;
-
-         end;
-
          try
             {$IFDEF PLUGIN_BUILD}
             for i := 0 to packagesCount - 1 do
@@ -8810,28 +8747,7 @@ begin
             {$ENDIF}
          except
          end;
-
          e.Text.EndUpdate;
-         
-         // Code folding
-         if (e.Text.CodeFolding.Enabled) then
-         begin
-
-           e.Text.ReScanForFoldRanges; // Update fold ranges
-
-           // Now go through a recollapse sections that
-           //   had been previously collapsed.
-           for i := (Length(collapsedList) - 1) downto 0 do
-           begin
-
-              if ((collapsedList[i+1] = '1') and (i < e.Text.GetFoldCount)) then
-                 if  Assigned(e.Text.GetFoldRange(i)) then
-                    e.Text.Collapse(e.Text.GetFoldRange(i));
-
-            end;
-
-         end;
-
          e.Modified:=true;
          e.InsertString('', false);
          MainForm.StatusBar.Panels[3].Text := messageToDysplay;

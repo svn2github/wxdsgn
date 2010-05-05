@@ -40,8 +40,7 @@ interface
 
 uses
 {$IFDEF WIN32}
-Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes,
-    SynEditCodeFolding;  //, DbugIntf; EAB removed Gexperts debug stuff.
+Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes, IniFiles, prjtypes;  //, DbugIntf; EAB removed Gexperts debug stuff.
 {$ENDIF}
 {$IFDEF LINUX}
   QDialogs, Classes, QGraphics, QSynEdit, CFGData, CFGTypes, IniFiles, prjtypes;
@@ -525,7 +524,7 @@ type
     fMatch: boolean; // Highlight matching parenthesis
     fHighCurrLine: boolean;     // Highlight current line
     fHighColor: TColor;         // Color of current line when highlighted
-    fCodeFolding : boolean;     // Code folding enabled?
+
   public
     constructor Create;
     destructor Destroy; override;
@@ -589,7 +588,6 @@ type
     property HighCurrLine: boolean read fHighCurrLine write fHighCurrLine;
     property HighColor: TColor read fHighColor write fHighColor;
 
-    property CodeFolding: boolean read fCodeFolding write fCodeFolding;
   end;
 
   // master option object -- contains program globals
@@ -2498,8 +2496,7 @@ begin
 
   fParserHints := TRUE;
   fMatch := false;
-  fCodeFolding := True;
-  
+
   fHighCurrLine := True;
   fHighColor := $FFFFCC; //Light Turquoise
 
@@ -2591,34 +2588,6 @@ begin
         Options := Options + [eoTrimTrailingSpaces];
       if fSpecialChar then
         Options := Options + [eoShowSpecialChars];
-
-        // Code Folding
-      if (fCodeFolding) then
-      begin
-        with CodeFolding do
-        begin
-                Enabled := True;
-                IndentGuides := True;
-                CaseSensitive := False;
-           //     HighlighterFoldRegions := True;
-                HighlighterFoldRegions := False;
-                FolderBarColor := clDefault;
-                FolderBarLinesColor := clDefault;
-                // CollapsingMarkStyle := TSynCollapsingMarkStyle(0);
-
-                // Code folding
-                with FoldRegions do
-                begin
-                        Add(rtChar, False, False, False, '{', '}', nil);
-                        Add(rtKeyword, True, True, False, '/*', '*/', nil);
-                end;
-
-                end;
-        end
-      else
-          begin
-                CodeFolding.Enabled := False;
-          end;
 
     finally
       EndUpdate;

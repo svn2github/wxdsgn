@@ -47,7 +47,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=packages;packages\parser;plugins\interfaces;packages\codetooltip;..\..\packman;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme
 Packages=vcl;rtl
-Conditionals=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting;CODEFOLDING
+Conditionals=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
 DebugSourceDirs=
 UsePackages=1
 [Parameters]
@@ -61,8 +61,8 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=7
 MinorVer=3
-Release=2
-Build=1
+Release=1
+Build=4
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=wxDev-C++ Developers
 FileDescription=wxDev-C++ IDE
-FileVersion=7.3.2.1
+FileVersion=7.3.1.4
 InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software and the wxDev-C++ Developers
 LegalTrademarks=
@@ -83,9 +83,8 @@ ProductVersion=7
 Comments=This program is licensed under the GNU General Public License
 LastCompiled=
 [HistoryLists\hlConditionals]
-Count=2
-Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting;CODEFOLDING
-Item1=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
+Count=1
+Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

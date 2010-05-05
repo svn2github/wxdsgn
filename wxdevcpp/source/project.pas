@@ -116,7 +116,6 @@ type
     fBuildCmd: string;
     fLink: boolean;
     fPriority: integer;
-    fCollapsedList : string;
     function GetDirty: boolean;
     procedure SetDirty(value: boolean);
   public
@@ -133,7 +132,6 @@ type
     property Folder: string read fFolder write fFolder;
     property Compile: boolean read fCompile write fCompile;
     property CompileCpp: boolean read fCompileCpp write fCompileCpp;
-    property CollapsedList: string read fCollapsedList write fCollapsedList;
     property OverrideBuildCmd: boolean read fOverrideBuildCmd write fOverrideBuildCmd;
     property BuildCmd: string read fBuildCmd write fBuildCmd;
     property Link: boolean read fLink write fLink;
@@ -321,19 +319,7 @@ begin
               Lines.Add('');
 
       DisableFileWatch;
-
-
-      // Code folding - Save the un-folded text, otherwise
-      //    the folded regions won't be saved.
-      if (fEditor.Text.CodeFolding.Enabled) then
-      begin
-         fEditor.Text.ReScanForFoldRanges;
-          //fEditor.Text.Update;
-         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName);
-      end
-      else
-         fEditor.Text.Lines.SavetoFile(fFileName);
-
+      fEditor.Text.Lines.SavetoFile(fFileName);
       EnableFileWatch;
 
       fEditor.New := False;
@@ -350,17 +336,7 @@ begin
               Lines.Add('');
 
       DisableFileWatch;
-
-      // Code folding - Save the un-folded text, otherwise
-      //    the folded regions won't be saved.
-      if (fEditor.Text.CodeFolding.Enabled) then
-      begin
-         //fEditor.Text.ReScanForFoldRanges;
-         fEditor.Text.GetUncollapsedStrings.SavetoFile(fFileName);
-      end
-      else
-         fEditor.Text.Lines.SavetoFile(fFileName);
-
+      fEditor.Text.Lines.SavetoFile(fFileName);
       EnableFileWatch;
 
       fEditor.New := False;
@@ -526,7 +502,6 @@ begin
   fBuildCmd := Source.fBuildCmd;
   fLink := Source.fLink;
   fPriority := Source.fPriority;
-  fCollapsedList := Source.fCollapsedList;
 end;
 
 { TProject }
@@ -767,7 +742,6 @@ if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
           if ResFile.Count > 0 then
             if ResFile[ResFile.Count -1] <> '' then
               ResFile.Add('');
-
         ResFile.SaveToFile(Res);
       end;
       Original.Free;
@@ -914,7 +888,7 @@ begin
         Compile := True;
     	CompileCpp:=Self.Profiles.useGPP;
         Link := True;
-    end;
+    end;    
     Priority := 1000;
     OverrideBuildCmd := False;
     BuildCmd := '';
@@ -1011,7 +985,7 @@ begin
       // Load the project folders as well as other non-profile specifics
       fFolders.CommaText := Read('Folders', '');
       fCmdLineArgs := Read('CommandLine', '');
-
+      
       //Load the version information stuff before others.
       Section := 'VersionInfo';
       VersionInfo.Major := Read('Major', 0);
@@ -1332,8 +1306,6 @@ begin
     finifile.WriteUnit(idx, 'Priority', fUnits[idx].Priority);
     finifile.WriteUnit(idx, 'OverrideBuildCmd', fUnits[idx].OverrideBuildCmd);
     finifile.WriteUnit(idx, 'BuildCmd', fUnits[idx].BuildCmd);
-    finifile.WriteUnit(idx, 'CollapsedList', fUnits[idx].Editor.Text.GetCollapsedArray);
-
     inc(idx);
   end;
   finifile.Write('UnitCount', Count);
@@ -1447,8 +1419,7 @@ begin
       Priority := finifile.ReadUnit(i, 'Priority', 1000);
       OverrideBuildCmd := finifile.ReadUnit(i, 'OverrideBuildCmd', False);
       BuildCmd := finifile.ReadUnit(i, 'BuildCmd', '');
-      CollapsedList := finifile.ReadUnit(i, 'CollapsedList', '');
-      
+
       Editor := nil;
       New := FALSE;
       fParent := self;
@@ -1737,9 +1708,7 @@ begin
   UpdateFile; // so data is current before going to disk
   SaveLayout; // save current opened files, and which is "active".
   if fModified then
-   finiFile.UpdateFile
-  else
-
+    finiFile.UpdateFile;
   SetModified(FALSE);
 end;
 
@@ -1802,9 +1771,6 @@ begin
 end;
 
 function TProject.OpenUnit(index: integer): TEditor;
-var
-  i : Integer;
-  collapsedList : string;
 begin
   result := nil;
   if (index < 0) or (index > pred(fUnits.Count)) then exit;
@@ -1820,29 +1786,6 @@ begin
       	     if devEditor.DefaulttoPrj then
                fEditor.InsertDefaultText;
          LoadUnitLayout(fEditor, index);
-
-         // Code folding
-        if (fEditor.Text.CodeFolding.Enabled) then
-         begin
-
-           // Load the folded region array list
-           collapsedList := fUnits[index].CollapsedList;
-
-           //fEditor.Text.ReScanForFoldRanges; // Update fold ranges
-
-           // Now go through a recollapse sections that
-           //   had been previously collapsed.
-           for i := (Length(collapsedList) - 1) downto 0 do
-           begin
-
-              if ((collapsedList[i+1] = '1') and (i < fEditor.Text.GetFoldCount)) then
-                 if  Assigned(fEditor.Text.GetFoldRange(i)) then
-                    fEditor.Text.Collapse(fEditor.Text.GetFoldRange(i));
-
-            end;
-
-         end;
-
          result:= fEditor;
       except
         on E: Exception do
@@ -1867,23 +1810,12 @@ begin
 end;
 
 procedure TProject.CloseUnit(index: integer);
-var
-    tempINIFile : Tdevini;
 begin
   if (index < 0) or (index > pred(fUnits.Count)) then exit;
   with fUnits[index] do
   begin
     if assigned(fEditor) then
     begin
-
-      if ((fEditor.Text.CodeFolding.Enabled) and (not fEditor.Modified)) then
-      begin
-
-      // Update the .dev file with the last collapsed sections
-        fInifile.UpdateFile;
-
-      end;
-
       SaveUnitLayout(fEditor, index);
       fEditor.Close;
       fEditor:=nil; //because closing the editor will destroy it
