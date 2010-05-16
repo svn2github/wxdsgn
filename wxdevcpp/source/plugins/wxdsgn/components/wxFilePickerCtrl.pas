@@ -550,7 +550,7 @@ function TWxFilePickerCtrl.GetParameterFromEventName(EventName: string): string;
 begin
   if EventName = 'EVT_FILEPICKER_CHANGED' then
   begin
-    Result := 'wxFilePickerEvent& event';
+    Result := 'wxFileDirPickerEvent& event';
     exit;
   end;
   if EventName = 'EVT_UPDATE_UI' then

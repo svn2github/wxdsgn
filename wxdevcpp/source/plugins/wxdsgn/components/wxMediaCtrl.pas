@@ -32,10 +32,17 @@ unit WxMediaCtrl;
 interface
 
 uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, Wxcontrolpanel, WxAuiToolBar, WxAuiNotebookPage, WxSizerPanel;
+  Forms, Graphics, ExtCtrls, WxUtils, Wxcontrolpanel, WxAuiToolBar,
+  WxAuiNotebookPage, WxSizerPanel, UValidator;
 
 type
-  TWxMediaCtrl = class(TWxControlPanel, IWxComponentInterface)
+
+
+ TWxMediaControlBackEndItem = (NONE, wxMEDIABACKEND_DIRECTSHOW, wxMEDIABACKEND_QUICKTIME,
+       wxMEDIABACKEND_GSTREAMER, wxMEDIABACKEND_WMP10);
+ //TWxMediaControlBackEndSet = set of TWxMediaControlBackEndItem;
+
+  TWxMediaCtrl = class(TWxControlPanel, IWxComponentInterface, IWxValidatorInterface)
   private
     FEVT_MEDIA_STOP:String;
     FEVT_MEDIA_LOADED:String;
@@ -69,6 +76,9 @@ type
     
     FWx_Control:TWxMediaCtrlControl;
     FWx_FileName:string;
+
+    FWx_Validator: string;
+    FWx_ProxyValidatorString : TWxValidatorString;
 
     { Storage for property Wx_ProxyBGColorString }
     FWx_ProxyBGColorString: TWxColorString;
@@ -106,6 +116,8 @@ type
     FWx_Layer: Integer;
     FWx_Row: Integer;
     FWx_Position: Integer;
+
+    FWx_Backend : TWxMediaControlBackEndItem;
 
     { Private methods of TWxMediaCtrl }
     { Method to set variable and property values and create objects }
@@ -153,6 +165,11 @@ type
     procedure SetIDValue(IDValue: integer);
     procedure SetWxClassName(wxClassName: string);
 
+    function GetValidator:String;
+    procedure SetValidator(value:String);
+    function GetValidatorString:TWxValidatorString;
+    procedure SetValidatorString(Value:TWxValidatorString);
+
     function GetFGColor: string;
     procedure SetFGColor(strValue: string);
     function GetBGColor: string;
@@ -171,6 +188,7 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
 
+    function GetBackend(Wx_MediaBackend: TWxMediaControlBackEndItem) : string;
 
   published
     { Published properties of TWxMediaCtrl }
@@ -207,6 +225,11 @@ type
     property Wx_Control: TWxMediaCtrlControl Read FWx_Control Write FWx_Control;
     property Wx_FileName: string Read FWx_FileName Write FWx_FileName;
 
+    property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
+    property Wx_ProxyValidatorString : TWxValidatorString Read GetValidatorString Write SetValidatorString;
+
+    property Wx_Backend : TWxMediaControlBackEndItem read FWx_Backend write FWx_Backend;
+    
     property EVT_MEDIA_STOP:String Read FEVT_MEDIA_STOP Write FEVT_MEDIA_STOP;
     property EVT_MEDIA_LOADED:String Read FEVT_MEDIA_LOADED Write FEVT_MEDIA_LOADED;
     property EVT_MEDIA_PLAY:String Read FEVT_MEDIA_PLAY Write FEVT_MEDIA_PLAY;
@@ -268,6 +291,7 @@ begin
   defaultBGColor         := self.color;
   defaultFGColor         := self.font.color;
   FWx_Comments           := TStringList.Create;
+  FWx_ProxyValidatorString := TwxValidatorString.Create(self);
 
   FImage.Align  := alClient	;
   FImage.Center := True;
@@ -288,6 +312,7 @@ begin
   FWx_ProxyFGColorString.Destroy;
   FPicture.Destroy;
   FWx_Comments.Destroy;
+  FWx_ProxyValidatorString.Destroy;
 end; { of AutoDestroy }
 
 { Read method for property Picture }
@@ -371,6 +396,13 @@ begin
   FWx_PropertyList.add('wxMEDIACTRLPLAYERCONTROLS_STEP:wxMEDIACTRLPLAYERCONTROLS_STEP');
   FWx_PropertyList.add('wxMEDIACTRLPLAYERCONTROLS_VOLUME:wxMEDIACTRLPLAYERCONTROLS_VOLUME');
 
+  FWx_PropertyList.add('Wx_Backend:Backend');
+  FWx_PropertyList.add('NONE:NONE');
+  FWx_PropertyList.add('wxMEDIABACKEND_DIRECTSHOW:wxMEDIABACKEND_DIRECTSHOW');
+  FWx_PropertyList.add('wxMEDIABACKEND_QUICKTIME:wxMEDIABACKEND_QUICKTIME');
+  FWx_PropertyList.add('wxMEDIABACKEND_GSTREAMER:wxMEDIABACKEND_GSTREAMER');
+  FWx_PropertyList.add('wxMEDIABACKEND_WMP10:wxMEDIABACKEND_WMP10');
+
   FWx_EventList.add('EVT_MEDIA_STOP:OnMediaStop');
   FWx_EventList.add('EVT_MEDIA_LOADED:OnMediaLoaded');
   FWx_EventList.add('EVT_MEDIA_PLAY:OnMediaPlay');
@@ -446,6 +478,8 @@ begin
     if not(UseDefaultPos) then
       Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
+    Result.Add('<backend>' + GetBackend(Wx_Backend) + '</backend>');
+
     Result.Add(IndentString + '</object>');
 
   except
@@ -463,8 +497,18 @@ var
 begin
   Result   := '';
   strStyle := GetStdStyleString(self.Wx_GeneralStyle);
-  if trim(strStyle) <> '' then
-    strStyle := ',' + strStyle;
+
+  if (trim(strStyle) = '')  then
+     strStyle := '0';
+
+  strStyle := ', ' + strStyle + ', ' + GetBackend(Wx_Backend);
+
+  if trim(Wx_ProxyValidatorString.strValidatorValue) <> '' then
+   strStyle := strStyle + ', ' + Wx_ProxyValidatorString.strValidatorValue
+                   + ', ' + GetCppString(Name)
+
+  else
+    strStyle := strStyle + ', wxDefaultValidator, ' + GetCppString(Name);
 
     if FWx_PaneCaption = '' then
     FWx_PaneCaption := Self.Name;
@@ -481,7 +525,7 @@ begin
       GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle])
   else
     Result := GetCommentString(self.FWx_Comments.Text) +
-      Format('%s = new %s(%s, %s,%s, %s, %s %s);',
+      Format('%s = new %s(%s, %s, %s, %s, %s%s);',
       [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
       self.Wx_IDValue),GetCppString(Wx_FileName),
       GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
@@ -718,6 +762,28 @@ begin
 
 end;
 
+function TWxMediaCtrl.GetValidatorString:TWxValidatorString;
+begin
+  Result := FWx_ProxyValidatorString;
+  Result.FstrValidatorValue := Wx_Validator;
+end;
+
+procedure TWxMediaCtrl.SetValidatorString(Value:TWxValidatorString);
+begin
+  FWx_ProxyValidatorString.FstrValidatorValue := Value.FstrValidatorValue;
+  Wx_Validator := Value.FstrValidatorValue;
+end;
+
+function TWxMediaCtrl.GetValidator:String;
+begin
+  Result := Wx_Validator;
+end;
+
+procedure TWxMediaCtrl.SetValidator(value:String);
+begin
+  Wx_Validator := value;
+end;
+
 function TWxMediaCtrl.GetFGColor: string;
 begin
   Result := FInvisibleFGColorString;
@@ -756,6 +822,31 @@ procedure TWxMediaCtrl.SetProxyBGColorString(Value: string);
 begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
+end;
+
+function TWxMediaCtrl.GetBackend(Wx_MediaBackend: TWxMediaControlBackEndItem) : string;
+begin
+  Result := '';
+
+  if Wx_MediaBackend = wxMEDIABACKEND_DIRECTSHOW then
+  begin
+    Result := 'wxMEDIABACKEND_DIRECTSHOW';
+  end;
+  if Wx_MediaBackend = wxMEDIABACKEND_QUICKTIME then
+  begin
+    Result := 'wxMEDIABACKEND_QUICKTIME';
+  end;
+  if Wx_MediaBackend = wxMEDIABACKEND_GSTREAMER then
+  begin
+    Result := 'wxMEDIABACKEND_GSTREAMER';
+  end;
+  if Wx_MediaBackend = wxMEDIABACKEND_WMP10 then
+  begin
+    Result := 'wxMEDIABACKEND_WMP10';
+  end;
+
+  Result := GetCppString(Result);
+
 end;
 
 end.
