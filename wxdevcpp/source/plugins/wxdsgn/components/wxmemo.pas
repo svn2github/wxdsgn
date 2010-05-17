@@ -393,6 +393,7 @@ begin
   FWx_PropertyList.Add('wxTE_LEFT:wxTE_LEFT');
   FWx_PropertyList.Add('wxTE_CENTRE:wxTE_CENTRE');
   FWx_PropertyList.Add('wxTE_RIGHT:wxTE_RIGHT');
+  FWx_PropertyList.Add('wxTE_NO_VSCROLL:wxTE_NO_VSCROLL');
 
   FWx_PropertyList.add('Lines:Strings');
   FWx_PropertyList.add('Wx_MaxLength:Maximum Length');

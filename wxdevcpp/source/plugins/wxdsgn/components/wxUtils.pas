@@ -305,7 +305,7 @@ type
   TWxLbStyleSet = set of TWxLbStyleItem;
 
   TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB, wxTE_PASSWORD,
-    wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL,
+    wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NO_VSCROLL,
     wxTE_NOHIDESEL, wxTE_DONTWRAP, wxTE_LINEWRAP,
     wxTE_WORDWRAP, wxTE_CHARWRAP, wxTE_BESTWRAP,
     wxTE_CAPITALIZE, wxTE_MULTILINE, wxTE_LEFT,
@@ -3124,6 +3124,9 @@ begin
 
     if wxTE_AUTO_URL in edtdStyle then
       strLst.add('wxTE_AUTO_URL');
+
+    if wxTE_NO_VSCROLL in edtdStyle then
+      strLst.add('wxTE_NO_VSCROLL');
 
     if wxTE_NOHIDESEL in edtdStyle then
       strLst.add('wxTE_NOHIDESEL');
@@ -7962,6 +7965,9 @@ begin
 
     if wxTE_RICH2 in sValue then
       Result := Result + [wxTE_RICH2];
+
+     if wxTE_NO_VSCROLL in sValue then
+      Result := Result + [wxTE_NO_VSCROLL];
 
     if wxTE_AUTO_URL in sValue then
       Result := Result + [wxTE_AUTO_URL];
