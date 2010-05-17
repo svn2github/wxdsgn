@@ -2248,7 +2248,8 @@ begin
   //fText.Invalidate;
 
   // GAR 11/30/2009 - Trying to correct bug report submitted by mrHappyPants
-  fText.Refresh
+  if (fText <> nil) then
+      fText.Refresh
 end;
 
 // Editor needs to be told when class browser has been recreated otherwise AV !

@@ -7247,6 +7247,7 @@ end;
 
 procedure TMainForm.UpdateAppTitle;
 var
+    ii : integer;
     editorName: String;
 begin
   editorName := self.GetActiveEditorName;
@@ -7264,6 +7265,11 @@ begin
         Caption := Format('%s  - [ %s ]', [DEVCPP, editorName]);
     Application.Title := Format('%s', [DEVCPP]);
   end;
+
+  // Clear status bar text
+   for ii := 0 to (StatusBar.Panels.Count - 1) do
+           StatusBar.Panels[ii].Text := '';
+
 end;
 
 procedure TMainForm.PackageManagerItemClick(Sender: TObject);
