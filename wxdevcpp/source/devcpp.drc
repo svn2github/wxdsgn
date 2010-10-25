@@ -8,176 +8,175 @@
   resources were bound to the produced executable.
 */
 
-#define version_cBP 65040
-#define version_cErr 65041
-#define version_cABP 65042
-#define version_cGut 65043
-#define version_cSel 65044
-#define version_COMPILER_INI_LABEL 65045
-#define version_CPP_INI_LABEL 65046
-#define version_C_INI_LABEL 65047
-#define version_LINKER_INI_LABEL 65048
-#define version_PREPROC_INI_LABEL 65049
-#define version_VC2005_DEFCOMPILERSET 65056
-#define version_VC2003_DEFCOMPILERSET 65057
-#define version_VC6_DEFCOMPILERSET 65058
-#define version_DMARS_DEFCOMPILERSET 65059
-#define version_BORLAND_DEFCOMPILERSET 65060
-#define version_WATCOM_DEFCOMPILERSET 65061
-#define version_LINUX_DEFCOMPILERSET 65062
-#define version_FLT_BASE 65063
-#define version_FLT_ALLFILES 65064
-#define version_FLT_PROJECTS 65065
-#define version_FLT_HEADS 65066
-#define version_FLT_CS 65067
-#define version_FLT_CPPS 65068
-#define version_FLT_RES 65069
-#define version_FLT_HELPS 65070
-#define version_FLT_MSVCPROJECTS 65071
-#define version_LINUX_MAKE_PROGRAM 65072
-#define version_LINUX_CP_PROGRAM 65073
-#define version_LINUX_CPP_PROGRAM 65074
-#define version_LINUX_DBG_PROGRAM 65075
-#define version_LINUX_RES_PROGRAM 65076
-#define version_LINUX_DLL_PROGRAM 65077
-#define version_LINUX_PROF_PROGRAM 65078
-#define version_LINUX_COMPILER_CMD_LINE 65079
-#define version_LINUX_LINKER_CMD_LINE 65080
-#define version_LINUX_MAKE_CMD_LINE 65081
-#define version_OPT_DIRS 65082
-#define version_OPT_EDITOR 65083
-#define version_OPT_OPTIONS 65084
-#define version_OPT_COMPILERSETS 65085
-#define version_GCC_DEFCOMPILERSET 65086
-#define version_VC2008_DEFCOMPILERSET 65087
-#define version_BORLAND_RES_PROGRAM 65088
-#define version_BORLAND_DLL_PROGRAM 65089
-#define version_BORLAND_PROF_PROGRAM 65090
-#define version_BORLAND_COMPILER_CMD_LINE 65091
-#define version_BORLAND_LINKER_CMD_LINE 65092
-#define version_BORLAND_MAKE_CMD_LINE 65093
-#define version_WATCOM_MAKE_PROGRAM 65094
-#define version_WATCOM_CP_PROGRAM 65095
-#define version_WATCOM_CPP_PROGRAM 65096
-#define version_WATCOM_DBG_PROGRAM 65097
-#define version_WATCOM_RES_PROGRAM 65098
-#define version_WATCOM_DLL_PROGRAM 65099
-#define version_WATCOM_PROF_PROGRAM 65100
-#define version_WATCOM_COMPILER_CMD_LINE 65101
-#define version_WATCOM_LINKER_CMD_LINE 65102
-#define version_WATCOM_MAKE_CMD_LINE 65103
-#define version_VC_LINKER_CMD_LINE 65104
-#define version_VC_MAKE_CMD_LINE 65105
-#define version_DMARS_MAKE_PROGRAM 65106
-#define version_DMARS_CP_PROGRAM 65107
-#define version_DMARS_CPP_PROGRAM 65108
-#define version_DMARS_DBG_PROGRAM 65109
-#define version_DMARS_RES_PROGRAM 65110
-#define version_DMARS_DLL_PROGRAM 65111
-#define version_DMARS_PROF_PROGRAM 65112
-#define version_DMARS_COMPILER_CMD_LINE 65113
-#define version_DMARS_LINKER_CMD_LINE 65114
-#define version_DMARS_MAKE_CMD_LINE 65115
-#define version_BORLAND_MAKE_PROGRAM 65116
-#define version_BORLAND_CP_PROGRAM 65117
-#define version_BORLAND_CPP_PROGRAM 65118
-#define version_BORLAND_DBG_PROGRAM 65119
-#define version_GCC_CPP_PROGRAM 65120
-#define version_GCC_DBG_PROGRAM 65121
-#define version_GCC_RES_PROGRAM 65122
-#define version_GCC_DLL_PROGRAM 65123
-#define version_GCC_PROF_PROGRAM 65124
-#define version_GCC_COMPILER_CMD_LINE 65125
-#define version_GCC_LINKER_CMD_LINE 65126
-#define version_GCC_MAKE_CMD_LINE 65127
-#define version_VC_MAKE_PROGRAM 65128
-#define version_VC_CP_PROGRAM 65129
-#define version_VC_CPP_PROGRAM 65130
-#define version_VC_DBG_PROGRAM 65131
-#define version_VC_RES_PROGRAM 65132
-#define version_VC_DLL_PROGRAM 65133
-#define version_VC_PROF_PROGRAM 65134
-#define version_VC_COMPILER_CMD_LINE 65135
-#define version_ICON_DIR 65136
-#define version_HELP_DIR 65137
-#define version_TEMPLATE_DIR 65138
-#define version_THEME_DIR 65139
-#define version_DLL_EXT 65140
-#define version_EXE_EXT 65141
-#define version_DEV_EXT 65142
-#define version_HTML_EXT 65143
-#define version_RTF_EXT 65144
-#define version_INI_EXT 65145
-#define version_TEMPLATE_EXT 65146
-#define version_SYNTAX_EXT 65147
-#define version_PACKMAN_PROGRAM 65148
-#define version_UPDATE_PROGRAM 65149
-#define version_GCC_MAKE_PROGRAM 65150
-#define version_GCC_CP_PROGRAM 65151
-#define version_WATCOM_C_INCLUDE_DIR 65152
-#define version_WATCOM_RC_INCLUDE_DIR 65153
-#define version_LINUX_BIN_DIR 65154
-#define version_LINUX_LIB_DIR 65155
-#define version_LINUX_C_INCLUDE_DIR 65156
-#define version_LINUX_RC_INCLUDE_DIR 65157
-#define version_GCC_CPP_INCLUDE_DIR 65158
-#define version_VC2008_CPP_INCLUDE_DIR 65159
-#define version_VC2005_CPP_INCLUDE_DIR 65160
-#define version_VC2003_CPP_INCLUDE_DIR 65161
-#define version_VC6_CPP_INCLUDE_DIR 65162
-#define version_BORLAND_CPP_INCLUDE_DIR 65163
-#define version_DMARS_CPP_INCLUDE_DIR 65164
-#define version_WATCOM_CPP_INCLUDE_DIR 65165
-#define version_LINUX_CPP_INCLUDE_DIR 65166
-#define version_LANGUAGE_DIR 65167
-#define version_VC2003_C_INCLUDE_DIR 65168
-#define version_VC2003_RC_INCLUDE_DIR 65169
-#define version_VC6_BIN_DIR 65170
-#define version_VC6_LIB_DIR 65171
-#define version_VC6_C_INCLUDE_DIR 65172
-#define version_VC6_RC_INCLUDE_DIR 65173
-#define version_DMARS_BIN_DIR 65174
-#define version_DMARS_LIB_DIR 65175
-#define version_DMARS_C_INCLUDE_DIR 65176
-#define version_DMARS_RC_INCLUDE_DIR 65177
-#define version_BORLAND_BIN_DIR 65178
-#define version_BORLAND_LIB_DIR 65179
-#define version_BORLAND_C_INCLUDE_DIR 65180
-#define version_BORLAND_RC_INCLUDE_DIR 65181
-#define version_WATCOM_BIN_DIR 65182
-#define version_WATCOM_LIB_DIR 65183
-#define version_DEV_BLUE_THEME 65184
-#define version_DEV_CLASSIC_THEME 65185
-#define version_GCC_BIN_DIR 65186
-#define version_GCC_LIB_DIR 65187
-#define version_GCC_C_INCLUDE_DIR 65188
-#define version_GCC_RC_INCLUDE_DIR 65189
-#define version_VC2008_BIN_DIR 65190
-#define version_VC2008_LIB_DIR 65191
-#define version_VC2008_C_INCLUDE_DIR 65192
-#define version_VC2008_RC_INCLUDE_DIR 65193
-#define version_VC2005_BIN_DIR 65194
-#define version_VC2005_LIB_DIR 65195
-#define version_VC2005_C_INCLUDE_DIR 65196
-#define version_VC2005_RC_INCLUDE_DIR 65197
-#define version_VC2003_BIN_DIR 65198
-#define version_VC2003_LIB_DIR 65199
-#define version_DEVCPP_VERSION 65200
-#define version_DEVCPP_WEBPAGE 65201
-#define version_DEFAULT_LANG_FILE 65202
-#define version_HTTP 65203
-#define version_DEV_INTERNAL_OPEN 65204
-#define version_DEV_SEARCHLOOP 65205
-#define version_DEV_COMPLETION_CACHE 65206
-#define version_DEV_DEFAULTCODE_FILE 65207
-#define version_DEV_SHORTCUTS_FILE 65208
-#define version_DEV_CLASSFOLDERS_FILE 65209
-#define version_DEV_MAKE_FILE 65210
-#define version_DEV_HELP_INI 65211
-#define version_DEV_CODEINS_FILE 65212
-#define version_DEV_MAINHELP_FILE 65213
-#define version_DEV_GNOME_THEME 65214
-#define version_DEV_NEWLOOK_THEME 65215
+#define version_cErr 65040
+#define version_cABP 65041
+#define version_cGut 65042
+#define version_cSel 65043
+#define version_COMPILER_INI_LABEL 65044
+#define version_CPP_INI_LABEL 65045
+#define version_C_INI_LABEL 65046
+#define version_LINKER_INI_LABEL 65047
+#define version_PREPROC_INI_LABEL 65048
+#define version_VC2003_DEFCOMPILERSET 65056
+#define version_VC6_DEFCOMPILERSET 65057
+#define version_DMARS_DEFCOMPILERSET 65058
+#define version_BORLAND_DEFCOMPILERSET 65059
+#define version_WATCOM_DEFCOMPILERSET 65060
+#define version_LINUX_DEFCOMPILERSET 65061
+#define version_FLT_BASE 65062
+#define version_FLT_ALLFILES 65063
+#define version_FLT_PROJECTS 65064
+#define version_FLT_HEADS 65065
+#define version_FLT_CS 65066
+#define version_FLT_CPPS 65067
+#define version_FLT_RES 65068
+#define version_FLT_HELPS 65069
+#define version_FLT_MSVCPROJECTS 65070
+#define version_cBP 65071
+#define version_LINUX_CP_PROGRAM 65072
+#define version_LINUX_CPP_PROGRAM 65073
+#define version_LINUX_DBG_PROGRAM 65074
+#define version_LINUX_RES_PROGRAM 65075
+#define version_LINUX_DLL_PROGRAM 65076
+#define version_LINUX_PROF_PROGRAM 65077
+#define version_LINUX_COMPILER_CMD_LINE 65078
+#define version_LINUX_LINKER_CMD_LINE 65079
+#define version_LINUX_MAKE_CMD_LINE 65080
+#define version_OPT_DIRS 65081
+#define version_OPT_EDITOR 65082
+#define version_OPT_OPTIONS 65083
+#define version_OPT_COMPILERSETS 65084
+#define version_GCC_DEFCOMPILERSET 65085
+#define version_VC2008_DEFCOMPILERSET 65086
+#define version_VC2005_DEFCOMPILERSET 65087
+#define version_BORLAND_DLL_PROGRAM 65088
+#define version_BORLAND_PROF_PROGRAM 65089
+#define version_BORLAND_COMPILER_CMD_LINE 65090
+#define version_BORLAND_LINKER_CMD_LINE 65091
+#define version_BORLAND_MAKE_CMD_LINE 65092
+#define version_WATCOM_MAKE_PROGRAM 65093
+#define version_WATCOM_CP_PROGRAM 65094
+#define version_WATCOM_CPP_PROGRAM 65095
+#define version_WATCOM_DBG_PROGRAM 65096
+#define version_WATCOM_RES_PROGRAM 65097
+#define version_WATCOM_DLL_PROGRAM 65098
+#define version_WATCOM_PROF_PROGRAM 65099
+#define version_WATCOM_COMPILER_CMD_LINE 65100
+#define version_WATCOM_LINKER_CMD_LINE 65101
+#define version_WATCOM_MAKE_CMD_LINE 65102
+#define version_LINUX_MAKE_PROGRAM 65103
+#define version_VC_MAKE_CMD_LINE 65104
+#define version_DMARS_MAKE_PROGRAM 65105
+#define version_DMARS_CP_PROGRAM 65106
+#define version_DMARS_CPP_PROGRAM 65107
+#define version_DMARS_DBG_PROGRAM 65108
+#define version_DMARS_RES_PROGRAM 65109
+#define version_DMARS_DLL_PROGRAM 65110
+#define version_DMARS_PROF_PROGRAM 65111
+#define version_DMARS_COMPILER_CMD_LINE 65112
+#define version_DMARS_LINKER_CMD_LINE 65113
+#define version_DMARS_MAKE_CMD_LINE 65114
+#define version_BORLAND_MAKE_PROGRAM 65115
+#define version_BORLAND_CP_PROGRAM 65116
+#define version_BORLAND_CPP_PROGRAM 65117
+#define version_BORLAND_DBG_PROGRAM 65118
+#define version_BORLAND_RES_PROGRAM 65119
+#define version_GCC_DBG_PROGRAM 65120
+#define version_GCC_RES_PROGRAM 65121
+#define version_GCC_DLL_PROGRAM 65122
+#define version_GCC_PROF_PROGRAM 65123
+#define version_GCC_COMPILER_CMD_LINE 65124
+#define version_GCC_LINKER_CMD_LINE 65125
+#define version_GCC_MAKE_CMD_LINE 65126
+#define version_VC_MAKE_PROGRAM 65127
+#define version_VC_CP_PROGRAM 65128
+#define version_VC_CPP_PROGRAM 65129
+#define version_VC_DBG_PROGRAM 65130
+#define version_VC_RES_PROGRAM 65131
+#define version_VC_DLL_PROGRAM 65132
+#define version_VC_PROF_PROGRAM 65133
+#define version_VC_COMPILER_CMD_LINE 65134
+#define version_VC_LINKER_CMD_LINE 65135
+#define version_HELP_DIR 65136
+#define version_TEMPLATE_DIR 65137
+#define version_THEME_DIR 65138
+#define version_DLL_EXT 65139
+#define version_EXE_EXT 65140
+#define version_DEV_EXT 65141
+#define version_HTML_EXT 65142
+#define version_RTF_EXT 65143
+#define version_INI_EXT 65144
+#define version_TEMPLATE_EXT 65145
+#define version_SYNTAX_EXT 65146
+#define version_PACKMAN_PROGRAM 65147
+#define version_UPDATE_PROGRAM 65148
+#define version_GCC_MAKE_PROGRAM 65149
+#define version_GCC_CP_PROGRAM 65150
+#define version_GCC_CPP_PROGRAM 65151
+#define version_WATCOM_RC_INCLUDE_DIR 65152
+#define version_LINUX_BIN_DIR 65153
+#define version_LINUX_LIB_DIR 65154
+#define version_LINUX_C_INCLUDE_DIR 65155
+#define version_LINUX_RC_INCLUDE_DIR 65156
+#define version_GCC_CPP_INCLUDE_DIR 65157
+#define version_VC2008_CPP_INCLUDE_DIR 65158
+#define version_VC2005_CPP_INCLUDE_DIR 65159
+#define version_VC2003_CPP_INCLUDE_DIR 65160
+#define version_VC6_CPP_INCLUDE_DIR 65161
+#define version_BORLAND_CPP_INCLUDE_DIR 65162
+#define version_DMARS_CPP_INCLUDE_DIR 65163
+#define version_WATCOM_CPP_INCLUDE_DIR 65164
+#define version_LINUX_CPP_INCLUDE_DIR 65165
+#define version_LANGUAGE_DIR 65166
+#define version_ICON_DIR 65167
+#define version_VC2003_RC_INCLUDE_DIR 65168
+#define version_VC6_BIN_DIR 65169
+#define version_VC6_LIB_DIR 65170
+#define version_VC6_C_INCLUDE_DIR 65171
+#define version_VC6_RC_INCLUDE_DIR 65172
+#define version_DMARS_BIN_DIR 65173
+#define version_DMARS_LIB_DIR 65174
+#define version_DMARS_C_INCLUDE_DIR 65175
+#define version_DMARS_RC_INCLUDE_DIR 65176
+#define version_BORLAND_BIN_DIR 65177
+#define version_BORLAND_LIB_DIR 65178
+#define version_BORLAND_C_INCLUDE_DIR 65179
+#define version_BORLAND_RC_INCLUDE_DIR 65180
+#define version_WATCOM_BIN_DIR 65181
+#define version_WATCOM_LIB_DIR 65182
+#define version_WATCOM_C_INCLUDE_DIR 65183
+#define version_DEV_CLASSIC_THEME 65184
+#define version_GCC_BIN_DIR 65185
+#define version_GCC_LIB_DIR 65186
+#define version_GCC_C_INCLUDE_DIR 65187
+#define version_GCC_RC_INCLUDE_DIR 65188
+#define version_VC2008_BIN_DIR 65189
+#define version_VC2008_LIB_DIR 65190
+#define version_VC2008_C_INCLUDE_DIR 65191
+#define version_VC2008_RC_INCLUDE_DIR 65192
+#define version_VC2005_BIN_DIR 65193
+#define version_VC2005_LIB_DIR 65194
+#define version_VC2005_C_INCLUDE_DIR 65195
+#define version_VC2005_RC_INCLUDE_DIR 65196
+#define version_VC2003_BIN_DIR 65197
+#define version_VC2003_LIB_DIR 65198
+#define version_VC2003_C_INCLUDE_DIR 65199
+#define version_DEVCPP_WEBPAGE 65200
+#define version_DEFAULT_LANG_FILE 65201
+#define version_HTTP 65202
+#define version_DEV_INTERNAL_OPEN 65203
+#define version_DEV_SEARCHLOOP 65204
+#define version_DEV_COMPLETION_CACHE 65205
+#define version_DEV_DEFAULTCODE_FILE 65206
+#define version_DEV_SHORTCUTS_FILE 65207
+#define version_DEV_CLASSFOLDERS_FILE 65208
+#define version_DEV_MAKE_FILE 65209
+#define version_DEV_HELP_INI 65210
+#define version_DEV_CODEINS_FILE 65211
+#define version_DEV_MAINHELP_FILE 65212
+#define version_DEV_GNOME_THEME 65213
+#define version_DEV_NEWLOOK_THEME 65214
+#define version_DEV_BLUE_THEME 65215
 #define main_cPrjPath 65216
 #define main_cCurSrc 65217
 #define main_cSrcPath 65218
@@ -500,7 +499,6 @@
 #define SynEditStrConst_SYNS_AttrNamespaceAttrName 65535
 STRINGTABLE
 BEGIN
-	version_cBP,	"Break points"
 	version_cErr,	"Error Line"
 	version_cABP,	"Active Breakpoints"
 	version_cGut,	"Gutter"
@@ -510,7 +508,6 @@ BEGIN
 	version_C_INI_LABEL,	"Compiler"
 	version_LINKER_INI_LABEL,	"Linker"
 	version_PREPROC_INI_LABEL,	"PreprocDefines"
-	version_VC2005_DEFCOMPILERSET,	"Default VC2005 compiler"
 	version_VC2003_DEFCOMPILERSET,	"Default VC2003 compiler"
 	version_VC6_DEFCOMPILERSET,	"Default VC6 compiler"
 	version_DMARS_DEFCOMPILERSET,	"Default DigitalMars compiler"
@@ -526,7 +523,7 @@ BEGIN
 	version_FLT_RES,	"Resource scripts (*.rc)|*.rc"
 	version_FLT_HELPS,	"Help files (*.hlp;*.chm;*.col)|*.hlp;*.chm;*.col|HTML files (*.htm;*.html)|*.htm;*.html|Text files (*.doc;*.rtf;*.txt)|*.doc;*.rtf;*.txt|All files (*.*)|*.*"
 	version_FLT_MSVCPROJECTS,	"MS Visual C++ projects (*.dsp)|*.dsp"
-	version_LINUX_MAKE_PROGRAM,	"/usr/bin/make"
+	version_cBP,	"Break points"
 	version_LINUX_CP_PROGRAM,	"gcc"
 	version_LINUX_CPP_PROGRAM,	"gcc"
 	version_LINUX_DBG_PROGRAM,	"gdb"
@@ -542,7 +539,7 @@ BEGIN
 	version_OPT_COMPILERSETS,	"CompilerSets"
 	version_GCC_DEFCOMPILERSET,	"Default GCC compiler"
 	version_VC2008_DEFCOMPILERSET,	"Default VC2008 compiler"
-	version_BORLAND_RES_PROGRAM,	"borwindres.exe"
+	version_VC2005_DEFCOMPILERSET,	"Default VC2005 compiler"
 	version_BORLAND_DLL_PROGRAM,	"link.exe"
 	version_BORLAND_PROF_PROGRAM,	"borgprof.exe"
 	version_BORLAND_COMPILER_CMD_LINE,	""
@@ -558,7 +555,7 @@ BEGIN
 	version_WATCOM_COMPILER_CMD_LINE,	""
 	version_WATCOM_LINKER_CMD_LINE,	""
 	version_WATCOM_MAKE_CMD_LINE,	""
-	version_VC_LINKER_CMD_LINE,	""
+	version_LINUX_MAKE_PROGRAM,	"/usr/bin/make"
 	version_VC_MAKE_CMD_LINE,	""
 	version_DMARS_MAKE_PROGRAM,	"mingw32-make.exe"
 	version_DMARS_CP_PROGRAM,	"dmc.exe"
@@ -574,7 +571,7 @@ BEGIN
 	version_BORLAND_CP_PROGRAM,	"borgcc.exe"
 	version_BORLAND_CPP_PROGRAM,	"borg++.exe"
 	version_BORLAND_DBG_PROGRAM,	"borgdb.exe"
-	version_GCC_CPP_PROGRAM,	"g++.exe"
+	version_BORLAND_RES_PROGRAM,	"borwindres.exe"
 	version_GCC_DBG_PROGRAM,	"gdb.exe"
 	version_GCC_RES_PROGRAM,	"windres.exe"
 	version_GCC_DLL_PROGRAM,	"dllwrap.exe"
@@ -590,7 +587,7 @@ BEGIN
 	version_VC_DLL_PROGRAM,	"link.exe"
 	version_VC_PROF_PROGRAM,	"mt.exe"
 	version_VC_COMPILER_CMD_LINE,	""
-	version_ICON_DIR,	"Icons\\"
+	version_VC_LINKER_CMD_LINE,	""
 	version_HELP_DIR,	"Help\\"
 	version_TEMPLATE_DIR,	"Templates\\"
 	version_THEME_DIR,	"Themes\\"
@@ -606,7 +603,7 @@ BEGIN
 	version_UPDATE_PROGRAM,	"updater.exe"
 	version_GCC_MAKE_PROGRAM,	"mingw32-make.exe"
 	version_GCC_CP_PROGRAM,	"gcc.exe"
-	version_WATCOM_C_INCLUDE_DIR,	"Include\\watcom;Include\\common;"
+	version_GCC_CPP_PROGRAM,	"g++.exe"
 	version_WATCOM_RC_INCLUDE_DIR,	"include\\common;"
 	version_LINUX_BIN_DIR,	"\\bin;\\usr\\bin"
 	version_LINUX_LIB_DIR,	"\\usr\\lib"
@@ -622,7 +619,7 @@ BEGIN
 	version_WATCOM_CPP_INCLUDE_DIR,	";include\\watcom;include\\common;"
 	version_LINUX_CPP_INCLUDE_DIR,	""
 	version_LANGUAGE_DIR,	"Lang\\"
-	version_VC2003_C_INCLUDE_DIR,	"Include\\common;Include\\VC2003;"
+	version_ICON_DIR,	"Icons\\"
 	version_VC2003_RC_INCLUDE_DIR,	"include\\common;"
 	version_VC6_BIN_DIR,	"Bin\\VC6;Bin;"
 	version_VC6_LIB_DIR,	"Lib\\VC6"
@@ -638,7 +635,7 @@ BEGIN
 	version_BORLAND_RC_INCLUDE_DIR,	"include\\common;"
 	version_WATCOM_BIN_DIR,	"Bin;Bin\\watcom;"
 	version_WATCOM_LIB_DIR,	"Lib\\watcom;"
-	version_DEV_BLUE_THEME,	"Blue"
+	version_WATCOM_C_INCLUDE_DIR,	"Include\\watcom;Include\\common;"
 	version_DEV_CLASSIC_THEME,	"Classic"
 	version_GCC_BIN_DIR,	"Bin;"
 	version_GCC_LIB_DIR,	"Lib;"
@@ -654,7 +651,7 @@ BEGIN
 	version_VC2005_RC_INCLUDE_DIR,	"include\\common;"
 	version_VC2003_BIN_DIR,	"Bin\\VC2003;Bin;"
 	version_VC2003_LIB_DIR,	"Lib\\VC2003"
-	version_DEVCPP_VERSION,	"7.4"
+	version_VC2003_C_INCLUDE_DIR,	"Include\\common;Include\\VC2003;"
 	version_DEVCPP_WEBPAGE,	"http://wxdsgn.sourceforge.net/"
 	version_DEFAULT_LANG_FILE,	"English.lng"
 	version_HTTP,	"http://"
@@ -670,6 +667,7 @@ BEGIN
 	version_DEV_MAINHELP_FILE,	"devcpp.chm"
 	version_DEV_GNOME_THEME,	"Gnome"
 	version_DEV_NEWLOOK_THEME,	"New Look"
+	version_DEV_BLUE_THEME,	"Blue"
 	main_cPrjPath,	"<PROJECTPATH>"
 	main_cCurSrc,	"<SOURCENAME>"
 	main_cSrcPath,	"<SOURCEPATH>"
