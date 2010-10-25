@@ -1402,7 +1402,7 @@ begin
   fWatchError := true;
   fNoToolTip := true;
 
-  fDebugCommand := 'Finish';
+  fDebugCommand := '-exec-finish';
 
 end;
 

@@ -49,7 +49,7 @@ type
     procedure AfterPaint(ACanvas: TCanvas; const AClip: TRect;
       FirstLine, LastLine: integer); override;
     procedure LinesInserted(FirstLine, Count: integer); override;
-    procedure LinesDeleted(FirstLine, Count: integer); override;
+    procedure LinesDeleted(FirstLine, Count: integer; AddToUndoList: Boolean); override;
   public
     constructor Create(ed: TEditor);
   end;
@@ -217,7 +217,7 @@ begin
   // if this method is not defined -> Abstract error
 end;
 
-procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer);
+procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer; AddToUndoList: Boolean);
 begin
   // if this method is not defined -> Abstract error
 end;

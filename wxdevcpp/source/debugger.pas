@@ -575,6 +575,8 @@ begin
   QueueCommand(Cmd);
 end;
 
+//=============================================================
+
 procedure TDebugger.QueueCommand(command: TCommand);
 var
   Ptr: PCommand;
@@ -2358,44 +2360,62 @@ begin
 end;
 
 procedure TGDBDebugger.Execute(filename, arguments: string);
+const
+  gdbInterp:   String = '--interpreter=mi';
+  gdbSilent:   String = '--silent';
+
 var
   Executable: string;
   WorkingDir: string;
   Includes: string;
   I: Integer;
+  verbose : boolean;
+
 begin
   //Reset our variables
   self.FileName := filename;
   fNextBreakpoint := 0;
   IgnoreBreakpoint := False;
 
+  verbose := False;
+  
   //Get the name of the debugger
   if (devCompiler.gdbName <> '') then
     Executable := devCompiler.gdbName
   else
     Executable := DBG_PROGRAM(devCompiler.CompilerType);
-  Executable := Executable + ' --annotate=2 --silent';
 
-  //Executable := Executable + ' --interpreter=mi ';
+
+  Executable := Executable + ' ' + gdbInterp;
+
+  // Verbose output requested?
+  if (not verbose) then
+    Executable := Executable + ' ' + gdbSilent;
 
   //Add in the include paths
+
   for I := 0 to IncludeDirs.Count - 1 do
     Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
   if Includes <> '' then
     Executable := Executable + ' ' + Includes;
 
+
+  //Add the target executable
+  Executable := Executable + ' "' + filename + '"';
+
   //Launch the process
+
   if Assigned(MainForm.fProject) then
     WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
+
   Launch(Executable, WorkingDir);
 
-  //Tell GDB which file we want to debug
-  //QueueCommand('interp', 'mi');
-  QueueCommand('set', 'new-console on'); // For console applications
-  QueueCommand('set', 'height 0');
-  QueueCommand('set', 'breakpoint pending on'); // Fix for DLL breakpoints
-  QueueCommand('file', '"' + filename + '"');
-  QueueCommand('set args', arguments);
+  QueueCommand('-gdb-set', 'new-console on'); // For console applications
+  // ??? Will this have any effect - see GDB Documentation: "the debuggee will be started in a new console on next start"
+  //     I read this as implying it WILL go into effect because the target is only loaded, not yet started.
+  QueueCommand('-gdb-set', 'height 0');
+  QueueCommand('-gdb-set', 'breakpoint pending on'); // Fix for DLL breakpoints
+  QueueCommand('-gdb-set args', arguments);
 end;
 
 procedure TGDBDebugger.Attach(pid: integer);
@@ -2426,8 +2446,8 @@ begin
   Launch(Executable, '');
 
   //Tell GDB which file we want to debug
-  QueueCommand('set', 'height 0');
-  QueueCommand('attach', inttostr(pid));
+  QueueCommand('-gdb-set', 'height 0');
+  QueueCommand('-target-attach', inttostr(pid));
 end;
 
 procedure TGDBDebugger.CloseDebugger(Sender: TObject);
@@ -2681,7 +2701,7 @@ begin
     if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
     begin
       if Executing then
-        QueueCommand('delete', IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
+        QueueCommand('-break-delete ', IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
       Dispose(Breakpoints.Items[i]);
       Breakpoints.Delete(i);
       Break;
@@ -2696,7 +2716,7 @@ begin
     Inc(fNextBreakpoint);
     breakpoint.Index := fNextBreakpoint;
     breakpoint.Valid := True;
-    QueueCommand('break', Format('"%s:%d"', [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
+    QueueCommand('-break-insert ', Format('"%s:%d"', [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
   end;
 end;
 
@@ -2720,14 +2740,14 @@ begin
   if cdLocals in refresh then
   begin
     Command := TCommand.Create;
-    Command.Command := 'info locals 1';
+    Command.Command := '-stack-list-locals 1';
     Command.OnResult := OnLocals;
     QueueCommand(Command);
   end;
   if cdThreads in refresh then
   begin
     Command := TCommand.Create;
-    Command.Command := 'info threads';
+    Command.Command := '-thread-list-all-threads';
     Command.OnResult := OnThreads;
     QueueCommand(Command);
   end;
@@ -2749,9 +2769,9 @@ begin
       begin
         Command := TCommand.Create;
         if Pos('.', Name) > 0 then
-          Command.Command := 'display ' + Copy(name, 1, Pos('.', name) - 1)
+          Command.Command := '-display-insert  ' + Copy(name, 1, Pos('.', name) - 1)
         else
-          Command.Command := 'display ' + name;
+          Command.Command := '-display-insert  ' + name;
 
         //Fill in the other data
         Command.Data := Node;
@@ -2905,11 +2925,11 @@ begin
   Command.Data := Pointer(Watch);
   case when of
     wbRead:
-      Command.Command := 'rwatch ' + varname;
+      Command.Command := '-break-watch -r ' + varname;
     wbWrite:
-      Command.Command := 'watch ' + varname;
+      Command.Command := '-break-watch ' + varname;
     wbBoth:
-      Command.Command := 'awatch ' + varname;
+      Command.Command := '-break-watch -a ' + varname;
   end;
   Command.OnResult := OnWatchesSet;
   QueueCommand(Command);
@@ -2925,7 +2945,7 @@ begin
     begin
       Command := TCommand.Create;
       Command.Data := DebugTree.Items[I].Data;
-      Command.Command := 'awatch ' + Name;
+      Command.Command := '-break-watch -a ' + Name;
       Command.OnResult := OnWatchesSet;
       QueueCommand(Command);
     end;
@@ -2955,7 +2975,7 @@ end;
 
 procedure TGDBDebugger.ModifyVariable(varname, newvalue: string);
 begin
-  QueueCommand('set variable', varname + ' = ' + newvalue);
+  QueueCommand('-gdb-set variable', varname + ' = ' + newvalue);
 end;
 
 procedure TGDBDebugger.OnCallStack(Output: TStringList);
@@ -3414,8 +3434,8 @@ end;
 procedure TGDBDebugger.SetAssemblySyntax(syntax: AssemblySyntax);
 begin
   case syntax of
-   asIntel: QueueCommand('set disassembly-flavor', 'intel');
-   asATnT:  QueueCommand('set disassembly-flavor', 'att');
+   asIntel: QueueCommand('-gdb-set disassembly-flavor', 'intel');
+   asATnT:  QueueCommand('-gdb-set disassembly-flavor', 'att');
   end;
 end;
 
@@ -3428,7 +3448,8 @@ begin
 
   Command := TCommand.Create;
   Command.OnResult := OnVariableHint;
-  Command.Command := 'print ' + name;
+  //Command.Command := 'print ' + name;
+  Command.Command := '-data-evaluate-expression ' + name;
 
   //Send the command;
   QueueCommand(Command);
@@ -3447,9 +3468,9 @@ var
 begin
   Command := TCommand.Create;
   if not Started then
-    Command.Command := 'run'
+    Command.Command := '-exec-run'
   else
-    Command.Command := 'continue';
+    Command.Command := '-exec-continue';
   Command.Callback := OnGo;
   QueueCommand(Command);
 end;
@@ -3465,7 +3486,7 @@ var
   Command: TCommand;
 begin
   Command := TCommand.Create;
-  Command.Command := 'next';
+  Command.Command := '-exec-next';
   Command.Callback := OnTrace;
   QueueCommand(Command);
 end;
@@ -3475,7 +3496,7 @@ var
   Command: TCommand;
 begin
   Command := TCommand.Create;
-  Command.Command := 'step';
+  Command.Command := '-exec-step';
   Command.Callback := OnTrace;
   QueueCommand(Command);
 end;
@@ -3485,7 +3506,7 @@ var
   Command: TCommand;
 begin
   Command := TCommand.Create;
-  Command.Command := devData.DebugCommand;
+  Command.Command := devData.DebugCommand;   // -exec-finish
   Command.Callback := OnTrace;
   QueueCommand(Command);
 end;
@@ -3504,13 +3525,13 @@ end;
 
 procedure TGDBDebugger.SetThread(thread: Integer);
 begin
-  QueueCommand('thread', IntToStr(thread));
+  QueueCommand('-thread-select ', IntToStr(thread));
   RefreshContext;
 end;
 
 procedure TGDBDebugger.SetContext(frame: Integer);
 begin
-  QueueCommand('frame', IntToStr(frame));
+  QueueCommand('-stack-select-frame ', IntToStr(frame));
   RefreshContext([cdLocals, cdWatches]);
 end;
 

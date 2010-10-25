@@ -44,7 +44,7 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'wxDev-C++';
-  DEVCPP_VERSION    = '7.3';
+  DEVCPP_VERSION    = '7.4';
   DEVCPP_WEBPAGE    = 'http://wxdsgn.sourceforge.net/';
   DEFAULT_LANG_FILE = 'English.lng';
   HTTP = 'http://';
