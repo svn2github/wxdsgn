@@ -72,7 +72,8 @@ var
 implementation
 
 uses 
-  main, version, MultiLangSupport, utils, devcfg, debugwait, Types; 
+  main, version, MultiLangSupport, utils, devcfg, //debugwait,
+  Types; 
 
 {$R *.dfm}
 

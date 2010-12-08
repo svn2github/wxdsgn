@@ -1187,7 +1187,8 @@ uses
   SynEditTypes, JvAppIniStorage, JvAppStorage,
   debugfrm, Types, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
-  ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm,
+  ProfileAnalysisFm, //debugwait,
+  FilePropertiesFm, AddToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
   WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm, devMsgBox, ComObj, uvista
 
@@ -1205,7 +1206,8 @@ uses
   QSynEdit, QSynEditTypes,
   CheckForUpdate, debugfrm, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
-  ProfileAnalysisFm, debugwait, FilePropertiesFm, AddToDoFm, ViewToDoFm,
+  ProfileAnalysisFm, // debugwait,
+  FilePropertiesFm, AddToDoFm, ViewToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
   WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm;
 {$ENDIF}

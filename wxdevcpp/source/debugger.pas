@@ -21,10 +21,15 @@
 
 unit debugger;
 
+//{$DEFINE DISPLAYOUTPUT}       // enable general progress output for debugging
+//{$DEFINE DISPLAYOUTPUTHEX}    // enable debugging display of GDB output
+                                //  in 'HEX Editor' style
+
 interface
 
 uses
-  Sysutils, Classes, debugwait, version, editor,
+  Sysutils, Classes, //debugwait,
+  version, editor,
 {$IFDEF WIN32}
   Windows, ShellAPI, Dialogs, Controls, ComCtrls;
 {$ENDIF}
@@ -32,12 +37,117 @@ uses
   QDialogs, QControls, QComCtrls;
 {$ENDIF}
 
+var
+  //output from GDB
+  running: boolean = false;       // result of status messages
+  verbose: boolean = true;
+  gui_critSect:  TRTLCriticalSection;    // Why do we need this? Once the pipe
+                                         // has been read, all processing is in
+                                         // the Main Thread anyway!!!
+                                         // Answer: Only when using debugging display
+                                         // - and then there's little chance of conflict!
+
+  Send_critSect: TRTLCriticalSection;    // Not sure this is necessary either...
+                                         //  we WRITE from only one place,
+                                         //  we have our own handshake?
+
+
+  // Globals for the Reader buffer data
+
+  bytesInBuffer: DWORD;   // Number of unprocessed bytes
+  buf: PChar;             // The main buffer into which data is read
+
+
+{$IFDEF DISPLAYOUTPUTHEX}
+// (Global because it is a useful data analysis tool).
+  procedure HexDisplay(buf: PChar; LastRead: DWORD);
+{$endif}
+
+// These don't really belong in T(GDB)Debugger
+  function AnsiBeforeFirst(Sub: String; Target: String): String;
+  function AnsiAfterFirst(Sub: String; Target: String): String;
+  function AnsiAfterLast(Sub: String; Target: String): String;
+  function AnsiFindLast(Src: String; Target: String): Integer;
+  function AnsiLeftStr(const AText: string; ACount: Integer): string;
+  function AnsiMidStr(const AText: string; const AStart, ACount: Integer): string;
+  function AnsiRightStr(const AText: string; ACount: Integer): string;
+
+  const GDBPrompt    : String = '(gdb)';
+  const GDBerror     : String = 'error,';
+  const GDBdone      : String = 'done,';
+  const GDBaddr      : String = 'addr=';
+  const GDBbkpt      : String = 'bkpt={';
+  const GDBbkptno    : String = 'bkptno';
+  const GDBbkpttable : String = 'BreakpointTable={';
+  const GDBbody      : String = 'body=[';
+  const GDBcurthread : String = 'current-thread-id';
+  const GDBexp       : String = 'exp=';
+  const GDBExit      : String = '-gdb-exit';
+  const GDBExitmsg   : String = 'exit';
+  const GDBfile      : String = 'file';
+  const GDBframe     : String = 'frame={';
+  const GDBfunc      : String = 'func';
+  const GDBid        : String = 'id';
+  const GDBlevel     : String = 'level';
+  const GDBlocals    : String = 'locals=[';
+  const GDBline      : String = 'line';
+  const GDBnr_rows   : String = 'nr_rows';
+  const GDBname      : String = 'name';
+  const GDBnameq     : String = 'name=';
+  const GDBnew       : String = 'new';
+  const GDBnumber    : String = 'number';
+  const GDBold       : String = 'old';
+  const GDBorig_loc  : String = 'original-location=';
+  const GDBreason    : String = 'reason=';
+  const GDBrunning   : String = 'running';
+  const GDBstack     : String = 'stack=[';
+  const GDBstopped   : String = 'stopped';
+  const GDBthreadid  : String = 'thread-id';
+  const GDBthreads   : String = 'threads=';
+  const GDBtype      : String = 'type';
+  const GDBvalue     : String = 'value';
+  const GDBvalueq    : String = 'value={';
+  const GDBwhat      : String = 'what=';
+  const GDBwpt       : String = 'wpt=';
+  const GDBwpta      : String = 'hw-awpt=';
+  const GDBwptr      : String = 'hw-rwpt=';
+  const GDBqStrEmpty : String = '\"';
+  const wxStringBase : String = '<wxStringBase>';
+
+  const ExpandClasses: Boolean = true;          // set to false to treat contents of classes as string constants
+
+  const LF : Char = #10;
+  const CR : Char = #13;
+  const NL: String = #13+#10;
+  const MAXSTACKDEPTH: Integer = 99;  // Arbitrary limit to the depth of stack that can
+                                      // be displayed, to prevent an infinite loop.
+                                      // The display gets silly and probably not useful
+                                      // long before this. A sensible limit is around 10 - 20
+                                      // This just flags a user warning and returns.
+                                      //  (N.B. For GDB, the request can limit the range returned)
+
+
 type
   AssemblySyntax = (asATnT, asIntel);
   ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly, cdRegisters);
   ContextDataSet = set of ContextData;
   TCallback = procedure(Output: TStringList) of object;
-  
+
+  ReadThread = class(TThread)
+
+  public
+    ReadChildStdOut: THandle;
+
+  protected
+
+    procedure Execute; override;
+
+  // called when the thread exits - whether it terminates normally or is
+  // stopped with Delete() (but not when it is Kill()ed!)
+  //  OnExit: procedure;
+
+  end;
+
   TRegisters = class
     EAX: string;
     EBX: string;
@@ -104,14 +214,20 @@ type
     ID: String;
   end;
 
-  PCommand = ^TCommand;
-  TCommand = class
+  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TCommand = class
   public
     Data: TObject;
     Command: String;
     Callback: procedure of object;
     OnResult: procedure(Output: TStringList) of object;
   end;
+
+  PCommand = ^TCommand;
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   PCommandWithResult = ^TCommandWithResult;
   TCommandWithResult = class(TCommand)
@@ -124,8 +240,26 @@ type
   end;
 
   TDebugger = class
-    constructor Create; virtual;
-    destructor Destroy; override;
+
+    public
+  handle: THandle;
+
+  constructor Create; virtual;
+  destructor Destroy; override;
+  procedure Launch(commandline, startupdir: String); virtual;
+  procedure Execute(filename, arguments: string); virtual; abstract;
+  procedure DisplayError(s: string);
+  procedure CreateChildProcess(ChildCmd: String; StdIn: THandle; StdOut: THandle; StdErr: THandle);
+  procedure QueueCommand(command, params: String); overload; virtual;
+  procedure QueueCommand(command: TCommand); overload; virtual;
+  procedure SendCommand; virtual;
+
+
+  procedure CloseDebugger(Sender: TObject); virtual;
+
+
+    private
+     Token: Longint;
 
   protected
     fBusy: Boolean;
@@ -147,16 +281,13 @@ type
 
     FileName: string;
     Event: THandle;
-    Wait: TDebugWait;
-    Reader: TDebugReader;
+    //Wait: TDebugWait;
+    Reader: ReadThread;
     CurOutput: TStringList;
 
-    procedure DisplayError(s: string);
-    function GetBreakpointFromIndex(index: integer): TBreakpoint;
-
     procedure OnOutput(Output: string); virtual; abstract;
-    procedure Launch(commandline: string; startupdir: string = '');
-    procedure SendCommand; virtual;
+
+    function GetBreakpointFromIndex(index: integer): TBreakpoint;
 
     //Instruction callbacks
     procedure OnGo;
@@ -173,6 +304,8 @@ type
     property DebugTree: TTreeView read fDebugTree write fDebugTree;
 
   public
+
+
     //Callback functions
     OnVariableHint: procedure(Hint: string) of object;
     OnDisassemble: procedure(Disassembly: string) of object;
@@ -183,12 +316,8 @@ type
 
     //Debugger basics
     procedure Attach(pid: integer); virtual; abstract;
-    procedure Execute(filename, arguments: string); virtual; abstract;
-    procedure CloseDebugger(Sender: TObject); virtual;
     procedure SetAssemblySyntax(syntax: AssemblySyntax); virtual; abstract;
-    procedure QueueCommand(command, params: String); overload; virtual;
-    procedure QueueCommand(command: TCommand); overload; virtual;
-
+    
     //Breakpoint handling
     procedure AddBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
     procedure RemoveBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
@@ -281,7 +410,11 @@ type
     procedure Disassemble(func: string); overload; override;
   end;
 
-  TGDBDebugger = class(TDebugger)
+////////////////////////////////////
+// TGDBDebugger
+/////////////////////////////////
+TGDBDebugger = class(TDebugger)
+
     constructor Create; override;
     destructor Destroy; override;
 
@@ -291,6 +424,12 @@ type
     Registers: TRegisters;
     LastWasCtrl: Boolean;
     Started: Boolean;
+
+    // Pipe handles
+  g_hChildStd_IN_Wr:  THandle;               //we write to this
+  g_hChildStd_IN_Rd:  THandle;               //Child process reads from here
+  g_hChildStd_OUT_Wr: THandle;               //Child process writes to this
+  g_hChildStd_OUT_Rd: THandle;               //we read from here
 
   protected
     procedure OnOutput(Output: string); override;
@@ -313,9 +452,17 @@ type
 
   public
     //Debugger control
-    procedure Execute(filename, arguments: string); override;
     procedure Attach(pid: integer); override;
     procedure CloseDebugger(Sender: TObject); override;
+    
+    procedure AddtoDisplay(Msg: String);
+  procedure Launch(commandline, startupdir: String);
+  procedure Execute(filename, arguments: string);  override;
+  procedure Exit;
+  procedure Cleanup;
+  procedure SendCommand; override;
+  procedure WriteToPipe(Buffer: String);
+  function  SendToDisplay(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
 
     //Set the include paths
     procedure AddIncludeDir(s: string); override;
@@ -333,6 +480,33 @@ type
     procedure AddWatch(varname: string; when: TWatchBreakOn); override;
     procedure RemoveWatch(varname: string); override;
     procedure ModifyVariable(varname, newvalue: string); override;
+
+    // Parser functions
+    function  GetToken(buf: PChar;  bsize: PLongInt; Token: PInteger) : PChar;
+  function  FindFirstChar(Str: String; c: Char): Integer;
+  procedure FirstParse;
+  function  Result(buf: PChar; bsize: PLongInt): PChar;
+  function  ExecResult(buf: PChar; bsize: PLongInt): PChar;
+  function  breakOut(Next: PPChar; bsize: PLongInt ): String;
+  function  ParseConst(Msg: PString; Vari: PString; Value: PString): Boolean; overload;
+  function  ParseConst(Msg: PString; Vari: PString; Value: PInteger): Boolean; overload;
+  function  ParseConst(Msg: PString; Vari: PString; Value: PBoolean): Boolean; overload;
+  function  ParseResult(Str: PString): String;
+  function  SplitResult(Str: PString; Vari: PString): String;
+  function  ExtractWxStr(Str: PString): String;
+  function  ParseValue(Str: PString): String;
+  function  ExtractList(Str: PString): String;
+  function  ExtractBracketed(Str: PString; start: Pinteger; next: PInteger; c: Char; inclusive: Boolean): String;
+  function  ExtractNamed(Src: PString; Target: PString; count: Integer): String;
+  procedure ParseWatchpoint(Msg: String);
+  procedure ParseBreakpoint(Msg: String);
+  procedure ParseBreakpointTable(Msg: String);
+  procedure ParseStack(Msg: String);
+  procedure ParseFrame(Msg: String);
+  procedure ParseThreads(Msg: String);
+  procedure WatchpointHit(Msg: PString);
+  procedure BreakpointHit(Msg: PString);
+  procedure StepHit(Msg: PString);
 
     //Debugger control
     procedure Go; override;
@@ -367,6 +541,97 @@ begin
   Result := AnsiReplaceStr(Result, ')', '\)');
 end;
 
+//=============================================================
+
+procedure ReadThread.Execute;
+
+var
+	BufMem: PChar;           // The originally allocated memory (pointer 'buf' gets moved!)
+	BytesAvailable: DWORD;
+	BytesToRead: DWORD;
+	LastRead: DWORD;
+{$IFDEF DISPLAYOUTPUT}
+	Buffer: String;
+{$ENDIF}
+
+
+begin
+
+  buf := Nil;
+	BytesAvailable := 0;
+	BytesToRead := 0;
+	LastRead := 0;
+
+
+	while (not Terminated) do
+    begin
+  		Sleep(100);       // Give other processes some time
+
+    	PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable, @BytesToRead);
+                        // Poll the pipe buffer
+      if ( (BytesAvailable > 0) and (buf = Nil)) then
+                        // Indicates data is available and
+                        // the buffer is unused or empty and can accept data.
+                        // When done, the handler must free the memory and
+                        // set bytesInBuffer to zero in order for this to accept
+                        // more data.
+                        // BytesAvailable and bytesInBuffer > zero (for any length
+                        // of time) could indicate a possible deadlock.
+                        // (Resolve this by counting iterations round the loop
+                        // while bytesInBuffer > zero and set an arbitrary limit? )
+                        //(This possibile deadlock has never been observed!)
+      begin
+{$IFDEF DISPLAYOUTPUT}
+        begin
+          Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
+          //gui_critSect.Enter();               // Maybe needed while debugging
+          debug.AddtoDisplay(Buffer);
+          //gui_critSect.Leave();               // Maybe needed while debugging
+        end;
+{$ENDIF}
+        try
+          BufMem := AllocMem(BytesAvailable+16);          // bump it up just to give some in hand
+                                                          // in case we screw up the count!
+                                                          // NOTE: WE do not free the memory
+                                                          // but rely on it being freed externally.
+          buf := BufMem;
+          if (ReadFile(ReadChildStdOut, BufMem^, BytesAvailable, LastRead, Nil)) then
+          begin
+{$ifdef DISPLAYOUTPUT}
+            Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
+            // gui_critSect.Enter();               // Maybe needed while debugging
+            AddtoDisplay(Buffer);
+            // gui_critSect.Leave();               // Maybe needed while debugging
+{$endif}
+            if (LastRead > 0)then              // The number of bytes read
+           	begin
+              buf[LastRead] := (#0);              // Terminate it, thus can handle as Cstring
+{$ifdef DISPLAYOUTPUTHEX}
+	            // gui_critSect.Enter();               // Maybe needed while debugging
+              HexDisplay(buf, LastRead);
+              // gui_critSect.Leave();               // Maybe needed while debugging
+
+{$endif}
+
+//            Pass details (Pointer, length) of the buffer to the Parser
+//             in Global vars (buf: PChar and bytesInBuffer: DWORD) and
+//             run the Parser and all that follows in the main thread.
+
+              bytesInBuffer := LastRead;
+              //Synchronize(FirstParse);
+            end;
+          end;  // of Readfile
+        except
+          on EOutOfMemory do ShowMessage('Unable to allocate memory to read Debugger output');
+        end;
+      end;  // ... of main loop
+
+    end;    // ... of while(TRUE)
+
+end;
+
+//===============================================
+
 constructor TCommandWithResult.Create;
 begin
   Event := CreateEvent(nil, false, false, nil);
@@ -384,25 +649,57 @@ begin
   Str := AStr;
 end;
 
+function GenerateCtrlCEvent(PGenerateConsoleCtrlEvent: Pointer): DWORD; stdcall;
+begin
+  Result := 0;
+  if PGenerateConsoleCtrlEvent <> nil then
+  begin
+    asm
+      //Call assembly code! We just want to get the console function thingo
+      push 0;
+      push 0;
+      call PGenerateConsoleCtrlEvent;
+    end;
+    Result := 1;
+  end;
+end;
+
+//////////////////////////////////////////
+// TDebugger
+/////////////////////////////////////////
 constructor TDebugger.Create;
 begin
   CurOutput := TStringList.Create;
   SentCommand := False;
   fExecuting := False;
-  fBusy := False;
 
   JumpToCurrentLine := False;
   CommandQueue := TList.Create;
   IncludeDirs := TStringList.Create;
   FileName := '';
   Event := CreateEvent(nil, false, false, nil);
+
+  buf := Nil;
+  bytesInBuffer := 0;
+
 end;
+
+//=============================================================
+
+procedure TDebugger.Launch(commandline, startupdir: String);
+begin
+end;
+
+//=============================================================
 
 destructor TDebugger.Destroy;
 begin
+  if (buf <> Nil) then
+    FreeMem(buf);
+
   CloseDebugger(nil);
   CloseHandle(Event);
-  RemoveAllBreakpoints; 
+  RemoveAllBreakpoints;
 
   CurOutput.Free;
   CommandQueue.Free;
@@ -411,117 +708,28 @@ begin
   inherited Destroy;
 end;
 
-procedure TDebugger.Launch(commandline: string; startupdir: string);
+//=============================================================
+
+procedure TDebugger.RemoveAllBreakpoints;
 var
-  ProcessInfo: TProcessInformation;
-  StartupInfo: TStartupInfo;
-  hOutputReadTmp, hOutputWrite,
-  hInputWriteTmp, hInputRead,
-  hErrorWrite: THandle;
-  pStartupDir: PChar;
-  sa: TSecurityAttributes;
+  I: integer;
 begin
-  // Set up the security attributes struct.
-  sa.nLength := sizeof(TSecurityAttributes);
-  sa.lpSecurityDescriptor := nil;
-  sa.bInheritHandle := true;
-
-  // Create the child output pipe.
-  if (not CreatePipe(hOutputRead, hOutputWrite, @sa, 0)) then
-    DisplayError('CreatePipe');
-
-  if (not SetHandleInformation(hOutputRead, HANDLE_FLAG_INHERIT, 0))  then
-    DisplayError('SetHandle hOutputRead');
-
-  // Create a duplicate of the output write handle for the std error
-  // write handle. This is necessary in case the child application
-  // closes one of its std output handles.
-  if (not DuplicateHandle(GetCurrentProcess(), hOutputWrite,
-    GetCurrentProcess(), @hErrorWrite, 0,
-    true, DUPLICATE_SAME_ACCESS)) then
-    DisplayError('DuplicateHandle');
-
-  // Create the child input pipe.
-  if (not CreatePipe(hInputRead, hInputWrite, @sa, 0)) then
-    DisplayError('CreatePipe');
-
-  if (not SetHandleInformation(hInputWrite, HANDLE_FLAG_INHERIT, 0))    then
-    DisplayError('SetHandle hInputWrite');
-
-  // Create a thread that will read the child's output.
-  Reader := TDebugReader.Create(true);
-  Reader.Pipe := hOutputRead;
-  Reader.Event := Event;
-  Reader.OnTerminate := CloseDebugger;
-  Reader.FreeOnTerminate := True;
-  Reader.Resume;
-
-  // Create a thread that will notice when an output is ready to be sent for processing
-  Wait := TDebugWait.Create(true);
-  Wait.OnOutput := OnOutput;
-  Wait.Reader := Reader;
-  Wait.Event := Event;
-
-  // Set up the start up info structure.
-  FillChar(StartupInfo, sizeof(TStartupInfo), 0);
-  StartupInfo.cb := sizeof(TStartupInfo);
-  StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
-  StartupInfo.hStdOutput := hOutputWrite;
-  StartupInfo.hStdInput := hInputRead;
-  StartupInfo.hStdError := hErrorWrite;
-  StartupInfo.wShowWindow := SW_HIDE;
-
-  if startupdir <> '' then
-    pStartupDir := PChar(startupdir)
-  else
-    pStartupDir := nil;
-
-  // Launch the process
-  if not CreateProcess(nil, PChar(commandline), nil, nil, True, CREATE_NEW_CONSOLE,
-                       nil, pStartupDir, StartupInfo, ProcessInfo) then
-  begin
-    DisplayError('Could not start debugger process (' + commandline + ')');
-    Exit;
-  end;
-
-  // GAR 12/16/09 - Wait for reader to start parsing messages from gdb
-  //  This is a hack to fix slower CPUs.
-  Screen.Cursor := crHourglass;
-  Reader.Resume;
- // while (Reader.Output = '') do;
-  Screen.Cursor := crDefault;
-
-  // Okay the process is running: set our flag
-  fExecuting := True;
-
-  // Get the PID of the new process
-  hPid := ProcessInfo.hProcess;
-
-  //Close any unnecessary handles.
-  if (not CloseHandle(ProcessInfo.hThread)) then
-    DisplayError('CloseHandle');
-
-  // Close pipe handles (do not continue to modify the parent).
-  // Make sure that no handles of the
-  // output pipe are maintained in this process or else the pipe will
-  // not close when the child process exits and the ReadFile will hang.
-  if (not CloseHandle(hOutputWrite)) then
-    DisplayError('CloseHandle');
-  if (not CloseHandle(hInputRead)) then
-    DisplayError('CloseHandle');
-  if (not CloseHandle(hErrorWrite)) then
-    DisplayError('CloseHandle');
-
-  //Run both wait threads
-  Wait.Resume;
-  Reader.Resume;
-
+  for I := 0 to Breakpoints.Count - 1 do
+    RemoveBreakpoint(Breakpoints[I]);
 end;
 
-procedure TDebugger.DisplayError(s: string);
+//=============================================================
+
+procedure TDebugger.RefreshBreakpoints;
+var
+  I: Integer;
 begin
-  MessageDlg('Error with debugging process: ' + s, mtError, [mbOK], Mainform.Handle);
+  //Refresh the execution breakpoints
+  for I := 0 to Breakpoints.Count - 1 do
+    RefreshBreakpoint(PBreakPoint(Breakpoints.Items[I])^);
 end;
+
+//=============================================================
 
 procedure TDebugger.CloseDebugger(Sender: TObject);
 begin
@@ -530,19 +738,24 @@ begin
     fPaused := false;
     fExecuting := false;
 
+// GAR: Note we SHOULD NOT pull the plug on GDB debugger unless it fails
+//      to stop when commanded to exit (manual page 306: Quitting GDB)
+//      Would similar considerations apply to other debuggers?
+
     // First don't let us be called twice. Set the secondary threads to not call
     // us when they terminate
+
     Reader.OnTerminate := nil;
 
     // Force the read on the input to return by closing the stdin handle.
-    Wait.Stop := True;
+   // Wait.Stop := True;
     SetEvent(Event);
     TerminateProcess(hPid, 0);
-    Wait.Terminate;
-    Wait := nil;
+  //  Wait.Terminate;
+  //  Wait := nil;
     Reader.Terminate;
     Reader := nil;
-    
+
     //Close the handles
     if (not CloseHandle(hPid)) then
       DisplayError('CloseHandle - process handle');
@@ -550,13 +763,16 @@ begin
       DisplayError('CloseHandle - output read');
     if (not CloseHandle(hInputWrite)) then
       DisplayError('CloseHandle - input write');
+
     MainForm.RemoveActiveBreakpoints;
-    
+
     //Clear the command queue
     CommandQueue.Clear;
     CurrentCommand := nil;
   end;
 end;
+
+//=============================================================
 
 procedure TDebugger.QueueCommand(command, params: String);
 var
@@ -584,7 +800,7 @@ begin
   //Copy the object
   New(Ptr);
   Ptr^ := command;
-  Command.Command := Command.Command + #10;
+  Command.Command := Command.Command;
 
   //Add it into our list of commands
   CommandQueue.Add(Ptr);
@@ -594,68 +810,90 @@ begin
     SendCommand;
 end;
 
+//=============================================================
+
 procedure TDebugger.SendCommand;
-var
-  Str: array[0..512] of char;
-  nBytesWrote, Copied: DWORD;
-  I, CommandLength: UInt;
-const
-  StrSize = 511;
 begin
-  //Do we have anything left? Are we paused?
-  if (CommandQueue.Count = 0) or (not Paused) or Busy or SentCommand then
-    Exit;
-  
-  //Initialize stuff
-  Copied := 0;
-  SentCommand := True;
-  CurrentCommand := PCommand(CommandQueue[0])^;
-  CommandLength := Length(CurrentCommand.Command);
-
-  //Remove the entry from the list
-  if not (CurrentCommand is TCommandWithResult) then
-    Dispose(CommandQueue[0]);
-  CommandQueue.Delete(0);
-
-  //Write the command to the pipe, sequentially
-  repeat
-    //Copy the current string to as much as our buffer allows
-    I := 0;
-    while (I < StrSize) and (I + Copied < CommandLength) do
-    begin
-      Str[I] := CurrentCommand.Command[I + 1 + Copied];
-      Inc(I);
-    end;
-
-    //Set the last character to be NULL
-    Str[I] := #0;
-
-    //Then write the block to the pipe
-    if WriteFile(hInputWrite, Str, StrLen(Str), nBytesWrote, nil) then
-    begin
-      with MainForm.DebugOutput do
-        Lines[Lines.Count - 1] := Lines[Lines.Count - 1] + Str;
-      Inc(Copied, nBytesWrote);
-    end
-    else if (GetLastError() <> ERROR_NO_DATA) then
-    begin
-      DisplayError('WriteFile');
-      Break;
-    end;
-  until Copied >= CommandLength;
-
-//  FlushFileBuffers(hInputWrite);
-  
-  //Call the callback function if we are provided one
-  if Assigned(CurrentCommand.Callback) then
-    CurrentCommand.Callback;
 end;
+
+//=============================================================
 
 procedure TDebugger.OnGo;
 begin
   fPaused := False;
-  fBusy := False;
 end;
+
+//=============================================================
+
+procedure TDebugger.CreateChildProcess(ChildCmd: String; StdIn: THandle;
+              StdOut: THandle; StdErr: THandle);
+
+// Create a child process that uses the handles to previously created pipes
+//   for STDIN and STDOUT.
+var
+  piProcInfo: PROCESS_INFORMATION;
+  siStartInfo: STARTUPINFO;
+  bSuccess: boolean;
+
+begin
+
+  // Set up members of the PROCESS_INFORMATION structure.
+  ZeroMemory( @piProcInfo, SizeOf(PROCESS_INFORMATION) );
+
+  // Set up members of the STARTUPINFO structure.
+  // This structure specifies the STDIN and STDOUT handles for redirection.
+
+  ZeroMemory( @siStartInfo, sizeof(STARTUPINFO) );
+  siStartInfo.cb := SizeOf(STARTUPINFO);
+  siStartInfo.hStdError := StdErr;
+  siStartInfo.hStdOutput := StdOut;
+  siStartInfo.hStdInput := StdIn;
+  siStartInfo.dwFlags := siStartInfo.dwFlags or STARTF_USESTDHANDLES;
+
+  // Hide child window
+  siStartInfo.dwFlags := siStartInfo.dwFlags or STARTF_USESHOWWINDOW;
+  //   siStartInfo.wShowWindow = siStartInfo.wShowWindow |= SW_SHOWDEFAULT; //SW_HIDE;
+  siStartInfo.wShowWindow := SW_HIDE;
+
+// Create the child process.
+
+  bSuccess := CreateProcess(Nil,
+    PChar(ChildCmd),          // command line
+    Nil,                      // process security attributes
+    Nil,                      // primary thread security attributes
+    TRUE,                     // handles are inherited
+    0,                        // creation flags
+    Nil,                      // use parent's environment
+    Nil,                      // use parent's current directory
+    siStartInfo,              // STARTUPINFO pointer
+    piProcInfo);              // receives PROCESS_INFORMATION
+
+  // If an error occurs, exit the application.
+  if ( not bSuccess ) then
+    DisplayError('Cannot create process: '+ ChildCmd)
+// WARNING ! ! ! Delphi gives a Thread error: The handle is invalid (6)
+//               if the child's _Command Line_ is invalid  ! ! !
+  else
+  begin
+    // Close handles to the child process and its primary thread.
+	  // Some applications might keep these handles to monitor the status
+	  // of the child process, for example.
+
+    CloseHandle(piProcInfo.hProcess);
+    CloseHandle(piProcInfo.hThread);
+    fExecuting := True;
+    fPaused := True;
+  end;
+end;
+
+//=============================================================
+
+procedure TDebugger.DisplayError(s: string);
+begin
+  MessageDlg('Error with debugging process: ' + s, mtError, [mbOK], Mainform.Handle);
+end;
+
+//=============================================================
 
 procedure TDebugger.OnNoDebuggingSymbolsFound;
 var
@@ -737,6 +975,8 @@ begin
   end;
 end;
 
+//=============================================================
+
 function TDebugger.BreakpointExists(filename: string; line: integer): Boolean;
 var
   I: integer;
@@ -751,22 +991,7 @@ begin
     end;
 end;
 
-procedure TDebugger.RemoveAllBreakpoints;
-var
-  I: integer;
-begin
-  for I := 0 to Breakpoints.Count - 1 do
-    RemoveBreakpoint(Breakpoints[I]);
-end;
-
-procedure TDebugger.RefreshBreakpoints;
-var
-  I: Integer;
-begin
-  //Refresh the execution breakpoints
-  for I := 0 to Breakpoints.Count - 1 do
-    RefreshBreakpoint(PBreakPoint(Breakpoints.Items[I])^);
-end;
+//=============================================================
 
 function TDebugger.GetBreakpointFromIndex(index: integer): TBreakpoint;
 var
@@ -781,6 +1006,8 @@ begin
     end;
 end;
 
+//=============================================================
+
 procedure TDebugger.OnAccessViolation;
 begin
   Application.BringToFront;
@@ -790,6 +1017,8 @@ begin
     mrYes: JumpToCurrentLine := True;
   end;
 end;
+
+//=============================================================
 
 procedure TDebugger.OnBreakpoint;
 begin
@@ -801,24 +1030,11 @@ begin
   end;
 end;
 
+//=============================================================
+
 procedure TDebugger.Disassemble;
 begin
   Disassemble('');
-end;
-
-function GenerateCtrlCEvent(PGenerateConsoleCtrlEvent: Pointer): DWORD; stdcall;
-begin
-  Result := 0;
-  if PGenerateConsoleCtrlEvent <> nil then
-  begin
-    asm
-      //Call assembly code! We just want to get the console function thingo
-      push 0;
-      push 0;
-      call PGenerateConsoleCtrlEvent;
-    end;
-    Result := 1;
-  end;
 end;
 
 procedure TDebugger.Pause;
@@ -857,6 +1073,3071 @@ begin
     VirtualFreeEx(hPid, WriteAddr, 0, MEM_RELEASE); // free the memory we allocated
   end;
 end;
+
+////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// TGDBDebugger
+//------------------------------------------------------------------------------
+function TGDBDebugger.ExtractNamed(Src: PString; Target: PString; count: Integer): String;
+
+  // Find count-th (ONE-based) occurrence of Target in Src
+  //    e.g. it returns item={ListItem2} when called with
+  //     Param1 = "value=[item={ListItem1},item={ListItem2},item={ListItem3}]"
+  //     Param2 = "item={"
+  //     Param3 = 2
+  //
+  //    the last character of Target must be either '{' or '[' or '"'
+  //    Target is deemed to end with the matching closing character
+  //
+  //    Returns a string EXCLUSIVE of the enclosing brackets/quotes
+  //    Returns an empty string on failure
+
+var
+  Temp: String;
+  TargetLength: Integer;
+  c: Char;
+  s, e, l: Integer;
+  m: Char;
+
+begin
+  TargetLength := Length(Target^);
+  c := AnsiLastChar(Target^)^;
+  s := 1;                       // start index
+  e := 1;                       // end index
+  l := 0;                       // level of nesting
+  m := #0;
+
+
+
+  if (count = 0) then
+    ExtractNamed := Temp
+  else
+  begin
+
+    case (c) of
+      '{' : m := '}';
+      '[' : m := ']';
+      '"' : m := '"';
+    end;
+    Temp := Src^;
+    repeat
+    begin
+
+      Temp := AnsiMidStr(Temp, e-s+1, Length(Temp)-e+s);
+      s := AnsiPos(Target^, Temp);
+      if (s = 0) then
+        begin
+          Temp := '';
+          ExtractNamed := Temp;
+          break; //  return Temp;
+
+        end;
+        e := s + TargetLength-1;
+        while (e <= Length(Temp)) do
+        begin
+          if (Temp[e] = c) then
+            Inc(l)
+          else
+          if (Temp[e] = m) then
+          begin
+            Dec(l);
+            if (l = 0) then
+                break;
+          end;
+          Inc(e);
+        end;
+        Temp := AnsiRightStr(Temp, Length(Temp) - s+1);
+      Dec(count);
+    end
+    until not(count > 0);
+
+    Temp := AnsiMidStr(Temp, TargetLength+1, e-s-TargetLength);
+    ExtractNamed := Temp;
+
+  end;
+
+end;
+
+//=================================================================
+
+function TGDBDebugger.ParseConst(Msg: PString; Vari: PString; Value: PString): Boolean;
+{
+   Parses out and obtains the value of one variable in a results string
+   (Note: our variable must be unique within Msg)
+
+   *Msg = ptr to Message string from GDB, containing one or many results
+    of the form Var="Value",Var2="Value2" etc.
+   *Vari = NAME of variable as a string -- Var in GDB documentation
+   *Value = ptr to variable to receive value
+       overloaded for String, long and bool only
+   Returns FALSE if Vari is not found, else TRUE
+}
+
+var
+  s: integer;     // Start index of "Var"
+  Sub: String;
+
+begin
+  // Find our Variable
+  s := AnsiPos(Vari^, Msg^);
+  if (s = 0) then
+    ParseConst := false
+  else
+  begin
+    Sub := AnsiRightStr(Msg^, Length(Msg^)-s);              // Sub = OurVar="Value",....
+    Sub := ExtractBracketed(@Sub, Nil, Nil, '"', false);
+    // Remove quotes
+    Sub := AnsiDequotedStr(Sub, '"');
+    Value^ := Sub;
+    ParseConst := true;
+  end;
+end;
+
+//-----------------------------------------------------------------
+
+function TGDBDebugger.ParseConst(Msg: PString; Vari: PString; Value: PInteger): Boolean;
+var
+  Val: String;
+begin
+
+  if (ParseConst(Msg, Vari, PString(@Val)) = false) then
+    ParseConst:= false
+  else
+  begin
+    Value^ := StrToInt(Val);
+    ParseConst := true;
+  end;
+end;
+
+//-----------------------------------------------------------------
+
+function TGDBDebugger.ParseConst(Msg: PString; Vari: PString; Value: PBoolean): Boolean;
+var
+  Val: String;
+begin
+  if (ParseConst(Msg, Vari, PString(@Val)) = false) then
+    ParseConst := false
+  else
+  begin
+    if ((Val = 'true') or (Val = 'y')) then
+      Value^ := true
+    else
+    if ((Val = 'false') or (Val = 'n')) then
+      Value^ := false;
+    ParseConst := true;
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ParseBreakpoint(Msg: String);
+{
+   Part of Third Level Parse of Output.
+
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+   Needs to build a list to pass back to the IDE
+}
+var
+
+    Num: Integer;
+    BPType: String;
+    SrcFile: String;
+    Line: Integer;
+    Expr: String;
+
+
+    Output: String;
+    {Ret: Boolean;}
+
+begin
+    Num := 0;
+    Line := 0;
+    {Ret := false;}
+
+
+    {Ret := }ParseConst(@Msg, @GDBnumber, PInteger(@Num));
+    {Ret := }ParseConst(@Msg, @GDBtype, PString(@BPType));
+
+    if (BPType = 'breakpoint') then
+    begin
+        if (ParseConst(@Msg, @GDBaddr, PString(@SrcFile)) and
+           ParseConst(@Msg, @GDBorig_loc, PString(@SrcFile))) then
+        Output := format('Breakpoint No %d set multiple times in %s', [Num, SrcFile])
+        else
+        begin
+          ParseConst(@Msg, @GDBline, PInteger(@Line));
+          ParseConst(@Msg, @GDBfile, PString(@SrcFile));
+          Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
+        end;
+
+
+        // gui_critSect.Enter();
+        AddtoDisplay(Output);
+        // gui_critSect.Leave();
+    end;
+    if (BPType = 'read watchpoint') then
+    begin
+        {Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
+        Output := format('Watchpoint No %d (read) set for %s', [Num, Expr]);
+        // gui_critSect.Enter();
+        AddtoDisplay(Output);
+        // gui_critSect.Leave();
+    end;
+    if (BPType = 'acc watchpoint') then
+    begin
+        {Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
+        Output := format('Watchpoint No %d (acc) set for %s', [Num, Expr]);
+        // gui_critSect.Enter();
+        AddtoDisplay(Output);
+        // gui_critSect.Leave();
+    end;
+    if (BPType = 'hw watchpoint') then
+    begin
+        {Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
+        Output := format('Watchpoint No %d (hw)  set for %s', [Num, Expr]);
+        // gui_critSect.Enter();
+        AddtoDisplay(Output);
+        // gui_critSect.Leave();
+    end;
+{
+/*
+    These might or might not also be useful:
+
+    frame->AddtoListBox("Parsing Breakpoint "+Msg+ " from Debugger");
+
+    Ret = ParseConst(&Msg, &(wxString("number")), &Num);
+    Output.Printf("%s Parsed value is number: %ld", Ret?"OK ":"Bad", Num);
+    frame->AddtoListBox(Output);
+
+
+    Ret = ParseConst(&Msg, &(wxString("type")), &Type);
+    Output.Printf("%s Parsed value is type: %s", Ret?"OK ":"Bad", Type.c_str());
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("disp")), &Disp);
+    Output.Printf("%s Parsed value is disp: %s", Ret?"OK ":"Bad", Disp.c_str());
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("enabled")), &Enabled);
+    Output.Printf("%s Parsed value is enabled: %s", Ret?"OK ":"Bad", Enabled?"Enabled":"Disabled");
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("addr")), &Addr);
+    Output.Printf("%s Parsed value is addr: %s", Ret?"OK ":"Bad", Addr.c_str());
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("func")), &Func);
+    Output.Printf("%s Parsed value is func: %s", Ret?"OK ":"Bad", Func.c_str());
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("file")), &File);
+    Output.Printf("%s Parsed value is file: %s", Ret?"OK ":"Bad", File.c_str());
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("fullname")), &Fullname);
+    Output.Printf("%s Parsed value is fullname: %s", Ret?"OK ":"Bad", Fullname.c_str());
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("times")), &Times);
+    Output.Printf("%s Parsed value is times: %ld", Ret?"OK ":"Bad", Times);
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("line")), &Line);
+    Output.Printf("%s Parsed value is line: %ld", Ret?"OK ":"Bad", Line);
+    frame->AddtoListBox(Output);
+
+    Ret = ParseConst(&Msg, &(wxString("original-location")), &OriginalLocation);
+    Output.Printf("%s Parsed value is original-location: %s", Ret?"OK ":"Bad", OriginalLocation.c_str());
+    frame->AddtoListBox(Output);
+
+*/
+}
+
+end;
+
+//=================================================================
+
+
+procedure TGDBDebugger.ParseBreakpointTable(Msg: String);
+{
+   Part of Third Level Parse of Output.
+
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+}
+var
+
+    N_rows, row: Integer;
+    Str: String;
+    BkptStr: String;
+    {Ret: Boolean;}
+
+begin
+
+    N_rows := 0;
+    {Ret := false;}
+    {Ret := }ParseConst(@Msg, @GDBnr_rows, PInteger(@N_rows));
+    Str := ExtractNamed(@Msg, @GDBbody, 1);
+
+    if (not(Str = '')) then
+    begin
+        for row := 1 to N_rows do
+        begin
+            BkptStr := ExtractNamed(@Str, @GDBbkpt, row);
+            ParseBreakpoint(BkptStr);
+        end;
+    end;
+end;
+
+//=================================================================
+
+
+procedure TGDBDebugger.ParseStack(Msg: String);
+{
+   Part of Third Level Parse of Output.
+
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+}
+var
+    level: Integer;
+    FrameStr: String;
+begin
+    level := 0;
+
+    if (not (Msg = '')) then
+    begin
+        repeat
+        begin
+            Inc(level);
+            FrameStr := ExtractNamed(@Msg, @GDBframe, level);
+            if (FrameStr = '') then
+                break;
+            ParseFrame(FrameStr);
+        end
+        until (level >= MAXSTACKDEPTH);               // Arbitrary limit for safety!
+        if (level = MAXSTACKDEPTH) then
+        begin
+            // gui_critSect.Enter();
+            AddtoDisplay('Stack is too deep, Aborting...');
+            // gui_critSect.Leave();
+        end;
+
+    end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ParseFrame(Msg: String);
+{
+   Part of Third Level Parse of Output.
+
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+   Might need to build a list to pass back to the IDE
+}
+var
+    Level: Integer;
+    Func: String;
+    SrcFile: String;
+    Line: Integer;
+
+    Output: String;
+    {Ret: Boolean;}
+    SubOutput: String;
+    SubOutput1: String;
+
+begin
+
+  Level := 0;
+  Line := 0;
+  {Ret := false;}
+
+  if (not (Msg = '')) then
+  begin
+
+    
+    {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
+    {Ret := }ParseConst(@Msg, @GDBfunc,  PString(@Func));
+    {Ret := }ParseConst(@Msg, @GDBline,  PInteger(@Line));
+    {Ret := }ParseConst(@Msg, @GDBfile,  PString(@SrcFile));
+    if (Level = 0) then
+      SubOutput := 'Stopped in '
+    else
+      SubOutput := ' called from ';
+    if (Line = 0) then
+      SubOutput1 := ' <no line number>'
+    else
+      SubOutput := format(' at Line %d',[Line]);
+
+    Output := format('Level %2d: %*s %s %s %s', [Level, Level+1 , ' ', SubOutput, Func, SubOutput1]);
+    // gui_critSect.Enter();
+    AddtoDisplay(Output);
+    // gui_critSect.Leave();
+  end;
+end;
+
+
+//=================================================================
+
+
+procedure TGDBDebugger.ParseThreads(Msg: String);
+{
+   Part of Third Level Parse of Output.
+
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+}
+var
+
+    ThreadStr: String;
+    ThreadList: String;
+    CurrentThread: String;
+    start: Integer;
+    next: Integer;
+    ThreadID: String;
+
+begin
+
+  ParseConst(@Msg, @GDBcurthread, PString(@CurrentThread));
+  ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
+  ThreadList := AnsiMidStr(ThreadList, 2, Length(ThreadList)-2);
+  if (ThreadList = '') then
+  begin
+        // gui_critSect.Enter();
+    AddtoDisplay('No active threads');
+        // gui_critSect.Leave();
+  end
+  else
+  begin
+    // gui_critSect.Enter();
+    AddtoDisplay('Current Thread ID = ' + CurrentThread);
+    // gui_critSect.Leave();
+
+    repeat
+    begin
+        ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
+       
+        if (not(ThreadStr = '')) then
+        begin
+            ParseConst(@ThreadStr, @GDBid, PString(@ThreadID));
+            // gui_critSect.Enter();
+            AddtoDisplay('Thread ID = ' + ThreadID);
+            // gui_critSect.Leave();
+
+            ParseFrame(ThreadStr);
+        end;
+        ThreadList := AnsiRightStr(ThreadList, Length(ThreadList) - next);
+    end
+    until ((ThreadStr = '') or (next = 0));
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ParseWatchpoint(Msg: String);
+{
+   Part of Third Level Parse of Output.
+
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+   Needs to build a list to pass back to the IDE
+}
+var
+    Num: Integer;
+    Expr: String;
+
+    Output: String;
+    {Ret: Boolean;}
+begin
+    Num := 0;
+    {Ret := false;}
+
+    {Ret := }ParseConst(@Msg, @GDBnumber, PInteger(@Num));
+    {Ret := }ParseConst(@Msg, @GDBexp, PString(@Expr));
+    Output := format('Watchpoint No %d set for %s', [Num, Expr]);
+    // gui_critSect.Enter();
+    AddtoDisplay(Output);
+    // gui_critSect.Leave();
+
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.WatchpointHit(Msg: PString);
+{
+   INCOMPLETE
+   Does nothing with the result apart from writing to display
+   Needs to build a list to pass back to the IDE
+   Parses out Watchpoint details
+   May be easier to split this for the 3 types of Watchpoint
+}
+
+var
+  Temp: String;
+  Num, Line: Integer;
+  Expr, Wpt, Val, Old, New, Value, Func, SrcFile, frame, Output: String;
+  hasOld, hasNew, hasValue: Boolean;
+  //Ret: Boolean;
+
+begin
+
+  Temp := Msg^;
+  Num :=0;
+  Line := 0;
+
+  //Ret := false;
+
+
+  Val := ExtractNamed(@Temp, @GDBvalueq, 1);
+  Wpt := ExtractNamed(@Temp, @GDBwpt, 1);
+  {Ret := }ParseConst(@Wpt, @GDBnumber, PInteger(@Num));
+
+  hasOld := ParseConst(@Val, @GDBold, PString(@Old));
+  if (hasOld) then
+    Old := ' was ' + Old;
+  hasNew := ParseConst(@Val, @GDBnew, PString(@New));
+  if (hasNew) then
+    New := ' now ' + New;
+  hasValue := ParseConst(@Val, @GDBvalue, PString(@Value));
+  if (hasValue) then
+    Value := ' Presently ' + Value;
+
+  {Ret := }ParseConst(@Wpt, @GDBexp, PString(@Expr));
+
+  Frame := ExtractNamed(@Temp, @GDBframe, 1);
+  {Ret := }ParseConst(@Frame,@GDBfile, PString(@SrcFile));
+  {Ret := }ParseConst(@Frame, @GDBfunc, PString(@Func));
+  {Ret := }ParseConst(@Frame, @GDBline, PInteger(@Line));
+
+  Output := Format('Watchpoint No %d hit. %s%s%s%s in %s at line %d in %s',
+        [Num, Expr, Old, New, Value, Func, Line, SrcFile]);
+  // gui_critSect.Enter();
+  AddtoDisplay(Output);
+  // gui_critSect.Leave();
+
+// Line No. is not meaningful - need to find some way to relate to source line in editor,
+//  else disable GDB's ability to trace into headers/libraries.
+
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.BreakpointHit(Msg: PString);
+// Parses out Breakpoint details
+
+var
+  Temp: String;
+  Num, Line: Integer;
+  Func, SrcFile, frame, Output: String;
+  //Ret: Boolean;
+
+begin
+
+  Temp := Msg^;
+  Num :=0;
+
+  //Ret := false;
+
+  {Ret := }ParseConst(Msg, @GDBbkptno, PInteger(@Num));
+  Frame := ExtractNamed(@Temp, @GDBframe, 1);
+  {Ret := }ParseConst(@frame, @GDBfile, PString(@SrcFile));
+  {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
+  {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
+
+  Output := Format('Breakpoint No %d hit in %s at line %d in %s', [Num, Func, Line, SrcFile]);
+
+  // gui_critSect.Enter();
+  AddtoDisplay(Output);
+  // gui_critSect.Leave();
+
+// Line No. is not always meaningful - need to find some way to relate to source line in editor,
+//  else disable GDB's ability to trace into headers/libraries.
+
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.StepHit(Msg: PString);
+// Parses out Breakpoint details
+
+var
+  Temp: String;
+  Line: Integer;
+  Func, SrcFile, frame, Output: String;
+  //Ret: Boolean;
+
+begin
+
+  Temp := Msg^;
+
+  //Ret := false;
+
+  Frame := ExtractNamed(@Temp, @GDBframe, 1);
+  {Ret := }ParseConst(@frame, @GDBfile, PString(@SrcFile));
+  {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
+  {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
+
+  Output := Format('Stopped in %s at line %d in %s', [Func, Line, SrcFile]);
+
+  // gui_critSect.Enter();
+  AddtoDisplay(Output);
+  // gui_critSect.Leave();
+
+// Line No. is not meaningful - need to find some way to relate to source line in editor,
+//  else disable GDB's ability to trace into headers/libraries.
+
+end;
+
+//=================================================================
+
+
+function TGDBDebugger.SplitResult(Str: PString; Vari: PString): String;
+{
+/*
+    Expects a string of form Variable = Value, where value may be a const, tuple or list
+    Returns Value:
+        Variable in Var
+    Str MUST be well-formed, i.e. with no unmatched braces, etc.
+ */
+}
+var
+  Val: String;
+
+begin          // SplitResult
+  Vari^ := AnsiBeforeFirst('=', Str^);
+  Val := AnsiAfterFirst('=', Str^);
+  Vari^ := Trim(Vari^);
+  Val := Trim(Val);
+  SplitResult := Val;
+end;
+
+//=================================================================
+
+
+function TGDBDebugger.ParseResult(Str: PString): String;
+{
+/*
+    Parses a Result extracted from a Result-record of the form var = value.
+    The Result must NOT be enclose in quotes, brackets or braces,
+    and must be well-formed.
+    This is the entry point that will recursively and fully parse a Result
+    to the full depth. A special case - wxString - is handled specially.
+
+    [In the comments of this and the functions that follow, words like
+     "Result", "Tuple", "List" with initial capitals have the meanings
+     defined in the GDB formal output syntax specification.
+     N.B "list" - with lower-case l - has the ordinary meaning].
+
+    Returns the sub-string reassembled from parsing the original Str.
+    wxStrings are condensed into the form var = "string"
+    This is suitable for display on one line.
+
+    Can (must?) be extended to build (linked) list(s) as required.
+
+    Str is expected to be of the form variable = value (as defined in the formal
+    specification, where value can be a Const or Tuple or List, etc
+}
+
+Var
+  Output: String;
+  Vari: String;   // This is called Var in the GDB spec !
+  start: Integer;
+  Val: String;
+
+
+begin          // ParseResult
+  Val := SplitResult(Str, @Vari);
+  Output := Vari;
+  Output := Output + ' = ';
+  // Special Case:
+  start := Pos(wxStringBase, Val);
+  if ((start < 6) and not (start = 0)) then
+  begin
+        Output := Output + '"';
+        Output := Output + ExtractWxStr(@Val);
+        Output := Output + '"';
+  end
+  else
+  Output := Output + ParseValue(@Val);
+  ParseResult := Output;
+end;
+
+
+//=================================================================
+
+
+function TGDBDebugger.ExtractWxStr(Str: PString): String;
+
+//    Expects a Value specifically of the form:
+
+//    {<wxStringBase> = {static npos = 1234567890,
+//    m_pchData = 0x12abcd \"A String with or without \\\"quotes\\\" embedded\"},
+//     <No data fields>}
+//
+//    or
+//
+//    {<wxStringBase> = {static npos = 4294967295,
+//    m_pchData = 0x13 <Address 0x13 out of bounds>},
+//     <No data fields>}
+//
+//    (and may start with a quote and end with a comma)
+//    and returns the string only.
+
+var
+  starts: Integer;
+  ends: Integer;
+  QStr: String;
+
+begin          // ExtractwxStr
+  QStr := AnsiLeftStr(Str^, Length(Str^)- 20);
+  if (AnsiPos('"{', QStr) = 1) then
+    QStr := AnsiMidStr(QStr, 3, Length(QStr)-3);    // Strip the wrapping
+  if (AnsiPos('{', QStr) = 1) then
+    QStr := AnsiMidStr(QStr, 2, Length(QStr)-1);    // Strip the wrapping
+  if (AnsiLastChar(QStr) = '>') then                // An Error Msg
+    QStr := '<' + AnsiAfterLast('<',QStr)
+  else                                              // a quoted string
+  begin
+    starts := AnsiPos('\"', QStr);
+    ends := AnsiFindLast(GDBqStrEmpty, QStr);
+    QStr := AnsiMidStr(QStr, starts+2, ends-starts-2);
+  end;
+  ExtractWxStr := QStr;
+
+end;
+
+
+//=================================================================
+
+function AnsiBeforeFirst(Sub: String; Target: String): String;
+// Returns the string before the first 'Sub' in 'Target'
+begin
+  //AnsiBeforeFirst := AnsiLeftStr(Target, AnsiPos(Sub,Target)-1);
+  AnsiBeforeFirst := LeftStr(Target, AnsiPos(Sub,Target)-1);
+end;
+
+//=================================================================
+
+function AnsiAfterFirst(Sub: String; Target: String): String;
+// Returns the string after the first 'Sub' in 'Target'
+begin
+ // AnsiAfterFirst := AnsiRightStr(Target, Length(Target) - AnsiPos(Sub, Target));
+  AnsiAfterFirst := RightStr(Target, Length(Target) - AnsiPos(Sub, Target));
+end;
+
+//=================================================================
+
+function AnsiAfterLast(Sub: String; Target: String): String;
+// Returns the string after the last 'Sub' in 'Target'
+var
+  RTarget, RSub, Res: String;
+
+begin
+  RTarget := ReverseString(Target);
+  RSub := ReverseString(Sub);
+  Res := LeftStr(RTarget, AnsiPos(RSub, RTarget)-1);
+  AnsiAfterLast := ReverseString(Res);
+end;
+
+//=================================================================
+
+function AnsiFindLast(Src: String; Target: String): Integer;
+// Find the index of the last occurrence of Src in Target
+var
+  RTarget, RSrc: String;
+
+begin
+  RTarget := ReverseString(Target);
+  RSrc := ReverseString(Src);
+  AnsiFindLast := Length(Target) - AnsiPos(RSrc, RTarget);
+end;
+
+function AnsiMidStr(const AText: string; const AStart, ACount: Integer): string;
+begin
+     Result := MidStr(AText, AStart, ACount);
+end;
+
+function AnsiRightStr(const AText: string; ACount: Integer): string;
+begin
+    Result := RightStr(AText,ACount);
+end;
+
+function AnsiLeftStr(const AText: string; ACount: Integer): string;
+begin
+    Result := LeftStr(AText, ACount);
+end;
+//=================================================================
+function TGDBDebugger.ParseValue(Str: PString): String;
+
+//    Determines the content of a Value, i.e.
+//        const | tuple | list
+//    The Value must NOT be enclosed in {...} or [...]  -- although its
+//    contents will be if those are a Tuple or a List.
+//
+//    N.B. This is recursive and will fully parse the Result tree.
+
+var
+  Output: String;
+  s: Integer;
+  n: Integer;
+  Str2: String;
+
+begin          // ParseValue
+  if (AnsiStartsStr('{', Str^) or AnsiStartsStr('[', Str^)) then      // a Tuple or List
+    Output := Output + ExtractList(Str)
+  else if ((Str^[1] = '"')
+    and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then  // it might be a class
+  begin
+    Str2 := ExtractBracketed(Str, @s, @n, '"', false);
+    Output := Output + ExtractList(@Str2);
+  end
+  else                                                                // a const
+    Output := Output + Str^;
+
+  ParseValue := Output;
+end;
+
+
+//=================================================================
+
+
+function TGDBDebugger.ExtractList(Str: PString): String;
+
+{
+    Extracts a comma-separated list of values or results from a Tuple or List,
+    of the form "[value(,value)*]"
+             or "[result(,result)*]"
+
+    N.B. This is recursive and will fully parse the Result tree.
+}
+var
+  delim: Char;
+  Remainder: String;
+  Item: String;
+  start, next: Integer;
+  Output: String;
+
+  len, comma, lbrace, lsqbkt, equals: Integer;
+
+begin          // ExtractList
+
+  // Get the first result or value.
+  delim := (Str^)[1];                          // = '{' for a Tuple, '[' for a List
+    // Remove outermost "[ ]" or "{ }"
+    Remainder := ExtractBracketed(Str, @start, @next, delim, false);
+    Output := Output + delim;
+    //
+    //    At this point, we're inside  '{' ... '}' or '[' ... ']' and expecting either
+    //      result ("," result )*
+    //    or
+    //      value ("," value )*
+    //
+    //    A result starts with "variable = "  i.e. '=' must come before
+    //       any of ',' '{' or '['
+    //       -- anything else is a value,
+    //
+    //    A value must be a Tuple (start with '{'), a List (start with '[')
+    //     otherwise it's a const.
+    //
+
+    while (true) do
+    begin                                                // Loop through the list
+      len := Length(Remainder);                          // find out which
+      comma := FindFirstChar(Remainder, ',');
+      lbrace := FindFirstChar(Remainder, '{');
+      lsqbkt := FindFirstChar(Remainder, '[');
+      equals := FindFirstChar(Remainder, '=');
+
+      if (not(equals = 0)
+        and ((lbrace = 0) or (equals < lbrace))
+        and ((lsqbkt = 0) or (equals < lsqbkt))
+        and ((comma  = 0) or (equals < comma ))) then    // we have a Result
+
+
+        begin
+            if (comma = 0) then                         // and the only or the last one
+            begin
+              Output := Output + ParseResult(@Remainder);
+              break;                                    // done
+            end
+            else
+            begin
+              Item := AnsiLeftStr(Remainder, comma-1);  // ... or the first of many
+              Output := Output + ParseResult(@Item);
+              next := comma+1;
+              Output := Output + ',';
+            end;
+        end
+        else                                            // we have a value
+        begin
+            if (comma = 0) then                         // and the only or the last one
+            begin
+                Output := Output + ParseValue(@Remainder);
+                break;                                  // done
+            end
+            else
+            begin
+                Item := AnsiLeftStr(Remainder, comma-1); // ... or the first of many
+                Output := Output + ParseValue(@Item);
+                Output := Output + ',';
+                next := comma+1;
+            end;
+        end;
+      if (next < len) then
+        Remainder := AnsiMidStr(Remainder, next, Length(Remainder)-next + 1);
+    end;
+    if (delim = '{') then
+      Output := Output + '}'
+    else
+        Output := Output + ']';
+    ExtractList := Output;
+end;
+
+
+//=================================================================
+
+function TGDBDebugger.FindFirstChar(Str: String; c: Char): Integer;
+
+//    Finds the first occurrence of 'c' in Str that is
+//    not enclosed in { ... }, [ ... ] or  " ... "
+//    although it WILL find the opening { or [ or " provided it is
+//    not otherwise enclosed.
+//    A well-formed input string is assumed.
+//    Returns the one-based index of 'c', or 0.
+
+
+var
+  pos, p: Integer;
+  isquoted: Boolean;
+
+begin
+
+  isquoted := false;
+  FindFirstChar := 0;
+  pos := 1;
+
+  while ((not (Str[pos] = c) or isquoted) and (pos <= Length(Str))) do
+  begin
+    if (Str[pos] = '"') then
+      isquoted := not isquoted
+    else if (Str[pos] = '{') then
+    begin
+      p := FindFirstChar(AnsiMidStr(Str, (pos+1), Length(Str)-pos-1), '}');
+      if (p = 0) then
+      begin
+        FindFirstChar := 0;
+        break;
+      end;
+      pos := pos + p;
+    end
+    else if (Str[pos] = '[') then
+    begin
+      p := FindFirstChar(AnsiMidStr(Str, (pos+1), Length(Str)-pos-1), ']');
+      if (p = 0) then
+      begin
+        FindFirstChar := 0;
+        break;
+      end;
+      pos := pos + p;
+    end;
+
+    Inc(pos);
+    FindFirstChar := pos;
+  end;
+
+  if (pos > Length(Str)) then
+    FindFirstChar := 0;
+
+end;
+
+//=================================================================
+
+
+function TGDBDebugger.ExtractBracketed(Str: PString; start: Pinteger; next: PInteger; c: Char; inclusive: Boolean): String;
+
+
+//    Returns the sub-string from the first occurrence of 'c'
+//    (which must be one of '{' '[' '<' '"')
+//    to the matching  '}' ']' '>' '"' character. If inclusive, 'c' and its match
+//    are returned, otherwise they are stripped.
+//    Nesting is allowed.
+//    RETURN VALUES:
+//    start is the index in the original string where the sub-string was found,
+//    and next the index of the character immediately after sub-string.
+//    If not required, these can be NULL pointers.
+//    If the sub-string is not found, an empty string is returned and start & next
+//    both are zero.
+//    If the sub-string is the whole of the input string, a non-empty string is
+//    returned and start & next both are zero.
+//    If the sub-string starts at the beginning of the input string, a non-empty string is
+//    returned and start is zero.
+//    If the sub-string ends at the end of the input string, a non-empty string is
+//    returned and next is zero.
+
+
+var
+  Output: String;
+  l1, l2, l3,l4, s, e: Integer;
+  nestedin: Array[0..9] of Integer;
+
+begin          // ExtractBracketed
+  Output := Str^;
+  for e:= 9 downto 0 do
+    nestedin[e] := 0;  // we are expecting a closing '"' at this level (arbitrary limit of 256)
+
+  l1 := 0;             // level of nesting of ""
+  l2 := 0;             // level of nesting of {}
+  l3 := 0;             // level of nesting of []
+  l4 := 0;             // level of nesting of <>
+  s := -1;             // index of start of our region -1 = not found
+  e := 0;              // index of end of our region
+
+  begin
+
+  while (e <= Length(Output)) do
+  begin
+    if (not(Output[e] = c) and (s = -1)) then
+    begin                   // skip over all before our start char
+      Inc(e);
+      continue;
+    end;
+
+    case (Output[e]) of
+    '\' : if (Output[e+1] = '"') then           // a literal quote - ignore
+          begin
+            e := e + 2;                         // & skip over
+            continue;
+          end;
+
+    '"' : if ((nestedin[l1] = 0) and not (s = -1)) then
+            Dec(l1)
+          else
+            Inc(l1);
+
+    '{' : begin
+            Inc(l2);
+            Inc(nestedin[l1]);
+          end;
+
+    '}' : begin
+            Dec(l2);
+            Dec(nestedin[l1]);
+          end;
+
+    '[' : begin
+            Inc(l3);
+            Inc(nestedin[l1]);
+          end;
+
+    ']' : begin
+            Dec(l3);
+            Dec(nestedin[l1]);
+          end;
+
+    '<' : begin
+            Inc(l4);
+            Inc(nestedin[l1]);
+          end;
+
+    '>' : begin
+            Dec(l4);
+            Dec(nestedin[l1]);
+          end;
+    end;
+
+    if ((s = -1) and (Output[e] = c)) then
+      s := e;
+    Inc(e);
+    if (not (s = -1) and ((l1 = 0) and (c = '"') or (l2 = 0)
+                                   and (c = '{') or (l3 = 0)
+                                   and (c = '[') or (l4 = 0)
+                                   and (c = '<'))) then
+      break;
+  end;
+
+  if ((e = Length(Output)) and (s = -1)) then
+  begin
+    if (not (start = Nil)) then
+      start^ := 0;
+    if (not (next = Nil)) then
+      next^ := 0;
+    Output := '';
+    ExtractBracketed := Output;
+    end;
+  end;
+
+  if (not(next = Nil)) then
+  begin
+    if (e = Length(Output)) then
+      next^ := 0
+    else
+      next^ := e;
+  end;
+
+  if (not(inclusive)) then
+  begin
+    Inc(s);
+    Output := AnsiMidStr(Str^, s, e-s-1);
+  end
+  else
+    Output := AnsiMidStr(Str^, s, e-s);
+
+  if (not (start = Nil)) then
+    start^ := s;
+
+  ExtractBracketed := Output;
+end;
+
+//=================================================================
+
+
+constructor TGDBDebugger.Create;
+begin
+  inherited;
+  OverrideHandler := nil;
+  LastWasCtrl := True;
+  Started := False;
+end;
+
+//=============================================================
+
+destructor TGDBDebugger.Destroy;
+begin
+  inherited;
+end;
+
+//=============================================================
+
+procedure TGDBDebugger.Exit;
+begin
+
+  QueueCommand(GDBExit, '');
+
+// GAR: Note we SHOULD NOT pull the plug on the debugger unless it fails
+//      to stop when commanded to exit (manual page 306: Quitting GDB)
+//      It should be safe to stop the reader and close the pipes after
+//      telling GDB to exit, even though it might not have finished.
+//      GDB won't stop if the target is running.
+//      We will never know when GDB has actually stopped, even though it
+//      has reported 'exit', because it still must clean up.
+//      Killing GDB will still not terminate the target. (Neither will
+//      stopping the IDE).
+//      The Windows API documentation on TerminateProcess explains all.
+//      (N.B. TaskManager cannot be driven programmatically!)
+
+
+end;
+
+//=============================================================
+procedure TGDBDebugger.Cleanup;
+
+
+begin
+
+  Reader.Terminate;
+    //Close the handles
+  if (not CloseHandle(g_hChildStd_IN_Wr)) then
+    DisplayError('CloseHandle - ChildStd_IN_Wr');
+  if (not CloseHandle(g_hChildStd_OUT_Rd)) then
+    DisplayError('CloseHandle - ChildStd_OUT_Rd');
+  // See the note above about TerminateProcess
+
+end;
+
+//=============================================================
+
+
+procedure TGDBDebugger.Execute(filename, arguments: string);
+const
+  gdbInterp:   String = '--interpreter=mi';
+  gdbSilent:   String = '--silent';
+
+var
+  Executable: string;
+  WorkingDir: string;
+  Includes: string;
+  I: Integer;
+  verbose : boolean;
+
+begin
+  //Reset our variables
+  self.FileName := filename;
+  fNextBreakpoint := 0;
+  IgnoreBreakpoint := False;
+
+  verbose := False;
+  
+  //Get the name of the debugger
+  if (devCompiler.gdbName <> '') then
+    Executable := devCompiler.gdbName
+  else
+    Executable := DBG_PROGRAM(devCompiler.CompilerType);
+
+
+  Executable := Executable + ' ' + gdbInterp;
+
+  // Verbose output requested?
+  if (not verbose) then
+    Executable := Executable + ' ' + gdbSilent;
+
+  //Add in the include paths
+
+  for I := 0 to IncludeDirs.Count - 1 do
+    Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
+  if Includes <> '' then
+    Executable := Executable + ' ' + Includes;
+
+
+  //Add the target executable
+  Executable := Executable + ' "' + filename + '"';
+
+  //Launch the process
+
+  if Assigned(MainForm.fProject) then
+    WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
+
+  Launch(Executable, WorkingDir);
+
+  QueueCommand('-gdb-set', 'new-console on'); // For console applications
+  // ??? Will this have any effect - see GDB Documentation: "the debuggee will be started in a new console on next start"
+  //     I read this as implying it WILL go into effect because the target is only loaded, not yet started.
+  QueueCommand('-gdb-set', 'height 0');
+  QueueCommand('-gdb-set', 'breakpoint pending on'); // Fix for DLL breakpoints
+  QueueCommand('-gdb-set args', arguments);
+end;
+
+//=============================================================
+procedure TGDBDebugger.AddtoDisplay(Msg: String);
+// Write to the IDE debugger output window
+
+// This is equivalent to the calls in TGDBDebugger.OnOutput:
+//   MainForm.DebugOutput.Lines.AddStrings(TempLines);
+// around line 2487
+// GAR: Change this to suit
+
+begin
+  MainForm.DebugOutput.Lines.Add(Msg);
+end;
+
+//=============================================================
+procedure TGDBDebugger.SendCommand;
+// called by QueueCommand( ) initially, then by the parser once the present
+//  debugger output is exhausted in order to process the next in the queue.
+
+begin
+  //Do we have anything left? Are we paused?
+  // SentCommand is reset by the parser
+  if Executing and Paused then
+  while ((CommandQueue.Count > 0) and (Paused) and (not SentCommand)) do
+  begin
+
+    //Initialize stuff
+    // Let's assume commands have been queued up
+
+    SentCommand := True;
+    CurrentCommand := PCommand(CommandQueue[0])^;
+
+    //Remove the entry from the list
+    if not (CurrentCommand is TCommandWithResult) then
+      Dispose(CommandQueue[0]);
+    CommandQueue.Delete(0);
+
+{
+  For the Exerciser only: We write the command in to the Edit Box, and to
+  the output window, purely for User Information.
+  Unless required for logging, we don't NEED even the output window write.
+  There should be no problem with writing directly to the Pipe from here:
+  All commands should be well within the capabilities of the native OS Pipe
+  Buffers (4K Windows, 32K Linux?) so the main thread should not hang while
+  the debugger runs.
+  If for any reason the debugger fails to read off the end of the pipe, the
+  only thing that will happen is the list will build with unpiped commands.
+
+  The pipe buffer and GDB are capable of processing commands sequentially.
+  Thus there is no need to wait until the result of the command has been read.
+}
+
+    AddtoDisplay('Sending '+CurrentCommand.Command);
+
+// For proper handling of multi-threaded targets, we might need to prefix each
+// command with '--thread' and ‘--frame’  (See GDB Manual: 27.1.1 Context management)
+// with parameters got from ExecResult() or ParseThreads() unless changed by user.
+//  (can see no evidence for this having been done in existing version)
+
+    WriteToPipe(CurrentCommand.Command);
+
+    //Call the callback function if we are provided one
+    if Assigned(CurrentCommand.Callback) then
+      CurrentCommand.Callback;
+  end;
+end;
+
+//=============================================================
+
+procedure TGDBDebugger.Attach(pid: integer);
+var
+  Executable: string;
+  Includes: string;
+  I: Integer;
+begin
+  //Reset our variables
+  self.FileName := filename;
+  fNextBreakpoint := 0;
+  IgnoreBreakpoint := False;
+
+  //Get the name of the debugger
+  if (devCompiler.gdbName <> '') then
+    Executable := devCompiler.gdbName
+  else
+    Executable := DBG_PROGRAM(devCompiler.CompilerType);
+  Executable := Executable + ' --annotate=2 --silent';
+
+  //Add in the include paths
+  for I := 0 to IncludeDirs.Count - 1 do
+    Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
+  if Includes <> '' then
+    Executable := Executable + ' ' + Includes;
+
+  //Launch the process
+  Launch(Executable, '');
+
+  //Tell GDB which file we want to debug
+  QueueCommand('-gdb-set', 'height 0');
+  QueueCommand('-target-attach', inttostr(pid));
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.CloseDebugger(Sender: TObject);
+begin
+  inherited;
+  Started := False;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnOutput(Output: string);
+var
+  RegExp: TRegExpr;
+  CurLine: string;
+  NewLines: TStringList;
+
+  procedure FlushOutputBuffer;
+  var
+     i : integer;
+     LastString : string;
+     TempLines : TStringList;
+  begin
+    if NewLines.Count = 0 then
+      Exit;
+
+     // Delete the output lines 'breakpoints-invalid'
+    i := NewLines.IndexOf('breakpoints-invalid');
+    while (i > -1) do
+    begin
+        NewLines.Delete(i);
+        i := NewLines.IndexOf('breakpoints-invalid');
+    end;
+
+    // Delete the output lines 'frames-invalid'
+    i := NewLines.IndexOf('frames-invalid');
+    while (i > -1) do
+    begin
+        NewLines.Delete(i);
+        i := NewLines.IndexOf('frames-invalid');
+    end;
+
+      if NewLines.Count = 0 then
+      Exit;
+
+      // Get rid of duplicate debugger messages.
+      TempLines := TStringList.Create;
+      LastString := NewLines.Strings[0];
+    TempLines.Add(LastString);
+    for i := 1 to (NewLines.Count - 1) do
+    begin
+       if (NewLines.Strings[i] <> LastString) then
+       begin
+        TempLines.Add(NewLines.Strings[i]);
+        LastString := NewLines.Strings[i];
+       end
+    end;
+
+    MainForm.DebugOutput.Lines.BeginUpdate;
+    MainForm.DebugOutput.Lines.AddStrings(TempLines);
+    MainForm.DebugOutput.Lines.EndUpdate;
+    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
+                MainForm.DebugOutput.Lines.Count);
+    NewLines.Clear;
+    TempLines.Free;
+  end;
+  
+  function StripCtrlChars(var line: string): Boolean;
+  var
+    Idx: Integer;
+  begin
+    Idx := Pos(#26, line);
+    Result := Idx <> 0;
+    while Idx <> 0 do
+    begin
+      Delete(line, Idx, 1);
+      Idx := Pos(#26, line);
+    end;
+  end;
+
+  procedure ParseOutput(const line: string);
+  begin
+    //Exclude these miscellaneous messages
+    if (line = 'pre-prompt') or (line = 'prompt') or (line = 'post-prompt') or
+       (line = 'frames-invalid') or (Pos('error', line) = 1)
+       or (line = '{') then
+      Exit
+    //Empty lines
+    else if (Trim(line) = '') or (Trim(line) = 'breakpoints-invalid') then
+      Exit
+    else if (line = 'value-history-value') or (line = 'value-history-end')
+       or (Pos('value-history-begin', line) = 1) or
+       RegExp.Exec(line, '\$([0-9]+) =') then
+       Exit
+    else if Pos('(gdb) ', line) = 1 then
+    begin
+      //The debugger is waiting for input, we're paused!
+      SentCommand := False;
+      fPaused := True;
+      fBusy := False;
+
+      //Because we are here, we probably are a side-effect of a previous instruction
+      //Execute the process function for the command.
+      if Assigned(OverrideHandler) then
+      begin
+        OverrideHandler(CurOutput);
+        OverrideHandler := nil;
+      end
+      else if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and Assigned(CurrentCommand.OnResult) then
+        CurrentCommand.OnResult(CurOutput);
+
+      if CurrentCommand <> nil then
+      begin
+        if (CurrentCommand.Command = 'run'#10) or (CurrentCommand.Command = 'next'#10) or
+           (CurrentCommand.Command = 'step'#10) or (CurrentCommand.Command = 'continue'#10) or
+           (CurrentCommand.Command = (devData.DebugCommand + #10)) or (CurrentCommand.Command =''#10) then
+        begin
+          RefreshContext;
+          Application.BringToFront;
+        end;
+      end;
+      CurOutput.Clear;
+
+      //Send the command, and do not send any more
+      FlushOutputBuffer;
+      SendCommand;
+
+      //Make sure we don't save the current line!
+      Exit;
+    end
+    else if (Pos('no debugging symbols found', line) > 0) or (Pos('No symbol table is loaded', line) > 0) then
+      OnNoDebuggingSymbolsFound
+    else if Pos('file is more recent than executable', line) > 0 then
+      OnSourceMoreRecent
+    else if line = 'signal' then
+      OverrideHandler := OnSignal 
+    else if RegExp.Exec(line, 'Breakpoint ([0-9]+),') then
+      with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
+        MainForm.GotoBreakpoint(Filename, Line)
+    else if RegExp.Exec(line, 'Hardware access \(.*\) watchpoint ') then
+      JumpToCurrentLine := True
+    else if Pos('exited ', line) = 1 then
+      CloseDebugger(nil);
+
+    CurOutput.Add(Line);
+  end;
+begin
+  //Update the memo
+  Screen.Cursor := crHourglass;
+  Application.ProcessMessages;
+  RegExp := TRegExpr.Create;
+  NewLines := TStringList.Create;
+
+  while Pos(#10, Output) > 0 do
+  begin
+    //Extract the current line
+    CurLine := Copy(Output, 0, Pos(#13, Output) - 1);
+
+    //Process the output
+{$IFNDEF RELEASE}
+    StripCtrlChars(CurLine);
+{$ELSE}
+    if not StripCtrlChars(CurLine) then
+    begin
+{$ENDIF}
+      if (not LastWasCtrl) or (Length(CurLine) <> 0) then
+        NewLines.Add(CurLine);
+      LastWasCtrl := False;
+{$IFDEF RELEASE}
+    end
+    else
+      LastWasCtrl := True;
+{$ENDIF}
+    ParseOutput(CurLine);
+
+    //Remove those that we've already processed
+    Delete(Output, 1, Pos(#10, Output));
+  end;
+
+  if Length(Output) > 0 then
+  begin
+    NewLines.Add(Output);
+    ParseOutput(Output);
+  end;
+
+  //Add the new lines to the edit control if we have any
+  FlushOutputBuffer;
+
+  //Clean up
+  NewLines.Free;
+  RegExp.Free;
+  Screen.Cursor := crDefault;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnSignal(Output: TStringList);
+var
+  I: Integer;
+begin
+  for I := 0 to Output.Count - 1 do
+  begin
+    if Output[I] = 'signal-name' then
+      if Output[I + 1] = 'SIGSEGV' then
+        OnAccessViolation
+      else;
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnSourceMoreRecent;
+begin
+  if (MessageDlg(Lang[ID_MSG_SOURCEMORERECENT], mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
+    CloseDebugger(nil);
+    MainForm.actCompileExecute(nil);
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.AddIncludeDir(s: string);
+begin
+  IncludeDirs.Add(s);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ClearIncludeDirs;
+begin
+  IncludeDirs.Clear;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.AddBreakpoint(breakpoint: TBreakpoint);
+var
+  aBreakpoint: PBreakpoint;
+begin
+  if (not Paused) and Executing then
+  begin
+    MessageDlg('Cannot add a breakpoint while the debugger is executing.', mtError, [mbOK], MainForm.Handle);
+    Exit;
+  end;
+
+  New(aBreakpoint);
+  aBreakpoint^ := breakpoint;
+  Breakpoints.Add(aBreakpoint);
+  RefreshBreakpoint(aBreakpoint^);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.RemoveBreakpoint(breakpoint: TBreakpoint);
+var
+  I: Integer;
+begin
+  if (not Paused) and Executing then
+  begin
+    MessageDlg('Cannot remove a breakpoint while the debugger is executing.', mtError, [mbOK], MainForm.Handle);
+    Exit;
+  end;
+
+  for i := 0 to Breakpoints.Count - 1 do
+  begin
+    if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
+    begin
+      if Executing then
+        QueueCommand('-break-delete ', IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
+      Dispose(Breakpoints.Items[i]);
+      Breakpoints.Delete(i);
+      Break;
+    end;
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.RefreshBreakpoint(var breakpoint: TBreakpoint);
+begin
+  if Executing then
+  begin
+    Inc(fNextBreakpoint);
+    breakpoint.Index := fNextBreakpoint;
+    breakpoint.Valid := True;
+    QueueCommand('-break-insert ', Format('"%s:%d"', [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.RefreshContext(refresh: ContextDataSet);
+var
+  I: Integer;
+  Node: TTreeNode;
+  Command: TCommand;
+begin
+  if not Executing then
+    Exit;
+
+  //First send commands for stack tracing, locals and threads
+  if cdCallStack in refresh then
+  begin
+    Command := TCommand.Create;
+    Command.Command := 'bt';
+    Command.OnResult := OnCallStack;
+    QueueCommand(Command);
+  end;
+  if cdLocals in refresh then
+  begin
+    Command := TCommand.Create;
+    Command.Command := '-stack-list-locals 1';
+    Command.OnResult := OnLocals;
+    QueueCommand(Command);
+  end;
+  if cdThreads in refresh then
+  begin
+    Command := TCommand.Create;
+    Command.Command := '-thread-list-all-threads';
+    Command.OnResult := OnThreads;
+    QueueCommand(Command);
+  end;
+  if cdDisassembly in refresh then
+    Disassemble;
+  if cdRegisters in refresh then
+    GetRegisters;
+
+  //Then update the watches
+  if (cdWatches in refresh) and Assigned(DebugTree) then
+  begin
+    I := 0;
+    while I < DebugTree.Items.Count do
+    begin
+      Node := DebugTree.Items[I];
+      if Node.Data = nil then
+        Continue;
+      with PWatch(Node.Data)^ do
+      begin
+        Command := TCommand.Create;
+        if Pos('.', Name) > 0 then
+          Command.Command := '-display-insert  ' + Copy(name, 1, Pos('.', name) - 1)
+        else
+          Command.Command := '-display-insert  ' + name;
+
+        //Fill in the other data
+        Command.Data := Node;
+        Command.OnResult := OnRefreshContext;
+        Node.DeleteChildren;
+
+        //Then send it
+        QueueCommand(Command);
+      end;
+
+      //Increment our counter
+      Inc(I);
+    end;
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnRefreshContext(Output: TStringList);
+var
+  I: Integer;
+  Node: TTreeNode;
+
+  procedure RecurseArray(Parent: TTreeNode; var I: Integer); forward;
+  procedure RecurseStructure(Parent: TTreeNode; var I: Integer);
+  var
+    Child: TTreeNode;
+  begin
+    while I < Output.Count - 4 do
+      if Output[I] = '}' then
+        Exit
+      else if Pos('{', Output[I + 4]) <> 1 then
+      begin
+        with DebugTree.Items.AddChild(Parent, Output[I] + ' = ' + Output[I + 4]) do
+        begin
+          SelectedIndex := 21;
+          ImageIndex := 21;
+        end;
+
+        Inc(I, 6);
+        if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
+          Inc(I, 2);
+      end
+      else
+      begin
+        Child := DebugTree.Items.AddChild(Parent, Output[I]);
+        with Child do
+        begin
+          SelectedIndex := 32;
+          ImageIndex := 32;
+        end;
+        
+        Inc(I, 6);
+        if Pos('array-section-begin', Output[I - 1]) = 1 then
+          RecurseArray(Child, I)
+        else
+          RecurseStructure(Child, I);
+
+        Inc(I, 2);
+        if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
+          Inc(I, 2);
+      end;
+  end;
+
+  procedure RecurseArray(Parent: TTreeNode; var I: Integer);
+  var
+    Child: TTreeNode;
+    Count: Integer;
+  begin
+    Count := 0;
+    while (I < Output.Count - 2) do
+    begin
+      if Output[I] = '}' then
+        Break
+      else if Pos(',', Output[I]) = 1 then
+        Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
+
+      if Pos('{', Output[I]) = 1 then
+      begin
+        Child := DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]));
+        with Child do
+        begin
+          SelectedIndex := 32;
+          ImageIndex := 32;
+        end;
+        
+        Inc(I, 2);
+        RecurseStructure(Child, I);
+      end
+      else if (Trim(Output[I]) <> '') and (Output[I] <> 'array-section-end') then
+      begin
+        with DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]) + ' = ' + Output[I]) do
+        begin
+          SelectedIndex := 21;
+          ImageIndex := 21;
+        end;
+      end
+      else
+      begin
+        Inc(I);
+        Continue;
+      end;
+
+      Inc(Count);
+      Inc(I, 2);
+    end;
+  end;
+begin
+  I := 0;
+  Node := TTreeNode(CurrentCommand.Data);
+  
+  while I < Output.Count do
+  begin
+    if Output[I] = 'display-expression' then
+    begin
+      Node.Text := Output[I + 1];
+      Node.SelectedIndex := 32;
+      Node.ImageIndex := 32;
+      
+      if Pos('{', Output[I + 5]) = 1 then
+      begin
+        Inc(I, 7);
+
+        //Determine if it is a structure of an array
+        if Pos('array-section-begin', Output[I - 1]) = 1 then
+          RecurseArray(Node, I)
+        else
+          RecurseStructure(Node, I);
+      end
+      else
+        Node.Text := Output[I + 1] + ' = ' + Output[I + 5];
+      Break;
+    end;
+    Inc(I);
+  end
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
+var
+  Watch: PWatch;
+  Command: TCommand;
+begin
+  with DebugTree.Items.Add(nil, varname + ' = (unknown)') do
+  begin
+    ImageIndex := 21;
+    SelectedIndex := 21;
+    New(Watch);
+    Watch^.Name := varname;
+    Data := Watch;
+  end;
+
+  Command := TCommand.Create;
+  Command.Data := Pointer(Watch);
+  case when of
+    wbRead:
+      Command.Command := '-break-watch -r ' + varname;
+    wbWrite:
+      Command.Command := '-break-watch ' + varname;
+    wbBoth:
+      Command.Command := '-break-watch -a ' + varname;
+  end;
+  Command.OnResult := OnWatchesSet;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.RefreshWatches;
+var
+  I: Integer;
+  Command: TCommand;
+begin
+  for I := 0 to DebugTree.Items.Count - 1 do
+    with PWatch(DebugTree.Items[I].Data)^ do
+    begin
+      Command := TCommand.Create;
+      Command.Data := DebugTree.Items[I].Data;
+      Command.Command := '-break-watch -a ' + Name;
+      Command.OnResult := OnWatchesSet;
+      QueueCommand(Command);
+    end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnWatchesSet(Output: TStringList);
+begin
+  //TODO: lowjoel: Watch-setting error?
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.RemoveWatch(varname: string);
+var
+  node: TTreeNode;
+begin
+  //Find the top-most node
+  node := DebugTree.Selected;
+  while Assigned(node) and (Assigned(node.Parent)) do
+    node := node.Parent;
+
+  //Then clean it up
+  if Assigned(node) then
+  begin
+    Dispose(node.Data);
+    DebugTree.Items.Delete(node);
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ModifyVariable(varname, newvalue: string);
+begin
+  QueueCommand('-gdb-set variable', varname + ' = ' + newvalue);
+end;
+
+procedure TGDBDebugger.OnCallStack(Output: TStringList);
+var
+  I: Integer;
+  CallStack: TList;
+  RegExp: TRegExpr;
+  StackFrame: PStackFrame;
+begin
+  StackFrame := nil;
+  CallStack := TList.Create;
+  RegExp := TRegExpr.Create;
+
+  I := 0;
+  while I < Output.Count do
+  begin
+    if Pos('frame-begin', Output[I]) = 1 then
+    begin
+      //Stack frame with source information
+      New(StackFrame);
+      CallStack.Add(StackFrame);
+    end
+    else if Output[I] = 'frame-function-name' then
+    begin
+      Inc(I);
+      StackFrame^.FuncName := Output[I]; 
+    end
+    else if Output[I] = 'frame-args' then
+    begin
+      Inc(I);
+
+      //Make sure it's valid
+      if Output[I] <> ' (' then
+      begin
+        Inc(I);
+        Continue;
+      end
+      else
+        Inc(I);
+
+      while (I < Output.Count - 6) do
+      begin
+        if Output[I] = 'arg-begin' then
+        begin
+          if StackFrame^.Args <> '' then
+            StackFrame^.Args := StackFrame^.Args + ', ';
+          StackFrame^.Args := StackFrame^.Args + Output[I + 1] + ' = ' + Output[I + 5];
+        end;
+        Inc(I, 6);
+
+        //Do we stop?
+        if Trim(Output[I + 1]) <> ',' then
+          Break
+        else
+          Inc(I, 2);
+      end;
+    end
+    else if Output[I] = 'frame-source-file' then
+    begin
+      Inc(I);
+      StackFrame^.Filename := Output[I];
+    end
+    else if Output[I] = 'frame-source-line' then
+    begin
+      Inc(I);
+      StackFrame^.Line := StrToInt(Output[I]);
+    end;
+    Inc(I);
+  end;
+
+  //Now that we have the entire callstack loaded into our list, call the function
+  //that wants it
+  if Assigned(TDebugger(Self).OnCallStack) then
+    TDebugger(Self).OnCallStack(CallStack);
+
+  //Do we show the new execution point?
+  if JumpToCurrentLine then
+  begin
+    JumpToCurrentLine := False;
+    MainForm.GotoTopOfStackTrace;
+  end;
+
+  //Clean up
+  RegExp.Free;
+  CallStack.Free;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnLocals(Output: TStringList);
+var
+  I: Integer;
+  RegExp: TRegExpr;
+  Local: PVariable;
+  Locals: TList;
+
+  function SynthesizeIndent(Indent: Integer): string;
+  var
+    I: Integer;
+  begin
+    Result := '';
+    for I := 0 to Indent - 1 do
+      Result := Result + ' ';
+  end;
+
+  procedure RecurseArray(Indent: Integer; var I: Integer); forward;
+  procedure RecurseStructure(Indent: Integer; var I: Integer);
+  begin
+    while I < Output.Count - 4 do
+      if Output[I] = '}' then
+        Exit
+      else if Pos('{', Output[I + 4]) <> 1 then
+      begin
+        New(Local);
+        Locals.Add(Local);
+        with Local^ do
+        begin
+          Name := SynthesizeIndent(Indent) + Output[I];
+          Value := Output[I + 4];
+        end;
+
+        Inc(I, 6);
+        if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
+          Inc(I, 2);
+      end
+      else
+      begin
+        New(Local);
+        Locals.Add(Local);
+        with Local^ do
+        begin
+          Name := SynthesizeIndent(Indent) + Output[I];
+          Value := '';
+        end;
+        
+        Inc(I, 6);
+        if Pos('array-section-begin', Output[I - 1]) = 1 then
+          RecurseArray(Indent + 4, I)
+        else
+          RecurseStructure(Indent + 4, I);
+
+        Inc(I, 2);
+        if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
+          Inc(I, 2);
+      end;
+  end;
+
+  procedure RecurseArray(Indent: Integer; var I: Integer);
+  var
+    Count: Integer;
+  begin
+    Count := 0;
+    while (I < Output.Count - 2) do
+    begin
+      if Output[I] = '}' then
+        Break
+      else if Pos(',', Output[I]) = 1 then
+        Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
+
+      if Pos('{', Output[I]) = 1 then
+      begin
+        New(Local);
+        Locals.Add(Local);
+        with Local^ do
+          Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
+        
+        Inc(I, 2);
+        RecurseStructure(Indent + 4, I);
+      end
+      else if (Trim(Output[I]) <> '') and (Output[I] <> 'array-section-end') then
+      begin
+        New(Local);
+        Locals.Add(Local);
+        with Local^ do
+        begin
+          Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
+          Value := Output[I];
+        end;
+      end
+      else
+      begin
+        Inc(I);
+        Continue;
+      end;
+
+      Inc(Count);
+      Inc(I, 2);
+    end;
+  end;
+begin
+  RegExp := TRegExpr.Create;
+  Locals := TList.Create;
+
+  I := 0;
+  while I < Output.Count do
+  begin
+    if RegExp.Exec(Output[I], '(.*) = (.*)') then
+    begin
+      New(Local);
+      Locals.Add(Local);
+      
+      if RegExp.Substitute('$2') = '{' then
+      begin
+        with Local^ do
+        begin
+          Name := RegExp.Substitute('$1');
+          Value := '';
+        end;
+
+        Inc(I, 2);
+        //Determine if it is a structure of an array
+        if Pos('array-section-begin', Output[I - 1]) = 1 then
+          RecurseArray(4, I)
+        else
+          RecurseStructure(4, I);
+      end
+      else
+      begin
+        //Fill the fields
+        with Local^ do
+        begin
+          Name := RegExp.Substitute('$1');
+          Value := RegExp.Substitute('$2');
+        end;
+      end;
+    end;
+    Inc(I);
+  end;
+
+  //Pass the locals list to the callback function that wants it
+  if Assigned(TDebugger(Self).OnLocals) then
+    TDebugger(Self).OnLocals(Locals);
+
+  //Clean up
+  Locals.Free;
+  RegExp.Free;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnThreads(Output: TStringList);
+var
+  I: Integer;
+  RegExp: TRegExpr;
+  Thread: PDebuggerThread;
+  Threads: TList;
+begin
+  RegExp := TRegExpr.Create;
+  Threads := TList.Create;
+
+  for I := 0 to Output.Count - 1 do
+    if RegExp.Exec(Output[I], '(\**)( +)([0-9]+)( +)thread ([0-9a-fA-F]*).0x([0-9a-fA-F]*)') then
+    begin
+      New(Thread);
+      Threads.Insert(0, Thread);
+
+      with Thread^ do
+      begin
+        Active := RegExp.Substitute('$1') = '*';
+        Index := RegExp.Substitute('$3');
+        ID := RegExp.Substitute('$5.$6');
+      end;
+    end;
+
+  //Call the callback function to list the threads
+  if Assigned(TDebugger(Self).OnThreads) then
+    TDebugger(Self).OnThreads(Threads);
+
+  Threads.Free;
+  RegExp.Free;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.GetRegisters;
+var
+  Command: TCommand;
+begin
+  if (not Executing) or (not Paused) then
+    Exit;
+
+  RegistersFilled := 0;
+  Registers := TRegisters.Create;
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $eax';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $ebx';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $ecx';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $edx';
+  Command.OnResult := OnRegisters;
+
+  QueueCommand(Command);
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $esi';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $edi';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $ebp';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $esp';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $eip';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $cs';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $ds';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $ss';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $es';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $fs';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $gs';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+
+  Command := TCommand.Create;
+  Command.Command := 'displ/x $eflags';
+  Command.OnResult := OnRegisters;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnRegisters(Output: TStringList);
+var
+  I: Integer;
+  Reg: String;
+  RegExp: TRegExpr;
+begin
+  RegExp := TRegExpr.Create;
+
+  I := 0;
+  while I < Output.Count do
+  begin
+    if Output[I] = ' = ' then
+    begin
+      Inc(I, 2);
+
+      //Determine the register
+      if RegExp.Exec(CurrentCommand.Command, 'displ/x \$(.*)') then
+      begin
+        Inc(RegistersFilled);
+        Reg := Trim(RegExp.Substitute('$1'));
+        if Reg = 'eax' then
+          Registers.EAX := Output[I]
+        else if Reg = 'ebx' then
+          Registers.EBX := Output[I]
+        else if Reg = 'ecx' then
+          Registers.ECX := Output[I]
+        else if Reg = 'edx' then
+          Registers.EDX := Output[I]
+        else if Reg = 'esi' then
+          Registers.ESI := Output[I]
+        else if Reg = 'edi' then
+          Registers.EDI := Output[I]
+        else if Reg = 'ebp' then
+          Registers.EBP := Output[I]
+        else if Reg = 'eip' then
+          Registers.EIP := Output[I]
+        else if Reg = 'esp' then
+          Registers.ESP := Output[I]
+        else if Reg = 'cs' then
+          Registers.CS := Output[I]
+        else if Reg = 'ds' then
+          Registers.DS := Output[I]
+        else if Reg = 'ss' then
+          Registers.SS := Output[I]
+        else if Reg = 'es' then
+          Registers.ES := Output[I]
+        else if Reg = 'fs' then
+          Registers.FS := Output[I]
+        else if Reg = 'gs' then
+          Registers.GS := Output[I]
+        else if Reg = 'eflags' then
+          Registers.EFLAGS := Output[I]
+        else
+          Dec(RegistersFilled);
+      end;
+    end;
+    Inc(I);
+  end;
+
+  //Pass the locals list to the callback function that wants it
+  if (RegistersFilled = 16) and Assigned(TDebugger(Self).OnRegisters) then
+  begin
+    TDebugger(Self).OnRegisters(Registers);
+    Registers.Free;
+  end;
+
+  //Clean up
+  RegExp.Free;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.Disassemble(func: string);
+var
+  Command: TCommand;
+begin
+  if (not Executing) or (not Paused) then
+    Exit;
+
+  Command := TCommand.Create;
+  Command.Command := 'disas ' + func;
+  Command.OnResult := OnDisassemble;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnDisassemble(Output: TStringList);
+begin
+  //Delete the first and last entries (Dump of assembler code for function X and End Dump)
+  if (Output.Count > 0) then
+  begin
+     Output.Delete(Output.Count - 1);
+     Output.Delete(0);
+  end;
+
+  //Pass the disassembly to the callback function that wants it
+  if Assigned(TDebugger(Self).OnDisassemble) then
+    TDebugger(Self).OnDisassemble(Output.Text);
+end;
+
+//=================================================================
+
+
+procedure TGDBDebugger.SetAssemblySyntax(syntax: AssemblySyntax);
+begin
+  case syntax of
+   asIntel: QueueCommand('-gdb-set disassembly-flavor', 'intel');
+   asATnT:  QueueCommand('-gdb-set disassembly-flavor', 'att');
+  end;
+end;
+
+//=================================================================
+
+function TGDBDebugger.GetVariableHint(name: string): string;
+var
+  Command: TCommand;
+begin
+  if (not Executing) or (not Paused) then
+    Exit;
+
+  Command := TCommand.Create;
+  Command.OnResult := OnVariableHint;
+  //Command.Command := 'print ' + name;
+  Command.Command := '-data-evaluate-expression ' + name;
+
+  //Send the command;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnVariableHint(Output: TStringList);
+begin
+  //Call the callback
+  if Assigned(TDebugger(Self).OnVariableHint) then
+    TDebugger(Self).OnVariableHint(Output[0]);
+end;
+
+procedure TGDBDebugger.Go;
+var
+  Command: TCommand;
+begin
+  Command := TCommand.Create;
+  if not Started then
+    Command.Command := '-exec-run'
+  else
+    Command.Command := '-exec-continue';
+  Command.Callback := OnGo;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnGo;
+begin
+  inherited;
+  Started := True;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.Launch(commandline, startupdir: String);
+var
+  saAttr: TSecurityAttributes;
+
+begin
+
+  saAttr.nLength := SizeOf(SECURITY_ATTRIBUTES);
+  saAttr.bInheritHandle := TRUE;
+  saAttr.lpSecurityDescriptor := Nil;
+
+  // Create a pipe for the child process's STDOUT.
+
+  if ( not CreatePipe(g_hChildStd_OUT_Rd, g_hChildStd_OUT_Wr, @saAttr, 0) ) then
+    DisplayError('Std_OUT CreatePipe');
+
+// Ensure the read handle to the pipe for STDOUT is not inherited.
+
+  if ( not SetHandleInformation(g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0) ) then
+      DisplayError('Std_OUT SetHandleInformation');
+
+// Create a pipe for the child process's STDIN.
+
+  if ( not CreatePipe(g_hChildStd_IN_Rd, g_hChildStd_IN_Wr, @saAttr, 0)) then
+      DisplayError('Std_IN CreatePipe');
+
+// Ensure the write handle to the pipe for STDIN is not inherited.
+
+  if ( not SetHandleInformation(g_hChildStd_IN_Wr, HANDLE_FLAG_INHERIT, 0) ) then
+      DisplayError('Std_IN SetHandleInformation');
+
+//  Pipes created
+
+//-----------------------------------------------------------------
+
+// Start the Reader thread
+
+// May want to pass the TDebugger address to ReadThread
+
+  Reader := ReadThread.Create(true);
+  Reader.ReadChildStdOut := g_hChildStd_OUT_Rd;
+  Reader.FreeOnTerminate := True;
+  Reader.Resume;
+
+//---------------------------------------------------------
+
+// Create a child process that uses the previously created pipes for STDIN and STDOUT.
+
+  CreateChildProcess(commandline, g_hChildStd_IN_Rd, g_hChildStd_OUT_Wr, g_hChildStd_OUT_Wr);
+
+// Reader Thread created & running
+
+  if (not CloseHandle(g_hChildStd_OUT_Wr)) then
+    DisplayError('CloseHandle Std_OUT');
+  if (not CloseHandle(g_hChildStd_IN_Rd)) then
+    DisplayError('CloseHandle Std_IN');
+
+  Reader.Resume;
+
+end;
+
+//============================================
+
+procedure TGDBDebugger.WriteToPipe(Buffer: String);
+
+var
+  BytesWritten: DWORD;
+
+begin
+  BytesWritten := 0;
+
+  Buffer := Buffer + NL;               // GDB requires a newline
+
+  // Send it to the pipe
+  WriteFile(g_hChildStd_IN_Wr, PChar(Buffer)^, Length(Buffer), BytesWritten, Nil);
+
+end;
+
+//=============================================================
+
+function TGDBDebugger.Result(buf: PChar; bsize: PLongInt): PChar;
+{
+/*
+   Part of Second Level Parse of Output.
+
+   Parse Result Record.
+
+   Looks from beginning up to [0x0d][0x0a] pair.
+   MODIFIES the input buffer.
+   Returns pointer to start of unprocessed buffer, else if nothing left: NULL
+   bsize is updated to reflect new size of unprocessed part.
+   Note: embedded cr or cr-lf are replaced by nulls.
+ */
+}
+
+var
+    OutputBuffer: String;
+    msg: String;
+    Mainmsg: String;
+
+begin
+{$ifdef DISPLAYOUTPUT}
+  AddtoDisplay('Parsing ^');
+{$endif}
+
+    Result := nil;
+    msg := breakOut(@buf, bsize);
+    msg := AnsiMidStr(msg, 2, Maxint-1);
+
+    if (verbose) then
+    begin
+      OutputBuffer := msg;
+      // gui_critSect.Enter();
+      AddtoDisplay(OutputBuffer);
+      // gui_critSect.Leave();
+    end;
+
+    if (not(msg = '')) then
+      begin
+        if (AnsiStartsStr(GDBerror, msg)) then
+        begin
+            Mainmsg := StringReplace(msg, 'msg="','', []);
+            Mainmsg := StringReplace(Mainmsg, '\','',[rfReplaceAll]);
+            DisplayError('GDB Error: ' + Mainmsg);
+        end
+
+        else if (AnsiStartsStr(GDBExitmsg, msg)) then
+        begin
+            AddtoDisplay('GDB is exiting');
+            Cleanup;
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBbkpt, msg)) then
+        begin
+            ParseBreakpoint(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBbkpttable, msg)) then
+        begin
+            ParseBreakpointTable(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBstack, msg)) then
+        begin
+            ParseStack(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBlocals, msg)) then
+        begin
+            OutputBuffer := ParseResult(@msg);    // Parses & Reassembles Result
+            AddtoDisplay(OutputBuffer);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBthreads, msg)) then
+        begin
+            ParseThreads(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBwpt, msg)) then
+        begin
+            ParseWatchpoint(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBwpta, msg)) then
+        begin
+            ParseWatchpoint(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBwptr, msg)) then
+        begin
+            ParseWatchpoint(msg);
+        end;
+
+        if (AnsiStartsStr(GDBdone+GDBnameq, Mainmsg)) then
+        begin
+            //ParseVObjCreate(Mainmsg);         // if it was a VObj create...
+        end;
+
+        if (AnsiStartsStr(GDBdone+GDBvalue, Mainmsg))  then
+        begin
+            //ParseVObjAssign(Mainmsg);         // if it was a VObj assign...
+        end;
+
+        Result := buf;
+
+      end;
+end;
+
+
+//=================================================================
+
+function TGDBDebugger.ExecResult(buf: PChar; bsize: PLongInt): PChar;
+{
+   Part of Second Level Parse of Output.
+
+   INCOMPLETE - see below.
+   Looks from beginning up to [0x0d][0x0a] pair.
+   Returns pointer to start of unprocessed buffer, else if nothing left: NULL
+   bsize is updated to reflect new size of unprocessed part.
+   Note: embedded cr-lf are replaced by nulls.
+}
+
+var
+  OutputBuffer: String;
+  msg: String;
+  AllReason: String;
+  Reason: String;
+  Errmsg: String;
+
+  threadID: String;
+  thread: LongInt;
+
+begin
+
+{$ifdef DISPLAYOUTPUT}
+  // gui_critSect.Enter();
+  AddtoDisplay('Parsing *');
+  // gui_critSect.Leave();
+{$endif}
+
+  ExecResult := nil;
+  msg := breakOut(@buf, bsize);
+  msg := AnsiMidStr(msg, 2, Maxint-1);
+
+
+  if (verbose) then
+  begin
+    OutputBuffer := msg;
+    // gui_critSect.Enter();
+    AddtoDisplay(OutputBuffer);
+    // gui_critSect.Leave();
+  end;
+
+
+  if (not(msg = '')) then
+  begin
+    if (AnsiStartsStr(GDBrunning, msg)) then
+    begin
+      // get rest into , &AllReason))
+      AllReason := AnsiRightStr(msg, (Length(msg)-Length(GDBrunning)));
+      running := true;
+      // gui_critSect.Enter();
+      // gui_critSect.Leave();
+
+      if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
+      begin
+        if (threadID = 'all') then
+        begin
+          {thread := -1;}                              // Thread No.
+          OutputBuffer := 'Running all threads'
+        end
+        else
+        begin
+          thread := StrToInt(threadID);
+          OutputBuffer := Format('Running thread %d', [thread]);
+          AddtoDisplay(OutputBuffer);
+        end;
+      end;
+
+// INCOMPLETE: does nothing with the thread number
+
+    end
+    else
+    if (AnsiStartsStr(GDBstopped, msg)) then
+    begin
+      // get rest into , &AllReason))
+      AllReason := AnsiRightStr(msg, (Length(msg)-Length(GDBstopped)));
+      running := false;
+      // gui_critSect.Enter();
+      // gui_critSect.Leave();
+
+      if (ParseConst(@msg, @GDBreason, PString(@Reason))) then
+      begin
+        if (Reason = 'exited-normally') then
+        begin
+          // gui_critSect.Enter();
+          AddtoDisplay('Stopped - Exited normally');
+          // gui_critSect.Leave();
+          Started := False;
+        end
+        else if (Reason = 'breakpoint-hit') then
+        begin
+          // gui_critSect.Enter();
+          AddtoDisplay('Stopped - breakpoint-hit');
+          // gui_critSect.Leave();
+          BreakpointHit(@msg);
+        end
+        else if (Reason = 'watchpoint-trigger') then
+        begin
+          // gui_critSect.Enter();
+          AddtoDisplay('Stopped - watchpoint-trigger');
+          // gui_critSect.Leave();
+          WatchpointHit(@msg);
+        end
+        else if (Reason = 'read-watchpoint-trigger') then
+        begin
+          // gui_critSect.Enter();
+          AddtoDisplay('Stopped - read-watchpoint-trigger');
+          // gui_critSect.Leave();
+          WatchpointHit(@msg);
+        end
+        else if (Reason = 'access-watchpoint-trigger') then
+        begin
+          // gui_critSect.Enter();
+          AddtoDisplay('Stopped - access-watchpoint-trigger');
+          // gui_critSect.Leave();
+          WatchpointHit(@msg);
+        end
+        else if (Reason = 'end-stepping-range') then
+        begin
+          // gui_critSect.Enter();
+          AddtoDisplay('Stopped - end-stepping-range');
+          // gui_critSect.Leave();
+          StepHit(@msg);
+        end
+        else
+        begin
+          Errmsg := AnsiReplaceStr(Errmsg, 'msg="','');
+          Errmsg := AnsiReplaceStr(Errmsg, '\"','');
+          DisplayError('GDB Error:' + Errmsg);
+        end;
+      end;
+    end;
+  ExecResult := buf;
+  end;
+end;
+
+//===============================================
+procedure TGDBDebugger.FirstParse;
+
+var
+
+	BufMem: PChar;          // Keep a copy of the originally allocated memory
+                          //  so that we can free the memory
+begin
+  BufMem := buf;           // because pointer 'buf' gets moved!
+
+	while ((bytesInBuffer > 0) and not (buf = Nil)) do
+	// && some arbitrary counter to prevent an infinite loop in case
+	// a programming error fails to clear the buffer?
+	begin
+
+		if ((buf^ >= '0') and (buf^ <='9')) then
+		// a token
+		begin
+			buf := GetToken(buf, @bytesInBuffer, @Token);
+			if (verbose) then
+			begin
+        AddtoDisplay('Token ' + IntToStr(Token) );
+				
+			end;
+		end
+		else if (buf^ = '~') then
+		// console stream
+		// Not of interest: display it
+
+			buf := SendToDisplay(buf, @bytesInBuffer, true)
+
+		else if (buf^ = '=') then
+		// notify async
+		// For now: display it
+
+      buf := SendToDisplay(buf, @bytesInBuffer, verbose)
+
+		else if ((buf^ = '@') or (buf^ = '&')) then
+		// target output ||  log stream
+		// Not of interest: display it
+
+			buf := SendToDisplay(buf, @bytesInBuffer, verbose)
+
+		else if (buf^ = '^') then
+		// A result or error
+		begin
+			// gui_critSect.Enter();
+      if (verbose) then
+				AddtoDisplay('Result or Error:');
+			// gui_critSect.Leave();
+      buf := Result(buf, @bytesInBuffer);
+		end
+		else if (buf^ = '*') then
+		// executing async
+		begin
+			// gui_critSect.Enter();
+      if (verbose) then
+				AddtoDisplay('Executing Async:');
+			// gui_critSect.Leave();
+      buf := ExecResult(buf, @bytesInBuffer);
+		end
+		else if (buf^ = '+') then
+		// status async
+		begin
+      if (verbose) then
+      begin
+        // gui_critSect.Enter();
+				AddtoDisplay('Status Output:');
+				// gui_critSect.Leave();
+      end;
+      buf := SendToDisplay(buf, @bytesInBuffer, verbose);
+
+		end
+		else if (buf^ = '(') then
+		// might be GDB prompt - cannot really be anything else!
+    begin
+
+			//gui_critSect.Enter();
+      AddtoDisplay('GDB Ready');
+			//gui_critSect.Leave();
+			buf := SendToDisplay(buf, @bytesInBuffer, verbose);
+    end
+		else
+		// Don't know, what is left?
+		begin
+			// gui_critSect.Enter();
+      AddtoDisplay('Cannot decide about:');
+			// gui_critSect.Leave();
+			buf := SendToDisplay(buf, @bytesInBuffer, verbose);
+		end;
+  end;
+
+  FreeMem(BufMem);
+  buf := Nil;              // The reader will only get the next lot from
+                           // the pipe buffer when it sees this.
+  SentCommand := false;    // Requests next command to be sent from queue
+  fPaused := True;
+  SendCommand;             //  (these are only needed to maintain sync. between
+                           //  the outgoing and incoming data streams).
+
+end;
+
+//=============================================================
+
+function TGDBDebugger.breakOut(Next: PPChar; bsize: PLongInt ): String;
+{
+/*
+  Supports the Second Level Parse.
+  Takes the buffer and returns a String up to but excluding the first
+  CR or CR-LF pair.
+  N.B. an embedded newline appears as the string '\n', NOT as #13#10
+  MODIFIES the input buffer (replaces CR and LF with Null(s)).
+  Parameters:
+    Next: Pointer to pointer to the buffer. On return this points to
+      the first char following the first CR or CR-LF pair, else NULL
+    bsize: a pointer to the buffer size. On return this size has been
+      modified to reflect the size of the unprocessed buffer remaining.
+*/
+}
+var
+  s, c: PChar;
+
+begin
+  breakOut := '';
+  s := Next^;
+  c := Next^;
+
+  while (not (c^ = CR) and (c < (Next^+bsize^))) do
+    Inc(c);
+  c^ := #0;
+  Inc(c);
+  if (c^ = LF) then
+  begin
+    c^ := #0;
+    Inc(c);
+  end;
+  bsize^ := bsize^ - (c-s);
+  if (bsize^ <= 0) then                         // nothing remains
+    Next^ := Nil
+  else
+    Next^ := c;
+  breakOut := s;                                // copies NULL-terminated part
+
+
+end;
+
+//=============================================================
+
+function TGDBDebugger.GetToken(buf: PChar;  bsize: PLongInt; Token: PInteger): PChar;
+var
+    OutputBuffer: String;
+    c, s: PChar;
+    sToken: String;
+
+begin
+{
+   Part of Second Level Parse of Output.
+
+   Looks from beginning up to first non-digit.
+   Returns pointer to start of unprocessed buffer, else if nothing left: NULL
+   bsize is updated to reflect new size of unprocessed part.
+}
+
+
+{$ifdef DISPLAYOUTPUT}
+    // gui_critSect.Enter();
+    AddtoDisplay('Parsing Token');
+    // gui_critSect.Leave();
+{$endif}
+
+    c := buf;
+    s := buf;
+
+    while ((c^ >= '0') and (c^ <= '9') and (c < (buf+bsize^))) do
+    begin
+      sToken := sToken + c^;
+      Inc(c);
+    end;
+
+    if (c = s) then
+    begin
+      Token^ := 0;                  // We should never get here
+      GetToken := c;                // return c;
+    end
+    else
+    begin
+      try
+        Token^ := StrToInt(sToken);
+      except
+        Token^ := 0;
+      end;
+
+      bsize^ := bsize^ - (c-s);
+      if (bsize^ = 0) then                          // nothing remains
+        GetToken := Nil
+      else
+        GetToken := c;
+    end;
+end;
+
+//=================================================================
+
+function TGDBDebugger.SendToDisplay(buf: PChar;  bsize: PLongInt; verbose: Boolean): PChar;
+var
+    OutputBuffer: String;
+    msg: String;
+
+begin
+{
+/*
+   Part of Second Level Parse of Output.
+
+   Sends from beginning up to [0x0d][0x0a] pair to display.
+   Returns pointer to start of unprocessed buffer, else if nothing left: NULL
+   bsize is updated to reflect new size of unprocessed part.
+   Note: embedded cr or cr-lf are replaced by nulls.
+ */
+}
+{$ifdef DISPLAYOUTPUT}
+  // gui_critSect.Enter();
+  AddtoDisplay('Output to Display...');
+  // gui_critSect.Leave();
+
+{$endif}
+
+  if ((buf = Nil) or (bsize^ = 0)) then
+    SendToDisplay := Nil
+  else
+  begin
+    msg := breakOut(@buf, bsize);
+    if (not(AnsiLeftStr(msg,5) = GDBPrompt)) then   // Special case exception: "(gdb)"
+      msg := AnsiMidStr(msg, 2, Maxint-1);
+
+    if (verbose) then
+    begin
+      OutputBuffer := msg;
+      // gui_critSect.Enter();
+      AddtoDisplay(OutputBuffer);
+      // gui_critSect.Leave();
+    end;
+
+
+    if (bsize^ = 0) then  // nothing remains
+      SendToDisplay := Nil
+    else
+      SendToDisplay := buf;
+  end;
+end;
+
+//===================================================
+
+procedure TGDBDebugger.Next;
+var
+  Command: TCommand;
+begin
+  Command := TCommand.Create;
+  Command.Command := '-exec-next';
+  Command.Callback := OnTrace;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.Step;
+var
+  Command: TCommand;
+begin
+  Command := TCommand.Create;
+  Command.Command := '-exec-step';
+  Command.Callback := OnTrace;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.Finish;
+var
+  Command: TCommand;
+begin
+  Command := TCommand.Create;
+  Command.Command := devData.DebugCommand;   // -exec-finish
+  Command.Callback := OnTrace;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnTrace;
+begin
+  JumpToCurrentLine := True;
+  fPaused := False;
+  fBusy := False;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.Pause;
+begin
+  //Do nothing. GDB does not support break-ins.
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.SetThread(thread: Integer);
+begin
+  QueueCommand('-thread-select ', IntToStr(thread));
+  RefreshContext;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.SetContext(frame: Integer);
+begin
+  QueueCommand('-stack-select-frame ', IntToStr(frame));
+  RefreshContext([cdLocals, cdWatches]);
+end;
+
 
 //------------------------------------------------------------------------------
 // TCDBDebugger
@@ -912,7 +4193,7 @@ begin
   Launch(Executable, WorkingDir);
 
   //Tell the wait function that another valid output terminator is the 0:0000 prompt
-  Wait.OutputTerminators.Add(InputPrompt);
+  //Wait.OutputTerminators.Add(InputPrompt);
 
   //Send the source mode setting (enable all except ONLY source)
   QueueCommand('l+t; l+l; l+s', '');
@@ -952,7 +4233,7 @@ begin
   Launch(Executable, '');
 
   //Tell the wait function that another valid output terminator is the 0:0000 prompt
-  Wait.OutputTerminators.Add(InputPrompt);
+ // Wait.OutputTerminators.Add(InputPrompt);
 
   //Send the source mode setting (enable all except ONLY source)
   QueueCommand('l+t; l+l; l+s', '');
@@ -2340,1198 +5621,6 @@ end;
 procedure TCDBDebugger.SetContext(frame: Integer);
 begin
   QueueCommand('.frame', IntToStr(frame));
-  RefreshContext([cdLocals, cdWatches]);
-end;
-
-//------------------------------------------------------------------------------
-// TGDBDebugger
-//------------------------------------------------------------------------------
-constructor TGDBDebugger.Create;
-begin
-  inherited;
-  OverrideHandler := nil;
-  LastWasCtrl := True;
-  Started := False;
-end;
-
-destructor TGDBDebugger.Destroy;
-begin
-  inherited;
-end;
-
-procedure TGDBDebugger.Execute(filename, arguments: string);
-const
-  gdbInterp:   String = '--interpreter=mi';
-  gdbSilent:   String = '--silent';
-
-var
-  Executable: string;
-  WorkingDir: string;
-  Includes: string;
-  I: Integer;
-  verbose : boolean;
-
-begin
-  //Reset our variables
-  self.FileName := filename;
-  fNextBreakpoint := 0;
-  IgnoreBreakpoint := False;
-
-  verbose := False;
-  
-  //Get the name of the debugger
-  if (devCompiler.gdbName <> '') then
-    Executable := devCompiler.gdbName
-  else
-    Executable := DBG_PROGRAM(devCompiler.CompilerType);
-
-
-  Executable := Executable + ' ' + gdbInterp;
-
-  // Verbose output requested?
-  if (not verbose) then
-    Executable := Executable + ' ' + gdbSilent;
-
-  //Add in the include paths
-
-  for I := 0 to IncludeDirs.Count - 1 do
-    Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
-  if Includes <> '' then
-    Executable := Executable + ' ' + Includes;
-
-
-  //Add the target executable
-  Executable := Executable + ' "' + filename + '"';
-
-  //Launch the process
-
-  if Assigned(MainForm.fProject) then
-    WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
-
-  Launch(Executable, WorkingDir);
-
-  QueueCommand('-gdb-set', 'new-console on'); // For console applications
-  // ??? Will this have any effect - see GDB Documentation: "the debuggee will be started in a new console on next start"
-  //     I read this as implying it WILL go into effect because the target is only loaded, not yet started.
-  QueueCommand('-gdb-set', 'height 0');
-  QueueCommand('-gdb-set', 'breakpoint pending on'); // Fix for DLL breakpoints
-  QueueCommand('-gdb-set args', arguments);
-end;
-
-procedure TGDBDebugger.Attach(pid: integer);
-var
-  Executable: string;
-  Includes: string;
-  I: Integer;
-begin
-  //Reset our variables
-  self.FileName := filename;
-  fNextBreakpoint := 0;
-  IgnoreBreakpoint := False;
-
-  //Get the name of the debugger
-  if (devCompiler.gdbName <> '') then
-    Executable := devCompiler.gdbName
-  else
-    Executable := DBG_PROGRAM(devCompiler.CompilerType);
-  Executable := Executable + ' --annotate=2 --silent';
-
-  //Add in the include paths
-  for I := 0 to IncludeDirs.Count - 1 do
-    Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
-  if Includes <> '' then
-    Executable := Executable + ' ' + Includes;
-
-  //Launch the process
-  Launch(Executable, '');
-
-  //Tell GDB which file we want to debug
-  QueueCommand('-gdb-set', 'height 0');
-  QueueCommand('-target-attach', inttostr(pid));
-end;
-
-procedure TGDBDebugger.CloseDebugger(Sender: TObject);
-begin
-  inherited;
-  Started := False;
-end;
-
-procedure TGDBDebugger.OnOutput(Output: string);
-var
-  RegExp: TRegExpr;
-  CurLine: string;
-  NewLines: TStringList;
-
-  procedure FlushOutputBuffer;
-  var
-     i : integer;
-     LastString : string;
-     TempLines : TStringList;
-  begin
-    if NewLines.Count = 0 then
-      Exit;
-
-     // Delete the output lines 'breakpoints-invalid'
-    i := NewLines.IndexOf('breakpoints-invalid');
-    while (i > -1) do
-    begin
-        NewLines.Delete(i);
-        i := NewLines.IndexOf('breakpoints-invalid');
-    end;
-
-    // Delete the output lines 'frames-invalid'
-    i := NewLines.IndexOf('frames-invalid');
-    while (i > -1) do
-    begin
-        NewLines.Delete(i);
-        i := NewLines.IndexOf('frames-invalid');
-    end;
-
-      if NewLines.Count = 0 then
-      Exit;
-
-      // Get rid of duplicate debugger messages.
-      TempLines := TStringList.Create;
-      LastString := NewLines.Strings[0];
-    TempLines.Add(LastString);
-    for i := 1 to (NewLines.Count - 1) do
-    begin
-       if (NewLines.Strings[i] <> LastString) then
-       begin
-        TempLines.Add(NewLines.Strings[i]);
-        LastString := NewLines.Strings[i];
-       end
-    end;
-
-    MainForm.DebugOutput.Lines.BeginUpdate;
-    MainForm.DebugOutput.Lines.AddStrings(TempLines);
-    MainForm.DebugOutput.Lines.EndUpdate;
-    SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-                MainForm.DebugOutput.Lines.Count);
-    NewLines.Clear;
-    TempLines.Free;
-  end;
-  
-  function StripCtrlChars(var line: string): Boolean;
-  var
-    Idx: Integer;
-  begin
-    Idx := Pos(#26, line);
-    Result := Idx <> 0;
-    while Idx <> 0 do
-    begin
-      Delete(line, Idx, 1);
-      Idx := Pos(#26, line);
-    end;
-  end;
-
-  procedure ParseOutput(const line: string);
-  begin
-    //Exclude these miscellaneous messages
-    if (line = 'pre-prompt') or (line = 'prompt') or (line = 'post-prompt') or
-       (line = 'frames-invalid') or (Pos('error', line) = 1)
-       or (line = '{') then
-      Exit
-    //Empty lines
-    else if (Trim(line) = '') or (Trim(line) = 'breakpoints-invalid') then
-      Exit
-    else if (line = 'value-history-value') or (line = 'value-history-end')
-       or (Pos('value-history-begin', line) = 1) or
-       RegExp.Exec(line, '\$([0-9]+) =') then
-       Exit
-    else if Pos('(gdb) ', line) = 1 then
-    begin
-      //The debugger is waiting for input, we're paused!
-      SentCommand := False;
-      fPaused := True;
-      fBusy := False;
-
-      //Because we are here, we probably are a side-effect of a previous instruction
-      //Execute the process function for the command.
-      if Assigned(OverrideHandler) then
-      begin
-        OverrideHandler(CurOutput);
-        OverrideHandler := nil;
-      end
-      else if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and Assigned(CurrentCommand.OnResult) then
-        CurrentCommand.OnResult(CurOutput);
-
-      if CurrentCommand <> nil then
-      begin
-        if (CurrentCommand.Command = 'run'#10) or (CurrentCommand.Command = 'next'#10) or
-           (CurrentCommand.Command = 'step'#10) or (CurrentCommand.Command = 'continue'#10) or
-           (CurrentCommand.Command = (devData.DebugCommand + #10)) or (CurrentCommand.Command =''#10) then
-        begin
-          RefreshContext;
-          Application.BringToFront;
-        end;
-      end;
-      CurOutput.Clear;
-
-      //Send the command, and do not send any more
-      FlushOutputBuffer;
-      SendCommand;
-
-      //Make sure we don't save the current line!
-      Exit;
-    end
-    else if (Pos('no debugging symbols found', line) > 0) or (Pos('No symbol table is loaded', line) > 0) then
-      OnNoDebuggingSymbolsFound
-    else if Pos('file is more recent than executable', line) > 0 then
-      OnSourceMoreRecent
-    else if line = 'signal' then
-      OverrideHandler := OnSignal 
-    else if RegExp.Exec(line, 'Breakpoint ([0-9]+),') then
-      with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
-        MainForm.GotoBreakpoint(Filename, Line)
-    else if RegExp.Exec(line, 'Hardware access \(.*\) watchpoint ') then
-      JumpToCurrentLine := True
-    else if Pos('exited ', line) = 1 then
-      CloseDebugger(nil);
-
-    CurOutput.Add(Line);
-  end;
-begin
-  //Update the memo
-  Screen.Cursor := crHourglass;
-  Application.ProcessMessages;
-  RegExp := TRegExpr.Create;
-  NewLines := TStringList.Create;
-
-  while Pos(#10, Output) > 0 do
-  begin
-    //Extract the current line
-    CurLine := Copy(Output, 0, Pos(#13, Output) - 1);
-
-    //Process the output
-{$IFNDEF RELEASE}
-    StripCtrlChars(CurLine);
-{$ELSE}
-    if not StripCtrlChars(CurLine) then
-    begin
-{$ENDIF}
-      if (not LastWasCtrl) or (Length(CurLine) <> 0) then
-        NewLines.Add(CurLine);
-      LastWasCtrl := False;
-{$IFDEF RELEASE}
-    end
-    else
-      LastWasCtrl := True;
-{$ENDIF}
-    ParseOutput(CurLine);
-
-    //Remove those that we've already processed
-    Delete(Output, 1, Pos(#10, Output));
-  end;
-
-  if Length(Output) > 0 then
-  begin
-    NewLines.Add(Output);
-    ParseOutput(Output);
-  end;
-
-  //Add the new lines to the edit control if we have any
-  FlushOutputBuffer;
-
-  //Clean up
-  NewLines.Free;
-  RegExp.Free;
-  Screen.Cursor := crDefault;
-end;
-
-procedure TGDBDebugger.OnSignal(Output: TStringList);
-var
-  I: Integer;
-begin
-  for I := 0 to Output.Count - 1 do
-  begin
-    if Output[I] = 'signal-name' then
-      if Output[I + 1] = 'SIGSEGV' then
-        OnAccessViolation
-      else;
-  end;
-end;
-
-procedure TGDBDebugger.OnSourceMoreRecent;
-begin
-  if (MessageDlg(Lang[ID_MSG_SOURCEMORERECENT], mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
-    CloseDebugger(nil);
-    MainForm.actCompileExecute(nil);
-  end;
-end;
-
-procedure TGDBDebugger.AddIncludeDir(s: string);
-begin
-  IncludeDirs.Add(s);
-end;
-
-procedure TGDBDebugger.ClearIncludeDirs;
-begin
-  IncludeDirs.Clear;
-end;
-
-procedure TGDBDebugger.AddBreakpoint(breakpoint: TBreakpoint);
-var
-  aBreakpoint: PBreakpoint;
-begin
-  if (not Paused) and Executing then
-  begin
-    MessageDlg('Cannot add a breakpoint while the debugger is executing.', mtError, [mbOK], MainForm.Handle);
-    Exit;
-  end;
-
-  New(aBreakpoint);
-  aBreakpoint^ := breakpoint;
-  Breakpoints.Add(aBreakpoint);
-  RefreshBreakpoint(aBreakpoint^);
-end;
-
-procedure TGDBDebugger.RemoveBreakpoint(breakpoint: TBreakpoint);
-var
-  I: Integer;
-begin
-  if (not Paused) and Executing then
-  begin
-    MessageDlg('Cannot remove a breakpoint while the debugger is executing.', mtError, [mbOK], MainForm.Handle);
-    Exit;
-  end;
-
-  for i := 0 to Breakpoints.Count - 1 do
-  begin
-    if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
-    begin
-      if Executing then
-        QueueCommand('-break-delete ', IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
-      Dispose(Breakpoints.Items[i]);
-      Breakpoints.Delete(i);
-      Break;
-    end;
-  end;
-end;
-
-procedure TGDBDebugger.RefreshBreakpoint(var breakpoint: TBreakpoint);
-begin
-  if Executing then
-  begin
-    Inc(fNextBreakpoint);
-    breakpoint.Index := fNextBreakpoint;
-    breakpoint.Valid := True;
-    QueueCommand('-break-insert ', Format('"%s:%d"', [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
-  end;
-end;
-
-procedure TGDBDebugger.RefreshContext(refresh: ContextDataSet);
-var
-  I: Integer;
-  Node: TTreeNode;
-  Command: TCommand;
-begin
-  if not Executing then
-    Exit;
-
-  //First send commands for stack tracing, locals and threads
-  if cdCallStack in refresh then
-  begin
-    Command := TCommand.Create;
-    Command.Command := 'bt';
-    Command.OnResult := OnCallStack;
-    QueueCommand(Command);
-  end;
-  if cdLocals in refresh then
-  begin
-    Command := TCommand.Create;
-    Command.Command := '-stack-list-locals 1';
-    Command.OnResult := OnLocals;
-    QueueCommand(Command);
-  end;
-  if cdThreads in refresh then
-  begin
-    Command := TCommand.Create;
-    Command.Command := '-thread-list-all-threads';
-    Command.OnResult := OnThreads;
-    QueueCommand(Command);
-  end;
-  if cdDisassembly in refresh then
-    Disassemble;
-  if cdRegisters in refresh then
-    GetRegisters;
-
-  //Then update the watches
-  if (cdWatches in refresh) and Assigned(DebugTree) then
-  begin
-    I := 0;
-    while I < DebugTree.Items.Count do
-    begin
-      Node := DebugTree.Items[I];
-      if Node.Data = nil then
-        Continue;
-      with PWatch(Node.Data)^ do
-      begin
-        Command := TCommand.Create;
-        if Pos('.', Name) > 0 then
-          Command.Command := '-display-insert  ' + Copy(name, 1, Pos('.', name) - 1)
-        else
-          Command.Command := '-display-insert  ' + name;
-
-        //Fill in the other data
-        Command.Data := Node;
-        Command.OnResult := OnRefreshContext;
-        Node.DeleteChildren;
-
-        //Then send it
-        QueueCommand(Command);
-      end;
-
-      //Increment our counter
-      Inc(I);
-    end;
-  end;
-end;
-
-procedure TGDBDebugger.OnRefreshContext(Output: TStringList);
-var
-  I: Integer;
-  Node: TTreeNode;
-
-  procedure RecurseArray(Parent: TTreeNode; var I: Integer); forward;
-  procedure RecurseStructure(Parent: TTreeNode; var I: Integer);
-  var
-    Child: TTreeNode;
-  begin
-    while I < Output.Count - 4 do
-      if Output[I] = '}' then
-        Exit
-      else if Pos('{', Output[I + 4]) <> 1 then
-      begin
-        with DebugTree.Items.AddChild(Parent, Output[I] + ' = ' + Output[I + 4]) do
-        begin
-          SelectedIndex := 21;
-          ImageIndex := 21;
-        end;
-
-        Inc(I, 6);
-        if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
-          Inc(I, 2);
-      end
-      else
-      begin
-        Child := DebugTree.Items.AddChild(Parent, Output[I]);
-        with Child do
-        begin
-          SelectedIndex := 32;
-          ImageIndex := 32;
-        end;
-        
-        Inc(I, 6);
-        if Pos('array-section-begin', Output[I - 1]) = 1 then
-          RecurseArray(Child, I)
-        else
-          RecurseStructure(Child, I);
-
-        Inc(I, 2);
-        if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
-          Inc(I, 2);
-      end;
-  end;
-
-  procedure RecurseArray(Parent: TTreeNode; var I: Integer);
-  var
-    Child: TTreeNode;
-    Count: Integer;
-  begin
-    Count := 0;
-    while (I < Output.Count - 2) do
-    begin
-      if Output[I] = '}' then
-        Break
-      else if Pos(',', Output[I]) = 1 then
-        Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
-
-      if Pos('{', Output[I]) = 1 then
-      begin
-        Child := DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]));
-        with Child do
-        begin
-          SelectedIndex := 32;
-          ImageIndex := 32;
-        end;
-        
-        Inc(I, 2);
-        RecurseStructure(Child, I);
-      end
-      else if (Trim(Output[I]) <> '') and (Output[I] <> 'array-section-end') then
-      begin
-        with DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]) + ' = ' + Output[I]) do
-        begin
-          SelectedIndex := 21;
-          ImageIndex := 21;
-        end;
-      end
-      else
-      begin
-        Inc(I);
-        Continue;
-      end;
-
-      Inc(Count);
-      Inc(I, 2);
-    end;
-  end;
-begin
-  I := 0;
-  Node := TTreeNode(CurrentCommand.Data);
-  
-  while I < Output.Count do
-  begin
-    if Output[I] = 'display-expression' then
-    begin
-      Node.Text := Output[I + 1];
-      Node.SelectedIndex := 32;
-      Node.ImageIndex := 32;
-      
-      if Pos('{', Output[I + 5]) = 1 then
-      begin
-        Inc(I, 7);
-
-        //Determine if it is a structure of an array
-        if Pos('array-section-begin', Output[I - 1]) = 1 then
-          RecurseArray(Node, I)
-        else
-          RecurseStructure(Node, I);
-      end
-      else
-        Node.Text := Output[I + 1] + ' = ' + Output[I + 5];
-      Break;
-    end;
-    Inc(I);
-  end
-end;
-
-procedure TGDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
-var
-  Watch: PWatch;
-  Command: TCommand;
-begin
-  with DebugTree.Items.Add(nil, varname + ' = (unknown)') do
-  begin
-    ImageIndex := 21;
-    SelectedIndex := 21;
-    New(Watch);
-    Watch^.Name := varname;
-    Data := Watch;
-  end;
-
-  Command := TCommand.Create;
-  Command.Data := Pointer(Watch);
-  case when of
-    wbRead:
-      Command.Command := '-break-watch -r ' + varname;
-    wbWrite:
-      Command.Command := '-break-watch ' + varname;
-    wbBoth:
-      Command.Command := '-break-watch -a ' + varname;
-  end;
-  Command.OnResult := OnWatchesSet;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.RefreshWatches;
-var
-  I: Integer;
-  Command: TCommand;
-begin
-  for I := 0 to DebugTree.Items.Count - 1 do
-    with PWatch(DebugTree.Items[I].Data)^ do
-    begin
-      Command := TCommand.Create;
-      Command.Data := DebugTree.Items[I].Data;
-      Command.Command := '-break-watch -a ' + Name;
-      Command.OnResult := OnWatchesSet;
-      QueueCommand(Command);
-    end;
-end;
-
-procedure TGDBDebugger.OnWatchesSet(Output: TStringList);
-begin
-  //TODO: lowjoel: Watch-setting error?
-end;
-
-procedure TGDBDebugger.RemoveWatch(varname: string);
-var
-  node: TTreeNode;
-begin
-  //Find the top-most node
-  node := DebugTree.Selected;
-  while Assigned(node) and (Assigned(node.Parent)) do
-    node := node.Parent;
-
-  //Then clean it up
-  if Assigned(node) then
-  begin
-    Dispose(node.Data);
-    DebugTree.Items.Delete(node);
-  end;
-end;
-
-procedure TGDBDebugger.ModifyVariable(varname, newvalue: string);
-begin
-  QueueCommand('-gdb-set variable', varname + ' = ' + newvalue);
-end;
-
-procedure TGDBDebugger.OnCallStack(Output: TStringList);
-var
-  I: Integer;
-  CallStack: TList;
-  RegExp: TRegExpr;
-  StackFrame: PStackFrame;
-begin
-  StackFrame := nil;
-  CallStack := TList.Create;
-  RegExp := TRegExpr.Create;
-
-  I := 0;
-  while I < Output.Count do
-  begin
-    if Pos('frame-begin', Output[I]) = 1 then
-    begin
-      //Stack frame with source information
-      New(StackFrame);
-      CallStack.Add(StackFrame);
-    end
-    else if Output[I] = 'frame-function-name' then
-    begin
-      Inc(I);
-      StackFrame^.FuncName := Output[I]; 
-    end
-    else if Output[I] = 'frame-args' then
-    begin
-      Inc(I);
-
-      //Make sure it's valid
-      if Output[I] <> ' (' then
-      begin
-        Inc(I);
-        Continue;
-      end
-      else
-        Inc(I);
-
-      while (I < Output.Count - 6) do
-      begin
-        if Output[I] = 'arg-begin' then
-        begin
-          if StackFrame^.Args <> '' then
-            StackFrame^.Args := StackFrame^.Args + ', ';
-          StackFrame^.Args := StackFrame^.Args + Output[I + 1] + ' = ' + Output[I + 5];
-        end;
-        Inc(I, 6);
-
-        //Do we stop?
-        if Trim(Output[I + 1]) <> ',' then
-          Break
-        else
-          Inc(I, 2);
-      end;
-    end
-    else if Output[I] = 'frame-source-file' then
-    begin
-      Inc(I);
-      StackFrame^.Filename := Output[I];
-    end
-    else if Output[I] = 'frame-source-line' then
-    begin
-      Inc(I);
-      StackFrame^.Line := StrToInt(Output[I]);
-    end;
-    Inc(I);
-  end;
-
-  //Now that we have the entire callstack loaded into our list, call the function
-  //that wants it
-  if Assigned(TDebugger(Self).OnCallStack) then
-    TDebugger(Self).OnCallStack(CallStack);
-
-  //Do we show the new execution point?
-  if JumpToCurrentLine then
-  begin
-    JumpToCurrentLine := False;
-    MainForm.GotoTopOfStackTrace;
-  end;
-
-  //Clean up
-  RegExp.Free;
-  CallStack.Free;
-end;
-
-procedure TGDBDebugger.OnLocals(Output: TStringList);
-var
-  I: Integer;
-  RegExp: TRegExpr;
-  Local: PVariable;
-  Locals: TList;
-
-  function SynthesizeIndent(Indent: Integer): string;
-  var
-    I: Integer;
-  begin
-    Result := '';
-    for I := 0 to Indent - 1 do
-      Result := Result + ' ';
-  end;
-
-  procedure RecurseArray(Indent: Integer; var I: Integer); forward;
-  procedure RecurseStructure(Indent: Integer; var I: Integer);
-  begin
-    while I < Output.Count - 4 do
-      if Output[I] = '}' then
-        Exit
-      else if Pos('{', Output[I + 4]) <> 1 then
-      begin
-        New(Local);
-        Locals.Add(Local);
-        with Local^ do
-        begin
-          Name := SynthesizeIndent(Indent) + Output[I];
-          Value := Output[I + 4];
-        end;
-
-        Inc(I, 6);
-        if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
-          Inc(I, 2);
-      end
-      else
-      begin
-        New(Local);
-        Locals.Add(Local);
-        with Local^ do
-        begin
-          Name := SynthesizeIndent(Indent) + Output[I];
-          Value := '';
-        end;
-        
-        Inc(I, 6);
-        if Pos('array-section-begin', Output[I - 1]) = 1 then
-          RecurseArray(Indent + 4, I)
-        else
-          RecurseStructure(Indent + 4, I);
-
-        Inc(I, 2);
-        if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
-          Inc(I, 2);
-      end;
-  end;
-
-  procedure RecurseArray(Indent: Integer; var I: Integer);
-  var
-    Count: Integer;
-  begin
-    Count := 0;
-    while (I < Output.Count - 2) do
-    begin
-      if Output[I] = '}' then
-        Break
-      else if Pos(',', Output[I]) = 1 then
-        Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
-
-      if Pos('{', Output[I]) = 1 then
-      begin
-        New(Local);
-        Locals.Add(Local);
-        with Local^ do
-          Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
-        
-        Inc(I, 2);
-        RecurseStructure(Indent + 4, I);
-      end
-      else if (Trim(Output[I]) <> '') and (Output[I] <> 'array-section-end') then
-      begin
-        New(Local);
-        Locals.Add(Local);
-        with Local^ do
-        begin
-          Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
-          Value := Output[I];
-        end;
-      end
-      else
-      begin
-        Inc(I);
-        Continue;
-      end;
-
-      Inc(Count);
-      Inc(I, 2);
-    end;
-  end;
-begin
-  RegExp := TRegExpr.Create;
-  Locals := TList.Create;
-
-  I := 0;
-  while I < Output.Count do
-  begin
-    if RegExp.Exec(Output[I], '(.*) = (.*)') then
-    begin
-      New(Local);
-      Locals.Add(Local);
-      
-      if RegExp.Substitute('$2') = '{' then
-      begin
-        with Local^ do
-        begin
-          Name := RegExp.Substitute('$1');
-          Value := '';
-        end;
-
-        Inc(I, 2);
-        //Determine if it is a structure of an array
-        if Pos('array-section-begin', Output[I - 1]) = 1 then
-          RecurseArray(4, I)
-        else
-          RecurseStructure(4, I);
-      end
-      else
-      begin
-        //Fill the fields
-        with Local^ do
-        begin
-          Name := RegExp.Substitute('$1');
-          Value := RegExp.Substitute('$2');
-        end;
-      end;
-    end;
-    Inc(I);
-  end;
-
-  //Pass the locals list to the callback function that wants it
-  if Assigned(TDebugger(Self).OnLocals) then
-    TDebugger(Self).OnLocals(Locals);
-
-  //Clean up
-  Locals.Free;
-  RegExp.Free;
-end;
-
-procedure TGDBDebugger.OnThreads(Output: TStringList);
-var
-  I: Integer;
-  RegExp: TRegExpr;
-  Thread: PDebuggerThread;
-  Threads: TList;
-begin
-  RegExp := TRegExpr.Create;
-  Threads := TList.Create;
-
-  for I := 0 to Output.Count - 1 do
-    if RegExp.Exec(Output[I], '(\**)( +)([0-9]+)( +)thread ([0-9a-fA-F]*).0x([0-9a-fA-F]*)') then
-    begin
-      New(Thread);
-      Threads.Insert(0, Thread);
-
-      with Thread^ do
-      begin
-        Active := RegExp.Substitute('$1') = '*';
-        Index := RegExp.Substitute('$3');
-        ID := RegExp.Substitute('$5.$6');
-      end;
-    end;
-
-  //Call the callback function to list the threads
-  if Assigned(TDebugger(Self).OnThreads) then
-    TDebugger(Self).OnThreads(Threads);
-
-  Threads.Free;
-  RegExp.Free;
-end;
-
-procedure TGDBDebugger.GetRegisters;
-var
-  Command: TCommand;
-begin
-  if (not Executing) or (not Paused) then
-    Exit;
-
-  RegistersFilled := 0;
-  Registers := TRegisters.Create;
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $eax';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $ebx';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $ecx';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $edx';
-  Command.OnResult := OnRegisters;
-
-  QueueCommand(Command);
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $esi';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $edi';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $ebp';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $esp';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $eip';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $cs';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $ds';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $ss';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $es';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $fs';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $gs';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-
-  Command := TCommand.Create;
-  Command.Command := 'displ/x $eflags';
-  Command.OnResult := OnRegisters;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.OnRegisters(Output: TStringList);
-var
-  I: Integer;
-  Reg: String;
-  RegExp: TRegExpr;
-begin
-  RegExp := TRegExpr.Create;
-
-  I := 0;
-  while I < Output.Count do
-  begin
-    if Output[I] = ' = ' then
-    begin
-      Inc(I, 2);
-
-      //Determine the register
-      if RegExp.Exec(CurrentCommand.Command, 'displ/x \$(.*)') then
-      begin
-        Inc(RegistersFilled);
-        Reg := Trim(RegExp.Substitute('$1'));
-        if Reg = 'eax' then
-          Registers.EAX := Output[I]
-        else if Reg = 'ebx' then
-          Registers.EBX := Output[I]
-        else if Reg = 'ecx' then
-          Registers.ECX := Output[I]
-        else if Reg = 'edx' then
-          Registers.EDX := Output[I]
-        else if Reg = 'esi' then
-          Registers.ESI := Output[I]
-        else if Reg = 'edi' then
-          Registers.EDI := Output[I]
-        else if Reg = 'ebp' then
-          Registers.EBP := Output[I]
-        else if Reg = 'eip' then
-          Registers.EIP := Output[I]
-        else if Reg = 'esp' then
-          Registers.ESP := Output[I]
-        else if Reg = 'cs' then
-          Registers.CS := Output[I]
-        else if Reg = 'ds' then
-          Registers.DS := Output[I]
-        else if Reg = 'ss' then
-          Registers.SS := Output[I]
-        else if Reg = 'es' then
-          Registers.ES := Output[I]
-        else if Reg = 'fs' then
-          Registers.FS := Output[I]
-        else if Reg = 'gs' then
-          Registers.GS := Output[I]
-        else if Reg = 'eflags' then
-          Registers.EFLAGS := Output[I]
-        else
-          Dec(RegistersFilled);
-      end;
-    end;
-    Inc(I);
-  end;
-
-  //Pass the locals list to the callback function that wants it
-  if (RegistersFilled = 16) and Assigned(TDebugger(Self).OnRegisters) then
-  begin
-    TDebugger(Self).OnRegisters(Registers);
-    Registers.Free;
-  end;
-
-  //Clean up
-  RegExp.Free;
-end;
-
-procedure TGDBDebugger.Disassemble(func: string);
-var
-  Command: TCommand;
-begin
-  if (not Executing) or (not Paused) then
-    Exit;
-
-  Command := TCommand.Create;
-  Command.Command := 'disas ' + func;
-  Command.OnResult := OnDisassemble;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.OnDisassemble(Output: TStringList);
-begin
-  //Delete the first and last entries (Dump of assembler code for function X and End Dump)
-  if (Output.Count > 0) then
-  begin
-     Output.Delete(Output.Count - 1);
-     Output.Delete(0);
-  end;
-
-  //Pass the disassembly to the callback function that wants it
-  if Assigned(TDebugger(Self).OnDisassemble) then
-    TDebugger(Self).OnDisassemble(Output.Text);
-end;
-
-procedure TGDBDebugger.SetAssemblySyntax(syntax: AssemblySyntax);
-begin
-  case syntax of
-   asIntel: QueueCommand('-gdb-set disassembly-flavor', 'intel');
-   asATnT:  QueueCommand('-gdb-set disassembly-flavor', 'att');
-  end;
-end;
-
-function TGDBDebugger.GetVariableHint(name: string): string;
-var
-  Command: TCommand;
-begin
-  if (not Executing) or (not Paused) then
-    Exit;
-
-  Command := TCommand.Create;
-  Command.OnResult := OnVariableHint;
-  //Command.Command := 'print ' + name;
-  Command.Command := '-data-evaluate-expression ' + name;
-
-  //Send the command;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.OnVariableHint(Output: TStringList);
-begin
-  //Call the callback
-  if Assigned(TDebugger(Self).OnVariableHint) then
-    TDebugger(Self).OnVariableHint(Output[0]);
-end;
-
-procedure TGDBDebugger.Go;
-var
-  Command: TCommand;
-begin
-  Command := TCommand.Create;
-  if not Started then
-    Command.Command := '-exec-run'
-  else
-    Command.Command := '-exec-continue';
-  Command.Callback := OnGo;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.OnGo;
-begin
-  inherited;
-  Started := True;
-end;
-
-procedure TGDBDebugger.Next;
-var
-  Command: TCommand;
-begin
-  Command := TCommand.Create;
-  Command.Command := '-exec-next';
-  Command.Callback := OnTrace;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.Step;
-var
-  Command: TCommand;
-begin
-  Command := TCommand.Create;
-  Command.Command := '-exec-step';
-  Command.Callback := OnTrace;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.Finish;
-var
-  Command: TCommand;
-begin
-  Command := TCommand.Create;
-  Command.Command := devData.DebugCommand;   // -exec-finish
-  Command.Callback := OnTrace;
-  QueueCommand(Command);
-end;
-
-procedure TGDBDebugger.OnTrace;
-begin
-  JumpToCurrentLine := True;
-  fPaused := False;
-  fBusy := False;
-end;
-
-procedure TGDBDebugger.Pause;
-begin
-  //Do nothing. GDB does not support break-ins.
-end;
-
-procedure TGDBDebugger.SetThread(thread: Integer);
-begin
-  QueueCommand('-thread-select ', IntToStr(thread));
-  RefreshContext;
-end;
-
-procedure TGDBDebugger.SetContext(frame: Integer);
-begin
-  QueueCommand('-stack-select-frame ', IntToStr(frame));
   RefreshContext([cdLocals, cdWatches]);
 end;
 
