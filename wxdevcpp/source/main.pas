@@ -1098,7 +1098,7 @@ type
 
   public
     fProject: TProject;
-    fDebugger: TDebugger;
+    fDebugger: TGDBDebugger;
     CacheCreated: Boolean;
     frmProjMgrDock: TForm;
     defaultHelpF1: Boolean;
@@ -4890,16 +4890,17 @@ begin
       Initialize;
     end;
   end
-  else if devCompiler.CompilerType in ID_COMPILER_VC then
+{  else if devCompiler.CompilerType in ID_COMPILER_VC then
   begin
     if not (fDebugger is TCDBDebugger) then
     begin
       if Assigned(fDebugger) then
         fDebugger.Free;
+}
 {$WARNINGS OFF 'Instance of TCDBDebugger containing abstract method...'}
-      fDebugger := TCDBDebugger.Create;
+//      fDebugger := TCDBDebugger.Create;
 {$WARNINGS ON}
-      Initialize;
+{      Initialize;
     end;
   end
   else if devCompiler.CompilerType = ID_COMPILER_DMARS then
@@ -4908,12 +4909,13 @@ begin
     begin
       if Assigned(fDebugger) then
         fDebugger.Free;
+        }
 {$WARNINGS OFF 'Instance of TCDBDebugger containing abstract method...'}
-      fDebugger := TCDBDebugger.Create;
+ //     fDebugger := TCDBDebugger.Create;
 {$WARNINGS ON}
-      Initialize;
-    end;
-  end;
+//      Initialize;
+//    end;
+//  end;
 
 end;
 
@@ -5122,8 +5124,8 @@ end;
 
 procedure TMainForm.actPauseDebugUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := fDebugger.Executing and not fDebugger.Paused and
-    (fDebugger is TCDBDebugger);
+  (Sender as TAction).Enabled := fDebugger.Executing and not fDebugger.Paused ; //and
+    //(fDebugger is TCDBDebugger);
 end;
 
 procedure TMainForm.actEnviroOptionsExecute(Sender: TObject);

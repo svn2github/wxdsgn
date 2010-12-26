@@ -21,7 +21,7 @@
 
 unit debugger;
 
-//{$DEFINE DISPLAYOUTPUT}       // enable general progress output for debugging
+{$DEFINE DISPLAYOUTPUT}       // enable general progress output for debugging
 //{$DEFINE DISPLAYOUTPUTHEX}    // enable debugging display of GDB output
                                 //  in 'HEX Editor' style
 
@@ -585,7 +585,7 @@ begin
         begin
           Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
           //gui_critSect.Enter();               // Maybe needed while debugging
-          debug.AddtoDisplay(Buffer);
+          MainForm.fDebugger.AddToDisplay(Buffer);
           //gui_critSect.Leave();               // Maybe needed while debugging
         end;
 {$ENDIF}
@@ -600,7 +600,7 @@ begin
 {$ifdef DISPLAYOUTPUT}
             Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
             // gui_critSect.Enter();               // Maybe needed while debugging
-            AddtoDisplay(Buffer);
+            MainForm.fDebugger.AddtoDisplay(Buffer);
             // gui_critSect.Leave();               // Maybe needed while debugging
 {$endif}
             if (LastRead > 0)then              // The number of bytes read
@@ -618,7 +618,7 @@ begin
 //             run the Parser and all that follows in the main thread.
 
               bytesInBuffer := LastRead;
-              //Synchronize(FirstParse);
+              Synchronize(MainForm.fDebugger.FirstParse);
             end;
           end;  // of Readfile
         except
@@ -757,12 +757,12 @@ begin
     Reader := nil;
 
     //Close the handles
-    if (not CloseHandle(hPid)) then
-      DisplayError('CloseHandle - process handle');
-    if (not CloseHandle(hOutputRead)) then
-      DisplayError('CloseHandle - output read');
-    if (not CloseHandle(hInputWrite)) then
-      DisplayError('CloseHandle - input write');
+ //   if (not CloseHandle(hPid)) then
+//      DisplayError('CloseHandle - process handle');
+  //  if (not CloseHandle(hOutputRead)) then
+ //     DisplayError('CloseHandle - output read');
+//    if (not CloseHandle(hInputWrite)) then
+ //     DisplayError('CloseHandle - input write');
 
     MainForm.RemoveActiveBreakpoints;
 
