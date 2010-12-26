@@ -1098,7 +1098,7 @@ type
 
   public
     fProject: TProject;
-    fDebugger: TGDBDebugger;
+    fDebugger: TDebugger;
     CacheCreated: Boolean;
     frmProjMgrDock: TForm;
     defaultHelpF1: Boolean;

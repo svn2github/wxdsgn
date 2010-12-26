@@ -22,7 +22,7 @@
 unit debugger;
 
 {$DEFINE DISPLAYOUTPUT}       // enable general progress output for debugging
-//{$DEFINE DISPLAYOUTPUTHEX}    // enable debugging display of GDB output
+{$DEFINE DISPLAYOUTPUTHEX}    // enable debugging display of GDB output
                                 //  in 'HEX Editor' style
 
 interface
@@ -585,7 +585,7 @@ begin
         begin
           Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
           //gui_critSect.Enter();               // Maybe needed while debugging
-          MainForm.fDebugger.AddToDisplay(Buffer);
+          TGDBDebugger(MainForm.fDebugger).AddToDisplay(Buffer);
           //gui_critSect.Leave();               // Maybe needed while debugging
         end;
 {$ENDIF}
@@ -600,7 +600,7 @@ begin
 {$ifdef DISPLAYOUTPUT}
             Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
             // gui_critSect.Enter();               // Maybe needed while debugging
-            MainForm.fDebugger.AddtoDisplay(Buffer);
+            TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
             // gui_critSect.Leave();               // Maybe needed while debugging
 {$endif}
             if (LastRead > 0)then              // The number of bytes read
@@ -618,7 +618,7 @@ begin
 //             run the Parser and all that follows in the main thread.
 
               bytesInBuffer := LastRead;
-              Synchronize(MainForm.fDebugger.FirstParse);
+              Synchronize(TGDBDebugger(MainForm.fDebugger).FirstParse);
             end;
           end;  // of Readfile
         except
@@ -5623,6 +5623,54 @@ begin
   QueueCommand('.frame', IntToStr(frame));
   RefreshContext([cdLocals, cdWatches]);
 end;
+
+{$IFDEF DISPLAYOUTPUTHEX}
+{*
+ * This is a debugging display
+ * Turn on only for development or fault-finding.
+ *
+}
+procedure HexDisplay(buf: PChar; LastRead: DWORD);
+var
+  Buffer: String;
+  CBuffer: String;
+  i, j: DWORD;
+
+begin
+  Buffer := 'Bytes actually read: ' + IntToStr(LastRead);
+	TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
+	Buffer := '';
+	TGDBDebugger(MainForm.fDebugger).AddtoDisplay(buf);
+	i := 0;
+  repeat
+    for j := 0 to 15 do
+		begin
+      if ((buf[i+j] = CR) or (buf[i+j] = LF)) then
+        CBuffer := '   '
+      else
+        CBuffer := ' ' + buf[i+j] + ' ';
+			Buffer := Buffer + CBuffer;
+      if (i+j >= LastRead) then
+        break;
+		end;
+		Buffer := Buffer;
+		TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
+		Buffer := '';
+		for j:=0 to 15 do
+		begin
+			CBuffer := ' ' + IntToHex(Ord(buf[i+j]), 2);
+			Buffer := Buffer + CBuffer;
+      if (i+j >= LastRead) then
+        break;
+		end;
+		Buffer := Buffer;
+		TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
+		Buffer := '';
+    i := i+16;
+  until (i >= LastRead);
+end;
+
+{$endif}
 
 initialization
   Breakpoints := TList.Create;
