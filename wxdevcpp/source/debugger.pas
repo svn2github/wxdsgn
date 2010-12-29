@@ -28,33 +28,31 @@ unit debugger;
 interface
 
 uses
-    Sysutils, Classes, //debugwait,
-    version, editor
-{$IFDEF WIN32}
-    ,Windows, ShellAPI, Dialogs, Controls, ComCtrls
-{$ENDIF}
-{$IFDEF LINUX}
-    ,QDialogs, QControls, QComCtrls
-{$ENDIF}
-    ;
+    Classes, editor, Sysutils, version
+    {$IFDEF WIN32}
+    , ComCtrls, Controls, Dialogs, ShellAPI, Windows
+    {$ENDIF}
+    {$IFDEF LINUX}
+    , QComCtrls, QControls, QDialogs
+    {$ENDIF};
 
 var
     //output from GDB
     running: boolean = false;       // result of status messages
     verbose: boolean = true;
-    gui_critSect:  TRTLCriticalSection;    // Why do we need this? Once the pipe
+    gui_critSect: TRTLCriticalSection;
+    // Why do we need this? Once the pipe
     // has been read, all processing is in
     // the Main Thread anyway!!!
     // Answer: Only when using debugging display
     // - and then there's little chance of conflict!
 
-    Send_critSect: TRTLCriticalSection;    // Not sure this is necessary either...
+    Send_critSect: TRTLCriticalSection;
+    // Not sure this is necessary either...
     //  we WRITE from only one place,
     //  we have our own handshake?
 
-
     // Globals for the Reader buffer data
-
     bytesInBuffer: DWORD;   // Number of unprocessed bytes
     buf: PChar;             // The main buffer into which data is read
 
@@ -62,7 +60,7 @@ var
 {$IFDEF DISPLAYOUTPUTHEX}
 // (Global because it is a useful data analysis tool).
 procedure HexDisplay(buf: PChar; LastRead: DWORD);
-{$endif}
+{$ENDIF}
 
 // These don't really belong in T(GDB)Debugger
 function AnsiBeforeFirst(Sub: String; Target: String): String;
@@ -70,57 +68,60 @@ function AnsiAfterFirst(Sub: String; Target: String): String;
 function AnsiAfterLast(Sub: String; Target: String): String;
 function AnsiFindLast(Src: String; Target: String): Integer;
 function AnsiLeftStr(const AText: string; ACount: Integer): string;
-function AnsiMidStr(const AText: string; const AStart, ACount: Integer): string;
+function AnsiMidStr(const AText: string;
+                    const AStart, ACount: Integer): string;
 function AnsiRightStr(const AText: string; ACount: Integer): string;
 
-const GDBPrompt    : String = '(gdb)';
-const GDBerror     : String = 'error,';
-const GDBdone      : String = 'done,';
-const GDBaddr      : String = 'addr=';
-const GDBbkpt      : String = 'bkpt={';
-const GDBbkptno    : String = 'bkptno';
-const GDBbkpttable : String = 'BreakpointTable={';
-const GDBbody      : String = 'body=[';
-const GDBcurthread : String = 'current-thread-id';
-const GDBexp       : String = 'exp=';
-const GDBExit      : String = '-gdb-exit';
-const GDBExitmsg   : String = 'exit';
-const GDBfile      : String = 'file';
-const GDBframe     : String = 'frame={';
-const GDBfunc      : String = 'func';
-const GDBid        : String = 'id';
-const GDBlevel     : String = 'level';
-const GDBlocals    : String = 'locals=[';
-const GDBline      : String = 'line';
-const GDBnr_rows   : String = 'nr_rows';
-const GDBname      : String = 'name';
-const GDBnameq     : String = 'name=';
-const GDBnew       : String = 'new';
-const GDBnumber    : String = 'number';
-const GDBold       : String = 'old';
-const GDBorig_loc  : String = 'original-location=';
-const GDBreason    : String = 'reason=';
-const GDBrunning   : String = 'running';
-const GDBstack     : String = 'stack=[';
-const GDBstopped   : String = 'stopped';
-const GDBthreadid  : String = 'thread-id';
-const GDBthreads   : String = 'threads=';
-const GDBtype      : String = 'type';
-const GDBvalue     : String = 'value';
-const GDBvalueq    : String = 'value={';
-const GDBwhat      : String = 'what=';
-const GDBwpt       : String = 'wpt=';
-const GDBwpta      : String = 'hw-awpt=';
-const GDBwptr      : String = 'hw-rwpt=';
-const GDBqStrEmpty : String = '\"';
-const wxStringBase : String = '<wxStringBase>';
+const GDBPrompt: String = '(gdb)';
+const GDBerror: String = 'error,';
+const GDBdone: String = 'done,';
+const GDBaddr: String = 'addr=';
+const GDBbkpt: String = 'bkpt={';
+const GDBbkptno: String = 'bkptno';
+const GDBbkpttable: String = 'BreakpointTable={';
+const GDBbody: String = 'body=[';
+const GDBcurthread: String = 'current-thread-id';
+const GDBexp: String = 'exp=';
+const GDBExit: String = '-gdb-exit';
+const GDBExitmsg: String = 'exit';
+const GDBfile: String = 'file';
+const GDBframe: String = 'frame={';
+const GDBfunc: String = 'func';
+const GDBid: String = 'id';
+const GDBlevel: String = 'level';
+const GDBlocals: String = 'locals=[';
+const GDBline: String = 'line';
+const GDBnr_rows: String = 'nr_rows';
+const GDBname: String = 'name';
+const GDBnameq: String = 'name=';
+const GDBnew: String = 'new';
+const GDBnumber: String = 'number';
+const GDBold: String = 'old';
+const GDBorig_loc: String = 'original-location=';
+const GDBreason: String = 'reason=';
+const GDBrunning: String = 'running';
+const GDBstack: String = 'stack=[';
+const GDBstopped: String = 'stopped';
+const GDBthreadid: String = 'thread-id';
+const GDBthreads: String = 'threads=';
+const GDBtype: String = 'type';
+const GDBvalue: String = 'value';
+const GDBvalueq: String = 'value={';
+const GDBwhat: String = 'what=';
+const GDBwpt: String = 'wpt=';
+const GDBwpta: String = 'hw-awpt=';
+const GDBwptr: String = 'hw-rwpt=';
+const GDBqStrEmpty: String = '\"';
+const wxStringBase: String = '<wxStringBase>';
 
-const ExpandClasses: Boolean = true;          // set to false to treat contents of classes as string constants
+const ExpandClasses: Boolean = true;
+// set to false to treat contents of classes as string constants
 
-const LF : Char = #10;
-const CR : Char = #13;
-const NL: String = #13+#10;
-const MAXSTACKDEPTH: Integer = 99;  // Arbitrary limit to the depth of stack that can
+const LF: Char = #10;
+const CR: Char = #13;
+const NL: String = #13 + #10;
+const MAXSTACKDEPTH: Integer = 99;
+// Arbitrary limit to the depth of stack that can
 // be displayed, to prevent an infinite loop.
 // The display gets silly and probably not useful
 // long before this. A sensible limit is around 10 - 20
@@ -130,7 +131,8 @@ const MAXSTACKDEPTH: Integer = 99;  // Arbitrary limit to the depth of stack tha
 
 type
     AssemblySyntax = (asATnT, asIntel);
-    ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly, cdRegisters);
+    ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads,
+        cdDisassembly, cdRegisters);
     ContextDataSet = set of ContextData;
     TCallback = procedure(Output: TStringList) of object;
 
@@ -240,6 +242,9 @@ type
         Result: TStringList;
     end;
 
+    ////////////////////////////////////
+    // TDebugger
+    /////////////////////////////////
     TDebugger = class
 
     public
@@ -250,7 +255,8 @@ type
         procedure Launch(commandline, startupdir: String); virtual;
         procedure Execute(filename, arguments: string); virtual; abstract;
         procedure DisplayError(s: string);
-        procedure CreateChildProcess(ChildCmd: String; StdIn: THandle; StdOut: THandle; StdErr: THandle);
+        procedure CreateChildProcess(ChildCmd: String;
+            StdIn: THandle; StdOut: THandle; StdErr: THandle);
         procedure QueueCommand(command, params: String); overload; virtual;
         procedure QueueCommand(command: TCommand); overload; virtual;
         procedure SendCommand; virtual;
@@ -273,7 +279,7 @@ type
         hInputWrite: THandle;
         hOutputRead: THandle;
         hPid: THandle;
-    
+
         SentCommand: Boolean;
         CurrentCommand: TCommand;
         CommandQueue: TList;
@@ -315,14 +321,15 @@ type
         //Debugger basics
         procedure Attach(pid: integer); virtual; abstract;
         procedure SetAssemblySyntax(syntax: AssemblySyntax); virtual; abstract;
-    
+
         //Breakpoint handling
         procedure AddBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
         procedure RemoveBreakpoint(breakpoint: TBreakpoint); virtual; abstract;
         procedure RemoveAllBreakpoints;
         procedure RefreshBreakpoints;
         procedure RefreshWatches; virtual; abstract;
-        procedure RefreshBreakpoint(var breakpoint: TBreakpoint); virtual; abstract;
+        procedure RefreshBreakpoint(var breakpoint: TBreakpoint);
+            virtual; abstract;
         function BreakpointExists(filename: string; line: integer): boolean;
 
         //Debugger control funtions
@@ -346,8 +353,11 @@ type
         procedure ClearIncludeDirs; virtual; abstract;
 
         //Variable watches
-        procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly]); virtual; abstract;
-        procedure AddWatch(varname: string; when: TWatchBreakOn); virtual; abstract;
+        procedure RefreshContext(refresh: ContextDataSet =
+            [cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly]);
+            virtual; abstract;
+        procedure AddWatch(varname: string; when: TWatchBreakOn);
+            virtual; abstract;
         procedure RemoveWatch(varname: string); virtual; abstract;
         procedure ModifyVariable(varname, newvalue: string); virtual; abstract;
 
@@ -356,6 +366,135 @@ type
         procedure Disassemble; overload;
         procedure Disassemble(func: string); overload; virtual; abstract;
     end;
+
+    ////////////////////////////////////
+    // TGDBDebugger
+    /////////////////////////////////
+    TGDBDebugger = class(TDebugger)
+
+        constructor Create; override;
+        destructor Destroy; override;
+
+    protected
+        OverrideHandler: TCallback;
+        RegistersFilled: Integer;
+        Registers: TRegisters;
+        LastWasCtrl: Boolean;
+        Started: Boolean;
+
+        // Pipe handles
+        g_hChildStd_IN_Wr: THandle;               //we write to this
+        g_hChildStd_IN_Rd: THandle;
+        //Child process reads from here
+        g_hChildStd_OUT_Wr: THandle;
+        //Child process writes to this
+        g_hChildStd_OUT_Rd: THandle;               //we read from here
+
+    protected
+        procedure OnOutput(Output: string); override;
+        procedure OnSignal(Output: TStringList);
+        procedure OnSourceMoreRecent;
+
+        //Instruction callbacks
+        procedure OnGo;
+        procedure OnTrace;
+
+        //Parser callbacks
+        procedure OnRefreshContext(Output: TStringList);
+        procedure OnVariableHint(Output: TStringList);
+        procedure OnDisassemble(Output: TStringList);
+        procedure OnCallStack(Output: TStringList);
+        procedure OnRegisters(Output: TStringList);
+        procedure OnThreads(Output: TStringList);
+        procedure OnLocals(Output: TStringList);
+        procedure OnWatchesSet(Output: TStringList);
+
+    public
+        //Debugger control
+        procedure Attach(pid: integer); override;
+        procedure CloseDebugger(Sender: TObject); override;
+
+        // Debugger virtual functions
+        procedure FirstParse; override;
+        procedure Exit; override;
+        procedure WriteToPipe(Buffer: String); override;
+        procedure AddToDisplay(Msg: String); override;
+
+        procedure Launch(commandline, startupdir: String);
+        procedure Execute(filename, arguments: string); override;
+
+        procedure Cleanup;
+        procedure SendCommand; override;
+        function SendToDisplay(buf: PChar; bsize: PLongInt;
+            verbose: Boolean): PChar;
+
+        //Set the include paths
+        procedure AddIncludeDir(s: string); override;
+        procedure ClearIncludeDirs; override;
+
+        //Override the breakpoint handling
+        procedure AddBreakpoint(breakpoint: TBreakpoint); override;
+        procedure RemoveBreakpoint(breakpoint: TBreakpoint); override;
+        procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
+        procedure RefreshWatches; override;
+
+        //Variable watches
+        procedure RefreshContext(refresh: ContextDataSet =
+            [cdLocals, cdCallStack, cdWatches,
+            cdThreads, cdDisassembly, cdRegisters]); override;
+        procedure AddWatch(varname: string; when: TWatchBreakOn); override;
+        procedure RemoveWatch(varname: string); override;
+        procedure ModifyVariable(varname, newvalue: string); override;
+
+        // Parser functions
+        function GetToken(buf: PChar; bsize: PLongInt;
+            Token: PInteger): PChar;
+        function FindFirstChar(Str: String; c: Char): Integer;
+        function Result(buf: PChar; bsize: PLongInt): PChar;
+        function ExecResult(buf: PChar; bsize: PLongInt): PChar;
+        function breakOut(Next: PPChar; bsize: PLongInt): String;
+        function ParseConst(Msg: PString; Vari: PString;
+            Value: PString): Boolean; overload;
+        function ParseConst(Msg: PString; Vari: PString;
+            Value: PInteger): Boolean; overload;
+        function ParseConst(Msg: PString; Vari: PString;
+            Value: PBoolean): Boolean; overload;
+        function ParseResult(Str: PString): String;
+        function SplitResult(Str: PString; Vari: PString): String;
+        function ExtractWxStr(Str: PString): String;
+        function ParseValue(Str: PString): String;
+        function ExtractList(Str: PString): String;
+        function ExtractBracketed(Str: PString; start: Pinteger;
+            next: PInteger; c: Char; inclusive: Boolean): String;
+        function ExtractNamed(Src: PString; Target: PString;
+            count: Integer): String;
+        procedure ParseWatchpoint(Msg: String);
+        procedure ParseBreakpoint(Msg: String);
+        procedure ParseBreakpointTable(Msg: String);
+        procedure ParseStack(Msg: String);
+        procedure ParseFrame(Msg: String);
+        procedure ParseThreads(Msg: String);
+        procedure WatchpointHit(Msg: PString);
+        procedure BreakpointHit(Msg: PString);
+        procedure StepHit(Msg: PString);
+
+        //Debugger control
+        procedure Go; override;
+        procedure Next; override;
+        procedure Step; override;
+        procedure Finish; override;
+        procedure Pause; override;
+        procedure SetThread(thread: Integer); override;
+        procedure SetContext(frame: Integer); override;
+        function GetVariableHint(name: string): string; override;
+
+        //Low-level stuff
+        procedure GetRegisters; override;
+        procedure Disassemble(func: string); overload; override;
+        procedure SetAssemblySyntax(syntax: AssemblySyntax); override;
+    end;
+
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     TCDBDebugger = class(TDebugger)
         constructor Create; override;
@@ -395,7 +534,8 @@ type
         procedure RefreshWatches; override;
 
         //Variable watches
-        procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches,
+        procedure RefreshContext(refresh: ContextDataSet =
+            [cdLocals, cdCallStack, cdWatches,
             cdThreads, cdDisassembly, cdRegisters]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
         procedure RemoveWatch(varname: string); override;
@@ -418,123 +558,6 @@ type
         //Low-level stuff
         procedure GetRegisters; override;
         procedure Disassemble(func: string); overload; override;
-    end;
-
-    ////////////////////////////////////
-    // TGDBDebugger
-    /////////////////////////////////
-    TGDBDebugger = class(TDebugger)
-
-        constructor Create; override;
-        destructor Destroy; override;
-
-    protected
-        OverrideHandler: TCallback;
-        RegistersFilled: Integer;
-        Registers: TRegisters;
-        LastWasCtrl: Boolean;
-        Started: Boolean;
-
-        // Pipe handles
-        g_hChildStd_IN_Wr:  THandle;               //we write to this
-        g_hChildStd_IN_Rd:  THandle;               //Child process reads from here
-        g_hChildStd_OUT_Wr: THandle;               //Child process writes to this
-        g_hChildStd_OUT_Rd: THandle;               //we read from here
-
-    protected
-        procedure OnOutput(Output: string); override;
-        procedure OnSignal(Output: TStringList);
-        procedure OnSourceMoreRecent;
-
-        //Instruction callbacks
-        procedure OnGo;
-        procedure OnTrace;
-
-        //Parser callbacks
-        procedure OnRefreshContext(Output: TStringList);
-        procedure OnVariableHint(Output: TStringList);
-        procedure OnDisassemble(Output: TStringList);
-        procedure OnCallStack(Output: TStringList);
-        procedure OnRegisters(Output: TStringList);
-        procedure OnThreads(Output: TStringList);
-        procedure OnLocals(Output: TStringList);
-        procedure OnWatchesSet(Output: TStringList);
-
-    public
-        //Debugger control
-        procedure Attach(pid: integer); override;
-        procedure CloseDebugger(Sender: TObject); override;
-
-        // Debugger virtual functions
-        procedure FirstParse; override;
-        procedure Exit; override;
-        procedure WriteToPipe(Buffer: String); override;
-        procedure AddToDisplay(Msg: String); override;
-
-        procedure Launch(commandline, startupdir: String);
-        procedure Execute(filename, arguments: string);  override;
-
-        procedure Cleanup;
-        procedure SendCommand; override;
-        function  SendToDisplay(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
-
-        //Set the include paths
-        procedure AddIncludeDir(s: string); override;
-        procedure ClearIncludeDirs; override;
-
-        //Override the breakpoint handling
-        procedure AddBreakpoint(breakpoint: TBreakpoint); override;
-        procedure RemoveBreakpoint(breakpoint: TBreakpoint); override;
-        procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
-        procedure RefreshWatches; override;
-
-        //Variable watches
-        procedure RefreshContext(refresh: ContextDataSet = [cdLocals, cdCallStack, cdWatches,
-            cdThreads, cdDisassembly, cdRegisters]); override;
-        procedure AddWatch(varname: string; when: TWatchBreakOn); override;
-        procedure RemoveWatch(varname: string); override;
-        procedure ModifyVariable(varname, newvalue: string); override;
-
-        // Parser functions
-        function  GetToken(buf: PChar;  bsize: PLongInt; Token: PInteger) : PChar;
-        function  FindFirstChar(Str: String; c: Char): Integer;
-        function  Result(buf: PChar; bsize: PLongInt): PChar;
-        function  ExecResult(buf: PChar; bsize: PLongInt): PChar;
-        function  breakOut(Next: PPChar; bsize: PLongInt ): String;
-        function  ParseConst(Msg: PString; Vari: PString; Value: PString): Boolean; overload;
-        function  ParseConst(Msg: PString; Vari: PString; Value: PInteger): Boolean; overload;
-        function  ParseConst(Msg: PString; Vari: PString; Value: PBoolean): Boolean; overload;
-        function  ParseResult(Str: PString): String;
-        function  SplitResult(Str: PString; Vari: PString): String;
-        function  ExtractWxStr(Str: PString): String;
-        function  ParseValue(Str: PString): String;
-        function  ExtractList(Str: PString): String;
-        function  ExtractBracketed(Str: PString; start: Pinteger; next: PInteger; c: Char; inclusive: Boolean): String;
-        function  ExtractNamed(Src: PString; Target: PString; count: Integer): String;
-        procedure ParseWatchpoint(Msg: String);
-        procedure ParseBreakpoint(Msg: String);
-        procedure ParseBreakpointTable(Msg: String);
-        procedure ParseStack(Msg: String);
-        procedure ParseFrame(Msg: String);
-        procedure ParseThreads(Msg: String);
-        procedure WatchpointHit(Msg: PString);
-        procedure BreakpointHit(Msg: PString);
-        procedure StepHit(Msg: PString);
-
-        //Debugger control
-        procedure Go; override;
-        procedure Next; override;
-        procedure Step; override;
-        procedure Finish; override;
-        procedure Pause; override;
-        procedure SetThread(thread: Integer); override;
-        procedure SetContext(frame: Integer); override;
-        function GetVariableHint(name: string): string; override;
-
-        //Low-level stuff
-        procedure GetRegisters; override;
-        procedure Disassemble(func: string); overload; override;
-        procedure SetAssemblySyntax(syntax: AssemblySyntax); override;
     end;
 
 var
@@ -542,9 +565,10 @@ var
 
 implementation
 
-uses 
-    main, devcfg, MultiLangSupport, cpufrm, prjtypes, StrUtils, RegExpr, //dbugintf,  EAB removed Gexperts debug stuff.
-    madExcept, Forms, utils;
+uses
+    cpufrm, devcfg, Forms, madExcept, main, MultiLangSupport,
+    prjtypes, RegExpr, //dbugintf,  EAB removed Gexperts debug stuff.
+    StrUtils, utils;
 
 function RegexEscape(str: string): string;
 begin
@@ -559,7 +583,8 @@ end;
 procedure ReadThread.Execute;
 
 var
-    BufMem: PChar;           // The originally allocated memory (pointer 'buf' gets moved!)
+    BufMem: PChar;
+    // The originally allocated memory (pointer 'buf' gets moved!)
     BytesAvailable: DWORD;
     BytesToRead: DWORD;
     LastRead: DWORD;
@@ -580,9 +605,10 @@ begin
     begin
         Sleep(100);       // Give other processes some time
 
-        PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable, @BytesToRead);
+        PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable,
+            @BytesToRead);
         // Poll the pipe buffer
-        if ( (BytesAvailable > 0) and (buf = Nil)) then
+        if ((BytesAvailable > 0) and (buf = Nil)) then
             // Indicates data is available and
             // the buffer is unused or empty and can accept data.
             // When done, the handler must free the memory and
@@ -596,29 +622,35 @@ begin
         begin
 {$IFDEF DISPLAYOUTPUT}
             begin
-                Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
+                Buffer := 'PeekPipe bytes available: ' +
+                    IntToStr(BytesAvailable);
                 //gui_critSect.Enter();               // Maybe needed while debugging
                 TGDBDebugger(MainForm.fDebugger).AddToDisplay(Buffer);
                 //gui_critSect.Leave();               // Maybe needed while debugging
             end;
 {$ENDIF}
             try
-                BufMem := AllocMem(BytesAvailable+16);          // bump it up just to give some in hand
+                BufMem := AllocMem(BytesAvailable + 16);
+                // bump it up just to give some in hand
                 // in case we screw up the count!
                 // NOTE: WE do not free the memory
                 // but rely on it being freed externally.
                 buf := BufMem;
-                if (ReadFile(ReadChildStdOut, BufMem^, BytesAvailable, LastRead, Nil)) then
+                if (ReadFile(ReadChildStdOut, BufMem^,
+                    BytesAvailable, LastRead, Nil)) then
                 begin
 {$ifdef DISPLAYOUTPUT}
-                    Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
+                    Buffer :=
+                        'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
                     // gui_critSect.Enter();               // Maybe needed while debugging
                     TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
                     // gui_critSect.Leave();               // Maybe needed while debugging
 {$endif}
-                    if (LastRead > 0)then              // The number of bytes read
+                    if (LastRead > 0) then
+                        // The number of bytes read
                     begin
-                        buf[LastRead] := (#0);              // Terminate it, thus can handle as Cstring
+                        buf[LastRead] := (#0);
+                        // Terminate it, thus can handle as Cstring
 {$ifdef DISPLAYOUTPUTHEX}
 	                       // gui_critSect.Enter();               // Maybe needed while debugging
                         HexDisplay(buf, LastRead);
@@ -663,7 +695,8 @@ begin
     Str := AStr;
 end;
 
-function GenerateCtrlCEvent(PGenerateConsoleCtrlEvent: Pointer): DWORD; stdcall;
+function GenerateCtrlCEvent(PGenerateConsoleCtrlEvent: Pointer): DWORD;
+    stdcall;
 begin
     Result := 0;
     if PGenerateConsoleCtrlEvent <> nil then
@@ -709,7 +742,7 @@ end;
 destructor TDebugger.Destroy;
 begin
     if (buf <> Nil) then
-    begin FreeMem(buf) end;
+        FreeMem(buf);
 
     CloseDebugger(nil);
     CloseHandle(Event);
@@ -729,7 +762,7 @@ var
     I: integer;
 begin
     for I := 0 to Breakpoints.Count - 1 do
-    begin RemoveBreakpoint(Breakpoints[I]) end;
+        RemoveBreakpoint(Breakpoints[I]);
 end;
 
 //=============================================================
@@ -740,7 +773,7 @@ var
 begin
     //Refresh the execution breakpoints
     for I := 0 to Breakpoints.Count - 1 do
-    begin RefreshBreakpoint(PBreakPoint(Breakpoints.Items[I])^) end;
+        RefreshBreakpoint(PBreakPoint(Breakpoints.Items[I])^);
 end;
 
 //=============================================================
@@ -796,7 +829,7 @@ begin
     //Combine the strings to get the final command
     Combined := command;
     if Length(params) > 0 then
-    begin Combined := Combined + ' ' + params end;
+        Combined := Combined + ' ' + params;
 
     //Create the command object
     Cmd := TCommand.Create;
@@ -821,7 +854,7 @@ begin
 
     //Can we execute the command now?
     if Executing and Paused then
-    begin SendCommand end;
+        SendCommand;
 end;
 
 //=============================================================
@@ -871,12 +904,12 @@ var
 begin
 
     // Set up members of the PROCESS_INFORMATION structure.
-    ZeroMemory( @piProcInfo, SizeOf(PROCESS_INFORMATION) );
+    ZeroMemory(@piProcInfo, SizeOf(PROCESS_INFORMATION));
 
     // Set up members of the STARTUPINFO structure.
     // This structure specifies the STDIN and STDOUT handles for redirection.
 
-    ZeroMemory( @siStartInfo, sizeof(STARTUPINFO) );
+    ZeroMemory(@siStartInfo, sizeof(STARTUPINFO));
     siStartInfo.cb := SizeOf(STARTUPINFO);
     siStartInfo.hStdError := StdErr;
     siStartInfo.hStdOutput := StdOut;
@@ -902,8 +935,8 @@ begin
         piProcInfo);              // receives PROCESS_INFORMATION
 
     // If an error occurs, exit the application.
-    if ( not bSuccess ) then
-    begin DisplayError('Cannot create process: '+ ChildCmd) end
+    if (not bSuccess) then
+        DisplayError('Cannot create process: ' + ChildCmd)
     // WARNING ! ! ! Delphi gives a Thread error: The handle is invalid (6)
     //               if the child's _Command Line_ is invalid  ! ! !
     else
@@ -923,7 +956,8 @@ end;
 
 procedure TDebugger.DisplayError(s: string);
 begin
-    MessageDlg('Error with debugging process: ' + s, mtError, [mbOK], Mainform.Handle);
+    MessageDlg('Error with debugging process: ' + s, mtError,
+        [mbOK], Mainform.Handle);
 end;
 
 //=============================================================
@@ -936,19 +970,22 @@ var
     opts: TProjProfile;
 begin
 
-    if MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation,
+        [mbYes, mbNo], 0) = mrYes then
     begin
         CloseDebugger(nil);
-        if ( (devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX) ) then
+        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
         begin
 
             if devCompiler.FindOption('-g3', opt, idx) then
             begin
                 opt.optValue := 1;
                 if not Assigned(MainForm.fProject) then
-                begin devCompiler.Options[idx] := opt end; // set global debugging option only if not working with a project
-                MainForm.SetProjCompOpt(idx, True); // set the project's correpsonding option too
+                    devCompiler.Options[idx] := opt;
+                // set global debugging option only if not working with a project
+                MainForm.SetProjCompOpt(idx, True);
+                // set the project's correpsonding option too
 
                 // remove "-s" from the linker''s command line
                 if Assigned(MainForm.fProject) then
@@ -959,16 +996,19 @@ begin
                     //       some other option starting with "-s...."
                     spos := Pos('-s ', opts.Linker); // following more opts
                     if spos = 0 then
-                    begin spos := Pos('-s'#13, opts.Linker) end; // end of line
+                        spos := Pos('-s'#13, opts.Linker); // end of line
                     if spos = 0 then
-                    begin spos := Pos('-s_@@_', opts.Linker) end; // end of line (dev 4.9.7.3+)
-                    if (spos = 0) and (Length(opts.Linker) >= 2) and // end of string
-                        (Copy(opts.Linker, Length(opts.Linker) - 1, 2) = '-s') then
-                    begin spos := Length(opts.Linker) - 1 end;
+                        spos := Pos('-s_@@_', opts.Linker);
+                    // end of line (dev 4.9.7.3+)
+                    if (spos = 0) and (Length(opts.Linker) >= 2) and
+                        // end of string
+                        (Copy(opts.Linker, Length(opts.Linker) - 1, 2) =
+                        '-s') then
+                        spos := Length(opts.Linker) - 1;
 
                     // if found, delete it
                     if spos > 0 then
-                    begin Delete(opts.Linker, spos, 2) end;
+                        Delete(opts.Linker, spos, 2);
 
                 end;
 
@@ -977,10 +1017,12 @@ begin
                 begin
                     opts := MainForm.fProject.CurrentProfile;
                     // look for "--no-export-all-symbols"
-                    spos := Pos('--no-export-all-symbols', opts.Linker); // following more opts
+                    spos := Pos('--no-export-all-symbols', opts.Linker);
+                    // following more opts
                     // if found, delete it
                     if spos > 0 then
-                    begin Delete(opts.Linker, spos, length('--no-export-all-symbols')) end;
+                        Delete(opts.Linker, spos,
+                            length('--no-export-all-symbols'));
 
                 end;
 
@@ -989,23 +1031,24 @@ begin
                 begin
                     opt.optValue := 0;
                     if not Assigned(MainForm.fProject) then
-                    begin devCompiler.Options[idx] := opt end; // set global debugging option only if not working with a project
-                    MainForm.SetProjCompOpt(idx, False); // set the project's correpsonding option too
+                        devCompiler.Options[idx] := opt;
+                    // set global debugging option only if not working with a project
+                    MainForm.SetProjCompOpt(idx, False);
+                    // set the project's correpsonding option too
                 end;
             end;
         end
         else
         if devCompiler.CompilerType in ID_COMPILER_VC then
-        begin
             if devCompiler.FindOption('/ZI', opt, idx) then
             begin
                 opt.optValue := 1;
                 if not Assigned(MainForm.fProject) then
-                begin devCompiler.Options[idx] := opt end;
+                    devCompiler.Options[idx] := opt;
                 MainForm.SetProjCompOpt(idx, True);
-                MainForm.fProject.CurrentProfile.Linker := MainForm.fProject.CurrentProfile.Linker + '/Debug';
+                MainForm.fProject.CurrentProfile.Linker :=
+                    MainForm.fProject.CurrentProfile.Linker + '/Debug';
             end;
-        end;
         MainForm.Compiler.OnCompilationEnded := MainForm.doDebugAfterCompile;
         MainForm.actRebuildExecute(nil);
     end;
@@ -1019,12 +1062,12 @@ var
 begin
     Result := False;
     for I := 0 to Breakpoints.Count - 1 do
-    begin if (PBreakpoint(Breakpoints[I])^.Filename = filename) and
+        if (PBreakpoint(Breakpoints[I])^.Filename = filename) and
             (PBreakpoint(Breakpoints[I])^.Line = line) then
         begin
             Result := true;
             Break;
-        end end;
+        end;
 end;
 
 //=============================================================
@@ -1035,11 +1078,11 @@ var
 begin
     Result := nil;
     for I := 0 to Breakpoints.Count - 1 do
-    begin if PBreakpoint(Breakpoints[I])^.Index = index then
+        if PBreakpoint(Breakpoints[I])^.Index = index then
         begin
             Result := PBreakpoint(Breakpoints[I])^;
             Exit;
-        end end;
+        end;
 end;
 
 //=============================================================
@@ -1047,13 +1090,14 @@ end;
 procedure TDebugger.OnAccessViolation;
 begin
     Application.BringToFront;
-    case MessageDlg(Lang[ID_MSG_SEGFAULT], mtError, [mbYes, mbNo, mbAbort], MainForm.Handle) of
+    case MessageDlg(Lang[ID_MSG_SEGFAULT], mtError, [mbYes, mbNo, mbAbort],
+            MainForm.Handle) of
         mrNo:
-        begin Go end;
+            Go;
         mrAbort:
-        begin CloseDebugger(nil) end;
+            CloseDebugger(nil);
         mrYes:
-        begin JumpToCurrentLine := True end;
+            JumpToCurrentLine := True;
     end;
 end;
 
@@ -1062,13 +1106,14 @@ end;
 procedure TDebugger.OnBreakpoint;
 begin
     Application.BringToFront;
-    case MessageDlg(Lang[ID_MSG_BREAKPOINT], mtError, [mbYes, mbNo, mbAbort], MainForm.Handle) of
+    case MessageDlg(Lang[ID_MSG_BREAKPOINT], mtError,
+            [mbYes, mbNo, mbAbort], MainForm.Handle) of
         mrNo:
-        begin Go end;
+            Go;
         mrAbort:
-        begin CloseDebugger(nil) end;
+            CloseDebugger(nil);
         mrYes:
-        begin JumpToCurrentLine := True end;
+            JumpToCurrentLine := True;
     end;
 end;
 
@@ -1087,14 +1132,18 @@ var
     BytesWritten, ThreadID, ExitCode: DWORD;
     WriteAddr: Pointer;
 begin
-    WriteAddr := VirtualAllocEx(hPid, nil, CodeSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    WriteAddr := VirtualAllocEx(hPid, nil, CodeSize, MEM_COMMIT,
+        PAGE_EXECUTE_READWRITE);
     if WriteAddr <> nil then
     begin
-        WriteProcessMemory(hPid, WriteAddr, @GenerateCtrlCEvent, CodeSize, BytesWritten);
+        WriteProcessMemory(hPid, WriteAddr, @GenerateCtrlCEvent,
+            CodeSize, BytesWritten);
         if BytesWritten = CodeSize then
         begin
             //Create and run the thread
-            Thread := CreateRemoteThread(hPid, nil, 0, WriteAddr, GetProcAddress(LoadLibrary('kernel32.dll'), 'GenerateConsoleCtrlEvent'), 0, ThreadID);
+            Thread := CreateRemoteThread(hPid, nil, 0, WriteAddr,
+                GetProcAddress(LoadLibrary('kernel32.dll'), 'GenerateConsoleCtrlEvent'),
+                0, ThreadID);
             if Thread <> 0 then
             begin
                 //Wait for its termination
@@ -1104,7 +1153,7 @@ begin
                 GetExitCodeThread(Thread, ExitCode);
                 if ExitCode <> 0 then
                     //We've triggered a breakpoint, so yes, ignore it
-                begin IgnoreBreakpoint := True end;
+                    IgnoreBreakpoint := True;
 
                 //Destroy the thread
                 CloseHandle(Thread);
@@ -1112,7 +1161,8 @@ begin
         end;
 
         //Free the memory we injected
-        VirtualFreeEx(hPid, WriteAddr, 0, MEM_RELEASE); // free the memory we allocated
+        VirtualFreeEx(hPid, WriteAddr, 0, MEM_RELEASE);
+        // free the memory we allocated
     end;
 end;
 
@@ -1121,7 +1171,8 @@ end;
 //------------------------------------------------------------------------------
 // TGDBDebugger
 //------------------------------------------------------------------------------
-function TGDBDebugger.ExtractNamed(Src: PString; Target: PString; count: Integer): String;
+function TGDBDebugger.ExtractNamed(Src: PString; Target: PString;
+    count: Integer): String;
 
     // Find count-th (ONE-based) occurrence of Target in Src
     //    e.g. it returns item={ListItem2} when called with
@@ -1153,23 +1204,23 @@ begin
 
 
     if (count = 0) then
-    begin ExtractNamed := Temp end
+        ExtractNamed := Temp
     else
     begin
 
         case (c) of
-            '{' :
-            begin m := '}' end;
-            '[' :
-            begin m := ']' end;
-            '"' :
-            begin m := '"' end;
+            '{':
+                m := '}';
+            '[':
+                m := ']';
+            '"':
+                m := '"';
         end;
         Temp := Src^;
         repeat
             begin
 
-                Temp := AnsiMidStr(Temp, e-s+1, Length(Temp)-e+s);
+                Temp := AnsiMidStr(Temp, e - s + 1, Length(Temp) - e + s);
                 s := AnsiPos(Target^, Temp);
                 if (s = 0) then
                 begin
@@ -1178,26 +1229,26 @@ begin
                     break; //  return Temp;
 
                 end;
-                e := s + TargetLength-1;
+                e := s + TargetLength - 1;
                 while (e <= Length(Temp)) do
                 begin
                     if (Temp[e] = c) then
-                    begin Inc(l) end
+                        Inc(l)
                     else
                     if (Temp[e] = m) then
                     begin
                         Dec(l);
                         if (l = 0) then
-                        begin break end;
+                            break;
                     end;
                     Inc(e);
                 end;
-                Temp := AnsiRightStr(Temp, Length(Temp) - s+1);
+                Temp := AnsiRightStr(Temp, Length(Temp) - s + 1);
                 Dec(count);
             end
-        until not(count > 0);
+        until not (count > 0);
 
-        Temp := AnsiMidStr(Temp, TargetLength+1, e-s-TargetLength);
+        Temp := AnsiMidStr(Temp, TargetLength + 1, e - s - TargetLength);
         ExtractNamed := Temp;
 
     end;
@@ -1206,7 +1257,8 @@ end;
 
 //=================================================================
 
-function TGDBDebugger.ParseConst(Msg: PString; Vari: PString; Value: PString): Boolean;
+function TGDBDebugger.ParseConst(Msg: PString; Vari: PString;
+    Value: PString): Boolean;
 {
    Parses out and obtains the value of one variable in a results string
    (Note: our variable must be unique within Msg)
@@ -1227,10 +1279,11 @@ begin
     // Find our Variable
     s := AnsiPos(Vari^, Msg^);
     if (s = 0) then
-    begin ParseConst := false end
+        ParseConst := false
     else
     begin
-        Sub := AnsiRightStr(Msg^, Length(Msg^)-s);              // Sub = OurVar="Value",....
+        Sub := AnsiRightStr(Msg^, Length(Msg^) - s);
+        // Sub = OurVar="Value",....
         Sub := ExtractBracketed(@Sub, Nil, Nil, '"', false);
         // Remove quotes
         Sub := AnsiDequotedStr(Sub, '"');
@@ -1241,13 +1294,14 @@ end;
 
 //-----------------------------------------------------------------
 
-function TGDBDebugger.ParseConst(Msg: PString; Vari: PString; Value: PInteger): Boolean;
+function TGDBDebugger.ParseConst(Msg: PString; Vari: PString;
+    Value: PInteger): Boolean;
 var
     Val: String;
 begin
 
     if (ParseConst(Msg, Vari, PString(@Val)) = false) then
-    begin ParseConst:= false end
+        ParseConst := false
     else
     begin
         Value^ := StrToInt(Val);
@@ -1257,19 +1311,20 @@ end;
 
 //-----------------------------------------------------------------
 
-function TGDBDebugger.ParseConst(Msg: PString; Vari: PString; Value: PBoolean): Boolean;
+function TGDBDebugger.ParseConst(Msg: PString; Vari: PString;
+    Value: PBoolean): Boolean;
 var
     Val: String;
 begin
     if (ParseConst(Msg, Vari, PString(@Val)) = false) then
-    begin ParseConst := false end
+        ParseConst := false
     else
     begin
         if ((Val = 'true') or (Val = 'y')) then
-        begin Value^ := true end
+            Value^ := true
         else
         if ((Val = 'false') or (Val = 'n')) then
-        begin Value^ := false end;
+            Value^ := false;
         ParseConst := true;
     end;
 end;
@@ -1309,12 +1364,14 @@ begin
     begin
         if (ParseConst(@Msg, @GDBaddr, PString(@SrcFile)) and
             ParseConst(@Msg, @GDBorig_loc, PString(@SrcFile))) then
-        begin Output := format('Breakpoint No %d set multiple times in %s', [Num, SrcFile]) end
+            Output := format('Breakpoint No %d set multiple times in %s',
+                [Num, SrcFile])
         else
         begin
             ParseConst(@Msg, @GDBline, PInteger(@Line));
             ParseConst(@Msg, @GDBfile, PString(@SrcFile));
-            Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
+            Output := format('Breakpoint No %d set at line %d in %s',
+                [Num, Line, SrcFile]);
         end;
 
 
@@ -1426,14 +1483,12 @@ begin
     {Ret := }ParseConst(@Msg, @GDBnr_rows, PInteger(@N_rows));
     Str := ExtractNamed(@Msg, @GDBbody, 1);
 
-    if (not(Str = '')) then
-    begin
+    if (not (Str = '')) then
         for row := 1 to N_rows do
         begin
             BkptStr := ExtractNamed(@Str, @GDBbkpt, row);
             ParseBreakpoint(BkptStr);
         end;
-    end;
 end;
 
 //=================================================================
@@ -1459,16 +1514,15 @@ begin
                 Inc(level);
                 FrameStr := ExtractNamed(@Msg, @GDBframe, level);
                 if (FrameStr = '') then
-                begin break end;
+                    break;
                 ParseFrame(FrameStr);
             end
-        until (level >= MAXSTACKDEPTH);               // Arbitrary limit for safety!
+        until (level >= MAXSTACKDEPTH);
+        // Arbitrary limit for safety!
         if (level = MAXSTACKDEPTH) then
-        begin
-            // gui_critSect.Enter();
-            AddtoDisplay('Stack is too deep, Aborting...');
+            AddtoDisplay('Stack is too deep, Aborting...')// gui_critSect.Enter();
             // gui_critSect.Leave();
-        end;
+        ;
 
     end;
 end;
@@ -1503,21 +1557,22 @@ begin
     if (not (Msg = '')) then
     begin
 
-    
-        {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
-        {Ret := }ParseConst(@Msg, @GDBfunc,  PString(@Func));
-        {Ret := }ParseConst(@Msg, @GDBline,  PInteger(@Line));
-        {Ret := }ParseConst(@Msg, @GDBfile,  PString(@SrcFile));
-        if (Level = 0) then
-        begin SubOutput := 'Stopped in ' end
-        else
-        begin SubOutput := ' called from ' end;
-        if (Line = 0) then
-        begin SubOutput1 := ' <no line number>' end
-        else
-        begin SubOutput := format(' at Line %d',[Line]) end;
 
-        Output := format('Level %2d: %*s %s %s %s', [Level, Level+1 , ' ', SubOutput, Func, SubOutput1]);
+        {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
+        {Ret := }ParseConst(@Msg, @GDBfunc, PString(@Func));
+        {Ret := }ParseConst(@Msg, @GDBline, PInteger(@Line));
+        {Ret := }ParseConst(@Msg, @GDBfile, PString(@SrcFile));
+        if (Level = 0) then
+            SubOutput := 'Stopped in '
+        else
+            SubOutput := ' called from ';
+        if (Line = 0) then
+            SubOutput1 := ' <no line number>'
+        else
+            SubOutput := format(' at Line %d', [Line]);
+
+        Output := format('Level %2d: %*s %s %s %s',
+            [Level, Level + 1, ' ', SubOutput, Func, SubOutput1]);
         // gui_critSect.Enter();
         AddtoDisplay(Output);
         // gui_critSect.Leave();
@@ -1548,13 +1603,11 @@ begin
 
     ParseConst(@Msg, @GDBcurthread, PString(@CurrentThread));
     ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
-    ThreadList := AnsiMidStr(ThreadList, 2, Length(ThreadList)-2);
+    ThreadList := AnsiMidStr(ThreadList, 2, Length(ThreadList) - 2);
     if (ThreadList = '') then
-    begin
-        // gui_critSect.Enter();
-        AddtoDisplay('No active threads');
+        AddtoDisplay('No active threads')// gui_critSect.Enter();
         // gui_critSect.Leave();
-    end
+
     else
     begin
         // gui_critSect.Enter();
@@ -1563,9 +1616,10 @@ begin
 
         repeat
             begin
-                ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
-       
-                if (not(ThreadStr = '')) then
+                ThreadStr :=
+                    ExtractBracketed(@ThreadList, @start, @next, '{', false);
+
+                if (not (ThreadStr = '')) then
                 begin
                     ParseConst(@ThreadStr, @GDBid, PString(@ThreadID));
                     // gui_critSect.Enter();
@@ -1574,7 +1628,8 @@ begin
 
                     ParseFrame(ThreadStr);
                 end;
-                ThreadList := AnsiRightStr(ThreadList, Length(ThreadList) - next);
+                ThreadList :=
+                    AnsiRightStr(ThreadList, Length(ThreadList) - next);
             end
         until ((ThreadStr = '') or (next = 0));
     end;
@@ -1630,7 +1685,7 @@ var
 begin
 
     Temp := Msg^;
-    Num :=0;
+    Num := 0;
     Line := 0;
 
     //Ret := false;
@@ -1642,18 +1697,18 @@ begin
 
     hasOld := ParseConst(@Val, @GDBold, PString(@Old));
     if (hasOld) then
-    begin Old := ' was ' + Old end;
+        Old := ' was ' + Old;
     hasNew := ParseConst(@Val, @GDBnew, PString(@New));
     if (hasNew) then
-    begin New := ' now ' + New end;
+        New := ' now ' + New;
     hasValue := ParseConst(@Val, @GDBvalue, PString(@Value));
     if (hasValue) then
-    begin Value := ' Presently ' + Value end;
+        Value := ' Presently ' + Value;
 
     {Ret := }ParseConst(@Wpt, @GDBexp, PString(@Expr));
 
     Frame := ExtractNamed(@Temp, @GDBframe, 1);
-    {Ret := }ParseConst(@Frame,@GDBfile, PString(@SrcFile));
+    {Ret := }ParseConst(@Frame, @GDBfile, PString(@SrcFile));
     {Ret := }ParseConst(@Frame, @GDBfunc, PString(@Func));
     {Ret := }ParseConst(@Frame, @GDBline, PInteger(@Line));
 
@@ -1682,7 +1737,7 @@ var
 begin
 
     Temp := Msg^;
-    Num :=0;
+    Num := 0;
 
     //Ret := false;
 
@@ -1692,7 +1747,8 @@ begin
     {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
     {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
 
-    Output := Format('Breakpoint No %d hit in %s at line %d in %s', [Num, Func, Line, SrcFile]);
+    Output := Format('Breakpoint No %d hit in %s at line %d in %s',
+        [Num, Func, Line, SrcFile]);
 
     // gui_critSect.Enter();
     AddtoDisplay(Output);
@@ -1806,7 +1862,7 @@ begin          // ParseResult
         Output := Output + '"';
     end
     else
-    begin Output := Output + ParseValue(@Val) end;
+        Output := Output + ParseValue(@Val);
     ParseResult := Output;
 end;
 
@@ -1837,18 +1893,18 @@ var
     QStr: String;
 
 begin          // ExtractwxStr
-    QStr := AnsiLeftStr(Str^, Length(Str^)- 20);
+    QStr := AnsiLeftStr(Str^, Length(Str^) - 20);
     if (AnsiPos('"{', QStr) = 1) then
-    begin QStr := AnsiMidStr(QStr, 3, Length(QStr)-3) end;    // Strip the wrapping
+        QStr := AnsiMidStr(QStr, 3, Length(QStr) - 3);    // Strip the wrapping
     if (AnsiPos('{', QStr) = 1) then
-    begin QStr := AnsiMidStr(QStr, 2, Length(QStr)-1) end;    // Strip the wrapping
+        QStr := AnsiMidStr(QStr, 2, Length(QStr) - 1);    // Strip the wrapping
     if (AnsiLastChar(QStr) = '>') then                // An Error Msg
-    begin QStr := '<' + AnsiAfterLast('<',QStr) end
+        QStr := '<' + AnsiAfterLast('<', QStr)
     else                                              // a quoted string
     begin
         starts := AnsiPos('\"', QStr);
         ends := AnsiFindLast(GDBqStrEmpty, QStr);
-        QStr := AnsiMidStr(QStr, starts+2, ends-starts-2);
+        QStr := AnsiMidStr(QStr, starts + 2, ends - starts - 2);
     end;
     ExtractWxStr := QStr;
 
@@ -1861,7 +1917,7 @@ function AnsiBeforeFirst(Sub: String; Target: String): String;
     // Returns the string before the first 'Sub' in 'Target'
 begin
     //AnsiBeforeFirst := AnsiLeftStr(Target, AnsiPos(Sub,Target)-1);
-    AnsiBeforeFirst := LeftStr(Target, AnsiPos(Sub,Target)-1);
+    AnsiBeforeFirst := LeftStr(Target, AnsiPos(Sub, Target) - 1);
 end;
 
 //=================================================================
@@ -1883,7 +1939,7 @@ var
 begin
     RTarget := ReverseString(Target);
     RSub := ReverseString(Sub);
-    Res := LeftStr(RTarget, AnsiPos(RSub, RTarget)-1);
+    Res := LeftStr(RTarget, AnsiPos(RSub, RTarget) - 1);
     AnsiAfterLast := ReverseString(Res);
 end;
 
@@ -1900,14 +1956,15 @@ begin
     AnsiFindLast := Length(Target) - AnsiPos(RSrc, RTarget);
 end;
 
-function AnsiMidStr(const AText: string; const AStart, ACount: Integer): string;
+function AnsiMidStr(const AText: string;
+    const AStart, ACount: Integer): string;
 begin
     Result := MidStr(AText, AStart, ACount);
 end;
 
 function AnsiRightStr(const AText: string; ACount: Integer): string;
 begin
-    Result := RightStr(AText,ACount);
+    Result := RightStr(AText, ACount);
 end;
 
 function AnsiLeftStr(const AText: string; ACount: Integer): string;
@@ -1931,17 +1988,19 @@ var
     Str2: String;
 
 begin          // ParseValue
-    if (AnsiStartsStr('{', Str^) or AnsiStartsStr('[', Str^)) then      // a Tuple or List
-    begin Output := Output + ExtractList(Str) end
+    if (AnsiStartsStr('{', Str^) or AnsiStartsStr('[', Str^)) then
+        // a Tuple or List
+        Output := Output + ExtractList(Str)
     else
     if ((Str^[1] = '"')
-        and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then  // it might be a class
+        and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then
+        // it might be a class
     begin
         Str2 := ExtractBracketed(Str, @s, @n, '"', false);
         Output := Output + ExtractList(@Str2);
     end
     else                                                                // a const
-    begin Output := Output + Str^ end;
+        Output := Output + Str^;
 
     ParseValue := Output;
 end;
@@ -1971,7 +2030,8 @@ var
 begin          // ExtractList
 
     // Get the first result or value.
-    delim := (Str^)[1];                          // = '{' for a Tuple, '[' for a List
+    delim := (Str^)[1];
+    // = '{' for a Tuple, '[' for a List
     // Remove outermost "[ ]" or "{ }"
     Remainder := ExtractBracketed(Str, @start, @next, delim, false);
     Output := Output + delim;
@@ -1997,48 +2057,51 @@ begin          // ExtractList
         lsqbkt := FindFirstChar(Remainder, '[');
         equals := FindFirstChar(Remainder, '=');
 
-        if (not(equals = 0)
+        if (not (equals = 0)
             and ((lbrace = 0) or (equals < lbrace))
             and ((lsqbkt = 0) or (equals < lsqbkt))
-            and ((comma  = 0) or (equals < comma ))) then    // we have a Result
+            and ((comma = 0) or (equals < comma))) then
+            // we have a Result
 
 
         begin
-            if (comma = 0) then                         // and the only or the last one
+            if (comma = 0) then
+                // and the only or the last one
             begin
                 Output := Output + ParseResult(@Remainder);
                 break;                                    // done
             end
             else
             begin
-                Item := AnsiLeftStr(Remainder, comma-1);  // ... or the first of many
+                Item := AnsiLeftStr(Remainder, comma - 1);
+                // ... or the first of many
                 Output := Output + ParseResult(@Item);
-                next := comma+1;
+                next := comma + 1;
                 Output := Output + ',';
             end;
         end
         else                                            // we have a value
+        if (comma = 0) then
+            // and the only or the last one
         begin
-            if (comma = 0) then                         // and the only or the last one
-            begin
-                Output := Output + ParseValue(@Remainder);
-                break;                                  // done
-            end
-            else
-            begin
-                Item := AnsiLeftStr(Remainder, comma-1); // ... or the first of many
-                Output := Output + ParseValue(@Item);
-                Output := Output + ',';
-                next := comma+1;
-            end;
+            Output := Output + ParseValue(@Remainder);
+            break;                                  // done
+        end
+        else
+        begin
+            Item := AnsiLeftStr(Remainder, comma - 1);
+            // ... or the first of many
+            Output := Output + ParseValue(@Item);
+            Output := Output + ',';
+            next := comma + 1;
         end;
         if (next < len) then
-        begin Remainder := AnsiMidStr(Remainder, next, Length(Remainder)-next + 1) end;
+            Remainder := AnsiMidStr(Remainder, next, Length(Remainder) - next + 1);
     end;
     if (delim = '{') then
-    begin Output := Output + '}' end
+        Output := Output + '}'
     else
-    begin Output := Output + ']' end;
+        Output := Output + ']';
     ExtractList := Output;
 end;
 
@@ -2068,11 +2131,12 @@ begin
     while ((not (Str[pos] = c) or isquoted) and (pos <= Length(Str))) do
     begin
         if (Str[pos] = '"') then
-        begin isquoted := not isquoted end
+            isquoted := not isquoted
         else
         if (Str[pos] = '{') then
         begin
-            p := FindFirstChar(AnsiMidStr(Str, (pos+1), Length(Str)-pos-1), '}');
+            p := FindFirstChar(AnsiMidStr(Str, (pos + 1),
+                Length(Str) - pos - 1), '}');
             if (p = 0) then
             begin
                 FindFirstChar := 0;
@@ -2083,7 +2147,8 @@ begin
         else
         if (Str[pos] = '[') then
         begin
-            p := FindFirstChar(AnsiMidStr(Str, (pos+1), Length(Str)-pos-1), ']');
+            p := FindFirstChar(AnsiMidStr(Str, (pos + 1),
+                Length(Str) - pos - 1), ']');
             if (p = 0) then
             begin
                 FindFirstChar := 0;
@@ -2097,14 +2162,15 @@ begin
     end;
 
     if (pos > Length(Str)) then
-    begin FindFirstChar := 0 end;
+        FindFirstChar := 0;
 
 end;
 
 //=================================================================
 
 
-function TGDBDebugger.ExtractBracketed(Str: PString; start: Pinteger; next: PInteger; c: Char; inclusive: Boolean): String;
+function TGDBDebugger.ExtractBracketed(Str: PString; start: Pinteger;
+    next: PInteger; c: Char; inclusive: Boolean): String;
 
 
     //    Returns the sub-string from the first occurrence of 'c'
@@ -2128,13 +2194,14 @@ function TGDBDebugger.ExtractBracketed(Str: PString; start: Pinteger; next: PInt
 
 var
     Output: String;
-    l1, l2, l3,l4, s, e: Integer;
+    l1, l2, l3, l4, s, e: Integer;
     nestedin: Array[0..9] of Integer;
 
 begin          // ExtractBracketed
     Output := Str^;
-    for e:= 9 downto 0 do
-    begin nestedin[e] := 0 end;  // we are expecting a closing '"' at this level (arbitrary limit of 256)
+    for e := 9 downto 0 do
+        nestedin[e] := 0;
+    // we are expecting a closing '"' at this level (arbitrary limit of 256)
 
     l1 := 0;             // level of nesting of ""
     l2 := 0;             // level of nesting of {}
@@ -2147,57 +2214,58 @@ begin          // ExtractBracketed
 
         while (e <= Length(Output)) do
         begin
-            if (not(Output[e] = c) and (s = -1)) then
+            if (not (Output[e] = c) and (s = -1)) then
             begin                   // skip over all before our start char
                 Inc(e);
                 continue;
             end;
 
             case (Output[e]) of
-                '\' :
-                begin if (Output[e+1] = '"') then           // a literal quote - ignore
+                '\':
+                    if (Output[e + 1] = '"') then
+                        // a literal quote - ignore
                     begin
                         e := e + 2;                         // & skip over
                         continue;
-                    end end;
+                    end;
 
-                '"' :
-                begin if ((nestedin[l1] = 0) and not (s = -1)) then
-                    begin Dec(l1) end
+                '"':
+                    if ((nestedin[l1] = 0) and not (s = -1)) then
+                        Dec(l1)
                     else
-                    begin Inc(l1) end end;
+                        Inc(l1);
 
-                '{' :
+                '{':
                 begin
                     Inc(l2);
                     Inc(nestedin[l1]);
                 end;
 
-                '}' :
+                '}':
                 begin
                     Dec(l2);
                     Dec(nestedin[l1]);
                 end;
 
-                '[' :
+                '[':
                 begin
                     Inc(l3);
                     Inc(nestedin[l1]);
                 end;
 
-                ']' :
+                ']':
                 begin
                     Dec(l3);
                     Dec(nestedin[l1]);
                 end;
 
-                '<' :
+                '<':
                 begin
                     Inc(l4);
                     Inc(nestedin[l1]);
                 end;
 
-                '>' :
+                '>':
                 begin
                     Dec(l4);
                     Dec(nestedin[l1]);
@@ -2205,44 +2273,42 @@ begin          // ExtractBracketed
             end;
 
             if ((s = -1) and (Output[e] = c)) then
-            begin s := e end;
+                s := e;
             Inc(e);
             if (not (s = -1) and ((l1 = 0) and (c = '"') or (l2 = 0)
                 and (c = '{') or (l3 = 0)
                 and (c = '[') or (l4 = 0)
                 and (c = '<'))) then
-            begin break end;
+                break;
         end;
 
         if ((e = Length(Output)) and (s = -1)) then
         begin
             if (not (start = Nil)) then
-            begin start^ := 0 end;
+                start^ := 0;
             if (not (next = Nil)) then
-            begin next^ := 0 end;
+                next^ := 0;
             Output := '';
             ExtractBracketed := Output;
         end;
     end;
 
-    if (not(next = Nil)) then
-    begin
+    if (not (next = Nil)) then
         if (e = Length(Output)) then
-        begin next^ := 0 end
+            next^ := 0
         else
-        begin next^ := e end;
-    end;
+            next^ := e;
 
-    if (not(inclusive)) then
+    if (not (inclusive)) then
     begin
         Inc(s);
-        Output := AnsiMidStr(Str^, s, e-s-1);
+        Output := AnsiMidStr(Str^, s, e - s - 1);
     end
     else
-    begin Output := AnsiMidStr(Str^, s, e-s) end;
+        Output := AnsiMidStr(Str^, s, e - s);
 
     if (not (start = Nil)) then
-    begin start^ := s end;
+        start^ := s;
 
     ExtractBracketed := Output;
 end;
@@ -2296,9 +2362,9 @@ begin
     Reader.Terminate;
     //Close the handles
     if (not CloseHandle(g_hChildStd_IN_Wr)) then
-    begin DisplayError('CloseHandle - ChildStd_IN_Wr') end;
+        DisplayError('CloseHandle - ChildStd_IN_Wr');
     if (not CloseHandle(g_hChildStd_OUT_Rd)) then
-    begin DisplayError('CloseHandle - ChildStd_OUT_Rd') end;
+        DisplayError('CloseHandle - ChildStd_OUT_Rd');
     // See the note above about TerminateProcess
 
 end;
@@ -2308,15 +2374,15 @@ end;
 
 procedure TGDBDebugger.Execute(filename, arguments: string);
 const
-    gdbInterp:   String = '--interpreter=mi';
-    gdbSilent:   String = '--silent';
+    gdbInterp: String = '--interpreter=mi';
+    gdbSilent: String = '--silent';
 
 var
     Executable: string;
     WorkingDir: string;
     Includes: string;
     I: Integer;
-    verbose : boolean;
+    verbose: boolean;
 
 begin
     //Reset our variables
@@ -2325,26 +2391,26 @@ begin
     IgnoreBreakpoint := False;
 
     verbose := False;
-  
+
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
-    begin Executable := devCompiler.gdbName end
+        Executable := devCompiler.gdbName
     else
-    begin Executable := DBG_PROGRAM(devCompiler.CompilerType) end;
+        Executable := DBG_PROGRAM(devCompiler.CompilerType);
 
 
     Executable := Executable + ' ' + gdbInterp;
 
     // Verbose output requested?
     if (not verbose) then
-    begin Executable := Executable + ' ' + gdbSilent end;
+        Executable := Executable + ' ' + gdbSilent;
 
     //Add in the include paths
 
     for I := 0 to IncludeDirs.Count - 1 do
-    begin Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ' end;
+        Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
     if Includes <> '' then
-    begin Executable := Executable + ' ' + Includes end;
+        Executable := Executable + ' ' + Includes;
 
 
     //Add the target executable
@@ -2353,7 +2419,7 @@ begin
     //Launch the process
 
     if Assigned(MainForm.fProject) then
-    begin WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput end;
+        WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
 
     Launch(Executable, WorkingDir);
 
@@ -2361,7 +2427,8 @@ begin
     // ??? Will this have any effect - see GDB Documentation: "the debuggee will be started in a new console on next start"
     //     I read this as implying it WILL go into effect because the target is only loaded, not yet started.
     QueueCommand('-gdb-set', 'height 0');
-    QueueCommand('-gdb-set', 'breakpoint pending on'); // Fix for DLL breakpoints
+    QueueCommand('-gdb-set', 'breakpoint pending on');
+    // Fix for DLL breakpoints
     QueueCommand('-gdb-set args', arguments);
 end;
 
@@ -2387,7 +2454,7 @@ begin
     //Do we have anything left? Are we paused?
     // SentCommand is reset by the parser
     if Executing and Paused then
-    begin while ((CommandQueue.Count > 0) and (Paused) and (not SentCommand)) do
+        while ((CommandQueue.Count > 0) and (Paused) and (not SentCommand)) do
         begin
 
             //Initialize stuff
@@ -2398,7 +2465,7 @@ begin
 
             //Remove the entry from the list
             if not (CurrentCommand is TCommandWithResult) then
-            begin Dispose(CommandQueue[0]) end;
+                Dispose(CommandQueue[0]);
             CommandQueue.Delete(0);
 
 {
@@ -2416,7 +2483,7 @@ begin
   Thus there is no need to wait until the result of the command has been read.
 }
 
-            AddtoDisplay('Sending '+CurrentCommand.Command);
+            AddtoDisplay('Sending ' + CurrentCommand.Command);
 
             // For proper handling of multi-threaded targets, we might need to prefix each
             // command with '--thread' and ‘--frame’  (See GDB Manual: 27.1.1 Context management)
@@ -2427,8 +2494,8 @@ begin
 
             //Call the callback function if we are provided one
             if Assigned(CurrentCommand.Callback) then
-            begin CurrentCommand.Callback end;
-        end end;
+                CurrentCommand.Callback;
+        end;
 end;
 
 //=============================================================
@@ -2446,16 +2513,16 @@ begin
 
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
-    begin Executable := devCompiler.gdbName end
+        Executable := devCompiler.gdbName
     else
-    begin Executable := DBG_PROGRAM(devCompiler.CompilerType) end;
+        Executable := DBG_PROGRAM(devCompiler.CompilerType);
     Executable := Executable + ' --annotate=2 --silent';
 
     //Add in the include paths
     for I := 0 to IncludeDirs.Count - 1 do
-    begin Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ' end;
+        Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
     if Includes <> '' then
-    begin Executable := Executable + ' ' + Includes end;
+        Executable := Executable + ' ' + Includes;
 
     //Launch the process
     Launch(Executable, '');
@@ -2483,12 +2550,12 @@ var
 
     procedure FlushOutputBuffer;
     var
-        i : integer;
-        LastString : string;
-        TempLines : TStringList;
+        i: integer;
+        LastString: string;
+        TempLines: TStringList;
     begin
         if NewLines.Count = 0 then
-        begin Exit end;
+            Exit;
 
         // Delete the output lines 'breakpoints-invalid'
         i := NewLines.IndexOf('breakpoints-invalid');
@@ -2507,20 +2574,18 @@ var
         end;
 
         if NewLines.Count = 0 then
-        begin Exit end;
+            Exit;
 
         // Get rid of duplicate debugger messages.
         TempLines := TStringList.Create;
         LastString := NewLines.Strings[0];
         TempLines.Add(LastString);
         for i := 1 to (NewLines.Count - 1) do
-        begin
             if (NewLines.Strings[i] <> LastString) then
             begin
                 TempLines.Add(NewLines.Strings[i]);
                 LastString := NewLines.Strings[i];
-            end
-        end;
+            end;
 
         MainForm.DebugOutput.Lines.BeginUpdate;
         MainForm.DebugOutput.Lines.AddStrings(TempLines);
@@ -2530,7 +2595,7 @@ var
         NewLines.Clear;
         TempLines.Free;
     end;
-  
+
     function StripCtrlChars(var line: string): Boolean;
     var
         Idx: Integer;
@@ -2547,19 +2612,20 @@ var
     procedure ParseOutput(const line: string);
     begin
         //Exclude these miscellaneous messages
-        if (line = 'pre-prompt') or (line = 'prompt') or (line = 'post-prompt') or
+        if (line = 'pre-prompt') or (line = 'prompt') or
+            (line = 'post-prompt') or
             (line = 'frames-invalid') or (Pos('error', line) = 1)
             or (line = '{') then
-        begin Exit end
+            Exit
         //Empty lines
         else
         if (Trim(line) = '') or (Trim(line) = 'breakpoints-invalid') then
-        begin Exit end
+            Exit
         else
         if (line = 'value-history-value') or (line = 'value-history-end')
             or (Pos('value-history-begin', line) = 1) or
             RegExp.Exec(line, '\$([0-9]+) =') then
-        begin Exit end
+            Exit
         else
         if Pos('(gdb) ', line) = 1 then
         begin
@@ -2576,19 +2642,21 @@ var
                 OverrideHandler := nil;
             end
             else
-            if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and Assigned(CurrentCommand.OnResult) then
-            begin CurrentCommand.OnResult(CurOutput) end;
+            if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and
+                Assigned(CurrentCommand.OnResult) then
+                CurrentCommand.OnResult(CurOutput);
 
             if CurrentCommand <> nil then
-            begin
-                if (CurrentCommand.Command = 'run'#10) or (CurrentCommand.Command = 'next'#10) or
-                    (CurrentCommand.Command = 'step'#10) or (CurrentCommand.Command = 'continue'#10) or
-                    (CurrentCommand.Command = (devData.DebugCommand + #10)) or (CurrentCommand.Command =''#10) then
+                if (CurrentCommand.Command = 'run'#10) or
+                    (CurrentCommand.Command = 'next'#10) or
+                    (CurrentCommand.Command = 'step'#10) or
+                    (CurrentCommand.Command = 'continue'#10) or
+                    (CurrentCommand.Command = (devData.DebugCommand + #10)) or
+                    (CurrentCommand.Command = ''#10) then
                 begin
                     RefreshContext;
                     Application.BringToFront;
                 end;
-            end;
             CurOutput.Clear;
 
             //Send the command, and do not send any more
@@ -2599,24 +2667,25 @@ var
             Exit;
         end
         else
-        if (Pos('no debugging symbols found', line) > 0) or (Pos('No symbol table is loaded', line) > 0) then
-        begin OnNoDebuggingSymbolsFound end
+        if (Pos('no debugging symbols found', line) > 0) or
+            (Pos('No symbol table is loaded', line) > 0) then
+            OnNoDebuggingSymbolsFound
         else
         if Pos('file is more recent than executable', line) > 0 then
-        begin OnSourceMoreRecent end
+            OnSourceMoreRecent
         else
         if line = 'signal' then
-        begin OverrideHandler := OnSignal end 
+            OverrideHandler := OnSignal
         else
         if RegExp.Exec(line, 'Breakpoint ([0-9]+),') then
-        begin with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
-            begin MainForm.GotoBreakpoint(Filename, Line) end end
+            with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
+                MainForm.GotoBreakpoint(Filename, Line)
         else
         if RegExp.Exec(line, 'Hardware access \(.*\) watchpoint ') then
-        begin JumpToCurrentLine := True end
+            JumpToCurrentLine := True
         else
         if Pos('exited ', line) = 1 then
-        begin CloseDebugger(nil) end;
+            CloseDebugger(nil);
 
         CurOutput.Add(Line);
     end;
@@ -2640,12 +2709,12 @@ begin
         begin
 {$ENDIF}
             if (not LastWasCtrl) or (Length(CurLine) <> 0) then
-            begin NewLines.Add(CurLine) end;
+                NewLines.Add(CurLine);
             LastWasCtrl := False;
 {$IFDEF RELEASE}
         end
         else
-        begin LastWasCtrl := True end;
+            LastWasCtrl := True;
 {$ENDIF}
         ParseOutput(CurLine);
 
@@ -2675,20 +2744,19 @@ var
     I: Integer;
 begin
     for I := 0 to Output.Count - 1 do
-    begin
         if Output[I] = 'signal-name' then
-        begin if Output[I + 1] = 'SIGSEGV' then
-            begin OnAccessViolation end
+            if Output[I + 1] = 'SIGSEGV' then
+                OnAccessViolation
             else
-            begin end end;
-    end;
+    ;
 end;
 
 //=================================================================
 
 procedure TGDBDebugger.OnSourceMoreRecent;
 begin
-    if (MessageDlg(Lang[ID_MSG_SOURCEMORERECENT], mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
+    if (MessageDlg(Lang[ID_MSG_SOURCEMORERECENT], mtConfirmation,
+        [mbYes, mbNo], 0) = mrYes) then
     begin
         CloseDebugger(nil);
         MainForm.actCompileExecute(nil);
@@ -2717,7 +2785,8 @@ var
 begin
     if (not Paused) and Executing then
     begin
-        MessageDlg('Cannot add a breakpoint while the debugger is executing.', mtError, [mbOK], MainForm.Handle);
+        MessageDlg('Cannot add a breakpoint while the debugger is executing.',
+            mtError, [mbOK], MainForm.Handle);
         Exit;
     end;
 
@@ -2740,16 +2809,16 @@ begin
     end;
 
     for i := 0 to Breakpoints.Count - 1 do
-    begin
-        if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
+        if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and
+            (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
         begin
             if Executing then
-            begin QueueCommand('-break-delete ', IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index)) end;
+                QueueCommand('-break-delete ',
+                    IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
             Dispose(Breakpoints.Items[i]);
             Breakpoints.Delete(i);
             Break;
         end;
-    end;
 end;
 
 //=================================================================
@@ -2761,7 +2830,8 @@ begin
         Inc(fNextBreakpoint);
         breakpoint.Index := fNextBreakpoint;
         breakpoint.Valid := True;
-        QueueCommand('-break-insert ', Format('"%s:%d"', [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
+        QueueCommand('-break-insert ', Format('"%s:%d"',
+            [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
     end;
 end;
 
@@ -2774,7 +2844,7 @@ var
     Command: TCommand;
 begin
     if not Executing then
-    begin Exit end;
+        Exit;
 
     //First send commands for stack tracing, locals and threads
     if cdCallStack in refresh then
@@ -2799,9 +2869,9 @@ begin
         QueueCommand(Command);
     end;
     if cdDisassembly in refresh then
-    begin Disassemble end;
+        Disassemble;
     if cdRegisters in refresh then
-    begin GetRegisters end;
+        GetRegisters;
 
     //Then update the watches
     if (cdWatches in refresh) and Assigned(DebugTree) then
@@ -2811,14 +2881,15 @@ begin
         begin
             Node := DebugTree.Items[I];
             if Node.Data = nil then
-            begin Continue end;
+                Continue;
             with PWatch(Node.Data)^ do
             begin
                 Command := TCommand.Create;
                 if Pos('.', Name) > 0 then
-                begin Command.Command := '-display-insert  ' + Copy(name, 1, Pos('.', name) - 1) end
+                    Command.Command :=
+                        '-display-insert  ' + Copy(name, 1, Pos('.', name) - 1)
                 else
-                begin Command.Command := '-display-insert  ' + name end;
+                    Command.Command := '-display-insert  ' + name;
 
                 //Fill in the other data
                 Command.Data := Node;
@@ -2848,12 +2919,13 @@ var
         Child: TTreeNode;
     begin
         while I < Output.Count - 4 do
-        begin if Output[I] = '}' then
-            begin Exit end
+            if Output[I] = '}' then
+                Exit
             else
             if Pos('{', Output[I + 4]) <> 1 then
             begin
-                with DebugTree.Items.AddChild(Parent, Output[I] + ' = ' + Output[I + 4]) do
+                with DebugTree.Items.AddChild(Parent, Output[I] +
+                        ' = ' + Output[I + 4]) do
                 begin
                     SelectedIndex := 21;
                     ImageIndex := 21;
@@ -2861,7 +2933,7 @@ var
 
                 Inc(I, 6);
                 if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
-                begin Inc(I, 2) end;
+                    Inc(I, 2);
             end
             else
             begin
@@ -2871,17 +2943,17 @@ var
                     SelectedIndex := 32;
                     ImageIndex := 32;
                 end;
-        
+
                 Inc(I, 6);
                 if Pos('array-section-begin', Output[I - 1]) = 1 then
-                begin RecurseArray(Child, I) end
+                    RecurseArray(Child, I)
                 else
-                begin RecurseStructure(Child, I) end;
+                    RecurseStructure(Child, I);
 
                 Inc(I, 2);
                 if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
-                begin Inc(I, 2) end;
-            end end;
+                    Inc(I, 2);
+            end;
     end;
 
     procedure RecurseArray(Parent: TTreeNode; var I: Integer);
@@ -2893,32 +2965,33 @@ var
         while (I < Output.Count - 2) do
         begin
             if Output[I] = '}' then
-            begin Break end
+                Break
             else
             if Pos(',', Output[I]) = 1 then
-            begin Output[I] := Trim(Copy(Output[I], 2, Length(Output[I]))) end;
+                Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
 
             if Pos('{', Output[I]) = 1 then
             begin
-                Child := DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]));
+                Child := DebugTree.Items.AddChild(Parent,
+                    Format('[%d]', [Count]));
                 with Child do
                 begin
                     SelectedIndex := 32;
                     ImageIndex := 32;
                 end;
-        
+
                 Inc(I, 2);
                 RecurseStructure(Child, I);
             end
             else
-            if (Trim(Output[I]) <> '') and (Output[I] <> 'array-section-end') then
-            begin
-                with DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]) + ' = ' + Output[I]) do
+            if (Trim(Output[I]) <> '') and
+                (Output[I] <> 'array-section-end') then
+                with DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]) +
+                        ' = ' + Output[I]) do
                 begin
                     SelectedIndex := 21;
                     ImageIndex := 21;
-                end;
-            end
+                end
             else
             begin
                 Inc(I);
@@ -2932,7 +3005,7 @@ var
 begin
     I := 0;
     Node := TTreeNode(CurrentCommand.Data);
-  
+
     while I < Output.Count do
     begin
         if Output[I] = 'display-expression' then
@@ -2940,23 +3013,23 @@ begin
             Node.Text := Output[I + 1];
             Node.SelectedIndex := 32;
             Node.ImageIndex := 32;
-      
+
             if Pos('{', Output[I + 5]) = 1 then
             begin
                 Inc(I, 7);
 
                 //Determine if it is a structure of an array
                 if Pos('array-section-begin', Output[I - 1]) = 1 then
-                begin RecurseArray(Node, I) end
+                    RecurseArray(Node, I)
                 else
-                begin RecurseStructure(Node, I) end;
+                begin RecurseStructure(Node, I); end;
             end
             else
-            begin Node.Text := Output[I + 1] + ' = ' + Output[I + 5] end;
+                Node.Text := Output[I + 1] + ' = ' + Output[I + 5];
             Break;
         end;
         Inc(I);
-    end
+    end;
 end;
 
 //=================================================================
@@ -2979,11 +3052,11 @@ begin
     Command.Data := Pointer(Watch);
     case when of
         wbRead:
-        begin Command.Command := '-break-watch -r ' + varname end;
+            Command.Command := '-break-watch -r ' + varname;
         wbWrite:
-        begin Command.Command := '-break-watch ' + varname end;
+            Command.Command := '-break-watch ' + varname;
         wbBoth:
-        begin Command.Command := '-break-watch -a ' + varname end;
+            Command.Command := '-break-watch -a ' + varname;
     end;
     Command.OnResult := OnWatchesSet;
     QueueCommand(Command);
@@ -2997,14 +3070,14 @@ var
     Command: TCommand;
 begin
     for I := 0 to DebugTree.Items.Count - 1 do
-    begin with PWatch(DebugTree.Items[I].Data)^ do
+        with PWatch(DebugTree.Items[I].Data)^ do
         begin
             Command := TCommand.Create;
             Command.Data := DebugTree.Items[I].Data;
             Command.Command := '-break-watch -a ' + Name;
             Command.OnResult := OnWatchesSet;
             QueueCommand(Command);
-        end end;
+        end;
 end;
 
 //=================================================================
@@ -3023,7 +3096,7 @@ begin
     //Find the top-most node
     node := DebugTree.Selected;
     while Assigned(node) and (Assigned(node.Parent)) do
-    begin node := node.Parent end;
+        node := node.Parent;
 
     //Then clean it up
     if Assigned(node) then
@@ -3064,7 +3137,7 @@ begin
         if Output[I] = 'frame-function-name' then
         begin
             Inc(I);
-            StackFrame^.FuncName := Output[I]; 
+            StackFrame^.FuncName := Output[I];
         end
         else
         if Output[I] = 'frame-args' then
@@ -3078,23 +3151,24 @@ begin
                 Continue;
             end
             else
-            begin Inc(I) end;
+            begin Inc(I); end;
 
             while (I < Output.Count - 6) do
             begin
                 if Output[I] = 'arg-begin' then
                 begin
                     if StackFrame^.Args <> '' then
-                    begin StackFrame^.Args := StackFrame^.Args + ', ' end;
-                    StackFrame^.Args := StackFrame^.Args + Output[I + 1] + ' = ' + Output[I + 5];
+                        StackFrame^.Args := StackFrame^.Args + ', ';
+                    StackFrame^.Args :=
+                        StackFrame^.Args + Output[I + 1] + ' = ' + Output[I + 5];
                 end;
                 Inc(I, 6);
 
                 //Do we stop?
                 if Trim(Output[I + 1]) <> ',' then
-                begin Break end
+                    Break
                 else
-                begin Inc(I, 2) end;
+                    Inc(I, 2);
             end;
         end
         else
@@ -3115,7 +3189,7 @@ begin
     //Now that we have the entire callstack loaded into our list, call the function
     //that wants it
     if Assigned(TDebugger(Self).OnCallStack) then
-    begin TDebugger(Self).OnCallStack(CallStack) end;
+        TDebugger(Self).OnCallStack(CallStack);
 
     //Do we show the new execution point?
     if JumpToCurrentLine then
@@ -3144,15 +3218,15 @@ var
     begin
         Result := '';
         for I := 0 to Indent - 1 do
-        begin Result := Result + ' ' end;
+            Result := Result + ' ';
     end;
 
     procedure RecurseArray(Indent: Integer; var I: Integer); forward;
     procedure RecurseStructure(Indent: Integer; var I: Integer);
     begin
         while I < Output.Count - 4 do
-        begin if Output[I] = '}' then
-            begin Exit end
+            if Output[I] = '}' then
+                Exit
             else
             if Pos('{', Output[I + 4]) <> 1 then
             begin
@@ -3166,7 +3240,7 @@ var
 
                 Inc(I, 6);
                 if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
-                begin Inc(I, 2) end;
+                    Inc(I, 2);
             end
             else
             begin
@@ -3177,17 +3251,17 @@ var
                     Name := SynthesizeIndent(Indent) + Output[I];
                     Value := '';
                 end;
-        
+
                 Inc(I, 6);
                 if Pos('array-section-begin', Output[I - 1]) = 1 then
-                begin RecurseArray(Indent + 4, I) end
+                    RecurseArray(Indent + 4, I)
                 else
-                begin RecurseStructure(Indent + 4, I) end;
+                    RecurseStructure(Indent + 4, I);
 
                 Inc(I, 2);
                 if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
-                begin Inc(I, 2) end;
-            end end;
+                    Inc(I, 2);
+            end;
     end;
 
     procedure RecurseArray(Indent: Integer; var I: Integer);
@@ -3198,29 +3272,31 @@ var
         while (I < Output.Count - 2) do
         begin
             if Output[I] = '}' then
-            begin Break end
+                Break
             else
             if Pos(',', Output[I]) = 1 then
-            begin Output[I] := Trim(Copy(Output[I], 2, Length(Output[I]))) end;
+                Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
 
             if Pos('{', Output[I]) = 1 then
             begin
                 New(Local);
                 Locals.Add(Local);
                 with Local^ do
-                begin Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]) end;
-        
+                    Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
+
                 Inc(I, 2);
                 RecurseStructure(Indent + 4, I);
             end
             else
-            if (Trim(Output[I]) <> '') and (Output[I] <> 'array-section-end') then
+            if (Trim(Output[I]) <> '') and
+                (Output[I] <> 'array-section-end') then
             begin
                 New(Local);
                 Locals.Add(Local);
                 with Local^ do
                 begin
-                    Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
+                    Name :=
+                        Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
                     Value := Output[I];
                 end;
             end
@@ -3245,7 +3321,7 @@ begin
         begin
             New(Local);
             Locals.Add(Local);
-      
+
             if RegExp.Substitute('$2') = '{' then
             begin
                 with Local^ do
@@ -3257,26 +3333,24 @@ begin
                 Inc(I, 2);
                 //Determine if it is a structure of an array
                 if Pos('array-section-begin', Output[I - 1]) = 1 then
-                begin RecurseArray(4, I) end
+                    RecurseArray(4, I)
                 else
-                begin RecurseStructure(4, I) end;
+                begin RecurseStructure(4, I); end;
             end
             else
-            begin
-                //Fill the fields
                 with Local^ do
                 begin
                     Name := RegExp.Substitute('$1');
                     Value := RegExp.Substitute('$2');
-                end;
-            end;
+                end//Fill the fields
+            ;
         end;
         Inc(I);
     end;
 
     //Pass the locals list to the callback function that wants it
     if Assigned(TDebugger(Self).OnLocals) then
-    begin TDebugger(Self).OnLocals(Locals) end;
+        TDebugger(Self).OnLocals(Locals);
 
     //Clean up
     Locals.Free;
@@ -3296,7 +3370,8 @@ begin
     Threads := TList.Create;
 
     for I := 0 to Output.Count - 1 do
-    begin if RegExp.Exec(Output[I], '(\**)( +)([0-9]+)( +)thread ([0-9a-fA-F]*).0x([0-9a-fA-F]*)') then
+        if RegExp.Exec(Output[I],
+            '(\**)( +)([0-9]+)( +)thread ([0-9a-fA-F]*).0x([0-9a-fA-F]*)') then
         begin
             New(Thread);
             Threads.Insert(0, Thread);
@@ -3307,11 +3382,11 @@ begin
                 Index := RegExp.Substitute('$3');
                 ID := RegExp.Substitute('$5.$6');
             end;
-        end end;
+        end;
 
     //Call the callback function to list the threads
     if Assigned(TDebugger(Self).OnThreads) then
-    begin TDebugger(Self).OnThreads(Threads) end;
+        TDebugger(Self).OnThreads(Threads);
 
     Threads.Free;
     RegExp.Free;
@@ -3324,7 +3399,7 @@ var
     Command: TCommand;
 begin
     if (not Executing) or (not Paused) then
-    begin Exit end;
+        Exit;
 
     RegistersFilled := 0;
     Registers := TRegisters.Create;
@@ -3432,54 +3507,54 @@ begin
                 Inc(RegistersFilled);
                 Reg := Trim(RegExp.Substitute('$1'));
                 if Reg = 'eax' then
-                begin Registers.EAX := Output[I] end
+                    Registers.EAX := Output[I]
                 else
                 if Reg = 'ebx' then
-                begin Registers.EBX := Output[I] end
+                    Registers.EBX := Output[I]
                 else
                 if Reg = 'ecx' then
-                begin Registers.ECX := Output[I] end
+                    Registers.ECX := Output[I]
                 else
                 if Reg = 'edx' then
-                begin Registers.EDX := Output[I] end
+                    Registers.EDX := Output[I]
                 else
                 if Reg = 'esi' then
-                begin Registers.ESI := Output[I] end
+                    Registers.ESI := Output[I]
                 else
                 if Reg = 'edi' then
-                begin Registers.EDI := Output[I] end
+                    Registers.EDI := Output[I]
                 else
                 if Reg = 'ebp' then
-                begin Registers.EBP := Output[I] end
+                    Registers.EBP := Output[I]
                 else
                 if Reg = 'eip' then
-                begin Registers.EIP := Output[I] end
+                    Registers.EIP := Output[I]
                 else
                 if Reg = 'esp' then
-                begin Registers.ESP := Output[I] end
+                    Registers.ESP := Output[I]
                 else
                 if Reg = 'cs' then
-                begin Registers.CS := Output[I] end
+                    Registers.CS := Output[I]
                 else
                 if Reg = 'ds' then
-                begin Registers.DS := Output[I] end
+                    Registers.DS := Output[I]
                 else
                 if Reg = 'ss' then
-                begin Registers.SS := Output[I] end
+                    Registers.SS := Output[I]
                 else
                 if Reg = 'es' then
-                begin Registers.ES := Output[I] end
+                    Registers.ES := Output[I]
                 else
                 if Reg = 'fs' then
-                begin Registers.FS := Output[I] end
+                    Registers.FS := Output[I]
                 else
                 if Reg = 'gs' then
-                begin Registers.GS := Output[I] end
+                    Registers.GS := Output[I]
                 else
                 if Reg = 'eflags' then
-                begin Registers.EFLAGS := Output[I] end
+                    Registers.EFLAGS := Output[I]
                 else
-                begin Dec(RegistersFilled) end;
+                    Dec(RegistersFilled);
             end;
         end;
         Inc(I);
@@ -3503,7 +3578,7 @@ var
     Command: TCommand;
 begin
     if (not Executing) or (not Paused) then
-    begin Exit end;
+        Exit;
 
     Command := TCommand.Create;
     Command.Command := 'disas ' + func;
@@ -3524,7 +3599,7 @@ begin
 
     //Pass the disassembly to the callback function that wants it
     if Assigned(TDebugger(Self).OnDisassemble) then
-    begin TDebugger(Self).OnDisassemble(Output.Text) end;
+        TDebugger(Self).OnDisassemble(Output.Text);
 end;
 
 //=================================================================
@@ -3534,9 +3609,9 @@ procedure TGDBDebugger.SetAssemblySyntax(syntax: AssemblySyntax);
 begin
     case syntax of
         asIntel:
-        begin QueueCommand('-gdb-set disassembly-flavor', 'intel') end;
+            QueueCommand('-gdb-set disassembly-flavor', 'intel');
         asATnT:
-        begin QueueCommand('-gdb-set disassembly-flavor', 'att') end;
+            QueueCommand('-gdb-set disassembly-flavor', 'att');
     end;
 end;
 
@@ -3547,7 +3622,7 @@ var
     Command: TCommand;
 begin
     if (not Executing) or (not Paused) then
-    begin Exit end;
+        Exit;
 
     Command := TCommand.Create;
     Command.OnResult := OnVariableHint;
@@ -3564,7 +3639,7 @@ procedure TGDBDebugger.OnVariableHint(Output: TStringList);
 begin
     //Call the callback
     if Assigned(TDebugger(Self).OnVariableHint) then
-    begin TDebugger(Self).OnVariableHint(Output[0]) end;
+        TDebugger(Self).OnVariableHint(Output[0]);
 end;
 
 procedure TGDBDebugger.Go;
@@ -3573,9 +3648,9 @@ var
 begin
     Command := TCommand.Create;
     if not Started then
-    begin Command.Command := '-exec-run' end
+        Command.Command := '-exec-run'
     else
-    begin Command.Command := '-exec-continue' end;
+        Command.Command := '-exec-continue';
     Command.Callback := OnGo;
     QueueCommand(Command);
 end;
@@ -3602,23 +3677,26 @@ begin
 
     // Create a pipe for the child process's STDOUT.
 
-    if ( not CreatePipe(g_hChildStd_OUT_Rd, g_hChildStd_OUT_Wr, @saAttr, 0) ) then
-    begin DisplayError('Std_OUT CreatePipe') end;
+    if (not CreatePipe(g_hChildStd_OUT_Rd, g_hChildStd_OUT_Wr,
+        @saAttr, 0)) then
+        DisplayError('Std_OUT CreatePipe');
 
     // Ensure the read handle to the pipe for STDOUT is not inherited.
 
-    if ( not SetHandleInformation(g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0) ) then
-    begin DisplayError('Std_OUT SetHandleInformation') end;
+    if (not SetHandleInformation(g_hChildStd_OUT_Rd,
+        HANDLE_FLAG_INHERIT, 0)) then
+        DisplayError('Std_OUT SetHandleInformation');
 
     // Create a pipe for the child process's STDIN.
 
-    if ( not CreatePipe(g_hChildStd_IN_Rd, g_hChildStd_IN_Wr, @saAttr, 0)) then
-    begin DisplayError('Std_IN CreatePipe') end;
+    if (not CreatePipe(g_hChildStd_IN_Rd, g_hChildStd_IN_Wr, @saAttr, 0)) then
+        DisplayError('Std_IN CreatePipe');
 
     // Ensure the write handle to the pipe for STDIN is not inherited.
 
-    if ( not SetHandleInformation(g_hChildStd_IN_Wr, HANDLE_FLAG_INHERIT, 0) ) then
-    begin DisplayError('Std_IN SetHandleInformation') end;
+    if (not SetHandleInformation(g_hChildStd_IN_Wr,
+        HANDLE_FLAG_INHERIT, 0)) then
+        DisplayError('Std_IN SetHandleInformation');
 
     //  Pipes created
 
@@ -3637,14 +3715,15 @@ begin
 
     // Create a child process that uses the previously created pipes for STDIN and STDOUT.
 
-    CreateChildProcess(commandline, g_hChildStd_IN_Rd, g_hChildStd_OUT_Wr, g_hChildStd_OUT_Wr);
+    CreateChildProcess(commandline, g_hChildStd_IN_Rd,
+        g_hChildStd_OUT_Wr, g_hChildStd_OUT_Wr);
 
     // Reader Thread created & running
 
     if (not CloseHandle(g_hChildStd_OUT_Wr)) then
-    begin DisplayError('CloseHandle Std_OUT') end;
+        DisplayError('CloseHandle Std_OUT');
     if (not CloseHandle(g_hChildStd_IN_Rd)) then
-    begin DisplayError('CloseHandle Std_IN') end;
+        DisplayError('CloseHandle Std_IN');
 
     Reader.Resume;
 
@@ -3663,7 +3742,8 @@ begin
     Buffer := Buffer + NL;               // GDB requires a newline
 
     // Send it to the pipe
-    WriteFile(g_hChildStd_IN_Wr, PChar(Buffer)^, Length(Buffer), BytesWritten, Nil);
+    WriteFile(g_hChildStd_IN_Wr, PChar(Buffer)^, Length(Buffer),
+        BytesWritten, Nil);
 
 end;
 
@@ -3696,7 +3776,7 @@ begin
 
     Result := nil;
     msg := breakOut(@buf, bsize);
-    msg := AnsiMidStr(msg, 2, Maxint-1);
+    msg := AnsiMidStr(msg, 2, Maxint - 1);
 
     if (verbose) then
     begin
@@ -3706,12 +3786,12 @@ begin
         // gui_critSect.Leave();
     end;
 
-    if (not(msg = '')) then
+    if (not (msg = '')) then
     begin
         if (AnsiStartsStr(GDBerror, msg)) then
         begin
-            Mainmsg := StringReplace(msg, 'msg="','', []);
-            Mainmsg := StringReplace(Mainmsg, '\','',[rfReplaceAll]);
+            Mainmsg := StringReplace(msg, 'msg="', '', []);
+            Mainmsg := StringReplace(Mainmsg, '\', '', [rfReplaceAll]);
             DisplayError('GDB Error: ' + Mainmsg);
         end
 
@@ -3723,63 +3803,48 @@ begin
         end
 
         else
-        if (AnsiStartsStr(GDBdone+GDBbkpt, msg)) then
-        begin
-            ParseBreakpoint(msg);
-        end
+        if (AnsiStartsStr(GDBdone + GDBbkpt, msg)) then
+            ParseBreakpoint(msg)
 
         else
-        if (AnsiStartsStr(GDBdone+GDBbkpttable, msg)) then
-        begin
-            ParseBreakpointTable(msg);
-        end
+        if (AnsiStartsStr(GDBdone + GDBbkpttable, msg)) then
+            ParseBreakpointTable(msg)
 
         else
-        if (AnsiStartsStr(GDBdone+GDBstack, msg)) then
-        begin
-            ParseStack(msg);
-        end
+        if (AnsiStartsStr(GDBdone + GDBstack, msg)) then
+            ParseStack(msg)
 
         else
-        if (AnsiStartsStr(GDBdone+GDBlocals, msg)) then
+        if (AnsiStartsStr(GDBdone + GDBlocals, msg)) then
         begin
-            OutputBuffer := ParseResult(@msg);    // Parses & Reassembles Result
+            OutputBuffer := ParseResult(@msg);
+            // Parses & Reassembles Result
             AddtoDisplay(OutputBuffer);
         end
 
         else
-        if (AnsiStartsStr(GDBdone+GDBthreads, msg)) then
-        begin
-            ParseThreads(msg);
-        end
+        if (AnsiStartsStr(GDBdone + GDBthreads, msg)) then
+            ParseThreads(msg)
 
         else
-        if (AnsiStartsStr(GDBdone+GDBwpt, msg)) then
-        begin
-            ParseWatchpoint(msg);
-        end
+        if (AnsiStartsStr(GDBdone + GDBwpt, msg)) then
+            ParseWatchpoint(msg)
 
         else
-        if (AnsiStartsStr(GDBdone+GDBwpta, msg)) then
-        begin
-            ParseWatchpoint(msg);
-        end
+        if (AnsiStartsStr(GDBdone + GDBwpta, msg)) then
+            ParseWatchpoint(msg)
 
         else
-        if (AnsiStartsStr(GDBdone+GDBwptr, msg)) then
-        begin
+        if (AnsiStartsStr(GDBdone + GDBwptr, msg)) then
             ParseWatchpoint(msg);
-        end;
 
-        if (AnsiStartsStr(GDBdone+GDBnameq, Mainmsg)) then
-        begin
+        if (AnsiStartsStr(GDBdone + GDBnameq, Mainmsg)) then
             //ParseVObjCreate(Mainmsg);         // if it was a VObj create...
-        end;
+        ;
 
-        if (AnsiStartsStr(GDBdone+GDBvalue, Mainmsg))  then
-        begin
+        if (AnsiStartsStr(GDBdone + GDBvalue, Mainmsg)) then
             //ParseVObjAssign(Mainmsg);         // if it was a VObj assign...
-        end;
+        ;
 
         Result := buf;
 
@@ -3820,7 +3885,7 @@ begin
 
     ExecResult := nil;
     msg := breakOut(@buf, bsize);
-    msg := AnsiMidStr(msg, 2, Maxint-1);
+    msg := AnsiMidStr(msg, 2, Maxint - 1);
 
 
     if (verbose) then
@@ -3832,30 +3897,27 @@ begin
     end;
 
 
-    if (not(msg = '')) then
+    if (not (msg = '')) then
     begin
         if (AnsiStartsStr(GDBrunning, msg)) then
         begin
             // get rest into , &AllReason))
-            AllReason := AnsiRightStr(msg, (Length(msg)-Length(GDBrunning)));
+            AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBrunning)));
             running := true;
             // gui_critSect.Enter();
             // gui_critSect.Leave();
 
             if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
-            begin
                 if (threadID = 'all') then
-                begin
-                    {thread := -1;}// Thread No.
-                    OutputBuffer := 'Running all threads'
-                end
+                    OutputBuffer :=
+                        'Running all threads'{thread := -1;}// Thread No.
+
                 else
                 begin
                     thread := StrToInt(threadID);
                     OutputBuffer := Format('Running thread %d', [thread]);
                     AddtoDisplay(OutputBuffer);
                 end;
-            end;
 
             // INCOMPLETE: does nothing with the thread number
 
@@ -3864,13 +3926,12 @@ begin
         if (AnsiStartsStr(GDBstopped, msg)) then
         begin
             // get rest into , &AllReason))
-            AllReason := AnsiRightStr(msg, (Length(msg)-Length(GDBstopped)));
+            AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBstopped)));
             running := false;
             // gui_critSect.Enter();
             // gui_critSect.Leave();
 
             if (ParseConst(@msg, @GDBreason, PString(@Reason))) then
-            begin
                 if (Reason = 'exited-normally') then
                 begin
                     // gui_critSect.Enter();
@@ -3920,11 +3981,10 @@ begin
                 end
                 else
                 begin
-                    Errmsg := AnsiReplaceStr(Errmsg, 'msg="','');
-                    Errmsg := AnsiReplaceStr(Errmsg, '\"','');
+                    Errmsg := AnsiReplaceStr(Errmsg, 'msg="', '');
+                    Errmsg := AnsiReplaceStr(Errmsg, '\"', '');
                     DisplayError('GDB Error:' + Errmsg);
                 end;
-            end;
         end;
         ExecResult := buf;
     end;
@@ -3943,38 +4003,33 @@ begin
     while ((bytesInBuffer > 0) and not (buf = Nil)) do
 	       // && some arbitrary counter to prevent an infinite loop in case
 	       // a programming error fails to clear the buffer?
-    begin
-
-        if ((buf^ >= '0') and (buf^ <='9')) then
+        if ((buf^ >= '0') and (buf^ <= '9')) then
 		          // a token
         begin
             buf := GetToken(buf, @bytesInBuffer, @Token);
             if (verbose) then
-            begin
-                AddtoDisplay('Token ' + IntToStr(Token) );
-				
-            end;
+                AddtoDisplay('Token ' + IntToStr(Token));
         end
         else
         if (buf^ = '~') then
 		          // console stream
 		          // Not of interest: display it
 
-        begin buf := SendToDisplay(buf, @bytesInBuffer, true) end
+            buf := SendToDisplay(buf, @bytesInBuffer, true)
 
         else
         if (buf^ = '=') then
 		          // notify async
 		          // For now: display it
 
-        begin buf := SendToDisplay(buf, @bytesInBuffer, verbose) end
+            buf := SendToDisplay(buf, @bytesInBuffer, verbose)
 
         else
         if ((buf^ = '@') or (buf^ = '&')) then
 		          // target output ||  log stream
 		          // Not of interest: display it
 
-        begin buf := SendToDisplay(buf, @bytesInBuffer, verbose) end
+            buf := SendToDisplay(buf, @bytesInBuffer, verbose)
 
         else
         if (buf^ = '^') then
@@ -3982,7 +4037,7 @@ begin
         begin
 			         // gui_critSect.Enter();
             if (verbose) then
-            begin AddtoDisplay('Result or Error:') end;
+                AddtoDisplay('Result or Error:');
 			         // gui_critSect.Leave();
             buf := Result(buf, @bytesInBuffer);
         end
@@ -3992,7 +4047,7 @@ begin
         begin
 			         // gui_critSect.Enter();
             if (verbose) then
-            begin AddtoDisplay('Executing Async:') end;
+                AddtoDisplay('Executing Async:');
 			         // gui_critSect.Leave();
             buf := ExecResult(buf, @bytesInBuffer);
         end
@@ -4001,11 +4056,9 @@ begin
 		          // status async
         begin
             if (verbose) then
-            begin
-                // gui_critSect.Enter();
-                AddtoDisplay('Status Output:');
-				            // gui_critSect.Leave();
-            end;
+                AddtoDisplay('Status Output:')// gui_critSect.Enter();
+                // gui_critSect.Leave();
+            ;
             buf := SendToDisplay(buf, @bytesInBuffer, verbose);
 
         end
@@ -4027,7 +4080,6 @@ begin
 			         // gui_critSect.Leave();
             buf := SendToDisplay(buf, @bytesInBuffer, verbose);
         end;
-    end;
 
     FreeMem(BufMem);
     buf := Nil;              // The reader will only get the next lot from
@@ -4041,7 +4093,7 @@ end;
 
 //=============================================================
 
-function TGDBDebugger.breakOut(Next: PPChar; bsize: PLongInt ): String;
+function TGDBDebugger.breakOut(Next: PPChar; bsize: PLongInt): String;
 {
 /*
   Supports the Second Level Parse.
@@ -4064,8 +4116,8 @@ begin
     s := Next^;
     c := Next^;
 
-    while (not (c^ = CR) and (c < (Next^+bsize^))) do
-    begin Inc(c) end;
+    while (not (c^ = CR) and (c < (Next^ + bsize^))) do
+        Inc(c);
     c^ := #0;
     Inc(c);
     if (c^ = LF) then
@@ -4073,11 +4125,11 @@ begin
         c^ := #0;
         Inc(c);
     end;
-    bsize^ := bsize^ - (c-s);
+    bsize^ := bsize^ - (c - s);
     if (bsize^ <= 0) then                         // nothing remains
-    begin Next^ := Nil end
+        Next^ := Nil
     else
-    begin Next^ := c end;
+        Next^ := c;
     breakOut := s;                                // copies NULL-terminated part
 
 
@@ -4085,7 +4137,8 @@ end;
 
 //=============================================================
 
-function TGDBDebugger.GetToken(buf: PChar;  bsize: PLongInt; Token: PInteger): PChar;
+function TGDBDebugger.GetToken(buf: PChar; bsize: PLongInt;
+    Token: PInteger): PChar;
 var
     OutputBuffer: String;
     c, s: PChar;
@@ -4110,7 +4163,7 @@ begin
     c := buf;
     s := buf;
 
-    while ((c^ >= '0') and (c^ <= '9') and (c < (buf+bsize^))) do
+    while ((c^ >= '0') and (c^ <= '9') and (c < (buf + bsize^))) do
     begin
         sToken := sToken + c^;
         Inc(c);
@@ -4129,17 +4182,18 @@ begin
             Token^ := 0;
         end;
 
-        bsize^ := bsize^ - (c-s);
+        bsize^ := bsize^ - (c - s);
         if (bsize^ = 0) then                          // nothing remains
-        begin GetToken := Nil end
+            GetToken := Nil
         else
-        begin GetToken := c end;
+            GetToken := c;
     end;
 end;
 
 //=================================================================
 
-function TGDBDebugger.SendToDisplay(buf: PChar;  bsize: PLongInt; verbose: Boolean): PChar;
+function TGDBDebugger.SendToDisplay(buf: PChar; bsize: PLongInt;
+    verbose: Boolean): PChar;
 var
     OutputBuffer: String;
     msg: String;
@@ -4163,12 +4217,13 @@ begin
 {$endif}
 
     if ((buf = Nil) or (bsize^ = 0)) then
-    begin SendToDisplay := Nil end
+        SendToDisplay := Nil
     else
     begin
         msg := breakOut(@buf, bsize);
-        if (not(AnsiLeftStr(msg,5) = GDBPrompt)) then   // Special case exception: "(gdb)"
-        begin msg := AnsiMidStr(msg, 2, Maxint-1) end;
+        if (not (AnsiLeftStr(msg, 5) = GDBPrompt)) then
+            // Special case exception: "(gdb)"
+            msg := AnsiMidStr(msg, 2, Maxint - 1);
 
         if (verbose) then
         begin
@@ -4180,9 +4235,9 @@ begin
 
 
         if (bsize^ = 0) then  // nothing remains
-        begin SendToDisplay := Nil end
+            SendToDisplay := Nil
         else
-        begin SendToDisplay := buf end;
+            SendToDisplay := buf;
     end;
 end;
 
@@ -4283,9 +4338,9 @@ begin
 
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
-    begin Executable := devCompiler.gdbName end
+        Executable := devCompiler.gdbName
     else
-    begin Executable := DBG_PROGRAM(devCompiler.CompilerType) end;
+        Executable := DBG_PROGRAM(devCompiler.CompilerType);
 
     //Create the command line
     {if MainForm.fProject.CurrentProfile.compilerType = ID_COMPILER_VC2008 then
@@ -4293,9 +4348,11 @@ begin
     ';SRV*' + IncludeTrailingPathDelimiter(ExtractFilePath(devDirs.Exec)) +
     'Symbols*http://msdl.microsoft.com/download/symbols', filename, arguments]);
     else}
-    Executable := Format('%s -lines -2 -G -n -s -y "%s" "%s" %s', [Executable, ExtractFilePath(filename) +
+    Executable := Format('%s -lines -2 -G -n -s -y "%s" "%s" %s',
+        [Executable, ExtractFilePath(filename) +
         ';SRV*' + IncludeTrailingPathDelimiter(ExtractFilePath(devDirs.Exec)) +
-        'Symbols*http://msdl.microsoft.com/download/symbols', filename, arguments]);
+        'Symbols*http://msdl.microsoft.com/download/symbols',
+        filename, arguments]);
 
     //Executable := Format('%s -lines -2 -G -n -s -y "%s" "%s" %s', [Executable, IncludeTrailingPathDelimiter(ExtractFilePath(filename)) +
     //  ';SRV*' + devDirs.Exec +
@@ -4303,9 +4360,9 @@ begin
 
     //Run the thing!
     if Assigned(MainForm.fProject) then
-    begin WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput end;
+        WorkingDir := MainForm.fProject.CurrentProfile.ExeOutput;
 
-   
+
     Launch(Executable, WorkingDir);
 
     //Tell the wait function that another valid output terminator is the 0:0000 prompt
@@ -4317,7 +4374,7 @@ begin
     //Set all the paths
     Srcpath := ExtractFilePath(Filename) + ';';
     for I := 0 to IncludeDirs.Count - 1 do
-    begin Srcpath := Srcpath + IncludeDirs[I] + ';' end;
+        Srcpath := Srcpath + IncludeDirs[I] + ';';
     QueueCommand('.srcpath+', Srcpath);
     QueueCommand('.exepath+', ExtractFilePath(Filename));
 end;
@@ -4336,12 +4393,13 @@ begin
 
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
-    begin Executable := devCompiler.gdbName end
+        Executable := devCompiler.gdbName
     else
-    begin Executable := DBG_PROGRAM(devCompiler.CompilerType) end;
+        Executable := DBG_PROGRAM(devCompiler.CompilerType);
 
     //Create the command line
-    Executable := Format('%s -lines -2 -G -n -s -y "%s" -p %d', [Executable, ExtractFilePath(filename) +
+    Executable := Format('%s -lines -2 -G -n -s -y "%s" -p %d',
+        [Executable, ExtractFilePath(filename) +
         ';SRV*' + IncludeTrailingPathDelimiter(ExtractFilePath(devDirs.Exec)) +
         'Symbols*http://msdl.microsoft.com/download/symbols', pid]);
 
@@ -4357,7 +4415,7 @@ begin
     //Set all the paths
     Srcpath := ExtractFilePath(Filename) + ';';
     for I := 0 to IncludeDirs.Count - 1 do
-    begin Srcpath := Srcpath + IncludeDirs[I] + ';' end;
+        Srcpath := Srcpath + IncludeDirs[I] + ';';
     QueueCommand('.srcpath+', Srcpath);
     QueueCommand('.exepath+', ExtractFilePath(Filename));
 end;
@@ -4385,21 +4443,21 @@ var
     end;
 
     procedure ParseError(const line: string);
-    begin                  
+    begin
         if RegExp.Substitute('$3') = 'c0000005' then
-        begin OnAccessViolation end
+            OnAccessViolation
         else
         if RegExp.Substitute('$3') = '40010005' then
-        begin end
+
         else
         if RegExp.Substitute('$3') = 'c00000fd' then
-        begin end
+
         else
         if RegExp.Substitute('$3') = '80000003' then
-        begin if IgnoreBreakpoint then
-            begin IgnoreBreakpoint := False end
+            if IgnoreBreakpoint then
+                IgnoreBreakpoint := False
             else
-            begin OnBreakpoint end end;
+                OnBreakpoint;
     end;
 
     procedure ParseOutput(const line: string);
@@ -4413,17 +4471,17 @@ var
 
             //Because we are here, we probably are a side-effect of a previous instruction
             //Execute the process function for the command.
-            if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and Assigned(CurrentCommand.OnResult) then
-            begin CurrentCommand.OnResult(CurOutput) end;
+            if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and
+                Assigned(CurrentCommand.OnResult) then
+                CurrentCommand.OnResult(CurOutput);
 
             if CurrentCommand <> nil then
-            begin
-                if (CurrentCommand.Command = 'g'#10) or (CurrentCommand.Command = 't'#10) or (CurrentCommand.Command = 'p'#10) then
+                if (CurrentCommand.Command = 'g'#10) or
+                    (CurrentCommand.Command = 't'#10) or (CurrentCommand.Command = 'p'#10) then
                 begin
                     RefreshContext;
                     Application.BringToFront;
                 end;
-            end;
             CurOutput.Clear;
 
             //Send the command, and do not send any more
@@ -4436,23 +4494,28 @@ var
 
         if RegExp.Exec(line, 'DBGHELP: (.*) - no symbols loaded') then
         begin
-            if LowerCase(RegExp.Substitute('$1')) = LowerCase(ChangeFileExt(ExtractFileName(Filename), '')) then
-            begin OnNoDebuggingSymbolsFound end;
+            if LowerCase(RegExp.Substitute('$1')) =
+                LowerCase(ChangeFileExt(ExtractFileName(Filename), '')) then
+                OnNoDebuggingSymbolsFound;
         end
         else
-        if RegExp.Exec(line, 'ModLoad: +([0-9a-fA-F]{1,8}) +([0-9a-fA-F]{1,8}) +(.*)') then
-        begin MainForm.StatusBar.Panels[3].Text := 'Loaded ' + RegExp.Substitute('$3') end
+        if RegExp.Exec(line,
+            'ModLoad: +([0-9a-fA-F]{1,8}) +([0-9a-fA-F]{1,8}) +(.*)') then
+            MainForm.StatusBar.Panels[3].Text :=
+                'Loaded ' + RegExp.Substitute('$3')
         else
-        if RegExp.Exec(line, '\((.*)\): (.*) - code ([0-9a-fA-F]{1,8}) \((.*)\)') then
-        begin ParseError(line) end
+        if RegExp.Exec(line,
+            '\((.*)\): (.*) - code ([0-9a-fA-F]{1,8}) \((.*)\)') then
+            ParseError(line)
         else
         if RegExp.Exec(line, 'Breakpoint ([0-9]+) hit') then
         begin
-            CurrBp := GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1')));
+            CurrBp := GetBreakpointFromIndex(
+                StrToInt(RegExp.Substitute('$1')));
             if CurrBp <> nil then
-            begin MainForm.GotoBreakpoint(CurrBp.Filename, CurrBp.Line) end
+                MainForm.GotoBreakpoint(CurrBp.Filename, CurrBp.Line)
             else
-            begin JumpToCurrentLine := True end;
+                JumpToCurrentLine := True;
         end;
 
         CurOutput.Add(Line);
@@ -4472,7 +4535,7 @@ begin
 
             //Process the output
             if not AnsiStartsStr('DBGHELP: ', CurLine) then
-            begin NewLines.Add(CurLine) end;
+                NewLines.Add(CurLine);
             ParseOutput(CurLine);
 
             //Remove those that we've already processed
@@ -4502,7 +4565,7 @@ procedure TCDBDebugger.AddIncludeDir(s: string);
 begin
     IncludeDirs.Add(s);
     if Executing then
-    begin QueueCommand('.sympath+', s) end;
+        QueueCommand('.sympath+', s);
 end;
 
 procedure TCDBDebugger.ClearIncludeDirs;
@@ -4516,7 +4579,8 @@ var
 begin
     if (not Paused) and Executing then
     begin
-        MessageDlg('Cannot add a breakpoint while the debugger is executing.', mtError, [mbOK], MainForm.Handle);
+        MessageDlg('Cannot add a breakpoint while the debugger is executing.',
+            mtError, [mbOK], MainForm.Handle);
         Exit;
     end;
 
@@ -4537,16 +4601,16 @@ begin
     end;
 
     for i := 0 to Breakpoints.Count - 1 do
-    begin
-        if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
+        if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and
+            (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
         begin
             if Executing then
-            begin QueueCommand('bc', IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index)) end;
+                QueueCommand('bc',
+                    IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
             Dispose(Breakpoints.Items[i]);
             Breakpoints.Delete(i);
             Break;
         end;
-    end;
 end;
 
 procedure TCDBDebugger.RefreshBreakpoint(var breakpoint: TBreakpoint);
@@ -4560,7 +4624,9 @@ begin
         breakpoint.Index := fNextBreakpoint;
         Command := TCommand.Create;
         Command.Data := breakpoint;
-        Command.Command := Format('bp%d `%s:%d`', [breakpoint.Index, breakpoint.Filename, breakpoint.Line]);
+        Command.Command :=
+            Format('bp%d `%s:%d`', [breakpoint.Index, breakpoint.Filename,
+            breakpoint.Line]);
         Command.OnResult := OnBreakpointSet;
         QueueCommand(Command);
     end;
@@ -4571,14 +4637,14 @@ var
     e: TEditor;
 begin
     if CurrentCommand.Data = nil then
-    begin Exit end;
-  
+        Exit;
+
     with TBreakpoint(CurrentCommand.Data) do
     begin
         Valid := False;
         e := MainForm.GetEditorFromFileName(FileName, True);
         if e <> nil then
-        begin e.InvalidateGutter end;
+            e.InvalidateGutter;
     end;
 end;
 
@@ -4590,7 +4656,7 @@ var
     MemberName: string;
 begin
     if not Executing then
-    begin Exit end;
+        Exit;
 
     //First send commands for stack tracing, locals and the threads list
     if cdCallStack in refresh then
@@ -4615,9 +4681,9 @@ begin
         QueueCommand(Command);
     end;
     if cdDisassembly in refresh then
-    begin Disassemble end;
+        Disassemble;
     if cdRegisters in refresh then
-    begin GetRegisters end;
+        GetRegisters;
 
     //Then update the watches
     if (cdWatches in refresh) and Assigned(DebugTree) then
@@ -4627,7 +4693,7 @@ begin
         begin
             Node := DebugTree.Items[I];
             if Node.Data = nil then
-            begin Continue end;
+                Continue;
             with PWatch(Node.Data)^ do
             begin
                 Command := TCommand.Create;
@@ -4635,16 +4701,20 @@ begin
                 //Decide what command we should send - dv for locals, dt for structures
                 if Pos('.', Name) > 0 then
                 begin
-                    Command.Command := 'dt -r -b -n ' + Copy(name, 1, Pos('.', name) - 1);
+                    Command.Command :=
+                        'dt -r -b -n ' + Copy(name, 1, Pos('.', name) - 1);
                     MemberName := Copy(name, Pos('.', name) + 1, Length(name));
                     if MemberName <> '' then
-                    begin Command.Command := Command.Command + ' ' + MemberName + '.' end;
+                        Command.Command :=
+                            Command.Command + ' ' + MemberName + '.';
                 end
                 else
                 if Pos('[', Name) > 0 then
-                begin Command.Command := 'dt -a -r -b -n ' + Copy(name, 1, Pos('[', name) - 1) end
+                    Command.Command :=
+                        'dt -a -r -b -n ' + Copy(name, 1, Pos('[', name) - 1)
                 else
-                begin Command.Command := 'dt -r -b -n ' + Copy(name, Pos('*', name) + 1, Length(name)) end;
+                    Command.Command :=
+                        'dt -r -b -n ' + Copy(name, Pos('*', name) + 1, Length(name));
 
                 //Fill in the other data
                 Command.Data := Node;
@@ -4673,7 +4743,8 @@ var
     RegExp: TRegExpr;
     Node: TTreeNode;
 
-    procedure ParseStructure(Output: TStringList; ParentNode: TTreeNode); forward;
+    procedure ParseStructure(Output: TStringList;
+        ParentNode: TTreeNode); forward;
     procedure ParseStructArray(Output: TStringList; ParentNode: TTreeNode);
     var
         I: Integer;
@@ -4683,10 +4754,10 @@ var
         I := 0;
         Indent := 0;
         while I < Output.Count do
-        begin
             if RegExp.Exec(Output[I], StructArrayExpr) then
             begin
-                with DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('[$2] $3')) do
+                with DebugTree.Items.AddChild(ParentNode,
+                        RegExp.Substitute('[$2] $3')) do
                 begin
                     SelectedIndex := 21;
                     ImageIndex := 21;
@@ -4694,12 +4765,12 @@ var
 
                 Inc(I);
                 if I >= Output.Count then
-                begin Continue end;
+                    Continue;
 
                 if RegExp.Exec(Output[I], StructExpr) then
                 begin
                     if Indent = 0 then
-                    begin Indent := Length(RegExp.Substitute('$1')) end;
+                        Indent := Length(RegExp.Substitute('$1'));
 
                     SubStructure := TStringList.Create;
                     while I < Output.Count do
@@ -4707,17 +4778,17 @@ var
                         if RegExp.Exec(Output[I], StructExpr) then
                         begin
                             if Length(RegExp.Substitute('$1')) < Indent then
-                            begin Break end
+                                Break
                             else
-                            begin SubStructure.Add(Output[I]) end;
+                            begin SubStructure.Add(Output[I]); end;
                         end
                         else
                         if RegExp.Exec(Output[I], StructArrayExpr) then
-                        begin if Length(RegExp.Substitute('$1')) <= Indent then
-                            begin Break end
+                            if Length(RegExp.Substitute('$1')) <= Indent then
+                                Break
                             else
-                            begin SubStructure.Add(Output[I]) end end;
-                
+                                SubStructure.Add(Output[I]);
+
                         Inc(I);
                     end;
                     Indent := 0;
@@ -4730,13 +4801,13 @@ var
                     end;
 
                     //Determine if it is a structure or an array
-                    ParseStructure(SubStructure, ParentNode.Item[ParentNode.Count - 1]);
+                    ParseStructure(SubStructure,
+                        ParentNode.Item[ParentNode.Count - 1]);
                     ParentNode.Item[ParentNode.Count - 1].Expand(false);
                     SubStructure.Free;
                     Dec(I);
                 end;
             end;
-        end;
     end;
 
     procedure ParseStructure(Output: TStringList; ParentNode: TTreeNode);
@@ -4750,10 +4821,11 @@ var
         Indent := 0;
         while I < Output.Count do
         begin
-            if RegExp.Exec(Output[I], StructExpr) or RegExp.Exec(Output[I], StructArrayExpr) then
+            if RegExp.Exec(Output[I], StructExpr) or
+                RegExp.Exec(Output[I], StructArrayExpr) then
             begin
                 if Indent = 0 then
-                begin Indent := Length(RegExp.Substitute('$1')) end;
+                    Indent := Length(RegExp.Substitute('$1'));
 
                 //Check if this is a sub-structure
                 if Indent <> Length(RegExp.Substitute('$1')) then
@@ -4763,11 +4835,12 @@ var
 
                     while I < Output.Count do
                     begin
-                        if RegExp.Exec(Output[I], StructArrayExpr) or RegExp.Exec(Output[I], StructExpr) then
-                        begin if Length(RegExp.Substitute('$1')) <= Indent then
-                            begin Break end
+                        if RegExp.Exec(Output[I], StructArrayExpr) or
+                            RegExp.Exec(Output[I], StructExpr) then
+                            if Length(RegExp.Substitute('$1')) <= Indent then
+                                Break
                             else
-                            begin SubStructure.Add(Output[I]) end end;
+                                SubStructure.Add(Output[I]);
                         Inc(I);
                     end;
 
@@ -4780,10 +4853,12 @@ var
 
                     //Determine if it is a structure or an array
                     if SubStructure.Count <> 0 then
-                    begin if Trim(SubStructure[0])[1] = '[' then
-                        begin ParseStructArray(SubStructure, ParentNode.Item[ParentNode.Count - 1]) end
+                        if Trim(SubStructure[0])[1] = '[' then
+                            ParseStructArray(SubStructure,
+                                ParentNode.Item[ParentNode.Count - 1])
                         else
-                        begin ParseStructure(SubStructure, ParentNode.Item[ParentNode.Count - 1]) end end;
+                            ParseStructure(SubStructure,
+                                ParentNode.Item[ParentNode.Count - 1]);
                     ParentNode.Item[ParentNode.Count - 1].Expand(false);
                     SubStructure.Free;
                     Indent := 0;
@@ -4794,9 +4869,11 @@ var
                 else
                 begin
                     if RegExp.Substitute('$5') = '' then
-                    begin Node := DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('$3')) end
+                        Node :=
+                            DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('$3'))
                     else
-                    begin Node := DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('$3 = $5')) end;
+                        Node :=
+                            DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('$3 = $5'));
 
                     with Node do
                     begin
@@ -4807,9 +4884,11 @@ var
             end
             //Otherwise just add the value if it is a scalar
             else
-            if (I < Output.Count - 1) and (Length(Output[I + 1]) <> 0) and (Output[I + 1][1] <> '+') then
+            if (I < Output.Count - 1) and (Length(Output[I + 1]) <> 0) and
+                (Output[I + 1][1] <> '+') then
             begin
-                with DebugTree.Items.AddChild(ParentNode, Trim(Output[I + 1])) do
+                with DebugTree.Items.AddChild(ParentNode,
+                        Trim(Output[I + 1])) do
                 begin
                     SelectedIndex := 21;
                     ImageIndex := 21;
@@ -4851,7 +4930,8 @@ var
                     with TRegExpr.Create do
                     begin
                         Exec(Output[I - Increment], ArrayExpr);
-                        with DebugTree.Items.AddChild(ParentNode, Substitute('[$1]')) do
+                        with DebugTree.Items.AddChild(ParentNode,
+                                Substitute('[$1]')) do
                         begin
                             SelectedIndex := 32;
                             ImageIndex := 32;
@@ -4869,7 +4949,8 @@ var
                     end;
 
                     //Process it
-                    ParseStructure(SubStructure, ParentNode.Item[ParentNode.Count - 1]);
+                    ParseStructure(SubStructure,
+                        ParentNode.Item[ParentNode.Count - 1]);
                     ParentNode.Item[ParentNode.Count - 1].Expand(false);
                     SubStructure.Free;
 
@@ -4877,25 +4958,28 @@ var
                     Dec(I);
                 end
                 else
-                begin with TRegExpr.Create do
+                    with TRegExpr.Create do
                     begin
                         Exec(Output[I - Increment], ArrayExpr);
-                        with DebugTree.Items.AddChild(ParentNode, Substitute('[$1]') + ' = ' + Output[I]) do
+                        with DebugTree.Items.AddChild(ParentNode,
+                                Substitute('[$1]') + ' = ' + Output[I]) do
                         begin
                             SelectedIndex := 21;
                             ImageIndex := 21;
                         end;
                         Inc(I);
 
-                        if (I < Output.Count - 1) and Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+                        if (I < Output.Count - 1) and
+                            Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
                         begin
                             with ParentNode.Item[ParentNode.Count - 1] do
                             begin
                                 SelectedIndex := 32;
                                 ImageIndex := 32;
                             end;
-              
-                            with DebugTree.Items.AddChild(ParentNode.Item[ParentNode.Count - 1], Substitute('$1 = $2')) do
+
+                            with DebugTree.Items.AddChild(
+                                    ParentNode.Item[ParentNode.Count - 1], Substitute('$1 = $2')) do
                             begin
                                 SelectedIndex := 21;
                                 ImageIndex := 21;
@@ -4921,14 +5005,15 @@ var
                             end;
 
                             //Process it
-                            ParseStructure(SubStructure, ParentNode.Item[ParentNode.Count - 1]);
+                            ParseStructure(SubStructure,
+                                ParentNode.Item[ParentNode.Count - 1]);
                             SubStructure.Free;
 
                             //Decrement I, since we will increment one at the end of the loop
                             Dec(I);
                         end;
                         Free;
-                    end end;
+                    end;
             end;
 
             //Increment I
@@ -4939,42 +5024,46 @@ begin
     NeedsRefresh := False;
     RegExp := TRegExpr.Create;
     Node := TTreeNode(CurrentCommand.Data);
-  
+
     //Set the type of the structure/class/whatever
     with PWatch(Node.Data)^ do
-    begin if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)') then
+        if RegExp.Exec(Output[0],
+            '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)') then
         begin
             Expanded := Node.Expanded;
             if Pos('[', name) <> 0 then
-            begin Node.Text := RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) + ' = $4$5 (0x$3)') end
+                Node.Text := RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) +
+                    ' = $4$5 (0x$3)')
             else
-            begin Node.Text := RegExp.Substitute(name + ' = $4$5 (0x$3)') end;
+            begin Node.Text := RegExp.Substitute(name + ' = $4$5 (0x$3)'); end;
             Node.SelectedIndex := 32;
             Node.ImageIndex := 32;
             ParseArray(Output, Node);
 
             if Expanded then
-            begin Node.Expand(True) end;
+                Node.Expand(True);
         end
         else
-        if RegExp.Exec(Output[0], '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)') then
+        if RegExp.Exec(Output[0],
+            '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)') then
         begin
             Expanded := Node.Expanded;
             if Pos('.', name) <> 0 then
-            begin Node.Text := RegExp.Substitute(Copy(name, 1, Pos('.', name) - 1) + ' = $4 (0x$3)') end
+                Node.Text := RegExp.Substitute(Copy(name, 1, Pos('.', name) - 1) +
+                    ' = $4 (0x$3)')
             else
-            begin Node.Text := RegExp.Substitute(name + ' = $4 (0x$3)') end;
+                Node.Text := RegExp.Substitute(name + ' = $4 (0x$3)');
             Node.SelectedIndex := 32;
             Node.ImageIndex := 32;
             ParseStructure(Output, Node);
 
             if Expanded then
-            begin Node.Expand(True) end;
-        end end;
+                Node.Expand(True);
+        end;
 
     //Do we have to refresh the entire thing?
     if NeedsRefresh then
-    begin RefreshContext end;
+        RefreshContext;
     RegExp.Free;
 end;
 
@@ -5002,14 +5091,15 @@ begin
     //Determine the type
     case when of
         wbWrite:
-        begin bpType := 'w' end;
+            bpType := 'w';
         wbBoth:
-        begin bpType := 'r' end;
+            bpType := 'r';
     end;
 
     Command := TCommand.Create;
     Command.Data := nil;
-    Command.Command := Format('ba%d %s4 %s', [fNextBreakpoint, bpType, varname]);
+    Command.Command := Format('ba%d %s4 %s',
+        [fNextBreakpoint, bpType, varname]);
     Command.OnResult := OnBreakpointSet;
     QueueCommand(Command);
 end;
@@ -5020,14 +5110,14 @@ var
     Command: TCommand;
 begin
     for I := 0 to DebugTree.Items.Count - 1 do
-    begin with PWatch(DebugTree.Items[I].Data)^ do
+        with PWatch(DebugTree.Items[I].Data)^ do
         begin
             Command := TCommand.Create;
             Command.Data := nil;
             Command.Command := Format('ba%d r4 %s', [ID, Name]);
             Command.OnResult := OnBreakpointSet;
             QueueCommand(Command);
-        end end;
+        end;
 end;
 
 procedure TCDBDebugger.RemoveWatch(varname: string);
@@ -5037,7 +5127,7 @@ begin
     //Find the top-most node
     node := DebugTree.Selected;
     while Assigned(node) and (Assigned(node.Parent)) do
-    begin node := node.Parent end;
+        node := node.Parent;
 
     //Then clean it up
     if Assigned(node) then
@@ -5057,12 +5147,13 @@ var
 begin
     CallStack := TList.Create;
     RegExp := TRegExpr.Create;
-  
+
     for I := 0 to Output.Count - 1 do
-    begin if RegExp.Exec(Output[I], 'ChildEBP RetAddr') then
-        begin Continue end
+        if RegExp.Exec(Output[I], 'ChildEBP RetAddr') then
+            Continue
         else
-        if RegExp.Exec(Output[I], '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)\((.*)\)(|.*) \[(.*) @ ([0-9]*)\]') then
+        if RegExp.Exec(Output[I],
+            '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)\((.*)\)(|.*) \[(.*) @ ([0-9]*)\]') then
         begin
             //Stack frame with source information
             New(StackFrame);
@@ -5078,7 +5169,8 @@ begin
             end;
         end
         else
-        if RegExp.Exec(Output[I], '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)(|\((.*)\))(.*)') then
+        if RegExp.Exec(Output[I],
+            '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)(|\((.*)\))(.*)') then
         begin
             //Stack frame without source information
             New(StackFrame);
@@ -5091,12 +5183,12 @@ begin
                 Args := RegExp.Substitute('$5');
                 Line := 0;
             end;
-        end end;
+        end;
 
     //Now that we have the entire callstack loaded into our list, call the function
     //that wants it
     if Assigned(TDebugger(Self).OnCallStack) then
-    begin TDebugger(Self).OnCallStack(CallStack) end;
+        TDebugger(Self).OnCallStack(CallStack);
 
     //Do we show the new execution point?
     if JumpToCurrentLine then
@@ -5120,9 +5212,10 @@ var
 begin
     Threads := TList.Create;
     RegExp := TRegExpr.Create;
-  
+
     for I := 0 to Output.Count - 1 do
-    begin if RegExp.Exec(Output[I], '([.#]*)( +)([0-9]*)( +)Id: ([0-9a-fA-F]*)\.([0-9a-fA-F]*) Suspend: ([0-9a-fA-F]*) Teb: ([0-9a-fA-F]{1,8}) (.*)') then
+        if RegExp.Exec(Output[I],
+            '([.#]*)( +)([0-9]*)( +)Id: ([0-9a-fA-F]*)\.([0-9a-fA-F]*) Suspend: ([0-9a-fA-F]*) Teb: ([0-9a-fA-F]{1,8}) (.*)') then
         begin
             New(Thread);
             Threads.Add(Thread);
@@ -5136,19 +5229,19 @@ begin
                 Suspended := RegExp.Substitute('$7') <> '0';
                 Frozen := RegExp.Substitute('$9') = 'frozen';
                 if Suspended and Frozen then
-                begin ID := ID + ' (Suspended, Frozen)' end
+                    ID := ID + ' (Suspended, Frozen)'
                 else
                 if Suspended then
-                begin ID := ID + ' (Suspended)' end
+                    ID := ID + ' (Suspended)'
                 else
                 if Frozen then
-                begin ID := ID + ' (Frozen)' end
+                    ID := ID + ' (Frozen)';
             end;
-        end end;
+        end;
 
     //Pass the locals list to the callback function that wants it
     if Assigned(TDebugger(Self).OnThreads) then
-    begin TDebugger(Self).OnThreads(Threads) end;
+        TDebugger(Self).OnThreads(Threads);
 
     //Clean up
     Threads.Free;
@@ -5166,9 +5259,10 @@ begin
     Locals := TList.Create;
     LocalsList := TList.Create;
     RegExp := TRegExpr.Create;
-  
+
     for I := 0 to Output.Count - 1 do
-    begin if RegExp.Exec(Output[I], '(.*)( +)(.*)( +)([0-9a-fA-F]{1,8}) +(.*) = (.*)') then
+        if RegExp.Exec(Output[I],
+            '(.*)( +)(.*)( +)([0-9a-fA-F]{1,8}) +(.*) = (.*)') then
         begin
             New(Local);
             Locals.Add(Local);
@@ -5180,24 +5274,28 @@ begin
                 Value := RegExp.Substitute('$7');
                 Location := RegExp.Substitute('$5');
             end;
-        end end;
+        end;
 
     //Now that the locals list has a complete list of values, we want to get the
     //full variable stuff if it is a structure.
     Command := TCommand.Create;
     Command.Command := '';
     for I := 0 to Locals.Count - 1 do
-    begin with PVariable(Locals[I])^ do
-        begin if (Pos('class', Value) > 0) or (Pos('struct', Value) > 0) or (Pos('union', Value) > 0) then
-            begin Command.Command := Format('%sdt -r -b -n %s;', [Command.Command, Name]) end
+        with PVariable(Locals[I])^ do
+            if (Pos('class', Value) > 0) or (Pos('struct', Value) > 0) or
+                (Pos('union', Value) > 0) then
+                Command.Command :=
+                    Format('%sdt -r -b -n %s;', [Command.Command, Name])
             else
             if Pos('[', Value) > 0 then
-            begin Command.Command := Format('%sdt -a -r -b -n %s;', [Command.Command, Name]) end
+                Command.Command :=
+                    Format('%sdt -a -r -b -n %s;', [Command.Command, Name])
             else
             if Pos('0x', Value) = 1 then
-            begin Command.Command := Format('%sdt -a -r -b -n %s;', [Command.Command, Name]) end
+                Command.Command :=
+                    Format('%sdt -a -r -b -n %s;', [Command.Command, Name])
             else
-            begin LocalsList.Add(Locals[I]) end end end;
+                LocalsList.Add(Locals[I]);
 
     if Command.Command <> '' then
     begin
@@ -5207,7 +5305,7 @@ begin
     else
     begin
         if Assigned(TDebugger(Self).OnLocals) then
-        begin TDebugger(Self).OnLocals(LocalsList) end;
+            TDebugger(Self).OnLocals(LocalsList);
         FreeAndNil(LocalsList);
     end;
 
@@ -5238,9 +5336,9 @@ var
     begin
         Result := '';
         for I := 0 to Indent - 1 do
-        begin Result := Result + ' ' end;
+            Result := Result + ' ';
     end;
-  
+
     procedure ParseStructure(Output: TStringList; exIndent: Integer); forward;
     procedure ParseStructArray(Output: TStringList; Indent: Integer);
     var
@@ -5250,17 +5348,16 @@ var
         I := 0;
         Indent := 0;
         while I < Output.Count do
-        begin
             if RegExp.Exec(Output[I], StructArrayExpr) then
             begin
                 Inc(I);
                 if I >= Output.Count then
-                begin Continue end;
+                    Continue;
 
                 if RegExp.Exec(Output[I], StructExpr) then
                 begin
                     if Indent = 0 then
-                    begin Indent := Length(RegExp.Substitute('$1')) end;
+                        Indent := Length(RegExp.Substitute('$1'));
 
                     SubStructure := TStringList.Create;
                     while I < Output.Count do
@@ -5268,17 +5365,17 @@ var
                         if RegExp.Exec(Output[I], StructExpr) then
                         begin
                             if Length(RegExp.Substitute('$1')) < Indent then
-                            begin Break end
+                                Break
                             else
-                            begin SubStructure.Add(Output[I]) end;
+                            begin SubStructure.Add(Output[I]); end;
                         end
                         else
                         if RegExp.Exec(Output[I], StructArrayExpr) then
-                        begin if Length(RegExp.Substitute('$1')) <= Indent then
-                            begin Break end
+                            if Length(RegExp.Substitute('$1')) <= Indent then
+                                Break
                             else
-                            begin SubStructure.Add(Output[I]) end end;
-                
+                                SubStructure.Add(Output[I]);
+
                         Inc(I);
                     end;
 
@@ -5288,7 +5385,6 @@ var
                     Dec(I);
                 end;
             end;
-        end;
     end;
 
     procedure ParseStructure(Output: TStringList; exIndent: Integer);
@@ -5300,10 +5396,11 @@ var
         Indent := 0;
         while I < Output.Count do
         begin
-            if RegExp.Exec(Output[I], StructExpr) or RegExp.Exec(Output[I], StructArrayExpr) then
+            if RegExp.Exec(Output[I], StructExpr) or
+                RegExp.Exec(Output[I], StructArrayExpr) then
             begin
                 if Indent = 0 then
-                begin Indent := Length(RegExp.Substitute('$1')) end;
+                    Indent := Length(RegExp.Substitute('$1'));
 
                 //Check if this is a sub-structure
                 if Indent <> Length(RegExp.Substitute('$1')) then
@@ -5313,23 +5410,24 @@ var
 
                     while I < Output.Count do
                     begin
-                        if RegExp.Exec(Output[I], StructArrayExpr) or RegExp.Exec(Output[I], StructExpr) then
-                        begin if Length(RegExp.Substitute('$1')) <= Indent then
+                        if RegExp.Exec(Output[I], StructArrayExpr) or
+                            RegExp.Exec(Output[I], StructExpr) then
+                            if Length(RegExp.Substitute('$1')) <= Indent then
                             begin
                                 Inc(I);
                                 Break;
                             end
                             else
-                            begin SubStructure.Add(Output[I]) end end;
+                                SubStructure.Add(Output[I]);
                         Inc(I);
                     end;
 
                     //Determine if it is a structure or an array
                     if SubStructure.Count <> 0 then
-                    begin if Trim(SubStructure[0])[1] = '[' then
-                        begin ParseStructArray(SubStructure, Indent + 4) end
+                        if Trim(SubStructure[0])[1] = '[' then
+                            ParseStructArray(SubStructure, Indent + 4)
                         else
-                        begin ParseStructure(SubStructure, Indent + 4) end end;
+                            ParseStructure(SubStructure, Indent + 4);
                     SubStructure.Free;
 
                     //Decrement I, since we will increment one at the end of the loop
@@ -5339,7 +5437,8 @@ var
                 else
                 begin
                     New(Local);
-                    Local^.Name := SynthesizeIndent(Indent + exIndent) + RegExp.Substitute('$3');
+                    Local^.Name :=
+                        SynthesizeIndent(Indent + exIndent) + RegExp.Substitute('$3');
                     Local^.Value := RegExp.Substitute('$5');
                     LocalsList.Add(Local);
                 end;
@@ -5368,7 +5467,7 @@ var
                     Inc(I);
                     Inc(Increment);
                 end;
-        
+
                 //Are we an array (with a basic data type) or with a UDT?
                 if RegExp.Exec(Output[I], StructExpr) then
                 begin
@@ -5376,7 +5475,8 @@ var
                     begin
                         Exec(Output[I - Increment], ArrayExpr);
                         New(Local);
-                        Local^.Name := SynthesizeIndent(Indent) + Substitute('$1');
+                        Local^.Name :=
+                            SynthesizeIndent(Indent) + Substitute('$1');
                         LocalsList.Add(Local);
                         Free;
                     end;
@@ -5397,19 +5497,22 @@ var
                     Dec(I);
                 end
                 else
-                begin with TRegExpr.Create do
+                    with TRegExpr.Create do
                     begin
                         Exec(Output[I - Increment], ArrayExpr);
                         New(Local);
-                        Local^.Name := SynthesizeIndent(Indent) + Substitute('[$1]');
+                        Local^.Name :=
+                            SynthesizeIndent(Indent) + Substitute('[$1]');
                         Local^.Value := Output[I];
                         LocalsList.Add(Local);
                         Inc(I);
 
-                        if (I < Output.Count - 1) and Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+                        if (I < Output.Count - 1) and
+                            Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
                         begin
                             New(Local);
-                            Local^.Name := SynthesizeIndent(Indent + 4) + Substitute('$1');
+                            Local^.Name :=
+                                SynthesizeIndent(Indent + 4) + Substitute('$1');
                             Local^.Value := Substitute('$2');
                             LocalsList.Add(Local);
                             Inc(I);
@@ -5433,7 +5536,7 @@ var
                             Dec(I);
                         end;
                         Free;
-                    end end;
+                    end;
             end;
 
             //Increment I
@@ -5470,7 +5573,7 @@ begin
     J := 0;
     I := 0;
     while I < Output.Count do
-    begin if RegExp.Exec(Output[I], PtrVarPrompt) then
+        if RegExp.Exec(Output[I], PtrVarPrompt) then
         begin
             New(Local);
             Local^.Name := Variables[J];
@@ -5479,7 +5582,8 @@ begin
             LocalsList.Add(Local);
             Inc(I);
 
-            while (I < Output.Count) and not RegExp.Exec(Output[I], VarPrompt) do
+            while (I < Output.Count) and not
+                RegExp.Exec(Output[I], VarPrompt) do
             begin
                 SubStructure.Add(Output[I]);
                 Inc(I);
@@ -5499,7 +5603,8 @@ begin
             LocalsList.Add(Local);
             Inc(I);
 
-            while (I < Output.Count) and not RegExp.Exec(Output[I], VarPrompt) do
+            while (I < Output.Count) and not
+                RegExp.Exec(Output[I], VarPrompt) do
             begin
                 SubStructure.Add(Output[I]);
                 Inc(I);
@@ -5510,11 +5615,11 @@ begin
             Inc(J);
         end
         else
-        begin Inc(I) end end;
+            Inc(I);
 
     //Send the list of locals
     if Assigned(TDebugger(Self).OnLocals) then
-    begin TDebugger(Self).OnLocals(LocalsList) end;
+        TDebugger(Self).OnLocals(LocalsList);
     FreeAndNil(LocalsList);
 
     SubStructure.Free;
@@ -5527,7 +5632,7 @@ var
     Command: TCommand;
 begin
     if (not Executing) or (not Paused) then
-    begin Exit end;
+        Exit;
 
     Command := TCommand.Create;
     Command.Command := 'r';
@@ -5545,8 +5650,8 @@ begin
     Registers := TRegisters.Create;
 
     for I := 0 to Output.Count - 1 do
-    begin if RegExp.Exec(Output[I], 'eax=([0-9a-fA-F]{1,8}) ebx=([0-9a-fA-F]{1,8}) ecx=([0-9a-fA-F]{1,8}) edx=([0-9a-fA-F]{1,8}) esi=([0-9a-fA-F]{1,8}) edi=([0-9a-fA-F]{1,8})') then
-        begin
+        if RegExp.Exec(Output[I],
+            'eax=([0-9a-fA-F]{1,8}) ebx=([0-9a-fA-F]{1,8}) ecx=([0-9a-fA-F]{1,8}) edx=([0-9a-fA-F]{1,8}) esi=([0-9a-fA-F]{1,8}) edi=([0-9a-fA-F]{1,8})') then
             with Registers do
             begin
                 EAX := RegExp.Substitute('$1');
@@ -5555,21 +5660,20 @@ begin
                 EDX := RegExp.Substitute('$4');
                 ESI := RegExp.Substitute('$5');
                 EDI := RegExp.Substitute('$6');
-            end;
-        end
+            end
         else
-        if RegExp.Exec(Output[I], 'eip=([0-9a-fA-F]{1,8}) esp=([0-9a-fA-F]{1,8}) ebp=([0-9a-fA-F]{1,8}) iopl=([0-9a-fA-F]{1,8})') then
-        begin
+        if RegExp.Exec(Output[I],
+            'eip=([0-9a-fA-F]{1,8}) esp=([0-9a-fA-F]{1,8}) ebp=([0-9a-fA-F]{1,8}) iopl=([0-9a-fA-F]{1,8})')
+        then
             with Registers do
             begin
                 EIP := RegExp.Substitute('$1');
                 ESP := RegExp.Substitute('$2');
                 EBP := RegExp.Substitute('$3');
-            end;
-        end
+            end
         else
-        if RegExp.Exec(Output[I], 'cs=([0-9a-fA-F]{1,4})  ss=([0-9a-fA-F]{1,4})  ds=([0-9a-fA-F]{1,4})  es=([0-9a-fA-F]{1,4})  fs=([0-9a-fA-F]{1,4})  gs=([0-9a-fA-F]{1,4})             efl=([0-9a-fA-F]{1,8})') then
-        begin
+        if RegExp.Exec(Output[I],
+            'cs=([0-9a-fA-F]{1,4})  ss=([0-9a-fA-F]{1,4})  ds=([0-9a-fA-F]{1,4})  es=([0-9a-fA-F]{1,4})  fs=([0-9a-fA-F]{1,4})  gs=([0-9a-fA-F]{1,4})             efl=([0-9a-fA-F]{1,8})') then
             with Registers do
             begin
                 CS := RegExp.Substitute('$1');
@@ -5580,14 +5684,13 @@ begin
                 GS := RegExp.Substitute('$6');
                 EFLAGS := RegExp.Substitute('$7');
             end;
-        end end;
 
     //Pass the locals list to the callback function that wants it
     if Assigned(TDebugger(Self).OnRegisters) then
-    begin TDebugger(Self).OnRegisters(Registers) end;
+        TDebugger(Self).OnRegisters(Registers);
 
     //Clean up
-    RegExp.Free;  
+    RegExp.Free;
 end;
 
 procedure TCDBDebugger.Disassemble(func: string);
@@ -5595,11 +5698,11 @@ var
     Command: TCommand;
 begin
     if (not Executing) or (not Paused) then
-    begin Exit end;
+        Exit;
 
     //If func is empty, assume the value of the reguister eip.
     if func = '' then
-    begin func := 'eip' end;
+        func := 'eip';
 
     Command := TCommand.Create;
     Command.Command := 'uf ' + func;
@@ -5617,7 +5720,7 @@ begin
     CurLine := -1;
     RegExp := TRegExpr.Create;
     for I := 0 to Output.Count - 1 do
-    begin if RegExp.Exec(Output[I], '^(.*)!(.*) \[(.*) @ ([0-9]+)]:') then
+        if RegExp.Exec(Output[I], '^(.*)!(.*) \[(.*) @ ([0-9]+)]:') then
         begin
             CurLine := StrToInt(RegExp.Substitute('$4'));
             CurFile := RegExp.Substitute('$1!$2 [$3 @ ');
@@ -5625,24 +5728,28 @@ begin
         end
         else
         if RegExp.Exec(Output[I], '^(.*)!(.*):') then
-        begin Disassembly := Disassembly + #9 + ';' + Output[I] + #10 end
+            Disassembly := Disassembly + #9 + ';' + Output[I] + #10
         else
-        if RegExp.Exec(Output[I], '^ +([0-9]+) +([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') then
+        if RegExp.Exec(Output[I],
+            '^ +([0-9]+) +([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') then
         begin
             if StrToInt(RegExp.Substitute('$1')) <> CurLine then
             begin
                 CurLine := StrToInt(RegExp.Substitute('$1'));
-                Disassembly := Disassembly + #9 + ';' + CurFile + RegExp.Substitute('$1') + ']:' + #10;
+                Disassembly :=
+                    Disassembly + #9 + ';' + CurFile + RegExp.Substitute('$1') + ']:' + #10;
             end;
-            Disassembly := Disassembly + RegExp.Substitute('$2$3$4$5$6$7$8') + #10;
+            Disassembly := Disassembly +
+                RegExp.Substitute('$2$3$4$5$6$7$8') + #10;
         end
         else
-        if RegExp.Exec(Output[I], '^([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') then
-        begin Disassembly := Disassembly + Output[I] + #10 end end;
+        if RegExp.Exec(Output[I],
+            '^([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') then
+            Disassembly := Disassembly + Output[I] + #10;
 
     //Pass the disassembly to the callback function that wants it
     if Assigned(TDebugger(Self).OnDisassemble) then
-    begin TDebugger(Self).OnDisassemble(Disassembly) end;
+        TDebugger(Self).OnDisassemble(Disassembly);
 
     //Clean up
     RegExp.Free;
@@ -5653,7 +5760,7 @@ var
     Command: TCommand;
 begin
     if (not Executing) or (not Paused) then
-    begin Exit end;
+        Exit;
 
     Command := TCommand.Create;
     Command.Data := TString.Create(name);
@@ -5661,9 +5768,9 @@ begin
 
     //Decide what command we should send - dv for locals, dt for structures
     if Pos('.', name) > 0 then
-    begin Command.Command := 'dt ' + Copy(name, 1, Pos('.', name) - 1) end
+        Command.Command := 'dt ' + Copy(name, 1, Pos('.', name) - 1)
     else
-    begin Command.Command := 'dv ' + name end;
+        Command.Command := 'dv ' + name;
 
     //Send the command;
     QueueCommand(Command);
@@ -5684,25 +5791,25 @@ begin
         //Remove the dots and count the number of indents
         Depth := 0;
         for I := 1 to Length(name) do
-        begin if name[I] = '.' then
-            begin Inc(Depth) end end;
+            if name[I] = '.' then
+                Inc(Depth);
 
         //Then find the member name
         for I := 0 to Output.Count - 1 do
-        begin if RegExp.Exec(Output[I], '( {' + IntToStr(Depth * 3) + '})\+0x([0-9a-fA-F]{1,8}) ' +
-                Copy(name, GetLastPos('.', name) + 1, Length(name)) + '( +): (.*)') then
-            begin Hint := RegExp.Substitute(name + ' = $4') end end;
+            if RegExp.Exec(Output[I], '( {' + IntToStr(Depth * 3) +
+                '})\+0x([0-9a-fA-F]{1,8}) ' +
+                Copy(name, GetLastPos('.', name) + 1, Length(name)) +
+                '( +): (.*)') then
+                Hint := RegExp.Substitute(name + ' = $4');
     end
     else
-    begin
         for I := 0 to Output.Count - 1 do
-        begin if RegExp.Exec(Output[I], '( +)(.*) = (.*)') then
-            begin Hint := Trim(Output[I]) end end;
-    end;
+            if RegExp.Exec(Output[I], '( +)(.*) = (.*)') then
+                Hint := Trim(Output[I]);
 
     //Call the callback
     if Assigned(TDebugger(Self).OnVariableHint) then
-    begin TDebugger(Self).OnVariableHint(Hint) end;
+        TDebugger(Self).OnVariableHint(Hint);
 
     //Clean up
     RegExp.Free;
@@ -5807,28 +5914,28 @@ begin
     repeat
         for j := 0 to 15 do
         begin
-            if ((buf[i+j] = CR) or (buf[i+j] = LF)) then
-            begin CBuffer := '   ' end
+            if ((buf[i + j] = CR) or (buf[i + j] = LF)) then
+                CBuffer := '   '
             else
-            begin CBuffer := ' ' + buf[i+j] + ' ' end;
+                CBuffer := ' ' + buf[i + j] + ' ';
             Buffer := Buffer + CBuffer;
-            if (i+j >= LastRead) then
-            begin break end;
+            if (i + j >= LastRead) then
+                break;
         end;
         Buffer := Buffer;
         TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
         Buffer := '';
-        for j:=0 to 15 do
+        for j := 0 to 15 do
         begin
-            CBuffer := ' ' + IntToHex(Ord(buf[i+j]), 2);
+            CBuffer := ' ' + IntToHex(Ord(buf[i + j]), 2);
             Buffer := Buffer + CBuffer;
-            if (i+j >= LastRead) then
-            begin break end;
+            if (i + j >= LastRead) then
+                break;
         end;
         Buffer := Buffer;
         TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
         Buffer := '';
-        i := i+16;
+        i := i + 16;
     until (i >= LastRead);
 end;
 
