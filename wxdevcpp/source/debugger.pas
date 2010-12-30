@@ -1,5 +1,5 @@
 {
-    $Id: debugger.pas 897 2007-02-20 11:57:13Z lowjoel $
+    $Id$
     
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
@@ -69,7 +69,7 @@ function AnsiAfterLast(Sub: String; Target: String): String;
 function AnsiFindLast(Src: String; Target: String): Integer;
 function AnsiLeftStr(const AText: string; ACount: Integer): string;
 function AnsiMidStr(const AText: string;
-                    const AStart, ACount: Integer): string;
+    const AStart, ACount: Integer): string;
 function AnsiRightStr(const AText: string; ACount: Integer): string;
 
 const GDBPrompt: String = '(gdb)';
@@ -420,7 +420,7 @@ type
         procedure WriteToPipe(Buffer: String); override;
         procedure AddToDisplay(Msg: String); override;
 
-        procedure Launch(commandline, startupdir: String);
+        procedure Launch(commandline, startupdir: String); override;
         procedure Execute(filename, arguments: string); override;
 
         procedure Cleanup;
@@ -1142,7 +1142,8 @@ begin
         begin
             //Create and run the thread
             Thread := CreateRemoteThread(hPid, nil, 0, WriteAddr,
-                GetProcAddress(LoadLibrary('kernel32.dll'), 'GenerateConsoleCtrlEvent'),
+                GetProcAddress(LoadLibrary('kernel32.dll'),
+                'GenerateConsoleCtrlEvent'),
                 0, ThreadID);
             if Thread <> 0 then
             begin
@@ -1520,8 +1521,9 @@ begin
         until (level >= MAXSTACKDEPTH);
         // Arbitrary limit for safety!
         if (level = MAXSTACKDEPTH) then
-            AddtoDisplay('Stack is too deep, Aborting...')// gui_critSect.Enter();
-            // gui_critSect.Leave();
+            AddtoDisplay('Stack is too deep, Aborting...')
+        // gui_critSect.Enter();
+        // gui_critSect.Leave();
         ;
 
     end;
@@ -1606,7 +1608,7 @@ begin
     ThreadList := AnsiMidStr(ThreadList, 2, Length(ThreadList) - 2);
     if (ThreadList = '') then
         AddtoDisplay('No active threads')// gui_critSect.Enter();
-        // gui_critSect.Leave();
+    // gui_critSect.Leave();
 
     else
     begin
@@ -2096,7 +2098,8 @@ begin          // ExtractList
             next := comma + 1;
         end;
         if (next < len) then
-            Remainder := AnsiMidStr(Remainder, next, Length(Remainder) - next + 1);
+            Remainder := AnsiMidStr(Remainder, next,
+                Length(Remainder) - next + 1);
     end;
     if (delim = '{') then
         Output := Output + '}'
@@ -2408,7 +2411,8 @@ begin
     //Add in the include paths
 
     for I := 0 to IncludeDirs.Count - 1 do
-        Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
+        Includes := Includes + '--directory=' +
+            GetShortName(IncludeDirs[I]) + ' ';
     if Includes <> '' then
         Executable := Executable + ' ' + Includes;
 
@@ -2520,7 +2524,8 @@ begin
 
     //Add in the include paths
     for I := 0 to IncludeDirs.Count - 1 do
-        Includes := Includes + '--directory=' + GetShortName(IncludeDirs[I]) + ' ';
+        Includes := Includes + '--directory=' +
+            GetShortName(IncludeDirs[I]) + ' ';
     if Includes <> '' then
         Executable := Executable + ' ' + Includes;
 
@@ -2708,9 +2713,9 @@ begin
         if not StripCtrlChars(CurLine) then
         begin
 {$ENDIF}
-            if (not LastWasCtrl) or (Length(CurLine) <> 0) then
-                NewLines.Add(CurLine);
-            LastWasCtrl := False;
+        if (not LastWasCtrl) or (Length(CurLine) <> 0) then
+            NewLines.Add(CurLine);
+        LastWasCtrl := False;
 {$IFDEF RELEASE}
         end
         else
@@ -2810,7 +2815,8 @@ begin
 
     for i := 0 to Breakpoints.Count - 1 do
         if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and
-            (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
+            (PBreakPoint(Breakpoints.Items[i])^.editor =
+            breakpoint.Editor) then
         begin
             if Executing then
                 QueueCommand('-break-delete ',
@@ -3160,7 +3166,8 @@ begin
                     if StackFrame^.Args <> '' then
                         StackFrame^.Args := StackFrame^.Args + ', ';
                     StackFrame^.Args :=
-                        StackFrame^.Args + Output[I + 1] + ' = ' + Output[I + 5];
+                        StackFrame^.Args + Output[I + 1] + ' = ' +
+                        Output[I + 5];
                 end;
                 Inc(I, 6);
 
@@ -3282,7 +3289,8 @@ var
                 New(Local);
                 Locals.Add(Local);
                 with Local^ do
-                    Name := Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
+                    Name :=
+                        Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
 
                 Inc(I, 2);
                 RecurseStructure(Indent + 4, I);
@@ -4057,7 +4065,7 @@ begin
         begin
             if (verbose) then
                 AddtoDisplay('Status Output:')// gui_critSect.Enter();
-                // gui_critSect.Leave();
+            // gui_critSect.Leave();
             ;
             buf := SendToDisplay(buf, @bytesInBuffer, verbose);
 
@@ -4477,7 +4485,8 @@ var
 
             if CurrentCommand <> nil then
                 if (CurrentCommand.Command = 'g'#10) or
-                    (CurrentCommand.Command = 't'#10) or (CurrentCommand.Command = 'p'#10) then
+                    (CurrentCommand.Command = 't'#10) or
+                    (CurrentCommand.Command = 'p'#10) then
                 begin
                     RefreshContext;
                     Application.BringToFront;
@@ -4602,7 +4611,8 @@ begin
 
     for i := 0 to Breakpoints.Count - 1 do
         if (PBreakPoint(Breakpoints.Items[i])^.line = breakpoint.Line) and
-            (PBreakPoint(Breakpoints.Items[i])^.editor = breakpoint.Editor) then
+            (PBreakPoint(Breakpoints.Items[i])^.editor =
+            breakpoint.Editor) then
         begin
             if Executing then
                 QueueCommand('bc',
@@ -4714,7 +4724,8 @@ begin
                         'dt -a -r -b -n ' + Copy(name, 1, Pos('[', name) - 1)
                 else
                     Command.Command :=
-                        'dt -r -b -n ' + Copy(name, Pos('*', name) + 1, Length(name));
+                        'dt -r -b -n ' +
+                        Copy(name, Pos('*', name) + 1, Length(name));
 
                 //Fill in the other data
                 Command.Data := Node;
@@ -4870,10 +4881,12 @@ var
                 begin
                     if RegExp.Substitute('$5') = '' then
                         Node :=
-                            DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('$3'))
+                            DebugTree.Items.AddChild(ParentNode,
+                            RegExp.Substitute('$3'))
                     else
                         Node :=
-                            DebugTree.Items.AddChild(ParentNode, RegExp.Substitute('$3 = $5'));
+                            DebugTree.Items.AddChild(ParentNode,
+                            RegExp.Substitute('$3 = $5'));
 
                     with Node do
                     begin
@@ -4970,7 +4983,8 @@ var
                         Inc(I);
 
                         if (I < Output.Count - 1) and
-                            Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+                            Exec(Output[I],
+                            ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
                         begin
                             with ParentNode.Item[ParentNode.Count - 1] do
                             begin
@@ -4979,7 +4993,8 @@ var
                             end;
 
                             with DebugTree.Items.AddChild(
-                                    ParentNode.Item[ParentNode.Count - 1], Substitute('$1 = $2')) do
+                                    ParentNode.Item[ParentNode.Count - 1],
+                                    Substitute('$1 = $2')) do
                             begin
                                 SelectedIndex := 21;
                                 ImageIndex := 21;
@@ -5032,7 +5047,8 @@ begin
         begin
             Expanded := Node.Expanded;
             if Pos('[', name) <> 0 then
-                Node.Text := RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) +
+                Node.Text :=
+                    RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) +
                     ' = $4$5 (0x$3)')
             else
             begin Node.Text := RegExp.Substitute(name + ' = $4$5 (0x$3)'); end;
@@ -5049,7 +5065,8 @@ begin
         begin
             Expanded := Node.Expanded;
             if Pos('.', name) <> 0 then
-                Node.Text := RegExp.Substitute(Copy(name, 1, Pos('.', name) - 1) +
+                Node.Text :=
+                    RegExp.Substitute(Copy(name, 1, Pos('.', name) - 1) +
                     ' = $4 (0x$3)')
             else
                 Node.Text := RegExp.Substitute(name + ' = $4 (0x$3)');
@@ -5153,7 +5170,8 @@ begin
             Continue
         else
         if RegExp.Exec(Output[I],
-            '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)\((.*)\)(|.*) \[(.*) @ ([0-9]*)\]') then
+            '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)\((.*)\)(|.*) \[(.*) @ ([0-9]*)\]')
+        then
         begin
             //Stack frame with source information
             New(StackFrame);
@@ -5170,7 +5188,8 @@ begin
         end
         else
         if RegExp.Exec(Output[I],
-            '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)(|\((.*)\))(.*)') then
+            '([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) (.*)!(.*)(|\((.*)\))(.*)')
+        then
         begin
             //Stack frame without source information
             New(StackFrame);
@@ -5438,7 +5457,8 @@ var
                 begin
                     New(Local);
                     Local^.Name :=
-                        SynthesizeIndent(Indent + exIndent) + RegExp.Substitute('$3');
+                        SynthesizeIndent(Indent + exIndent) +
+                        RegExp.Substitute('$3');
                     Local^.Value := RegExp.Substitute('$5');
                     LocalsList.Add(Local);
                 end;
@@ -5508,11 +5528,13 @@ var
                         Inc(I);
 
                         if (I < Output.Count - 1) and
-                            Exec(Output[I], ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
+                            Exec(Output[I],
+                            ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
                         begin
                             New(Local);
                             Local^.Name :=
-                                SynthesizeIndent(Indent + 4) + Substitute('$1');
+                                SynthesizeIndent(Indent + 4) +
+                                Substitute('$1');
                             Local^.Value := Substitute('$2');
                             LocalsList.Add(Local);
                             Inc(I);
@@ -5737,7 +5759,8 @@ begin
             begin
                 CurLine := StrToInt(RegExp.Substitute('$1'));
                 Disassembly :=
-                    Disassembly + #9 + ';' + CurFile + RegExp.Substitute('$1') + ']:' + #10;
+                    Disassembly + #9 + ';' + CurFile +
+                    RegExp.Substitute('$1') + ']:' + #10;
             end;
             Disassembly := Disassembly +
                 RegExp.Substitute('$2$3$4$5$6$7$8') + #10;
