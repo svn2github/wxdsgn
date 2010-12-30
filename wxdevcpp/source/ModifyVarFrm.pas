@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -32,69 +32,69 @@ uses
 {$ENDIF}
 
 type
-  TModifyVarForm = class(TForm)
-    OkBtn: TBitBtn;
-    CancelBtn: TBitBtn;
-    NameLabel: TLabel;
-    NameEdit: TEdit;
-    ValueEdit: TEdit;
-    ValueLabel: TLabel;
-    XPMenu: TXPMenu;
-    chkStopOnRead: TCheckBox;
-    chkStopOnWrite: TCheckBox;
-    procedure FormCreate(Sender: TObject);
-    procedure NameEditKeyPress(Sender: TObject; var Key: Char);
-    procedure FormShow(Sender: TObject);
-  private
-    { Private declarations }
-    fActiveWindow: TWinControl;
-    procedure LoadText;
-  public
-    { Public declarations }
-    property ActiveWindow: TWinControl write fActiveWindow;
-  end;
+    TModifyVarForm = class(TForm)
+        OkBtn: TBitBtn;
+        CancelBtn: TBitBtn;
+        NameLabel: TLabel;
+        NameEdit: TEdit;
+        ValueEdit: TEdit;
+        ValueLabel: TLabel;
+        XPMenu: TXPMenu;
+        chkStopOnRead: TCheckBox;
+        chkStopOnWrite: TCheckBox;
+        procedure FormCreate(Sender: TObject);
+        procedure NameEditKeyPress(Sender: TObject; var Key: Char);
+        procedure FormShow(Sender: TObject);
+    private
+        { Private declarations }
+        fActiveWindow: TWinControl;
+        procedure LoadText;
+    public
+        { Public declarations }
+        property ActiveWindow: TWinControl write fActiveWindow;
+    end;
 
 var
-  ModifyVarForm: TModifyVarForm;
+    ModifyVarForm: TModifyVarForm;
 
 implementation
 
-uses 
-  MultiLangSupport;
+uses
+    MultiLangSupport;
 
 {$R *.dfm}
 
 procedure TModifyVarForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
 
-  Caption := Lang.Strings[ID_NV_MODIFYVALUE];
-  NameLabel.Caption := Lang.Strings[ID_NV_VARNAME];
-  ValueLabel.Caption := Lang.Strings[ID_NV_VARVALUE];
-  OkBtn.Caption := Lang.Strings[ID_BTN_OK];
-  CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
+    Caption := Lang.Strings[ID_NV_MODIFYVALUE];
+    NameLabel.Caption := Lang.Strings[ID_NV_VARNAME];
+    ValueLabel.Caption := Lang.Strings[ID_NV_VARVALUE];
+    OkBtn.Caption := Lang.Strings[ID_BTN_OK];
+    CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
 end;
 
 procedure TModifyVarForm.FormCreate(Sender: TObject);
 begin
-  ActiveWindow := NameEdit;
-  LoadText;
+    ActiveWindow := NameEdit;
+    LoadText;
 end;
 
 procedure TModifyVarForm.NameEditKeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = #13 then
-  begin
-    ModalResult := mrOK;
-    Close;
-  end;
+    if Key = #13 then
+    begin
+        ModalResult := mrOK;
+        Close;
+    end;
 end;
 
 procedure TModifyVarForm.FormShow(Sender: TObject);
 begin
-  SetFocus;
-  fActiveWindow.SetFocus;
+    SetFocus;
+    fActiveWindow.SetFocus;
 end;
 
 end.

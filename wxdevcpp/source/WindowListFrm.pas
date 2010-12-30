@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, XPMenu;
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, Buttons, ExtCtrls, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -32,30 +32,30 @@ uses
 {$ENDIF}
 
 type
-  TWindowListForm = class(TForm)
-    Panel: TPanel;
-    OkBtn: TBitBtn;
-    CancelBtn: TBitBtn;
-    Label1: TLabel;
-    GroupBox: TGroupBox;
-    UnitList: TListBox;
-    Label2: TLabel;
-    Label3: TLabel;
-    XPMenu: TXPMenu;
-    procedure FormCreate(Sender: TObject);
-    procedure UnitListDblClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure UnitListKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-  end;
+    TWindowListForm = class(TForm)
+        Panel: TPanel;
+        OkBtn: TBitBtn;
+        CancelBtn: TBitBtn;
+        Label1: TLabel;
+        GroupBox: TGroupBox;
+        UnitList: TListBox;
+        Label2: TLabel;
+        Label3: TLabel;
+        XPMenu: TXPMenu;
+        procedure FormCreate(Sender: TObject);
+        procedure UnitListDblClick(Sender: TObject);
+        procedure FormShow(Sender: TObject);
+        procedure UnitListKeyDown(Sender: TObject; var Key: Word;
+            Shift: TShiftState);
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
 implementation
 
-uses 
+uses
 {$IFDEF WIN32}
-  MultiLangSupport, devcfg;
+    MultiLangSupport, devcfg;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, MultiLangSupport, devcfg;
@@ -65,50 +65,52 @@ uses
 
 procedure TWindowListForm.FormCreate(Sender: TObject);
 begin
-  DesktopFont       := True;
-  XPMenu.Active     := devData.XPTheme;
-  Caption           := Lang[ID_WL];
-  GroupBox.Caption  := Lang[ID_WL_SELECT];
-  OkBtn.Caption     := Lang[ID_BTN_OK];
-  CancelBtn.Caption := Lang[ID_BTN_CANCEL];
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
+    Caption := Lang[ID_WL];
+    GroupBox.Caption := Lang[ID_WL_SELECT];
+    OkBtn.Caption := Lang[ID_BTN_OK];
+    CancelBtn.Caption := Lang[ID_BTN_CANCEL];
 end;
 
 procedure TWindowListForm.UnitListDblClick(Sender: TObject);
-var a : TCloseAction;
+var a: TCloseAction;
 begin
-  if UnitList.ItemIndex > -1 then begin
-    ModalResult := mrOk;
-    DoClose(a);
-  end;
+    if UnitList.ItemIndex > -1 then
+    begin
+        ModalResult := mrOk;
+        DoClose(a);
+    end;
 end;
 
 procedure TWindowListForm.FormShow(Sender: TObject);
 begin
-  UnitList.SetFocus;
+    UnitList.SetFocus;
 end;
 
 procedure TWindowListForm.UnitListKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+    Shift: TShiftState);
 begin
 {$IFDEF WIN32}
-  if Key=vk_Return then
+    if Key = vk_Return then
 {$ENDIF}
 {$IFDEF LINUX}
   if Key = XK_RETURN then
 {$ENDIF}
-    UnitListDblClick(Sender);
+        UnitListDblClick(Sender);
 end;
 
 procedure TWindowListForm.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
-  if (Parent <> nil) or (ParentWindow <> 0) then
-    Exit;  // must not mess with wndparent if form is embedded
+    inherited;
+    if (Parent <> nil) or (ParentWindow <> 0) then
+        Exit;  // must not mess with wndparent if form is embedded
 
-  if Assigned(Owner) and (Owner is TWincontrol) then
-    Params.WndParent := TWinControl(Owner).handle
-  else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
+    if Assigned(Owner) and (Owner is TWincontrol) then
+        Params.WndParent := TWinControl(Owner).handle
+    else
+    if Assigned(Screen.Activeform) then
+        Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

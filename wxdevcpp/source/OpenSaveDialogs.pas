@@ -8,53 +8,55 @@ uses
 type
     TOpenDialogEx = class(TObject)
 
-    Options: TOpenOptions;
-    OptionsEx: TOpenOptionsEx;
+        Options: TOpenOptions;
+        OptionsEx: TOpenOptionsEx;
 
-private
-    OpenDialog: TOpenDialog;
-    ParentWND: TWinControl;
+    private
+        OpenDialog: TOpenDialog;
+        ParentWND: TWinControl;
 
-public
+    public
 
-    Title: String;
-    Filter: String;
-    DefaultExt: String;
-    InitialDir: String;
-    FileName: TFileName;
-    Files: TStrings;
-    FilterIndex: Integer;
-    HistoryList: TStrings;
-    function Execute: Boolean;
-    constructor Create(AOwner: TWinControl);
-    destructor Destroy; override;
-end;
+        Title: String;
+        Filter: String;
+        DefaultExt: String;
+        InitialDir: String;
+        FileName: TFileName;
+        Files: TStrings;
+        FilterIndex: Integer;
+        HistoryList: TStrings;
+        function Execute: Boolean;
+        constructor Create(AOwner: TWinControl);
+        destructor Destroy; override;
+    end;
 
 type
     TSaveDialogEx = class(TObject)
-    Options: TOpenOptions;
-    OptionsEx: TOpenOptionsEx;
-private
-    SaveDialog: TSaveDialog;
-    ParentWND: TWinControl;
-public
+        Options: TOpenOptions;
+        OptionsEx: TOpenOptionsEx;
+    private
+        SaveDialog: TSaveDialog;
+        ParentWND: TWinControl;
+    public
 
-    Title: String;
-    Filter: String;
-    DefaultExt: String;
-    InitialDir: String;
-    FileName: TFileName;
-    Files: TStrings;
-    FilterIndex: Integer;
-    HistoryList: TStrings;
-    function Execute: Boolean;
-    constructor Create(AOwner: TWinControl);
-    destructor Destroy; override;
-end;
+        Title: String;
+        Filter: String;
+        DefaultExt: String;
+        InitialDir: String;
+        FileName: TFileName;
+        Files: TStrings;
+        FilterIndex: Integer;
+        HistoryList: TStrings;
+        function Execute: Boolean;
+        constructor Create(AOwner: TWinControl);
+        destructor Destroy; override;
+    end;
 
-function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): integer stdcall;
+function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT;
+    lParam, lpData: LPARAM): integer stdcall;
 
-function BrowseDialog(const Title: string; const Flag: integer; const initialFolder: String = '' ): string;
+function BrowseDialog(const Title: string; const Flag: integer;
+    const initialFolder: String = ''): string;
 
 implementation
 
@@ -62,7 +64,7 @@ uses
     uvista;
 
 var
-  lg_StartFolder: String;
+    lg_StartFolder: String;
 
 constructor TOpenDialogEx.Create(AOwner: TWinControl);
 begin
@@ -86,7 +88,8 @@ begin
     if IsWindowsVista then
     begin
         fileN := FileName;
-        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files, FilterIndex,
+        Result := OpenSaveFileDialog(ParentWND, DefaultExt,
+            Filter, InitialDir, Title, fileN, Files, FilterIndex,
             (ofReadOnly in Options),
             (ofOverwritePrompt in Options),
             (ofHideReadOnly in Options),
@@ -156,7 +159,8 @@ begin
     if IsWindowsVista then
     begin
         fileN := FileName;
-        Result := OpenSaveFileDialog(ParentWND, DefaultExt, Filter, InitialDir, Title, fileN, Files, FilterIndex,
+        Result := OpenSaveFileDialog(ParentWND, DefaultExt,
+            Filter, InitialDir, Title, fileN, Files, FilterIndex,
             (ofReadOnly in Options),
             (ofOverwritePrompt in Options),
             (ofHideReadOnly in Options),
@@ -205,55 +209,59 @@ begin
 end;
 
 
-function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): integer stdcall;
+function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT;
+    lParam, lpData: LPARAM): integer stdcall;
 var
-  wa, rect : TRect;
-  dialogPT : TPoint;
+    wa, rect: TRect;
+    dialogPT: TPoint;
 begin
-  //center in work area
-  if uMsg = BFFM_INITIALIZED then
-  begin
-    SendMessage(Wnd,BFFM_SETSELECTION, 1, Integer(@lg_StartFolder[1]));
-    wa := Screen.WorkAreaRect;
-    GetWindowRect(Wnd, Rect);
-    dialogPT.X := ((wa.Right-wa.Left) div 2) - 
-                  ((rect.Right-rect.Left) div 2);
-    dialogPT.Y := ((wa.Bottom-wa.Top) div 2) - 
-                  ((rect.Bottom-rect.Top) div 2);
-    MoveWindow(Wnd,
-               dialogPT.X,
-               dialogPT.Y,
-               Rect.Right - Rect.Left,
-               Rect.Bottom - Rect.Top,
-               True);
-  end;
+    //center in work area
+    if uMsg = BFFM_INITIALIZED then
+    begin
+        SendMessage(Wnd, BFFM_SETSELECTION, 1, Integer(@lg_StartFolder[1]));
+        wa := Screen.WorkAreaRect;
+        GetWindowRect(Wnd, Rect);
+        dialogPT.X := ((wa.Right - wa.Left) div 2) -
+            ((rect.Right - rect.Left) div 2);
+        dialogPT.Y := ((wa.Bottom - wa.Top) div 2) -
+            ((rect.Bottom - rect.Top) div 2);
+        MoveWindow(Wnd,
+            dialogPT.X,
+            dialogPT.Y,
+            Rect.Right - Rect.Left,
+            Rect.Bottom - Rect.Top,
+            True);
+    end;
 
-  Result := 0;
+    Result := 0;
 end; (*BrowseDialogCallBack*)
 
-function BrowseDialog(const Title: string; const Flag: integer; const initialFolder: String = '' ): string;
+function BrowseDialog(const Title: string; const Flag: integer;
+    const initialFolder: String = ''): string;
 var
-  lpItemID : PItemIDList;
-  BrowseInfo : TBrowseInfo;
-  DisplayName : array[0..MAX_PATH] of char;
-  TempPath : array[0..MAX_PATH] of char;
+    lpItemID: PItemIDList;
+    BrowseInfo: TBrowseInfo;
+    DisplayName: array[0..MAX_PATH] of char;
+    TempPath: array[0..MAX_PATH] of char;
 begin
-  Result:='';
-  FillChar(BrowseInfo, sizeof(TBrowseInfo), #0);
-  with BrowseInfo do begin
-    hwndOwner := Application.Handle;
-    lg_StartFolder := initialFolder;
-    pszDisplayName := @DisplayName;
-    lpszTitle := PChar(Title);
-    ulFlags := Flag;
-    lpfn := BrowseDialogCallBack;
-  end;
-  lpItemID := SHBrowseForFolder(BrowseInfo);
-  if lpItemId <> nil then begin
-    SHGetPathFromIDList(lpItemID, TempPath);
-    Result := TempPath;
-    GlobalFreePtr(lpItemID);
-  end;
+    Result := '';
+    FillChar(BrowseInfo, sizeof(TBrowseInfo), #0);
+    with BrowseInfo do
+    begin
+        hwndOwner := Application.Handle;
+        lg_StartFolder := initialFolder;
+        pszDisplayName := @DisplayName;
+        lpszTitle := PChar(Title);
+        ulFlags := Flag;
+        lpfn := BrowseDialogCallBack;
+    end;
+    lpItemID := SHBrowseForFolder(BrowseInfo);
+    if lpItemId <> nil then
+    begin
+        SHGetPathFromIDList(lpItemID, TempPath);
+        Result := TempPath;
+        GlobalFreePtr(lpItemID);
+    end;
 end;
 
 end.

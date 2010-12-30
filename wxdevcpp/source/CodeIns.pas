@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, Variants, Classes, Graphics, Controls, Forms,
-  ExtCtrls, Buttons, StdCtrls, XPMenu, Spin;
+    Windows, Messages, Variants, Classes, Graphics, Controls, Forms,
+    ExtCtrls, Buttons, StdCtrls, XPMenu, Spin;
 {$ENDIF}
 {$IFDEF LINUX}
   Variants, Classes, QGraphics, QControls, QForms,
@@ -32,241 +32,249 @@ uses
 {$ENDIF}
 
 type
-  PCodeIns = ^TCodeIns;
-  TCodeIns = record
-    Caption: string;
-    Line: string;
-    Desc: string;
-    Sep: integer;
-  end;
+    PCodeIns = ^TCodeIns;
+    TCodeIns = record
+        Caption: string;
+        Line: string;
+        Desc: string;
+        Sep: integer;
+    end;
 
-  TCodeInsList = class(TObject)
-  private
-    fFile: string;
-    fList: TList;
-    procedure SetItem(index: integer; Value: PCodeIns);
-    function GetItem(index: integer): PCodeIns;
-    function GetCount: integer;
-  public
-    constructor Create;
-    destructor Destroy; override;
+    TCodeInsList = class(TObject)
+    private
+        fFile: string;
+        fList: TList;
+        procedure SetItem(index: integer; Value: PCodeIns);
+        function GetItem(index: integer): PCodeIns;
+        function GetCount: integer;
+    public
+        constructor Create;
+        destructor Destroy; override;
 
-    procedure LoadCode;
-    procedure SaveCode;
-   function Indexof(const Value: String): integer;
-    function AddItem(Value: PCodeIns): integer;
-    procedure Delete(index: integer);
-    procedure Clear;
-   property Items[index: integer]: PCodeins read GetItem write SetItem; default;
-    property Count: integer read GetCount;
-  end;
+        procedure LoadCode;
+        procedure SaveCode;
+        function Indexof(const Value: String): integer;
+        function AddItem(Value: PCodeIns): integer;
+        procedure Delete(index: integer);
+        procedure Clear;
+        property Items[index: integer]: PCodeins read GetItem write SetItem;
+            default;
+        property Count: integer read GetCount;
+    end;
 
-  TfrmCodeEdit = class(TForm)
-    lblMenu: TLabel;
-    lblSec: TLabel;
-    edMenuText: TEdit;
-    seSection: TSpinEdit;
-    btnOk: TBitBtn;
-    btnCancel: TBitBtn;
-    lblDesc: TLabel;
-    edDesc: TEdit;
-    XPMenu: TXPMenu;
-    procedure FormCreate(Sender: TObject);
-    procedure btnOkClick(Sender: TObject);
-    procedure edMenuTextChange(Sender: TObject);
-  private
-    fEdit: boolean;
-    fEntry: PCodeIns;
-    procedure SetEntry(Value: PCodeIns);
-    procedure LoadText;
-  public
-    property Edit: boolean read fEdit write fEdit;
-    property Entry: PCodeIns read fEntry write SetEntry;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-  end;
+    TfrmCodeEdit = class(TForm)
+        lblMenu: TLabel;
+        lblSec: TLabel;
+        edMenuText: TEdit;
+        seSection: TSpinEdit;
+        btnOk: TBitBtn;
+        btnCancel: TBitBtn;
+        lblDesc: TLabel;
+        edDesc: TEdit;
+        XPMenu: TXPMenu;
+        procedure FormCreate(Sender: TObject);
+        procedure btnOkClick(Sender: TObject);
+        procedure edMenuTextChange(Sender: TObject);
+    private
+        fEdit: boolean;
+        fEntry: PCodeIns;
+        procedure SetEntry(Value: PCodeIns);
+        procedure LoadText;
+    public
+        property Edit: boolean read fEdit write fEdit;
+        property Entry: PCodeIns read fEntry write SetEntry;
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
 implementation
 
 uses
- SysUtils, IniFiles, devCFG, Utils, version, MultiLangSupport;
+    SysUtils, IniFiles, devCFG, Utils, version, MultiLangSupport;
 
 {$R *.dfm}
 { TCodeInsList }
 
 constructor TCodeInsList.Create;
 begin
-  inherited Create;
-  fList := TList.Create;
+    inherited Create;
+    fList := TList.Create;
 end;
 
 destructor TCodeInsList.Destroy;
 var
-  idx: integer;
+    idx: integer;
 begin
-  for idx:= 0 to pred(fList.Count) do dispose(fList[idx]);
-  fList.Free;
-  inherited Destroy;
+    for idx := 0 to pred(fList.Count) do
+        dispose(fList[idx]);
+    fList.Free;
+    inherited Destroy;
 end;
 
 function TCodeInsList.Indexof(const Value: string): integer;
 begin
-  for result := 0 to pred(fList.Count) do
-   if AnsiCompareText(PCodeIns(fList[result])^.Caption, Value) = 0 then exit;
-  result := -1;
+    for result := 0 to pred(fList.Count) do
+        if AnsiCompareText(PCodeIns(fList[result])^.Caption, Value) = 0 then
+            exit;
+    result := -1;
 end;
 
 function TCodeInsList.AddItem(Value: PCodeIns): integer;
 begin
-  result := fList.Add(Value);
+    result := fList.Add(Value);
 end;
 
 procedure TCodeInsList.Clear;
 begin
-  fList.Clear;
-  fList.Pack;
-  fList.Capacity := fList.Count;
+    fList.Clear;
+    fList.Pack;
+    fList.Capacity := fList.Count;
 end;
 
 procedure TCodeInsList.Delete(index: integer);
 begin
-  if (index <0) or (index > fList.Count -1) then exit;
+    if (index < 0) or (index > fList.Count - 1) then
+        exit;
 
-  fList.Delete(index);
-  fList.Pack;
-  fList.Capacity := fList.Count;
+    fList.Delete(index);
+    fList.Pack;
+    fList.Capacity := fList.Count;
 end;
 
 function TCodeInsList.GetCount: integer;
 begin
-  result := fList.Count;
+    result := fList.Count;
 end;
 
 function TCodeInsList.GetItem(index: integer): PCodeIns;
 begin
-  if (index < 0) or (index > fList.Count - 1) then
-    result := nil
-  else
-    result := PCodeIns(fList[index]);
+    if (index < 0) or (index > fList.Count - 1) then
+        result := nil
+    else
+        result := PCodeIns(fList[index]);
 end;
 
 procedure TCodeInsList.SetItem(index: integer; Value: PCodeIns);
 begin
-  fList[index] := Value;
+    fList[index] := Value;
 end;
 
 procedure TCodeInsList.LoadCode;
 var
-  Item: PCodeIns;
-  tmp: TStringList;
-  idx: integer;
+    Item: PCodeIns;
+    tmp: TStringList;
+    idx: integer;
 begin
-  if not FileExists(fFile) then
-    fFile := devDirs.Config + DEV_CODEINS_FILE;
+    if not FileExists(fFile) then
+        fFile := devDirs.Config + DEV_CODEINS_FILE;
 
-  if FileExists(fFile) then
-    with TINIFile.Create(fFile) do
-    try
-      tmp := TStringList.Create;
-      Clear;
-      try
-        ReadSections(tmp);
-     if tmp.Count = 0 then exit;
-        for idx := 0 to pred(tmp.Count) do
-        begin
-          new(Item);
-          Item^.Caption := StringReplace(tmp[idx], '_', ' ', [rfReplaceAll]);
-          Item^.Desc := ReadString(tmp[idx], 'Desc', '');
-          Item^.Line := StrtoCodeIns(ReadString(tmp[idx], 'Line', ''));
-          Item^.Sep := ReadInteger(tmp[idx], 'Sep', 0);
-          AddItem(Item);
-        end;
-      finally
-        tmp.free;
-      end;
-    finally
-      free;
-    end;
+    if FileExists(fFile) then
+        with TINIFile.Create(fFile) do
+            try
+                tmp := TStringList.Create;
+                Clear;
+                try
+                    ReadSections(tmp);
+                    if tmp.Count = 0 then
+                        exit;
+                    for idx := 0 to pred(tmp.Count) do
+                    begin
+                        new(Item);
+                        Item^.Caption := StringReplace(tmp[idx], '_', ' ', [rfReplaceAll]);
+                        Item^.Desc := ReadString(tmp[idx], 'Desc', '');
+                        Item^.Line := StrtoCodeIns(ReadString(tmp[idx], 'Line', ''));
+                        Item^.Sep := ReadInteger(tmp[idx], 'Sep', 0);
+                        AddItem(Item);
+                    end;
+                finally
+                    tmp.free;
+                end;
+            finally
+                free;
+            end;
 end;
 
 procedure TCodeInsList.SaveCode;
 var
-  idx: integer;
-  section: string;
-  CI: TCodeIns;
+    idx: integer;
+    section: string;
+    CI: TCodeIns;
 begin
-  fList.Pack;
-  fList.Capacity := fList.Count;
-  DeleteFile(fFile);
-  if fList.Count= 0 then exit;
-  with TINIFile.Create(fFile) do
-  try
-    for idx := 0 to pred(fList.Count) do
-    begin
-      CI := PCodeIns(fList[idx])^;
-      section := StringReplace(CI.Caption, ' ', '_', [rfReplaceAll]);
-      EraseSection(section); // may be redundent
-      WriteString(section, 'Desc', CI.Desc);
-      WriteString(section, 'Line', CodeInstoStr(CI.Line));
-      WriteInteger(section, 'Sep', CI.Sep);
-    end;
-  finally
-    free;
-  end;
+    fList.Pack;
+    fList.Capacity := fList.Count;
+    DeleteFile(fFile);
+    if fList.Count = 0 then
+        exit;
+    with TINIFile.Create(fFile) do
+        try
+            for idx := 0 to pred(fList.Count) do
+            begin
+                CI := PCodeIns(fList[idx])^;
+                section := StringReplace(CI.Caption, ' ', '_', [rfReplaceAll]);
+                EraseSection(section); // may be redundent
+                WriteString(section, 'Desc', CI.Desc);
+                WriteString(section, 'Line', CodeInstoStr(CI.Line));
+                WriteInteger(section, 'Sep', CI.Sep);
+            end;
+        finally
+            free;
+        end;
 end;
 
 { TfrmCodeEdit }
 
 procedure TfrmCodeEdit.SetEntry(Value: PCodeIns);
 begin
-  edMenuText.Text := Value^.Caption;
-  edDesc.Text := Value^.Desc;
-  seSection.Value := Value^.Sep;
+    edMenuText.Text := Value^.Caption;
+    edDesc.Text := Value^.Desc;
+    seSection.Value := Value^.Sep;
 end;
 
 procedure TfrmCodeEdit.FormCreate(Sender: TObject);
 begin
-  LoadText;
+    LoadText;
 end;
 
 procedure TfrmCodeEdit.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  if Edit then
-    Caption := Lang[ID_CIE_EDCAPTION]
-  else
-    Caption := Lang[ID_CIE_ADDCAPTION];
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
+    if Edit then
+        Caption := Lang[ID_CIE_EDCAPTION]
+    else
+        Caption := Lang[ID_CIE_ADDCAPTION];
 
-  lblMenu.Caption := Lang[ID_CIE_MENU];
-  lblDesc.Caption := Lang[ID_CIE_DESC];
-  lblSec.Caption := Lang[ID_CIE_SEC];
-  btnOk.Caption := Lang[ID_BTN_OK];
-  btnCancel.Caption := Lang[ID_BTN_CANCEL];
+    lblMenu.Caption := Lang[ID_CIE_MENU];
+    lblDesc.Caption := Lang[ID_CIE_DESC];
+    lblSec.Caption := Lang[ID_CIE_SEC];
+    btnOk.Caption := Lang[ID_BTN_OK];
+    btnCancel.Caption := Lang[ID_BTN_CANCEL];
 end;
 
 procedure TfrmCodeEdit.btnOkClick(Sender: TObject);
 begin
-  if edMenuText.Text = '' then begin
-    ModalResult := mrNone;
-  end;
+    if edMenuText.Text = '' then
+    begin
+        ModalResult := mrNone;
+    end;
 end;
 
 procedure TfrmCodeEdit.edMenuTextChange(Sender: TObject);
 begin
-  btnOK.Enabled := edMenuText.Text <> '';
+    btnOK.Enabled := edMenuText.Text <> '';
 end;
 
 procedure TfrmCodeEdit.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
-  if (Parent <> nil) or (ParentWindow <> 0) then
-    Exit;  // must not mess with wndparent if form is embedded
+    inherited;
+    if (Parent <> nil) or (ParentWindow <> 0) then
+        Exit;  // must not mess with wndparent if form is embedded
 
-  if Assigned(Owner) and (Owner is TWincontrol) then
-    Params.WndParent := TWinControl(Owner).handle
-  else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
+    if Assigned(Owner) and (Owner is TWincontrol) then
+        Params.WndParent := TWinControl(Owner).handle
+    else
+    if Assigned(Screen.Activeform) then
+        Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

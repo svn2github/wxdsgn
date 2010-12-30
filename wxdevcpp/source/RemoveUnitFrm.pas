@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, XPMenu;
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, Buttons, ExtCtrls, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -32,38 +32,38 @@ uses
 {$ENDIF}
 
 type
-  TRemoveUnitForm = class(TForm)
-    Panel: TPanel;
-    OkBtn: TBitBtn;
-    CancelBtn: TBitBtn;
-    Label1: TLabel;
-    GroupBox: TGroupBox;
-    UnitList: TListBox;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
-    XPMenu: TXPMenu;
-    Label7: TLabel;
-    procedure FormCreate(Sender: TObject);
-  end;
+    TRemoveUnitForm = class(TForm)
+        Panel: TPanel;
+        OkBtn: TBitBtn;
+        CancelBtn: TBitBtn;
+        Label1: TLabel;
+        GroupBox: TGroupBox;
+        UnitList: TListBox;
+        Label2: TLabel;
+        Label3: TLabel;
+        Label4: TLabel;
+        Label5: TLabel;
+        Label6: TLabel;
+        XPMenu: TXPMenu;
+        Label7: TLabel;
+        procedure FormCreate(Sender: TObject);
+    end;
 
 implementation
 
-uses 
-  MultiLangSupport, devcfg;
+uses
+    MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
 procedure TRemoveUnitForm.FormCreate(Sender: TObject);
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption:=           Lang[ID_RU];
-  GroupBox.Caption:=  Lang[ID_RU_TEXT];
-  OkBtn.Caption := Lang[ID_BTN_OK];
-  CancelBtn.Caption:= Lang[ID_BTN_CANCEL];
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
+    Caption := Lang[ID_RU];
+    GroupBox.Caption := Lang[ID_RU_TEXT];
+    OkBtn.Caption := Lang[ID_BTN_OK];
+    CancelBtn.Caption := Lang[ID_BTN_CANCEL];
 end;
 
 end.

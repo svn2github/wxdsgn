@@ -26,8 +26,8 @@ interface
 uses
     Version,
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, XPMenu, ComCtrls;
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, Buttons, ExtCtrls, XPMenu, ComCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -35,53 +35,53 @@ uses
 {$ENDIF}
 
 type
-  TAboutForm = class(TForm)
-    btnOk: TBitBtn;
-    btnUpdateCheck: TBitBtn;
-    banner: TImage;
-    XPMenu: TXPMenu;
-    Container: TPageControl;
-    Version: TTabSheet;
-    wxWebsite: TLabel;
-    ForumSite: TLabel;
-    wxdevcppWebsite: TLabel;
-    wxdevcppWebsiteLabel: TLabel;
-    ForumLabel: TLabel;
-    wxWebLabel: TLabel;
-    License: TTabSheet;
-    Authors: TTabSheet;
-    LicenseText: TMemo;
-    lblAuthors_wxDevCpp: TLabel;
-    Label2: TLabel;
-    lblAuthors_DevCpp: TLabel;
-    Label4: TLabel;
-    lblMingW: TLabel;
-    Label5: TLabel;
-    lblSplash: TLabel;
-    Label6: TLabel;
-    Label8: TLabel;
-    Label9: TLabel;
-    lblGnome: TLabel;
-    Gnome: TLabel;
-    CopyrightLabel: TLabel;
-    wxdevcopyright: TLabel;
-    BookLabel: TLabel;
-    Book: TLabel;
-    Label1: TLabel;
-    BuildNumber: TLabel;
-    procedure LabelClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure btnUpdateCheckClick(Sender: TObject);
-  private
-    procedure LoadText;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-  end;
+    TAboutForm = class(TForm)
+        btnOk: TBitBtn;
+        btnUpdateCheck: TBitBtn;
+        banner: TImage;
+        XPMenu: TXPMenu;
+        Container: TPageControl;
+        Version: TTabSheet;
+        wxWebsite: TLabel;
+        ForumSite: TLabel;
+        wxdevcppWebsite: TLabel;
+        wxdevcppWebsiteLabel: TLabel;
+        ForumLabel: TLabel;
+        wxWebLabel: TLabel;
+        License: TTabSheet;
+        Authors: TTabSheet;
+        LicenseText: TMemo;
+        lblAuthors_wxDevCpp: TLabel;
+        Label2: TLabel;
+        lblAuthors_DevCpp: TLabel;
+        Label4: TLabel;
+        lblMingW: TLabel;
+        Label5: TLabel;
+        lblSplash: TLabel;
+        Label6: TLabel;
+        Label8: TLabel;
+        Label9: TLabel;
+        lblGnome: TLabel;
+        Gnome: TLabel;
+        CopyrightLabel: TLabel;
+        wxdevcopyright: TLabel;
+        BookLabel: TLabel;
+        Book: TLabel;
+        Label1: TLabel;
+        BuildNumber: TLabel;
+        procedure LabelClick(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure btnUpdateCheckClick(Sender: TObject);
+    private
+        procedure LoadText;
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
 implementation
-uses 
+uses
 {$IFDEF WIN32}
-  ShellAPI, devcfg, MultiLangSupport, main;
+    ShellAPI, devcfg, MultiLangSupport, main;
 {$ENDIF}
 {$IFDEF LINUX}
   devcfg, MultiLangSupport, main;
@@ -89,85 +89,86 @@ uses
 
 {$R *.dfm}
 
-function GetAppVersion:string;
-   var
+function GetAppVersion: string;
+var
     Size, Size2: DWord;
     Pt, Pt2: Pointer;
-   begin
-     Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
-     if Size > 0 then
-     begin
-       GetMem (Pt, Size);
-       try
-          GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
-          VerQueryValue (Pt, '\', Pt2, Size2);
-          with TVSFixedFileInfo (Pt2^) do
-          begin
-            Result:= ' build '+
-                     IntToStr (HiWord (dwFileVersionMS)) + '.' +
-                     IntToStr (LoWord (dwFileVersionMS)) + '.' +
-                     IntToStr (HiWord (dwFileVersionLS)) + '.' +
-                     IntToStr (LoWord (dwFileVersionLS));
-         end;
-       finally
-         FreeMem (Pt);
-     end;
-   end;
+begin
+    Size := GetFileVersionInfoSize(PChar(ParamStr(0)), Size2);
+    if Size > 0 then
+    begin
+        GetMem(Pt, Size);
+        try
+            GetFileVersionInfo(PChar(ParamStr(0)), 0, Size, Pt);
+            VerQueryValue(Pt, '\', Pt2, Size2);
+            with TVSFixedFileInfo(Pt2^) do
+            begin
+                Result := ' build ' +
+                    IntToStr(HiWord(dwFileVersionMS)) + '.' +
+                    IntToStr(LoWord(dwFileVersionMS)) + '.' +
+                    IntToStr(HiWord(dwFileVersionLS)) + '.' +
+                    IntToStr(LoWord(dwFileVersionLS));
+            end;
+        finally
+            FreeMem(Pt);
+        end;
+    end;
 end;
 
 procedure TAboutForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption := 'About wxDev-C++';
-  License.Caption := Lang[ID_AB_LICENSE];
-  Version.Caption := Lang[ID_AB_VERSCAP];
-  btnOk.Caption := Lang[ID_BTN_OK];
-  btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
-  Authors.Caption := Lang[ID_BTN_AUTHOR];
-  BuildNumber.Caption := GetAppVersion;
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
+    Caption := 'About wxDev-C++';
+    License.Caption := Lang[ID_AB_LICENSE];
+    Version.Caption := Lang[ID_AB_VERSCAP];
+    btnOk.Caption := Lang[ID_BTN_OK];
+    btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
+    Authors.Caption := Lang[ID_BTN_AUTHOR];
+    BuildNumber.Caption := GetAppVersion;
 end;
 
 procedure TAboutForm.LabelClick(Sender: TObject);
-var s : string;
+var s: string;
 begin
-  if pos('@', (Sender as TLabel).Caption) <> 0 then
-    s := 'mailto:' + (Sender as TLabel).Caption
-  else
-    s := (Sender as TLabel).Caption;
-  ShellExecute(GetDesktopWindow(), 'open', PChar(s), nil, nil, SW_SHOWNORMAL);
+    if pos('@', (Sender as TLabel).Caption) <> 0 then
+        s := 'mailto:' + (Sender as TLabel).Caption
+    else
+        s := (Sender as TLabel).Caption;
+    ShellExecute(GetDesktopWindow(), 'open', PChar(s), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
-  LoadText;
-  wxDevCopyright.Font.Style := [fsBold];
-  CopyrightLabel.Font.Style := [fsBold];
-  ForumSite.Font.Style := [fsUnderline];
-  ForumSite.Font.Color := clBlue;
-  wxdevcppWebsite.Font.Style := [fsUnderline];
-  wxdevcppWebsite.Font.Color := clBlue;
-  wxWebsite.Font.Style := [fsUnderline];
-  wxWebsite.Font.Color := clBlue;
-  Book.Font.Style := [fsUnderline];
-  Book.Font.Color := clBlue;
+    LoadText;
+    wxDevCopyright.Font.Style := [fsBold];
+    CopyrightLabel.Font.Style := [fsBold];
+    ForumSite.Font.Style := [fsUnderline];
+    ForumSite.Font.Color := clBlue;
+    wxdevcppWebsite.Font.Style := [fsUnderline];
+    wxdevcppWebsite.Font.Color := clBlue;
+    wxWebsite.Font.Style := [fsUnderline];
+    wxWebsite.Font.Color := clBlue;
+    Book.Font.Style := [fsUnderline];
+    Book.Font.Color := clBlue;
 end;
 
 procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
 begin
-  MainForm.actUpdateCheckExecute(sender);
+    MainForm.actUpdateCheckExecute(sender);
 end;
 
 procedure TAboutForm.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
-  if (Parent <> nil) or (ParentWindow <> 0) then
-    Exit;  // must not mess with wndparent if form is embedded
+    inherited;
+    if (Parent <> nil) or (ParentWindow <> 0) then
+        Exit;  // must not mess with wndparent if form is embedded
 
-  if Assigned(Owner) and (Owner is TWincontrol) then
-    Params.WndParent := TWinControl(Owner).handle
-  else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
+    if Assigned(Owner) and (Owner is TWincontrol) then
+        Params.WndParent := TWinControl(Owner).handle
+    else
+    if Assigned(Screen.Activeform) then
+        Params.WndParent := Screen.Activeform.Handle;
 end;
 
 end.

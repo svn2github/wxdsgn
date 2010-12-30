@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, XPMenu, devcfg, OpenSaveDialogs;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, Buttons, XPMenu, devcfg, OpenSaveDialogs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -32,70 +32,70 @@ uses
 {$ENDIF}
 
 type
-  TParamsForm = class(TForm)
-    grpParameters: TGroupBox;
-    ParamEdit: TEdit;
-    grpHost: TGroupBox;
-    HostEdit: TEdit;
-    LoadBtn: TSpeedButton;
-    OkBtn: TBitBtn;
-    CancelBtn: TBitBtn;
-    XPMenu: TXPMenu;
-    procedure LoadBtnClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-  private
-    OpenDialog: TOpenDialogEx;
-    procedure LoadText;
-    { Private declarations }
-  public
-    procedure DisableHost;
-    { Public declarations }
-  end;
+    TParamsForm = class(TForm)
+        grpParameters: TGroupBox;
+        ParamEdit: TEdit;
+        grpHost: TGroupBox;
+        HostEdit: TEdit;
+        LoadBtn: TSpeedButton;
+        OkBtn: TBitBtn;
+        CancelBtn: TBitBtn;
+        XPMenu: TXPMenu;
+        procedure LoadBtnClick(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure FormShow(Sender: TObject);
+    private
+        OpenDialog: TOpenDialogEx;
+        procedure LoadText;
+        { Private declarations }
+    public
+        procedure DisableHost;
+        { Public declarations }
+    end;
 
 var
-  ParamsForm: TParamsForm;
+    ParamsForm: TParamsForm;
 
 implementation
 
 uses
-  MultiLangSupport, main;
+    MultiLangSupport, main;
 
 {$R *.dfm}
 
 procedure TParamsForm.LoadText;
 begin
-  Caption := Lang.Strings[ID_PARAM_CAPTION];
-  grpParameters.Caption := Lang.Strings[ID_PARAM_PARAMS];
-  grpHost.Caption := Lang.Strings[ID_PARAM_HOST];
-  OkBtn.Caption := Lang.Strings[ID_BTN_OK];
-  CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
+    Caption := Lang.Strings[ID_PARAM_CAPTION];
+    grpParameters.Caption := Lang.Strings[ID_PARAM_PARAMS];
+    grpHost.Caption := Lang.Strings[ID_PARAM_HOST];
+    OkBtn.Caption := Lang.Strings[ID_BTN_OK];
+    CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
 end;
 
 procedure TParamsForm.LoadBtnClick(Sender: TObject);
 begin
-  if OpenDialog.Execute then
-    HostEdit.Text := OpenDialog.FileName;
+    if OpenDialog.Execute then
+        HostEdit.Text := OpenDialog.FileName;
 end;
 
 procedure TParamsForm.DisableHost;
 begin
-  HostEdit.Enabled := false;
-  LoadBtn.Enabled := false;
+    HostEdit.Enabled := false;
+    LoadBtn.Enabled := false;
 end;
 
 procedure TParamsForm.FormCreate(Sender: TObject);
 begin
-  OpenDialog := TOpenDialogEx.Create(MainForm);
-  OpenDialog.DefaultExt := '.exe';
-  OpenDialog.Filter := 'Applications (*.exe)|*.exe';
-  LoadText;
+    OpenDialog := TOpenDialogEx.Create(MainForm);
+    OpenDialog.DefaultExt := '.exe';
+    OpenDialog.Filter := 'Applications (*.exe)|*.exe';
+    LoadText;
 end;
 
 procedure TParamsForm.FormShow(Sender: TObject);
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
 end;
 
 end.

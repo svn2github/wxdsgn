@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls, XPMenu, devcfg;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, ExtCtrls, ComCtrls, XPMenu, devcfg;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -32,48 +32,48 @@ uses
 {$ENDIF}
 
 type
-  TCompileProgressForm = class(TForm)
-    btnClose: TButton;
-    PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    Memo1: TMemo;
-    pb: TProgressBar;
-    Label1: TLabel;
-    lblCompiler: TLabel;
-    Bevel1: TBevel;
-    lblStatus: TLabel;
-    Bevel2: TBevel;
-    Bevel3: TBevel;
-    lblFile: TLabel;
-    Label5: TLabel;
-    Label3: TLabel;
-    Label2: TLabel;
-    lblErr: TLabel;
-    Bevel5: TBevel;
-    Label4: TLabel;
-    Bevel6: TBevel;
-    lblWarn: TLabel;
-    XPMenu: TXPMenu;
-    Label6: TLabel;
-    Bevel4: TBevel;
-    lblElapsed: TLabel;
-    timeTimer: TTimer;
-    chkSelfClose: TCheckBox;
-    procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure timeTimerTimer(Sender: TObject);
-    procedure chkSelfCloseClick(Sender: TObject);
-  private
-    { Private declarations }
-    StartTime: Cardinal;
-  public
-    { Public declarations }
-    class function FormatTime(Seconds: Integer): string;
-  end;
+    TCompileProgressForm = class(TForm)
+        btnClose: TButton;
+        PageControl1: TPageControl;
+        TabSheet1: TTabSheet;
+        TabSheet2: TTabSheet;
+        Memo1: TMemo;
+        pb: TProgressBar;
+        Label1: TLabel;
+        lblCompiler: TLabel;
+        Bevel1: TBevel;
+        lblStatus: TLabel;
+        Bevel2: TBevel;
+        Bevel3: TBevel;
+        lblFile: TLabel;
+        Label5: TLabel;
+        Label3: TLabel;
+        Label2: TLabel;
+        lblErr: TLabel;
+        Bevel5: TBevel;
+        Label4: TLabel;
+        Bevel6: TBevel;
+        lblWarn: TLabel;
+        XPMenu: TXPMenu;
+        Label6: TLabel;
+        Bevel4: TBevel;
+        lblElapsed: TLabel;
+        timeTimer: TTimer;
+        chkSelfClose: TCheckBox;
+        procedure FormShow(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure timeTimerTimer(Sender: TObject);
+        procedure chkSelfCloseClick(Sender: TObject);
+    private
+        { Private declarations }
+        StartTime: Cardinal;
+    public
+        { Public declarations }
+        class function FormatTime(Seconds: Integer): string;
+    end;
 
 var
-  CompileProgressForm: TCompileProgressForm;
+    CompileProgressForm: TCompileProgressForm;
 
 implementation
 
@@ -81,50 +81,53 @@ implementation
 
 procedure TCompileProgressForm.FormShow(Sender: TObject);
 begin
-  StartTime := GetTickCount div 1000;
-  DesktopFont := True;
-  lblFile.Font.Style := [fsBold];
-  PageControl1.ActivePageIndex := 0;
-  XPMenu.Active := devData.XPTheme;
-  chkSelfClose.Checked  := devData.AutoCloseProgress;
-  timeTimer.OnTimer(timeTimer);
+    StartTime := GetTickCount div 1000;
+    DesktopFont := True;
+    lblFile.Font.Style := [fsBold];
+    PageControl1.ActivePageIndex := 0;
+    XPMenu.Active := devData.XPTheme;
+    chkSelfClose.Checked := devData.AutoCloseProgress;
+    timeTimer.OnTimer(timeTimer);
 end;
 
 procedure TCompileProgressForm.FormClose(Sender: TObject;
-  var Action: TCloseAction);
+    var Action: TCloseAction);
 begin
-  Action := caFree;
+    Action := caFree;
 end;
 
 procedure TCompileProgressForm.timeTimerTimer(Sender: TObject);
 begin
-  lblElapsed.Caption := FormatTime((GetTickCount div 1000) - StartTime);
+    lblElapsed.Caption := FormatTime((GetTickCount div 1000) - StartTime);
 end;
 
 class function TCompileProgressForm.FormatTime(Seconds: Integer): string;
-  function GetPlural(amount: Integer): string;
-  begin
-    if amount <> 1 then
-      Result := 's'
-    else
-      Result := '';
-  end;
+    function GetPlural(amount: Integer): string;
+    begin
+        if amount <> 1 then
+            Result := 's'
+        else
+            Result := '';
+    end;
 var
-  Hours, Minutes: Integer;
+    Hours, Minutes: Integer;
 begin
-  //Format the string
-  Hours := Seconds div 3600;
-  Seconds := Seconds mod 3600;
-  Minutes := Seconds div 60;
-  Seconds := Seconds mod 60;
+    //Format the string
+    Hours := Seconds div 3600;
+    Seconds := Seconds mod 3600;
+    Minutes := Seconds div 60;
+    Seconds := Seconds mod 60;
 
-  if Hours <> 0 then
-    Result := Format('%d hour%s %d minute%s %d second%s', [Hours, GetPlural(Hours), Minutes,
-                     GetPlural(Minutes), Seconds, GetPlural(Seconds)])
-  else if Minutes <> 0 then
-    Result := Format('%d minute%s %d second%s', [Minutes, GetPlural(Minutes), Seconds, GetPlural(Seconds)])
-  else
-    Result := Format('%d second%s', [Seconds, GetPlural(Seconds)]);
+    if Hours <> 0 then
+        Result := Format('%d hour%s %d minute%s %d second%s',
+            [Hours, GetPlural(Hours), Minutes,
+            GetPlural(Minutes), Seconds, GetPlural(Seconds)])
+    else
+    if Minutes <> 0 then
+        Result := Format('%d minute%s %d second%s',
+            [Minutes, GetPlural(Minutes), Seconds, GetPlural(Seconds)])
+    else
+        Result := Format('%d second%s', [Seconds, GetPlural(Seconds)]);
 end;
 
 procedure TCompileProgressForm.chkSelfCloseClick(Sender: TObject);

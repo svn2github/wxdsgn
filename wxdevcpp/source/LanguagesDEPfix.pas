@@ -21,136 +21,138 @@ unit LanguagesDEPfix;
 interface
 
 uses
-  Windows, Classes;
+    Windows, Classes;
 
 implementation
 
 uses
-  SysUtils, SysConst;
+    SysUtils, SysConst;
 
 type
-  PJumpRec = ^TJumpRec;
-  TJumpRec = packed record
-    OpCode: Byte;
-    Address: DWord;
-  end;
+    PJumpRec = ^TJumpRec;
+    TJumpRec = packed record
+        OpCode: Byte;
+        Address: DWord;
+    end;
 
-  PLongJumpRec = ^TLongJumpRec;
-  TLongJumpRec = packed record
-    OpCode: Word;
-    Address: DWord;
-  end;
+    PLongJumpRec = ^TLongJumpRec;
+    TLongJumpRec = packed record
+        OpCode: Word;
+        Address: DWord;
+    end;
 
-  // hack for access to private members of TLanguage
-  THackLanguages = class
-  private
-    FSysLangs: array of TLangRec;
-  end;
+    // hack for access to private members of TLanguage
+    THackLanguages = class
+    private
+        FSysLangs: array of TLangRec;
+    end;
 
-  // replacement for TLanguages.Create
-  TLanguagesDEPfix = class(TLanguages)
-  private
-    function LocalesCallback(LocaleID: PChar): integer; stdcall;
-  public
-    constructor Create;
-  end;
+    // replacement for TLanguages.Create
+    TLanguagesDEPfix = class(TLanguages)
+    private
+        function LocalesCallback(LocaleID: PChar): integer; stdcall;
+    public
+        constructor Create;
+    end;
 
 var
-  FTempLanguages: TLanguagesDEPfix;
+    FTempLanguages: TLanguagesDEPfix;
 
 function EnumLocalesCallback(LocaleID: PChar): integer; stdcall;
 begin
-  Result := FTempLanguages.LocalesCallback(LocaleID);
+    Result := FTempLanguages.LocalesCallback(LocaleID);
 end;
 
 function GetLocaleDataW(ID: LCID; Flag: DWORD): string;
 var
-  Buffer: array[0..1023] of WideChar;
+    Buffer: array[0..1023] of WideChar;
 begin
-  Buffer[0] := #0;
-  GetLocaleInfoW(ID, Flag, Buffer, SizeOf(Buffer) div 2);
-  Result := Buffer;
+    Buffer[0] := #0;
+    GetLocaleInfoW(ID, Flag, Buffer, SizeOf(Buffer) div 2);
+    Result := Buffer;
 end;
 
 function GetLocaleDataA(ID: LCID; Flag: DWORD): string;
 var
-  Buffer: array[0..1023] of Char;
+    Buffer: array[0..1023] of Char;
 begin
-  Buffer[0] := #0;
-  SetString(Result, Buffer, GetLocaleInfoA(ID, Flag, Buffer, SizeOf(Buffer)) - 1);
+    Buffer[0] := #0;
+    SetString(Result, Buffer, GetLocaleInfoA(ID, Flag, Buffer,
+        SizeOf(Buffer)) - 1);
 end;
 
 { TLanguagesDEPfix }
 
 function TLanguagesDEPfix.LocalesCallback(LocaleID: PChar): Integer; stdcall;
 type
-  PSysLangs = ^TSysLangs;
-  TSysLangs = array of TLangRec;
+    PSysLangs = ^TSysLangs;
+    TSysLangs = array of TLangRec;
 var
-  AID: LCID;
-  ShortLangName: string;
-  GetLocaleDataProc: function (ID: LCID; Flag: DWORD): string;
-  PSLangs: PSysLangs;
+    AID: LCID;
+    ShortLangName: string;
+    GetLocaleDataProc: function(ID: LCID; Flag: DWORD): string;
+    PSLangs: PSysLangs;
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    GetLocaleDataProc := @GetLocaleDataW
-  else
-    GetLocaleDataProc := @GetLocaleDataA;
-  AID := StrToInt('$' + Copy(LocaleID, 5, 4));
-  ShortLangName := GetLocaleDataProc(AID, LOCALE_SABBREVLANGNAME);
-  if ShortLangName <> '' then
-  begin
-    PSLangs := @THackLanguages(Self).FSysLangs;
-    SetLength(PSLangs^, Length(PSLangs^) + 1);
-    with PSLangs^[High(PSLangs^)] do
+    if Win32Platform = VER_PLATFORM_WIN32_NT then
+        GetLocaleDataProc := @GetLocaleDataW
+    else
+        GetLocaleDataProc := @GetLocaleDataA;
+    AID := StrToInt('$' + Copy(LocaleID, 5, 4));
+    ShortLangName := GetLocaleDataProc(AID, LOCALE_SABBREVLANGNAME);
+    if ShortLangName <> '' then
     begin
-      FName := GetLocaleDataProc(AID, LOCALE_SLANGUAGE);
-      FLCID := AID;
-      FExt := ShortLangName;
+        PSLangs := @THackLanguages(Self).FSysLangs;
+        SetLength(PSLangs^, Length(PSLangs^) + 1);
+        with PSLangs^[High(PSLangs^)] do
+        begin
+            FName := GetLocaleDataProc(AID, LOCALE_SLANGUAGE);
+            FLCID := AID;
+            FExt := ShortLangName;
+        end;
     end;
-  end;
-  Result := 1;
+    Result := 1;
 end;
 
 constructor TLanguagesDEPfix.Create;
 begin
-  FTempLanguages := Self;
-  EnumSystemLocales(@EnumLocalesCallback, LCID_SUPPORTED);
+    FTempLanguages := Self;
+    EnumSystemLocales(@EnumLocalesCallback, LCID_SUPPORTED);
 end;
 
 var
-  FLanguages: TLanguagesDEPfix;
+    FLanguages: TLanguagesDEPfix;
 
 function Languages: TLanguages;
 begin
-  if FLanguages = nil then
-    FLanguages := TLanguagesDEPfix.Create;
-  Result := FLanguages;
+    if FLanguages = nil then
+        FLanguages := TLanguagesDEPfix.Create;
+    Result := FLanguages;
 end;
 
 procedure ApplyLanguagesDEPfix;
 var
-  JumpRec: PJumpRec;
-  LongJumpRec: PLongJumpRec;
-  OldProtect: DWord;
-  IsPackages: Boolean;
+    JumpRec: PJumpRec;
+    LongJumpRec: PLongJumpRec;
+    OldProtect: DWord;
+    IsPackages: Boolean;
 begin
-  JumpRec := PJumpRec(@SysUtils.Languages);
-  LongJumpRec := Pointer(JumpRec);
+    JumpRec := PJumpRec(@SysUtils.Languages);
+    LongJumpRec := Pointer(JumpRec);
 
-  IsPackages := LongJumpRec.OpCode = $25FF; // runtime package?
-  if IsPackages then
-    JumpRec := Pointer(PDWord(LongJumpRec.Address)^);
+    IsPackages := LongJumpRec.OpCode = $25FF; // runtime package?
+    if IsPackages then
+        JumpRec := Pointer(PDWord(LongJumpRec.Address)^);
 
-  if not VirtualProtect(JumpRec, SizeOf(JumpRec^), PAGE_EXECUTE_WRITECOPY, @OldProtect) then
-    // If we cannot change the access right the following line will crash. Exit here anyway.
-    Exit;
-  JumpRec.OpCode := $E9; // 32bit jump near
-  JumpRec.Address := integer(@Languages) - integer(JumpRec) - 5;
-  VirtualProtect(JumpRec, SizeOf(JumpRec^), OldProtect, @OldProtect);
+    if not VirtualProtect(JumpRec, SizeOf(JumpRec^),
+        PAGE_EXECUTE_WRITECOPY, @OldProtect) then
+        // If we cannot change the access right the following line will crash. Exit here anyway.
+        Exit;
+    JumpRec.OpCode := $E9; // 32bit jump near
+    JumpRec.Address := integer(@Languages) - integer(JumpRec) - 5;
+    VirtualProtect(JumpRec, SizeOf(JumpRec^), OldProtect, @OldProtect);
 end;
 
 initialization
-  ApplyLanguagesDEPfix;
+    ApplyLanguagesDEPfix;
 
 end.

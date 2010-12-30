@@ -83,7 +83,7 @@ type
     procedure CutExecute;
     procedure CopyExecute;
     procedure PasteExecute;
-    procedure Destroy;
+    procedure Destroy; 
     procedure OnToolbarEvent(WM_COMMAND: Word);
     procedure SetBoolInspectorDataClear(b: Boolean);
     procedure SetDisablePropertyBuilding(b: Boolean);

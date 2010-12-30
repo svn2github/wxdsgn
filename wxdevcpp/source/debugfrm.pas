@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, XPMenu;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, ComCtrls, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -32,65 +32,65 @@ uses
 {$ENDIF}
 
 type
-  TDebugForm = class(TForm)
-    lvItems: TListView;
-    btnClose: TButton;
-    XPMenu: TXPMenu;
-    procedure FormShow(Sender: TObject);
-    procedure btnCloseClick(Sender: TObject);
-    procedure AddItem(const Text, Value: string);
-  private
+    TDebugForm = class(TForm)
+        lvItems: TListView;
+        btnClose: TButton;
+        XPMenu: TXPMenu;
+        procedure FormShow(Sender: TObject);
+        procedure btnCloseClick(Sender: TObject);
+        procedure AddItem(const Text, Value: string);
+    private
 
-  public
-    { Public declarations }
-  end;
+    public
+        { Public declarations }
+    end;
 
 var
-  DebugForm: TDebugForm;
+    DebugForm: TDebugForm;
 
 implementation
 
-uses 
-  utils, devcfg, main;
+uses
+    utils, devcfg, main;
 
 {$R *.dfm}
 
 procedure TDebugForm.AddItem(const Text, Value: string);
 var
-  Item: TListItem;
+    Item: TListItem;
 begin
-  Item := lvItems.Items.Add;
-  Item.Caption := Text;
-  Item.SubItems.Add(Value);
+    Item := lvItems.Items.Add;
+    Item.Caption := Text;
+    Item.SubItems.Add(Value);
 end;
 
 procedure TDebugForm.FormShow(Sender: TObject);
 begin
-  AddItem('Current Path', GetCurrentDir);
-  with devDirs do
-  begin
-    AddItem('devDirs.Exec', Exec);
-    AddItem('devDirs.Icons', Icons);
-    AddItem('devDirs.Help', ExpandFileto(Help, Exec));
-    AddItem('devDirs.Lang', ExpandFileto(Lang, Exec));
-    AddItem('devDirs.Templates', ExpandFileto(Templates, Exec));
-    AddItem('devDirs.Default', Default);
-    AddItem('devDirs.Bin', Bins);
-    AddItem('devDirs.C', C);
-    AddItem('devDirs.Cpp', Cpp);
-    AddItem('devDirs.Lib', Lib);
-    AddItem('devDirs.OriginalPath', OriginalPath);
+    AddItem('Current Path', GetCurrentDir);
+    with devDirs do
+    begin
+        AddItem('devDirs.Exec', Exec);
+        AddItem('devDirs.Icons', Icons);
+        AddItem('devDirs.Help', ExpandFileto(Help, Exec));
+        AddItem('devDirs.Lang', ExpandFileto(Lang, Exec));
+        AddItem('devDirs.Templates', ExpandFileto(Templates, Exec));
+        AddItem('devDirs.Default', Default);
+        AddItem('devDirs.Bin', Bins);
+        AddItem('devDirs.C', C);
+        AddItem('devDirs.Cpp', Cpp);
+        AddItem('devDirs.Lib', Lib);
+        AddItem('devDirs.OriginalPath', OriginalPath);
 
-    if devData.XPTheme then
-      XPMenu.Active := true
-    else
-      XPMenu.Active := false;
-  end;
+        if devData.XPTheme then
+            XPMenu.Active := true
+        else
+            XPMenu.Active := false;
+    end;
 end;
 
 procedure TDebugForm.btnCloseClick(Sender: TObject);
 begin
-  close;
+    close;
 end;
 
 end.

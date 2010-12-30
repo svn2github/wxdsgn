@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, XPMenu;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
@@ -32,37 +32,37 @@ uses
 {$ENDIF}
 
 type
-  TCVSPasswdForm = class(TForm)
-    Label1: TLabel;
-    txtPass: TEdit;
-    btnOK: TButton;
-    Label2: TLabel;
-    XPMenu: TXPMenu;
-    procedure FormShow(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
-  end;
+    TCVSPasswdForm = class(TForm)
+        Label1: TLabel;
+        txtPass: TEdit;
+        btnOK: TButton;
+        Label2: TLabel;
+        XPMenu: TXPMenu;
+        procedure FormShow(Sender: TObject);
+    private
+        { Private declarations }
+    public
+        { Public declarations }
+    end;
 
 var
-  CVSPasswdForm: TCVSPasswdForm;
+    CVSPasswdForm: TCVSPasswdForm;
 
 implementation
 
-uses 
-  devcfg;
+uses
+    devcfg;
 
 {$R *.dfm}
 
 procedure TCVSPasswdForm.FormShow(Sender: TObject);
 begin
-  if devData.XPTheme then
-    XPMenu.Active := true
-  else
-    XPMenu.Active := false;
-  txtPass.Text := '';
-  txtPass.SetFocus;
+    if devData.XPTheme then
+        XPMenu.Active := true
+    else
+        XPMenu.Active := false;
+    txtPass.Text := '';
+    txtPass.SetFocus;
 end;
 
 end.

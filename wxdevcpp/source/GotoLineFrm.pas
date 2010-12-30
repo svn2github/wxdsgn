@@ -30,8 +30,8 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, 
-  Buttons, ExtCtrls, Spin, XPMenu, SynEdit;
+    Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+    Buttons, ExtCtrls, Spin, XPMenu, SynEdit;
 {$ENDIF}
 {$IFDEF LINUX}
   Classes, QGraphics, QForms, QControls, QStdCtrls, 
@@ -39,31 +39,31 @@ uses
 {$ENDIF}
 
 type
-  TGotoLineForm = class(TForm)
-    GotoLabel: TLabel;
-    Line: TSpinEdit;
-    XPMenu: TXPMenu;
-    BtnOK: TButton;
-    BtnCancel: TButton;
-    procedure FormCreate(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure FormShow(Sender: TObject);
-    procedure LineKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-  private
-    FEditor: TCustomSynEdit;
-    procedure SetEditor(AEditor: TCustomSynEdit);
-  public
-    procedure LoadText;
-    property Editor: TCustomSynEdit read FEditor write SetEditor;
-  end;
+    TGotoLineForm = class(TForm)
+        GotoLabel: TLabel;
+        Line: TSpinEdit;
+        XPMenu: TXPMenu;
+        BtnOK: TButton;
+        BtnCancel: TButton;
+        procedure FormCreate(Sender: TObject);
+        procedure FormKeyUp(Sender: TObject; var Key: Word;
+            Shift: TShiftState);
+        procedure FormShow(Sender: TObject);
+        procedure LineKeyDown(Sender: TObject; var Key: Word;
+            Shift: TShiftState);
+    private
+        FEditor: TCustomSynEdit;
+        procedure SetEditor(AEditor: TCustomSynEdit);
+    public
+        procedure LoadText;
+        property Editor: TCustomSynEdit read FEditor write SetEditor;
+    end;
 
 implementation
 
 uses
 {$IFDEF WIN32}
-  MultiLangSupport, devcfg;
+    MultiLangSupport, devcfg;
 {$ENDIF}
 {$IFDEF LINUX}
   Xlib, MultiLangSupport, devcfg;
@@ -73,19 +73,20 @@ uses
 
 procedure TGotoLineForm.FormCreate(Sender: TObject);
 begin
-  LoadText;
+    LoadText;
 end;
 
 procedure TGotoLineForm.FormShow(Sender: TObject);
 begin
-  Line.Value := 1;
+    Line.Value := 1;
 end;
 
 procedure TGotoLineForm.LineKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+    Shift: TShiftState);
 begin
 {$IFDEF WIN32}
-  if Key = VK_RETURN then BtnOK.Click;
+    if Key = VK_RETURN then
+        BtnOK.Click;
 {$ENDIF}
 {$IFDEF LINUX}
   if Key = XK_RETURN then BtnOK.Click;
@@ -94,19 +95,20 @@ end;
 
 procedure TGotoLineForm.LoadText;
 begin
-  DesktopFont := True;
-  XPMenu.Active := devData.XPTheme;
-  Caption := Lang[ID_GOTO_CAPTION];
-  GotoLabel.Caption := Lang[ID_GOTO_TEXT];
-  BtnOk.Caption := Lang[ID_BTN_OK];
-  BtnCancel.Caption := Lang[ID_BTN_CANCEL];
+    DesktopFont := True;
+    XPMenu.Active := devData.XPTheme;
+    Caption := Lang[ID_GOTO_CAPTION];
+    GotoLabel.Caption := Lang[ID_GOTO_TEXT];
+    BtnOk.Caption := Lang[ID_BTN_OK];
+    BtnCancel.Caption := Lang[ID_BTN_CANCEL];
 end;
 
 procedure TGotoLineForm.FormKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+    Shift: TShiftState);
 begin
 {$IFDEF WIN32}
-  if Key = VK_ESCAPE then Close;
+    if Key = VK_ESCAPE then
+        Close;
 {$ENDIF}
 {$IFDEF LINUX}
   if Key = XK_ESCAPE then Close;
@@ -115,12 +117,12 @@ end;
 
 procedure TGotoLineForm.SetEditor(AEditor: TCustomSynEdit);
 begin
-  FEditor := AEditor;
-  if Assigned(FEditor) then
-  begin
-    Line.MaxValue := FEditor.Lines.Count;
-    Line.Value := FEditor.CaretY;
-  end;
+    FEditor := AEditor;
+    if Assigned(FEditor) then
+    begin
+        Line.MaxValue := FEditor.Lines.Count;
+        Line.Value := FEditor.CaretY;
+    end;
 end;
 
 end.

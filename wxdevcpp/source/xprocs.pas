@@ -97,7 +97,7 @@ uses
 type
     Float = Extended; { our type for float arithmetic }
 
-{$IFDEF Win32} { our type for integer functions, Int_ is ever 32 bit }
+{$IFDEF Win32}{ our type for integer functions, Int_ is ever 32 bit }
     Int_ = Integer;
 {$ELSE}
     Int_ = Longint;
@@ -165,7 +165,8 @@ type
     TMonth = (NoneMonth, January, February, March, April, May, June, July,
         August, September, October, November, December);
 
-    TDayOfWeek = (Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday);
+    TDayOfWeek = (Sunday, Monday, Tuesday, Wednesday, Thursday,
+        Friday, Saturday);
 
     { Online eMail Service Provider }
     TMailProvider = (mpCServe, mpInternet, mpNone);
@@ -176,7 +177,7 @@ type
 
     { Search and Replace options }
     TSROption = (srWord, srCase, srAll);
-    TSROptions = set of TsrOption;	
+    TSROptions = set of TsrOption;
 
     { Data types }
     TDataType = (dtInteger, dtBoolean, dtString, dtDate, dtTime,
@@ -184,13 +185,13 @@ type
 
 var
     IsWin95,
-        IsWinNT: Boolean;
+    IsWinNT: Boolean;
     IsFabula: TLicCallBack;
 
     xLanguage: Integer;
     xLangOfs: Integer;
 
-    { bit manipulating }
+{ bit manipulating }
 function bitSet(const Value: Int_; const TheBit: TBit): Boolean;
 function bitOn(const Value: Int_; const TheBit: TBit): Int_;
 function bitOff(const Value: Int_; const TheBit: TBit): Int_;
@@ -226,7 +227,7 @@ function strTokenCount(S: string; Seperator: Char): Integer;
 function strTokenAt(const S: string; Seperator: Char; At: Integer): string;
 procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 function strTokenFromStrings(Seperator: Char; List: TStrings): string;
-function strRemoveDuplicates(OrigString : string; Seperator: Char): string;
+function strRemoveDuplicates(OrigString: string; Seperator: Char): string;
 
 function strUpper(const S: string): string;
 function strOemAnsi(const S: string): string;
@@ -249,7 +250,8 @@ function strLastCh(const S: string): Char;
 procedure strStripLast(var S: string);
 function strByteSize(Value: Longint): string;
 function strSoundex(S: string): string;
-procedure strSearchReplace(var S: string; const Source, Dest: string; Options: TSRoptions);
+procedure strSearchReplace(var S: string; const Source, Dest: string;
+    Options: TSRoptions);
 function strProfile(const aFile, aSection, aEntry, aDefault: string): string;
 function strCapitalize(const S: string): string; { 31.07.96 sb }
 
@@ -401,9 +403,11 @@ procedure regWriteShellExt(const aExt, aCmd, aMenu, aExec: string);
 }
 procedure regKeyList(aKey: HKEY; const Path: string; var aValue: TStringList);
 function regValueExist(aKey: HKEY; const Path: string): Boolean;
-function regWriteValue(aKey: HKEY; const Path: string; Value: Variant; Typ: TDataType): Boolean;
+function regWriteValue(aKey: HKEY; const Path: string;
+    Value: Variant; Typ: TDataType): Boolean;
 function regReadValue(aKey: HKEY; const Path: string; Typ: TDataType): Variant;
-procedure regValueList(aKey: HKEY; const Path: string; var aValue: TStringList);
+procedure regValueList(aKey: HKEY; const Path: string;
+    var aValue: TStringList);
 {$ENDIF}
 
 {Innet functions}
@@ -448,7 +452,8 @@ type
     { Persistent access of components from the registry }
     TPersistentRegistry = class(TRegistry)
     public
-        function ReadComponent(const Name: string; Owner, Parent: TComponent): TComponent;
+        function ReadComponent(const Name: string;
+            Owner, Parent: TComponent): TComponent;
         procedure WriteComponent(const Name: string; Component: TComponent);
     end;
     {$ENDIF
@@ -457,22 +462,22 @@ type
     TSystemMetric = class
     private
         FColorDepth,
-            FMenuHeight,
-            FCaptionHeight: Integer;
+        FMenuHeight,
+        FCaptionHeight: Integer;
         FBorder,
-            FFrame,
-            FDlgFrame,
-            FBitmap,
-            FHScroll,
-            FVScroll,
-            FThumb,
-            FFullScreen,
-            FMin,
-            FMinTrack,
-            FCursor,
-            FIcon,
-            FDoubleClick,
-            FIconSpacing: TPoint;
+        FFrame,
+        FDlgFrame,
+        FBitmap,
+        FHScroll,
+        FVScroll,
+        FThumb,
+        FFullScreen,
+        FMin,
+        FMinTrack,
+        FCursor,
+        FIcon,
+        FDoubleClick,
+        FIconSpacing: TPoint;
     protected
         constructor Create;
         procedure Update;
@@ -691,22 +696,22 @@ end;
 
 function strTokenCount(S: string; Seperator: Char): Integer;
 var
-    Scopy : string;
-    I, Count : Integer;
+    Scopy: string;
+    I, Count: Integer;
 begin
 
-   Scopy := S;
-   Count := 0;
+    Scopy := S;
+    Count := 0;
 
-   I := Pos(Seperator, Scopy);
-   while I <> 0 do
-   begin
-      Count := Count + 1;
-      Delete(Scopy, 1, I + Length(Seperator) - 1);
-      I := Pos(Seperator, Scopy);
-   end;
+    I := Pos(Seperator, Scopy);
+    while I <> 0 do
+    begin
+        Count := Count + 1;
+        Delete(Scopy, 1, I + Length(Seperator) - 1);
+        I := Pos(Seperator, Scopy);
+    end;
 
-   Result := Count;
+    Result := Count;
 
 end;
 
@@ -721,7 +726,8 @@ begin
     begin
         if S[j] = Seperator then
             Inc(i)
-        else if i = At then
+        else
+        if i = At then
             Result := Result + S[j];
         Inc(j);
     end;
@@ -731,8 +737,8 @@ procedure strTokenToStrings(S: string; Seperator: Char; List: TStrings);
 var
     Token, Scopy: string;
 begin
-   List.Clear;
-   Scopy := S;
+    List.Clear;
+    Scopy := S;
 
     Token := strToken(Scopy, Seperator);
     while Token <> '' do
@@ -755,11 +761,11 @@ begin
 end;
 
 // Removes duplicate values in a token-delimited string
-function strRemoveDuplicates(OrigString : string; Seperator: Char): string;
+function strRemoveDuplicates(OrigString: string; Seperator: Char): string;
 var
-  List1, List2 : TStringList;
-  nodupString : string;
-  i : Integer;
+    List1, List2: TStringList;
+    nodupString: string;
+    i: Integer;
 begin
 
     List1 := TStringList.Create;
@@ -769,9 +775,9 @@ begin
     List2.Add(List1[0]);
     for i := 1 to List1.Count - 1 do
     begin
-       // If the string from List1 is not in List2, then add it.
-       if (List2.IndexOf(List1[i]) > -1) and (strTrim(List1[i]) <> '') then
-          List2.Add(List1[i]);
+        // If the string from List1 is not in List2, then add it.
+        if (List2.IndexOf(List1[i]) > -1) and (strTrim(List1[i]) <> '') then
+            List2.Add(List1[i]);
     end;
 
     nodupString := strTokenFromStrings(Seperator, List2);
@@ -890,7 +896,8 @@ begin
     for i := 0 to length(S) do
         if S[i] in DIGITS then
             a[j] := a[j] + S[i]
-        else if S[i] in [DateSeparator] then
+        else
+        if S[i] in [DateSeparator] then
             Inc(j);
     for i := 0 to 2 do
         if Length(a[i]) = 0 then
@@ -898,7 +905,8 @@ begin
                 a[i] := copy(heute, i * 3 + 1, 4)
             else
                 a[i] := copy(heute, i * 3 + 1, 2)
-        else if length(a[i]) = 1 then
+        else
+        if length(a[i]) = 1 then
             a[i] := '0' + a[i];
 
     Result := a[0] + DateSeparator + a[1] + DateSeparator + a[2];
@@ -924,7 +932,8 @@ begin
         begin
             a[j] := a[j] + S[i];
         end
-        else if S[i] in ['.', ',', ':'] then
+        else
+        if S[i] in ['.', ',', ':'] then
             inc(J);
         if j > 2 then
             exit;
@@ -932,7 +941,8 @@ begin
     for J := 0 to 2 do
         if length(a[j]) = 1 then
             a[j] := '0' + a[j]
-        else if length(a[j]) = 0 then
+        else
+        if length(a[j]) = 0 then
             a[j] := '00';
     Result := a[0] + TimeSeparator + a[1] + TimeSeparator + a[2];
 end;
@@ -944,7 +954,8 @@ begin
     if Length(S) > 3 then
     begin
         L := (Length(S) + 1) div 2;
-        Result := strNicePhone(strLeft(S, L)) + SPACE + strNicePhone(strRight(S, Length(S) - L));
+        Result := strNicePhone(strLeft(S, L)) + SPACE +
+            strNicePhone(strRight(S, Length(S) - L));
     end
     else
         Result := S;
@@ -1049,7 +1060,8 @@ var
 
     function Group(Ch: Char): Char;
     begin
-        if (Ch in ['B'..'Z']) and not (Ch in ['E', 'H', 'I', 'O', 'U', 'W', 'Y']) then
+        if (Ch in ['B'..'Z']) and not
+            (Ch in ['E', 'H', 'I', 'O', 'U', 'W', 'Y']) then
             Result := CvTable[Ch]
         else
             Result := '0';
@@ -1090,9 +1102,11 @@ function strByteSize(Value: Longint): string;
 begin
     if Value > GBYTE then
         Result := FltTostr(Value / GBYTE) + ' GB'
-    else if Value > MBYTE then
+    else
+    if Value > MBYTE then
         Result := FltToStr(Value / MBYTE) + ' MB'
-    else if Value > KBYTE then
+    else
+    if Value > KBYTE then
         Result := FltTostr(Value / KBYTE) + ' KB'
     else
         Result := FltTostr(Value) + ' Byte'; { 04.08.96 sb }
@@ -1145,7 +1159,8 @@ begin
         Delete(S, Length(S), 1);
 end;
 
-procedure strSearchReplace(var S: string; const Source, Dest: string; Options: TSRoptions);
+procedure strSearchReplace(var S: string; const Source, Dest: string;
+    Options: TSRoptions);
 var
     hs, hs1, hs2, hs3: string;
 var
@@ -1225,7 +1240,8 @@ begin
         Ch := S[i];
         if Ch in [SPACE, '-', '.'] then
             First := True
-        else if First then
+        else
+        if First then
         begin
             Ch := strUpper(Ch)[1];
             First := False;
@@ -1324,7 +1340,8 @@ function IntSign(a: Int_): Integer;
 begin
     if a < 0 then
         Result := -1
-    else if a > 0 then
+    else
+    if a > 0 then
         Result := +1
     else
         Result := 0;
@@ -1481,23 +1498,25 @@ begin
         if not Bracket then
             case Expr[i] of
                 '0'..'9':
-                    begin
-                        z := z * 10 + ord(Expr[i]) - ord('0');
-                        n := n * m;
-                    end;
-                ',', #46: m := 10;
-                '(': Bracket := True; {hier Klammeranfang merken, Zähler!!}
+                begin
+                    z := z * 10 + ord(Expr[i]) - ord('0');
+                    n := n * m;
+                end;
+                ',', #46:
+                    m := 10;
+                '(':
+                    Bracket := True; {hier Klammeranfang merken, Zähler!!}
                 '*', 'x',
-                    'X',
-                    '/', '+':
-                    begin
-                        Stack[j] := z / n;
-                        oStack[j] := Expr[i];
-                        Inc(j);
-                        m := 1;
-                        z := 0;
-                        n := 1;
-                    end;
+                'X',
+                '/', '+':
+                begin
+                    Stack[j] := z / n;
+                    oStack[j] := Expr[i];
+                    Inc(j);
+                    m := 1;
+                    z := 0;
+                    n := 1;
+                end;
             end {case}
         else
             Bracket := Expr[i] <> ')'; {hier Rekursiver Aufruf, Zähler !!}
@@ -1506,9 +1525,12 @@ begin
     Stack[j] := z / n;
     for i := 1 to j do
         case oStack[i - 1] of
-            '*', 'x', 'X': Stack[i] := Stack[i - 1] * Stack[i];
-            '/': Stack[i] := Stack[i - 1] / Stack[i];
-            '+': Stack[i] := Stack[i - 1] + Stack[i];
+            '*', 'x', 'X':
+                Stack[i] := Stack[i - 1] * Stack[i];
+            '/':
+                Stack[i] := Stack[i - 1] / Stack[i];
+            '+':
+                Stack[i] := Stack[i - 1] + Stack[i];
         end;
     Result := Stack[j];
 end;
@@ -1599,7 +1621,8 @@ end;
 
 function RectPoint(const R: TRect; P: TPoint): Boolean;
 begin
-    Result := (p.x > r.left) and (p.x < r.right) and (p.y > r.top) and (p.y < r.bottom);
+    Result := (p.x > r.left) and (p.x < r.right) and (p.y > r.top) and
+        (p.y < r.bottom);
 end;
 
 function RectIntersection(const R1, R2: TRect): TRect;
@@ -1687,24 +1710,34 @@ end;
 function varToStr(const V: Variant): string;
 begin
     case TVarData(v).vType of
-        varSmallInt: Result := IntToStr(TVarData(v).VSmallInt);
-        varInteger: Result := IntToStr(TVarData(v).VInteger);
-        varSingle: Result := FloatToStr(TVarData(v).VSingle);
-        varDouble: Result := FloatToStr(TVarData(v).VDouble);
-        varCurrency: Result := FloatToStr(TVarData(v).VCurrency);
-        varDate: Result := DateToStr(TVarData(v).VDate);
-        varBoolean: Result := varIIf(TVarData(v).VBoolean, 'True', 'False');
-        varByte: Result := IntToStr(TVarData(v).VByte);
-        varString: Result := StrPas(TVarData(v).VString);
+        varSmallInt:
+            Result := IntToStr(TVarData(v).VSmallInt);
+        varInteger:
+            Result := IntToStr(TVarData(v).VInteger);
+        varSingle:
+            Result := FloatToStr(TVarData(v).VSingle);
+        varDouble:
+            Result := FloatToStr(TVarData(v).VDouble);
+        varCurrency:
+            Result := FloatToStr(TVarData(v).VCurrency);
+        varDate:
+            Result := DateToStr(TVarData(v).VDate);
+        varBoolean:
+            Result := varIIf(TVarData(v).VBoolean, 'True', 'False');
+        varByte:
+            Result := IntToStr(TVarData(v).VByte);
+        varString:
+            Result := StrPas(TVarData(v).VString);
         varEmpty,
-            varNull,
-            varVariant,
-            varUnknown,
-            varTypeMask,
-            varArray,
-            varByRef,
-            varDispatch,
-            varError: Result := '';
+        varNull,
+        varVariant,
+        varUnknown,
+        varTypeMask,
+        varArray,
+        varByRef,
+        varDispatch,
+        varError:
+            Result := '';
     end;
 end;
 
@@ -1767,36 +1800,37 @@ const
     BlockSize = 1024 * 16;
 var
     FSource, FTarget: Integer;
-   // FFileSize: Longint;
+    // FFileSize: Longint;
     BRead, Bwrite: Word;
     Buffer: Pointer;
 begin
     Result := False;
-    FSource := FileOpen(SourceFile, fmOpenRead + fmShareDenyNone); { Open Source }
+    FSource := FileOpen(SourceFile, fmOpenRead + fmShareDenyNone);
+    { Open Source }
     if FSource >= 0 then
-    try
-        //FFileSize := FileSeek(FSource, 0, soFromEnd);
-        FTarget := FileCreate(TargetFile); { Open Target }
         try
-            getmem(Buffer, BlockSize);
+            //FFileSize := FileSeek(FSource, 0, soFromEnd);
+            FTarget := FileCreate(TargetFile); { Open Target }
             try
-                FileSeek(FSource, 0, soFromBeginning);
-                repeat
-                    BRead := FileRead(FSource, Buffer^, BlockSize);
-                    BWrite := FileWrite(FTarget, Buffer^, Bread);
-                until (Bread = 0) or (Bread <> BWrite);
-                if Bread = Bwrite then
-                    Result := True;
+                getmem(Buffer, BlockSize);
+                try
+                    FileSeek(FSource, 0, soFromBeginning);
+                    repeat
+                        BRead := FileRead(FSource, Buffer^, BlockSize);
+                        BWrite := FileWrite(FTarget, Buffer^, Bread);
+                    until (Bread = 0) or (Bread <> BWrite);
+                    if Bread = Bwrite then
+                        Result := True;
+                finally
+                    freemem(Buffer, BlockSize);
+                end;
+                FileSetDate(FTarget, FileGetDate(FSource));
             finally
-                freemem(Buffer, BlockSize);
+                FileClose(FTarget);
             end;
-            FileSetDate(FTarget, FileGetDate(FSource));
         finally
-            FileClose(FTarget);
+            FileClose(FSource);
         end;
-    finally
-        FileClose(FSource);
-    end;
 end;
 
 {$IFDEF Win32}
@@ -1884,7 +1918,8 @@ function fileLongName(const aFile: string): string;
 var
     aInfo: TSHFileInfo;
 begin
-    if SHGetFileInfo(PChar(aFile), 0, aInfo, Sizeof(aInfo), SHGFI_DISPLAYNAME) <> 0 then
+    if SHGetFileInfo(PChar(aFile), 0, aInfo, Sizeof(aInfo),
+        SHGFI_DISPLAYNAME) <> 0 then
         Result := StrPas(aInfo.szDisplayName)
     else
         Result := aFile;
@@ -1894,7 +1929,8 @@ function fileTypeName(const aFile: string): string;
 var
     aInfo: TSHFileInfo;
 begin
-    if SHGetFileInfo(PChar(aFile), 0, aInfo, Sizeof(aInfo), SHGFI_TYPENAME) <> 0 then
+    if SHGetFileInfo(PChar(aFile), 0, aInfo, Sizeof(aInfo),
+        SHGFI_TYPENAME) <> 0 then
         Result := StrPas(aInfo.szTypeName)
     else
     begin
@@ -1994,7 +2030,7 @@ const
     t2: array[1..7] of ShortInt = (-4, 2, 1, 0, -1, -2, -3);
 var
     doy1,
-        doy2: Integer;
+    doy2: Integer;
     NewYear: TDateTime;
 begin
     NewYear := dateBeginOfYear(D);
@@ -2002,7 +2038,8 @@ begin
     doy2 := dateDayofYear(D) + t2[DayOfWeek(D)];
     if doy1 <= 0 then
         Result := dateWeekOfYear(NewYear - 1)
-    else if (doy2 >= dateDayofYear(dateEndOfYear(NewYear))) then
+    else
+    if (doy2 >= dateDayofYear(dateEndOfYear(NewYear))) then
         Result := 1
     else
         Result := (doy1 - 1) div 7 + 1;
@@ -2048,7 +2085,8 @@ end;
 
 function dateDaysInMonth(D: TDateTime): Integer;
 const
-    DaysPerMonth: array[1..12] of Byte = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+    DaysPerMonth: array[1..12] of Byte =
+        (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 var
     Month: Integer;
 begin
@@ -2087,32 +2125,41 @@ const
 {$ENDIF}
 begin
     case Upcase(Key) of { Quicken Date Fast Keys }
-        '+': Result := D + 1;
-        '-': Result := D - 1;
-        _ToDay: Result := Date;
-        _PrevYear: if D <> dateBeginOfYear(D) then
+        '+':
+            Result := D + 1;
+        '-':
+            Result := D - 1;
+        _ToDay:
+            Result := Date;
+        _PrevYear:
+            if D <> dateBeginOfYear(D) then
                 Result := dateBeginOfYear(D)
             else
                 Result := dateBeginOfYear(D - 1);
-        _NextYear: if D <> dateEndOfYear(D) then
+        _NextYear:
+            if D <> dateEndOfYear(D) then
                 Result := dateEndOfYear(D)
             else
                 Result := dateEndOfYear(Date + 1);
-        _PrevMonth: if D <> dateBeginOfMonth(D) then
+        _PrevMonth:
+            if D <> dateBeginOfMonth(D) then
                 Result := dateBeginOfMonth(D)
             else
                 Result := dateBeginOfMonth(D - 1);
-        _NextMonth: if D <> dateEndOfMonth(D) then
+        _NextMonth:
+            if D <> dateEndOfMonth(D) then
                 Result := dateEndOfMonth(D)
             else
                 Result := dateEndOfMonth(D + 1);
-        _BeginQuart: Result := dateBeginOfQuarter(D);
-        _EndQuart: Result := dateEndOfQuarter(D);
+        _BeginQuart:
+            Result := dateBeginOfQuarter(D);
+        _EndQuart:
+            Result := dateEndOfQuarter(D);
     else
-        begin
-            Result := D;
-            exit;
-        end;
+    begin
+        Result := D;
+        exit;
+    end;
     end;
     Key := #0;
 end;
@@ -2169,26 +2216,27 @@ function comIsCis(const S: string): Boolean;
 var
     aSt: string;
     PreId,
-        PostId: Integer;
+    PostId: Integer;
 begin
-    Result := strContainsU('@compuserve.com', S); { 28.7.96 sb This is also on CIS }
+    Result := strContainsU('@compuserve.com', S);
+    { 28.7.96 sb This is also on CIS }
     if not Result then
         if Pos(',', S) > 0 then
-        try
-            aSt := S;
-            PreId := StrToInt(strToken(aSt, ','));
-            PostId := StrToInt(aSt);
-            Result := (PreId > 0) and (PostId > 0);
-        except
-            Result := False;
-        end;
+            try
+                aSt := S;
+                PreId := StrToInt(strToken(aSt, ','));
+                PostId := StrToInt(aSt);
+                Result := (PreId > 0) and (PostId > 0);
+            except
+                Result := False;
+            end;
 end;
 
 function comIsInt(const S: string): Boolean;
 var
     aSt: string;
     PreId,
-        PostId: string;
+    PostId: string;
 begin
     try
         aSt := S;
@@ -2289,9 +2337,11 @@ function comNormPhone(const Phone: string): string;
         begin
             if (S[j] = Str) then
                 FSkip := not FSkip
-            else if (S[j] = Seperator) and not FSkip then
+            else
+            if (S[j] = Seperator) and not FSkip then
                 Inc(i)
-            else if i = At then
+            else
+            if i = At then
                 Result := Result + S[j];
             Inc(j);
         end;
@@ -2299,21 +2349,23 @@ function comNormPhone(const Phone: string): string;
 
 var
     aNumber,
-        aCountry,
-        aPrefix,
-        aDefault,
-        aLocation: string;
+    aCountry,
+    aPrefix,
+    aDefault,
+    aLocation: string;
 
     i: Integer;
 begin
     aDefault := '1,"Hamburg","","","40",49,0,0,0,"",1," "';
-    aLocation := strProfile('telephon.ini', 'Locations', 'CurrentLocation', '');
+    aLocation := strProfile('telephon.ini', 'Locations',
+        'CurrentLocation', '');
     if aLocation <> '' then
     begin
         aLocation := strTokenAt(aLocation, ',', 0);
         if aLocation <> '' then
         begin
-            aLocation := strProfile('telephon.ini', 'Locations', 'Location' + aLocation, '');
+            aLocation := strProfile('telephon.ini', 'Locations',
+                'Location' + aLocation, '');
             if aLocation <> '' then
                 aDefault := aLocation;
         end;
@@ -2401,7 +2453,8 @@ var
 begin
     aDC := GetDC(0);
     try
-        Result := 1 shl (GetDeviceCaps(aDC, PLANES) * GetDeviceCaps(aDC, BITSPIXEL));
+        Result := 1 shl (GetDeviceCaps(aDC, PLANES) *
+            GetDeviceCaps(aDC, BITSPIXEL));
     finally
         ReleaseDC(0, aDC);
     end;
@@ -2415,7 +2468,8 @@ var
     buf: array[0..MAX_PATH] of Char;
 begin
     Result := '';
-    if Succeeded(ShGetSpecialFolderLocation(GetActiveWindow, folderID, pidl)) then
+    if Succeeded(ShGetSpecialFolderLocation(GetActiveWindow,
+        folderID, pidl)) then
     begin
         if ShGetPathfromIDList(pidl, buf) then
             Result := buf;
@@ -2534,7 +2588,8 @@ var
     aKey: hKey;
 begin
     Result := '';
-    if RegOpenKey(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, aKey) = ERROR_SUCCESS then
+    if RegOpenKey(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, aKey) =
+        ERROR_SUCCESS then
     begin
         Result := regReadString(aKey, Value);
         RegCloseKey(aKey);
@@ -2558,32 +2613,33 @@ var
     s, aPath: string;
 begin
     with TRegistry.Create do
-    try
-        RootKey := HKEY_CLASSES_ROOT;
-        aPath := aExt;
-        if KeyExists(aPath) then
-        begin
-            OpenKey(aPath, False);
-            S := ReadString('');
+        try
+            RootKey := HKEY_CLASSES_ROOT;
+            aPath := aExt;
+            if KeyExists(aPath) then
+            begin
+                OpenKey(aPath, False);
+                S := ReadString('');
+                CloseKey;
+                if S <> '' then
+                    if KeyExists(S) then
+                        aPath := S;
+            end;
+
+            OpenKey(aPath + '\Shell\' + aCmd, True);
+            WriteString('', aMenu);
             CloseKey;
-            if S <> '' then
-                if KeyExists(S) then
-                    aPath := S;
+
+            OpenKey(aPath + '\Shell\' + aCmd + '\Command', True);
+            WriteString('', aExec + ' %1');
+            CloseKey;
+        finally
+            Free;
         end;
-
-        OpenKey(aPath + '\Shell\' + aCmd, True);
-        WriteString('', aMenu);
-        CloseKey;
-
-        OpenKey(aPath + '\Shell\' + aCmd + '\Command', True);
-        WriteString('', aExec + ' %1');
-        CloseKey;
-    finally
-        Free;
-    end;
 end;
 
-procedure regValueList(aKey: HKEY; const Path: string; var aValue: TStringList);
+procedure regValueList(aKey: HKEY; const Path: string;
+    var aValue: TStringList);
 var
     aRegistry: TRegistry;
 begin
@@ -2652,13 +2708,20 @@ begin
             if OpenKey(aPath, True) then
                 if ValueExists(aValue) then
                     case Typ of
-                        dtInteger: Result := ReadInteger(aValue);
-                        dtBoolean: Result := ReadBool(aValue);
-                        dtString: Result := ReadString(aValue);
-                        dtDate: Result := ReadDate(aValue);
-                        dtFloat: Result := ReadFloat(aValue);
-                        dtCurrency: Result := ReadCurrency(aValue);
-                        dtTime: Result := REadTime(aValue);
+                        dtInteger:
+                            Result := ReadInteger(aValue);
+                        dtBoolean:
+                            Result := ReadBool(aValue);
+                        dtString:
+                            Result := ReadString(aValue);
+                        dtDate:
+                            Result := ReadDate(aValue);
+                        dtFloat:
+                            Result := ReadFloat(aValue);
+                        dtCurrency:
+                            Result := ReadCurrency(aValue);
+                        dtTime:
+                            Result := REadTime(aValue);
                     end;
         end;
     finally
@@ -2666,7 +2729,8 @@ begin
     end;
 end;
 
-function regWriteValue(aKey: HKEY; const Path: string; Value: Variant; Typ: TDataType): Boolean;
+function regWriteValue(aKey: HKEY; const Path: string;
+    Value: Variant; Typ: TDataType): Boolean;
 var
     aRegistry: TRegistry;
     aPath: string;
@@ -2680,23 +2744,30 @@ begin
             regParsePath(Path, aPath, aValue);
             if OpenKey(aPath, True) then
                 case Typ of
-                    dtInteger: WriteInteger(aValue, Value);
-                    dtBoolean: WriteBool(aValue, Value);
-                    dtString: WriteString(aValue, Value);
-                    dtDate: WriteDate(aValue, Value);
-                    dtFloat: WriteFloat(aValue, Value);
-                    dtCurrency: WriteCurrency(aValue, Value);
-                    dtTime: WriteTime(aValue, Value);
+                    dtInteger:
+                        WriteInteger(aValue, Value);
+                    dtBoolean:
+                        WriteBool(aValue, Value);
+                    dtString:
+                        WriteString(aValue, Value);
+                    dtDate:
+                        WriteDate(aValue, Value);
+                    dtFloat:
+                        WriteFloat(aValue, Value);
+                    dtCurrency:
+                        WriteCurrency(aValue, Value);
+                    dtTime:
+                        WriteTime(aValue, Value);
                 end
-	    else
-		raise Exception.CreateFmt('', []);
-	end;
+	           else
+		              raise Exception.CreateFmt('', []);
+	       end;
     except
-	begin
-	    Result := false;
-	    aRegistry.Free;
-	    exit;
-	end
+	       begin
+	           Result := false;
+	           aRegistry.Free;
+	           exit;
+	       end
     end;
     Result := True;
     aRegistry.Free;
@@ -2842,12 +2913,12 @@ begin
             Reader.Parent := Parent;
             Result := Reader.ReadRootComponent(nil);
             if Owner <> nil then
-            try
-                Owner.InsertComponent(Result);
-            except
-                Result.Free;
-                raise;
-            end;
+                try
+                    Owner.InsertComponent(Result);
+                except
+                    Result.Free;
+                    raise;
+                end;
         finally
             Reader.Free;
         end;
@@ -2858,7 +2929,8 @@ begin
 end;
 {$IFDEF PLUGIN_BUILD}{$HINTS ON}{$ENDIF}
 
-procedure TPersistentRegistry.WriteComponent(const Name: string; Component: TComponent);
+procedure TPersistentRegistry.WriteComponent(const Name: string;
+    Component: TComponent);
 var
     MemStream: TMemoryStream;
 begin
@@ -2940,7 +3012,8 @@ var
     aVersion: TOSVersionInfo;
 begin
     aVersion.dwOSVersionInfoSize := SizeOf(aVersion);
-    Result := GetVersionEx(aVersion) and (aVersion.dwPLatformId = VER_PLATFORM_WIN32_NT);
+    Result := GetVersionEx(aVersion) and (aVersion.dwPLatformId =
+        VER_PLATFORM_WIN32_NT);
 end;
 {$ENDIF}
 
@@ -2986,26 +3059,27 @@ begin
         while Sp^ <> #0 do
         begin
             case Sp^ of
-                '+': Rp^ := ' ';
+                '+':
+                    Rp^ := ' ';
                 '%':
+                begin
+                    // Look for an escaped % (%%) or %<hex> encoded character
+                    Inc(Sp);
+                    if Sp^ = '%' then
+                        Rp^ := '%'
+                    else
                     begin
-                        // Look for an escaped % (%%) or %<hex> encoded character
+                        Cp := Sp;
                         Inc(Sp);
-                        if Sp^ = '%' then
-                            Rp^ := '%'
-                        else
+                        if (Cp^ <> #0) and (Sp^ <> #0) then
                         begin
-                            Cp := Sp;
-                            Inc(Sp);
-                            if (Cp^ <> #0) and (Sp^ <> #0) then
-                            begin
-                                S := '$' + Cp^ + Sp^;
-                                Rp^ := Chr(StrToInt(S));
-                            end
-                                //else
-                                //  raise Exception.CreateFmt('Encoding Error');
-                        end;
+                            S := '$' + Cp^ + Sp^;
+                            Rp^ := Chr(StrToInt(S));
+                        end
+                        //else
+                        //  raise Exception.CreateFmt('Encoding Error');
                     end;
+                end;
             else
                 Rp^ := Sp^;
             end;
@@ -3035,7 +3109,8 @@ begin
     begin
         if Sp^ in NoConversion then
             Rp^ := Sp^
-        else if Sp^ = ' ' then
+        else
+        if Sp^ = ' ' then
             Rp^ := '+'
         else
         begin
@@ -3064,13 +3139,20 @@ initialization
 {$IFDEF Win32}
     xLanguage := (LoWord(GetUserDefaultLangID) and $3FF);
     case xLanguage of
-        LANG_GERMAN: xLangOfs := 70000;
-        LANG_ENGLISH: xLangOfs := 71000;
-        LANG_SPANISH: xLangOfs := 72000;
-        LANG_RUSSIAN: xLangOfs := 73000;
-        LANG_ITALIAN: xLangOfs := 74000;
-        LANG_FRENCH: xLangOfs := 75000;
-        LANG_PORTUGUESE: xLangOfs := 76000;
+        LANG_GERMAN:
+            xLangOfs := 70000;
+        LANG_ENGLISH:
+            xLangOfs := 71000;
+        LANG_SPANISH:
+            xLangOfs := 72000;
+        LANG_RUSSIAN:
+            xLangOfs := 73000;
+        LANG_ITALIAN:
+            xLangOfs := 74000;
+        LANG_FRENCH:
+            xLangOfs := 75000;
+        LANG_PORTUGUESE:
+            xLangOfs := 76000;
     else
         xLangOfs := 71000;
     end;
@@ -3083,4 +3165,3 @@ finalization
     AddExitProc(DoneXProcs);
 {$ENDIF}
 end.
-

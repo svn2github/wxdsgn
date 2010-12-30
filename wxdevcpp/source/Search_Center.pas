@@ -23,8 +23,8 @@ interface
 
 uses
 {$IFDEF WIN32}
- Classes, Types, Project, Editor, utils, SynEdit, ComCtrls,
- SynEditSearch, SynEditRegexSearch, SynEditMiscClasses, SynEditTypes;
+    Classes, Types, Project, Editor, utils, SynEdit, ComCtrls,
+    SynEditSearch, SynEditRegexSearch, SynEditMiscClasses, SynEditTypes;
 {$ENDIF}
 {$IFDEF LINUX}
  Classes, Types, Project, Editor, utils, QSynEdit, QComCtrls,
@@ -32,56 +32,57 @@ uses
 {$ENDIF}
 
 type
-  TLookIn = (liSelected, liFile, liProject, liOpen);
-  TdevSearchProc = procedure(const SR: TdevSearchResult) of object;
+    TLookIn = (liSelected, liFile, liProject, liOpen);
+    TdevSearchProc = procedure(const SR: TdevSearchResult) of object;
 
-  TdevSearchCenter = class(TObject)
-  public
-    function ExecuteSearch: boolean;
-    procedure AssignSearchEngine(Regex: Boolean = false);
-  private
-    fSingleFile: boolean;
-    fReplace: boolean;
-    fFindText: string;
-    fReplaceText: string;
-    fSearchProc: TdevSearchProc;
-    fEditor: TEditor;
-    fProject: TProject;
-    fOptions: TSynSearchOptions;
-    fSynEdit: TSynEdit;
-    fCurFile: string;
-    fPC: TPageControl;
-    fUseSelection: Boolean;
-    fSearchEngine: TSynEditSearchCustom;
-    function RunSingleFile: boolean;
-    function RunAllFiles: boolean;
-    procedure EditorReplaceText(Sender: TObject; const aSearch,
-      aReplace: string; Line, Column: integer; var Action: TSynReplaceAction);
-    function RunProject: boolean;
-    function RunOpenFiles: boolean;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    property SingleFile: boolean read fSingleFile write fSingleFile;
-    property Replace: boolean read fReplace write fReplace;
-    property FindText: string read fFindText write fFindText;
-    property ReplaceText: string read fReplaceText write fReplaceText;
-    property SearchProc: TdevSearchProc read fSearchProc write fSearchProc;
-    property Editor: TEditor read fEditor write fEditor;
-    property Project: TProject read fProject write fProject;
-    property Options: TSynSearchOptions read fOptions write fOptions;
-    property PageControl: TPageControl read fPC write fPC;
-    property UseSelection: Boolean read fUseSelection write fUseSelection;
-  end;
+    TdevSearchCenter = class(TObject)
+    public
+        function ExecuteSearch: boolean;
+        procedure AssignSearchEngine(Regex: Boolean = false);
+    private
+        fSingleFile: boolean;
+        fReplace: boolean;
+        fFindText: string;
+        fReplaceText: string;
+        fSearchProc: TdevSearchProc;
+        fEditor: TEditor;
+        fProject: TProject;
+        fOptions: TSynSearchOptions;
+        fSynEdit: TSynEdit;
+        fCurFile: string;
+        fPC: TPageControl;
+        fUseSelection: Boolean;
+        fSearchEngine: TSynEditSearchCustom;
+        function RunSingleFile: boolean;
+        function RunAllFiles: boolean;
+        procedure EditorReplaceText(Sender: TObject; const aSearch,
+            aReplace: string; Line, Column: integer; var Action: TSynReplaceAction);
+        function RunProject: boolean;
+        function RunOpenFiles: boolean;
+    public
+        constructor Create;
+        destructor Destroy; override;
+        property SingleFile: boolean read fSingleFile write fSingleFile;
+        property Replace: boolean read fReplace write fReplace;
+        property FindText: string read fFindText write fFindText;
+        property ReplaceText: string read fReplaceText write fReplaceText;
+        property SearchProc: TdevSearchProc read fSearchProc write fSearchProc;
+        property Editor: TEditor read fEditor write fEditor;
+        property Project: TProject read fProject write fProject;
+        property Options: TSynSearchOptions read fOptions write fOptions;
+        property PageControl: TPageControl read fPC write fPC;
+        property UseSelection: Boolean read fUseSelection write fUseSelection;
+    end;
 
 var
-  SearchCenter: TdevSearchCenter;
+    SearchCenter: TdevSearchCenter;
 
 implementation
 
 uses
 {$IFDEF WIN32}
-  Forms, SysUtils, Controls, Dialogs, Findfrm, Replacefrm, version, MultiLangSupport;
+    Forms, SysUtils, Controls, Dialogs, Findfrm, Replacefrm,
+    version, MultiLangSupport;
 {$ENDIF}
 {$IFDEF LINUX}
   QForms, SysUtils, QControls, QDialogs, Findfrm, Replacefrm, version, MultiLangSupport;
@@ -91,179 +92,181 @@ uses
 
 procedure TdevSearchCenter.AssignSearchEngine(Regex: Boolean);
 begin
-  //Get the search engine right
-  if Regex then
-  begin
-    if Assigned(fSearchEngine) and not (fSearchEngine is TSynEditRegexSearch) then
-      FreeAndNil(fSearchEngine);
-    if not Assigned(fSearchEngine) then
-      fSearchEngine := TSynEditRegexSearch.Create(nil);
-  end
-  else
-  begin
-    if Assigned(fSearchEngine) and not (fSearchEngine is TSynEditSearch) then
-      FreeAndNil(fSearchEngine);
-    if not Assigned(fSearchEngine) then
-      fSearchEngine := TSynEditSearch.Create(nil);
-  end;
+    //Get the search engine right
+    if Regex then
+    begin
+        if Assigned(fSearchEngine) and not (fSearchEngine is
+            TSynEditRegexSearch) then
+            FreeAndNil(fSearchEngine);
+        if not Assigned(fSearchEngine) then
+            fSearchEngine := TSynEditRegexSearch.Create(nil);
+    end
+    else
+    begin
+        if Assigned(fSearchEngine) and not (fSearchEngine is TSynEditSearch) then
+            FreeAndNil(fSearchEngine);
+        if not Assigned(fSearchEngine) then
+            fSearchEngine := TSynEditSearch.Create(nil);
+    end;
 
-  if Assigned(fEditor) then
-    fEditor.Text.SearchEngine := fSearchEngine;
-  fSynEdit.SearchEngine := fSearchEngine;
+    if Assigned(fEditor) then
+        fEditor.Text.SearchEngine := fSearchEngine;
+    fSynEdit.SearchEngine := fSearchEngine;
 end;
 
 function TdevSearchCenter.ExecuteSearch: boolean;
 var
-  return: integer;
+    return: integer;
 begin
-  if fReplace then
-  begin
-    frmReplace.cboFindText.Text:= fFindText;
-    return := frmReplace.ShowModal;
-    if (return = mrOk) or (return = mrAll) then
+    if fReplace then
     begin
-      AssignSearchEngine(frmReplace.Regex);
-      fFindText:= frmReplace.cboFindText.Text;
-      fReplaceText:= frmReplace.cboReplaceText.Text;
-      fOptions:= frmReplace.SearchOptions;
-      UseSelection := frmReplace.UseSelection;
-    end;
-  end
-  else
-  begin
-    frmFind.FindAll := not fSingleFile;
-    frmFind.cboFindText.Text := fFindText;
-    return := frmFind.ShowModal;
-    fSingleFile := not frmFind.FindAll;
-    if return = mrOk then
+        frmReplace.cboFindText.Text := fFindText;
+        return := frmReplace.ShowModal;
+        if (return = mrOk) or (return = mrAll) then
+        begin
+            AssignSearchEngine(frmReplace.Regex);
+            fFindText := frmReplace.cboFindText.Text;
+            fReplaceText := frmReplace.cboReplaceText.Text;
+            fOptions := frmReplace.SearchOptions;
+            UseSelection := frmReplace.UseSelection;
+        end;
+    end
+    else
     begin
-      AssignSearchEngine(frmFind.Regex);
-      fFindText:= frmFind.cboFindText.Text;
-      fReplaceText:= '';
-      fOptions:= frmFind.SearchOptions;
+        frmFind.FindAll := not fSingleFile;
+        frmFind.cboFindText.Text := fFindText;
+        return := frmFind.ShowModal;
+        fSingleFile := not frmFind.FindAll;
+        if return = mrOk then
+        begin
+            AssignSearchEngine(frmFind.Regex);
+            fFindText := frmFind.cboFindText.Text;
+            fReplaceText := '';
+            fOptions := frmFind.SearchOptions;
+        end;
     end;
-  end;
 
-  if not (return in [mrOk, mrAll]) then
-    result:= FALSE
-  else if fReplace or (frmFind.FindWhat in [liSelected, liFile]) then
-    result:= RunSingleFile
-  else
-    result:= RunAllFiles;
+    if not (return in [mrOk, mrAll]) then
+        result := FALSE
+    else
+    if fReplace or (frmFind.FindWhat in [liSelected, liFile]) then
+        result := RunSingleFile
+    else
+        result := RunAllFiles;
 end;
 
 function TdevSearchCenter.RunSingleFile: boolean;
 var
-  startTmp, endTmp: Integer;    // EAB Workaround for Replace All
+    startTmp, endTmp: Integer;    // EAB Workaround for Replace All
 begin
-  if not assigned(fEditor) then
-  begin
-    Result:= False;
-    Exit;
-  end
-  else
-  begin
-    if (ssoReplaceAll in fOptions) and not UseSelection then
+    if not assigned(fEditor) then
     begin
-        startTmp := fEditor.Text.SelStart;
-        endTmp := fEditor.Text.SelEnd;
-        fEditor.Text.SelStart := 0;
-        fEditor.Text.SelEnd := fEditor.Text.GetTextLen;
-    end;
-
-    if fEditor.Text.SearchReplace(fFindText, fReplaceText, fOptions) = 0 then
-    MessageDlg(Format(Lang[ID_MSG_TEXTNOTFOUND], [SearchCenter.FindText]),
-       mtInformation, [mbOk], 0);
-
-    if (ssoReplaceAll in fOptions) and not UseSelection then
+        Result := False;
+        Exit;
+    end
+    else
     begin
-        fEditor.Text.SelStart := startTmp;
-        fEditor.Text.SelEnd := startTmp;
+        if (ssoReplaceAll in fOptions) and not UseSelection then
+        begin
+            startTmp := fEditor.Text.SelStart;
+            endTmp := fEditor.Text.SelEnd;
+            fEditor.Text.SelStart := 0;
+            fEditor.Text.SelEnd := fEditor.Text.GetTextLen;
+        end;
+
+        if fEditor.Text.SearchReplace(fFindText, fReplaceText, fOptions) = 0 then
+            MessageDlg(Format(Lang[ID_MSG_TEXTNOTFOUND], [SearchCenter.FindText]),
+                mtInformation, [mbOk], 0);
+
+        if (ssoReplaceAll in fOptions) and not UseSelection then
+        begin
+            fEditor.Text.SelStart := startTmp;
+            fEditor.Text.SelEnd := startTmp;
+        end;
     end;
-  end;
-  Result:= True;
+    Result := True;
 end;
 
 function TdevSearchCenter.RunAllFiles: boolean;
 begin
-  fReplaceText:= DEV_SEARCHLOOP;
-  if frmFind.FindWhat = liProject then
-    Result:= RunProject
-  else
-    Result:= RunOpenFiles;
-  fSynEdit.ClearAll;
+    fReplaceText := DEV_SEARCHLOOP;
+    if frmFind.FindWhat = liProject then
+        Result := RunProject
+    else
+        Result := RunOpenFiles;
+    fSynEdit.ClearAll;
 end;
 
 function TdevSearchCenter.RunProject: boolean;
 var
-  idx: integer;
+    idx: integer;
 begin
-  for idx := 0 to pred(fProject.Units.Count) do
-  begin
-    fCurFile:= fProject.Units[idx].FileName;
-    if ExtractFilePath(fCurFile) = '' then
-      fCurFile:= ExpandFileto(fCurFile, fProject.Directory);
+    for idx := 0 to pred(fProject.Units.Count) do
+    begin
+        fCurFile := fProject.Units[idx].FileName;
+        if ExtractFilePath(fCurFile) = '' then
+            fCurFile := ExpandFileto(fCurFile, fProject.Directory);
 
-    if assigned(fProject.Units[idx].Editor) then
-      fSynEdit.Lines:= fProject.Units[idx].Editor.Text.Lines
-    else
-      fSynEdit.Lines.LoadFromfile(fCurFile);
+        if assigned(fProject.Units[idx].Editor) then
+            fSynEdit.Lines := fProject.Units[idx].Editor.Text.Lines
+        else
+            fSynEdit.Lines.LoadFromfile(fCurFile);
 
-    fSynEdit.SearchReplace(fFindText, fReplaceText, fOptions);
-    Application.ProcessMessages;
-  end;
-  result:= True;
+        fSynEdit.SearchReplace(fFindText, fReplaceText, fOptions);
+        Application.ProcessMessages;
+    end;
+    result := True;
 end;
 
 function TdevSearchCenter.RunOpenFiles: boolean;
 var
-  idx: integer;
+    idx: integer;
 begin
-  for idx := 0 to pred(fPC.PageCount) do
-  begin
-    fCurFile:= TEditor(fPC.Pages[idx].Tag).FileName;
-    fSynEdit.Lines:= TEditor(fPC.Pages[idx].Tag).Text.Lines;
-    fSynEdit.SearchReplace(fFindText, fReplaceText, fOptions);
-    Application.ProcessMessages;
-  end;
-  result:= TRUE;
+    for idx := 0 to pred(fPC.PageCount) do
+    begin
+        fCurFile := TEditor(fPC.Pages[idx].Tag).FileName;
+        fSynEdit.Lines := TEditor(fPC.Pages[idx].Tag).Text.Lines;
+        fSynEdit.SearchReplace(fFindText, fReplaceText, fOptions);
+        Application.ProcessMessages;
+    end;
+    result := TRUE;
 end;
 
 procedure TdevSearchCenter.EditorReplaceText(Sender: TObject;
-  const aSearch, aReplace: string; Line, Column: integer;
-  var Action: TSynReplaceAction);
+    const aSearch, aReplace: string; Line, Column: integer;
+    var Action: TSynReplaceAction);
 var
-  SR: TdevSearchResult;
+    SR: TdevSearchResult;
 begin
-  if fReplaceText = DEV_SEARCHLOOP then
-  begin
-    SR.pt:= point(Line, Column);
-    SR.InFile:= fCurFile;
-    SR.msg:= fSynEdit.Lines[Line -1];
-    fSearchProc(SR);
-  end;
-  Action:= raSkip;
+    if fReplaceText = DEV_SEARCHLOOP then
+    begin
+        SR.pt := point(Line, Column);
+        SR.InFile := fCurFile;
+        SR.msg := fSynEdit.Lines[Line - 1];
+        fSearchProc(SR);
+    end;
+    Action := raSkip;
 end;
 
 constructor TdevSearchCenter.Create;
 begin
-  fSingleFile := true;
-  fSynEdit:= TSynEdit.Create(nil);
-  fSynEdit.OnReplaceText:= EditorReplaceText;
+    fSingleFile := true;
+    fSynEdit := TSynEdit.Create(nil);
+    fSynEdit.OnReplaceText := EditorReplaceText;
 
-  fSearchEngine:=TSynEditSearch.Create(nil);
+    fSearchEngine := TSynEditSearch.Create(nil);
 end;
 
 destructor TdevSearchCenter.Destroy;
 begin
-  fSearchEngine.Free;
-  fSynEdit.Free;
-  inherited;
+    fSearchEngine.Free;
+    fSynEdit.Free;
+    inherited;
 end;
 
 initialization
- SearchCenter:= TdevSearchCenter.Create;
+    SearchCenter := TdevSearchCenter.Create;
 finalization
- SearchCenter.Free;
+    SearchCenter.Free;
 
 end.
