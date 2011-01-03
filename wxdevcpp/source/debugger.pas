@@ -91,6 +91,7 @@ const GDBid: String = 'id';
 const GDBlevel: String = 'level';
 const GDBlocals: String = 'locals=[';
 const GDBline: String = 'line';
+const GDBmult: String = '<MULTIPLE>';
 const GDBnr_rows: String = 'nr_rows';
 const GDBname: String = 'name';
 const GDBnameq: String = 'name=';
@@ -1347,6 +1348,7 @@ var
     SrcFile: String;
     Line: Integer;
     Expr: String;
+    Addr: String;
 
 
     Output: String;
@@ -1363,16 +1365,15 @@ begin
 
     if (BPType = 'breakpoint') then
     begin
-        if (ParseConst(@Msg, @GDBaddr, PString(@SrcFile)) and
-            ParseConst(@Msg, @GDBorig_loc, PString(@SrcFile))) then
-            Output := format('Breakpoint No %d set multiple times in %s',
-                [Num, SrcFile])
+        ParseConst(@Msg, @GDBaddr, PString(@Addr));
+        if (ParseConst(@Msg, @GDBorig_loc, PString(@SrcFile)) and (Addr = GDBmult)) then
+        Output := format('Breakpoint No %d set at multiple addresses at %s', [Num, SrcFile])
         else
         begin
-            ParseConst(@Msg, @GDBline, PInteger(@Line));
-            ParseConst(@Msg, @GDBfile, PString(@SrcFile));
-            Output := format('Breakpoint No %d set at line %d in %s',
-                [Num, Line, SrcFile]);
+          ParseConst(@Msg, @GDBline, PInteger(@Line));
+          ParseConst(@Msg, @GDBfile, PString(@SrcFile));
+          Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
+          MainForm.GotoBreakpoint(SrcFile, Line);
         end;
 
 
