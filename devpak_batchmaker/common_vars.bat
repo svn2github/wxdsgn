@@ -8,7 +8,10 @@ echo off
 cls
 
 rem Default wxWidgets root directory
-set WXVER=2.8.10
+set WXVER=2.9.1
+
+rem Set UNICODE 0=off 1=on
+set UNICODE_FLAG=1
 
 echo What version of wxWidgets are you building (Default = %WXVER%)?
 set /P WXVER=
@@ -24,12 +27,12 @@ wxlibversion.exe %WXVER% >> temp123.bat
 call temp123.bat
 del temp123.bat
 
-set WXWIN=c:\wxWidgets-%WXVER%
+set WXWIN=H:\wxWidgets-%WXVER%
 
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
 set /P WXWIN=
 
-set WXCODE=c:\Users\Public\devpak_batchmaker\wxCode
+set WXCODE=H:\wxCode
 echo In what directory are the wxCode components located (Default = %WXCODE%)?
 set /P WXCODE=
 
