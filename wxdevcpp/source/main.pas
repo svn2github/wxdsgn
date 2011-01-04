@@ -5283,7 +5283,7 @@ begin
         end;
     end;
 
-    //Then run the debuggee
+    //Then run the debugger
     fDebugger.Go;
 end;
 

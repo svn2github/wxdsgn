@@ -21,8 +21,8 @@
 
 unit debugger;
 
-{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
-{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
+//{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
+//{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
 //  in 'HEX Editor' style
 
 interface
@@ -1373,7 +1373,7 @@ begin
           ParseConst(@Msg, @GDBline, PInteger(@Line));
           ParseConst(@Msg, @GDBfile, PString(@SrcFile));
           Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
-          MainForm.GotoBreakpoint(SrcFile, Line);
+
         end;
 
 
@@ -1723,7 +1723,7 @@ begin
 
     // Line No. is not meaningful - need to find some way to relate to source line in editor,
     //  else disable GDB's ability to trace into headers/libraries.
-
+    MainForm.GotoBreakpoint(SrcFile, Line);
 end;
 
 //=================================================================
@@ -1759,7 +1759,7 @@ begin
 
     // Line No. is not always meaningful - need to find some way to relate to source line in editor,
     //  else disable GDB's ability to trace into headers/libraries.
-
+    MainForm.GotoBreakpoint(SrcFile, Line);
 end;
 
 //=================================================================
@@ -1792,7 +1792,7 @@ begin
 
     // Line No. is not meaningful - need to find some way to relate to source line in editor,
     //  else disable GDB's ability to trace into headers/libraries.
-
+    MainForm.GotoBreakpoint(SrcFile, Line);
 end;
 
 //=================================================================
@@ -3947,6 +3947,8 @@ begin
                     AddtoDisplay('Stopped - Exited normally');
                     // gui_critSect.Leave();
                     Started := False;
+                    Finish;
+                    CloseDebugger(nil);
                 end
                 else
                 if (Reason = 'breakpoint-hit') then
@@ -4281,9 +4283,13 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := devData.DebugCommand;   // -exec-finish
+  //  Command.Command := devData.DebugCommand;   // -exec-finish
+  //  Command.Callback := OnTrace;
+  //  QueueCommand(Command);
+    
+    Command.Command := '-gdb-exit';
     Command.Callback := OnTrace;
-    QueueCommand(Command);
+    QueueCommand(Command);  // Exit gdb too.
 end;
 
 //=================================================================
