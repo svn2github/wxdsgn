@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 248
-  Top = 131
+  Left = 108
+  Top = 115
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1497,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 386
-          Height = 77
+          Height = 81
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True

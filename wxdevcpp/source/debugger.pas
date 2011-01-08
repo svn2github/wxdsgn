@@ -21,8 +21,8 @@
 
 unit debugger;
 
-//{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
-//{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
+{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
+{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
 //  in 'HEX Editor' style
 
 interface
@@ -339,6 +339,7 @@ type
         procedure Next; virtual; abstract;
         procedure Step; virtual; abstract;
         procedure Finish; virtual; abstract;
+        procedure ExitDebugger; virtual; abstract;
         procedure SetThread(thread: Integer); virtual; abstract;
         procedure SetContext(frame: Integer); virtual; abstract;
         function GetVariableHint(name: string): string; virtual; abstract;
@@ -484,6 +485,7 @@ type
         procedure Next; override;
         procedure Step; override;
         procedure Finish; override;
+        procedure ExitDebugger; override;
         procedure Pause; override;
         procedure SetThread(thread: Integer); override;
         procedure SetContext(frame: Integer); override;
@@ -780,9 +782,12 @@ end;
 //=============================================================
 
 procedure TDebugger.CloseDebugger(Sender: TObject);
+var
+i :integer;
 begin
     if Executing then
     begin
+
         fPaused := false;
         fExecuting := false;
 
@@ -802,6 +807,7 @@ begin
         //  Wait.Terminate;
         //  Wait := nil;
         Reader.Terminate;
+
         Reader := nil;
 
         //Close the handles
@@ -4278,18 +4284,27 @@ end;
 
 //=================================================================
 
+procedure TGDBDebugger.ExitDebugger;
+var
+    Command: TCommand;
+begin
+    Command := TCommand.Create;
+    Command.Command := GDBExit;  // '-gdb-exit'
+    Command.Callback := OnGo;
+    QueueCommand(Command);  // Exit gdb too.
+end;
+
+//=================================================================
+
 procedure TGDBDebugger.Finish;
 var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-  //  Command.Command := devData.DebugCommand;   // -exec-finish
-  //  Command.Callback := OnTrace;
-  //  QueueCommand(Command);
-    
-    Command.Command := '-gdb-exit';
+    Command.Command := devData.DebugCommand;   // -exec-finish
     Command.Callback := OnTrace;
-    QueueCommand(Command);  // Exit gdb too.
+    QueueCommand(Command);
+
 end;
 
 //=================================================================

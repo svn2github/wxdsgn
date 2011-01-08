@@ -5872,7 +5872,11 @@ end;
 procedure TMainForm.actStopExecuteExecute(Sender: TObject);
 begin
     if fDebugger.Executing then
-        fDebugger.CloseDebugger(sender);
+    begin
+       fDebugger.ExitDebugger;
+       fDebugger.CloseDebugger(sender);
+    end;
+
 end;
 
 procedure TMainForm.actRestartDebugExecute(Sender: TObject);
