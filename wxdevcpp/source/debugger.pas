@@ -339,7 +339,6 @@ type
         procedure Next; virtual; abstract;
         procedure Step; virtual; abstract;
         procedure Finish; virtual; abstract;
-        procedure ExitDebugger; virtual; abstract;
         procedure SetThread(thread: Integer); virtual; abstract;
         procedure SetContext(frame: Integer); virtual; abstract;
         function GetVariableHint(name: string): string; virtual; abstract;
@@ -485,7 +484,6 @@ type
         procedure Next; override;
         procedure Step; override;
         procedure Finish; override;
-        procedure ExitDebugger; override;
         procedure Pause; override;
         procedure SetThread(thread: Integer); override;
         procedure SetContext(frame: Integer); override;
@@ -798,17 +796,17 @@ begin
         // First don't let us be called twice. Set the secondary threads to not call
         // us when they terminate
 
-        Reader.OnTerminate := nil;
+   //GAR     Reader.OnTerminate := nil;
 
         // Force the read on the input to return by closing the stdin handle.
         // Wait.Stop := True;
-        SetEvent(Event);
-        TerminateProcess(hPid, 0);
+ //GAR       SetEvent(Event);
+  //GAR      TerminateProcess(hPid, 0);
         //  Wait.Terminate;
         //  Wait := nil;
-        Reader.Terminate;
+  //GAR      Reader.Terminate;
 
-        Reader := nil;
+  //GAR      Reader := nil;
 
         //Close the handles
         //   if (not CloseHandle(hPid)) then
@@ -2369,7 +2367,7 @@ procedure TGDBDebugger.Cleanup;
 
 begin
 
-    Reader.Terminate;
+ //GAR   Reader.Terminate;
     //Close the handles
     if (not CloseHandle(g_hChildStd_IN_Wr)) then
         DisplayError('CloseHandle - ChildStd_IN_Wr');
@@ -3953,7 +3951,8 @@ begin
                     AddtoDisplay('Stopped - Exited normally');
                     // gui_critSect.Leave();
                     Started := False;
-                    Finish;
+
+                //GAR Exit;
                     CloseDebugger(nil);
                 end
                 else
@@ -4280,18 +4279,6 @@ begin
     Command.Command := '-exec-step';
     Command.Callback := OnTrace;
     QueueCommand(Command);
-end;
-
-//=================================================================
-
-procedure TGDBDebugger.ExitDebugger;
-var
-    Command: TCommand;
-begin
-    Command := TCommand.Create;
-    Command.Command := GDBExit;  // '-gdb-exit'
-    Command.Callback := OnGo;
-    QueueCommand(Command);  // Exit gdb too.
 end;
 
 //=================================================================

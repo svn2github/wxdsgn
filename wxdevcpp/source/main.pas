@@ -5873,7 +5873,7 @@ procedure TMainForm.actStopExecuteExecute(Sender: TObject);
 begin
     if fDebugger.Executing then
     begin
-       fDebugger.ExitDebugger;
+      // fDebugger.Exit;
        fDebugger.CloseDebugger(sender);
     end;
 
