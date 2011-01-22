@@ -33,8 +33,8 @@ N.B. 'Event' of TDebugger is redundant
 
 unit debugger;
 
-{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
-{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
+//{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
+//{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
 //  in 'HEX Editor' style
 
 interface
@@ -2496,6 +2496,8 @@ begin
     self.FileName := filename;
     fNextBreakpoint := 0;
     IgnoreBreakpoint := False;
+    Started := False;
+    TargetIsRunning := False;
 
     verbose := False;
 
