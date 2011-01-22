@@ -26,7 +26,7 @@ DWORD DebuggerPID
 function TDebugger.KillProcess
 function TGDBDebugger.Notify
 const GDBthreadgcr
-const GDBid
+const GDBidq
 TGDBDebugger.CloseDebugger
 N.B. 'Event' of TDebugger is redundant
 }
@@ -102,6 +102,7 @@ const GDBfile: String = 'file';
 const GDBframe: String = 'frame={';
 const GDBfunc: String = 'func';
 const GDBid: String = 'id';
+const GDBidq: String = 'id=';
 const GDBlevel: String = 'level';
 const GDBlocals: String = 'locals=[';
 const GDBline: String = 'line';
@@ -4251,7 +4252,7 @@ begin
 	begin
 		if (AnsiStartsStr(GDBthreadgcr, msg)) then
 		// Only extract Target PID for now - can add more if required
-			ParseConst(@msg, @GDBid, PInteger(@TargetPID));
+			ParseConst(@msg, @GDBidq, PInteger(@TargetPID));
 
 		Result := buf;
 
