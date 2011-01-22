@@ -8,383 +8,400 @@
   resources were bound to the produced executable.
 */
 
-#define version_cErr 65040
-#define version_cABP 65041
-#define version_cGut 65042
-#define version_cSel 65043
-#define version_COMPILER_INI_LABEL 65044
-#define version_CPP_INI_LABEL 65045
-#define version_C_INI_LABEL 65046
-#define version_LINKER_INI_LABEL 65047
-#define version_PREPROC_INI_LABEL 65048
-#define version_VC2003_DEFCOMPILERSET 65056
-#define version_VC6_DEFCOMPILERSET 65057
-#define version_DMARS_DEFCOMPILERSET 65058
-#define version_BORLAND_DEFCOMPILERSET 65059
-#define version_WATCOM_DEFCOMPILERSET 65060
-#define version_LINUX_DEFCOMPILERSET 65061
-#define version_FLT_BASE 65062
-#define version_FLT_ALLFILES 65063
-#define version_FLT_PROJECTS 65064
-#define version_FLT_HEADS 65065
-#define version_FLT_CS 65066
-#define version_FLT_CPPS 65067
-#define version_FLT_RES 65068
-#define version_FLT_HELPS 65069
-#define version_FLT_MSVCPROJECTS 65070
-#define version_cBP 65071
-#define version_LINUX_CP_PROGRAM 65072
-#define version_LINUX_CPP_PROGRAM 65073
-#define version_LINUX_DBG_PROGRAM 65074
-#define version_LINUX_RES_PROGRAM 65075
-#define version_LINUX_DLL_PROGRAM 65076
-#define version_LINUX_PROF_PROGRAM 65077
-#define version_LINUX_COMPILER_CMD_LINE 65078
-#define version_LINUX_LINKER_CMD_LINE 65079
-#define version_LINUX_MAKE_CMD_LINE 65080
-#define version_OPT_DIRS 65081
-#define version_OPT_EDITOR 65082
-#define version_OPT_OPTIONS 65083
-#define version_OPT_COMPILERSETS 65084
-#define version_GCC_DEFCOMPILERSET 65085
-#define version_VC2008_DEFCOMPILERSET 65086
-#define version_VC2005_DEFCOMPILERSET 65087
-#define version_BORLAND_DLL_PROGRAM 65088
-#define version_BORLAND_PROF_PROGRAM 65089
-#define version_BORLAND_COMPILER_CMD_LINE 65090
-#define version_BORLAND_LINKER_CMD_LINE 65091
-#define version_BORLAND_MAKE_CMD_LINE 65092
-#define version_WATCOM_MAKE_PROGRAM 65093
-#define version_WATCOM_CP_PROGRAM 65094
-#define version_WATCOM_CPP_PROGRAM 65095
-#define version_WATCOM_DBG_PROGRAM 65096
-#define version_WATCOM_RES_PROGRAM 65097
-#define version_WATCOM_DLL_PROGRAM 65098
-#define version_WATCOM_PROF_PROGRAM 65099
-#define version_WATCOM_COMPILER_CMD_LINE 65100
-#define version_WATCOM_LINKER_CMD_LINE 65101
-#define version_WATCOM_MAKE_CMD_LINE 65102
-#define version_LINUX_MAKE_PROGRAM 65103
-#define version_VC_MAKE_CMD_LINE 65104
-#define version_DMARS_MAKE_PROGRAM 65105
-#define version_DMARS_CP_PROGRAM 65106
-#define version_DMARS_CPP_PROGRAM 65107
-#define version_DMARS_DBG_PROGRAM 65108
-#define version_DMARS_RES_PROGRAM 65109
-#define version_DMARS_DLL_PROGRAM 65110
-#define version_DMARS_PROF_PROGRAM 65111
-#define version_DMARS_COMPILER_CMD_LINE 65112
-#define version_DMARS_LINKER_CMD_LINE 65113
-#define version_DMARS_MAKE_CMD_LINE 65114
-#define version_BORLAND_MAKE_PROGRAM 65115
-#define version_BORLAND_CP_PROGRAM 65116
-#define version_BORLAND_CPP_PROGRAM 65117
-#define version_BORLAND_DBG_PROGRAM 65118
-#define version_BORLAND_RES_PROGRAM 65119
-#define version_GCC_DBG_PROGRAM 65120
-#define version_GCC_RES_PROGRAM 65121
-#define version_GCC_DLL_PROGRAM 65122
-#define version_GCC_PROF_PROGRAM 65123
-#define version_GCC_COMPILER_CMD_LINE 65124
-#define version_GCC_LINKER_CMD_LINE 65125
-#define version_GCC_MAKE_CMD_LINE 65126
-#define version_VC_MAKE_PROGRAM 65127
-#define version_VC_CP_PROGRAM 65128
-#define version_VC_CPP_PROGRAM 65129
-#define version_VC_DBG_PROGRAM 65130
-#define version_VC_RES_PROGRAM 65131
-#define version_VC_DLL_PROGRAM 65132
-#define version_VC_PROF_PROGRAM 65133
-#define version_VC_COMPILER_CMD_LINE 65134
-#define version_VC_LINKER_CMD_LINE 65135
-#define version_HELP_DIR 65136
-#define version_TEMPLATE_DIR 65137
-#define version_THEME_DIR 65138
-#define version_DLL_EXT 65139
-#define version_EXE_EXT 65140
-#define version_DEV_EXT 65141
-#define version_HTML_EXT 65142
-#define version_RTF_EXT 65143
-#define version_INI_EXT 65144
-#define version_TEMPLATE_EXT 65145
-#define version_SYNTAX_EXT 65146
-#define version_PACKMAN_PROGRAM 65147
-#define version_UPDATE_PROGRAM 65148
-#define version_GCC_MAKE_PROGRAM 65149
-#define version_GCC_CP_PROGRAM 65150
-#define version_GCC_CPP_PROGRAM 65151
-#define version_WATCOM_RC_INCLUDE_DIR 65152
-#define version_LINUX_BIN_DIR 65153
-#define version_LINUX_LIB_DIR 65154
-#define version_LINUX_C_INCLUDE_DIR 65155
-#define version_LINUX_RC_INCLUDE_DIR 65156
-#define version_GCC_CPP_INCLUDE_DIR 65157
-#define version_VC2008_CPP_INCLUDE_DIR 65158
-#define version_VC2005_CPP_INCLUDE_DIR 65159
-#define version_VC2003_CPP_INCLUDE_DIR 65160
-#define version_VC6_CPP_INCLUDE_DIR 65161
-#define version_BORLAND_CPP_INCLUDE_DIR 65162
-#define version_DMARS_CPP_INCLUDE_DIR 65163
-#define version_WATCOM_CPP_INCLUDE_DIR 65164
-#define version_LINUX_CPP_INCLUDE_DIR 65165
-#define version_LANGUAGE_DIR 65166
-#define version_ICON_DIR 65167
-#define version_VC2003_RC_INCLUDE_DIR 65168
-#define version_VC6_BIN_DIR 65169
-#define version_VC6_LIB_DIR 65170
-#define version_VC6_C_INCLUDE_DIR 65171
-#define version_VC6_RC_INCLUDE_DIR 65172
-#define version_DMARS_BIN_DIR 65173
-#define version_DMARS_LIB_DIR 65174
-#define version_DMARS_C_INCLUDE_DIR 65175
-#define version_DMARS_RC_INCLUDE_DIR 65176
-#define version_BORLAND_BIN_DIR 65177
-#define version_BORLAND_LIB_DIR 65178
-#define version_BORLAND_C_INCLUDE_DIR 65179
-#define version_BORLAND_RC_INCLUDE_DIR 65180
-#define version_WATCOM_BIN_DIR 65181
-#define version_WATCOM_LIB_DIR 65182
-#define version_WATCOM_C_INCLUDE_DIR 65183
-#define version_DEV_CLASSIC_THEME 65184
-#define version_GCC_BIN_DIR 65185
-#define version_GCC_LIB_DIR 65186
-#define version_GCC_C_INCLUDE_DIR 65187
-#define version_GCC_RC_INCLUDE_DIR 65188
-#define version_VC2008_BIN_DIR 65189
-#define version_VC2008_LIB_DIR 65190
-#define version_VC2008_C_INCLUDE_DIR 65191
-#define version_VC2008_RC_INCLUDE_DIR 65192
-#define version_VC2005_BIN_DIR 65193
-#define version_VC2005_LIB_DIR 65194
-#define version_VC2005_C_INCLUDE_DIR 65195
-#define version_VC2005_RC_INCLUDE_DIR 65196
-#define version_VC2003_BIN_DIR 65197
-#define version_VC2003_LIB_DIR 65198
-#define version_VC2003_C_INCLUDE_DIR 65199
-#define version_DEVCPP_WEBPAGE 65200
-#define version_DEFAULT_LANG_FILE 65201
-#define version_HTTP 65202
-#define version_DEV_INTERNAL_OPEN 65203
-#define version_DEV_SEARCHLOOP 65204
-#define version_DEV_COMPLETION_CACHE 65205
-#define version_DEV_DEFAULTCODE_FILE 65206
-#define version_DEV_SHORTCUTS_FILE 65207
-#define version_DEV_CLASSFOLDERS_FILE 65208
-#define version_DEV_MAKE_FILE 65209
-#define version_DEV_HELP_INI 65210
-#define version_DEV_CODEINS_FILE 65211
-#define version_DEV_MAINHELP_FILE 65212
-#define version_DEV_GNOME_THEME 65213
-#define version_DEV_NEWLOOK_THEME 65214
-#define version_DEV_BLUE_THEME 65215
-#define main_cPrjPath 65216
-#define main_cCurSrc 65217
-#define main_cSrcPath 65218
-#define main_cDevVer 65219
-#define main_cDefault 65220
-#define main_cExecDir 65221
-#define main_cSrcList 65222
-#define main_cWordxy 65223
-#define compiler_cMakeLine 65224
-#define compiler_cSingleFileMakeLine 65225
-#define compiler_cMake 65226
-#define compiler_cDots 65227
-#define Templates_cTemplate 65228
-#define Templates_cEditor 65229
-#define Templates_cProject 65230
-#define version_DEVCPP 65231
-#define JConsts_sChangeJPGSize 65232
-#define JConsts_sJPEGError 65233
-#define JConsts_sJPEGImageFile 65234
-#define JvDockGlobals_RsDockStringSplitter 65235
-#define JvDockGlobals_RsDockJvDockInfoSplitter 65236
-#define JvDockGlobals_RsDockJvDockTreeCloseBtnHint 65237
-#define JvDockGlobals_RsDockVSNETDockTreeAutoHideBtnHint 65238
-#define JvDockGlobals_RsEDockControlCannotIsNil 65239
-#define JvDockGlobals_RsEDockCannotGetValueWithNoOrient 65240
-#define JvDockGlobals_RsEDockCannotSetValueWithNoOrient 65241
-#define JvDockGlobals_RsEDockCannotLayAnother 65242
-#define JvDockGlobals_RsEDockCannotSetTabPosition 65243
-#define JvDockGlobals_RsDockCannotFindWindow 65244
-#define main_cEXEName 65245
-#define main_cPrjName 65246
-#define main_cPrjFile 65247
-#define JvResources_RsClHighlightText 65248
-#define JvResources_RsClBtnFace 65249
-#define JvResources_RsClBtnShadow 65250
-#define JvResources_RsClGrayText 65251
-#define JvResources_RsClBtnText 65252
-#define JvResources_RsClInactiveCaptionText 65253
-#define JvResources_RsClBtnHighlight 65254
-#define JvResources_RsCl3DDkShadow 65255
-#define JvResources_RsCl3DLight 65256
-#define JvResources_RsClInfoText 65257
-#define JvResources_RsClInfoBk 65258
-#define JvResources_RsGradientActiveCaption 65259
-#define JvResources_RsGradientInactiveCaption 65260
-#define JvResources_RsHotLight 65261
-#define JvResources_RsMenuBar 65262
-#define JvResources_RsMenuHighlight 65263
-#define JvResources_RsClPaleBlue 65264
-#define JvResources_RsClLavender 65265
-#define JvResources_RsClScrollBar 65266
-#define JvResources_RsClBackground 65267
-#define JvResources_RsClActiveCaption 65268
-#define JvResources_RsClInactiveCaption 65269
-#define JvResources_RsClMenu 65270
-#define JvResources_RsClWindow 65271
-#define JvResources_RsClWindowFrame 65272
-#define JvResources_RsClMenuText 65273
-#define JvResources_RsClWindowText 65274
-#define JvResources_RsClCaptionText 65275
-#define JvResources_RsClActiveBorder 65276
-#define JvResources_RsClInactiveBorder 65277
-#define JvResources_RsClAppWorkSpace 65278
-#define JvResources_RsClHighlight 65279
-#define JvResources_RsClLightOrange 65280
-#define JvResources_RsClSeaGreen 65281
-#define JvResources_RsClLightBlue 65282
-#define JvResources_RsClViolet 65283
-#define JvResources_RsClGray40 65284
-#define JvResources_RsClPink 65285
-#define JvResources_RsClGold 65286
-#define JvResources_RsClBrightGreen 65287
-#define JvResources_RsClTurquoise 65288
-#define JvResources_RsClPlum 65289
-#define JvResources_RsClGray25 65290
-#define JvResources_RsClRose 65291
-#define JvResources_RsClTan 65292
-#define JvResources_RsClLightYellow 65293
-#define JvResources_RsClLightGreen 65294
-#define JvResources_RsClLightTurquoise 65295
-#define JvResources_RsClMoneyGreen 65296
-#define JvResources_RsClSkyBlue 65297
-#define JvResources_RsClCream 65298
-#define JvResources_RsClMedGray 65299
-#define JvResources_RsClBrown 65300
-#define JvResources_RsClOliveGreen 65301
-#define JvResources_RsClDarkGreen 65302
-#define JvResources_RsClDarkTeal 65303
-#define JvResources_RsClDarkBlue 65304
-#define JvResources_RsClIndigo 65305
-#define JvResources_RsClGray80 65306
-#define JvResources_RsClDarkRed 65307
-#define JvResources_RsClOrange 65308
-#define JvResources_RsClDarkYellow 65309
-#define JvResources_RsClBlueGray 65310
-#define JvResources_RsClGray50 65311
-#define JvResources_RsClBlack 65312
-#define JvResources_RsClMaroon 65313
-#define JvResources_RsClGreen 65314
-#define JvResources_RsClOlive 65315
-#define JvResources_RsClNavy 65316
-#define JvResources_RsClPurple 65317
-#define JvResources_RsClTeal 65318
-#define JvResources_RsClGray 65319
-#define JvResources_RsClSilver 65320
-#define JvResources_RsClRed 65321
-#define JvResources_RsClLime 65322
-#define JvResources_RsClYellow 65323
-#define JvResources_RsClBlue 65324
-#define JvResources_RsClFuchsia 65325
-#define JvResources_RsClAqua 65326
-#define JvResources_RsClWhite 65327
-#define JvResources_RsRootValueReplaceFmt 65328
-#define JvResources_RsEInvalidType 65329
-#define JvResources_RsEUnknownBaseType 65330
-#define JvResources_RsEInvalidPath 65331
-#define JvResources_RsENotAUniqueRootPath 65332
-#define JvResources_RsECircularReferenceOfStorages 65333
-#define JvResources_RsJvAppStorageSynchronizeTimeout 65334
-#define JvResources_RsJvAppStorageSynchronizeProcedureName 65335
-#define JvResources_RsEReadOnlyProperty 65336
-#define JvResources_RsFileTypeString 65337
-#define JvResources_RsAttrArchiveShortString 65338
-#define JvResources_RsAttrCompressedShortString 65339
-#define JvResources_RsAttrDirectoryShortString 65340
-#define JvResources_RsAttrReadOnlyShortString 65341
-#define JvResources_RsAttrHiddenShortString 65342
-#define JvResources_RsAttrSystemShortString 65343
-#define JclResources_RsIntelCacheDescrB3 65344
-#define JclResources_RsIntelCacheDescrB4 65345
-#define JclResources_RsIntelCacheDescrBA 65346
-#define JclResources_RsIntelCacheDescrC0 65347
-#define JclResources_RsIntelCacheDescrCA 65348
-#define JclResources_RsIntelCacheDescrE4 65349
-#define JclResources_RsIntelCacheDescrF0 65350
-#define JclResources_RsIntelCacheDescrF1 65351
-#define JclResources_RsIntelCacheDescrFF 65352
-#define JclResources_RsUnknownAMDModel 65353
-#define JclResources_RsEOpenGLInfo 65354
-#define JclResources_RsInvalidMMFName 65355
-#define JclResources_RsInvalidMMFEmpty 65356
-#define JclResources_RsELibraryNotFound 65357
-#define JclResources_RsEFunctionNotFound 65358
-#define JvResources_RsEReadValueFailed 65359
-#define JclResources_RsIntelCacheDescr79 65360
-#define JclResources_RsIntelCacheDescr7A 65361
-#define JclResources_RsIntelCacheDescr7B 65362
-#define JclResources_RsIntelCacheDescr7C 65363
-#define JclResources_RsIntelCacheDescr7D 65364
-#define JclResources_RsIntelCacheDescr7F 65365
-#define JclResources_RsIntelCacheDescr80 65366
-#define JclResources_RsIntelCacheDescr82 65367
-#define JclResources_RsIntelCacheDescr83 65368
-#define JclResources_RsIntelCacheDescr84 65369
-#define JclResources_RsIntelCacheDescr85 65370
-#define JclResources_RsIntelCacheDescr86 65371
-#define JclResources_RsIntelCacheDescr87 65372
-#define JclResources_RsIntelCacheDescrB0 65373
-#define JclResources_RsIntelCacheDescrB1 65374
-#define JclResources_RsIntelCacheDescrB2 65375
-#define JclResources_RsIntelCacheDescr56 65376
-#define JclResources_RsIntelCacheDescr57 65377
-#define JclResources_RsIntelCacheDescr59 65378
-#define JclResources_RsIntelCacheDescr5A 65379
-#define JclResources_RsIntelCacheDescr5B 65380
-#define JclResources_RsIntelCacheDescr5C 65381
-#define JclResources_RsIntelCacheDescr5D 65382
-#define JclResources_RsIntelCacheDescr60 65383
-#define JclResources_RsIntelCacheDescr66 65384
-#define JclResources_RsIntelCacheDescr67 65385
-#define JclResources_RsIntelCacheDescr68 65386
-#define JclResources_RsIntelCacheDescr70 65387
-#define JclResources_RsIntelCacheDescr71 65388
-#define JclResources_RsIntelCacheDescr72 65389
-#define JclResources_RsIntelCacheDescr73 65390
-#define JclResources_RsIntelCacheDescr78 65391
-#define JclResources_RsIntelCacheDescr44 65392
-#define JclResources_RsIntelCacheDescr45 65393
-#define JclResources_RsIntelCacheDescr46 65394
-#define JclResources_RsIntelCacheDescr47 65395
-#define JclResources_RsIntelCacheDescr48 65396
-#define JclResources_RsIntelCacheDescr49 65397
-#define JclResources_RsIntelCacheDescr4A 65398
-#define JclResources_RsIntelCacheDescr4B 65399
-#define JclResources_RsIntelCacheDescr4C 65400
-#define JclResources_RsIntelCacheDescr4D 65401
-#define JclResources_RsIntelCacheDescr4E 65402
-#define JclResources_RsIntelCacheDescr4F 65403
-#define JclResources_RsIntelCacheDescr50 65404
-#define JclResources_RsIntelCacheDescr51 65405
-#define JclResources_RsIntelCacheDescr52 65406
-#define JclResources_RsIntelCacheDescr55 65407
-#define JclResources_RsIntelCacheDescr22 65408
-#define JclResources_RsIntelCacheDescr23 65409
-#define JclResources_RsIntelCacheDescr25 65410
-#define JclResources_RsIntelCacheDescr29 65411
-#define JclResources_RsIntelCacheDescr2C 65412
-#define JclResources_RsIntelCacheDescr30 65413
-#define JclResources_RsIntelCacheDescr39 65414
-#define JclResources_RsIntelCacheDescr3A 65415
-#define JclResources_RsIntelCacheDescr3B 65416
-#define JclResources_RsIntelCacheDescr3C 65417
-#define JclResources_RsIntelCacheDescr3D 65418
-#define JclResources_RsIntelCacheDescr3E 65419
-#define JclResources_RsIntelCacheDescr40 65420
-#define JclResources_RsIntelCacheDescr41 65421
-#define JclResources_RsIntelCacheDescr42 65422
-#define JclResources_RsIntelCacheDescr43 65423
+#define version_cBP 65024
+#define version_cErr 65025
+#define version_cABP 65026
+#define version_cGut 65027
+#define version_cSel 65028
+#define version_COMPILER_INI_LABEL 65029
+#define version_CPP_INI_LABEL 65030
+#define version_C_INI_LABEL 65031
+#define version_LINKER_INI_LABEL 65032
+#define version_PREPROC_INI_LABEL 65033
+#define version_VC2005_DEFCOMPILERSET 65040
+#define version_VC2003_DEFCOMPILERSET 65041
+#define version_VC6_DEFCOMPILERSET 65042
+#define version_DMARS_DEFCOMPILERSET 65043
+#define version_BORLAND_DEFCOMPILERSET 65044
+#define version_WATCOM_DEFCOMPILERSET 65045
+#define version_LINUX_DEFCOMPILERSET 65046
+#define version_FLT_BASE 65047
+#define version_FLT_ALLFILES 65048
+#define version_FLT_PROJECTS 65049
+#define version_FLT_HEADS 65050
+#define version_FLT_CS 65051
+#define version_FLT_CPPS 65052
+#define version_FLT_RES 65053
+#define version_FLT_HELPS 65054
+#define version_FLT_MSVCPROJECTS 65055
+#define version_LINUX_MAKE_PROGRAM 65056
+#define version_LINUX_CP_PROGRAM 65057
+#define version_LINUX_CPP_PROGRAM 65058
+#define version_LINUX_DBG_PROGRAM 65059
+#define version_LINUX_RES_PROGRAM 65060
+#define version_LINUX_DLL_PROGRAM 65061
+#define version_LINUX_PROF_PROGRAM 65062
+#define version_LINUX_COMPILER_CMD_LINE 65063
+#define version_LINUX_LINKER_CMD_LINE 65064
+#define version_LINUX_MAKE_CMD_LINE 65065
+#define version_OPT_DIRS 65066
+#define version_OPT_EDITOR 65067
+#define version_OPT_OPTIONS 65068
+#define version_OPT_COMPILERSETS 65069
+#define version_GCC_DEFCOMPILERSET 65070
+#define version_VC2008_DEFCOMPILERSET 65071
+#define version_BORLAND_RES_PROGRAM 65072
+#define version_BORLAND_DLL_PROGRAM 65073
+#define version_BORLAND_PROF_PROGRAM 65074
+#define version_BORLAND_COMPILER_CMD_LINE 65075
+#define version_BORLAND_LINKER_CMD_LINE 65076
+#define version_BORLAND_MAKE_CMD_LINE 65077
+#define version_WATCOM_MAKE_PROGRAM 65078
+#define version_WATCOM_CP_PROGRAM 65079
+#define version_WATCOM_CPP_PROGRAM 65080
+#define version_WATCOM_DBG_PROGRAM 65081
+#define version_WATCOM_RES_PROGRAM 65082
+#define version_WATCOM_DLL_PROGRAM 65083
+#define version_WATCOM_PROF_PROGRAM 65084
+#define version_WATCOM_COMPILER_CMD_LINE 65085
+#define version_WATCOM_LINKER_CMD_LINE 65086
+#define version_WATCOM_MAKE_CMD_LINE 65087
+#define version_VC_LINKER_CMD_LINE 65088
+#define version_VC_MAKE_CMD_LINE 65089
+#define version_DMARS_MAKE_PROGRAM 65090
+#define version_DMARS_CP_PROGRAM 65091
+#define version_DMARS_CPP_PROGRAM 65092
+#define version_DMARS_DBG_PROGRAM 65093
+#define version_DMARS_RES_PROGRAM 65094
+#define version_DMARS_DLL_PROGRAM 65095
+#define version_DMARS_PROF_PROGRAM 65096
+#define version_DMARS_COMPILER_CMD_LINE 65097
+#define version_DMARS_LINKER_CMD_LINE 65098
+#define version_DMARS_MAKE_CMD_LINE 65099
+#define version_BORLAND_MAKE_PROGRAM 65100
+#define version_BORLAND_CP_PROGRAM 65101
+#define version_BORLAND_CPP_PROGRAM 65102
+#define version_BORLAND_DBG_PROGRAM 65103
+#define version_GCC_CPP_PROGRAM 65104
+#define version_GCC_DBG_PROGRAM 65105
+#define version_GCC_RES_PROGRAM 65106
+#define version_GCC_DLL_PROGRAM 65107
+#define version_GCC_PROF_PROGRAM 65108
+#define version_GCC_COMPILER_CMD_LINE 65109
+#define version_GCC_LINKER_CMD_LINE 65110
+#define version_GCC_MAKE_CMD_LINE 65111
+#define version_VC_MAKE_PROGRAM 65112
+#define version_VC_CP_PROGRAM 65113
+#define version_VC_CPP_PROGRAM 65114
+#define version_VC_DBG_PROGRAM 65115
+#define version_VC_RES_PROGRAM 65116
+#define version_VC_DLL_PROGRAM 65117
+#define version_VC_PROF_PROGRAM 65118
+#define version_VC_COMPILER_CMD_LINE 65119
+#define version_ICON_DIR 65120
+#define version_HELP_DIR 65121
+#define version_TEMPLATE_DIR 65122
+#define version_THEME_DIR 65123
+#define version_DLL_EXT 65124
+#define version_EXE_EXT 65125
+#define version_DEV_EXT 65126
+#define version_HTML_EXT 65127
+#define version_RTF_EXT 65128
+#define version_INI_EXT 65129
+#define version_TEMPLATE_EXT 65130
+#define version_SYNTAX_EXT 65131
+#define version_PACKMAN_PROGRAM 65132
+#define version_UPDATE_PROGRAM 65133
+#define version_GCC_MAKE_PROGRAM 65134
+#define version_GCC_CP_PROGRAM 65135
+#define version_WATCOM_C_INCLUDE_DIR 65136
+#define version_WATCOM_RC_INCLUDE_DIR 65137
+#define version_LINUX_BIN_DIR 65138
+#define version_LINUX_LIB_DIR 65139
+#define version_LINUX_C_INCLUDE_DIR 65140
+#define version_LINUX_RC_INCLUDE_DIR 65141
+#define version_GCC_CPP_INCLUDE_DIR 65142
+#define version_VC2008_CPP_INCLUDE_DIR 65143
+#define version_VC2005_CPP_INCLUDE_DIR 65144
+#define version_VC2003_CPP_INCLUDE_DIR 65145
+#define version_VC6_CPP_INCLUDE_DIR 65146
+#define version_BORLAND_CPP_INCLUDE_DIR 65147
+#define version_DMARS_CPP_INCLUDE_DIR 65148
+#define version_WATCOM_CPP_INCLUDE_DIR 65149
+#define version_LINUX_CPP_INCLUDE_DIR 65150
+#define version_LANGUAGE_DIR 65151
+#define version_VC2003_C_INCLUDE_DIR 65152
+#define version_VC2003_RC_INCLUDE_DIR 65153
+#define version_VC6_BIN_DIR 65154
+#define version_VC6_LIB_DIR 65155
+#define version_VC6_C_INCLUDE_DIR 65156
+#define version_VC6_RC_INCLUDE_DIR 65157
+#define version_DMARS_BIN_DIR 65158
+#define version_DMARS_LIB_DIR 65159
+#define version_DMARS_C_INCLUDE_DIR 65160
+#define version_DMARS_RC_INCLUDE_DIR 65161
+#define version_BORLAND_BIN_DIR 65162
+#define version_BORLAND_LIB_DIR 65163
+#define version_BORLAND_C_INCLUDE_DIR 65164
+#define version_BORLAND_RC_INCLUDE_DIR 65165
+#define version_WATCOM_BIN_DIR 65166
+#define version_WATCOM_LIB_DIR 65167
+#define version_DEV_BLUE_THEME 65168
+#define version_DEV_CLASSIC_THEME 65169
+#define version_GCC_BIN_DIR 65170
+#define version_GCC_LIB_DIR 65171
+#define version_GCC_C_INCLUDE_DIR 65172
+#define version_GCC_RC_INCLUDE_DIR 65173
+#define version_VC2008_BIN_DIR 65174
+#define version_VC2008_LIB_DIR 65175
+#define version_VC2008_C_INCLUDE_DIR 65176
+#define version_VC2008_RC_INCLUDE_DIR 65177
+#define version_VC2005_BIN_DIR 65178
+#define version_VC2005_LIB_DIR 65179
+#define version_VC2005_C_INCLUDE_DIR 65180
+#define version_VC2005_RC_INCLUDE_DIR 65181
+#define version_VC2003_BIN_DIR 65182
+#define version_VC2003_LIB_DIR 65183
+#define version_DEVCPP 65184
+#define version_DEVCPP_WEBPAGE 65185
+#define version_DEFAULT_LANG_FILE 65186
+#define version_HTTP 65187
+#define version_DEV_INTERNAL_OPEN 65188
+#define version_DEV_SEARCHLOOP 65189
+#define version_DEV_COMPLETION_CACHE 65190
+#define version_DEV_DEFAULTCODE_FILE 65191
+#define version_DEV_SHORTCUTS_FILE 65192
+#define version_DEV_CLASSFOLDERS_FILE 65193
+#define version_DEV_MAKE_FILE 65194
+#define version_DEV_HELP_INI 65195
+#define version_DEV_CODEINS_FILE 65196
+#define version_DEV_MAINHELP_FILE 65197
+#define version_DEV_GNOME_THEME 65198
+#define version_DEV_NEWLOOK_THEME 65199
+#define main_cPrjFile 65200
+#define main_cPrjPath 65201
+#define main_cCurSrc 65202
+#define main_cSrcPath 65203
+#define main_cDevVer 65204
+#define main_cDefault 65205
+#define main_cExecDir 65206
+#define main_cSrcList 65207
+#define main_cWordxy 65208
+#define compiler_cMakeLine 65209
+#define compiler_cSingleFileMakeLine 65210
+#define compiler_cMake 65211
+#define compiler_cDots 65212
+#define Templates_cTemplate 65213
+#define Templates_cEditor 65214
+#define Templates_cProject 65215
+#define JvResources_RsMenuHighlight 65216
+#define JConsts_sChangeJPGSize 65217
+#define JConsts_sJPEGError 65218
+#define JConsts_sJPEGImageFile 65219
+#define JvDockGlobals_RsDockStringSplitter 65220
+#define JvDockGlobals_RsDockJvDockInfoSplitter 65221
+#define JvDockGlobals_RsDockJvDockTreeCloseBtnHint 65222
+#define JvDockGlobals_RsDockVSNETDockTreeAutoHideBtnHint 65223
+#define JvDockGlobals_RsEDockControlCannotIsNil 65224
+#define JvDockGlobals_RsEDockCannotGetValueWithNoOrient 65225
+#define JvDockGlobals_RsEDockCannotSetValueWithNoOrient 65226
+#define JvDockGlobals_RsEDockCannotLayAnother 65227
+#define JvDockGlobals_RsEDockCannotSetTabPosition 65228
+#define JvDockGlobals_RsDockCannotFindWindow 65229
+#define main_cEXEName 65230
+#define main_cPrjName 65231
+#define JvResources_RsClHighlight 65232
+#define JvResources_RsClHighlightText 65233
+#define JvResources_RsClBtnFace 65234
+#define JvResources_RsClBtnShadow 65235
+#define JvResources_RsClGrayText 65236
+#define JvResources_RsClBtnText 65237
+#define JvResources_RsClInactiveCaptionText 65238
+#define JvResources_RsClBtnHighlight 65239
+#define JvResources_RsCl3DDkShadow 65240
+#define JvResources_RsCl3DLight 65241
+#define JvResources_RsClInfoText 65242
+#define JvResources_RsClInfoBk 65243
+#define JvResources_RsGradientActiveCaption 65244
+#define JvResources_RsGradientInactiveCaption 65245
+#define JvResources_RsHotLight 65246
+#define JvResources_RsMenuBar 65247
+#define JvResources_RsClLightTurquoise 65248
+#define JvResources_RsClPaleBlue 65249
+#define JvResources_RsClLavender 65250
+#define JvResources_RsClScrollBar 65251
+#define JvResources_RsClBackground 65252
+#define JvResources_RsClActiveCaption 65253
+#define JvResources_RsClInactiveCaption 65254
+#define JvResources_RsClMenu 65255
+#define JvResources_RsClWindow 65256
+#define JvResources_RsClWindowFrame 65257
+#define JvResources_RsClMenuText 65258
+#define JvResources_RsClWindowText 65259
+#define JvResources_RsClCaptionText 65260
+#define JvResources_RsClActiveBorder 65261
+#define JvResources_RsClInactiveBorder 65262
+#define JvResources_RsClAppWorkSpace 65263
+#define JvResources_RsClGray50 65264
+#define JvResources_RsClLightOrange 65265
+#define JvResources_RsClSeaGreen 65266
+#define JvResources_RsClLightBlue 65267
+#define JvResources_RsClViolet 65268
+#define JvResources_RsClGray40 65269
+#define JvResources_RsClPink 65270
+#define JvResources_RsClGold 65271
+#define JvResources_RsClBrightGreen 65272
+#define JvResources_RsClTurquoise 65273
+#define JvResources_RsClPlum 65274
+#define JvResources_RsClGray25 65275
+#define JvResources_RsClRose 65276
+#define JvResources_RsClTan 65277
+#define JvResources_RsClLightYellow 65278
+#define JvResources_RsClLightGreen 65279
+#define JvResources_RsClWhite 65280
+#define JvResources_RsClMoneyGreen 65281
+#define JvResources_RsClSkyBlue 65282
+#define JvResources_RsClCream 65283
+#define JvResources_RsClMedGray 65284
+#define JvResources_RsClBrown 65285
+#define JvResources_RsClOliveGreen 65286
+#define JvResources_RsClDarkGreen 65287
+#define JvResources_RsClDarkTeal 65288
+#define JvResources_RsClDarkBlue 65289
+#define JvResources_RsClIndigo 65290
+#define JvResources_RsClGray80 65291
+#define JvResources_RsClDarkRed 65292
+#define JvResources_RsClOrange 65293
+#define JvResources_RsClDarkYellow 65294
+#define JvResources_RsClBlueGray 65295
+#define JvResources_RsAttrSystemShortString 65296
+#define JvResources_RsClBlack 65297
+#define JvResources_RsClMaroon 65298
+#define JvResources_RsClGreen 65299
+#define JvResources_RsClOlive 65300
+#define JvResources_RsClNavy 65301
+#define JvResources_RsClPurple 65302
+#define JvResources_RsClTeal 65303
+#define JvResources_RsClGray 65304
+#define JvResources_RsClSilver 65305
+#define JvResources_RsClRed 65306
+#define JvResources_RsClLime 65307
+#define JvResources_RsClYellow 65308
+#define JvResources_RsClBlue 65309
+#define JvResources_RsClFuchsia 65310
+#define JvResources_RsClAqua 65311
+#define JvResources_RsEReadValueFailed 65312
+#define JvResources_RsRootValueReplaceFmt 65313
+#define JvResources_RsEInvalidType 65314
+#define JvResources_RsEUnknownBaseType 65315
+#define JvResources_RsEInvalidPath 65316
+#define JvResources_RsENotAUniqueRootPath 65317
+#define JvResources_RsECircularReferenceOfStorages 65318
+#define JvResources_RsJvAppStorageSynchronizeTimeout 65319
+#define JvResources_RsJvAppStorageSynchronizeProcedureName 65320
+#define JvResources_RsEReadOnlyProperty 65321
+#define JvResources_RsFileTypeString 65322
+#define JvResources_RsAttrArchiveShortString 65323
+#define JvResources_RsAttrCompressedShortString 65324
+#define JvResources_RsAttrDirectoryShortString 65325
+#define JvResources_RsAttrReadOnlyShortString 65326
+#define JvResources_RsAttrHiddenShortString 65327
+#define JclResources_RsIntelCacheDescrE3 65328
+#define JclResources_RsIntelCacheDescrE4 65329
+#define JclResources_RsIntelCacheDescrEA 65330
+#define JclResources_RsIntelCacheDescrEB 65331
+#define JclResources_RsIntelCacheDescrEC 65332
+#define JclResources_RsIntelCacheDescrF0 65333
+#define JclResources_RsIntelCacheDescrF1 65334
+#define JclResources_RsIntelCacheDescrFF 65335
+#define JclResources_RsUnknownAMDModel 65336
+#define JclResources_RsEOpenGLInfo 65337
+#define JclResources_RsOpenGLInfoError 65338
+#define JclResources_RsInvalidMMFName 65339
+#define JclResources_RsInvalidMMFEmpty 65340
+#define JclResources_RsWin32Error 65341
+#define JclResources_RsELibraryNotFound 65342
+#define JclResources_RsEFunctionNotFound 65343
+#define JclResources_RsIntelCacheDescrB2 65344
+#define JclResources_RsIntelCacheDescrB3 65345
+#define JclResources_RsIntelCacheDescrB4 65346
+#define JclResources_RsIntelCacheDescrBA 65347
+#define JclResources_RsIntelCacheDescrC0 65348
+#define JclResources_RsIntelCacheDescrCA 65349
+#define JclResources_RsIntelCacheDescrD0 65350
+#define JclResources_RsIntelCacheDescrD1 65351
+#define JclResources_RsIntelCacheDescrD2 65352
+#define JclResources_RsIntelCacheDescrD6 65353
+#define JclResources_RsIntelCacheDescrD7 65354
+#define JclResources_RsIntelCacheDescrD8 65355
+#define JclResources_RsIntelCacheDescrDC 65356
+#define JclResources_RsIntelCacheDescrDD 65357
+#define JclResources_RsIntelCacheDescrDE 65358
+#define JclResources_RsIntelCacheDescrE2 65359
+#define JclResources_RsIntelCacheDescr78 65360
+#define JclResources_RsIntelCacheDescr79 65361
+#define JclResources_RsIntelCacheDescr7A 65362
+#define JclResources_RsIntelCacheDescr7B 65363
+#define JclResources_RsIntelCacheDescr7C 65364
+#define JclResources_RsIntelCacheDescr7D 65365
+#define JclResources_RsIntelCacheDescr7F 65366
+#define JclResources_RsIntelCacheDescr80 65367
+#define JclResources_RsIntelCacheDescr82 65368
+#define JclResources_RsIntelCacheDescr83 65369
+#define JclResources_RsIntelCacheDescr84 65370
+#define JclResources_RsIntelCacheDescr85 65371
+#define JclResources_RsIntelCacheDescr86 65372
+#define JclResources_RsIntelCacheDescr87 65373
+#define JclResources_RsIntelCacheDescrB0 65374
+#define JclResources_RsIntelCacheDescrB1 65375
+#define JclResources_RsIntelCacheDescr55 65376
+#define JclResources_RsIntelCacheDescr56 65377
+#define JclResources_RsIntelCacheDescr57 65378
+#define JclResources_RsIntelCacheDescr59 65379
+#define JclResources_RsIntelCacheDescr5A 65380
+#define JclResources_RsIntelCacheDescr5B 65381
+#define JclResources_RsIntelCacheDescr5C 65382
+#define JclResources_RsIntelCacheDescr5D 65383
+#define JclResources_RsIntelCacheDescr60 65384
+#define JclResources_RsIntelCacheDescr66 65385
+#define JclResources_RsIntelCacheDescr67 65386
+#define JclResources_RsIntelCacheDescr68 65387
+#define JclResources_RsIntelCacheDescr70 65388
+#define JclResources_RsIntelCacheDescr71 65389
+#define JclResources_RsIntelCacheDescr72 65390
+#define JclResources_RsIntelCacheDescr73 65391
+#define JclResources_RsIntelCacheDescr43 65392
+#define JclResources_RsIntelCacheDescr44 65393
+#define JclResources_RsIntelCacheDescr45 65394
+#define JclResources_RsIntelCacheDescr46 65395
+#define JclResources_RsIntelCacheDescr47 65396
+#define JclResources_RsIntelCacheDescr48 65397
+#define JclResources_RsIntelCacheDescr49 65398
+#define JclResources_RsIntelCacheDescr4A 65399
+#define JclResources_RsIntelCacheDescr4B 65400
+#define JclResources_RsIntelCacheDescr4C 65401
+#define JclResources_RsIntelCacheDescr4D 65402
+#define JclResources_RsIntelCacheDescr4E 65403
+#define JclResources_RsIntelCacheDescr4F 65404
+#define JclResources_RsIntelCacheDescr50 65405
+#define JclResources_RsIntelCacheDescr51 65406
+#define JclResources_RsIntelCacheDescr52 65407
+#define JclResources_RsIntelCacheDescr21 65408
+#define JclResources_RsIntelCacheDescr22 65409
+#define JclResources_RsIntelCacheDescr23 65410
+#define JclResources_RsIntelCacheDescr25 65411
+#define JclResources_RsIntelCacheDescr29 65412
+#define JclResources_RsIntelCacheDescr2C 65413
+#define JclResources_RsIntelCacheDescr30 65414
+#define JclResources_RsIntelCacheDescr39 65415
+#define JclResources_RsIntelCacheDescr3A 65416
+#define JclResources_RsIntelCacheDescr3B 65417
+#define JclResources_RsIntelCacheDescr3C 65418
+#define JclResources_RsIntelCacheDescr3D 65419
+#define JclResources_RsIntelCacheDescr3E 65420
+#define JclResources_RsIntelCacheDescr40 65421
+#define JclResources_RsIntelCacheDescr41 65422
+#define JclResources_RsIntelCacheDescr42 65423
 #define JclResources_RsDeclarationFormat 65424
 #define JclResources_RsSynchCreateMutex 65425
 #define JclResources_RsIntelCacheDescr00 65426
@@ -395,12 +412,12 @@
 #define JclResources_RsIntelCacheDescr05 65431
 #define JclResources_RsIntelCacheDescr06 65432
 #define JclResources_RsIntelCacheDescr08 65433
-#define JclResources_RsIntelCacheDescr0A 65434
-#define JclResources_RsIntelCacheDescr0B 65435
-#define JclResources_RsIntelCacheDescr0C 65436
-#define JclResources_RsIntelCacheDescr0D 65437
-#define JclResources_RsIntelCacheDescr0E 65438
-#define JclResources_RsIntelCacheDescr21 65439
+#define JclResources_RsIntelCacheDescr09 65434
+#define JclResources_RsIntelCacheDescr0A 65435
+#define JclResources_RsIntelCacheDescr0B 65436
+#define JclResources_RsIntelCacheDescr0C 65437
+#define JclResources_RsIntelCacheDescr0D 65438
+#define JclResources_RsIntelCacheDescr0E 65439
 #define JclResources_RsRTTIMaxValue 65440
 #define JclResources_RsRTTINameList 65441
 #define JclResources_RsRTTIClassName 65442
@@ -433,7 +450,7 @@
 #define JclResources_RsRTTITypeKind 65469
 #define JclResources_RsRTTIOrdinalType 65470
 #define JclResources_RsRTTIMinValue 65471
-#define JclResources_RsFileUtilsNoVersionInfo 65472
+#define JclResources_RsFileUtilsFileDoesNotExist 65472
 #define JclResources_RsUnableToOpenKeyRead 65473
 #define JclResources_RsUnableToOpenKeyWrite 65474
 #define JclResources_RsUnableToAccessValue 65475
@@ -463,8 +480,8 @@
 #define SynEditTextBuffer_SListIndexOutOfBounds 65499
 #define SynEditTextBuffer_SInvalidCapacity 65500
 #define CodeToolTip_SCodeToolTipIndexXOfX 65501
-#define JclResources_RsWin32Prefix 65502
-#define JclResources_RsEReplacementChar 65503
+#define JclResources_RsEReplacementChar 65502
+#define JclResources_RsFileUtilsNoVersionInfo 65503
 #define SynEditStrConst_SYNS_AttrNamespaceAttrValue 65504
 #define SynEditStrConst_SYNS_AttrNumber 65505
 #define SynEditStrConst_SYNS_AttrOctal 65506
@@ -499,6 +516,7 @@
 #define SynEditStrConst_SYNS_AttrNamespaceAttrName 65535
 STRINGTABLE
 BEGIN
+	version_cBP,	"Break points"
 	version_cErr,	"Error Line"
 	version_cABP,	"Active Breakpoints"
 	version_cGut,	"Gutter"
@@ -508,6 +526,7 @@ BEGIN
 	version_C_INI_LABEL,	"Compiler"
 	version_LINKER_INI_LABEL,	"Linker"
 	version_PREPROC_INI_LABEL,	"PreprocDefines"
+	version_VC2005_DEFCOMPILERSET,	"Default VC2005 compiler"
 	version_VC2003_DEFCOMPILERSET,	"Default VC2003 compiler"
 	version_VC6_DEFCOMPILERSET,	"Default VC6 compiler"
 	version_DMARS_DEFCOMPILERSET,	"Default DigitalMars compiler"
@@ -523,7 +542,7 @@ BEGIN
 	version_FLT_RES,	"Resource scripts (*.rc)|*.rc"
 	version_FLT_HELPS,	"Help files (*.hlp;*.chm;*.col)|*.hlp;*.chm;*.col|HTML files (*.htm;*.html)|*.htm;*.html|Text files (*.doc;*.rtf;*.txt)|*.doc;*.rtf;*.txt|All files (*.*)|*.*"
 	version_FLT_MSVCPROJECTS,	"MS Visual C++ projects (*.dsp)|*.dsp"
-	version_cBP,	"Break points"
+	version_LINUX_MAKE_PROGRAM,	"/usr/bin/make"
 	version_LINUX_CP_PROGRAM,	"gcc"
 	version_LINUX_CPP_PROGRAM,	"gcc"
 	version_LINUX_DBG_PROGRAM,	"gdb"
@@ -539,7 +558,7 @@ BEGIN
 	version_OPT_COMPILERSETS,	"CompilerSets"
 	version_GCC_DEFCOMPILERSET,	"Default GCC compiler"
 	version_VC2008_DEFCOMPILERSET,	"Default VC2008 compiler"
-	version_VC2005_DEFCOMPILERSET,	"Default VC2005 compiler"
+	version_BORLAND_RES_PROGRAM,	"borwindres.exe"
 	version_BORLAND_DLL_PROGRAM,	"link.exe"
 	version_BORLAND_PROF_PROGRAM,	"borgprof.exe"
 	version_BORLAND_COMPILER_CMD_LINE,	""
@@ -555,7 +574,7 @@ BEGIN
 	version_WATCOM_COMPILER_CMD_LINE,	""
 	version_WATCOM_LINKER_CMD_LINE,	""
 	version_WATCOM_MAKE_CMD_LINE,	""
-	version_LINUX_MAKE_PROGRAM,	"/usr/bin/make"
+	version_VC_LINKER_CMD_LINE,	""
 	version_VC_MAKE_CMD_LINE,	""
 	version_DMARS_MAKE_PROGRAM,	"mingw32-make.exe"
 	version_DMARS_CP_PROGRAM,	"dmc.exe"
@@ -571,7 +590,7 @@ BEGIN
 	version_BORLAND_CP_PROGRAM,	"borgcc.exe"
 	version_BORLAND_CPP_PROGRAM,	"borg++.exe"
 	version_BORLAND_DBG_PROGRAM,	"borgdb.exe"
-	version_BORLAND_RES_PROGRAM,	"borwindres.exe"
+	version_GCC_CPP_PROGRAM,	"g++.exe"
 	version_GCC_DBG_PROGRAM,	"gdb.exe"
 	version_GCC_RES_PROGRAM,	"windres.exe"
 	version_GCC_DLL_PROGRAM,	"dllwrap.exe"
@@ -587,7 +606,7 @@ BEGIN
 	version_VC_DLL_PROGRAM,	"link.exe"
 	version_VC_PROF_PROGRAM,	"mt.exe"
 	version_VC_COMPILER_CMD_LINE,	""
-	version_VC_LINKER_CMD_LINE,	""
+	version_ICON_DIR,	"Icons\\"
 	version_HELP_DIR,	"Help\\"
 	version_TEMPLATE_DIR,	"Templates\\"
 	version_THEME_DIR,	"Themes\\"
@@ -603,7 +622,7 @@ BEGIN
 	version_UPDATE_PROGRAM,	"updater.exe"
 	version_GCC_MAKE_PROGRAM,	"mingw32-make.exe"
 	version_GCC_CP_PROGRAM,	"gcc.exe"
-	version_GCC_CPP_PROGRAM,	"g++.exe"
+	version_WATCOM_C_INCLUDE_DIR,	"Include\\watcom;Include\\common;"
 	version_WATCOM_RC_INCLUDE_DIR,	"include\\common;"
 	version_LINUX_BIN_DIR,	"\\bin;\\usr\\bin"
 	version_LINUX_LIB_DIR,	"\\usr\\lib"
@@ -619,7 +638,7 @@ BEGIN
 	version_WATCOM_CPP_INCLUDE_DIR,	";include\\watcom;include\\common;"
 	version_LINUX_CPP_INCLUDE_DIR,	""
 	version_LANGUAGE_DIR,	"Lang\\"
-	version_ICON_DIR,	"Icons\\"
+	version_VC2003_C_INCLUDE_DIR,	"Include\\common;Include\\VC2003;"
 	version_VC2003_RC_INCLUDE_DIR,	"include\\common;"
 	version_VC6_BIN_DIR,	"Bin\\VC6;Bin;"
 	version_VC6_LIB_DIR,	"Lib\\VC6"
@@ -635,7 +654,7 @@ BEGIN
 	version_BORLAND_RC_INCLUDE_DIR,	"include\\common;"
 	version_WATCOM_BIN_DIR,	"Bin;Bin\\watcom;"
 	version_WATCOM_LIB_DIR,	"Lib\\watcom;"
-	version_WATCOM_C_INCLUDE_DIR,	"Include\\watcom;Include\\common;"
+	version_DEV_BLUE_THEME,	"Blue"
 	version_DEV_CLASSIC_THEME,	"Classic"
 	version_GCC_BIN_DIR,	"Bin;"
 	version_GCC_LIB_DIR,	"Lib;"
@@ -651,7 +670,7 @@ BEGIN
 	version_VC2005_RC_INCLUDE_DIR,	"include\\common;"
 	version_VC2003_BIN_DIR,	"Bin\\VC2003;Bin;"
 	version_VC2003_LIB_DIR,	"Lib\\VC2003"
-	version_VC2003_C_INCLUDE_DIR,	"Include\\common;Include\\VC2003;"
+	version_DEVCPP,	"wxDev-C++"
 	version_DEVCPP_WEBPAGE,	"http://wxdsgn.sourceforge.net/"
 	version_DEFAULT_LANG_FILE,	"English.lng"
 	version_HTTP,	"http://"
@@ -667,7 +686,7 @@ BEGIN
 	version_DEV_MAINHELP_FILE,	"devcpp.chm"
 	version_DEV_GNOME_THEME,	"Gnome"
 	version_DEV_NEWLOOK_THEME,	"New Look"
-	version_DEV_BLUE_THEME,	"Blue"
+	main_cPrjFile,	"<PROJECTFILE>"
 	main_cPrjPath,	"<PROJECTPATH>"
 	main_cCurSrc,	"<SOURCENAME>"
 	main_cSrcPath,	"<SOURCEPATH>"
@@ -683,7 +702,7 @@ BEGIN
 	Templates_cTemplate,	"Template"
 	Templates_cEditor,	"Editor"
 	Templates_cProject,	"Project"
-	version_DEVCPP,	"wxDev-C++"
+	JvResources_RsMenuHighlight,	"Menu Highlight"
 	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
 	JConsts_sJPEGError,	"JPEG error #%d"
 	JConsts_sJPEGImageFile,	"JPEG Image File"
@@ -699,7 +718,7 @@ BEGIN
 	JvDockGlobals_RsDockCannotFindWindow,	"Cannot find window"
 	main_cEXEName,	"<EXENAME>"
 	main_cPrjName,	"<PROJECTNAME>"
-	main_cPrjFile,	"<PROJECTFILE>"
+	JvResources_RsClHighlight,	"Selection background"
 	JvResources_RsClHighlightText,	"Selection text"
 	JvResources_RsClBtnFace,	"Button face"
 	JvResources_RsClBtnShadow,	"Button shadow"
@@ -715,7 +734,7 @@ BEGIN
 	JvResources_RsGradientInactiveCaption,	"Gradient Inactive Caption"
 	JvResources_RsHotLight,	"Hot Light"
 	JvResources_RsMenuBar,	"Menu Bar"
-	JvResources_RsMenuHighlight,	"Menu Highlight"
+	JvResources_RsClLightTurquoise,	"Light Turquoise"
 	JvResources_RsClPaleBlue,	"Pale Blue"
 	JvResources_RsClLavender,	"Lavender"
 	JvResources_RsClScrollBar,	"Scrollbar"
@@ -731,7 +750,7 @@ BEGIN
 	JvResources_RsClActiveBorder,	"Active window border"
 	JvResources_RsClInactiveBorder,	"Inactive window border"
 	JvResources_RsClAppWorkSpace,	"Application workspace"
-	JvResources_RsClHighlight,	"Selection background"
+	JvResources_RsClGray50,	"Gray 50%"
 	JvResources_RsClLightOrange,	"Light Orange"
 	JvResources_RsClSeaGreen,	"Sea Green"
 	JvResources_RsClLightBlue,	"Light Blue"
@@ -747,7 +766,7 @@ BEGIN
 	JvResources_RsClTan,	"Tan"
 	JvResources_RsClLightYellow,	"Light Yellow"
 	JvResources_RsClLightGreen,	"Light Green"
-	JvResources_RsClLightTurquoise,	"Light Turquoise"
+	JvResources_RsClWhite,	"White"
 	JvResources_RsClMoneyGreen,	"Money green"
 	JvResources_RsClSkyBlue,	"Sky blue"
 	JvResources_RsClCream,	"Cream"
@@ -763,7 +782,7 @@ BEGIN
 	JvResources_RsClOrange,	"Orange"
 	JvResources_RsClDarkYellow,	"Dark Yellow"
 	JvResources_RsClBlueGray,	"Blue Gray"
-	JvResources_RsClGray50,	"Gray 50%"
+	JvResources_RsAttrSystemShortString,	"S"
 	JvResources_RsClBlack,	"Black"
 	JvResources_RsClMaroon,	"Maroon"
 	JvResources_RsClGreen,	"Green"
@@ -779,7 +798,7 @@ BEGIN
 	JvResources_RsClBlue,	"Blue"
 	JvResources_RsClFuchsia,	"Fuchsia"
 	JvResources_RsClAqua,	"Aqua"
-	JvResources_RsClWhite,	"White"
+	JvResources_RsEReadValueFailed,	"TJvAppIniFileStorage.ReadValue: Section undefined"
 	JvResources_RsRootValueReplaceFmt,	"The Default Root Value \"%0:s\" has been replaced with \"%1:s\".\r\nPlease change the value in the FileVersionInfo Project Properties."
 	JvResources_RsEInvalidType,	"Invalid type"
 	JvResources_RsEUnknownBaseType,	"Unknown base type for given set"
@@ -795,23 +814,39 @@ BEGIN
 	JvResources_RsAttrDirectoryShortString,	"D"
 	JvResources_RsAttrReadOnlyShortString,	"R"
 	JvResources_RsAttrHiddenShortString,	"H"
-	JvResources_RsAttrSystemShortString,	"S"
-	JclResources_RsIntelCacheDescrB3,	"Data TLB: 4 KByte pages, 4-way set associative, 128 entries"
-	JclResources_RsIntelCacheDescrB4,	"Data TLB1: 4 KByte pages, 4-way set associative, 256 entries"
-	JclResources_RsIntelCacheDescrBA,	"Data TLB1: 4 KByte pages, 4-way set associative, 64 entries"
-	JclResources_RsIntelCacheDescrC0,	"Data TLB: 4 KByte and 4 MByte pages, 4-way set associative, 8 entries"
-	JclResources_RsIntelCacheDescrCA,	"Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries"
+	JclResources_RsIntelCacheDescrE3,	"3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescrE4,	"3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrEA,	"3rd-level cache: 12 MByte, 24-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrEB,	"3rd-level cache: 18 MByte, 24-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrEC,	"3rd-level cache: 24 MByte, 24-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescrF0,	"64-Byte Prefetching"
 	JclResources_RsIntelCacheDescrF1,	"128-Byte Prefetching"
 	JclResources_RsIntelCacheDescrFF,	"CPUID leaf 2 does not report cache descriptor information, use CPUID leaf 4 to query cache parameters"
 	JclResources_RsUnknownAMDModel,	"Unknown AMD (Model %d)"
 	JclResources_RsEOpenGLInfo,	"GetOpenGLVersion: %s failed"
+	JclResources_RsOpenGLInfoError,	"Err"
 	JclResources_RsInvalidMMFName,	"Invalid MMF name \"%s\""
 	JclResources_RsInvalidMMFEmpty,	"The MMF named \"%s\" cannot be created empty"
+	JclResources_RsWin32Error,	"Win32 error: %s (%u)%s%s"
 	JclResources_RsELibraryNotFound,	"Library not found: %s"
 	JclResources_RsEFunctionNotFound,	"Function not found: %s.%s"
-	JvResources_RsEReadValueFailed,	"TJvAppIniFileStorage.ReadValue: Section undefined"
+	JclResources_RsIntelCacheDescrB2,	"Instruction TLB: 4 KByte pages, 4-way set associative, 64 entries"
+	JclResources_RsIntelCacheDescrB3,	"Data TLB: 4 KByte pages, 4-way set associative, 128 entries"
+	JclResources_RsIntelCacheDescrB4,	"Data TLB1: 4 KByte pages, 4-way set associative, 256 entries"
+	JclResources_RsIntelCacheDescrBA,	"Data TLB1: 4 KByte pages, 4-way set associative, 64 entries"
+	JclResources_RsIntelCacheDescrC0,	"Data TLB: 4 KByte and 4 MByte pages, 4-way set associative, 8 entries"
+	JclResources_RsIntelCacheDescrCA,	"Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries"
+	JclResources_RsIntelCacheDescrD0,	"3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrD1,	"3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrD2,	"3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrD6,	"3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrD7,	"3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrD8,	"3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrDC,	"3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrDD,	"3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrDE,	"3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescrE2,	"3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size"
+	JclResources_RsIntelCacheDescr78,	"2nd-level cache: 1 MBytes, 4-way set associative, 64 bytes line size"
 	JclResources_RsIntelCacheDescr79,	"2nd-level cache: 128 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector"
 	JclResources_RsIntelCacheDescr7A,	"2nd-level cache: 256 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector"
 	JclResources_RsIntelCacheDescr7B,	"2nd-level cache: 512 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector"
@@ -827,7 +862,7 @@ BEGIN
 	JclResources_RsIntelCacheDescr87,	"2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescrB0,	"Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries"
 	JclResources_RsIntelCacheDescrB1,	"Instruction TLB: 2 MByte pages, 4-way, 8 entries or 4 MByte pages, 4-way, 4 entries"
-	JclResources_RsIntelCacheDescrB2,	"Instruction TLB: 4 KByte pages, 4-way set associative, 64 entries"
+	JclResources_RsIntelCacheDescr55,	"Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries"
 	JclResources_RsIntelCacheDescr56,	"Data TLB0: 4 MByte pages, 4-way set associative, 16 entries"
 	JclResources_RsIntelCacheDescr57,	"Data TLB0: 4 KByte pages, 4-way associative, 16 entries"
 	JclResources_RsIntelCacheDescr59,	"Data TLB0: 4 KByte pages, fully associative, 16 entries"
@@ -843,7 +878,7 @@ BEGIN
 	JclResources_RsIntelCacheDescr71,	"Trace cache: 16 K-Ops, 8-way set associative"
 	JclResources_RsIntelCacheDescr72,	"Trace cache: 32 K-Ops, 8-way set associative"
 	JclResources_RsIntelCacheDescr73,	"Trace cache: 64 K-Ops, 8-way set associative"
-	JclResources_RsIntelCacheDescr78,	"2nd-level cache: 1 MBytes, 4-way set associative, 64 bytes line size"
+	JclResources_RsIntelCacheDescr43,	"2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr44,	"2nd-level cache: 1 MBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr45,	"2nd-level cache: 2 MBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr46,	"3rd-level cache: 4 MBytes, 4-way set associative, 64 byte line size"
@@ -859,7 +894,7 @@ BEGIN
 	JclResources_RsIntelCacheDescr50,	"Instruction TLB: 4 KByte and 2 MByte or 4 MByte pages, 64 Entries"
 	JclResources_RsIntelCacheDescr51,	"Instruction TLB: 4 KByte and 2 MByte or 4 MByte pages, 128 Entries"
 	JclResources_RsIntelCacheDescr52,	"Instruction TLB: 4 KByte and 2 MByte or 4 MByte pages, 256 Entries"
-	JclResources_RsIntelCacheDescr55,	"Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries"
+	JclResources_RsIntelCacheDescr21,	"2nd level cache: 256 KBytes, 8-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescr22,	"3rd level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector"
 	JclResources_RsIntelCacheDescr23,	"3rd level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector"
 	JclResources_RsIntelCacheDescr25,	"3rd level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector"
@@ -875,7 +910,6 @@ BEGIN
 	JclResources_RsIntelCacheDescr40,	"No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache"
 	JclResources_RsIntelCacheDescr41,	"2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr42,	"2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size"
-	JclResources_RsIntelCacheDescr43,	"2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsDeclarationFormat,	"// Declaration for '%s' not supported."
 	JclResources_RsSynchCreateMutex,	"Failed to create mutex"
 	JclResources_RsIntelCacheDescr00,	"Null descriptor"
@@ -886,12 +920,12 @@ BEGIN
 	JclResources_RsIntelCacheDescr05,	"Data TLB1: 4 MByte pages, 4-way set associative, 32 entries"
 	JclResources_RsIntelCacheDescr06,	"1st level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr08,	"1st level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size"
+	JclResources_RsIntelCacheDescr09,	"1st level instruction cache: 32 KBytes, 4-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescr0A,	"1st level data cache: 8 KBytes, 2-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr0B,	"Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries"
 	JclResources_RsIntelCacheDescr0C,	"1st level data cache: 16 KBytes, 4-way set associative, 32 byte line size"
 	JclResources_RsIntelCacheDescr0D,	"1st level data cache: 16 KBytes, 4-way set associative, 64 byte line size"
 	JclResources_RsIntelCacheDescr0E,	"1st level data cache: 24 KBytes, 6-way set associative, 64 byte line size"
-	JclResources_RsIntelCacheDescr21,	"2nd level cache: 256 KBytes, 8-way set associative, 64 byte line size"
 	JclResources_RsRTTIMaxValue,	"Max value: "
 	JclResources_RsRTTINameList,	"Names: "
 	JclResources_RsRTTIClassName,	"Class name: "
@@ -924,7 +958,7 @@ BEGIN
 	JclResources_RsRTTITypeKind,	"Type kind: "
 	JclResources_RsRTTIOrdinalType,	"Ordinal type: "
 	JclResources_RsRTTIMinValue,	"Min value: "
-	JclResources_RsFileUtilsNoVersionInfo,	"File contains no version information"
+	JclResources_RsFileUtilsFileDoesNotExist,	"The file %s does not exist"
 	JclResources_RsUnableToOpenKeyRead,	"Unable to open key \"%s\\%s\" for read"
 	JclResources_RsUnableToOpenKeyWrite,	"Unable to open key \"%s\\%s\" for write"
 	JclResources_RsUnableToAccessValue,	"Unable to open key \"%s\\%s\" and access value \"%s\""
@@ -954,8 +988,8 @@ BEGIN
 	SynEditTextBuffer_SListIndexOutOfBounds,	"Invalid stringlist index %d"
 	SynEditTextBuffer_SInvalidCapacity,	"Stringlist capacity cannot be smaller than count"
 	CodeToolTip_SCodeToolTipIndexXOfX,	"%d / %d"
-	JclResources_RsWin32Prefix,	"Win32: %s (%u)"
 	JclResources_RsEReplacementChar,	"Failed to get ANSI replacement character"
+	JclResources_RsFileUtilsNoVersionInfo,	"File contains no version information"
 	SynEditStrConst_SYNS_AttrNamespaceAttrValue,	"Namespace Attribute Value"
 	SynEditStrConst_SYNS_AttrNumber,	"Number"
 	SynEditStrConst_SYNS_AttrOctal,	"Octal"
