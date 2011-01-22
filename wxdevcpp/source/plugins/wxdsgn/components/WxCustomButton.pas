@@ -451,8 +451,8 @@ begin
     if (KeepFormat) then
     begin
          Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
-         Result := 'wxBitmap ' + self.Name + '_BITMAP' +
-         ' ("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+         Result := 'wxBitmap ' + self.Name + '_BITMAP (' +
+         GetCppString(Wx_FileName) + ', wxBITMAP_TYPE_' +
          GetExtension(Wx_FileName) + ');'
 
     end

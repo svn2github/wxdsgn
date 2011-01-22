@@ -452,7 +452,7 @@ begin
     begin
     Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
 
-      strBitmapArrayName := 'wxBitmap("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+      strBitmapArrayName := 'wxBitmap(' + GetCppString(Wx_FileName) + ', wxBITMAP_TYPE_' +
          GetExtension(Wx_FileName) + ')';
     end
     else

@@ -18,6 +18,18 @@
     along with Dev-C++; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
+{
+added 15/1/2011:
+Bool TargetIsRunning (name was 'running')
+DWORD TargetPID  (name was 'hPid')
+DWORD DebuggerPID
+function TDebugger.KillProcess
+function TGDBDebugger.Notify
+const GDBthreadgcr
+const GDBid
+TGDBDebugger.CloseDebugger
+N.B. 'Event' of TDebugger is redundant
+}
 
 unit debugger;
 
@@ -38,7 +50,9 @@ uses
 
 var
     //output from GDB
-    running: boolean = false;       // result of status messages
+// added 15/1/2011	
+    TargetIsRunning: boolean = false;       // result of status messages
+// end added (was 'running'	
     verbose: boolean = true;
     gui_critSect: TRTLCriticalSection;
     // Why do we need this? Once the pipe
@@ -105,6 +119,9 @@ const GDBstack: String = 'stack=[';
 const GDBstopped: String = 'stopped';
 const GDBthreadid: String = 'thread-id';
 const GDBthreads: String = 'threads=';
+// added 15/1/2011
+const GDBthreadgcr : String = 'thread-group-created';
+// end added
 const GDBtype: String = 'type';
 const GDBvalue: String = 'value';
 const GDBvalueq: String = 'value={';
@@ -261,6 +278,9 @@ type
         procedure QueueCommand(command, params: String); overload; virtual;
         procedure QueueCommand(command: TCommand); overload; virtual;
         procedure SendCommand; virtual;
+// added 15/1/2011
+		function  KillProcess(PID: DWORD): Boolean;
+// end added
 
         procedure CloseDebugger(Sender: TObject); virtual;
 
@@ -290,6 +310,10 @@ type
         //Wait: TDebugWait;
         Reader: ReadThread;
         CurOutput: TStringList;
+// added 15/1/2011
+		TargetPID: Integer;
+		DebuggerPID: DWORD;
+// end added
 
         procedure OnOutput(Output: string); virtual; abstract;
 
@@ -384,12 +408,10 @@ type
         Started: Boolean;
 
         // Pipe handles
-        g_hChildStd_IN_Wr: THandle;               //we write to this
-        g_hChildStd_IN_Rd: THandle;
-        //Child process reads from here
-        g_hChildStd_OUT_Wr: THandle;
-        //Child process writes to this
-        g_hChildStd_OUT_Rd: THandle;               //we read from here
+        g_hChildStd_IN_Wr: THandle;		//we write to this
+        g_hChildStd_IN_Rd: THandle;		//Child process reads from here
+        g_hChildStd_OUT_Wr: THandle;		//Child process writes to this
+        g_hChildStd_OUT_Rd: THandle;		//we read from here
 
     protected
         procedure OnOutput(Output: string); override;
@@ -413,8 +435,7 @@ type
     public
         //Debugger control
         procedure Attach(pid: integer); override;
-        procedure CloseDebugger(Sender: TObject); override;
-
+       
         // Debugger virtual functions
         procedure FirstParse; override;
         procedure Exit; override;
@@ -425,6 +446,10 @@ type
         procedure Execute(filename, arguments: string); override;
 
         procedure Cleanup;
+// added 15/1/2011
+		procedure CloseDebugger(Sender: TObject); override;
+		function  Notify(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
+// end added
         procedure SendCommand; override;
         function SendToDisplay(buf: PChar; bsize: PLongInt;
             verbose: Boolean): PChar;
@@ -757,6 +782,29 @@ begin
 end;
 
 //=============================================================
+// added 15/1/2011
+function TDebugger.KillProcess(PID: DWORD): Boolean;
+// returns 'TRUE' on success
+var
+	hProc: THandle;
+
+begin
+	KillProcess := false;
+	hProc := OpenProcess(PROCESS_TERMINATE,FALSE,PID);
+	if (not(hProc = 0)) then
+	begin
+		if(TerminateProcess(hProc,0)) then
+			begin
+// 				process terminated
+				CloseHandle(hProc);
+				KillProcess := true;
+			end
+    end;
+end;
+
+//=============================================================
+// end added
+
 
 procedure TDebugger.RemoveAllBreakpoints;
 var
@@ -779,7 +827,15 @@ end;
 
 //=============================================================
 
+// added 15/1/2011
 procedure TDebugger.CloseDebugger(Sender: TObject);
+
+begin
+
+end;
+
+// end added. All moved in to TGDBDebugger. was:
+{
 var
 i :integer;
 begin
@@ -823,6 +879,7 @@ begin
         CurrentCommand := nil;
     end;
 end;
+}
 
 //=============================================================
 
@@ -952,6 +1009,9 @@ begin
 
         CloseHandle(piProcInfo.hProcess);
         CloseHandle(piProcInfo.hThread);
+// added 15/1/2011
+		DebuggerPID := piProcInfo.dwProcessId;
+// end added
         fExecuting := True;
         fPaused := True;
     end;
@@ -2333,7 +2393,41 @@ begin
 end;
 
 //=============================================================
+// added 15/1/2011
+procedure TGDBDebugger.CloseDebugger(Sender: TObject);
+begin
+	if Executing then
+	begin
+		fPaused := false;
+		fExecuting := false;
 
+//		DLLs attached to the process are not notified that the process
+//  	is terminating. Thus using Reset may result in an unstable system.
+//  	The Windows API documentation on TerminateProcess explains all.
+
+		if (TargetIsRunning) then
+// 			Kill the target
+			KillProcess(TargetPID);
+// 		Kill the Debugger
+		KillProcess(DebuggerPID);
+		Cleanup;
+
+// First don't let us be called twice. Set the secondary threads to not call
+// us when they terminate
+
+		Reader.OnTerminate := nil;
+		Reader := nil;
+
+//    	MainForm.RemoveActiveBreakpoints;
+
+//		Clear the command queue
+		CommandQueue.Clear;
+		CurrentCommand := nil;
+	end;
+end;
+
+//=============================================================
+// end added
 destructor TGDBDebugger.Destroy;
 begin
     inherited;
@@ -2346,7 +2440,7 @@ begin
 
     QueueCommand(GDBExit, '');
 
-    // GAR: Note we SHOULD NOT pull the plug on the debugger unless it fails
+    //		Note we SHOULD NOT pull the plug on the debugger unless it fails
     //      to stop when commanded to exit (manual page 306: Quitting GDB)
     //      It should be safe to stop the reader and close the pipes after
     //      telling GDB to exit, even though it might not have finished.
@@ -2356,7 +2450,6 @@ begin
     //      Killing GDB will still not terminate the target. (Neither will
     //      stopping the IDE).
     //      The Windows API documentation on TerminateProcess explains all.
-    //      (N.B. TaskManager cannot be driven programmatically!)
 
 
 end;
@@ -2367,13 +2460,19 @@ procedure TGDBDebugger.Cleanup;
 
 begin
 
- //GAR   Reader.Terminate;
+	Reader.Terminate;
     //Close the handles
-    if (not CloseHandle(g_hChildStd_IN_Wr)) then
-        DisplayError('CloseHandle - ChildStd_IN_Wr');
-    if (not CloseHandle(g_hChildStd_OUT_Rd)) then
-        DisplayError('CloseHandle - ChildStd_OUT_Rd');
-    // See the note above about TerminateProcess
+// added 15/1/2011
+	try
+		if (not CloseHandle(g_hChildStd_IN_Wr)) then
+			DisplayError('CloseHandle - ChildStd_IN_Wr');
+		if (not CloseHandle(g_hChildStd_OUT_Rd)) then
+			DisplayError('CloseHandle - ChildStd_OUT_Rd');
+		//	See the note above about TerminateProcess
+	except
+		on EExternalException do DisplayError('Closing Pipe Handles');
+	end;
+// end added (was without try/except)
 
 end;
 
@@ -2542,15 +2641,7 @@ begin
     QueueCommand('-target-attach', inttostr(pid));
 end;
 
-//=================================================================
-
-procedure TGDBDebugger.CloseDebugger(Sender: TObject);
-begin
-    inherited;
-    Started := False;
-end;
-
-//=================================================================
+// ===============================================
 
 procedure TGDBDebugger.OnOutput(Output: string);
 var
@@ -3916,7 +4007,7 @@ begin
         begin
             // get rest into , &AllReason))
             AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBrunning)));
-            running := true;
+            TargetIsRunning := true;
             // gui_critSect.Enter();
             // gui_critSect.Leave();
 
@@ -3940,7 +4031,7 @@ begin
         begin
             // get rest into , &AllReason))
             AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBstopped)));
-            running := false;
+            TargetIsRunning := false;
             // gui_critSect.Enter();
             // gui_critSect.Leave();
 
@@ -3951,6 +4042,9 @@ begin
                     AddtoDisplay('Stopped - Exited normally');
                     // gui_critSect.Leave();
                     Started := False;
+// added 15/1/2011
+					Exit;
+// end added
 
                 //GAR Exit;
                     CloseDebugger(nil);
@@ -4036,9 +4130,12 @@ begin
         else
         if (buf^ = '=') then
 		          // notify async
-		          // For now: display it
-
-            buf := SendToDisplay(buf, @bytesInBuffer, verbose)
+// added 15/1/2011
+			buf := Notify(buf, @bytesInBuffer, verbose)
+// was
+		// For now: display it
+// was     buf := SendToDisplay(buf, @bytesInBuffer, verbose)
+// end added
 
         else
         if ((buf^ = '@') or (buf^ = '&')) then
@@ -4108,6 +4205,59 @@ begin
 end;
 
 //=============================================================
+// added 15/1/2011
+
+function TGDBDebugger.Notify(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
+{
+/*
+   Part of Second Level Parse of Output.
+
+   Parse Notify Record.
+
+   Looks from beginning up to [0x0d][0x0a] pair.
+   MODIFIES the input buffer.
+   Returns pointer to start of unprocessed buffer, else if nothing left: NULL
+   bsize is updated to reflect new size of unprocessed part.
+   Note: embedded cr or cr-lf are replaced by nulls.
+ */
+}
+
+var
+    OutputBuffer: String;
+    msg: String;
+    Mainmsg: String;
+    groupID: DWORD;
+
+begin
+{$ifdef DISPLAYOUTPUT}
+	AddtoDisplay('Parsing =');
+{$endif}
+
+    Result := nil;
+    msg := breakOut(@buf, bsize);
+    msg := AnsiMidStr(msg, 2, Maxint-1);
+
+    if (verbose) then
+    begin
+		OutputBuffer := msg;
+		// gui_critSect.Enter();
+		AddtoDisplay(OutputBuffer);
+		// gui_critSect.Leave();
+    end;
+
+    if (not(msg = '')) then
+	begin
+		if (AnsiStartsStr(GDBthreadgcr, msg)) then
+		// Only extract Target PID for now - can add more if required
+			ParseConst(@msg, @GDBid, PInteger(@TargetPID));
+
+		Result := buf;
+
+	end;
+end;
+
+//=============================================================
+// end added
 
 function TGDBDebugger.breakOut(Next: PPChar; bsize: PLongInt): String;
 {

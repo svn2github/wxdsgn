@@ -378,7 +378,7 @@ begin
     begin
       Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
 
-      strFirstBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' ("' + Wx_FileName + '", wxBITMAP_TYPE_' +
+      strFirstBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetCppString(Wx_FileName) + ', wxBITMAP_TYPE_' +
           GetExtension(Wx_FileName) + ');'
     end
     else
