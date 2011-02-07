@@ -694,6 +694,7 @@ type
         actDebugFinish: TAction;
         RemoveAllBreakpoints1: TMenuItem;
         actRemoveAllBreakpoints: TAction;
+    VerboseDebug: TMenuItem;
 
         procedure FormShow(Sender: TObject);
         procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1004,6 +1005,7 @@ type
         OldHeight: integer;
         fIsIconized: Boolean;
         ReloadFilenames: TList;
+
 
         LeftDockTabs: TJvDockTabHostForm;
         RightDockTabs: TJvDockTabHostForm;
@@ -5873,7 +5875,6 @@ procedure TMainForm.actStopExecuteExecute(Sender: TObject);
 begin
     if fDebugger.Executing then
     begin
-      // fDebugger.Exit;
        fDebugger.CloseDebugger(sender);
     end;
 
@@ -10505,3 +10506,4 @@ begin
 end;
 
 end.
+

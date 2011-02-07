@@ -19,21 +19,33 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 {
-added 15/1/2011:
-Bool TargetIsRunning (name was 'running')
-DWORD TargetPID  (name was 'hPid')
-DWORD DebuggerPID
-function TDebugger.KillProcess
-function TGDBDebugger.Notify
-const GDBthreadgcr
-const GDBidq
-TGDBDebugger.CloseDebugger
-N.B. 'Event' of TDebugger is redundant
+added since 25/1/2011:
+
+procedure ParseVObjCreate
+procedure ParseVObjAssign
+procedure ParseVObjName
+String LastVOident
+String LastVOVar
+procedure ExtractLocals
+function unescape
+function OctToHex
+PVariable
+TVariable
+PList
+
+modified:
+procedure ParseBreakpoint 
+ParseResult
+SplitResult
+ParseValue
+ExtractList
+
+various Constants
+
 }
 
 unit debugger;
 
-//{$DEFINE DISPLAYOUTPUT}// enable general progress output for debugging
 //{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
 //  in 'HEX Editor' style
 
@@ -50,9 +62,7 @@ uses
 
 var
     //output from GDB
-// added 15/1/2011	
     TargetIsRunning: boolean = false;       // result of status messages
-// end added (was 'running'	
     verbose: boolean = true;
     gui_critSect: TRTLCriticalSection;
     // Why do we need this? Once the pipe
@@ -86,6 +96,13 @@ function AnsiMidStr(const AText: string;
     const AStart, ACount: Integer): string;
 function AnsiRightStr(const AText: string; ACount: Integer): string;
 
+//added 23/1/2011
+function unescape(s: PString): String;
+function OctToHex(s: PString): String;
+
+// end added
+
+
 const GDBPrompt: String = '(gdb)';
 const GDBerror: String = 'error,';
 const GDBdone: String = 'done,';
@@ -104,7 +121,8 @@ const GDBfunc: String = 'func';
 const GDBid: String = 'id';
 const GDBidq: String = 'id=';
 const GDBlevel: String = 'level';
-const GDBlocals: String = 'locals=[';
+const GDBlocals: String = 'locals';
+const GDBlocalsq: String = 'locals=';
 const GDBline: String = 'line';
 const GDBmult: String = '<MULTIPLE>';
 const GDBnr_rows: String = 'nr_rows';
@@ -114,18 +132,21 @@ const GDBnew: String = 'new';
 const GDBnumber: String = 'number';
 const GDBold: String = 'old';
 const GDBorig_loc: String = 'original-location=';
+const GDBsigmean: String = 'signal-meaning';
+const GDBsigname: String = 'signal-name';
+const GDBsigsegv: String = 'SIGSEV';
 const GDBreason: String = 'reason=';
 const GDBrunning: String = 'running';
 const GDBstack: String = 'stack=[';
 const GDBstopped: String = 'stopped';
+const GDBtargetid: String = 'target-id';
 const GDBthreadid: String = 'thread-id';
 const GDBthreads: String = 'threads=';
-// added 15/1/2011
 const GDBthreadgcr : String = 'thread-group-created';
-// end added
 const GDBtype: String = 'type';
 const GDBvalue: String = 'value';
-const GDBvalueq: String = 'value={';
+const GDBvalueq: String = 'value=';
+const GDBvalueqb: String = 'value={';
 const GDBwhat: String = 'what=';
 const GDBwpt: String = 'wpt=';
 const GDBwpta: String = 'hw-awpt=';
@@ -147,6 +168,12 @@ const MAXSTACKDEPTH: Integer = 99;
 // This just flags a user warning and returns.
 //  (N.B. For GDB, the request can limit the range returned)
 
+// added 23/1/2011
+const
+  PARSELIST = false;
+  PARSETUPLE = true;
+  INDENT = 3;                         // Amount of indentation of Locals display
+// end added
 
 type
     AssemblySyntax = (asATnT, asIntel);
@@ -154,6 +181,10 @@ type
         cdDisassembly, cdRegisters);
     ContextDataSet = set of ContextData;
     TCallback = procedure(Output: TStringList) of object;
+
+// added 23/1/2011
+	PList = ^TList;
+// end added
 
     ReadThread = class(TThread)
 
@@ -230,11 +261,11 @@ type
     end;
 
     PDebuggerThread = ^TDebuggerThread;
-    TDebuggerThread = packed record
-        Active: Boolean;
-        Index: String;
-        ID: String;
-    end;
+  TDebuggerThread = packed record
+    Active: Boolean;
+    Index: String;
+    ID: String;
+  end;
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -279,10 +310,7 @@ type
         procedure QueueCommand(command, params: String); overload; virtual;
         procedure QueueCommand(command: TCommand); overload; virtual;
         procedure SendCommand; virtual;
-// added 15/1/2011
 		function  KillProcess(PID: DWORD): Boolean;
-// end added
-
         procedure CloseDebugger(Sender: TObject); virtual;
 
     private
@@ -311,10 +339,8 @@ type
         //Wait: TDebugWait;
         Reader: ReadThread;
         CurOutput: TStringList;
-// added 15/1/2011
 		TargetPID: Integer;
 		DebuggerPID: DWORD;
-// end added
 
         procedure OnOutput(Output: string); virtual; abstract;
 
@@ -370,7 +396,7 @@ type
 
         // Debugger virtual functions
         procedure FirstParse; virtual;
-        procedure Exit; virtual;
+        procedure ExitDebugger; virtual;
         procedure WriteToPipe(Buffer: String); virtual;
         procedure AddToDisplay(Msg: String); virtual;
 
@@ -407,7 +433,10 @@ type
         Registers: TRegisters;
         LastWasCtrl: Boolean;
         Started: Boolean;
-
+// added 23/1/2011
+		LastVOident: String;
+		LastVOVar: String;
+// end added		
         // Pipe handles
         g_hChildStd_IN_Wr: THandle;		//we write to this
         g_hChildStd_IN_Rd: THandle;		//Child process reads from here
@@ -439,7 +468,7 @@ type
        
         // Debugger virtual functions
         procedure FirstParse; override;
-        procedure Exit; override;
+        procedure ExitDebugger; override;
         procedure WriteToPipe(Buffer: String); override;
         procedure AddToDisplay(Msg: String); override;
 
@@ -447,10 +476,8 @@ type
         procedure Execute(filename, arguments: string); override;
 
         procedure Cleanup;
-// added 15/1/2011
 		procedure CloseDebugger(Sender: TObject); override;
 		function  Notify(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
-// end added
         procedure SendCommand; override;
         function SendToDisplay(buf: PChar; bsize: PLongInt;
             verbose: Boolean): PChar;
@@ -486,24 +513,32 @@ type
             Value: PInteger): Boolean; overload;
         function ParseConst(Msg: PString; Vari: PString;
             Value: PBoolean): Boolean; overload;
-        function ParseResult(Str: PString): String;
+// added 23/1/2011
+		function  ExtractLocals(Str: PString): String;
+		function  ParseResult(Str: PString; Level: Integer; List: TList): String;
+		function  ExtractList(Str: PString; Tuple: Boolean; Level: Integer; List: TList): String;
+		function  ParseValue(Str: PString; Level: Integer; List: TList): String;
+// end added
         function SplitResult(Str: PString; Vari: PString): String;
         function ExtractWxStr(Str: PString): String;
-        function ParseValue(Str: PString): String;
-        function ExtractList(Str: PString): String;
         function ExtractBracketed(Str: PString; start: Pinteger;
             next: PInteger; c: Char; inclusive: Boolean): String;
         function ExtractNamed(Src: PString; Target: PString;
             count: Integer): String;
+// added 23/1/2011
+		function ParseVObjCreate(Msg: String): Boolean;
+		function ParseVObjAssign(Msg: String): Boolean;
+// end added
         procedure ParseWatchpoint(Msg: String);
         procedure ParseBreakpoint(Msg: String);
         procedure ParseBreakpointTable(Msg: String);
         procedure ParseStack(Msg: String);
-        procedure ParseFrame(Msg: String);
+        function  ParseFrame(Msg: String): String;
         procedure ParseThreads(Msg: String);
         procedure WatchpointHit(Msg: PString);
         procedure BreakpointHit(Msg: PString);
         procedure StepHit(Msg: PString);
+        procedure SigRecv(Msg: Pstring);
 
         //Debugger control
         procedure Go; override;
@@ -578,7 +613,7 @@ type
 
         // Debugger virtual functions
         procedure FirstParse; override;
-        procedure Exit; override;
+        procedure ExitDebugger; override;
         procedure WriteToPipe(Buffer: String); override;
         procedure AddToDisplay(Msg: String); override;
 
@@ -615,10 +650,8 @@ var
     BytesAvailable: DWORD;
     BytesToRead: DWORD;
     LastRead: DWORD;
-{$IFDEF DISPLAYOUTPUT}
-    Buffer: String;
-{$ENDIF}
 
+    Buffer: String;
 
 begin
 
@@ -647,15 +680,15 @@ begin
             // while bytesInBuffer > zero and set an arbitrary limit? )
             //(This possibile deadlock has never been observed!)
         begin
-{$IFDEF DISPLAYOUTPUT}
+
+
+if (MainForm.VerboseDebug.Checked) then
             begin
                 Buffer := 'PeekPipe bytes available: ' +
                     IntToStr(BytesAvailable);
-                //gui_critSect.Enter();               // Maybe needed while debugging
                 TGDBDebugger(MainForm.fDebugger).AddToDisplay(Buffer);
-                //gui_critSect.Leave();               // Maybe needed while debugging
             end;
-{$ENDIF}
+
             try
                 BufMem := AllocMem(BytesAvailable + 16);
                 // bump it up just to give some in hand
@@ -666,22 +699,27 @@ begin
                 if (ReadFile(ReadChildStdOut, BufMem^,
                     BytesAvailable, LastRead, Nil)) then
                 begin
-{$ifdef DISPLAYOUTPUT}
+
+
+if (MainForm.VerboseDebug.Checked) then
+begin
                     Buffer :=
                         'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
-                    // gui_critSect.Enter();               // Maybe needed while debugging
+
                     TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
-                    // gui_critSect.Leave();               // Maybe needed while debugging
-{$endif}
+
+end;
+
                     if (LastRead > 0) then
                         // The number of bytes read
                     begin
                         buf[LastRead] := (#0);
                         // Terminate it, thus can handle as Cstring
 {$ifdef DISPLAYOUTPUTHEX}
-	                       // gui_critSect.Enter();               // Maybe needed while debugging
-                        HexDisplay(buf, LastRead);
-                        // gui_critSect.Leave();               // Maybe needed while debugging
+if (MainForm.VerboseDebug.Checked) then
+begin
+	                HexDisplay(buf, LastRead);
+end
 
 {$endif}
 
@@ -783,7 +821,6 @@ begin
 end;
 
 //=============================================================
-// added 15/1/2011
 function TDebugger.KillProcess(PID: DWORD): Boolean;
 // returns 'TRUE' on success
 var
@@ -804,8 +841,6 @@ begin
 end;
 
 //=============================================================
-// end added
-
 
 procedure TDebugger.RemoveAllBreakpoints;
 var
@@ -828,7 +863,6 @@ end;
 
 //=============================================================
 
-// added 15/1/2011
 procedure TDebugger.CloseDebugger(Sender: TObject);
 
 begin
@@ -940,7 +974,7 @@ procedure TDebugger.FirstParse;
 begin
 end;
 
-procedure TDebugger.Exit;
+procedure TDebugger.ExitDebugger;
 begin
 end;
 
@@ -1010,9 +1044,7 @@ begin
 
         CloseHandle(piProcInfo.hProcess);
         CloseHandle(piProcInfo.hThread);
-// added 15/1/2011
 		DebuggerPID := piProcInfo.dwProcessId;
-// end added
         fExecuting := True;
         fPaused := True;
     end;
@@ -1397,6 +1429,130 @@ begin
 end;
 
 //=================================================================
+// added 23/1/2011
+
+function TGDBDebugger.ParseVObjCreate(Msg: String): Boolean;
+
+//   Parses out simple Variable value
+//   Does not work for compound variables: GDB returns {...}
+
+var
+  Value: String;
+  ValStrings : TStringList;
+  VarType: String;
+  Name: String;
+  start: Integer;
+  Ret: Boolean;
+  Buffer, Output: String;
+  BytesWritten: DWORD;
+
+begin
+
+  start := 0;
+  Ret := true;
+
+  Name := ExtractBracketed(@Msg, @start, Nil, '"', false); // because 'name=' gets stripped off!
+
+  Ret := Ret and ParseConst(@Msg, @GDBtype, PString(@VarType));
+
+
+{/* If type=="wxString", do
+    "-var-evaluate-expression -f natural var1.wxStringBase.protected.m_pchData"
+   in stages to build the VO Tree.
+   (The type when you get there is "const wxChar *"  and you get a pointer plus
+   the string)
+   The following works but we'd be better with the IDE to supply the name of the
+   variable in question via LastVOVar.
+ */}
+
+    if (VarType = 'wxString') then
+    begin
+
+        Buffer := '-var-info-path-expression ' + Name + NL;
+        Buffer := Buffer + '-var-list-children 1 ' + Name + NL;
+        Buffer := Buffer + '-var-list-children 1 ' + Name + '.wxStringBase' + NL;
+        Buffer := Buffer + '-var-list-children 1 ' + Name + '.wxStringBase.protected' + NL;
+        Buffer := Buffer + '-var-evaluate-expression -f natural ' + Name + '.wxStringBase.protected.m_pchData' + NL;
+        WriteToPipe(Buffer);
+        ParseVObjCreate := false;
+    end
+    else
+    begin
+      Ret := Ret and ParseConst(@Msg, @GDBvalue, PString(@Value));
+      Ret := Ret and ParseConst(@Msg, @GDBNameq, PString(@LastVOident));
+
+      ParseVObjCreate := false;
+      if (Ret) then            // If all 3 are found it probably was a VObj... but we can't prove it
+      begin
+        LastVOVar := '<fix me>'; //MidStr(MainForm.Edit1.Text, 17, 99);    // ! ! !  We need the real name from the IDE
+        Value := OctToHex(@Value);
+        Value := unescape(@Value);
+
+        ValStrings := TStringList.Create;
+        ValStrings.Add(Value);
+        OnVariableHint(ValStrings);
+        ValStrings.Clear; ValStrings.Free;
+        
+        Output := format('%s has value %s', [LastVOVar, Value]);
+        // gui_critSect.Enter();
+        AddToDisplay(Output);
+        // gui_critSect.Leave();
+        ParseVObjCreate := true;
+      end;
+    end;
+end;
+
+//=================================================================
+
+function TGDBDebugger.ParseVObjAssign(Msg: String):Boolean;
+{
+/*
+   Parses out Variable new value
+   (also works for -data-evaluate-expression expr but will attach the name
+    of the last VObj used to the output string unless LastVOVar has been set
+    to 'expression' by the IDE).
+*/
+}
+var
+  Value: String;
+  ValStrings:TStringList;
+  VarType: String;
+  Name: String;
+  start: Integer;
+  Ret: Boolean;
+  Buffer, Output: String;
+  BytesWritten: DWORD;
+
+begin
+  start := 0;
+
+  Value := ExtractBracketed(@Msg, @start, Nil, '"', false); // because 'value' gets stripped off!
+
+  ParseVObjAssign := false;
+  if (start = 13) then            // 13 = length('done,value=') - Most likely it was a VObj or expression value ... but we can't prove it
+  begin
+    // Handle wxString
+    start := Pos(wxStringBase, Value);
+    if ((start < 6) and not (start = 0)) then
+      Value := ExtractWxStr(@Value);
+    Value := OctToHex(@Value);
+    Value := unescape(@Value);
+    ValStrings := TStringList.Create;
+    ValStrings.Add(Value);
+    OnVariableHint(ValStrings);
+    ValStrings.Clear;
+    ValStrings.Free;
+
+    Output := format('%s has value %s', [LastVOVar, Value]);
+    // gui_critSect.Enter();
+    AddtoDisplay(Output);
+    // gui_critSect.Leave();
+    ParseVObjAssign := true;
+  end;
+end;
+
+//=================================================================
+// end added
 
 procedure TGDBDebugger.ParseBreakpoint(Msg: String);
 {
@@ -1597,13 +1753,9 @@ end;
 
 //=================================================================
 
-procedure TGDBDebugger.ParseFrame(Msg: String);
+function TGDBDebugger.ParseFrame(Msg: String): String;
 {
    Part of Third Level Parse of Output.
-
-   INCOMPLETE
-   Does nothing with the result apart from writing to display
-   Might need to build a list to pass back to the IDE
 }
 var
     Level: Integer;
@@ -1618,45 +1770,41 @@ var
 
 begin
 
-    Level := 0;
-    Line := 0;
-    {Ret := false;}
+  Level := 0;
+  Line := 0;
+  {Ret := false;}
 
-    if (not (Msg = '')) then
+  if (not (Msg = '')) then
+  begin
+
+    if (verbose) then
     begin
-
-
-        {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
-        {Ret := }ParseConst(@Msg, @GDBfunc, PString(@Func));
-        {Ret := }ParseConst(@Msg, @GDBline, PInteger(@Line));
-        {Ret := }ParseConst(@Msg, @GDBfile, PString(@SrcFile));
-        if (Level = 0) then
-            SubOutput := 'Stopped in '
-        else
-            SubOutput := ' called from ';
-        if (Line = 0) then
-            SubOutput1 := ' <no line number>'
-        else
-            SubOutput := format(' at Line %d', [Line]);
-
-        Output := format('Level %2d: %*s %s %s %s',
-            [Level, Level + 1, ' ', SubOutput, Func, SubOutput1]);
-        // gui_critSect.Enter();
-        AddtoDisplay(Output);
-        // gui_critSect.Leave();
+        Output := format('Stack Frame: %s', [Msg]);
     end;
+
+    {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
+    {Ret := }ParseConst(@Msg, @GDBfunc,  PString(@Func));
+    {Ret := }ParseConst(@Msg, @GDBline,  PInteger(@Line));
+    {Ret := }ParseConst(@Msg, @GDBfile,  PString(@SrcFile));
+    if (Level = 0) then
+      SubOutput := 'Stopped in '
+    else
+      SubOutput := ' called from ';
+    if (Line = 0) then
+      SubOutput1 := ' <no line number>'
+    else
+      SubOutput1 := format(' at Line %d',[Line]);
+
+    Output := format('Level %2d: %*s %s %s %s', [Level, Level+1 , ' ', SubOutput, Func, SubOutput1]);
+  end;
+  ParseFrame := Output;
 end;
 
-
 //=================================================================
-
 
 procedure TGDBDebugger.ParseThreads(Msg: String);
 {
    Part of Third Level Parse of Output.
-
-   INCOMPLETE
-   Does nothing with the result apart from writing to display
 }
 var
 
@@ -1666,43 +1814,79 @@ var
     start: Integer;
     next: Integer;
     ThreadID: String;
+    TargetID: String;
+    Output: String;
+    Threads: TList;
+    Thread: PDebuggerThread;
+    I: Integer;
 
 begin
 
-    ParseConst(@Msg, @GDBcurthread, PString(@CurrentThread));
-    ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
-    ThreadList := AnsiMidStr(ThreadList, 2, Length(ThreadList) - 2);
-    if (ThreadList = '') then
-        AddtoDisplay('No active threads')// gui_critSect.Enter();
+  Threads := TList.Create;
+
+  ParseConst(@Msg, @GDBcurthread, PString(@CurrentThread));
+  ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
+  if (ThreadList = '') then
+  begin
+        // gui_critSect.Enter();
+    AddtoDisplay('No active threads');
+        // gui_critSect.Leave();
+  end
+  else
+  begin
+    // gui_critSect.Enter();
+    AddtoDisplay('Current Thread ID = ' + CurrentThread);
     // gui_critSect.Leave();
 
-    else
+    repeat
     begin
-        // gui_critSect.Enter();
-        AddtoDisplay('Current Thread ID = ' + CurrentThread);
-        // gui_critSect.Leave();
+        ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
+        if (verbose) then
+        begin
+            // gui_critSect.Enter();
+            AddtoDisplay('Thread: ');
+            AddtoDisplay(ThreadStr);
+            // gui_critSect.Leave();
+        end;
+        if (not(ThreadStr = '')) then
+        begin
+            New(Thread);
+            ParseConst(@ThreadList, @GDBid, PString(@ThreadID));
+            ParseConst(@ThreadList, @GDBtargetid, PString(@TargetID));
+            // gui_critSect.Enter();
+            if (verbose) then
+              AddtoDisplay('Thread ID = ' + ThreadID);
+            // gui_critSect.Leave();
 
-        repeat
+            Output := ParseFrame(ThreadStr);
+            Threads.Insert(0, Thread);
+            with Thread^ do
             begin
-                ThreadStr :=
-                    ExtractBracketed(@ThreadList, @start, @next, '{', false);
+                Active := (ThreadId = CurrentThread);
+                Index := ThreadId;
+                ID := TargetID + '  ' + Output;
+            end;
 
-                if (not (ThreadStr = '')) then
-                begin
-                    ParseConst(@ThreadStr, @GDBid, PString(@ThreadID));
-                    // gui_critSect.Enter();
-                    AddtoDisplay('Thread ID = ' + ThreadID);
-                    // gui_critSect.Leave();
+        end;
+        ThreadList := AnsiRightStr(ThreadList, Length(ThreadList) - next);
+    end
+    until ((ThreadList = '') or (next = 0));
+  end;
 
-                    ParseFrame(ThreadStr);
-                end;
-                ThreadList :=
-                    AnsiRightStr(ThreadList, Length(ThreadList) - next);
-            end
-        until ((ThreadStr = '') or (next = 0));
-    end;
+  MainForm.OnThreads(Threads);
+
+  try
+      { Cleanup: must free the list items as well as the list }
+   for I := 0 to (Threads.Count - 1) do
+   begin
+     Thread := Threads.Items[I];
+     Dispose(Thread);
+   end;
+  finally
+    Threads.Free;
+  end;
+
 end;
-
 //=================================================================
 
 procedure TGDBDebugger.ParseWatchpoint(Msg: String);
@@ -1759,7 +1943,7 @@ begin
     //Ret := false;
 
 
-    Val := ExtractNamed(@Temp, @GDBvalueq, 1);
+    Val := ExtractNamed(@Temp, @GDBvalueqb, 1);
     Wpt := ExtractNamed(@Temp, @GDBwpt, 1);
     {Ret := }ParseConst(@Wpt, @GDBnumber, PInteger(@Num));
 
@@ -1884,16 +2068,61 @@ begin          // SplitResult
 end;
 
 //=================================================================
+// added 23/1/2011 all changed
 
+function TGDBDebugger.ExtractLocals(Str: PString): String;
+// expects Str to be of form "done,locals=Result"
+var
+  Output: String;
+  Level: Integer;
+  LocalsStr: String;
+  Val: String;
+  Vari: String;   // This is called Var in the GDB spec !
+  I: Integer;
+  Local: PVariable;
+  LocalsList: TList;
 
-function TGDBDebugger.ParseResult(Str: PString): String;
+begin
+
+  LocalsList := TList.Create;
+  Level := 0;
+
+  LocalsStr := AnsiMidStr(Str^, Length(GDBdone)+1, Length(Str^) - Length(GDBdone));
+  if (AnsiStartsStr(GDBlocalsq, LocalsStr)) then
+  begin
+    LocalsStr := MidStr(Str^, Length(GDBdone)+1, Length(Str^)-Length(GDBdone));
+    Val := SplitResult(@LocalsStr, @Vari);    // Must start with a List or a Tuple
+
+    if (AnsiStartsStr('{', Val )) then
+		Output := ExtractList(@LocalsStr, PARSETUPLE, Level, LocalsList)
+    else // it starts '['
+		Output := ExtractList(@LocalsStr, PARSELIST, Level, LocalsList);
+	if (verbose) then
+		ExtractLocals := GDBlocalsq + Output;
+  end;
+  MainForm.OnLocals(LocalsList);
+  try
+      { Cleanup: must free the list items as well as the list }
+   for I := 0 to (LocalsList.Count - 1) do
+   begin
+     Local := LocalsList.Items[I];
+     Dispose(Local);
+   end;
+  finally
+    LocalsList.Free;
+  end;
+
+end;
+
+//=================================================================
+
+function TGDBDebugger.ParseResult(Str: PString; Level: Integer; List: TList): String;
 {
 /*
     Parses a Result extracted from a Result-record of the form var = value.
-    The Result must NOT be enclose in quotes, brackets or braces,
+    The Result must NOT be enclosed in quotes, brackets or braces,
     and must be well-formed.
-    This is the entry point that will recursively and fully parse a Result
-    to the full depth. A special case - wxString - is handled specially.
+    A special case - wxString - is handled specially.
 
     [In the comments of this and the functions that follow, words like
      "Result", "Tuple", "List" with initial capitals have the meanings
@@ -1904,36 +2133,247 @@ function TGDBDebugger.ParseResult(Str: PString): String;
     wxStrings are condensed into the form var = "string"
     This is suitable for display on one line.
 
-    Can (must?) be extended to build (linked) list(s) as required.
-
     Str is expected to be of the form variable = value (as defined in the formal
     specification, where value can be a Const or Tuple or List, etc
+    Level is the recursion level or degree of indentation in the list
+    Plist is a pointer to the TList of TVariables that accepts the list of
+    local variables.
 }
-
 Var
-    Output: String;
-    Vari: String;   // This is called Var in the GDB spec !
-    start: Integer;
-    Val: String;
-
+  Output: String;
+  Vari: String;   // This is called Var in the GDB spec !
+  start: Integer;
+  Val: String;
+  Local: PVariable;
 
 begin          // ParseResult
-    Val := SplitResult(Str, @Vari);
-    Output := Vari;
-    Output := Output + ' = ';
-    // Special Case:
-    start := Pos(wxStringBase, Val);
-    if ((start < 6) and not (start = 0)) then
+  Val := SplitResult(Str, @Vari);
+  Output := Vari;
+  Output := Output + ' = ';
+  start := Pos(wxStringBase, Val);
+  if (Vari = GDBname) then              // a name of a Tuple
+  begin
+    New(Local);
+    Output := Output + Val;
+    Local.Name := format('%*s%s',[Level*INDENT, '',
+      ExtractBracketed(@Val, nil, nil, '"', false)]);
+    Local.Value := '';
+    List.Add(Local);
+  end
+  else
+  if (Vari = GDBvalue) then                        // a value of named a Tuple
+  begin
+    if ((start < 6) and not (start = 0)) then      // a WxString
     begin
-        Output := Output + '"';
-        Output := Output + ExtractWxStr(@Val);
-        Output := Output + '"';
+      New(Local);
+      Local := List.Last;                     // so add it to the last item
+      Local^.Value := ExtractWxStr(@Val);
+      List.Remove(Local);
+      List.Add(Local);
+      Output := Output + '"';
+      Output := Output + ExtractWxStr(@Val);
+      Output := Output + '"';
     end
     else
-        Output := Output + ParseValue(@Val);
-    ParseResult := Output;
+    if (AnsiStartsStr('"{', Val)) then                 // it's a named Tuple
+    begin
+      Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
+    end
+    else
+    if (AnsiStartsStr('"', Val)) then                   // it's value of a Tuple
+    begin
+      New(Local);
+      Output := Output + OctToHex(@Val);
+      Local := List.Last;                     // so add the value to the last item
+      Val := OctToHex(@Val);
+      Local^.Value := ExtractBracketed(@Val, nil, nil, '"', false);
+      List.Remove(Local);
+      List.Add(Local);
+    end
+  end
+  else
+  if (AnsiStartsStr('[', Val)) then                   // it's a List
+    begin
+      Output := Output + ExtractList(Str, PARSELIST, Level, List);
+    end
+  else
+    // Special Case: WxString
+  if ((start < 6) and not (start = 0)) then
+  begin
+    New(Local);
+    Local^.Name := format('%*s%s',[Level*INDENT, '', Vari]);
+    Local^.Value := ExtractWxStr(@Val);
+    List.Add(Local);
+    Output := Output + '"';
+    Output := Output + ExtractWxStr(@Val);
+    Output := Output + '"';
+  end
+  else
+  if (AnsiStartsStr('{', Val)) then                   // it's a Tuple
+  begin
+    New(Local);
+    Local^.Name := format('%*s%s',[Level*INDENT, '',
+      ExtractBracketed(@Vari, nil, nil, '"', false)]);
+    List.Add(Local);
+    Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
+  end
+  else
+  begin                                               // it's a simple Const
+    New(Local);
+    Local^.Name := format('%*s%s',[Level*INDENT, '',
+      ExtractBracketed(@Vari, nil, nil, '"', false)]);
+    Val := OctToHex(@Val);
+    Local^.Value := Val;
+    List.Add(Local);
+    Output := Output + Val;
+  end;
+         
+  ParseResult := Output;
 end;
 
+//=================================================================
+
+function TGDBDebugger.ExtractList(Str: PString; Tuple: Boolean; Level: Integer; List: TList): String;
+{
+    Extracts a comma-separated list of values or results from a List,
+    of the form "[value(,value)*]"
+             or "[result(,result)*]"
+
+    N.B. This is recursive and will fully parse the Result tree.
+}
+var
+  delim1, delim2: Char;
+  Remainder: String;
+  Item: String;
+  start, next: Integer;
+  Output: String;
+
+  len, comma, lbrace, lsqbkt, equals: Integer;
+
+begin          // ParseList
+
+  // Get the first result or value.
+    // Remove outermost "[ ]" or "{ }"
+    if (Tuple) then
+    begin
+      delim1 := '{';
+      delim2 := '}';
+    end
+    else   // it's a List
+    begin
+      delim1 := '[';
+      delim2 := ']';
+    end;
+    Remainder := ExtractBracketed(Str, @start, @next, delim1, false);
+    Output := Output + delim1;
+    //
+    //    At this point, we're inside  '[' ... ']' and expecting either
+    //      result ("," result )*
+    //    or
+    //      value ("," value )*
+    //
+    //    A result starts with "variable = "  i.e. '=' must come before
+    //       any of ',' '{' or '['
+    //       -- anything else is a value,
+    //
+    //    A value must be a Tuple (start with '{'), a List (start with '[')
+    //     otherwise it's a const.
+    //
+
+    while (true) do
+    begin                                                // Loop through the list
+      len := Length(Remainder);                          // find out which
+      if (Len = 0) then
+        break;
+      comma := FindFirstChar(Remainder, ',');
+      lbrace := FindFirstChar(Remainder, '{');
+      lsqbkt := FindFirstChar(Remainder, '[');
+      equals := FindFirstChar(Remainder, '=');
+
+      if (not(equals = 0)
+        and ((lbrace = 0) or (equals < lbrace))
+        and ((lsqbkt = 0) or (equals < lsqbkt))
+        and ((comma  = 0) or (equals < comma ))) then    // we have a Result
+
+
+        begin
+            if (comma = 0) then                         // and the only or the last one
+            begin
+              Output := Output + ParseResult(@Remainder, Level+1, List);
+              break;                                    // done
+            end
+            else
+            begin
+              Item := AnsiLeftStr(Remainder, comma-1);  // ... or the first of many
+              Output := Output + ParseResult(@Item, Level+1, List);
+              next := comma+1;
+              Output := Output + ', ';
+            end;
+        end
+        else                                            // we have a value
+        begin
+            if (comma = 0) then                         // and the only or the last one
+            begin
+                Output := Output + ParseValue(@Remainder, Level+1, List);
+                break;                                  // done
+            end
+            else
+            begin
+                Item := AnsiLeftStr(Remainder, comma-1); // ... or the first of many
+                Output := Output + ParseValue(@Item, Level+1, List);
+                Output := Output + ', ';
+                next := comma+1;
+            end;
+        end;
+      if (next < len) then
+        Remainder := AnsiMidStr(Remainder, next, Length(Remainder)-next + 1);
+    end;
+    Output := Output + delim2;
+    ExtractList := Output;
+end;
+
+//=================================================================
+
+function TGDBDebugger.ParseValue(Str: PString; Level: Integer; List: TList): String;
+
+//    Determines the content of a Value, i.e.
+//        const | tuple | list
+//    The Value must NOT be enclosed in {...} or [...]  -- although its
+//    contents will be if those are a Tuple or a List.
+//
+//    N.B. This is recursive and will fully parse the Result tree.
+
+var
+  Output: String;
+  s: Integer;
+  n: Integer;
+  Str2: String;
+  Local: PVariable;
+
+begin          // ParseValue
+  if (AnsiStartsStr('{', Str^)) then                          // a Tuple
+    Output := Output + ExtractList(Str, PARSETUPLE, Level, List)
+  else
+  if (AnsiStartsStr('[', Str^)) then                          // a List
+    Output := Output + ExtractList(Str, PARSELIST, Level, List)
+  else
+  if ((Str^[1] = '"')
+    and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then  // it might be a class
+  begin
+    Str2 := ExtractBracketed(Str, @s, @n, '"', false);
+    Output := Output + ExtractList(@Str2, PARSELIST, Level, List);
+  end
+  else
+  begin
+    New(Local);                           // a const
+    Output := Output + OctToHex(Str);
+    Local := List.Last;                   // so add the value to the last item
+    Local^.Value := OctToHex(Str);
+    List.Remove(Local);
+    List.Add(Local);
+  end;
+  ParseValue := Output;
+end;
 
 //=================================================================
 
@@ -1974,10 +2414,95 @@ begin          // ExtractwxStr
         ends := AnsiFindLast(GDBqStrEmpty, QStr);
         QStr := AnsiMidStr(QStr, starts + 2, ends - starts - 2);
     end;
-    ExtractWxStr := QStr;
+    ExtractWxStr := unescape(@QStr);
 
 end;
 
+
+//=================================================================
+//added 23/1/2011
+//=================================================================
+
+function unescape(s: PString): String;
+// Unescapes a GDB double-escaped C-style string.
+// E.g 'A \\\"quote\\\"'  becomes  'A \"quote\"'
+var
+	i: Integer;
+	temp: String;
+
+begin
+	if (length(s^) >1) then
+	begin
+		i := 1;
+
+		repeat
+		begin
+			if ((s^[i] = '\') and
+			((s^[i+1] = '\') or (s^[i+1] = '"'))) then
+				inc(i);
+			temp := temp + s^[i];
+			inc (i);
+		end;
+		until i > length(s^);
+		unescape := temp;
+	end
+	else
+		unescape := s^;
+end;
+
+//=================================================================
+
+function OctToHex(s: PString): String;
+// Replaces each Octal representation of an 8-bit number embedded in a string
+//  with its Hex equivalent. Format must be '\nnn' or '\\0nn'
+//  (i.e. escaped leading zero)
+//  E.g.  '\302' => '0xC2'    '\\025' => '0x15'
+
+//  Note: 3 digits, 1 or 2 backslashes and the surrounding single quotes
+//  are all required.
+// Returns the converted string.
+
+var
+	i,k: Integer;
+	temp: String;
+	c: Integer;
+
+begin
+	if (length(s^) > 5) then
+	begin
+		i := 1;
+		k := 0;
+		repeat
+		begin
+		if ((s^[i+1] = '\') and (s^[i+2] = '\')) then
+			k := 1;
+		if (s^[i] = '''') and
+			(s^[i+1] = '\') and
+			(s^[i+k+1] = '\') and
+			(s^[i+k+2] >= '0') and
+			(s^[i+k+2] < '8') and
+			(s^[i+k+3] >= '0') and
+			(s^[i+k+3] < '8') and
+			(s^[i+k+4] >= '0') and
+			(s^[i+k+4] < '8') and
+			(s^[i+k+5] = '''') then
+			begin
+				c := ((StrToInt(s^[i+k+2]) * 8) + StrToInt(s^[i+k+3])) * 8 + StrToInt(s^[i+k+4]);
+				temp := temp + format('''0x%2.2x''', [c]);
+				i := i + k + 6;
+			end
+			else
+			begin
+				temp := temp + s^[i];
+				inc (i);
+			end;
+		end;
+		until (i > length(s^));
+		OctToHex := temp;
+	end
+	else
+		OctToHex := s^;
+end;
 
 //=================================================================
 
@@ -2039,141 +2564,6 @@ function AnsiLeftStr(const AText: string; ACount: Integer): string;
 begin
     Result := LeftStr(AText, ACount);
 end;
-//=================================================================
-function TGDBDebugger.ParseValue(Str: PString): String;
-
-    //    Determines the content of a Value, i.e.
-    //        const | tuple | list
-    //    The Value must NOT be enclosed in {...} or [...]  -- although its
-    //    contents will be if those are a Tuple or a List.
-    //
-    //    N.B. This is recursive and will fully parse the Result tree.
-
-var
-    Output: String;
-    s: Integer;
-    n: Integer;
-    Str2: String;
-
-begin          // ParseValue
-    if (AnsiStartsStr('{', Str^) or AnsiStartsStr('[', Str^)) then
-        // a Tuple or List
-        Output := Output + ExtractList(Str)
-    else
-    if ((Str^[1] = '"')
-        and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then
-        // it might be a class
-    begin
-        Str2 := ExtractBracketed(Str, @s, @n, '"', false);
-        Output := Output + ExtractList(@Str2);
-    end
-    else                                                                // a const
-        Output := Output + Str^;
-
-    ParseValue := Output;
-end;
-
-
-//=================================================================
-
-
-function TGDBDebugger.ExtractList(Str: PString): String;
-
-{
-    Extracts a comma-separated list of values or results from a Tuple or List,
-    of the form "[value(,value)*]"
-             or "[result(,result)*]"
-
-    N.B. This is recursive and will fully parse the Result tree.
-}
-var
-    delim: Char;
-    Remainder: String;
-    Item: String;
-    start, next: Integer;
-    Output: String;
-
-    len, comma, lbrace, lsqbkt, equals: Integer;
-
-begin          // ExtractList
-
-    // Get the first result or value.
-    delim := (Str^)[1];
-    // = '{' for a Tuple, '[' for a List
-    // Remove outermost "[ ]" or "{ }"
-    Remainder := ExtractBracketed(Str, @start, @next, delim, false);
-    Output := Output + delim;
-    //
-    //    At this point, we're inside  '{' ... '}' or '[' ... ']' and expecting either
-    //      result ("," result )*
-    //    or
-    //      value ("," value )*
-    //
-    //    A result starts with "variable = "  i.e. '=' must come before
-    //       any of ',' '{' or '['
-    //       -- anything else is a value,
-    //
-    //    A value must be a Tuple (start with '{'), a List (start with '[')
-    //     otherwise it's a const.
-    //
-
-    while (true) do
-    begin                                                // Loop through the list
-        len := Length(Remainder);                          // find out which
-        comma := FindFirstChar(Remainder, ',');
-        lbrace := FindFirstChar(Remainder, '{');
-        lsqbkt := FindFirstChar(Remainder, '[');
-        equals := FindFirstChar(Remainder, '=');
-
-        if (not (equals = 0)
-            and ((lbrace = 0) or (equals < lbrace))
-            and ((lsqbkt = 0) or (equals < lsqbkt))
-            and ((comma = 0) or (equals < comma))) then
-            // we have a Result
-
-
-        begin
-            if (comma = 0) then
-                // and the only or the last one
-            begin
-                Output := Output + ParseResult(@Remainder);
-                break;                                    // done
-            end
-            else
-            begin
-                Item := AnsiLeftStr(Remainder, comma - 1);
-                // ... or the first of many
-                Output := Output + ParseResult(@Item);
-                next := comma + 1;
-                Output := Output + ',';
-            end;
-        end
-        else                                            // we have a value
-        if (comma = 0) then
-            // and the only or the last one
-        begin
-            Output := Output + ParseValue(@Remainder);
-            break;                                  // done
-        end
-        else
-        begin
-            Item := AnsiLeftStr(Remainder, comma - 1);
-            // ... or the first of many
-            Output := Output + ParseValue(@Item);
-            Output := Output + ',';
-            next := comma + 1;
-        end;
-        if (next < len) then
-            Remainder := AnsiMidStr(Remainder, next,
-                Length(Remainder) - next + 1);
-    end;
-    if (delim = '{') then
-        Output := Output + '}'
-    else
-        Output := Output + ']';
-    ExtractList := Output;
-end;
-
 
 //=================================================================
 
@@ -2394,7 +2784,7 @@ begin
 end;
 
 //=============================================================
-// added 15/1/2011
+
 procedure TGDBDebugger.CloseDebugger(Sender: TObject);
 begin
 	if Executing then
@@ -2428,7 +2818,7 @@ begin
 end;
 
 //=============================================================
-// end added
+
 destructor TGDBDebugger.Destroy;
 begin
     inherited;
@@ -2436,7 +2826,7 @@ end;
 
 //=============================================================
 
-procedure TGDBDebugger.Exit;
+procedure TGDBDebugger.ExitDebugger;
 begin
 
     QueueCommand(GDBExit, '');
@@ -2463,7 +2853,6 @@ begin
 
 	Reader.Terminate;
     //Close the handles
-// added 15/1/2011
 	try
 		if (not CloseHandle(g_hChildStd_IN_Wr)) then
 			DisplayError('CloseHandle - ChildStd_IN_Wr');
@@ -2473,7 +2862,6 @@ begin
 	except
 		on EExternalException do DisplayError('Closing Pipe Handles');
 	end;
-// end added (was without try/except)
 
 end;
 
@@ -2969,7 +3357,7 @@ begin
     if cdThreads in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := '-thread-list-all-threads';
+        Command.Command := '-thread-info'; 
         Command.OnResult := OnThreads;
         QueueCommand(Command);
     end;
@@ -2992,9 +3380,9 @@ begin
                 Command := TCommand.Create;
                 if Pos('.', Name) > 0 then
                     Command.Command :=
-                        '-display-insert  ' + Copy(name, 1, Pos('.', name) - 1)
+                        '-break-list  ' + Copy(name, 1, Pos('.', name) - 1)
                 else
-                    Command.Command := '-display-insert  ' + name;
+                    Command.Command := '-break-list  ' + name;
 
                 //Fill in the other data
                 Command.Data := Node;
@@ -3877,9 +4265,11 @@ var
     Mainmsg: String;
 
 begin
-{$ifdef DISPLAYOUTPUT}
+
+if (MainForm.VerboseDebug.Checked) then
+begin
     AddtoDisplay('Parsing ^');
-{$endif}
+end;
 
     Result := nil;
     msg := breakOut(@buf, bsize);
@@ -3920,15 +4310,15 @@ begin
         else
         if (AnsiStartsStr(GDBdone + GDBstack, msg)) then
             ParseStack(msg)
-
+// added 23/1/2011
         else
-        if (AnsiStartsStr(GDBdone + GDBlocals, msg)) then
+        if (AnsiStartsStr(GDBdone + GDBlocalsq, msg)) then
         begin
-            OutputBuffer := ParseResult(@msg);
+            OutputBuffer := ExtractLocals(@msg);
             // Parses & Reassembles Result
             AddtoDisplay(OutputBuffer);
         end
-
+// end added
         else
         if (AnsiStartsStr(GDBdone + GDBthreads, msg)) then
             ParseThreads(msg)
@@ -3945,13 +4335,11 @@ begin
         if (AnsiStartsStr(GDBdone + GDBwptr, msg)) then
             ParseWatchpoint(msg);
 
-        if (AnsiStartsStr(GDBdone + GDBnameq, Mainmsg)) then
-            //ParseVObjCreate(Mainmsg);         // if it was a VObj create...
-        ;
+        if (AnsiStartsStr(GDBdone + GDBnameq, msg)) then
+            ParseVObjCreate(msg);         // if it was a VObj create...
 
-        if (AnsiStartsStr(GDBdone + GDBvalue, Mainmsg)) then
-            //ParseVObjAssign(Mainmsg);         // if it was a VObj assign...
-        ;
+        if (AnsiStartsStr(GDBdone + GDBvalue, msg)) then
+            ParseVObjAssign(msg);         // if it was a VObj assign or -data-evaluate-expression...
 
         Result := buf;
 
@@ -3984,11 +4372,10 @@ var
 
 begin
 
-{$ifdef DISPLAYOUTPUT}
-    // gui_critSect.Enter();
+if (MainForm.VerboseDebug.Checked) then
+begin
     AddtoDisplay('Parsing *');
-    // gui_critSect.Leave();
-{$endif}
+end;
 
     ExecResult := nil;
     msg := breakOut(@buf, bsize);
@@ -4034,6 +4421,9 @@ begin
         begin
             // get rest into , &AllReason))
             AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBstopped)));
+            if (TargetIsRunning) then
+                RefreshContext;
+                
             TargetIsRunning := false;
             // gui_critSect.Enter();
             // gui_critSect.Leave();
@@ -4045,9 +4435,7 @@ begin
                     AddtoDisplay('Stopped - Exited normally');
                     // gui_critSect.Leave();
                     Started := False;
-// added 15/1/2011
-					Exit;
-// end added
+					ExitDebugger;
 
                 //GAR Exit;
                     CloseDebugger(nil);
@@ -4092,6 +4480,11 @@ begin
                     // gui_critSect.Leave();
                     StepHit(@msg);
                 end
+                else if (Reason = 'signal-received') then
+                begin
+                   AddtoDisplay('Stopped - signal received');
+                   SigRecv(@msg);
+                end
                 else
                 begin
                     Errmsg := AnsiReplaceStr(Errmsg, 'msg="', '');
@@ -4133,13 +4526,7 @@ begin
         else
         if (buf^ = '=') then
 		          // notify async
-// added 15/1/2011
 			buf := Notify(buf, @bytesInBuffer, verbose)
-// was
-		// For now: display it
-// was     buf := SendToDisplay(buf, @bytesInBuffer, verbose)
-// end added
-
         else
         if ((buf^ = '@') or (buf^ = '&')) then
 		          // target output ||  log stream
@@ -4208,7 +4595,6 @@ begin
 end;
 
 //=============================================================
-// added 15/1/2011
 
 function TGDBDebugger.Notify(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
 {
@@ -4232,9 +4618,11 @@ var
     groupID: DWORD;
 
 begin
-{$ifdef DISPLAYOUTPUT}
+
+if (MainForm.VerboseDebug.Checked) then
+begin
 	AddtoDisplay('Parsing =');
-{$endif}
+end;
 
     Result := nil;
     msg := breakOut(@buf, bsize);
@@ -4260,7 +4648,6 @@ begin
 end;
 
 //=============================================================
-// end added
 
 function TGDBDebugger.breakOut(Next: PPChar; bsize: PLongInt): String;
 {
@@ -4322,12 +4709,10 @@ begin
    bsize is updated to reflect new size of unprocessed part.
 }
 
-
-{$ifdef DISPLAYOUTPUT}
-    // gui_critSect.Enter();
+if (MainForm.VerboseDebug.Checked) then
+begin
     AddtoDisplay('Parsing Token');
-    // gui_critSect.Leave();
-{$endif}
+end;
 
     c := buf;
     s := buf;
@@ -4378,12 +4763,11 @@ begin
    Note: embedded cr or cr-lf are replaced by nulls.
  */
 }
-{$ifdef DISPLAYOUTPUT}
-    // gui_critSect.Enter();
+    
+if (MainForm.VerboseDebug.Checked) then
+begin
     AddtoDisplay('Output to Display...');
-    // gui_critSect.Leave();
-
-{$endif}
+end;
 
     if ((buf = Nil) or (bsize^ = 0)) then
         SendToDisplay := Nil
@@ -4479,6 +4863,42 @@ begin
     RefreshContext([cdLocals, cdWatches]);
 end;
 
+
+//==================================================================
+procedure TGDBDebugger.SigRecv(Msg: PString);
+// Parses out Signal details
+
+var
+  Temp: String;
+  Thread, Line: Integer;
+  SigName, SigMeaning, Func, SrcFile, frame, Output: String;
+  // Ret: Boolean;
+
+begin
+
+  Temp := Msg^;
+
+  //Ret := false;
+  frame := ExtractNamed(@Temp, @GDBframe, 1);
+  {Ret := }ParseConst(Msg, @GDBsigname, PString(@SigName));
+  {Ret := }ParseConst(Msg, @GDBsigmean, PString(@SigMeaning));
+  {Ret := }ParseConst(Msg, @GDBthreadid, PInteger(@Thread));
+  {Ret := }ParseConst(@frame, @GDBfile, PString(@SrcFile));
+  {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
+  {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
+
+  Output := Format('Thread %d stopped in %s at line %d in %s with %s',
+    [Thread, Func, Line, SrcFile, SigMeaning]);
+
+  // gui_critSect.Enter();
+  AddtoDisplay(Output);
+  // gui_critSect.Leave();
+
+  if (SigName = GDBsigsegv) then
+    OnAccessViolation;
+  // else any other signal?
+
+end;
 
 //------------------------------------------------------------------------------
 // TCDBDebugger
@@ -6064,7 +6484,7 @@ procedure TCDBDebugger.FirstParse;
 begin
 end;
 
-procedure TCDBDebugger.Exit;
+procedure TCDBDebugger.ExitDebugger;
 begin
 end;
 

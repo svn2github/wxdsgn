@@ -240,8 +240,9 @@ begin
     if Result = '' then
         Result := fDefaultLang.Values[inttostr(ID)];
     if result = '' then
-        result := format('<ERR: %d>', [ID])
-    else result := StringReplace(result, '<CR>', #13#10, [rfReplaceAll]);
+        result := format('<ERR: %d>', [ID]);
+    //else result := StringReplace(result, '<CR>', #13#10, [rfReplaceAll]);
+    result := StringReplace(result, '<CR>', #13#10, [rfReplaceAll]);
 end;
 
 function TdevMultiLangSupport.GetLangName: string;

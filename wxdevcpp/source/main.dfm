@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 108
-  Top = 115
+  Left = 161
+  Top = 158
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1357,13 +1357,13 @@ object MainForm: TMainForm
     Top = 263
     Width = 644
     Height = 130
-    ActivePage = TodoSheet
+    ActivePage = DebugSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 5
+    TabIndex = 3
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1412,7 +1412,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,7 +1486,7 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 407
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
@@ -1497,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 386
-          Height = 81
+          Height = 82
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1515,9 +1515,9 @@ object MainForm: TMainForm
         Top = 0
         Width = 632
         Height = 98
-        ActivePage = tabWatches
+        ActivePage = tabLocals
         Align = alClient
-        TabIndex = 3
+        TabIndex = 1
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -1526,7 +1526,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1561,7 +1561,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1589,7 +1589,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1692,7 +1692,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -2900,6 +2900,12 @@ object MainForm: TMainForm
       object ViewCPUItem: TMenuItem
         Action = actViewCPU
         GroupIndex = 9
+      end
+      object VerboseDebug: TMenuItem
+        AutoCheck = True
+        Caption = 'Verbose Output'
+        GroupIndex = 9
+        Hint = 'Verbose output from debugger'
       end
     end
     object ToolsMenu: TMenuItem
