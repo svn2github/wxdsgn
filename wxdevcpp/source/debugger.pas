@@ -18,31 +18,42 @@
     along with Dev-C++; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
+
 {
-added since 25/1/2011:
+ADDED since 16/2/2011
+dataeval
+WATCHTOKENBASE
+WatchPoints
+GDBtargetid
+PWatchPt
+TWatchPt
+WatchPtList
+TGDBDebugger.GetWatches
+TGDBDebugger.FillWatches
 
-procedure ParseVObjCreate
-procedure ParseVObjAssign
-procedure ParseVObjName
-String LastVOident
-String LastVOVar
-procedure ExtractLocals
-function unescape
-function OctToHex
-PVariable
-TVariable
-PList
+MODIFIED:
+TGDBDebugger.ParseBreakpoint
+TGDBDebugger.Result
+TGDBDebugger.ParseBreakpointTable
+TGDBDebugger.ParseFrame
+TGDBDebugger.ParseResult
+TGDBDebugger.ParseValue
+}
 
-modified:
-procedure ParseBreakpoint 
-ParseResult
-SplitResult
-ParseValue
-ExtractList
+{
+ADDED 26/2/11 -- This needs to be visible to main:
 
-various Constants
+// added 25/2/2011
+  PWatchVar = ^TWatchVar;
+  TWatchVar = packed record
+    Number: Integer;
+    Name: string;
+    Value: string;
+  end;
+//end added
 
 }
+
 
 unit debugger;
 
@@ -95,12 +106,8 @@ function AnsiLeftStr(const AText: string; ACount: Integer): string;
 function AnsiMidStr(const AText: string;
     const AStart, ACount: Integer): string;
 function AnsiRightStr(const AText: string; ACount: Integer): string;
-
-//added 23/1/2011
 function unescape(s: PString): String;
 function OctToHex(s: PString): String;
-
-// end added
 
 
 const GDBPrompt: String = '(gdb)';
@@ -112,6 +119,7 @@ const GDBbkptno: String = 'bkptno';
 const GDBbkpttable: String = 'BreakpointTable={';
 const GDBbody: String = 'body=[';
 const GDBcurthread: String = 'current-thread-id';
+const GDBdataeval: String = '-data-evaluate-expression ';
 const GDBexp: String = 'exp=';
 const GDBExit: String = '-gdb-exit';
 const GDBExitmsg: String = 'exit';
@@ -168,11 +176,12 @@ const MAXSTACKDEPTH: Integer = 99;
 // This just flags a user warning and returns.
 //  (N.B. For GDB, the request can limit the range returned)
 
-// added 23/1/2011
 const
   PARSELIST = false;
   PARSETUPLE = true;
-  INDENT = 3;                         // Amount of indentation of Locals display
+  INDENT = 3;                       // Amount of indentation of Locals display
+// added 16/2/2011
+  WATCHTOKENBASE = 9000;			// Token base for Watchpoint values
 // end added
 
 type
@@ -182,8 +191,15 @@ type
     ContextDataSet = set of ContextData;
     TCallback = procedure(Output: TStringList) of object;
 
-// added 23/1/2011
 	PList = ^TList;
+
+// added 16/2/2011
+	PWatchPt = ^TWatchPt;
+	TWatchPt = packed record
+		Name: string;
+                Number: Integer;
+		Token: Longint;
+	end;
 // end added
 
     ReadThread = class(TThread)
@@ -260,12 +276,12 @@ type
         ID: Integer;
     end;
 
-    PDebuggerThread = ^TDebuggerThread;
-  TDebuggerThread = packed record
-    Active: Boolean;
-    Index: String;
-    ID: String;
-  end;
+	PDebuggerThread = ^TDebuggerThread;
+	TDebuggerThread = packed record
+		Active: Boolean;
+		Index: String;
+		ID: String;
+	end;
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -320,7 +336,7 @@ type
         fBusy: Boolean;
         fPaused: Boolean;
         fExecuting: Boolean;
-        fDebugTree: TTreeView;
+        fDebugTree: TListView;
         fNextBreakpoint: Integer;
         IncludeDirs: TStringList;
         IgnoreBreakpoint: Boolean;
@@ -358,7 +374,7 @@ type
         property Busy: Boolean read fBusy;
         property Executing: Boolean read fExecuting;
         property Paused: Boolean read fPaused;
-        property DebugTree: TTreeView read fDebugTree write fDebugTree;
+        property DebugTree: TListView read fDebugTree write fDebugTree;
 
     public
 
@@ -433,10 +449,12 @@ type
         Registers: TRegisters;
         LastWasCtrl: Boolean;
         Started: Boolean;
-// added 23/1/2011
 		LastVOident: String;
 		LastVOVar: String;
-// end added		
+// added 16/2/2011
+		WatchPtList: TList;
+// end added
+
         // Pipe handles
         g_hChildStd_IN_Wr: THandle;		//we write to this
         g_hChildStd_IN_Rd: THandle;		//Child process reads from here
@@ -513,27 +531,27 @@ type
             Value: PInteger): Boolean; overload;
         function ParseConst(Msg: PString; Vari: PString;
             Value: PBoolean): Boolean; overload;
-// added 23/1/2011
 		function  ExtractLocals(Str: PString): String;
 		function  ParseResult(Str: PString; Level: Integer; List: TList): String;
 		function  ExtractList(Str: PString; Tuple: Boolean; Level: Integer; List: TList): String;
 		function  ParseValue(Str: PString; Level: Integer; List: TList): String;
-// end added
         function SplitResult(Str: PString; Vari: PString): String;
         function ExtractWxStr(Str: PString): String;
         function ExtractBracketed(Str: PString; start: Pinteger;
             next: PInteger; c: Char; inclusive: Boolean): String;
         function ExtractNamed(Src: PString; Target: PString;
             count: Integer): String;
-// added 23/1/2011
 		function ParseVObjCreate(Msg: String): Boolean;
 		function ParseVObjAssign(Msg: String): Boolean;
-// end added
         procedure ParseWatchpoint(Msg: String);
-        procedure ParseBreakpoint(Msg: String);
+// added modified 16/2/2011
+		procedure ParseBreakpoint(Msg: String; List: PList);
+		procedure GetWatches(List: PList);
+		procedure FillWatches(Msg: String; List: PList);
+// end added
         procedure ParseBreakpointTable(Msg: String);
         procedure ParseStack(Msg: String);
-        function  ParseFrame(Msg: String): String;
+        function  ParseFrame(Msg: String; Frame: PStackFrame): String;
         procedure ParseThreads(Msg: String);
         procedure WatchpointHit(Msg: PString);
         procedure BreakpointHit(Msg: PString);
@@ -869,7 +887,7 @@ begin
 
 end;
 
-// end added. All moved in to TGDBDebugger. was:
+//  All moved in to TGDBDebugger. was:
 {
 var
 i :integer;
@@ -880,14 +898,14 @@ begin
         fPaused := false;
         fExecuting := false;
 
-        // GAR: Note we SHOULD NOT pull the plug on GDB debugger unless it fails
+        //      Note we SHOULD NOT pull the plug on GDB debugger unless it fails
         //      to stop when commanded to exit (manual page 306: Quitting GDB)
         //      Would similar considerations apply to other debuggers?
 
         // First don't let us be called twice. Set the secondary threads to not call
         // us when they terminate
 
-   //GAR     Reader.OnTerminate := nil;
+  //GAR     Reader.OnTerminate := nil;
 
         // Force the read on the input to return by closing the stdin handle.
         // Wait.Stop := True;
@@ -1429,7 +1447,6 @@ begin
 end;
 
 //=================================================================
-// added 23/1/2011
 
 function TGDBDebugger.ParseVObjCreate(Msg: String): Boolean;
 
@@ -1552,15 +1569,12 @@ begin
 end;
 
 //=================================================================
-// end added
-
-procedure TGDBDebugger.ParseBreakpoint(Msg: String);
+// added 16/2/2011 & 26/2/2011 modified
+procedure TGDBDebugger.ParseBreakpoint(Msg: String; List: PList);
 {
+
    Part of Third Level Parse of Output.
 
-   INCOMPLETE
-   Does nothing with the result apart from writing to display
-   Needs to build a list to pass back to the IDE
 }
 var
 
@@ -1570,7 +1584,7 @@ var
     Line: Integer;
     Expr: String;
     Addr: String;
-
+    Vari: PWatchVar;
 
     Output: String;
     {Ret: Boolean;}
@@ -1591,41 +1605,37 @@ begin
         Output := format('Breakpoint No %d set at multiple addresses at %s', [Num, SrcFile])
         else
         begin
-          ParseConst(@Msg, @GDBline, PInteger(@Line));
-          ParseConst(@Msg, @GDBfile, PString(@SrcFile));
-          Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
-
+			ParseConst(@Msg, @GDBline, PInteger(@Line));
+			ParseConst(@Msg, @GDBfile, PString(@SrcFile));
+			Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
         end;
-
-
         // gui_critSect.Enter();
         AddtoDisplay(Output);
         // gui_critSect.Leave();
-    end;
-    if (BPType = 'read watchpoint') then
+    end
+    else
     begin
-        {Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
-        Output := format('Watchpoint No %d (read) set for %s', [Num, Expr]);
+		{Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
+		if (BPType = 'read watchpoint') then
+			Output := format('Watchpoint No %d (read) set for %s', [Num, Expr]);
+		if (BPType = 'acc watchpoint') then
+			Output := format('Watchpoint No %d (acc) set for %s', [Num, Expr]);
+		if (BPType = 'hw watchpoint') then
+			Output := format('Watchpoint No %d (hw)  set for %s', [Num, Expr]);
+		if (BPType = 'watchpoint') then
+			Output := format('Watchpoint No %d set for %s', [Num, Expr]);
         // gui_critSect.Enter();
-        AddtoDisplay(Output);
+		AddtoDisplay(Output);
         // gui_critSect.Leave();
+		if not(List = nil) then
+		begin
+			New(Vari);
+			Vari.Name := format('%s',[Expr]);
+			Vari.Value := '';
+			List.Add(Vari);
+		end;
     end;
-    if (BPType = 'acc watchpoint') then
-    begin
-        {Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
-        Output := format('Watchpoint No %d (acc) set for %s', [Num, Expr]);
-        // gui_critSect.Enter();
-        AddtoDisplay(Output);
-        // gui_critSect.Leave();
-    end;
-    if (BPType = 'hw watchpoint') then
-    begin
-        {Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
-        Output := format('Watchpoint No %d (hw)  set for %s', [Num, Expr]);
-        // gui_critSect.Enter();
-        AddtoDisplay(Output);
-        // gui_critSect.Leave();
-    end;
+// end added
 {
 /*
     These might or might not also be useful:
@@ -1684,13 +1694,12 @@ end;
 
 //=================================================================
 
-
+// added 16/2/2011 modified
 procedure TGDBDebugger.ParseBreakpointTable(Msg: String);
 {
    Part of Third Level Parse of Output.
-
-   INCOMPLETE
-   Does nothing with the result apart from writing to display
+   Reads the response and builds a list of watchpoints, which is
+   passed on to GetWatches.
 }
 var
 
@@ -1699,61 +1708,213 @@ var
     BkptStr: String;
     {Ret: Boolean;}
 
+
 begin
 
+    WatchPtList := TList.Create;
     N_rows := 0;
     {Ret := false;}
     {Ret := }ParseConst(@Msg, @GDBnr_rows, PInteger(@N_rows));
     Str := ExtractNamed(@Msg, @GDBbody, 1);
 
-    if (not (Str = '')) then
+    if (not(Str = '')) then
+    begin
         for row := 1 to N_rows do
         begin
             BkptStr := ExtractNamed(@Str, @GDBbkpt, row);
-            ParseBreakpoint(BkptStr);
+            ParseBreakpoint(BkptStr, @WatchPtList);
         end;
+    end;
+    GetWatches(@WatchPtList);
+
 end;
 
 //=================================================================
 
-
-procedure TGDBDebugger.ParseStack(Msg: String);
+procedure TGDBDebugger.GetWatches(List: PList);
 {
    Part of Third Level Parse of Output.
+   Reads a list of Watched variables in "List" and emits a request
+   for the present values for each in the list.
 
-   INCOMPLETE
-   Does nothing with the result apart from writing to display
+   Uses token to allow us to identify our returning result.
+}
+
+var
+    I: Integer;
+    Token: Integer;
+    Local: PWatchPt;
+    Command: TCommand;
+
+begin
+    for I := 0 to (List.Count - 1) do
+    begin
+		Token := WATCHTOKENBASE + I;
+		Local := List.Items[I];
+		Local.Token := Token;
+		List.Items[I] := Local;
+		Command := TCommand.Create;
+		Command.Command := format('%d%s%s',[Token, GDBdataeval, Local.Name]);
+		Command.Callback := Nil;
+		QueueCommand(Command);
+    end;
+
+end;
+
+//=================================================================
+//added 25/2/2011 modified
+
+procedure TGDBDebugger.FillWatches(Msg: String; List: PList);
+{
+   Part of Third Level Parse of Output.
+   Receives the result of a single "-data-evaluate-expression ..."
+   identified by a designated token, and adds the variable name to the
+   returned present values of the Watched variable, then passes the result
+   to the IDE window in a second list.
+   List is the list of watched variables and their tokens from GetWatches.
+   The token returned with the value is used to retrieve the variable name
+   in List that has the corresponding token.
+}
+
+var
+    Value: String;
+    start: Integer;
+    Output, WatchesStr: String;
+    I: Integer;
+    Level: Integer;
+    Local: PWatchPt;
+    WatchItemList: TList;       // The list for one watched var for display
+// added 25/2/2011 modded
+    WatchItem: PWatchVar;
+// end added
+
+begin
+    start := 0;
+    level := 0;
+    WatchItemList := TList.Create;
+    New(WatchItem);
+
+    if (Token = WATCHTOKENBASE) then      // Clear the IDE display
+      MainForm.OnWatches(nil);
+
+    Value := ExtractBracketed(@Msg, @start, Nil, '"', false); // because 'value' gets stripped off!
+    if (start = 13) then            // 13 = length('done,value=') - Most likely it was a VObj or expression value ... but we can't prove it
+    begin
+      WatchesStr := AnsiMidStr(Msg, Length(GDBdone)+1, Length(Msg) - Length(GDBdone));
+      if (AnsiStartsStr(GDBvalueq, WatchesStr)) then
+      begin
+        Output := ParseResult(@WatchesStr, Level, WatchItemList);
+        I := 0;
+        while (I < List.Count) do                 // Search List for our Variable
+        begin
+          Local := List^.Items[I];
+          if (Local.Token = Token) then           // find the correct variable
+          begin
+            if (WatchItemList.Count = 1) then
+              // It's a simple Variable - add the name to the 1st and only item
+            begin
+              WatchItem := WatchItemList.Items[0];
+              WatchItem.Name := Local.Name;
+// added 25/2/2011
+              WatchItem.Number := Local.Number;
+// end added
+              WatchItemList.Items[0] := WatchItem;
+
+            end
+            else
+              // else insert the name at the beginning
+            begin
+              WatchItem.Name := Local.Name;
+// added 25/2/2011
+              WatchItem.Number := Local.Number;
+// end added
+              WatchItem.Value := '';
+              WatchItemList.Insert(0, WatchItem);
+            end;
+            MainForm.OnWatches(@WatchItemList);
+            break;
+          end;
+          Inc(I);
+        end;
+      end;
+      Token := 0;
+      try
+          { Cleanup: must free the list items as well as the list }
+       for I := 0 to (WatchItemList.Count - 1) do
+       begin
+         WatchItem := WatchItemList.Items[I];
+         Dispose(WatchItem);
+       end;
+      finally
+        WatchItemList.Free;
+      end;
+    end;
+end;
+
+//=================================================================
+// end added
+
+// added 23/2/2011 modified
+procedure TGDBDebugger.ParseStack(Msg: String);
+{
+
+   Part of Third Level Parse of Output.
+
 }
 var
     level: Integer;
     FrameStr: String;
+    Output: String;
+    CallStack: TList;
+    Frame: PStackFrame;
+    I: Integer;
+
 begin
     level := 0;
 
     if (not (Msg = '')) then
     begin
+        CallStack := TList.Create;
         repeat
-            begin
-                Inc(level);
-                FrameStr := ExtractNamed(@Msg, @GDBframe, level);
-                if (FrameStr = '') then
-                    break;
-                ParseFrame(FrameStr);
-            end
-        until (level >= MAXSTACKDEPTH);
-        // Arbitrary limit for safety!
-        if (level = MAXSTACKDEPTH) then
-            AddtoDisplay('Stack is too deep, Aborting...')
-        // gui_critSect.Enter();
-        // gui_critSect.Leave();
-        ;
+        begin
+            Inc(level);
+            New (Frame);
+            FrameStr := ExtractNamed(@Msg, @GDBframe, level);
+            if (FrameStr = '') then
+                break;
+            Output := ParseFrame(FrameStr, Frame);
+            CallStack.Add(Frame);
+            if (verbose) then
+                AddtoDisplay(Output);
 
+        end
+        until (level >= MAXSTACKDEPTH);               // Arbitrary limit for safety!
+        if (level = MAXSTACKDEPTH) then
+        if (verbose) then
+        begin
+            // gui_critSect.Enter();
+            AddtoDisplay('Stack is too deep, Aborting...');
+            // gui_critSect.Leave();
+        end;
+
+        MainForm.OnCallStack(@CallStack);
+
+        try
+        { Cleanup: must free the list items as well as the list }
+        for I := 0 to (CallStack.Count - 1) do
+        begin
+            Frame := CallStack.Items[I];
+            Dispose(Frame);
+        end;
+        finally
+            CallStack.Free;
+        end;
     end;
 end;
 
 //=================================================================
 
-function TGDBDebugger.ParseFrame(Msg: String): String;
+function TGDBDebugger.ParseFrame(Msg: String; Frame: PStackFrame): String;
 {
    Part of Third Level Parse of Output.
 }
@@ -1770,37 +1931,44 @@ var
 
 begin
 
-  Level := 0;
-  Line := 0;
-  {Ret := false;}
+    Level := 0;
+    Line := 0;
+    {Ret := false;}
 
-  if (not (Msg = '')) then
-  begin
-
-    if (verbose) then
+    if (not (Msg = '')) then
     begin
-        Output := format('Stack Frame: %s', [Msg]);
+
+        if (verbose) then
+            Output := format('Stack Frame: %s', [Msg]);
+
+        {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
+        {Ret := }ParseConst(@Msg, @GDBfunc,  PString(@Func));
+        {Ret := }ParseConst(@Msg, @GDBline,  PInteger(@Line));
+        {Ret := }ParseConst(@Msg, @GDBfile,  PString(@SrcFile));
+        if not (Frame = nil) then
+        begin
+            Frame.Filename := SrcFile;
+            Frame.FuncName := format('%*s%s',[Level, '', Func]);
+            Frame.Line := Line;
+            Frame.Args := '';
+        end;
+
+        if (Level = 0) then
+            SubOutput := 'Stopped in '
+        else
+            SubOutput := 'called from';
+        if (Line = 0) then
+            SubOutput1 := '<no line number>'
+        else
+            SubOutput1 := format('at Line %d',[Line]);
+
+        Output := format('Level %2d: %*s %s  %s  %s', [Level, Level+1 , ' ', SubOutput, Func, SubOutput1]);
     end;
-
-    {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
-    {Ret := }ParseConst(@Msg, @GDBfunc,  PString(@Func));
-    {Ret := }ParseConst(@Msg, @GDBline,  PInteger(@Line));
-    {Ret := }ParseConst(@Msg, @GDBfile,  PString(@SrcFile));
-    if (Level = 0) then
-      SubOutput := 'Stopped in '
-    else
-      SubOutput := ' called from ';
-    if (Line = 0) then
-      SubOutput1 := ' <no line number>'
-    else
-      SubOutput1 := format(' at Line %d',[Line]);
-
-    Output := format('Level %2d: %*s %s %s %s', [Level, Level+1 , ' ', SubOutput, Func, SubOutput1]);
-  end;
-  ParseFrame := Output;
+    ParseFrame := Output;
 end;
 
 //=================================================================
+// end added
 
 procedure TGDBDebugger.ParseThreads(Msg: String);
 {
@@ -1822,71 +1990,72 @@ var
 
 begin
 
-  Threads := TList.Create;
+	Threads := TList.Create;
 
-  ParseConst(@Msg, @GDBcurthread, PString(@CurrentThread));
-  ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
-  if (ThreadList = '') then
-  begin
+	ParseConst(@Msg, @GDBcurthread, PString(@CurrentThread));
+	ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
+	if (ThreadList = '') then
+	begin
         // gui_critSect.Enter();
-    AddtoDisplay('No active threads');
+		AddtoDisplay('No active threads');
         // gui_critSect.Leave();
-  end
-  else
-  begin
-    // gui_critSect.Enter();
-    AddtoDisplay('Current Thread ID = ' + CurrentThread);
-    // gui_critSect.Leave();
+	end
+	else
+	begin
+		// gui_critSect.Enter();
+		AddtoDisplay('Current Thread ID = ' + CurrentThread);
+		// gui_critSect.Leave();
 
-    repeat
-    begin
-        ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
-        if (verbose) then
-        begin
-            // gui_critSect.Enter();
-            AddtoDisplay('Thread: ');
-            AddtoDisplay(ThreadStr);
-            // gui_critSect.Leave();
-        end;
-        if (not(ThreadStr = '')) then
-        begin
-            New(Thread);
-            ParseConst(@ThreadList, @GDBid, PString(@ThreadID));
-            ParseConst(@ThreadList, @GDBtargetid, PString(@TargetID));
-            // gui_critSect.Enter();
-            if (verbose) then
-              AddtoDisplay('Thread ID = ' + ThreadID);
-            // gui_critSect.Leave();
+		repeat
+		begin
+			ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
+			if (verbose) then
+			begin
+				// gui_critSect.Enter();
+				AddtoDisplay('Thread: ');
+				AddtoDisplay(ThreadStr);
+				// gui_critSect.Leave();
+			end;
+			if (not(ThreadStr = '')) then
+			begin
+				New(Thread);
+				ParseConst(@ThreadList, @GDBid, PString(@ThreadID));
+				ParseConst(@ThreadList, @GDBtargetid, PString(@TargetID));
+				// gui_critSect.Enter();
+				if (verbose) then
+					AddtoDisplay('Thread ID = ' + ThreadID);
+				// gui_critSect.Leave();
 
-            Output := ParseFrame(ThreadStr);
-            Threads.Insert(0, Thread);
-            with Thread^ do
-            begin
-                Active := (ThreadId = CurrentThread);
-                Index := ThreadId;
-                ID := TargetID + '  ' + Output;
-            end;
+				Output := ParseFrame(ThreadStr, nil);
+				Threads.Insert(0, Thread);
+				with Thread^ do
+				begin
+					Active := (ThreadId = CurrentThread);
+					Index := ThreadId;
+					ID := TargetID + '  ' + Output;
+				end;
 
-        end;
-        ThreadList := AnsiRightStr(ThreadList, Length(ThreadList) - next);
-    end
-    until ((ThreadList = '') or (next = 0));
-  end;
+			end;
+			ThreadList := AnsiRightStr(ThreadList, Length(ThreadList) - next);
+		end
+		until ((ThreadList = '') or (next = 0));
+	end;
 
-  MainForm.OnThreads(Threads);
+	MainForm.OnThreads(Threads);
 
-  try
+	try
       { Cleanup: must free the list items as well as the list }
-   for I := 0 to (Threads.Count - 1) do
-   begin
-     Thread := Threads.Items[I];
-     Dispose(Thread);
-   end;
-  finally
-    Threads.Free;
-  end;
+	for I := 0 to (Threads.Count - 1) do
+	begin
+		Thread := Threads.Items[I];
+		Dispose(Thread);
+	end;
+	finally
+		Threads.Free;
+	end;
 
 end;
+
 //=================================================================
 
 procedure TGDBDebugger.ParseWatchpoint(Msg: String);
@@ -2068,49 +2237,48 @@ begin          // SplitResult
 end;
 
 //=================================================================
-// added 23/1/2011 all changed
 
 function TGDBDebugger.ExtractLocals(Str: PString): String;
 // expects Str to be of form "done,locals=Result"
 var
-  Output: String;
-  Level: Integer;
-  LocalsStr: String;
-  Val: String;
-  Vari: String;   // This is called Var in the GDB spec !
-  I: Integer;
-  Local: PVariable;
-  LocalsList: TList;
+	Output: String;
+	Level: Integer;
+	LocalsStr: String;
+	Val: String;
+	Vari: String;   // This is called Var in the GDB spec !
+	I: Integer;
+	Local: PVariable;
+	LocalsList: TList;
 
 begin
 
-  LocalsList := TList.Create;
-  Level := 0;
+	LocalsList := TList.Create;
+	Level := 0;
 
-  LocalsStr := AnsiMidStr(Str^, Length(GDBdone)+1, Length(Str^) - Length(GDBdone));
-  if (AnsiStartsStr(GDBlocalsq, LocalsStr)) then
-  begin
-    LocalsStr := MidStr(Str^, Length(GDBdone)+1, Length(Str^)-Length(GDBdone));
-    Val := SplitResult(@LocalsStr, @Vari);    // Must start with a List or a Tuple
+	LocalsStr := AnsiMidStr(Str^, Length(GDBdone)+1, Length(Str^) - Length(GDBdone));
+	if (AnsiStartsStr(GDBlocalsq, LocalsStr)) then
+	begin
+		LocalsStr := MidStr(Str^, Length(GDBdone)+1, Length(Str^)-Length(GDBdone));
+		Val := SplitResult(@LocalsStr, @Vari);    // Must start with a List or a Tuple
 
-    if (AnsiStartsStr('{', Val )) then
-		Output := ExtractList(@LocalsStr, PARSETUPLE, Level, LocalsList)
-    else // it starts '['
-		Output := ExtractList(@LocalsStr, PARSELIST, Level, LocalsList);
-	if (verbose) then
-		ExtractLocals := GDBlocalsq + Output;
-  end;
-  MainForm.OnLocals(LocalsList);
-  try
-      { Cleanup: must free the list items as well as the list }
-   for I := 0 to (LocalsList.Count - 1) do
-   begin
-     Local := LocalsList.Items[I];
-     Dispose(Local);
-   end;
-  finally
-    LocalsList.Free;
-  end;
+		if (AnsiStartsStr('{', Val )) then
+			Output := ExtractList(@LocalsStr, PARSETUPLE, Level, LocalsList)
+		else // it starts '['
+			Output := ExtractList(@LocalsStr, PARSELIST, Level, LocalsList);
+		if (verbose) then
+			ExtractLocals := GDBlocalsq + Output;
+	end;
+	MainForm.OnLocals(LocalsList);
+	try
+		{ Cleanup: must free the list items as well as the list }
+	for I := 0 to (LocalsList.Count - 1) do
+	begin
+		Local := LocalsList.Items[I];
+		Dispose(Local);
+	end;
+	finally
+		LocalsList.Free;
+	end;
 
 end;
 
@@ -2144,16 +2312,21 @@ Var
   Vari: String;   // This is called Var in the GDB spec !
   start: Integer;
   Val: String;
-  Local: PVariable;
+// added 25/2/2011 modded
+  Local: PWatchVar;
+// end added
 
 begin          // ParseResult
   Val := SplitResult(Str, @Vari);
   Output := Vari;
   Output := Output + ' = ';
   start := Pos(wxStringBase, Val);
-  if (Vari = GDBname) then              // a name of a Tuple
+  if (Vari = GDBname) then                        // a name of a Tuple
   begin
     New(Local);
+// added 25/2/2011 modded
+    Local.Number := 0;
+// end added
     Output := Output + Val;
     Local.Name := format('%*s%s',[Level*INDENT, '',
       ExtractBracketed(@Val, nil, nil, '"', false)]);
@@ -2161,30 +2334,44 @@ begin          // ParseResult
     List.Add(Local);
   end
   else
-  if (Vari = GDBvalue) then                        // a value of named a Tuple
+  if (Vari = GDBvalue) then                      // a value of named a Tuple
   begin
-    if ((start < 6) and not (start = 0)) then      // a WxString
+    if ((start < 6) and not (start = 0)) then    // a WxString
     begin
-      New(Local);
-      Local := List.Last;                     // so add it to the last item
-      Local^.Value := ExtractWxStr(@Val);
-      List.Remove(Local);
+      if (List.Count = 0) then
+      begin
+        New(Local);
+// added 25/2/2011 modded
+        Local.Number := 0;
+// end added
+        Local^.Value := ExtractWxStr(@Val);
+      end
+      else
+      begin
+        Local := List.Last;                      // so add it to the last item
+        Local^.Value := ExtractWxStr(@Val);
+        List.Remove(Local);
+      end;
       List.Add(Local);
       Output := Output + '"';
       Output := Output + ExtractWxStr(@Val);
       Output := Output + '"';
     end
     else
-    if (AnsiStartsStr('"{', Val)) then                 // it's a named Tuple
+    if (AnsiStartsStr('"{', Val)) then           // it's a named Tuple
     begin
       Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
     end
     else
-    if (AnsiStartsStr('"', Val)) then                   // it's value of a Tuple
+    if (AnsiStartsStr('"', Val)) then            // it's value of a Tuple
     begin
       New(Local);
+// added 25/2/2011 modded
+      Local.Number := 0;
+// end added
       Output := Output + OctToHex(@Val);
-      Local := List.Last;                     // so add the value to the last item
+      if (List.Count > 0) then
+        Local := List.Last;                      // so add the value to the last item
       Val := OctToHex(@Val);
       Local^.Value := ExtractBracketed(@Val, nil, nil, '"', false);
       List.Remove(Local);
@@ -2192,7 +2379,7 @@ begin          // ParseResult
     end
   end
   else
-  if (AnsiStartsStr('[', Val)) then                   // it's a List
+  if (AnsiStartsStr('[', Val)) then              // it's a List
     begin
       Output := Output + ExtractList(Str, PARSELIST, Level, List);
     end
@@ -2201,6 +2388,9 @@ begin          // ParseResult
   if ((start < 6) and not (start = 0)) then
   begin
     New(Local);
+// added 25/2/2011 modded
+    Local.Number := 0;
+// end added
     Local^.Name := format('%*s%s',[Level*INDENT, '', Vari]);
     Local^.Value := ExtractWxStr(@Val);
     List.Add(Local);
@@ -2209,17 +2399,23 @@ begin          // ParseResult
     Output := Output + '"';
   end
   else
-  if (AnsiStartsStr('{', Val)) then                   // it's a Tuple
+  if (AnsiStartsStr('{', Val)) then              // it's a Tuple
   begin
     New(Local);
+// added 25/2/2011 modded
+    Local.Number := 0;
+// end added
     Local^.Name := format('%*s%s',[Level*INDENT, '',
       ExtractBracketed(@Vari, nil, nil, '"', false)]);
     List.Add(Local);
     Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
   end
   else
-  begin                                               // it's a simple Const
+  begin                                          // it's a simple Const
     New(Local);
+// added 25/2/2011 modded
+    Local.Number := 0;
+// end added
     Local^.Name := format('%*s%s',[Level*INDENT, '',
       ExtractBracketed(@Vari, nil, nil, '"', false)]);
     Val := OctToHex(@Val);
@@ -2227,7 +2423,7 @@ begin          // ParseResult
     List.Add(Local);
     Output := Output + Val;
   end;
-         
+
   ParseResult := Output;
 end;
 
@@ -2242,13 +2438,13 @@ function TGDBDebugger.ExtractList(Str: PString; Tuple: Boolean; Level: Integer; 
     N.B. This is recursive and will fully parse the Result tree.
 }
 var
-  delim1, delim2: Char;
-  Remainder: String;
-  Item: String;
-  start, next: Integer;
-  Output: String;
+	delim1, delim2: Char;
+	Remainder: String;
+	Item: String;
+	start, next: Integer;
+	Output: String;
 
-  len, comma, lbrace, lsqbkt, equals: Integer;
+	len, comma, lbrace, lsqbkt, equals: Integer;
 
 begin          // ParseList
 
@@ -2256,13 +2452,13 @@ begin          // ParseList
     // Remove outermost "[ ]" or "{ }"
     if (Tuple) then
     begin
-      delim1 := '{';
-      delim2 := '}';
+		delim1 := '{';
+		delim2 := '}';
     end
     else   // it's a List
     begin
-      delim1 := '[';
-      delim2 := ']';
+		delim1 := '[';
+		delim2 := ']';
     end;
     Remainder := ExtractBracketed(Str, @start, @next, delim1, false);
     Output := Output + delim1;
@@ -2282,32 +2478,31 @@ begin          // ParseList
 
     while (true) do
     begin                                                // Loop through the list
-      len := Length(Remainder);                          // find out which
-      if (Len = 0) then
-        break;
-      comma := FindFirstChar(Remainder, ',');
-      lbrace := FindFirstChar(Remainder, '{');
-      lsqbkt := FindFirstChar(Remainder, '[');
-      equals := FindFirstChar(Remainder, '=');
+		len := Length(Remainder);                          // find out which
+		if (Len = 0) then
+			break;
+		comma := FindFirstChar(Remainder, ',');
+		lbrace := FindFirstChar(Remainder, '{');
+		lsqbkt := FindFirstChar(Remainder, '[');
+		equals := FindFirstChar(Remainder, '=');
 
-      if (not(equals = 0)
-        and ((lbrace = 0) or (equals < lbrace))
-        and ((lsqbkt = 0) or (equals < lsqbkt))
-        and ((comma  = 0) or (equals < comma ))) then    // we have a Result
-
+		if (not(equals = 0)
+			and ((lbrace = 0) or (equals < lbrace))
+			and ((lsqbkt = 0) or (equals < lsqbkt))
+			and ((comma  = 0) or (equals < comma ))) then    // we have a Result
 
         begin
             if (comma = 0) then                         // and the only or the last one
             begin
-              Output := Output + ParseResult(@Remainder, Level+1, List);
-              break;                                    // done
+				Output := Output + ParseResult(@Remainder, Level+1, List);
+				break;                                    // done
             end
             else
             begin
-              Item := AnsiLeftStr(Remainder, comma-1);  // ... or the first of many
-              Output := Output + ParseResult(@Item, Level+1, List);
-              next := comma+1;
-              Output := Output + ', ';
+				Item := AnsiLeftStr(Remainder, comma-1);  // ... or the first of many
+				Output := Output + ParseResult(@Item, Level+1, List);
+				next := comma+1;
+				Output := Output + ', ';
             end;
         end
         else                                            // we have a value
@@ -2325,8 +2520,8 @@ begin          // ParseList
                 next := comma+1;
             end;
         end;
-      if (next < len) then
-        Remainder := AnsiMidStr(Remainder, next, Length(Remainder)-next + 1);
+		if (next < len) then
+			Remainder := AnsiMidStr(Remainder, next, Length(Remainder)-next + 1);
     end;
     Output := Output + delim2;
     ExtractList := Output;
@@ -2344,35 +2539,35 @@ function TGDBDebugger.ParseValue(Str: PString; Level: Integer; List: TList): Str
 //    N.B. This is recursive and will fully parse the Result tree.
 
 var
-  Output: String;
-  s: Integer;
-  n: Integer;
-  Str2: String;
-  Local: PVariable;
+	Output: String;
+	s: Integer;
+	n: Integer;
+	Str2: String;
+	Local: PVariable;
 
 begin          // ParseValue
-  if (AnsiStartsStr('{', Str^)) then                          // a Tuple
-    Output := Output + ExtractList(Str, PARSETUPLE, Level, List)
-  else
-  if (AnsiStartsStr('[', Str^)) then                          // a List
-    Output := Output + ExtractList(Str, PARSELIST, Level, List)
-  else
-  if ((Str^[1] = '"')
-    and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then  // it might be a class
-  begin
-    Str2 := ExtractBracketed(Str, @s, @n, '"', false);
-    Output := Output + ExtractList(@Str2, PARSELIST, Level, List);
-  end
-  else
-  begin
-    New(Local);                           // a const
-    Output := Output + OctToHex(Str);
-    Local := List.Last;                   // so add the value to the last item
-    Local^.Value := OctToHex(Str);
-    List.Remove(Local);
-    List.Add(Local);
-  end;
-  ParseValue := Output;
+	if (AnsiStartsStr('{', Str^)) then                          // a Tuple
+		Output := Output + ExtractList(Str, PARSETUPLE, Level, List)
+	else
+	if (AnsiStartsStr('[', Str^)) then                          // a List
+		Output := Output + ExtractList(Str, PARSELIST, Level, List)
+	else
+	if ((Str^[1] = '"')
+		and ((Str^[2] = '{') or (Str^[2] = '{')) and ExpandClasses) then  // it might be a class
+	begin
+		Str2 := ExtractBracketed(Str, @s, @n, '"', false);
+		Output := Output + ExtractList(@Str2, PARSELIST, Level, List);
+	end
+	else
+	begin
+// added 16/2/2011 modified
+		New(Local);                           // a const
+		Local^.Value := Trim(OctToHex(Str));
+		List.Add(Local);
+		Output := Output + OctToHex(Str);         // a const
+// end added
+	end;
+	ParseValue := Output;
 end;
 
 //=================================================================
@@ -2418,9 +2613,6 @@ begin          // ExtractwxStr
 
 end;
 
-
-//=================================================================
-//added 23/1/2011
 //=================================================================
 
 function unescape(s: PString): String;
@@ -3333,7 +3525,7 @@ end;
 procedure TGDBDebugger.RefreshContext(refresh: ContextDataSet);
 var
     I: Integer;
-    Node: TTreeNode;
+    Node: TListItem;
     Command: TCommand;
 begin
     if not Executing then
@@ -3387,7 +3579,7 @@ begin
                 //Fill in the other data
                 Command.Data := Node;
                 Command.OnResult := OnRefreshContext;
-                Node.DeleteChildren;
+               // Node.DeleteChildren;
 
                 //Then send it
                 QueueCommand(Command);
@@ -3402,127 +3594,8 @@ end;
 //=================================================================
 
 procedure TGDBDebugger.OnRefreshContext(Output: TStringList);
-var
-    I: Integer;
-    Node: TTreeNode;
-
-    procedure RecurseArray(Parent: TTreeNode; var I: Integer); forward;
-    procedure RecurseStructure(Parent: TTreeNode; var I: Integer);
-    var
-        Child: TTreeNode;
-    begin
-        while I < Output.Count - 4 do
-            if Output[I] = '}' then
-                Exit
-            else
-            if Pos('{', Output[I + 4]) <> 1 then
-            begin
-                with DebugTree.Items.AddChild(Parent, Output[I] +
-                        ' = ' + Output[I + 4]) do
-                begin
-                    SelectedIndex := 21;
-                    ImageIndex := 21;
-                end;
-
-                Inc(I, 6);
-                if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
-                    Inc(I, 2);
-            end
-            else
-            begin
-                Child := DebugTree.Items.AddChild(Parent, Output[I]);
-                with Child do
-                begin
-                    SelectedIndex := 32;
-                    ImageIndex := 32;
-                end;
-
-                Inc(I, 6);
-                if Pos('array-section-begin', Output[I - 1]) = 1 then
-                    RecurseArray(Child, I)
-                else
-                    RecurseStructure(Child, I);
-
-                Inc(I, 2);
-                if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
-                    Inc(I, 2);
-            end;
-    end;
-
-    procedure RecurseArray(Parent: TTreeNode; var I: Integer);
-    var
-        Child: TTreeNode;
-        Count: Integer;
-    begin
-        Count := 0;
-        while (I < Output.Count - 2) do
-        begin
-            if Output[I] = '}' then
-                Break
-            else
-            if Pos(',', Output[I]) = 1 then
-                Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
-
-            if Pos('{', Output[I]) = 1 then
-            begin
-                Child := DebugTree.Items.AddChild(Parent,
-                    Format('[%d]', [Count]));
-                with Child do
-                begin
-                    SelectedIndex := 32;
-                    ImageIndex := 32;
-                end;
-
-                Inc(I, 2);
-                RecurseStructure(Child, I);
-            end
-            else
-            if (Trim(Output[I]) <> '') and
-                (Output[I] <> 'array-section-end') then
-                with DebugTree.Items.AddChild(Parent, Format('[%d]', [Count]) +
-                        ' = ' + Output[I]) do
-                begin
-                    SelectedIndex := 21;
-                    ImageIndex := 21;
-                end
-            else
-            begin
-                Inc(I);
-                Continue;
-            end;
-
-            Inc(Count);
-            Inc(I, 2);
-        end;
-    end;
 begin
-    I := 0;
-    Node := TTreeNode(CurrentCommand.Data);
 
-    while I < Output.Count do
-    begin
-        if Output[I] = 'display-expression' then
-        begin
-            Node.Text := Output[I + 1];
-            Node.SelectedIndex := 32;
-            Node.ImageIndex := 32;
-
-            if Pos('{', Output[I + 5]) = 1 then
-            begin
-                Inc(I, 7);
-
-                //Determine if it is a structure of an array
-                if Pos('array-section-begin', Output[I - 1]) = 1 then
-                    RecurseArray(Node, I)
-                else
-                begin RecurseStructure(Node, I); end;
-            end
-            else
-                Node.Text := Output[I + 1] + ' = ' + Output[I + 5];
-            Break;
-        end;
-        Inc(I);
-    end;
 end;
 
 //=================================================================
@@ -3532,7 +3605,8 @@ var
     Watch: PWatch;
     Command: TCommand;
 begin
-    with DebugTree.Items.Add(nil, varname + ' = (unknown)') do
+
+ {   with DebugTree.AddItem(varname + ' = (unknown)', nil) do
     begin
         ImageIndex := 21;
         SelectedIndex := 21;
@@ -3540,7 +3614,7 @@ begin
         Watch^.Name := varname;
         Data := Watch;
     end;
-
+  }
     Command := TCommand.Create;
     Command.Data := Pointer(Watch);
     case when of
@@ -3562,6 +3636,7 @@ var
     I: Integer;
     Command: TCommand;
 begin
+
     for I := 0 to DebugTree.Items.Count - 1 do
         with PWatch(DebugTree.Items[I].Data)^ do
         begin
@@ -3584,10 +3659,11 @@ end;
 
 procedure TGDBDebugger.RemoveWatch(varname: string);
 var
-    node: TTreeNode;
+    node: TListItem;
 begin
+
     //Find the top-most node
-    node := DebugTree.Selected;
+{    node := DebugTree.Selected;
     while Assigned(node) and (Assigned(node.Parent)) do
         node := node.Parent;
 
@@ -3597,6 +3673,7 @@ begin
         Dispose(node.Data);
         DebugTree.Items.Delete(node);
     end;
+    }
 end;
 
 //=================================================================
@@ -4301,8 +4378,11 @@ end;
 
         else
         if (AnsiStartsStr(GDBdone + GDBbkpt, msg)) then
-            ParseBreakpoint(msg)
-
+        begin
+ // added 16/2/2011 modified
+            ParseBreakpoint(msg, nil);
+// end added
+        end
         else
         if (AnsiStartsStr(GDBdone + GDBbkpttable, msg)) then
             ParseBreakpointTable(msg)
@@ -4310,7 +4390,6 @@ end;
         else
         if (AnsiStartsStr(GDBdone + GDBstack, msg)) then
             ParseStack(msg)
-// added 23/1/2011
         else
         if (AnsiStartsStr(GDBdone + GDBlocalsq, msg)) then
         begin
@@ -4318,7 +4397,6 @@ end;
             // Parses & Reassembles Result
             AddtoDisplay(OutputBuffer);
         end
-// end added
         else
         if (AnsiStartsStr(GDBdone + GDBthreads, msg)) then
             ParseThreads(msg)
@@ -4339,7 +4417,13 @@ end;
             ParseVObjCreate(msg);         // if it was a VObj create...
 
         if (AnsiStartsStr(GDBdone + GDBvalue, msg)) then
-            ParseVObjAssign(msg);         // if it was a VObj assign or -data-evaluate-expression...
+// added 16/2/2011
+            if ((Token >= WATCHTOKENBASE) and (Token < (WATCHTOKENBASE + 999))) then
+				FillWatches(msg, @watchPtList)  // if it came from a request from GetWatches
+            else
+				ParseVObjAssign(msg);       // else it was a VObj assign
+//                                            or another -data-evaluate-expression...
+// end added
 
         Result := buf;
 
@@ -5280,390 +5364,13 @@ begin
     //Then update the watches
     if (cdWatches in refresh) and Assigned(DebugTree) then
     begin
-        I := 0;
-        while I < DebugTree.Items.Count do
-        begin
-            Node := DebugTree.Items[I];
-            if Node.Data = nil then
-                Continue;
-            with PWatch(Node.Data)^ do
-            begin
-                Command := TCommand.Create;
 
-                //Decide what command we should send - dv for locals, dt for structures
-                if Pos('.', Name) > 0 then
-                begin
-                    Command.Command :=
-                        'dt -r -b -n ' + Copy(name, 1, Pos('.', name) - 1);
-                    MemberName := Copy(name, Pos('.', name) + 1, Length(name));
-                    if MemberName <> '' then
-                        Command.Command :=
-                            Command.Command + ' ' + MemberName + '.';
-                end
-                else
-                if Pos('[', Name) > 0 then
-                    Command.Command :=
-                        'dt -a -r -b -n ' + Copy(name, 1, Pos('[', name) - 1)
-                else
-                    Command.Command :=
-                        'dt -r -b -n ' +
-                        Copy(name, Pos('*', name) + 1, Length(name));
-
-                //Fill in the other data
-                Command.Data := Node;
-                Command.OnResult := OnRefreshContext;
-                Node.DeleteChildren;
-
-                //Then send it
-                QueueCommand(Command);
-            end;
-
-            //Increment our counter
-            Inc(I);
-        end;
+       
     end;
 end;
 
 procedure TCDBDebugger.OnRefreshContext(Output: TStringList);
-const
-    NotFound = 'Cannot find specified field members.';
-    StructExpr = '( +)[\+|=]0x([0-9a-fA-F]{1,8}) ([^ ]*)?( +): (.*)';
-    ArrayExpr = '\[([0-9a-fA-F]*)\] @ ([0-9a-fA-F]*)';
-    StructArrayExpr = '( *)\[([0-9a-fA-F]*)\] (.*)';
-var
-    NeedsRefresh: Boolean;
-    Expanded: Boolean;
-    RegExp: TRegExpr;
-    Node: TTreeNode;
-
-    procedure ParseStructure(Output: TStringList;
-        ParentNode: TTreeNode); forward;
-    procedure ParseStructArray(Output: TStringList; ParentNode: TTreeNode);
-    var
-        I: Integer;
-        Indent: Integer;
-        SubStructure: TStringList;
-    begin
-        I := 0;
-        Indent := 0;
-        while I < Output.Count do
-            if RegExp.Exec(Output[I], StructArrayExpr) then
-            begin
-                with DebugTree.Items.AddChild(ParentNode,
-                        RegExp.Substitute('[$2] $3')) do
-                begin
-                    SelectedIndex := 21;
-                    ImageIndex := 21;
-                end;
-
-                Inc(I);
-                if I >= Output.Count then
-                    Continue;
-
-                if RegExp.Exec(Output[I], StructExpr) then
-                begin
-                    if Indent = 0 then
-                        Indent := Length(RegExp.Substitute('$1'));
-
-                    SubStructure := TStringList.Create;
-                    while I < Output.Count do
-                    begin
-                        if RegExp.Exec(Output[I], StructExpr) then
-                        begin
-                            if Length(RegExp.Substitute('$1')) < Indent then
-                                Break
-                            else
-                            begin SubStructure.Add(Output[I]); end;
-                        end
-                        else
-                        if RegExp.Exec(Output[I], StructArrayExpr) then
-                            if Length(RegExp.Substitute('$1')) <= Indent then
-                                Break
-                            else
-                                SubStructure.Add(Output[I]);
-
-                        Inc(I);
-                    end;
-                    Indent := 0;
-
-                    //Process it
-                    with ParentNode.Item[ParentNode.Count - 1] do
-                    begin
-                        SelectedIndex := 32;
-                        ImageIndex := 32;
-                    end;
-
-                    //Determine if it is a structure or an array
-                    ParseStructure(SubStructure,
-                        ParentNode.Item[ParentNode.Count - 1]);
-                    ParentNode.Item[ParentNode.Count - 1].Expand(false);
-                    SubStructure.Free;
-                    Dec(I);
-                end;
-            end;
-    end;
-
-    procedure ParseStructure(Output: TStringList; ParentNode: TTreeNode);
-    var
-        SubStructure: TStringList;
-        Indent: Integer;
-        Node: TTreeNode;
-        I: Integer;
-    begin
-        I := 0;
-        Indent := 0;
-        while I < Output.Count do
-        begin
-            if RegExp.Exec(Output[I], StructExpr) or
-                RegExp.Exec(Output[I], StructArrayExpr) then
-            begin
-                if Indent = 0 then
-                    Indent := Length(RegExp.Substitute('$1'));
-
-                //Check if this is a sub-structure
-                if Indent <> Length(RegExp.Substitute('$1')) then
-                begin
-                    //Populate the substructure string list
-                    SubStructure := TStringList.Create;
-
-                    while I < Output.Count do
-                    begin
-                        if RegExp.Exec(Output[I], StructArrayExpr) or
-                            RegExp.Exec(Output[I], StructExpr) then
-                            if Length(RegExp.Substitute('$1')) <= Indent then
-                                Break
-                            else
-                                SubStructure.Add(Output[I]);
-                        Inc(I);
-                    end;
-
-                    //Process it
-                    with ParentNode.Item[ParentNode.Count - 1] do
-                    begin
-                        SelectedIndex := 32;
-                        ImageIndex := 32;
-                    end;
-
-                    //Determine if it is a structure or an array
-                    if SubStructure.Count <> 0 then
-                        if Trim(SubStructure[0])[1] = '[' then
-                            ParseStructArray(SubStructure,
-                                ParentNode.Item[ParentNode.Count - 1])
-                        else
-                            ParseStructure(SubStructure,
-                                ParentNode.Item[ParentNode.Count - 1]);
-                    ParentNode.Item[ParentNode.Count - 1].Expand(false);
-                    SubStructure.Free;
-                    Indent := 0;
-
-                    //Decrement I, since we will increment one at the end of the loop
-                    Dec(I);
-                end
-                else
-                begin
-                    if RegExp.Substitute('$5') = '' then
-                        Node :=
-                            DebugTree.Items.AddChild(ParentNode,
-                            RegExp.Substitute('$3'))
-                    else
-                        Node :=
-                            DebugTree.Items.AddChild(ParentNode,
-                            RegExp.Substitute('$3 = $5'));
-
-                    with Node do
-                    begin
-                        SelectedIndex := 21;
-                        ImageIndex := 21;
-                    end;
-                end;
-            end
-            //Otherwise just add the value if it is a scalar
-            else
-            if (I < Output.Count - 1) and (Length(Output[I + 1]) <> 0) and
-                (Output[I + 1][1] <> '+') then
-            begin
-                with DebugTree.Items.AddChild(ParentNode,
-                        Trim(Output[I + 1])) do
-                begin
-                    SelectedIndex := 21;
-                    ImageIndex := 21;
-                end;
-                with ParentNode do
-                begin
-                    SelectedIndex := 32;
-                    ImageIndex := 32;
-                end;
-            end;
-
-            //Increment I
-            Inc(I);
-        end;
-    end;
-
-    procedure ParseArray(Output: TStringList; ParentNode: TTreeNode);
-    var
-        SubStructure: TStringList;
-        Increment: Integer;
-        I: Integer;
-    begin
-        I := 0;
-        while I < Output.Count do
-        begin
-            if RegExp.Exec(Output[I], ArrayExpr) then
-            begin
-                Inc(I, 2);
-                Increment := 2;
-                while Trim(Output[I]) = '' do
-                begin
-                    Inc(I);
-                    Inc(Increment);
-                end;
-
-                //Are we an array (with a basic data type) or with a UDT?
-                if RegExp.Exec(Output[I], StructExpr) then
-                begin
-                    with TRegExpr.Create do
-                    begin
-                        Exec(Output[I - Increment], ArrayExpr);
-                        with DebugTree.Items.AddChild(ParentNode,
-                                Substitute('[$1]')) do
-                        begin
-                            SelectedIndex := 32;
-                            ImageIndex := 32;
-                        end;
-
-                        Free;
-                    end;
-
-                    //Populate the substructure string list
-                    SubStructure := TStringList.Create;
-                    while (I < Output.Count) and (Output[I] <> '') do
-                    begin
-                        SubStructure.Add(Output[I]);
-                        Inc(I);
-                    end;
-
-                    //Process it
-                    ParseStructure(SubStructure,
-                        ParentNode.Item[ParentNode.Count - 1]);
-                    ParentNode.Item[ParentNode.Count - 1].Expand(false);
-                    SubStructure.Free;
-
-                    //Decrement I, since we will increment one at the end of the loop
-                    Dec(I);
-                end
-                else
-                    with TRegExpr.Create do
-                    begin
-                        Exec(Output[I - Increment], ArrayExpr);
-                        with DebugTree.Items.AddChild(ParentNode,
-                                Substitute('[$1]') + ' = ' + Output[I]) do
-                        begin
-                            SelectedIndex := 21;
-                            ImageIndex := 21;
-                        end;
-                        Inc(I);
-
-                        if (I < Output.Count - 1) and
-                            Exec(Output[I],
-                            ' -> 0x([0-9a-fA-F]{1,8}) +(.*)') then
-                        begin
-                            with ParentNode.Item[ParentNode.Count - 1] do
-                            begin
-                                SelectedIndex := 32;
-                                ImageIndex := 32;
-                            end;
-
-                            with DebugTree.Items.AddChild(
-                                    ParentNode.Item[ParentNode.Count - 1],
-                                    Substitute('$1 = $2')) do
-                            begin
-                                SelectedIndex := 21;
-                                ImageIndex := 21;
-                            end;
-                            Inc(I);
-                        end
-                        else
-                        if RegExp.Exec(Output[I], StructExpr) then
-                        begin
-                            //Populate the substructure string list
-                            SubStructure := TStringList.Create;
-                            while (I < Output.Count) and (Output[I] <> '') do
-                            begin
-                                SubStructure.Add(Output[I]);
-                                Inc(I);
-                            end;
-
-                            //Change the icon of the parent node
-                            with ParentNode.Item[ParentNode.Count - 1] do
-                            begin
-                                SelectedIndex := 32;
-                                ImageIndex := 32;
-                            end;
-
-                            //Process it
-                            ParseStructure(SubStructure,
-                                ParentNode.Item[ParentNode.Count - 1]);
-                            SubStructure.Free;
-
-                            //Decrement I, since we will increment one at the end of the loop
-                            Dec(I);
-                        end;
-                        Free;
-                    end;
-            end;
-
-            //Increment I
-            Inc(I);
-        end;
-    end;
 begin
-    NeedsRefresh := False;
-    RegExp := TRegExpr.Create;
-    Node := TTreeNode(CurrentCommand.Data);
-
-    //Set the type of the structure/class/whatever
-    with PWatch(Node.Data)^ do
-        if RegExp.Exec(Output[0],
-            '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*?)([\[\]\*]+)') then
-        begin
-            Expanded := Node.Expanded;
-            if Pos('[', name) <> 0 then
-                Node.Text :=
-                    RegExp.Substitute(Copy(name, 1, Pos('[', name) - 1) +
-                    ' = $4$5 (0x$3)')
-            else
-            begin Node.Text := RegExp.Substitute(name + ' = $4$5 (0x$3)'); end;
-            Node.SelectedIndex := 32;
-            Node.ImageIndex := 32;
-            ParseArray(Output, Node);
-
-            if Expanded then
-                Node.Expand(True);
-        end
-        else
-        if RegExp.Exec(Output[0],
-            '(.*) (.*) @ 0x([0-9a-fA-F]{1,8}) Type (.*)') then
-        begin
-            Expanded := Node.Expanded;
-            if Pos('.', name) <> 0 then
-                Node.Text :=
-                    RegExp.Substitute(Copy(name, 1, Pos('.', name) - 1) +
-                    ' = $4 (0x$3)')
-            else
-                Node.Text := RegExp.Substitute(name + ' = $4 (0x$3)');
-            Node.SelectedIndex := 32;
-            Node.ImageIndex := 32;
-            ParseStructure(Output, Node);
-
-            if Expanded then
-                Node.Expand(True);
-        end;
-
-    //Do we have to refresh the entire thing?
-    if NeedsRefresh then
-        RefreshContext;
-    RegExp.Free;
 end;
 
 procedure TCDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
@@ -5672,69 +5379,15 @@ var
     bpType: string;
     Watch: PWatch;
 begin
-    with DebugTree.Items.Add(nil, varname + ' = (unknown)') do
-    begin
-        ImageIndex := 21;
-        SelectedIndex := 21;
-        New(Watch);
-        Watch^.Name := AnsiReplaceStr(varname, '->', '.');
 
-        //Give the watch a unique ID
-        Inc(fNextBreakpoint);
-        Watch^.ID := fNextBreakpoint;
-
-        //Then store the associated data
-        Data := Watch;
-    end;
-
-    //Determine the type
-    case when of
-        wbWrite:
-            bpType := 'w';
-        wbBoth:
-            bpType := 'r';
-    end;
-
-    Command := TCommand.Create;
-    Command.Data := nil;
-    Command.Command := Format('ba%d %s4 %s',
-        [fNextBreakpoint, bpType, varname]);
-    Command.OnResult := OnBreakpointSet;
-    QueueCommand(Command);
 end;
 
 procedure TCDBDebugger.RefreshWatches;
-var
-    I: Integer;
-    Command: TCommand;
 begin
-    for I := 0 to DebugTree.Items.Count - 1 do
-        with PWatch(DebugTree.Items[I].Data)^ do
-        begin
-            Command := TCommand.Create;
-            Command.Data := nil;
-            Command.Command := Format('ba%d r4 %s', [ID, Name]);
-            Command.OnResult := OnBreakpointSet;
-            QueueCommand(Command);
-        end;
 end;
 
 procedure TCDBDebugger.RemoveWatch(varname: string);
-var
-    node: TTreeNode;
 begin
-    //Find the top-most node
-    node := DebugTree.Selected;
-    while Assigned(node) and (Assigned(node.Parent)) do
-        node := node.Parent;
-
-    //Then clean it up
-    if Assigned(node) then
-    begin
-        QueueCommand('bc', IntToStr(PWatch(Node.Data)^.ID));
-        Dispose(node.Data);
-        DebugTree.Items.Delete(node);
-    end;
 end;
 
 procedure TCDBDebugger.OnCallStack(Output: TStringList);

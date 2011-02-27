@@ -354,7 +354,7 @@ begin
 
       //MN detect whether there is a wxAuiManager component and do the code for that last
       //it is then first in the generated code
-      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+     for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
         if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
           continue;
@@ -372,7 +372,8 @@ begin
     end
     else
     begin
-      for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+
+     for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
 
         if not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
@@ -390,6 +391,7 @@ begin
 
       //MN detect whether there is a wxAuiManager component and do the code for that last
       //it is then first in the generated code
+
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
         //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
@@ -425,6 +427,7 @@ begin
   if GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) then
   begin
     DeleteAllRHSVariableList(synEdit, strClassName,intBlockStart, intBlockEnd);
+
       for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
       begin
         //            if frmNewForm.Components[i] is TPanel then
@@ -499,7 +502,7 @@ begin
 
     AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart,intBlockEnd, strEndStr);
     for I := strlstManualCode.Count - 1 downto 0 do    // Iterate
-      AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
+     AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
         strlstManualCode[i]);    // for
 
    finally
@@ -1529,7 +1532,8 @@ begin
   strLst := TStringList.Create;
 
   if self.Wx_DesignerType = dtWxFrame then
-    for I := self.ComponentCount - 1 downto 0 do    // Iterate
+   // for I := self.ComponentCount - 1 downto 0 do    // Iterate
+   for I := 0 to self.ComponentCount - 1 do    // Iterate
     begin
       if IsControlWxToolBar(TControl(Components[i])) then
       begin

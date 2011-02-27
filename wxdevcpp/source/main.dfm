@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1412,7 +1412,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
+        Height = 97
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 98
+        Height = 97
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,18 +1486,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 407
-        Height = 98
+        Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           407
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 386
-          Height = 82
+          Height = 80
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1514,10 +1514,10 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
-        ActivePage = tabLocals
+        Height = 97
+        ActivePage = tabBacktrace
         Align = alClient
-        TabIndex = 1
+        TabIndex = 0
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -1526,7 +1526,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -1561,7 +1561,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -1589,7 +1589,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -1612,20 +1612,29 @@ object MainForm: TMainForm
         object tabWatches: TTabSheet
           Caption = 'Watches'
           ImageIndex = -1
-          object DebugTree: TTreeView
+          object WatchesListView: TListView
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
-            Images = dmMain.MenuImages_NewLook
-            Indent = 19
-            MultiSelectStyle = []
-            PopupMenu = DebugVarsPopup
+            Columns = <
+              item
+                Caption = 'Name'
+                Width = 200
+              end
+              item
+                Caption = 'Value'
+                Width = 325
+              end
+              item
+                Caption = 'Location'
+                Width = 75
+              end>
             ReadOnly = True
-            RightClickSelect = True
+            RowSelect = True
             TabOrder = 0
-            OnKeyDown = DebugTreeKeyDown
+            ViewStyle = vsReport
           end
         end
         object tabDebugOutput: TTabSheet
@@ -1634,7 +1643,7 @@ object MainForm: TMainForm
           object DebugOutput: TMemo
             Left = 0
             Top = 22
-            Width = 616
+            Width = 624
             Height = 47
             Align = alClient
             Font.Charset = DEFAULT_CHARSET
@@ -1651,7 +1660,7 @@ object MainForm: TMainForm
           object DebuggerCmdPanel: TPanel
             Left = 0
             Top = 0
-            Width = 616
+            Width = 624
             Height = 22
             Align = alTop
             BevelOuter = bvNone
@@ -1692,7 +1701,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1736,7 +1745,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 636
-        Height = 61
+        Height = 60
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -1771,7 +1780,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 61
+        Top = 60
         Width = 636
         Height = 41
         Align = alBottom
@@ -4368,7 +4377,6 @@ object MainForm: TMainForm
       Caption = '&Modify value'
       ImageIndex = 37
       OnExecute = actModifyWatchExecute
-      OnUpdate = actModifyWatchUpdate
     end
     object actRestartDebug: TAction
       Category = 'Debug'

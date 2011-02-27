@@ -117,6 +117,9 @@ uses
 {$ENDIF}
 
 type
+        PTList = ^Tlist;
+        
+type
     TMainForm = class(TForm{$IFDEF PLUGIN_BUILD}, iplug{$ENDIF})
         MainMenu: TMainMenu;
         FileMenu: TMenuItem;
@@ -654,7 +657,6 @@ type
         ClassSheet: TTabSheet;
         ClassBrowser1: TClassBrowser;
         tabWatches: TTabSheet;
-        DebugTree: TTreeView;
         tabLocals: TTabSheet;
         lvLocals: TListView;
         tbDebug: TToolBar;
@@ -695,6 +697,7 @@ type
         RemoveAllBreakpoints1: TMenuItem;
         actRemoveAllBreakpoints: TAction;
     VerboseDebug: TMenuItem;
+    WatchesListView: TListView;
 
         procedure FormShow(Sender: TObject);
         procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -945,7 +948,6 @@ type
         procedure actAttachProcessUpdate(Sender: TObject);
         procedure actAttachProcessExecute(Sender: TObject);
         procedure actModifyWatchExecute(Sender: TObject);
-        procedure actModifyWatchUpdate(Sender: TObject);
         procedure ClearallWatchPopClick(Sender: TObject);
         procedure PageControlChanging(Sender: TObject;
             var AllowChange: Boolean);
@@ -989,6 +991,8 @@ type
         procedure FormCreate(Sender: TObject);
         procedure DebugFinishClick(Sender: TObject);
         procedure RemoveAllBreakpoints1Click(Sender: TObject);
+
+        procedure OnWatches(Locals: PTList);
 
     private
         HelpWindow: HWND;
@@ -1215,6 +1219,17 @@ type
 {$ENDIF}
         function OpenWithAssignedProgram(strFileName: String): boolean;
     end;
+
+
+// added 25/2/2011
+  PWatchVar = ^TWatchVar;
+  TWatchVar = packed record
+    Number: Integer;
+    Name: string;
+    Value: string;
+  end;
+//end added
+
 var
     MainForm: TMainForm;
 
@@ -5105,7 +5120,7 @@ end;
 procedure TMainForm.InitializeDebugger;
     procedure Initialize;
     begin
-        fDebugger.DebugTree := DebugTree;
+        fDebugger.DebugTree := WatchesListView;
         fDebugger.OnCallStack := OnCallStack;
         fDebugger.OnThreads := OnThreads;
         fDebugger.OnLocals := OnLocals;
@@ -5274,7 +5289,7 @@ begin
         end;
     end;
 
-    for idx := 0 to DebugTree.Items.Count - 1 do
+ {   for idx := 0 to DebugTree.Items.Count - 1 do
     begin
         idx2 := AnsiPos('=', DebugTree.Items[idx].Text);
         if (idx2 > 0) then
@@ -5284,7 +5299,8 @@ begin
             DebugTree.Items[idx].Text := s + ' (unknown)';
         end;
     end;
-
+  }
+  
     //Then run the debugger
     fDebugger.Go;
 end;
@@ -5826,16 +5842,16 @@ var
     node: TTreeNode;
 begin
     //Trace the selected watch node to the highest-level node
-    node := DebugTree.Selected;
-    while Assigned(Node) and (Assigned(node.Parent)) do
-        node := node.Parent;
+ //   node := WatchesTreeView.Selected;
+ //   while Assigned(Node) and (Assigned(node.Parent)) do
+ //       node := node.Parent;
 
     //Then remove the watch
-    if Assigned(node) then
-    begin
-        fDebugger.RemoveWatch(IntToStr(Integer(node.Data)));
-        DebugTree.Items.Delete(node);
-    end;
+ //   if Assigned(node) then
+ //   begin
+ //       fDebugger.RemoveWatch(IntToStr(Integer(node.Data)));
+ //       DebugTree.Items.Delete(node);
+ //   end;
 end;
 
 procedure TMainForm.RemoveActiveBreakpoints;
@@ -8463,7 +8479,7 @@ end;
 
 procedure TMainForm.DebugVarsPopupPopup(Sender: TObject);
 begin
-    RemoveWatchPop.Enabled := Assigned(DebugTree.Selected);
+   // RemoveWatchPop.Enabled := Assigned(DebugTree.Selected);
 end;
 
 procedure TMainForm.actAttachProcessUpdate(Sender: TObject);
@@ -8519,63 +8535,14 @@ var
     i: integer;
     n: TTreeNode;
 begin
-    if (not Assigned(DebugTree.Selected)) or (not fDebugger.Executing) then
-        exit;
-    s := DebugTree.Selected.Text;
-    val := '';
-    i := Pos(' ', s);
-    if i > 0 then
-    begin
-        Val := Copy(s, i + 3, length(s) - Pos(' ', s));
-        Delete(s, Pos(' ', s), length(s) - Pos(' ', s) + 1);
-    end;
-    if Assigned(DebugTree.Selected.Parent) then
-    begin
-        n := DebugTree.Selected.Parent;
-        while (Assigned(n)) do
-        begin
-            s := n.Text + '.' + s;
-            n := n.Parent;
-        end;
-    end;
-
-    //Create the variable edit dialog
-    ModifyVarForm := TModifyVarForm.Create(self);
-    try
-        ModifyVarForm.NameEdit.Text := s;
-        ModifyVarForm.NameEdit.Enabled := False;
-        ModifyVarForm.ValueEdit.Text := Val;
-        ModifyVarForm.ActiveWindow := ModifyVarForm.ValueEdit;
-        if ModifyVarForm.ShowModal = mrOK then
-        begin
-            fDebugger.ModifyVariable(ModifyVarForm.NameEdit.Text,
-                ModifyVarForm.ValueEdit.Text);
-            fDebugger.RefreshContext;
-        end;
-    finally
-        ModifyVarForm.Free;
-    end;
-
-end;
-
-procedure TMainForm.actModifyWatchUpdate(Sender: TObject);
-begin
-    (Sender as TCustomAction).Enabled :=
-        Assigned(DebugTree.Selected) and fDebugger.Executing;
+   
 end;
 
 procedure TMainForm.ClearallWatchPopClick(Sender: TObject);
 var
     node: TTreeNode;
 begin
-    node := DebugTree.TopItem;
-    while Assigned(Node) do
-    begin
-        fDebugger.RemoveWatch(IntToStr(integer(node.Data)));
-        DebugTree.Items.Delete(node);
-        node := DebugTree.TopItem;
-    end;
-    DebugTree.Items.Clear;
+   
 end;
 
 procedure TMainForm.HideCodeToolTip;
@@ -10503,6 +10470,45 @@ begin
                 e.ToggleBreakPoint(i);
         end;
     end;
+end;
+
+
+procedure TMainForm.OnWatches(Locals: PTList);
+{
+  If Locals is a null pointer, clear the on-screen list,
+  otherwise, add Locals to the on-screen display
+}
+var
+  I: Integer;
+  ListItem: TListItem;
+
+  Local: PWatchVar;
+
+begin
+
+  if (Locals = nil) then
+  begin
+    MainForm.WatchesListView.Clear;
+    Exit;
+  end;
+
+  try
+    for I := 0 to Locals^.Count - 1 do
+      with MainForm.WatchesListView do
+      begin
+        Local := Locals^.Items[I];
+        ListItem := Items.Add;
+        ListItem.Caption := Local^.Name;
+        ListItem.SubItems.Add(Local^.Value);
+
+        ListItem.SubItems.Add(format('%d',[Local^.Number]));
+
+
+      end;
+  finally
+    ;
+  end;
+
 end;
 
 end.

@@ -6801,9 +6801,6 @@ begin
         
        strFileName := TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
-              ShowMessage(strFileName);
-       // TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
-
       end;
 
       if strClassName = UpperCase('TFrmNewForm') then
@@ -6812,11 +6809,17 @@ begin
         TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Bitmap.Transparent := True;
 
         if (PictureEdit.KeepFormat.State = cbChecked) then
-             TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        begin
+             TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true;
+             TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+        end
         else
+        begin
             TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+            TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+        end;
 
-        TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+        strFileName := TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
       end;
 
@@ -6827,11 +6830,18 @@ begin
         TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
 
         if (PictureEdit.KeepFormat.State = cbChecked) then
-            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        begin
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true;
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+        end
         else
-            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+        begin
+             TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+               //strFileName := 'Images/' + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
+             TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+        end;
 
-        TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+        strFileName := TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
       end;
 
@@ -6842,11 +6852,18 @@ begin
         TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
 
         if (PictureEdit.KeepFormat.State = cbChecked) then
-            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        begin
+            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true;
+            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+        end
         else
-            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+        begin
+             TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+               //strFileName := 'Images/' + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
+             TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+        end;
 
-        TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+       strFileName := TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
       end;
 
@@ -6857,12 +6874,18 @@ begin
         TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
 
         if (PictureEdit.KeepFormat.State = cbChecked) then
-           TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true
+        begin
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := true;
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+        end
         else
-            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+        begin
+             TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := false;
+               //strFileName := 'Images/' + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
+             TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+        end;
 
-
-        TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Filename := PictureEdit.FileName.Text;
+       strFileName := TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
       end;
 
