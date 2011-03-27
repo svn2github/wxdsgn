@@ -128,62 +128,10 @@ md common\include\wx\unix
 md common\include\wx\xml
 md common\include\wx\xrc
 
-cd /d %DEVPAKDIR%\common\include
-copy /Y %WXWIN%\include\*.*
 
-cd %DEVPAKDIR%\common\include\msvc
-copy /Y %WXWIN%\include\msvc\*.*
+cd %DEVPAKDIR%\common\include
+xcopy /S /Y %WXWIN%\include
 
-cd %DEVPAKDIR%\common\include\msvc\wx
-copy /Y %WXWIN%\include\msvc\wx\*.*
-
-cd %DEVPAKDIR%\common\include\wx
-copy /Y %WXWIN%\include\wx\*.*
-
-cd %DEVPAKDIR%\common\include\wx\aui
-copy /Y %WXWIN%\include\wx\aui\*.*
-
-cd %DEVPAKDIR%\common\include\wx\common
-copy /Y %WXWIN%\include\wx\common\*.*
-
-cd %DEVPAKDIR%\common\include\wx\generic
-copy /Y %WXWIN%\include\wx\generic\*.*
-
-cd %DEVPAKDIR%\common\include\wx\html
-copy /Y %WXWIN%\include\wx\html\*.*
-
-cd %DEVPAKDIR%\common\include\wx\msdos
-copy /Y %WXWIN%\include\wx\msdos\*.*
-
-cd %DEVPAKDIR%\common\include\wx\msw
-copy /Y %WXWIN%\include\wx\msw\*.*
-
-cd %DEVPAKDIR%\common\include\wx\msw\ole
-copy /Y %WXWIN%\include\wx\msw\ole\*.*
-
-cd %DEVPAKDIR%\common\include\wx\msw\wince
-copy /Y %WXWIN%\include\wx\msw\wince\*.*
-
-cd %DEVPAKDIR%\common\include\wx\private
-copy /Y %WXWIN%\include\wx\private\*.*
-
-cd %DEVPAKDIR%\common\include\wx\protocol
-copy /Y %WXWIN%\include\wx\protocol\*.*
-
-cd %DEVPAKDIR%\common\include\wx\richtext
-copy /Y %WXWIN%\include\wx\richtext\*.*
-
-cd %DEVPAKDIR%\common\include\wx\univ
-copy /Y %WXWIN%\include\wx\univ\*.*
-
-cd %DEVPAKDIR%\common\include\wx\unix
-copy /Y %WXWIN%\include\wx\unix\*.*
-
-cd %DEVPAKDIR%\common\include\wx\xml
-copy /Y %WXWIN%\include\wx\xml\*.*
-
-cd %DEVPAKDIR%\common\include\wx\xrc
-copy /Y %WXWIN%\include\wx\xrc\*.*
 
 cd /d %STARTDIR%
 md %DEVPAKDIR%\common\Templates
@@ -192,90 +140,7 @@ copy Templates\*wx*.* %DEVPAKDIR%\common\Templates\
 copy Templates\wxWidgets\wx*.* %DEVPAKDIR%\common\Templates\wxWidgets\
 
 
-@echo --------------------------------------------------------------------
-@echo -
-@echo -    Build Contrib wxWidgets Libraries
-@echo -
-@echo --------------------------------------------------------------------
-
-
-IF NOT "%BUILDCONTRIB%"=="Y" GOTO COMMON_CONTRIB_DEVPAK
-
-
-cd /d %WXWIN%
-
-IF NOT "%BUILDGCC%"=="Y" GOTO VCMAKESCONT
-
-CALL %STARTDIR%\wxWidgets_contrib.bat gcc
-IF NOT "%BUILDRESULT%"=="P" GOTO GCC_CONTRIB_BUILD_ERR
-
-
-:VCMAKESCONT
-IF NOT "%BUILDVC%"=="Y" GOTO DMCMAKESCONT
-
-CALL %STARTDIR%\wxWidgets_contrib.bat vc
-IF NOT "%BUILDRESULT%"=="P" GOTO VC_CONTRIB_BUILD_ERR
-
-
-:DMCMAKESCONT
-IF NOT "%BUILDDMC%"=="Y" GOTO BCCMAKESCONT
-
-CALL %STARTDIR%\wxWidgets_contrib.bat dmc
-IF NOT "%BUILDRESULT%"=="P" GOTO DMC_CONTRIB_BUILD_ERR
-
-
-:BCCMAKESCONT
-IF NOT "%BUILDBCC%"=="Y" GOTO CONTDEP
-
-CALL %STARTDIR%\wxWidgets_contrib.bat bcc
-IF NOT "%BUILDRESULT%"=="P" GOTO BCC_CONTRIB_BUILD_ERR
-
-:CONTDEP
-
-@echo --------------------------------------------------------------------
-@echo -
-@echo -    Prepare Contrib wxWidgets devpak
-@echo -
-@echo --------------------------------------------------------------------
-
-
-rem Write the files to subdirectory setup devpak
-
-IF NOT "%BUILDGCC%"=="Y" GOTO VC_CONT_DEVPAK
-call %STARTDIR%\set_contribs gcc
-
-:VC_CONT_DEVPAK
-IF NOT "%BUILDVC%"=="Y" GOTO DMC_CONT_DEVPAK
-call %STARTDIR%\set_contribs vc
-
-:DMC_CONT_DEVPAK
-IF NOT "%BUILDDMC%"=="Y" GOTO BCC_CONT_DEVPAK
-call %STARTDIR%\set_contribs dmc
-
-:BCC_CONT_DEVPAK
-IF NOT "%BUILDBCC%"=="Y" GOTO COMMON_CONTRIB_DEVPAK
-call %STARTDIR%\set_contribs bcc
-
-:COMMON_CONTRIB_DEVPAK
-
-FOR /R %WXWIN%\contrib\samples %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
-
-
-cd /d %STARTDIR%
-copy wxWidgets_contrib_common.DevPackage %DEVPAKDIR%\wxWidgets_contrib_common.DevPackage
-
-cd /d %DEVPAKDIR%
-
-%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_contrib_common.DevPackage
-%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_contrib_common.DevPackage
-
-IF NOT EXIST %DEVPAKDIR%\contrib md %DEVPAKDIR%\contrib
-IF NOT EXIST %DEVPAKDIR%\contrib\include md %DEVPAKDIR%\contrib\include
-IF NOT EXIST %DEVPAKDIR%\contrib\samples md %DEVPAKDIR%\contrib\samples
-
-xcopy %WXWIN%\contrib\include contrib\include\ /e /Y /Q
-xcopy %WXWIN%\contrib\samples contrib\samples\ /e /Y /Q
-
+if "%BUILD3RDP%"=="N" goto BUILD_OK
 
 @echo --------------------------------------------------------------------
 @echo -
@@ -291,8 +156,6 @@ copy %WXCODE%\wxplotctrl\art\*.xpm %WXWIN%\3rdParty\art\
 
 
 md 3rdParty\build\chartart
-md 3rdParty\build\plotctrl
-md 3rdParty\build\scintilla
 md 3rdParty\build\sheet
 md 3rdParty\build\things
 md 3rdParty\build\treelistctrl
@@ -306,10 +169,6 @@ rem copy %WXCODE%\wxchart\build\msw\*.rc %WXWIN%\3rdParty\build\msw\
 copy %WXCODE%\wxchart\include\wx\*.h %WXWIN%\3rdParty\include\wx\
 copy %WXCODE%\wxchart\include\wx\chartart\*.* %WXWIN%\3rdParty\include\wx\chartart\
 
-md 3rdParty\include\wx\plotctrl
-copy %WXCODE%\wxplotctrl\include\wx\plotctrl\*.h %WXWIN%\3rdParty\include\wx\plotctrl\
-
-copy %WXCODE%\wxscintilla\include\wx\*.h %WXWIN%\3rdParty\include\wx\
 
 md 3rdParty\include\wx\sheet
 copy %WXCODE%\wxsheet\include\wx\sheet\*.h %WXWIN%\3rdParty\include\wx\sheet\
@@ -326,19 +185,6 @@ md 3rdParty\src
 md 3rdParty\src\chartart
 copy %WXCODE%\wxchart\src\*.c* %WXWIN%\3rdParty\src\chartart\
  
-md 3rdParty\src\plotctrl
-copy %WXCODE%\wxplotctrl\src\*.c* %WXWIN%\3rdParty\src\plotctrl\
-copy %WXCODE%\wxplotctrl\src\*.h* %WXWIN%\3rdParty\src\plotctrl\
-
-md 3rdParty\src\scintilla
-md 3rdParty\src\scintilla\include
-md 3rdParty\src\scintilla\src
-copy %WXCODE%\wxscintilla\src\*.c* %WXWIN%\3rdParty\src\
-copy %WXCODE%\wxscintilla\src\*.h* %WXWIN%\3rdParty\src\
-copy %WXCODE%\wxscintilla\src\scintilla\include\*.h* %WXWIN%\3rdParty\src\scintilla\include\
-copy %WXCODE%\wxscintilla\src\scintilla\src\*.c* %WXWIN%\3rdParty\src\scintilla\src\
-copy %WXCODE%\wxscintilla\src\scintilla\src\*.h* %WXWIN%\3rdParty\src\scintilla\src\
-
 md 3rdParty\src\sheet
 copy %WXCODE%\wxsheet\src\*.c* %WXWIN%\3rdParty\src\sheet\
 
@@ -359,11 +205,6 @@ md 3rdParty\samples
 md 3rdParty\samples\chartart
 copy %WXCODE%\wxchart\samples\*.* %WXWIN%\3rdParty\samples\chartart\
 
-md 3rdParty\samples\plotctrl
-copy %WXCODE%\wxplotctrl\samples\plotctrl\wx*.* %WXWIN%\3rdParty\samples\plotctrl\
-
-md 3rdParty\samples\scintilla
-copy %WXCODE%\wxscintilla\samples\test\*.* %WXWIN%\3rdParty\samples\scintilla\
 
 md 3rdParty\samples\sheet
 copy %WXCODE%\wxsheet\samples\sheet\*.* %WXWIN%\3rdParty\samples\sheet\
@@ -391,10 +232,6 @@ cd /d %WXWIN%
 rem change unix line endings to windows/dos line endings
 rem for /R ""%%G in (*.cpp *.h *.c) do %STARTDIR%\gsar -ud -o %%G
 
-
-rem Change the plotctrl files 
-%STARTDIR%\gsar -sWX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE -r//WX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE -o 3rdparty\include/wx/plotctrl/plotcurv.h
-%STARTDIR%\gsar -s#include:x20:x22wx/bitmap -r#include:x20:x22wx/window.h:x22:x0d:x0a#include:x20:x22wx/bitmap -o 3rdparty\include/wx/plotctrl/plotctrl.h
 
 rem Change the sheet files
 %STARTDIR%\gsar -sdcscreen:x2eh:x22:x0a#endif -rdcscreen:x2eh:x22:x0a#include:x20:x22wx/combobox:x2eh:x22:x0d:x0a#endif -o 3rdparty\src/sheet/sheet.cpp

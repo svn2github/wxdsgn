@@ -32,7 +32,7 @@ set WXWIN=H:\wxWidgets-%WXVER%
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
 set /P WXWIN=
 
-set WXCODE=H:\wxCode
+set WXCODE=H:\Users\Public\devpak_batchmaker\wxCode
 echo In what directory are the wxCode components located (Default = %WXCODE%)?
 set /P WXCODE=
 
@@ -51,7 +51,7 @@ set BUILDBASE=N
 :BuildBaseEND
 
 
-set BUILDCONTRIB=Y
+set BUILDCONTRIB=N
 %STARTDIR%\CP /T:Y,5 Do you wish to build the CONTRIB libraries (Default = %BUILDCONTRIB%)?
 IF ERRORLEVEL 1 GOTO ContribKeyPressed
 GOTO BuildContribEND
@@ -66,7 +66,7 @@ set BUILDCONTRIB=N
 :BuildContribEND
 
 
-set BUILD3RDP=Y
+set BUILD3RDP=N
 %STARTDIR%\CP /T:Y,5 Do you wish to build the 3RD PARTY libraries (Default = %BUILD3RDP%)?
 IF ERRORLEVEL 1 GOTO 3RDPKeyPressed
 GOTO BUILD3RDPEND

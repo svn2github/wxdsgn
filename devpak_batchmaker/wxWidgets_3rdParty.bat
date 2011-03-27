@@ -13,10 +13,7 @@ IF "%1"=="bcc" SET PATH=%bccpath%
 
 
 copy %STARTDIR%\chartart.%1 %WXWIN%\3rdParty\build\chartart\makefile.%1
-copy %STARTDIR%\plotctrl.%1 %WXWIN%\3rdParty\build\plotctrl\makefile.%1
-copy %STARTDIR%\scintilla.%1 %WXWIN%\3rdParty\build\scintilla\makefile.%1
 copy %STARTDIR%\sheet.%1 %WXWIN%\3rdParty\build\sheet\makefile.%1
-copy %STARTDIR%\things.%1 %WXWIN%\3rdParty\build\things\makefile.%1
 copy %STARTDIR%\treelistctrl.%1 %WXWIN%\3rdParty\build\treelistctrl\makefile.%1
 copy %STARTDIR%\treemultictrl.%1 %WXWIN%\3rdParty\build\treemultictrl\makefile.%1
 
@@ -26,21 +23,10 @@ cd /d %WXWIN%\3rdparty\build\chartart
 %MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_chartart.txt 
 if errorlevel 1 goto 3RDPARTY_BUILD_ERR
 
-cd ..\plotctrl
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_plotctrl.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
 
-cd ..\scintilla
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1  2> error_%1_scintilla.txt
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\sheet
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_sheet.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
-
-cd ..\things
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_things.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
+rem cd ..\sheet
+rem %MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 rem USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_sheet.txt 
+rem if errorlevel 1 goto 3RDPARTY_BUILD_ERR
 
 cd ..\treelistctrl
 %MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_treelist.txt 

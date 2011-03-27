@@ -13,7 +13,7 @@ IF "%1"=="bcc" SET PATH=%bccpath%
 cd %WXWIN%
 cd build\msw
 
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 UNICODE=%UNICODE_FLAG% VENDOR=wxdevcpp 2> error_%1_base.txt
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 UNICODE=%UNICODE_FLAG% VENDOR=wxdevcpp all 2> error_%1_base.txt
 
 if NOT errorlevel 1 goto BASE_END
 
