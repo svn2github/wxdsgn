@@ -38,7 +38,6 @@ contains
   JclUnitVersioning,
   JclSynch,
   JclAnsiStrings,
-  //JvVCL5Utils,
   JvResources,
   JvConsts,
   JvWin32,

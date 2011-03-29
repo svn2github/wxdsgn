@@ -611,9 +611,9 @@ Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("
   for i := self.columns.Count - 1 downto 0 do
   begin
     if (i = self.columns.Count - 1) then
-      Result := Result + #13 + Format('%s->AddColumn(%s,%s,%d );',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, AlignmentToStr(columns[i].Alignment)])
+      Result := Result + #13 + Format('%s->AddColumn(%s,%d,%s );',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, AlignmentToStr(columns[i].Alignment)])
     else
-        Result := Result + #13 + Format('%s->InsertColumn(0,%s,%s,%d );',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, AlignmentToStr( columns[i].Alignment)]);
+        Result := Result + #13 + Format('%s->InsertColumn(0,%s,%d,%s );',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, AlignmentToStr( columns[i].Alignment)]);
   end;
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
