@@ -260,6 +260,9 @@ begin
             fOptions[0].ObjectOutput :=
                 ReadString(cProject, 'ObjectOutput', '');
 
+            fOptions[0].ImagesOutput :=
+                ReadString(cProject, 'ImagesOutput', '');
+
             if (Trim(fOptions[0].ExeOutput) = '') and
                 (Trim(fOptions[0].ObjectOutput) <> '') then
                 fOptions[0].ExeOutput := fOptions[0].ObjectOutput
@@ -318,6 +321,8 @@ begin
                     ReadString(CurrentProfileName, 'ExeOutput', '');
                 NewProfile.ObjectOutput :=
                     ReadString(CurrentProfileName, 'ObjectOutput', '');
+                NewProfile.ImagesOutput :=
+                    ReadString(CurrentProfileName, 'ImagesOutput', 'Images\');
                 NewProfile.OverrideOutput :=
                     ReadBool(CurrentProfileName, 'OverrideOutput', false);
                 NewProfile.OverridenOutput :=

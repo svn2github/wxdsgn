@@ -2543,9 +2543,13 @@ var
 	s: Integer;
 	n: Integer;
 	Str2: String;
-	Local: PVariable;
+	Local: PWatchVar;
 
-begin          // ParseValue
+begin
+
+        Str^ := TrimLeft(Str^);
+        
+       // ParseValue
 	if (AnsiStartsStr('{', Str^)) then                          // a Tuple
 		Output := Output + ExtractList(Str, PARSETUPLE, Level, List)
 	else
@@ -2563,6 +2567,7 @@ begin          // ParseValue
 // added 16/2/2011 modified
 		New(Local);                           // a const
 		Local^.Value := Trim(OctToHex(Str));
+                Local^.Name := '';
 		List.Add(Local);
 		Output := Output + OctToHex(Str);         // a const
 // end added
@@ -3535,7 +3540,7 @@ begin
     if cdCallStack in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := 'bt';
+        Command.Command := '-stack-list-frames'; //'bt';
         Command.OnResult := OnCallStack;
         QueueCommand(Command);
     end;
@@ -3562,13 +3567,19 @@ begin
     if (cdWatches in refresh) and Assigned(DebugTree) then
     begin
         I := 0;
+        ShowMessage(Format('Debugtree count = %d', [DebugTree.Items.Count]));
         while I < DebugTree.Items.Count do
         begin
+        ShowMessage('1');
             Node := DebugTree.Items[I];
+            ShowMessage('2');
             if Node.Data = nil then
                 Continue;
+
+            ShowMessage('3');
             with PWatch(Node.Data)^ do
             begin
+            ShowMessage('hereh');
                 Command := TCommand.Create;
                 if Pos('.', Name) > 0 then
                     Command.Command :=
@@ -3576,6 +3587,7 @@ begin
                 else
                     Command.Command := '-break-list  ' + name;
 
+                ShowMessage(name);
                 //Fill in the other data
                 Command.Data := Node;
                 Command.OnResult := OnRefreshContext;

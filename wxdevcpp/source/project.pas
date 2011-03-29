@@ -1152,6 +1152,8 @@ begin
 
         fProfiles[0].ResourceIncludes.DelimitedText := Read('ResourceIncludes', '');
         fProfiles[0].MakeIncludes.DelimitedText := Read('MakeIncludes', '');
+        fProfiles[0].ImagesOutput := Read('ImagesOutput', fProfiles[0].ProfileName);
+
 {$ENDIF}
                 fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
                 fProfiles[0].ObjectOutput :=
@@ -1216,6 +1218,8 @@ begin
             fProfiles[0].ExeOutput := Read('ExeOutput', fProfiles[0].ProfileName);
             fProfiles[0].ObjectOutput :=
                 Read('ObjectOutput', fProfiles[0].ProfileName);
+            fProfiles[0].ImagesOutput :=
+                Read('ImagesOutput', fProfiles[0].ProfileName);
 
             if (trim(fProfiles[0].ExeOutput) = '') and
                 (trim(fProfiles[0].ObjectOutput) <> '') then
@@ -1288,6 +1292,7 @@ begin
             WriteProfile(i, 'Icon', ExtractRelativePath(Directory,
                 fProfiles[i].Icon));
             WriteProfile(i, 'ExeOutput', fProfiles[i].ExeOutput);
+            WriteProfile(i, 'ImagesOutput', fProfiles[i].ImagesOutput);
             WriteProfile(i, 'ObjectOutput', fProfiles[i].ObjectOutput);
             WriteProfile(i, 'OverrideOutput', fProfiles[i].OverrideOutput);
             WriteProfile(i, 'OverrideOutputName', fProfiles[i].OverridenOutput);
@@ -1639,6 +1644,7 @@ begin
         NewProfile.Icon := finifile.ReadProfile(i, 'Icon', '');
         NewProfile.ExeOutput := finifile.ReadProfile(i, 'ExeOutput', '');
         NewProfile.ObjectOutput := finifile.ReadProfile(i, 'ObjectOutput', '');
+        NewProfile.ImagesOutput := finifile.ReadProfile(i, 'ImagesOutput', 'Images\');
         NewProfile.OverrideOutput :=
             finifile.ReadProfile(i, 'OverrideOutput', false);
         NewProfile.OverridenOutput :=

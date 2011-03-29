@@ -734,6 +734,9 @@ begin
  if (strFileName = '') then
      strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm';
 
+ if not KeepFormat then
+        strFileName := 'Images\' + strFileName;
+
   Wx_Filename := CreateGraphicFileName(strFileName);
   Result:= true;
 

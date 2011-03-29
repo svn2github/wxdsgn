@@ -971,9 +971,8 @@ begin
 
  // If no filename passed, then auto-generate XPM filename
  if (strFileName = '') then
-     strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm';
+     strFileName := 'Images\' + GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm';
 
- //Wx_Filename := CreateGraphicFileName(strFileName);
   Result:= true;
 end;
 

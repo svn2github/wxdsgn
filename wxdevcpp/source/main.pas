@@ -993,6 +993,10 @@ type
         procedure RemoveAllBreakpoints1Click(Sender: TObject);
 
         procedure OnWatches(Locals: PTList);
+    procedure WatchesListViewMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure WatchesListViewDblClick(Sender: TObject);
+    procedure WatchesListViewClick(Sender: TObject);
 
     private
         HelpWindow: HWND;
@@ -5289,7 +5293,7 @@ begin
         end;
     end;
 
- {   for idx := 0 to DebugTree.Items.Count - 1 do
+{    for idx := 0 to DebugTree.Items.Count - 1 do
     begin
         idx2 := AnsiPos('=', DebugTree.Items[idx].Text);
         if (idx2 > 0) then
@@ -5299,8 +5303,9 @@ begin
             DebugTree.Items[idx].Text := s + ' (unknown)';
         end;
     end;
-  }
-  
+
+    }
+
     //Then run the debugger
     fDebugger.Go;
 end;
@@ -5803,11 +5808,24 @@ begin
 end;
 
 procedure TMainForm.AddDebugVar(s: string; when: TWatchBreakOn);
+
 begin
     if Trim(s) = '' then
         Exit;
     if fDebugger.Executing and fDebugger.Paused then
     begin
+
+        WatchesListView.Items.BeginUpdate;
+        //WatchesListView.Clear;
+
+        with WatchesListView.Items.Add do
+        begin
+            Caption := s;
+            Subitems.Add('<unknown>');
+            Subitems.Add('<unknown>');
+        end;
+        WatchesListView.Items.EndUpdate;
+
         fDebugger.AddWatch(s, when);
         fDebugger.RefreshContext([cdWatches]);
     end;
@@ -8593,6 +8611,37 @@ begin
         Result := ''
 end;
 
+procedure TMainForm.WatchesListViewClick(Sender: TObject);
+var
+  WPtName, WPtNumber: String;
+
+begin
+
+  if ((MainForm.WatchesListView.Items.Count > 0)
+    and not(MainForm.WatchesListView.Selected = nil)) then
+
+  begin
+    WPtName := MainForm.WatchesListView.Selected.Caption;
+
+    WPtNumber :=  MainForm.WatchesListView.Selected.SubItems[0];
+
+  //  MainForm.StatusBar1.Panels[1].Text := 'WPtNumber = ' + WPtNumber;
+  end;
+end;
+
+procedure TMainForm.WatchesListViewDblClick(Sender: TObject);
+var
+  WPtName, WPtNumber, WPtValue: String;
+begin
+  if ((MainForm.WatchesListView.Items.Count > 0)
+    and not(MainForm.WatchesListView.Selected = nil)) then
+  begin
+    WPtValue :=  MainForm.WatchesListView.Selected.SubItems[1];
+  //  MainForm.StatusBar1.Panels[1].Text := 'WPtValue = ' + WPtValue;
+
+  end;
+end;
+
 function TMainForm.isFunctionAvailable(intClassID: Integer;
     strFunctionName: String): boolean;
 var
@@ -10509,6 +10558,31 @@ begin
     ;
   end;
 
+end;
+
+procedure TMainForm.WatchesListViewMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  WPtName, WPtNumber, WPtValue: String;
+  Sel: TListItem;
+  MPt: TPoint;
+
+begin
+  if (MainForm.WatchesListView.Items.Count > 0) then
+  begin
+    MPt.X := X;
+    MPt.Y := Y;
+
+    Sel := MainForm.WatchesListView.GetItemAt( X, Y);
+    if (Sel = nil) then
+      Sel := MainForm.WatchesListView.GetNearestItem(MPt, sdAll);
+
+    if (not(Sel = nil)) then
+    begin
+      WPtValue :=  Sel.SubItems[1];
+   //   MainForm.StatusBar1.Panels[1].Text := 'WPtValue = ' + WPtValue;
+    end;
+  end;
 end;
 
 end.

@@ -153,6 +153,9 @@ type
         Label2: TLabel;
         cmbProfileSetComp: TComboBox;
         btnCopyProfileSet: TSpeedButton;
+    lblImagesoutputdir: TLabel;
+    edImagesOutput: TEdit;
+    btnImagesOutputDir: TSpeedButton;
         procedure ListClick(Sender: TObject);
         procedure EditChange(SEnder: TObject);
         procedure ButtonClick(Sender: TObject);
@@ -168,6 +171,7 @@ type
         procedure btnRemoveIconClick(Sender: TObject);
         procedure BrowseExecutableOutDirClick(Sender: TObject);
         procedure BrowseObjDirClick(Sender: TObject);
+        procedure BrowseImageDirClick(Sender: TObject);
         procedure btnMakeBrowseClick(Sender: TObject);
         procedure btnMakClick(Sender: TObject);
         procedure MakButtonClick(Sender: TObject);
@@ -533,6 +537,7 @@ begin
 
         ExeOutput := edExeOutput.Text;
         ObjectOutput := edObjOutput.Text;
+        ImagesOutput := edImagesOutput.Text;
         OverrideOutput := chkOverrideOutput.Checked;
         OverridenOutput := edOverridenOutput.Text;
         if cbUseCustomMakefile.Checked and FileExists(edCustomMakefile.Text) then
@@ -652,6 +657,7 @@ Begin
     // Output tab
     edExeOutput.Text := CurrentProfile.ExeOutput;
     edObjOutput.Text := CurrentProfile.ObjectOutput;
+    edImagesOutput.Text := CurrentProfile.ImagesOutput;
     chkOverrideOutput.Checked := CurrentProfile.OverrideOutput;
     if CurrentProfile.OverridenOutput <> '' then
         edOverridenOutput.Text := ExtractFilename(CurrentProfile.OverridenOutput)
@@ -983,6 +989,30 @@ begin
     else
         TempDir := TempDir;
     edObjOutput.Text := TempDir;
+end;
+
+procedure TfrmProjectOptions.BrowseImageDirClick(Sender: TObject);
+var
+{$IFDEF WIN32}
+    Dir: String;
+{$ENDIF}
+{$IFDEF LINUX}
+  Dir: WideString;
+{$ENDIF}
+    TempDir: String;
+begin
+    if fProject.CurrentProfile.ImagesOutput <> '' then
+        Dir := ExpandFileto(fProject.CurrentProfile.ImagesOutput, fProject.Directory)
+    else
+        Dir := fProject.Directory;
+    if SelectDirectory('Select Directory', '', Dir) = false then
+        exit;
+    TempDir := ExtractRelativePath(fProject.Directory, Dir);
+    if DirectoryExists(TempDir) then
+        TempDir := GetShortName(TempDir)
+    else
+        TempDir := TempDir;
+    edImagesOutput.Text := TempDir;
 end;
 
 procedure TfrmProjectOptions.btnMakeBrowseClick(Sender: TObject);

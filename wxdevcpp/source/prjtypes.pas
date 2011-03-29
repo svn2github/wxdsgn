@@ -78,6 +78,7 @@ type
         MakeIncludes: TStringList;
         Icon: string;
         ExeOutput: String;
+        ImagesOutput: String;
         ObjectOutput: String;
         OverrideOutput: boolean;
         OverridenOutput: string;
@@ -140,6 +141,7 @@ begin
     ObjFiles.Delimiter := ';';
     Icon := '';
     ExeOutput := '';
+    ImagesOutput := 'Images\';
     ObjectOutput := '';
     HostApplication := '';
     SupportXPThemes := False;
@@ -201,6 +203,7 @@ begin
 
     icon := R1.icon;
     ExeOutput := R1.ExeOutput;
+    ImagesOutput := R1.ImagesOutput;
     ObjectOutput := R1.ObjectOutput;
     OverrideOutput := R1.OverrideOutput;
     OverridenOutput := R1.OverridenOutput;

@@ -755,8 +755,8 @@ begin
 
   if (frmNewForm.KeepFormat) then
    Exit;
-   
-  xpmFileDir := CreateGraphicFileDir(strFileName);
+
+  xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
 
   if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
   begin

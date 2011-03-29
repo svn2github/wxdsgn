@@ -224,9 +224,9 @@ object frmProjectOptions: TfrmProjectOptions
     Top = 27
     Width = 553
     Height = 306
-    ActivePage = tabFiles
+    ActivePage = tabOutputDir
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 5
     TabOrder = 3
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -1010,13 +1010,13 @@ object frmProjectOptions: TfrmProjectOptions
         Left = 8
         Top = 8
         Width = 531
-        Height = 115
+        Height = 161
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Directories'
         TabOrder = 0
         DesignSize = (
           531
-          115)
+          161)
         object lblExeOutput: TLabel
           Left = 10
           Top = 17
@@ -1105,6 +1105,50 @@ object frmProjectOptions: TfrmProjectOptions
             BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
           OnClick = BrowseObjDirClick
         end
+        object lblImagesoutputdir: TLabel
+          Left = 10
+          Top = 113
+          Width = 113
+          Height = 13
+          Caption = 'Images output directory:'
+          FocusControl = edObjOutput
+          Transparent = True
+        end
+        object btnImagesOutputDir: TSpeedButton
+          Left = 496
+          Top = 129
+          Width = 23
+          Height = 22
+          Anchors = [akTop, akRight]
+          Glyph.Data = {
+            36030000424D3603000000000000360000002800000010000000100000000100
+            18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
+            BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF0000000000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000BF
+            BFBF000000BFBFBF0000005DCCFF5DCCFF5DCCFF000000BFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBF000000BFBFBFBFBFBFBFBFBFBFBFBF6868680000000000
+            00000000000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF000000000000
+            000000000000000000000000000000000000000000000000000000BFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBF00000000AEFF0096DB0096DB0096DB0096DB0096DB00
+            96DB0096DB0082BE000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
+            00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF00AEFF00AEFF00AEFF00
+            AEFF00AEFF0096DB000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF0000005DCCFF
+            00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF00AEFF0096DB000000BFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBF0000005DCCFF00AEFF00AEFF5DCCFF5DCCFF5DCCFF5D
+            CCFF5DCCFF00AEFF000000BFBFBFBFBFBFBFBFBFBFBFBFBFBFBF686868BDEBFF
+            5DCCFF5DCCFF000000000000000000000000000000000000BFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBF000000000000000000BFBFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBFBF}
+          OnClick = BrowseImageDirClick
+        end
         object edExeOutput: TEdit
           Left = 10
           Top = 33
@@ -1121,10 +1165,19 @@ object frmProjectOptions: TfrmProjectOptions
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 1
         end
+        object edImagesOutput: TEdit
+          Left = 10
+          Top = 129
+          Width = 476
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 2
+          Text = 'Images\'
+        end
       end
       object edOverridenOutput: TEdit
         Left = 24
-        Top = 150
+        Top = 206
         Width = 513
         Height = 21
         Anchors = [akLeft, akTop, akRight]
@@ -1132,7 +1185,7 @@ object frmProjectOptions: TfrmProjectOptions
       end
       object chkOverrideOutput: TCheckBox
         Left = 8
-        Top = 130
+        Top = 186
         Width = 515
         Height = 17
         Caption = 'Override output filename:'

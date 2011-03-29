@@ -1963,6 +1963,7 @@ begin
     WriteDev('Profile1', 'ProfileName', 'MingW 3.4.5');
     WriteDev('Profile1', 'ExeOutput', 'Output\MingW');
     WriteDev('Profile1', 'ObjectOutput', 'Objects\MingW');
+    WriteDev('Profile1', 'ImagesOutput', 'Images\');
     WriteDev('Profile1', 'CompilerSet', '0');
     WriteDev('Profile1', 'CompilerType', '0');
 

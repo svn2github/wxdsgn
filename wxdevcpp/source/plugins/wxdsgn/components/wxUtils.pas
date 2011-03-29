@@ -968,8 +968,6 @@ begin
 
   strDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
 
-  strDir:=IncludeTrailingPathDelimiter(strDir)+'Images';
-
   if DirectoryExists(strDir) = false then
   begin
    if ForceDirectories(strDir) = true then
@@ -5194,7 +5192,7 @@ begin
   if bmp = nil then
     Exit;
 
-  xpmFileDir := CreateGraphicFileDir(strFileName);
+  xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
 
   if bmp.handle <> 0 then
   begin
