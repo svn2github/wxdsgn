@@ -1,10 +1,10 @@
 object ListviewForm: TListviewForm
-  Left = 526
-  Top = 390
+  Left = 207
+  Top = 178
   BorderStyle = bsDialog
   Caption = 'Listcontrol Columns Editor'
-  ClientHeight = 296
-  ClientWidth = 479
+  ClientHeight = 303
+  ClientWidth = 485
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -126,6 +126,16 @@ object ListviewForm: TListviewForm
         'Left Justify'
         'Center'
         'Right Justify')
+    end
+    object btUpdate: TButton
+      Left = 64
+      Top = 112
+      Width = 75
+      Height = 25
+      Caption = 'Update'
+      Enabled = False
+      TabOrder = 3
+      OnClick = btUpdateClick
     end
   end
   object GroupBox3: TGroupBox

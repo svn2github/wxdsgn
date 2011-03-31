@@ -50,12 +50,14 @@ type
     XPMenu: TXPMenu;
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
+    btUpdate: TButton;
     procedure btAddClick(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbxColumnNamesClick(Sender: TObject);
     procedure btMoveUpClick(Sender: TObject);
     procedure btMoveDownClick(Sender: TObject);
+    procedure btUpdateClick(Sender: TObject);
   private
     { Private declarations }
     lastidx: integer;
@@ -139,6 +141,8 @@ begin
   btMoveDown.Enabled := (lbxColumnNames.ItemIndex <> -1) and
                         (lbxColumnNames.ItemIndex <> lbxColumnNames.Count - 1);
 
+  btUpdate.Enabled := lbxColumnNames.ItemIndex <> -1;
+
   if lbxColumnNames.ItemIndex = -1 then
   begin
     lastidx := -1;
@@ -211,6 +215,27 @@ begin
   btDelete.Enabled   := lastIdx <> -1;
   btMoveUp.Enabled   := lastIdx > 0;
   btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
+end;
+
+procedure TListviewForm.btUpdateClick(Sender: TObject);
+var
+  idx: integer;
+begin
+  idx := lbxColumnNames.ItemIndex;
+  if idx = -1 then
+    Exit;
+
+  if idx <> -1 then
+  begin
+    LstViewObj.Columns[idx].Caption := txtCaption.Text;
+    LstViewObj.Columns[idx].Width   := StrToInt(txtWidth.Text);
+    case cbAlign.ItemIndex of
+      0: LstViewObj.Columns[idx].Alignment := taLeftJustify;
+      1: LstViewObj.Columns[idx].Alignment := taCenter;
+      2: LstViewObj.Columns[idx].Alignment := taRightJustify;
+    end;
+  end;
+
 end;
 
 end.
