@@ -205,6 +205,8 @@ type
     function GetStretchFactor: integer;
     procedure SetStretchFactor(intValue: integer);
 
+    function TLAlignmentToStr(taPos: TAlignment): string;
+
   published
     { Published properties of TWxTreeListCtrl }
     property OnKeyDown;
@@ -611,9 +613,9 @@ Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("
   for i := self.columns.Count - 1 downto 0 do
   begin
     if (i = self.columns.Count - 1) then
-      Result := Result + #13 + Format('%s->AddColumn(%s,%d,%s );',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, AlignmentToStr(columns[i].Alignment)])
+      Result := Result + #13 + Format('%s->AddColumn(%s, %d, %s);',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, TLAlignmentToStr(columns[i].Alignment)])
     else
-        Result := Result + #13 + Format('%s->InsertColumn(0,%s,%d,%s );',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, AlignmentToStr( columns[i].Alignment)]);
+        Result := Result + #13 + Format('%s->InsertColumn(0, %s, %d, %s);',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, TLAlignmentToStr( columns[i].Alignment)]);
   end;
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
@@ -953,6 +955,16 @@ procedure TWxTreeListCtrl.SetProxyBGColorString(Value: string);
 begin
   FInvisibleBGColorString := Value;
   self.Font.Color := GetColorFromString(Value);
+end;
+
+function TWxTreeListCtrl.TLAlignmentToStr(taPos: TAlignment): string;
+begin
+  Result := '';
+  case taPos of
+    taLeftJustify: Result := 'wxTL_ALIGN_LEFT';
+    taRightJustify: Result := 'wxTL_ALIGN_RIGHT';
+    taCenter: Result := 'wxTL_ALIGN_CENTER';
+  end; // case
 end;
 
 end.
