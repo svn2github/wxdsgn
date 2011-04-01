@@ -961,9 +961,9 @@ function TWxTreeListCtrl.TLAlignmentToStr(taPos: TAlignment): string;
 begin
   Result := '';
   case taPos of
-    taLeftJustify: Result := 'wxTL_ALIGN_LEFT';
-    taRightJustify: Result := 'wxTL_ALIGN_RIGHT';
-    taCenter: Result := 'wxTL_ALIGN_CENTER';
+    taLeftJustify: Result := 'wxALIGN_LEFT';
+    taRightJustify: Result := 'wxALIGN_RIGHT';
+    taCenter: Result := 'wxALIGN_CENTER';
   end; // case
 end;
 
