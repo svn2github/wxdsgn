@@ -1357,13 +1357,13 @@ object MainForm: TMainForm
     Top = 263
     Width = 644
     Height = 130
-    ActivePage = LogSheet
+    ActivePage = DebugSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 98
+        Height = 97
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,18 +1486,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 407
-        Height = 98
+        Height = 97
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           407
-          98)
+          97)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 386
-          Height = 78
+          Height = 77
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1514,10 +1514,10 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
-        ActivePage = tabDebugOutput
+        Height = 97
+        ActivePage = tabLocals
         Align = alClient
-        TabIndex = 4
+        TabIndex = 1
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -1629,7 +1629,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 624
-            Height = 48
+            Height = 47
             Align = alClient
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1730,7 +1730,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 636
-        Height = 61
+        Height = 60
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -1765,7 +1765,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 61
+        Top = 60
         Width = 636
         Height = 41
         Align = alBottom

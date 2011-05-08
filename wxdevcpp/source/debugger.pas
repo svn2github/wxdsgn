@@ -519,7 +519,6 @@ type
 		procedure LoadAllWatches; override;
 		procedure ReLoadWatches; override;
 		procedure RemoveWatch(node: TTreenode); override;
-                procedure GetWatches(List: PList);
 		procedure GetWatchedValues; override;
 		procedure FillWatchValue(Msg: String);
 		procedure FillTooltipValue(Msg: String);
@@ -2008,37 +2007,6 @@ begin
     Token := 0;
 end;
 // end added
-//=================================================================
-
-procedure TGDBDebugger.GetWatches(List: PList);
-{
-   Part of Third Level Parse of Output.
-   Reads a list of Watched variables in "List" and emits a request
-   for the present values for each in the list.
-
-   Uses token to allow us to identify our returning result.
-}
-
-var
-    I: Integer;
-    Token: Integer;
-    Local: PWatchPt;
-    Command: TCommand;
-
-begin
-    for I := 0 to (List.Count - 1) do
-    begin
-		Token := WATCHTOKENBASE + I;
-		Local := List.Items[I];
-		Local.Token := Token;
-		List.Items[I] := Local;
-		Command := TCommand.Create;
-		Command.Command := format('%d%s%s',[Token, GDBdataeval, Local.Name]);
-		Command.Callback := Nil;
-		QueueCommand(Command);
-    end;
-end;
- 
 //=================================================================
 
 procedure TGDBDebugger.ParseStack(Msg: String);
@@ -4714,7 +4682,12 @@ function TGDBDebugger.Result(buf: PChar; bsize: PLongInt): PChar;
 var
     OutputBuffer: String;
     msg: String;
-    Mainmsg: String;
+    Mainmsg, AllReason, ThreadID: String;
+// added 20110409
+    varname: String;
+    watch: pWatchPt;
+    index, thread: Integer;
+// end added
 
 begin
 
@@ -4741,10 +4714,69 @@ end;
         begin
             Mainmsg := StringReplace(msg, 'msg="', '', []);
             Mainmsg := StringReplace(Mainmsg, '\', '', [rfReplaceAll]);
+// added 20110409
+          if ((Token >= WATCHTOKENBASE) and (Token < MODVARTOKEN)) then
+        // Error: Probably a Watchpoint out of scope
+          begin
+            if (AnsiStartsStr(GDBError+GDBNoSymbol, Mainmsg)) then
+            // It has gone out of scope
+            begin
+{$ifdef DISPLAYOUTPUT}
+              // gui_critSect.Enter();
+              AddtoDisplay(Mainmsg);
+              // gui_critSect.Leave();
+{$endif}
+              varname := ExtractBracketed(@Mainmsg, Nil, Nil, '"', false);
+              // Find ALL watchpoints with a name starting with 'varname' and flag as deleted
+              with MainForm.WatchTree do
+                for index := 0 to Items.Count - 1 do
+                begin
+                  Watch := Items[index].Data;
+                  if (AnsiStartsStr(varname, Watch^.Name)) then
+                  begin
+                    Watch^.Value := wpUnknown;
+                    Watch^.BPNumber := 0;
+                    Watch^.Token := 0;
+                    Watch^.Deleted := true;
+                    Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
+                  end;
+                end;
+            end
+            else
+              DisplayError('GDB Error: ' + Mainmsg);
+          end
+          else if (Mainmsg = 'error,mi_cmd_var_assign: Variable object is not editable"') then
+          begin
+            DisplayError('This Variable is not editable');
+          end
+          else
             DisplayError('GDB Error: ' + Mainmsg);
         end
 
-        else
+        else if (AnsiStartsStr(GDBrunning, msg)) then
+        begin
+          // get rest into , &AllReason))
+          AllReason := AnsiRightStr(msg, (Length(msg)-Length(GDBrunning)));
+          TargetIsRunning := true;
+          // gui_critSect.Enter();
+          //MainForm.SetRunStatus(true);
+          // gui_critSect.Leave();
+
+          if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
+          begin
+            if (threadID = 'all') then
+            begin
+              OutputBuffer := 'Running all threads'
+            end
+            else
+            begin
+              thread := StrToInt(threadID);
+              OutputBuffer := Format('Running thread %d', [thread]);
+              AddtoDisplay(OutputBuffer);
+            end;
+          end;
+        end ;
+// end added
         if (AnsiStartsStr(GDBExitmsg, msg)) then
         begin
             AddtoDisplay('GDB is exiting');
@@ -4788,8 +4820,29 @@ end;
         if (AnsiStartsStr(GDBdone + GDBwptr, msg)) then
             ParseWatchpoint(msg);
 
-        if (AnsiStartsStr(GDBdone + GDBnameq, msg)) then
-            ParseVObjCreate(msg);         // if it was a VObj create...
+// modified 20110409
+        if ((AnsiStartsStr(GDBdone+GDBnameq, msg))
+            and not (Token = MODVARTOKEN)) then  
+			// It's not from Modify Variable
+        begin
+		  // if it was a VObj create...
+          ParseVObjCreate(msg);
+        end;
+
+        if (AnsiStartsStr(GDBdone+GDBvalue, msg))  then
+        begin
+            if ((Token >= WATCHTOKENBASE) and (Token < MODVARTOKEN)) then
+			  // it came from a request from GetWatchedValues
+              FillWatchValue(msg)         
+            else
+            if ((Token = TOOLTOKEN)) then
+              // it came from a request from Tooltip (GetVariableHint)
+			  FillTooltipValue(msg)
+            else
+			  // else it was a VObj assign or another -data-evaluate-expression...
+              ParseVObjAssign(msg);                                              
+        end;
+// end modified
 
         
 
