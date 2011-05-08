@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 109
-  Top = 68
+  Left = 222
+  Top = 65
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1357,13 +1357,13 @@ object MainForm: TMainForm
     Top = 263
     Width = 644
     Height = 130
-    ActivePage = DebugSheet
+    ActivePage = LogSheet
     Align = alBottom
     Constraints.MinHeight = 1
     Images = dmMain.MenuImages_Gnome
     MultiLine = True
     PopupMenu = MessagePopup
-    TabIndex = 3
+    TabIndex = 2
     TabOrder = 0
     object CompSheet: TTabSheet
       BorderWidth = 2
@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1412,7 +1412,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
+        Height = 97
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1497,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 386
-          Height = 81
+          Height = 78
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1515,9 +1515,9 @@ object MainForm: TMainForm
         Top = 0
         Width = 632
         Height = 98
-        ActivePage = tabWatches
+        ActivePage = tabDebugOutput
         Align = alClient
-        TabIndex = 3
+        TabIndex = 4
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -1612,32 +1612,14 @@ object MainForm: TMainForm
         object tabWatches: TTabSheet
           Caption = 'Watches'
           ImageIndex = -1
-          object WatchesListView: TListView
+          object WatchTree: TTreeView
             Left = 0
             Top = 0
             Width = 624
             Height = 70
             Align = alClient
-            Columns = <
-              item
-                Caption = 'Name'
-                Width = 200
-              end
-              item
-                Caption = 'Value'
-                Width = 325
-              end
-              item
-                Caption = 'Location'
-                Width = 75
-              end>
-            ReadOnly = True
-            RowSelect = True
+            Indent = 19
             TabOrder = 0
-            ViewStyle = vsReport
-            OnClick = WatchesListViewClick
-            OnDblClick = WatchesListViewDblClick
-            OnMouseUp = WatchesListViewMouseUp
           end
         end
         object tabDebugOutput: TTabSheet
@@ -1647,7 +1629,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 22
             Width = 624
-            Height = 47
+            Height = 48
             Align = alClient
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1704,7 +1686,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 98
+        Height = 97
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft

@@ -697,7 +697,7 @@ type
         RemoveAllBreakpoints1: TMenuItem;
         actRemoveAllBreakpoints: TAction;
     VerboseDebug: TMenuItem;
-    WatchesListView: TListView;
+    WatchTree: TTreeView;
 
         procedure FormShow(Sender: TObject);
         procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -993,10 +993,6 @@ type
         procedure RemoveAllBreakpoints1Click(Sender: TObject);
 
         procedure OnWatches(Locals: PTList);
-    procedure WatchesListViewMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure WatchesListViewDblClick(Sender: TObject);
-    procedure WatchesListViewClick(Sender: TObject);
 
     private
         HelpWindow: HWND;
@@ -5124,7 +5120,7 @@ end;
 procedure TMainForm.InitializeDebugger;
     procedure Initialize;
     begin
-        fDebugger.DebugTree := WatchesListView;
+     //   fDebugger.DebugTree := WatchesListView;
         fDebugger.OnCallStack := OnCallStack;
         fDebugger.OnThreads := OnThreads;
         fDebugger.OnLocals := OnLocals;
@@ -5241,7 +5237,7 @@ begin
         end;
 
         fDebugger.RefreshBreakpoints;
-        fDebugger.RefreshWatches;
+        
     end
     else
     begin
@@ -5815,16 +5811,16 @@ begin
     if fDebugger.Executing and fDebugger.Paused then
     begin
 
-        WatchesListView.Items.BeginUpdate;
+      //  WatchesListView.Items.BeginUpdate;
         //WatchesListView.Clear;
 
-        with WatchesListView.Items.Add do
-        begin
-            Caption := s;
-            Subitems.Add('<unknown>');
-            Subitems.Add('<unknown>');
-        end;
-        WatchesListView.Items.EndUpdate;
+     //   with WatchesListView.Items.Add do
+     //   begin
+      //      Caption := s;
+     //       Subitems.Add('<unknown>');
+     //       Subitems.Add('<unknown>');
+     //   end;
+      //  WatchesListView.Items.EndUpdate;
 
         fDebugger.AddWatch(s, when);
         fDebugger.RefreshContext([cdWatches]);
@@ -8611,37 +8607,6 @@ begin
         Result := ''
 end;
 
-procedure TMainForm.WatchesListViewClick(Sender: TObject);
-var
-  WPtName, WPtNumber: String;
-
-begin
-
-  if ((MainForm.WatchesListView.Items.Count > 0)
-    and not(MainForm.WatchesListView.Selected = nil)) then
-
-  begin
-    WPtName := MainForm.WatchesListView.Selected.Caption;
-
-    WPtNumber :=  MainForm.WatchesListView.Selected.SubItems[0];
-
-  //  MainForm.StatusBar1.Panels[1].Text := 'WPtNumber = ' + WPtNumber;
-  end;
-end;
-
-procedure TMainForm.WatchesListViewDblClick(Sender: TObject);
-var
-  WPtName, WPtNumber, WPtValue: String;
-begin
-  if ((MainForm.WatchesListView.Items.Count > 0)
-    and not(MainForm.WatchesListView.Selected = nil)) then
-  begin
-    WPtValue :=  MainForm.WatchesListView.Selected.SubItems[1];
-  //  MainForm.StatusBar1.Panels[1].Text := 'WPtValue = ' + WPtValue;
-
-  end;
-end;
-
 function TMainForm.isFunctionAvailable(intClassID: Integer;
     strFunctionName: String): boolean;
 var
@@ -10537,52 +10502,9 @@ begin
 
   if (Locals = nil) then
   begin
-    MainForm.WatchesListView.Clear;
     Exit;
   end;
 
-  try
-    for I := 0 to Locals^.Count - 1 do
-      with MainForm.WatchesListView do
-      begin
-        Local := Locals^.Items[I];
-        ListItem := Items.Add;
-        ListItem.Caption := Local^.Name;
-        ListItem.SubItems.Add(Local^.Value);
-
-        ListItem.SubItems.Add(format('%d',[Local^.Number]));
-
-
-      end;
-  finally
-    ;
-  end;
-
-end;
-
-procedure TMainForm.WatchesListViewMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  WPtName, WPtNumber, WPtValue: String;
-  Sel: TListItem;
-  MPt: TPoint;
-
-begin
-  if (MainForm.WatchesListView.Items.Count > 0) then
-  begin
-    MPt.X := X;
-    MPt.Y := Y;
-
-    Sel := MainForm.WatchesListView.GetItemAt( X, Y);
-    if (Sel = nil) then
-      Sel := MainForm.WatchesListView.GetNearestItem(MPt, sdAll);
-
-    if (not(Sel = nil)) then
-    begin
-      WPtValue :=  Sel.SubItems[1];
-   //   MainForm.StatusBar1.Panels[1].Text := 'WPtValue = ' + WPtValue;
-    end;
-  end;
 end;
 
 end.

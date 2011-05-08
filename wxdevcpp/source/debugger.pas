@@ -19,40 +19,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-{
-ADDED since 16/2/2011
-dataeval
-WATCHTOKENBASE
-WatchPoints
-GDBtargetid
-PWatchPt
-TWatchPt
-WatchPtList
-TGDBDebugger.GetWatches
-TGDBDebugger.FillWatches
-
-MODIFIED:
-TGDBDebugger.ParseBreakpoint
-TGDBDebugger.Result
-TGDBDebugger.ParseBreakpointTable
-TGDBDebugger.ParseFrame
-TGDBDebugger.ParseResult
-TGDBDebugger.ParseValue
-}
-
-{
-ADDED 26/2/11 -- This needs to be visible to main:
-
-// added 25/2/2011
-  PWatchVar = ^TWatchVar;
-  TWatchVar = packed record
-    Number: Integer;
-    Name: string;
-    Value: string;
-  end;
-//end added
-
-}
 
 
 unit debugger;
@@ -118,6 +84,9 @@ const GDBbkpt: String = 'bkpt={';
 const GDBbkptno: String = 'bkptno';
 const GDBbkpttable: String = 'BreakpointTable={';
 const GDBbody: String = 'body=[';
+// added 20110409
+const GDBcontinue: String = '-exec-continue';
+//end added
 const GDBcurthread: String = 'current-thread-id';
 const GDBdataeval: String = '-data-evaluate-expression ';
 const GDBexp: String = 'exp=';
@@ -138,6 +107,9 @@ const GDBname: String = 'name';
 const GDBnameq: String = 'name=';
 const GDBnew: String = 'new';
 const GDBnumber: String = 'number';
+// added 20110409
+const GDBNoSymbol: String = 'No symbol';
+// end added
 const GDBold: String = 'old';
 const GDBorig_loc: String = 'original-location=';
 const GDBsigmean: String = 'signal-meaning';
@@ -159,8 +131,15 @@ const GDBwhat: String = 'what=';
 const GDBwpt: String = 'wpt=';
 const GDBwpta: String = 'hw-awpt=';
 const GDBwptr: String = 'hw-rwpt=';
+// added 20110409
+const GDBwpscope: String = 'watchpoint-scope';
+const GDBwpNum: String = 'wpnum=';
+// end added
 const GDBqStrEmpty: String = '\"';
 const wxStringBase: String = '<wxStringBase>';
+// added 20110409
+  const wpUnknown    : String = '(unknown)';
+// end added
 
 const ExpandClasses: Boolean = true;
 // set to false to treat contents of classes as string constants
@@ -180,9 +159,12 @@ const
   PARSELIST = false;
   PARSETUPLE = true;
   INDENT = 3;                       // Amount of indentation of Locals display
-// added 16/2/2011
   WATCHTOKENBASE = 9000;			// Token base for Watchpoint values
+// added 20110409
+  MODVARTOKEN = 9998;
+  TOOLTOKEN = 9999;
 // end added
+
 
 type
     AssemblySyntax = (asATnT, asIntel);
@@ -193,14 +175,20 @@ type
 
 	PList = ^TList;
 
-// added 16/2/2011
+// added 20110409
+  TWatchBreakOn = (wbRead, wbWrite, wbBoth);
 	PWatchPt = ^TWatchPt;
 	TWatchPt = packed record
 		Name: string;
-                Number: Integer;
-		Token: Longint;
-	end;
+// added 20110409
+		Value: String;
+		BPNumber: Integer;
+		BPType: TWatchBreakOn;
+		Token: Longint;       // Last used Token - not necessarily unique!
+		Inactive: Boolean;    // Unused at present
+		Deleted: Boolean;     // deleted by GDB
 // end added
+	end;
 
     ReadThread = class(TThread)
 
@@ -267,14 +255,16 @@ type
         Location: string;
     end;
 
+// redundant ? 20110409
     PWatch = ^TWatch;
-    TWatchBreakOn = (wbRead, wbWrite, wbBoth);
+    
     TWatch = packed record
         Name: string;
         Address: string;
         BreakOn: TWatchBreakOn;
         ID: Integer;
     end;
+// end redundant
 
 	PDebuggerThread = ^TDebuggerThread;
 	TDebuggerThread = packed record
@@ -399,7 +389,18 @@ type
         procedure RefreshBreakpoint(var breakpoint: TBreakpoint);
             virtual; abstract;
         function BreakpointExists(filename: string; line: integer): boolean;
+// added 20110409  
+		procedure LoadAllWatches; virtual; abstract;
+		procedure ReLoadWatches; virtual; abstract;
+		procedure GetWatchedValues; virtual;
+		procedure AddWatch(VarName: String; when: TWatchBreakOn); virtual;
+		procedure RemoveWatch(node: TTreenode); virtual;
+		procedure ModifyVariable(VarName: String; Value: String); virtual;
 
+                procedure ReplaceWxStr(Str: PString); virtual; 
+// end added
+
+		
         //Debugger control funtions
         procedure Go; virtual; abstract;
         procedure Pause; virtual;
@@ -424,10 +425,10 @@ type
         procedure RefreshContext(refresh: ContextDataSet =
             [cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly]);
             virtual; abstract;
-        procedure AddWatch(varname: string; when: TWatchBreakOn);
-            virtual; abstract;
-        procedure RemoveWatch(varname: string); virtual; abstract;
-        procedure ModifyVariable(varname, newvalue: string); virtual; abstract;
+//        procedure AddWatch(varname: string; when: TWatchBreakOn);
+//            virtual; abstract;
+//        procedure RemoveWatch(varname: string); virtual; abstract;
+//        procedure ModifyVariable(varname, newvalue: string); virtual; abstract;
 
         //Low-level stuff
         procedure GetRegisters; virtual; abstract;
@@ -451,10 +452,9 @@ type
         Started: Boolean;
 		LastVOident: String;
 		LastVOVar: String;
-// added 16/2/2011
-		WatchPtList: TList;
-// end added
-
+// Modified 20110409 - was TList
+		WatchPtList: TTreeView;
+// end modified
         // Pipe handles
         g_hChildStd_IN_Wr: THandle;		//we write to this
         g_hChildStd_IN_Rd: THandle;		//Child process reads from here
@@ -508,15 +508,24 @@ type
         procedure AddBreakpoint(breakpoint: TBreakpoint); override;
         procedure RemoveBreakpoint(breakpoint: TBreakpoint); override;
         procedure RefreshBreakpoint(var breakpoint: TBreakpoint); override;
-        procedure RefreshWatches; override;
+//        procedure RefreshWatches; override;
 
         //Variable watches
         procedure RefreshContext(refresh: ContextDataSet =
             [cdLocals, cdCallStack, cdWatches,
             cdThreads, cdDisassembly, cdRegisters]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
-        procedure RemoveWatch(varname: string); override;
-        procedure ModifyVariable(varname, newvalue: string); override;
+// added 20110409
+		procedure LoadAllWatches; override;
+		procedure ReLoadWatches; override;
+		procedure RemoveWatch(node: TTreenode); override;
+                procedure GetWatches(List: PList);
+		procedure GetWatchedValues; override;
+		procedure FillWatchValue(Msg: String);
+		procedure FillTooltipValue(Msg: String);
+		procedure ModifyVariable(VarName: String; Value: String); override;
+// end added  
+//        procedure RemoveWatch(varname: string); override;
 
         // Parser functions
         function GetToken(buf: PChar; bsize: PLongInt;
@@ -537,6 +546,9 @@ type
 		function  ParseValue(Str: PString; Level: Integer; List: TList): String;
         function SplitResult(Str: PString; Vari: PString): String;
         function ExtractWxStr(Str: PString): String;
+// added 20110409
+		procedure ReplaceWxStr(Str: PString); override;
+//end added
         function ExtractBracketed(Str: PString; start: Pinteger;
             next: PInteger; c: Char; inclusive: Boolean): String;
         function ExtractNamed(Src: PString; Target: PString;
@@ -544,18 +556,15 @@ type
 		function ParseVObjCreate(Msg: String): Boolean;
 		function ParseVObjAssign(Msg: String): Boolean;
         procedure ParseWatchpoint(Msg: String);
-// added modified 16/2/2011
 		procedure ParseBreakpoint(Msg: String; List: PList);
-		procedure GetWatches(List: PList);
-		procedure FillWatches(Msg: String; List: PList);
-// end added
-        procedure ParseBreakpointTable(Msg: String);
+		procedure ParseBreakpointTable(Msg: String);
         procedure ParseStack(Msg: String);
         function  ParseFrame(Msg: String; Frame: PStackFrame): String;
         procedure ParseThreads(Msg: String);
         procedure WatchpointHit(Msg: PString);
         procedure BreakpointHit(Msg: PString);
         procedure StepHit(Msg: PString);
+		procedure WptScope(Msg: PString);		
         procedure SigRecv(Msg: Pstring);
 
         //Debugger control
@@ -618,7 +627,7 @@ type
             [cdLocals, cdCallStack, cdWatches,
             cdThreads, cdDisassembly, cdRegisters]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
-        procedure RemoveWatch(varname: string); override;
+        //procedure RemoveWatch(varname: string); override;
 
         //Debugger control
         procedure Go; override;
@@ -815,6 +824,26 @@ begin
 end;
 
 //=============================================================
+
+procedure TDebugger.GetWatchedValues;
+begin
+end;
+
+procedure TDebugger.AddWatch(VarName: String; when: TWatchBreakOn);
+begin
+end;
+
+procedure TDebugger.RemoveWatch(node: TTreenode);
+begin
+end;
+
+procedure TDebugger.ModifyVariable(VarName: String; Value: String);
+begin
+end;
+
+procedure TDebugger.ReplaceWxStr(Str: PString);
+begin
+end;
 
 procedure TDebugger.Launch(commandline, startupdir: String);
 begin
@@ -1298,7 +1327,7 @@ function TGDBDebugger.ExtractNamed(Src: PString; Target: PString;
     //     Param3 = 2
     //
     //    the last character of Target must be either '{' or '[' or '"'
-    //    Target is deemed to end with the matching closing character
+    //    The target is deemed to end with the matching closing character
     //
     //    Returns a string EXCLUSIVE of the enclosing brackets/quotes
     //    Returns an empty string on failure
@@ -1455,13 +1484,12 @@ function TGDBDebugger.ParseVObjCreate(Msg: String): Boolean;
 
 var
   Value: String;
-  ValStrings : TStringList;
   VarType: String;
+  ValStrings : TStringList;
   Name: String;
   start: Integer;
   Ret: Boolean;
   Buffer, Output: String;
-  BytesWritten: DWORD;
 
 begin
 
@@ -1532,13 +1560,9 @@ function TGDBDebugger.ParseVObjAssign(Msg: String):Boolean;
 }
 var
   Value: String;
-  ValStrings:TStringList;
-  VarType: String;
-  Name: String;
+  ValStrings : TStringList;
   start: Integer;
-  Ret: Boolean;
   Buffer, Output: String;
-  BytesWritten: DWORD;
 
 begin
   start := 0;
@@ -1568,8 +1592,49 @@ begin
   end;
 end;
 
+
 //=================================================================
-// added 16/2/2011 & 26/2/2011 modified
+// addded 20110409
+procedure TGDBDebugger.FillTooltipValue(Msg: String);
+{
+/*
+   Parses out the Tooltip value
+*/
+}
+var
+  Value: String;
+  ValStrings : TStringList;
+  start: Integer;
+  Output: String;
+
+begin
+  start := 0;
+
+  Value := ExtractBracketed(@Msg, @start, Nil, '"', false); // strip 'value'
+
+  if (start = 13) then            // 13 = length('done,value=')
+  begin
+    // Handle wxString
+    ReplaceWxStr(@Value);
+    Value := OctToHex(@Value);
+    Value := unescape(@Value);
+    ValStrings := TStringList.Create;
+    ValStrings.Add(Value);
+    OnVariableHint(ValStrings);
+    ValStrings.Clear;
+    ValStrings.Free;
+    if (verbose) then
+    begin
+      Output := format('Tooltip has value %s', [Value]);
+      // gui_critSect.Enter();
+      AddtoDisplay(Output);
+      // gui_critSect.Leave();
+    end;
+  end;
+end;
+// end added
+//=================================================================
+
 procedure TGDBDebugger.ParseBreakpoint(Msg: String; List: PList);
 {
 
@@ -1635,7 +1700,7 @@ begin
 			List.Add(Vari);
 		end;
     end;
-// end added
+
 {
 /*
     These might or might not also be useful:
@@ -1694,12 +1759,10 @@ end;
 
 //=================================================================
 
-// added 16/2/2011 modified
+// modified 20110409
 procedure TGDBDebugger.ParseBreakpointTable(Msg: String);
 {
    Part of Third Level Parse of Output.
-   Reads the response and builds a list of watchpoints, which is
-   passed on to GetWatches.
 }
 var
 
@@ -1710,8 +1773,6 @@ var
 
 
 begin
-
-    WatchPtList := TList.Create;
     N_rows := 0;
     {Ret := false;}
     {Ret := }ParseConst(@Msg, @GDBnr_rows, PInteger(@N_rows));
@@ -1722,13 +1783,231 @@ begin
         for row := 1 to N_rows do
         begin
             BkptStr := ExtractNamed(@Str, @GDBbkpt, row);
-            ParseBreakpoint(BkptStr, @WatchPtList);
+            ParseBreakpoint(BkptStr, nil);
         end;
     end;
-    GetWatches(@WatchPtList);
 
 end;
 
+//=================================================================
+// added 20110409
+procedure TGDBDebugger.AddWatch(VarName: String; when: TWatchBreakOn);
+{
+   Adds a watch variable/expression VarName to the TTreeView list,
+   and to GDB's list.
+   Uses token to allow us to identify our result when it is returned.
+}
+var
+  Watch: PWatchPt;
+  Command: TCommand;
+begin
+  with MainForm.WatchTree.Items.Add(nil, VarName) do
+  begin
+    ImageIndex := 21;
+    SelectedIndex := 21;
+    New(Watch);
+    Watch^.Name := varname;
+    Watch^.Value := wpUnknown;
+    Watch^.BPNumber := 0;
+    Watch^.Deleted := true;
+    Watch^.Token := MainForm.WatchTree.Items.Count - 1;
+    Watch^.BPType := when;
+    Data := Watch;
+    Text := Watch^.Name + ' = ' + Watch^.Value;
+  end;
+
+  Command := TCommand.Create;
+  Command.Data := Pointer(Watch);
+  case when of
+    wbRead:
+      Command.Command := Format('%d-break-watch -r %s',
+        [Watch^.Token,varname]);
+    wbWrite:
+      Command.Command := Format('%d-break-watch %s',
+        [Watch^.Token,varname]);
+    wbBoth:
+      Command.Command := Format('%d-break-watch -a %s',
+        [Watch^.Token,varname]);
+  end;
+  QueueCommand(Command);
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.LoadAllWatches;
+{
+   MUST ONLY BE CALLED ON GDB STARTUP
+
+   Loads GDB with all the watches in the TTreeView list.
+   Uses token to allow us to identify our returning result.
+}
+var
+  Watch: PWatchPt;
+  Command: TCommand;
+  index: Integer;
+begin
+  with MainForm.WatchTree do
+  for index := 0 to Items.Count - 1 do
+  begin
+    Watch := Items[index].Data;
+    Watch^.Value := wpUnknown;
+    Watch^.BPNumber := 0;
+    Watch^.Deleted := true;
+    Watch^.Token := WATCHTOKENBASE + index;
+    Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
+
+    Command := TCommand.Create;
+    case Watch^.BPType of
+      wbRead:
+        Command.Command := Format('%d-break-watch -r %s',
+          [Watch^.Token,Watch^.Name]);
+      wbWrite:
+        Command.Command := Format('%d-break-watch %s',
+          [Watch^.Token,Watch^.Name]);
+      wbBoth:
+        Command.Command := Format('%d-break-watch -a %s',
+          [Watch^.Token,Watch^.Name]);
+    end;
+    QueueCommand(Command);
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ReLoadWatches;
+{
+   Automatically reloads GDB with deleted watches.
+
+   Loads GDB with all the watches flagged as 'deleted' in the TTreeView list.
+   Uses token to allow us to identify our result when it is returned.
+}
+var
+  Watch: PWatchPt;
+  Command: TCommand;
+  index: Integer;
+begin
+  with MainForm.WatchTree do
+  for index := 0 to Items.Count - 1 do
+  begin
+    Watch := Items[index].Data;
+    if (Watch^.Deleted) then
+    begin
+      Watch^.Value := wpUnknown;
+      Watch^.BPNumber := 0;
+      Watch^.Token := WATCHTOKENBASE + index;
+      Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
+
+      Command := TCommand.Create;
+      case Watch^.BPType of
+        wbRead:
+          Command.Command := Format('%d-break-watch -r %s',
+            [Watch^.Token,Watch^.Name]);
+        wbWrite:
+          Command.Command := Format('%d-break-watch %s',
+            [Watch^.Token,Watch^.Name]);
+        wbBoth:
+          Command.Command := Format('%d-break-watch -a %s',
+            [Watch^.Token,Watch^.Name]);
+      end;
+      QueueCommand(Command);
+    end;
+  end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.RemoveWatch(node: TTreenode);
+{
+    Removes a watch from the TTreeView list and from GDB's list.
+}
+var
+    Watch: PWatchPt;
+    Command: TCommand;
+begin
+    //while Assigned(node) and (Assigned(node.Parent)) do
+    //  node := node.Parent;
+
+    //Then clean it up
+    if Assigned(node) then
+    begin
+      Watch := node.Data;
+      if ((Watch.BPNumber = 0) and not (Watch.Deleted)) then
+      begin
+        DisplayError('Internal Error: unable to identify Watchpoint');
+        Exit;
+      end;
+      Command := TCommand.Create;
+      Command.Command := Format('-break-delete %d',[watch.BPNumber]);
+      QueueCommand(Command);
+      Dispose(node.Data);
+      MainForm.WatchTree.Items.Delete(node);
+    end;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.GetWatchedValues;
+{
+    Part of Third Level Parse of Output.
+    Reads a list of Watched variables in the WatchTree list and emits a request
+    for the present values for each in the list.
+
+
+    Uses token to allow us to identify our result when it is returned.
+}
+
+var
+    I: Integer;
+
+    Watch: PWatchPt;
+    Command: TCommand;
+
+begin
+    with MainForm.WatchTree do
+    for I := 0 to (Items.Count - 1) do
+    begin
+
+
+
+
+      Watch := Items[I].Data;
+      Watch.Token := WATCHTOKENBASE + I;
+      Command := TCommand.Create;
+      Command.Command := format('%d%s%s',[Watch.Token, GDBdataeval, Watch.Name]);
+      Command.Callback := Nil;
+      QueueCommand(Command);
+    end;
+
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.FillWatchValue(Msg: String);
+{
+   Part of Third Level Parse of Output.
+   Receives the result of a single "-data-evaluate-expression ..."
+   identified by a designated token, and adds the variable value to the
+   Watched variable in WachTree list.
+}
+
+var
+    Value: String;
+    start: Integer;
+    I: Integer;
+    Watch: PWatchPt;
+
+begin
+    Value := ExtractBracketed(@Msg, @start, Nil, '"', false); // must strip 'value'
+    Value := OctToHex(@Value);
+    ReplaceWxStr(@Value);
+    I := Token - WATCHTOKENBASE;
+    Watch := MainForm.WatchTree.Items[I].Data;
+    Watch.Value := Value;
+    MainForm.WatchTree.Items[I].Text :=
+      Format('%s = %s', [Watch.Name, Watch.Value]);
+    Token := 0;
+end;
+// end added
 //=================================================================
 
 procedure TGDBDebugger.GetWatches(List: PList);
@@ -1758,103 +2037,10 @@ begin
 		Command.Callback := Nil;
 		QueueCommand(Command);
     end;
-
 end;
-
+ 
 //=================================================================
-//added 25/2/2011 modified
 
-procedure TGDBDebugger.FillWatches(Msg: String; List: PList);
-{
-   Part of Third Level Parse of Output.
-   Receives the result of a single "-data-evaluate-expression ..."
-   identified by a designated token, and adds the variable name to the
-   returned present values of the Watched variable, then passes the result
-   to the IDE window in a second list.
-   List is the list of watched variables and their tokens from GetWatches.
-   The token returned with the value is used to retrieve the variable name
-   in List that has the corresponding token.
-}
-
-var
-    Value: String;
-    start: Integer;
-    Output, WatchesStr: String;
-    I: Integer;
-    Level: Integer;
-    Local: PWatchPt;
-    WatchItemList: TList;       // The list for one watched var for display
-// added 25/2/2011 modded
-    WatchItem: PWatchVar;
-// end added
-
-begin
-    start := 0;
-    level := 0;
-    WatchItemList := TList.Create;
-    New(WatchItem);
-
-    if (Token = WATCHTOKENBASE) then      // Clear the IDE display
-      MainForm.OnWatches(nil);
-
-    Value := ExtractBracketed(@Msg, @start, Nil, '"', false); // because 'value' gets stripped off!
-    if (start = 13) then            // 13 = length('done,value=') - Most likely it was a VObj or expression value ... but we can't prove it
-    begin
-      WatchesStr := AnsiMidStr(Msg, Length(GDBdone)+1, Length(Msg) - Length(GDBdone));
-      if (AnsiStartsStr(GDBvalueq, WatchesStr)) then
-      begin
-        Output := ParseResult(@WatchesStr, Level, WatchItemList);
-        I := 0;
-        while (I < List.Count) do                 // Search List for our Variable
-        begin
-          Local := List^.Items[I];
-          if (Local.Token = Token) then           // find the correct variable
-          begin
-            if (WatchItemList.Count = 1) then
-              // It's a simple Variable - add the name to the 1st and only item
-            begin
-              WatchItem := WatchItemList.Items[0];
-              WatchItem.Name := Local.Name;
-// added 25/2/2011
-              WatchItem.Number := Local.Number;
-// end added
-              WatchItemList.Items[0] := WatchItem;
-
-            end
-            else
-              // else insert the name at the beginning
-            begin
-              WatchItem.Name := Local.Name;
-// added 25/2/2011
-              WatchItem.Number := Local.Number;
-// end added
-              WatchItem.Value := '';
-              WatchItemList.Insert(0, WatchItem);
-            end;
-            MainForm.OnWatches(@WatchItemList);
-            break;
-          end;
-          Inc(I);
-        end;
-      end;
-      Token := 0;
-      try
-          { Cleanup: must free the list items as well as the list }
-       for I := 0 to (WatchItemList.Count - 1) do
-       begin
-         WatchItem := WatchItemList.Items[I];
-         Dispose(WatchItem);
-       end;
-      finally
-        WatchItemList.Free;
-      end;
-    end;
-end;
-
-//=================================================================
-// end added
-
-// added 23/2/2011 modified
 procedure TGDBDebugger.ParseStack(Msg: String);
 {
 
@@ -1968,7 +2154,6 @@ begin
 end;
 
 //=================================================================
-// end added
 
 procedure TGDBDebugger.ParseThreads(Msg: String);
 {
@@ -2057,20 +2242,21 @@ begin
 end;
 
 //=================================================================
-
+// modified 20110409
 procedure TGDBDebugger.ParseWatchpoint(Msg: String);
 {
    Part of Third Level Parse of Output.
 
-   INCOMPLETE
-   Does nothing with the result apart from writing to display
-   Needs to build a list to pass back to the IDE
+   Acknowledgement of watchpoint loaded by GDB.
+   Updates the Watchpoint data record.
 }
 var
     Num: Integer;
     Expr: String;
 
+    Watch: PWatchPt;
     Output: String;
+    index: Integer;
     {Ret: Boolean;}
 begin
     Num := 0;
@@ -2078,13 +2264,32 @@ begin
 
     {Ret := }ParseConst(@Msg, @GDBnumber, PInteger(@Num));
     {Ret := }ParseConst(@Msg, @GDBexp, PString(@Expr));
+    if ((Token >= WATCHTOKENBASE) and (Token < MODVARTOKEN)) then
+    with MainForm.WatchTree.Items do
+    begin
+      if not(Count = 0) then
+      begin
+        for index := 0 to Count-1   do
+        begin
+          Watch := Item[index].Data;
+          if ((Watch.Name = Expr) and (Watch.BPNumber = 0)) then
+          begin
+            Watch.BPNumber := Num;
+            Watch.Inactive := False;
+            Watch.Deleted := False;
+            Item[index].Text := Format('%s = %s', [Watch.Name, Watch.Value]);
+          end;
+        end;
+      end;
+    end;
+    Token := 0;
     Output := format('Watchpoint No %d set for %s', [Num, Expr]);
     // gui_critSect.Enter();
     AddtoDisplay(Output);
     // gui_critSect.Leave();
 
 end;
-
+// end modified
 //=================================================================
 
 procedure TGDBDebugger.WatchpointHit(Msg: PString);
@@ -2180,6 +2385,111 @@ begin
     MainForm.GotoBreakpoint(SrcFile, Line);
 end;
 
+//=================================================================
+// added 20110409
+procedure TGDBDebugger.ModifyVariable(VarName: String; Value: String);
+{
+/*
+   Writes 3 commands in succession to create a Variable Object, change its
+   value and then delete the Variable Object.
+   The name for the VO is made from the Variable Name with certain characters
+   replaced and prefixed with 'VO'. I.E. MyClass.Prop[3] is named
+     MyClass_Prop_3_
+   Uses token to allow us to identify our result when it is returned.
+*/
+}
+var
+  VOName: String;
+  i: Integer;
+
+begin
+  VOName := VarName;
+  // create a name
+  for i := 1 to length(VOName) do
+    if ((VOName[i] = '.') or (VOName[i] = '[') or (VOName[i] = ']')) then
+      VOName[i] := '_';
+
+{$ifdef DISPLAYOUTPUT}
+  AddtoDisplay(format('Writing %d-var-create VO%s @ %s',[MODVARTOKEN, VOName, VarName]));
+  AddtoDisplay(format('Writing %d-var-assign VO%s %s',[MODVARTOKEN, VOName, Value]));
+  AddtoDisplay(format('Writing %d-var-delete VO%s',[MODVARTOKEN, VOName]));
+{$endif}
+  WriteToPipe(format('%d-var-create VO%s @ %s',[MODVARTOKEN, VOName, VarName]));
+  WriteToPipe(format('%d-var-assign VO%s %s',[MODVARTOKEN, VOName, Value]));
+  WriteToPipe(format('%d-var-delete VO%s',[MODVARTOKEN, VOName]));
+
+end;
+
+//=================================================================
+// added 20110409
+procedure TGDBDebugger.WptScope(Msg: PString);
+// Parses out Watchpoint details
+// N.B. "Msg" may contain multiple pairs of values:
+//    reason="watchpoint-scope",wpnum="n",
+
+var
+  Temp: String;
+  Reason, Output: String;
+  Thread: Integer;
+  wpnum: Integer;
+  index: Integer;
+//  count: Integer;
+  watch: PWatchPt;
+  //Ret: Boolean;
+  comma1, comma2: Integer;
+  BPStr: String;
+
+begin
+
+  Temp := Msg^;
+  // reason="watchpoint-scope",wpnum="3",  <etc> ,thread-id="1",frame={addr="0x77c2c3d9",func="msvcrt!free",args=[],from="C:\\WINDOWS\\system32\\msvcrt.dll"}'
+
+  ParseConst(Msg, @GDBthreadid, PInteger(@Thread));
+  comma1 := FindFirstChar(Temp, ',');
+  Temp := AnsiMidStr(Temp, (comma1+1), Length(Temp)-comma1-1);
+//  count := 1;
+  repeat
+    comma1 := FindFirstChar(Temp, ',');
+    if (comma1 = 0) then Break;
+    comma2 := FindFirstChar(AnsiMidStr(Temp, (comma1+1), Length(Temp)-comma1-1), ',');
+    if (comma2 = 0) then Break;
+    BPStr := AnsiLeftStr(Temp, comma1+comma2);
+    Temp := AnsiMidStr(Temp, (comma1+comma2+1), Length(Temp)-comma1-comma2-1);
+
+    ParseConst(@BPStr, @GDBreason, PString(@Reason));
+    ParseConst(@BPStr, @GDBwpNum, PInteger(@wpnum));
+    if ((not(Reason = '')) and (not(wpnum = 0))) then
+    begin
+      with MainForm.WatchTree.Items do
+      begin
+        if not(Count = 0) then
+        begin
+          for index := 0 to Count-1   do
+          begin
+            Watch := Item[index].Data;
+            if (Watch.BPNumber = wpnum) then
+            begin
+              Watch.Deleted := true;
+              Watch.Value := wpUnknown;
+              Item[index].Text := Format('%s = %s', [Watch.Name, Watch.Value]);
+              Output := Format('Stopped - %s for %s in Thread %d', [Reason, Watch.Name, Thread]);
+            end;
+          end;
+        end;
+      end;
+    end;
+//    Inc(count);
+  until((Reason = '') or (wpnum = 0));
+
+  // Restart the Target:
+  WriteToPipe(GDBcontinue);
+
+  // gui_critSect.Enter();
+  AddtoDisplay(Output);
+  // gui_critSect.Leave();
+
+end;
+//end added
 //=================================================================
 
 procedure TGDBDebugger.StepHit(Msg: PString);
@@ -2283,7 +2593,7 @@ begin
 end;
 
 //=================================================================
-
+// modified 20110409
 function TGDBDebugger.ParseResult(Str: PString; Level: Integer; List: TList): String;
 {
 /*
@@ -2312,9 +2622,7 @@ Var
   Vari: String;   // This is called Var in the GDB spec !
   start: Integer;
   Val: String;
-// added 25/2/2011 modded
   Local: PWatchVar;
-// end added
 
 begin          // ParseResult
   Val := SplitResult(Str, @Vari);
@@ -2324,80 +2632,72 @@ begin          // ParseResult
   if (Vari = GDBname) then                        // a name of a Tuple
   begin
     New(Local);
-// added 25/2/2011 modded
+
     Local.Number := 0;
-// end added
+
     Output := Output + Val;
     Local.Name := format('%*s%s',[Level*INDENT, '',
-      ExtractBracketed(@Val, nil, nil, '"', false)]);
+    ExtractBracketed(@Val, nil, nil, '"', false)]);
     Local.Value := '';
     List.Add(Local);
   end
   else
   if (Vari = GDBvalue) then                      // a value of named a Tuple
   begin
-    if ((start < 6) and not (start = 0)) then    // a WxString
-    begin
-      if (List.Count = 0) then
-      begin
-        New(Local);
-// added 25/2/2011 modded
-        Local.Number := 0;
-// end added
-        Local^.Value := ExtractWxStr(@Val);
-      end
-      else
-      begin
-        Local := List.Last;                      // so add it to the last item
-        Local^.Value := ExtractWxStr(@Val);
-        List.Remove(Local);
-      end;
-      List.Add(Local);
-      Output := Output + '"';
-      Output := Output + ExtractWxStr(@Val);
-      Output := Output + '"';
-    end
-    else
-    if (AnsiStartsStr('"{', Val)) then           // it's a named Tuple
-    begin
-      Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
-    end
-    else
-    if (AnsiStartsStr('"', Val)) then            // it's value of a Tuple
+
+    ReplaceWxStr(@Val);
+//    else
+//    if (AnsiStartsStr('"{', Val)) then           // it's a named Tuple
+//    begin
+//      Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
+//    end
+
+    if (AnsiStartsStr('"', Val)) then            // it's a quoted string e.g. a value of a Tuple
     begin
       New(Local);
-// added 25/2/2011 modded
       Local.Number := 0;
-// end added
       Output := Output + OctToHex(@Val);
       if (List.Count > 0) then
         Local := List.Last;                      // so add the value to the last item
       Val := OctToHex(@Val);
-      Local^.Value := ExtractBracketed(@Val, nil, nil, '"', false);
+      Local^.Value := Val;
+
       List.Remove(Local);
       List.Add(Local);
     end
+    else
+    begin
+      if (List.Count = 0) then
+      begin
+          New(Local);
+
+          Local.Number := 0;
+
+          Local^.Value := Val;
+      end
+      else
+      begin
+          Local := List.Last;                      // so add it to the last item
+          Local^.Value := Val;
+          List.Remove(Local);
+      end;
+      List.Add(Local);
+      Output := Output + Val;
+
+
+
+
+    end;
+
   end
+
   else
   if (AnsiStartsStr('[', Val)) then              // it's a List
     begin
+
       Output := Output + ExtractList(Str, PARSELIST, Level, List);
     end
-  else
-    // Special Case: WxString
-  if ((start < 6) and not (start = 0)) then
-  begin
-    New(Local);
-// added 25/2/2011 modded
-    Local.Number := 0;
-// end added
-    Local^.Name := format('%*s%s',[Level*INDENT, '', Vari]);
-    Local^.Value := ExtractWxStr(@Val);
-    List.Add(Local);
-    Output := Output + '"';
-    Output := Output + ExtractWxStr(@Val);
-    Output := Output + '"';
-  end
+
   else
   if (AnsiStartsStr('{', Val)) then              // it's a Tuple
   begin
@@ -2427,6 +2727,7 @@ begin          // ParseResult
   ParseResult := Output;
 end;
 
+// end modified
 //=================================================================
 
 function TGDBDebugger.ExtractList(Str: PString; Tuple: Boolean; Level: Integer; List: TList): String;
@@ -2618,6 +2919,45 @@ begin          // ExtractwxStr
 
 end;
 
+//=================================================================
+// Added 20110409
+procedure TGDBDebugger.ReplaceWxStr(Str: PString);
+
+//    Expects a string with embedded wxStrings specifically of the form expected
+//     by ExtractWxStr
+//    and returns with the string that has only the quoted string itself embedded.
+//      e.g. {MywxStr = {<wxStringBase> = {static npos = ..., m_pchData = 0x... \"AString\"}, <No data fields>}}
+//    becomes
+//      {MywxStr = "AString"}
+
+
+var
+  wxstarts: Integer;
+  starts: Integer;
+  ends: Integer;
+  QStr, Remainder, Output: String;
+
+begin
+  Remainder := Str^;
+  Output := '';
+  wxstarts := AnsiPos( '{'+wxStringBase, Remainder);
+  while (not(wxstarts = 0)) do
+  begin
+    Output := Output + AnsiLeftStr(Remainder, wxstarts-1);
+    Remainder := AnsiRightStr(Remainder, Length(Remainder) - wxstarts +1 );
+    QStr := ExtractBracketed(@Remainder, @starts, @ends, '{', true);
+    Output := Output + '"' + ExtractWxStr(@QStr) + '"';
+    if (ends = 0) then
+    begin
+      Remainder := '';
+      break;
+    end;
+    Remainder := AnsiRightStr(Remainder, Length(Remainder) - ends + starts );
+    wxstarts := AnsiPos( '{'+wxStringBase, Remainder);
+  end;
+  Str^ := Output + Remainder;
+end;
+// end added
 //=================================================================
 
 function unescape(s: PString): String;
@@ -2938,7 +3278,9 @@ begin          // ExtractBracketed
                 break;
         end;
 
-        if ((e = Length(Output)) and (s = -1)) then
+// changed 20110409
+		if ((e > Length(Output)) and (s = -1)) then          // was e = Length(Output)
+// end changed
         begin
             if (not (start = Nil)) then
                 start^ := 0;
@@ -2950,7 +3292,9 @@ begin          // ExtractBracketed
     end;
 
     if (not (next = Nil)) then
-        if (e = Length(Output)) then
+// changed 20110409
+        if (e > Length(Output)) then
+// end changed
             next^ := 0
         else
             next^ := e;
@@ -3126,6 +3470,9 @@ begin
     QueueCommand('-gdb-set', 'breakpoint pending on');
     // Fix for DLL breakpoints
     QueueCommand('-gdb-set args', arguments);
+
+    LoadAllWatches;
+    
 end;
 
 //=============================================================
@@ -3564,10 +3911,14 @@ begin
         GetRegisters;
 
     //Then update the watches
-    if (cdWatches in refresh) and Assigned(DebugTree) then
+    if (cdWatches in refresh) and Assigned(MainForm.WatchTree) then
     begin
+		ReLoadWatches;
+		GetWatchedValues;
+{
+Deleted 20110409:
         I := 0;
-        ShowMessage(Format('Debugtree count = %d', [DebugTree.Items.Count]));
+        ShowMessage(Format('Watchtree count = %d', [WatchTree.Items.Count]));
         while I < DebugTree.Items.Count do
         begin
         ShowMessage('1');
@@ -3600,7 +3951,10 @@ begin
             //Increment our counter
             Inc(I);
         end;
+}		
     end;
+	
+	
 end;
 
 //=================================================================
@@ -3611,14 +3965,15 @@ begin
 end;
 
 //=================================================================
-
+{
+deleted 20110409
 procedure TGDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
 var
     Watch: PWatch;
     Command: TCommand;
 begin
 
- {   with DebugTree.AddItem(varname + ' = (unknown)', nil) do
+    with DebugTree.AddItem(varname + ' = (unknown)', nil) do
     begin
         ImageIndex := 21;
         SelectedIndex := 21;
@@ -3626,7 +3981,7 @@ begin
         Watch^.Name := varname;
         Data := Watch;
     end;
-  }
+  
     Command := TCommand.Create;
     Command.Data := Pointer(Watch);
     case when of
@@ -3642,6 +3997,9 @@ begin
 end;
 
 //=================================================================
+}
+{
+deleted 20110409
 
 procedure TGDBDebugger.RefreshWatches;
 var
@@ -3661,21 +4019,22 @@ begin
 end;
 
 //=================================================================
-
+}
 procedure TGDBDebugger.OnWatchesSet(Output: TStringList);
 begin
     //TODO: lowjoel: Watch-setting error?
 end;
 
 //=================================================================
-
+{
+deleted 20110409
 procedure TGDBDebugger.RemoveWatch(varname: string);
 var
     node: TListItem;
 begin
 
     //Find the top-most node
-{    node := DebugTree.Selected;
+    node := DebugTree.Selected;
     while Assigned(node) and (Assigned(node.Parent)) do
         node := node.Parent;
 
@@ -3685,15 +4044,19 @@ begin
         Dispose(node.Data);
         DebugTree.Items.Delete(node);
     end;
-    }
+    
 end;
 
 //=================================================================
 
+deleted 20110409
 procedure TGDBDebugger.ModifyVariable(varname, newvalue: string);
 begin
     QueueCommand('-gdb-set variable', varname + ' = ' + newvalue);
 end;
+}
+
+//=================================================================
 
 procedure TGDBDebugger.OnCallStack(Output: TStringList);
 var
@@ -4211,7 +4574,7 @@ begin
     Command := TCommand.Create;
     Command.OnResult := OnVariableHint;
     //Command.Command := 'print ' + name;
-    Command.Command := '-data-evaluate-expression ' + name;
+    Command.Command := format('%d%s%s',[TOOLTOKEN, GDBdataeval, name]);
 
     //Send the command;
     QueueCommand(Command);
@@ -4428,14 +4791,7 @@ end;
         if (AnsiStartsStr(GDBdone + GDBnameq, msg)) then
             ParseVObjCreate(msg);         // if it was a VObj create...
 
-        if (AnsiStartsStr(GDBdone + GDBvalue, msg)) then
-// added 16/2/2011
-            if ((Token >= WATCHTOKENBASE) and (Token < (WATCHTOKENBASE + 999))) then
-				FillWatches(msg, @watchPtList)  // if it came from a request from GetWatches
-            else
-				ParseVObjAssign(msg);       // else it was a VObj assign
-//                                            or another -data-evaluate-expression...
-// end added
+        
 
         Result := buf;
 
@@ -4576,6 +4932,15 @@ end;
                     // gui_critSect.Leave();
                     StepHit(@msg);
                 end
+// added 20110409
+				else if (Reason = 'watchpoint-scope') then
+				begin
+					// gui_critSect.Enter();
+					AddtoDisplay('Stopped - watchpoint-scope');
+					// gui_critSect.Leave();
+					WptScope(@msg);
+				end
+// added 20110409
                 else if (Reason = 'signal-received') then
                 begin
                    AddtoDisplay('Stopped - signal received');
@@ -4710,8 +5075,6 @@ function TGDBDebugger.Notify(buf: PChar; bsize: PLongInt; verbose: Boolean): PCh
 var
     OutputBuffer: String;
     msg: String;
-    Mainmsg: String;
-    groupID: DWORD;
 
 begin
 
@@ -5395,10 +5758,6 @@ begin
 end;
 
 procedure TCDBDebugger.RefreshWatches;
-begin
-end;
-
-procedure TCDBDebugger.RemoveWatch(varname: string);
 begin
 end;
 
