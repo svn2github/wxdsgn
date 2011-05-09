@@ -8545,11 +8545,37 @@ end;
 
 procedure TMainForm.actModifyWatchExecute(Sender: TObject);
 var
-    s, val: string;
+    val: string;
     i: integer;
     n: TTreeNode;
+    Watch: PWatchPt;
+
 begin
-   
+    if (not Assigned(WatchTree.Selected)) or (not fDebugger.Executing) then
+        exit;
+    Watch := MainForm.WatchTree.Selected.Data;
+
+    //Create the variable edit dialog
+    ModifyVarForm := TModifyVarForm.Create(self);
+    try
+        ModifyVarForm.NameEdit.Text := Watch.Name;
+        ModifyVarForm.NameEdit.Enabled := False;
+        ModifyVarForm.ValueEdit.Text := Watch.Value;
+
+        ModifyVarForm.chkStopOnRead.Enabled := False;
+        ModifyVarForm.chkStopOnWrite.Enabled := False;
+        ModifyVarForm.chkStopOnRead.Checked := ((Watch.BPType = wbRead) or (Watch.BPType = wbBoth));
+        ModifyVarForm.chkStopOnWrite.Checked := ((Watch.BPType = wbWrite) or (Watch.BPType = wbBoth));
+        ModifyVarForm.ActiveWindow := ModifyVarForm.ValueEdit;
+        if ModifyVarForm.ShowModal = mrOK then
+        begin
+            fDebugger.ModifyVariable(ModifyVarForm.NameEdit.Text,
+                ModifyVarForm.ValueEdit.Text);
+            fDebugger.RefreshContext;
+        end;
+    finally
+        ModifyVarForm.Free;
+    end;
 end;
 
 procedure TMainForm.ClearallWatchPopClick(Sender: TObject);

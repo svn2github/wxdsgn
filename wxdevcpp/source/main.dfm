@@ -1497,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 386
-          Height = 77
+          Height = 78
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1515,9 +1515,9 @@ object MainForm: TMainForm
         Top = 0
         Width = 632
         Height = 97
-        ActivePage = tabLocals
+        ActivePage = tabWatches
         Align = alClient
-        TabIndex = 1
+        TabIndex = 3
         TabOrder = 0
         object tabBacktrace: TTabSheet
           Caption = 'Stack Trace'
@@ -1526,7 +1526,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -1561,7 +1561,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -1616,10 +1616,11 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Indent = 19
             TabOrder = 0
+            OnClick = actModifyWatchExecute
           end
         end
         object tabDebugOutput: TTabSheet
