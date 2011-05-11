@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 222
-  Top = 65
+  Left = 83
+  Top = 83
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1589,7 +1589,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 70
+            Height = 69
             Align = alClient
             Columns = <
               item
@@ -1619,6 +1619,9 @@ object MainForm: TMainForm
             Height = 69
             Align = alClient
             Indent = 19
+            PopupMenu = DebugVarsPopup
+            ReadOnly = True
+            RightClickSelect = True
             TabOrder = 0
             OnClick = actModifyWatchExecute
           end

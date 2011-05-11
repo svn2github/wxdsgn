@@ -1227,6 +1227,7 @@ type
     Number: Integer;
     Name: string;
     Value: string;
+    Location: string;
   end;
 //end added
 
@@ -1795,9 +1796,9 @@ begin
     for I := 0 to Locals.Count - 1 do
         with lvLocals.Items.Add do
         begin
-            Caption := PVariable(Locals[I])^.Name;
-            SubItems.Add(PVariable(Locals[I])^.Value);
-            SubItems.Add(PVariable(Locals[I])^.Location);
+            Caption := PWatchVar(Locals[I])^.Name;
+            SubItems.Add(PWatchVar(Locals[I])^.Value);
+            SubItems.Add(PWatchVar(Locals[I])^.Location);
         end;
     lvLocals.Items.EndUpdate;
 end;
@@ -5120,7 +5121,6 @@ end;
 procedure TMainForm.InitializeDebugger;
     procedure Initialize;
     begin
-     //   fDebugger.DebugTree := WatchesListView;
         fDebugger.OnCallStack := OnCallStack;
         fDebugger.OnThreads := OnThreads;
         fDebugger.OnLocals := OnLocals;
@@ -5288,19 +5288,6 @@ begin
             fDebugger.RefreshWatches;
         end;
     end;
-
-{    for idx := 0 to DebugTree.Items.Count - 1 do
-    begin
-        idx2 := AnsiPos('=', DebugTree.Items[idx].Text);
-        if (idx2 > 0) then
-        begin
-            s := DebugTree.Items[idx].Text;
-            Delete(s, idx2 + 1, length(s) - idx2);
-            DebugTree.Items[idx].Text := s + ' (unknown)';
-        end;
-    end;
-
-    }
 
     //Then run the debugger
     fDebugger.Go;
@@ -5856,16 +5843,16 @@ var
     node: TTreeNode;
 begin
     //Trace the selected watch node to the highest-level node
- //   node := WatchesTreeView.Selected;
- //   while Assigned(Node) and (Assigned(node.Parent)) do
- //       node := node.Parent;
+    node := WatchTree.Selected;
+    while Assigned(Node) and (Assigned(node.Parent)) do
+        node := node.Parent;
 
     //Then remove the watch
- //   if Assigned(node) then
- //   begin
- //       fDebugger.RemoveWatch(IntToStr(Integer(node.Data)));
- //       DebugTree.Items.Delete(node);
- //   end;
+    if Assigned(node) then
+    begin
+        fDebugger.RemoveWatch(WatchTree.Selected);
+        WatchTree.Items.Delete(node);
+    end;
 end;
 
 procedure TMainForm.RemoveActiveBreakpoints;
@@ -8493,7 +8480,7 @@ end;
 
 procedure TMainForm.DebugVarsPopupPopup(Sender: TObject);
 begin
-   // RemoveWatchPop.Enabled := Assigned(DebugTree.Selected);
+    RemoveWatchPop.Enabled := Assigned(WatchTree.Selected);
 end;
 
 procedure TMainForm.actAttachProcessUpdate(Sender: TObject);

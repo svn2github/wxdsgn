@@ -666,18 +666,20 @@ begin
     Result := AnsiReplaceStr(Result, ')', '\)');
 end;
 
-//=============================================================
-
 procedure ReadThread.Execute;
 
 var
-    BufMem: PChar;
-    // The originally allocated memory (pointer 'buf' gets moved!)
+    BufMem: PChar;           // The originally allocated memory (pointer 'buf' gets moved!)
     BytesAvailable: DWORD;
+    PipeBufSize: DWORD;
     BytesToRead: DWORD;
     LastRead: DWORD;
+    BufType: DWORD;
+    TotalBytesRead: DWORD;
+    ReadSuccess: Boolean;
 
     Buffer: String;
+
 
 begin
 
@@ -685,90 +687,112 @@ begin
     BytesAvailable := 0;
     BytesToRead := 0;
     LastRead := 0;
-
+    TotalBytesRead := 0;
 
     while (not Terminated) do
     begin
         Sleep(100);       // Give other processes some time
 
-        PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable,
-            @BytesToRead);
-        // Poll the pipe buffer
-        if ((BytesAvailable > 0) and (buf = Nil)) then
-            // Indicates data is available and
-            // the buffer is unused or empty and can accept data.
-            // When done, the handler must free the memory and
-            // set bytesInBuffer to zero in order for this to accept
-            // more data.
-            // BytesAvailable and bytesInBuffer > zero (for any length
-            // of time) could indicate a possible deadlock.
-            // (Resolve this by counting iterations round the loop
-            // while bytesInBuffer > zero and set an arbitrary limit? )
-            //(This possibile deadlock has never been observed!)
+        PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable, @BytesToRead);
+
+                        // Poll the pipe buffer
+        if ( (BytesAvailable > 0) and (buf = Nil)) then
+                        // Indicates data is available and
+                        // the buffer is unused or empty and can accept data.
+                        // When done, the handler must free the memory and
+                        // set bytesInBuffer to zero in order for this to accept
+                        // more data.
+                        // BytesAvailable and bytesInBuffer > zero (for any length
+                        // of time) could indicate a possible deadlock.
+                        // (Resolve this by counting iterations round the loop
+                        // while bytesInBuffer > zero and set an arbitrary limit? )
+                        //(This possible deadlock has never been observed!)
         begin
+if (verbose) then
+          begin
+            Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
+            //gui_critSect.Enter();               // Maybe needed while debugging
+            MainForm.fDebugger.AddtoDisplay(Buffer);
+            //gui_critSect.Leave();               // Maybe needed while debugging
+          end;
 
+        try
+          BufMem := AllocMem(BytesAvailable+16);          
+                                                          // bump it up just to give some in hand
+                                                          // in case we screw up the count!
+                                                          // NOTE: WE do not free the memory
+                                                          // but rely on it being freed externally.
 
-if (MainForm.VerboseDebug.Checked) then
+          ReadSuccess := ReadFile(ReadChildStdOut, BufMem^, BytesAvailable, LastRead, Nil);
+          if (ReadSuccess) then
+          begin
+
+          if (verbose) then
+          begin
+            Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
+            // gui_critSect.Enter();               // Maybe needed while debugging
+            MainForm.fDebugger.AddtoDisplay(Buffer);
+            // gui_critSect.Leave();               // Maybe needed while debugging
+          end;
+
+            Sleep(5);                              // Allow the pipe to refill
+            TotalBytesRead := LastRead;
+            PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable, @BytesToRead);
+            while (BytesAvailable > 0) do
             begin
-                Buffer := 'PeekPipe bytes available: ' +
-                    IntToStr(BytesAvailable);
-                TGDBDebugger(MainForm.fDebugger).AddToDisplay(Buffer);
+              ReAllocMem(BufMem, TotalBytesRead + BytesAvailable + 16);
+              ReadSuccess := ReadSuccess and
+                  ReadFile(ReadChildStdOut, (BufMem+TotalBytesRead)^, BytesAvailable, LastRead, Nil);
+
+              if (verbose) then
+              begin
+              Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
+              // gui_critSect.Enter();               // Maybe needed while debugging
+              MainForm.fDebugger.AddtoDisplay(Buffer);
+              // gui_critSect.Leave();               // Maybe needed while debugging
+                end;
+
+              TotalBytesRead := TotalBytesRead + LastRead;
+              Sleep(5);                              // Allow the pipe to refill
+              PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable, @BytesToRead);
             end;
-
-            try
-                BufMem := AllocMem(BytesAvailable + 16);
-                // bump it up just to give some in hand
-                // in case we screw up the count!
-                // NOTE: WE do not free the memory
-                // but rely on it being freed externally.
+            if ((LastRead > 0) and (ReadSuccess)) then
+              begin
                 buf := BufMem;
-                if (ReadFile(ReadChildStdOut, BufMem^,
-                    BytesAvailable, LastRead, Nil)) then
+                buf[TotalBytesRead] := (#0);  // Terminate it, thus can handle as Cstring
+
+                if (verbose) then
                 begin
-
-
-if (MainForm.VerboseDebug.Checked) then
-begin
-                    Buffer :=
-                        'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
-
-                    TGDBDebugger(MainForm.fDebugger).AddtoDisplay(Buffer);
-
-end;
-
-                    if (LastRead > 0) then
-                        // The number of bytes read
-                    begin
-                        buf[LastRead] := (#0);
-                        // Terminate it, thus can handle as Cstring
+                Buffer := 'Readfile (Pipe) total bytes read: ' + IntToStr(TotalBytesRead);
+                // gui_critSect.Enter();               // Maybe needed while debugging
+                MainForm.fDebugger.AddtoDisplay(Buffer);
+                // gui_critSect.Leave();               // Maybe needed while debugging
+              end;
 {$ifdef DISPLAYOUTPUTHEX}
-if (MainForm.VerboseDebug.Checked) then
-begin
-	                HexDisplay(buf, LastRead);
-end
+                // gui_critSect.Enter();               // Maybe needed while debugging
+                HexDisplay(buf, TotalBytesRead);
+                // gui_critSect.Leave();               // Maybe needed while debugging
 
 {$endif}
 
-                        //            Pass details (Pointer, length) of the buffer to the Parser
-                        //             in Global vars (buf: PChar and bytesInBuffer: DWORD) and
-                        //             run the Parser and all that follows in the main thread.
+//            Pass details (Pointer, length) of the buffer to the Parser
+//             in Global vars (buf: PChar and bytesInBuffer: DWORD) and
+//             run the Parser and all that follows in the main thread.
 
-                        bytesInBuffer := LastRead;
-                        Synchronize(MainForm.fDebugger.FirstParse);
-                    end;
-                end;  // of Readfile
-            except
-                on EOutOfMemory do
-                    ShowMessage('Unable to allocate memory to read Debugger output');
+              bytesInBuffer := TotalBytesRead;
+              Synchronize(MainForm.fDebugger.FirstParse);
             end;
-        end;  // ... of main loop
+          end;  // of Readfile
+        except
+          on EOutOfMemory do MainForm.fDebugger.DisplayError('Unable to allocate memory to read Debugger output');
+        end;
+      end;  // ... of main loop
 
-    end;    // ... of while(TRUE)
+    end;    // ... of while(Terminated)
 
 end;
 
-//===============================================
-
+//=============================================================
 constructor TCommandWithResult.Create;
 begin
     Event := CreateEvent(nil, false, false, nil);
