@@ -1833,7 +1833,7 @@ begin
     Watch^.Value := wpUnknown;
     Watch^.BPNumber := 0;
     Watch^.Deleted := true;
-    Watch^.Token := MainForm.WatchTree.Items.Count - 1;
+    Watch^.Token := WATCHTOKENBASE + MainForm.WatchTree.Items.Count - 1;
     Watch^.BPType := when;
     Data := Watch;
     Text := Watch^.Name + ' = ' + Watch^.Value;
@@ -4760,7 +4760,7 @@ end;
                   begin
                     Watch^.Value := wpUnknown;
                     Watch^.BPNumber := 0;
-                    Watch^.Token := 0;
+                    Watch^.Token := WATCHTOKENBASE + 0;
                     Watch^.Deleted := true;
                     Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
                   end;
