@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 80
-  Top = 56
+  Left = 124
+  Top = 121
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -2898,7 +2898,6 @@ object MainForm: TMainForm
       object ViewMemory1: TMenuItem
         AutoCheck = True
         Caption = 'View Memory'
-        Checked = True
         GroupIndex = 9
         OnClick = ViewMemory1Click
       end

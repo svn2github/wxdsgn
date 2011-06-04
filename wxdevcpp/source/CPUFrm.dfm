@@ -1,6 +1,6 @@
 object CPUForm: TCPUForm
-  Left = 255
-  Top = 183
+  Left = 163
+  Top = 106
   Width = 585
   Height = 487
   BorderIcons = [biSystemMenu, biMinimize]

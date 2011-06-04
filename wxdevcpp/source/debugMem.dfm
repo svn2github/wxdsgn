@@ -1,7 +1,7 @@
 object DebugMemFrm: TDebugMemFrm
-  Left = 233
+  Left = 113
   Top = 197
-  Width = 556
+  Width = 676
   Height = 385
   Caption = 'Memory'
   Color = clBtnFace
@@ -19,12 +19,12 @@ object DebugMemFrm: TDebugMemFrm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 548
+    Width = 668
     Height = 351
     Align = alClient
     TabOrder = 0
     DesignSize = (
-      548
+      668
       351)
     object Label2: TLabel
       Left = 8
@@ -54,7 +54,7 @@ object DebugMemFrm: TDebugMemFrm
       Caption = 'Count:'
     end
     object MemoryRefreshButton: TButton
-      Left = 472
+      Left = 592
       Top = 10
       Width = 67
       Height = 20
@@ -81,7 +81,7 @@ object DebugMemFrm: TDebugMemFrm
     object MemoryRichEdit: TRichEdit
       Left = 0
       Top = 32
-      Width = 549
+      Width = 669
       Height = 315
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = ANSI_CHARSET

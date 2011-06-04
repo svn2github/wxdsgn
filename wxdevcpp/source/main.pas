@@ -1705,6 +1705,8 @@ begin
     DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
     DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
 
+    DebugMemFrm.Hide;
+    
     //Clean up after ourselves
     NewDocks.Free;
     RemoveControl(MessageControl);
@@ -5799,17 +5801,6 @@ begin
         Exit;
     if fDebugger.Executing and fDebugger.Paused then
     begin
-
-      //  WatchesListView.Items.BeginUpdate;
-        //WatchesListView.Clear;
-
-     //   with WatchesListView.Items.Add do
-     //   begin
-      //      Caption := s;
-     //       Subitems.Add('<unknown>');
-     //       Subitems.Add('<unknown>');
-     //   end;
-      //  WatchesListView.Items.EndUpdate;
 
         fDebugger.AddWatch(s, when);
         fDebugger.RefreshContext([cdWatches]);
@@ -10526,14 +10517,14 @@ procedure TMainForm.ViewMemory1Click(Sender: TObject);
 begin
 
  if (ViewMemory1.Checked) then
-    DebugMemFrm := TDebugMemFrm.Create(self)
-  else
-    DebugMemFrm.Free;
+ begin
+   if not Assigned(DebugMemFrm) then
+    DebugMemFrm := TDebugMemFrm.Create(self);
 
-  if (ViewMemory1.Checked) then
-    DebugMemFrm.Show
-  else
-    DebugMemFrm.Hide;
+   DebugMemFrm.Show;
+ end
+ else
+   DebugMemFrm.Hide;
 
 end;
 

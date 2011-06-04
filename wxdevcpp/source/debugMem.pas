@@ -49,7 +49,7 @@ procedure TDebugMemFrm.FormClose(Sender: TObject;
 //  (This must be suitably altered to interface with the IDE)
 //
 begin
-    MainForm.ViewMemory1.Checked := false
+    MainForm.ViewMemory1.Checked := false;
 end;
 
 //=================================================================
@@ -86,10 +86,15 @@ end;
 
 procedure TDebugMemFrm.FormCreate(Sender: TObject);
 begin
+
+if Assigned(DebugMemFrm) then
+begin
   DebugMemFrm.Visible := true;
   DebugMemFrm.BringToFront;
 
   RefreshMemory;
+end;
+
 end;
 
 //=================================================================
