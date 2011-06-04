@@ -29,7 +29,8 @@ unit debugger;
 interface
 
 uses
-    Classes, editor, Sysutils, version
+    Classes, editor, Sysutils, version, debugMem
+
     {$IFDEF WIN32}
     , ComCtrls, Controls, Dialogs, ShellAPI, Windows
     {$ENDIF}
@@ -77,18 +78,22 @@ function OctToHex(s: PString): String;
 
 
 const GDBPrompt: String = '(gdb)';
+const GDBaddress   : String = 'address=';
 const GDBerror: String = 'error,';
 const GDBdone: String = 'done,';
 const GDBaddr: String = 'addr=';
+const GDBbegin     : String = 'begin';
 const GDBbkpt: String = 'bkpt={';
 const GDBbkptno: String = 'bkptno';
 const GDBbkpttable: String = 'BreakpointTable={';
 const GDBbody: String = 'body=[';
+const GDBcontents  : String = 'contents';
 // added 20110409
 const GDBcontinue: String = '-exec-continue';
 //end added
 const GDBcurthread: String = 'current-thread-id';
 const GDBdataeval: String = '-data-evaluate-expression ';
+const GDBend       : String = 'end';
 const GDBexp: String = 'exp=';
 const GDBExit: String = '-gdb-exit';
 const GDBExitmsg: String = 'exit';
@@ -101,6 +106,7 @@ const GDBlevel: String = 'level';
 const GDBlocals: String = 'locals';
 const GDBlocalsq: String = 'locals=';
 const GDBline: String = 'line';
+const GDBmemq      : String = 'memory=';
 const GDBmult: String = '<MULTIPLE>';
 const GDBnr_rows: String = 'nr_rows';
 const GDBname: String = 'name';
@@ -515,6 +521,7 @@ type
             [cdLocals, cdCallStack, cdWatches,
             cdThreads, cdDisassembly, cdRegisters]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
+        
 // added 20110409
 		procedure LoadAllWatches; override;
 		procedure ReLoadWatches; override;
@@ -555,6 +562,10 @@ type
 		function ParseVObjCreate(Msg: String): Boolean;
 		function ParseVObjAssign(Msg: String): Boolean;
         procedure ParseWatchpoint(Msg: String);
+        procedure ParseWatchpointError(Msg: String);
+
+        procedure ParseCPUMemory(Msg: String);
+
 		procedure ParseBreakpoint(Msg: String; List: PList);
 		procedure ParseBreakpointTable(Msg: String);
         procedure ParseStack(Msg: String);
@@ -876,6 +887,7 @@ end;
 
 destructor TDebugger.Destroy;
 begin
+
     if (buf <> Nil) then
         FreeMem(buf);
 
@@ -2282,6 +2294,160 @@ begin
 
 end;
 // end modified
+//=================================================================
+
+// added 20110602
+procedure TGDBDebugger.ParseWatchpointError(Msg: String);
+{
+   Part of Third Level Parse of Output.
+   Handles errors accompanied by a Watchpoint Token.
+   Updates and may delete the Watchpoint data record.
+}
+var
+    varname: String;
+    watch: pWatchPt;
+    index: Integer;
+
+begin
+    // These messages were gathered from GDB source. No all might be seen.
+    if ((AnsiStartsStr(GDBError+'Expression cannot be implemented', Msg))
+        // "Expression cannot be implemented with read/access watchpoint."
+      or (AnsiStartsStr(GDBError+'Target does not support', Msg))
+        // "Target does not support this type of hardware watchpoint."
+      or (AnsiStartsStr(GDBError+'Target can only support', Msg))
+        // "Target can only support one kind of HW watchpoint at a time."
+      or (AnsiStartsStr(GDBError+'Junk at end of command.', Msg))
+        // "Junk at end of command."
+      or (AnsiStartsStr(GDBError+'Cannot watch constant value', Msg))
+        // "Cannot watch constant value ..."
+      or (AnsiStartsStr(GDBError+'Cannot enable watchpoint', Msg))
+        // "Cannot enable watchpoint"
+      or (AnsiStartsStr(GDBError+'Unexpected error setting', Msg))
+        // "Unexpected error setting breakpoint or watchpoint"
+      or (AnsiStartsStr(GDBError+'Cannot understand watchpoint', Msg))
+        // "Cannot understand watchpoint access type."
+      or (AnsiStartsStr(GDBError+'Too many watchpoints', Msg))) then
+        // "Too many watchpoints"
+    begin
+      // Delete the Watchpoint from the table completely
+{$ifdef DISPLAYOUTPUT}
+      // gui_critSect.Enter();
+      AddtoDisplay(Msg);
+      // gui_critSect.Leave();
+{$endif}
+      index := Token - WATCHTOKENBASE;
+      Watch := MainForm.WatchTree.Items[index].Data;
+      Dispose(Watch);
+      MainForm.WatchTree.Items[index].Delete;
+      DisplayError('GDB Error: ' + Msg);
+    end
+    else
+    if (AnsiStartsStr(GDBError+GDBNoSymbol, Msg)) then
+    // It has gone out of scope or doesn't exist in present context
+    begin
+      // Flag as deleted - it can be resurrected if/when it comes into scope
+      varname := ExtractBracketed(@Msg, Nil, Nil, '"', false);
+      // Find ALL watchpoints with a name starting with 'varname' and flag as deleted
+      with MainForm.WatchTree do
+      for index := 0 to Items.Count - 1 do
+        begin
+          Watch := Items[index].Data;
+          if (AnsiStartsStr(varname, Watch^.Name)) then
+          begin
+            Watch^.Value := wpUnknown;
+            Watch^.BPNumber := 0;
+            Watch^.Token := 0;
+            Watch^.Deleted := true;
+            Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
+          end;
+        end;
+    end
+    else
+    begin
+      // It must be something else!
+      DisplayError('GDB Error: ' + Msg);
+{$ifdef DISPLAYOUTPUT}
+      // gui_critSect.Enter();
+      AddtoDisplay(Msg);
+      // gui_critSect.Leave();
+{$endif}
+    end;
+end;
+// =========================================
+
+//=================================================================
+
+procedure TGDBDebugger.ParseCPUMemory(Msg: String);
+var
+  MemList, List: String;
+  memnext, next: Integer;
+  i, j, b: Integer;
+  displaystart, memstart, memend, mem: Int64;
+  Smemstart, Smemend: String;
+  MemContent: String;
+  Output, AscChars: String;
+  AscChar: Byte;
+
+begin
+  MemList := ExtractBracketed(@Msg, nil, @memnext, '[', false);
+  repeat
+  begin
+    List := ExtractBracketed(@MemList, nil, @next, '{', false);
+    if (not(List = '')) then
+    begin
+      ParseConst(@List, @GDBbegin, PString(@Smemstart));
+      ParseConst(@List, @GDBend, PString(@Smemend));
+      ParseConst(@List, @GDBcontents, PString(@MemContent));
+      memstart := StrToInt64(Smemstart);
+      memend := StrToInt64(Smemend);
+      displaystart := memstart and (not $0f);
+      mem := displaystart;
+      //  (66 = length of preamble 'begin=" ..... contents="'
+      if (memend > memstart + Trunc((Length(List) - 66) / 2)) then
+        memend := memstart + Trunc((Length(List) - 66) / 2);
+      i := 0;
+      j := 0;
+      while (mem < memend) do
+      begin
+        // Line loop
+        AscChars := '';
+        Output := Output + format('0x%8.8X ', [displaystart+i] );
+        for b := 0 to 15 do
+        // byte loop (Hex)
+        begin
+          if ((mem < memstart) or (mem >= memend)) then
+          begin
+            Output := Output + '   ';
+            AscChars := AscChars + ' ';
+          end
+          else
+            begin
+            Output := Output + format('%.1s%.1s ',
+                              [MemContent[j*2 + 1], MemContent[j*2 + 2]]);
+            AscChar := StrToInt('$' + MemContent[j*2 + 1] + MemContent[j*2 + 2]);
+            if ((AscChar < 32) or (AscChar > 127)) then
+              AscChars := AscChars + ' '
+            else
+              AscChars := AscChars + Chr(AscChar);
+            Inc(j);
+          end;
+          if ( (mem and $07) = $07) then
+            Output := Output + ' ';
+          Inc(mem);
+          Inc(i);
+        end;
+          Output := Output + AscChars + NL;
+      end;
+    end;
+  MemList := AnsiRightStr(MemList, Length(MemList) - next);
+  Output := Output + NL;
+  end;
+  until (next = 0);
+
+  DebugMemFrm.MemoryRichEdit.Lines.Add(Output);
+
+end;
+
 //=================================================================
 
 procedure TGDBDebugger.WatchpointHit(Msg: PString);
@@ -4707,69 +4873,36 @@ var
     OutputBuffer: String;
     msg: String;
     Mainmsg, AllReason, ThreadID: String;
-// added 20110409
-    varname: String;
-    watch: pWatchPt;
-    index, thread: Integer;
-// end added
+    thread: Integer;
 
 begin
-
-if (MainForm.VerboseDebug.Checked) then
-begin
-    AddtoDisplay('Parsing ^');
-end;
+{$ifdef DISPLAYOUTPUT}
+  AddtoDisplay('Parsing ^');
+{$endif}
 
     Result := nil;
     msg := breakOut(@buf, bsize);
-    msg := AnsiMidStr(msg, 2, Maxint - 1);
+    msg := AnsiMidStr(msg, 2, Maxint-1);
 
     if (verbose) then
     begin
-        OutputBuffer := msg;
-        // gui_critSect.Enter();
-        AddtoDisplay(OutputBuffer);
-        // gui_critSect.Leave();
+      OutputBuffer := msg;
+      // gui_critSect.Enter();
+      AddtoDisplay(OutputBuffer);
+      // gui_critSect.Leave();
     end;
 
-    if (not (msg = '')) then
-    begin
+    if (not(msg = '')) then
+      begin
         if (AnsiStartsStr(GDBerror, msg)) then
         begin
-            Mainmsg := StringReplace(msg, 'msg="', '', []);
-            Mainmsg := StringReplace(Mainmsg, '\', '', [rfReplaceAll]);
-// added 20110409
+          Mainmsg := StringReplace(msg, 'msg="','', []);
+          Mainmsg := StringReplace(Mainmsg, '\','',[rfReplaceAll]);
+
           if ((Token >= WATCHTOKENBASE) and (Token < MODVARTOKEN)) then
-        // Error: Probably a Watchpoint out of scope
-          begin
-            if (AnsiStartsStr(GDBError+GDBNoSymbol, Mainmsg)) then
-            // It has gone out of scope
-            begin
-{$ifdef DISPLAYOUTPUT}
-              // gui_critSect.Enter();
-              AddtoDisplay(Mainmsg);
-              // gui_critSect.Leave();
-{$endif}
-              varname := ExtractBracketed(@Mainmsg, Nil, Nil, '"', false);
-              // Find ALL watchpoints with a name starting with 'varname' and flag as deleted
-              with MainForm.WatchTree do
-                for index := 0 to Items.Count - 1 do
-                begin
-                  Watch := Items[index].Data;
-                  if (AnsiStartsStr(varname, Watch^.Name)) then
-                  begin
-                    Watch^.Value := wpUnknown;
-                    Watch^.BPNumber := 0;
-                    Watch^.Token := WATCHTOKENBASE + 0;
-                    Watch^.Deleted := true;
-                    Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
-                  end;
-                end;
-            end
-            else
-              DisplayError('GDB Error: ' + Mainmsg);
-          end
-          else if (Mainmsg = 'error,mi_cmd_var_assign: Variable object is not editable"') then
+            ParseWatchpointError(Mainmsg)
+          else
+          if (Mainmsg = 'error,mi_cmd_var_assign: Variable object is not editable"') then
           begin
             DisplayError('This Variable is not editable');
           end
@@ -4790,6 +4923,7 @@ end;
           begin
             if (threadID = 'all') then
             begin
+//              thread := -1;                              // Thread No.
               OutputBuffer := 'Running all threads'
             end
             else
@@ -4799,82 +4933,100 @@ end;
               AddtoDisplay(OutputBuffer);
             end;
           end;
-        end ;
-// end added
-        if (AnsiStartsStr(GDBExitmsg, msg)) then
+        end
+
+        else if (AnsiStartsStr(GDBExitmsg, msg)) then
         begin
             AddtoDisplay('GDB is exiting');
             Cleanup;
         end
 
-        else
-        if (AnsiStartsStr(GDBdone + GDBbkpt, msg)) then
+        else if (AnsiStartsStr(GDBdone+GDBbkpt, msg)) then
         begin
- // added 16/2/2011 modified
-            ParseBreakpoint(msg, nil);
-// end added
+          ParseBreakpoint(msg, nil);
         end
-        else
-        if (AnsiStartsStr(GDBdone + GDBbkpttable, msg)) then
-            ParseBreakpointTable(msg)
 
-        else
-        if (AnsiStartsStr(GDBdone + GDBstack, msg)) then
-            ParseStack(msg)
-        else
-        if (AnsiStartsStr(GDBdone + GDBlocalsq, msg)) then
+        else if (AnsiStartsStr(GDBdone+GDBbkpttable, msg)) then
         begin
-            OutputBuffer := ExtractLocals(@msg);
-            // Parses & Reassembles Result
+            ParseBreakpointTable(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBstack, msg)) then
+        begin
+            ParseStack(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBlocalsq, msg)) then
+        begin
+            OutputBuffer := ExtractLocals(@msg);  // Parses & Reassembles Result
             AddtoDisplay(OutputBuffer);
         end
-        else
-        if (AnsiStartsStr(GDBdone + GDBthreads, msg)) then
-            ParseThreads(msg)
 
-        else
-        if (AnsiStartsStr(GDBdone + GDBwpt, msg)) then
-            ParseWatchpoint(msg)
-
-        else
-        if (AnsiStartsStr(GDBdone + GDBwpta, msg)) then
-            ParseWatchpoint(msg)
-
-        else
-        if (AnsiStartsStr(GDBdone + GDBwptr, msg)) then
-            ParseWatchpoint(msg);
-
-// modified 20110409
-        if ((AnsiStartsStr(GDBdone+GDBnameq, msg))
-            and not (Token = MODVARTOKEN)) then  
-			// It's not from Modify Variable
+        else if (AnsiStartsStr(GDBdone+GDBthreads, msg)) then
         begin
-		  // if it was a VObj create...
-          ParseVObjCreate(msg);
+            ParseThreads(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBwpt, msg)) then
+        begin
+            ParseWatchpoint(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBwpta, msg)) then
+        begin
+            ParseWatchpoint(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBwptr, msg)) then
+        begin
+            ParseWatchpoint(msg);
+        end
+
+{
+        else if (AnsiStartsStr(GDBdone+GDBregnames, msg)) then
+        begin
+          ParseRegisterNames(msg);
+        end
+}
+        else if (AnsiStartsStr(GDBdone+GDBmemq, msg)) then
+        begin
+          ParseCPUMemory(msg);
+        end;
+
+{
+        else if (AnsiStartsStr(GDBdone+GDBasminst, msg)) then
+        begin
+          ParseCPUDisassem(msg);
+        end
+
+        else if (AnsiStartsStr(GDBdone+GDBregvalues, msg)) then
+        begin
+          ParseRegisterValues(msg);
+        end;
+}
+        if ((AnsiStartsStr(GDBdone+GDBnameq, msg))
+            and not (Token = MODVARTOKEN)) then  // It's not from Modify Variable
+        begin
+          ParseVObjCreate(msg);           // if it was a VObj create...
         end;
 
         if (AnsiStartsStr(GDBdone+GDBvalue, msg))  then
         begin
             if ((Token >= WATCHTOKENBASE) and (Token < MODVARTOKEN)) then
-			  // it came from a request from GetWatchedValues
-              FillWatchValue(msg)         
+              FillWatchValue(msg)         // it came from a request from GetWatchedValues
             else
             if ((Token = TOOLTOKEN)) then
-              // it came from a request from Tooltip (GetVariableHint)
-			  FillTooltipValue(msg)
+              FillTooltipValue(msg)       // it came from a request from Tooltip (GetVariableHint)
             else
-			  // else it was a VObj assign or another -data-evaluate-expression...
-              ParseVObjAssign(msg);                                              
-        end;
-// end modified
+              ParseVObjAssign(msg);       // else it was a VObj assign
+//                                            or another -data-evaluate-expression...
 
-        
+        end;
 
         Result := buf;
 
-    end;
+      end;
 end;
-
 
 //=================================================================
 

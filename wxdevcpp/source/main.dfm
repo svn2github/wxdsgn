@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 83
-  Top = 83
+  Left = 80
+  Top = 56
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1412,7 +1412,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,18 +1486,18 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 407
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           407
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 386
-          Height = 78
+          Height = 79
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1514,7 +1514,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         ActivePage = tabWatches
         Align = alClient
         TabIndex = 3
@@ -1526,7 +1526,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1561,7 +1561,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1589,7 +1589,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Columns = <
               item
@@ -1616,7 +1616,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 624
-            Height = 69
+            Height = 70
             Align = alClient
             Indent = 19
             PopupMenu = DebugVarsPopup
@@ -1690,7 +1690,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1734,7 +1734,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 636
-        Height = 60
+        Height = 61
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -1769,7 +1769,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 60
+        Top = 61
         Width = 636
         Height = 41
         Align = alBottom
@@ -2894,6 +2894,13 @@ object MainForm: TMainForm
       object WatchItem: TMenuItem
         Action = actWatchItem
         GroupIndex = 9
+      end
+      object ViewMemory1: TMenuItem
+        AutoCheck = True
+        Caption = 'View Memory'
+        Checked = True
+        GroupIndex = 9
+        OnClick = ViewMemory1Click
       end
       object ViewCPUItem: TMenuItem
         Action = actViewCPU

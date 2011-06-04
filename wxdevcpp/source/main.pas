@@ -698,6 +698,7 @@ type
         actRemoveAllBreakpoints: TAction;
     VerboseDebug: TMenuItem;
     WatchTree: TTreeView;
+    ViewMemory1: TMenuItem;
 
         procedure FormShow(Sender: TObject);
         procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -993,6 +994,7 @@ type
         procedure RemoveAllBreakpoints1Click(Sender: TObject);
 
         procedure OnWatches(Locals: PTList);
+    procedure ViewMemory1Click(Sender: TObject);
 
     private
         HelpWindow: HWND;
@@ -1252,7 +1254,7 @@ uses
 
 {$IFDEF PLUGIN_BUILD}
     //Our dependencies
-    , FilesReloadFrm
+    , FilesReloadFrm, debugMem
 
 {$ENDIF}
     ;
@@ -10517,6 +10519,21 @@ begin
   begin
     Exit;
   end;
+
+end;
+
+procedure TMainForm.ViewMemory1Click(Sender: TObject);
+begin
+
+ if (ViewMemory1.Checked) then
+    DebugMemFrm := TDebugMemFrm.Create(self)
+  else
+    DebugMemFrm.Free;
+
+  if (ViewMemory1.Checked) then
+    DebugMemFrm.Show
+  else
+    DebugMemFrm.Hide;
 
 end;
 
