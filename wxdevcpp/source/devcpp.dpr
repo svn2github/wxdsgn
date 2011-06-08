@@ -84,7 +84,6 @@ uses
   FilePropertiesFm in 'FilePropertiesFm.pas' {FilePropertiesForm},
   AddToDoFm in 'AddToDoFm.pas' {AddToDoForm},
   ImportMSVCFm in 'ImportMSVCFm.pas' {ImportMSVCForm},
-  CPUFrm in 'CPUFrm.pas' {CPUForm},
   FileAssocs in 'FileAssocs.pas',
   TipOfTheDayFm in 'TipOfTheDayFm.pas' {TipOfTheDayForm},
   CVSFm in 'CVSFm.pas' {CVSForm},
@@ -107,7 +106,8 @@ uses
   hh in 'hh.pas',
   hh_funcs in 'hh_funcs.pas',
   SynAutoIndent in 'packages\SynAutoIndent.pas',
-  debugMem in 'debugMem.pas' {DebugMemFrm};
+  debugMem in 'debugMem.pas' {DebugMemFrm},
+  debugCPU in 'debugCPU.pas' {DebugCPUFrm};
 
 {$R 'winxp.res'}
 {$R 'icons.res' 'icons.rc'}
@@ -244,8 +244,8 @@ begin
     Application.Title := 'wxDev-C++';
     Application.HelpFile := '..\Help\devcpp.chm';
     Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TDebugMemFrm, DebugMemFrm);
-  if not devData.NoSplashScreen then
+
+   if not devData.NoSplashScreen then
     begin
         SplashForm := TSplashForm.Create(Application);
         SplashForm.Show;

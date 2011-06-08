@@ -43,11 +43,6 @@ uses main;
 
 procedure TDebugMemFrm.FormClose(Sender: TObject;
   var Action: TCloseAction);
-//
-//  Uncheck the exerciser menu
-//
-//  (This must be suitably altered to interface with the IDE)
-//
 begin
     MainForm.ViewMemory1.Checked := false;
 end;

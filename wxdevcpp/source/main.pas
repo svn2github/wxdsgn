@@ -699,6 +699,8 @@ type
     VerboseDebug: TMenuItem;
     WatchTree: TTreeView;
     ViewMemory1: TMenuItem;
+    actVerboseDebugOutput: TAction;
+    actViewDebugMemory: TAction;
 
         procedure FormShow(Sender: TObject);
         procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1254,7 +1256,7 @@ uses
 
 {$IFDEF PLUGIN_BUILD}
     //Our dependencies
-    , FilesReloadFrm, debugMem
+    , FilesReloadFrm, debugMem, debugCPU
 
 {$ENDIF}
     ;
@@ -1705,8 +1707,6 @@ begin
     DockServer.LeftDockPanel.JvDockManager.GrabberSize := 22;
     DockServer.RightDockPanel.JvDockManager.GrabberSize := 22;
 
-    DebugMemFrm.Hide;
-    
     //Clean up after ourselves
     NewDocks.Free;
     RemoveControl(MessageControl);
@@ -7494,9 +7494,22 @@ begin
     if (not fDebugger.Executing) or (not fDebugger.Paused) then
         Exit;
 
-    CPUForm := TCPUForm.Create(self);
-    CPUForm.Show;
-    CPUForm.PopulateRegisters(fDebugger);
+    if not (ViewCPUItem.Checked) then
+ begin
+
+ ViewCPUItem.Checked := true;
+   if not Assigned(debugCPUFrm) then
+    Application.CreateForm(TDebugCPUFrm, debugCPUFrm);
+
+   debugCPUFrm.Show;
+ end
+ else
+ begin
+ ViewCPUItem.Checked := false;
+        if Assigned(debugCPUFrm) then
+                debugCPUFrm.Hide;
+ end;
+
 end;
 
 procedure TMainForm.edCommandKeyPress(Sender: TObject; var Key: Char);
@@ -10515,16 +10528,23 @@ end;
 
 procedure TMainForm.ViewMemory1Click(Sender: TObject);
 begin
+   if (not fDebugger.Executing) or (not fDebugger.Paused) then
+        Exit;
 
- if (ViewMemory1.Checked) then
+ if not (ViewMemory1.Checked) then
  begin
+   ViewMemory1.Checked := true;
    if not Assigned(DebugMemFrm) then
-    DebugMemFrm := TDebugMemFrm.Create(self);
+   Application.CreateForm(TDebugMemFrm, DebugMemFrm);
 
    DebugMemFrm.Show;
  end
  else
-   DebugMemFrm.Hide;
+ begin
+   ViewMemory1.Checked := false;
+   if Assigned(DebugMemFrm) then
+        DebugMemFrm.Hide;
+ end;
 
 end;
 

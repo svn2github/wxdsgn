@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 124
-  Top = 121
+  Left = 94
+  Top = 96
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]
@@ -2896,20 +2896,19 @@ object MainForm: TMainForm
         GroupIndex = 9
       end
       object ViewMemory1: TMenuItem
-        AutoCheck = True
-        Caption = 'View Memory'
+        Caption = 'View memory'
         GroupIndex = 9
         OnClick = ViewMemory1Click
       end
       object ViewCPUItem: TMenuItem
-        Action = actViewCPU
+        Caption = '&View CPU Window'
         GroupIndex = 9
+        OnClick = ViewCPUItemClick
       end
       object VerboseDebug: TMenuItem
         AutoCheck = True
-        Caption = 'Verbose Output'
+        Caption = 'Verbose Debugger Output'
         GroupIndex = 9
-        Hint = 'Verbose output from debugger'
       end
     end
     object ToolsMenu: TMenuItem
@@ -4288,6 +4287,7 @@ object MainForm: TMainForm
     end
     object actAbortCompilation: TAction
       Category = 'Execute'
+      AutoCheck = True
       Caption = 'Abort compilation'
       OnExecute = actAbortCompilationExecute
       OnUpdate = actAbortCompilationUpdate
@@ -4403,6 +4403,18 @@ object MainForm: TMainForm
       ImageIndex = 5
       OnExecute = RemoveAllBreakpoints1Click
       OnUpdate = actUpdateEmptyEditor
+    end
+    object actVerboseDebugOutput: TAction
+      Category = 'Debug'
+      AutoCheck = True
+      Caption = 'Verbose Debugger Output'
+      ImageIndex = 31
+    end
+    object actViewDebugMemory: TAction
+      Category = 'Debug'
+      AutoCheck = True
+      Caption = 'View memory'
+      ImageIndex = 43
     end
   end
   object ApplicationEvents1: TApplicationEvents

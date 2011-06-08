@@ -19,8 +19,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-
-
 unit debugger;
 
 //{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
@@ -29,7 +27,7 @@ unit debugger;
 interface
 
 uses
-    Classes, editor, Sysutils, version, debugMem
+    Classes, editor, Sysutils, version, debugCPU
 
     {$IFDEF WIN32}
     , ComCtrls, Controls, Dialogs, ShellAPI, Windows
@@ -41,7 +39,7 @@ uses
 var
     //output from GDB
     TargetIsRunning: boolean = false;       // result of status messages
-    verbose: boolean = true;
+    verbose: boolean = false;
     gui_critSect: TRTLCriticalSection;
     // Why do we need this? Once the pipe
     // has been read, all processing is in
@@ -78,51 +76,58 @@ function OctToHex(s: PString): String;
 
 
 const GDBPrompt: String = '(gdb)';
-const GDBaddress   : String = 'address=';
 const GDBerror: String = 'error,';
 const GDBdone: String = 'done,';
 const GDBaddr: String = 'addr=';
+const GDBaddress: String = 'address=';
+const GDBasminst: String = 'asm_insns=';
+const GDBasmline: String = 'line_asm_insns=';
 const GDBbegin     : String = 'begin';
 const GDBbkpt: String = 'bkpt={';
 const GDBbkptno: String = 'bkptno';
 const GDBbkpttable: String = 'BreakpointTable={';
 const GDBbody: String = 'body=[';
-const GDBcontents  : String = 'contents';
-// added 20110409
+const GDBcontents: String = 'contents';
 const GDBcontinue: String = '-exec-continue';
-//end added
 const GDBcurthread: String = 'current-thread-id';
 const GDBdataeval: String = '-data-evaluate-expression ';
-const GDBend       : String = 'end';
+const GDBDisassem: String = '-data-disassemble ';
+const GDBend: String = 'end';
 const GDBexp: String = 'exp=';
 const GDBExit: String = '-gdb-exit';
 const GDBExitmsg: String = 'exit';
 const GDBfile: String = 'file';
+const GDBfileq: String = 'file=';
 const GDBframe: String = 'frame={';
 const GDBfunc: String = 'func';
+const GDBfuncname: String = 'func-name=';
 const GDBid: String = 'id';
 const GDBidq: String = 'id=';
+const GDBinstr: String = 'inst=';
 const GDBlevel: String = 'level';
 const GDBlocals: String = 'locals';
 const GDBlocalsq: String = 'locals=';
 const GDBline: String = 'line';
-const GDBmemq      : String = 'memory=';
+const GDBlineq: String = 'line=';
+const GDBmemq: String = 'memory=';
 const GDBmult: String = '<MULTIPLE>';
 const GDBnr_rows: String = 'nr_rows';
 const GDBname: String = 'name';
 const GDBnameq: String = 'name=';
 const GDBnew: String = 'new';
 const GDBnumber: String = 'number';
-// added 20110409
 const GDBNoSymbol: String = 'No symbol';
-// end added
+const GDBoffset: String = 'offset=';
 const GDBold: String = 'old';
 const GDBorig_loc: String = 'original-location=';
+const GDBregnames: String = 'register-names=';
+const GDBregvalues: String = 'register-values=';
+const GDBreason: String = 'reason=';
+const GDBrunning: String = 'running';
 const GDBsigmean: String = 'signal-meaning';
 const GDBsigname: String = 'signal-name';
 const GDBsigsegv: String = 'SIGSEV';
-const GDBreason: String = 'reason=';
-const GDBrunning: String = 'running';
+const GDBsrcline: String = 'src_and_asm_line=';
 const GDBstack: String = 'stack=[';
 const GDBstopped: String = 'stopped';
 const GDBtargetid: String = 'target-id';
@@ -137,19 +142,24 @@ const GDBwhat: String = 'what=';
 const GDBwpt: String = 'wpt=';
 const GDBwpta: String = 'hw-awpt=';
 const GDBwptr: String = 'hw-rwpt=';
-// added 20110409
 const GDBwpscope: String = 'watchpoint-scope';
 const GDBwpNum: String = 'wpnum=';
-// end added
 const GDBqStrEmpty: String = '\"';
 const wxStringBase: String = '<wxStringBase>';
-// added 20110409
-  const wpUnknown    : String = '(unknown)';
-// end added
-
+const wpUnknown: String = '(unknown)';
+const FileStr: String = 'File';
+const FuncStr: String = 'Function';
+const LineStr: String = 'Line';
+const LinesStr: String = 'Lines';
+const NoDisasmStr: String = 'No disassembly available';
+const CPURegList: String = '0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15';
+const CPURegCount: Integer = 15;  // The number of values above - 1
+//            If this is changed, alter TRegisters & ParseRegisterValues and the
+//            arrays CPURegNames, CPURegValues to suit.
 const ExpandClasses: Boolean = true;
 // set to false to treat contents of classes as string constants
 
+const HT: Char = #9;
 const LF: Char = #10;
 const CR: Char = #13;
 const NL: String = #13 + #10;
@@ -166,11 +176,8 @@ const
   PARSETUPLE = true;
   INDENT = 3;                       // Amount of indentation of Locals display
   WATCHTOKENBASE = 9000;			// Token base for Watchpoint values
-// added 20110409
   MODVARTOKEN = 9998;
   TOOLTOKEN = 9999;
-// end added
-
 
 type
     AssemblySyntax = (asATnT, asIntel);
@@ -181,19 +188,16 @@ type
 
 	PList = ^TList;
 
-// added 20110409
   TWatchBreakOn = (wbRead, wbWrite, wbBoth);
 	PWatchPt = ^TWatchPt;
 	TWatchPt = packed record
 		Name: string;
-// added 20110409
 		Value: String;
 		BPNumber: Integer;
 		BPType: TWatchBreakOn;
 		Token: Longint;       // Last used Token - not necessarily unique!
 		Inactive: Boolean;    // Unused at present
 		Deleted: Boolean;     // deleted by GDB
-// end added
 	end;
 
     ReadThread = class(TThread)
@@ -290,7 +294,6 @@ type
     end;
 
     PCommand = ^TCommand;
-
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -395,7 +398,6 @@ type
         procedure RefreshBreakpoint(var breakpoint: TBreakpoint);
             virtual; abstract;
         function BreakpointExists(filename: string; line: integer): boolean;
-// added 20110409  
 		procedure LoadAllWatches; virtual; abstract;
 		procedure ReLoadWatches; virtual; abstract;
 		procedure GetWatchedValues; virtual;
@@ -403,8 +405,7 @@ type
 		procedure RemoveWatch(node: TTreenode); virtual;
 		procedure ModifyVariable(VarName: String; Value: String); virtual;
 
-                procedure ReplaceWxStr(Str: PString); virtual; 
-// end added
+        procedure ReplaceWxStr(Str: PString); virtual; 
 
 		
         //Debugger control funtions
@@ -454,13 +455,13 @@ type
         OverrideHandler: TCallback;
         RegistersFilled: Integer;
         Registers: TRegisters;
+		CPURegNames: array[0..15] of String;
+		CPURegValues: array[0..15] of String;
         LastWasCtrl: Boolean;
         Started: Boolean;
 		LastVOident: String;
 		LastVOVar: String;
-// Modified 20110409 - was TList
 		WatchPtList: TTreeView;
-// end modified
         // Pipe handles
         g_hChildStd_IN_Wr: THandle;		//we write to this
         g_hChildStd_IN_Rd: THandle;		//Child process reads from here
@@ -522,52 +523,52 @@ type
             cdThreads, cdDisassembly, cdRegisters]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
         
-// added 20110409
 		procedure LoadAllWatches; override;
 		procedure ReLoadWatches; override;
 		procedure RemoveWatch(node: TTreenode); override;
 		procedure GetWatchedValues; override;
 		procedure FillWatchValue(Msg: String);
 		procedure FillTooltipValue(Msg: String);
-		procedure ModifyVariable(VarName: String; Value: String); override;
-// end added  
-//        procedure RemoveWatch(varname: string); override;
+		procedure ModifyVariable(VarName: String; Value: String); override; 
 
         // Parser functions
-        function GetToken(buf: PChar; bsize: PLongInt;
+        function  GetToken(buf: PChar; bsize: PLongInt;
             Token: PInteger): PChar;
-        function FindFirstChar(Str: String; c: Char): Integer;
-        function Result(buf: PChar; bsize: PLongInt): PChar;
-        function ExecResult(buf: PChar; bsize: PLongInt): PChar;
-        function breakOut(Next: PPChar; bsize: PLongInt): String;
-        function ParseConst(Msg: PString; Vari: PString;
+        function  FindFirstChar(Str: String; c: Char): Integer;
+        function  Result(buf: PChar; bsize: PLongInt): PChar;
+        function  ExecResult(buf: PChar; bsize: PLongInt): PChar;
+        function  breakOut(Next: PPChar; bsize: PLongInt): String;
+        function  ParseConst(Msg: PString; Vari: PString;
             Value: PString): Boolean; overload;
-        function ParseConst(Msg: PString; Vari: PString;
+        function  ParseConst(Msg: PString; Vari: PString;
             Value: PInteger): Boolean; overload;
-        function ParseConst(Msg: PString; Vari: PString;
+        function  ParseConst(Msg: PString; Vari: PString;
             Value: PBoolean): Boolean; overload;
 		function  ExtractLocals(Str: PString): String;
 		function  ParseResult(Str: PString; Level: Integer; List: TList): String;
 		function  ExtractList(Str: PString; Tuple: Boolean; Level: Integer; List: TList): String;
 		function  ParseValue(Str: PString; Level: Integer; List: TList): String;
-        function SplitResult(Str: PString; Vari: PString): String;
-        function ExtractWxStr(Str: PString): String;
-// added 20110409
+        function  SplitResult(Str: PString; Vari: PString): String;
+        function  ExtractWxStr(Str: PString): String;
 		procedure ReplaceWxStr(Str: PString); override;
-//end added
-        function ExtractBracketed(Str: PString; start: Pinteger;
+        function  ExtractBracketed(Str: PString; start: Pinteger;
             next: PInteger; c: Char; inclusive: Boolean): String;
-        function ExtractNamed(Src: PString; Target: PString;
+        function  ExtractNamed(Src: PString; Target: PString;
             count: Integer): String;
-		function ParseVObjCreate(Msg: String): Boolean;
-		function ParseVObjAssign(Msg: String): Boolean;
+		function  ParseVObjCreate(Msg: String): Boolean;
+		function  ParseVObjAssign(Msg: String): Boolean;
         procedure ParseWatchpoint(Msg: String);
         procedure ParseWatchpointError(Msg: String);
 
-        procedure ParseCPUMemory(Msg: String);
 
 		procedure ParseBreakpoint(Msg: String; List: PList);
 		procedure ParseBreakpointTable(Msg: String);
+		procedure ParseCPUDisassem(Msg: String);
+		function  ParseCPUMixedMode(List: String): String;
+		function  ParseCPUDisasmMode(List: String; CurrentFuncName: PString): String;
+		procedure ParseRegisterNames(Msg: String);
+		procedure ParseRegisterValues(Msg: String);
+		procedure ParseCPUMemory(Msg: String);
         procedure ParseStack(Msg: String);
         function  ParseFrame(Msg: String; Frame: PStackFrame): String;
         procedure ParseThreads(Msg: String);
@@ -575,7 +576,7 @@ type
         procedure BreakpointHit(Msg: PString);
         procedure StepHit(Msg: PString);
 		procedure WptScope(Msg: PString);		
-        procedure SigRecv(Msg: Pstring);
+        procedure SigRecv(Msg: PString);
 
         //Debugger control
         procedure Go; override;
@@ -585,7 +586,7 @@ type
         procedure Pause; override;
         procedure SetThread(thread: Integer); override;
         procedure SetContext(frame: Integer); override;
-        function GetVariableHint(name: string): string; override;
+        function  GetVariableHint(name: string): string; override;
 
         //Low-level stuff
         procedure GetRegisters; override;
@@ -1148,8 +1149,8 @@ var
     idx: integer;
     spos: integer;
     opts: TProjProfile;
-begin
 
+begin
     if MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation,
         [mbYes, mbNo], 0) = mrYes then
     begin
@@ -1157,7 +1158,6 @@ begin
         if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
             (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
         begin
-
             if devCompiler.FindOption('-g3', opt, idx) then
             begin
                 opt.optValue := 1;
@@ -1382,13 +1382,10 @@ begin
     l := 0;                       // level of nesting
     m := #0;
 
-
-
     if (count = 0) then
         ExtractNamed := Temp
     else
     begin
-
         case (c) of
             '{':
                 m := '}';
@@ -1431,7 +1428,6 @@ begin
 
         Temp := AnsiMidStr(Temp, TargetLength + 1, e - s - TargetLength);
         ExtractNamed := Temp;
-
     end;
 
 end;
@@ -1629,7 +1625,7 @@ end;
 
 
 //=================================================================
-// addded 20110409
+
 procedure TGDBDebugger.FillTooltipValue(Msg: String);
 {
 /*
@@ -1667,7 +1663,7 @@ begin
     end;
   end;
 end;
-// end added
+
 //=================================================================
 
 procedure TGDBDebugger.ParseBreakpoint(Msg: String; List: PList);
@@ -1693,7 +1689,6 @@ begin
     Num := 0;
     Line := 0;
     {Ret := false;}
-
 
     {Ret := }ParseConst(@Msg, @GDBnumber, PInteger(@Num));
     {Ret := }ParseConst(@Msg, @GDBtype, PString(@BPType));
@@ -1794,18 +1789,15 @@ end;
 
 //=================================================================
 
-// modified 20110409
 procedure TGDBDebugger.ParseBreakpointTable(Msg: String);
 {
    Part of Third Level Parse of Output.
 }
 var
-
     N_rows, row: Integer;
     Str: String;
     BkptStr: String;
     {Ret: Boolean;}
-
 
 begin
     N_rows := 0;
@@ -1825,7 +1817,7 @@ begin
 end;
 
 //=================================================================
-// added 20110409
+
 procedure TGDBDebugger.AddWatch(VarName: String; when: TWatchBreakOn);
 {
    Adds a watch variable/expression VarName to the TTreeView list,
@@ -2001,10 +1993,6 @@ begin
     with MainForm.WatchTree do
     for I := 0 to (Items.Count - 1) do
     begin
-
-
-
-
       Watch := Items[I].Data;
       Watch.Token := WATCHTOKENBASE + I;
       Command := TCommand.Create;
@@ -2042,7 +2030,7 @@ begin
       Format('%s = %s', [Watch.Name, Watch.Value]);
     Token := 0;
 end;
-// end added
+
 //=================================================================
 
 procedure TGDBDebugger.ParseStack(Msg: String);
@@ -2246,7 +2234,7 @@ begin
 end;
 
 //=================================================================
-// modified 20110409
+
 procedure TGDBDebugger.ParseWatchpoint(Msg: String);
 {
    Part of Third Level Parse of Output.
@@ -2293,10 +2281,9 @@ begin
     // gui_critSect.Leave();
 
 end;
-// end modified
+
 //=================================================================
 
-// added 20110602
 procedure TGDBDebugger.ParseWatchpointError(Msg: String);
 {
    Part of Third Level Parse of Output.
@@ -2309,7 +2296,7 @@ var
     index: Integer;
 
 begin
-    // These messages were gathered from GDB source. No all might be seen.
+    // These messages were gathered from GDB source. Not all might be seen.
     if ((AnsiStartsStr(GDBError+'Expression cannot be implemented', Msg))
         // "Expression cannot be implemented with read/access watchpoint."
       or (AnsiStartsStr(GDBError+'Target does not support', Msg))
@@ -2373,11 +2360,15 @@ begin
 {$endif}
     end;
 end;
-// =========================================
 
 //=================================================================
 
 procedure TGDBDebugger.ParseCPUMemory(Msg: String);
+{
+   Part of Third Level Parse of Output.
+   Parses memory display and writes to a RichText edit window
+   in the familiar 'Hex Editor' style.
+}
 var
   MemList, List: String;
   memnext, next: Integer;
@@ -2444,7 +2435,251 @@ begin
   end;
   until (next = 0);
 
-  DebugMemFrm.MemoryRichEdit.Lines.Add(Output);
+  debugCPUFrm.MemoryRichEdit.Lines.Add(Output);
+
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ParseCPUDisassem(Msg: String);
+
+{
+   Part of Third Level Parse of Output.
+   Initial parse of Disassembly display.
+}
+var
+  line: String;
+  List: String;
+  CurrentFuncName: String;
+  next: Integer;
+  Output: String;
+
+//  We expect:
+//  Disassembly
+//    Preamble:
+//    ^done,asm_insns=[ <list 1> ]
+//    <list 1> is 1 or more of
+//      {address="<hex string>",func-name="<string>",offset="<int>",inst="<string>"},
+//
+//  Mixed Mode
+//    Preamble:
+//    ^done,asm_insns=[ <list 2> ]
+//    <list 2> is 1 or more of
+//      src_and_asm_line={ <tuple 1> },
+//
+//  <tuple 1> is
+//  line="64",file="DebugeeFrm.cpp",line_asm_insn=[ <list 1> | empty ]
+//
+
+begin
+  CurrentFuncName := '';
+  List := ExtractBracketed(@Msg, nil, @next, '[', false);
+  if (AnsiStartsStr(GDBsrcline, List)) then
+  // Mixed Mode
+    Output := ParseCPUMixedMode(List);
+  if (AnsiStartsStr('{' + GDBaddress, List)) then
+  // Disassemby Mode
+    Output := ParseCPUDisasmMode(List, @CurrentFuncName);
+  DebugCPUFrm.DisassemblyRichEdit.Lines.Add(Output);
+end;
+
+//=================================================================
+
+function TGDBDebugger.ParseCPUMixedMode(List: String): String;
+{
+   Part of Third Level Parse of Output.
+   Parses Mixed Mode (disassembly related to line numbers) and writes
+   to a RichText edit window.
+   Redundant lines, etc, are removed.
+   (Takes data preprocessed by ParseCPUDisassem)
+
+   Display algorithm for <tuple>:
+ 	 Extract vars but pass line_asm_insn to ParseCPUDisasmMode;
+     if 'file' = same as stored, skip it
+      else write it and store it;
+     write vars to Output.
+   Skip but report empty lines to reduce output bloat. 
+}
+var
+  Line, LineNum, FileName, AsmInstr, Output: String;
+  CurrentFileName, CurrentFuncName, FirstLine, LastLine: String;
+  next: Integer;
+  NoAsm: Boolean;
+
+begin
+  CurrentFileName := '';
+  CurrentFuncName := '';
+  NoAsm := false;
+
+  repeat
+  begin
+    Line := ExtractBracketed(@List, nil, @next, '{', false);
+    if (not(Line = '')) then
+    begin
+      ParseConst(@Line, @GDBlineq, PString(@LineNum));
+      ParseConst(@Line, @GDBfileq, PString(@FileName));
+      AsmInstr := ExtractBracketed(@Line, nil, nil, '[', false);
+      if (not(FileName = CurrentFileName)) then
+      begin
+        Output := Output + format('%s: %s%s',[FileStr, FileName, NL]);
+        CurrentFileName := FileName;
+      end;
+      if (AsmInstr = '') then
+        begin
+          if (NoAsm = false) then
+            FirstLine := LineNum;
+          NoAsm := true;
+          LastLine := LineNum;
+        end
+      else
+      begin
+        NoAsm := false;
+        if ((FirstLine = '') and (LastLine = '')) then
+           // Do nothing!
+        else if (FirstLine = LastLine) then
+          Output := Output + 'Line: ' + FirstLine
+            + ' ' + NoDisasmStr + NL
+        else if ((FirstLine = '') or (LastLine = '')) then
+          Output := Output + LineStr + ': ' + LineNum + NL
+        else
+          Output := Output + LinesStr + ': ' + FirstLine + ' - ' + LastLine
+            + ' ' + NoDisasmStr + NL;
+        Output := Output + LineStr + ': ' + LineNum + NL;
+        Output := Output + ParseCPUDisasmMode(AsmInstr, @CurrentFuncName);
+        FirstLine := '';
+        LastLine := '';
+      end;
+    end;
+    List := AnsiRightStr(List, Length(List) - next);
+  end;
+  until (next = 0);
+  ParseCPUMixedMode := Output;
+end;
+
+//=================================================================
+
+function TGDBDebugger.ParseCPUDisasmMode(List: String; CurrentFuncName: PString): String;
+{
+   Part of Third Level Parse of Output.
+   Parses disassembly display and writes to a RichText edit window.
+   (Takes data preprocessed by ParseCPUDisassem and ParseCPUMixedMode)
+}
+//   Disassembly Mode
+//   We expect a list of
+//     {address="<hex string>",func-name="<string>",offset="<int>",inst="<string>"},
+{
+    Display algorithm:
+    	Extract vars;
+      if 'func-name' = same as stored, skip it
+       else write it and store it;
+      write vars to Output.
+}
+var
+  Line, Address, FuncName, Offset, Instr, Output: String;
+  next: Integer;
+
+begin
+  repeat
+  begin
+    Line := ExtractBracketed(@List, nil, @next, '{', false);
+    if (not(Line = '')) then
+    begin
+      ParseConst(@Line, @GDBaddress, PString(@Address));
+      ParseConst(@Line, @GDBfuncname, PString(@FuncName));
+      ParseConst(@Line, @GDBoffset, PString(@Offset));
+      ParseConst(@Line, @GDBinstr, PString(@Instr));
+      if (not(FuncName = CurrentFuncName^)) then
+      begin
+        Output := Output + format('%s: %s%s',[FuncStr, FuncName, NL]);
+        CurrentFuncName^ := FuncName;
+      end;
+      Output := Output + Address + HT + Offset + HT + Instr + NL;
+
+    end;
+    List := AnsiRightStr(List, Length(List) - next);
+  end;
+  until (next = 0);
+  ParseCPUDisasmMode := Output;
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ParseRegisterNames(Msg:String);
+{
+   Part of Third Level Parse of Output.
+   Parses list of register names, then generates request to get their values.
+}
+var
+  List: String;
+  start, next, i: Integer;
+
+begin
+  List := ExtractBracketed(@Msg, @start, @next, '[', false);
+  for i:=0 to CPURegCount do
+  begin
+    CPURegNames[i] := ExtractBracketed(@List, @start, @next, '"', false);
+    List := MidStr(List, next, Length(List));
+  end;
+
+  WriteToPipe('-data-list-register-values r ' + CPURegList);
+
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.ParseRegisterValues(Msg:String);
+{
+   Part of Third Level Parse of Output.
+   Parses and pairs up the list of register values against the list of register names.
+}
+var
+  List, Reg, Value: String;
+  start, next, Number, i: Integer;
+
+begin
+  List := ExtractBracketed(@Msg, @start, @next, '[', false);
+  for i:=0 to CPURegCount do
+  begin
+    Reg := ExtractBracketed(@List, @start, @next, '{', false);
+    ParseConst(@Reg, @GDBvalue, PString(@Value));
+    ParseConst(@Reg, @GDBnumber, PInteger(@Number));
+    if ((Number >= 0) and (Number <= CPURegCount)) then
+      CPURegValues[Number] := Value;
+    List := MidStr(List, next, Length(List));
+    if (verbose) then
+      AddtoDisplay(CPURegNames[i] + '  '+CPURegValues[i]);
+    DebugCPUFrm.RegisterList.InsertRow(CPURegNames[i], Value, true);
+  end;
+
+{      If the 'natural' order of registers as GDB sends them is good enough,
+       then retain the last 2 lines above, then the Registers class and the rest
+       below can be removed.
+
+  Registers := TRegisters.Create;
+  for i:= 0 to CPURegCount do
+  begin
+    if      (CPURegNames[i] = 'eax') then Registers.EAX := CPURegValues[i]
+    else if (CPURegNames[i] = 'ebx') then Registers.EBX := CPURegValues[i]
+    else if (CPURegNames[i] = 'ecx') then Registers.ECX := CPURegValues[i]
+    else if (CPURegNames[i] = 'edx') then Registers.EDX := CPURegValues[i]
+    else if (CPURegNames[i] = 'esi') then Registers.ESI := CPURegValues[i]
+    else if (CPURegNames[i] = 'edi') then Registers.EDI := CPURegValues[i]
+    else if (CPURegNames[i] = 'ebp') then Registers.EBP := CPURegValues[i]
+    else if (CPURegNames[i] = 'esi') then Registers.ESI := CPURegValues[i]
+    else if (CPURegNames[i] = 'esp') then Registers.ESP := CPURegValues[i]
+    else if (CPURegNames[i] = 'eip') then Registers.EIP := CPURegValues[i]
+    else if (CPURegNames[i] = 'eflags') then Registers.EFLAGS := CPURegValues[i]
+    else if (CPURegNames[i] = 'cs') then Registers.CS := CPURegValues[i]
+    else if (CPURegNames[i] = 'ds') then Registers.DS := CPURegValues[i]
+    else if (CPURegNames[i] = 'ss') then Registers.SS := CPURegValues[i]
+    else if (CPURegNames[i] = 'es') then Registers.ES := CPURegValues[i]
+    else if (CPURegNames[i] = 'gs') then Registers.GS := CPURegValues[i]
+    else if (CPURegNames[i] = 'fs') then Registers.FS := CPURegValues[i];
+  end;
+  if (verbose)
+    AddtoDisplay(CPURegNames[i] + '  '+CPURegValues[i]);
+  DebugCPUFrm.RegisterList.InsertRow(CPURegNames[i], Value, true);
+}
 
 end;
 
@@ -2458,7 +2693,6 @@ procedure TGDBDebugger.WatchpointHit(Msg: PString);
    Parses out Watchpoint details
    May be easier to split this for the 3 types of Watchpoint
 }
-
 var
     Temp: String;
     Num, Line: Integer;
@@ -2467,14 +2701,11 @@ var
     //Ret: Boolean;
 
 begin
-
     Temp := Msg^;
     Num := 0;
     Line := 0;
 
     //Ret := false;
-
-
     Val := ExtractNamed(@Temp, @GDBvalueqb, 1);
     Wpt := ExtractNamed(@Temp, @GDBwpt, 1);
     {Ret := }ParseConst(@Wpt, @GDBnumber, PInteger(@Num));
@@ -2544,7 +2775,7 @@ begin
 end;
 
 //=================================================================
-// added 20110409
+
 procedure TGDBDebugger.ModifyVariable(VarName: String; Value: String);
 {
 /*
@@ -2579,7 +2810,7 @@ begin
 end;
 
 //=================================================================
-// added 20110409
+
 procedure TGDBDebugger.WptScope(Msg: PString);
 // Parses out Watchpoint details
 // N.B. "Msg" may contain multiple pairs of values:
@@ -2647,7 +2878,7 @@ begin
   // gui_critSect.Leave();
 
 end;
-//end added
+
 //=================================================================
 
 procedure TGDBDebugger.StepHit(Msg: PString);
@@ -2751,7 +2982,7 @@ begin
 end;
 
 //=================================================================
-// modified 20110409
+
 function TGDBDebugger.ParseResult(Str: PString; Level: Integer; List: TList): String;
 {
 /*
@@ -2860,9 +3091,7 @@ begin          // ParseResult
   if (AnsiStartsStr('{', Val)) then              // it's a Tuple
   begin
     New(Local);
-// added 25/2/2011 modded
     Local.Number := 0;
-// end added
     Local^.Name := format('%*s%s',[Level*INDENT, '',
       ExtractBracketed(@Vari, nil, nil, '"', false)]);
     List.Add(Local);
@@ -2871,9 +3100,7 @@ begin          // ParseResult
   else
   begin                                          // it's a simple Const
     New(Local);
-// added 25/2/2011 modded
     Local.Number := 0;
-// end added
     Local^.Name := format('%*s%s',[Level*INDENT, '',
       ExtractBracketed(@Vari, nil, nil, '"', false)]);
     Val := OctToHex(@Val);
@@ -2885,7 +3112,6 @@ begin          // ParseResult
   ParseResult := Output;
 end;
 
-// end modified
 //=================================================================
 
 function TGDBDebugger.ExtractList(Str: PString; Tuple: Boolean; Level: Integer; List: TList): String;
@@ -3004,6 +3230,10 @@ var
 	Str2: String;
 	Local: PWatchVar;
 
+
+
+
+
 begin
 
         Str^ := TrimLeft(Str^);
@@ -3023,19 +3253,16 @@ begin
 	end
 	else
 	begin
-// added 16/2/2011 modified
 		New(Local);                           // a const
 		Local^.Value := Trim(OctToHex(Str));
                 Local^.Name := '';
 		List.Add(Local);
 		Output := Output + OctToHex(Str);         // a const
-// end added
 	end;
 	ParseValue := Output;
 end;
 
 //=================================================================
-
 
 function TGDBDebugger.ExtractWxStr(Str: PString): String;
 
@@ -3078,7 +3305,7 @@ begin          // ExtractwxStr
 end;
 
 //=================================================================
-// Added 20110409
+
 procedure TGDBDebugger.ReplaceWxStr(Str: PString);
 
 //    Expects a string with embedded wxStrings specifically of the form expected
@@ -3115,7 +3342,7 @@ begin
   end;
   Str^ := Output + Remainder;
 end;
-// end added
+
 //=================================================================
 
 function unescape(s: PString): String;
@@ -3436,9 +3663,7 @@ begin          // ExtractBracketed
                 break;
         end;
 
-// changed 20110409
 		if ((e > Length(Output)) and (s = -1)) then          // was e = Length(Output)
-// end changed
         begin
             if (not (start = Nil)) then
                 start^ := 0;
@@ -3450,9 +3675,7 @@ begin          // ExtractBracketed
     end;
 
     if (not (next = Nil)) then
-// changed 20110409
         if (e > Length(Output)) then
-// end changed
             next^ := 0
         else
             next^ := e;
@@ -4164,6 +4387,10 @@ var
     I: Integer;
     Command: TCommand;
 begin
+
+
+
+
 
     for I := 0 to DebugTree.Items.Count - 1 do
         with PWatch(DebugTree.Items[I].Data)^ do
@@ -4982,18 +5209,16 @@ begin
             ParseWatchpoint(msg);
         end
 
-{
         else if (AnsiStartsStr(GDBdone+GDBregnames, msg)) then
         begin
           ParseRegisterNames(msg);
         end
-}
+
         else if (AnsiStartsStr(GDBdone+GDBmemq, msg)) then
         begin
           ParseCPUMemory(msg);
-        end;
+        end
 
-{
         else if (AnsiStartsStr(GDBdone+GDBasminst, msg)) then
         begin
           ParseCPUDisassem(msg);
@@ -5003,7 +5228,7 @@ begin
         begin
           ParseRegisterValues(msg);
         end;
-}
+
         if ((AnsiStartsStr(GDBdone+GDBnameq, msg))
             and not (Token = MODVARTOKEN)) then  // It's not from Modify Variable
         begin
@@ -5029,6 +5254,10 @@ begin
 end;
 
 //=================================================================
+
+
+
+
 
 function TGDBDebugger.ExecResult(buf: PChar; bsize: PLongInt): PChar;
 {
@@ -5161,7 +5390,6 @@ end;
                     // gui_critSect.Leave();
                     StepHit(@msg);
                 end
-// added 20110409
 				else if (Reason = 'watchpoint-scope') then
 				begin
 					// gui_critSect.Enter();
@@ -5169,7 +5397,6 @@ end;
 					// gui_critSect.Leave();
 					WptScope(@msg);
 				end
-// added 20110409
                 else if (Reason = 'signal-received') then
                 begin
                    AddtoDisplay('Stopped - signal received');
@@ -5187,8 +5414,8 @@ end;
 end;
 
 //===============================================
-procedure TGDBDebugger.FirstParse;
 
+procedure TGDBDebugger.FirstParse;
 var
 
     BufMem: PChar;          // Keep a copy of the originally allocated memory
