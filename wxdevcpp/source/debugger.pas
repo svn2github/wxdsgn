@@ -666,7 +666,7 @@ var
 implementation
 
 uses
-    cpufrm, devcfg, Forms, madExcept, main, MultiLangSupport,
+    devcfg, Forms, madExcept, main, MultiLangSupport,
     prjtypes, RegExpr, //dbugintf,  EAB removed Gexperts debug stuff.
     StrUtils, utils;
 

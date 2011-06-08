@@ -1250,7 +1250,7 @@ uses
     NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
     ProfileAnalysisFm, //debugwait,
     FilePropertiesFm, AddToDoFm,
-    ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
+    ImportMSVCFm, FileAssocs, TipOfTheDayFm, Splash,
     WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm,
     devMsgBox, ComObj, uvista
 
