@@ -2895,11 +2895,6 @@ object MainForm: TMainForm
         Action = actWatchItem
         GroupIndex = 9
       end
-      object ViewMemory1: TMenuItem
-        Caption = 'View memory'
-        GroupIndex = 9
-        OnClick = ViewMemory1Click
-      end
       object ViewCPUItem: TMenuItem
         Caption = '&View CPU Window'
         GroupIndex = 9

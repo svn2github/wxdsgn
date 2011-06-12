@@ -181,8 +181,7 @@ const
 
 type
     AssemblySyntax = (asATnT, asIntel);
-    ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads,
-        cdDisassembly, cdRegisters);
+    ContextData = (cdLocals, cdCallStack, cdWatches, cdThreads);
     ContextDataSet = set of ContextData;
     TCallback = procedure(Output: TStringList) of object;
 
@@ -351,7 +350,6 @@ type
 
         FileName: string;
         Event: THandle;
-        //Wait: TDebugWait;
         Reader: ReadThread;
         CurOutput: TStringList;
 		TargetPID: Integer;
@@ -430,7 +428,7 @@ type
 
         //Variable watches
         procedure RefreshContext(refresh: ContextDataSet =
-            [cdLocals, cdCallStack, cdWatches, cdThreads, cdDisassembly]);
+            [cdLocals, cdCallStack, cdWatches, cdThreads]);
             virtual; abstract;
 //        procedure AddWatch(varname: string; when: TWatchBreakOn);
 //            virtual; abstract;
@@ -485,7 +483,7 @@ type
         procedure OnRegisters(Output: TStringList);
         procedure OnThreads(Output: TStringList);
         procedure OnLocals(Output: TStringList);
-        procedure OnWatchesSet(Output: TStringList);
+      //  procedure OnWatchesSet(Output: TStringList);
 
     public
         //Debugger control
@@ -520,7 +518,7 @@ type
         //Variable watches
         procedure RefreshContext(refresh: ContextDataSet =
             [cdLocals, cdCallStack, cdWatches,
-            cdThreads, cdDisassembly, cdRegisters]); override;
+            cdThreads]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
         
 		procedure LoadAllWatches; override;
@@ -635,8 +633,7 @@ type
 
         //Variable watches
         procedure RefreshContext(refresh: ContextDataSet =
-            [cdLocals, cdCallStack, cdWatches,
-            cdThreads, cdDisassembly, cdRegisters]); override;
+            [cdLocals, cdCallStack, cdWatches, cdThreads]); override;
         procedure AddWatch(varname: string; when: TWatchBreakOn); override;
         //procedure RemoveWatch(varname: string); override;
 
@@ -669,14 +666,6 @@ uses
     devcfg, Forms, madExcept, main, MultiLangSupport,
     prjtypes, RegExpr, //dbugintf,  EAB removed Gexperts debug stuff.
     StrUtils, utils;
-
-function RegexEscape(str: string): string;
-begin
-    Result := AnsiReplaceStr(str, '[', '\[');
-    Result := AnsiReplaceStr(Result, ']', '\]');
-    Result := AnsiReplaceStr(Result, '(', '\(');
-    Result := AnsiReplaceStr(Result, ')', '\)');
-end;
 
 procedure ReadThread.Execute;
 
@@ -2638,6 +2627,7 @@ var
 
 begin
   List := ExtractBracketed(@Msg, @start, @next, '[', false);
+   
   for i:=0 to CPURegCount do
   begin
     Reg := ExtractBracketed(@List, @start, @next, '{', false);
@@ -3957,215 +3947,50 @@ begin
     QueueCommand('-target-attach', inttostr(pid));
 end;
 
+function RegexEscape(str: string): string;
+begin
+   Assert(false, 'RegexEscape: I am not redundant');
+end;
+
 // ===============================================
 
 procedure TGDBDebugger.OnOutput(Output: string);
-var
-    RegExp: TRegExpr;
-    CurLine: string;
-    NewLines: TStringList;
-
-    procedure FlushOutputBuffer;
-    var
-        i: integer;
-        LastString: string;
-        TempLines: TStringList;
-    begin
-        if NewLines.Count = 0 then
-            Exit;
-
-        // Delete the output lines 'breakpoints-invalid'
-        i := NewLines.IndexOf('breakpoints-invalid');
-        while (i > -1) do
-        begin
-            NewLines.Delete(i);
-            i := NewLines.IndexOf('breakpoints-invalid');
-        end;
-
-        // Delete the output lines 'frames-invalid'
-        i := NewLines.IndexOf('frames-invalid');
-        while (i > -1) do
-        begin
-            NewLines.Delete(i);
-            i := NewLines.IndexOf('frames-invalid');
-        end;
-
-        if NewLines.Count = 0 then
-            Exit;
-
-        // Get rid of duplicate debugger messages.
-        TempLines := TStringList.Create;
-        LastString := NewLines.Strings[0];
-        TempLines.Add(LastString);
-        for i := 1 to (NewLines.Count - 1) do
-            if (NewLines.Strings[i] <> LastString) then
-            begin
-                TempLines.Add(NewLines.Strings[i]);
-                LastString := NewLines.Strings[i];
-            end;
-
-        MainForm.DebugOutput.Lines.BeginUpdate;
-        MainForm.DebugOutput.Lines.AddStrings(TempLines);
-        MainForm.DebugOutput.Lines.EndUpdate;
-        SendMessage(MainForm.DebugOutput.Handle, $00B6 {EM_LINESCROLL}, 0,
-            MainForm.DebugOutput.Lines.Count);
-        NewLines.Clear;
-        TempLines.Free;
-    end;
-
-    function StripCtrlChars(var line: string): Boolean;
-    var
-        Idx: Integer;
-    begin
-        Idx := Pos(#26, line);
-        Result := Idx <> 0;
-        while Idx <> 0 do
-        begin
-            Delete(line, Idx, 1);
-            Idx := Pos(#26, line);
-        end;
-    end;
-
-    procedure ParseOutput(const line: string);
-    begin
-        //Exclude these miscellaneous messages
-        if (line = 'pre-prompt') or (line = 'prompt') or
-            (line = 'post-prompt') or
-            (line = 'frames-invalid') or (Pos('error', line) = 1)
-            or (line = '{') then
-            Exit
-        //Empty lines
-        else
-        if (Trim(line) = '') or (Trim(line) = 'breakpoints-invalid') then
-            Exit
-        else
-        if (line = 'value-history-value') or (line = 'value-history-end')
-            or (Pos('value-history-begin', line) = 1) or
-            RegExp.Exec(line, '\$([0-9]+) =') then
-            Exit
-        else
-        if Pos('(gdb) ', line) = 1 then
-        begin
-            //The debugger is waiting for input, we're paused!
-            SentCommand := False;
-            fPaused := True;
-            fBusy := False;
-
-            //Because we are here, we probably are a side-effect of a previous instruction
-            //Execute the process function for the command.
-            if Assigned(OverrideHandler) then
-            begin
-                OverrideHandler(CurOutput);
-                OverrideHandler := nil;
-            end
-            else
-            if (CurOutput.Count <> 0) and (CurrentCommand <> nil) and
-                Assigned(CurrentCommand.OnResult) then
-                CurrentCommand.OnResult(CurOutput);
-
-            if CurrentCommand <> nil then
-                if (CurrentCommand.Command = 'run'#10) or
-                    (CurrentCommand.Command = 'next'#10) or
-                    (CurrentCommand.Command = 'step'#10) or
-                    (CurrentCommand.Command = 'continue'#10) or
-                    (CurrentCommand.Command = (devData.DebugCommand + #10)) or
-                    (CurrentCommand.Command = ''#10) then
-                begin
-                    RefreshContext;
-                    Application.BringToFront;
-                end;
-            CurOutput.Clear;
-
-            //Send the command, and do not send any more
-            FlushOutputBuffer;
-            SendCommand;
-
-            //Make sure we don't save the current line!
-            Exit;
-        end
-        else
-        if (Pos('no debugging symbols found', line) > 0) or
-            (Pos('No symbol table is loaded', line) > 0) then
-            OnNoDebuggingSymbolsFound
-        else
-        if Pos('file is more recent than executable', line) > 0 then
-            OnSourceMoreRecent
-        else
-        if line = 'signal' then
-            OverrideHandler := OnSignal
-        else
-        if RegExp.Exec(line, 'Breakpoint ([0-9]+),') then
-            with GetBreakpointFromIndex(StrToInt(RegExp.Substitute('$1'))) do
-                MainForm.GotoBreakpoint(Filename, Line)
-        else
-        if RegExp.Exec(line, 'Hardware access \(.*\) watchpoint ') then
-            JumpToCurrentLine := True
-        else
-        if Pos('exited ', line) = 1 then
-            CloseDebugger(nil);
-
-        CurOutput.Add(Line);
-    end;
 begin
-    //Update the memo
-    Screen.Cursor := crHourglass;
-    Application.ProcessMessages;
-    RegExp := TRegExpr.Create;
-    NewLines := TStringList.Create;
-
-    while Pos(#10, Output) > 0 do
-    begin
-        //Extract the current line
-        CurLine := Copy(Output, 0, Pos(#13, Output) - 1);
-
-        //Process the output
-{$IFNDEF RELEASE}
-        StripCtrlChars(CurLine);
-{$ELSE}
-        if not StripCtrlChars(CurLine) then
-        begin
-{$ENDIF}
-        if (not LastWasCtrl) or (Length(CurLine) <> 0) then
-            NewLines.Add(CurLine);
-        LastWasCtrl := False;
-{$IFDEF RELEASE}
-        end
-        else
-            LastWasCtrl := True;
-{$ENDIF}
-        ParseOutput(CurLine);
-
-        //Remove those that we've already processed
-        Delete(Output, 1, Pos(#10, Output));
-    end;
-
-    if Length(Output) > 0 then
-    begin
-        NewLines.Add(Output);
-        ParseOutput(Output);
-    end;
-
-    //Add the new lines to the edit control if we have any
-    FlushOutputBuffer;
-
-    //Clean up
-    NewLines.Free;
-    RegExp.Free;
-    Screen.Cursor := crDefault;
+   Assert(false, 'TGDBDebugger.OnOutput: I am not redundant');
 end;
 
 //=================================================================
 
 procedure TGDBDebugger.OnSignal(Output: TStringList);
-var
-    I: Integer;
 begin
-    for I := 0 to Output.Count - 1 do
-        if Output[I] = 'signal-name' then
-            if Output[I + 1] = 'SIGSEGV' then
-                OnAccessViolation
-            else
-    ;
+   Assert(false, 'TGDBDebugger.OnSignal: I am not redundant');
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnLocals(Output: TStringList);
+begin
+   Assert(false, 'TGDBDebugger.OnLocals: I am not redundant');
+end;
+//=================================================================
+
+procedure TGDBDebugger.OnThreads(Output: TStringList);
+begin
+   Assert(false, 'TGDBDebugger.OnThreads: I am not redundant');
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.GetRegisters;
+begin
+   Assert(false, 'TGDBDebugger.GetRegisters: I am not redundant');
+end;
+
+//=================================================================
+
+procedure TGDBDebugger.OnRegisters(Output: TStringList);
+begin
+   Assert(false, 'TGDBDebugger.OnRegisters: I am not redundant');
 end;
 
 //=================================================================
@@ -4286,53 +4111,12 @@ begin
         Command.OnResult := OnThreads;
         QueueCommand(Command);
     end;
-    if cdDisassembly in refresh then
-        Disassemble;
-    if cdRegisters in refresh then
-        GetRegisters;
 
     //Then update the watches
     if (cdWatches in refresh) and Assigned(MainForm.WatchTree) then
     begin
 		ReLoadWatches;
 		GetWatchedValues;
-{
-Deleted 20110409:
-        I := 0;
-        ShowMessage(Format('Watchtree count = %d', [WatchTree.Items.Count]));
-        while I < DebugTree.Items.Count do
-        begin
-        ShowMessage('1');
-            Node := DebugTree.Items[I];
-            ShowMessage('2');
-            if Node.Data = nil then
-                Continue;
-
-            ShowMessage('3');
-            with PWatch(Node.Data)^ do
-            begin
-            ShowMessage('hereh');
-                Command := TCommand.Create;
-                if Pos('.', Name) > 0 then
-                    Command.Command :=
-                        '-break-list  ' + Copy(name, 1, Pos('.', name) - 1)
-                else
-                    Command.Command := '-break-list  ' + name;
-
-                ShowMessage(name);
-                //Fill in the other data
-                Command.Data := Node;
-                Command.OnResult := OnRefreshContext;
-               // Node.DeleteChildren;
-
-                //Then send it
-                QueueCommand(Command);
-            end;
-
-            //Increment our counter
-            Inc(I);
-        end;
-}		
     end;
 	
 	
@@ -4346,100 +4130,6 @@ begin
 end;
 
 //=================================================================
-{
-deleted 20110409
-procedure TGDBDebugger.AddWatch(varname: string; when: TWatchBreakOn);
-var
-    Watch: PWatch;
-    Command: TCommand;
-begin
-
-    with DebugTree.AddItem(varname + ' = (unknown)', nil) do
-    begin
-        ImageIndex := 21;
-        SelectedIndex := 21;
-        New(Watch);
-        Watch^.Name := varname;
-        Data := Watch;
-    end;
-  
-    Command := TCommand.Create;
-    Command.Data := Pointer(Watch);
-    case when of
-        wbRead:
-            Command.Command := '-break-watch -r ' + varname;
-        wbWrite:
-            Command.Command := '-break-watch ' + varname;
-        wbBoth:
-            Command.Command := '-break-watch -a ' + varname;
-    end;
-    Command.OnResult := OnWatchesSet;
-    QueueCommand(Command);
-end;
-
-//=================================================================
-}
-{
-deleted 20110409
-
-procedure TGDBDebugger.RefreshWatches;
-var
-    I: Integer;
-    Command: TCommand;
-begin
-
-
-
-
-
-    for I := 0 to DebugTree.Items.Count - 1 do
-        with PWatch(DebugTree.Items[I].Data)^ do
-        begin
-            Command := TCommand.Create;
-            Command.Data := DebugTree.Items[I].Data;
-            Command.Command := '-break-watch -a ' + Name;
-            Command.OnResult := OnWatchesSet;
-            QueueCommand(Command);
-        end;
-end;
-
-//=================================================================
-}
-procedure TGDBDebugger.OnWatchesSet(Output: TStringList);
-begin
-    //TODO: lowjoel: Watch-setting error?
-end;
-
-//=================================================================
-{
-deleted 20110409
-procedure TGDBDebugger.RemoveWatch(varname: string);
-var
-    node: TListItem;
-begin
-
-    //Find the top-most node
-    node := DebugTree.Selected;
-    while Assigned(node) and (Assigned(node.Parent)) do
-        node := node.Parent;
-
-    //Then clean it up
-    if Assigned(node) then
-    begin
-        Dispose(node.Data);
-        DebugTree.Items.Delete(node);
-    end;
-    
-end;
-
-//=================================================================
-
-deleted 20110409
-procedure TGDBDebugger.ModifyVariable(varname, newvalue: string);
-begin
-    QueueCommand('-gdb-set variable', varname + ' = ' + newvalue);
-end;
-}
 
 //=================================================================
 
@@ -4536,402 +4226,16 @@ end;
 
 //=================================================================
 
-procedure TGDBDebugger.OnLocals(Output: TStringList);
-var
-    I: Integer;
-    RegExp: TRegExpr;
-    Local: PVariable;
-    Locals: TList;
-
-    function SynthesizeIndent(Indent: Integer): string;
-    var
-        I: Integer;
-    begin
-        Result := '';
-        for I := 0 to Indent - 1 do
-            Result := Result + ' ';
-    end;
-
-    procedure RecurseArray(Indent: Integer; var I: Integer); forward;
-    procedure RecurseStructure(Indent: Integer; var I: Integer);
-    begin
-        while I < Output.Count - 4 do
-            if Output[I] = '}' then
-                Exit
-            else
-            if Pos('{', Output[I + 4]) <> 1 then
-            begin
-                New(Local);
-                Locals.Add(Local);
-                with Local^ do
-                begin
-                    Name := SynthesizeIndent(Indent) + Output[I];
-                    Value := Output[I + 4];
-                end;
-
-                Inc(I, 6);
-                if (I < Output.Count) and (Pos(',', Output[I]) <> 0) then
-                    Inc(I, 2);
-            end
-            else
-            begin
-                New(Local);
-                Locals.Add(Local);
-                with Local^ do
-                begin
-                    Name := SynthesizeIndent(Indent) + Output[I];
-                    Value := '';
-                end;
-
-                Inc(I, 6);
-                if Pos('array-section-begin', Output[I - 1]) = 1 then
-                    RecurseArray(Indent + 4, I)
-                else
-                    RecurseStructure(Indent + 4, I);
-
-                Inc(I, 2);
-                if (I < Output.Count) and (Pos(',', Output[I]) = 1) then
-                    Inc(I, 2);
-            end;
-    end;
-
-    procedure RecurseArray(Indent: Integer; var I: Integer);
-    var
-        Count: Integer;
-    begin
-        Count := 0;
-        while (I < Output.Count - 2) do
-        begin
-            if Output[I] = '}' then
-                Break
-            else
-            if Pos(',', Output[I]) = 1 then
-                Output[I] := Trim(Copy(Output[I], 2, Length(Output[I])));
-
-            if Pos('{', Output[I]) = 1 then
-            begin
-                New(Local);
-                Locals.Add(Local);
-                with Local^ do
-                    Name :=
-                        Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
-
-                Inc(I, 2);
-                RecurseStructure(Indent + 4, I);
-            end
-            else
-            if (Trim(Output[I]) <> '') and
-                (Output[I] <> 'array-section-end') then
-            begin
-                New(Local);
-                Locals.Add(Local);
-                with Local^ do
-                begin
-                    Name :=
-                        Format('%s[%d]', [SynthesizeIndent(Indent), Count]);
-                    Value := Output[I];
-                end;
-            end
-            else
-            begin
-                Inc(I);
-                Continue;
-            end;
-
-            Inc(Count);
-            Inc(I, 2);
-        end;
-    end;
-begin
-    RegExp := TRegExpr.Create;
-    Locals := TList.Create;
-
-    I := 0;
-    while I < Output.Count do
-    begin
-        if RegExp.Exec(Output[I], '(.*) = (.*)') then
-        begin
-            New(Local);
-            Locals.Add(Local);
-
-            if RegExp.Substitute('$2') = '{' then
-            begin
-                with Local^ do
-                begin
-                    Name := RegExp.Substitute('$1');
-                    Value := '';
-                end;
-
-                Inc(I, 2);
-                //Determine if it is a structure of an array
-                if Pos('array-section-begin', Output[I - 1]) = 1 then
-                    RecurseArray(4, I)
-                else
-                begin RecurseStructure(4, I); end;
-            end
-            else
-                with Local^ do
-                begin
-                    Name := RegExp.Substitute('$1');
-                    Value := RegExp.Substitute('$2');
-                end//Fill the fields
-            ;
-        end;
-        Inc(I);
-    end;
-
-    //Pass the locals list to the callback function that wants it
-    if Assigned(TDebugger(Self).OnLocals) then
-        TDebugger(Self).OnLocals(Locals);
-
-    //Clean up
-    Locals.Free;
-    RegExp.Free;
-end;
-
-//=================================================================
-
-procedure TGDBDebugger.OnThreads(Output: TStringList);
-var
-    I: Integer;
-    RegExp: TRegExpr;
-    Thread: PDebuggerThread;
-    Threads: TList;
-begin
-    RegExp := TRegExpr.Create;
-    Threads := TList.Create;
-
-    for I := 0 to Output.Count - 1 do
-        if RegExp.Exec(Output[I],
-            '(\**)( +)([0-9]+)( +)thread ([0-9a-fA-F]*).0x([0-9a-fA-F]*)') then
-        begin
-            New(Thread);
-            Threads.Insert(0, Thread);
-
-            with Thread^ do
-            begin
-                Active := RegExp.Substitute('$1') = '*';
-                Index := RegExp.Substitute('$3');
-                ID := RegExp.Substitute('$5.$6');
-            end;
-        end;
-
-    //Call the callback function to list the threads
-    if Assigned(TDebugger(Self).OnThreads) then
-        TDebugger(Self).OnThreads(Threads);
-
-    Threads.Free;
-    RegExp.Free;
-end;
-
-//=================================================================
-
-procedure TGDBDebugger.GetRegisters;
-var
-    Command: TCommand;
-begin
-    if (not Executing) or (not Paused) then
-        Exit;
-
-    RegistersFilled := 0;
-    Registers := TRegisters.Create;
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $eax';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $ebx';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $ecx';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $edx';
-    Command.OnResult := OnRegisters;
-
-    QueueCommand(Command);
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $esi';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $edi';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $ebp';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $esp';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $eip';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $cs';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $ds';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $ss';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $es';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $fs';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $gs';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-
-    Command := TCommand.Create;
-    Command.Command := 'displ/x $eflags';
-    Command.OnResult := OnRegisters;
-    QueueCommand(Command);
-end;
-
-//=================================================================
-
-procedure TGDBDebugger.OnRegisters(Output: TStringList);
-var
-    I: Integer;
-    Reg: String;
-    RegExp: TRegExpr;
-begin
-    RegExp := TRegExpr.Create;
-
-    I := 0;
-    while I < Output.Count do
-    begin
-        if Output[I] = ' = ' then
-        begin
-            Inc(I, 2);
-
-            //Determine the register
-            if RegExp.Exec(CurrentCommand.Command, 'displ/x \$(.*)') then
-            begin
-                Inc(RegistersFilled);
-                Reg := Trim(RegExp.Substitute('$1'));
-                if Reg = 'eax' then
-                    Registers.EAX := Output[I]
-                else
-                if Reg = 'ebx' then
-                    Registers.EBX := Output[I]
-                else
-                if Reg = 'ecx' then
-                    Registers.ECX := Output[I]
-                else
-                if Reg = 'edx' then
-                    Registers.EDX := Output[I]
-                else
-                if Reg = 'esi' then
-                    Registers.ESI := Output[I]
-                else
-                if Reg = 'edi' then
-                    Registers.EDI := Output[I]
-                else
-                if Reg = 'ebp' then
-                    Registers.EBP := Output[I]
-                else
-                if Reg = 'eip' then
-                    Registers.EIP := Output[I]
-                else
-                if Reg = 'esp' then
-                    Registers.ESP := Output[I]
-                else
-                if Reg = 'cs' then
-                    Registers.CS := Output[I]
-                else
-                if Reg = 'ds' then
-                    Registers.DS := Output[I]
-                else
-                if Reg = 'ss' then
-                    Registers.SS := Output[I]
-                else
-                if Reg = 'es' then
-                    Registers.ES := Output[I]
-                else
-                if Reg = 'fs' then
-                    Registers.FS := Output[I]
-                else
-                if Reg = 'gs' then
-                    Registers.GS := Output[I]
-                else
-                if Reg = 'eflags' then
-                    Registers.EFLAGS := Output[I]
-                else
-                    Dec(RegistersFilled);
-            end;
-        end;
-        Inc(I);
-    end;
-
-    //Pass the locals list to the callback function that wants it
-    if (RegistersFilled = 16) and Assigned(TDebugger(Self).OnRegisters) then
-    begin
-        TDebugger(Self).OnRegisters(Registers);
-        Registers.Free;
-    end;
-
-    //Clean up
-    RegExp.Free;
-end;
-
-//=================================================================
-
 procedure TGDBDebugger.Disassemble(func: string);
-var
-    Command: TCommand;
 begin
-    if (not Executing) or (not Paused) then
-        Exit;
-
-    Command := TCommand.Create;
-    Command.Command := 'disas ' + func;
-    Command.OnResult := OnDisassemble;
-    QueueCommand(Command);
+   Assert(false, 'TGDBDebugger.Disassemble: I am not redundant');
 end;
 
 //=================================================================
 
 procedure TGDBDebugger.OnDisassemble(Output: TStringList);
 begin
-    //Delete the first and last entries (Dump of assembler code for function X and End Dump)
-    if (Output.Count > 0) then
-    begin
-        Output.Delete(Output.Count - 1);
-        Output.Delete(0);
-    end;
-
-    //Pass the disassembly to the callback function that wants it
-    if Assigned(TDebugger(Self).OnDisassemble) then
-        TDebugger(Self).OnDisassemble(Output.Text);
+   Assert(false, 'TGDBDebugger.OnDisassemble: I am not redundant');
 end;
 
 //=================================================================
@@ -5254,10 +4558,6 @@ begin
 end;
 
 //=================================================================
-
-
-
-
 
 function TGDBDebugger.ExecResult(buf: PChar; bsize: PLongInt): PChar;
 {
@@ -6187,11 +5487,7 @@ begin
         Command.OnResult := OnThreads;
         QueueCommand(Command);
     end;
-    if cdDisassembly in refresh then
-        Disassemble;
-    if cdRegisters in refresh then
-        GetRegisters;
-
+   
     //Then update the watches
     if (cdWatches in refresh) and Assigned(DebugTree) then
     begin

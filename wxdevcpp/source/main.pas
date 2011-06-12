@@ -698,7 +698,6 @@ type
         actRemoveAllBreakpoints: TAction;
     VerboseDebug: TMenuItem;
     WatchTree: TTreeView;
-    ViewMemory1: TMenuItem;
     actVerboseDebugOutput: TAction;
     actViewDebugMemory: TAction;
 
@@ -996,8 +995,7 @@ type
         procedure RemoveAllBreakpoints1Click(Sender: TObject);
 
         procedure OnWatches(Locals: PTList);
-    procedure ViewMemory1Click(Sender: TObject);
-
+    
     private
         HelpWindow: HWND;
         fToDoList: TList;
@@ -1248,7 +1246,7 @@ uses
     SynEditTypes, JvAppIniStorage, JvAppStorage,
     debugfrm, Types, Prjtypes, devExec,
     NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
-    ProfileAnalysisFm, //debugwait,
+    ProfileAnalysisFm,
     FilePropertiesFm, AddToDoFm,
     ImportMSVCFm, FileAssocs, TipOfTheDayFm, Splash,
     WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm,
@@ -1256,7 +1254,7 @@ uses
 
 {$IFDEF PLUGIN_BUILD}
     //Our dependencies
-    , FilesReloadFrm, debugMem, debugCPU
+    , FilesReloadFrm, debugCPU
 
 {$ENDIF}
     ;
@@ -1268,7 +1266,7 @@ uses
   QSynEdit, QSynEditTypes,
   CheckForUpdate, debugfrm, Prjtypes, devExec,
   NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
-  ProfileAnalysisFm, // debugwait,
+  ProfileAnalysisFm, 
   FilePropertiesFm, AddToDoFm, ViewToDoFm,
   ImportMSVCFm, CPUFrm, FileAssocs, TipOfTheDayFm, Splash,
   WindowListFrm, ParamsFrm, ProcessListFrm, ModifyVarFrm;
@@ -10523,28 +10521,6 @@ begin
   begin
     Exit;
   end;
-
-end;
-
-procedure TMainForm.ViewMemory1Click(Sender: TObject);
-begin
-   if (not fDebugger.Executing) or (not fDebugger.Paused) then
-        Exit;
-
- if not (ViewMemory1.Checked) then
- begin
-   ViewMemory1.Checked := true;
-   if not Assigned(DebugMemFrm) then
-   Application.CreateForm(TDebugMemFrm, DebugMemFrm);
-
-   DebugMemFrm.Show;
- end
- else
- begin
-   ViewMemory1.Checked := false;
-   if Assigned(DebugMemFrm) then
-        DebugMemFrm.Hide;
- end;
 
 end;
 

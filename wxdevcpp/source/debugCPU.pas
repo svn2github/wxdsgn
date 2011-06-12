@@ -156,8 +156,7 @@ end;
 procedure TDebugCPUFrm.FormShow(Sender: TObject);
 begin
 
-  SrcFileName.Text := MainForm.GetActiveEditorName;
-  // fProject.FileName ? ? ?
+  SrcFileName.Text := ExtractFileName(MainForm.GetActiveEditorName);
   RefreshAll(Sender);
 end;
 
@@ -168,14 +167,13 @@ begin
   DebugCPUFrm.Visible := true;
   DebugCPUFrm.BringToFront;
 
-  RefreshAll(Sender);
 end;
 
 //=================================================================
 
 procedure TDebugCPUFrm.FormActivate(Sender: TObject);
 begin
-//  RefreshAll(Sender);
+
 end;
 
 //=================================================================

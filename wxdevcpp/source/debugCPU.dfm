@@ -1,6 +1,6 @@
 object DebugCPUFrm: TDebugCPUFrm
-  Left = 117
-  Top = 12
+  Left = 160
+  Top = 10
   Width = 768
   Height = 564
   Caption = 'CPU'
