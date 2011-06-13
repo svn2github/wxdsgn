@@ -1,7 +1,7 @@
 object DebugCPUFrm: TDebugCPUFrm
-  Left = 160
-  Top = 10
-  Width = 768
+  Left = 43
+  Top = 32
+  Width = 775
   Height = 564
   Caption = 'CPU'
   Color = clBtnFace
@@ -30,7 +30,6 @@ object DebugCPUFrm: TDebugCPUFrm
     Width = 569
     Height = 530
     Align = alLeft
-    Caption = 'Panel1'
     TabOrder = 0
     object Splitter2: TSplitter
       Left = 1
@@ -183,17 +182,30 @@ object DebugCPUFrm: TDebugCPUFrm
   object Panel4: TPanel
     Left = 589
     Top = 0
-    Width = 171
+    Width = 178
     Height = 530
     Align = alClient
     TabOrder = 1
     DesignSize = (
-      171
+      178
       530)
+    object Label6: TLabel
+      Left = 8
+      Top = 8
+      Width = 54
+      Height = 13
+      Caption = 'Registers'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
     object RegisterList: TValueListEditor
       Left = 1
       Top = 24
-      Width = 169
+      Width = 176
       Height = 502
       Anchors = [akLeft, akTop, akRight, akBottom]
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goThumbTracking]
@@ -205,30 +217,16 @@ object DebugCPUFrm: TDebugCPUFrm
         'Value')
       ColWidths = (
         76
-        87)
-    end
-    object StaticText1: TStaticText
-      Left = 8
-      Top = 4
-      Width = 57
-      Height = 17
-      Caption = 'Registers'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 1
+        94)
     end
     object RegistersRefreshButton: TButton
-      Left = 96
+      Left = 103
       Top = 2
       Width = 67
       Height = 20
       Anchors = [akTop, akRight]
       Caption = 'Refresh'
-      TabOrder = 2
+      TabOrder = 1
       OnClick = RegistersRefreshButtonClick
     end
   end

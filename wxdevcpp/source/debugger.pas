@@ -1825,7 +1825,7 @@ begin
     Watch^.Name := varname;
     Watch^.Value := wpUnknown;
     Watch^.BPNumber := 0;
-    Watch^.Deleted := true;
+    Watch^.Deleted := false;
     Watch^.Token := WATCHTOKENBASE + MainForm.WatchTree.Items.Count - 1;
     Watch^.BPType := when;
     Data := Watch;

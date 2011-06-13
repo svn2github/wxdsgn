@@ -18,7 +18,6 @@ type
     Label2: TLabel;
     Panel4: TPanel;
     RegisterList: TValueListEditor;
-    StaticText1: TStaticText;
     DisassemblyRefreshButton: TButton;
     MemoryRefreshButton: TButton;
     RegistersRefreshButton: TButton;
@@ -30,6 +29,7 @@ type
     Label5: TLabel;
     SrcFileName: TEdit;
     DisassemblyRichEdit: TRichEdit;
+    Label6: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure DisassemblyRefreshButtonClick(Sender: TObject);
     procedure MemoryRefreshButtonClick(Sender: TObject);
