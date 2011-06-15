@@ -1868,7 +1868,7 @@ begin
     Watch := Items[index].Data;
     Watch^.Value := wpUnknown;
     Watch^.BPNumber := 0;
-    Watch^.Deleted := true;
+    Watch^.Deleted := false;
     Watch^.Token := WATCHTOKENBASE + index;
     Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
 
@@ -1910,6 +1910,7 @@ begin
     begin
       Watch^.Value := wpUnknown;
       Watch^.BPNumber := 0;
+      Watch^.Deleted := false;
       Watch^.Token := WATCHTOKENBASE + index;
       Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
 
@@ -2852,6 +2853,7 @@ begin
               Watch.Value := wpUnknown;
               Item[index].Text := Format('%s = %s', [Watch.Name, Watch.Value]);
               Output := Format('Stopped - %s for %s in Thread %d', [Reason, Watch.Name, Thread]);
+              
             end;
           end;
         end;
@@ -2861,7 +2863,7 @@ begin
   until((Reason = '') or (wpnum = 0));
 
   // Restart the Target:
-  WriteToPipe(GDBcontinue);
+  //WriteToPipe(GDBcontinue);
 
   // gui_critSect.Enter();
   AddtoDisplay(Output);
