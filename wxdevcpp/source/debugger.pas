@@ -239,7 +239,7 @@ type
         constructor Create(AStr: string);
     end;
 
-    PBreakpoint = ^TBreakpoint;
+     PBreakpoint = ^TBreakpoint;
     TBreakpoint = class
     public
         Index: Integer;
@@ -247,6 +247,7 @@ type
         Editor: TEditor;
         Filename: string;
         Line: Integer;
+        BPNumber: Integer;
     end;
 
     PStackFrame = ^TStackFrame;
@@ -484,6 +485,8 @@ type
         procedure OnThreads(Output: TStringList);
         procedure OnLocals(Output: TStringList);
       //  procedure OnWatchesSet(Output: TStringList);
+
+        procedure FillBreakpointNumber(SrcFile: PString; Line: Integer; Num: Integer);
 
     public
         //Debugger control
@@ -1686,12 +1689,13 @@ begin
     begin
         ParseConst(@Msg, @GDBaddr, PString(@Addr));
         if (ParseConst(@Msg, @GDBorig_loc, PString(@SrcFile)) and (Addr = GDBmult)) then
-        Output := format('Breakpoint No %d set at multiple addresses at %s', [Num, SrcFile])
+          Output := format('Breakpoint No %d set at multiple addresses at %s', [Num, SrcFile])
         else
         begin
 			ParseConst(@Msg, @GDBline, PInteger(@Line));
 			ParseConst(@Msg, @GDBfile, PString(@SrcFile));
 			Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
+                        FillBreakpointNumber(@SrcFile, Line, Num);
         end;
         // gui_critSect.Enter();
         AddtoDisplay(Output);
@@ -1719,61 +1723,6 @@ begin
 			List.Add(Vari);
 		end;
     end;
-
-{
-/*
-    These might or might not also be useful:
-
-    frame->AddtoListBox("Parsing Breakpoint "+Msg+ " from Debugger");
-
-    Ret = ParseConst(&Msg, &(wxString("number")), &Num);
-    Output.Printf("%s Parsed value is number: %ld", Ret?"OK ":"Bad", Num);
-    frame->AddtoListBox(Output);
-
-
-    Ret = ParseConst(&Msg, &(wxString("type")), &Type);
-    Output.Printf("%s Parsed value is type: %s", Ret?"OK ":"Bad", Type.c_str());
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("disp")), &Disp);
-    Output.Printf("%s Parsed value is disp: %s", Ret?"OK ":"Bad", Disp.c_str());
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("enabled")), &Enabled);
-    Output.Printf("%s Parsed value is enabled: %s", Ret?"OK ":"Bad", Enabled?"Enabled":"Disabled");
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("addr")), &Addr);
-    Output.Printf("%s Parsed value is addr: %s", Ret?"OK ":"Bad", Addr.c_str());
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("func")), &Func);
-    Output.Printf("%s Parsed value is func: %s", Ret?"OK ":"Bad", Func.c_str());
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("file")), &File);
-    Output.Printf("%s Parsed value is file: %s", Ret?"OK ":"Bad", File.c_str());
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("fullname")), &Fullname);
-    Output.Printf("%s Parsed value is fullname: %s", Ret?"OK ":"Bad", Fullname.c_str());
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("times")), &Times);
-    Output.Printf("%s Parsed value is times: %ld", Ret?"OK ":"Bad", Times);
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("line")), &Line);
-    Output.Printf("%s Parsed value is line: %ld", Ret?"OK ":"Bad", Line);
-    frame->AddtoListBox(Output);
-
-    Ret = ParseConst(&Msg, &(wxString("original-location")), &OriginalLocation);
-    Output.Printf("%s Parsed value is original-location: %s", Ret?"OK ":"Bad", OriginalLocation.c_str());
-    frame->AddtoListBox(Output);
-
-*/
-}
-
 end;
 
 //=================================================================
@@ -4059,7 +4008,8 @@ begin
         begin
             if Executing then
                 QueueCommand('-break-delete ',
-                    IntToStr(PBreakpoint(Breakpoints.Items[i])^.Index));
+                    IntToStr(PBreakpoint(Breakpoints.Items[i])^.BPNumber));
+
             Dispose(Breakpoints.Items[i]);
             Breakpoints.Delete(i);
             Break;
@@ -5115,6 +5065,26 @@ begin
     OnAccessViolation;
   // else any other signal?
 
+end;
+
+// ----------------------------------------
+
+procedure TGDBDebugger.FillBreakpointNumber(SrcFile: PString; Line: Integer; Num: Integer);
+{
+
+   Part of Third Level Parse of Output.
+   Fills Breakpoint table with GDB's breakpoint number
+}
+var
+    I: Integer;
+begin
+    for I := 0 to Breakpoints.Count - 1 do
+        if (PBreakpoint(Breakpoints[I])^.Filename = SrcFile^) and
+            (PBreakpoint(Breakpoints[I])^.Line = Line) then
+        begin
+            PBreakpoint(Breakpoints[I])^.BPNumber := Num;
+            Break;
+        end;
 end;
 
 //------------------------------------------------------------------------------
@@ -6273,6 +6243,7 @@ end;
 procedure TCDBDebugger.AddToDisplay(Msg: String);
 begin
 end;
+
 
 /////////////////////////////////////////////
 
