@@ -1695,6 +1695,7 @@ begin
 			ParseConst(@Msg, @GDBline, PInteger(@Line));
 			ParseConst(@Msg, @GDBfile, PString(@SrcFile));
 			Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
+
                         FillBreakpointNumber(@SrcFile, Line, Num);
         end;
         // gui_critSect.Enter();
@@ -2064,7 +2065,7 @@ begin
         {Ret := }ParseConst(@Msg, @GDBfile,  PString(@SrcFile));
         if not (Frame = nil) then
         begin
-            Frame.Filename := SrcFile;
+            Frame.Filename := ExtractFileName(SrcFile);
             Frame.FuncName := format('%*s%s',[Level, '', Func]);
             Frame.Line := Line;
             Frame.Args := '';
@@ -2458,6 +2459,8 @@ begin
       ParseConst(@Line, @GDBlineq, PString(@LineNum));
       ParseConst(@Line, @GDBfileq, PString(@FileName));
       AsmInstr := ExtractBracketed(@Line, nil, nil, '[', false);
+      FileName := ExtractFileName(FileName);
+      
       if (not(FileName = CurrentFileName)) then
       begin
         Output := Output + format('%s: %s%s',[FileStr, FileName, NL]);
@@ -4148,7 +4151,7 @@ begin
         if Output[I] = 'frame-source-file' then
         begin
             Inc(I);
-            StackFrame^.Filename := Output[I];
+            StackFrame^.Filename := ExtractFileName(Output[I]);
         end
         else
         if Output[I] = 'frame-source-line' then
@@ -5078,8 +5081,9 @@ procedure TGDBDebugger.FillBreakpointNumber(SrcFile: PString; Line: Integer; Num
 var
     I: Integer;
 begin
+
     for I := 0 to Breakpoints.Count - 1 do
-        if (PBreakpoint(Breakpoints[I])^.Filename = SrcFile^) and
+        if (ExtractFileName(PBreakpoint(Breakpoints[I])^.Filename) = SrcFile^) and
             (PBreakpoint(Breakpoints[I])^.Line = Line) then
         begin
             PBreakpoint(Breakpoints[I])^.BPNumber := Num;
