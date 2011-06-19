@@ -3653,6 +3653,11 @@ end;
 
 procedure TGDBDebugger.CloseDebugger(Sender: TObject);
 begin
+
+        // Reset breakpoint colors in editor
+        MainForm.RemoveActiveBreakpoints;
+        MainForm.DebugOutput.Lines.Add('Debugger closed.');
+
 	if Executing then
 	begin
 		fPaused := false;
@@ -4029,7 +4034,7 @@ begin
         breakpoint.Index := fNextBreakpoint;
         breakpoint.Valid := True;
         QueueCommand('-break-insert ', Format('"%s:%d"',
-            [ExtractFileName(breakpoint.Filename), breakpoint.Line]));
+            [breakpoint.Filename, breakpoint.Line]));
     end;
 end;
 
@@ -5083,7 +5088,7 @@ var
 begin
 
     for I := 0 to Breakpoints.Count - 1 do
-        if (ExtractFileName(PBreakpoint(Breakpoints[I])^.Filename) = SrcFile^) and
+        if (PBreakpoint(Breakpoints[I])^.Filename = SrcFile^) and
             (PBreakpoint(Breakpoints[I])^.Line = Line) then
         begin
             PBreakpoint(Breakpoints[I])^.BPNumber := Num;

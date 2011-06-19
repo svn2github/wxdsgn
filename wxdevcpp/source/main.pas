@@ -1722,7 +1722,7 @@ begin
     with Breakpoint do
     begin
         Line := line_number;
-        Filename := e.Filename;
+        Filename := ExtractFileName(e.Filename);
         Editor := e;
     end;
     fDebugger.AddBreakpoint(Breakpoint);
@@ -1736,7 +1736,7 @@ begin
     with Breakpoint do
     begin
         Line := line_number;
-        Filename := e.Filename;
+        Filename := ExtractFileName(e.Filename);
         Editor := e;
     end;
     fDebugger.RemoveBreakpoint(Breakpoint);
