@@ -3654,12 +3654,13 @@ end;
 procedure TGDBDebugger.CloseDebugger(Sender: TObject);
 begin
 
+	if Executing then
+	begin
+
         // Reset breakpoint colors in editor
         MainForm.RemoveActiveBreakpoints;
         MainForm.DebugOutput.Lines.Add('Debugger closed.');
 
-	if Executing then
-	begin
 		fPaused := false;
 		fExecuting := false;
 
