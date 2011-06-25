@@ -4639,7 +4639,7 @@ begin
       Inc(cpp);
     //Writeln(F,'/* XPM */');
     Result := Result + '/* XPM */' + #13;
-    StrFmt(outline, 'static char *%s', [XPMName]);
+    StrFmt(outline, 'static const char *%s', [XPMName]);
     strLine := outline;
     cp := StrScan(outline, '.');
     if cp <> nil then
@@ -4877,7 +4877,7 @@ begin
       Inc(cpp);
     //Writeln(F,'/* XPM */');
     Result := Result + '/* XPM */' + #13;
-    StrFmt(outline, 'static char *%s', [XPMName]);
+    StrFmt(outline, 'static const char *%s', [XPMName]);
     strLine := outline;
     cp := StrScan(outline, '.');
     if cp <> nil then
@@ -5113,7 +5113,7 @@ begin
       Inc(cpp);
     //Writeln(F,'/* XPM */');
     Result := Result + '/* XPM */' + #13;
-    StrFmt(outline, 'static char *%s', [XPMName]);
+    StrFmt(outline, 'static const char *%s', [XPMName]);
     strLine := outline;
     cp := StrScan(outline, '.');
     if cp <> nil then
