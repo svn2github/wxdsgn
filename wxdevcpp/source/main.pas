@@ -2123,8 +2123,10 @@ var
     i: Integer;
 {$ENDIF PLUGIN_BUILD}
 begin
-    if fDebugger.Executing then
-        fDebugger.CloseDebugger(Sender);
+    if Assigned(fDebugger) then
+        if fDebugger.Executing then
+                fDebugger.CloseDebugger(Sender);
+    
     fHelpFiles.free;
     fTools.Free;
     fCompiler.Free;
@@ -2134,6 +2136,7 @@ begin
     ReloadFilenames.Free;
     ClassBrowser1.Free;
 
+    if Assigned(fToDoList) then
     while fToDoList.Count > 0 do
         if Assigned(fToDoList[0]) then
         begin
@@ -2141,6 +2144,7 @@ begin
             fToDoList.Delete(0);
         end;
     fToDoList.Free;
+    
     devPluginToolbarsX.Free;
     devPluginToolbarsY.Free;
 
@@ -2303,7 +2307,7 @@ begin
                     idx2 := HelpMenu.IndexOf(HelpSep1)
                 else
                     idx2 := HelpMenu.IndexOf(HelpSep2);
-
+    
                 Item := TMenuItem.Create(HelpMenu);
                 XPMenu.InitComponent(Item);
                 with Item do
@@ -5373,24 +5377,32 @@ begin
 
     end
     else
+    if Assigned(fDebugger) then
     if fDebugger.Paused then
     begin
         RemoveActiveBreakpoints;
         fDebugger.Go;
     end;
+
 end;
+
 
 procedure TMainForm.actPauseDebugExecute(Sender: TObject);
 begin
+if Assigned(fDebugger) then
     if fDebugger.Executing then
         fDebugger.Pause;
 end;
 
 procedure TMainForm.actPauseDebugUpdate(Sender: TObject);
 begin
+   if Assigned(fDebugger) then
     (Sender as TAction).Enabled :=
-        fDebugger.Executing and not fDebugger.Paused; //and
+        fDebugger.Executing and not fDebugger.Paused //and
     //(fDebugger is TCDBDebugger);
+    else
+       (Sender as TAction).Enabled := False;
+       
 end;
 
 procedure TMainForm.actEnviroOptionsExecute(Sender: TObject);
@@ -5476,8 +5488,11 @@ begin
 {$IFNDEF PRIVATE_BUILD}
     try
 {$ENDIF}
+        if Assigned(e) then
         (Sender as TAction).Enabled :=
-            Assigned(e) and Assigned(e.Text) and (e.Text.Text <> '');
+            Assigned(e) and Assigned(e.Text) and (e.Text.Text <> '')
+        else
+          (Sender as TAction).Enabled := false;
 {$IFNDEF PRIVATE_BUILD}
     except
     end;
@@ -5486,12 +5501,19 @@ end;
 
 procedure TMainForm.actUpdateDebuggerRunning(Sender: TObject);
 begin
-    (Sender as TAction).Enabled := fDebugger.Executing;
+    if Assigned(fDebugger) then
+    (Sender as TAction).Enabled := fDebugger.Executing
+    else
+    (Sender as TAction).Enabled := false;
 end;
 
 procedure TMainForm.actUpdateDebuggerPaused(Sender: TObject);
 begin
-    (Sender as TAction).Enabled := fDebugger.Executing and fDebugger.Paused;
+    if Assigned(fDebugger) then
+    (Sender as TAction).Enabled := fDebugger.Executing and fDebugger.Paused
+    else
+     (Sender as TAction).Enabled := false;
+
 end;
 
 procedure TMainForm.ToolbarClick(Sender: TObject);
@@ -5797,28 +5819,36 @@ procedure TMainForm.AddDebugVar(s: string; when: TWatchBreakOn);
 begin
     if Trim(s) = '' then
         Exit;
+
+    if Assigned(fDebugger) then
     if fDebugger.Executing and fDebugger.Paused then
     begin
 
         fDebugger.AddWatch(s, when);
         fDebugger.RefreshContext([cdWatches]);
     end;
+   
 end;
 
 procedure TMainForm.actNextStepExecute(Sender: TObject);
 begin
+if Assigned(fDebugger) then
     if fDebugger.Paused and fDebugger.Executing then
         fDebugger.Next;
+
 end;
 
 procedure TMainForm.actStepSingleExecute(Sender: TObject);
 begin
+if Assigned(fDebugger) then
     if fDebugger.Paused and fDebugger.Executing then
         fDebugger.Step;
+
 end;
 
 procedure TMainForm.DebugFinishClick(Sender: TObject);
 begin
+if Assigned(fDebugger) then
     if fDebugger.Paused and fDebugger.Executing then
         fDebugger.Finish;
 end;
@@ -5872,15 +5902,18 @@ end;
 
 procedure TMainForm.actStepOverExecute(Sender: TObject);
 begin
+if Assigned(fDebugger) then
     if fDebugger.Paused and fDebugger.Executing then
     begin
         RemoveActiveBreakpoints;
         fDebugger.Go;
     end;
+    
 end;
 
 procedure TMainForm.actStopExecuteExecute(Sender: TObject);
 begin
+if Assigned(fDebugger) then
     if fDebugger.Executing then
     begin
        fDebugger.CloseDebugger(sender);
@@ -6752,8 +6785,13 @@ begin
         and Assigned(ClassBrowser1.Selected.Data) then
         //check if node.data still in statements
         if CppParser1.Statements.IndexOf(ClassBrowser1.Selected.Data) >= 0 then
+
+        if Assigned(ClassBrowser1) then
             (Sender as TAction).Enabled :=
                 (PStatement(ClassBrowser1.Selected.Data)^._Kind <> skClass)
+        else
+             (Sender as TAction).Enabled := false
+             
         else
         begin
             ClassBrowser1.Selected.Data := nil;
@@ -6765,8 +6803,11 @@ end;
 
 procedure TMainForm.actBrowserNewClassUpdate(Sender: TObject);
 begin
+    if (Assigned(ClassBrowser1) and Assigned(fProject)) then
     (Sender as TAction).Enabled := ClassBrowser1.Enabled
-        and Assigned(fProject);
+        and Assigned(fProject)
+    else
+        (Sender as TAction).Enabled := false;
 end;
 
 procedure TMainForm.actBrowserNewMemberUpdate(Sender: TObject);
@@ -6775,8 +6816,11 @@ begin
         and Assigned(ClassBrowser1.Selected.Data) then
         //check if node.data still in statements
         if CppParser1.Statements.IndexOf(ClassBrowser1.Selected.Data) >= 0 then
+        if Assigned(ClassBrowser1) then
             (Sender as TAction).Enabled :=
                 (PStatement(ClassBrowser1.Selected.Data)^._Kind = skClass)
+        else
+            (Sender as TAction).Enabled := false
         else
         begin
             ClassBrowser1.Selected.Data := nil;
@@ -6792,8 +6836,11 @@ begin
         and Assigned(ClassBrowser1.Selected.Data) then
         //check if node.data still in statements
         if CppParser1.Statements.IndexOf(ClassBrowser1.Selected.Data) >= 0 then
+        if Assigned(ClassBrowser1) then
             (Sender as TAction).Enabled :=
                 (PStatement(ClassBrowser1.Selected.Data)^._Kind = skClass)
+        else
+             (Sender as TAction).Enabled := false
         else
         begin
             ClassBrowser1.Selected.Data := nil;
@@ -6805,8 +6852,11 @@ end;
 
 procedure TMainForm.actBrowserAddFolderUpdate(Sender: TObject);
 begin
+   if (Assigned(ClassBrowser1) and Assigned(fProject)) then
     (Sender as TAction).Enabled := ClassBrowser1.Enabled
-        and Assigned(fProject);
+        and Assigned(fProject)
+    else
+      (Sender as TAction).Enabled := false;
 end;
 
 procedure TMainForm.actBrowserViewAllUpdate(Sender: TObject);
@@ -7467,6 +7517,7 @@ begin
     // be added. Also ensure that the cursor is not on a line that is already marked
     // as a breakpoint
     else
+    if Assigned(fDebugger) then
     if fDebugger.Paused and
         (not fDebugger.BreakpointExists(e.Filename, line)) then
         if assigned(e) then
@@ -7474,17 +7525,21 @@ begin
 
     // If we are broken and the run to cursor location is the same as the current
     // breakpoint, just continue to try to run to the current location
+    if Assigned(fDebugger) then
     if fDebugger.Paused then
         fDebugger.Go;
+    
 end;
 
 procedure TMainForm.btnSendCommandClick(Sender: TObject);
 begin
+    if Assigned(fDebugger) then
     if fDebugger.Executing then
     begin
         fDebugger.QueueCommand(edCommand.Text, '');
         edCommand.Clear;
     end;
+
 end;
 
 procedure TMainForm.ViewCPUItemClick(Sender: TObject);
@@ -9575,7 +9630,7 @@ var
     menuItem: TMenuItem;
     toolbar: TToolBar;
     tabs: TTabSheet;
-    i, j, idx, temp_left, temp_top: Integer;
+    i, j, idx, temp_left, temp_top, setIndex: Integer;
     AClass: TPersistentClass;
     loadablePlugins: TStringList;
     plugin: IPlug_In_BPL;
@@ -9731,21 +9786,38 @@ begin
     end;
   {$ENDIF}
 
-    for i := 0 to pluginsCount - 1 do
-        plugins[i].SetCompilerOptionstoDefaults;
 
+  // Plugin-specific options
+  //  for i := 0 to pluginsCount - 1 do
+   //     plugins[i].SetCompilerOptionstoDefaults;
+
+
+ {  for setIndex := 0 to devCompilerSet.Sets.Count - 1 do
+   begin
+
+
+  devCompilerSet.LoadSet(setIndex);
+
+    // Get plugin-specific compiler options
     for i := 0 to pluginsCount - 1 do
     begin
         pluginSettings := plugins[i].GetCompilerOptions;
         for j := 0 to Length(pluginSettings) - 1 do
         begin
+            // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
+
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
             if tempName <> '' then
                 plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
         end;
     end;
+
+    end;
+  }
 
     // Inserting plugin controls to the IDE
     for i := 0 to pluginsCount - 1 do
@@ -10108,6 +10180,7 @@ begin
         end;
 
     end;
+
 end;
 
 

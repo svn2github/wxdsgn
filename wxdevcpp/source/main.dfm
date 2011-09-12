@@ -1492,12 +1492,12 @@ object MainForm: TMainForm
         TabOrder = 1
         DesignSize = (
           407
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
           Width = 386
-          Height = 78
+          Height = 82
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1514,7 +1514,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
         TabIndex = 4
@@ -1734,7 +1734,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 636
-        Height = 60
+        Height = 61
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -1769,7 +1769,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 60
+        Top = 61
         Width = 636
         Height = 41
         Align = alBottom

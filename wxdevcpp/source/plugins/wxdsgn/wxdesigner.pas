@@ -5051,10 +5051,10 @@ begin
   with wxOptions do
   begin
     majorVersion := 2;
-    minorVersion := 8;
-    releaseVersion := 9;
+    minorVersion := 9;
+    releaseVersion := 1;
 
-    unicodeSupport := False;
+    unicodeSupport := True;
     monolithicLibrary := True;
     debugLibrary := False;
     staticLibrary := True;

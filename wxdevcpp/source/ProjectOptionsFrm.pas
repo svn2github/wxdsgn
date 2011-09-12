@@ -31,7 +31,7 @@ uses
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     ExtDlgs, StdCtrls, ExtCtrls, Buttons, ComCtrls, main, project,
     devTabs, prjtypes, XPMenu, Spin, Grids, ValEdit, CompilerOptionsFrame,
-    OpenSaveDialogs;
+    OpenSaveDialogs, iplugin;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
@@ -488,6 +488,11 @@ procedure TfrmProjectOptions.UpdateCurrentProfileDataFromUI;
 var
     I: integer;
     strCppOption, strCOption, strLinkerOption, strPreprocDefines: String;
+{$IFDEF PLUGIN_BUILD}
+   j : integer;
+  pluginSettings: TSettings;
+  tempName : string;
+{$ENDIF PLUGIN_BUILD}
 begin
     if CurrentProfile = nil then
         exit;
@@ -592,6 +597,31 @@ begin
             end;
         end;
     end;
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
 end;
 
 procedure TfrmProjectOptions.UpdateUIWithCurrentProfile;

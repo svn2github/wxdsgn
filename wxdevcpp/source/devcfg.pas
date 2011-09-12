@@ -1044,7 +1044,7 @@ begin
         devCompilerSet.LoadSetProgs(ID_COMPILER_MINGW);
         devCompilerSet.LoadSetDirs(ID_COMPILER_MINGW);
         if MainForm <> nil then
-            devCompilerSet.SaveSet(ID_COMPILER_MINGW);
+           devCompilerSet.SaveSet(ID_COMPILER_MINGW);
 
         devCompilerSet.CompilerType := ID_COMPILER_VC2005;
         devdirs.fCompilerType := ID_COMPILER_VC2005;
@@ -1129,6 +1129,12 @@ begin
 end;
 
 procedure InitializeOptionsAfterPlugins;
+{$IFDEF PLUGIN_BUILD}
+var
+    i, j : integer;
+  pluginSettings: TSettings;
+  tempName : string;
+{$ENDIF PLUGIN_BUILD}
 begin
 
     devCompilerSet.WriteSets;
@@ -1144,20 +1150,71 @@ begin
     //  ID_COMPILER_LINUX = 8;
 
 
-    devCompilerSet.CompilerType := ID_COMPILER_MINGW;
-    devdirs.fCompilerType := ID_COMPILER_MINGW;
+     devCompilerSet.CompilerType := ID_COMPILER_MINGW;
+    devDirs.fCompilerType := ID_COMPILER_MINGW;
     // EAB: Aren't these numbers supposed to be ID's? Like "ID_COMPILER_MINGW" instead of "0"?
     devdirs.SettoDefaults;
     // EAB: this shouldn't be called this way because it messes up with the user AppData Folder settings.
     devCompilerSet.LoadSetProgs(ID_COMPILER_MINGW);
     devCompilerSet.LoadSetDirs(ID_COMPILER_MINGW);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_MINGW);
+
 
     devCompilerSet.CompilerType := ID_COMPILER_VC2005;
     devdirs.fCompilerType := ID_COMPILER_VC2005;
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_VC2005);
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2005);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_VC2005);
 
     devCompilerSet.CompilerType := ID_COMPILER_VC2003;
@@ -1165,6 +1222,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_VC2003);
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2003);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_VC2003);
 
     devCompilerSet.CompilerType := ID_COMPILER_VC6;
@@ -1172,6 +1254,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_VC6);
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC6);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_VC6);
 
     devCompilerSet.CompilerType := ID_COMPILER_DMARS;
@@ -1179,6 +1286,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_DMARS);
     devCompilerSet.LoadSetDirs(ID_COMPILER_DMARS);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_DMARS);
 
     devCompilerSet.CompilerType := ID_COMPILER_VC2008;
@@ -1187,6 +1319,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_VC2008);
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2008);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_VC2008);
 
     devCompilerSet.CompilerType := ID_COMPILER_BORLAND;
@@ -1194,6 +1351,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_BORLAND);
     devCompilerSet.LoadSetDirs(ID_COMPILER_BORLAND);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_BORLAND);
 
     devCompilerSet.CompilerType := ID_COMPILER_WATCOM;
@@ -1201,6 +1383,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_WATCOM);
     devCompilerSet.LoadSetDirs(ID_COMPILER_WATCOM);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_WATCOM);
 
     devCompilerSet.CompilerType := ID_COMPILER_LINUX;
@@ -1208,6 +1415,31 @@ begin
     devdirs.SettoDefaults;
     devCompilerSet.LoadSetProgs(ID_COMPILER_LINUX);
     devCompilerSet.LoadSetDirs(ID_COMPILER_LINUX);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
     devCompilerSet.SaveSet(ID_COMPILER_LINUX);
 
     //Reset the compiler type back to GCC
@@ -1218,6 +1450,31 @@ begin
     devCompilerSet.LoadSet(devCompiler.CompilerSet);
     devCompiler.AddDefaultOptions;
     devCompilerSet.AssignToCompiler;
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+    
     devCompilerSet.SaveSet(devCompiler.CompilerSet);
     devCompiler.SaveSettings;
 end;

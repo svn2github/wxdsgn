@@ -21,6 +21,7 @@
 
 unit debugger;
 
+//{$DEFINE DISPLAYOUTPUT}   // enable byte count output in ReadThread for debugging
 //{$DEFINE DISPLAYOUTPUTHEX}// enable debugging display of GDB output
 //  in 'HEX Editor' style
 
@@ -39,7 +40,6 @@ uses
 var
     //output from GDB
     TargetIsRunning: boolean = false;       // result of status messages
-    verbose: boolean = false;
     gui_critSect: TRTLCriticalSection;
     // Why do we need this? Once the pipe
     // has been read, all processing is in
@@ -712,33 +712,31 @@ begin
                         // while bytesInBuffer > zero and set an arbitrary limit? )
                         //(This possible deadlock has never been observed!)
         begin
-if (verbose) then
-          begin
-            Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
-            //gui_critSect.Enter();               // Maybe needed while debugging
-            MainForm.fDebugger.AddtoDisplay(Buffer);
-            //gui_critSect.Leave();               // Maybe needed while debugging
-          end;
+			if (MainForm.VerboseDebug.Checked) then
+			begin
+				Buffer := 'PeekPipe bytes available: ' + IntToStr(BytesAvailable);
+				//gui_critSect.Enter();               // Maybe needed while debugging
+				MainForm.fDebugger.AddtoDisplay(Buffer);
+				//gui_critSect.Leave();               // Maybe needed while debugging
+			end;
 
         try
-          BufMem := AllocMem(BytesAvailable+16);          
+			BufMem := AllocMem(BytesAvailable+16);          
                                                           // bump it up just to give some in hand
                                                           // in case we screw up the count!
                                                           // NOTE: WE do not free the memory
                                                           // but rely on it being freed externally.
 
-          ReadSuccess := ReadFile(ReadChildStdOut, BufMem^, BytesAvailable, LastRead, Nil);
-          if (ReadSuccess) then
-          begin
+			ReadSuccess := ReadFile(ReadChildStdOut, BufMem^, BytesAvailable, LastRead, Nil);
+			if (ReadSuccess) then
+			begin
 
-          if (verbose) then
-          begin
-            Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
-            // gui_critSect.Enter();               // Maybe needed while debugging
-            MainForm.fDebugger.AddtoDisplay(Buffer);
-            // gui_critSect.Leave();               // Maybe needed while debugging
-          end;
-
+{$ifdef DISPLAYOUTPUT}
+				Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
+				// gui_critSect.Enter();               // Maybe needed while debugging
+				MainForm.fDebugger.AddtoDisplay(Buffer);
+				// gui_critSect.Leave();               // Maybe needed while debugging
+{$endif}
             Sleep(5);                              // Allow the pipe to refill
             TotalBytesRead := LastRead;
             PeekNamedPipe(ReadChildStdOut, Nil, 0, Nil, @BytesAvailable, @BytesToRead);
@@ -748,13 +746,12 @@ if (verbose) then
               ReadSuccess := ReadSuccess and
                   ReadFile(ReadChildStdOut, (BufMem+TotalBytesRead)^, BytesAvailable, LastRead, Nil);
 
-              if (verbose) then
-              begin
-              Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
-              // gui_critSect.Enter();               // Maybe needed while debugging
-              MainForm.fDebugger.AddtoDisplay(Buffer);
-              // gui_critSect.Leave();               // Maybe needed while debugging
-                end;
+{$ifdef DISPLAYOUTPUT}
+				Buffer := 'Readfile (Pipe) bytes read: ' + IntToStr(LastRead);
+				// gui_critSect.Enter();               // Maybe needed while debugging
+				MainForm.fDebugger.AddtoDisplay(Buffer);
+				// gui_critSect.Leave();               // Maybe needed while debugging
+{$endif}
 
               TotalBytesRead := TotalBytesRead + LastRead;
               Sleep(5);                              // Allow the pipe to refill
@@ -765,13 +762,12 @@ if (verbose) then
                 buf := BufMem;
                 buf[TotalBytesRead] := (#0);  // Terminate it, thus can handle as Cstring
 
-                if (verbose) then
-                begin
+{$ifdef DISPLAYOUTPUT}
                 Buffer := 'Readfile (Pipe) total bytes read: ' + IntToStr(TotalBytesRead);
                 // gui_critSect.Enter();               // Maybe needed while debugging
                 MainForm.fDebugger.AddtoDisplay(Buffer);
                 // gui_critSect.Leave();               // Maybe needed while debugging
-              end;
+{$endif}
 {$ifdef DISPLAYOUTPUTHEX}
                 // gui_critSect.Enter();               // Maybe needed while debugging
                 HexDisplay(buf, TotalBytesRead);
@@ -1646,7 +1642,7 @@ begin
     OnVariableHint(ValStrings);
     ValStrings.Clear;
     ValStrings.Free;
-    if (verbose) then
+    if (MainForm.VerboseDebug.Checked) then
     begin
       Output := format('Tooltip has value %s', [Value]);
       // gui_critSect.Enter();
@@ -1695,12 +1691,14 @@ begin
 			ParseConst(@Msg, @GDBline, PInteger(@Line));
 			ParseConst(@Msg, @GDBfile, PString(@SrcFile));
 			Output := format('Breakpoint No %d set at line %d in %s', [Num, Line, SrcFile]);
-
-                        FillBreakpointNumber(@SrcFile, Line, Num);
+            FillBreakpointNumber(@SrcFile, Line, Num);
         end;
-        // gui_critSect.Enter();
-        AddtoDisplay(Output);
-        // gui_critSect.Leave();
+        if (MainForm.VerboseDebug.Checked) then
+		begin
+			// gui_critSect.Enter();
+			AddtoDisplay(Output);
+			// gui_critSect.Leave();
+		end;
     end
     else
     begin
@@ -1713,9 +1711,12 @@ begin
 			Output := format('Watchpoint No %d (hw)  set for %s', [Num, Expr]);
 		if (BPType = 'watchpoint') then
 			Output := format('Watchpoint No %d set for %s', [Num, Expr]);
-        // gui_critSect.Enter();
-		AddtoDisplay(Output);
-        // gui_critSect.Leave();
+        if (MainForm.VerboseDebug.Checked) then
+		begin
+			// gui_critSect.Enter();
+			AddtoDisplay(Output);
+			// gui_critSect.Leave();
+		end;
 		if not(List = nil) then
 		begin
 			New(Vari);
@@ -2002,20 +2003,20 @@ begin
                 break;
             Output := ParseFrame(FrameStr, Frame);
             CallStack.Add(Frame);
-            if (verbose) then
+            if (MainForm.VerboseDebug.Checked) then
                 AddtoDisplay(Output);
 
         end
         until (level >= MAXSTACKDEPTH);               // Arbitrary limit for safety!
         if (level = MAXSTACKDEPTH) then
-        if (verbose) then
+        if (MainForm.VerboseDebug.Checked) then
         begin
             // gui_critSect.Enter();
             AddtoDisplay('Stack is too deep, Aborting...');
             // gui_critSect.Leave();
         end;
 
-        MainForm.OnCallStack(@CallStack);
+        MainForm.OnCallStack(CallStack);
 
         try
         { Cleanup: must free the list items as well as the list }
@@ -2056,8 +2057,7 @@ begin
     if (not (Msg = '')) then
     begin
 
-        if (verbose) then
-            Output := format('Stack Frame: %s', [Msg]);
+        Output := format('Stack Frame: %s', [Msg]);
 
         {Ret := }ParseConst(@Msg, @GDBlevel, PInteger(@Level));
         {Ret := }ParseConst(@Msg, @GDBfunc,  PString(@Func));
@@ -2126,21 +2126,17 @@ begin
 		repeat
 		begin
 			ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
-			if (verbose) then
-			begin
-				// gui_critSect.Enter();
-				AddtoDisplay('Thread: ');
-				AddtoDisplay(ThreadStr);
-				// gui_critSect.Leave();
-			end;
+			// gui_critSect.Enter();
+			AddtoDisplay('Thread: ');
+			AddtoDisplay(ThreadStr);
+			// gui_critSect.Leave();
 			if (not(ThreadStr = '')) then
 			begin
 				New(Thread);
 				ParseConst(@ThreadList, @GDBid, PString(@ThreadID));
 				ParseConst(@ThreadList, @GDBtargetid, PString(@TargetID));
 				// gui_critSect.Enter();
-				if (verbose) then
-					AddtoDisplay('Thread ID = ' + ThreadID);
+				AddtoDisplay('Thread ID = ' + ThreadID);
 				// gui_critSect.Leave();
 
 				Output := ParseFrame(ThreadStr, nil);
@@ -2215,10 +2211,13 @@ begin
       end;
     end;
     Token := 0;
-    Output := format('Watchpoint No %d set for %s', [Num, Expr]);
-    // gui_critSect.Enter();
-    AddtoDisplay(Output);
-    // gui_critSect.Leave();
+    if (MainForm.VerboseDebug.Checked) then
+	begin
+		Output := format('Watchpoint No %d set for %s', [Num, Expr]);
+		// gui_critSect.Enter();
+		AddtoDisplay(Output);
+		// gui_critSect.Leave();
+	end;
 
 end;
 
@@ -2256,12 +2255,6 @@ begin
       or (AnsiStartsStr(GDBError+'Too many watchpoints', Msg))) then
         // "Too many watchpoints"
     begin
-      // Delete the Watchpoint from the table completely
-{$ifdef DISPLAYOUTPUT}
-      // gui_critSect.Enter();
-      AddtoDisplay(Msg);
-      // gui_critSect.Leave();
-{$endif}
       index := Token - WATCHTOKENBASE;
       Watch := MainForm.WatchTree.Items[index].Data;
       Dispose(Watch);
@@ -2589,7 +2582,7 @@ begin
     if ((Number >= 0) and (Number <= CPURegCount)) then
       CPURegValues[Number] := Value;
     List := MidStr(List, next, Length(List));
-    if (verbose) then
+    if (MainForm.VerboseDebug.Checked) then
       AddtoDisplay(CPURegNames[i] + '  '+CPURegValues[i]);
     DebugCPUFrm.RegisterList.InsertRow(CPURegNames[i], Value, true);
   end;
@@ -2619,7 +2612,7 @@ begin
     else if (CPURegNames[i] = 'gs') then Registers.GS := CPURegValues[i]
     else if (CPURegNames[i] = 'fs') then Registers.FS := CPURegValues[i];
   end;
-  if (verbose)
+  if (MainForm.VerboseDebug.Checked)
     AddtoDisplay(CPURegNames[i] + '  '+CPURegValues[i]);
   DebugCPUFrm.RegisterList.InsertRow(CPURegNames[i], Value, true);
 }
@@ -2670,11 +2663,14 @@ begin
     {Ret := }ParseConst(@Frame, @GDBfunc, PString(@Func));
     {Ret := }ParseConst(@Frame, @GDBline, PInteger(@Line));
 
-    Output := Format('Watchpoint No %d hit. %s%s%s%s in %s at line %d in %s',
-        [Num, Expr, Old, New, Value, Func, Line, SrcFile]);
-    // gui_critSect.Enter();
-    AddtoDisplay(Output);
-    // gui_critSect.Leave();
+    if (MainForm.VerboseDebug.Checked) then
+	begin
+		Output := Format('Watchpoint No %d hit. %s%s%s%s in %s at line %d in %s',
+			[Num, Expr, Old, New, Value, Func, Line, SrcFile]);
+		// gui_critSect.Enter();
+		AddtoDisplay(Output);
+		// gui_critSect.Leave();
+	end;
 
     // Line No. is not meaningful - need to find some way to relate to source line in editor,
     //  else disable GDB's ability to trace into headers/libraries.
@@ -2705,12 +2701,14 @@ begin
     {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
     {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
 
-    Output := Format('Breakpoint No %d hit in %s at line %d in %s',
-        [Num, Func, Line, SrcFile]);
-
-    // gui_critSect.Enter();
-    AddtoDisplay(Output);
-    // gui_critSect.Leave();
+    if (MainForm.VerboseDebug.Checked) then
+	begin
+		Output := Format('Breakpoint No %d hit in %s at line %d in %s',
+			[Num, Func, Line, SrcFile]);
+		// gui_critSect.Enter();
+		AddtoDisplay(Output);
+		// gui_critSect.Leave();
+	end;
 
     // Line No. is not always meaningful - need to find some way to relate to source line in editor,
     //  else disable GDB's ability to trace into headers/libraries.
@@ -2845,11 +2843,13 @@ begin
     {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
     {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
 
-    Output := Format('Stopped in %s at line %d in %s', [Func, Line, SrcFile]);
-
-    // gui_critSect.Enter();
-    AddtoDisplay(Output);
-    // gui_critSect.Leave();
+    if (MainForm.VerboseDebug.Checked) then
+	begin
+		Output := Format('Stopped in %s at line %d in %s', [Func, Line, SrcFile]);
+		// gui_critSect.Enter();
+		AddtoDisplay(Output);
+		// gui_critSect.Leave();
+	end;
 
     // Line No. is not meaningful - need to find some way to relate to source line in editor,
     //  else disable GDB's ability to trace into headers/libraries.
@@ -2908,8 +2908,7 @@ begin
 			Output := ExtractList(@LocalsStr, PARSETUPLE, Level, LocalsList)
 		else // it starts '['
 			Output := ExtractList(@LocalsStr, PARSELIST, Level, LocalsList);
-		if (verbose) then
-			ExtractLocals := GDBlocalsq + Output;
+		ExtractLocals := GDBlocalsq + Output;
 	end;
 	MainForm.OnLocals(LocalsList);
 	try
@@ -3750,7 +3749,6 @@ var
     WorkingDir: string;
     Includes: string;
     I: Integer;
-    verbose: boolean;
 
 begin
     //Reset our variables
@@ -3759,8 +3757,6 @@ begin
     IgnoreBreakpoint := False;
     Started := False;
     TargetIsRunning := False;
-
-    verbose := False;
 
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
@@ -3772,7 +3768,7 @@ begin
     Executable := Executable + ' ' + gdbInterp;
 
     // Verbose output requested?
-    if (not verbose) then
+    if (not MainForm.VerboseDebug.Checked) then
         Executable := Executable + ' ' + gdbSilent;
 
     //Add in the include paths
@@ -3857,7 +3853,8 @@ begin
   Thus there is no need to wait until the result of the command has been read.
 }
 
-            AddtoDisplay('Sending ' + CurrentCommand.Command);
+            if (MainForm.VerboseDebug.Checked) then
+				AddtoDisplay('Sending ' + CurrentCommand.Command);
 
             // For proper handling of multi-threaded targets, we might need to prefix each
             // command with '--thread' and ‘--frame’  (See GDB Manual: 27.1.1 Context management)
@@ -4368,15 +4365,16 @@ var
     thread: Integer;
 
 begin
-{$ifdef DISPLAYOUTPUT}
-  AddtoDisplay('Parsing ^');
-{$endif}
+	if (MainForm.VerboseDebug.Checked) then
+	begin
+		AddtoDisplay('Parsing ^');
+	end;
 
     Result := nil;
     msg := breakOut(@buf, bsize);
     msg := AnsiMidStr(msg, 2, Maxint-1);
 
-    if (verbose) then
+    if (MainForm.VerboseDebug.Checked) then
     begin
       OutputBuffer := msg;
       // gui_critSect.Enter();
@@ -4451,7 +4449,8 @@ begin
         else if (AnsiStartsStr(GDBdone+GDBlocalsq, msg)) then
         begin
             OutputBuffer := ExtractLocals(@msg);  // Parses & Reassembles Result
-            AddtoDisplay(OutputBuffer);
+            if (MainForm.VerboseDebug.Checked) then
+				AddtoDisplay(OutputBuffer);
         end
 
         else if (AnsiStartsStr(GDBdone+GDBthreads, msg)) then
@@ -4543,17 +4542,17 @@ var
 
 begin
 
-if (MainForm.VerboseDebug.Checked) then
-begin
-    AddtoDisplay('Parsing *');
-end;
+	if (MainForm.VerboseDebug.Checked) then
+	begin
+		AddtoDisplay('Parsing *');
+	end;
 
     ExecResult := nil;
     msg := breakOut(@buf, bsize);
     msg := AnsiMidStr(msg, 2, Maxint - 1);
 
 
-    if (verbose) then
+    if (MainForm.VerboseDebug.Checked) then
     begin
         OutputBuffer := msg;
         // gui_critSect.Enter();
@@ -4569,14 +4568,11 @@ end;
             // get rest into , &AllReason))
             AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBrunning)));
             TargetIsRunning := true;
-            // gui_critSect.Enter();
-            // gui_critSect.Leave();
 
             if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
                 if (threadID = 'all') then
                     OutputBuffer :=
-                        'Running all threads'{thread := -1;}// Thread No.
-
+                        'Running all threads'
                 else
                 begin
                     thread := StrToInt(threadID);
@@ -4596,8 +4592,6 @@ end;
                 RefreshContext;
                 
             TargetIsRunning := false;
-            // gui_critSect.Enter();
-            // gui_critSect.Leave();
 
             if (ParseConst(@msg, @GDBreason, PString(@Reason))) then
                 if (Reason = 'exited-normally') then
@@ -4608,47 +4602,61 @@ end;
                     Started := False;
 					ExitDebugger;
 
-                //GAR Exit;
                     CloseDebugger(nil);
                 end
                 else
                 if (Reason = 'breakpoint-hit') then
                 begin
-                    // gui_critSect.Enter();
-                    AddtoDisplay('Stopped - breakpoint-hit');
-                    // gui_critSect.Leave();
-                    BreakpointHit(@msg);
+                    if (MainForm.VerboseDebug.Checked) then
+					begin
+						// gui_critSect.Enter();
+						AddtoDisplay('Stopped - breakpoint-hit');
+						// gui_critSect.Leave();
+                    end;
+					BreakpointHit(@msg);
                 end
                 else
                 if (Reason = 'watchpoint-trigger') then
                 begin
-                    // gui_critSect.Enter();
-                    AddtoDisplay('Stopped - watchpoint-trigger');
-                    // gui_critSect.Leave();
+                    if (MainForm.VerboseDebug.Checked) then
+					begin
+						// gui_critSect.Enter();
+						AddtoDisplay('Stopped - watchpoint-trigger');
+						// gui_critSect.Leave();
+					end;
                     WatchpointHit(@msg);
                 end
                 else
                 if (Reason = 'read-watchpoint-trigger') then
                 begin
-                    // gui_critSect.Enter();
-                    AddtoDisplay('Stopped - read-watchpoint-trigger');
-                    // gui_critSect.Leave();
+                    if (MainForm.VerboseDebug.Checked) then
+					begin
+						// gui_critSect.Enter();
+						AddtoDisplay('Stopped - read-watchpoint-trigger');
+						// gui_critSect.Leave();
+					end;
                     WatchpointHit(@msg);
                 end
                 else
                 if (Reason = 'access-watchpoint-trigger') then
                 begin
-                    // gui_critSect.Enter();
-                    AddtoDisplay('Stopped - access-watchpoint-trigger');
-                    // gui_critSect.Leave();
+                    if (MainForm.VerboseDebug.Checked) then
+					begin
+						// gui_critSect.Enter();
+						AddtoDisplay('Stopped - access-watchpoint-trigger');
+						// gui_critSect.Leave();
+					end;
                     WatchpointHit(@msg);
                 end
                 else
                 if (Reason = 'end-stepping-range') then
                 begin
-                    // gui_critSect.Enter();
-                    AddtoDisplay('Stopped - end-stepping-range');
-                    // gui_critSect.Leave();
+                    if (MainForm.VerboseDebug.Checked) then
+					begin
+						// gui_critSect.Enter();
+						AddtoDisplay('Stopped - end-stepping-range');
+						// gui_critSect.Leave();
+					end;
                     StepHit(@msg);
                 end
 				else if (Reason = 'watchpoint-scope') then
@@ -4691,7 +4699,7 @@ begin
 		          // a token
         begin
             buf := GetToken(buf, @bytesInBuffer, @Token);
-            if (verbose) then
+            if (MainForm.VerboseDebug.Checked) then
                 AddtoDisplay('Token ' + IntToStr(Token));
         end
         else
@@ -4704,20 +4712,20 @@ begin
         else
         if (buf^ = '=') then
 		          // notify async
-			buf := Notify(buf, @bytesInBuffer, verbose)
+			buf := Notify(buf, @bytesInBuffer, MainForm.VerboseDebug.Checked)
         else
         if ((buf^ = '@') or (buf^ = '&')) then
 		          // target output ||  log stream
 		          // Not of interest: display it
 
-            buf := SendToDisplay(buf, @bytesInBuffer, verbose)
+            buf := SendToDisplay(buf, @bytesInBuffer, MainForm.VerboseDebug.Checked)
 
         else
         if (buf^ = '^') then
 		          // A result or error
         begin
 			         // gui_critSect.Enter();
-            if (verbose) then
+            if (MainForm.VerboseDebug.Checked) then
                 AddtoDisplay('Result or Error:');
 			         // gui_critSect.Leave();
             buf := Result(buf, @bytesInBuffer);
@@ -4727,7 +4735,7 @@ begin
 		          // executing async
         begin
 			         // gui_critSect.Enter();
-            if (verbose) then
+            if (MainForm.VerboseDebug.Checked) then
                 AddtoDisplay('Executing Async:');
 			         // gui_critSect.Leave();
             buf := ExecResult(buf, @bytesInBuffer);
@@ -4736,36 +4744,38 @@ begin
         if (buf^ = '+') then
 		          // status async
         begin
-            if (verbose) then
-                AddtoDisplay('Status Output:')// gui_critSect.Enter();
-            // gui_critSect.Leave();
-            ;
-            buf := SendToDisplay(buf, @bytesInBuffer, verbose);
-
+            if (MainForm.VerboseDebug.Checked) then
+                AddtoDisplay('Status Output:');
+            buf := SendToDisplay(buf, @bytesInBuffer, MainForm.VerboseDebug.Checked);
         end
         else
         if (buf^ = '(') then
 		          // might be GDB prompt - cannot really be anything else!
         begin
 
-			         //gui_critSect.Enter();
-            AddtoDisplay('GDB Ready');
-			         //gui_critSect.Leave();
-            buf := SendToDisplay(buf, @bytesInBuffer, verbose);
+			    
+            if (MainForm.VerboseDebug.Checked) then
+			begin
+			    //gui_critSect.Enter(); 
+				AddtoDisplay('GDB Ready');
+			    //gui_critSect.Leave();
+			end;
+            buf := SendToDisplay(buf, @bytesInBuffer, MainForm.VerboseDebug.Checked);
         end
         else
 		          // Don't know, what is left?
         begin
-			         // gui_critSect.Enter();
+			// gui_critSect.Enter();
             AddtoDisplay('Cannot decide about:');
-			         // gui_critSect.Leave();
-            buf := SendToDisplay(buf, @bytesInBuffer, verbose);
+			// gui_critSect.Leave();
+            buf := SendToDisplay(buf, @bytesInBuffer, MainForm.VerboseDebug.Checked);
         end;
 
     FreeMem(BufMem);
-    buf := Nil;              // The reader will only get the next lot from
-    // the pipe buffer when it sees this.
-    SentCommand := false;    // Requests next command to be sent from queue
+    // The reader will only get the next lot from
+    // the pipe buffer when it sees this:
+    buf := Nil;              
+	SentCommand := false;    // Requests next command to be sent from queue
     fPaused := True;
     SendCommand;             //  (these are only needed to maintain sync. between
     //  the outgoing and incoming data streams).
@@ -4795,9 +4805,11 @@ var
 
 begin
 
-if (MainForm.VerboseDebug.Checked) then
+if (verbose) then
 begin
+	// gui_critSect.Enter();
 	AddtoDisplay('Parsing =');
+	// gui_critSect.Leave();
 end;
 
     Result := nil;
@@ -4887,7 +4899,9 @@ begin
 
 if (MainForm.VerboseDebug.Checked) then
 begin
-    AddtoDisplay('Parsing Token');
+    // gui_critSect.Enter();
+	AddtoDisplay('Parsing Token');
+	// gui_critSect.Leave();
 end;
 
     c := buf;
@@ -4940,9 +4954,11 @@ begin
  */
 }
     
-if (MainForm.VerboseDebug.Checked) then
+if (verbose) then
 begin
-    AddtoDisplay('Output to Display...');
+    // gui_critSect.Enter();
+	AddtoDisplay('Output to Display...');
+	// gui_critSect.Leave();
 end;
 
     if ((buf = Nil) or (bsize^ = 0)) then

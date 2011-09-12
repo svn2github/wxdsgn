@@ -26,7 +26,7 @@ interface
 
 uses
 {$IFDEF PLUGIN_BUILD}
-    iplugin_bpl,
+    iplugin_bpl, iplugin,
 {$ENDIF}
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -516,17 +516,52 @@ begin
 end;
 
 procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
+{$IFDEF PLUGIN_BUILD}
+var
+  i, j : integer;
+  pluginSettings: TSettings;
+  tempName : string;
+{$ENDIF}
 begin
     //SaveSettings;    EAB
     devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
+
+    {$IFDEF PLUGIN_BUILD}
+    for i := 0 to MainForm.pluginsCount - 1 do
+      begin
+
+      // Get plugin-specific compiler options
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+      end;
+{$ENDIF}
+
     currentSet := cmbCompilerSetComp.ItemIndex;
     LoadOptions;
+
 end;
 
 procedure TCompForm.LoadOptions;
 {$IFDEF PLUGIN_BUILD}
 var
-    i: Integer;
+    i, j : integer;
+  pluginSettings: TSettings;
+  tempName : string;
 {$ENDIF PLUGIN_BUILD}
 begin
     with devCompilerSet do
@@ -551,13 +586,33 @@ begin
         DllwrapEdit.Text := dllwrapName;
         GprofEdit.Text := gprofName;
 
-    {$IFDEF PLUGIN_BUILD}
-        for i := 0 to MainForm.pluginsCount - 1 do
-            MainForm.plugins[i].LoadCompilerOptions;
-    {$ENDIF PLUGIN_BUILD}
-
         devCompiler.AddDefaultOptions;
         devCompiler.OptionStr := OptionsStr;
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
         CompOptionsFrame1.FillOptions(nil);
         CompilerTypesClick(nil);
     end;
@@ -596,6 +651,7 @@ begin
 
     devCompilerSet.SaveSet(currentSet);
     devCompilerSet.SaveSettings;
+  
 end;
 
 procedure TCompForm.btnBrws1Click(Sender: TObject);
