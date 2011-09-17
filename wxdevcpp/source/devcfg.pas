@@ -1162,6 +1162,7 @@ begin
         for i := 0 to MainForm.pluginsCount - 1 do
             begin
 
+            MainForm.plugins[i].SetCompilerOptionstoDefaults;
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
         for j := 0 to Length(pluginSettings) - 1 do

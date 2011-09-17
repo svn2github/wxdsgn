@@ -1024,7 +1024,7 @@ begin
     Top := 16;
     Width := 45;
     Height := 22;
-    MaxValue := 0;
+    MaxValue := 1000;
     MinValue := 0;
     TabOrder := 0;
     Value := 2;
@@ -1038,10 +1038,10 @@ begin
     Top := 43;
     Width := 45;
     Height := 22;
-    MaxValue := 0;
+    MaxValue := 1000;
     MinValue := 0;
     TabOrder := 1;
-    Value := 8;
+    Value := 9;
     ParentFont := false;
   end;
 
@@ -1052,10 +1052,10 @@ begin
     Top := 70;
     Width := 45;
     Height := 22;
-    MaxValue := 0;
+    MaxValue := 1000;
     MinValue := 0;
     TabOrder := 2;
-    Value := 1;
+    Value := 2;
     ParentFont := false;
   end;
 
@@ -5052,7 +5052,7 @@ begin
   begin
     majorVersion := 2;
     minorVersion := 9;
-    releaseVersion := 1;
+    releaseVersion := 2;
 
     unicodeSupport := True;
     monolithicLibrary := True;

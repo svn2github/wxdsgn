@@ -62,7 +62,7 @@ AutoIncBuild=1
 MajorVer=7
 MinorVer=4
 Release=0
-Build=7
+Build=10
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=wxDev-C++ RAD add-on
-FileVersion=7.4.0.7
+FileVersion=7.4.0.10
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -81,6 +81,8 @@ OriginalFilename=
 ProductName=
 ProductVersion=7.0
 Comments=
+[Excluded Packages]
+C:\Program Files\Borland\Delphi6\Projects\Bpl\JvCtrlsD6D.bpl=JVCL Visual Controls
 [HistoryLists\hlConditionals]
 Count=2
 Item0=PLUGIN_BUILD
