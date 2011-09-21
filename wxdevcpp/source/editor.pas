@@ -1769,6 +1769,7 @@ begin
 
         if (s1 <> '') then
         begin
+            IsArray := false;
             slen := Length(s1);
             while (slen >= I) and (I <> 0) and
                    ((s1[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_',
