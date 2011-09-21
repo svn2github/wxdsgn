@@ -1727,6 +1727,7 @@ end;
 procedure TEditor.EditorMouseMove(Sender: TObject; Shift: TShiftState;
     X, Y: Integer);
 var s, s1: string;
+    IsArray: boolean;
     p: TBufferCoord;
   	 I, j, slen: integer;
     attr: TSynHighlighterAttributes;
@@ -1769,12 +1770,14 @@ begin
         if (s1 <> '') then
         begin
             slen := Length(s1);
-            //index of S was not checked before we use it.
-            //The debugger mode crash is due to this.
             while (slen >= I) and (I <> 0) and
-                (s1[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_',
-                    '.', '-', '>', '&', '*']) do
-                Dec(I, 1);
+                   ((s1[I] in ['A'..'Z', 'a'..'z', '0'..'9', '_',
+                       '.', '-', '>', '&', ']', '*'])
+                     or (s1[I] = '[') and IsArray) do
+                   begin
+                     if (s1[I] = ']') then IsArray := true;
+                     Dec(I, 1);
+                   end;
         end;
         s := Copy(s1, I + 1, p.Char - I - 1);
     end;
