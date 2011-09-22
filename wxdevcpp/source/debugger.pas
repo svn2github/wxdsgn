@@ -126,7 +126,7 @@ const GDBreason: String = 'reason=';
 const GDBrunning: String = 'running';
 const GDBsigmean: String = 'signal-meaning';
 const GDBsigname: String = 'signal-name';
-const GDBsigsegv: String = 'SIGSEV';
+const GDBsigsegv: String = 'SIGSEGV';
 const GDBsrcline: String = 'src_and_asm_line=';
 const GDBstack: String = 'stack=[';
 const GDBstopped: String = 'stopped';
