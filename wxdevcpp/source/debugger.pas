@@ -3812,6 +3812,7 @@ procedure TGDBDebugger.AddtoDisplay(Msg: String);
 // GAR: Change this to suit
 
 begin
+if Assigned(MainForm.DebugOutput) then
     MainForm.DebugOutput.Lines.Add(Msg);
 end;
 

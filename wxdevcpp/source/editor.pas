@@ -1445,6 +1445,9 @@ begin
   end;
 {$ENDIF}//GURUS_BUILD
 
+if not Assigned(fCompletionBox) then
+   exit;
+
     if fCompletionBox.Enabled then
     begin
         fCompletionBox.OnKeyPress := EditorKeyPress;
@@ -1529,12 +1532,19 @@ end;
 procedure TEditor.ReconfigCompletion;
 begin
     // re-read completion options
+    if Assigned(fCompletionBox) and Assigned(devClassBrowsing) and
+        Assigned(devCodeCompletion) then
+    begin
+
     fCompletionBox.Enabled :=
         devClassBrowsing.Enabled and devCodeCompletion.Enabled;
     if fCompletionBox.Enabled then
         InitCompletion
     else
         DestroyCompletion;
+
+    end;
+
 end;
 
 procedure TEditor.DestroyCompletion;

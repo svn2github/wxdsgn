@@ -2167,6 +2167,7 @@ var
     strLstParams: TStringList;
 begin
     idx := 1;
+    
     strLstParams := TStringList.Create;
     while idx <= ParamCount do
     begin
@@ -2189,7 +2190,7 @@ var
 {$ENDIF}
 begin
     idx := 0;
-    intParamCount := 0;
+    intParamCount := strLst.Count - 1;
     while idx <= intParamCount do
     begin
         if (strLst[idx] = CONFIG_PARAM) then
@@ -5237,9 +5238,10 @@ begin
                 exit;
             end;
 
-            fDebugger.Execute(
-                StringReplace(fProject.CurrentProfile.HostApplication,
-                '\', '\\', [rfReplaceAll]), fCompiler.RunParams);
+            if Assigned(fDebugger) then
+                fDebugger.Execute(
+                        StringReplace(fProject.CurrentProfile.HostApplication,
+                        '\', '\\', [rfReplaceAll]), fCompiler.RunParams);
         end;
 
         fDebugger.RefreshBreakpoints;

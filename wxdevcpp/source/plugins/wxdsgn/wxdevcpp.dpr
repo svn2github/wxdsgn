@@ -145,29 +145,48 @@ const
     WX_VERSION = 7;//.2.0.2;  I think we can't declare a literal this way.
 var
   // ConfigMode moved to devcfg, 'cause I need it in enviroform (for AltConfigFile)
+  paramIndex : integer;
   UserHome, strLocalAppData, strAppData, strIniFile: String;
   tempc: array [0..MAX_PATH] of char;
   iniFile: TIniFile;
+  configFound : boolean;
   versionNum: Integer;
 
 begin
   strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
+  paramIndex := 1;
 
-  if (ParamCount > 0) and (ParamStr(1) = CONFIG_PARAM) then
-  begin
-    if not DirectoryExists(ParamStr(2)) then
-      if not ForceDirectories(ParamStr(2)) then
-      begin
-        ShowMessage('The configuration directory does not exist and we were unable to ' +
-                    'create it. Please check that the path is not read-only and that ' +
-                    'you have sufficient privilieges to write to it.'#10#13#10#13 +
-                    'wxDev-C++ will now exit.');
-        Application.Terminate;
-      end;
-    devData.INIFile := IncludeTrailingBackslash(ParamStr(2)) + strIniFile;
-    ConfigMode := CFG_PARAM;
-  end
-  else if IsWinNT then
+  configFound := false;
+
+    while ( (paramIndex <= ParamCount) and (not configFound) ) do
+    begin
+        if ((ParamStr(paramIndex) = CONFIG_PARAM)
+           and ((paramIndex + 1) <= ParamCount))  then
+        begin
+                if not DirectoryExists(ParamStr(paramIndex + 1)) then
+                if not ForceDirectories(ParamStr(paramIndex + 1)) then
+                begin
+                        ShowMessage('The configuration directory #10#13#10#13' +
+                        ParamStr(paramIndex + 1) +
+                        '#10#13#10#13does not exist and we were unable to ' +
+                        'create it. Please check that the path is not read-only and that ' +
+                        'you have sufficient privilieges to write to it.'#10#13#10#13 +
+                        'wxDev-C++ will now exit.');
+                        Application.Terminate;
+                end;
+
+                devData.INIFile := IncludeTrailingBackslash(ParamStr(paramIndex + 1)) + strIniFile;
+                ConfigMode := CFG_PARAM;
+                configFound := true;
+        end;
+
+        paramIndex := paramIndex + 1;
+
+    end;
+  end;
+
+  if (not configFound) then
+  if IsWinNT then
   begin
     //default dir should be %APPDATA%\Dev-Cpp
     strLocalAppData := '';
@@ -199,6 +218,8 @@ begin
   else
     devData.INIFile := ChangeFileExt(Application.EXEName, INI_EXT);
 
+    end;
+
   if FileExists(devData.INIFile+'.ver') = false then
   begin
     DeleteFile(devData.INIFile);
@@ -227,7 +248,7 @@ begin
 
   InitializeOptions;
   if ConfigMode = CFG_PARAM then
-    devDirs.Config := IncludeTrailingBackslash(ParamStr(2))
+    devDirs.Config := IncludeTrailingBackslash(ParamStr(paramIndex))
   else if ConfigMode = CFG_USER then
     devDirs.Config := UserHome;
 
