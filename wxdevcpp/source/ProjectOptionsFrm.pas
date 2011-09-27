@@ -1127,7 +1127,7 @@ end;
 
 procedure TfrmProjectOptions.btnHelpClick(Sender: TObject);
 begin
-    Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) +
+    Application.HelpFile := IncludeTrailingPathDelimiter(devDirs.Help) +
         DEV_MAINHELP_FILE;
     HtmlHelp(self.handle, PChar(Application.HelpFile), HH_DISPLAY_TOPIC,
         DWORD(PChar('html\managing_project_options.html')));

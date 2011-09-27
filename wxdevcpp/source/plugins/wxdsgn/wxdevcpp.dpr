@@ -175,7 +175,7 @@ begin
                         Application.Terminate;
                 end;
 
-                devData.INIFile := IncludeTrailingBackslash(ParamStr(paramIndex + 1)) + strIniFile;
+                devData.INIFile := IncludeTrailingPathDelimiter(ParamStr(paramIndex + 1)) + strIniFile;
                 ConfigMode := CFG_PARAM;
                 configFound := true;
         end;
@@ -191,11 +191,11 @@ begin
     //default dir should be %APPDATA%\Dev-Cpp
     strLocalAppData := '';
     if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
-      strLocalAppData := IncludeTrailingBackslash(String(tempc));
+      strLocalAppData := IncludeTrailingPathDelimiter(String(tempc));
 
     strAppData := '';
     if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
-      strAppData := IncludeTrailingBackslash(String(tempc));
+      strAppData := IncludeTrailingPathDelimiter(String(tempc));
 
     if (strLocalAppData <> '') and FileExists(strLocalAppData + strIniFile) then begin
       UserHome := strLocalAppData;
@@ -248,7 +248,7 @@ begin
 
   InitializeOptions;
   if ConfigMode = CFG_PARAM then
-    devDirs.Config := IncludeTrailingBackslash(ParamStr(paramIndex))
+    devDirs.Config := IncludeTrailingPathDelimiter(ParamStr(paramIndex))
   else if ConfigMode = CFG_USER then
     devDirs.Config := UserHome;
 

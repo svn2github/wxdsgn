@@ -138,6 +138,7 @@ var
     tempc: array [0..MAX_PATH] of char;
     iniFile: TIniFile;
     paramIndex : integer;
+    paramString : string;
     configFound : boolean;
     versionNum: Integer;
 
@@ -145,22 +146,25 @@ begin
     strIniFile := ChangeFileExt(ExtractFileName(Application.EXEName), INI_EXT);
 
     configFound := false;
+    paramString := '';
 
    if (ParamCount > 0) then
   begin
 
     paramIndex := 1;
 
-    while ((paramIndex <= ParamCount) and (not configFound) ) do
+    while ((paramIndex <= ParamCount) and (not configFound)) do
     begin
         if ((ParamStr(paramIndex) = CONFIG_PARAM)
            and ((paramIndex + 1) <= ParamCount))  then
         begin
-                if not DirectoryExists(ParamStr(paramIndex + 1)) then
-                if not ForceDirectories(ParamStr(paramIndex + 1)) then
+        paramString := IncludeTrailingPathDelimiter(ParamStr(paramIndex + 1));
+
+                if not DirectoryExists(paramString) then
+                if not ForceDirectories(paramString) then
                 begin
                         ShowMessage('The configuration directory #10#13#10#13' +
-                        ParamStr(paramIndex + 1) +
+                        paramString +
                         '#10#13#10#13does not exist and we were unable to ' +
                         'create it. Please check that the path is not read-only and that ' +
                         'you have sufficient privilieges to write to it.'#10#13#10#13 +
@@ -168,7 +172,7 @@ begin
                         Application.Terminate;
                 end;
 
-                devData.INIFile := IncludeTrailingBackslash(ParamStr(paramIndex + 1)) + strIniFile;
+                devData.INIFile := paramString + strIniFile;
                 ConfigMode := CFG_PARAM;
                 configFound := true;
         end;
@@ -186,11 +190,11 @@ begin
         //default dir should be %APPDATA%\Dev-Cpp
         strLocalAppData := '';
         if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
-            strLocalAppData := IncludeTrailingBackslash(String(tempc));
+            strLocalAppData := IncludeTrailingPathDelimiter(String(tempc));
 
         strAppData := '';
         if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
-            strAppData := IncludeTrailingBackslash(String(tempc));
+            strAppData := IncludeTrailingPathDelimiter(String(tempc));
 
         if (strLocalAppData <> '') and FileExists(strLocalAppData +
             strIniFile) then
@@ -252,7 +256,7 @@ begin
 
     InitializeOptions;
     if ConfigMode = CFG_PARAM then
-        devDirs.Config := IncludeTrailingBackslash(ParamStr(paramIndex))
+        devDirs.Config := IncludeTrailingPathDelimiter(ParamStr(paramIndex))
     else
     if ConfigMode = CFG_USER then
         devDirs.Config := UserHome;

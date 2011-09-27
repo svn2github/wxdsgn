@@ -595,11 +595,11 @@ begin
      //default dir should be %APPDATA%\Dev-Cpp
      strLocalAppData := '';
      if SUCCEEDED(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, tempc)) then
-       strLocalAppData := IncludeTrailingBackslash(String(tempc));
+       strLocalAppData := IncludeTrailingPathDelimiter(String(tempc));
 
      strAppData := '';
      if SUCCEEDED(SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, tempc)) then
-       strAppData := IncludeTrailingBackslash(String(tempc));
+       strAppData := IncludeTrailingPathDelimiter(String(tempc));
 
      if (strLocalAppData <> '') and
      FileExists(strLocalAppData + 'Dev-Cpp') then begin
@@ -618,7 +618,7 @@ begin
      end;
 
      {if ConfigMode = CFG_PARAM then
-        devDirsConfig := IncludeTrailingBackslash(ParamStr(2))
+        devDirsConfig := IncludeTrailingPathDelimiter(ParamStr(2))
      else if ConfigMode = CFG_USER then     }
         devDirsConfig := UserHome;
 

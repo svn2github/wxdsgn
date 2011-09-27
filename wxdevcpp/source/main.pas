@@ -4749,8 +4749,8 @@ procedure TMainForm.actUpdateCheckExecute(Sender: TObject);
 var s: string;
 begin
     //WebUpdateForm.Show;
-    s := IncludeTrailingBackslash(devDirs.Exec) + UPDATE_PROGRAM;
-    ExecuteFile(s, '', IncludeTrailingBackslash(devDirs.Exec), SW_SHOW)
+    s := IncludeTrailingPathDelimiter(devDirs.Exec) + UPDATE_PROGRAM;
+    ExecuteFile(s, '', IncludeTrailingPathDelimiter(devDirs.Exec), SW_SHOW)
 end;
 
 procedure TMainForm.actAboutExecute(Sender: TObject);
@@ -7709,7 +7709,7 @@ end;
 
 procedure TMainForm.HelpMenuItemClick(Sender: TObject);
 begin
-    Application.HelpFile := IncludeTrailingBackslash(devDirs.Help) +
+    Application.HelpFile := IncludeTrailingPathDelimiter(devDirs.Help) +
         DEV_MAINHELP_FILE;
     WordToHelpKeyword;
 end;
@@ -7801,8 +7801,8 @@ end;
 procedure TMainForm.PackageManagerItemClick(Sender: TObject);
 var s: string;
 begin
-    s := IncludeTrailingBackslash(devDirs.Exec) + PACKMAN_PROGRAM;
-    ExecuteFile(s, '', IncludeTrailingBackslash(devDirs.Exec), SW_SHOW)
+    s := IncludeTrailingPathDelimiter(devDirs.Exec) + PACKMAN_PROGRAM;
+    ExecuteFile(s, '', IncludeTrailingPathDelimiter(devDirs.Exec), SW_SHOW)
 end;
 
 procedure TMainForm.actAbortCompilationUpdate(Sender: TObject);
