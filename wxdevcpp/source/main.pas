@@ -1243,7 +1243,7 @@ uses
     ShellAPI, IniFiles, Clipbrd, MultiLangSupport, version,
     devcfg, datamod, helpfrm, NewProjectFrm, AboutFrm, PrintFrm,
     CompOptionsFrm, EditorOptfrm, Incrementalfrm, Search_Center, Envirofrm,
-    SynEditTypes, JvAppIniStorage, JvAppStorage,
+    SynEditTypes, SynEditTextBuffer, JvAppIniStorage, JvAppStorage,
     debugfrm, Types, Prjtypes, devExec,
     NewTemplateFm, FunctionSearchFm, NewMemberFm, NewVarFm, NewClassFm,
     ProfileAnalysisFm,
@@ -3344,26 +3344,51 @@ end;
 
 procedure TMainForm.CppCommentString(e: TEditor);
 var
-    I: Integer;
+    I: integer;
+    st: TBufferCoord;
+    Line: integer;
+    LineText: string;
+    Hdr: string;
+    Prepend: string;
     startXY, endXY: TBufferCoord;
 begin
-    if assigned(e) = false then
-        exit;
-    if e.Text.SelAvail then
+    e := MainForm.GetEditor;
+    if not Assigned(e) then
     begin
-        startXY := e.Text.BlockBegin;
-        endXY := e.Text.BlockEnd;
-        for I := startXY.Line - 1 to endXY.Line - 1 do    // Iterate
+        Exit;
+    end;
+
+    Line := e.Text.CaretY - 1;
+    LineText := e.Text.Lines[Line];
+    st.Line := Line + 1;
+    st.Char := 1;
+
+    I := 1;
+    while (I <= Length(LineText)) and (LineText[I] in [#9, ' ']) do
+        Inc(I);
+    Prepend := Copy(LineText, 1, I - 1);
+
+    Hdr := '//';
+
+     startXY := e.Text.BlockBegin;
+     endXY := e.Text.BlockEnd;
+
+     for I := startXY.Line - 1 to endXY.Line - 1 do    // Iterate
         begin
-            e.Text.Lines[i] := '// ' + e.Text.Lines[i];
+            //e.Text.Lines[i] := '// ' + e.Text.Lines[i];
+            e.Text.Lines.Insert(I, '// ' + e.Text.Lines[I]);
+            e.Text.UndoList.AddChange(crInsert, st, BufferCoord(st.Char,
+        st.Line), '', smNormal);
+            e.Text.Lines.Delete(I+1);
+            e.Text.UndoList.AddChange(crDelete, st, BufferCoord(st.Char,
+        st.Line), '', smNormal);
+
             e.Modified := true;
-            //            e.Text.UndoList.AddChange(crPaste, st, Point(st.X, st.Y ), '', smNormal);
-            //            e.Text.Lines.Delete(i);
-            //            e.Text.UndoList.AddChange(crDelete, st, Point(st.X, st.Y ), '', smNormal);
-            //            e.Text.Lines.Insert(i,strLine);
-            //            e.Text.UndoList.AddChange(crPaste, st, Point(st.X, st.Y +1), '', smNormal);
         end;
-    end
+
+
+
+
 end;
 
 procedure TMainForm.SurroundWithClick(Sender: TObject);

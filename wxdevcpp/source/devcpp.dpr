@@ -158,6 +158,7 @@ begin
         if ((ParamStr(paramIndex) = CONFIG_PARAM)
            and ((paramIndex + 1) <= ParamCount))  then
         begin
+
         paramString := IncludeTrailingPathDelimiter(ParamStr(paramIndex + 1));
 
                 if not DirectoryExists(paramString) then
@@ -256,7 +257,7 @@ begin
 
     InitializeOptions;
     if ConfigMode = CFG_PARAM then
-        devDirs.Config := IncludeTrailingPathDelimiter(ParamStr(paramIndex))
+        devDirs.Config := paramString
     else
     if ConfigMode = CFG_USER then
         devDirs.Config := UserHome;
