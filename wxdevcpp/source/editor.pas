@@ -1882,6 +1882,9 @@ var
 begin
     if Text.SelAvail then
     begin // has selection
+
+        Text.BeginUndoBlock;
+
         backup := Text.CaretXY;
         Text.BeginUpdate;
         S := '//' + Text.SelText;
@@ -1906,8 +1909,11 @@ begin
     end
     else // no selection; easy stuff ;)
         Text.LineText := '//' + Text.LineText;
+
+    Text.EndUndoBlock;
     Text.UpdateCaret;
     Text.Modified := True;
+
 end;
 
 {** Modified by Peter **}

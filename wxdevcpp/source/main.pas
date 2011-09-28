@@ -1105,8 +1105,7 @@ type
 
 {$IFDEF PLUGIN_BUILD}
         procedure SurroundString(e: TEditor; strStart, strEnd: String);
-        procedure CppCommentString(e: TEditor);
-
+        
         property Compiler: TCompiler read fCompiler write fCompiler;
         property IsIconized: Boolean read fIsIconized;
 {$ENDIF}
@@ -2196,7 +2195,10 @@ begin
         if (strLst[idx] = CONFIG_PARAM) then
         begin
             idx := idx + 2;
-            continue;
+            if (idx <= intParamCount) then
+                continue
+            else
+                exit;
         end;
         if FileExists(strLst[idx]) then
         begin
@@ -2214,7 +2216,12 @@ begin
 {$ENDIF}
                 OpenFile(GetLongName(strLst[idx]));
             end;
+        end
+        else
+        begin
+                ShowMessage('File ' + strLst[idx] + ' doesn''t exist!')
         end;
+                
         inc(idx);
     end;
 end;
@@ -3305,89 +3312,43 @@ begin
 
     strLstToPaste := TStringList.Create;
     try
-        strLstToPaste.Add(strStart);
+        strLstToPaste.Add(strStart);   // Add start string
         if e.Text.SelAvail then
         begin
+
+        e.Text.BeginUndoBlock;
+        e.Text.BeginUpdate;
+
             startXY := e.Text.BlockBegin;
             endXY := e.Text.BlockEnd;
 
+            // Add selected text
             for I := startXY.Line - 1 to endXY.Line - 1 do    // Iterate
             begin
                 strLstToPaste.Add(e.Text.Lines[i])
             end;
 
-            for I := endXY.Line - 1 downto startXY.Line - 1 do    // Iterate
-            begin
-                //e.Text.insert
-                e.Text.Lines.Delete(I);
-            end;
-
-            // for
         end
         else
         begin
             startXY.Line := e.Text.CaretY;
         end;
+
+        // Add end string
         strLstToPaste.Add(strEnd);
 
-        for I := strLstToPaste.Count - 1 downto 0 do    // Iterate
-        begin
-            e.Text.Lines.Insert(startXY.Line - 1, strLstToPaste[i]);
-            e.Modified := true;
-        end;
+        // Replace selected text with our modified text
+       e.Text.SelText := strLstToPaste.Text;
+
+        e.Text.EndUpdate;
+        e.Text.EndUndoBlock;
+        e.Text.UpdateCaret;
+        e.Text.Modified := true;
 
     finally
+
         strLstToPaste.Destroy;
     end;
-
-end;
-
-procedure TMainForm.CppCommentString(e: TEditor);
-var
-    I: integer;
-    st: TBufferCoord;
-    Line: integer;
-    LineText: string;
-    Hdr: string;
-    Prepend: string;
-    startXY, endXY: TBufferCoord;
-begin
-    e := MainForm.GetEditor;
-    if not Assigned(e) then
-    begin
-        Exit;
-    end;
-
-    Line := e.Text.CaretY - 1;
-    LineText := e.Text.Lines[Line];
-    st.Line := Line + 1;
-    st.Char := 1;
-
-    I := 1;
-    while (I <= Length(LineText)) and (LineText[I] in [#9, ' ']) do
-        Inc(I);
-    Prepend := Copy(LineText, 1, I - 1);
-
-    Hdr := '//';
-
-     startXY := e.Text.BlockBegin;
-     endXY := e.Text.BlockEnd;
-
-     for I := startXY.Line - 1 to endXY.Line - 1 do    // Iterate
-        begin
-            //e.Text.Lines[i] := '// ' + e.Text.Lines[i];
-            e.Text.Lines.Insert(I, '// ' + e.Text.Lines[I]);
-            e.Text.UndoList.AddChange(crInsert, st, BufferCoord(st.Char,
-        st.Line), '', smNormal);
-            e.Text.Lines.Delete(I+1);
-            e.Text.UndoList.AddChange(crDelete, st, BufferCoord(st.Char,
-        st.Line), '', smNormal);
-
-            e.Modified := true;
-        end;
-
-
-
 
 end;
 
@@ -3431,7 +3392,7 @@ begin
             SurroundString(e, 'switch() { case 0:', '}');
 
         INT_CPP_COMMENT:
-            CppCommentString(e);
+            e.CommentSelection;
 
     end;    // case
 end;
