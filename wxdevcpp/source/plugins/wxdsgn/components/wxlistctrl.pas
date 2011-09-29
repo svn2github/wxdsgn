@@ -772,9 +772,9 @@ if (XRCGEN) then
   if trim(self.Wx_HelpText) <> '' then
     Result := Result + #13 + Format('%s->SetHelpText(%s);',
       [self.Name, GetCppString(self.Wx_HelpText)]);
-  for i := self.columns.Count - 1 downto 0 do
-    Result := Result + #13 + Format('%s->InsertColumn(0,%s,%s,%d );',
-      [self.Name, GetCppString(self.columns[i].Caption), AlignmentToStr(
+  for i := 0 to self.columns.Count - 1 do
+    Result := Result + #13 + Format('%s->InsertColumn(%d, %s, %s, %d);',
+      [self.Name, i, GetCppString(self.columns[i].Caption), AlignmentToStr(
       columns[i].Alignment), self.columns[i].Width]);
 
   strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
@@ -833,7 +833,7 @@ if not (XRCGEN) then //NUKLEAR ZELPH
   if (self.Parent is TWxSizerPanel) then
   begin
     strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s,%d,%s,%d);',
+    Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
       [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
       self.Wx_Border]);
   end;
