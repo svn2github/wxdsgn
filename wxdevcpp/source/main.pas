@@ -3307,12 +3307,14 @@ var
     startXY, endXY: TBufferCoord;
     strLstToPaste: TStringList;
 begin
-    if assigned(e) = false then
+    if not assigned(e) then
         exit;
 
     strLstToPaste := TStringList.Create;
     try
+
         strLstToPaste.Add(strStart);   // Add start string
+
         if e.Text.SelAvail then
         begin
 

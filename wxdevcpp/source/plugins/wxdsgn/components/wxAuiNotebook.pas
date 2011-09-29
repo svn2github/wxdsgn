@@ -612,8 +612,9 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
+    //Old Code?? GAR 29Sep2011
   if (wxAUI_NB_TAB_FIXED_WIDTH in FWx_AuiNotebookStyle) then
-    Result := Result + #13 + Format('%s->SetTabSize(%s);', [self.Name, GetTabWidth, GetTabHeight]);
+    Result := Result + #13 + Format('%s->SetTabSize(wxSize(%d,%d));', [self.Name, GetTabWidth, GetTabHeight]);
 
   if not (XRCGEN) then //NUKLEAR ZELPH
   begin

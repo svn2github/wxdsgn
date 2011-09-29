@@ -4448,25 +4448,6 @@ var
 begin
 
 if Sender is TControl then
-  begin
-    // only components of type TControl and descendends
-    // work
-    Control := Sender as TControl;
-
-    showmessage('Tony Reina is working here.');
-showmessage(GetTypeData(Control.Parent.ClassInfo)^.ClassType.ClassName);
-if (GetTypeData(Control.Parent.ClassInfo)^.ClassType.ClassName = 'TWxToolBar')  then
-begin
-ToolbarParent := Control.Parent as TToolbar;
-
-     ToolbarParent.Buttons[1].
-
-  end;
-
-  end;
-
-  exit;
-
   if (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName = 'TWxNoteBookPage') or (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName = 'TWxAuiNoteBookPage') then
   begin
     NotebookPage := Sender as TTabSheet;

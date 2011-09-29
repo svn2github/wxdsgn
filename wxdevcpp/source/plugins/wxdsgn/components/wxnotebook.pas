@@ -422,6 +422,7 @@ if (XRCGEN) then
  end
  else 
  begin
+
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s, %s, %s, %s%s);',
     [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
@@ -457,9 +458,9 @@ if (XRCGEN) then
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
+    //Old Code?? GAR 29Sep2011
   if (wxNB_FIXEDWIDTH in FWx_NotebookStyle) then
-    Result := Result + #13 + Format('%s->SetTabSize(%s);', [self.Name, GetTabWidth, GetTabHeight]);
-
+    Result := Result + #13 + Format('%s->SetTabSize(wxSize(%d,%d));', [self.Name, GetTabWidth, GetTabHeight]);
 
   if not (XRCGEN) then //NUKLEAR ZELPH
   begin
