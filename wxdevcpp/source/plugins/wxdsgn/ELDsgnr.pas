@@ -1980,6 +1980,13 @@ var
   LLockedIndex: Integer;
   CanDelete: Boolean;  // @mh
 begin
+
+if not Assigned(FSelCtrls) then
+   exit;
+
+   if not Assigned(FRoot) then
+   exit;
+
   if ((FSelCtrls.Count = 1) and (FSelCtrls[0] <> FRoot)) or
     (FSelCtrls.Count > 1) then
   begin

@@ -1906,39 +1906,34 @@ var
   bmp:TBitmap;
   strPropertyName, strXPMFileName:String;
 begin
+  for i:= 0 to self.ComponentCount -1 Do
+  begin
+    if self.Components[i].GetInterface(IID_IWxImageContainerInterface,imgCtrl) = false then
+    begin
+      if self.Components[i].GetInterface(IDD_IWxMenuBarInterface,mnuCtrl) = true then
+        mnuCtrl.GenerateXPM(strFileName);
+      continue;
+    end;
 
-// GAR 27 FEB 2010 - I don't think this procedure is needed.
-//    We should have already saved the XPMs when the
-//    the component was created.  ?????
-
- // for i:= 0 to self.ComponentCount -1 Do
- // begin
- //   if self.Components[i].GetInterface(IID_IWxImageContainerInterface,imgCtrl) = false then
- //   begin
- //     if self.Components[i].GetInterface(IDD_IWxMenuBarInterface,mnuCtrl) = true then
- //       mnuCtrl.GenerateXPM(strFileName);
- //     continue;
-  //  end;
-
- //   for j := 0 to imgCtrl.GetBitmapCount -1 Do
- //   begin
- //   if not imgCtrl.PreserveFormat then
- //     begin
- //       strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
- //       if FileExists(strXPMFileName) then
- //         continue;
-  //      bmp:=nil;
-  //      imgCtrl.GetBitmap(j,bmp,strPropertyName);
-  //      if bmp <> nil then
-  //        GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
-  //    end;
-  //  end;
-  //end;
-  //strXPMFileName:='Images\Self_'+wx_Name+'.xpm';
-  //if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> nil) then
-  //begin
-   // GenerateXPMDirectly(Wx_ICON.Bitmap,'Self',wx_Name,strFileName);
-  //end;
+    for j := 0 to imgCtrl.GetBitmapCount -1 Do
+    begin
+    if not imgCtrl.PreserveFormat then
+      begin
+        strXPMFileName:=IncludeTrailingPathDelimiter(ExtractFilePath(strFileName))+'Images\'+Wx_Name+'_'+imgCtrl.GetPropertyName(j)+'.xpm';
+        if FileExists(strXPMFileName) then
+          continue;
+        bmp:=nil;
+        imgCtrl.GetBitmap(j,bmp,strPropertyName);
+        if bmp <> nil then
+          GenerateXPMDirectly(bmp,strPropertyName,wx_Name,strFileName);
+      end;
+    end;
+  end;
+  strXPMFileName:='Images\Self_'+wx_Name+'.xpm';
+  if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> nil) then
+  begin
+    GenerateXPMDirectly(Wx_ICON.Bitmap,'Self',wx_Name,strFileName);
+  end;
 end;
 
 function TfrmNewForm.GetBitmapCount:Integer;

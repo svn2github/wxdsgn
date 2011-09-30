@@ -1430,6 +1430,7 @@ var
   i: Integer;
   designerFlag: Boolean;
 begin
+
   designerFlag := true;
   if ELDesigner1.Floating then
     designerFlag := self.IsForm(main.GetActiveEditorName);
@@ -1452,9 +1453,12 @@ begin
         for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
           ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top + 1;
     end;
+
+
     ELDesigner1.OnModified(Sender);
 
-  end;
+    end;
+
 end;
 
 procedure TWXDsgn.AssignDesignerControl(editorName: string);
@@ -3057,6 +3061,13 @@ begin
       ELDesigner1.Paste;
   end;
 
+  // Need to hijack delete function in designer form
+  // so that the proper code cleanup is done
+  if (Key = VK_DELETE) then
+  begin
+        actDesignerDeleteExecute(nil);
+  end;
+
 end;
 
 procedure TWXDsgn.ELDesigner1Modified(Sender: TObject);
@@ -4177,9 +4188,10 @@ begin
   ELDesigner1.DeleteSelectedControls;
   DisablePropertyBuilding := false;
 
+  GetCurrentDesignerForm();
   ELDesigner1.SelectedControls.Clear;
   ELDesigner1.SelectedControls.Add(ELDesigner1.DesignControl);
-  BuildProperties(ELDesigner1.DesignControl);
+  BuildProperties(ELDesigner1.SelectedControls[0]);
 
 end;
 

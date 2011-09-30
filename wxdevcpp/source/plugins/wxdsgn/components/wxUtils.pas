@@ -964,22 +964,42 @@ end;
 function CreateGraphicFileDir(strFileName: string): string;
 var
    strDir : string;
+   fileDir : string;
+   workingDir : string;
 begin
 
-  strDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
+  strDir := '';
+  fileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
 
-  if DirectoryExists(strDir) = false then
-  begin
-   if ForceDirectories(strDir) = true then
-     strDir:=strDir;
-  end
+  // Get current working directory
+  workingDir := GetCurrentDir;
+  // If working directory already contained within fileDir, then
+  //    don't add it again.
+  if AnsiContainsStr(fileDir, workingDir) then
+     workingDir := '';
+
+  // See if file directory exists
+  if DirectoryExists(fileDir) then
+        strDir := fileDir
+
+  // Try working directory plus file directory
+  else if DirectoryExists(workingDir + pd + fileDir) then
+        strDir := workingDir + pd + fileDir
   else
-    strDir:=strDir;
-    
+  begin
+        // Try to force the directory creation
+       if ForceDirectories(workingDir + pd + fileDir) then
+          strDir := workingDir + pd + fileDir
+       else
+
+           ShowMessage('ERROR: Can''t create directory ' + workingDir + pd + fileDir);
+
+  end;
+
   strDir := IncludetrailingPathDelimiter(strDir);
 
   strDir := AnsiReplaceText(strDir, '\', '/');
-
+  
   Result := strDir;
 
 end;
@@ -5203,13 +5223,16 @@ begin
 
   if bmp.handle <> 0 then
   begin
+
     fileStrlst := TStringList.Create;
     try
       strXPMContent := GetXPMFromTPicture(strParentName + '_' + strCompName, bmp);
+
       if trim(strXPMContent) <> '' then
       begin
         fileStrlst.Add(strXPMContent);
         fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' + strCompName + '_XPM.xpm');
+        ShowMessage( xpmFileDir + strParentName + '_' + strCompName + '_XPM.xpm');
       end;
     except
     end;
@@ -6235,6 +6258,8 @@ var
   compIntf: IWxValidatorInterface;
 begin
 
+if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
+
   wxValidatorString := TWxValidatorString(Data.AsOrdinal);
 
   ValidatorForm := TwxValidator.Create(GetParentForm(Inspector));
@@ -6370,6 +6395,9 @@ var
   strColorValue: string;
   compIntf: IWxComponentInterface;
 begin
+
+if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
+
   ColorEditForm := TColorEdit.Create(GetParentForm(Inspector));
   try
     if (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
@@ -6461,6 +6489,8 @@ var
   lstColumn: TListColumn;
 begin
 
+if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
+
   ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
   try
     ListviewForm.LstViewObj.Columns.Clear;
@@ -6534,6 +6564,8 @@ var
   stPnl: TStatusPanel;
 begin
 
+if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
+
   sbForm := TStatusBarForm.Create(GetParentForm(Inspector));
   try
     sbForm.StatusBarObj.Panels.Clear;
@@ -6602,6 +6634,8 @@ var
   i: integer;
   lstColumn: TListColumn;
 begin
+
+if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
 
   ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
   try
@@ -6707,7 +6741,12 @@ var
   strClassName: string;
   strFileName : string;
 begin
+
+ if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then
+         exit;
+
   PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
+
   strClassName := UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName);
 
   if strClassName = UpperCase('TWxBitmapButton') then
@@ -7002,6 +7041,10 @@ var
   maxControlValue: integer;
   MenuName: string;
 begin
+
+if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
+
+
   try
     if (TJvInspectorPropData(Self.GetData()).Instance is TControl) then
       MenuName := TControl(TJvInspectorPropData(Self.GetData()).Instance).Name;
