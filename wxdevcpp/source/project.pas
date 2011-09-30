@@ -2519,6 +2519,10 @@ var
     tempnode: TTreeNode;
 
 begin
+
+if not Assigned(fUnits) then exit;
+if not Assigned(fNode) then exit;
+
     MainForm.ProjectView.Items.BeginUpdate;
 
     //remember if folder nodes were expanded or collapsed
@@ -2539,6 +2543,7 @@ begin
   {
     for idx:=0 to pred(fFolders.Count) do
       MakeNewFileNode(fFolders[idx], True).Data:=Pointer(-1);}
+
     for idx := 0 to pred(fUnits.Count) do
     begin
         fUnits[idx].Node := MakeNewFileNode(ExtractFileName(fUnits[idx].FileName),
