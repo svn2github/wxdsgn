@@ -1528,6 +1528,7 @@ var
   WinRect: TRect;
   wxtoolbarintf: IWxToolBarInterface;
   strTemp: string;
+  sizerParentName : string;
 begin
   strLst := TStringList.Create;
 
@@ -1561,7 +1562,7 @@ begin
         end;    // for
 
        if not (XRCGEN) then //NUKLEAR ZELPH
-	    begin 
+	    begin
         if not ((MaxToolWidth = 16) and (MaxToolHt = 15)) then
           strLst.add(Format('%s->SetToolBitmapSize(wxSize(%d,%d));',
             [self.Components[i].Name, MaxToolWidth, MaxToolHt]));
@@ -1594,12 +1595,23 @@ begin
     end;
 
   isSizerAvailable := False;
+  sizerParentName := '';
   isAuimanagerAvailable := False;
   for I := 0 to self.ComponentCount - 1 do
   begin // Iterate
     if self.Components[i] is TWxSizerPanel then
     begin
-      isSizerAvailable := True;
+      if not (isSizerAvailable) then
+      begin
+        isSizerAvailable := True;
+
+        // Bug fix for #2695519
+        // Need to refer to parent name rather than always referring to 'this->'
+        if  (TControl(Components[i]).Parent is TForm) then
+            sizerParentName := 'this' + '->'
+        else
+                sizerParentName := TControl(Components[i]).Parent.Name + '->';
+      end;
       //      break;
     end;
     if self.Components[i] is TWxAuiManager then
@@ -1635,10 +1647,10 @@ begin
   begin
     if strLst.Count <> 0 then
       strLst.add('');
-    strLst.Add('GetSizer()->Layout();');
-    strLst.add('GetSizer()->Fit(this);');
+    strLst.Add(sizerParentName + 'GetSizer()->Layout();');
+    strLst.add(sizerParentName + 'GetSizer()->Fit(this);');
     if Wx_SizeToContents then
-        strLst.add('GetSizer()->SetSizeHints(this);');
+        strLst.add(sizerParentName + 'GetSizer()->SetSizeHints(this);');
   end
   else
   begin

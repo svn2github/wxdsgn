@@ -426,9 +426,9 @@ begin
     if (self.Parent is TForm) then
       parentName := 'this'
     else if (self.Parent.ClassName = 'TWxPanel') then
- //       if self.Parent.Parent is TForm and not HasAuiManagedForm then
+        if self.Parent.Parent is TForm and not HasAuiManagedForm then
         if self.Parent.Parent is TForm and not FormHasAuiManager(self) then
-        parentName := 'this'
+        parentName := self.Parent.Name  //'this'
       else if (self.Parent.Parent.ClassName <> 'TWxNotebook') then
         parentName := self.Parent.Name
       else
