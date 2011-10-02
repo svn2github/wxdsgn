@@ -6229,6 +6229,9 @@ procedure TJvInspectorValidatorItem.ContentsChanged(Sender: TObject);
 var
   Obj: TStrings;
 begin
+
+if not Assigned(Data) then exit;
+
   Obj := TStrings(Data.AsOrdinal);
   Obj.Text := TMemo(Sender).Lines.Text;
 end;
@@ -6259,6 +6262,7 @@ var
 begin
 
 if not Assigned(TJvInspectorPropData(Self.GetData()).Instance) then exit;
+if not Assigned(Data) then exit;
 
   wxValidatorString := TWxValidatorString(Data.AsOrdinal);
 
@@ -6302,6 +6306,7 @@ procedure TWxJvInspectorTStringsItem.ContentsChanged(Sender: TObject);
 var
   Obj: TStrings;
 begin
+if not Assigned(Data) then exit;
   Obj := TStrings(Data.AsOrdinal);
   Obj.Text := TMemo(Sender).Lines.Text;
 end;
@@ -6316,6 +6321,9 @@ var
   SL: TStrings;
   Form: TStringsForm;
 begin
+
+if not Assigned(Data) then exit;
+
   //Create the form
   Form := TStringsForm.Create(GetParentForm(Inspector));
 
@@ -6342,6 +6350,9 @@ procedure TWxJvInspectorTStringsItem.SetDisplayValue(const Value: string);
 var
   Obj: TObject;
 begin
+
+if not Assigned(Data) then exit;
+
   if Multiline then
   begin
     Obj := TObject(Data.AsOrdinal);
@@ -6977,6 +6988,8 @@ var
   ColorInt: integer;
 begin
 
+if not Assigned(Data) then exit;
+
   fnt := TFont(Data.AsOrdinal);
 
   prevColor := fnt.Color;
@@ -7128,6 +7141,8 @@ var
   WxFileNameString: TWxFileNameString;
 begin
 
+if not Assigned(Data) then exit;
+
   WxFileNameString := TWxFileNameString(Data.AsOrdinal);
 
   FileOpenForm := TOpenDialogEx.Create(wx_designer.ownerForm);
@@ -7158,6 +7173,8 @@ function TJvInspectorFileNameEditItem.GetDisplayValue: string;
 var
   WxFileNameString: TWxFileNameString;
 begin
+
+if not Assigned(Data) then exit;
 
   WxFileNameString := TWxFileNameString(Data.AsOrdinal);
 
@@ -7211,6 +7228,8 @@ function TJvInspectorAnimationFileNameEditItem.GetDisplayValue: string;
 var
   WxAnimationFileNameString: TWxAnimationFileNameString;
 begin
+
+if not Assigned(Data) then exit;
 
   WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
 

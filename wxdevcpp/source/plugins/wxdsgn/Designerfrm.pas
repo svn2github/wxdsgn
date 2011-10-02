@@ -1608,7 +1608,7 @@ begin
         // Bug fix for #2695519
         // Need to refer to parent name rather than always referring to 'this->'
         if  (TControl(Components[i]).Parent is TForm) then
-            sizerParentName := 'this' + '->'
+            sizerParentName := '' //'this' + '->'
         else
                 sizerParentName := TControl(Components[i]).Parent.Name + '->';
       end;
@@ -1647,10 +1647,14 @@ begin
   begin
     if strLst.Count <> 0 then
       strLst.add('');
-    strLst.Add(sizerParentName + 'GetSizer()->Layout();');
-    strLst.add(sizerParentName + 'GetSizer()->Fit(this);');
-    if Wx_SizeToContents then
-        strLst.add(sizerParentName + 'GetSizer()->SetSizeHints(this);');
+
+      if (sizerParentName = '') then
+      begin
+        strLst.Add('Layout();');
+        strLst.add('GetSizer()->Fit(this);');
+        if Wx_SizeToContents then
+                strLst.add('GetSizer()->SetSizeHints(this);');
+        end
   end
   else
   begin
