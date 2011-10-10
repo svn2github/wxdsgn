@@ -303,6 +303,7 @@ begin
   FWx_ProxyFGColorString.Destroy;
   FWx_Comments.Destroy;
   FWx_ProxyValidatorString.Destroy;
+  
 end; { of AutoDestroy }
 
 { Override OnClick handler from TTreeView,IWxComponentInterface }
@@ -644,6 +645,7 @@ function TWxTreeCtrl.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
   strStyle, parentName, strAlignment: string;
+  index : integer;
 begin
   Result := '';
 
@@ -676,7 +678,7 @@ begin
  begin//generate xrc loading code
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
+    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
  end
  else
  begin
@@ -714,6 +716,18 @@ begin
   strColorStr := GetWxFontDeclaration(self.Font);
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
+
+  if (Items.Count > 0) then
+        Result := Result + #13 + Format('wxTreeItemId parentNodeID = %s->AddRoot(%s);',
+                  [self.Name, GetCppString('')]);
+
+  for index := 0 to Items.Count-1 do
+  begin
+      Result := Result + #13 + Format('parentNodeID = %s->AppendItem(parentNodeID, %s);',
+          [self.Name, GetCppString(Items[index].Text)]);
+
+  end;
+
 if not (XRCGEN) then //NUKLEAR ZELPH
   begin
     if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
