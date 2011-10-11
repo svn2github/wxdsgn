@@ -288,7 +288,7 @@ begin
   FWx_ProxyFGColorString := TWxColorString.Create;
   defaultBGColor         := self.color;
   defaultFGColor         := self.font.color;
-  FWx_TreeviewStyle      := [wxTR_HAS_BUTTONS];
+  FWx_TreeviewStyle      := [wxTR_HAS_BUTTONS, wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT];
   FWx_Comments           := TStringList.Create;
   FWx_ProxyValidatorString := TwxValidatorString.Create(self);
 
@@ -645,7 +645,8 @@ function TWxTreeCtrl.GenerateGUIControlCreation: string;
 var
   strColorStr: string;
   strStyle, parentName, strAlignment: string;
-  index : integer;
+  strParentNodeID, strNodeID : string;
+  index, indexLevel, lastLevel : integer;
 begin
   Result := '';
 
@@ -718,13 +719,33 @@ begin
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
   if (Items.Count > 0) then
-        Result := Result + #13 + Format('wxTreeItemId parentNodeID = %s->AddRoot(%s);',
-                  [self.Name, GetCppString('')]);
-
-  for index := 0 to Items.Count-1 do
   begin
-      Result := Result + #13 + Format('parentNodeID = %s->AppendItem(parentNodeID, %s);',
-          [self.Name, GetCppString(Items[index].Text)]);
+        strParentNodeID := self.Name + 'NodeID';
+        Result := Result + #13 + Format('wxTreeItemId %s = %s->AddRoot(%s);',
+                  [strParentNodeID, self.Name, GetCppString('')]);
+
+        Result := Result + #13 + Format('%s = %s->AppendItem(%s, %s);',
+          [strParentNodeID, self.Name, strParentNodeID, GetCppString(Items[index].Text)]);
+        lastLevel := Items[0].Level;
+  end
+  else
+        strParentNodeID := '';
+
+  for index := 1 to (Items.Count-1) do
+  begin
+     strNodeID := strParentNodeID;
+
+     if (lastLevel >= Items[index].Level) then
+     begin
+
+        for indexLevel := Items[index].Level to lastLevel do
+                strNodeID := self.Name + '->GetItemParent(' + strNodeID + ')';
+     end;
+
+     lastLevel := Items[index].Level;
+
+      Result := Result + #13 + Format('%s = %s->AppendItem(%s, %s);',
+          [strParentNodeID, self.Name, strNodeID, GetCppString(Items[index].Text)]);
 
   end;
 
