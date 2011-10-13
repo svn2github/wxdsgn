@@ -11,17 +11,18 @@
   !include "MUI2.nsh"
   !include "Sections.nsh"
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
+  !include "EnvVarUpdate.nsh" ; Updates the path environment variable
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.2.0.2"
+!define WXDEVCPP_VERSION "7.4"
 !define IDE_DEVPAK_NAME  "wxdevcpp.DevPak"
 !define PROGRAM_TITLE "wxDev-C++"
 !define PROGRAM_NAME "wxdevcpp"
 !define EXECUTABLE_NAME "devcpp.exe"
 !define DEFAULT_START_MENU_DIRECTORY "wxDev-C++"
 
-!define MSVC_VERSION "9.0" ; 2005 = version 8.0, 2008 = version 9.0
-!define MSVC_YEAR "2008"
+!define MSVC_VERSION "10.0" ; 2005 = version 8.0, 2008 = version 9.0, 2010 = version 10.0
+!define MSVC_YEAR "2010"
 !define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
@@ -37,9 +38,9 @@
 
   !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
   
-  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.DevPak"  ; name of the contrib devpak
+;  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.DevPak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.DevPak"  ; name of the extras devpak
+;  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
@@ -47,9 +48,9 @@
 
   !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
  
-  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.DevPak"  ; name of the contrib devpak
+;  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.DevPak"  ; name of the contrib devpak
  
-  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.DevPak"  ; name of the extras devpak
+;  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
@@ -80,51 +81,6 @@ Var MODIFIED_STR
 	StrCpy $MODIFIED_STR $R0
 
 !macroend
-
-Function StrRep
-
-  ;Written by dirtydingus 2003-02-20 04:30:09
-  ; USAGE
-  ;Push String to do replacement in (haystack)
-  ;Push String to replace (needle)
-  ;Push Replacement
-  ;Call StrRep
-  ;Pop $R0 result
-
-  Exch $R4 ; $R4 = Replacement String
-  Exch
-  Exch $R3 ; $R3 = String to replace (needle)
-  Exch 2
-  Exch $R1 ; $R1 = String to do replacement in (haystack)
-  Push $R2 ; Replaced haystack
-  Push $R5 ; Len (needle)
-  Push $R6 ; len (haystack)
-  Push $R7 ; Scratch reg
-  StrCpy $R2 ""
-  StrLen $R5 $R3
-  StrLen $R6 $R1
-loop:
-  StrCpy $R7 $R1 $R5
-  StrCmp $R7 $R3 found
-  StrCpy $R7 $R1 1 ; - optimization can be removed if U know len needle=1
-  StrCpy $R2 "$R2$R7"
-  StrCpy $R1 $R1 $R6 1
-  StrCmp $R1 "" done loop
-found:
-  StrCpy $R2 "$R2$R4"
-  StrCpy $R1 $R1 $R6 $R5
-  StrCmp $R1 "" done loop
-done:
-  StrCpy $R3 $R2
-  Pop $R7
-  Pop $R6
-  Pop $R5
-  Pop $R2
-  Pop $R1
-  Pop $R4
-  Exch $R3
-
-FunctionEnd
 
 ; ================================================
 ; MACRO - InstallDevPak
@@ -431,24 +387,24 @@ Section "Libraries" SectionwxWidgetsMingw
 SectionEnd
 
 
-Section /o "Contribs" SectionwxWidgetsContribGcc
-  SectionIn 1
+;Section /o "Contribs" SectionwxWidgetsContribGcc
+;  SectionIn 1
   
-  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
+;  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
   
-  !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
+;  !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
  
-SectionEnd
+;SectionEnd
 
-Section /o "Extras" SectionwxWidgetsExtrasGcc
+;Section /o "Extras" SectionwxWidgetsExtrasGcc
 
-  SectionIn 1
+;  SectionIn 1
 
-  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
+;  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
   
-  !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
+;  !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
   
-SectionEnd
+;SectionEnd
 
 SectionGroupEnd
 !endif
@@ -465,25 +421,25 @@ Section /o "Libraries" SectionwxWidgetsMSVC
   
 SectionEnd
 
-Section /o "Contribs" SectionwxWidgetsContribMSVC
+;Section /o "Contribs" SectionwxWidgetsContribMSVC
 
-  SectionIn 1
+;  SectionIn 1
 
-  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
+;  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
   
-  !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
+;  !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
   
-SectionEnd
+;SectionEnd
 
-Section /o "Extras" SectionwxWidgetsExtrasMSVC
+;Section /o "Extras" SectionwxWidgetsExtrasMSVC
 
-  SectionIn 1
+;  SectionIn 1
 
-  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
+;  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
   
-  !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
+;  !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
   
-SectionEnd
+;SectionEnd
 SectionGroupEnd
 
 !endif
@@ -931,19 +887,25 @@ Function .onInstSuccess
   ;try to read from registry if last installation installed for All Users/Current User
   ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
       "Shortcuts"
-  StrCmp $0 "" cont exists
+  StrCmp $0 "" cont CurrentUsers
   cont:
 
-  SetShellVarContext all
-  MessageBox MB_YESNO "Do you want to install ${PROGRAM_TITLE} for all users on this computer ?" IDYES AllUsers
   SetShellVarContext current
+  MessageBox MB_YESNO "Do you want to install ${PROGRAM_TITLE} for all users on this computer ?" IDNO CurrentUsers
 
 AllUsers:
-  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
+  SetShellVarContext all
+
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
       "Shortcuts" "$0"
 
-exists:
+  ${EnvVarUpdate} $0 "PATH" "P" "HKLM" "$INSTDIR\bin"   ; Prepend to path
+
+CurrentUsers:
+
+  ${EnvVarUpdate} $0 "PATH" "P" "HKCU" "$INSTDIR\bin"   ; Prepend to path
+
+  StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
 
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   SetOutPath $INSTDIR
@@ -971,6 +933,10 @@ FunctionEnd
 Function un.onUninstSuccess
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR"
+  
+  ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\bin"   ; Remove from path
+  ${un.EnvVarUpdate} $0 "PATH" "R" "HKCU" "$INSTDIR\bin"   ; Remove from path
+
 FunctionEnd
 
 ;backup file association
