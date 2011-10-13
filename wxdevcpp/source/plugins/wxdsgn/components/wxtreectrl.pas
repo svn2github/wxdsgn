@@ -718,12 +718,19 @@ begin
   if strColorStr <> '' then
     Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
 
+    // Do we have items for the tree?
   if (Items.Count > 0) then
   begin
-        strParentNodeID := self.Name + 'NodeID';
+        strParentNodeID := self.Name + 'NodeID'; // Variable name for ID of item
+
+        // wxTreeCtrl can only have 1 root. In order to get it to look like
+        //   Delphi's TTreeView we need to hide the root and draw the root lines
+        //   We'll create a blank root and top level items will go on the first
+        //   level of the wxTreeCtrl.
         Result := Result + #13 + Format('wxTreeItemId %s = %s->AddRoot(%s);',
                   [strParentNodeID, self.Name, GetCppString('')]);
 
+        //  Place the first item under the strParentNodeID (the root ID)
         Result := Result + #13 + Format('%s = %s->AppendItem(%s, %s);',
           [strParentNodeID, self.Name, strParentNodeID, GetCppString(Items[index].Text)]);
         lastLevel := Items[0].Level;
@@ -731,10 +738,17 @@ begin
   else
         strParentNodeID := '';
 
+  // TTreeView (TTreeNodes) is always indexed going down the first child first
+  //   We'll take advantage of this indexing to write the wxWidgets code.
   for index := 1 to (Items.Count-1) do
   begin
-     strNodeID := strParentNodeID;
 
+     strNodeID := strParentNodeID;  // ID for the item
+
+     // If the item is on the same level as the last one, then we need
+     //  to refer to the last node ID's parent. If it is on a higher level
+     //   (i.e. smaller number), then we need to wrap more GetItemParent
+     //   calls to keep going up the tree branch to the correct ID.
      if (lastLevel >= Items[index].Level) then
      begin
 
