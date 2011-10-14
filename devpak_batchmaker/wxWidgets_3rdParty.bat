@@ -1,3 +1,5 @@
+CALL common_vars.bat
+
 md %WXWIN%\3rdparty\lib
 md %WXWIN%\3rdparty\lib\%1_lib
 
@@ -19,22 +21,17 @@ copy %STARTDIR%\treemultictrl.%1 %WXWIN%\3rdParty\build\treemultictrl\makefile.%
 
 echo makefiles copied
 
-cd /d %WXWIN%\3rdparty\build\chartart
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_chartart.txt 
-if errorlevel 1 goto 3RDPARTY_BUILD_ERR
 
+cd %WXWIN%\3rdParty\build\chartart
 
-rem cd ..\sheet
-rem %MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 rem USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_sheet.txt 
+cd ..\sheet
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 rem USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_sheet.txt 
 rem if errorlevel 1 goto 3RDPARTY_BUILD_ERR
 
 cd ..\treelistctrl
 %MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_treelist.txt 
 if errorlevel 1 goto 3RDPARTY_BUILD_ERR
 
-cd ..\treemultictrl
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% USE_OPENGL=1 USE_XRC=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 2> error_%1_treemultictrl.txt 
-if NOT errorlevel 1 goto 3RDPARTY_END
 
 :3RDPARTY_BUILD_ERR
 SET BUILDRESULT=F

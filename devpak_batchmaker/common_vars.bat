@@ -8,7 +8,7 @@ echo off
 cls
 
 rem Default wxWidgets root directory
-set WXVER=2.9.1
+set WXVER=2.8.12
 
 rem Set UNICODE 0=off 1=on
 set UNICODE_FLAG=1
@@ -27,12 +27,12 @@ wxlibversion.exe %WXVER% >> temp123.bat
 call temp123.bat
 del temp123.bat
 
-set WXWIN=H:\wxWidgets-%WXVER%
+set WXWIN=G:\wxWidgets-%WXVER%
 
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
 set /P WXWIN=
 
-set WXCODE=H:\Users\Public\devpak_batchmaker\wxCode
+set WXCODE=G:\Users\Public\devpak_batchmaker\wxCode
 echo In what directory are the wxCode components located (Default = %WXCODE%)?
 set /P WXCODE=
 
@@ -170,15 +170,9 @@ echo Otherwise, the paths might not be correct.
 echo Trying to prepare Visual C++ Paths (by running vcvarsall.bat)
 
 rem Look up the Visual Studio directory in the Windows registry
-rem Version 9.0 = VS 2008; Version 8.0 = VS 2005
-FOR /F "tokens=2* delims=	 " %%A IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\SxS\VC7" /v 9.0') DO SET VCVARS_DIR=%%B
-set VC_VER=2008
-IF EXIST "%VCVARS_DIR%vcvarsall.bat" goto found_VCVARS
-
-rem Look up the Visual Studio directory in the Windows registry
-rem Version 9.0 = VS 2008; Version 8.0 = VS 2005
-FOR /F "tokens=2* delims=	 " %%A IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\SxS\VC7" /v 8.0') DO SET VCVARS_DIR=%%B
-set VC_VER=2005
+rem Version 10.0 = VC2010; Version 9.0 = VS 2008; Version 8.0 = VS 2005
+FOR /F "tokens=2* delims=	 " %%A IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\SxS\VC7" /v 10.0') DO SET VCVARS_DIR=%%B
+set VC_VER=2010
 IF EXIST "%VCVARS_DIR%vcvarsall.bat" goto found_VCVARS
 
 echo In what directory is vcvarsall.bat located (Default = %VCVARS_DIR%)?
