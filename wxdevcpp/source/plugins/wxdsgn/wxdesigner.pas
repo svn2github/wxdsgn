@@ -5063,8 +5063,8 @@ begin
   with wxOptions do
   begin
     majorVersion := 2;
-    minorVersion := 9;
-    releaseVersion := 2;
+    minorVersion := 8;
+    releaseVersion := 12;
 
     unicodeSupport := True;
     monolithicLibrary := True;

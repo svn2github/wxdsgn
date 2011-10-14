@@ -346,6 +346,8 @@ begin
             writeln(F, '# Compiler Type: Visual C++ 2005');
         ID_COMPILER_VC2008:
             writeln(F, '# Compiler Type: Visual C++ 2008');
+        ID_COMPILER_VC2010:
+            writeln(F, '# Compiler Type: Visual C++ 2010');
         ID_COMPILER_DMARS:
             writeln(F, '# Compiler Type: Digital Mars');
         ID_COMPILER_BORLAND:
@@ -414,8 +416,7 @@ begin
             writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
         else
         begin
-            if (devCompiler.CompilerType = ID_COMPILER_VC2005) or
-                (devCompiler.CompilerType = ID_COMPILER_VC2008) then
+            if (devCompiler.CompilerType in ID_COMPILER_VC_CURRENT)  then
                 writeln(F, 'LINK      = "' + devCompiler.dllwrapName +
                     '" /nologo /manifest')
             else
@@ -831,8 +832,7 @@ begin
             writeln(F, #9 + '$(LINK) $(LINKOBJ) ' +
                 format(devCompiler.LinkerFormat, ['$(BIN)']) + ', ,$(LIBS),,' + fResObjects);
 
-        if (devCompiler.compilerType = ID_COMPILER_VC2005) or
-            (devCompiler.CompilerType = ID_COMPILER_VC2008) then
+        if (devCompiler.compilerType in ID_COMPILER_VC_CURRENT) then
         begin
             writeln(F, #9 + '$(GPROF) /nologo /manifest "' +
                 ExtractRelativePath(Makefile, fProject.Executable) +
@@ -912,8 +912,7 @@ begin
             writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat,
                 [GenMakePath(ChangeFileExt(tfile, '.lib')), binary]) + ' $(LINKOBJ) $(LIBS)');
 
-        if (devCompiler.compilerType = ID_COMPILER_VC2005) or
-            (devCompiler.CompilerType = ID_COMPILER_VC2008) then
+        if (devCompiler.compilerType in ID_COMPILER_VC_CURRENT)  then
         begin
             writeln(F, #9 + '$(GPROF) /nologo /manifest "' +
                 ExtractRelativePath(Makefile, fProject.Executable) +
@@ -2630,8 +2629,7 @@ begin
                 begin
                     //Check for the manifest tool
                     srch := devCompiler.gprofName;
-                    if ((devCompiler.CompilerType = ID_COMPILER_VC2005) or
-                        (devCompiler.CompilerType = ID_COMPILER_VC2008)) and
+                    if ((devCompiler.CompilerType in ID_COMPILER_VC_CURRENT)) and
                         (Pos(UpperCase(srch), UpperCase(Trim(Line))) = 1) then
                     begin
                         act := 'Embedding manifest';

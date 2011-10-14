@@ -73,6 +73,11 @@ resourcestring
     GCC_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
     //Vc++
+    VC2010_BIN_DIR = 'Bin' + pd + 'VC2010;Bin;';
+    VC2010_LIB_DIR = 'Lib' + pd + 'VC2010';
+    VC2010_C_INCLUDE_DIR = 'Include' + pd + 'common;Include' + pd + 'VC2010;';
+    VC2010_RC_INCLUDE_DIR = 'include' + pd + 'common;';
+
     VC2008_BIN_DIR = 'Bin' + pd + 'VC2008;Bin;';
     VC2008_LIB_DIR = 'Lib' + pd + 'VC2008';
     VC2008_C_INCLUDE_DIR = 'Include' + pd + 'common;Include' + pd + 'VC2008;';
@@ -130,6 +135,9 @@ resourcestring
         + ';lib' + pd + 'gcc' + pd + 'mingw32' +
         pd + GCC_VERSION + pd + 'include;'
     ;
+
+    VC2010_CPP_INCLUDE_DIR =
+        ';include' + pd + 'VC2010;' + 'include' + pd + 'common;';
 
     VC2008_CPP_INCLUDE_DIR =
         ';include' + pd + 'VC2008;' + 'include' + pd + 'common;';
@@ -290,6 +298,7 @@ resourcestring
     WEBUPDATE_SECTION = 'WEBUPDATE';
 
     GCC_DEFCOMPILERSET = 'Default GCC compiler';
+    VC2010_DEFCOMPILERSET = 'Default VC2010 compiler';
     VC2008_DEFCOMPILERSET = 'Default VC2008 compiler';
     VC2005_DEFCOMPILERSET = 'Default VC2005 compiler';
     VC2003_DEFCOMPILERSET = 'Default VC2003 compiler';
@@ -376,15 +385,18 @@ function GetRefinedPathList(StrPathValue, strVSInstallPath,
     strVCPPInstallPath, strFSDKInstallDir, strWinSDKPath: String): String;
 function GetVC200XPath(versionString: String; PathType: integer): String;
 function GetVC6Path(PathType: integer): String;
+function GetVC2010Include: String;
 function GetVC2008Include: String;
 // EAB Comment: Is that OK to keep adding functions for each new compiler? Wouldn't it be better to have something more flexible like config files?
 function GetVC2005Include: String;
 function GetVC2003Include: String;
 function GetVC6Include: String;
+function GetVC2010Bin: String;
 function GetVC2008Bin: String;
 function GetVC2005Bin: String;
 function GetVC2003Bin: String;
 function GetVC6Bin: String;
+function GetVC2010Lib: String;
 function GetVC2008Lib: String;
 function GetVC2005Lib: String;
 function GetVC2003Lib: String;
@@ -463,6 +475,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_MAKE_PROGRAM;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -494,6 +507,7 @@ begin
         //ID_COMPILER_VC2008:
         //    Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_CP_PROGRAM + '"';
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -524,6 +538,7 @@ begin
         //ID_COMPILER_VC2008:
         //    Result := '"' + StringReplace(GetProgramFilesDir, '\', '/', [rfReplaceAll]) + '/Microsoft Visual Studio 9.0/VC/Bin/' + VC_CPP_PROGRAM + '"';
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -552,6 +567,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_DBG_PROGRAM;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008:
             if DirectoryExists(GetProgramFilesDir +
                 '\Debugging Tools for Windows (x86)') then
@@ -587,6 +603,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_RES_PROGRAM;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -613,6 +630,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_DLL_PROGRAM;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -638,6 +656,9 @@ begin
     case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_DEFCOMPILERSET;
+
+        ID_COMPILER_VC2010:
+            Result := VC2010_DEFCOMPILERSET;
 
         ID_COMPILER_VC2008:
             Result := VC2008_DEFCOMPILERSET;
@@ -671,6 +692,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_COMPILER_CMD_LINE;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -697,6 +719,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_LINKER_CMD_LINE;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -723,6 +746,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_MAKE_CMD_LINE;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -749,6 +773,7 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_PROF_PROGRAM;
 
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005,
         ID_COMPILER_VC2003,
@@ -774,6 +799,9 @@ begin
     case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_BIN_DIR;
+
+        ID_COMPILER_VC2010:
+            Result := VC2010_BIN_DIR + GetVC2010Bin;
 
         ID_COMPILER_VC2008:
             Result := VC2008_BIN_DIR + GetVC2008Bin;
@@ -807,6 +835,9 @@ begin
         ID_COMPILER_MINGW:
             Result := GCC_LIB_DIR;
 
+        ID_COMPILER_VC2010:
+            Result := VC2010_LIB_DIR + GetVC2010Lib;
+
         ID_COMPILER_VC2008:
             Result := VC2008_LIB_DIR + GetVC2008Lib;
 
@@ -838,6 +869,10 @@ begin
     case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_C_INCLUDE_DIR;
+
+        ID_COMPILER_VC2010:
+            Result := COMMON_CPP_INCLUDE_DIR + VC2010_C_INCLUDE_DIR +
+                GetVC2010Include;
 
         ID_COMPILER_VC2008:
             Result := COMMON_CPP_INCLUDE_DIR + VC2008_C_INCLUDE_DIR +
@@ -874,6 +909,10 @@ begin
         ID_COMPILER_MINGW:
             Result := COMMON_CPP_INCLUDE_DIR + GCC_CPP_INCLUDE_DIR;
 
+        ID_COMPILER_VC2010:
+            Result := GetVC2010Include + VC2010_CPP_INCLUDE_DIR +
+                COMMON_CPP_INCLUDE_DIR;
+
         ID_COMPILER_VC2008:
             Result := GetVC2008Include + VC2008_CPP_INCLUDE_DIR +
                 COMMON_CPP_INCLUDE_DIR;
@@ -909,6 +948,9 @@ begin
     case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_RC_INCLUDE_DIR;
+
+        ID_COMPILER_VC2010:
+            Result := GetVC2010Include + VC2010_RC_INCLUDE_DIR;
 
         ID_COMPILER_VC2008:
             Result := GetVC2008Include + VC2008_RC_INCLUDE_DIR;
@@ -1122,6 +1164,9 @@ Begin
             if versionString = '9.0' then
                 strVCPPInstallDir :=
                     GetProgramFilesDir + '\Microsoft Visual Studio 9.0\VC\';
+            if versionString = '10.0' then
+                strVCPPInstallDir :=
+                    GetProgramFilesDir + '\Microsoft Visual Studio 10.0\VC\';
         end;
 
         TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\FRAMEWORKSDK\';
@@ -1130,6 +1175,8 @@ Begin
             strFSDKInstallDir := reg.ReadString(VersionString);
             if trim(strFSDKInstallDir) = '' then
             begin
+                strFSDKInstallDir := reg.ReadString('10.0');
+                if trim(strFSDKInstallDir) = '' then
                 strFSDKInstallDir := reg.ReadString('9.0');
                 if trim(strFSDKInstallDir) = '' then
                     strFSDKInstallDir := reg.ReadString('8.0');
@@ -1148,6 +1195,9 @@ Begin
         strWinSDKDir := GetWinSDKDir;
         if (strWinSDKDir = '') then
         begin
+            if versionString = '10.0' then
+                strWinSDKDir := GetProgramFilesDir + '\Microsoft SDKs\'
+            else
             if versionString = '9.0' then
                 strWinSDKDir := GetProgramFilesDir + '\Microsoft SDKs\'
             else
@@ -1177,7 +1227,7 @@ Begin
                 if Trim(strInclude) = '' then
                     strInclude :=
                         '$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
-                if versionString = '9.0' then
+                if ((versionString = '9.0') or (versionString = '10.0')) then
                     strInclude :=
                         strInclude + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Include;';
@@ -1191,7 +1241,7 @@ Begin
                 if Trim(strBin) = '' then
                     strBin :=
                         '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;' + GetProgramFilesDir + '\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
-                if versionString = '9.0' then
+                if ((versionString = '9.0') or (versionString = '10.0')) then
                     strBin := strBin + ';' +
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Bin;';
@@ -1204,7 +1254,7 @@ Begin
                 if Trim(strLib) = '' then
                     strLib :=
                         '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
-                if versionString = '9.0' then
+                if ((versionString = '9.0') or (versionString = '10.0')) then
                     strLib := strLib + ';' +
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Lib;';
@@ -1219,6 +1269,11 @@ Begin
     reg.destroy;
     reg2.destroy;
 
+end;
+
+function GetVC2010Include: String;
+begin
+    Result := GetVC200XPath('10.0', 0);
 end;
 
 function GetVC2008Include: String;
@@ -1241,6 +1296,11 @@ begin
     Result := GetVC6Path(0);
 end;
 
+function GetVC2010Bin: String;
+begin
+    Result := GetVC200XPath('10.0', 1);
+end;
+
 function GetVC2008Bin: String;
 begin
     Result := GetVC200XPath('9.0', 1);
@@ -1259,6 +1319,11 @@ end;
 function GetVC6Bin: String;
 begin
     Result := GetVC6Path(1);
+end;
+
+function GetVC2010Lib: String;
+begin
+    Result := GetVC200XPath('10.0', 2);
 end;
 
 function GetVC2008Lib: String;

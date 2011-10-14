@@ -64,8 +64,11 @@ const
     ID_COMPILER_BORLAND = 6;
     ID_COMPILER_WATCOM = 7;
     ID_COMPILER_LINUX = 8;
+    ID_COMPILER_VC2010 = 9;
     ID_COMPILER_VC = [ID_COMPILER_VC6, ID_COMPILER_VC2003,
-        ID_COMPILER_VC2005, ID_COMPILER_VC2008];
+        ID_COMPILER_VC2005, ID_COMPILER_VC2008, ID_COMPILER_VC2010];
+    ID_COMPILER_VC_CURRENT = [ID_COMPILER_VC2005, ID_COMPILER_VC2008,
+                ID_COMPILER_VC2010];
 
 type
     // the comments are an example of the record
@@ -1034,6 +1037,7 @@ begin
         devCompilerSet.Sets.Add(BORLAND_DEFCOMPILERSET);
         devCompilerSet.Sets.Add(WATCOM_DEFCOMPILERSET);
         devCompilerSet.Sets.Add(LINUX_DEFCOMPILERSET);
+        devCompilerSet.Sets.Add(VC2010_DEFCOMPILERSET);
 
         //devCompilerSet.WriteSets;
 
@@ -1086,6 +1090,15 @@ begin
         devCompilerSet.LoadSetDirs(ID_COMPILER_VC2008);
         if MainForm <> nil then
             devCompilerSet.SaveSet(ID_COMPILER_VC2008);
+
+        devCompilerSet.CompilerType := ID_COMPILER_VC2010;
+        // EAB TODO: Check this logic. Maybe, move above and change numbering
+        devdirs.fCompilerType := ID_COMPILER_VC2010;
+        devdirs.SettoDefaults;
+        devCompilerSet.LoadSetProgs(ID_COMPILER_VC2010);
+        devCompilerSet.LoadSetDirs(ID_COMPILER_VC2010);
+        if MainForm <> nil then
+            devCompilerSet.SaveSet(ID_COMPILER_VC2010);
 
         devCompilerSet.CompilerType := ID_COMPILER_BORLAND;
         devdirs.fCompilerType := ID_COMPILER_BORLAND;
@@ -1346,6 +1359,41 @@ begin
     {$ENDIF PLUGIN_BUILD}
 
     devCompilerSet.SaveSet(ID_COMPILER_VC2008);
+
+
+    devCompilerSet.CompilerType := ID_COMPILER_VC2010;
+    // EAB TODO: Check this logic. Maybe, move above and change numbering
+    devdirs.fCompilerType := ID_COMPILER_VC2010;
+    devdirs.SettoDefaults;
+    devCompilerSet.LoadSetProgs(ID_COMPILER_VC2010);
+    devCompilerSet.LoadSetDirs(ID_COMPILER_VC2010);
+
+    {$IFDEF PLUGIN_BUILD}
+        for i := 0 to MainForm.pluginsCount - 1 do
+            begin
+
+        pluginSettings := MainForm.plugins[i].GetCompilerOptions;
+
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
+
+            // This line loads it from the .ini file.
+            tempName := devData.LoadSetting(devCompilerSet.optComKey,
+                pluginSettings[j].name);
+            // Value comes back as a string. Plugin converts
+            //  string value to correct type using LoadCompilerSettings
+            if tempName <> '' then
+                MainForm.plugins[i].LoadCompilerSettings(
+                    pluginSettings[j].name, tempName);
+        end;
+        MainForm.plugins[i].LoadCompilerOptions;
+
+        end;
+
+    {$ENDIF PLUGIN_BUILD}
+
+    devCompilerSet.SaveSet(ID_COMPILER_VC2010);
+
 
     devCompilerSet.CompilerType := ID_COMPILER_BORLAND;
     devdirs.fCompilerType := ID_COMPILER_BORLAND;
@@ -1805,8 +1853,7 @@ begin
         sl.Add('Compile native code  =');
         sl.Add('Compile for CLR=/clr');
         sl.Add('No assembly=/clr:noAssembly');
-        if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2008) then
+        if (devCompilerSet.CompilerType in ID_COMPILER_VC_CURRENT) then
         begin
             sl.Add('IL-only output file=/clr:pure');
             sl.Add('Verifiable IL-only output=/clr:safe');
@@ -1816,8 +1863,7 @@ begin
         AddOption('Common Language Runtime', false, true, true,
             false, 0, '', 'Code Generation', [], sl);
 
-        if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2008) then
+        if (devCompilerSet.CompilerType in ID_COMPILER_VC_CURRENT) then
         begin
             sl := TStringList.Create;
             sl.Add('Precise  =precise');
@@ -1900,8 +1946,7 @@ begin
             true, false, 0, '/Zl', 'Language Options', [], nil);
         AddOption('Generate function prototypes', false, true, true,
             false, 0, '/Zg', 'Language Options', [], nil);
-        if (devCompilerSet.CompilerType = ID_COMPILER_VC2005) or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2008) then
+        if (devCompilerSet.CompilerType in ID_COMPILER_VC_CURRENT) then
             AddOption('Enable OpenMP 2.0 Language Extensions', false,
                 false, true, false, 0, '/openmp', 'Language Options', [], nil);
 

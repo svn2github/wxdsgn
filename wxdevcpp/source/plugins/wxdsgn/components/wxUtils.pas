@@ -5393,6 +5393,7 @@ begin
 
             if trim(strXPMContent) <> '' then
             begin
+            //ShowMessage('Tony: Saving XPM file');
                 fileStrlst.Add(strXPMContent);
                 fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' +
                     strCompName + '_XPM.xpm');

@@ -315,7 +315,7 @@ begin
     else
         try
 {$IFDEF PLUGIN_BUILD}
-            if Assigned(fEditor) then
+   {         if Assigned(fEditor) then
             begin
                 boolForm := false;
                 for i := 0 to MainForm.pluginsCount - 1 do
@@ -326,6 +326,7 @@ begin
                         MainForm.plugins[i].CreateNewXPMs(fEditor.FileName);
                 // EAB TODO: Think better for multiple plugins here
             end;
+            }
 {$ENDIF}
 
             //If no editor is created open one; save file and close creates a blank file.
@@ -1341,6 +1342,10 @@ begin
             DeleteKey('OverrideOutputName');
             DeleteKey('HostApplication');
 
+            DeleteKey('VC2010_Compiler');
+            DeleteKey('VC2010_CppCompiler');
+            DeleteKey('VC2010_Linker');
+            DeleteKey('VC2010_PreprocDefines');
             DeleteKey('VC2008_Compiler');
             DeleteKey('VC2008_CppCompiler');
             DeleteKey('VC2008_Linker');
@@ -1665,6 +1670,8 @@ begin
             case NewProfile.compilerType of
                 ID_COMPILER_MINGW:
                     CompilerType := 'MingW';
+                ID_COMPILER_VC2010:
+                    CompilerType := 'Visual C++ 2010';
                 ID_COMPILER_VC2008:
                     CompilerType := 'Visual C++ 2008';
                 ID_COMPILER_VC2005:

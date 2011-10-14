@@ -224,8 +224,8 @@ object CompForm: TCompForm
     Top = 39
     Width = 430
     Height = 370
-    ActivePage = tabDirectories
-    TabIndex = 2
+    ActivePage = tabCompiler
+    TabIndex = 0
     TabOrder = 4
     object tabCompiler: TTabSheet
       Caption = 'Compiler'
@@ -296,7 +296,11 @@ object CompForm: TCompForm
             'Visual C++ .NET 2003'
             'Visual C++ 6.0'
             'Digital Mars C++'
-            'Visual C++ 2008')
+            'Visual C++ 2008'
+            'Borland'
+            'Watcom'
+            'Linux gcc'
+            'Visual C++ 2010')
         end
         object cbFastDep: TCheckBox
           Left = 8

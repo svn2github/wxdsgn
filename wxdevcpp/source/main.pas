@@ -5453,6 +5453,11 @@ end;
 
 procedure TMainForm.actCompileUpdate(Sender: TObject);
 begin
+
+if not Assigned(fDebugger) then exit;
+if not Assigned(fProject) then exit;
+if not Assigned(fCompiler) then exit;
+
     (Sender as TCustomAction).Enabled :=
         (assigned(fProject) or (PageControl.PageCount > 0)) and
         not devExecutor.Running and not fDebugger.Executing and

@@ -800,6 +800,7 @@ begin
             DllwrapEdit.Enabled := true;
             btnbrowse7.Enabled := true;
         end;
+        ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005:
         begin
