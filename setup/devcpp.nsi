@@ -5,6 +5,9 @@
 ; NSIS Install Script for wx-devcpp
 ; http://nsis.sourceforge.net/
 
+; NOTE: You'll need to get the INTEC plugin (http://nsis.sourceforge.net/Inetc_plug-in)
+;  for the web download section. Just copy the intec.dll into your NSIS plugins directory.
+
 ;--------------------------------
 ;Include Modern UI
 
@@ -23,7 +26,7 @@
 
 !define MSVC_VERSION "10.0" ; 2005 = version 8.0, 2008 = version 9.0, 2010 = version 10.0
 !define MSVC_YEAR "2010"
-!define DOWNLOAD_URL "http://wxdsgn.sourceforge.net/webupdate/"  ; Url of devpak server for downloads
+!define DOWNLOAD_URL "http://downloads.sourceforge.net/project/wxdsgn/devpaks/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
 ;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
@@ -38,9 +41,9 @@
 
   !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
   
-;  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.DevPak"  ; name of the contrib devpak
+  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.DevPak"  ; name of the contrib devpak
  
-;  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.DevPak"  ; name of the extras devpak
+  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
@@ -48,9 +51,9 @@
 
   !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
  
-;  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.DevPak"  ; name of the contrib devpak
+  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.DevPak"  ; name of the contrib devpak
  
-;  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.DevPak"  ; name of the extras devpak
+  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
@@ -108,15 +111,14 @@ Quit
 
 ${ELSE}
 DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
-NSISdl::download /TIMEOUT=30000 "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}"
-
-${ENDIF}
+inetc::get /RESUME "Connection interrupted. Resume?" "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}" /END
 Pop $R0 ;Get the return value
 
-
-${IF} $R0 != "success"
-    MessageBox MB_OK "Download failed: $R0"
+${IF} $R0 != "OK"
+    MessageBox MB_OK "Download failed: return = $R0"
     Abort   ; Abort the installation
+${ENDIF}
+
 ${ENDIF}
 
 !else   ;We have included devpaks, but user can still check for updates if desired
@@ -125,11 +127,12 @@ File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the d
 
 ${IF} $Have_Internet == ${YES}
 DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
-NSISdl::download /TIMEOUT=30000 "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}"
+inetc::get /RESUME "Connection interrupted. Resume?" "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}" /END
 Pop $R0 ;Get the return value
 
-${IF} $R0 != "success"
-    MessageBox MB_ICONINFORMATION  "Download failed: $R0./nUsing the devpak included with the install package."
+${IF} $R0 != "OK"
+    MessageBox MB_OK "Download failed: return = $R0"
+    Abort   ; Abort the installation
 ${ENDIF}
 
 ${ENDIF}
@@ -387,24 +390,24 @@ Section "Libraries" SectionwxWidgetsMingw
 SectionEnd
 
 
-;Section /o "Contribs" SectionwxWidgetsContribGcc
-;  SectionIn 1
+Section /o "Contribs" SectionwxWidgetsContribGcc
+  SectionIn 1
   
-;  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
+  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
   
-;  !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
+  !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
  
-;SectionEnd
+SectionEnd
 
-;Section /o "Extras" SectionwxWidgetsExtrasGcc
+Section /o "Extras" SectionwxWidgetsExtrasGcc
 
-;  SectionIn 1
+  SectionIn 1
 
-;  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
+  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
   
-;  !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
+  !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
   
-;SectionEnd
+SectionEnd
 
 SectionGroupEnd
 !endif
@@ -421,25 +424,25 @@ Section /o "Libraries" SectionwxWidgetsMSVC
   
 SectionEnd
 
-;Section /o "Contribs" SectionwxWidgetsContribMSVC
+Section /o "Contribs" SectionwxWidgetsContribMSVC
 
-;  SectionIn 1
+  SectionIn 1
 
-;  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
+  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
   
-;  !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
+  !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
   
-;SectionEnd
+SectionEnd
 
-;Section /o "Extras" SectionwxWidgetsExtrasMSVC
+Section /o "Extras" SectionwxWidgetsExtrasMSVC
 
-;  SectionIn 1
+  SectionIn 1
 
-;  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
+  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
   
-;  !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
+  !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
   
-;SectionEnd
+SectionEnd
 SectionGroupEnd
 
 !endif
