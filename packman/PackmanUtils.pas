@@ -16,6 +16,7 @@ function GetDevcppMenu: String;
 procedure CreateShortcut(FileName, Target: String; Icon: String = '');
 function CalcMod(Count: Integer): Integer;
 function GetVersionString(FileName: string): string;
+function GetEnvVarValue(const VarName: string): string;
 
 implementation
 
@@ -166,6 +167,26 @@ begin
   finally
     FreeMem(Buf);
   end;
+end;
+
+function GetEnvVarValue(const VarName: string): string;
+// Gets an environmental variable from the Windows shell
+//   e.g. %ALLUSERSPROFILE%, %PATH%, %LOCALAPPDATA%, %ProgramFiles%
+var
+   BufSize : integer;
+begin
+    // Get required buffer size (including terminal #0)
+    BufSize := GetEnvironmentVariable(PChar(VarName), nil, 0);
+    if (BufSize > 0) then
+    begin
+        // Read environmental variable into string
+        SetLength(Result, BufSize - 1);
+        GetEnvironmentVariable(PChar(VarName), PChar(Result), BufSize);
+    end
+    else
+        // No variable found
+        Result := '';
+
 end;
 
 end.

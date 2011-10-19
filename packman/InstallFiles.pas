@@ -4,10 +4,10 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows, Classes, IniFiles, SysUtils, Dialogs, PackmanUtils;
+  Windows, Classes, IniFiles, SysUtils, Dialogs, PackmanUtils, StrUtils;
 {$ENDIF}
 {$IFDEF LINUX}
-  Classes, IniFiles, SysUtils, QDialogs, PackmanUtils;
+  Classes, IniFiles, SysUtils, QDialogs, PackmanUtils, StrUtils;
 {$ENDIF}
 
 type
@@ -297,12 +297,25 @@ var
   WinDir, SysDir: array[0..1024] of Char;
 begin
   GetWindowsDirectory(WinDir, SizeOf(WinDir));
-  GetSystemDirectory(SysDir, SizeOf(WinDir));
+  GetSystemDirectory(SysDir, SizeOf(SysDir));
 
   ReplaceAll(Str, '<app>', FAppDir);
   ReplaceAll(Str, '<src>', ExtractFileDir(FInfoFile));
   ReplaceAll(Str, '<win>', WinDir);
   ReplaceAll(Str, '<sys>', SysDir);
+
+  // Now expand all shell environment variables
+  ReplaceAll(Str, '%ALLUSERSPROFILE%', GetEnvVarValue('ALLUSERSPROFILE'));
+  ReplaceAll(Str, '%USERPROFILE%', GetEnvVarValue('USERPROFILE'));
+  ReplaceAll(Str, '%PROGRAMDATA%', GetEnvVarValue('PROGRAMDATA'));
+  ReplaceAll(Str, '%APPDATA%', GetEnvVarValue('APPDATA'));
+  ReplaceAll(Str, '%PROGRAMFILES%', GetEnvVarValue('PROGRAMFILES'));
+  ReplaceAll(Str, '%COMMONPROGRAMFILES%', GetEnvVarValue('COMMONPROGRAMFILES'));
+  ReplaceAll(Str, '%SystemDrive%', GetEnvVarValue('SystemDrive'));
+  ReplaceAll(Str, '%SystemRoot%', GetEnvVarValue('SystemRoot'));
+  ReplaceAll(Str, '%WINDIR%', GetEnvVarValue('WINDIR'));
+  ReplaceAll(Str, '%TEMP%', GetEnvVarValue('Temp'));
+
 end;
 
 procedure TInstallFiles.Parse;

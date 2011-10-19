@@ -10,6 +10,7 @@ procedure FilesFromWildcard(Directory, Mask: String; var Files : TStringList;
 function GetDevcppMenu: String;
 procedure CreateShortcut(FileName, Target: String; Icon: String = '');
 function CalcMod(Count: Integer): Integer;
+function GetEnvVarValue(const VarName: string): string;
 
 implementation
 
