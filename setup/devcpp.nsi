@@ -224,7 +224,7 @@ ${VersionCompare} $0 $1 $R0  ; Check which version is newer 0 = same, 1 = first 
 
 ${IF} $R0 == '2'  ; server devpak is newer
 
-DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
+DetailPrint "Upgrading ${DEVPAK_NAME} from version $0 to version $1 via webupdate"
 inetc::get /RESUME "Connection interrupted. Resume?" "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}" /END
 Pop $R0 ;Get the return value
 
@@ -421,9 +421,8 @@ inetc::get /SILENT /RESUME "Connection interrupted. Resume?" "${DOWNLOAD_URL}web
 Pop $R0 ;Get the return value
 
 ${IF} $R0 != "OK"
-    MessageBox MB_YESNO "Download failed for webupdate.conf on internet server: return = $R0.$\r$\nDo you want to fall back to a non-internet download?" IDYES AnswerYes2
-     Abort "Sorry, then I can't install."    ; We need to abort
-   AnswerYes2:
+   MessageBox MB_OK "Download failed for webupdate.conf on internet server:$\r$\nreturn = $R0.$\r$\nFalling back to the included installer devpaks instead."
+   DetailPrint "No internet connection found. Using devpaks included from installer instead."
    StrCpy $Have_Internet ${NO}    ; no internet connection or no download wanted
 ${ENDIF}
 ${ENDIF}
