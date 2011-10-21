@@ -215,6 +215,8 @@ ${ENDIF}
 
 !else   ;We have included devpaks, but user can still check for updates if desired
 
+${IF} $Have_Internet == ${YES}
+
 ${FindINIStr} $0 '$INSTDIR\Packages\webupdate.conf' 'LocalFilename' '${DEVPAK_NAME}' 'Version'
 ${FindINIStr} $1 '$INSTDIR\Packages\webupdate_server.conf' 'LocalFilename' '${DEVPAK_NAME}' 'Version'
 
@@ -222,7 +224,6 @@ ${VersionCompare} $0 $1 $R0  ; Check which version is newer 0 = same, 1 = first 
 
 ${IF} $R0 == '2'  ; server devpak is newer
 
-${IF} $Have_Internet == ${YES}
 DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
 inetc::get /RESUME "Connection interrupted. Resume?" "${DOWNLOAD_URL}$MODIFIED_STR" "$INSTDIR\Packages\${DEVPAK_NAME}" /END
 Pop $R0 ;Get the return value
@@ -231,6 +232,10 @@ ${IF} $R0 != "OK"
     MessageBox MB_OK "Download failed: return = $R0"
     Abort   ; Abort the installation
 ${ENDIF}
+
+${ELSE}  ; server is same or older (that would be strange, huh?)
+
+File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the Packages subdirectory when we build the installer
 
 ${ENDIF}
 
