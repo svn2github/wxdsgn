@@ -15,6 +15,7 @@
   !include "Sections.nsh"
   !include "logiclib.nsh" ; needed by ${switch}, ${IF}, {$ELSEIF}
   !include "EnvVarUpdate.nsh" ; Updates the path environment variable
+  !include "WordFunc.nsh"  ; For VersionCompare
 ;--------------------------------
 
 !define WXDEVCPP_VERSION "7.4"
@@ -63,6 +64,97 @@
 ; Variable declarations
 Var LOCAL_APPDATA
 Var Have_Internet
+
+; FindINIStr
+; Courtesy of Zinthose (http://forums.winamp.com/showthread.php?t=336325)
+; Finds a field within an ini file based on the value of another field
+!define FindINIStr '!insertmacro _FindINIStr'
+!macro _FindINIStr _OutVar _INIFileName _MatchName _MatchValue _ReadValue
+    ;${FindINIStr} $0 $INIfilename 'LocalFileName=Language.DevPak' 'Version'
+    
+    Push `${_ReadValue}`
+    Push `${_MatchValue}`
+    Push `${_MatchName}`
+    Push `${_INIFileName}`
+    Call FindINIStr
+    Pop ${_OutVar}
+!macroend
+
+Function FindINIStr
+    # Stack:  _INIFileName _MatchName _MatchValue _ReadValue
+    Exch $0 ; r0 _MatchName _MatchValue _ReadValue
+
+    IfFileExists $0 0 FileNotFound
+
+    Exch    ; _MatchName r0 _MatchValue _ReadValue
+    Exch $1 ; r1 r0 _MatchValue _ReadValue
+    Exch 2  ; _MatchValue r0 r1 _ReadValue
+    Exch $2 ; r2 r0 r1 _ReadValue
+    Exch 3  ; _ReadValue r0 r1 r2
+    Exch $3 ; r3 r0 r1 r2
+    Push $4 ; r4 r3 r0 r1 r2
+    Push $5 ; r5 r4 r3 r0 r1 r2
+    Push $6 ; r6 r5 r4 r3 r0 r1 r2
+    Push $7 ; r7 r6 r5 r4 r3 r0 r1 r2
+    Push $8 ; r8 r7 r6 r5 r4 r3 r0 r1 r2
+    Push $9 ; r9 r8 r7 r6 r5 r4 r3 r0 r1 r2
+
+    ; $0 = _INIFileName
+    ; $1 = _MatchName
+    ; $2 = _MatchValue
+    ; $3 = _ReadValue
+    ; $4 = StrBuffer
+    ; $5 = RC / Max
+    ; $6 = Offset
+    ; $7 = Temp
+    ; $8 = Temp
+    ; $9 = ReturnValue
+
+    ## Allocate Memory
+        System::Alloc ${NSIS_MAX_STRLEN}
+        Pop $4
+
+    ## Get INI Section Names from file
+        System::Call 'Kernel32::GetPrivateProfileSectionNames(i r4,i ${NSIS_MAX_STRLEN},t r0)i .r5'
+        ## WARNING ASSUMTIONS MADE HERE
+
+        StrCpy $6 0
+        StrCpy $9 ""
+        Loop:
+            IntCmp $5 $6 NoMoreSections NoMoreSections
+            System::Call '*$4(&v$6,&t${NSIS_MAX_STRLEN} .r7)'
+            StrLen $8 $7
+            IntOp $6 $6 + $8
+            IntOp $6 $6 + 1
+            ReadINIStr $8 $0 $7 $1
+            StrCmp $8 $2 0 Loop
+            ReadINIStr $9 $0 $7 $3
+        NoMoreSections:
+        StrCmp $9 "" 0 +2
+            SetErrors
+
+    System::Free $4
+
+    ## Restore The Stack
+        ;STACK:   r9 r8 r7 r6 r5 r4 r3 r0 r1 r2
+        Exch $9 ; _RetVar r8 r7 r6 r5 r4 r3 r0 r1 r2
+        Exch 9  ; r2 r8 r7 r6 r5 r4 r3 r0 r1 _RetVar
+        Pop $2  ; r8 r7 r6 r5 r4 r3 r0 r1 _RetVar
+        Pop $8  ; r7 r6 r5 r4 r3 r0 r1 _RetVar
+        Pop $7  ; r6 r5 r4 r3 r0 r1 _RetVar
+        Pop $6  ; r5 r4 r3 r0 r1 _RetVar
+        Pop $5  ; r4 r3 r0 r1 _RetVar
+        Pop $4  ; r3 r0 r1 _RetVar
+        Pop $3  ; r0 r1 _RetVar
+        Pop $0  ; r1 _RetVar
+        Pop $1  ; _RetVar
+    Return
+    FileNotFound:
+        Pop $0
+        Push ""
+        MessageBox MB_OK "File not found!"
+        SetErrors
+FunctionEnd
 
 ; ================================================
 ; MACRO - ReplaceSubStr
@@ -123,7 +215,12 @@ ${ENDIF}
 
 !else   ;We have included devpaks, but user can still check for updates if desired
 
-File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the PAckages subdirectory when we build the installer
+${FindINIStr} $0 '$INSTDIR\Packages\webupdate.conf' 'LocalFilename' '${DEVPAK_NAME}' 'Version'
+${FindINIStr} $1 '$INSTDIR\Packages\webupdate_server.conf' 'LocalFilename' '${DEVPAK_NAME}' 'Version'
+
+${VersionCompare} $0 $1 $R0  ; Check which version is newer 0 = same, 1 = first is newer; 2 = second is newer
+
+${IF} $R0 == '2'  ; server devpak is newer
 
 ${IF} $Have_Internet == ${YES}
 DetailPrint "Url: ${DOWNLOAD_URL}$MODIFIED_STR"
@@ -136,6 +233,13 @@ ${IF} $R0 != "OK"
 ${ENDIF}
 
 ${ENDIF}
+
+${ELSE}  ; server is same or older (that would be strange, huh?)
+
+File "Packages\${DEVPAK_NAME}"   ; Copy the devpak over -- NOTE: We assume the devpak is located within the Packages subdirectory when we build the installer
+
+${ENDIF}
+
 !endif
 
   ; Replace .DevPak extension with .entry so that we can uninstall a previous devpak
@@ -177,7 +281,7 @@ DirText "Select the directory to install ${PROGRAM_TITLE} to :"
 
 # [Additional Installer Settings ]
 SetCompress force
-SetCompressor lzma
+;SetCompressor lzma
 
 ;--------------------------------
 ;Interface Settings
@@ -284,7 +388,7 @@ Section "${PROGRAM_TITLE} program files (required)" SectionMain
  
  Call IsInternetAvailable  ; Check to see if we have an internet connection
  
- !ifdef DONT_INCLUDE_DEVPAKS ; We need an internet connection if we don't include the devpaks in the installation package
+!ifdef DONT_INCLUDE_DEVPAKS ; We need an internet connection if we don't include the devpaks in the installation package
         ${IF} $Have_Internet == ${NO}
         MessageBox MB_ICONEXCLAMATION  "Sorry, but this version of the installer requires an internet connection.$\r$\nAborting installation"
         Quit
@@ -301,10 +405,33 @@ Section "${PROGRAM_TITLE} program files (required)" SectionMain
      StrCpy $Have_Internet ${NO}    ; no internet connection or no download wanted
    AnswerYes:
  
+ ; Download the webupdate.conf file from server to determine what version of devpaks lives there.
+ !ifndef DONT_INCLUDE_DEVPAKS
+SetOutPath $INSTDIR\Packages
+File "Packages\webupdate.conf"  ; Grab the ini file for the devpak versions we have in this installer
+
+${IF} $Have_Internet == ${YES}
+DetailPrint "Getting webupdate file: Url= ${DOWNLOAD_URL}webupdate.conf"
+inetc::get /SILENT /RESUME "Connection interrupted. Resume?" "${DOWNLOAD_URL}webupdate.conf" "$INSTDIR\Packages\webupdate_server.conf" /END
+Pop $R0 ;Get the return value
+
+${IF} $R0 != "OK"
+    MessageBox MB_YESNO "Download failed for webupdate.conf on internet server: return = $R0.$\r$\nDo you want to fall back to a non-internet download?" IDYES AnswerYes2
+     Abort "Sorry, then I can't install."    ; We need to abort
+   AnswerYes2:
+   StrCpy $Have_Internet ${NO}    ; no internet connection or no download wanted
+${ENDIF}
+${ENDIF}
+
+!endif
+
+SetOutPath $INSTDIR
+
  ; We just need the license and the Package Manager files.
  ; All other files are contained within devpaks and will be installed by the pakman
   File "packman.exe"
   
+
   ; Find all installed wxWidgets devpaks and uninstall them
   FindFirst $0 $1 $INSTDIR\Packages\*wxWidgets*.entry
 loop_devpaks:
@@ -873,6 +1000,16 @@ SectionEnd
 
 ; Functions
 Function .onInstSuccess
+
+!ifndef DONT_INCLUDE_DEVPAKS
+;
+;  Remove the webupdate.conf files
+;
+   Delete $INSTDIR\Packages\webupdate.conf
+   Delete $INSTDIR\Packages\webupdate_server.conf
+   
+!endif
+
 ; If the installation was successful, then let's write to the registry
 
 ; Write the installation path into the registry
