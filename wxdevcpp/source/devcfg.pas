@@ -3781,7 +3781,7 @@ begin
     if ((CompilerType = ID_COMPILER_MINGW) or
         (CompilerType = ID_COMPILER_LINUX)) then
     begin
-        fCheckSyntaxFormat := '%s -o nul';
+        fCheckSyntaxFormat := '-fsyntax-only %s';
         fOutputFormat := '-c %s -o %s';
         fResourceIncludeFormat := '--include-dir "%s"';
         fResourceFormat := '--input-format=rc -o %s -O coff';

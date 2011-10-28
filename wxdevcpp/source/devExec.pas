@@ -95,7 +95,7 @@ begin
         else
             wShowWindow := SW_HIDE;
     end;
-    if CreateProcess(nil, PChar(fFile + ' ' + fParams), nil, nil, False,
+    if CreateProcess(nil, PChar(fFile + ' ' + fParams), nil, nil, false,
         NORMAL_PRIORITY_CLASS, nil, PChar(fPath),
         StartupInfo, ProcessInfo) then
     begin
@@ -131,6 +131,7 @@ end;
 procedure TdevExecutor.ExecuteAndWatch(sFileName, sParams, sPath: string;
     bVisible: boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
 begin
+
     fIsRunning := True;
     fOnTermEvent := OnTermEvent;
     fExec := TExecThread.Create(True);
@@ -150,12 +151,15 @@ end;
 procedure TdevExecutor.Reset;
 begin
     if Assigned(fExec) then
+    begin
         TerminateProcess(fExec.Process, 0);
+    end;
     fIsRunning := False;
 end;
 
 procedure TdevExecutor.TerminateEvent(Sender: TObject);
 begin
+
     fIsRunning := False;
     if Assigned(fOnTermEvent) then
         fOnTermEvent(Self);
@@ -164,6 +168,7 @@ end;
 initialization
 
 finalization
+if Assigned(fDevExecutor) then
     fDevExecutor.Free;
 
 end.
