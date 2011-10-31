@@ -1258,13 +1258,13 @@ end;
 procedure TDebugger.OnAccessViolation;
 begin
     Application.BringToFront;
-    case MessageDlg(Lang[ID_MSG_SEGFAULT], mtError, [mbYes, mbNo, mbAbort],
+    case MessageDlg(Lang[ID_MSG_SEGFAULT], mtError, [mbOK, mbIgnore, mbAbort],
             MainForm.Handle) of
-        mrNo:
+        mrIgnore:
             Go;
         mrAbort:
             CloseDebugger(nil);
-        mrYes:
+        mrOk:
             JumpToCurrentLine := True;
     end;
 end;
@@ -1275,12 +1275,12 @@ procedure TDebugger.OnBreakpoint;
 begin
     Application.BringToFront;
     case MessageDlg(Lang[ID_MSG_BREAKPOINT], mtError,
-            [mbYes, mbNo, mbAbort], MainForm.Handle) of
-        mrNo:
+            [mbOK, mbIgnore, mbAbort], MainForm.Handle) of
+        mrIgnore:
             Go;
         mrAbort:
             CloseDebugger(nil);
-        mrYes:
+        mrOk:
             JumpToCurrentLine := True;
     end;
 end;
