@@ -17,21 +17,19 @@ Next &gt;</a></div>
 <h1>Using CPU window</h1>
 <br>
 wxDev-C++ provides a CPU window to expert developers who want access to
-the status of CPU registers and instructions.<br>
+the status of CPU registers, memory and instructions.<br>
 <br>
-To
-show the CPU window, wait for a breakpoint or interruption to raise in
-your program and go to the Debug menu, then click CPU Window. The
-following dialog will appear:<br>
-<p><img src="../images/debug_cpu.gif" alt="" border="0"> </p>
+To show the CPU window, wait for a breakpoint or interruption to raise in
+your program and go to the Debug menu, then click View CPU Window. A window similar to this will appear, but the memory pane will be blank:<br>
+<p><img src="../images/debug_cpu.png" alt="" border="0"> </p>
 <br>
 On
-the left, you can find the assembler instructions of the current
+the top left, you can find the assembler instructions of the current
 function. You can display the assembler code of any other function by
-typing its name in the Function field, then pressing the Enter key. You
-can also select the syntax of the assembler instructions: AT&amp;T
-or
-Intel.<br>
+typing its name in the Function field, then pressing the Enter key.<br>
+<br>
+On the bottom left is the Memory pane, which you can use to display the contents of memory. You can view any <i>accessible</i>* area of memory. For example, say we want to see where the character <code>chTest2</code> is stored. (You will need to step through the program and stop at line 12 to see this example). Type &quot;&amp;chTest2&quot; into the address box and click &quot;Refresh&quot;. The number '72' and the character 'r' will appear. This is the value of <code>chTest2</code> in hexadecimal and as a character. Change <i>count</i> to 64 and refresh. Now you will see <code>chTest2</code> and the following 63 bytes displayed, in hexadecimal in the left-hand block and the corresponding characters in the right-hand block. You can obtain the address where <code>chTest2</code> was stored by reading off the address and counting columns to the first value (GDB converted what you typed in the address box to the numeric address, you are likely to see a different address to that shown here). You can directly type addresses in decimal ('2359047') or hexadecimal ('0x23FF07') format as well as indirectly ('&amp;chTest2').<br>
+* Some memory areas are inaccessible and cannot be displayed.<br>
 <br>
 On the right, are the contents of the CPU registers.
 &nbsp;

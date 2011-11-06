@@ -24,7 +24,7 @@ the value you would expect.</p>
 conveniently show you&nbsp;the contents of your
 classes, strings, structures/unions, arrays and other variables in the
 <em>Debug</em> <em>Local Variables</em> window:</p>
-<p><img src="../images/debug_browser.gif" alt="" border="0"></p>
+<p><img style="width: 750px; height: 232px" src="../images/debug_browser.png" alt="" border="0"></p>
 <p>Note that in the above window, <code>iTesta</code>
 has already had its value set to "5", but <code>iTestb</code>
 has not been set (the value will be&nbsp;random and depends on what
@@ -87,5 +87,7 @@ You can bypass this problem by casting your watched variable. For
 example, if the debugger cannot show the contents of <i>my_pointer</i>
 of type MyPointer, you could try adding the watch variable: <i>*(MyPointer
 *)my_pointer</i></li>
+<li>If you are watching a wxString variable, you might find that when the string changes, the debugger stops inside one of wxWidgets' string functions and pressing <b>F7</b> has no effect. The solution is to set an ordinary breakpoint on the next line and press <b>F8</b> to continue to the new breakpoint.<br>
+<i>This happens because GDB is a general-purpose debugger and it doesn't know that you are not interested in the internal workings of wxWidgets. It is normally seen as undesirable behaviour but it is not a fault.</i>
 </ul>
 </body></html>

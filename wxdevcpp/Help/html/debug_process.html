@@ -17,7 +17,7 @@ Next &gt;</a></div>
 <h1>Debugging your program</h1>
 <br>
 Launching your program into the debugger is easy. <br>
-Just go to the <em>Debug</em> menu and click on <span style="font-style: italic;">Debug</span> (<img src="../images/icon_debug.gif" alt="" border="0">
+Just go to the <em>Debug</em> menu and click on <span style="font-style: italic;">Debug</span> (<img style="width: 26px; height: 22px;" alt="Debug" src="../images/icon_debug.gif" alt="" border="0">
 shortcut : <strong>F8</strong>).<br>
 <br>
 If
@@ -40,22 +40,31 @@ you can click
 <br>
 The debugger has now loaded your program and runs it. <br>
 <br>
-<img style="width: 747px; height: 394px;" alt="Debugger output log" src="../images/debug_log.gif"><br>
+<img style="width: 750px; height: 359px;" alt="Debugger output log" src="../images/debug_log.png"><br>
 <br>
 &nbsp;&nbsp;&nbsp; What happened? &nbsp;Well, as the <strong>Debugger
 Output</strong>
 window shows above, wxDev-C++ started gdb and ran your executable
 called "sampleDebug.exe". &nbsp;The program had no errors and no
-breakpoints and so it exited normally. Since the program exited
-normally, this
-output is probably only interesting if you are familiar with gdb. <br>
+breakpoints and so it exited normally. <br>
+
+Since the program exited normally, this
+output is probably only interesting if you are familiar with gdb. 
+<br>
+You will also have seen your program run in a console window like this<br>
+<br>
+<img style="width: 669px; height: 338px;" alt="Program's console window"
+ src="../images/console_window.png"><br>
 <br>
 &nbsp;&nbsp;&nbsp; You
 can also send commands directly to the debugger by using the "<em>Send
 command to GDB</em>" edit box just
 above the output. If you do not know gdb, you can
 type <strong>help</strong>&nbsp;to
-display a list of commands. Remember that wxDev-C++ is really just
+display a list of commands. <br>
+You can see (almost) all of GDB's output by turning on Verbose Debugger 
+Output in the Debug menu.<br>
+Remember that wxDev-C++ is really just
 running a shell that passes these commands to the debugger and reads
 the output returned. You could re-create the same commands by using gdb
 from within a DOS shell.<br>

@@ -1,11 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Stepping Through Your Program</title>
-
+<style> li {line-spacing: 1ex;}
+</style>
 </head>
 <body>
 <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
 <param name="Keyword" value="debug"><param name="Keyword" value="debugger"><param name="Keyword" value="stepping"><param name="Keyword" value="Next Step"><param name="Keyword" value="breakpoint"><param name="Keyword" value="Continue"><param name="Keyword" value="Step Into"></object><a name="id_stepdebug"></a>
+
 <div style="text-align: center;"><a href="breakpoints.html">&lt;
 &nbsp;Previous &nbsp; &lt;</a> &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp;
@@ -19,7 +21,7 @@ Next &gt;</a></div>
 Once a breakpoint has been reached, you can step into the code of your
 application in different ways :</p>
 <ul>
-<li><b>Next Step</b> <img src="../images/icon_nextstep.gif" alt="" border="0">
+<li><b>Next Step</b> <img style="width: 24px; height: 22px;" alt="next step" src="../images/icon_nextstep.gif" alt="" border="0">
 (shortcut : <strong>F7</strong>)
 : &nbsp; The debugger will execute the next instruction (i.e. line
 of code) and pause</li>
@@ -31,11 +33,10 @@ of code) and pause</li>
 If that instruction is a function call it will jump into the function
 and future steps will go line by line through that function until it
 returns to the line that called it.</li>
-</ul>
-<ul>
-<li><b>Continue </b><img src="../images/icon_continue.gif" alt="" border="0">
-(shortcut&nbsp;: <strong>Ctrl+F7</strong>)
-: &nbsp;The debugger will continue the execution of your program
+<li><b>-exec-finish</b><img style="width: 21px; height: 20px;" alt="finish" src="../images/icon_finish.png" border="0">: &nbsp; The debugger will resume execution until the current function is exited.</li>
+<li><b>Debug / Continue </b><img style="width: 26px; height: 22px;" alt="Debug" src="../images/icon_debug.gif" border="0">
+(shortcut&nbsp;: <strong>F8</strong>)
+: &nbsp;The debugger will start or continue the execution of your program
 until another breakpoint is reached<b>.</b></li>
 </ul>
 If your program is still paused at the breakpoint, try hitting <strong>F7</strong>
