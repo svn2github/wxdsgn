@@ -6,59 +6,59 @@ Ver=1
 
 #Top level menus
 100=&Fájl
-101=&Szerkesztés
+101=S&zerkesztés
 102=&Keresés
 103=&Nézet
 104=&Projekt
 105=F&uttatás
 106=&Eszközök
 107=&Ablakok
-108=Se&gítség
+108=&Súgó
 109=N&yomkövetés
 
 
 
 #File menu
-120=&Új
+120=Ú&j
 121=&Projekt...
-122=&Forrás Fájl
-123=&Erõforrás Fájl
+122=&Forrás fájl
+123=&Erõforrás fájl
 124=&Sablon...
-130=&Projekt v. Fájl Megnyitása...
-131=&Korábbi Fájlok
-132=&Lista Törlése
+130=&Projekt v. Fájl megnyitása...
+131=&Korábbi fájlok
+132=&Lista törlése
 133=&Mentés
-134=M&entés Másként...
-135=M&indent Ment
+134=M&entés másként...
+135=M&indent ment
 136=&Bezár
-137=Projekt Be&zárása
+137=Projekt be&zárása
 138=Tulajdonságok
-139=Projekt Mentése Másként...
-140=&Export
+139=Projekt mentése másként...
+140=&Exportálás
 141=&HTML-be
 142=&RTF-be
 143=a &Projektet HTML-be
-149=&Import
+149=&Importálás
 150=&Nyomtatás
-151=Nyomtatási Beállítások
+151=Nyomtatási beállítások
 152=K&ilépés
 
 
 
 #Edit menu
-160=Még&se
+160=Még&sem
 161=Mé&gis
 162=&Kivágás
 163=&Másolás
 164=&Beillesztés
-165=M&indet Kijelöl
+165=M&indet kijelöl
 166=&Törlés
 167=B&eszúrás
-168=Könyvjelzõ Elhelyezése
-169=&Könyvjelzõre Ugrás
+168=Könyvjelzõ elhelyezése
+169=&Könyvjelzõre ugrás
 170=Könyvjelzõ
 171=&Dátum/Idõ
-172=&Szöveges Fejléc
+172=&Szöveges fejléc
 
 
 
@@ -68,23 +68,23 @@ Ver=1
 
 #Search menu
 175=Keresés...
-176=&Keresés Fájlokban...
+176=&Keresés fájlokban...
 177=Csere...
-178=&Tovább/Újra Keres
-179=&Sorra Ugrás...
-180=&Bõvített Keresés
-181=Függvényre Ugrás...
+178=&Tovább/Újra keres
+179=&Sorra ugrás...
+180=&Bõvített keresés
+181=Függvényre ugrás...
 
 
 
 #View menu
 182=Lebegõ Projekt Menedzser
-183=Projekt &Menedzserre Ugrás
-184=Osztály Listára Ugrás
-185=&Projekt/Osztály Lista
-186=&Státuszsor
+183=Projekt &Menedzserre ugrás
+184=Osztály Listára ugrás
+185=&Projekt/Osztály lista
+186=Állapot&sáv
 187=&Fordító Kimenete
-188=&Mindig Látható
+188=&Mindig látható
 189=&Csak ha szükséges
 190=&Eszköszsorok
 
@@ -103,14 +103,14 @@ Ver=1
 
 
 #Project menu
-200=&Új Fájl
+200=Új &fájl
 201=&Hozzáadás a Projekthez
 202=&Törlés a Projektbõl
-203=&Erõforrás Fájl Szerkesztése...
+203=&Erõforrás fájl szerkesztése...
 204=Projekt &Beállítások
-205=&Makefile Szerkesztése
-206=E&rõforrás Fájl Hozzáadása...
-207=Erõ&forrás Fájl Törlése...
+205=&Makefile szerkesztése
+206=E&rõforrás fájl hozzáadása...
+207=Erõ&forrás fájl törlése...
 
 
 
@@ -118,33 +118,33 @@ Ver=1
 210=&Fordítás
 211=F&uttatás
 212=F&ordítás && Futtatás
-213=&Mindent Újrafordít
+213=&Mindent újrafordít
 214=&Törlés/Tisztítás
-215=For&dítás Eredménye
-216=&Szintaktika Ellenõrzés
-217=&Program Leállítása
-218=P&rofil Elemzés
+215=For&dítás eredménye
+216=&Szintaktika ellenõrzés
+217=&Program leállítása
+218=P&rofil elemzés
 219=Megszakítás
 
 
 
 #Tool menu
-220=&Fordító Beállításai
-221=&Környezeti Beállítások
-222=&Szerkesztõ Beállításai
-223=Eszközök Konfigurálása
-224=Gyorsbillentyûk Konfigurálása
+220=&Fordító beállításai
+221=&Környezeti beállítások
+222=&Szerkesztõ beállításai
+223=Eszközök konfigurálása
+224=Gyorsbillentyûk konfigurálása
 
 
 
 #Window menu
-230=&Teljesképernyõs Mód
-231=&Vissza a Normál Módhoz
+230=&Teljesképernyõs mód
+231=&Vissza a normál módhoz
 232=&Következõ
 233=&Elõzõ
-234=&Mindet Bezár
-235=%s-s verzió %s teljesképernyõs mód. shift+F12 lenyomásával az eszközsor megj. vagy F12-vel normál módbe visszatérhetsz.
-236=Mindet Bezár (kivéve az aktívat)
+234=&Mindet bezár
+235=%s-s verzió %s teljesképernyõs mód. shift+F12 lenyomásával az eszközsor megj. vagy F12-vel normál módba visszatérhetsz.
+236=Mindet bezár (kivéve az aktívat)
 237=&Lista...
 
 
@@ -152,25 +152,24 @@ Ver=1
 #Help menu
 240=&Dev-C++ Info...
 241=&Frissítések/Csomagok Keresése...
-242=Segítség Menü Testreszabása...
+242=Súgó menü testreszabása...
 243=&Tartalomjegyzék(Dev-C++)
-
 
 
 
 #Debug Menu
 245=&Nyomkövetés
-246=&Töréspont Elhelyezése
+246=&Töréspont elhelyezése
 247=&Léptetés
 248=&Folytatás
-249=&Megfigyelés Hozzáadása
-250=Vált&ozó Megfigyelése
-251=&Végrehajtás Megállítása
-252=M&egfigyelés Szerkesztése
-253=Me&gfigyelés Törlése
+249=&Megfigyelés hozzáadása
+250=Vált&ozó megfigyelése
+251=&Végrehajtás megállítása
+252=M&egfigyelés szerkesztése
+253=Me&gfigyelés törlése
 254=Lé&ptetés (beugrással)
-255=Futtatás a Kurzorig
-256=&CPU Ablak
+255=Futtatás a kurzorig
+256=&CPU ablak
 257=F&olyamathoz rendelés...
 258=&Érték módosítása
 259=Mindet törli
@@ -179,39 +178,39 @@ Ver=1
 
 
 # project menu
-260=Új Fájl
-261=Fájl Hozzáadása...
-262=Fájl Törlése...
+260=Új fájl
+261=Fájl hozzáadása...
+262=Fájl törlése...
 263=Beállítások...
-264=Erõforrás Fájl Szerkesztése
+264=Erõforrás fájl szerkesztése
 
 
 
 # file menu
-270=Fájl Törlése
-271=Fájl Átnevezése
+270=Fájl törlése
+271=Fájl átnevezése
 272=Bezárás
 273=Megnyitás
-274=Header Megnyitása
+274=Header megnyitása
 
 
 
 # class browser menu
-280=Ugrás a Deklarációra
-281=Ugrás a Megvalósításra
-282=Új Osztály
-283=Új Tagfügvény
-284=Új Változó
-285=Nézet Mód...
-286=Minden Fájl
-287=Aktuális Fájl
-288=Könyvtár Hozzáadása
-289=Könyvtár Törlése
-290=Könyvtár Átnevezése
-291=Nem lehet több mint %d könyvtár egy projektben...
-292=Színek Használata
-293=Projekt Fájlok
-294=Örökölt Tagok Mutatása
+280=Ugrás a deklarációra
+281=Ugrás a megvalósításra
+282=Új osztály
+283=Új tagfügvény
+284=Új változó
+285=Nézet mód...
+286=Minden fájl
+287=Aktuális fájl
+288=Könyvtár hozzáadása
+289=Könyvtár törlése
+290=Könyvtár átnevezése
+291=Nem lehet több, mint %d könyvtár egy projektben...
+292=Színek használata
+293=Projekt fájlok
+294=Örökölt tagok mutatása
 295=Megnyitás ezzel..
 
 
@@ -250,8 +249,8 @@ Ver=1
 323=Érték
 324=Információ
 325=Forditó kimenete
-326=Összes hiba:
-327=Kimenet mérete:
+326=Összes hiba :
+327=Kimenet mérete :
 
 
 
@@ -269,9 +268,9 @@ Ver=1
 341=Beilleszt
 342=Elhelyez
 343=Ugrás
-344=Projekt Ablak
-345=Nyomkövetõ Ablak
-346=Fordítási folyamat Ablak
+344=Projekt ablak
+345=Nyomkövetõ ablak
+346=Fordítási folyamat ablak
 
 
 
@@ -295,16 +294,16 @@ Ver=1
 
 
 #Edit menu (more options)
-380=Megjegyzés Be
-381=Megjegyzés Ki
-382=Bekezdés Be
-383=Bekezdés Ki 
+380=Megjegyzés be
+381=Megjegyzés ki
+382=Bekezdés be
+383=Bekezdés ki 
 384=Cserél Header/Forrás
 
 
 
 #Editor Options Dialog 400-499
-400=Szerkesztõ Beállításai
+400=Szerkesztõ beállításai
 401=Általános
 402=Kijelzõ
 403=Szintaktika
@@ -325,9 +324,9 @@ Ver=1
 421=Automatikus bekezdés
 422=Beszúrás mód
 423=Tab használata
-424=Rövid Tabok
+424=Rövid tabok
 425=Visszatörléssel bekezdés ki
-426=Sorvégi "space"-ek megtartása
+426=Sorvégi szóközök megtartása
 427=Csoportos visszavonás
 428=Módosított Home billentyû
 429=Kurzor EOF után
@@ -368,9 +367,9 @@ Ver=1
 462=Méret:
 463=Szerkesztõ betûkészlete
 464=Jelölõsáv
-465=Autómatikus méretezés
+465=Automatikus méretezés
 466=Sorszámozás
-467=Bevezetõ nullák mutatása
+467=Kezdõ nullák mutatása
 468=Nullával kezdve
 469=Egyedi betûkészlet
 470=Jelölõsáv betûkészlet
@@ -425,7 +424,7 @@ Ver=1
 501=Leírás:
 503=Név:
 504=&C projekt
-505=C&++ projekt
+505=C++ &projekt
 506=&Alapértelmezett nyelv készítése
 507=Egyebek
 508=Projekt beállítások
@@ -440,7 +439,7 @@ Ver=1
 
 #Goto line form
 525=Sorra ugrás ...
-526=Újsor :
+526=Új sor :
 
 
 
@@ -470,11 +469,11 @@ Ver=1
 
 #Configure Shortcuts Form
 550=Gyorsbillentyûk konfigurálása
-551= Kattints egy sorra, és nyomd meg a kívánt billentyûket!
+551=Kattints egy sorra, és nyomd meg a kívánt billentyûket!
 552=Tipp: nyomj "Escape"-et a törléshez...
 553=Menük
 554=Hozzárendelt billentyûk
-555=Mégse
+555=Mégsem
 556=OK
 
 
@@ -495,12 +494,12 @@ Ver=1
 
 
 #About form
-580=A Dev-C++-ról :)
+580=A wxDev-C++-ról :-)
 581=inseculous@users.sourceforge.net
 582=GNU General Public License
 583=Kapcsolattartás
-584=Bloodshed Software Website:
-585=Mingw Compiler Website:
+584=Bloodshed Software honlapja:
+585=Mingw Compiler honlapja:
 586=Dev-C++ discussion forums:
 587=Dev-C++ felhasz. levlista:
 588=Készítõk e-mail címe:
@@ -516,16 +515,13 @@ Ver=1
 #Code Inserts Entry Edit form
 600=Edit code insert entry
 601=Add code insert entry
-602=Menü Elem Cimke
-603=Elem Leírása
-604=Menü Szekció
+602=Menü elem cimke
+603=Elem leírása
+604=Menü szekció
 
 
 
 #Environment options form
-
-
-
 606=Fordítási folyamatot jelzõ ablak 
 607=&Fordítás alatt legyen látható
 608=Forítás után &automatikus bezárás
@@ -533,7 +529,7 @@ Ver=1
 610=Környezeti beállítások
 611=Általános
 612=Fájlok és Könyvtárak
-613=Autómatikus megnyitás
+613=Automatikus megnyitás
 614=C++ az alapértelmezett projekt típus
 615=Eszközsor teljesképernyõs módban
 616=Backup fájlok készítése
@@ -544,7 +540,7 @@ Ver=1
 621=Windows 3.1
 622=Nyelv :
 623=Üzenetablak fülek helye:
-624=Max.fájlszám a Korábbi Fájlok menüben:
+624=Max. fájlszám a Korábbi fájlok menüben:
 625=Felhasználói alapértelmezett könyvtár:
 626=Fordító kimeneti könyvtára:
 627=Ikon könyvtár:
@@ -564,19 +560,16 @@ Ver=1
 
 
 #Find Form
-
-
-
 640=Szöveg keresése:
 641=Keresés
-642=Keresés file-ban
+642=Keresés fájlban
 643=&Keresendõ szöveg
 644=Beállítások
 645=K&is/nagybetû különbözik
 646=K&eresés egész szóra
 647=Hol
 648=&Projektben
-649=&Megnyitott File-okban
+649=&Megnyitott fájlokban
 650=Keresési tartomány
 651=&Teljes
 652=&Kijelölt terület
@@ -590,9 +583,6 @@ Ver=1
 
 
 #Replace form
-
-
-
 670=Csere szövegben
 671=Szöveg keresése:
 672=Csere ezzel:
@@ -608,14 +598,11 @@ Ver=1
 682=&Kijelölt terület
 683=Keresés indítása
 684=K&urzortól
-685=F&ile elejétõl
+685=Fá&jl elejétõl
 
 
 
 #Goto function form
-
-
-
 695=Keresés:
 696=Típus
 697=Függvény
@@ -624,17 +611,12 @@ Ver=1
 
 
 #Compiler Options
-
-
-
 700=Fordító beállításai
 701=Fordító
 702=Könyvtárak
 703=Beállítások
 704=Linker
 705=Programok
-
-
 
 710=Bináris
 711=Lib-ek
@@ -651,9 +633,10 @@ Ver=1
 730=Heurisztika használata a gyorsabb fordításhoz
 731=Cygwin fordító használata Mingw helyett
 732=Következõ kapcsolók hozzáadása a fordító parancssorához:
-733=   Késleltetés:
+733=Késleltetés:
 734=Engedélyezzük a késleltetést ms-ban, ha a make kifogásolja a makefile idõbélyegét.
 735=Hibák megjelenítése soronként
+
 740=Kód generálás
 741=Optimalizálás
 745=Kivételkezelés engedélyezése
@@ -674,8 +657,6 @@ Ver=1
 760=Nincs optimalizálás
 761=További optimalizálás
 
-
-
 770=Itt változtathatod meg a Dev-C++ által használt programokat (pl. a használni kívánt fordítót) :
 771=Fordítási módok
 772=Új fordítási mód
@@ -689,9 +670,6 @@ Ver=1
 
 
 #Help Editor Form
-
-
-
 780=Segítség Menü Szerkesztõ
 781=Szöveg menü
 782=Segítség Fájl
@@ -723,16 +701,13 @@ Ver=1
 
 
 #Update Form
-
-
-
-820=Dev-C++ frissítések keresése
+820=wxDev-C++ frissítések keresése
 821=Folyamat:
 822=Eredmény:
 823=Kiadott verzió:
 824=Szükséges verzió:
 825=Leírás:
-826=Download hely (dupla-klikk a letöltéshez):
+826=Letöltési hely (dupla-klikk a letöltéshez):
 
 
 
@@ -934,28 +909,25 @@ Ver=1
 2002=Beszúrás
 2003=Felûlírás
 2004=Projekt%d
-2005=Kérlek adj meg másik fájlnevet.
+2005=Kérlek, adj meg másik fájlnevet.
 2006=%d soros fájl
 2007=Fájl átnevezése
 2008=%s indítása.
-2009= Feladat befejezve
+2009=Feladat befejezve
 2010=bájtok
 2011=Módosítva
 2012=Hiba
 2013=Információ
 2014=Figyelmeztetés
 2015=Kérdés
-2016= Sikeres fordítás
-2017= Felhasználói megszakítás
+2016=Sikeres fordítás
+2017=Felhasználói megszakítás
 
 
 
 # buttons
-
-
-
-2500=&Ok
-2501=&Mégse
+2500=&OK
+2501=&Mégsem
 2502=&Segítség
 2503=&Alapállapot
 2504=&Igen
@@ -973,8 +945,8 @@ Ver=1
 2516=Tallóz
 2517=Levesz
 2518=Átnevez
-2519=Import
-2520=Ablak Mód
+2519=Importálás
+2520=Ablak mód
 2521=Törlés
 
 
@@ -982,7 +954,7 @@ Ver=1
 # CPU Window
 2600=CPU Ablak
 2601=Assembler kód:
-2602=Fügvény:
+2602=Függvény:
 2603=Assembler szintaktika:
 2604=Regiszterek:
 
@@ -990,7 +962,7 @@ Ver=1
 
 # TipOfTheDay Window
 2700=A nap tippje
-2701=Tudta, hogy...
+2701=Tudta-e, hogy...
 2702=...nincsennek megjeleníthetõ tippek?
 2703=Ne jelenítsen meg tippeket indításnál
 2704=Köv. tipp
@@ -1015,8 +987,8 @@ Ver=1
 2813=Külsõ program hozzárendelése:
 2814=Kiértékelés rámutatással
 2815=Megfigyelési hibák kijelzése
-2816= Változók értékének nyomkövetése 
-2817=  Alternatív konfigurációs fájl 
+2816=Változók értékének nyomkövetése 
+2817=Alternatív konfigurációs fájl 
 2818=Használja ezt az alternatív konfigurációs fájlt
 2819=Megváltoztatta az alkalmazás által használt konfigurációs fájlt.<CR>Az új konfigurációs fájl *nem* használható azonnal. Minden elõzõ változtatás a *jelenlegi* konfigurációs fájlba fog elmentõdni.<CR><CR>Indítsa újra a az alkalmazást az új konfigurációs fájl használatához...
 
@@ -1076,7 +1048,7 @@ Ver=1
 3031=Ha nem található, a legújabbat
 3032=További revíziók
 3033=Unified diff formátum
-3034=Helyi fájl összehasonlítása a hasonló reviziójú/tagú távoli fájlal
+3034=Helyi fájl összehasonlítása a hasonló revíziójú/tagú távoli fájllal
 3035=Helyi fájl összehasonlítása egy másik távoli revízióval
 3036=Két távoli revizió összehasonlítása
 3037=Dátum
@@ -1114,7 +1086,7 @@ Ver=1
 3202=Projekt opciók:
 3203=Nyomkövetési információ elõállítása
 3204=Végrehajtási információ elõállítása
-3205=FIGYELEM: Ezek a beállítások felülbírálják a globális fordító opciókat ebben a projektben.
+3205=FIGYELEM : Ezek a beállítások felülbírálják a globális fordító opciókat ebben a projektben.
 3206=Windows XP témák támogatása
 3207=Fájl opciók
 3208=Szerepeljen a fordításban
@@ -1136,11 +1108,22 @@ Ver=1
 3224=Egyedi Makefile használata (ne generáljon Makefile-t, ezt használja)
 3225=Információ a Makefile készítéséhez...
 3226=&A következõ fájl(ok) hozzáadása a Makefile-hoz:
+3227=Auto-Increment on compile
+3228=Auto-Increment on rebuild
+3229=Don't Auto-Increment
+3230=Precompiled Headers
+3231=No precompiled header
+3232=Create precompiled header
+3233=Use precompiled header
 
 
+
+# More compiler options
 3400=Exe fájl sztrippelése
 3401=Optimalizálás a következõ géptipusra
 3402=Processzor spec. utasításkészletének használata
+
+
 
 # wx designer properties
 7000=Engedélyezve
@@ -1199,8 +1182,8 @@ Ver=1
 7053=Nem hivatalos vezérlõk
 7054=Floating
 7055=Behavior
-7056=Close when done
-7057=De&lete Line
+7056=Bezárja, ha kész
+7057=Sor tör&lése
 7058=You cannot change Open/Save Dialog options in this version of Windows
 7059=Use Individual Enum Values
 
