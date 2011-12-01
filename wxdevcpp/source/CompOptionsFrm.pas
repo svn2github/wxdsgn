@@ -258,9 +258,20 @@ begin
 end;
 
 procedure TCompForm.btnDefaultClick(Sender: TObject);
+var
+  i : Integer;
 begin
     devCompiler.SettoDefaults;
     SetOptions;
+
+{$IFDEF PLUGIN_BUILD}//EAB TODO: Make this more general (not easy to do :P )
+
+    for i := 0 to MainForm.pluginsCount - 1 do
+        begin
+                MainForm.plugins[i].SetCompilerOptionstoDefaults;
+        end;
+{$ENDIF}
+
 end;
 
 procedure TCompForm.btnHelpClick(Sender: TObject);

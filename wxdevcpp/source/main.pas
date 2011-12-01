@@ -1217,6 +1217,7 @@ type
         procedure ToggleDockForm(form: TForm; b: Boolean);
         procedure SendToFront;
         procedure forceEditorFocus;
+        procedure ToggleExecuteMenu(state: boolean);
 {$ENDIF}
         function OpenWithAssignedProgram(strFileName: String): boolean;
     end;
@@ -1307,6 +1308,17 @@ type
         IsDone: boolean;
     end;
 
+
+// Turn the execute and debug menu items on and off
+procedure TMainForm.ToggleExecuteMenu(state: Boolean);
+begin
+
+    CompileBtn.Enabled := state;
+    RebuildAllBtn.Enabled := state;
+    ExecuteMenu.Enabled := state;
+    DebugMenu.Enabled := state;
+
+end;
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
@@ -3197,6 +3209,8 @@ begin
     if (ClassBrowser1.ShowFilter = sfCurrent) or not Assigned(fProject) then
         ClassBrowser1.Clear;
 
+    ToggleExecuteMenu(false);
+    
     // EAB: fix tab names
     PageControl.Refresh;
 end;
@@ -3840,8 +3854,12 @@ begin
 {$ENDIF}
                 if AlreadyActivated = false then
                     e.Activate;
+              
             end;
         end;
+
+        ToggleExecuteMenu(true);
+
 end;
 
 procedure TMainForm.ProjectViewClick(Sender: TObject);
@@ -4243,6 +4261,8 @@ begin
     ResourceOutput.Clear;
     LogOutput.Clear;
     DebugOutput.Clear;
+
+    ToggleExecuteMenu(false);
 
     UpdateAppTitle;
     ClassBrowser1.ProjectDir := '';
@@ -4911,6 +4931,11 @@ var
     i: Integer;
 begin
     Result := False;
+
+    if not Assigned(fProject) then
+        exit;
+
+
     if (Assigned(fProject)) and (fProject.Units.Count = 0) then
     begin
         Application.MessageBox(
@@ -4921,6 +4946,7 @@ begin
 {$IFDEF LINUX}
         'Huh?', [smbOK], smsInformation);
 {$ENDIF}
+        
         Exit;
     end;
 
@@ -9783,11 +9809,11 @@ begin
 
 
   // Plugin-specific options
-  //  for i := 0 to pluginsCount - 1 do
-   //     plugins[i].SetCompilerOptionstoDefaults;
+    for i := 0 to pluginsCount - 1 do
+       plugins[i].SetCompilerOptionstoDefaults;
 
 
- {  for setIndex := 0 to devCompilerSet.Sets.Count - 1 do
+   for setIndex := 0 to devCompilerSet.Sets.Count - 1 do
    begin
 
 
@@ -9812,7 +9838,7 @@ begin
     end;
 
     end;
-  }
+
 
     // Inserting plugin controls to the IDE
     for i := 0 to pluginsCount - 1 do

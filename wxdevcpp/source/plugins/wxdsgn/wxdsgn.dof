@@ -43,7 +43,7 @@ ExeDescription=
 [Directories]
 OutputDir=
 UnitOutputDir=wxdsgn\units
-PackageDLLOutputDir=C:\wxdevcpp\wxdsgn\wxdevcpp
+PackageDLLOutputDir=C:\wxdevcpp\wxdsgn\wxdevcpp\plugins\wxdsgn\
 PackageDCPOutputDir=wxdsgn\bin
 SearchPath=propedit;components;..\interfaces;..\..\packages;..\..\units;$(DEVCPPLIBS)\synedit\Source;$(DEVCPPLIBS)\theme;$(DEVCPPLIBS)\extlib;$(DEVCPPLIBS)\GraphicEx;components\BaseComponents;$(PROGRAMFILES)\GExperts for Delphi 6
 Packages=
@@ -61,8 +61,8 @@ IncludeVerInfo=1
 AutoIncBuild=1
 MajorVer=7
 MinorVer=4
-Release=0
-Build=158
+Release=1
+Build=18
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=wxDev-C++ RAD add-on
-FileVersion=7.4.0.158
+FileVersion=7.4.1.18
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -121,10 +121,11 @@ Count=2
 Item0=wxdsgn\units
 Item1=units
 [HistoryLists\hlBPLOutput]
-Count=3
-Item0=C:\wxdevcpp\wxdsgn\wxdevcpp
-Item1=wxdsgn
-Item2=bin
+Count=4
+Item0=C:\wxdevcpp\wxdsgn\wxdevcpp\plugins\wxdsgn\
+Item1=C:\wxdevcpp\wxdsgn\wxdevcpp
+Item2=wxdsgn
+Item3=bin
 [HistoryLists\hlDCPOutput]
 Count=2
 Item0=wxdsgn\bin

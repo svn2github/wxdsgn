@@ -5066,7 +5066,7 @@ begin
     minorVersion := 8;
     releaseVersion := 12;
 
-    unicodeSupport := false;
+    unicodeSupport := True;
     monolithicLibrary := True;
     debugLibrary := False;
     staticLibrary := True;

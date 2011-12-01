@@ -429,12 +429,16 @@ begin
         if self.Parent.Parent is TForm and not HasAuiManagedForm then
         if self.Parent.Parent is TForm and not FormHasAuiManager(self) then
         parentName := self.Parent.Name  //'this'
-      else if (self.Parent.Parent.ClassName <> 'TWxNotebook') then
+      else if (self.Parent.Parent.ClassName <> 'TWxNotebook')  then
         parentName := self.Parent.Name
       else
         parentName := self.Parent.Parent.Name
     else
       parentName := self.Parent.Name;
+
+    if parentName = '' then
+        parentName := self.Parent.Name;
+
     Result := Result + #13 + Format('%s->SetSizer(%s);', [parentName, self.Name]);
     Result := Result + #13 + Format('%s->SetAutoLayout(true);', [parentName]);
   end

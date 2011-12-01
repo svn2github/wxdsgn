@@ -60,7 +60,6 @@ uses
   Findfrm in '..\..\Findfrm.pas' {frmFind},
   editor in '..\..\editor.pas',
   Envirofrm in '..\..\Envirofrm.pas' {EnviroForm},
-  debugwait in '..\..\debugwait.pas',
   debugger in '..\..\debugger.pas',
   CFGData in '..\..\CFGData.pas',
   CFGINI in '..\..\CFGINI.pas',

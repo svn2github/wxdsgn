@@ -2281,10 +2281,10 @@ object AboutForm: TAboutForm
       object ForumSite: TLabel
         Left = 43
         Top = 112
-        Width = 241
+        Width = 233
         Height = 13
         Cursor = crHandPoint
-        Caption = 'http://wxforum.shadonet.com/viewforum.php?f=28'
+        Caption = 'http://forums.wxwidgets.org/viewforum.php?f=28'
         Color = clBtnFace
         ParentColor = False
         WordWrap = True

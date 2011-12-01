@@ -515,6 +515,9 @@ begin
             (AssignedPlugin <> '') {$ENDIF} then
             MainForm.PageControl.OnChange(MainForm.PageControl);
         // this makes sure that the classbrowser is consistent
+
+        MainForm.ToggleExecuteMenu(true);
+        
     end;
 end;
 

@@ -1258,15 +1258,13 @@ end;
 procedure TDebugger.OnAccessViolation;
 begin
     Application.BringToFront;
-    case MessageDlg(Lang[ID_MSG_SEGFAULT], mtError, [mbOK, mbIgnore, mbAbort],
-            MainForm.Handle) of
-        mrIgnore:
-            Go;
-        mrAbort:
-            CloseDebugger(nil);
-        mrOk:
+    if (MessageDlg(Lang[ID_MSG_SEGFAULT], mtError, [mbOK],
+            MainForm.Handle) = mrOK) then
+      begin
             JumpToCurrentLine := True;
-    end;
+            CloseDebugger(nil)
+      end;
+    
 end;
 
 //=============================================================

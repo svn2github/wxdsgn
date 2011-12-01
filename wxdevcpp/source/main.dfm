@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1412,7 +1412,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelKind = bkSoft
         BorderStyle = bsNone
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,7 +1486,7 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 407
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
@@ -1497,7 +1497,7 @@ object MainForm: TMainForm
           Left = 7
           Top = 16
           Width = 386
-          Height = 82
+          Height = 93
           Anchors = [akLeft, akTop, akRight, akBottom]
           PopupMenu = MessagePopup
           ReadOnly = True
@@ -1690,7 +1690,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 632
-        Height = 97
+        Height = 98
         Align = alClient
         BevelOuter = bvRaised
         BevelKind = bkSoft
@@ -1922,11 +1922,13 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Action = actCompile
+        Enabled = False
       end
       object RebuildAllBtn: TToolButton
         Left = 23
         Top = 0
         Action = actRebuild
+        Enabled = False
       end
       object ToolButton2: TToolButton
         Left = 46
@@ -2799,6 +2801,7 @@ object MainForm: TMainForm
     end
     object ExecuteMenu: TMenuItem
       Action = actExecuteMenu
+      Enabled = False
       object CompileItem: TMenuItem
         Tag = 8
         Action = actCompile
@@ -2846,6 +2849,7 @@ object MainForm: TMainForm
     end
     object DebugMenu: TMenuItem
       Action = actDebugMenu
+      Enabled = False
       object DebugItem: TMenuItem
         Tag = 10
         Action = actDebug

@@ -27,10 +27,10 @@ object EnviroForm: TEnviroForm
     Top = 8
     Width = 403
     Height = 375
-    ActivePage = tabExternal
+    ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
@@ -214,7 +214,7 @@ object EnviroForm: TEnviroForm
         Width = 153
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 0
       end
       object cboTheme: TComboBox
@@ -223,7 +223,7 @@ object EnviroForm: TEnviroForm
         Width = 153
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
       end
       object cboTabsTop: TComboBox

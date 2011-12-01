@@ -388,6 +388,11 @@ begin
 	parentName := self.Parent.Parent.Name
     else
       parentName := self.Parent.Name;
+
+      if parentName = '' then
+        parentName := self.Parent.Name;
+
+        
     Result := Result + #13 + Format('%s->SetSizer(%s);', [parentName, self.Name]);
     Result := Result + #13 + Format('%s->SetAutoLayout(true);', [parentName]);
   end
