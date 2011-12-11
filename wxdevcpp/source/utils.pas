@@ -1033,7 +1033,9 @@ begin
     if CompareText(Copy(Result, 1, 1), '/') = 0 then
     begin
         Delete(Result, 1, 2);
-        Result[2] := ':';
+        if (Length(Result) > 2) then
+                Result[2] := ':';
+                
         Insert('\', Result, 3);
     end;
 

@@ -155,6 +155,7 @@ begin
         TerminateProcess(fExec.Process, 0);
     end;
     fIsRunning := False;
+
 end;
 
 procedure TdevExecutor.TerminateEvent(Sender: TObject);

@@ -1341,7 +1341,7 @@ end;
 procedure TMainForm.WMCopyData(var Msg: TWMCopyData);
 var
     PData: PChar;
-    Param: string;
+    Param : string;
     strLstParams: TStringList;
 begin
     if Msg.CopyDataStruct.dwData <> cCopyDataWaterMark then
@@ -1349,16 +1349,17 @@ begin
         exit;
         //raise Exception.Create('Invalid data structure passed in WM_COPYDATA');
     end;
-    PData := Msg.CopyDataStruct.lpData;
+    PData := PChar(Msg.CopyDataStruct.lpData);
     strLstParams := TStringList.Create;
     while PData^ <> #0 do
     begin
-        strLstParams.add(StrPas(PData));
-        //ProcessParam(Param);
+        Param := PData;
+        strLstParams.add(Param);
         Inc(PData, Length(Param) + 1);
     end;
     Msg.Result := 1;
     ParseCustomCmdLine(strLstParams);
+    strLstParams.Free;
 end;
 
 procedure TMainForm.SetSplashStatus(str: string);
@@ -4932,9 +4933,8 @@ var
 begin
     Result := False;
 
-    if not Assigned(fProject) then
-        exit;
-
+  //  if not Assigned(fProject) then
+   //     exit;
 
     if (Assigned(fProject)) and (fProject.Units.Count = 0) then
     begin
@@ -5084,7 +5084,6 @@ begin
                 devExecutor.ExecuteAndWatch(ChangeFileExt(e.FileName, ''), '',
                     ExtractFilePath(e.FileName),
                     True, INFINITE, OnCompileTerminated);
-                devExecutor.Free;   // Free the executable
             end
         else
         if not FileExists(ChangeFileExt(e.FileName, EXE_EXT)) then
@@ -5096,7 +5095,6 @@ begin
             devExecutor.ExecuteAndWatch(ChangeFileExt(e.FileName, EXE_EXT), '',
                 ExtractFilePath(e.FileName),
                 True, INFINITE, OnCompileTerminated);
-            devExecutor.Free;  // Free the executable
         end;
     end;
 end;

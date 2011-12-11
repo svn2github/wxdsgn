@@ -753,16 +753,21 @@ var
 
 begin
 
+ShowMessage('1');
+
   if (frmNewForm.KeepFormat) then
    Exit;
 
   xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
+
+  showmessage(xpmFileDir);
 
   if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
   begin
     if onlyForForm then
       DeleteFile(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm');
 
+      showmessage(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm');
     if not fileexists(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm') then
     begin
       fileStrlst    := TStringList.Create;
@@ -1700,11 +1705,11 @@ end;
 
 function TfrmNewForm.GenerateImageInclude: string;
 begin
-  Result := '';
-  if assigned(Wx_ICON) then
+    if assigned(Wx_ICON) then
     if Wx_ICON.Bitmap.Handle <> 0 then
     if (not KeepFormat) then
-      Result := '#include "' + GetGraphicFileName + '"'
+      Result := '#include "' + GetGraphicFileName + '"';
+
 end;
 
 
@@ -1977,6 +1982,13 @@ end;
 function TfrmNewForm.SetGraphicFileName(strFileName:String): boolean;
 begin
 
+  // If no filename passed, then auto-generate XPM filename
+  if (strFileName = '') then
+     strFileName := GetDesignerFormName(self)+'_'+ self.Name + '_XPM.xpm' ;
+
+     if not KeepFormat then
+        strFileName := 'Images\' + strFileName;
+        
   Wx_Filename := CreateGraphicFileName(strFileName);
   Result:= true;
   
