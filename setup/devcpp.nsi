@@ -18,7 +18,7 @@
   !include "WordFunc.nsh"  ; For VersionCompare
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.4"
+!define WXDEVCPP_VERSION "7.4.1"
 !define IDE_DEVPAK_NAME  "wxdevcpp.DevPak"
 !define PROGRAM_TITLE "wxDev-C++"
 !define PROGRAM_NAME "wxdevcpp"
@@ -30,7 +30,7 @@
 !define DOWNLOAD_URL "http://downloads.sourceforge.net/project/wxdsgn/devpaks/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -842,7 +842,6 @@ SetShellVarContext current
   Delete "$APPDATA\Dev-Cpp\wxdevcpp.cfg"
   Delete "$APPDATA\Dev-Cpp\wxdevcpp.ci"
 
-
 SetShellVarContext all
   ;Delete "$APPDATA\Dev-Cpp\*.*"
 
@@ -1020,7 +1019,7 @@ Function .onInstSuccess
   WriteRegStr HKLM SOFTWARE\${PROGRAM_NAME} "Install_Dir" "$INSTDIR"
 
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "DisplayName" "${DISPLAY_NAME}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "DisplayName" "${PROGRAM_TITLE}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "NoRepair" 1
@@ -1042,12 +1041,22 @@ AllUsers:
 
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
       "Shortcuts" "$0"
-
+  ReadEnvStr $1 PATH
+  DetailPrint "Original path = $1"
+  
   ${EnvVarUpdate} $0 "PATH" "P" "HKLM" "$INSTDIR\bin"   ; Prepend to path
+  ReadEnvStr $1 PATH
+  DetailPrint "Modified path = $1"
 
 CurrentUsers:
 
+  ReadEnvStr $1 PATH
+  DetailPrint "Original path = $1"
+  
   ${EnvVarUpdate} $0 "PATH" "P" "HKCU" "$INSTDIR\bin"   ; Prepend to path
+  
+  ReadEnvStr $1 PATH
+  DetailPrint "Modified path = $1"
 
   StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
 
