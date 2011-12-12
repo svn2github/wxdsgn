@@ -1,3 +1,4 @@
+echo Contrib
 md %WXWIN%\contrib\lib
 md %WXWIN%\contrib\lib\%1_lib
 cd /d %wxwin%
@@ -30,39 +31,57 @@ cd /d %wxwin%\contrib\build\deprecated
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\fl
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp  2> error_%1_fl.txt
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 \
+USE_EXCEPTIONS=1 VENDOR=wxdevcpp  2> error_%1_fl.txt
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\foldbar
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_foldbar.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_foldbar.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\gizmos
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_gizmos.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_gizmos.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\mmedia
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_mmedia.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_mmedia.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\net
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_net.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_net.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\ogl
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_ogl.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_ogl.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\plot
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_plot.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_plot.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\stc
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp 2> error_%1_stc.txt 
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp 2> error_%1_stc.txt 
 if errorlevel 1 goto CONTRIB_BUILD_ERR
 
 cd ..\svg
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 VENDOR=wxdevcpp  2> error_%1_svg.txt
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 \
+RUNTIME_LIBS=static UNICODE=%UNICODE_FLAG% USE_RTTI=0 USE_EXCEPTIONS=1 \
+VENDOR=wxdevcpp  2> error_%1_svg.txt
 if NOT errorlevel 1 goto CONTRIB_END
 
 :CONTRIB_BUILD_ERR

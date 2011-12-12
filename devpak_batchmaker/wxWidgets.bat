@@ -159,6 +159,7 @@ md 3rdParty\build\chartart
 md 3rdParty\build\sheet
 md 3rdParty\build\things
 md 3rdParty\build\treelistctrl
+md 3rdParty\build\treemultictrl
 
 md 3rdParty\include
 md 3rdParty\include\wx
@@ -177,6 +178,8 @@ copy %WXCODE%\wxthings\include\wx\things\*.h %WXWIN%\3rdParty\include\wx\things\
 
 copy %WXCODE%\treelistctrl\include\wx\*.h %WXWIN%\3rdParty\include\wx\
 
+md 3rdParty\include\wx\treemultictrl
+copy %WXCODE%\treemultictrl\contrib\include\wx\treemultictrl\*.h %WXWIN%\3rdParty\include\wx\treemultictrl
 
 md 3rdParty\src
 md 3rdParty\src\chartart
@@ -190,6 +193,13 @@ copy %WXCODE%\wxthings\src\*.c* %WXWIN%\3rdParty\src\things\
 
 md 3rdParty\src\treelistctrl
 copy %WXCODE%\treelistctrl\src\*.c* %WXWIN%\3rdParty\src\treelistctrl\
+
+md 3rdParty\src\treemultictrl
+md 3rdParty\src\treemultictrl\images
+copy %WXCODE%\treemultictrl\contrib\src\treemultictrl\*.c* %WXWIN%\3rdParty\src\treemultictrl\
+copy %WXCODE%\treemultictrl\contrib\src\treemultictrl\*.x* %WXWIN%\3rdParty\src\treemultictrl\
+copy %WXCODE%\treemultictrl\contrib\src\treemultictrl\images\*.p* %WXWIN%\3rdParty\src\treemultictrl\images\
+
 
 md 3rdParty\samples
 md 3rdParty\samples\chartart
@@ -213,6 +223,9 @@ copy %WXCODE%\treelistctrl\samples\treelisttest\*.rc* %WXWIN%\3rdParty\samples\t
 copy %WXCODE%\treelistctrl\samples\treelisttest\*.ic* %WXWIN%\3rdParty\samples\treelisttest\ 
 copy %WXCODE%\treelistctrl\samples\treelisttest\bitmaps\*.x* %WXWIN%\3rdParty\samples\treelisttest\bitmaps\ 
 copy %WXCODE%\treelistctrl\samples\treelisttest\bitmaps\*.b* %WXWIN%\3rdParty\samples\treelisttest\bitmaps\ 
+
+md 3rdParty\samples\treemultictrl
+copy %WXCODE%\treemultictrl\contrib\samples\treemultictrl\*.* %WXWIN%\3rdParty\src\treemultictrl\
 
 
 cd /d %WXWIN%

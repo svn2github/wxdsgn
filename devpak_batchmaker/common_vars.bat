@@ -27,12 +27,12 @@ wxlibversion.exe %WXVER% >> temp123.bat
 call temp123.bat
 del temp123.bat
 
-set WXWIN=G:\wxWidgets-%WXVER%
+set WXWIN=H:\wxWidgets-%WXVER%
 
 echo In what directory is wxWidgets located (Default = %WXWIN%)?
 set /P WXWIN=
 
-set WXCODE=G:\Users\Public\devpak_batchmaker\wxCode
+set WXCODE=H:\Users\Public\devpak_batchmaker\wxCode
 echo In what directory are the wxCode components located (Default = %WXCODE%)?
 set /P WXCODE=
 
