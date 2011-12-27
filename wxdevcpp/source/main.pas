@@ -4027,7 +4027,7 @@ begin
                     fProject.CurrentProfile.CompilerOptions;
 
                 if not ShowProjectInspItem.Checked then
-                    ShowProjectInspItem.OnClick(nil);
+                    ShowProjectInspItem.OnClick(self);
                 UpdateAppTitle;
             end;
         finally
