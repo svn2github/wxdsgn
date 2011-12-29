@@ -466,10 +466,17 @@ begin
     end;
 
     DestroyCompletion;
+
+    if Assigned(fText) then
+    begin
     FreeAndNil(fText);
+    end;
 
     //this activates the previous tab if the last one was
     //closed, instead of moving to the first one
+    if Assigned(fTabSheet) then
+    begin
+
     with fTabSheet.PageControl do
     begin
         lastActPage := ActivePageIndex;
@@ -481,7 +488,8 @@ begin
                 ActivePageIndex := lastActPage;
         end;
     end;
-
+    end;
+    
     if Assigned(FCodeToolTip) then
         FreeAndNil(FCodeToolTip);
 
