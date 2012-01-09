@@ -212,7 +212,7 @@ var
   strType, strStyle: string;
 begin
   Result   := '';
-  strType  := 'wxSAVE';
+  strType  := 'wxFD_SAVE';
   strStyle := GetFileDialogStyleString(self.Wx_DialogStyle);
 
   Result := GetCommentString(self.FWx_Comments.Text) +

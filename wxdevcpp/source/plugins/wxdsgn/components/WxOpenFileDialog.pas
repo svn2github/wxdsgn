@@ -214,7 +214,7 @@ var
   strType, strStyle: string;
 begin
   Result   := '';
-  strType  := 'wxOPEN';
+  strType  := 'wxFD_OPEN';
   strStyle := GetFileDialogStyleString(self.Wx_DialogStyle);
 
   Result := GetCommentString(self.FWx_Comments.Text) +

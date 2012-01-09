@@ -2630,19 +2630,19 @@ begin
 
     try
         if wxHIDE_READONLY in stdStyle then
-            strLst.add('wxHIDE_READONLY');
+            strLst.add('wxFD_HIDE_READONLY');
 
         if wxOVERWRITE_PROMPT in stdStyle then
-            strLst.add('wxOVERWRITE_PROMPT');
+            strLst.add('wxFD_OVERWRITE_PROMPT');
 
         if wxFILE_MUST_EXIST in stdStyle then
-            strLst.add('wxFILE_MUST_EXIST');
+            strLst.add('wxFD_FILE_MUST_EXIST');
 
         if wxMULTIPLE in stdStyle then
-            strLst.add('wxMULTIPLE');
+            strLst.add('wxFD_MULTIPLE');
 
         if wxCHANGE_DIR in stdStyle then
-            strLst.add('wxCHANGE_DIR');
+            strLst.add('wxFD_CHANGE_DIR');
 
         if strLst.Count = 0 then
             Result := ''

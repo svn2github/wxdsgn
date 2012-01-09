@@ -34,8 +34,8 @@ requires
   designide,
   rtl,
   jcl,
-  JvCoreD6R,
-  JvDockingD6R,
+  //JvCoreD6R,
+  //JvDockingD6R,
   ThemeManager6;
 
 contains

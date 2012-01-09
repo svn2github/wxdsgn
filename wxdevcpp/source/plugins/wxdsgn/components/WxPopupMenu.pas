@@ -322,7 +322,7 @@ function TWxPopupMenu.GenerateGUIControlCreation: string;
 begin
   Result := GetCommentString(self.FWx_Comments.Text) +
     Format('%s = new %s(%s);', [self.Name, self.Wx_Class, GetCppString(Wx_Caption)]);
-  Result := Result + GetMenuItemCode;
+  Result := Result + #13 + #10 + GetMenuItemCode;
 end;
 
 function TWxPopupMenu.GetCodeForOneMenuItem(parentName: string;

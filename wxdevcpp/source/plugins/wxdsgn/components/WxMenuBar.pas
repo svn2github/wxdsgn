@@ -645,8 +645,8 @@ var
       if submnu.items[J].Count > 0 then
       begin
         strLst.add('');
-        strV := Format('wxMenu *%s = new wxMenu(%s);',
-          [submnu.items[J].wx_IDName + '_Mnu_Obj', '0']);
+        strV := Format('wxMenu *%s = new wxMenu();',
+          [submnu.items[J].wx_IDName + '_Mnu_Obj']);
         strLst.add(strV);
 
         GetCodeFromSubMenu(submnustrlst, submnu.items[J]);
@@ -671,8 +671,8 @@ begin
   for I := 0 to Wx_MenuItems.Count - 1 do    // Iterate
     if Wx_MenuItems.items[i].Count > 0 then
     begin
-      strF := Format('wxMenu *%s = new wxMenu(%s);',
-        [Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj', '0']);
+      strF := Format('wxMenu *%s = new wxMenu();',
+        [Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj']);
       strLst.add(strF);
       GetCodeFromSubMenu(strLst, Wx_MenuItems.items[i]);
 
@@ -683,8 +683,8 @@ begin
       strLst.add('');
     end
     else begin
-      strF := Format('wxMenu *%s = new wxMenu(%s);',
-        [Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj', '0']);
+      strF := Format('wxMenu *%s = new wxMenu();',
+        [Wx_MenuItems.Items[i].Wx_IDName + '_Mnu_Obj']);
 
       if trim(strF) <> '' then
       begin

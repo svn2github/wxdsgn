@@ -753,21 +753,16 @@ var
 
 begin
 
-ShowMessage('1');
-
   if (frmNewForm.KeepFormat) then
    Exit;
 
   xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
-
-  showmessage(xpmFileDir);
 
   if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
   begin
     if onlyForForm then
       DeleteFile(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm');
 
-      showmessage(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm');
     if not fileexists(xpmFileDir + 'Self_'+frmNewForm.Wx_Name + '_XPM.xpm') then
     begin
       fileStrlst    := TStringList.Create;
