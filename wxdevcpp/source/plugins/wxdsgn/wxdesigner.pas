@@ -187,6 +187,7 @@ type
     staticLib: TRadioButton;
     dynamicLib: TRadioButton;
 
+
   private
     fwxOptions: TdevWxOptions;
     pendingEditorSwitch: Boolean; // EAB: Let's see if we can make JvInspector to behave when switching to editor from Events field
@@ -320,6 +321,7 @@ type
     procedure AfterStartupCheck;
     procedure FullScreenSwitch;
     function GetContextForHelp: String;
+    
   end;
 
 var
@@ -1179,6 +1181,8 @@ begin
   tabwxWidgets.InsertControl(grpwxVersion);
   tabwxWidgets.InsertControl(grpwxType);
   tabwxWidgets.InsertControl(rdwxLibraryType);
+
+
 
 end; // end Initialize
 

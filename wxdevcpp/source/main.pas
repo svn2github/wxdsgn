@@ -5701,7 +5701,7 @@ begin
         begin
             strCol := copy(tfile, delimPos + 1, length(tfile));
             if isNumeric(strCol) then
-                Line := strToInt(strCol);
+                Line := strToIntDef(strCol, 0);
             tfile := trim(copy(tfile, 0, delimPos - 1));
         end;
 
@@ -5726,8 +5726,8 @@ begin
     // goto find pos
     if not assigned(FindOutPut.Selected) then
         exit;
-    Col := strtoint(FindOutput.Selected.SubItems[0]);
-    Line := strtoint(FindOutput.Selected.Caption);
+    Col := strtointdef(FindOutput.Selected.SubItems[0], 0);
+    Line := strtointdef(FindOutput.Selected.Caption, 0);
 
     // replaced redundant code...
     e := GetEditorFromFileName(FindOutput.Selected.SubItems[1]);
@@ -7181,7 +7181,7 @@ begin
             if Assigned(e) then
             begin
                 if fDebugger.Paused then
-                    fDebugger.SetContext(lvBacktrace.Selected.Index);
+                    fDebugger.SetFrame(lvBacktrace.Selected.Index);
                 e.GotoLineNr(idx);
                 e.Activate;
             end;
@@ -9717,9 +9717,9 @@ begin
                     if idx <> -1 then
                     begin
                         temp_left :=
-                            StrToInt(devPluginToolbarsX.ToolbarsXName[idx]);
+                            StrToIntDef(devPluginToolbarsX.ToolbarsXName[idx], 0);
                         temp_top :=
-                            StrToInt(devPluginToolbarsY.ToolbarsYName[idx]);
+                            StrToIntDef(devPluginToolbarsY.ToolbarsYName[idx], 0);
 
                         If temp_left > current_max_toolbar_left then
                             current_max_toolbar_left := temp_left;
@@ -9779,9 +9779,9 @@ begin
                 if idx <> -1 then
                 begin
                     temp_left :=
-                        StrToInt(devPluginToolbarsX.ToolbarsXName[idx]);
+                        StrToIntDef(devPluginToolbarsX.ToolbarsXName[idx], 0);
                     temp_top :=
-                        StrToInt(devPluginToolbarsY.ToolbarsYName[idx]);
+                        StrToIntDef(devPluginToolbarsY.ToolbarsYName[idx], 0);
 
                     If temp_left > current_max_toolbar_left then
                         current_max_toolbar_left := temp_left;

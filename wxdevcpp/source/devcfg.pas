@@ -2727,7 +2727,7 @@ begin
         fSaveLog := LoadBoolSetting(key, 'Log');
         s := LoadSetting(key, 'Delay');
         if s <> '' then
-            fDelay := strtoint(s);
+            fDelay := strtointdef(s, 0);
 
         CompilerSet := StrToIntDef(LoadSetting(key, 'CompilerSet'), 0);
 
@@ -3205,10 +3205,7 @@ end;
 
 procedure TdevCodeCompletion.SetDelay(Value: integer);
 begin
-    if Value = 0 then
-        fDelay := 1 // minimum 1 ms
-    else
-        fDelay := Value;
+   fDelay:=Max(1,Value); // minimum 1 msec
 end;
 
 procedure TdevCodeCompletion.SettoDefaults;
@@ -3548,7 +3545,7 @@ begin
     begin
         key := OPT_COMPILERSETS + '_' + IntToStr(Index);
         if (LoadSetting(key, 'CompilerType') <> '') then
-            fCompilerType := StrToInt(LoadSetting(key, 'CompilerType'));
+            fCompilerType := StrToIntDef(LoadSetting(key, 'CompilerType'), 0);
         self.SetToDefaults;
 
         // Programs

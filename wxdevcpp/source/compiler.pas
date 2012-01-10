@@ -2115,7 +2115,7 @@ begin
                 begin
                     { Get message }
                     cpos := GetLastPos(': ', Line);
-                    O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos - 2);
+                    O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos - 1);
                     Delete(Line, cpos, Length(Line) - cpos + 1);
 
                     { Get file }
@@ -2160,17 +2160,17 @@ begin
 
 
                 { foo.cpp: In method `bool MyApp::Bar()': }
-                cpos := GetLastPos('In method `', Line);
+                cpos := GetLastPos('In method ''', Line);
                 // GCC >= 3.2 support
                 if cpos <= 0 then
                     { foo.cpp: In member function `bool MyApp::Bar()': }
-                    cpos := GetLastPos('In member function `', Line);
+                    cpos := GetLastPos('In member function ''', Line);
                 if cpos <= 0 then
                     { foo.cpp: In constructor `MyApp::MyApp()': }
                     cpos := GetLastPos('In constructor `', Line);
                 if cpos <= 0 then
                     { foo.cpp: In destructor `MyApp::MyApp()': }
-                    cpos := GetLastPos('In destructor `', Line);
+                    cpos := GetLastPos('In destructor ''', Line);
                 if cpos > 0 then
                 begin
                     O_Msg := Copy(Line, cpos, Length(Line) - cpos + 1);

@@ -1,6 +1,6 @@
 {
     $Id$
-    
+
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -414,7 +414,7 @@ type
         procedure Step; virtual; abstract;
         procedure Finish; virtual; abstract;
         procedure SetThread(thread: Integer); virtual; abstract;
-        procedure SetContext(frame: Integer); virtual; abstract;
+        procedure SetFrame(frame: Integer); virtual; abstract;
         function GetVariableHint(name: string): string; virtual; abstract;
 
         // Debugger virtual functions
@@ -461,6 +461,9 @@ type
 		LastVOident: String;
 		LastVOVar: String;
 		WatchPtList: TTreeView;
+		GDBCurrentThread: integer;			// as reported by GDB - presently unused
+		SelectedFrame: integer;			// selected by user - defaults to 0
+		SelectedThread: integer;			// selected by user - defaults to CurrentGDBThread
         // Pipe handles
         g_hChildStd_IN_Wr: THandle;		//we write to this
         g_hChildStd_IN_Rd: THandle;		//Child process reads from here
@@ -586,7 +589,7 @@ type
         procedure Finish; override;
         procedure Pause; override;
         procedure SetThread(thread: Integer); override;
-        procedure SetContext(frame: Integer); override;
+        procedure SetFrame(frame: Integer); override;
         function  GetVariableHint(name: string): string; override;
 
         //Low-level stuff
@@ -646,7 +649,7 @@ type
         procedure Step; override;
         procedure Finish; override;
         procedure SetThread(thread: Integer); override;
-        procedure SetContext(frame: Integer); override;
+        procedure SetFrame(frame: Integer); override;
         function GetVariableHint(name: string): string; override;
 
         // Debugger virtual functions
@@ -1467,7 +1470,7 @@ begin
         ParseConst := false
     else
     begin
-        Value^ := StrToInt(Val);
+        Value^ := StrToIntdef(Val, 0);
         ParseConst := true;
     end;
 end;
@@ -1785,14 +1788,14 @@ begin
   Command.Data := Pointer(Watch);
   case when of
     wbRead:
-      Command.Command := Format('%d-break-watch -r %s',
-        [Watch^.Token,varname]);
+      Command.Command := Format('%d-break-watch --thread %d --frame %d -r %s',
+        [Watch^.Token,SelectedThread,SelectedFrame,varname]);
     wbWrite:
-      Command.Command := Format('%d-break-watch %s',
-        [Watch^.Token,varname]);
+      Command.Command := Format('%d-break-watch --thread %d --frame %d %s',
+        [Watch^.Token,SelectedThread,SelectedFrame,varname]);
     wbBoth:
-      Command.Command := Format('%d-break-watch -a %s',
-        [Watch^.Token,varname]);
+      Command.Command := Format('%d-break-watch --thread %d --frame %d -a %s',
+        [Watch^.Token,SelectedThread,SelectedFrame,varname]);
   end;
   QueueCommand(Command);
 end;
@@ -1824,14 +1827,14 @@ begin
     Command := TCommand.Create;
     case Watch^.BPType of
       wbRead:
-        Command.Command := Format('%d-break-watch -r %s',
-          [Watch^.Token,Watch^.Name]);
+        Command.Command := Format('%d-break-watch --thread %d --frame %d -r %s',
+          [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
       wbWrite:
-        Command.Command := Format('%d-break-watch %s',
-          [Watch^.Token,Watch^.Name]);
+        Command.Command := Format('%d-break-watch --thread %d --frame %d %s',
+          [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
       wbBoth:
-        Command.Command := Format('%d-break-watch -a %s',
-          [Watch^.Token,Watch^.Name]);
+        Command.Command := Format('%d-break-watch --thread %d --frame %d -a %s',
+          [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
     end;
     QueueCommand(Command);
   end;
@@ -1866,14 +1869,14 @@ begin
       Command := TCommand.Create;
       case Watch^.BPType of
         wbRead:
-          Command.Command := Format('%d-break-watch -r %s',
-            [Watch^.Token,Watch^.Name]);
+          Command.Command := Format('%d-break-watch --thread %d --frame %d -r %s',
+            [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
         wbWrite:
-          Command.Command := Format('%d-break-watch %s',
-            [Watch^.Token,Watch^.Name]);
+          Command.Command := Format('%d-break-watch --thread %d --frame %d %s',
+            [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
         wbBoth:
-          Command.Command := Format('%d-break-watch -a %s',
-            [Watch^.Token,Watch^.Name]);
+          Command.Command := Format('%d-break-watch --thread %d --frame %d -a %s',
+            [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
       end;
       QueueCommand(Command);
     end;
@@ -1903,7 +1906,7 @@ begin
         Exit;
       end;
       Command := TCommand.Create;
-      Command.Command := Format('-break-delete %d',[watch.BPNumber]);
+      Command.Command := Format('-break-delete --thread %d --frame %d %d',[watch.BPNumber]);
       QueueCommand(Command);
       Dispose(node.Data);
       MainForm.WatchTree.Items.Delete(node);
@@ -1935,7 +1938,7 @@ begin
       Watch := Items[I].Data;
       Watch.Token := WATCHTOKENBASE + I;
       Command := TCommand.Create;
-      Command.Command := format('%d%s%s',[Watch.Token, GDBdataeval, Watch.Name]);
+      Command.Command := format('%d%s--thread %d --frame %d %s',[Watch.Token,GDBdataeval,SelectedThread,SelectedFrame,Watch.Name]);
       Command.Callback := Nil;
       QueueCommand(Command);
     end;
@@ -2120,7 +2123,9 @@ begin
 		// gui_critSect.Enter();
 		AddtoDisplay('Current Thread ID = ' + CurrentThread);
 		// gui_critSect.Leave();
-
+		GDBCurrentThread := strtointdef(CurrentThread, -1);
+        SelectedThread := strtointdef(CurrentThread, -1);
+        SelectedFrame := 0;
 		repeat
 		begin
 			ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
@@ -2553,9 +2558,7 @@ begin
     CPURegNames[i] := ExtractBracketed(@List, @start, @next, '"', false);
     List := MidStr(List, next, Length(List));
   end;
-
-  WriteToPipe('-data-list-register-values r ' + CPURegList);
-
+  WriteToPipe(format('-data-list-register-values --thread %d --frame %d r', [SelectedThread,SelectedFrame]) + CPURegList);
 end;
 
 //=================================================================
@@ -2738,11 +2741,14 @@ begin
       VOName[i] := '_';
 
 {$ifdef DISPLAYOUTPUT}
-  AddtoDisplay(format('Writing %d-var-create VO%s @ %s',[MODVARTOKEN, VOName, VarName]));
+
+format( '-stack-list-locals --thread %d --frame %d 1', [SelectedThread,SelectedFrame]);
+
+  AddtoDisplay(format('Writing %d-var-create --thread %d --frame %d VO%s @ %s',[MODVARTOKEN, SelectedThread, SelectedFrame, VOName, VarName]));
   AddtoDisplay(format('Writing %d-var-assign VO%s %s',[MODVARTOKEN, VOName, Value]));
   AddtoDisplay(format('Writing %d-var-delete VO%s',[MODVARTOKEN, VOName]));
 {$endif}
-  WriteToPipe(format('%d-var-create VO%s @ %s',[MODVARTOKEN, VOName, VarName]));
+  WriteToPipe(format('%d-var-create --thread %d --frame %d VO%s @ %s',[MODVARTOKEN, SelectedThread, SelectedFrame, VOName, VarName]));
   WriteToPipe(format('%d-var-assign VO%s %s',[MODVARTOKEN, VOName, Value]));
   WriteToPipe(format('%d-var-delete VO%s',[MODVARTOKEN, VOName]));
 
@@ -2801,6 +2807,9 @@ begin
               Watch.Value := wpUnknown;
               Item[index].Text := Format('%s = %s', [Watch.Name, Watch.Value]);
               Output := Format('Stopped - %s for %s in Thread %d', [Reason, Watch.Name, Thread]);
+			  GDBCurrentThread := Thread;
+              SelectedThread := Thread;
+              SelectedFrame := 0;
               
             end;
           end;
@@ -3756,6 +3765,9 @@ begin
     Started := False;
     TargetIsRunning := False;
 
+	SelectedFrame := 0;
+	SelectedThread := 1;
+
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
         Executable := devCompiler.gdbName
@@ -3838,9 +3850,6 @@ begin
             CommandQueue.Delete(0);
 
 {
-  For the Exerciser only: We write the command in to the Edit Box, and to
-  the output window, purely for User Information.
-  Unless required for logging, we don't NEED even the output window write.
   There should be no problem with writing directly to the Pipe from here:
   All commands should be well within the capabilities of the native OS Pipe
   Buffers (4K Windows, 32K Linux?) so the main thread should not hang while
@@ -3855,10 +3864,11 @@ begin
             if (MainForm.VerboseDebug.Checked) then
 				AddtoDisplay('Sending ' + CurrentCommand.Command);
 
-            // For proper handling of multi-threaded targets, we might need to prefix each
+            // For proper handling of multi-threaded targets, we need to prefix each relevant
             // command with '--thread' and ‘--frame’  (See GDB Manual: 27.1.1 Context management)
             // with parameters got from ExecResult() or ParseThreads() unless changed by user.
-            //  (can see no evidence for this having been done in existing version)
+            // GDBCurrentThread is the thread reported by GDB, the user's default choices 
+			// are SelectedThread and SelectedFrame (always defaults to 0)
 
             WriteToPipe(CurrentCommand.Command);
 
@@ -4050,14 +4060,14 @@ begin
     if cdCallStack in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := '-stack-list-frames'; //'bt';
+        Command.Command := format( '-stack-list-frames --thread %d --frame %d', [SelectedThread,SelectedFrame]);
         Command.OnResult := OnCallStack;
         QueueCommand(Command);
     end;
     if cdLocals in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := '-stack-list-locals 1';
+        Command.Command := format( '-stack-list-locals --thread %d --frame %d 1', [SelectedThread,SelectedFrame]);
         Command.OnResult := OnLocals;
         QueueCommand(Command);
     end;
@@ -4220,7 +4230,8 @@ begin
     Command := TCommand.Create;
     Command.OnResult := OnVariableHint;
     //Command.Command := 'print ' + name;
-    Command.Command := format('%d%s%s',[TOOLTOKEN, GDBdataeval, name]);
+    Command.Command := format('%d%s--thread %d --frame %d %s',[TOOLTOKEN,GDBdataeval,SelectedThread,SelectedFrame,name]);
+	  
 
     //Send the command;
     QueueCommand(Command);
@@ -4412,12 +4423,14 @@ begin
           begin
             if (threadID = 'all') then
             begin
-//              thread := -1;                              // Thread No.
               OutputBuffer := 'Running all threads'
             end
             else
             begin
               thread := StrToInt(threadID);
+			  GDBCurrentThread := thread;
+              SelectedThread := thread;
+              SelectedFrame := 0;
               OutputBuffer := Format('Running thread %d', [thread]);
               AddtoDisplay(OutputBuffer);
             end;
@@ -4576,11 +4589,11 @@ begin
                 begin
                     thread := StrToInt(threadID);
                     OutputBuffer := Format('Running thread %d', [thread]);
+					GDBCurrentThread := thread;
+					SelectedThread := thread;
+					SelectedFrame := 0;
                     AddtoDisplay(OutputBuffer);
                 end;
-
-            // INCOMPLETE: does nothing with the thread number
-
         end
         else
         if (AnsiStartsStr(GDBstopped, msg)) then
@@ -4992,7 +5005,7 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := '-exec-next';
+    Command.Command := format( '-exec-next --thread %d --frame %d', [SelectedThread,SelectedFrame]);
     Command.Callback := OnTrace;
     QueueCommand(Command);
 end;
@@ -5004,7 +5017,7 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := '-exec-step';
+    Command.Command := format( '-exec-step --thread %d --frame %d', [SelectedThread,SelectedFrame]);
     Command.Callback := OnTrace;
     QueueCommand(Command);
 end;
@@ -5016,7 +5029,8 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := devData.DebugCommand;   // -exec-finish
+    Command.Command := format( '-exec-finish --thread %d --frame %d', [SelectedThread,SelectedFrame]);
+		//was Command.Command := devData.DebugCommand;
     Command.Callback := OnTrace;
     QueueCommand(Command);
 
@@ -5042,15 +5056,17 @@ end;
 
 procedure TGDBDebugger.SetThread(thread: Integer);
 begin
-    QueueCommand('-thread-select ', IntToStr(thread));
+    // QueueCommand('-thread-select ', IntToStr(thread));
+	SelectedThread := thread;
     RefreshContext;
 end;
 
 //=================================================================
 
-procedure TGDBDebugger.SetContext(frame: Integer);
+procedure TGDBDebugger.SetFrame(frame: Integer);
 begin
-    QueueCommand('-stack-select-frame ', IntToStr(frame));
+    // QueueCommand('-stack-select-frame ', IntToStr(frame));
+	SelectedFrame := frame;
     RefreshContext([cdLocals, cdWatches]);
 end;
 
@@ -5078,6 +5094,9 @@ begin
   {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
   {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
 
+  GDBCurrentThread := Thread;
+  SelectedThread := Thread;
+  SelectedFrame := 0;
   Output := Format('Thread %d stopped in %s at line %d in %s with %s',
     [Thread, Func, Line, SrcFile, SigMeaning]);
 
@@ -6246,7 +6265,7 @@ begin
     RefreshContext;
 end;
 
-procedure TCDBDebugger.SetContext(frame: Integer);
+procedure TCDBDebugger.SetFrame(frame: Integer);
 begin
     QueueCommand('.frame', IntToStr(frame));
     RefreshContext([cdLocals, cdWatches]);

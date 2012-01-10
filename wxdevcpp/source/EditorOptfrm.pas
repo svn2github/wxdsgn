@@ -412,7 +412,7 @@ begin
         else // sort the returned sizes
             for idx := 1 to 3 do
                 for idx2 := pred(Items.Count) downto 1 do
-                    if strtoint(Items[idx2]) < strtoint(Items[idx2 - 1]) then
+                    if strtointdef(Items[idx2], 0) < strtointdef(Items[idx2 - 1], 0) then
                         Items.Exchange(idx2, idx2 - 1);
         if fGutter then
         begin
@@ -435,16 +435,16 @@ procedure TEditorOptForm.FontSizeChange(Sender: TObject);
     begin
         if Sender = cboEditorSize then
         begin
-            pnlEditorPreview.Font.Size := strtoint(cboEditorsize.Text);
-            ASynEdit.Font.Size := strtoint(cboEditorSize.Text);
+            pnlEditorPreview.Font.Size := strtointdef(cboEditorsize.Text, 12);
+            ASynEdit.Font.Size := strtointdef(cboEditorSize.Text, 12);
             ASynEdit.Refresh;
         end
         else
         begin
-            pnlGutterPreview.Font.Size := strtoint(cboGutterSize.Text);
+            pnlGutterPreview.Font.Size := strtointdef(cboGutterSize.Text, 12);
             CppEdit.Gutter.Font.Name := cboGutterFont.Text;
-            ASynEdit.Gutter.Font.Size := strtoint(cboGutterSize.Text);
-            ASynEdit.Gutter.Width := strtoint(edGutterWidth.Text);
+            ASynEdit.Gutter.Font.Size := strtointdef(cboGutterSize.Text, 12);
+            ASynEdit.Gutter.Width := strtointdef(edGutterWidth.Text, 12);
             ASynEdit.Refresh;
         end;
     end;
@@ -483,8 +483,8 @@ begin
         cboGutterSize.Text := Size;
 
         CppEdit.Gutter.Font.Name := cboGutterFont.Text;
-        CppEdit.Gutter.Font.Size := strtoint(cboGutterSize.Text);
-        CppEdit.Gutter.Width := strtoint(edGutterWidth.Text);
+        CppEdit.Gutter.Font.Size := strtointdef(cboGutterSize.Text, 12);
+        CppEdit.Gutter.Width := strtointdef(edGutterWidth.Text, 12);
         CppEdit.Refresh;
     end
     else
@@ -495,7 +495,7 @@ begin
         cboEditorSize.Text := Size;
 
         CppEdit.Font.Name := cboEditorFont.Text;
-        CppEdit.Font.Size := strtoint(cboEditorSize.Text);
+        CppEdit.Font.Size := strtointdef(cboEditorSize.Text, 12);
         CppEdit.Refresh;
     end;
 end;
@@ -886,10 +886,10 @@ begin
         TabSize := seTabSize.Value;
 
         Font.Name := cboEditorFont.Text;
-        Font.Size := strtoint(cboEditorSize.Text);
+        Font.Size := strtointdef(cboEditorSize.Text, 12);
 
         Gutterfont.Name := cboGutterFont.Text;
-        GutterFont.Size := strtoint(cboGutterSize.Text);
+        GutterFont.Size := strtointdef(cboGutterSize.Text, 12);
 
         Gutterfnt := cbGutterFnt.Checked;
         GutterAuto := cbGutterAuto.Checked;
@@ -1401,7 +1401,7 @@ begin
         try
             Edit := TRUE;
             edMenuText.Text := lvCodeIns.Selected.Caption;
-            seSection.Value := strtoint(lvCodeIns.Selected.SubItems[0]);
+            seSection.Value := strtointdef(lvCodeIns.Selected.SubItems[0], 12);
             edDesc.Text := lvCodeIns.Selected.SubItems[1];
             if ShowModal = mrOk then
             begin
@@ -1441,8 +1441,8 @@ procedure TEditorOptForm.lvCodeinsCompare(Sender: TObject; Item1,
 var
     i1, i2: integer;
 begin
-    i1 := strtoint(Item1.SubItems[0]);
-    i2 := strtoint(Item2.SubItems[0]);
+    i1 := strtointdef(Item1.SubItems[0], 0);
+    i2 := strtointdef(Item2.SubItems[0], 0);
     if i1 > i2 then
         Compare := 1
     else
@@ -1503,7 +1503,7 @@ begin
     begin
         new(Item);
         Item.Caption := lvCodeIns.Items[idx].Caption;
-        Item.Sep := strtoint(lvCodeIns.Items[idx].SubItems[0]);
+        Item.Sep := strtointdef(lvCodeIns.Items[idx].SubItems[0], 0);
         Item.Desc := lvcodeIns.Items[idx].SubItems[1];
         Item.Line := lvCodeIns.Items[idx].SubItems[2];
         dmMain.CodeInserts.AddItem(Item);

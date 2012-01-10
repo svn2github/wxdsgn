@@ -165,7 +165,7 @@ begin
             s := NewStrs.Values['Ver'];
 
             try // handle invalid ver entry
-                ver := strtoint(s);
+                ver := strtointdef(s, -1);
             except
                 if MessageDlg('The selected language file has an invalid, or is missing a version entry.'#13#10
                     + 'You may not have all the required strings for your current Dev-C++ interface.'#13#10
