@@ -41,7 +41,7 @@ interface
 uses
 {$IFDEF WIN32}
     Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes,
-    IniFiles, prjtypes;  //, DbugIntf; EAB removed Gexperts debug stuff.
+    IniFiles, prjtypes; //, SynEditCodeFolding;  //, DbugIntf; EAB removed Gexperts debug stuff.
 {$ENDIF}
 {$IFDEF LINUX}
   QDialogs, Classes, QGraphics, QSynEdit, CFGData, CFGTypes, IniFiles, prjtypes;
@@ -553,6 +553,7 @@ type
         fHighCurrLine: boolean;     // Highlight current line
         fHighColor: TColor;         // Color of current line when highlighted
 
+        //fCodeFolding : boolean; // Code folding enabled?
     public
         constructor Create;
         destructor Destroy; override;
@@ -618,7 +619,8 @@ type
         property Match: boolean read fMatch write fMatch;
         property HighCurrLine: boolean read fHighCurrLine write fHighCurrLine;
         property HighColor: TColor read fHighColor write fHighColor;
-
+       // property CodeFolding: boolean read fCodeFolding write fCodeFolding;
+        
     end;
 
     // master option object -- contains program globals
@@ -3080,6 +3082,8 @@ begin
     fHighCurrLine := True;
     fHighColor := $FFFFCC; //Light Turquoise
 
+    //fCodeFolding := True;
+    
     fAppendNewline := True;
 end;
 
@@ -3107,7 +3111,7 @@ begin
                 ShowLineNumbers := fLineNumbers;
                 LeadingZeros := fLeadZero;
                 ZeroStart := fFirstisZero;
-                Gradient := fGutterGradient;
+                //Gradient := fGutterGradient;
                 x := fSyntax.IndexofName(cGut);
                 if x <> -1 then
                 begin
@@ -3170,6 +3174,34 @@ begin
             if fSpecialChar then
                 Options := Options + [eoShowSpecialChars];
 
+               // Code Folding	 
+	      { if (fCodeFolding) then
+	       begin	 
+	         with CodeFolding do	 
+	         begin	 
+	                 Enabled := True;	 
+	                 IndentGuides := True;	 
+	                 CaseSensitive := False;	 
+	            //     HighlighterFoldRegions := True;	 
+	                 HighlighterFoldRegions := False;	 
+	                 FolderBarColor := clDefault;	 
+	                 FolderBarLinesColor := clDefault;	 
+	                 // CollapsingMarkStyle := TSynCollapsingMarkStyle(0);	 
+	 	 
+	                 // Code folding	 
+	                 with FoldRegions do	 
+	                 begin	}
+	                //         Add(rtChar, False, False, False, '{', '}', nil);
+	                //         Add(rtKeyword, True, True, False, '/*', '*/', nil);
+	              {   end;
+	 	 
+	                 end;	 
+	         end	 
+	       else	 
+	           begin	 
+	                 CodeFolding.Enabled := False;	 
+	           end;
+                   }
         finally
             EndUpdate;
         end;

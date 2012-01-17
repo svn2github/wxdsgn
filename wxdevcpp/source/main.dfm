@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 225
-  Top = 63
+  Left = 105
+  Top = 139
   Width = 652
   Height = 466
   Anchors = [akLeft, akTop, akBottom]

@@ -22,7 +22,7 @@ unit project;
 interface
 
 uses
-    Utils, StrUtils, jvsimplexml,
+    Utils, StrUtils, jvsimplexml, //SynEditCodeFolding,
 {$IFDEF WIN32}
     IniFiles, SysUtils, Dialogs, ComCtrls, Editor, Contnrs,
     Classes, Controls, version, prjtypes, Templates, Forms,
@@ -341,7 +341,17 @@ begin
                                 Lines.Add('');
 
                 DisableFileWatch;
+                  // Code folding - Save the un-folded text, otherwise	 
+	       //    the folded regions won't be saved.	 
+	     {  if (fEditor.Text.CodeFolding.Enabled) then
+	       begin	 
+	          fEditor.Text.ReScanForFoldRanges;	 
+	           //fEditor.Text.Update;	 
+	          fEditor.Text.UncollapsedLines.SavetoFile(fFileName);
+	       end
+	       else    }
                 fEditor.Text.Lines.SavetoFile(fFileName);
+
                 EnableFileWatch;
 
                 fEditor.New := False;
@@ -359,6 +369,7 @@ begin
                                 Lines.Add('');
 
                 DisableFileWatch;
+
                 fEditor.Text.Lines.SavetoFile(fFileName);
                 EnableFileWatch;
 

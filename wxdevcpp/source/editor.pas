@@ -30,7 +30,7 @@ uses
     Menus, ImgList, ComCtrls, StdCtrls, ExtCtrls, SynEdit,
     SynEditKeyCmds, version, Grids,
     SynCompletionProposal, StrUtils, SynEditTypes, SynEditHighlighter,
-
+ //   SynEditCodeFolding,
     {** Modified by Peter **}
     DevCodeToolTip, SynAutoIndent, utils, iplugin;
 {$ENDIF}
@@ -51,8 +51,8 @@ type
         procedure AfterPaint(ACanvas: TCanvas; const AClip: TRect;
             FirstLine, LastLine: integer); override;
         procedure LinesInserted(FirstLine, Count: integer); override;
-        procedure LinesDeleted(FirstLine, Count: integer;
-            AddToUndoList: Boolean); override;
+        procedure LinesDeleted(FirstLine, Count: integer); override;
+              //  ;AddToUndoList: boolean); override;
     public
         constructor Create(ed: TEditor);
     end;
@@ -231,8 +231,8 @@ begin
     // if this method is not defined -> Abstract error
 end;
 
-procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer;
-    AddToUndoList: Boolean);
+procedure TDebugGutter.LinesDeleted(FirstLine, Count: integer);
+//     AddToUndoList: boolean);
 begin
     // if this method is not defined -> Abstract error
 end;
@@ -306,7 +306,9 @@ begin
                         if Lines.Count > 0 then
                             if Lines[Lines.Count - 1] <> '' then
                                 Lines.Add('');
-                fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
+
+                
+                   fText.Lines.SaveToFile(ChangeFileExt(FileName, s));
             end;
 
         except
@@ -355,6 +357,9 @@ begin
         fText.Highlighter := dmMain.Res
     else
         fText.Highlighter := dmMain.cpp;
+
+    // Code folding
+   // fText.InitCodeFolding;
 
 {$IFDEF PLUGIN_BUILD}
     for i := 0 to MainForm.pluginsCount - 1 do
@@ -1897,7 +1902,17 @@ begin
         Text.BeginUndoBlock;
 
         backup := Text.CaretXY;
+
+       { if (Text.CodeFolding.Enabled) then
+         begin
+
+              Text.UncollapsedLines.BeginUpdate;
+         end
+            else  }
+          //  begin
         Text.BeginUpdate;
+       // end;
+
         S := '//' + Text.SelText;
         Offset := 0;
         if S[Length(S)] = #10 then
@@ -1915,7 +1930,15 @@ begin
         if Offset = 2 then
             S := S + #13#10;
         Text.SelText := S;
+       {  if (Text.CodeFolding.Enabled) then
+         begin
+
+              Text.UncollapsedLines.EndUpdate;
+         end
+            else
+            begin }
         Text.EndUpdate;
+       // end;
         Text.CaretXY := backup;
     end
     else // no selection; easy stuff ;)

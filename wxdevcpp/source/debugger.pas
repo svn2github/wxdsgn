@@ -1,6 +1,6 @@
 {
     $Id$
-
+    
     This file is part of Dev-C++
     Copyright (c) 2004 Bloodshed Software
 
@@ -80,31 +80,52 @@ const GDBerror: String = 'error,';
 const GDBdone: String = 'done,';
 const GDBaddr: String = 'addr=';
 const GDBaddress: String = 'address=';
+const GDBall: String = 'all';
+const GDBarg: String = 'arg-begin';
 const GDBasminst: String = 'asm_insns=';
 const GDBasmline: String = 'line_asm_insns=';
-const GDBbegin     : String = 'begin';
+const GDBassignerror: String = 'error,mi_cmd_var_assign: Variable object is not editable"';
+const GDBbegin: String = 'begin';
 const GDBbkpt: String = 'bkpt={';
+const GDBbpoint: String = 'breakpoint';
+const GDBbkpthit: String = 'breakpoint-hit';
 const GDBbkptno: String = 'bkptno';
 const GDBbkpttable: String = 'BreakpointTable={';
 const GDBbody: String = 'body=[';
+const GDBbrkins: String = '-break-insert ';
+const GDBbrkdel: String = '-break-delete ';
+const GDBbrkwatch: String = '-break-watch ';
 const GDBcontents: String = 'contents';
 const GDBcontinue: String = '-exec-continue';
+const GDBcontext: String = '--thread %d --frame %d';
 const GDBcurthread: String = 'current-thread-id';
 const GDBdataeval: String = '-data-evaluate-expression ';
 const GDBDisassem: String = '-data-disassemble ';
 const GDBend: String = 'end';
+const GDBendstep: String = 'end-stepping-range';
 const GDBexp: String = 'exp=';
 const GDBExit: String = '-gdb-exit';
 const GDBExitmsg: String = 'exit';
+const GDBExitnormal: String = 'exited-normally';
 const GDBfile: String = 'file';
 const GDBfileq: String = 'file=';
+const GDBflavour: String = '-gdb-set disassembly-flavor';
 const GDBframe: String = 'frame={';
+const GDBframebegin: String = 'frame-begin';
+const GDBframefnarg: String = 'frame-args';
+const GDBframefnname: String = 'frame-function-name';
+const GDBframesrcfile: String = 'frame-source-file';
+const GDBframesrcline: String = 'frame-source-line';
 const GDBfunc: String = 'func';
 const GDBfuncname: String = 'func-name=';
 const GDBid: String = 'id';
 const GDBidq: String = 'id=';
 const GDBinstr: String = 'inst=';
+const GDBInterp: String = '--interpreter=mi';
 const GDBlevel: String = 'level';
+const GDBlistframes: String = '-stack-list-frames';
+const GDBlistlocals: String = '-stack-list-locals';
+const GDBlistregvalues: String = '-data-list-register-values %s r';
 const GDBlocals: String = 'locals';
 const GDBlocalsq: String = 'locals=';
 const GDBline: String = 'line';
@@ -123,28 +144,52 @@ const GDBorig_loc: String = 'original-location=';
 const GDBregnames: String = 'register-names=';
 const GDBregvalues: String = 'register-values=';
 const GDBreason: String = 'reason=';
+const GDBrun: String = '-exec-run';
 const GDBrunning: String = 'running';
 const GDBsigmean: String = 'signal-meaning';
 const GDBsigname: String = 'signal-name';
+const GDBsigrcv: String = 'signal-received';
 const GDBsigsegv: String = 'SIGSEGV';
+const GDBSilent: String = '--silent';
 const GDBsrcline: String = 'src_and_asm_line=';
 const GDBstack: String = 'stack=[';
 const GDBstopped: String = 'stopped';
 const GDBtargetid: String = 'target-id';
 const GDBthreadid: String = 'thread-id';
+const GDBthreadinfo: String = '-thread-info';
 const GDBthreads: String = 'threads=';
-const GDBthreadgcr : String = 'thread-group-created';
+const GDBthreadgcr: String = 'thread-group-created';
 const GDBtype: String = 'type';
 const GDBvalue: String = 'value';
 const GDBvalueq: String = 'value=';
 const GDBvalueqb: String = 'value={';
+const GDBvarcreate: String = '%d-var-create %s VO%s @ %s';
+const GDBvarassign: String = '%d-var-assign VO%s %s';
+const GDBvardelete: String = '%d-var-delete VO%s';
 const GDBwhat: String = 'what=';
+const GDBwperrnoimp: String = 'Expression cannot be implemented';
+const GDBwperrnosup: String = 'Target does not support';
+const GDBwperrsup: String = 'Target can only support';
+const GDBwperrjunk: String = 'Junk at end of command.';
+const GDBwperrconst: String = 'Cannot watch constant value';
+const GDBwperrxen: String = 'Cannot enable watchpoint';
+const GDBwperrset: String = 'Unexpected error setting';
+const GDBwperrustd: String = 'Cannot understand watchpoint';
+const GDBwperrxs: String = 'Too many watchpoints';
 const GDBwpt: String = 'wpt=';
 const GDBwpta: String = 'hw-awpt=';
 const GDBwptr: String = 'hw-rwpt=';
+const GDBwptread: String = 'read watchpoint';
+const GDBwptacc: String = 'acc watchpoint';
+const GDBwpthw: String = 'hw watchpoint';
+const GDBwpoint: String = 'watchpoint';
 const GDBwpscope: String = 'watchpoint-scope';
 const GDBwpNum: String = 'wpnum=';
+const GDBwptrig: String = 'watchpoint-trigger';
+const GDBwptriga: String = 'access-watchpoint-trigger';
+const GDBwptrigr: String = 'read-watchpoint-trigger';
 const GDBqStrEmpty: String = '\"';
+const GDBwxString: String = 'wxString';
 const wxStringBase: String = '<wxStringBase>';
 const wpUnknown: String = '(unknown)';
 const FileStr: String = 'File';
@@ -461,7 +506,7 @@ type
 		LastVOident: String;
 		LastVOVar: String;
 		WatchPtList: TTreeView;
-		GDBCurrentThread: integer;			// as reported by GDB - presently unused
+		CurrentGDBThread: integer;			// as reported by GDB - presently unused
 		SelectedFrame: integer;			// selected by user - defaults to 0
 		SelectedThread: integer;			// selected by user - defaults to CurrentGDBThread
         // Pipe handles
@@ -508,7 +553,8 @@ type
 		procedure CloseDebugger(Sender: TObject); override;
 		function  Notify(buf: PChar; bsize: PLongInt; verbose: Boolean): PChar;
         procedure SendCommand; override;
-        function SendToDisplay(buf: PChar; bsize: PLongInt;
+		function  WriteGDBContext(thread: Integer; frame: Integer): String;
+        function  SendToDisplay(buf: PChar; bsize: PLongInt;
             verbose: Boolean): PChar;
 
         //Set the include paths
@@ -563,7 +609,6 @@ type
 		function  ParseVObjAssign(Msg: String): Boolean;
         procedure ParseWatchpoint(Msg: String);
         procedure ParseWatchpointError(Msg: String);
-
 
 		procedure ParseBreakpoint(Msg: String; List: PList);
 		procedure ParseBreakpointTable(Msg: String);
@@ -1470,7 +1515,7 @@ begin
         ParseConst := false
     else
     begin
-        Value^ := StrToIntdef(Val, 0);
+        Value^ := StrToInt(Val);
         ParseConst := true;
     end;
 end;
@@ -1530,7 +1575,7 @@ begin
    variable in question via LastVOVar.
  */}
 
-    if (VarType = 'wxString') then
+    if (VarType = GDBwxString) then
     begin
 
         Buffer := '-var-info-path-expression ' + Name + NL;
@@ -1682,7 +1727,7 @@ begin
     {Ret := }ParseConst(@Msg, @GDBnumber, PInteger(@Num));
     {Ret := }ParseConst(@Msg, @GDBtype, PString(@BPType));
 
-    if (BPType = 'breakpoint') then
+    if (BPType = GDBbpoint) then
     begin
         ParseConst(@Msg, @GDBaddr, PString(@Addr));
         if (ParseConst(@Msg, @GDBorig_loc, PString(@SrcFile)) and (Addr = GDBmult)) then
@@ -1704,13 +1749,13 @@ begin
     else
     begin
 		{Ret := }ParseConst(@Msg, @GDBwhat, PString(@Expr));
-		if (BPType = 'read watchpoint') then
+		if (BPType = GDBwptread) then
 			Output := format('Watchpoint No %d (read) set for %s', [Num, Expr]);
-		if (BPType = 'acc watchpoint') then
+		if (BPType = GDBwptacc) then
 			Output := format('Watchpoint No %d (acc) set for %s', [Num, Expr]);
-		if (BPType = 'hw watchpoint') then
+		if (BPType = GDBwpthw) then
 			Output := format('Watchpoint No %d (hw)  set for %s', [Num, Expr]);
-		if (BPType = 'watchpoint') then
+		if (BPType = GDBwpoint) then
 			Output := format('Watchpoint No %d set for %s', [Num, Expr]);
         if (MainForm.VerboseDebug.Checked) then
 		begin
@@ -1788,14 +1833,14 @@ begin
   Command.Data := Pointer(Watch);
   case when of
     wbRead:
-      Command.Command := Format('%d-break-watch --thread %d --frame %d -r %s',
-        [Watch^.Token,SelectedThread,SelectedFrame,varname]);
+      Command.Command := Format('%d%s%s -r %s',
+        [Watch^.Token,GDBbrkwatch,WriteGDBContext(SelectedThread,SelectedFrame),varname]);
     wbWrite:
-      Command.Command := Format('%d-break-watch --thread %d --frame %d %s',
-        [Watch^.Token,SelectedThread,SelectedFrame,varname]);
+      Command.Command := Format('%d%s%s %s',
+        [Watch^.Token,GDBbrkwatch,WriteGDBContext(SelectedThread,SelectedFrame),varname]);
     wbBoth:
-      Command.Command := Format('%d-break-watch --thread %d --frame %d -a %s',
-        [Watch^.Token,SelectedThread,SelectedFrame,varname]);
+      Command.Command := Format('%d%s%s -a %s',
+        [Watch^.Token,GDBbrkwatch,WriteGDBContext(SelectedThread,SelectedFrame),varname]);
   end;
   QueueCommand(Command);
 end;
@@ -1827,14 +1872,14 @@ begin
     Command := TCommand.Create;
     case Watch^.BPType of
       wbRead:
-        Command.Command := Format('%d-break-watch --thread %d --frame %d -r %s',
-          [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
+        Command.Command := Format('%d%s-r %s',
+          [Watch^.Token,GDBbrkwatch,Watch^.Name]);
       wbWrite:
-        Command.Command := Format('%d-break-watch --thread %d --frame %d %s',
-          [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
+        Command.Command := Format('%d%d %s',
+          [Watch^.Token,GDBbrkwatch,Watch^.Name]);
       wbBoth:
-        Command.Command := Format('%d-break-watch --thread %d --frame %d -a %s',
-          [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
+        Command.Command := Format('%d%d -a %s',
+          [Watch^.Token,GDBbrkwatch,Watch^.Name]);
     end;
     QueueCommand(Command);
   end;
@@ -1869,14 +1914,14 @@ begin
       Command := TCommand.Create;
       case Watch^.BPType of
         wbRead:
-          Command.Command := Format('%d-break-watch --thread %d --frame %d -r %s',
-            [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
+          Command.Command := Format('%d%s%s -r %s',
+            [Watch^.Token,GDBbrkwatch,WriteGDBContext(SelectedThread,SelectedFrame),Watch^.Name]);
         wbWrite:
-          Command.Command := Format('%d-break-watch --thread %d --frame %d %s',
-            [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
+          Command.Command := Format('%d%s%s %s',
+            [Watch^.Token,GDBbrkwatch,WriteGDBContext(SelectedThread,SelectedFrame),Watch^.Name]);
         wbBoth:
-          Command.Command := Format('%d-break-watch --thread %d --frame %d -a %s',
-            [Watch^.Token,SelectedThread,SelectedFrame,Watch^.Name]);
+          Command.Command := Format('%d%s%s -a %s',
+            [Watch^.Token,GDBbrkwatch,WriteGDBContext(SelectedThread,SelectedFrame),Watch^.Name]);
       end;
       QueueCommand(Command);
     end;
@@ -1906,7 +1951,7 @@ begin
         Exit;
       end;
       Command := TCommand.Create;
-      Command.Command := Format('-break-delete --thread %d --frame %d %d',[watch.BPNumber]);
+      Command.Command := Format('%s %d',[GDBbrkdel, watch.BPNumber]);
       QueueCommand(Command);
       Dispose(node.Data);
       MainForm.WatchTree.Items.Delete(node);
@@ -1938,7 +1983,8 @@ begin
       Watch := Items[I].Data;
       Watch.Token := WATCHTOKENBASE + I;
       Command := TCommand.Create;
-      Command.Command := format('%d%s--thread %d --frame %d %s',[Watch.Token,GDBdataeval,SelectedThread,SelectedFrame,Watch.Name]);
+      Command.Command := format('%d%s%s %s',[Watch.Token,GDBdataeval,
+		WriteGDBContext(SelectedThread,SelectedFrame),Watch.Name]);
       Command.Callback := Nil;
       QueueCommand(Command);
     end;
@@ -2114,6 +2160,9 @@ begin
 	ThreadList := ExtractBracketed(@Msg, @start, @next, '[', false);
 	if (ThreadList = '') then
 	begin
+		CurrentGDBThread := 0;
+        SelectedThread := 0;
+        SelectedFrame := 0;
         // gui_critSect.Enter();
 		AddtoDisplay('No active threads');
         // gui_critSect.Leave();
@@ -2123,8 +2172,8 @@ begin
 		// gui_critSect.Enter();
 		AddtoDisplay('Current Thread ID = ' + CurrentThread);
 		// gui_critSect.Leave();
-		GDBCurrentThread := strtointdef(CurrentThread, -1);
-        SelectedThread := strtointdef(CurrentThread, -1);
+		CurrentGDBThread := StrToInt(CurrentThread);
+        SelectedThread := CurrentGDBThread;
         SelectedFrame := 0;
 		repeat
 		begin
@@ -2239,23 +2288,23 @@ var
 
 begin
     // These messages were gathered from GDB source. Not all might be seen.
-    if ((AnsiStartsStr(GDBError+'Expression cannot be implemented', Msg))
+    if ((AnsiStartsStr(GDBError+GDBwperrnoimp, Msg))
         // "Expression cannot be implemented with read/access watchpoint."
-      or (AnsiStartsStr(GDBError+'Target does not support', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrnosup, Msg))
         // "Target does not support this type of hardware watchpoint."
-      or (AnsiStartsStr(GDBError+'Target can only support', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrsup, Msg))
         // "Target can only support one kind of HW watchpoint at a time."
-      or (AnsiStartsStr(GDBError+'Junk at end of command.', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrjunk, Msg))
         // "Junk at end of command."
-      or (AnsiStartsStr(GDBError+'Cannot watch constant value', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrconst, Msg))
         // "Cannot watch constant value ..."
-      or (AnsiStartsStr(GDBError+'Cannot enable watchpoint', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrxen, Msg))
         // "Cannot enable watchpoint"
-      or (AnsiStartsStr(GDBError+'Unexpected error setting', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrset, Msg))
         // "Unexpected error setting breakpoint or watchpoint"
-      or (AnsiStartsStr(GDBError+'Cannot understand watchpoint', Msg))
+      or (AnsiStartsStr(GDBError+GDBwperrustd, Msg))
         // "Cannot understand watchpoint access type."
-      or (AnsiStartsStr(GDBError+'Too many watchpoints', Msg))) then
+      or (AnsiStartsStr(GDBError+GDBwperrxs, Msg))) then
         // "Too many watchpoints"
     begin
       index := Token - WATCHTOKENBASE;
@@ -2558,7 +2607,7 @@ begin
     CPURegNames[i] := ExtractBracketed(@List, @start, @next, '"', false);
     List := MidStr(List, next, Length(List));
   end;
-  WriteToPipe(format('-data-list-register-values --thread %d --frame %d r', [SelectedThread,SelectedFrame]) + CPURegList);
+  WriteToPipe(format(GDBlistregvalues, [WriteGDBContext(SelectedThread,SelectedFrame)]) + CPURegList);
 end;
 
 //=================================================================
@@ -2741,16 +2790,15 @@ begin
       VOName[i] := '_';
 
 {$ifdef DISPLAYOUTPUT}
-
-format( '-stack-list-locals --thread %d --frame %d 1', [SelectedThread,SelectedFrame]);
-
-  AddtoDisplay(format('Writing %d-var-create --thread %d --frame %d VO%s @ %s',[MODVARTOKEN, SelectedThread, SelectedFrame, VOName, VarName]));
+  AddtoDisplay(format('Writing %d-var-create %s VO%s @ %s',
+	[MODVARTOKEN, WriteGDBContext(SelectedThread, SelectedFrame), VOName, VarName]));
   AddtoDisplay(format('Writing %d-var-assign VO%s %s',[MODVARTOKEN, VOName, Value]));
   AddtoDisplay(format('Writing %d-var-delete VO%s',[MODVARTOKEN, VOName]));
 {$endif}
-  WriteToPipe(format('%d-var-create --thread %d --frame %d VO%s @ %s',[MODVARTOKEN, SelectedThread, SelectedFrame, VOName, VarName]));
-  WriteToPipe(format('%d-var-assign VO%s %s',[MODVARTOKEN, VOName, Value]));
-  WriteToPipe(format('%d-var-delete VO%s',[MODVARTOKEN, VOName]));
+  WriteToPipe(format(GDBvarcreate,[MODVARTOKEN, 
+	WriteGDBContext(SelectedThread, SelectedFrame), VOName, VarName]));
+  WriteToPipe(format(GDBvarassign,[MODVARTOKEN, VOName, Value]));
+  WriteToPipe(format(GDBvardelete,[MODVARTOKEN, VOName]));
 
 end;
 
@@ -2807,7 +2855,7 @@ begin
               Watch.Value := wpUnknown;
               Item[index].Text := Format('%s = %s', [Watch.Name, Watch.Value]);
               Output := Format('Stopped - %s for %s in Thread %d', [Reason, Watch.Name, Thread]);
-			  GDBCurrentThread := Thread;
+			  CurrentGDBThread := Thread;
               SelectedThread := Thread;
               SelectedFrame := 0;
               
@@ -3747,10 +3795,6 @@ end;
 
 
 procedure TGDBDebugger.Execute(filename, arguments: string);
-const
-    gdbInterp: String = '--interpreter=mi';
-    gdbSilent: String = '--silent';
-
 var
     Executable: string;
     WorkingDir: string;
@@ -3764,9 +3808,9 @@ begin
     IgnoreBreakpoint := False;
     Started := False;
     TargetIsRunning := False;
-
+	
 	SelectedFrame := 0;
-	SelectedThread := 1;
+	SelectedThread := 0;
 
     //Get the name of the debugger
     if (devCompiler.gdbName <> '') then
@@ -3775,11 +3819,11 @@ begin
         Executable := DBG_PROGRAM(devCompiler.CompilerType);
 
 
-    Executable := Executable + ' ' + gdbInterp;
+    Executable := Executable + ' ' + GDBInterp;
 
     // Verbose output requested?
     if (not MainForm.VerboseDebug.Checked) then
-        Executable := Executable + ' ' + gdbSilent;
+        Executable := Executable + ' ' + GDBSilent;
 
     //Add in the include paths
 
@@ -3867,7 +3911,7 @@ begin
             // For proper handling of multi-threaded targets, we need to prefix each relevant
             // command with '--thread' and ‘--frame’  (See GDB Manual: 27.1.1 Context management)
             // with parameters got from ExecResult() or ParseThreads() unless changed by user.
-            // GDBCurrentThread is the thread reported by GDB, the user's default choices 
+            // CurrentGDBThread is the thread reported by GDB, the user's default choices 
 			// are SelectedThread and SelectedFrame (always defaults to 0)
 
             WriteToPipe(CurrentCommand.Command);
@@ -3876,6 +3920,19 @@ begin
             if Assigned(CurrentCommand.Callback) then
                 CurrentCommand.Callback;
         end;
+end;
+
+//=============================================================
+function TGDBDebugger.WriteGDBContext(thread: Integer; frame: Integer):String;
+
+//    Returns a string of the form "--thread n --frame n"
+//     If thread == 0 or negative, an empty string is returned
+
+begin
+    if (thread < 1) then WriteGDBContext := ''
+    else
+        WriteGDBContext := Format(GDBcontext,
+            [thread,frame]);
 end;
 
 //=============================================================
@@ -4022,7 +4079,7 @@ begin
             breakpoint.Editor) then
         begin
             if Executing then
-                QueueCommand('-break-delete ',
+                QueueCommand(GDBbrkdel,
                     IntToStr(PBreakpoint(Breakpoints.Items[i])^.BPNumber));
 
             Dispose(Breakpoints.Items[i]);
@@ -4040,7 +4097,7 @@ begin
         Inc(fNextBreakpoint);
         breakpoint.Index := fNextBreakpoint;
         breakpoint.Valid := True;
-        QueueCommand('-break-insert ', Format('"%s:%d"',
+        QueueCommand(GDBbrkins, Format('"%s:%d"',
             [breakpoint.Filename, breakpoint.Line]));
     end;
 end;
@@ -4060,21 +4117,23 @@ begin
     if cdCallStack in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := format( '-stack-list-frames --thread %d --frame %d', [SelectedThread,SelectedFrame]);
+        Command.Command := format( '%s %s', 
+			[GDBlistframes,WriteGDBContext(SelectedThread,SelectedFrame)]);
         Command.OnResult := OnCallStack;
         QueueCommand(Command);
     end;
     if cdLocals in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := format( '-stack-list-locals --thread %d --frame %d 1', [SelectedThread,SelectedFrame]);
+        Command.Command := format( '%s %s 1', 
+			[GDBlistlocals, WriteGDBContext(SelectedThread,SelectedFrame)]);
         Command.OnResult := OnLocals;
         QueueCommand(Command);
     end;
     if cdThreads in refresh then
     begin
         Command := TCommand.Create;
-        Command.Command := '-thread-info'; 
+        Command.Command := GDBthreadinfo; 
         Command.OnResult := OnThreads;
         QueueCommand(Command);
     end;
@@ -4098,8 +4157,6 @@ end;
 
 //=================================================================
 
-//=================================================================
-
 procedure TGDBDebugger.OnCallStack(Output: TStringList);
 var
     I: Integer;
@@ -4114,20 +4171,20 @@ begin
     I := 0;
     while I < Output.Count do
     begin
-        if Pos('frame-begin', Output[I]) = 1 then
+        if Pos(GDBframebegin, Output[I]) = 1 then
         begin
             //Stack frame with source information
             New(StackFrame);
             CallStack.Add(StackFrame);
         end
         else
-        if Output[I] = 'frame-function-name' then
+        if Output[I] = GDBframefnname then
         begin
             Inc(I);
             StackFrame^.FuncName := Output[I];
         end
         else
-        if Output[I] = 'frame-args' then
+        if Output[I] = GDBframefnarg then
         begin
             Inc(I);
 
@@ -4142,7 +4199,7 @@ begin
 
             while (I < Output.Count - 6) do
             begin
-                if Output[I] = 'arg-begin' then
+                if Output[I] = GDBarg then
                 begin
                     if StackFrame^.Args <> '' then
                         StackFrame^.Args := StackFrame^.Args + ', ';
@@ -4160,13 +4217,13 @@ begin
             end;
         end
         else
-        if Output[I] = 'frame-source-file' then
+        if Output[I] = GDBframesrcfile then
         begin
             Inc(I);
             StackFrame^.Filename := ExtractFileName(Output[I]);
         end
         else
-        if Output[I] = 'frame-source-line' then
+        if Output[I] = GDBframesrcline then
         begin
             Inc(I);
             StackFrame^.Line := StrToInt(Output[I]);
@@ -4212,9 +4269,9 @@ procedure TGDBDebugger.SetAssemblySyntax(syntax: AssemblySyntax);
 begin
     case syntax of
         asIntel:
-            QueueCommand('-gdb-set disassembly-flavor', 'intel');
+            QueueCommand(GDBflavour, 'intel');
         asATnT:
-            QueueCommand('-gdb-set disassembly-flavor', 'att');
+            QueueCommand(GDBflavour, 'att');
     end;
 end;
 
@@ -4230,7 +4287,8 @@ begin
     Command := TCommand.Create;
     Command.OnResult := OnVariableHint;
     //Command.Command := 'print ' + name;
-    Command.Command := format('%d%s--thread %d --frame %d %s',[TOOLTOKEN,GDBdataeval,SelectedThread,SelectedFrame,name]);
+    Command.Command := format('%d%s%s %s',[TOOLTOKEN,GDBdataeval,
+		WriteGDBContext(SelectedThread,SelectedFrame),name]);
 	  
 
     //Send the command;
@@ -4252,9 +4310,9 @@ var
 begin
     Command := TCommand.Create;
     if not Started then
-        Command.Command := '-exec-run'
+        Command.Command := GDBrun
     else
-        Command.Command := '-exec-continue';
+        Command.Command := GDBcontinue;
     Command.Callback := OnGo;
     QueueCommand(Command);
 end;
@@ -4402,7 +4460,7 @@ begin
           if ((Token >= WATCHTOKENBASE) and (Token < MODVARTOKEN)) then
             ParseWatchpointError(Mainmsg)
           else
-          if (Mainmsg = 'error,mi_cmd_var_assign: Variable object is not editable"') then
+          if (Mainmsg = GDBassignerror) then
           begin
             DisplayError('This Variable is not editable');
           end
@@ -4421,14 +4479,14 @@ begin
 
           if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
           begin
-            if (threadID = 'all') then
+            if (threadID = GDBall) then
             begin
               OutputBuffer := 'Running all threads'
             end
             else
             begin
               thread := StrToInt(threadID);
-			  GDBCurrentThread := thread;
+			  CurrentGDBThread := thread;
               SelectedThread := thread;
               SelectedFrame := 0;
               OutputBuffer := Format('Running thread %d', [thread]);
@@ -4535,7 +4593,6 @@ function TGDBDebugger.ExecResult(buf: PChar; bsize: PLongInt): PChar;
 {
    Part of Second Level Parse of Output.
 
-   INCOMPLETE - see below.
    Looks from beginning up to [0x0d][0x0a] pair.
    Returns pointer to start of unprocessed buffer, else if nothing left: NULL
    bsize is updated to reflect new size of unprocessed part.
@@ -4582,14 +4639,14 @@ begin
             TargetIsRunning := true;
 
             if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
-                if (threadID = 'all') then
+                if (threadID = GDBall) then
                     OutputBuffer :=
                         'Running all threads'
                 else
                 begin
                     thread := StrToInt(threadID);
                     OutputBuffer := Format('Running thread %d', [thread]);
-					GDBCurrentThread := thread;
+					CurrentGDBThread := thread;
 					SelectedThread := thread;
 					SelectedFrame := 0;
                     AddtoDisplay(OutputBuffer);
@@ -4598,6 +4655,13 @@ begin
         else
         if (AnsiStartsStr(GDBstopped, msg)) then
         begin
+			if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
+			begin
+				CurrentGDBThread := StrToInt(threadID);
+				SelectedThread := CurrentGDBThread;
+				SelectedFrame := 0;
+			end;
+		
             // get rest into , &AllReason))
             AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBstopped)));
             if (TargetIsRunning) then
@@ -4606,7 +4670,7 @@ begin
             TargetIsRunning := false;
 
             if (ParseConst(@msg, @GDBreason, PString(@Reason))) then
-                if (Reason = 'exited-normally') then
+                if (Reason = GDBExitnormal) then
                 begin
                     // gui_critSect.Enter();
                     AddtoDisplay('Stopped - Exited normally');
@@ -4617,7 +4681,7 @@ begin
                     CloseDebugger(nil);
                 end
                 else
-                if (Reason = 'breakpoint-hit') then
+                if (Reason = GDBbkpthit) then
                 begin
                     if (MainForm.VerboseDebug.Checked) then
 					begin
@@ -4628,7 +4692,7 @@ begin
 					BreakpointHit(@msg);
                 end
                 else
-                if (Reason = 'watchpoint-trigger') then
+                if (Reason = GDBwptrig) then
                 begin
                     if (MainForm.VerboseDebug.Checked) then
 					begin
@@ -4639,7 +4703,7 @@ begin
                     WatchpointHit(@msg);
                 end
                 else
-                if (Reason = 'read-watchpoint-trigger') then
+                if (Reason = GDBwptrigr) then
                 begin
                     if (MainForm.VerboseDebug.Checked) then
 					begin
@@ -4650,7 +4714,7 @@ begin
                     WatchpointHit(@msg);
                 end
                 else
-                if (Reason = 'access-watchpoint-trigger') then
+                if (Reason = GDBwptriga) then
                 begin
                     if (MainForm.VerboseDebug.Checked) then
 					begin
@@ -4661,7 +4725,7 @@ begin
                     WatchpointHit(@msg);
                 end
                 else
-                if (Reason = 'end-stepping-range') then
+                if (Reason = GDBendstep) then
                 begin
                     if (MainForm.VerboseDebug.Checked) then
 					begin
@@ -4671,14 +4735,14 @@ begin
 					end;
                     StepHit(@msg);
                 end
-				else if (Reason = 'watchpoint-scope') then
+				else if (Reason = GDBwpscope) then
 				begin
 					// gui_critSect.Enter();
 					AddtoDisplay('Stopped - watchpoint-scope');
 					// gui_critSect.Leave();
 					WptScope(@msg);
 				end
-                else if (Reason = 'signal-received') then
+                else if (Reason = GDBsigrcv) then
                 begin
                    AddtoDisplay('Stopped - signal received');
                    SigRecv(@msg);
@@ -5005,7 +5069,8 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := format( '-exec-next --thread %d --frame %d', [SelectedThread,SelectedFrame]);
+    Command.Command := format( '-exec-next %s', 
+		[WriteGDBContext(SelectedThread,SelectedFrame)]);
     Command.Callback := OnTrace;
     QueueCommand(Command);
 end;
@@ -5017,7 +5082,8 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := format( '-exec-step --thread %d --frame %d', [SelectedThread,SelectedFrame]);
+    Command.Command := format( '-exec-step %s', 
+		[WriteGDBContext(SelectedThread,SelectedFrame)]);
     Command.Callback := OnTrace;
     QueueCommand(Command);
 end;
@@ -5029,7 +5095,8 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := format( '-exec-finish --thread %d --frame %d', [SelectedThread,SelectedFrame]);
+    Command.Command := format( '-exec-finish %s', 
+		[WriteGDBContext(SelectedThread,SelectedFrame)]);
 		//was Command.Command := devData.DebugCommand;
     Command.Callback := OnTrace;
     QueueCommand(Command);
@@ -5094,7 +5161,7 @@ begin
   {Ret := }ParseConst(@frame, @GDBfunc, PString(@Func));
   {Ret := }ParseConst(@frame, @GDBline, PInteger(@Line));
 
-  GDBCurrentThread := Thread;
+  CurrentGDBThread := Thread;
   SelectedThread := Thread;
   SelectedFrame := 0;
   Output := Format('Thread %d stopped in %s at line %d in %s with %s',

@@ -739,6 +739,8 @@ begin
         cpHighColor.SelectionColor := HighColor;
         cpHighColor.Enabled := cbHighCurrLine.Checked;
 
+      //  cbCodeFolding.Checked := CodeFolding;
+
         StrtoPoint(fGutColor, Syntax.Values[cGut]);
         StrtoPoint(fbpColor, Syntax.Values[cBP]);
         StrtoPoint(fErrColor, Syntax.Values[cErr]);
@@ -901,6 +903,8 @@ begin
         FirstLineZero := cbFirstZero.Checked;
         InsDropFiles := cbDropFiles.Checked;
         ParserHints := cbParserHints.Checked;
+
+       // CodeFolding := cbCodeFolding.Checked;
 
         // load in attributes
         for idx := 0 to pred(cpp.AttrCount) do

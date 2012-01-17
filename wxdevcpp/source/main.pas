@@ -92,7 +92,7 @@ uses
     JvDockSupportControl,
 {$IFDEF PLUGIN_BUILD}
     SynEdit, iplugin, iplugin_bpl, iplugin_dll, iplugger,
-    controlbar_win32_events, hashes,
+    controlbar_win32_events, hashes, //SynEditCodeFolding,
     xprocs, SynHighlighterRC, hh, hh_funcs, VistaAltFixUnit,
 
 {$IFNDEF COMPILER_7_UP}
@@ -2950,7 +2950,18 @@ begin
                         if Lines.Count > 0 then
                             if Lines[Lines.Count - 1] <> '' then
                                 Lines.Add('');
-                e.Text.Lines.SaveToFile(s);
+
+                   // Code folding - Save the un-folded text, otherwise	 
+	         //    the folded regions won't be saved.	 
+	       {  if (e.Text.CodeFolding.Enabled) then
+	         begin	 
+	           //e.Text.ReScanForFoldRanges;
+	           e.Text.UncollapsedLines.SaveToFile(s);
+	         end	 
+	         else	 
+	         begin }
+                        e.Text.Lines.SaveToFile(s);
+                // end;
                 e.Modified := False;
                 e.New := False;
             except
@@ -3096,7 +3107,16 @@ begin
                             Lines.Add('');
 
             //And commit the file to disk
-            e.Text.Lines.SaveToFile(e.FileName);
+           { if (e.Text.CodeFolding.Enabled) then
+	         begin	 
+	           //e.Text.ReScanForFoldRanges;
+	           e.Text.UncollapsedLines.SaveToFile(e.FileName);
+	         end	 
+	         else	 
+	         begin  }
+                e.Text.Lines.SaveToFile(e.FileName);
+              //  end;
+
             e.Modified := false;
 
             //Re-enable the file watch
@@ -3334,7 +3354,16 @@ begin
         begin
 
         e.Text.BeginUndoBlock;
+
+       {  if (e.Text.CodeFolding.Enabled) then
+         begin
+
+              e.Text.UncollapsedLines.BeginUpdate;
+         end
+            else
+            begin }
         e.Text.BeginUpdate;
+      //  end;
 
             startXY := e.Text.BlockBegin;
             endXY := e.Text.BlockEnd;
@@ -3357,7 +3386,16 @@ begin
         // Replace selected text with our modified text
        e.Text.SelText := strLstToPaste.Text;
 
+      {  if (e.Text.CodeFolding.Enabled) then
+         begin
+
+              e.Text.UncollapsedLines.EndUpdate;
+         end
+            else
+            begin    }
         e.Text.EndUpdate;
+      //  end;
+
         e.Text.EndUndoBlock;
         e.Text.UpdateCaret;
         e.Text.Modified := true;
@@ -4361,6 +4399,7 @@ begin
     e := GetEditor;
     if assigned(e) then
         e.Text.Redo;
+
 end;
 
 procedure TMainForm.actCutExecute(Sender: TObject);
@@ -5320,6 +5359,8 @@ var
     linker_original: string;
     opts: TProjProfile;
 begin
+
+    linker_original := '';  // Trying to supress bug #3469393
 
     if not fDebugger.Executing then
     begin
@@ -9395,17 +9436,29 @@ begin
         e := MainForm.GetEditorFromFileName(filename);
         if Assigned(e) then
         begin
+       // if (e.Text.CodeFolding.Enabled) then
+        //   e.Text.UncollapseAll;
+
             e.Text.BeginUpdate;
+            
             try
             {$IFDEF PLUGIN_BUILD}
+
                 for i := 0 to packagesCount - 1 do
                     (plugins[delphi_plugins[i]] AS
                         IPlug_In_BPL).GenerateSource(
                         filename, e.Text);
+
             {$ENDIF}
             except
             end;
-            e.Text.EndUpdate;
+
+              e.Text.EndUpdate;
+
+         //     if (e.Text.CodeFolding.Enabled) then
+         //  e.Text.ReScanForFoldRanges;
+
+
             e.Modified := true;
             e.InsertString('', false);
             MainForm.StatusBar.Panels[3].Text := messageToDysplay;
