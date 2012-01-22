@@ -109,6 +109,7 @@ const GDBExitmsg: String = 'exit';
 const GDBExitnormal: String = 'exited-normally';
 const GDBfile: String = 'file';
 const GDBfileq: String = 'file=';
+const GDBfinish: String = '-exec-finish';
 const GDBflavour: String = '-gdb-set disassembly-flavor';
 const GDBframe: String = 'frame={';
 const GDBframebegin: String = 'frame-begin';
@@ -136,6 +137,7 @@ const GDBnr_rows: String = 'nr_rows';
 const GDBname: String = 'name';
 const GDBnameq: String = 'name=';
 const GDBnew: String = 'new';
+const GDBnext: String = '-exec-next';
 const GDBnumber: String = 'number';
 const GDBNoSymbol: String = 'No symbol';
 const GDBoffset: String = 'offset=';
@@ -153,6 +155,7 @@ const GDBsigsegv: String = 'SIGSEGV';
 const GDBSilent: String = '--silent';
 const GDBsrcline: String = 'src_and_asm_line=';
 const GDBstack: String = 'stack=[';
+const GDBstep: String = '-exec-step';
 const GDBstopped: String = 'stopped';
 const GDBtargetid: String = 'target-id';
 const GDBthreadid: String = 'thread-id';
@@ -3509,7 +3512,8 @@ begin
 
     while ((not (Str[pos] = c) or isquoted) and (pos <= Length(Str))) do
     begin
-        if (Str[pos] = '"') then
+		if ((Str[pos] = '"') and ((pos > 1) and not (Str[pos-1] = '\'))) then
+		// was: if (Str[pos] = '"') then
             isquoted := not isquoted
         else
         if (Str[pos] = '{') then
@@ -4655,15 +4659,13 @@ begin
         else
         if (AnsiStartsStr(GDBstopped, msg)) then
         begin
-			if (ParseConst(@AllReason, @GDBthreadid, PString(@threadID))) then
+			if (ParseConst(@msg, @GDBthreadid, PInteger(@thread))) then
 			begin
-				CurrentGDBThread := StrToInt(threadID);
-				SelectedThread := CurrentGDBThread;
+				CurrentGDBThread := thread;
+				SelectedThread := thread;
 				SelectedFrame := 0;
 			end;
 		
-            // get rest into , &AllReason))
-            AllReason := AnsiRightStr(msg, (Length(msg) - Length(GDBstopped)));
             if (TargetIsRunning) then
                 RefreshContext;
                 
@@ -5069,8 +5071,7 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := format( '-exec-next %s', 
-		[WriteGDBContext(SelectedThread,SelectedFrame)]);
+    Command.Command := GDBnext;
     Command.Callback := OnTrace;
     QueueCommand(Command);
 end;
@@ -5082,8 +5083,7 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := format( '-exec-step %s', 
-		[WriteGDBContext(SelectedThread,SelectedFrame)]);
+    Command.Command := GDBstep;
     Command.Callback := OnTrace;
     QueueCommand(Command);
 end;
@@ -5095,8 +5095,7 @@ var
     Command: TCommand;
 begin
     Command := TCommand.Create;
-    Command.Command := format( '-exec-finish %s', 
-		[WriteGDBContext(SelectedThread,SelectedFrame)]);
+    Command.Command := GDBfinish;
 		//was Command.Command := devData.DebugCommand;
     Command.Callback := OnTrace;
     QueueCommand(Command);

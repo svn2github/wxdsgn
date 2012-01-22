@@ -805,8 +805,8 @@ begin
       Inc(WidthParam, FBmp.Canvas.TextWidth(S)+3);
 
       // paint the DOWN button
-      FDownButton.Paint(FBmp.Canvas);
       FDownButton.Left := WidthParam;
+      FDownButton.Paint(FBmp.Canvas);
       Inc(WidthParam, 3 + FDownButton.Width+FUpButton.Left);
     end;
   

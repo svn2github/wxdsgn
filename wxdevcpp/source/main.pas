@@ -4512,7 +4512,8 @@ var
     e: TEditor;
 begin
     e := GetEditor;
-    if assigned(e) and e.Text.SelAvail then
+    if assigned(e) then
+      if e.Text.SelAvail then
         e.Text.ClearSelection;
 end;
 
