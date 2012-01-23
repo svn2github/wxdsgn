@@ -82,6 +82,10 @@
 				<param name="Local" value="html\debug_process.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Multithreaded programs">
+				<param name="Local" value="html\multi-thread.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Integrated debugging commands">
 				</OBJECT>
 			<UL>
