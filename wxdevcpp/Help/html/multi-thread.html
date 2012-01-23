@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Debugging multi-threaded programs</title>
+
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="Keyword" value="Multi-threaded programs"><param name="Keyword" value="threads"></object><a name="id_multithread"></a>
+<div style="text-align: center;"><a href="cpu_windows.html">&lt;
+&nbsp;Previous &nbsp; &lt;</a> &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+<a href="index.htm">=
+Home =</a> &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+&nbsp;&nbsp;
+<a href="Templates.html">&gt;
+Next &gt;</a></div>
+<h1>Debugging multi-threaded programs</h1>
+<br>
+The GDB Debugger manual describes multi-threaded programs:
+<pre>&quot; ...a single program may have more than one thread of execution. The precise semantics 
+of threads differ from one operating system to another, but in general the threads of a 
+single program are akin to multiple processes &mdash; except that they share one address space 
+(that is, they can all examine and modify the same variables). On the other hand, each 
+thread has its own registers and execution stack, and perhaps private memory.&quot;
+</pre>
+<br>
+Debugging a multi-threaded program is broadly similar to debugging a single-threaded program, however a number of points must be borne in mind:
+<ul>
+<li>A breakpoint may be set in any part of the program in the normal way. If the breakpoint is set in a function or method that was or will be started as a separate thread, then execution halts as normal when the breakpoint is hit. If the function or method executes in several threads, then execution halts each time the breakpoint is hit, no matter which thread it is in.</li>
+<li>When a thread stops, usually because a breakpoint or watchpoint is hit, then all currently executing threads stop. Only the thread that initiated the stop is guaranteed to stop at a source line. The other threads may stop anywhere, including part-way through a statement.</li>
+<li>The thread that initiated the stop becomes the currently active thread and the focus of debugging.</li>
+<li>The currently active thread is marked with an asterisk '*' in the Threads tab.</li>
+<li>When a thread is started with &quot;Debug&quot; [F8], &quot;Next Step&quot; [F7], &quot;Step Into&quot; [Shift+F7] or <i>any</i> other command that causes execution to begin, <u>ALL</u> stopped threads will re-start.</li>
+<li><i>A single step might not complete</i>. It is possible for a breakpoint or another cause in another thread to halt execution before the first thread completes the step you requested.</li>
+<li>It is not possible to separately identify watched variables that have the same name, but which are in different threads; hence the program will stop when any instance of the watched variable changes. However, the thread in which the watched variable changed will become the current thread, and both the Local Variables tab and the Watches tab will show the values of the variables in that current thread.</li>  
+<li>Unless you examine memory directly, the CPU window also operates on the current thread. Unlike Local Variables, Watches and Threads, the panes of the CPU window do not refresh automatically and you must click Refresh on each pane as appropriate.</li>
+
+&nbsp;
+</body></html>
