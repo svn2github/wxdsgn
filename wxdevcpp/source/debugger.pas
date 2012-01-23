@@ -2181,18 +2181,24 @@ begin
 		repeat
 		begin
 			ThreadStr := ExtractBracketed(@ThreadList, @start, @next, '{', false);
-			// gui_critSect.Enter();
-			AddtoDisplay('Thread: ');
-			AddtoDisplay(ThreadStr);
-			// gui_critSect.Leave();
+			if (MainForm.VerboseDebug.Checked) then
+			begin
+				// gui_critSect.Enter();
+				AddtoDisplay('Thread: ');
+				AddtoDisplay(ThreadStr);
+				// gui_critSect.Leave();
+			end;
 			if (not(ThreadStr = '')) then
 			begin
 				New(Thread);
 				ParseConst(@ThreadList, @GDBid, PString(@ThreadID));
 				ParseConst(@ThreadList, @GDBtargetid, PString(@TargetID));
-				// gui_critSect.Enter();
-				AddtoDisplay('Thread ID = ' + ThreadID);
-				// gui_critSect.Leave();
+				if (MainForm.VerboseDebug.Checked) then
+				begin
+					// gui_critSect.Enter();
+					AddtoDisplay('Thread ID = ' + ThreadID);
+					// gui_critSect.Leave();
+				end;
 
 				Output := ParseFrame(ThreadStr, nil);
 				Threads.Insert(0, Thread);
