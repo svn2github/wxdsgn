@@ -125,8 +125,8 @@ resourcestring
     LINUX_RC_INCLUDE_DIR = '';
 
     GCC_CPP_INCLUDE_DIR =
-        ';include'
-        //one of below directories will be deleted if don't exist, later
+        ';include';
+     {   //one of below directories will be deleted if don't exist, later
         + ';include' + pd + 'c++' + pd + GCC_VERSION
         + ';include' + pd + 'c++' + pd +
         GCC_VERSION + pd + 'mingw32'
@@ -134,7 +134,7 @@ resourcestring
         GCC_VERSION + pd + 'backward'
         + ';lib' + pd + 'gcc' + pd + 'mingw32' +
         pd + GCC_VERSION + pd + 'include;'
-    ;
+    ;   }
 
     VC2010_CPP_INCLUDE_DIR =
         ';include' + pd + 'VC2010;' + 'include' + pd + 'common;';
@@ -466,6 +466,7 @@ Begin
             reg.CloseKey;
         end;
     finally
+    reg.Free;
     end;
 end;
 
@@ -1044,7 +1045,7 @@ begin
     for i := strLst.Count - 1 downto 0 do
         Result := Result + ';' + strLst[i];
     Result := Result + ';';
-    strLst.Destroy;
+    strLst.Free;
 end;
 
 function GetWinSDKDir: String;
@@ -1082,12 +1083,12 @@ begin
     else
         Result := strFSDKInstallDir;
 
-    strLst.Destroy;
+    strLst.Free;
     reg.CloseKey;
     reg2.CloseKey;
 
-    reg.Destroy;
-    reg2.Destroy;
+    reg.Free;
+    reg2.Free;
 end;
 
 function GetVC200XPath(versionString: String; PathType: integer): String;
@@ -1122,8 +1123,8 @@ Begin
             TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\VC7\';
             if reg2.OpenKey(TempString, false) = false then
             begin
-                reg.destroy;
-                reg2.destroy;
+                reg.Free;
+                reg2.Free;
                 exit;
             end;
             strVCPPInstallDir := reg2.ReadString(versionString);
@@ -1145,8 +1146,8 @@ Begin
             TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\VS7\';
             if reg2.OpenKey(TempString, false) = false then
             begin
-                reg.destroy;
-                reg2.destroy;
+                reg.Free;
+                reg2.Free;
                 exit;
             end;
             strVSInstallDir := reg2.ReadString(versionString);
@@ -1266,8 +1267,8 @@ Begin
     finally
     end;
 
-    reg.destroy;
-    reg2.destroy;
+    reg.Free;
+    reg2.Free;
 
 end;
 

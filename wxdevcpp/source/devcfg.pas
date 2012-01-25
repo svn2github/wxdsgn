@@ -3512,53 +3512,6 @@ begin
         end;
      {$ENDIF}
 
-        // GAR 16 Nov 2009
-        // Wine hack
-        // Remove check for paths
-        msg := '';
-
-        if msg <> '' then
-        begin
-            msg := msg + 'Would you like Dev-C++ to remove them for you '
-                + 'and add the default paths to the remaining existing paths?'
-                + #13#10
-                + 'Leaving those directories will lead to problems during compilation '
-                + 'of any projects created with Dev-C++' + #13#10
-                + #13#10
-                + 'Unless you know exactly what you''re doing, it is recommended '
-                + 'that you click Yes';
-
-            if MessageDlg(msg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-                // EAB TODO:* These messages could appear sencuentially multiple times depending on the amount of templates being read for a project. We need to fix this.
-            begin
-                fBinDir := goodBinDir;
-                fCDir := goodCDir;
-                fCppDir := goodCppDir;
-                fLibDir := goodLibDir;
-                fRCDir := goodRCDir;
-
-                //additionally insert default paths:
-                maindir := IncludeTrailingPathDelimiter(
-                    ExtractFilePath(Application.ExeName));
-                tempStr := '';
-
-                fRCDir := maindir + RC_INCLUDE_DIR(CompilerType) + ';' + fRCDir;
-                fRCDir := ValidatePaths(fRCDir, tempStr);
-                devDirs.RC := fRCDir;
-                fBinDir := maindir + BIN_DIR(CompilerType) + ';' + fBinDir;
-                fBinDir := ValidatePaths(fBinDir, tempStr);
-                devDirs.Bins := fBinDir;
-                fCDir := C_INCLUDE_DIR(CompilerType) + ';' + fCDir;
-                fCDir := ValidatePaths(fCDir, tempStr);
-                devDirs.C := fCDir;
-                fCppDir := CPP_INCLUDE_DIR(CompilerType) + ';' + fCppDir;
-                fCppDir := ValidatePaths(fCppDir, tempStr);
-                devDirs.Cpp := fCppDir;
-                fLibDir := LIB_DIR(CompilerType) + ';' + fLibDir;
-                fLibDir := ValidatePaths(fLibDir, tempStr);
-                devDirs.Lib := fLibDir;
-            end;
-        end;
     end;
 
     //check if make is in path + bins directory

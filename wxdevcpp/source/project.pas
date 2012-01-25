@@ -2800,7 +2800,7 @@ begin
         xmlObj.SaveToFile(aFileName);
     except
     end;
-    xmlObj.Destroy;
+    xmlObj.Free;
     Result := true;
 end;
 

@@ -2043,7 +2043,7 @@ begin
         JvAppIniFileStorage.Location := flCustom;
         JvAppIniFileStorage.EndUpdate;
         JvAppIniFileStorage.Flush;
-        JvAppIniFileStorage.Destroy;
+        JvAppIniFileStorage.Free;
     end;
 
     devData.ClassView := LeftPageControl.ActivePage = ClassSheet;
@@ -2076,7 +2076,7 @@ begin
     DockServer.BottomDockPanel.Visible := false;
     //end;
 
-    themeManager.Destroy;
+    themeManager.Free;
     for i := 0 to pluginsCount - 1 do
     begin
 
@@ -2087,7 +2087,7 @@ begin
             begin
                 panel1 := items[j];
                 panel1.Visible := false;
-                FindDockClient(panel1).Destroy;
+                FindDockClient(panel1).Free;
             end;
         end;
 
@@ -2098,7 +2098,7 @@ begin
             begin
                 panel1 := items[j];
                 panel1.Visible := false;
-                FindDockClient(panel1).Destroy;
+                FindDockClient(panel1).Free;
             end;
         end;
 
@@ -2109,7 +2109,7 @@ begin
             begin
                 panel1 := items[j];
                 panel1.Visible := false;
-                FindDockClient(panel1).Destroy;
+                FindDockClient(panel1).Free;
             end;
         end;
 
@@ -2188,7 +2188,7 @@ begin
     end;
 
     ParseCustomCmdLine(strLstParams);
-    strLstParams.Destroy;
+    strLstParams.Free;
 end;
 
 //This function is derived from the pre parsecmdline function.
@@ -3402,7 +3402,7 @@ begin
 
     finally
 
-        strLstToPaste.Destroy;
+        strLstToPaste.Free;
     end;
 
 end;
@@ -4210,7 +4210,7 @@ begin
     if ClassBrowser1.Enabled then
         for idx := 0 to fileLstToParse.Count - 1 do
             CppParser1.ReParseFile(fileLstToParse[idx], True);
-    fileLstToParse.Destroy;
+    fileLstToParse.Free;
 end;
 
 procedure TMainForm.actCloseExecute(Sender: TObject);
@@ -7884,7 +7884,7 @@ begin
     begin
         Item := WindowMenu.Items[7];
         WindowMenu.Remove(Item);
-        Item.Destroy;
+        Item.Free;
     end;
     for i := 0 to pred(PageControl.PageCount) do
     begin
@@ -8295,7 +8295,7 @@ begin
     //Then assign the profile back to the project
     fProject.CurrentProfile.CopyProfileFrom(projOpt);
     devCompiler.OptionStr := fProject.CurrentProfile.CompilerOptions;
-    projOpt.Destroy;
+    projOpt.Free
 end;
 
 procedure TMainForm.SetupProjectView;

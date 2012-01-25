@@ -11,13 +11,13 @@ const
 resourcestring
   // misc strings
   DEVCPP = 'wxDev-C++';
-  WXDEVCPP_VERSION = '7.4.0';
+  WXDEVCPP_VERSION = '7.4.2';
 
   // EAB Comment: I think this would be better if stored on a config file and not compiled along with the plugin.
-  COMMON_CPP_INCLUDE_DIR      =
+  COMMON_CPP_INCLUDE_DIR      = '';
 //The Dir are taken from bottom to up. So I added the dir in the inverted order in which
 //they are picked by the parser.
-                       'include' + pd + 'common;'
+                      { 'include' + pd + 'common' + pd + 'wx;';
                        +'include' + pd + 'common' + pd + 'wx;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xrc;'
                        + 'include' + pd + 'common' + pd+ 'wx' + pd + 'xml;'

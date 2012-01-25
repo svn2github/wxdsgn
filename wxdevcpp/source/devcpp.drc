@@ -650,7 +650,7 @@ BEGIN
 	version_LINUX_LIB_DIR,	"\\usr\\lib"
 	version_LINUX_C_INCLUDE_DIR,	"\\usr\\include"
 	version_LINUX_RC_INCLUDE_DIR,	""
-	version_GCC_CPP_INCLUDE_DIR,	";include;include\\c++\\3.4.5;include\\c++\\3.4.5\\mingw32;include\\c++\\3.4.5\\backward;lib\\gcc\\mingw32\\3.4.5\\include;"
+	version_GCC_CPP_INCLUDE_DIR,	";include"
 	version_VC2010_CPP_INCLUDE_DIR,	";include\\VC2010;include\\common;"
 	version_VC2008_CPP_INCLUDE_DIR,	";include\\VC2008;include\\common;"
 	version_VC2005_CPP_INCLUDE_DIR,	";include\\VC2005;include\\common;"

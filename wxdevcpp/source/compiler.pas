@@ -465,7 +465,7 @@ begin
         Visited := TStringList.Create;
         Result := FindDeps(TheFile, Visited);
     finally
-        Visited.Destroy;
+        Visited.Free;
     end;
 end;
 
@@ -559,7 +559,7 @@ begin;
 
     finally
         if Assigned(Includes) then
-            Includes.Destroy;
+            Includes.Free;
         Editor.Free;
     end;
 end;
@@ -1185,7 +1185,7 @@ begin
         cRCString := cRCString + GetShortName(strLst.Strings[i]) + ';';
     fRcIncludesParams := CommaStrToStr(cRCString, '%s ' +
         devCompiler.ResourceIncludeFormat);
-    strLst.Destroy;
+    strLst.Free;
 
     if (fTarget = ctProject) and assigned(fProject) then
     begin
@@ -1248,7 +1248,7 @@ begin
             Result := Result + ' ' + Format(devCompiler.PreprocDefines, [values[i]]);
 
         //Clean up
-        values.Destroy;
+        values.Free;
     end;
 
 {$IFDEF PLUGIN_BUILD}//EAB TODO: Make this more general (not easy to do :P )
@@ -1824,7 +1824,7 @@ begin
             end;
         end;
     finally
-        RegEx.Destroy;
+        RegEx.Free;
     end;
 
     if Assigned(CompileProgressForm) then
@@ -2350,7 +2350,7 @@ begin
             DoOutput(O_Line, O_file, O_Msg);
         end;
     finally
-        RegEx.Destroy;
+        RegEx.Free;
         Application.ProcessMessages;
         if devCompiler.SaveLog then
             try

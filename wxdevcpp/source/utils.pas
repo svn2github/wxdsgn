@@ -1338,7 +1338,7 @@ begin
     end;
 
     //Free the memory
-    MakeArgs.Destroy;
+    MakeArgs.Free;
 end;
 {$EndIf}
 

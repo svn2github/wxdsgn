@@ -238,7 +238,7 @@ begin
             DeleteFile(devData.INIFile);
         iniFile.WriteInteger('Program', 'Version', WXVERSION);
     finally
-        iniFile.Destroy;
+        iniFile.Free;
     end;
 
     devData.UseRegistry := FALSE;

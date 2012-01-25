@@ -154,12 +154,12 @@ end;
 
 destructor TCodeCompletion.Destroy;
 begin
-  if Assigned(CodeComplForm) then FreeAndNil(CodeComplForm);
-  if Assigned(fCompletionStatementList) then FreeAndNil(fCompletionStatementList);
-  if Assigned(fFullCompletionStatementList) then FreeAndNil(fFullCompletionStatementList);
-  if Assigned(fHintWindow) then FreeAndNil(fHintWindow);
-  if Assigned(fHintTimer) then FreeAndNil(fHintTimer);
-  if Assigned(fIncludedFiles) then FreeAndNil(fIncludedFiles);
+  CodeComplForm.Free;
+  fCompletionStatementList.Free;
+  fFullCompletionStatementList.Free;
+  fHintWindow.Free;
+  fHintTimer.Free;
+  fIncludedFiles.Free;
   inherited Destroy;
 end;
 
