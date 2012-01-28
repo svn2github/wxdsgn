@@ -8,7 +8,7 @@ echo off
 cls
 
 rem Default wxWidgets root directory
-set WXVER=2.8.12
+set WXVER=2.9.3
 
 rem Set UNICODE 0=off 1=on
 set UNICODE_FLAG=1

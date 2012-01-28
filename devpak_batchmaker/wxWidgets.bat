@@ -123,6 +123,8 @@ md common\include\wx\msw\wince
 md common\include\wx\private
 md common\include\wx\protocol
 md common\include\wx\richtext
+rem Moved stc from contrib in wxWidgets 2.9
+md common\include\wx\stc
 md common\include\wx\univ
 md common\include\wx\unix
 md common\include\wx\xml
@@ -138,6 +140,90 @@ md %DEVPAKDIR%\common\Templates
 md %DEVPAKDIR%\common\Templates\wxWidgets
 copy Templates\*wx*.* %DEVPAKDIR%\common\Templates\
 copy Templates\wxWidgets\wx*.* %DEVPAKDIR%\common\Templates\wxWidgets\
+
+@echo --------------------------------------------------------------------
+@echo -
+@echo -    Build Contrib wxWidgets Libraries
+@echo -
+@echo --------------------------------------------------------------------
+
+
+IF NOT "%BUILDCONTRIB%"=="Y" GOTO COMMON_CONTRIB_DEVPAK
+
+
+cd /d %WXWIN%
+
+IF NOT "%BUILDGCC%"=="Y" GOTO VCMAKESCONT
+
+CALL %STARTDIR%\wxWidgets_contrib.bat gcc
+IF NOT "%BUILDRESULT%"=="P" GOTO GCC_CONTRIB_BUILD_ERR
+
+
+:VCMAKESCONT
+IF NOT "%BUILDVC%"=="Y" GOTO DMCMAKESCONT
+
+CALL %STARTDIR%\wxWidgets_contrib.bat vc
+IF NOT "%BUILDRESULT%"=="P" GOTO VC_CONTRIB_BUILD_ERR
+
+
+:DMCMAKESCONT
+IF NOT "%BUILDDMC%"=="Y" GOTO BCCMAKESCONT
+
+CALL %STARTDIR%\wxWidgets_contrib.bat dmc
+IF NOT "%BUILDRESULT%"=="P" GOTO DMC_CONTRIB_BUILD_ERR
+
+
+:BCCMAKESCONT
+IF NOT "%BUILDBCC%"=="Y" GOTO CONTDEP
+
+CALL %STARTDIR%\wxWidgets_contrib.bat bcc
+IF NOT "%BUILDRESULT%"=="P" GOTO BCC_CONTRIB_BUILD_ERR
+
+:CONTDEP
+
+@echo --------------------------------------------------------------------
+@echo -
+@echo -    Prepare Contrib wxWidgets devpak
+@echo -
+@echo --------------------------------------------------------------------
+
+
+rem Write the files to subdirectory setup devpak
+
+IF NOT "%BUILDGCC%"=="Y" GOTO VC_CONT_DEVPAK
+call %STARTDIR%\set_contribs gcc
+
+:VC_CONT_DEVPAK
+IF NOT "%BUILDVC%"=="Y" GOTO DMC_CONT_DEVPAK
+call %STARTDIR%\set_contribs vc
+
+:DMC_CONT_DEVPAK
+IF NOT "%BUILDDMC%"=="Y" GOTO BCC_CONT_DEVPAK
+call %STARTDIR%\set_contribs dmc
+
+:BCC_CONT_DEVPAK
+IF NOT "%BUILDBCC%"=="Y" GOTO COMMON_CONTRIB_DEVPAK
+call %STARTDIR%\set_contribs bcc
+
+:COMMON_CONTRIB_DEVPAK
+
+FOR /R %WXWIN%\contrib\samples %%G IN (makefile.*, *.bkl, *.ds?, *.vc?, *.pro, descrip.mms) DO del %%G
+
+
+cd /d %STARTDIR%
+copy wxWidgets_contrib_common.DevPackage %DEVPAKDIR%\wxWidgets_contrib_common.DevPackage
+
+cd /d %DEVPAKDIR%
+
+%STARTDIR%\gsar -s_WXVER_ -r"%WXVER%" -o wxWidgets_contrib_common.DevPackage
+%STARTDIR%\gsar -s_WXWIN_ -r"%WXWIN_GSAR%" -o wxWidgets_contrib_common.DevPackage
+
+IF NOT EXIST %DEVPAKDIR%\contrib md %DEVPAKDIR%\contrib
+IF NOT EXIST %DEVPAKDIR%\contrib\include md %DEVPAKDIR%\contrib\include
+IF NOT EXIST %DEVPAKDIR%\contrib\samples md %DEVPAKDIR%\contrib\samples
+
+xcopy %WXWIN%\contrib\include contrib\include\ /e /Y /Q
+xcopy %WXWIN%\contrib\samples contrib\samples\ /e /Y /Q
 
 
 if "%BUILD3RDP%"=="N" goto BUILD_OK

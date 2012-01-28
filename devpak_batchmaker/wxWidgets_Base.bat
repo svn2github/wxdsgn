@@ -13,7 +13,15 @@ IF "%1"=="bcc" SET PATH=%bccpath%
 cd %WXWIN%
 cd build\msw
 
-%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 USE_EXCEPTIONS=1 UNICODE=%UNICODE_FLAG% VENDOR=wxdevcpp all 2> error_%1_base.txt
+
+echo Cleaning old build
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% VENDOR=wxdevcpp clean
+
+
+rem %MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 USE_OPENGL=1 USE_ODBC=1 RUNTIME_LIBS=static USE_RTTI=0 rem USE_EXCEPTIONS=1 USE_STC=1 USE_SVG=1 USE_XRC=1 UNICODE=%UNICODE_FLAG% -DWXUSINGDLL VENDOR=wxdevcpp all 2> rem error_%1_base.txt
+
+echo Creating new build
+%MAKEPROG% -f makefile.%1 BUILD=release MONOLITHIC=1 UNICODE=%UNICODE_FLAG% VENDOR=wxdevcpp all 2> error_%1_base.txt
 
 if NOT errorlevel 1 goto BASE_END
 
