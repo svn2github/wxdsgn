@@ -443,6 +443,9 @@ begin
 
     // set any breakpoints that should be set in this file
     SetBreakPointsOnOpen;
+
+    MainForm.ToggleExecuteMenu(true);
+
 end;
 
 destructor TEditor.Destroy;

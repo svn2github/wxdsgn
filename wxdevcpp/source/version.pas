@@ -32,7 +32,6 @@ var
     COMMON_CPP_INCLUDE_DIR: string;
 
 const
-    GCC_VERSION = '3.4.5';
     //path delimiter
 {$IFDEF WIN32}
     pd = '\';
@@ -124,17 +123,7 @@ resourcestring
     LINUX_C_INCLUDE_DIR = '\usr\include';
     LINUX_RC_INCLUDE_DIR = '';
 
-    GCC_CPP_INCLUDE_DIR =
-        ';include';
-     {   //one of below directories will be deleted if don't exist, later
-        + ';include' + pd + 'c++' + pd + GCC_VERSION
-        + ';include' + pd + 'c++' + pd +
-        GCC_VERSION + pd + 'mingw32'
-        + ';include' + pd + 'c++' + pd +
-        GCC_VERSION + pd + 'backward'
-        + ';lib' + pd + 'gcc' + pd + 'mingw32' +
-        pd + GCC_VERSION + pd + 'include;'
-    ;   }
+    GCC_CPP_INCLUDE_DIR = ';include';
 
     VC2010_CPP_INCLUDE_DIR =
         ';include' + pd + 'VC2010;' + 'include' + pd + 'common;';
@@ -401,6 +390,8 @@ function GetVC2008Lib: String;
 function GetVC2005Lib: String;
 function GetVC2003Lib: String;
 function GetVC6Lib: String;
+function GetTDMGCCDir: String;
+
 var
     DevCppDir: string;
 
@@ -799,7 +790,15 @@ function BIN_DIR(CompilerID: Integer): String;
 begin
     case CompilerID of
         ID_COMPILER_MINGW:
-            Result := GCC_BIN_DIR;
+
+        begin
+           Result := GetTDMGCCDir;
+            if (Result = '') then
+                Result := GCC_BIN_DIR
+            else
+                Result := Result + pd + 'bin';
+
+        end;
 
         ID_COMPILER_VC2010:
             Result := VC2010_BIN_DIR + GetVC2010Bin;
@@ -833,8 +832,15 @@ end;
 function LIB_DIR(CompilerID: Integer): String;
 begin
     case CompilerID of
-        ID_COMPILER_MINGW:
-            Result := GCC_LIB_DIR;
+    ID_COMPILER_MINGW:
+
+    begin
+        Result := GetTDMGCCDir;
+            if (Result = '') then
+                Result := GCC_LIB_DIR
+            else
+                Result := Result + pd + 'lib;' + GCC_LIB_DIR;
+         end;
 
         ID_COMPILER_VC2010:
             Result := VC2010_LIB_DIR + GetVC2010Lib;
@@ -869,7 +875,15 @@ function C_INCLUDE_DIR(CompilerID: Integer): String;
 begin
     case CompilerID of
         ID_COMPILER_MINGW:
-            Result := GCC_C_INCLUDE_DIR;
+
+        begin
+            Result := GetTDMGCCDir;
+            if (Result = '') then
+                Result := GCC_C_INCLUDE_DIR
+            else
+                Result := Result + pd + 'include';
+
+                end;
 
         ID_COMPILER_VC2010:
             Result := COMMON_CPP_INCLUDE_DIR + VC2010_C_INCLUDE_DIR +
@@ -908,8 +922,16 @@ function CPP_INCLUDE_DIR(CompilerID: Integer): String;
 begin
     case CompilerID of
         ID_COMPILER_MINGW:
-            Result := COMMON_CPP_INCLUDE_DIR + GCC_CPP_INCLUDE_DIR;
 
+        begin
+        Result := GetTDMGCCDir;
+            if (Result = '') then
+                Result := COMMON_CPP_INCLUDE_DIR + GCC_CPP_INCLUDE_DIR
+            else
+                Result := Result + pd + 'include';
+
+                end;
+                
         ID_COMPILER_VC2010:
             Result := GetVC2010Include + VC2010_CPP_INCLUDE_DIR +
                 COMMON_CPP_INCLUDE_DIR;
@@ -1345,6 +1367,28 @@ end;
 function GetVC6Lib: String;
 begin
     Result := GetVC6Path(2);
+end;
+
+function GetTDMGCCDir: String;
+var
+        Reg : TRegistry;
+begin
+
+  Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Uninstall\TDM-GCC', False) then
+   begin
+      Result := Reg.ReadString('InstallLocation');
+    end
+    else
+        Result := '';
+
+    Reg.CloseKey;
+  finally
+    Reg.Free;
+  end;
+
 end;
 
 end.

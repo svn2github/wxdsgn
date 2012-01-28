@@ -61,8 +61,8 @@ IncludeVerInfo=1
 AutoIncBuild=1
 MajorVer=7
 MinorVer=4
-Release=1
-Build=66
+Release=2
+Build=7
 Debug=0
 PreRelease=0
 Special=0
@@ -73,7 +73,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=wxDev-C++ Developers
 FileDescription=wxDev-C++ IDE
-FileVersion=7.4.1.66
+FileVersion=7.4.2.7
 InternalName=devcpp.exe
 LegalCopyright=Copyright Bloodshed Software and the wxDev-C++ Developers
 LegalTrademarks=
@@ -82,8 +82,6 @@ ProductName=wxDev-C++ 7.0
 ProductVersion=7
 Comments=This program is licensed under the GNU General Public License
 LastCompiled=
-[Excluded Packages]
-C:\Program Files\Borland\Delphi6\Projects\Bpl\JvCtrlsD6D.bpl=JVCL Visual Controls
 [HistoryLists\hlConditionals]
 Count=1
 Item0=madExcept;PLUGIN_BUILD;UseRuntimePackages;RequireIDEPresenceForLeakReporting

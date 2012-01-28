@@ -1960,7 +1960,7 @@ begin
     WriteDev('Project', 'ProfilesCount', '3');
     WriteDev('Project', 'ProfileIndex', '0');
 
-    WriteDev('Profile1', 'ProfileName', 'MingW 3.4.5');
+    WriteDev('Profile1', 'ProfileName', 'MingW gcc');
     WriteDev('Profile1', 'ExeOutput', 'Output\MingW');
     WriteDev('Profile1', 'ObjectOutput', 'Objects\MingW');
     WriteDev('Profile1', 'ImagesOutput', 'Images\');

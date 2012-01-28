@@ -409,7 +409,14 @@ begin
     writeln(F, 'CXXFLAGS  = $(CXXINCS) $(DEFINES) ' + fCppCompileParams);
     writeln(F, 'CFLAGS    = $(INCS) $(DEFINES) ' + fCompileParams);
     writeln(F, 'GPROF     = ' + devCompilerSet.gprofName);
-    writeln(F, 'RM        = ' + RmExe);
+  //  writeln(F, 'RM        = ' + RmExe);
+    writeln(F, 'ifeq ($(OS),Windows_NT)');
+    writeln(F, '   RM = del /Q');
+    writeln(F, '   FixPath = $(subst /,\,$1)');
+    writeln(F, 'else');
+    writeln(F, '   RM = rm -f');
+    writeln(F, '   FixPath = $1');
+    writeln(F, 'endif');
 
     if devCompiler.CompilerType in ID_COMPILER_VC then
         if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
@@ -811,7 +818,7 @@ end;
 procedure TCompiler.WriteMakeClean(var F: TextFile);
 begin
     Writeln(F, 'clean: clean-custom');
-    Writeln(F, #9 + '$(RM) $(LINKOBJ) "$(BIN)"');
+    Writeln(F, #9 + '$(RM) $(call FixPath,$(LINKOBJ)) "$(call FixPath,$(BIN))"');
 end;
 
 procedure TCompiler.CreateMakefile;
