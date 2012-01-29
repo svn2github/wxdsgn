@@ -18,7 +18,7 @@
   !include "WordFunc.nsh"  ; For VersionCompare
 ;--------------------------------
 
-!define WXDEVCPP_VERSION "7.4.1"
+!define WXDEVCPP_VERSION "7.4.2"
 !define IDE_DEVPAK_NAME  "wxdevcpp.DevPak"
 !define PROGRAM_TITLE "wxDev-C++"
 !define PROGRAM_NAME "wxdevcpp"
@@ -30,7 +30,7 @@
 !define DOWNLOAD_URL "http://downloads.sourceforge.net/project/wxdsgn/devpaks/"  ; Url of devpak server for downloads
 !define HAVE_MINGW
 !define HAVE_MSVC
-!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
+;!define  DONT_INCLUDE_DEVPAKS ; Don't include the devpaks in the installer package
                                ; Instead we'll rely on an internet connection
                                ; and download the devpaks from our update server
 !define wxWidgets_name "wxWidgets"
@@ -42,19 +42,11 @@
 
   !define wxWidgets_mingw_devpak "${wxWidgets_name}_gcc.DevPak" ; name of the wxWidgets Mingw gcc devpak
   
-  !define wxWidgetsContribGcc_devpak "${wxWidgets_name}_gcc_contrib.DevPak"  ; name of the contrib devpak
- 
-  !define wxWidgetsExtrasGcc_devpak "${wxWidgets_name}_gcc_extras.DevPak"  ; name of the extras devpak
- 
 !endif
 
 !ifdef HAVE_MSVC
 
   !define wxWidgets_msvc_devpak "${wxWidgets_name}_vc.DevPak" ; name of the wxWidgets MS VC devpak
- 
-  !define wxWidgetsContribMSVC_devpak "${wxWidgets_name}_vc_contrib.DevPak"  ; name of the contrib devpak
- 
-  !define wxWidgetsExtrasMSVC_devpak "${wxWidgets_name}_vc_extras.DevPak"  ; name of the extras devpak
  
 !endif
 
@@ -456,6 +448,9 @@ done_uninstalldevpaks:
 
 File "license.txt"
 
+; Check for MinGW
+Call CheckMinGW
+
  SetOutPath $INSTDIR\Lang
   ; Basic English language file
   File "Lang\English.lng"
@@ -463,18 +458,6 @@ File "license.txt"
 
   ; Install wxDev-C++ executable
 !insertmacro InstallDevPak "${IDE_DEVPAK_NAME}"
- 
-; Install make - All compilers use the Mingw32 GNU make system
- !insertmacro InstallDevPak "make.DevPak"
-
- ; Install binutils
- !insertmacro InstallDevPak "binutils.DevPak"
-
-; Install mingw-runtime
-  !insertmacro InstallDevPak "mingw-runtime.DevPak"
-
-; Install win32-api
-  !insertmacro InstallDevPak "win32api.DevPak"
 
   ; Install Dev-C++ examples
   !insertmacro InstallDevPak "devcpp_examples.DevPak"
@@ -510,9 +493,9 @@ Section "wxWidgets common files" SectionwxWidgetsCommon
 SectionEnd
 
 !ifdef HAVE_MINGW
-SectionGroup /e "Mingw gcc wxWidgets" SectionGroupwxWidgetsGCC
+;SectionGroup /e "Mingw gcc wxWidgets" SectionGroupwxWidgetsGCC
 
-Section "Libraries" SectionwxWidgetsMingw
+Section "MinGW gcc libraries" SectionwxWidgetsMingw
 
   SectionIn 1 2
   
@@ -520,34 +503,14 @@ Section "Libraries" SectionwxWidgetsMingw
   
 SectionEnd
 
-
-Section /o "Contribs" SectionwxWidgetsContribGcc
-  SectionIn 1
-  
-  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
-  
-  !insertmacro InstallDevPak ${wxWidgetsContribGcc_devpak}
- 
-SectionEnd
-
-Section /o "Extras" SectionwxWidgetsExtrasGcc
-
-  SectionIn 1
-
-  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
-  
-  !insertmacro InstallDevPak ${wxWidgetsExtrasGcc_devpak}
-  
-SectionEnd
-
-SectionGroupEnd
+;SectionGroupEnd
 !endif
 
 !ifdef HAVE_MSVC
 
-SectionGroup /e "MS VC++ ${MSVC_YEAR} wxWidgets" SectionGroupwxWidgetsMSVC
+;SectionGroup /e "MS VC++ ${MSVC_YEAR} wxWidgets" SectionGroupwxWidgetsMSVC
 
-Section /o "Libraries" SectionwxWidgetsMSVC
+Section /o "MS VC++ ${MSVC_YEAR} libraries" SectionwxWidgetsMSVC
 
   SectionIn 1
 
@@ -555,26 +518,7 @@ Section /o "Libraries" SectionwxWidgetsMSVC
   
 SectionEnd
 
-Section /o "Contribs" SectionwxWidgetsContribMSVC
-
-  SectionIn 1
-
-  !insertmacro InstallDevPak ${wxWidgets_name}_contrib_common.DevPak
-  
-  !insertmacro InstallDevPak ${wxWidgetsContribMSVC_devpak}
-  
-SectionEnd
-
-Section /o "Extras" SectionwxWidgetsExtrasMSVC
-
-  SectionIn 1
-
-  !insertmacro InstallDevPak ${wxWidgets_name}_extras_common.DevPak
-  
-  !insertmacro InstallDevPak ${wxWidgetsExtrasMSVC_devpak}
-  
-SectionEnd
-SectionGroupEnd
+;SectionGroupEnd
 
 !endif
 
@@ -587,24 +531,6 @@ Section "Samples" SectionwxWidgetsSamples
 SectionEnd
 
 SectionGroupEnd  ; SectionGroupwxWidgetsMain
-
-!ifdef HAVE_MINGW
-Section "Mingw compiler system (headers and libraries)" SectionMingw
-  SectionIn 1 2 3
-  
-  ; Install gcc-core
-  !insertmacro InstallDevPak "gcc-core.DevPak"
-  
-; Install gcc-g++
-  !insertmacro InstallDevPak "gcc-g++.DevPak"
-  
-; Install gdb
-  !insertmacro InstallDevPak "gdb.DevPak"
-  
-  SetOutPath $INSTDIR
-  
-SectionEnd
-!endif
 
 SectionGroup /e "Help files" SectionGroupHelp
 
@@ -939,14 +865,12 @@ SectionEnd
   LangString DESC_SectionGroupwxWidgetsGCC ${LANG_ENGLISH} "wxWidgets for Mingw gcc"
   LangString DESC_SectionwxWidgetsMingw ${LANG_ENGLISH} "wxWidgets libraries compiled with Mingw gcc"
   LangString DESC_SectionMingw ${LANG_ENGLISH} "The MinGW gcc compiler and associated tools, headers and libraries"
-  LangString DESC_SectionwxWidgetsContribGcc ${LANG_ENGLISH} "wxWidgets contrib directory for Mingw gcc"
-  LangString DESC_SectionwxWidgetsExtrasGcc ${LANG_ENGLISH} "wxWidgets extras directory"
+  
 !endif
 !ifdef HAVE_MSVC
   LangString DESC_SectionGroupwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets for MS VC++ ${MSVC_YEAR}"
   LangString DESC_SectionwxWidgetsMSVC ${LANG_ENGLISH} "wxWidgets libraries compiled with MS VC ${MSVC_YEAR}"
-  LangString DESC_SectionwxWidgetsContribMSVC ${LANG_ENGLISH} "wxWidgets contrib directory for MS VC++ ${MSVC_YEAR}"
-  LangString DESC_SectionwxWidgetsExtrasMSVC ${LANG_ENGLISH} "wxWidgets extras directory for MS VC++ ${MSVC_YEAR}"
+  
 !endif
 
   LangString DESC_SectionwxWidgetsSamples ${LANG_ENGLISH} "wxWidgets samples directory"
@@ -973,14 +897,10 @@ SectionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsGCC} $(DESC_SectionGroupwxWidgetsGCC)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMingw} $(DESC_SectionwxWidgetsMingw)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionMingw} $(DESC_SectionMingw)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContribGcc} $(DESC_SectionwxWidgetsContribGcc)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsExtrasGcc} $(DESC_SectionwxWidgetsExtrasGcc)
 !endif
 !ifdef HAVE_MSVC
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsMSVC} $(DESC_SectionGroupwxWidgetsMSVC)
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsMSVC} $(DESC_SectionwxWidgetsMSVC)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsContribMSVC} $(DESC_SectionwxWidgetsContribMSVC)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SectionwxWidgetsExtrasMSVC} $(DESC_SectionwxWidgetsExtrasMSVC)
 !endif
 
     !insertmacro MUI_DESCRIPTION_TEXT ${SectionGroupwxWidgetsExamples} $(DESC_SectionGroupwxWidgetsExamples)
@@ -1041,22 +961,25 @@ AllUsers:
 
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}\Backup" \
       "Shortcuts" "$0"
-  ReadEnvStr $1 PATH
-  DetailPrint "Original path = $1"
+      
+  ;ReadEnvStr $1 PATH
+  ;DetailPrint "Original path = $1"
   
-  ${EnvVarUpdate} $0 "PATH" "P" "HKLM" "$INSTDIR\bin"   ; Prepend to path
-  ReadEnvStr $1 PATH
-  DetailPrint "Modified path = $1"
+  ;${EnvVarUpdate} $0 "PATH" "P" "HKLM" "$INSTDIR\bin"   ; Prepend to path
+  ;ReadEnvStr $1 PATH
+  ;DetailPrint "Modified path = $1"
 
 CurrentUsers:
 
-  ReadEnvStr $1 PATH
-  DetailPrint "Original path = $1"
+  SetShellVarContext current
+
+  ;ReadEnvStr $1 PATH
+  ;DetailPrint "Original path = $1"
   
-  ${EnvVarUpdate} $0 "PATH" "P" "HKCU" "$INSTDIR\bin"   ; Prepend to path
+  ;${EnvVarUpdate} $0 "PATH" "P" "HKCU" "$INSTDIR\bin"   ; Prepend to path
   
-  ReadEnvStr $1 PATH
-  DetailPrint "Modified path = $1"
+  ;ReadEnvStr $1 PATH
+  ;DetailPrint "Modified path = $1"
 
   StrCpy $0 "$SMPROGRAMS\$STARTMENU_FOLDER"
 
@@ -1067,8 +990,6 @@ CurrentUsers:
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${PROGRAM_TITLE}.lnk" "$INSTDIR\uninstall.exe"
 
-
-  
 !insertmacro MUI_STARTMENU_WRITE_END
 
 FunctionEnd
@@ -1087,8 +1008,8 @@ Function un.onUninstSuccess
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR"
   
-  ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\bin"   ; Remove from path
-  ${un.EnvVarUpdate} $0 "PATH" "R" "HKCU" "$INSTDIR\bin"   ; Remove from path
+  ;${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\bin"   ; Remove from path
+  ;${un.EnvVarUpdate} $0 "PATH" "R" "HKCU" "$INSTDIR\bin"   ; Remove from path
 
 FunctionEnd
 
@@ -1391,6 +1312,49 @@ Function .onInit
 
   ${ENDIF}
 
+FunctionEnd
+
+#Check to see if user has MinGW installed. 
+Function CheckMinGW
+
+  ;ClearErrors
+
+  ; MinGW 
+ ; ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{AC2C1BDB-1E91-4F94-B99C-E716FE2E9C75}_is1" "InstallLocation"
+ ; DetailPrint $0
+  ;IfErrors 0 mingwInstalled   ; If it's detected, then we probably don't need to remind user to install it.
+
+  ClearErrors
+  
+  ; TDM-GCC MinGW
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\TDM-GCC" "InstallLocation"
+  DetailPrint $0
+  IfErrors mingwNotInstalled mingwInstalled   ; If it's detected, then we probably don't need to remind user to install it.
+
+mingwNotInstalled:
+;====================================================================
+; Install TDM-GCC MinGW using their installer so that we can always
+;  update to latest version via them.
+
+MessageBox MB_OK "TDM-GCC MinGW (http://tdm-gcc.tdragon.net/) was not detected.$\r$\nStarting its installer for use with ${PROGRAM_TITLE}.$\r$\nClick OK to continue."
+
+!ifdef DONT_INCLUDE_DEVPAKS
+
+  File "tdm-gcc-webdl.exe"   ; Web access version
+  ExecWait "$INSTDIR\tdm-gcc-webdl.exe"
+  Delete "$INSTDIR\tdm-gcc-webdl.exe"
+
+!else
+
+  File "tdm-gcc-4.6.1.exe"
+  ExecWait "$INSTDIR\tdm-gcc-4.6.1.exe"
+  Delete "$INSTDIR\tdm-gcc-4.6.1.exe"
+
+!endif
+;====================================================================
+
+mingwInstalled:
+  DetailPrint "MinGW installed."
 
 FunctionEnd
 
