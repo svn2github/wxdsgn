@@ -34,14 +34,6 @@ uses
     {** Modified by Peter **}
     DevCodeToolTip, SynAutoIndent, utils, iplugin;
 {$ENDIF}
-{$IFDEF LINUX}
-  SysUtils, Classes, Graphics, QControls, QForms, QDialogs, CodeCompletion, CppParser,
-  QMenus, QImgList, QComCtrls, QStdCtrls, QExtCtrls, QSynEdit, QSynEditKeyCmds, version, QGrids,
-  QSynCompletionProposal, StrUtils, QSynEditTypes, QSynEditHighlighter, 
-
-  {** Modified by Peter **}
-  DevCodeToolTip, QSynAutoIndent, Types;
-{$ENDIF}
 
 type
     TEditor = class;
@@ -207,10 +199,7 @@ implementation
 
 uses
     Main, project, MultiLangSupport, devcfg, Search_Center, datamod,
-    GotoLineFrm, Macros, debugger
-{$IFDEF LINUX}
-  ,Xlib, utils
-{$ENDIF};
+    GotoLineFrm, Macros, debugger;
 
 { TDebugGutter }
 
@@ -418,9 +407,6 @@ begin
 {$IFDEF WIN32}
         ShortCut := Menus.ShortCut(Word(VK_SPACE), [ssCtrl, ssShift]);
 {$ENDIF}
-{$IFDEF LINUX}
-    ShortCut := Menus.ShortCut(Word(XK_SPACE), [ssCtrl, ssShift]);
-{$ENDIF}
     end;
 
     // create the codetooltip
@@ -464,21 +450,28 @@ begin
     if Assigned(fDebugHintTimer) then
     begin
         fDebugHintTimer.Enabled := False;
-        FreeAndNil(fDebugHintTimer);
+
+        if Assigned(fDebugHintTimer) then
+                FreeAndNil(fDebugHintTimer)
+        else
+                fDebugHintTimer := nil;
     end;
 
     if Assigned(fToolTipTimer) then
     begin
         fToolTipTimer.Enabled := False;
-        FreeAndNil(fToolTipTimer);
+        if Assigned(fToolTipTimer) then
+                FreeAndNil(fToolTipTimer)
+        else
+                fToolTipTimer := nil;
     end;
 
     DestroyCompletion;
 
     if Assigned(fText) then
-    begin
-    FreeAndNil(fText);
-    end;
+    FreeAndNil(fText)
+    else
+        fText := nil;
 
     //this activates the previous tab if the last one was
     //closed, instead of moving to the first one
@@ -488,7 +481,12 @@ begin
     with fTabSheet.PageControl do
     begin
         lastActPage := ActivePageIndex;
-        FreeAndNil(fTabSheet);
+
+        if Assigned(fTabSheet) then
+                FreeAndNil(fTabSheet)
+        else
+                fTabSheet := nil;
+                
         if lastActPage >= PageCount then
         begin
             Dec(lastActPage);
@@ -499,10 +497,14 @@ begin
     end;
     
     if Assigned(FCodeToolTip) then
-        FreeAndNil(FCodeToolTip);
+        FreeAndNil(FCodeToolTip)
+    else
+        FCodeToolTip := nil;
 
     if Assigned(FAutoIndent) then
-        FreeAndNil(FAutoIndent);
+        FreeAndNil(FAutoIndent)
+    else
+        FAutoIndent := nil;
 
     inherited;
 end;
@@ -1381,9 +1383,7 @@ begin
                 Char(vk_Back):
                     if fText.SelStart > 0 then
 {$ENDIF}
-{$IFDEF LINUX}
-        Char(XK_BackSpace): if fText.SelStart > 0 then 
-{$ENDIF}
+
                     begin
                         fText.SelStart := fText.SelStart - 1;
                         fText.SelEnd := fText.SelStart + 1;
@@ -1393,9 +1393,7 @@ begin
 {$IFDEF WIN32}
                 Char(vk_Return):
 {$ENDIF}
-{$IFDEF LINUX}
-        Char(XK_Return): 
-{$ENDIF}
+
                 begin
                     SetEditorText(Key);
                     fCompletionBox.Hide;
@@ -1432,9 +1430,7 @@ begin
 {$IFDEF WIN32}
     if Key = VK_TAB then
 {$ENDIF}
-{$IFDEF LINUX}
-  if Key = XK_TAB then
-{$ENDIF}
+
     begin
         // Indent/Unindent selected text with TAB key, like Visual C++ ...
         if FText.SelText <> '' then
@@ -1450,9 +1446,7 @@ begin
 {$IFDEF WIN32}
   if (Key = VK_UP) or (Key = VK_DOWN) then
 {$ENDIF}
-{$IFDEF LINUX}
-  if (Key = XK_UP) or (Key = VK_DOWN) then
-{$ENDIF}
+
   begin
     if (ssCtrl in Shift) and (ssAlt in Shift) then
     begin
@@ -1474,9 +1468,6 @@ if not Assigned(fCompletionBox) then
 {$IFDEF WIN32}
             if Key = vk_Space then
             begin
-{$ENDIF}
-{$IFDEF LINUX}
-      if Key = XK_Space then begin
 {$ENDIF}
                 Key := 0;
                 if not (ssShift in Shift) then
@@ -1569,7 +1560,10 @@ end;
 procedure TEditor.DestroyCompletion;
 begin
     if Assigned(fTimer) then
-        FreeAndNil(fTimer);
+        FreeAndNil(fTimer)
+    else
+        fTimer := nil;
+        
 end;
 
 procedure TEditor.InitCompletion;
@@ -1669,9 +1663,7 @@ begin
         else
         if Key = Char(vk_Return) then
 {$ENDIF}
-{$IFDEF LINUX}
-    else if Key=Char(Xk_Return) then
-{$ENDIF}
+
             FuncAddOn := '()'
         else
             FuncAddOn := '(';
@@ -1680,9 +1672,6 @@ begin
     begin
 {$IFDEF WIN32}
         if Key = Char(vk_Return) then
-{$ENDIF}
-{$IFDEF LINUX}
-    if Key=Char(Xk_Return) then
 {$ENDIF}
             FuncAddOn := ''
         else
@@ -1761,7 +1750,9 @@ var s, s1: string;
   	 I, j, slen: integer;
     attr: TSynHighlighterAttributes;
 begin
-    fDebugHintTimer.Enabled := false;
+
+    if Assigned(fDebugHintTimer) then
+        fDebugHintTimer.Enabled := false;
 
     //check if not comment or string
     //if yes - exit without hint
@@ -2385,11 +2376,17 @@ begin
                                 Lookup, False, sl) then
                             begin  // and try to use only a minimum of FillListOf
                                 if Assigned(fLastParamFunc) then
-                                    FreeAndNil(fLastParamFunc);
+                                    FreeAndNil(fLastParamFunc)
+                                else
+                                   fLastParamFunc := nil;
+
                                 fLastParamFunc := sl;
                             end
                             else
-                                FreeAndNil(sl);
+                                if Assigned(sl) then
+                                        FreeAndNil(sl)
+                                else
+                                        sl := nil;
                         end;
                         FoundMatch := Assigned(sl);
                         if not (FoundMatch) then

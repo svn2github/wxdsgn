@@ -485,6 +485,7 @@ end;
 destructor TGlyphList.Destroy;
 
 begin
+  if Assigned(FUsed) then
   FUsed.Free;
   inherited Destroy;
 end;
@@ -539,6 +540,7 @@ end;
 destructor TGlyphCache.Destroy;
 
 begin
+if Assigned(FGlyphLists) then
   FGlyphLists.Free;
   inherited Destroy;
 end;
@@ -602,6 +604,7 @@ end;
 destructor TButtonGlyph.Destroy;
 
 begin
+  if Assigned(FOriginal) then
   FOriginal.Free;
   Invalidate;
   if Assigned(GlyphCache) and GlyphCache.Empty then
@@ -1069,6 +1072,7 @@ destructor TColorPopup.Destroy;
 begin
   FBWCombs := nil;
   FColorCombs := nil;
+  if Assigned(FCanvas) then
   FCanvas.Free;
   inherited;
 end;

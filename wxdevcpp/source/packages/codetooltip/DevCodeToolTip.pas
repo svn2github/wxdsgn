@@ -33,95 +33,97 @@
 //      DeBeforeShow optimized
 //
 
-unit DevCodeToolTip;
+Unit DevCodeToolTip;
 
-interface
-uses
-  SysUtils, Classes, CodeToolTip, CppParser;
+Interface
+Uses
+    SysUtils, Classes, CodeToolTip, CppParser;
 
-type        
-  TDevCodeToolTipError = class(Exception);
-  
-  
-  TDevCodeToolTip = class(TBaseCodeToolTip)
-  private
-    FList: TList;
-    FParser: TCppParser;
-  protected
-    procedure DoBeforeShow(const AToolTips: TStringList; const APrototypeName: string); override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    property Activated;
-    property SelIndex;
-  published
-    property ActivateKey;
-    property Color;
-    property Editor;
-    property EndWhenChr;
-    property Hints;
-    property MaxScanLength;
-    property Options;    
-    property Parser: TCppParser read FParser write FParser;
-    property StartWhenChr;
-  end;
-  
-implementation
+Type
+    TDevCodeToolTipError = Class(Exception);
 
-//----------------------------------------------------------------------------------------------------------------------
 
-constructor TDevCodeToolTip.Create(AOwner: TComponent);
-begin
-  inherited;
+    TDevCodeToolTip = Class(TBaseCodeToolTip)
+    Private
+        FList: TList;
+        FParser: TCppParser;
+    Protected
+        Procedure DoBeforeShow(Const AToolTips: TStringList; Const APrototypeName: String); Override;
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Property Activated;
+        Property SelIndex;
+    Published
+        Property ActivateKey;
+        Property Color;
+        Property Editor;
+        Property EndWhenChr;
+        Property Hints;
+        Property MaxScanLength;
+        Property Options;
+        Property Parser: TCppParser Read FParser Write FParser;
+        Property StartWhenChr;
+    End;
 
-  FList := TList.Create;
-end;
+Implementation
 
 //----------------------------------------------------------------------------------------------------------------------
 
-destructor TDevCodeToolTip.Destroy;
-begin
-  FList.Free;
-  inherited;
-end;
+Constructor TDevCodeToolTip.Create(AOwner: TComponent);
+Begin
+    Inherited;
+
+    FList := TList.Create;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TDevCodeToolTip.DoBeforeShow(const AToolTips: TStringList; const APrototypeName: string);
-var
-  I: Integer;
-begin
+Destructor TDevCodeToolTip.Destroy;
+Begin
+    If Assigned(FList) Then
+        FList.Free;
+    Inherited;
+End;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+Procedure TDevCodeToolTip.DoBeforeShow(Const AToolTips: TStringList; Const APrototypeName: String);
+Var
+    I: Integer;
+Begin
   // added on 28march 2004
   // we dont need to go further when the hint is already
   // active, BECAUSE we already got all neccessary prototimes!
-  if Activated then Exit;
-  
-  AToolTips.Clear;
+    If Activated Then
+        Exit;
 
-  if Parser = nil then
-    raise TDevCodeToolTipError.Create('No parser available!');
-  
-  Parser.FillListOf(APrototypeName, False, FList);
-  AToolTips.BeginUpdate;
-  try
-    for I := 0 to FList.Count-1 do
-    begin
-      AToolTips.Add(PStatement(FList.Items[I])^._FullText);
-    end;
-  finally
+    AToolTips.Clear;
+
+    If Parser = Nil Then
+        Raise TDevCodeToolTipError.Create('No parser available!');
+
+    Parser.FillListOf(APrototypeName, False, FList);
+    AToolTips.BeginUpdate;
+    Try
+        For I := 0 To FList.Count - 1 Do
+        Begin
+            AToolTips.Add(PStatement(FList.Items[I])^._FullText);
+        End;
+    Finally
     // add the default casting "functions"
-    AToolTips.Add('dest_type reinterpret_cast<dest_type>(src_type src)');
-    AToolTips.Add('dest_type dynamic_cast<dest_type>(src_type src)');
-    AToolTips.Add('dest_type static_cast<dest_type>(src_type src)');
-    AToolTips.Add('dest_type const_cast<(const)(volatile) type>(src_type src)');
+        AToolTips.Add('dest_type reinterpret_cast<dest_type>(src_type src)');
+        AToolTips.Add('dest_type dynamic_cast<dest_type>(src_type src)');
+        AToolTips.Add('dest_type static_cast<dest_type>(src_type src)');
+        AToolTips.Add('dest_type const_cast<(const)(volatile) type>(src_type src)');
 
     // and RTTI
-    AToolTips.Add('type_info& typeid(type)');
-    AToolTips.Add('type_info& typeid(object)');
+        AToolTips.Add('type_info& typeid(type)');
+        AToolTips.Add('type_info& typeid(object)');
 
-    AToolTips.EndUpdate;
-  end;
-end;
+        AToolTips.EndUpdate;
+    End;
+End;
 
 
-end.
+End.

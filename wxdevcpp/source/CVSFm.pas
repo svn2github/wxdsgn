@@ -1105,8 +1105,17 @@ end;
 
 procedure TCVSForm.FormDestroy(Sender: TObject);
 begin
-    FreeAndNil(fAllFiles);
-    FreeAndNil(fFiles);
+
+    if Assigned(fAllFiles) then
+        FreeAndNil(fAllFiles)
+    else
+        fAllFiles := nil;
+
+    if Assigned(fFiles) then
+        FreeAndNil(fFiles)
+    else
+        fFiles := nil;
+
 end;
 
 procedure TCVSForm.FindModifiedFiles;

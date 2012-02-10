@@ -163,7 +163,8 @@ destructor TConfigData.Destroy;
 begin
     GetINI.Free;
     GetREG.Free;
-    fIgnores.Free;
+    if Assigned(fIgnores)then
+        fIgnores.Free;
     inherited Destroy;
 end;
 

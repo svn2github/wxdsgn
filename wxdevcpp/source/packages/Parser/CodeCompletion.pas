@@ -154,12 +154,36 @@ end;
 
 destructor TCodeCompletion.Destroy;
 begin
-  CodeComplForm.Free;
-  fCompletionStatementList.Free;
-  fFullCompletionStatementList.Free;
-  fHintWindow.Free;
-  fHintTimer.Free;
-  fIncludedFiles.Free;
+  if Assigned(CodeComplForm) then
+        FreeAndNil(CodeComplForm)
+        else
+          CodeComplForm := nil;
+
+  if Assigned(fCompletionStatementList) then
+        FreeAndNil(fCompletionStatementList)
+        else
+          fCompletionStatementList := nil;
+
+  if Assigned(fFullCompletionStatementList) then
+        FreeAndNil(fFullCompletionStatementList)
+  else
+        fFullCompletionStatementList := nil;
+
+  if Assigned(fHintWindow) then
+        FreeAndNil(fHintWindow)
+  else
+        fHintWindow := nil;
+
+  if Assigned(fHintTimer) then
+        FreeAndNil(fHintTimer)
+  else
+        fHintTimer := nil;
+
+  if Assigned(fIncludedFiles) then
+        FreeAndNil(fIncludedFiles)
+  else
+        fIncludedFiles := nil;
+
   inherited Destroy;
 end;
 

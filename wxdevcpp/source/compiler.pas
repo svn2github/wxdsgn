@@ -19,299 +19,295 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit compiler;
+Unit compiler;
 
-interface
-uses
+Interface
+Uses
     xprocs,
 {$IFDEF WIN32}
     Windows, SysUtils, Dialogs, StdCtrls, ComCtrls, Forms,
     devrun, version, project, utils, prjtypes, Classes, Graphics;
 {$ENDIF}
-{$IFDEF LINUX}
-  SysUtils, QDialogs, QStdCtrls, QComCtrls, QForms,
-  devrun, version, project, utils, prjtypes, Classes, QGraphics;
-{$ENDIF}
 
-const
+Const
     RmExe = 'rm -f';
 
-type
-    TLogEntryEvent = procedure(const msg: string) of object;
-    TOutputEvent = procedure(const _Line, _Unit, _Message: string) of object;
-    TSuccessEvent = procedure(const messages: integer) of object;
+Type
+    TLogEntryEvent = Procedure(Const msg: String) Of Object;
+    TOutputEvent = Procedure(Const _Line, _Unit, _Message: String) Of Object;
+    TSuccessEvent = Procedure(Const messages: Integer) Of Object;
 
     TTarget = (ctNone, ctFile, ctProject);
 
-    TCompiler = class
-    private
+    TCompiler = Class
+    Private
         fOnLogEntry: TLogEntryEvent;
         fOnOutput: TOutputEvent;
         fOnResOutput: TOutputEvent;
         fOnSuccess: TSuccessEvent;
         fPerfectDepCheck: Boolean;
         fProject: TProject;
-        fSourceFile: string;
-        fRunParams: string;
-        fMakefile: string;
+        fSourceFile: String;
+        fRunParams: String;
+        fMakefile: String;
         fTarget: TTarget;
-        fErrCount: integer;
+        fErrCount: Integer;
         DoCheckSyntax: Boolean;
-        fWarnCount: integer;
-        fSingleFile: boolean;
-        fOriginalSet: integer;
+        fWarnCount: Integer;
+        fSingleFile: Boolean;
+        fOriginalSet: Integer;
         fStartCompile: Cardinal;
 
-        procedure DoLogEntry(const msg: string);
-        procedure DoOutput(const s, s2, s3: string);
-        procedure DoResOutput(const s, s2, s3: string);
-        function GetMakeFile: string;
-        function GetCompiling: Boolean;
-        procedure InitProgressForm(Status: string);
-        procedure EndProgressForm;
-        procedure ReleaseProgressForm;
-        procedure ProcessProgressForm(Line: string);
-        procedure SwitchToProjectCompilerSet; // stores the original compiler set
-        procedure SwitchToOriginalCompilerSet;
+        Procedure DoLogEntry(Const msg: String);
+        Procedure DoOutput(Const s, s2, s3: String);
+        Procedure DoResOutput(Const s, s2, s3: String);
+        Function GetMakeFile: String;
+        Function GetCompiling: Boolean;
+        Procedure InitProgressForm(Status: String);
+        Procedure EndProgressForm;
+        Procedure ReleaseProgressForm;
+        Procedure ProcessProgressForm(Line: String);
+        Procedure SwitchToProjectCompilerSet; // stores the original compiler set
+        Procedure SwitchToOriginalCompilerSet;
         // switches the original compiler set to index
-        procedure SetProject(Project: TProject);
-    public
-        OnCompilationEnded: procedure(Sender: TObject) of object;
+        Procedure SetProject(Project: TProject);
+    Public
+        OnCompilationEnded: Procedure(Sender: TObject) Of Object;
 
-        procedure BuildMakeFile;
-        procedure CheckSyntax; virtual;
-        procedure Compile(SingleFile: string = ''); virtual;
-        function Clean: Boolean; virtual;
-        function RebuildAll: Boolean; virtual;
-        procedure ShowResults; virtual;
-        function FindDeps(TheFile: String): String; Overload;
-        function FindDeps(TheFile: String; var VisitedFiles: TStringList): String;
+        Procedure BuildMakeFile;
+        Procedure CheckSyntax; Virtual;
+        Procedure Compile(SingleFile: String = ''); Virtual;
+        Function Clean: Boolean; Virtual;
+        Function RebuildAll: Boolean; Virtual;
+        Procedure ShowResults; Virtual;
+        Function FindDeps(TheFile: String): String; Overload;
+        Function FindDeps(TheFile: String; Var VisitedFiles: TStringList): String;
             Overload;
-        function UpToDate: Boolean;
+        Function UpToDate: Boolean;
 
-        property Compiling: Boolean read GetCompiling;
-        property Project: TProject read fProject write SetProject;
-        property OnLogEntry: TLogEntryEvent read fOnLogEntry write fOnLogEntry;
-        property OnOutput: TOutputEvent read fOnOutput write fOnOutput;
-        property OnResOutput: TOutputEvent read fOnResOutput write fOnResOutput;
-        property OnSuccess: TSuccessEvent read fOnSuccess write fOnSuccess;
-        property SourceFile: string read fSourceFile write fSourceFile;
-        property PerfectDepCheck: Boolean read fPerfectDepCheck
-            write fPerfectDepCheck;
-        property RunParams: string read fRunParams write fRunParams;
-        property MakeFile: string read GetMakeFile write fMakeFile;
-        property Target: TTarget read fTarget write fTarget;
-        property ErrorCount: integer read fErrCount;
-        procedure OnAbortCompile(Sender: TObject);
-        procedure AbortThread;
-        procedure ParseLine(Line: String);
-    protected
-        fCompileParams: string;
-        fCppCompileParams: string;
-        fLibrariesParams: string;
-        fResObjects: string;
-        fLibrariesLibs: string;
-        fIncludesParams: string;
-        fCppIncludesParams: string;
-        fRcIncludesParams: string;
-        fBinDirs: string;
-        fUserParams: string;
+        Property Compiling: Boolean Read GetCompiling;
+        Property Project: TProject Read fProject Write SetProject;
+        Property OnLogEntry: TLogEntryEvent Read fOnLogEntry Write fOnLogEntry;
+        Property OnOutput: TOutputEvent Read fOnOutput Write fOnOutput;
+        Property OnResOutput: TOutputEvent Read fOnResOutput Write fOnResOutput;
+        Property OnSuccess: TSuccessEvent Read fOnSuccess Write fOnSuccess;
+        Property SourceFile: String Read fSourceFile Write fSourceFile;
+        Property PerfectDepCheck: Boolean Read fPerfectDepCheck
+            Write fPerfectDepCheck;
+        Property RunParams: String Read fRunParams Write fRunParams;
+        Property MakeFile: String Read GetMakeFile Write fMakeFile;
+        Property Target: TTarget Read fTarget Write fTarget;
+        Property ErrorCount: Integer Read fErrCount;
+        Procedure OnAbortCompile(Sender: TObject);
+        Procedure AbortThread;
+        Procedure ParseLine(Line: String);
+    Protected
+        fCompileParams: String;
+        fCppCompileParams: String;
+        fLibrariesParams: String;
+        fResObjects: String;
+        fLibrariesLibs: String;
+        fIncludesParams: String;
+        fCppIncludesParams: String;
+        fRcIncludesParams: String;
+        fBinDirs: String;
+        fUserParams: String;
         fDevRun: TDevRun;
-        fAbortThread: boolean;
+        fAbortThread: Boolean;
 
-        procedure CreateMakefile; virtual;
-        procedure CreateStaticMakefile; virtual;
-        procedure CreateDynamicMakefile; virtual;
-        procedure GetCompileParams; virtual;
-        procedure GetLibrariesParams; virtual;
-        procedure GetIncludesParams; virtual;
-        procedure LaunchThread(s, dir: string); virtual;
-        procedure OnCompilationTerminated(Sender: TObject); virtual;
-        procedure OnLineOutput(Sender: TObject; const Line: String); virtual;
-        procedure ParseResults; virtual;
-        function NewMakeFile(var F: TextFile): boolean; virtual;
-        procedure WriteMakeClean(var F: TextFile); virtual;
-        procedure WriteMakeObjFilesRules(var F: TextFile); virtual;
-        function PreprocDefines: string;
-        function ExtractLibParams(strFullLibStr: String): string;
-        function ExtractLibFiles(strFullLibStr: String): string;
-    published
-        constructor Create;
-    end;
+        Procedure CreateMakefile; Virtual;
+        Procedure CreateStaticMakefile; Virtual;
+        Procedure CreateDynamicMakefile; Virtual;
+        Procedure GetCompileParams; Virtual;
+        Procedure GetLibrariesParams; Virtual;
+        Procedure GetIncludesParams; Virtual;
+        Procedure LaunchThread(s, dir: String); Virtual;
+        Procedure OnCompilationTerminated(Sender: TObject); Virtual;
+        Procedure OnLineOutput(Sender: TObject; Const Line: String); Virtual;
+        Procedure ParseResults; Virtual;
+        Function NewMakeFile(Var F: TextFile): Boolean; Virtual;
+        Procedure WriteMakeClean(Var F: TextFile); Virtual;
+        Procedure WriteMakeObjFilesRules(Var F: TextFile); Virtual;
+        Function PreprocDefines: String;
+        Function ExtractLibParams(strFullLibStr: String): String;
+        Function ExtractLibFiles(strFullLibStr: String): String;
+    Published
+        Constructor Create;
+    End;
 
-implementation
+Implementation
 
-uses
+Uses
     MultiLangSupport, devcfg, Macros, devExec, CompileProgressFm,
     StrUtils, RegExpr,
     SynEdit, SynEditHighlighter, SynEditTypes, datamod, main;
 // DbugIntf, EAB removed Gexperts debug stuff.
 
-constructor TCompiler.Create;
-begin
+Constructor TCompiler.Create;
+Begin
     fOriginalSet := -1;
-end;
+End;
 
-procedure TCompiler.DoLogEntry(const msg: string);
-begin
-    if assigned(fOnLogEntry) then
+Procedure TCompiler.DoLogEntry(Const msg: String);
+Begin
+    If assigned(fOnLogEntry) Then
         fOnLogEntry(msg);
-end;
+End;
 
-procedure TCompiler.DoOutput(const s, s2, s3: string);
-begin
-    if assigned(fOnOutput) then
+Procedure TCompiler.DoOutput(Const s, s2, s3: String);
+Begin
+    If assigned(fOnOutput) Then
         fOnOutput(s, s2, s3);
-end;
+End;
 
-procedure TCompiler.DoResOutput(const s, s2, s3: string);
-begin
-    if assigned(fOnResOutput) then
+Procedure TCompiler.DoResOutput(Const s, s2, s3: String);
+Begin
+    If assigned(fOnResOutput) Then
         fOnResOutput(s, s2, s3);
-end;
+End;
 
-function TCompiler.GetMakeFile: string;
-begin
-    if not FileExists(fMakeFile) then
+Function TCompiler.GetMakeFile: String;
+Begin
+    If Not FileExists(fMakeFile) Then
         BuildMakeFile;
     result := fMakeFile;
-end;
+End;
 
 // create makefile for fproject if assigned
-procedure TCompiler.BuildMakeFile;
-begin
+Procedure TCompiler.BuildMakeFile;
+Begin
     //Make sure we have an active project
-    if not Assigned(fProject) then
-    begin
+    If Not Assigned(fProject) Then
+    Begin
         fMakeFile := '';
         Exit;
-    end
+    End
 
     //Exit if we have a custom makefile
-    else
-    if fProject.CurrentProfile.UseCustomMakefile then
-    begin
+    Else
+    If fProject.CurrentProfile.UseCustomMakefile Then
+    Begin
         fMakefile := fProject.CurrentProfile.CustomMakefile;
         Exit;
-    end;
+    End;
 
     //Create the object and executable output directory if it doesn't exist
-    if (fProject.CurrentProfile.ObjectOutput <> '') and
-        (not DirectoryExists(fProject.CurrentProfile.ObjectOutput)) then
+    If (fProject.CurrentProfile.ObjectOutput <> '') And
+        (Not DirectoryExists(fProject.CurrentProfile.ObjectOutput)) Then
         ForceDirectories(GetRealPath(SubstituteMakeParams(
             fProject.CurrentProfile.ObjectOutput), fProject.Directory));
-    if (fProject.CurrentProfile.ExeOutput <> '') and
-        (not DirectoryExists(fProject.CurrentProfile.ExeOutput)) then
+    If (fProject.CurrentProfile.ExeOutput <> '') And
+        (Not DirectoryExists(fProject.CurrentProfile.ExeOutput)) Then
         ForceDirectories(GetRealPath(SubstituteMakeParams(
             fProject.CurrentProfile.ExeOutput), fProject.Directory));
 
     //Then show the compilation progres form
-    if Assigned(CompileProgressForm) then
+    If Assigned(CompileProgressForm) Then
         CompileProgressForm.btnClose.Enabled := False;
 
     //Generate a makefile for the current project type
-    case Project.CurrentProfile.typ of
+    Case Project.CurrentProfile.typ Of
         dptStat:
             CreateStaticMakeFile;
         dptDyn:
             CreateDynamicMakeFile;
-    else
+    Else
         CreateMakeFile;
-    end;
+    End;
 
-    if FileExists(fMakeFile) then
+    If FileExists(fMakeFile) Then
         FileSetDate(fMakefile, DateTimeToFileDate(Now));
     // fix the "Clock skew detected" warning ;)
-    if Assigned(CompileProgressForm) then
+    If Assigned(CompileProgressForm) Then
         CompileProgressForm.btnClose.Enabled := True;
-end;
+End;
 
-function TCompiler.NewMakeFile(var F: TextFile): boolean;
-const
+Function TCompiler.NewMakeFile(Var F: TextFile): Boolean;
+Const
     cAppendStr = '%s %s';
 
-var
-    ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, tfile: string;
-    i: integer;
-begin
+Var
+    ObjResFile, Objects, LinkObjects, Comp_ProgCpp, Comp_Prog, tfile: String;
+    i: Integer;
+Begin
     Objects := '';
 
-    for i := 0 to Pred(fProject.Units.Count) do
-    begin
-        if (GetFileTyp(fProject.Units[i].FileName) = utRes) or
-            ((not fProject.Units[i].Compile) and (not fProject.Units[i].Link)) then
+    For i := 0 To Pred(fProject.Units.Count) Do
+    Begin
+        If (GetFileTyp(fProject.Units[i].FileName) = utRes) Or
+            ((Not fProject.Units[i].Compile) And (Not fProject.Units[i].Link)) Then
             Continue;
 
-        if fProject.CurrentProfile.ObjectOutput <> '' then
-        begin
+        If fProject.CurrentProfile.ObjectOutput <> '' Then
+        Begin
             tfile := IncludeTrailingPathDelimiter(
                 fProject.CurrentProfile.ObjectOutput) +
                 ExtractFileName(fProject.Units[i].FileName);
             tfile := ExtractRelativePath(fProject.FileName, tfile);
-        end
-        else
+        End
+        Else
             tfile := ExtractRelativePath(fProject.FileName,
                 fProject.Units[i].FileName);
 
-        if GetFileTyp(tfile) <> utHead then
-        begin
+        If GetFileTyp(tfile) <> utHead Then
+        Begin
             Objects := Format(cAppendStr,
-                [Objects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT), true, false, true)]);
-            if fProject.Units[i].Link then
-            begin
-                if (devCompiler.CompilerType = ID_COMPILER_DMARS) then
+                [Objects, GenMakePath(ChangeFileExt(tfile, OBJ_EXT), True, False, True)]);
+            If fProject.Units[i].Link Then
+            Begin
+                If (devCompiler.CompilerType = ID_COMPILER_DMARS) Then
                     LinkObjects := Format(cAppendStr,
                         [LinkObjects, GenMakePath3(ChangeFileExt(tfile, OBJ_EXT))])
-                else
+                Else
                     LinkObjects := Format(cAppendStr, [LinkObjects, '"' +
-                        GenMakePath(ChangeFileExt(tfile, OBJ_EXT), false, false, true) + '"']);
-            end;
-        end
-        else
-        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) and
-            (I = fProject.PchHead) then
+                        GenMakePath(ChangeFileExt(tfile, OBJ_EXT), False, False, True) + '"']);
+            End;
+        End
+        Else
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) And
+            (I = fProject.PchHead) Then
             Objects := Format(cAppendStr,
                 [Objects, GenMakePath(ChangeFileExt(ExtractRelativePath(
-                fProject.FileName, fProject.Units[i].FileName), PCH_EXT), true, false, true)]);
-    end;
+                fProject.FileName, fProject.Units[i].FileName), PCH_EXT), True, False, True)]);
+    End;
 
-    if Length(fProject.CurrentProfile.PrivateResource) = 0 then
+    If Length(fProject.CurrentProfile.PrivateResource) = 0 Then
         ObjResFile := ''
-    else
-    begin
-        if fProject.CurrentProfile.ObjectOutput <> '' then
-        begin
+    Else
+    Begin
+        If fProject.CurrentProfile.ObjectOutput <> '' Then
+        Begin
             ObjResFile := ChangeFileExt(fProject.CurrentProfile.PrivateResource,
                 RES_EXT);
             ObjResFile := ExtractRelativePath(fProject.FileName, ObjResFile);
-        end
-        else
+        End
+        Else
             ObjResFile := ExtractRelativePath(fProject.FileName,
                 ChangeFileExt(fProject.CurrentProfile.PrivateResource, RES_EXT));
-        if devCompiler.CompilerType <> ID_COMPILER_DMARS then
+        If devCompiler.CompilerType <> ID_COMPILER_DMARS Then
             //Make the resource file into a usable path
             LinkObjects := Format(cAppendStr, [LinkObjects, GenMakePath(ObjResFile)])
-        else
+        Else
             LinkObjects := LinkObjects + '_@@_' + GenMakePath(ObjResFile);
 
         Objects := Format(cAppendStr, [Objects, GenMakePath2(ObjResFile)]);
-    end;
+    End;
 
-    if devCompiler.gppName <> '' then
-        if devCompiler.compilerType in ID_COMPILER_VC then
+    If devCompiler.gppName <> '' Then
+        If devCompiler.compilerType In ID_COMPILER_VC Then
             Comp_ProgCpp := '"' + devCompiler.gppName + '" /nologo'
-        else
+        Else
             Comp_ProgCpp := devCompiler.gppName
-    else
+    Else
         Comp_ProgCpp := CPP_PROGRAM(devCompiler.CompilerType);
 
-    if devCompiler.gccName <> '' then
-        if devCompiler.compilerType in ID_COMPILER_VC then
+    If devCompiler.gccName <> '' Then
+        If devCompiler.compilerType In ID_COMPILER_VC Then
             Comp_Prog := '"' + devCompiler.gccName + '" /nologo'
-        else
+        Else
             Comp_Prog := devCompiler.gccName
-    else
+    Else
         Comp_Prog := CP_PROGRAM(devCompiler.CompilerType);
 
     GetCompileParams;
@@ -319,23 +315,23 @@ begin
     GetIncludesParams;
 
     fMakefile := fProject.Directory + DEV_MAKE_FILE;
-    OnLineOutput(nil, 'Building Makefile: "' + fMakefile + '"');
+    OnLineOutput(Nil, 'Building Makefile: "' + fMakefile + '"');
     Assignfile(F, fMakefile);
-    try
+    Try
         Rewrite(F);
-    except
-        on E: Exception do
-        begin
+    Except
+        on E: Exception Do
+        Begin
             MessageDlg('Could not create Makefile: "' + fMakefile + '"'
                 + #13#10 + E.Message, mtError, [mbOK], 0);
-            result := false;
+            result := False;
             exit;
-        end;
-    end;
-    result := true;
+        End;
+    End;
+    result := True;
     writeln(F, '# Project: ' + fProject.Name);
     writeln(F, '# Compiler: ' + devCompiler.Name);
-    case devCompiler.CompilerType of
+    Case devCompiler.CompilerType Of
         ID_COMPILER_MINGW:
             writeln(F, '# Compiler Type: MingW 3');
         ID_COMPILER_VC6:
@@ -356,43 +352,43 @@ begin
             writeln(F, '# Compiler Type: OpenWatCom');
         ID_COMPILER_LINUX:
             writeln(F, '# Compiler Type: Linux gcc');
-    end;
+    End;
     writeln(F, Format('# Makefile created by %s %s on %s',
         [DEVCPP, DEVCPP_VERSION,
         FormatDateTime('dd/mm/yy hh:nn', Now)]));
 
-    if DoCheckSyntax then
-    begin
+    If DoCheckSyntax Then
+    Begin
         writeln(F, '# This Makefile is written for syntax check!');
         writeln(F, '# Regenerate it if you want to use this Makefile to build.');
-    end;
+    End;
     writeln(F);
 
 {$IFDEF PLUGIN_BUILD}
-    for i := 0 to MainForm.pluginsCount - 1 do
+    For i := 0 To MainForm.pluginsCount - 1 Do
         writeln(F, MainForm.plugins[i].GetCompilerMacros);
 {$ENDIF}
 
     writeln(F, 'CPP       = ' + Comp_ProgCpp);
     writeln(F, 'CC        = ' + Comp_Prog);
-    if (devCompiler.windresName <> '') then
+    If (devCompiler.windresName <> '') Then
         writeln(F, 'WINDRES   = "' + devCompiler.windresName + '"')
-    else
+    Else
         writeln(F, 'WINDRES   = ' + RES_PROGRAM(devCompiler.CompilerType));
     writeln(F, 'OBJ       =' + Objects);
 
-    if (devCompiler.CompilerType = ID_COMPILER_DMARS) then
-    begin
+    If (devCompiler.CompilerType = ID_COMPILER_DMARS) Then
+    Begin
         writeln(F, 'LINKOBJ   = ' + ExtractLibParams(LinkObjects));
         fResObjects := StringReplace(ExtractLibFiles(LinkObjects),
             '/', '\', [rfReplaceAll]);
-    end
-    else
+    End
+    Else
         writeln(F, 'LINKOBJ   =' + LinkObjects);
 
-    if (devCompiler.CompilerType = ID_COMPILER_DMARS) then
+    If (devCompiler.CompilerType = ID_COMPILER_DMARS) Then
         writeln(F, 'LIBS      =' + ExtractLibFiles(fLibrariesParams))
-    else
+    Else
         writeln(F, 'LIBS      =' + StringReplace(fLibrariesParams,
             '\', '/', [rfReplaceAll]));
 
@@ -404,7 +400,7 @@ begin
         '\', '/', [rfReplaceAll]));
     writeln(F, 'BIN       = ' +
         GenMakePath(ExtractRelativePath(Makefile, fProject.Executable),
-        false, false, true));
+        False, False, True));
     writeln(F, 'DEFINES   = ' + PreprocDefines);
     writeln(F, 'CXXFLAGS  = $(CXXINCS) $(DEFINES) ' + fCppCompileParams);
     writeln(F, 'CFLAGS    = $(INCS) $(DEFINES) ' + fCompileParams);
@@ -418,95 +414,95 @@ begin
     writeln(F, '   FixPath = $1');
     writeln(F, 'endif');
 
-    if devCompiler.CompilerType in ID_COMPILER_VC then
-        if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
+    If devCompiler.CompilerType In ID_COMPILER_VC Then
+        If (assigned(fProject) And (fProject.CurrentProfile.typ = dptStat)) Then
             writeln(F, 'LINK      = ' + devCompiler.dllwrapName)
-        else
-        begin
-            if (devCompiler.CompilerType in ID_COMPILER_VC_CURRENT)  then
+        Else
+        Begin
+            If (devCompiler.CompilerType In ID_COMPILER_VC_CURRENT) Then
                 writeln(F, 'LINK      = "' + devCompiler.dllwrapName +
                     '" /nologo /manifest')
-            else
+            Else
                 writeln(F, 'LINK      = "' + devCompiler.dllwrapName + '" /nologo');
-        end
-    else
-    if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-        (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
-        if (assigned(fProject) and (fProject.CurrentProfile.typ = dptStat)) then
+        End
+    Else
+    If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+        (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
+        If (assigned(fProject) And (fProject.CurrentProfile.typ = dptStat)) Then
             writeln(F, 'LINK      = ar')
-        else
-        if fProject.Profiles.useGPP then
+        Else
+        If fProject.Profiles.useGPP Then
             writeln(F, 'LINK      = ' + Comp_ProgCpp)
-        else
+        Else
             writeln(F, 'LINK      = ' + Comp_Prog)
-    else
-    if devCompiler.CompilerType = ID_COMPILER_DMARS then
-    begin //fixme: Check what is the options for static Lib file generation
+    Else
+    If devCompiler.CompilerType = ID_COMPILER_DMARS Then
+    Begin //fixme: Check what is the options for static Lib file generation
         writeln(F, 'LINK      = ' + devCompiler.dllwrapName +
-            ' /NOLOGO /SILENT /NOI /DELEXECUTABLE ' + ExtractLibParams(fLibrariesParams))
-    end;
+            ' /NOLOGO /SILENT /NOI /DELEXECUTABLE ' + ExtractLibParams(fLibrariesParams));
+    End;
 
     Writeln(F, '');
-    if DoCheckSyntax then
+    If DoCheckSyntax Then
         Writeln(F, '.PHONY: all all-before all-after clean clean-custom $(OBJ) $(BIN)')
-    else
+    Else
         Writeln(F, '.PHONY: all all-before all-after clean clean-custom');
     Writeln(F, 'all: all-before $(BIN) all-after');
     Writeln(F, '');
 
-    for i := 0 to fProject.CurrentProfile.MakeIncludes.Count - 1 do
-    begin
+    For i := 0 To fProject.CurrentProfile.MakeIncludes.Count - 1 Do
+    Begin
         Writeln(F, 'include ' +
             GenMakePath(fProject.CurrentProfile.MakeIncludes.Strings[i]));
-    end;
+    End;
 
     WriteMakeClean(F);
     writeln(F);
-end;
+End;
 
-function TCompiler.FindDeps(TheFile: String): String;
-var
+Function TCompiler.FindDeps(TheFile: String): String;
+Var
     Visited: TStringList;
-begin
-    try
+Begin
+    Try
         Visited := TStringList.Create;
         Result := FindDeps(TheFile, Visited);
-    finally
+    Finally
         Visited.Free;
-    end;
-end;
+    End;
+End;
 
-function TCompiler.FindDeps(TheFile: String;
-    var VisitedFiles: TStringList): String;
-var
+Function TCompiler.FindDeps(TheFile: String;
+    Var VisitedFiles: TStringList): String;
+Var
     Editor: TSynEdit;
-    i, Start: integer;
+    i, Start: Integer;
     Includes: TStringList;
-    Token, Quote, FilePath: string;
+    Token, Quote, FilePath: String;
     Attri: TSynHighlighterAttributes;
 
-    function StartsStr(start: string; str: string): Boolean;
-    var
-        i: integer;
-    begin
+    Function StartsStr(start: String; str: String): Boolean;
+    Var
+        i: Integer;
+    Begin
         //Skip whitespace
         Result := False;
-        for i := 1 to Length(str) - 1 do
-        begin
-            if str[i] in [' ', #9, #13, #10] then
+        For i := 1 To Length(str) - 1 Do
+        Begin
+            If str[i] In [' ', #9, #13, #10] Then
                 continue;
 
             //OK, no more whitespace, see if we start the string
             Result := Copy(str, i, Length(start)) = start;
             Exit;
-        end;
-    end;
-begin;
+        End;
+    End;
+Begin;
     Result := '';
-    Includes := nil;
+    Includes := Nil;
 
     //First check that we have not been visited
-    if VisitedFiles.IndexOf(TheFile) <> -1 then
+    If VisitedFiles.IndexOf(TheFile) <> -1 Then
         Exit;
 
     //Otherwise mark ourselves as visited
@@ -515,26 +511,26 @@ begin;
     VisitedFiles.Add(TheFile);
     Application.ProcessMessages;
 
-    try
+    Try
         //Load the lines of the file
         Includes := TStringList.Create;
         Editor.Lines.LoadFromFile(TheFile);
 
         //Iterate over the lines of the file
-        for i := 0 to Editor.Lines.Count - 1 do
-            if StartsStr('#', Editor.Lines[i]) then
-            begin
+        For i := 0 To Editor.Lines.Count - 1 Do
+            If StartsStr('#', Editor.Lines[i]) Then
+            Begin
                 Start := Pos('#', Editor.Lines[i]);
                 Editor.GetHighlighterAttriAtRowCol(BufferCoord(start, i + 1),
                     Token, Attri);
 
                 //Is it a preprocessor directive?
-                if Attri.Name <> 'Preprocessor' then
+                If Attri.Name <> 'Preprocessor' Then
                     Continue;
 
                 //Is it an include?
                 Token := Trim(Copy(Token, 2, Length(Token))); //copy after #
-                if not AnsiStartsStr('include', Token) then
+                If Not AnsiStartsStr('include', Token) Then
                     Continue;
 
                 //Extract the include filename
@@ -544,7 +540,7 @@ begin;
 
                 //Extract the type of closing quote
                 quote := Token[1];
-                if quote = '<' then
+                If quote = '<' Then
                     quote := '>';
 
                 //Remove the start and close quotes
@@ -553,7 +549,7 @@ begin;
 
                 //Now that tempstr contains the path, does it exist, hence we can depend on it?
                 FilePath := GetRealPath(Token, ExtractFilePath(TheFile));
-                if not FileExists(FilePath) then
+                If Not FileExists(FilePath) Then
                     Continue;
 
                 //When we do get here, the file does exist. Convert the path to the one relative to the makefile
@@ -562,235 +558,235 @@ begin;
 
                 //Recurse into the include
                 Result := result + FindDeps(FilePath, VisitedFiles);
-            end;
+            End;
 
-    finally
-        if Assigned(Includes) then
+    Finally
+        If Assigned(Includes) Then
             Includes.Free;
         Editor.Free;
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.WriteMakeObjFilesRules(var F: TextFile);
-var
-    i: integer;
+Procedure TCompiler.WriteMakeObjFilesRules(Var F: TextFile);
+Var
+    i: Integer;
     RCDir: String;
     PCHObj, PCHFile, PCHHead: String;
-    tfile, ofile, ResFiles, tmp: string;
-begin
+    tfile, ofile, ResFiles, tmp: String;
+Begin
     //Calculate the PCH file for this project
     PCHFile := '';
     PCHHead := '';
     PCHObj := '';
 
-    try
-        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
-        begin
-            if fProject.PchHead <> -1 then
-            begin
+    Try
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
+        Begin
+            If fProject.PchHead <> -1 Then
+            Begin
                 PCHObj := GenMakePath2(ExtractRelativePath(Makefile,
                     GetRealPath(ChangeFileExt(fProject.Units[fProject.PchHead].FileName, PCH_EXT),
                     fProject.Directory)));
                 PCHHead := ExtractRelativePath(fProject.Directory,
                     fProject.Units[fProject.PchHead].FileName);
                 PCHFile := GenMakePath(ExtractFileName(PCHHead) + PCH_EXT);
-            end;
-        end
-        else
-        if devCompiler.CompilerType in ID_COMPILER_VC then
-        begin
-            if (fProject.PchHead <> -1) and (fProject.PchSource <> -1) then
-            begin
-                if fProject.CurrentProfile.ObjectOutput <> '' then
-                begin
+            End;
+        End
+        Else
+        If devCompiler.CompilerType In ID_COMPILER_VC Then
+        Begin
+            If (fProject.PchHead <> -1) And (fProject.PchSource <> -1) Then
+            Begin
+                If fProject.CurrentProfile.ObjectOutput <> '' Then
+                Begin
                     PCHObj := IncludeTrailingPathDelimiter(
                         fProject.CurrentProfile.ObjectOutput);
                     PCHFile := PCHObj;
-                end;
+                End;
                 PCHObj := GenMakePath2(PCHObj + ExtractRelativePath(
                     Makefile, GetRealPath(ChangeFileExt(
                     fProject.Units[fProject.PchSource].FileName, OBJ_EXT), fProject.Directory)));
                 PCHHead := ExtractRelativePath(fProject.Directory,
                     fProject.Units[fProject.PchHead].FileName);
                 PCHFile := GenMakePath(PCHFile + ExtractFileName(PCHHead) + PCH_EXT);
-            end
-            else
-            if (fProject.PchHead <> -1) or (fProject.PchSource <> -1) then
-            begin
+            End
+            Else
+            If (fProject.PchHead <> -1) Or (fProject.PchSource <> -1) Then
+            Begin
                 DoOutput('', '', Format(Lang[ID_COMPMSG_MAKEFILEWARNING],
                     [Lang[ID_COMPMSG_PCHINCOMPLETE]]));
                 Inc(fWarnCount);
-            end;
-        end;
-    except
-        on e: Exception do
-            if devCompiler.CompilerType in ID_COMPILER_VC then
-            begin
+            End;
+        End;
+    Except
+        on e: Exception Do
+            If devCompiler.CompilerType In ID_COMPILER_VC Then
+            Begin
                 DoOutput('', '', Format(Lang[ID_COMPMSG_MAKEFILEWARNING],
                     [Lang[ID_COMPMSG_PCHINCOMPLETE]]));
                 Inc(fWarnCount);
-            end;
-    end;
+            End;
+    End;
 
-    for i := 0 to pred(fProject.Units.Count) do
-    begin
-        if not fProject.Units[i].Compile then
+    For i := 0 To pred(fProject.Units.Count) Do
+    Begin
+        If Not fProject.Units[i].Compile Then
             Continue;
 
         // skip resource files
-        if GetFileTyp(fProject.Units[i].FileName) = utRes then
+        If GetFileTyp(fProject.Units[i].FileName) = utRes Then
             Continue;
 
         tfile := fProject.Units[i].FileName;
-        if FileSamePath(tfile, fProject.Directory) then
+        If FileSamePath(tfile, fProject.Directory) Then
             tfile := ExtractFileName(tFile)
-        else
+        Else
             tfile := ExtractRelativePath(Makefile, tfile);
 
-        if GetFileTyp(tfile) <> utHead then
-        begin
+        If GetFileTyp(tfile) <> utHead Then
+        Begin
             writeln(F);
-            if fProject.CurrentProfile.ObjectOutput <> '' then
-            begin
+            If fProject.CurrentProfile.ObjectOutput <> '' Then
+            Begin
                 ofile := IncludeTrailingPathDelimiter(
                     fProject.CurrentProfile.ObjectOutput) +
                     ExtractFileName(fProject.Units[i].FileName);
                 ofile := ExtractRelativePath(fProject.FileName,
                     ChangeFileExt(ofile, OBJ_EXT));
-            end
-            else
+            End
+            Else
                 ofile := ChangeFileExt(tfile, OBJ_EXT);
 
-            if (PCHObj <> '') and (((devCompiler.CompilerType in ID_COMPILER_VC) and
-                (I <> fProject.PchSource)) or
-                (not (devCompiler.CompilerType in ID_COMPILER_VC))) then
+            If (PCHObj <> '') And (((devCompiler.CompilerType In ID_COMPILER_VC) And
+                (I <> fProject.PchSource)) Or
+                (Not (devCompiler.CompilerType In ID_COMPILER_VC))) Then
                 tmp := PCHObj + ' '
-            else
+            Else
                 tmp := '';
 
-            if PerfectDepCheck and not fSingleFile then
+            If PerfectDepCheck And Not fSingleFile Then
                 writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' +
                     tmp + GenMakePath2(tfile) + FindDeps(fProject.Directory + tfile))
-            else
+            Else
                 writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' +
                     tmp + GenMakePath2(tfile));
 
-            if fProject.Units[i].OverrideBuildCmd and
-                (fProject.Units[i].BuildCmd <> '') then
-            begin
+            If fProject.Units[i].OverrideBuildCmd And
+                (fProject.Units[i].BuildCmd <> '') Then
+            Begin
                 tmp := fProject.Units[i].BuildCmd;
                 tmp := StringReplace(tmp, '<CRTAB>', #10#9, [rfReplaceAll]);
                 writeln(F, #9 + tmp);
-            end
-            else
-            begin
+            End
+            Else
+            Begin
                 //Decide on whether we pass a PCH creation or usage argument
-                with devCompiler do
-                begin
+                With devCompiler Do
+                Begin
                     tmp := '';
-                    if CompilerType in ID_COMPILER_VC then
-                    begin
-                        if PCHHead <> '' then
-                        begin
-                            if I <> fProject.PchSource then
+                    If CompilerType In ID_COMPILER_VC Then
+                    Begin
+                        If PCHHead <> '' Then
+                        Begin
+                            If I <> fProject.PchSource Then
                                 tmp := PchUseFormat
-                            else
+                            Else
                                 tmp := PchCreateFormat;
                             tmp := Format(' ' + tmp + ' ' + PchFileFormat,
                                 [GenMakePath(PCHHead), PCHFile]);
-                        end
-                    end;
-                end;
+                        End;
+                    End;
+                End;
 
-                if not DoCheckSyntax then
-                    if fProject.Units[i].CompileCpp then
+                If Not DoCheckSyntax Then
+                    If fProject.Units[i].CompileCpp Then
                         writeln(F, #9 + '$(CPP) ' +
                             format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) +
                             tmp + ' $(CXXFLAGS)')
-                    else
+                    Else
                         writeln(F, #9 + '$(CC) ' +
                             format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) +
                             tmp + ' $(CFLAGS)')
-                else
-                if fProject.Units[i].CompileCpp then
+                Else
+                If fProject.Units[i].CompileCpp Then
                     writeln(F, #9 + '$(CPP) ' +
                         format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) +
                         tmp + ' $(CXXFLAGS)')
-                else
+                Else
                     writeln(F, #9 + '$(CC) ' +
                         format(devCompiler.CheckSyntaxFormat, [GenMakePath(tfile)]) +
                         tmp + ' $(CFLAGS)');
-            end;
-        end
-        else
-        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) and
-            (I = fProject.PchHead) and (PchHead <> '') then
-        begin
-            if not DoCheckSyntax then
-            begin
+            End;
+        End
+        Else
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) And
+            (I = fProject.PchHead) And (PchHead <> '') Then
+        Begin
+            If Not DoCheckSyntax Then
+            Begin
                 writeln(F);
                 ofile := ChangeFileExt(tfile, '.h.gch');
 
-                if PerfectDepCheck then
+                If PerfectDepCheck Then
                     writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' +
                         tmp + GenMakePath2(tfile) + FindDeps(fProject.Directory + tfile))
-                else
+                Else
                     writeln(F, GenMakePath2(ofile) + ': $(GLOBALDEPS) ' +
                         tmp + GenMakePath2(tfile));
 
-                if fProject.Units[i].OverrideBuildCmd and
-                    (fProject.Units[i].BuildCmd <> '') then
-                begin
+                If fProject.Units[i].OverrideBuildCmd And
+                    (fProject.Units[i].BuildCmd <> '') Then
+                Begin
                     tmp := fProject.Units[i].BuildCmd;
                     tmp := StringReplace(tmp, '<CRTAB>', #10#9, [rfReplaceAll]);
                     writeln(F, #9 + tmp);
-                end
-                else
-                begin
+                End
+                Else
+                Begin
                     //Decide on whether we pass a PCH creation or usage argument
-                    with devCompiler do
-                    begin
-                        if (PCHHead <> '') and (PchCreateFormat <> '') then
+                    With devCompiler Do
+                    Begin
+                        If (PCHHead <> '') And (PchCreateFormat <> '') Then
                             tmp := Format(' ' + PchCreateFormat, [GenMakePath(PCHHead)])
-                        else
+                        Else
                             tmp := '';
-                    end;
+                    End;
 
-                    if fProject.Units[i].CompileCpp then
+                    If fProject.Units[i].CompileCpp Then
                         writeln(F, #9 + '$(CPP) ' +
                             format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) +
                             tmp + ' $(CXXFLAGS)')
-                    else
+                    Else
                         writeln(F, #9 + '$(CC) ' +
                             format(devCompiler.OutputFormat, [GenMakePath(tfile), GenMakePath(ofile)]) +
                             tmp + ' $(CFLAGS)');
-                end;
-            end;
-        end;
-    end;
+                End;
+            End;
+        End;
+    End;
 
-    if (Length(fProject.CurrentProfile.PrivateResource) > 0) then
-    begin
+    If (Length(fProject.CurrentProfile.PrivateResource) > 0) Then
+    Begin
         ResFiles := '';
-        for i := 0 to fProject.Units.Count - 1 do
-        begin
-            if GetFileTyp(fProject.Units[i].FileName) <> utRes then
+        For i := 0 To fProject.Units.Count - 1 Do
+        Begin
+            If GetFileTyp(fProject.Units[i].FileName) <> utRes Then
                 Continue;
-            if FileExists(GetRealPath(fProject.Units[i].FileName,
-                fProject.Directory)) then
+            If FileExists(GetRealPath(fProject.Units[i].FileName,
+                fProject.Directory)) Then
                 ResFiles := ResFiles +
                     GenMakePath2(ExtractRelativePath(fProject.Directory,
                     fProject.Units[i].FileName)) + ' ';
-        end;
+        End;
         writeln(F);
 
         //Get the path of the resource
         ofile := ChangeFileExt(fProject.CurrentProfile.PrivateResource, RES_EXT);
-        if (fProject.CurrentProfile.ObjectOutput <> '') then
+        If (fProject.CurrentProfile.ObjectOutput <> '') Then
             RCDir := fProject.CurrentProfile.ObjectOutput
-        else
+        Else
             RCDir := fProject.Directory;
         RCDir := IncludeTrailingPathDelimiter(GetRealPath(RCDir,
             fProject.Directory));
@@ -801,384 +797,384 @@ begin
             fProject.CurrentProfile.PrivateResource);
 
         writeln(F, ofile + ': ' + GenMakePath2(tfile) + ' ' + ResFiles);
-        if devCompiler.CompilerType = ID_COMPILER_MINGW then
+        If devCompiler.CompilerType = ID_COMPILER_MINGW Then
             writeln(F, #9 + '$(WINDRES) ' +
                 format(devCompiler.ResourceFormat,
                 [GenMakePath(ChangeFileExt(tfile, RES_EXT)) + ' $(RCINCS) ' +
                 GenMakePath(GetShortName(tfile))]))
-        else
-        if (devCompiler.CompilerType <> ID_COMPILER_LINUX) then
+        Else
+        If (devCompiler.CompilerType <> ID_COMPILER_LINUX) Then
             writeln(F, #9 + '$(WINDRES) ' +
                 format(devCompiler.ResourceFormat,
                 [GenMakePath(ChangeFileExt(tfile, RES_EXT)) + ' $(RCINCS) ' +
-                GenMakePath(tfile)]))
-    end;
-end;
+                GenMakePath(tfile)]));
+    End;
+End;
 
-procedure TCompiler.WriteMakeClean(var F: TextFile);
-begin
+Procedure TCompiler.WriteMakeClean(Var F: TextFile);
+Begin
     Writeln(F, 'clean: clean-custom');
     Writeln(F, #9 + '$(RM) $(call FixPath,$(LINKOBJ)) "$(call FixPath,$(BIN))"');
-end;
+End;
 
-procedure TCompiler.CreateMakefile;
-var
+Procedure TCompiler.CreateMakefile;
+Var
     F: TextFile;
-begin
-    if not NewMakeFile(F) then
+Begin
+    If Not NewMakeFile(F) Then
         exit;
     writeln(F, '$(BIN): $(OBJ)');
 
-    if not DoCheckSyntax then
-    begin
+    If Not DoCheckSyntax Then
+    Begin
 
-        if devCompiler.compilerType <> ID_COMPILER_DMARS then
+        If devCompiler.compilerType <> ID_COMPILER_DMARS Then
             writeln(F, #9 + '$(LINK) $(LINKOBJ) ' +
                 format(devCompiler.LinkerFormat, ['$(BIN)']) + ' $(LIBS) ')
-        else
+        Else
             writeln(F, #9 + '$(LINK) $(LINKOBJ) ' +
                 format(devCompiler.LinkerFormat, ['$(BIN)']) + ', ,$(LIBS),,' + fResObjects);
 
-        if (devCompiler.compilerType in ID_COMPILER_VC_CURRENT) then
-        begin
+        If (devCompiler.compilerType In ID_COMPILER_VC_CURRENT) Then
+        Begin
             writeln(F, #9 + '$(GPROF) /nologo /manifest "' +
                 ExtractRelativePath(Makefile, fProject.Executable) +
                 '.manifest" /outputresource:"' + ExtractRelativePath(
                 Makefile, fProject.Executable) + '"');
             writeln(F, #9 + '@$(RM) "' +
                 ExtractRelativePath(Makefile, fProject.Executable) + '.manifest"');
-        end;
-    end;
+        End;
+    End;
 
     WriteMakeObjFilesRules(F);
     Flush(F);
     CloseFile(F);
-end;
+End;
 
-procedure TCompiler.CreateStaticMakefile;
-var
+Procedure TCompiler.CreateStaticMakefile;
+Var
     F: TextFile;
-begin
-    if not NewMakeFile(F) then
+Begin
+    If Not NewMakeFile(F) Then
         exit;
     writeln(F, '$(BIN): $(OBJ)');
-    if not DoCheckSyntax then
-    begin
-        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
+    If Not DoCheckSyntax Then
+    Begin
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
             writeln(F, #9 + '$(LINK) ' + format(devCompiler.LibFormat, ['$(BIN)']) +
                 ' $(LINKOBJ)')
-        else
+        Else
             writeln(F, #9 + '$(LINK) ' + format(devCompiler.LibFormat, ['$(BIN)']) +
-                ' $(LINKOBJ) $(LIBS)')
-    end;
+                ' $(LINKOBJ) $(LIBS)');
+    End;
     WriteMakeObjFilesRules(F);
     Flush(F);
     CloseFile(F);
-end;
+End;
 
-procedure TCompiler.CreateDynamicMakefile;
-var
-    backward, forward: integer;
+Procedure TCompiler.CreateDynamicMakefile;
+Var
+    backward, forward: Integer;
     F: TextFile;
-    binary: string;
-    pfile, tfile: string;
-begin
-    if not NewMakeFile(F) then
+    binary: String;
+    pfile, tfile: String;
+Begin
+    If Not NewMakeFile(F) Then
         exit;
     pfile := ExtractFilePath(Project.Executable);
     tfile := pfile + ExtractFileName(Project.Executable);
-    if FileSamePath(tfile, Project.Directory) then
+    If FileSamePath(tfile, Project.Directory) Then
         tfile := ExtractFileName(tFile)
-    else
+    Else
         tfile := ExtractRelativePath(Makefile, tfile);
 
     //If we are MingW then change the library name to start with lib
-    if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-        (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
-    begin
+    If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+        (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
+    Begin
         Forward := GetLastPos('/', tfile);
         Backward := GetLastPos('\', tfile);
-        if Backward > Forward then
+        If Backward > Forward Then
             Insert('lib', tfile, Backward + 1)
-        else
+        Else
             Insert('lib', tfile, Forward + 1);
-    end;
+    End;
 
     writeln(F, '$(BIN): $(OBJ)');
 
-    if not DoCheckSyntax then
-    begin
+    If Not DoCheckSyntax Then
+    Begin
         binary := GenMakePath(ExtractRelativePath(Makefile, fProject.Executable));
-        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
             writeln(F, #9 + '$(LINK) -shared $(STATICLIB) $(LINKOBJ) $(LIBS) ' +
                 format(devcompiler.DllFormat,
                 [GenMakePath(ChangeFileExt(tfile, LIB_EXT)), binary]))
-        else
+        Else
             writeln(F, #9 + '$(LINK) ' + format(devcompiler.DllFormat,
                 [GenMakePath(ChangeFileExt(tfile, '.lib')), binary]) + ' $(LINKOBJ) $(LIBS)');
 
-        if (devCompiler.compilerType in ID_COMPILER_VC_CURRENT)  then
-        begin
+        If (devCompiler.compilerType In ID_COMPILER_VC_CURRENT) Then
+        Begin
             writeln(F, #9 + '$(GPROF) /nologo /manifest "' +
                 ExtractRelativePath(Makefile, fProject.Executable) +
                 '.manifest" /outputresource:"' + ExtractRelativePath(
                 Makefile, fProject.Executable) + ';#2"');
             writeln(F, #9 + '@rm "' + ExtractRelativePath(
                 Makefile, fProject.Executable) + '.manifest"');
-        end;
-    end;
+        End;
+    End;
 
     WriteMakeObjFilesRules(F);
     Flush(F);
     CloseFile(F);
-end;
+End;
 
-procedure TCompiler.GetCompileParams;
-    procedure AppendStr(var s: string; value: string);
-    begin
+Procedure TCompiler.GetCompileParams;
+    Procedure AppendStr(Var s: String; value: String);
+    Begin
         s := s + ' ' + value;
-    end;
-var
-    I, val: integer;
-begin
+    End;
+Var
+    I, val: Integer;
+Begin
     { Check user's compiler options }
-    with devCompiler do
-    begin
+    With devCompiler Do
+    Begin
         fCompileParams := '';
         fCppCompileParams := '';
         fUserParams := '';
 
-        if Assigned(fProject) then
-        begin
+        If Assigned(fProject) Then
+        Begin
             fCppCompileParams :=
                 StringReplace(fProject.CurrentProfile.CppCompiler, '_@@_',
                 ' ', [rfReplaceAll]);
             fCompileParams := StringReplace(fProject.CurrentProfile.Compiler,
                 '_@@_', ' ', [rfReplaceAll]);
-        end;
+        End;
 
-        if CmdOpts <> '' then
+        If CmdOpts <> '' Then
             AppendStr(fUserParams, CmdOpts);
         AppendStr(fCompileParams, fUserParams);
         AppendStr(fCppCompileParams, fUserParams);
 
-        for I := 0 to OptionsCount - 1 do
+        For I := 0 To OptionsCount - 1 Do
             // consider project specific options for the compiler
-            if (Assigned(fProject) and
-                (I < Length(fProject.CurrentProfile.CompilerOptions)) and
-                not (fProject.CurrentProfile.typ in
-                devCompiler.Options[I].optExcludeFromTypes)) or
-                (not Assigned(fProject) and (Options[I].optValue > 0)) then
-            begin
-                if devCompiler.Options[I].optIsC then
-                begin
-                    if Assigned(devCompiler.Options[I].optChoices) then
-                    begin
-                        if Assigned(fProject) then
+            If (Assigned(fProject) And
+                (I < Length(fProject.CurrentProfile.CompilerOptions)) And
+                Not (fProject.CurrentProfile.typ In
+                devCompiler.Options[I].optExcludeFromTypes)) Or
+                (Not Assigned(fProject) And (Options[I].optValue > 0)) Then
+            Begin
+                If devCompiler.Options[I].optIsC Then
+                Begin
+                    If Assigned(devCompiler.Options[I].optChoices) Then
+                    Begin
+                        If Assigned(fProject) Then
                             val := devCompiler.ConvertCharToValue(
                                 fProject.CurrentProfile.CompilerOptions[I + 1])
-                        else
+                        Else
                             val := devCompiler.Options[I].optValue;
-                        if (val > 0) and
-                            (val < devCompiler.Options[I].optChoices.Count) then
+                        If (val > 0) And
+                            (val < devCompiler.Options[I].optChoices.Count) Then
                             AppendStr(fCompileParams, devCompiler.Options[I].optSetting +
                                 devCompiler.Options[I].optChoices.Values[devCompiler.Options
                                 [I].optChoices.Names[val]]);
-                    end
-                    else
-                    if (Assigned(fProject) and
-                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or
-                        (not Assigned(fProject)) then
+                    End
+                    Else
+                    If (Assigned(fProject) And
+                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) Or
+                        (Not Assigned(fProject)) Then
                         AppendStr(fCompileParams, devCompiler.Options[I].optSetting);
-                end;
-                if devCompiler.Options[I].optIsCpp then
-                begin
-                    if Assigned(devCompiler.Options[I].optChoices) then
-                    begin
-                        if Assigned(fProject) then
+                End;
+                If devCompiler.Options[I].optIsCpp Then
+                Begin
+                    If Assigned(devCompiler.Options[I].optChoices) Then
+                    Begin
+                        If Assigned(fProject) Then
                             val := devCompiler.ConvertCharToValue(
                                 fProject.CurrentProfile.CompilerOptions[I + 1])
-                        else
+                        Else
                             val := devCompiler.Options[I].optValue;
-                        if (val > 0) and
-                            (val < devCompiler.Options[I].optChoices.Count) then
+                        If (val > 0) And
+                            (val < devCompiler.Options[I].optChoices.Count) Then
                             AppendStr(fCppCompileParams, devCompiler.Options[I].optSetting +
                                 devCompiler.Options[I].optChoices.Values[devCompiler.Options
                                 [I].optChoices.Names[val]]);
-                    end
-                    else
-                    if (Assigned(fProject) and
-                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or
-                        (not Assigned(fProject)) then
+                    End
+                    Else
+                    If (Assigned(fProject) And
+                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) Or
+                        (Not Assigned(fProject)) Then
                         AppendStr(fCppCompileParams, devCompiler.Options[I].optSetting);
-                end;
-            end;
+                End;
+            End;
 
         fCompileParams := ParseMacros(fCompileParams);
         fCppCompileParams := ParseMacros(fCppCompileParams);
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.GetLibrariesParams;
-var
-    i, val: integer;
-    cAppendStr, compilerSetOptionStr: string;
+Procedure TCompiler.GetLibrariesParams;
+Var
+    i, val: Integer;
+    cAppendStr, compilerSetOptionStr: String;
     strLst, strProfileLinkerLst: TStringList;
     libStr, temps: String;
-begin
+Begin
     fLibrariesParams := '';
-    if devCompiler.compilerType <> ID_COMPILER_DMARS then
-    begin
+    If devCompiler.compilerType <> ID_COMPILER_DMARS Then
+    Begin
         cAppendStr := '%s ' + devCompiler.LinkerPaths;
         fLibrariesParams := CommaStrToStr(devDirs.lib, cAppendStr);
 
-        if devCompilerSet.LinkOpts <> '' then
+        If devCompilerSet.LinkOpts <> '' Then
             fLibrariesParams := fLibrariesParams + ' ' + devCompilerSet.LinkOpts;
-        if (fTarget = ctProject) and assigned(fProject) then
-        begin
-            for i := 0 to pred(fProject.CurrentProfile.Libs.Count) do
+        If (fTarget = ctProject) And assigned(fProject) Then
+        Begin
+            For i := 0 To pred(fProject.CurrentProfile.Libs.Count) Do
                 fLibrariesParams :=
                     format(cAppendStr, [fLibrariesParams, fProject.CurrentProfile.Libs[i]]);
             fLibrariesParams := fLibrariesParams + ' ' +
                 StringReplace(fProject.CurrentProfile.Linker, '_@@_', ' ', [rfReplaceAll]);
-        end;
+        End;
 
         //TODO: lowjoel:What does this do?
-        if (pos(' -pg', fCompileParams) <> 0) and
-            (pos('-lgmon', fLibrariesParams) = 0) then
+        If (pos(' -pg', fCompileParams) <> 0) And
+            (pos('-lgmon', fLibrariesParams) = 0) Then
             fLibrariesParams := fLibrariesParams + ' -lgmon -pg ';
 
         fLibrariesParams := fLibrariesParams + ' ';
-        for I := 0 to devCompiler.OptionsCount - 1 do
+        For I := 0 To devCompiler.OptionsCount - 1 Do
             // consider project specific options for the compiler
-            if (
-                Assigned(fProject) and
-                (I < Length(fProject.CurrentProfile.CompilerOptions)) and
-                not (fProject.CurrentProfile.typ in
+            If (
+                Assigned(fProject) And
+                (I < Length(fProject.CurrentProfile.CompilerOptions)) And
+                Not (fProject.CurrentProfile.typ In
                 devCompiler.Options[I].optExcludeFromTypes)
-                ) or
+                ) Or
                 // else global compiler options
-                (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then
-            begin
-                if devCompiler.Options[I].optIsLinker then
-                    if Assigned(devCompiler.Options[I].optChoices) then
-                    begin
-                        if Assigned(fProject) then
+                (Not Assigned(fProject) And (devCompiler.Options[I].optValue > 0)) Then
+            Begin
+                If devCompiler.Options[I].optIsLinker Then
+                    If Assigned(devCompiler.Options[I].optChoices) Then
+                    Begin
+                        If Assigned(fProject) Then
                             val := devCompiler.ConvertCharToValue(
                                 fProject.CurrentProfile.CompilerOptions[I + 1])
-                        else
+                        Else
                             val := devCompiler.Options[I].optValue;
-                        if (val > 0) and
-                            (val < devCompiler.Options[I].optChoices.Count) then
+                        If (val > 0) And
+                            (val < devCompiler.Options[I].optChoices.Count) Then
                             fLibrariesParams := fLibrariesParams
                                 + devCompiler.Options[I].optSetting +
                                 devCompiler.Options[I].optChoices.Values[devCompiler.Options
                                 [I].optChoices.Names[val]] + ' ';
-                    end
-                    else
-                    if (Assigned(fProject) and
-                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or
-                        (not Assigned(fProject)) then
+                    End
+                    Else
+                    If (Assigned(fProject) And
+                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) Or
+                        (Not Assigned(fProject)) Then
                         fLibrariesParams := fLibrariesParams
                             + devCompiler.Options[I].optSetting + ' ';
-            end;
-    end
-    else //if ID_COMPILER_DMARS
-    begin
+            End;
+    End
+    Else //if ID_COMPILER_DMARS
+    Begin
         fLibrariesParams := ' ';
         strLst := TStringList.Create;
         cAppendStr := '%s ' + devCompiler.LinkerPaths;
 
         StrtoList(devDirs.lib, strLst, ';');
 
-        if devCompilerSet.LinkOpts <> '' then
+        If devCompilerSet.LinkOpts <> '' Then
             compilerSetOptionStr := devCompilerSet.LinkOpts;
 
-        for I := 0 to devCompiler.OptionsCount - 1 do
+        For I := 0 To devCompiler.OptionsCount - 1 Do
             // consider project specific options for the compiler
-            if (
-                Assigned(fProject) and
-                (I < Length(fProject.CurrentProfile.CompilerOptions)) and
-                not (fProject.CurrentProfile.typ in
+            If (
+                Assigned(fProject) And
+                (I < Length(fProject.CurrentProfile.CompilerOptions)) And
+                Not (fProject.CurrentProfile.typ In
                 devCompiler.Options[I].optExcludeFromTypes)
-                ) or
+                ) Or
                 // else global compiler options
-                (not Assigned(fProject) and (devCompiler.Options[I].optValue > 0)) then
-            begin
-                if devCompiler.Options[I].optIsLinker then
-                    if Assigned(devCompiler.Options[I].optChoices) then
-                    begin
-                        if Assigned(fProject) then
+                (Not Assigned(fProject) And (devCompiler.Options[I].optValue > 0)) Then
+            Begin
+                If devCompiler.Options[I].optIsLinker Then
+                    If Assigned(devCompiler.Options[I].optChoices) Then
+                    Begin
+                        If Assigned(fProject) Then
                             val := devCompiler.ConvertCharToValue(
                                 fProject.CurrentProfile.CompilerOptions[I + 1])
-                        else
+                        Else
                             val := devCompiler.Options[I].optValue;
-                        if (val > 0) and
-                            (val < devCompiler.Options[I].optChoices.Count) then
+                        If (val > 0) And
+                            (val < devCompiler.Options[I].optChoices.Count) Then
                             compilerSetOptionStr := compilerSetOptionStr
                                 + devCompiler.Options[I].optSetting +
                                 devCompiler.Options[I].optChoices.Values[devCompiler.Options
                                 [I].optChoices.Names[val]] + ' ';
-                    end
-                    else
-                    if (Assigned(fProject) and
-                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) or
-                        (not Assigned(fProject)) then
+                    End
+                    Else
+                    If (Assigned(fProject) And
+                        (StrToIntDef(fProject.CurrentProfile.CompilerOptions[I + 1], 0) = 1)) Or
+                        (Not Assigned(fProject)) Then
                         compilerSetOptionStr := compilerSetOptionStr
                             + devCompiler.Options[I].optSetting + ' ';
-            end;
+            End;
 
-        if (fTarget = ctProject) and assigned(fProject) then
-        begin
-            for i := 0 to pred(fProject.CurrentProfile.Libs.Count) do
-            begin
+        If (fTarget = ctProject) And assigned(fProject) Then
+        Begin
+            For i := 0 To pred(fProject.CurrentProfile.Libs.Count) Do
+            Begin
                 strLst.Add(fProject.CurrentProfile.Libs[i]);
-            end;
+            End;
             strProfileLinkerLst := TStringList.Create;
             temps := StringReplace(fProject.CurrentProfile.Linker, '_@@_',
                 '~', [rfReplaceAll]);
             StrtoList(temps, strProfileLinkerLst, '~');
 
-            for i := 0 to strProfileLinkerLst.Count - 1 do
-            begin
-                if trim(strProfileLinkerLst[i]) = '' then
+            For i := 0 To strProfileLinkerLst.Count - 1 Do
+            Begin
+                If trim(strProfileLinkerLst[i]) = '' Then
                     continue;
                 temps := copy(trim(strProfileLinkerLst[i]), 0, 1);
-                if (temps = '-') or (temps = '/') then
+                If (temps = '-') Or (temps = '/') Then
                     compilerSetOptionStr :=
                         compilerSetOptionStr + ' ' + strProfileLinkerLst[i]
-                else
+                Else
                     fLibrariesParams := fLibrariesParams + ' ' + strProfileLinkerLst[i];
-            end;
+            End;
             //fLibrariesParams := fLibrariesParams + ' ' + StringReplace(fProject.CurrentProfile.Linker, '_@@_', ' ', [rfReplaceAll]);
 
-        end;
+        End;
 
         libStr := '';
-        if trim(fLibrariesParams) <> '' then
-        begin
-            for i := 0 to strLst.count - 1 do
-            begin
-                if AnsiContainsText(strLst[i], '\lib\dmars') or
-                    AnsiContainsText(strLst[i], '\lib\dmars\') then
+        If trim(fLibrariesParams) <> '' Then
+        Begin
+            For i := 0 To strLst.count - 1 Do
+            Begin
+                If AnsiContainsText(strLst[i], '\lib\dmars') Or
+                    AnsiContainsText(strLst[i], '\lib\dmars\') Then
                     libStr := libStr + ' ' + fLibrariesParams
-                else
+                Else
                     libStr := libStr + ' ' + '"' + strLst[i] + '"' + ' ' +
                         fLibrariesParams;
-            end;
-        end;
+            End;
+        End;
         fLibrariesParams := compilerSetOptionStr + '_@@_' + libStr;
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.GetIncludesParams;
-var
-    i: integer;
-    cAppendStr, cRCString: string;
+Procedure TCompiler.GetIncludesParams;
+Var
+    i: Integer;
+    cAppendStr, cRCString: String;
     strLst: TStringList;
-begin
+Begin
     fIncludesParams := '';
     fCppIncludesParams := '';
     cAppendStr := '%s ' + devCompiler.IncludeFormat;
@@ -1188,120 +1184,120 @@ begin
     strLst := TStringList.Create;
     strTokenToStrings(devDirs.RC, ';', strLst);
     cRCString := '';
-    for i := 0 to strLst.Count - 1 do
+    For i := 0 To strLst.Count - 1 Do
         cRCString := cRCString + GetShortName(strLst.Strings[i]) + ';';
     fRcIncludesParams := CommaStrToStr(cRCString, '%s ' +
         devCompiler.ResourceIncludeFormat);
     strLst.Free;
 
-    if (fTarget = ctProject) and assigned(fProject) then
-    begin
-        for i := 0 to pred(fProject.CurrentProfile.Includes.Count) do
-            if directoryExists(fProject.CurrentProfile.Includes[i]) then
-            begin
+    If (fTarget = ctProject) And assigned(fProject) Then
+    Begin
+        For i := 0 To pred(fProject.CurrentProfile.Includes.Count) Do
+            If directoryExists(fProject.CurrentProfile.Includes[i]) Then
+            Begin
                 fIncludesParams :=
                     format(cAppendStr, [fIncludesParams, fProject.CurrentProfile.Includes[i]]);
                 fCppIncludesParams :=
                     format('%s ' + devCompiler.IncludeFormat, [fCppIncludesParams,
                     fProject.CurrentProfile.Includes[i]]);
-            end;
-        for i := 0 to pred(fProject.CurrentProfile.ResourceIncludes.Count) do
-            if directoryExists(fProject.CurrentProfile.ResourceIncludes[i]) then
+            End;
+        For i := 0 To pred(fProject.CurrentProfile.ResourceIncludes.Count) Do
+            If directoryExists(fProject.CurrentProfile.ResourceIncludes[i]) Then
                 fRcIncludesParams :=
                     format(cAppendStr, [fRcIncludesParams,
                     GetShortName(fProject.CurrentProfile.ResourceIncludes[i])]);
-    end;
-end;
+    End;
+End;
 
-function TCompiler.ExtractLibParams(strFullLibStr: String): string;
-var
+Function TCompiler.ExtractLibParams(strFullLibStr: String): String;
+Var
     nPos: Integer;
-begin
+Begin
     nPos := pos('_@@_', strFullLibStr);
-    if nPos = 0 then
+    If nPos = 0 Then
         Result := strFullLibStr
-    else
+    Else
         Result := copy(strFullLibStr, 0, nPos - 1);
-end;
+End;
 
-function TCompiler.ExtractLibFiles(strFullLibStr: String): string;
-var
+Function TCompiler.ExtractLibFiles(strFullLibStr: String): String;
+Var
     nPos: Integer;
-begin
+Begin
     nPos := pos('_@@_', strFullLibStr);
-    if nPos = 0 then
+    If nPos = 0 Then
         Result := ''
-    else
+    Else
         Result := copy(strFullLibStr, nPos + 4, length(strFullLibStr));
-end;
+End;
 
 
-function TCompiler.PreprocDefines: string;
-var
-    i: integer;
+Function TCompiler.PreprocDefines: String;
+Var
+    i: Integer;
     values: TStringList;
 {$IFDEF PLUGIN_BUILD}
     temp: String;
 {$ENDIF}
-begin
+Begin
     Result := '';
-    if assigned(fProject) then
-    begin
+    If assigned(fProject) Then
+    Begin
         values := TStringList.Create;
         strTokenToStrings(StringReplace(fProject.CurrentProfile.PreprocDefines,
             '_@@_', #10, [rfReplaceAll]), #10, values);
 
-        for i := 0 to values.Count - 1 do
+        For i := 0 To values.Count - 1 Do
             Result := Result + ' ' + Format(devCompiler.PreprocDefines, [values[i]]);
 
         //Clean up
         values.Free;
-    end;
+    End;
 
 {$IFDEF PLUGIN_BUILD}//EAB TODO: Make this more general (not easy to do :P )
-    for i := 0 to MainForm.pluginsCount - 1 do
-    begin
+    For i := 0 To MainForm.pluginsCount - 1 Do
+    Begin
         temp := MainForm.plugins[i].GetCompilerPreprocDefines;
-        if temp <> '' then
+        If temp <> '' Then
             Result := Result + ' ' + Format(devCompiler.PreprocDefines, [temp]);
-    end;
+    End;
 {$ENDIF}
     Result := Trim(Result);
-end;
+End;
 
-procedure TCompiler.ShowResults;
-begin
+Procedure TCompiler.ShowResults;
+Begin
     // display compile results dialog
-end;
+End;
 
-procedure TCompiler.CheckSyntax;
-begin
+Procedure TCompiler.CheckSyntax;
+Begin
     DoCheckSyntax := True;
     Compile;
     DoCheckSyntax := False;
-end;
+End;
 
-procedure TCompiler.Compile(SingleFile: string);
-resourcestring
+Procedure TCompiler.Compile(SingleFile: String);
+Resourcestring
     cMakeLine = '%s -f "%s" all';
     cSingleFileMakeLine = '%s -f "%s" %s';
     cMake = ' make';
     cDots = '...';
-var
-    cmdline: string;
-    s: string;
-    ofile: string;
-    cCmdLine: string;
-begin
+Var
+    cmdline: String;
+    s: String;
+    ofile: String;
+    cCmdLine: String;
+Begin
     cCmdLine := devCompiler.SingleCompile;
     fSingleFile := SingleFile <> '';
-    if Assigned(fDevRun) then
-    begin
+    If Assigned(fDevRun) Then
+    Begin
         MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0);
         Exit;
-    end;
+    End;
 
-    if fTarget = ctNone then
+    If fTarget = ctNone Then
         exit;
 
     DoLogEntry(Format('%s: %s', [Lang[ID_COPT_COMPTAB],
@@ -1313,56 +1309,56 @@ begin
     GetLibrariesParams;
     GetIncludesParams;
 
-    if fTarget = ctProject then
-    begin
+    If fTarget = ctProject Then
+    Begin
         BuildMakeFile;
         Application.ProcessMessages;
-        if SingleFile <> '' then
-        begin
-            if fProject.CurrentProfile.ObjectOutput <> '' then
-            begin
+        If SingleFile <> '' Then
+        Begin
+            If fProject.CurrentProfile.ObjectOutput <> '' Then
+            Begin
                 ofile := IncludeTrailingPathDelimiter(
                     fProject.CurrentProfile.ObjectOutput) + ExtractFileName(SingleFile);
                 ofile := GenMakePath(ExtractRelativePath(
                     fProject.FileName, ChangeFileExt(ofile, OBJ_EXT)));
-            end
-            else
+            End
+            Else
                 ofile := GenMakePath(ExtractRelativePath(
                     fProject.FileName, ChangeFileExt(SingleFile, OBJ_EXT)));
             fMakeFile := ExtractRelativePath(fProject.Directory, fMakeFile);
 
-            if (devCompiler.makeName <> '') then
+            If (devCompiler.makeName <> '') Then
                 cmdline := format(cSingleFileMakeLine,
                     [devCompiler.makeName, fMakeFile, ofile]) + ' ' + devCompiler.makeopts
-            else
+            Else
                 cmdline := format(cSingleFileMakeLine,
                     [MAKE_PROGRAM(devCompiler.CompilerType), fMakeFile, ofile]) +
                     ' ' + devCompiler.makeopts;
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             fMakeFile := ExtractRelativePath(fProject.Directory, fMakeFile);
 
-            if (devCompiler.makeName <> '') then
+            If (devCompiler.makeName <> '') Then
                 cmdline := format(cMakeLine, [devCompiler.makeName, fMakeFile]) +
                     ' ' + devCompiler.makeopts
-            else
+            Else
                 cmdline := format(cMakeLine,
                     [MAKE_PROGRAM(devCompiler.CompilerType), fMakeFile]) + ' ' +
                     devCompiler.makeopts;
-        end;
+        End;
 
         DoLogEntry(format(Lang[ID_EXECUTING], [cMake + cDots]));
         DoLogEntry(cmdline);
         Sleep(devCompiler.Delay);
         LaunchThread(cmdline, ExtractFilePath(Project.FileName));
-    end
-    else
-    if (GetFileTyp(fSourceFile) = utRes) then
-    begin
-        if (devCompiler.windresName <> '') then
+    End
+    Else
+    If (GetFileTyp(fSourceFile) = utRes) Then
+    Begin
+        If (devCompiler.windresName <> '') Then
             s := devCompiler.windresName
-        else
+        Else
             s := RES_PROGRAM(devCompiler.CompilerType);
 
         cmdline := s + ' ' + GenMakePath(fSourceFile) +
@@ -1370,131 +1366,131 @@ begin
             [GenMakePath(ChangeFileExt(fSourceFile, OBJ_EXT))]);
         DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
         DoLogEntry(cmdline);
-    end
-    else
-    begin
-        if (GetFileTyp(fSourceFile) = utSrc) and
-            (GetExTyp(fSourceFile) = utCppSrc) then
-        begin
-            if (devCompiler.gppName <> '') then
+    End
+    Else
+    Begin
+        If (GetFileTyp(fSourceFile) = utSrc) And
+            (GetExTyp(fSourceFile) = utCppSrc) Then
+        Begin
+            If (devCompiler.gppName <> '') Then
                 s := devCompiler.gppName
-            else
+            Else
                 s := CPP_PROGRAM(devCompiler.CompilerType);
-            if DoCheckSyntax then
+            If DoCheckSyntax Then
                 cmdline := format(cCmdLine,
                     [s, fSourceFile, 'nul', fCppCompileParams,
                     fCppIncludesParams, fLibrariesParams])
-            else
-            begin
-                if devCompiler.CompilerType in ID_COMPILER_VC then
+            Else
+            Begin
+                If devCompiler.CompilerType In ID_COMPILER_VC Then
                     cmdline := format(cCmdLine,
                         [s, fSourceFile, fCppCompileParams, fCppIncludesParams,
                         fLibrariesParams])
-                else
-                begin
+                Else
+                Begin
                     // GAR 10 Nov 2009
                     // Hack for Wine/Linux
                     // ProductName returns empty string for Wine/Linux
                     // for Windows, it returns OS name (e.g. Windows Vista).
-                    if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+                    If (MainForm.JvComputerInfoEx1.OS.ProductName = '') Then
                         cmdline := format(cCmdLine,
                             [s, fSourceFile, ChangeFileExt(fSourceFile, ''),
                             fCppCompileParams, fCppIncludesParams, fLibrariesParams])
-                    else
+                    Else
                         cmdline := format(cCmdLine,
                             [s, fSourceFile, ChangeFileExt(fSourceFile, EXE_EXT),
                             fCppCompileParams, fCppIncludesParams, fLibrariesParams]);
 
                     cmdline := StringReplace(cmdline, '\', '/', [rfReplaceAll]);
                     // EAB fixes compilation
-                end;
-            end;
+                End;
+            End;
             DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
             DoLogEntry(cmdline);
-        end
-        else
-        begin
-            if (devCompiler.gccName <> '') then
+        End
+        Else
+        Begin
+            If (devCompiler.gccName <> '') Then
                 s := devCompiler.gccName
-            else
+            Else
                 s := CP_PROGRAM(devCompiler.CompilerType);
-            if DoCheckSyntax then
+            If DoCheckSyntax Then
                 cmdline := format(cCmdLine,
                     [s, fSourceFile, 'nul', fCompileParams,
                     fIncludesParams, fLibrariesParams])
-            else
+            Else
             // GAR 10 Nov 2009
             // Hack for Wine/Linux
             // ProductName returns empty string for Wine/Linux
             // for Windows, it returns OS name (e.g. Windows Vista).
-            if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+            If (MainForm.JvComputerInfoEx1.OS.ProductName = '') Then
                 cmdline := format(cCmdLine,
                     [s, fSourceFile, ChangeFileExt(fSourceFile, ''),
                     fCompileParams, fIncludesParams, fLibrariesParams])
-            else
+            Else
                 cmdline := format(cCmdLine,
                     [s, fSourceFile, ChangeFileExt(fSourceFile, EXE_EXT),
                     fCompileParams, fIncludesParams, fLibrariesParams]);
 
             DoLogEntry(format(Lang[ID_EXECUTING], [' ' + s + cDots]));
             DoLogEntry(cmdline);
-        end;
+        End;
 
         LaunchThread(cmdline, ExtractFilePath(fSourceFile));
-    end;
-end;
+    End;
+End;
 
-function TCompiler.Clean: Boolean;
-const
+Function TCompiler.Clean: Boolean;
+Const
     cCleanLine = '%s clean -f "%s" %s';
     cmsg = ' make clean';
-var
-    cmdLine: string;
-    s: string;
-begin
+Var
+    cmdLine: String;
+    s: String;
+Begin
     fSingleFile := True;
     // fool clean; don't run deps checking since all we do is cleaning
-    if Project <> nil then
-    begin
+    If Project <> Nil Then
+    Begin
         DoLogEntry(Format('%s: %s', [Lang[ID_COPT_COMPTAB],
             devCompilerSet.SetName(devCompiler.CompilerSet)]));
         Result := True;
         InitProgressForm('Cleaning...');
         BuildMakeFile;
-        if not FileExists(fMakefile) then
-        begin
+        If Not FileExists(fMakefile) Then
+        Begin
             DoLogEntry(Lang[ID_ERR_NOMAKEFILE]);
             DoLogEntry(Lang[ID_ERR_CLEANFAILED]);
             MessageBox(Application.MainForm.Handle,
-                PChar(Lang[ID_ERR_NOMAKEFILE]),
-                PChar(Lang[ID_ERROR]), MB_OK or MB_ICONHAND);
+                Pchar(Lang[ID_ERR_NOMAKEFILE]),
+                Pchar(Lang[ID_ERROR]), MB_OK Or MB_ICONHAND);
             Result := False;
             Exit;
-        end;
+        End;
 
         DoLogEntry(Format(Lang[ID_EXECUTING], [cmsg]));
-        if (devCompiler.makeName <> '') then
+        If (devCompiler.makeName <> '') Then
             s := devCompiler.makeName
-        else
+        Else
             s := MAKE_PROGRAM(devCompiler.CompilerType);
 
         fMakeFile := ExtractRelativePath(fProject.Directory, fMakeFile);
 
         cmdLine := Format(cCleanLine, [s, fMakeFile, devCompiler.MakeOpts]);
         LaunchThread(cmdLine, fProject.Directory);
-    end
-    else
+    End
+    Else
         Result := False;
-end;
+End;
 
-function TCompiler.RebuildAll: Boolean;
-const
+Function TCompiler.RebuildAll: Boolean;
+Const
     cCleanLine = '%s -f "%s" clean all';
     cmsg = ' make clean';
-var
-    cmdLine: string;
-    s: string;
-begin
+Var
+    cmdLine: String;
+    s: String;
+Begin
     fSingleFile := True;
     // fool rebuild; don't run deps checking since all files will be rebuilt
     Result := True;
@@ -1502,286 +1498,286 @@ begin
     DoLogEntry(Format('%s: %s',
         [Lang[ID_COPT_COMPTAB], devCompilerSet.SetName(devCompiler.CompilerSet)]));
     InitProgressForm('Rebuilding...');
-    if Project <> nil then
-    begin
+    If Project <> Nil Then
+    Begin
         BuildMakeFile;
-        if not FileExists(fMakefile) then
-        begin
+        If Not FileExists(fMakefile) Then
+        Begin
             DoLogEntry(Lang[ID_ERR_NOMAKEFILE]);
             DoLogEntry(Lang[ID_ERR_CLEANFAILED]);
             MessageBox(Application.MainForm.Handle,
-                PChar(Lang[ID_ERR_NOMAKEFILE]),
-                PChar(Lang[ID_ERROR]), MB_OK or MB_ICONERROR);
+                Pchar(Lang[ID_ERR_NOMAKEFILE]),
+                Pchar(Lang[ID_ERROR]), MB_OK Or MB_ICONERROR);
             Result := False;
             Exit;
-        end;
+        End;
 
         DoLogEntry(Format(Lang[ID_EXECUTING], [cmsg]));
 
-        if (devCompiler.makeName <> '') then
+        If (devCompiler.makeName <> '') Then
             s := devCompiler.makeName
-        else
+        Else
             s := MAKE_PROGRAM(devCompiler.CompilerType);
 
         fMakeFile := ExtractRelativePath(fProject.Directory, fMakeFile);
         cmdLine := Format(cCleanLine, [s, fMakeFile]) + ' ' + devCompiler.makeopts;
         LaunchThread(cmdLine, fProject.Directory);
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         Compile;
         Result := True;
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.LaunchThread(s, dir: string);
-begin
-    if Assigned(fDevRun) then
+Procedure TCompiler.LaunchThread(s, dir: String);
+Begin
+    If Assigned(fDevRun) Then
         MessageDlg(Lang[ID_MSG_ALREADYCOMP], mtInformation, [mbOK], 0)
-    else
-    begin
+    Else
+    Begin
         Application.ProcessMessages;
-        fStartCompile := GetTickCount div 1000;
+        fStartCompile := GetTickCount Div 1000;
         fAbortThread := False;
-        fDevRun := TDevRun.Create(true);
+        fDevRun := TDevRun.Create(True);
         fDevRun.Command := s;
         fDevRun.Directory := dir;
         fDevRun.OnTerminate := OnCompilationTerminated;
         fDevRun.OnLineOutput := OnLineOutput;
         fDevRun.FreeOnTerminate := True;
         fDevRun.Resume;
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.AbortThread;
-begin
-    if not Assigned(fDevRun) then
+Procedure TCompiler.AbortThread;
+Begin
+    If Not Assigned(fDevRun) Then
         Exit;
     fDevRun.Terminate;
     fAbortThread := True;
-end;
+End;
 
-procedure TCompiler.OnAbortCompile(Sender: TObject);
-begin
-    if Assigned(fDevRun) then
-    begin
+Procedure TCompiler.OnAbortCompile(Sender: TObject);
+Begin
+    If Assigned(fDevRun) Then
+    Begin
         fDevRun.Terminate;
         fAbortThread := True;
-    end
-    else
+    End
+    Else
         ReleaseProgressForm;
-end;
+End;
 
-procedure TCompiler.OnCompilationTerminated(Sender: TObject);
-var
+Procedure TCompiler.OnCompilationTerminated(Sender: TObject);
+Var
     FWinfo: TFlashWInfo;
     MainForm: TMainForm;
-begin
+Begin
     ParseResults;
     EndProgressForm;
     DoLogEntry(Lang[ID_EXECUTIONTERM]);
     MainForm := TMainForm(Application.MainForm);
 
-    if fAbortThread then
+    If fAbortThread Then
         DoLogEntry(Lang[ID_COMPILEABORT])
-    else
-    if (fErrCount = 0) and (fDevRun.ExitCode = 0) then
-    begin
+    Else
+    If (fErrCount = 0) And (fDevRun.ExitCode = 0) Then
+    Begin
         DoLogEntry(Lang[ID_COMPILESUCCESS]);
         DoLogEntry('Compilation took ' + TCompileProgressForm.FormatTime(
-            (GetTickCount div 1000) - fStartCompile) + ' to complete');
+            (GetTickCount Div 1000) - fStartCompile) + ' to complete');
         Application.ProcessMessages;
         MainForm.StatusBar.Panels[3].Text :=
             Lang[ID_COMPILESUCCESS] + '; Compilation took ' +
             TCompileProgressForm.FormatTime(
-            (GetTickCount div 1000) - fStartCompile);
-        if Assigned(OnCompilationEnded) then
+            (GetTickCount Div 1000) - fStartCompile);
+        If Assigned(OnCompilationEnded) Then
             OnCompilationEnded(Self);
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         DoLogEntry('Compilation Failed. Make returned ' +
             IntToStr(fDevRun.ExitCode));
         MainForm.StatusBar.Panels[3].Text :=
             Format('Compilation failed with %d errors and %d warnings',
             [fErrCount, fWarnCount]);
-    end;
+    End;
 
     //Clean up
-    fDevRun := nil;
-    OnCompilationEnded := nil;
+    fDevRun := Nil;
+    OnCompilationEnded := Nil;
     Application.ProcessMessages;
 
     //Flash the taskbar icon if the form is minimized
-    if IsIconic(Application.Handle) then
-    begin
+    If IsIconic(Application.Handle) Then
+    Begin
         FWinfo.cbSize := SizeOf(FWinfo);
         FWinfo.hwnd := Application.Handle;
         FWinfo.dwflags := FLASHW_ALL;
         FWinfo.ucount := 10;
         FWinfo.dwtimeout := 0;
         FlashWindowEx(FWinfo);
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.OnLineOutput(Sender: TObject; const Line: String);
-begin
+Procedure TCompiler.OnLineOutput(Sender: TObject; Const Line: String);
+Begin
     ParseLine(Line);
     DoLogEntry(Line);
     ProcessProgressForm(Line);
-end;
+End;
 
-procedure TCompiler.ParseLine(Line: String);
-var
+Procedure TCompiler.ParseLine(Line: String);
+Var
     RegEx: TRegExpr;
-    LowerLine: string;
-    cpos: integer;
-begin
+    LowerLine: String;
+    cpos: Integer;
+Begin
     RegEx := TRegExpr.Create;
 
-    try
-        if (devCompiler.compilerType in ID_COMPILER_VC) then
-        begin
+    Try
+        If (devCompiler.compilerType In ID_COMPILER_VC) Then
+        Begin
             //Check for command line errors
             RegEx.Expression := 'Command line error (.*) : (.*)';
-            if RegEx.Exec(Line) then
+            If RegEx.Exec(Line) Then
                 Inc(fErrCount);
 
             //Command line warnings
             RegEx.Expression := 'Command line warning (.*) : (.*)';
-            if RegEx.Exec(Line) then
+            If RegEx.Exec(Line) Then
                 Inc(fWarnCount);
 
             //Fatal error
             RegEx.Expression := '(.*)\(([0-9]+)\) : fatal error ([^:]*): (.*)';
-            if Regex.Exec(Line) then
+            If Regex.Exec(Line) Then
                 Inc(fErrCount);
 
             //LINK fatal error
             RegEx.Expression := 'LINK : fatal error ([^:]*): (.*)';
-            if RegEx.Exec(Line) then
+            If RegEx.Exec(Line) Then
                 Inc(fErrCount);
 
             //General compiler error
             RegEx.Expression := '(.*)\(([0-9]+)\) : error ([^:]*): (.*)';
-            if RegEx.Exec(Line) then
+            If RegEx.Exec(Line) Then
                 Inc(fErrCount);
 
             //Compiler warning
             RegEx.Expression := '(.*)\(([0-9]+)\) : warning ([^:]*): (.*)';
-            if RegEx.Exec(Line) then
+            If RegEx.Exec(Line) Then
                 Inc(fWarnCount);
-        end
-        else //if (devCompiler.CompilerType = ID_COMPILER_MINGW) or (devCompiler.compilerType = ID_COMPILER_DMARS) then
-        begin
+        End
+        Else //if (devCompiler.CompilerType = ID_COMPILER_MINGW) or (devCompiler.compilerType = ID_COMPILER_DMARS) then
+        Begin
             LowerLine := LowerCase(Line);
 
             { Make errors }
-            if (Pos('make.exe: ***', LowerCase(Line)) > 0) and
+            If (Pos('make.exe: ***', LowerCase(Line)) > 0) And
                 (Pos('Clock skew detected. Your build may be incomplete',
-                LowerCase(Line)) <= 0) then
-            begin
-                if fErrCount = 0 then
+                LowerCase(Line)) <= 0) Then
+            Begin
+                If fErrCount = 0 Then
                     fErrCount := 1;
-            end;
+            End;
 
             { windres errors }
-            if Pos('windres.exe: ', LowerCase(Line)) > 0 then
-            begin
+            If Pos('windres.exe: ', LowerCase(Line)) > 0 Then
+            Begin
                 { Delete 'windres.exe :' }
                 Delete(Line, 1, 13);
 
                 cpos := GetLastPos('warning: ', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     { Delete 'warning: ' }
                     Delete(Line, 1, 9);
                     cpos := Pos(':', Line);
                     Delete(Line, 1, cpos);
                     Inc(fWarnCount);
-                end
-                else
-                begin
+                End
+                Else
+                Begin
                     { Does it contain a filename and line number? }
                     cpos := GetLastPos(':', Line);
-                    if (cpos > 0) and (Pos(':', Line) <> cpos) then
-                    begin
+                    If (cpos > 0) And (Pos(':', Line) <> cpos) Then
+                    Begin
                         Delete(Line, cpos, Length(Line) - cpos + 1);
                         cpos := GetLastPos(':', Line);
                         Delete(Line, cpos, Length(Line) - 1);
-                    end;
+                    End;
                     Inc(fErrCount);
-                end;
-            end;
+                End;
+            End;
 
 
             { foo.c: In function 'bar': }
-            if Pos('In function', Line) > 0 then
-            begin
+            If Pos('In function', Line) > 0 Then
+            Begin
                 { Get message }
                 cpos := GetLastPos(': ', Line);
                 Delete(Line, cpos, Length(Line) - cpos + 1);
                 Inc(fWarnCount);
-            end;
+            End;
 
             { In file included from C:/foo.h:1, }
-            if Pos('In file included from ', Line) > 0 then
-            begin
+            If Pos('In file included from ', Line) > 0 Then
+            Begin
                 Delete(Line, Length(Line), 1);
                 cpos := GetLastPos(':', Line);
                 Delete(Line, cpos, Length(Line) - cpos + 1);
-            end;
+            End;
 
             { from blabla.c:1: }
-            if Pos('                 from ', Line) > 0 then
-            begin
+            If Pos('                 from ', Line) > 0 Then
+            Begin
                 Delete(Line, Length(Line), 1);
                 cpos := GetLastPos(':', Line);
                 Delete(Line, cpos, Length(Line) - cpos + 1);
-            end;
+            End;
 
 
             { foo.cpp: In method `bool MyApp::Bar()': }
             cpos := GetLastPos('In method `', Line);
             // GCC >= 3.2 support
-            if cpos <= 0 then
+            If cpos <= 0 Then
                 { foo.cpp: In member function `bool MyApp::Bar()': }
                 cpos := GetLastPos('In member function `', Line);
-            if cpos <= 0 then
+            If cpos <= 0 Then
                 { foo.cpp: In constructor `MyApp::MyApp()': }
                 cpos := GetLastPos('In constructor `', Line);
-            if cpos <= 0 then
+            If cpos <= 0 Then
                 { foo.cpp: In destructor `MyApp::MyApp()': }
                 cpos := GetLastPos('In destructor `', Line);
-            if cpos > 0 then
-            begin
+            If cpos > 0 Then
+            Begin
                 Delete(Line, cpos - 2, Length(Line) - cpos + 3);
-            end;
+            End;
 
 
             { C:\TEMP\foo.o(.text+0xc)://C/bar.c: undefined reference to `hello' }
             cpos := Pos('undefined reference to ', Line);
-            if cpos > 0 then
-            begin
+            If cpos > 0 Then
+            Begin
                 Inc(fErrCount);
-            end;
+            End;
 
 
             { foo.cpp:1:[2:] bar.h: No such file or directory }
             cpos := GetLastPos('No such file or directory', Line);
-            if cpos > 0 then
-            begin
+            If cpos > 0 Then
+            Begin
                 Inc(fErrCount);
-            end;
+            End;
 
             { foo.cpp:1: candidates are: FooClass::Bar(void) }
             cpos := GetLastPos(': candidates are: ', Line);
-            if cpos > 0 then
-            begin
+            If cpos > 0 Then
+            Begin
                 Delete(Line, cpos, Length(Line) - cpos + 1);
                 cpos := GetLastPos(':', Line);
                 Delete(Line, cpos, Length(Line) - cpos + 1);
-            end;
+            End;
 
             { Other messages }
             cpos := GetLastPos(': ', Line);
@@ -1794,109 +1790,109 @@ begin
             //     copy $(BIN) c:\$(BIN)
             //
             // the following block of code freaked-out with the ":"!
-            if cpos > 0 then
-            begin // mandrav fix
+            If cpos > 0 Then
+            Begin // mandrav fix
                 Delete(Line, cpos + 2, Length(Line) - cpos - 1);
 
                 cpos := Pos('warning: ', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     Inc(fWarnCount);
                     Delete(Line, cpos - 2, Length(Line) - cpos + 2);
-                end;
+                End;
 
                 // GCC >= 3.2. support
-                if Pos(': error', Line) > 0 then
-                begin
+                If Pos(': error', Line) > 0 Then
+                Begin
                     Delete(Line, Pos(': error', Line), Length(Line) - cpos + 1);
                     cpos := GetLastPos(':', Line);
                     Delete(Line, cpos, Length(Line) - cpos + 1);
-                end
-                else
-                begin
+                End
+                Else
+                Begin
                     cpos := GetLastPos(':', Line);
-                    if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos - 1),
-                        -1) <> -1 then
-                    begin
+                    If StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos - 1),
+                        -1) <> -1 Then
+                    Begin
                         Delete(Line, cpos, Length(Line) - cpos + 1);
                         //filename may also contain column as "filename:line:col"
                         cpos := GetLastPos(':', Line);
-                        if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos),
-                            -1) <> -1 then
-                        begin
+                        If StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos),
+                            -1) <> -1 Then
+                        Begin
                             Delete(Line, cpos, Length(Line) - cpos + 1);
-                        end;
-                    end;
-                end;
-            end;
-        end;
-    finally
+                        End;
+                    End;
+                End;
+            End;
+        End;
+    Finally
         RegEx.Free;
-    end;
+    End;
 
-    if Assigned(CompileProgressForm) then
-        with CompileProgressForm do
-        begin
+    If Assigned(CompileProgressForm) Then
+        With CompileProgressForm Do
+        Begin
             lblErr.Caption := IntToStr(fErrCount);
             lblWarn.Caption := IntToStr(fWarnCount);
-        end
-end;
+        End;
+End;
 
-procedure TCompiler.ParseResults;
-var
+Procedure TCompiler.ParseResults;
+Var
     LOutput: TStringList;
-    cpos, curLine: integer;
+    cpos, curLine: Integer;
     O_file, // file error in
     O_Line, // line error on
     O_Msg, // message for error
-    Line, LowerLine: string;
+    Line, LowerLine: String;
     Messages, IMod: Integer;
-    gcc, gpp: string;
+    gcc, gpp: String;
     RegEx: TRegExpr;
 
-begin
+Begin
     Messages := 0;
     fErrCount := 0;
     RegEx := TRegExpr.Create;
     LOutput := TStringList.Create;
 
-    if (devCompiler.gccName <> '') then
+    If (devCompiler.gccName <> '') Then
         gcc := devCompiler.gccName
-    else
+    Else
         gcc := CP_PROGRAM(devCompiler.CompilerType);
-    if (devCompiler.gppName <> '') then
+    If (devCompiler.gppName <> '') Then
         gpp := devCompiler.gppName
-    else
+    Else
         gpp := CPP_PROGRAM(devCompiler.CompilerType);
-    try
+    Try
         LOutput.Text := fdevRun.Output;
 
         IMod := CalcMod(pred(LOutput.Count));
 
         // Concatenate errors which are on multiple lines
-        if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
-            for curLine := 0 to pred(LOutput.Count) do
-            begin
-                if (curLine > 0) and AnsiStartsStr('   ', LOutput[curLine]) then
-                begin
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
+            For curLine := 0 To pred(LOutput.Count) Do
+            Begin
+                If (curLine > 0) And AnsiStartsStr('   ', LOutput[curLine]) Then
+                Begin
                     O_Msg := LOutput[curLine];
                     Delete(O_Msg, 1, 2);
                     LOutput[curLine - 1] := LOutput[curLine - 1] + O_Msg;
-                end;
-            end;
+                End;
+            End;
 
-        for curLine := 0 to pred(LOutput.Count) do
-        begin
-            if (IMod = 0) or (curLine mod IMod = 0) then
+        For curLine := 0 To pred(LOutput.Count) Do
+        Begin
+            If (IMod = 0) Or (curLine Mod IMod = 0) Then
                 Application.ProcessMessages;
 
-            if Messages > 500 then
-            begin
+            If Messages > 500 Then
+            Begin
                 DoOutput('', '', Format(Lang[ID_COMPMSG_GENERALERROR],
                     [Lang[ID_COMPMSG_TOOMANYMSGS]]));
                 Break;
-            end;
+            End;
 
             Line := LOutput.Strings[curLine];
             LowerLine := LowerCase(Line);
@@ -1904,163 +1900,163 @@ begin
             O_Line := '';
             O_File := '';
 
-            if devCompiler.compilerType in ID_COMPILER_VC then
-            begin
+            If devCompiler.compilerType In ID_COMPILER_VC Then
+            Begin
                 //Do we have to ignore this message?
-                if
-                (Line = '') or //Empty line?!
-                    (Copy(Line, 1, Length(devCompiler.gccName)) = devCompiler.gccName) or
-                    (Copy(Line, 1, Length(devCompiler.gppName)) = devCompiler.gppName) or
+                If
+                (Line = '') Or //Empty line?!
+                    (Copy(Line, 1, Length(devCompiler.gccName)) = devCompiler.gccName) Or
+                    (Copy(Line, 1, Length(devCompiler.gppName)) = devCompiler.gppName) Or
                     (Copy(Line, 1, Length(devCompiler.dllwrapName)) =
-                    devCompiler.dllwrapName) or
+                    devCompiler.dllwrapName) Or
                     (Copy(Line, 1, Length(devCompiler.windresName)) =
-                    devCompiler.windresName) or
+                    devCompiler.windresName) Or
                     (Copy(Line, 1, Length(devCompiler.gprofName)) =
-                    devCompiler.gprofName) or
-                    (Copy(Line, 1, Length(RmExe)) = RmExe) or
-                    (Copy(Line, 1, 19) = '   Creating library') or
-                    (Length(Line) = 2) or //One word lines?
-                    (Pos('*** [', Line) > 0) or
-                    (((Pos('.c', Line) > 0) or (Pos('.cpp', Line) > 0)) and
-                    (Pos('(', Line) = 0)) or
-                    (Pos('Nothing to be done for', Line) > 0) or
-                    (Pos('while trying to match the argument list', Line) > 0) or
-                    (Line = 'Generating code') or
+                    devCompiler.gprofName) Or
+                    (Copy(Line, 1, Length(RmExe)) = RmExe) Or
+                    (Copy(Line, 1, 19) = '   Creating library') Or
+                    (Length(Line) = 2) Or //One word lines?
+                    (Pos('*** [', Line) > 0) Or
+                    (((Pos('.c', Line) > 0) Or (Pos('.cpp', Line) > 0)) And
+                    (Pos('(', Line) = 0)) Or
+                    (Pos('Nothing to be done for', Line) > 0) Or
+                    (Pos('while trying to match the argument list', Line) > 0) Or
+                    (Line = 'Generating code') Or
                     (Line = 'Finished generating code')
-                then
+                Then
                     continue;
 
                 //Check for command line errors
-                if RegEx.Exec(Line, 'Command line error ([^:]*) : (.*)') then
-                begin
+                If RegEx.Exec(Line, 'Command line error ([^:]*) : (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Command line error $1] $2');
                     Inc(fErrCount);
-                end
+                End
                 //Command line warnings
-                else
-                if RegEx.Exec(Line, 'Command line warning ([^:]*) : (.*)') then
-                begin
+                Else
+                If RegEx.Exec(Line, 'Command line warning ([^:]*) : (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Command line warning $1] $2');
                     Inc(fWarnCount);
-                end
+                End
                 //Fatal error
-                else
-                if Regex.Exec(Line, '(.*)\(([0-9]+)\) : fatal error ([^:]*): (.*)') then
-                begin
+                Else
+                If Regex.Exec(Line, '(.*)\(([0-9]+)\) : fatal error ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Error $3] $4');
                     O_Line := RegEx.Substitute('$2');
                     O_File := RegEx.Substitute('$1');
                     Inc(fErrCount);
-                end
+                End
                 //LINK fatal error
-                else
-                if RegEx.Exec(Line, 'LINK : fatal error ([^:]*): (.*)') then
-                begin
+                Else
+                If RegEx.Exec(Line, 'LINK : fatal error ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Error $1] $2');
                     Inc(fErrCount);
-                end
+                End
                 //General compiler error
-                else
-                if RegEx.Exec(Line, '(.*)\(([0-9]+)\) : error ([^:]*): (.*)') then
-                begin
+                Else
+                If RegEx.Exec(Line, '(.*)\(([0-9]+)\) : error ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Error $3] $4');
                     O_Line := RegEx.Substitute('$2');
                     O_File := RegEx.Substitute('$1');
                     Inc(fErrCount);
-                end
+                End
                 //Compiler warning
-                else
-                if RegEx.Exec(Line, '(.*)\(([0-9]+)\) : warning ([^:]*): (.*)') then
-                begin
+                Else
+                If RegEx.Exec(Line, '(.*)\(([0-9]+)\) : warning ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Warning $3] $4');
                     O_Line := RegEx.Substitute('$2');
                     O_File := RegEx.Substitute('$1');
                     Inc(fWarnCount);
-                end
+                End
                 //LINK error
-                else
-                if RegEx.Exec(Line, '(.*)\((.*)\) : error ([^:]*): (.*)') then
-                begin
+                Else
+                If RegEx.Exec(Line, '(.*)\((.*)\) : error ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Error $3] $4');
                     O_File := RegEx.Substitute('$2');
                     Inc(FErrCount);
-                end
-                else
-                if RegEx.Exec(Line, '(.*) : error ([^:]*): (.*)') then
-                begin
+                End
+                Else
+                If RegEx.Exec(Line, '(.*) : error ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Error $2] $3');
                     O_File := RegEx.Substitute('$1');
                     Inc(fErrCount);
-                end
-                else
-                if RegEx.Exec(Line, 'LINK : warning ([^:]*): (.*)') then
-                begin
+                End
+                Else
+                If RegEx.Exec(Line, 'LINK : warning ([^:]*): (.*)') Then
+                Begin
                     O_Msg := RegEx.Substitute('[Warning $1] $2');
                     Inc(fWarnCount);
-                end
+                End
                 //General compiler errors can produce extra filenames at the end. Take those into account
-                else
-                if RegEx.Exec(Line,
-                    '( +)(.*)\(([0-9]+)\)(| ): (could be|or|see declaration of) ''(.*)''') then
-                begin
+                Else
+                If RegEx.Exec(Line,
+                    '( +)(.*)\(([0-9]+)\)(| ): (could be|or|see declaration of) ''(.*)''') Then
+                Begin
                     O_Msg := RegEx.Substitute('$1$5 $6');
                     O_Line := RegEx.Substitute('$3');
                     O_File := RegEx.Substitute('$2');
-                end
+                End
                 //Do we have any spare messages floating around?
-                else
+                Else
                     O_Msg := Line;
-            end
-            else //ID_COMPILER_MINGW
-            begin
+            End
+            Else //ID_COMPILER_MINGW
+            Begin
                 Line := LOutput.Strings[curLine];
                 LowerLine := LowerCase(Line);
                 { Is this a compiler message? }
-                if (Pos(':', Line) <= 0) or
-                    (CompareText(Copy(LowerLine, 1, Length(gpp)), gpp) = 0) or
-                    (CompareText(Copy(LowerLine, 1, Length(gcc)), gcc) = 0) or
+                If (Pos(':', Line) <= 0) Or
+                    (CompareText(Copy(LowerLine, 1, Length(gpp)), gpp) = 0) Or
+                    (CompareText(Copy(LowerLine, 1, Length(gcc)), gcc) = 0) Or
                     (CompareText(Copy(LowerLine, 1, Length(devCompiler.dllwrapName) + 1),
-                    devCompiler.dllwrapName + ' ') = 0) or
+                    devCompiler.dllwrapName + ' ') = 0) Or
                     (Pos(devCompiler.makeName + ': nothing to be done for ',
-                    LowerLine) > 0) or
-                    (Pos('has modification time in the future', LowerLine) > 0) or
-                    (Pos(devCompiler.dllwrapName + ':', LowerLine) > 0) or
+                    LowerLine) > 0) Or
+                    (Pos('has modification time in the future', LowerLine) > 0) Or
+                    (Pos(devCompiler.dllwrapName + ':', LowerLine) > 0) Or
                     (Pos('is up to date.', LowerLine) > 0)
-                then
+                Then
                     Continue;
 
                 { Make errors }
-                if (Pos(devCompiler.makeName + ': ***', LowerCase(Line)) > 0) and
+                If (Pos(devCompiler.makeName + ': ***', LowerCase(Line)) > 0) And
                     (Pos('Clock skew detected. Your build may be incomplete',
-                    LowerCase(Line)) <= 0) then
-                begin
+                    LowerCase(Line)) <= 0) Then
+                Begin
                     cpos := Length(devCompiler.makeName + ': ***');
                     O_Msg := '[Build Error] ' + Copy(Line, cpos + 1, Length(Line) - cpos);
 
-                    if Assigned(fProject) then
+                    If Assigned(fProject) Then
                         O_file := Makefile
-                    else
+                    Else
                         O_file := '';
 
-                    if Messages = 0 then
+                    If Messages = 0 Then
                         Messages := 1;
-                    if fErrCount = 0 then
+                    If fErrCount = 0 Then
                         fErrCount := 1;
 
                     DoOutput('', O_file, O_Msg);
                     Continue;
-                end;
+                End;
 
 
                 { windres errors }
-                if Pos(devCompiler.windresName + ': ', LowerCase(Line)) > 0 then
-                begin
+                If Pos(devCompiler.windresName + ': ', LowerCase(Line)) > 0 Then
+                Begin
                     { Delete 'windres.exe :' }
                     Delete(Line, 1, Length(devCompiler.windresName) + 2);
 
                     cpos := GetLastPos('warning: ', Line);
-                    if cpos > 0 then
-                    begin
+                    If cpos > 0 Then
+                    Begin
                         { Delete 'warning: ' }
                         Delete(Line, 1, 9);
                         cpos := Pos(':', Line);
@@ -2075,13 +2071,13 @@ begin
                         Inc(fWarnCount);
                         DoResOutput(O_Line, O_file, O_Msg);
                         Continue;
-                    end
-                    else
-                    begin
+                    End
+                    Else
+                    Begin
                         { Does it contain a filename and line number? }
                         cpos := GetLastPos(':', Line);
-                        if (cpos > 0) and (Pos(':', Line) <> cpos) then
-                        begin
+                        If (cpos > 0) And (Pos(':', Line) <> cpos) Then
+                        Begin
                             O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos - 1);
                             Delete(Line, cpos, Length(Line) - cpos + 1);
 
@@ -2092,20 +2088,20 @@ begin
                             O_file := Line;
 
                             { It doesn't contain a filename and line number after all }
-                            if StrToIntDef(O_Line, -1) = -1 then
-                            begin
+                            If StrToIntDef(O_Line, -1) = -1 Then
+                            Begin
                                 O_Msg := LOutput.Strings[curLine];
                                 Delete(O_Msg, 1, 13);
                                 O_Line := '';
                                 O_file := '';
-                            end;
-                        end
-                        else
-                        begin
+                            End;
+                        End
+                        Else
+                        Begin
                             O_Line := '';
                             O_file := '';
                             O_Msg := Line;
-                        end;
+                        End;
 
                         Inc(Messages);
                         Inc(fErrCount);
@@ -2113,13 +2109,13 @@ begin
                         DoOutput(O_Line, O_file,
                             Format(Lang[ID_COMPMSG_RESOURCEERROR], [O_Msg]));
                         Continue;
-                    end;
-                end;
+                    End;
+                End;
 
 
                 { foo.c: In function 'bar': }
-                if Pos('In function', Line) > 0 then
-                begin
+                If Pos('In function', Line) > 0 Then
+                Begin
                     { Get message }
                     cpos := GetLastPos(': ', Line);
                     O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos - 1);
@@ -2131,11 +2127,11 @@ begin
                     Inc(fWarnCount);
                     DoOutput('', O_file, O_Msg + ':');
                     Continue;
-                end;
+                End;
 
                 { In file included from C:/foo.h:1, }
-                if Pos('In file included from ', Line) > 0 then
-                begin
+                If Pos('In file included from ', Line) > 0 Then
+                Begin
                     Delete(Line, Length(Line), 1);
                     cpos := GetLastPos(':', Line);
                     O_Line := Copy(Line, cpos + 1, Length(Line) - cpos);
@@ -2147,11 +2143,11 @@ begin
 
                     DoOutput(O_Line, O_file, O_Msg);
                     Continue;
-                end;
+                End;
 
                 { from blabla.c:1: }
-                if Pos('                 from ', Line) > 0 then
-                begin
+                If Pos('                 from ', Line) > 0 Then
+                Begin
                     Delete(Line, Length(Line), 1);
                     cpos := GetLastPos(':', Line);
                     O_Line := Copy(Line, cpos + 1, Length(Line) - cpos);
@@ -2163,36 +2159,36 @@ begin
 
                     DoOutput(O_Line, O_file, O_Msg);
                     Continue;
-                end;
+                End;
 
 
                 { foo.cpp: In method `bool MyApp::Bar()': }
                 cpos := GetLastPos('In method ''', Line);
                 // GCC >= 3.2 support
-                if cpos <= 0 then
+                If cpos <= 0 Then
                     { foo.cpp: In member function `bool MyApp::Bar()': }
                     cpos := GetLastPos('In member function ''', Line);
-                if cpos <= 0 then
+                If cpos <= 0 Then
                     { foo.cpp: In constructor `MyApp::MyApp()': }
                     cpos := GetLastPos('In constructor `', Line);
-                if cpos <= 0 then
+                If cpos <= 0 Then
                     { foo.cpp: In destructor `MyApp::MyApp()': }
                     cpos := GetLastPos('In destructor ''', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     O_Msg := Copy(Line, cpos, Length(Line) - cpos + 1);
                     Delete(Line, cpos - 2, Length(Line) - cpos + 3);
                     O_file := Line;
 
                     DoOutput('', O_file, O_Msg);
                     Continue;
-                end;
+                End;
 
 
                 { C:\TEMP\foo.o(.text+0xc)://C/bar.c: undefined reference to `hello' }
                 cpos := Pos('undefined reference to ', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     O_Msg := Line;
                     Delete(O_Msg, 1, cpos - 1);
 
@@ -2200,13 +2196,13 @@ begin
                     Inc(Messages);
                     DoOutput('', '', Format(Lang[ID_COMPMSG_LINKERERROR], [O_Msg]));
                     Continue;
-                end;
+                End;
 
 
                 { foo.cpp:1:[2:] bar.h: No such file or directory }
                 cpos := GetLastPos('No such file or directory', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     { Get file name }
                     Delete(Line, cpos - 2, Length(Line) - cpos + 3);
                     cpos := GetLastPos(': ', Line);
@@ -2229,12 +2225,12 @@ begin
                     Inc(Messages);
                     DoOutput(O_Line, O_file, O_Msg);
                     Continue;
-                end;
+                End;
 
                 { foo.cpp:1: candidates are: FooClass::Bar(void) }
                 cpos := GetLastPos(': candidates are: ', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos - 1);
                     Delete(Line, cpos, Length(Line) - cpos + 1);
 
@@ -2246,15 +2242,15 @@ begin
 
                     DoOutput(O_Line, O_file, O_Msg);
                     Continue;
-                end;
+                End;
 
                 { windres.exe ... }//normal command, *not* an error
                 cpos := GetLastPos(devCompiler.windresName + ' ', Line);
-                if cpos > 0 then
-                begin
+                If cpos > 0 Then
+                Begin
                     Line := '';
                     Continue;
-                end;
+                End;
 
                 { Other messages }
                 cpos := GetLastPos(': ', Line);
@@ -2267,199 +2263,199 @@ begin
                 //     copy $(BIN) c:\$(BIN)
                 //
                 // the following block of code freaked-out with the ":"!
-                if cpos > 0 then
-                begin // mandrav fix
+                If cpos > 0 Then
+                Begin // mandrav fix
 
                     O_Msg := Copy(Line, cpos + 2, Length(Line) - cpos - 1);
                     Delete(Line, cpos + 2, Length(Line) - cpos - 1);
 
                     cpos := Pos('warning: ', Line);
-                    if cpos > 0 then
-                    begin
+                    If cpos > 0 Then
+                    Begin
                         Inc(fWarnCount);
-                        if Pos('warning: ignoring pragma: ', Line) > 0 then
+                        If Pos('warning: ignoring pragma: ', Line) > 0 Then
                             O_Msg := 'ignoring pragma: ' + O_Msg;
-                        if Pos('#warning ', O_Msg) <= 0 then
+                        If Pos('#warning ', O_Msg) <= 0 Then
                             O_Msg := '[Warning] ' + O_Msg;
 
                         { Delete 'warning: ' }
                         Delete(Line, cpos - 2, Length(Line) - cpos + 2);
-                    end
-                    else
-                    if Pos('Info: ', Line) = 1 then
-                    begin
+                    End
+                    Else
+                    If Pos('Info: ', Line) = 1 Then
+                    Begin
                         O_Line := '';
                         O_file := '';
                         Delete(Line, 1, 6);
                         O_Msg := '[Info] ' + Line;
-                    end
-                    else
-                    begin
+                    End
+                    Else
+                    Begin
                         //We have no idea what this is, just call it a normal message
                         Delete(Line, Length(Line) - 1, 1);
-                    end;
+                    End;
                     Inc(Messages);
 
 
                     // GCC >= 3.2. support
-                    if Pos(': error', Line) > 0 then
-                    begin
+                    If Pos(': error', Line) > 0 Then
+                    Begin
                         Delete(Line, Pos(': error', Line), Length(Line) - cpos + 1);
                         cpos := GetLastPos(':', Line);
                         O_Line := Copy(Line, cpos + 1, Length(Line) - cpos + 1);
                         Delete(Line, cpos, Length(Line) - cpos + 1);
                         O_file := Line;
-                    end
-                    else
-                    begin
+                    End
+                    Else
+                    Begin
                         cpos := GetLastPos(':', Line);
-                        if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos - 1),
-                            -1) <> -1 then
-                        begin
+                        If StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos - 1),
+                            -1) <> -1 Then
+                        Begin
                             O_Line := Copy(Line, cpos + 1, Length(Line) - cpos - 1);
                             Delete(Line, cpos, Length(Line) - cpos + 1);
                             O_file := Line;
                             //filename may also contain column as "filename:line:col"
                             cpos := GetLastPos(':', Line);
-                            if StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos),
-                                -1) <> -1 then
-                            begin
+                            If StrToIntDef(Copy(Line, cpos + 1, Length(Line) - cpos),
+                                -1) <> -1 Then
+                            Begin
                                 O_Line := Copy(Line, cpos + 1, Length(Line) - cpos) +
                                     ':' + O_Line;
                                 Delete(Line, cpos, Length(Line) - cpos + 1);
                                 O_file := Line;
-                            end;
-                        end;
-                    end;
+                            End;
+                        End;
+                    End;
 
                     cpos := Pos('parse error before ', O_Msg);
-                    if (cpos > 0) and (StrToIntDef(O_Line, 0) > 0) then
+                    If (cpos > 0) And (StrToIntDef(O_Line, 0) > 0) Then
                         O_Line := IntToStr(StrToInt(O_Line)); // - 1); *mandrav*: why -1 ???
 
-                    if (Pos('(Each undeclared identifier is reported only once',
-                        O_Msg) > 0) or (Pos('for each function it appears in.)',
-                        O_Msg) > 0) or (Pos('At top level:', O_Msg) > 0) then
-                    begin
+                    If (Pos('(Each undeclared identifier is reported only once',
+                        O_Msg) > 0) Or (Pos('for each function it appears in.)',
+                        O_Msg) > 0) Or (Pos('At top level:', O_Msg) > 0) Then
+                    Begin
                         O_Line := '';
                         O_file := '';
                         Dec(Messages);
-                    end;
+                    End;
 
                     { This is an error in the Makefile }
-                    if (MakeFile <> '') and SameFileName(Makefile,
-                        GetRealPath(O_file)) then
-                        if Pos('[Warning] ', O_Msg) <> 1 then
+                    If (MakeFile <> '') And SameFileName(Makefile,
+                        GetRealPath(O_file)) Then
+                        If Pos('[Warning] ', O_Msg) <> 1 Then
                             O_Msg := '[Build Error] ' + O_Msg;
-                end;
-            end;
+                End;
+            End;
 
             Inc(Messages);
             DoOutput(O_Line, O_file, O_Msg);
-        end;
-    finally
+        End;
+    Finally
         RegEx.Free;
         Application.ProcessMessages;
-        if devCompiler.SaveLog then
-            try
-                if (fTarget = ctProject) and assigned(fProject) then
+        If devCompiler.SaveLog Then
+            Try
+                If (fTarget = ctProject) And assigned(fProject) Then
                     LOutput.SavetoFile(ChangeFileExt(fProject.FileName, '.compiler.out'))
-                else
+                Else
                     LOutput.SavetoFile(ChangeFileExt(fSourceFile, '.compiler.out'));
-            except
+            Except
                 // swallow
-            end;
+            End;
         LOutput.Free;
-    end;
+    End;
 
     // there are no compiler errors/warnings
-    if (Assigned(fOnSuccess)) then
+    If (Assigned(fOnSuccess)) Then
         fOnSuccess(Messages);
-end;
+End;
 
-function TCompiler.GetCompiling: Boolean;
-begin
-    Result := fDevRun <> nil;
-end;
+Function TCompiler.GetCompiling: Boolean;
+Begin
+    Result := fDevRun <> Nil;
+End;
 
-procedure TCompiler.SwitchToOriginalCompilerSet;
-begin
-    if fOriginalSet = devCompiler.CompilerSet then
+Procedure TCompiler.SwitchToOriginalCompilerSet;
+Begin
+    If fOriginalSet = devCompiler.CompilerSet Then
         Exit;
 
     devCompilerSet.LoadSet(fOriginalSet);
     devCompilerSet.AssignToCompiler;
     devCompiler.CompilerSet := fOriginalSet;
     fOriginalSet := -1;
-end;
+End;
 
-procedure TCompiler.SwitchToProjectCompilerSet;
-begin
-    if fOriginalSet = -1 then
+Procedure TCompiler.SwitchToProjectCompilerSet;
+Begin
+    If fOriginalSet = -1 Then
         fOriginalSet := devCompiler.CompilerSet;
 
-    if (not Assigned(fProject)) or
-        (devCompiler.CompilerSet = fProject.CurrentProfile.CompilerSet) or
-        (fProject.CurrentProfile.CompilerSet >= devCompilerSet.Sets.Count) then
+    If (Not Assigned(fProject)) Or
+        (devCompiler.CompilerSet = fProject.CurrentProfile.CompilerSet) Or
+        (fProject.CurrentProfile.CompilerSet >= devCompilerSet.Sets.Count) Then
         Exit;
 
     devCompilerSet.LoadSet(fProject.CurrentProfile.CompilerSet);
     devCompilerSet.AssignToCompiler;
     devCompiler.CompilerSet := fProject.CurrentProfile.CompilerSet;
-end;
+End;
 
-procedure TCompiler.SetProject(Project: TProject);
-begin
+Procedure TCompiler.SetProject(Project: TProject);
+Begin
     //Just assign it
     fProject := Project;
 
     //Do we swap the compiler set?
-    if fProject <> nil then
+    If fProject <> Nil Then
         SwitchToProjectCompilerSet
-    else
+    Else
         SwitchToOriginalCompilerSet;
-end;
+End;
 
-function TCompiler.UpToDate: Boolean;
-var
+Function TCompiler.UpToDate: Boolean;
+Var
     sa: TSecurityAttributes;
     tpi: TProcessInformation;
     tsi: TStartupInfo;
     ec: Cardinal;
-begin
+Begin
     Result := False;
     Assert(fTarget = ctProject);
     sa.nLength := SizeOf(TSecurityAttributes);
-    sa.lpSecurityDescriptor := nil;
+    sa.lpSecurityDescriptor := Nil;
     sa.bInheritHandle := True;
 
     FillChar(tsi, SizeOf(TStartupInfo), 0);
     tsi.cb := SizeOf(TStartupInfo);
     tsi.dwFlags := STARTF_USESHOWWINDOW;
-    if CreateProcess(nil, PChar(format('%s -q -f "%s" all',
+    If CreateProcess(Nil, Pchar(format('%s -q -f "%s" all',
         [devCompiler.makeName, MakeFile]) +
         ' ' + devCompiler.makeopts), @sa,
-        @sa, true, 0, nil,
-        nil, tsi, tpi) then
-    begin
+        @sa, True, 0, Nil,
+        Nil, tsi, tpi) Then
+    Begin
         //Wait for make to come up with a result
-        while WaitForSingleObject(tpi.hProcess, 100) = WAIT_TIMEOUT do
+        While WaitForSingleObject(tpi.hProcess, 100) = WAIT_TIMEOUT Do
             Application.ProcessMessages;
 
-        if GetExitCodeProcess(tpi.hProcess, ec) then
+        If GetExitCodeProcess(tpi.hProcess, ec) Then
             Result := ec = 0;
-    end;
+    End;
     CloseHandle(tpi.hProcess);
     CloseHandle(tpi.hThread);
-end;
+End;
 
-procedure TCompiler.InitProgressForm(Status: string);
-begin
-    if not devData.ShowProgress then
+Procedure TCompiler.InitProgressForm(Status: String);
+Begin
+    If Not devData.ShowProgress Then
         exit;
-    if not Assigned(CompileProgressForm) then
+    If Not Assigned(CompileProgressForm) Then
         CompileProgressForm := TCompileProgressForm.Create(Application);
-    with CompileProgressForm do
-    begin
+    With CompileProgressForm Do
+    Begin
         Memo1.Lines.Clear;
         btnClose.Caption := Lang[ID_BTN_CANCEL];
         btnClose.OnClick := OnAbortCompile;
@@ -2474,207 +2470,207 @@ begin
         lblWarn.Caption := '0';
         pb.Position := 0;
         pb.Step := 1;
-        if Assigned(fProject) then
+        If Assigned(fProject) Then
             pb.Max := fProject.Units.Count +
                 2  // all project units + linking output + private resource
-        else
+        Else
             pb.Max := 1; // just fSourceFile
-    end;
+    End;
     fWarnCount := 0;
     fErrCount := 0;
     Application.ProcessMessages;
-end;
+End;
 
-procedure TCompiler.EndProgressForm;
-var
-    sMsg: string;
-begin
-    if Assigned(CompileProgressForm) then
-    begin
-        with CompileProgressForm do
-        begin
+Procedure TCompiler.EndProgressForm;
+Var
+    sMsg: String;
+Begin
+    If Assigned(CompileProgressForm) Then
+    Begin
+        With CompileProgressForm Do
+        Begin
             pb.Position := 0;
             btnClose.Caption := Lang[ID_BTN_CLOSE];
             lblErr.Caption := IntToStr(fErrCount);
             lblWarn.Caption := IntToStr(fWarnCount);
-            if fAbortThread then
+            If fAbortThread Then
                 sMsg := 'Aborted'
-            else
+            Else
                 sMsg := 'Done';
-            if fErrCount > 0 then
+            If fErrCount > 0 Then
                 sMsg := sMsg + ' with errors.'
-            else
-            if fWarnCount > 0 then
+            Else
+            If fWarnCount > 0 Then
                 sMsg := sMsg + ' with warnings.'
-            else
+            Else
                 sMsg := sMsg + '.';
             Memo1.Lines.Add(sMsg);
             lblStatus.Caption := sMsg;
             lblStatus.Font.Style := [fsBold];
             lblFile.Caption := '';
             timeTimer.Enabled := False;
-        end;
+        End;
         Application.ProcessMessages;
-        if devData.AutoCloseProgress or (fErrCount > 0) or (fWarnCount > 0) then
+        If devData.AutoCloseProgress Or (fErrCount > 0) Or (fWarnCount > 0) Then
             ReleaseProgressForm;
-    end;
-end;
+    End;
+End;
 
-procedure TCompiler.ProcessProgressForm(Line: string);
-var
-    I: integer;
-    srch: string;
-    schk: boolean;
-    act, fil: string;
-    OK: boolean;
-    prog: integer;
-begin
-    if not Assigned(CompileProgressForm) then
+Procedure TCompiler.ProcessProgressForm(Line: String);
+Var
+    I: Integer;
+    srch: String;
+    schk: Boolean;
+    act, fil: String;
+    OK: Boolean;
+    prog: Integer;
+Begin
+    If Not Assigned(CompileProgressForm) Then
         Exit;
-    with CompileProgressForm do
-    begin
+    With CompileProgressForm Do
+    Begin
         // report currently compiling file
-        if not Assigned(fProject) then
-        begin
+        If Not Assigned(fProject) Then
+        Begin
             Memo1.Lines.Add(fSourceFile);
             Memo1.Lines.Add('Compiling ' + fil);
             lblStatus.Caption := 'Compiling...';
             lblFile.Caption := fSourceFile;
             Exit;
-        end;
+        End;
 
         // the progress reported is the index of the unit in the project
         prog := pb.Position;
         OK := False;
         schk := Pos(devCompiler.CheckSyntaxFormat, Line) > 0;
-        if schk then
+        If schk Then
             act := 'Syntax checking'
-        else
-        begin
+        Else
+        Begin
             schk := Pos('Building Makefile', Line) > 0;
-            if schk then
+            If schk Then
                 act := 'Building Makefile'
-            else
+            Else
                 act := '';
-        end;
+        End;
 
         srch := Format(devCompiler.PchCreateFormat, ['']);
-        if Pos(srch, Line) > 0 then
-        begin
-            OK := false;
+        If Pos(srch, Line) > 0 Then
+        Begin
+            OK := False;
             act := 'Precompiling';
             fil := '';
 
-            for i := Pos(srch, Line) + 3 to Length(Line) - Pos(srch, Line) + 3 do
-            begin
-                if (Line[i] = '"') then
-                    OK := not OK;
+            For i := Pos(srch, Line) + 3 To Length(Line) - Pos(srch, Line) + 3 Do
+            Begin
+                If (Line[i] = '"') Then
+                    OK := Not OK;
 
-                if ((Line[i] = ' ') or ((Line[i] = '"') and (OK))) then
+                If ((Line[i] = ' ') Or ((Line[i] = '"') And (OK))) Then
                     break
-                else
+                Else
                     fil := fil + Line[i];
-            end;
-        end
-        else
-        begin
+            End;
+        End
+        Else
+        Begin
             fil := '';
-            for I := 0 to fProject.Units.Count - 1 do
-            begin
+            For I := 0 To fProject.Units.Count - 1 Do
+            Begin
                 srch := ' ' + GenMakePath(ExtractRelativePath(fProject.FileName,
                     fProject.Units[I].FileName), False, True) + ' ';
-                if Pos(srch, Line) > 0 then
-                begin
+                If Pos(srch, Line) > 0 Then
+                Begin
                     fil := ExtractFilename(fProject.Units[I].FileName);
                     prog := I + 1;
-                    if not schk then
+                    If Not schk Then
                         act := 'Compiling';
                     OK := True;
 
                     //Is it a header file being compiled?
-                    if GetFileTyp(fil) = utHead then
-                    begin
+                    If GetFileTyp(fil) = utHead Then
+                    Begin
                         act := 'Precompiling';
                         prog := 1;
-                    end;
+                    End;
                     Break;
-                end;
-            end;
-            if not OK then
-            begin
+                End;
+            End;
+            If Not OK Then
+            Begin
                 srch := ExtractFileName(SubstituteMakeParams(
                     fProject.CurrentProfile.PrivateResource));
-                if Pos(srch, Line) > 0 then
-                begin
+                If Pos(srch, Line) > 0 Then
+                Begin
                     fil := srch;
                     prog := pb.Max - 1;
-                    if not schk then
+                    If Not schk Then
                         act := 'Compiling';
                     lblFile.Caption := srch;
-                end;
+                End;
 
                 srch := ExtractFileName(fProject.Executable);
-                if (Pos(srch, Line) > 0) and (Pos(RmExe, Line) > 0) then
-                begin
+                If (Pos(srch, Line) > 0) And (Pos(RmExe, Line) > 0) Then
+                Begin
                     fil := srch;
                     prog := 1;
-                    if not schk then
+                    If Not schk Then
                         act := 'Cleaning';
                     lblFile.Caption := '';
-                end
-                else
-                if (Pos(srch, Line) > 0) then
-                begin
+                End
+                Else
+                If (Pos(srch, Line) > 0) Then
+                Begin
                     fil := srch;
                     prog := pb.Max;
-                    if not schk then
+                    If Not schk Then
                         act := 'Linking';
                     lblFile.Caption := srch;
-                end;
+                End;
 
-                if devCompiler.CompilerType in ID_COMPILER_VC then
-                begin
+                If devCompiler.CompilerType In ID_COMPILER_VC Then
+                Begin
                     //Check for the manifest tool
                     srch := devCompiler.gprofName;
-                    if ((devCompiler.CompilerType in ID_COMPILER_VC_CURRENT)) and
-                        (Pos(UpperCase(srch), UpperCase(Trim(Line))) = 1) then
-                    begin
+                    If ((devCompiler.CompilerType In ID_COMPILER_VC_CURRENT)) And
+                        (Pos(UpperCase(srch), UpperCase(Trim(Line))) = 1) Then
+                    Begin
                         act := 'Embedding manifest';
                         fil := Copy(Line, Pos(UpperCase('/outputresource:'),
                             UpperCase(Line)) + 17, Length(Line));
                         fil := Copy(fil, 0, Pos(Line, '"'));
-                    end;
+                    End;
 
                     //Link-time code generation?
                     srch := 'Generating code';
-                    if (Pos(UpperCase(srch), UpperCase(Trim(Line)))) = 1 then
-                    begin
+                    If (Pos(UpperCase(srch), UpperCase(Trim(Line)))) = 1 Then
+                    Begin
                         act := 'Generating code';
-                    end;
-                end;
-            end;
-        end;
+                    End;
+                End;
+            End;
+        End;
 
-        if act + ' ' + fil <> ' ' then
+        If act + ' ' + fil <> ' ' Then
             Memo1.Lines.Add(Trim(act + ' ' + fil));
-        if trim(act) <> '' then
+        If trim(act) <> '' Then
             lblStatus.Caption := act + '...';
-        if trim(fil) <> '' then
+        If trim(fil) <> '' Then
             lblFile.Caption := fil;
-        if (fil <> '') and (pb.Position < pb.Max) then
+        If (fil <> '') And (pb.Position < pb.Max) Then
             pb.Position := prog;
-    end;
+    End;
 
     Application.ProcessMessages;
-end;
+End;
 
-procedure TCompiler.ReleaseProgressForm;
-begin
-    if not Assigned(CompileProgressForm) then
+Procedure TCompiler.ReleaseProgressForm;
+Begin
+    If Not Assigned(CompileProgressForm) Then
         Exit;
 
     CompileProgressForm.Close; // it's freed on close
-    CompileProgressForm := nil;
-end;
+    CompileProgressForm := Nil;
+End;
 
-end.
+End.

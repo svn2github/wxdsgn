@@ -537,13 +537,16 @@ end;
 function TdmMain.InsertList: TStrings;
 var
     idx: integer;
+    list1 : TStringList;
 begin
-    result := TStringList.Create;
+    list1 := TStringList.Create;
     try
         for idx := 0 to pred(fCodeList.Count) do
-            result.Append(fCodeList[idx].Caption);
-    except
-        FreeandNIL(Result);
+            list1.Append(fCodeList[idx].Caption);
+            
+        Result := list1;
+    finally
+        list1.Free;
     end;
 end;
 

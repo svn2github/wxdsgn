@@ -598,7 +598,9 @@ begin
     end;
 
     if (Assigned(StrStream)) then
-        FreeAndNil(StrStream);
+        FreeAndNil(StrStream)
+    else
+        StrStream := nil;
 end;
 
 function ObjectBinaryStreamToString(BinStream: TMemoryStream; var sResult: string; bResource: Boolean = FALSE): Boolean;
@@ -623,7 +625,9 @@ begin
     end;
 
     if (Assigned(StrStream)) then
-        FreeAndNil(StrStream);
+        FreeAndNil(StrStream)
+    else
+        StrStream := nil;
 end;
 
 function ObjectBinaryStreamToObjectTextStream(BinStream: TMemoryStream; StrStream: TMemoryStream; bResource: Boolean = FALSE): Boolean;
@@ -756,9 +760,13 @@ begin
 
   // To avoid memory leaks, always check the trash
     if (Assigned(StrStream)) then
-        FreeAndNil(StrStream);
+        FreeAndNil(StrStream)
+    else
+        strStream := nil;
     if (Assigned(BinStream)) then
-        FreeAndNil(BinStream);
+        FreeAndNil(BinStream)
+    else
+        BinStream := nil;
 end;
 
 function WriteComponentToFile(Component: TComponent; FileName: string;
@@ -1032,9 +1040,13 @@ begin
 
   // Throw away the trash
     if (Assigned(FileStream)) then
-        FreeAndNil(FileStream);
+        FreeAndNil(FileStream)
+    else
+        FileStream := nil;
     if (Assigned(BinStream)) then
-        FreeAndNil(BinStream);
+        FreeAndNil(BinStream)
+    else
+        BinStream := nil;
 end;
 
 function ReadComponentsFromFile(FormsAndComponents: array of TComponent; FileName: string): Boolean;
@@ -1595,11 +1607,17 @@ begin
 
   // Clean up trash
     if (Assigned(TempStream)) then
-        FreeAndNil(TempStream);
+        FreeAndNil(TempStream)
+    else
+        TempStream := nil;
     if (Assigned(sHeaderInfo)) then
-        FreeAndNil(sHeaderInfo);
+        FreeAndNil(sHeaderInfo)
+    else
+        sHeaderInfo := nil;
     if (Assigned(Stream)) then
-        FreeAndNil(Stream);
+        FreeAndNil(Stream)
+    else
+        Stream := nil;
 end;
 
 
@@ -1741,9 +1759,13 @@ begin
 
    // Clean up trash
         if (Assigned(sHeaderInfo)) then
-            FreeAndNil(sHeaderInfo);
+            FreeAndNil(sHeaderInfo)
+        else
+                sHeaderInfo := nil;
         if (Assigned(Stream)) then
-            FreeAndNil(Stream);
+            FreeAndNil(Stream)
+        else
+                Stream := nil;
     end;
 end;
 
@@ -1776,7 +1798,9 @@ begin
 
  // Clean up trash
     if (Assigned(Stream)) then
-        FreeAndNil(Stream);
+        FreeAndNil(Stream)
+    else
+        Stream := nil;
 end;
 
 
@@ -1837,11 +1861,20 @@ begin
 
  // Clean up trash
     if (Assigned(StrStream)) then
-        FreeAndNil(StrStream);
+        FreeAndNil(StrStream)
+    else
+        StrStream := nil;
+
     if (Assigned(Stream)) then
-        FreeAndNil(Stream);
+        FreeAndNil(Stream)
+    else
+        Stream := nil;
+
     if (Assigned(sHeaderInfo)) then
-        FreeAndNil(sHeaderInfo);
+        FreeAndNil(sHeaderInfo)
+    else
+        sHeaderInfo := nil;
+
 end;
 
 
@@ -1873,9 +1906,13 @@ begin
 
  // Clean up trash
     if (Assigned(sHeaderInfo)) then
-        FreeAndNil(sHeaderInfo);
+        FreeAndNil(sHeaderInfo)
+    else
+        sHeaderInfo := nil;
     if (Assigned(Stream)) then
-        FreeAndNil(Stream);
+        FreeAndNil(Stream)
+    else
+        Stream := nil;
 end;
 
 function DeleteComponentFromResourceFile(ResourceName: string; FileName: string): Boolean;
@@ -1963,9 +2000,13 @@ begin
 
   // Clean up trash
     if (Assigned(sHeaderInfo)) then
-        FreeAndNil(sHeaderInfo);
+        FreeAndNil(sHeaderInfo)
+    else
+        sHeaderInfo := nil;
     if (Assigned(Stream)) then
-        FreeAndNil(Stream);
+        FreeAndNil(Stream)
+    else
+        Stream := nil;
 end;
 
 function DeleteComponentFromResourceFile(Component: TComponent; FileName: string; NamingMethod: TResourceNaming = rnClassTag): Boolean;

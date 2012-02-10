@@ -116,7 +116,8 @@ begin
   try
     Reset;
   finally
-    FreeAndNil(fTokenList);
+    if Assigned(fTokenList) then FreeAndNil(fTokenList)
+        else fTokenList := nil;
   end;
   inherited Destroy;
 end;

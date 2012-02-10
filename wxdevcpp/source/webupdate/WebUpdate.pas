@@ -747,9 +747,12 @@ begin
   memDescr.Clear;
 
   ClearList;
-  FreeAndNil(fUpdateList);
-  FreeAndNil(fMirrorList);
-  FreeAndNil(fErrorsList);
+  if Assigned(fUpdateList) then FreeAndNil(fUpdateList)
+        else fUpdateList := nil;
+  if Assigned(fMirrorList) then FreeAndNil(fMirrorList)
+        else fMirrorList := nil;
+  if Assigned(fErrorsList) then FreeAndNil(fErrorsList)
+        else fErrorsList := nil;
 
   FormInitialized := False;
 end;

@@ -1,229 +1,229 @@
-unit wxeditor;
+Unit wxeditor;
 
-interface
+Interface
 
-uses
+Uses
     Windows, Controls, Forms, ComCtrls, Graphics, SysUtils, Menus,
     Designerfrm, CompFileIo, Dialogs,
     wxutils, SynEdit, wxversion, MigrateFrm, StdCtrls;
 
-type
+Type
 
-  TWXEditor = class
-    fDesigner: TfrmNewForm;
-    fScrollDesign: TScrollBox;
+    TWXEditor = Class
+        fDesigner: TfrmNewForm;
+        fScrollDesign: TScrollBox;
 
     //Guru's Code
-  private
-    fDesignerClassName, fDesignerTitle: string;
-    fDesignerStyle: TWxDlgStyleSet;
-    fDesignerDefaultData: Boolean;
-    procedure Close; // New fnc for wx
-    procedure OnbtnFloatingDesigner_Click(Sender: TObject);
-  public
-    FileName: String;
-    editorNumber: Integer;
-    btnFloatingDesigner: TButton;
-    function GetDesigner: TfrmNewForm;
-    procedure InitDesignerData(strFName, strCName, strFTitle: string; dlgSStyle:TWxDlgStyleSet);
-    function GetDesignerHPPFileName: string;
-    function GetDesignerCPPFileName: string;
-    procedure ReloadForm;
-    procedure ReloadFormFromFile(strFilename:String);
-    procedure Init(fTabSheet: TTabSheet; var fText: TSynEdit; DesignerPopup: TPopUpMenu; DoOpen: boolean; fName: String);
+    Private
+        fDesignerClassName, fDesignerTitle: String;
+        fDesignerStyle: TWxDlgStyleSet;
+        fDesignerDefaultData: Boolean;
+        Procedure Close; // New fnc for wx
+        Procedure OnbtnFloatingDesigner_Click(Sender: TObject);
+    Public
+        FileName: String;
+        editorNumber: Integer;
+        btnFloatingDesigner: TButton;
+        Function GetDesigner: TfrmNewForm;
+        Procedure InitDesignerData(strFName, strCName, strFTitle: String; dlgSStyle: TWxDlgStyleSet);
+        Function GetDesignerHPPFileName: String;
+        Function GetDesignerCPPFileName: String;
+        Procedure ReloadForm;
+        Procedure ReloadFormFromFile(strFilename: String);
+        Procedure Init(fTabSheet: TTabSheet; Var fText: TSynEdit; DesignerPopup: TPopUpMenu; DoOpen: Boolean; fName: String);
     //procedure Reload;
-    procedure Terminate;
-    function GetDefaultText: String;
-    function IsDesignerNil: Boolean;
-    property ScrollDesign: TScrollBox read fScrollDesign write fScrollDesign;
-    procedure RestorePosition;
-    
-    end;
+        Procedure Terminate;
+        Function GetDefaultText: String;
+        Function IsDesignerNil: Boolean;
+        Property ScrollDesign: TScrollBox Read fScrollDesign Write fScrollDesign;
+        Procedure RestorePosition;
 
-implementation
+    End;
 
-uses
+Implementation
+
+Uses
     wxdesigner;
 
-   procedure TWXEditor.Init(fTabSheet: TTabSheet; var fText: TSynEdit; DesignerPopup: TPopUpMenu; DoOpen: boolean; fName: String);
-   begin
+Procedure TWXEditor.Init(fTabSheet: TTabSheet; Var fText: TSynEdit; DesignerPopup: TPopUpMenu; DoOpen: Boolean; fName: String);
+Begin
 
 	    //Dont allow anyone to edit the text content
-        FileName := fName;
-	    fScrollDesign := TScrollBox.Create(fTabSheet);
-	    fScrollDesign.Parent := fTabSheet;
-	    fScrollDesign.Align := alClient;
-	    fScrollDesign.Visible := True;
-	    fScrollDesign.Color := clWhite;
+    FileName := fName;
+    fScrollDesign := TScrollBox.Create(fTabSheet);
+    fScrollDesign.Parent := fTabSheet;
+    fScrollDesign.Align := alClient;
+    fScrollDesign.Visible := True;
+    fScrollDesign.Color := clWhite;
 
-	    fDesigner := TfrmNewForm.Create(fScrollDesign);
+    fDesigner := TfrmNewForm.Create(fScrollDesign);
 	    //fDesigner.Parent:=fScrollDesign;
 
-	    fDesigner.synEdit := fText;
-	    fDesigner.Visible := False;
-        fDesigner.fileName := FileName;
+    fDesigner.synEdit := fText;
+    fDesigner.Visible := False;
+    fDesigner.fileName := FileName;
 
-          btnFloatingDesigner := TButton.Create(fScrollDesign);
-          with btnFloatingDesigner do
-          begin
-            Left := 2;
-            Top := 2;
-            Width :=  fScrollDesign.Width - 2;
-            Height := fScrollDesign.Height - 2;
-            Anchors := [akLeft, akTop, akRight, akBottom];
-            Caption := 'Click here to bring designer to front...';
-            Parent := fScrollDesign;
-            Visible := false;
-            OnClick := OnbtnFloatingDesigner_Click;
-          end;
+    btnFloatingDesigner := TButton.Create(fScrollDesign);
+    With btnFloatingDesigner Do
+    Begin
+        Left := 2;
+        Top := 2;
+        Width := fScrollDesign.Width - 2;
+        Height := fScrollDesign.Height - 2;
+        Anchors := [akLeft, akTop, akRight, akBottom];
+        Caption := 'Click here to bring designer to front...';
+        Parent := fScrollDesign;
+        Visible := False;
+        OnClick := OnbtnFloatingDesigner_Click;
+    End;
 
-        if not wx_designer.ELDesigner1.Floating then
-        begin
-	        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD or GetWindowLong(fDesigner.Handle, GWL_STYLE));
-	        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
-        end
-        else
-            btnFloatingDesigner.Visible := true;
+    If Not wx_designer.ELDesigner1.Floating Then
+    Begin
+        SetWindowLong(fDesigner.Handle, GWL_STYLE, WS_CHILD Or GetWindowLong(fDesigner.Handle, GWL_STYLE));
+        Windows.SetParent(fDesigner.Handle, fScrollDesign.Handle);
+    End
+    Else
+        btnFloatingDesigner.Visible := True;
 
-	    fScrollDesign.ScrollInView(fDesigner);
+    fScrollDesign.ScrollInView(fDesigner);
 
-  if (DoOpen) then
-  try
-      ReloadForm();
-  except
-    raise;
-  end;
-       fDesigner.Visible := True;
+    If (DoOpen) Then
+        Try
+            ReloadForm();
+        Except
+            Raise;
+        End;
+    fDesigner.Visible := True;
 
-       if not wx_designer.ELDesigner1.Floating then
-       begin
-           fDesigner.Left := 8;
-           fDesigner.Top := 8;
-       end;
+    If Not wx_designer.ELDesigner1.Floating Then
+    Begin
+        fDesigner.Left := 8;
+        fDesigner.Top := 8;
+    End;
 
-       if fDesignerDefaultData then
-       begin
-         if Trim(fDesignerClassName) <> '' then
-           fDesigner.Wx_Name := Trim(fDesignerClassName);
+    If fDesignerDefaultData Then
+    Begin
+        If Trim(fDesignerClassName) <> '' Then
+            fDesigner.Wx_Name := Trim(fDesignerClassName);
 
-         if Trim(fDesigner.Wx_Name) <> '' then
-           fDesigner.Wx_IDName := UpperCase('ID_' + fDesigner.Wx_Name);
+        If Trim(fDesigner.Wx_Name) <> '' Then
+            fDesigner.Wx_IDName := UpperCase('ID_' + fDesigner.Wx_Name);
 
-         if fDesigner.Wx_IDValue = 0 then
-           fDesigner.Wx_IDValue := 1000;
+        If fDesigner.Wx_IDValue = 0 Then
+            fDesigner.Wx_IDValue := 1000;
 
-         if fDesignerStyle <> [] then
-         fDesigner.Wx_DialogStyle := fDesignerStyle;
+        If fDesignerStyle <> [] Then
+            fDesigner.Wx_DialogStyle := fDesignerStyle;
 
-         if Trim(fDesignerTitle) <> '' then
-           fDesigner.Caption := Self.fDesignerTitle;
-       end;
+        If Trim(fDesignerTitle) <> '' Then
+            fDesigner.Caption := Self.fDesignerTitle;
+    End;
 
-         fDesigner.PopupMenu := DesignerPopup;
-   end;
+    fDesigner.PopupMenu := DesignerPopup;
+End;
 
- procedure TWXEditor.Terminate;
- begin
-  wx_designer.DisableDesignerControls;
- end;
-
- procedure TWXEditor.Close;
- begin
+Procedure TWXEditor.Terminate;
+Begin
     wx_designer.DisableDesignerControls;
- end;
+End;
 
- function TWXEditor.GetDefaultText: String;
- begin
-   Result := CompFileIo.ComponentToString(fDesigner)
- end;
+Procedure TWXEditor.Close;
+Begin
+    wx_designer.DisableDesignerControls;
+End;
 
- function TWXEditor.GetDesigner: TfrmNewForm;
- begin
-     Result := fDesigner
- end;
+Function TWXEditor.GetDefaultText: String;
+Begin
+    Result := CompFileIo.ComponentToString(fDesigner);
+End;
 
- procedure TWXEditor.InitDesignerData(strFName, strCName, strFTitle: string;
-   dlgSStyle: TWxDlgStyleSet);
- begin
-   fDesignerClassName := strCName;
-   fDesignerTitle := strFTitle;
-   fDesignerStyle := dlgSStyle;
-   fDesignerDefaultData := True;
- end;
+Function TWXEditor.GetDesigner: TfrmNewForm;
+Begin
+    Result := fDesigner;
+End;
 
- function TWXEditor.GetDesignerHPPFileName: string;
- begin
+Procedure TWXEditor.InitDesignerData(strFName, strCName, strFTitle: String;
+    dlgSStyle: TWxDlgStyleSet);
+Begin
+    fDesignerClassName := strCName;
+    fDesignerTitle := strFTitle;
+    fDesignerStyle := dlgSStyle;
+    fDesignerDefaultData := True;
+End;
 
-   if FileExists(ChangeFileExt(FileName, H_EXT)) then
-     Result := ChangeFileExt(FileName, H_EXT);
- end;
+Function TWXEditor.GetDesignerHPPFileName: String;
+Begin
 
- function TWXEditor.GetDesignerCPPFileName: string;
- begin
-   if FileExists(ChangeFileExt(FileName, CPP_EXT)) then
-     Result := ChangeFileExt(FileName, CPP_EXT);
- end;
+    If FileExists(ChangeFileExt(FileName, H_EXT)) Then
+        Result := ChangeFileExt(FileName, H_EXT);
+End;
 
- procedure TWXEditor.ReloadForm;
- begin
+Function TWXEditor.GetDesignerCPPFileName: String;
+Begin
+    If FileExists(ChangeFileExt(FileName, CPP_EXT)) Then
+        Result := ChangeFileExt(FileName, CPP_EXT);
+End;
+
+Procedure TWXEditor.ReloadForm;
+Begin
     ReloadFormFromFile(self.FileName);
- end;
+End;
 
-procedure TWXEditor.ReloadFormFromFile(strFilename:String);
-var
-     I:Integer;
-begin
-   try
+Procedure TWXEditor.ReloadFormFromFile(strFilename: String);
+Var
+    I: Integer;
+Begin
+    Try
      //Delete all the Components and
-     for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
-     begin
-         self.fDesigner.Components[i].Destroy;
-     end;    // for
-     ReadComponentFromFile(self.fDesigner, strFilename);
-  except
-    on e: Exception do
-      with TMigrateFrm.Create(Application.MainForm) do
-      begin
-        Source.Text := strFileName;
-        if ShowModal = mrOK then
-        begin
+        For I := self.fDesigner.ComponentCount - 1 Downto 0 Do    // Iterate
+        Begin
+            self.fDesigner.Components[i].Destroy;
+        End;    // for
+        ReadComponentFromFile(self.fDesigner, strFilename);
+    Except
+        on e: Exception Do
+            With TMigrateFrm.Create(Application.MainForm) Do
+            Begin
+                Source.Text := strFileName;
+                If ShowModal = mrOK Then
+                Begin
           //ReloadFormFromFile(strFileName);
-          try
+                    Try
              //Delete all the Components and
-             for I := self.fDesigner.ComponentCount -1  downto 0 do    // Iterate
-             begin
-                 self.fDesigner.Components[i].Destroy;
-             end;    // for
-             ReadComponentFromFile(self.fDesigner, strFilename);
-          except
-            on e: Exception do
-            begin
-                MessageDlg(Format('%s: "%s"', [wx_designer.GetLangString(ID_ERR_UPDATE_WXFORM), e.Message]), mtError, [mbOk], Handle);
-            end;
-          end;
-      end;
+                        For I := self.fDesigner.ComponentCount - 1 Downto 0 Do    // Iterate
+                        Begin
+                            self.fDesigner.Components[i].Destroy;
+                        End;    // for
+                        ReadComponentFromFile(self.fDesigner, strFilename);
+                    Except
+                        on e: Exception Do
+                        Begin
+                            MessageDlg(Format('%s: "%s"', [wx_designer.GetLangString(ID_ERR_UPDATE_WXFORM), e.Message]), mtError, [mbOk], Handle);
+                        End;
+                    End;
+                End;
 
-      Destroy;
-    end;
-  end;	 
-end;
+                Destroy;
+            End;
+    End;
+End;
 
-function TWXEditor.IsDesignerNil: Boolean;
-begin
-    if fDesigner <> nil then
-      Result := false
-    else
-      Result := true;
-end;
+Function TWXEditor.IsDesignerNil: Boolean;
+Begin
+    If fDesigner <> Nil Then
+        Result := False
+    Else
+        Result := True;
+End;
 
-procedure TWXEditor.OnbtnFloatingDesigner_Click(Sender: TObject);
-begin
+Procedure TWXEditor.OnbtnFloatingDesigner_Click(Sender: TObject);
+Begin
     fDesigner.Show;
-end;
+End;
 
-procedure TWXEditor.RestorePosition;
-begin
+Procedure TWXEditor.RestorePosition;
+Begin
 
-end;
+End;
 
-end.
+End.

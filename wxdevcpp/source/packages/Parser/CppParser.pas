@@ -321,27 +321,46 @@ destructor TCppParser.Destroy;
 var
   i: Integer;
 begin
-  FreeAndNil(fInvalidatedIDs);
-  FreeAndNil(fProjectFiles);
+  if Assigned(fInvalidatedIDs) then FreeAndNil(fInvalidatedIDs)
+        else fInvalidatedIDs := nil;
+
+  if Assigned(fProjectFiles) then FreeAndNil(fProjectFiles)
+        else fProjectFiles := nil;
 
   for i := 0 to fIncludesList.Count -1 do
     Dispose(PIncludesRec(fIncludesList.Items[i]));
-  FreeAndNil(fIncludesList);
+  if Assigned(fIncludesList) then FreeAndNil(fIncludesList)
+        else fIncludesList := nil;
 
   for i := 0 to fOutstandingTypedefs.Count -1 do
     Dispose(POutstandingTypedef(fOutstandingTypedefs.Items[i]));
-  FreeAndNil(fOutstandingTypedefs);
+
+  if Assigned(fOutstandingTypedefs) then FreeAndNil(fOutstandingTypedefs)
+        else fOutstandingTypedefs := nil;
 
   for i := 0 to fStatementList.Count -1 do
     Dispose(PStatement(fStatementList.Items[i]));
-  FreeAndNil(fStatementList);
 
-  FreeAndNil(fFilesToScan);
-  FreeAndNil(fCacheContents);
-  FreeAndNil(fScannedFiles);
-  FreeAndNil(fIncludePaths);
-  FreeAndNil(fProjectIncludePaths);
-  FreeAndNil(fFileIncludes);
+  if Assigned(fStatementList) then FreeAndNil(fStatementList)
+        else fStatementList := nil;
+
+  if Assigned(fFilesToScan) then FreeAndNil(fFilesToScan)
+        else fFilesToScan := nil;
+
+  if Assigned(fCacheContents) then FreeAndNil(fCacheContents)
+        else fCacheContents := nil;
+
+  if Assigned(fScannedFiles) then FreeAndNil(fScannedFiles)
+        else fScannedFiles := nil;
+
+  if Assigned(fIncludePaths) then FreeAndNil(fIncludePaths)
+        else fIncludePaths := nil;
+
+  if Assigned(fProjectIncludePaths) then FreeAndNil(fProjectIncludePaths)
+        else fProjectIncludePaths := nil;
+
+  if Assigned(fFileIncludes) then FreeAndNil(fFileIncludes)
+        else fFileIncludes := nil;
 
   inherited Destroy;
 end;

@@ -20,8 +20,8 @@ object CVSForm: TCVSForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
-    581
-    424)
+    589
+    426)
   PixelsPerInch = 96
   TextHeight = 13
   object devPages1: TPageControl

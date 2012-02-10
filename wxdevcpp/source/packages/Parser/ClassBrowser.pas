@@ -327,7 +327,8 @@ destructor TClassBrowser.Destroy;
 begin
   SetLength(fFolderAssocs, 0);
   SetLength(fFolders, 0);
-  FreeAndNil(fImagesRecord);
+  if Assigned(fImagesRecord) then FreeAndNil(fImagesRecord)
+        else fImagesRecord := nil;
 
   if fUseColors then
     SetUseColors(False);

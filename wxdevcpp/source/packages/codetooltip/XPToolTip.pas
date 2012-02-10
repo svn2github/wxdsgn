@@ -27,268 +27,269 @@
 //    draws a black border around the hint, like the system hints from win2k and xp
 //
 
-unit XPToolTip;
+Unit XPToolTip;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
-  SysUtils, Dialogs, Classes, Windows, Messages, Graphics, Controls, Menus, Forms, StdCtrls;
+    SysUtils, Dialogs, Classes, Windows, Messages, Graphics, Controls, Menus, Forms, StdCtrls;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, QDialogs, Classes, QGraphics, QControls, QMenus, QForms, QStdCtrls, Types;
 {$ENDIF}
 
-  
-type
-  TCustomToolTip = class(THintWindow)
-  private
-    FActivated: Boolean;  
-  protected
-    property Activated: Boolean read FActivated;    
-  public
-    constructor Create(AOwner: TComponent); override;
+
+Type
+    TCustomToolTip = Class(THintWindow)
+    Private
+        FActivated: Boolean;
+    Protected
+        Property Activated: Boolean Read FActivated;
+    Public
+        Constructor Create(AOwner: TComponent); Override;
 {$IFDEF WIN32}
-    procedure ActivateHint(Rect: TRect; const AHint: string); override;
+        Procedure ActivateHint(Rect: TRect; Const AHint: String); Override;
 {$ENDIF}
 {$IFDEF LINUX}
     procedure ActivateHint(Rect: TRect; const AHint: WideString); override;
 {$ENDIF}
-    procedure ReleaseHandle; virtual;
-  end;
-  
-  
-  TToolTip = class(TCustomToolTip)
-  public
-    property Activated;
-  end;
-  
-  
-  TCustomXPToolTip = class(TCustomToolTip)
-  private
-    FAlphaBlend: Boolean;
-    FAlphaBlendValue: Byte;
-    FDropShadow: Boolean;
-    procedure SetAlphaBlend(Value: Boolean);
-    procedure SetAlphaBlendValue(Value: Byte);
-    procedure SetDropShadow(Value: Boolean);
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMNCPaint(var msg: TMessage); message WM_NCPAINT;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    property AlphaBlend: Boolean read FAlphaBlend write SetAlphaBlend default False;
-    property AlphaBlendValue: Byte read FAlphaBlendValue write SetAlphaBlendValue default 255;
-    property DropShadow: Boolean read FDropShadow write SetDropShadow default True;
-  public
-    constructor Create(AOwner: TComponent); override;
+        Procedure ReleaseHandle; Virtual;
+    End;
+
+
+    TToolTip = Class(TCustomToolTip)
+    Public
+        Property Activated;
+    End;
+
+
+    TCustomXPToolTip = Class(TCustomToolTip)
+    Private
+        FAlphaBlend: Boolean;
+        FAlphaBlendValue: Byte;
+        FDropShadow: Boolean;
+        Procedure SetAlphaBlend(Value: Boolean);
+        Procedure SetAlphaBlendValue(Value: Byte);
+        Procedure SetDropShadow(Value: Boolean);
+        Procedure WMNCHitTest(Var Message: TWMNCHitTest); Message WM_NCHITTEST;
+        Procedure WMNCPaint(Var msg: TMessage); Message WM_NCPAINT;
+    Protected
+        Procedure CreateParams(Var Params: TCreateParams); Override;
+        Property AlphaBlend: Boolean Read FAlphaBlend Write SetAlphaBlend Default False;
+        Property AlphaBlendValue: Byte Read FAlphaBlendValue Write SetAlphaBlendValue Default 255;
+        Property DropShadow: Boolean Read FDropShadow Write SetDropShadow Default True;
+    Public
+        Constructor Create(AOwner: TComponent); Override;
 {$IFDEF WIN32}
-    procedure ActivateHint(Rect: TRect; const AHint: string); override;
+        Procedure ActivateHint(Rect: TRect; Const AHint: String); Override;
 {$ENDIF}
 {$IFDEF LINUX}
     procedure ActivateHint(Rect: TRect; const AHint: WideString); override;
 {$ENDIF}
-  end;
+    End;
 
 
-  TXPToolTip = class(TCustomXPToolTip)
-  public
-    property Activated;
-  published
-    property AlphaBlend;
-    property AlphaBlendValue;
-    property DropShadow;
-  end;
-  
-const
-  clXPToolTipBk: TColor = $E1FFFF;
-  
-implementation
-var
-  SetLayeredWindowAttributesProc : function (hWnd : HWND; crKey: TColor; bAlpha: byte; dwFlags: DWORD): BOOL; stdcall;
+    TXPToolTip = Class(TCustomXPToolTip)
+    Public
+        Property Activated;
+    Published
+        Property AlphaBlend;
+        Property AlphaBlendValue;
+        Property DropShadow;
+    End;
+
+Const
+    clXPToolTipBk: TColor = $E1FFFF;
+
+Implementation
+Var
+    SetLayeredWindowAttributesProc: Function(hWnd: HWND; crKey: TColor; bAlpha: Byte; dwFlags: DWORD): BOOL; Stdcall;
 
 //----------------- local helper functions -----------------------------------------------------------------------------
 
-  function IsWin2kOrLater: Boolean;
+Function IsWin2kOrLater: Boolean;
   // returns true when the operating system is windows 2000 or newer  
-  begin
+Begin
 {$IFDEF WIN32}
-    Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5);
+    Result := (Win32Platform = VER_PLATFORM_WIN32_NT) And (Win32MajorVersion >= 5);
 {$ENDIF}
 {$IFDEF LINUX}
     Result := False;
 {$ENDIF}
-  end;
-  
-  function IsWinXP: Boolean;
+End;
+
+Function IsWinXP: Boolean;
   // returns true when the operating system is windows XP or newer  
-  begin
+Begin
 {$IFDEF WIN32}
-    Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
+    Result := (Win32Platform = VER_PLATFORM_WIN32_NT) And (Win32MajorVersion >= 5) And (Win32MinorVersion >= 1);
 {$ENDIF}
 {$IFDEF LINUX}
     Result := False;
 {$ENDIF}
-  end;
+End;
 
 //----------------- TCustomToolTip -------------------------------------------------------------------------------------
 
-constructor TCustomToolTip.Create(AOwner: TComponent); 
-begin
-  inherited;
+Constructor TCustomToolTip.Create(AOwner: TComponent);
+Begin
+    Inherited;
 
-  FActivated := False;
-  Color := clXPToolTipBk;
-end;
+    FActivated := False;
+    Color := clXPToolTipBk;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
-procedure TCustomToolTip.ActivateHint(Rect: TRect; const AHint: string);
+Procedure TCustomToolTip.ActivateHint(Rect: TRect; Const AHint: String);
 {$ENDIF}
 {$IFDEF LINUX}
 procedure TCustomToolTip.ActivateHint(Rect: TRect; const AHint: WideString);
 {$ENDIF}
-begin
-  inherited;
-  FActivated := True;
-end;
+Begin
+    Inherited;
+    FActivated := True;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomToolTip.ReleaseHandle;
-begin
-  FActivated := False;
-  DestroyHandle;
-end;
+Procedure TCustomToolTip.ReleaseHandle;
+Begin
+    FActivated := False;
+    DestroyHandle;
+End;
 
 //----------------- TCustomXPToolTip -----------------------------------------------------------------------------------
 
-constructor TCustomXPToolTip.Create(AOwner: TComponent); 
-begin
-  inherited;
+Constructor TCustomXPToolTip.Create(AOwner: TComponent);
+Begin
+    Inherited;
 
-  Color := clXPToolTipBk;
-  FAlphaBlend := False;
-  FAlphaBlendValue := 255;
-  FDropShadow := True;
-  
-  SetAlphaBlend(FAlphaBlend);
-  SetAlphaBlendValue(FAlphaBlendValue);
-end;
+    Color := clXPToolTipBk;
+    FAlphaBlend := False;
+    FAlphaBlendValue := 255;
+    FDropShadow := True;
+
+    SetAlphaBlend(FAlphaBlend);
+    SetAlphaBlendValue(FAlphaBlendValue);
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
-procedure TCustomXPToolTip.ActivateHint(Rect: TRect; const AHint: string);
+Procedure TCustomXPToolTip.ActivateHint(Rect: TRect; Const AHint: String);
 {$ENDIF}
 {$IFDEF LINUX}
 procedure TCustomXPToolTip.ActivateHint(Rect: TRect; const AHint: WideString);
 {$ENDIF}
-const
-  CS_DROPSHADOW = $00020000;
-begin     
-  if IsWinXP then
-  begin
-    if FDropShadow then
-      SetClassLong(Handle, GCL_STYLE, GetClassLong(Handle, GCL_STYLE) or CS_DROPSHADOW)
-    else
-      SetClassLong(Handle, GCL_STYLE, GetClassLong(Handle, GCL_STYLE) and not CS_DROPSHADOW);
-  end;
+Const
+    CS_DROPSHADOW = $00020000;
+Begin
+    If IsWinXP Then
+    Begin
+        If FDropShadow Then
+            SetClassLong(Handle, GCL_STYLE, GetClassLong(Handle, GCL_STYLE) Or CS_DROPSHADOW)
+        Else
+            SetClassLong(Handle, GCL_STYLE, GetClassLong(Handle, GCL_STYLE) And Not CS_DROPSHADOW);
+    End;
 
-  SetAlphaBlend(FAlphaBlend);
-  SetAlphaBlendValue(FAlphaBlendValue);      
-  
-  inherited;
-end;
+    SetAlphaBlend(FAlphaBlend);
+    SetAlphaBlendValue(FAlphaBlendValue);
+
+    Inherited;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomXPToolTip.CreateParams(var Params: TCreateParams);
-begin
- inherited;
+Procedure TCustomXPToolTip.CreateParams(Var Params: TCreateParams);
+Begin
+    Inherited;
 {TODO: 'winnt: The next line breaks tooltip on nt which crashes anyway'}
- if IsWin2kOrLater then
- Params.ExStyle := Params.ExStyle or WS_EX_LAYERED;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
- 
-procedure TCustomXPToolTip.SetAlphaBlend(Value: Boolean);
-const
-  WS_EX_LAYERED = $80000;
-begin
-  FAlphaBlend := Value;
-  
-  if IsWin2kOrLater then
-  begin
-    if FAlphaBlend then
-    begin
-      SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
-      SetAlphaBlendValue(FAlphaBlendValue);
-    end
-    else
-    begin
-      if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_LAYERED) = WS_EX_LAYERED then
-        SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) and not WS_EX_LAYERED) ;
-    end;
-  end;
-end;
+    If IsWin2kOrLater Then
+        Params.ExStyle := Params.ExStyle Or WS_EX_LAYERED;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomXPToolTip.SetAlphaBlendValue(Value: Byte);
-const
- LWA_COLORKEY  = $1;
- LWA_ALPHA     = $2;
-begin
-  FAlphaBlendValue := Value;
-  
-  if IsWin2kOrLater and Assigned(SetLayeredWindowAttributesProc) then
-  begin
-    if FAlphaBlend then SetLayeredWindowAttributesProc(Handle, 0, Value, LWA_ALPHA)
-    else SetLayeredWindowAttributesProc(Handle, 0, Value, 0);
-  end;
-end;
+Procedure TCustomXPToolTip.SetAlphaBlend(Value: Boolean);
+Const
+    WS_EX_LAYERED = $80000;
+Begin
+    FAlphaBlend := Value;
+
+    If IsWin2kOrLater Then
+    Begin
+        If FAlphaBlend Then
+        Begin
+            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_LAYERED);
+            SetAlphaBlendValue(FAlphaBlendValue);
+        End
+        Else
+        Begin
+            If (GetWindowLong(Handle, GWL_EXSTYLE) And WS_EX_LAYERED) = WS_EX_LAYERED Then
+                SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_LAYERED);
+        End;
+    End;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomXPToolTip.SetDropShadow(Value: Boolean);
-begin
-  FDropShadow := Value;
-end;
+Procedure TCustomXPToolTip.SetAlphaBlendValue(Value: Byte);
+Const
+    LWA_COLORKEY = $1;
+    LWA_ALPHA = $2;
+Begin
+    FAlphaBlendValue := Value;
+
+    If IsWin2kOrLater And Assigned(SetLayeredWindowAttributesProc) Then
+    Begin
+        If FAlphaBlend Then
+            SetLayeredWindowAttributesProc(Handle, 0, Value, LWA_ALPHA)
+        Else SetLayeredWindowAttributesProc(Handle, 0, Value, 0);
+    End;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomXPToolTip.WMNCHitTest(var Message: TWMNCHitTest);
-begin
-  Message.Result := HTTRANSPARENT;
+Procedure TCustomXPToolTip.SetDropShadow(Value: Boolean);
+Begin
+    FDropShadow := Value;
+End;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+Procedure TCustomXPToolTip.WMNCHitTest(Var Message: TWMNCHitTest);
+Begin
+    Message.Result := HTTRANSPARENT;
   //Message.Result := HTCLIENT;
-end;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomXPToolTip.WMNCPaint(var msg: TMessage);
-var
-  R: TRect;
-  DC: HDC;
-begin
-  DC := GetWindowDC(Handle);
-  try
-    R := Rect(0, 0, Width, Height);
-    DrawEdge(DC, R, EDGE_ETCHED, BF_RECT or BF_MONO);
-  finally
-    ReleaseDC(Handle, DC);
-  end;
-end;
+Procedure TCustomXPToolTip.WMNCPaint(Var msg: TMessage);
+Var
+    R: TRect;
+    DC: HDC;
+Begin
+    DC := GetWindowDC(Handle);
+    Try
+        R := Rect(0, 0, Width, Height);
+        DrawEdge(DC, R, EDGE_ETCHED, BF_RECT Or BF_MONO);
+    Finally
+        ReleaseDC(Handle, DC);
+    End;
+End;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-initialization
-  SetLayeredWindowAttributesProc := nil;
-  if IsWin2kOrLater then 
-    SetLayeredWindowAttributesProc := GetProcAddress(GetModulehandle(user32), 'SetLayeredWindowAttributes');
-  
-finalization
-  SetLayeredWindowAttributesProc := nil;
-  
-end.
+Initialization
+    SetLayeredWindowAttributesProc := Nil;
+    If IsWin2kOrLater Then
+        SetLayeredWindowAttributesProc := GetProcAddress(GetModulehandle(user32), 'SetLayeredWindowAttributes');
+
+Finalization
+    SetLayeredWindowAttributesProc := Nil;
+
+End.

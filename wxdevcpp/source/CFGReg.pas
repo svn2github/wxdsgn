@@ -80,7 +80,8 @@ end;
 
 destructor TCFGReg.Destroy;
 begin
-    fReg.Free;
+   if Assigned(fReg) then
+        fReg.Free;
     inherited;
 end;
 
