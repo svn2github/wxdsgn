@@ -5133,6 +5133,7 @@ Var
     strXPMContent: String;
 
 Begin
+
     Result := False;
     If bmp = Nil Then
         Exit;
@@ -5147,12 +5148,23 @@ Begin
             strXPMContent := GetXPMFromTPicture(strParentName + '_' +
                 strCompName, bmp);
 
+            // Create the Images directory if it doesn't exist.
+            If Not DirectoryExists(xpmFileDir) Then
+                If Not CreateDir(xpmFileDir) Then
+                Begin
+                    ShowMessage('ERROR: Can''t create directory ' +
+                        xpmFileDir + ' for image.');
+                    strXPMContent := '';
+                End;
+
             If trim(strXPMContent) <> '' Then
             Begin
+
                 fileStrlst.Add(strXPMContent);
                 fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' +
                     strCompName + '_XPM.xpm');
             End;
+
         Except
         End;
         fileStrlst.Destroy;
